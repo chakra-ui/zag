@@ -10,9 +10,9 @@ import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./rating-group.anatomy"
 import { dom } from "./rating-group.dom"
-import type { ItemProps, ItemState, PublicApi, Send, State } from "./rating-group.types"
+import type { ItemProps, ItemState, MachineApi, Send, State } from "./rating-group.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isInteractive = state.context.isInteractive
   const value = state.context.value
   const hoveredValue = state.context.hoveredValue

@@ -9,13 +9,13 @@ export const dom = createScope({
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `pin-input:${ctx.id}:control`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
-  getElements: (ctx: Ctx) => {
+  getInputEls: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getRootId(ctx))
     const selector = `input[data-ownedby=${ownerId}]`
     return queryAll<HTMLInputElement>(dom.getRootEl(ctx), selector)
   },
   getInputEl: (ctx: Ctx, id: string) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx, id)),
-  getFocusedInputEl: (ctx: Ctx) => dom.getElements(ctx)[ctx.focusedIndex],
-  getFirstInputEl: (ctx: Ctx) => dom.getElements(ctx)[0],
+  getFocusedInputEl: (ctx: Ctx) => dom.getInputEls(ctx)[ctx.focusedIndex],
+  getFirstInputEl: (ctx: Ctx) => dom.getInputEls(ctx)[0],
   getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
 })

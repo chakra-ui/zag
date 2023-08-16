@@ -27,15 +27,15 @@ const fetchMachine = createMachine({
   on: {
     SET_VALUE: [{
       cond: "hasIndex",
-      actions: ["setValueAtIndex", "invokeOnChange"]
+      actions: ["setValueAtIndex"]
     }, {
-      actions: ["setValue", "invokeOnChange"]
+      actions: ["setValue"]
     }],
     CLEAR_VALUE: [{
       cond: "isDisabled",
-      actions: ["clearValue", "invokeOnChange"]
+      actions: ["clearValue"]
     }, {
-      actions: ["clearValue", "invokeOnChange", "setFocusIndexToFirst"]
+      actions: ["clearValue", "setFocusIndexToFirst"]
     }]
   },
   on: {
@@ -56,16 +56,16 @@ const fetchMachine = createMachine({
       on: {
         INPUT: [{
           cond: "isFinalValue && isValidValue",
-          actions: ["setFocusedValue", "invokeOnChange", "syncInputValue"]
+          actions: ["setFocusedValue", "syncInputValue"]
         }, {
           cond: "isValidValue",
-          actions: ["setFocusedValue", "invokeOnChange", "setNextFocusedIndex", "syncInputValue"]
+          actions: ["setFocusedValue", "setNextFocusedIndex", "syncInputValue"]
         }],
         PASTE: [{
           cond: "isValidValue",
-          actions: ["setPastedValue", "invokeOnChange", "setLastValueFocusIndex"]
+          actions: ["setPastedValue", "setLastValueFocusIndex"]
         }, {
-          actions: ["resetFocusedValue", "invokeOnChange"]
+          actions: ["revertInputValue"]
         }],
         BLUR: {
           target: "idle",
@@ -73,7 +73,7 @@ const fetchMachine = createMachine({
         },
         DELETE: {
           cond: "hasValue",
-          actions: ["clearFocusedValue", "invokeOnChange"]
+          actions: ["clearFocusedValue"]
         },
         ARROW_LEFT: {
           actions: "setPrevFocusedIndex"
@@ -83,9 +83,9 @@ const fetchMachine = createMachine({
         },
         BACKSPACE: [{
           cond: "hasValue",
-          actions: ["clearFocusedValue", "invokeOnChange"]
+          actions: ["clearFocusedValue"]
         }, {
-          actions: ["setPrevFocusedIndex", "clearFocusedValue", "invokeOnChange"]
+          actions: ["setPrevFocusedIndex", "clearFocusedValue"]
         }],
         ENTER: {
           cond: "isValueComplete",

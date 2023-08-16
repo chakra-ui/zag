@@ -54,7 +54,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        value: ["invokeOnChange", "dispatchChangeEvent"],
+        value: ["syncInputElement"],
         isOutOfRange: ["invokeOnInvalid"],
         scrubberCursorPoint: ["setVirtualCursorPosition"],
       },
@@ -62,15 +62,9 @@ export function machine(userContext: UserDefinedContext) {
       entry: ["syncInputValue"],
 
       on: {
-        SET_VALUE: [
-          {
-            guard: "clampOnBlur",
-            actions: ["setValue", "clampValue", "setHintToSet"],
-          },
-          {
-            actions: ["setValue", "setHintToSet"],
-          },
-        ],
+        SET_VALUE: {
+          actions: ["setValue", "clampValue", "setHintToSet"],
+        },
         CLEAR_VALUE: {
           actions: ["clearValue"],
         },
@@ -84,17 +78,19 @@ export function machine(userContext: UserDefinedContext) {
 
       states: {
         idle: {
-          exit: "invokeOnFocus",
           on: {
             PRESS_DOWN: {
               target: "before:spin",
-              actions: ["focusInput", "setHint"],
+              actions: ["focusInput", "invokeOnFocus", "setHint"],
             },
             PRESS_DOWN_SCRUBBER: {
               target: "scrubbing",
-              actions: ["focusInput", "setHint", "setCursorPoint"],
+              actions: ["focusInput", "invokeOnFocus", "setHint", "setCursorPoint"],
             },
-            FOCUS: "focused",
+            FOCUS: {
+              target: "focused",
+              actions: ["focusInput", "invokeOnFocus"],
+            },
           },
         },
 
@@ -290,35 +286,37 @@ export function machine(userContext: UserDefinedContext) {
       actions: {
         focusInput(ctx) {
           if (!ctx.focusInputOnChange) return
-          const input = dom.getInputEl(ctx)
-          raf(() => input?.focus())
+          const inputEl = dom.getInputEl(ctx)
+          raf(() => {
+            inputEl?.focus()
+          })
         },
         increment(ctx, evt) {
-          ctx.value = utils.increment(ctx, evt.step)
+          set.value(ctx, utils.increment(ctx, evt.step))
         },
         decrement(ctx, evt) {
-          ctx.value = utils.decrement(ctx, evt.step)
+          set.value(ctx, utils.decrement(ctx, evt.step))
         },
         clampValue(ctx) {
-          ctx.value = utils.clamp(ctx)
+          set.value(ctx, utils.clamp(ctx))
         },
         roundValue(ctx) {
-          if (ctx.value !== "") {
-            ctx.value = utils.round(ctx)
-          }
+          if (ctx.value === "") return
+          set.value(ctx, utils.round(ctx))
         },
         setValue(ctx, evt) {
-          const value = evt.target?.value ?? evt.value
-          ctx.value = utils.sanitize(ctx, utils.parse(ctx, value.toString()))
+          let value = evt.target?.value ?? evt.value
+          value = utils.sanitize(ctx, utils.parse(ctx, value.toString()))
+          set.value(ctx, value)
         },
         clearValue(ctx) {
-          ctx.value = ""
+          set.value(ctx, "")
         },
         setToMax(ctx) {
-          ctx.value = ctx.max.toString()
+          set.value(ctx, ctx.max.toString())
         },
         setToMin(ctx) {
-          ctx.value = ctx.min.toString()
+          set.value(ctx, ctx.min.toString())
         },
         setHint(ctx, evt) {
           ctx.hint = evt.hint
@@ -328,12 +326,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         setHintToSet(ctx) {
           ctx.hint = "set"
-        },
-        invokeOnChange(ctx) {
-          ctx.onChange?.({
-            value: ctx.value,
-            valueAsNumber: ctx.valueAsNumber,
-          })
         },
         invokeOnFocus(ctx, evt) {
           let srcElement: HTMLElement | null = null
@@ -353,10 +345,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         invokeOnBlur(ctx) {
-          ctx.onBlur?.({
-            value: ctx.value,
-            valueAsNumber: ctx.valueAsNumber,
-          })
+          ctx.onBlur?.({ value: ctx.value, valueAsNumber: ctx.valueAsNumber })
         },
         invokeOnInvalid(ctx) {
           if (!ctx.isOutOfRange) return
@@ -367,12 +356,16 @@ export function machine(userContext: UserDefinedContext) {
             valueAsNumber: ctx.valueAsNumber,
           })
         },
-        // sync input value, in event it was set from form libraries via `ref`, `bind:this`, etc.
+        syncInputElement(ctx) {
+          const inputEl = dom.getInputEl(ctx)
+          dom.setValue(inputEl, ctx.formattedValue)
+        },
         syncInputValue(ctx) {
-          const input = dom.getInputEl(ctx)
-          if (!input || input.value == ctx.value) return
-          const value = utils.parse(ctx, input.value)
-          ctx.value = utils.sanitize(ctx, value)
+          const inputEl = dom.getInputEl(ctx)
+          if (!inputEl || inputEl.value == ctx.value) return
+
+          const value = utils.parse(ctx, inputEl.value)
+          set.value(ctx, utils.sanitize(ctx, value))
         },
         setCursorPoint(ctx, evt) {
           ctx.scrubberCursorPoint = evt.point
@@ -386,11 +379,25 @@ export function machine(userContext: UserDefinedContext) {
           const { x, y } = ctx.scrubberCursorPoint
           cursor.style.transform = `translate3d(${x}px, ${y}px, 0px)`
         },
-        dispatchChangeEvent(ctx) {
-          const inputEl = dom.getInputEl(ctx)
-          dispatchInputValueEvent(inputEl, { value: ctx.formattedValue })
-        },
       },
     },
   )
+}
+
+const invoke = {
+  onChange: (ctx: MachineContext) => {
+    // invoke callback
+    ctx.onChange?.({ value: ctx.value, valueAsNumber: ctx.valueAsNumber })
+
+    // form event
+    const inputEl = dom.getInputEl(ctx)
+    dispatchInputValueEvent(inputEl, { value: ctx.formattedValue })
+  },
+}
+
+const set = {
+  value: (ctx: MachineContext, value: string) => {
+    ctx.value = value
+    invoke.onChange(ctx)
+  },
 }

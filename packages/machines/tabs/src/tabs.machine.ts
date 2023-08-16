@@ -46,14 +46,7 @@ export function machine(userContext: UserDefinedContext) {
       exit: ["cleanupObserver"],
 
       watch: {
-        focusedValue: "invokeOnFocus",
-        value: [
-          "enableIndicatorTransition",
-          "invokeOnChange",
-          "setPrevSelectedTabs",
-          "syncIndicatorRect",
-          "setContentTabIndex",
-        ],
+        value: ["enableIndicatorTransition", "setPrevSelectedTabs", "syncIndicatorRect", "setContentTabIndex"],
         dir: ["syncIndicatorRect"],
         orientation: ["syncIndicatorRect"],
       },
@@ -146,16 +139,16 @@ export function machine(userContext: UserDefinedContext) {
 
       actions: {
         setFocusedValue(ctx, evt) {
-          ctx.focusedValue = evt.value
+          set.focusedValue(ctx, evt.value)
         },
         clearFocusedValue(ctx) {
-          ctx.focusedValue = null
+          set.focusedValue(ctx, null)
         },
         setValue(ctx, evt) {
-          ctx.value = evt.value
+          set.value(ctx, evt.value)
         },
         clearValue(ctx) {
-          ctx.value = null
+          set.value(ctx, null)
         },
         focusFirstTab(ctx) {
           raf(() => dom.getFirstEl(ctx)?.focus())
@@ -175,12 +168,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         checkRenderedElements(ctx) {
           ctx.isIndicatorRendered = !!dom.getIndicatorEl(ctx)
-        },
-        invokeOnChange(ctx) {
-          ctx.onChange?.({ value: ctx.value })
-        },
-        invokeOnFocus(ctx) {
-          ctx.onFocus?.({ value: ctx.focusedValue })
         },
         setPrevSelectedTabs(ctx) {
           if (ctx.value != null) {
@@ -253,4 +240,24 @@ function pushUnique(arr: string[], value: any) {
   }
   newArr.push(value)
   return newArr
+}
+
+const invoke = {
+  change: (ctx: MachineContext) => {
+    ctx.onChange?.({ value: ctx.value })
+  },
+  focusChange: (ctx: MachineContext) => {
+    ctx.onFocus?.({ value: ctx.focusedValue })
+  },
+}
+
+const set = {
+  value: (ctx: MachineContext, value: string | null) => {
+    ctx.value = value
+    invoke.change(ctx)
+  },
+  focusedValue: (ctx: MachineContext, value: string | null) => {
+    ctx.focusedValue = value
+    invoke.focusChange(ctx)
+  },
 }

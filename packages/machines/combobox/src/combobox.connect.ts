@@ -9,12 +9,12 @@ import type {
   OptionGroupLabelProps,
   OptionGroupProps,
   OptionProps,
-  PublicApi,
+  MachineApi,
   Send,
   State,
 } from "./combobox.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const translations = state.context.translations
 
   const isDisabled = state.context.disabled

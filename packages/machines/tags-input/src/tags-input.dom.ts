@@ -13,28 +13,28 @@ export const dom = createScope({
   getTagDeleteTriggerId: (ctx: Ctx, opt: TagProps) =>
     ctx.ids?.tagDeleteTrigger?.(opt) ?? `${dom.getTagId(ctx, opt)}:delete-btn`,
   getTagInputId: (ctx: Ctx, opt: TagProps) => ctx.ids?.tagInput?.(opt) ?? `${dom.getTagId(ctx, opt)}:input`,
-  getEditInputId: (ctx: Ctx) => `${ctx.editedId}:input`,
+  getEditInputId: (ctx: Ctx) => `${ctx.editedTagId}:input`,
 
   getTagInputEl: (ctx: Ctx, opt: TagProps) => dom.getById<HTMLInputElement>(ctx, dom.getTagInputId(ctx, opt)),
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
   getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
   getEditInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getEditInputId(ctx)),
-  getElements: (ctx: Ctx) => queryAll(dom.getRootEl(ctx), `[data-part=tag]:not([data-disabled])`),
-  getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
-  getLastEl: (ctx: Ctx) => dom.getElements(ctx)[dom.getElements(ctx).length - 1],
-  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), id, false),
-  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), id, false),
-  getElAtIndex: (ctx: Ctx, index: number) => dom.getElements(ctx)[index],
+  getTagElements: (ctx: Ctx) => queryAll(dom.getRootEl(ctx), `[data-part=tag]:not([data-disabled])`),
+  getFirstEl: (ctx: Ctx) => dom.getTagElements(ctx)[0],
+  getLastEl: (ctx: Ctx) => dom.getTagElements(ctx)[dom.getTagElements(ctx).length - 1],
+  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getTagElements(ctx), id, false),
+  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getTagElements(ctx), id, false),
+  getTagElAtIndex: (ctx: Ctx, index: number) => dom.getTagElements(ctx)[index],
 
-  getIndexOfId: (ctx: Ctx, id: string) => indexOfId(dom.getElements(ctx), id),
+  getIndexOfId: (ctx: Ctx, id: string) => indexOfId(dom.getTagElements(ctx), id),
   isInputFocused: (ctx: Ctx) => dom.getDoc(ctx).activeElement === dom.getInputEl(ctx),
 
   getFocusedTagValue: (ctx: Ctx) => {
     if (!ctx.focusedId) return null
     const idx = dom.getIndexOfId(ctx, ctx.focusedId)
     if (idx === -1) return null
-    return dom.getElements(ctx)[idx].dataset.value ?? null
+    return dom.getTagElements(ctx)[idx].dataset.value ?? null
   },
   setHoverIntent: (el: Element) => {
     const tag = el.closest<HTMLElement>("[data-part=tag]")

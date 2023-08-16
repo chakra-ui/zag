@@ -29,7 +29,7 @@ export function constrainValue(ctx: Ctx, value: number, index: number) {
 }
 
 export function decrement(ctx: Ctx, index?: number, step?: number) {
-  const idx = index ?? ctx.activeIndex
+  const idx = index ?? ctx.focusedIndex
   const range = getRangeAtIndex(ctx, idx)
   const nextValues = getPreviousStepValue(idx, {
     ...range,
@@ -41,7 +41,7 @@ export function decrement(ctx: Ctx, index?: number, step?: number) {
 }
 
 export function increment(ctx: Ctx, index?: number, step?: number) {
-  const idx = index ?? ctx.activeIndex
+  const idx = index ?? ctx.focusedIndex
   const range = getRangeAtIndex(ctx, idx)
   const nextValues = getNextStepValue(idx, {
     ...range,

@@ -5,7 +5,7 @@ type PublicContext = {
   onExitComplete?: () => void
 }
 
-export type PublicApi = {
+export type MachineApi = {
   /**
    * Whether the node is present in the DOM.
    */

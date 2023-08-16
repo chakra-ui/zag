@@ -32,7 +32,7 @@ import type {
   DayCellProps,
   GridProps,
   Offset,
-  PublicApi,
+  MachineApi,
   Send,
   State,
   ViewProps,
@@ -53,7 +53,7 @@ import {
 
 const pretty = (value: DateValue) => value.toString().split("T")[0]
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const startValue = state.context.startValue
   const endValue = state.context.endValue
   const selectedValue = state.context.value

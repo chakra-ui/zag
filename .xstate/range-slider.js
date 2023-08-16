@@ -19,7 +19,7 @@ const fetchMachine = createMachine({
     "isVertical": false,
     "isVertical": false
   },
-  entry: ["checkValue"],
+  entry: ["coarseValue"],
   activities: ["trackFormControlState", "trackThumbsSize"],
   on: {
     SET_VALUE: [{
@@ -49,7 +49,7 @@ const fetchMachine = createMachine({
         },
         FOCUS: {
           target: "focus",
-          actions: "setActiveIndex"
+          actions: "setFocusedIndex"
         }
       }
     },
@@ -90,7 +90,7 @@ const fetchMachine = createMachine({
         },
         BLUR: {
           target: "idle",
-          actions: "clearActiveIndex"
+          actions: "clearFocusedIndex"
         }
       }
     },

@@ -24,7 +24,7 @@ import { getPlacement } from "@zag-js/popper"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact } from "@zag-js/utils"
 import { dom } from "./date-picker.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
+import type { DateValue, DateView, MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 import { adjustStartAndEndDate, formatValue, sortDates } from "./date-picker.utils"
 
 const { and, not } = guards
@@ -60,7 +60,6 @@ const getInitialContext = (ctx: Partial<MachineContext>): MachineContext => {
     selectionMode,
     view: "day",
     activeIndex: 0,
-    valueText: "",
     hoveredValue: null,
     ...ctx,
     positioning: {
@@ -78,6 +77,8 @@ export function machine(userContext: UserDefinedContext) {
       initial: ctx.inline ? "open" : "idle",
       context: getInitialContext(ctx),
       computed: {
+        valueText: (ctx) =>
+          ctx.value.map((date) => formatSelectedDate(date, null, ctx.locale, ctx.timeZone)).join(", "),
         isInteractive: (ctx) => !ctx.disabled && !ctx.readOnly,
         visibleDuration: (ctx) => ({ months: ctx.numOfMonths }),
         endValue: (ctx) => getEndDate(ctx.startValue, ctx.visibleDuration),
@@ -103,11 +104,11 @@ export function machine(userContext: UserDefinedContext) {
           "syncYearSelectElement",
           "focusActiveCellIfNeeded",
           "setHoveredValueIfKeyboard",
-          "invokeOnFocusChange",
         ],
-        value: ["setValueText", "announceValueText", "setInputValue"],
+        value: ["setInputValue"],
+        valueText: ["announceValueText"],
         inputValue: ["syncInputElement"],
-        view: ["focusActiveCell", "invokeOnViewChange"],
+        view: ["focusActiveCell"],
       },
 
       on: {
@@ -412,20 +413,16 @@ export function machine(userContext: UserDefinedContext) {
       },
       actions: {
         setViewToDay(ctx) {
-          ctx.view = "day"
+          set.view(ctx, "day")
         },
         setViewToMonth(ctx) {
-          ctx.view = "month"
+          set.view(ctx, "month")
         },
         setViewToYear(ctx) {
-          ctx.view = "year"
+          set.view(ctx, "year")
         },
         setView(ctx, evt) {
-          ctx.view = evt.cell
-        },
-        setValueText(ctx) {
-          if (!ctx.value.length) return
-          ctx.valueText = ctx.value.map((date) => formatSelectedDate(date, null, ctx.locale, ctx.timeZone)).join(", ")
+          set.view(ctx, evt.cell)
         },
         announceValueText(ctx) {
           ctx.announcer?.announce(ctx.valueText, 3000)
@@ -442,7 +439,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusFirstSelectedDate(ctx) {
           if (!ctx.value.length) return
-          ctx.focusedValue = ctx.value[0]
+          set.focusedValue(ctx, ctx.value[0])
         },
         setInputValue(ctx) {
           const input = dom.getInputEl(ctx)
@@ -450,45 +447,46 @@ export function machine(userContext: UserDefinedContext) {
           ctx.inputValue = ctx.format?.(ctx.value) ?? formatValue(ctx)
         },
         syncInputElement(ctx) {
-          const input = dom.getInputEl(ctx)
-          if (!input || input.value === ctx.inputValue) return
+          const inputEl = dom.getInputEl(ctx)
+          if (!inputEl || inputEl.value === ctx.inputValue) return
           raf(() => {
-            input.value = ctx.inputValue
             // move cursor to the end
-            input.setSelectionRange(input.value.length, input.value.length)
+            inputEl.value = ctx.inputValue
+            inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length)
           })
         },
         setFocusedDate(ctx, evt) {
           const value = Array.isArray(evt.value) ? evt.value[0] : evt.value
-          ctx.focusedValue = constrainValue(value, ctx.min, ctx.max)
+          set.focusedValue(ctx, constrainValue(value, ctx.min, ctx.max))
         },
         setFocusedMonth(ctx, evt) {
-          ctx.focusedValue = ctx.focusedValue.set({ month: evt.value })
+          set.focusedValue(ctx, ctx.focusedValue.set({ month: evt.value }))
         },
         focusNextMonth(ctx) {
-          ctx.focusedValue = ctx.focusedValue.add({ months: 1 })
+          set.focusedValue(ctx, ctx.focusedValue.add({ months: 1 }))
         },
         focusPreviousMonth(ctx) {
-          ctx.focusedValue = ctx.focusedValue.subtract({ months: 1 })
+          set.focusedValue(ctx, ctx.focusedValue.subtract({ months: 1 }))
         },
         setFocusedYear(ctx, evt) {
-          ctx.focusedValue = ctx.focusedValue.set({ year: evt.value })
+          set.focusedValue(ctx, ctx.focusedValue.set({ year: evt.value }))
         },
         setSelectedDate(ctx, evt) {
-          const nextValue = [...ctx.value]
-          nextValue[ctx.activeIndex] = evt.value ?? ctx.focusedValue
-          ctx.value = adjustStartAndEndDate(nextValue)
+          const values = [...ctx.value]
+          values[ctx.activeIndex] = evt.value ?? ctx.focusedValue
+          set.value(ctx, adjustStartAndEndDate(values))
         },
         toggleSelectedDate(ctx, evt) {
           const currentValue = evt.value ?? ctx.focusedValue
           const index = ctx.value.findIndex((date) => isDateEqual(date, currentValue))
+
           if (index === -1) {
-            const nextValues = [...ctx.value, currentValue]
-            ctx.value = sortDates(nextValues)
+            const values = [...ctx.value, currentValue]
+            set.value(ctx, sortDates(values))
           } else {
-            const nextValues = [...ctx.value]
-            nextValues.splice(index, 1)
-            ctx.value = sortDates(nextValues)
+            const values = [...ctx.value]
+            values.splice(index, 1)
+            set.value(ctx, sortDates(values))
           }
         },
         setHoveredDate(ctx, evt) {
@@ -498,45 +496,45 @@ export function machine(userContext: UserDefinedContext) {
           ctx.hoveredValue = null
         },
         selectFocusedDate(ctx) {
-          const nextValue = [...ctx.value]
-          nextValue[ctx.activeIndex] = ctx.focusedValue.copy()
-          ctx.value = adjustStartAndEndDate(nextValue)
+          const values = [...ctx.value]
+          values[ctx.activeIndex] = ctx.focusedValue.copy()
+          set.value(ctx, adjustStartAndEndDate(values))
         },
         adjustStartDate(ctx) {
           const adjust = getAdjustedDateFn(ctx.visibleDuration, ctx.locale, ctx.min, ctx.max)
           const { startDate, focusedDate } = adjust({ focusedDate: ctx.focusedValue, startDate: ctx.startValue })
           ctx.startValue = startDate
-          ctx.focusedValue = focusedDate
+          set.focusedValue(ctx, focusedDate)
         },
         setPreviousDate(ctx) {
-          ctx.focusedValue = getPreviousDay(ctx.focusedValue)
+          set.focusedValue(ctx, getPreviousDay(ctx.focusedValue))
         },
         setNextDate(ctx) {
-          ctx.focusedValue = getNextDay(ctx.focusedValue)
+          set.focusedValue(ctx, getNextDay(ctx.focusedValue))
         },
         focusPreviousDay(ctx) {
-          ctx.focusedValue = ctx.focusedValue.subtract({ days: 1 })
+          set.focusedValue(ctx, ctx.focusedValue.subtract({ days: 1 }))
         },
         focusNextDay(ctx) {
-          ctx.focusedValue = ctx.focusedValue.add({ days: 1 })
+          set.focusedValue(ctx, ctx.focusedValue.add({ days: 1 }))
         },
         focusPreviousWeek(ctx) {
-          ctx.focusedValue = ctx.focusedValue.subtract({ weeks: 1 })
+          set.focusedValue(ctx, ctx.focusedValue.subtract({ weeks: 1 }))
         },
         focusNextWeek(ctx) {
-          ctx.focusedValue = ctx.focusedValue.add({ weeks: 1 })
+          set.focusedValue(ctx, ctx.focusedValue.add({ weeks: 1 }))
         },
         focusNextPage(ctx) {
-          ctx.focusedValue = ctx.focusedValue.add({ months: 1 })
+          set.focusedValue(ctx, ctx.focusedValue.add(ctx.visibleDuration))
         },
         focusPreviousPage(ctx) {
-          ctx.focusedValue = ctx.focusedValue.subtract(ctx.visibleDuration)
+          set.focusedValue(ctx, ctx.focusedValue.subtract(ctx.visibleDuration))
         },
         focusSectionStart(ctx) {
-          ctx.focusedValue = ctx.startValue.copy()
+          set.focusedValue(ctx, ctx.startValue.copy())
         },
         focusSectionEnd(ctx) {
-          ctx.focusedValue = ctx.endValue.copy()
+          set.focusedValue(ctx, ctx.endValue.copy())
         },
         focusNextSection(ctx, evt) {
           const section = getNextSection(
@@ -550,7 +548,7 @@ export function machine(userContext: UserDefinedContext) {
           )
 
           if (!section) return
-          ctx.focusedValue = section.focusedDate
+          set.focusedValue(ctx, section.focusedDate)
         },
         focusPreviousSection(ctx, evt) {
           const section = getPreviousSection(
@@ -564,51 +562,51 @@ export function machine(userContext: UserDefinedContext) {
           )
 
           if (!section) return
-          ctx.focusedValue = section.focusedDate
+          set.focusedValue(ctx, section.focusedDate)
         },
         focusNextYear(ctx) {
-          ctx.focusedValue = ctx.focusedValue.add({ years: 1 })
+          set.focusedValue(ctx, ctx.focusedValue.add({ years: 1 }))
         },
         focusPreviousYear(ctx) {
-          ctx.focusedValue = ctx.focusedValue.subtract({ years: 1 })
+          set.focusedValue(ctx, ctx.focusedValue.subtract({ years: 1 }))
         },
         focusNextDecade(ctx) {
-          ctx.focusedValue = ctx.focusedValue.add({ years: 10 })
+          set.focusedValue(ctx, ctx.focusedValue.add({ years: 10 }))
         },
         focusPreviousDecade(ctx) {
-          ctx.focusedValue = ctx.focusedValue.subtract({ years: 10 })
+          set.focusedValue(ctx, ctx.focusedValue.subtract({ years: 10 }))
         },
         clearSelectedDate(ctx) {
-          ctx.value = []
+          set.value(ctx, [])
         },
         clearFocusedDate(ctx) {
-          ctx.focusedValue = getTodayDate(ctx.timeZone)
+          set.focusedValue(ctx, getTodayDate(ctx.timeZone))
         },
         focusPreviousMonthColumn(ctx, evt) {
-          ctx.focusedValue = ctx.focusedValue.subtract({ months: evt.columns })
+          set.focusedValue(ctx, ctx.focusedValue.subtract({ months: evt.columns }))
         },
         focusNextMonthColumn(ctx, evt) {
-          ctx.focusedValue = ctx.focusedValue.add({ months: evt.columns })
+          set.focusedValue(ctx, ctx.focusedValue.add({ months: evt.columns }))
         },
         focusPreviousYearColumn(ctx, evt) {
-          ctx.focusedValue = ctx.focusedValue.subtract({ years: evt.columns })
+          set.focusedValue(ctx, ctx.focusedValue.subtract({ years: evt.columns }))
         },
         focusNextYearColumn(ctx, evt) {
-          ctx.focusedValue = ctx.focusedValue.add({ years: evt.columns })
+          set.focusedValue(ctx, ctx.focusedValue.add({ years: evt.columns }))
         },
         focusFirstMonth(ctx) {
-          ctx.focusedValue = ctx.focusedValue.set({ month: 0 })
+          set.focusedValue(ctx, ctx.focusedValue.set({ month: 0 }))
         },
         focusLastMonth(ctx) {
-          ctx.focusedValue = ctx.focusedValue.set({ month: 12 })
+          set.focusedValue(ctx, ctx.focusedValue.set({ month: 12 }))
         },
         focusFirstYear(ctx) {
           const range = getDecadeRange(ctx.focusedValue.year)
-          ctx.focusedValue = ctx.focusedValue.set({ year: range.at(0) })
+          set.focusedValue(ctx, ctx.focusedValue.set({ year: range.at(0) }))
         },
         focusLastYear(ctx) {
           const range = getDecadeRange(ctx.focusedValue.year)
-          ctx.focusedValue = ctx.focusedValue.set({ year: range.at(-1) })
+          set.focusedValue(ctx, ctx.focusedValue.set({ year: range.at(-1) }))
         },
         setEndIndex(ctx) {
           ctx.activeIndex = 1
@@ -642,29 +640,22 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         syncMonthSelectElement(ctx) {
-          const month = dom.getMonthSelectEl(ctx)
-          if (!month) return
-          month.value = ctx.focusedValue.month.toString()
+          const monthSelectEl = dom.getMonthSelectEl(ctx)
+          if (!monthSelectEl) return
+          monthSelectEl.value = ctx.focusedValue.month.toString()
         },
         syncYearSelectElement(ctx) {
-          const year = dom.getYearSelectEl(ctx)
-          if (!year) return
-          year.value = ctx.focusedValue.year.toString()
-        },
-        invokeOnFocusChange(ctx) {
-          ctx.onFocusChange?.({ focusedValue: ctx.focusedValue, value: ctx.value, view: ctx.view })
-        },
-        invokeOnViewChange(ctx) {
-          ctx.onViewChange?.({ view: ctx.view })
+          const yearSelectEl = dom.getYearSelectEl(ctx)
+          if (!yearSelectEl) return
+          yearSelectEl.value = ctx.focusedValue.year.toString()
         },
         focusParsedDate(ctx, evt) {
           ctx.inputValue = evt.value
           const date = parseDateString(ctx.inputValue, ctx.locale, ctx.timeZone)
-          if (!date) return
-          ctx.focusedValue = date
+          set.focusedValue(ctx, date)
         },
         resetView(ctx, _evt, { initialContext }) {
-          ctx.view = initialContext.view
+          set.view(ctx, initialContext.view)
         },
         setStartValue(ctx) {
           const startValue = alignDate(ctx.focusedValue, "start", { months: ctx.numOfMonths }, ctx.locale)
@@ -678,4 +669,35 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
+}
+
+const invoke = {
+  change(ctx: MachineContext) {
+    const details = { value: ctx.value, view: ctx.view }
+    ctx.onChange?.(details)
+  },
+  focusChange(ctx: MachineContext) {
+    const details = { focusedValue: ctx.focusedValue, value: ctx.value, view: ctx.view }
+    ctx.onFocusChange?.(details)
+  },
+  viewChange(ctx: MachineContext) {
+    const details = { view: ctx.view }
+    ctx.onViewChange?.(details)
+  },
+}
+
+const set = {
+  value(ctx: MachineContext, value: DateValue[]) {
+    ctx.value = value
+    invoke.change(ctx)
+  },
+  focusedValue(ctx: MachineContext, value: DateValue | undefined) {
+    if (!value) return
+    ctx.focusedValue = value
+    invoke.focusChange(ctx)
+  },
+  view(ctx: MachineContext, value: DateView) {
+    ctx.view = value
+    invoke.viewChange(ctx)
+  },
 }

@@ -19,13 +19,13 @@ import type {
   ItemProps,
   LabelProps,
   OptionItemProps,
-  PublicApi,
+  MachineApi,
   Send,
   Service,
   State,
 } from "./menu.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isSubmenu = state.context.isSubmenu
   const values = state.context.value
   const isTypingAhead = state.context.isTypingAhead

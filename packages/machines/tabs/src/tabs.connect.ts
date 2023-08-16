@@ -3,9 +3,9 @@ import { dataAttr, isSafari, isSelfEvent } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
 import { dom } from "./tabs.dom"
-import type { ContentProps, PublicApi, Send, State, TriggerProps } from "./tabs.types"
+import type { ContentProps, MachineApi, Send, State, TriggerProps } from "./tabs.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const translations = state.context.translations
   const isFocused = state.matches("focused")
 

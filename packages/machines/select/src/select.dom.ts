@@ -35,7 +35,8 @@ export const dom = createScope({
     const options = dom.getOptionElements(ctx)
     return prevById(options, currentId, ctx.loop)
   },
-  getOptionDetails(option: HTMLElement) {
+  getOptionData(option: HTMLElement | null | undefined) {
+    if (!option) return null
     const { label, value } = option.dataset
     return { label, value } as Option
   },

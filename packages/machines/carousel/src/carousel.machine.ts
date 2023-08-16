@@ -25,7 +25,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        index: ["invokeOnSlideChange", "setScrollSnaps"],
+        index: ["setScrollSnaps"],
       },
 
       on: {
@@ -139,14 +139,13 @@ export function machine(userContext: UserDefinedContext) {
         isFirstSlide: (ctx) => ctx.index === 0,
       },
       actions: {
-        invokeOnSlideChange(ctx, _evt) {
-          ctx.onSlideChange?.({ index: ctx.index })
-        },
         scrollToNext(ctx) {
-          ctx.index = nextIndex(ctx.slideRects, ctx.index)
+          const index = nextIndex(ctx.slideRects, ctx.index)
+          set.index(ctx, index)
         },
         scrollToPrev(ctx) {
-          ctx.index = prevIndex(ctx.slideRects, ctx.index)
+          const index = prevIndex(ctx.slideRects, ctx.index)
+          set.index(ctx, index)
         },
         setScrollSnaps(ctx) {
           const { snapsAligned, scrollProgress } = getScrollSnaps(ctx)
@@ -154,7 +153,8 @@ export function machine(userContext: UserDefinedContext) {
           ctx.scrollProgress = scrollProgress
         },
         scrollTo(ctx, evt) {
-          ctx.index = Math.max(0, Math.min(evt.index, ctx.slideRects.length - 1))
+          const index = Math.max(0, Math.min(evt.index, ctx.slideRects.length - 1))
+          set.index(ctx, index)
         },
         measureElements,
       },
@@ -168,4 +168,17 @@ const measureElements = (ctx: MachineContext) => {
   ctx.containerRect = ref(slideGroupEl.getBoundingClientRect())
   ctx.containerSize = ctx.isHorizontal ? ctx.containerRect.width : ctx.containerRect.height
   ctx.slideRects = ref(dom.getSlideEls(ctx).map((slide) => slide.getBoundingClientRect()))
+}
+
+const invoke = {
+  slideChange: (ctx: MachineContext) => {
+    ctx.onSlideChange?.({ index: ctx.index })
+  },
+}
+
+const set = {
+  index: (ctx: MachineContext, index: number) => {
+    ctx.index = index
+    invoke.slideChange(ctx)
+  },
 }

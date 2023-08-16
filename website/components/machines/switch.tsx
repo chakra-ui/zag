@@ -34,7 +34,7 @@ export function Switch(props: SwitchProps) {
           "--switch-track-height": "1.5rem",
         }}
       >
-        <input {...api.inputProps} />
+        <input {...api.hiddenInputProps} />
         <chakra.span
           {...api.controlProps}
           display="inline-flex"

@@ -99,7 +99,83 @@ type PublicContext = DirectionProperty &
     thumbAlignment?: "contain" | "center"
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
+
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * Whether the slider is interactive
+   */
+  readonly isInteractive: boolean
+  /**
+   * @computed
+   * Whether the thumb size has been measured
+   */
+  readonly hasMeasuredThumbSize: boolean
+  /**
+   * @computed
+   * Whether the slider is horizontal
+   */
+  readonly isHorizontal: boolean
+  /**
+   * @computed
+   * Whether the slider is vertical
+   */
+  readonly isVertical: boolean
+  /**
+   * @computed
+   * Whether the slider is in RTL mode
+   */
+  readonly isRtl: boolean
+  /**
+   * @computed
+   * The value of the slider as a percentage
+   */
+  readonly valuePercent: number
+}>
+
+type PrivateContext = Context<{
+  /**
+   * @internal The move threshold of the slider thumb before it is considered to be moved
+   */
+  threshold: number
+  /**
+   * @internal The slider thumb dimensions
+   */
+  thumbSize: { width: number; height: number } | null
+}>
+
+export type MachineContext = PublicContext & ComputedContext & PrivateContext
+
+export type MachineState = {
+  value: "idle" | "dragging" | "focus"
+}
+
+export type State = S.State<MachineContext, MachineState>
+
+export type Send = S.Send<S.AnyEventObject>
+
+export type SharedContext = {
+  min: number
+  max: number
+  step: number
+  dir?: "ltr" | "rtl"
+  isRtl: boolean
+  isVertical: boolean
+  isHorizontal: boolean
+  value: number
+  thumbSize: { width: number; height: number } | null
+  thumbAlignment?: "contain" | "center"
+  orientation?: "horizontal" | "vertical"
+  readonly hasMeasuredThumbSize: boolean
+}
+
+export type Point = {
+  x: number
+  y: number
+}
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Whether the slider is focused.
    */
@@ -150,86 +226,4 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   controlProps: T["element"]
   markerGroupProps: T["element"]
   getMarkerProps({ value }: { value: number }): T["element"]
-}
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the slider is interactive
-   */
-  readonly isInteractive: boolean
-  /**
-   * @computed
-   * Whether the thumb size has been measured
-   */
-  readonly hasMeasuredThumbSize: boolean
-  /**
-   * @computed
-   * Whether the slider is horizontal
-   */
-  readonly isHorizontal: boolean
-  /**
-   * @computed
-   * Whether the slider is vertical
-   */
-  readonly isVertical: boolean
-  /**
-   * @computed
-   * Whether the slider is in RTL mode
-   */
-  readonly isRtl: boolean
-  /**
-   * @computed
-   * The value of the slider as a percentage
-   */
-  readonly valuePercent: number
-}>
-
-type PrivateContext = Context<{
-  /**
-   * @internal The move threshold of the slider thumb before it is considered to be moved
-   */
-  threshold: number
-  /**
-   * @internal The slider thumb dimensions
-   */
-  thumbSize: { width: number; height: number } | null
-  /**
-   * @internal
-   * The value of the slider when it was initially rendered.
-   * Used when the `form.reset(...)` is called.
-   */
-  initialValue: number | null
-}>
-
-export type MachineContext = PublicContext & ComputedContext & PrivateContext
-
-export type MachineState = {
-  value: "idle" | "dragging" | "focus"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type SharedContext = {
-  min: number
-  max: number
-  step: number
-  dir?: "ltr" | "rtl"
-  isRtl: boolean
-  isVertical: boolean
-  isHorizontal: boolean
-  value: number
-  thumbSize: { width: number; height: number } | null
-  thumbAlignment?: "contain" | "center"
-  orientation?: "horizontal" | "vertical"
-  readonly hasMeasuredThumbSize: boolean
-}
-
-export type Point = {
-  x: number
-  y: number
 }

@@ -4,7 +4,7 @@ import { contains, raf } from "@zag-js/dom-query"
 import { trackFormControl } from "@zag-js/form-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
-import { compact, warn } from "@zag-js/utils"
+import { compact, removeAt, warn } from "@zag-js/utils"
 import { dom } from "./tags-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tags-input.types"
 
@@ -20,9 +20,8 @@ export function machine(userContext: UserDefinedContext) {
         log: { current: null, prev: null },
         inputValue: "",
         editedTagValue: "",
+        editedTagId: null,
         focusedId: null,
-        editedId: null,
-        initialValue: [],
         value: [],
         dir: "ltr",
         max: Infinity,
@@ -54,15 +53,16 @@ export function machine(userContext: UserDefinedContext) {
         isOverflowing: (ctx) => ctx.count > ctx.max,
       },
       watch: {
-        focusedId: ["invokeOnHighlight", "logFocused"],
+        focusedId: "logFocusedTag",
         isOverflowing: "invokeOnInvalid",
-        value: ["invokeOnChange", "dispatchChangeEvent"],
         log: "announceLog",
         inputValue: "syncInputValue",
-        editedTagValue: "syncEditedTagValue",
+        editedTagValue: "syncEditedTagInputValue",
       },
 
       activities: ["trackFormControlState"],
+
+      entry: ["setupLiveRegion"],
 
       exit: ["removeLiveRegion", "clearLog"],
 
@@ -104,8 +104,6 @@ export function machine(userContext: UserDefinedContext) {
           { guard: "clearOnBlur", actions: "clearInputValue" },
         ],
       },
-
-      entry: ["setupDocument", "checkValue"],
 
       states: {
         idle: {
@@ -231,7 +229,7 @@ export function machine(userContext: UserDefinedContext) {
             ],
             TAG_INPUT_ENTER: {
               target: "navigating:tag",
-              actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex", "invokeOnTagUpdate"],
+              actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex"],
             },
           },
         },
@@ -279,13 +277,13 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
-        trackFormControlState(ctx) {
+        trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getHiddenInputEl(ctx), {
             onFieldsetDisabled() {
               ctx.disabled = true
             },
             onFormReset() {
-              ctx.value = ctx.initialValue
+              send({ type: "SET_VALUE", value: initialContext.value, src: "form-reset" })
             },
           })
         },
@@ -303,58 +301,50 @@ export function machine(userContext: UserDefinedContext) {
         raiseExternalBlurEvent(_, evt, { self }) {
           self.send({ type: "EXTERNAL_BLUR", id: evt.id })
         },
-        invokeOnHighlight(ctx) {
-          const value = dom.getFocusedTagValue(ctx)
-          ctx.onHighlight?.({ value })
-        },
-        invokeOnTagUpdate(ctx) {
-          if (!ctx.idx) return
-          const value = ctx.value[ctx.idx]
-          ctx.onTagUpdate?.({ value, index: ctx.idx })
-        },
-        invokeOnChange(ctx) {
-          ctx.onChange?.({ values: ctx.value })
-        },
         dispatchChangeEvent(ctx) {
           dom.dispatchInputEvent(ctx)
         },
-        setupDocument(ctx) {
+        setupLiveRegion(ctx) {
           ctx.liveRegion = createLiveRegion({
             level: "assertive",
             document: dom.getDoc(ctx),
           })
         },
         focusNextTag(ctx) {
-          if (!ctx.focusedId) return
+          if (ctx.focusedId == null) return
           const next = dom.getNextEl(ctx, ctx.focusedId)
-          if (next) ctx.focusedId = next.id
+          if (next == null) return
+          set.focusedId(ctx, next.id)
         },
         focusFirstTag(ctx) {
           raf(() => {
-            const first = dom.getFirstEl(ctx)?.id
-            if (first) ctx.focusedId = first
+            const first = dom.getFirstEl(ctx)
+            if (first == null) return
+            set.focusedId(ctx, first.id)
           })
         },
         focusLastTag(ctx) {
           const last = dom.getLastEl(ctx)
-          if (last) ctx.focusedId = last.id
+          if (last == null) return
+          set.focusedId(ctx, last.id)
         },
         focusPrevTag(ctx) {
-          if (!ctx.focusedId) return
+          if (ctx.focusedId == null) return
           const prev = dom.getPrevEl(ctx, ctx.focusedId)
-          ctx.focusedId = prev?.id || null
+          set.focusedId(ctx, prev?.id || null)
         },
         focusTag(ctx, evt) {
-          ctx.focusedId = evt.id
+          set.focusedId(ctx, evt.id)
         },
         focusTagAtIndex(ctx) {
           raf(() => {
             if (ctx.idx == null) return
-            const el = dom.getElAtIndex(ctx, ctx.idx)
-            if (el) {
-              ctx.focusedId = el.id
-              ctx.idx = undefined
-            }
+
+            const tagEl = dom.getTagElAtIndex(ctx, ctx.idx)
+            if (tagEl == null) return
+
+            set.focusedId(ctx, tagEl.id)
+            ctx.idx = undefined
           })
         },
         deleteTag(ctx, evt) {
@@ -365,10 +355,10 @@ export function machine(userContext: UserDefinedContext) {
           ctx.log.prev = ctx.log.current
           ctx.log.current = { type: "delete", value }
 
-          ctx.value.splice(index, 1)
+          set.value(ctx, removeAt(ctx.value, index))
         },
         deleteFocusedTag(ctx) {
-          if (!ctx.focusedId) return
+          if (ctx.focusedId == null) return
           const index = dom.getIndexOfId(ctx, ctx.focusedId)
           ctx.idx = index
           const value = ctx.value[index]
@@ -377,14 +367,14 @@ export function machine(userContext: UserDefinedContext) {
           ctx.log.prev = ctx.log.current
           ctx.log.current = { type: "delete", value }
 
-          ctx.value.splice(index, 1)
+          set.value(ctx, removeAt(ctx.value, index))
         },
         setEditedId(ctx, evt) {
-          ctx.editedId = evt.id ?? ctx.focusedId
-          ctx.idx = dom.getIndexOfId(ctx, ctx.editedId!)
+          ctx.editedTagId = evt.id ?? ctx.focusedId
+          ctx.idx = dom.getIndexOfId(ctx, ctx.editedTagId!)
         },
         clearEditedId(ctx) {
-          ctx.editedId = null
+          ctx.editedTagId = null
         },
         clearEditedTagValue(ctx) {
           ctx.editedTagValue = ""
@@ -393,9 +383,11 @@ export function machine(userContext: UserDefinedContext) {
           ctx.editedTagValue = evt.value
         },
         submitEditedTagValue(ctx) {
-          if (!ctx.editedId) return
-          const index = dom.getIndexOfId(ctx, ctx.editedId)
-          ctx.value[index] = ctx.editedTagValue ?? ""
+          if (!ctx.editedTagId) return
+
+          const index = dom.getIndexOfId(ctx, ctx.editedTagId)
+          set.valueAtIndex(ctx, index, ctx.editedTagValue ?? "")
+
           // log
           ctx.log.prev = ctx.log.current
           ctx.log.current = { type: "update", value: ctx.editedTagValue! }
@@ -411,8 +403,8 @@ export function machine(userContext: UserDefinedContext) {
           }
         },
         initializeEditedTagValue(ctx) {
-          if (!ctx.editedId) return
-          const index = dom.getIndexOfId(ctx, ctx.editedId)
+          if (!ctx.editedTagId) return
+          const index = dom.getIndexOfId(ctx, ctx.editedTagId)
           ctx.editedTagValue = ctx.value[index]
         },
         focusEditedTagInput(ctx) {
@@ -435,22 +427,20 @@ export function machine(userContext: UserDefinedContext) {
           ctx.inputValue = ""
         },
         syncInputValue(ctx) {
-          const input = dom.getInputEl(ctx)
-          if (!input) return
-          input.value = ctx.inputValue
+          const inputEl = dom.getInputEl(ctx)
+          dom.setValue(inputEl, ctx.inputValue)
         },
-        syncEditedTagValue(ctx, evt) {
-          const id = ctx.editedId || ctx.focusedId || evt.id
-          if (!id) return
-          const el = dom.getById(ctx, `${id}:input`) as HTMLInputElement | null
-          if (!el) return
-          el.value = ctx.editedTagValue
+        syncEditedTagInputValue(ctx, evt) {
+          const id = ctx.editedTagId || ctx.focusedId || evt.id
+          if (id == null) return
+          const editTagInputEl = dom.getById<HTMLInputElement>(ctx, `${id}:input`)
+          dom.setValue(editTagInputEl, ctx.editedTagValue)
         },
         addTag(ctx, evt) {
           const value = evt.value ?? ctx.trimmedInputValue
           const guard = ctx.validate?.({ inputValue: value, values: ctx.value })
           if (guard) {
-            ctx.value.push(value)
+            set.value(ctx, ctx.value.concat(value))
             // log
             ctx.log.prev = ctx.log.current
             ctx.log.current = { type: "add", value }
@@ -464,7 +454,7 @@ export function machine(userContext: UserDefinedContext) {
             const guard = ctx.validate?.({ inputValue: value, values: ctx.value })
             if (guard) {
               const trimmedValue = ctx.delimiter ? value.split(ctx.delimiter).map((v) => v.trim()) : [value]
-              ctx.value.push(...trimmedValue)
+              set.value(ctx, ctx.value.concat(...trimmedValue))
               // log
               ctx.log.prev = ctx.log.current
               ctx.log.current = { type: "paste", values: trimmedValue }
@@ -475,16 +465,13 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         clearTags(ctx) {
-          ctx.value = []
+          set.value(ctx, [])
           // log
           ctx.log.prev = ctx.log.current
           ctx.log.current = { type: "clear" }
         },
-        checkValue(ctx) {
-          ctx.initialValue = ctx.value.slice()
-        },
         setValue(ctx, evt) {
-          ctx.value = evt.value
+          set.value(ctx, evt.value)
         },
         removeLiveRegion(ctx) {
           ctx.liveRegion?.destroy()
@@ -497,8 +484,8 @@ export function machine(userContext: UserDefinedContext) {
         clearLog(ctx) {
           ctx.log = { prev: null, current: null }
         },
-        logFocused(ctx) {
-          if (!ctx.focusedId) return
+        logFocusedTag(ctx) {
+          if (ctx.focusedId == null) return
           const index = dom.getIndexOfId(ctx, ctx.focusedId)
 
           // log
@@ -543,4 +530,30 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
+}
+
+const invoke = {
+  change: (ctx: MachineContext) => {
+    ctx.onChange?.({ values: ctx.value })
+    dom.dispatchInputEvent(ctx)
+  },
+  focusChange: (ctx: MachineContext) => {
+    const value = dom.getFocusedTagValue(ctx)
+    ctx.onFocusChange?.({ value })
+  },
+}
+
+const set = {
+  value: (ctx: MachineContext, value: string[]) => {
+    ctx.value = value
+    invoke.change(ctx)
+  },
+  valueAtIndex: (ctx: MachineContext, index: number, value: string) => {
+    ctx.value[index] = value
+    invoke.change(ctx)
+  },
+  focusedId: (ctx: MachineContext, id: string | null) => {
+    ctx.focusedId = id
+    invoke.focusChange(ctx)
+  },
 }

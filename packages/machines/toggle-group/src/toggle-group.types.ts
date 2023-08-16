@@ -82,14 +82,20 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  value: string[]
-  setValue: (values: string[]) => void
-  rootProps: T["element"]
-  getToggleProps(props: ToggleProps): T["button"]
-}
-
 export type ToggleProps = {
   value: string
   disabled?: boolean
+}
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The value of the toggle group.
+   */
+  value: string[]
+  /**
+   * Function to set the value of the toggle group.
+   */
+  setValue: (values: string[]) => void
+  rootProps: T["element"]
+  getToggleProps(props: ToggleProps): T["button"]
 }

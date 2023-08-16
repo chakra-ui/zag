@@ -3,10 +3,10 @@ import { type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./file-upload.anatomy"
 import { dom } from "./file-upload.dom"
-import { type PublicApi, type Send, type State } from "./file-upload.types"
+import { type MachineApi, type Send, type State } from "./file-upload.types"
 import { isEventWithFiles } from "./file-upload.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const disabled = state.context.disabled
   const isDragging = state.matches("dragging")
   const isFocused = state.matches("focused") && !disabled

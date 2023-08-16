@@ -30,6 +30,7 @@ const fetchMachine = createMachine({
     "isInputRelatedTarget": false
   },
   activities: ["trackFormControlState"],
+  entry: ["setupLiveRegion"],
   exit: ["removeLiveRegion", "clearLog"],
   on: {
     DOUBLE_CLICK_TAG: {
@@ -72,7 +73,6 @@ const fetchMachine = createMachine({
       actions: "clearInputValue"
     }]
   },
-  entry: ["setupDocument", "checkValue"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -190,7 +190,7 @@ const fetchMachine = createMachine({
         }],
         TAG_INPUT_ENTER: {
           target: "navigating:tag",
-          actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex", "invokeOnTagUpdate"]
+          actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "focusTagAtIndex"]
         }
       }
     }

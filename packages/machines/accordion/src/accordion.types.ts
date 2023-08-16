@@ -8,6 +8,14 @@ type ElementIds = Partial<{
   trigger(value: string): string
 }>
 
+export type ChangeDetails = {
+  value: string[]
+}
+
+export type FocusChangeDetails = {
+  value: string | null
+}
+
 type PublicContext = DirectionProperty &
   CommonProperties & {
     /**
@@ -27,7 +35,7 @@ type PublicContext = DirectionProperty &
     /**
      * The `id` of the accordion item that is currently being opened.
      */
-    value: string | string[] | null
+    value: string[]
     /**
      * Whether the accordion items are disabled
      */
@@ -35,35 +43,16 @@ type PublicContext = DirectionProperty &
     /**
      * The callback fired when the state of opened/closed accordion items changes.
      */
-    onChange?: (details: { value: string | string[] | null }) => void
+    onChange?: (details: ChangeDetails) => void
+    /**
+     * The callback fired when the focused accordion item changes.
+     */
+    onFocusChange?: (details: FocusChangeDetails) => void
     /**
      *  The orientation of the accordion items.
      */
     orientation?: "horizontal" | "vertical"
   }
-
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  rootProps: T["element"]
-  getItemProps(props: ItemProps): T["element"]
-  getContentProps(props: ItemProps): T["element"]
-  getTriggerProps(props: ItemProps): T["button"]
-  /**
-   * The value of the focused accordion item.
-   */
-  focusedValue: string | null
-  /**
-   * The value of the accordion
-   */
-  value: string | string[] | null
-  /**
-   * Sets the value of the accordion.
-   */
-  setValue: (value: string | string[]) => void
-  /**
-   * Gets the state of an accordion item.
-   */
-  getItemState: (props: ItemProps) => ItemState
-}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
@@ -102,4 +91,27 @@ export type ItemState = {
   isOpen: boolean
   isFocused: boolean
   isDisabled: boolean
+}
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * The value of the focused accordion item.
+   */
+  focusedValue: string | null
+  /**
+   * The value of the accordion
+   */
+  value: string[]
+  /**
+   * Sets the value of the accordion.
+   */
+  setValue: (value: string[]) => void
+  /**
+   * Gets the state of an accordion item.
+   */
+  getItemState: (props: ItemProps) => ItemState
+  rootProps: T["element"]
+  getItemProps(props: ItemProps): T["element"]
+  getContentProps(props: ItemProps): T["element"]
+  getTriggerProps(props: ItemProps): T["button"]
 }

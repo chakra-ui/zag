@@ -12,9 +12,9 @@ import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./slider.anatomy"
 import { dom } from "./slider.dom"
-import type { PublicApi, Send, State } from "./slider.types"
+import type { MachineApi, Send, State } from "./slider.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const ariaLabel = state.context["aria-label"]
   const ariaLabelledBy = state.context["aria-labelledby"]
   const ariaValueText = state.context.getAriaValueText?.(state.context.value)
@@ -32,8 +32,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   function getValuePercentFn(value: number) {
     return getValuePercent(value, state.context.min, state.context.max)
   }
-
-  // TODO - getMarkerState
 
   return {
     isFocused,
@@ -165,7 +163,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     hiddenInputProps: normalize.input({
-      type: "text",
       defaultValue: state.context.value,
       name: state.context.name,
       form: state.context.form,

@@ -25,7 +25,7 @@ export default function Page() {
     <>
       <main class="switch">
         <label {...api().rootProps}>
-          <input {...api().inputProps} />
+          <input {...api().hiddenInputProps} />
           <span {...api().controlProps}>
             <span {...api().thumbProps} />
           </span>

@@ -19,7 +19,7 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         disabled: "removeFocusIfNeeded",
-        checked: ["invokeOnChange", "syncInputElement"],
+        checked: "syncInputElement",
       },
 
       activities: ["trackFormControlState"],
@@ -60,9 +60,6 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       actions: {
-        invokeOnChange(ctx) {
-          ctx.onChange?.({ checked: ctx.checked })
-        },
         setContext(ctx, evt) {
           Object.assign(ctx, evt.context)
         },
@@ -72,21 +69,17 @@ export function machine(userContext: UserDefinedContext) {
           inputEl.checked = ctx.isChecked
           inputEl.indeterminate = ctx.isIndeterminate
         },
-        dispatchCheckedEvent(ctx, evt) {
-          const inputEl = dom.getHiddenInputEl(ctx)
-          const checked = isIndeterminate(evt.checked) ? false : evt.checked
-          dispatchInputCheckedEvent(inputEl, { checked, bubbles: true })
-        },
         removeFocusIfNeeded(ctx) {
           if (ctx.disabled && ctx.focused) {
             ctx.focused = false
           }
         },
         setChecked(ctx, evt) {
-          ctx.checked = evt.checked
+          set.checked(ctx, evt.checked)
         },
         toggleChecked(ctx) {
-          ctx.checked = isIndeterminate(ctx.checked) ? true : !ctx.checked
+          const checked = isIndeterminate(ctx.checked) ? true : !ctx.checked
+          set.checked(ctx, checked)
         },
       },
     },
@@ -95,4 +88,23 @@ export function machine(userContext: UserDefinedContext) {
 
 function isIndeterminate(checked?: CheckedState): checked is "indeterminate" {
   return checked === "indeterminate"
+}
+
+const invoke = {
+  change: (ctx: MachineContext) => {
+    // invoke fn
+    ctx.onChange?.({ checked: ctx.checked })
+
+    // form event
+    const inputEl = dom.getHiddenInputEl(ctx)
+    const checked = isIndeterminate(ctx.checked) ? false : ctx.checked
+    dispatchInputCheckedEvent(inputEl, { checked, bubbles: true })
+  },
+}
+
+const set = {
+  checked: (ctx: MachineContext, checked: CheckedState) => {
+    ctx.checked = checked
+    invoke.change(ctx)
+  },
 }

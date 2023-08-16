@@ -66,30 +66,6 @@ type PublicContext = CommonProperties & {
   open?: boolean
 }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  /**
-   * Whether the tooltip is open.
-   */
-  isOpen: boolean
-  /**
-   * Function to open the tooltip.
-   */
-  open(): void
-  /**
-   * Function to close the tooltip.
-   */
-  close(): void
-  /**
-   * Function to reposition the popover
-   */
-  setPositioning(options?: Partial<PositioningOptions>): void
-  triggerProps: T["button"]
-  arrowProps: T["element"]
-  arrowTipProps: T["element"]
-  positionerProps: T["element"]
-  contentProps: T["element"]
-}
-
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
@@ -124,3 +100,27 @@ export type State = S.State<MachineContext, MachineState>
 export type Send = S.Send<S.AnyEventObject>
 
 export type { PositioningOptions, Placement }
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the tooltip is open.
+   */
+  isOpen: boolean
+  /**
+   * Function to open the tooltip.
+   */
+  open(): void
+  /**
+   * Function to close the tooltip.
+   */
+  close(): void
+  /**
+   * Function to reposition the popover
+   */
+  setPositioning(options?: Partial<PositioningOptions>): void
+  triggerProps: T["button"]
+  arrowProps: T["element"]
+  arrowTipProps: T["element"]
+  positionerProps: T["element"]
+  contentProps: T["element"]
+}

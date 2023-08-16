@@ -2,10 +2,10 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./pagination.anatomy"
 import { dom } from "./pagination.dom"
-import type { EllipsisProps, PageTriggerProps, PublicApi, Send, State } from "./pagination.types"
+import type { EllipsisProps, PageTriggerProps, MachineApi, Send, State } from "./pagination.types"
 import { utils } from "./pagination.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const totalPages = state.context.totalPages
   const page = state.context.page
   const translations = state.context.translations
@@ -43,7 +43,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     setPage(page: number) {
-      send({ type: "SET_PAGE", page, srcElement: null })
+      send({ type: "SET_PAGE", page })
     },
 
     rootProps: normalize.element({
@@ -69,8 +69,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-selected": dataAttr(isCurrentPage),
         "aria-current": isCurrentPage ? "page" : undefined,
         "aria-label": translations.pageTriggerLabel?.({ page: index, totalPages }),
-        onClick(evt) {
-          send({ type: "SET_PAGE", page: index, srcElement: evt.currentTarget })
+        onClick() {
+          send({ type: "SET_PAGE", page: index })
         },
         ...(isButton && { type: "button" }),
       })
@@ -81,8 +81,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.prevPageTrigger.attrs,
       "data-disabled": dataAttr(isFirstPage),
       "aria-label": translations.prevPageTriggerLabel,
-      onClick(evt) {
-        send({ type: "PREVIOUS_PAGE", srcElement: evt.currentTarget })
+      onClick() {
+        send({ type: "PREVIOUS_PAGE" })
       },
       ...(isButton && { disabled: isFirstPage, type: "button" }),
     }),
@@ -92,8 +92,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.nextPageTrigger.attrs,
       "data-disabled": dataAttr(isLastPage),
       "aria-label": translations.nextPageTriggerLabel,
-      onClick(evt) {
-        send({ type: "NEXT_PAGE", srcElement: evt.currentTarget })
+      onClick() {
+        send({ type: "NEXT_PAGE" })
       },
       ...(isButton && { disabled: isLastPage, type: "button" }),
     }),

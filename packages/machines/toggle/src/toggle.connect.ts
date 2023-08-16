@@ -1,10 +1,10 @@
 import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { dom } from "./toggle.dom"
-import type { PublicApi, Send, State } from "./toggle.types"
+import type { MachineApi, Send, State } from "./toggle.types"
 import { parts } from "./toggle.anatomy"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isPressed = state.context.pressed
   const isDisabled = state.context.disabled
 

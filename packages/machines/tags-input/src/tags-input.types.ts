@@ -92,15 +92,11 @@ type PublicContext = DirectionProperty &
     /**
      * Callback fired when a tag is focused by pointer or keyboard navigation
      */
-    onHighlight?(details: { value: string | null }): void
+    onFocusChange?(details: { value: string | null }): void
     /**
      * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
      */
     onInvalid?(details: { reason: ValidityState }): void
-    /**
-     * Callback fired when a tag's value is updated
-     */
-    onTagUpdate?(details: { value: string; index: number }): void
     /**
      * Returns a boolean that determines whether a tag can be added.
      * Useful for preventing duplicates or invalid tag values.
@@ -138,7 +134,96 @@ type PublicContext = DirectionProperty &
     form?: string
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
+
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * The string value of the tags input
+   */
+  readonly valueAsString: string
+  /**
+   * @computed
+   * The trimmed value of the input
+   */
+  readonly trimmedInputValue: string
+  /**
+   * @computed
+   * Whether the tags input is interactive
+   */
+  readonly isInteractive: boolean
+  /**
+   * @computed
+   * Whether the tags input is at the maximum allowed number of tags
+   */
+  readonly isAtMax: boolean
+  /**
+   * @computed
+   * The total number of tags
+   */
+  readonly count: number
+  /**
+   * @computed
+   * Whether the tags input is exceeding the max number of tags
+   */
+  readonly isOverflowing: boolean
+}>
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The output log for the screen reader to speak
+   */
+  log: { current: Log | null; prev: Log | null }
+  /**
+   * @internal
+   * The live region to announce changes to the user
+   */
+  liveRegion: LiveRegion | null
+  /**
+   * @internal
+   * The `id` of the currently focused tag
+   */
+  focusedId: string | null
+  /**
+   * @internal
+   * The index of the deleted tag. Used to determine the next tag to focus.
+   */
+  idx?: number
+  /**
+   * @internal
+   * The `id` of the currently edited tag
+   */
+  editedTagId: string | null
+  /**
+   * @internal
+   * The value of the currently edited tag
+   */
+  editedTagValue: string
+}>
+
+export type MachineContext = PublicContext & ComputedContext & PrivateContext
+
+export type MachineState = {
+  value: "idle" | "navigating:tag" | "focused:input" | "editing:tag"
+  tags: "focused" | "editing"
+}
+
+export type State = S.State<MachineContext, MachineState>
+
+export type Send = S.Send<S.AnyEventObject>
+
+export type ValidityState = "rangeOverflow" | "invalidTag"
+
+export type TagProps = {
+  index: string | number
+  value: string
+  disabled?: boolean
+}
+
+export type { InteractOutsideEvent }
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Whether the tags are empty
    */
@@ -201,97 +286,3 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   getTagDeleteTriggerProps(options: TagProps): T["button"]
   clearTriggerProps: T["button"]
 }
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * The string value of the tags input
-   */
-  readonly valueAsString: string
-  /**
-   * @computed
-   * The trimmed value of the input
-   */
-  readonly trimmedInputValue: string
-  /**
-   * @computed
-   * Whether the tags input is interactive
-   */
-  readonly isInteractive: boolean
-  /**
-   * @computed
-   * Whether the tags input is at the maximum allowed number of tags
-   */
-  readonly isAtMax: boolean
-  /**
-   * @computed
-   * The total number of tags
-   */
-  readonly count: number
-  /**
-   * @computed
-   * Whether the tags input is exceeding the max number of tags
-   */
-  readonly isOverflowing: boolean
-}>
-
-type PrivateContext = Context<{
-  /**
-   * @internal
-   * The intial values of the tags input
-   */
-  initialValue: string[]
-  /**
-   * @internal
-   * The output log for the screen reader to speak
-   */
-  log: { current: Log | null; prev: Log | null }
-  /**
-   * @internal
-   * The live region to announce changes to the user
-   */
-  liveRegion: LiveRegion | null
-  /**
-   * @internal
-   * The `id` of the currently focused tag
-   */
-  focusedId: string | null
-  /**
-   * @internal
-   * The index of the deleted tag. Used to determine the next tag to focus.
-   */
-  idx?: number
-  /**
-   * @internal
-   * The `id` of the currently edited tag
-   */
-  editedId: string | null
-  /**
-   * @internal
-   * The value of the currently edited tag
-   */
-  editedTagValue: string
-}>
-
-export type MachineContext = PublicContext & ComputedContext & PrivateContext
-
-export type MachineState = {
-  value: "idle" | "navigating:tag" | "focused:input" | "editing:tag"
-  tags: "focused" | "editing"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type ValidityState = "rangeOverflow" | "invalidTag"
-
-export type TagProps = {
-  index: string | number
-  value: string
-  disabled?: boolean
-}
-
-export type { InteractOutsideEvent }

@@ -2,7 +2,7 @@ import { createMachine, guards, ref } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./file-upload.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./file-upload.types"
+import type { MachineContext, MachineState, RejectedFile, UserDefinedContext } from "./file-upload.types"
 import { getAcceptAttrString, getFilesFromEvent, isFilesWithinRange } from "./file-upload.utils"
 
 const { not } = guards
@@ -29,10 +29,10 @@ export function machine(userContext: UserDefinedContext) {
       },
       on: {
         "FILES.SET": {
-          actions: ["setFilesFromEvent", "invokeOnChange"],
+          actions: ["setFilesFromEvent"],
         },
         "FILE.DELETE": {
-          actions: ["removeFile", "invokeOnChange"],
+          actions: ["removeFile"],
         },
       },
       states: {
@@ -63,7 +63,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "DROPZONE.DROP": {
               target: "idle",
-              actions: ["clearInvalid", "setFilesFromEvent", "invokeOnChange"],
+              actions: ["clearInvalid", "setFilesFromEvent"],
             },
             "DROPZONE.DRAG_LEAVE": {
               target: "idle",
@@ -110,20 +110,20 @@ export function machine(userContext: UserDefinedContext) {
           const result = getFilesFromEvent(ctx, evt.files)
           const { acceptedFiles, rejectedFiles } = result
 
-          ctx.rejectedFiles = ref(rejectedFiles)
-
           if (ctx.multiple) {
-            ctx.files = ref([...ctx.files, ...acceptedFiles])
+            const files = ref([...ctx.files, ...acceptedFiles])
+            set.files(ctx, files, rejectedFiles)
             return
           }
 
           if (acceptedFiles.length) {
-            ctx.files = ref([acceptedFiles[0]])
+            const files = ref([acceptedFiles[0]])
+            set.files(ctx, files, rejectedFiles)
           }
         },
         removeFile(ctx, evt) {
           const nextFiles = ctx.files.filter((file) => file !== evt.file)
-          ctx.files = ref(nextFiles)
+          set.files(ctx, nextFiles)
         },
         invokeOnChange(ctx) {
           ctx.onChange?.({
@@ -137,4 +137,18 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
+}
+
+const invoke = {
+  change: (ctx: MachineContext) => {
+    ctx.onChange?.({ acceptedFiles: ctx.files, rejectedFiles: ctx.rejectedFiles })
+  },
+}
+
+const set = {
+  files: (ctx: MachineContext, acceptedFiles: File[], rejectedFiles?: RejectedFile[]) => {
+    ctx.files = ref(acceptedFiles)
+    if (rejectedFiles) ctx.rejectedFiles = ref(rejectedFiles)
+    invoke.change(ctx)
+  },
 }

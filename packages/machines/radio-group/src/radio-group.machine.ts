@@ -29,7 +29,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["trackFormControlState"],
 
       watch: {
-        value: ["setIndicatorTransition", "invokeOnChange", "syncIndicatorRect", "syncInputElements"],
+        value: ["setIndicatorTransition", "syncIndicatorRect", "syncInputElements"],
       },
 
       on: {
@@ -68,7 +68,7 @@ export function machine(userContext: UserDefinedContext) {
 
       actions: {
         setValue(ctx, evt) {
-          ctx.value = evt.value
+          set.value(ctx, evt.value)
         },
         setHovered(ctx, evt) {
           ctx.hoveredId = evt.value
@@ -78,9 +78,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         setFocused(ctx, evt) {
           ctx.focusedId = evt.value
-        },
-        invokeOnChange(ctx, evt) {
-          ctx.onChange?.({ value: evt.value })
         },
         syncInputElements(ctx) {
           const inputs = dom.getInputEls(ctx)
@@ -124,4 +121,18 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
+}
+
+const invoke = {
+  change: (ctx: MachineContext) => {
+    if (ctx.value == null) return
+    ctx.onChange?.({ value: ctx.value })
+  },
+}
+
+const set = {
+  value: (ctx: MachineContext, value: string) => {
+    ctx.value = value
+    invoke.change(ctx)
+  },
 }

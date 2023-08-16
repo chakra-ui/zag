@@ -8,7 +8,6 @@ import type {
   ZonedDateTime,
 } from "@internationalized/date"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import * as _internationalized_date from "@internationalized/date"
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -185,7 +184,84 @@ type PublicContext = DirectionProperty &
     positioning: PositioningOptions
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
+export type DateView = "day" | "month" | "year"
+
+export type ViewProps = {
+  view?: DateView
+}
+
+type PrivateContext = Context<{
+  startValue: DateValue
+  hasFocus?: boolean
+  announcer?: LiveRegion
+  inputValue: string
+  hoveredValue: DateValue | null
+  /**
+   * The index of the currently active date.
+   * Used in range selection mode.
+   */
+  activeIndex: number
+  /**
+   * @internal
+   * The computed placement (maybe different from initial placement)
+   */
+  currentPlacement?: Placement
+}>
+
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * The end date of the current visible duration.
+   */
+  endValue: DateValue
+  /**
+   * @computed
+   * Whether the calendar is interactive.
+   */
+  isInteractive: boolean
+  /**
+   * @computed
+   * The duration of the visible range.
+   */
+  visibleDuration: DateDuration
+  /**
+   * @computed
+   * The start/end date of the current visible duration.
+   */
+  visibleRange: { start: DateValue; end: DateValue }
+  /**
+   * @computed
+   * The text to announce when the visible range changes.
+   */
+  visibleRangeText: { start: string; end: string; formatted: string }
+  /**
+   * @computed
+   * Whether the next visible range is valid.
+   */
+  isNextVisibleRangeValid: boolean
+  /**
+   * @computed
+   * Whether the previous visible range is valid.
+   */
+  isPrevVisibleRangeValid: boolean
+  /**
+   * @computed
+   * The value text to display in the input.
+   */
+  valueText: string
+}>
+
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
+
+export type MachineContext = PublicContext & PrivateContext & ComputedContext
+
+export type State = S.State<MachineContext, MachineState>
+
+export type Send = S.Send<S.AnyEventObject>
+
+export type { Calendar, CalendarDate, CalendarDateTime, DateDuration, DateFormatter, DateValue, ZonedDateTime }
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Whether the input is focused
    */
@@ -212,8 +288,8 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   getOffset(months: number): {
     amount: number
     visibleRange: {
-      start: CalendarDate | _internationalized_date.CalendarDateTime | _internationalized_date.ZonedDateTime
-      end: CalendarDate | _internationalized_date.CalendarDateTime | _internationalized_date.ZonedDateTime
+      start: CalendarDate | CalendarDateTime | ZonedDateTime
+      end: CalendarDate | CalendarDateTime | ZonedDateTime
     }
     weeks: DateValue[][]
   }
@@ -233,7 +309,7 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
    * The days of the week. Represented as an array of strings.
    */
   weekDays: {
-    value: CalendarDate | _internationalized_date.CalendarDateTime | _internationalized_date.ZonedDateTime
+    value: CalendarDate | CalendarDateTime | ZonedDateTime
     short: string
     long: string
     narrow: string
@@ -416,76 +492,3 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   monthSelectProps: T["select"]
   yearSelectProps: T["select"]
 }
-
-export type DateView = "day" | "month" | "year"
-
-export type ViewProps = {
-  view?: DateView
-}
-
-type PrivateContext = Context<{
-  startValue: DateValue
-  hasFocus?: boolean
-  announcer?: LiveRegion
-  valueText: string
-  inputValue: string
-  hoveredValue: DateValue | null
-  /**
-   * The index of the currently active date.
-   * Used in range selection mode.
-   */
-  activeIndex: number
-  /**
-   * @internal
-   * The computed placement (maybe different from initial placement)
-   */
-  currentPlacement?: Placement
-}>
-
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * The end date of the current visible duration.
-   */
-  endValue: DateValue
-  /**
-   * @computed
-   * Whether the calendar is interactive.
-   */
-  isInteractive: boolean
-  /**
-   * @computed
-   * The duration of the visible range.
-   */
-  visibleDuration: DateDuration
-  /**
-   * @computed
-   * The start/end date of the current visible duration.
-   */
-  visibleRange: { start: DateValue; end: DateValue }
-  /**
-   * @computed
-   * The text to announce when the visible range changes.
-   */
-  visibleRangeText: { start: string; end: string; formatted: string }
-  /**
-   * @computed
-   * Whether the next visible range is valid.
-   */
-  isNextVisibleRangeValid: boolean
-  /**
-   * @computed
-   * Whether the previous visible range is valid.
-   */
-  isPrevVisibleRangeValid: boolean
-}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type { Calendar, CalendarDate, CalendarDateTime, DateDuration, DateFormatter, DateValue, ZonedDateTime }

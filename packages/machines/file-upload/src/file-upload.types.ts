@@ -82,7 +82,7 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type PublicApi<T extends PropTypes> = {
+export type MachineApi<T extends PropTypes> = {
   /**
    * Whether the user is dragging something over the root element
    */

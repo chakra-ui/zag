@@ -3,9 +3,9 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./checkbox.anatomy"
 import { dom } from "./checkbox.dom"
-import type { CheckedState, PublicApi, Send, State } from "./checkbox.types"
+import type { CheckedState, MachineApi, Send, State } from "./checkbox.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isDisabled = state.context.disabled
   const isFocused = !isDisabled && state.context.focused
   const isChecked = state.context.isChecked

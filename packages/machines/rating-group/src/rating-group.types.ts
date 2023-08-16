@@ -77,7 +77,37 @@ type PublicContext = DirectionProperty &
     onHover?: (details: { value: number }) => void
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
+
+type ComputedContext = Readonly<{
+  /**
+   * @computed Whether the rating is interactive
+   */
+  readonly isInteractive: boolean
+  /**
+   * @computed Whether the pointer is hovering over the rating
+   */
+  readonly isHovering: boolean
+}>
+
+type PrivateContext = Context<{
+  /**
+   * @internal The value of the hovered rating.
+   */
+  hoveredValue: number
+}>
+
+export type MachineContext = PublicContext & ComputedContext & PrivateContext
+
+export type MachineState = {
+  value: "idle" | "hover" | "focus"
+}
+
+export type State = S.State<MachineContext, MachineState>
+
+export type Send = S.Send<S.AnyEventObject>
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Sets the value of the rating group
    */
@@ -116,33 +146,3 @@ export type PublicApi<T extends PropTypes = PropTypes> = {
   controlProps: T["element"]
   getRatingProps(props: ItemProps): T["element"]
 }
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-type ComputedContext = Readonly<{
-  /**
-   * @computed Whether the rating is interactive
-   */
-  readonly isInteractive: boolean
-  /**
-   * @computed Whether the pointer is hovering over the rating
-   */
-  readonly isHovering: boolean
-}>
-
-type PrivateContext = Context<{
-  /**
-   * @internal The value of the hovered rating.
-   */
-  hoveredValue: number
-}>
-
-export type MachineContext = PublicContext & ComputedContext & PrivateContext
-
-export type MachineState = {
-  value: "idle" | "hover" | "focus"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>

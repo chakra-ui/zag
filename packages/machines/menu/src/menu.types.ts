@@ -68,65 +68,6 @@ type PublicContext = DirectionProperty &
     onClose?: () => void
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  /**
-   * Whether the menu is open
-   */
-  isOpen: boolean
-  /**
-   * Function to open the menu
-   */
-  open(): void
-  /**
-   * Function to close the menu
-   */
-  close(): void
-  /**
-   * The id of the currently highlighted menuitem
-   */
-  highlightedId: string | null
-  /**
-   * Function to set the highlighted menuitem
-   */
-  setHighlightedId(id: string): void
-  /**
-   * Function to register a parent menu. This is used for submenus
-   */
-  setParent(parent: Service): void
-  /**
-   * Function to register a child menu. This is used for submenus
-   */
-  setChild(child: Service): void
-  /**
-   * The value of the menu options item
-   */
-  value: Record<string, string | string[]> | undefined
-  /**
-   * Function to set the value of the menu options item
-   */
-  setValue(name: string, value: any): void
-  /**
-   * Function to check if an option is checked
-   */
-  isOptionChecked(opts: OptionItemProps): boolean | undefined
-  /**
-   * Function to reposition the popover
-   */
-  setPositioning(options?: Partial<PositioningOptions>): void
-  contextTriggerProps: T["element"]
-  getTriggerItemProps<A extends Api>(childApi: A): T["element"]
-  triggerProps: T["button"]
-  positionerProps: T["element"]
-  arrowProps: T["element"]
-  arrowTipProps: T["element"]
-  contentProps: T["element"]
-  separatorProps: T["element"]
-  getItemProps(options: ItemProps): T["element"]
-  getOptionItemProps(option: OptionItemProps): T["element"]
-  getItemGroupLabelProps(options: LabelProps): T["element"]
-  getItemGroupProps(options: GroupProps): T["element"]
-}
-
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
@@ -260,4 +201,63 @@ export type LabelProps = {
    * The `id` of the group this refers to
    */
   htmlFor: string
+}
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the menu is open
+   */
+  isOpen: boolean
+  /**
+   * Function to open the menu
+   */
+  open(): void
+  /**
+   * Function to close the menu
+   */
+  close(): void
+  /**
+   * The id of the currently highlighted menuitem
+   */
+  highlightedId: string | null
+  /**
+   * Function to set the highlighted menuitem
+   */
+  setHighlightedId(id: string): void
+  /**
+   * Function to register a parent menu. This is used for submenus
+   */
+  setParent(parent: Service): void
+  /**
+   * Function to register a child menu. This is used for submenus
+   */
+  setChild(child: Service): void
+  /**
+   * The value of the menu options item
+   */
+  value: Record<string, string | string[]> | undefined
+  /**
+   * Function to set the value of the menu options item
+   */
+  setValue(name: string, value: any): void
+  /**
+   * Function to check if an option is checked
+   */
+  isOptionChecked(opts: OptionItemProps): boolean | undefined
+  /**
+   * Function to reposition the popover
+   */
+  setPositioning(options?: Partial<PositioningOptions>): void
+  contextTriggerProps: T["element"]
+  getTriggerItemProps<A extends Api>(childApi: A): T["element"]
+  triggerProps: T["button"]
+  positionerProps: T["element"]
+  arrowProps: T["element"]
+  arrowTipProps: T["element"]
+  contentProps: T["element"]
+  separatorProps: T["element"]
+  getItemProps(options: ItemProps): T["element"]
+  getOptionItemProps(option: OptionItemProps): T["element"]
+  getItemGroupLabelProps(options: LabelProps): T["element"]
+  getItemGroupProps(options: GroupProps): T["element"]
 }

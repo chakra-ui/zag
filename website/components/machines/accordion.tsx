@@ -31,7 +31,7 @@ type AccordionProps = {
 
 export function Accordion(props: AccordionProps) {
   const [state, send] = useMachine(
-    accordion.machine({ id: useId(), value: "Aircrafts" }),
+    accordion.machine({ id: useId(), value: ["Aircrafts"] }),
     {
       context: props.controls,
     },

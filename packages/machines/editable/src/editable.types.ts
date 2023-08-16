@@ -127,50 +127,6 @@ type PublicContext = DirectionProperty &
     onInteractOutside?: (event: InteractOutsideEvent) => void
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  /**
-   * Whether the editable is in edit mode
-   */
-  isEditing: boolean
-  /**
-   * Whether the editable value is empty
-   */
-  isValueEmpty: boolean
-  /**
-   * The current value of the editable
-   */
-  value: string
-  /**
-   * Function to set the value of the editable
-   */
-  setValue(value: string): void
-  /**
-   * Function to clear the value of the editable
-   */
-  clearValue(): void
-  /**
-   * Function to enter edit mode
-   */
-  edit(): void
-  /**
-   * Function to exit edit mode, and discard any changes
-   */
-  cancel(): void
-  /**
-   * Function to exit edit mode, and submit any changes
-   */
-  submit(): void
-  rootProps: T["element"]
-  areaProps: T["element"]
-  labelProps: T["label"]
-  inputProps: T["input"]
-  previewProps: T["element"]
-  editTriggerProps: T["button"]
-  controlProps: T["element"]
-  submitTriggerProps: T["button"]
-  cancelTriggerProps: T["button"]
-}
-
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
@@ -220,3 +176,47 @@ export type State = S.State<MachineContext, MachineState>
 export type Send = S.Send<S.AnyEventObject>
 
 export type { InteractOutsideEvent }
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the editable is in edit mode
+   */
+  isEditing: boolean
+  /**
+   * Whether the editable value is empty
+   */
+  isValueEmpty: boolean
+  /**
+   * The current value of the editable
+   */
+  value: string
+  /**
+   * Function to set the value of the editable
+   */
+  setValue(value: string): void
+  /**
+   * Function to clear the value of the editable
+   */
+  clearValue(): void
+  /**
+   * Function to enter edit mode
+   */
+  edit(): void
+  /**
+   * Function to exit edit mode, and discard any changes
+   */
+  cancel(): void
+  /**
+   * Function to exit edit mode, and submit any changes
+   */
+  submit(): void
+  rootProps: T["element"]
+  areaProps: T["element"]
+  labelProps: T["label"]
+  inputProps: T["input"]
+  previewProps: T["element"]
+  editTriggerProps: T["button"]
+  controlProps: T["element"]
+  submitTriggerProps: T["button"]
+  cancelTriggerProps: T["button"]
+}

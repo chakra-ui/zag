@@ -1,9 +1,9 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
-import type { PublicApi, Send, State } from "./toast.types"
+import type { MachineApi, Send, State } from "./toast.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): PublicApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isVisible = state.hasTag("visible")
   const isPaused = state.hasTag("paused")
 

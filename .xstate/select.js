@@ -23,16 +23,15 @@ const fetchMachine = createMachine({
   initial: "idle",
   on: {
     HIGHLIGHT_OPTION: {
-      actions: ["setHighlightedOption", "invokeOnHighlight"]
+      actions: ["setHighlightedOption"]
     },
     SELECT_OPTION: {
-      actions: ["setSelectedOption", "invokeOnSelect"]
+      actions: ["setSelectedOption"]
     },
     CLEAR_SELECTED: {
-      actions: ["clearSelectedOption", "invokeOnSelect"]
+      actions: ["clearSelectedOption"]
     }
   },
-  entry: ["setInitialSelectedOption"],
   activities: ["trackFormControlState"],
   on: {
     UPDATE_CONTEXT: {
@@ -70,32 +69,32 @@ const fetchMachine = createMachine({
         },
         ARROW_UP: {
           target: "open",
-          actions: ["highlightLastOption", "invokeOnHighlight"]
+          actions: ["highlightLastOption"]
         },
         ARROW_DOWN: {
           target: "open",
-          actions: ["highlightFirstOption", "invokeOnHighlight"]
+          actions: ["highlightFirstOption"]
         },
         ARROW_LEFT: [{
           cond: "hasSelectedOption",
-          actions: ["selectPreviousOption", "invokeOnSelect"]
+          actions: ["selectPreviousOption"]
         }, {
-          actions: ["selectLastOption", "invokeOnSelect"]
+          actions: ["selectLastOption"]
         }],
         ARROW_RIGHT: [{
           cond: "hasSelectedOption",
-          actions: ["selectNextOption", "invokeOnSelect"]
+          actions: ["selectNextOption"]
         }, {
-          actions: ["selectFirstOption", "invokeOnSelect"]
+          actions: ["selectFirstOption"]
         }],
         HOME: {
-          actions: ["selectFirstOption", "invokeOnSelect"]
+          actions: ["selectFirstOption"]
         },
         END: {
-          actions: ["selectLastOption", "invokeOnSelect"]
+          actions: ["selectLastOption"]
         },
         TYPEAHEAD: {
-          actions: ["selectMatchingOption", "invokeOnSelect"]
+          actions: ["selectMatchingOption"]
         },
         OPEN: {
           target: "open"
@@ -118,52 +117,52 @@ const fetchMachine = createMachine({
         },
         OPTION_CLICK: [{
           target: "focused",
-          actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"],
+          actions: ["selectHighlightedOption", "invokeOnClose"],
           cond: "closeOnSelect"
         }, {
-          actions: ["selectHighlightedOption", "invokeOnSelect"]
+          actions: ["selectHighlightedOption"]
         }],
         TRIGGER_KEY: [{
           target: "focused",
-          actions: ["selectHighlightedOption", "invokeOnSelect", "invokeOnClose"],
+          actions: ["selectHighlightedOption", "invokeOnClose"],
           cond: "closeOnSelect"
         }, {
-          actions: ["selectHighlightedOption", "invokeOnSelect"]
+          actions: ["selectHighlightedOption"]
         }],
         BLUR: {
           target: "focused",
           actions: ["invokeOnClose"]
         },
         HOME: {
-          actions: ["highlightFirstOption", "invokeOnHighlight"]
+          actions: ["highlightFirstOption"]
         },
         END: {
-          actions: ["highlightLastOption", "invokeOnHighlight"]
+          actions: ["highlightLastOption"]
         },
         ARROW_DOWN: [{
           cond: "hasHighlightedOption",
-          actions: ["highlightNextOption", "invokeOnHighlight"]
+          actions: ["highlightNextOption"]
         }, {
-          actions: ["highlightFirstOption", "invokeOnHighlight"]
+          actions: ["highlightFirstOption"]
         }],
         ARROW_UP: [{
           cond: "hasHighlightedOption",
-          actions: ["highlightPreviousOption", "invokeOnHighlight"]
+          actions: ["highlightPreviousOption"]
         }, {
-          actions: ["highlightLastOption", "invokeOnHighlight"]
+          actions: ["highlightLastOption"]
         }],
         TYPEAHEAD: {
-          actions: ["highlightMatchingOption", "invokeOnHighlight"]
+          actions: ["highlightMatchingOption"]
         },
         POINTER_MOVE: {
-          actions: ["highlightOption", "invokeOnHighlight"]
+          actions: ["highlightOption"]
         },
         POINTER_LEAVE: {
           actions: ["clearHighlightedOption"]
         },
         TAB: [{
           target: "idle",
-          actions: ["selectHighlightedOption", "invokeOnClose", "invokeOnSelect", "clearHighlightedOption"],
+          actions: ["selectHighlightedOption", "invokeOnClose", "clearHighlightedOption"],
           cond: "selectOnTab"
         }, {
           target: "idle",

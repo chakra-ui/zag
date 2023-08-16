@@ -65,7 +65,7 @@ async function main() {
     const contextSrc = project.getSourceFile(typesFilePath)
 
     const publicContext = getContextReturnType(contextSrc, "PublicContext", typeChecker)
-    const publicApi = getContextReturnType(contextSrc, "PublicApi", typeChecker)
+    const publicApi = getContextReturnType(contextSrc, "MachineApi", typeChecker)
 
     result[baseDir] = { api: publicApi, context: publicContext }
   }

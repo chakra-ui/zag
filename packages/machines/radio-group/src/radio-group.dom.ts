@@ -11,7 +11,7 @@ export const dom = createScope({
     ctx.ids?.radioControl?.(value) ?? `radio-group:${ctx.id}:radio:control:${value}`,
   getRadioLabelId: (ctx: Ctx, value: string) =>
     ctx.ids?.radioLabel?.(value) ?? `radio-group:${ctx.id}:radio:label:${value}`,
-  getIndicatorId: (ctx: Ctx) => ctx.ids?.indicator ?? `tabs:${ctx.id}:indicator`,
+  getIndicatorId: (ctx: Ctx) => ctx.ids?.indicator ?? `radio-group:${ctx.id}:indicator`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getRadioHiddenInputEl: (ctx: Ctx, value: string) =>
@@ -33,14 +33,12 @@ export const dom = createScope({
     return dom.getById(ctx, dom.getRadioId(ctx, ctx.value))
   },
 
-  getOffsetRect: (el: HTMLElement | undefined) => {
-    return {
-      left: el?.offsetLeft ?? 0,
-      top: el?.offsetTop ?? 0,
-      width: el?.offsetWidth ?? 0,
-      height: el?.offsetHeight ?? 0,
-    }
-  },
+  getOffsetRect: (el: HTMLElement | undefined) => ({
+    left: el?.offsetLeft ?? 0,
+    top: el?.offsetTop ?? 0,
+    width: el?.offsetWidth ?? 0,
+    height: el?.offsetHeight ?? 0,
+  }),
 
   getRectById: (ctx: Ctx, id: string) => {
     const radioEl = dom.getById(ctx, dom.getRadioId(ctx, id))
@@ -48,12 +46,10 @@ export const dom = createScope({
     return dom.resolveRect(dom.getOffsetRect(radioEl))
   },
 
-  resolveRect(rect: Record<"width" | "height" | "left" | "top", number>) {
-    return {
-      width: `${rect.width}px`,
-      height: `${rect.height}px`,
-      left: `${rect.left}px`,
-      top: `${rect.top}px`,
-    }
-  },
+  resolveRect: (rect: Record<"width" | "height" | "left" | "top", number>) => ({
+    width: `${rect.width}px`,
+    height: `${rect.height}px`,
+    left: `${rect.left}px`,
+    top: `${rect.top}px`,
+  }),
 })

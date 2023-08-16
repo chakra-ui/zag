@@ -6,6 +6,6 @@ export const dom = createScope({
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `switch:${ctx.id}:label`,
   getThumbId: (ctx: Ctx) => ctx.ids?.thumb ?? `switch:${ctx.id}:thumb`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `switch:${ctx.id}:control`,
-  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `switch:${ctx.id}:input`,
-  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
+  getHiddenInputId: (ctx: Ctx) => ctx.ids?.input ?? `switch:${ctx.id}:input`,
+  getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
 })

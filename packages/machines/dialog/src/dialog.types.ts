@@ -80,28 +80,6 @@ type PublicContext = DirectionProperty &
     open?: boolean
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  /**
-   * Whether the dialog is open
-   */
-  isOpen: boolean
-  /**
-   * Function to open the dialog
-   */
-  open(): void
-  /**
-   * Function to close the dialog
-   */
-  close(): void
-  triggerProps: T["button"]
-  backdropProps: T["element"]
-  containerProps: T["element"]
-  contentProps: T["element"]
-  titleProps: T["element"]
-  descriptionProps: T["element"]
-  closeTriggerProps: T["button"]
-}
-
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{}>
@@ -126,3 +104,25 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the dialog is open
+   */
+  isOpen: boolean
+  /**
+   * Function to open the dialog
+   */
+  open(): void
+  /**
+   * Function to close the dialog
+   */
+  close(): void
+  triggerProps: T["button"]
+  backdropProps: T["element"]
+  containerProps: T["element"]
+  contentProps: T["element"]
+  titleProps: T["element"]
+  descriptionProps: T["element"]
+  closeTriggerProps: T["button"]
+}

@@ -28,12 +28,11 @@ export function machine(userContext: UserDefinedContext) {
         thumbSizes: [],
         thumbAlignment: "contain",
         threshold: 5,
-        activeIndex: -1,
+        focusedIndex: -1,
         min: 0,
         max: 100,
         step: 1,
         value: [0, 100],
-        initialValues: [],
         orientation: "horizontal",
         dir: "ltr",
         minStepsBetweenThumbs: 0,
@@ -53,10 +52,10 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        value: ["invokeOnChange", "dispatchChangeEvent"],
+        value: ["syncInputElements"],
       },
 
-      entry: ["checkValue"],
+      entry: ["coarseValue"],
 
       activities: ["trackFormControlState", "trackThumbsSize"],
 
@@ -85,7 +84,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             FOCUS: {
               target: "focus",
-              actions: "setActiveIndex",
+              actions: "setFocusedIndex",
             },
           },
         },
@@ -126,7 +125,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             BLUR: {
               target: "idle",
-              actions: "clearActiveIndex",
+              actions: "clearFocusedIndex",
             },
           },
         },
@@ -152,14 +151,13 @@ export function machine(userContext: UserDefinedContext) {
         hasIndex: (_ctx, evt) => evt.index != null,
       },
       activities: {
-        trackFormControlState(ctx) {
+        trackFormControlState(ctx, _evt, { initialContext }) {
           return trackFormControl(dom.getRootEl(ctx), {
             onFieldsetDisabled() {
               ctx.disabled = true
             },
             onFormReset() {
-              if (!ctx.name) return
-              assignArray(ctx.value, ctx.initialValues)
+              set.value(ctx, initialContext.value)
             },
           })
         },
@@ -190,70 +188,97 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
+        syncInputElements(ctx) {
+          ctx.value.forEach((value, index) => {
+            const inputEl = dom.getHiddenInputEl(ctx, index)
+            dom.setValue(inputEl, value)
+          })
+        },
         invokeOnChangeStart(ctx) {
           ctx.onChangeStart?.({ value: ctx.value })
         },
         invokeOnChangeEnd(ctx) {
           ctx.onChangeEnd?.({ value: ctx.value })
         },
-        invokeOnChange(ctx) {
-          ctx.onChange?.({ value: ctx.value })
-        },
-        dispatchChangeEvent(ctx) {
-          raf(() => {
-            dom.dispatchChangeEvent(ctx)
-          })
-        },
         setClosestThumbIndex(ctx, evt) {
           const pointValue = dom.getValueFromPoint(ctx, evt.point)
           if (pointValue == null) return
-          ctx.activeIndex = getClosestIndex(ctx, pointValue)
+
+          const focusedIndex = getClosestIndex(ctx, pointValue)
+          set.focusedIndex(ctx, focusedIndex)
         },
-        setActiveIndex(ctx, evt) {
-          ctx.activeIndex = evt.index
+        setFocusedIndex(ctx, evt) {
+          set.focusedIndex(ctx, evt.index)
         },
-        clearActiveIndex(ctx) {
-          ctx.activeIndex = -1
+        clearFocusedIndex(ctx) {
+          set.focusedIndex(ctx, -1)
         },
         setPointerValue(ctx, evt) {
-          const value = dom.getValueFromPoint(ctx, evt.point)
-          if (value == null) return
-          ctx.value[ctx.activeIndex] = constrainValue(ctx, value, ctx.activeIndex)
+          const pointerValue = dom.getValueFromPoint(ctx, evt.point)
+          if (pointerValue == null) return
+
+          const value = constrainValue(ctx, pointerValue, ctx.focusedIndex)
+          set.valueAtIndex(ctx, ctx.focusedIndex, value)
         },
         focusActiveThumb(ctx) {
           raf(() => {
-            const thumb = dom.getThumbEl(ctx, ctx.activeIndex)
-            thumb?.focus()
+            const thumbEl = dom.getThumbEl(ctx, ctx.focusedIndex)
+            thumbEl?.focus({ preventScroll: true })
           })
         },
         decrementAtIndex(ctx, evt) {
-          const nextValue = decrement(ctx, evt.index, evt.step)
-          assignArray(ctx.value, nextValue)
+          const value = decrement(ctx, evt.index, evt.step)
+          set.value(ctx, value)
         },
         incrementAtIndex(ctx, evt) {
-          const nextValue = increment(ctx, evt.index, evt.step)
-          assignArray(ctx.value, nextValue)
+          const value = increment(ctx, evt.index, evt.step)
+          set.value(ctx, value)
         },
         setActiveThumbToMin(ctx) {
-          const { min } = getRangeAtIndex(ctx, ctx.activeIndex)
-          ctx.value[ctx.activeIndex] = min
+          const { min } = getRangeAtIndex(ctx, ctx.focusedIndex)
+          set.valueAtIndex(ctx, ctx.focusedIndex, min)
         },
         setActiveThumbToMax(ctx) {
-          const { max } = getRangeAtIndex(ctx, ctx.activeIndex)
-          ctx.value[ctx.activeIndex] = max
+          const { max } = getRangeAtIndex(ctx, ctx.focusedIndex)
+          set.valueAtIndex(ctx, ctx.focusedIndex, max)
         },
-        checkValue(ctx) {
-          const nextValue = normalizeValues(ctx, ctx.value)
-          assignArray(ctx.value, nextValue)
-          assignArray(ctx.initialValues, nextValue)
+        coarseValue(ctx) {
+          const value = normalizeValues(ctx, ctx.value)
+          set.value(ctx, value)
         },
         setValueAtIndex(ctx, evt) {
-          ctx.value[evt.index] = constrainValue(ctx, evt.value, evt.index)
+          const value = constrainValue(ctx, evt.value, evt.index)
+          set.valueAtIndex(ctx, evt.index, value)
         },
         setValue(ctx, evt) {
-          assignArray(ctx.value, normalizeValues(ctx, evt.value))
+          const value = normalizeValues(ctx, evt.value)
+          set.value(ctx, value)
         },
       },
     },
   )
+}
+
+const invoke = {
+  change: (ctx: MachineContext) => {
+    ctx.onChange?.({ value: ctx.value })
+    dom.dispatchChangeEvent(ctx)
+  },
+  focusChange: (ctx: MachineContext) => {
+    ctx.onFocusChange?.({ value: ctx.value, index: ctx.focusedIndex })
+  },
+}
+const set = {
+  valueAtIndex: (ctx: MachineContext, index: number, value: number) => {
+    ctx.value[index] = value
+    invoke.change(ctx)
+  },
+  value: (ctx: MachineContext, value: number[]) => {
+    assignArray(ctx.value, value)
+    invoke.change(ctx)
+  },
+  focusedIndex: (ctx: MachineContext, index: number) => {
+    ctx.focusedIndex = index
+    invoke.focusChange(ctx)
+  },
 }

@@ -85,61 +85,6 @@ type PublicContext = DirectionProperty &
     loop?: boolean
   }
 
-export type PublicApi<T extends PropTypes = PropTypes> = {
-  /**
-   * Whether the select is open
-   */
-  isOpen: boolean
-  /**
-   * The currently highlighted option
-   */
-  highlightedOption: Option | null
-  /**
-   * The currently selected option
-   */
-  selectedOption: Option | null
-  /**
-   * Function to focus the select
-   */
-  focus(): void
-  /**
-   * Function to open the select
-   */
-  open(): void
-  /**
-   * Function to close the select
-   */
-  close(): void
-  /**
-   * Function to set the selected option
-   */
-  setSelectedOption(value: Option): void
-  /**
-   * Function to set the highlighted option
-   */
-  setHighlightedOption(value: Option): void
-  /**
-   * Function to clear the selected option
-   */
-  clearSelectedOption(): void
-  /**
-   * Returns the state details of an option
-   */
-  getOptionState: (props: OptionProps) => {
-    isDisabled: boolean
-    isHighlighted: boolean
-    isChecked: boolean
-  }
-  labelProps: T["label"]
-  positionerProps: T["element"]
-  triggerProps: T["button"]
-  getOptionProps(props: OptionProps): T["element"]
-  getOptionGroupLabelProps(props: OptionGroupLabelProps): T["element"]
-  getOptionGroupProps(props: OptionGroupProps): T["element"]
-  hiddenSelectProps: T["select"]
-  contentProps: T["element"]
-}
-
 type PrivateContext = Context<{
   /**
    * Internal state of the typeahead
@@ -159,10 +104,6 @@ type PrivateContext = Context<{
    * Used to determine if the selected option has changed.
    */
   prevSelectedOption?: Option | null
-  /**
-   * The initial selected option. Used for form reset.
-   */
-  initialSelectedOption: Option | null
 }>
 
 type ComputedContext = Readonly<{
@@ -217,4 +158,59 @@ export type OptionGroupProps = {
 
 export type OptionGroupLabelProps = {
   htmlFor: string
+}
+
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the select is open
+   */
+  isOpen: boolean
+  /**
+   * The currently highlighted option
+   */
+  highlightedOption: Option | null
+  /**
+   * The currently selected option
+   */
+  selectedOption: Option | null
+  /**
+   * Function to focus the select
+   */
+  focus(): void
+  /**
+   * Function to open the select
+   */
+  open(): void
+  /**
+   * Function to close the select
+   */
+  close(): void
+  /**
+   * Function to set the selected option
+   */
+  setSelectedOption(value: Option): void
+  /**
+   * Function to set the highlighted option
+   */
+  setHighlightedOption(value: Option): void
+  /**
+   * Function to clear the selected option
+   */
+  clearSelectedOption(): void
+  /**
+   * Returns the state details of an option
+   */
+  getOptionState: (props: OptionProps) => {
+    isDisabled: boolean
+    isHighlighted: boolean
+    isChecked: boolean
+  }
+  labelProps: T["label"]
+  positionerProps: T["element"]
+  triggerProps: T["button"]
+  getOptionProps(props: OptionProps): T["element"]
+  getOptionGroupLabelProps(props: OptionGroupLabelProps): T["element"]
+  getOptionGroupProps(props: OptionGroupProps): T["element"]
+  hiddenSelectProps: T["select"]
+  contentProps: T["element"]
 }
