@@ -13,7 +13,7 @@ export type ChangeDetails = {
 }
 
 export type FocusChangeDetails = {
-  focusedValue: string | null
+  value: string | null
 }
 
 type PublicContext = DirectionProperty &

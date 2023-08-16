@@ -110,10 +110,10 @@ export function machine(userContext: UserDefinedContext) {
           triggerEl?.focus()
         },
         setFocusedValue(ctx, evt) {
-          ctx.focusedValue = evt.value
+          set.focusedValue(ctx, evt.value)
         },
         clearFocusedValue(ctx) {
-          ctx.focusedValue = null
+          set.focusedValue(ctx, null)
         },
         setValue(ctx, evt) {
           set.value(ctx, evt.value)
@@ -134,7 +134,7 @@ const invoke = {
     ctx.onChange?.({ value: ctx.value })
   },
   focusChange(ctx: MachineContext) {
-    ctx.onFocusChange?.({ focusedValue: ctx.focusedValue })
+    ctx.onFocusChange?.({ value: ctx.focusedValue })
   },
 }
 
@@ -145,5 +145,6 @@ const set = {
   },
   focusedValue(ctx: MachineContext, value: string | null) {
     ctx.focusedValue = value
+    invoke.focusChange(ctx)
   },
 }
