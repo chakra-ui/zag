@@ -237,8 +237,8 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackFormControlState(ctx, _evt, { initialContext }) {
           return trackFormControl(dom.getHiddenSelectElement(ctx), {
-            onFieldsetDisabled() {
-              ctx.disabled = true
+            onFieldsetDisabledChange(disabled) {
+              ctx.disabled = disabled
             },
             onFormReset() {
               set.selectedOption(ctx, initialContext.selectedOption)
