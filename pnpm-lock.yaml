@@ -42,8 +42,8 @@ importers:
         specifier: 20.0.1
         version: 20.0.1
       '@playwright/test':
-        specifier: 1.36.2
-        version: 1.36.2
+        specifier: 1.37.1
+        version: 1.37.1
       '@swc/core':
         specifier: 1.3.74
         version: 1.3.74
@@ -5720,13 +5720,13 @@ packages:
       picocolors: 1.0.0
       tslib: 2.6.0
 
-  /@playwright/test@1.36.2:
-    resolution: {integrity: sha512-2rVZeyPRjxfPH6J0oGJqE8YxiM1IBRyM8hyrXYK7eSiAqmbNhxwcLa7dZ7fy9Kj26V7FYia5fh9XJRq4Dqme+g==}
+  /@playwright/test@1.37.1:
+    resolution: {integrity: sha512-bq9zTli3vWJo8S3LwB91U0qDNQDpEXnw7knhxLM0nwDvexQAwx9tO8iKDZSqqneVq+URd/WIoz+BALMqUTgdSg==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
       '@types/node': 20.4.8
-      playwright-core: 1.36.2
+      playwright-core: 1.37.1
     optionalDependencies:
       fsevents: 2.3.2
     dev: false
@@ -7050,9 +7050,9 @@ packages:
   /@vue/babel-plugin-jsx@1.1.1(@babel/core@7.22.9):
     resolution: {integrity: sha512-j2uVfZjnB5+zkcbc/zsOc0fSNGCMMjaEXP52wdwdIfn0qjFfEYpYZBFKFg+HHnQeJCVrjOeO0YxgaL7DMrym9w==}
     dependencies:
-      '@babel/helper-module-imports': 7.22.5
+      '@babel/helper-module-imports': 7.18.6
       '@babel/plugin-syntax-jsx': 7.18.6(@babel/core@7.22.9)
-      '@babel/template': 7.22.5
+      '@babel/template': 7.20.7
       '@babel/traverse': 7.22.8
       '@babel/types': 7.22.5
       '@vue/babel-helper-vue-transform-on': 1.0.2
@@ -14187,6 +14187,12 @@ packages:
 
   /playwright-core@1.36.2:
     resolution: {integrity: sha512-sQYZt31dwkqxOrP7xy2ggDfEzUxM1lodjhsQ3NMMv5uGTRDsLxU0e4xf4wwMkF2gplIxf17QMBCodSFgm6bFVQ==}
+    engines: {node: '>=16'}
+    hasBin: true
+    dev: false
+
+  /playwright-core@1.37.1:
+    resolution: {integrity: sha512-17EuQxlSIYCmEMwzMqusJ2ztDgJePjrbttaefgdsiqeLWidjYz9BxXaTaZWxH1J95SHGk6tjE+dwgWILJoUZfA==}
     engines: {node: '>=16'}
     hasBin: true
     dev: false
