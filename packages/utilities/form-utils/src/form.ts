@@ -30,21 +30,16 @@ export function isNativeDisabled(el: HTMLElement) {
 }
 
 export type FormControlOptions = {
-  onFieldsetDisabled: () => void
+  onFieldsetDisabledChange: (disabled: boolean) => void
   onFormReset: () => void
 }
 
 export function trackFormControl(el: HTMLElement | null, options: FormControlOptions) {
   if (!el) return
 
-  const { onFieldsetDisabled, onFormReset } = options
+  const { onFieldsetDisabledChange, onFormReset } = options
 
-  const cleanups = [
-    trackFormReset(el, onFormReset),
-    trackFieldsetDisabled(el, (disabled) => {
-      if (disabled) onFieldsetDisabled()
-    }),
-  ]
+  const cleanups = [trackFormReset(el, onFormReset), trackFieldsetDisabled(el, onFieldsetDisabledChange)]
 
   return () => {
     cleanups.forEach((cleanup) => cleanup?.())

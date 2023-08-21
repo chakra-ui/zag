@@ -153,8 +153,8 @@ export function machine(userContext: UserDefinedContext) {
       activities: {
         trackFormControlState(ctx, _evt, { initialContext }) {
           return trackFormControl(dom.getRootEl(ctx), {
-            onFieldsetDisabled() {
-              ctx.disabled = true
+            onFieldsetDisabledChange(disabled) {
+              ctx.disabled = disabled
             },
             onFormReset() {
               set.value(ctx, initialContext.value)

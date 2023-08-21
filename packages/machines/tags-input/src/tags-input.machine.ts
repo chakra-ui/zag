@@ -279,8 +279,8 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getHiddenInputEl(ctx), {
-            onFieldsetDisabled() {
-              ctx.disabled = true
+            onFieldsetDisabledChange(disabled) {
+              ctx.disabled = disabled
             },
             onFormReset() {
               send({ type: "SET_VALUE", value: initialContext.value, src: "form-reset" })
