@@ -31,7 +31,9 @@ export function machine(userContext: UserDefinedContext) {
         allowEditTag: true,
         validate: () => true,
         delimiter: ",",
+        disabled: false,
         ...ctx,
+        fieldsetDisabled: false,
         translations: {
           clearTriggerLabel: "Clear all tags",
           deleteTagTriggerLabel: (value) => `Delete tag ${value}`,
@@ -48,7 +50,8 @@ export function machine(userContext: UserDefinedContext) {
         count: (ctx) => ctx.value.length,
         valueAsString: (ctx) => JSON.stringify(ctx.value),
         trimmedInputValue: (ctx) => ctx.inputValue.trim(),
-        isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
+        isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
+        isInteractive: (ctx) => !(ctx.readOnly || ctx.isDisabled),
         isAtMax: (ctx) => ctx.count === ctx.max,
         isOverflowing: (ctx) => ctx.count > ctx.max,
       },
@@ -280,7 +283,7 @@ export function machine(userContext: UserDefinedContext) {
         trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getHiddenInputEl(ctx), {
             onFieldsetDisabledChange(disabled) {
-              ctx.disabled = disabled
+              ctx.fieldsetDisabled = disabled
             },
             onFormReset() {
               send({ type: "SET_VALUE", value: initialContext.value, src: "form-reset" })

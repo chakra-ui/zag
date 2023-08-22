@@ -62,6 +62,10 @@ type ComputedContext = Readonly<{
    * Whether the checkbox is checked
    */
   isChecked: boolean
+  /**
+   * Whether the checkbox is disabled
+   */
+  isDisabled: boolean
 }>
 
 type PrivateContext = Context<{
@@ -80,6 +84,11 @@ type PrivateContext = Context<{
    * Whether the checkbox is hovered
    */
   hovered?: boolean
+  /**
+   * @internal
+   * Whether the checkbox's fieldset is disabled
+   */
+  fieldsetDisabled: boolean
 }>
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext

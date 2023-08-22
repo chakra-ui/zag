@@ -19,16 +19,19 @@ export function machine(userContext: UserDefinedContext) {
       initial: "idle",
       context: {
         dir: "ltr",
+        value: "#D9D9D9",
+        disabled: false,
+        ...ctx,
         activeId: null,
         activeChannel: null,
         activeOrientation: null,
-        value: "#D9D9D9",
-        ...ctx,
+        fieldsetDisabled: false,
       },
 
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
-        isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
+        isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
+        isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
         valueAsColor: (ctx) => parseColor(ctx.value),
       },
 
@@ -182,7 +185,7 @@ export function machine(userContext: UserDefinedContext) {
           const inputEl = dom.getHiddenInputEl(ctx)
           return trackFormControl(inputEl, {
             onFieldsetDisabledChange(disabled) {
-              ctx.disabled = disabled
+              ctx.fieldsetDisabled = disabled
             },
             onFormReset() {
               send({ type: "VALUE.SET", value: initialContext.value, src: "form.reset" })

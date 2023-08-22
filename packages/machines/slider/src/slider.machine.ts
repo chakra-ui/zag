@@ -18,7 +18,6 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         thumbSize: null,
         thumbAlignment: "contain",
-        disabled: false,
         threshold: 5,
         dir: "ltr",
         origin: "start",
@@ -27,14 +26,17 @@ export function machine(userContext: UserDefinedContext) {
         step: 1,
         min: 0,
         max: 100,
+        disabled: false,
         ...ctx,
+        fieldsetDisabled: false,
       },
 
       computed: {
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
         isVertical: (ctx) => ctx.orientation === "vertical",
         isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
-        isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
+        isDisabled: (ctx) => ctx.disabled || ctx.fieldsetDisabled,
+        isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
         hasMeasuredThumbSize: (ctx) => ctx.thumbSize !== null,
         valuePercent: (ctx) => 100 * getValuePercent(ctx.value, ctx.min, ctx.max),
       },
@@ -134,7 +136,7 @@ export function machine(userContext: UserDefinedContext) {
         trackFormControlState(ctx, _evt, { initialContext }) {
           return trackFormControl(dom.getHiddenInputEl(ctx), {
             onFieldsetDisabledChange(disabled) {
-              ctx.disabled = disabled
+              ctx.fieldsetDisabled = disabled
             },
             onFormReset() {
               set.value(ctx, initialContext.value)

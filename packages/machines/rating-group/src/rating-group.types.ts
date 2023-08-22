@@ -81,13 +81,20 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
   /**
-   * @computed Whether the rating is interactive
+   * @computed
+   * Whether the rating is interactive
    */
-  readonly isInteractive: boolean
+  isInteractive: boolean
   /**
-   * @computed Whether the pointer is hovering over the rating
+   * @computed
+   * Whether the pointer is hovering over the rating
    */
-  readonly isHovering: boolean
+  isHovering: boolean
+  /**
+   * @computed
+   * Whether the rating is disabled
+   */
+  isDisabled: boolean
 }>
 
 type PrivateContext = Context<{
@@ -95,6 +102,10 @@ type PrivateContext = Context<{
    * @internal The value of the hovered rating.
    */
   hoveredValue: number
+  /**
+   * @internal Whether the fieldset is disabled.
+   */
+  fieldsetDisabled: boolean
 }>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext

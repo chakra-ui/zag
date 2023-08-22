@@ -6,7 +6,7 @@ import { dom } from "./checkbox.dom"
 import type { CheckedState, MachineApi, Send, State } from "./checkbox.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isDisabled = state.context.disabled
+  const isDisabled = state.context.isDisabled
   const isFocused = !isDisabled && state.context.focused
   const isChecked = state.context.isChecked
   const isIndeterminate = state.context.isIndeterminate

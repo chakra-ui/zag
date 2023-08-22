@@ -6,7 +6,7 @@ import { dom } from "./switch.dom"
 import type { MachineApi, Send, State } from "./switch.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isDisabled = state.context.disabled
+  const isDisabled = state.context.isDisabled
   const isFocusable = state.context.focusable
   const isFocused = !isDisabled && state.context.focused
   const isChecked = state.context.checked

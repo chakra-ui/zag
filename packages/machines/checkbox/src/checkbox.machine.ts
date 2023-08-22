@@ -14,7 +14,9 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         checked: false,
         value: "on",
+        disabled: false,
         ...ctx,
+        fieldsetDisabled: false,
       },
 
       watch: {
@@ -39,6 +41,7 @@ export function machine(userContext: UserDefinedContext) {
       computed: {
         isIndeterminate: (ctx) => isIndeterminate(ctx.checked),
         isChecked: (ctx) => (ctx.isIndeterminate ? false : !!ctx.checked),
+        isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
       },
 
       states: {
@@ -50,7 +53,7 @@ export function machine(userContext: UserDefinedContext) {
         trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getHiddenInputEl(ctx), {
             onFieldsetDisabledChange(disabled) {
-              ctx.disabled = disabled
+              ctx.fieldsetDisabled = disabled
             },
             onFormReset() {
               send({ type: "CHECKED.SET", checked: !!initialContext.checked })

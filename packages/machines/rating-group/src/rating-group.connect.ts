@@ -14,9 +14,10 @@ import type { ItemProps, ItemState, MachineApi, Send, State } from "./rating-gro
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isInteractive = state.context.isInteractive
+  const isDisabled = state.context.isDisabled
+
   const value = state.context.value
   const hoveredValue = state.context.hoveredValue
-  const isDisabled = state.context.disabled
   const translations = state.context.translations
 
   const api = {

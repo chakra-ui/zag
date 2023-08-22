@@ -78,32 +78,48 @@ type PublicContext = CommonProperties & {
 
 type PrivateContext = Context<{
   /**
+   * @internal
    * The id of the thumb that is currently being dragged
    */
   activeId: string | null
   /**
+   * @internal
    * The channel that is currently being interacted with
    */
   activeChannel: Partial<ColorAxes> | null
   /**
+   * @internal
    * The orientation of the channel that is currently being interacted with
    */
   activeOrientation: Orientation | null
+  /**
+   * @internal
+   * Whether the checkbox's fieldset is disabled
+   */
+  fieldsetDisabled: boolean
 }>
 
 type ComputedContext = Readonly<{
   /**
+   * @computed
    * Whether the color picker is in RTL mode
    */
   isRtl: boolean
   /**
+   * @computed
    * Whether the color picker is interactive
    */
   isInteractive: boolean
   /**
+   * @computed
    * The color value as a Color object
    */
   valueAsColor: Color
+  /**
+   * @computed
+   * Whether the color picker is disabled
+   */
+  isDisabled: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

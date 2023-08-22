@@ -36,14 +36,17 @@ export function machine(userContext: UserDefinedContext) {
         orientation: "horizontal",
         dir: "ltr",
         minStepsBetweenThumbs: 0,
+        disabled: false,
         ...ctx,
+        fieldsetDisabled: false,
       },
 
       computed: {
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
         isVertical: (ctx) => ctx.orientation === "vertical",
         isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
-        isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
+        isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
+        isInteractive: (ctx) => !(ctx.readOnly || ctx.isDisabled),
         spacing: (ctx) => ctx.minStepsBetweenThumbs * ctx.step,
         hasMeasuredThumbSize: (ctx) => ctx.thumbSizes.length !== 0,
         valuePercent(ctx) {
@@ -154,7 +157,7 @@ export function machine(userContext: UserDefinedContext) {
         trackFormControlState(ctx, _evt, { initialContext }) {
           return trackFormControl(dom.getRootEl(ctx), {
             onFieldsetDisabledChange(disabled) {
-              ctx.disabled = disabled
+              ctx.fieldsetDisabled = disabled
             },
             onFormReset() {
               set.value(ctx, initialContext.value)

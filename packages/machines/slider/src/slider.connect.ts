@@ -21,7 +21,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const isFocused = state.matches("focus")
   const isDragging = state.matches("dragging")
-  const isDisabled = state.context.disabled
+  const isDisabled = state.context.isDisabled
   const isInteractive = state.context.isInteractive
   const isInvalid = state.context.invalid
 

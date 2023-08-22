@@ -81,11 +81,21 @@ type PrivateContext = Context<{
    * Function to clean up the observer for the active tab's rect
    */
   indicatorCleanup?: VoidFunction | null
+  /**
+   * @internal
+   * Whether the radio group's fieldset is disabled
+   */
+  fieldsetDisabled: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
-type ComputedContext = Readonly<{}>
+type ComputedContext = Readonly<{
+  /**
+   * Whether the radio group is disabled
+   */
+  isDisabled: boolean
+}>
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 

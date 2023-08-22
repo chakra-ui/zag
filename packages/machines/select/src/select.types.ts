@@ -104,6 +104,10 @@ type PrivateContext = Context<{
    * Used to determine if the selected option has changed.
    */
   prevSelectedOption?: Option | null
+  /**
+   * Whether the fieldset is disabled
+   */
+  fieldsetDisabled: boolean
 }>
 
 type ComputedContext = Readonly<{
@@ -122,6 +126,11 @@ type ComputedContext = Readonly<{
    * Whether the select is interactive
    */
   isInteractive: boolean
+  /**
+   * @computed
+   * Whether the select is disabled
+   */
+  isDisabled: boolean
   selectedId: string | null
   highlightedId: string | null
   hasSelectedChanged: boolean

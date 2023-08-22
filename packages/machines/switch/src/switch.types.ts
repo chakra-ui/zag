@@ -66,7 +66,12 @@ type PublicContext = DirectionProperty &
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
-type ComputedContext = Readonly<{}>
+type ComputedContext = Readonly<{
+  /**
+   * Whether the switch is disabled
+   */
+  isDisabled: boolean
+}>
 
 type PrivateContext = Context<{
   /**
@@ -84,6 +89,11 @@ type PrivateContext = Context<{
    * Whether the checkbox is hovered
    */
   hovered?: boolean
+  /**
+   * @internal
+   * Whether the checkbox fieldset is disabled
+   */
+  fieldsetDisabled: boolean
 }>
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext

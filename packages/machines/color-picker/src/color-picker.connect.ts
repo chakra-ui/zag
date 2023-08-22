@@ -31,7 +31,7 @@ import { getSliderBgImage } from "./utils/get-slider-background"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const valueAsColor = state.context.valueAsColor
   const value = state.context.value
-  const isDisabled = state.context.disabled
+  const isDisabled = state.context.isDisabled
   const isInteractive = state.context.isInteractive
   const isDragging = state.matches("dragging")
 

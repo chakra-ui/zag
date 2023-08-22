@@ -23,7 +23,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isFocused = state.matches("focus")
   const isDragging = state.matches("dragging")
 
-  const isDisabled = state.context.disabled
+  const isDisabled = state.context.isDisabled
   const isInvalid = state.context.invalid
   const isInteractive = state.context.isInteractive
 
@@ -89,6 +89,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     labelProps: normalize.label({
       ...parts.label.attrs,
       "data-disabled": dataAttr(isDisabled),
+      "data-orientation": state.context.orientation,
       "data-invalid": dataAttr(isInvalid),
       "data-focus": dataAttr(isFocused),
       id: dom.getLabelId(state.context),
@@ -108,6 +109,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-invalid": dataAttr(isInvalid),
+      "data-focus": dataAttr(isFocused),
       id: dom.getRootId(state.context),
       dir: state.context.dir,
       style: dom.getRootStyle(state.context),
@@ -116,7 +118,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     outputProps: normalize.output({
       ...parts.output.attrs,
       "data-disabled": dataAttr(isDisabled),
+      "data-orientation": state.context.orientation,
       "data-invalid": dataAttr(isInvalid),
+      "data-focus": dataAttr(isFocused),
       id: dom.getOutputId(state.context),
       htmlFor: sliderValue.map((_v, i) => dom.getHiddenInputId(state.context, i)).join(" "),
       "aria-live": "off",

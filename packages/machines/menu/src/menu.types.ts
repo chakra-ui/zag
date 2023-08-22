@@ -75,17 +75,17 @@ type ComputedContext = Readonly<{
    * @computed
    * Whether the menu is a submenu (has a parent menu)
    */
-  readonly isSubmenu: boolean
+  isSubmenu: boolean
   /**
    * @computed
    * Whether the writing direction is rtl
    */
-  readonly isRtl: boolean
+  isRtl: boolean
   /**
    * @computed
    * Whether a typeahead search is ongoing
    */
-  readonly isTypingAhead: boolean
+  isTypingAhead: boolean
 }>
 
 type PrivateContext = Context<{

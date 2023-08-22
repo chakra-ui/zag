@@ -105,37 +105,42 @@ type ComputedContext = Readonly<{
    * @computed
    * Whether the slider thumb has been measured
    */
-  readonly hasMeasuredThumbSize: boolean
+  hasMeasuredThumbSize: boolean
   /**
    * @computed
    * Whether the slider is interactive
    */
-  readonly isInteractive: boolean
+  isInteractive: boolean
   /**
    * @computed
    * The raw value of the space between each thumb
    */
-  readonly spacing: number
+  spacing: number
   /**
    * @computed
    * Whether the slider is vertical
    */
-  readonly isVertical: boolean
+  isVertical: boolean
   /**
    * @computed
    * Whether the slider is horizontal
    */
-  readonly isHorizontal: boolean
+  isHorizontal: boolean
   /**
    * @computed
    * Whether the slider is in RTL mode
    */
-  readonly isRtl: boolean
+  isRtl: boolean
   /**
    * @computed
    * The percentage of the slider value relative to the slider min/max
    */
-  readonly valuePercent: number[]
+  valuePercent: number[]
+  /**
+   * @computed
+   * Whether the slider is disabled
+   */
+  isDisabled: boolean
 }>
 
 type PrivateContext = Context<{
@@ -155,6 +160,11 @@ type PrivateContext = Context<{
    * The move threshold of the slider thumb before it is considered to be moved
    */
   threshold: number
+  /**
+   * @internal
+   * Whether the slider fieldset is disabled
+   */
+  fieldsetDisabled: boolean
 }>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext

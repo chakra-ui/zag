@@ -17,9 +17,15 @@ export function machine(userContext: UserDefinedContext) {
         activeId: null,
         focusedId: null,
         hoveredId: null,
+        disabled: false,
+        ...ctx,
         indicatorRect: {},
         canIndicatorTransition: false,
-        ...ctx,
+        fieldsetDisabled: false,
+      },
+
+      computed: {
+        isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
       },
 
       entry: ["syncIndicatorRect"],
@@ -57,7 +63,7 @@ export function machine(userContext: UserDefinedContext) {
         trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getRootEl(ctx), {
             onFieldsetDisabledChange(disabled) {
-              ctx.disabled = disabled
+              ctx.fieldsetDisabled = disabled
             },
             onFormReset() {
               send({ type: "SET_VALUE", value: initialContext.value })

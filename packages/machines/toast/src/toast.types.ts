@@ -149,7 +149,7 @@ type GroupComputedContext = Readonly<{
    * @computed
    * The total number of toasts in the group
    */
-  readonly count: number
+  count: number
 }>
 
 type GroupPrivateContext = Context<{

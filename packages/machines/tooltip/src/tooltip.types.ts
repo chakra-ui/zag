@@ -72,7 +72,7 @@ type ComputedContext = Readonly<{
   /**
    * @computed Whether an `aria-label` is set.
    */
-  readonly hasAriaLabel: boolean
+  hasAriaLabel: boolean
 }>
 
 type PrivateContext = RootProperties & {

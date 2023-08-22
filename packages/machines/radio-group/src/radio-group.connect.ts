@@ -6,7 +6,7 @@ import { dom } from "./radio-group.dom"
 import type { InputProps, MachineApi, RadioProps, Send, State } from "./radio-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isGroupDisabled = state.context.disabled
+  const isGroupDisabled = state.context.isDisabled
 
   function getRadioState<T extends RadioProps>(props: T) {
     const radioState = {

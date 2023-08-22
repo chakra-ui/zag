@@ -141,32 +141,37 @@ type ComputedContext = Readonly<{
    * @computed
    * The string value of the tags input
    */
-  readonly valueAsString: string
+  valueAsString: string
   /**
    * @computed
    * The trimmed value of the input
    */
-  readonly trimmedInputValue: string
+  trimmedInputValue: string
   /**
    * @computed
    * Whether the tags input is interactive
    */
-  readonly isInteractive: boolean
+  isInteractive: boolean
   /**
    * @computed
    * Whether the tags input is at the maximum allowed number of tags
    */
-  readonly isAtMax: boolean
+  isAtMax: boolean
   /**
    * @computed
    * The total number of tags
    */
-  readonly count: number
+  count: number
   /**
    * @computed
    * Whether the tags input is exceeding the max number of tags
    */
-  readonly isOverflowing: boolean
+  isOverflowing: boolean
+  /**
+   * @computed
+   * Whether the tags input is disabled
+   */
+  isDisabled: boolean
 }>
 
 type PrivateContext = Context<{
@@ -200,6 +205,11 @@ type PrivateContext = Context<{
    * The value of the currently edited tag
    */
   editedTagValue: string
+  /**
+   * @internal
+   * Whether the fieldset is disabled
+   */
+  fieldsetDisabled: boolean
 }>
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext

@@ -20,10 +20,12 @@ export function machine(userContext: UserDefinedContext) {
         highlightedOption: null,
         loop: false,
         closeOnSelect: true,
+        disabled: false,
         ...ctx,
         prevSelectedOption: null,
         prevHighlightedOption: null,
         typeahead: getByTypeahead.defaultOptions,
+        fieldsetDisabled: false,
         positioning: {
           placement: "bottom-start",
           gutter: 8,
@@ -34,7 +36,8 @@ export function machine(userContext: UserDefinedContext) {
       computed: {
         hasSelectedOption: (ctx) => ctx.selectedOption != null,
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
-        isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
+        isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
+        isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
         selectedId: (ctx) => (ctx.selectedOption ? dom.getOptionId(ctx, ctx.selectedOption.value) : null),
         highlightedId: (ctx) => (ctx.highlightedOption ? dom.getOptionId(ctx, ctx.highlightedOption.value) : null),
         hasSelectedChanged: (ctx) => ctx.selectedOption?.value !== ctx.prevSelectedOption?.value,
@@ -238,7 +241,7 @@ export function machine(userContext: UserDefinedContext) {
         trackFormControlState(ctx, _evt, { initialContext }) {
           return trackFormControl(dom.getHiddenSelectElement(ctx), {
             onFieldsetDisabledChange(disabled) {
-              ctx.disabled = disabled
+              ctx.fieldsetDisabled = disabled
             },
             onFormReset() {
               set.selectedOption(ctx, initialContext.selectedOption)
