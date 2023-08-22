@@ -14,7 +14,6 @@ import rehypeSlug from "rehype-slug"
 import remarkDirective from "remark-directive"
 import remarkGfm from "remark-gfm"
 import { remarkAdmonition } from "./lib/remark-utils"
-import { toKebabCase } from "./lib/to-kebab-case"
 import siteConfig from "./site.config"
 
 const fields: FieldDefs = {
@@ -135,46 +134,10 @@ const Snippet = defineDocumentType(() => ({
   },
 }))
 
-const Changelog = defineDocumentType(() => {
-  const getSlug = (doc: LocalDocument) => toKebabCase(doc.releaseDate)
-  return {
-    name: "Changelog",
-    filePathPattern: "changelogs/**/*.mdx",
-    contentType: "mdx",
-    fields: {
-      releaseUrl: { type: "string" },
-      releaseDate: { type: "string" },
-    },
-    computedFields: {
-      editUrl: {
-        type: "string",
-        resolve: (doc) => `${siteConfig.repo.editUrl}/${doc._id}`,
-      },
-      params: {
-        type: "list",
-        resolve: (doc) => ["changelogs", getSlug(doc)],
-      },
-      frontmatter: {
-        type: "json",
-        resolve: (doc) => ({
-          title: "Changelog",
-          description: `The changes made as at ${doc.releaseDate}`,
-          slug: `/changelogs/${getSlug(doc)}`,
-          toc: [],
-        }),
-      },
-      slug: {
-        type: "string",
-        resolve: (doc) => `/changelogs/${getSlug(doc)}`,
-      },
-    },
-  }
-})
-
 export default makeSource({
   contentDirPath: "./data",
   contentDirExclude: ["*/node_modules", "dist"],
-  documentTypes: [Overview, Guide, Snippet, Component, Changelog],
+  documentTypes: [Overview, Guide, Snippet, Component],
   disableImportAliasWarning: true,
   onUnknownDocuments: "skip-ignore",
   mdx: {

@@ -23,7 +23,7 @@ To see the documentation, visit [zagjs.com/](https://zagjs.com/)
 
 ## Releases
 
-For changelog, visit [zagjs.com/changelogs/latest](https://zagjs.com/changelogs/latest)
+For changelog, Check [CHANGELOG.md](./CHANGELOG.md)
 
 ---
 
