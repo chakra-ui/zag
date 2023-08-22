@@ -49,7 +49,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
           type: "doc",
           label: "Changelog",
           id: "changelogs",
-          href: "/changelogs/latest",
+          href: "https://github.com/chakra-ui/zag/blob/main/CHANGELOG.md",
         },
       ],
     },

@@ -20,10 +20,6 @@ function test(href: string, asPath: string) {
   const a = sanitize(href)
   const b = sanitize(asPath)
 
-  if (asPath.startsWith("/changelogs")) {
-    return a[0] === b[0]
-  }
-
   return a[a.length - 1] === b[b.length - 1]
 }
 

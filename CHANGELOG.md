@@ -1,79 +1,352 @@
-# Changelog
+# CHANGELOG
 
+All notable changes to this project will be documented in this file.
 
-## Latest Release
-### August 13, 2023: [#782](/.changelog/pr-782.mdx)
+## [Unreleased]
 
+See the [Changesets](./.changeset) for the latest changes.
 
-## Previous Releases
-### August 8, 2023: [#781](/.changelog/pr-781.mdx)
-### August 7, 2023: [#766](/.changelog/pr-766.mdx)
-### July 25, 2023: [#757](/.changelog/pr-757.mdx)
-### July 16, 2023: [#743](/.changelog/pr-743.mdx)
-### July 13, 2023: [#736](/.changelog/pr-736.mdx)
-### July 12, 2023: [#735](/.changelog/pr-735.mdx)
-### July 11, 2023: [#732](/.changelog/pr-732.mdx)
-### July 6, 2023: [#722](/.changelog/pr-722.mdx)
-### July 5, 2023: [#720](/.changelog/pr-720.mdx)
-### June 30, 2023: [#689](/.changelog/pr-689.mdx)
-### June 1, 2023: [#673](/.changelog/pr-673.mdx)
-### May 31, 2023: [#670](/.changelog/pr-670.mdx)
-### May 31, 2023: [#669](/.changelog/pr-669.mdx)
-### May 18, 2023: [#652](/.changelog/pr-652.mdx)
-### May 16, 2023: [#649](/.changelog/pr-649.mdx)
-### May 16, 2023: [#634](/.changelog/pr-634.mdx)
-### May 3, 2023: [#603](/.changelog/pr-603.mdx)
-### April 15, 2023: [#600](/.changelog/pr-600.mdx)
-### April 11, 2023: [#594](/.changelog/pr-594.mdx)
-### March 28, 2023: [#584](/.changelog/pr-584.mdx)
-### February 25, 2023: [#545](/.changelog/pr-545.mdx)
-### February 25, 2023: [#544](/.changelog/pr-544.mdx)
-### February 23, 2023: [#540](/.changelog/pr-540.mdx)
-### February 23, 2023: [#538](/.changelog/pr-538.mdx)
-### February 7, 2023: [#508](/.changelog/pr-508.mdx)
-### February 3, 2023: [#498](/.changelog/pr-498.mdx)
-### February 2, 2023: [#496](/.changelog/pr-496.mdx)
-### January 31, 2023: [#493](/.changelog/pr-493.mdx)
-### January 31, 2023: [#486](/.changelog/pr-486.mdx)
-### January 20, 2023: [#482](/.changelog/pr-482.mdx)
-### January 16, 2023: [#464](/.changelog/pr-464.mdx)
-### December 30, 2022: [#452](/.changelog/pr-452.mdx)
-### December 15, 2022: [#449](/.changelog/pr-449.mdx)
-### December 14, 2022: [#448](/.changelog/pr-448.mdx)
-### December 13, 2022: [#429](/.changelog/pr-429.mdx)
-### December 6, 2022: [#406](/.changelog/pr-406.mdx)
-### November 24, 2022: [#399](/.changelog/pr-399.mdx)
-### November 21, 2022: [#396](/.changelog/pr-396.mdx)
-### November 18, 2022: [#389](/.changelog/pr-389.mdx)
-### November 9, 2022: [#388](/.changelog/pr-388.mdx)
-### November 9, 2022: [#380](/.changelog/pr-380.mdx)
-### November 3, 2022: [#351](/.changelog/pr-351.mdx)
-### October 7, 2022: [#327](/.changelog/pr-327.mdx)
-### September 27, 2022: [#324](/.changelog/pr-324.mdx)
-### September 16, 2022: [#305](/.changelog/pr-305.mdx)
-### September 1, 2022: [#272](/.changelog/pr-272.mdx)
-### August 15, 2022: [#256](/.changelog/pr-256.mdx)
-### August 11, 2022: [#251](/.changelog/pr-251.mdx)
-### August 10, 2022: [#233](/.changelog/pr-233.mdx)
-### August 10, 2022: [#233](/.changelog/pr-233.mdx)
-### July 17, 2022: [#208](/.changelog/pr-208.mdx)
-### July 15, 2022: [#204](/.changelog/pr-204.mdx)
-### July 14, 2022: [#194](/.changelog/pr-194.mdx)
-### July 8, 2022: [#193](/.changelog/pr-193.mdx)
-### July 8, 2022: [#192](/.changelog/pr-192.mdx)
-### July 7, 2022: [#162](/.changelog/pr-162.mdx)
-### June 18, 2022: [#121](/.changelog/pr-121.mdx)
-### June 6, 2022: [#117](/.changelog/pr-117.mdx)
-### May 28, 2022: [#107](/.changelog/pr-107.mdx)
-### May 22, 2022: [#106](/.changelog/pr-106.mdx)
-### May 22, 2022: [#105](/.changelog/pr-105.mdx)
-### May 22, 2022: [#97](/.changelog/pr-97.mdx)
-### May 19, 2022: [#95](/.changelog/pr-95.mdx)
-### May 17, 2022: [#77](/.changelog/pr-77.mdx)
-### May 10, 2022: [#75](/.changelog/pr-75.mdx)
-### May 4, 2022: [#66](/.changelog/pr-66.mdx)
-### April 30, 2022: [#63](/.changelog/pr-63.mdx)
-### April 29, 2022: [#60](/.changelog/pr-60.mdx)
-### April 29, 2022: [#59](/.changelog/pr-59.mdx)
-### April 28, 2022: [#55](/.changelog/pr-55.mdx)
-### April 27, 2022: [#1](/.changelog/pr-1.mdx)
+## [0.16.0] - 2023-08-13
+
+## Fixed
+
+- Fix issue in **Select** where interaction outside and positioning does not work when select content is conditionally
+  rendered
+
+## Changed
+
+- Remove `id` usage in **pressable** for better composition
+- Renamed **radio** `getRadioInputProps` to `getRadioHiddenInputProps`
+- Rename **tablist** part to list to match naming convention
+
+## [0.15.0] - 2023-08-08
+
+## Changed
+
+- Rename inputProps to hiddenInputProps. input is no longer part of the **checkbox** anatomy
+- Machines no longer export hiddenInput as part of their anatomy API
+- Add option group label to **Combobox**
+- **Tabs** no longer export a content group.
+
+## [0.14.0] - 2023-08-07
+
+## Fixed
+
+- Improve outside interaction logic to avoiding closing **dialog** elements when interacting with browser extensions
+  like grammarly or 1password.
+- Rename **File Upload** `minSize` and `maxSize` to `minFileSize` and `maxFileSize` respectively
+- Rename **File Upload**`api.openFilePicker` to `api.open`
+
+## Changed
+
+- **BREAKING:** Rename **Carousel** `nextTrigger`, `prevTrigger` to `nextSlideTrigger` and `prevSlideTrigger` parts
+- Add positioner part to date picker machine to allow dynamic positioning.
+
+## Added
+
+- Provide interaction event handlers (`onPointerdownOutside`, `onFocusOutside` and `onInteractOutside`) to better manage
+  outside interaction.
+
+> Affected machines, `combobox`, `editable`, `menu`, `select`, `tags-input`.
+
+## [0.13.0] - 2023-07-25
+
+## Fixed
+
+- Fix issue in **Color Picker** where `isEqual` doesn't consider alpha channel.
+- Fix keyboard navigation in **Color Picker** between area and channel slider thumb.
+- Fix issue in **Combobox**, **Select**, **Menu**, **Hover Card** where `sameWidth` doesn't work consistently in Vue.js
+  and Solid.js during re-render.
+- Add `data-disabled` to **File Upload** parts
+- Add `data-focus` to the **NumberInput** parts
+- Set `portalled` attribute to be `true` by default in **Popover**
+- Add `data-orientation` to all parts in **Radio Group**
+- Remove unimplemented `setPreviousValue` action in **Radio Group**
+
+## Changed
+
+- Add support for transforming context before settings it in the machine's context. This is useful when some values need
+  to passed to `ref` function
+
+- Add option to setting toast default options like placement, removeDelay, duration, etc
+
+## Added
+
+- Introduce new ToggleGroup machine
+
+## [0.12.0] - 2023-07-16
+
+## Fixed
+
+- Fix issue in **Avatar** where avatar doesn't show fallback when image src is initially empty
+- Fix issue in **Color Picker** where focusing on area thumb doesn't transition to focused state, making keyboard
+  navigation not work.
+- Fix issue in **Switch** where `api.setChecked` does not work for Checkbox and Switch components
+
+## Changed
+
+- **Breaking**: Add `data-state` attribute to allow styling the open/closed state or checked/unchecked states
+
+  We replaced `data-expanded` or `data-checked` to `data-state` attribute
+
+  - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
+  - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
+  - `data-indeterminate` maps to `data-state="indeterminate"`
+  - `data-open` maps to `data-state="open"`
+
+## [0.11.2] - 2023-07-13
+
+## Fixed
+
+- Fix issue where machine types were not being properly inferred
+
+## [0.11.1] - 2023-07-12
+
+## Fixed
+
+- Expose the types and add `onClick` to **carousel** indicator
+- Fix types exports in **ColorPicker**
+
+## [0.11.0] - 2023-07-11
+
+## Fixed
+
+- Fix issue in **Editable** where initially cancelling the value by pressing the escape key doesn't work
+- Fix issue in in **Tooltip** where it re-opens after clicking the trigger and moving the cursor slightly.
+
+## Changed
+
+Revert build tooling from `vite` to `tsup`
+
+## Added
+
+- Introduce new animate presence machine to manage mount/unmount animation.
+
+## [0.10.5] - 2023-07-06
+
+## Fixed
+
+- Fix an issue where type declarations aren't inferred correctly
+
+## [0.10.4] - 2023-07-05
+
+## Fixed
+
+- Fix issue where **RadioGroup** indicator part does not transition its size and position after first render
+
+## [0.10.3] - 2023-06-30
+
+## Fixed
+
+- Improve DOM detection code to rely on `document` instead of `window`
+- Fix issue where `offset` is ignored from default gutter in **Popper**
+
+## [0.10.2] - 2023-06-01
+
+## Fixed
+
+- Fix issue where anatomy was not exported in **Avatar**
+- Set the panel's default `minSize` to `0` in **Splitter**
+
+## [0.10.1] - 2023-05-31
+
+## Fixed
+
+Fix issue where `api` for controlling panel sizes wasn't implemented in **splitter** machine.
+
+## [0.10.0] - 2023-05-31
+
+## Fixed
+
+- Fix issue where **Checkbox** and **Switch** emits `onClick` twice when parent element is clicked
+- Fix issue where entering value in between input character moves cursor to the end in **Combobox**.
+- Fix issue where non-ascii characters could not be entered in **Combobox**, **NumberInput**
+- Fix scroll hijacking issue in **Date Picker**, **Dialog** during initial and return focus
+- Upgrade `focus-trap` package to ensure that trap works when the active element within the content is removed in
+  **Dialog**
+- Fix scroll hijacking issue during initial and return focus
+- Ensure consistent behavior between space and enter key in **Pressable**
+
+## Changed
+
+- The `createAnatomy` function has been updated to return an array of the anatomy instance's part names
+
+## Added
+
+- Add avatar machine to handle the loading and fallback states of an **avatar** image
+
+## [0.9.2] - 2023-05-18
+
+## Fixed
+
+- Fix issue in **ColorPicker, Menu, NumberInput, Slider, RangeSlider, RatingGroup** where event point calculation is
+  incorrect when the page is scrolled
+- Fix issue where `setReturnFocus` used in `focus-trap` throws a console error in **Dialog**
+- Fix issue where default value is always overriden with an array with empty strings when the **PinInput** component is
+  mounted.
+
+## [0.9.0] - 2023-05-16
+
+## Fixed
+
+- Add transient updates to svelte `useMachine`
+- Refactor machines to wire out state and transitions correctly
+- Fix inconsistencies in **DatePicker** api methods and naming conventions
+- Remove unused attributes in **Switch** and make it consistent with checkbox
+- Remove unneeded style property on **tabs** indicator (depending on orientation)
+- Fix bug where keyboard navigation doesn't work in **Tabs** manual activation mode
+
+## Changed
+
+- Add support for renaming component scope/name
+
+## [0.7.0] - 2023-05-03
+
+## Fixed
+
+- Ensure ids of underlying elements can customized based on `ids` context property.
+- Fix issue in **Editable** where focus is hijacked on blur when interacting outside on a focusable element
+- Refactor regex for `mergeProps` in zag core.
+- Improve reactivity of `mergeProps` function in the SolidJS adapter
+- Improve support for spacing and slides per view in **Carousel**
+- Export types for color channel and swatch parts in **ColorPicker**
+- Update the `setPositioning` api method to allow empty arguments in **Popover, Menu, Tooltip, HoverCard**
+- Ensure consistent props for marker in **`Slider`** and **`RangeSlider`**
+- Export types for panel and resize trigger props in **Splitter**
+
+## Changed
+
+- Add `finalFocusEl` to allow for better return focus management in **Editable**
+- Add `type` property to the pagination's context to control properties used in trigger elements in **Pagination**
+
+## [0.6.0] - 2023-04-15
+
+### Fixed
+
+- Fix issue in Vue where `defaultValue` does not get applied to input element. The fix was to normalize `defaultValue`
+  to `value`
+- Fix issue in **Checkbox** where checkbox `toggleChecked` was not defined
+- Fix issue in **DatePicker** where `focusedValue` was not synced with `value` property.
+- Fix issue in **DatePicker** where input value was not updated when `locale` and `value` changed.
+- Update point calculations in **RatingGroup**, **Splitter** based on changes in `getRelativePointPercent` output
+
+### Changed
+
+- Rename **HoverCard** and **Popover** `onOpenChange` to `onOpen` and `onClose`
+
+### Added
+
+- Initial release of the color utilities and picker.
+
+## [0.5.0] - 2023-04-11
+
+### Fixed
+
+- Fix for Svelte style attribute ( now included in the use directive rather than the native spread )
+- Fix for Svelte handlers not being updated correctly ( we used to attach them once the connect is init, but they need
+  to be updated for each change of the api )
+- Renamed Svelte `attributes` to `attrs`
+- Fix Svelte handlers and attributes types for `normalizeProps`
+
+### Changed
+
+- Ensure all packages are versioned together
+- Remove the **Checkbox** `defaultChecked` property in favor of the `checked` property that can now be controlled.
+
+```jsx
+// the checkbox will be checked initially
+const [state, send] = useMachine(
+  checkbox.machine({
+    id: "1",
+    checked: true,
+  }),
+)
+
+// this will update the checkbox when the `checked` value changes
+const [state, send] = useMachine(checkbox.machine({ id: "1" }), {
+  context: {
+    // when this value changes, the checkbox will be checked/unchecked
+    checked: true,
+  },
+})
+```
+
+- Remove the **Dialog** `defaultOpen` property in favor of the `open` property that can now be controlled.
+
+```jsx
+// this is will open the dialog initially
+const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
+
+// this will open the dialog when the `open` value changes
+const [state, send] = useMachine(dialog.machine({ id: "1" }), {
+  context: {
+    // when this value changes, the dialog will open/close
+    open: true,
+  },
+})
+```
+
+- Remove the **HoverCard** `defaultOpen` property in favor of the `open` property that can now be controlled.
+
+```jsx
+// this is will open the hoverCard initially
+const [state, send] = useMachine(hoverCard.machine({ id: "1", open: true }))
+
+// this will open the hoverCard when the `open` value changes
+const [state, send] = useMachine(hoverCard.machine({ id: "1" }), {
+  context: {
+    // when this value changes, the hoverCard will open/close
+    open: true,
+  },
+})
+```
+
+- Remove the **Popover** `defaultOpen` property in favor of the `open` property that can now be controlled.
+
+```jsx
+// this is will open the popover initially
+const [state, send] = useMachine(popover.machine({ id: "1", open: true }))
+
+// this will open the popover when the `open` value changes
+const [state, send] = useMachine(popover.machine({ id: "1" }), {
+  context: {
+    // when this value changes, the popover will open/close
+    open: true,
+  },
+})
+```
+
+- Remove the **Switch** `defaultChecked` property in favor of the `checked` property that can now be controlled.
+
+```jsx
+// the switch will be checked initially
+const [state, send] = useMachine(
+  switch.machine({
+    id: "1",
+    checked: true,
+  }),
+)
+
+// this will update the switch when the `checked` value changes
+const [state, send] = useMachine(switch.machine({ id: "1" }), {
+  context: {
+    // when this value changes, the switch will be checked/unchecked
+    checked: true,
+  },
+})
+```
+
+- Remove the **Tooltip** `defaultOpen` property in favor of the `open` property that can now be controlled.
+
+```jsx
+// this is will open the tooltip initially
+const [state, send] = useMachine(tooltip.machine({ id: "1", open: true }))
+
+// this will open the tooltip when the `open` value changes
+const [state, send] = useMachine(tooltip.machine({ id: "1" }), {
+  context: {
+    // when this value changes, the tooltip will open/close
+    open: true,
+  },
+})
+```
