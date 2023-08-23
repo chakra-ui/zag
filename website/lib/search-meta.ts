@@ -1,6 +1,6 @@
 import { allComponents, allOverviews } from "@/contentlayer"
 
-type SearchMetaItem = {
+export type SearchMetaItem = {
   content: string
   id: string
   url: string
