@@ -47,10 +47,8 @@ export function getPlacementStyles(options: PlacementStyleOptions = {}) {
       width: sameWidth ? "var(--reference-width)" : undefined,
       maxWidth: fitViewport ? "var(--available-width)" : undefined,
       maxHeight: fitViewport ? "var(--available-height)" : undefined,
-      top: "0px",
-      left: "0px",
-      "--x": `${point.x}px`,
-      "--y": `${point.y}px`,
+      top: `${point.y}px`,
+      left: `${point.x}px`,
       transform: `translate3d(var(--x), var(--y), 0)`,
     } as const,
   }
