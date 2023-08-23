@@ -13,8 +13,13 @@ const ARROW_FLOATING_STYLE = {
   right: "rotate(315deg)",
 } as const
 
-export function getPlacementStyles(options: PositioningOptions = {}) {
-  const { placement = "bottom", sameWidth, fitViewport, strategy = "absolute" } = options
+type PlacementStyleOptions = PositioningOptions & {
+  anchorPoint?: { x: number; y: number } | null
+}
+
+export function getPlacementStyles(options: PlacementStyleOptions = {}) {
+  const { placement = "bottom", sameWidth, fitViewport, strategy = "absolute", anchorPoint } = options
+  const point = anchorPoint || { x: 0, y: 0 }
 
   return {
     arrow: {
@@ -44,6 +49,8 @@ export function getPlacementStyles(options: PositioningOptions = {}) {
       maxHeight: fitViewport ? "var(--available-height)" : undefined,
       top: "0px",
       left: "0px",
+      "--x": `${point.x}px`,
+      "--y": `${point.y}px`,
       transform: `translate3d(var(--x), var(--y), 0)`,
     } as const,
   }
