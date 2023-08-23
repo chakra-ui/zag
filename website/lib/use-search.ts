@@ -8,7 +8,7 @@ import { useEffect, useState } from "react"
 import { searchData, type SearchMetaResult } from "./search-meta"
 import { useUpdateEffect } from "./use-update-effect"
 
-export function useSearch() {
+export function useSearch(): any {
   const [dialog_state, dialog_send] = useMachine(
     dialog.machine({
       id: "s1",
