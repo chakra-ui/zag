@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@internationalized/date": "^3.3.0",
+    "@internationalized/date": "^3.4.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -75,17 +75,17 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "next": "13.4.12",
+    "next": "13.4.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-spinners": "0.13.8"
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "@types/node": "20.4.8",
-    "@types/react": "18.2.18",
+    "@types/node": "20.5.3",
+    "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
-    "eslint-plugin-react": "7.33.1",
+    "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
     "typescript": "5.1.6"
   },

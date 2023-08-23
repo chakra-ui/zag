@@ -13,12 +13,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "vite": "4.4.8",
+    "vite": "4.4.9",
     "vite-plugin-solid": "2.7.0"
   },
   "dependencies": {
-    "@internationalized/date": "^3.3.0",
-    "@solidjs/router": "^0.8.2",
+    "@internationalized/date": "^3.4.0",
+    "@solidjs/router": "^0.8.3",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
@@ -82,6 +82,6 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "solid-js": "1.7.9"
+    "solid-js": "1.7.11"
   }
 }

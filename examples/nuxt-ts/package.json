@@ -9,7 +9,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@internationalized/date": "^3.3.0",
+    "@internationalized/date": "^3.4.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
@@ -77,7 +77,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@types/node": "^20.4.8",
+    "@types/node": "^20.5.3",
     "nuxt": "^3.6.5"
   }
 }
