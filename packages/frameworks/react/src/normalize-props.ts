@@ -1,8 +1,14 @@
 import { createNormalizer } from "@zag-js/types"
 import type { HTMLAttributes, CSSProperties } from "react"
 
-type PropTypes = JSX.IntrinsicElements & {
-  element: HTMLAttributes<HTMLElement>
+type WithoutRef<T> = Omit<T, "ref">
+
+type ElementsWithoutRef = {
+  [K in keyof JSX.IntrinsicElements]: WithoutRef<JSX.IntrinsicElements[K]>
+}
+
+type PropTypes = ElementsWithoutRef & {
+  element: WithoutRef<HTMLAttributes<HTMLElement>>
   style: CSSProperties
 }
 
