@@ -8,12 +8,12 @@ export default defineComponent({
   name: "Dialog",
   setup() {
     // Dialog 1
-    const [state, send] = useMachine(dialog.machine({ id: "dialog-1" }))
+    const [state, send] = useMachine(dialog.machine({ id: "1" }))
 
     const parentDialogRef = computed(() => dialog.connect(state.value, send, normalizeProps))
 
     // Dialog 2
-    const [state2, send2] = useMachine(dialog.machine({ id: "dialog-2" }))
+    const [state2, send2] = useMachine(dialog.machine({ id: "2" }))
 
     const childDialogRef = computed(() => dialog.connect(state2.value, send2, normalizeProps))
 

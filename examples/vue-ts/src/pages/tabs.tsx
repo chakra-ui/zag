@@ -12,7 +12,7 @@ export default defineComponent({
   setup() {
     const controls = useControls(tabsControls)
 
-    const [state, send] = useMachine(tabs.machine({ id: "tabs", value: "nils" }), {
+    const [state, send] = useMachine(tabs.machine({ id: "1", value: "nils" }), {
       context: controls.context,
     })
 

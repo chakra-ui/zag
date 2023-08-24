@@ -14,7 +14,7 @@ export default defineComponent({
 
     const [state, send] = useMachine(
       pinInput.machine({
-        id: "pinInput",
+        id: "1",
         name: "test",
       }),
       {

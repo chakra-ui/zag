@@ -8,15 +8,15 @@ import { Toolbar } from "../components/toolbar"
 export default defineComponent({
   name: "NestedMenu",
   setup() {
-    const [state, send, machine] = useMachine(menu.machine({ id: "menu-1" }))
+    const [state, send, machine] = useMachine(menu.machine({ id: "1" }))
 
     const root = computed(() => menu.connect(state.value, send, normalizeProps))
 
-    const [subState, subSend, subMachine] = useMachine(menu.machine({ id: "menu-2" }))
+    const [subState, subSend, subMachine] = useMachine(menu.machine({ id: "2" }))
 
     const sub = computed(() => menu.connect(subState.value, subSend, normalizeProps))
 
-    const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine({ id: "menu-3" }))
+    const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine({ id: "3" }))
 
     const sub2 = computed(() => menu.connect(sub2State.value, sub2Send, normalizeProps))
 

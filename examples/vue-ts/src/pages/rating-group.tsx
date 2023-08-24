@@ -49,7 +49,7 @@ export default defineComponent({
     const controls = useControls(ratingControls)
     const [state, send] = useMachine(
       rating.machine({
-        id: "rating",
+        id: "1",
         value: 2.5,
       }),
       {

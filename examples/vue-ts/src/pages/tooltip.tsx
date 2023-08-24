@@ -7,10 +7,10 @@ import { Toolbar } from "../components/toolbar"
 export default defineComponent({
   name: "Tooltip",
   setup() {
-    const [state, send] = useMachine(Tooltip.machine({ id: "tip-1" }))
+    const [state, send] = useMachine(Tooltip.machine({ id: "1" }))
     const apiRef = computed(() => Tooltip.connect(state.value, send, normalizeProps))
 
-    const [state2, send2] = useMachine(Tooltip.machine({ id: "tip-2" }))
+    const [state2, send2] = useMachine(Tooltip.machine({ id: "2" }))
     const apiRef2 = computed(() => Tooltip.connect(state2.value, send2, normalizeProps))
 
     return () => {

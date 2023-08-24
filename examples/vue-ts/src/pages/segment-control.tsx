@@ -11,7 +11,7 @@ export default defineComponent({
   setup() {
     const controls = useControls(radioControls)
 
-    const [state, send] = useMachine(radio.machine({ id: "v1", name: "fruit" }), {
+    const [state, send] = useMachine(radio.machine({ id: "1", name: "fruit" }), {
       context: controls.context,
     })
 

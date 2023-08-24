@@ -1,5 +1,5 @@
 import { sliderControls } from "@zag-js/shared"
-import * as Slider from "@zag-js/slider"
+import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import serialize from "form-serialize"
 import { computed, defineComponent } from "vue"
@@ -14,8 +14,8 @@ export default defineComponent({
     const controls = useControls(sliderControls)
 
     const [state, send] = useMachine(
-      Slider.machine({
-        id: "slider",
+      slider.machine({
+        id: "1",
         name: "quantity",
       }),
       {
@@ -23,7 +23,7 @@ export default defineComponent({
       },
     )
 
-    const apiRef = computed(() => Slider.connect(state.value, send, normalizeProps))
+    const apiRef = computed(() => slider.connect(state.value, send, normalizeProps))
 
     return () => {
       const api = apiRef.value

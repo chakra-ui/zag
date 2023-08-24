@@ -14,7 +14,7 @@ export default defineComponent({
     const [state, send] = useMachine(
       checkbox.machine({
         name: "checkbox",
-        id: "v1",
+        id: "1",
       }),
       {
         context: controls.context,

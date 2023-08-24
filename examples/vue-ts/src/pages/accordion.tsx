@@ -11,7 +11,7 @@ export default defineComponent({
   setup() {
     const controls = useControls(accordionControls)
 
-    const [state, send] = useMachine(accordion.machine({ id: "accordion" }), {
+    const [state, send] = useMachine(accordion.machine({ id: "1" }), {
       context: controls.context,
     })
 

@@ -13,7 +13,7 @@ export default defineComponent({
     const controls = useControls(menuControls)
     const [state, send] = useMachine(
       menu.machine({
-        id: "menu-options",
+        id: "1",
         value: { order: "", type: [] },
         onValueChange: console.log,
       }),

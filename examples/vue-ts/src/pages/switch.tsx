@@ -14,7 +14,7 @@ export default defineComponent({
     const [state, send] = useMachine(
       zagSwitch.machine({
         name: "switch",
-        id: "v1",
+        id: "1",
       }),
       {
         context: controls.context,

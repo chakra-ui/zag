@@ -14,7 +14,7 @@ export default defineComponent({
 
     const [state, send] = useMachine(
       splitter.machine({
-        id: "r1",
+        id: "1",
         size: [{ id: "aside", size: 40, maxSize: 60 }, { id: "content", size: 20 }, { id: "sources" }],
       }),
       {

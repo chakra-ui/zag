@@ -12,7 +12,7 @@ export default defineComponent({
   setup() {
     const controls = useControls(numberInputControls)
 
-    const [state, send] = useMachine(numberInput.machine({ id: "numberInput" }), {
+    const [state, send] = useMachine(numberInput.machine({ id: "1" }), {
       context: controls.context,
     })
 

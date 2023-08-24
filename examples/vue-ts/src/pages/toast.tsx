@@ -54,7 +54,7 @@ export default defineComponent({
 
     const [state, send] = useMachine(
       toast.group.machine({
-        id: "v1",
+        id: "1",
         defaultOptions: {
           placement: "top-start",
         },

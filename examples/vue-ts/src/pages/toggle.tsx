@@ -9,7 +9,7 @@ export default defineComponent({
   setup() {
     const [state, send] = useMachine(
       toggle.machine({
-        id: "v1",
+        id: "1",
         "aria-label": "Toggle italic",
       }),
     )

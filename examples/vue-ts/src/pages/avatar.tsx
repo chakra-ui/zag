@@ -11,7 +11,7 @@ const getRandomImage = () => images[Math.floor(Math.random() * images.length)]
 export default defineComponent({
   name: "avatar",
   setup() {
-    const [state, send] = useMachine(avatar.machine({ id: "v1" }))
+    const [state, send] = useMachine(avatar.machine({ id: "1" }))
     const srcRef = ref(images[0])
     const showImageRef = ref(true)
 

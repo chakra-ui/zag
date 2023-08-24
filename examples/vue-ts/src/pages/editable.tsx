@@ -11,7 +11,7 @@ export default defineComponent({
   setup() {
     const controls = useControls(editableControls)
 
-    const [state, send] = useMachine(editable.machine({ id: "editable" }), {
+    const [state, send] = useMachine(editable.machine({ id: "1" }), {
       context: controls.context,
     })
 
