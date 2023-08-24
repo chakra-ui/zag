@@ -723,10 +723,6 @@ main [data-testid="scrubber"] {
   --switch-bg: #3182ce;
 }
 
-[data-scope="switch"][data-part="control"][data-focus] {
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
-}
-
 [data-scope="switch"][data-part="control"][data-disabled] {
   opacity: 0.4;
   cursor: not-allowed;
