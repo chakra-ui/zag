@@ -17,6 +17,7 @@ export const semanticTokens = {
     "text-bold": { default: "gray.900", _dark: "gray.50" },
     "text-subtle": { default: "gray.600", _dark: "gray.400" },
     "text-primary-bold": "green.500",
+    "text-inverse": { default: "white", _dark: "gray.800" },
     "text-primary-subtle": { default: "green.600", _dark: "green.400" },
     "text-badge": { default: "orange.700", _dark: "orange.300" },
 

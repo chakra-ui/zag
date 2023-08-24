@@ -1,0 +1,18 @@
+```jsx
+import { normalizeProps, useMachine } from "@zag-js/react"
+import * as toggle from "@zag-js/toggle-group"
+import { useId } from "react"
+
+export function ToggleGroup() {
+  const [state, send] = useMachine(toggle.machine({ id: useId() }))
+  const api = toggle.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      <button {...api.getToggleProps({ value: "bold" })}>B</button>
+      <button {...api.getToggleProps({ value: "italic" })}>I</button>
+      <button {...api.getToggleProps({ value: "underline" })}>U</button>
+    </div>
+  )
+}
+```

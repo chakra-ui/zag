@@ -1,0 +1,18 @@
+```jsx
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import * as toggle from "@zag-js/toggle-group"
+import { createMemo, createUniqueId } from "solid-js"
+
+export function ToggleGroup() {
+  const [state, send] = useMachine(toggle.machine({ id: createUniqueId() }))
+  const api = createMemo(() => toggle.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <button {...api().getToggleProps({ value: "bold" })}>B</button>
+      <button {...api().getToggleProps({ value: "italic" })}>I</button>
+      <button {...api().getToggleProps({ value: "underline" })}>U</button>
+    </div>
+  )
+}
+```

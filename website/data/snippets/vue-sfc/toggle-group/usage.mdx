@@ -1,0 +1,18 @@
+```md
+<script setup>
+import * as toggle from "@zag-js/toggle-group"
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed } from "vue";
+
+const [state, send] = useMachine(toggle.machine({ id: createUniqueId() }))
+const api = computed(() => toggle.connect(state.value, send, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.rootProps">
+    <button v-bind="api.getToggleProps({ value: 'bold' })">B</button>
+    <button v-bind="api.getToggleProps({ value: 'italic' })">I</button>
+    <button v-bind="api.getToggleProps({ value: 'underline' })">U</button>
+  </div>
+</template>
+```

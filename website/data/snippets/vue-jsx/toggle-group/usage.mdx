@@ -1,0 +1,27 @@
+```jsx
+import * as toggle from "@zag-js/toggle-group"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, computed, h, Fragment } from "vue"
+
+export default defineComponent({
+  name: "ToggleGroup",
+  setup() {
+    const [state, send] = useMachine(toggle.machine({ id: "1" }))
+
+    const apiRef = computed(() =>
+      toggle.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <div {...api.rootProps}>
+          <button {...api.getToggleProps({ value: "bold" })}>B</button>
+          <button {...api.getToggleProps({ value: "italic" })}>I</button>
+          <button {...api.getToggleProps({ value: "underline" })}>U</button>
+        </div>
+      )
+    }
+  },
+})
+```

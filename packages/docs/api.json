@@ -6,11 +6,11 @@
         "description": "The value of the focused accordion item."
       },
       "value": {
-        "type": "string | string[]",
+        "type": "string[]",
         "description": "The value of the accordion"
       },
       "setValue": {
-        "type": "(value: string | string[]) => void",
+        "type": "(value: string[]) => void",
         "description": "Sets the value of the accordion."
       },
       "getItemState": {
@@ -47,7 +47,7 @@
         "defaultValue": "false"
       },
       "value": {
-        "type": "string | string[]",
+        "type": "string[]",
         "description": "The `id` of the accordion item that is currently being opened."
       },
       "disabled": {
@@ -55,8 +55,12 @@
         "description": "Whether the accordion items are disabled"
       },
       "onChange": {
-        "type": "(details: { value: string | string[]; }) => void",
+        "type": "(details: ChangeDetails) => void",
         "description": "The callback fired when the state of opened/closed accordion items changes."
+      },
+      "onFocusChange": {
+        "type": "(details: FocusChangeDetails) => void",
+        "description": "The callback fired when the focused accordion item changes."
       },
       "orientation": {
         "type": "\"horizontal\" | \"vertical\"",
@@ -401,6 +405,10 @@
       "focus": {
         "type": "() => void",
         "description": "Function to focus the combobox input"
+      },
+      "getOptionState": {
+        "type": "(props: OptionProps) => { isDisabled: boolean; isHighlighted: boolean; isChecked: boolean; }",
+        "description": "Returns the state of an option"
       }
     },
     "context": {
@@ -1554,7 +1562,7 @@
         "description": "The active page"
       },
       "onChange": {
-        "type": "(details: { page: number; pageSize: number; srcElement: HTMLElement; }) => void",
+        "type": "(details: ChangeDetails) => void",
         "description": "Called when the page number is changed, and it takes the resulting page number argument"
       },
       "type": {
@@ -1881,7 +1889,7 @@
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "ids": {
-        "type": "Partial<{ root: string; label: string; indicator: string; radio(value: string): string; radioLabel(value: string): string; radioControl(value: string): string; radioInput(value: string): string; }>",
+        "type": "Partial<{ root: string; label: string; indicator: string; radio(value: string): string; radioLabel(value: string): string; radioControl(value: string): string; radioHiddenInput(value: string): string; }>",
         "description": "The ids of the elements in the radio. Useful for composition."
       },
       "value": {
@@ -2038,6 +2046,10 @@
       "onChangeEnd": {
         "type": "(details: { value: number[]; }) => void",
         "description": "Function invoked when the slider value change is done"
+      },
+      "onFocusChange": {
+        "type": "(details: { index: number; value: number[]; }) => void",
+        "description": "Function invoked when the slider's focused index changes"
       },
       "getAriaValueText": {
         "type": "(value: number, index: number) => string",
@@ -2441,7 +2453,7 @@
         "description": "Whether the splitter is being dragged."
       },
       "bounds": {
-        "type": "{ min: number; max: number; }",
+        "type": "PanelBounds",
         "description": "The bounds of the currently dragged splitter handle."
       },
       "setToMinSize": {
@@ -2789,17 +2801,13 @@
         "type": "(details: { values: string[]; }) => void",
         "description": "Callback fired when the tag values is updated"
       },
-      "onHighlight": {
+      "onFocusChange": {
         "type": "(details: { value: string; }) => void",
         "description": "Callback fired when a tag is focused by pointer or keyboard navigation"
       },
       "onInvalid": {
         "type": "(details: { reason: ValidityState; }) => void",
         "description": "Callback fired when the max tag count is reached or the `validateTag` function returns `false`"
-      },
-      "onTagUpdate": {
-        "type": "(details: { value: string; index: number; }) => void",
-        "description": "Callback fired when a tag's value is updated"
       },
       "validate": {
         "type": "(details: { inputValue: string; values: string[]; }) => boolean",
@@ -2929,7 +2937,16 @@
     }
   },
   "toggle-group": {
-    "api": {},
+    "api": {
+      "value": {
+        "type": "string[]",
+        "description": "The value of the toggle group."
+      },
+      "setValue": {
+        "type": "(values: string[]) => void",
+        "description": "Function to set the value of the toggle group."
+      }
+    },
     "context": {
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

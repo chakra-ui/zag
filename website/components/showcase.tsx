@@ -24,6 +24,7 @@ import { Slider } from "./machines/slider"
 import { Tabs } from "./machines/tabs"
 import { TagsInput } from "./machines/tags-input"
 import { ToastGroup } from "./machines/toast"
+import { ToggleGroup } from "./machines/toggle-group"
 import { Tooltip } from "./machines/tooltip"
 import { Playground } from "./playground"
 
@@ -293,6 +294,15 @@ const components = {
         disabled: false,
         allowDrop: true,
         accept: "image/png, image/jpeg",
+      }}
+    />
+  ),
+  ToggleGroup: () => (
+    <Playground
+      component={ToggleGroup}
+      defaultProps={{
+        disabled: false,
+        multiple: true,
       }}
     />
   ),

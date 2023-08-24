@@ -8,11 +8,11 @@ import { useFramework } from "./framework"
 
 export function usePagination() {
   const { framework } = useFramework()
-  const { asPath, isReady } = useRouter()
+  const { asPath } = useRouter()
   const { prev, next } = paginate({ framework, current: asPath })
   return {
-    prev: isReady ? prev : undefined,
-    next: isReady ? next : undefined,
+    prev,
+    next,
     hasPrev: !!prev,
     hasNext: !!next,
   }

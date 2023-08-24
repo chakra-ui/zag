@@ -2690,6 +2690,9 @@ importers:
       '@zag-js/toggle':
         specifier: workspace:*
         version: link:../packages/machines/toggle
+      '@zag-js/toggle-group':
+        specifier: workspace:*
+        version: link:../packages/machines/toggle-group
       '@zag-js/tooltip':
         specifier: workspace:*
         version: link:../packages/machines/tooltip

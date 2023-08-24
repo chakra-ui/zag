@@ -25,6 +25,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       tabIndex: state.context.isTabbingBackward ? -1 : 0,
       "data-disabled": dataAttr(disabled),
       "data-orientation": state.context.orientation,
+      "data-focus": dataAttr(state.context.focusedId != null),
       style: { outline: "none" },
       onMouseDown() {
         send("ROOT.MOUSE_DOWN")
@@ -51,6 +52,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id,
         type: "button",
         "data-ownedby": dom.getRootId(state.context),
+        "data-focus": dataAttr(isFocused),
         disabled: isDisabled,
         tabIndex: rovingFocus ? rovingTabIndex : undefined,
         // radio

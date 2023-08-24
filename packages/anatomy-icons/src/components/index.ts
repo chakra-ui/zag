@@ -21,8 +21,10 @@ import { TabsAnatomy } from "./tabs"
 import { TagsInputAnatomy } from "./tags-input"
 import { ToastAnatomy } from "./toast"
 import { TooltipAnatomy } from "./tooltip"
+import { ToggleGroupAnatomy } from "./toggle-group"
 
 export const allComponents = {
+  "toggle-group": ToggleGroupAnatomy,
   "file-upload": FileUploadAnatomy,
   accordion: AccordionAnatomy,
   avatar: AvatarAnatomy,
