@@ -440,8 +440,11 @@ export function machine(userContext: UserDefinedContext) {
             ctx.value[name] = value
           }
         },
-        clickFocusedItem(ctx) {
-          dom.getFocusedItem(ctx)?.click()
+        clickFocusedItem(ctx, _evt, { send }) {
+          const itemEl = dom.getFocusedItem(ctx)
+          if (!itemEl || itemEl.dataset.disabled) return
+          const { id } = itemEl
+          send({ type: "ITEM_CLICK", src: "pointerup", target: itemEl, id })
         },
         setIntentPolygon(ctx, evt) {
           const menu = dom.getContentEl(ctx)
