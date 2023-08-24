@@ -22,8 +22,10 @@ import { TagsInputAnatomy } from "./tags-input"
 import { ToastAnatomy } from "./toast"
 import { TooltipAnatomy } from "./tooltip"
 import { ToggleGroupAnatomy } from "./toggle-group"
+import { RadioGroupAnatomy } from "./radio-group"
 
 export const allComponents = {
+  "radio-group": RadioGroupAnatomy,
   "toggle-group": ToggleGroupAnatomy,
   "file-upload": FileUploadAnatomy,
   accordion: AccordionAnatomy,
