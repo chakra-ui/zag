@@ -481,10 +481,6 @@
         "type": "boolean",
         "description": "Whether to autofocus the input on mount"
       },
-      "selectInputOnFocus": {
-        "type": "boolean",
-        "description": "Whether to select the input's text content on focus"
-      },
       "focusOnClear": {
         "type": "boolean",
         "description": "Whether to return focus to the input on click the clear button"

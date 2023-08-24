@@ -7,7 +7,7 @@ export const dom = createScope({
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `combobox:${ctx.id}:label`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.id}:control`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `combobox:${ctx.id}:input`,
-  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `combobox:${ctx.id}:listbox`,
+  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `combobox:${ctx.id}:content`,
   getPositionerId: (ctx: Ctx) => ctx.ids?.positioner ?? `combobox:${ctx.id}:popper`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `combobox:${ctx.id}:toggle-btn`,
   getClearTriggerId: (ctx: Ctx) => ctx.ids?.clearTrigger ?? `combobox:${ctx.id}:clear-btn`,
@@ -45,42 +45,36 @@ export const dom = createScope({
   }),
   getOptionCount: (ctx: Ctx) => {
     // if option has `aria-setsize`, announce the number of options
-    const listbox = dom.getContentEl(ctx)
-    const count = listbox?.querySelector("[role=option]")?.getAttribute("aria-setsize")
+    const contentEl = dom.getContentEl(ctx)
+    const count = contentEl?.querySelector("[role=option]")?.getAttribute("aria-setsize")
 
     if (count != null) return parseInt(count)
     // else announce the number of options by querying the listbox
-    return listbox?.querySelectorAll("[role=option]").length ?? 0
+    return contentEl?.querySelectorAll("[role=option]").length ?? 0
   },
   getMatchingOptionEl: (ctx: Ctx, value: string | null | undefined) => {
     if (!value) return null
 
     const selector = `[role=option][data-value="${CSS.escape(value)}"`
 
-    const listbox = dom.getContentEl(ctx)
-    if (!listbox) return null
+    const contentEl = dom.getContentEl(ctx)
+    if (!contentEl) return null
 
-    return listbox.querySelector<HTMLElement>(selector)
+    return contentEl?.querySelector<HTMLElement>(selector)
   },
 
   focusInput: (ctx: Ctx) => {
-    const input = dom.getInputEl(ctx)
-    if (dom.getDoc(ctx).activeElement !== input) {
-      input?.focus()
-    }
-    if (ctx.selectInputOnFocus) {
-      input?.select()
-    }
+    dom.getInputEl(ctx)?.focus()
   },
 
   getClosestSectionLabel(ctx: Ctx) {
     if (!ctx.focusedId) return
-    const group = dom.getActiveOptionEl(ctx)?.closest("[data-part=option-group]")
-    return group?.getAttribute("aria-label")
+    const groupEl = dom.getActiveOptionEl(ctx)?.closest("[data-part=option-group]")
+    return groupEl?.getAttribute("aria-label")
   },
 
   getValueLabel: (ctx: Ctx, value: string) => {
-    const el = dom.getMatchingOptionEl(ctx, value)
-    return dom.getOptionData(el).label
+    const optionEl = dom.getMatchingOptionEl(ctx, value)
+    return dom.getOptionData(optionEl).label
   },
 })

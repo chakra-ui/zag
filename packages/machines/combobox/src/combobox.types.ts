@@ -88,10 +88,6 @@ type PublicContext = DirectionProperty &
      */
     autoFocus?: boolean
     /**
-     * Whether to select the input's text content on focus
-     */
-    selectInputOnFocus?: boolean
-    /**
      * Whether to return focus to the input on click the clear button
      */
     focusOnClear?: boolean
