@@ -1465,6 +1465,11 @@ main [data-testid="scrubber"] {
   color: white;
 }
 
+[data-scope="select"][data-part="option"][data-highlighted] {
+  background: rgb(0, 0, 195);
+  color: white;
+}
+
 /* -----------------------------------------------------------------------------
 * DatePicker
 * -----------------------------------------------------------------------------*/
