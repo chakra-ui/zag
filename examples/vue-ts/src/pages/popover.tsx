@@ -12,7 +12,7 @@ export default defineComponent({
   setup() {
     const controls = useControls(popoverControls)
 
-    const [state, send] = useMachine(popover.machine({ id: "popover" }), {
+    const [state, send] = useMachine(popover.machine({ id: "1" }), {
       context: controls.context,
     })
 
@@ -20,8 +20,6 @@ export default defineComponent({
 
     return () => {
       const api = apiRef.value
-
-      const Wrapper = api.portalled ? Teleport : Fragment
 
       return (
         <>
@@ -31,7 +29,7 @@ export default defineComponent({
               <button data-testid="popover-trigger" {...api.triggerProps}>
                 Click me
               </button>
-              <Wrapper to="body">
+              <Teleport to="body" disabled={!api.portalled}>
                 <div {...api.positionerProps}>
                   <div data-testid="popover-content" class="popover-content" {...api.contentProps}>
                     <div {...api.arrowProps}>
@@ -52,7 +50,7 @@ export default defineComponent({
                     </div>
                   </div>
                 </div>
-              </Wrapper>
+              </Teleport>
               <span data-testid="plain-text">I am just text</span>
               <button data-testid="button-after">Button :after</button>
             </div>
