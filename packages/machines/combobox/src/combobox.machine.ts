@@ -31,7 +31,6 @@ export function machine(userContext: UserDefinedContext) {
 
         liveRegion: null,
         focusOnClear: true,
-        selectInputOnFocus: false,
         selectOnTab: true,
         isHovering: false,
         isKeyboardEvent: false,
