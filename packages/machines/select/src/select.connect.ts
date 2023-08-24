@@ -242,7 +242,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: 0,
       onPointerMove(event) {
-        if (!isInteractive) return
+        if (!isInteractive || event.pointerType !== "mouse") return
         const option = dom.getClosestOption(event.target)
         if (!option || option.hasAttribute("data-disabled")) {
           send({ type: "POINTER_LEAVE" })
@@ -256,14 +256,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (!option || option.hasAttribute("data-disabled")) return
         send({ type: "OPTION_CLICK", src: "pointerup", id: option.id })
       },
-      onPointerLeave() {
+      onPointerLeave(event) {
+        if (event.pointerType !== "mouse") return
         send({ type: "POINTER_LEAVE" })
-      },
-      onClick(event) {
-        if (!isInteractive) return
-        const option = dom.getClosestOption(event.target)
-        if (!option || option.hasAttribute("data-disabled")) return
-        send({ type: "OPTION_CLICK", src: "click", id: option.id })
       },
       onKeyDown(event) {
         if (!isInteractive || !isSelfEvent(event)) return

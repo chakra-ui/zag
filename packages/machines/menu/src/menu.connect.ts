@@ -301,18 +301,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-ownedby": dom.getContentId(state.context),
         "data-highlighted": dataAttr(state.context.highlightedId === id),
         "data-valuetext": valueText,
-        onClick(event) {
-          if (disabled) return
-          send({ type: "ITEM_CLICK", src: "click", target: event.currentTarget, id })
-        },
-        onPointerDown(event) {
-          if (disabled) return
-          send({ type: "ITEM_POINTERDOWN", target: event.currentTarget, id })
-        },
-        onPointerUp(event) {
-          const evt = getNativeEvent(event)
-          if (!isLeftClick(evt) || disabled) return
-          send({ type: "ITEM_CLICK", src: "pointerup", target: event.currentTarget, id })
+        onDragStart(event) {
+          const isLink = event.currentTarget.matches("a[href]")
+          if (isLink) event.preventDefault()
         },
         onPointerLeave(event) {
           if (disabled || event.pointerType !== "mouse") return
@@ -322,9 +313,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (disabled || event.pointerType !== "mouse") return
           send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
         },
-        onDragStart(event) {
-          const isLink = event.currentTarget.matches("a[href]")
-          if (isLink) event.preventDefault()
+        onPointerDown(event) {
+          if (disabled) return
+          send({ type: "ITEM_POINTERDOWN", target: event.currentTarget, id })
+        },
+        onPointerUp(event) {
+          const evt = getNativeEvent(event)
+          if (!isLeftClick(evt) || disabled) return
+          send({ type: "ITEM_CLICK", src: "pointerup", target: event.currentTarget, id })
         },
         onAuxClick(event) {
           if (disabled) return
@@ -352,11 +348,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           role: `menuitem${type}`,
           "aria-checked": !!checked,
           "data-state": checked ? "checked" : "unchecked",
-          onClick(event) {
-            if (disabled) return
-            send({ type: "ITEM_CLICK", src: "click", target: event.currentTarget, option })
-            onCheckedChange?.(!checked)
-          },
           onPointerUp(event) {
             const evt = getNativeEvent(event)
             if (!isLeftClick(evt) || disabled) return

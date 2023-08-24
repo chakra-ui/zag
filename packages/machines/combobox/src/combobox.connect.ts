@@ -274,8 +274,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-setsize": count,
         "data-value": value,
         "data-label": label,
-        // Prefer `pointermove` to `pointerenter` to avoid interrupting the keyboard navigation
-        // NOTE: for perf, we may want to move these handlers to the listbox
         onPointerMove() {
           if (optionState.isDisabled) return
           send({ type: "POINTEROVER_OPTION", id, value, label })
@@ -283,10 +281,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onPointerUp() {
           if (optionState.isDisabled) return
           send({ type: "CLICK_OPTION", src: "pointerup", id, value, label })
-        },
-        onClick() {
-          if (optionState.isDisabled) return
-          send({ type: "CLICK_OPTION", src: "click", id, value, label })
         },
         onAuxClick(event) {
           if (optionState.isDisabled) return
