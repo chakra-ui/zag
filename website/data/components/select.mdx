@@ -211,6 +211,15 @@ const [state, send] = useMachine(
 )
 ```
 
+## Usage within dialog
+
+When using the select within a dialog, you'll need to avoid rendering the select
+in a `Portal` or `Teleport`. This is because the dialog will trap focus within
+it, and the select will be rendered outside the dialog.
+
+> Consider designing a `portalled` property in your component to allow you
+> decide where to render the select in a portal.
+
 ## Styling guide
 
 Earlier, we mentioned that each select part has a `data-part` attribute added to

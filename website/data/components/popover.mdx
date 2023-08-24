@@ -180,7 +180,7 @@ const [state, send] = useMachine(
 )
 ```
 
-## Callbacks
+## Listening for open and close events
 
 When the popover is opened or closed, we invoke the `onOpen` and `onClose`
 callbacks.
@@ -197,6 +197,15 @@ const [state, send] = useMachine(
   }),
 )
 ```
+
+## Usage within dialog
+
+When using the popover within a dialog, you'll need to avoid rendering the
+popover in a `Portal` or `Teleport`. This is because the dialog will trap focus
+within it, and the popover will be rendered outside the dialog.
+
+> Consider designing a `portalled` property in your component to allow you
+> decide where to render the popover in a portal.
 
 ## Styling guide
 
