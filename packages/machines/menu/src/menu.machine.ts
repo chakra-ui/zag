@@ -44,7 +44,7 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         isSubmenu: "setSubmenuPlacement",
-        anchorPoint: "applyAnchorPoint",
+        anchorPoint: "setPositioning",
       },
 
       on: {
@@ -388,22 +388,6 @@ export function machine(userContext: UserDefinedContext) {
         clearAnchorPoint(ctx) {
           ctx.anchorPoint = null
         },
-        applyAnchorPoint(ctx) {
-          const point = ctx.anchorPoint
-          if (!point) return
-
-          const el = dom.getPositionerEl(ctx)
-          if (!el) return
-
-          raf(() => {
-            Object.assign(el.style, {
-              position: "absolute",
-              top: "0",
-              left: "0",
-              transform: `translate3d(${point.x}px, ${point.y}px, 0)`,
-            })
-          })
-        },
         setSubmenuPlacement(ctx) {
           if (!ctx.isSubmenu) return
           ctx.positioning.placement = ctx.isRtl ? "left-start" : "right-start"
@@ -411,11 +395,23 @@ export function machine(userContext: UserDefinedContext) {
         },
         setPositioning(ctx, evt) {
           const getPositionerEl = () => dom.getPositionerEl(ctx)
-          getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
+
+          const virtualAnchorEl = ctx.anchorPoint
+            ? {
+                getBoundingClientRect: () => {
+                  const win = dom.getWin(ctx)
+                  return win.DOMRect.fromRect({ width: 0, height: 0, ...ctx.anchorPoint })
+                },
+              }
+            : undefined
+
+          const anchorEl = virtualAnchorEl ?? dom.getTriggerEl(ctx)
+
+          void getPlacement(anchorEl, getPositionerEl, {
             ...ctx.positioning,
-            ...evt.options,
-            defer: true,
+            ...(evt.options ?? {}),
             listeners: false,
+            // defer: true,
           })
         },
         invokeOnValueChange(ctx, evt) {
