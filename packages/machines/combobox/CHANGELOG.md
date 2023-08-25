@@ -1,5 +1,36 @@
 # @zag-js/combobox
 
+## 0.17.0
+
+### Minor Changes
+
+- [#789](https://github.com/chakra-ui/zag/pull/789)
+  [`db81eaab`](https://github.com/chakra-ui/zag/commit/db81eaab8c8b06d74cf81d46fa145f4b480b7e82) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor machine event handling and rename `PublicApi` to `Api`
+
+### Patch Changes
+
+- [#816](https://github.com/chakra-ui/zag/pull/816)
+  [`c1b04e32`](https://github.com/chakra-ui/zag/commit/c1b04e3248a2bf5211c4ee82298bc827521f102d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove `selectInputOnFocus` option in favor of userland control.
+
+- [#816](https://github.com/chakra-ui/zag/pull/816)
+  [`c1b04e32`](https://github.com/chakra-ui/zag/commit/c1b04e3248a2bf5211c4ee82298bc827521f102d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where select clicks underlying element on mobile.
+  - Fix issue where combobox and menu option item triggers double click.
+- Updated dependencies [[`db81eaab`](https://github.com/chakra-ui/zag/commit/db81eaab8c8b06d74cf81d46fa145f4b480b7e82)]:
+  - @zag-js/dom-query@0.17.0
+  - @zag-js/aria-hidden@0.17.0
+  - @zag-js/interact-outside@0.17.0
+  - @zag-js/popper@0.17.0
+  - @zag-js/dom-event@0.17.0
+  - @zag-js/anatomy@0.17.0
+  - @zag-js/core@0.17.0
+  - @zag-js/types@0.17.0
+  - @zag-js/utils@0.17.0
+  - @zag-js/live-region@0.17.0
+  - @zag-js/mutation-observer@0.17.0
+
 ## 0.16.0
 
 ### Patch Changes

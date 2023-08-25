@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/tabbable",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Small utility that returns an array of all* tabbable DOM nodes within a containing node.",
   "keywords": [
     "js",

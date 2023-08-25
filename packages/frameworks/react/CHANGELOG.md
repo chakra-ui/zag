@@ -1,5 +1,18 @@
 # @zag-js/react
 
+## 0.17.0
+
+### Patch Changes
+
+- [`39b20b8c`](https://github.com/chakra-ui/zag/commit/39b20b8ccf49a23714b122d4879f6261c9507c16) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where spreading props on a `forwardRef` element show a
+  `LegacyRef` error
+
+- Updated dependencies []:
+  - @zag-js/core@0.17.0
+  - @zag-js/store@0.17.0
+  - @zag-js/types@0.17.0
+
 ## 0.16.0
 
 ### Patch Changes

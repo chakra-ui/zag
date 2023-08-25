@@ -1,5 +1,30 @@
 # @zag-js/date-picker
 
+## 0.17.0
+
+### Minor Changes
+
+- [#789](https://github.com/chakra-ui/zag/pull/789)
+  [`db81eaab`](https://github.com/chakra-ui/zag/commit/db81eaab8c8b06d74cf81d46fa145f4b480b7e82) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor machine event handling and rename `PublicApi` to `Api`
+
+### Patch Changes
+
+- Updated dependencies [[`82d1ab7b`](https://github.com/chakra-ui/zag/commit/82d1ab7b61d75fa6d7678e60af53b84c5d93e74b),
+  [`db81eaab`](https://github.com/chakra-ui/zag/commit/db81eaab8c8b06d74cf81d46fa145f4b480b7e82)]:
+  - @zag-js/form-utils@0.17.0
+  - @zag-js/dom-query@0.17.0
+  - @zag-js/dismissable@0.17.0
+  - @zag-js/popper@0.17.0
+  - @zag-js/text-selection@0.17.0
+  - @zag-js/dom-event@0.17.0
+  - @zag-js/anatomy@0.17.0
+  - @zag-js/core@0.17.0
+  - @zag-js/types@0.17.0
+  - @zag-js/utils@0.17.0
+  - @zag-js/date-utils@0.17.0
+  - @zag-js/live-region@0.17.0
+
 ## 0.16.0
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @zag-js/dom-event
 
+## 0.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/text-selection@0.17.0
+  - @zag-js/types@0.17.0
+
 ## 0.16.0
 
 ### Patch Changes

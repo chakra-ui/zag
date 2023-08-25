@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/element-size",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Observer the size of an element over time",
   "keywords": [
     "js",

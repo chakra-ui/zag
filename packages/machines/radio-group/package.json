@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/radio-group",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Core logic for the radio group widget implemented as a state machine",
   "keywords": [
     "js",
