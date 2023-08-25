@@ -96,6 +96,10 @@ type PublicContext = DirectionProperty &
      * - `contain`: the thumb will be contained within the bounds of the track.
      */
     thumbAlignment?: "contain" | "center"
+    /**
+     * The slider thumbs dimensions
+     */
+    thumbSize: { width: number; height: number } | null
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -144,11 +148,6 @@ type ComputedContext = Readonly<{
 }>
 
 type PrivateContext = Context<{
-  /**
-   * @internal
-   * The slider thumbs dimensions
-   */
-  thumbSizes: Array<{ width: number; height: number }>
   /**
    * @internal
    * The active index of the range slider. This represents

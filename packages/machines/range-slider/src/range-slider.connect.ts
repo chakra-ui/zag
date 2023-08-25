@@ -162,6 +162,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "slider",
         tabIndex: isDisabled ? undefined : 0,
         style: dom.getThumbStyle(state.context, index),
+        onPointerDown(event) {
+          send({ type: "THUMB_POINTER_DOWN", index })
+          event.stopPropagation()
+        },
         onBlur() {
           if (!isInteractive) return
           send("BLUR")
@@ -271,14 +275,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getMarkerProps({ value }: { value: number }) {
-      const percent = getValuePercentFn(value)
-      const style = dom.getMarkerStyle(state.context, percent)
+      const style = dom.getMarkerStyle(state.context, value)
       let markerState: "over-value" | "under-value" | "at-value"
 
-      if (Math.max(...state.context.value) < value) {
-        markerState = "over-value"
-      } else if (Math.min(...state.context.value) > value) {
+      const first = state.context.value[0]
+      const last = state.context.value[state.context.value.length - 1]
+
+      if (value < first) {
         markerState = "under-value"
+      } else if (value > last) {
+        markerState = "over-value"
       } else {
         markerState = "at-value"
       }
@@ -287,6 +293,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.marker.attrs,
         id: dom.getMarkerId(state.context, value),
         role: "presentation",
+        dir: state.context.dir,
         "data-orientation": state.context.orientation,
         "data-value": value,
         "data-disabled": dataAttr(isDisabled),

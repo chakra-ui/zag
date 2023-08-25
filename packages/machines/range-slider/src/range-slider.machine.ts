@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
-import { trackElementsSize } from "@zag-js/element-size"
+import { trackElementsSize, type ElementSize } from "@zag-js/element-size"
 import { trackFormControl } from "@zag-js/form-utils"
 import { getValuePercent } from "@zag-js/numeric-range"
 import { compact } from "@zag-js/utils"
@@ -17,6 +17,10 @@ import {
   normalizeValues,
 } from "./range-slider.utils"
 
+const isEqualSize = (a: ElementSize | null, b: ElementSize | null) => {
+  return a?.width === b?.width && a?.height === b?.height
+}
+
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
@@ -25,7 +29,7 @@ export function machine(userContext: UserDefinedContext) {
       initial: "idle",
 
       context: {
-        thumbSizes: [],
+        thumbSize: null,
         thumbAlignment: "contain",
         threshold: 5,
         focusedIndex: -1,
@@ -48,7 +52,7 @@ export function machine(userContext: UserDefinedContext) {
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         isInteractive: (ctx) => !(ctx.readOnly || ctx.isDisabled),
         spacing: (ctx) => ctx.minStepsBetweenThumbs * ctx.step,
-        hasMeasuredThumbSize: (ctx) => ctx.thumbSizes.length !== 0,
+        hasMeasuredThumbSize: (ctx) => ctx.thumbSize != null,
         valuePercent(ctx) {
           return ctx.value.map((value) => 100 * getValuePercent(value, ctx.min, ctx.max))
         },
@@ -89,6 +93,10 @@ export function machine(userContext: UserDefinedContext) {
               target: "focus",
               actions: "setFocusedIndex",
             },
+            THUMB_POINTER_DOWN: {
+              target: "dragging",
+              actions: ["setFocusedIndex", "invokeOnChangeStart", "focusActiveThumb"],
+            },
           },
         },
         focus: {
@@ -97,6 +105,10 @@ export function machine(userContext: UserDefinedContext) {
             POINTER_DOWN: {
               target: "dragging",
               actions: ["setClosestThumbIndex", "setPointerValue", "invokeOnChangeStart", "focusActiveThumb"],
+            },
+            THUMB_POINTER_DOWN: {
+              target: "dragging",
+              actions: ["setFocusedIndex", "invokeOnChangeStart", "focusActiveThumb"],
             },
             ARROW_LEFT: {
               guard: "isHorizontal",
@@ -176,16 +188,14 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         trackThumbsSize(ctx) {
-          if (ctx.thumbAlignment !== "contain") return
+          if (ctx.thumbAlignment !== "contain" || ctx.thumbSize) return
+
           return trackElementsSize({
-            getNodes() {
-              return dom.getElements(ctx)
-            },
+            getNodes: () => dom.getElements(ctx),
             observeMutation: true,
-            callback(size, index) {
-              if (size) {
-                ctx.thumbSizes[index] = size
-              }
+            callback(size) {
+              if (!size || isEqualSize(ctx.thumbSize, size)) return
+              ctx.thumbSize = size
             },
           })
         },

@@ -43,7 +43,11 @@ const fetchMachine = createMachine({
           target: "dragging",
           actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"]
         },
-        FOCUS: "focus"
+        FOCUS: "focus",
+        THUMB_POINTER_DOWN: {
+          target: "dragging",
+          actions: ["invokeOnChangeStart", "focusThumb"]
+        }
       }
     },
     focus: {
@@ -52,6 +56,10 @@ const fetchMachine = createMachine({
         POINTER_DOWN: {
           target: "dragging",
           actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"]
+        },
+        THUMB_POINTER_DOWN: {
+          target: "dragging",
+          actions: ["invokeOnChangeStart", "focusThumb"]
         },
         ARROW_LEFT: {
           cond: "isHorizontal",

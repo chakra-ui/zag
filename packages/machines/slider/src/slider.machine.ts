@@ -69,6 +69,10 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"],
             },
             FOCUS: "focus",
+            THUMB_POINTER_DOWN: {
+              target: "dragging",
+              actions: ["invokeOnChangeStart", "focusThumb"],
+            },
           },
         },
 
@@ -78,6 +82,10 @@ export function machine(userContext: UserDefinedContext) {
             POINTER_DOWN: {
               target: "dragging",
               actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"],
+            },
+            THUMB_POINTER_DOWN: {
+              target: "dragging",
+              actions: ["invokeOnChangeStart", "focusThumb"],
             },
             ARROW_LEFT: {
               guard: "isHorizontal",
@@ -155,7 +163,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         trackThumbSize(ctx, _evt) {
-          if (ctx.thumbAlignment !== "contain") return
+          if (ctx.thumbAlignment !== "contain" || ctx.thumbSize) return
           return trackElementSize(dom.getThumbEl(ctx), (size) => {
             if (size) ctx.thumbSize = size
           })

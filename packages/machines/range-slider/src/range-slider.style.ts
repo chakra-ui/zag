@@ -30,7 +30,7 @@ function getVisibility(ctx: Ctx) {
 }
 
 function getThumbStyle(ctx: Ctx, index: number): Style {
-  const placementProp = ctx.isVertical ? "bottom" : ctx.isRtl ? "right" : "left"
+  const placementProp = ctx.isVertical ? "bottom" : "insetInlineStart"
   return {
     visibility: getVisibility(ctx),
     position: "absolute",
@@ -47,14 +47,13 @@ function getRootStyle(ctx: Ctx): Style {
   const range = getRangeOffsets(ctx)
 
   const offsetStyles = ctx.value.reduce<Style>((styles, value, index) => {
-    const thumbSize = ctx.thumbSizes[index] ?? { width: 0, height: 0 }
-    const offset = sliderDom.getThumbOffset({ ...ctx, value, thumbSize })
+    const offset = sliderDom.getThumbOffset({ ...ctx, value })
     return { ...styles, [`--slider-thumb-offset-${index}`]: offset }
   }, {})
 
   return {
     ...offsetStyles,
-    "--slider-thumb-transform": ctx.isVertical ? "translateY(50%)" : "translateX(-50%)",
+    "--slider-thumb-transform": ctx.isVertical ? "translateY(50%)" : ctx.isRtl ? "translateX(50%)" : "translateX(-50%)",
     "--slider-range-start": range.start,
     "--slider-range-end": range.end,
   }

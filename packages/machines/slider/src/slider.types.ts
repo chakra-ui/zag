@@ -97,6 +97,10 @@ type PublicContext = DirectionProperty &
      * - `contain`: the thumb will be contained within the bounds of the track.
      */
     thumbAlignment?: "contain" | "center"
+    /**
+     * The slider thumb dimensions.If not provided, the thumb size will be measured automatically.
+     */
+    thumbSize: { width: number; height: number } | null
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -145,11 +149,6 @@ type PrivateContext = Context<{
    * The move threshold of the slider thumb before it is considered to be moved
    */
   threshold: number
-  /**
-   * @internal
-   * The slider thumb dimensions
-   */
-  thumbSize: { width: number; height: number } | null
   /**
    * @internal
    * Whether the slider fieldset is disabled

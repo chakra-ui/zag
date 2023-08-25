@@ -47,6 +47,12 @@ export default function Page() {
                   </div>
                 ))}
               </div>
+              <div {...api.markerGroupProps}>
+                <span {...api.getMarkerProps({ value: 10 })}>*</span>
+                <span {...api.getMarkerProps({ value: 30 })}>*</span>
+                <span {...api.getMarkerProps({ value: 50 })}>*</span>
+                <span {...api.getMarkerProps({ value: 90 })}>*</span>
+              </div>
             </div>
           </div>
         </form>

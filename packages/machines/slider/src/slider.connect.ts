@@ -106,6 +106,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-valuetext": ariaValueText,
       role: "slider",
       tabIndex: isDisabled ? undefined : 0,
+      onPointerDown(event) {
+        send({ type: "THUMB_POINTER_DOWN" })
+        event.stopPropagation()
+      },
       onBlur() {
         if (!isInteractive) return
         send("BLUR")
@@ -231,13 +235,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getMarkerProps({ value }: { value: number }) {
-      const percent = getValuePercentFn(value)
-      const style = dom.getMarkerStyle(state.context, percent)
+      const style = dom.getMarkerStyle(state.context, value)
       const markerState =
-        value > state.context.value ? "over-value" : value < state.context.value ? "under-value" : "at-value"
+        value > state.context.value ? "over-value" : value === state.context.value ? "at-value" : "under-value"
 
       return normalize.element({
         ...parts.marker.attrs,
+        dir: state.context.dir,
         id: dom.getMarkerId(state.context, value),
         role: "presentation",
         "data-orientation": state.context.orientation,
