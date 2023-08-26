@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/remove-scroll",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "JavaScript utility to remove scroll on body",
   "keywords": [
     "js",

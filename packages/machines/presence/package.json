@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/presence",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Core logic for the presence widget implemented as a state machine",
   "keywords": [
     "js",

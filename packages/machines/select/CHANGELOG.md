@@ -1,5 +1,40 @@
 # @zag-js/select
 
+## 0.17.0
+
+### Minor Changes
+
+- [#789](https://github.com/chakra-ui/zag/pull/789)
+  [`db81eaab`](https://github.com/chakra-ui/zag/commit/db81eaab8c8b06d74cf81d46fa145f4b480b7e82) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor machine event handling and rename `PublicApi` to `Api`
+
+### Patch Changes
+
+- [#816](https://github.com/chakra-ui/zag/pull/816)
+  [`c1b04e32`](https://github.com/chakra-ui/zag/commit/c1b04e3248a2bf5211c4ee82298bc827521f102d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where select clicks underlying element on mobile.
+
+  - Fix issue where combobox and menu option item triggers double click.
+
+- [#807](https://github.com/chakra-ui/zag/pull/807)
+  [`82d1ab7b`](https://github.com/chakra-ui/zag/commit/82d1ab7b61d75fa6d7678e60af53b84c5d93e74b) Thanks
+  [@srflp](https://github.com/srflp)! - Re-enable the input after removing `disabled` attribute from the parent fieldset
+
+- Updated dependencies [[`82d1ab7b`](https://github.com/chakra-ui/zag/commit/82d1ab7b61d75fa6d7678e60af53b84c5d93e74b),
+  [`db81eaab`](https://github.com/chakra-ui/zag/commit/db81eaab8c8b06d74cf81d46fa145f4b480b7e82)]:
+  - @zag-js/form-utils@0.17.0
+  - @zag-js/dom-query@0.17.0
+  - @zag-js/dismissable@0.17.0
+  - @zag-js/popper@0.17.0
+  - @zag-js/tabbable@0.17.0
+  - @zag-js/dom-event@0.17.0
+  - @zag-js/anatomy@0.17.0
+  - @zag-js/core@0.17.0
+  - @zag-js/types@0.17.0
+  - @zag-js/utils@0.17.0
+  - @zag-js/mutation-observer@0.17.0
+  - @zag-js/visually-hidden@0.17.0
+
 ## 0.16.0
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/hover-card",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Core logic for the hover-card widget implemented as a state machine",
   "keywords": [
     "js",

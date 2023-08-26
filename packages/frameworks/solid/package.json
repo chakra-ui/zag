@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/solid",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "The solid.js wrapper for zag",
   "keywords": [
     "ui-machines",

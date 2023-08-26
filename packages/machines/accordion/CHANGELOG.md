@@ -1,5 +1,32 @@
 # @zag-js/accordion
 
+## 0.17.0
+
+### Minor Changes
+
+- [#789](https://github.com/chakra-ui/zag/pull/789)
+  [`db81eaab`](https://github.com/chakra-ui/zag/commit/db81eaab8c8b06d74cf81d46fa145f4b480b7e82) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove support for passing value as `string`.
+
+  The `value` property must be an array of strings.
+
+  - When `multiple` is `false`, the array must contain a single string.
+  - When `multiple` is `true`, the array can contain multiple strings.
+
+- [#789](https://github.com/chakra-ui/zag/pull/789)
+  [`db81eaab`](https://github.com/chakra-ui/zag/commit/db81eaab8c8b06d74cf81d46fa145f4b480b7e82) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor machine event handling and rename `PublicApi` to `Api`
+
+### Patch Changes
+
+- Updated dependencies [[`db81eaab`](https://github.com/chakra-ui/zag/commit/db81eaab8c8b06d74cf81d46fa145f4b480b7e82)]:
+  - @zag-js/dom-query@0.17.0
+  - @zag-js/dom-event@0.17.0
+  - @zag-js/anatomy@0.17.0
+  - @zag-js/core@0.17.0
+  - @zag-js/types@0.17.0
+  - @zag-js/utils@0.17.0
+
 ## 0.16.0
 
 ### Patch Changes

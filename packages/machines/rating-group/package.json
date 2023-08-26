@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/rating-group",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Core logic for the rating-group widget implemented as a state machine",
   "keywords": [
     "js",

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/element-rect",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "observe element&#x27;s rect over time",
   "keywords": [
     "js",

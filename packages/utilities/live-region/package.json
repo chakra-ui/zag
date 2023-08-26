@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/live-region",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Implementing live region for screen readers",
   "keywords": [
     "js",

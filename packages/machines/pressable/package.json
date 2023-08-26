@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/pressable",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Core logic for the pressable widget implemented as a state machine",
   "keywords": [
     "js",

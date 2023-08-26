@@ -1,5 +1,16 @@
 # @zag-js/form-utils
 
+## 0.17.0
+
+### Patch Changes
+
+- [#807](https://github.com/chakra-ui/zag/pull/807)
+  [`82d1ab7b`](https://github.com/chakra-ui/zag/commit/82d1ab7b61d75fa6d7678e60af53b84c5d93e74b) Thanks
+  [@srflp](https://github.com/srflp)! - Re-enable the input after removing `disabled` attribute from the parent fieldset
+
+- Updated dependencies []:
+  - @zag-js/mutation-observer@0.17.0
+
 ## 0.16.0
 
 ### Patch Changes
