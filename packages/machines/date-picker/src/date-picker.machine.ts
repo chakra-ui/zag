@@ -122,7 +122,6 @@ export function machine(userContext: UserDefinedContext) {
           actions: ["setFocusedDate"],
         },
         "VALUE.CLEAR": {
-          target: "focused",
           actions: ["clearSelectedDate", "clearFocusedDate", "focusInputElement"],
         },
         "GOTO.NEXT": [

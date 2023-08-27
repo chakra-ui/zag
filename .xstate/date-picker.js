@@ -66,7 +66,6 @@ const fetchMachine = createMachine({
       actions: ["setFocusedDate"]
     },
     "VALUE.CLEAR": {
-      target: "focused",
       actions: ["clearSelectedDate", "clearFocusedDate", "focusInputElement"]
     },
     "GOTO.NEXT": [{
