@@ -1456,10 +1456,6 @@ main [data-testid="scrubber"] {
   flex: 1;
 }
 
-[data-scope="select"][data-part="option"]:hover {
-  background: #dfdfdf;
-}
-
 [data-scope="select"][data-part="option"][data-state="checked"] {
   background: blue;
   color: white;

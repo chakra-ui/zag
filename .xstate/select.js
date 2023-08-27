@@ -15,7 +15,6 @@ const fetchMachine = createMachine({
     "hasSelectedItems": false,
     "hasSelectedItems": false,
     "hasSelectedItems": false,
-    "hasSelectedItems": false,
     "!multiple && hasSelectedItems": false,
     "!multiple": false,
     "!multiple && hasSelectedItems": false,
@@ -66,19 +65,15 @@ const fetchMachine = createMachine({
     },
     focused: {
       tags: ["closed"],
-      entry: ["focusTrigger", "clearHighlightedItem"],
+      entry: ["focusTrigger"],
       on: {
         TRIGGER_BLUR: {
           target: "idle"
         },
-        TRIGGER_CLICK: [{
-          cond: "hasSelectedItems",
+        TRIGGER_CLICK: {
           target: "open",
           actions: ["invokeOnOpen"]
-        }, {
-          target: "open",
-          actions: ["highlightFirstItem", "invokeOnOpen"]
-        }],
+        },
         TRIGGER_KEY: [{
           cond: "hasSelectedItems",
           target: "open",
@@ -143,29 +138,29 @@ const fetchMachine = createMachine({
       on: {
         CLOSE: {
           target: "focused",
-          actions: ["invokeOnClose"]
+          actions: ["clearHighlightedItem", "invokeOnClose"]
         },
         TRIGGER_CLICK: {
           target: "focused",
-          actions: ["invokeOnClose"]
+          actions: ["clearHighlightedItem", "invokeOnClose"]
         },
         OPTION_CLICK: [{
           cond: "closeOnSelect",
           target: "focused",
-          actions: ["selectHighlightedItem", "invokeOnClose"]
+          actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"]
         }, {
-          actions: ["selectHighlightedItem"]
+          actions: ["selectHighlightedItem", "clearHighlightedItem"]
         }],
         TRIGGER_KEY: [{
           cond: "closeOnSelect",
           target: "focused",
-          actions: ["selectHighlightedItem", "invokeOnClose"]
+          actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"]
         }, {
-          actions: ["selectHighlightedItem"]
+          actions: ["selectHighlightedItem", "clearHighlightedItem"]
         }],
         BLUR: {
           target: "focused",
-          actions: ["invokeOnClose"]
+          actions: ["clearHighlightedItem", "invokeOnClose"]
         },
         HOME: {
           actions: ["highlightFirstItem"]

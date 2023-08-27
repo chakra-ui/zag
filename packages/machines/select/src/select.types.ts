@@ -31,7 +31,7 @@ type PublicContext = DirectionProperty &
   InteractOutsideHandlers &
   CollectionOptions & {
     /**
-     * The ids of the elements in the accordion. Useful for composition.
+     * The ids of the elements in the select. Useful for composition.
      */
     ids?: ElementIds
     /**
@@ -55,20 +55,20 @@ type PublicContext = DirectionProperty &
      */
     readOnly?: boolean
     /**
-     * Whether the select should close after an option is selected
+     * Whether the select should close after an item is selected
      */
     closeOnSelect?: boolean
     /**
-     * Whether to select the highlighted option when the user presses Tab,
+     * Whether to select the highlighted item when the user presses Tab,
      * and the menu is open.
      */
     selectOnTab?: boolean
     /**
-     * The callback fired when the highlighted option changes.
+     * The callback fired when the highlighted item changes.
      */
     onHighlightChange?: (details: HighlightChangeDetails) => void
     /**
-     * The callback fired when the selected option changes.
+     * The callback fired when the selected item changes.
      */
     onChange?: (details: ValueChangeDetails) => void
     /**
@@ -80,11 +80,11 @@ type PublicContext = DirectionProperty &
      */
     positioning: PositioningOptions
     /**
-     * The selected option
+     * The keys of the selected items
      */
     value: string[]
     /**
-     * The highlighted option
+     * The key of the highlighted item
      */
     highlightedValue: string | null
     /**
@@ -133,11 +133,6 @@ type ComputedContext = Readonly<{
    * Whether the select is disabled
    */
   isDisabled: boolean
-  /**
-   * @computed
-   * The number of items in the select
-   */
-  _itemCount: number
   /**
    * The highlighted item
    */

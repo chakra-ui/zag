@@ -150,7 +150,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send({ type: "END" })
           },
           Enter() {
-            send({ type: "TRIGGER_CLICK" })
+            send({ type: "TRIGGER_KEY" })
           },
           Space(event) {
             if (isTypingAhead) {
@@ -244,7 +244,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerMove(event) {
         if (!isInteractive || event.pointerType !== "mouse") return
         const option = dom.getClosestOption(event.target)
-        if (!option || option.dataset.disabled) {
+        if (!option || option.hasAttribute("data-disabled")) {
           send({ type: "POINTER_LEAVE" })
         } else {
           send({ type: "POINTER_MOVE", value: option.dataset.value })
@@ -253,7 +253,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerUp(event) {
         if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
-        if (!option || option.dataset.disabled) return
+        if (!option || option.hasAttribute("data-disabled")) return
         send({ type: "OPTION_CLICK", src: "pointerup", value: option.dataset.value })
       },
       onPointerLeave(event) {

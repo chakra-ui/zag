@@ -30,10 +30,6 @@ export type CollectionOptions = {
    */
   items: CollectionItem[]
   /**
-   * The number of items in the select
-   */
-  itemCount?: number
-  /**
    * The key of the item
    */
   getItemKey?: (item: CollectionItem) => string

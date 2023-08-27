@@ -40,7 +40,6 @@ export function machine(userContext: UserDefinedContext) {
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
-        _itemCount: (ctx) => ctx.itemCount ?? ctx.items.length,
         collection: (ctx) =>
           new Collection({
             items: ctx.items,
@@ -92,15 +91,15 @@ export function machine(userContext: UserDefinedContext) {
 
         focused: {
           tags: ["closed"],
-          entry: ["focusTrigger", "clearHighlightedItem"],
+          entry: ["focusTrigger"],
           on: {
             TRIGGER_BLUR: {
               target: "idle",
             },
-            TRIGGER_CLICK: [
-              { guard: "hasSelectedItems", target: "open", actions: ["invokeOnOpen"] },
-              { target: "open", actions: ["highlightFirstItem", "invokeOnOpen"] },
-            ],
+            TRIGGER_CLICK: {
+              target: "open",
+              actions: ["invokeOnOpen"],
+            },
             TRIGGER_KEY: [
               { guard: "hasSelectedItems", target: "open", actions: ["invokeOnOpen"] },
               { target: "open", actions: ["highlightFirstItem", "invokeOnOpen"] },
@@ -160,35 +159,35 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             CLOSE: {
               target: "focused",
-              actions: ["invokeOnClose"],
+              actions: ["clearHighlightedItem", "invokeOnClose"],
             },
             TRIGGER_CLICK: {
               target: "focused",
-              actions: ["invokeOnClose"],
+              actions: ["clearHighlightedItem", "invokeOnClose"],
             },
             OPTION_CLICK: [
               {
                 guard: "closeOnSelect",
                 target: "focused",
-                actions: ["selectHighlightedItem", "invokeOnClose"],
+                actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"],
               },
               {
-                actions: ["selectHighlightedItem"],
+                actions: ["selectHighlightedItem", "clearHighlightedItem"],
               },
             ],
             TRIGGER_KEY: [
               {
                 guard: "closeOnSelect",
                 target: "focused",
-                actions: ["selectHighlightedItem", "invokeOnClose"],
+                actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"],
               },
               {
-                actions: ["selectHighlightedItem"],
+                actions: ["selectHighlightedItem", "clearHighlightedItem"],
               },
             ],
             BLUR: {
               target: "focused",
-              actions: ["invokeOnClose"],
+              actions: ["clearHighlightedItem", "invokeOnClose"],
             },
             HOME: {
               actions: ["highlightFirstItem"],
@@ -432,7 +431,7 @@ function dispatchChangeEvent(ctx: MachineContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    ctx.onChange?.({ value: ctx.value, items: ctx.selectedItems })
+    ctx.onChange?.({ value: Array.from(ctx.value), items: ctx.selectedItems })
     dispatchChangeEvent(ctx)
   },
   highlightChange: (ctx: MachineContext) => {
