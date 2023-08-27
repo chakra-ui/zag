@@ -28,7 +28,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   function getOptionState(props: OptionProps) {
     const { value: item } = props
     const disabled = state.context.isItemDisabled?.(item)
+    const key = state.context.getItemKey?.(item) ?? item.value
     return {
+      key,
       isDisabled: Boolean(disabled || isDisabled),
       isHighlighted: state.context.highlightedValue === item.value,
       isSelected: state.context.selectedItems.some(({ value }) => value === item.value),
@@ -176,16 +178,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getOptionProps(props: OptionProps) {
       const { value: item } = props
-
       const optionState = getOptionState(props)
-      const valueText = state.context.getItemLabel?.(item) ?? item.label ?? item.value
 
       return normalize.element({
         id: dom.getOptionId(state.context, item.value),
         role: "option",
         ...parts.option.attrs,
-        "data-value": item.value,
-        "data-valuetext": valueText,
+        "data-value": optionState.key,
         "aria-selected": optionState.isSelected,
         "data-state": optionState.isSelected ? "checked" : "unchecked",
         "data-highlighted": dataAttr(optionState.isHighlighted),
