@@ -6,33 +6,32 @@ import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./select.anatomy"
 import { dom } from "./select.dom"
 import type {
-  MachineApi,
-  Option,
+  // MachineApi,
   OptionGroupLabelProps,
   OptionGroupProps,
   OptionProps,
   Send,
   State,
 } from "./select.types"
-import * as utils from "./select.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isDisabled = state.context.isDisabled
   const isInvalid = state.context.invalid
   const isInteractive = state.context.isInteractive
 
   const isOpen = state.matches("open")
 
-  const highlightedOption = state.context.highlightedOption
-  const selectedOption = state.context.selectedOption
+  const highlightedOption = state.context.highlightedItem
+  const selectedOption = state.context.selectedItems[0]
   const isTypingAhead = state.context.isTypingAhead
 
   function getOptionState(props: OptionProps) {
-    const id = dom.getOptionId(state.context, props.value)
+    const { value: item } = props
+    const disabled = state.context.isItemDisabled?.(item)
     return {
-      isDisabled: Boolean(props.disabled || isDisabled),
-      isHighlighted: state.context.highlightedId === id,
-      isChecked: state.context.selectedOption?.value === props.value,
+      isDisabled: Boolean(disabled || isDisabled),
+      isHighlighted: state.context.highlightedValue === item.value,
+      isSelected: state.context.selectedItems.some(({ value }) => value === item.value),
     }
   }
 
@@ -47,7 +46,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     selectedOption,
 
     focus() {
-      dom.getTriggerElement(state.context)?.focus()
+      dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
     },
 
     open() {
@@ -58,17 +57,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("CLOSE")
     },
 
-    setSelectedOption(value: Option) {
-      utils.validateOptionData(value)
+    setValue(value: string[]) {
       send({ type: "SELECT_OPTION", value })
     },
 
-    setHighlightedOption(value: Option) {
-      utils.validateOptionData(value)
+    highlightValue(value: string) {
       send({ type: "HIGHLIGHT_OPTION", value })
     },
 
-    clearSelectedOption() {
+    clearValue() {
       send({ type: "CLEAR_SELECTED" })
     },
 
@@ -84,7 +81,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       htmlFor: dom.getHiddenSelectId(state.context),
       onClick() {
         if (isDisabled) return
-        dom.getTriggerElement(state.context)?.focus()
+        dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
       },
     }),
 
@@ -110,7 +107,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-invalid": isInvalid,
       "data-readonly": dataAttr(state.context.readOnly),
       "data-placement": state.context.currentPlacement,
-      "data-placeholder-shown": dataAttr(!state.context.hasSelectedOption),
+      "data-placeholder-shown": dataAttr(!state.context.hasSelectedItems),
       onPointerDown(event) {
         if (event.button || event.ctrlKey || !isInteractive) return
         event.currentTarget.dataset.pointerType = event.pointerType
@@ -147,11 +144,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           Home() {
             send({ type: "HOME" })
           },
-          Enter() {
-            send({ type: "TRIGGER_CLICK" })
-          },
           End() {
             send({ type: "END" })
+          },
+          Enter() {
+            send({ type: "TRIGGER_CLICK" })
           },
           Space(event) {
             if (isTypingAhead) {
@@ -178,17 +175,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getOptionProps(props: OptionProps) {
-      const { value, label, valueText } = props
+      const { value: item } = props
+
       const optionState = getOptionState(props)
+      const valueText = state.context.getItemLabel?.(item) ?? item.label ?? item.value
+
       return normalize.element({
-        id: dom.getOptionId(state.context, value),
+        id: dom.getOptionId(state.context, item.value),
         role: "option",
         ...parts.option.attrs,
-        "data-label": label,
-        "data-value": value,
-        "data-valuetext": valueText ?? label,
-        "aria-selected": optionState.isChecked,
-        "data-state": optionState.isChecked ? "checked" : "unchecked",
+        "data-value": item.value,
+        "data-valuetext": valueText,
+        "aria-selected": optionState.isSelected,
+        "data-state": optionState.isSelected ? "checked" : "unchecked",
         "data-highlighted": dataAttr(optionState.isHighlighted),
         "data-disabled": dataAttr(optionState.isDisabled),
         "aria-disabled": ariaAttr(optionState.isDisabled),
@@ -218,15 +217,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       name: state.context.name,
       form: state.context.form,
       disabled: !isInteractive,
+      multiple: state.context.multiple,
       "aria-hidden": true,
       id: dom.getHiddenSelectId(state.context),
-      defaultValue: state.context.selectedOption?.value,
+      // defaultValue: state.context.selectedOption?.value,
       style: visuallyHiddenStyle,
       tabIndex: -1,
       // Some browser extensions will focus the hidden select.
       // Let's forward the focus to the trigger.
       onFocus() {
-        dom.getTriggerElement(state.context)?.focus()
+        dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
       },
       "aria-labelledby": dom.getLabelId(state.context),
     }),
@@ -238,23 +238,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "listbox",
       ...parts.content.attrs,
       "data-state": isOpen ? "open" : "closed",
-      "aria-activedescendant": state.context.highlightedId || "",
+      "aria-activedescendant": state.context.highlightedValue || "",
+      "aria-multiselectable": state.context.multiple ? "true" : undefined,
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: 0,
       onPointerMove(event) {
         if (!isInteractive || event.pointerType !== "mouse") return
         const option = dom.getClosestOption(event.target)
-        if (!option || option.hasAttribute("data-disabled")) {
+        if (!option || option.dataset.disabled) {
           send({ type: "POINTER_LEAVE" })
         } else {
-          send({ type: "POINTER_MOVE", id: option.id, target: option })
+          send({ type: "POINTER_MOVE", value: option.dataset.value })
         }
       },
       onPointerUp(event) {
         if (!isInteractive) return
         const option = dom.getClosestOption(event.target)
-        if (!option || option.hasAttribute("data-disabled")) return
-        send({ type: "OPTION_CLICK", src: "pointerup", id: option.id })
+        if (!option || option.dataset.disabled) return
+        send({ type: "OPTION_CLICK", src: "pointerup", value: option.dataset.value })
       },
       onPointerLeave(event) {
         if (event.pointerType !== "mouse") return

@@ -1,0 +1,187 @@
+import type { CollectionItem, CollectionNode, CollectionOptions, CollectionSearchOptions } from "./types"
+
+export class Collection {
+  private nodes: Map<string, CollectionNode> = new Map()
+  private disabledKeys: Set<string> = new Set()
+
+  private _firstKey: string | null = null
+  private _lastKey: string | null = null
+
+  constructor(options: CollectionOptions) {
+    const { items, isItemDisabled, getItemKey, getItemLabel } = options
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+
+      const getKeyFn = getItemKey ?? this.getItemKey
+
+      const node: CollectionNode = {
+        item: { ...item, label: getItemLabel?.(item) ?? item.label ?? item.value },
+        index: i,
+        key: getKeyFn(item),
+        prevKey: getKeyFn(items[i - 1]) ?? null,
+        nextKey: getKeyFn(items[i + 1]) ?? null,
+      }
+
+      this.nodes.set(item.value, node)
+
+      if (isItemDisabled?.(item)) {
+        this.disabledKeys.add(item.value)
+      }
+
+      if (i === 0) {
+        this._firstKey = getKeyFn(item)
+      }
+
+      if (i === items.length - 1) {
+        this._lastKey = getKeyFn(item)
+      }
+    }
+  }
+
+  getItem = (key: string | null) => {
+    if (key === null) return null
+    return this.nodes.get(key)?.item ?? null
+  }
+
+  getItems = (keys: string[]): CollectionItem[] => {
+    return keys.map((key) => this.getItem(key)!).filter(Boolean)
+  }
+
+  getItemAt = (index: number) => {
+    for (const node of this.nodes.values()) {
+      if (node.index === index) {
+        return node.item
+      }
+    }
+    return null
+  }
+
+  getItemKey = (item: CollectionItem) => {
+    return item?.value
+  }
+
+  getCount = () => {
+    return this.nodes.size
+  }
+
+  getFirstKey = () => {
+    let firstKey = this._firstKey
+    while (firstKey != null) {
+      let item = this.nodes.get(firstKey)
+      if (item != null && !this.disabledKeys.has(item.key)) {
+        return firstKey
+      }
+      firstKey = item?.nextKey ?? null
+    }
+    return null
+  }
+
+  getLastKey = () => {
+    let lastKey = this._lastKey
+    while (lastKey != null) {
+      let item = this.nodes.get(lastKey)
+      if (item != null && !this.disabledKeys.has(item.key)) {
+        return lastKey
+      }
+      lastKey = item?.prevKey ?? null
+    }
+    return null
+  }
+
+  getKeysAfter = (key: string) => {
+    const item = this.nodes.get(key)
+    let keyAfter = item?.nextKey ?? null
+
+    while (keyAfter != null) {
+      let item = this.nodes.get(keyAfter)
+      if (item != null && !this.disabledKeys.has(item.key)) {
+        return keyAfter
+      }
+      keyAfter = item?.nextKey ?? null
+    }
+    return null
+  }
+
+  getKeysBefore = (key: string) => {
+    const item = this.nodes.get(key)
+    let keyBefore = item?.prevKey ?? null
+
+    while (keyBefore != null) {
+      let item = this.nodes.get(keyBefore)
+      if (item != null && !this.disabledKeys.has(item.key)) {
+        return keyBefore
+      }
+      keyBefore = item?.prevKey ?? null
+    }
+    return null
+  };
+
+  *getKeys() {
+    for (const item of this.nodes.values()) {
+      yield item.key
+    }
+  }
+
+  getKeyForSearch = (options: CollectionSearchOptions) => {
+    const { state, fromKey, eventKey, timeout = 350 } = options
+
+    const search = state.keysSoFar + eventKey
+    const isRepeated = search.length > 1 && Array.from(search).every((char) => char === search[0])
+
+    const query = isRepeated ? search[0] : search
+    const isSingleKey = query.length === 1
+
+    const index = this.nodes.get(fromKey ?? "")?.index ?? -1
+
+    let nodes = Array.from(this.nodes.values())
+    if (fromKey != null) {
+      const wrappedNodes = wrap(nodes, index)
+      nodes = isSingleKey ? wrappedNodes.filter((item) => item.key !== fromKey) : wrappedNodes
+    }
+
+    const matchingKey = findMatchingNode(nodes, search)
+
+    function cleanup() {
+      clearTimeout(state.timer)
+      state.timer = -1
+    }
+
+    function update(value: string) {
+      state.keysSoFar = value
+      cleanup()
+
+      if (value !== "") {
+        state.timer = +setTimeout(() => {
+          update("")
+          cleanup()
+        }, timeout)
+      }
+    }
+
+    update(search)
+
+    return matchingKey
+  }
+}
+
+const findMatchingNode = (nodes: CollectionNode[], search: string) => {
+  for (const node of nodes) {
+    if (match(getValueText(node), search)) {
+      return node.key
+    }
+  }
+  return null
+}
+
+const getValueText = (node: CollectionNode) => {
+  return node.item.label ?? node.item.value ?? ""
+}
+
+const match = (label: string, query: string) => {
+  return label.toLowerCase().startsWith(query.toLowerCase())
+}
+
+const wrap = <T>(v: T[], idx: number) => {
+  return v.map((_, index) => v[(Math.max(idx, 0) + index) % v.length])
+}

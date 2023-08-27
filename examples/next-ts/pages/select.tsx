@@ -26,19 +26,17 @@ export default function Page() {
 
   const [state, send] = useMachine(
     select.machine({
+      items: selectData,
       id: useId(),
       name: "country",
-      onHighlight(details) {
+      onHighlightChange(details) {
         console.log("onHighlight", details)
       },
       onChange(details) {
         console.log("onChange", details)
       },
-      onOpen() {
-        console.log("onOpen")
-      },
-      onClose() {
-        console.log("onClose")
+      onOpenChange(isOpen) {
+        console.log("onOpen", { isOpen })
       },
     }),
     {
@@ -80,10 +78,10 @@ export default function Page() {
         <Portal>
           <div {...api.positionerProps}>
             <ul {...api.contentProps}>
-              {selectData.map(({ label, value }) => (
-                <li key={value} {...api.getOptionProps({ label, value })}>
-                  <span>{label}</span>
-                  {value === api.selectedOption?.value && "✓"}
+              {selectData.map((item) => (
+                <li key={item.value} {...api.getOptionProps({ value: item })}>
+                  <span>{item.label}</span>
+                  {item.value === api.selectedOption?.value && "✓"}
                 </li>
               ))}
             </ul>
@@ -92,7 +90,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["data"]} />
+        <StateVisualizer state={state} omit={["data", "collection", "items"]} />
       </Toolbar>
     </>
   )

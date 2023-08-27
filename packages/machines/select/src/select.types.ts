@@ -1,3 +1,4 @@
+import type { Collection, CollectionOptions, CollectionItem as Item } from "@zag-js/collection"
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
@@ -15,9 +16,20 @@ type ElementIds = Partial<{
   optionGroupLabel(id: string | number): string
 }>
 
+export type ValueChangeDetails = {
+  value: string[]
+  items: Item[]
+}
+
+export type HighlightChangeDetails = {
+  value: string | null
+  item: Item | null
+}
+
 type PublicContext = DirectionProperty &
   CommonProperties &
-  InteractOutsideHandlers & {
+  InteractOutsideHandlers &
+  CollectionOptions & {
     /**
      * The ids of the elements in the accordion. Useful for composition.
      */
@@ -54,19 +66,15 @@ type PublicContext = DirectionProperty &
     /**
      * The callback fired when the highlighted option changes.
      */
-    onHighlight?: (details: Option | null) => void
+    onHighlightChange?: (details: HighlightChangeDetails) => void
     /**
      * The callback fired when the selected option changes.
      */
-    onChange?: (details: Option | null) => void
+    onChange?: (details: ValueChangeDetails) => void
     /**
-     * The callback fired when the menu is opened.
+     * The callback fired when the menu is open state changes.
      */
-    onOpen?: () => void
-    /**
-     * The callback fired when the menu is closed.
-     */
-    onClose?: () => void
+    onOpenChange?: (open: boolean) => void
     /**
      * The positioning options of the menu.
      */
@@ -74,15 +82,19 @@ type PublicContext = DirectionProperty &
     /**
      * The selected option
      */
-    selectedOption: Option | null
+    value: string[]
     /**
      * The highlighted option
      */
-    highlightedOption: Option | null
+    highlightedValue: string | null
     /**
      * Whether to loop the keyboard navigation through the options
      */
     loop?: boolean
+    /**
+     * Whether to allow multiple selection
+     */
+    multiple?: boolean
   }
 
 type PrivateContext = Context<{
@@ -95,16 +107,6 @@ type PrivateContext = Context<{
    */
   currentPlacement?: Placement
   /**
-   * The previous highlighted option.
-   * Used to determine if the user has highlighted a new option.
-   */
-  prevHighlightedOption?: Option | null
-  /**
-   * The previous selected option.
-   * Used to determine if the selected option has changed.
-   */
-  prevSelectedOption?: Option | null
-  /**
    * Whether the fieldset is disabled
    */
   fieldsetDisabled: boolean
@@ -115,7 +117,7 @@ type ComputedContext = Readonly<{
    * @computed
    * Whether there's a selected option
    */
-  hasSelectedOption: boolean
+  hasSelectedItems: boolean
   /**
    * @computed
    * Whether a typeahead is currently active
@@ -131,26 +133,33 @@ type ComputedContext = Readonly<{
    * Whether the select is disabled
    */
   isDisabled: boolean
-  selectedId: string | null
-  highlightedId: string | null
-  hasSelectedChanged: boolean
-  hasHighlightedChanged: boolean
+  /**
+   * @computed
+   * The number of items in the select
+   */
+  _itemCount: number
+  /**
+   * The highlighted item
+   */
+  highlightedItem: Item | null
+  /**
+   * @computed
+   * The selected items
+   */
+  selectedItems: Item[]
+  /**
+   * @computed
+   * The map of item key to item
+   */
+  collection: Collection
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
-export type Option = {
-  label: string
-  value: string
-}
-
 export type OptionProps = {
-  label: string
-  value: string
-  disabled?: boolean
-  valueText?: string
+  value: Item
 }
 
 export type MachineState = {
@@ -177,11 +186,11 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * The currently highlighted option
    */
-  highlightedOption: Option | null
+  highlightedOption: Item | null
   /**
-   * The currently selected option
+   * The currently selected item
    */
-  selectedOption: Option | null
+  selectedOption: Item | null
   /**
    * Function to focus the select
    */

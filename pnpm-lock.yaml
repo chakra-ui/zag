@@ -161,6 +161,9 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../packages/utilities/collection
       '@zag-js/color-picker':
         specifier: workspace:*
         version: link:../../packages/machines/color-picker
@@ -375,6 +378,9 @@ importers:
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../packages/anatomy
+      '@zag-js/anatomy-icons':
+        specifier: workspace:*
+        version: link:../../packages/anatomy-icons
       '@zag-js/aria-hidden':
         specifier: workspace:*
         version: link:../../packages/utilities/aria-hidden
@@ -390,6 +396,9 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../packages/utilities/collection
       '@zag-js/color-picker':
         specifier: workspace:*
         version: link:../../packages/machines/color-picker
@@ -580,6 +589,9 @@ importers:
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../packages/anatomy
+      '@zag-js/anatomy-icons':
+        specifier: workspace:*
+        version: link:../../packages/anatomy-icons
       '@zag-js/aria-hidden':
         specifier: workspace:*
         version: link:../../packages/utilities/aria-hidden
@@ -595,6 +607,9 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../packages/utilities/collection
       '@zag-js/color-picker':
         specifier: workspace:*
         version: link:../../packages/machines/color-picker
@@ -794,6 +809,9 @@ importers:
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../packages/anatomy
+      '@zag-js/anatomy-icons':
+        specifier: workspace:*
+        version: link:../../packages/anatomy-icons
       '@zag-js/aria-hidden':
         specifier: workspace:*
         version: link:../../packages/utilities/aria-hidden
@@ -809,6 +827,9 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../packages/utilities/collection
       '@zag-js/color-picker':
         specifier: workspace:*
         version: link:../../packages/machines/color-picker
@@ -1002,6 +1023,9 @@ importers:
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../packages/anatomy
+      '@zag-js/anatomy-icons':
+        specifier: workspace:*
+        version: link:../../packages/anatomy-icons
       '@zag-js/aria-hidden':
         specifier: workspace:*
         version: link:../../packages/utilities/aria-hidden
@@ -1017,6 +1041,9 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../packages/utilities/collection
       '@zag-js/color-picker':
         specifier: workspace:*
         version: link:../../packages/machines/color-picker
@@ -2013,6 +2040,9 @@ importers:
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../anatomy
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../utilities/collection
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
@@ -2344,6 +2374,12 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../dom-query
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/utilities/collection:
     devDependencies:
       clean-package:
         specifier: 2.2.0
