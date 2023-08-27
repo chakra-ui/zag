@@ -306,12 +306,8 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       guards: {
-        closeOnSelect: (ctx, evt) => !!(evt.option?.closeOnSelect ?? ctx.closeOnSelect),
-        isMenuFocused: (ctx) => {
-          const menu = dom.getContentEl(ctx)
-          const activeElement = dom.getActiveElement(ctx)
-          return contains(menu, activeElement)
-        },
+        closeOnSelect: (ctx, evt) => !!(evt?.closeOnSelect ?? ctx.closeOnSelect),
+        isMenuFocused: (ctx) => contains(dom.getContentEl(ctx), dom.getActiveElement(ctx)),
         isTargetFocused: (ctx, evt) => ctx.highlightedId === evt.target.id,
         // whether the trigger is also a menu item
         isTriggerItem: (_ctx, evt) => dom.isTriggerItem(evt.target),
@@ -411,7 +407,6 @@ export function machine(userContext: UserDefinedContext) {
             ...ctx.positioning,
             ...(evt.options ?? {}),
             listeners: false,
-            // defer: true,
           })
         },
         invokeOnValueChange(ctx, evt) {

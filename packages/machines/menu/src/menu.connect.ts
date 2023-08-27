@@ -290,7 +290,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getItemProps(options: ItemProps) {
-      const { id, disabled, valueText } = options
+      const { id, disabled, valueText, closeOnSelect } = options
       return normalize.element({
         ...parts.item.attrs,
         id,
@@ -306,31 +306,36 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onPointerLeave(event) {
           if (disabled || event.pointerType !== "mouse") return
-          send({ type: "ITEM_POINTERLEAVE", target: event.currentTarget })
+          const target = event.currentTarget
+          send({ type: "ITEM_POINTERLEAVE", id, target, closeOnSelect })
         },
         onPointerMove(event) {
           if (disabled || event.pointerType !== "mouse") return
-          send({ type: "ITEM_POINTERMOVE", id, target: event.currentTarget })
+          const target = event.currentTarget
+          send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect })
         },
         onPointerDown(event) {
           if (disabled) return
-          send({ type: "ITEM_POINTERDOWN", target: event.currentTarget, id })
+          const target = event.currentTarget
+          send({ type: "ITEM_POINTERDOWN", target, id, closeOnSelect })
         },
         onPointerUp(event) {
           const evt = getNativeEvent(event)
           if (!isLeftClick(evt) || disabled) return
-          send({ type: "ITEM_CLICK", src: "pointerup", target: event.currentTarget, id })
+          const target = event.currentTarget
+          send({ type: "ITEM_CLICK", src: "pointerup", target, id, closeOnSelect })
         },
         onAuxClick(event) {
           if (disabled) return
           event.preventDefault()
-          send({ type: "ITEM_CLICK", src: "auxclick", target: event.currentTarget, id })
+          const target = event.currentTarget
+          send({ type: "ITEM_CLICK", src: "auxclick", target, id, closeOnSelect })
         },
       })
     },
 
     getOptionItemProps(option: OptionItemProps) {
-      const { name, type, disabled, onCheckedChange } = option
+      const { name, type, disabled, onCheckedChange, closeOnSelect } = option
 
       option.id ??= option.value
       option.valueText ??= option.value
@@ -350,13 +355,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           onPointerUp(event) {
             const evt = getNativeEvent(event)
             if (!isLeftClick(evt) || disabled) return
-            send({ type: "ITEM_CLICK", src: "pointerup", target: event.currentTarget, option })
+            const target = event.currentTarget
+            send({ type: "ITEM_CLICK", src: "pointerup", target, option, closeOnSelect })
             onCheckedChange?.(!checked)
           },
           onAuxClick(event) {
             if (disabled) return
             event.preventDefault()
-            send({ type: "ITEM_CLICK", src: "auxclick", target: event.currentTarget, option })
+            const target = event.currentTarget
+            send({ type: "ITEM_CLICK", src: "auxclick", target, option, closeOnSelect })
             onCheckedChange?.(!checked)
           },
         }),
