@@ -26,9 +26,10 @@ const fetchMachine = createMachine({
     "multiple": false,
     "closeOnSelect": false,
     "multiple": false,
+    "selectOnBlur && hasHighlightedItem": false,
+    "isTargetFocusable": false,
     "hasHighlightedItem": false,
-    "hasHighlightedItem": false,
-    "selectOnTab": false
+    "hasHighlightedItem": false
   },
   initial: "idle",
   on: {
@@ -38,11 +39,14 @@ const fetchMachine = createMachine({
     SELECT_ITEM: {
       actions: ["selectItem"]
     },
-    CLEAR_VALUE: {
-      actions: ["clearSelectedItems"]
-    },
     CLEAR_ITEM: {
       actions: ["clearItem"]
+    },
+    SET_VALUE: {
+      actions: ["setSelectedItems"]
+    },
+    CLEAR_VALUE: {
+      actions: ["clearSelectedItems"]
     }
   },
   activities: ["trackFormControlState"],
@@ -139,7 +143,7 @@ const fetchMachine = createMachine({
       tags: ["open"],
       entry: ["focusContent", "highlightFirstSelectedItem"],
       exit: ["scrollContentToTop"],
-      activities: ["trackInteractOutside", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
+      activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
       on: {
         CLOSE: {
           target: "focused",
@@ -169,10 +173,18 @@ const fetchMachine = createMachine({
         }, {
           actions: ["selectHighlightedItem", "clearHighlightedItem"]
         }],
-        BLUR: {
+        BLUR: [{
+          cond: "selectOnBlur && hasHighlightedItem",
+          target: "idle",
+          actions: ["selectHighlightedItem", "invokeOnClose", "clearHighlightedItem"]
+        }, {
+          cond: "isTargetFocusable",
+          target: "idle",
+          actions: ["clearHighlightedItem", "invokeOnClose"]
+        }, {
           target: "focused",
           actions: ["clearHighlightedItem", "invokeOnClose"]
-        },
+        }],
         HOME: {
           actions: ["highlightFirstItem"]
         },
@@ -199,15 +211,7 @@ const fetchMachine = createMachine({
         },
         POINTER_LEAVE: {
           actions: ["clearHighlightedItem"]
-        },
-        TAB: [{
-          cond: "selectOnTab",
-          target: "idle",
-          actions: ["selectHighlightedItem", "invokeOnClose", "clearHighlightedItem"]
-        }, {
-          target: "idle",
-          actions: ["invokeOnClose", "clearHighlightedItem"]
-        }]
+        }
       }
     }
   }
@@ -225,7 +229,8 @@ const fetchMachine = createMachine({
     "!multiple": ctx => ctx["!multiple"],
     "closeOnSelect": ctx => ctx["closeOnSelect"],
     "multiple": ctx => ctx["multiple"],
-    "hasHighlightedItem": ctx => ctx["hasHighlightedItem"],
-    "selectOnTab": ctx => ctx["selectOnTab"]
+    "selectOnBlur && hasHighlightedItem": ctx => ctx["selectOnBlur && hasHighlightedItem"],
+    "isTargetFocusable": ctx => ctx["isTargetFocusable"],
+    "hasHighlightedItem": ctx => ctx["hasHighlightedItem"]
   }
 });

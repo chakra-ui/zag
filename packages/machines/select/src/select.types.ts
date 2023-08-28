@@ -63,7 +63,7 @@ type PublicContext = DirectionProperty &
      * Whether to select the highlighted item when the user presses Tab,
      * and the menu is open.
      */
-    selectOnTab?: boolean
+    selectOnBlur?: boolean
     /**
      * The callback fired when the highlighted item changes.
      */
@@ -96,6 +96,10 @@ type PublicContext = DirectionProperty &
      * Whether to allow multiple selection
      */
     multiple?: boolean
+    /**
+     * Whether the select menu is open
+     */
+    open?: boolean
   }
 
 type PrivateContext = Context<{
@@ -174,4 +178,6 @@ export type ItemGroupLabelProps = {
   htmlFor: string
 }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {}
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  labelProps: T["label"]
+}

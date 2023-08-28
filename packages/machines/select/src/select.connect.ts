@@ -60,8 +60,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("CLOSE")
     },
 
-    setValue(value: string[]) {
+    selectValue(value: string) {
       send({ type: "SELECT_ITEM", value })
+    },
+
+    setValue(value: string[]) {
+      send({ type: "SET_VALUE", value })
     },
 
     highlightValue(value: string) {
@@ -305,10 +309,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           },
           End() {
             send({ type: "END" })
-          },
-          Tab(event) {
-            if (event.shiftKey) return
-            send({ type: "TAB" })
           },
           Enter() {
             send({ type: "TRIGGER_KEY" })

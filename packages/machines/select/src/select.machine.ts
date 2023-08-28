@@ -21,7 +21,7 @@ export function machine(userContext: UserDefinedContext) {
         items: [],
         value: [],
         highlightedValue: null,
-        selectOnTab: false,
+        selectOnBlur: false,
         loop: false,
         closeOnSelect: true,
         disabled: false,
@@ -54,6 +54,7 @@ export function machine(userContext: UserDefinedContext) {
       initial: "idle",
 
       watch: {
+        open: ["toggleVisibility"],
         value: ["syncSelectElement"],
       },
 
@@ -64,11 +65,14 @@ export function machine(userContext: UserDefinedContext) {
         SELECT_ITEM: {
           actions: ["selectItem"],
         },
-        CLEAR_VALUE: {
-          actions: ["clearSelectedItems"],
-        },
         CLEAR_ITEM: {
           actions: ["clearItem"],
+        },
+        SET_VALUE: {
+          actions: ["setSelectedItems"],
+        },
+        CLEAR_VALUE: {
+          actions: ["clearSelectedItems"],
         },
       },
 
@@ -104,16 +108,37 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["invokeOnOpen"],
             },
             TRIGGER_KEY: [
-              { guard: "hasSelectedItems", target: "open", actions: ["invokeOnOpen"] },
-              { target: "open", actions: ["highlightFirstItem", "invokeOnOpen"] },
+              {
+                guard: "hasSelectedItems",
+                target: "open",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["highlightFirstItem", "invokeOnOpen"],
+              },
             ],
             ARROW_UP: [
-              { guard: "hasSelectedItems", target: "open", actions: ["invokeOnOpen"] },
-              { target: "open", actions: ["highlightLastItem", "invokeOnOpen"] },
+              {
+                guard: "hasSelectedItems",
+                target: "open",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["highlightLastItem", "invokeOnOpen"],
+              },
             ],
             ARROW_DOWN: [
-              { guard: "hasSelectedItems", target: "open", actions: ["invokeOnOpen"] },
-              { target: "open", actions: ["highlightFirstItem", "invokeOnOpen"] },
+              {
+                guard: "hasSelectedItems",
+                target: "open",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["highlightFirstItem", "invokeOnOpen"],
+              },
             ],
             OPEN: {
               target: "open",
@@ -158,7 +183,7 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["open"],
           entry: ["focusContent", "highlightFirstSelectedItem"],
           exit: ["scrollContentToTop"],
-          activities: ["trackInteractOutside", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
+          activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
           on: {
             CLOSE: {
               target: "focused",
@@ -196,10 +221,22 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["selectHighlightedItem", "clearHighlightedItem"],
               },
             ],
-            BLUR: {
-              target: "focused",
-              actions: ["clearHighlightedItem", "invokeOnClose"],
-            },
+            BLUR: [
+              {
+                guard: and("selectOnBlur", "hasHighlightedItem"),
+                target: "idle",
+                actions: ["selectHighlightedItem", "invokeOnClose", "clearHighlightedItem"],
+              },
+              {
+                guard: "isTargetFocusable",
+                target: "idle",
+                actions: ["clearHighlightedItem", "invokeOnClose"],
+              },
+              {
+                target: "focused",
+                actions: ["clearHighlightedItem", "invokeOnClose"],
+              },
+            ],
             HOME: {
               actions: ["highlightFirstItem"],
             },
@@ -233,17 +270,6 @@ export function machine(userContext: UserDefinedContext) {
             POINTER_LEAVE: {
               actions: ["clearHighlightedItem"],
             },
-            TAB: [
-              {
-                guard: "selectOnTab",
-                target: "idle",
-                actions: ["selectHighlightedItem", "invokeOnClose", "clearHighlightedItem"],
-              },
-              {
-                target: "idle",
-                actions: ["invokeOnClose", "clearHighlightedItem"],
-              },
-            ],
           },
         },
       },
@@ -253,11 +279,12 @@ export function machine(userContext: UserDefinedContext) {
         multiple: (ctx) => !!ctx.multiple,
         hasSelectedItems: (ctx) => ctx.hasSelectedItems,
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
-        selectOnTab: (ctx) => !!ctx.selectOnTab,
+        selectOnBlur: (ctx) => !!ctx.selectOnBlur,
         closeOnSelect: (ctx, evt) => {
           if (ctx.multiple) return false
           return !!(evt.closeOnSelect ?? ctx.closeOnSelect)
         },
+        isTargetFocusable: (_ctx, evt) => !!evt.focusable,
       },
       activities: {
         proxyTabFocus(ctx) {
@@ -279,7 +306,7 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
-        trackInteractOutside(ctx, _evt, { send }) {
+        trackDismissableElement(ctx, _evt, { send }) {
           let focusable = false
           return trackDismissableElement(dom.getContentEl(ctx), {
             defer: true,
@@ -322,6 +349,9 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
+        toggleVisibility(ctx, _evt, { send }) {
+          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
+        },
         highlightPreviousItem(ctx) {
           if (!ctx.highlightedValue) return
           const prevKey = ctx.collection.getKeysBefore(ctx.highlightedValue)
@@ -345,8 +375,7 @@ export function machine(userContext: UserDefinedContext) {
             dom.getContentEl(ctx)?.focus({ preventScroll: true })
           })
         },
-        focusTrigger(ctx, evt) {
-          if (evt.focusable) return
+        focusTrigger(ctx) {
           raf(() => {
             dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
           })
@@ -386,6 +415,9 @@ export function machine(userContext: UserDefinedContext) {
         clearItem(ctx, evt) {
           const value = ctx.value.filter((v) => v !== evt.value)
           set.selectedItems(ctx, value)
+        },
+        setSelectedItems(ctx, evt) {
+          set.selectedItems(ctx, evt.value)
         },
         clearSelectedItems(ctx) {
           set.selectedItems(ctx, [])
@@ -427,7 +459,7 @@ export function machine(userContext: UserDefinedContext) {
         syncSelectElement(ctx) {
           const selectEl = dom.getHiddenSelectEl(ctx)
           if (!selectEl) return
-          const selectedKeys = ctx.collection.itemToKeys(ctx.selectedItems)
+          const selectedKeys = ctx.collection.getItemKeys(ctx.selectedItems)
           setElementValue(selectEl, selectedKeys.join(","), { type: "HTMLSelectElement" })
         },
       },
