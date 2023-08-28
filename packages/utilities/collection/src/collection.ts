@@ -7,34 +7,35 @@ export class Collection {
   private _firstKey: string | null = null
   private _lastKey: string | null = null
 
-  constructor(options: CollectionOptions) {
-    const { items, isItemDisabled, getItemKey, getItemLabel } = options
+  constructor(private options: CollectionOptions) {
+    const { items, isItemDisabled } = options
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i]
 
-      const getKeyFn = getItemKey ?? this.getItemKey
+      const key = this.getItemKey(item)
+      const label = this.getItemLabel(item)
 
       const node: CollectionNode = {
-        item: { ...item, label: getItemLabel?.(item) ?? item.label ?? item.value },
+        item: { ...item, label },
         index: i,
-        key: getKeyFn(item),
-        prevKey: getKeyFn(items[i - 1]) ?? null,
-        nextKey: getKeyFn(items[i + 1]) ?? null,
+        key: key,
+        prevKey: this.getItemKey(items[i - 1]) ?? null,
+        nextKey: this.getItemKey(items[i + 1]) ?? null,
       }
 
-      this.nodes.set(item.value, node)
+      this.nodes.set(key, node)
 
       if (isItemDisabled?.(item)) {
-        this.disabledKeys.add(item.value)
+        this.disabledKeys.add(key)
       }
 
       if (i === 0) {
-        this._firstKey = getKeyFn(item)
+        this._firstKey = key
       }
 
       if (i === items.length - 1) {
-        this._lastKey = getKeyFn(item)
+        this._lastKey = key
       }
     }
   }
@@ -58,7 +59,24 @@ export class Collection {
   }
 
   getItemKey = (item: CollectionItem) => {
-    return item?.value
+    return this.options.getItemKey?.(item) ?? item?.value
+  }
+
+  getItemKeys = (item: CollectionItem[]) => {
+    return item.map((item) => this.getItemKey(item)).filter(Boolean) as string[]
+  }
+
+  getItemLabel = (item: CollectionItem) => {
+    return this.options.getItemLabel?.(item) ?? item?.label ?? this.getItemKey(item)
+  }
+
+  getItemLabels = (item: CollectionItem[]) => {
+    return item.map((item) => this.getItemLabel(item)).filter(Boolean) as string[]
+  }
+
+  hasItemKey = (items: CollectionItem[], key: string) => {
+    const keys = this.getItemKeys(items)
+    return keys.some((itemKey) => itemKey === key)
   }
 
   getCount = () => {
@@ -115,12 +133,6 @@ export class Collection {
       keyBefore = item?.prevKey ?? null
     }
     return null
-  };
-
-  *getKeys() {
-    for (const item of this.nodes.values()) {
-      yield item.key
-    }
   }
 
   getKeyForSearch = (options: CollectionSearchOptions) => {
@@ -163,6 +175,14 @@ export class Collection {
 
     return matchingKey
   }
+
+  toJSON = () => {
+    return {
+      size: this.getCount(),
+      firstKey: this.getFirstKey(),
+      lastKey: this.getLastKey(),
+    }
+  }
 }
 
 const findMatchingNode = (nodes: CollectionNode[], search: string) => {
@@ -175,7 +195,7 @@ const findMatchingNode = (nodes: CollectionNode[], search: string) => {
 }
 
 const getValueText = (node: CollectionNode) => {
-  return node.item.label ?? node.item.value ?? ""
+  return node.item.label ?? node.key ?? ""
 }
 
 const match = (label: string, query: string) => {

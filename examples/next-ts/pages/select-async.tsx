@@ -1,8 +1,7 @@
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
-import { selectControls, selectData } from "@zag-js/shared"
-import serialize from "form-serialize"
-import { useId } from "react"
+import { selectControls } from "@zag-js/shared"
+import { useEffect, useId, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -24,23 +23,28 @@ const CaretIcon = () => (
 export default function Page() {
   const controls = useControls(selectControls)
 
+  const [items, setItems] = useState([])
+
+  useEffect(() => {
+    async function load() {
+      const res = await fetch(`https://pokeapi.co/api/v2/pokemon`)
+      const json = await res.json()
+      setItems(json.results)
+    }
+
+    load()
+  }, [])
+
   const [state, send] = useMachine(
     select.machine({
-      items: selectData,
+      items,
       id: useId(),
-      name: "country",
-      onHighlightChange(details) {
-        console.log("onHighlight", details)
-      },
-      onChange(details) {
-        console.log("onChange", details)
-      },
-      onOpenChange(isOpen) {
-        console.log("onOpen", { isOpen })
+      getItemKey(item) {
+        return item?.name
       },
     }),
     {
-      context: controls.context,
+      context: { items },
     },
   )
 
@@ -49,7 +53,6 @@ export default function Page() {
   return (
     <>
       <main className="select">
-        {/* control */}
         <div className="control">
           <label {...api.labelProps}>Label</label>
           <button {...api.triggerProps}>
@@ -60,29 +63,12 @@ export default function Page() {
           </button>
         </div>
 
-        <form
-          onChange={(e) => {
-            const formData = serialize(e.currentTarget, { hash: true })
-            console.log(formData)
-          }}
-        >
-          {/* Hidden select */}
-          <select {...api.hiddenSelectProps}>
-            {selectData.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </form>
-
-        {/* UI select */}
         <Portal>
           <div {...api.positionerProps}>
             <ul {...api.contentProps}>
-              {selectData.map((item) => (
-                <li key={item.value} {...api.getItemProps({ value: item })}>
-                  <span className="item-label">{item.label}</span>
+              {items.map((item) => (
+                <li key={item.name} {...api.getItemProps({ value: item })}>
+                  <span className="item-label">{item.name}</span>
                   <span {...api.getItemIndicatorProps({ value: item })}>✓</span>
                 </li>
               ))}
@@ -91,8 +77,8 @@ export default function Page() {
         </Portal>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["data", "collection", "items"]} />
+      <Toolbar controls={controls.ui} viz>
+        <StateVisualizer state={state} omit={["data", "items"]} />
       </Toolbar>
     </>
   )

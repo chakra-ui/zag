@@ -23,21 +23,26 @@ const fetchMachine = createMachine({
     "!multiple": false,
     "!multiple": false,
     "closeOnSelect": false,
+    "multiple": false,
     "closeOnSelect": false,
+    "multiple": false,
     "hasHighlightedItem": false,
     "hasHighlightedItem": false,
     "selectOnTab": false
   },
   initial: "idle",
   on: {
-    HIGHLIGHT_OPTION: {
+    HIGHLIGHT_ITEM: {
       actions: ["setHighlightedItem"]
     },
-    SELECT_OPTION: {
+    SELECT_ITEM: {
       actions: ["selectItem"]
     },
-    CLEAR_SELECTED: {
+    CLEAR_VALUE: {
       actions: ["clearSelectedItems"]
+    },
+    CLEAR_ITEM: {
+      actions: ["clearItem"]
     }
   },
   activities: ["trackFormControlState"],
@@ -144,10 +149,13 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: ["clearHighlightedItem", "invokeOnClose"]
         },
-        OPTION_CLICK: [{
+        ITEM_CLICK: [{
           cond: "closeOnSelect",
           target: "focused",
           actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"]
+        }, {
+          cond: "multiple",
+          actions: ["selectHighlightedItem"]
         }, {
           actions: ["selectHighlightedItem", "clearHighlightedItem"]
         }],
@@ -155,6 +163,9 @@ const fetchMachine = createMachine({
           cond: "closeOnSelect",
           target: "focused",
           actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"]
+        }, {
+          cond: "multiple",
+          actions: ["selectHighlightedItem"]
         }, {
           actions: ["selectHighlightedItem", "clearHighlightedItem"]
         }],
@@ -170,7 +181,7 @@ const fetchMachine = createMachine({
         },
         ARROW_DOWN: [{
           cond: "hasHighlightedItem",
-          actions: ["highlightNextOption"]
+          actions: ["highlightNextItem"]
         }, {
           actions: ["highlightFirstItem"]
         }],
@@ -213,6 +224,7 @@ const fetchMachine = createMachine({
     "!multiple && hasSelectedItems": ctx => ctx["!multiple && hasSelectedItems"],
     "!multiple": ctx => ctx["!multiple"],
     "closeOnSelect": ctx => ctx["closeOnSelect"],
+    "multiple": ctx => ctx["multiple"],
     "hasHighlightedItem": ctx => ctx["hasHighlightedItem"],
     "selectOnTab": ctx => ctx["selectOnTab"]
   }

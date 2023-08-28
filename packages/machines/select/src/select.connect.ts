@@ -7,9 +7,9 @@ import { parts } from "./select.anatomy"
 import { dom } from "./select.dom"
 import type {
   // MachineApi,
-  OptionGroupLabelProps,
-  OptionGroupProps,
-  OptionProps,
+  ItemGroupLabelProps,
+  ItemGroupProps,
+  ItemProps,
   Send,
   State,
 } from "./select.types"
@@ -19,21 +19,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isInvalid = state.context.invalid
   const isInteractive = state.context.isInteractive
 
-  const isOpen = state.matches("open")
+  const isOpen = state.hasTag("open")
 
-  const highlightedOption = state.context.highlightedItem
-  const selectedOption = state.context.selectedItems[0]
+  const highlightedItem = state.context.highlightedItem
+  const selectedItems = state.context.selectedItems
   const isTypingAhead = state.context.isTypingAhead
 
-  function getOptionState(props: OptionProps) {
+  function getItemState(props: ItemProps) {
     const { value: item } = props
     const disabled = state.context.isItemDisabled?.(item)
     const key = state.context.getItemKey?.(item) ?? item.value
     return {
       key,
       isDisabled: Boolean(disabled || isDisabled),
-      isHighlighted: state.context.highlightedValue === item.value,
-      isSelected: state.context.selectedItems.some(({ value }) => value === item.value),
+      isHighlighted: state.context.highlightedValue === key,
+      isSelected: state.context.collection.hasItemKey(state.context.selectedItems, key),
     }
   }
 
@@ -44,8 +44,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     isOpen,
-    highlightedOption,
-    selectedOption,
+    highlightedItem,
+    selectedItems,
+    hasSelectedItems: state.context.hasSelectedItems,
 
     focus() {
       dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
@@ -60,18 +61,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     setValue(value: string[]) {
-      send({ type: "SELECT_OPTION", value })
+      send({ type: "SELECT_ITEM", value })
     },
 
     highlightValue(value: string) {
-      send({ type: "HIGHLIGHT_OPTION", value })
+      send({ type: "HIGHLIGHT_ITEM", value })
     },
 
-    clearValue() {
-      send({ type: "CLEAR_SELECTED" })
+    clearValue(value?: string) {
+      if (value) {
+        send({ type: "CLEAR_ITEM", value })
+      } else {
+        send({ type: "CLEAR_VALUE" })
+      }
     },
 
-    getOptionState,
+    getItemState,
 
     labelProps: normalize.label({
       dir: state.context.dir,
@@ -134,8 +139,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           ArrowUp() {
             send({ type: "ARROW_UP" })
           },
-          ArrowDown() {
-            send({ type: "ARROW_DOWN" })
+          ArrowDown(event) {
+            send({ type: event.altKey ? "OPEN" : "ARROW_DOWN" })
           },
           ArrowLeft() {
             send({ type: "ARROW_LEFT" })
@@ -176,14 +181,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getOptionProps(props: OptionProps) {
-      const { value: item } = props
-      const optionState = getOptionState(props)
+    getItemProps(props: ItemProps) {
+      const optionState = getItemState(props)
 
       return normalize.element({
-        id: dom.getOptionId(state.context, item.value),
+        id: dom.getItemId(state.context, optionState.key),
         role: "option",
-        ...parts.option.attrs,
+        ...parts.item.attrs,
+        dir: state.context.dir,
         "data-value": optionState.key,
         "aria-selected": optionState.isSelected,
         "data-state": optionState.isSelected ? "checked" : "unchecked",
@@ -193,24 +198,49 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getOptionGroupLabelProps(props: OptionGroupLabelProps) {
-      const { htmlFor } = props
+    getItemIndicatorProps(props: ItemProps) {
+      const optionState = getItemState(props)
       return normalize.element({
-        id: dom.getOptionGroupId(state.context, htmlFor),
-        role: "group",
-        ...parts.optionGroupLabel.attrs,
+        "aria-hidden": true,
+        ...parts.itemIndicator.attrs,
+        dir: state.context.dir,
+        "data-state": optionState.isSelected ? "checked" : "unchecked",
+        hidden: !optionState.isSelected,
       })
     },
 
-    getOptionGroupProps(props: OptionGroupProps) {
-      const { id } = props
+    getItemGroupLabelProps(props: ItemGroupLabelProps) {
+      const { htmlFor } = props
       return normalize.element({
-        ...parts.optionGroup.attrs,
-        "data-disabled": dataAttr(isDisabled),
-        id: dom.getOptionGroupId(state.context, id),
-        "aria-labelledby": dom.getOptionGroupLabelId(state.context, id),
+        ...parts.itemGroupLabel.attrs,
+        id: dom.getItemGroupId(state.context, htmlFor),
+        role: "group",
+        dir: state.context.dir,
       })
     },
+
+    getItemGroupProps(props: ItemGroupProps) {
+      const { id } = props
+      return normalize.element({
+        ...parts.itemGroup.attrs,
+        "data-disabled": dataAttr(isDisabled),
+        id: dom.getItemGroupId(state.context, id),
+        "aria-labelledby": dom.getItemGroupLabelId(state.context, id),
+        dir: state.context.dir,
+      })
+    },
+
+    clearTriggerProps: normalize.button({
+      ...parts.clearTrigger.attrs,
+      id: dom.getClearTriggerId(state.context),
+      type: "button",
+      "aria-label": "Clear value",
+      hidden: !state.context.hasSelectedItems,
+      dir: state.context.dir,
+      onClick() {
+        send("CLEAR_VALUE")
+      },
+    }),
 
     hiddenSelectProps: normalize.select({
       name: state.context.name,
@@ -243,7 +273,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       tabIndex: 0,
       onPointerMove(event) {
         if (!isInteractive || event.pointerType !== "mouse") return
-        const option = dom.getClosestOption(event.target)
+        const option = dom.getClosestOptionEl(event.target)
         if (!option || option.hasAttribute("data-disabled")) {
           send({ type: "POINTER_LEAVE" })
         } else {
@@ -252,9 +282,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onPointerUp(event) {
         if (!isInteractive) return
-        const option = dom.getClosestOption(event.target)
+        const option = dom.getClosestOptionEl(event.target)
         if (!option || option.hasAttribute("data-disabled")) return
-        send({ type: "OPTION_CLICK", src: "pointerup", value: option.dataset.value })
+        send({ type: "ITEM_CLICK", src: "pointerup", value: option.dataset.value })
       },
       onPointerLeave(event) {
         if (event.pointerType !== "mouse") return

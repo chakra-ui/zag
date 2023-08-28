@@ -8,12 +8,13 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
 type ElementIds = Partial<{
   content: string
   trigger: string
+  clearTrigger: string
   label: string
-  option(id: string | number): string
   hiddenSelect: string
   positioner: string
-  optionGroup(id: string | number): string
-  optionGroupLabel(id: string | number): string
+  item(id: string | number): string
+  itemGroup(id: string | number): string
+  itemGroupLabel(id: string | number): string
 }>
 
 export type ValueChangeDetails = {
@@ -153,7 +154,7 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
-export type OptionProps = {
+export type ItemProps = {
   value: Item
 }
 
@@ -165,65 +166,12 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type OptionGroupProps = {
+export type ItemGroupProps = {
   id: string
 }
 
-export type OptionGroupLabelProps = {
+export type ItemGroupLabelProps = {
   htmlFor: string
 }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
-  /**
-   * Whether the select is open
-   */
-  isOpen: boolean
-  /**
-   * The currently highlighted option
-   */
-  highlightedOption: Item | null
-  /**
-   * The currently selected item
-   */
-  selectedOption: Item | null
-  /**
-   * Function to focus the select
-   */
-  focus(): void
-  /**
-   * Function to open the select
-   */
-  open(): void
-  /**
-   * Function to close the select
-   */
-  close(): void
-  /**
-   * Function to set the selected option
-   */
-  setSelectedOption(value: Option): void
-  /**
-   * Function to set the highlighted option
-   */
-  setHighlightedOption(value: Option): void
-  /**
-   * Function to clear the selected option
-   */
-  clearSelectedOption(): void
-  /**
-   * Returns the state details of an option
-   */
-  getOptionState: (props: OptionProps) => {
-    isDisabled: boolean
-    isHighlighted: boolean
-    isChecked: boolean
-  }
-  labelProps: T["label"]
-  positionerProps: T["element"]
-  triggerProps: T["button"]
-  getOptionProps(props: OptionProps): T["element"]
-  getOptionGroupLabelProps(props: OptionGroupLabelProps): T["element"]
-  getOptionGroupProps(props: OptionGroupProps): T["element"]
-  hiddenSelectProps: T["select"]
-  contentProps: T["element"]
-}
+export type MachineApi<T extends PropTypes = PropTypes> = {}

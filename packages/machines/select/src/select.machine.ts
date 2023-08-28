@@ -58,14 +58,17 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       on: {
-        HIGHLIGHT_OPTION: {
+        HIGHLIGHT_ITEM: {
           actions: ["setHighlightedItem"],
         },
-        SELECT_OPTION: {
+        SELECT_ITEM: {
           actions: ["selectItem"],
         },
-        CLEAR_SELECTED: {
+        CLEAR_VALUE: {
           actions: ["clearSelectedItems"],
+        },
+        CLEAR_ITEM: {
+          actions: ["clearItem"],
         },
       },
 
@@ -165,11 +168,15 @@ export function machine(userContext: UserDefinedContext) {
               target: "focused",
               actions: ["clearHighlightedItem", "invokeOnClose"],
             },
-            OPTION_CLICK: [
+            ITEM_CLICK: [
               {
                 guard: "closeOnSelect",
                 target: "focused",
                 actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"],
+              },
+              {
+                guard: "multiple",
+                actions: ["selectHighlightedItem"],
               },
               {
                 actions: ["selectHighlightedItem", "clearHighlightedItem"],
@@ -180,6 +187,10 @@ export function machine(userContext: UserDefinedContext) {
                 guard: "closeOnSelect",
                 target: "focused",
                 actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"],
+              },
+              {
+                guard: "multiple",
+                actions: ["selectHighlightedItem"],
               },
               {
                 actions: ["selectHighlightedItem", "clearHighlightedItem"],
@@ -198,7 +209,7 @@ export function machine(userContext: UserDefinedContext) {
             ARROW_DOWN: [
               {
                 guard: "hasHighlightedItem",
-                actions: ["highlightNextOption"],
+                actions: ["highlightNextItem"],
               },
               {
                 actions: ["highlightFirstItem"],
@@ -239,10 +250,14 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
+        multiple: (ctx) => !!ctx.multiple,
         hasSelectedItems: (ctx) => ctx.hasSelectedItems,
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
         selectOnTab: (ctx) => !!ctx.selectOnTab,
-        closeOnSelect: (ctx, evt) => !!(evt.closeOnSelect ?? ctx.closeOnSelect),
+        closeOnSelect: (ctx, evt) => {
+          if (ctx.multiple) return false
+          return !!(evt.closeOnSelect ?? ctx.closeOnSelect)
+        },
       },
       activities: {
         proxyTabFocus(ctx) {
@@ -255,7 +270,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         trackFormControlState(ctx, _evt, { initialContext }) {
-          return trackFormControl(dom.getHiddenSelectElement(ctx), {
+          return trackFormControl(dom.getHiddenSelectEl(ctx), {
             onFieldsetDisabledChange(disabled) {
               ctx.fieldsetDisabled = disabled
             },
@@ -295,8 +310,8 @@ export function machine(userContext: UserDefinedContext) {
             const state = getState()
             // don't scroll into view if we're using the pointer
             if (state.event.type === "POINTER_MOVE") return
-            const option = dom.getHighlightedOption(ctx)
-            option?.scrollIntoView({ block: "nearest" })
+            const optionEl = dom.getHighlightedOptionEl(ctx)
+            optionEl?.scrollIntoView({ block: "nearest" })
           }
 
           raf(() => {
@@ -312,7 +327,7 @@ export function machine(userContext: UserDefinedContext) {
           const prevKey = ctx.collection.getKeysBefore(ctx.highlightedValue)
           set.highlightedItem(ctx, prevKey)
         },
-        highlightNextOption(ctx) {
+        highlightNextItem(ctx) {
           if (!ctx.highlightedValue) return
           const nextKey = ctx.collection.getKeysAfter(ctx.highlightedValue)
           set.highlightedItem(ctx, nextKey)
@@ -343,8 +358,8 @@ export function machine(userContext: UserDefinedContext) {
         },
         highlightFirstSelectedItem(ctx) {
           if (!ctx.hasSelectedItems) return
-          const firstItem = ctx.selectedItems[0]
-          set.highlightedItem(ctx, firstItem?.value)
+          const firstSelectedKey = ctx.collection.getItemKey(ctx.selectedItems[0])
+          set.highlightedItem(ctx, firstSelectedKey)
         },
         highlightItem(ctx, evt) {
           set.highlightedItem(ctx, evt.value)
@@ -367,6 +382,10 @@ export function machine(userContext: UserDefinedContext) {
         },
         selectItem(ctx, evt) {
           set.selectedItem(ctx, evt.value)
+        },
+        clearItem(ctx, evt) {
+          const value = ctx.value.filter((v) => v !== evt.value)
+          set.selectedItems(ctx, value)
         },
         clearSelectedItems(ctx) {
           set.selectedItems(ctx, [])
@@ -406,15 +425,15 @@ export function machine(userContext: UserDefinedContext) {
           ctx.onOpenChange?.(false)
         },
         syncSelectElement(ctx) {
-          const node = dom.getHiddenSelectElement(ctx)
-          if (!node) return
-          const selectedValue = ctx.selectedItems.map((item) => item.value).join(",")
-          setElementValue(node, selectedValue, { type: "HTMLSelectElement" })
+          const selectEl = dom.getHiddenSelectEl(ctx)
+          if (!selectEl) return
+          const selectedKeys = ctx.collection.itemToKeys(ctx.selectedItems)
+          setElementValue(selectEl, selectedKeys.join(","), { type: "HTMLSelectElement" })
         },
       },
       transformContext(ctx) {
-        if (ctx.value) {
-          ctx.value = ref(ctx.value)
+        if (ctx.items) {
+          ctx.items = ref(ctx.items)
         }
       },
     },
@@ -422,7 +441,7 @@ export function machine(userContext: UserDefinedContext) {
 }
 
 function dispatchChangeEvent(ctx: MachineContext) {
-  const node = dom.getHiddenSelectElement(ctx)
+  const node = dom.getHiddenSelectEl(ctx)
   if (!node) return
   const win = dom.getWin(ctx)
   const changeEvent = new win.Event("change", { bubbles: true })
