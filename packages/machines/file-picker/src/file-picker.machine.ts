@@ -1,9 +1,9 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
-import { dom } from "./file-upload.dom"
-import type { MachineContext, MachineState, RejectedFile, UserDefinedContext } from "./file-upload.types"
-import { getAcceptAttrString, getFilesFromEvent, isFilesWithinRange } from "./file-upload.utils"
+import { dom } from "./file-picker.dom"
+import type { MachineContext, MachineState, RejectedFile, UserDefinedContext } from "./file-picker.types"
+import { getAcceptAttrString, getFilesFromEvent, isFilesWithinRange } from "./file-picker.utils"
 
 const { not } = guards
 
@@ -11,7 +11,7 @@ export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
-      id: "fileupload",
+      id: "filePicker",
       initial: "idle",
       context: {
         minFileSize: 0,

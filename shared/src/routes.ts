@@ -4,7 +4,7 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
-  { label: "File Upload", path: "/file-upload" },
+  { label: "File Picker", path: "/file-picker" },
   { label: "Presence", path: "/presence" },
   { label: "Avatar", path: "/avatar" },
   { label: "Color Picker", path: "/color-picker" },

@@ -1,20 +1,20 @@
 import { HStack, Stack, VStack } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
-import * as fileUpload from "@zag-js/file-upload"
+import * as filePicker from "@zag-js/file-picker"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { Button } from "components/button"
 import { useId } from "react"
 import { HiX } from "react-icons/hi"
 
-export function FileUpload(props: { controls: any }) {
+export function filePicker(props: { controls: any }) {
   const [state, send] = useMachine(
-    fileUpload.machine({
+    filePicker.machine({
       id: useId(),
     }),
     { context: props.controls },
   )
 
-  const api = fileUpload.connect(state, send, normalizeProps)
+  const api = filePicker.connect(state, send, normalizeProps)
 
   return (
     <Stack width="80%" {...api.rootProps}>

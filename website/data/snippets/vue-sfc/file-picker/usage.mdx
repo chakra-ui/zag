@@ -1,13 +1,13 @@
 ```html
 <script setup>
-  import * as fileUpload from "@zag-js/file-upload"
+  import * as filePicker from "@zag-js/file-picker"
   import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed } from "vue"
 
-  const [state, send] = useMachine(fileUpload.machine({ id: "1" }))
+  const [state, send] = useMachine(filePicker.machine({ id: "1" }))
 
   const api = computed(() =>
-    fileUpload.connect(state.value, send, normalizeProps),
+    filePicker.connect(state.value, send, normalizeProps),
   )
 </script>
 

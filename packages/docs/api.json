@@ -1028,7 +1028,7 @@
       }
     }
   },
-  "file-upload": {
+  "file-picker": {
     "api": {
       "isDragging": {
         "type": "boolean",

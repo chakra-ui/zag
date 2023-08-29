@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import * as fileUpload from "@zag-js/file-upload"
-import { fileUploadControls, formatFileSize } from "@zag-js/shared"
+import * as filePicker from "@zag-js/file-picker"
+import { filePickerControls, formatFileSize } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
-const controls = useControls(fileUploadControls)
+const controls = useControls(filePickerControls)
 
-const [state, send] = useMachine(fileUpload.machine({ id: "1" }), {
+const [state, send] = useMachine(filePicker.machine({ id: "1" }), {
   context: controls.context,
 })
 
-const api = computed(() => fileUpload.connect(state.value, send, normalizeProps))
+const api = computed(() => filePicker.connect(state.value, send, normalizeProps))
 </script>
 
 <template>
-  <main class="file-upload">
+  <main class="file-picker">
     <div v-bind="api.rootProps">
       <div v-bind="api.dropzoneProps">
         <input v-bind="api.hiddenInputProps" />

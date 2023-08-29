@@ -203,9 +203,9 @@ importers:
       '@zag-js/element-size':
         specifier: workspace:*
         version: link:../../packages/utilities/element-size
-      '@zag-js/file-upload':
+      '@zag-js/file-picker':
         specifier: workspace:*
-        version: link:../../packages/machines/file-upload
+        version: link:../../packages/machines/file-picker
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -432,9 +432,9 @@ importers:
       '@zag-js/element-size':
         specifier: workspace:*
         version: link:../../packages/utilities/element-size
-      '@zag-js/file-upload':
+      '@zag-js/file-picker':
         specifier: workspace:*
-        version: link:../../packages/machines/file-upload
+        version: link:../../packages/machines/file-picker
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -637,9 +637,9 @@ importers:
       '@zag-js/element-size':
         specifier: workspace:*
         version: link:../../packages/utilities/element-size
-      '@zag-js/file-upload':
+      '@zag-js/file-picker':
         specifier: workspace:*
-        version: link:../../packages/machines/file-upload
+        version: link:../../packages/machines/file-picker
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -851,9 +851,9 @@ importers:
       '@zag-js/element-size':
         specifier: workspace:*
         version: link:../../packages/utilities/element-size
-      '@zag-js/file-upload':
+      '@zag-js/file-picker':
         specifier: workspace:*
-        version: link:../../packages/machines/file-upload
+        version: link:../../packages/machines/file-picker
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -1059,9 +1059,9 @@ importers:
       '@zag-js/element-size':
         specifier: workspace:*
         version: link:../../packages/utilities/element-size
-      '@zag-js/file-upload':
+      '@zag-js/file-picker':
         specifier: workspace:*
-        version: link:../../packages/machines/file-upload
+        version: link:../../packages/machines/file-picker
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -1657,7 +1657,7 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  packages/machines/file-upload:
+  packages/machines/file-picker:
     dependencies:
       '@zag-js/anatomy':
         specifier: workspace:*
@@ -2630,9 +2630,9 @@ importers:
       '@zag-js/editable':
         specifier: workspace:*
         version: link:../packages/machines/editable
-      '@zag-js/file-upload':
+      '@zag-js/file-picker':
         specifier: workspace:*
-        version: link:../packages/machines/file-upload
+        version: link:../packages/machines/file-picker
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../packages/machines/hover-card

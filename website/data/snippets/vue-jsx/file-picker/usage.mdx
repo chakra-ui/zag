@@ -1,17 +1,17 @@
 ```jsx
-import * as fileUpload from "@zag-js/file-upload"
+import * as filePicker from "@zag-js/file-picker"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent } from "vue"
 
-export const FileUpload = defineComponent({
-  name: "FileUpload",
+export const filePicker = defineComponent({
+  name: "filePicker",
   setup() {
-    const [state, send] = useMachine(fileUpload.machine({ id: "1" }), {
+    const [state, send] = useMachine(filePicker.machine({ id: "1" }), {
       context: controls.context,
     })
 
     const apiRef = computed(() =>
-      fileUpload.connect(state.value, send, normalizeProps),
+      filePicker.connect(state.value, send, normalizeProps),
     )
 
     return () => {

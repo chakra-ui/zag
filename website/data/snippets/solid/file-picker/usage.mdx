@@ -1,16 +1,16 @@
 ```jsx
-import * as fileUpload from "@zag-js/file-upload"
+import * as filePicker from "@zag-js/file-picker"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createUniqueId, createMemo } from "solid-js"
 
-export function FileUpload() {
+export function filePicker() {
   const [state, send] = useMachine(
-    fileUpload.machine({
+    filePicker.machine({
       id: createUniqueId(),
     }),
   )
 
-  const api = createMemo(() => fileUpload.connect(state, send, normalizeProps))
+  const api = createMemo(() => filePicker.connect(state, send, normalizeProps))
 
   return (
     <div {...api.rootProps}>

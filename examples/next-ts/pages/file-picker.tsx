@@ -1,19 +1,19 @@
-import * as fileUpload from "@zag-js/file-upload"
+import * as filePicker from "@zag-js/file-picker"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { fileUploadControls, formatFileSize } from "@zag-js/shared"
+import { filePickerControls, formatFileSize } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls(fileUploadControls)
-  const [state, send] = useMachine(fileUpload.machine({ id: useId() }), { context: controls.context })
-  const api = fileUpload.connect(state, send, normalizeProps)
+  const controls = useControls(filePickerControls)
+  const [state, send] = useMachine(filePicker.machine({ id: useId() }), { context: controls.context })
+  const api = filePicker.connect(state, send, normalizeProps)
 
   return (
     <>
-      <main className="file-upload">
+      <main className="file-picker">
         <div {...api.rootProps}>
           <div {...api.dropzoneProps}>
             <input {...api.hiddenInputProps} />

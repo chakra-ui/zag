@@ -1,13 +1,13 @@
-# @zag-js/file-upload
+# @zag-js/file-picker
 
-Core logic for the file-upload widget implemented as a state machine
+Core logic for the file-picker widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add @zag-js/file-upload
+yarn add @zag-js/file-picker
 # or
-npm i @zag-js/file-upload
+npm i @zag-js/file-picker
 ```
 
 ## Contribution

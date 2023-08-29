@@ -1,5 +1,5 @@
-import * as fileUpload from "@zag-js/file-upload"
-import { fileUploadControls, formatFileSize } from "@zag-js/shared"
+import * as filePicker from "@zag-js/file-picker"
+import { filePickerControls, formatFileSize } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -7,17 +7,17 @@ import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls(fileUploadControls)
+  const controls = useControls(filePickerControls)
 
-  const [state, send] = useMachine(fileUpload.machine({ id: createUniqueId() }), {
+  const [state, send] = useMachine(filePicker.machine({ id: createUniqueId() }), {
     context: controls.context,
   })
 
-  const api = createMemo(() => fileUpload.connect(state, send, normalizeProps))
+  const api = createMemo(() => filePicker.connect(state, send, normalizeProps))
 
   return (
     <>
-      <main class="file-upload">
+      <main class="file-picker">
         <div {...api().rootProps}>
           <div {...api().dropzoneProps}>
             <input {...api().hiddenInputProps} />

@@ -32,7 +32,7 @@
     "@zag-js/dialog": "workspace:*",
     "@zag-js/docs": "workspace:*",
     "@zag-js/editable": "workspace:*",
-    "@zag-js/file-upload": "workspace:*",
+    "@zag-js/file-picker": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/menu": "workspace:*",
     "@zag-js/number-input": "workspace:*",

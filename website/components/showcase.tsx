@@ -12,7 +12,7 @@ import { Avatar } from "./machines/avatar"
 import { Checkbox } from "./machines/checkbox"
 import { Dialog } from "./machines/dialog"
 import { Editable } from "./machines/editable"
-import { FileUpload } from "./machines/file-upload"
+import { filePicker } from "./machines/file-picker"
 import { Menu } from "./machines/menu"
 import { NumberInput } from "./machines/number-input"
 import { PinInput } from "./machines/pin-input"
@@ -287,9 +287,9 @@ const components = {
       }}
     />
   ),
-  FileUpload: () => (
+  filePicker: () => (
     <Playground
-      component={FileUpload}
+      component={filePicker}
       defaultProps={{
         disabled: false,
         allowDrop: true,

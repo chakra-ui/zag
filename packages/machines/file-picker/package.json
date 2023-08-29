@@ -1,7 +1,7 @@
 {
-  "name": "@zag-js/file-upload",
+  "name": "@zag-js/file-picker",
   "version": "0.17.0",
-  "description": "Core logic for the file-upload widget implemented as a state machine",
+  "description": "Core logic for the file-picker widget implemented as a state machine",
   "keywords": [
     "js",
     "machine",
@@ -9,13 +9,13 @@
     "statechart",
     "component",
     "chakra-ui",
-    "file-upload"
+    "file-picker"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "src/index.ts",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/file-upload",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/file-picker",
   "sideEffects": false,
   "files": [
     "dist",

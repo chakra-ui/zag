@@ -1,16 +1,16 @@
 ```jsx
-import * as fileUpload from "@zag-js/file-upload"
+import * as filePicker from "@zag-js/file-picker"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-export function FileUpload() {
+export function filePicker() {
   const [state, send] = useMachine(
-    fileUpload.machine({
+    filePicker.machine({
       id: useId(),
     }),
   )
 
-  const api = fileUpload.connect(state, send, normalizeProps)
+  const api = filePicker.connect(state, send, normalizeProps)
 
   return (
     <div {...api.rootProps}>

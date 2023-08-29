@@ -1,4 +1,4 @@
-# @zag-js/file-upload
+# @zag-js/file-picker
 
 ## 0.17.0
 

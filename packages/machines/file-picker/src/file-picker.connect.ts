@@ -1,10 +1,10 @@
 import { contains, dataAttr, isSelfEvent } from "@zag-js/dom-query"
 import { type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
-import { parts } from "./file-upload.anatomy"
-import { dom } from "./file-upload.dom"
-import { type MachineApi, type Send, type State } from "./file-upload.types"
-import { isEventWithFiles } from "./file-upload.utils"
+import { parts } from "./file-picker.anatomy"
+import { dom } from "./file-picker.dom"
+import { type MachineApi, type Send, type State } from "./file-picker.types"
+import { isEventWithFiles } from "./file-picker.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const disabled = state.context.disabled

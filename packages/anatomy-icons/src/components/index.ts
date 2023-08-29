@@ -4,7 +4,7 @@ import { CheckboxAnatomy } from "./checkbox"
 import { ComboboxAnatomy } from "./combobox"
 import { DialogAnatomy } from "./dialog"
 import { EditableAnatomy } from "./editable"
-import { FileUploadAnatomy } from "./file-upload"
+import { filePickerAnatomy } from "./file-picker"
 import { HoverCardAnatomy } from "./hover-card"
 import { MenuAnatomy } from "./menu"
 import { NumberInputAnatomy } from "./number-input"
@@ -27,7 +27,7 @@ import { RadioGroupAnatomy } from "./radio-group"
 export const allComponents = {
   "radio-group": RadioGroupAnatomy,
   "toggle-group": ToggleGroupAnatomy,
-  "file-upload": FileUploadAnatomy,
+  "file-picker": filePickerAnatomy,
   accordion: AccordionAnatomy,
   avatar: AvatarAnatomy,
   checkbox: CheckboxAnatomy,
