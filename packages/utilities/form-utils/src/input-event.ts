@@ -66,4 +66,8 @@ export function dispatchInputCheckedEvent(el: HTMLElement | null, options: Check
   // dispatch click event
   const event = new win.Event("click", { bubbles })
   el.dispatchEvent(event)
+
+  // dispatch change event
+  const changeEvent = new win.Event("change", { bubbles })
+  el.dispatchEvent(changeEvent)
 }
