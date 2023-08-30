@@ -135,6 +135,10 @@ export class Collection {
     return null
   }
 
+  isItemDisabled = (item: CollectionItem) => {
+    return this.disabledKeys.has(this.getItemKey(item))
+  }
+
   getKeyForSearch = (options: CollectionSearchOptions) => {
     const { state, fromKey, eventKey, timeout = 350 } = options
 

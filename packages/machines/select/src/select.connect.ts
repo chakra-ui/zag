@@ -27,8 +27,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   function getItemState(props: ItemProps) {
     const { value: item } = props
-    const disabled = state.context.isItemDisabled?.(item)
-    const key = state.context.getItemKey?.(item) ?? item.value
+    const disabled = state.context.collection.isItemDisabled(item)
+    const key = state.context.collection.getItemKey(item)
     return {
       key,
       isDisabled: Boolean(disabled || isDisabled),
@@ -94,12 +94,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (isDisabled) return
         dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
       },
-    }),
-
-    positionerProps: normalize.element({
-      ...parts.positioner.attrs,
-      id: dom.getPositionerId(state.context),
-      style: popperStyles.floating,
     }),
 
     triggerProps: normalize.button({
@@ -264,6 +258,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-labelledby": dom.getLabelId(state.context),
     }),
 
+    positionerProps: normalize.element({
+      ...parts.positioner.attrs,
+      id: dom.getPositionerId(state.context),
+      style: popperStyles.floating,
+    }),
+
     contentProps: normalize.element({
       hidden: !isOpen,
       dir: state.context.dir,
@@ -281,6 +281,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (!option || option.hasAttribute("data-disabled")) {
           send({ type: "POINTER_LEAVE" })
         } else {
+          if (option.dataset.value === state.context.highlightedValue) return
           send({ type: "POINTER_MOVE", value: option.dataset.value })
         }
       },

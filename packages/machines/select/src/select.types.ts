@@ -1,4 +1,4 @@
-import type { Collection, CollectionOptions, CollectionItem as Item } from "@zag-js/collection"
+import type { Collection, CollectionItem as Item } from "@zag-js/collection"
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
@@ -29,8 +29,11 @@ export type HighlightChangeDetails = {
 
 type PublicContext = DirectionProperty &
   CommonProperties &
-  InteractOutsideHandlers &
-  CollectionOptions & {
+  InteractOutsideHandlers & {
+    /**
+     * The item collection
+     */
+    collection: Collection
     /**
      * The ids of the elements in the select. Useful for composition.
      */
@@ -104,14 +107,17 @@ type PublicContext = DirectionProperty &
 
 type PrivateContext = Context<{
   /**
+   * @internal
    * Internal state of the typeahead
    */
   typeahead: TypeaheadState
   /**
+   * @internal
    * The current placement of the menu
    */
   currentPlacement?: Placement
   /**
+   * @internal
    * Whether the fieldset is disabled
    */
   fieldsetDisabled: boolean
@@ -147,11 +153,6 @@ type ComputedContext = Readonly<{
    * The selected items
    */
   selectedItems: Item[]
-  /**
-   * @computed
-   * The map of item key to item
-   */
-  collection: Collection
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

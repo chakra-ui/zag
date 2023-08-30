@@ -21,12 +21,14 @@ const CaretIcon = () => (
   </svg>
 )
 
+const items = selectData.slice(0, 100)
+
 export default function Page() {
   const controls = useControls(selectControls)
 
   const [state, send] = useMachine(
     select.machine({
-      items: selectData,
+      collection: select.collection({ items }),
       id: useId(),
       name: "country",
       onHighlightChange(details) {
@@ -68,7 +70,7 @@ export default function Page() {
         >
           {/* Hidden select */}
           <select {...api.hiddenSelectProps}>
-            {selectData.map((option) => (
+            {items.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -80,7 +82,7 @@ export default function Page() {
         <Portal>
           <div {...api.positionerProps}>
             <ul {...api.contentProps}>
-              {selectData.map((item) => (
+              {items.map((item) => (
                 <li key={item.value} {...api.getItemProps({ value: item })}>
                   <span className="item-label">{item.label}</span>
                   <span {...api.getItemIndicatorProps({ value: item })}>✓</span>

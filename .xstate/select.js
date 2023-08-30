@@ -49,7 +49,7 @@ const fetchMachine = createMachine({
       actions: ["clearSelectedItems"]
     }
   },
-  activities: ["trackFormControlState"],
+  activities: ["trackFormControlState", "trackVirtualizer"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -86,7 +86,7 @@ const fetchMachine = createMachine({
         TRIGGER_KEY: [{
           cond: "hasSelectedItems",
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
         }, {
           target: "open",
           actions: ["highlightFirstItem", "invokeOnOpen"]
@@ -94,7 +94,7 @@ const fetchMachine = createMachine({
         ARROW_UP: [{
           cond: "hasSelectedItems",
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
         }, {
           target: "open",
           actions: ["highlightLastItem", "invokeOnOpen"]
@@ -102,7 +102,7 @@ const fetchMachine = createMachine({
         ARROW_DOWN: [{
           cond: "hasSelectedItems",
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
         }, {
           target: "open",
           actions: ["highlightFirstItem", "invokeOnOpen"]
@@ -141,7 +141,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      entry: ["focusContent", "highlightFirstSelectedItem"],
+      entry: ["focusContent"],
       exit: ["scrollContentToTop"],
       activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
       on: {

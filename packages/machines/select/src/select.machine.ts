@@ -1,5 +1,4 @@
-import { Collection } from "@zag-js/collection"
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { getByTypeahead, raf } from "@zag-js/dom-query"
 import { setElementValue, trackFormControl } from "@zag-js/form-utils"
@@ -7,6 +6,7 @@ import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
 import { proxyTabFocus } from "@zag-js/tabbable"
 import { addOrRemove, compact } from "@zag-js/utils"
+import { collection } from "./select.collection"
 import { dom } from "./select.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./select.types"
 
@@ -18,7 +18,7 @@ export function machine(userContext: UserDefinedContext) {
     {
       id: "select",
       context: {
-        items: [],
+        collection: collection({ items: [] }),
         value: [],
         highlightedValue: null,
         selectOnBlur: false,
@@ -40,13 +40,6 @@ export function machine(userContext: UserDefinedContext) {
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
-        collection: (ctx) =>
-          new Collection({
-            items: ctx.items,
-            getItemKey: ctx.getItemKey,
-            getItemLabel: ctx.getItemLabel,
-            isItemDisabled: ctx.isItemDisabled,
-          }),
         selectedItems: (ctx) => ctx.collection.getItems(ctx.value),
         highlightedItem: (ctx) => ctx.collection.getItem(ctx.highlightedValue),
       },
@@ -76,7 +69,7 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
-      activities: ["trackFormControlState"],
+      activities: ["trackFormControlState", "trackVirtualizer"],
 
       states: {
         idle: {
@@ -111,7 +104,7 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "hasSelectedItems",
                 target: "open",
-                actions: ["invokeOnOpen"],
+                actions: ["highlightFirstSelectedItem", "invokeOnOpen"],
               },
               {
                 target: "open",
@@ -122,7 +115,7 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "hasSelectedItems",
                 target: "open",
-                actions: ["invokeOnOpen"],
+                actions: ["highlightFirstSelectedItem", "invokeOnOpen"],
               },
               {
                 target: "open",
@@ -133,7 +126,7 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "hasSelectedItems",
                 target: "open",
-                actions: ["invokeOnOpen"],
+                actions: ["highlightFirstSelectedItem", "invokeOnOpen"],
               },
               {
                 target: "open",
@@ -181,7 +174,7 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["open"],
-          entry: ["focusContent", "highlightFirstSelectedItem"],
+          entry: ["focusContent"],
           exit: ["scrollContentToTop"],
           activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
           on: {
@@ -462,11 +455,6 @@ export function machine(userContext: UserDefinedContext) {
           const selectedKeys = ctx.collection.getItemKeys(ctx.selectedItems)
           setElementValue(selectEl, selectedKeys.join(","), { type: "HTMLSelectElement" })
         },
-      },
-      transformContext(ctx) {
-        if (ctx.items) {
-          ctx.items = ref(ctx.items)
-        }
       },
     },
   )

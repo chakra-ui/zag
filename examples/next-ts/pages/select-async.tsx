@@ -1,7 +1,7 @@
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { selectControls } from "@zag-js/shared"
-import { useEffect, useId, useState } from "react"
+import { useEffect, useId, useMemo, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -37,14 +37,26 @@ export default function Page() {
 
   const [state, send] = useMachine(
     select.machine({
-      items,
+      collection: select.collection({
+        items,
+        getItemKey(item) {
+          return item?.name
+        },
+      }),
       id: useId(),
-      getItemKey(item) {
-        return item?.name
-      },
     }),
     {
-      context: { items },
+      context: {
+        ...controls.context,
+        collection: useMemo(
+          () =>
+            select.collection({
+              items,
+              getItemKey: (item) => item?.name,
+            }),
+          [items],
+        ),
+      },
     },
   )
 
