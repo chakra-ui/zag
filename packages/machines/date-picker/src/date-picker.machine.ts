@@ -672,11 +672,11 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change(ctx: MachineContext) {
-    const details = { value: ctx.value, view: ctx.view }
+    const details = { value: Array.from(ctx.value), view: ctx.view }
     ctx.onChange?.(details)
   },
   focusChange(ctx: MachineContext) {
-    const details = { focusedValue: ctx.focusedValue, value: ctx.value, view: ctx.view }
+    const details = { focusedValue: ctx.focusedValue, value: Array.from(ctx.value), view: ctx.view }
     ctx.onFocusChange?.(details)
   },
   viewChange(ctx: MachineContext) {
