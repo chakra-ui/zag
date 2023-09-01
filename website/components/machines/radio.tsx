@@ -12,7 +12,7 @@ const items = [
 
 type RadioProps = {
   controls: {
-    readOnly: boolean
+    name: string
     disabled: boolean
   }
 }
@@ -41,9 +41,6 @@ export function Radio(props: RadioProps) {
             _disabled={{
               cursor: "not-allowed",
               opacity: 0.4,
-            }}
-            _readOnly={{
-              cursor: "default",
             }}
             key={opt.id}
             {...api.getRadioProps({ value: opt.id })}

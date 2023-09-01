@@ -274,7 +274,7 @@ const components = {
       component={SegmentedControl}
       defaultProps={{
         disabled: false,
-        readOnly: false,
+        name: "",
       }}
     />
   ),

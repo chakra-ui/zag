@@ -7,7 +7,7 @@ type ElementsWithoutRef = {
   [K in keyof JSX.IntrinsicElements]: WithoutRef<JSX.IntrinsicElements[K]>
 }
 
-type PropTypes = ElementsWithoutRef & {
+export type PropTypes = ElementsWithoutRef & {
   element: WithoutRef<HTMLAttributes<HTMLElement>>
   style: CSSProperties
 }
