@@ -82,12 +82,12 @@
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "@types/node": "20.5.3",
+    "@types/node": "20.5.7",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
-    "typescript": "5.1.6"
+    "typescript": "5.2.2"
   },
   "license": "MIT"
 }

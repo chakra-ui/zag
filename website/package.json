@@ -73,14 +73,14 @@
     "all-contributors-cli": "6.26.1",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
-    "prettier": "3.0.2",
-    "rehype": "12.0.1",
+    "prettier": "3.0.3",
+    "rehype": "13.0.1",
     "rehype-autolink-headings": "6.1.1",
     "rehype-code-titles": "1.2.0",
     "rehype-prism-plus": "1.6.3",
-    "rehype-slug": "5.1.0",
+    "rehype-slug": "6.0.0",
     "remark-directive": "2.0.1",
     "remark-gfm": "3.0.1",
-    "typescript": "5.1.6"
+    "typescript": "5.2.2"
   }
 }
