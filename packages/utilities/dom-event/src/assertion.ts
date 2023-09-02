@@ -21,13 +21,10 @@ export function isVirtualClick(e: MouseEvent | PointerEvent): boolean {
 export const isLeftClick = (e: Pick<MouseEvent, "button">) => e.button === 0
 
 export const isContextMenuEvent = (e: Pick<MouseEvent, "button" | "ctrlKey" | "metaKey">) => {
-  return e.button === 2 || (isCtrlKey(e) && e.button === 0)
+  return e.button === 2 || (isMac() && e.ctrlKey && e.button === 0)
 }
 
 export const isModifiedEvent = (e: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | "altKey">) =>
   e.ctrlKey || e.altKey || e.metaKey
 
 const isMac = () => /Mac|iPod|iPhone|iPad/.test(window.navigator.platform)
-
-export const isCtrlKey = (e: Pick<KeyboardEvent, "ctrlKey" | "metaKey">) =>
-  isMac() ? e.metaKey && !e.ctrlKey : e.ctrlKey && !e.metaKey
