@@ -226,11 +226,6 @@ type PrivateContext = Context<{
   currentPlacement?: Placement
   /**
    * @internal
-   * The label of the closest section to the focused item
-   */
-  sectionLabel?: string
-  /**
-   * @internal
    * Whether the user is composing text in the input
    */
   composing: boolean

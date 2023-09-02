@@ -564,11 +564,6 @@ export function machine(userContext: UserDefinedContext) {
         preventDefault(_ctx, evt) {
           evt.preventDefault()
         },
-        setSectionLabel(ctx) {
-          // const label = dom.getClosestSectionLabel(ctx)
-          // if (!label) return
-          // ctx.sectionLabel = label
-        },
       },
     },
   )
