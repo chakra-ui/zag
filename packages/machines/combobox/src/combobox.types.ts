@@ -80,6 +80,10 @@ type PublicContext = DirectionProperty &
      */
     selectionBehavior?: "clear" | "set"
     /**
+     * Whether the select should close after an option is selected
+     */
+    closeOnSelect?: boolean
+    /**
      * Whether to select the focused option when the `Tab` key is pressed
      */
     selectOnTab: boolean
