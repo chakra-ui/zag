@@ -77,10 +77,6 @@ type PublicContext = DirectionProperty &
      */
     inputBehavior: "autohighlight" | "autocomplete" | "none"
     /**
-     * Whether to blur the input on select
-     */
-    blurOnSelect?: boolean
-    /**
      * The behavior of the combobox when an item is selected
      */
     selectionBehavior?: "clear" | "set"
@@ -93,10 +89,6 @@ type PublicContext = DirectionProperty &
      */
     autoFocus?: boolean
     /**
-     * Whether to return focus to the input on click the clear button
-     */
-    focusOnClear?: boolean
-    /**
      * Whether to open the combobox popup on initial click on the input
      */
     openOnClick?: boolean
@@ -104,10 +96,6 @@ type PublicContext = DirectionProperty &
      * Whether to allow custom values or free values in the input
      */
     allowCustomValue?: boolean
-    /**
-     * Whether to hide all elements besides the combobox parts. Useful for accessibility
-     */
-    ariaHidden?: boolean
     /**
      * Whether to loop the keyboard navigation through the items
      */

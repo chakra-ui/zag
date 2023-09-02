@@ -12,7 +12,7 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./combobo
 
 const { and, not } = guards
 
-const keydownEventRegex = /(ARROW_UP|ARROW_DOWN|HOME|END|ENTER|ESCAPE)/
+const KEYDOWN_EVENT_REGEX = /(ARROW_UP|ARROW_DOWN|HOME|END|ENTER|ESCAPE)/
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -23,14 +23,12 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         loop: true,
         openOnClick: false,
-        ariaHidden: true,
         collection: collection({ items: [] as any[] }),
         composing: false,
         value: [],
         highlightedValue: null,
         inputValue: "",
         liveRegion: null,
-        focusOnClear: true,
         selectOnBlur: true,
         isHovering: false,
         allowCustomValue: false,
@@ -77,16 +75,10 @@ export function machine(userContext: UserDefinedContext) {
         SET_INPUT_VALUE: {
           actions: "setInputValue",
         },
-        CLEAR_VALUE: [
-          {
-            guard: "focusOnClear",
-            target: "focused",
-            actions: ["clearInputValue", "clearSelectedItems"],
-          },
-          {
-            actions: ["clearInputValue", "clearSelectedItems"],
-          },
-        ],
+        CLEAR_VALUE: {
+          target: "focused",
+          actions: ["clearInputValue", "clearSelectedItems"],
+        },
         POINTER_OVER: {
           actions: "setIsHovering",
         },
@@ -153,7 +145,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "interacting",
-                actions: ["highlightFirstItem", "invokeOnOpen"],
+                actions: ["highlightNextItem", "invokeOnOpen"],
               },
             ],
             ALT_ARROW_DOWN: {
@@ -180,10 +172,10 @@ export function machine(userContext: UserDefinedContext) {
           entry: "highlightFirstSelectedItem",
           on: {
             HOME: {
-              actions: ["highlightFirstItem", "preventDefault"],
+              actions: ["highlightFirstItem"],
             },
             END: {
-              actions: ["highlightLastItem", "preventDefault"],
+              actions: ["highlightLastItem"],
             },
             ARROW_DOWN: [
               {
@@ -191,11 +183,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["clearHighlightedItem", "scrollToTop"],
               },
               {
-                guard: "hasHighlightedItem",
                 actions: "highlightNextItem",
-              },
-              {
-                actions: "highlightFirstItem",
               },
             ],
             ARROW_UP: [
@@ -203,22 +191,16 @@ export function machine(userContext: UserDefinedContext) {
                 guard: and("autoComplete", "isFirstItemHighlighted"),
                 actions: "clearHighlightedItem",
               },
-              {
-                guard: "hasHighlightedItem",
-                actions: "highlightPrevItem",
-              },
-              {
-                actions: "highlightLastItem",
-              },
+              { actions: "highlightPrevItem" },
             ],
             ENTER: [
               {
                 guard: not("closeOnSelect"),
-                actions: ["selectItem"],
+                actions: ["selectHighlightedItem"],
               },
               {
                 target: "focused",
-                actions: ["selectItem", "invokeOnClose"],
+                actions: ["selectHighlightedItem", "invokeOnClose"],
               },
             ],
             CHANGE: [
@@ -241,11 +223,11 @@ export function machine(userContext: UserDefinedContext) {
             CLICK_OPTION: [
               {
                 guard: not("closeOnSelect"),
-                actions: ["selectItem"],
+                actions: ["setSelectedItem"],
               },
               {
                 target: "focused",
-                actions: ["selectItem", "invokeOnClose"],
+                actions: ["setSelectedItem", "invokeOnClose"],
               },
             ],
             ESCAPE: {
@@ -260,7 +242,7 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: and("selectOnBlur", "hasHighlightedItem"),
                 target: "idle",
-                actions: ["selectItem", "invokeOnClose"],
+                actions: ["setSelectedItem", "invokeOnClose"],
               },
               {
                 guard: and("isCustomValue", not("allowCustomValue")),
@@ -286,9 +268,15 @@ export function machine(userContext: UserDefinedContext) {
           ],
           entry: ["focusInput", "invokeOnOpen"],
           on: {
-            CHILDREN_CHANGE: {
-              actions: ["highlightFirstItem", "announceOptionCount"],
-            },
+            CHILDREN_CHANGE: [
+              {
+                guard: "isHighlightedItemVisible",
+                actions: "announceOptionCount",
+              },
+              {
+                actions: ["highlightFirstItem", "announceOptionCount"],
+              },
+            ],
             ARROW_DOWN: {
               target: "interacting",
               actions: "highlightNextItem",
@@ -300,11 +288,11 @@ export function machine(userContext: UserDefinedContext) {
             ALT_ARROW_UP: "focused",
             HOME: {
               target: "interacting",
-              actions: ["highlightFirstItem", "preventDefault"],
+              actions: ["highlightFirstItem"],
             },
             END: {
               target: "interacting",
-              actions: ["highlightLastItem", "preventDefault"],
+              actions: ["highlightLastItem"],
             },
             ENTER: [
               {
@@ -315,7 +303,7 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "hasHighlightedItem",
                 target: "focused",
-                actions: "selectItem",
+                actions: "selectHighlightedItem",
               },
             ],
             CHANGE: [
@@ -356,11 +344,11 @@ export function machine(userContext: UserDefinedContext) {
             CLICK_OPTION: [
               {
                 guard: not("closeOnSelect"),
-                actions: ["selectItem"],
+                actions: ["setSelectedItem"],
               },
               {
                 target: "focused",
-                actions: ["selectItem", "invokeOnClose"],
+                actions: ["setSelectedItem", "invokeOnClose"],
               },
             ],
           },
@@ -372,7 +360,6 @@ export function machine(userContext: UserDefinedContext) {
       guards: {
         openOnClick: (ctx) => !!ctx.openOnClick,
         isInputValueEmpty: (ctx) => ctx.isInputValueEmpty,
-        focusOnClear: (ctx) => !!ctx.focusOnClear,
         autoFocus: (ctx) => !!ctx.autoFocus,
         autoComplete: (ctx) => ctx.autoComplete,
         autoHighlight: (ctx) => ctx.autoHighlight,
@@ -382,7 +369,9 @@ export function machine(userContext: UserDefinedContext) {
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
         hasHighlightedItem: (ctx) => !!ctx.highlightedValue,
         selectOnBlur: (ctx) => !!ctx.selectOnBlur,
+        multiple: (ctx) => !!ctx.multiple,
         closeOnSelect: (ctx) => (!!ctx.multiple ? false : !!ctx.closeOnSelect),
+        isHighlightedItemVisible: (ctx) => ctx.collection.has(ctx.highlightedValue),
       },
 
       activities: {
@@ -411,7 +400,6 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         hideOtherElements(ctx) {
-          if (!ctx.ariaHidden) return
           return ariaHidden([dom.getInputEl(ctx), dom.getContentEl(ctx), dom.getTriggerEl(ctx)])
         },
         computePlacement(ctx) {
@@ -435,15 +423,17 @@ export function machine(userContext: UserDefinedContext) {
         },
         scrollIntoView(ctx, _evt, { getState }) {
           const inputEl = dom.getInputEl(ctx)
-          return observeAttributes(inputEl, ["aria-activedescendant"], () => {
+
+          const exec = () => {
             const state = getState()
-
-            const isTyping = !keydownEventRegex.test(state.event.type)
+            const isTyping = !KEYDOWN_EVENT_REGEX.test(state.event.type)
             if (isTyping || !ctx.highlightedValue) return
-
             const optionEl = dom.getHighlightedItemEl(ctx)
             optionEl?.scrollIntoView({ block: "nearest" })
-          })
+          }
+
+          raf(() => exec())
+          return observeAttributes(inputEl, ["aria-activedescendant"], exec)
         },
       },
 
@@ -463,21 +453,15 @@ export function machine(userContext: UserDefinedContext) {
         selectHighlightedItem(ctx) {
           set.selectedItem(ctx, ctx.highlightedValue)
         },
-        selectItem(ctx, evt) {
+        setSelectedItem(ctx, evt) {
           set.selectedItem(ctx, evt.value)
         },
-        blurInputIfNeeded(ctx) {
-          if (ctx.autoComplete || !ctx.blurOnSelect) return
-          raf(() => {
-            dom.getInputEl(ctx)?.blur()
-          })
-        },
         focusInput(ctx, evt) {
-          if (evt.type === "CHANGE") return
-          dom.focusInput(ctx)
+          if (evt.type === "CHANGE" || dom.isInputFocused(ctx)) return
+          dom.getInputEl(ctx)?.focus({ preventScroll: true })
         },
         syncInputValue(ctx, evt) {
-          const isTyping = !keydownEventRegex.test(evt.type)
+          const isTyping = !KEYDOWN_EVENT_REGEX.test(evt.type)
           const inputEl = dom.getInputEl(ctx)
 
           if (!inputEl) return
@@ -501,11 +485,7 @@ export function machine(userContext: UserDefinedContext) {
           set.inputValue(ctx, "")
         },
         revertInputValue(ctx) {
-          if (ctx.hasSelectedItems) {
-            set.inputValue(ctx, ctx.displayValue)
-          } else {
-            set.inputValue(ctx, "")
-          }
+          set.inputValue(ctx, ctx.hasSelectedItems ? ctx.displayValue : "")
         },
         setSelectedItems(ctx, evt) {
           set.selectedItems(ctx, evt.value)
@@ -526,22 +506,18 @@ export function machine(userContext: UserDefinedContext) {
         },
         highlightFirstItem(ctx) {
           const firstKey = ctx.collection.getFirstKey()
-          if (!firstKey) return
           set.highlightedItem(ctx, firstKey)
         },
         highlightLastItem(ctx) {
           const lastKey = ctx.collection.getLastKey()
-          if (!lastKey) return
           set.highlightedItem(ctx, lastKey)
         },
         highlightNextItem(ctx) {
-          const nextKey = ctx.collection.getKeysAfter(ctx.highlightedValue)
-          if (!nextKey) return
+          const nextKey = ctx.collection.getKeysAfter(ctx.highlightedValue) ?? ctx.collection.getFirstKey()
           set.highlightedItem(ctx, nextKey)
         },
         highlightPrevItem(ctx) {
-          const prevKey = ctx.collection.getKeysBefore(ctx.highlightedValue)
-          if (!prevKey) return
+          const prevKey = ctx.collection.getKeysBefore(ctx.highlightedValue) ?? ctx.collection.getLastKey()
           set.highlightedItem(ctx, prevKey)
         },
         highlightFirstSelectedItem(ctx) {
@@ -560,9 +536,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearIsHovering(ctx) {
           ctx.isHovering = false
-        },
-        preventDefault(_ctx, evt) {
-          evt.preventDefault()
         },
       },
     },
@@ -592,8 +565,7 @@ const set = {
       return
     }
 
-    const nextValue = ctx.multiple ? addOrRemove(ctx.value, value!) : [value!]
-    ctx.value = nextValue
+    ctx.value = ctx.multiple ? addOrRemove(ctx.value, value!) : [value!]
     invoke.selectionChange(ctx)
   },
   selectedItems: (ctx: MachineContext, value: string[]) => {

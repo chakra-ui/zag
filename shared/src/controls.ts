@@ -32,8 +32,7 @@ export const comboboxControls = defineControls({
   multiple: { type: "boolean", defaultValue: false },
   loop: { type: "boolean", defaultValue: true },
   openOnClick: { type: "boolean", defaultValue: false },
-  blurOnSelect: { type: "boolean", defaultValue: false },
-  selectOnTab: { type: "boolean", defaultValue: true },
+  selectOnBlur: { type: "boolean", defaultValue: true },
 })
 
 export const editableControls = defineControls({

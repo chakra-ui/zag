@@ -29,7 +29,7 @@ export const avatarData = {
 export const comboboxData = [
   { label: "Zambia", code: "ZA" },
   { label: "Benin", code: "BN" },
-  { label: "Canada", code: "CA", disabled: true },
+  { label: "Canada", code: "CA" },
   { label: "United States", code: "US" },
   { label: "Japan", code: "JP" },
   { label: "Nigeria", code: "NG" },

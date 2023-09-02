@@ -1,7 +1,7 @@
 import * as combobox from "@zag-js/combobox"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
-import { useId, useMemo, useState } from "react"
+import { useId, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -11,27 +11,19 @@ export default function Page() {
 
   const [options, setOptions] = useState(comboboxData)
 
-  const collection = useMemo(
-    () =>
-      combobox.collection({
-        items: options,
-        isItemDisabled(item) {
-          return item.disabled
-        },
-        getItemKey: (item) => item.code,
-        getItemLabel: (item) => item.label,
-      }),
-    [options],
-  )
+  const collection = combobox.collection({
+    items: options,
+    getItemKey: (item) => item.code,
+    getItemLabel: (item) => item.label,
+  })
 
   const [state, send] = useMachine(
     combobox.machine({
       id: useId(),
       collection,
       onOpenChange(open) {
-        if (open) {
-          setOptions(comboboxData)
-        }
+        if (!open) return
+        setOptions(comboboxData)
       },
       onInputChange({ value }) {
         const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
@@ -39,7 +31,10 @@ export default function Page() {
       },
     }),
     {
-      context: { ...controls.context, collection },
+      context: {
+        ...controls.context,
+        collection,
+      },
     },
   )
 

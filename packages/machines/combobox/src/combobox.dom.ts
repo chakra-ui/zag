@@ -28,19 +28,4 @@ export const dom = createScope({
     if (value == null) return
     return dom.getContentEl(ctx)?.querySelector<HTMLElement>(`[role=option][data-value="${CSS.escape(value)}"`)
   },
-
-  focusInput: (ctx: Ctx) => {
-    dom.getInputEl(ctx)?.focus()
-  },
-
-  getClosestSectionLabel(ctx: Ctx) {
-    // if (!ctx.highlightedValue) return
-    // const groupEl = dom.getHighlightedOptionEl(ctx)?.closest("[data-part=option-group]")
-    // return groupEl?.getAttribute("aria-label")
-  },
-
-  getValueLabel: (ctx: Ctx, value: string) => {
-    // const optionEl = dom.getMatchingItemEl(ctx, value)
-    // return dom.getItemData(optionEl).label
-  },
 })

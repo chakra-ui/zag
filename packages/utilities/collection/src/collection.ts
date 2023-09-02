@@ -83,6 +83,11 @@ export class Collection<T extends CollectionItem = CollectionItem> {
     return item.map((item) => this.getItemLabel(item)).filter(Boolean) as string[]
   }
 
+  has = (key: string | null) => {
+    if (key == null) return false
+    return this.nodes.has(key)
+  }
+
   hasItemKey = (items: T[], key: string) => {
     const keys = this.getItemKeys(items)
     return keys.some((itemKey) => itemKey === key)

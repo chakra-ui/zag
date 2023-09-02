@@ -158,12 +158,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           Home(event) {
             const isModified = event.ctrlKey || event.metaKey || event.shiftKey
             if (isModified) return
-            send({ type: "HOME", preventDefault: () => event.preventDefault() })
+            prevent = isOpen
+            send("HOME")
           },
           End(event) {
             const isModified = event.ctrlKey || event.metaKey || event.shiftKey
             if (isModified) return
-            send({ type: "END", preventDefault: () => event.preventDefault() })
+            prevent = isOpen
+            send("END")
           },
           Enter() {
             if (state.context.composing) return
