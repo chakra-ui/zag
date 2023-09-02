@@ -83,9 +83,9 @@ export default function Page() {
           <div {...api.positionerProps}>
             <ul {...api.contentProps}>
               {items.map((item) => (
-                <li key={item.value} {...api.getItemProps({ value: item })}>
+                <li key={item.value} {...api.getItemProps({ item })}>
                   <span className="item-label">{item.label}</span>
-                  <span {...api.getItemIndicatorProps({ value: item })}>✓</span>
+                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
                 </li>
               ))}
             </ul>

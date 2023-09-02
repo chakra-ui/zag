@@ -160,7 +160,7 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type ItemProps = {
-  value: Item
+  item: Item
 }
 
 export type MachineState = {

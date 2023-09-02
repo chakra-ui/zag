@@ -29,6 +29,7 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
+    "@zag-js/collection": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/mutation-observer": "workspace:*",

@@ -9,8 +9,9 @@ export const anatomy = createAnatomy("combobox").parts(
   "trigger",
   "content",
   "clearTrigger",
-  "option",
-  "optionGroup",
-  "optionGroupLabel",
+  "item",
+  "itemIndicator",
+  "itemGroup",
+  "itemGroupLabel",
 )
 export const parts = anatomy.build()

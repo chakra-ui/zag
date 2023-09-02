@@ -1541,6 +1541,9 @@ importers:
       '@zag-js/aria-hidden':
         specifier: workspace:*
         version: link:../../utilities/aria-hidden
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../utilities/collection
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core

@@ -1,13 +1,13 @@
 export { anatomy } from "./combobox.anatomy"
 export { connect } from "./combobox.connect"
 export { machine } from "./combobox.machine"
+export { collection } from "./combobox.collection"
 export type {
   UserDefinedContext as Context,
   InteractOutsideEvent,
-  OptionData,
-  OptionGroupLabelProps,
-  OptionGroupProps,
-  OptionProps,
+  ItemGroupLabelProps,
+  ItemGroupProps,
+  ItemProps,
   Placement,
   PositioningOptions,
   MachineApi as Api,

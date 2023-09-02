@@ -1,20 +1,12 @@
 import { getEventKey, getNativeEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, raf } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
 import { dom } from "./combobox.dom"
-import type {
-  OptionData,
-  OptionGroupLabelProps,
-  OptionGroupProps,
-  OptionProps,
-  MachineApi,
-  Send,
-  State,
-} from "./combobox.types"
+import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, MachineApi, Send, State } from "./combobox.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const translations = state.context.translations
 
   const isDisabled = state.context.disabled
@@ -26,10 +18,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isFocused = state.hasTag("focused")
   const isIdle = state.hasTag("idle")
 
-  const autofill = isOpen && state.context.navigationData && state.context.autoComplete
+  const autofill = isOpen && state.context.highlightedValue && state.context.autoComplete
   const showClearButton = (!isIdle || state.context.isHovering) && !state.context.isInputValueEmpty
 
-  const value = autofill ? state.context.navigationData?.label : state.context.inputValue
+  const value = autofill ? state.context.highlightedItem?.label : state.context.inputValue
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
@@ -41,17 +33,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isOpen,
     isInputValueEmpty: state.context.isInputValueEmpty,
     inputValue: state.context.inputValue,
-    focusedOption: state.context.focusedOptionData,
-    selectedValue: state.context.selectionData?.value,
+    highlightedItem: state.context.highlightedItem,
+    selectedItems: state.context.selectedItems,
 
-    setValue(value: string | OptionData) {
-      let data: OptionData
-      if (typeof value === "string") {
-        data = { value, label: dom.getValueLabel(state.context, value) }
-      } else {
-        data = value
-      }
-      send({ type: "SET_VALUE", ...data })
+    setValue(value: string[]) {
+      send({ type: "SET_VALUE", value })
     },
 
     setInputValue(value: string) {
@@ -130,7 +116,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       "aria-expanded": isOpen,
       "data-state": isOpen ? "open" : "closed",
-      "aria-activedescendant": state.context.focusedId ?? undefined,
+      "aria-activedescendant": state.context.highlightedValue
+        ? dom.getItemId(state.context, state.context.highlightedValue)
+        : undefined,
+      onCompositionStart() {
+        send("COMPOSITION_START")
+      },
+      onCompositionEnd() {
+        raf(() => {
+          send("COMPOSITION_END")
+        })
+      },
       onClick() {
         if (!isInteractive) return
         send("CLICK_INPUT")
@@ -152,7 +148,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         const keymap: EventKeyMap = {
           ArrowDown(event) {
-            send(event.altKey ? "ALT_ARROW_DOWN" : "ARROW_DOWN")
+            send({ type: event.altKey ? "ALT_ARROW_DOWN" : "ARROW_DOWN" })
             prevent = true
           },
           ArrowUp() {
@@ -160,25 +156,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             prevent = true
           },
           Home(event) {
-            const isCtrlKey = event.ctrlKey || event.metaKey
-            if (isCtrlKey) return
+            const isModified = event.ctrlKey || event.metaKey || event.shiftKey
+            if (isModified) return
             send({ type: "HOME", preventDefault: () => event.preventDefault() })
           },
           End(event) {
-            const isCtrlKey = event.ctrlKey || event.metaKey
-            if (isCtrlKey) return
+            const isModified = event.ctrlKey || event.metaKey || event.shiftKey
+            if (isModified) return
             send({ type: "END", preventDefault: () => event.preventDefault() })
           },
           Enter() {
+            if (state.context.composing) return
             send("ENTER")
             prevent = true
           },
           Escape() {
             send("ESCAPE")
             prevent = true
-          },
-          Tab() {
-            send("TAB")
           },
         }
 
@@ -188,6 +182,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         if (prevent) {
           event.preventDefault()
+          event.stopPropagation()
         }
       },
     }),
@@ -224,6 +219,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       hidden: !isOpen,
       "data-state": isOpen ? "open" : "closed",
       "aria-labelledby": dom.getLabelId(state.context),
+      "aria-multiselectable": state.context.multiple ? true : undefined,
       onPointerDown(event) {
         // prevent options or elements within listbox from taking focus
         event.preventDefault()
@@ -246,65 +242,70 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getOptionState(props: OptionProps) {
-      const id = dom.getOptionId(state.context, props.value, props.index)
+    getItemState(props: ItemProps) {
+      const { item } = props
+      const key = state.context.collection.getItemKey(item)
       return {
-        isDisabled: !!props.disabled,
-        isHighlighted: state.context.focusedId === id,
-        isChecked: state.context.selectionData?.value === props.value,
+        key,
+        isDisabled: state.context.collection.isItemDisabled(item),
+        isHighlighted: state.context.highlightedValue === key,
+        isSelected: state.context.collection.hasItemKey(state.context.selectedItems, key),
       }
     },
 
-    getOptionProps(props: OptionProps) {
-      const { value, label, index, count } = props
-      const id = dom.getOptionId(state.context, value, index)
-      const optionState = api.getOptionState(props)
+    getItemProps(props: ItemProps) {
+      const optionState = api.getItemState(props)
+      const value = optionState.key
 
       return normalize.element({
-        ...parts.option.attrs,
-        id,
+        ...parts.item.attrs,
+        id: dom.getItemId(state.context, value),
         role: "option",
         tabIndex: -1,
         "data-highlighted": dataAttr(optionState.isHighlighted),
-        "data-state": optionState.isChecked ? "checked" : "unchecked",
+        "data-state": optionState.isSelected ? "checked" : "unchecked",
         "aria-selected": optionState.isHighlighted,
         "aria-disabled": optionState.isDisabled,
         "data-disabled": dataAttr(optionState.isDisabled),
-        "aria-posinset": count && index != null ? index + 1 : undefined,
-        "aria-setsize": count,
-        "data-value": value,
-        "data-label": label,
+        // "aria-posinset": count && index != null ? index + 1 : undefined,
+        // "aria-setsize": count,
+        "data-value": optionState.key,
+        // "data-label": label,
         onPointerMove() {
           if (optionState.isDisabled) return
-          send({ type: "POINTEROVER_OPTION", id, value, label })
+          send({ type: "POINTEROVER_OPTION", value })
+        },
+        onPointerLeave() {
+          if (optionState.isDisabled) return
+          send({ type: "POINTERLEAVE_OPTION", value })
         },
         onPointerUp() {
           if (optionState.isDisabled) return
-          send({ type: "CLICK_OPTION", src: "pointerup", id, value, label })
+          send({ type: "CLICK_OPTION", src: "pointerup", value })
         },
         onAuxClick(event) {
           if (optionState.isDisabled) return
           event.preventDefault()
-          send({ type: "CLICK_OPTION", src: "auxclick", id, value, label })
+          send({ type: "CLICK_OPTION", src: "auxclick", value })
         },
       })
     },
 
-    getOptionGroupProps(props: OptionGroupProps) {
+    getItemGroupProps(props: ItemGroupProps) {
       const { id } = props
       return normalize.element({
-        ...parts.optionGroup.attrs,
-        id: dom.getOptionGroupId(state.context, id),
-        "aria-labelledby": dom.getOptionGroupLabelId(state.context, id),
+        ...parts.itemGroup.attrs,
+        id: dom.getItemGroupId(state.context, id),
+        "aria-labelledby": dom.getItemGroupLabelId(state.context, id),
       })
     },
 
-    getOptionGroupLabelProps(props: OptionGroupLabelProps) {
+    getItemGroupLabelProps(props: ItemGroupLabelProps) {
       const { htmlFor } = props
       return normalize.element({
-        id: dom.getOptionGroupId(state.context, htmlFor),
+        ...parts.itemGroupLabel.attrs,
+        id: dom.getItemGroupId(state.context, htmlFor),
         role: "group",
-        ...parts.optionGroupLabel.attrs,
       })
     },
   }

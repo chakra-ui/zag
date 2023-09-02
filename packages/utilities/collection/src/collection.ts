@@ -1,13 +1,13 @@
 import type { CollectionItem, CollectionNode, CollectionOptions, CollectionSearchOptions } from "./types"
 
-export class Collection {
-  private nodes: Map<string, CollectionNode> = new Map()
+export class Collection<T extends CollectionItem = CollectionItem> {
+  private nodes: Map<string, CollectionNode<T>> = new Map()
   private disabledKeys: Set<string> = new Set()
 
   private _firstKey: string | null = null
   private _lastKey: string | null = null
 
-  constructor(private options: CollectionOptions) {
+  constructor(private options: CollectionOptions<T>) {
     const { items, isItemDisabled } = options
 
     for (let i = 0; i < items.length; i++) {
@@ -16,7 +16,7 @@ export class Collection {
       const key = this.getItemKey(item)
       const label = this.getItemLabel(item)
 
-      const node: CollectionNode = {
+      const node: CollectionNode<T> = {
         item: { ...item, label },
         index: i,
         key: key,
@@ -45,7 +45,7 @@ export class Collection {
     return this.nodes.get(key)?.item ?? null
   }
 
-  getItems = (keys: string[]): CollectionItem[] => {
+  getItems = (keys: string[]): T[] => {
     return keys.map((key) => this.getItem(key)!).filter(Boolean)
   }
 
@@ -58,23 +58,32 @@ export class Collection {
     return null
   }
 
-  getItemKey = (item: CollectionItem) => {
-    return this.options.getItemKey?.(item) ?? item?.value
+  sortKeys = (keys: string[]) => {
+    return keys.sort((a, b) => {
+      const nodeA = this.nodes.get(a)
+      const nodeB = this.nodes.get(b)
+      return (nodeA?.index ?? 0) - (nodeB?.index ?? 0)
+    })
   }
 
-  getItemKeys = (item: CollectionItem[]) => {
+  getItemKey = (item: T) => {
+    if (!item) return ""
+    return this.options.getItemKey?.(item) ?? item?.value ?? ""
+  }
+
+  getItemKeys = (item: T[]) => {
     return item.map((item) => this.getItemKey(item)).filter(Boolean) as string[]
   }
 
-  getItemLabel = (item: CollectionItem) => {
+  getItemLabel = (item: T) => {
     return this.options.getItemLabel?.(item) ?? item?.label ?? this.getItemKey(item)
   }
 
-  getItemLabels = (item: CollectionItem[]) => {
+  getItemLabels = (item: T[]) => {
     return item.map((item) => this.getItemLabel(item)).filter(Boolean) as string[]
   }
 
-  hasItemKey = (items: CollectionItem[], key: string) => {
+  hasItemKey = (items: T[], key: string) => {
     const keys = this.getItemKeys(items)
     return keys.some((itemKey) => itemKey === key)
   }
@@ -107,7 +116,9 @@ export class Collection {
     return null
   }
 
-  getKeysAfter = (key: string) => {
+  getKeysAfter = (key: string | null) => {
+    if (key == null) return null
+
     const item = this.nodes.get(key)
     let keyAfter = item?.nextKey ?? null
 
@@ -121,7 +132,9 @@ export class Collection {
     return null
   }
 
-  getKeysBefore = (key: string) => {
+  getKeysBefore = (key: string | null) => {
+    if (key == null) return null
+
     const item = this.nodes.get(key)
     let keyBefore = item?.prevKey ?? null
 
@@ -135,7 +148,7 @@ export class Collection {
     return null
   }
 
-  isItemDisabled = (item: CollectionItem) => {
+  isItemDisabled = (item: T) => {
     return this.disabledKeys.has(this.getItemKey(item))
   }
 
@@ -156,7 +169,7 @@ export class Collection {
       nodes = isSingleKey ? wrappedNodes.filter((item) => item.key !== fromKey) : wrappedNodes
     }
 
-    const matchingKey = findMatchingNode(nodes, search)
+    const matchingKey = this.findMatchingNode(nodes, search)
 
     function cleanup() {
       clearTimeout(state.timer)
@@ -187,19 +200,19 @@ export class Collection {
       lastKey: this.getLastKey(),
     }
   }
-}
 
-const findMatchingNode = (nodes: CollectionNode[], search: string) => {
-  for (const node of nodes) {
-    if (match(getValueText(node), search)) {
-      return node.key
+  private findMatchingNode = (nodes: CollectionNode<T>[], search: string) => {
+    for (const node of nodes) {
+      if (match(this.getValueText(node), search)) {
+        return node.key
+      }
     }
+    return null
   }
-  return null
-}
 
-const getValueText = (node: CollectionNode) => {
-  return node.item.label ?? node.key ?? ""
+  private getValueText = (node: CollectionNode<T>) => {
+    return node.item.label ?? node.key ?? ""
+  }
 }
 
 const match = (label: string, query: string) => {

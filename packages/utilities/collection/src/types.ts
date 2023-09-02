@@ -12,33 +12,33 @@ export type CollectionSearchOptions = {
 
 export type CollectionItem = {
   label?: string
-  value: string
+  value?: string
   [key: string]: any
 }
 
-export type CollectionNode = {
-  item: CollectionItem
+export type CollectionNode<T extends CollectionItem> = {
+  item: T
   index: number
   key: string
   prevKey: string | null
   nextKey: string | null
 }
 
-export type CollectionOptions = {
+export type CollectionOptions<T extends CollectionItem> = {
   /**
    * The options of the select
    */
-  items: CollectionItem[]
+  items: T[]
   /**
    * The key of the item
    */
-  getItemKey?: (item: CollectionItem) => string
+  getItemKey?: (item: T) => string
   /**
    * The label of the item
    */
-  getItemLabel?: (item: CollectionItem) => string
+  getItemLabel?: (item: T) => string
   /**
    * Whether the item is disabled
    */
-  isItemDisabled?: (item: CollectionItem) => boolean
+  isItemDisabled?: (item: T) => boolean
 }

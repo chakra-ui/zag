@@ -18,7 +18,7 @@ export function machine(userContext: UserDefinedContext) {
     {
       id: "select",
       context: {
-        collection: collection({ items: [] }),
+        collection: collection({ items: [] as any[] }),
         value: [],
         highlightedValue: null,
         selectOnBlur: false,
@@ -380,7 +380,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         highlightFirstSelectedItem(ctx) {
           if (!ctx.hasSelectedItems) return
-          const firstSelectedKey = ctx.collection.getItemKey(ctx.selectedItems[0])
+          const [firstSelectedKey] = ctx.collection.sortKeys(ctx.value)
           set.highlightedItem(ctx, firstSelectedKey)
         },
         highlightItem(ctx, evt) {

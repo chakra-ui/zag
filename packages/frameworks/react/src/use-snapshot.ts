@@ -10,6 +10,8 @@ type Options = {
   sync?: boolean
 }
 
+const targetCache = new WeakMap()
+
 export function useSnapshot<T extends object>(proxyObject: T, options?: Options): Snapshot<T> {
   const notifyInSync = options?.sync
   const lastSnapshot = useRef<Snapshot<T>>()
@@ -47,5 +49,5 @@ export function useSnapshot<T extends object>(proxyObject: T, options?: Options)
     lastAffected.current = currAffected
   })
   const proxyCache = useMemo(() => new WeakMap(), []) // per-hook proxyCache
-  return createProxyToCompare(currSnapshot, currAffected, proxyCache)
+  return createProxyToCompare(currSnapshot, currAffected, proxyCache, targetCache)
 }

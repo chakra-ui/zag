@@ -26,7 +26,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isTypingAhead = state.context.isTypingAhead
 
   function getItemState(props: ItemProps) {
-    const { value: item } = props
+    const { item } = props
     const disabled = state.context.collection.isItemDisabled(item)
     const key = state.context.collection.getItemKey(item)
     return {

@@ -1,3 +1,4 @@
+import type { Collection, CollectionItem } from "@zag-js/collection"
 import type { StateMachine as S } from "@zag-js/core"
 import type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
@@ -19,10 +20,10 @@ type ElementIds = Partial<{
   content: string
   trigger: string
   clearTrigger: string
-  option(id: string, index?: number): string
+  item(id: string, index?: number): string
   positioner: string
-  optionGroup(id: string | number): string
-  optionGroupLabel(id: string | number): string
+  itemGroup(id: string | number): string
+  itemGroupLabel(id: string | number): string
 }>
 
 type PublicContext = DirectionProperty &
@@ -35,10 +36,6 @@ type PublicContext = DirectionProperty &
      * The current value of the combobox's input
      */
     inputValue: string
-    /**
-     * The selected option's value
-     */
-    selectionData: OptionData | null
     /**
      * The `name` attribute of the combobox's input. Useful for form submission
      */
@@ -65,10 +62,18 @@ type PublicContext = DirectionProperty &
      */
     placeholder?: string
     /**
+     * The active item's id. Used to set the `aria-activedescendant` attribute
+     */
+    highlightedValue: string | null
+    /**
+     * The keys of the selected items
+     */
+    value: string[]
+    /**
      * Defines the auto-completion behavior of the combobox.
      *
-     * - `autohighlight`: The first focused option is highlighted as the user types
-     * - `autocomplete`: Navigating the listbox with the arrow keys selects the option and the input is updated
+     * - `autohighlight`: The first focused item is highlighted as the user types
+     * - `autocomplete`: Navigating the listbox with the arrow keys selects the item and the input is updated
      */
     inputBehavior: "autohighlight" | "autocomplete" | "none"
     /**
@@ -76,13 +81,13 @@ type PublicContext = DirectionProperty &
      */
     blurOnSelect?: boolean
     /**
-     * The behavior of the combobox when an option is selected
+     * The behavior of the combobox when an item is selected
      */
     selectionBehavior?: "clear" | "set"
     /**
-     * Whether to select the focused option when the `Tab` key is pressed
+     * Whether to select the higlighted item on interaction outside the combobox
      */
-    selectOnTab: boolean
+    selectOnBlur: boolean
     /**
      * Whether to autofocus the input on mount
      */
@@ -104,15 +109,11 @@ type PublicContext = DirectionProperty &
      */
     ariaHidden?: boolean
     /**
-     * Function called to validate the input value
-     */
-    isCustomValue?: (details: { inputValue: string; previousValue: string | undefined }) => boolean
-    /**
-     * Whether to loop the keyboard navigation through the options
+     * Whether to loop the keyboard navigation through the items
      */
     loop?: boolean
     /**
-     * The options used to dynamically position the menu
+     * The positioning options to dynamically position the menu
      */
     positioning: PositioningOptions
     /**
@@ -120,29 +121,46 @@ type PublicContext = DirectionProperty &
      */
     onInputChange?: (details: { value: string }) => void
     /**
-     * Function called when a new option is selected
+     * Function called when a new item is selected
      */
-    onSelect?: (details: Partial<OptionData> & { relatedTarget: HTMLElement | null }) => void
+    onValueChange?: (details: { value: string[]; items: CollectionItem[] }) => void
     /**
-     * Function called when an options is highlighted using the pointer
+     * Function called when an item is highlighted using the pointer
      * or keyboard navigation.
      */
-    onHighlight?: (details: Partial<OptionData> & { relatedTarget: HTMLElement | null }) => void
+    onHighlightChange?: (details: { value: string | null; item: CollectionItem | null }) => void
     /**
      * Function called when the popup is opened
      */
-    onOpen?: () => void
-    /**
-     * Function called when the popup is closed
-     */
-    onClose?: () => void
+    onOpenChange?: (open: boolean) => void
     /**
      * Specifies the localized strings that identifies the accessibility elements and their states
      */
     translations: IntlTranslations
+    /**
+     * Function called when the pointer is pressed down outside the combobox
+     */
     onPointerDownOutside?: (event: PointerDownOutsideEvent) => void
+    /**
+     * Function called when the focus is moved outside the combobox
+     */
     onFocusOutside?: (event: FocusOutsideEvent) => void
+    /**
+     * Function called when an interaction happens outside the combobox
+     */
     onInteractOutside?: (event: InteractOutsideEvent) => void
+    /**
+     * The collection of items
+     */
+    collection: Collection<CollectionItem>
+    /**
+     * Whether to allow multiple selection
+     */
+    multiple?: boolean
+    /**
+     * Whether to close the combobox when an item is selected.
+     */
+    closeOnSelect?: boolean
   }
 
 /**
@@ -169,24 +187,28 @@ type ComputedContext = Readonly<{
    * @computed
    */
   autoHighlight: boolean
+  /**
+   * The highlighted item
+   */
+  highlightedItem: CollectionItem | null
+  /**
+   * @computed
+   * The selected items
+   */
+  selectedItems: CollectionItem[]
+  /**
+   * @computed
+   * Whether there's a selected option
+   */
+  hasSelectedItems: boolean
+  /**
+   * @computed
+   * The display value of the combobox (based on the selected items)
+   */
+  displayValue: string
 }>
 
 type PrivateContext = Context<{
-  /**
-   * @internal
-   * The active option's id. Used to set the `aria-activedescendant` attribute
-   */
-  focusedId: string | null
-  /**
-   * @internal
-   * The data associated with the focused option
-   */
-  focusedOptionData: OptionData | null
-  /**
-   * @internal
-   * The value of the option when the user hovers/navigates with keyboard
-   */
-  navigationData: OptionData | null
   /**
    * @internal
    * The live region used to announce changes in the combobox
@@ -199,25 +221,19 @@ type PrivateContext = Context<{
   isHovering: boolean
   /**
    * @internal
-   * Whether the combobox popover is rendered. We use this to dynamically position
-   * the popover relative to the input.
-   */
-  isPopoverRendered?: boolean
-  /**
-   * @internal
    * The placement of the combobox popover.
    */
   currentPlacement?: Placement
   /**
    * @internal
-   * The label of the closest section to the focused option
+   * The label of the closest section to the focused item
    */
   sectionLabel?: string
   /**
    * @internal
-   * Whether the event source is a keyboard event
+   * Whether the user is composing text in the input
    */
-  isKeyboardEvent?: boolean
+  composing: boolean
 }>
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
@@ -231,101 +247,18 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type OptionData = {
-  /**
-   * The label of the option. Used to populate the combobox's input when selected
-   */
-  label: string
-  /**
-   * The actual value of the option
-   */
-  value: string
+export type ItemProps = {
+  item: CollectionItem
 }
 
-export type OptionProps = OptionData & {
-  /**
-   * The index of the option. Used to set the `aria-posinset` attribute
-   * and allow options with same value
-   */
-  index?: number
-  /**
-   * The total count of options. Used to set the `aria-setsize` attribute
-   */
-  count?: number
-  /**
-   * Whether the option is disabled
-   */
-  disabled?: boolean
-}
-
-export type OptionGroupProps = {
+export type ItemGroupProps = {
   id: string
 }
 
-export type OptionGroupLabelProps = {
+export type ItemGroupLabelProps = {
   htmlFor: string
 }
 
 export type { InteractOutsideEvent, Placement, PositioningOptions }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
-  /**
-   * Whether the combobox is focused
-   */
-  isFocused: boolean
-  /**
-   * Whether the combobox content or listbox is open
-   */
-  isOpen: boolean
-  /**
-   * Whether the combobox input is empty
-   */
-  isInputValueEmpty: boolean
-  /**
-   * The current value of the combobox input
-   */
-  inputValue: string
-  /**
-   * The currently focused option (by pointer or keyboard)
-   */
-  focusedOption: OptionData | null
-  /**
-   * The currently selected option value
-   */
-  selectedValue: string | undefined
-  /**
-   * Function to set the combobox value
-   */
-  setValue(value: string | OptionData): void
-  /**
-   * Function to set the combobox input value
-   */
-  setInputValue(value: string): void
-  /**
-   * Function to clear the combobox input value and selected value
-   */
-  clearValue(): void
-  /**
-   * Function to focus the combobox input
-   */
-  focus(): void
-  rootProps: T["element"]
-  labelProps: T["label"]
-  controlProps: T["element"]
-  positionerProps: T["element"]
-  inputProps: T["input"]
-  triggerProps: T["button"]
-  contentProps: T["element"]
-  clearTriggerProps: T["button"]
-  /**
-   * Returns the state of an option
-   */
-  getOptionState(props: OptionProps): {
-    isDisabled: boolean
-    isHighlighted: boolean
-    isChecked: boolean
-  }
-  getOptionProps(props: OptionProps): T["element"]
-  getOptionGroupProps(props: OptionGroupProps): T["element"]
-  getOptionGroupLabelProps(props: OptionGroupLabelProps): T["element"]
-}
+export type MachineApi<T extends PropTypes = PropTypes> = {}

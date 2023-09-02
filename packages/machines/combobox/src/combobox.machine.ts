@@ -1,15 +1,18 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards } from "@zag-js/core"
 import { contains, raf } from "@zag-js/dom-query"
-import { observeAttributes, observeChildren } from "@zag-js/mutation-observer"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
+import { observeAttributes, observeChildren } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
-import { compact } from "@zag-js/utils"
+import { addOrRemove, compact } from "@zag-js/utils"
+import { collection } from "./combobox.collection"
 import { dom } from "./combobox.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./combobox.types"
 
 const { and, not } = guards
+
+const keydownEventRegex = /(ARROW_UP|ARROW_DOWN|HOME|END|ENTER|ESCAPE)/
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -21,21 +24,17 @@ export function machine(userContext: UserDefinedContext) {
         loop: true,
         openOnClick: false,
         ariaHidden: true,
-
-        focusedId: null,
-        focusedOptionData: null,
-        navigationData: null,
-        selectionData: null,
-
+        collection: collection({ items: [] as any[] }),
+        composing: false,
+        value: [],
+        highlightedValue: null,
         inputValue: "",
-
         liveRegion: null,
         focusOnClear: true,
-        selectOnTab: true,
+        selectOnBlur: true,
         isHovering: false,
-        isKeyboardEvent: false,
         allowCustomValue: false,
-        isCustomValue: (data) => data.inputValue !== data.previousValue,
+        closeOnSelect: true,
         inputBehavior: "none",
         selectionBehavior: "set",
         ...ctx,
@@ -59,23 +58,21 @@ export function machine(userContext: UserDefinedContext) {
         isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
         autoComplete: (ctx) => ctx.inputBehavior === "autocomplete",
         autoHighlight: (ctx) => ctx.inputBehavior === "autohighlight",
+        selectedItems: (ctx) => ctx.collection.getItems(ctx.value),
+        highlightedItem: (ctx) => ctx.collection.getItem(ctx.highlightedValue),
+        displayValue: (ctx) => ctx.collection.getItemLabels(ctx.selectedItems).join(", "),
+        hasSelectedItems: (ctx) => ctx.value.length > 0,
       },
 
       watch: {
-        inputValue: "invokeOnInputChange",
-        navigationData: "invokeOnHighlight",
-        selectionData: ["invokeOnSelect", "blurInputIfNeeded"],
-        focusedId: "setSectionLabel",
+        inputValue: ["syncInputValue"],
       },
 
-      entry: ["setupLiveRegion"],
-      exit: ["removeLiveRegion"],
-
-      activities: ["syncInputValue"],
+      activities: ["setupLiveRegion"],
 
       on: {
         SET_VALUE: {
-          actions: ["setInputValue", "setSelectionData"],
+          actions: ["setSelectedItems"],
         },
         SET_INPUT_VALUE: {
           actions: "setInputValue",
@@ -84,10 +81,10 @@ export function machine(userContext: UserDefinedContext) {
           {
             guard: "focusOnClear",
             target: "focused",
-            actions: ["clearInputValue", "clearSelectedValue"],
+            actions: ["clearInputValue", "clearSelectedItems"],
           },
           {
-            actions: ["clearInputValue", "clearSelectedValue"],
+            actions: ["clearInputValue", "clearSelectedItems"],
           },
         ],
         POINTER_OVER: {
@@ -96,12 +93,18 @@ export function machine(userContext: UserDefinedContext) {
         POINTER_LEAVE: {
           actions: "clearIsHovering",
         },
+        COMPOSITION_START: {
+          actions: ["setIsComposing"],
+        },
+        COMPOSITION_END: {
+          actions: ["clearIsComposing"],
+        },
       },
 
       states: {
         idle: {
           tags: ["idle"],
-          entry: ["scrollToTop", "clearFocusedOption"],
+          entry: ["scrollToTop", "clearHighlightedItem"],
           on: {
             CLICK_BUTTON: {
               target: "interacting",
@@ -118,14 +121,14 @@ export function machine(userContext: UserDefinedContext) {
 
         focused: {
           tags: ["focused"],
-          entry: ["focusInput", "scrollToTop", "clearFocusedOption"],
+          entry: ["focusInput", "scrollToTop"],
           activities: ["trackInteractOutside"],
           on: {
             CHANGE: {
               target: "suggesting",
               actions: "setInputValue",
             },
-            BLUR: "idle",
+            INTERACT_OUTSIDE: "idle",
             ESCAPE: {
               guard: and("isCustomValue", not("allowCustomValue")),
               actions: "revertInputValue",
@@ -133,7 +136,7 @@ export function machine(userContext: UserDefinedContext) {
             CLICK_INPUT: {
               guard: "openOnClick",
               target: "interacting",
-              actions: ["focusInput", "invokeOnOpen"],
+              actions: ["invokeOnOpen"],
             },
             CLICK_BUTTON: {
               target: "interacting",
@@ -142,17 +145,6 @@ export function machine(userContext: UserDefinedContext) {
             POINTER_OVER: {
               actions: "setIsHovering",
             },
-            ARROW_UP: [
-              {
-                guard: "autoComplete",
-                target: "interacting",
-                actions: "invokeOnOpen",
-              },
-              {
-                target: "interacting",
-                actions: ["focusLastOption", "invokeOnOpen"],
-              },
-            ],
             ARROW_DOWN: [
               {
                 guard: "autoComplete",
@@ -161,13 +153,125 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "interacting",
-                actions: ["focusFirstOption", "invokeOnOpen"],
+                actions: ["highlightFirstItem", "invokeOnOpen"],
               },
             ],
             ALT_ARROW_DOWN: {
               target: "interacting",
-              actions: ["focusInput", "invokeOnOpen"],
+              actions: "invokeOnOpen",
             },
+            ARROW_UP: [
+              {
+                guard: "autoComplete",
+                target: "interacting",
+                actions: "invokeOnOpen",
+              },
+              {
+                target: "interacting",
+                actions: ["highlightLastItem", "invokeOnOpen"],
+              },
+            ],
+          },
+        },
+
+        interacting: {
+          tags: ["open", "focused"],
+          activities: ["scrollIntoView", "trackInteractOutside", "computePlacement", "hideOtherElements"],
+          entry: "highlightFirstSelectedItem",
+          on: {
+            HOME: {
+              actions: ["highlightFirstItem", "preventDefault"],
+            },
+            END: {
+              actions: ["highlightLastItem", "preventDefault"],
+            },
+            ARROW_DOWN: [
+              {
+                guard: and("autoComplete", "isLastItemHighlighted"),
+                actions: ["clearHighlightedItem", "scrollToTop"],
+              },
+              {
+                guard: "hasHighlightedItem",
+                actions: "highlightNextItem",
+              },
+              {
+                actions: "highlightFirstItem",
+              },
+            ],
+            ARROW_UP: [
+              {
+                guard: and("autoComplete", "isFirstItemHighlighted"),
+                actions: "clearHighlightedItem",
+              },
+              {
+                guard: "hasHighlightedItem",
+                actions: "highlightPrevItem",
+              },
+              {
+                actions: "highlightLastItem",
+              },
+            ],
+            ENTER: [
+              {
+                guard: not("closeOnSelect"),
+                actions: ["selectItem"],
+              },
+              {
+                target: "focused",
+                actions: ["selectItem", "invokeOnClose"],
+              },
+            ],
+            CHANGE: [
+              {
+                guard: "autoComplete",
+                target: "suggesting",
+                actions: ["setInputValue"],
+              },
+              {
+                target: "suggesting",
+                actions: ["clearHighlightedItem", "setInputValue"],
+              },
+            ],
+            POINTEROVER_OPTION: {
+              actions: ["setHighlightedItem"],
+            },
+            POINTERLEAVE_OPTION: {
+              actions: ["clearHighlightedItem"],
+            },
+            CLICK_OPTION: [
+              {
+                guard: not("closeOnSelect"),
+                actions: ["selectItem"],
+              },
+              {
+                target: "focused",
+                actions: ["selectItem", "invokeOnClose"],
+              },
+            ],
+            ESCAPE: {
+              target: "focused",
+              actions: "invokeOnClose",
+            },
+            CLICK_BUTTON: {
+              target: "focused",
+              actions: "invokeOnClose",
+            },
+            INTERACT_OUTSIDE: [
+              {
+                guard: and("selectOnBlur", "hasHighlightedItem"),
+                target: "idle",
+                actions: ["selectItem", "invokeOnClose"],
+              },
+              {
+                guard: and("isCustomValue", not("allowCustomValue")),
+                target: "idle",
+                actions: ["revertInputValue", "invokeOnClose"],
+              },
+              {
+                target: "idle",
+                actions: "invokeOnClose",
+              },
+            ],
           },
         },
 
@@ -175,160 +279,90 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["open", "focused"],
           activities: [
             "trackInteractOutside",
-            "scrollOptionIntoView",
+            "scrollIntoView",
             "computePlacement",
-            "trackOptionNodes",
+            "trackChildNodes",
             "hideOtherElements",
           ],
           entry: ["focusInput", "invokeOnOpen"],
           on: {
+            CHILDREN_CHANGE: {
+              actions: ["highlightFirstItem", "announceOptionCount"],
+            },
             ARROW_DOWN: {
               target: "interacting",
-              actions: "focusNextOption",
+              actions: "highlightNextItem",
             },
             ARROW_UP: {
               target: "interacting",
-              actions: "focusPrevOption",
+              actions: "highlightPrevItem",
             },
             ALT_ARROW_UP: "focused",
             HOME: {
               target: "interacting",
-              actions: ["focusFirstOption", "preventDefault"],
+              actions: ["highlightFirstItem", "preventDefault"],
             },
             END: {
               target: "interacting",
-              actions: ["focusLastOption", "preventDefault"],
+              actions: ["highlightLastItem", "preventDefault"],
             },
             ENTER: [
               {
-                guard: and("hasFocusedOption", "autoComplete"),
+                guard: and("hasHighlightedItem", "autoComplete"),
                 target: "focused",
-                actions: "selectActiveOption",
+                actions: "selectHighlightedItem",
               },
               {
-                guard: "hasFocusedOption",
+                guard: "hasHighlightedItem",
                 target: "focused",
-                actions: "selectOption",
+                actions: "selectItem",
               },
             ],
             CHANGE: [
               {
                 guard: "autoHighlight",
-                actions: ["clearFocusedOption", "setInputValue", "focusFirstOption"],
+                actions: ["clearHighlightedItem", "setInputValue", "highlightFirstItem"],
               },
               {
-                actions: ["clearFocusedOption", "setInputValue"],
+                actions: ["clearHighlightedItem", "setInputValue"],
               },
             ],
             ESCAPE: {
               target: "focused",
               actions: "invokeOnClose",
             },
-            POINTEROVER_OPTION: [
+            POINTEROVER_OPTION: {
+              target: "interacting",
+              actions: "setHighlightedItem",
+            },
+            POINTERLEAVE_OPTION: {
+              actions: "clearHighlightedItem",
+            },
+            INTERACT_OUTSIDE: [
               {
-                guard: "autoComplete",
-                target: "interacting",
-                actions: "setActiveOption",
+                guard: and("isCustomValue", not("allowCustomValue")),
+                target: "idle",
+                actions: ["revertInputValue", "invokeOnClose"],
               },
               {
-                target: "interacting",
-                actions: ["setActiveOption", "setNavigationData"],
+                target: "idle",
+                actions: "invokeOnClose",
               },
             ],
-            BLUR: {
-              target: "idle",
-              actions: "invokeOnClose",
-            },
             CLICK_BUTTON: {
               target: "focused",
               actions: "invokeOnClose",
             },
-            CLICK_OPTION: {
-              target: "focused",
-              actions: ["selectOption", "invokeOnClose"],
-            },
-          },
-        },
-
-        interacting: {
-          tags: ["open", "focused"],
-          activities: ["scrollOptionIntoView", "trackInteractOutside", "computePlacement", "hideOtherElements"],
-          entry: "focusMatchingOption",
-          on: {
-            HOME: {
-              actions: ["focusFirstOption", "preventDefault"],
-            },
-            END: {
-              actions: ["focusLastOption", "preventDefault"],
-            },
-            ARROW_DOWN: [
+            CLICK_OPTION: [
               {
-                guard: and("autoComplete", "isLastOptionFocused"),
-                actions: ["clearFocusedOption", "scrollToTop"],
-              },
-              { actions: "focusNextOption" },
-            ],
-            ARROW_UP: [
-              {
-                guard: and("autoComplete", "isFirstOptionFocused"),
-                actions: "clearFocusedOption",
+                guard: not("closeOnSelect"),
+                actions: ["selectItem"],
               },
               {
-                actions: "focusPrevOption",
+                target: "focused",
+                actions: ["selectItem", "invokeOnClose"],
               },
             ],
-            ALT_UP: {
-              target: "focused",
-              actions: ["selectOption", "invokeOnClose"],
-            },
-            CLEAR_FOCUS: {
-              actions: "clearFocusedOption",
-            },
-            TAB: {
-              guard: "selectOnTab",
-              target: "idle",
-              actions: ["selectOption", "invokeOnClose"],
-            },
-            ENTER: {
-              target: "focused",
-              actions: ["selectOption", "invokeOnClose"],
-            },
-            CHANGE: [
-              {
-                guard: "autoComplete",
-                target: "suggesting",
-                actions: ["commitNavigationData", "setInputValue"],
-              },
-              {
-                target: "suggesting",
-                actions: ["clearFocusedOption", "setInputValue"],
-              },
-            ],
-            POINTEROVER_OPTION: [
-              {
-                guard: "autoComplete",
-                actions: "setActiveOption",
-              },
-              {
-                actions: ["setActiveOption", "setNavigationData"],
-              },
-            ],
-            CLICK_OPTION: {
-              target: "focused",
-              actions: ["selectOption", "invokeOnClose"],
-            },
-            ESCAPE: {
-              target: "focused",
-              actions: "invokeOnClose",
-            },
-            CLICK_BUTTON: {
-              target: "focused",
-              actions: "invokeOnClose",
-            },
-            BLUR: {
-              target: "idle",
-              actions: "invokeOnClose",
-            },
           },
         },
       },
@@ -342,22 +376,24 @@ export function machine(userContext: UserDefinedContext) {
         autoFocus: (ctx) => !!ctx.autoFocus,
         autoComplete: (ctx) => ctx.autoComplete,
         autoHighlight: (ctx) => ctx.autoHighlight,
-        isFirstOptionFocused: (ctx) => dom.getFirstEl(ctx)?.id === ctx.focusedId,
-        isLastOptionFocused: (ctx) => dom.getLastEl(ctx)?.id === ctx.focusedId,
-        isCustomValue: (ctx) =>
-          !!ctx.isCustomValue?.({ inputValue: ctx.inputValue, previousValue: ctx.selectionData?.value }),
+        isFirstItemHighlighted: (ctx) => ctx.value[0] === ctx.highlightedValue,
+        isLastItemHighlighted: (ctx) => ctx.value[ctx.value.length - 1] === ctx.highlightedValue,
+        isCustomValue: (ctx) => ctx.inputValue !== ctx.displayValue,
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
-        hasFocusedOption: (ctx) => !!ctx.focusedId,
-        selectOnTab: (ctx) => !!ctx.selectOnTab,
+        hasHighlightedItem: (ctx) => !!ctx.highlightedValue,
+        selectOnBlur: (ctx) => !!ctx.selectOnBlur,
+        closeOnSelect: (ctx) => (!!ctx.multiple ? false : !!ctx.closeOnSelect),
       },
 
       activities: {
-        syncInputValue: (ctx) => {
-          const inputEl = dom.getInputEl(ctx)
-          if (!inputEl) return
-          return observeAttributes(inputEl, ["data-value"], () => {
-            inputEl.value = inputEl.dataset.value || ""
+        setupLiveRegion(ctx) {
+          ctx.liveRegion = createLiveRegion({
+            level: "assertive",
+            document: dom.getDoc(ctx),
           })
+          return () => {
+            ctx.liveRegion?.destroy()
+          }
         },
         trackInteractOutside(ctx, _evt, { send }) {
           return trackInteractOutside(dom.getInputEl(ctx), {
@@ -370,7 +406,7 @@ export function machine(userContext: UserDefinedContext) {
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
               if (event.defaultPrevented) return
-              send({ type: "BLUR", src: "interact-outside" })
+              send({ type: "INTERACT_OUTSIDE", src: "interact-outside" })
             },
           })
         },
@@ -391,90 +427,44 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         // in event the options are fetched (async), we still want to auto-highlight the first option
-        trackOptionNodes(ctx, evt, meta) {
+        trackChildNodes(ctx, _evt, { send }) {
           if (!ctx.autoHighlight) return
-          const focusFirstOption = meta.getAction("focusFirstOption")
-          const exec = () => focusFirstOption(ctx, evt, meta)
+          const exec = () => send("CHILDREN_CHANGE")
           exec()
           return observeChildren(dom.getContentEl(ctx), exec)
         },
-        scrollOptionIntoView(ctx, _evt, { getState }) {
+        scrollIntoView(ctx, _evt, { getState }) {
           const inputEl = dom.getInputEl(ctx)
           return observeAttributes(inputEl, ["aria-activedescendant"], () => {
-            const evt = getState().event
-            const isKeyboardEvent = /(ARROW_UP|ARROW_DOWN|HOME|END|TAB)/.test(evt.type)
-            if (!isKeyboardEvent) return
+            const state = getState()
 
-            const option = dom.getActiveOptionEl(ctx)
-            option?.scrollIntoView({ block: "nearest" })
+            const isTyping = !keydownEventRegex.test(state.event.type)
+            if (isTyping || !ctx.highlightedValue) return
 
-            if (ctx.autoComplete) {
-              dom.focusInput(ctx)
-            }
+            const optionEl = dom.getHighlightedItemEl(ctx)
+            optionEl?.scrollIntoView({ block: "nearest" })
           })
         },
       },
 
       actions: {
-        setupLiveRegion(ctx) {
-          ctx.liveRegion = createLiveRegion({
-            level: "assertive",
-            document: dom.getDoc(ctx),
-          })
+        setIsComposing(ctx) {
+          ctx.composing = true
         },
-        removeLiveRegion(ctx) {
-          ctx.liveRegion?.destroy()
+        clearIsComposing(ctx) {
+          ctx.composing = false
         },
-        setActiveOption(ctx, evt) {
-          const { label, id, value } = evt
-          ctx.focusedId = id
-          ctx.focusedOptionData = { label, value }
+        setHighlightedItem(ctx, evt) {
+          set.highlightedItem(ctx, evt.value)
         },
-        setNavigationData(ctx, evt) {
-          const { label, value } = evt
-          ctx.navigationData = { label, value }
+        clearHighlightedItem(ctx) {
+          set.highlightedItem(ctx, null, true)
         },
-        clearNavigationData(ctx) {
-          ctx.navigationData = null
+        selectHighlightedItem(ctx) {
+          set.selectedItem(ctx, ctx.highlightedValue)
         },
-        commitNavigationData(ctx) {
-          if (!ctx.navigationData) return
-          ctx.inputValue = ctx.navigationData.label
-          ctx.navigationData = null
-        },
-        clearFocusedOption(ctx) {
-          ctx.focusedId = null
-          ctx.focusedOptionData = null
-          ctx.navigationData = null
-        },
-        selectActiveOption(ctx) {
-          if (!ctx.focusedOptionData) return
-          ctx.selectionData = ctx.focusedOptionData
-          ctx.inputValue = ctx.focusedOptionData.label
-        },
-        selectOption(ctx, evt) {
-          const isOptionEvent = !!evt.value && !!evt.label
-
-          ctx.selectionData = isOptionEvent
-            ? {
-                label: evt.label,
-                value: evt.value,
-              }
-            : ctx.navigationData
-
-          let value: string | undefined
-
-          if (!ctx.selectionData) return
-
-          if (ctx.selectionBehavior === "set") {
-            value = ctx.selectionData!.label
-          }
-          if (ctx.selectionBehavior === "clear") {
-            value = ""
-          }
-          if (value != null) {
-            ctx.inputValue = value
-          }
+        selectItem(ctx, evt) {
+          set.selectedItem(ctx, evt.value)
         },
         blurInputIfNeeded(ctx) {
           if (ctx.autoComplete || !ctx.blurOnSelect) return
@@ -486,86 +476,81 @@ export function machine(userContext: UserDefinedContext) {
           if (evt.type === "CHANGE") return
           dom.focusInput(ctx)
         },
+        syncInputValue(ctx, evt) {
+          const isTyping = !keydownEventRegex.test(evt.type)
+          const inputEl = dom.getInputEl(ctx)
+
+          if (!inputEl) return
+          inputEl.value = ctx.inputValue
+
+          raf(() => {
+            if (isTyping) return
+
+            const { selectionStart, selectionEnd } = inputEl
+
+            if (Math.abs((selectionEnd ?? 0) - (selectionStart ?? 0)) !== 0) return
+            if (selectionStart !== 0) return
+
+            inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length)
+          })
+        },
         setInputValue(ctx, evt) {
-          const value = evt.type === "SET_VALUE" ? evt.label : evt.value
-          ctx.inputValue = value
+          set.inputValue(ctx, evt.value)
         },
         clearInputValue(ctx) {
-          ctx.inputValue = ""
+          set.inputValue(ctx, "")
         },
         revertInputValue(ctx) {
-          if (!ctx.selectionData) return
-          ctx.inputValue = ctx.selectionData.label
+          if (ctx.hasSelectedItems) {
+            set.inputValue(ctx, ctx.displayValue)
+          } else {
+            set.inputValue(ctx, "")
+          }
         },
-        setSelectionData(ctx, evt) {
-          const { label, value } = evt
-          ctx.selectionData = { label, value }
+        setSelectedItems(ctx, evt) {
+          set.selectedItems(ctx, evt.value)
         },
-        clearSelectedValue(ctx) {
-          ctx.selectionData = null
+        clearSelectedItems(ctx) {
+          set.selectedItems(ctx, [])
         },
         scrollToTop(ctx) {
-          const listbox = dom.getContentEl(ctx)
-          if (!listbox) return
-          listbox.scrollTop = 0
-        },
-        invokeOnInputChange(ctx) {
-          ctx.onInputChange?.({ value: ctx.inputValue })
-        },
-        invokeOnHighlight(ctx) {
-          const { label, value } = ctx.navigationData ?? {}
-          const relatedTarget = dom.getMatchingOptionEl(ctx, value)
-          ctx.onHighlight?.({ label, value, relatedTarget })
-        },
-        invokeOnSelect(ctx) {
-          const { label, value } = ctx.selectionData ?? {}
-          const relatedTarget = dom.getMatchingOptionEl(ctx, value)
-          ctx.onSelect?.({ label, value, relatedTarget })
+          const contentEl = dom.getContentEl(ctx)
+          if (!contentEl) return
+          contentEl.scrollTop = 0
         },
         invokeOnOpen(ctx) {
-          ctx.onOpen?.()
+          ctx.onOpenChange?.(true)
         },
         invokeOnClose(ctx) {
-          ctx.onClose?.()
+          ctx.onOpenChange?.(false)
         },
-        highlightFirstOption(ctx) {
-          raf(() => {
-            setHighlight(ctx, dom.getFirstEl(ctx))
-          })
+        highlightFirstItem(ctx) {
+          const firstKey = ctx.collection.getFirstKey()
+          if (!firstKey) return
+          set.highlightedItem(ctx, firstKey)
         },
-        focusFirstOption(ctx) {
-          raf(() => {
-            setFocus(ctx, dom.getFirstEl(ctx))
-          })
+        highlightLastItem(ctx) {
+          const lastKey = ctx.collection.getLastKey()
+          if (!lastKey) return
+          set.highlightedItem(ctx, lastKey)
         },
-        focusLastOption(ctx) {
-          raf(() => {
-            setFocus(ctx, dom.getLastEl(ctx))
-          })
+        highlightNextItem(ctx) {
+          const nextKey = ctx.collection.getKeysAfter(ctx.highlightedValue)
+          if (!nextKey) return
+          set.highlightedItem(ctx, nextKey)
         },
-        focusNextOption(ctx) {
-          raf(() => {
-            const option = dom.getNextEl(ctx, ctx.focusedId ?? "")
-            setFocus(ctx, option)
-          })
+        highlightPrevItem(ctx) {
+          const prevKey = ctx.collection.getKeysBefore(ctx.highlightedValue)
+          if (!prevKey) return
+          set.highlightedItem(ctx, prevKey)
         },
-        focusPrevOption(ctx) {
-          raf(() => {
-            const option = dom.getPrevEl(ctx, ctx.focusedId ?? "")
-            setFocus(ctx, option)
-          })
-        },
-        focusMatchingOption(ctx) {
-          raf(() => {
-            const option = dom.getMatchingOptionEl(ctx, ctx.selectionData?.value)
-            option?.scrollIntoView({ block: "nearest" })
-            setFocus(ctx, option)
-          })
+        highlightFirstSelectedItem(ctx) {
+          const [firstKey] = ctx.collection.sortKeys(ctx.value)
+          set.highlightedItem(ctx, firstKey)
         },
         announceOptionCount(ctx) {
           raf(() => {
-            const count = dom.getOptionCount(ctx)
-            if (!count) return
+            const count = ctx.collection.getCount()
             const text = ctx.translations.countAnnouncement(count)
             ctx.liveRegion?.announce(text)
           })
@@ -580,25 +565,56 @@ export function machine(userContext: UserDefinedContext) {
           evt.preventDefault()
         },
         setSectionLabel(ctx) {
-          const label = dom.getClosestSectionLabel(ctx)
-          if (!label) return
-          ctx.sectionLabel = label
+          // const label = dom.getClosestSectionLabel(ctx)
+          // if (!label) return
+          // ctx.sectionLabel = label
         },
       },
     },
   )
 }
 
-function setHighlight(ctx: MachineContext, option: HTMLElement | undefined | null) {
-  if (!option) return
-  const data = dom.getOptionData(option)
-  ctx.focusedId = option.id
-  ctx.focusedOptionData = data
-  return data
+const invoke = {
+  selectionChange: (ctx: MachineContext) => {
+    ctx.onValueChange?.({ value: Array.from(ctx.value), items: ctx.selectedItems })
+    ctx.inputValue = ctx.displayValue
+  },
+  highlightChange: (ctx: MachineContext) => {
+    ctx.onHighlightChange?.({ value: ctx.highlightedValue, item: ctx.highlightedItem })
+  },
+  inputChange: (ctx: MachineContext) => {
+    ctx.onInputChange?.({ value: ctx.inputValue })
+  },
 }
 
-function setFocus(ctx: MachineContext, option: HTMLElement | undefined | null) {
-  if (!option || option.id === ctx.focusedId) return
-  const data = setHighlight(ctx, option)
-  ctx.navigationData = data!
+const set = {
+  selectedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
+    if (value == null && !force) return
+
+    if (value == null && force) {
+      ctx.value = []
+      invoke.selectionChange(ctx)
+      return
+    }
+
+    const nextValue = ctx.multiple ? addOrRemove(ctx.value, value!) : [value!]
+    ctx.value = nextValue
+    invoke.selectionChange(ctx)
+  },
+  selectedItems: (ctx: MachineContext, value: string[]) => {
+    ctx.value = value
+    invoke.selectionChange(ctx)
+  },
+  highlightedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
+    if (!value && !force) return
+    ctx.highlightedValue = value || null
+    invoke.highlightChange(ctx)
+  },
+  inputDisplayValue: (ctx: MachineContext) => {
+    ctx.inputValue = ctx.displayValue
+  },
+  inputValue: (ctx: MachineContext, value: string) => {
+    ctx.inputValue = value
+    invoke.inputChange(ctx)
+  },
 }
