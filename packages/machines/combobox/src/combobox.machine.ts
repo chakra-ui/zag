@@ -38,6 +38,7 @@ export function machine(userContext: UserDefinedContext) {
         isCustomValue: (data) => data.inputValue !== data.previousValue,
         inputBehavior: "none",
         selectionBehavior: "set",
+        closeOnSelect: true,
         ...ctx,
         positioning: {
           placement: "bottom",
@@ -201,13 +202,21 @@ export function machine(userContext: UserDefinedContext) {
             },
             ENTER: [
               {
-                guard: and("hasFocusedOption", "autoComplete"),
+                guard: and("hasFocusedOption", "autoComplete", "closeOnSelect"),
                 target: "focused",
+                actions: ["selectActiveOption", "invokeOnClose"],
+              },
+              {
+                guard: and("hasFocusedOption", "autoComplete"),
                 actions: "selectActiveOption",
               },
               {
-                guard: "hasFocusedOption",
+                guard: and("hasFocusedOption", "closeOnSelect"),
                 target: "focused",
+                actions: ["selectOption", "invokeOnClose"],
+              },
+              {
+                guard: "hasFocusedOption",
                 actions: "selectOption",
               },
             ],
@@ -243,10 +252,16 @@ export function machine(userContext: UserDefinedContext) {
               target: "focused",
               actions: "invokeOnClose",
             },
-            CLICK_OPTION: {
-              target: "focused",
-              actions: ["selectOption", "invokeOnClose"],
-            },
+            CLICK_OPTION: [
+              {
+                guard: "closeOnSelect",
+                target: "focused",
+                actions: ["selectOption", "invokeOnClose"],
+              },
+              {
+                actions: ["selectOption"],
+              },
+            ],
           },
         },
 
@@ -289,10 +304,16 @@ export function machine(userContext: UserDefinedContext) {
               target: "idle",
               actions: ["selectOption", "invokeOnClose"],
             },
-            ENTER: {
-              target: "focused",
-              actions: ["selectOption", "invokeOnClose"],
-            },
+            ENTER: [
+              {
+                guard: "closeOnSelect",
+                target: "focused",
+                actions: ["selectOption", "invokeOnClose"],
+              },
+              {
+                actions: ["selectOption"],
+              },
+            ],
             CHANGE: [
               {
                 guard: "autoComplete",
@@ -313,10 +334,16 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setActiveOption", "setNavigationData"],
               },
             ],
-            CLICK_OPTION: {
-              target: "focused",
-              actions: ["selectOption", "invokeOnClose"],
-            },
+            CLICK_OPTION: [
+              {
+                guard: "closeOnSelect",
+                target: "focused",
+                actions: ["selectOption", "invokeOnClose"],
+              },
+              {
+                actions: ["selectOption"],
+              },
+            ],
             ESCAPE: {
               target: "focused",
               actions: "invokeOnClose",
@@ -349,6 +376,7 @@ export function machine(userContext: UserDefinedContext) {
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
         hasFocusedOption: (ctx) => !!ctx.focusedId,
         selectOnTab: (ctx) => !!ctx.selectOnTab,
+        closeOnSelect: (ctx) => !!ctx.closeOnSelect,
       },
 
       activities: {

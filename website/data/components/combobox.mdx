@@ -100,6 +100,21 @@ return {
 }
 ```
 
+## Close on select
+
+This behaviour ensures that the menu is closed when an option is selected and is
+`true` by default. It's only concerned with when an option is selected with
+pointer or enter key. To disable the behaviour, set the `closeOnSelect` property
+in the machine's context to `false`.
+
+```jsx {3}
+const [state, send] = useMachine(
+  combobox.machine({
+    closeOnSelect: false,
+  }),
+)
+```
+
 ## Making the combobox readonly
 
 To make a combobox readonly, set the context's `readOnly` property to `true`
