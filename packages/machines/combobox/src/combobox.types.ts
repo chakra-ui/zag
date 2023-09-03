@@ -151,7 +151,7 @@ type PublicContext = DirectionProperty &
 /**
  * This is the actual context exposed to the user.
  */
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+export type UserDefinedContext = RequiredBy<PublicContext, "id" | "collection">
 
 type ComputedContext = Readonly<{
   /**
