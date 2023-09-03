@@ -11,8 +11,6 @@ export type CollectionSearchOptions = {
 }
 
 export type CollectionItem = {
-  label?: string
-  value?: string
   [key: string]: any
 }
 

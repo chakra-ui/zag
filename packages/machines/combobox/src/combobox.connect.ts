@@ -6,7 +6,7 @@ import { parts } from "./combobox.anatomy"
 import { dom } from "./combobox.dom"
 import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, MachineApi, Send, State } from "./combobox.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const translations = state.context.translations
   const collection = state.context.collection
 
@@ -27,7 +27,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     placement: state.context.currentPlacement,
   })
 
-  const api = {
+  function getItemState(props: ItemProps) {
+    const { item } = props
+    const key = state.context.collection.getItemKey(item)
+    return {
+      key,
+      isDisabled: state.context.collection.isItemDisabled(item),
+      isHighlighted: state.context.highlightedValue === key,
+      isSelected: state.context.collection.hasItemKey(state.context.selectedItems, key),
+    }
+  }
+
+  return {
     isFocused,
     isOpen,
     isInputValueEmpty: state.context.isInputValueEmpty,
@@ -35,11 +46,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     highlightedItem: state.context.highlightedItem,
     selectedItems: state.context.selectedItems,
 
-    setValue(value: string[]) {
+    setValue(value) {
       send({ type: "VALUE.SET", value })
     },
 
-    setInputValue(value: string) {
+    setInputValue(value) {
       send({ type: "INPUT_VALUE.SET", value })
     },
 
@@ -243,19 +254,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getItemState(props: ItemProps) {
-      const { item } = props
-      const key = state.context.collection.getItemKey(item)
-      return {
-        key,
-        isDisabled: state.context.collection.isItemDisabled(item),
-        isHighlighted: state.context.highlightedValue === key,
-        isSelected: state.context.collection.hasItemKey(state.context.selectedItems, key),
-      }
-    },
+    getItemState,
 
     getItemProps(props: ItemProps) {
-      const optionState = api.getItemState(props)
+      const optionState = getItemState(props)
       const value = optionState.key
 
       return normalize.element({
@@ -313,6 +315,4 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
   }
-
-  return api
 }

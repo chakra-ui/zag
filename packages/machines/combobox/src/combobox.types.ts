@@ -137,7 +137,7 @@ type PublicContext = DirectionProperty &
     /**
      * The collection of items
      */
-    collection: Collection<CollectionItem>
+    collection: Collection<any>
     /**
      * Whether to allow multiple selection
      */
@@ -221,6 +221,13 @@ export type ItemProps = {
   item: CollectionItem
 }
 
+export type ItemState = {
+  key: string
+  isDisabled: boolean
+  isSelected: boolean
+  isHighlighted: boolean
+}
+
 export type ItemGroupProps = {
   id: string
 }
@@ -231,4 +238,28 @@ export type ItemGroupLabelProps = {
 
 export type { InteractOutsideEvent, Placement, PositioningOptions }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {}
+export type MachineApi<T extends PropTypes = PropTypes> = {
+  isFocused: boolean
+  isOpen: boolean
+  isInputValueEmpty: boolean
+  inputValue: string
+  highlightedItem: CollectionItem | null
+  selectedItems: CollectionItem[]
+  setValue(value: string[]): void
+  clearValue(): void
+  focus(): void
+  setInputValue(value: string): void
+  getItemState(props: ItemProps): ItemState
+
+  rootProps: T["element"]
+  labelProps: T["label"]
+  controlProps: T["element"]
+  positionerProps: T["element"]
+  inputProps: T["input"]
+  contentProps: T["element"]
+  triggerProps: T["button"]
+  clearTriggerProps: T["button"]
+  getItemProps(props: ItemProps): T["element"]
+  getItemGroupProps(props: ItemGroupProps): T["element"]
+  getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]
+}
