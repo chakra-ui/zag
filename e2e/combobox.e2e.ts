@@ -1,13 +1,13 @@
 import { expect, type Locator, test } from "@playwright/test"
-import { a11y, controls, isInViewport, testid } from "./__utils"
+import { a11y, controls, isInViewport, repeat, testid } from "./__utils"
 
 const input = testid("input")
 const trigger = testid("trigger")
 const content = testid("combobox-content")
 const clear_value_button = testid("clear-value-button")
 
-const options = "[data-part=option]:not([data-disabled])"
-const highlighted_option = "[data-part=option][data-highlighted]"
+const options = "[data-part=item]:not([data-disabled])"
+const highlighted_option = "[data-part=item][data-highlighted]"
 
 const expectToBeHighlighted = async (el: Locator) => {
   await expect(el).toHaveAttribute("data-highlighted", "")
@@ -130,10 +130,7 @@ test.describe("combobox", () => {
 
     const option_els = page.locator(options)
 
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("ArrowDown")
+    await repeat(4, () => page.keyboard.press("ArrowDown"))
 
     await expectToBeHighlighted(option_els.last())
     await page.keyboard.press("ArrowDown")

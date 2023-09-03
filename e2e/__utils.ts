@@ -89,7 +89,7 @@ export async function isInViewport(viewport: Locator, el: Locator) {
   )
 }
 
-export const repeat = async (fn: () => unknown, count: number) => {
+export const repeat = async (count: number, fn: () => unknown) => {
   await [...new Array(count)].reduce((p) => p.then(fn), Promise.resolve())
 }
 

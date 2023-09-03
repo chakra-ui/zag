@@ -529,9 +529,9 @@ export function machine(userContext: UserDefinedContext) {
           const [firstKey] = ctx.collection.sortKeys(ctx.value)
           set.highlightedItem(ctx, firstKey)
         },
-        autofillInputValue(ctx) {
+        autofillInputValue(ctx, evt) {
           const inputEl = dom.getInputEl(ctx)
-          if (!ctx.autoComplete || !inputEl) return
+          if (!ctx.autoComplete || !inputEl || !KEYDOWN_EVENT_REGEX.test(evt.type)) return
           const valueText = ctx.collection.getKeyLabel(ctx.highlightedValue)
           inputEl!.value = valueText || ctx.inputValue
         },

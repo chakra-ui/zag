@@ -17,6 +17,7 @@ const collectionRef = computed(() =>
 const [state, send] = useMachine(
   combobox.machine({
     id: "1",
+    collection: collectionRef.value,
     onOpenChange(open) {
       if (!open) return
       options.value = comboboxData

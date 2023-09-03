@@ -86,7 +86,7 @@ test.describe("select / pointer", () => {
 test.describe("select/ open / keyboard", () => {
   test("should navigate on arrow down", async ({ page }) => {
     await page.click(trigger)
-    await repeat(() => page.keyboard.press("ArrowDown"), 3)
+    await repeat(3, () => page.keyboard.press("ArrowDown"))
     const afganistan = page.locator(options.get("AF"))
     await expectToBeHighlighted(afganistan)
     await expectToBeInViewport(page.locator(menu), afganistan)
@@ -94,7 +94,7 @@ test.describe("select/ open / keyboard", () => {
 
   test("should navigate on arrow up", async ({ page }) => {
     await page.click(trigger)
-    await repeat(() => page.keyboard.press("ArrowUp"), 3)
+    await repeat(3, () => page.keyboard.press("ArrowUp"))
     const southAfrica = page.locator(options.get("ZA"))
     await expectToBeHighlighted(southAfrica)
     await expectToBeInViewport(page.locator(menu), southAfrica)
@@ -174,7 +174,7 @@ test.describe("select / open / blur", () => {
 
   test("should close on press tab - no select", async ({ page }) => {
     await page.click(trigger)
-    await repeat(() => page.keyboard.press("ArrowDown"), 3)
+    await repeat(3, () => page.keyboard.press("ArrowDown"))
     await page.keyboard.press("Tab")
     await expect(page.locator(menu)).not.toBeVisible()
     await expect(page.locator(trigger)).toContainText("Select option")
@@ -183,7 +183,7 @@ test.describe("select / open / blur", () => {
   test.skip("should close on press tab - with select", async ({ page }) => {
     await controls(page).bool("selectOnTab", true)
     await page.click(trigger)
-    await repeat(() => page.keyboard.press("ArrowDown"), 3)
+    await repeat(3, () => page.keyboard.press("ArrowDown"))
 
     const afganistan = page.locator(options.get("AF"))
     await page.keyboard.press("Tab")
