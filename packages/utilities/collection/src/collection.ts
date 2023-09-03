@@ -163,6 +163,24 @@ export class Collection<T extends CollectionItem = CollectionItem> {
     return this.disabledKeys.has(this.getItemKey(item))
   }
 
+  private getKeyIndex = (key: string | null) => {
+    if (key == null) return -1
+    return this.nodes.get(key)?.index ?? -1
+  }
+
+  private getByText = (text: string, currentKey: string | null) => {
+    const index = this.getKeyIndex(currentKey)
+    let items = currentKey ? wrap(Array.from(this.nodes.values()), index) : Array.from(this.nodes.values())
+
+    const isSingleKey = text.length === 1
+
+    if (isSingleKey) {
+      items = items.filter((item) => item.key !== currentKey)
+    }
+
+    return items.find(({ item }) => match(this.getItemLabel(item), text))
+  }
+
   getKeyForSearch = (options: CollectionSearchOptions) => {
     const { state, fromKey, eventKey, timeout = 350 } = options
 
@@ -170,17 +188,8 @@ export class Collection<T extends CollectionItem = CollectionItem> {
     const isRepeated = search.length > 1 && Array.from(search).every((char) => char === search[0])
 
     const query = isRepeated ? search[0] : search
-    const isSingleKey = query.length === 1
 
-    const index = this.nodes.get(fromKey ?? "")?.index ?? -1
-
-    let nodes = Array.from(this.nodes.values())
-    if (fromKey != null) {
-      const wrappedNodes = wrap(nodes, index)
-      nodes = isSingleKey ? wrappedNodes.filter((item) => item.key !== fromKey) : wrappedNodes
-    }
-
-    const matchingKey = this.findMatchingNode(nodes, search)
+    const nextKey = this.getByText(query, fromKey)?.key ?? null
 
     function cleanup() {
       clearTimeout(state.timer)
@@ -201,7 +210,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
 
     update(search)
 
-    return matchingKey
+    return nextKey
   }
 
   toJSON = () => {
@@ -210,19 +219,6 @@ export class Collection<T extends CollectionItem = CollectionItem> {
       firstKey: this.getFirstKey(),
       lastKey: this.getLastKey(),
     }
-  }
-
-  private findMatchingNode = (nodes: CollectionNode<T>[], search: string) => {
-    for (const node of nodes) {
-      if (match(this.getValueText(node), search)) {
-        return node.key
-      }
-    }
-    return null
-  }
-
-  private getValueText = (node: CollectionNode<T>) => {
-    return node.item.label ?? node.key ?? ""
   }
 }
 

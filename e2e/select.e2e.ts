@@ -4,18 +4,16 @@ import { a11y, controls, isInViewport, part, pointer, repeat } from "./__utils"
 const label = part("label")
 const trigger = part("trigger")
 const menu = part("content")
-const options = {
-  first: "[role=option]:first-of-type",
-  last: "[role=option]:last-of-type",
-  get: (id: string) => `[role=option][data-value="${id}"]`,
+
+const options = "[data-part=item]:not([data-disabled])"
+const getOption = (id: string) => `[data-part=item][data-value="${id}"]`
+
+const expectToBeHighlighted = async (el: Locator) => {
+  await expect(el).toHaveAttribute("data-highlighted", "")
 }
 
 const expectToBeChecked = async (el: Locator) => {
   await expect(el).toHaveAttribute("data-state", "checked")
-}
-
-const expectToBeHighlighted = async (el: Locator) => {
-  await expect(el).toHaveAttribute("data-highlighted", "")
 }
 
 const expectToBeInViewport = async (viewport: Locator, option: Locator) => {
@@ -63,7 +61,7 @@ test.describe("select / pointer", () => {
 
   test("should open and select with pointer cycle", async ({ page }) => {
     await pointer.down(page.locator(trigger))
-    const albania = page.locator(options.get("AL"))
+    const albania = page.locator(getOption("AL"))
     await pointer.move(albania)
     await pointer.up(albania)
     await expectToBeChecked(albania)
@@ -73,11 +71,11 @@ test.describe("select / pointer", () => {
   test("should highlight on hover", async ({ page }) => {
     await page.click(trigger)
 
-    const albania = page.locator(options.get("AL"))
+    const albania = page.locator(getOption("AL"))
     await pointer.move(albania)
     await expectToBeHighlighted(albania)
 
-    const angola = page.locator(options.get("AO"))
+    const angola = page.locator(getOption("AO"))
     await pointer.move(angola)
     await expectToBeHighlighted(angola)
   })
@@ -87,7 +85,7 @@ test.describe("select/ open / keyboard", () => {
   test("should navigate on arrow down", async ({ page }) => {
     await page.click(trigger)
     await repeat(3, () => page.keyboard.press("ArrowDown"))
-    const afganistan = page.locator(options.get("AF"))
+    const afganistan = page.locator(getOption("AF"))
     await expectToBeHighlighted(afganistan)
     await expectToBeInViewport(page.locator(menu), afganistan)
   })
@@ -95,7 +93,7 @@ test.describe("select/ open / keyboard", () => {
   test("should navigate on arrow up", async ({ page }) => {
     await page.click(trigger)
     await repeat(3, () => page.keyboard.press("ArrowUp"))
-    const southAfrica = page.locator(options.get("ZA"))
+    const southAfrica = page.locator(getOption("ZA"))
     await expectToBeHighlighted(southAfrica)
     await expectToBeInViewport(page.locator(menu), southAfrica)
   })
@@ -103,12 +101,12 @@ test.describe("select/ open / keyboard", () => {
   test("should navigate on home/end", async ({ page }) => {
     await page.click(trigger)
     await page.keyboard.press("End")
-    const zimbabwe = page.locator(options.get("ZW"))
+    const zimbabwe = page.locator(getOption("ZW"))
     await expectToBeHighlighted(zimbabwe)
     await expectToBeInViewport(page.locator(menu), zimbabwe)
 
     await page.keyboard.press("Home")
-    const andora = page.locator(options.get("AD"))
+    const andora = page.locator(getOption("AD"))
     await expectToBeHighlighted(andora)
     await expectToBeInViewport(page.locator(menu), andora)
   })
@@ -116,7 +114,7 @@ test.describe("select/ open / keyboard", () => {
   test("should navigate on typeahead", async ({ page }) => {
     await page.click(trigger)
     await page.keyboard.type("Cy")
-    const cyprus = page.locator(options.get("CY"))
+    const cyprus = page.locator(getOption("CY"))
     await expectToBeHighlighted(cyprus)
     await expectToBeInViewport(page.locator(menu), cyprus)
   })
@@ -135,7 +133,7 @@ test.describe("select / keyboard / select", () => {
     await page.click(trigger)
     await page.keyboard.press("ArrowDown")
     await page.keyboard.press("Enter")
-    const andorra = page.locator(options.get("AD"))
+    const andorra = page.locator(getOption("AD"))
     await expectToBeChecked(andorra)
     await expect(page.locator(trigger)).toContainText("Andorra")
   })
@@ -144,7 +142,7 @@ test.describe("select / keyboard / select", () => {
     await page.click(trigger)
     await page.keyboard.press("ArrowDown")
     await page.keyboard.press(" ")
-    const andorra = page.locator(options.get("AD"))
+    const andorra = page.locator(getOption("AD"))
     await expectToBeChecked(andorra)
     await expect(page.locator(trigger)).toContainText("Andorra")
   })
@@ -180,12 +178,12 @@ test.describe("select / open / blur", () => {
     await expect(page.locator(trigger)).toContainText("Select option")
   })
 
-  test.skip("should close on press tab - with select", async ({ page }) => {
-    await controls(page).bool("selectOnTab", true)
+  test("should close on press tab - with select", async ({ page }) => {
+    await controls(page).bool("selectOnBlur", true)
     await page.click(trigger)
     await repeat(3, () => page.keyboard.press("ArrowDown"))
 
-    const afganistan = page.locator(options.get("AF"))
+    const afganistan = page.locator(getOption("AF"))
     await page.keyboard.press("Tab")
     await expect(page.locator(menu)).not.toBeVisible()
     await expectToBeChecked(afganistan)
@@ -209,14 +207,14 @@ test.describe("select / focused / open", () => {
     await page.focus(trigger)
     await page.keyboard.press("ArrowDown")
     await expect(page.locator(menu)).toBeVisible()
-    await expectToBeHighlighted(page.locator(options.first))
+    await expectToBeHighlighted(page.locator(options).first())
   })
 
   test("should open with up arrow keys  + highlight last option", async ({ page }) => {
     await page.focus(trigger)
     await page.keyboard.press("ArrowUp")
     await expect(page.locator(menu)).toBeVisible()
-    await expectToBeHighlighted(page.locator(options.last))
+    await expectToBeHighlighted(page.locator(options).last())
   })
 })
 
@@ -224,35 +222,35 @@ test.describe("select / focused / select option", () => {
   test("should select last option on arrow left", async ({ page }) => {
     await page.focus(trigger)
     await page.keyboard.press("ArrowLeft")
-    await expectToBeChecked(page.locator(options.get("ZW")))
+    await expectToBeChecked(page.locator(getOption("ZW")))
   })
 
   test("should select last option on arrow right", async ({ page }) => {
     await page.focus(trigger)
     await page.keyboard.press("ArrowRight")
-    await expectToBeChecked(page.locator(options.get("AD")))
+    await expectToBeChecked(page.locator(getOption("AD")))
   })
 
   test("should select with typeahead", async ({ page }) => {
     await page.focus(trigger)
     await page.keyboard.type("Nigeri")
-    await expectToBeChecked(page.locator(options.get("NG")))
+    await expectToBeChecked(page.locator(getOption("NG")))
   })
 
   test("should cycle selected value with typeahead", async ({ page }) => {
     await page.focus(trigger)
 
     await page.keyboard.type("P") // select Panama
-    await expectToBeChecked(page.locator(options.get("PA")))
+    await expectToBeChecked(page.locator(getOption("PA")))
 
     await page.keyboard.type("P") // select Panama
-    await expectToBeChecked(page.locator(options.get("PE")))
+    await expectToBeChecked(page.locator(getOption("PE")))
 
     await page.keyboard.type("P") // select papua new guinea
-    await expectToBeChecked(page.locator(options.get("PG")))
+    await expectToBeChecked(page.locator(getOption("PG")))
 
     await page.waitForTimeout(350) // default timeout for typeahead to reset
     await page.keyboard.type("K") // select papua new guinea
-    await expectToBeChecked(page.locator(options.get("KE")))
+    await expectToBeChecked(page.locator(getOption("KE")))
   })
 })

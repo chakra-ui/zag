@@ -6,9 +6,15 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(selectControls)
 
-const [state, send] = useMachine(select.machine({ id: "1" }), {
-  context: controls.context,
-})
+const [state, send] = useMachine(
+  select.machine({
+    collection: select.collection({ items: selectData }),
+    id: "1",
+  }),
+  {
+    context: controls.context,
+  },
+)
 
 const api = computed(() => select.connect(state.value, send, normalizeProps))
 
@@ -32,7 +38,9 @@ const CaretIcon = () => (
     <div class="control">
       <label v-bind="api.labelProps">Label</label>
       <button v-bind="api.triggerProps">
-        <span>{{ api.selectedOption?.label ?? "Select option" }}</span>
+        <span>{{
+          api.hasSelectedItems ? api.selectedItems.map((item) => item.label).join(", ") : "Select option"
+        }}</span>
         <CaretIcon />
       </button>
     </div>
@@ -54,9 +62,9 @@ const CaretIcon = () => (
     <Teleport to="body">
       <div v-bind="api.positionerProps">
         <ul v-bind="api.contentProps">
-          <li v-for="{ label, value } in selectData" :key="value" v-bind="api.getOptionProps({ label, value })">
-            <span>{{ label }}</span>
-            {{ value === api.selectedOption?.value ? "✓" : null }}
+          <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
+            <span>{{ item.label }}</span>
+            <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
           </li>
         </ul>
       </div>

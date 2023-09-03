@@ -25,9 +25,15 @@ const CaretIcon = () => (
 export default function Page() {
   const controls = useControls(selectControls)
 
-  const [state, send] = useMachine(select.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    select.machine({
+      collection: select.collection({ items: selectData }),
+      id: createUniqueId(),
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = createMemo(() => select.connect(state, send, normalizeProps))
 
@@ -38,7 +44,11 @@ export default function Page() {
         <div class="control">
           <label {...api().labelProps}>Label</label>
           <button {...api().triggerProps}>
-            <span>{api().selectedOption?.label ?? "Select option"}</span>
+            {api().hasSelectedItems
+              ? api()
+                  .selectedItems.map((item) => item.label)
+                  .join(", ")
+              : "Select option"}
             <CaretIcon />
           </button>
         </div>
@@ -61,10 +71,10 @@ export default function Page() {
           <div {...api().positionerProps}>
             <ul {...api().contentProps}>
               <For each={selectData}>
-                {({ label, value }) => (
-                  <li {...api().getOptionProps({ label, value })}>
-                    <span>{label}</span>
-                    {value === api().selectedOption?.value && "✓"}
+                {(item) => (
+                  <li {...api().getItemProps({ item })}>
+                    <span class="item-label">{item.label}</span>
+                    <span {...api().getItemIndicatorProps({ item })}>✓</span>
                   </li>
                 )}
               </For>

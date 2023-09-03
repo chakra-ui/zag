@@ -26,9 +26,15 @@ export default defineComponent({
   setup() {
     const controls = useControls(selectControls)
 
-    const [state, send] = useMachine(select.machine({ id: "1" }), {
-      context: controls.context,
-    })
+    const [state, send] = useMachine(
+      select.machine({
+        id: "1",
+        collection: select.collection({ items: selectData }),
+      }),
+      {
+        context: controls.context,
+      },
+    )
 
     const apiRef = computed(() => select.connect(state.value, send, normalizeProps))
 
@@ -42,7 +48,7 @@ export default defineComponent({
             <div class="control">
               <label {...api.labelProps}>Label</label>
               <button {...api.triggerProps}>
-                <span>{api.selectedOption?.label ?? "Select option"}</span>
+                {api.hasSelectedItems ? api.selectedItems.map((item) => item.label).join(", ") : "Select option"}
                 <CaretIcon />
               </button>
             </div>
@@ -68,10 +74,10 @@ export default defineComponent({
             <Teleport to="body">
               <div {...api.positionerProps}>
                 <ul {...api.contentProps}>
-                  {selectData.map(({ label, value }) => (
-                    <li key={value} {...api.getOptionProps({ label, value })}>
-                      <span>{label}</span>
-                      {value === api.selectedOption?.value && "✓"}
+                  {selectData.map((item) => (
+                    <li key={item.value} {...api.getItemProps({ item })}>
+                      <span class="item-label">{item.label}</span>
+                      <span {...api.getItemIndicatorProps({ item })}>✓</span>
                     </li>
                   ))}
                 </ul>
