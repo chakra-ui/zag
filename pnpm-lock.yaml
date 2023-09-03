@@ -1556,9 +1556,6 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../utilities/interact-outside
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../utilities/live-region
       '@zag-js/mutation-observer':
         specifier: workspace:*
         version: link:../../utilities/mutation-observer

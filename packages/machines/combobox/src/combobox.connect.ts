@@ -8,6 +8,7 @@ import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, MachineApi, Send, 
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const translations = state.context.translations
+  const collection = state.context.collection
 
   const isDisabled = state.context.disabled
   const isInteractive = state.context.isInteractive
@@ -16,12 +17,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const isOpen = state.hasTag("open")
   const isFocused = state.hasTag("focused")
-  const isIdle = state.hasTag("idle")
 
   const autofill = isOpen && state.context.highlightedValue && state.context.autoComplete
-  const showClearButton = (!isIdle || state.context.isHovering) && !state.context.isInputValueEmpty
 
-  const value = autofill ? state.context.highlightedItem?.label : state.context.inputValue
+  const value = autofill ? collection.getItemLabel(state.context.highlightedItem) : state.context.inputValue
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
@@ -37,15 +36,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     selectedItems: state.context.selectedItems,
 
     setValue(value: string[]) {
-      send({ type: "SET_VALUE", value })
+      send({ type: "VALUE.SET", value })
     },
 
     setInputValue(value: string) {
-      send({ type: "SET_INPUT_VALUE", value })
+      send({ type: "INPUT_VALUE.SET", value })
     },
 
     clearValue() {
-      send("CLEAR_VALUE")
+      send("VALUE.CLEAR")
     },
 
     focus() {
@@ -54,6 +53,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
+      dir: state.context.dir,
       id: dom.getRootId(state.context),
       "data-invalid": dataAttr(isInvalid),
       "data-readonly": dataAttr(isReadOnly),
@@ -61,6 +61,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.label({
       ...parts.label.attrs,
+      dir: state.context.dir,
       htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
       "data-readonly": dataAttr(isReadOnly),
@@ -71,19 +72,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     controlProps: normalize.element({
       ...parts.control.attrs,
+      dir: state.context.dir,
       id: dom.getControlId(state.context),
       "data-state": isOpen ? "open" : "closed",
       "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
-      onPointerOver() {
-        if (!isInteractive) return
-        send("POINTER_OVER")
-      },
-      onPointerLeave() {
-        if (!isInteractive) return
-        send("POINTER_LEAVE")
-      },
     }),
 
     positionerProps: normalize.element({
@@ -95,6 +89,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     inputProps: normalize.input({
       ...parts.input.attrs,
+      dir: state.context.dir,
       "aria-invalid": ariaAttr(isInvalid),
       "data-invalid": dataAttr(isInvalid),
       name: state.context.name,
@@ -120,23 +115,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ? dom.getItemId(state.context, state.context.highlightedValue)
         : undefined,
       onCompositionStart() {
-        send("COMPOSITION_START")
+        send("INPUT.COMPOSITION_START")
       },
       onCompositionEnd() {
         raf(() => {
-          send("COMPOSITION_END")
+          send("INPUT.COMPOSITION_END")
         })
       },
       onClick() {
         if (!isInteractive) return
-        send("CLICK_INPUT")
+        send("INPUT.CLICK")
       },
       onFocus() {
         if (isDisabled) return
-        send("FOCUS")
+        send("INPUT.FOCUS")
       },
       onChange(event) {
-        send({ type: "CHANGE", value: event.currentTarget.value })
+        send({ type: "INPUT.CHANGE", value: event.currentTarget.value })
       },
       onKeyDown(event) {
         if (!isInteractive) return
@@ -148,32 +143,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         const keymap: EventKeyMap = {
           ArrowDown(event) {
-            send({ type: event.altKey ? "ALT_ARROW_DOWN" : "ARROW_DOWN" })
+            send({ type: event.altKey ? "INPUT.ARROW_DOWN+ALT" : "INPUT.ARROW_DOWN" })
             prevent = true
           },
           ArrowUp() {
-            send(event.altKey ? "ALT_ARROW_UP" : "ARROW_UP")
+            send(event.altKey ? "INPUT.ARROW_UP+ALT" : "INPUT.ARROW_UP")
             prevent = true
           },
           Home(event) {
             const isModified = event.ctrlKey || event.metaKey || event.shiftKey
             if (isModified) return
             prevent = isOpen
-            send("HOME")
+            send("INPUT.HOME")
           },
           End(event) {
             const isModified = event.ctrlKey || event.metaKey || event.shiftKey
             if (isModified) return
             prevent = isOpen
-            send("END")
+            send("INPUT.END")
           },
           Enter() {
             if (state.context.composing) return
-            send("ENTER")
+            send("INPUT.ENTER")
             prevent = true
           },
           Escape() {
-            send("ESCAPE")
+            send("INPUT.ESCAPE")
             prevent = true
           },
         }
@@ -191,6 +186,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
+      dir: state.context.dir,
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "listbox",
       type: "button",
@@ -205,17 +201,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerDown(event) {
         const evt = getNativeEvent(event)
         if (!isInteractive || !isLeftClick(evt) || evt.pointerType === "touch") return
-        send("CLICK_BUTTON")
+        send("TRIGGER.CLICK")
         event.preventDefault()
       },
       onPointerUp(event) {
         if (event.pointerType !== "touch") return
-        send("CLICK_BUTTON")
+        send("TRIGGER.CLICK")
       },
+      style: { outline: 0 },
     }),
 
     contentProps: normalize.element({
       ...parts.content.attrs,
+      dir: state.context.dir,
       id: dom.getContentId(state.context),
       role: "listbox",
       hidden: !isOpen,
@@ -230,16 +228,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     clearTriggerProps: normalize.button({
       ...parts.clearTrigger.attrs,
+      dir: state.context.dir,
       id: dom.getClearTriggerId(state.context),
       type: "button",
       tabIndex: -1,
       disabled: isDisabled,
       "aria-label": translations.clearTriggerLabel,
-      hidden: !showClearButton,
+      hidden: !state.context.isInputValueEmpty,
       onPointerDown(event) {
         const evt = getNativeEvent(event)
         if (!isInteractive || !isLeftClick(evt)) return
-        send("CLEAR_VALUE")
+        send({ type: "VALUE.CLEAR", src: "clear-trigger" })
         event.preventDefault()
       },
     }),
@@ -261,6 +260,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.item.attrs,
+        dir: state.context.dir,
         id: dom.getItemId(state.context, value),
         role: "option",
         tabIndex: -1,
@@ -275,20 +275,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         // "data-label": label,
         onPointerMove() {
           if (optionState.isDisabled) return
-          send({ type: "POINTEROVER_OPTION", value })
+          send({ type: "OPTION.POINTER_OVER", value })
         },
         onPointerLeave() {
           if (optionState.isDisabled) return
-          send({ type: "POINTERLEAVE_OPTION", value })
+          send({ type: "OPTION.POINTER_LEAVE", value })
         },
         onPointerUp(event) {
           if (optionState.isDisabled || isContextMenuEvent(event)) return
-          send({ type: "CLICK_OPTION", src: "pointerup", value })
+          send({ type: "OPTION.CLICK", src: "pointerup", value })
         },
         onAuxClick(event) {
           if (optionState.isDisabled || isContextMenuEvent(event)) return
           event.preventDefault()
-          send({ type: "CLICK_OPTION", src: "auxclick", value })
+          send({ type: "OPTION.CLICK", src: "auxclick", value })
         },
       })
     },
@@ -297,6 +297,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { id } = props
       return normalize.element({
         ...parts.itemGroup.attrs,
+        dir: state.context.dir,
         id: dom.getItemGroupId(state.context, id),
         "aria-labelledby": dom.getItemGroupLabelId(state.context, id),
       })
@@ -306,6 +307,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { htmlFor } = props
       return normalize.element({
         ...parts.itemGroupLabel.attrs,
+        dir: state.context.dir,
         id: dom.getItemGroupId(state.context, htmlFor),
         role: "group",
       })

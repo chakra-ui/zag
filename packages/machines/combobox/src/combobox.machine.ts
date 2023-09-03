@@ -2,7 +2,6 @@ import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards } from "@zag-js/core"
 import { contains, raf } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
-import { createLiveRegion } from "@zag-js/live-region"
 import { observeAttributes, observeChildren } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, compact } from "@zag-js/utils"
@@ -28,9 +27,7 @@ export function machine(userContext: UserDefinedContext) {
         value: [],
         highlightedValue: null,
         inputValue: "",
-        liveRegion: null,
         selectOnBlur: true,
-        isHovering: false,
         allowCustomValue: false,
         closeOnSelect: true,
         inputBehavior: "none",
@@ -45,8 +42,6 @@ export function machine(userContext: UserDefinedContext) {
         translations: {
           triggerLabel: "Toggle suggestions",
           clearTriggerLabel: "Clear value",
-          navigationHint: "use the up and down keys to navigate. Press the enter key to select",
-          countAnnouncement: (count) => `${count} ${count === 1 ? "option" : "options"} available`,
           ...ctx.translations,
         },
       },
@@ -64,95 +59,89 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         inputValue: ["syncInputValue"],
+        highlightedValue: ["autofillInputValue"],
       },
 
-      activities: ["setupLiveRegion"],
-
       on: {
-        SET_VALUE: {
+        "VALUE.SET": {
           actions: ["setSelectedItems"],
         },
-        SET_INPUT_VALUE: {
+        "INPUT_VALUE.SET": {
           actions: "setInputValue",
         },
-        CLEAR_VALUE: {
+        "VALUE.CLEAR": {
           target: "focused",
           actions: ["clearInputValue", "clearSelectedItems"],
         },
-        POINTER_OVER: {
-          actions: "setIsHovering",
-        },
-        POINTER_LEAVE: {
-          actions: "clearIsHovering",
-        },
-        COMPOSITION_START: {
+        "INPUT.COMPOSITION_START": {
           actions: ["setIsComposing"],
         },
-        COMPOSITION_END: {
+        "INPUT.COMPOSITION_END": {
           actions: ["clearIsComposing"],
         },
       },
 
       states: {
         idle: {
-          tags: ["idle"],
+          tags: ["idle", "closed"],
           entry: ["scrollToTop", "clearHighlightedItem"],
           on: {
-            CLICK_BUTTON: {
+            "TRIGGER.CLICK": {
               target: "interacting",
-              actions: ["focusInput", "invokeOnOpen"],
+              actions: ["focusInput", "highlightFirstSelectedItem", "invokeOnOpen"],
             },
-            CLICK_INPUT: {
+            "INPUT.CLICK": {
               guard: "openOnClick",
               target: "interacting",
-              actions: "invokeOnOpen",
+              actions: ["highlightFirstSelectedItem", "invokeOnOpen"],
             },
-            FOCUS: "focused",
+            "INPUT.FOCUS": {
+              target: "focused",
+            },
           },
         },
 
         focused: {
-          tags: ["focused"],
-          entry: ["focusInput", "scrollToTop"],
+          tags: ["focused", "closed"],
+          entry: ["focusInput", "scrollToTop", "clearHighlightedItem"],
           activities: ["trackInteractOutside"],
           on: {
-            CHANGE: {
+            "INPUT.CHANGE": {
               target: "suggesting",
               actions: "setInputValue",
             },
-            INTERACT_OUTSIDE: "idle",
-            ESCAPE: {
+            INTERACT_OUTSIDE: {
+              target: "idle",
+            },
+            "INPUT.ESCAPE": {
               guard: and("isCustomValue", not("allowCustomValue")),
               actions: "revertInputValue",
             },
-            CLICK_INPUT: {
+            "INPUT.CLICK": {
               guard: "openOnClick",
               target: "interacting",
-              actions: ["invokeOnOpen"],
+              actions: ["highlightFirstSelectedItem", "invokeOnOpen"],
             },
-            CLICK_BUTTON: {
+            "TRIGGER.CLICK": {
               target: "interacting",
-              actions: ["focusInput", "invokeOnOpen"],
+              actions: ["focusInput", "highlightFirstSelectedItem", "invokeOnOpen"],
             },
-            POINTER_OVER: {
-              actions: "setIsHovering",
-            },
-            ARROW_DOWN: [
+            "INPUT.ARROW_DOWN": [
               {
                 guard: "autoComplete",
                 target: "interacting",
-                actions: "invokeOnOpen",
+                actions: ["invokeOnOpen"],
               },
               {
                 target: "interacting",
                 actions: ["highlightNextItem", "invokeOnOpen"],
               },
             ],
-            ALT_ARROW_DOWN: {
+            "INPUT.ARROW_DOWN+ALT": {
               target: "interacting",
               actions: "invokeOnOpen",
             },
-            ARROW_UP: [
+            "INPUT.ARROW_UP": [
               {
                 guard: "autoComplete",
                 target: "interacting",
@@ -169,15 +158,14 @@ export function machine(userContext: UserDefinedContext) {
         interacting: {
           tags: ["open", "focused"],
           activities: ["scrollIntoView", "trackInteractOutside", "computePlacement", "hideOtherElements"],
-          entry: "highlightFirstSelectedItem",
           on: {
-            HOME: {
+            "INPUT.HOME": {
               actions: ["highlightFirstItem"],
             },
-            END: {
+            "INPUT.END": {
               actions: ["highlightLastItem"],
             },
-            ARROW_DOWN: [
+            "INPUT.ARROW_DOWN": [
               {
                 guard: and("autoComplete", "isLastItemHighlighted"),
                 actions: ["clearHighlightedItem", "scrollToTop"],
@@ -186,14 +174,17 @@ export function machine(userContext: UserDefinedContext) {
                 actions: "highlightNextItem",
               },
             ],
-            ARROW_UP: [
+            "INPUT.ARROW_UP": [
               {
                 guard: and("autoComplete", "isFirstItemHighlighted"),
                 actions: "clearHighlightedItem",
               },
               { actions: "highlightPrevItem" },
             ],
-            ENTER: [
+            "INPUT.ARROW_UP+ALT": {
+              target: "focused",
+            },
+            "INPUT.ENTER": [
               {
                 guard: not("closeOnSelect"),
                 actions: ["selectHighlightedItem"],
@@ -203,7 +194,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["selectHighlightedItem", "invokeOnClose"],
               },
             ],
-            CHANGE: [
+            "INPUT.CHANGE": [
               {
                 guard: "autoComplete",
                 target: "suggesting",
@@ -214,13 +205,13 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["clearHighlightedItem", "setInputValue"],
               },
             ],
-            POINTEROVER_OPTION: {
+            "OPTION.POINTER_OVER": {
               actions: ["setHighlightedItem"],
             },
-            POINTERLEAVE_OPTION: {
+            "OPTION.POINTER_LEAVE": {
               actions: ["clearHighlightedItem"],
             },
-            CLICK_OPTION: [
+            "OPTION.CLICK": [
               {
                 guard: not("closeOnSelect"),
                 actions: ["setSelectedItem"],
@@ -230,11 +221,18 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setSelectedItem", "invokeOnClose"],
               },
             ],
-            ESCAPE: {
-              target: "focused",
-              actions: "invokeOnClose",
-            },
-            CLICK_BUTTON: {
+            "INPUT.ESCAPE": [
+              {
+                guard: "autoComplete",
+                target: "focused",
+                actions: ["syncInputValue", "invokeOnClose"],
+              },
+              {
+                target: "focused",
+                actions: ["invokeOnClose"],
+              },
+            ],
+            "TRIGGER.CLICK": {
               target: "focused",
               actions: "invokeOnClose",
             },
@@ -268,33 +266,30 @@ export function machine(userContext: UserDefinedContext) {
           ],
           entry: ["focusInput", "invokeOnOpen"],
           on: {
-            CHILDREN_CHANGE: [
-              {
-                guard: "isHighlightedItemVisible",
-                actions: "announceOptionCount",
-              },
-              {
-                actions: ["highlightFirstItem", "announceOptionCount"],
-              },
-            ],
-            ARROW_DOWN: {
+            CHILDREN_CHANGE: {
+              guard: not("isHighlightedItemVisible"),
+              actions: ["highlightFirstItem"],
+            },
+            "INPUT.ARROW_DOWN": {
               target: "interacting",
               actions: "highlightNextItem",
             },
-            ARROW_UP: {
+            "INPUT.ARROW_UP": {
               target: "interacting",
               actions: "highlightPrevItem",
             },
-            ALT_ARROW_UP: "focused",
-            HOME: {
+            "INPUT.ARROW_UP+ALT": {
+              target: "focused",
+            },
+            "INPUT.HOME": {
               target: "interacting",
               actions: ["highlightFirstItem"],
             },
-            END: {
+            "INPUT.END": {
               target: "interacting",
               actions: ["highlightLastItem"],
             },
-            ENTER: [
+            "INPUT.ENTER": [
               {
                 guard: and("hasHighlightedItem", "autoComplete"),
                 target: "focused",
@@ -306,24 +301,24 @@ export function machine(userContext: UserDefinedContext) {
                 actions: "selectHighlightedItem",
               },
             ],
-            CHANGE: [
+            "INPUT.CHANGE": [
               {
                 guard: "autoHighlight",
-                actions: ["clearHighlightedItem", "setInputValue", "highlightFirstItem"],
+                actions: ["setInputValue", "highlightFirstItem"],
               },
               {
                 actions: ["clearHighlightedItem", "setInputValue"],
               },
             ],
-            ESCAPE: {
+            "INPUT.ESCAPE": {
               target: "focused",
               actions: "invokeOnClose",
             },
-            POINTEROVER_OPTION: {
+            "OPTION.POINTER_OVER": {
               target: "interacting",
               actions: "setHighlightedItem",
             },
-            POINTERLEAVE_OPTION: {
+            "OPTION.POINTER_LEAVE": {
               actions: "clearHighlightedItem",
             },
             INTERACT_OUTSIDE: [
@@ -337,11 +332,11 @@ export function machine(userContext: UserDefinedContext) {
                 actions: "invokeOnClose",
               },
             ],
-            CLICK_BUTTON: {
+            "TRIGGER.CLICK": {
               target: "focused",
               actions: "invokeOnClose",
             },
-            CLICK_OPTION: [
+            "OPTION.CLICK": [
               {
                 guard: not("closeOnSelect"),
                 actions: ["setSelectedItem"],
@@ -360,30 +355,19 @@ export function machine(userContext: UserDefinedContext) {
       guards: {
         openOnClick: (ctx) => !!ctx.openOnClick,
         isInputValueEmpty: (ctx) => ctx.isInputValueEmpty,
-        autoFocus: (ctx) => !!ctx.autoFocus,
         autoComplete: (ctx) => ctx.autoComplete,
         autoHighlight: (ctx) => ctx.autoHighlight,
-        isFirstItemHighlighted: (ctx) => ctx.value[0] === ctx.highlightedValue,
-        isLastItemHighlighted: (ctx) => ctx.value[ctx.value.length - 1] === ctx.highlightedValue,
+        isFirstItemHighlighted: (ctx) => ctx.collection.getFirstKey() === ctx.highlightedValue,
+        isLastItemHighlighted: (ctx) => ctx.collection.getLastKey() === ctx.highlightedValue,
         isCustomValue: (ctx) => ctx.inputValue !== ctx.displayValue,
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
-        hasHighlightedItem: (ctx) => !!ctx.highlightedValue,
+        hasHighlightedItem: (ctx) => ctx.highlightedValue == null,
         selectOnBlur: (ctx) => !!ctx.selectOnBlur,
-        multiple: (ctx) => !!ctx.multiple,
         closeOnSelect: (ctx) => (!!ctx.multiple ? false : !!ctx.closeOnSelect),
         isHighlightedItemVisible: (ctx) => ctx.collection.has(ctx.highlightedValue),
       },
 
       activities: {
-        setupLiveRegion(ctx) {
-          ctx.liveRegion = createLiveRegion({
-            level: "assertive",
-            document: dom.getDoc(ctx),
-          })
-          return () => {
-            ctx.liveRegion?.destroy()
-          }
-        },
         trackInteractOutside(ctx, _evt, { send }) {
           return trackInteractOutside(dom.getInputEl(ctx), {
             exclude(target) {
@@ -426,8 +410,10 @@ export function machine(userContext: UserDefinedContext) {
 
           const exec = () => {
             const state = getState()
-            const isTyping = !KEYDOWN_EVENT_REGEX.test(state.event.type)
-            if (isTyping || !ctx.highlightedValue) return
+
+            const isPointer = state.event.type.startsWith("OPTION.POINTER")
+            if (isPointer || !ctx.highlightedValue) return
+
             const optionEl = dom.getHighlightedItemEl(ctx)
             optionEl?.scrollIntoView({ block: "nearest" })
           }
@@ -456,8 +442,8 @@ export function machine(userContext: UserDefinedContext) {
         setSelectedItem(ctx, evt) {
           set.selectedItem(ctx, evt.value)
         },
-        focusInput(ctx, evt) {
-          if (evt.type === "CHANGE" || dom.isInputFocused(ctx)) return
+        focusInput(ctx) {
+          if (dom.isInputFocused(ctx)) return
           dom.getInputEl(ctx)?.focus({ preventScroll: true })
         },
         syncInputValue(ctx, evt) {
@@ -524,18 +510,11 @@ export function machine(userContext: UserDefinedContext) {
           const [firstKey] = ctx.collection.sortKeys(ctx.value)
           set.highlightedItem(ctx, firstKey)
         },
-        announceOptionCount(ctx) {
-          raf(() => {
-            const count = ctx.collection.getCount()
-            const text = ctx.translations.countAnnouncement(count)
-            ctx.liveRegion?.announce(text)
-          })
-        },
-        setIsHovering(ctx) {
-          ctx.isHovering = true
-        },
-        clearIsHovering(ctx) {
-          ctx.isHovering = false
+        autofillInputValue(ctx) {
+          const inputEl = dom.getInputEl(ctx)
+          if (!ctx.autoComplete || !inputEl) return
+          const valueText = ctx.collection.getKeyLabel(ctx.highlightedValue)
+          inputEl!.value = valueText || ctx.inputValue
         },
       },
     },

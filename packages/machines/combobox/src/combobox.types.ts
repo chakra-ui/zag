@@ -1,15 +1,12 @@
 import type { Collection, CollectionItem } from "@zag-js/collection"
 import type { StateMachine as S } from "@zag-js/core"
 import type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent } from "@zag-js/interact-outside"
-import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type IntlTranslations = {
   triggerLabel?: string
   clearTriggerLabel?: string
-  countAnnouncement(count: number): string
-  navigationHint?: string
 }
 
 type ElementIds = Partial<{
@@ -199,16 +196,6 @@ type ComputedContext = Readonly<{
 type PrivateContext = Context<{
   /**
    * @internal
-   * The live region used to announce changes in the combobox
-   */
-  liveRegion?: LiveRegion | null
-  /**
-   * @internal
-   * Whether the pointer is hovering the combobox input. Used to show/hide the clear button
-   */
-  isHovering: boolean
-  /**
-   * @internal
    * The placement of the combobox popover.
    */
   currentPlacement?: Placement
@@ -223,7 +210,7 @@ export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type MachineState = {
   value: "idle" | "focused" | "suggesting" | "interacting"
-  tags: "open" | "focused" | "idle"
+  tags: "open" | "focused" | "idle" | "closed"
 }
 
 export type State = S.State<MachineContext, MachineState>

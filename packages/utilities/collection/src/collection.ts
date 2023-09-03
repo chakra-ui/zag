@@ -75,8 +75,14 @@ export class Collection<T extends CollectionItem = CollectionItem> {
     return item.map((item) => this.getItemKey(item)).filter(Boolean) as string[]
   }
 
-  getItemLabel = (item: T) => {
+  getItemLabel = (item: T | null) => {
+    if (!item) return ""
     return this.options.getItemLabel?.(item) ?? item?.label ?? this.getItemKey(item)
+  }
+
+  getKeyLabel = (key: string | null) => {
+    if (key == null) return ""
+    return this.getItemLabel(this.getItem(key))
   }
 
   getItemLabels = (item: T[]) => {
