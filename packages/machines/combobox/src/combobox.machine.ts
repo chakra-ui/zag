@@ -179,7 +179,9 @@ export function machine(userContext: UserDefinedContext) {
                 guard: and("autoComplete", "isFirstItemHighlighted"),
                 actions: "clearHighlightedItem",
               },
-              { actions: "highlightPrevItem" },
+              {
+                actions: "highlightPrevItem",
+              },
             ],
             "INPUT.ARROW_UP+ALT": {
               target: "focused",
@@ -291,14 +293,12 @@ export function machine(userContext: UserDefinedContext) {
             },
             "INPUT.ENTER": [
               {
-                guard: and("hasHighlightedItem", "autoComplete"),
-                target: "focused",
-                actions: "selectHighlightedItem",
+                guard: not("closeOnSelect"),
+                actions: ["selectHighlightedItem"],
               },
               {
-                guard: "hasHighlightedItem",
                 target: "focused",
-                actions: "selectHighlightedItem",
+                actions: ["selectHighlightedItem", "invokeOnClose"],
               },
             ],
             "INPUT.CHANGE": [
