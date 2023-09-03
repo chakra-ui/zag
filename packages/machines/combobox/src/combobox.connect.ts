@@ -271,10 +271,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-selected": optionState.isHighlighted,
         "aria-disabled": optionState.isDisabled,
         "data-disabled": dataAttr(optionState.isDisabled),
-        // "aria-posinset": count && index != null ? index + 1 : undefined,
-        // "aria-setsize": count,
         "data-value": optionState.key,
-        // "data-label": label,
         onPointerMove() {
           if (optionState.isDisabled) return
           send({ type: "OPTION.POINTER_OVER", value })
