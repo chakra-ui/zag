@@ -155,7 +155,7 @@ type ComputedContext = Readonly<{
   selectedItems: Item[]
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+export type UserDefinedContext = RequiredBy<PublicContext, "id" | "collection">
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 

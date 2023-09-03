@@ -22,7 +22,6 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         loop: true,
         openOnClick: false,
-        collection: collection({ items: [] as any[] }),
         composing: false,
         value: [],
         highlightedValue: null,
@@ -33,6 +32,7 @@ export function machine(userContext: UserDefinedContext) {
         inputBehavior: "none",
         selectionBehavior: "set",
         ...ctx,
+        collection: ctx.collection ?? collection.empty(),
         positioning: {
           placement: "bottom",
           flip: false,
@@ -355,7 +355,7 @@ export function machine(userContext: UserDefinedContext) {
       guards: {
         openOnClick: (ctx) => !!ctx.openOnClick,
         isInputValueEmpty: (ctx) => ctx.isInputValueEmpty,
-        autoComplete: (ctx) => ctx.autoComplete,
+        autoComplete: (ctx) => ctx.autoComplete && !ctx.multiple,
         autoHighlight: (ctx) => ctx.autoHighlight,
         isFirstItemHighlighted: (ctx) => ctx.collection.getFirstKey() === ctx.highlightedValue,
         isLastItemHighlighted: (ctx) => ctx.collection.getLastKey() === ctx.highlightedValue,

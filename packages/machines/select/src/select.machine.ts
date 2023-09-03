@@ -18,7 +18,6 @@ export function machine(userContext: UserDefinedContext) {
     {
       id: "select",
       context: {
-        collection: collection({ items: [] as any[] }),
         value: [],
         highlightedValue: null,
         selectOnBlur: false,
@@ -26,6 +25,7 @@ export function machine(userContext: UserDefinedContext) {
         closeOnSelect: true,
         disabled: false,
         ...ctx,
+        collection: ctx.collection ?? collection.empty(),
         typeahead: getByTypeahead.defaultOptions,
         fieldsetDisabled: false,
         positioning: {
