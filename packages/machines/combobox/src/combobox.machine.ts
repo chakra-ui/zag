@@ -133,6 +133,11 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["invokeOnOpen"],
               },
               {
+                guard: "hasSelectedItems",
+                target: "interacting",
+                actions: ["highlightFirstSelectedItem", "invokeOnOpen"],
+              },
+              {
                 target: "interacting",
                 actions: ["highlightNextItem", "invokeOnOpen"],
               },
@@ -146,6 +151,11 @@ export function machine(userContext: UserDefinedContext) {
                 guard: "autoComplete",
                 target: "interacting",
                 actions: "invokeOnOpen",
+              },
+              {
+                guard: "hasSelectedItems",
+                target: "interacting",
+                actions: ["highlightFirstSelectedItem", "invokeOnOpen"],
               },
               {
                 target: "interacting",
@@ -171,13 +181,21 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["clearHighlightedItem", "scrollToTop"],
               },
               {
-                actions: "highlightNextItem",
+                guard: "hasSelectedItems",
+                actions: ["highlightFirstSelectedItem"],
+              },
+              {
+                actions: ["highlightNextItem"],
               },
             ],
             "INPUT.ARROW_UP": [
               {
                 guard: and("autoComplete", "isFirstItemHighlighted"),
                 actions: "clearHighlightedItem",
+              },
+              {
+                guard: "hasSelectedItems",
+                actions: ["highlightFirstSelectedItem"],
               },
               {
                 actions: "highlightPrevItem",
@@ -362,6 +380,7 @@ export function machine(userContext: UserDefinedContext) {
         isCustomValue: (ctx) => ctx.inputValue !== ctx.displayValue,
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
         hasHighlightedItem: (ctx) => ctx.highlightedValue == null,
+        hasSelectedItems: (ctx) => ctx.hasSelectedItems,
         selectOnBlur: (ctx) => !!ctx.selectOnBlur,
         closeOnSelect: (ctx) => (!!ctx.multiple ? false : !!ctx.closeOnSelect),
         isHighlightedItemVisible: (ctx) => ctx.collection.has(ctx.highlightedValue),

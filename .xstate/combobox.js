@@ -17,9 +17,13 @@ const fetchMachine = createMachine({
     "isCustomValue && !allowCustomValue": false,
     "openOnClick": false,
     "autoComplete": false,
+    "hasSelectedItems": false,
     "autoComplete": false,
+    "hasSelectedItems": false,
     "autoComplete && isLastItemHighlighted": false,
+    "hasSelectedItems": false,
     "autoComplete && isFirstItemHighlighted": false,
+    "hasSelectedItems": false,
     "!closeOnSelect": false,
     "autoComplete": false,
     "!closeOnSelect": false,
@@ -104,6 +108,10 @@ const fetchMachine = createMachine({
           target: "interacting",
           actions: ["invokeOnOpen"]
         }, {
+          cond: "hasSelectedItems",
+          target: "interacting",
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
+        }, {
           target: "interacting",
           actions: ["highlightNextItem", "invokeOnOpen"]
         }],
@@ -115,6 +123,10 @@ const fetchMachine = createMachine({
           cond: "autoComplete",
           target: "interacting",
           actions: "invokeOnOpen"
+        }, {
+          cond: "hasSelectedItems",
+          target: "interacting",
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
         }, {
           target: "interacting",
           actions: ["highlightLastItem", "invokeOnOpen"]
@@ -135,11 +147,17 @@ const fetchMachine = createMachine({
           cond: "autoComplete && isLastItemHighlighted",
           actions: ["clearHighlightedItem", "scrollToTop"]
         }, {
-          actions: "highlightNextItem"
+          cond: "hasSelectedItems",
+          actions: ["highlightFirstSelectedItem"]
+        }, {
+          actions: ["highlightNextItem"]
         }],
         "INPUT.ARROW_UP": [{
           cond: "autoComplete && isFirstItemHighlighted",
           actions: "clearHighlightedItem"
+        }, {
+          cond: "hasSelectedItems",
+          actions: ["highlightFirstSelectedItem"]
         }, {
           actions: "highlightPrevItem"
         }],
@@ -286,6 +304,7 @@ const fetchMachine = createMachine({
     "openOnClick": ctx => ctx["openOnClick"],
     "isCustomValue && !allowCustomValue": ctx => ctx["isCustomValue && !allowCustomValue"],
     "autoComplete": ctx => ctx["autoComplete"],
+    "hasSelectedItems": ctx => ctx["hasSelectedItems"],
     "autoComplete && isLastItemHighlighted": ctx => ctx["autoComplete && isLastItemHighlighted"],
     "autoComplete && isFirstItemHighlighted": ctx => ctx["autoComplete && isFirstItemHighlighted"],
     "!closeOnSelect": ctx => ctx["!closeOnSelect"],
