@@ -31,16 +31,28 @@ export function useSearch(): UseSearchReturn {
 
   const router = useRouter()
 
+  const collection = combobox.collection({
+    items: results,
+    getItemKey(item) {
+      return item.url
+    },
+    getItemLabel(item) {
+      return JSON.stringify(item)
+    },
+  })
+
   const [combobox_state, combobox_send] = useMachine(
     combobox.machine({
       id: "s2",
       placeholder: "Search the docs",
       inputBehavior: "autohighlight",
       selectionBehavior: "clear",
-      onSelect({ label }) {
-        if (!label) return
+      collection,
+      onValueChange({ items }) {
+        const [item] = items as SearchMetaItem[]
+        if (!item) return
         try {
-          const { pathname, slug, url } = JSON.parse(label)
+          const { pathname, slug, url } = item
           router.push({ pathname, query: { slug } }, url)
         } catch (err) {
           console.log(err)
@@ -60,6 +72,7 @@ export function useSearch(): UseSearchReturn {
         setResults(results.slice(0, 10))
       },
     }),
+    { context: { collection } },
   )
 
   useEffect(() => {

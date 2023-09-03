@@ -97,10 +97,7 @@ export function Search() {
                           alignItems="center"
                           minHeight="14"
                           key={item.url}
-                          {...combobox_api.getOptionProps({
-                            value: item.url,
-                            label: JSON.stringify(item),
-                          })}
+                          {...combobox_api.getItemProps({ item })}
                         >
                           <Icon
                             as={isLvl1 ? HiDocument : HiHashtag}
