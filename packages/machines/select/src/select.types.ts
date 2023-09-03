@@ -33,7 +33,7 @@ type PublicContext = DirectionProperty &
     /**
      * The item collection
      */
-    collection: Collection
+    collection: Collection<any>
     /**
      * The ids of the elements in the select. Useful for composition.
      */

@@ -96,10 +96,10 @@ export function Select(props: SelectProps) {
                 cursor="pointer"
                 _highlighted={{ bg: "bg-primary-subtle", color: "white" }}
                 key={item.value}
-                {...api.getItemProps({ value: item })}
+                {...api.getItemProps({ item })}
               >
                 <chakra.span flex={1}>{item.label}</chakra.span>
-                <span {...api.getItemIndicatorProps({ value: item })}>
+                <span {...api.getItemIndicatorProps({ item })}>
                   <MdCheck />
                 </span>
               </chakra.li>
