@@ -10,7 +10,9 @@ export default defineComponent({
   name: "Menu",
   setup() {
     const controls = useControls(menuControls)
-    const [state, send] = useMachine(menu.machine({ id: "1", onSelect: console.log }))
+    const [state, send] = useMachine(menu.machine({ id: "1", onSelect: console.log }), {
+      context: controls.context,
+    })
 
     const apiRef = computed(() => menu.connect(state.value, send, normalizeProps))
 

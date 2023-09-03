@@ -18,12 +18,12 @@ export default function Page() {
     <>
       <main>
         <div>
-          <button data-testid="trigger" {...api.triggerProps}>
+          <button {...api.triggerProps}>
             Actions <span aria-hidden>▾</span>
           </button>
           <Portal>
             <div {...api.positionerProps}>
-              <ul data-testid="menu" {...api.contentProps}>
+              <ul {...api.contentProps}>
                 <li {...api.getItemProps({ id: "edit" })}>Edit</li>
                 <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
                 <li {...api.getItemProps({ id: "delete" })}>Delete</li>

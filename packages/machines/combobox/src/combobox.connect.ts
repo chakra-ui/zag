@@ -1,4 +1,4 @@
-import { getEventKey, getNativeEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventKey, getNativeEvent, isLeftClick, type EventKeyMap, isContextMenuEvent } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr, raf } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -281,12 +281,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (optionState.isDisabled) return
           send({ type: "POINTERLEAVE_OPTION", value })
         },
-        onPointerUp() {
-          if (optionState.isDisabled) return
+        onPointerUp(event) {
+          if (optionState.isDisabled || isContextMenuEvent(event)) return
           send({ type: "CLICK_OPTION", src: "pointerup", value })
         },
         onAuxClick(event) {
-          if (optionState.isDisabled) return
+          if (optionState.isDisabled || isContextMenuEvent(event)) return
           event.preventDefault()
           send({ type: "CLICK_OPTION", src: "auxclick", value })
         },
