@@ -1,10 +1,10 @@
-import { getEventKey, getNativeEvent, isLeftClick, type EventKeyMap, isContextMenuEvent } from "@zag-js/dom-event"
+import { getEventKey, getNativeEvent, isContextMenuEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr, raf } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
 import { dom } from "./combobox.dom"
-import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, MachineApi, Send, State } from "./combobox.types"
+import type { ItemProps, MachineApi, Send, State } from "./combobox.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const translations = state.context.translations
@@ -256,7 +256,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getItemState,
 
-    getItemProps(props: ItemProps) {
+    getItemProps(props) {
       const optionState = getItemState(props)
       const value = optionState.key
 
@@ -295,7 +295,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemGroupProps(props: ItemGroupProps) {
+    getItemIndicatorProps(props) {
+      const optionState = getItemState(props)
+      return normalize.element({
+        "aria-hidden": true,
+        ...parts.itemIndicator.attrs,
+        dir: state.context.dir,
+        "data-state": optionState.isSelected ? "checked" : "unchecked",
+        hidden: !optionState.isSelected,
+      })
+    },
+
+    getItemGroupProps(props) {
       const { id } = props
       return normalize.element({
         ...parts.itemGroup.attrs,
@@ -305,7 +316,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemGroupLabelProps(props: ItemGroupLabelProps) {
+    getItemGroupLabelProps(props) {
       const { htmlFor } = props
       return normalize.element({
         ...parts.itemGroupLabel.attrs,
