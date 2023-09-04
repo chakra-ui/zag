@@ -127,7 +127,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
     return null
   }
 
-  getKeysAfter = (key: string | null) => {
+  getKeyAfter = (key: string | null) => {
     if (key == null) return null
 
     const item = this.nodes.get(key)
@@ -143,7 +143,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
     return null
   }
 
-  getKeysBefore = (key: string | null) => {
+  getKeyBefore = (key: string | null) => {
     if (key == null) return null
 
     const item = this.nodes.get(key)
@@ -181,7 +181,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
     return items.find(({ item }) => match(this.getItemLabel(item), text))
   }
 
-  getKeyForSearch = (options: CollectionSearchOptions) => {
+  getKeyFromSearch = (options: CollectionSearchOptions) => {
     const { state, fromKey, eventKey, timeout = 350 } = options
 
     const search = state.keysSoFar + eventKey

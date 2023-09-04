@@ -38,9 +38,7 @@ const CaretIcon = () => (
     <div class="control">
       <label v-bind="api.labelProps">Label</label>
       <button v-bind="api.triggerProps">
-        <span>{{
-          api.hasSelectedItems ? api.selectedItems.map((item) => item.label).join(", ") : "Select option"
-        }}</span>
+        <span>{{ api.valueAsString || "Select option" }}</span>
         <CaretIcon />
       </button>
     </div>

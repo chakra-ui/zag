@@ -69,7 +69,7 @@ export function Select(props: SelectProps) {
           {...api.triggerProps}
         >
           <chakra.span p="1" flex="1">
-            {api.selectedItems[0]?.label ?? "Select option"}
+            {api.valueAsString || "Select option"}
           </chakra.span>
           <CaretIcon />
         </Button>

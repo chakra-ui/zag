@@ -25,8 +25,8 @@ export const comboboxControls = defineControls({
   },
   selectionBehavior: {
     type: "select",
-    defaultValue: "set",
-    options: ["set", "clear"] as const,
+    defaultValue: "replace",
+    options: ["replace", "clear", "preserve"] as const,
   },
   disabled: { type: "boolean", defaultValue: false },
   multiple: { type: "boolean", defaultValue: false },

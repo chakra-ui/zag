@@ -1,4 +1,4 @@
-import type { Collection, CollectionItem as Item } from "@zag-js/collection"
+import type { Collection, CollectionItem, CollectionItem as Item } from "@zag-js/collection"
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
@@ -157,6 +157,11 @@ type ComputedContext = Readonly<{
    * The selected items
    */
   selectedItems: Item[]
+  /**
+   * @computed
+   * The display value of the select (based on the selected items)
+   */
+  valueAsString: string
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id" | "collection">
@@ -165,6 +170,13 @@ export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
 export type ItemProps = {
   item: Item
+}
+
+export type ItemState = {
+  key: string
+  isDisabled: boolean
+  isSelected: boolean
+  isHighlighted: boolean
 }
 
 export type MachineState = {
@@ -184,5 +196,79 @@ export type ItemGroupLabelProps = {
 }
 
 export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the select is focused
+   */
+  isFocused: boolean
+  /**
+   * Whether the select is open
+   */
+  isOpen: boolean
+  /**
+   * The value of the highlighted item
+   */
+  highlightedValue: string | null
+  /**
+   * The highlighted item
+   */
+  highlightedItem: CollectionItem | null
+  /**
+   * The value of the combobox input
+   */
+  highlightValue(value: string): void
+  /**
+   * The selected items
+   */
+  selectedItems: CollectionItem[]
+  /**
+   * Whether there's a selected option
+   */
+  hasSelectedItems: boolean
+  /**
+   * The selected item keys
+   */
+  value: string[]
+  /**
+   * The string representation of the selected items
+   */
+  valueAsString: string
+  /**
+   * Function to select a value
+   */
+  selectValue(value: string): void
+  /**
+   * Function to set the value of the combobox
+   */
+  setValue(value: string[]): void
+  /**
+   * Function to clear the value of the combobox
+   */
+  clearValue(): void
+  /**
+   * Function to focus on the combobox input
+   */
+  focus(): void
+  /**
+   * Returns the state of a combobox item
+   */
+  getItemState(props: ItemProps): ItemState
+  /**
+   * Function to open the combobox
+   */
+  open(): void
+  /**
+   * Function to close the combobox
+   */
+  close(): void
+
   labelProps: T["label"]
+  triggerProps: T["button"]
+  clearTriggerProps: T["button"]
+  positionerProps: T["element"]
+  contentProps: T["element"]
+  getItemProps(props: ItemProps): T["element"]
+  getItemIndicatorProps(props: ItemProps): T["element"]
+  getItemGroupProps(props: ItemGroupProps): T["element"]
+  getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]
+  hiddenSelectProps: T["select"]
 }

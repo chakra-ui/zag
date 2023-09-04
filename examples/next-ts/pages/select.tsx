@@ -53,9 +53,7 @@ export default function Page() {
         <div className="control">
           <label {...api.labelProps}>Label</label>
           <button {...api.triggerProps}>
-            <span>
-              {api.hasSelectedItems ? api.selectedItems.map((item) => item.label).join(", ") : "Select option"}
-            </span>
+            <span>{api.hasSelectedItems ? api.valueAsString : "Select option"}</span>
             <CaretIcon />
           </button>
         </div>

@@ -5,21 +5,15 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./select.anatomy"
 import { dom } from "./select.dom"
-import type {
-  // MachineApi,
-  ItemGroupLabelProps,
-  ItemGroupProps,
-  ItemProps,
-  Send,
-  State,
-} from "./select.types"
+import type { ItemProps, MachineApi, Send, State } from "./select.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isDisabled = state.context.isDisabled
   const isInvalid = state.context.invalid
   const isInteractive = state.context.isInteractive
 
   const isOpen = state.hasTag("open")
+  const isFocused = state.matches("focused")
 
   const highlightedItem = state.context.highlightedItem
   const selectedItems = state.context.selectedItems
@@ -44,9 +38,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     isOpen,
+    isFocused,
     highlightedItem,
+    highlightedValue: state.context.highlightedValue,
     selectedItems,
     hasSelectedItems: state.context.hasSelectedItems,
+    value: state.context.value,
+    valueAsString: state.context.valueAsString,
 
     focus() {
       dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
@@ -179,7 +177,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getItemProps(props: ItemProps) {
+    getItemProps(props) {
       const optionState = getItemState(props)
 
       return normalize.element({
@@ -196,7 +194,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemIndicatorProps(props: ItemProps) {
+    getItemIndicatorProps(props) {
       const optionState = getItemState(props)
       return normalize.element({
         "aria-hidden": true,
@@ -207,7 +205,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemGroupLabelProps(props: ItemGroupLabelProps) {
+    getItemGroupLabelProps(props) {
       const { htmlFor } = props
       return normalize.element({
         ...parts.itemGroupLabel.attrs,
@@ -217,7 +215,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemGroupProps(props: ItemGroupProps) {
+    getItemGroupProps(props) {
       const { id } = props
       return normalize.element({
         ...parts.itemGroup.attrs,

@@ -4,7 +4,7 @@ import { contains, raf } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { observeAttributes, observeChildren } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
-import { addOrRemove, compact } from "@zag-js/utils"
+import { addOrRemove, compact, match } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
 import { dom } from "./combobox.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./combobox.types"
@@ -30,7 +30,7 @@ export function machine(userContext: UserDefinedContext) {
         allowCustomValue: false,
         closeOnSelect: true,
         inputBehavior: "none",
-        selectionBehavior: "set",
+        selectionBehavior: "replace",
         ...ctx,
         collection: ctx.collection ?? collection.empty(),
         positioning: {
@@ -53,7 +53,7 @@ export function machine(userContext: UserDefinedContext) {
         autoHighlight: (ctx) => ctx.inputBehavior === "autohighlight",
         selectedItems: (ctx) => ctx.collection.getItems(ctx.value),
         highlightedItem: (ctx) => ctx.collection.getItem(ctx.highlightedValue),
-        displayValue: (ctx) => ctx.collection.getItemLabels(ctx.selectedItems).join(", "),
+        valueAsString: (ctx) => ctx.collection.getItemLabels(ctx.selectedItems).join(", "),
         hasSelectedItems: (ctx) => ctx.value.length > 0,
       },
 
@@ -63,8 +63,14 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       on: {
+        "HIGHLIGHTED_VALUE.SET": {
+          actions: ["setHighlightedItem"],
+        },
         "VALUE.SET": {
           actions: ["setSelectedItems"],
+        },
+        "VALUE.SELECT": {
+          actions: ["setSelectedItem"],
         },
         "INPUT_VALUE.SET": {
           actions: "setInputValue",
@@ -97,6 +103,10 @@ export function machine(userContext: UserDefinedContext) {
             },
             "INPUT.FOCUS": {
               target: "focused",
+            },
+            OPEN: {
+              target: "interacting",
+              actions: ["invokeOnOpen"],
             },
           },
         },
@@ -162,6 +172,10 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["highlightLastItem", "invokeOnOpen"],
               },
             ],
+            OPEN: {
+              target: "interacting",
+              actions: ["invokeOnOpen"],
+            },
           },
         },
 
@@ -272,6 +286,10 @@ export function machine(userContext: UserDefinedContext) {
                 actions: "invokeOnClose",
               },
             ],
+            CLOSE: {
+              target: "focused",
+              actions: "invokeOnClose",
+            },
           },
         },
 
@@ -364,6 +382,10 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setSelectedItem", "invokeOnClose"],
               },
             ],
+            CLOSE: {
+              target: "focused",
+              actions: "invokeOnClose",
+            },
           },
         },
       },
@@ -377,7 +399,7 @@ export function machine(userContext: UserDefinedContext) {
         autoHighlight: (ctx) => ctx.autoHighlight,
         isFirstItemHighlighted: (ctx) => ctx.collection.getFirstKey() === ctx.highlightedValue,
         isLastItemHighlighted: (ctx) => ctx.collection.getLastKey() === ctx.highlightedValue,
-        isCustomValue: (ctx) => ctx.inputValue !== ctx.displayValue,
+        isCustomValue: (ctx) => ctx.inputValue !== ctx.valueAsString,
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
         hasHighlightedItem: (ctx) => ctx.highlightedValue == null,
         hasSelectedItems: (ctx) => ctx.hasSelectedItems,
@@ -490,7 +512,7 @@ export function machine(userContext: UserDefinedContext) {
           set.inputValue(ctx, "")
         },
         revertInputValue(ctx) {
-          set.inputValue(ctx, ctx.hasSelectedItems ? ctx.displayValue : "")
+          set.inputValue(ctx, ctx.hasSelectedItems ? ctx.valueAsString : "")
         },
         setSelectedItems(ctx, evt) {
           set.selectedItems(ctx, evt.value)
@@ -518,11 +540,11 @@ export function machine(userContext: UserDefinedContext) {
           set.highlightedItem(ctx, lastKey)
         },
         highlightNextItem(ctx) {
-          const nextKey = ctx.collection.getKeysAfter(ctx.highlightedValue) ?? ctx.collection.getFirstKey()
+          const nextKey = ctx.collection.getKeyAfter(ctx.highlightedValue) ?? ctx.collection.getFirstKey()
           set.highlightedItem(ctx, nextKey)
         },
         highlightPrevItem(ctx) {
-          const prevKey = ctx.collection.getKeysBefore(ctx.highlightedValue) ?? ctx.collection.getLastKey()
+          const prevKey = ctx.collection.getKeyBefore(ctx.highlightedValue) ?? ctx.collection.getLastKey()
           set.highlightedItem(ctx, prevKey)
         },
         highlightFirstSelectedItem(ctx) {
@@ -533,7 +555,7 @@ export function machine(userContext: UserDefinedContext) {
           const inputEl = dom.getInputEl(ctx)
           if (!ctx.autoComplete || !inputEl || !KEYDOWN_EVENT_REGEX.test(evt.type)) return
           const valueText = ctx.collection.getKeyLabel(ctx.highlightedValue)
-          inputEl!.value = valueText || ctx.inputValue
+          inputEl.value = valueText || ctx.inputValue
         },
       },
     },
@@ -543,7 +565,13 @@ export function machine(userContext: UserDefinedContext) {
 const invoke = {
   selectionChange: (ctx: MachineContext) => {
     ctx.onChange?.({ value: Array.from(ctx.value), items: ctx.selectedItems })
-    ctx.inputValue = ctx.displayValue
+
+    // side effect: sync inputValue
+    ctx.inputValue = match(ctx.selectionBehavior, {
+      replace: ctx.valueAsString,
+      clear: "",
+      preserve: ctx.inputValue,
+    })
   },
   highlightChange: (ctx: MachineContext) => {
     ctx.onHighlight?.({ value: ctx.highlightedValue, item: ctx.highlightedItem })
@@ -574,9 +602,6 @@ const set = {
     if (!value && !force) return
     ctx.highlightedValue = value || null
     invoke.highlightChange(ctx)
-  },
-  inputDisplayValue: (ctx: MachineContext) => {
-    ctx.inputValue = ctx.displayValue
   },
   inputValue: (ctx: MachineContext, value: string) => {
     ctx.inputValue = value

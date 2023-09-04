@@ -18,10 +18,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isOpen = state.hasTag("open")
   const isFocused = state.hasTag("focused")
 
-  const autofill = isOpen && state.context.highlightedValue && state.context.autoComplete
-
-  const value = autofill ? collection.getItemLabel(state.context.highlightedItem) : state.context.inputValue
-
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
     placement: state.context.currentPlacement,
@@ -29,37 +25,49 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   function getItemState(props: ItemProps) {
     const { item } = props
-    const key = state.context.collection.getItemKey(item)
+    const key = collection.getItemKey(item)
     return {
       key,
-      isDisabled: state.context.collection.isItemDisabled(item),
+      isDisabled: collection.isItemDisabled(item),
       isHighlighted: state.context.highlightedValue === key,
-      isSelected: state.context.collection.hasItemKey(state.context.selectedItems, key),
+      isSelected: collection.hasItemKey(state.context.selectedItems, key),
     }
   }
 
   return {
     isFocused,
     isOpen,
-    isInputValueEmpty: state.context.isInputValueEmpty,
     inputValue: state.context.inputValue,
+    isInputValueEmpty: state.context.isInputValueEmpty,
+    highlightedValue: state.context.highlightedValue,
     highlightedItem: state.context.highlightedItem,
+    value: state.context.value,
+    valueAsString: state.context.valueAsString,
+    hasSelectedItems: state.context.hasSelectedItems,
     selectedItems: state.context.selectedItems,
-
+    highlightValue(value) {
+      send({ type: "HIGHLIGHTED_VALUE.SET", value })
+    },
+    selectValue(value) {
+      send({ type: "VALUE.SELECT", value })
+    },
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
-
     setInputValue(value) {
       send({ type: "INPUT_VALUE.SET", value })
     },
-
     clearValue() {
       send("VALUE.CLEAR")
     },
-
     focus() {
       dom.getInputEl(state.context)?.focus()
+    },
+    open() {
+      send("OPEN")
+    },
+    close() {
+      send("CLOSE")
     },
 
     rootProps: normalize.element({
@@ -116,8 +124,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getInputId(state.context),
       type: "text",
       role: "combobox",
-      defaultValue: value,
-      "data-value": value,
+      defaultValue: state.context.inputValue || state.context.valueAsString,
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
       "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       "aria-expanded": isOpen,

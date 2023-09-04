@@ -42,6 +42,7 @@ export function machine(userContext: UserDefinedContext) {
         isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
         selectedItems: (ctx) => ctx.collection.getItems(ctx.value),
         highlightedItem: (ctx) => ctx.collection.getItem(ctx.highlightedValue),
+        valueAsString: (ctx) => ctx.collection.getItemLabels(ctx.selectedItems).join(", "),
       },
 
       initial: "idle",
@@ -347,12 +348,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         highlightPreviousItem(ctx) {
           if (!ctx.highlightedValue) return
-          const prevKey = ctx.collection.getKeysBefore(ctx.highlightedValue)
+          const prevKey = ctx.collection.getKeyBefore(ctx.highlightedValue)
           set.highlightedItem(ctx, prevKey)
         },
         highlightNextItem(ctx) {
           if (!ctx.highlightedValue) return
-          const nextKey = ctx.collection.getKeysAfter(ctx.highlightedValue)
+          const nextKey = ctx.collection.getKeyAfter(ctx.highlightedValue)
           set.highlightedItem(ctx, nextKey)
         },
         highlightFirstItem(ctx) {
@@ -387,7 +388,7 @@ export function machine(userContext: UserDefinedContext) {
           set.highlightedItem(ctx, evt.value)
         },
         highlightMatchingItem(ctx, evt) {
-          const matchingKey = ctx.collection.getKeyForSearch({
+          const matchingKey = ctx.collection.getKeyFromSearch({
             eventKey: evt.key,
             state: ctx.typeahead,
             fromKey: ctx.highlightedValue,
@@ -416,11 +417,11 @@ export function machine(userContext: UserDefinedContext) {
           set.selectedItems(ctx, [])
         },
         selectPreviousItem(ctx) {
-          const prevKey = ctx.collection.getKeysBefore(ctx.value[0])
+          const prevKey = ctx.collection.getKeyBefore(ctx.value[0])
           set.selectedItem(ctx, prevKey)
         },
         selectNextItem(ctx) {
-          const nextKey = ctx.collection.getKeysAfter(ctx.value[0])
+          const nextKey = ctx.collection.getKeyAfter(ctx.value[0])
           set.selectedItem(ctx, nextKey)
         },
         selectFirstItem(ctx) {
@@ -432,7 +433,7 @@ export function machine(userContext: UserDefinedContext) {
           set.selectedItem(ctx, lastKey)
         },
         selectMatchingItem(ctx, evt) {
-          const matchingKey = ctx.collection.getKeyForSearch({
+          const matchingKey = ctx.collection.getKeyFromSearch({
             eventKey: evt.key,
             state: ctx.typeahead,
             fromKey: ctx.value[0],

@@ -37,8 +37,14 @@ const fetchMachine = createMachine({
     "!closeOnSelect": false
   },
   on: {
+    "HIGHLIGHTED_VALUE.SET": {
+      actions: ["setHighlightedItem"]
+    },
     "VALUE.SET": {
       actions: ["setSelectedItems"]
+    },
+    "VALUE.SELECT": {
+      actions: ["setSelectedItem"]
     },
     "INPUT_VALUE.SET": {
       actions: "setInputValue"
@@ -75,6 +81,10 @@ const fetchMachine = createMachine({
         },
         "INPUT.FOCUS": {
           target: "focused"
+        },
+        OPEN: {
+          target: "interacting",
+          actions: ["invokeOnOpen"]
         }
       }
     },
@@ -130,7 +140,11 @@ const fetchMachine = createMachine({
         }, {
           target: "interacting",
           actions: ["highlightLastItem", "invokeOnOpen"]
-        }]
+        }],
+        OPEN: {
+          target: "interacting",
+          actions: ["invokeOnOpen"]
+        }
       }
     },
     interacting: {
@@ -215,7 +229,11 @@ const fetchMachine = createMachine({
         }, {
           target: "idle",
           actions: "invokeOnClose"
-        }]
+        }],
+        CLOSE: {
+          target: "focused",
+          actions: "invokeOnClose"
+        }
       }
     },
     suggesting: {
@@ -288,7 +306,11 @@ const fetchMachine = createMachine({
         }, {
           target: "focused",
           actions: ["setSelectedItem", "invokeOnClose"]
-        }]
+        }],
+        CLOSE: {
+          target: "focused",
+          actions: "invokeOnClose"
+        }
       }
     }
   }

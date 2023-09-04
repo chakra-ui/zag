@@ -5,7 +5,13 @@ import { selectData } from "@zag-js/shared"
 import { useId } from "react"
 
 function Select() {
-  const [state, send] = useMachine(select.machine({ id: useId(), name: "country" }))
+  const [state, send] = useMachine(
+    select.machine({
+      collection: select.collection({ items: selectData }),
+      id: useId(),
+      name: "country",
+    }),
+  )
   const api = select.connect(state, send, normalizeProps)
 
   return (
@@ -13,16 +19,16 @@ function Select() {
       <div className="control">
         <label {...api.labelProps}>Label</label>
         <button {...api.triggerProps}>
-          <span>{api.selectedOption?.label ?? "Select option"}</span>
+          <span>{api.valueAsString || "Select option"}</span>
         </button>
       </div>
 
       <div {...api.positionerProps}>
         <ul {...api.contentProps}>
-          {selectData.map(({ label, value }) => (
-            <li key={value} {...api.getOptionProps({ label, value })}>
-              <span>{label}</span>
-              {value === api.selectedOption?.value && "✓"}
+          {selectData.map((item) => (
+            <li key={item.value} {...api.getItemProps({ item })}>
+              <span>{item.label}</span>
+              <span {...api.getItemIndicatorProps({ item })}>✓</span>
             </li>
           ))}
         </ul>

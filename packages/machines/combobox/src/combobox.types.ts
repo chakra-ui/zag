@@ -74,9 +74,13 @@ type PublicContext = DirectionProperty &
      */
     inputBehavior: "autohighlight" | "autocomplete" | "none"
     /**
-     * The behavior of the combobox when an item is selected
+     * The behavior of the combobox input when an item is selected
+     *
+     * - `replace`: The selected item string is set as the input value
+     * - `clear`: The input value is cleared
+     * - `preserve`: The input value is preserved
      */
-    selectionBehavior?: "clear" | "set"
+    selectionBehavior: "clear" | "replace" | "preserve"
     /**
      * Whether to select the higlighted item on interaction outside the combobox
      */
@@ -194,7 +198,7 @@ type ComputedContext = Readonly<{
    * @computed
    * The display value of the combobox (based on the selected items)
    */
-  displayValue: string
+  valueAsString: string
 }>
 
 type PrivateContext = Context<{
@@ -243,17 +247,82 @@ export type ItemGroupLabelProps = {
 export type { InteractOutsideEvent, Placement, PositioningOptions }
 
 export type MachineApi<T extends PropTypes = PropTypes> = {
+  /**
+   * Whether the combobox is focused
+   */
   isFocused: boolean
+  /**
+   * Whether the combobox is open
+   */
   isOpen: boolean
+  /**
+   * Whether the combobox input value is empty
+   */
   isInputValueEmpty: boolean
+  /**
+   * The value of the combobox input
+   */
   inputValue: string
+  /**
+   * The value of the highlighted item
+   */
+  highlightedValue: string | null
+  /**
+   * The highlighted item
+   */
   highlightedItem: CollectionItem | null
+  /**
+   * The value of the combobox input
+   */
+  highlightValue(value: string): void
+  /**
+   * The selected items
+   */
   selectedItems: CollectionItem[]
+  /**
+   * Whether there's a selected item
+   */
+  hasSelectedItems: boolean
+  /**
+   * The selected item keys
+   */
+  value: string[]
+  /**
+   * The string representation of the selected items
+   */
+  valueAsString: string
+  /**
+   * Function to select a value
+   */
+  selectValue(value: string): void
+  /**
+   * Function to set the value of the combobox
+   */
   setValue(value: string[]): void
+  /**
+   * Function to clear the value of the combobox
+   */
   clearValue(): void
+  /**
+   * Function to focus on the combobox input
+   */
   focus(): void
+  /**
+   * Function to set the input value of the combobox
+   */
   setInputValue(value: string): void
+  /**
+   * Returns the state of a combobox item
+   */
   getItemState(props: ItemProps): ItemState
+  /**
+   * Function to open the combobox
+   */
+  open(): void
+  /**
+   * Function to close the combobox
+   */
+  close(): void
 
   rootProps: T["element"]
   labelProps: T["label"]
