@@ -47,9 +47,10 @@ On a high level, the select consists of:
 - **Label**: The element that labels the select.
 - **Trigger**: The element that is used to open/close the select.
 - **Positioner**: The element that positions the select dynamically.
-- **Menu**: The popup element that contains the options.
-- **Option**: The option element.
-- **OptionGroup**: The element used to group options.
+- **Content**: The popup element that contains the options.
+- **Item**: The select item or option element.
+- **ItemIndicator**: The element that indicates the selected item.
+- **ItemGroup**: The element used to group related items.
 
 ## Usage
 
@@ -59,11 +60,13 @@ First, import the select package into your project
 import * as select from "@zag-js/select"
 ```
 
-The select package exports two key functions:
+The select package exports these functions:
 
 - `machine` — The state machine logic for the select.
 - `connect` — The function that translates the machine's state to JSX attributes
   and event handlers.
+- `collection` - The function that creates a collection interface from an array
+  of items.
 
 > You'll need to provide a unique `id` to the `useMachine` hook. This is used to
 > ensure that every part has a unique identifier.
@@ -82,17 +85,17 @@ To use select within a form, you'll need to:
 
 <CodeSnippet id="select/usage-with-form.mdx" />
 
-## Selecting option on tab key
+## Selecting option on blur
 
-While navigating the options, pressing the `Tab` key blurs the select and does
-nothing. In some cases, you might what the `Tab`key to select the currently
-highlighted option. To enable this behaviour, set `selectOnTab` to `true`.
+Use the `selectOnBlur` property to allow selecting the highlighted option when
+immediately interacting or focusing outside the select (e.g. using the `Tab`
+key).
 
 ```jsx {4}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
-    selectOnTab: true,
+    selectOnBlur: true,
   }),
 )
 ```
@@ -113,16 +116,21 @@ const [state, send] = useMachine(
 
 ## Disabling an option
 
-To disable an option, pass the `disabled` property in the
-`api.getOptionProps(...)` function. This will make it unselectable via mouse and
-keyboard, and it will be skipped on keyboard navigation.
+To make a combobox option disabled, pass the `isItemDisabled` property to the
+collection function.
 
 ```jsx
-//...
-<li {...api.getOptionProps({ label, value, disabled: true })}>
-  {option.label}
-</li>
-//...
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    collection: select.collection({
+      items: countries,
+      isItemDisabled(item) {
+        return item.disabled
+      },
+    }),
+  }),
+)
 ```
 
 ## Close on select
@@ -245,7 +253,7 @@ attribute.
 When an option is selected, it is given a `data-selected` attribute.
 
 ```css
-[data-part="option"][data-selected] {
+[data-part="item"][data-selected] {
   /* styles for selected state */
 }
 ```
@@ -253,10 +261,10 @@ When an option is selected, it is given a `data-selected` attribute.
 ### Highlighted state
 
 When an option is higlighted, via keyboard navigation or pointer, it is given a
-`data-focus` attribute.
+`data-highlighted` attribute.
 
 ```css
-[data-part="option"][data-focus] {
+[data-part="item"][data-highlighted] {
   /* styles for highlighted state */
 }
 ```
@@ -290,7 +298,7 @@ attribute.
   /* styles for disabled label state */
 }
 
-[data-part="option"][data-disabled] {
+[data-part="item"][data-disabled] {
   /* styles for disabled option state */
 }
 ```

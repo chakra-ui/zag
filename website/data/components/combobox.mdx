@@ -48,6 +48,11 @@ On a high level, the combobox consists of:
 - **Positioner**: The element that positions the combobox dynamically.
 - **Content**: The element that contains the options.
 - **Trigger**: The element that toggles the combobox menu.
+- **Control**: The element that contains the input and trigger.
+- **Input**: The element that receives user input.
+- **Item**: The combobox item or option element.
+- **ItemIndicator**: The element that indicates the selected item.
+- **ItemGroup**: The element used to group related items.
 
 ## Usage
 
@@ -57,11 +62,13 @@ First, import the combobox package into your project
 import * as combobox from "@zag-js/combobox"
 ```
 
-The combobox package exports two key functions:
+The combobox package exports these functions:
 
 - `machine` — The state machine logic for the combobox widget.
 - `connect` — The function that translates the machine's state to JSX attributes
   and event handlers.
+- `collection` - The function that creates a collection interface from an array
+  of items.
 
 Next, import the required hooks and functions for your framework and use the
 combobox machine in your project 🔥
@@ -82,22 +89,21 @@ const [state, send] = useMachine(
 
 ## Disabling an option
 
-To make a combobox option disabled, set the `disabled` property of
-`getOptionProps` to `true`
+To make a combobox option disabled, pass the `isItemDisabled` property to the
+collection function.
 
-```jsx {9}
-const [state, send] = useMachine(combobox.machine())
-
-return {
-  <li
-    {...api.getOptionProps({
-      label: item.label,
-      value: item.code,
-      index:index,
-      disabled: item.disabled,
-    })}
-  />
-}
+```jsx {6,9}
+const [state, send] = useMachine(
+  combobox.machine({
+    id: useId(),
+    collection: combobox.collection({
+      items: countries,
+      isItemDisabled(item) {
+        return item.disabled
+      },
+    }),
+  }),
+)
 ```
 
 ## Close on select
@@ -241,8 +247,8 @@ label, control, trigger and option parts.
   /* styles for trigger disabled state */
 }
 
-[data-part="option"][data-disabled] {
-  /* styles for option disabled state */
+[data-part="item"][data-disabled] {
+  /* styles for item disabled state */
 }
 ```
 
@@ -266,6 +272,28 @@ label, control and input parts.
 
 [data-part="input"][data-invalid] {
   /* styles for input invalid state */
+}
+```
+
+### Selected State
+
+When a combobox item is selected, the `data-selected` attribute is added to the
+item part.
+
+```css
+[data-part="item"][data-state="checked|unchecked"] {
+  /* styles for item selected state */
+}
+```
+
+### Highlighted State
+
+When a combobox item is highlighted, the `data-highlighted` attribute is added
+to the item part.
+
+```css
+[data-part="item"][data-highlighted] {
+  /* styles for item highlighted state */
 }
 ```
 
