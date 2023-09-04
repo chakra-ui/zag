@@ -59,15 +59,11 @@ type PublicContext = DirectionProperty &
     /**
      * Callback to be called when the selected/active tab changes
      */
-    onChange?: (details: { value: string | null }) => void
+    onChange?: (details: { value: string }) => void
     /**
      * Callback to be called when the focused tab changes
      */
-    onFocus?: (details: { value: string | null }) => void
-    /**
-     * Callback to be called when a tab's close button is clicked
-     */
-    onDelete?: (details: { value: string }) => void
+    onFocus?: (details: { value: string }) => void
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
