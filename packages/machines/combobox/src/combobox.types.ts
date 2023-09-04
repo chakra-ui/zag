@@ -302,7 +302,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Function to clear the value of the combobox
    */
-  clearValue(): void
+  clearValue(value?: string): void
   /**
    * Function to focus on the combobox input
    */
@@ -323,6 +323,10 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
    * Function to close the combobox
    */
   close(): void
+  /**
+   * Function to set the collection of items
+   */
+  setCollection(collection: Collection<any>): void
 
   rootProps: T["element"]
   labelProps: T["label"]

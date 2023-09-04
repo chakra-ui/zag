@@ -68,6 +68,9 @@ export function machine(userContext: UserDefinedContext) {
         "VALUE.CLEAR": {
           actions: ["clearSelectedItems"],
         },
+        "COLLECTION.SET": {
+          actions: ["setCollection"],
+        },
       },
 
       activities: ["trackFormControlState"],
@@ -455,6 +458,9 @@ export function machine(userContext: UserDefinedContext) {
           if (!selectEl) return
           const selectedKeys = ctx.collection.getItemKeys(ctx.selectedItems)
           setElementValue(selectEl, selectedKeys.join(","), { type: "HTMLSelectElement" })
+        },
+        setCollection(ctx, evt) {
+          ctx.collection = evt.value
         },
       },
     },

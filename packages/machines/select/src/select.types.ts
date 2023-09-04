@@ -260,6 +260,10 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
    * Function to close the combobox
    */
   close(): void
+  /**
+   * Function to set the collection of items
+   */
+  setCollection(collection: Collection<any>): void
 
   labelProps: T["label"]
   triggerProps: T["button"]

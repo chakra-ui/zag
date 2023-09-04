@@ -45,6 +45,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     hasSelectedItems: state.context.hasSelectedItems,
     value: state.context.value,
     valueAsString: state.context.valueAsString,
+    setCollection(collection) {
+      send({ type: "COLLECTION.SET", value: collection })
+    },
     focus() {
       dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
     },

@@ -40,11 +40,14 @@ const fetchMachine = createMachine({
     "HIGHLIGHTED_VALUE.SET": {
       actions: ["setHighlightedItem"]
     },
+    "ITEM.SELECT": {
+      actions: ["selectItem"]
+    },
+    "ITEM.CLEAR": {
+      actions: ["clearItem"]
+    },
     "VALUE.SET": {
       actions: ["setSelectedItems"]
-    },
-    "VALUE.SELECT": {
-      actions: ["setSelectedItem"]
     },
     "INPUT_VALUE.SET": {
       actions: "setInputValue"
@@ -58,6 +61,9 @@ const fetchMachine = createMachine({
     },
     "INPUT.COMPOSITION_END": {
       actions: ["clearIsComposing"]
+    },
+    "COLLECTION.SET": {
+      actions: ["setCollection"]
     }
   },
   on: {
@@ -68,7 +74,7 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       tags: ["idle", "closed"],
-      entry: ["scrollToTop", "clearHighlightedItem"],
+      entry: ["scrollContentToTop", "clearHighlightedItem"],
       on: {
         "TRIGGER.CLICK": {
           target: "interacting",
@@ -90,14 +96,14 @@ const fetchMachine = createMachine({
     },
     focused: {
       tags: ["focused", "closed"],
-      entry: ["focusInput", "scrollToTop", "clearHighlightedItem"],
+      entry: ["focusInput", "scrollContentToTop", "clearHighlightedItem"],
       activities: ["trackInteractOutside"],
       on: {
         "INPUT.CHANGE": {
           target: "suggesting",
           actions: "setInputValue"
         },
-        INTERACT_OUTSIDE: {
+        "CONTENT.INTERACT_OUTSIDE": {
           target: "idle"
         },
         "INPUT.ESCAPE": {
@@ -159,7 +165,7 @@ const fetchMachine = createMachine({
         },
         "INPUT.ARROW_DOWN": [{
           cond: "autoComplete && isLastItemHighlighted",
-          actions: ["clearHighlightedItem", "scrollToTop"]
+          actions: ["clearHighlightedItem", "scrollContentToTop"]
         }, {
           cond: "hasSelectedItems",
           actions: ["highlightFirstSelectedItem"]
@@ -193,18 +199,18 @@ const fetchMachine = createMachine({
           target: "suggesting",
           actions: ["clearHighlightedItem", "setInputValue"]
         }],
-        "OPTION.POINTER_OVER": {
+        "ITEM.POINTER_OVER": {
           actions: ["setHighlightedItem"]
         },
-        "OPTION.POINTER_LEAVE": {
+        "ITEM.POINTER_LEAVE": {
           actions: ["clearHighlightedItem"]
         },
-        "OPTION.CLICK": [{
+        "ITEM.CLICK": [{
           cond: "!closeOnSelect",
-          actions: ["setSelectedItem"]
+          actions: ["selectItem"]
         }, {
           target: "focused",
-          actions: ["setSelectedItem", "invokeOnClose"]
+          actions: ["selectItem", "invokeOnClose"]
         }],
         "INPUT.ESCAPE": [{
           cond: "autoComplete",
@@ -218,10 +224,10 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: "invokeOnClose"
         },
-        INTERACT_OUTSIDE: [{
+        "CONTENT.INTERACT_OUTSIDE": [{
           cond: "selectOnBlur && hasHighlightedItem",
           target: "idle",
-          actions: ["setSelectedItem", "invokeOnClose"]
+          actions: ["selectItem", "invokeOnClose"]
         }, {
           cond: "isCustomValue && !allowCustomValue",
           target: "idle",
@@ -281,14 +287,14 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: "invokeOnClose"
         },
-        "OPTION.POINTER_OVER": {
+        "ITEM.POINTER_OVER": {
           target: "interacting",
           actions: "setHighlightedItem"
         },
-        "OPTION.POINTER_LEAVE": {
+        "ITEM.POINTER_LEAVE": {
           actions: "clearHighlightedItem"
         },
-        INTERACT_OUTSIDE: [{
+        "CONTENT.INTERACT_OUTSIDE": [{
           cond: "isCustomValue && !allowCustomValue",
           target: "idle",
           actions: ["revertInputValue", "invokeOnClose"]
@@ -300,12 +306,12 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: "invokeOnClose"
         },
-        "OPTION.CLICK": [{
+        "ITEM.CLICK": [{
           cond: "!closeOnSelect",
-          actions: ["setSelectedItem"]
+          actions: ["selectItem"]
         }, {
           target: "focused",
-          actions: ["setSelectedItem", "invokeOnClose"]
+          actions: ["selectItem", "invokeOnClose"]
         }],
         CLOSE: {
           target: "focused",

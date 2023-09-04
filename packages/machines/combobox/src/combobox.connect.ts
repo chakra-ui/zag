@@ -45,11 +45,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     valueAsString: state.context.valueAsString,
     hasSelectedItems: state.context.hasSelectedItems,
     selectedItems: state.context.selectedItems,
+    setCollection(collection) {
+      send({ type: "COLLECTION.SET", value: collection })
+    },
     highlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
     selectValue(value) {
-      send({ type: "VALUE.SELECT", value })
+      send({ type: "ITEM.SELECT", value })
     },
     setValue(value) {
       send({ type: "VALUE.SET", value })
@@ -57,8 +60,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setInputValue(value) {
       send({ type: "INPUT_VALUE.SET", value })
     },
-    clearValue() {
-      send("VALUE.CLEAR")
+    clearValue(value) {
+      if (value != null) {
+        send({ type: "ITEM.CLEAR", value })
+      } else {
+        send("VALUE.CLEAR")
+      }
     },
     focus() {
       dom.getInputEl(state.context)?.focus()
@@ -264,8 +271,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getItemState,
 
     getItemProps(props) {
-      const optionState = getItemState(props)
-      const value = optionState.key
+      const itemState = getItemState(props)
+      const value = itemState.key
 
       return normalize.element({
         ...parts.item.attrs,
@@ -273,40 +280,40 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getItemId(state.context, value),
         role: "option",
         tabIndex: -1,
-        "data-highlighted": dataAttr(optionState.isHighlighted),
-        "data-state": optionState.isSelected ? "checked" : "unchecked",
-        "aria-selected": optionState.isHighlighted,
-        "aria-disabled": optionState.isDisabled,
-        "data-disabled": dataAttr(optionState.isDisabled),
-        "data-value": optionState.key,
+        "data-highlighted": dataAttr(itemState.isHighlighted),
+        "data-state": itemState.isSelected ? "checked" : "unchecked",
+        "aria-selected": itemState.isHighlighted,
+        "aria-disabled": itemState.isDisabled,
+        "data-disabled": dataAttr(itemState.isDisabled),
+        "data-value": itemState.key,
         onPointerMove() {
-          if (optionState.isDisabled) return
-          send({ type: "OPTION.POINTER_OVER", value })
+          if (itemState.isDisabled) return
+          send({ type: "ITEM.POINTER_OVER", value })
         },
         onPointerLeave() {
-          if (optionState.isDisabled) return
-          send({ type: "OPTION.POINTER_LEAVE", value })
+          if (itemState.isDisabled) return
+          send({ type: "ITEM.POINTER_LEAVE", value })
         },
         onPointerUp(event) {
-          if (optionState.isDisabled || isContextMenuEvent(event)) return
-          send({ type: "OPTION.CLICK", src: "pointerup", value })
+          if (itemState.isDisabled || isContextMenuEvent(event)) return
+          send({ type: "ITEM.CLICK", src: "pointerup", value })
         },
         onAuxClick(event) {
-          if (optionState.isDisabled || isContextMenuEvent(event)) return
+          if (itemState.isDisabled || isContextMenuEvent(event)) return
           event.preventDefault()
-          send({ type: "OPTION.CLICK", src: "auxclick", value })
+          send({ type: "ITEM.CLICK", src: "auxclick", value })
         },
       })
     },
 
     getItemIndicatorProps(props) {
-      const optionState = getItemState(props)
+      const itemState = getItemState(props)
       return normalize.element({
         "aria-hidden": true,
         ...parts.itemIndicator.attrs,
         dir: state.context.dir,
-        "data-state": optionState.isSelected ? "checked" : "unchecked",
-        hidden: !optionState.isSelected,
+        "data-state": itemState.isSelected ? "checked" : "unchecked",
+        hidden: !itemState.isSelected,
       })
     },
 

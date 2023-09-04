@@ -66,11 +66,14 @@ export function machine(userContext: UserDefinedContext) {
         "HIGHLIGHTED_VALUE.SET": {
           actions: ["setHighlightedItem"],
         },
+        "ITEM.SELECT": {
+          actions: ["selectItem"],
+        },
+        "ITEM.CLEAR": {
+          actions: ["clearItem"],
+        },
         "VALUE.SET": {
           actions: ["setSelectedItems"],
-        },
-        "VALUE.SELECT": {
-          actions: ["setSelectedItem"],
         },
         "INPUT_VALUE.SET": {
           actions: "setInputValue",
@@ -85,12 +88,15 @@ export function machine(userContext: UserDefinedContext) {
         "INPUT.COMPOSITION_END": {
           actions: ["clearIsComposing"],
         },
+        "COLLECTION.SET": {
+          actions: ["setCollection"],
+        },
       },
 
       states: {
         idle: {
           tags: ["idle", "closed"],
-          entry: ["scrollToTop", "clearHighlightedItem"],
+          entry: ["scrollContentToTop", "clearHighlightedItem"],
           on: {
             "TRIGGER.CLICK": {
               target: "interacting",
@@ -113,14 +119,14 @@ export function machine(userContext: UserDefinedContext) {
 
         focused: {
           tags: ["focused", "closed"],
-          entry: ["focusInput", "scrollToTop", "clearHighlightedItem"],
+          entry: ["focusInput", "scrollContentToTop", "clearHighlightedItem"],
           activities: ["trackInteractOutside"],
           on: {
             "INPUT.CHANGE": {
               target: "suggesting",
               actions: "setInputValue",
             },
-            INTERACT_OUTSIDE: {
+            "CONTENT.INTERACT_OUTSIDE": {
               target: "idle",
             },
             "INPUT.ESCAPE": {
@@ -192,7 +198,7 @@ export function machine(userContext: UserDefinedContext) {
             "INPUT.ARROW_DOWN": [
               {
                 guard: and("autoComplete", "isLastItemHighlighted"),
-                actions: ["clearHighlightedItem", "scrollToTop"],
+                actions: ["clearHighlightedItem", "scrollContentToTop"],
               },
               {
                 guard: "hasSelectedItems",
@@ -239,20 +245,20 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["clearHighlightedItem", "setInputValue"],
               },
             ],
-            "OPTION.POINTER_OVER": {
+            "ITEM.POINTER_OVER": {
               actions: ["setHighlightedItem"],
             },
-            "OPTION.POINTER_LEAVE": {
+            "ITEM.POINTER_LEAVE": {
               actions: ["clearHighlightedItem"],
             },
-            "OPTION.CLICK": [
+            "ITEM.CLICK": [
               {
                 guard: not("closeOnSelect"),
-                actions: ["setSelectedItem"],
+                actions: ["selectItem"],
               },
               {
                 target: "focused",
-                actions: ["setSelectedItem", "invokeOnClose"],
+                actions: ["selectItem", "invokeOnClose"],
               },
             ],
             "INPUT.ESCAPE": [
@@ -270,11 +276,11 @@ export function machine(userContext: UserDefinedContext) {
               target: "focused",
               actions: "invokeOnClose",
             },
-            INTERACT_OUTSIDE: [
+            "CONTENT.INTERACT_OUTSIDE": [
               {
                 guard: and("selectOnBlur", "hasHighlightedItem"),
                 target: "idle",
-                actions: ["setSelectedItem", "invokeOnClose"],
+                actions: ["selectItem", "invokeOnClose"],
               },
               {
                 guard: and("isCustomValue", not("allowCustomValue")),
@@ -350,14 +356,14 @@ export function machine(userContext: UserDefinedContext) {
               target: "focused",
               actions: "invokeOnClose",
             },
-            "OPTION.POINTER_OVER": {
+            "ITEM.POINTER_OVER": {
               target: "interacting",
               actions: "setHighlightedItem",
             },
-            "OPTION.POINTER_LEAVE": {
+            "ITEM.POINTER_LEAVE": {
               actions: "clearHighlightedItem",
             },
-            INTERACT_OUTSIDE: [
+            "CONTENT.INTERACT_OUTSIDE": [
               {
                 guard: and("isCustomValue", not("allowCustomValue")),
                 target: "idle",
@@ -372,14 +378,14 @@ export function machine(userContext: UserDefinedContext) {
               target: "focused",
               actions: "invokeOnClose",
             },
-            "OPTION.CLICK": [
+            "ITEM.CLICK": [
               {
                 guard: not("closeOnSelect"),
-                actions: ["setSelectedItem"],
+                actions: ["selectItem"],
               },
               {
                 target: "focused",
-                actions: ["setSelectedItem", "invokeOnClose"],
+                actions: ["selectItem", "invokeOnClose"],
               },
             ],
             CLOSE: {
@@ -420,7 +426,7 @@ export function machine(userContext: UserDefinedContext) {
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
               if (event.defaultPrevented) return
-              send({ type: "INTERACT_OUTSIDE", src: "interact-outside" })
+              send({ type: "CONTENT.INTERACT_OUTSIDE" })
             },
           })
         },
@@ -452,7 +458,7 @@ export function machine(userContext: UserDefinedContext) {
           const exec = () => {
             const state = getState()
 
-            const isPointer = state.event.type.startsWith("OPTION.POINTER")
+            const isPointer = state.event.type.startsWith("ITEM.POINTER")
             if (isPointer || !ctx.highlightedValue) return
 
             const optionEl = dom.getHighlightedItemEl(ctx)
@@ -480,8 +486,12 @@ export function machine(userContext: UserDefinedContext) {
         selectHighlightedItem(ctx) {
           set.selectedItem(ctx, ctx.highlightedValue)
         },
-        setSelectedItem(ctx, evt) {
+        selectItem(ctx, evt) {
           set.selectedItem(ctx, evt.value)
+        },
+        clearItem(ctx, evt) {
+          const value = ctx.value.filter((v) => v !== evt.value)
+          set.selectedItems(ctx, value)
         },
         focusInput(ctx) {
           if (dom.isInputFocused(ctx)) return
@@ -520,7 +530,7 @@ export function machine(userContext: UserDefinedContext) {
         clearSelectedItems(ctx) {
           set.selectedItems(ctx, [])
         },
-        scrollToTop(ctx) {
+        scrollContentToTop(ctx) {
           const contentEl = dom.getContentEl(ctx)
           if (!contentEl) return
           contentEl.scrollTop = 0
@@ -556,6 +566,9 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.autoComplete || !inputEl || !KEYDOWN_EVENT_REGEX.test(evt.type)) return
           const valueText = ctx.collection.getKeyLabel(ctx.highlightedValue)
           inputEl.value = valueText || ctx.inputValue
+        },
+        setCollection(ctx, evt) {
+          ctx.collection = evt.value
         },
       },
     },

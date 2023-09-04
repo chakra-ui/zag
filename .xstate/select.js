@@ -47,6 +47,9 @@ const fetchMachine = createMachine({
     },
     "VALUE.CLEAR": {
       actions: ["clearSelectedItems"]
+    },
+    "COLLECTION.SET": {
+      actions: ["setCollection"]
     }
   },
   activities: ["trackFormControlState"],
