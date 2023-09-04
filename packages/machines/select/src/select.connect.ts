@@ -45,36 +45,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     hasSelectedItems: state.context.hasSelectedItems,
     value: state.context.value,
     valueAsString: state.context.valueAsString,
-
     focus() {
       dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
     },
-
     open() {
       send("OPEN")
     },
-
     close() {
       send("CLOSE")
     },
-
-    selectValue(value: string) {
-      send({ type: "SELECT_ITEM", value })
+    selectValue(value) {
+      send({ type: "ITEM.SELECT", value })
     },
-
-    setValue(value: string[]) {
-      send({ type: "SET_VALUE", value })
+    setValue(value) {
+      send({ type: "VALUE.SET", value })
     },
-
-    highlightValue(value: string) {
-      send({ type: "HIGHLIGHT_ITEM", value })
+    highlightValue(value) {
+      send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
-
-    clearValue(value?: string) {
+    clearValue(value) {
       if (value) {
-        send({ type: "CLEAR_ITEM", value })
+        send({ type: "ITEM.CLEAR", value })
       } else {
-        send({ type: "CLEAR_VALUE" })
+        send({ type: "VALUE.CLEAR" })
       }
     },
 
@@ -115,49 +108,49 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (event.button || event.ctrlKey || !isInteractive) return
         event.currentTarget.dataset.pointerType = event.pointerType
         if (isDisabled || event.pointerType === "touch") return
-        send({ type: "TRIGGER_CLICK" })
+        send({ type: "TRIGGER.CLICK" })
       },
       onClick(event) {
         if (!isInteractive || event.button) return
         if (event.currentTarget.dataset.pointerType === "touch") {
-          send({ type: "TRIGGER_CLICK" })
+          send({ type: "TRIGGER.CLICK" })
         }
       },
       onFocus() {
-        send("TRIGGER_FOCUS")
+        send("TRIGGER.FOCUS")
       },
       onBlur() {
-        send("TRIGGER_BLUR")
+        send("TRIGGER.BLUR")
       },
       onKeyDown(event) {
         if (!isInteractive) return
         const keyMap: EventKeyMap = {
           ArrowUp() {
-            send({ type: "ARROW_UP" })
+            send({ type: "TRIGGER.ARROW_UP" })
           },
           ArrowDown(event) {
-            send({ type: event.altKey ? "OPEN" : "ARROW_DOWN" })
+            send({ type: event.altKey ? "OPEN" : "TRIGGER.ARROW_DOWN" })
           },
           ArrowLeft() {
-            send({ type: "ARROW_LEFT" })
+            send({ type: "TRIGGER.ARROW_LEFT" })
           },
           ArrowRight() {
-            send({ type: "ARROW_RIGHT" })
+            send({ type: "TRIGGER.ARROW_RIGHT" })
           },
           Home() {
-            send({ type: "HOME" })
+            send({ type: "TRIGGER.HOME" })
           },
           End() {
-            send({ type: "END" })
+            send({ type: "TRIGGER.END" })
           },
           Enter() {
-            send({ type: "TRIGGER_KEY" })
+            send({ type: "TRIGGER.ENTER" })
           },
           Space(event) {
             if (isTypingAhead) {
-              send({ type: "TYPEAHEAD", key: event.key })
+              send({ type: "TRIGGER.TYPEAHEAD", key: event.key })
             } else {
-              send({ type: "TRIGGER_KEY" })
+              send({ type: "TRIGGER.ENTER" })
             }
           },
         }
@@ -171,37 +164,50 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         }
 
         if (getByTypeahead.isValidEvent(event)) {
-          send({ type: "TYPEAHEAD", key: event.key })
+          send({ type: "TRIGGER.TYPEAHEAD", key: event.key })
           event.preventDefault()
         }
       },
     }),
 
     getItemProps(props) {
-      const optionState = getItemState(props)
+      const itemState = getItemState(props)
 
       return normalize.element({
-        id: dom.getItemId(state.context, optionState.key),
+        id: dom.getItemId(state.context, itemState.key),
         role: "option",
         ...parts.item.attrs,
         dir: state.context.dir,
-        "data-value": optionState.key,
-        "aria-selected": optionState.isSelected,
-        "data-state": optionState.isSelected ? "checked" : "unchecked",
-        "data-highlighted": dataAttr(optionState.isHighlighted),
-        "data-disabled": dataAttr(optionState.isDisabled),
-        "aria-disabled": ariaAttr(optionState.isDisabled),
+        "data-value": itemState.key,
+        "aria-selected": itemState.isSelected,
+        "data-state": itemState.isSelected ? "checked" : "unchecked",
+        "data-highlighted": dataAttr(itemState.isHighlighted),
+        "data-disabled": dataAttr(itemState.isDisabled),
+        "aria-disabled": ariaAttr(itemState.isDisabled),
+        onPointerMove(event) {
+          if (!isInteractive || event.pointerType !== "mouse") return
+          if (itemState.key === state.context.highlightedValue) return
+          send({ type: "ITEM.POINTER_MOVE", value: itemState.key })
+        },
+        onPointerUp() {
+          if (!isInteractive || itemState.isDisabled) return
+          send({ type: "ITEM.CLICK", src: "pointerup", value: itemState.key })
+        },
+        onPointerLeave(event) {
+          if (event.pointerType !== "mouse") return
+          send({ type: "ITEM.POINTER_LEAVE" })
+        },
       })
     },
 
     getItemIndicatorProps(props) {
-      const optionState = getItemState(props)
+      const itemState = getItemState(props)
       return normalize.element({
         "aria-hidden": true,
         ...parts.itemIndicator.attrs,
         dir: state.context.dir,
-        "data-state": optionState.isSelected ? "checked" : "unchecked",
-        hidden: !optionState.isSelected,
+        "data-state": itemState.isSelected ? "checked" : "unchecked",
+        hidden: !itemState.isSelected,
       })
     },
 
@@ -234,7 +240,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       hidden: !state.context.hasSelectedItems,
       dir: state.context.dir,
       onClick() {
-        send("CLEAR_VALUE")
+        send("VALUE.CLEAR")
       },
     }),
 
@@ -273,48 +279,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-multiselectable": state.context.multiple ? "true" : undefined,
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: 0,
-      onPointerMove(event) {
-        if (!isInteractive || event.pointerType !== "mouse") return
-        const option = dom.getClosestOptionEl(event.target)
-        if (!option || option.hasAttribute("data-disabled")) {
-          send({ type: "POINTER_LEAVE" })
-        } else {
-          if (option.dataset.value === state.context.highlightedValue) return
-          send({ type: "POINTER_MOVE", value: option.dataset.value })
-        }
-      },
-      onPointerUp(event) {
-        if (!isInteractive) return
-        const option = dom.getClosestOptionEl(event.target)
-        if (!option || option.hasAttribute("data-disabled")) return
-        send({ type: "ITEM_CLICK", src: "pointerup", value: option.dataset.value })
-      },
-      onPointerLeave(event) {
-        if (event.pointerType !== "mouse") return
-        send({ type: "POINTER_LEAVE" })
-      },
       onKeyDown(event) {
         if (!isInteractive || !isSelfEvent(event)) return
 
         const keyMap: EventKeyMap = {
           ArrowUp() {
-            send({ type: "ARROW_UP" })
+            send({ type: "CONTENT.ARROW_UP" })
           },
           ArrowDown() {
-            send({ type: "ARROW_DOWN" })
+            send({ type: "CONTENT.ARROW_DOWN" })
           },
           Home() {
-            send({ type: "HOME" })
+            send({ type: "CONTENT.HOME" })
           },
           End() {
-            send({ type: "END" })
+            send({ type: "CONTENT.END" })
           },
           Enter() {
-            send({ type: "TRIGGER_KEY" })
+            send({ type: "CONTENT.ENTER" })
           },
           Space(event) {
             if (isTypingAhead) {
-              send({ type: "TYPEAHEAD", key: event.key })
+              send({ type: "CONTENT.TYPEAHEAD", key: event.key })
             } else {
               keyMap.Enter?.(event)
             }
@@ -334,7 +320,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         }
 
         if (getByTypeahead.isValidEvent(event)) {
-          send({ type: "TYPEAHEAD", key: event.key })
+          send({ type: "CONTENT.TYPEAHEAD", key: event.key })
           event.preventDefault()
         }
       },

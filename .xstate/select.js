@@ -33,23 +33,23 @@ const fetchMachine = createMachine({
   },
   initial: "idle",
   on: {
-    HIGHLIGHT_ITEM: {
+    "HIGHLIGHTED_VALUE.SET": {
       actions: ["setHighlightedItem"]
     },
-    SELECT_ITEM: {
+    "ITEM.SELECT": {
       actions: ["selectItem"]
     },
-    CLEAR_ITEM: {
+    "ITEM.CLEAR": {
       actions: ["clearItem"]
     },
-    SET_VALUE: {
+    "VALUE.SET": {
       actions: ["setSelectedItems"]
     },
-    CLEAR_VALUE: {
+    "VALUE.CLEAR": {
       actions: ["clearSelectedItems"]
     }
   },
-  activities: ["trackFormControlState", "trackVirtualizer"],
+  activities: ["trackFormControlState"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -59,11 +59,11 @@ const fetchMachine = createMachine({
     idle: {
       tags: ["closed"],
       on: {
-        TRIGGER_CLICK: {
+        "TRIGGER.CLICK": {
           target: "open",
           actions: ["invokeOnOpen"]
         },
-        TRIGGER_FOCUS: {
+        "TRIGGER.FOCUS": {
           target: "focused"
         },
         OPEN: {
@@ -76,14 +76,18 @@ const fetchMachine = createMachine({
       tags: ["closed"],
       entry: ["focusTrigger"],
       on: {
-        TRIGGER_BLUR: {
-          target: "idle"
-        },
-        TRIGGER_CLICK: {
+        OPEN: {
           target: "open",
           actions: ["invokeOnOpen"]
         },
-        TRIGGER_KEY: [{
+        "TRIGGER.BLUR": {
+          target: "idle"
+        },
+        "TRIGGER.CLICK": {
+          target: "open",
+          actions: ["invokeOnOpen"]
+        },
+        "TRIGGER.ENTER": [{
           cond: "hasSelectedItems",
           target: "open",
           actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
@@ -91,7 +95,7 @@ const fetchMachine = createMachine({
           target: "open",
           actions: ["highlightFirstItem", "invokeOnOpen"]
         }],
-        ARROW_UP: [{
+        "TRIGGER.ARROW_UP": [{
           cond: "hasSelectedItems",
           target: "open",
           actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
@@ -99,7 +103,7 @@ const fetchMachine = createMachine({
           target: "open",
           actions: ["highlightLastItem", "invokeOnOpen"]
         }],
-        ARROW_DOWN: [{
+        "TRIGGER.ARROW_DOWN": [{
           cond: "hasSelectedItems",
           target: "open",
           actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
@@ -107,33 +111,29 @@ const fetchMachine = createMachine({
           target: "open",
           actions: ["highlightFirstItem", "invokeOnOpen"]
         }],
-        OPEN: {
-          target: "open",
-          actions: ["invokeOnOpen"]
-        },
-        ARROW_LEFT: [{
+        "TRIGGER.ARROW_LEFT": [{
           cond: "!multiple && hasSelectedItems",
           actions: ["selectPreviousItem"]
         }, {
           cond: "!multiple",
           actions: ["selectLastItem"]
         }],
-        ARROW_RIGHT: [{
+        "TRIGGER.ARROW_RIGHT": [{
           cond: "!multiple && hasSelectedItems",
           actions: ["selectNextItem"]
         }, {
           cond: "!multiple",
           actions: ["selectFirstItem"]
         }],
-        HOME: {
+        "TRIGGER.HOME": {
           cond: "!multiple",
           actions: ["selectFirstItem"]
         },
-        END: {
+        "TRIGGER.END": {
           cond: "!multiple",
           actions: ["selectLastItem"]
         },
-        TYPEAHEAD: {
+        "TRIGGER.TYPEAHEAD": {
           cond: "!multiple",
           actions: ["selectMatchingItem"]
         }
@@ -149,11 +149,11 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: ["clearHighlightedItem", "invokeOnClose"]
         },
-        TRIGGER_CLICK: {
+        "TRIGGER.CLICK": {
           target: "focused",
           actions: ["clearHighlightedItem", "invokeOnClose"]
         },
-        ITEM_CLICK: [{
+        "ITEM.CLICK": [{
           cond: "closeOnSelect",
           target: "focused",
           actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"]
@@ -163,7 +163,7 @@ const fetchMachine = createMachine({
         }, {
           actions: ["selectHighlightedItem", "clearHighlightedItem"]
         }],
-        TRIGGER_KEY: [{
+        "CONTENT.ENTER": [{
           cond: "closeOnSelect",
           target: "focused",
           actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"]
@@ -173,7 +173,7 @@ const fetchMachine = createMachine({
         }, {
           actions: ["selectHighlightedItem", "clearHighlightedItem"]
         }],
-        BLUR: [{
+        "CONTENT.INTERACT_OUTSIDE": [{
           cond: "selectOnBlur && hasHighlightedItem",
           target: "idle",
           actions: ["selectHighlightedItem", "invokeOnClose", "clearHighlightedItem"]
@@ -185,31 +185,31 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: ["clearHighlightedItem", "invokeOnClose"]
         }],
-        HOME: {
+        "CONTENT.HOME": {
           actions: ["highlightFirstItem"]
         },
-        END: {
+        "CONTENT.END": {
           actions: ["highlightLastItem"]
         },
-        ARROW_DOWN: [{
+        "CONTENT.ARROW_DOWN": [{
           cond: "hasHighlightedItem",
           actions: ["highlightNextItem"]
         }, {
           actions: ["highlightFirstItem"]
         }],
-        ARROW_UP: [{
+        "CONTENT.ARROW_UP": [{
           cond: "hasHighlightedItem",
           actions: ["highlightPreviousItem"]
         }, {
           actions: ["highlightLastItem"]
         }],
-        TYPEAHEAD: {
+        "CONTENT.TYPEAHEAD": {
           actions: ["highlightMatchingItem"]
         },
-        POINTER_MOVE: {
+        "ITEM.POINTER_MOVE": {
           actions: ["highlightItem"]
         },
-        POINTER_LEAVE: {
+        "ITEM.POINTER_LEAVE": {
           actions: ["clearHighlightedItem"]
         }
       }

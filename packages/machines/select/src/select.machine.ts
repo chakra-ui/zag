@@ -53,34 +53,34 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       on: {
-        HIGHLIGHT_ITEM: {
+        "HIGHLIGHTED_VALUE.SET": {
           actions: ["setHighlightedItem"],
         },
-        SELECT_ITEM: {
+        "ITEM.SELECT": {
           actions: ["selectItem"],
         },
-        CLEAR_ITEM: {
+        "ITEM.CLEAR": {
           actions: ["clearItem"],
         },
-        SET_VALUE: {
+        "VALUE.SET": {
           actions: ["setSelectedItems"],
         },
-        CLEAR_VALUE: {
+        "VALUE.CLEAR": {
           actions: ["clearSelectedItems"],
         },
       },
 
-      activities: ["trackFormControlState", "trackVirtualizer"],
+      activities: ["trackFormControlState"],
 
       states: {
         idle: {
           tags: ["closed"],
           on: {
-            TRIGGER_CLICK: {
+            "TRIGGER.CLICK": {
               target: "open",
               actions: ["invokeOnOpen"],
             },
-            TRIGGER_FOCUS: {
+            "TRIGGER.FOCUS": {
               target: "focused",
             },
             OPEN: {
@@ -94,14 +94,18 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["closed"],
           entry: ["focusTrigger"],
           on: {
-            TRIGGER_BLUR: {
-              target: "idle",
-            },
-            TRIGGER_CLICK: {
+            OPEN: {
               target: "open",
               actions: ["invokeOnOpen"],
             },
-            TRIGGER_KEY: [
+            "TRIGGER.BLUR": {
+              target: "idle",
+            },
+            "TRIGGER.CLICK": {
+              target: "open",
+              actions: ["invokeOnOpen"],
+            },
+            "TRIGGER.ENTER": [
               {
                 guard: "hasSelectedItems",
                 target: "open",
@@ -112,7 +116,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["highlightFirstItem", "invokeOnOpen"],
               },
             ],
-            ARROW_UP: [
+            "TRIGGER.ARROW_UP": [
               {
                 guard: "hasSelectedItems",
                 target: "open",
@@ -123,7 +127,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["highlightLastItem", "invokeOnOpen"],
               },
             ],
-            ARROW_DOWN: [
+            "TRIGGER.ARROW_DOWN": [
               {
                 guard: "hasSelectedItems",
                 target: "open",
@@ -134,11 +138,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["highlightFirstItem", "invokeOnOpen"],
               },
             ],
-            OPEN: {
-              target: "open",
-              actions: ["invokeOnOpen"],
-            },
-            ARROW_LEFT: [
+            "TRIGGER.ARROW_LEFT": [
               {
                 guard: and(not("multiple"), "hasSelectedItems"),
                 actions: ["selectPreviousItem"],
@@ -148,7 +148,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["selectLastItem"],
               },
             ],
-            ARROW_RIGHT: [
+            "TRIGGER.ARROW_RIGHT": [
               {
                 guard: and(not("multiple"), "hasSelectedItems"),
                 actions: ["selectNextItem"],
@@ -158,15 +158,15 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["selectFirstItem"],
               },
             ],
-            HOME: {
+            "TRIGGER.HOME": {
               guard: not("multiple"),
               actions: ["selectFirstItem"],
             },
-            END: {
+            "TRIGGER.END": {
               guard: not("multiple"),
               actions: ["selectLastItem"],
             },
-            TYPEAHEAD: {
+            "TRIGGER.TYPEAHEAD": {
               guard: not("multiple"),
               actions: ["selectMatchingItem"],
             },
@@ -183,11 +183,11 @@ export function machine(userContext: UserDefinedContext) {
               target: "focused",
               actions: ["clearHighlightedItem", "invokeOnClose"],
             },
-            TRIGGER_CLICK: {
+            "TRIGGER.CLICK": {
               target: "focused",
               actions: ["clearHighlightedItem", "invokeOnClose"],
             },
-            ITEM_CLICK: [
+            "ITEM.CLICK": [
               {
                 guard: "closeOnSelect",
                 target: "focused",
@@ -201,7 +201,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["selectHighlightedItem", "clearHighlightedItem"],
               },
             ],
-            TRIGGER_KEY: [
+            "CONTENT.ENTER": [
               {
                 guard: "closeOnSelect",
                 target: "focused",
@@ -215,7 +215,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["selectHighlightedItem", "clearHighlightedItem"],
               },
             ],
-            BLUR: [
+            "CONTENT.INTERACT_OUTSIDE": [
               {
                 guard: and("selectOnBlur", "hasHighlightedItem"),
                 target: "idle",
@@ -231,13 +231,13 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["clearHighlightedItem", "invokeOnClose"],
               },
             ],
-            HOME: {
+            "CONTENT.HOME": {
               actions: ["highlightFirstItem"],
             },
-            END: {
+            "CONTENT.END": {
               actions: ["highlightLastItem"],
             },
-            ARROW_DOWN: [
+            "CONTENT.ARROW_DOWN": [
               {
                 guard: "hasHighlightedItem",
                 actions: ["highlightNextItem"],
@@ -246,7 +246,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["highlightFirstItem"],
               },
             ],
-            ARROW_UP: [
+            "CONTENT.ARROW_UP": [
               {
                 guard: "hasHighlightedItem",
                 actions: ["highlightPreviousItem"],
@@ -255,13 +255,13 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["highlightLastItem"],
               },
             ],
-            TYPEAHEAD: {
+            "CONTENT.TYPEAHEAD": {
               actions: ["highlightMatchingItem"],
             },
-            POINTER_MOVE: {
+            "ITEM.POINTER_MOVE": {
               actions: ["highlightItem"],
             },
-            POINTER_LEAVE: {
+            "ITEM.POINTER_LEAVE": {
               actions: ["clearHighlightedItem"],
             },
           },
@@ -312,7 +312,7 @@ export function machine(userContext: UserDefinedContext) {
               ctx.onInteractOutside?.(event)
             },
             onDismiss() {
-              send({ type: "BLUR", src: "interact-outside", focusable })
+              send({ type: "CONTENT.INTERACT_OUTSIDE", focusable })
             },
           })
         },
@@ -330,7 +330,7 @@ export function machine(userContext: UserDefinedContext) {
           const exec = () => {
             const state = getState()
             // don't scroll into view if we're using the pointer
-            if (state.event.type === "POINTER_MOVE") return
+            if (state.event.type.startsWith("ITEM.POINTER")) return
             const optionEl = dom.getHighlightedOptionEl(ctx)
             optionEl?.scrollIntoView({ block: "nearest" })
           }

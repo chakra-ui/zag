@@ -243,7 +243,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Function to clear the value of the combobox
    */
-  clearValue(): void
+  clearValue(value?: string): void
   /**
    * Function to focus on the combobox input
    */
