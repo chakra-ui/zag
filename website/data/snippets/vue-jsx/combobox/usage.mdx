@@ -14,9 +14,18 @@ export default defineComponent({
   setup() {
     const options = ref(comboboxData)
 
+    const collectionRef = computed(() =>
+      combobox.collection({
+        items: options.value,
+        getItemLabel: (item) => item.label,
+        getItemKey: (item) => item.code,
+      }),
+    )
+
     const [state, send] = useMachine(
       combobox.machine({
-        id: "combobox",
+        id: "v1",
+        collection: collectionRef.value,
         onOpen() {
           options.value = comboboxData
         },
@@ -27,6 +36,11 @@ export default defineComponent({
           options.value = filtered.length > 0 ? filtered : comboboxData
         },
       }),
+      {
+        context: computed(() => ({
+          collection: collectionRef.value,
+        })),
+      },
     )
 
     const apiRef = computed(() =>
@@ -50,16 +64,8 @@ export default defineComponent({
           <div {...api.positionerProps}>
             {options.value.length > 0 && (
               <ul {...api.contentProps}>
-                {options.value.map((item, index) => (
-                  <li
-                    key={`${item.code}:${index}`}
-                    {...api.getOptionProps({
-                      label: item.label,
-                      value: item.code,
-                      index,
-                      disabled: item.disabled,
-                    })}
-                  >
+                {options.value.map((item) => (
+                  <li key={item.code} {...api.getItemProps({ item })}>
                     {item.label}
                   </li>
                 ))}

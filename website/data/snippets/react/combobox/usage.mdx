@@ -14,6 +14,11 @@ export function Combobox() {
   const [state, send] = useMachine(
     combobox.machine({
       id: useId(),
+      collection: combobox.collection({
+        items: comboboxData,
+        getItemKey: (item) => item.code,
+        getItemLabel: (item) => item.label,
+      }),
       onOpen() {
         setOptions(comboboxData)
       },
@@ -40,16 +45,8 @@ export function Combobox() {
       <div {...api.positionerProps}>
         {options.length > 0 && (
           <ul {...api.contentProps}>
-            {options.map((item, index) => (
-              <li
-                key={`${item.code}:${index}`}
-                {...api.getOptionProps({
-                  label: item.label,
-                  value: item.code,
-                  index,
-                  disabled: item.disabled,
-                })}
-              >
+            {options.map((item) => (
+              <li key={item.code} {...api.getItemProps({ item })}>
                 {item.label}
               </li>
             ))}

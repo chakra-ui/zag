@@ -12,9 +12,18 @@
 
   const options = ref(comboboxData)
 
+  const collectionRef = computed(() =>
+    select.collection({
+      items: options.value,
+      getItemKey: (item) => item.code,
+      getItemLabel: (item) => item.label,
+    }),
+  )
+
   const [state, send] = useMachine(
     combobox.machine({
-      id: "combobox",
+      id: "1",
+      collection: collectionRef.value,
       onOpen() {
         options.value = comboboxData
       },
@@ -25,6 +34,11 @@
         options.value = filtered.length > 0 ? filtered : comboboxData
       },
     }),
+    {
+      context: computed(() => ({
+        collection: collectionRef.value,
+      })),
+    },
   )
 
   const api = computed(() =>
@@ -44,16 +58,11 @@
   <div v-bind="api.positionerProps">
     <ul v-if="options.length > 0" v-bind="api.contentProps">
       <li
-        v-for="(item, index) in options"
+        v-for="item in options"
         :key="item.code"
-        v-bind="api.getOptionProps({
-          label: item.label,
-          value: item.code,
-          index,
-          disabled: item.disabled,
-        })"
+        v-bind="api.getItemProps({ item })"
       >
-        {{item.label}}
+        {{ item.label }}
       </li>
     </ul>
   </div>

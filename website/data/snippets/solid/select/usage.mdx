@@ -3,8 +3,21 @@ import * as select from "@zag-js/select"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 
+const selectData = [
+  { label: "Nigeria", value: "NG" },
+  { label: "Japan", value: "JP" },
+  //...
+]
+
 export function Select() {
-  const [state, send] = useMachine(menu.machine({ id: createUniqueId() }))
+  const [state, send] = useMachine(
+    select.machine({
+      id: createUniqueId(),
+      collection: select.collection({
+        items: selectData,
+      }),
+    }),
+  )
 
   const api = createMemo(() => select.connect(state, send, normalizeProps))
 
@@ -13,16 +26,16 @@ export function Select() {
       <div>
         <label {...api().labelProps}>Label</label>
         <button {...api().triggerProps}>
-          <span>{api().selectedOption?.label ?? "Select option"}</span>
+          <span>{api().valueAsString || "Select option"}</span>
         </button>
       </div>
 
       <div {...api().positionerProps}>
         <ul {...api().contentProps}>
-          {selectData.map(({ label, value }) => (
-            <li key={value} {...api().getOptionProps({ label, value })}>
-              <span>{label}</span>
-              {value === api().selectedOption?.value && "✓"}
+          {selectData.map((item) => (
+            <li key={item.value} {...api().getOptionProps({ item })}>
+              <span>{item.label}</span>
+              <span {...api().getItemIndicatorProps({ item })}>✓</span>
             </li>
           ))}
         </ul>

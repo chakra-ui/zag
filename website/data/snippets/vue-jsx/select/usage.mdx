@@ -3,10 +3,23 @@ import * as select from "@zag-js/select"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment, Teleport } from "vue"
 
+const selectData = [
+  { label: "Nigeria", value: "NG" },
+  { label: "Japan", value: "JP" },
+  //...
+]
+
 export default defineComponent({
   name: "Select",
   setup() {
-    const [state, send] = useMachine(select.machine({ id: "1" }))
+    const [state, send] = useMachine(
+      select.machine({
+        id: "1",
+        collection: select.collection({
+          items: selectData,
+        }),
+      }),
+    )
 
     const apiRef = computed(() =>
       select.connect(state.value, send, normalizeProps),
@@ -18,17 +31,17 @@ export default defineComponent({
           <div>
             <label {...api.labelProps}>Label</label>
             <button {...api.triggerProps}>
-              <span>{api.selectedOption?.label ?? "Select option"}</span>
+              <span>{api.valueAsString || "Select option"}</span>
             </button>
           </div>
 
           <Teleport to="body">
             <div {...api.positionerProps}>
               <ul {...api.contentProps}>
-                {selectData.map(({ label, value }) => (
-                  <li key={value} {...api.getOptionProps({ label, value })}>
+                {selectData.map((item) => (
+                  <li key={value} {...api.getItemProps({ item })}>
                     <span>{label}</span>
-                    {value === api.selectedOption?.value && "✓"}
+                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
                   </li>
                 ))}
               </ul>

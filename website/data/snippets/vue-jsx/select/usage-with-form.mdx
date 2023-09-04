@@ -6,11 +6,7 @@ import { Teleport } from "vue"
 const selectData = [
   { label: "Nigeria", value: "NG" },
   { label: "Japan", value: "JP" },
-  { label: "Korea", value: "KO" },
-  { label: "Kenya", value: "KE" },
-  { label: "United Kingdom", value: "UK" },
-  { label: "Ghana", value: "GH" },
-  { label: "Uganda", value: "UG" },
+  //...
 ]
 
 export default defineComponent({
@@ -19,6 +15,9 @@ export default defineComponent({
     const [state, send] = useMachine(
       select.machine({
         id: "1",
+        collection: select.collection({
+          items: selectData,
+        }),
         name: "country",
       }),
     )
@@ -30,12 +29,12 @@ export default defineComponent({
     return () => {
       const api = apiRef.value
       return (
-        <div>
+        <form>
           {/* Hidden select */}
           <select {...api.hiddenSelectProps}>
-            {selectData.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
+            {selectData.map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.label}
               </option>
             ))}
           </select>
@@ -44,7 +43,7 @@ export default defineComponent({
           <div class="control">
             <label {...api.labelProps}>Label</label>
             <button type="button" {...api.triggerProps}>
-              <span>{api.selectedOption?.label ?? "Select option"}</span>
+              <span>{api.valueAsString || "Select option"}</span>
               <CaretIcon />
             </button>
           </div>
@@ -52,16 +51,16 @@ export default defineComponent({
           <Teleport to="body">
             <div {...api.positionerProps}>
               <ul {...api.contentProps}>
-                {selectData.map(({ label, value }) => (
-                  <li key={value} {...api.getOptionProps({ label, value })}>
+                {selectData.map((item) => (
+                  <li key={value} {...api.getItemProps({ item })}>
                     <span>{label}</span>
-                    {value === api.selectedOption?.value && "✓"}
+                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
                   </li>
                 ))}
               </ul>
             </div>
           </Teleport>
-        </div>
+        </form>
       )
     }
   },
