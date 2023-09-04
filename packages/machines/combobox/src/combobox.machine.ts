@@ -201,7 +201,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["clearHighlightedItem", "scrollContentToTop"],
               },
               {
-                guard: "hasSelectedItems",
+                guard: and(not("hasHighlightedItem"), "hasSelectedItems"),
                 actions: ["highlightFirstSelectedItem"],
               },
               {
@@ -214,7 +214,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: "clearHighlightedItem",
               },
               {
-                guard: "hasSelectedItems",
+                guard: and(not("hasHighlightedItem"), "hasSelectedItems"),
                 actions: ["highlightFirstSelectedItem"],
               },
               {
@@ -280,7 +280,7 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: and("selectOnBlur", "hasHighlightedItem"),
                 target: "idle",
-                actions: ["selectItem", "invokeOnClose"],
+                actions: ["selectHighlightedItem", "invokeOnClose"],
               },
               {
                 guard: and("isCustomValue", not("allowCustomValue")),
@@ -407,10 +407,10 @@ export function machine(userContext: UserDefinedContext) {
         isLastItemHighlighted: (ctx) => ctx.collection.getLastKey() === ctx.highlightedValue,
         isCustomValue: (ctx) => ctx.inputValue !== ctx.valueAsString,
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
-        hasHighlightedItem: (ctx) => ctx.highlightedValue == null,
+        hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
         hasSelectedItems: (ctx) => ctx.hasSelectedItems,
         selectOnBlur: (ctx) => !!ctx.selectOnBlur,
-        closeOnSelect: (ctx) => (!!ctx.multiple ? false : !!ctx.closeOnSelect),
+        closeOnSelect: (ctx) => (ctx.multiple ? false : !!ctx.closeOnSelect),
         isHighlightedItemVisible: (ctx) => ctx.collection.has(ctx.highlightedValue),
       },
 

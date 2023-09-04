@@ -21,9 +21,9 @@ const fetchMachine = createMachine({
     "autoComplete": false,
     "hasSelectedItems": false,
     "autoComplete && isLastItemHighlighted": false,
-    "hasSelectedItems": false,
+    "!hasHighlightedItem && hasSelectedItems": false,
     "autoComplete && isFirstItemHighlighted": false,
-    "hasSelectedItems": false,
+    "!hasHighlightedItem && hasSelectedItems": false,
     "!closeOnSelect": false,
     "autoComplete": false,
     "!closeOnSelect": false,
@@ -167,7 +167,7 @@ const fetchMachine = createMachine({
           cond: "autoComplete && isLastItemHighlighted",
           actions: ["clearHighlightedItem", "scrollContentToTop"]
         }, {
-          cond: "hasSelectedItems",
+          cond: "!hasHighlightedItem && hasSelectedItems",
           actions: ["highlightFirstSelectedItem"]
         }, {
           actions: ["highlightNextItem"]
@@ -176,7 +176,7 @@ const fetchMachine = createMachine({
           cond: "autoComplete && isFirstItemHighlighted",
           actions: "clearHighlightedItem"
         }, {
-          cond: "hasSelectedItems",
+          cond: "!hasHighlightedItem && hasSelectedItems",
           actions: ["highlightFirstSelectedItem"]
         }, {
           actions: "highlightPrevItem"
@@ -227,7 +227,7 @@ const fetchMachine = createMachine({
         "CONTENT.INTERACT_OUTSIDE": [{
           cond: "selectOnBlur && hasHighlightedItem",
           target: "idle",
-          actions: ["selectItem", "invokeOnClose"]
+          actions: ["selectHighlightedItem", "invokeOnClose"]
         }, {
           cond: "isCustomValue && !allowCustomValue",
           target: "idle",
@@ -334,6 +334,7 @@ const fetchMachine = createMachine({
     "autoComplete": ctx => ctx["autoComplete"],
     "hasSelectedItems": ctx => ctx["hasSelectedItems"],
     "autoComplete && isLastItemHighlighted": ctx => ctx["autoComplete && isLastItemHighlighted"],
+    "!hasHighlightedItem && hasSelectedItems": ctx => ctx["!hasHighlightedItem && hasSelectedItems"],
     "autoComplete && isFirstItemHighlighted": ctx => ctx["autoComplete && isFirstItemHighlighted"],
     "!closeOnSelect": ctx => ctx["!closeOnSelect"],
     "selectOnBlur && hasHighlightedItem": ctx => ctx["selectOnBlur && hasHighlightedItem"],

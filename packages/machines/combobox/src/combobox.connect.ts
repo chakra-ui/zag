@@ -241,6 +241,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getContentId(state.context),
       role: "listbox",
+      tabIndex: -1,
       hidden: !isOpen,
       "data-state": isOpen ? "open" : "closed",
       "aria-labelledby": dom.getLabelId(state.context),
