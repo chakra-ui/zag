@@ -48,7 +48,7 @@ export function useSearch(): UseSearchReturn {
       inputBehavior: "autohighlight",
       selectionBehavior: "clear",
       collection,
-      onValueChange({ items }) {
+      onChange({ items }) {
         const [item] = items as SearchMetaItem[]
         if (!item) return
         try {

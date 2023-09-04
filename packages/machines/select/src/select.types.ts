@@ -70,15 +70,19 @@ type PublicContext = DirectionProperty &
     /**
      * The callback fired when the highlighted item changes.
      */
-    onHighlightChange?: (details: HighlightChangeDetails) => void
+    onHighlight?: (details: HighlightChangeDetails) => void
     /**
      * The callback fired when the selected item changes.
      */
     onChange?: (details: ValueChangeDetails) => void
     /**
-     * The callback fired when the menu is open state changes.
+     * Function called when the popup is opened
      */
-    onOpenChange?: (open: boolean) => void
+    onOpen?: VoidFunction
+    /**
+     * Function called when the popup is closed
+     */
+    onClose?: VoidFunction
     /**
      * The positioning options of the menu.
      */

@@ -108,16 +108,20 @@ type PublicContext = DirectionProperty &
     /**
      * Function called when a new item is selected
      */
-    onValueChange?: (details: { value: string[]; items: CollectionItem[] }) => void
+    onChange?: (details: { value: string[]; items: CollectionItem[] }) => void
     /**
      * Function called when an item is highlighted using the pointer
      * or keyboard navigation.
      */
-    onHighlightChange?: (details: { value: string | null; item: CollectionItem | null }) => void
+    onHighlight?: (details: { value: string | null; item: CollectionItem | null }) => void
     /**
      * Function called when the popup is opened
      */
-    onOpenChange?: (open: boolean) => void
+    onOpen?: VoidFunction
+    /**
+     * Function called when the popup is closed
+     */
+    onClose?: VoidFunction
     /**
      * Specifies the localized strings that identifies the accessibility elements and their states
      */

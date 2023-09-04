@@ -61,6 +61,7 @@ const CaretIcon = () => (
 
 export function Combobox(props: ComboboxProps) {
   const [options, setOptions] = useState(comboboxData)
+
   const collection = combobox.collection({
     items: options,
     getItemKey: (item) => item.code,
@@ -71,8 +72,7 @@ export function Combobox(props: ComboboxProps) {
     combobox.machine({
       id: useId(),
       collection,
-      onOpenChange(open) {
-        if (!open) return
+      onOpen() {
         setOptions(comboboxData)
       },
       onInputChange({ value }) {

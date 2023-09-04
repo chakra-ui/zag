@@ -21,8 +21,7 @@ export default function Page() {
     combobox.machine({
       id: useId(),
       collection,
-      onOpenChange(open) {
-        if (!open) return
+      onOpen() {
         setOptions(comboboxData)
       },
       onInputChange({ value }) {

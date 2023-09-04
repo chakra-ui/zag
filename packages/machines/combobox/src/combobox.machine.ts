@@ -504,10 +504,10 @@ export function machine(userContext: UserDefinedContext) {
           contentEl.scrollTop = 0
         },
         invokeOnOpen(ctx) {
-          ctx.onOpenChange?.(true)
+          ctx.onOpen?.()
         },
         invokeOnClose(ctx) {
-          ctx.onOpenChange?.(false)
+          ctx.onClose?.()
         },
         highlightFirstItem(ctx) {
           const firstKey = ctx.collection.getFirstKey()
@@ -542,11 +542,11 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   selectionChange: (ctx: MachineContext) => {
-    ctx.onValueChange?.({ value: Array.from(ctx.value), items: ctx.selectedItems })
+    ctx.onChange?.({ value: Array.from(ctx.value), items: ctx.selectedItems })
     ctx.inputValue = ctx.displayValue
   },
   highlightChange: (ctx: MachineContext) => {
-    ctx.onHighlightChange?.({ value: ctx.highlightedValue, item: ctx.highlightedItem })
+    ctx.onHighlight?.({ value: ctx.highlightedValue, item: ctx.highlightedItem })
   },
   inputChange: (ctx: MachineContext) => {
     ctx.onInputChange?.({ value: ctx.inputValue })

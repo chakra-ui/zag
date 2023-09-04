@@ -29,14 +29,14 @@ export default function Page() {
       collection: select.collection({ items: selectData }),
       id: useId(),
       name: "country",
-      onHighlightChange(details) {
+      onHighlight(details) {
         console.log("onHighlight", details)
       },
       onChange(details) {
         console.log("onChange", details)
       },
-      onOpenChange(isOpen) {
-        console.log("onOpen", { isOpen })
+      onOpen() {
+        console.log("onOpen")
       },
     }),
     {

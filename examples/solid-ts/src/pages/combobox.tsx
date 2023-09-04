@@ -11,11 +11,24 @@ export default function Page() {
 
   const [options, setOptions] = createSignal(comboboxData)
 
+  const collection = createMemo(() =>
+    combobox.collection({
+      items: options(),
+      getItemKey: (item) => item.code,
+      getItemLabel: (item) => item.label,
+    }),
+  )
+
+  const context = createMemo(() => ({
+    ...controls.context,
+    collection: collection(),
+  }))
+
   const [state, send] = useMachine(
     combobox.machine({
       id: createUniqueId(),
-      onOpenChange(open) {
-        if (!open) return
+      collection: collection(),
+      onOpen() {
         setOptions(comboboxData)
       },
       onInputChange({ value }) {
@@ -23,7 +36,7 @@ export default function Page() {
         setOptions(filtered.length > 0 ? filtered : comboboxData)
       },
     }),
-    { context: controls.context },
+    { context },
   )
 
   const api = createMemo(() => combobox.connect(state, send, normalizeProps))
