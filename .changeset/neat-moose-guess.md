@@ -2,4 +2,4 @@
 "@zag-js/editable": minor
 ---
 
-Rename MaschineApi to Api
+Rename `MachineApi` to `Api`

@@ -2,4 +2,4 @@
 "@zag-js/radio-group": patch
 ---
 
-Remove unsupport `readOnly` property from types
+Remove unsupported `readOnly` property from types

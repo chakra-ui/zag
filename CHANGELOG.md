@@ -6,6 +6,54 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.18.0] - 2023-09-05
+
+### Fixed
+
+- **DatePicker**
+  - Fix issue where datepicker value `onChange` returned a proxy array
+  - Fix issue where clearing the date picker value prevent selecting a new date when `inline: true` is set
+- **Menu**: Fix issue where `closeOnSelect` on menu item props isn't respected in machine
+- **NumberInput**: Fix issue where number input goes into infinite update cycles due to additional input event
+
+### Added
+
+- **React**: Export `PropTypes` from react package for consistency
+- **Select, Combobox**: Add support for selecting multiple items
+- **Combobox**: Add support for `closeOnSelect`
+
+### Changed
+
+- **RadioGroup**: Remove unsupported `readOnly` property from types
+
+> 💥 Breaking changes
+
+Redesign select and combobox API to allow passing value as `string` and `collection`
+
+Prior to this change, Zag computes the label and value from the DOM element. While this worked, it makes it challenging
+to manage complex objects that don't match the `label` and `value` convention.
+
+```jsx
+// Create the collection
+const collection = select.collection({
+  items: [],
+  itemToString(item) {
+    return item.label
+  },
+  itemToValue(item) {
+    return item.value
+  },
+})
+
+// Pass the collection to the select machine
+const [state, send] = useMachine(
+  select.machine({
+    collection,
+    id: useId(),
+  }),
+)
+```
+
 ## [0.17.0] - 2023-08-26
 
 ### Fixed
