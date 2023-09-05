@@ -201,9 +201,8 @@ const [state, send] = useMachine(
 
 ## Listening for highlight changes
 
-When an option is highlighted with the pointer or keyboard, the
-`highlightedOption` property in the machine's context is updated. You can listen
-for this change and do something with it.
+When an option is highlighted with the pointer or keyboard, use the
+`onHighlight` property to listen for this change and do something with it.
 
 ```jsx {4-7}
 const [state, send] = useMachine(
