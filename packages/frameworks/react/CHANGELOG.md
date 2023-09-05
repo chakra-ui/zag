@@ -1,5 +1,17 @@
 # @zag-js/react
 
+## 0.18.0
+
+### Patch Changes
+
+- [`44df2f45`](https://github.com/chakra-ui/zag/commit/44df2f458ce7679afc7cb8ca8d72c17b758f1366) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Export PropTypes from react package for consistency
+
+- Updated dependencies []:
+  - @zag-js/core@0.18.0
+  - @zag-js/store@0.18.0
+  - @zag-js/types@0.18.0
+
 ## 0.17.0
 
 ### Patch Changes

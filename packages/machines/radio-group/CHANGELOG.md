@@ -1,5 +1,22 @@
 # @zag-js/radio-group
 
+## 0.18.0
+
+### Patch Changes
+
+- [`e22ef3bc`](https://github.com/chakra-ui/zag/commit/e22ef3bc424da65909fef9003af918b97dc97963) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove unsupported `readOnly` property from types
+
+- Updated dependencies [[`224cbbb0`](https://github.com/chakra-ui/zag/commit/224cbbb02eef713d81acbee627dd9a0ed745c7fa)]:
+  - @zag-js/utils@0.18.0
+  - @zag-js/core@0.18.0
+  - @zag-js/anatomy@0.18.0
+  - @zag-js/types@0.18.0
+  - @zag-js/dom-query@0.18.0
+  - @zag-js/element-rect@0.18.0
+  - @zag-js/form-utils@0.18.0
+  - @zag-js/visually-hidden@0.18.0
+
 ## 0.17.0
 
 ### Minor Changes

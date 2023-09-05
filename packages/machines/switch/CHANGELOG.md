@@ -1,5 +1,23 @@
 # @zag-js/switch
 
+## 0.18.0
+
+### Minor Changes
+
+- [`3898e76c`](https://github.com/chakra-ui/zag/commit/3898e76cdcb105c25d5bf0c681680ec79e3cf757) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Remove input from anatomy
+
+### Patch Changes
+
+- Updated dependencies [[`224cbbb0`](https://github.com/chakra-ui/zag/commit/224cbbb02eef713d81acbee627dd9a0ed745c7fa)]:
+  - @zag-js/utils@0.18.0
+  - @zag-js/core@0.18.0
+  - @zag-js/anatomy@0.18.0
+  - @zag-js/types@0.18.0
+  - @zag-js/dom-query@0.18.0
+  - @zag-js/form-utils@0.18.0
+  - @zag-js/visually-hidden@0.18.0
+
 ## 0.17.0
 
 ### Minor Changes

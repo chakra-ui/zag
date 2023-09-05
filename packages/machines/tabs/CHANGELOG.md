@@ -1,5 +1,25 @@
 # @zag-js/tabs
 
+## 0.18.0
+
+### Minor Changes
+
+- [`8be96a5e`](https://github.com/chakra-ui/zag/commit/8be96a5e943c6caa9a71b2d7c076f16a5adceb2a) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - - Optimize `onFocus` and `onChange` type declaration.
+  - Remove `onDelete` from type defintion.
+
+### Patch Changes
+
+- Updated dependencies [[`224cbbb0`](https://github.com/chakra-ui/zag/commit/224cbbb02eef713d81acbee627dd9a0ed745c7fa)]:
+  - @zag-js/utils@0.18.0
+  - @zag-js/core@0.18.0
+  - @zag-js/anatomy@0.18.0
+  - @zag-js/types@0.18.0
+  - @zag-js/dom-event@0.18.0
+  - @zag-js/dom-query@0.18.0
+  - @zag-js/element-rect@0.18.0
+  - @zag-js/tabbable@0.18.0
+
 ## 0.17.0
 
 ### Minor Changes
