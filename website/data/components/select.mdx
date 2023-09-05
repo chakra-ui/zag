@@ -84,7 +84,7 @@ machine's context.
 > The `value` property must be an array of strings. If selecting a single value,
 > pass an array with a single string.
 
-```jsx {13}
+```jsx {14}
 const collection = select.collection({
   items: [
     { label: "Nigeria", value: "ng" },
@@ -97,6 +97,7 @@ const collection = select.collection({
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
+    collection,
     value: ["ng"],
   }),
 )
@@ -107,10 +108,11 @@ const [state, send] = useMachine(
 To allow selecting multiple values, set the `multiple` property in the machine's
 context to `true`.
 
-```jsx {4}
+```jsx {5}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
+    collection,
     multiple: true,
   }),
 )
@@ -131,10 +133,11 @@ Use the `selectOnBlur` property to allow selecting the highlighted option when
 immediately interacting or focusing outside the select (e.g. using the `Tab`
 key).
 
-```jsx {4}
+```jsx {5}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
+    collection,
     selectOnBlur: true,
   }),
 )
@@ -145,10 +148,11 @@ const [state, send] = useMachine(
 To disable the select, set the `disabled` property in the machine's context to
 `true`.
 
-```jsx {4}
+```jsx {5}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
+    collection,
     disabled: true,
   }),
 )
@@ -159,16 +163,18 @@ const [state, send] = useMachine(
 To make a combobox option disabled, pass the `isItemDisabled` property to the
 collection function.
 
-```jsx
+```jsx {3-5}
+const collection = select.collection({
+  items: countries,
+  isItemDisabled(item) {
+    return item.disabled
+  },
+})
+
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
-    collection: select.collection({
-      items: countries,
-      isItemDisabled(item) {
-        return item.disabled
-      },
-    }),
+    collection,
   }),
 )
 ```
@@ -180,10 +186,11 @@ This behaviour ensures that the menu is closed when an item is selected and is
 pointer, space key or enter key. To disable the behaviour, set the
 `closeOnSelect` property in the machine's context to `false`.
 
-```jsx {4}
+```jsx {5}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
+    collection,
     closeOnSelect: false,
   }),
 )
@@ -195,10 +202,11 @@ When navigating with the select using the arrow down and up keys, the select
 stops at the first and last options. If you need want the navigation to loop
 back to the first or last option, set the `loop: true` in the machine's context.
 
-```jsx {4}
+```jsx {5}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
+    collection,
     loop: true,
   }),
 )
@@ -226,10 +234,11 @@ const [state, send] = useMachine(
 When an item is selected, use the `onChange` property to listen for the change
 and do something with it.
 
-```jsx {4-7}
+```jsx {5-7}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
+    collection,
     onChange(details) {
       // details => { value: string[], items: Item[] }
       console.log(details)
@@ -244,10 +253,11 @@ When the select is opened or closed, the `onOpen` and `onClose` properties in
 the machine's context are called. You can listen for these events and do
 something with it.
 
-```jsx {4-9}
+```jsx {5-9}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
+    collection,
     onOpen() {
       console.log("Select opened")
     },
