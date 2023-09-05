@@ -372,43 +372,79 @@
       },
       "isOpen": {
         "type": "boolean",
-        "description": "Whether the combobox content or listbox is open"
+        "description": "Whether the combobox is open"
       },
       "isInputValueEmpty": {
         "type": "boolean",
-        "description": "Whether the combobox input is empty"
+        "description": "Whether the combobox input value is empty"
       },
       "inputValue": {
         "type": "string",
-        "description": "The current value of the combobox input"
+        "description": "The value of the combobox input"
       },
-      "focusedOption": {
-        "type": "OptionData",
-        "description": "The currently focused option (by pointer or keyboard)"
-      },
-      "selectedValue": {
+      "highlightedValue": {
         "type": "string",
-        "description": "The currently selected option value"
+        "description": "The value of the highlighted item"
+      },
+      "highlightedItem": {
+        "type": "CollectionItem",
+        "description": "The highlighted item"
+      },
+      "highlightValue": {
+        "type": "(value: string) => void",
+        "description": "The value of the combobox input"
+      },
+      "selectedItems": {
+        "type": "CollectionItem[]",
+        "description": "The selected items"
+      },
+      "hasSelectedItems": {
+        "type": "boolean",
+        "description": "Whether there's a selected item"
+      },
+      "value": {
+        "type": "string[]",
+        "description": "The selected item keys"
+      },
+      "valueAsString": {
+        "type": "string",
+        "description": "The string representation of the selected items"
+      },
+      "selectValue": {
+        "type": "(value: string) => void",
+        "description": "Function to select a value"
       },
       "setValue": {
-        "type": "(value: string | OptionData) => void",
-        "description": "Function to set the combobox value"
-      },
-      "setInputValue": {
-        "type": "(value: string) => void",
-        "description": "Function to set the combobox input value"
+        "type": "(value: string[]) => void",
+        "description": "Function to set the value of the combobox"
       },
       "clearValue": {
-        "type": "() => void",
-        "description": "Function to clear the combobox input value and selected value"
+        "type": "(value?: string) => void",
+        "description": "Function to clear the value of the combobox"
       },
       "focus": {
         "type": "() => void",
-        "description": "Function to focus the combobox input"
+        "description": "Function to focus on the combobox input"
       },
-      "getOptionState": {
-        "type": "(props: OptionProps) => { isDisabled: boolean; isHighlighted: boolean; isChecked: boolean; }",
-        "description": "Returns the state of an option"
+      "setInputValue": {
+        "type": "(value: string) => void",
+        "description": "Function to set the input value of the combobox"
+      },
+      "getItemState": {
+        "type": "(props: ItemState",
+        "description": "Returns the state of a combobox item"
+      },
+      "open": {
+        "type": "() => void",
+        "description": "Function to open the combobox"
+      },
+      "close": {
+        "type": "() => void",
+        "description": "Function to close the combobox"
+      },
+      "setCollection": {
+        "type": "(collection: Collection<any>) => void",
+        "description": "Function to set the collection of items"
       }
     },
     "context": {
@@ -426,16 +462,12 @@
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
       "ids": {
-        "type": "Partial<{ root: string; label: string; control: string; input: string; content: string; trigger: string; clearTrigger: string; option(id: string, index?: number): string; positioner: string; optionGroup(id: string | number): string; optionGroupLabel(id: string | number): string; }>",
+        "type": "Partial<{ root: string; label: string; control: string; input: string; content: string; trigger: string; clearTrigger: string; item(id: string, index?: number): string; positioner: string; itemGroup(id: string | number): string; itemGroupLabel(id: string | number): string; }>",
         "description": "The ids of the elements in the combobox. Useful for composition."
       },
       "inputValue": {
         "type": "string",
         "description": "The current value of the combobox's input"
-      },
-      "selectionData": {
-        "type": "OptionData",
-        "description": "The selected option's value"
       },
       "name": {
         "type": "string",
@@ -461,29 +493,29 @@
         "type": "string",
         "description": "The placeholder text of the combobox's input"
       },
+      "highlightedValue": {
+        "type": "string",
+        "description": "The active item's id. Used to set the `aria-activedescendant` attribute"
+      },
+      "value": {
+        "type": "string[]",
+        "description": "The keys of the selected items"
+      },
       "inputBehavior": {
         "type": "\"autohighlight\" | \"autocomplete\" | \"none\"",
-        "description": "Defines the auto-completion behavior of the combobox.\n\n- `autohighlight`: The first focused option is highlighted as the user types\n- `autocomplete`: Navigating the listbox with the arrow keys selects the option and the input is updated"
-      },
-      "blurOnSelect": {
-        "type": "boolean",
-        "description": "Whether to blur the input on select"
+        "description": "Defines the auto-completion behavior of the combobox.\n\n- `autohighlight`: The first focused item is highlighted as the user types\n- `autocomplete`: Navigating the listbox with the arrow keys selects the item and the input is updated"
       },
       "selectionBehavior": {
-        "type": "\"clear\" | \"set\"",
-        "description": "The behavior of the combobox when an option is selected"
+        "type": "\"clear\" | \"replace\" | \"preserve\"",
+        "description": "The behavior of the combobox input when an item is selected\n\n- `replace`: The selected item string is set as the input value\n- `clear`: The input value is cleared\n- `preserve`: The input value is preserved"
       },
-      "selectOnTab": {
+      "selectOnBlur": {
         "type": "boolean",
-        "description": "Whether to select the focused option when the `Tab` key is pressed"
+        "description": "Whether to select the higlighted item on interaction outside the combobox"
       },
       "autoFocus": {
         "type": "boolean",
         "description": "Whether to autofocus the input on mount"
-      },
-      "focusOnClear": {
-        "type": "boolean",
-        "description": "Whether to return focus to the input on click the clear button"
       },
       "openOnClick": {
         "type": "boolean",
@@ -493,45 +525,61 @@
         "type": "boolean",
         "description": "Whether to allow custom values or free values in the input"
       },
-      "ariaHidden": {
-        "type": "boolean",
-        "description": "Whether to hide all elements besides the combobox parts. Useful for accessibility"
-      },
-      "isCustomValue": {
-        "type": "(details: { inputValue: string; previousValue: string; }) => boolean",
-        "description": "Function called to validate the input value"
-      },
       "loop": {
         "type": "boolean",
-        "description": "Whether to loop the keyboard navigation through the options"
+        "description": "Whether to loop the keyboard navigation through the items"
       },
       "positioning": {
         "type": "PositioningOptions",
-        "description": "The options used to dynamically position the menu"
+        "description": "The positioning options to dynamically position the menu"
       },
       "onInputChange": {
         "type": "(details: { value: string; }) => void",
         "description": "Function called when the input's value changes"
       },
-      "onSelect": {
-        "type": "(details: Partial<OptionData> & { relatedTarget: HTMLElement; }) => void",
-        "description": "Function called when a new option is selected"
+      "onChange": {
+        "type": "(details: { value: string[]; items: CollectionItem[]; }) => void",
+        "description": "Function called when a new item is selected"
       },
       "onHighlight": {
-        "type": "(details: Partial<OptionData> & { relatedTarget: HTMLElement; }) => void",
-        "description": "Function called when an options is highlighted using the pointer\nor keyboard navigation."
+        "type": "(details: { value: string; item: CollectionItem; }) => void",
+        "description": "Function called when an item is highlighted using the pointer\nor keyboard navigation."
       },
       "onOpen": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function called when the popup is opened"
       },
       "onClose": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function called when the popup is closed"
       },
       "translations": {
         "type": "IntlTranslations",
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
+      },
+      "onPointerDownOutside": {
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "description": "Function called when the pointer is pressed down outside the combobox"
+      },
+      "onFocusOutside": {
+        "type": "(event: FocusOutsideEvent) => void",
+        "description": "Function called when the focus is moved outside the combobox"
+      },
+      "onInteractOutside": {
+        "type": "(event: InteractOutsideEvent) => void",
+        "description": "Function called when an interaction happens outside the combobox"
+      },
+      "collection": {
+        "type": "Collection<any>",
+        "description": "The collection of items"
+      },
+      "multiple": {
+        "type": "boolean",
+        "description": "Whether to allow multiple selection"
+      },
+      "closeOnSelect": {
+        "type": "boolean",
+        "description": "Whether to close the combobox when an item is selected."
       }
     }
   },
@@ -1904,10 +1952,6 @@
         "type": "boolean",
         "description": "If `true`, the radio group will be disabled"
       },
-      "readOnly": {
-        "type": "boolean",
-        "description": "If `true`, the radio group will be readonly"
-      },
       "onChange": {
         "type": "(details: { value: string; }) => void",
         "description": "Function called once a radio is checked"
@@ -2074,6 +2118,10 @@
       "thumbAlignment": {
         "type": "\"contain\" | \"center\"",
         "description": "The alignment of the slider thumb relative to the track\n- `center`: the thumb will extend beyond the bounds of the slider track.\n- `contain`: the thumb will be contained within the bounds of the track."
+      },
+      "thumbSize": {
+        "type": "{ width: number; height: number; }",
+        "description": "The slider thumbs dimensions"
       }
     }
   },
@@ -2178,45 +2226,73 @@
   },
   "select": {
     "api": {
+      "isFocused": {
+        "type": "boolean",
+        "description": "Whether the select is focused"
+      },
       "isOpen": {
         "type": "boolean",
         "description": "Whether the select is open"
       },
-      "highlightedOption": {
-        "type": "Option",
-        "description": "The currently highlighted option"
+      "highlightedValue": {
+        "type": "string",
+        "description": "The value of the highlighted item"
       },
-      "selectedOption": {
-        "type": "Option",
-        "description": "The currently selected option"
+      "highlightedItem": {
+        "type": "CollectionItem",
+        "description": "The highlighted item"
+      },
+      "highlightValue": {
+        "type": "(value: string) => void",
+        "description": "The value of the combobox input"
+      },
+      "selectedItems": {
+        "type": "CollectionItem[]",
+        "description": "The selected items"
+      },
+      "hasSelectedItems": {
+        "type": "boolean",
+        "description": "Whether there's a selected option"
+      },
+      "value": {
+        "type": "string[]",
+        "description": "The selected item keys"
+      },
+      "valueAsString": {
+        "type": "string",
+        "description": "The string representation of the selected items"
+      },
+      "selectValue": {
+        "type": "(value: string) => void",
+        "description": "Function to select a value"
+      },
+      "setValue": {
+        "type": "(value: string[]) => void",
+        "description": "Function to set the value of the combobox"
+      },
+      "clearValue": {
+        "type": "(value?: string) => void",
+        "description": "Function to clear the value of the combobox"
       },
       "focus": {
         "type": "() => void",
-        "description": "Function to focus the select"
+        "description": "Function to focus on the combobox input"
+      },
+      "getItemState": {
+        "type": "(props: ItemState",
+        "description": "Returns the state of a combobox item"
       },
       "open": {
         "type": "() => void",
-        "description": "Function to open the select"
+        "description": "Function to open the combobox"
       },
       "close": {
         "type": "() => void",
-        "description": "Function to close the select"
+        "description": "Function to close the combobox"
       },
-      "setSelectedOption": {
-        "type": "(value: Option) => void",
-        "description": "Function to set the selected option"
-      },
-      "setHighlightedOption": {
-        "type": "(value: Option) => void",
-        "description": "Function to set the highlighted option"
-      },
-      "clearSelectedOption": {
-        "type": "() => void",
-        "description": "Function to clear the selected option"
-      },
-      "getOptionState": {
-        "type": "(props: OptionProps) => { isDisabled: boolean; isHighlighted: boolean; isChecked: boolean; }",
-        "description": "Returns the state details of an option"
+      "setCollection": {
+        "type": "(collection: Collection<any>) => void",
+        "description": "Function to set the collection of items"
       }
     },
     "context": {
@@ -2233,9 +2309,13 @@
         "type": "() => ShadowRoot | Node | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
+      "collection": {
+        "type": "Collection<any>",
+        "description": "The item collection"
+      },
       "ids": {
-        "type": "Partial<{ content: string; trigger: string; label: string; option(id: string | number): string; hiddenSelect: string; positioner: string; optionGroup(id: string | number): string; optionGroupLabel(id: string | number): string; }>",
-        "description": "The ids of the elements in the accordion. Useful for composition."
+        "type": "Partial<{ content: string; trigger: string; clearTrigger: string; label: string; hiddenSelect: string; positioner: string; item(id: string | number): string; itemGroup(id: string | number): string; itemGroupLabel(id: string | number): string; }>",
+        "description": "The ids of the elements in the select. Useful for composition."
       },
       "name": {
         "type": "string",
@@ -2259,43 +2339,51 @@
       },
       "closeOnSelect": {
         "type": "boolean",
-        "description": "Whether the select should close after an option is selected"
+        "description": "Whether the select should close after an item is selected"
       },
-      "selectOnTab": {
+      "selectOnBlur": {
         "type": "boolean",
-        "description": "Whether to select the highlighted option when the user presses Tab,\nand the menu is open."
+        "description": "Whether to select the highlighted item when the user presses Tab,\nand the menu is open."
       },
       "onHighlight": {
-        "type": "(details: Option) => void",
-        "description": "The callback fired when the highlighted option changes."
+        "type": "(details: HighlightChangeDetails) => void",
+        "description": "The callback fired when the highlighted item changes."
       },
       "onChange": {
-        "type": "(details: Option) => void",
-        "description": "The callback fired when the selected option changes."
+        "type": "(details: ValueChangeDetails) => void",
+        "description": "The callback fired when the selected item changes."
       },
       "onOpen": {
-        "type": "() => void",
-        "description": "The callback fired when the menu is opened."
+        "type": "VoidFunction",
+        "description": "Function called when the popup is opened"
       },
       "onClose": {
-        "type": "() => void",
-        "description": "The callback fired when the menu is closed."
+        "type": "VoidFunction",
+        "description": "Function called when the popup is closed"
       },
       "positioning": {
         "type": "PositioningOptions",
         "description": "The positioning options of the menu."
       },
-      "selectedOption": {
-        "type": "Option",
-        "description": "The selected option"
+      "value": {
+        "type": "string[]",
+        "description": "The keys of the selected items"
       },
-      "highlightedOption": {
-        "type": "Option",
-        "description": "The highlighted option"
+      "highlightedValue": {
+        "type": "string",
+        "description": "The key of the highlighted item"
       },
       "loop": {
         "type": "boolean",
         "description": "Whether to loop the keyboard navigation through the options"
+      },
+      "multiple": {
+        "type": "boolean",
+        "description": "Whether to allow multiple selection"
+      },
+      "open": {
+        "type": "boolean",
+        "description": "Whether the select menu is open"
       }
     }
   },
@@ -2435,6 +2523,10 @@
       "thumbAlignment": {
         "type": "\"center\" | \"contain\"",
         "description": "The alignment of the slider thumb relative to the track\n- `center`: the thumb will extend beyond the bounds of the slider track.\n- `contain`: the thumb will be contained within the bounds of the track."
+      },
+      "thumbSize": {
+        "type": "{ width: number; height: number; }",
+        "description": "The slider thumb dimensions.If not provided, the thumb size will be measured automatically."
       }
     }
   },
