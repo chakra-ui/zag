@@ -1,7 +1,6 @@
 import { choose, createMachine, guards } from "@zag-js/core"
 import { addDomEvent, requestPointerLock } from "@zag-js/dom-event"
 import { isSafari, raf } from "@zag-js/dom-query"
-import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { observeAttributes } from "@zag-js/mutation-observer"
 import { isAtMax, isAtMin, isWithinRange, valueOf } from "@zag-js/number-utils"
 import { callAll, compact } from "@zag-js/utils"
@@ -386,12 +385,7 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   onChange: (ctx: MachineContext) => {
-    // invoke callback
     ctx.onChange?.({ value: ctx.value, valueAsNumber: ctx.valueAsNumber })
-
-    // form event
-    const inputEl = dom.getInputEl(ctx)
-    dispatchInputValueEvent(inputEl, { value: ctx.formattedValue })
   },
 }
 

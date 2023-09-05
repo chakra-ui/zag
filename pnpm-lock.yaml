@@ -1785,9 +1785,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/mutation-observer':
         specifier: workspace:*
         version: link:../../utilities/mutation-observer
