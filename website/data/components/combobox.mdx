@@ -75,6 +75,72 @@ combobox machine in your project 🔥
 
 <CodeSnippet id="combobox/usage.mdx" />
 
+## Setting the initial value
+
+To set the initial value of the combobox, pass the `value` property to the
+machine's context.
+
+> The `value` property must be an array of strings. If selecting a single value,
+> pass an array with a single string.
+
+```jsx {14}
+const collection = combobox.collection({
+  items: [
+    { label: "Nigeria", value: "ng" },
+    { label: "Ghana", value: "gh" },
+    { label: "Kenya", value: "ke" },
+    //...
+  ],
+})
+
+const [state, send] = useMachine(
+  combobox.machine({
+    id: useId(),
+    collection,
+    value: ["ng"],
+  }),
+)
+```
+
+## Selecting multiple values
+
+To allow selecting multiple values, set the `multiple` property in the machine's
+context to `true`.
+
+```jsx {5}
+const [state, send] = useMachine(
+  combobox.machine({
+    id: useId(),
+    collection,
+    multiple: true,
+  }),
+)
+```
+
+## Rendering the selected values outside the combobox
+
+By default, the selected values of a combobox is displayed in the input element,
+when selecting multiple items, it is a better UX to render the selected value
+outside the combobox.
+
+To achieve this you need to:
+
+- Set the `selectionBehavior` to `clear`, which clears the input value when an
+  item is selected.
+- Set the `multiple` property to `true` to allow selecting multiple values.
+- Render the selected values outside the combobox.
+
+```jsx {5-7}
+const [state, send] = useMachine(
+  combobox.machine({
+    id: useId(),
+    collection,
+    selectionBehavior: "clear",
+    multiple: true,
+  }),
+)
+```
+
 ## Disabling the combobox
 
 To make a combobox disabled, set the context's `disabled` property to `true`
@@ -182,6 +248,20 @@ To get this feature working you need to pass a `name` option to the context.
 const [state, send] = useMachine(
   combobox.machine({
     name: "countries",
+  }),
+)
+```
+
+## Allowing custom values
+
+By default, the combobox only allows selecting values from the collection. To
+allow custom values, set the `allowCustomValue` property in the machine's
+context to `true`.
+
+```jsx {3}
+const [state, send] = useMachine(
+  combobox.machine({
+    allowCustomValue: true,
   }),
 )
 ```
