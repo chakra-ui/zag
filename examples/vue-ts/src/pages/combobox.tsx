@@ -69,8 +69,8 @@ export default defineComponent({
               <div {...api.positionerProps}>
                 {options.value.length > 0 && (
                   <ul data-testid="combobox-content" {...api.contentProps}>
-                    {options.value.map((item, index) => (
-                      <li key={`${item.code}:${index}`} {...api.getItemProps({ item })}>
+                    {options.value.map((item) => (
+                      <li key={item.code} {...api.getItemProps({ item })}>
                         {item.label}
                       </li>
                     ))}

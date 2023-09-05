@@ -309,7 +309,7 @@ export function machine(userContext: UserDefinedContext) {
           const contentEl = () => dom.getContentEl(ctx)
           return trackDismissableElement(contentEl, {
             defer: true,
-            exclude: [dom.getTriggerEl(ctx)],
+            exclude: [dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
             onFocusOutside: ctx.onFocusOutside,
             onPointerDownOutside: ctx.onPointerDownOutside,
             onInteractOutside(event) {

@@ -1,4 +1,4 @@
-import { createScope, isHTMLElement } from "@zag-js/dom-query"
+import { createScope } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./select.types"
 
 export const dom = createScope({
@@ -16,12 +16,10 @@ export const dom = createScope({
   getHiddenSelectEl: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenSelectId(ctx)),
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
+  getClearTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getClearTriggerId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getHighlightedOptionEl(ctx: Ctx) {
     if (!ctx.highlightedValue) return null
     return dom.getById(ctx, dom.getItemId(ctx, ctx.highlightedValue))
-  },
-  getClosestOptionEl(target: EventTarget | HTMLElement | null) {
-    return isHTMLElement(target) ? target.closest<HTMLElement>("[role=option]") : null
   },
 })

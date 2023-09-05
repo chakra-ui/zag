@@ -410,7 +410,7 @@ export function machine(userContext: UserDefinedContext) {
         trackInteractOutside(ctx, _evt, { send }) {
           return trackInteractOutside(dom.getInputEl(ctx), {
             exclude(target) {
-              const ignore = [dom.getContentEl(ctx), dom.getTriggerEl(ctx)]
+              const ignore = [dom.getContentEl(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)]
               return ignore.some((el) => contains(el, target))
             },
             onFocusOutside: ctx.onFocusOutside,

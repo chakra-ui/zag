@@ -56,7 +56,7 @@ const api = computed(() => combobox.connect(state.value, send, normalizeProps))
 
       <div v-bind="api.positionerProps">
         <ul v-if="options.length > 0" data-testid="combobox-content" v-bind="api.contentProps">
-          <li v-for="(item, index) in options" :key="`${item.code}:${index}`" v-bind="api.getItemProps({ item })">
+          <li v-for="item in options" :key="item.code" v-bind="api.getItemProps({ item })">
             {{ item.label }}
           </li>
         </ul>

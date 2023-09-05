@@ -333,7 +333,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.itemGroupLabel.attrs,
         dir: state.context.dir,
-        id: dom.getItemGroupId(state.context, htmlFor),
+        id: dom.getItemGroupLabelId(state.context, htmlFor),
         role: "group",
       })
     },
