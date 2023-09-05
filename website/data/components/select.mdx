@@ -14,11 +14,11 @@ A Select component allows users pick a value from predefined options.
 
 **Features**
 
-- Support for selecting a single option
+- Support for selecting a single or multiple option
 - Keyboard support for opening the listbox using the arrow keys, including
   automatically focusing the first or last item.
 - Support for looping keyboard navigation.
-- Support for selecting an option with tab key.
+- Support for selecting an item on blur.
 - Typeahead to allow selecting options by typing text, even without opening the
   listbox
 - Support for Right to Left direction.
@@ -114,7 +114,7 @@ const [state, send] = useMachine(
 )
 ```
 
-## Disabling an option
+## Disabling an item
 
 To make a combobox option disabled, pass the `isItemDisabled` property to the
 collection function.
@@ -135,8 +135,8 @@ const [state, send] = useMachine(
 
 ## Close on select
 
-This behaviour ensures that the menu is closed when an option is selected and is
-`true` by default. It's only concerned with when an option is selected with
+This behaviour ensures that the menu is closed when an item is selected and is
+`true` by default. It's only concerned with when an item is selected with
 pointer, space key or enter key. To disable the behaviour, set the
 `closeOnSelect` property in the machine's context to `false`.
 
@@ -166,16 +166,15 @@ const [state, send] = useMachine(
 
 ## Listening for highlight changes
 
-When an option is highlighted with the pointer or keyboard, the
-`highlightedOption` property in the machine's context is updated. You can listen
-for this change and do something with it.
+When an item is highlighted with the pointer or keyboard, use the `onHighlight`
+to listen for the change and do something with it.
 
 ```jsx {4-7}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
     onHighlight(details) {
-      // details => { label: string, value: string }
+      // details => { value: string | null, item: Item | null }
       console.log(details)
     },
   }),
@@ -184,15 +183,15 @@ const [state, send] = useMachine(
 
 ## Listening for selection changes
 
-When an option is selected, the `selectedOption` property in the machine's
-context is updated. You can listen for this change and do something with it.
+When an item is selected, use the `onChange` property to listen for the change
+and do something with it.
 
 ```jsx {4-7}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
-    onSelect(details) {
-      // details => { label: string, value: string }
+    onChange(details) {
+      // details => { value: string[], items: Item[] }
       console.log(details)
     },
   }),
@@ -250,7 +249,7 @@ attribute.
 
 ### Selected state
 
-When an option is selected, it is given a `data-selected` attribute.
+When an item is selected, it is given a `data-selected` attribute.
 
 ```css
 [data-part="item"][data-selected] {
@@ -260,7 +259,7 @@ When an option is selected, it is given a `data-selected` attribute.
 
 ### Highlighted state
 
-When an option is higlighted, via keyboard navigation or pointer, it is given a
+When an item is higlighted, via keyboard navigation or pointer, it is given a
 `data-highlighted` attribute.
 
 ```css
@@ -303,8 +302,7 @@ attribute.
 }
 ```
 
-> Optionally, when an option is disabled, it is given a `data-disabled`
-> attribute.
+> Optionally, when an item is disabled, it is given a `data-disabled` attribute.
 
 ### Empty state
 
