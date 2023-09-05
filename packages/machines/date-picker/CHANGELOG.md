@@ -1,5 +1,30 @@
 # @zag-js/date-picker
 
+## 0.18.0
+
+### Patch Changes
+
+- [`d65e8fc1`](https://github.com/chakra-ui/zag/commit/d65e8fc1a78cfc3ccee709055ee7f9c1fc28dacb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where datepicker value `onChange` returned a proxy array
+
+- [`5c6431db`](https://github.com/chakra-ui/zag/commit/5c6431db3bbf8f9200e62f75b0ceaf74348131cf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where clearing the date picker value prevent selecting a
+  new date when `inline: true` is set
+
+- Updated dependencies [[`224cbbb0`](https://github.com/chakra-ui/zag/commit/224cbbb02eef713d81acbee627dd9a0ed745c7fa)]:
+  - @zag-js/utils@0.18.0
+  - @zag-js/core@0.18.0
+  - @zag-js/dismissable@0.18.0
+  - @zag-js/popper@0.18.0
+  - @zag-js/anatomy@0.18.0
+  - @zag-js/types@0.18.0
+  - @zag-js/date-utils@0.18.0
+  - @zag-js/dom-event@0.18.0
+  - @zag-js/dom-query@0.18.0
+  - @zag-js/form-utils@0.18.0
+  - @zag-js/live-region@0.18.0
+  - @zag-js/text-selection@0.18.0
+
 ## 0.17.0
 
 ### Minor Changes

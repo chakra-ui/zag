@@ -1,5 +1,58 @@
 # @zag-js/combobox
 
+## 0.18.0
+
+### Minor Changes
+
+- [#826](https://github.com/chakra-ui/zag/pull/826)
+  [`224cbbb0`](https://github.com/chakra-ui/zag/commit/224cbbb02eef713d81acbee627dd9a0ed745c7fa) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - > Breaking Changes 💥
+
+  Redesign select and combobox API to allow passing value as `string` and `collection`
+
+  Prior to this change, Zag computes the label and value from the DOM element. While this worked, it makes it
+  challenging to manage complex objects that don't match the `label` and `value` convention.
+
+  ```jsx
+  // Create the collection
+  const collection = select.collection({
+    items: [],
+    itemToString(item) {
+      return item.label
+    },
+    itemToValue(item) {
+      return item.value
+    },
+  })
+
+  // Pass the collection to the select machine
+  const [state, send] = useMachine(
+    select.machine({
+      collection,
+      id: useId(),
+    }),
+  )
+  ```
+
+### Patch Changes
+
+- [#833](https://github.com/chakra-ui/zag/pull/833)
+  [`579d4a06`](https://github.com/chakra-ui/zag/commit/579d4a0666b1f1b2aebde6639e6912f2b1b1eccc) Thanks
+  [@srflp](https://github.com/srflp)! - Add support for `closeOnSelect`
+
+- Updated dependencies [[`224cbbb0`](https://github.com/chakra-ui/zag/commit/224cbbb02eef713d81acbee627dd9a0ed745c7fa)]:
+  - @zag-js/utils@0.18.0
+  - @zag-js/core@0.18.0
+  - @zag-js/interact-outside@0.18.0
+  - @zag-js/popper@0.18.0
+  - @zag-js/anatomy@0.18.0
+  - @zag-js/types@0.18.0
+  - @zag-js/aria-hidden@0.18.0
+  - @zag-js/collection@0.18.0
+  - @zag-js/dom-event@0.18.0
+  - @zag-js/dom-query@0.18.0
+  - @zag-js/mutation-observer@0.18.0
+
 ## 0.17.0
 
 ### Minor Changes

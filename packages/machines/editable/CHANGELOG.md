@@ -1,5 +1,24 @@
 # @zag-js/editable
 
+## 0.18.0
+
+### Minor Changes
+
+- [`c54f5966`](https://github.com/chakra-ui/zag/commit/c54f59669f185480d7adda761eb4f9986ab51636) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Rename `MachineApi` to `Api`
+
+### Patch Changes
+
+- Updated dependencies [[`224cbbb0`](https://github.com/chakra-ui/zag/commit/224cbbb02eef713d81acbee627dd9a0ed745c7fa)]:
+  - @zag-js/utils@0.18.0
+  - @zag-js/core@0.18.0
+  - @zag-js/interact-outside@0.18.0
+  - @zag-js/anatomy@0.18.0
+  - @zag-js/types@0.18.0
+  - @zag-js/dom-event@0.18.0
+  - @zag-js/dom-query@0.18.0
+  - @zag-js/form-utils@0.18.0
+
 ## 0.17.0
 
 ### Minor Changes

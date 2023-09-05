@@ -1,5 +1,24 @@
 # @zag-js/menu
 
+## 0.18.0
+
+### Patch Changes
+
+- [`bdd2b963`](https://github.com/chakra-ui/zag/commit/bdd2b963aa50201d3c4e569fc1ac90a93a65d1a9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `closeOnSelect` on menu item props isn't respected
+  in machine.
+
+- Updated dependencies [[`224cbbb0`](https://github.com/chakra-ui/zag/commit/224cbbb02eef713d81acbee627dd9a0ed745c7fa)]:
+  - @zag-js/utils@0.18.0
+  - @zag-js/core@0.18.0
+  - @zag-js/dismissable@0.18.0
+  - @zag-js/popper@0.18.0
+  - @zag-js/anatomy@0.18.0
+  - @zag-js/types@0.18.0
+  - @zag-js/dom-event@0.18.0
+  - @zag-js/dom-query@0.18.0
+  - @zag-js/rect-utils@0.18.0
+
 ## 0.17.0
 
 ### Minor Changes
