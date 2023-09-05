@@ -1,39 +1,33 @@
 ```html
 <script setup>
-import * as select from "@zag-js/select"
-import { normalizeProps, useMachine } from "@zag-js/vue"
-import { Teleport } from "vue"
+  import * as select from "@zag-js/select"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { Teleport } from "vue"
 
-const selectData = [
-  { label: "Nigeria", value: "NG" },
-  { label: "Japan", value: "JP" },
-  { label: "Korea", value: "KO" },
-  { label: "Kenya", value: "KE" },
-  { label: "United Kingdom", value: "UK" },
-  { label: "Ghana", value: "GH" },
-  { label: "Uganda", value: "UG" },
-]
-const [state, send] = useMachine(
-  select.machine({
-    id: "1",
-    name: "country",
-  }),
-)
+  const selectData = [
+    { label: "Nigeria", value: "NG" },
+    { label: "Japan", value: "JP" },
+    //...
+  ]
 
-const api = computed(() =>
-  select.connect(state.value, send, normalizeProps),
-)
+  const [state, send] = useMachine(
+    select.machine({
+      id: "1",
+      collection: select.collection({
+        items: selectData,
+      }),
+      name: "country",
+    }),
+  )
+
+  const api = computed(() => select.connect(state.value, send, normalizeProps))
 </script>
 <template>
-  <div>
+  <form>
     <!-- Hidden select  -->
     <select v-bind="api.hiddenSelectProps">
-      <option
-        v-for="option in selectData"
-        :key="option.value"
-        :value="option.value"
-      >
-        {{option.label}}
+      <option v-for="item in selectData" :key="item.value" :value="item.value">
+        {{ item.label }}
       </option>
     </select>
 
@@ -41,8 +35,8 @@ const api = computed(() =>
     <div class="control">
       <label v-bind="api.labelProps">Label</label>
       <button type="button" v-bind="api.triggerProps">
-        <span>{{api.selectedOption?.label ?? "Select option"}}</span>
-        <CaretIcon />
+        <span>{{ api.valueAsString || "Select option" }}</span>
+        <span>▼</span>
       </button>
     </div>
 
@@ -50,16 +44,16 @@ const api = computed(() =>
       <div v-bind="api.positionerProps">
         <ul v-bind="api.contentProps">
           <li
-            v-for="{label, value} in selectData"
-            :key="value"
-            v-bind="api.getOptionProps({ label, value })"
+            v-for="item in selectData"
+            :key="item.value"
+            v-bind="api.getItemProps({ item })"
           >
-            <span>{{label}}</span>
-            {{value === api.selectedOption?.value && "✓"}}
+            <span>{{ label }}</span>
+            <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
           </li>
         </ul>
       </div>
     </Teleport>
-  </div>
+  </form>
 </template>
 ```

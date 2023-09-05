@@ -62,9 +62,16 @@ const CaretIcon = () => (
 export function Combobox(props: ComboboxProps) {
   const [options, setOptions] = useState(comboboxData)
 
+  const collection = combobox.collection({
+    items: options,
+    itemToValue: (item) => item.code,
+    itemToString: (item) => item.label,
+  })
+
   const [state, send] = useMachine(
     combobox.machine({
       id: useId(),
+      collection,
       onOpen() {
         setOptions(comboboxData)
       },
@@ -76,7 +83,7 @@ export function Combobox(props: ComboboxProps) {
       },
       placeholder: "Type or select country",
     }),
-    { context: props.controls },
+    { context: { ...props.controls, collection } },
   )
 
   const api = combobox.connect(state, send, normalizeProps)
@@ -150,11 +157,7 @@ export function Combobox(props: ComboboxProps) {
                     cursor: "unset",
                   }}
                   key={`${item.code}:${index}`}
-                  {...api.getOptionProps({
-                    label: item.label,
-                    value: item.code,
-                    index,
-                  })}
+                  {...api.getItemProps({ item })}
                 >
                   {item.label}
                 </chakra.li>

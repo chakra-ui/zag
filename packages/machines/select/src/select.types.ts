@@ -1,3 +1,4 @@
+import type { Collection, CollectionItem, CollectionItem as Item } from "@zag-js/collection"
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
@@ -7,19 +8,34 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
 type ElementIds = Partial<{
   content: string
   trigger: string
+  clearTrigger: string
   label: string
-  option(id: string | number): string
   hiddenSelect: string
   positioner: string
-  optionGroup(id: string | number): string
-  optionGroupLabel(id: string | number): string
+  item(id: string | number): string
+  itemGroup(id: string | number): string
+  itemGroupLabel(id: string | number): string
 }>
+
+export type ValueChangeDetails = {
+  value: string[]
+  items: Item[]
+}
+
+export type HighlightChangeDetails = {
+  value: string | null
+  item: Item | null
+}
 
 type PublicContext = DirectionProperty &
   CommonProperties &
   InteractOutsideHandlers & {
     /**
-     * The ids of the elements in the accordion. Useful for composition.
+     * The item collection
+     */
+    collection: Collection<any>
+    /**
+     * The ids of the elements in the select. Useful for composition.
      */
     ids?: ElementIds
     /**
@@ -43,68 +59,69 @@ type PublicContext = DirectionProperty &
      */
     readOnly?: boolean
     /**
-     * Whether the select should close after an option is selected
+     * Whether the select should close after an item is selected
      */
     closeOnSelect?: boolean
     /**
-     * Whether to select the highlighted option when the user presses Tab,
+     * Whether to select the highlighted item when the user presses Tab,
      * and the menu is open.
      */
-    selectOnTab?: boolean
+    selectOnBlur?: boolean
     /**
-     * The callback fired when the highlighted option changes.
+     * The callback fired when the highlighted item changes.
      */
-    onHighlight?: (details: Option | null) => void
+    onHighlight?: (details: HighlightChangeDetails) => void
     /**
-     * The callback fired when the selected option changes.
+     * The callback fired when the selected item changes.
      */
-    onChange?: (details: Option | null) => void
+    onChange?: (details: ValueChangeDetails) => void
     /**
-     * The callback fired when the menu is opened.
+     * Function called when the popup is opened
      */
-    onOpen?: () => void
+    onOpen?: VoidFunction
     /**
-     * The callback fired when the menu is closed.
+     * Function called when the popup is closed
      */
-    onClose?: () => void
+    onClose?: VoidFunction
     /**
      * The positioning options of the menu.
      */
     positioning: PositioningOptions
     /**
-     * The selected option
+     * The keys of the selected items
      */
-    selectedOption: Option | null
+    value: string[]
     /**
-     * The highlighted option
+     * The key of the highlighted item
      */
-    highlightedOption: Option | null
+    highlightedValue: string | null
     /**
      * Whether to loop the keyboard navigation through the options
      */
     loop?: boolean
+    /**
+     * Whether to allow multiple selection
+     */
+    multiple?: boolean
+    /**
+     * Whether the select menu is open
+     */
+    open?: boolean
   }
 
 type PrivateContext = Context<{
   /**
+   * @internal
    * Internal state of the typeahead
    */
   typeahead: TypeaheadState
   /**
+   * @internal
    * The current placement of the menu
    */
   currentPlacement?: Placement
   /**
-   * The previous highlighted option.
-   * Used to determine if the user has highlighted a new option.
-   */
-  prevHighlightedOption?: Option | null
-  /**
-   * The previous selected option.
-   * Used to determine if the selected option has changed.
-   */
-  prevSelectedOption?: Option | null
-  /**
+   * @internal
    * Whether the fieldset is disabled
    */
   fieldsetDisabled: boolean
@@ -115,7 +132,7 @@ type ComputedContext = Readonly<{
    * @computed
    * Whether there's a selected option
    */
-  hasSelectedOption: boolean
+  hasSelectedItems: boolean
   /**
    * @computed
    * Whether a typeahead is currently active
@@ -131,26 +148,35 @@ type ComputedContext = Readonly<{
    * Whether the select is disabled
    */
   isDisabled: boolean
-  selectedId: string | null
-  highlightedId: string | null
-  hasSelectedChanged: boolean
-  hasHighlightedChanged: boolean
+  /**
+   * The highlighted item
+   */
+  highlightedItem: Item | null
+  /**
+   * @computed
+   * The selected items
+   */
+  selectedItems: Item[]
+  /**
+   * @computed
+   * The display value of the select (based on the selected items)
+   */
+  valueAsString: string
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+export type UserDefinedContext = RequiredBy<PublicContext, "id" | "collection">
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
-export type Option = {
-  label: string
-  value: string
+export type ItemProps = {
+  item: Item
 }
 
-export type OptionProps = {
-  label: string
+export type ItemState = {
   value: string
-  disabled?: boolean
-  valueText?: string
+  isDisabled: boolean
+  isSelected: boolean
+  isHighlighted: boolean
 }
 
 export type MachineState = {
@@ -161,65 +187,92 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type OptionGroupProps = {
+export type ItemGroupProps = {
   id: string
 }
 
-export type OptionGroupLabelProps = {
+export type ItemGroupLabelProps = {
   htmlFor: string
 }
 
 export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
+   * Whether the select is focused
+   */
+  isFocused: boolean
+  /**
    * Whether the select is open
    */
   isOpen: boolean
   /**
-   * The currently highlighted option
+   * The value of the highlighted item
    */
-  highlightedOption: Option | null
+  highlightedValue: string | null
   /**
-   * The currently selected option
+   * The highlighted item
    */
-  selectedOption: Option | null
+  highlightedItem: CollectionItem | null
   /**
-   * Function to focus the select
+   * The value of the combobox input
+   */
+  highlightValue(value: string): void
+  /**
+   * The selected items
+   */
+  selectedItems: CollectionItem[]
+  /**
+   * Whether there's a selected option
+   */
+  hasSelectedItems: boolean
+  /**
+   * The selected item keys
+   */
+  value: string[]
+  /**
+   * The string representation of the selected items
+   */
+  valueAsString: string
+  /**
+   * Function to select a value
+   */
+  selectValue(value: string): void
+  /**
+   * Function to set the value of the combobox
+   */
+  setValue(value: string[]): void
+  /**
+   * Function to clear the value of the combobox
+   */
+  clearValue(value?: string): void
+  /**
+   * Function to focus on the combobox input
    */
   focus(): void
   /**
-   * Function to open the select
+   * Returns the state of a combobox item
+   */
+  getItemState(props: ItemProps): ItemState
+  /**
+   * Function to open the combobox
    */
   open(): void
   /**
-   * Function to close the select
+   * Function to close the combobox
    */
   close(): void
   /**
-   * Function to set the selected option
+   * Function to set the collection of items
    */
-  setSelectedOption(value: Option): void
-  /**
-   * Function to set the highlighted option
-   */
-  setHighlightedOption(value: Option): void
-  /**
-   * Function to clear the selected option
-   */
-  clearSelectedOption(): void
-  /**
-   * Returns the state details of an option
-   */
-  getOptionState: (props: OptionProps) => {
-    isDisabled: boolean
-    isHighlighted: boolean
-    isChecked: boolean
-  }
+  setCollection(collection: Collection<any>): void
+
   labelProps: T["label"]
-  positionerProps: T["element"]
   triggerProps: T["button"]
-  getOptionProps(props: OptionProps): T["element"]
-  getOptionGroupLabelProps(props: OptionGroupLabelProps): T["element"]
-  getOptionGroupProps(props: OptionGroupProps): T["element"]
-  hiddenSelectProps: T["select"]
+  clearTriggerProps: T["button"]
+  positionerProps: T["element"]
   contentProps: T["element"]
+  getItemProps(props: ItemProps): T["element"]
+  getItemIndicatorProps(props: ItemProps): T["element"]
+  getItemGroupProps(props: ItemGroupProps): T["element"]
+  getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]
+  hiddenSelectProps: T["select"]
 }

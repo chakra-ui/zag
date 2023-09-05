@@ -54,7 +54,6 @@ const components = {
       defaultProps={{
         disabled: false,
         readOnly: false,
-        blurOnSelect: false,
         loop: false,
         inputBehavior: {
           default: "autohighlight",
@@ -263,7 +262,7 @@ const components = {
       component={Select}
       defaultProps={{
         loop: false,
-        selectOnTab: false,
+        selectOnBlur: false,
         disabled: false,
         readOnly: false,
       }}

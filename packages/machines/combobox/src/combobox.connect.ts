@@ -1,21 +1,14 @@
-import { getEventKey, getNativeEvent, isLeftClick, type EventKeyMap, isContextMenuEvent } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { getEventKey, getNativeEvent, isContextMenuEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr, raf } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
 import { dom } from "./combobox.dom"
-import type {
-  OptionData,
-  OptionGroupLabelProps,
-  OptionGroupProps,
-  OptionProps,
-  MachineApi,
-  Send,
-  State,
-} from "./combobox.types"
+import type { ItemProps, MachineApi, Send, State } from "./combobox.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const translations = state.context.translations
+  const collection = state.context.collection
 
   const isDisabled = state.context.disabled
   const isInteractive = state.context.isInteractive
@@ -24,50 +17,69 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const isOpen = state.hasTag("open")
   const isFocused = state.hasTag("focused")
-  const isIdle = state.hasTag("idle")
-
-  const autofill = isOpen && state.context.navigationData && state.context.autoComplete
-  const showClearButton = (!isIdle || state.context.isHovering) && !state.context.isInputValueEmpty
-
-  const value = autofill ? state.context.navigationData?.label : state.context.inputValue
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
     placement: state.context.currentPlacement,
   })
 
-  const api = {
+  function getItemState(props: ItemProps) {
+    const { item } = props
+    const value = collection.itemToValue(item)
+    return {
+      value,
+      isDisabled: collection.isItemDisabled(item),
+      isHighlighted: state.context.highlightedValue === value,
+      isSelected: state.context.value.includes(value),
+    }
+  }
+
+  return {
     isFocused,
     isOpen,
-    isInputValueEmpty: state.context.isInputValueEmpty,
     inputValue: state.context.inputValue,
-    focusedOption: state.context.focusedOptionData,
-    selectedValue: state.context.selectionData?.value,
-
-    setValue(value: string | OptionData) {
-      let data: OptionData
-      if (typeof value === "string") {
-        data = { value, label: dom.getValueLabel(state.context, value) }
+    isInputValueEmpty: state.context.isInputValueEmpty,
+    highlightedValue: state.context.highlightedValue,
+    highlightedItem: state.context.highlightedItem,
+    value: state.context.value,
+    valueAsString: state.context.valueAsString,
+    hasSelectedItems: state.context.hasSelectedItems,
+    selectedItems: state.context.selectedItems,
+    setCollection(collection) {
+      send({ type: "COLLECTION.SET", value: collection })
+    },
+    highlightValue(value) {
+      send({ type: "HIGHLIGHTED_VALUE.SET", value })
+    },
+    selectValue(value) {
+      send({ type: "ITEM.SELECT", value })
+    },
+    setValue(value) {
+      send({ type: "VALUE.SET", value })
+    },
+    setInputValue(value) {
+      send({ type: "INPUT_VALUE.SET", value })
+    },
+    clearValue(value) {
+      if (value != null) {
+        send({ type: "ITEM.CLEAR", value })
       } else {
-        data = value
+        send("VALUE.CLEAR")
       }
-      send({ type: "SET_VALUE", ...data })
     },
-
-    setInputValue(value: string) {
-      send({ type: "SET_INPUT_VALUE", value })
-    },
-
-    clearValue() {
-      send("CLEAR_VALUE")
-    },
-
     focus() {
       dom.getInputEl(state.context)?.focus()
+    },
+    open() {
+      send("OPEN")
+    },
+    close() {
+      send("CLOSE")
     },
 
     rootProps: normalize.element({
       ...parts.root.attrs,
+      dir: state.context.dir,
       id: dom.getRootId(state.context),
       "data-invalid": dataAttr(isInvalid),
       "data-readonly": dataAttr(isReadOnly),
@@ -75,6 +87,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.label({
       ...parts.label.attrs,
+      dir: state.context.dir,
       htmlFor: dom.getInputId(state.context),
       id: dom.getLabelId(state.context),
       "data-readonly": dataAttr(isReadOnly),
@@ -85,19 +98,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     controlProps: normalize.element({
       ...parts.control.attrs,
+      dir: state.context.dir,
       id: dom.getControlId(state.context),
       "data-state": isOpen ? "open" : "closed",
       "data-focus": dataAttr(isFocused),
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
-      onPointerOver() {
-        if (!isInteractive) return
-        send("POINTER_OVER")
-      },
-      onPointerLeave() {
-        if (!isInteractive) return
-        send("POINTER_LEAVE")
-      },
     }),
 
     positionerProps: normalize.element({
@@ -109,6 +115,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     inputProps: normalize.input({
       ...parts.input.attrs,
+      dir: state.context.dir,
       "aria-invalid": ariaAttr(isInvalid),
       "data-invalid": dataAttr(isInvalid),
       name: state.context.name,
@@ -124,23 +131,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getInputId(state.context),
       type: "text",
       role: "combobox",
-      defaultValue: value,
-      "data-value": value,
+      defaultValue: state.context.inputValue || state.context.valueAsString,
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
       "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       "aria-expanded": isOpen,
       "data-state": isOpen ? "open" : "closed",
-      "aria-activedescendant": state.context.focusedId ?? undefined,
+      "aria-activedescendant": state.context.highlightedValue
+        ? dom.getItemId(state.context, state.context.highlightedValue)
+        : undefined,
+      onCompositionStart() {
+        send("INPUT.COMPOSITION_START")
+      },
+      onCompositionEnd() {
+        raf(() => {
+          send("INPUT.COMPOSITION_END")
+        })
+      },
       onClick() {
         if (!isInteractive) return
-        send("CLICK_INPUT")
+        send("INPUT.CLICK")
       },
       onFocus() {
         if (isDisabled) return
-        send("FOCUS")
+        send("INPUT.FOCUS")
       },
       onChange(event) {
-        send({ type: "CHANGE", value: event.currentTarget.value })
+        send({ type: "INPUT.CHANGE", value: event.currentTarget.value })
       },
       onKeyDown(event) {
         if (!isInteractive) return
@@ -152,33 +168,33 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         const keymap: EventKeyMap = {
           ArrowDown(event) {
-            send(event.altKey ? "ALT_ARROW_DOWN" : "ARROW_DOWN")
+            send({ type: event.altKey ? "INPUT.ARROW_DOWN+ALT" : "INPUT.ARROW_DOWN" })
             prevent = true
           },
           ArrowUp() {
-            send(event.altKey ? "ALT_ARROW_UP" : "ARROW_UP")
+            send(event.altKey ? "INPUT.ARROW_UP+ALT" : "INPUT.ARROW_UP")
             prevent = true
           },
           Home(event) {
-            const isCtrlKey = event.ctrlKey || event.metaKey
-            if (isCtrlKey) return
-            send({ type: "HOME", preventDefault: () => event.preventDefault() })
+            const isModified = event.ctrlKey || event.metaKey || event.shiftKey
+            if (isModified) return
+            prevent = isOpen
+            send("INPUT.HOME")
           },
           End(event) {
-            const isCtrlKey = event.ctrlKey || event.metaKey
-            if (isCtrlKey) return
-            send({ type: "END", preventDefault: () => event.preventDefault() })
+            const isModified = event.ctrlKey || event.metaKey || event.shiftKey
+            if (isModified) return
+            prevent = isOpen
+            send("INPUT.END")
           },
           Enter() {
-            send("ENTER")
+            if (state.context.composing) return
+            send("INPUT.ENTER")
             prevent = true
           },
           Escape() {
-            send("ESCAPE")
+            send("INPUT.ESCAPE")
             prevent = true
-          },
-          Tab() {
-            send("TAB")
           },
         }
 
@@ -188,12 +204,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         if (prevent) {
           event.preventDefault()
+          event.stopPropagation()
         }
       },
     }),
 
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
+      dir: state.context.dir,
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "listbox",
       type: "button",
@@ -208,22 +226,26 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerDown(event) {
         const evt = getNativeEvent(event)
         if (!isInteractive || !isLeftClick(evt) || evt.pointerType === "touch") return
-        send("CLICK_BUTTON")
+        send("TRIGGER.CLICK")
         event.preventDefault()
       },
       onPointerUp(event) {
         if (event.pointerType !== "touch") return
-        send("CLICK_BUTTON")
+        send("TRIGGER.CLICK")
       },
+      style: { outline: 0 },
     }),
 
     contentProps: normalize.element({
       ...parts.content.attrs,
+      dir: state.context.dir,
       id: dom.getContentId(state.context),
       role: "listbox",
+      tabIndex: -1,
       hidden: !isOpen,
       "data-state": isOpen ? "open" : "closed",
       "aria-labelledby": dom.getLabelId(state.context),
+      "aria-multiselectable": state.context.multiple ? true : undefined,
       onPointerDown(event) {
         // prevent options or elements within listbox from taking focus
         event.preventDefault()
@@ -232,82 +254,88 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     clearTriggerProps: normalize.button({
       ...parts.clearTrigger.attrs,
+      dir: state.context.dir,
       id: dom.getClearTriggerId(state.context),
       type: "button",
       tabIndex: -1,
       disabled: isDisabled,
       "aria-label": translations.clearTriggerLabel,
-      hidden: !showClearButton,
+      hidden: !state.context.isInputValueEmpty,
       onPointerDown(event) {
         const evt = getNativeEvent(event)
         if (!isInteractive || !isLeftClick(evt)) return
-        send("CLEAR_VALUE")
+        send({ type: "VALUE.CLEAR", src: "clear-trigger" })
         event.preventDefault()
       },
     }),
 
-    getOptionState(props: OptionProps) {
-      const id = dom.getOptionId(state.context, props.value, props.index)
-      return {
-        isDisabled: !!props.disabled,
-        isHighlighted: state.context.focusedId === id,
-        isChecked: state.context.selectionData?.value === props.value,
-      }
-    },
+    getItemState,
 
-    getOptionProps(props: OptionProps) {
-      const { value, label, index, count } = props
-      const id = dom.getOptionId(state.context, value, index)
-      const optionState = api.getOptionState(props)
+    getItemProps(props) {
+      const itemState = getItemState(props)
+      const value = itemState.value
 
       return normalize.element({
-        ...parts.option.attrs,
-        id,
+        ...parts.item.attrs,
+        dir: state.context.dir,
+        id: dom.getItemId(state.context, value),
         role: "option",
         tabIndex: -1,
-        "data-highlighted": dataAttr(optionState.isHighlighted),
-        "data-state": optionState.isChecked ? "checked" : "unchecked",
-        "aria-selected": optionState.isHighlighted,
-        "aria-disabled": optionState.isDisabled,
-        "data-disabled": dataAttr(optionState.isDisabled),
-        "aria-posinset": count && index != null ? index + 1 : undefined,
-        "aria-setsize": count,
-        "data-value": value,
-        "data-label": label,
+        "data-highlighted": dataAttr(itemState.isHighlighted),
+        "data-state": itemState.isSelected ? "checked" : "unchecked",
+        "aria-selected": itemState.isHighlighted,
+        "aria-disabled": itemState.isDisabled,
+        "data-disabled": dataAttr(itemState.isDisabled),
+        "data-value": itemState.value,
         onPointerMove() {
-          if (optionState.isDisabled) return
-          send({ type: "POINTEROVER_OPTION", id, value, label })
+          if (itemState.isDisabled) return
+          send({ type: "ITEM.POINTER_OVER", value })
+        },
+        onPointerLeave() {
+          if (itemState.isDisabled) return
+          send({ type: "ITEM.POINTER_LEAVE", value })
         },
         onPointerUp(event) {
-          if (optionState.isDisabled || isContextMenuEvent(event)) return
-          send({ type: "CLICK_OPTION", src: "pointerup", id, value, label })
+          if (itemState.isDisabled || isContextMenuEvent(event)) return
+          send({ type: "ITEM.CLICK", src: "pointerup", value })
         },
         onAuxClick(event) {
-          if (optionState.isDisabled || isContextMenuEvent(event)) return
+          if (itemState.isDisabled || isContextMenuEvent(event)) return
           event.preventDefault()
-          send({ type: "CLICK_OPTION", src: "auxclick", id, value, label })
+          send({ type: "ITEM.CLICK", src: "auxclick", value })
         },
       })
     },
 
-    getOptionGroupProps(props: OptionGroupProps) {
-      const { id } = props
+    getItemIndicatorProps(props) {
+      const itemState = getItemState(props)
       return normalize.element({
-        ...parts.optionGroup.attrs,
-        id: dom.getOptionGroupId(state.context, id),
-        "aria-labelledby": dom.getOptionGroupLabelId(state.context, id),
+        "aria-hidden": true,
+        ...parts.itemIndicator.attrs,
+        dir: state.context.dir,
+        "data-state": itemState.isSelected ? "checked" : "unchecked",
+        hidden: !itemState.isSelected,
       })
     },
 
-    getOptionGroupLabelProps(props: OptionGroupLabelProps) {
+    getItemGroupProps(props) {
+      const { id } = props
+      return normalize.element({
+        ...parts.itemGroup.attrs,
+        dir: state.context.dir,
+        id: dom.getItemGroupId(state.context, id),
+        "aria-labelledby": dom.getItemGroupLabelId(state.context, id),
+      })
+    },
+
+    getItemGroupLabelProps(props) {
       const { htmlFor } = props
       return normalize.element({
-        id: dom.getOptionGroupId(state.context, htmlFor),
+        ...parts.itemGroupLabel.attrs,
+        dir: state.context.dir,
+        id: dom.getItemGroupLabelId(state.context, htmlFor),
         role: "group",
-        ...parts.optionGroupLabel.attrs,
       })
     },
   }
-
-  return api
 }

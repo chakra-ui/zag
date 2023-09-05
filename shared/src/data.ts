@@ -29,7 +29,7 @@ export const avatarData = {
 export const comboboxData = [
   { label: "Zambia", code: "ZA" },
   { label: "Benin", code: "BN" },
-  { label: "Canada", code: "CA", disabled: true },
+  { label: "Canada", code: "CA" },
   { label: "United States", code: "US" },
   { label: "Japan", code: "JP" },
   { label: "Nigeria", code: "NG" },
@@ -38,7 +38,7 @@ export const comboboxData = [
   { label: "American Samoa", code: "AS" },
   { label: "AndorrA", code: "AD" },
   { label: "Angola", code: "AO" },
-  { label: "Angola", code: "AO" },
+  // { label: "Angola", code: "AO" },
   { label: "Anguilla", code: "AI" },
   { label: "Antarctica", code: "AQ" },
   { label: "Australia", code: "AU" },

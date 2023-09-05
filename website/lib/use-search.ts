@@ -4,7 +4,7 @@ import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { matchSorter } from "match-sorter"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import {
   searchData,
   type SearchMetaItem,
@@ -21,7 +21,7 @@ type UseSearchReturn = {
 export function useSearch(): UseSearchReturn {
   const [dialog_state, dialog_send] = useMachine(
     dialog.machine({
-      id: "s1",
+      id: useId(),
     }),
   )
 
@@ -31,16 +31,28 @@ export function useSearch(): UseSearchReturn {
 
   const router = useRouter()
 
+  const collection = combobox.collection({
+    items: results,
+    itemToValue(item) {
+      return item.url
+    },
+    itemToString(item) {
+      return JSON.stringify(item)
+    },
+  })
+
   const [combobox_state, combobox_send] = useMachine(
     combobox.machine({
-      id: "s2",
+      id: useId(),
       placeholder: "Search the docs",
       inputBehavior: "autohighlight",
       selectionBehavior: "clear",
-      onSelect({ label }) {
-        if (!label) return
+      collection,
+      onChange({ items }) {
+        const [item] = items as SearchMetaItem[]
+        if (!item) return
         try {
-          const { pathname, slug, url } = JSON.parse(label)
+          const { pathname, slug, url } = item
           router.push({ pathname, query: { slug } }, url)
         } catch (err) {
           console.log(err)
@@ -60,6 +72,7 @@ export function useSearch(): UseSearchReturn {
         setResults(results.slice(0, 10))
       },
     }),
+    { context: { collection } },
   )
 
   useEffect(() => {

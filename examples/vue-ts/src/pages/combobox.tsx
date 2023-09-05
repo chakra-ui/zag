@@ -11,9 +11,17 @@ export default defineComponent({
   setup() {
     const controls = useControls(comboboxControls)
     const options = ref(comboboxData)
+    const collectionRef = computed(() =>
+      combobox.collection({
+        items: options.value,
+        itemToValue: (item) => item.code,
+        itemToString: (item) => item.label,
+      }),
+    )
 
     const [state, send] = useMachine(
       combobox.machine({
+        collection: collectionRef.value,
         id: "1",
         onOpen() {
           options.value = comboboxData
@@ -23,7 +31,12 @@ export default defineComponent({
           options.value = filtered.length > 0 ? filtered : comboboxData
         },
       }),
-      { context: controls.context },
+      {
+        context: computed(() => ({
+          ...controls.context.value,
+          collection: collectionRef.value,
+        })),
+      },
     )
 
     const apiRef = computed(() => combobox.connect(state.value, send, normalizeProps))
@@ -35,7 +48,7 @@ export default defineComponent({
         <>
           <main class="combobox">
             <div>
-              <button onClick={() => api.setValue("Togo")}>Set to Togo</button>
+              <button onClick={() => api.setValue(["TG"])}>Set to Togo</button>
               <button data-testid="clear-value-button" onClick={() => api.clearValue()}>
                 Clear Value
               </button>
@@ -56,11 +69,8 @@ export default defineComponent({
               <div {...api.positionerProps}>
                 {options.value.length > 0 && (
                   <ul data-testid="combobox-content" {...api.contentProps}>
-                    {options.value.map((item, index) => (
-                      <li
-                        key={`${item.code}:${index}`}
-                        {...api.getOptionProps({ label: item.label, value: item.code, index, disabled: item.disabled })}
-                      >
+                    {options.value.map((item) => (
+                      <li key={item.code} {...api.getItemProps({ item })}>
                         {item.label}
                       </li>
                     ))}
@@ -71,7 +81,7 @@ export default defineComponent({
           </main>
 
           <Toolbar controls={controls.ui}>
-            <StateVisualizer state={state} />
+            <StateVisualizer state={state} omit={["collection"]} />
           </Toolbar>
         </>
       )

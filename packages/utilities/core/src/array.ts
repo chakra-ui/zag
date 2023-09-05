@@ -22,6 +22,11 @@ export const removeAt = <T>(v: T[], i: number): T[] => {
   return v
 }
 
+export const addOrRemove = <T>(v: T[], item: T): T[] => {
+  if (has(v, item)) return remove(v, item)
+  return add(v, item)
+}
+
 export function clear<T>(v: T[]): T[] {
   while (v.length > 0) v.pop()
   return v

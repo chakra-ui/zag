@@ -12,24 +12,44 @@ const {
 const fetchMachine = createMachine({
   id: "select",
   context: {
-    "hasSelectedOption": false,
-    "hasSelectedOption": false,
+    "hasSelectedItems": false,
+    "hasSelectedItems": false,
+    "hasSelectedItems": false,
+    "!multiple && hasSelectedItems": false,
+    "!multiple": false,
+    "!multiple && hasSelectedItems": false,
+    "!multiple": false,
+    "!multiple": false,
+    "!multiple": false,
+    "!multiple": false,
     "closeOnSelect": false,
+    "multiple": false,
     "closeOnSelect": false,
-    "hasHighlightedOption": false,
-    "hasHighlightedOption": false,
-    "selectOnTab": false
+    "multiple": false,
+    "selectOnBlur && hasHighlightedItem": false,
+    "isTargetFocusable": false,
+    "hasHighlightedItem": false,
+    "hasHighlightedItem": false
   },
   initial: "idle",
   on: {
-    HIGHLIGHT_OPTION: {
-      actions: ["setHighlightedOption"]
+    "HIGHLIGHTED_VALUE.SET": {
+      actions: ["setHighlightedItem"]
     },
-    SELECT_OPTION: {
-      actions: ["setSelectedOption"]
+    "ITEM.SELECT": {
+      actions: ["selectItem"]
     },
-    CLEAR_SELECTED: {
-      actions: ["clearSelectedOption"]
+    "ITEM.CLEAR": {
+      actions: ["clearItem"]
+    },
+    "VALUE.SET": {
+      actions: ["setSelectedItems"]
+    },
+    "VALUE.CLEAR": {
+      actions: ["clearSelectedItems"]
+    },
+    "COLLECTION.SET": {
+      actions: ["setCollection"]
     }
   },
   activities: ["trackFormControlState"],
@@ -42,132 +62,159 @@ const fetchMachine = createMachine({
     idle: {
       tags: ["closed"],
       on: {
-        TRIGGER_CLICK: {
-          target: "open"
+        "TRIGGER.CLICK": {
+          target: "open",
+          actions: ["invokeOnOpen"]
         },
-        TRIGGER_FOCUS: {
+        "TRIGGER.FOCUS": {
           target: "focused"
         },
         OPEN: {
-          target: "open"
+          target: "open",
+          actions: ["invokeOnOpen"]
         }
       }
     },
     focused: {
       tags: ["closed"],
-      entry: ["focusTrigger", "clearHighlightedOption"],
+      entry: ["focusTriggerEl"],
       on: {
-        TRIGGER_CLICK: {
-          target: "open"
-        },
-        TRIGGER_BLUR: {
-          target: "idle",
-          actions: ["clearHighlightedOption"]
-        },
-        TRIGGER_KEY: {
-          target: "open"
-        },
-        ARROW_UP: {
-          target: "open",
-          actions: ["highlightLastOption"]
-        },
-        ARROW_DOWN: {
-          target: "open",
-          actions: ["highlightFirstOption"]
-        },
-        ARROW_LEFT: [{
-          cond: "hasSelectedOption",
-          actions: ["selectPreviousOption"]
-        }, {
-          actions: ["selectLastOption"]
-        }],
-        ARROW_RIGHT: [{
-          cond: "hasSelectedOption",
-          actions: ["selectNextOption"]
-        }, {
-          actions: ["selectFirstOption"]
-        }],
-        HOME: {
-          actions: ["selectFirstOption"]
-        },
-        END: {
-          actions: ["selectLastOption"]
-        },
-        TYPEAHEAD: {
-          actions: ["selectMatchingOption"]
-        },
         OPEN: {
-          target: "open"
+          target: "open",
+          actions: ["invokeOnOpen"]
+        },
+        "TRIGGER.BLUR": {
+          target: "idle"
+        },
+        "TRIGGER.CLICK": {
+          target: "open",
+          actions: ["invokeOnOpen"]
+        },
+        "TRIGGER.ENTER": [{
+          cond: "hasSelectedItems",
+          target: "open",
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
+        }, {
+          target: "open",
+          actions: ["highlightFirstItem", "invokeOnOpen"]
+        }],
+        "TRIGGER.ARROW_UP": [{
+          cond: "hasSelectedItems",
+          target: "open",
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
+        }, {
+          target: "open",
+          actions: ["highlightLastItem", "invokeOnOpen"]
+        }],
+        "TRIGGER.ARROW_DOWN": [{
+          cond: "hasSelectedItems",
+          target: "open",
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
+        }, {
+          target: "open",
+          actions: ["highlightFirstItem", "invokeOnOpen"]
+        }],
+        "TRIGGER.ARROW_LEFT": [{
+          cond: "!multiple && hasSelectedItems",
+          actions: ["selectPreviousItem"]
+        }, {
+          cond: "!multiple",
+          actions: ["selectLastItem"]
+        }],
+        "TRIGGER.ARROW_RIGHT": [{
+          cond: "!multiple && hasSelectedItems",
+          actions: ["selectNextItem"]
+        }, {
+          cond: "!multiple",
+          actions: ["selectFirstItem"]
+        }],
+        "TRIGGER.HOME": {
+          cond: "!multiple",
+          actions: ["selectFirstItem"]
+        },
+        "TRIGGER.END": {
+          cond: "!multiple",
+          actions: ["selectLastItem"]
+        },
+        "TRIGGER.TYPEAHEAD": {
+          cond: "!multiple",
+          actions: ["selectMatchingItem"]
         }
       }
     },
     open: {
       tags: ["open"],
-      entry: ["focusContent", "highlightSelectedOption", "invokeOnOpen"],
+      entry: ["focusContentEl"],
       exit: ["scrollContentToTop"],
-      activities: ["trackInteractOutside", "computePlacement", "scrollToHighlightedOption", "proxyTabFocus"],
+      activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
       on: {
         CLOSE: {
           target: "focused",
-          actions: ["invokeOnClose"]
+          actions: ["clearHighlightedItem", "invokeOnClose"]
         },
-        TRIGGER_CLICK: {
+        "TRIGGER.CLICK": {
           target: "focused",
-          actions: ["invokeOnClose"]
+          actions: ["clearHighlightedItem", "invokeOnClose"]
         },
-        OPTION_CLICK: [{
+        "ITEM.CLICK": [{
+          cond: "closeOnSelect",
           target: "focused",
-          actions: ["selectHighlightedOption", "invokeOnClose"],
-          cond: "closeOnSelect"
+          actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"]
         }, {
-          actions: ["selectHighlightedOption"]
+          cond: "multiple",
+          actions: ["selectHighlightedItem"]
+        }, {
+          actions: ["selectHighlightedItem", "clearHighlightedItem"]
         }],
-        TRIGGER_KEY: [{
+        "CONTENT.ENTER": [{
+          cond: "closeOnSelect",
           target: "focused",
-          actions: ["selectHighlightedOption", "invokeOnClose"],
-          cond: "closeOnSelect"
+          actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"]
         }, {
-          actions: ["selectHighlightedOption"]
-        }],
-        BLUR: {
-          target: "focused",
-          actions: ["invokeOnClose"]
-        },
-        HOME: {
-          actions: ["highlightFirstOption"]
-        },
-        END: {
-          actions: ["highlightLastOption"]
-        },
-        ARROW_DOWN: [{
-          cond: "hasHighlightedOption",
-          actions: ["highlightNextOption"]
+          cond: "multiple",
+          actions: ["selectHighlightedItem"]
         }, {
-          actions: ["highlightFirstOption"]
+          actions: ["selectHighlightedItem", "clearHighlightedItem"]
         }],
-        ARROW_UP: [{
-          cond: "hasHighlightedOption",
-          actions: ["highlightPreviousOption"]
-        }, {
-          actions: ["highlightLastOption"]
-        }],
-        TYPEAHEAD: {
-          actions: ["highlightMatchingOption"]
-        },
-        POINTER_MOVE: {
-          actions: ["highlightOption"]
-        },
-        POINTER_LEAVE: {
-          actions: ["clearHighlightedOption"]
-        },
-        TAB: [{
+        "CONTENT.INTERACT_OUTSIDE": [{
+          cond: "selectOnBlur && hasHighlightedItem",
           target: "idle",
-          actions: ["selectHighlightedOption", "invokeOnClose", "clearHighlightedOption"],
-          cond: "selectOnTab"
+          actions: ["selectHighlightedItem", "invokeOnClose", "clearHighlightedItem"]
         }, {
+          cond: "isTargetFocusable",
           target: "idle",
-          actions: ["invokeOnClose", "clearHighlightedOption"]
-        }]
+          actions: ["clearHighlightedItem", "invokeOnClose"]
+        }, {
+          target: "focused",
+          actions: ["clearHighlightedItem", "invokeOnClose"]
+        }],
+        "CONTENT.HOME": {
+          actions: ["highlightFirstItem"]
+        },
+        "CONTENT.END": {
+          actions: ["highlightLastItem"]
+        },
+        "CONTENT.ARROW_DOWN": [{
+          cond: "hasHighlightedItem",
+          actions: ["highlightNextItem"]
+        }, {
+          actions: ["highlightFirstItem"]
+        }],
+        "CONTENT.ARROW_UP": [{
+          cond: "hasHighlightedItem",
+          actions: ["highlightPreviousItem"]
+        }, {
+          actions: ["highlightLastItem"]
+        }],
+        "CONTENT.TYPEAHEAD": {
+          actions: ["highlightMatchingItem"]
+        },
+        "ITEM.POINTER_MOVE": {
+          actions: ["highlightItem"]
+        },
+        "ITEM.POINTER_LEAVE": {
+          actions: ["clearHighlightedItem"]
+        }
       }
     }
   }
@@ -180,9 +227,13 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "hasSelectedOption": ctx => ctx["hasSelectedOption"],
+    "hasSelectedItems": ctx => ctx["hasSelectedItems"],
+    "!multiple && hasSelectedItems": ctx => ctx["!multiple && hasSelectedItems"],
+    "!multiple": ctx => ctx["!multiple"],
     "closeOnSelect": ctx => ctx["closeOnSelect"],
-    "hasHighlightedOption": ctx => ctx["hasHighlightedOption"],
-    "selectOnTab": ctx => ctx["selectOnTab"]
+    "multiple": ctx => ctx["multiple"],
+    "selectOnBlur && hasHighlightedItem": ctx => ctx["selectOnBlur && hasHighlightedItem"],
+    "isTargetFocusable": ctx => ctx["isTargetFocusable"],
+    "hasHighlightedItem": ctx => ctx["hasHighlightedItem"]
   }
 });

@@ -25,7 +25,7 @@ test.describe("context menu", () => {
 
   test("keyboard navigation works", async ({ page }) => {
     await page.click(trigger, { button: "right" })
-    await repeat(() => page.keyboard.press("ArrowDown"), 3)
+    await repeat(3, () => page.keyboard.press("ArrowDown"))
     await expectToBeFocused(page, "delete")
   })
 })

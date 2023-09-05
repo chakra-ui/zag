@@ -32,9 +32,17 @@ type SelectProps = {
 }
 
 export function Select(props: SelectProps) {
-  const [state, send] = useMachine(select.machine({ id: useId() }), {
-    context: props.controls,
-  })
+  const [state, send] = useMachine(
+    select.machine({
+      id: useId(),
+      collection: select.collection({
+        items: data,
+      }),
+    }),
+    {
+      context: props.controls,
+    },
+  )
 
   const api = select.connect(state, send, normalizeProps)
 
@@ -61,7 +69,7 @@ export function Select(props: SelectProps) {
           {...api.triggerProps}
         >
           <chakra.span p="1" flex="1">
-            {api.selectedOption?.label ?? "Select option"}
+            {api.valueAsString || "Select option"}
           </chakra.span>
           <CaretIcon />
         </Button>
@@ -79,7 +87,7 @@ export function Select(props: SelectProps) {
             className="focus-outline"
             {...api.contentProps}
           >
-            {data.map(({ label, value }) => (
+            {data.map((item) => (
               <chakra.li
                 px="2"
                 py="1"
@@ -87,11 +95,13 @@ export function Select(props: SelectProps) {
                 alignItems="center"
                 cursor="pointer"
                 _highlighted={{ bg: "bg-primary-subtle", color: "white" }}
-                key={value}
-                {...api.getOptionProps({ label, value })}
+                key={item.value}
+                {...api.getItemProps({ item })}
               >
-                <chakra.span flex={1}>{label}</chakra.span>
-                {value === api.selectedOption?.value && <MdCheck />}
+                <chakra.span flex={1}>{item.label}</chakra.span>
+                <span {...api.getItemIndicatorProps({ item })}>
+                  <MdCheck />
+                </span>
               </chakra.li>
             ))}
           </chakra.ul>

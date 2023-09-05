@@ -8,7 +8,7 @@ type ReservedProps = {
 
 type Attrs<T> = T & ReservedProps
 
-export type PropTypes = JSX.IntrinsicElements & {
+export type PropTypes = Vue.NativeElements & {
   element: Attrs<Vue.HTMLAttributes>
   style: Vue.CSSProperties
 }

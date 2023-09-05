@@ -15,7 +15,7 @@ select a value from a collection of possible values.
 
 **Features**
 
-- Support for filtering a list of options by typing.
+- Support for selecting multiple values
 - Support for disabled options
 - Support for custom user input values
 - Support for mouse, touch, and keyboard interactions
@@ -48,6 +48,11 @@ On a high level, the combobox consists of:
 - **Positioner**: The element that positions the combobox dynamically.
 - **Content**: The element that contains the options.
 - **Trigger**: The element that toggles the combobox menu.
+- **Control**: The element that contains the input and trigger.
+- **Input**: The element that receives user input.
+- **Item**: The combobox item or option element.
+- **ItemIndicator**: The element that indicates the selected item.
+- **ItemGroup**: The element used to group related items.
 
 ## Usage
 
@@ -57,16 +62,84 @@ First, import the combobox package into your project
 import * as combobox from "@zag-js/combobox"
 ```
 
-The combobox package exports two key functions:
+The combobox package exports these functions:
 
 - `machine` — The state machine logic for the combobox widget.
 - `connect` — The function that translates the machine's state to JSX attributes
   and event handlers.
+- `collection` - The function that creates a collection interface from an array
+  of items.
 
 Next, import the required hooks and functions for your framework and use the
 combobox machine in your project 🔥
 
 <CodeSnippet id="combobox/usage.mdx" />
+
+## Setting the initial value
+
+To set the initial value of the combobox, pass the `value` property to the
+machine's context.
+
+> The `value` property must be an array of strings. If selecting a single value,
+> pass an array with a single string.
+
+```jsx {14}
+const collection = combobox.collection({
+  items: [
+    { label: "Nigeria", value: "ng" },
+    { label: "Ghana", value: "gh" },
+    { label: "Kenya", value: "ke" },
+    //...
+  ],
+})
+
+const [state, send] = useMachine(
+  combobox.machine({
+    id: useId(),
+    collection,
+    value: ["ng"],
+  }),
+)
+```
+
+## Selecting multiple values
+
+To allow selecting multiple values, set the `multiple` property in the machine's
+context to `true`.
+
+```jsx {5}
+const [state, send] = useMachine(
+  combobox.machine({
+    id: useId(),
+    collection,
+    multiple: true,
+  }),
+)
+```
+
+## Rendering the selected values outside the combobox
+
+By default, the selected values of a combobox is displayed in the input element,
+when selecting multiple items, it is a better UX to render the selected value
+outside the combobox.
+
+To achieve this you need to:
+
+- Set the `selectionBehavior` to `clear`, which clears the input value when an
+  item is selected.
+- Set the `multiple` property to `true` to allow selecting multiple values.
+- Render the selected values outside the combobox.
+
+```jsx {5-7}
+const [state, send] = useMachine(
+  combobox.machine({
+    id: useId(),
+    collection,
+    selectionBehavior: "clear",
+    multiple: true,
+  }),
+)
+```
 
 ## Disabling the combobox
 
@@ -82,22 +155,21 @@ const [state, send] = useMachine(
 
 ## Disabling an option
 
-To make a combobox option disabled, set the `disabled` property of
-`getOptionProps` to `true`
+To make a combobox option disabled, pass the `isItemDisabled` property to the
+collection function.
 
-```jsx {9}
-const [state, send] = useMachine(combobox.machine())
-
-return {
-  <li
-    {...api.getOptionProps({
-      label: item.label,
-      value: item.code,
-      index:index,
-      disabled: item.disabled,
-    })}
-  />
-}
+```jsx {6-8}
+const [state, send] = useMachine(
+  combobox.machine({
+    id: useId(),
+    collection: combobox.collection({
+      items: countries,
+      isItemDisabled(item) {
+        return item.disabled
+      },
+    }),
+  }),
+)
 ```
 
 ## Close on select
@@ -129,16 +201,15 @@ const [state, send] = useMachine(
 
 ## Listening for highlight changes
 
-When an option is highlighted with the pointer or keyboard, the
-`highlightedOption` property in the machine's context is updated. You can listen
-for this change and do something with it.
+When an option is highlighted with the pointer or keyboard, use the
+`onHighlight` property to listen for this change and do something with it.
 
 ```jsx {4-7}
 const [state, send] = useMachine(
   combobox.machine({
     id: useId(),
     onHighlight(details) {
-      // details => { label: string, value: string, relatedTarget: HTMLElement | null }
+      // details => { value: string | null; item: CollectionItem | null }
       console.log(details)
     },
   }),
@@ -147,14 +218,14 @@ const [state, send] = useMachine(
 
 ## Listening for selection changes
 
-When an option is selected, the `selectedOption` property in the machine's
-context is updated. You can listen for this change and do something with it.
+When an item is selected, use `onChange` property to listen for this change and
+do something with it.
 
 ```jsx {3-6}
 const [state, send] = useMachine(
   combobox.machine({
     onSelect(details) {
-      // details => { label: string, value: string, relatedTarget: HTMLElement | null }
+      // details => { value: string[]; items: CollectionItem[] }
       console.log(details)
     },
   }),
@@ -176,6 +247,20 @@ To get this feature working you need to pass a `name` option to the context.
 const [state, send] = useMachine(
   combobox.machine({
     name: "countries",
+  }),
+)
+```
+
+## Allowing custom values
+
+By default, the combobox only allows selecting values from the collection. To
+allow custom values, set the `allowCustomValue` property in the machine's
+context to `true`.
+
+```jsx {3}
+const [state, send] = useMachine(
+  combobox.machine({
+    allowCustomValue: true,
   }),
 )
 ```
@@ -241,8 +326,8 @@ label, control, trigger and option parts.
   /* styles for trigger disabled state */
 }
 
-[data-part="option"][data-disabled] {
-  /* styles for option disabled state */
+[data-part="item"][data-disabled] {
+  /* styles for item disabled state */
 }
 ```
 
@@ -266,6 +351,28 @@ label, control and input parts.
 
 [data-part="input"][data-invalid] {
   /* styles for input invalid state */
+}
+```
+
+### Selected State
+
+When a combobox item is selected, the `data-selected` attribute is added to the
+item part.
+
+```css
+[data-part="item"][data-state="checked|unchecked"] {
+  /* styles for item selected state */
+}
+```
+
+### Highlighted State
+
+When a combobox item is highlighted, the `data-highlighted` attribute is added
+to the item part.
+
+```css
+[data-part="item"][data-highlighted] {
+  /* styles for item highlighted state */
 }
 ```
 

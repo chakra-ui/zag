@@ -25,15 +25,14 @@ export const comboboxControls = defineControls({
   },
   selectionBehavior: {
     type: "select",
-    defaultValue: "set",
-    options: ["set", "clear"] as const,
+    defaultValue: "replace",
+    options: ["replace", "clear", "preserve"] as const,
   },
   disabled: { type: "boolean", defaultValue: false },
+  multiple: { type: "boolean", defaultValue: false },
   loop: { type: "boolean", defaultValue: true },
   openOnClick: { type: "boolean", defaultValue: false },
-  blurOnSelect: { type: "boolean", defaultValue: false },
-  closeOnSelect: { type: "boolean", defaultValue: true },
-  selectOnTab: { type: "boolean", defaultValue: true },
+  selectOnBlur: { type: "boolean", defaultValue: true },
 })
 
 export const editableControls = defineControls({
@@ -161,10 +160,11 @@ export const toastControls = defineControls({
 })
 
 export const selectControls = defineControls({
+  multiple: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
   loop: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
-  selectOnTab: { type: "boolean", defaultValue: false },
+  selectOnBlur: { type: "boolean", defaultValue: false },
   closeOnSelect: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })

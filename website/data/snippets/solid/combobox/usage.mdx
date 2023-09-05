@@ -4,17 +4,26 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js"
 
 const comboboxData = [
-  { label: "Zambia", code: "ZA", disabled: false },
-  { label: "Benin", code: "BN", disabled: false },
+  { label: "Zambia", code: "ZA" },
+  { label: "Benin", code: "BN" },
   //...
 ]
 
 export function Combobox() {
   const [options, setOptions] = createSignal(comboboxData)
 
+  const collection = createMemo(() =>
+    combobox.collection({
+      items: options(),
+      itemToValue: (item) => item.code,
+      itemToString: (item) => item.label,
+    }),
+  )
+
   const [state, send] = useMachine(
     combobox.machine({
       id: createUniqueId(),
+      collection: collection(),
       onOpen() {
         setOptions(comboboxData)
       },
@@ -42,17 +51,8 @@ export function Combobox() {
         <Show when={options().length > 0}>
           <ul {...api().contentProps}>
             <For each={options()}>
-              {(item, index) => (
-                <li
-                  {...api().getOptionProps({
-                    label: item.label,
-                    value: item.code,
-                    index: index(),
-                    disabled: item.disabled,
-                  })}
-                >
-                  {item.label}
-                </li>
+              {(item) => (
+                <li {...api().getItemProps({ item })}>{item.label}</li>
               )}
             </For>
           </ul>

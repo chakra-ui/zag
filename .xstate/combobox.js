@@ -13,49 +13,55 @@ const fetchMachine = createMachine({
   id: "combobox",
   initial: ctx.autoFocus ? "focused" : "idle",
   context: {
-    "focusOnClear": false,
     "openOnClick": false,
     "isCustomValue && !allowCustomValue": false,
     "openOnClick": false,
     "autoComplete": false,
+    "hasSelectedItems": false,
     "autoComplete": false,
-    "hasFocusedOption && autoComplete && closeOnSelect": false,
-    "hasFocusedOption && autoComplete": false,
-    "hasFocusedOption && closeOnSelect": false,
-    "hasFocusedOption": false,
+    "hasSelectedItems": false,
+    "autoComplete && isLastItemHighlighted": false,
+    "autoComplete && isFirstItemHighlighted": false,
+    "!closeOnSelect": false,
+    "autoComplete": false,
+    "!closeOnSelect": false,
+    "autoComplete": false,
+    "selectOnBlur && hasHighlightedItem": false,
+    "isCustomValue && !allowCustomValue": false,
+    "!isHighlightedItemVisible": false,
+    "!closeOnSelect": false,
     "autoHighlight": false,
-    "autoComplete": false,
-    "closeOnSelect": false,
-    "autoComplete && isLastOptionFocused": false,
-    "autoComplete && isFirstOptionFocused": false,
-    "selectOnTab": false,
-    "closeOnSelect": false,
-    "autoComplete": false,
-    "autoComplete": false,
-    "closeOnSelect": false
+    "isCustomValue && !allowCustomValue": false,
+    "!closeOnSelect": false
   },
-  entry: ["setupLiveRegion"],
-  exit: ["removeLiveRegion"],
-  activities: ["syncInputValue"],
   on: {
-    SET_VALUE: {
-      actions: ["setInputValue", "setSelectionData"]
+    "HIGHLIGHTED_VALUE.SET": {
+      actions: ["setHighlightedItem"]
     },
-    SET_INPUT_VALUE: {
+    "ITEM.SELECT": {
+      actions: ["selectItem"]
+    },
+    "ITEM.CLEAR": {
+      actions: ["clearItem"]
+    },
+    "VALUE.SET": {
+      actions: ["setSelectedItems"]
+    },
+    "INPUT_VALUE.SET": {
       actions: "setInputValue"
     },
-    CLEAR_VALUE: [{
-      cond: "focusOnClear",
+    "VALUE.CLEAR": {
       target: "focused",
-      actions: ["clearInputValue", "clearSelectedValue"]
-    }, {
-      actions: ["clearInputValue", "clearSelectedValue"]
-    }],
-    POINTER_OVER: {
-      actions: "setIsHovering"
+      actions: ["clearInputValue", "clearSelectedItems"]
     },
-    POINTER_LEAVE: {
-      actions: "clearIsHovering"
+    "INPUT.COMPOSITION_START": {
+      actions: ["setIsComposing"]
+    },
+    "INPUT.COMPOSITION_END": {
+      actions: ["clearIsComposing"]
+    },
+    "COLLECTION.SET": {
+      actions: ["setCollection"]
     }
   },
   on: {
@@ -65,214 +71,242 @@ const fetchMachine = createMachine({
   },
   states: {
     idle: {
-      tags: ["idle"],
-      entry: ["scrollToTop", "clearFocusedOption"],
+      tags: ["idle", "closed"],
+      entry: ["scrollContentToTop", "clearHighlightedItem"],
       on: {
-        CLICK_BUTTON: {
+        "TRIGGER.CLICK": {
           target: "interacting",
-          actions: ["focusInput", "invokeOnOpen"]
+          actions: ["focusInput", "highlightFirstSelectedItem", "invokeOnOpen"]
         },
-        CLICK_INPUT: {
+        "INPUT.CLICK": {
           cond: "openOnClick",
           target: "interacting",
-          actions: "invokeOnOpen"
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
         },
-        FOCUS: "focused"
+        "INPUT.FOCUS": {
+          target: "focused"
+        },
+        OPEN: {
+          target: "interacting",
+          actions: ["invokeOnOpen"]
+        }
       }
     },
     focused: {
-      tags: ["focused"],
-      entry: ["focusInput", "scrollToTop", "clearFocusedOption"],
+      tags: ["focused", "closed"],
+      entry: ["focusInput", "scrollContentToTop", "clearHighlightedItem"],
       activities: ["trackInteractOutside"],
       on: {
-        CHANGE: {
+        "INPUT.CHANGE": {
           target: "suggesting",
           actions: "setInputValue"
         },
-        BLUR: "idle",
-        ESCAPE: {
+        "CONTENT.INTERACT_OUTSIDE": {
+          target: "idle"
+        },
+        "INPUT.ESCAPE": {
           cond: "isCustomValue && !allowCustomValue",
           actions: "revertInputValue"
         },
-        CLICK_INPUT: {
+        "INPUT.CLICK": {
           cond: "openOnClick",
           target: "interacting",
-          actions: ["focusInput", "invokeOnOpen"]
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
         },
-        CLICK_BUTTON: {
+        "TRIGGER.CLICK": {
           target: "interacting",
-          actions: ["focusInput", "invokeOnOpen"]
+          actions: ["focusInput", "highlightFirstSelectedItem", "invokeOnOpen"]
         },
-        POINTER_OVER: {
-          actions: "setIsHovering"
+        "INPUT.ARROW_DOWN": [{
+          cond: "autoComplete",
+          target: "interacting",
+          actions: ["invokeOnOpen"]
+        }, {
+          cond: "hasSelectedItems",
+          target: "interacting",
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
+        }, {
+          target: "interacting",
+          actions: ["highlightNextItem", "invokeOnOpen"]
+        }],
+        "INPUT.ARROW_DOWN+ALT": {
+          target: "interacting",
+          actions: "invokeOnOpen"
         },
-        ARROW_UP: [{
+        "INPUT.ARROW_UP": [{
           cond: "autoComplete",
           target: "interacting",
           actions: "invokeOnOpen"
         }, {
+          cond: "hasSelectedItems",
           target: "interacting",
-          actions: ["focusLastOption", "invokeOnOpen"]
-        }],
-        ARROW_DOWN: [{
-          cond: "autoComplete",
-          target: "interacting",
-          actions: "invokeOnOpen"
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
         }, {
           target: "interacting",
-          actions: ["focusFirstOption", "invokeOnOpen"]
+          actions: ["highlightLastItem", "invokeOnOpen"]
         }],
-        ALT_ARROW_DOWN: {
+        OPEN: {
           target: "interacting",
-          actions: ["focusInput", "invokeOnOpen"]
+          actions: ["invokeOnOpen"]
+        }
+      }
+    },
+    interacting: {
+      tags: ["open", "focused"],
+      activities: ["scrollIntoView", "trackInteractOutside", "computePlacement", "hideOtherElements"],
+      on: {
+        "INPUT.HOME": {
+          actions: ["highlightFirstItem"]
+        },
+        "INPUT.END": {
+          actions: ["highlightLastItem"]
+        },
+        "INPUT.ARROW_DOWN": [{
+          cond: "autoComplete && isLastItemHighlighted",
+          actions: ["clearHighlightedItem", "scrollContentToTop"]
+        }, {
+          actions: ["highlightNextItem"]
+        }],
+        "INPUT.ARROW_UP": [{
+          cond: "autoComplete && isFirstItemHighlighted",
+          actions: "clearHighlightedItem"
+        }, {
+          actions: "highlightPrevItem"
+        }],
+        "INPUT.ARROW_UP+ALT": {
+          target: "focused"
+        },
+        "INPUT.ENTER": [{
+          cond: "!closeOnSelect",
+          actions: ["selectHighlightedItem"]
+        }, {
+          target: "focused",
+          actions: ["selectHighlightedItem", "invokeOnClose"]
+        }],
+        "INPUT.CHANGE": [{
+          cond: "autoComplete",
+          target: "suggesting",
+          actions: ["setInputValue"]
+        }, {
+          target: "suggesting",
+          actions: ["clearHighlightedItem", "setInputValue"]
+        }],
+        "ITEM.POINTER_OVER": {
+          actions: ["setHighlightedItem"]
+        },
+        "ITEM.POINTER_LEAVE": {
+          actions: ["clearHighlightedItem"]
+        },
+        "ITEM.CLICK": [{
+          cond: "!closeOnSelect",
+          actions: ["selectItem"]
+        }, {
+          target: "focused",
+          actions: ["selectItem", "invokeOnClose"]
+        }],
+        "INPUT.ESCAPE": [{
+          cond: "autoComplete",
+          target: "focused",
+          actions: ["syncInputValue", "invokeOnClose"]
+        }, {
+          target: "focused",
+          actions: ["invokeOnClose"]
+        }],
+        "TRIGGER.CLICK": {
+          target: "focused",
+          actions: "invokeOnClose"
+        },
+        "CONTENT.INTERACT_OUTSIDE": [{
+          cond: "selectOnBlur && hasHighlightedItem",
+          target: "idle",
+          actions: ["selectHighlightedItem", "invokeOnClose"]
+        }, {
+          cond: "isCustomValue && !allowCustomValue",
+          target: "idle",
+          actions: ["revertInputValue", "invokeOnClose"]
+        }, {
+          target: "idle",
+          actions: "invokeOnClose"
+        }],
+        CLOSE: {
+          target: "focused",
+          actions: "invokeOnClose"
         }
       }
     },
     suggesting: {
       tags: ["open", "focused"],
-      activities: ["trackInteractOutside", "scrollOptionIntoView", "computePlacement", "trackOptionNodes", "hideOtherElements"],
+      activities: ["trackInteractOutside", "scrollIntoView", "computePlacement", "trackChildNodes", "hideOtherElements"],
       entry: ["focusInput", "invokeOnOpen"],
       on: {
-        ARROW_DOWN: {
-          target: "interacting",
-          actions: "focusNextOption"
+        CHILDREN_CHANGE: {
+          cond: "!isHighlightedItemVisible",
+          actions: ["highlightFirstItem"]
         },
-        ARROW_UP: {
+        "INPUT.ARROW_DOWN": {
           target: "interacting",
-          actions: "focusPrevOption"
+          actions: "highlightNextItem"
         },
-        ALT_ARROW_UP: "focused",
-        HOME: {
+        "INPUT.ARROW_UP": {
           target: "interacting",
-          actions: ["focusFirstOption", "preventDefault"]
+          actions: "highlightPrevItem"
         },
-        END: {
+        "INPUT.ARROW_UP+ALT": {
+          target: "focused"
+        },
+        "INPUT.HOME": {
           target: "interacting",
-          actions: ["focusLastOption", "preventDefault"]
+          actions: ["highlightFirstItem"]
         },
-        ENTER: [{
-          cond: "hasFocusedOption && autoComplete && closeOnSelect",
+        "INPUT.END": {
+          target: "interacting",
+          actions: ["highlightLastItem"]
+        },
+        "INPUT.ENTER": [{
+          cond: "!closeOnSelect",
+          actions: ["selectHighlightedItem"]
+        }, {
           target: "focused",
-          actions: ["selectActiveOption", "invokeOnClose"]
-        }, {
-          cond: "hasFocusedOption && autoComplete",
-          actions: "selectActiveOption"
-        }, {
-          cond: "hasFocusedOption && closeOnSelect",
-          target: "focused",
-          actions: ["selectOption", "invokeOnClose"]
-        }, {
-          cond: "hasFocusedOption",
-          actions: "selectOption"
+          actions: ["selectHighlightedItem", "invokeOnClose"]
         }],
-        CHANGE: [{
+        "INPUT.CHANGE": [{
           cond: "autoHighlight",
-          actions: ["clearFocusedOption", "setInputValue", "focusFirstOption"]
+          actions: ["setInputValue", "highlightFirstItem"]
         }, {
-          actions: ["clearFocusedOption", "setInputValue"]
+          actions: ["clearHighlightedItem", "setInputValue"]
         }],
-        ESCAPE: {
+        "INPUT.ESCAPE": {
           target: "focused",
           actions: "invokeOnClose"
         },
-        POINTEROVER_OPTION: [{
-          cond: "autoComplete",
+        "ITEM.POINTER_OVER": {
           target: "interacting",
-          actions: "setActiveOption"
+          actions: "setHighlightedItem"
+        },
+        "ITEM.POINTER_LEAVE": {
+          actions: "clearHighlightedItem"
+        },
+        "CONTENT.INTERACT_OUTSIDE": [{
+          cond: "isCustomValue && !allowCustomValue",
+          target: "idle",
+          actions: ["revertInputValue", "invokeOnClose"]
         }, {
-          target: "interacting",
-          actions: ["setActiveOption", "setNavigationData"]
-        }],
-        BLUR: {
           target: "idle",
           actions: "invokeOnClose"
-        },
-        CLICK_BUTTON: {
+        }],
+        "TRIGGER.CLICK": {
           target: "focused",
           actions: "invokeOnClose"
         },
-        CLICK_OPTION: [{
-          cond: "closeOnSelect",
+        "ITEM.CLICK": [{
+          cond: "!closeOnSelect",
+          actions: ["selectItem"]
+        }, {
           target: "focused",
-          actions: ["selectOption", "invokeOnClose"]
-        }, {
-          actions: ["selectOption"]
-        }]
-      }
-    },
-    interacting: {
-      tags: ["open", "focused"],
-      activities: ["scrollOptionIntoView", "trackInteractOutside", "computePlacement", "hideOtherElements"],
-      entry: "focusMatchingOption",
-      on: {
-        HOME: {
-          actions: ["focusFirstOption", "preventDefault"]
-        },
-        END: {
-          actions: ["focusLastOption", "preventDefault"]
-        },
-        ARROW_DOWN: [{
-          cond: "autoComplete && isLastOptionFocused",
-          actions: ["clearFocusedOption", "scrollToTop"]
-        }, {
-          actions: "focusNextOption"
+          actions: ["selectItem", "invokeOnClose"]
         }],
-        ARROW_UP: [{
-          cond: "autoComplete && isFirstOptionFocused",
-          actions: "clearFocusedOption"
-        }, {
-          actions: "focusPrevOption"
-        }],
-        ALT_UP: {
+        CLOSE: {
           target: "focused",
-          actions: ["selectOption", "invokeOnClose"]
-        },
-        CLEAR_FOCUS: {
-          actions: "clearFocusedOption"
-        },
-        TAB: {
-          cond: "selectOnTab",
-          target: "idle",
-          actions: ["selectOption", "invokeOnClose"]
-        },
-        ENTER: [{
-          cond: "closeOnSelect",
-          target: "focused",
-          actions: ["selectOption", "invokeOnClose"]
-        }, {
-          actions: ["selectOption"]
-        }],
-        CHANGE: [{
-          cond: "autoComplete",
-          target: "suggesting",
-          actions: ["commitNavigationData", "setInputValue"]
-        }, {
-          target: "suggesting",
-          actions: ["clearFocusedOption", "setInputValue"]
-        }],
-        POINTEROVER_OPTION: [{
-          cond: "autoComplete",
-          actions: "setActiveOption"
-        }, {
-          actions: ["setActiveOption", "setNavigationData"]
-        }],
-        CLICK_OPTION: [{
-          cond: "closeOnSelect",
-          target: "focused",
-          actions: ["selectOption", "invokeOnClose"]
-        }, {
-          actions: ["selectOption"]
-        }],
-        ESCAPE: {
-          target: "focused",
-          actions: "invokeOnClose"
-        },
-        CLICK_BUTTON: {
-          target: "focused",
-          actions: "invokeOnClose"
-        },
-        BLUR: {
-          target: "idle",
           actions: "invokeOnClose"
         }
       }
@@ -287,18 +321,15 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "focusOnClear": ctx => ctx["focusOnClear"],
     "openOnClick": ctx => ctx["openOnClick"],
     "isCustomValue && !allowCustomValue": ctx => ctx["isCustomValue && !allowCustomValue"],
     "autoComplete": ctx => ctx["autoComplete"],
-    "hasFocusedOption && autoComplete && closeOnSelect": ctx => ctx["hasFocusedOption && autoComplete && closeOnSelect"],
-    "hasFocusedOption && autoComplete": ctx => ctx["hasFocusedOption && autoComplete"],
-    "hasFocusedOption && closeOnSelect": ctx => ctx["hasFocusedOption && closeOnSelect"],
-    "hasFocusedOption": ctx => ctx["hasFocusedOption"],
-    "autoHighlight": ctx => ctx["autoHighlight"],
-    "closeOnSelect": ctx => ctx["closeOnSelect"],
-    "autoComplete && isLastOptionFocused": ctx => ctx["autoComplete && isLastOptionFocused"],
-    "autoComplete && isFirstOptionFocused": ctx => ctx["autoComplete && isFirstOptionFocused"],
-    "selectOnTab": ctx => ctx["selectOnTab"]
+    "hasSelectedItems": ctx => ctx["hasSelectedItems"],
+    "autoComplete && isLastItemHighlighted": ctx => ctx["autoComplete && isLastItemHighlighted"],
+    "autoComplete && isFirstItemHighlighted": ctx => ctx["autoComplete && isFirstItemHighlighted"],
+    "!closeOnSelect": ctx => ctx["!closeOnSelect"],
+    "selectOnBlur && hasHighlightedItem": ctx => ctx["selectOnBlur && hasHighlightedItem"],
+    "!isHighlightedItemVisible": ctx => ctx["!isHighlightedItemVisible"],
+    "autoHighlight": ctx => ctx["autoHighlight"]
   }
 });

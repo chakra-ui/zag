@@ -1,13 +1,16 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { getByTypeahead, raf } from "@zag-js/dom-query"
 import { setElementValue, trackFormControl } from "@zag-js/form-utils"
 import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
 import { proxyTabFocus } from "@zag-js/tabbable"
-import { compact, json } from "@zag-js/utils"
+import { addOrRemove, compact } from "@zag-js/utils"
+import { collection } from "./select.collection"
 import { dom } from "./select.dom"
-import type { MachineContext, MachineState, Option, UserDefinedContext } from "./select.types"
+import type { MachineContext, MachineState, UserDefinedContext } from "./select.types"
+
+const { and, not } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -15,15 +18,14 @@ export function machine(userContext: UserDefinedContext) {
     {
       id: "select",
       context: {
-        selectOnTab: false,
-        selectedOption: null,
-        highlightedOption: null,
+        value: [],
+        highlightedValue: null,
+        selectOnBlur: false,
         loop: false,
         closeOnSelect: true,
         disabled: false,
         ...ctx,
-        prevSelectedOption: null,
-        prevHighlightedOption: null,
+        collection: ctx.collection ?? collection.empty(),
         typeahead: getByTypeahead.defaultOptions,
         fieldsetDisabled: false,
         positioning: {
@@ -34,31 +36,40 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       computed: {
-        hasSelectedOption: (ctx) => ctx.selectedOption != null,
+        hasSelectedItems: (ctx) => ctx.value.length > 0,
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
-        selectedId: (ctx) => (ctx.selectedOption ? dom.getOptionId(ctx, ctx.selectedOption.value) : null),
-        highlightedId: (ctx) => (ctx.highlightedOption ? dom.getOptionId(ctx, ctx.highlightedOption.value) : null),
-        hasSelectedChanged: (ctx) => ctx.selectedOption?.value !== ctx.prevSelectedOption?.value,
-        hasHighlightedChanged: (ctx) => ctx.highlightedOption?.value !== ctx.prevHighlightedOption?.value,
+        selectedItems: (ctx) => ctx.collection.items(ctx.value),
+        highlightedItem: (ctx) => ctx.collection.item(ctx.highlightedValue),
+        valueAsString: (ctx) => ctx.collection.itemsToString(ctx.selectedItems),
       },
 
       initial: "idle",
 
       watch: {
-        selectedOption: ["syncSelectElement"],
+        open: ["toggleVisibility"],
+        value: ["syncSelectElement"],
       },
 
       on: {
-        HIGHLIGHT_OPTION: {
-          actions: ["setHighlightedOption"],
+        "HIGHLIGHTED_VALUE.SET": {
+          actions: ["setHighlightedItem"],
         },
-        SELECT_OPTION: {
-          actions: ["setSelectedOption"],
+        "ITEM.SELECT": {
+          actions: ["selectItem"],
         },
-        CLEAR_SELECTED: {
-          actions: ["clearSelectedOption"],
+        "ITEM.CLEAR": {
+          actions: ["clearItem"],
+        },
+        "VALUE.SET": {
+          actions: ["setSelectedItems"],
+        },
+        "VALUE.CLEAR": {
+          actions: ["clearSelectedItems"],
+        },
+        "COLLECTION.SET": {
+          actions: ["setCollection"],
         },
       },
 
@@ -68,191 +79,237 @@ export function machine(userContext: UserDefinedContext) {
         idle: {
           tags: ["closed"],
           on: {
-            TRIGGER_CLICK: {
+            "TRIGGER.CLICK": {
               target: "open",
+              actions: ["invokeOnOpen"],
             },
-            TRIGGER_FOCUS: {
+            "TRIGGER.FOCUS": {
               target: "focused",
             },
             OPEN: {
               target: "open",
+              actions: ["invokeOnOpen"],
             },
           },
         },
 
         focused: {
           tags: ["closed"],
-          entry: ["focusTrigger", "clearHighlightedOption"],
+          entry: ["focusTriggerEl"],
           on: {
-            TRIGGER_CLICK: {
-              target: "open",
-            },
-            TRIGGER_BLUR: {
-              target: "idle",
-              actions: ["clearHighlightedOption"],
-            },
-            TRIGGER_KEY: {
-              target: "open",
-            },
-            ARROW_UP: {
-              target: "open",
-              actions: ["highlightLastOption"],
-            },
-            ARROW_DOWN: {
-              target: "open",
-              actions: ["highlightFirstOption"],
-            },
-            ARROW_LEFT: [
-              {
-                guard: "hasSelectedOption",
-                actions: ["selectPreviousOption"],
-              },
-              {
-                actions: ["selectLastOption"],
-              },
-            ],
-            ARROW_RIGHT: [
-              {
-                guard: "hasSelectedOption",
-                actions: ["selectNextOption"],
-              },
-              {
-                actions: ["selectFirstOption"],
-              },
-            ],
-            HOME: {
-              actions: ["selectFirstOption"],
-            },
-            END: {
-              actions: ["selectLastOption"],
-            },
-            TYPEAHEAD: {
-              actions: ["selectMatchingOption"],
-            },
             OPEN: {
               target: "open",
+              actions: ["invokeOnOpen"],
+            },
+            "TRIGGER.BLUR": {
+              target: "idle",
+            },
+            "TRIGGER.CLICK": {
+              target: "open",
+              actions: ["invokeOnOpen"],
+            },
+            "TRIGGER.ENTER": [
+              {
+                guard: "hasSelectedItems",
+                target: "open",
+                actions: ["highlightFirstSelectedItem", "invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["highlightFirstItem", "invokeOnOpen"],
+              },
+            ],
+            "TRIGGER.ARROW_UP": [
+              {
+                guard: "hasSelectedItems",
+                target: "open",
+                actions: ["highlightFirstSelectedItem", "invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["highlightLastItem", "invokeOnOpen"],
+              },
+            ],
+            "TRIGGER.ARROW_DOWN": [
+              {
+                guard: "hasSelectedItems",
+                target: "open",
+                actions: ["highlightFirstSelectedItem", "invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["highlightFirstItem", "invokeOnOpen"],
+              },
+            ],
+            "TRIGGER.ARROW_LEFT": [
+              {
+                guard: and(not("multiple"), "hasSelectedItems"),
+                actions: ["selectPreviousItem"],
+              },
+              {
+                guard: not("multiple"),
+                actions: ["selectLastItem"],
+              },
+            ],
+            "TRIGGER.ARROW_RIGHT": [
+              {
+                guard: and(not("multiple"), "hasSelectedItems"),
+                actions: ["selectNextItem"],
+              },
+              {
+                guard: not("multiple"),
+                actions: ["selectFirstItem"],
+              },
+            ],
+            "TRIGGER.HOME": {
+              guard: not("multiple"),
+              actions: ["selectFirstItem"],
+            },
+            "TRIGGER.END": {
+              guard: not("multiple"),
+              actions: ["selectLastItem"],
+            },
+            "TRIGGER.TYPEAHEAD": {
+              guard: not("multiple"),
+              actions: ["selectMatchingItem"],
             },
           },
         },
 
         open: {
           tags: ["open"],
-          entry: ["focusContent", "highlightSelectedOption", "invokeOnOpen"],
+          entry: ["focusContentEl"],
           exit: ["scrollContentToTop"],
-          activities: ["trackInteractOutside", "computePlacement", "scrollToHighlightedOption", "proxyTabFocus"],
+          activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
           on: {
             CLOSE: {
               target: "focused",
-              actions: ["invokeOnClose"],
+              actions: ["clearHighlightedItem", "invokeOnClose"],
             },
-            TRIGGER_CLICK: {
+            "TRIGGER.CLICK": {
               target: "focused",
-              actions: ["invokeOnClose"],
+              actions: ["clearHighlightedItem", "invokeOnClose"],
             },
-            OPTION_CLICK: [
+            "ITEM.CLICK": [
+              {
+                guard: "closeOnSelect",
+                target: "focused",
+                actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"],
+              },
+              {
+                guard: "multiple",
+                actions: ["selectHighlightedItem"],
+              },
+              {
+                actions: ["selectHighlightedItem", "clearHighlightedItem"],
+              },
+            ],
+            "CONTENT.ENTER": [
+              {
+                guard: "closeOnSelect",
+                target: "focused",
+                actions: ["selectHighlightedItem", "clearHighlightedItem", "invokeOnClose"],
+              },
+              {
+                guard: "multiple",
+                actions: ["selectHighlightedItem"],
+              },
+              {
+                actions: ["selectHighlightedItem", "clearHighlightedItem"],
+              },
+            ],
+            "CONTENT.INTERACT_OUTSIDE": [
+              {
+                guard: and("selectOnBlur", "hasHighlightedItem"),
+                target: "idle",
+                actions: ["selectHighlightedItem", "invokeOnClose", "clearHighlightedItem"],
+              },
+              {
+                guard: "isTargetFocusable",
+                target: "idle",
+                actions: ["clearHighlightedItem", "invokeOnClose"],
+              },
               {
                 target: "focused",
-                actions: ["selectHighlightedOption", "invokeOnClose"],
-                guard: "closeOnSelect",
-              },
-              {
-                actions: ["selectHighlightedOption"],
+                actions: ["clearHighlightedItem", "invokeOnClose"],
               },
             ],
-            TRIGGER_KEY: [
+            "CONTENT.HOME": {
+              actions: ["highlightFirstItem"],
+            },
+            "CONTENT.END": {
+              actions: ["highlightLastItem"],
+            },
+            "CONTENT.ARROW_DOWN": [
               {
-                target: "focused",
-                actions: ["selectHighlightedOption", "invokeOnClose"],
-                guard: "closeOnSelect",
+                guard: "hasHighlightedItem",
+                actions: ["highlightNextItem"],
               },
               {
-                actions: ["selectHighlightedOption"],
+                actions: ["highlightFirstItem"],
               },
             ],
-            BLUR: {
-              target: "focused",
-              actions: ["invokeOnClose"],
-            },
-            HOME: {
-              actions: ["highlightFirstOption"],
-            },
-            END: {
-              actions: ["highlightLastOption"],
-            },
-            ARROW_DOWN: [
+            "CONTENT.ARROW_UP": [
               {
-                guard: "hasHighlightedOption",
-                actions: ["highlightNextOption"],
+                guard: "hasHighlightedItem",
+                actions: ["highlightPreviousItem"],
               },
               {
-                actions: ["highlightFirstOption"],
+                actions: ["highlightLastItem"],
               },
             ],
-            ARROW_UP: [
-              {
-                guard: "hasHighlightedOption",
-                actions: ["highlightPreviousOption"],
-              },
-              {
-                actions: ["highlightLastOption"],
-              },
-            ],
-            TYPEAHEAD: {
-              actions: ["highlightMatchingOption"],
+            "CONTENT.TYPEAHEAD": {
+              actions: ["highlightMatchingItem"],
             },
-            POINTER_MOVE: {
-              actions: ["highlightOption"],
+            "ITEM.POINTER_MOVE": {
+              actions: ["highlightItem"],
             },
-            POINTER_LEAVE: {
-              actions: ["clearHighlightedOption"],
+            "ITEM.POINTER_LEAVE": {
+              actions: ["clearHighlightedItem"],
             },
-            TAB: [
-              {
-                target: "idle",
-                actions: ["selectHighlightedOption", "invokeOnClose", "clearHighlightedOption"],
-                guard: "selectOnTab",
-              },
-              {
-                target: "idle",
-                actions: ["invokeOnClose", "clearHighlightedOption"],
-              },
-            ],
           },
         },
       },
     },
     {
       guards: {
-        hasHighlightedOption: (ctx) => ctx.highlightedId != null,
-        selectOnTab: (ctx) => !!ctx.selectOnTab,
-        hasSelectedOption: (ctx) => ctx.hasSelectedOption,
-        closeOnSelect: (ctx) => !!ctx.closeOnSelect,
+        multiple: (ctx) => !!ctx.multiple,
+        hasSelectedItems: (ctx) => ctx.hasSelectedItems,
+        hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
+        selectOnBlur: (ctx) => !!ctx.selectOnBlur,
+        closeOnSelect: (ctx, evt) => {
+          if (ctx.multiple) return false
+          return !!(evt.closeOnSelect ?? ctx.closeOnSelect)
+        },
+        isTargetFocusable: (_ctx, evt) => !!evt.focusable,
       },
       activities: {
         proxyTabFocus(ctx) {
-          return proxyTabFocus(dom.getContentElement(ctx), {
+          const contentEl = () => dom.getContentEl(ctx)
+          return proxyTabFocus(contentEl, {
             defer: true,
-            triggerElement: dom.getTriggerElement(ctx),
-            onFocus(el: HTMLElement) {
+            triggerElement: dom.getTriggerEl(ctx),
+            onFocus(el) {
               raf(() => el.focus({ preventScroll: true }))
             },
           })
         },
         trackFormControlState(ctx, _evt, { initialContext }) {
-          return trackFormControl(dom.getHiddenSelectElement(ctx), {
+          return trackFormControl(dom.getHiddenSelectEl(ctx), {
             onFieldsetDisabledChange(disabled) {
               ctx.fieldsetDisabled = disabled
             },
             onFormReset() {
-              set.selectedOption(ctx, initialContext.selectedOption)
+              set.selectedItems(ctx, initialContext.value)
             },
           })
         },
-        trackInteractOutside(ctx, _evt, { send }) {
+        trackDismissableElement(ctx, _evt, { send }) {
           let focusable = false
-          return trackDismissableElement(dom.getContentElement(ctx), {
+          const contentEl = () => dom.getContentEl(ctx)
+          return trackDismissableElement(contentEl, {
             defer: true,
-            exclude: [dom.getTriggerElement(ctx)],
+            exclude: [dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
             onFocusOutside: ctx.onFocusOutside,
             onPointerDownOutside: ctx.onPointerDownOutside,
             onInteractOutside(event) {
@@ -260,13 +317,15 @@ export function machine(userContext: UserDefinedContext) {
               ctx.onInteractOutside?.(event)
             },
             onDismiss() {
-              send({ type: "BLUR", src: "interact-outside", focusable })
+              send({ type: "CONTENT.INTERACT_OUTSIDE", focusable })
             },
           })
         },
         computePlacement(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
-          return getPlacement(dom.getTriggerElement(ctx), dom.getPositionerElement(ctx), {
+          const triggerEl = () => dom.getTriggerEl(ctx)
+          const positionerEl = () => dom.getPositionerEl(ctx)
+          return getPlacement(triggerEl, positionerEl, {
             defer: true,
             ...ctx.positioning,
             onComplete(data) {
@@ -274,105 +333,123 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
-        scrollToHighlightedOption(ctx, _evt, { getState }) {
+        scrollToHighlightedItem(ctx, _evt, { getState }) {
           const exec = () => {
             const state = getState()
+
             // don't scroll into view if we're using the pointer
-            if (state.event.type === "POINTER_MOVE") return
-            const option = dom.getHighlightedOption(ctx)
-            option?.scrollIntoView({ block: "nearest" })
+            if (state.event.type.startsWith("ITEM.POINTER")) return
+
+            const optionEl = dom.getHighlightedOptionEl(ctx)
+            optionEl?.scrollIntoView({ block: "nearest" })
           }
 
           raf(() => {
             exec()
           })
 
-          return observeAttributes(dom.getContentElement(ctx), ["aria-activedescendant"], exec)
+          return observeAttributes(dom.getContentEl(ctx), ["aria-activedescendant"], exec)
         },
       },
       actions: {
-        highlightPreviousOption(ctx) {
-          if (!ctx.highlightedId) return
-          const option = dom.getPreviousOption(ctx, ctx.highlightedId)
-          set.highlightedOption(ctx, dom.getOptionData(option))
+        toggleVisibility(ctx, _evt, { send }) {
+          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },
-        highlightNextOption(ctx) {
-          if (!ctx.highlightedId) return
-          const option = dom.getNextOption(ctx, ctx.highlightedId)
-          set.highlightedOption(ctx, dom.getOptionData(option))
+        highlightPreviousItem(ctx) {
+          if (ctx.highlightedValue == null) return
+          const value = ctx.collection.prev(ctx.highlightedValue)
+          set.highlightedItem(ctx, value)
         },
-        highlightFirstOption(ctx) {
-          const option = dom.getFirstOption(ctx)
-          set.highlightedOption(ctx, dom.getOptionData(option))
+        highlightNextItem(ctx) {
+          if (ctx.highlightedValue == null) return
+          const value = ctx.collection.next(ctx.highlightedValue)
+          set.highlightedItem(ctx, value)
         },
-        highlightLastOption(ctx) {
-          const option = dom.getLastOption(ctx)
-          set.highlightedOption(ctx, dom.getOptionData(option))
+        highlightFirstItem(ctx) {
+          const value = ctx.collection.first()
+          set.highlightedItem(ctx, value)
         },
-        focusContent(ctx) {
+        highlightLastItem(ctx) {
+          const value = ctx.collection.last()
+          set.highlightedItem(ctx, value)
+        },
+        focusContentEl(ctx) {
           raf(() => {
-            dom.getContentElement(ctx)?.focus({ preventScroll: true })
+            dom.getContentEl(ctx)?.focus({ preventScroll: true })
           })
         },
-        focusTrigger(ctx, evt) {
-          if (evt.focusable) return
+        focusTriggerEl(ctx) {
           raf(() => {
-            dom.getTriggerElement(ctx)?.focus({ preventScroll: true })
+            dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
           })
         },
-        selectHighlightedOption(ctx, evt) {
-          const id = evt.id ?? ctx.highlightedId
-          if (!id) return
-          const option = dom.getById(ctx, id)
-          set.selectedOption(ctx, dom.getOptionData(option))
+        selectHighlightedItem(ctx, evt) {
+          const value = evt.value ?? ctx.highlightedValue
+          if (value == null) return
+          set.selectedItem(ctx, value)
         },
-        selectFirstOption(ctx) {
-          const option = dom.getFirstOption(ctx)
-          set.selectedOption(ctx, dom.getOptionData(option))
+        highlightFirstSelectedItem(ctx) {
+          if (!ctx.hasSelectedItems) return
+          const [value] = ctx.collection.sort(ctx.value)
+          set.highlightedItem(ctx, value)
         },
-        selectLastOption(ctx) {
-          const option = dom.getLastOption(ctx)
-          set.selectedOption(ctx, dom.getOptionData(option))
+        highlightItem(ctx, evt) {
+          set.highlightedItem(ctx, evt.value)
         },
-        selectNextOption(ctx) {
-          if (!ctx.selectedId) return
-          const option = dom.getNextOption(ctx, ctx.selectedId)
-          set.selectedOption(ctx, dom.getOptionData(option))
+        highlightMatchingItem(ctx, evt) {
+          const value = ctx.collection.search(evt.key, {
+            state: ctx.typeahead,
+            currentValue: ctx.highlightedValue,
+          })
+
+          if (value == null) return
+          set.highlightedItem(ctx, value)
         },
-        selectPreviousOption(ctx) {
-          if (!ctx.selectedId) return
-          const option = dom.getPreviousOption(ctx, ctx.selectedId)
-          set.selectedOption(ctx, dom.getOptionData(option))
+        setHighlightedItem(ctx, evt) {
+          set.highlightedItem(ctx, evt.value)
         },
-        highlightSelectedOption(ctx) {
-          set.highlightedOption(ctx, ctx.selectedOption)
+        clearHighlightedItem(ctx) {
+          set.highlightedItem(ctx, null, true)
         },
-        highlightOption(ctx, evt) {
-          const option = evt.target ?? dom.getById(ctx, evt.id)
-          set.highlightedOption(ctx, dom.getOptionData(option))
+        selectItem(ctx, evt) {
+          set.selectedItem(ctx, evt.value)
         },
-        highlightMatchingOption(ctx, evt) {
-          const option = dom.getMatchingOption(ctx, evt.key, ctx.highlightedId)
-          set.highlightedOption(ctx, dom.getOptionData(option))
+        clearItem(ctx, evt) {
+          const value = ctx.value.filter((v) => v !== evt.value)
+          set.selectedItems(ctx, value)
         },
-        selectMatchingOption(ctx, evt) {
-          const option = dom.getMatchingOption(ctx, evt.key, ctx.selectedId)
-          set.selectedOption(ctx, dom.getOptionData(option))
+        setSelectedItems(ctx, evt) {
+          set.selectedItems(ctx, evt.value)
         },
-        setHighlightedOption(ctx, evt) {
-          set.highlightedOption(ctx, evt.value)
+        clearSelectedItems(ctx) {
+          set.selectedItems(ctx, [])
         },
-        clearHighlightedOption(ctx) {
-          set.highlightedOption(ctx, null, true)
+        selectPreviousItem(ctx) {
+          const value = ctx.collection.prev(ctx.value[0])
+          set.selectedItem(ctx, value)
         },
-        setSelectedOption(ctx, evt) {
-          set.selectedOption(ctx, evt.value)
+        selectNextItem(ctx) {
+          const value = ctx.collection.next(ctx.value[0])
+          set.selectedItem(ctx, value)
         },
-        clearSelectedOption(ctx) {
-          set.selectedOption(ctx, null, true)
+        selectFirstItem(ctx) {
+          const value = ctx.collection.first()
+          set.selectedItem(ctx, value)
+        },
+        selectLastItem(ctx) {
+          const value = ctx.collection.last()
+          set.selectedItem(ctx, value)
+        },
+        selectMatchingItem(ctx, evt) {
+          const value = ctx.collection.search(evt.key, {
+            state: ctx.typeahead,
+            currentValue: ctx.value[0],
+          })
+          if (value == null) return
+          set.selectedItem(ctx, value)
         },
         scrollContentToTop(ctx) {
-          dom.getContentElement(ctx)?.scrollTo(0, 0)
+          dom.getContentEl(ctx)?.scrollTo(0, 0)
         },
         invokeOnOpen(ctx) {
           ctx.onOpen?.()
@@ -381,10 +458,12 @@ export function machine(userContext: UserDefinedContext) {
           ctx.onClose?.()
         },
         syncSelectElement(ctx) {
-          const selectedOption = ctx.selectedOption
-          const node = dom.getHiddenSelectElement(ctx)
-          if (!node || !selectedOption) return
-          setElementValue(node, selectedOption.value, { type: "HTMLSelectElement" })
+          const selectEl = dom.getHiddenSelectEl(ctx)
+          if (!selectEl) return
+          setElementValue(selectEl, ctx.value.join(","), { type: "HTMLSelectElement" })
+        },
+        setCollection(ctx, evt) {
+          ctx.collection = evt.value
         },
       },
     },
@@ -392,7 +471,7 @@ export function machine(userContext: UserDefinedContext) {
 }
 
 function dispatchChangeEvent(ctx: MachineContext) {
-  const node = dom.getHiddenSelectElement(ctx)
+  const node = dom.getHiddenSelectEl(ctx)
   if (!node) return
   const win = dom.getWin(ctx)
   const changeEvent = new win.Event("change", { bubbles: true })
@@ -401,25 +480,35 @@ function dispatchChangeEvent(ctx: MachineContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    ctx.onChange?.(json(ctx.selectedOption))
+    ctx.onChange?.({ value: Array.from(ctx.value), items: ctx.selectedItems })
     dispatchChangeEvent(ctx)
   },
   highlightChange: (ctx: MachineContext) => {
-    ctx.onHighlight?.(json(ctx.highlightedOption))
+    ctx.onHighlight?.({ value: ctx.highlightedValue, item: ctx.highlightedItem })
   },
 }
 
 const set = {
-  selectedOption: (ctx: MachineContext, value: Option | null | undefined, force = false) => {
-    if (!value && !force) return
-    ctx.prevSelectedOption = ctx.selectedOption
-    ctx.selectedOption = value || null
+  selectedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
+    if (value == null && !force) return
+
+    if (value == null && force) {
+      ctx.value = []
+      invoke.change(ctx)
+      return
+    }
+
+    const nextValue = ctx.multiple ? addOrRemove(ctx.value, value!) : [value!]
+    ctx.value = nextValue
     invoke.change(ctx)
   },
-  highlightedOption: (ctx: MachineContext, value: Option | null | undefined, force = false) => {
-    if (!value && !force) return
-    ctx.prevHighlightedOption = ctx.highlightedOption
-    ctx.highlightedOption = value || null
+  selectedItems: (ctx: MachineContext, value: string[]) => {
+    ctx.value = value
+    invoke.change(ctx)
+  },
+  highlightedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
+    if (value == null && !force) return
+    ctx.highlightedValue = value ?? null
     invoke.highlightChange(ctx)
   },
 }

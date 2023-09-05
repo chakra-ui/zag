@@ -14,11 +14,11 @@ A Select component allows users pick a value from predefined options.
 
 **Features**
 
-- Support for selecting a single option
+- Support for selecting a single or multiple option
 - Keyboard support for opening the listbox using the arrow keys, including
   automatically focusing the first or last item.
 - Support for looping keyboard navigation.
-- Support for selecting an option with tab key.
+- Support for selecting an item on blur.
 - Typeahead to allow selecting options by typing text, even without opening the
   listbox
 - Support for Right to Left direction.
@@ -47,9 +47,10 @@ On a high level, the select consists of:
 - **Label**: The element that labels the select.
 - **Trigger**: The element that is used to open/close the select.
 - **Positioner**: The element that positions the select dynamically.
-- **Menu**: The popup element that contains the options.
-- **Option**: The option element.
-- **OptionGroup**: The element used to group options.
+- **Content**: The popup element that contains the options.
+- **Item**: The select item or option element.
+- **ItemIndicator**: The element that indicates the selected item.
+- **ItemGroup**: The element used to group related items.
 
 ## Usage
 
@@ -59,11 +60,13 @@ First, import the select package into your project
 import * as select from "@zag-js/select"
 ```
 
-The select package exports two key functions:
+The select package exports these functions:
 
 - `machine` — The state machine logic for the select.
 - `connect` — The function that translates the machine's state to JSX attributes
   and event handlers.
+- `collection` - The function that creates a collection interface from an array
+  of items.
 
 > You'll need to provide a unique `id` to the `useMachine` hook. This is used to
 > ensure that every part has a unique identifier.
@@ -72,6 +75,48 @@ Next, import the required hooks and functions for your framework and use the
 select machine in your project 🔥
 
 <CodeSnippet id="select/usage.mdx" />
+
+## Setting the initial value
+
+To set the initial value of the select, pass the `value` property to the select
+machine's context.
+
+> The `value` property must be an array of strings. If selecting a single value,
+> pass an array with a single string.
+
+```jsx {14}
+const collection = select.collection({
+  items: [
+    { label: "Nigeria", value: "ng" },
+    { label: "Ghana", value: "gh" },
+    { label: "Kenya", value: "ke" },
+    //...
+  ],
+})
+
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    collection,
+    value: ["ng"],
+  }),
+)
+```
+
+## Selecting multiple values
+
+To allow selecting multiple values, set the `multiple` property in the machine's
+context to `true`.
+
+```jsx {5}
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    collection,
+    multiple: true,
+  }),
+)
+```
 
 ## Usage within a form
 
@@ -82,17 +127,18 @@ To use select within a form, you'll need to:
 
 <CodeSnippet id="select/usage-with-form.mdx" />
 
-## Selecting option on tab key
+## Selecting option on blur
 
-While navigating the options, pressing the `Tab` key blurs the select and does
-nothing. In some cases, you might what the `Tab`key to select the currently
-highlighted option. To enable this behaviour, set `selectOnTab` to `true`.
+Use the `selectOnBlur` property to allow selecting the highlighted option when
+immediately interacting or focusing outside the select (e.g. using the `Tab`
+key).
 
-```jsx {4}
+```jsx {5}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
-    selectOnTab: true,
+    collection,
+    selectOnBlur: true,
   }),
 )
 ```
@@ -102,40 +148,49 @@ const [state, send] = useMachine(
 To disable the select, set the `disabled` property in the machine's context to
 `true`.
 
-```jsx {4}
+```jsx {5}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
+    collection,
     disabled: true,
   }),
 )
 ```
 
-## Disabling an option
+## Disabling an item
 
-To disable an option, pass the `disabled` property in the
-`api.getOptionProps(...)` function. This will make it unselectable via mouse and
-keyboard, and it will be skipped on keyboard navigation.
+To make a combobox option disabled, pass the `isItemDisabled` property to the
+collection function.
 
-```jsx
-//...
-<li {...api.getOptionProps({ label, value, disabled: true })}>
-  {option.label}
-</li>
-//...
+```jsx {3-5}
+const collection = select.collection({
+  items: countries,
+  isItemDisabled(item) {
+    return item.disabled
+  },
+})
+
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    collection,
+  }),
+)
 ```
 
 ## Close on select
 
-This behaviour ensures that the menu is closed when an option is selected and is
-`true` by default. It's only concerned with when an option is selected with
+This behaviour ensures that the menu is closed when an item is selected and is
+`true` by default. It's only concerned with when an item is selected with
 pointer, space key or enter key. To disable the behaviour, set the
 `closeOnSelect` property in the machine's context to `false`.
 
-```jsx {4}
+```jsx {5}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
+    collection,
     closeOnSelect: false,
   }),
 )
@@ -147,10 +202,11 @@ When navigating with the select using the arrow down and up keys, the select
 stops at the first and last options. If you need want the navigation to loop
 back to the first or last option, set the `loop: true` in the machine's context.
 
-```jsx {4}
+```jsx {5}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
+    collection,
     loop: true,
   }),
 )
@@ -158,16 +214,15 @@ const [state, send] = useMachine(
 
 ## Listening for highlight changes
 
-When an option is highlighted with the pointer or keyboard, the
-`highlightedOption` property in the machine's context is updated. You can listen
-for this change and do something with it.
+When an item is highlighted with the pointer or keyboard, use the `onHighlight`
+to listen for the change and do something with it.
 
 ```jsx {4-7}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
     onHighlight(details) {
-      // details => { label: string, value: string }
+      // details => { value: string | null, item: Item | null }
       console.log(details)
     },
   }),
@@ -176,15 +231,16 @@ const [state, send] = useMachine(
 
 ## Listening for selection changes
 
-When an option is selected, the `selectedOption` property in the machine's
-context is updated. You can listen for this change and do something with it.
+When an item is selected, use the `onChange` property to listen for the change
+and do something with it.
 
-```jsx {4-7}
+```jsx {5-7}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
-    onSelect(details) {
-      // details => { label: string, value: string }
+    collection,
+    onChange(details) {
+      // details => { value: string[], items: Item[] }
       console.log(details)
     },
   }),
@@ -197,10 +253,11 @@ When the select is opened or closed, the `onOpen` and `onClose` properties in
 the machine's context are called. You can listen for these events and do
 something with it.
 
-```jsx {4-9}
+```jsx {5-9}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
+    collection,
     onOpen() {
       console.log("Select opened")
     },
@@ -242,21 +299,21 @@ attribute.
 
 ### Selected state
 
-When an option is selected, it is given a `data-selected` attribute.
+When an item is selected, it is given a `data-selected` attribute.
 
 ```css
-[data-part="option"][data-selected] {
+[data-part="item"][data-selected] {
   /* styles for selected state */
 }
 ```
 
 ### Highlighted state
 
-When an option is higlighted, via keyboard navigation or pointer, it is given a
-`data-focus` attribute.
+When an item is higlighted, via keyboard navigation or pointer, it is given a
+`data-highlighted` attribute.
 
 ```css
-[data-part="option"][data-focus] {
+[data-part="item"][data-highlighted] {
   /* styles for highlighted state */
 }
 ```
@@ -290,13 +347,12 @@ attribute.
   /* styles for disabled label state */
 }
 
-[data-part="option"][data-disabled] {
+[data-part="item"][data-disabled] {
   /* styles for disabled option state */
 }
 ```
 
-> Optionally, when an option is disabled, it is given a `data-disabled`
-> attribute.
+> Optionally, when an item is disabled, it is given a `data-disabled` attribute.
 
 ### Empty state
 
