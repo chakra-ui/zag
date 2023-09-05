@@ -17,8 +17,8 @@ export default defineComponent({
     const collectionRef = computed(() =>
       combobox.collection({
         items: options.value,
-        getItemLabel: (item) => item.label,
-        getItemKey: (item) => item.code,
+        itemToString: (item) => item.label,
+        itemToValue: (item) => item.code,
       }),
     )
 

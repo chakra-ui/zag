@@ -40,9 +40,9 @@ export function machine(userContext: UserDefinedContext) {
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
-        selectedItems: (ctx) => ctx.collection.getItems(ctx.value),
-        highlightedItem: (ctx) => ctx.collection.getItem(ctx.highlightedValue),
-        valueAsString: (ctx) => ctx.collection.getItemLabels(ctx.selectedItems).join(", "),
+        selectedItems: (ctx) => ctx.collection.items(ctx.value),
+        highlightedItem: (ctx) => ctx.collection.item(ctx.highlightedValue),
+        valueAsString: (ctx) => ctx.collection.itemsToString(ctx.selectedItems),
       },
 
       initial: "idle",
@@ -95,7 +95,7 @@ export function machine(userContext: UserDefinedContext) {
 
         focused: {
           tags: ["closed"],
-          entry: ["focusTrigger"],
+          entry: ["focusTriggerEl"],
           on: {
             OPEN: {
               target: "open",
@@ -178,7 +178,7 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["open"],
-          entry: ["focusContent"],
+          entry: ["focusContentEl"],
           exit: ["scrollContentToTop"],
           activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
           on: {
@@ -285,7 +285,8 @@ export function machine(userContext: UserDefinedContext) {
       },
       activities: {
         proxyTabFocus(ctx) {
-          return proxyTabFocus(dom.getContentEl(ctx), {
+          const contentEl = () => dom.getContentEl(ctx)
+          return proxyTabFocus(contentEl, {
             defer: true,
             triggerElement: dom.getTriggerEl(ctx),
             onFocus(el) {
@@ -305,7 +306,8 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackDismissableElement(ctx, _evt, { send }) {
           let focusable = false
-          return trackDismissableElement(dom.getContentEl(ctx), {
+          const contentEl = () => dom.getContentEl(ctx)
+          return trackDismissableElement(contentEl, {
             defer: true,
             exclude: [dom.getTriggerEl(ctx)],
             onFocusOutside: ctx.onFocusOutside,
@@ -321,7 +323,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         computePlacement(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
-          return getPlacement(dom.getTriggerEl(ctx), dom.getPositionerEl(ctx), {
+          const triggerEl = () => dom.getTriggerEl(ctx)
+          const positionerEl = () => dom.getPositionerEl(ctx)
+          return getPlacement(triggerEl, positionerEl, {
             defer: true,
             ...ctx.positioning,
             onComplete(data) {
@@ -332,8 +336,10 @@ export function machine(userContext: UserDefinedContext) {
         scrollToHighlightedItem(ctx, _evt, { getState }) {
           const exec = () => {
             const state = getState()
+
             // don't scroll into view if we're using the pointer
             if (state.event.type.startsWith("ITEM.POINTER")) return
+
             const optionEl = dom.getHighlightedOptionEl(ctx)
             optionEl?.scrollIntoView({ block: "nearest" })
           }
@@ -350,55 +356,54 @@ export function machine(userContext: UserDefinedContext) {
           send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },
         highlightPreviousItem(ctx) {
-          if (!ctx.highlightedValue) return
-          const prevKey = ctx.collection.getKeyBefore(ctx.highlightedValue)
-          set.highlightedItem(ctx, prevKey)
+          if (ctx.highlightedValue == null) return
+          const value = ctx.collection.prev(ctx.highlightedValue)
+          set.highlightedItem(ctx, value)
         },
         highlightNextItem(ctx) {
-          if (!ctx.highlightedValue) return
-          const nextKey = ctx.collection.getKeyAfter(ctx.highlightedValue)
-          set.highlightedItem(ctx, nextKey)
+          if (ctx.highlightedValue == null) return
+          const value = ctx.collection.next(ctx.highlightedValue)
+          set.highlightedItem(ctx, value)
         },
         highlightFirstItem(ctx) {
-          const firstKey = ctx.collection.getFirstKey()
-          set.highlightedItem(ctx, firstKey)
+          const value = ctx.collection.first()
+          set.highlightedItem(ctx, value)
         },
         highlightLastItem(ctx) {
-          const lastKey = ctx.collection.getLastKey()
-          set.highlightedItem(ctx, lastKey)
+          const value = ctx.collection.last()
+          set.highlightedItem(ctx, value)
         },
-        focusContent(ctx) {
+        focusContentEl(ctx) {
           raf(() => {
             dom.getContentEl(ctx)?.focus({ preventScroll: true })
           })
         },
-        focusTrigger(ctx) {
+        focusTriggerEl(ctx) {
           raf(() => {
             dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
           })
         },
         selectHighlightedItem(ctx, evt) {
-          const key = evt.value ?? ctx.highlightedValue
-          if (!key) return
-          set.selectedItem(ctx, key)
+          const value = evt.value ?? ctx.highlightedValue
+          if (value == null) return
+          set.selectedItem(ctx, value)
         },
         highlightFirstSelectedItem(ctx) {
           if (!ctx.hasSelectedItems) return
-          const [firstSelectedKey] = ctx.collection.sortKeys(ctx.value)
-          set.highlightedItem(ctx, firstSelectedKey)
+          const [value] = ctx.collection.sort(ctx.value)
+          set.highlightedItem(ctx, value)
         },
         highlightItem(ctx, evt) {
           set.highlightedItem(ctx, evt.value)
         },
         highlightMatchingItem(ctx, evt) {
-          const matchingKey = ctx.collection.getKeyFromSearch({
-            eventKey: evt.key,
+          const value = ctx.collection.search(evt.key, {
             state: ctx.typeahead,
-            fromKey: ctx.highlightedValue,
+            currentValue: ctx.highlightedValue,
           })
 
-          if (!matchingKey) return
-          set.highlightedItem(ctx, matchingKey)
+          if (value == null) return
+          set.highlightedItem(ctx, value)
         },
         setHighlightedItem(ctx, evt) {
           set.highlightedItem(ctx, evt.value)
@@ -420,29 +425,28 @@ export function machine(userContext: UserDefinedContext) {
           set.selectedItems(ctx, [])
         },
         selectPreviousItem(ctx) {
-          const prevKey = ctx.collection.getKeyBefore(ctx.value[0])
-          set.selectedItem(ctx, prevKey)
+          const value = ctx.collection.prev(ctx.value[0])
+          set.selectedItem(ctx, value)
         },
         selectNextItem(ctx) {
-          const nextKey = ctx.collection.getKeyAfter(ctx.value[0])
-          set.selectedItem(ctx, nextKey)
+          const value = ctx.collection.next(ctx.value[0])
+          set.selectedItem(ctx, value)
         },
         selectFirstItem(ctx) {
-          const firstKey = ctx.collection.getFirstKey()
-          set.selectedItem(ctx, firstKey)
+          const value = ctx.collection.first()
+          set.selectedItem(ctx, value)
         },
         selectLastItem(ctx) {
-          const lastKey = ctx.collection.getLastKey()
-          set.selectedItem(ctx, lastKey)
+          const value = ctx.collection.last()
+          set.selectedItem(ctx, value)
         },
         selectMatchingItem(ctx, evt) {
-          const matchingKey = ctx.collection.getKeyFromSearch({
-            eventKey: evt.key,
+          const value = ctx.collection.search(evt.key, {
             state: ctx.typeahead,
-            fromKey: ctx.value[0],
+            currentValue: ctx.value[0],
           })
-          if (!matchingKey) return
-          set.selectedItem(ctx, matchingKey)
+          if (value == null) return
+          set.selectedItem(ctx, value)
         },
         scrollContentToTop(ctx) {
           dom.getContentEl(ctx)?.scrollTo(0, 0)
@@ -456,8 +460,7 @@ export function machine(userContext: UserDefinedContext) {
         syncSelectElement(ctx) {
           const selectEl = dom.getHiddenSelectEl(ctx)
           if (!selectEl) return
-          const selectedKeys = ctx.collection.getItemKeys(ctx.selectedItems)
-          setElementValue(selectEl, selectedKeys.join(","), { type: "HTMLSelectElement" })
+          setElementValue(selectEl, ctx.value.join(","), { type: "HTMLSelectElement" })
         },
         setCollection(ctx, evt) {
           ctx.collection = evt.value
@@ -504,8 +507,8 @@ const set = {
     invoke.change(ctx)
   },
   highlightedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
-    if (!value && !force) return
-    ctx.highlightedValue = value || null
+    if (value == null && !force) return
+    ctx.highlightedValue = value ?? null
     invoke.highlightChange(ctx)
   },
 }

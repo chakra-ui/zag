@@ -14,8 +14,8 @@ export default function Page() {
   const collection = createMemo(() =>
     combobox.collection({
       items: options(),
-      getItemKey: (item) => item.code,
-      getItemLabel: (item) => item.label,
+      itemToValue: (item) => item.code,
+      itemToString: (item) => item.label,
     }),
   )
 

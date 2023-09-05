@@ -173,7 +173,7 @@ export type ItemProps = {
 }
 
 export type ItemState = {
-  key: string
+  value: string
   isDisabled: boolean
   isSelected: boolean
   isHighlighted: boolean

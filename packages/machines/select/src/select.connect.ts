@@ -22,12 +22,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   function getItemState(props: ItemProps) {
     const { item } = props
     const disabled = state.context.collection.isItemDisabled(item)
-    const key = state.context.collection.getItemKey(item)
+    const value = state.context.collection.itemToValue(item)
     return {
-      key,
+      value,
       isDisabled: Boolean(disabled || isDisabled),
-      isHighlighted: state.context.highlightedValue === key,
-      isSelected: state.context.collection.hasItemKey(state.context.selectedItems, key),
+      isHighlighted: state.context.highlightedValue === value,
+      isSelected: state.context.value.includes(value),
     }
   }
 
@@ -177,11 +177,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
 
       return normalize.element({
-        id: dom.getItemId(state.context, itemState.key),
+        id: dom.getItemId(state.context, itemState.value),
         role: "option",
         ...parts.item.attrs,
         dir: state.context.dir,
-        "data-value": itemState.key,
+        "data-value": itemState.value,
         "aria-selected": itemState.isSelected,
         "data-state": itemState.isSelected ? "checked" : "unchecked",
         "data-highlighted": dataAttr(itemState.isHighlighted),
@@ -189,12 +189,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-disabled": ariaAttr(itemState.isDisabled),
         onPointerMove(event) {
           if (!isInteractive || event.pointerType !== "mouse") return
-          if (itemState.key === state.context.highlightedValue) return
-          send({ type: "ITEM.POINTER_MOVE", value: itemState.key })
+          if (itemState.value === state.context.highlightedValue) return
+          send({ type: "ITEM.POINTER_MOVE", value: itemState.value })
         },
         onPointerUp() {
           if (!isInteractive || itemState.isDisabled) return
-          send({ type: "ITEM.CLICK", src: "pointerup", value: itemState.key })
+          send({ type: "ITEM.CLICK", src: "pointerup", value: itemState.value })
         },
         onPointerLeave(event) {
           if (event.pointerType !== "mouse") return

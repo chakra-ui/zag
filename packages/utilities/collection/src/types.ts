@@ -5,8 +5,7 @@ export type CollectionSearchState = {
 
 export type CollectionSearchOptions = {
   state: CollectionSearchState
-  fromKey: string | null
-  eventKey: string
+  currentValue: string | null
   timeout?: number
 }
 
@@ -17,9 +16,9 @@ export type CollectionItem = {
 export type CollectionNode<T extends CollectionItem> = {
   item: T
   index: number
-  key: string
-  prevKey: string | null
-  nextKey: string | null
+  value: string
+  previousValue: string | null
+  nextValue: string | null
 }
 
 export type CollectionOptions<T extends CollectionItem> = {
@@ -28,13 +27,13 @@ export type CollectionOptions<T extends CollectionItem> = {
    */
   items: T[]
   /**
-   * The key of the item
+   * The value of the item
    */
-  getItemKey?: (item: T) => string
+  itemToValue?: (item: T) => string
   /**
    * The label of the item
    */
-  getItemLabel?: (item: T) => string
+  itemToString?: (item: T) => string
   /**
    * Whether the item is disabled
    */

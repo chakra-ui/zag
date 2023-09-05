@@ -64,8 +64,8 @@ export function Combobox(props: ComboboxProps) {
 
   const collection = combobox.collection({
     items: options,
-    getItemKey: (item) => item.code,
-    getItemLabel: (item) => item.label,
+    itemToValue: (item) => item.code,
+    itemToString: (item) => item.label,
   })
 
   const [state, send] = useMachine(

@@ -14,8 +14,8 @@ export default defineComponent({
     const collectionRef = computed(() =>
       combobox.collection({
         items: options.value,
-        getItemKey: (item) => item.code,
-        getItemLabel: (item) => item.label,
+        itemToValue: (item) => item.code,
+        itemToString: (item) => item.label,
       }),
     )
 
@@ -23,8 +23,7 @@ export default defineComponent({
       combobox.machine({
         collection: collectionRef.value,
         id: "1",
-        onOpenChange(open) {
-          if (!open) return
+        onOpen() {
           options.value = comboboxData
         },
         onInputChange({ value }) {

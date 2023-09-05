@@ -77,7 +77,7 @@ const fetchMachine = createMachine({
     },
     focused: {
       tags: ["closed"],
-      entry: ["focusTrigger"],
+      entry: ["focusTriggerEl"],
       on: {
         OPEN: {
           target: "open",
@@ -144,7 +144,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      entry: ["focusContent"],
+      entry: ["focusContentEl"],
       exit: ["scrollContentToTop"],
       activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
       on: {

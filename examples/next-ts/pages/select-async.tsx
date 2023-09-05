@@ -23,7 +23,7 @@ const CaretIcon = () => (
 export default function Page() {
   const controls = useControls(selectControls)
 
-  const [items, setItems] = useState([])
+  const [items, setItems] = useState<{ name: string; url: string }[]>([])
 
   useEffect(() => {
     async function load() {
@@ -39,8 +39,8 @@ export default function Page() {
     select.machine({
       collection: select.collection({
         items,
-        getItemKey(item) {
-          return item?.name
+        itemToValue(item) {
+          return item.name
         },
       }),
       id: useId(),
@@ -52,7 +52,9 @@ export default function Page() {
           () =>
             select.collection({
               items,
-              getItemKey: (item) => item?.name,
+              itemToValue(item) {
+                return item.name
+              },
             }),
           [items],
         ),

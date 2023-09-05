@@ -51,9 +51,9 @@ export function machine(userContext: UserDefinedContext) {
         isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
         autoComplete: (ctx) => ctx.inputBehavior === "autocomplete",
         autoHighlight: (ctx) => ctx.inputBehavior === "autohighlight",
-        selectedItems: (ctx) => ctx.collection.getItems(ctx.value),
-        highlightedItem: (ctx) => ctx.collection.getItem(ctx.highlightedValue),
-        valueAsString: (ctx) => ctx.collection.getItemLabels(ctx.selectedItems).join(", "),
+        selectedItems: (ctx) => ctx.collection.items(ctx.value),
+        highlightedItem: (ctx) => ctx.collection.item(ctx.highlightedValue),
+        valueAsString: (ctx) => ctx.collection.itemsToString(ctx.selectedItems),
         hasSelectedItems: (ctx) => ctx.value.length > 0,
       },
 
@@ -403,8 +403,8 @@ export function machine(userContext: UserDefinedContext) {
         isInputValueEmpty: (ctx) => ctx.isInputValueEmpty,
         autoComplete: (ctx) => ctx.autoComplete && !ctx.multiple,
         autoHighlight: (ctx) => ctx.autoHighlight,
-        isFirstItemHighlighted: (ctx) => ctx.collection.getFirstKey() === ctx.highlightedValue,
-        isLastItemHighlighted: (ctx) => ctx.collection.getLastKey() === ctx.highlightedValue,
+        isFirstItemHighlighted: (ctx) => ctx.collection.first() === ctx.highlightedValue,
+        isLastItemHighlighted: (ctx) => ctx.collection.last() === ctx.highlightedValue,
         isCustomValue: (ctx) => ctx.inputValue !== ctx.valueAsString,
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
@@ -542,29 +542,29 @@ export function machine(userContext: UserDefinedContext) {
           ctx.onClose?.()
         },
         highlightFirstItem(ctx) {
-          const firstKey = ctx.collection.getFirstKey()
-          set.highlightedItem(ctx, firstKey)
+          const value = ctx.collection.first()
+          set.highlightedItem(ctx, value)
         },
         highlightLastItem(ctx) {
-          const lastKey = ctx.collection.getLastKey()
-          set.highlightedItem(ctx, lastKey)
+          const value = ctx.collection.last()
+          set.highlightedItem(ctx, value)
         },
         highlightNextItem(ctx) {
-          const nextKey = ctx.collection.getKeyAfter(ctx.highlightedValue) ?? ctx.collection.getFirstKey()
-          set.highlightedItem(ctx, nextKey)
+          const value = ctx.collection.next(ctx.highlightedValue) ?? ctx.collection.first()
+          set.highlightedItem(ctx, value)
         },
         highlightPrevItem(ctx) {
-          const prevKey = ctx.collection.getKeyBefore(ctx.highlightedValue) ?? ctx.collection.getLastKey()
-          set.highlightedItem(ctx, prevKey)
+          const value = ctx.collection.prev(ctx.highlightedValue) ?? ctx.collection.last()
+          set.highlightedItem(ctx, value)
         },
         highlightFirstSelectedItem(ctx) {
-          const [firstKey] = ctx.collection.sortKeys(ctx.value)
-          set.highlightedItem(ctx, firstKey)
+          const [value] = ctx.collection.sort(ctx.value)
+          set.highlightedItem(ctx, value)
         },
         autofillInputValue(ctx, evt) {
           const inputEl = dom.getInputEl(ctx)
           if (!ctx.autoComplete || !inputEl || !KEYDOWN_EVENT_REGEX.test(evt.type)) return
-          const valueText = ctx.collection.getKeyLabel(ctx.highlightedValue)
+          const valueText = ctx.collection.valueToString(ctx.highlightedValue)
           inputEl.value = valueText || ctx.inputValue
         },
         setCollection(ctx, evt) {

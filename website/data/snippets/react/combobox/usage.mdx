@@ -16,8 +16,8 @@ export function Combobox() {
       id: useId(),
       collection: combobox.collection({
         items: comboboxData,
-        getItemKey: (item) => item.code,
-        getItemLabel: (item) => item.label,
+        itemToValue: (item) => item.code,
+        itemToString: (item) => item.label,
       }),
       onOpen() {
         setOptions(comboboxData)

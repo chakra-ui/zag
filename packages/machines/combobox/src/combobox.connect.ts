@@ -25,12 +25,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   function getItemState(props: ItemProps) {
     const { item } = props
-    const key = collection.getItemKey(item)
+    const value = collection.itemToValue(item)
     return {
-      key,
+      value,
       isDisabled: collection.isItemDisabled(item),
-      isHighlighted: state.context.highlightedValue === key,
-      isSelected: collection.hasItemKey(state.context.selectedItems, key),
+      isHighlighted: state.context.highlightedValue === value,
+      isSelected: state.context.value.includes(value),
     }
   }
 
@@ -273,7 +273,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getItemProps(props) {
       const itemState = getItemState(props)
-      const value = itemState.key
+      const value = itemState.value
 
       return normalize.element({
         ...parts.item.attrs,
@@ -286,7 +286,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-selected": itemState.isHighlighted,
         "aria-disabled": itemState.isDisabled,
         "data-disabled": dataAttr(itemState.isDisabled),
-        "data-value": itemState.key,
+        "data-value": itemState.value,
         onPointerMove() {
           if (itemState.isDisabled) return
           send({ type: "ITEM.POINTER_OVER", value })

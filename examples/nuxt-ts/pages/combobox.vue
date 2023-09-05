@@ -9,8 +9,8 @@ const options = ref(comboboxData)
 const collectionRef = computed(() =>
   combobox.collection({
     items: options.value,
-    getItemKey: (item) => item.code,
-    getItemLabel: (item) => item.label,
+    itemToValue: (item) => item.code,
+    itemToString: (item) => item.label,
   }),
 )
 
