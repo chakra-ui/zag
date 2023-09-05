@@ -76,6 +76,46 @@ select machine in your project 🔥
 
 <CodeSnippet id="select/usage.mdx" />
 
+## Setting the initial value
+
+To set the initial value of the select, pass the `value` property to the select
+machine's context.
+
+> The `value` property must be an array of strings. If selecting a single value,
+> pass an array with a single string.
+
+```jsx {13}
+const collection = select.collection({
+  items: [
+    { label: "Nigeria", value: "ng" },
+    { label: "Ghana", value: "gh" },
+    { label: "Kenya", value: "ke" },
+    //...
+  ],
+})
+
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    value: ["ng"],
+  }),
+)
+```
+
+## Selecting multiple values
+
+To allow selecting multiple values, set the `multiple` property in the machine's
+context to `true`.
+
+```jsx {4}
+const [state, send] = useMachine(
+  select.machine({
+    id: useId(),
+    multiple: true,
+  }),
+)
+```
+
 ## Usage within a form
 
 To use select within a form, you'll need to:
