@@ -21,9 +21,7 @@ const fetchMachine = createMachine({
     "autoComplete": false,
     "hasSelectedItems": false,
     "autoComplete && isLastItemHighlighted": false,
-    "!hasHighlightedItem && hasSelectedItems": false,
     "autoComplete && isFirstItemHighlighted": false,
-    "!hasHighlightedItem && hasSelectedItems": false,
     "!closeOnSelect": false,
     "autoComplete": false,
     "!closeOnSelect": false,
@@ -167,17 +165,11 @@ const fetchMachine = createMachine({
           cond: "autoComplete && isLastItemHighlighted",
           actions: ["clearHighlightedItem", "scrollContentToTop"]
         }, {
-          cond: "!hasHighlightedItem && hasSelectedItems",
-          actions: ["highlightFirstSelectedItem"]
-        }, {
           actions: ["highlightNextItem"]
         }],
         "INPUT.ARROW_UP": [{
           cond: "autoComplete && isFirstItemHighlighted",
           actions: "clearHighlightedItem"
-        }, {
-          cond: "!hasHighlightedItem && hasSelectedItems",
-          actions: ["highlightFirstSelectedItem"]
         }, {
           actions: "highlightPrevItem"
         }],
@@ -334,7 +326,6 @@ const fetchMachine = createMachine({
     "autoComplete": ctx => ctx["autoComplete"],
     "hasSelectedItems": ctx => ctx["hasSelectedItems"],
     "autoComplete && isLastItemHighlighted": ctx => ctx["autoComplete && isLastItemHighlighted"],
-    "!hasHighlightedItem && hasSelectedItems": ctx => ctx["!hasHighlightedItem && hasSelectedItems"],
     "autoComplete && isFirstItemHighlighted": ctx => ctx["autoComplete && isFirstItemHighlighted"],
     "!closeOnSelect": ctx => ctx["!closeOnSelect"],
     "selectOnBlur && hasHighlightedItem": ctx => ctx["selectOnBlur && hasHighlightedItem"],

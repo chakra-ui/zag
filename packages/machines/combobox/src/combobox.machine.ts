@@ -201,10 +201,6 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["clearHighlightedItem", "scrollContentToTop"],
               },
               {
-                guard: and(not("hasHighlightedItem"), "hasSelectedItems"),
-                actions: ["highlightFirstSelectedItem"],
-              },
-              {
                 actions: ["highlightNextItem"],
               },
             ],
@@ -212,10 +208,6 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: and("autoComplete", "isFirstItemHighlighted"),
                 actions: "clearHighlightedItem",
-              },
-              {
-                guard: and(not("hasHighlightedItem"), "hasSelectedItems"),
-                actions: ["highlightFirstSelectedItem"],
               },
               {
                 actions: "highlightPrevItem",
