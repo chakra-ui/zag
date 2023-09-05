@@ -11,14 +11,16 @@ const comboboxData = [
 export function Combobox() {
   const [options, setOptions] = useState(comboboxData)
 
+  const collection = combobox.collection({
+    items: comboboxData,
+    itemToValue: (item) => item.code,
+    itemToString: (item) => item.label,
+  })
+
   const [state, send] = useMachine(
     combobox.machine({
       id: useId(),
-      collection: combobox.collection({
-        items: comboboxData,
-        itemToValue: (item) => item.code,
-        itemToString: (item) => item.label,
-      }),
+      collection,
       onOpen() {
         setOptions(comboboxData)
       },
@@ -29,6 +31,9 @@ export function Combobox() {
         setOptions(filtered.length > 0 ? filtered : comboboxData)
       },
     }),
+    {
+      context: { collection },
+    },
   )
 
   const api = combobox.connect(state, send, normalizeProps)
