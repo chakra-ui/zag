@@ -44,6 +44,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("CLICK")
       },
       onFocus() {
+        if (state.event.type === "POINTER_DOWN") return
         send("FOCUS")
       },
       onBlur() {
