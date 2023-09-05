@@ -20,6 +20,7 @@ function Select() {
         <label {...api.labelProps}>Label</label>
         <button {...api.triggerProps}>
           <span>{api.valueAsString || "Select option"}</span>
+          <span>▼</span>
         </button>
       </div>
 
