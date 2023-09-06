@@ -60,12 +60,13 @@ export default function Page() {
     <>
       <main className="select">
         <div {...api.rootProps}>
+          <label {...api.labelProps}>Label</label>
           <div {...api.controlProps}>
-            <label {...api.labelProps}>Label</label>
             <button {...api.triggerProps}>
               <span>{api.hasSelectedItems ? api.valueAsString : "Select option"}</span>
               <span>▼</span>
             </button>
+            <button {...api.clearTriggerProps}>X</button>
           </div>
 
           <Portal>

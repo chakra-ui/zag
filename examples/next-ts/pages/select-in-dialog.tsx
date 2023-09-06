@@ -16,12 +16,13 @@ function Select() {
 
   return (
     <div {...api.rootProps}>
+      <label {...api.labelProps}>Label</label>
       <div {...api.controlProps}>
-        <label {...api.labelProps}>Label</label>
         <button {...api.triggerProps}>
           <span>{api.valueAsString || "Select option"}</span>
           <span>▼</span>
         </button>
+        <button {...api.clearTriggerProps}>X</button>
       </div>
 
       <div {...api.positionerProps}>
