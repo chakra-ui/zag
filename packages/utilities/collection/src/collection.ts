@@ -1,5 +1,27 @@
 import type { CollectionItem, CollectionNode, CollectionOptions, CollectionSearchOptions } from "./types"
 
+const isObject = (v: any): v is Record<string, any> => typeof v === "object" && v !== null && !Array.isArray(v)
+
+const hasKey = <T>(obj: T, key: string): obj is T & Record<string, any> =>
+  Object.prototype.hasOwnProperty.call(obj, key)
+
+const fallback = {
+  itemToValue(item: any) {
+    if (typeof item === "string") return item
+    if (isObject(item) && hasKey(item, "value")) return item.value
+    return ""
+  },
+  itemToString(item: any) {
+    if (typeof item === "string") return item
+    if (isObject(item) && hasKey(item, "label")) return item.label
+    return fallback.itemToValue(item)
+  },
+  itemToDisabled(item: any) {
+    if (isObject(item) && hasKey(item, "disabled")) return !!item.disabled
+    return false
+  },
+}
+
 export class Collection<T extends CollectionItem = CollectionItem> {
   /**
    * The collection nodes
@@ -29,17 +51,19 @@ export class Collection<T extends CollectionItem = CollectionItem> {
    * Iterate over the collection items and create a map of nodes
    */
   private iterate = (): Collection<T> => {
-    const { items, isItemDisabled } = this.options
+    const { items } = this.options
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i]
 
       const value = this.itemToValue(item)
       const label = this.itemToString(item)
+      const disabled = this.itemToDisabled(item)
 
       const node: CollectionNode<T> = {
-        item: { ...item, label },
+        item,
         index: i,
+        label,
         value: value,
         previousValue: this.itemToValue(items[i - 1]) ?? null,
         nextValue: this.itemToValue(items[i + 1]) ?? null,
@@ -47,7 +71,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
 
       this.nodes.set(value, node)
 
-      if (isItemDisabled?.(item)) {
+      if (disabled) {
         this.disabledValues.add(value)
       }
 
@@ -116,7 +140,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
    */
   itemToValue = (item: T): string => {
     if (!item) return ""
-    return this.options.itemToValue?.(item) ?? item?.value ?? ""
+    return this.options.itemToValue?.(item) ?? fallback.itemToValue(item)
   }
 
   /**
@@ -124,7 +148,15 @@ export class Collection<T extends CollectionItem = CollectionItem> {
    */
   itemToString = (item: T | null): string => {
     if (!item) return ""
-    return this.options.itemToString?.(item) ?? item?.label ?? this.itemToValue(item)
+    return this.options.itemToString?.(item) ?? fallback.itemToString(item)
+  }
+
+  /**
+   * Whether an item is disabled
+   */
+  itemToDisabled = (item: T | null): boolean => {
+    if (!item) return false
+    return this.options.isItemDisabled?.(item) ?? fallback.itemToDisabled(item)
   }
 
   /**
@@ -132,7 +164,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
    */
   valueToString = (value: string | null): string => {
     if (value == null) return ""
-    return this.itemToString(this.item(value))
+    return this.nodes.get(value)?.label ?? ""
   }
 
   /**
@@ -257,10 +289,10 @@ export class Collection<T extends CollectionItem = CollectionItem> {
     const isSingleKey = text.length === 1
 
     if (isSingleKey) {
-      nodes = nodes.filter((item) => item.value !== currentValue)
+      nodes = nodes.filter((node) => node.value !== currentValue)
     }
 
-    return nodes.find((node) => match(this.itemToString(node.item), text))
+    return nodes.find((node) => match(node.label, text))
   }
 
   /**

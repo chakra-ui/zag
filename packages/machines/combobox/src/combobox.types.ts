@@ -1,8 +1,10 @@
-import type { Collection, CollectionItem } from "@zag-js/collection"
+import type { Collection, CollectionItem, CollectionOptions } from "@zag-js/collection"
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+
+export type { CollectionOptions }
 
 type IntlTranslations = {
   triggerLabel?: string
@@ -23,7 +25,21 @@ type ElementIds = Partial<{
   itemGroupLabel(id: string | number): string
 }>
 
-type PublicContext = DirectionProperty &
+export type ValueChangeDetails<T extends CollectionItem = CollectionItem> = {
+  value: string[]
+  items: T[]
+}
+
+export type HighlightChangeDetails<T extends CollectionItem = CollectionItem> = {
+  value: string | null
+  item: T | null
+}
+
+type InputValueChangeDetails = {
+  value: string
+}
+
+type PublicContext<T extends CollectionItem = CollectionItem> = DirectionProperty &
   CommonProperties &
   InteractOutsideHandlers & {
     /**
@@ -109,16 +125,16 @@ type PublicContext = DirectionProperty &
     /**
      * Function called when the input's value changes
      */
-    onInputChange?: (details: { value: string }) => void
+    onInputChange?: (details: InputValueChangeDetails) => void
     /**
      * Function called when a new item is selected
      */
-    onChange?: (details: { value: string[]; items: CollectionItem[] }) => void
+    onChange?: (details: ValueChangeDetails<T>) => void
     /**
      * Function called when an item is highlighted using the pointer
      * or keyboard navigation.
      */
-    onHighlight?: (details: { value: string | null; item: CollectionItem | null }) => void
+    onHighlight?: (details: HighlightChangeDetails<T>) => void
     /**
      * Function called when the popup is opened
      */
@@ -148,7 +164,10 @@ type PublicContext = DirectionProperty &
 /**
  * This is the actual context exposed to the user.
  */
-export type UserDefinedContext = RequiredBy<PublicContext, "id" | "collection">
+export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
+  PublicContext<T>,
+  "id" | "collection"
+>
 
 type ComputedContext = Readonly<{
   /**
@@ -235,7 +254,7 @@ export type ItemGroupLabelProps = {
 
 export type { Placement, PositioningOptions }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export type MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> = {
   /**
    * Whether the combobox is focused
    */
@@ -259,7 +278,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * The highlighted item
    */
-  highlightedItem: CollectionItem | null
+  highlightedItem: V | null
   /**
    * The value of the combobox input
    */
@@ -267,7 +286,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * The selected items
    */
-  selectedItems: CollectionItem[]
+  selectedItems: V[]
   /**
    * Whether there's a selected item
    */
@@ -315,7 +334,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Function to set the collection of items
    */
-  setCollection(collection: Collection<any>): void
+  setCollection(collection: Collection<V>): void
 
   rootProps: T["element"]
   labelProps: T["label"]
