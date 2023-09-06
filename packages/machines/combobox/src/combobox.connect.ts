@@ -164,48 +164,51 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const evt = getNativeEvent(event)
         if (evt.ctrlKey || evt.shiftKey || evt.isComposing) return
 
-        let prevent = false
-
         const keymap: EventKeyMap = {
           ArrowDown(event) {
             send({ type: event.altKey ? "INPUT.ARROW_DOWN+ALT" : "INPUT.ARROW_DOWN" })
-            prevent = true
+            event.preventDefault()
+            event.stopPropagation()
           },
           ArrowUp() {
             send(event.altKey ? "INPUT.ARROW_UP+ALT" : "INPUT.ARROW_UP")
-            prevent = true
+            event.preventDefault()
+            event.stopPropagation()
           },
           Home(event) {
             const isModified = event.ctrlKey || event.metaKey || event.shiftKey
             if (isModified) return
-            prevent = isOpen
             send("INPUT.HOME")
+            if (isOpen) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
           },
           End(event) {
             const isModified = event.ctrlKey || event.metaKey || event.shiftKey
             if (isModified) return
-            prevent = isOpen
             send("INPUT.END")
+            if (isOpen) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
           },
           Enter() {
             if (state.context.composing) return
             send("INPUT.ENTER")
-            prevent = true
+            event.preventDefault()
+            event.stopPropagation()
           },
           Escape() {
             send("INPUT.ESCAPE")
-            prevent = true
+            event.preventDefault()
+            // don't stop propagation. this is handled by the dismissable layer
           },
         }
 
         const key = getEventKey(event, state.context)
         const exec = keymap[key]
         exec?.(event)
-
-        if (prevent) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
       },
     }),
 
