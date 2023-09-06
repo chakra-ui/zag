@@ -6,7 +6,9 @@ import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 type ElementIds = Partial<{
+  root: string
   content: string
+  control: string
   trigger: string
   clearTrigger: string
   label: string
@@ -265,7 +267,9 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
    */
   setCollection(collection: Collection<any>): void
 
+  rootProps: T["element"]
   labelProps: T["label"]
+  controlProps: T["element"]
   triggerProps: T["button"]
   clearTriggerProps: T["button"]
   positionerProps: T["element"]

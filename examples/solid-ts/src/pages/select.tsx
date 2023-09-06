@@ -26,43 +26,45 @@ export default function Page() {
   return (
     <>
       <main class="select">
-        {/* control */}
-        <div class="control">
-          <label {...api().labelProps}>Label</label>
-          <button {...api().triggerProps}>
-            {api().valueAsString || "Select option"}
-            <span>▼</span>
-          </button>
-        </div>
-
-        <form
-          onInput={(e) => {
-            const form = e.currentTarget as HTMLFormElement
-            const formData = serialize(form, { hash: true })
-            console.log(formData)
-          }}
-        >
-          {/* Hidden select */}
-          <select {...api().hiddenSelectProps}>
-            <For each={selectData}>{(option) => <option value={option.value}>{option.label}</option>}</For>
-          </select>
-        </form>
-
-        {/* UI select */}
-        <Portal>
-          <div {...api().positionerProps}>
-            <ul {...api().contentProps}>
-              <For each={selectData}>
-                {(item) => (
-                  <li {...api().getItemProps({ item })}>
-                    <span class="item-label">{item.label}</span>
-                    <span {...api().getItemIndicatorProps({ item })}>✓</span>
-                  </li>
-                )}
-              </For>
-            </ul>
+        <div {...api().rootProps}>
+          {/* control */}
+          <div {...api().controlProps}>
+            <label {...api().labelProps}>Label</label>
+            <button {...api().triggerProps}>
+              {api().valueAsString || "Select option"}
+              <span>▼</span>
+            </button>
           </div>
-        </Portal>
+
+          <form
+            onInput={(e) => {
+              const form = e.currentTarget as HTMLFormElement
+              const formData = serialize(form, { hash: true })
+              console.log(formData)
+            }}
+          >
+            {/* Hidden select */}
+            <select {...api().hiddenSelectProps}>
+              <For each={selectData}>{(option) => <option value={option.value}>{option.label}</option>}</For>
+            </select>
+          </form>
+
+          {/* UI select */}
+          <Portal>
+            <div {...api().positionerProps}>
+              <ul {...api().contentProps}>
+                <For each={selectData}>
+                  {(item) => (
+                    <li {...api().getItemProps({ item })}>
+                      <span class="item-label">{item.label}</span>
+                      <span {...api().getItemIndicatorProps({ item })}>✓</span>
+                    </li>
+                  )}
+                </For>
+              </ul>
+            </div>
+          </Portal>
+        </div>
       </main>
 
       <Toolbar controls={controls.ui}>

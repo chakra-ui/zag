@@ -31,7 +31,7 @@
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/collection": "workspace:*",
     "@zag-js/core": "workspace:*",
-    "@zag-js/interact-outside": "workspace:*",
+    "@zag-js/dismissable": "workspace:*",
     "@zag-js/mutation-observer": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/dom-event": "workspace:*",

@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards } from "@zag-js/core"
-import { contains, raf } from "@zag-js/dom-query"
-import { trackInteractOutside } from "@zag-js/interact-outside"
+import { raf } from "@zag-js/dom-query"
+import { trackDismissableElement } from "@zag-js/dismissable"
 import { observeAttributes, observeChildren } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, compact, match } from "@zag-js/utils"
@@ -408,16 +408,14 @@ export function machine(userContext: UserDefinedContext) {
 
       activities: {
         trackInteractOutside(ctx, _evt, { send }) {
-          return trackInteractOutside(dom.getInputEl(ctx), {
-            exclude(target) {
-              const ignore = [dom.getContentEl(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)]
-              return ignore.some((el) => contains(el, target))
-            },
+          const contentEl = () => dom.getContentEl(ctx)
+          return trackDismissableElement(contentEl, {
+            defer: true,
+            exclude: () => [dom.getContentEl(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
             onFocusOutside: ctx.onFocusOutside,
             onPointerDownOutside: ctx.onPointerDownOutside,
-            onInteractOutside(event) {
-              ctx.onInteractOutside?.(event)
-              if (event.defaultPrevented) return
+            onInteractOutside: ctx.onInteractOutside,
+            onDismiss() {
               send({ type: "CONTENT.INTERACT_OUTSIDE" })
             },
           })

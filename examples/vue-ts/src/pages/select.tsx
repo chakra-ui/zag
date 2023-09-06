@@ -30,45 +30,47 @@ export default defineComponent({
       return (
         <>
           <main class="select">
-            {/* control */}
-            <div class="control">
-              <label {...api.labelProps}>Label</label>
-              <button {...api.triggerProps}>
-                {api.valueAsString || "Select option"}
-                <span>▼</span>
-              </button>
-            </div>
-
-            <form
-              onInput={(e) => {
-                const form = e.currentTarget as HTMLFormElement
-                const formData = serialize(form, { hash: true })
-                console.log(formData)
-              }}
-            >
-              {/* Hidden select */}
-              <select {...api.hiddenSelectProps}>
-                {selectData.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </form>
-
-            {/* UI select */}
-            <Teleport to="body">
-              <div {...api.positionerProps}>
-                <ul {...api.contentProps}>
-                  {selectData.map((item) => (
-                    <li key={item.value} {...api.getItemProps({ item })}>
-                      <span class="item-label">{item.label}</span>
-                      <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                    </li>
-                  ))}
-                </ul>
+            <div {...api.rootProps}>
+              {/* control */}
+              <div {...api.controlProps}>
+                <label {...api.labelProps}>Label</label>
+                <button {...api.triggerProps}>
+                  {api.valueAsString || "Select option"}
+                  <span>▼</span>
+                </button>
               </div>
-            </Teleport>
+
+              <form
+                onInput={(e) => {
+                  const form = e.currentTarget as HTMLFormElement
+                  const formData = serialize(form, { hash: true })
+                  console.log(formData)
+                }}
+              >
+                {/* Hidden select */}
+                <select {...api.hiddenSelectProps}>
+                  {selectData.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </form>
+
+              {/* UI select */}
+              <Teleport to="body">
+                <div {...api.positionerProps}>
+                  <ul {...api.contentProps}>
+                    {selectData.map((item) => (
+                      <li key={item.value} {...api.getItemProps({ item })}>
+                        <span class="item-label">{item.label}</span>
+                        <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Teleport>
+            </div>
           </main>
 
           <Toolbar controls={controls.ui}>

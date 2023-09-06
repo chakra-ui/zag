@@ -1371,7 +1371,7 @@ main [data-testid="scrubber"] {
 * Select
 * -----------------------------------------------------------------------------*/
 
-.select .control {
+[data-scope="select"][data-part="control"]  {
   display: flex;
   flex-direction: column;
   row-gap: 6px;

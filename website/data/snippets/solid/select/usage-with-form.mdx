@@ -24,7 +24,7 @@ export function SelectWithForm() {
 
   return (
     <form>
-      <div className="select">
+      <div {...api.rootProps}>
         {/* Hidden select */}
         <select {...api().hiddenSelectProps}>
           {selectData.map((item) => (
@@ -35,7 +35,7 @@ export function SelectWithForm() {
         </select>
 
         {/* Custom Select */}
-        <div className="control">
+        <div {...api.controlProps}>
           <label {...api().labelProps}>Label</label>
           <button type="button" {...api().triggerProps}>
             <span>{api().valueAsString || "Select option"}</span>
