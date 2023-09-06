@@ -81,7 +81,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "TRIGGER.CLICK": {
               target: "open",
-              actions: ["invokeOnOpen"],
+              actions: ["invokeOnOpen", "highlightFirstSelectedItem"],
             },
             "TRIGGER.FOCUS": {
               target: "focused",
@@ -106,7 +106,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "TRIGGER.CLICK": {
               target: "open",
-              actions: ["invokeOnOpen"],
+              actions: ["invokeOnOpen", "highlightFirstSelectedItem"],
             },
             "TRIGGER.ENTER": [
               {

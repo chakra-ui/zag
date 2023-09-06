@@ -9,19 +9,18 @@ export type CollectionSearchOptions = {
   timeout?: number
 }
 
-export type CollectionItem = {
-  [key: string]: any
-}
+export type CollectionItem = string | Record<string, any>
 
-export type CollectionNode<T extends CollectionItem> = {
+export type CollectionNode<T extends CollectionItem = CollectionItem> = {
   item: T
   index: number
+  label: string
   value: string
   previousValue: string | null
   nextValue: string | null
 }
 
-export type CollectionOptions<T extends CollectionItem> = {
+export type CollectionOptions<T extends CollectionItem = CollectionItem> = {
   /**
    * The options of the select
    */

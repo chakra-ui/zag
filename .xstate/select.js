@@ -64,7 +64,7 @@ const fetchMachine = createMachine({
       on: {
         "TRIGGER.CLICK": {
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["invokeOnOpen", "highlightFirstSelectedItem"]
         },
         "TRIGGER.FOCUS": {
           target: "focused"
@@ -88,7 +88,7 @@ const fetchMachine = createMachine({
         },
         "TRIGGER.CLICK": {
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["invokeOnOpen", "highlightFirstSelectedItem"]
         },
         "TRIGGER.ENTER": [{
           cond: "hasSelectedItems",

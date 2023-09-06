@@ -1,9 +1,11 @@
-import type { Collection, CollectionItem, CollectionItem as Item } from "@zag-js/collection"
+import type { Collection, CollectionItem, CollectionOptions } from "@zag-js/collection"
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+
+export type { CollectionOptions }
 
 type ElementIds = Partial<{
   content: string
@@ -17,17 +19,17 @@ type ElementIds = Partial<{
   itemGroupLabel(id: string | number): string
 }>
 
-export type ValueChangeDetails = {
+export type ValueChangeDetails<T extends CollectionItem = CollectionItem> = {
   value: string[]
-  items: Item[]
+  items: T[]
 }
 
-export type HighlightChangeDetails = {
+export type HighlightChangeDetails<T extends CollectionItem = CollectionItem> = {
   value: string | null
-  item: Item | null
+  item: T | null
 }
 
-type PublicContext = DirectionProperty &
+type PublicContext<T extends CollectionItem = any> = DirectionProperty &
   CommonProperties &
   InteractOutsideHandlers & {
     /**
@@ -70,11 +72,11 @@ type PublicContext = DirectionProperty &
     /**
      * The callback fired when the highlighted item changes.
      */
-    onHighlight?: (details: HighlightChangeDetails) => void
+    onHighlight?: (details: HighlightChangeDetails<T>) => void
     /**
      * The callback fired when the selected item changes.
      */
-    onChange?: (details: ValueChangeDetails) => void
+    onChange?: (details: ValueChangeDetails<T>) => void
     /**
      * Function called when the popup is opened
      */
@@ -151,12 +153,12 @@ type ComputedContext = Readonly<{
   /**
    * The highlighted item
    */
-  highlightedItem: Item | null
+  highlightedItem: CollectionItem | null
   /**
    * @computed
    * The selected items
    */
-  selectedItems: Item[]
+  selectedItems: CollectionItem[]
   /**
    * @computed
    * The display value of the select (based on the selected items)
@@ -164,12 +166,15 @@ type ComputedContext = Readonly<{
   valueAsString: string
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id" | "collection">
+export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
+  PublicContext<T>,
+  "id" | "collection"
+>
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
-export type ItemProps = {
-  item: Item
+export type ItemProps<T extends CollectionItem = CollectionItem> = {
+  item: T
 }
 
 export type ItemState = {
@@ -195,7 +200,7 @@ export type ItemGroupLabelProps = {
   htmlFor: string
 }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export type MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> = {
   /**
    * Whether the select is focused
    */
@@ -211,7 +216,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * The highlighted item
    */
-  highlightedItem: CollectionItem | null
+  highlightedItem: V | null
   /**
    * The value of the combobox input
    */
@@ -219,7 +224,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * The selected items
    */
-  selectedItems: CollectionItem[]
+  selectedItems: V[]
   /**
    * Whether there's a selected option
    */
@@ -263,7 +268,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Function to set the collection of items
    */
-  setCollection(collection: Collection<any>): void
+  setCollection(collection: Collection<V>): void
 
   labelProps: T["label"]
   triggerProps: T["button"]
