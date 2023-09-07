@@ -6,6 +6,31 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.19.0] - 2023-09-07
+
+### Fixed
+
+- **Popper**: Fix issue where passing the `offset` positioning option to popper-related components causes undesired
+  placement in each render cycle.
+
+- **RadioGroup**: Fix issue where change event doesn't get dispatched when value changes programmatically.
+
+### Added
+
+- **Combobox, Selected**
+  - Add `control` and `root` parts to select and combobox components
+
+### Changed
+
+- **Combobox, Select**
+
+  - Loosen the collection item types to allow string item
+  - Add generic to select and combobox context and api
+  - Use dismissable layer to better manage layering when used in a popover or dialog
+
+- **Checkbox, Switch**: Dispatch change event when checked state is set programmatically to get it working in Solid.js
+  form libraries
+
 ## [0.18.0] - 2023-09-05
 
 ### Fixed
