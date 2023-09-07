@@ -1,7 +1,7 @@
 import type { Middleware, Placement, VirtualElement } from "@floating-ui/dom"
 import { type ComputePositionConfig, arrow, computePosition, flip, offset, shift, size } from "@floating-ui/dom"
 import { raf } from "@zag-js/dom-query"
-import { callAll } from "@zag-js/utils"
+import { callAll, compact } from "@zag-js/utils"
 import { autoUpdate } from "./auto-update"
 import { shiftArrow, transformOrigin } from "./middleware"
 import type { BasePlacement, PositioningOptions } from "./types"
@@ -50,7 +50,9 @@ function getPlacementImpl(reference: MaybeRectElement, floating: MaybeElement, o
     let crossAxis = options.offset?.crossAxis
 
     if (mainAxis != null) mainAxis += arrowOffset
-    middleware.push(offset({ mainAxis, crossAxis }))
+
+    const offsetOptions = compact({ mainAxis, crossAxis })
+    middleware.push(offset(offsetOptions))
   }
 
   middleware.push(
