@@ -4,7 +4,7 @@ import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-export type { CollectionOptions }
+export type { CollectionOptions, CollectionItem }
 
 type IntlTranslations = {
   triggerLabel?: string
