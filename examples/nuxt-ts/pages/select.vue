@@ -46,7 +46,7 @@ const api = computed(() => select.connect(state.value, send, normalizeProps))
         <div v-bind="api.positionerProps">
           <ul v-bind="api.contentProps">
             <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
-              <span>{{ item.label }}</span>
+              <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
               <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
             </li>
           </ul>

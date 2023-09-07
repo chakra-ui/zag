@@ -63,7 +63,7 @@ export default defineComponent({
                   <ul {...api.contentProps}>
                     {selectData.map((item) => (
                       <li key={item.value} {...api.getItemProps({ item })}>
-                        <span class="item-label">{item.label}</span>
+                        <span {...api.getItemTextProps({ item })}>{item.label}</span>
                         <span {...api.getItemIndicatorProps({ item })}>✓</span>
                       </li>
                     ))}

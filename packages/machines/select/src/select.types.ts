@@ -280,6 +280,7 @@ export type MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem
   positionerProps: T["element"]
   contentProps: T["element"]
   getItemProps(props: ItemProps): T["element"]
+  getItemTextProps(props: ItemProps): T["element"]
   getItemIndicatorProps(props: ItemProps): T["element"]
   getItemGroupProps(props: ItemGroupProps): T["element"]
   getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]

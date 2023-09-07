@@ -56,7 +56,7 @@ export default function Page() {
                 <For each={selectData}>
                   {(item) => (
                     <li {...api().getItemProps({ item })}>
-                      <span class="item-label">{item.label}</span>
+                      <span {...api().getItemTextProps({ item })}>{item.label}</span>
                       <span {...api().getItemIndicatorProps({ item })}>✓</span>
                     </li>
                   )}

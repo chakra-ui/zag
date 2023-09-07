@@ -74,7 +74,7 @@ export default function Page() {
               <ul {...api.contentProps}>
                 {items.map((item) => (
                   <li key={item.name} {...api.getItemProps({ item })}>
-                    <span className="item-label">{item.name}</span>
+                    <span {...api.getItemTextProps({ item })}>{item.name}</span>
                     <span {...api.getItemIndicatorProps({ item })}>✓</span>
                   </li>
                 ))}
