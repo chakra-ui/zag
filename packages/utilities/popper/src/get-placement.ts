@@ -45,9 +45,12 @@ function getPlacementImpl(reference: MaybeRectElement, floating: MaybeElement, o
 
   if (options.gutter || options.offset) {
     const arrowOffset = arrowEl ? arrowEl.offsetHeight / 2 : 0
-    const data = options.offset ? options.offset : { mainAxis: options.gutter }
-    if (data?.mainAxis != null) data.mainAxis += arrowOffset
-    middleware.push(offset(data))
+
+    let mainAxis = options.offset?.mainAxis ?? options.gutter
+    let crossAxis = options.offset?.crossAxis
+
+    if (mainAxis != null) mainAxis += arrowOffset
+    middleware.push(offset({ mainAxis, crossAxis }))
   }
 
   middleware.push(
