@@ -1,5 +1,18 @@
 # @zag-js/popper
 
+## 0.19.0
+
+### Patch Changes
+
+- [`8845d75a`](https://github.com/chakra-ui/zag/commit/8845d75a72f6d082e1566fe7e65e76e343b60971) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where offset data mutation causes undesired placement in
+  each render cycle.
+
+- Updated dependencies []:
+  - @zag-js/utils@0.19.0
+  - @zag-js/dom-query@0.19.0
+  - @zag-js/element-rect@0.19.0
+
 ## 0.18.0
 
 ### Patch Changes

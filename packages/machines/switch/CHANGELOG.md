@@ -1,5 +1,22 @@
 # @zag-js/switch
 
+## 0.19.0
+
+### Patch Changes
+
+- [`4c578aab`](https://github.com/chakra-ui/zag/commit/4c578aab2d330405077bb790e884f968b6b5703f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **Checkbox, Switch**: Dispatch change event when checked state
+  is set programmatically to get it working in Solid.js form libraries
+  - **RadioGroup**: Fix issue where change event doesn't get dispatched when value changes
+- Updated dependencies [[`4c578aab`](https://github.com/chakra-ui/zag/commit/4c578aab2d330405077bb790e884f968b6b5703f)]:
+  - @zag-js/form-utils@0.19.0
+  - @zag-js/anatomy@0.19.0
+  - @zag-js/core@0.19.0
+  - @zag-js/types@0.19.0
+  - @zag-js/utils@0.19.0
+  - @zag-js/dom-query@0.19.0
+  - @zag-js/visually-hidden@0.19.0
+
 ## 0.18.0
 
 ### Minor Changes

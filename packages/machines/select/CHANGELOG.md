@@ -1,5 +1,36 @@
 # @zag-js/select
 
+## 0.19.0
+
+### Minor Changes
+
+- [#839](https://github.com/chakra-ui/zag/pull/839)
+  [`dca474b9`](https://github.com/chakra-ui/zag/commit/dca474b93fee1501a0a7b15dbcbd64f9addbb178) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - - Add `control` and `root` parts to select and combobox components
+  - Add combobox content element to the dismissable layer stack
+
+### Patch Changes
+
+- [`e4d78be4`](https://github.com/chakra-ui/zag/commit/e4d78be47b4b46e97be943b78561213b022c692c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Loosen the collection item types to allow string item
+  - Add generic to select and combobox context and api
+- Updated dependencies [[`e4d78be4`](https://github.com/chakra-ui/zag/commit/e4d78be47b4b46e97be943b78561213b022c692c),
+  [`8845d75a`](https://github.com/chakra-ui/zag/commit/8845d75a72f6d082e1566fe7e65e76e343b60971),
+  [`4c578aab`](https://github.com/chakra-ui/zag/commit/4c578aab2d330405077bb790e884f968b6b5703f)]:
+  - @zag-js/collection@0.19.0
+  - @zag-js/popper@0.19.0
+  - @zag-js/form-utils@0.19.0
+  - @zag-js/anatomy@0.19.0
+  - @zag-js/core@0.19.0
+  - @zag-js/types@0.19.0
+  - @zag-js/utils@0.19.0
+  - @zag-js/dismissable@0.19.0
+  - @zag-js/dom-event@0.19.0
+  - @zag-js/dom-query@0.19.0
+  - @zag-js/mutation-observer@0.19.0
+  - @zag-js/tabbable@0.19.0
+  - @zag-js/visually-hidden@0.19.0
+
 ## 0.18.0
 
 ### Minor Changes
