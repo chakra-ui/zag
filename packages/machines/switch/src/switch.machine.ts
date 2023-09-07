@@ -1,8 +1,10 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./switch.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./switch.types"
+
+const { not } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -32,12 +34,24 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["trackFormControlState"],
 
       on: {
-        "CHECKED.TOGGLE": {
-          actions: ["toggleChecked"],
-        },
-        "CHECKED.SET": {
-          actions: ["setChecked"],
-        },
+        "CHECKED.TOGGLE": [
+          {
+            guard: not("isTrusted"),
+            actions: ["toggleChecked", "dispatchChangeEvent"],
+          },
+          {
+            actions: ["toggleChecked"],
+          },
+        ],
+        "CHECKED.SET": [
+          {
+            guard: not("isTrusted"),
+            actions: ["setChecked", "dispatchChangeEvent"],
+          },
+          {
+            actions: ["setChecked"],
+          },
+        ],
         "CONTEXT.SET": {
           actions: ["setContext"],
         },
@@ -48,6 +62,9 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
+      guards: {
+        isTrusted: (_ctx, evt) => !!evt.isTrusted,
+      },
       activities: {
         trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getHiddenInputEl(ctx), {
@@ -81,6 +98,10 @@ export function machine(userContext: UserDefinedContext) {
         toggleChecked(ctx, _evt) {
           set.checked(ctx, !ctx.checked)
         },
+        dispatchChangeEvent(ctx) {
+          const inputEl = dom.getHiddenInputEl(ctx)
+          dispatchInputCheckedEvent(inputEl, { checked: ctx.checked })
+        },
       },
     },
   )
@@ -88,12 +109,7 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    // invoke fn
     ctx.onChange?.({ checked: ctx.checked })
-
-    // form event
-    const inputEl = dom.getHiddenInputEl(ctx)
-    dispatchInputCheckedEvent(inputEl, { checked: ctx.checked, bubbles: true })
   },
 }
 

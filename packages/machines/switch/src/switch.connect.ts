@@ -28,11 +28,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isFocused,
 
     setChecked(checked: boolean) {
-      send({ type: "CHECKED.SET", checked })
+      send({ type: "CHECKED.SET", checked, isTrusted: false })
     },
 
     toggleChecked() {
-      send({ type: "CHECKED.TOGGLE", checked: isChecked })
+      send({ type: "CHECKED.TOGGLE", checked: isChecked, isTrusted: false })
     },
 
     rootProps: normalize.label({
@@ -103,7 +103,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: visuallyHiddenStyle,
       onChange(event) {
         const checked = event.currentTarget.checked
-        send({ type: "CHECKED.SET", checked })
+        send({ type: "CHECKED.SET", checked, isTrusted: true })
       },
       onBlur() {
         send({ type: "CONTEXT.SET", context: { focused: false } })

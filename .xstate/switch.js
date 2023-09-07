@@ -12,15 +12,24 @@ const {
 const fetchMachine = createMachine({
   id: "switch",
   initial: "ready",
-  context: {},
+  context: {
+    "!isTrusted": false,
+    "!isTrusted": false
+  },
   activities: ["trackFormControlState"],
   on: {
-    "CHECKED.TOGGLE": {
+    "CHECKED.TOGGLE": [{
+      cond: "!isTrusted",
+      actions: ["toggleChecked", "dispatchChangeEvent"]
+    }, {
       actions: ["toggleChecked"]
-    },
-    "CHECKED.SET": {
+    }],
+    "CHECKED.SET": [{
+      cond: "!isTrusted",
+      actions: ["setChecked", "dispatchChangeEvent"]
+    }, {
       actions: ["setChecked"]
-    },
+    }],
     "CONTEXT.SET": {
       actions: ["setContext"]
     }
@@ -41,5 +50,7 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {}
+  guards: {
+    "!isTrusted": ctx => ctx["!isTrusted"]
+  }
 });

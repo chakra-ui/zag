@@ -1,8 +1,10 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./checkbox.dom"
 import type { CheckedState, MachineContext, MachineState, UserDefinedContext } from "./checkbox.types"
+
+const { not } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -27,12 +29,24 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["trackFormControlState"],
 
       on: {
-        "CHECKED.TOGGLE": {
-          actions: ["toggleChecked"],
-        },
-        "CHECKED.SET": {
-          actions: ["setChecked"],
-        },
+        "CHECKED.TOGGLE": [
+          {
+            guard: not("isTrusted"),
+            actions: ["toggleChecked", "dispatchChangeEvent"],
+          },
+          {
+            actions: ["toggleChecked"],
+          },
+        ],
+        "CHECKED.SET": [
+          {
+            guard: not("isTrusted"),
+            actions: ["setChecked", "dispatchChangeEvent"],
+          },
+          {
+            actions: ["setChecked"],
+          },
+        ],
         "CONTEXT.SET": {
           actions: ["setContext"],
         },
@@ -40,7 +54,7 @@ export function machine(userContext: UserDefinedContext) {
 
       computed: {
         isIndeterminate: (ctx) => isIndeterminate(ctx.checked),
-        isChecked: (ctx) => (ctx.isIndeterminate ? false : !!ctx.checked),
+        isChecked: (ctx) => isChecked(ctx.checked),
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
       },
 
@@ -49,6 +63,9 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
+      guards: {
+        isTrusted: (_ctx, evt) => !!evt.isTrusted,
+      },
       activities: {
         trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getHiddenInputEl(ctx), {
@@ -84,6 +101,10 @@ export function machine(userContext: UserDefinedContext) {
           const checked = isIndeterminate(ctx.checked) ? true : !ctx.checked
           set.checked(ctx, checked)
         },
+        dispatchChangeEvent(ctx) {
+          const inputEl = dom.getHiddenInputEl(ctx)
+          dispatchInputCheckedEvent(inputEl, { checked: isChecked(ctx.checked) })
+        },
       },
     },
   )
@@ -93,15 +114,13 @@ function isIndeterminate(checked?: CheckedState): checked is "indeterminate" {
   return checked === "indeterminate"
 }
 
+function isChecked(checked?: CheckedState): checked is boolean {
+  return isIndeterminate(checked) ? false : !!checked
+}
+
 const invoke = {
   change: (ctx: MachineContext) => {
-    // invoke fn
     ctx.onChange?.({ checked: ctx.checked })
-
-    // form event
-    const inputEl = dom.getHiddenInputEl(ctx)
-    const checked = isIndeterminate(ctx.checked) ? false : ctx.checked
-    dispatchInputCheckedEvent(inputEl, { checked, bubbles: true })
   },
 }
 

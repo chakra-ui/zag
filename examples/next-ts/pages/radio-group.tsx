@@ -1,6 +1,7 @@
 import * as radio from "@zag-js/radio-group"
-import { useMachine, normalizeProps } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { radioControls, radioData } from "@zag-js/shared"
+import serialize from "form-serialize"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -20,8 +21,8 @@ export default function Page() {
       <main className="radio">
         <form
           onChange={(e) => {
-            const form = new FormData(e.currentTarget)
-            console.log(form.get("fruit"))
+            const result = serialize(e.currentTarget, { hash: true })
+            console.log(result)
           }}
         >
           <fieldset disabled={false}>

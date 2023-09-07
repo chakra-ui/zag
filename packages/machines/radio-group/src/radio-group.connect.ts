@@ -51,11 +51,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     value: state.context.value,
 
     setValue(value: string) {
-      send({ type: "SET_VALUE", value, manual: true })
+      send({ type: "SET_VALUE", value, isTrusted: false })
     },
 
     clearValue() {
-      send({ type: "SET_VALUE", value: null, manual: true })
+      send({ type: "SET_VALUE", value: null, isTrusted: false })
     },
 
     focus,
@@ -158,7 +158,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (inputState.isDisabled) return
 
           if (event.target.checked) {
-            send({ type: "SET_VALUE", value: props.value })
+            send({ type: "SET_VALUE", value: props.value, isTrusted: true })
           }
         },
         onBlur() {

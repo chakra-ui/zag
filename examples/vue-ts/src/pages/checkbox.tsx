@@ -1,6 +1,7 @@
 import * as checkbox from "@zag-js/checkbox"
 import { checkboxControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import serialize from "form-serialize"
 import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -29,7 +30,12 @@ export default defineComponent({
       return (
         <>
           <main class="checkbox">
-            <form>
+            <form
+              onChange={(e) => {
+                const result = serialize(e.currentTarget as HTMLFormElement, { hash: true })
+                console.log(result)
+              }}
+            >
               <fieldset>
                 <label {...api.rootProps}>
                   <div {...api.controlProps} />

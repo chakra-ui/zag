@@ -12,14 +12,19 @@ const {
 const fetchMachine = createMachine({
   id: "radio",
   initial: "idle",
-  context: {},
+  context: {
+    "!isTrusted": false
+  },
   entry: ["syncIndicatorRect"],
   exit: ["cleanupObserver"],
   activities: ["trackFormControlState"],
   on: {
-    SET_VALUE: {
+    SET_VALUE: [{
+      cond: "!isTrusted",
+      actions: ["setValue", "dispatchChangeEvent"]
+    }, {
       actions: ["setValue"]
-    },
+    }],
     SET_HOVERED: {
       actions: "setHovered"
     },
@@ -46,5 +51,7 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {}
+  guards: {
+    "!isTrusted": ctx => ctx["!isTrusted"]
+  }
 });

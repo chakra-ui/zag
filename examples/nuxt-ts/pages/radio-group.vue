@@ -2,6 +2,7 @@
 import * as radio from "@zag-js/radio-group"
 import { radioControls, radioData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import serialize from "form-serialize"
 
 const controls = useControls(radioControls)
 
@@ -14,7 +15,14 @@ const api = computed(() => radio.connect(state.value, send, normalizeProps))
 
 <template>
   <main class="radio">
-    <form>
+    <form
+      @change="
+        (e) => {
+          const result = serialize(e.currentTarget as HTMLFormElement, { hash: true })
+          console.log(result)
+        }
+      "
+    >
       <fieldset>
         <div v-bind="api.rootProps">
           <h3 v-bind="api.labelProps">Fruits</h3>

@@ -1,7 +1,8 @@
 import * as checkbox from "@zag-js/checkbox"
 import { checkboxControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, createSignal } from "solid-js"
+import serialize from "form-serialize"
+import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -21,14 +22,17 @@ export default function Page() {
 
   const api = createMemo(() => checkbox.connect(state, send, normalizeProps))
 
-  const [fieldsetDisabled, setFieldsetDisabled] = createSignal(false)
-
   return (
     <>
       <main class="checkbox">
-        <form>
+        <form
+          onChange={(e) => {
+            const result = serialize(e.currentTarget, { hash: true })
+            console.log(result)
+          }}
+        >
           <fieldset>
-            <fieldset disabled={fieldsetDisabled()}>
+            <fieldset>
               <label {...api().rootProps}>
                 <div {...api().controlProps} />
                 <span {...api().labelProps}>Input {api().isChecked ? "Checked" : "Unchecked"}</span>
@@ -44,15 +48,6 @@ export default function Page() {
                 Uncheck
               </button>
               <button type="reset">Reset Form</button>
-            </div>
-
-            <div>
-              <button type="button" onClick={() => setFieldsetDisabled(false)} disabled={!fieldsetDisabled()}>
-                Enable fieldset
-              </button>
-              <button type="button" onClick={() => setFieldsetDisabled(true)} disabled={fieldsetDisabled()}>
-                Disable fieldset
-              </button>
             </div>
           </fieldset>
         </form>

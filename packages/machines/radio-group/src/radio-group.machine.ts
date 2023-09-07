@@ -1,10 +1,12 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { nextTick } from "@zag-js/dom-query"
 import { trackElementRect } from "@zag-js/element-rect"
-import { trackFormControl } from "@zag-js/form-utils"
+import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact, isString } from "@zag-js/utils"
 import { dom } from "./radio-group.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./radio-group.types"
+
+const { not } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -39,9 +41,15 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       on: {
-        SET_VALUE: {
-          actions: ["setValue"],
-        },
+        SET_VALUE: [
+          {
+            guard: not("isTrusted"),
+            actions: ["setValue", "dispatchChangeEvent"],
+          },
+          {
+            actions: ["setValue"],
+          },
+        ],
         SET_HOVERED: {
           actions: "setHovered",
         },
@@ -59,6 +67,9 @@ export function machine(userContext: UserDefinedContext) {
     },
 
     {
+      guards: {
+        isTrusted: (_ctx, evt) => !!evt.isTrusted,
+      },
       activities: {
         trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getRootEl(ctx), {
@@ -122,6 +133,14 @@ export function machine(userContext: UserDefinedContext) {
                 ctx.canIndicatorTransition = false
               })
             },
+          })
+        },
+        dispatchChangeEvent(ctx) {
+          const inputEls = dom.getInputEls(ctx)
+          inputEls.forEach((inputEl) => {
+            const checked = inputEl.value === ctx.value
+            if (checked === inputEl.checked) return
+            dispatchInputCheckedEvent(inputEl, { checked })
           })
         },
       },

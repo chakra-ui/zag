@@ -1,7 +1,8 @@
 import * as radio from "@zag-js/radio-group"
-import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId } from "solid-js"
 import { radioControls, radioData } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import serialize from "form-serialize"
+import { createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -9,16 +10,27 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(radioControls)
 
-  const [state, send] = useMachine(radio.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    radio.machine({
+      name: "fruits",
+      id: createUniqueId(),
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = createMemo(() => radio.connect(state, send, normalizeProps))
 
   return (
     <>
       <main class="radio">
-        <form>
+        <form
+          onChange={(e) => {
+            const result = serialize(e.currentTarget, { hash: true })
+            console.log(result)
+          }}
+        >
           <fieldset disabled={false}>
             <div {...api().rootProps}>
               <h3 {...api().labelProps}>Fruits</h3>

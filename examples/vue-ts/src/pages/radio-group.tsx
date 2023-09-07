@@ -5,6 +5,7 @@ import { radioControls, radioData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
+import serialize from "form-serialize"
 
 export default defineComponent({
   name: "radio",
@@ -23,7 +24,12 @@ export default defineComponent({
       return (
         <>
           <main class="radio">
-            <form>
+            <form
+              onChange={(e) => {
+                const result = serialize(e.currentTarget as HTMLFormElement, { hash: true })
+                console.log(result)
+              }}
+            >
               <fieldset disabled={false}>
                 <div {...api.rootProps}>
                   <h3 {...api.labelProps}>Fruits</h3>

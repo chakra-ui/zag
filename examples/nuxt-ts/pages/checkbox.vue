@@ -2,6 +2,7 @@
 import * as checkbox from "@zag-js/checkbox"
 import { checkboxControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import serialize from "form-serialize"
 
 const controls = useControls(checkboxControls)
 
@@ -18,7 +19,14 @@ const api = computed(() => checkbox.connect(state.value, send, normalizeProps))
 
 <template>
   <main class="checkbox">
-    <form>
+    <form
+      @change="
+        (e) => {
+          const result = serialize(e.currentTarget as HTMLFormElement, { hash: true })
+          console.log(result)
+        }
+      "
+    >
       <fieldset>
         <label v-bind="api.rootProps">
           <div v-bind="api.controlProps" />
