@@ -11,4 +11,5 @@ export type {
   PositioningOptions,
   MachineApi as Api,
   CollectionOptions,
+  CollectionItem,
 } from "./combobox.types"

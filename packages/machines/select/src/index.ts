@@ -9,4 +9,5 @@ export type {
   ItemProps,
   MachineApi as Api,
   CollectionOptions,
+  CollectionItem,
 } from "./select.types"
