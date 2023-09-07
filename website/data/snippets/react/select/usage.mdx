@@ -30,8 +30,8 @@ export function Select() {
   const api = select.connect(state, send, normalizeProps)
 
   return (
-    <>
-      <div>
+    <div {...api.rootProps}>
+      <div {...api.controlProps}>
         <label {...api.labelProps}>Label</label>
         <button {...api.triggerProps}>
           {api.valueAsString || "Select option"}
@@ -50,7 +50,7 @@ export function Select() {
           </ul>
         </div>
       </Portal>
-    </>
+    </div>
   )
 }
 ```

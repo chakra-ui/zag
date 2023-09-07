@@ -1,6 +1,6 @@
 import type { Collection, CollectionItem, CollectionOptions } from "@zag-js/collection"
 import type { StateMachine as S } from "@zag-js/core"
-import type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent } from "@zag-js/interact-outside"
+import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -40,7 +40,8 @@ type InputValueChangeDetails = {
 }
 
 type PublicContext<T extends CollectionItem = CollectionItem> = DirectionProperty &
-  CommonProperties & {
+  CommonProperties &
+  InteractOutsideHandlers & {
     /**
      * The ids of the elements in the combobox. Useful for composition.
      */
@@ -147,18 +148,6 @@ type PublicContext<T extends CollectionItem = CollectionItem> = DirectionPropert
      */
     translations: IntlTranslations
     /**
-     * Function called when the pointer is pressed down outside the combobox
-     */
-    onPointerDownOutside?: (event: PointerDownOutsideEvent) => void
-    /**
-     * Function called when the focus is moved outside the combobox
-     */
-    onFocusOutside?: (event: FocusOutsideEvent) => void
-    /**
-     * Function called when an interaction happens outside the combobox
-     */
-    onInteractOutside?: (event: InteractOutsideEvent) => void
-    /**
      * The collection of items
      */
     collection: Collection<any>
@@ -263,7 +252,7 @@ export type ItemGroupLabelProps = {
   htmlFor: string
 }
 
-export type { InteractOutsideEvent, Placement, PositioningOptions }
+export type { Placement, PositioningOptions }
 
 export type MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> = {
   /**
@@ -356,6 +345,7 @@ export type MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem
   triggerProps: T["button"]
   clearTriggerProps: T["button"]
   getItemProps(props: ItemProps): T["element"]
+  getItemTextProps(props: ItemProps): T["element"]
   getItemIndicatorProps(props: ItemProps): T["element"]
   getItemGroupProps(props: ItemGroupProps): T["element"]
   getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]

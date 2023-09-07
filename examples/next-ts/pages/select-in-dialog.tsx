@@ -1,6 +1,6 @@
+import * as dialog from "@zag-js/dialog"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
-import * as dialog from "@zag-js/dialog"
 import { selectData } from "@zag-js/shared"
 import { useId } from "react"
 
@@ -15,26 +15,27 @@ function Select() {
   const api = select.connect(state, send, normalizeProps)
 
   return (
-    <>
-      <div className="control">
-        <label {...api.labelProps}>Label</label>
+    <div {...api.rootProps}>
+      <label {...api.labelProps}>Label</label>
+      <div {...api.controlProps}>
         <button {...api.triggerProps}>
           <span>{api.valueAsString || "Select option"}</span>
           <span>▼</span>
         </button>
+        <button {...api.clearTriggerProps}>X</button>
       </div>
 
       <div {...api.positionerProps}>
         <ul {...api.contentProps}>
           {selectData.map((item) => (
             <li key={item.value} {...api.getItemProps({ item })}>
-              <span>{item.label}</span>
+              <span {...api.getItemTextProps({ item })}>{item.label}</span>
               <span {...api.getItemIndicatorProps({ item })}>✓</span>
             </li>
           ))}
         </ul>
       </div>
-    </>
+    </div>
   )
 }
 

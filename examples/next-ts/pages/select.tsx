@@ -35,44 +35,47 @@ export default function Page() {
   return (
     <>
       <main className="select">
-        {/* control */}
-        <div className="control">
+        <div {...api.rootProps}>
           <label {...api.labelProps}>Label</label>
-          <button {...api.triggerProps}>
-            <span>{api.valueAsString || "Select option"}</span>
-            <span>▼</span>
-          </button>
-        </div>
-
-        <form
-          onChange={(e) => {
-            const formData = serialize(e.currentTarget, { hash: true })
-            console.log(formData)
-          }}
-        >
-          {/* Hidden select */}
-          <select {...api.hiddenSelectProps}>
-            {selectData.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </form>
-
-        {/* UI select */}
-        <Portal>
-          <div {...api.positionerProps}>
-            <ul {...api.contentProps}>
-              {selectData.map((item) => (
-                <li key={item.value} {...api.getItemProps({ item })}>
-                  <span className="item-label">{item.label}</span>
-                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                </li>
-              ))}
-            </ul>
+          {/* control */}
+          <div {...api.controlProps}>
+            <button {...api.triggerProps}>
+              <span>{api.valueAsString || "Select option"}</span>
+              <span>▼</span>
+            </button>
+            <button {...api.clearTriggerProps}>X</button>
           </div>
-        </Portal>
+
+          <form
+            onChange={(e) => {
+              const formData = serialize(e.currentTarget, { hash: true })
+              console.log(formData)
+            }}
+          >
+            {/* Hidden select */}
+            <select {...api.hiddenSelectProps}>
+              {selectData.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </form>
+
+          {/* UI select */}
+          <Portal>
+            <div {...api.positionerProps}>
+              <ul {...api.contentProps}>
+                {selectData.map((item) => (
+                  <li key={item.value} {...api.getItemProps({ item })}>
+                    <span {...api.getItemTextProps({ item })}>{item.label}</span>
+                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Portal>
+        </div>
       </main>
 
       <Toolbar controls={controls.ui}>

@@ -10,6 +10,7 @@ import type { ItemProps, MachineApi, Send, State } from "./select.types"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isDisabled = state.context.isDisabled
   const isInvalid = state.context.invalid
+  const isReadOnly = state.context.readOnly
   const isInteractive = state.context.isInteractive
 
   const isOpen = state.hasTag("open")
@@ -76,18 +77,36 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getItemState,
 
+    rootProps: normalize.element({
+      ...parts.root.attrs,
+      dir: state.context.dir,
+      id: dom.getRootId(state.context),
+      "data-invalid": dataAttr(isInvalid),
+      "data-readonly": dataAttr(isReadOnly),
+    }),
+
     labelProps: normalize.label({
       dir: state.context.dir,
       id: dom.getLabelId(state.context),
       ...parts.label.attrs,
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
-      "data-readonly": dataAttr(state.context.readOnly),
+      "data-readonly": dataAttr(isReadOnly),
       htmlFor: dom.getHiddenSelectId(state.context),
       onClick() {
         if (isDisabled) return
         dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
       },
+    }),
+
+    controlProps: normalize.element({
+      ...parts.control.attrs,
+      dir: state.context.dir,
+      id: dom.getControlId(state.context),
+      "data-state": isOpen ? "open" : "closed",
+      "data-focus": dataAttr(isFocused),
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
     }),
 
     triggerProps: normalize.button({
@@ -104,7 +123,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
       "aria-invalid": isInvalid,
-      "data-readonly": dataAttr(state.context.readOnly),
+      "data-readonly": dataAttr(isReadOnly),
       "data-placement": state.context.currentPlacement,
       "data-placeholder-shown": dataAttr(!state.context.hasSelectedItems),
       onPointerDown(event) {
@@ -200,6 +219,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.pointerType !== "mouse") return
           send({ type: "ITEM.POINTER_LEAVE" })
         },
+      })
+    },
+
+    getItemTextProps(props) {
+      const itemState = getItemState(props)
+      return normalize.element({
+        ...parts.itemText.attrs,
+        dir: state.context.dir,
+        "data-disabled": dataAttr(itemState.isDisabled),
+        "data-highlighted": dataAttr(itemState.isHighlighted),
       })
     },
 

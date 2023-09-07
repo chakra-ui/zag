@@ -59,26 +59,29 @@ export default function Page() {
   return (
     <>
       <main className="select">
-        <div className="control">
+        <div {...api.rootProps}>
           <label {...api.labelProps}>Label</label>
-          <button {...api.triggerProps}>
-            <span>{api.hasSelectedItems ? api.valueAsString : "Select option"}</span>
-            <span>▼</span>
-          </button>
-        </div>
-
-        <Portal>
-          <div {...api.positionerProps}>
-            <ul {...api.contentProps}>
-              {items.map((item) => (
-                <li key={item.name} {...api.getItemProps({ item })}>
-                  <span className="item-label">{item.name}</span>
-                  <span {...api.getItemIndicatorProps({ item })}>✓</span>
-                </li>
-              ))}
-            </ul>
+          <div {...api.controlProps}>
+            <button {...api.triggerProps}>
+              <span>{api.hasSelectedItems ? api.valueAsString : "Select option"}</span>
+              <span>▼</span>
+            </button>
+            <button {...api.clearTriggerProps}>X</button>
           </div>
-        </Portal>
+
+          <Portal>
+            <div {...api.positionerProps}>
+              <ul {...api.contentProps}>
+                {items.map((item) => (
+                  <li key={item.name} {...api.getItemProps({ item })}>
+                    <span {...api.getItemTextProps({ item })}>{item.name}</span>
+                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Portal>
+        </div>
       </main>
 
       <Toolbar controls={controls.ui} viz>

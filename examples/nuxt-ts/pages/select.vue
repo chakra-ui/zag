@@ -21,38 +21,38 @@ const api = computed(() => select.connect(state.value, send, normalizeProps))
 
 <template>
   <main class="select">
-    <div class="control">
-      <label v-bind="api.labelProps">Label</label>
-      <button v-bind="api.triggerProps">
-        <span>{{ api.valueAsString || "Select option" }}</span>
-        <span>▼</span>
-      </button>
-    </div>
-
-    <form
-      @input="
-        (e) => {
-          const form = e.currentTarget as HTMLFormElement
-          const formData = serialize(form, { hash: true })
-          console.log(formData)
-        }
-      "
-    >
-      <select v-bind="api.hiddenSelectProps">
-        <option v-for="option in selectData" :key="option.value" :value="option.value">{{ option.label }}</option>
-      </select>
-    </form>
-
-    <Teleport to="body">
-      <div v-bind="api.positionerProps">
-        <ul v-bind="api.contentProps">
-          <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
-            <span>{{ item.label }}</span>
-            <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
-          </li>
-        </ul>
+    <div v-bind="api.rootProps">
+      <div v-bind="api.controlProps">
+        <label v-bind="api.labelProps">Label</label>
+        <button v-bind="api.triggerProps">
+          <span>{{ api.valueAsString || "Select option" }}</span>
+          <span>▼</span>
+        </button>
       </div>
-    </Teleport>
+      <form
+        @input="
+          (e) => {
+            const form = e.currentTarget as HTMLFormElement
+            const formData = serialize(form, { hash: true })
+            console.log(formData)
+          }
+        "
+      >
+        <select v-bind="api.hiddenSelectProps">
+          <option v-for="option in selectData" :key="option.value" :value="option.value">{{ option.label }}</option>
+        </select>
+      </form>
+      <Teleport to="body">
+        <div v-bind="api.positionerProps">
+          <ul v-bind="api.contentProps">
+            <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
+              <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
+              <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
+            </li>
+          </ul>
+        </div>
+      </Teleport>
+    </div>
   </main>
 
   <Toolbar>

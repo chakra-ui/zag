@@ -98,7 +98,9 @@ export function Select(props: SelectProps) {
                 key={item.value}
                 {...api.getItemProps({ item })}
               >
-                <chakra.span flex={1}>{item.label}</chakra.span>
+                <chakra.span flex={1} {...api.getItemTextProps({ item })}>
+                  {item.label}
+                </chakra.span>
                 <span {...api.getItemIndicatorProps({ item })}>
                   <MdCheck />
                 </span>

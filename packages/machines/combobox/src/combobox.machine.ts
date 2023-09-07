@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards } from "@zag-js/core"
-import { contains, raf } from "@zag-js/dom-query"
-import { trackInteractOutside } from "@zag-js/interact-outside"
+import { trackDismissableElement } from "@zag-js/dismissable"
+import { raf } from "@zag-js/dom-query"
 import { observeAttributes, observeChildren } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, compact, match } from "@zag-js/utils"
@@ -120,13 +120,12 @@ export function machine(userContext: UserDefinedContext) {
         focused: {
           tags: ["focused", "closed"],
           entry: ["focusInput", "scrollContentToTop", "clearHighlightedItem"],
-          activities: ["trackInteractOutside"],
           on: {
             "INPUT.CHANGE": {
               target: "suggesting",
               actions: "setInputValue",
             },
-            "CONTENT.INTERACT_OUTSIDE": {
+            "LAYER.INTERACT_OUTSIDE": {
               target: "idle",
             },
             "INPUT.ESCAPE": {
@@ -187,7 +186,7 @@ export function machine(userContext: UserDefinedContext) {
 
         interacting: {
           tags: ["open", "focused"],
-          activities: ["scrollIntoView", "trackInteractOutside", "computePlacement", "hideOtherElements"],
+          activities: ["scrollIntoView", "trackDismissableLayer", "computePlacement", "hideOtherElements"],
           on: {
             "INPUT.HOME": {
               actions: ["highlightFirstItem"],
@@ -253,7 +252,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["selectItem", "invokeOnClose"],
               },
             ],
-            "INPUT.ESCAPE": [
+            "LAYER.ESCAPE": [
               {
                 guard: "autoComplete",
                 target: "focused",
@@ -268,7 +267,7 @@ export function machine(userContext: UserDefinedContext) {
               target: "focused",
               actions: "invokeOnClose",
             },
-            "CONTENT.INTERACT_OUTSIDE": [
+            "LAYER.INTERACT_OUTSIDE": [
               {
                 guard: and("selectOnBlur", "hasHighlightedItem"),
                 target: "idle",
@@ -294,7 +293,7 @@ export function machine(userContext: UserDefinedContext) {
         suggesting: {
           tags: ["open", "focused"],
           activities: [
-            "trackInteractOutside",
+            "trackDismissableLayer",
             "scrollIntoView",
             "computePlacement",
             "trackChildNodes",
@@ -344,7 +343,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["clearHighlightedItem", "setInputValue"],
               },
             ],
-            "INPUT.ESCAPE": {
+            "LAYER.ESCAPE": {
               target: "focused",
               actions: "invokeOnClose",
             },
@@ -355,7 +354,7 @@ export function machine(userContext: UserDefinedContext) {
             "ITEM.POINTER_LEAVE": {
               actions: "clearHighlightedItem",
             },
-            "CONTENT.INTERACT_OUTSIDE": [
+            "LAYER.INTERACT_OUTSIDE": [
               {
                 guard: and("isCustomValue", not("allowCustomValue")),
                 target: "idle",
@@ -407,18 +406,20 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       activities: {
-        trackInteractOutside(ctx, _evt, { send }) {
-          return trackInteractOutside(dom.getInputEl(ctx), {
-            exclude(target) {
-              const ignore = [dom.getContentEl(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)]
-              return ignore.some((el) => contains(el, target))
-            },
+        trackDismissableLayer(ctx, _evt, { send }) {
+          const contentEl = () => dom.getContentEl(ctx)
+          return trackDismissableElement(contentEl, {
+            defer: true,
+            exclude: () => [dom.getContentEl(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
             onFocusOutside: ctx.onFocusOutside,
             onPointerDownOutside: ctx.onPointerDownOutside,
-            onInteractOutside(event) {
-              ctx.onInteractOutside?.(event)
-              if (event.defaultPrevented) return
-              send({ type: "CONTENT.INTERACT_OUTSIDE" })
+            onInteractOutside: ctx.onInteractOutside,
+            onEscapeKeyDown(event) {
+              event.preventDefault()
+              send("LAYER.ESCAPE")
+            },
+            onDismiss() {
+              send({ type: "LAYER.INTERACT_OUTSIDE" })
             },
           })
         },

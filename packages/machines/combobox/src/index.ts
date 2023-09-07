@@ -4,7 +4,6 @@ export { machine } from "./combobox.machine"
 export { collection } from "./combobox.collection"
 export type {
   UserDefinedContext as Context,
-  InteractOutsideEvent,
   ItemGroupLabelProps,
   ItemGroupProps,
   ItemProps,

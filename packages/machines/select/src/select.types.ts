@@ -8,7 +8,9 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
 export type { CollectionOptions }
 
 type ElementIds = Partial<{
+  root: string
   content: string
+  control: string
   trigger: string
   clearTrigger: string
   label: string
@@ -270,12 +272,15 @@ export type MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem
    */
   setCollection(collection: Collection<V>): void
 
+  rootProps: T["element"]
   labelProps: T["label"]
+  controlProps: T["element"]
   triggerProps: T["button"]
   clearTriggerProps: T["button"]
   positionerProps: T["element"]
   contentProps: T["element"]
   getItemProps(props: ItemProps): T["element"]
+  getItemTextProps(props: ItemProps): T["element"]
   getItemIndicatorProps(props: ItemProps): T["element"]
   getItemGroupProps(props: ItemGroupProps): T["element"]
   getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]

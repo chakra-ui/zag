@@ -6,9 +6,12 @@ export const anatomy = createAnatomy("select").parts(
   "trigger",
   "clearTrigger",
   "item",
+  "itemText",
   "itemIndicator",
   "itemGroup",
   "itemGroupLabel",
   "content",
+  "root",
+  "control",
 )
 export const parts = anatomy.build()

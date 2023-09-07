@@ -32,7 +32,7 @@
     </select>
 
     <!-- Custom Select  -->
-    <div class="control">
+    <div v-bind="api.controlProps">
       <label v-bind="api.labelProps">Label</label>
       <button type="button" v-bind="api.triggerProps">
         <span>{{ api.valueAsString || "Select option" }}</span>

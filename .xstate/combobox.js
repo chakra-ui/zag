@@ -95,13 +95,12 @@ const fetchMachine = createMachine({
     focused: {
       tags: ["focused", "closed"],
       entry: ["focusInput", "scrollContentToTop", "clearHighlightedItem"],
-      activities: ["trackInteractOutside"],
       on: {
         "INPUT.CHANGE": {
           target: "suggesting",
           actions: "setInputValue"
         },
-        "CONTENT.INTERACT_OUTSIDE": {
+        "LAYER.INTERACT_OUTSIDE": {
           target: "idle"
         },
         "INPUT.ESCAPE": {
@@ -153,7 +152,7 @@ const fetchMachine = createMachine({
     },
     interacting: {
       tags: ["open", "focused"],
-      activities: ["scrollIntoView", "trackInteractOutside", "computePlacement", "hideOtherElements"],
+      activities: ["scrollIntoView", "trackDismissableLayer", "computePlacement", "hideOtherElements"],
       on: {
         "INPUT.HOME": {
           actions: ["highlightFirstItem"]
@@ -204,7 +203,7 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: ["selectItem", "invokeOnClose"]
         }],
-        "INPUT.ESCAPE": [{
+        "LAYER.ESCAPE": [{
           cond: "autoComplete",
           target: "focused",
           actions: ["syncInputValue", "invokeOnClose"]
@@ -216,7 +215,7 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: "invokeOnClose"
         },
-        "CONTENT.INTERACT_OUTSIDE": [{
+        "LAYER.INTERACT_OUTSIDE": [{
           cond: "selectOnBlur && hasHighlightedItem",
           target: "idle",
           actions: ["selectHighlightedItem", "invokeOnClose"]
@@ -236,7 +235,7 @@ const fetchMachine = createMachine({
     },
     suggesting: {
       tags: ["open", "focused"],
-      activities: ["trackInteractOutside", "scrollIntoView", "computePlacement", "trackChildNodes", "hideOtherElements"],
+      activities: ["trackDismissableLayer", "scrollIntoView", "computePlacement", "trackChildNodes", "hideOtherElements"],
       entry: ["focusInput", "invokeOnOpen"],
       on: {
         CHILDREN_CHANGE: {
@@ -275,7 +274,7 @@ const fetchMachine = createMachine({
         }, {
           actions: ["clearHighlightedItem", "setInputValue"]
         }],
-        "INPUT.ESCAPE": {
+        "LAYER.ESCAPE": {
           target: "focused",
           actions: "invokeOnClose"
         },
@@ -286,7 +285,7 @@ const fetchMachine = createMachine({
         "ITEM.POINTER_LEAVE": {
           actions: "clearHighlightedItem"
         },
-        "CONTENT.INTERACT_OUTSIDE": [{
+        "LAYER.INTERACT_OUTSIDE": [{
           cond: "isCustomValue && !allowCustomValue",
           target: "idle",
           actions: ["revertInputValue", "invokeOnClose"]
