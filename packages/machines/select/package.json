@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/select",
-  "version": "0.19.0",
+  "version": "0.19.1",
   "description": "Core logic for the select widget implemented as a state machine",
   "keywords": [
     "js",

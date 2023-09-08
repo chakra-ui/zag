@@ -1,5 +1,13 @@
 # @zag-js/utils
 
+## 0.19.1
+
+### Patch Changes
+
+- [`f5dff3f4`](https://github.com/chakra-ui/zag/commit/f5dff3f4e1a13d5315d3bcfcc1295952b46e4016) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where change callbacks could be executed excessively
+  when no value changed.
+
 ## 0.19.0
 
 ## 0.18.0

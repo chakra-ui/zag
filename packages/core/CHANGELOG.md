@@ -1,5 +1,15 @@
 # @zag-js/core
 
+## 0.19.1
+
+### Patch Changes
+
+- [`3f0b6a19`](https://github.com/chakra-ui/zag/commit/3f0b6a19dcf9779846efb2bc093235299301bbdb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **Internal**: Add support for stopping an activity on demand
+
+- Updated dependencies []:
+  - @zag-js/store@0.19.1
+
 ## 0.19.0
 
 ### Patch Changes
