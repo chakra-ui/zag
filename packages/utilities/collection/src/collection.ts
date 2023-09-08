@@ -61,7 +61,8 @@ export class Collection<T extends CollectionItem = CollectionItem> {
       const disabled = this.itemToDisabled(item)
 
       const node: CollectionNode<T> = {
-        item,
+        // freeze item to prevent mutation by frameworks like Solid.js
+        item: Object.freeze(item),
         index: i,
         label,
         value: value,

@@ -211,16 +211,16 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-disabled": dataAttr(itemState.isDisabled),
         "aria-disabled": ariaAttr(itemState.isDisabled),
         onPointerMove(event) {
-          if (!isInteractive || event.pointerType !== "mouse") return
+          if (itemState.isDisabled || event.pointerType !== "mouse") return
           if (itemState.value === state.context.highlightedValue) return
           send({ type: "ITEM.POINTER_MOVE", value: itemState.value })
         },
         onPointerUp() {
-          if (!isInteractive || itemState.isDisabled) return
+          if (itemState.isDisabled) return
           send({ type: "ITEM.CLICK", src: "pointerup", value: itemState.value })
         },
         onPointerLeave(event) {
-          if (event.pointerType !== "mouse") return
+          if (itemState.isDisabled || event.pointerType !== "mouse") return
           send({ type: "ITEM.POINTER_LEAVE" })
         },
       })
