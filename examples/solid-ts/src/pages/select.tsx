@@ -11,9 +11,16 @@ import serialize from "form-serialize"
 export default function Page() {
   const controls = useControls(selectControls)
 
+  const items = () => [
+    { label: "React", value: "react" },
+    { label: "Solid", value: "solid" },
+    { label: "Vue", value: "vue" },
+    { label: "Svelte", value: "svelte", disabled: true },
+  ]
+
   const [state, send] = useMachine(
     select.machine({
-      collection: select.collection({ items: selectData }),
+      collection: select.collection({ items: items() }),
       id: createUniqueId(),
     }),
     {
@@ -45,7 +52,7 @@ export default function Page() {
           >
             {/* Hidden select */}
             <select {...api().hiddenSelectProps}>
-              <For each={selectData}>{(option) => <option value={option.value}>{option.label}</option>}</For>
+              <For each={items()}>{(option) => <option value={option.value}>{option.label}</option>}</For>
             </select>
           </form>
 
@@ -53,7 +60,7 @@ export default function Page() {
           <Portal>
             <div {...api().positionerProps}>
               <ul {...api().contentProps}>
-                <For each={selectData}>
+                <For each={items()}>
                   {(item) => (
                     <li {...api().getItemProps({ item })}>
                       <span {...api().getItemTextProps({ item })}>{item.label}</span>
