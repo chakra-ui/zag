@@ -1,5 +1,5 @@
 ---
-"@zag-js/core": minor
+"@zag-js/core": patch
 ---
 
-Add support for stopping an activity on demand
+**Internal**: Add support for stopping an activity on demand
