@@ -267,7 +267,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       tabIndex: -1,
       disabled: isDisabled,
       "aria-label": translations.clearTriggerLabel,
-      hidden: !state.context.isInputValueEmpty,
+      hidden: state.context.isInputValueEmpty,
       onPointerDown(event) {
         const evt = getNativeEvent(event)
         if (!isInteractive || !isLeftClick(evt)) return
