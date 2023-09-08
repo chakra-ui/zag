@@ -41,7 +41,7 @@ test("should be checked when spacebar is pressed while focused", async ({ page }
 
 test("should have disabled attributes when disabled", async ({ page }) => {
   await controls(page).bool("disabled")
-  await expect(page.locator(input)).toHaveAttribute("data-disabled", "")
+  await expect(page.locator(control)).toHaveAttribute("data-disabled", "")
   await expect(page.locator(input)).toBeDisabled()
 })
 

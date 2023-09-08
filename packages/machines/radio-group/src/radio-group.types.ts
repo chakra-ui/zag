@@ -115,16 +115,14 @@ export type RadioProps = {
   invalid?: boolean
 }
 
-export type InputProps = RadioProps & {
-  /**
-   * If `true` and `disabled` is passed, the radio will
-   * remain tabbable but not interactive
-   */
-  focusable?: boolean
-  /**
-   * If `true`, the radio input is marked as required,
-   */
-  required?: boolean
+export type RadioState = {
+  isInteractive: boolean
+  isInvalid: boolean
+  isDisabled: boolean
+  isChecked: boolean
+  isFocused: boolean
+  isHovered: boolean
+  isActive: boolean
 }
 
 export type MachineApi<T extends PropTypes = PropTypes> = {
@@ -145,28 +143,14 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
    */
   focus: () => void
   /**
-   * Function to blur the currently focused radio input in the radio group
-   */
-  blur(): void
-  /**
    * Returns the state details of a radio input
    */
-  getRadioState: <T_1 extends RadioProps>(
-    props: T_1,
-  ) => {
-    isInteractive: boolean
-    isInvalid: boolean | undefined
-    isDisabled: boolean | undefined
-    isChecked: boolean
-    isFocused: boolean
-    isHovered: boolean
-    isActive: boolean
-  }
+  getRadioState(props: RadioProps): RadioState
   rootProps: T["element"]
   labelProps: T["element"]
   getRadioProps(props: RadioProps): T["label"]
   getRadioLabelProps(props: RadioProps): T["element"]
   getRadioControlProps(props: RadioProps): T["element"]
-  getRadioHiddenInputProps(props: InputProps): T["input"]
+  getRadioHiddenInputProps(props: RadioProps): T["input"]
   indicatorProps: T["element"]
 }

@@ -1,17 +1,17 @@
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./radio-group.anatomy"
 import { dom } from "./radio-group.dom"
-import type { InputProps, MachineApi, RadioProps, Send, State } from "./radio-group.types"
+import type { MachineApi, RadioProps, Send, State } from "./radio-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isGroupDisabled = state.context.isDisabled
 
   function getRadioState<T extends RadioProps>(props: T) {
     const radioState = {
-      isInvalid: props.invalid,
-      isDisabled: props.disabled || isGroupDisabled,
+      isInvalid: !!props.invalid,
+      isDisabled: !!props.disabled || isGroupDisabled,
       isChecked: state.context.value === props.value,
       isFocused: state.context.focusedId === props.value,
       isHovered: state.context.hoveredId === props.value,
@@ -59,13 +59,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     focus,
-
-    blur() {
-      const focusedElement = dom.getActiveElement(state.context)
-      const inputEls = dom.getInputEls(state.context)
-      const radioHiddenInputIsFocused = inputEls.some((el) => el === focusedElement)
-      if (radioHiddenInputIsFocused) focusedElement?.blur()
-    },
 
     getRadioState,
 
@@ -141,11 +134,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getRadioHiddenInputProps(props: InputProps) {
+    getRadioHiddenInputProps(props: RadioProps) {
       const inputState = getRadioState(props)
-
-      const isRequired = props.required
-      const trulyDisabled = inputState.isDisabled && !props.focusable
 
       return normalize.input({
         "data-ownedby": dom.getRootId(state.context),
@@ -177,14 +167,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send({ type: "SET_ACTIVE", value: null })
           }
         },
-        disabled: trulyDisabled,
-        required: isRequired,
+        disabled: inputState.isDisabled,
         defaultChecked: inputState.isChecked,
-        "data-disabled": dataAttr(inputState.isDisabled),
-        "aria-required": ariaAttr(isRequired),
-        "aria-invalid": ariaAttr(inputState.isInvalid),
-        "aria-disabled": ariaAttr(trulyDisabled),
-        "aria-checked": ariaAttr(inputState.isChecked),
         style: visuallyHiddenStyle,
       })
     },

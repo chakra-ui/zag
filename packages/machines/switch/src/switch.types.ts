@@ -24,11 +24,6 @@ type PublicContext = DirectionProperty &
      */
     disabled?: boolean
     /**
-     * If `true` and `disabled` is passed, the switch will
-     * remain tabbable but not interactive
-     */
-    focusable?: boolean
-    /**
      * If `true`, the switch will be readonly
      */
     readOnly?: boolean
