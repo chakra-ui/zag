@@ -1,7 +1,7 @@
 import { createMachine, guards } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
-import { compact } from "@zag-js/utils"
+import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./pin-input.types"
 
@@ -289,11 +289,13 @@ const invoke = {
 }
 
 const set = {
-  value(ctx: MachineContext, values: string[]) {
-    assignValue(ctx, values)
+  value(ctx: MachineContext, value: string[]) {
+    if (isEqual(ctx.value, value)) return
+    assignValue(ctx, value)
     invoke.change(ctx)
   },
   valueAtIndex(ctx: MachineContext, index: number, value: string) {
+    if (isEqual(ctx.value[index], value)) return
     ctx.value[index] = value
     invoke.change(ctx)
   },

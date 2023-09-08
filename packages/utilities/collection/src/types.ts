@@ -9,7 +9,7 @@ export type CollectionSearchOptions = {
   timeout?: number
 }
 
-export type CollectionItem = string | Record<string, any>
+export type CollectionItem = any
 
 export type CollectionNode<T extends CollectionItem = CollectionItem> = {
   item: T

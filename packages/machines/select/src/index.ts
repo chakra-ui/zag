@@ -7,6 +7,7 @@ export type {
   ItemGroupLabelProps,
   ItemGroupProps,
   ItemProps,
+  ItemState,
   MachineApi as Api,
   CollectionOptions,
   CollectionItem,

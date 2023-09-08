@@ -22,7 +22,7 @@ import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement } from "@zag-js/popper"
 import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
-import { compact } from "@zag-js/utils"
+import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./date-picker.dom"
 import type { DateValue, DateView, MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 import { adjustStartAndEndDate, formatValue, sortDates } from "./date-picker.utils"
@@ -685,17 +685,24 @@ const invoke = {
   },
 }
 
+const isDateEqualFn = (a: DateValue[], b: DateValue[]) => {
+  if (a.length !== b.length) return false
+  return a.every((date, index) => isDateEqual(date, b[index]))
+}
+
 const set = {
   value(ctx: MachineContext, value: DateValue[]) {
+    if (isDateEqualFn(ctx.value, value)) return
     ctx.value = value
     invoke.change(ctx)
   },
   focusedValue(ctx: MachineContext, value: DateValue | undefined) {
-    if (!value) return
+    if (!value || isDateEqual(ctx.focusedValue, value)) return
     ctx.focusedValue = value
     invoke.focusChange(ctx)
   },
   view(ctx: MachineContext, value: DateView) {
+    if (isEqual(ctx.view, value)) return
     ctx.view = value
     invoke.viewChange(ctx)
   },

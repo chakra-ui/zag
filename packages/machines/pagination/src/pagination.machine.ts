@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { compact } from "@zag-js/utils"
+import { compact, isEqual } from "@zag-js/utils"
 import type { MachineContext, MachineState, UserDefinedContext } from "./pagination.types"
 
 export function machine(userContext: UserDefinedContext) {
@@ -110,6 +110,7 @@ export function machine(userContext: UserDefinedContext) {
 
 const set = {
   page: (ctx: MachineContext, value: number) => {
+    if (isEqual(ctx.page, value)) return
     ctx.page = value
     ctx.onChange?.({ page: ctx.page, pageSize: ctx.pageSize })
   },

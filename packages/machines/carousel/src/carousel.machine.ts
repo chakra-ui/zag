@@ -1,5 +1,5 @@
 import { createMachine, ref } from "@zag-js/core"
-import { compact, nextIndex, prevIndex } from "@zag-js/utils"
+import { compact, isEqual, nextIndex, prevIndex } from "@zag-js/utils"
 import { dom } from "./carousel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./carousel.types"
 import { getScrollSnaps } from "./utils/get-scroll-snaps"
@@ -178,6 +178,7 @@ const invoke = {
 
 const set = {
   index: (ctx: MachineContext, index: number) => {
+    if (isEqual(ctx.index, index)) return
     ctx.index = index
     invoke.slideChange(ctx)
   },

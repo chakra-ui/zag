@@ -169,7 +169,7 @@ export type UserDefinedContext<T extends CollectionItem = CollectionItem> = Requ
   "id" | "collection"
 >
 
-type ComputedContext = Readonly<{
+type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
   /**
    * @computed
    * Whether the input's value is empty
@@ -191,12 +191,12 @@ type ComputedContext = Readonly<{
   /**
    * The highlighted item
    */
-  highlightedItem: CollectionItem | null
+  highlightedItem: T | null
   /**
    * @computed
    * The selected items
    */
-  selectedItems: CollectionItem[]
+  selectedItems: T[]
   /**
    * @computed
    * Whether there's a selected option

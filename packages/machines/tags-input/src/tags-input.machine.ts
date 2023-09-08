@@ -4,7 +4,7 @@ import { contains, raf } from "@zag-js/dom-query"
 import { trackFormControl } from "@zag-js/form-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
-import { compact, removeAt, warn } from "@zag-js/utils"
+import { compact, isEqual, removeAt, warn } from "@zag-js/utils"
 import { dom } from "./tags-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tags-input.types"
 
@@ -537,7 +537,7 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    ctx.onChange?.({ values: ctx.value })
+    ctx.onChange?.({ values: Array.from(ctx.value) })
     dom.dispatchInputEvent(ctx)
   },
   focusChange: (ctx: MachineContext) => {
@@ -548,14 +548,17 @@ const invoke = {
 
 const set = {
   value: (ctx: MachineContext, value: string[]) => {
+    if (isEqual(ctx.value, value)) return
     ctx.value = value
     invoke.change(ctx)
   },
   valueAtIndex: (ctx: MachineContext, index: number, value: string) => {
+    if (isEqual(ctx.value[index], value)) return
     ctx.value[index] = value
     invoke.change(ctx)
   },
   focusedId: (ctx: MachineContext, id: string | null) => {
+    if (isEqual(ctx.focusedId, id)) return
     ctx.focusedId = id
     invoke.focusChange(ctx)
   },

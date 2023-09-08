@@ -1,7 +1,7 @@
 import { createMachine, guards } from "@zag-js/core"
 import { contains, raf } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
-import { compact } from "@zag-js/utils"
+import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./editable.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./editable.types"
 
@@ -191,6 +191,7 @@ const invoke = {
 
 const set = {
   value(ctx: MachineContext, value: string) {
+    if (isEqual(ctx.value, value)) return
     ctx.value = value
     invoke.change(ctx)
   },

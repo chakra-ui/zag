@@ -4,7 +4,7 @@ import { raf } from "@zag-js/dom-query"
 import { trackElementsSize, type ElementSize } from "@zag-js/element-size"
 import { trackFormControl } from "@zag-js/form-utils"
 import { getValuePercent } from "@zag-js/numeric-range"
-import { compact } from "@zag-js/utils"
+import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./range-slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./range-slider.types"
 import {
@@ -274,23 +274,27 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    ctx.onChange?.({ value: ctx.value })
+    ctx.onChange?.({ value: Array.from(ctx.value) })
     dom.dispatchChangeEvent(ctx)
   },
   focusChange: (ctx: MachineContext) => {
-    ctx.onFocusChange?.({ value: ctx.value, index: ctx.focusedIndex })
+    ctx.onFocusChange?.({ value: Array.from(ctx.value), index: ctx.focusedIndex })
   },
 }
+
 const set = {
   valueAtIndex: (ctx: MachineContext, index: number, value: number) => {
+    if (isEqual(ctx.value[index], value)) return
     ctx.value[index] = value
     invoke.change(ctx)
   },
   value: (ctx: MachineContext, value: number[]) => {
+    if (isEqual(ctx.value, value)) return
     assignArray(ctx.value, value)
     invoke.change(ctx)
   },
   focusedIndex: (ctx: MachineContext, index: number) => {
+    if (isEqual(ctx.focusedIndex, index)) return
     ctx.focusedIndex = index
     invoke.focusChange(ctx)
   },

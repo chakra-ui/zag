@@ -2,7 +2,7 @@ import { createMachine, guards } from "@zag-js/core"
 import { nextTick } from "@zag-js/dom-query"
 import { trackElementRect } from "@zag-js/element-rect"
 import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
-import { compact, isString } from "@zag-js/utils"
+import { compact, isEqual, isString } from "@zag-js/utils"
 import { dom } from "./radio-group.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./radio-group.types"
 
@@ -157,6 +157,7 @@ const invoke = {
 
 const set = {
   value: (ctx: MachineContext, value: string) => {
+    if (isEqual(ctx.value, value)) return
     ctx.value = value
     invoke.change(ctx)
   },

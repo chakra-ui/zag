@@ -2,7 +2,7 @@ import { createMachine, guards } from "@zag-js/core"
 import { nextTick, raf } from "@zag-js/dom-query"
 import { trackElementRect } from "@zag-js/element-rect"
 import { getFocusables } from "@zag-js/tabbable"
-import { compact } from "@zag-js/utils"
+import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./tabs.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tabs.types"
 
@@ -255,10 +255,12 @@ const invoke = {
 
 const set = {
   value: (ctx: MachineContext, value: string | null) => {
+    if (isEqual(value, ctx.value)) return
     ctx.value = value
     invoke.change(ctx)
   },
   focusedValue: (ctx: MachineContext, value: string | null) => {
+    if (isEqual(value, ctx.focusedValue)) return
     ctx.focusedValue = value
     invoke.focusChange(ctx)
   },

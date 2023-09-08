@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { add, compact, remove, warn } from "@zag-js/utils"
+import { add, compact, isEqual, remove, warn } from "@zag-js/utils"
 import { dom } from "./accordion.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./accordion.types"
 
@@ -131,7 +131,7 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change(ctx: MachineContext) {
-    ctx.onChange?.({ value: ctx.value })
+    ctx.onChange?.({ value: Array.from(ctx.value) })
   },
   focusChange(ctx: MachineContext) {
     ctx.onFocusChange?.({ value: ctx.focusedValue })
@@ -140,10 +140,12 @@ const invoke = {
 
 const set = {
   value(ctx: MachineContext, value: string[]) {
+    if (isEqual(ctx.value, value)) return
     ctx.value = value
     invoke.change(ctx)
   },
   focusedValue(ctx: MachineContext, value: string | null) {
+    if (isEqual(ctx.focusedValue, value)) return
     ctx.focusedValue = value
     invoke.focusChange(ctx)
   },

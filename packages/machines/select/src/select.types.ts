@@ -31,13 +31,13 @@ export type HighlightChangeDetails<T extends CollectionItem = CollectionItem> = 
   item: T | null
 }
 
-type PublicContext<T extends CollectionItem = any> = DirectionProperty &
+type PublicContext<T extends CollectionItem = CollectionItem> = DirectionProperty &
   CommonProperties &
   InteractOutsideHandlers & {
     /**
      * The item collection
      */
-    collection: Collection<any>
+    collection: Collection<CollectionItem>
     /**
      * The ids of the elements in the select. Useful for composition.
      */
@@ -131,7 +131,7 @@ type PrivateContext = Context<{
   fieldsetDisabled: boolean
 }>
 
-type ComputedContext = Readonly<{
+type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
   /**
    * @computed
    * Whether there's a selected option
@@ -155,12 +155,12 @@ type ComputedContext = Readonly<{
   /**
    * The highlighted item
    */
-  highlightedItem: CollectionItem | null
+  highlightedItem: T | null
   /**
    * @computed
    * The selected items
    */
-  selectedItems: CollectionItem[]
+  selectedItems: T[]
   /**
    * @computed
    * The display value of the select (based on the selected items)

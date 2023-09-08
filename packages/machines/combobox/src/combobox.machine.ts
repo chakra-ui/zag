@@ -4,16 +4,16 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
 import { observeAttributes, observeChildren } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
-import { addOrRemove, compact, match } from "@zag-js/utils"
+import { addOrRemove, compact, isEqual, match } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
 import { dom } from "./combobox.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./combobox.types"
+import type { CollectionItem, MachineContext, MachineState, UserDefinedContext } from "./combobox.types"
 
 const { and, not } = guards
 
 const KEYDOWN_EVENT_REGEX = /(ARROW_UP|ARROW_DOWN|HOME|END|ENTER|ESCAPE)/
 
-export function machine(userContext: UserDefinedContext) {
+export function machine<T extends CollectionItem>(userContext: UserDefinedContext<T>) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
@@ -589,6 +589,8 @@ const invoke = {
 
 const set = {
   selectedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
+    if (isEqual(ctx.value, value)) return
+
     if (value == null && !force) return
 
     if (value == null && force) {
@@ -601,15 +603,18 @@ const set = {
     invoke.selectionChange(ctx)
   },
   selectedItems: (ctx: MachineContext, value: string[]) => {
+    if (isEqual(ctx.value, value)) return
     ctx.value = value
     invoke.selectionChange(ctx)
   },
   highlightedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
+    if (isEqual(ctx.highlightedValue, value)) return
     if (!value && !force) return
     ctx.highlightedValue = value || null
     invoke.highlightChange(ctx)
   },
   inputValue: (ctx: MachineContext, value: string) => {
+    if (isEqual(ctx.inputValue, value)) return
     ctx.inputValue = value
     invoke.inputChange(ctx)
   },

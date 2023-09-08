@@ -1,6 +1,6 @@
 import { createMachine, guards } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
-import { add, compact, remove } from "@zag-js/utils"
+import { add, compact, isEqual, remove } from "@zag-js/utils"
 import { dom } from "./toggle-group.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./toggle-group.types"
 
@@ -159,12 +159,13 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change(ctx: MachineContext) {
-    ctx.onChange?.({ value: ctx.value })
+    ctx.onChange?.({ value: Array.from(ctx.value) })
   },
 }
 
 const set = {
   value(ctx: MachineContext, value: string[]) {
+    if (isEqual(ctx.value, value)) return
     ctx.value = value
     invoke.change(ctx)
   },

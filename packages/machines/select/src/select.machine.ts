@@ -5,14 +5,14 @@ import { setElementValue, trackFormControl } from "@zag-js/form-utils"
 import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
 import { proxyTabFocus } from "@zag-js/tabbable"
-import { addOrRemove, compact } from "@zag-js/utils"
+import { addOrRemove, compact, isEqual } from "@zag-js/utils"
 import { collection } from "./select.collection"
 import { dom } from "./select.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./select.types"
+import type { CollectionItem, MachineContext, MachineState, UserDefinedContext } from "./select.types"
 
 const { and, not } = guards
 
-export function machine(userContext: UserDefinedContext) {
+export function machine<T extends CollectionItem>(userContext: UserDefinedContext<T>) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
@@ -490,6 +490,8 @@ const invoke = {
 
 const set = {
   selectedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
+    if (isEqual(ctx.value, value)) return
+
     if (value == null && !force) return
 
     if (value == null && force) {
@@ -503,12 +505,17 @@ const set = {
     invoke.change(ctx)
   },
   selectedItems: (ctx: MachineContext, value: string[]) => {
+    if (isEqual(ctx.value, value)) return
+
     ctx.value = value
     invoke.change(ctx)
   },
   highlightedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
+    if (isEqual(ctx.highlightedValue, value)) return
+
     if (value == null && !force) return
     ctx.highlightedValue = value ?? null
+
     invoke.highlightChange(ctx)
   },
 }

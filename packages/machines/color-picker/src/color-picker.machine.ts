@@ -384,6 +384,7 @@ const invoke = {
 
 const set = {
   value(ctx: MachineContext, color: Color) {
+    if (ctx.valueAsColor.isEqual(color)) return
     ctx.value = color.toString("css")
     invoke.change(ctx)
   },

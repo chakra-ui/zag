@@ -3,7 +3,7 @@ import { addDomEvent, requestPointerLock } from "@zag-js/dom-event"
 import { isSafari, raf } from "@zag-js/dom-query"
 import { observeAttributes } from "@zag-js/mutation-observer"
 import { isAtMax, isAtMin, isWithinRange, valueOf } from "@zag-js/number-utils"
-import { callAll, compact } from "@zag-js/utils"
+import { callAll, compact, isEqual } from "@zag-js/utils"
 import { dom } from "./number-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./number-input.types"
 import { utils } from "./number-input.utils"
@@ -391,6 +391,7 @@ const invoke = {
 
 const set = {
   value: (ctx: MachineContext, value: string) => {
+    if (isEqual(ctx.value, value)) return
     ctx.value = value
     invoke.onChange(ctx)
   },

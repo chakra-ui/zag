@@ -1,6 +1,6 @@
 import { createMachine, guards } from "@zag-js/core"
 import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
-import { compact } from "@zag-js/utils"
+import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./switch.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./switch.types"
 
@@ -115,6 +115,7 @@ const invoke = {
 
 const set = {
   checked: (ctx: MachineContext, checked: boolean) => {
+    if (isEqual(ctx.checked, checked)) return
     ctx.checked = checked
     invoke.change(ctx)
   },

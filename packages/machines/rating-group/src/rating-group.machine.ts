@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
 import { trackFormControl } from "@zag-js/form-utils"
-import { compact } from "@zag-js/utils"
+import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./rating-group.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./rating-group.types"
 
@@ -191,10 +191,12 @@ const invoke = {
 
 const set = {
   value: (ctx: MachineContext, value: number) => {
+    if (isEqual(ctx.value, value)) return
     ctx.value = value
     invoke.change(ctx)
   },
   hoveredValue: (ctx: MachineContext, value: number) => {
+    if (isEqual(ctx.hoveredValue, value)) return
     ctx.hoveredValue = value
     invoke.hoverChange(ctx)
   },

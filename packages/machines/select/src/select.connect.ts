@@ -5,9 +5,13 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./select.anatomy"
 import { dom } from "./select.dom"
-import type { ItemProps, MachineApi, Send, State } from "./select.types"
+import type { CollectionItem, ItemProps, MachineApi, Send, State } from "./select.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes, V extends CollectionItem = CollectionItem>(
+  state: State,
+  send: Send,
+  normalize: NormalizeProps<T>,
+): MachineApi<T, V> {
   const isDisabled = state.context.isDisabled
   const isInvalid = state.context.invalid
   const isReadOnly = state.context.readOnly

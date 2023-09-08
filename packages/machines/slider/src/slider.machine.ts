@@ -4,7 +4,7 @@ import { raf } from "@zag-js/dom-query"
 import { trackElementSize } from "@zag-js/element-size"
 import { trackFormControl } from "@zag-js/form-utils"
 import { clampValue, getValuePercent } from "@zag-js/numeric-range"
-import { compact } from "@zag-js/utils"
+import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./slider.types"
 import { constrainValue, decrement, increment } from "./slider.utils"
@@ -224,6 +224,7 @@ const invoke = {
 
 const set = {
   value: (ctx: MachineContext, value: number) => {
+    if (isEqual(ctx.value, value)) return
     ctx.value = value
     invoke.change(ctx)
   },
