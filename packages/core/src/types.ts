@@ -401,6 +401,7 @@ export declare namespace StateMachine {
     sendChild: (evt: Event<TEvent>, to: string | ((ctx: TContext) => string)) => void
     stop: VoidFunction
     stopChild: (id: string) => void
+    stopActivity: (id: string) => void
     spawn<T>(src: T | (() => T), id?: string): T
     state: State<TContext, TState, TEvent>
     initialContext: TContext

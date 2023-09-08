@@ -45,7 +45,7 @@ export class Machine<
   public type: MachineType = MachineType.Machine
 
   // Cleanup function map (per state)
-  private activityEvents = new Map<string, Set<VoidFunction>>()
+  private activityEvents = new Map<string, Map<string, VoidFunction>>()
   private delayedEvents = new Map<string, VoidFunction[]>()
 
   // state update listeners the user can opt-in for
@@ -333,12 +333,19 @@ export class Machine<
     return cast<typeof actor>(ref(actor))
   }
 
-  private addActivityCleanup = (state: TState["value"] | null, cleanup: VoidFunction) => {
+  private stopActivity = (key: string) => {
+    if (!this.state.value) return
+    const cleanups = this.activityEvents.get(this.state.value)
+    cleanups?.get(key)?.() // cleanup
+    cleanups?.delete(key) // remove from map
+  }
+
+  private addActivityCleanup = (state: TState["value"] | null, key: string, cleanup: VoidFunction) => {
     if (!state) return
     if (!this.activityEvents.has(state)) {
-      this.activityEvents.set(state, new Set([cleanup]))
+      this.activityEvents.set(state, new Map([[key, cleanup]]))
     } else {
-      this.activityEvents.get(state)?.add(cleanup)
+      this.activityEvents.get(state)?.set(key, cleanup)
     }
   }
 
@@ -503,6 +510,7 @@ export class Machine<
       stop: this.stop.bind(this),
       stopChild: this.stopChild.bind(this),
       spawn: this.spawn.bind(this) as any,
+      stopActivity: this.stopActivity.bind(this),
       get state() {
         return self.stateSnapshot
       },
@@ -571,7 +579,8 @@ export class Machine<
       const cleanup = fn(this.state.context, event, this.meta)
 
       if (cleanup) {
-        this.addActivityCleanup(state ?? this.state.value, cleanup)
+        const key = isString(activity) ? activity : activity.name || uuid()
+        this.addActivityCleanup(state ?? this.state.value, key, cleanup)
       }
     }
   }
