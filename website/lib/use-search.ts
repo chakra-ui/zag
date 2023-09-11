@@ -4,7 +4,7 @@ import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { matchSorter } from "match-sorter"
 import { useRouter } from "next/router"
-import { useEffect, useId, useState } from "react"
+import { useEffect, useId, useMemo, useState } from "react"
 import {
   searchData,
   type SearchMetaItem,
@@ -31,15 +31,19 @@ export function useSearch(): UseSearchReturn {
 
   const router = useRouter()
 
-  const collection = combobox.collection({
-    items: results,
-    itemToValue(item) {
-      return item.url
-    },
-    itemToString(item) {
-      return JSON.stringify(item)
-    },
-  })
+  const collection = useMemo(
+    () =>
+      combobox.collection({
+        items: results,
+        itemToValue(item) {
+          return item.url
+        },
+        itemToString(item) {
+          return JSON.stringify(item)
+        },
+      }),
+    [],
+  )
 
   const [combobox_state, combobox_send] = useMachine(
     combobox.machine({
