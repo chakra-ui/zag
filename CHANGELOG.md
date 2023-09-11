@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.19.1] - 2023-09-11
+
+### Fixed
+
+- **All machines**: Fix issue where onChange callbacks could be executed excessively when no value changed.
+- **Combobox, Select**:
+  - Fix issue where clear trigger was incorrectly shown when value is empty
+  - Export `CollectionItem` type
+  - Ensure consistent usage of generics across the `connect` and `machine` functions
+
 ## [0.19.0] - 2023-09-07
 
 ### Fixed
