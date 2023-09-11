@@ -1,4 +1,4 @@
-import Icon from "@chakra-ui/icon"
+import { Icon } from "@chakra-ui/icon"
 import { Center, HStack } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
 import * as dialog from "@zag-js/dialog"

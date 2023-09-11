@@ -1,4 +1,4 @@
-import Icon from "@chakra-ui/icon"
+import { Icon } from "@chakra-ui/icon"
 import { Box, Flex, HStack, Text } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
 import { useSearch } from "lib/use-search"

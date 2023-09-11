@@ -10,11 +10,11 @@
       "@/panda/*": ["./panda/*"],
       "@/contentlayer": [".contentlayer/generated"],
       "@/*": ["src/*"]
-    }
+    },
+    "verbatimModuleSyntax": false,
+    "isolatedModules": true
   },
   "plugins": [{ "name": "next" }],
-  "verbatimModuleSyntax": false,
-  "isolatedModules": true,
   "include": [
     "next-env.d.ts",
     ".contentlayer",

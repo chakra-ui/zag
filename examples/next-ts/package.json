@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@internationalized/date": "^3.4.0",
+    "@internationalized/date": "^3.5.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -82,7 +82,7 @@
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.2",
-    "@types/node": "20.5.7",
+    "@types/node": "20.6.0",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "eslint-plugin-react": "7.33.2",

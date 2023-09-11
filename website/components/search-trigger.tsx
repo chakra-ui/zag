@@ -1,4 +1,4 @@
-import Icon from "@chakra-ui/icon"
+import { Icon } from "@chakra-ui/icon"
 import { chakra, forwardRef, type HTMLChakraProps } from "@chakra-ui/system"
 import { HiOutlineSearch } from "react-icons/hi"
 

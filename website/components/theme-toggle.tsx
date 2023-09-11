@@ -1,4 +1,4 @@
-import Icon from "@chakra-ui/icon"
+import { Icon } from "@chakra-ui/icon"
 import { Box, Center } from "@chakra-ui/layout"
 import { useColorMode, useColorModeValue } from "@chakra-ui/system"
 import { FaMoon, FaSun } from "react-icons/fa"

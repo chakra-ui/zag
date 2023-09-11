@@ -1,4 +1,4 @@
-import Icon from "@chakra-ui/icon"
+import { Icon } from "@chakra-ui/icon"
 import { Box, HStack, Spacer } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
 import { FrameworkSelect } from "components/framework-select"

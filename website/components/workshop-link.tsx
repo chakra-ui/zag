@@ -1,4 +1,4 @@
-import Icon from "@chakra-ui/icon"
+import { Icon } from "@chakra-ui/icon"
 import { HStack } from "@chakra-ui/layout"
 import { FaChevronRight } from "react-icons/fa"
 

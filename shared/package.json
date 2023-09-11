@@ -7,6 +7,6 @@
     "country-list": "^2.3.0"
   },
   "devDependencies": {
-    "@types/country-list": "^2.1.1"
+    "@types/country-list": "^2.1.2"
   }
 }
