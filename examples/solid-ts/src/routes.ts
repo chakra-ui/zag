@@ -41,7 +41,6 @@ export const routes: RouteDefinition[] = [
   { path: "/tabs", component: lazy(() => import("./pages/tabs")) },
   { path: "/tags-input", component: lazy(() => import("./pages/tags-input")) },
   { path: "/toast", component: lazy(() => import("./pages/toast")) },
-  { path: "/toggle", component: lazy(() => import("./pages/toggle")) },
   { path: "/toggle-group", component: lazy(() => import("./pages/toggle-group")) },
   { path: "/tooltip", component: lazy(() => import("./pages/tooltip")) },
   { path: "/splitter", component: lazy(() => import("./pages/splitter")) },
