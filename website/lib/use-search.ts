@@ -42,7 +42,7 @@ export function useSearch(): UseSearchReturn {
           return JSON.stringify(item)
         },
       }),
-    [],
+    [results],
   )
 
   const [combobox_state, combobox_send] = useMachine(

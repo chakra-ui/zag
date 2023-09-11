@@ -2,6 +2,7 @@
   "root": true,
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "target": "es6",
     "allowJs": true,
     "baseUrl": ".",
     "jsx": "preserve",
@@ -12,7 +13,6 @@
     }
   },
   "plugins": [{ "name": "next" }],
-  "target": "es6",
   "verbatimModuleSyntax": false,
   "isolatedModules": true,
   "include": [
