@@ -1,5 +1,14 @@
 # @zag-js/react
 
+## 0.19.1
+
+### Patch Changes
+
+- Updated dependencies [[`3f0b6a19`](https://github.com/chakra-ui/zag/commit/3f0b6a19dcf9779846efb2bc093235299301bbdb)]:
+  - @zag-js/core@0.19.1
+  - @zag-js/store@0.19.1
+  - @zag-js/types@0.19.1
+
 ## 0.19.0
 
 ### Patch Changes

@@ -1,5 +1,36 @@
 # @zag-js/combobox
 
+## 0.19.1
+
+### Patch Changes
+
+- [`cdf90c05`](https://github.com/chakra-ui/zag/commit/cdf90c05165ed0d7f919fd2b6a57e6b693ca28c2) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Hide clear trigger if no value is available
+
+- [`f5dff3f4`](https://github.com/chakra-ui/zag/commit/f5dff3f4e1a13d5315d3bcfcc1295952b46e4016) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve generic usage across api and context
+
+- [`617f0dd8`](https://github.com/chakra-ui/zag/commit/617f0dd8587e1903410a461538e6fad9de245ad8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Export `CollectionItem` from select and combobox
+
+- [`f5dff3f4`](https://github.com/chakra-ui/zag/commit/f5dff3f4e1a13d5315d3bcfcc1295952b46e4016) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where change callbacks could be executed excessively
+  when no value changed.
+
+- Updated dependencies [[`f5dff3f4`](https://github.com/chakra-ui/zag/commit/f5dff3f4e1a13d5315d3bcfcc1295952b46e4016),
+  [`3f0b6a19`](https://github.com/chakra-ui/zag/commit/3f0b6a19dcf9779846efb2bc093235299301bbdb)]:
+  - @zag-js/collection@0.19.1
+  - @zag-js/utils@0.19.1
+  - @zag-js/core@0.19.1
+  - @zag-js/dismissable@0.19.1
+  - @zag-js/popper@0.19.1
+  - @zag-js/anatomy@0.19.1
+  - @zag-js/types@0.19.1
+  - @zag-js/aria-hidden@0.19.1
+  - @zag-js/dom-event@0.19.1
+  - @zag-js/dom-query@0.19.1
+  - @zag-js/mutation-observer@0.19.1
+
 ## 0.19.0
 
 ### Minor Changes

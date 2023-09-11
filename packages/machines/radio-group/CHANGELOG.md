@@ -1,5 +1,31 @@
 # @zag-js/radio-group
 
+## 0.19.1
+
+### Patch Changes
+
+- [`f5dff3f4`](https://github.com/chakra-ui/zag/commit/f5dff3f4e1a13d5315d3bcfcc1295952b46e4016) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where change callbacks could be executed excessively
+  when no value changed.
+
+- [`d84c7913`](https://github.com/chakra-ui/zag/commit/d84c7913fce1a8ac1bc8b0f3c8c0d22502b9dc7a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Deprecate the `focusable` and `required` properties for hdiden
+  input. - Remove redundant properties from hidden input element.
+
+- [`f4e3d29f`](https://github.com/chakra-ui/zag/commit/f4e3d29fd3b881be83c375038567b486e0c95f3e) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Exports missing types
+
+- Updated dependencies [[`f5dff3f4`](https://github.com/chakra-ui/zag/commit/f5dff3f4e1a13d5315d3bcfcc1295952b46e4016),
+  [`3f0b6a19`](https://github.com/chakra-ui/zag/commit/3f0b6a19dcf9779846efb2bc093235299301bbdb)]:
+  - @zag-js/utils@0.19.1
+  - @zag-js/core@0.19.1
+  - @zag-js/anatomy@0.19.1
+  - @zag-js/types@0.19.1
+  - @zag-js/dom-query@0.19.1
+  - @zag-js/element-rect@0.19.1
+  - @zag-js/form-utils@0.19.1
+  - @zag-js/visually-hidden@0.19.1
+
 ## 0.19.0
 
 ### Patch Changes
