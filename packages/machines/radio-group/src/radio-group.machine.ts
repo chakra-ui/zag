@@ -151,7 +151,7 @@ export function machine(userContext: UserDefinedContext) {
 const invoke = {
   change: (ctx: MachineContext) => {
     if (ctx.value == null) return
-    ctx.onChange?.({ value: ctx.value })
+    ctx.onValueChange?.({ value: ctx.value })
   },
 }
 
