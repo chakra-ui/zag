@@ -53,9 +53,6 @@ export default function Page() {
             <button type="button" onClick={() => api().focus()}>
               Focus
             </button>
-            <button type="button" onClick={() => api().blur()}>
-              Blur
-            </button>
           </fieldset>
         </form>
       </main>
