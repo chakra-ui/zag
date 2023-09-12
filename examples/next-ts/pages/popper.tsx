@@ -14,7 +14,7 @@ export default function App() {
     })
   }, [])
 
-  const styles = getPlacementStyles({ measured: true })
+  const styles = getPlacementStyles({ placement: "bottom" })
 
   return (
     <div>
