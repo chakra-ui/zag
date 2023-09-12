@@ -1,11 +1,11 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-export type SlideProps = {
+export interface SlideProps {
   index: number
 }
 
-export type SlideIndicatorProps = {
+export interface SlideIndicatorProps {
   index: number
   readOnly?: boolean
 }
@@ -21,44 +21,45 @@ type ElementIds = Partial<{
   indicator(index: number): string
 }>
 
-type ChangeDetails = { index: number }
+export interface SlideChangeDetails {
+  index: number
+}
 
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    /**
-     * The orientation of the carousel.
-     * @default "horizontal"
-     */
-    orientation: "horizontal" | "vertical"
-    /**
-     * The alignment of the slides in the carousel.
-     */
-    align: "start" | "center" | "end"
-    /**
-     * The number of slides to show at a time.
-     */
-    slidesPerView: number | "auto"
-    /**
-     * Whether the carousel should loop around.
-     */
-    loop: boolean
-    /**
-     * The current slide index.
-     */
-    index: number
-    /**
-     * The amount of space between slides.
-     */
-    spacing: string
-    /**
-     * Function called when the slide changes.
-     */
-    onSlideChange?: (details: ChangeDetails) => void
-    /**
-     * The ids of the elements in the carousel. Useful for composition.
-     */
-    ids?: ElementIds
-  }
+interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The orientation of the carousel.
+   * @default "horizontal"
+   */
+  orientation: "horizontal" | "vertical"
+  /**
+   * The alignment of the slides in the carousel.
+   */
+  align: "start" | "center" | "end"
+  /**
+   * The number of slides to show at a time.
+   */
+  slidesPerView: number | "auto"
+  /**
+   * Whether the carousel should loop around.
+   */
+  loop: boolean
+  /**
+   * The current slide index.
+   */
+  index: number
+  /**
+   * The amount of space between slides.
+   */
+  spacing: string
+  /**
+   * Function called when the slide changes.
+   */
+  onSlideChange?: (details: SlideChangeDetails) => void
+  /**
+   * The ids of the elements in the carousel. Useful for composition.
+   */
+  ids?: ElementIds
+}
 
 type PrivateContext = Context<{
   slideRects: DOMRect[]
@@ -83,9 +84,9 @@ type ComputedContext = Readonly<{
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "dragging" | "autoplay"
 }
 
@@ -93,7 +94,15 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface SliderState {
+  valueText: string
+  isCurrent: boolean
+  isNext: boolean
+  isPrevious: boolean
+  isInView: boolean
+}
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The current index of the carousel
    */
@@ -129,13 +138,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    *  Returns the state of a specific slide
    */
-  getSlideState: (props: SlideProps) => {
-    valueText: string
-    isCurrent: boolean
-    isNext: boolean
-    isPrevious: boolean
-    isInView: boolean
-  }
+  getSlideState(props: SlideProps): SliderState
   /**
    * Function to start/resume autoplay
    */

@@ -452,10 +452,10 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           dom.getContentEl(ctx)?.scrollTo(0, 0)
         },
         invokeOnOpen(ctx) {
-          ctx.onOpen?.()
+          ctx.onOpenChange?.({ open: true })
         },
         invokeOnClose(ctx) {
-          ctx.onClose?.()
+          ctx.onOpenChange?.({ open: false })
         },
         syncSelectElement(ctx) {
           const selectEl = dom.getHiddenSelectEl(ctx)
@@ -480,11 +480,17 @@ function dispatchChangeEvent(ctx: MachineContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    ctx.onChange?.({ value: Array.from(ctx.value), items: ctx.selectedItems })
+    ctx.onValueChange?.({
+      value: Array.from(ctx.value),
+      items: ctx.selectedItems,
+    })
     dispatchChangeEvent(ctx)
   },
   highlightChange: (ctx: MachineContext) => {
-    ctx.onHighlight?.({ value: ctx.highlightedValue, item: ctx.highlightedItem })
+    ctx.onHighlightChange?.({
+      highlightedValue: ctx.highlightedValue,
+      highlightedItem: ctx.highlightedItem,
+    })
   },
 }
 

@@ -40,7 +40,7 @@ const getInitialContext = (ctx: Partial<MachineContext>): MachineContext => {
   value = value.map((date) => constrainValue(date, ctx.min, ctx.max))
 
   // get initial focused value
-  let focusedValue = value.at(0) || ctx.focusedValue || getTodayDate(timeZone)
+  let focusedValue = value[0] || ctx.focusedValue || getTodayDate(timeZone)
   focusedValue = constrainValue(focusedValue, ctx.min, ctx.max)
 
   // get initial start value for visible range
@@ -145,7 +145,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "TRIGGER.CLICK": {
               target: "open",
-              actions: ["focusFirstSelectedDate"],
+              actions: ["focusFirstSelectedDate", "invokeOnOpen"],
             },
           },
         },
@@ -155,7 +155,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "TRIGGER.CLICK": {
               target: "open",
-              actions: ["setViewToDay", "focusFirstSelectedDate"],
+              actions: ["setViewToDay", "focusFirstSelectedDate", "invokeOnOpen"],
             },
             "INPUT.CHANGE": {
               actions: ["focusParsedDate"],
@@ -168,7 +168,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "CELL.FOCUS": {
               target: "open",
-              actions: ["setView"],
+              actions: ["setView", "invokeOnOpen"],
             },
           },
         },
@@ -209,6 +209,7 @@ export function machine(userContext: UserDefinedContext) {
                   "setStartIndex",
                   "clearHoveredDate",
                   "focusInputElement",
+                  "invokeOnClose",
                 ],
               },
               // ===
@@ -227,7 +228,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "focused",
-                actions: ["setFocusedDate", "setSelectedDate", "focusInputElement"],
+                actions: ["setFocusedDate", "setSelectedDate", "focusInputElement", "invokeOnClose"],
               },
               // ===
             ],
@@ -250,7 +251,7 @@ export function machine(userContext: UserDefinedContext) {
             "GRID.ESCAPE": {
               guard: not("isInline"),
               target: "focused",
-              actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement"],
+              actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement", "invokeOnClose"],
             },
             "GRID.ENTER": [
               {
@@ -273,7 +274,7 @@ export function machine(userContext: UserDefinedContext) {
               {
                 target: "focused",
                 guard: and("isRangePicker", "isSelectingEndDate"),
-                actions: ["setSelectedDate", "setStartIndex", "focusInputElement"],
+                actions: ["setSelectedDate", "setStartIndex", "focusInputElement", "invokeOnClose"],
               },
               // ===
               {
@@ -291,7 +292,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "focused",
-                actions: ["selectFocusedDate", "focusInputElement"],
+                actions: ["selectFocusedDate", "focusInputElement", "invokeOnClose"],
               },
               // ===
             ],
@@ -333,6 +334,7 @@ export function machine(userContext: UserDefinedContext) {
             ],
             "TRIGGER.CLICK": {
               target: "focused",
+              actions: ["invokeOnClose"],
             },
             "VIEW.CHANGE": [
               {
@@ -348,11 +350,11 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "isTargetFocusable",
                 target: "idle",
-                actions: ["setStartIndex"],
+                actions: ["setStartIndex", "invokeOnClose"],
               },
               {
                 target: "focused",
-                actions: ["focusTriggerElement", "setStartIndex"],
+                actions: ["focusTriggerElement", "setStartIndex", "invokeOnClose"],
               },
             ],
           },
@@ -660,6 +662,12 @@ export function machine(userContext: UserDefinedContext) {
           const startValue = alignDate(ctx.focusedValue, "start", { months: ctx.numOfMonths }, ctx.locale)
           ctx.startValue = startValue
         },
+        invokeOnOpen(ctx) {
+          ctx.onOpenChange?.({ open: true })
+        },
+        invokeOnClose(ctx) {
+          ctx.onOpenChange?.({ open: false })
+        },
       },
       compareFns: {
         startValue: (a, b) => a.toString() === b.toString(),
@@ -672,16 +680,20 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change(ctx: MachineContext) {
-    const details = { value: Array.from(ctx.value), view: ctx.view }
-    ctx.onChange?.(details)
+    ctx.onValueChange?.({
+      value: Array.from(ctx.value),
+      view: ctx.view,
+    })
   },
   focusChange(ctx: MachineContext) {
-    const details = { focusedValue: ctx.focusedValue, value: Array.from(ctx.value), view: ctx.view }
-    ctx.onFocusChange?.(details)
+    ctx.onFocusChange?.({
+      focusedValue: ctx.focusedValue,
+      value: Array.from(ctx.value),
+      view: ctx.view,
+    })
   },
   viewChange(ctx: MachineContext) {
-    const details = { view: ctx.view }
-    ctx.onViewChange?.(details)
+    ctx.onViewChange?.({ view: ctx.view })
   },
 }
 

@@ -30,9 +30,9 @@ export const dom = createScope({
   getIndexOfId: (ctx: Ctx, id: string) => indexOfId(dom.getTagElements(ctx), id),
   isInputFocused: (ctx: Ctx) => dom.getDoc(ctx).activeElement === dom.getInputEl(ctx),
 
-  getFocusedTagValue: (ctx: Ctx) => {
-    if (!ctx.focusedId) return null
-    const idx = dom.getIndexOfId(ctx, ctx.focusedId)
+  getHighlightedTagValue: (ctx: Ctx) => {
+    if (!ctx.highlightedTagId) return null
+    const idx = dom.getIndexOfId(ctx, ctx.highlightedTagId)
     if (idx === -1) return null
     return dom.getTagElements(ctx)[idx].dataset.value ?? null
   },

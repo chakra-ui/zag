@@ -1,16 +1,12 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-export type PageTriggerProps = {
-  type: "page"
-  value: number
+export interface PageChangeDetails {
+  page: number
+  pageSize: number
 }
 
-export type EllipsisProps = {
-  index: number
-}
-
-type IntlTranslations = {
+interface IntlTranslations {
   rootLabel?: string
   prevPageTriggerLabel?: string
   nextPageTriggerLabel?: string
@@ -25,49 +21,41 @@ type ElementIds = Partial<{
   pageTrigger(page: number): string
 }>
 
-export type ChangeDetails = {
-  page: number
+interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the elements in the accordion. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations: IntlTranslations
+  /**
+   * Total number of data items
+   */
+  count: number
+  /**
+   * Number of data items per page
+   */
   pageSize: number
+  /**
+   * Number of pages to show beside active page
+   */
+  siblingCount: number
+  /**
+   * The active page
+   */
+  page: number
+  /**
+   * Called when the page number is changed, and it takes the resulting page number argument
+   */
+  onPageChange?: (details: PageChangeDetails) => void
+  /**
+   * The type of the trigger element
+   * @default "button"
+   */
+  type: "button" | "link"
 }
-
-export type PaginationRange = ({ type: "ellipsis" } | { type: "page"; value: number })[]
-
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    /**
-     * The ids of the elements in the accordion. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * Specifies the localized strings that identifies the accessibility elements and their states
-     */
-    translations: IntlTranslations
-    /**
-     * Total number of data items
-     */
-    count: number
-    /**
-     * Number of data items per page
-     */
-    pageSize: number
-    /**
-     * Number of pages to show beside active page
-     */
-    siblingCount: number
-    /**
-     * The active page
-     */
-    page: number
-    /**
-     * Called when the page number is changed, and it takes the resulting page number argument
-     */
-    onChange?: (details: ChangeDetails) => void
-    /**
-     * The type of the trigger element
-     * @default "button"
-     */
-    type: "button" | "link"
-  }
 
 type PrivateContext = Context<{}>
 
@@ -81,7 +69,7 @@ type ComputedContext = Readonly<{
    * @computed
    * Pages to render in pagination
    */
-  items: PaginationRange
+  items: Pages
   /**
    * @computed
    * Index of first and last data items on current page
@@ -116,6 +104,22 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+export interface PageTriggerProps {
+  type: "page"
+  value: number
+}
+
+export interface EllipsisProps {
+  index: number
+}
+
+export type Pages = Array<{ type: "ellipsis" } | { type: "page"; value: number }>
+
+interface PageRange {
+  start: number
+  end: number
+}
+
 export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * The current page.
@@ -128,7 +132,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * The page range. Represented as an array of page numbers (including ellipsis)
    */
-  pages: PaginationRange
+  pages: Pages
   /**
    * The previous page.
    */
@@ -140,14 +144,11 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * The page range. Represented as an object with `start` and `end` properties.
    */
-  pageRange: {
-    start: number
-    end: number
-  }
+  pageRange: PageRange
   /**
    * Function to slice an array of data based on the current page.
    */
-  slice<T_1>(data: T_1[]): T_1[]
+  slice<V>(data: V[]): V[]
   /**
    * Whether the current page is the first page.
    */

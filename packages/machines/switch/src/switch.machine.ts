@@ -109,7 +109,7 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    ctx.onChange?.({ checked: ctx.checked })
+    ctx.onCheckedChange?.({ checked: ctx.checked })
   },
 }
 

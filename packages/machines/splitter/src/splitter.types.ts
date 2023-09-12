@@ -3,14 +3,14 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
 
 export type PanelId = string | number
 
-type PanelSizeData = {
+interface PanelSizeData {
   id: PanelId
   size?: number
   minSize?: number
   maxSize?: number
 }
 
-type ResizeDetails = {
+interface SizeChangeDetails {
   size: PanelSizeData[]
   activeHandleId: string | null
 }
@@ -22,33 +22,32 @@ type ElementIds = Partial<{
   panel(id: string | number): string
 }>
 
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    /**
-     * The orientation of the splitter. Can be `horizontal` or `vertical`
-     */
-    orientation: "horizontal" | "vertical"
-    /**
-     * The size data of the panels
-     */
-    size: PanelSizeData[]
-    /**
-     * Function called when the splitter is resized.
-     */
-    onResize?: (details: ResizeDetails) => void
-    /**
-     * Function called when the splitter resize starts.
-     */
-    onResizeStart?: (details: ResizeDetails) => void
-    /**
-     * Function called when the splitter resize ends.
-     */
-    onResizeEnd?: (details: ResizeDetails) => void
-    /**
-     * The ids of the elements in the splitter. Useful for composition.
-     */
-    ids?: ElementIds
-  }
+interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The orientation of the splitter. Can be `horizontal` or `vertical`
+   */
+  orientation: "horizontal" | "vertical"
+  /**
+   * The size data of the panels
+   */
+  size: PanelSizeData[]
+  /**
+   * Function called when the splitter is resized.
+   */
+  onSizeChange?: (details: SizeChangeDetails) => void
+  /**
+   * Function called when the splitter resize starts.
+   */
+  onSizeChangeStart?: (details: SizeChangeDetails) => void
+  /**
+   * Function called when the splitter resize ends.
+   */
+  onSizeChangeEnd?: (details: SizeChangeDetails) => void
+  /**
+   * The ids of the elements in the splitter. Useful for composition.
+   */
+  ids?: ElementIds
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
@@ -78,7 +77,7 @@ type PrivateContext = Context<{
 
 export type MachineContext = PublicContext & ComputedContext & PrivateContext
 
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "hover:temp" | "hover" | "dragging" | "focused"
   tags: "focus"
 }
@@ -87,23 +86,32 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type PanelProps = {
+export interface PanelProps {
   id: PanelId
   snapSize?: number
 }
 
-export type ResizeTriggerProps = {
+export interface ResizeTriggerProps {
   id: `${PanelId}:${PanelId}`
   step?: number
   disabled?: boolean
 }
 
-export type PanelBounds = {
+export interface ResizeTriggerState {
+  isDisabled: boolean
+  isFocused: boolean
+  panelIds: string[]
+  min: number | undefined
+  max: number | undefined
+  value: number
+}
+
+export interface PanelBounds {
   min: number
   max: number
 }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the splitter is focused.
    */
@@ -131,14 +139,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Returns the state details for a resize trigger.
    */
-  getResizeTriggerState(props: ResizeTriggerProps): {
-    isDisabled: boolean
-    isFocused: boolean
-    panelIds: string[]
-    min: number | undefined
-    max: number | undefined
-    value: number
-  }
+  getResizeTriggerState(props: ResizeTriggerProps): ResizeTriggerState
   rootProps: T["element"]
   getPanelProps(props: PanelProps): T["element"]
   getResizeTriggerProps(props: ResizeTriggerProps): T["element"]

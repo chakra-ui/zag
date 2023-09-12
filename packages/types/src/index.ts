@@ -8,7 +8,15 @@ export type Orientation = "horizontal" | "vertical"
 
 export type MaybeElement<T extends HTMLElement = HTMLElement> = T | null
 
-export type DirectionProperty = {
+export interface OrientationProperty {
+  /**
+   * The orientation of the element.
+   * @default "horizontal"
+   */
+  orientation?: Orientation
+}
+
+export interface DirectionProperty {
   /**
    * The document's text/writing direction.
    * @default "ltr"
@@ -16,7 +24,7 @@ export type DirectionProperty = {
   dir?: "ltr" | "rtl"
 }
 
-export type CommonProperties = {
+export interface CommonProperties {
   /**
    * The unique identifier of the machine.
    */
@@ -27,7 +35,7 @@ export type CommonProperties = {
   getRootNode?: () => ShadowRoot | Document | Node
 }
 
-export type RootProperties = {
+export interface RootProperties {
   /**
    * The owner document of the machine.
    */

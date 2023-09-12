@@ -529,10 +529,10 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           contentEl.scrollTop = 0
         },
         invokeOnOpen(ctx) {
-          ctx.onOpen?.()
+          ctx.onOpenChange?.({ open: true })
         },
         invokeOnClose(ctx) {
-          ctx.onClose?.()
+          ctx.onOpenChange?.({ open: false })
         },
         highlightFirstItem(ctx) {
           const value = ctx.collection.first()
@@ -570,7 +570,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
 const invoke = {
   selectionChange: (ctx: MachineContext) => {
-    ctx.onChange?.({ value: Array.from(ctx.value), items: ctx.selectedItems })
+    ctx.onValueChange?.({ value: Array.from(ctx.value), items: ctx.selectedItems })
 
     // side effect: sync inputValue
     ctx.inputValue = match(ctx.selectionBehavior, {
@@ -580,10 +580,10 @@ const invoke = {
     })
   },
   highlightChange: (ctx: MachineContext) => {
-    ctx.onHighlight?.({ value: ctx.highlightedValue, item: ctx.highlightedItem })
+    ctx.onHighlightChange?.({ value: ctx.highlightedValue, item: ctx.highlightedItem })
   },
   inputChange: (ctx: MachineContext) => {
-    ctx.onInputChange?.({ value: ctx.inputValue })
+    ctx.onInputValueChange?.({ value: ctx.inputValue })
   },
 }
 

@@ -10,46 +10,49 @@ type ElementIds = Partial<{
 
 export type CheckedState = boolean | "indeterminate"
 
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    /**
-     * The ids of the elements in the checkbox. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * If `true`, the checkbox will be disabled
-     */
-    disabled?: boolean
-    /**
-     * If `true`, the checkbox is marked as invalid.
-     */
-    invalid?: boolean
-    /**
-     * If `true`, the checkbox input is marked as required,
-     */
-    required?: boolean
-    /**
-     * If `true`, the checkbox will be checked.
-     */
-    checked: CheckedState
-    /**
-     * The callback invoked when the checked state of the `Checkbox` changes.
-     */
-    onChange?: (details: { checked: CheckedState }) => void
-    /**
-     * The name of the input field in a checkbox. Useful for form submission.
-     */
-    name?: string
-    /**
-     * The id of the form that the checkbox belongs to.
-     */
-    form?: string
-    /**
-     * The value of checkbox input. Useful for form submission.
-     * @default "on"
-     */
-    value: string
-  }
+export interface CheckedChangeDetails {
+  checked: CheckedState
+}
+
+interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the elements in the checkbox. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * If `true`, the checkbox will be disabled
+   */
+  disabled?: boolean
+  /**
+   * If `true`, the checkbox is marked as invalid.
+   */
+  invalid?: boolean
+  /**
+   * If `true`, the checkbox input is marked as required,
+   */
+  required?: boolean
+  /**
+   * If `true`, the checkbox will be checked.
+   */
+  checked: CheckedState
+  /**
+   * The callback invoked when the checked state of the `Checkbox` changes.
+   */
+  onCheckedChange?(details: CheckedChangeDetails): void
+  /**
+   * The name of the input field in a checkbox. Useful for form submission.
+   */
+  name?: string
+  /**
+   * The id of the form that the checkbox belongs to.
+   */
+  form?: string
+  /**
+   * The value of checkbox input. Useful for form submission.
+   * @default "on"
+   */
+  value: string
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
@@ -91,9 +94,9 @@ type PrivateContext = Context<{
   fieldsetDisabled: boolean
 }>
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "ready"
 }
 
@@ -101,7 +104,7 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the checkbox is checked
    */

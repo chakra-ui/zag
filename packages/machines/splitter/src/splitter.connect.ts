@@ -3,7 +3,7 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./splitter.anatomy"
 import { dom } from "./splitter.dom"
-import type { PanelId, PanelProps, MachineApi, ResizeTriggerProps, Send, State } from "./splitter.types"
+import type { MachineApi, ResizeTriggerProps, Send, State } from "./splitter.types"
 import { getHandleBounds } from "./splitter.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
@@ -12,40 +12,42 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isDragging = state.matches("dragging")
   const panels = state.context.panels
 
-  const api = {
+  function getResizeTriggerState(props: ResizeTriggerProps) {
+    const { id, disabled } = props
+    const ids = id.split(":")
+    const panelIds = ids.map((id) => dom.getPanelId(state.context, id))
+    const panels = getHandleBounds(state.context, id)
+
+    return {
+      isDisabled: !!disabled,
+      isFocused: state.context.activeResizeId === id && isFocused,
+      panelIds,
+      min: panels?.min,
+      max: panels?.max,
+      value: 0,
+    }
+  }
+
+  return {
     isFocused,
     isDragging,
     bounds: getHandleBounds(state.context),
 
-    setToMinSize(id: PanelId) {
+    setToMinSize(id) {
       const panel = panels.find((panel) => panel.id === id)
       send({ type: "SET_PANEL_SIZE", id, size: panel?.minSize, src: "setToMinSize" })
     },
 
-    setToMaxSize(id: PanelId) {
+    setToMaxSize(id) {
       const panel = panels.find((panel) => panel.id === id)
       send({ type: "SET_PANEL_SIZE", id, size: panel?.maxSize, src: "setToMaxSize" })
     },
 
-    setSize(id: PanelId, size: number) {
+    setSize(id, size) {
       send({ type: "SET_PANEL_SIZE", id, size })
     },
 
-    getResizeTriggerState(props: ResizeTriggerProps) {
-      const { id, disabled } = props
-      const ids = id.split(":")
-      const panelIds = ids.map((id) => dom.getPanelId(state.context, id))
-      const panels = getHandleBounds(state.context, id)
-
-      return {
-        isDisabled: !!disabled,
-        isFocused: state.context.activeResizeId === id && isFocused,
-        panelIds,
-        min: panels?.min,
-        max: panels?.max,
-        value: 0,
-      }
-    },
+    getResizeTriggerState,
 
     rootProps: normalize.element({
       ...parts.root.attrs,
@@ -61,7 +63,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getPanelProps(props: PanelProps) {
+    getPanelProps(props) {
       const { id } = props
       return normalize.element({
         ...parts.panel.attrs,
@@ -72,9 +74,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getResizeTriggerProps(props: ResizeTriggerProps) {
+    getResizeTriggerProps(props) {
       const { id, disabled, step = 1 } = props
-      const triggerState = api.getResizeTriggerState(props)
+      const triggerState = getResizeTriggerState(props)
 
       return normalize.element({
         ...parts.resizeTrigger.attrs,
@@ -164,6 +166,4 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
   }
-
-  return api
 }

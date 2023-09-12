@@ -1,11 +1,11 @@
 import type { StateMachine as S } from "@zag-js/core"
 
-type PublicContext = {
+interface PublicContext {
   present: boolean
   onExitComplete?: () => void
 }
 
-export type MachineApi = {
+export interface MachineApi {
   /**
    * Whether the node is present in the DOM.
    */
@@ -16,7 +16,7 @@ export type MachineApi = {
   setNode(node: HTMLElement | null): void
 }
 
-type PrivateContext = {
+interface PrivateContext {
   node: HTMLElement | null
   styles: CSSStyleDeclaration | null
   prevPresent?: boolean
@@ -25,9 +25,9 @@ type PrivateContext = {
 
 export type UserDefinedContext = PublicContext
 
-export type MachineContext = PublicContext & PrivateContext
+export interface MachineContext extends PublicContext, PrivateContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "mounted" | "unmountSuspended" | "unmounted"
 }
 

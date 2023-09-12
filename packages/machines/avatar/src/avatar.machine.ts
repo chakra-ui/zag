@@ -79,10 +79,10 @@ export function machine(userContext: UserDefinedContext) {
       },
       actions: {
         invokeOnLoad(ctx) {
-          ctx.onLoad?.()
+          ctx.onLoadingStatusChange?.({ status: "loaded" })
         },
         invokeOnError(ctx) {
-          ctx.onError?.()
+          ctx.onLoadingStatusChange?.({ status: "error" })
         },
         checkImgStatus(ctx, _evt, { send }) {
           const img = dom.getImageEl(ctx)

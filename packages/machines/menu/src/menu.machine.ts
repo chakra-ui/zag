@@ -536,10 +536,10 @@ export function machine(userContext: UserDefinedContext) {
           ctx.parent?.send("RESTORE_FOCUS")
         },
         invokeOnOpen(ctx) {
-          ctx.onOpen?.()
+          ctx.onOpenChange?.({ open: true })
         },
         invokeOnClose(ctx) {
-          ctx.onClose?.()
+          ctx.onOpenChange?.({ open: false })
         },
       },
     },

@@ -22,11 +22,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "FILE.DELETE", file })
     },
     files: state.context.files,
-    setValue(files: File[]) {
+    setFiles(files: File[]) {
       const count = files.length
       send({ type: "VALUE.SET", files, count })
     },
-    clearValue() {
+    clearFiles() {
       send({ type: "VALUE.SET", files: [] })
     },
 

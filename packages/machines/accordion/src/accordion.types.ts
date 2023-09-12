@@ -8,51 +8,50 @@ type ElementIds = Partial<{
   trigger(value: string): string
 }>
 
-export type ChangeDetails = {
+export interface ChangeDetails {
   value: string[]
 }
 
-export type FocusChangeDetails = {
+export interface FocusChangeDetails {
   value: string | null
 }
 
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    /**
-     * The ids of the elements in the accordion. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * Whether multple accordion items can be open at the same time.
-     * @default false
-     */
-    multiple?: boolean
-    /**
-     * Whether an accordion item can be collapsed after it has been opened.
-     * @default false
-     */
-    collapsible?: boolean
-    /**
-     * The `id` of the accordion item that is currently being opened.
-     */
-    value: string[]
-    /**
-     * Whether the accordion items are disabled
-     */
-    disabled?: boolean
-    /**
-     * The callback fired when the state of opened/closed accordion items changes.
-     */
-    onChange?: (details: ChangeDetails) => void
-    /**
-     * The callback fired when the focused accordion item changes.
-     */
-    onFocusChange?: (details: FocusChangeDetails) => void
-    /**
-     *  The orientation of the accordion items.
-     */
-    orientation?: "horizontal" | "vertical"
-  }
+interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the elements in the accordion. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * Whether multple accordion items can be open at the same time.
+   * @default false
+   */
+  multiple?: boolean
+  /**
+   * Whether an accordion item can be collapsed after it has been opened.
+   * @default false
+   */
+  collapsible?: boolean
+  /**
+   * The `id` of the accordion item that is currently being opened.
+   */
+  value: string[]
+  /**
+   * Whether the accordion items are disabled
+   */
+  disabled?: boolean
+  /**
+   * The callback fired when the state of opened/closed accordion items changes.
+   */
+  onValueChange?: (details: ChangeDetails) => void
+  /**
+   * The callback fired when the focused accordion item changes.
+   */
+  onFocusChange?: (details: FocusChangeDetails) => void
+  /**
+   *  The orientation of the accordion items.
+   */
+  orientation?: "horizontal" | "vertical"
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
@@ -72,9 +71,9 @@ type PrivateContext = Context<{
   focusedValue: string | null
 }>
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "focused"
 }
 
@@ -82,18 +81,18 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type ItemProps = {
+export interface ItemProps {
   value: string
   disabled?: boolean
 }
 
-export type ItemState = {
+export interface ItemState {
   isOpen: boolean
   isFocused: boolean
   isDisabled: boolean
 }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the focused accordion item.
    */

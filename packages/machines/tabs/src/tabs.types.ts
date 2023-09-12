@@ -1,6 +1,14 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+export interface ValueChangeDetails {
+  value: string
+}
+
+export interface FocusChangeDetails {
+  focusedValue: string
+}
+
 type IntlTranslations = {
   tablistLabel?: string
 }
@@ -12,15 +20,6 @@ type ElementIds = Partial<{
   content: string
   indicator: string
 }>
-
-export type TriggerProps = {
-  value: string
-  disabled?: boolean
-}
-
-export type ContentProps = {
-  value: string
-}
 
 type PublicContext = DirectionProperty &
   CommonProperties & {
@@ -59,11 +58,11 @@ type PublicContext = DirectionProperty &
     /**
      * Callback to be called when the selected/active tab changes
      */
-    onChange?: (details: { value: string }) => void
+    onValueChange?: (details: ValueChangeDetails) => void
     /**
      * Callback to be called when the focused tab changes
      */
-    onFocus?: (details: { value: string }) => void
+    onFocusChange?: (details: FocusChangeDetails) => void
   }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -124,7 +123,21 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface TriggerProps {
+  value: string
+  disabled?: boolean
+}
+
+export interface TriggerState {
+  isSelected: boolean
+  isFocused: boolean
+}
+
+export interface ContentProps {
+  value: string
+}
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the tabs.
    */
@@ -146,9 +159,14 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
    */
   clearValue(): void
   /**
-   * Sets the indicator rect to the tab with the given id.
+   * Sets the indicator rect to the tab with the given value
    */
-  setIndicatorRect(id: string | null | undefined): void
+  setIndicatorRect(value: string): void
+  /**
+   * Returns the state of the trigger with the given props
+   */
+  getTriggerState(props: TriggerProps): TriggerState
+
   rootProps: T["element"]
   tablistProps: T["element"]
   getTriggerProps(props: TriggerProps): T["button"]

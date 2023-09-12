@@ -169,10 +169,16 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnComplete(ctx) {
           if (!ctx.isValueComplete) return
-          ctx.onComplete?.({ value: Array.from(ctx.value), valueAsString: ctx.valueAsString })
+          ctx.onValueComplete?.({
+            value: Array.from(ctx.value),
+            valueAsString: ctx.valueAsString,
+          })
         },
         invokeOnInvalid(ctx, evt) {
-          ctx.onInvalid?.({ value: evt.value, index: ctx.focusedIndex })
+          ctx.onValueInvalid?.({
+            value: evt.value,
+            index: ctx.focusedIndex,
+          })
         },
         clearFocusedIndex(ctx) {
           ctx.focusedIndex = -1
@@ -280,7 +286,10 @@ function getNextValue(current: string, next: string) {
 const invoke = {
   change(ctx: MachineContext) {
     // callback
-    ctx.onChange?.({ value: Array.from(ctx.value) })
+    ctx.onValueChange?.({
+      value: Array.from(ctx.value),
+      valueAsString: ctx.valueAsString,
+    })
 
     // form event
     const inputEl = dom.getHiddenInputEl(ctx)

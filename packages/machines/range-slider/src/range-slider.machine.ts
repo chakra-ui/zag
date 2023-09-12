@@ -208,10 +208,10 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         invokeOnChangeStart(ctx) {
-          ctx.onChangeStart?.({ value: ctx.value })
+          ctx.onValueChangeStart?.({ value: ctx.value })
         },
         invokeOnChangeEnd(ctx) {
-          ctx.onChangeEnd?.({ value: ctx.value })
+          ctx.onValueChangeEnd?.({ value: ctx.value })
         },
         setClosestThumbIndex(ctx, evt) {
           const pointValue = dom.getValueFromPoint(ctx, evt.point)
@@ -274,11 +274,16 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    ctx.onChange?.({ value: Array.from(ctx.value) })
+    ctx.onValueChange?.({
+      value: Array.from(ctx.value),
+    })
     dom.dispatchChangeEvent(ctx)
   },
   focusChange: (ctx: MachineContext) => {
-    ctx.onFocusChange?.({ value: Array.from(ctx.value), index: ctx.focusedIndex })
+    ctx.onFocusChange?.({
+      value: Array.from(ctx.value),
+      focusedIndex: ctx.focusedIndex,
+    })
   },
 }
 

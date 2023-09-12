@@ -5,6 +5,19 @@ import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+export interface OpenChangeDetails {
+  open: boolean
+}
+
+export interface ValueChangeDetails {
+  name: string
+  value: string | string[]
+}
+
+export interface SelectionDetails {
+  value: string
+}
+
 type ElementIds = Partial<{
   trigger: string
   contextTrigger: string
@@ -15,58 +28,52 @@ type ElementIds = Partial<{
   arrow: string
 }>
 
-type PublicContext = DirectionProperty &
-  CommonProperties &
-  InteractOutsideHandlers & {
-    /**
-     * The ids of the elements in the menu. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * The values of radios and checkboxes in the menu.
-     */
-    value?: Record<string, string | string[]>
-    /**
-     * Callback to be called when the menu values change (for radios and checkboxes).
-     */
-    onValueChange?: (details: { name: string; value: string | string[] }) => void
-    /**
-     * The `id` of the active menu item.
-     */
-    highlightedId: string | null
-    /**
-     * Function called when a menu item is selected.
-     */
-    onSelect?: (details: { value: string }) => void
-    /**
-     * The positioning point for the menu. Can be set by the context menu trigger or the button trigger.
-     */
-    anchorPoint: Point | null
-    /**
-     * Whether to loop the keyboard navigation.
-     */
-    loop: boolean
-    /**
-     * The options used to dynamically position the menu
-     */
-    positioning: PositioningOptions
-    /**
-     * Whether to close the menu when an option is selected
-     */
-    closeOnSelect: boolean
-    /**
-     * The accessibility label for the menu
-     */
-    "aria-label"?: string
-    /**
-     * Function called when the menu is opened
-     */
-    onOpen?: () => void
-    /**
-     * Function called when the menu is closed
-     */
-    onClose?: () => void
-  }
+interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+  /**
+   * The ids of the elements in the menu. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * The values of radios and checkboxes in the menu.
+   */
+  value?: Record<string, string | string[]>
+  /**
+   * Callback to be called when the menu values change (for radios and checkboxes).
+   */
+  onValueChange?: (details: ValueChangeDetails) => void
+  /**
+   * The `id` of the active menu item.
+   */
+  highlightedId: string | null
+  /**
+   * Function called when a menu item is selected.
+   */
+  onSelect?: (details: SelectionDetails) => void
+  /**
+   * The positioning point for the menu. Can be set by the context menu trigger or the button trigger.
+   */
+  anchorPoint: Point | null
+  /**
+   * Whether to loop the keyboard navigation.
+   */
+  loop: boolean
+  /**
+   * The options used to dynamically position the menu
+   */
+  positioning: PositioningOptions
+  /**
+   * Whether to close the menu when an option is selected
+   */
+  closeOnSelect: boolean
+  /**
+   * The accessibility label for the menu
+   */
+  "aria-label"?: string
+  /**
+   * Function called when the menu opens or closes
+   */
+  onOpenChange?: (details: OpenChangeDetails) => void
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
@@ -132,9 +139,9 @@ type PrivateContext = Context<{
   focusTriggerOnClose?: boolean
 }>
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
   tags: "visible"
 }
@@ -145,12 +152,12 @@ export type Send = S.Send<S.AnyEventObject>
 
 export type Service = Machine<MachineContext, MachineState>
 
-export type Api = {
+export interface Api {
   getItemProps: (opts: ItemProps) => Record<string, any>
   triggerProps: Record<string, any>
 }
 
-export type ItemProps = {
+export interface ItemProps {
   /**
    * The `id` of the menu item option.
    */
@@ -170,7 +177,7 @@ export type ItemProps = {
   closeOnSelect?: boolean
 }
 
-export type OptionItemProps = Partial<ItemProps> & {
+export interface OptionItemProps extends Partial<ItemProps> {
   /**
    * The option's name as specified in menu's `context.values` object
    */
@@ -189,21 +196,21 @@ export type OptionItemProps = Partial<ItemProps> & {
   onCheckedChange?: (checked: boolean) => void
 }
 
-export type GroupProps = {
+export interface GroupProps {
   /**
    * The `id` of the element that provides accessibility label to the option group
    */
   id: string
 }
 
-export type LabelProps = {
+export interface LabelProps {
   /**
    * The `id` of the group this refers to
    */
   htmlFor: string
 }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the menu is open
    */

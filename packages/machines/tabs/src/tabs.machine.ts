@@ -245,11 +245,11 @@ function pushUnique(arr: string[], value: any) {
 const invoke = {
   change: (ctx: MachineContext) => {
     if (ctx.value == null) return
-    ctx.onChange?.({ value: ctx.value })
+    ctx.onValueChange?.({ value: ctx.value })
   },
   focusChange: (ctx: MachineContext) => {
     if (ctx.focusedValue == null) return
-    ctx.onFocus?.({ value: ctx.focusedValue })
+    ctx.onFocusChange?.({ focusedValue: ctx.focusedValue })
   },
 }
 

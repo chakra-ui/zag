@@ -181,11 +181,11 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    ctx.onChange?.({ value: ctx.value })
+    ctx.onValueChange?.({ value: ctx.value })
     dom.dispatchChangeEvent(ctx)
   },
   hoverChange: (ctx: MachineContext) => {
-    ctx.onHover?.({ value: ctx.hoveredValue })
+    ctx.onHoveredValueChange?.({ hoveredValue: ctx.hoveredValue })
   },
 }
 

@@ -6,7 +6,7 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
 
 export type { CollectionOptions, CollectionItem }
 
-type IntlTranslations = {
+interface IntlTranslations {
   triggerLabel?: string
   clearTriggerLabel?: string
 }
@@ -25,141 +25,142 @@ type ElementIds = Partial<{
   itemGroupLabel(id: string | number): string
 }>
 
-export type ValueChangeDetails<T extends CollectionItem = CollectionItem> = {
+export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
   value: string[]
   items: T[]
 }
 
-export type HighlightChangeDetails<T extends CollectionItem = CollectionItem> = {
+export interface HighlightChangeDetails<T extends CollectionItem = CollectionItem> {
   value: string | null
   item: T | null
 }
 
-type InputValueChangeDetails = {
+export interface InputValueChangeDetails {
   value: string
 }
 
-type PublicContext<T extends CollectionItem = CollectionItem> = DirectionProperty &
-  CommonProperties &
-  InteractOutsideHandlers & {
-    /**
-     * The ids of the elements in the combobox. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * The current value of the combobox's input
-     */
-    inputValue: string
-    /**
-     * The `name` attribute of the combobox's input. Useful for form submission
-     */
-    name?: string
-    /**
-     * The associate form of the combobox.
-     */
-    form?: string
-    /**
-     * Whether the combobox is disabled
-     */
-    disabled?: boolean
-    /**
-     * Whether the combobox is readonly. This puts the combobox in a "non-editable" mode
-     * but the user can still interact with it
-     */
-    readOnly?: boolean
-    /**
-     * Whether the combobox is required
-     */
-    invalid?: boolean
-    /**
-     * The placeholder text of the combobox's input
-     */
-    placeholder?: string
-    /**
-     * The active item's id. Used to set the `aria-activedescendant` attribute
-     */
-    highlightedValue: string | null
-    /**
-     * The keys of the selected items
-     */
-    value: string[]
-    /**
-     * Defines the auto-completion behavior of the combobox.
-     *
-     * - `autohighlight`: The first focused item is highlighted as the user types
-     * - `autocomplete`: Navigating the listbox with the arrow keys selects the item and the input is updated
-     */
-    inputBehavior: "autohighlight" | "autocomplete" | "none"
-    /**
-     * The behavior of the combobox input when an item is selected
-     *
-     * - `replace`: The selected item string is set as the input value
-     * - `clear`: The input value is cleared
-     * - `preserve`: The input value is preserved
-     */
-    selectionBehavior: "clear" | "replace" | "preserve"
-    /**
-     * Whether to select the higlighted item on interaction outside the combobox
-     */
-    selectOnBlur: boolean
-    /**
-     * Whether to autofocus the input on mount
-     */
-    autoFocus?: boolean
-    /**
-     * Whether to open the combobox popup on initial click on the input
-     */
-    openOnClick?: boolean
-    /**
-     * Whether to allow custom values or free values in the input
-     */
-    allowCustomValue?: boolean
-    /**
-     * Whether to loop the keyboard navigation through the items
-     */
-    loop?: boolean
-    /**
-     * The positioning options to dynamically position the menu
-     */
-    positioning: PositioningOptions
-    /**
-     * Function called when the input's value changes
-     */
-    onInputChange?: (details: InputValueChangeDetails) => void
-    /**
-     * Function called when a new item is selected
-     */
-    onChange?: (details: ValueChangeDetails<T>) => void
-    /**
-     * Function called when an item is highlighted using the pointer
-     * or keyboard navigation.
-     */
-    onHighlight?: (details: HighlightChangeDetails<T>) => void
-    /**
-     * Function called when the popup is opened
-     */
-    onOpen?: VoidFunction
-    /**
-     * Function called when the popup is closed
-     */
-    onClose?: VoidFunction
-    /**
-     * Specifies the localized strings that identifies the accessibility elements and their states
-     */
-    translations: IntlTranslations
-    /**
-     * The collection of items
-     */
-    collection: Collection<any>
-    /**
-     * Whether to allow multiple selection
-     */
-    multiple?: boolean
-    /**
-     * Whether to close the combobox when an item is selected.
-     */
-    closeOnSelect?: boolean
-  }
+export interface OpenChangeDetails {
+  open: boolean
+}
+
+interface PublicContext<T extends CollectionItem = CollectionItem>
+  extends DirectionProperty,
+    CommonProperties,
+    InteractOutsideHandlers {
+  /**
+   * The ids of the elements in the combobox. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * The current value of the combobox's input
+   */
+  inputValue: string
+  /**
+   * The `name` attribute of the combobox's input. Useful for form submission
+   */
+  name?: string
+  /**
+   * The associate form of the combobox.
+   */
+  form?: string
+  /**
+   * Whether the combobox is disabled
+   */
+  disabled?: boolean
+  /**
+   * Whether the combobox is readonly. This puts the combobox in a "non-editable" mode
+   * but the user can still interact with it
+   */
+  readOnly?: boolean
+  /**
+   * Whether the combobox is required
+   */
+  invalid?: boolean
+  /**
+   * The placeholder text of the combobox's input
+   */
+  placeholder?: string
+  /**
+   * The active item's id. Used to set the `aria-activedescendant` attribute
+   */
+  highlightedValue: string | null
+  /**
+   * The keys of the selected items
+   */
+  value: string[]
+  /**
+   * Defines the auto-completion behavior of the combobox.
+   *
+   * - `autohighlight`: The first focused item is highlighted as the user types
+   * - `autocomplete`: Navigating the listbox with the arrow keys selects the item and the input is updated
+   */
+  inputBehavior: "autohighlight" | "autocomplete" | "none"
+  /**
+   * The behavior of the combobox input when an item is selected
+   *
+   * - `replace`: The selected item string is set as the input value
+   * - `clear`: The input value is cleared
+   * - `preserve`: The input value is preserved
+   */
+  selectionBehavior: "clear" | "replace" | "preserve"
+  /**
+   * Whether to select the higlighted item on interaction outside the combobox
+   */
+  selectOnBlur: boolean
+  /**
+   * Whether to autofocus the input on mount
+   */
+  autoFocus?: boolean
+  /**
+   * Whether to open the combobox popup on initial click on the input
+   */
+  openOnClick?: boolean
+  /**
+   * Whether to allow custom values or free values in the input
+   */
+  allowCustomValue?: boolean
+  /**
+   * Whether to loop the keyboard navigation through the items
+   */
+  loop?: boolean
+  /**
+   * The positioning options to dynamically position the menu
+   */
+  positioning: PositioningOptions
+  /**
+   * Function called when the input's value changes
+   */
+  onInputValueChange?: (details: InputValueChangeDetails) => void
+  /**
+   * Function called when a new item is selected
+   */
+  onValueChange?: (details: ValueChangeDetails<T>) => void
+  /**
+   * Function called when an item is highlighted using the pointer
+   * or keyboard navigation.
+   */
+  onHighlightChange?: (details: HighlightChangeDetails<T>) => void
+  /**
+   * Function called when the popup is opened
+   */
+  onOpenChange?: (details: OpenChangeDetails) => void
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations: IntlTranslations
+  /**
+   * The collection of items
+   */
+  collection: Collection<any>
+  /**
+   * Whether to allow multiple selection
+   */
+  multiple?: boolean
+  /**
+   * Whether to close the combobox when an item is selected.
+   */
+  closeOnSelect?: boolean
+}
 
 /**
  * This is the actual context exposed to the user.
@@ -222,9 +223,9 @@ type PrivateContext = Context<{
   composing: boolean
 }>
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "focused" | "suggesting" | "interacting"
   tags: "open" | "focused" | "idle" | "closed"
 }
@@ -233,28 +234,28 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type ItemProps = {
+export interface ItemProps {
   item: CollectionItem
 }
 
-export type ItemState = {
+export interface ItemState {
   value: string
   isDisabled: boolean
   isSelected: boolean
   isHighlighted: boolean
 }
 
-export type ItemGroupProps = {
+export interface ItemGroupProps {
   id: string
 }
 
-export type ItemGroupLabelProps = {
+export interface ItemGroupLabelProps {
   htmlFor: string
 }
 
 export type { Placement, PositioningOptions }
 
-export type MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> = {
+export interface MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
   /**
    * Whether the combobox is focused
    */

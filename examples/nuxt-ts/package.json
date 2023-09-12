@@ -34,6 +34,7 @@
     "@zag-js/element-rect": "workspace:*",
     "@zag-js/element-size": "workspace:*",
     "@zag-js/file-upload": "workspace:*",
+    "@zag-js/file-utils": "workspace:*",
     "@zag-js/focus-scope": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/form-utils": "workspace:*",

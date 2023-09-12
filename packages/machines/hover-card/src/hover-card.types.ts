@@ -2,6 +2,10 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+interface OpenChangeDetails {
+  open: boolean
+}
+
 type ElementIds = Partial<{
   trigger: string
   content: string
@@ -9,39 +13,34 @@ type ElementIds = Partial<{
   arrow: string
 }>
 
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    /**
-     * The ids of the elements in the popover. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * Function invoked when the hover card is opened.
-     */
-    onOpen?: VoidFunction
-    /**
-     * Function invoked when the hover card is closed.
-     */
-    onClose?: VoidFunction
-    /**
-     * The duration from when the mouse enters the trigger until the hover card opens.
-     */
-    openDelay: number
-    /**
-     * The duration from when the mouse leaves the trigger or content until the hover card closes.
-     */
-    closeDelay: number
-    /**
-     * Whether the hover card is open
-     */
-    open?: boolean
-    /**
-     * The user provided options used to position the popover content
-     */
-    positioning: PositioningOptions
-  }
+interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the elements in the popover. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * Function called when the hover card opens or closes.
+   */
+  onOpenChange?: (details: OpenChangeDetails) => void
+  /**
+   * The duration from when the mouse enters the trigger until the hover card opens.
+   */
+  openDelay: number
+  /**
+   * The duration from when the mouse leaves the trigger or content until the hover card closes.
+   */
+  closeDelay: number
+  /**
+   * Whether the hover card is open
+   */
+  open?: boolean
+  /**
+   * The user provided options used to position the popover content
+   */
+  positioning: PositioningOptions
+}
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the hover card is open
    */
@@ -84,7 +83,7 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 export type MachineContext = PublicContext & PrivateContext & ComputedContext
 
-export type MachineState = {
+export interface MachineState {
   value: "opening" | "open" | "closing" | "closed"
   tags: "open" | "closed"
 }

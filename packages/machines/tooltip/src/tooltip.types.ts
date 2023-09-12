@@ -9,7 +9,11 @@ type ElementIds = Partial<{
   positioner: string
 }>
 
-type PublicContext = CommonProperties & {
+interface OpenChangeDetails {
+  open: boolean
+}
+
+interface PublicContext extends CommonProperties {
   /**
    * The ids of the elements in the tooltip. Useful for composition.
    */
@@ -43,11 +47,7 @@ type PublicContext = CommonProperties & {
   /**
    * Function called when the tooltip is opened.
    */
-  onOpen?: VoidFunction
-  /**
-   * Function called when the tooltip is closed.
-   */
-  onClose?: VoidFunction
+  onOpenChange?(details: OpenChangeDetails): void
   /**
    * Custom label for the tooltip.
    */
@@ -88,9 +88,9 @@ type PrivateContext = RootProperties & {
   hasPointerMoveOpened?: boolean
 }
 
-export type MachineContext = PublicContext & ComputedContext & PrivateContext
+export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "opening" | "open" | "closing" | "closed"
   tags: "open" | "closed"
 }
@@ -99,9 +99,9 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type { PositioningOptions, Placement }
+export type { Placement, PositioningOptions }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tooltip is open.
    */
@@ -118,6 +118,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
    * Function to reposition the popover
    */
   setPositioning(options?: Partial<PositioningOptions>): void
+
   triggerProps: T["button"]
   arrowProps: T["element"]
   arrowTipProps: T["element"]

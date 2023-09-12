@@ -3,7 +3,7 @@ import { addDomEvent, requestPointerLock } from "@zag-js/dom-event"
 import { isSafari, raf } from "@zag-js/dom-query"
 import { observeAttributes } from "@zag-js/mutation-observer"
 import { isAtMax, isAtMin, isWithinRange, valueOf } from "@zag-js/number-utils"
-import { callAll, compact, isEqual } from "@zag-js/utils"
+import { callAll, compact, isEqual, match } from "@zag-js/utils"
 import { dom } from "./number-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./number-input.types"
 import { utils } from "./number-input.utils"
@@ -327,29 +327,29 @@ export function machine(userContext: UserDefinedContext) {
           ctx.hint = "set"
         },
         invokeOnFocus(ctx, evt) {
-          let srcElement: HTMLElement | null = null
-
-          if (evt.type === "PRESS_DOWN") {
-            srcElement = dom.getPressedTriggerEl(ctx, evt.hint)
-          } else if (evt.type === "FOCUS") {
-            srcElement = dom.getInputEl(ctx)
-          } else if (evt.type === "PRESS_DOWN_SCRUBBER") {
-            srcElement = dom.getScrubberEl(ctx)
-          }
-
-          ctx.onFocus?.({
-            value: ctx.value,
-            valueAsNumber: ctx.valueAsNumber,
+          const srcElement: HTMLElement | null = match(evt.type, {
+            PRESS_DOWN: dom.getPressedTriggerEl(ctx, evt.hint),
+            FOCUS: dom.getInputEl(ctx),
+            PRESS_DOWN_SCRUBBER: dom.getScrubberEl(ctx),
+          })
+          ctx.onFocusChange?.({
+            focused: true,
             srcElement,
+            value: ctx.formattedValue,
+            valueAsNumber: ctx.valueAsNumber,
           })
         },
         invokeOnBlur(ctx) {
-          ctx.onBlur?.({ value: ctx.value, valueAsNumber: ctx.valueAsNumber })
+          ctx.onFocusChange?.({
+            focused: true,
+            value: ctx.formattedValue,
+            valueAsNumber: ctx.valueAsNumber,
+          })
         },
         invokeOnInvalid(ctx) {
           if (!ctx.isOutOfRange) return
           const reason = ctx.valueAsNumber > ctx.max ? "rangeOverflow" : "rangeUnderflow"
-          ctx.onInvalid?.({
+          ctx.onValueInvalid?.({
             reason,
             value: ctx.formattedValue,
             valueAsNumber: ctx.valueAsNumber,
@@ -385,7 +385,7 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   onChange: (ctx: MachineContext) => {
-    ctx.onChange?.({ value: ctx.value, valueAsNumber: ctx.valueAsNumber })
+    ctx.onValueChange?.({ value: ctx.value, valueAsNumber: ctx.valueAsNumber })
   },
 }
 

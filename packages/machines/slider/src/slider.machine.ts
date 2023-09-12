@@ -175,10 +175,10 @@ export function machine(userContext: UserDefinedContext) {
           ctx.value = constrainValue(ctx, ctx.value)
         },
         invokeOnChangeStart(ctx) {
-          ctx.onChangeStart?.({ value: ctx.value })
+          ctx.onValueChangeStart?.({ value: ctx.value })
         },
         invokeOnChangeEnd(ctx) {
-          ctx.onChangeEnd?.({ value: ctx.value })
+          ctx.onValueChangeEnd?.({ value: ctx.value })
         },
         setPointerValue(ctx, evt) {
           const value = dom.getValueFromPoint(ctx, evt.point)
@@ -217,7 +217,7 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    ctx.onChange?.({ value: ctx.value })
+    ctx.onValueChange?.({ value: ctx.value })
     dom.dispatchChangeEvent(ctx)
   },
 }

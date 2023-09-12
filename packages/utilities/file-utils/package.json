@@ -1,0 +1,30 @@
+{
+  "name": "@zag-js/file-utils",
+  "version": "0.0.0",
+  "description": "JS File API utilities",
+  "keywords": ["js", "utils", "file-utils"],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/file-utils",
+  "sideEffects": false,
+  "files": ["dist/**/*"],
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "clean-package": "../../../clean-package.config.json",
+  "devDependencies": {
+    "clean-package": "2.2.0"
+  }
+}

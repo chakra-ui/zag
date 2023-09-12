@@ -11,40 +11,39 @@ type ElementIds = Partial<{
   radioHiddenInput(value: string): string
 }>
 
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    /**
-     * The ids of the elements in the radio. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * The value of the checked radio
-     */
-    value: string | null
+interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the elements in the radio. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * The value of the checked radio
+   */
+  value: string | null
 
-    /**
-     * The name of the input fields in the radio
-     * (Useful for form submission).
-     */
-    name?: string
-    /**
-     * The associate form of the underlying input.
-     */
-    form?: string
-    /**
-     * If `true`, the radio group will be disabled
-     */
-    disabled?: boolean
-    /**
-     * Function called once a radio is checked
-     * @param value the value of the checked radio
-     */
-    onChange?(details: { value: string }): void
-    /**
-     * Orientation of the radio group
-     */
-    orientation?: "horizontal" | "vertical"
-  }
+  /**
+   * The name of the input fields in the radio
+   * (Useful for form submission).
+   */
+  name?: string
+  /**
+   * The associate form of the underlying input.
+   */
+  form?: string
+  /**
+   * If `true`, the radio group will be disabled
+   */
+  disabled?: boolean
+  /**
+   * Function called once a radio is checked
+   * @param value the value of the checked radio
+   */
+  onValueChange?(details: { value: string }): void
+  /**
+   * Orientation of the radio group
+   */
+  orientation?: "horizontal" | "vertical"
+}
 
 type PrivateContext = Context<{
   /**

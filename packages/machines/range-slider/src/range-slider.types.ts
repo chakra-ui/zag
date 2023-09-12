@@ -1,6 +1,15 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+interface ValueChangeDetails {
+  value: number[]
+}
+
+interface FocusChangeDetails {
+  focusedIndex: number
+  value: number[]
+}
+
 type ElementIds = Partial<{
   root: string
   thumb(index: number): string
@@ -12,95 +21,94 @@ type ElementIds = Partial<{
   marker(index: number): string
 }>
 
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    /**
-     * The ids of the elements in the range slider. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * The aria-label of each slider thumb. Useful for providing an accessible name to the slider
-     */
-    "aria-label"?: string[]
-    /**
-     * The `id` of the elements that labels each slider thumb. Useful for providing an accessible name to the slider
-     */
-    "aria-labelledby"?: string[]
-    /**
-     * The name associated with each slider thumb (when used in a form)
-     */
-    name?: string
-    /**
-     * The associate form of the underlying input element.
-     */
-    form?: string
-    /**
-     * The value of the range slider
-     */
-    value: number[]
-    /**
-     * Whether the slider is disabled
-     */
-    disabled?: boolean
-    /**
-     * Whether the slider is read-only
-     */
-    readOnly?: boolean
-    /**
-     * Whether the slider is invalid
-     */
-    invalid?: boolean
-    /**
-     * Function invoked when the value of the slider changes
-     */
-    onChange?(details: { value: number[] }): void
-    /**
-     * Function invoked when the slider value change is started
-     */
-    onChangeStart?(details: { value: number[] }): void
-    /**
-     * Function invoked when the slider value change is done
-     */
-    onChangeEnd?(details: { value: number[] }): void
-    /**
-     * Function invoked when the slider's focused index changes
-     */
-    onFocusChange?(details: { index: number; value: number[] }): void
-    /**
-     * Function that returns a human readable value for the slider thumb
-     */
-    getAriaValueText?(value: number, index: number): string
-    /**
-     * The minimum value of the slider
-     */
-    min: number
-    /**
-     * The maximum value of the slider
-     */
-    max: number
-    /**
-     * The step value of the slider
-     */
-    step: number
-    /**
-     * The minimum permitted steps between multiple thumbs.
-     */
-    minStepsBetweenThumbs: number
-    /**
-     * The orientation of the slider
-     */
-    orientation: "vertical" | "horizontal"
-    /**
-     * The alignment of the slider thumb relative to the track
-     * - `center`: the thumb will extend beyond the bounds of the slider track.
-     * - `contain`: the thumb will be contained within the bounds of the track.
-     */
-    thumbAlignment?: "contain" | "center"
-    /**
-     * The slider thumbs dimensions
-     */
-    thumbSize: { width: number; height: number } | null
-  }
+interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the elements in the range slider. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * The aria-label of each slider thumb. Useful for providing an accessible name to the slider
+   */
+  "aria-label"?: string[]
+  /**
+   * The `id` of the elements that labels each slider thumb. Useful for providing an accessible name to the slider
+   */
+  "aria-labelledby"?: string[]
+  /**
+   * The name associated with each slider thumb (when used in a form)
+   */
+  name?: string
+  /**
+   * The associate form of the underlying input element.
+   */
+  form?: string
+  /**
+   * The value of the range slider
+   */
+  value: number[]
+  /**
+   * Whether the slider is disabled
+   */
+  disabled?: boolean
+  /**
+   * Whether the slider is read-only
+   */
+  readOnly?: boolean
+  /**
+   * Whether the slider is invalid
+   */
+  invalid?: boolean
+  /**
+   * Function invoked when the value of the slider changes
+   */
+  onValueChange?(details: ValueChangeDetails): void
+  /**
+   * Function invoked when the slider value change is started
+   */
+  onValueChangeStart?(details: ValueChangeDetails): void
+  /**
+   * Function invoked when the slider value change is done
+   */
+  onValueChangeEnd?(details: ValueChangeDetails): void
+  /**
+   * Function invoked when the slider's focused index changes
+   */
+  onFocusChange?(details: FocusChangeDetails): void
+  /**
+   * Function that returns a human readable value for the slider thumb
+   */
+  getAriaValueText?(value: number, index: number): string
+  /**
+   * The minimum value of the slider
+   */
+  min: number
+  /**
+   * The maximum value of the slider
+   */
+  max: number
+  /**
+   * The step value of the slider
+   */
+  step: number
+  /**
+   * The minimum permitted steps between multiple thumbs.
+   */
+  minStepsBetweenThumbs: number
+  /**
+   * The orientation of the slider
+   */
+  orientation: "vertical" | "horizontal"
+  /**
+   * The alignment of the slider thumb relative to the track
+   * - `center`: the thumb will extend beyond the bounds of the slider track.
+   * - `contain`: the thumb will be contained within the bounds of the track.
+   */
+  thumbAlignment?: "contain" | "center"
+  /**
+   * The slider thumbs dimensions
+   */
+  thumbSize: { width: number; height: number } | null
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
