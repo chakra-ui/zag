@@ -142,22 +142,21 @@ const [state, send] = useMachine(
 
 ## Listening for changes
 
-When the slider value changes, the `onChange` and `onChangeEnd` callbacks are
-invoked. You can use this to setup custom behaviors in your app.
+When the slider value changes, the `onValueChange` and `onValueChangeEnd`
+callbacks are invoked. You can use this to setup custom behaviors in your app.
 
 ```jsx {3-8}
 const [state, send] = useMachine(
   slider.machine({
-    onChange(value) {
-      console.log("value is changing to:", value)
+    onValueChange(details) {
+      console.log("value is changing to:", details)
     },
-    onChangeEnd(value) {
-      console.log("value has changed to:", value)
+    onValueChangeEnd(details) {
+      console.log("value has changed to:", details)
     },
   }),
 )
 ```
-
 
 ## Changing the start position
 

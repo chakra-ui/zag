@@ -124,17 +124,19 @@ clickable.
 
 ## Listening for events
 
-- `onChange` — Callback invoked when the selected tab changes.
-- `onFocus` — Callback invoked when the focused tab changes.
+- `onValueChange` — Callback invoked when the selected tab changes.
+- `onFocusChange` — Callback invoked when the focused tab changes.
 
 ```jsx {3-8}
 const [state, send] = useMachine(
   tabs.machine({
-    onFocus(value) {
-      console.log("focused tab:", value)
+    onFocusChange(details) {
+      // details => { value: string | null }
+      console.log("focused tab:", details.value)
     },
-    onChange(value) {
-      console.log("selected tab:", value)
+    onValueChange(details) {
+      // details => { value: string }
+      console.log("selected tab:", details.value)
     },
   }),
 )

@@ -74,19 +74,31 @@ menu machine in your project 🔥
 
 <CodeSnippet id="menu/usage.mdx" />
 
-## Listening to item selection
+## Listening for item selection
 
-Pass `onSelect` to the machine's context to perform some custom logic when an
-item is selected. When an item is selected, the machine invokes the `onSelect`
-callback. This callback is invoked with the `value` of the item.
+When a menu item is clicked, the `onSelect` callback is invoked.
 
 ```jsx {4-7}
 const [state, send] = useMachine(
   menu.machine({
-    values: { order: "", type: [] },
-    onSelect(value) {
-      // value => "nigeria"
-      console.log("selected value is ", value)
+    onSelect(details) {
+      // details => { value: string }
+      console.log("selected value is ", details.value)
+    },
+  }),
+)
+```
+
+## Listening for open state changes
+
+When a menu is opened or closed, the `onOpenChange` callback is invoked.
+
+```jsx {4-7}
+const [state, send] = useMachine(
+  menu.machine({
+    onOpenChange(details) {
+      // details => { open: boolean }
+      console.log("open state is ", details.open)
     },
   }),
 )

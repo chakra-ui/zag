@@ -121,7 +121,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
    */
-  onInvalid?(details: ValidityChangeDetails): void
+  onValueInvalid?(details: ValidityChangeDetails): void
   /**
    * Returns a boolean that determines whether a tag can be added.
    * Useful for preventing duplicates or invalid tag values.

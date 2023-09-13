@@ -77,6 +77,39 @@ editable machine in your project 🔥
 
 <CodeSnippet id="editable/usage.mdx" />
 
+## Setting the initial value
+
+To set the initial value of the editable, pass the `value` property to the
+machine's context.
+
+```jsx {3}
+const [state, send] = useMachine(
+  editable.machine({
+    value: "Hello World",
+  }),
+)
+```
+
+## Listening for value changes
+
+The editable machine supports two ways of listening for value changes:
+
+- `onValueChange`: called when value changes.
+- `onValueCommit`: called when the value is committed.
+
+```jsx {3-4}
+const [state, send] = useMachine(
+  editable.machine({
+    onValueChange(details) {
+      console.log("Value changed", details.value)
+    },
+    onValueCommit: (details) => {
+      console.log("Value submitted", details.value)
+    },
+  }),
+)
+```
+
 ## Using custom controls
 
 In some cases, you might need to use custom controls to toggle the edit and read
@@ -136,7 +169,6 @@ const [state, send] = useMachine(
   }),
 )
 ```
-
 
 ## Styling guide
 

@@ -447,7 +447,7 @@ export function machine(userContext: UserDefinedContext) {
             ctx.log.prev = ctx.log.current
             ctx.log.current = { type: "add", value }
           } else {
-            ctx.onInvalid?.({ reason: "invalidTag" })
+            ctx.onValueInvalid?.({ reason: "invalidTag" })
           }
         },
         addTagFromPaste(ctx) {
@@ -461,7 +461,7 @@ export function machine(userContext: UserDefinedContext) {
               ctx.log.prev = ctx.log.current
               ctx.log.current = { type: "paste", values: trimmedValue }
             } else {
-              ctx.onInvalid?.({ reason: "invalidTag" })
+              ctx.onValueInvalid?.({ reason: "invalidTag" })
             }
             ctx.inputValue = ""
           })
@@ -475,10 +475,9 @@ export function machine(userContext: UserDefinedContext) {
         setValue(ctx, evt) {
           set.value(ctx, evt.value)
         },
-
         invokeOnInvalid(ctx) {
           if (ctx.isOverflowing) {
-            ctx.onInvalid?.({ reason: "rangeOverflow" })
+            ctx.onValueInvalid?.({ reason: "rangeOverflow" })
           }
         },
         clearLog(ctx) {

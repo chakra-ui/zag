@@ -180,19 +180,16 @@ const [state, send] = useMachine(
 )
 ```
 
-## Listening for open and close events
+## Listening for open state changes
 
-When the popover is opened or closed, we invoke the `onOpen` and `onClose`
-callbacks.
+When the popover is opened or closed, the `onOpenChange` callback is invoked.
 
 ```jsx {3-8}
 const [state, send] = useMachine(
   popover.machine({
-    onOpen() {
-      console.log("Popover opened")
-    },
-    onClose() {
-      console.log("Popover closed")
+    onOpenChange(details) {
+      // details => { open: boolean }
+      console.log("Popover", details.open)
     },
   }),
 )

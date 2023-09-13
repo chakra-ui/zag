@@ -111,17 +111,18 @@ const [state, send] = useMachine(
 )
 ```
 
-## Listening to file upload events
+## Listening to file changes
 
-When files are uploaded, the `onChange` callback is invoked with the details of
-the accepted and rejected files.
+When files are uploaded, the `onFilesChange` callback is invoked with the
+details of the accepted and rejected files.
 
 ```jsx
 const [state, send] = useMachine(
   fileUpload.machine({
-    onChange: (details) => {
-      console.log(details.acceptedFiles) // File[]
-      console.log(details.rejectedFiles) // { file: File, errors: [] }
+    onFilesChange: (details) => {
+      // details => { acceptedFiles: File[], rejectedFiles: { file: File, errors: [] }[] }
+      console.log(details.acceptedFiles)
+      console.log(details.rejectedFiles)
     },
   }),
 )
@@ -148,7 +149,7 @@ read the file and set the `src` attribute of an image element.
 ```jsx
 const [state, send] = useMachine(
   fileUpload.machine({
-    onChange: (details) => {
+    onFilesChange: (details) => {
       const reader = new FileReader()
       reader.onload = (event) => {
         const image = event.target.result

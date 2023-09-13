@@ -127,6 +127,21 @@ const [state, send] = useMachine(
 )
 ```
 
+## Listening for changes
+
+When the accordion value changes, the `onValueChange` callback is invoked.
+
+```jsx {3-6}
+const [state, send] = useMachine(
+  accordion.machine({
+    onValueChange(details) {
+      // details => { value: string[] }
+      console.log("selected accordion:", details.value)
+    },
+  }),
+)
+```
+
 ## Disabling specific accordion items
 
 To disable a specific accordion, pass the `disabled: true` property to the

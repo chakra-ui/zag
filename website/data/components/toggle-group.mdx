@@ -79,15 +79,17 @@ const [state, send] = useMachine(
 )
 ```
 
-## Listening for changes
+## Listening for value changes
 
-When the pressed toggle in the group changes, `onChange` callback is invoked.
+When the pressed toggle in the group changes, `onValueChange` callback is
+invoked.
 
 ```jsx {3-5}
 const [state, send] = useMachine(
   toggle.machine({
-    onChange(details) {
-      console.log(details.value) // => ["option-1"]
+    onValueChange(details) {
+      // details => { value: string[] }
+      console.log(details.value)
     },
   }),
 )

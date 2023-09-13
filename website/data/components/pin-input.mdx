@@ -156,24 +156,24 @@ const [state, send] = useMachine(
 
 The pin input machine invokes several callback functions when the user enters:
 
-- `onChange` — Function invoked when the value is changed.
-- `onComplete` — Function invoked when all fields have been completed (by typing
-  or pasting).
-- `onInvalid` — Function invoked when an invalid value is entered into the
+- `onValueChange` — Function invoked when the value is changed.
+- `onValueComplete` — Function invoked when all fields have been completed (by
+  typing or pasting).
+- `onValueInvalid` — Function invoked when an invalid value is entered into the
   input. An invalid value is any value that doesn't match the specified "type".
 
 ```jsx
 const [state, send] = useMachine(
   pinInput.machine({
-    onChange(value) {
+    onValueChange(value) {
       // value => string[]
       console.log("value changed to:", value)
     },
-    onComplete(details) {
+    onValueComplete(details) {
       // details => { value: string[], valueAsString: string }
       console.log("completed value:", details)
     },
-    onInvalid(details) {
+    onValueInvalid(details) {
       // details => { index: number, value: string }
       console.log("invalid value:", details)
     },
@@ -195,7 +195,6 @@ const [state, send] = useMachine(
   }),
 )
 ```
-
 
 ## Styling guide
 

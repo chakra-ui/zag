@@ -98,14 +98,14 @@ const [state, send] = useMachine(
 
 ## Listening for changes
 
-When the radio group value changes, the `onChange` callback is invoked.
+When the radio group value changes, the `onValueChange` callback is invoked.
 
 ```jsx {3-8}
 const [state, send] = useMachine(
   radio.machine({
-    onChange({ value }) {
-      console.log("radio value is:", value)
-      // 'apple' | 'orange' | 'grape'
+    onValueChange(details) {
+      // details => { value: string }
+      console.log("radio value is:", details.value)
     },
   }),
 )

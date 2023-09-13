@@ -103,13 +103,14 @@ const [state, send] = useMachine(
 
 ## Listening for changes
 
-When the switch value changes, the `onChange` callback is invoked.
+When the switch value changes, the `onCheckChange` callback is invoked.
 
 ```jsx {3-5}
 const [state, send] = useMachine(
   zagSwitch.machine({
-    onChange({ checked }) {
-      console.log("switch is:", checked ? "On" : "Off")
+    onCheckChange(details) {
+      // details => { checked: boolean }
+      console.log("switch is:", details.checked ? "On" : "Off")
     },
   }),
 )

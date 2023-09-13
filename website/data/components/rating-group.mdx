@@ -104,12 +104,12 @@ const [state, send] = useMachine(
 
 ## Listening for changes
 
-When the rating value changes, the `onChange` callback is invoked.
+When the rating value changes, the `onValueChange` callback is invoked.
 
 ```jsx {3-8}
 const [state, send] = useMachine(
   rating.machine({
-    onChange({ value }) {
+    onValueChange({ value }) {
       console.log("rating value is:", value)
       // '1' | '2.5' | '4'
     },

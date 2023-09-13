@@ -214,15 +214,15 @@ const [state, send] = useMachine(
 
 ## Listening for highlight changes
 
-When an item is highlighted with the pointer or keyboard, use the `onHighlight`
-to listen for the change and do something with it.
+When an item is highlighted with the pointer or keyboard, use the
+`onHighlightChange` to listen for the change and do something with it.
 
 ```jsx {4-7}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
-    onHighlight(details) {
-      // details => { value: string | null, item: Item | null }
+    onHighlightChange(details) {
+      // details => { highlightedValue: string | null, highlightedItem: CollectionItem | null }
       console.log(details)
     },
   }),
@@ -231,15 +231,15 @@ const [state, send] = useMachine(
 
 ## Listening for selection changes
 
-When an item is selected, use the `onChange` property to listen for the change
-and do something with it.
+When an item is selected, use the `onValueChange` property to listen for the
+change and do something with it.
 
 ```jsx {5-7}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
     collection,
-    onChange(details) {
+    onValueChange(details) {
       // details => { value: string[], items: Item[] }
       console.log(details)
     },
@@ -249,20 +249,17 @@ const [state, send] = useMachine(
 
 ## Listening for open and close events
 
-When the select is opened or closed, the `onOpen` and `onClose` properties in
-the machine's context are called. You can listen for these events and do
-something with it.
+When the select is opened or closed, the `onOpenChange` callback is called. You
+can listen for these events and do something with it.
 
-```jsx {5-9}
+```jsx {5-8}
 const [state, send] = useMachine(
   select.machine({
     id: useId(),
     collection,
-    onOpen() {
+    onOpenChange(details) {
+      // details => { open: boolean }
       console.log("Select opened")
-    },
-    onClose() {
-      console.log("Select closed")
     },
   }),
 )
