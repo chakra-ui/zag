@@ -47,3 +47,23 @@ test("should update page when prev button is clicked", async ({ page }) => {
   await page.click(prevButton)
   await expect(page.locator(item2)).toHaveAttribute("aria-current", "page")
 })
+
+test("should call onChange when item is clicked", async ({ page }) => {
+  const onChangeCallbackParams = page.waitForEvent("console")
+  await page.click(item2)
+  expect((await onChangeCallbackParams).text()).toContain("page: 2")
+})
+
+test("should call onChange when next button is clicked", async ({ page }) => {
+  const onChangeCallbackParams = page.waitForEvent("console")
+  await page.click(nextButton)
+  expect((await onChangeCallbackParams).text()).toContain("page: 2")
+})
+
+test("should call onChange when prev button is clicked", async ({ page }) => {
+  await page.click(item5)
+
+  const onChangeCallbackParams = page.waitForEvent("console")
+  await page.click(prevButton)
+  expect((await onChangeCallbackParams).text()).toContain("page: 4")
+})
