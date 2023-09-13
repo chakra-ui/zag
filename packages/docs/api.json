@@ -1747,6 +1747,98 @@
       }
     }
   },
+  "popover": {
+    "api": {
+      "portalled": {
+        "type": "boolean",
+        "description": "Whether the popover is portalled"
+      },
+      "isOpen": {
+        "type": "boolean",
+        "description": "Whether the popover is open"
+      },
+      "open": {
+        "type": "() => void",
+        "description": "Function to open the popover"
+      },
+      "close": {
+        "type": "() => void",
+        "description": "Function to close the popover"
+      },
+      "setPositioning": {
+        "type": "(options?: Partial<PositioningOptions>) => void",
+        "description": "Function to reposition the popover"
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "Partial<{ anchor: string; trigger: string; content: string; title: string; description: string; closeTrigger: string; positioner: string; arrow: string; }>",
+        "description": "The ids of the elements in the popover. Useful for composition."
+      },
+      "modal": {
+        "type": "boolean",
+        "description": "Whether the popover should be modal. When set to `true`:\n- interaction with outside elements will be disabled\n- only popover content will be visible to screen readers\n- scrolling is blocked\n- focus is trapped within the popover",
+        "defaultValue": "false"
+      },
+      "portalled": {
+        "type": "boolean",
+        "description": "Whether the popover is rendered in a portal",
+        "defaultValue": "true"
+      },
+      "autoFocus": {
+        "type": "boolean",
+        "description": "Whether to automatically set focus on the first focusable\ncontent within the popover when opened."
+      },
+      "initialFocusEl": {
+        "type": "HTMLElement | (() => HTMLElement)",
+        "description": "The element to focus on when the popover is opened."
+      },
+      "closeOnInteractOutside": {
+        "type": "boolean",
+        "description": "Whether to close the popover when the user clicks outside of the popover."
+      },
+      "closeOnEsc": {
+        "type": "boolean",
+        "description": "Whether to close the popover when the escape key is pressed."
+      },
+      "onOpenChange": {
+        "type": "(details: OpenChangeDetails) => void",
+        "description": "Function invoked when the popover opens or closes"
+      },
+      "positioning": {
+        "type": "PositioningOptions",
+        "description": "The user provided options used to position the popover content"
+      },
+      "open": {
+        "type": "boolean",
+        "description": "Whether the popover is open"
+      },
+      "onEscapeKeyDown": {
+        "type": "(event: KeyboardEvent) => void",
+        "description": "Function called when the escape key is pressed"
+      },
+      "onPointerDownOutside": {
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "description": "Function called when the pointer is pressed down outside the combobox"
+      },
+      "onFocusOutside": {
+        "type": "(event: FocusOutsideEvent) => void",
+        "description": "Function called when the focus is moved outside the combobox"
+      },
+      "onInteractOutside": {
+        "type": "(event: InteractOutsideEvent) => void",
+        "description": "Function called when an interaction happens outside the combobox"
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => Node | ShadowRoot | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "presence": {
     "api": {
       "isPresent": {

@@ -15,6 +15,9 @@ type Container = MaybeElement | Array<MaybeElement>
 type NodeOrFn = MaybeElement | (() => MaybeElement)
 
 export interface DismissableElementHandlers extends InteractOutsideHandlers {
+  /**
+   * Function called when the escape key is pressed
+   */
   onEscapeKeyDown?: (event: KeyboardEvent) => void
 }
 
