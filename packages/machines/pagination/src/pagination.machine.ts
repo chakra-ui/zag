@@ -85,7 +85,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.count = evt.count
         },
         setPage(ctx, evt) {
-          ctx.page = evt.page
+          set.page(ctx, evt.page)
         },
         setPageSize(ctx, evt) {
           ctx.pageSize = evt.size
