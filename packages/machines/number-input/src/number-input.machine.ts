@@ -341,7 +341,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnBlur(ctx) {
           ctx.onFocusChange?.({
-            focused: true,
+            focused: false,
             value: ctx.formattedValue,
             valueAsNumber: ctx.valueAsNumber,
           })
