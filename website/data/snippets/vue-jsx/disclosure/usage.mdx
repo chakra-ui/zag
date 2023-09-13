@@ -1,0 +1,27 @@
+```tsx
+import * as disclosure from "@zag-js/disclosure"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, h, Fragment, computed } from "vue"
+
+const data = { title: "Watercraft", content: "Sample disclosure content" }
+
+export default defineComponent({
+  name: "Disclosure",
+  setup() {
+    const [state, send] = useMachine(disclosure.machine({ id: "1" }))
+
+    const apiRef = computed(() =>
+      disclosure.connect(state.value, send, normalizeProps),
+    )
+    return () => {
+      const api = apiRef.value
+      return (
+        <>
+          <button {...api.buttonProps}>{data.title}</button>
+          <div {...api.contentProps}>{data.content}</div>
+        </>
+      )
+    }
+  },
+})
+```

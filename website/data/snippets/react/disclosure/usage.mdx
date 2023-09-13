@@ -1,0 +1,19 @@
+```jsx
+import * as disclosure from "@zag-js/disclosure"
+import { useMachine, normalizeProps } from "@zag-js/react"
+
+const data = { title: "Watercraft", content: "Sample disclosure content" }
+
+function Disclosure() {
+  const [state, send] = useMachine(disclosure.machine({ id: "1" }))
+
+  const api = disclosure.connect(state, send, normalizeProps)
+
+  return (
+    <>
+      <button {...api.buttonProps}>{data.title}</button>
+      <div {...api.contentProps}>{data.content}</div>
+    </>
+  )
+}
+```

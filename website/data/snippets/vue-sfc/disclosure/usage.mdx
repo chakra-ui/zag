@@ -1,0 +1,25 @@
+```md
+<script setup>
+import * as disclosure from "@zag-js/disclosure"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed } from "vue"
+
+const data = 
+  { title: "Watercraft", content: "Sample disclosure content" }
+
+const [state, send] = useMachine(disclosure.machine({ id: "1" }))
+
+const api = computed(() => disclosure.connect(state.value, send, normalizeProps))
+</script>
+
+<template>
+  <div>
+    <button v-bind="api.buttonProps">
+      {{ data.title }}
+    </button>
+    <div v-bind="api.contentProps">
+      {{ data.content }}
+    </div>
+  </div>
+</template>
+```

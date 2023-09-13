@@ -1,0 +1,130 @@
+---
+title: Disclosure
+description: Using the disclosure machine in your project.
+package: "@zag-js/disclosure"
+---
+
+# Disclosure
+
+A disclosure is a widget that enables content to be either collapsed (hidden) or
+expanded (visible).
+
+<Resources pkg="@zag-js/disclosure" />
+
+<Showcase id="Disclosure" />
+
+**Features**
+
+- Full keyboard navigation.
+- Can collapse or expand content.
+
+## Installation
+
+To use the disclosure machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="disclosure/installation.mdx" />
+
+This command will install the framework agnostic disclosure logic and the
+reactive utilities for your framework of choice.
+
+## Anatomy
+
+To set up the disclosure correctly, you'll need to understand its anatomy and
+how we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="disclosure" />
+
+On a high level, the disclosure consists of:
+
+- **Button**: The control for the disclosure content
+- **Disclosure**: The section of content whose visibility is controlled by the
+  button
+
+## Usage
+
+First, import the disclosure package into your project
+
+```jsx
+import * as disclosure from "@zag-js/disclosure"
+```
+
+The disclosure package exports two key functions:
+
+- `machine` — The state machine logic for the disclosure widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll also need to provide a unique `id` to the `useMachine` hook. This is
+> used to ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+disclosure machine in your project 🔥
+
+<CodeSnippet id="disclosure/usage.mdx" />
+
+## Disabling the button
+
+To disable the disclosure button, set `disable` to `true`. This ensures that
+each the disclosure content will not be expanded or collapsed when the button is
+activated.
+
+```jsx {3}
+const [state, send] = useMachine(
+  disclosure.machine({
+    disabled: true,
+  }),
+)
+```
+
+## Open by default
+
+To set the disclosure content to be opened initially, pass the `open` property
+to the machine function.
+
+```jsx {4,5,12}
+const [state, send] = useMachine(
+  disclosure.machine({
+    open: true,
+  }),
+)
+```
+
+## Styling guide
+
+Earlier, we mentioned that each disclosure part has a `data-part` attribute
+added to them to select and style them in the DOM.
+
+### Open and closed state
+
+When an disclosure is open or expanded, a `data-state` attribute is set on the
+button and content elements. This attribute is removed when it is closed.
+
+```css
+[data-part="content"][data-state="open|closed"] {
+  /* styles for the content in open or closed state */
+}
+
+[data-part="button"][data-state="open|closed"] {
+  /* styles for the button in open or closed state */
+}
+```
+
+### Focused state
+
+When a disclosure button is focused, a `data-focused` attribute is set on the
+button.
+
+```css
+[data-part="button"][data-focus] {
+  /* styles for the button's focus state */
+}
+```
+
+## Methods and Properties
+
+The disclosure's `api` exposes the following methods and properties:
+
+<ApiTable name="disclosure" />

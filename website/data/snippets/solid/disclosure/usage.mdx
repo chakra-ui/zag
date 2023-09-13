@@ -1,0 +1,20 @@
+```jsx
+import * as disclosure from "@zag-js/disclosure"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, For } from "solid-js"
+
+const data = { title: "Watercraft", content: "Sample disclosure content" }
+
+function Disclosure() {
+  const [state, send] = useMachine(disclosure.machine({ id: createUniqueId() }))
+
+  const api = createMemo(() => disclosure.connect(state, send, normalizeProps))
+
+  return (
+    <>
+      <button {...api().buttonProps}>{data.title}</button>
+      <div {...api().contentProps}>{data.content}</div>
+    </>
+  )
+}
+```
