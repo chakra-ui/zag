@@ -163,6 +163,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: isDisabled ? undefined : 0,
         style: dom.getThumbStyle(state.context, index),
         onPointerDown(event) {
+          if (!isInteractive) return
           send({ type: "THUMB_POINTER_DOWN", index })
           event.stopPropagation()
         },
