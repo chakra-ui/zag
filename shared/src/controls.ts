@@ -17,6 +17,11 @@ export const switchControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
 })
 
+export const disclosureControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  open: { type: "boolean", defaultValue: false },
+})
+
 export const comboboxControls = defineControls({
   inputBehavior: {
     type: "select",

@@ -35,6 +35,7 @@
     "@zag-js/date-picker": "workspace:*",
     "@zag-js/date-utils": "workspace:*",
     "@zag-js/dialog": "workspace:*",
+    "@zag-js/disclosure": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/docs": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
