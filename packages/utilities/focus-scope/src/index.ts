@@ -5,11 +5,10 @@ import { focusMoveEffect, type FocusMoveEffectOptions } from "./focus-move"
 import { focusOnChildUnmountEffect } from "./focus-on-child-unmount"
 import { focusOutsideEffect } from "./focus-outside"
 
-export type TrapFocusOptions = FocusMoveEffectOptions &
-  FocusContainmentOptions & {
-    contain?: boolean
-    guards?: boolean
-  }
+export interface TrapFocusOptions extends FocusMoveEffectOptions, FocusContainmentOptions {
+  contain?: boolean
+  guards?: boolean
+}
 
 export function trapFocus(node: HTMLElement | null, options: TrapFocusOptions = {}) {
   if (!node) return

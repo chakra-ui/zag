@@ -4,7 +4,7 @@ import { trackElementRect } from "@zag-js/element-rect"
 
 export type { Placement }
 
-export type AutoUpdateOptions = {
+export interface AutoUpdateOptions {
   ancestorScroll?: boolean
   ancestorResize?: boolean
   referenceResize?: boolean

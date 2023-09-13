@@ -220,7 +220,7 @@ export function machine(userContext: UserDefinedContext) {
               const format = ctx.valueAsColor.getColorSpace()
               const color = parseColor(sRGBHex).toFormat(format)
               set.value(ctx, color)
-              ctx.onChangeEnd?.({ value: ctx.value, valueAsColor: color })
+              ctx.onValueChangeEnd?.({ value: ctx.value, valueAsColor: color })
             })
             .catch(() => void 0)
         },
@@ -368,17 +368,18 @@ export function machine(userContext: UserDefinedContext) {
   )
 }
 
-const getDetails = (ctx: MachineContext) => ({
-  value: ctx.value,
-  valueAsColor: ctx.valueAsColor,
-})
-
 const invoke = {
   changeEnd(ctx: MachineContext) {
-    ctx.onChangeEnd?.(getDetails(ctx))
+    ctx.onValueChangeEnd?.({
+      value: ctx.value,
+      valueAsColor: ctx.valueAsColor,
+    })
   },
   change(ctx: MachineContext) {
-    ctx.onChange?.(getDetails(ctx))
+    ctx.onValueChange?.({
+      value: ctx.value,
+      valueAsColor: ctx.valueAsColor,
+    })
   },
 }
 

@@ -2,32 +2,20 @@ import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@za
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 
-export type ColorChannelProps = {
-  channel: ColorChannel
-  orientation?: Orientation
-}
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
 
-export type ExtendedColorChannel = ColorChannel | "hex" | "css"
-
-export type ColorChannelInputProps = {
-  channel: ExtendedColorChannel
-  orientation?: Orientation
-}
-
-export type ColorAreaProps = {
-  xChannel: ColorChannel
-  yChannel: ColorChannel
-}
-
-export type ColorSwatchProps = {
-  readOnly?: boolean
-  value: string | Color
-}
-
-type ChangeDetails = {
+export interface ValueChangeDetails {
   value: string
   valueAsColor: Color
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
 type ElementIds = Partial<{
   content: string
@@ -39,9 +27,7 @@ type ElementIds = Partial<{
   channelSliderThumb(id: ColorChannel): string
 }>
 
-export type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType }
-
-type PublicContext = CommonProperties & {
+interface PublicContext extends CommonProperties {
   /**
    * The ids of the elements in the color picker. Useful for composition.
    */
@@ -65,11 +51,11 @@ type PublicContext = CommonProperties & {
   /**
    * Handler that is called when the value changes, as the user drags.
    */
-  onChange?: (details: ChangeDetails) => void
+  onValueChange?: (details: ValueChangeDetails) => void
   /**
    * Handler that is called when the user stops dragging.
    */
-  onChangeEnd?: (details: ChangeDetails) => void
+  onValueChangeEnd?: (details: ValueChangeDetails) => void
   /**
    *  The name for the form input
    */
@@ -124,9 +110,9 @@ type ComputedContext = Readonly<{
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "focused" | "dragging"
 }
 
@@ -134,7 +120,31 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface ColorChannelProps {
+  channel: ColorChannel
+  orientation?: Orientation
+}
+
+export interface ColorChannelInputProps {
+  channel: ExtendedColorChannel
+  orientation?: Orientation
+}
+
+export interface ColorAreaProps {
+  xChannel: ColorChannel
+  yChannel: ColorChannel
+}
+
+export interface ColorSwatchProps {
+  readOnly?: boolean
+  value: string | Color
+}
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the color picker is being dragged
    */
@@ -171,6 +181,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
    * Function to set the color alpha
    */
   setAlpha(value: number): void
+
   contentProps: T["element"]
   hiddenInputProps: T["input"]
   getAreaProps(props: ColorAreaProps): T["element"]
@@ -184,3 +195,9 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   getSwatchBackgroundProps(props: ColorSwatchProps): T["element"]
   getSwatchProps(props: ColorSwatchProps): T["element"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType }

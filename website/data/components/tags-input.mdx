@@ -224,27 +224,29 @@ const [state, send] = useMachine(
 )
 ```
 
-## Events
+## Listening for events
 
 During the lifetime of the tags input interaction, here's a list of events we
 emit:
 
-- `onChange` — invoked when the tag value changes.
-- `onHighlight` — invoked when a tag has visual focus.
-- `onInvalid` — invoked when the max tag count is reached or the `validate`
+- `onValueChange` — invoked when the tag value changes.
+- `onHighlightChange` — invoked when a tag has visual focus.
+- `onValueInvalid` — invoked when the max tag count is reached or the `validate`
   function returns `false`.
 
 ```jsx
 const [state, send] = useMachine(
   tagsInput.machine({
-    onChange(tags) {
-      console.log("tags changed to:", tags)
+    onValueChange(details) {
+      // details => { value: string[] }
+      console.log("tags changed to:", details.value)
     },
-    onHighlight(tag) {
-      console.log("highlighted tag:", tag)
+    onHighlightChange(details) {
+      // details => { value: string }
+      console.log("highlighted tag:", details.value)
     },
-    onInvalid(err) {
-      console.log("Invalid!", err)
+    onValueInvalid(details) {
+      console.log("Invalid!", details.reason)
     },
   }),
 )

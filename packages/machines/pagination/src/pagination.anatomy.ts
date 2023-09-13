@@ -7,4 +7,5 @@ export const anatomy = createAnatomy("pagination").parts(
   "prevPageTrigger",
   "nextPageTrigger",
 )
+
 export const parts = anatomy.build()

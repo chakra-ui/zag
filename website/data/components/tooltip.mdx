@@ -214,18 +214,16 @@ const [state, send] = useMachine(
 )
 ```
 
-## Events
+## Listening for open state changes
 
-When the tooltip open or closes, the `onOpen` and `onClose` callbacks are fired.
+When the tooltip is opened or closed, the `onOpenChange` callback is invoked.
 
 ```jsx {3-8}
 const [state, send] = useMachine(
   tooltip.machine({
-    onOpen() {
-      console.log("Tooltip opened")
-    },
-    onClose() {
-      console.log("Tooltip closed")
+    onOpenChange(details) {
+      // details => { open: boolean }
+      console.log("Tooltip", details.open)
     },
   }),
 )

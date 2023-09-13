@@ -125,12 +125,6 @@ export function machine(userContext: UserDefinedContext) {
           const nextFiles = ctx.files.filter((file) => file !== evt.file)
           set.files(ctx, nextFiles)
         },
-        invokeOnChange(ctx) {
-          ctx.onChange?.({
-            acceptedFiles: ctx.files,
-            rejectedFiles: ctx.rejectedFiles,
-          })
-        },
       },
       compareFns: {
         files: (a, b) => a.length === b.length && a.every((file, i) => file === b[i]),
@@ -141,7 +135,10 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    ctx.onChange?.({ acceptedFiles: ctx.files, rejectedFiles: ctx.rejectedFiles })
+    ctx.onFilesChange?.({
+      acceptedFiles: ctx.files,
+      rejectedFiles: ctx.rejectedFiles,
+    })
   },
 }
 

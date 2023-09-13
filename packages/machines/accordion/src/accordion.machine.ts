@@ -131,7 +131,7 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change(ctx: MachineContext) {
-    ctx.onChange?.({ value: Array.from(ctx.value) })
+    ctx.onValueChange?.({ value: Array.from(ctx.value) })
   },
   focusChange(ctx: MachineContext) {
     ctx.onFocusChange?.({ value: ctx.focusedValue })

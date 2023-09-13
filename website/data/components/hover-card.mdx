@@ -76,7 +76,7 @@ const [state, send] = useMachine(
 )
 ```
 
-## Listening for changes in `open` state
+## Listening for open state changes
 
 When the hover card is `opened` or `closed`, the `onOpenChange` callback is
 invoked.
@@ -84,9 +84,9 @@ invoked.
 ```jsx {3-6}
 const [state, send] = useMachine(
   hoverCard.machine({
-    onOpenChange(open) {
-      console.log("hovercard is:", open ? "opened" : "closed")
-      // open -  true | false
+    onOpenChange(details) {
+      // details => { open: boolean }
+      console.log("hovercard is:", details.open ? "opened" : "closed")
     },
   }),
 )

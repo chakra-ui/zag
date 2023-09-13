@@ -12,7 +12,10 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "editable",
+
       initial: ctx.startWithEditView ? "edit" : "preview",
+      entry: ctx.startWithEditView ? ["focusInput"] : undefined,
+
       context: {
         activationMode: "focus",
         submitMode: "both",
@@ -144,7 +147,6 @@ export function machine(userContext: UserDefinedContext) {
           raf(() => {
             const inputEl = dom.getInputEl(ctx)
             if (!inputEl) return
-
             if (ctx.selectOnFocus) {
               inputEl.select()
             } else {
@@ -153,18 +155,17 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         invokeOnCancel(ctx) {
-          ctx.onCancel?.({ value: ctx.previousValue })
+          ctx.onValueRevert?.({ value: ctx.previousValue })
         },
         invokeOnSubmit(ctx) {
-          ctx.onSubmit?.({ value: ctx.value })
+          ctx.onValueCommit?.({ value: ctx.value })
         },
         invokeOnEdit(ctx) {
           ctx.onEdit?.()
         },
         syncInputValue(ctx) {
-          const input = dom.getInputEl(ctx)
-          if (!input) return
-          input.value = ctx.value
+          const inputEl = dom.getInputEl(ctx)
+          dom.setValue(inputEl, ctx.value)
         },
         setValue(ctx, evt) {
           set.value(ctx, evt.value)
@@ -185,7 +186,7 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change(ctx: MachineContext) {
-    ctx.onChange?.({ value: ctx.value })
+    ctx.onValueChange?.({ value: ctx.value })
   },
 }
 

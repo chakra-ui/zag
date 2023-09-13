@@ -101,7 +101,7 @@ const fetchMachine = createMachine({
         },
         "TRIGGER.CLICK": {
           target: "open",
-          actions: ["focusFirstSelectedDate"]
+          actions: ["focusFirstSelectedDate", "invokeOnOpen"]
         }
       }
     },
@@ -110,7 +110,7 @@ const fetchMachine = createMachine({
       on: {
         "TRIGGER.CLICK": {
           target: "open",
-          actions: ["setViewToDay", "focusFirstSelectedDate"]
+          actions: ["setViewToDay", "focusFirstSelectedDate", "invokeOnOpen"]
         },
         "INPUT.CHANGE": {
           actions: ["focusParsedDate"]
@@ -123,7 +123,7 @@ const fetchMachine = createMachine({
         },
         "CELL.FOCUS": {
           target: "open",
-          actions: ["setView"]
+          actions: ["setView", "invokeOnOpen"]
         }
       }
     },
@@ -153,7 +153,7 @@ const fetchMachine = createMachine({
         }, {
           target: "focused",
           cond: "isRangePicker && isSelectingEndDate",
-          actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate", "focusInputElement"]
+          actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate", "focusInputElement", "invokeOnClose"]
         },
         // ===
         {
@@ -169,7 +169,7 @@ const fetchMachine = createMachine({
           actions: ["setFocusedDate", "setSelectedDate"]
         }, {
           target: "focused",
-          actions: ["setFocusedDate", "setSelectedDate", "focusInputElement"]
+          actions: ["setFocusedDate", "setSelectedDate", "focusInputElement", "invokeOnClose"]
         }
         // ===
         ],
@@ -193,7 +193,7 @@ const fetchMachine = createMachine({
         "GRID.ESCAPE": {
           cond: "!isInline",
           target: "focused",
-          actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement"]
+          actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement", "invokeOnClose"]
         },
         "GRID.ENTER": [{
           cond: "isMonthView",
@@ -212,7 +212,7 @@ const fetchMachine = createMachine({
         }, {
           target: "focused",
           cond: "isRangePicker && isSelectingEndDate",
-          actions: ["setSelectedDate", "setStartIndex", "focusInputElement"]
+          actions: ["setSelectedDate", "setStartIndex", "focusInputElement", "invokeOnClose"]
         },
         // ===
         {
@@ -228,7 +228,7 @@ const fetchMachine = createMachine({
           actions: ["selectFocusedDate"]
         }, {
           target: "focused",
-          actions: ["selectFocusedDate", "focusInputElement"]
+          actions: ["selectFocusedDate", "focusInputElement", "invokeOnClose"]
         }
         // ===
         ],
@@ -294,7 +294,8 @@ const fetchMachine = createMachine({
           actions: ["focusSectionEnd"]
         }],
         "TRIGGER.CLICK": {
-          target: "focused"
+          target: "focused",
+          actions: ["invokeOnClose"]
         },
         "VIEW.CHANGE": [{
           cond: "isDayView",
@@ -306,10 +307,10 @@ const fetchMachine = createMachine({
         DISMISS: [{
           cond: "isTargetFocusable",
           target: "idle",
-          actions: ["setStartIndex"]
+          actions: ["setStartIndex", "invokeOnClose"]
         }, {
           target: "focused",
-          actions: ["focusTriggerElement", "setStartIndex"]
+          actions: ["focusTriggerElement", "setStartIndex", "invokeOnClose"]
         }]
       }
     }

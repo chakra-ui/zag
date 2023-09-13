@@ -44,7 +44,6 @@ const api = computed(() => radio.connect(state.value, send, normalizeProps))
         <button type="reset">Reset</button>
         <button type="button" @click="() => api.setValue('mango')">Set to Mangoes</button>
         <button type="button" @click="() => api.focus()">Focus</button>
-        <button type="button" @click="() => api.blur()">Blur</button>
       </fieldset>
     </form>
   </main>

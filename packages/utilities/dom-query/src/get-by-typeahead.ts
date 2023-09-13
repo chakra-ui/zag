@@ -1,11 +1,11 @@
 import { getByText } from "./get-by-text"
 
-export type TypeaheadState = {
+export interface TypeaheadState {
   keysSoFar: string
   timer: number
 }
 
-export type TypeaheadOptions = {
+export interface TypeaheadOptions {
   state: TypeaheadState
   activeId: string | null
   key: string

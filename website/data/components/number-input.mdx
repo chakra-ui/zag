@@ -162,6 +162,21 @@ const [state, send] = useMachine(
 )
 ```
 
+## Listening for value changes
+
+When the value changes, the `onValueChange` callback is invoked.
+
+```jsx {3-8}
+const [state, send] = useMachine(
+  numberInput.machine({
+    onValueChange(details) {
+      // details => { value: string, valueAsNumber: number }
+      console.log("value is:", details.value)
+    },
+  }),
+)
+```
+
 ## Usage within forms
 
 To use the number input within forms, set the `name` property in the machine's

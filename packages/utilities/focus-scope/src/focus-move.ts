@@ -2,7 +2,7 @@ import { getActiveElement } from "@zag-js/dom-query"
 import type { FocusContext } from "./focus-context"
 import { focusScopeStack } from "./focus-stack"
 
-export type FocusMoveEffectOptions = {
+export interface FocusMoveEffectOptions {
   onMountAutoFocus?: EventListener
   onUnmountAutoFocus?: EventListener
 }

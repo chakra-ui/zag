@@ -20,7 +20,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const hoveredValue = state.context.hoveredValue
   const translations = state.context.translations
 
-  const api = {
+  function getRatingState(props: ItemProps): ItemState {
+    const value = state.context.isHovering ? state.context.hoveredValue : state.context.value
+    const isEqual = Math.ceil(value) === props.index
+
+    const isHighlighted = props.index <= value || isEqual
+    const isHalf = isEqual && Math.abs(value - props.index) === 0.5
+
+    return {
+      isEqual,
+      isValueEmpty: state.context.value === -1,
+      isHighlighted,
+      isHalf,
+      isChecked: isEqual || (state.context.value === -1 && props.index === 1),
+    }
+  }
+
+  return {
     setValue(value: number) {
       send({ type: "SET_VALUE", value })
     },
@@ -34,22 +50,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     hoveredValue,
     size: state.context.max,
     sizeArray: Array.from({ length: state.context.max }).map((_, index) => index + 1),
-
-    getRatingState(props: ItemProps): ItemState {
-      const value = state.context.isHovering ? state.context.hoveredValue : state.context.value
-      const isEqual = Math.ceil(value) === props.index
-
-      const isHighlighted = props.index <= value || isEqual
-      const isHalf = isEqual && Math.abs(value - props.index) === 0.5
-
-      return {
-        isEqual,
-        isValueEmpty: state.context.value === -1,
-        isHighlighted,
-        isHalf,
-        isChecked: isEqual || (state.context.value === -1 && props.index === 1),
-      }
-    },
+    getRatingState,
 
     rootProps: normalize.element({
       dir: state.context.dir,
@@ -92,14 +93,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getRatingProps(props: ItemProps) {
       const { index } = props
-      const { isHalf, isHighlighted, isChecked } = api.getRatingState(props)
+      const itemState = getRatingState(props)
       const valueText = translations.ratingValueText(index)
 
       return normalize.element({
         ...parts.rating.attrs,
         id: dom.getRatingId(state.context, index.toString()),
         role: "radio",
-        tabIndex: isDisabled ? undefined : isChecked ? 0 : -1,
+        tabIndex: isDisabled ? undefined : itemState.isChecked ? 0 : -1,
         "aria-roledescription": "rating",
         "aria-label": valueText,
         "aria-disabled": isDisabled,
@@ -107,11 +108,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-readonly": ariaAttr(state.context.readOnly),
         "data-readonly": dataAttr(state.context.readOnly),
         "aria-setsize": state.context.max,
-        "aria-checked": isChecked,
-        "data-checked": dataAttr(isChecked),
+        "aria-checked": itemState.isChecked,
+        "data-checked": dataAttr(itemState.isChecked),
         "aria-posinset": index,
-        "data-highlighted": dataAttr(isHighlighted),
-        "data-half": dataAttr(isHalf),
+        "data-highlighted": dataAttr(itemState.isHighlighted),
+        "data-half": dataAttr(itemState.isHalf),
         onPointerDown(event) {
           if (!isInteractive) return
           const evt = getNativeEvent(event)
@@ -179,6 +180,4 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
   }
-
-  return api
 }

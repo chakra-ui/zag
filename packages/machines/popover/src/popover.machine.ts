@@ -205,10 +205,10 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         invokeOnOpen(ctx) {
-          ctx.onOpen?.()
+          ctx.onOpenChange?.({ open: true })
         },
         invokeOnClose(ctx) {
-          ctx.onClose?.()
+          ctx.onOpenChange?.({ open: false })
         },
         toggleVisibility(ctx, _evt, { send }) {
           send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })

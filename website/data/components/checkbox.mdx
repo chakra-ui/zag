@@ -106,14 +106,14 @@ const [state, send] = useMachine(
 
 ## Listening for changes
 
-When the checkbox value changes, the `onChange` callback is invoked.
+When the checkbox value changes, the `onCheckChange` callback is invoked.
 
 ```jsx {3-6}
 const [state, send] = useMachine(
   checkbox.machine({
-    onChange({ checked }) {
-      console.log("checkbox is:", checked)
-      // 'checked' | 'unchecked' | 'indeterminate'
+    onCheckChange(details) {
+      // details => { checked: boolean }
+      console.log("checkbox is:", details.checked)
     },
   }),
 )

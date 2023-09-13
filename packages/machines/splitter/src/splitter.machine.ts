@@ -170,13 +170,13 @@ export function machine(userContext: UserDefinedContext) {
           dom.removeGlobalCursor(ctx)
         },
         invokeOnResize(ctx) {
-          ctx.onResize?.({ size: ctx.size, activeHandleId: ctx.activeResizeId })
+          ctx.onSizeChange?.({ size: Array.from(ctx.size), activeHandleId: ctx.activeResizeId })
         },
         invokeOnResizeStart(ctx) {
-          ctx.onResizeStart?.({ size: ctx.size, activeHandleId: ctx.activeResizeId })
+          ctx.onSizeChangeStart?.({ size: Array.from(ctx.size), activeHandleId: ctx.activeResizeId })
         },
         invokeOnResizeEnd(ctx) {
-          ctx.onResizeEnd?.({ size: ctx.size, activeHandleId: ctx.activeResizeId })
+          ctx.onSizeChangeEnd?.({ size: Array.from(ctx.size), activeHandleId: ctx.activeResizeId })
         },
         setActiveHandleId(ctx, evt) {
           ctx.activeResizeId = evt.id

@@ -14,11 +14,14 @@ type MaybeElement = HTMLElement | null
 type Container = MaybeElement | Array<MaybeElement>
 type NodeOrFn = MaybeElement | (() => MaybeElement)
 
-export type DismissableElementHandlers = InteractOutsideHandlers & {
+export interface DismissableElementHandlers extends InteractOutsideHandlers {
+  /**
+   * Function called when the escape key is pressed
+   */
   onEscapeKeyDown?: (event: KeyboardEvent) => void
 }
 
-export type DismissableElementOptions = DismissableElementHandlers & {
+export interface DismissableElementOptions extends DismissableElementHandlers {
   debug?: boolean
   pointerBlocking?: boolean
   onDismiss: () => void

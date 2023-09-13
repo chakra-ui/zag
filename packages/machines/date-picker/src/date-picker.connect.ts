@@ -48,7 +48,6 @@ import {
   getViewTriggerLabel,
   isDateWithinRange,
   isValidCharacter,
-  matchView,
 } from "./date-picker.utils"
 
 const pretty = (value: DateValue) => value.toString().split("T")[0]
@@ -93,8 +92,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isFocused,
     isOpen,
     view: state.context.view,
-
-    matchView,
 
     getDaysInWeek(weekIndex: number, from = startValue) {
       return getDaysInWeek(weekIndex, from, locale, startOfWeek)

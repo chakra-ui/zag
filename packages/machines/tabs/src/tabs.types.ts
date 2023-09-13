@@ -1,7 +1,23 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-type IntlTranslations = {
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface ValueChangeDetails {
+  value: string
+}
+
+export interface FocusChangeDetails {
+  focusedValue: string
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+interface IntlTranslations {
   tablistLabel?: string
 }
 
@@ -13,58 +29,48 @@ type ElementIds = Partial<{
   indicator: string
 }>
 
-export type TriggerProps = {
-  value: string
-  disabled?: boolean
+interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the elements in the tabs. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations: IntlTranslations
+  /**
+   * Whether the keyboard navigation will loop from last tab to first, and vice versa.
+   * @default true
+   */
+  loop: boolean
+  /**
+   * The selected tab id
+   */
+  value: string | null
+  /**
+   * The orientation of the tabs. Can be `horizontal` or `vertical`
+   * - `horizontal`: only left and right arrow key navigation will work.
+   * - `vertical`: only up and down arrow key navigation will work.
+   *
+   * @default "horizontal"
+   */
+  orientation?: "horizontal" | "vertical"
+  /**
+   * The activation mode of the tabs. Can be `manual` or `automatic`
+   * - `manual`: Tabs are activated when clicked or press `enter` key.
+   * - `automatic`: Tabs are activated when receiving focus
+   * @default "automatic"
+   */
+  activationMode?: "manual" | "automatic"
+  /**
+   * Callback to be called when the selected/active tab changes
+   */
+  onValueChange?: (details: ValueChangeDetails) => void
+  /**
+   * Callback to be called when the focused tab changes
+   */
+  onFocusChange?: (details: FocusChangeDetails) => void
 }
-
-export type ContentProps = {
-  value: string
-}
-
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    /**
-     * The ids of the elements in the tabs. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * Specifies the localized strings that identifies the accessibility elements and their states
-     */
-    translations: IntlTranslations
-    /**
-     * Whether the keyboard navigation will loop from last tab to first, and vice versa.
-     * @default true
-     */
-    loop: boolean
-    /**
-     * The selected tab id
-     */
-    value: string | null
-    /**
-     * The orientation of the tabs. Can be `horizontal` or `vertical`
-     * - `horizontal`: only left and right arrow key navigation will work.
-     * - `vertical`: only up and down arrow key navigation will work.
-     *
-     * @default "horizontal"
-     */
-    orientation?: "horizontal" | "vertical"
-    /**
-     * The activation mode of the tabs. Can be `manual` or `automatic`
-     * - `manual`: Tabs are activated when clicked or press `enter` key.
-     * - `automatic`: Tabs are activated when receiving focus
-     * @default "automatic"
-     */
-    activationMode?: "manual" | "automatic"
-    /**
-     * Callback to be called when the selected/active tab changes
-     */
-    onChange?: (details: { value: string }) => void
-    /**
-     * Callback to be called when the focused tab changes
-     */
-    onFocus?: (details: { value: string }) => void
-  }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
@@ -114,9 +120,9 @@ type PrivateContext = Context<{
   indicatorCleanup?: VoidFunction | null
 }>
 
-export type MachineContext = PublicContext & ComputedContext & PrivateContext
+export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "focused"
 }
 
@@ -124,7 +130,25 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface TriggerProps {
+  value: string
+  disabled?: boolean
+}
+
+export interface TriggerState {
+  isSelected: boolean
+  isFocused: boolean
+}
+
+export interface ContentProps {
+  value: string
+}
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the tabs.
    */
@@ -146,12 +170,17 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
    */
   clearValue(): void
   /**
-   * Sets the indicator rect to the tab with the given id.
+   * Sets the indicator rect to the tab with the given value
    */
-  setIndicatorRect(id: string | null | undefined): void
+  setIndicatorRect(value: string): void
+  /**
+   * Returns the state of the trigger with the given props
+   */
+  getTriggerState(props: TriggerProps): TriggerState
+
   rootProps: T["element"]
   tablistProps: T["element"]
   getTriggerProps(props: TriggerProps): T["button"]
-  getContentProps({ value }: ContentProps): T["element"]
+  getContentProps(props: ContentProps): T["element"]
   indicatorProps: T["element"]
 }

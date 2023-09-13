@@ -16,7 +16,7 @@ export default defineComponent({
       pagination.machine({
         id: "1",
         count: paginationData.length,
-        onChange: console.log,
+        onPageChange: console.log,
       }),
       {
         context: controls.context,

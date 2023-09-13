@@ -1,6 +1,6 @@
 import { trackElementSize, type ElementSize } from "./track-size"
 
-export type TrackElementsSizeOptions<T extends HTMLElement | null> = {
+export interface TrackElementsSizeOptions<T extends HTMLElement | null> {
   getNodes: () => T[]
   observeMutation?: boolean
   callback: (size: ElementSize | undefined, index: number) => void

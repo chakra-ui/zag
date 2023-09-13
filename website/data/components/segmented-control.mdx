@@ -112,14 +112,15 @@ const [state, send] = useMachine(
 
 ## Listening for changes
 
-When the segmented control value changes, the `onChange` callback is invoked.
+When the segmented control value changes, the `onValueChange` callback is
+invoked.
 
 ```jsx {3-8}
 const [state, send] = useMachine(
   radio.machine({
-    onChange({ value }) {
-      console.log("segmented control value is:", value)
-      // 'apple' | 'orange' | 'grape'
+    onValueChange(details) {
+      // details => { value: string }
+      console.log("segmented control value is:", details.value)
     },
   }),
 )

@@ -1,14 +1,41 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
-import type { InteractOutsideEvent, InteractOutsideHandlers } from "@zag-js/interact-outside"
+import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 
-type IntlTranslations = {
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface ValueChangeDetails {
+  value: string[]
+}
+
+export interface HighlightChangeDetails {
+  highlightedValue: string | null
+}
+
+export type ValidityState = "rangeOverflow" | "invalidTag"
+
+export interface ValidityChangeDetails {
+  reason: ValidityState
+}
+
+interface ValidateArgs {
+  inputValue: string
+  value: string[]
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+interface IntlTranslations {
   clearTriggerLabel: string
   deleteTagTriggerLabel(value: string): string
   tagSelected(value: string): string
   tagAdded(value: string): string
-  tagsPasted(values: string[]): string
+  tagsPasted(value: string[]): string
   tagEdited(value: string): string
   tagUpdated(value: string): string
   tagDeleted(value: string): string
@@ -33,106 +60,104 @@ type ElementIds = Partial<{
   tagInput(opts: TagProps): string
 }>
 
-type PublicContext = DirectionProperty &
-  CommonProperties &
-  InteractOutsideHandlers & {
-    /**
-     * The ids of the elements in the tags input. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * Specifies the localized strings that identifies the accessibility elements and their states
-     */
-    translations: IntlTranslations
-    /**
-     * The max length of the input.
-     */
-    maxLength?: number
-    /**
-     * The character that serves has:
-     * - event key to trigger the addition of a new tag
-     * - character used to split tags when pasting into the input
-     *
-     * @default "," (aka COMMA)
-     */
-    delimiter: string | null
-    /**
-     * Whether the input should be auto-focused
-     */
-    autoFocus?: boolean
-    /**
-     * Whether the tags input should be disabled
-     */
-    disabled?: boolean
-    /**
-     * Whether the tags input should be read-only
-     */
-    readOnly?: boolean
-    /**
-     * Whether the tags input is invalid
-     */
-    invalid?: boolean
-    /**
-     * Whether a tag can be edited after creation.
-     * If `true` and focus is on a tag, pressing `Enter`or double clicking will edit the tag.
-     */
-    allowEditTag?: boolean
-    /**
-     * The tag input's value
-     */
-    inputValue: string
-    /**
-     * The tag values
-     */
-    value: string[]
-    /**
-     * Callback fired when the tag values is updated
-     */
-    onChange?(details: { values: string[] }): void
-    /**
-     * Callback fired when a tag is focused by pointer or keyboard navigation
-     */
-    onFocusChange?(details: { value: string | null }): void
-    /**
-     * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
-     */
-    onInvalid?(details: { reason: ValidityState }): void
-    /**
-     * Returns a boolean that determines whether a tag can be added.
-     * Useful for preventing duplicates or invalid tag values.
-     */
-    validate?(details: { inputValue: string; values: string[] }): boolean
-    /**
-     * The behavior of the tags input when the input is blurred
-     * - `"add"`: add the input value as a new tag
-     * - `"none"`: do nothing
-     * - `"clear"`: clear the input value
-     *
-     * @default "none"
-     */
-    blurBehavior?: "clear" | "add"
-    /**
-     * Whether to add a tag when you paste values into the tag input
-     */
-    addOnPaste?: boolean
-    /**
-     * The max number of tags
-     */
-    max: number
-    /**
-     * Whether to allow tags to exceed max. In this case,
-     * we'll attach `data-invalid` to the root
-     */
-    allowOverflow?: boolean
-    /**
-     * The name attribute for the input. Useful for form submissions
-     */
-    name?: string
-    /**
-     * The associate form of the underlying input element.
-     */
-    form?: string
-  }
+interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+  /**
+   * The ids of the elements in the tags input. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations: IntlTranslations
+  /**
+   * The max length of the input.
+   */
+  maxLength?: number
+  /**
+   * The character that serves has:
+   * - event key to trigger the addition of a new tag
+   * - character used to split tags when pasting into the input
+   *
+   * @default "," (aka COMMA)
+   */
+  delimiter: string | null
+  /**
+   * Whether the input should be auto-focused
+   */
+  autoFocus?: boolean
+  /**
+   * Whether the tags input should be disabled
+   */
+  disabled?: boolean
+  /**
+   * Whether the tags input should be read-only
+   */
+  readOnly?: boolean
+  /**
+   * Whether the tags input is invalid
+   */
+  invalid?: boolean
+  /**
+   * Whether a tag can be edited after creation.
+   * If `true` and focus is on a tag, pressing `Enter`or double clicking will edit the tag.
+   */
+  allowEditTag?: boolean
+  /**
+   * The tag input's value
+   */
+  inputValue: string
+  /**
+   * The tag values
+   */
+  value: string[]
+  /**
+   * Callback fired when the tag values is updated
+   */
+  onValueChange?(details: ValueChangeDetails): void
+  /**
+   * Callback fired when a tag is highlighted by pointer or keyboard navigation
+   */
+  onHighlightChange?(details: HighlightChangeDetails): void
+  /**
+   * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
+   */
+  onValueInvalid?(details: ValidityChangeDetails): void
+  /**
+   * Returns a boolean that determines whether a tag can be added.
+   * Useful for preventing duplicates or invalid tag values.
+   */
+  validate?(details: ValidateArgs): boolean
+  /**
+   * The behavior of the tags input when the input is blurred
+   * - `"add"`: add the input value as a new tag
+   * - `"none"`: do nothing
+   * - `"clear"`: clear the input value
+   *
+   * @default "none"
+   */
+  blurBehavior?: "clear" | "add"
+  /**
+   * Whether to add a tag when you paste values into the tag input
+   */
+  addOnPaste?: boolean
+  /**
+   * The max number of tags
+   */
+  max: number
+  /**
+   * Whether to allow tags to exceed max. In this case,
+   * we'll attach `data-invalid` to the root
+   */
+  allowOverflow?: boolean
+  /**
+   * The name attribute for the input. Useful for form submissions
+   */
+  name?: string
+  /**
+   * The associate form of the underlying input element.
+   */
+  form?: string
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
@@ -187,9 +212,9 @@ type PrivateContext = Context<{
   liveRegion: LiveRegion | null
   /**
    * @internal
-   * The `id` of the currently focused tag
+   * The `id` of the currently highlighted tag
    */
-  focusedId: string | null
+  highlightedTagId: string | null
   /**
    * @internal
    * The index of the deleted tag. Used to determine the next tag to focus.
@@ -212,9 +237,9 @@ type PrivateContext = Context<{
   fieldsetDisabled: boolean
 }>
 
-export type MachineContext = PublicContext & ComputedContext & PrivateContext
+export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "navigating:tag" | "focused:input" | "editing:tag"
   tags: "focused" | "editing"
 }
@@ -223,17 +248,24 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type ValidityState = "rangeOverflow" | "invalidTag"
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
-export type TagProps = {
+export interface TagProps {
   index: string | number
   value: string
   disabled?: boolean
 }
 
-export type { InteractOutsideEvent }
+export interface TagState {
+  id: string
+  isEditing: boolean
+  isHighlighted: boolean
+  isDisabled: boolean
+}
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tags are empty
    */
@@ -286,6 +318,11 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
    * Function to focus the tags entry input.
    */
   focus(): void
+  /**
+   * Returns the state of a tag
+   */
+  getTagState(props: TagProps): TagState
+
   rootProps: T["element"]
   labelProps: T["label"]
   controlProps: T["element"]

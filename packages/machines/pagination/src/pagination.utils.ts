@@ -1,49 +1,49 @@
-import type { MachineContext as Ctx, PaginationRange } from "./pagination.types"
+import type { MachineContext as Ctx, Pages } from "./pagination.types"
 
-export const utils = {
-  range: (start: number, end: number) => {
-    let length = end - start + 1
-    return Array.from({ length }, (_, idx) => idx + start)
-  },
-  transform: (items: (string | number)[]): PaginationRange => {
-    return items.map((value) => {
-      if (typeof value === "number") return { type: "page", value }
-      return { type: "ellipsis" }
-    })
-  },
-  getRange: (ctx: Omit<Ctx, "items">) => {
-    const totalPageNumbers = ctx.siblingCount + 5
-    if (totalPageNumbers >= ctx.totalPages) return utils.transform(utils.range(1, ctx.totalPages))
+export const range = (start: number, end: number) => {
+  let length = end - start + 1
+  return Array.from({ length }, (_, idx) => idx + start)
+}
 
-    const ELLIPSIS = "ellipsis"
+export const transform = (items: (string | number)[]): Pages => {
+  return items.map((value) => {
+    if (typeof value === "number") return { type: "page", value }
+    return { type: "ellipsis" }
+  })
+}
 
-    const leftSiblingIndex = Math.max(ctx.page - ctx.siblingCount, 1)
-    const rightSiblingIndex = Math.min(ctx.page + ctx.siblingCount, ctx.totalPages)
+export const getRange = (ctx: Omit<Ctx, "items">) => {
+  const totalPageNumbers = ctx.siblingCount + 5
+  if (totalPageNumbers >= ctx.totalPages) return transform(range(1, ctx.totalPages))
 
-    const showLeftEllipsis = leftSiblingIndex > 2
-    const showRightEllipsis = rightSiblingIndex < ctx.totalPages - 2
+  const ELLIPSIS = "ellipsis"
 
-    const firstPageIndex = 1
-    const lastPageIndex = ctx.totalPages
+  const leftSiblingIndex = Math.max(ctx.page - ctx.siblingCount, 1)
+  const rightSiblingIndex = Math.min(ctx.page + ctx.siblingCount, ctx.totalPages)
 
-    if (!showLeftEllipsis && showRightEllipsis) {
-      let leftItemCount = 3 + 2 * ctx.siblingCount
-      let leftRange = utils.range(1, leftItemCount)
+  const showLeftEllipsis = leftSiblingIndex > 2
+  const showRightEllipsis = rightSiblingIndex < ctx.totalPages - 2
 
-      return utils.transform([...leftRange, ELLIPSIS, ctx.totalPages])
-    }
+  const firstPageIndex = 1
+  const lastPageIndex = ctx.totalPages
 
-    if (showLeftEllipsis && !showRightEllipsis) {
-      let rightItemCount = 3 + 2 * ctx.siblingCount
-      let rightRange = utils.range(ctx.totalPages - rightItemCount + 1, ctx.totalPages)
-      return utils.transform([firstPageIndex, ELLIPSIS, ...rightRange])
-    }
+  if (!showLeftEllipsis && showRightEllipsis) {
+    let leftItemCount = 3 + 2 * ctx.siblingCount
+    let leftRange = range(1, leftItemCount)
 
-    if (showLeftEllipsis && showRightEllipsis) {
-      let middleRange = utils.range(leftSiblingIndex, rightSiblingIndex)
-      return utils.transform([firstPageIndex, ELLIPSIS, ...middleRange, ELLIPSIS, lastPageIndex])
-    }
+    return transform([...leftRange, ELLIPSIS, ctx.totalPages])
+  }
 
-    return []
-  },
+  if (showLeftEllipsis && !showRightEllipsis) {
+    let rightItemCount = 3 + 2 * ctx.siblingCount
+    let rightRange = range(ctx.totalPages - rightItemCount + 1, ctx.totalPages)
+    return transform([firstPageIndex, ELLIPSIS, ...rightRange])
+  }
+
+  if (showLeftEllipsis && showRightEllipsis) {
+    let middleRange = range(leftSiblingIndex, rightSiblingIndex)
+    return transform([firstPageIndex, ELLIPSIS, ...middleRange, ELLIPSIS, lastPageIndex])
+  }
+
+  return []
 }

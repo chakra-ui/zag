@@ -2,8 +2,8 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./pagination.anatomy"
 import { dom } from "./pagination.dom"
-import type { EllipsisProps, PageTriggerProps, MachineApi, Send, State } from "./pagination.types"
-import { utils } from "./pagination.utils"
+import type { MachineApi, Send, State } from "./pagination.types"
+import * as utils from "./pagination.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const totalPages = state.context.totalPages
@@ -30,19 +30,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isFirstPage,
     isLastPage,
 
-    slice<T>(data: T[]) {
+    slice(data) {
       return data.slice(pageRange.start, pageRange.end)
     },
 
-    setCount(count: number) {
+    setCount(count) {
       send({ type: "SET_COUNT", count })
     },
 
-    setPageSize(size: number) {
+    setPageSize(size) {
       send({ type: "SET_PAGE_SIZE", size })
     },
 
-    setPage(page: number) {
+    setPage(page) {
       send({ type: "SET_PAGE", page })
     },
 
@@ -52,14 +52,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": translations.rootLabel,
     }),
 
-    getEllipsisProps(props: EllipsisProps) {
+    getEllipsisProps(props) {
       return normalize.element({
         id: dom.getEllipsisId(state.context, props.index),
         ...parts.ellipsis.attrs,
       })
     },
 
-    getPageTriggerProps(page: PageTriggerProps) {
+    getPageTriggerProps(page) {
       const index = page.value
       const isCurrentPage = index === state.context.page
 

@@ -209,6 +209,9 @@ importers:
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
+      '@zag-js/file-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/file-utils
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -441,6 +444,9 @@ importers:
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
+      '@zag-js/file-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/file-utils
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -649,6 +655,9 @@ importers:
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
+      '@zag-js/file-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/file-utils
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -866,6 +875,9 @@ importers:
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
+      '@zag-js/file-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/file-utils
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -1077,6 +1089,9 @@ importers:
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
+      '@zag-js/file-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/file-utils
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -2416,6 +2431,12 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
+  packages/utilities/file-utils:
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
   packages/utilities/focus-scope:
     dependencies:
       '@zag-js/dom-event':
@@ -2801,6 +2822,7 @@ packages:
     dependencies:
       '@babel/highlight': 7.22.13
       chalk: 2.4.2
+    dev: true
 
   /@babel/code-frame@7.22.13:
     resolution: {integrity: sha512-XktuhWlJ5g+3TJXc5upd9Ks1HutSArik6jf2eAjYFyIOf4ej3RN+184cZbzDvbPnuTJIUhPKKJE3cIsYTiAT3w==}

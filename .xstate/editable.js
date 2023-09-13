@@ -12,6 +12,7 @@ const {
 const fetchMachine = createMachine({
   id: "editable",
   initial: ctx.startWithEditView ? "edit" : "preview",
+  entry: ctx.startWithEditView ? ["focusInput"] : undefined,
   context: {
     "activateOnDblClick": false,
     "activateOnFocus": false,

@@ -5,7 +5,27 @@ import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-export type { CollectionOptions, CollectionItem }
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
+  value: string[]
+  items: T[]
+}
+
+export interface HighlightChangeDetails<T extends CollectionItem = CollectionItem> {
+  highlightedValue: string | null
+  highlightedItem: T | null
+}
+
+export interface OpenChangeDetails {
+  open: boolean
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 type ElementIds = Partial<{
   root: string
@@ -21,97 +41,84 @@ type ElementIds = Partial<{
   itemGroupLabel(id: string | number): string
 }>
 
-export type ValueChangeDetails<T extends CollectionItem = CollectionItem> = {
+interface PublicContext<T extends CollectionItem = CollectionItem>
+  extends DirectionProperty,
+    CommonProperties,
+    InteractOutsideHandlers {
+  /**
+   * The item collection
+   */
+  collection: Collection<CollectionItem>
+  /**
+   * The ids of the elements in the select. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * The `name` attribute of the underlying select.
+   */
+  name?: string
+  /**
+   * The associate form of the underlying select.
+   */
+  form?: string
+  /**
+   * Whether the select is disabled
+   */
+  disabled?: boolean
+  /**
+   * Whether the select is invalid
+   */
+  invalid?: boolean
+  /**
+   * Whether the select is read-only
+   */
+  readOnly?: boolean
+  /**
+   * Whether the select should close after an item is selected
+   */
+  closeOnSelect?: boolean
+  /**
+   * Whether to select the highlighted item when the user presses Tab,
+   * and the menu is open.
+   */
+  selectOnBlur?: boolean
+  /**
+   * The callback fired when the highlighted item changes.
+   */
+  onHighlightChange?: (details: HighlightChangeDetails<T>) => void
+  /**
+   * The callback fired when the selected item changes.
+   */
+  onValueChange?: (details: ValueChangeDetails<T>) => void
+  /**
+   * Function called when the popup is opened
+   */
+  onOpenChange?: (details: OpenChangeDetails) => void
+  /**
+   * The positioning options of the menu.
+   */
+  positioning: PositioningOptions
+  /**
+   * The keys of the selected items
+   */
   value: string[]
-  items: T[]
+  /**
+   * The key of the highlighted item
+   */
+  highlightedValue: string | null
+  /**
+   * Whether to loop the keyboard navigation through the options
+   */
+  loop?: boolean
+  /**
+   * Whether to allow multiple selection
+   */
+  multiple?: boolean
+  /**
+   * Whether the select menu is open
+   */
+  open?: boolean
 }
-
-export type HighlightChangeDetails<T extends CollectionItem = CollectionItem> = {
-  value: string | null
-  item: T | null
-}
-
-type PublicContext<T extends CollectionItem = CollectionItem> = DirectionProperty &
-  CommonProperties &
-  InteractOutsideHandlers & {
-    /**
-     * The item collection
-     */
-    collection: Collection<CollectionItem>
-    /**
-     * The ids of the elements in the select. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * The `name` attribute of the underlying select.
-     */
-    name?: string
-    /**
-     * The associate form of the underlying select.
-     */
-    form?: string
-    /**
-     * Whether the select is disabled
-     */
-    disabled?: boolean
-    /**
-     * Whether the select is invalid
-     */
-    invalid?: boolean
-    /**
-     * Whether the select is read-only
-     */
-    readOnly?: boolean
-    /**
-     * Whether the select should close after an item is selected
-     */
-    closeOnSelect?: boolean
-    /**
-     * Whether to select the highlighted item when the user presses Tab,
-     * and the menu is open.
-     */
-    selectOnBlur?: boolean
-    /**
-     * The callback fired when the highlighted item changes.
-     */
-    onHighlight?: (details: HighlightChangeDetails<T>) => void
-    /**
-     * The callback fired when the selected item changes.
-     */
-    onChange?: (details: ValueChangeDetails<T>) => void
-    /**
-     * Function called when the popup is opened
-     */
-    onOpen?: VoidFunction
-    /**
-     * Function called when the popup is closed
-     */
-    onClose?: VoidFunction
-    /**
-     * The positioning options of the menu.
-     */
-    positioning: PositioningOptions
-    /**
-     * The keys of the selected items
-     */
-    value: string[]
-    /**
-     * The key of the highlighted item
-     */
-    highlightedValue: string | null
-    /**
-     * Whether to loop the keyboard navigation through the options
-     */
-    loop?: boolean
-    /**
-     * Whether to allow multiple selection
-     */
-    multiple?: boolean
-    /**
-     * Whether the select menu is open
-     */
-    open?: boolean
-  }
 
 type PrivateContext = Context<{
   /**
@@ -173,20 +180,9 @@ export type UserDefinedContext<T extends CollectionItem = CollectionItem> = Requ
   "id" | "collection"
 >
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type ItemProps<T extends CollectionItem = CollectionItem> = {
-  item: T
-}
-
-export type ItemState = {
-  value: string
-  isDisabled: boolean
-  isSelected: boolean
-  isHighlighted: boolean
-}
-
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "focused" | "open"
 }
 
@@ -194,15 +190,30 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type ItemGroupProps = {
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface ItemProps<T extends CollectionItem = CollectionItem> {
+  item: T
+}
+
+export interface ItemState {
+  value: string
+  isDisabled: boolean
+  isSelected: boolean
+  isHighlighted: boolean
+}
+
+export interface ItemGroupProps {
   id: string
 }
 
-export type ItemGroupLabelProps = {
+export interface ItemGroupLabelProps {
   htmlFor: string
 }
 
-export type MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> = {
+export interface MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
   /**
    * Whether the select is focused
    */
@@ -286,3 +297,9 @@ export type MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem
   getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]
   hiddenSelectProps: T["select"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { CollectionOptions, CollectionItem }

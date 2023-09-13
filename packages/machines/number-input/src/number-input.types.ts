@@ -1,7 +1,31 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface ValueChangeDetails {
+  value: string
+  valueAsNumber: number
+}
+
+export interface FocusChangeDetails extends ValueChangeDetails {
+  focused: boolean
+  srcElement?: HTMLElement | null
+}
+
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
+
+export interface ValueInvalidDetails extends ValueChangeDetails {
+  reason: ValidityState
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+type InputMode = "text" | "tel" | "numeric" | "decimal"
 
 type ElementIds = Partial<{
   root: string
@@ -28,131 +52,121 @@ type IntlTranslations = {
   decrementLabel: string
 }
 
-type Value = {
+interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the elements in the number input. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * The name attribute of the number input. Useful for form submission.
+   */
+  name?: string
+  /**
+   * The associate form of the input element.
+   */
+  form?: string
+  /**
+   * Whether the number input is disabled.
+   */
+  disabled?: boolean
+  /**
+   * Whether the number input is readonly
+   */
+  readOnly?: boolean
+  /**
+   * Whether the number input value is invalid.
+   */
+  invalid?: boolean
+  /**
+   * The pattern used to check the <input> element's value against
+   *
+   * @default
+   * "[0-9]*(.[0-9]+)?"
+   */
+  pattern: string
+  /**
+   * The value of the input
+   */
   value: string
-  valueAsNumber: number
+  /**
+   * The minimum value of the number input
+   */
+  min: number
+  /**
+   * The maximum value of the number input
+   */
+  max: number
+  /**
+   * The amount to increment or decrement the value by
+   */
+  step: number
+  /**
+   * Whether to allow mouse wheel to change the value
+   */
+  allowMouseWheel?: boolean
+  /**
+   * Whether to allow the value overflow the min/max range
+   * @default true
+   */
+  allowOverflow: boolean
+  /**
+   * Whether the pressed key should be allowed in the input.
+   * The default behavior is to allow DOM floating point characters defined by /^[Ee0-9+\-.]$/
+   */
+  validateCharacter?: (char: string) => boolean
+  /**
+   * Whether to clamp the value when the input loses focus (blur)
+   * @default true
+   */
+  clampValueOnBlur: boolean
+  /**
+   * Whether to focus input when the value changes
+   * @default true
+   */
+  focusInputOnChange: boolean
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations: IntlTranslations
+  /**
+   * If using a custom display format, this converts the custom format to a format `parseFloat` understands.
+   */
+  parse?: (value: string) => string
+  /**
+   * If using a custom display format, this converts the default format to the custom format.
+   */
+  format?: (value: string) => string | number
+  /**
+   * Hints at the type of data that might be entered by the user. It also determines
+   * the type of keyboard shown to the user on mobile devices
+   * @default "decimal"
+   */
+  inputMode: InputMode
+  /**
+   * Function invoked when the value changes
+   */
+  onValueChange?: (details: ValueChangeDetails) => void
+  /**
+   * Function invoked when the value overflows or underflows the min/max range
+   */
+  onValueInvalid?: (details: ValueInvalidDetails) => void
+  /**
+   * Function invoked when the number input is focused
+   */
+  onFocusChange?: (details: FocusChangeDetails) => void
+  /**
+   * The minimum number of fraction digits to use. Possible values are from 0 to 20
+   */
+  minFractionDigits?: number
+  /**
+   * The maximum number of fraction digits to use. Possible values are from 0 to 20;
+   */
+  maxFractionDigits?: number
+  /**
+   * Whether to spin the value when the increment/decrement button is pressed
+   */
+  spinOnPress?: boolean
 }
-
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    /**
-     * The ids of the elements in the number input. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * The name attribute of the number input. Useful for form submission.
-     */
-    name?: string
-    /**
-     * The associate form of the input element.
-     */
-    form?: string
-    /**
-     * Whether the number input is disabled.
-     */
-    disabled?: boolean
-    /**
-     * Whether the number input is readonly
-     */
-    readOnly?: boolean
-    /**
-     * Whether the number input value is invalid.
-     */
-    invalid?: boolean
-    /**
-     * The pattern used to check the <input> element's value against
-     *
-     * @default
-     * "[0-9]*(.[0-9]+)?"
-     */
-    pattern: string
-    /**
-     * The value of the input
-     */
-    value: string
-    /**
-     * The minimum value of the number input
-     */
-    min: number
-    /**
-     * The maximum value of the number input
-     */
-    max: number
-    /**
-     * The amount to increment or decrement the value by
-     */
-    step: number
-    /**
-     * Whether to allow mouse wheel to change the value
-     */
-    allowMouseWheel?: boolean
-    /**
-     * Whether to allow the value overflow the min/max range
-     * @default true
-     */
-    allowOverflow: boolean
-    /**
-     * Whether the pressed key should be allowed in the input.
-     * The default behavior is to allow DOM floating point characters defined by /^[Ee0-9+\-.]$/
-     */
-    validateCharacter?: (char: string) => boolean
-    /**
-     * Whether to clamp the value when the input loses focus (blur)
-     * @default true
-     */
-    clampValueOnBlur: boolean
-    /**
-     * Whether to focus input when the value changes
-     * @default true
-     */
-    focusInputOnChange: boolean
-    /**
-     * Specifies the localized strings that identifies the accessibility elements and their states
-     */
-    translations: IntlTranslations
-    /**
-     * If using a custom display format, this converts the custom format to a format `parseFloat` understands.
-     */
-    parse?: (value: string) => string
-    /**
-     * If using a custom display format, this converts the default format to the custom format.
-     */
-    format?: (value: string) => string | number
-    /**
-     * Hints at the type of data that might be entered by the user. It also determines
-     * the type of keyboard shown to the user on mobile devices
-     * @default "decimal"
-     */
-    inputMode: "text" | "tel" | "numeric" | "decimal"
-    /**
-     * Function invoked when the value changes
-     */
-    onChange?: (details: Value) => void
-    /**
-     * Function invoked when the value overflows or underflows the min/max range
-     */
-    onInvalid?: (details: Value & { reason: ValidityState }) => void
-    /**
-     * Function invoked when the number input is focused
-     */
-    onFocus?: (details: Value & { srcElement: HTMLElement | null }) => void
-    /**
-     * The value of the input when it is blurred
-     */
-    onBlur?: (details: Value) => void
-    /**
-     * The minimum number of fraction digits to use. Possible values are from 0 to 20
-     */
-    minFractionDigits?: number
-    /**
-     * The maximum number of fraction digits to use. Possible values are from 0 to 20;
-     */
-    maxFractionDigits?: number
-    /**
-     * Whether to spin the value when the increment/decrement button is pressed
-     */
-    spinOnPress?: boolean
-  }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
@@ -222,9 +236,9 @@ type PrivateContext = Context<{
   scrubberCursorPoint: { x: number; y: number } | null
 }>
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"
   tags: "focus"
 }
@@ -233,7 +247,11 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the input is focused.
    */

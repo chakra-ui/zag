@@ -122,7 +122,7 @@ const NumberInput = () => {
   const [state, send] = useMachine(machine({ id: "1" }), {
     context: {
       value,
-      onChange(details) {
+      onValueChange(details) {
         flushSync(() => {
           setValue(details.value)
         })

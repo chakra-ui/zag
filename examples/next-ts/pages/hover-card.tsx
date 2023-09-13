@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-target-blank */
 import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { hoverCardControls } from "@zag-js/shared"

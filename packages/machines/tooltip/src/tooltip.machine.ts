@@ -222,11 +222,11 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnOpen(ctx, evt) {
           const omit = ["CONTENT.POINTER_MOVE", "POINTER_MOVE"]
           if (!omit.includes(evt.type)) {
-            ctx.onOpen?.()
+            ctx.onOpenChange?.({ open: true })
           }
         },
         invokeOnClose(ctx) {
-          ctx.onClose?.()
+          ctx.onOpenChange?.({ open: false })
         },
         closeIfDisabled(ctx, _evt, { send }) {
           if (!ctx.disabled) return

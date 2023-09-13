@@ -22,7 +22,7 @@ export type EventKeyMap = {
   [key in EventKey]?: (event: JSX.KeyboardEvent) => void
 }
 
-export type EventKeyOptions = {
+export interface EventKeyOptions {
   dir?: "ltr" | "rtl"
   orientation?: "horizontal" | "vertical"
 }

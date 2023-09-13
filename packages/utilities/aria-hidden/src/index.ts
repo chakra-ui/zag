@@ -4,7 +4,7 @@ import { raf } from "@zag-js/dom-query"
 const refCountMap = new WeakMap<Element, number>()
 const observerStack: any[] = []
 
-export type AriaHiddenOptions = {
+export interface AriaHiddenOptions {
   rootEl?: HTMLElement
   defer?: boolean
 }

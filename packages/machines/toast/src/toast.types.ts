@@ -13,23 +13,7 @@ export type Type = "success" | "error" | "loading" | "info" | "custom"
 
 export type Placement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
 
-type SharedContext = {
-  /**
-   * Whether to pause toast when the user leaves the browser tab
-   */
-  pauseOnPageIdle?: boolean
-  /**
-   * Whether to pause the toast when interacted with
-   */
-  pauseOnInteraction?: boolean
-
-  /**
-   * The default options for the toast
-   */
-  defaultOptions?: Partial<Pick<ToastOptions, "duration" | "removeDelay" | "placement">>
-}
-
-export type ToastOptions = {
+export interface ToastOptions {
   /**
    * The unique id of the toast
    */
@@ -87,30 +71,51 @@ export type RenderOptions = Omit<ToastOptions, "render"> & {
   dismiss(): void
 }
 
-export type MachineContext = SharedContext &
-  RootProperties &
-  CommonProperties &
-  Omit<ToastOptions, "removeDelay"> & {
-    /**
-     * The duration for the toast to kept alive before it is removed.
-     * Useful for exit transitions.
-     */
-    removeDelay: number
-    /**
-     * The document's text/writing direction.
-     */
-    dir?: Direction
-    /**
-     * The time the toast was created
-     */
-    createdAt: number
-    /**
-     * The time left before the toast is removed
-     */
-    remaining: number
-  }
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
-export type MachineState = {
+interface SharedContext {
+  /**
+   * Whether to pause toast when the user leaves the browser tab
+   */
+  pauseOnPageIdle?: boolean
+  /**
+   * Whether to pause the toast when interacted with
+   */
+  pauseOnInteraction?: boolean
+
+  /**
+   * The default options for the toast
+   */
+  defaultOptions?: Partial<Pick<ToastOptions, "duration" | "removeDelay" | "placement">>
+}
+
+export interface MachineContext
+  extends SharedContext,
+    RootProperties,
+    CommonProperties,
+    Omit<ToastOptions, "removeDelay"> {
+  /**
+   * The duration for the toast to kept alive before it is removed.
+   * Useful for exit transitions.
+   */
+  removeDelay: number
+  /**
+   * The document's text/writing direction.
+   */
+  dir?: Direction
+  /**
+   * The time the toast was created
+   */
+  createdAt: number
+  /**
+   * The time left before the toast is removed
+   */
+  remaining: number
+}
+
+export interface MachineState {
   value: "active" | "active:temp" | "dismissing" | "inactive" | "persist"
   tags: "visible" | "paused" | "updating"
 }
@@ -121,26 +126,24 @@ export type Send = S.Send
 
 export type Service = Machine<MachineContext, MachineState>
 
-type GroupPublicContext = SharedContext &
-  DirectionProperty &
-  CommonProperties & {
-    /**
-     * The gutter or spacing between toasts
-     */
-    gutter: string
-    /**
-     * The z-index applied to each toast group
-     */
-    zIndex: number
-    /**
-     * The maximum number of toasts that can be shown at once
-     */
-    max: number
-    /**
-     * The offset from the safe environment edge of the viewport
-     */
-    offsets: string | Record<"left" | "right" | "bottom" | "top", string>
-  }
+interface GroupPublicContext extends SharedContext, DirectionProperty, CommonProperties {
+  /**
+   * The gutter or spacing between toasts
+   */
+  gutter: string
+  /**
+   * The z-index applied to each toast group
+   */
+  zIndex: number
+  /**
+   * The maximum number of toasts that can be shown at once
+   */
+  max: number
+  /**
+   * The offset from the safe environment edge of the viewport
+   */
+  offsets: string | Record<"left" | "right" | "bottom" | "top", string>
+}
 
 export type UserDefinedGroupContext = RequiredBy<GroupPublicContext, "id">
 
@@ -160,26 +163,30 @@ type GroupPrivateContext = Context<{
   toasts: Service[]
 }>
 
-export type GroupMachineContext = GroupPublicContext & GroupComputedContext & GroupPrivateContext
+export interface GroupMachineContext extends GroupPublicContext, GroupComputedContext, GroupPrivateContext {}
 
 export type GroupState = S.State<GroupMachineContext>
 
-export type GroupSend = (event: S.Event<S.AnyEventObject>) => void
+export type GroupSend = S.Send
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
 
-export type PromiseOptions<Value> = {
+export interface PromiseOptions<Value> {
   loading: ToastOptions
   success: MaybeFunction<ToastOptions, Value>
   error: MaybeFunction<ToastOptions, Error>
 }
 
-export type GroupProps = {
+export interface GroupProps {
   placement: Placement
   label?: string
 }
 
-export type GroupMachineApi<T extends PropTypes = PropTypes> = {
+export interface GroupMachineApi<T extends PropTypes = PropTypes> {
   /**
    * The total number of toasts
    */
@@ -255,7 +262,7 @@ export type GroupMachineApi<T extends PropTypes = PropTypes> = {
   getGroupProps(options: GroupProps): T["element"]
 }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The type of the toast.
    */

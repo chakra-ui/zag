@@ -30,21 +30,20 @@ export const dom = createScope({
   getIndexOfId: (ctx: Ctx, id: string) => indexOfId(dom.getTagElements(ctx), id),
   isInputFocused: (ctx: Ctx) => dom.getDoc(ctx).activeElement === dom.getInputEl(ctx),
 
-  getFocusedTagValue: (ctx: Ctx) => {
-    if (!ctx.focusedId) return null
-    const idx = dom.getIndexOfId(ctx, ctx.focusedId)
-    if (idx === -1) return null
-    return dom.getTagElements(ctx)[idx].dataset.value ?? null
+  getHighlightedTagValue: (ctx: Ctx) => {
+    if (!ctx.highlightedTagId) return null
+    const tagEl = dom.getById(ctx, ctx.highlightedTagId)
+    return tagEl?.dataset.value ?? null
   },
   setHoverIntent: (el: Element) => {
-    const tag = el.closest<HTMLElement>("[data-part=tag]")
-    if (!tag) return
-    tag.dataset.deleteIntent = ""
+    const tagEl = el.closest<HTMLElement>("[data-part=tag]")
+    if (!tagEl) return
+    tagEl.dataset.deleteIntent = ""
   },
   clearHoverIntent: (el: Element) => {
-    const tag = el.closest<HTMLElement>("[data-part=tag]")
-    if (!tag) return
-    delete tag.dataset.deleteIntent
+    const tagEl = el.closest<HTMLElement>("[data-part=tag]")
+    if (!tagEl) return
+    delete tagEl.dataset.deleteIntent
   },
   dispatchInputEvent(ctx: Ctx) {
     const inputEl = dom.getHiddenInputEl(ctx)

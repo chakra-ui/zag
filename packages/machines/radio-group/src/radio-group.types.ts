@@ -1,6 +1,14 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+export interface ValueChangeDetails {
+  value: string
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 type ElementIds = Partial<{
   root: string
   label: string
@@ -11,40 +19,39 @@ type ElementIds = Partial<{
   radioHiddenInput(value: string): string
 }>
 
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    /**
-     * The ids of the elements in the radio. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * The value of the checked radio
-     */
-    value: string | null
+interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the elements in the radio. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * The value of the checked radio
+   */
+  value: string | null
 
-    /**
-     * The name of the input fields in the radio
-     * (Useful for form submission).
-     */
-    name?: string
-    /**
-     * The associate form of the underlying input.
-     */
-    form?: string
-    /**
-     * If `true`, the radio group will be disabled
-     */
-    disabled?: boolean
-    /**
-     * Function called once a radio is checked
-     * @param value the value of the checked radio
-     */
-    onChange?(details: { value: string }): void
-    /**
-     * Orientation of the radio group
-     */
-    orientation?: "horizontal" | "vertical"
-  }
+  /**
+   * The name of the input fields in the radio
+   * (Useful for form submission).
+   */
+  name?: string
+  /**
+   * The associate form of the underlying input.
+   */
+  form?: string
+  /**
+   * If `true`, the radio group will be disabled
+   */
+  disabled?: boolean
+  /**
+   * Function called once a radio is checked
+   * @param value the value of the checked radio
+   */
+  onValueChange?(details: ValueChangeDetails): void
+  /**
+   * Orientation of the radio group
+   */
+  orientation?: "horizontal" | "vertical"
+}
 
 type PrivateContext = Context<{
   /**
@@ -88,14 +95,15 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
   /**
+   * @computed
    * Whether the radio group is disabled
    */
   isDisabled: boolean
 }>
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle"
 }
 
@@ -103,19 +111,17 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type RadioProps = {
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface RadioProps {
   value: string
-  /**
-   * If `true`, the radio will be disabled
-   */
   disabled?: boolean
-  /**
-   * If `true`, the radio is marked as invalid.
-   */
   invalid?: boolean
 }
 
-export type RadioState = {
+export interface RadioState {
   isInteractive: boolean
   isInvalid: boolean
   isDisabled: boolean
@@ -125,7 +131,11 @@ export type RadioState = {
   isActive: boolean
 }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the radio group
    */

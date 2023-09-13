@@ -2,7 +2,7 @@ import { addDomEvent } from "@zag-js/dom-event"
 import { setVisuallyHidden } from "@zag-js/visually-hidden"
 import type { FocusContext } from "./focus-context"
 
-export type FocusContainmentOptions = {
+export interface FocusContainmentOptions {
   loop?: boolean
 }
 

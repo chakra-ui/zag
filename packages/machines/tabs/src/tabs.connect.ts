@@ -3,18 +3,26 @@ import { dataAttr, isSafari, isSelfEvent } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
 import { dom } from "./tabs.dom"
-import type { ContentProps, MachineApi, Send, State, TriggerProps } from "./tabs.types"
+import type { MachineApi, Send, State, TriggerProps } from "./tabs.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const translations = state.context.translations
   const isFocused = state.matches("focused")
+
+  function getTriggerState(props: TriggerProps) {
+    return {
+      isSelected: state.context.value === props.value,
+      isFocused: state.context.focusedValue === props.value,
+      isDisabled: !!props.disabled,
+    }
+  }
 
   return {
     value: state.context.value,
     focusedValue: state.context.focusedValue,
     previousValues: Array.from(state.context.previousValues),
 
-    setValue(value: string) {
+    setValue(value) {
       send({ type: "SET_VALUE", value })
     },
 
@@ -22,9 +30,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "CLEAR_VALUE" })
     },
 
-    setIndicatorRect(id: string | null | undefined) {
+    setIndicatorRect(value) {
+      const id = dom.getTriggerId(state.context, value)
       send({ type: "SET_INDICATOR_RECT", id })
     },
+
+    getTriggerState,
 
     rootProps: normalize.element({
       ...parts.root.attrs,
@@ -38,6 +49,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.list.attrs,
       id: dom.getTablistId(state.context),
       role: "tablist",
+      dir: state.context.dir,
       "data-focus": dataAttr(isFocused),
       "aria-orientation": state.context.orientation,
       "data-orientation": state.context.orientation,
@@ -79,25 +91,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getTriggerProps(props: TriggerProps) {
+    getTriggerProps(props) {
       const { value, disabled } = props
-      const selected = state.context.value === value
+      const triggerState = getTriggerState(props)
 
       return normalize.button({
         ...parts.trigger.attrs,
         role: "tab",
         type: "button",
         disabled,
+        dir: state.context.dir,
         "data-orientation": state.context.orientation,
         "data-disabled": dataAttr(disabled),
         "aria-disabled": disabled,
         "data-value": value,
-        "aria-selected": selected,
-        "data-selected": dataAttr(selected),
+        "aria-selected": triggerState.isSelected,
+        "data-selected": dataAttr(triggerState.isSelected),
+        "data-focus": dataAttr(triggerState.isFocused),
         "aria-controls": dom.getContentId(state.context, value),
         "data-ownedby": dom.getTablistId(state.context),
         id: dom.getTriggerId(state.context, value),
-        tabIndex: selected ? 0 : -1,
+        tabIndex: triggerState.isSelected ? 0 : -1,
         onFocus() {
           send({ type: "TAB_FOCUS", value })
         },
@@ -117,16 +131,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getContentProps({ value }: ContentProps) {
+    getContentProps(props) {
+      const { value } = props
       const selected = state.context.value === value
       return normalize.element({
         ...parts.content.attrs,
+        dir: state.context.dir,
         id: dom.getContentId(state.context, value),
         tabIndex: 0,
         "aria-labelledby": dom.getTriggerId(state.context, value),
         role: "tabpanel",
         "data-ownedby": dom.getTablistId(state.context),
         "data-selected": dataAttr(selected),
+        "data-orientation": state.context.orientation,
         hidden: !selected,
       })
     },

@@ -14,7 +14,7 @@ export default function Page() {
     pagination.machine({
       id: useId(),
       count: paginationData.length,
-      onChange: console.log,
+      onPageChange: console.log,
     }),
     {
       context: controls.context,

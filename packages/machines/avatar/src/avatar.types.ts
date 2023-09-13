@@ -1,9 +1,23 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, PropTypes, RequiredBy } from "@zag-js/types"
 
-type PublicContext = CommonProperties & {
-  onLoad?: () => void
-  onError?: () => void
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface StatusChangeDetails {
+  status: "loaded" | "error"
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+interface PublicContext extends CommonProperties {
+  /**
+   * Functional called when the image loading status changes.
+   */
+  onLoadingStatusChange?: (details: StatusChangeDetails) => void
 }
 
 type PrivateContext = Context<{}>
@@ -12,9 +26,9 @@ type ComputedContext = Readonly<{}>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "loading" | "error" | "loaded"
 }
 
@@ -22,7 +36,11 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the image is loaded.
    */
@@ -43,6 +61,7 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
    * Function to set error state.
    */
   setError(): void
+
   rootProps: T["element"]
   imageProps: T["img"]
   fallbackProps: T["element"]

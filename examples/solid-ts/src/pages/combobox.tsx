@@ -28,10 +28,11 @@ export default function Page() {
     combobox.machine({
       id: createUniqueId(),
       collection: collection(),
-      onOpen() {
+      onOpenChange(details) {
+        if (!details.open) return
         setOptions(comboboxData)
       },
-      onInputChange({ value }) {
+      onInputValueChange({ value }) {
         const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
         setOptions(filtered.length > 0 ? filtered : comboboxData)
       },

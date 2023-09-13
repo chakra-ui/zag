@@ -19,12 +19,12 @@ function getDescription(property: Symbol, typeChecker?: TypeChecker) {
   return description?.text
 }
 
-function getContextReturnType(sourceFile: SourceFile | undefined, typeAlias: string, typeChecker?: TypeChecker) {
+function getContextReturnType(sourceFile: SourceFile | undefined, typeName: string, typeChecker?: TypeChecker) {
   if (!sourceFile) return {}
 
   const result: Record<string, { type: string; description: string; defaultValue: string | null }> = {}
 
-  const contextType = sourceFile.getTypeAlias(typeAlias)?.getType()
+  const contextType = sourceFile.getInterface(typeName)?.getType()
 
   contextType?.getProperties().forEach((property) => {
     const name = property.getName()
@@ -44,7 +44,7 @@ function getContextReturnType(sourceFile: SourceFile | undefined, typeAlias: str
 async function main() {
   const project = new Project({
     compilerOptions: {
-      moduleResolution: ModuleResolutionKind.NodeJs,
+      moduleResolution: ModuleResolutionKind.NodeNext,
     },
   })
 
@@ -64,10 +64,14 @@ async function main() {
 
     const contextSrc = project.getSourceFile(typesFilePath)
 
-    const publicContext = getContextReturnType(contextSrc, "PublicContext", typeChecker)
-    const publicApi = getContextReturnType(contextSrc, "MachineApi", typeChecker)
+    try {
+      const publicContext = getContextReturnType(contextSrc, "PublicContext", typeChecker)
+      const publicApi = getContextReturnType(contextSrc, "MachineApi", typeChecker)
 
-    result[baseDir] = { api: publicApi, context: publicContext }
+      result[baseDir] = { api: publicApi, context: publicContext }
+    } catch (error) {
+      console.error("failed --------->", dir)
+    }
   }
 
   const outPath = join(process.cwd(), "packages", "docs", "api.json")

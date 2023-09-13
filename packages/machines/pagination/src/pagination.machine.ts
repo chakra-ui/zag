@@ -112,6 +112,6 @@ const set = {
   page: (ctx: MachineContext, value: number) => {
     if (isEqual(ctx.page, value)) return
     ctx.page = value
-    ctx.onChange?.({ page: ctx.page, pageSize: ctx.pageSize })
+    ctx.onPageChange?.({ page: ctx.page, pageSize: ctx.pageSize })
   },
 }

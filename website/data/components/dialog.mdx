@@ -104,6 +104,21 @@ const [state, send] = useMachine(
 )
 ```
 
+## Listening for open state changes
+
+When the dialog is opened or closed, the `onOpenChange` callback is invoked.
+
+```jsx {3-8}
+const [state, send] = useMachine(
+  dialog.machine({
+    onOpenChange(details) {
+      // details => { open: boolean }
+      console.log("open:", details.open)
+    },
+  }),
+)
+```
+
 ## Controlling the scroll behavior
 
 When the dialog is open, it prevents scrolling on the `body` element. To disable
@@ -117,7 +132,7 @@ const [state, send] = useMachine(
 )
 ```
 
-## Creating an Alert dialog
+## Creating an alert dialog
 
 The dialog has support for dialog and alert dialog roles. It's set to `dialog`
 by default. To change it's role, pass the `role: alertdialog` property to the

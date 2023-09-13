@@ -1,7 +1,25 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
-type PublicContext = CommonProperties & {
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface RejectedFile {
+  file: File
+  errors: (string | null)[]
+}
+
+export interface FileChangeDetails {
+  acceptedFiles: File[]
+  rejectedFiles: RejectedFile[]
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+interface PublicContext extends CommonProperties {
   /**
    * The name of the underlying file input
    */
@@ -41,40 +59,40 @@ type PublicContext = CommonProperties & {
   /**
    * Function called when the value changes
    */
-  onChange?: (details: ChangeDetails) => void
+  onFilesChange?: (details: FileChangeDetails) => void
 }
 
-export type RejectedFile = {
-  file: File
-  errors: (string | null)[]
-}
-
-type ChangeDetails = {
-  acceptedFiles: File[]
-  rejectedFiles: RejectedFile[]
-}
-
-type PrivateContext = {
+interface PrivateContext {
   /**
+   * @internal
    * Whether the files includes any rejection
    */
   invalid: boolean
   /**
+   * @internal
    * The rejected files
    */
   rejectedFiles: RejectedFile[]
 }
 
 type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * The accept attribute as a string
+   */
   acceptAttr: string | undefined
+  /**
+   * @computed
+   * Whether the file can select multiple files
+   */
   multiple: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "focused" | "open" | "dragging"
 }
 
@@ -82,7 +100,11 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type MachineApi<T extends PropTypes> = {
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface MachineApi<T extends PropTypes> {
   /**
    * Whether the user is dragging something over the root element
    */
@@ -106,11 +128,12 @@ export type MachineApi<T extends PropTypes> = {
   /**
    * Function to set the value
    */
-  setValue(files: File[]): void
+  setFiles(files: File[]): void
   /**
    * Function to clear the value
    */
-  clearValue(): void
+  clearFiles(): void
+
   rootProps: T["element"]
   dropzoneProps: T["element"]
   triggerProps: T["button"]

@@ -17,6 +17,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isEditingTag = state.matches("editing:tag")
   const isEmpty = state.context.count === 0
 
+  function getTagState(options: TagProps) {
+    const id = dom.getTagId(state.context, options)
+    return {
+      id,
+      isEditing: isEditingTag && state.context.editedTagId === id,
+      isHighlighted: id === state.context.highlightedTagId,
+      isDisabled: options.disabled || isDisabled,
+    }
+  }
+
   return {
     isEmpty,
     inputValue: state.context.trimmedInputValue,
@@ -56,6 +66,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     focus() {
       dom.getInputEl(state.context)?.focus()
     },
+
+    getTagState,
 
     rootProps: normalize.element({
       dir: state.context.dir,
@@ -140,7 +152,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send("ARROW_LEFT")
           },
           ArrowRight() {
-            if (state.context.focusedId) {
+            if (state.context.highlightedTagId) {
               event.preventDefault()
             }
             if (isCombobox && isExpanded) return
@@ -181,46 +193,44 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultValue: state.context.valueAsString,
     }),
 
-    getTagProps(options: TagProps) {
-      const { value } = options
-      const id = dom.getTagId(state.context, options)
+    getTagProps(props) {
+      const tagState = getTagState(props)
       return normalize.element({
         ...parts.tag.attrs,
-        id,
-        hidden: isEditingTag ? state.context.editedTagId === id : false,
-        "data-value": value,
+        id: tagState.id,
+        hidden: tagState.isEditing,
+        "data-value": props.value,
         "data-disabled": dataAttr(isDisabled),
-        "data-highlighted": dataAttr(id === state.context.focusedId),
+        "data-highlighted": dataAttr(tagState.isHighlighted),
         onPointerDown(event) {
-          if (!isInteractive) return
+          if (!isInteractive || tagState.isDisabled) return
           event.preventDefault()
-          send({ type: "POINTER_DOWN_TAG", id })
+          send({ type: "POINTER_DOWN_TAG", id: tagState.id })
         },
         onDoubleClick() {
-          if (!isInteractive) return
-          send({ type: "DOUBLE_CLICK_TAG", id })
+          if (!isInteractive || tagState.isDisabled) return
+          send({ type: "DOUBLE_CLICK_TAG", id: tagState.id })
         },
       })
     },
 
-    getTagInputProps(options: TagProps) {
-      const id = dom.getTagId(state.context, options)
-      const active = state.context.editedTagId === id
+    getTagInputProps(props) {
+      const tagState = getTagState(props)
+
       return normalize.input({
         ...parts.tagInput.attrs,
-        "aria-label": translations.tagEdited(options.value),
+        "aria-label": translations.tagEdited(props.value),
         "aria-hidden": true,
         disabled: isDisabled,
-        id: dom.getTagInputId(state.context, options),
-        type: "text",
+        id: dom.getTagInputId(state.context, props),
         tabIndex: -1,
-        hidden: isEditingTag ? !active : true,
-        defaultValue: active ? state.context.editedTagValue : "",
+        hidden: !tagState.isEditing,
+        defaultValue: tagState.isEditing ? state.context.editedTagValue : "",
         onChange(event) {
           send({ type: "TAG_INPUT_TYPE", value: event.target.value })
         },
         onBlur(event) {
-          send({ type: "TAG_INPUT_BLUR", target: event.relatedTarget, id })
+          send({ type: "TAG_INPUT_BLUR", target: event.relatedTarget, id: tagState.id })
         },
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
@@ -242,14 +252,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getTagDeleteTriggerProps(options: TagProps) {
-      const id = dom.getTagId(state.context, options)
+    getTagDeleteTriggerProps(props) {
+      const id = dom.getTagId(state.context, props)
       return normalize.button({
         ...parts.tagDeleteTrigger.attrs,
-        id: dom.getTagDeleteTriggerId(state.context, options),
+        id: dom.getTagDeleteTriggerId(state.context, props),
         type: "button",
         disabled: isDisabled,
-        "aria-label": translations.deleteTagTriggerLabel(options.value),
+        "aria-label": translations.deleteTagTriggerLabel(props.value),
         tabIndex: -1,
         onPointerDown(event) {
           if (!isInteractive) {

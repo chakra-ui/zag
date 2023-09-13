@@ -64,20 +64,16 @@ avatar machine in your project 🔥
 
 <CodeSnippet id="avatar/usage.mdx" />
 
-## Listening to loading status changes
+## Listening for loading status changes
 
-The avatar machine provides a `onLoad` and `onError` event that you can listen
-to. This is useful when you want to perform an action when the image loads or
-fails to load.
+When the image has loaded or failed to load, the `onLoadingStatusChange`
+callback is invoked.
 
 ```jsx {3}
 const [state, send] = useMachine(
   avatar.machine({
-    onLoad() {
-      // Do something when the image loads
-    },
-    onError() {
-      // Do something when the image fails to load
+    onLoadingStatusChange(details) {
+      // details => { status: "error" | "loaded" }
     },
   }),
 )

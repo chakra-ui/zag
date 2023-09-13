@@ -52,7 +52,7 @@ export function useSearch(): UseSearchReturn {
       inputBehavior: "autohighlight",
       selectionBehavior: "clear",
       collection,
-      onChange({ items }) {
+      onValueChange({ items }) {
         const [item] = items as SearchMetaItem[]
         if (!item) return
         try {
@@ -63,7 +63,7 @@ export function useSearch(): UseSearchReturn {
         }
         dialog_api.close()
       },
-      onInputChange({ value }) {
+      onInputValueChange({ value }) {
         if (value.length < 3) return
         const results = matchSorter(searchData, value, {
           keys: [

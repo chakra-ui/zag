@@ -18,10 +18,11 @@ const [state, send] = useMachine(
   combobox.machine({
     id: "1",
     collection: collectionRef.value,
-    onOpen() {
+    onOpenChange(details) {
+      if (!details.open) return
       options.value = comboboxData
     },
-    onInputChange({ value }) {
+    onInputValueChange({ value }) {
       const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
       options.value = filtered.length > 0 ? filtered : comboboxData
     },

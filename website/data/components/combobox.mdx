@@ -202,13 +202,13 @@ const [state, send] = useMachine(
 ## Listening for highlight changes
 
 When an option is highlighted with the pointer or keyboard, use the
-`onHighlight` property to listen for this change and do something with it.
+`onHighlightChange` property to listen for this change and do something with it.
 
 ```jsx {4-7}
 const [state, send] = useMachine(
   combobox.machine({
     id: useId(),
-    onHighlight(details) {
+    onHighlightChange(details) {
       // details => { value: string | null; item: CollectionItem | null }
       console.log(details)
     },
@@ -216,15 +216,15 @@ const [state, send] = useMachine(
 )
 ```
 
-## Listening for selection changes
+## Listening for value changes
 
-When an item is selected, use `onChange` property to listen for this change and
-do something with it.
+When an item is selected, use `onValueChange` property to listen for this change
+and do something with it.
 
 ```jsx {3-6}
 const [state, send] = useMachine(
   combobox.machine({
-    onSelect(details) {
+    onValueChange(details) {
       // details => { value: string[]; items: CollectionItem[] }
       console.log(details)
     },

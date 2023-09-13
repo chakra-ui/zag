@@ -11,13 +11,38 @@ import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
-import type { matchView } from "./date-picker.utils"
 
-type ChangeDetails<T = {}> = T & {
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export type DateView = "day" | "month" | "year"
+
+export interface ValueChangeDetails {
   value: DateValue[]
+  view: DateView
 }
 
-type IntlMessages = {
+export interface FocusChangeDetails extends ValueChangeDetails {
+  focusedValue: DateValue
+  view: DateView
+}
+
+export interface ViewChangeDetails {
+  view: DateView
+}
+
+export interface OpenChangeDetails {
+  open: boolean
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+export type SelectionMode = "single" | "multiple" | "range"
+
+interface IntlMessages {
   placeholder: (locale: string) => { year: string; month: string; day: string }
 }
 
@@ -38,165 +63,154 @@ type ElementIds = Partial<{
   positioner: string
 }>
 
-export type SelectionMode = "single" | "multiple" | "range"
-
-export type Offset = {
-  amount: number
-  visibleRange: { start: DateValue; end: DateValue }
-}
-
-export type DayCellProps = {
-  value: DateValue
+interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The localized messages to use.
+   */
+  messages?: IntlMessages
+  /**
+   * The ids of the elements in the date picker. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * The `name` attribute of the input element.
+   */
+  name?: string
+  /**
+   * The locale (BCP 47 language tag) to use when formatting the date.
+   */
+  locale: string
+  /**
+   * The time zone to use
+   */
+  timeZone: string
+  /**
+   * Whether the calendar is disabled.
+   */
   disabled?: boolean
-  offset?: Offset
-}
-
-export type MachineState = {
-  tags: "open" | "closed"
-  value: "idle" | "focused" | "open"
-}
-
-export type GridProps = {
-  view?: DateView
-  columns?: number
-  id?: string
-}
-
-export type CellProps = {
-  disabled?: boolean
-  value: number
-}
-
-type PublicContext = DirectionProperty &
-  CommonProperties & {
-    /**
-     * The localized messages to use.
-     */
-    messages?: IntlMessages
-    /**
-     * The ids of the elements in the date picker. Useful for composition.
-     */
-    ids?: ElementIds
-    /**
-     * The `name` attribute of the input element.
-     */
-    name?: string
-    /**
-     * The locale (BCP 47 language tag) to use when formatting the date.
-     */
-    locale: string
-    /**
-     * The time zone to use
-     */
-    timeZone: string
-    /**
-     * Whether the calendar is disabled.
-     */
-    disabled?: boolean
-    /**
-     * Whether the calendar is read-only.
-     */
-    readOnly?: boolean
-    /**
-     * The minimum date that can be selected.
-     */
-    min?: DateValue
-    /**
-     * The maximum date that can be selected.
-     */
-    max?: DateValue
-    /**
-     * Whether the calendar should be displayed inline.
-     */
-    inline?: boolean
-    /**
-     * The selected date(s).
-     */
-    value: DateValue[]
-    /**
-     * The focused date.
-     */
-    focusedValue: DateValue
-    /**
-     * The number of months to display.
-     */
-    numOfMonths: number
-    /**
-     * The first day of the week.
-     *  `0` - Sunday
-     *  `1` - Monday
-     *  `2` - Tuesday
-     *  `3` - Wednesday
-     *  `4` - Thursday
-     *  `5` - Friday
-     *  `6` - Saturday
-     */
-    startOfWeek?: number
-    /**
-     * Whether the calendar should have a fixed number of weeks.
-     * This renders the calendar with 6 weeks instead of 5 or 6.
-     */
-    fixedWeeks?: boolean
-    /**
-     * Function called when the value changes.
-     */
-    onChange?: (details: ChangeDetails) => void
-    /**
-     * Function called when the focused date changes.
-     */
-    onFocusChange?: (details: ChangeDetails<{ focusedValue: DateValue; view: DateView }>) => void
-    /**
-     * Function called when the view changes.
-     */
-    onViewChange?: (details: { view: DateView }) => void
-    /**
-     * Returns whether a date of the calendar is available.
-     */
-    isDateUnavailable?: (date: DateValue, locale: string) => boolean
-    /**
-     * The selection mode of the calendar.
-     * - `single` - only one date can be selected
-     * - `multiple` - multiple dates can be selected
-     * - `range` - a range of dates can be selected
-     */
-    selectionMode: SelectionMode
-    /**
-     * The format of the date to display in the input.
-     */
-    format?: (date: DateValue[]) => string
-    /**
-     * The format of the date to display in the input.
-     */
-    parse?: (value: string) => DateValue[]
-    /**
-     * The view of the calendar
-     * @default "day"
-     */
-    view: DateView
-    /**
-     * Whether the calendar should be modal. This means that the calendar will
-     * block interaction with the rest of the page, and trap focus within it.
-     */
-    modal?: boolean
-    /**
-     * The user provided options used to position the date picker content
-     */
-    positioning: PositioningOptions
-  }
-
-export type DateView = "day" | "month" | "year"
-
-export type ViewProps = {
-  view?: DateView
+  /**
+   * Whether the calendar is read-only.
+   */
+  readOnly?: boolean
+  /**
+   * The minimum date that can be selected.
+   */
+  min?: DateValue
+  /**
+   * The maximum date that can be selected.
+   */
+  max?: DateValue
+  /**
+   * Whether the calendar should be displayed inline.
+   */
+  inline?: boolean
+  /**
+   * The selected date(s).
+   */
+  value: DateValue[]
+  /**
+   * The focused date.
+   */
+  focusedValue: DateValue
+  /**
+   * The number of months to display.
+   */
+  numOfMonths: number
+  /**
+   * The first day of the week.
+   *  `0` - Sunday
+   *  `1` - Monday
+   *  `2` - Tuesday
+   *  `3` - Wednesday
+   *  `4` - Thursday
+   *  `5` - Friday
+   *  `6` - Saturday
+   */
+  startOfWeek?: number
+  /**
+   * Whether the calendar should have a fixed number of weeks.
+   * This renders the calendar with 6 weeks instead of 5 or 6.
+   */
+  fixedWeeks?: boolean
+  /**
+   * Function called when the value changes.
+   */
+  onValueChange?: (details: ValueChangeDetails) => void
+  /**
+   * Function called when the focused date changes.
+   */
+  onFocusChange?: (details: FocusChangeDetails) => void
+  /**
+   * Function called when the view changes.
+   */
+  onViewChange?: (details: ViewChangeDetails) => void
+  /**
+   * Function called when the calendar opens or closes.
+   */
+  onOpenChange?: (details: OpenChangeDetails) => void
+  /**
+   * Returns whether a date of the calendar is available.
+   */
+  isDateUnavailable?: (date: DateValue, locale: string) => boolean
+  /**
+   * The selection mode of the calendar.
+   * - `single` - only one date can be selected
+   * - `multiple` - multiple dates can be selected
+   * - `range` - a range of dates can be selected
+   */
+  selectionMode: SelectionMode
+  /**
+   * The format of the date to display in the input.
+   */
+  format?: (date: DateValue[]) => string
+  /**
+   * The format of the date to display in the input.
+   */
+  parse?: (value: string) => DateValue[]
+  /**
+   * The view of the calendar
+   * @default "day"
+   */
+  view: DateView
+  /**
+   * Whether the calendar should be modal. This means that the calendar will
+   * block interaction with the rest of the page, and trap focus within it.
+   */
+  modal?: boolean
+  /**
+   * The user provided options used to position the date picker content
+   */
+  positioning: PositioningOptions
 }
 
 type PrivateContext = Context<{
+  /**
+   * @internal
+   * The start date of the current visible duration.
+   */
   startValue: DateValue
+  /**
+   * @internal
+   * Whether the calendar has focus
+   */
   hasFocus?: boolean
+  /**
+   * @internal
+   * The live region to announce changes
+   */
   announcer?: LiveRegion
+  /**
+   * @internal
+   * The input element's value
+   */
   inputValue: string
+  /**
+   * @internal
+   * The current hovered date. Useful for range selection mode.
+   */
   hoveredValue: DateValue | null
   /**
+   * @internal
    * The index of the currently active date.
    * Used in range selection mode.
    */
@@ -253,15 +267,91 @@ type ComputedContext = Readonly<{
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
+
+export interface MachineState {
+  tags: "open" | "closed"
+  value: "idle" | "focused" | "open"
+}
 
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type { Calendar, CalendarDate, CalendarDateTime, DateDuration, DateFormatter, DateValue, ZonedDateTime }
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface Offset {
+  amount: number
+  visibleRange: { start: DateValue; end: DateValue }
+}
+
+export interface CellProps {
+  disabled?: boolean
+  value: number
+}
+
+export interface CellState {
+  isFocused: boolean
+  isSelectable: boolean
+  isSelected: boolean
+  valueText: string
+  readonly isDisabled: boolean
+}
+
+export interface DayCellProps {
+  value: DateValue
+  disabled?: boolean
+  offset?: Offset
+}
+
+export interface DayCellState {
+  isInvalid: boolean
+  isDisabled: boolean
+  isSelected: boolean
+  isUnavailable: boolean
+  isOutsideRange: boolean
+  isInRange: boolean
+  isFirstInRange: boolean
+  isLastInRange: boolean
+  isToday: boolean
+  isWeekend: boolean
+  formattedDate: string
+  readonly isFocused: boolean
+  readonly ariaLabel: string
+  readonly isSelectable: boolean
+}
+
+export interface GridProps {
+  view?: DateView
+  columns?: number
+  id?: string
+}
+
+export interface ViewProps {
+  view?: DateView
+}
+
+export interface MonthGridProps {
+  columns?: number
+  format?: "short" | "long"
+}
+
+interface GridItem {
+  label: string
+  value: number
+}
+
+export type MonthGridValue = GridItem[][]
+
+export interface YearGridProps {
+  columns?: number
+}
+
+export type YearGridValue = GridItem[][]
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the input is focused
    */
@@ -274,10 +364,6 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
    * The current view of the date picker
    */
   view: DateView
-  /**
-   * Matcher for the current view of the date picker
-   */
-  matchView: typeof matchView
   /**
    * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
    */
@@ -388,18 +474,12 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Returns the months of the year
    */
-  getYears(): {
-    label: string
-    value: number
-  }[]
+  getYears(): GridItem[]
   /**
    * Returns the years of the decade based on the columns.
    * Represented as an array of arrays of years.
    */
-  getYearsGrid(props?: { columns?: number }): {
-    label: string
-    value: number
-  }[][]
+  getYearsGrid(props?: YearGridProps): YearGridValue
   /**
    * Returns the start and end years of the decade.
    */
@@ -410,18 +490,12 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   /**
    * Returns the months of the year
    */
-  getMonths(props?: { format?: "short" | "long" }): {
-    label: string
-    value: number
-  }[]
+  getMonths(props?: { format?: "short" | "long" }): GridItem[]
   /**
    * Returns the months of the year based on the columns.
    * Represented as an array of arrays of months.
    */
-  getMonthsGrid(props?: { columns?: number; format?: "short" | "long" }): {
-    label: string
-    value: number
-  }[][]
+  getMonthsGrid(props?: MonthGridProps): MonthGridValue
   /**
    * Formats the given date value based on the provided options.
    */
@@ -438,48 +512,24 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
    * Goes to the previous month/year/decade.
    */
   goToPrev(): void
-  controlProps: T["element"]
-  contentProps: T["element"]
-  positionerProps: T["element"]
-
-  getGridProps(props?: GridProps): T["element"]
   /**
    * Returns the state details for a given cell.
    */
-  getDayCellState(props: DayCellProps): {
-    isInvalid: boolean
-    isDisabled: boolean
-    isSelected: boolean
-    isUnavailable: boolean
-    isOutsideRange: boolean
-    isInRange: boolean
-    isFirstInRange: boolean
-    isLastInRange: boolean
-    isToday: boolean
-    isWeekend: boolean
-    formattedDate: string
-    readonly isFocused: boolean
-    readonly ariaLabel: string
-    readonly isSelectable: boolean
-  }
+  getDayCellState(props: DayCellProps): DayCellState
+  /**
+   * Returns the state details for a given month cell.
+   */
+  getMonthCellState(props: CellProps): CellState
+
+  controlProps: T["element"]
+  contentProps: T["element"]
+  positionerProps: T["element"]
+  getGridProps(props?: GridProps): T["element"]
   getDayCellProps(props: DayCellProps): T["element"]
   getDayCellTriggerProps(props: DayCellProps): T["element"]
-  getMonthCellState(props: CellProps): {
-    isFocused: boolean
-    isSelectable: boolean
-    isSelected: boolean
-    valueText: string
-    readonly isDisabled: boolean
-  }
   getMonthCellProps(props: CellProps): T["element"]
   getMonthCellTriggerProps(props: CellProps): T["element"]
-  getYearCellState(props: CellProps): {
-    isFocused: boolean
-    isSelectable: boolean
-    isSelected: boolean
-    valueText: string
-    readonly isDisabled: boolean
-  }
+  getYearCellState(props: CellProps): CellState
   getYearCellProps(props: CellProps): T["element"]
   getYearCellTriggerProps(props: CellProps): T["element"]
   getNextTriggerProps(props?: ViewProps): T["button"]
@@ -492,3 +542,9 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   monthSelectProps: T["select"]
   yearSelectProps: T["select"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { Calendar, CalendarDate, CalendarDateTime, DateDuration, DateFormatter, DateValue, ZonedDateTime }
