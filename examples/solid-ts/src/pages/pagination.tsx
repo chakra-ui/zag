@@ -23,7 +23,7 @@ export default function Page() {
 
   const api = createMemo(() => pagination.connect(state, send, normalizeProps))
 
-  const data = api().slice(paginationData)
+  const data = () => api().slice(paginationData)
 
   return (
     <>
@@ -39,7 +39,7 @@ export default function Page() {
             </tr>
           </thead>
           <tbody>
-            <For each={data}>
+            <For each={data()}>
               {(item) => (
                 <tr>
                   <td>{item.id}</td>
