@@ -1,9 +1,9 @@
-export type CollectionSearchState = {
+export interface CollectionSearchState {
   keysSoFar: string
   timer: number
 }
 
-export type CollectionSearchOptions = {
+export interface CollectionSearchOptions {
   state: CollectionSearchState
   currentValue: string | null
   timeout?: number
@@ -11,7 +11,7 @@ export type CollectionSearchOptions = {
 
 export type CollectionItem = any
 
-export type CollectionNode<T extends CollectionItem = CollectionItem> = {
+export interface CollectionNode<T extends CollectionItem = CollectionItem> {
   item: T
   index: number
   label: string
@@ -20,7 +20,7 @@ export type CollectionNode<T extends CollectionItem = CollectionItem> = {
   nextValue: string | null
 }
 
-export type CollectionOptions<T extends CollectionItem = CollectionItem> = {
+export interface CollectionOptions<T extends CollectionItem = CollectionItem> {
   /**
    * The options of the select
    */

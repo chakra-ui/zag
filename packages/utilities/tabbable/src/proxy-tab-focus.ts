@@ -4,7 +4,7 @@ import { getNextTabbable, getTabbableEdges } from "./tabbable"
 type MaybeElement = HTMLElement | null
 type NodeOrFn = MaybeElement | (() => MaybeElement)
 
-type ProxyTabFocusOptions<T = MaybeElement> = {
+interface ProxyTabFocusOptions<T = MaybeElement> {
   triggerElement?: T
   onFocus?: (elementToFocus: HTMLElement) => void
   defer?: boolean

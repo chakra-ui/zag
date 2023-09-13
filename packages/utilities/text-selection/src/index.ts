@@ -6,7 +6,7 @@ let state: State = "default"
 let userSelect = ""
 const elementMap = new WeakMap<HTMLElement, string>()
 
-export type DisableTextSelectionOptions<T = MaybeElement> = {
+export interface DisableTextSelectionOptions<T = MaybeElement> {
   target?: T
   doc?: Document
   defer?: boolean

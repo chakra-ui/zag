@@ -1,13 +1,13 @@
 type Fn = (rect: Rect) => void
 
-type Rect = {
+interface Rect {
   top: number
   left: number
   width: number
   height: number
 }
 
-type ObservedData = {
+interface ObservedData {
   rect: Rect
   callbacks: Fn[]
 }

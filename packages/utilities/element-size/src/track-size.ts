@@ -1,4 +1,4 @@
-export type ElementSize = {
+export interface ElementSize {
   width: number
   height: number
 }

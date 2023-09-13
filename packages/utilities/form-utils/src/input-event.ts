@@ -1,4 +1,4 @@
-type DescriptorOptions = {
+interface DescriptorOptions {
   type?: "HTMLInputElement" | "HTMLTextAreaElement" | "HTMLSelectElement"
   property?: "value" | "checked"
 }

@@ -4,18 +4,27 @@ import { isFocusable } from "@zag-js/tabbable"
 import { callAll } from "@zag-js/utils"
 import { getWindowFrames } from "./get-window-frames"
 
-export type InteractOutsideHandlers = {
+export interface InteractOutsideHandlers {
+  /**
+   * Function called when the pointer is pressed down outside the combobox
+   */
   onPointerDownOutside?: (event: PointerDownOutsideEvent) => void
+  /**
+   * Function called when the focus is moved outside the combobox
+   */
   onFocusOutside?: (event: FocusOutsideEvent) => void
+  /**
+   * Function called when an interaction happens outside the combobox
+   */
   onInteractOutside?: (event: InteractOutsideEvent) => void
 }
 
-export type InteractOutsideOptions = InteractOutsideHandlers & {
+export interface InteractOutsideOptions extends InteractOutsideHandlers {
   exclude?: (target: HTMLElement) => boolean
   defer?: boolean
 }
 
-export type EventDetails<T> = {
+export interface EventDetails<T> {
   originalEvent: T
   contextmenu: boolean
   focusable: boolean

@@ -3,7 +3,7 @@ import type { AutoUpdateOptions } from "./auto-update"
 
 export type { Placement, Boundary, ComputePositionReturn, AutoUpdateOptions }
 
-export type PositioningOptions = {
+export interface PositioningOptions {
   /**
    * The strategy to use for positioning
    */

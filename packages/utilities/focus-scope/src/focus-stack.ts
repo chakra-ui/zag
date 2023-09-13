@@ -1,6 +1,6 @@
 import { remove } from "@zag-js/utils"
 
-export type Scope = {
+export interface Scope {
   node: HTMLElement
   paused: boolean
   pause(): void

@@ -1,6 +1,6 @@
 import { setVisuallyHidden } from "@zag-js/visually-hidden"
 
-export type LiveRegionOptions = {
+export interface LiveRegionOptions {
   level: "polite" | "assertive"
   document?: Document
   root?: HTMLElement | null

@@ -14,6 +14,9 @@ export interface StatusChangeDetails {
  * -----------------------------------------------------------------------------*/
 
 interface PublicContext extends CommonProperties {
+  /**
+   * Functional called when the image loading status changes.
+   */
   onLoadingStatusChange?: (details: StatusChangeDetails) => void
 }
 
