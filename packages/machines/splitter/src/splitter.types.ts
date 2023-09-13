@@ -1,6 +1,10 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
 export type PanelId = string | number
 
 interface PanelSizeData {
@@ -14,6 +18,10 @@ interface SizeChangeDetails {
   size: PanelSizeData[]
   activeHandleId: string | null
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 type ElementIds = Partial<{
   root: string
@@ -75,7 +83,7 @@ type PrivateContext = Context<{
   initialSize: Array<Required<Pick<PanelSizeData, "id" | "size">>>
 }>
 
-export type MachineContext = PublicContext & ComputedContext & PrivateContext
+export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
 
 export interface MachineState {
   value: "idle" | "hover:temp" | "hover" | "dragging" | "focused"
@@ -85,6 +93,10 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface PanelProps {
   id: PanelId

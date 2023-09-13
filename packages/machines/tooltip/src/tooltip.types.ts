@@ -2,16 +2,24 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, PropTypes, RequiredBy, RootProperties } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+interface OpenChangeDetails {
+  open: boolean
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 type ElementIds = Partial<{
   trigger: string
   content: string
   arrow: string
   positioner: string
 }>
-
-interface OpenChangeDetails {
-  open: boolean
-}
 
 interface PublicContext extends CommonProperties {
   /**
@@ -99,7 +107,9 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type { Placement, PositioningOptions }
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
@@ -125,3 +135,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   positionerProps: T["element"]
   contentProps: T["element"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { Placement, PositioningOptions }

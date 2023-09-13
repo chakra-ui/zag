@@ -1,9 +1,31 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
-import type { InteractOutsideEvent, InteractOutsideHandlers } from "@zag-js/interact-outside"
+import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 
-type IntlTranslations = {
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface ValueChangeDetails {
+  values: string[]
+}
+
+export interface HighlightChangeDetails {
+  value: string | null
+}
+
+export type ValidityState = "rangeOverflow" | "invalidTag"
+
+export interface ValidityChangeDetails {
+  reason: ValidityState
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+interface IntlTranslations {
   clearTriggerLabel: string
   deleteTagTriggerLabel(value: string): string
   tagSelected(value: string): string
@@ -32,18 +54,6 @@ type ElementIds = Partial<{
   tagDeleteTrigger(opts: TagProps): string
   tagInput(opts: TagProps): string
 }>
-
-export interface ValueChangeDetails {
-  values: string[]
-}
-
-export interface HighlightChangeDetails {
-  value: string | null
-}
-
-export interface ValidityChangeDetails {
-  reason: ValidityState
-}
 
 interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
@@ -233,7 +243,9 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type ValidityState = "rangeOverflow" | "invalidTag"
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface TagProps {
   index: string | number
@@ -247,8 +259,6 @@ export interface TagState {
   isHighlighted: boolean
   isDisabled: boolean
 }
-
-export type { InteractOutsideEvent }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
