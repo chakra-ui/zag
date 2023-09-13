@@ -107,6 +107,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "slider",
       tabIndex: isDisabled ? undefined : 0,
       onPointerDown(event) {
+        if (!isInteractive) return
         send({ type: "THUMB_POINTER_DOWN" })
         event.stopPropagation()
       },
