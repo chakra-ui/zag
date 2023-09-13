@@ -440,7 +440,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         addTag(ctx, evt) {
           const value = evt.value ?? ctx.trimmedInputValue
-          const guard = ctx.validate?.({ inputValue: value, values: ctx.value })
+          const guard = ctx.validate?.({ inputValue: value, value: Array.from(ctx.value) })
           if (guard) {
             set.value(ctx, ctx.value.concat(value))
             // log
@@ -453,7 +453,7 @@ export function machine(userContext: UserDefinedContext) {
         addTagFromPaste(ctx) {
           raf(() => {
             const value = ctx.trimmedInputValue
-            const guard = ctx.validate?.({ inputValue: value, values: ctx.value })
+            const guard = ctx.validate?.({ inputValue: value, value: Array.from(ctx.value) })
             if (guard) {
               const trimmedValue = ctx.delimiter ? value.split(ctx.delimiter).map((v) => v.trim()) : [value]
               set.value(ctx, ctx.value.concat(...trimmedValue))
@@ -534,12 +534,12 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    ctx.onValueChange?.({ values: Array.from(ctx.value) })
+    ctx.onValueChange?.({ value: Array.from(ctx.value) })
     dom.dispatchInputEvent(ctx)
   },
   highlightChange: (ctx: MachineContext) => {
-    const value = dom.getHighlightedTagValue(ctx)
-    ctx.onHighlightChange?.({ value })
+    const highlightedValue = dom.getHighlightedTagValue(ctx)
+    ctx.onHighlightChange?.({ highlightedValue })
   },
 }
 

@@ -8,17 +8,22 @@ import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
  * -----------------------------------------------------------------------------*/
 
 export interface ValueChangeDetails {
-  values: string[]
+  value: string[]
 }
 
 export interface HighlightChangeDetails {
-  value: string | null
+  highlightedValue: string | null
 }
 
 export type ValidityState = "rangeOverflow" | "invalidTag"
 
 export interface ValidityChangeDetails {
   reason: ValidityState
+}
+
+interface ValidateArgs {
+  inputValue: string
+  value: string[]
 }
 
 /* -----------------------------------------------------------------------------
@@ -30,7 +35,7 @@ interface IntlTranslations {
   deleteTagTriggerLabel(value: string): string
   tagSelected(value: string): string
   tagAdded(value: string): string
-  tagsPasted(values: string[]): string
+  tagsPasted(value: string[]): string
   tagEdited(value: string): string
   tagUpdated(value: string): string
   tagDeleted(value: string): string
@@ -110,7 +115,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    */
   onValueChange?(details: ValueChangeDetails): void
   /**
-   * Callback fired when a tag is focused by pointer or keyboard navigation
+   * Callback fired when a tag is highlighted by pointer or keyboard navigation
    */
   onHighlightChange?(details: HighlightChangeDetails): void
   /**
@@ -121,7 +126,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * Returns a boolean that determines whether a tag can be added.
    * Useful for preventing duplicates or invalid tag values.
    */
-  validate?(details: { inputValue: string; values: string[] }): boolean
+  validate?(details: ValidateArgs): boolean
   /**
    * The behavior of the tags input when the input is blurred
    * - `"add"`: add the input value as a new tag
@@ -207,7 +212,7 @@ type PrivateContext = Context<{
   liveRegion: LiveRegion | null
   /**
    * @internal
-   * The `id` of the currently focused tag
+   * The `id` of the currently highlighted tag
    */
   highlightedTagId: string | null
   /**
