@@ -570,7 +570,10 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
 const invoke = {
   selectionChange: (ctx: MachineContext) => {
-    ctx.onValueChange?.({ value: Array.from(ctx.value), items: ctx.selectedItems })
+    ctx.onValueChange?.({
+      value: Array.from(ctx.value),
+      items: ctx.selectedItems,
+    })
 
     // side effect: sync inputValue
     ctx.inputValue = match(ctx.selectionBehavior, {
@@ -580,7 +583,10 @@ const invoke = {
     })
   },
   highlightChange: (ctx: MachineContext) => {
-    ctx.onHighlightChange?.({ value: ctx.highlightedValue, item: ctx.highlightedItem })
+    ctx.onHighlightChange?.({
+      highlightedValue: ctx.highlightedValue,
+      highligtedItem: ctx.highlightedItem,
+    })
   },
   inputChange: (ctx: MachineContext) => {
     ctx.onInputValueChange?.({ value: ctx.inputValue })

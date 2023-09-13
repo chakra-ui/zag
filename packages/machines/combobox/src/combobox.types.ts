@@ -14,8 +14,8 @@ export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
 }
 
 export interface HighlightChangeDetails<T extends CollectionItem = CollectionItem> {
-  value: string | null
-  item: T | null
+  highlightedValue: string | null
+  highligtedItem: T | null
 }
 
 export interface InputValueChangeDetails {
