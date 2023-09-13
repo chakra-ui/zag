@@ -5,9 +5,13 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-interface ValueChangeDetails {
+export interface ValueChangeDetails {
   value: number
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 type ElementIds = Partial<{
   root: string
@@ -19,10 +23,6 @@ type ElementIds = Partial<{
   output: string
   hiddenInput: string
 }>
-
-/* -----------------------------------------------------------------------------
- * Machine context
- * -----------------------------------------------------------------------------*/
 
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**

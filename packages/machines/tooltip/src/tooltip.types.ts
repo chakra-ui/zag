@@ -6,7 +6,7 @@ import type { CommonProperties, PropTypes, RequiredBy, RootProperties } from "@z
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-interface OpenChangeDetails {
+export interface OpenChangeDetails {
   open: boolean
 }
 

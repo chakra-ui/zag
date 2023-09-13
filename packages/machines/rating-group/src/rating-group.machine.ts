@@ -185,7 +185,7 @@ const invoke = {
     dom.dispatchChangeEvent(ctx)
   },
   hoverChange: (ctx: MachineContext) => {
-    ctx.onHoveredValueChange?.({ hoveredValue: ctx.hoveredValue })
+    ctx.onHoverChange?.({ hoveredValue: ctx.hoveredValue })
   },
 }
 

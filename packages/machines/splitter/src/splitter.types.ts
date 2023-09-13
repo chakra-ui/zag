@@ -14,7 +14,7 @@ interface PanelSizeData {
   maxSize?: number
 }
 
-interface SizeChangeDetails {
+export interface SizeChangeDetails {
   size: PanelSizeData[]
   activeHandleId: string | null
 }

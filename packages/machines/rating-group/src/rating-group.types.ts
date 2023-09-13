@@ -5,11 +5,11 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-interface ValueChangeDetails {
+export interface ValueChangeDetails {
   value: number
 }
 
-interface HoveredValueChangeDetails {
+export interface HoverChangeDetails {
   hoveredValue: number
 }
 
@@ -77,7 +77,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Function to be called when the rating value is hovered.
    */
-  onHoveredValueChange?: (details: HoveredValueChangeDetails) => void
+  onHoverChange?: (details: HoverChangeDetails) => void
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

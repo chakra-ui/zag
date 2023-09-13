@@ -5,7 +5,7 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-interface CheckedChangeDetails {
+export interface CheckedChangeDetails {
   checked: boolean
 }
 

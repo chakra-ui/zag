@@ -7,7 +7,7 @@ import type { CommonProperties, Context, MaybeElement, PropTypes, RequiredBy } f
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-interface OpenChangeDetails {
+export interface OpenChangeDetails {
   open: boolean
 }
 

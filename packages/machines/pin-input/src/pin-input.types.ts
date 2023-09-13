@@ -5,12 +5,12 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-interface ValueChangeDetails {
+export interface ValueChangeDetails {
   value: string[]
   valueAsString: string
 }
 
-interface ValueInvalidDetails {
+export interface ValueInvalidDetails {
   value: string
   index: number
 }
