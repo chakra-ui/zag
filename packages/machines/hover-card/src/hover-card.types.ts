@@ -2,9 +2,17 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-interface OpenChangeDetails {
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface OpenChangeDetails {
   open: boolean
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 type ElementIds = Partial<{
   trigger: string
@@ -40,30 +48,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   positioning: PositioningOptions
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
-  /**
-   * Whether the hover card is open
-   */
-  isOpen: boolean
-  /**
-   * Function to open the hover card
-   */
-  open(): void
-  /**
-   * Function to close the hover card
-   */
-  close(): void
-  /**
-   * Function to reposition the popover
-   */
-  setPositioning(options?: Partial<PositioningOptions>): void
-  arrowProps: T["element"]
-  arrowTipProps: T["element"]
-  triggerProps: T["element"]
-  positionerProps: T["element"]
-  contentProps: T["element"]
-}
-
 type PrivateContext = Context<{
   /**
    * @internal
@@ -91,5 +75,37 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
+  /**
+   * Whether the hover card is open
+   */
+  isOpen: boolean
+  /**
+   * Function to open the hover card
+   */
+  open(): void
+  /**
+   * Function to close the hover card
+   */
+  close(): void
+  /**
+   * Function to reposition the popover
+   */
+  setPositioning(options?: Partial<PositioningOptions>): void
+  arrowProps: T["element"]
+  arrowTipProps: T["element"]
+  triggerProps: T["element"]
+  positionerProps: T["element"]
+  contentProps: T["element"]
+}
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
 
 export type { Placement, PositioningOptions }

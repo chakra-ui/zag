@@ -5,19 +5,9 @@ import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-type ElementIds = Partial<{
-  root: string
-  content: string
-  control: string
-  trigger: string
-  clearTrigger: string
-  label: string
-  hiddenSelect: string
-  positioner: string
-  item(id: string | number): string
-  itemGroup(id: string | number): string
-  itemGroupLabel(id: string | number): string
-}>
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
 
 export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
   value: string[]
@@ -32,6 +22,24 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
 export interface OpenChangeDetails {
   open: boolean
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+type ElementIds = Partial<{
+  root: string
+  content: string
+  control: string
+  trigger: string
+  clearTrigger: string
+  label: string
+  hiddenSelect: string
+  positioner: string
+  item(id: string | number): string
+  itemGroup(id: string | number): string
+  itemGroupLabel(id: string | number): string
+}>
 
 interface PublicContext<T extends CollectionItem = CollectionItem>
   extends DirectionProperty,
@@ -174,6 +182,18 @@ export type UserDefinedContext<T extends CollectionItem = CollectionItem> = Requ
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
+export interface MachineState {
+  value: "idle" | "focused" | "open"
+}
+
+export type State = S.State<MachineContext, MachineState>
+
+export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
 export interface ItemProps<T extends CollectionItem = CollectionItem> {
   item: T
 }
@@ -184,14 +204,6 @@ export interface ItemState {
   isSelected: boolean
   isHighlighted: boolean
 }
-
-export interface MachineState {
-  value: "idle" | "focused" | "open"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
 
 export interface ItemGroupProps {
   id: string
@@ -285,5 +297,9 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]
   hiddenSelectProps: T["select"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
 
 export type { CollectionOptions, CollectionItem }

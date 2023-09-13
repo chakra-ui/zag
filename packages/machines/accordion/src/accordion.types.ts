@@ -1,20 +1,28 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-type ElementIds = Partial<{
-  root: string
-  item(value: string): string
-  content(value: string): string
-  trigger(value: string): string
-}>
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
 
-export interface ChangeDetails {
+export interface ValueChangeDetails {
   value: string[]
 }
 
 export interface FocusChangeDetails {
   value: string | null
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+type ElementIds = Partial<{
+  root: string
+  item(value: string): string
+  content(value: string): string
+  trigger(value: string): string
+}>
 
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
@@ -42,7 +50,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The callback fired when the state of opened/closed accordion items changes.
    */
-  onValueChange?: (details: ChangeDetails) => void
+  onValueChange?: (details: ValueChangeDetails) => void
   /**
    * The callback fired when the focused accordion item changes.
    */
@@ -80,6 +88,10 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface ItemProps {
   value: string

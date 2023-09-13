@@ -1,6 +1,10 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
 export interface RejectedFile {
   file: File
   errors: (string | null)[]
@@ -10,6 +14,10 @@ export interface FileChangeDetails {
   acceptedFiles: File[]
   rejectedFiles: RejectedFile[]
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 interface PublicContext extends CommonProperties {
   /**
@@ -91,6 +99,10 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface MachineApi<T extends PropTypes> {
   /**

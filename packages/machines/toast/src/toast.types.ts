@@ -255,7 +255,7 @@ export type GroupMachineApi<T extends PropTypes = PropTypes> = {
   getGroupProps(options: GroupProps): T["element"]
 }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The type of the toast.
    */

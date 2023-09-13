@@ -4,7 +4,31 @@ import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-export type { CollectionOptions, CollectionItem }
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
+  value: string[]
+  items: T[]
+}
+
+export interface HighlightChangeDetails<T extends CollectionItem = CollectionItem> {
+  value: string | null
+  item: T | null
+}
+
+export interface InputValueChangeDetails {
+  value: string
+}
+
+export interface OpenChangeDetails {
+  open: boolean
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 interface IntlTranslations {
   triggerLabel?: string
@@ -24,24 +48,6 @@ type ElementIds = Partial<{
   itemGroup(id: string | number): string
   itemGroupLabel(id: string | number): string
 }>
-
-export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
-  value: string[]
-  items: T[]
-}
-
-export interface HighlightChangeDetails<T extends CollectionItem = CollectionItem> {
-  value: string | null
-  item: T | null
-}
-
-export interface InputValueChangeDetails {
-  value: string
-}
-
-export interface OpenChangeDetails {
-  open: boolean
-}
 
 interface PublicContext<T extends CollectionItem = CollectionItem>
   extends DirectionProperty,
@@ -162,9 +168,6 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   closeOnSelect?: boolean
 }
 
-/**
- * This is the actual context exposed to the user.
- */
 export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
   PublicContext<T>,
   "id" | "collection"
@@ -234,6 +237,10 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
 export interface ItemProps {
   item: CollectionItem
 }
@@ -252,8 +259,6 @@ export interface ItemGroupProps {
 export interface ItemGroupLabelProps {
   htmlFor: string
 }
-
-export type { Placement, PositioningOptions }
 
 export interface MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
   /**
@@ -351,3 +356,9 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   getItemGroupProps(props: ItemGroupProps): T["element"]
   getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { CollectionItem, CollectionOptions, Placement, PositioningOptions }

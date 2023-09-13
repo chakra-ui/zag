@@ -1,12 +1,20 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, PropTypes, RequiredBy } from "@zag-js/types"
 
-export interface LoadingChangeDetails {
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface StatusChangeDetails {
   status: "loaded" | "error"
 }
 
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 interface PublicContext extends CommonProperties {
-  onLoadingStatusChange?: (details: LoadingChangeDetails) => void
+  onLoadingStatusChange?: (details: StatusChangeDetails) => void
 }
 
 type PrivateContext = Context<{}>
@@ -24,6 +32,10 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**

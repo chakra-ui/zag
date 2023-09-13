@@ -1,14 +1,22 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-interface ValueChangeDetails {
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface ValueChangeDetails {
   value: number[]
 }
 
-interface FocusChangeDetails {
+export interface FocusChangeDetails {
   focusedIndex: number
   value: number[]
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 type ElementIds = Partial<{
   root: string
@@ -174,9 +182,9 @@ type PrivateContext = Context<{
   fieldsetDisabled: boolean
 }>
 
-export type MachineContext = PublicContext & ComputedContext & PrivateContext
+export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "dragging" | "focus"
 }
 
@@ -184,7 +192,15 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface MarkerProps {
+  value: number
+}
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the slider.
    */
@@ -254,5 +270,5 @@ export type MachineApi<T extends PropTypes = PropTypes> = {
   rangeProps: T["element"]
   controlProps: T["element"]
   markerGroupProps: T["element"]
-  getMarkerProps({ value }: { value: number }): T["element"]
+  getMarkerProps(props: MarkerProps): T["element"]
 }

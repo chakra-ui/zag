@@ -1,6 +1,10 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
 interface ValueChangeDetails {
   value: number
 }
@@ -8,6 +12,10 @@ interface ValueChangeDetails {
 interface HoveredValueChangeDetails {
   hoveredValue: number
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 interface IntlTranslations {
   ratingValueText(index: number): string
@@ -112,6 +120,10 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface ItemProps {
   index: number

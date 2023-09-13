@@ -19,12 +19,12 @@ function getDescription(property: Symbol, typeChecker?: TypeChecker) {
   return description?.text
 }
 
-function getContextReturnType(sourceFile: SourceFile | undefined, typeAlias: string, typeChecker?: TypeChecker) {
+function getContextReturnType(sourceFile: SourceFile | undefined, typeName: string, typeChecker?: TypeChecker) {
   if (!sourceFile) return {}
 
   const result: Record<string, { type: string; description: string; defaultValue: string | null }> = {}
 
-  const contextType = sourceFile.getTypeAlias(typeAlias)?.getType()
+  const contextType = sourceFile.getInterface(typeName)?.getType()
 
   contextType?.getProperties().forEach((property) => {
     const name = property.getName()

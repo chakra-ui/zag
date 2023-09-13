@@ -39,28 +39,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getItemProps(props: ItemProps) {
-      const { isOpen, isFocused, isDisabled } = getItemState(props)
+      const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
         id: dom.getItemId(state.context, props.value),
-        "data-state": isOpen ? "open" : "closed",
-        "data-focus": dataAttr(isFocused),
-        "data-disabled": dataAttr(isDisabled),
+        "data-state": itemState.isOpen ? "open" : "closed",
+        "data-focus": dataAttr(itemState.isFocused),
+        "data-disabled": dataAttr(itemState.isDisabled),
         "data-orientation": state.context.orientation,
       })
     },
 
     getContentProps(props: ItemProps) {
-      const { isOpen, isFocused, isDisabled } = getItemState(props)
+      const itemState = getItemState(props)
       return normalize.element({
         ...parts.content.attrs,
         role: "region",
         id: dom.getContentId(state.context, props.value),
         "aria-labelledby": dom.getTriggerId(state.context, props.value),
-        hidden: !isOpen,
-        "data-state": isOpen ? "open" : "closed",
-        "data-disabled": dataAttr(isDisabled),
-        "data-focus": dataAttr(isFocused),
+        hidden: !itemState.isOpen,
+        "data-state": itemState.isOpen ? "open" : "closed",
+        "data-disabled": dataAttr(itemState.isDisabled),
+        "data-focus": dataAttr(itemState.isFocused),
         "data-orientation": state.context.orientation,
       })
     },

@@ -1,4 +1,5 @@
 import { DateFormatter, type DateValue } from "@internationalized/date"
+import { match } from "@zag-js/utils"
 import type { DateView, MachineContext } from "./date-picker.types"
 
 export function adjustStartAndEndDate(value: DateValue[]) {
@@ -15,12 +16,6 @@ export function isDateWithinRange(date: DateValue, value: (DateValue | null)[]) 
 
 export function sortDates(values: DateValue[]) {
   return values.sort((a, b) => a.compare(b))
-}
-
-export function matchView<T>(view: DateView, values: { year: T; month: T; day: T }) {
-  if (view === "year") return values.year
-  if (view === "month") return values.month
-  return values.day
 }
 
 export function formatValue(ctx: Pick<MachineContext, "locale" | "timeZone" | "selectionMode" | "value">) {
@@ -47,7 +42,7 @@ export function formatValue(ctx: Pick<MachineContext, "locale" | "timeZone" | "s
 }
 
 export function getNextTriggerLabel(view: DateView) {
-  return matchView(view, {
+  return match(view, {
     year: "Switch to next decade",
     month: "Switch to next year",
     day: "Switch to next month",
@@ -55,7 +50,7 @@ export function getNextTriggerLabel(view: DateView) {
 }
 
 export function getPrevTriggerLabel(view: DateView) {
-  return matchView(view, {
+  return match(view, {
     year: "Switch to previous decade",
     month: "Switch to previous year",
     day: "Switch to previous month",
@@ -63,7 +58,7 @@ export function getPrevTriggerLabel(view: DateView) {
 }
 
 export function getRoleDescription(view: DateView) {
-  return matchView(view, {
+  return match(view, {
     year: "calendar decade",
     month: "calendar year",
     day: "calendar month",
@@ -71,7 +66,7 @@ export function getRoleDescription(view: DateView) {
 }
 
 export function getViewTriggerLabel(view: DateView) {
-  return matchView(view, {
+  return match(view, {
     year: "Switch to month view",
     month: "Switch to day view",
     day: "Switch to year view",

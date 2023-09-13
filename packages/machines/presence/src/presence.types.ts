@@ -1,19 +1,12 @@
 import type { StateMachine as S } from "@zag-js/core"
 
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 interface PublicContext {
   present: boolean
   onExitComplete?: () => void
-}
-
-export interface MachineApi {
-  /**
-   * Whether the node is present in the DOM.
-   */
-  isPresent: boolean
-  /**
-   * Function to set the node (as early as possible)
-   */
-  setNode(node: HTMLElement | null): void
 }
 
 interface PrivateContext {
@@ -34,3 +27,18 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface MachineApi {
+  /**
+   * Whether the node is present in the DOM.
+   */
+  isPresent: boolean
+  /**
+   * Function to set the node (as early as possible)
+   */
+  setNode(node: HTMLElement | null): void
+}

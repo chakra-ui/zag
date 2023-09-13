@@ -3,9 +3,17 @@ import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
 interface OpenChangeDetails {
   open: boolean
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 type ElementIds = Partial<{
   anchor: string
@@ -106,6 +114,10 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the popover is portalled
@@ -137,5 +149,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   descriptionProps: T["element"]
   closeTriggerProps: T["button"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
 
 export type { Placement, PositioningOptions }

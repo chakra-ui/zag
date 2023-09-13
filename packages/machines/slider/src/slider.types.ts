@@ -1,6 +1,10 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
 interface ValueChangeDetails {
   value: number
 }
@@ -15,6 +19,10 @@ type ElementIds = Partial<{
   output: string
   hiddenInput: string
 }>
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
@@ -169,23 +177,23 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export interface SharedContext {
-  min: number
-  max: number
-  step: number
-  dir?: "ltr" | "rtl"
-  isRtl: boolean
-  isVertical: boolean
-  isHorizontal: boolean
-  value: number
-  thumbSize: Size | null
-  thumbAlignment?: "contain" | "center"
-  orientation?: "horizontal" | "vertical"
-  readonly hasMeasuredThumbSize: boolean
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface Point {
+  x: number
+  y: number
 }
 
-export type Point = { x: number; y: number }
-type Size = { width: number; height: number }
+interface Size {
+  width: number
+  height: number
+}
+
+interface MarkerProps {
+  value: number
+}
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
@@ -238,5 +246,24 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   rangeProps: T["element"]
   controlProps: T["element"]
   markerGroupProps: T["element"]
-  getMarkerProps({ value }: { value: number }): T["element"]
+  getMarkerProps(props: MarkerProps): T["element"]
+}
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export interface SharedContext {
+  min: number
+  max: number
+  step: number
+  dir?: "ltr" | "rtl"
+  isRtl: boolean
+  isVertical: boolean
+  isHorizontal: boolean
+  value: number
+  thumbSize: Size | null
+  thumbAlignment?: "contain" | "center"
+  orientation?: "horizontal" | "vertical"
+  readonly hasMeasuredThumbSize: boolean
 }

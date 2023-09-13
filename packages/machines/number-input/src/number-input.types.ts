@@ -1,6 +1,10 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
 export interface ValueChangeDetails {
   value: string
   valueAsNumber: number
@@ -16,6 +20,10 @@ type ValidityState = "rangeUnderflow" | "rangeOverflow"
 export interface ValueInvalidDetails extends ValueChangeDetails {
   reason: ValidityState
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 type InputMode = "text" | "tel" | "numeric" | "decimal"
 
@@ -43,11 +51,6 @@ type IntlTranslations = {
    */
   decrementLabel: string
 }
-
-// interface Value {
-//   value: string
-//   valueAsNumber: number
-// }
 
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
@@ -243,6 +246,10 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**

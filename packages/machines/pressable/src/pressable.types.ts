@@ -1,6 +1,10 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 export type PointerType = "mouse" | "pen" | "touch" | "keyboard" | "virtual"
 
 export interface Rect {
@@ -34,7 +38,7 @@ export interface PressEvent {
   target: HTMLElement
 }
 
-export type PressHandlers = {
+export interface PressHandlers {
   /**
    * Handler that is called when the press is released over the target.
    */
@@ -59,43 +63,33 @@ export type PressHandlers = {
   onLongPress?: (event: PressEvent) => void
 }
 
-type PublicContext = DirectionProperty &
-  CommonProperties &
-  PressHandlers & {
-    /**
-     * Whether the element is disabled
-     */
-    disabled?: boolean
-    /**
-     * Whether the target should not receive focus on press.
-     */
-    preventFocusOnPress?: boolean
-    /**
-     * Whether press events should be canceled when the pointer leaves the target while pressed.
-     *
-     * By default, this is `false`, which means if the pointer returns back over the target while
-     * still pressed, onPressStart will be fired again.
-     *
-     * If set to `true`, the press is canceled when the pointer leaves the target and
-     * onPressStart will not be fired if the pointer returns.
-     */
-    cancelOnPointerExit?: boolean
-    /**
-     * Whether text selection should be enabled on the pressable element.
-     */
-    allowTextSelectionOnPress?: boolean
-    /**
-     * The amount of time (in milliseconds) to wait before firing the `onLongPress` event.
-     */
-    longPressDelay: number
-  }
-
-export type MachineApi<T extends PropTypes = PropTypes> = {
+interface PublicContext extends DirectionProperty, CommonProperties, PressHandlers {
   /**
-   * Whether the element is pressed.
+   * Whether the element is disabled
    */
-  isPressed: boolean
-  pressableProps: T["element"]
+  disabled?: boolean
+  /**
+   * Whether the target should not receive focus on press.
+   */
+  preventFocusOnPress?: boolean
+  /**
+   * Whether press events should be canceled when the pointer leaves the target while pressed.
+   *
+   * By default, this is `false`, which means if the pointer returns back over the target while
+   * still pressed, onPressStart will be fired again.
+   *
+   * If set to `true`, the press is canceled when the pointer leaves the target and
+   * onPressStart will not be fired if the pointer returns.
+   */
+  cancelOnPointerExit?: boolean
+  /**
+   * Whether text selection should be enabled on the pressable element.
+   */
+  allowTextSelectionOnPress?: boolean
+  /**
+   * The amount of time (in milliseconds) to wait before firing the `onLongPress` event.
+   */
+  longPressDelay: number
 }
 
 interface FocusableElement extends HTMLElement, HTMLOrSVGElement {}
@@ -113,9 +107,9 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{}>
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle" | "pressed:in" | "pressed:out"
   tags: "pressed"
 }
@@ -123,3 +117,15 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
+  /**
+   * Whether the element is pressed.
+   */
+  isPressed: boolean
+  pressableProps: T["element"]
+}

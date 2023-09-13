@@ -5,6 +5,10 @@ import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
 export interface OpenChangeDetails {
   open: boolean
 }
@@ -17,6 +21,10 @@ export interface ValueChangeDetails {
 export interface SelectionDetails {
   value: string
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 type ElementIds = Partial<{
   trigger: string
@@ -151,6 +159,10 @@ export type State = S.State<MachineContext, MachineState>
 export type Send = S.Send<S.AnyEventObject>
 
 export type Service = Machine<MachineContext, MachineState>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface Api {
   getItemProps: (opts: ItemProps) => Record<string, any>

@@ -1,14 +1,19 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-export interface SlideProps {
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface SlideChangeDetails {
   index: number
 }
 
-export interface SlideIndicatorProps {
-  index: number
-  readOnly?: boolean
-}
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+type RectEdge = "top" | "right" | "bottom" | "left"
 
 type ElementIds = Partial<{
   root: string
@@ -20,10 +25,6 @@ type ElementIds = Partial<{
   indicatorGroup: string
   indicator(index: number): string
 }>
-
-export interface SlideChangeDetails {
-  index: number
-}
 
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
@@ -69,8 +70,6 @@ type PrivateContext = Context<{
   scrollProgress: number
 }>
 
-type RectEdge = "top" | "right" | "bottom" | "left"
-
 type ComputedContext = Readonly<{
   isRtl: boolean
   isHorizontal: boolean
@@ -94,12 +93,25 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export interface SliderState {
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface SlideProps {
+  index: number
+}
+
+export interface SlideState {
   valueText: string
   isCurrent: boolean
   isNext: boolean
   isPrevious: boolean
   isInView: boolean
+}
+
+export interface SlideIndicatorProps {
+  index: number
+  readOnly?: boolean
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -138,7 +150,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    *  Returns the state of a specific slide
    */
-  getSlideState(props: SlideProps): SliderState
+  getSlideState(props: SlideProps): SlideState
   /**
    * Function to start/resume autoplay
    */

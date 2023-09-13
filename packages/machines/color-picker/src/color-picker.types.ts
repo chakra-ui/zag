@@ -2,6 +2,21 @@ import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@za
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface ValueChangeDetails {
+  value: string
+  valueAsColor: Color
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+export type ExtendedColorChannel = ColorChannel | "hex" | "css"
+
 type ElementIds = Partial<{
   content: string
   area: string
@@ -11,35 +26,6 @@ type ElementIds = Partial<{
   channelSliderTrack(id: ColorChannel): string
   channelSliderThumb(id: ColorChannel): string
 }>
-
-export interface ColorChannelProps {
-  channel: ColorChannel
-  orientation?: Orientation
-}
-
-export type ExtendedColorChannel = ColorChannel | "hex" | "css"
-
-export interface ColorChannelInputProps {
-  channel: ExtendedColorChannel
-  orientation?: Orientation
-}
-
-export interface ColorAreaProps {
-  xChannel: ColorChannel
-  yChannel: ColorChannel
-}
-
-export interface ColorSwatchProps {
-  readOnly?: boolean
-  value: string | Color
-}
-
-export type ValueChangeDetails = {
-  value: string
-  valueAsColor: Color
-}
-
-export type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType }
 
 interface PublicContext extends CommonProperties {
   /**
@@ -134,6 +120,30 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface ColorChannelProps {
+  channel: ColorChannel
+  orientation?: Orientation
+}
+
+export interface ColorChannelInputProps {
+  channel: ExtendedColorChannel
+  orientation?: Orientation
+}
+
+export interface ColorAreaProps {
+  xChannel: ColorChannel
+  yChannel: ColorChannel
+}
+
+export interface ColorSwatchProps {
+  readOnly?: boolean
+  value: string | Color
+}
+
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the color picker is being dragged
@@ -185,3 +195,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getSwatchBackgroundProps(props: ColorSwatchProps): T["element"]
   getSwatchProps(props: ColorSwatchProps): T["element"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType }

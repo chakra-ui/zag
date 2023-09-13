@@ -1,6 +1,18 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface OpenChangeDetails {
+  open: boolean
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 type ElementIds = Partial<{
   trigger: string
   container: string
@@ -10,10 +22,6 @@ type ElementIds = Partial<{
   title: string
   description: string
 }>
-
-export interface OpenChangeDetails {
-  open: boolean
-}
 
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
@@ -103,6 +111,10 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component props
+ * -----------------------------------------------------------------------------*/
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**

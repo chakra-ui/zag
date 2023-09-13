@@ -1,10 +1,18 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
 export interface PageChangeDetails {
   page: number
   pageSize: number
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 interface IntlTranslations {
   rootLabel?: string
@@ -94,7 +102,7 @@ type ComputedContext = Readonly<{
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id" | "count">
 
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
+export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
 export type MachineState = {
   value: "idle"
@@ -103,6 +111,10 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface PageTriggerProps {
   type: "page"
@@ -120,7 +132,7 @@ interface PageRange {
   end: number
 }
 
-export type MachineApi<T extends PropTypes = PropTypes> = {
+export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The current page.
    */
