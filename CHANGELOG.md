@@ -6,6 +6,44 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.20.0] - 2023-09-14
+
+### Fixed
+
+- **Pagination**: Fix issue where change callback does not get called when clicking the page button.
+
+### Added
+
+- **DatePicker**: Add `onOpenChange` callback to listen for changes in the open state
+- **[New]**: Add `@zag-js/file-utils` package to help with file related operations
+- **Editable**: Autofocus the editable input element when `startsWithEditView` is set to `true`
+- **Tabs**: Add `api.getTriggerState(...)` to get the current state of the tab trigger
+
+### Changed
+
+> 💥 Breaking changes
+
+- **All machines**: Unify all callbacks to follow a consistent naming convention
+
+  - `onOpen` and `onClose` => `onOpenChange`
+  - `onChange` => `onValueChange`
+  - `onFocus` => `onFocusChange`
+  - `onHighlight` => `onHighlightChange`
+  - `onLoad` and `onError` => `onLoadingStatusChange`
+  - `onInputChange` => `onInputValueChange`
+
+- Remove toggle machine in favor of userland implementation. For more advanced toggle functionality, use the
+  `ToggleGroup` machine.
+
+- **RadioGroup**: Remove `api.blur()` from radio group machine. Prefer to use `document.activeElement.blur()` instead.
+
+- **FileUpload**
+
+  - Rename `api.setValue` to `api.setFiles`
+  - Rename `api.clearValue` to `api.clearFiles`
+
+- **Tabs**: Changed `api.setIndicatorRect(id)` to `api.setIndicatorRect(value)` for better userland control
+
 ## [0.19.1] - 2023-09-11
 
 ### Fixed
