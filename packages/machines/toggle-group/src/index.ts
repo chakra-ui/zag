@@ -1,3 +1,4 @@
+export { anatomy } from "./toggle-group.anatomy"
 export { connect } from "./toggle-group.connect"
 export { machine } from "./toggle-group.machine"
-export type { UserDefinedContext as Context, MachineApi as Api } from "./toggle-group.types"
+export type { MachineApi as Api, UserDefinedContext as Context } from "./toggle-group.types"
