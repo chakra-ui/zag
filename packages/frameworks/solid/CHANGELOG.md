@@ -1,5 +1,18 @@
 # @zag-js/solid
 
+## 0.20.0
+
+### Patch Changes
+
+- [`942db6ca`](https://github.com/chakra-ui/zag/commit/942db6caf9f699d6af56929c835b10ae80cfbc85) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove toggle machine
+
+- Updated dependencies [[`9a3a82f0`](https://github.com/chakra-ui/zag/commit/9a3a82f0b3738beda59c313fafd51360e6b0322f),
+  [`942db6ca`](https://github.com/chakra-ui/zag/commit/942db6caf9f699d6af56929c835b10ae80cfbc85)]:
+  - @zag-js/types@0.20.0
+  - @zag-js/core@0.20.0
+  - @zag-js/store@0.20.0
+
 ## 0.19.1
 
 ### Patch Changes

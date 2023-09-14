@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/tags-input",
-  "version": "0.19.1",
+  "version": "0.20.0",
   "description": "Core logic for the tags-input widget implemented as a state machine",
   "keywords": [
     "js",

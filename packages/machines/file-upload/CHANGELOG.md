@@ -1,5 +1,28 @@
 # @zag-js/file-upload
 
+## 0.20.0
+
+### Minor Changes
+
+- [#862](https://github.com/chakra-ui/zag/pull/862)
+  [`9a3a82f0`](https://github.com/chakra-ui/zag/commit/9a3a82f0b3738beda59c313fafd51360e6b0322f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - BREAKING: Unify all callbacks to follow a consistent naming
+  convention
+
+### Patch Changes
+
+- [`942db6ca`](https://github.com/chakra-ui/zag/commit/942db6caf9f699d6af56929c835b10ae80cfbc85) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove toggle machine
+
+- Updated dependencies [[`9a3a82f0`](https://github.com/chakra-ui/zag/commit/9a3a82f0b3738beda59c313fafd51360e6b0322f),
+  [`942db6ca`](https://github.com/chakra-ui/zag/commit/942db6caf9f699d6af56929c835b10ae80cfbc85)]:
+  - @zag-js/types@0.20.0
+  - @zag-js/anatomy@0.20.0
+  - @zag-js/core@0.20.0
+  - @zag-js/utils@0.20.0
+  - @zag-js/dom-query@0.20.0
+  - @zag-js/visually-hidden@0.20.0
+
 ## 0.19.1
 
 ### Patch Changes
