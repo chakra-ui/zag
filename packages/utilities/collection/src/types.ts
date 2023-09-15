@@ -24,7 +24,7 @@ export interface CollectionOptions<T extends CollectionItem = CollectionItem> {
   /**
    * The options of the select
    */
-  items: T[]
+  items: T[] | readonly T[]
   /**
    * The value of the item
    */
