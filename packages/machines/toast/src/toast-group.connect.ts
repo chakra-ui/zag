@@ -133,7 +133,7 @@ export function groupConnect<T extends PropTypes>(
       return normalize.element({
         ...parts.group.attrs,
         tabIndex: -1,
-        "aria-label": label,
+        "aria-label": `${placement} ${label}`,
         id: dom.getGroupId(placement),
         "data-placement": placement,
         "aria-live": "polite",
