@@ -18,9 +18,9 @@ export type PageContext = Pick<Ctx, "siblingCount" | "page" | "totalPages">
 
 export const getRange = (ctx: PageContext) => {
   /**
-   * `2 * ctx.siblingCount + 5`:
+   * `2 * ctx.siblingCount + 5` explanation:
    * 2 * ctx.siblingCount for left/right siblings
-   * 5 for 2x for left/right ellipsis, 2x first/last page + 1x current page
+   * 5 for 2x left/right ellipsis, 2x first/last page + 1x current page
    *
    * For some page counts (e.g. totalPages: 8, siblingCount: 2),
    * calculated max page is higher than total pages,
@@ -37,7 +37,7 @@ export const getRange = (ctx: PageContext) => {
   const showLeftEllipsis = leftSiblingIndex > firstPageIndex + 1
   const showRightEllipsis = rightSiblingIndex < lastPageIndex - 1
 
-  const itemCount = totalPageNumbers - 2 // 2 stands for ellipsis and either first or last page
+  const itemCount = totalPageNumbers - 2 // 2 stands for one ellipsis and either first or last page
 
   if (!showLeftEllipsis && showRightEllipsis) {
     const leftRange = range(1, itemCount)
