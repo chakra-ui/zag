@@ -38,10 +38,10 @@ export function TagsInput(props: any) {
                   margin="4px"
                   _highlighted={{ bg: "bg-primary-bold", color: "white" }}
                   _disabled={{ opacity: 0.6 }}
-                  {...api.getTagProps(opt)}
+                  {...api.getItemProps(opt)}
                 >
                   <span>{value}</span>
-                  <chakra.button ml="1" {...api.getTagDeleteTriggerProps(opt)}>
+                  <chakra.button ml="1" {...api.getItemDeleteTriggerProps(opt)}>
                     &#x2715;
                   </chakra.button>
                 </chakra.div>
@@ -49,7 +49,7 @@ export function TagsInput(props: any) {
                   px="2"
                   width="10"
                   outline="0"
-                  {...api.getTagInputProps(opt)}
+                  {...api.getItemInputProps(opt)}
                 />
               </span>
             )
