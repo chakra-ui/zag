@@ -1,7 +1,7 @@
 import { chakra } from "@chakra-ui/system"
 import * as combobox from "@zag-js/combobox"
-import { normalizeProps, useMachine, Portal } from "@zag-js/react"
-import { useId, useState } from "react"
+import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { useId, useMemo, useState } from "react"
 
 type ComboboxProps = {
   controls: {
@@ -62,11 +62,15 @@ const CaretIcon = () => (
 export function Combobox(props: ComboboxProps) {
   const [options, setOptions] = useState(comboboxData)
 
-  const collection = combobox.collection({
-    items: options,
-    itemToValue: (item) => item.code,
-    itemToString: (item) => item.label,
-  })
+  const collection = useMemo(
+    () =>
+      combobox.collection({
+        items: options,
+        itemToValue: (item) => item.code,
+        itemToString: (item) => item.label,
+      }),
+    [options],
+  )
 
   const [state, send] = useMachine(
     combobox.machine({
