@@ -12,38 +12,50 @@ export const transform = (items: (string | number)[]): Pages => {
   })
 }
 
-export const getRange = (ctx: Omit<Ctx, "items">) => {
-  const totalPageNumbers = ctx.siblingCount + 5
-  if (totalPageNumbers >= ctx.totalPages) return transform(range(1, ctx.totalPages))
+const ELLIPSIS = "ellipsis"
 
-  const ELLIPSIS = "ellipsis"
+export type PageContext = Pick<Ctx, "siblingCount" | "page" | "totalPages">
 
-  const leftSiblingIndex = Math.max(ctx.page - ctx.siblingCount, 1)
-  const rightSiblingIndex = Math.min(ctx.page + ctx.siblingCount, ctx.totalPages)
-
-  const showLeftEllipsis = leftSiblingIndex > 2
-  const showRightEllipsis = rightSiblingIndex < ctx.totalPages - 2
+export const getRange = (ctx: PageContext) => {
+  /**
+   * `2 * ctx.siblingCount + 5` explanation:
+   * 2 * ctx.siblingCount for left/right siblings
+   * 5 for 2x left/right ellipsis, 2x first/last page + 1x current page
+   *
+   * For some page counts (e.g. totalPages: 8, siblingCount: 2),
+   * calculated max page is higher than total pages,
+   * so we need to take the minimum of both.
+   */
+  const totalPageNumbers = Math.min(2 * ctx.siblingCount + 5, ctx.totalPages)
 
   const firstPageIndex = 1
   const lastPageIndex = ctx.totalPages
 
-  if (!showLeftEllipsis && showRightEllipsis) {
-    let leftItemCount = 3 + 2 * ctx.siblingCount
-    let leftRange = range(1, leftItemCount)
+  const leftSiblingIndex = Math.max(ctx.page - ctx.siblingCount, firstPageIndex)
+  const rightSiblingIndex = Math.min(ctx.page + ctx.siblingCount, lastPageIndex)
 
-    return transform([...leftRange, ELLIPSIS, ctx.totalPages])
+  const showLeftEllipsis = leftSiblingIndex > firstPageIndex + 1
+  const showRightEllipsis = rightSiblingIndex < lastPageIndex - 1
+
+  const itemCount = totalPageNumbers - 2 // 2 stands for one ellipsis and either first or last page
+
+  if (!showLeftEllipsis && showRightEllipsis) {
+    const leftRange = range(1, itemCount)
+    return [...leftRange, ELLIPSIS, lastPageIndex]
   }
 
   if (showLeftEllipsis && !showRightEllipsis) {
-    let rightItemCount = 3 + 2 * ctx.siblingCount
-    let rightRange = range(ctx.totalPages - rightItemCount + 1, ctx.totalPages)
-    return transform([firstPageIndex, ELLIPSIS, ...rightRange])
+    const rightRange = range(lastPageIndex - itemCount + 1, lastPageIndex)
+    return [firstPageIndex, ELLIPSIS, ...rightRange]
   }
 
   if (showLeftEllipsis && showRightEllipsis) {
-    let middleRange = range(leftSiblingIndex, rightSiblingIndex)
-    return transform([firstPageIndex, ELLIPSIS, ...middleRange, ELLIPSIS, lastPageIndex])
+    const middleRange = range(leftSiblingIndex, rightSiblingIndex)
+    return [firstPageIndex, ELLIPSIS, ...middleRange, ELLIPSIS, lastPageIndex]
   }
 
-  return []
+  const fullRange = range(firstPageIndex, lastPageIndex)
+  return fullRange
 }
+
+export const getTransformedRange = (ctx: PageContext) => transform(getRange(ctx))
