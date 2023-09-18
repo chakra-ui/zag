@@ -36,4 +36,8 @@ export const dom = createScope({
   isTriggerItem: (el: HTMLElement | null) => {
     return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("aria-controls")
   },
+  getHighlightedOptionEl(ctx: Ctx) {
+    if (!ctx.highlightedId) return null
+    return dom.getById(ctx, ctx.highlightedId)
+  },
 })

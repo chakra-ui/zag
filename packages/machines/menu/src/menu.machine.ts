@@ -1,7 +1,8 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { contains, getByTypeahead, isEditableElement, raf } from "@zag-js/dom-query"
 import { addDomEvent } from "@zag-js/dom-event"
+import { contains, getByTypeahead, isEditableElement, raf } from "@zag-js/dom-query"
+import { observeAttributes } from "@zag-js/mutation-observer"
 import { getBasePlacement, getPlacement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
 import { add, cast, compact, isArray, remove } from "@zag-js/utils"
@@ -192,7 +193,7 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["visible"],
-          activities: ["trackInteractOutside", "trackPositioning"],
+          activities: ["trackInteractOutside", "trackPositioning", "scrollToHighlightedItem"],
           entry: ["focusMenu", "resumePointer"],
           on: {
             TRIGGER_CLICK: {
@@ -374,6 +375,16 @@ export function machine(userContext: UserDefinedContext) {
               ctx.parent!.state.context.suspendPointer = false
             }
           })
+        },
+        scrollToHighlightedItem(ctx, _evt, { getState }) {
+          const exec = () => {
+            const state = getState()
+            if (state.event.type.startsWith("ITEM_POINTER")) return
+            const optionEl = dom.getHighlightedOptionEl(ctx)
+            optionEl?.scrollIntoView({ block: "nearest" })
+          }
+          raf(() => exec())
+          return observeAttributes(dom.getContentEl(ctx), ["aria-activedescendant"], exec)
         },
       },
 

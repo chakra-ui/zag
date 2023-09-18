@@ -172,7 +172,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["visible"],
-      activities: ["trackInteractOutside", "trackPositioning"],
+      activities: ["trackInteractOutside", "trackPositioning", "scrollToHighlightedItem"],
       entry: ["focusMenu", "resumePointer"],
       on: {
         TRIGGER_CLICK: {

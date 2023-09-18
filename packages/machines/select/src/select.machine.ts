@@ -336,18 +336,12 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         scrollToHighlightedItem(ctx, _evt, { getState }) {
           const exec = () => {
             const state = getState()
-
             // don't scroll into view if we're using the pointer
             if (state.event.type.startsWith("ITEM.POINTER")) return
-
             const optionEl = dom.getHighlightedOptionEl(ctx)
             optionEl?.scrollIntoView({ block: "nearest" })
           }
-
-          raf(() => {
-            exec()
-          })
-
+          raf(() => exec())
           return observeAttributes(dom.getContentEl(ctx), ["aria-activedescendant"], exec)
         },
       },

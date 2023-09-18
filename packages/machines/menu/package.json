@@ -34,6 +34,7 @@
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
+    "@zag-js/mutation-observer": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
