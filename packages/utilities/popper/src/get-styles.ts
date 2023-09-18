@@ -45,6 +45,7 @@ export function getPlacementStyles(options: PositioningOptions = {}) {
       top: "0px",
       left: "0px",
       transform: `translate3d(var(--x), var(--y), 0)`,
+      zIndex: "var(--z-index)",
     } as const,
   }
 }

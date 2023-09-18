@@ -1,6 +1,6 @@
 import type { Middleware, Placement, VirtualElement } from "@floating-ui/dom"
-import { type ComputePositionConfig, arrow, computePosition, flip, offset, shift, size } from "@floating-ui/dom"
-import { raf } from "@zag-js/dom-query"
+import { arrow, computePosition, flip, offset, shift, size, type ComputePositionConfig } from "@floating-ui/dom"
+import { getWindow, raf } from "@zag-js/dom-query"
 import { callAll, compact } from "@zag-js/utils"
 import { autoUpdate } from "./auto-update"
 import { shiftArrow, transformOrigin } from "./middleware"
@@ -90,8 +90,9 @@ function getPlacementImpl(reference: MaybeRectElement, floating: MaybeElement, o
    * -----------------------------------------------------------------------------*/
 
   function compute(config: Omit<ComputePositionConfig, "platform"> = {}) {
-    if (!reference || !floating) return
     const { placement, strategy, onComplete } = options
+
+    if (!reference || !floating) return
 
     computePosition(reference, floating, {
       placement,
@@ -100,10 +101,15 @@ function getPlacementImpl(reference: MaybeRectElement, floating: MaybeElement, o
       ...config,
     }).then((data) => {
       const x = Math.round(data.x)
-      floating.style.setProperty("--x", `${x}px`)
-
       const y = Math.round(data.y)
+
+      floating.style.setProperty("--x", `${x}px`)
       floating.style.setProperty("--y", `${y}px`)
+
+      const win = getWindow(floating)
+      const zIndex = win.getComputedStyle(floating).zIndex
+
+      floating.style.setProperty("--z-index", zIndex)
 
       onComplete?.(data)
     })
