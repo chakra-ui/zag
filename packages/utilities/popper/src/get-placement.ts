@@ -107,9 +107,12 @@ function getPlacementImpl(reference: MaybeRectElement, floating: MaybeElement, o
       floating.style.setProperty("--y", `${y}px`)
 
       const win = getWindow(floating)
-      const zIndex = win.getComputedStyle(floating).zIndex
+      const contentEl = floating.firstElementChild
 
-      floating.style.setProperty("--z-index", zIndex)
+      if (contentEl) {
+        const zIndex = win.getComputedStyle(contentEl).zIndex
+        floating.style.setProperty("--z-index", zIndex)
+      }
 
       onComplete?.(data)
     })
