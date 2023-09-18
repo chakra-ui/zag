@@ -3,13 +3,13 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./radio-group.anatomy"
 import { dom } from "./radio-group.dom"
-import type { MachineApi, RadioProps, Send, State } from "./radio-group.types"
+import type { ItemProps, ItemState, MachineApi, Send, State } from "./radio-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isGroupDisabled = state.context.isDisabled
 
-  function getRadioState<T extends RadioProps>(props: T) {
-    const radioState = {
+  function getItemState(props: ItemProps): ItemState {
+    return {
       isInvalid: !!props.invalid,
       isDisabled: !!props.disabled || isGroupDisabled,
       isChecked: state.context.value === props.value,
@@ -17,14 +17,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       isHovered: state.context.hoveredId === props.value,
       isActive: state.context.activeId === props.value,
     }
-    return {
-      ...radioState,
-      isInteractive: !radioState.isDisabled,
-    }
   }
 
-  function getRadioDataAttrs<T extends RadioProps>(props: T) {
-    const radioState = getRadioState(props)
+  function getItemDataAttrs<T extends ItemProps>(props: T) {
+    const radioState = getItemState(props)
     return {
       "data-focus": dataAttr(radioState.isFocused),
       "data-disabled": dataAttr(radioState.isDisabled),
@@ -60,7 +56,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     focus,
 
-    getRadioState,
+    getItemState,
 
     rootProps: normalize.element({
       ...parts.root.attrs,
@@ -81,25 +77,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onClick: focus,
     }),
 
-    getRadioProps(props: RadioProps) {
-      const rootState = getRadioState(props)
+    getItemProps(props: ItemProps) {
+      const rootState = getItemState(props)
 
       return normalize.label({
-        ...parts.radio.attrs,
-        id: dom.getRadioId(state.context, props.value),
-        htmlFor: dom.getRadioHiddenInputId(state.context, props.value),
-        ...getRadioDataAttrs(props),
+        ...parts.item.attrs,
+        id: dom.getItemId(state.context, props.value),
+        htmlFor: dom.getItemHiddenInputId(state.context, props.value),
+        ...getItemDataAttrs(props),
 
         onPointerMove() {
-          if (!rootState.isInteractive) return
+          if (rootState.isDisabled) return
           send({ type: "SET_HOVERED", value: props.value, hovered: true })
         },
         onPointerLeave() {
-          if (!rootState.isInteractive) return
+          if (rootState.isDisabled) return
           send({ type: "SET_HOVERED", value: null })
         },
         onPointerDown(event) {
-          if (!rootState.isInteractive) return
+          if (rootState.isDisabled) return
           // On pointerdown, the input blurs and returns focus to the `body`,
           // we need to prevent this.
           if (rootState.isFocused && event.pointerType === "mouse") {
@@ -108,38 +104,38 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "SET_ACTIVE", value: props.value, active: true })
         },
         onPointerUp() {
-          if (!rootState.isInteractive) return
+          if (rootState.isDisabled) return
           send({ type: "SET_ACTIVE", value: null })
         },
       })
     },
 
-    getRadioLabelProps(props: RadioProps) {
+    getItemTextProps(props: ItemProps) {
       return normalize.element({
-        ...parts.radioLabel.attrs,
-        id: dom.getRadioLabelId(state.context, props.value),
-        ...getRadioDataAttrs(props),
+        ...parts.itemText.attrs,
+        id: dom.getItemLabelId(state.context, props.value),
+        ...getItemDataAttrs(props),
       })
     },
 
-    getRadioControlProps(props: RadioProps) {
-      const controlState = getRadioState(props)
+    getItemControlProps(props: ItemProps) {
+      const controlState = getItemState(props)
 
       return normalize.element({
-        ...parts.radioControl.attrs,
-        id: dom.getRadioControlId(state.context, props.value),
+        ...parts.itemControl.attrs,
+        id: dom.getItemControlId(state.context, props.value),
         "data-active": dataAttr(controlState.isActive),
         "aria-hidden": true,
-        ...getRadioDataAttrs(props),
+        ...getItemDataAttrs(props),
       })
     },
 
-    getRadioHiddenInputProps(props: RadioProps) {
-      const inputState = getRadioState(props)
+    getItemHiddenInputProps(props: ItemProps) {
+      const inputState = getItemState(props)
 
       return normalize.input({
         "data-ownedby": dom.getRootId(state.context),
-        id: dom.getRadioHiddenInputId(state.context, props.value),
+        id: dom.getItemHiddenInputId(state.context, props.value),
         type: "radio",
         name: state.context.name || state.context.id,
         form: state.context.form,

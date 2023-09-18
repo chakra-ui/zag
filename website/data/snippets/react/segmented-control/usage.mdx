@@ -18,11 +18,11 @@ function Radio() {
     <div {...api.rootProps}>
       <div {...api.indicatorProps} />
       {items.map((opt) => (
-        <label key={opt.value} {...api.getRadioProps({ value: opt.value })}>
-          <span {...api.getRadioLabelProps({ value: opt.value })}>
+        <label key={opt.value} {...api.getItemProps({ value: opt.value })}>
+          <span {...api.getItemTextProps({ value: opt.value })}>
             {opt.label}
           </span>
-          <input {...api.getRadioHiddenInputProps({ value: opt.value })} />
+          <input {...api.getItemHiddenInputProps({ value: opt.value })} />
         </label>
       ))}
     </div>

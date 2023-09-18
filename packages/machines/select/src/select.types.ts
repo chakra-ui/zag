@@ -287,6 +287,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   labelProps: T["label"]
   controlProps: T["element"]
   triggerProps: T["button"]
+  indicatorProps: T["element"]
   clearTriggerProps: T["button"]
   positionerProps: T["element"]
   contentProps: T["element"]

@@ -17,11 +17,11 @@ const api = computed(() => accordion.connect(state.value, send, normalizeProps))
     <div v-bind="api.rootProps">
       <div v-for="item in accordionData" v-bind="api.getItemProps({ value: item.id })">
         <h3>
-          <button :data-testid="`${item.id}:trigger`" v-bind="api.getTriggerProps({ value: item.id })">
+          <button :data-testid="`${item.id}:trigger`" v-bind="api.getItemTriggerProps({ value: item.id })">
             {{ item.label }}
           </button>
         </h3>
-        <div :data-testid="`${item.id}:content`" v-bind="api.getContentProps({ value: item.id })">
+        <div :data-testid="`${item.id}:content`" v-bind="api.getItemContentProps({ value: item.id })">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
           magna aliqua.
         </div>

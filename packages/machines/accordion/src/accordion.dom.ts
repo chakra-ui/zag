@@ -5,8 +5,8 @@ import type { MachineContext as Ctx } from "./accordion.types"
 export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `accordion:${ctx.id}`,
   getItemId: (ctx: Ctx, value: string) => ctx.ids?.item?.(value) ?? `accordion:${ctx.id}:item:${value}`,
-  getContentId: (ctx: Ctx, value: string) => ctx.ids?.content?.(value) ?? `accordion:${ctx.id}:content:${value}`,
-  getTriggerId: (ctx: Ctx, value: string) => ctx.ids?.trigger?.(value) ?? `accordion:${ctx.id}:trigger:${value}`,
+  getItemContentId: (ctx: Ctx, value: string) => ctx.ids?.content?.(value) ?? `accordion:${ctx.id}:content:${value}`,
+  getItemTriggerId: (ctx: Ctx, value: string) => ctx.ids?.trigger?.(value) ?? `accordion:${ctx.id}:trigger:${value}`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getTriggers: (ctx: Ctx) => {
@@ -17,6 +17,6 @@ export const dom = createScope({
 
   getFirstTriggerEl: (ctx: Ctx) => first(dom.getTriggers(ctx)),
   getLastTriggerEl: (ctx: Ctx) => last(dom.getTriggers(ctx)),
-  getNextTriggerEl: (ctx: Ctx, id: string) => nextById(dom.getTriggers(ctx), dom.getTriggerId(ctx, id)),
-  getPrevTriggerEl: (ctx: Ctx, id: string) => prevById(dom.getTriggers(ctx), dom.getTriggerId(ctx, id)),
+  getNextTriggerEl: (ctx: Ctx, id: string) => nextById(dom.getTriggers(ctx), dom.getItemTriggerId(ctx, id)),
+  getPrevTriggerEl: (ctx: Ctx, id: string) => prevById(dom.getTriggers(ctx), dom.getItemTriggerId(ctx, id)),
 })

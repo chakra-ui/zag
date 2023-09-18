@@ -145,7 +145,7 @@ const [state, send] = useMachine(
 ## Disabling specific accordion items
 
 To disable a specific accordion, pass the `disabled: true` property to the
-`getItemProps`, `getTriggerProps` and `getContentProps`.
+`getItemProps`, `getItemTriggerProps` and `getItemContentProps`.
 
 When an accordion item is disabled, it is skipped from keyboard navigation and
 can't be interacted with.
@@ -154,11 +154,13 @@ can't be interacted with.
 //...
 <div {...api.getItemProps({ value: "item", disabled: true })}>
   <h3>
-    <button {...api.getTriggerProps({ value: "item", disabled: true })}>
+    <button {...api.getItemTriggerProps({ value: "item", disabled: true })}>
       Trigger
     </button>
   </h3>
-  <div {...api.getContentProps({ value: "item", disabled: true })}>Content</div>
+  <div {...api.getItemContentProps({ value: "item", disabled: true })}>
+    Content
+  </div>
 </div>
 //...
 ```
@@ -190,11 +192,11 @@ closed.
   /* styles for the item is open or closed state */
 }
 
-[data-part="trigger"][data-state="open|closed"] {
+[data-part="item-trigger"][data-state="open|closed"] {
   /* styles for the item is open or closed state */
 }
 
-[data-part="content"][data-state="open|closed"] {
+[data-part="item-content"][data-state="open|closed"] {
   /* styles for the item is open or closed state */
 }
 ```
@@ -209,11 +211,11 @@ on the item and content.
   /* styles for the item's focus state */
 }
 
-[data-part="trigger"]:focus {
+[data-part="item-trigger"]:focus {
   /* styles for the trigger's focus state */
 }
 
-[data-part="content"][data-focus] {
+[data-part="item-content"][data-focus] {
   /* styles for the content's focus state */
 }
 ```

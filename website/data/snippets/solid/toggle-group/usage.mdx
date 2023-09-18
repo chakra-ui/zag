@@ -9,9 +9,9 @@ export function ToggleGroup() {
 
   return (
     <div {...api().rootProps}>
-      <button {...api().getToggleProps({ value: "bold" })}>B</button>
-      <button {...api().getToggleProps({ value: "italic" })}>I</button>
-      <button {...api().getToggleProps({ value: "underline" })}>U</button>
+      <button {...api().getItemProps({ value: "bold" })}>B</button>
+      <button {...api().getItemProps({ value: "italic" })}>I</button>
+      <button {...api().getItemProps({ value: "underline" })}>U</button>
     </div>
   )
 }

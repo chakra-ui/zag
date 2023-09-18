@@ -15,7 +15,7 @@ const api = computed(() => toggle.connect(state.value, send, normalizeProps))
   <main class="toggle-group">
     <button>Outside</button>
     <div v-bind="api.rootProps">
-      <button v-for="item in toggleGroupData" :key="item.value" v-bind="api.getToggleProps({ value: item.value })">
+      <button v-for="item in toggleGroupData" :key="item.value" v-bind="api.getItemProps({ value: item.value })">
         {{ item.label }}
       </button>
     </div>

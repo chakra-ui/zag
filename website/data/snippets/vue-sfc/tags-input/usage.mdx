@@ -18,13 +18,13 @@ const api = computed(() =>
 <template>
   <div ref="ref" v-bind="api.rootProps">
     <span v-for="(value, index) in api.value" :key="index">
-      <div v-bind="api.getTagProps({ index, value })">
+      <div v-bind="api.getItemProps({ index, value })">
         <span>{value} </span>
-        <button v-bind="api.getTagDeleteTriggerProps({ index, value })">
+        <button v-bind="api.getItemDeleteTriggerProps({ index, value })">
           &#x2715;
         </button>
       </div>
-      <input v-bind="api.getTagInputProps({ index, value })" />
+      <input v-bind="api.getItemInputProps({ index, value })" />
     </span>
     <input placeholder="Add tag..." v-bind="api.inputProps" />
   </div>

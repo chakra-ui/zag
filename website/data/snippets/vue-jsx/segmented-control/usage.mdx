@@ -23,11 +23,11 @@ export default defineComponent({
       return (
         <div {...api.rootProps}>
           {items.map((opt) => (
-            <label {...api.getRadioProps({ value: opt.value })}>
-              <span {...api.getRadioLabelProps({ value: opt.value })}>
+            <label {...api.getItemProps({ value: opt.value })}>
+              <span {...api.getItemTextProps({ value: opt.value })}>
                 {opt.label}
               </span>
-              <input {...api.getRadioHiddenInputProps({ value: opt.value })} />
+              <input {...api.getItemHiddenInputProps({ value: opt.value })} />
             </label>
           ))}
         </div>

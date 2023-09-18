@@ -68,9 +68,9 @@ export default defineComponent({
             <div {...api.rootProps}>
               <div {...api.controlProps}>
                 {api.sizeArray.map((index) => {
-                  const state = api.getRatingState({ index })
+                  const state = api.getItemState({ index })
                   return (
-                    <span key={index} {...api.getRatingProps({ index })}>
+                    <span key={index} {...api.getItemProps({ index })}>
                       {state.isHalf ? <HalfStar /> : <Star />}
                     </span>
                   )

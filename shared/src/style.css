@@ -454,13 +454,13 @@ main [data-testid="scrubber"] {
   display: inline-flex;
 }
 
-[data-scope="rating-group"][data-part="rating"] {
+[data-scope="rating-group"][data-part="item"] {
   width: 20px;
   height: 20px;
   padding: 1px;
 }
 
-[data-scope="rating-group"][data-part="rating"]:focus {
+[data-scope="rating-group"][data-part="item"]:focus {
   outline: 2px solid royalblue;
 }
 
@@ -468,11 +468,11 @@ main [data-testid="scrubber"] {
   color: #bdbdbd;
 }
 
-[data-scope="rating-group"][data-part="rating"][data-highlighted] [data-part="star"] {
+[data-scope="rating-group"][data-part="item"][data-highlighted] [data-part="star"] {
   color: #ffb400;
 }
 
-[data-scope="rating-group"][data-part="rating"][data-highlighted][data-disabled] [data-part="star"] {
+[data-scope="rating-group"][data-part="item"][data-highlighted][data-disabled] [data-part="star"] {
   color: #a1a1a1;
 }
 
@@ -797,7 +797,7 @@ main [data-testid="scrubber"] {
   outline-offset: 2px;
 }
 
-[data-scope="tags-input"][data-part="tag"] {
+[data-scope="tags-input"][data-part="item"] {
   background: #eee;
   color: #444;
   padding: 0 4px;
@@ -810,15 +810,15 @@ main [data-testid="scrubber"] {
   display: inline-block;
 }
 
-[data-scope="tags-input"][data-part="tag"][hidden] {
+[data-scope="tags-input"][data-part="item"][hidden] {
   display: none !important;
 }
-[data-scope="tags-input"][data-part="tag"][data-highlighted] {
+[data-scope="tags-input"][data-part="item"][data-highlighted] {
   background-color: #777;
   border-color: #777;
   color: #eee;
 }
-[data-scope="tags-input"][data-part="tag"][data-disabled] {
+[data-scope="tags-input"][data-part="item"][data-disabled] {
   opacity: 0.6;
   cursor: default;
 }
@@ -844,7 +844,7 @@ main [data-testid="scrubber"] {
   opacity: 0.6;
 }
 
-[data-scope="tags-input"][data-part="tag-delete-trigger"] {
+[data-scope="tags-input"][data-part="item-delete-trigger"] {
   all: unset;
 }
 
@@ -1028,27 +1028,6 @@ main [data-testid="scrubber"] {
 }
 
 /* -----------------------------------------------------------------------------
-* Toggle
-* -----------------------------------------------------------------------------*/
-
-[data-scope="toggle"][data-part="button"] {
-  background-color: white;
-  color: rgb(111, 110, 119);
-  height: 40px;
-  width: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  font-size: 20px;
-}
-
-[data-scope="toggle"][data-part="button"][data-pressed] {
-  background-color: rgb(63, 139, 77);
-  color: white;
-}
-
-/* -----------------------------------------------------------------------------
 * Tooltip
 * -----------------------------------------------------------------------------*/
 
@@ -1191,7 +1170,7 @@ main [data-testid="scrubber"] {
 * Radio
 * -----------------------------------------------------------------------------*/
 
-[data-scope="radio-group"][data-part="radio-control"][data-focus] {
+[data-scope="radio-group"][data-part="item-control"][data-focus] {
   outline: 2px solid royalblue;
 }
 
@@ -1206,7 +1185,7 @@ main [data-testid="scrubber"] {
   gap: 16px;
 }
 
-[data-scope="radio-group"][data-part="radio"] {
+[data-scope="radio-group"][data-part="item"] {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1214,11 +1193,11 @@ main [data-testid="scrubber"] {
   z-index: 2;
 }
 
-[data-scope="radio-group"][data-part="radio"][data-disabled] {
+[data-scope="radio-group"][data-part="item"][data-disabled] {
   cursor: not-allowed;
 }
 
-[data-scope="radio-group"][data-part="radio-control"] {
+[data-scope="radio-group"][data-part="item-control"] {
   height: 20px;
   width: 20px;
   background-color: #eee;
@@ -1229,20 +1208,20 @@ main [data-testid="scrubber"] {
   justify-content: center;
 }
 
-[data-scope="radio-group"][data-part="radio-control"][data-hover] {
+[data-scope="radio-group"][data-part="item-control"][data-hover] {
   background-color: #ccc;
 }
 
-[data-scope="radio-group"][data-part="radio-control"][data-state="checked"] {
+[data-scope="radio-group"][data-part="item-control"][data-state="checked"] {
   background-color: #2196f3;
   border-color: #2196f3;
 }
 
-[data-scope="radio-group"][data-part="radio-control"][data-state="checked"]::after {
+[data-scope="radio-group"][data-part="item-control"][data-state="checked"]::after {
   display: initial;
 }
 
-[data-scope="radio-group"][data-part="radio-control"]::after {
+[data-scope="radio-group"][data-part="item-control"]::after {
   content: "";
   display: none;
   width: 4px;
@@ -1277,7 +1256,7 @@ main [data-testid="scrubber"] {
   gap: 8px;
 }
 
-.segmented-control [data-part="radio"] {
+.segmented-control [data-part="item"] {
   padding-left: 0;
   padding: 8px;
   width: 100%;
@@ -1678,14 +1657,14 @@ main [data-testid="scrubber"] {
   display: flex;
 }
 
-[data-scope="toggle-group"][data-part="toggle"] {
+[data-scope="toggle-group"][data-part="item"] {
   border-radius: 0px;
   border: 0;
   width: 40px;
   height: 40px;
 }
 
-[data-scope="toggle-group"][data-part="toggle"][data-state="on"] {
+[data-scope="toggle-group"][data-part="item"][data-state="on"] {
   background-color: blue;
   color: white;
 }

@@ -67,6 +67,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
+    indicatorProps: normalize.element({
+      ...parts.indicator.attrs,
+      "data-state": isOpen ? "open" : "closed",
+    }),
+
     positionerProps: normalize.element({
       id: dom.getPositionerId(state.context),
       ...parts.positioner.attrs,

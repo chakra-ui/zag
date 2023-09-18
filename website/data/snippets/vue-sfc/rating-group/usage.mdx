@@ -17,9 +17,9 @@
       <span
         v-for="index in api.sizeArray"
         :key="index"
-        v-bind="api.getRatingProps({ index })"
+        v-bind="api.getItemProps({ index })"
       >
-        <HalfStar v-if="api.getRatingState(index).isHalf" />
+        <HalfStar v-if="api.getItemState(index).isHalf" />
         <Star v-else />
       </span>
     </div>

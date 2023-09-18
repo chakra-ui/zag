@@ -10,9 +10,9 @@ const api = computed(() => toggle.connect(state.value, send, normalizeProps))
 
 <template>
   <div v-bind="api.rootProps">
-    <button v-bind="api.getToggleProps({ value: 'bold' })">B</button>
-    <button v-bind="api.getToggleProps({ value: 'italic' })">I</button>
-    <button v-bind="api.getToggleProps({ value: 'underline' })">U</button>
+    <button v-bind="api.getItemProps({ value: 'bold' })">B</button>
+    <button v-bind="api.getItemProps({ value: 'italic' })">I</button>
+    <button v-bind="api.getItemProps({ value: 'underline' })">U</button>
   </div>
 </template>
 ```

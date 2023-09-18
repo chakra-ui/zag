@@ -3,7 +3,7 @@ import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tags-input.anatomy"
 import { dom } from "./tags-input.dom"
-import type { MachineApi, Send, State, TagProps } from "./tags-input.types"
+import type { MachineApi, Send, State, ItemProps } from "./tags-input.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isInteractive = state.context.isInteractive
@@ -17,8 +17,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isEditingTag = state.matches("editing:tag")
   const isEmpty = state.context.count === 0
 
-  function getTagState(options: TagProps) {
-    const id = dom.getTagId(state.context, options)
+  function getItemState(options: ItemProps) {
+    const id = dom.getItemId(state.context, options)
     return {
       id,
       isEditing: isEditingTag && state.context.editedTagId === id,
@@ -67,7 +67,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dom.getInputEl(state.context)?.focus()
     },
 
-    getTagState,
+    getItemState,
 
     rootProps: normalize.element({
       dir: state.context.dir,
@@ -90,12 +90,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(isInvalid),
       "data-readonly": dataAttr(isReadOnly),
       id: dom.getLabelId(state.context),
+      dir: state.context.dir,
       htmlFor: dom.getInputId(state.context),
     }),
 
     controlProps: normalize.element({
       id: dom.getControlId(state.context),
       ...parts.control.attrs,
+      dir: state.context.dir,
       tabIndex: isReadOnly ? 0 : undefined,
       "data-disabled": dataAttr(isDisabled),
       "data-readonly": dataAttr(isReadOnly),
@@ -105,6 +107,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     inputProps: normalize.input({
       ...parts.input.attrs,
+      dir: state.context.dir,
       "data-invalid": dataAttr(isInvalid),
       "aria-invalid": ariaAttr(isInvalid),
       "data-readonly": dataAttr(isReadOnly),
@@ -193,44 +196,55 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultValue: state.context.valueAsString,
     }),
 
-    getTagProps(props) {
-      const tagState = getTagState(props)
+    getItemProps(props) {
+      const itemState = getItemState(props)
       return normalize.element({
-        ...parts.tag.attrs,
-        id: tagState.id,
-        hidden: tagState.isEditing,
+        ...parts.item.attrs,
+        id: itemState.id,
+        dir: state.context.dir,
+        hidden: itemState.isEditing,
         "data-value": props.value,
         "data-disabled": dataAttr(isDisabled),
-        "data-highlighted": dataAttr(tagState.isHighlighted),
+        "data-highlighted": dataAttr(itemState.isHighlighted),
         onPointerDown(event) {
-          if (!isInteractive || tagState.isDisabled) return
+          if (!isInteractive || itemState.isDisabled) return
           event.preventDefault()
-          send({ type: "POINTER_DOWN_TAG", id: tagState.id })
+          send({ type: "POINTER_DOWN_TAG", id: itemState.id })
         },
         onDoubleClick() {
-          if (!isInteractive || tagState.isDisabled) return
-          send({ type: "DOUBLE_CLICK_TAG", id: tagState.id })
+          if (!isInteractive || itemState.isDisabled) return
+          send({ type: "DOUBLE_CLICK_TAG", id: itemState.id })
         },
       })
     },
 
-    getTagInputProps(props) {
-      const tagState = getTagState(props)
+    getItemTextProps(props) {
+      const itemState = getItemState(props)
+      return normalize.element({
+        ...parts.itemText.attrs,
+        dir: state.context.dir,
+        "data-disabled": dataAttr(isDisabled),
+        "data-highlighted": dataAttr(itemState.isHighlighted),
+      })
+    },
 
+    getItemInputProps(props) {
+      const itemState = getItemState(props)
       return normalize.input({
-        ...parts.tagInput.attrs,
+        ...parts.itemInput.attrs,
+        dir: state.context.dir,
         "aria-label": translations.tagEdited(props.value),
         "aria-hidden": true,
         disabled: isDisabled,
-        id: dom.getTagInputId(state.context, props),
+        id: dom.getItemInputId(state.context, props),
         tabIndex: -1,
-        hidden: !tagState.isEditing,
-        defaultValue: tagState.isEditing ? state.context.editedTagValue : "",
+        hidden: !itemState.isEditing,
+        defaultValue: itemState.isEditing ? state.context.editedTagValue : "",
         onChange(event) {
           send({ type: "TAG_INPUT_TYPE", value: event.target.value })
         },
         onBlur(event) {
-          send({ type: "TAG_INPUT_BLUR", target: event.relatedTarget, id: tagState.id })
+          send({ type: "TAG_INPUT_BLUR", target: event.relatedTarget, id: itemState.id })
         },
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
@@ -252,11 +266,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getTagDeleteTriggerProps(props) {
-      const id = dom.getTagId(state.context, props)
+    getItemDeleteTriggerProps(props) {
+      const id = dom.getItemId(state.context, props)
       return normalize.button({
-        ...parts.tagDeleteTrigger.attrs,
-        id: dom.getTagDeleteTriggerId(state.context, props),
+        ...parts.itemDeleteTrigger.attrs,
+        dir: state.context.dir,
+        id: dom.getItemDeleteTriggerId(state.context, props),
         type: "button",
         disabled: isDisabled,
         "aria-label": translations.deleteTagTriggerLabel(props.value),
@@ -283,6 +298,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     clearTriggerProps: normalize.button({
       ...parts.clearTrigger.attrs,
+      dir: state.context.dir,
       id: dom.getClearTriggerId(state.context),
       type: "button",
       "data-readonly": dataAttr(isReadOnly),

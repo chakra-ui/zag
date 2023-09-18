@@ -4,10 +4,9 @@ import { first, last } from "@zag-js/utils"
 
 export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `toggle-group:${ctx.id}`,
-  getToggleId: (ctx: Ctx, value: string) => ctx.ids?.toggle?.(value) ?? `toggle-group:${ctx.id}:${value}`,
+  getItemId: (ctx: Ctx, value: string) => ctx.ids?.toggle?.(value) ?? `toggle-group:${ctx.id}:${value}`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
-
   getElements: (ctx: Ctx) => {
     const ownerId = CSS.escape(dom.getRootId(ctx))
     const selector = `[data-ownedby='${ownerId}']:not([data-disabled])`

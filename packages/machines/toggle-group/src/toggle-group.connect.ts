@@ -3,19 +3,35 @@ import { dataAttr, isSafari, isSelfEvent } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toggle-group.anatomy"
 import { dom } from "./toggle-group.dom"
-import type { MachineApi, Send, State } from "./toggle-group.types"
+import type { ItemProps, ItemState, MachineApi, Send, State } from "./toggle-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const value = state.context.value
   const disabled = state.context.disabled
   const isSingle = !state.context.multiple
   const rovingFocus = state.context.rovingFocus
+  const isHorizontal = state.context.orientation === "horizontal"
+
+  function getItemState(props: ItemProps): ItemState {
+    const isDisabled = !!props.disabled || !!disabled
+    const isPressed = value?.includes(props.value)
+    const id = dom.getItemId(state.context, props.value)
+    const isFocused = state.context.focusedId === id
+
+    return {
+      id,
+      isDisabled,
+      isPressed,
+      isFocused,
+    }
+  }
 
   return {
     value,
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
+    getItemState,
 
     rootProps: normalize.element({
       ...parts.root.attrs,
@@ -28,56 +44,54 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-focus": dataAttr(state.context.focusedId != null),
       style: { outline: "none" },
       onMouseDown() {
+        if (disabled) return
         send("ROOT.MOUSE_DOWN")
       },
       onFocus(event) {
+        if (disabled) return
         if (!isSelfEvent(event) || !!state.context.isClickFocus || state.context.isTabbingBackward) return
         send("ROOT.FOCUS")
       },
       onBlur() {
+        if (disabled) return
         send("ROOT.BLUR")
       },
     }),
 
-    getToggleProps(props) {
-      const isDisabled = props.disabled || disabled
-      const isPressed = value?.includes(props.value)
-
-      const id = dom.getToggleId(state.context, props.value)
-      const isFocused = state.context.focusedId === id
-      const rovingTabIndex = isFocused ? 0 : -1
+    getItemProps(props) {
+      const itemState = getItemState(props)
+      const rovingTabIndex = itemState.isFocused ? 0 : -1
 
       return normalize.button({
-        ...parts.toggle.attrs,
-        id,
+        ...parts.item.attrs,
+        id: itemState.id,
         type: "button",
         "data-ownedby": dom.getRootId(state.context),
-        "data-focus": dataAttr(isFocused),
-        disabled: isDisabled,
+        "data-focus": dataAttr(itemState.isFocused),
+        disabled: itemState.isDisabled,
         tabIndex: rovingFocus ? rovingTabIndex : undefined,
         // radio
         role: isSingle ? "radio" : undefined,
-        "aria-checked": isSingle ? isPressed : undefined,
-        "aria-pressed": isSingle ? undefined : isPressed,
+        "aria-checked": isSingle ? itemState.isPressed : undefined,
+        "aria-pressed": isSingle ? undefined : itemState.isPressed,
         //
-        "data-disabled": dataAttr(isDisabled),
+        "data-disabled": dataAttr(itemState.isDisabled),
         "data-orientation": state.context.orientation,
         dir: state.context.dir,
-        "data-state": isPressed ? "on" : "off",
+        "data-state": itemState.isPressed ? "on" : "off",
         onFocus() {
-          if (isDisabled) return
-          send({ type: "TOGGLE.FOCUS", id })
+          if (itemState.isDisabled) return
+          send({ type: "TOGGLE.FOCUS", id: itemState.id })
         },
         onClick(event) {
-          if (isDisabled) return
-          send({ type: "TOGGLE.CLICK", id, value: props.value })
+          if (itemState.isDisabled) return
+          send({ type: "TOGGLE.CLICK", id: itemState.id, value: props.value })
           if (isSafari()) {
             event.currentTarget.focus({ preventScroll: true })
           }
         },
         onKeyDown(event) {
-          if (isDisabled || !isSelfEvent(event)) return
-          const isHorizontal = state.context.orientation === "horizontal"
+          if (itemState.isDisabled || !isSelfEvent(event)) return
 
           const keyMap: EventKeyMap = {
             Tab(event) {

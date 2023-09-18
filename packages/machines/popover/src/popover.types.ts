@@ -143,6 +143,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   arrowTipProps: T["element"]
   anchorProps: T["element"]
   triggerProps: T["button"]
+  indicatorProps: T["element"]
   positionerProps: T["element"]
   contentProps: T["element"]
   titleProps: T["element"]

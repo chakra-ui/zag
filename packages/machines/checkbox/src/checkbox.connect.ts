@@ -81,6 +81,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-hidden": true,
     }),
 
+    indicatorProps: normalize.element({
+      ...parts.indicator.attrs,
+      ...dataAttrs,
+      hidden: !isIndeterminate && !state.context.checked,
+    }),
+
     hiddenInputProps: normalize.input({
       id: dom.getHiddenInputId(state.context),
       type: "checkbox",

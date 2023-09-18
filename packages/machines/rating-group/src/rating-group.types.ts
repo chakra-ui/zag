@@ -169,11 +169,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the state of a rating item
    */
-  getRatingState(props: ItemProps): ItemState
+  getItemState(props: ItemProps): ItemState
 
   rootProps: T["element"]
   hiddenInputProps: T["input"]
   labelProps: T["element"]
   controlProps: T["element"]
-  getRatingProps(props: ItemProps): T["element"]
+  getItemProps(props: ItemProps): T["element"]
 }

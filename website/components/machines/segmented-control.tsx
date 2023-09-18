@@ -65,17 +65,17 @@ export function SegmentedControl(props: SegmentedControlProps) {
             cursor: "default",
           }}
           key={opt.value}
-          {...api.getRadioProps({ value: opt.value })}
+          {...api.getItemProps({ value: opt.value })}
         >
           <chakra.span
             order="2"
-            {...api.getRadioLabelProps({ value: opt.value })}
+            {...api.getItemTextProps({ value: opt.value })}
           >
             {opt.label}
           </chakra.span>
           <input
             data-peer
-            {...api.getRadioHiddenInputProps({ value: opt.value })}
+            {...api.getItemHiddenInputProps({ value: opt.value })}
           />
         </chakra.label>
       ))}

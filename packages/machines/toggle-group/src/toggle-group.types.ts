@@ -102,9 +102,16 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface ToggleProps {
+export interface ItemProps {
   value: string
   disabled?: boolean
+}
+
+export interface ItemState {
+  id: string
+  isDisabled: boolean
+  isPressed: boolean
+  isFocused: boolean
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -116,6 +123,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to set the value of the toggle group.
    */
   setValue: (values: string[]) => void
+  /**
+   * Returns the state of the toggle item.
+   */
+  getItemState(props: ItemProps): ItemState
   rootProps: T["element"]
-  getToggleProps(props: ToggleProps): T["button"]
+  getItemProps(props: ItemProps): T["button"]
 }

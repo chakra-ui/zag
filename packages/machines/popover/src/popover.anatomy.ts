@@ -5,10 +5,12 @@ export const anatomy = createAnatomy("popover").parts(
   "arrowTip",
   "anchor",
   "trigger",
+  "indicator",
   "positioner",
   "content",
   "title",
   "description",
   "closeTrigger",
 )
+
 export const parts = anatomy.build()

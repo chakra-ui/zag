@@ -43,17 +43,14 @@ export function Radio(props: RadioProps) {
               opacity: 0.4,
             }}
             key={opt.id}
-            {...api.getRadioProps({ value: opt.id })}
+            {...api.getItemProps({ value: opt.id })}
           >
-            <chakra.span
-              order="2"
-              {...api.getRadioLabelProps({ value: opt.id })}
-            >
+            <chakra.span order="2" {...api.getItemTextProps({ value: opt.id })}>
               {opt.label}
             </chakra.span>
             <input
               data-peer
-              {...api.getRadioHiddenInputProps({ value: opt.id })}
+              {...api.getItemHiddenInputProps({ value: opt.id })}
             />
             <chakra.div
               order="1"
@@ -80,7 +77,7 @@ export function Radio(props: RadioProps) {
                   borderColor: "blue.500",
                 },
               }}
-              {...api.getRadioControlProps({ value: opt.id })}
+              {...api.getItemControlProps({ value: opt.id })}
             >
               {api.value === opt.id && (
                 <chakra.svg

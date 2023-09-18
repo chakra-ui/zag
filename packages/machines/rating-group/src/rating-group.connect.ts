@@ -15,18 +15,15 @@ import type { ItemProps, ItemState, MachineApi, Send, State } from "./rating-gro
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isInteractive = state.context.isInteractive
   const isDisabled = state.context.isDisabled
-
   const value = state.context.value
   const hoveredValue = state.context.hoveredValue
   const translations = state.context.translations
 
-  function getRatingState(props: ItemProps): ItemState {
+  function getItemState(props: ItemProps): ItemState {
     const value = state.context.isHovering ? state.context.hoveredValue : state.context.value
     const isEqual = Math.ceil(value) === props.index
-
     const isHighlighted = props.index <= value || isEqual
     const isHalf = isEqual && Math.abs(value - props.index) === 0.5
-
     return {
       isEqual,
       isValueEmpty: state.context.value === -1,
@@ -50,7 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     hoveredValue,
     size: state.context.max,
     sizeArray: Array.from({ length: state.context.max }).map((_, index) => index + 1),
-    getRatingState,
+    getItemState: getItemState,
 
     rootProps: normalize.element({
       dir: state.context.dir,
@@ -91,14 +88,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getRatingProps(props: ItemProps) {
+    getItemProps(props: ItemProps) {
       const { index } = props
-      const itemState = getRatingState(props)
+      const itemState = getItemState(props)
       const valueText = translations.ratingValueText(index)
 
       return normalize.element({
-        ...parts.rating.attrs,
-        id: dom.getRatingId(state.context, index.toString()),
+        ...parts.item.attrs,
+        id: dom.getItemId(state.context, index.toString()),
         role: "radio",
         tabIndex: isDisabled ? undefined : itemState.isChecked ? 0 : -1,
         "aria-roledescription": "rating",

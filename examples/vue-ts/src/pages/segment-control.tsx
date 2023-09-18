@@ -25,11 +25,11 @@ export default defineComponent({
             <div {...api.rootProps}>
               <div {...api.indicatorProps} />
               {radioData.map((opt) => (
-                <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getRadioProps({ value: opt.id })}>
-                  <span data-testid={`label-${opt.id}`} {...api.getRadioLabelProps({ value: opt.id })}>
+                <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
+                  <span data-testid={`label-${opt.id}`} {...api.getItemTextProps({ value: opt.id })}>
                     {opt.label}
                   </span>
-                  <input data-testid={`input-${opt.id}`} {...api.getRadioHiddenInputProps({ value: opt.id })} />
+                  <input data-testid={`input-${opt.id}`} {...api.getItemHiddenInputProps({ value: opt.id })} />
                 </label>
               ))}
             </div>

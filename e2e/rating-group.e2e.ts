@@ -3,7 +3,7 @@ import { a11y, controls as testControls, part, testid } from "./__utils"
 
 const control = part("control")
 const hiddenInput = testid("hidden-input")
-const rating = part("rating")
+const rating = part("item")
 
 const getRating = (page: Page, value: number) => {
   return page.locator(rating).nth(value - 1)

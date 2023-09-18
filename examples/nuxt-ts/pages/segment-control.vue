@@ -21,12 +21,12 @@ const api = computed(() => radio.connect(state.value, send, normalizeProps))
         v-for="opt in radioData"
         :key="opt.id"
         :data-testid="`radio-${opt.id}`"
-        v-bind="api.getRadioProps({ value: opt.id })"
+        v-bind="api.getItemProps({ value: opt.id })"
       >
-        <span :data-testid="`label-${opt.id}`" v-bind="api.getRadioLabelProps({ value: opt.id })">
+        <span :data-testid="`label-${opt.id}`" v-bind="api.getItemTextProps({ value: opt.id })">
           {{ opt.label }}
         </span>
-        <input :data-testid="`input-${opt.id}`" v-bind="api.getRadioHiddenInputProps({ value: opt.id })" />
+        <input :data-testid="`input-${opt.id}`" v-bind="api.getItemHiddenInputProps({ value: opt.id })" />
       </label>
     </div>
 
