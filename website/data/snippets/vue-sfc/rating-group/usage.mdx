@@ -19,7 +19,7 @@
         :key="index"
         v-bind="api.getItemProps({ index })"
       >
-        <HalfStar v-if="api.getItemState(index).isHalf" />
+        <HalfStar v-if="api.getItemState({ index }).isHalf" />
         <Star v-else />
       </span>
     </div>
