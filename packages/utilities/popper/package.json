@@ -26,7 +26,7 @@
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/element-rect": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "@floating-ui/dom": "1.5.2"
+    "@floating-ui/dom": "1.5.3"
   },
   "devDependencies": {
     "clean-package": "2.2.0"
