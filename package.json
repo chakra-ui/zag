@@ -60,7 +60,7 @@
     "@axe-core/playwright": "4.7.3",
     "@babel/generator": "7.22.15",
     "@babel/parser": "7.22.16",
-    "@babel/traverse": "7.22.19",
+    "@babel/traverse": "7.22.20",
     "@babel/types": "7.22.19",
     "@changesets/changelog-github": "0.4.8",
     "@changesets/cli": "2.26.2",
