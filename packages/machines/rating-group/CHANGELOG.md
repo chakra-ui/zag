@@ -1,5 +1,50 @@
 # @zag-js/rating-group
 
+## 0.21.0
+
+### Minor Changes
+
+- [#882](https://github.com/chakra-ui/zag/pull/882)
+  [`fd71ad98`](https://github.com/chakra-ui/zag/commit/fd71ad98660fce3dd06c6dc2fa01e913ae7c3992) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Refactor component anatomy to use consistent naming convention
+  across all machines.
+
+  - **Accordion**
+
+    - `getTriggerProps` => `getItemTriggerProps`
+    - `getContentProps` => `getItemContentProps`
+
+  - **Radio**
+
+    - `getRadioProps` => `getItemProps`
+    - `getRadioControlProps` => `getItemControlProps`
+    - `getRadioLabelProps` => `getItemTextProps`
+    - `getRatingState` => `getItemState`
+    - `getRatingProps` => `getItemProps`
+
+  - **TagsInput**
+
+    - `getTagProps` => `getItemProps`
+    - `getTagDeleteTriggerProps` => `getItemDeleteTriggerProps`
+    - `getTagInputProps` => `getItemInputProps`
+
+  - **Toggle Group**
+    - `getToggleProps` => `getItemProps`
+  - **ToggleGroup**: Allow deselecting item when `multiple` is `false`.
+  - Add indicator part to some components for ease of styling. Added `AccordionItemIndicator`, `SelectIndicator`,
+    `MenuIndicator`, `PopoverIndicator`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.21.0
+  - @zag-js/core@0.21.0
+  - @zag-js/types@0.21.0
+  - @zag-js/utils@0.21.0
+  - @zag-js/dom-event@0.21.0
+  - @zag-js/dom-query@0.21.0
+  - @zag-js/form-utils@0.21.0
+
 ## 0.20.0
 
 ### Minor Changes

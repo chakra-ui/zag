@@ -1,5 +1,23 @@
 # @zag-js/combobox
 
+## 0.21.0
+
+### Patch Changes
+
+- Updated dependencies [[`e9d425c4`](https://github.com/chakra-ui/zag/commit/e9d425c427e0b9386680c8e7906f71a8c9a45978),
+  [`c2804903`](https://github.com/chakra-ui/zag/commit/c2804903811a29d4acfb697c8a098c74b2a5688b)]:
+  - @zag-js/popper@0.21.0
+  - @zag-js/collection@0.21.0
+  - @zag-js/anatomy@0.21.0
+  - @zag-js/core@0.21.0
+  - @zag-js/types@0.21.0
+  - @zag-js/aria-hidden@0.21.0
+  - @zag-js/utils@0.21.0
+  - @zag-js/dismissable@0.21.0
+  - @zag-js/dom-event@0.21.0
+  - @zag-js/dom-query@0.21.0
+  - @zag-js/mutation-observer@0.21.0
+
 ## 0.20.0
 
 ### Minor Changes
