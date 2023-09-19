@@ -1,5 +1,18 @@
 # @zag-js/popper
 
+## 0.21.0
+
+### Patch Changes
+
+- [`e9d425c4`](https://github.com/chakra-ui/zag/commit/e9d425c427e0b9386680c8e7906f71a8c9a45978) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Sync floating element `zIndex` with the positioner element
+  `zIndex`.
+
+- Updated dependencies []:
+  - @zag-js/utils@0.21.0
+  - @zag-js/dom-query@0.21.0
+  - @zag-js/element-rect@0.21.0
+
 ## 0.20.0
 
 ### Patch Changes

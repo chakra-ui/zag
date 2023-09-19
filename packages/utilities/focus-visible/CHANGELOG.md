@@ -1,5 +1,16 @@
 # @zag-js/focus-visible
 
+## 0.21.0
+
+### Patch Changes
+
+- [#881](https://github.com/chakra-ui/zag/pull/881)
+  [`2eddaec5`](https://github.com/chakra-ui/zag/commit/2eddaec55faf593e830a4db84a8876af34491ee1) Thanks
+  [@Shankrie](https://github.com/Shankrie)! - Fix focus handling when clicked inside element with tabindex attribute
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.21.0
+
 ## 0.20.0
 
 ### Patch Changes

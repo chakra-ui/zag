@@ -1,5 +1,20 @@
 # @zag-js/toast
 
+## 0.21.0
+
+### Patch Changes
+
+- [`74a02712`](https://github.com/chakra-ui/zag/commit/74a02712665d7256ac5cfaf021b45d0e298fd3ad) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Use unique labels for toast regions.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.21.0
+  - @zag-js/core@0.21.0
+  - @zag-js/types@0.21.0
+  - @zag-js/utils@0.21.0
+  - @zag-js/dom-event@0.21.0
+  - @zag-js/dom-query@0.21.0
+
 ## 0.20.0
 
 ### Patch Changes

@@ -1,5 +1,20 @@
 # @zag-js/pagination
 
+## 0.21.0
+
+### Patch Changes
+
+- [#873](https://github.com/chakra-ui/zag/pull/873)
+  [`9db4e54b`](https://github.com/chakra-ui/zag/commit/9db4e54b7212d4ef575edaea3504d4b6b896aa17) Thanks
+  [@srflp](https://github.com/srflp)! - Fix a bug where pagination does not return any pages.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.21.0
+  - @zag-js/core@0.21.0
+  - @zag-js/types@0.21.0
+  - @zag-js/utils@0.21.0
+  - @zag-js/dom-query@0.21.0
+
 ## 0.20.0
 
 ### Minor Changes

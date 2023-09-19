@@ -1,5 +1,12 @@
 # @zag-js/collection
 
+## 0.21.0
+
+### Patch Changes
+
+- [`c2804903`](https://github.com/chakra-ui/zag/commit/c2804903811a29d4acfb697c8a098c74b2a5688b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for readonly items in collection type
+
 ## 0.20.0
 
 ### Patch Changes
