@@ -6,6 +6,54 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.21.0] - 2023-09-19
+
+### Fixed
+
+- **ToggleGroup**: Fix issue where anatomy was not exported
+- **Pagination**: Fix bug where pagination returns inconsistent pages
+- **Select, Combobox**: Fix issue where `readonly` items could not be used in the collection
+- **Focus Visible**: Fix issue where focus visible was not working when clicked inside element with `tabindex` attribute
+- **Toast**: Fix accessibility issue where toast placement region labels were not unique
+- **Menu**: Fix issue where menu does not scroll highlighted item into view
+
+### Added
+
+- Add indicator part to some components for ease of styling. Added `AccordionItemIndicator`, `SelectIndicator`,
+  `MenuIndicator`, `PopoverIndicator`
+
+### Changed
+
+- **Popper**: Ensure positioner uses the same `zIndex` as the content element
+
+> 💥 Breaking changes
+
+- Refactor component anatomy to use consistent naming convention across all machines.
+
+  - **Accordion**
+
+    - `getTriggerProps` => `getItemTriggerProps`
+    - `getContentProps` => `getItemContentProps`
+
+  - **Radio**
+
+    - `getRadioProps` => `getItemProps`
+    - `getRadioControlProps` => `getItemControlProps`
+    - `getRadioLabelProps` => `getItemTextProps`
+    - `getRatingState` => `getItemState`
+    - `getRatingProps` => `getItemProps`
+
+  - **TagsInput**
+
+    - `getTagProps` => `getItemProps`
+    - `getTagDeleteTriggerProps` => `getItemDeleteTriggerProps`
+    - `getTagInputProps` => `getItemInputProps`
+
+  - **Toggle Group**
+    - `getToggleProps` => `getItemProps`
+
+- **ToggleGroup**: Allow deselecting item when `multiple` is `false`.
+
 ## [0.20.0] - 2023-09-14
 
 ### Fixed
