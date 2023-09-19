@@ -75,6 +75,12 @@ function onWindowFocus(event: FocusEvent) {
     return
   }
 
+  // An extra event is fired when the user first clicks inside an element with tabindex attribute.
+  // We ignore these events so they don't cause keyboard focus ring to appear.
+  if (event.target instanceof Element && event.target.hasAttribute("tabindex")) {
+    return
+  }
+
   // If a focus event occurs without a preceding keyboard or pointer event, switch to keyboard modality.
   // This occurs, for example, when navigating a form with the next/previous buttons on iOS.
   if (!hasEventBeforeFocus && !hasBlurredWindowRecently) {
