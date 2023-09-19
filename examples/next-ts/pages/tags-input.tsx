@@ -33,16 +33,16 @@ export default function Page() {
           <div {...api.controlProps}>
             {api.value.map((value, index) => (
               <span key={`${toDashCase(value)}-tag-${index}`}>
-                <div data-testid={`${toDashCase(value)}-tag`} {...api.getTagProps({ index, value })}>
+                <div data-testid={`${toDashCase(value)}-tag`} {...api.getItemProps({ index, value })}>
                   <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
                   <button
                     data-testid={`${toDashCase(value)}-close-button`}
-                    {...api.getTagDeleteTriggerProps({ index, value })}
+                    {...api.getItemDeleteTriggerProps({ index, value })}
                   >
                     &#x2715;
                   </button>
                 </div>
-                <input data-testid={`${toDashCase(value)}-input`} {...api.getTagInputProps({ index, value })} />
+                <input data-testid={`${toDashCase(value)}-input`} {...api.getItemInputProps({ index, value })} />
               </span>
             ))}
             <input data-testid="input" placeholder="add tag" {...api.inputProps} />

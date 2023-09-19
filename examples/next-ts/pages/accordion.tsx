@@ -27,11 +27,11 @@ export default function Page() {
           {accordionData.map((item) => (
             <div key={item.id} {...api.getItemProps({ value: item.id })}>
               <h3>
-                <button data-testid={`${item.id}:trigger`} {...api.getTriggerProps({ value: item.id })}>
+                <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
                   {item.label}
                 </button>
               </h3>
-              <div data-testid={`${item.id}:content`} {...api.getContentProps({ value: item.id })}>
+              <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>

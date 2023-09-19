@@ -7,7 +7,7 @@ export const dom = createScope({
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `rating:${ctx.id}:label`,
   getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `rating:${ctx.id}:input`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `rating:${ctx.id}:control`,
-  getRatingId: (ctx: Ctx, id: string) => ctx.ids?.rating?.(id) ?? `rating:${ctx.id}:star:${id}`,
+  getItemId: (ctx: Ctx, id: string) => ctx.ids?.rating?.(id) ?? `rating:${ctx.id}:star:${id}`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),

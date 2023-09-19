@@ -50,13 +50,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getContentProps(props: ItemProps) {
+    getItemContentProps(props: ItemProps) {
       const itemState = getItemState(props)
       return normalize.element({
-        ...parts.content.attrs,
+        ...parts.itemContent.attrs,
         role: "region",
-        id: dom.getContentId(state.context, props.value),
-        "aria-labelledby": dom.getTriggerId(state.context, props.value),
+        id: dom.getItemContentId(state.context, props.value),
+        "aria-labelledby": dom.getItemTriggerId(state.context, props.value),
         hidden: !itemState.isOpen,
         "data-state": itemState.isOpen ? "open" : "closed",
         "data-disabled": dataAttr(itemState.isDisabled),
@@ -65,15 +65,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getTriggerProps(props: ItemProps) {
+    getItemIndicatorProps(props) {
+      const itemState = getItemState(props)
+      return normalize.element({
+        ...parts.itemIndicator.attrs,
+        "aria-hidden": true,
+        "data-state": itemState.isOpen ? "open" : "closed",
+        "data-disabled": dataAttr(itemState.isDisabled),
+        "data-focus": dataAttr(itemState.isFocused),
+        "data-orientation": state.context.orientation,
+      })
+    },
+
+    getItemTriggerProps(props: ItemProps) {
       const { value } = props
       const itemState = getItemState(props)
 
       return normalize.button({
-        ...parts.trigger.attrs,
+        ...parts.itemTrigger.attrs,
         type: "button",
-        id: dom.getTriggerId(state.context, value),
-        "aria-controls": dom.getContentId(state.context, value),
+        id: dom.getItemTriggerId(state.context, value),
+        "aria-controls": dom.getItemContentId(state.context, value),
         "aria-expanded": itemState.isOpen,
         disabled: itemState.isDisabled,
         "data-orientation": state.context.orientation,

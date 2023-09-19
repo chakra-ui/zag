@@ -196,6 +196,12 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       },
     }),
 
+    indicatorProps: normalize.element({
+      ...parts.indicator.attrs,
+      "aria-hidden": true,
+      "data-state": isOpen ? "open" : "closed",
+    }),
+
     getItemProps(props) {
       const itemState = getItemState(props)
 

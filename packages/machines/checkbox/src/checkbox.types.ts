@@ -149,4 +149,5 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   labelProps: T["element"]
   controlProps: T["element"]
   hiddenInputProps: T["input"]
+  indicatorProps: T["element"]
 }

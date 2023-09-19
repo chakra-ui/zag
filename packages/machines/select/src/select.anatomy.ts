@@ -4,6 +4,7 @@ export const anatomy = createAnatomy("select").parts(
   "label",
   "positioner",
   "trigger",
+  "indicator",
   "clearTrigger",
   "item",
   "itemText",

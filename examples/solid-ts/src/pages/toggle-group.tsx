@@ -21,7 +21,7 @@ export default function Page() {
         <button>Outside</button>
         <div {...api().rootProps}>
           <For each={toggleGroupData}>
-            {(item) => <button {...api().getToggleProps({ value: item.value })}>{item.label}</button>}
+            {(item) => <button {...api().getItemProps({ value: item.value })}>{item.label}</button>}
           </For>
         </div>
       </main>

@@ -55,9 +55,9 @@ type ElementIds = Partial<{
   clearBtn: string
   label: string
   control: string
-  tag(opts: TagProps): string
-  tagDeleteTrigger(opts: TagProps): string
-  tagInput(opts: TagProps): string
+  item(opts: ItemProps): string
+  itemDeleteTrigger(opts: ItemProps): string
+  itemInput(opts: ItemProps): string
 }>
 
 interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
@@ -252,13 +252,13 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface TagProps {
+export interface ItemProps {
   index: string | number
   value: string
   disabled?: boolean
 }
 
-export interface TagState {
+export interface ItemState {
   id: string
   isEditing: boolean
   isHighlighted: boolean
@@ -321,15 +321,16 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the state of a tag
    */
-  getTagState(props: TagProps): TagState
+  getItemState(props: ItemProps): ItemState
 
   rootProps: T["element"]
   labelProps: T["label"]
   controlProps: T["element"]
   inputProps: T["input"]
   hiddenInputProps: T["input"]
-  getTagProps(options: TagProps): T["element"]
-  getTagInputProps(options: TagProps): T["input"]
-  getTagDeleteTriggerProps(options: TagProps): T["button"]
   clearTriggerProps: T["button"]
+  getItemProps(options: ItemProps): T["element"]
+  getItemTextProps(options: ItemProps): T["element"]
+  getItemInputProps(options: ItemProps): T["input"]
+  getItemDeleteTriggerProps(options: ItemProps): T["button"]
 }

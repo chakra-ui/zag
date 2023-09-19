@@ -270,6 +270,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   contextTriggerProps: T["element"]
   getTriggerItemProps<A extends Api>(childApi: A): T["element"]
   triggerProps: T["button"]
+  indicatorProps: T["element"]
   positionerProps: T["element"]
   arrowProps: T["element"]
   arrowTipProps: T["element"]

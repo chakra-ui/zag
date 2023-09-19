@@ -4,18 +4,18 @@ import type { MachineContext as Ctx } from "./radio-group.types"
 export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `radio-group:${ctx.id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `radio-group:${ctx.id}:label`,
-  getRadioId: (ctx: Ctx, value: string) => ctx.ids?.radio?.(value) ?? `radio-group:${ctx.id}:radio:${value}`,
-  getRadioHiddenInputId: (ctx: Ctx, value: string) =>
-    ctx.ids?.radioHiddenInput?.(value) ?? `radio-group:${ctx.id}:radio:input:${value}`,
-  getRadioControlId: (ctx: Ctx, value: string) =>
-    ctx.ids?.radioControl?.(value) ?? `radio-group:${ctx.id}:radio:control:${value}`,
-  getRadioLabelId: (ctx: Ctx, value: string) =>
-    ctx.ids?.radioLabel?.(value) ?? `radio-group:${ctx.id}:radio:label:${value}`,
+  getItemId: (ctx: Ctx, value: string) => ctx.ids?.item?.(value) ?? `radio-group:${ctx.id}:radio:${value}`,
+  getItemHiddenInputId: (ctx: Ctx, value: string) =>
+    ctx.ids?.itemHiddenInput?.(value) ?? `radio-group:${ctx.id}:radio:input:${value}`,
+  getItemControlId: (ctx: Ctx, value: string) =>
+    ctx.ids?.itemControl?.(value) ?? `radio-group:${ctx.id}:radio:control:${value}`,
+  getItemLabelId: (ctx: Ctx, value: string) =>
+    ctx.ids?.itemLabel?.(value) ?? `radio-group:${ctx.id}:radio:label:${value}`,
   getIndicatorId: (ctx: Ctx) => ctx.ids?.indicator ?? `radio-group:${ctx.id}:indicator`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
-  getRadioHiddenInputEl: (ctx: Ctx, value: string) =>
-    dom.getById<HTMLInputElement>(ctx, dom.getRadioHiddenInputId(ctx, value)),
+  getItemHiddenInputEl: (ctx: Ctx, value: string) =>
+    dom.getById<HTMLInputElement>(ctx, dom.getItemHiddenInputId(ctx, value)),
   getIndicatorEl: (ctx: Ctx) => dom.getById(ctx, dom.getIndicatorId(ctx)),
 
   getFirstEnabledInputEl: (ctx: Ctx) => dom.getRootEl(ctx)?.querySelector<HTMLInputElement>("input:not(:disabled)"),
@@ -30,7 +30,7 @@ export const dom = createScope({
 
   getActiveRadioEl: (ctx: Ctx) => {
     if (!ctx.value) return
-    return dom.getById(ctx, dom.getRadioId(ctx, ctx.value))
+    return dom.getById(ctx, dom.getItemId(ctx, ctx.value))
   },
 
   getOffsetRect: (el: HTMLElement | undefined) => ({
@@ -41,7 +41,7 @@ export const dom = createScope({
   }),
 
   getRectById: (ctx: Ctx, id: string) => {
-    const radioEl = dom.getById(ctx, dom.getRadioId(ctx, id))
+    const radioEl = dom.getById(ctx, dom.getItemId(ctx, id))
     if (!radioEl) return
     return dom.resolveRect(dom.getOffsetRect(radioEl))
   },

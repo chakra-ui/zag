@@ -26,7 +26,7 @@ export default defineComponent({
             <button>Outside</button>
             <div {...api.rootProps}>
               {toggleGroupData.map((item) => (
-                <button key={item.value} {...api.getToggleProps({ value: item.value })}>
+                <button key={item.value} {...api.getItemProps({ value: item.value })}>
                   {item.label}
                 </button>
               ))}

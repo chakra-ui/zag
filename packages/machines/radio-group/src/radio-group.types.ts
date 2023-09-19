@@ -13,10 +13,10 @@ type ElementIds = Partial<{
   root: string
   label: string
   indicator: string
-  radio(value: string): string
-  radioLabel(value: string): string
-  radioControl(value: string): string
-  radioHiddenInput(value: string): string
+  item(value: string): string
+  itemLabel(value: string): string
+  itemControl(value: string): string
+  itemHiddenInput(value: string): string
 }>
 
 interface PublicContext extends DirectionProperty, CommonProperties {
@@ -115,14 +115,13 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface RadioProps {
+export interface ItemProps {
   value: string
   disabled?: boolean
   invalid?: boolean
 }
 
-export interface RadioState {
-  isInteractive: boolean
+export interface ItemState {
   isInvalid: boolean
   isDisabled: boolean
   isChecked: boolean
@@ -155,12 +154,12 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the state details of a radio input
    */
-  getRadioState(props: RadioProps): RadioState
+  getItemState(props: ItemProps): ItemState
   rootProps: T["element"]
   labelProps: T["element"]
-  getRadioProps(props: RadioProps): T["label"]
-  getRadioLabelProps(props: RadioProps): T["element"]
-  getRadioControlProps(props: RadioProps): T["element"]
-  getRadioHiddenInputProps(props: RadioProps): T["input"]
+  getItemProps(props: ItemProps): T["label"]
+  getItemTextProps(props: ItemProps): T["element"]
+  getItemControlProps(props: ItemProps): T["element"]
+  getItemHiddenInputProps(props: ItemProps): T["input"]
   indicatorProps: T["element"]
 }

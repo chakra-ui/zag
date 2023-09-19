@@ -123,6 +123,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getItemState: (props: ItemProps) => ItemState
   rootProps: T["element"]
   getItemProps(props: ItemProps): T["element"]
-  getContentProps(props: ItemProps): T["element"]
-  getTriggerProps(props: ItemProps): T["button"]
+  getItemContentProps(props: ItemProps): T["element"]
+  getItemTriggerProps(props: ItemProps): T["button"]
+  getItemIndicatorProps(props: ItemProps): T["element"]
 }

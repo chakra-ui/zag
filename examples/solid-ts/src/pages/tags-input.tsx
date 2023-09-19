@@ -32,18 +32,18 @@ export default function Page() {
             <For each={api().value}>
               {(value, index) => (
                 <span>
-                  <div data-testid={`${toDashCase(value)}-tag`} {...api().getTagProps({ index: index(), value })}>
+                  <div data-testid={`${toDashCase(value)}-tag`} {...api().getItemProps({ index: index(), value })}>
                     <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
                     <button
                       data-testid={`${toDashCase(value)}-close-button`}
-                      {...api().getTagDeleteTriggerProps({ index: index(), value })}
+                      {...api().getItemDeleteTriggerProps({ index: index(), value })}
                     >
                       &#x2715;
                     </button>
                   </div>
                   <input
                     data-testid={`${toDashCase(value)}-input`}
-                    {...api().getTagInputProps({ index: index(), value })}
+                    {...api().getItemInputProps({ index: index(), value })}
                   />
                 </span>
               )}

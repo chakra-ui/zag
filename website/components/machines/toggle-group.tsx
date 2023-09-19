@@ -43,13 +43,13 @@ export function ToggleGroup(props: Props) {
   return (
     <div>
       <HStack spacing="0" mt="10" {...api.rootProps}>
-        <Button {...api.getToggleProps({ value: "bold" })}>
+        <Button {...api.getItemProps({ value: "bold" })}>
           <RxFontBold />
         </Button>
-        <Button {...api.getToggleProps({ value: "italic" })}>
+        <Button {...api.getItemProps({ value: "italic" })}>
           <RxFontItalic />
         </Button>
-        <Button {...api.getToggleProps({ value: "underline" })}>
+        <Button {...api.getItemProps({ value: "underline" })}>
           <RxUnderline />
         </Button>
       </HStack>

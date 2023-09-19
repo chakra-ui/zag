@@ -16,13 +16,13 @@ export function TagsInput() {
     <div {...api.rootProps}>
       {api.value.map((value, index) => (
         <span key={index}>
-          <div {...api.getTagProps({ index, value })}>
+          <div {...api.getItemProps({ index, value })}>
             <span>{value} </span>
-            <button {...api.getTagDeleteTriggerProps({ index, value })}>
+            <button {...api.getItemDeleteTriggerProps({ index, value })}>
               &#x2715;
             </button>
           </div>
-          <input {...api.getTagInputProps({ index, value })} />
+          <input {...api.getItemInputProps({ index, value })} />
         </span>
       ))}
       <input placeholder="Add tag..." {...api.inputProps} />

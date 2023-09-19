@@ -126,7 +126,7 @@ export function machine(userContext: UserDefinedContext) {
           if (ctx.multiple) {
             next = next.includes(evt.value) ? remove(next, evt.value) : add(next, evt.value)
           } else {
-            next = [evt.value]
+            next = isEqual(ctx.value, [evt.value]) ? [] : [evt.value]
           }
           set.value(ctx, next)
         },

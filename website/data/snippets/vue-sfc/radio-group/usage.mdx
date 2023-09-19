@@ -23,10 +23,10 @@ const api = computed(() => radio.connect(state.value, send, normalizeProps))
       v-for="opt in items"
       :key="opt.id"
     >
-      <label v-bind="api.getRadioProps({ value: opt.id })">
-        <span v-bind="api.getRadioLabelProps({ value: opt.id })">{{ opt.label }}</span>
-        <input v-bind="api.getRadioHiddenInputProps({ value: opt.id })" />
-        <div v-bind="api.getRadioControlProps({ value: opt.id })" />
+      <label v-bind="api.getItemProps({ value: opt.id })">
+        <span v-bind="api.getItemTextProps({ value: opt.id })">{{ opt.label }}</span>
+        <input v-bind="api.getItemHiddenInputProps({ value: opt.id })" />
+        <div v-bind="api.getItemControlProps({ value: opt.id })" />
       </label>
     </div>
   </div>

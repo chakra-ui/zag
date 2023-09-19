@@ -24,11 +24,11 @@ export default defineComponent({
           {data.map((item) => (
             <div {...api.getItemProps({ value: item.title })}>
               <h3>
-                <button {...api.getTriggerProps({ value: item.title })}>
+                <button {...api.getItemTriggerProps({ value: item.title })}>
                   {item.title}
                 </button>
               </h3>
-              <div {...api.getContentProps({ value: item.title })}>
+              <div {...api.getItemContentProps({ value: item.title })}>
                 {item.content}
               </div>
             </div>

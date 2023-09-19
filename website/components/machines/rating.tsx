@@ -70,11 +70,11 @@ export function Rating(props: RadioProps) {
         <label {...api.labelProps}>Rate Us:</label>
         <chakra.div {...api.controlProps} display="inline-flex">
           {api.sizeArray.map((index) => {
-            const state = api.getRatingState({ index })
+            const state = api.getItemState({ index })
             return (
               <chakra.span
                 key={index}
-                {...api.getRatingProps({ index })}
+                {...api.getItemProps({ index })}
                 boxSize="8"
                 p="1"
                 sx={{

@@ -26,16 +26,16 @@ const api = computed(() => tagsInput.connect(state.value, send, normalizeProps))
       <label v-bind="api.labelProps">Enter frameworks:</label>
       <div v-bind="api.controlProps">
         <span v-for="(value, index) in api.value" :key="`${toDashCase(value)}-tag-${index}`">
-          <div :data-testid="`${toDashCase(value)}-tag`" v-bind="api.getTagProps({ index, value })">
+          <div :data-testid="`${toDashCase(value)}-tag`" v-bind="api.getItemProps({ index, value })">
             <span>{{ value }} &nbsp;</span>
             <button
               :data-testid="`${toDashCase(value)}-close-button`"
-              v-bind="api.getTagDeleteTriggerProps({ index, value })"
+              v-bind="api.getItemDeleteTriggerProps({ index, value })"
             >
               &#x2715;
             </button>
           </div>
-          <input :data-testid="`${toDashCase(value)}-input`" v-bind="api.getTagInputProps({ index, value })" />
+          <input :data-testid="`${toDashCase(value)}-input`" v-bind="api.getItemInputProps({ index, value })" />
         </span>
 
         <input data-testid="input" placeholder="add tag" v-bind="api.inputProps" />

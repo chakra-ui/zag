@@ -56,7 +56,7 @@ export function Accordion(props: AccordionProps) {
               px="3"
               textAlign="start"
               cursor="pointer"
-              {...api.getTriggerProps({ value: item.title })}
+              {...api.getItemTriggerProps({ value: item.title })}
               _focusVisible={{
                 outline: "2px solid #0070f3",
               }}
@@ -71,7 +71,7 @@ export function Accordion(props: AccordionProps) {
             width="full"
             py="2"
             px="3"
-            {...api.getContentProps({ value: item.title })}
+            {...api.getItemContentProps({ value: item.title })}
           >
             {item.content}
           </Box>

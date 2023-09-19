@@ -98,7 +98,7 @@ test.describe("tags-input", () => {
     await page.keyboard.press("ArrowLeft")
     await page.click("body", { force: true })
 
-    expect(await page.locator("[data-part=tag][data-selected]").count()).toBe(0)
+    expect(await page.locator("[data-part=item][data-selected]").count()).toBe(0)
   })
 
   test("removes tag on close button click", async ({ page }) => {

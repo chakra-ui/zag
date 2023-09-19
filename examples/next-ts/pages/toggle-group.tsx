@@ -21,14 +21,14 @@ export default function Page() {
         <button>Outside</button>
         <div {...api.rootProps}>
           {toggleGroupData.map((item) => (
-            <button key={item.value} {...api.getToggleProps({ value: item.value })}>
+            <button key={item.value} {...api.getItemProps({ value: item.value })}>
               {item.label}
             </button>
           ))}
         </div>
       </main>
 
-      <Toolbar controls={controls.ui} viz>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>
     </>
