@@ -224,6 +224,9 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
+      '@zag-js/i18n-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/i18n-utils
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
@@ -459,6 +462,9 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
+      '@zag-js/i18n-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/i18n-utils
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
@@ -670,6 +676,9 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
+      '@zag-js/i18n-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/i18n-utils
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
@@ -890,6 +899,9 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
+      '@zag-js/i18n-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/i18n-utils
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
@@ -1104,6 +1116,9 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
+      '@zag-js/i18n-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/i18n-utils
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
@@ -2482,6 +2497,16 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
+  packages/utilities/i18n-utils:
+    dependencies:
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../dom-query
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
   packages/utilities/interact-outside:
     dependencies:
       '@zag-js/dom-event':
@@ -3040,7 +3065,7 @@ packages:
       '@babel/helper-module-imports': 7.22.5
       '@babel/helper-simple-access': 7.22.5
       '@babel/helper-split-export-declaration': 7.22.6
-      '@babel/helper-validator-identifier': 7.22.19
+      '@babel/helper-validator-identifier': 7.22.15
     dev: true
 
   /@babel/helper-module-transforms@7.22.9(@babel/core@7.22.10):
@@ -3054,7 +3079,7 @@ packages:
       '@babel/helper-module-imports': 7.22.5
       '@babel/helper-simple-access': 7.22.5
       '@babel/helper-split-export-declaration': 7.22.6
-      '@babel/helper-validator-identifier': 7.22.19
+      '@babel/helper-validator-identifier': 7.22.15
     dev: true
 
   /@babel/helper-module-transforms@7.22.9(@babel/core@7.22.9):

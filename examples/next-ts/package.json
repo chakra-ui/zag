@@ -40,6 +40,7 @@
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
+    "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
