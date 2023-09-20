@@ -39,7 +39,7 @@ export interface ColorType {
   /**
    * Returns the color space, 'rgb', 'hsb' or 'hsl', for the current color.
    */
-  getColorSpace(): ColorFormat
+  getColorFormat(): ColorFormat
   /**
    * Returns the color space axes, xChannel, yChannel, zChannel.
    */

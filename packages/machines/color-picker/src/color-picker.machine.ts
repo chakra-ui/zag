@@ -5,9 +5,16 @@ import { raf } from "@zag-js/dom-query"
 import { trackFormControl } from "@zag-js/form-utils"
 import { clampValue, getPercentValue, snapValueToStep } from "@zag-js/numeric-range"
 import { disableTextSelection } from "@zag-js/text-selection"
-import { compact } from "@zag-js/utils"
+import { compact, tryCatch } from "@zag-js/utils"
 import { dom } from "./color-picker.dom"
-import type { ExtendedColorChannel, MachineContext, MachineState, UserDefinedContext } from "./color-picker.types"
+import type {
+  ColorFormat,
+  ColorType,
+  ExtendedColorChannel,
+  MachineContext,
+  MachineState,
+  UserDefinedContext,
+} from "./color-picker.types"
 import { getChannelDetails } from "./utils/get-channel-details"
 import { getChannelInputValue } from "./utils/get-channel-input-value"
 
@@ -32,7 +39,7 @@ export function machine(userContext: UserDefinedContext) {
         isRtl: (ctx) => ctx.dir === "rtl",
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
-        valueAsColor: (ctx) => parseColor(ctx.value),
+        valueAsColor: (ctx) => parseColor(ctx.value) as Color,
       },
 
       on: {
@@ -137,14 +144,6 @@ export function machine(userContext: UserDefinedContext) {
             "CHANNEL_INPUT.CHANGE": {
               actions: ["setChannelColorFromInput"],
             },
-            "CHANNEL_INPUT.BLUR": [
-              {
-                guard: "isTextField",
-                target: "idle",
-                actions: ["setChannelColorFromInput"],
-              },
-              { target: "idle" },
-            ],
             "CHANNEL_SLIDER.BLUR": {
               target: "idle",
             },
@@ -177,9 +176,6 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
-      guards: {
-        isTextField: (_ctx, evt) => !!evt.isTextField,
-      },
       activities: {
         trackFormControl(ctx, _evt, { send, initialContext }) {
           const inputEl = dom.getHiddenInputEl(ctx)
@@ -217,8 +213,8 @@ export function machine(userContext: UserDefinedContext) {
           picker
             .open()
             .then(({ sRGBHex }: { sRGBHex: string }) => {
-              const format = ctx.valueAsColor.getColorSpace()
-              const color = parseColor(sRGBHex).toFormat(format)
+              const format = ctx.valueAsColor.getColorFormat()
+              const color = parseColor(sRGBHex).toFormat(format) as Color
               set.value(ctx, color)
               ctx.onValueChangeEnd?.({ value: ctx.value, valueAsColor: color })
             })
@@ -286,20 +282,35 @@ export function machine(userContext: UserDefinedContext) {
         },
         setChannelColorFromInput(ctx, evt) {
           const { channel, isTextField, value } = evt
-          try {
-            const format = ctx.valueAsColor.getColorSpace()
 
-            const newColor = isTextField
-              ? parseColor(value).toFormat(format)
-              : ctx.valueAsColor.withChannelValue(channel, value)
-
+          // handle alpha channel
+          if (channel === "alpha") {
+            const newColor = ctx.valueAsColor.withChannelValue("alpha", value)
             set.value(ctx, newColor)
-            //
-          } catch {
-            // reset input value
+            return
+          }
+
+          // handle other text channels
+          if (isTextField) {
+            const format: ColorFormat = "hsl"
+            const currentAlpha = ctx.valueAsColor.getChannelValue("alpha")
+
+            const newColor = tryCatch(
+              () => parseColor(value).toFormat(format).withChannelValue("alpha", currentAlpha),
+              () => ctx.valueAsColor,
+            )
+
+            // set channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
             const inputEl = dom.getChannelInputEl(ctx, channel)
             dom.setValue(inputEl, getChannelInputValue(ctx.valueAsColor, channel))
+
+            set.value(ctx, newColor)
+            return
           }
+
+          // handle other channels
+          const newColor = ctx.valueAsColor.withChannelValue(channel, value)
+          set.value(ctx, newColor)
         },
 
         incrementChannel(ctx, evt) {
@@ -384,7 +395,7 @@ const invoke = {
 }
 
 const set = {
-  value(ctx: MachineContext, color: Color) {
+  value(ctx: MachineContext, color: Color | ColorType) {
     if (ctx.valueAsColor.isEqual(color)) return
     ctx.value = color.toString("css")
     invoke.change(ctx)

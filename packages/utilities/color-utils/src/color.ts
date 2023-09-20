@@ -5,8 +5,12 @@ export abstract class Color implements ColorType {
   abstract toString(format: ColorFormat | "css"): string
   abstract clone(): ColorType
   abstract getChannelRange(channel: ColorChannel): ColorChannelRange
-  abstract getColorSpace(): ColorFormat
+  abstract getColorFormat(): ColorFormat
   abstract getColorChannels(): [ColorChannel, ColorChannel, ColorChannel]
+
+  hasColorChannel(channel: ColorChannel): boolean {
+    return this.getColorChannels().includes(channel)
+  }
 
   toHexInt(): number {
     return this.toFormat("rgb").toHexInt()

@@ -1,3 +1,4 @@
+export { getColorAreaGradient } from "./area-gradient"
 export { Color } from "./color"
-export { parseColor, normalizeColor } from "./parse-color"
-export type { ColorChannel, ColorFormat, ColorAxes, ColorChannelRange, ColorType } from "./types"
+export { normalizeColor, parseColor } from "./parse-color"
+export type { ColorAxes, ColorChannel, ColorChannelRange, ColorFormat, ColorType } from "./types"

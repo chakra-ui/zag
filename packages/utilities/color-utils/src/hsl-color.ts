@@ -108,7 +108,7 @@ export class HSLColor extends Color {
     }
   }
 
-  getColorSpace(): ColorFormat {
+  getColorFormat(): ColorFormat {
     return "hsl"
   }
 

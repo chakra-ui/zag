@@ -196,7 +196,7 @@ export class RGBColor extends Color {
     }
   }
 
-  getColorSpace(): ColorFormat {
+  getColorFormat(): ColorFormat {
     return "rgb"
   }
 

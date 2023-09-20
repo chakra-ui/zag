@@ -113,7 +113,7 @@ export class HSBColor extends Color {
     }
   }
 
-  getColorSpace(): ColorFormat {
+  getColorFormat(): ColorFormat {
     return "hsb"
   }
 

@@ -12,9 +12,7 @@ const {
 const fetchMachine = createMachine({
   id: "color-picker",
   initial: "idle",
-  context: {
-    "isTextField": false
-  },
+  context: {},
   on: {
     "VALUE.SET": {
       actions: ["setValue"]
@@ -115,13 +113,6 @@ const fetchMachine = createMachine({
         "CHANNEL_INPUT.CHANGE": {
           actions: ["setChannelColorFromInput"]
         },
-        "CHANNEL_INPUT.BLUR": [{
-          cond: "isTextField",
-          target: "idle",
-          actions: ["setChannelColorFromInput"]
-        }, {
-          target: "idle"
-        }],
         "CHANNEL_SLIDER.BLUR": {
           target: "idle"
         },
@@ -159,7 +150,5 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {
-    "isTextField": ctx => ctx["isTextField"]
-  }
+  guards: {}
 });

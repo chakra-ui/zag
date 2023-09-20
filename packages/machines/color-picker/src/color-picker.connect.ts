@@ -1,4 +1,10 @@
-import { normalizeColor, type Color, type ColorChannel, type ColorFormat } from "@zag-js/color-utils"
+import {
+  getColorAreaGradient,
+  normalizeColor,
+  type Color,
+  type ColorChannel,
+  type ColorFormat,
+} from "@zag-js/color-utils"
 import {
   getEventKey,
   getEventPoint,
@@ -8,7 +14,7 @@ import {
   isModifiedEvent,
   type EventKeyMap,
 } from "@zag-js/dom-event"
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, raf } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./color-picker.anatomy"
@@ -25,7 +31,6 @@ import type {
 import { getChannelDetails } from "./utils/get-channel-details"
 import { getChannelDisplayColor } from "./utils/get-channel-display-color"
 import { getChannelInputRange, getChannelInputValue } from "./utils/get-channel-input-value"
-import { getColorAreaGradient } from "./utils/get-color-area-gradient"
 import { getSliderBgImage } from "./utils/get-slider-background"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
@@ -66,11 +71,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     contentProps: normalize.element({
       ...parts.content.attrs,
       id: dom.getContentId(state.context),
+      dir: state.context.dir,
     }),
 
     getAreaProps(props: ColorAreaProps) {
       const { xChannel, yChannel } = props
-      const { areaStyles } = getColorAreaGradient(state.context, xChannel, yChannel)
+      const { areaStyles } = getColorAreaGradient(state.context.valueAsColor, {
+        xChannel,
+        yChannel,
+        dir: state.context.dir,
+      })
 
       return normalize.element({
         ...parts.area.attrs,
@@ -98,7 +108,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getAreaGradientProps(props: ColorAreaProps) {
       const { xChannel, yChannel } = props
-      const { areaGradientStyles } = getColorAreaGradient(state.context, xChannel, yChannel)
+      const { areaGradientStyles } = getColorAreaGradient(valueAsColor, {
+        xChannel,
+        yChannel,
+        dir: state.context.dir,
+      })
 
       return normalize.element({
         ...parts.areaGradient.attrs,
@@ -325,20 +339,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         min: range?.minValue,
         max: range?.maxValue,
         step: range?.step,
-        onFocus() {
+        onFocus(event) {
           send({ type: "CHANNEL_INPUT.FOCUS", channel })
-        },
-        onChange(event) {
-          if (isTextField) return
-          const value = event.currentTarget.value
-          send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
+          raf(() => event.target.select())
         },
         onBlur(event) {
           const value = event.currentTarget.value
-          send({ type: "CHANNEL_INPUT.BLUR", channel, value, isTextField })
+          send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
         },
         onKeyDown(event) {
-          if (!isTextField) return
           if (event.key === "Enter") {
             const value = event.currentTarget.value
             send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
@@ -403,7 +412,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getSwatchProps(props: ColorSwatchProps) {
       const { value, readOnly } = props
-      const color = normalizeColor(value).toFormat(valueAsColor.getColorSpace())
+      const color = normalizeColor(value).toFormat(valueAsColor.getColorFormat())
       return normalize.element({
         ...parts.swatch.attrs,
         onClick() {

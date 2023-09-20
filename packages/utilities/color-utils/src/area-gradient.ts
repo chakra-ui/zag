@@ -1,32 +1,43 @@
-import type { ColorChannel } from "@zag-js/color-utils"
-import type { Style } from "@zag-js/types"
-import type { MachineContext } from "../color-picker.types"
+import type { Color } from "./color"
 import {
-  generateHSB_B,
-  generateHSB_H,
-  generateHSB_S,
-  generateHSL_H,
-  generateHSL_L,
-  generateHSL_S,
-  generateRGB_B,
-  generateRGB_G,
   generateRGB_R,
-} from "./generate-format-background"
+  generateRGB_G,
+  generateRGB_B,
+  generateHSL_H,
+  generateHSB_H,
+  generateHSL_S,
+  generateHSB_S,
+  generateHSB_B,
+  generateHSL_L,
+} from "./color-format-gradient"
+import type { ColorChannel } from "./types"
 
-export function getColorAreaGradient(ctx: MachineContext, xChannel: ColorChannel, yChannel: ColorChannel) {
-  const value = ctx.valueAsColor
+interface GradientOptions {
+  xChannel: ColorChannel
+  yChannel: ColorChannel
+  dir: "rtl" | "ltr"
+}
 
-  const { zChannel } = value.getColorSpaceAxes({ xChannel, yChannel })
-  const zValue = value.getChannelValue(zChannel)
+interface GradientStyles {
+  areaStyles: Record<string, string>
+  areaGradientStyles: Record<string, string>
+}
 
-  const { minValue: zMin, maxValue: zMax } = value.getChannelRange(zChannel)
-  const orientation: [string, string] = ["top", ctx.dir === "rtl" ? "left" : "right"]
+export function getColorAreaGradient(color: Color, options: GradientOptions): GradientStyles {
+  const { xChannel, yChannel, dir: dirProp } = options
+
+  const { zChannel } = color.getColorSpaceAxes({ xChannel, yChannel })
+  const zValue = color.getChannelValue(zChannel)
+
+  const { minValue: zMin, maxValue: zMax } = color.getChannelRange(zChannel)
+  const orientation: [string, string] = ["top", dirProp === "rtl" ? "left" : "right"]
 
   let dir = false
-  let background = { areaStyles: {} as Style, areaGradientStyles: {} as Style }
+
+  let background = { areaStyles: {}, areaGradientStyles: {} }
 
   let alphaValue = (zValue - zMin) / (zMax - zMin)
-  let isHSL = value.getColorSpace() === "hsl"
+  let isHSL = color.getColorFormat() === "hsl"
 
   switch (zChannel) {
     case "red": {

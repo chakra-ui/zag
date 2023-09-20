@@ -1,4 +1,4 @@
-import type { Color, ColorChannel } from "@zag-js/color-utils"
+import type { Color, ColorChannel, ColorType } from "@zag-js/color-utils"
 import { getPercentValue, snapValueToStep } from "@zag-js/numeric-range"
 
 export function getChannelDetails(color: Color, xChannel: ColorChannel, yChannel: ColorChannel) {
@@ -42,7 +42,7 @@ export function getChannelDetails(color: Color, xChannel: ColorChannel, yChannel
       let newXValue = getPercentValue(x, minValueX, maxValueX, stepX)
       let newYValue = getPercentValue(1 - y, minValueY, maxValueY, stepY)
 
-      let newColor: Color | undefined
+      let newColor: ColorType | undefined
 
       if (newXValue !== xValue) {
         newXValue = snapValueToStep(newXValue, minValueX, maxValueX, stepX)
