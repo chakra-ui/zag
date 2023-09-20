@@ -41,3 +41,14 @@ export function match<V extends string | number = string, R = unknown>(
 
   throw error
 }
+
+export const tryCatch = <R>(fn: () => R, fallback: () => R) => {
+  try {
+    return fn()
+  } catch (error) {
+    if (error instanceof Error) {
+      Error.captureStackTrace?.(error, tryCatch)
+    }
+    return fallback?.()
+  }
+}
