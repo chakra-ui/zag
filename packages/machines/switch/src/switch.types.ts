@@ -35,10 +35,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   disabled?: boolean
   /**
-   * If `true`, the switch will be readonly
-   */
-  readOnly?: boolean
-  /**
    * If `true`, the switch is marked as invalid.
    */
   invalid?: boolean
