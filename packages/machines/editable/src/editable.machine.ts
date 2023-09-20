@@ -164,8 +164,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.onEdit?.()
         },
         syncInputValue(ctx) {
-          const inputEl = dom.getInputEl(ctx)
-          dom.setValue(inputEl, ctx.value)
+          sync.value(ctx)
         },
         setValue(ctx, evt) {
           set.value(ctx, evt.value)
@@ -184,6 +183,13 @@ export function machine(userContext: UserDefinedContext) {
   )
 }
 
+const sync = {
+  value: (ctx: MachineContext) => {
+    const inputEl = dom.getInputEl(ctx)
+    dom.setValue(inputEl, ctx.value)
+  },
+}
+
 const invoke = {
   change(ctx: MachineContext) {
     ctx.onValueChange?.({ value: ctx.value })
@@ -195,5 +201,12 @@ const set = {
     if (isEqual(ctx.value, value)) return
     ctx.value = value
     invoke.change(ctx)
+
+    /**
+     * sync when the value(ctx.value) entered from outside and the internal value(value) are different after invoke.
+     */
+    if (value !== ctx.value) {
+      sync.value(ctx)
+    }
   },
 }
