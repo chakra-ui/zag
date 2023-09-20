@@ -66,6 +66,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.element({
       ...parts.label.attrs,
+      dir: state.context.dir,
       id: dom.getLabelId(state.context),
       "data-disabled": dataAttr(isDisabled),
     }),
@@ -73,6 +74,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     controlProps: normalize.element({
       id: dom.getControlId(state.context),
       ...parts.control.attrs,
+      dir: state.context.dir,
       role: "radiogroup",
       "aria-orientation": "horizontal",
       "aria-labelledby": dom.getLabelId(state.context),
@@ -95,6 +97,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.item.attrs,
+        dir: state.context.dir,
         id: dom.getItemId(state.context, index.toString()),
         role: "radio",
         tabIndex: isDisabled ? undefined : itemState.isChecked ? 0 : -1,

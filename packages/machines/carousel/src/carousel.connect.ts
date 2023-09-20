@@ -60,6 +60,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "region",
       "aria-roledescription": "carousel",
       "data-orientation": state.context.orientation,
+      dir: state.context.dir,
       "aria-label": "Carousel",
       style: {
         "--slide-spacing": state.context.spacing,
@@ -69,6 +70,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     viewportProps: normalize.element({
       ...parts.viewport.attrs,
+      dir: state.context.dir,
       id: dom.getViewportId(state.context),
       "data-orientation": state.context.orientation,
     }),
@@ -77,6 +79,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.slideGroup.attrs,
       id: dom.getSlideGroupId(state.context),
       "data-orientation": state.context.orientation,
+      dir: state.context.dir,
       style: {
         display: "flex",
         flexDirection: isHorizontal ? "row" : "column",
@@ -103,6 +106,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-roledescription": "slide",
         "data-orientation": state.context.orientation,
         "aria-label": sliderState.valueText,
+        dir: state.context.dir,
         style: {
           position: "relative",
           flex: "0 0 var(--slide-size)",
@@ -117,6 +121,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       tabIndex: -1,
       disabled: !canScrollPrev,
+      dir: state.context.dir,
       "aria-label": "Previous Slide",
       "data-orientation": state.context.orientation,
       "aria-controls": dom.getSlideGroupId(state.context),
@@ -127,6 +132,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     nextSlideTriggerProps: normalize.button({
       ...parts.nextSlideTrigger.attrs,
+      dir: state.context.dir,
       id: dom.getNextSliderTriggerId(state.context),
       type: "button",
       tabIndex: -1,
@@ -141,6 +147,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     indicatorGroupProps: normalize.element({
       ...parts.indicatorGroup.attrs,
+      dir: state.context.dir,
       id: dom.getIndicatorGroupId(state.context),
       "data-orientation": state.context.orientation,
     }),
@@ -149,6 +156,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { index, readOnly } = props
       return normalize.button({
         ...parts.indicator.attrs,
+        dir: state.context.dir,
         id: dom.getIndicatorId(state.context, index),
         type: "button",
         "data-orientation": state.context.orientation,

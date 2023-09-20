@@ -77,6 +77,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
       "data-focus": dataAttr(isFocused),
+      dir: state.context.dir,
       id: dom.getLabelId(state.context),
       htmlFor: dom.getHiddenInputId(state.context),
       onClick(event) {
@@ -89,6 +90,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     thumbProps: normalize.element({
       ...parts.thumb.attrs,
+      dir: state.context.dir,
       id: dom.getThumbId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
@@ -181,12 +183,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(isInvalid),
       "data-orientation": state.context.orientation,
       id: dom.getOutputId(state.context),
+      dir: state.context.dir,
       htmlFor: dom.getHiddenInputId(state.context),
       "aria-live": "off",
     }),
 
     trackProps: normalize.element({
       ...parts.track.attrs,
+      dir: state.context.dir,
       id: dom.getTrackId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-focus": dataAttr(isFocused),
@@ -197,6 +201,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rangeProps: normalize.element({
       ...parts.range.attrs,
+      dir: state.context.dir,
       id: dom.getRangeId(state.context),
       "data-focus": dataAttr(isFocused),
       "data-invalid": dataAttr(isInvalid),
@@ -207,6 +212,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     controlProps: normalize.element({
       ...parts.control.attrs,
+      dir: state.context.dir,
       id: dom.getControlId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -229,6 +235,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     markerGroupProps: normalize.element({
       ...parts.markerGroup.attrs,
+      dir: state.context.dir,
       role: "presentation",
       "aria-hidden": true,
       "data-orientation": state.context.orientation,

@@ -50,6 +50,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.label({
       ...parts.label.attrs,
+      dir: state.context.dir,
       htmlFor: dom.getHiddenInputId(state.context),
       id: dom.getLabelId(state.context),
       "data-invalid": dataAttr(isInvalid),
@@ -75,6 +76,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     controlProps: normalize.element({
       ...parts.control.attrs,
+      dir: state.context.dir,
       id: dom.getControlId(state.context),
     }),
 
@@ -82,6 +84,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const inputType = state.context.type === "numeric" ? "tel" : "text"
       return normalize.input({
         ...parts.input.attrs,
+        dir: state.context.dir,
         disabled: state.context.disabled,
         "data-disabled": dataAttr(state.context.disabled),
         "data-complete": dataAttr(isValueComplete),

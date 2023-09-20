@@ -88,6 +88,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.label({
       ...parts.label.attrs,
+      dir: state.context.dir,
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-invalid": dataAttr(isInvalid),
@@ -117,6 +118,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     outputProps: normalize.output({
       ...parts.output.attrs,
+      dir: state.context.dir,
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-invalid": dataAttr(isInvalid),
@@ -128,6 +130,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     trackProps: normalize.element({
       ...parts.track.attrs,
+      dir: state.context.dir,
       id: dom.getTrackId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
@@ -145,6 +148,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.thumb.attrs,
+        dir: state.context.dir,
         "data-index": index,
         id: dom.getThumbId(state.context, index),
         "data-disabled": dataAttr(isDisabled),
@@ -238,6 +242,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rangeProps: normalize.element({
       id: dom.getRangeId(state.context),
       ...parts.range.attrs,
+      dir: state.context.dir,
       "data-focus": dataAttr(isFocused),
       "data-invalid": dataAttr(isInvalid),
       "data-disabled": dataAttr(isDisabled),
@@ -247,6 +252,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     controlProps: normalize.element({
       ...parts.control.attrs,
+      dir: state.context.dir,
       id: dom.getControlId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
@@ -270,6 +276,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     markerGroupProps: normalize.element({
       ...parts.markerGroup.attrs,
       role: "presentation",
+      dir: state.context.dir,
       "aria-hidden": true,
       "data-orientation": state.context.orientation,
       style: dom.getMarkerGroupStyle(),

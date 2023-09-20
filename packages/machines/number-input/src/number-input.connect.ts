@@ -60,6 +60,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       id: dom.getRootId(state.context),
       ...parts.root.attrs,
+      dir: state.context.dir,
       "data-disabled": dataAttr(isDisabled),
       "data-focus": dataAttr(isFocused),
       "data-invalid": dataAttr(isInvalid),
@@ -67,6 +68,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.label({
       ...parts.label.attrs,
+      dir: state.context.dir,
       "data-disabled": dataAttr(isDisabled),
       "data-focus": dataAttr(isFocused),
       "data-invalid": dataAttr(isInvalid),
@@ -76,6 +78,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     controlProps: normalize.element({
       ...parts.control.attrs,
+      dir: state.context.dir,
       role: "group",
       "aria-disabled": isDisabled,
       "data-focus": dataAttr(isFocused),
@@ -86,6 +89,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     inputProps: normalize.input({
       ...parts.input.attrs,
+      dir: state.context.dir,
       name: state.context.name,
       form: state.context.form,
       id: dom.getInputId(state.context),
@@ -153,6 +157,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     decrementTriggerProps: normalize.button({
       ...parts.decrementTrigger.attrs,
+      dir: state.context.dir,
       id: dom.getDecrementTriggerId(state.context),
       disabled: isDecrementDisabled,
       "data-disabled": dataAttr(isDecrementDisabled),
@@ -176,6 +181,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     incrementTriggerProps: normalize.button({
       ...parts.incrementTrigger.attrs,
+      dir: state.context.dir,
       id: dom.getIncrementTriggerId(state.context),
       disabled: isIncrementDisabled,
       "data-disabled": dataAttr(isIncrementDisabled),

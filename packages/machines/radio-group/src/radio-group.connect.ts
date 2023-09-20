@@ -71,6 +71,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.element({
       ...parts.label.attrs,
+      dir: state.context.dir,
       "data-orientation": state.context.orientation,
       "data-disabled": dataAttr(isGroupDisabled),
       id: dom.getLabelId(state.context),
@@ -82,10 +83,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.label({
         ...parts.item.attrs,
+        dir: state.context.dir,
         id: dom.getItemId(state.context, props.value),
         htmlFor: dom.getItemHiddenInputId(state.context, props.value),
         ...getItemDataAttrs(props),
-
         onPointerMove() {
           if (rootState.isDisabled) return
           send({ type: "SET_HOVERED", value: props.value, hovered: true })
@@ -113,6 +114,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getItemTextProps(props: ItemProps) {
       return normalize.element({
         ...parts.itemText.attrs,
+        dir: state.context.dir,
         id: dom.getItemLabelId(state.context, props.value),
         ...getItemDataAttrs(props),
       })
@@ -123,6 +125,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.itemControl.attrs,
+        dir: state.context.dir,
         id: dom.getItemControlId(state.context, props.value),
         "data-active": dataAttr(controlState.isActive),
         "aria-hidden": true,
@@ -172,6 +175,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     indicatorProps: normalize.element({
       id: dom.getIndicatorId(state.context),
       ...parts.indicator.attrs,
+      dir: state.context.dir,
       "data-disabled": dataAttr(isGroupDisabled),
       "data-orientation": state.context.orientation,
       style: {

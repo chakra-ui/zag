@@ -42,6 +42,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
+        dir: state.context.dir,
         id: dom.getItemId(state.context, props.value),
         "data-state": itemState.isOpen ? "open" : "closed",
         "data-focus": dataAttr(itemState.isFocused),
@@ -54,6 +55,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemContent.attrs,
+        dir: state.context.dir,
         role: "region",
         id: dom.getItemContentId(state.context, props.value),
         "aria-labelledby": dom.getItemTriggerId(state.context, props.value),
