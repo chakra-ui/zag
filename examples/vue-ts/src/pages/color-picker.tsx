@@ -47,20 +47,20 @@ export default defineComponent({
               </div>
 
               <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                <div {...api.getSwatchProps({ value: api.valueAsColor, readOnly: true })}>
+                <div {...api.getSwatchProps({ value: api.valueAsColor, readOnly: true })} data-testid="readonly-swatch">
                   <div {...api.getSwatchBackgroundProps({ value: api.valueAsColor })} />
                 </div>
-                <p>{api.value}</p>
+                <p data-testid="value">{api.value}</p>
               </div>
 
               <input {...api.getChannelInputProps({ channel: "hex" })} />
 
               <div style={{ display: "flex", gap: "10px" }}>
-                <div {...api.getSwatchProps({ value: "#f47373" })}>
+                <div {...api.getSwatchProps({ value: "#f47373" })} data-testid="clickable-swatch-1">
                   <div {...api.getSwatchBackgroundProps({ value: "#f47373" })} />
                 </div>
 
-                <div {...api.getSwatchProps({ value: "#697689" })}>
+                <div {...api.getSwatchProps({ value: "#697689" })} data-testid="clickable-swatch-2">
                   <div {...api.getSwatchBackgroundProps({ value: "#697689" })} />
                 </div>
               </div>
