@@ -49,6 +49,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     valueAsString: state.context.valueAsString,
     hasSelectedItems: state.context.hasSelectedItems,
     selectedItems: state.context.selectedItems,
+    setPositioning(options = {}) {
+      send({ type: "POSITIONING.SET", options })
+    },
     setCollection(collection) {
       send({ type: "COLLECTION.SET", value: collection })
     },

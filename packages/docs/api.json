@@ -449,6 +449,10 @@
       "setCollection": {
         "type": "(collection: Collection<V>) => void",
         "description": "Function to set the collection of items"
+      },
+      "setPositioning": {
+        "type": "(options: Partial<PositioningOptions>) => void",
+        "description": "Function to set the positioning options"
       }
     },
     "context": {
@@ -2321,6 +2325,10 @@
       "setCollection": {
         "type": "(collection: Collection<V>) => void",
         "description": "Function to set the collection of items"
+      },
+      "setPositioning": {
+        "type": "(options: Partial<PositioningOptions>) => void",
+        "description": "Function to set the positioning options of the select"
       }
     },
     "context": {

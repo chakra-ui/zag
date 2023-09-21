@@ -71,6 +71,9 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         "COLLECTION.SET": {
           actions: ["setCollection"],
         },
+        "POSITIONING.SET": {
+          actions: ["setPositioning"],
+        },
       },
 
       activities: ["trackFormControlState"],
@@ -346,6 +349,16 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
       },
       actions: {
+        setPositioning(ctx, evt) {
+          const triggerEl = () => dom.getTriggerEl(ctx)
+          const positionerEl = () => dom.getPositionerEl(ctx)
+          getPlacement(triggerEl, positionerEl, {
+            ...ctx.positioning,
+            ...evt.options,
+            defer: true,
+            listeners: false,
+          })
+        },
         toggleVisibility(ctx, _evt, { send }) {
           send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },

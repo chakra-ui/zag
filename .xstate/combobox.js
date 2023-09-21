@@ -62,6 +62,9 @@ const fetchMachine = createMachine({
     },
     "COLLECTION.SET": {
       actions: ["setCollection"]
+    },
+    "POSITIONING.SET": {
+      actions: ["setPositioning"]
     }
   },
   on: {

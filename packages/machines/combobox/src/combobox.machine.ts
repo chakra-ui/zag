@@ -91,6 +91,9 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         "COLLECTION.SET": {
           actions: ["setCollection"],
         },
+        "POSITIONING.SET": {
+          actions: ["setPositioning"],
+        },
       },
 
       states: {
@@ -427,8 +430,10 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           return ariaHidden([dom.getInputEl(ctx), dom.getContentEl(ctx), dom.getTriggerEl(ctx)])
         },
         computePlacement(ctx) {
+          const controlEl = () => dom.getControlEl(ctx)
+          const positionerEl = () => dom.getPositionerEl(ctx)
           ctx.currentPlacement = ctx.positioning.placement
-          return getPlacement(dom.getControlEl(ctx), dom.getPositionerEl(ctx), {
+          return getPlacement(controlEl, positionerEl, {
             ...ctx.positioning,
             onComplete(data) {
               ctx.currentPlacement = data.placement
@@ -464,6 +469,16 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
       },
 
       actions: {
+        setPositioning(ctx, evt) {
+          const controlEl = () => dom.getControlEl(ctx)
+          const positionerEl = () => dom.getPositionerEl(ctx)
+          getPlacement(controlEl, positionerEl, {
+            ...ctx.positioning,
+            ...evt.options,
+            defer: true,
+            listeners: false,
+          })
+        },
         setIsComposing(ctx) {
           ctx.composing = true
         },
