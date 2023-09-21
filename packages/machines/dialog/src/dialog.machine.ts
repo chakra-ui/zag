@@ -82,6 +82,9 @@ export function machine(userContext: UserDefinedContext) {
               }
               ctx.onEsc?.()
             },
+            onFocusOutside(event) {
+              event.preventDefault()
+            },
             onPointerDownOutside(event) {
               if (!ctx.closeOnOutsideClick) {
                 event.preventDefault()
