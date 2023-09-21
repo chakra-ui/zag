@@ -1,3 +1,2 @@
-export function isHTMLElement(value: any): value is HTMLElement {
-  return typeof value === "object" && value?.nodeType === Node.ELEMENT_NODE && typeof value?.nodeName === "string"
-}
+export const isHTMLElement = (v: any): v is HTMLElement =>
+  typeof v === "object" && v?.nodeType === Node.ELEMENT_NODE && typeof v?.nodeName === "string"

@@ -1,26 +1,16 @@
-import { getWindow, isDom } from "@zag-js/dom-query"
+import { getWindow } from "@zag-js/dom-query"
 import { getDefaultLocale, type Locale } from "./get-default-locale"
-import { getLocaleDir } from "./is-rtl"
 
 export interface LocaleOptions {
   locale?: string
-  getRootNode?: () => ShadowRoot | Document
+  getRootNode?: () => ShadowRoot | Document | Node
   onLocaleChange?: (locale: Locale) => void
-  immediate?: boolean
 }
 
 export function trackLocale(options: LocaleOptions = {}) {
-  const { locale: localeStr = "en-US", getRootNode, onLocaleChange, immediate } = options
+  const { getRootNode, onLocaleChange } = options
 
-  const fallbackLocale: Locale = {
-    locale: localeStr,
-    dir: getLocaleDir(localeStr),
-  }
-
-  if (immediate) {
-    const locale = !isDom() ? fallbackLocale : getDefaultLocale()
-    onLocaleChange?.(locale)
-  }
+  onLocaleChange?.(getDefaultLocale())
 
   const handleLocaleChange = () => {
     onLocaleChange?.(getDefaultLocale())
