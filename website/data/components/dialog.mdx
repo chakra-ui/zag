@@ -91,15 +91,15 @@ element)
 To set the element that receives focus when the dialog closes, pass the
 `finalFocusEl` in the similar fashion as shown above.
 
-## Closing the dialog on overlay click
+## Closing the dialog on interaction outside
 
 By default, the dialog closes when you click its overlay. You can set
-`closeOnOutsideClick` to `false` if you want the modal to stay visible.
+`closeOnInteractOutside` to `false` if you want the modal to stay visible.
 
 ```jsx {3}
 const [state, send] = useMachine(
   dialog.machine({
-    closeOnOutsideClick: false,
+    closeOnInteractOutside: false,
   }),
 )
 ```

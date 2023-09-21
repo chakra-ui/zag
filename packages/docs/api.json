@@ -899,20 +899,16 @@
         "type": "(details: OpenChangeDetails) => void",
         "description": "Callback to be invoked when the dialog is opened or closed"
       },
-      "closeOnOutsideClick": {
+      "closeOnInteractOutside": {
         "type": "boolean",
         "description": "Whether to close the dialog when the outside is clicked"
       },
-      "onOutsideClick": {
-        "type": "VoidFunction",
-        "description": "Callback to be invoked when the outside is clicked"
-      },
-      "closeOnEsc": {
+      "closeOnEscapeKeyDown": {
         "type": "boolean",
         "description": "Whether to close the dialog when the escape key is pressed"
       },
-      "onEsc": {
-        "type": "VoidFunction",
+      "onEscapeKeyDown": {
+        "type": "(event: KeyboardEvent) => void",
         "description": "Callback to be invoked when the escape key is pressed"
       },
       "aria-label": {
@@ -940,6 +936,18 @@
       "getRootNode": {
         "type": "() => Node | ShadowRoot | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "onPointerDownOutside": {
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "description": "Function called when the pointer is pressed down outside the combobox"
+      },
+      "onFocusOutside": {
+        "type": "(event: FocusOutsideEvent) => void",
+        "description": "Function called when the focus is moved outside the combobox"
+      },
+      "onInteractOutside": {
+        "type": "(event: InteractOutsideEvent) => void",
+        "description": "Function called when an interaction happens outside the combobox"
       }
     }
   },
@@ -1933,14 +1941,14 @@
         "type": "() => void",
         "description": "Function to focus the radio group"
       },
-      "getRadioState": {
-        "type": "(props: RadioState",
+      "getItemState": {
+        "type": "(props: ItemState",
         "description": "Returns the state details of a radio input"
       }
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; label: string; indicator: string; radio(value: string): string; radioLabel(value: string): string; radioControl(value: string): string; radioHiddenInput(value: string): string; }>",
+        "type": "Partial<{ root: string; label: string; indicator: string; item(value: string): string; itemLabel(value: string): string; itemControl(value: string): string; itemHiddenInput(value: string): string; }>",
         "description": "The ids of the elements in the radio. Useful for composition."
       },
       "value": {
@@ -2175,7 +2183,7 @@
         "type": "number[]",
         "description": "The array of rating values. Returns an array of numbers from 1 to the max value."
       },
-      "getRatingState": {
+      "getItemState": {
         "type": "(props: ItemState",
         "description": "Returns the state of a rating item"
       }
@@ -2665,10 +2673,6 @@
         "type": "boolean",
         "description": "Whether the switch is disabled."
       },
-      "readOnly": {
-        "type": "boolean",
-        "description": "If `true`, the switch will be readonly"
-      },
       "invalid": {
         "type": "boolean",
         "description": "If `true`, the switch is marked as invalid."
@@ -2849,14 +2853,14 @@
         "type": "() => void",
         "description": "Function to focus the tags entry input."
       },
-      "getTagState": {
-        "type": "(props: TagState",
+      "getItemState": {
+        "type": "(props: ItemState",
         "description": "Returns the state of a tag"
       }
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; input: string; clearBtn: string; label: string; control: string; tag(opts: TagProps): string; }>",
+        "type": "Partial<{ root: string; input: string; clearBtn: string; label: string; control: string; item(opts: ItemProps): string; }>",
         "description": "The ids of the elements in the tags input. Useful for composition."
       },
       "translations": {
@@ -3026,6 +3030,10 @@
       "setValue": {
         "type": "(values: string[]) => void",
         "description": "Function to set the value of the toggle group."
+      },
+      "getItemState": {
+        "type": "(props: ItemState",
+        "description": "Returns the state of the toggle item."
       }
     },
     "context": {

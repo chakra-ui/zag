@@ -24,8 +24,8 @@ export function machine(userContext: UserDefinedContext) {
         modal: true,
         trapFocus: true,
         preventScroll: true,
-        closeOnOutsideClick: true,
-        closeOnEsc: true,
+        closeOnInteractOutside: true,
+        closeOnEscapeKeyDown: true,
         restoreFocus: true,
         ...ctx,
       },
@@ -71,22 +71,21 @@ export function machine(userContext: UserDefinedContext) {
             defer: true,
             pointerBlocking: ctx.modal,
             exclude: [dom.getTriggerEl(ctx)],
-            onDismiss() {
-              send({ type: "CLOSE", src: "interact-outside" })
-            },
             onEscapeKeyDown(event) {
-              if (!ctx.closeOnEsc) {
-                event.preventDefault()
-              } else {
-                send({ type: "CLOSE", src: "escape-key" })
-              }
-              ctx.onEsc?.()
+              if (!ctx.closeOnEscapeKeyDown) event.preventDefault()
+              else send({ type: "CLOSE", src: "escape-key" })
+              ctx.onEscapeKeyDown?.(event)
             },
             onPointerDownOutside(event) {
-              if (!ctx.closeOnOutsideClick) {
-                event.preventDefault()
-              }
-              ctx.onOutsideClick?.()
+              if (!ctx.closeOnInteractOutside) event.preventDefault()
+              ctx.onPointerDownOutside?.(event)
+            },
+            onFocusOutside(event) {
+              if (!ctx.closeOnInteractOutside) event.preventDefault()
+              ctx.onFocusOutside?.(event)
+            },
+            onDismiss() {
+              send({ type: "CLOSE", src: "interact-outside" })
             },
           })
         },
