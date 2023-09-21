@@ -193,6 +193,7 @@ const sync = {
 const invoke = {
   change(ctx: MachineContext) {
     ctx.onValueChange?.({ value: ctx.value })
+    sync.value(ctx)
   },
 }
 
@@ -201,12 +202,5 @@ const set = {
     if (isEqual(ctx.value, value)) return
     ctx.value = value
     invoke.change(ctx)
-
-    /**
-     * sync when the value(ctx.value) entered from outside and the internal value(value) are different after invoke.
-     */
-    if (value !== ctx.value) {
-      sync.value(ctx)
-    }
   },
 }
