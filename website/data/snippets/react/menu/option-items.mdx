@@ -20,7 +20,7 @@ export function Menu() {
     menu.machine({
       id: "1",
       "aria-label": "Sort by",
-      values: { order: "", type: [] },
+      value: { order: "", type: [] },
     }),
   )
 
@@ -35,7 +35,8 @@ export function Menu() {
             const option = { type: "radio", name: "order", value: item.id }
             return (
               <div key={item.id} {...api.getOptionItemProps(option)}>
-                {api.isOptionChecked(option) ? "✅" : null} {item.label}
+                <span {...api.getOptionItemIndicatorProps(opts)}>✅</span>
+                <span {...api.getOptionItemTextProps(opts)}>{item.label}</span>
               </div>
             )
           })}
@@ -44,7 +45,8 @@ export function Menu() {
             const option = { type: "checkbox", name: "type", value: item.id }
             return (
               <div key={item.id} {...api.getOptionItemProps(option)}>
-                {api.isOptionChecked(option) ? "✅" : null} {item.label}
+                <span {...api.getOptionItemIndicatorProps(opts)}>✅</span>
+                <span {...api.getOptionItemTextProps(opts)}>{item.label}</span>
               </div>
             )
           })}

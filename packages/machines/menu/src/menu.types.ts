@@ -208,6 +208,15 @@ export interface OptionItemProps extends Partial<ItemProps> {
   onCheckedChange?: (checked: boolean) => void
 }
 
+export interface ItemState {
+  isDisabled: boolean
+  isHighlighted: boolean
+}
+
+export interface OptionItemState extends ItemState {
+  isChecked: boolean
+}
+
 export interface GroupProps {
   /**
    * The `id` of the element that provides accessibility label to the option group
@@ -258,15 +267,19 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the menu options item
    */
-  setValue(name: string, value: any): void
-  /**
-   * Function to check if an option is checked
-   */
-  isOptionChecked(opts: OptionItemProps): boolean | undefined
+  setValue: (name: string, value: any) => void
   /**
    * Function to reposition the popover
    */
-  setPositioning(options?: Partial<PositioningOptions>): void
+  setPositioning: (options?: Partial<PositioningOptions>) => void
+  /**
+   * Returns the state of the option item
+   */
+  getOptionItemState: (props: OptionItemProps) => OptionItemState
+  /**
+   * Returns the state of the menu item
+   */
+  getItemState: (props: ItemProps) => ItemState
   contextTriggerProps: T["element"]
   getTriggerItemProps<A extends Api>(childApi: A): T["element"]
   triggerProps: T["button"]
@@ -278,6 +291,8 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   separatorProps: T["element"]
   getItemProps(options: ItemProps): T["element"]
   getOptionItemProps(option: OptionItemProps): T["element"]
+  getOptionItemIndicatorProps(option: OptionItemProps): T["element"]
+  getOptionItemTextProps(option: OptionItemProps): T["element"]
   getItemGroupLabelProps(options: LabelProps): T["element"]
   getItemGroupProps(options: GroupProps): T["element"]
 }

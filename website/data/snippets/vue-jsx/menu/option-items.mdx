@@ -10,7 +10,7 @@ export default defineComponent({
       menu.machine({
         id: "1",
         "aria-label": "Sort by",
-        values: { order: "", type: [] },
+        value: { order: "", type: [] },
       }),
     )
 
@@ -29,7 +29,10 @@ export default defineComponent({
                 const option = { type: "radio", name: "order", value: item.id }
                 return (
                   <div key={item.id} {...api.getOptionItemProps(option)}>
-                    {api.isOptionChecked(option) ? "✅" : null} {item.label}
+                    <span {...api.getOptionItemIndicatorProps(option)}>✅</span>
+                    <span {...api.getOptionItemTextProps(option)}>
+                      {item.label}
+                    </span>
                   </div>
                 )
               })}
@@ -42,7 +45,10 @@ export default defineComponent({
                 }
                 return (
                   <div key={item.id} {...api.getOptionItemProps(option)}>
-                    {api.isOptionChecked(option) ? "✅" : null} {item.label}
+                    <span {...api.getOptionItemIndicatorProps(option)}>✅</span>
+                    <span {...api.getOptionItemTextProps(option)}>
+                      {item.label}
+                    </span>
                   </div>
                 )
               })}

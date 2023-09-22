@@ -9,21 +9,12 @@ import {
   type EventKeyMap,
 } from "@zag-js/dom-event"
 import { dataAttr, isEditableElement, isSelfEvent } from "@zag-js/dom-query"
-import { getPlacementStyles, type PositioningOptions } from "@zag-js/popper"
+import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { match } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
 import { dom } from "./menu.dom"
-import type {
-  Api,
-  GroupProps,
-  ItemProps,
-  LabelProps,
-  OptionItemProps,
-  MachineApi,
-  Send,
-  Service,
-  State,
-} from "./menu.types"
+import type { ItemProps, ItemState, MachineApi, OptionItemProps, OptionItemState, Send, State } from "./menu.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isSubmenu = state.context.isSubmenu
@@ -37,42 +28,99 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     placement: state.context.currentPlacement,
   })
 
-  const api = {
-    isOpen,
+  function getItemState(props: ItemProps): ItemState {
+    return {
+      isDisabled: !!props.disabled,
+      isHighlighted: state.context.highlightedId === props.id,
+    }
+  }
 
+  function getOptionItemProps(props: OptionItemProps) {
+    const id = props.id ?? props.value
+    const valueText = props.valueText ?? props.value
+    return { ...props, id, valueText }
+  }
+
+  function getOptionItemState(props: OptionItemProps): OptionItemState {
+    const itemState = getItemState(getOptionItemProps(props))
+    return {
+      ...itemState,
+      isChecked: !!match(props.type, {
+        radio: () => values?.[props.name] === props.value,
+        checkbox: () => values?.[props.name].includes(props.value),
+      }),
+    }
+  }
+
+  function getItemProps(props: ItemProps) {
+    const { id, closeOnSelect, valueText } = props
+    const itemState = getItemState(props)
+    return normalize.element({
+      ...parts.item.attrs,
+      id,
+      role: "menuitem",
+      "aria-disabled": itemState.isDisabled,
+      "data-disabled": dataAttr(itemState.isDisabled),
+      "data-ownedby": dom.getContentId(state.context),
+      "data-highlighted": dataAttr(itemState.isHighlighted),
+      "data-valuetext": valueText,
+      onDragStart(event) {
+        const isLink = event.currentTarget.matches("a[href]")
+        if (isLink) event.preventDefault()
+      },
+      onPointerLeave(event) {
+        if (itemState.isDisabled || event.pointerType !== "mouse") return
+        const target = event.currentTarget
+        send({ type: "ITEM_POINTERLEAVE", id, target, closeOnSelect })
+      },
+      onPointerMove(event) {
+        if (itemState.isDisabled || event.pointerType !== "mouse") return
+        const target = event.currentTarget
+        send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect })
+      },
+      onPointerDown(event) {
+        if (itemState.isDisabled) return
+        const target = event.currentTarget
+        send({ type: "ITEM_POINTERDOWN", target, id, closeOnSelect })
+      },
+      onPointerUp(event) {
+        const evt = getNativeEvent(event)
+        if (!isLeftClick(evt) || itemState.isDisabled) return
+        const target = event.currentTarget
+        send({ type: "ITEM_CLICK", src: "pointerup", target, id, closeOnSelect })
+      },
+      onAuxClick(event) {
+        if (itemState.isDisabled) return
+        event.preventDefault()
+        const target = event.currentTarget
+        send({ type: "ITEM_CLICK", src: "auxclick", target, id, closeOnSelect })
+      },
+    })
+  }
+
+  return {
+    highlightedId: state.context.highlightedId,
+    isOpen,
     open() {
       send("OPEN")
     },
-
     close() {
       send("CLOSE")
     },
-
-    highlightedId: state.context.highlightedId,
-
-    setHighlightedId(id: string) {
+    setHighlightedId(id) {
       send({ type: "SET_HIGHLIGHTED_ID", id })
     },
-
-    setParent(parent: Service) {
+    setParent(parent) {
       send({ type: "SET_PARENT", value: parent, id: parent.state.context.id })
     },
-
-    setChild(child: Service) {
+    setChild(child) {
       send({ type: "SET_CHILD", value: child, id: child.state.context.id })
     },
-
     value: values,
-
-    setValue(name: string, value: any) {
+    setValue(name, value) {
       send({ type: "SET_VALUE", name, value })
     },
-
-    isOptionChecked(opts: OptionItemProps) {
-      return opts.type === "radio" ? values?.[opts.name] === opts.value : values?.[opts.name].includes(opts.value)
-    },
-
-    setPositioning(options: Partial<PositioningOptions> = {}) {
+    setPositioning(options = {}) {
       send({ type: "SET_POSITIONING", options })
     },
 
@@ -109,8 +157,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getTriggerItemProps<A extends Api>(childApi: A) {
-      return mergeProps(api.getItemProps({ id: childApi.triggerProps.id }), childApi.triggerProps) as T["element"]
+    getTriggerItemProps(childApi) {
+      return mergeProps(getItemProps({ id: childApi.triggerProps.id }), childApi.triggerProps) as T["element"]
     },
 
     triggerProps: normalize.button({
@@ -293,104 +341,80 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "separator",
       "aria-orientation": "horizontal",
     }),
+    getItemState,
+    getItemProps,
 
-    getItemProps(options: ItemProps) {
-      const { id, disabled, valueText, closeOnSelect } = options
-      return normalize.element({
-        ...parts.item.attrs,
-        id,
-        role: "menuitem",
-        "aria-disabled": disabled,
-        "data-disabled": dataAttr(disabled),
-        "data-ownedby": dom.getContentId(state.context),
-        "data-highlighted": dataAttr(state.context.highlightedId === id),
-        "data-valuetext": valueText,
-        onDragStart(event) {
-          const isLink = event.currentTarget.matches("a[href]")
-          if (isLink) event.preventDefault()
-        },
-        onPointerLeave(event) {
-          if (disabled || event.pointerType !== "mouse") return
-          const target = event.currentTarget
-          send({ type: "ITEM_POINTERLEAVE", id, target, closeOnSelect })
-        },
-        onPointerMove(event) {
-          if (disabled || event.pointerType !== "mouse") return
-          const target = event.currentTarget
-          send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect })
-        },
-        onPointerDown(event) {
-          if (disabled) return
-          const target = event.currentTarget
-          send({ type: "ITEM_POINTERDOWN", target, id, closeOnSelect })
-        },
-        onPointerUp(event) {
-          const evt = getNativeEvent(event)
-          if (!isLeftClick(evt) || disabled) return
-          const target = event.currentTarget
-          send({ type: "ITEM_CLICK", src: "pointerup", target, id, closeOnSelect })
-        },
-        onAuxClick(event) {
-          if (disabled) return
-          event.preventDefault()
-          const target = event.currentTarget
-          send({ type: "ITEM_CLICK", src: "auxclick", target, id, closeOnSelect })
-        },
-      })
-    },
+    getOptionItemState,
+    getOptionItemProps(props) {
+      const { name, type, disabled, onCheckedChange, closeOnSelect } = props
 
-    getOptionItemProps(option: OptionItemProps) {
-      const { name, type, disabled, onCheckedChange, closeOnSelect } = option
-
-      option.id ??= option.value
-      option.valueText ??= option.value
-
-      const checked = api.isOptionChecked(option)
+      const option = getOptionItemProps(props)
+      const itemState = getOptionItemState(props)
 
       return Object.assign(
-        api.getItemProps(option as ItemProps),
+        getItemProps(option),
         normalize.element({
           "data-type": type,
           "data-name": name,
           ...parts.optionItem.attrs,
           "data-value": option.value,
           role: `menuitem${type}`,
-          "aria-checked": !!checked,
-          "data-state": checked ? "checked" : "unchecked",
+          "aria-checked": !!itemState.isChecked,
+          "data-state": itemState.isChecked ? "checked" : "unchecked",
           onPointerUp(event) {
             const evt = getNativeEvent(event)
             if (!isLeftClick(evt) || disabled) return
             const target = event.currentTarget
             send({ type: "ITEM_CLICK", src: "pointerup", target, option, closeOnSelect })
-            onCheckedChange?.(!checked)
+            onCheckedChange?.(!itemState.isChecked)
           },
           onAuxClick(event) {
             if (disabled) return
             event.preventDefault()
             const target = event.currentTarget
             send({ type: "ITEM_CLICK", src: "auxclick", target, option, closeOnSelect })
-            onCheckedChange?.(!checked)
+            onCheckedChange?.(!itemState.isChecked)
           },
         }),
       )
     },
 
-    getItemGroupLabelProps(options: LabelProps) {
+    getOptionItemIndicatorProps(props) {
+      const itemState = getOptionItemState(props)
       return normalize.element({
-        id: dom.getGroupLabelId(state.context, options.htmlFor),
+        ...parts.optionItemIndicator.attrs,
+        "data-disabled": dataAttr(itemState.isDisabled),
+        "data-highlighted": dataAttr(itemState.isHighlighted),
+        "data-state": itemState.isChecked ? "checked" : "unchecked",
+        hidden: !itemState.isChecked,
+      })
+    },
+
+    getOptionItemTextProps(props) {
+      const itemState = getOptionItemState(props)
+      return normalize.element({
+        ...parts.optionItemText.attrs,
+        dir: state.context.dir,
+        "data-disabled": dataAttr(itemState.isDisabled),
+        "data-highlighted": dataAttr(itemState.isHighlighted),
+        "data-state": itemState.isChecked ? "checked" : "unchecked",
+      })
+    },
+
+    getItemGroupLabelProps(props) {
+      return normalize.element({
+        id: dom.getGroupLabelId(state.context, props.htmlFor),
         ...parts.itemGroupLabel.attrs,
       })
     },
 
-    getItemGroupProps(options: GroupProps) {
+    getItemGroupProps(props) {
       return normalize.element({
-        id: dom.getGroupId(state.context, options.id),
+        id: dom.getGroupId(state.context, props.id),
         ...parts.itemGroup.attrs,
-        "aria-labelledby": options.id,
+        "aria-labelledby": dom.getGroupLabelId(state.context, props.id),
         role: "group",
       })
     },
   }
-
-  return api
 }

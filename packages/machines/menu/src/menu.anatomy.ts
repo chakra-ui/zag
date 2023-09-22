@@ -12,6 +12,8 @@ export const anatomy = createAnatomy("menu").parts(
   "separator",
   "item",
   "optionItem",
+  "optionItemIndicator",
+  "optionItemText",
   "itemGroupLabel",
   "itemGroup",
 )

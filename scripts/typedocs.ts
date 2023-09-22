@@ -4,7 +4,10 @@ import { ModuleResolutionKind, Project, SourceFile, Symbol, TypeChecker } from "
 import { getMachinePackages } from "./get-packages"
 
 function trimType(value: string) {
-  return value.replace(/import\(".*"\)\./, "")
+  return value
+    .split("=>")
+    .map((t) => t.replace(/import\(".*"\)\./, ""))
+    .join("=>")
 }
 
 function getDefaultValue(property: Symbol) {

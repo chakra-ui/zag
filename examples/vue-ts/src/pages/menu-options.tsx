@@ -37,7 +37,8 @@ export default defineComponent({
                       const opts = { type: "radio", name: "order", value: item.id } as const
                       return (
                         <div key={item.id} {...api.getOptionItemProps(opts)}>
-                          {api.isOptionChecked(opts) ? "✅" : null} {item.label}
+                          <span {...api.getOptionItemIndicatorProps(opts)}>✅</span>
+                          <span {...api.getOptionItemTextProps(opts)}>{item.label}</span>
                         </div>
                       )
                     })}
@@ -46,7 +47,8 @@ export default defineComponent({
                       const opts = { type: "checkbox", name: "type", value: item.id } as const
                       return (
                         <div key={item.id} {...api.getOptionItemProps(opts)}>
-                          {api.isOptionChecked(opts) ? "✅" : null} {item.label}
+                          <span {...api.getOptionItemIndicatorProps(opts)}>✅</span>
+                          <span {...api.getOptionItemTextProps(opts)}>{item.label}</span>
                         </div>
                       )
                     })}

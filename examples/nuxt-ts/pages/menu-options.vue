@@ -37,11 +37,13 @@ const checkboxes = data.type.map((item) => ({
         <div v-bind="api.positionerProps">
           <div v-bind="api.contentProps">
             <div v-for="item in radios" :key="item.id" v-bind="api.getOptionItemProps(item)">
-              {{ api.isOptionChecked(item) ? "✅" : null }} {{ item.label }}
+              <span v-bind="api.getOptionItemIndicatorProps(item)">✅</span>
+              <span v-bind="api.getOptionItemTextProps(item)">{{ item.label }}</span>
             </div>
             <hr />
             <div v-for="item in checkboxes" :key="item.id" v-bind="api.getOptionItemProps(item)">
-              {{ api.isOptionChecked(item) ? "✅" : null }} {{ item.label }}
+              <span v-bind="api.getOptionItemIndicatorProps(item)">✅</span>
+              <span v-bind="api.getOptionItemTextProps(item)">{{ item.label }}</span>
             </div>
           </div>
         </div>

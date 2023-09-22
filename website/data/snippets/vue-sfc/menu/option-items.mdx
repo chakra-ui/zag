@@ -9,15 +9,17 @@ const [state, send] = useMachine(
   menu.machine({
     id: "1",
     "aria-label": "Sort by",
-    values: { order: "", type: [] },
+    value: { order: "", type: [] },
   })
 );
 
 const api = computed(() => menu.connect(state.value, send, normalizeProps));
+
 const orderOptions = data.order.map((item) => ({
   ...item,
   option: { type: "radio", name: "order", value: item.id },
 }));
+
 const typeOptions = data.type.map((item) => ({
   ...item,
   option: { type: "checkbox", name: "type", value: item.id },
@@ -33,16 +35,17 @@ const typeOptions = data.type.map((item) => ({
         :key="item.id"
         v-bind="api.getOptionItemProps(item.option)"
       >
-        {{ api.isOptionChecked(item.option) ? "✅" : null }} {{ item.label }}
+       <span v-bind="api.getOptionItemIndicatorProps(item)">✅</span>
+       <span v-bind="api.getOptionItemTextProps(item)">{{ item.label }}</span>
       </div>
       <hr v-bind="api.separatorProps" />
-
       <div
         v-for="item in typeOptions"
         :key="item.id"
         v-bind="api.getOptionItemProps(item.option)"
       >
-        {{ api.isOptionChecked(item.option) ? "✅" : null }} {{ item.label }}
+       <span v-bind="api.getOptionItemIndicatorProps(item)">✅</span>
+       <span v-bind="api.getOptionItemTextProps(item)">{{ item.label }}</span>
       </div>
     </div>
 

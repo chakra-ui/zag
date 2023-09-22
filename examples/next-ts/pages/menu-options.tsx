@@ -1,6 +1,6 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
-import { menuControls, menuOptionData as data } from "@zag-js/shared"
+import { menuOptionData as data, menuControls } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -17,6 +17,7 @@ export default function Page() {
     }),
     { context: controls.context },
   )
+
   const api = menu.connect(state, send, normalizeProps)
 
   return (
@@ -34,7 +35,8 @@ export default function Page() {
                   const opts = { type: "radio", name: "order", value: item.id } as const
                   return (
                     <div key={item.id} {...api.getOptionItemProps(opts)}>
-                      {api.isOptionChecked(opts) ? "✅" : null} {item.label}
+                      <span {...api.getOptionItemIndicatorProps(opts)}>✅</span>
+                      <span {...api.getOptionItemTextProps(opts)}>{item.label}</span>
                     </div>
                   )
                 })}
@@ -43,7 +45,8 @@ export default function Page() {
                   const opts = { type: "checkbox", name: "type", value: item.id } as const
                   return (
                     <div key={item.id} {...api.getOptionItemProps(opts)}>
-                      {api.isOptionChecked(opts) ? "✅" : null} {item.label}
+                      <span {...api.getOptionItemIndicatorProps(opts)}>✅</span>
+                      <span {...api.getOptionItemTextProps(opts)}>{item.label}</span>
                     </div>
                   )
                 })}

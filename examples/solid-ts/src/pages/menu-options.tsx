@@ -39,7 +39,8 @@ export default function Page() {
                     const opts = { type: "radio", name: "order", value: item.id } as const
                     return (
                       <div {...api().getOptionItemProps(opts)}>
-                        {api().isOptionChecked(opts) ? "✅" : null} {item.label}
+                        <span {...api().getOptionItemIndicatorProps(opts)}>✅</span>
+                        <span {...api().getOptionItemTextProps(opts)}>{item.label}</span>
                       </div>
                     )
                   }}
@@ -50,7 +51,8 @@ export default function Page() {
                     const opts = { type: "checkbox", name: "type", value: item.id } as const
                     return (
                       <div {...api().getOptionItemProps(opts)}>
-                        {api().isOptionChecked(opts) ? "✅" : null} {item.label}
+                        <span {...api().getOptionItemIndicatorProps(opts)}>✅</span>
+                        <span {...api().getOptionItemTextProps(opts)}>{item.label}</span>
                       </div>
                     )
                   }}

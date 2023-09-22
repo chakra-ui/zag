@@ -14,7 +14,7 @@
         "description": "Sets the value of the accordion."
       },
       "getItemState": {
-        "type": "(props: ItemState",
+        "type": "(props: ItemProps) => ItemState",
         "description": "Gets the state of an accordion item."
       }
     },
@@ -141,7 +141,7 @@
         "description": "Function to scroll to the previous slide"
       },
       "getSlideState": {
-        "type": "(props: SlideState",
+        "type": "(props: SlideProps) => SlideState",
         "description": "Returns the state of a specific slide"
       },
       "play": {
@@ -435,7 +435,7 @@
         "description": "Function to set the input value of the combobox"
       },
       "getItemState": {
-        "type": "(props: ItemState",
+        "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a combobox item"
       },
       "open": {
@@ -602,7 +602,7 @@
         "description": "The current view of the date picker"
       },
       "getDaysInWeek": {
-        "type": "(weekIndex: number, from?: DateValue[]",
+        "type": "(weekIndex: number, from?: DateValue) => DateValue[]",
         "description": "Returns an array of days in the week index counted from the provided start date, or the first visible date if not given."
       },
       "getOffset": {
@@ -610,7 +610,7 @@
         "description": "Returns the offset of the month based on the provided number of months."
       },
       "getMonthDays": {
-        "type": "(from?: DateValue[][]",
+        "type": "(from?: DateValue) => DateValue[][]",
         "description": "Returns the weeks of the month from the provided date. Represented as an array of arrays of dates."
       },
       "isUnavailable": {
@@ -694,7 +694,7 @@
         "description": "Returns the months of the year"
       },
       "getYearsGrid": {
-        "type": "(props?: YearGridValue",
+        "type": "(props?: YearGridProps) => YearGridValue",
         "description": "Returns the years of the decade based on the columns.\nRepresented as an array of arrays of years."
       },
       "getDecade": {
@@ -706,7 +706,7 @@
         "description": "Returns the months of the year"
       },
       "getMonthsGrid": {
-        "type": "(props?: MonthGridValue",
+        "type": "(props?: MonthGridProps) => MonthGridValue",
         "description": "Returns the months of the year based on the columns.\nRepresented as an array of arrays of months."
       },
       "format": {
@@ -726,11 +726,11 @@
         "description": "Goes to the previous month/year/decade."
       },
       "getDayCellState": {
-        "type": "(props: DayCellState",
+        "type": "(props: DayCellProps) => DayCellState",
         "description": "Returns the state details for a given cell."
       },
       "getMonthCellState": {
-        "type": "(props: CellState",
+        "type": "(props: CellProps) => CellState",
         "description": "Returns the state details for a given month cell."
       }
     },
@@ -1279,13 +1279,17 @@
         "type": "(name: string, value: any) => void",
         "description": "Function to set the value of the menu options item"
       },
-      "isOptionChecked": {
-        "type": "(opts: OptionItemProps) => boolean",
-        "description": "Function to check if an option is checked"
-      },
       "setPositioning": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
+      },
+      "getOptionItemState": {
+        "type": "(props: OptionItemProps) => OptionItemState",
+        "description": "Returns the state of the option item"
+      },
+      "getItemState": {
+        "type": "(props: ItemProps) => ItemState",
+        "description": "Returns the state of the menu item"
       }
     },
     "context": {
@@ -1946,7 +1950,7 @@
         "description": "Function to focus the radio group"
       },
       "getItemState": {
-        "type": "(props: ItemState",
+        "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state details of a radio input"
       }
     },
@@ -2188,7 +2192,7 @@
         "description": "The array of rating values. Returns an array of numbers from 1 to the max value."
       },
       "getItemState": {
-        "type": "(props: ItemState",
+        "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a rating item"
       }
     },
@@ -2311,7 +2315,7 @@
         "description": "Function to focus on the combobox input"
       },
       "getItemState": {
-        "type": "(props: ItemState",
+        "type": "(props: ItemProps<any>) => ItemState",
         "description": "Returns the state of a combobox item"
       },
       "open": {
@@ -2601,7 +2605,7 @@
         "description": "Function to set the size of a panel."
       },
       "getResizeTriggerState": {
-        "type": "(props: ResizeTriggerState",
+        "type": "(props: ResizeTriggerProps) => ResizeTriggerState",
         "description": "Returns the state details for a resize trigger."
       }
     },
@@ -2752,7 +2756,7 @@
         "description": "Sets the indicator rect to the tab with the given value"
       },
       "getTriggerState": {
-        "type": "(props: TriggerState",
+        "type": "(props: TriggerProps) => TriggerState",
         "description": "Returns the state of the trigger with the given props"
       }
     },
@@ -2862,7 +2866,7 @@
         "description": "Function to focus the tags entry input."
       },
       "getItemState": {
-        "type": "(props: ItemState",
+        "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a tag"
       }
     },
@@ -3040,7 +3044,7 @@
         "description": "Function to set the value of the toggle group."
       },
       "getItemState": {
-        "type": "(props: ItemState",
+        "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of the toggle item."
       }
     },

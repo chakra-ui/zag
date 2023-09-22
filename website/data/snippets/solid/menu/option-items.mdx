@@ -8,7 +8,7 @@ export function Menu() {
     menu.machine({
       id: createUniqueId(),
       "aria-label": "Sort by",
-      values: { order: "", type: [] },
+      value: { order: "", type: [] },
     }),
   )
 
@@ -26,7 +26,8 @@ export function Menu() {
               const option = { type: "radio", name: "order", value: item.id }
               return (
                 <div {...api().getOptionItemProps(option)}>
-                  {api().isOptionChecked(option) ? "✅" : null} {item.label}
+                  <span {...api().getOptionItemIndicatorProps(option)}>✅</span>
+                  <span {...api().getOptionItemTextProps(option)}>{item.label}</span>
                 </div>
               )
             }}
@@ -37,7 +38,8 @@ export function Menu() {
               const option = { type: "checkbox", name: "type", value: item.id }
               return (
                 <div {...api().getOptionItemProps(option)}>
-                  {api().isOptionChecked(option) ? "✅" : null} {item.label}
+                  <span {...api().getOptionItemIndicatorProps(option)}>✅</span>
+                  <span {...api().getOptionItemTextProps(option)}>{item.label}</span>
                 </div>
               )
             }}

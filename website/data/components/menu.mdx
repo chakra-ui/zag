@@ -104,24 +104,6 @@ const [state, send] = useMachine(
 )
 ```
 
-## Methods and Properties
-
-The menu's `api` exposes the following methods:
-
-- `isOpen` — Whether the menu is open.
-- `open(...)` — Function to open the menu.
-- `close(...)` — Function to close the menu.
-- `activeId` — The `id` of the active menu item.
-- `setActiveId(...)` — Function to set the value active menu item.
-- `isOptionChecked(...)` — Function to check whether an option item is checked.
-
-When building nested menus, you'll need to use:
-
-- `setParent(...)` — Function to register a parent menu's machine in the child
-  menu's context.
-- `setChild(...)` — Function to register a child menu's machine in the parent
-  menu's context.
-
 ## Grouping menu items
 
 When the number of menu items gets much, it might be useful to group related
@@ -150,17 +132,15 @@ menu items. To achieve this:
 
 To use checkbox or radio option items, you'll need to:
 
-- Add a `values` property to the machine's context whose value is an object
+- Add a `value` property to the machine's context whose value is an object
   describing the state of the option items.
 - Use the `api.getOptionItemProps(...)` function to get the props for the option
   item.
-- Optionally use the `api.isOptionChecked(...)` function to check whether an
-  option item is checked.
 
 A common requirement for the option item that you pass the `name`, `value` and
 `type` properties.
 
-- `name` — The property key in the `values` context that this option is for.
+- `name` — The property key in the `value` context that this option is for.
 - `type` — The type of option item. Either `"checkbox"` or `"radio"`.
 - `value` — The value of the option item.
 
@@ -173,7 +153,7 @@ and its new value.
 ```jsx {3-6}
 const [state, send] = useMachine(
   menu.machine({
-    values: { order: "", type: [] },
+    value: { order: "", type: [] },
     onValueChange(data) {
       // data => { name: string, value: string | string[] }
       console.log("values changed", data.value)

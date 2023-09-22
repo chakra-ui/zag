@@ -5,6 +5,8 @@ export type {
   UserDefinedContext as Context,
   GroupProps,
   ItemProps,
+  ItemState,
   OptionItemProps,
+  OptionItemState,
   MachineApi as Api,
 } from "./menu.types"
