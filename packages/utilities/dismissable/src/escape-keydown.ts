@@ -5,5 +5,5 @@ export function trackEscapeKeydown(node: HTMLElement, fn?: (event: KeyboardEvent
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") fn?.(event)
   }
-  return addDomEvent(getDocument(node), "keydown", handleKeyDown, { capture: true })
+  return addDomEvent(getDocument(node), "keydown", handleKeyDown)
 }
