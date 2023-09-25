@@ -69,7 +69,7 @@
     "@internationalized/date": "^3.5.0",
     "@octokit/rest": "20.0.1",
     "@playwright/test": "1.38.0",
-    "@swc/core": "1.3.85",
+    "@swc/core": "1.3.88",
     "@types/babel__traverse": "^7.20.1",
     "@types/babel__generator": "^7.6.4",
     "@types/node": "^20.6.0",
