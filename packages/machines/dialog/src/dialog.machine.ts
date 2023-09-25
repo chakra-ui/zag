@@ -94,7 +94,7 @@ export function machine(userContext: UserDefinedContext) {
           return preventBodyScroll(dom.getDoc(ctx))
         },
         trapFocus(ctx) {
-          if (!ctx.trapFocus) return
+          if (!ctx.trapFocus || !ctx.modal) return
           let trap: FocusTrap
           nextTick(() => {
             const contentEl = dom.getContentEl(ctx)
