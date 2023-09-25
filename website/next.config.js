@@ -6,7 +6,6 @@ const { withContentlayer } = require("next-contentlayer")
 const nextConfig = {
   swcMinify: false,
   experimental: {
-    appDir: true,
     externalDir: true,
   },
   redirects: () => [
