@@ -164,6 +164,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.editTrigger.attrs,
       id: dom.getEditTriggerId(state.context),
       "aria-label": translations.edit,
+      hidden: isEditing,
       type: "button",
       disabled: isDisabled,
       onClick() {
@@ -181,6 +182,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.submitTrigger.attrs,
       id: dom.getSubmitTriggerId(state.context),
       "aria-label": translations.submit,
+      hidden: !isEditing,
       disabled: isDisabled,
       type: "button",
       onClick() {
@@ -193,6 +195,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.cancelTrigger.attrs,
       "aria-label": translations.cancel,
       id: dom.getCancelTriggerId(state.context),
+      hidden: !isEditing,
       type: "button",
       disabled: isDisabled,
       onClick() {
