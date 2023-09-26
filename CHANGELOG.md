@@ -6,6 +6,47 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.22.0] - 2023-09-26
+
+### Fixed
+
+- **All machines**: Ensure the `dir` attribute is applied consistently across all component parts.
+- **ColorPicker**:
+  - Fix issue where color area changes format when you type custom hex values
+  - Fix issue where alpha channel input resets to 1 after blurring hex channel input
+- **Dialog**:
+  - Fix issue where focusing outside closes the dialog despite `closeOnInteractOutside` being set to `false`
+- **Editable**:
+  - Fix issue where the input value doesn't get synced correctly when controlled
+
+### Added
+
+- **Combobox**: Add support for `api.setPositioning(...)` to allow for repositioning the combobox content
+- **Menu**:
+  - Add new `optionItemIndicator` and `optionItemText` part
+  - Add `api.optionItemIndicatorProps(...)`, `api.optionItemTextProps(...)` support
+  - Add api.getOptionItemState and `api.getItemState`
+  - Export `OptionItemState` and `ItemState` types
+- **ColorPicker**: Add support for entering native color names (e.g. red, blue, green, etc.)
+
+### Changed
+
+- **Menu**:
+  - Removed `api.isOptionChecked` in favor of `api.getOptionItemState`
+- **NumberInput**:
+  - Refactor number input machine to handle number parsing correctly
+  - Fix issue where value doesn't listen to form reset events
+  - **BREAKING:** Removed the following context properties in favor of the new `formatOptions`: `validateCharacter`,
+    `parse`, `format`, `minFractionDigits`, `maxFractionDigits`
+- **Dialog**:
+  - Fix issue where `modal: false` doesn't disable focus trap
+  - Rename `closeOnEsc` to `closeOnEscapeKeyDown`
+  - Rename `onEsc` to `onEscapeKeyDown`
+  - Rename `closeOnOutsideClick` to `closeOnInteractOutside`
+- **Editable**:
+  - Hide submit and cancel trigger when not in editing mode
+  - Hide edit trigger when in editing mode
+
 ## [0.21.0] - 2023-09-19
 
 ### Fixed
