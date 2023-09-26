@@ -71,7 +71,7 @@
     "@types/react": "18.2.22",
     "all-contributors-cli": "6.26.1",
     "eslint": "8.50.0",
-    "eslint-config-next": "13.5.2",
+    "eslint-config-next": "13.5.3",
     "prettier": "3.0.3",
     "rehype": "13.0.1",
     "rehype-autolink-headings": "6.1.1",
