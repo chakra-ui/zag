@@ -48,7 +48,7 @@ export function machine(userContext: UserDefinedContext) {
 
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
-        valueAsNumber: (ctx) => ctx.parser.parse(ctx.value) ?? 0,
+        valueAsNumber: (ctx) => ctx.parser.parse(String(ctx.value)) ?? 0,
         isAtMin: (ctx) => isAtMin(ctx.value, ctx),
         isAtMax: (ctx) => isAtMax(ctx.value, ctx),
         isOutOfRange: (ctx) => !isWithinRange(ctx.value, ctx),
