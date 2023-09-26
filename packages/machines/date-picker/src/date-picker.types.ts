@@ -515,26 +515,38 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the state details for a given cell.
    */
-  getDayCellState(props: DayCellProps): DayCellState
+  getDayTableCellState(props: DayCellProps): DayCellState
   /**
    * Returns the state details for a given month cell.
    */
-  getMonthCellState(props: CellProps): CellState
+  getMonthTableCellState(props: CellProps): CellState
+  /**
+   * Returns the state details for a given year cell.
+   */
+  getYearTableCellState(props: CellProps): CellState
 
+  rootProps: T["element"]
   controlProps: T["element"]
   contentProps: T["element"]
   positionerProps: T["element"]
-  getGridProps(props?: GridProps): T["element"]
-  getDayCellProps(props: DayCellProps): T["element"]
-  getDayCellTriggerProps(props: DayCellProps): T["element"]
-  getMonthCellProps(props: CellProps): T["element"]
-  getMonthCellTriggerProps(props: CellProps): T["element"]
-  getYearCellState(props: CellProps): CellState
-  getYearCellProps(props: CellProps): T["element"]
-  getYearCellTriggerProps(props: CellProps): T["element"]
+
+  getTableProps(props?: GridProps): T["element"]
+  getTableHeaderProps(props?: ViewProps): T["element"]
+  getTableBodyProps(props?: GridProps): T["element"]
+  getTableRowProps(props?: ViewProps): T["element"]
+
+  getDayTableCellProps(props: DayCellProps): T["element"]
+  getDayTableCellTriggerProps(props: DayCellProps): T["element"]
+
+  getMonthTableCellProps(props: CellProps): T["element"]
+  getMonthTableCellTriggerProps(props: CellProps): T["element"]
+
+  getYearTableCellProps(props: CellProps): T["element"]
+  getYearTableCellTriggerProps(props: CellProps): T["element"]
+
   getNextTriggerProps(props?: ViewProps): T["button"]
   getPrevTriggerProps(props?: ViewProps): T["button"]
-  getHeaderProps(props?: ViewProps): T["element"]
+
   clearTriggerProps: T["button"]
   triggerProps: T["button"]
   getViewTriggerProps(props?: ViewProps): T["button"]

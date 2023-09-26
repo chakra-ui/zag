@@ -77,7 +77,7 @@ export default function Page() {
 
             <div style={{ display: "flex", gap: "24px" }}>
               <table {...api.getGridProps()}>
-                <thead {...api.getHeaderProps()}>
+                <thead {...api.getTableHeaderProps()}>
                   <tr>
                     {api.weekDays.map((day, i) => (
                       <th scope="col" key={i} aria-label={day.long}>
@@ -100,7 +100,7 @@ export default function Page() {
               </table>
 
               <table {...api.getGridProps({ id: "+1" })}>
-                <thead {...api.getHeaderProps()}>
+                <thead {...api.getTableHeaderProps()}>
                   <tr>
                     {api.weekDays.map((day, i) => (
                       <th scope="col" key={i} aria-label={day.long}>

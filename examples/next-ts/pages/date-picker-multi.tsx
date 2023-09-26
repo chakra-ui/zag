@@ -72,7 +72,7 @@ export default function Page() {
             </div>
 
             <table {...api.getGridProps()}>
-              <thead {...api.getHeaderProps()}>
+              <thead {...api.getTableHeaderProps()}>
                 <tr>
                   {api.weekDays.map((day, i) => (
                     <th scope="col" key={i} aria-label={day.long}>

@@ -88,7 +88,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const separator = getLocaleSeparator(locale)
 
-  const api = {
+  return {
     isFocused,
     isOpen,
     view: state.context.view,
@@ -225,11 +225,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "calendar",
     }),
 
-    getGridProps(props: GridProps = {}) {
+    getTableProps(props: GridProps = {}) {
       const { view = "day", columns = view === "day" ? 7 : 4, id } = props
       const uid = [view, id].filter(Boolean).join(" ")
       return normalize.element({
-        ...parts.grid.attrs,
+        ...parts.table.attrs,
         role: "grid",
         "data-columns": columns,
         "aria-roledescription": getRoleDescription(view),
@@ -237,7 +237,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-readonly": ariaAttr(readOnly),
         "aria-disabled": ariaAttr(disabled),
         "aria-multiselectable": ariaAttr(state.context.selectionMode !== "single"),
-        "data-type": view,
+        "data-view": view,
         dir: state.context.dir,
         tabIndex: -1,
         onKeyDown(event) {
@@ -293,7 +293,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getDayCellState(props: DayCellProps) {
+    getDayTableCellState(props: DayCellProps) {
       const { value, disabled, offset = defaultOffset } = props
       const { visibleRange } = offset
 
@@ -330,10 +330,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return cellState
     },
 
-    getDayCellProps(props: DayCellProps) {
+    getDayTableCellProps(props: DayCellProps) {
       const { value } = props
       const cellState = api.getDayCellState(props)
       return normalize.element({
+        ...parts.tableCell.attrs,
         role: "gridcell",
         "aria-disabled": ariaAttr(!cellState.isSelectable),
         "aria-selected": cellState.isSelected || cellState.isInRange,
@@ -343,11 +344,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getDayCellTriggerProps(props: DayCellProps) {
+    getDayTableCellTriggerProps(props: DayCellProps) {
       const { value } = props
       const cellState = api.getDayCellState(props)
       return normalize.element({
-        ...parts.cellTrigger.attrs,
+        ...parts.tableCellTrigger.attrs,
         id: dom.getCellTriggerId(state.context, value.toString()),
         role: "button",
         tabIndex: cellState.isFocused ? 0 : -1,
@@ -357,7 +358,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(!cellState.isSelectable),
         "data-selected": dataAttr(cellState.isSelected),
         "data-value": value.toString(),
-        "data-type": "day",
+        "data-view": "day",
         "data-today": dataAttr(cellState.isToday),
         "data-focused": dataAttr(cellState.isFocused),
         "data-unavailable": dataAttr(cellState.isUnavailable),
@@ -381,7 +382,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getMonthCellState(props: CellProps) {
+    getMonthTableCellState(props: CellProps) {
       const { value, disabled } = props
       const normalized = focusedValue.set({ month: value })
       const formatter = getMonthFormatter(locale, timeZone)
@@ -397,10 +398,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return cellState
     },
 
-    getMonthCellProps(props: CellProps) {
+    getMonthTableCellProps(props: CellProps) {
       const { value } = props
       const cellState = api.getMonthCellState(props)
       return normalize.element({
+        ...parts.tableCell.attrs,
         role: "gridcell",
         "aria-selected": ariaAttr(cellState.isSelected),
         "data-selected": dataAttr(cellState.isSelected),
@@ -409,11 +411,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getMonthCellTriggerProps(props: CellProps) {
+    getMonthTableCellTriggerProps(props: CellProps) {
       const { value } = props
       const cellState = api.getMonthCellState(props)
       return normalize.element({
-        ...parts.cellTrigger.attrs,
+        ...parts.tableCellTrigger.attrs,
         role: "button",
         id: dom.getCellTriggerId(state.context, value.toString()),
         "data-selected": dataAttr(cellState.isSelected),
@@ -421,7 +423,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(!cellState.isSelectable),
         "data-focused": dataAttr(cellState.isFocused),
         "aria-label": cellState.valueText,
-        "data-type": "month",
+        "data-view": "month",
         "data-value": value,
         tabIndex: cellState.isFocused ? 0 : -1,
         onClick() {
@@ -434,7 +436,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getYearCellState(props: CellProps) {
+    getYearTableCellState(props: CellProps) {
       const { value, disabled } = props
       const normalized = focusedValue.set({ year: value })
       const cellState = {
@@ -449,10 +451,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return cellState
     },
 
-    getYearCellProps(props: CellProps) {
+    getYearTableCellProps(props: CellProps) {
       const { value } = props
       const cellState = api.getYearCellState(props)
       return normalize.element({
+        ...parts.tableCell.attrs,
         role: "gridcell",
         "aria-selected": ariaAttr(cellState.isSelected),
         "data-selected": dataAttr(cellState.isSelected),
@@ -461,11 +464,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getYearCellTriggerProps(props: CellProps) {
+    getYearTableCellTriggerProps(props: CellProps) {
       const { value } = props
       const cellState = api.getYearCellState(props)
       return normalize.element({
-        ...parts.cellTrigger.attrs,
+        ...parts.tableCellTrigger.attrs,
         role: "button",
         id: dom.getCellTriggerId(state.context, value.toString()),
         "data-selected": dataAttr(cellState.isSelected),
@@ -474,7 +477,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(!cellState.isSelectable),
         "aria-label": cellState.valueText,
         "data-value": value,
-        "data-type": "year",
+        "data-view": "year",
         tabIndex: cellState.isFocused ? 0 : -1,
         onClick() {
           if (!cellState.isSelectable) return
@@ -514,13 +517,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getHeaderProps(props: ViewProps = {}) {
+    getTableHeaderProps(props: ViewProps = {}) {
       const { view = "day" } = props
       return normalize.element({
-        ...parts.rowHeader.attrs,
+        ...parts.tableHead.attrs,
+        role: "rowgroup",
         "aria-hidden": true,
         dir: state.context.dir,
-        "data-type": view,
+        "data-view": view,
         "data-disabled": dataAttr(disabled),
         id: dom.getHeaderId(state.context),
       })
@@ -632,6 +636,4 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: popperStyles.floating,
     }),
   }
-
-  return api
 }
