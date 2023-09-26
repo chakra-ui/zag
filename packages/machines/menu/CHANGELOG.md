@@ -1,5 +1,34 @@
 # @zag-js/menu
 
+## 0.22.0
+
+### Minor Changes
+
+- [`97e559d6`](https://github.com/chakra-ui/zag/commit/97e559d6a56d1452208b27c026ad02c37070e016) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add new `optionItemIndicator` and `optionItemText` part
+
+  - Add `api.optionItemIndicatorProps(...)`, `api.optionItemTextProps(...)` support
+  - Add `api.getOptionItemState` and `api.getItemState`
+  - Export `OptionItemState` and `ItemState` types
+
+  > Breaking changes
+
+  - Removed `api.isOptionChecked` in favor of `api.getOptionItemState`
+
+### Patch Changes
+
+- Updated dependencies [[`6d439ac2`](https://github.com/chakra-ui/zag/commit/6d439ac2171d3158e8ba43dcc35f84e52707dae6)]:
+  - @zag-js/dismissable@0.22.0
+  - @zag-js/anatomy@0.22.0
+  - @zag-js/core@0.22.0
+  - @zag-js/types@0.22.0
+  - @zag-js/utils@0.22.0
+  - @zag-js/dom-event@0.22.0
+  - @zag-js/dom-query@0.22.0
+  - @zag-js/mutation-observer@0.22.0
+  - @zag-js/popper@0.22.0
+  - @zag-js/rect-utils@0.22.0
+
 ## 0.21.0
 
 ### Minor Changes

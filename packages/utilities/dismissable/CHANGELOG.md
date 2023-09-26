@@ -1,5 +1,18 @@
 # @zag-js/dismissable
 
+## 0.22.0
+
+### Patch Changes
+
+- [`6d439ac2`](https://github.com/chakra-ui/zag/commit/6d439ac2171d3158e8ba43dcc35f84e52707dae6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where `modal: false` doesn't disable focus trap
+
+- Updated dependencies []:
+  - @zag-js/utils@0.22.0
+  - @zag-js/dom-event@0.22.0
+  - @zag-js/dom-query@0.22.0
+  - @zag-js/interact-outside@0.22.0
+
 ## 0.21.0
 
 ### Patch Changes

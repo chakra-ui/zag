@@ -1,5 +1,27 @@
 # @zag-js/color-picker
 
+## 0.22.0
+
+### Patch Changes
+
+- [`adaf344f`](https://github.com/chakra-ui/zag/commit/adaf344f38b7d5fca9b53dc6b4342ea36c878f70) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where color area changes format when you type custom
+  hex values
+  - Fix issue where alpha channel input resets to `1` after blurring hex channel input
+  - Add support for entering native color names (e.g. `red`, `blue`, `green`, etc.)
+- Updated dependencies [[`adaf344f`](https://github.com/chakra-ui/zag/commit/adaf344f38b7d5fca9b53dc6b4342ea36c878f70)]:
+  - @zag-js/color-utils@0.22.0
+  - @zag-js/anatomy@0.22.0
+  - @zag-js/core@0.22.0
+  - @zag-js/types@0.22.0
+  - @zag-js/utils@0.22.0
+  - @zag-js/dom-event@0.22.0
+  - @zag-js/dom-query@0.22.0
+  - @zag-js/form-utils@0.22.0
+  - @zag-js/numeric-range@0.22.0
+  - @zag-js/text-selection@0.22.0
+  - @zag-js/visually-hidden@0.22.0
+
 ## 0.21.0
 
 ### Patch Changes

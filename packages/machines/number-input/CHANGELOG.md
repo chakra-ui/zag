@@ -1,5 +1,31 @@
 # @zag-js/number-input
 
+## 0.22.0
+
+### Minor Changes
+
+- [`67fbffc0`](https://github.com/chakra-ui/zag/commit/67fbffc010de315d9fba82386fe72e17b06bfb14) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Refactor number input machine to handle number parsing correctly
+  - Fix issue where value doesn't listen to form reset events
+  - **BREAKING:** Removed the following context properties in favor of the new `formatOptions`: `validateCharacter`,
+    `parse`, `format`, `minFractionDigits`, `maxFractionDigits`
+
+### Patch Changes
+
+- [`25095948`](https://github.com/chakra-ui/zag/commit/25095948d25c0d5e8d3088de939eacc9961dbfe4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Ensure `dir` context property is reflected in parts
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.22.0
+  - @zag-js/core@0.22.0
+  - @zag-js/types@0.22.0
+  - @zag-js/utils@0.22.0
+  - @zag-js/dom-event@0.22.0
+  - @zag-js/dom-query@0.22.0
+  - @zag-js/form-utils@0.22.0
+  - @zag-js/mutation-observer@0.22.0
+  - @zag-js/number-utils@0.22.0
+
 ## 0.21.0
 
 ### Patch Changes

@@ -1,5 +1,29 @@
 # @zag-js/select
 
+## 0.22.0
+
+### Minor Changes
+
+- [`fccc9de5`](https://github.com/chakra-ui/zag/commit/fccc9de5be5534967c44379e8eb5d316d6828b38) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for repositining the content
+
+### Patch Changes
+
+- Updated dependencies [[`6d439ac2`](https://github.com/chakra-ui/zag/commit/6d439ac2171d3158e8ba43dcc35f84e52707dae6)]:
+  - @zag-js/dismissable@0.22.0
+  - @zag-js/anatomy@0.22.0
+  - @zag-js/core@0.22.0
+  - @zag-js/types@0.22.0
+  - @zag-js/collection@0.22.0
+  - @zag-js/utils@0.22.0
+  - @zag-js/dom-event@0.22.0
+  - @zag-js/dom-query@0.22.0
+  - @zag-js/form-utils@0.22.0
+  - @zag-js/mutation-observer@0.22.0
+  - @zag-js/popper@0.22.0
+  - @zag-js/tabbable@0.22.0
+  - @zag-js/visually-hidden@0.22.0
+
 ## 0.21.0
 
 ### Minor Changes
