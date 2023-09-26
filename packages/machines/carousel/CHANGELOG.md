@@ -1,5 +1,19 @@
 # @zag-js/carousel
 
+## 0.22.0
+
+### Patch Changes
+
+- [`25095948`](https://github.com/chakra-ui/zag/commit/25095948d25c0d5e8d3088de939eacc9961dbfe4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Ensure `dir` context property is reflected in parts
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.22.0
+  - @zag-js/core@0.22.0
+  - @zag-js/types@0.22.0
+  - @zag-js/utils@0.22.0
+  - @zag-js/dom-query@0.22.0
+
 ## 0.21.0
 
 ### Patch Changes

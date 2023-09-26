@@ -1,5 +1,27 @@
 # @zag-js/editable
 
+## 0.22.0
+
+### Patch Changes
+
+- [#883](https://github.com/chakra-ui/zag/pull/883)
+  [`53a27898`](https://github.com/chakra-ui/zag/commit/53a2789898c36011e8f23ccb02d4682466b3f630) Thanks
+  [@junghyeonsu](https://github.com/junghyeonsu)! - Fix issue where the input value doesn't get synced correctly when
+  controlled
+
+- [`d60b79f4`](https://github.com/chakra-ui/zag/commit/d60b79f4050e611ac8521668f7c78ebfb5a3dbbd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Hide submit and cancel trigger when not in editing mode
+  - Hide edit trigger when in editing mode
+- Updated dependencies []:
+  - @zag-js/anatomy@0.22.0
+  - @zag-js/core@0.22.0
+  - @zag-js/types@0.22.0
+  - @zag-js/utils@0.22.0
+  - @zag-js/dom-event@0.22.0
+  - @zag-js/dom-query@0.22.0
+  - @zag-js/form-utils@0.22.0
+  - @zag-js/interact-outside@0.22.0
+
 ## 0.21.0
 
 ### Patch Changes

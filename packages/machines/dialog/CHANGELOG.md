@@ -1,5 +1,33 @@
 # @zag-js/dialog
 
+## 0.22.0
+
+### Patch Changes
+
+- [`0f39f6fd`](https://github.com/chakra-ui/zag/commit/0f39f6fd580fb89110c43c24dd7fcc0a2a5f7a0a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where interact outside handlers are not exposed
+
+  - Fix issue where interacting with toast closes dialog
+
+  > Breaking Changes
+
+  - Rename `closeOnEsc` to `closeOnEscapeKeyDown`
+  - Rename `onEsc` to `onEscapeKeyDown`
+  - Rename `closeOnOutsideClick` to `closeOnInteractOutside`
+
+- [`6d439ac2`](https://github.com/chakra-ui/zag/commit/6d439ac2171d3158e8ba43dcc35f84e52707dae6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where `modal: false` doesn't disable focus trap
+
+- Updated dependencies [[`6d439ac2`](https://github.com/chakra-ui/zag/commit/6d439ac2171d3158e8ba43dcc35f84e52707dae6)]:
+  - @zag-js/dismissable@0.22.0
+  - @zag-js/anatomy@0.22.0
+  - @zag-js/core@0.22.0
+  - @zag-js/types@0.22.0
+  - @zag-js/aria-hidden@0.22.0
+  - @zag-js/utils@0.22.0
+  - @zag-js/dom-query@0.22.0
+  - @zag-js/remove-scroll@0.22.0
+
 ## 0.21.0
 
 ### Patch Changes

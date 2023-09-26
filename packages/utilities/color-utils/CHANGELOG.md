@@ -1,5 +1,15 @@
 # @zag-js/color-utils
 
+## 0.22.0
+
+### Patch Changes
+
+- [`adaf344f`](https://github.com/chakra-ui/zag/commit/adaf344f38b7d5fca9b53dc6b4342ea36c878f70) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where color area changes format when you type custom
+  hex values
+  - Fix issue where alpha channel input resets to `1` after blurring hex channel input
+  - Add support for entering native color names (e.g. `red`, `blue`, `green`, etc.)
+
 ## 0.21.0
 
 ## 0.20.0
