@@ -13,8 +13,7 @@ const fetchMachine = createMachine({
   id: "number-input",
   initial: "idle",
   context: {
-    "isInvalidExponential": false,
-    "clampOnBlur && !isInRange && !isEmptyValue": false,
+    "clampValueOnBlur && !isInRange": false,
     "isIncrementHint": false,
     "isDecrementHint": false,
     "isInRange && spinOnPress": false,
@@ -22,17 +21,18 @@ const fetchMachine = createMachine({
     "isDecrementHint": false
   },
   entry: ["syncInputValue"],
+  activities: ["trackFormControl"],
   on: {
-    SET_VALUE: {
+    "VALUE.SET": {
       actions: ["setValue", "clampValue", "setHintToSet"]
     },
-    CLEAR_VALUE: {
+    "VALUE.CLEAR": {
       actions: ["clearValue"]
     },
-    INCREMENT: {
+    "VALUE.INCREMENT": {
       actions: ["increment"]
     },
-    DECREMENT: {
+    "VALUE.DECREMENT": {
       actions: ["decrement"]
     }
   },
@@ -44,15 +44,15 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        PRESS_DOWN: {
+        "TRIGGER.PRESS_DOWN": {
           target: "before:spin",
           actions: ["focusInput", "invokeOnFocus", "setHint"]
         },
-        PRESS_DOWN_SCRUBBER: {
+        "SCRUBBER.PRESS_DOWN": {
           target: "scrubbing",
           actions: ["focusInput", "invokeOnFocus", "setHint", "setCursorPoint"]
         },
-        FOCUS: {
+        "INPUT.FOCUS": {
           target: "focused",
           actions: ["focusInput", "invokeOnFocus"]
         }
@@ -63,41 +63,43 @@ const fetchMachine = createMachine({
       entry: "focusInput",
       activities: "attachWheelListener",
       on: {
-        PRESS_DOWN: {
+        "TRIGGER.PRESS_DOWN": {
           target: "before:spin",
           actions: ["focusInput", "setHint"]
         },
-        PRESS_DOWN_SCRUBBER: {
+        "SCRUBBER.PRESS_DOWN": {
           target: "scrubbing",
           actions: ["focusInput", "setHint", "setCursorPoint"]
         },
-        ARROW_UP: {
+        "INPUT.ARROW_UP": {
           actions: "increment"
         },
-        ARROW_DOWN: {
+        "INPUT.ARROW_DOWN": {
           actions: "decrement"
         },
-        HOME: {
-          actions: "setToMin"
+        "INPUT.HOME": {
+          actions: "decrementToMin"
         },
-        END: {
-          actions: "setToMax"
+        "INPUT.END": {
+          actions: "incrementToMax"
         },
-        CHANGE: {
+        "INPUT.CHANGE": {
           actions: ["setValue", "setHint"]
         },
-        BLUR: [{
-          cond: "isInvalidExponential",
+        "INPUT.COMMIT": [{
+          cond: "clampValueOnBlur && !isInRange",
           target: "idle",
-          actions: ["clearValue", "clearHint", "invokeOnBlur"]
-        }, {
-          cond: "clampOnBlur && !isInRange && !isEmptyValue",
-          target: "idle",
-          actions: ["clampValue", "clearHint", "invokeOnBlur"]
+          actions: ["clampValue", "syncInputElement", "clearHint", "invokeOnBlur"]
         }, {
           target: "idle",
-          actions: ["roundValue", "invokeOnBlur"]
-        }]
+          actions: ["syncInputElement", "invokeOnBlur"]
+        }],
+        "INPUT.COMPOSITION_START": {
+          actions: "setComposing"
+        },
+        "INPUT.COMPOSITION_END": {
+          actions: "clearComposing"
+        }
       }
     },
     "before:spin": {
@@ -117,7 +119,7 @@ const fetchMachine = createMachine({
         }
       },
       on: {
-        PRESS_UP: {
+        "TRIGGER.PRESS_UP": {
           target: "focused",
           actions: "clearHint"
         }
@@ -131,7 +133,7 @@ const fetchMachine = createMachine({
         id: "interval"
       },
       on: {
-        PRESS_UP: {
+        "TRIGGER.PRESS_UP": {
           target: "focused",
           actions: "clearHint"
         }
@@ -142,8 +144,8 @@ const fetchMachine = createMachine({
       exit: "clearCursorPoint",
       activities: ["activatePointerLock", "trackMousemove", "setupVirtualCursor", "preventTextSelection"],
       on: {
-        POINTER_UP_SCRUBBER: "focused",
-        POINTER_MOVE_SCRUBBER: [{
+        "SCRUBBER.POINTER_UP": "focused",
+        "SCRUBBER.POINTER_MOVE": [{
           cond: "isIncrementHint",
           actions: ["increment", "setCursorPoint"]
         }, {
@@ -166,8 +168,7 @@ const fetchMachine = createMachine({
     CHANGE_INTERVAL: 50
   },
   guards: {
-    "isInvalidExponential": ctx => ctx["isInvalidExponential"],
-    "clampOnBlur && !isInRange && !isEmptyValue": ctx => ctx["clampOnBlur && !isInRange && !isEmptyValue"],
+    "clampValueOnBlur && !isInRange": ctx => ctx["clampValueOnBlur && !isInRange"],
     "isIncrementHint": ctx => ctx["isIncrementHint"],
     "isDecrementHint": ctx => ctx["isDecrementHint"],
     "isInRange && spinOnPress": ctx => ctx["isInRange && spinOnPress"]

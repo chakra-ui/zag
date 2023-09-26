@@ -1,5 +1,6 @@
+import type { NumberFormatter, NumberParser } from "@internationalized/number"
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -12,7 +13,6 @@ export interface ValueChangeDetails {
 
 export interface FocusChangeDetails extends ValueChangeDetails {
   focused: boolean
-  srcElement?: HTMLElement | null
 }
 
 type ValidityState = "rangeUnderflow" | "rangeOverflow"
@@ -52,7 +52,7 @@ type IntlTranslations = {
   decrementLabel: string
 }
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * The ids of the elements in the number input. Useful for composition.
    */
@@ -110,11 +110,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   allowOverflow: boolean
   /**
-   * Whether the pressed key should be allowed in the input.
-   * The default behavior is to allow DOM floating point characters defined by /^[Ee0-9+\-.]$/
-   */
-  validateCharacter?: (char: string) => boolean
-  /**
    * Whether to clamp the value when the input loses focus (blur)
    * @default true
    */
@@ -129,13 +124,9 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   translations: IntlTranslations
   /**
-   * If using a custom display format, this converts the custom format to a format `parseFloat` understands.
+   * The options to pass to the `Intl.NumberFormat` constructor
    */
-  parse?: (value: string) => string
-  /**
-   * If using a custom display format, this converts the default format to the custom format.
-   */
-  format?: (value: string) => string | number
+  formatOptions?: Intl.NumberFormatOptions
   /**
    * Hints at the type of data that might be entered by the user. It also determines
    * the type of keyboard shown to the user on mobile devices
@@ -154,14 +145,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Function invoked when the number input is focused
    */
   onFocusChange?: (details: FocusChangeDetails) => void
-  /**
-   * The minimum number of fraction digits to use. Possible values are from 0 to 20
-   */
-  minFractionDigits?: number
-  /**
-   * The maximum number of fraction digits to use. Possible values are from 0 to 20;
-   */
-  maxFractionDigits?: number
   /**
    * Whether to spin the value when the increment/decrement button is pressed
    */
@@ -196,6 +179,11 @@ type ComputedContext = Readonly<{
    * Whether the value is empty
    */
   isValueEmpty: boolean
+  /**
+   * @computed
+   * Whether the color picker is disabled
+   */
+  isDisabled: boolean
   /**
    * @computed
    * Whether the increment button is enabled
@@ -234,6 +222,26 @@ type PrivateContext = Context<{
    * The scrubber cursor position
    */
   scrubberCursorPoint: { x: number; y: number } | null
+  /**
+   * @internal
+   * The number i18n formatter
+   */
+  formatter: NumberFormatter
+  /**
+   * @internal
+   * The number i18n parser
+   */
+  parser: NumberParser
+  /**
+   * @internal
+   * Whether the input is composing
+   */
+  composing: boolean
+  /**
+   * @internal
+   * Whether the checkbox's fieldset is disabled
+   */
+  fieldsetDisabled: boolean
 }>
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
@@ -300,10 +308,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to focus the input.
    */
   focus(): void
-  /**
-   * Function to blur the input.
-   */
-  blur(): void
   rootProps: T["element"]
   labelProps: T["label"]
   controlProps: T["element"]

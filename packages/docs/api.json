@@ -1413,10 +1413,6 @@
       "focus": {
         "type": "() => void",
         "description": "Function to focus the input."
-      },
-      "blur": {
-        "type": "() => void",
-        "description": "Function to blur the input."
       }
     },
     "context": {
@@ -1474,10 +1470,6 @@
         "description": "Whether to allow the value overflow the min/max range",
         "defaultValue": "true"
       },
-      "validateCharacter": {
-        "type": "(char: string) => boolean",
-        "description": "Whether the pressed key should be allowed in the input.\nThe default behavior is to allow DOM floating point characters defined by /^[Ee0-9+\\-.]$/"
-      },
       "clampValueOnBlur": {
         "type": "boolean",
         "description": "Whether to clamp the value when the input loses focus (blur)",
@@ -1492,13 +1484,9 @@
         "type": "IntlTranslations",
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
-      "parse": {
-        "type": "(value: string) => string",
-        "description": "If using a custom display format, this converts the custom format to a format `parseFloat` understands."
-      },
-      "format": {
-        "type": "(value: string) => string | number",
-        "description": "If using a custom display format, this converts the default format to the custom format."
+      "formatOptions": {
+        "type": "Intl.NumberFormatOptions",
+        "description": "The options to pass to the `Intl.NumberFormat` constructor"
       },
       "inputMode": {
         "type": "InputMode",
@@ -1517,17 +1505,14 @@
         "type": "(details: FocusChangeDetails) => void",
         "description": "Function invoked when the number input is focused"
       },
-      "minFractionDigits": {
-        "type": "number",
-        "description": "The minimum number of fraction digits to use. Possible values are from 0 to 20"
-      },
-      "maxFractionDigits": {
-        "type": "number",
-        "description": "The maximum number of fraction digits to use. Possible values are from 0 to 20;"
-      },
       "spinOnPress": {
         "type": "boolean",
         "description": "Whether to spin the value when the increment/decrement button is pressed"
+      },
+      "locale": {
+        "type": "string",
+        "description": "The current locale. Based on the BCP 47 definition.",
+        "defaultValue": "\"en-US\""
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

@@ -15,7 +15,7 @@ export const controls = (page: Page) => {
       const el = page.locator(testid(id))
       await el.selectText()
       await page.keyboard.press("Backspace")
-      await el.type(value)
+      await el.fill(value)
       await page.keyboard.press("Enter")
     },
     bool: async (id: string, value = true) => {

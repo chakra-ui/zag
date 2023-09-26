@@ -24,6 +24,14 @@ export interface DirectionProperty {
   dir?: "ltr" | "rtl"
 }
 
+export interface LocaleProperties extends DirectionProperty {
+  /**
+   * The current locale. Based on the BCP 47 definition.
+   * @default "en-US"
+   */
+  locale?: string
+}
+
 export interface CommonProperties {
   /**
    * The unique identifier of the machine.

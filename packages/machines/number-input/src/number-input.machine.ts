@@ -1,12 +1,14 @@
-import { choose, createMachine, guards } from "@zag-js/core"
+import { NumberParser } from "@internationalized/number"
+import { choose, createMachine, guards, ref } from "@zag-js/core"
 import { addDomEvent, requestPointerLock } from "@zag-js/dom-event"
 import { isSafari, raf } from "@zag-js/dom-query"
+import { trackFormControl } from "@zag-js/form-utils"
 import { observeAttributes } from "@zag-js/mutation-observer"
-import { isAtMax, isAtMin, isWithinRange, valueOf } from "@zag-js/number-utils"
-import { callAll, compact, isEqual, match } from "@zag-js/utils"
+import { clamp, decrement, increment, isAtMax, isAtMin, isWithinRange } from "@zag-js/number-utils"
+import { callAll, compact, isEqual } from "@zag-js/utils"
+import { recordCursor, restoreCursor } from "./cursor"
 import { dom } from "./number-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./number-input.types"
-import { utils } from "./number-input.utils"
 
 const { not, and } = guards
 
@@ -18,20 +20,25 @@ export function machine(userContext: UserDefinedContext) {
       initial: "idle",
       context: {
         dir: "ltr",
+        locale: "en-US",
         focusInputOnChange: true,
         clampValueOnBlur: true,
         allowOverflow: false,
         inputMode: "decimal",
         pattern: "[0-9]*(.[0-9]+)?",
-        hint: null,
         value: "",
         step: 1,
         min: Number.MIN_SAFE_INTEGER,
         max: Number.MAX_SAFE_INTEGER,
-        scrubberCursorPoint: null,
         invalid: false,
         spinOnPress: true,
         ...ctx,
+        hint: null,
+        scrubberCursorPoint: null,
+        composing: false,
+        fieldsetDisabled: false,
+        formatter: createFormatter(ctx.locale || "en-US", ctx.formatOptions),
+        parser: createParser(ctx.locale || "en-US", ctx.formatOptions),
         translations: {
           incrementLabel: "increment value",
           decrementLabel: "decrease value",
@@ -41,18 +48,24 @@ export function machine(userContext: UserDefinedContext) {
 
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
-        valueAsNumber: (ctx) => valueOf(ctx.value),
+        valueAsNumber: (ctx) => ctx.parser.parse(ctx.value) ?? 0,
         isAtMin: (ctx) => isAtMin(ctx.value, ctx),
         isAtMax: (ctx) => isAtMax(ctx.value, ctx),
         isOutOfRange: (ctx) => !isWithinRange(ctx.value, ctx),
         isValueEmpty: (ctx) => ctx.value === "",
+        isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         canIncrement: (ctx) => ctx.allowOverflow || !ctx.isAtMax,
         canDecrement: (ctx) => ctx.allowOverflow || !ctx.isAtMin,
         valueText: (ctx) => ctx.translations.valueText?.(ctx.value),
-        formattedValue: (ctx) => ctx.format?.(ctx.value).toString() ?? ctx.value,
+        formattedValue: (ctx) => {
+          if (Number.isNaN(ctx.valueAsNumber)) return ctx.value
+          return ctx.formatter.format(ctx.valueAsNumber)
+        },
       },
 
       watch: {
+        formatOptions: ["setFormatterAndParser", "syncInputElement"],
+        locale: ["setFormatterAndParser", "syncInputElement"],
         value: ["syncInputElement"],
         isOutOfRange: ["invokeOnInvalid"],
         scrubberCursorPoint: ["setVirtualCursorPosition"],
@@ -60,17 +73,19 @@ export function machine(userContext: UserDefinedContext) {
 
       entry: ["syncInputValue"],
 
+      activities: ["trackFormControl"],
+
       on: {
-        SET_VALUE: {
+        "VALUE.SET": {
           actions: ["setValue", "clampValue", "setHintToSet"],
         },
-        CLEAR_VALUE: {
+        "VALUE.CLEAR": {
           actions: ["clearValue"],
         },
-        INCREMENT: {
+        "VALUE.INCREMENT": {
           actions: ["increment"],
         },
-        DECREMENT: {
+        "VALUE.DECREMENT": {
           actions: ["decrement"],
         },
       },
@@ -78,15 +93,15 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         idle: {
           on: {
-            PRESS_DOWN: {
+            "TRIGGER.PRESS_DOWN": {
               target: "before:spin",
               actions: ["focusInput", "invokeOnFocus", "setHint"],
             },
-            PRESS_DOWN_SCRUBBER: {
+            "SCRUBBER.PRESS_DOWN": {
               target: "scrubbing",
               actions: ["focusInput", "invokeOnFocus", "setHint", "setCursorPoint"],
             },
-            FOCUS: {
+            "INPUT.FOCUS": {
               target: "focused",
               actions: ["focusInput", "invokeOnFocus"],
             },
@@ -98,45 +113,46 @@ export function machine(userContext: UserDefinedContext) {
           entry: "focusInput",
           activities: "attachWheelListener",
           on: {
-            PRESS_DOWN: {
+            "TRIGGER.PRESS_DOWN": {
               target: "before:spin",
               actions: ["focusInput", "setHint"],
             },
-            PRESS_DOWN_SCRUBBER: {
+            "SCRUBBER.PRESS_DOWN": {
               target: "scrubbing",
               actions: ["focusInput", "setHint", "setCursorPoint"],
             },
-            ARROW_UP: {
+            "INPUT.ARROW_UP": {
               actions: "increment",
             },
-            ARROW_DOWN: {
+            "INPUT.ARROW_DOWN": {
               actions: "decrement",
             },
-            HOME: {
-              actions: "setToMin",
+            "INPUT.HOME": {
+              actions: "decrementToMin",
             },
-            END: {
-              actions: "setToMax",
+            "INPUT.END": {
+              actions: "incrementToMax",
             },
-            CHANGE: {
+            "INPUT.CHANGE": {
               actions: ["setValue", "setHint"],
             },
-            BLUR: [
+            "INPUT.COMMIT": [
               {
-                guard: "isInvalidExponential",
+                guard: and("clampValueOnBlur", not("isInRange")),
                 target: "idle",
-                actions: ["clearValue", "clearHint", "invokeOnBlur"],
-              },
-              {
-                guard: and("clampOnBlur", not("isInRange"), not("isEmptyValue")),
-                target: "idle",
-                actions: ["clampValue", "clearHint", "invokeOnBlur"],
+                actions: ["clampValue", "syncInputElement", "clearHint", "invokeOnBlur"],
               },
               {
                 target: "idle",
-                actions: ["roundValue", "invokeOnBlur"],
+                actions: ["syncInputElement", "invokeOnBlur"],
               },
             ],
+            "INPUT.COMPOSITION_START": {
+              actions: "setComposing",
+            },
+            "INPUT.COMPOSITION_END": {
+              actions: "clearComposing",
+            },
           },
         },
 
@@ -154,7 +170,7 @@ export function machine(userContext: UserDefinedContext) {
             },
           },
           on: {
-            PRESS_UP: {
+            "TRIGGER.PRESS_UP": {
               target: "focused",
               actions: "clearHint",
             },
@@ -177,7 +193,7 @@ export function machine(userContext: UserDefinedContext) {
             },
           ],
           on: {
-            PRESS_UP: {
+            "TRIGGER.PRESS_UP": {
               target: "focused",
               actions: "clearHint",
             },
@@ -189,8 +205,8 @@ export function machine(userContext: UserDefinedContext) {
           exit: "clearCursorPoint",
           activities: ["activatePointerLock", "trackMousemove", "setupVirtualCursor", "preventTextSelection"],
           on: {
-            POINTER_UP_SCRUBBER: "focused",
-            POINTER_MOVE_SCRUBBER: [
+            "SCRUBBER.POINTER_UP": "focused",
+            "SCRUBBER.POINTER_MOVE": [
               {
                 guard: "isIncrementHint",
                 actions: ["increment", "setCursorPoint"],
@@ -211,18 +227,27 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       guards: {
-        clampOnBlur: (ctx) => !!ctx.clampValueOnBlur,
+        clampValueOnBlur: (ctx) => ctx.clampValueOnBlur,
         isAtMin: (ctx) => ctx.isAtMin,
         spinOnPress: (ctx) => !!ctx.spinOnPress,
         isAtMax: (ctx) => ctx.isAtMax,
         isInRange: (ctx) => !ctx.isOutOfRange,
         isDecrementHint: (ctx, evt) => (evt.hint ?? ctx.hint) === "decrement",
-        isEmptyValue: (ctx) => ctx.isValueEmpty,
         isIncrementHint: (ctx, evt) => (evt.hint ?? ctx.hint) === "increment",
-        isInvalidExponential: (ctx) => ctx.value.toString().startsWith("e"),
       },
 
       activities: {
+        trackFormControl(ctx, _evt, { initialContext }) {
+          const inputEl = dom.getInputEl(ctx)
+          return trackFormControl(inputEl, {
+            onFieldsetDisabledChange(disabled) {
+              ctx.fieldsetDisabled = disabled
+            },
+            onFormReset() {
+              set.value(ctx, initialContext.value)
+            },
+          })
+        },
         setupVirtualCursor(ctx) {
           return dom.setupVirtualCursor(ctx)
         },
@@ -232,26 +257,24 @@ export function machine(userContext: UserDefinedContext) {
         trackButtonDisabled(ctx, _evt, { send }) {
           const btn = dom.getPressedTriggerEl(ctx, ctx.hint)
           return observeAttributes(btn, ["disabled"], () => {
-            send("PRESS_UP")
+            send({ type: "TRIGGER.PRESS_UP", src: "attr" })
           })
         },
         attachWheelListener(ctx, _evt, { send }) {
-          const input = dom.getInputEl(ctx)
-          if (!input) return
+          const inputEl = dom.getInputEl(ctx)
+          if (!inputEl || !dom.isActiveElement(ctx, inputEl) || !ctx.allowMouseWheel) return
 
           function onWheel(event: WheelEvent) {
-            const isInputFocused = dom.getDoc(ctx).activeElement === input
-            if (!ctx.allowMouseWheel || !isInputFocused) return
             event.preventDefault()
-
             const dir = Math.sign(event.deltaY) * -1
             if (dir === 1) {
-              send("INCREMENT")
+              send("VALUE.INCREMENT")
             } else if (dir === -1) {
-              send("DECREMENT")
+              send("VALUE.DECREMENT")
             }
           }
-          return addDomEvent(input, "wheel", onWheel, { passive: false })
+
+          return addDomEvent(inputEl, "wheel", onWheel, { passive: false })
         },
         activatePointerLock(ctx) {
           if (isSafari()) return
@@ -265,14 +288,14 @@ export function machine(userContext: UserDefinedContext) {
             const value = dom.getMousementValue(ctx, event)
             if (!value.hint) return
             send({
-              type: "POINTER_MOVE_SCRUBBER",
+              type: "SCRUBBER.POINTER_MOVE",
               hint: value.hint,
               point: value.point,
             })
           }
 
           function onMouseup() {
-            send("POINTER_UP_SCRUBBER")
+            send("SCRUBBER.POINTER_UP")
           }
 
           return callAll(
@@ -286,36 +309,33 @@ export function machine(userContext: UserDefinedContext) {
         focusInput(ctx) {
           if (!ctx.focusInputOnChange) return
           const inputEl = dom.getInputEl(ctx)
-          raf(() => {
-            inputEl?.focus()
-          })
+          if (dom.isActiveElement(ctx, inputEl)) return
+          raf(() => inputEl?.focus({ preventScroll: true }))
         },
         increment(ctx, evt) {
-          set.value(ctx, utils.increment(ctx, evt.step))
+          const nextValue = increment(ctx.value, evt.step ?? ctx.step)
+          set.value(ctx, String(clamp(nextValue, ctx)))
         },
         decrement(ctx, evt) {
-          set.value(ctx, utils.decrement(ctx, evt.step))
+          const nextValue = decrement(ctx.value, evt.step ?? ctx.step)
+          set.value(ctx, String(clamp(nextValue, ctx)))
         },
         clampValue(ctx) {
-          set.value(ctx, utils.clamp(ctx))
-        },
-        roundValue(ctx) {
-          if (ctx.value === "") return
-          set.value(ctx, utils.round(ctx))
+          const nextValue = clamp(ctx.value, ctx)
+          set.value(ctx, String(nextValue))
         },
         setValue(ctx, evt) {
-          let value = evt.target?.value ?? evt.value
-          value = utils.sanitize(ctx, utils.parse(ctx, value.toString()))
+          const value = evt.target?.value ?? evt.value
           set.value(ctx, value)
         },
         clearValue(ctx) {
           set.value(ctx, "")
         },
-        setToMax(ctx) {
-          set.value(ctx, ctx.max.toString())
+        incrementToMax(ctx) {
+          set.value(ctx, String(ctx.max))
         },
-        setToMin(ctx) {
-          set.value(ctx, ctx.min.toString())
+        decrementToMin(ctx) {
+          set.value(ctx, String(ctx.min))
         },
         setHint(ctx, evt) {
           ctx.hint = evt.hint
@@ -326,15 +346,9 @@ export function machine(userContext: UserDefinedContext) {
         setHintToSet(ctx) {
           ctx.hint = "set"
         },
-        invokeOnFocus(ctx, evt) {
-          const srcElement: HTMLElement | null = match(evt.type, {
-            PRESS_DOWN: dom.getPressedTriggerEl(ctx, evt.hint),
-            FOCUS: dom.getInputEl(ctx),
-            PRESS_DOWN_SCRUBBER: dom.getScrubberEl(ctx),
-          })
+        invokeOnFocus(ctx) {
           ctx.onFocusChange?.({
             focused: true,
-            srcElement,
             value: ctx.formattedValue,
             valueAsNumber: ctx.valueAsNumber,
           })
@@ -355,16 +369,24 @@ export function machine(userContext: UserDefinedContext) {
             valueAsNumber: ctx.valueAsNumber,
           })
         },
-        syncInputElement(ctx) {
+        syncInputElement(ctx, evt) {
           const inputEl = dom.getInputEl(ctx)
-          dom.setValue(inputEl, ctx.formattedValue)
+          const inputValue = evt.type.endsWith("CHANGE") ? ctx.value : ctx.formattedValue
+
+          // record cursor position before updating input value
+          const sel = recordCursor(inputEl!)
+
+          dom.setValue(inputEl, inputValue)
+
+          // restore cursor position after updating input value
+          raf(() => {
+            restoreCursor(inputEl!, sel)
+          })
         },
         syncInputValue(ctx) {
           const inputEl = dom.getInputEl(ctx)
           if (!inputEl || inputEl.value == ctx.value) return
-
-          const value = utils.parse(ctx, inputEl.value)
-          set.value(ctx, utils.sanitize(ctx, value))
+          set.value(ctx, ctx.formattedValue)
         },
         setCursorPoint(ctx, evt) {
           ctx.scrubberCursorPoint = evt.point
@@ -373,19 +395,52 @@ export function machine(userContext: UserDefinedContext) {
           ctx.scrubberCursorPoint = null
         },
         setVirtualCursorPosition(ctx) {
-          const cursor = dom.getCursorEl(ctx)
-          if (!cursor || !ctx.scrubberCursorPoint) return
+          const cursorEl = dom.getCursorEl(ctx)
+          if (!cursorEl || !ctx.scrubberCursorPoint) return
           const { x, y } = ctx.scrubberCursorPoint
-          cursor.style.transform = `translate3d(${x}px, ${y}px, 0px)`
+          cursorEl.style.transform = `translate3d(${x}px, ${y}px, 0px)`
         },
+        setComposing(ctx) {
+          ctx.composing = true
+        },
+        clearComposing(ctx) {
+          ctx.composing = false
+        },
+        setFormatterAndParser(ctx) {
+          if (!ctx.locale) return
+          ctx.formatter = createFormatter(ctx.locale, ctx.formatOptions)
+          ctx.parser = createParser(ctx.locale, ctx.formatOptions)
+        },
+      },
+      compareFns: {
+        formatOptions: (a, b) => isEqual(a, b),
       },
     },
   )
 }
 
+const defaultFormatOptions: Intl.NumberFormatOptions = {
+  style: "decimal",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 20,
+}
+
+const createFormatter = (locale: string, options: Intl.NumberFormatOptions = {}) => {
+  const formatOptions = Object.assign({}, defaultFormatOptions, options)
+  return ref(new Intl.NumberFormat(locale, formatOptions))
+}
+
+const createParser = (locale: string, options: Intl.NumberFormatOptions = {}) => {
+  const formatOptions = Object.assign({}, defaultFormatOptions, options)
+  return ref(new NumberParser(locale, formatOptions))
+}
+
 const invoke = {
   onChange: (ctx: MachineContext) => {
-    ctx.onValueChange?.({ value: ctx.value, valueAsNumber: ctx.valueAsNumber })
+    ctx.onValueChange?.({
+      value: ctx.value,
+      valueAsNumber: ctx.valueAsNumber,
+    })
   },
 }
 

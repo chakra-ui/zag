@@ -70,8 +70,6 @@ export const numberInputControls = defineControls({
   allowMouseWheel: { type: "boolean", defaultValue: false },
   spinOnPress: { type: "boolean", defaultValue: true },
   step: { type: "number", defaultValue: 1 },
-  minFractionDigits: { type: "number", defaultValue: 0 },
-  maxFractionDigits: { type: "number", defaultValue: 3 },
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 100 },
 })

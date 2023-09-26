@@ -161,8 +161,6 @@ const components = {
       component={NumberInput}
       defaultProps={{
         disabled: false,
-        minFractionDigits: 0,
-        maxFractionDigits: 5,
         min: -10,
         max: 20,
         step: 1,

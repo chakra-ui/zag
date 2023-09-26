@@ -1791,6 +1791,9 @@ importers:
 
   packages/machines/number-input:
     dependencies:
+      '@internationalized/number':
+        specifier: ^3.2.1
+        version: 3.2.1
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../anatomy
@@ -1803,6 +1806,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/form-utils':
+        specifier: workspace:*
+        version: link:../../utilities/form-utils
       '@zag-js/mutation-observer':
         specifier: workspace:*
         version: link:../../utilities/mutation-observer
@@ -5303,6 +5309,12 @@ packages:
     resolution: {integrity: sha512-nw0Q+oRkizBWMioseI8+2TeUPEyopJVz5YxoYVzR0W1v+2YytiYah7s/ot35F149q/xAg4F1gT/6eTd+tsUpFQ==}
     dependencies:
       '@swc/helpers': 0.5.1
+
+  /@internationalized/number@3.2.1:
+    resolution: {integrity: sha512-hK30sfBlmB1aIe3/OwAPg9Ey0DjjXvHEiGVhNaOiBJl31G0B6wMaX8BN3ibzdlpyRNE9p7X+3EBONmxtJO9Yfg==}
+    dependencies:
+      '@swc/helpers': 0.5.2
+    dev: false
 
   /@ioredis/commands@1.2.0:
     resolution: {integrity: sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==}

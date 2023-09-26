@@ -11,6 +11,7 @@ export function createScope<T>(methods: T) {
     getDoc: (ctx: Ctx) => getDocument(screen.getRootNode(ctx)),
     getWin: (ctx: Ctx) => screen.getDoc(ctx).defaultView ?? window,
     getActiveElement: (ctx: Ctx) => screen.getDoc(ctx).activeElement as HTMLElement | null,
+    isActiveElement: (ctx: Ctx, elem: HTMLElement | null) => elem === screen.getActiveElement(ctx),
     getById: <T extends HTMLElement = HTMLElement>(ctx: Ctx, id: string) =>
       screen.getRootNode(ctx).getElementById(id) as T | null,
     setValue: <T extends { value: string }>(elem: T | null, value: string | number | null | undefined) => {

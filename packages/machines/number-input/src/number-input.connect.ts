@@ -1,20 +1,22 @@
 import { getEventPoint, getEventStep, getNativeEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, isHTMLElement } from "@zag-js/dom-query"
 import { roundToDevicePixel } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./number-input.anatomy"
 import { dom } from "./number-input.dom"
 import type { MachineApi, Send, State } from "./number-input.types"
-import { utils } from "./number-input.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isFocused = state.hasTag("focus")
   const isInvalid = state.context.isOutOfRange || !!state.context.invalid
 
-  const isDisabled = !!state.context.disabled
   const isValueEmpty = state.context.isValueEmpty
-  const isIncrementDisabled = isDisabled || !state.context.canIncrement
-  const isDecrementDisabled = isDisabled || !state.context.canDecrement
+
+  const isDisabled = state.context.isDisabled
+  const isReadOnly = state.context.readOnly
+
+  const isIncrementDisabled = isDisabled || !state.context.canIncrement || isReadOnly
+  const isDecrementDisabled = isDisabled || !state.context.canDecrement || isReadOnly
 
   const translations = state.context.translations
 
@@ -26,35 +28,31 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     valueAsNumber: state.context.valueAsNumber,
 
     setValue(value: string | number) {
-      send({ type: "SET_VALUE", value: value.toString() })
+      send({ type: "VALUE.SET", value: value.toString() })
     },
 
     clearValue() {
-      send("CLEAR_VALUE")
+      send("VALUE.CLEAR")
     },
 
     increment() {
-      send("INCREMENT")
+      send("VALUE.INCREMENT")
     },
 
     decrement() {
-      send("DECREMENT")
+      send("VALUE.DECREMENT")
     },
 
     setToMax() {
-      send({ type: "SET_VALUE", value: state.context.max })
+      send({ type: "VALUE.SET", value: state.context.max })
     },
 
     setToMin() {
-      send({ type: "SET_VALUE", value: state.context.min })
+      send({ type: "VALUE.SET", value: state.context.min })
     },
 
     focus() {
       dom.getInputEl(state.context)?.focus()
-    },
-
-    blur() {
-      dom.getInputEl(state.context)?.blur()
     },
 
     rootProps: normalize.element({
@@ -109,49 +107,67 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-roledescription": "numberfield",
       "aria-valuemin": state.context.min,
       "aria-valuemax": state.context.max,
-      "aria-valuenow": isNaN(state.context.valueAsNumber) ? undefined : state.context.valueAsNumber,
+      "aria-valuenow": Number.isNaN(state.context.valueAsNumber) ? undefined : state.context.valueAsNumber,
       "aria-valuetext": state.context.valueText,
+      onCompositionStart() {
+        send("INPUT.COMPOSITION_START")
+      },
+      onCompositionEnd() {
+        send("INPUT.COMPOSITION_END")
+      },
       onFocus() {
-        send("FOCUS")
+        send("INPUT.FOCUS")
       },
       onBlur() {
-        send("BLUR")
+        send({ type: "INPUT.COMMIT", src: "blur" })
       },
       onChange(event) {
-        send({ type: "CHANGE", target: event.currentTarget, hint: "set" })
+        send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set" })
+      },
+      onBeforeInput(event) {
+        try {
+          const { selectionStart, selectionEnd, value } = event.currentTarget
+
+          const nextValue = value.slice(0, selectionStart!) + (event as any).data + value.slice(selectionEnd!)
+          const isValid = state.context.parser.isValidPartialNumber(nextValue)
+
+          if (!isValid) {
+            event.preventDefault()
+          }
+        } catch {
+          // noop
+        }
       },
       onKeyDown(event) {
-        const evt = getNativeEvent(event)
-        // TODO: This blocks non-ascii characters
-        if (evt.isComposing) return
-
-        if (!utils.isValidNumericEvent(state.context, event)) {
-          event.preventDefault()
-        }
+        if (state.context.readOnly) return
 
         const step = getEventStep(event) * state.context.step
 
         const keyMap: EventKeyMap = {
           ArrowUp() {
-            send({ type: "ARROW_UP", step })
+            send({ type: "INPUT.ARROW_UP", step })
+            event.preventDefault()
           },
           ArrowDown() {
-            send({ type: "ARROW_DOWN", step })
+            send({ type: "INPUT.ARROW_DOWN", step })
+            event.preventDefault()
           },
           Home() {
-            send("HOME")
+            send("INPUT.HOME")
+            event.preventDefault()
           },
           End() {
-            send("END")
+            send("INPUT.END")
+            event.preventDefault()
+          },
+          Enter() {
+            if (state.context.composing) return
+            send({ type: "INPUT.COMMIT", src: "enter" })
           },
         }
 
         const exec = keyMap[event.key]
-
-        if (exec) {
-          exec(event)
-          event.preventDefault()
-        }
+        exec?.(event)
       },
     }),
 
@@ -166,16 +182,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       tabIndex: -1,
       "aria-controls": dom.getInputId(state.context),
       onPointerDown(event) {
-        if (isDecrementDisabled) return
-        send(isLeftClick(event) ? { type: "PRESS_DOWN", hint: "decrement" } : { type: "FOCUS" })
-        event.preventDefault()
+        if (isDecrementDisabled || !isLeftClick(event)) return
+        if (event.pointerType === "mouse") {
+          send({ type: "TRIGGER.PRESS_DOWN", hint: "decrement" })
+          return event.preventDefault()
+        }
+        if (isHTMLElement(event.target)) {
+          event.target?.focus()
+        }
       },
       onPointerUp() {
-        send({ type: "PRESS_UP", hint: "decrement" })
+        send({ type: "TRIGGER.PRESS_UP", hint: "decrement" })
       },
       onPointerLeave() {
         if (isDecrementDisabled) return
-        send({ type: "PRESS_UP", hint: "decrement" })
+        send({ type: "TRIGGER.PRESS_UP", hint: "decrement" })
       },
     }),
 
@@ -190,15 +211,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       tabIndex: -1,
       "aria-controls": dom.getInputId(state.context),
       onPointerDown(event) {
-        if (isIncrementDisabled) return
-        send(isLeftClick(event) ? { type: "PRESS_DOWN", hint: "increment" } : { type: "FOCUS" })
-        event.preventDefault()
+        if (isIncrementDisabled || !isLeftClick(event)) return
+        if (event.pointerType === "mouse") {
+          send({ type: "TRIGGER.PRESS_DOWN", hint: "increment" })
+          return event.preventDefault()
+        }
+        if (isHTMLElement(event.target)) {
+          event.target?.focus()
+        }
       },
       onPointerUp() {
-        send({ type: "PRESS_UP", hint: "increment" })
+        send({ type: "TRIGGER.PRESS_UP", hint: "increment" })
       },
       onPointerLeave() {
-        send({ type: "PRESS_UP", hint: "increment" })
+        send({ type: "TRIGGER.PRESS_UP", hint: "increment" })
       },
     }),
 
@@ -216,7 +242,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         point.x = point.x - roundToDevicePixel(7.5)
         point.y = point.y - roundToDevicePixel(7.5)
 
-        send({ type: "PRESS_DOWN_SCRUBBER", point })
+        send({ type: "SCRUBBER.PRESS_DOWN", point })
         event.preventDefault()
       },
       style: {

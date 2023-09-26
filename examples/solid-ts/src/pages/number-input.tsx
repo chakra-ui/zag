@@ -36,7 +36,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={state} omit={["formatter", "parser"]} />
       </Toolbar>
     </>
   )

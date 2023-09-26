@@ -18,7 +18,7 @@ test.describe("number input", () => {
   test.describe("when typing into the input", () => {
     test("should allow empty string value", async ({ page }) => {
       await page.focus(input)
-      await page.type(input, "12")
+      await page.locator(input).fill("12")
 
       await page.keyboard.press("Backspace")
       await page.keyboard.press("Backspace")
@@ -28,7 +28,7 @@ test.describe("number input", () => {
 
     test("should clamp value when blurred", async ({ page }) => {
       await page.focus(input)
-      await page.type(input, "200")
+      await page.locator(input).fill("200")
       await expect(page.locator(input)).toHaveAttribute("aria-invalid", "true")
 
       await clickOutside(page)
@@ -37,7 +37,7 @@ test.describe("number input", () => {
 
     test("should not clamp value when input is empty", async ({ page }) => {
       await page.focus(input)
-      await page.type(input, "5")
+      await page.locator(input).fill("5")
       await page.keyboard.press("Backspace")
       await clickOutside(page)
       await expect(page.locator(input)).toHaveValue("")
@@ -46,20 +46,20 @@ test.describe("number input", () => {
 
   test.describe("when using keyboard arrow in the input", () => {
     test("should increment the value", async ({ page }) => {
-      await page.type(input, "5")
+      await page.locator(input).pressSequentially("5")
       await page.keyboard.press("ArrowUp")
       await expect(page.locator(input)).toHaveValue("6")
     })
 
     test("should decrement the value", async ({ page }) => {
-      await page.type(input, "5")
+      await page.locator(input).fill("5")
       await page.keyboard.press("ArrowDown")
       await page.keyboard.press("ArrowDown")
       await expect(page.locator(input)).toHaveValue("3")
     })
 
     test("should for home/end keys", async ({ page }) => {
-      await page.type(input, "5")
+      await page.locator(input).fill("5")
       await page.keyboard.press("Home")
       await expect(page.locator(input)).toHaveValue("0")
       await page.keyboard.press("End")
@@ -67,7 +67,7 @@ test.describe("number input", () => {
     })
 
     test("should change 10 steps on shift arrow", async ({ page }) => {
-      await page.type(input, "0")
+      await page.locator(input).fill("0")
       await page.keyboard.press("ArrowUp")
       await expect(page.locator(input)).toHaveValue("1")
       await page.keyboard.press("Shift+ArrowUp")
@@ -80,26 +80,15 @@ test.describe("number input", () => {
 
     test("should change for 0.1 steps", async ({ page }) => {
       await controls(page).num("step", "0.1")
-      await controls(page).num("minFractionDigits", "2")
 
-      await page.type(input, "0.10")
+      await page.locator(input).pressSequentially("0.10")
       await page.keyboard.press("Control+ArrowUp")
       await expect(page.locator(input)).toHaveValue("0.11")
       await page.keyboard.press("Control+ArrowDown")
-      await expect(page.locator(input)).toHaveValue("0.10")
+      await expect(page.locator(input)).toHaveValue("0.1")
 
       await page.keyboard.press("ArrowDown")
-      await expect(page.locator(input)).toHaveValue("0.00")
-    })
-
-    test("should clear input if invalid `e` is typed", async ({ page }) => {
-      await page.type(input, "e")
-      await clickOutside(page)
-      await expect(page.locator(input)).toHaveValue("")
-
-      await page.type(input, "1e20")
-      await clickOutside(page)
-      await expect(page.locator(input)).toHaveValue("100")
+      await expect(page.locator(input)).toHaveValue("0")
     })
   })
 
@@ -143,17 +132,5 @@ test.describe("number input", () => {
       await expect(page.locator(input)).toHaveValue("10")
       await page.mouse.up()
     })
-  })
-
-  test("should clamp to max fraction digit", async ({ page }) => {
-    // set `maxFractionDigits` to 2
-    await controls(page).num("maxFractionDigits", "2")
-
-    await page.type(input, "12.345678")
-
-    // blur the input
-    await clickOutside(page)
-
-    await expect(page.locator(input)).toHaveValue("12.35")
   })
 })
