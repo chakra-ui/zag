@@ -22,7 +22,7 @@ export default function Page() {
   )
 
   const api = datePicker.connect(state, send, normalizeProps)
-  const offset = api.getOffset(1)
+  const offset = api.getOffset({ months: 1 })
 
   return (
     <>
@@ -76,7 +76,7 @@ export default function Page() {
             </div>
 
             <div style={{ display: "flex", gap: "24px" }}>
-              <table {...api.getGridProps()}>
+              <table {...api.getTableProps({ id: "r1" })}>
                 <thead {...api.getTableHeaderProps()}>
                   <tr>
                     {api.weekDays.map((day, i) => (
@@ -90,8 +90,8 @@ export default function Page() {
                   {api.weeks.map((week, i) => (
                     <tr key={i}>
                       {week.map((value, i) => (
-                        <td key={i} {...api.getDayCellProps({ value })}>
-                          <div {...api.getDayCellTriggerProps({ value })}>{value.day}</div>
+                        <td key={i} {...api.getDayTableCellProps({ value })}>
+                          <div {...api.getDayTableCellTriggerProps({ value })}>{value.day}</div>
                         </td>
                       ))}
                     </tr>
@@ -99,7 +99,7 @@ export default function Page() {
                 </tbody>
               </table>
 
-              <table {...api.getGridProps({ id: "+1" })}>
+              <table {...api.getTableProps({ id: "r2" })}>
                 <thead {...api.getTableHeaderProps()}>
                   <tr>
                     {api.weekDays.map((day, i) => (
@@ -115,8 +115,10 @@ export default function Page() {
                       {week.map((value, i) => {
                         if (value === null) return <td key={i} />
                         return (
-                          <td key={i} {...api.getDayCellProps({ value, offset })}>
-                            <div {...api.getDayCellTriggerProps({ value, offset })}>{value.day}</div>
+                          <td key={i} {...api.getDayTableCellProps({ value, visibleRange: offset.visibleRange })}>
+                            <div {...api.getDayTableCellTriggerProps({ value, visibleRange: offset.visibleRange })}>
+                              {value.day}
+                            </div>
                           </td>
                         )
                       })}

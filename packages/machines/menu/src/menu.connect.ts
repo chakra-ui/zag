@@ -241,6 +241,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     positionerProps: normalize.element({
       ...parts.positioner.attrs,
+      dir: state.context.dir,
       id: dom.getPositionerId(state.context),
       style: popperStyles.floating,
     }),

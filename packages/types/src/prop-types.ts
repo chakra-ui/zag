@@ -52,7 +52,7 @@ export type PropTypes<T = Dict> = Record<
 export type NormalizeProps<T extends PropTypes> = {
   [K in keyof T]: (props: K extends keyof JSX.IntrinsicElements ? DataAttr & JSX.IntrinsicElements[K] : never) => T[K]
 } & {
-  element(props: DataAttr & JSX.HTMLAttributes<HTMLElement>): T["element"]
+  element(props: DataAttr & JSX.HTMLAttributes<HTMLElement> & Record<string, any>): T["element"]
   style: JSX.CSSProperties
 }
 export function createNormalizer<T extends PropTypes>(fn: (props: Dict) => Dict): NormalizeProps<T> {

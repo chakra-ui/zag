@@ -47,8 +47,11 @@ interface IntlMessages {
 }
 
 type ElementIds = Partial<{
-  grid(id: string): string
-  header: string
+  root: string
+  table(id: string): string
+  tableHeader(id: string): string
+  tableBody(id: string): string
+  tableRow(id: string): string
   content: string
   cellTrigger(id: string): string
   prevTrigger(view: DateView): string
@@ -282,14 +285,22 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface Offset {
-  amount: number
-  visibleRange: { start: DateValue; end: DateValue }
+export interface Range<T> {
+  start: T
+  end: T
+}
+
+export type VisibleRange = Range<DateValue>
+
+export interface DateValueOffset {
+  visibleRange: VisibleRange
+  weeks: DateValue[][]
 }
 
 export interface CellProps {
   disabled?: boolean
   value: number
+  columns?: number
 }
 
 export interface CellState {
@@ -303,7 +314,7 @@ export interface CellState {
 export interface DayCellProps {
   value: DateValue
   disabled?: boolean
-  offset?: Offset
+  visibleRange?: VisibleRange
 }
 
 export interface DayCellState {
@@ -338,18 +349,33 @@ export interface MonthGridProps {
   format?: "short" | "long"
 }
 
-interface GridItem {
+export interface Cell {
   label: string
   value: number
 }
 
-export type MonthGridValue = GridItem[][]
+export type MonthGridValue = Cell[][]
 
 export interface YearGridProps {
   columns?: number
 }
 
-export type YearGridValue = GridItem[][]
+export type YearGridValue = Cell[][]
+
+export interface WeekDay {
+  value: DateValue
+  short: string
+  long: string
+  narrow: string
+}
+
+export interface MonthFormatOptions {
+  format?: "short" | "long"
+}
+
+interface VisibleRangeText extends Range<string> {
+  formatted: string
+}
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
@@ -367,22 +393,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
    */
-  getDaysInWeek(weekIndex: number, from?: DateValue): DateValue[]
+  getDaysInWeek(week: number, from?: DateValue): DateValue[]
   /**
    * Returns the offset of the month based on the provided number of months.
    */
-  getOffset(months: number): {
-    amount: number
-    visibleRange: {
-      start: CalendarDate | CalendarDateTime | ZonedDateTime
-      end: CalendarDate | CalendarDateTime | ZonedDateTime
-    }
-    weeks: DateValue[][]
-  }
+  getOffset(duration: DateDuration): DateValueOffset
   /**
    * Returns the weeks of the month from the provided date. Represented as an array of arrays of dates.
    */
-  getMonthDays(from?: DateValue): DateValue[][]
+  getMonthWeeks(from?: DateValue): DateValue[][]
   /**
    * Returns whether the provided date is available (or can be selected)
    */
@@ -390,24 +409,19 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The weeks of the month. Represented as an array of arrays of dates.
    */
-  readonly weeks: DateValue[][]
+  weeks: DateValue[][]
   /**
    * The days of the week. Represented as an array of strings.
    */
-  weekDays: {
-    value: CalendarDate | CalendarDateTime | ZonedDateTime
-    short: string
-    long: string
-    narrow: string
-  }[]
+  weekDays: WeekDay[]
+  /**
+   * The visible range of dates.
+   */
+  visibleRange: VisibleRange
   /**
    * The human readable text for the visible range of dates.
    */
-  visibleRangeText: {
-    start: string
-    end: string
-    formatted: string
-  }
+  visibleRangeText: VisibleRangeText
   /**
    * The selected date.
    */
@@ -465,16 +479,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   focusYear(year: number): void
   /**
-   * The visible range of dates.
-   */
-  visibleRange: {
-    start: DateValue
-    end: DateValue
-  }
-  /**
    * Returns the months of the year
    */
-  getYears(): GridItem[]
+  getYears(): Cell[]
   /**
    * Returns the years of the decade based on the columns.
    * Represented as an array of arrays of years.
@@ -483,14 +490,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the start and end years of the decade.
    */
-  getDecade(): {
-    start: number | undefined
-    end: number | undefined
-  }
+  getDecade(): Range<number | undefined>
   /**
    * Returns the months of the year
    */
-  getMonths(props?: { format?: "short" | "long" }): GridItem[]
+  getMonths(props?: MonthFormatOptions): Cell[]
   /**
    * Returns the months of the year based on the columns.
    * Represented as an array of arrays of months.
@@ -531,9 +535,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   positionerProps: T["element"]
 
   getTableProps(props?: GridProps): T["element"]
-  getTableHeaderProps(props?: ViewProps): T["element"]
+  getTableHeaderProps(props?: GridProps): T["element"]
   getTableBodyProps(props?: GridProps): T["element"]
-  getTableRowProps(props?: ViewProps): T["element"]
+  getTableRowProps(props?: GridProps): T["element"]
 
   getDayTableCellProps(props: DayCellProps): T["element"]
   getDayTableCellTriggerProps(props: DayCellProps): T["element"]

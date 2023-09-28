@@ -178,24 +178,24 @@ const fetchMachine = createMachine({
           cond: "isRangePicker && isSelectingEndDate",
           actions: ["setHoveredDate", "setFocusedDate"]
         },
-        "GRID.POINTER_LEAVE": {
+        "TABLE.POINTER_LEAVE": {
           cond: "isRangePicker",
           actions: ["clearHoveredDate"]
         },
-        "GRID.POINTER_DOWN": {
+        "TABLE.POINTER_DOWN": {
           cond: "!isInline",
           actions: ["disableTextSelection"]
         },
-        "GRID.POINTER_UP": {
+        "TABLE.POINTER_UP": {
           cond: "!isInline",
           actions: ["enableTextSelection"]
         },
-        "GRID.ESCAPE": {
+        "TABLE.ESCAPE": {
           cond: "!isInline",
           target: "focused",
           actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement", "invokeOnClose"]
         },
-        "GRID.ENTER": [{
+        "TABLE.ENTER": [{
           cond: "isMonthView",
           actions: "setViewToDay"
         }, {
@@ -233,7 +233,7 @@ const fetchMachine = createMachine({
         // ===
         ],
 
-        "GRID.ARROW_RIGHT": [{
+        "TABLE.ARROW_RIGHT": [{
           cond: "isMonthView",
           actions: "focusNextMonth"
         }, {
@@ -242,7 +242,7 @@ const fetchMachine = createMachine({
         }, {
           actions: ["focusNextDay", "setHoveredDate"]
         }],
-        "GRID.ARROW_LEFT": [{
+        "TABLE.ARROW_LEFT": [{
           cond: "isMonthView",
           actions: "focusPreviousMonth"
         }, {
@@ -251,7 +251,7 @@ const fetchMachine = createMachine({
         }, {
           actions: ["focusPreviousDay"]
         }],
-        "GRID.ARROW_UP": [{
+        "TABLE.ARROW_UP": [{
           cond: "isMonthView",
           actions: "focusPreviousMonthColumn"
         }, {
@@ -260,7 +260,7 @@ const fetchMachine = createMachine({
         }, {
           actions: ["focusPreviousWeek"]
         }],
-        "GRID.ARROW_DOWN": [{
+        "TABLE.ARROW_DOWN": [{
           cond: "isMonthView",
           actions: "focusNextMonthColumn"
         }, {
@@ -269,13 +269,13 @@ const fetchMachine = createMachine({
         }, {
           actions: ["focusNextWeek"]
         }],
-        "GRID.PAGE_UP": {
+        "TABLE.PAGE_UP": {
           actions: ["focusPreviousSection"]
         },
-        "GRID.PAGE_DOWN": {
+        "TABLE.PAGE_DOWN": {
           actions: ["focusNextSection"]
         },
-        "GRID.HOME": [{
+        "TABLE.HOME": [{
           cond: "isMonthView",
           actions: ["focusFirstMonth"]
         }, {
@@ -284,7 +284,7 @@ const fetchMachine = createMachine({
         }, {
           actions: ["focusSectionStart"]
         }],
-        "GRID.END": [{
+        "TABLE.END": [{
           cond: "isMonthView",
           actions: ["focusLastMonth"]
         }, {
