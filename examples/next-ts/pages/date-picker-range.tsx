@@ -45,7 +45,7 @@ export default function Page() {
 
         <div {...api.positionerProps}>
           <div {...api.contentProps}>
-            <div style={{ marginBlock: "20px" }}>
+            <div style={{ marginBottom: "20px" }}>
               <select {...api.monthSelectProps}>
                 {api.getMonths().map((month, i) => (
                   <option key={i} value={i + 1}>
@@ -64,9 +64,7 @@ export default function Page() {
             </div>
 
             <div>
-              <div
-                style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlock: "10px" }}
-              >
+              <div {...api.getViewControlProps({ view: "year" })}>
                 <button {...api.getPrevTriggerProps()}>Prev</button>
 
                 <span style={{ border: "0", padding: "4px 20px", borderRadius: "4px" }}>
