@@ -427,9 +427,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
           send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
         },
-        onContextMenu(event) {
-          event.preventDefault()
-        },
       })
     },
 
@@ -466,9 +463,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!cellState.isSelectable) return
           send({ type: "CELL.CLICK", cell: "month", value })
         },
-        onContextMenu(event) {
-          event.preventDefault()
-        },
       })
     },
 
@@ -504,9 +498,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick() {
           if (!cellState.isSelectable) return
           send({ type: "CELL.CLICK", cell: "year", value })
-        },
-        onContextMenu(event) {
-          event.preventDefault()
         },
       })
     },
@@ -568,6 +559,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { view = "day" } = props
       return normalize.button({
         ...parts.viewTrigger.attrs,
+        "data-view": view,
         id: dom.getViewTriggerId(state.context, view),
         type: "button",
         disabled,
@@ -576,6 +568,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!isInteractive) return
           send("VIEW.CHANGE")
         },
+      })
+    },
+
+    getViewControlProps(props = {}) {
+      const { view = "day" } = props
+      return normalize.element({
+        ...parts.viewControl.attrs,
+        "data-view": view,
       })
     },
 

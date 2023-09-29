@@ -1,5 +1,5 @@
 import { DateFormatter } from "@internationalized/date"
-import { createMachine, guards } from "@zag-js/core"
+import { choose, createMachine, guards } from "@zag-js/core"
 import {
   alignDate,
   constrainValue,
@@ -176,7 +176,12 @@ export function machine(userContext: UserDefinedContext) {
         open: {
           tags: "open",
           activities: ["trackDismissableElement", "trackPositioning"],
-          entry: ctx.inline ? undefined : ["focusActiveCell"],
+          entry: choose([
+            {
+              guard: not("isinline"),
+              actions: ["focusActiveCell"],
+            },
+          ]),
           exit: ["clearHoveredDate", "resetView"],
           on: {
             "INPUT.CHANGE": {

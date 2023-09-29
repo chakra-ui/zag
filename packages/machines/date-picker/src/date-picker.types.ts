@@ -554,6 +554,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   clearTriggerProps: T["button"]
   triggerProps: T["button"]
   getViewTriggerProps(props?: ViewProps): T["button"]
+  getViewControlProps(props?: ViewProps): T["element"]
   inputProps: T["input"]
   monthSelectProps: T["select"]
   yearSelectProps: T["select"]

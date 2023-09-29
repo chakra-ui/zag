@@ -20,6 +20,7 @@ export const anatomy = createAnatomy("date-picker").parts(
   "tableRow",
   "trigger",
   "viewTrigger",
+  "viewControl",
   "yearSelect",
 )
 

@@ -17,6 +17,7 @@ const fetchMachine = createMachine({
     "isMonthView": false,
     "isYearView": false,
     "isMonthView": false,
+    "!isinline": false,
     "isMonthView": false,
     "isYearView": false,
     "isRangePicker && hasSelectedRange": false,
@@ -130,7 +131,10 @@ const fetchMachine = createMachine({
     open: {
       tags: "open",
       activities: ["trackDismissableElement", "trackPositioning"],
-      entry: ctx.inline ? undefined : ["focusActiveCell"],
+      entry: choose([{
+        cond: "!isinline",
+        actions: ["focusActiveCell"]
+      }]),
       exit: ["clearHoveredDate", "resetView"],
       on: {
         "INPUT.CHANGE": {
@@ -326,6 +330,7 @@ const fetchMachine = createMachine({
   guards: {
     "isYearView": ctx => ctx["isYearView"],
     "isMonthView": ctx => ctx["isMonthView"],
+    "!isinline": ctx => ctx["!isinline"],
     "isRangePicker && hasSelectedRange": ctx => ctx["isRangePicker && hasSelectedRange"],
     "isRangePicker && isSelectingEndDate && isInline": ctx => ctx["isRangePicker && isSelectingEndDate && isInline"],
     "isRangePicker && isSelectingEndDate": ctx => ctx["isRangePicker && isSelectingEndDate"],
