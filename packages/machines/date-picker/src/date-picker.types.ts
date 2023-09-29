@@ -7,10 +7,10 @@ import type {
   DateValue,
   ZonedDateTime,
 } from "@internationalized/date"
-import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { Placement, PositioningOptions } from "@zag-js/popper"
+import type { CommonProperties, Context, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -66,7 +66,7 @@ type ElementIds = Partial<{
   positioner: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * The localized messages to use.
    */
@@ -79,10 +79,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The `name` attribute of the input element.
    */
   name?: string
-  /**
-   * The locale (BCP 47 language tag) to use when formatting the date.
-   */
-  locale: string
   /**
    * The time zone to use
    */
