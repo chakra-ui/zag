@@ -27,11 +27,11 @@ import { chunk } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
 import type {
-  CellProps,
-  CellState,
-  DayCellProps,
-  DayCellState,
-  GridProps,
+  TableCellProps,
+  TableCellState,
+  DayTableCellProps,
+  DayTableCellState,
+  TableProps,
   MachineApi,
   Send,
   State,
@@ -113,7 +113,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     send({ type: "FOCUS.SET", value })
   }
 
-  function getYearTableCellState(props: CellProps): CellState {
+  function getYearTableCellState(props: TableCellProps): TableCellState {
     const { value, disabled } = props
     const normalized = focusedValue.set({ year: value })
     const cellState = {
@@ -128,7 +128,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return cellState
   }
 
-  function getMonthTableCellState(props: CellProps): CellState {
+  function getMonthTableCellState(props: TableCellProps): TableCellState {
     const { value, disabled } = props
     const normalized = focusedValue.set({ month: value })
     const formatter = getMonthFormatter(locale, timeZone)
@@ -144,7 +144,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return cellState
   }
 
-  function getDayTableCellState(props: DayCellProps): DayCellState {
+  function getDayTableCellState(props: DayTableCellProps): DayTableCellState {
     const { value, disabled, visibleRange = state.context.visibleRange } = props
 
     const formatter = getDayFormatter(locale, timeZone)
@@ -179,7 +179,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return cellState
   }
 
-  function getTableId(props: GridProps) {
+  function getTableId(props: TableProps) {
     const { view = "day", id } = props
     return [view, id].filter(Boolean).join(" ")
   }
@@ -271,6 +271,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
       "data-disabled": dataAttr(disabled),
+    }),
+
+    rangeTextProps: normalize.element({
+      ...parts.rangeText.attrs,
     }),
 
     contentProps: normalize.element({

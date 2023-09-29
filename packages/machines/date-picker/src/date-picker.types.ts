@@ -297,13 +297,13 @@ export interface DateValueOffset {
   weeks: DateValue[][]
 }
 
-export interface CellProps {
+export interface TableCellProps {
   disabled?: boolean
   value: number
   columns?: number
 }
 
-export interface CellState {
+export interface TableCellState {
   isFocused: boolean
   isSelectable: boolean
   isSelected: boolean
@@ -311,13 +311,13 @@ export interface CellState {
   readonly isDisabled: boolean
 }
 
-export interface DayCellProps {
+export interface DayTableCellProps {
   value: DateValue
   disabled?: boolean
   visibleRange?: VisibleRange
 }
 
-export interface DayCellState {
+export interface DayTableCellState {
   isInvalid: boolean
   isDisabled: boolean
   isSelected: boolean
@@ -334,7 +334,7 @@ export interface DayCellState {
   readonly isSelectable: boolean
 }
 
-export interface GridProps {
+export interface TableProps {
   view?: DateView
   columns?: number
   id?: string
@@ -373,7 +373,7 @@ export interface MonthFormatOptions {
   format?: "short" | "long"
 }
 
-interface VisibleRangeText extends Range<string> {
+export interface VisibleRangeText extends Range<string> {
   formatted: string
 }
 
@@ -519,34 +519,35 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the state details for a given cell.
    */
-  getDayTableCellState(props: DayCellProps): DayCellState
+  getDayTableCellState(props: DayTableCellProps): DayTableCellState
   /**
    * Returns the state details for a given month cell.
    */
-  getMonthTableCellState(props: CellProps): CellState
+  getMonthTableCellState(props: TableCellProps): TableCellState
   /**
    * Returns the state details for a given year cell.
    */
-  getYearTableCellState(props: CellProps): CellState
+  getYearTableCellState(props: TableCellProps): TableCellState
 
   rootProps: T["element"]
   controlProps: T["element"]
   contentProps: T["element"]
   positionerProps: T["element"]
+  rangeTextProps: T["element"]
 
-  getTableProps(props?: GridProps): T["element"]
-  getTableHeaderProps(props?: GridProps): T["element"]
-  getTableBodyProps(props?: GridProps): T["element"]
-  getTableRowProps(props?: GridProps): T["element"]
+  getTableProps(props?: TableProps): T["element"]
+  getTableHeaderProps(props?: TableProps): T["element"]
+  getTableBodyProps(props?: TableProps): T["element"]
+  getTableRowProps(props?: TableProps): T["element"]
 
-  getDayTableCellProps(props: DayCellProps): T["element"]
-  getDayTableCellTriggerProps(props: DayCellProps): T["element"]
+  getDayTableCellProps(props: DayTableCellProps): T["element"]
+  getDayTableCellTriggerProps(props: DayTableCellProps): T["element"]
 
-  getMonthTableCellProps(props: CellProps): T["element"]
-  getMonthTableCellTriggerProps(props: CellProps): T["element"]
+  getMonthTableCellProps(props: TableCellProps): T["element"]
+  getMonthTableCellTriggerProps(props: TableCellProps): T["element"]
 
-  getYearTableCellProps(props: CellProps): T["element"]
-  getYearTableCellTriggerProps(props: CellProps): T["element"]
+  getYearTableCellProps(props: TableCellProps): T["element"]
+  getYearTableCellTriggerProps(props: TableCellProps): T["element"]
 
   getNextTriggerProps(props?: ViewProps): T["button"]
   getPrevTriggerProps(props?: ViewProps): T["button"]
