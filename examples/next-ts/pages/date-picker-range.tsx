@@ -67,7 +67,7 @@ export default function Page() {
               <div {...api.getViewControlProps({ view: "year" })}>
                 <button {...api.getPrevTriggerProps()}>Prev</button>
 
-                <span style={{ border: "0", padding: "4px 20px", borderRadius: "4px" }}>
+                <span>
                   {api.visibleRangeText.start} - {api.visibleRangeText.end}
                 </span>
 

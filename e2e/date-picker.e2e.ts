@@ -10,36 +10,36 @@ const createScreen = (page: Page) => ({
   yearSelect: page.locator(part("year-select")),
   prevTrigger: page.locator(part("prev-trigger")),
   nextTrigger: page.locator(part("next-trigger")),
-  grid: page.locator(part("grid")),
-  todayCell: page.locator(`${part("cell-trigger")}[data-today]`),
+  table: page.locator(part("table")),
+  todayCell: page.locator(`${part("table-cell-trigger")}[data-today]`),
   getFirstDayCell() {
     const start = startOfMonth(today(getLocalTimeZone()))
-    return page.locator(`${part("cell-trigger")}[data-type=day][data-value="${start.toString()}"]`)
+    return page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${start.toString()}"]`)
   },
   getLastDayCell() {
     const end = endOfMonth(today(getLocalTimeZone()))
-    return page.locator(`${part("cell-trigger")}[data-type=day][data-value="${end.toString()}"]`)
+    return page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${end.toString()}"]`)
   },
   getNextDayCell(opts: { current?: string; step?: number } = {}) {
     const { current, step = 1 } = opts
     const now = current ? parseDate(current) : today(getLocalTimeZone())
     const next = now.add({ days: step })
-    return page.locator(`${part("cell-trigger")}[data-type=day][data-value="${next.toString()}"]`)
+    return page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${next.toString()}"]`)
   },
   getPrevDayCell(opts: { current?: string; step?: number } = {}) {
     const { current, step = 1 } = opts
     const now = current ? parseDate(current) : today(getLocalTimeZone())
     const prev = now.add({ days: -1 * step })
-    return page.locator(`${part("cell-trigger")}[data-type=day][data-value="${prev.toString()}"]`)
+    return page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${prev.toString()}"]`)
   },
   getDayCell(value: string) {
-    return page.locator(`${part("cell-trigger")}[data-type=day][data-value="${value}"]`)
+    return page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${value}"]`)
   },
   getMonthCell(value: string) {
-    return page.locator(`${part("cell-trigger")}[data-type=month][data-value="${value}"]`)
+    return page.locator(`${part("table-cell-trigger")}[data-view=month][data-value="${value}"]`)
   },
   getYearCell(value: string) {
-    return page.locator(`${part("cell-trigger")}[data-type=year][data-value="${value}"]`)
+    return page.locator(`${part("table-cell-trigger")}[data-view=year][data-value="${value}"]`)
   },
 })
 

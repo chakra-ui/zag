@@ -42,7 +42,7 @@ export default function Page() {
         </div>
 
         <div {...api().contentProps}>
-          <div style={{ "margin-block": "20px" }}>
+          <div style={{ "margin-bottom": "20px" }}>
             <select {...api().monthSelectProps}>
               <Index each={api().getMonths()}>
                 {(month, i) => (
@@ -64,15 +64,8 @@ export default function Page() {
             </select>
           </div>
 
-          <div hidden={api().view !== "day"} style={{ "max-width": "230px" }}>
-            <div
-              style={{
-                display: "flex",
-                "justify-content": "space-between",
-                "align-items": "center",
-                "margin-block": "10px",
-              }}
-            >
+          <div hidden={api().view !== "day"}>
+            <div {...api().getViewControlProps()}>
               <button {...api().getPrevTriggerProps()}>Prev</button>
               <button
                 {...api().getViewTriggerProps()}
@@ -115,14 +108,7 @@ export default function Page() {
 
           <div style={{ display: "flex", gap: "40px", "margin-top": "24px" }}>
             <div hidden={api().view !== "month"}>
-              <div
-                style={{
-                  display: "flex",
-                  "justify-content": "space-between",
-                  "align-items": "center",
-                  "margin-block": "10px",
-                }}
-              >
+              <div {...api().getViewControlProps({ view: "month" })}>
                 <button {...api().getPrevTriggerProps({ view: "month" })}>Prev</button>
                 <button {...api().getViewTriggerProps({ view: "month" })}>{api().visibleRange.start.year}</button>
                 <button {...api().getNextTriggerProps({ view: "month" })}>Next</button>
@@ -132,7 +118,7 @@ export default function Page() {
                 <tbody>
                   <Index each={api().getMonthsGrid({ columns: 4, format: "short" })}>
                     {(months) => (
-                      <tr {...api().getTableBodyProps()}>
+                      <tr {...api().getTableBodyProps({ view: "month" })}>
                         <Index each={months()}>
                           {(month) => (
                             <td {...api().getMonthTableCellProps(month())}>
@@ -148,14 +134,7 @@ export default function Page() {
             </div>
 
             <div hidden={api().view !== "year"}>
-              <div
-                style={{
-                  display: "flex",
-                  "justify-content": "space-between",
-                  "align-items": "center",
-                  "margin-block": "10px",
-                }}
-              >
+              <div {...api().getViewControlProps({ view: "year" })}>
                 <button {...api().getPrevTriggerProps({ view: "year" })}>Prev</button>
                 <span>
                   {api().getDecade().start} - {api().getDecade().end}
@@ -167,11 +146,13 @@ export default function Page() {
                 <tbody>
                   <Index each={api().getYearsGrid({ columns: 4 })}>
                     {(years) => (
-                      <tr {...api().getTableBodyProps()}>
+                      <tr {...api().getTableBodyProps({ view: "year" })}>
                         <Index each={years()}>
                           {(year) => (
-                            <td colSpan={4} {...api().getYearTableCellProps(year())}>
-                              <div {...api().getYearTableCellTriggerProps(year())}>{year().label}</div>
+                            <td {...api().getYearTableCellProps({ ...year(), columns: 4 })}>
+                              <div {...api().getYearTableCellTriggerProps({ ...year(), columns: 4 })}>
+                                {year().label}
+                              </div>
                             </td>
                           )}
                         </Index>

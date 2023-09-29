@@ -61,15 +61,10 @@ export default function Page() {
               </select>
             </div>
 
-            <div hidden={api.view !== "day"} style={{ maxWidth: "230px" }}>
+            <div hidden={api.view !== "day"}>
               <div {...api.getViewControlProps({ view: "year" })}>
                 <button {...api.getPrevTriggerProps()}>Prev</button>
-                <button
-                  {...api.getViewTriggerProps()}
-                  style={{ border: "0", padding: "4px 20px", borderRadius: "4px" }}
-                >
-                  {api.visibleRangeText.start}
-                </button>
+                <button {...api.getViewTriggerProps()}>{api.visibleRangeText.start}</button>
                 <button {...api.getNextTriggerProps()}>Next</button>
               </div>
 
