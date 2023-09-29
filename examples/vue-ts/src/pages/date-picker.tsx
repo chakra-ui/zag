@@ -1,12 +1,12 @@
 import { CalendarDate } from "@internationalized/date"
 import * as datePicker from "@zag-js/date-picker"
+import { getYearsRange } from "@zag-js/date-utils"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { datePickerControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-import { getYearsRange } from "@zag-js/date-utils"
 
 export default defineComponent({
   name: "datePicker",
@@ -88,8 +88,8 @@ export default defineComponent({
                   <button {...api.getNextTriggerProps()}>Next</button>
                 </div>
 
-                <table {...api.getGridProps()}>
-                  <thead {...api.getHeaderProps()}>
+                <table {...api.getTableProps()}>
+                  <thead {...api.getTableHeaderProps()}>
                     <tr>
                       {api.weekDays.map((day, i) => (
                         <th scope="col" key={i} aria-label={day.long}>
@@ -102,8 +102,8 @@ export default defineComponent({
                     {api.weeks.map((week, i) => (
                       <tr key={i}>
                         {week.map((value, i) => (
-                          <td key={i} {...api.getDayCellProps({ value })}>
-                            <div {...api.getDayCellTriggerProps({ value })}>{value.day}</div>
+                          <td key={i} {...api.getDayTableCellProps({ value })}>
+                            <div {...api.getDayTableCellTriggerProps({ value })}>{value.day}</div>
                           </td>
                         ))}
                       </tr>
@@ -127,13 +127,13 @@ export default defineComponent({
                     <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
                   </div>
 
-                  <table {...api.getGridProps({ view: "month", columns: 4 })}>
+                  <table {...api.getTableProps({ view: "month", columns: 4 })}>
                     <tbody>
                       {api.getMonthsGrid({ columns: 4, format: "short" }).map((months, row) => (
                         <tr key={row}>
                           {months.map((month, index) => (
-                            <td key={index} {...api.getMonthCellProps(month)}>
-                              <div {...api.getMonthCellTriggerProps(month)}>{month}</div>
+                            <td key={index} {...api.getMonthTableCellProps(month)}>
+                              <div {...api.getMonthTableCellTriggerProps(month)}>{month}</div>
                             </td>
                           ))}
                         </tr>
@@ -158,13 +158,13 @@ export default defineComponent({
                     <button {...api.getNextTriggerProps({ view: "year" })}>Next</button>
                   </div>
 
-                  <table {...api.getGridProps({ view: "year", columns: 4 })}>
+                  <table {...api.getTableProps({ view: "year", columns: 4 })}>
                     <tbody>
                       {api.getYearsGrid({ columns: 4 }).map((years, row) => (
                         <tr key={row}>
                           {years.map((year, index) => (
-                            <td colspan={4} key={index} {...api.getYearCellProps(year)}>
-                              <div {...api.getYearCellTriggerProps(year)}>{year}</div>
+                            <td colspan={4} key={index} {...api.getYearTableCellProps(year)}>
+                              <div {...api.getYearTableCellTriggerProps(year)}>{year}</div>
                             </td>
                           ))}
                         </tr>

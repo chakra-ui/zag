@@ -78,7 +78,7 @@ export default function Page() {
             <div style={{ display: "flex", gap: "24px" }}>
               <table {...api.getTableProps({ id: "r1" })}>
                 <thead {...api.getTableHeaderProps()}>
-                  <tr>
+                  <tr {...api.getTableRowProps()}>
                     {api.weekDays.map((day, i) => (
                       <th scope="col" key={i} aria-label={day.long}>
                         {day.narrow}
@@ -86,9 +86,9 @@ export default function Page() {
                     ))}
                   </tr>
                 </thead>
-                <tbody>
+                <tbody {...api.getTableBodyProps()}>
                   {api.weeks.map((week, i) => (
-                    <tr key={i}>
+                    <tr key={i} {...api.getTableRowProps()}>
                       {week.map((value, i) => (
                         <td key={i} {...api.getDayTableCellProps({ value })}>
                           <div {...api.getDayTableCellTriggerProps({ value })}>{value.day}</div>
@@ -101,7 +101,7 @@ export default function Page() {
 
               <table {...api.getTableProps({ id: "r2" })}>
                 <thead {...api.getTableHeaderProps()}>
-                  <tr>
+                  <tr {...api.getTableRowProps()}>
                     {api.weekDays.map((day, i) => (
                       <th scope="col" key={i} aria-label={day.long}>
                         {day.narrow}
@@ -109,19 +109,16 @@ export default function Page() {
                     ))}
                   </tr>
                 </thead>
-                <tbody>
+                <tbody {...api.getTableBodyProps()}>
                   {offset.weeks.map((week, i) => (
-                    <tr key={i}>
-                      {week.map((value, i) => {
-                        if (value === null) return <td key={i} />
-                        return (
-                          <td key={i} {...api.getDayTableCellProps({ value, visibleRange: offset.visibleRange })}>
-                            <div {...api.getDayTableCellTriggerProps({ value, visibleRange: offset.visibleRange })}>
-                              {value.day}
-                            </div>
-                          </td>
-                        )
-                      })}
+                    <tr key={i} {...api.getTableRowProps()}>
+                      {week.map((value, i) => (
+                        <td key={i} {...api.getDayTableCellProps({ value, visibleRange: offset.visibleRange })}>
+                          <div {...api.getDayTableCellTriggerProps({ value, visibleRange: offset.visibleRange })}>
+                            {value.day}
+                          </div>
+                        </td>
+                      ))}
                     </tr>
                   ))}
                 </tbody>

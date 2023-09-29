@@ -83,8 +83,8 @@ export default function Page() {
               <button {...api().getNextTriggerProps()}>Next</button>
             </div>
 
-            <table {...api().getGridProps()}>
-              <thead {...api().getHeaderProps()}>
+            <table {...api().getTableProps()}>
+              <thead {...api().getTableHeaderProps()}>
                 <tr>
                   <For each={api().weekDays}>
                     {(day) => (
@@ -101,8 +101,8 @@ export default function Page() {
                     <tr>
                       <For each={week}>
                         {(value) => (
-                          <td {...api().getDayCellProps({ value })}>
-                            <div {...api().getDayCellTriggerProps({ value })}>{value.day}</div>
+                          <td {...api().getDayTableCellProps({ value })}>
+                            <div {...api().getDayTableCellTriggerProps({ value })}>{value.day}</div>
                           </td>
                         )}
                       </For>
@@ -128,15 +128,15 @@ export default function Page() {
                 <button {...api().getNextTriggerProps({ view: "month" })}>Next</button>
               </div>
 
-              <table {...api().getGridProps({ view: "month", columns: 4 })}>
+              <table {...api().getTableProps({ view: "month", columns: 4 })}>
                 <tbody>
                   <For each={api().getMonthsGrid({ columns: 4, format: "short" })}>
                     {(months) => (
                       <tr>
                         <For each={months}>
                           {(month) => (
-                            <td {...api().getMonthCellProps(month)}>
-                              <div {...api().getMonthCellTriggerProps(month)}>{month.label}</div>
+                            <td {...api().getMonthTableCellProps(month)}>
+                              <div {...api().getMonthTableCellTriggerProps(month)}>{month.label}</div>
                             </td>
                           )}
                         </For>
@@ -163,15 +163,15 @@ export default function Page() {
                 <button {...api().getNextTriggerProps({ view: "year" })}>Next</button>
               </div>
 
-              <table {...api().getGridProps({ view: "year", columns: 4 })}>
+              <table {...api().getTableProps({ view: "year", columns: 4 })}>
                 <tbody>
                   <For each={api().getYearsGrid({ columns: 4 })}>
                     {(years) => (
                       <tr>
                         <For each={years}>
                           {(year) => (
-                            <td colSpan={4} {...api().getYearCellProps(year)}>
-                              <div {...api().getYearCellTriggerProps(year)}>{year.label}</div>
+                            <td colSpan={4} {...api().getYearTableCellProps(year)}>
+                              <div {...api().getYearTableCellTriggerProps(year)}>{year.label}</div>
                             </td>
                           )}
                         </For>

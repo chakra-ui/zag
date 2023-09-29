@@ -353,31 +353,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getTableHeaderProps(props = {}) {
       const { view = "day" } = props
-      const uid = getTableId(props)
       return normalize.element({
         ...parts.tableHead.attrs,
         "aria-hidden": true,
         dir: state.context.dir,
         "data-view": view,
         "data-disabled": dataAttr(disabled),
-        id: dom.getTableHeaderId(state.context, uid),
       })
     },
 
     getTableBodyProps(props = {}) {
-      const uid = getTableId(props)
+      const { view = "day" } = props
       return normalize.element({
         ...parts.tableBody.attrs,
-        id: dom.getTableBodyId(state.context, uid),
+        "data-view": view,
+        "data-disabled": dataAttr(disabled),
       })
     },
 
     getTableRowProps(props = {}) {
       const { view = "day" } = props
-      const uid = getTableId(props)
       return normalize.element({
         ...parts.tableRow.attrs,
-        id: dom.getTableRowId(state.context, uid),
         "aria-disabled": ariaAttr(disabled),
         "data-disabled": dataAttr(disabled),
         "data-view": view,
