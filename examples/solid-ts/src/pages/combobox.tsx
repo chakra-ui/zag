@@ -1,7 +1,7 @@
 import * as combobox from "@zag-js/combobox"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { For, Show, createMemo, createSignal, createUniqueId } from "solid-js"
+import { Index, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -65,13 +65,13 @@ export default function Page() {
           <div {...api().positionerProps}>
             <Show when={options().length > 0}>
               <ul data-testid="combobox-content" {...api().contentProps}>
-                <For each={options()}>
+                <Index each={options()}>
                   {(item) => (
-                    <li class="combobox__option" {...api().getItemProps({ item })}>
-                      {item.label}
+                    <li class="combobox__option" {...api().getItemProps({ item: item() })}>
+                      {item().label}
                     </li>
                   )}
-                </For>
+                </Index>
               </ul>
             </Show>
           </div>

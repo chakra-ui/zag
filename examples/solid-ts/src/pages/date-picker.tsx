@@ -2,7 +2,7 @@ import * as datePicker from "@zag-js/date-picker"
 import { getYearsRange } from "@zag-js/date-utils"
 import { datePickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { For, createMemo, createUniqueId } from "solid-js"
+import { Index, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -44,23 +44,23 @@ export default function Page() {
         <div {...api().contentProps}>
           <div style={{ "margin-block": "20px" }}>
             <select {...api().monthSelectProps}>
-              <For each={api().getMonths()}>
+              <Index each={api().getMonths()}>
                 {(month, i) => (
-                  <option value={i() + 1} selected={api().focusedValue.month === i() + 1}>
-                    {month.label}
+                  <option value={i + 1} selected={api().focusedValue.month === i + 1}>
+                    {month().label}
                   </option>
                 )}
-              </For>
+              </Index>
             </select>
 
             <select {...api().yearSelectProps}>
-              <For each={getYearsRange({ from: 1_000, to: 4_000 })}>
+              <Index each={getYearsRange({ from: 1_000, to: 4_000 })}>
                 {(year) => (
-                  <option value={year} selected={api().focusedValue.year === year}>
-                    {year}
+                  <option value={year()} selected={api().focusedValue.year === year()}>
+                    {year()}
                   </option>
                 )}
-              </For>
+              </Index>
             </select>
           </div>
 
@@ -85,30 +85,30 @@ export default function Page() {
 
             <table {...api().getTableProps()}>
               <thead {...api().getTableHeaderProps()}>
-                <tr>
-                  <For each={api().weekDays}>
+                <tr {...api().getTableBodyProps()}>
+                  <Index each={api().weekDays}>
                     {(day) => (
-                      <th scope="col" aria-label={day.long}>
-                        {day.narrow}
+                      <th scope="col" aria-label={day().long}>
+                        {day().narrow}
                       </th>
                     )}
-                  </For>
+                  </Index>
                 </tr>
               </thead>
-              <tbody>
-                <For each={api().weeks}>
+              <tbody {...api().getTableBodyProps()}>
+                <Index each={api().weeks}>
                   {(week) => (
-                    <tr>
-                      <For each={week}>
+                    <tr {...api().getTableRowProps()}>
+                      <Index each={week()}>
                         {(value) => (
-                          <td {...api().getDayTableCellProps({ value })}>
-                            <div {...api().getDayTableCellTriggerProps({ value })}>{value.day}</div>
+                          <td {...api().getDayTableCellProps({ value: value() })}>
+                            <div {...api().getDayTableCellTriggerProps({ value: value() })}>{value().day}</div>
                           </td>
                         )}
-                      </For>
+                      </Index>
                     </tr>
                   )}
-                </For>
+                </Index>
               </tbody>
             </table>
           </div>
@@ -130,19 +130,19 @@ export default function Page() {
 
               <table {...api().getTableProps({ view: "month", columns: 4 })}>
                 <tbody>
-                  <For each={api().getMonthsGrid({ columns: 4, format: "short" })}>
+                  <Index each={api().getMonthsGrid({ columns: 4, format: "short" })}>
                     {(months) => (
-                      <tr>
-                        <For each={months}>
+                      <tr {...api().getTableBodyProps()}>
+                        <Index each={months()}>
                           {(month) => (
-                            <td {...api().getMonthTableCellProps(month)}>
-                              <div {...api().getMonthTableCellTriggerProps(month)}>{month.label}</div>
+                            <td {...api().getMonthTableCellProps(month())}>
+                              <div {...api().getMonthTableCellTriggerProps(month())}>{month().label}</div>
                             </td>
                           )}
-                        </For>
+                        </Index>
                       </tr>
                     )}
-                  </For>
+                  </Index>
                 </tbody>
               </table>
             </div>
@@ -165,19 +165,19 @@ export default function Page() {
 
               <table {...api().getTableProps({ view: "year", columns: 4 })}>
                 <tbody>
-                  <For each={api().getYearsGrid({ columns: 4 })}>
+                  <Index each={api().getYearsGrid({ columns: 4 })}>
                     {(years) => (
-                      <tr>
-                        <For each={years}>
+                      <tr {...api().getTableBodyProps()}>
+                        <Index each={years()}>
                           {(year) => (
-                            <td colSpan={4} {...api().getYearTableCellProps(year)}>
-                              <div {...api().getYearTableCellTriggerProps(year)}>{year.label}</div>
+                            <td colSpan={4} {...api().getYearTableCellProps(year())}>
+                              <div {...api().getYearTableCellTriggerProps(year())}>{year().label}</div>
                             </td>
                           )}
-                        </For>
+                        </Index>
                       </tr>
                     )}
-                  </For>
+                  </Index>
                 </tbody>
               </table>
             </div>

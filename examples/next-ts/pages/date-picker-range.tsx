@@ -43,86 +43,88 @@ export default function Page() {
           <button {...api.triggerProps}>🗓</button>
         </div>
 
-        <div {...api.contentProps}>
-          <div style={{ marginBlock: "20px" }}>
-            <select {...api.monthSelectProps}>
-              {api.getMonths().map((month, i) => (
-                <option key={i} value={i + 1}>
-                  {month.label}
-                </option>
-              ))}
-            </select>
+        <div {...api.positionerProps}>
+          <div {...api.contentProps}>
+            <div style={{ marginBlock: "20px" }}>
+              <select {...api.monthSelectProps}>
+                {api.getMonths().map((month, i) => (
+                  <option key={i} value={i + 1}>
+                    {month.label}
+                  </option>
+                ))}
+              </select>
 
-            <select {...api.yearSelectProps}>
-              {getYearsRange({ from: 1_000, to: 4_000 }).map((year, i) => (
-                <option key={i} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <div
-              style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlock: "10px" }}
-            >
-              <button {...api.getPrevTriggerProps()}>Prev</button>
-
-              <span style={{ border: "0", padding: "4px 20px", borderRadius: "4px" }}>
-                {api.visibleRangeText.start} - {api.visibleRangeText.end}
-              </span>
-
-              <button {...api.getNextTriggerProps()}>Next</button>
+              <select {...api.yearSelectProps}>
+                {getYearsRange({ from: 1_000, to: 4_000 }).map((year, i) => (
+                  <option key={i} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            <div style={{ display: "flex", gap: "24px" }}>
-              <table {...api.getTableProps({ id: "r1" })}>
-                <thead {...api.getTableHeaderProps()}>
-                  <tr {...api.getTableRowProps()}>
-                    {api.weekDays.map((day, i) => (
-                      <th scope="col" key={i} aria-label={day.long}>
-                        {day.narrow}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody {...api.getTableBodyProps()}>
-                  {api.weeks.map((week, i) => (
-                    <tr key={i} {...api.getTableRowProps()}>
-                      {week.map((value, i) => (
-                        <td key={i} {...api.getDayTableCellProps({ value })}>
-                          <div {...api.getDayTableCellTriggerProps({ value })}>{value.day}</div>
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div>
+              <div
+                style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlock: "10px" }}
+              >
+                <button {...api.getPrevTriggerProps()}>Prev</button>
 
-              <table {...api.getTableProps({ id: "r2" })}>
-                <thead {...api.getTableHeaderProps()}>
-                  <tr {...api.getTableRowProps()}>
-                    {api.weekDays.map((day, i) => (
-                      <th scope="col" key={i} aria-label={day.long}>
-                        {day.narrow}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody {...api.getTableBodyProps()}>
-                  {offset.weeks.map((week, i) => (
-                    <tr key={i} {...api.getTableRowProps()}>
-                      {week.map((value, i) => (
-                        <td key={i} {...api.getDayTableCellProps({ value, visibleRange: offset.visibleRange })}>
-                          <div {...api.getDayTableCellTriggerProps({ value, visibleRange: offset.visibleRange })}>
-                            {value.day}
-                          </div>
-                        </td>
+                <span style={{ border: "0", padding: "4px 20px", borderRadius: "4px" }}>
+                  {api.visibleRangeText.start} - {api.visibleRangeText.end}
+                </span>
+
+                <button {...api.getNextTriggerProps()}>Next</button>
+              </div>
+
+              <div style={{ display: "flex", gap: "24px" }}>
+                <table {...api.getTableProps({ id: "r1" })}>
+                  <thead {...api.getTableHeaderProps()}>
+                    <tr {...api.getTableRowProps()}>
+                      {api.weekDays.map((day, i) => (
+                        <th scope="col" key={i} aria-label={day.long}>
+                          {day.narrow}
+                        </th>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody {...api.getTableBodyProps()}>
+                    {api.weeks.map((week, i) => (
+                      <tr key={i} {...api.getTableRowProps()}>
+                        {week.map((value, i) => (
+                          <td key={i} {...api.getDayTableCellProps({ value })}>
+                            <div {...api.getDayTableCellTriggerProps({ value })}>{value.day}</div>
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <table {...api.getTableProps({ id: "r2" })}>
+                  <thead {...api.getTableHeaderProps()}>
+                    <tr {...api.getTableRowProps()}>
+                      {api.weekDays.map((day, i) => (
+                        <th scope="col" key={i} aria-label={day.long}>
+                          {day.narrow}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody {...api.getTableBodyProps()}>
+                    {offset.weeks.map((week, i) => (
+                      <tr key={i} {...api.getTableRowProps()}>
+                        {week.map((value, i) => (
+                          <td key={i} {...api.getDayTableCellProps({ value, visibleRange: offset.visibleRange })}>
+                            <div {...api.getDayTableCellTriggerProps({ value, visibleRange: offset.visibleRange })}>
+                              {value.day}
+                            </div>
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
