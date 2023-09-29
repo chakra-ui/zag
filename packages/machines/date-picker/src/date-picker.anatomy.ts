@@ -1,19 +1,26 @@
 import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("date-picker").parts(
-  "cellTrigger",
+  "root",
   "clearTrigger",
   "content",
   "control",
-  "grid",
   "input",
   "monthSelect",
   "nextTrigger",
   "positioner",
   "prevTrigger",
-  "rowHeader",
+  "rangeText",
+  "table",
+  "tableBody",
+  "tableCell",
+  "tableCellTrigger",
+  "tableHead",
+  "tableHeader",
+  "tableRow",
   "trigger",
   "viewTrigger",
+  "viewControl",
   "yearSelect",
 )
 

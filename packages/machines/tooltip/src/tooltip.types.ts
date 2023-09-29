@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, PropTypes, RequiredBy, RootProperties } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy, RootProperties } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -21,7 +21,7 @@ type ElementIds = Partial<{
   positioner: string
 }>
 
-interface PublicContext extends CommonProperties {
+interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the tooltip. Useful for composition.
    */

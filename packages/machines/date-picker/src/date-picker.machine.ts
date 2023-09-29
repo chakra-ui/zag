@@ -1,5 +1,5 @@
 import { DateFormatter } from "@internationalized/date"
-import { createMachine, guards } from "@zag-js/core"
+import { choose, createMachine, guards } from "@zag-js/core"
 import {
   alignDate,
   constrainValue,
@@ -176,7 +176,12 @@ export function machine(userContext: UserDefinedContext) {
         open: {
           tags: "open",
           activities: ["trackDismissableElement", "trackPositioning"],
-          entry: ctx.inline ? undefined : ["focusActiveCell"],
+          entry: choose([
+            {
+              guard: not("isinline"),
+              actions: ["focusActiveCell"],
+            },
+          ]),
           exit: ["clearHoveredDate", "resetView"],
           on: {
             "INPUT.CHANGE": {
@@ -236,24 +241,24 @@ export function machine(userContext: UserDefinedContext) {
               guard: and("isRangePicker", "isSelectingEndDate"),
               actions: ["setHoveredDate", "setFocusedDate"],
             },
-            "GRID.POINTER_LEAVE": {
+            "TABLE.POINTER_LEAVE": {
               guard: "isRangePicker",
               actions: ["clearHoveredDate"],
             },
-            "GRID.POINTER_DOWN": {
+            "TABLE.POINTER_DOWN": {
               guard: not("isInline"),
               actions: ["disableTextSelection"],
             },
-            "GRID.POINTER_UP": {
+            "TABLE.POINTER_UP": {
               guard: not("isInline"),
               actions: ["enableTextSelection"],
             },
-            "GRID.ESCAPE": {
+            "TABLE.ESCAPE": {
               guard: not("isInline"),
               target: "focused",
               actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement", "invokeOnClose"],
             },
-            "GRID.ENTER": [
+            "TABLE.ENTER": [
               {
                 guard: "isMonthView",
                 actions: "setViewToDay",
@@ -296,38 +301,38 @@ export function machine(userContext: UserDefinedContext) {
               },
               // ===
             ],
-            "GRID.ARROW_RIGHT": [
+            "TABLE.ARROW_RIGHT": [
               { guard: "isMonthView", actions: "focusNextMonth" },
               { guard: "isYearView", actions: "focusNextYear" },
               { actions: ["focusNextDay", "setHoveredDate"] },
             ],
-            "GRID.ARROW_LEFT": [
+            "TABLE.ARROW_LEFT": [
               { guard: "isMonthView", actions: "focusPreviousMonth" },
               { guard: "isYearView", actions: "focusPreviousYear" },
               { actions: ["focusPreviousDay"] },
             ],
-            "GRID.ARROW_UP": [
+            "TABLE.ARROW_UP": [
               { guard: "isMonthView", actions: "focusPreviousMonthColumn" },
               { guard: "isYearView", actions: "focusPreviousYearColumn" },
               { actions: ["focusPreviousWeek"] },
             ],
-            "GRID.ARROW_DOWN": [
+            "TABLE.ARROW_DOWN": [
               { guard: "isMonthView", actions: "focusNextMonthColumn" },
               { guard: "isYearView", actions: "focusNextYearColumn" },
               { actions: ["focusNextWeek"] },
             ],
-            "GRID.PAGE_UP": {
+            "TABLE.PAGE_UP": {
               actions: ["focusPreviousSection"],
             },
-            "GRID.PAGE_DOWN": {
+            "TABLE.PAGE_DOWN": {
               actions: ["focusNextSection"],
             },
-            "GRID.HOME": [
+            "TABLE.HOME": [
               { guard: "isMonthView", actions: ["focusFirstMonth"] },
               { guard: "isYearView", actions: ["focusFirstYear"] },
               { actions: ["focusSectionStart"] },
             ],
-            "GRID.END": [
+            "TABLE.END": [
               { guard: "isMonthView", actions: ["focusLastMonth"] },
               { guard: "isYearView", actions: ["focusLastYear"] },
               { actions: ["focusSectionEnd"] },
@@ -407,7 +412,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             onEscapeKeyDown(event) {
               event.preventDefault()
-              send({ type: "GRID.ESCAPE", src: "dismissable" })
+              send({ type: "TABLE.ESCAPE", src: "dismissable" })
             },
           })
         },
@@ -627,7 +632,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         setHoveredValueIfKeyboard(ctx, evt) {
-          if (!evt.type.startsWith("GRID.ARROW") || ctx.selectionMode !== "range" || ctx.activeIndex === 0) return
+          if (!evt.type.startsWith("TABLE.ARROW") || ctx.selectionMode !== "range" || ctx.activeIndex === 0) return
           ctx.hoveredValue = ctx.focusedValue.copy()
         },
         focusTriggerElement(ctx) {

@@ -1,12 +1,12 @@
 import * as select from "@zag-js/select"
-import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, For } from "solid-js"
-import { Portal } from "solid-js/web"
 import { selectControls, selectData } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import serialize from "form-serialize"
+import { Index, createMemo, createUniqueId } from "solid-js"
+import { Portal } from "solid-js/web"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-import serialize from "form-serialize"
 
 export default function Page() {
   const controls = useControls(selectControls)
@@ -45,7 +45,7 @@ export default function Page() {
           >
             {/* Hidden select */}
             <select {...api().hiddenSelectProps}>
-              <For each={selectData}>{(option) => <option value={option.value}>{option.label}</option>}</For>
+              <Index each={selectData}>{(option) => <option value={option().value}>{option().label}</option>}</Index>
             </select>
           </form>
 
@@ -53,14 +53,14 @@ export default function Page() {
           <Portal>
             <div {...api().positionerProps}>
               <ul {...api().contentProps}>
-                <For each={selectData}>
+                <Index each={selectData}>
                   {(item) => (
-                    <li {...api().getItemProps({ item })}>
-                      <span {...api().getItemTextProps({ item })}>{item.label}</span>
-                      <span {...api().getItemIndicatorProps({ item })}>✓</span>
+                    <li {...api().getItemProps({ item: item() })}>
+                      <span {...api().getItemTextProps({ item: item() })}>{item().label}</span>
+                      <span {...api().getItemIndicatorProps({ item: item() })}>✓</span>
                     </li>
                   )}
-                </For>
+                </Index>
               </ul>
             </div>
           </Portal>

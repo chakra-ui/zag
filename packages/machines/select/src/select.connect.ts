@@ -309,6 +309,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     positionerProps: normalize.element({
       ...parts.positioner.attrs,
+      dir: state.context.dir,
       id: dom.getPositionerId(state.context),
       style: popperStyles.floating,
     }),

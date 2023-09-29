@@ -2,8 +2,11 @@ import { createScope, query } from "@zag-js/dom-query"
 import type { DateView, MachineContext as Ctx } from "./date-picker.types"
 
 export const dom = createScope({
-  getGridId: (ctx: Ctx, id: string) => ctx.ids?.grid?.(id) ?? `datepicker:${ctx.id}:grid:${id}`,
-  getHeaderId: (ctx: Ctx) => ctx.ids?.header ?? `datepicker:${ctx.id}:header`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `datepicker:${ctx.id}`,
+  getTableId: (ctx: Ctx, id: string) => ctx.ids?.table?.(id) ?? `datepicker:${ctx.id}:table:${id}`,
+  getTableHeaderId: (ctx: Ctx, id: string) => ctx.ids?.tableHeader?.(id) ?? `datepicker:${ctx.id}:thead`,
+  getTableBodyId: (ctx: Ctx, id: string) => ctx.ids?.tableBody?.(id) ?? `datepicker:${ctx.id}:tbody`,
+  getTableRowId: (ctx: Ctx, id: string) => ctx.ids?.tableRow?.(id) ?? `datepicker:${ctx.id}:tr:${id}`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `datepicker:${ctx.id}:content`,
   getCellTriggerId: (ctx: Ctx, id: string) => ctx.ids?.cellTrigger?.(id) ?? `datepicker:${ctx.id}:cell-trigger:${id}`,
   getPrevTriggerId: (ctx: Ctx, view: DateView) => ctx.ids?.prevTrigger?.(view) ?? `datepicker:${ctx.id}:prev:${view}`,
@@ -18,7 +21,10 @@ export const dom = createScope({
   getYearSelectId: (ctx: Ctx) => ctx.ids?.yearSelect ?? `datepicker:${ctx.id}:year-select`,
 
   getFocusedCell: (ctx: Ctx, view = ctx.view) =>
-    query(dom.getContentEl(ctx), `[data-part=cell-trigger][data-type=${view}][data-focused]:not([data-outside-range])`),
+    query(
+      dom.getContentEl(ctx),
+      `[data-part=table-cell-trigger][data-view=${view}][data-focused]:not([data-outside-range])`,
+    ),
   getTriggerEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getTriggerId(ctx)),
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),

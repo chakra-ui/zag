@@ -7,9 +7,9 @@ import type {
   DateValue,
   ZonedDateTime,
 } from "@internationalized/date"
-import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
+import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -47,8 +47,11 @@ interface IntlMessages {
 }
 
 type ElementIds = Partial<{
-  grid(id: string): string
-  header: string
+  root: string
+  table(id: string): string
+  tableHeader(id: string): string
+  tableBody(id: string): string
+  tableRow(id: string): string
   content: string
   cellTrigger(id: string): string
   prevTrigger(view: DateView): string
@@ -65,6 +68,10 @@ type ElementIds = Partial<{
 
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
+   * The locale (BCP 47 language tag) to use when formatting the date.
+   */
+  locale: string
+  /**
    * The localized messages to use.
    */
   messages?: IntlMessages
@@ -76,10 +83,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The `name` attribute of the input element.
    */
   name?: string
-  /**
-   * The locale (BCP 47 language tag) to use when formatting the date.
-   */
-  locale: string
   /**
    * The time zone to use
    */
@@ -282,17 +285,25 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface Offset {
-  amount: number
-  visibleRange: { start: DateValue; end: DateValue }
+export interface Range<T> {
+  start: T
+  end: T
 }
 
-export interface CellProps {
+export type VisibleRange = Range<DateValue>
+
+export interface DateValueOffset {
+  visibleRange: VisibleRange
+  weeks: DateValue[][]
+}
+
+export interface TableCellProps {
   disabled?: boolean
   value: number
+  columns?: number
 }
 
-export interface CellState {
+export interface TableCellState {
   isFocused: boolean
   isSelectable: boolean
   isSelected: boolean
@@ -300,13 +311,13 @@ export interface CellState {
   readonly isDisabled: boolean
 }
 
-export interface DayCellProps {
+export interface DayTableCellProps {
   value: DateValue
   disabled?: boolean
-  offset?: Offset
+  visibleRange?: VisibleRange
 }
 
-export interface DayCellState {
+export interface DayTableCellState {
   isInvalid: boolean
   isDisabled: boolean
   isSelected: boolean
@@ -323,7 +334,7 @@ export interface DayCellState {
   readonly isSelectable: boolean
 }
 
-export interface GridProps {
+export interface TableProps {
   view?: DateView
   columns?: number
   id?: string
@@ -338,18 +349,33 @@ export interface MonthGridProps {
   format?: "short" | "long"
 }
 
-interface GridItem {
+export interface Cell {
   label: string
   value: number
 }
 
-export type MonthGridValue = GridItem[][]
+export type MonthGridValue = Cell[][]
 
 export interface YearGridProps {
   columns?: number
 }
 
-export type YearGridValue = GridItem[][]
+export type YearGridValue = Cell[][]
+
+export interface WeekDay {
+  value: DateValue
+  short: string
+  long: string
+  narrow: string
+}
+
+export interface MonthFormatOptions {
+  format?: "short" | "long"
+}
+
+export interface VisibleRangeText extends Range<string> {
+  formatted: string
+}
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
@@ -367,22 +393,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
    */
-  getDaysInWeek(weekIndex: number, from?: DateValue): DateValue[]
+  getDaysInWeek(week: number, from?: DateValue): DateValue[]
   /**
    * Returns the offset of the month based on the provided number of months.
    */
-  getOffset(months: number): {
-    amount: number
-    visibleRange: {
-      start: CalendarDate | CalendarDateTime | ZonedDateTime
-      end: CalendarDate | CalendarDateTime | ZonedDateTime
-    }
-    weeks: DateValue[][]
-  }
+  getOffset(duration: DateDuration): DateValueOffset
   /**
    * Returns the weeks of the month from the provided date. Represented as an array of arrays of dates.
    */
-  getMonthDays(from?: DateValue): DateValue[][]
+  getMonthWeeks(from?: DateValue): DateValue[][]
   /**
    * Returns whether the provided date is available (or can be selected)
    */
@@ -390,24 +409,19 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The weeks of the month. Represented as an array of arrays of dates.
    */
-  readonly weeks: DateValue[][]
+  weeks: DateValue[][]
   /**
    * The days of the week. Represented as an array of strings.
    */
-  weekDays: {
-    value: CalendarDate | CalendarDateTime | ZonedDateTime
-    short: string
-    long: string
-    narrow: string
-  }[]
+  weekDays: WeekDay[]
+  /**
+   * The visible range of dates.
+   */
+  visibleRange: VisibleRange
   /**
    * The human readable text for the visible range of dates.
    */
-  visibleRangeText: {
-    start: string
-    end: string
-    formatted: string
-  }
+  visibleRangeText: VisibleRangeText
   /**
    * The selected date.
    */
@@ -465,16 +479,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   focusYear(year: number): void
   /**
-   * The visible range of dates.
-   */
-  visibleRange: {
-    start: DateValue
-    end: DateValue
-  }
-  /**
    * Returns the months of the year
    */
-  getYears(): GridItem[]
+  getYears(): Cell[]
   /**
    * Returns the years of the decade based on the columns.
    * Represented as an array of arrays of years.
@@ -483,14 +490,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the start and end years of the decade.
    */
-  getDecade(): {
-    start: number | undefined
-    end: number | undefined
-  }
+  getDecade(): Range<number | undefined>
   /**
    * Returns the months of the year
    */
-  getMonths(props?: { format?: "short" | "long" }): GridItem[]
+  getMonths(props?: MonthFormatOptions): Cell[]
   /**
    * Returns the months of the year based on the columns.
    * Represented as an array of arrays of months.
@@ -515,29 +519,43 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the state details for a given cell.
    */
-  getDayCellState(props: DayCellProps): DayCellState
+  getDayTableCellState(props: DayTableCellProps): DayTableCellState
   /**
    * Returns the state details for a given month cell.
    */
-  getMonthCellState(props: CellProps): CellState
+  getMonthTableCellState(props: TableCellProps): TableCellState
+  /**
+   * Returns the state details for a given year cell.
+   */
+  getYearTableCellState(props: TableCellProps): TableCellState
 
+  rootProps: T["element"]
   controlProps: T["element"]
   contentProps: T["element"]
   positionerProps: T["element"]
-  getGridProps(props?: GridProps): T["element"]
-  getDayCellProps(props: DayCellProps): T["element"]
-  getDayCellTriggerProps(props: DayCellProps): T["element"]
-  getMonthCellProps(props: CellProps): T["element"]
-  getMonthCellTriggerProps(props: CellProps): T["element"]
-  getYearCellState(props: CellProps): CellState
-  getYearCellProps(props: CellProps): T["element"]
-  getYearCellTriggerProps(props: CellProps): T["element"]
+  rangeTextProps: T["element"]
+
+  getTableProps(props?: TableProps): T["element"]
+  getTableHeaderProps(props?: TableProps): T["element"]
+  getTableBodyProps(props?: TableProps): T["element"]
+  getTableRowProps(props?: TableProps): T["element"]
+
+  getDayTableCellProps(props: DayTableCellProps): T["element"]
+  getDayTableCellTriggerProps(props: DayTableCellProps): T["element"]
+
+  getMonthTableCellProps(props: TableCellProps): T["element"]
+  getMonthTableCellTriggerProps(props: TableCellProps): T["element"]
+
+  getYearTableCellProps(props: TableCellProps): T["element"]
+  getYearTableCellTriggerProps(props: TableCellProps): T["element"]
+
   getNextTriggerProps(props?: ViewProps): T["button"]
   getPrevTriggerProps(props?: ViewProps): T["button"]
-  getHeaderProps(props?: ViewProps): T["element"]
+
   clearTriggerProps: T["button"]
   triggerProps: T["button"]
   getViewTriggerProps(props?: ViewProps): T["button"]
+  getViewControlProps(props?: ViewProps): T["element"]
   inputProps: T["input"]
   monthSelectProps: T["select"]
   yearSelectProps: T["select"]

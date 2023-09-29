@@ -40,9 +40,10 @@ export default function Page() {
           <button {...api.clearTriggerProps}>❌</button>
           <button {...api.triggerProps}>🗓</button>
         </div>
+
         <div {...api.positionerProps}>
           <div {...api.contentProps}>
-            <div style={{ marginBlock: "20px" }}>
+            <div style={{ marginBottom: "20px" }}>
               <select {...api.monthSelectProps}>
                 {api.getMonths().map((month, i) => (
                   <option key={i} value={month.value}>
@@ -60,28 +61,16 @@ export default function Page() {
               </select>
             </div>
 
-            <div hidden={api.view !== "day"} style={{ maxWidth: "230px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBlock: "10px",
-                }}
-              >
+            <div hidden={api.view !== "day"}>
+              <div {...api.getViewControlProps({ view: "year" })}>
                 <button {...api.getPrevTriggerProps()}>Prev</button>
-                <button
-                  {...api.getViewTriggerProps()}
-                  style={{ border: "0", padding: "4px 20px", borderRadius: "4px" }}
-                >
-                  {api.visibleRangeText.start}
-                </button>
+                <button {...api.getViewTriggerProps()}>{api.visibleRangeText.start}</button>
                 <button {...api.getNextTriggerProps()}>Next</button>
               </div>
 
-              <table {...api.getGridProps()}>
-                <thead {...api.getHeaderProps()}>
-                  <tr>
+              <table {...api.getTableProps({ view: "day" })}>
+                <thead {...api.getTableHeaderProps({ view: "day" })}>
+                  <tr {...api.getTableRowProps({ view: "day" })}>
                     {api.weekDays.map((day, i) => (
                       <th scope="col" key={i} aria-label={day.long}>
                         {day.narrow}
@@ -89,12 +78,12 @@ export default function Page() {
                     ))}
                   </tr>
                 </thead>
-                <tbody>
+                <tbody {...api.getTableBodyProps({ view: "day" })}>
                   {api.weeks.map((week, i) => (
-                    <tr key={i}>
+                    <tr key={i} {...api.getTableRowProps({ view: "day" })}>
                       {week.map((value, i) => (
-                        <td key={i} {...api.getDayCellProps({ value })}>
-                          <div {...api.getDayCellTriggerProps({ value })}>{value.day}</div>
+                        <td key={i} {...api.getDayTableCellProps({ value })}>
+                          <div {...api.getDayTableCellTriggerProps({ value })}>{value.day}</div>
                         </td>
                       ))}
                     </tr>
@@ -103,28 +92,21 @@ export default function Page() {
               </table>
             </div>
 
-            <div style={{ display: "flex", gap: "40px", marginTop: "24px" }}>
-              <div hidden={api.view !== "month"}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBlock: "10px",
-                  }}
-                >
+            <div style={{ display: "flex", gap: "40px" }}>
+              <div hidden={api.view !== "month"} style={{ width: "100%" }}>
+                <div {...api.getViewControlProps({ view: "month" })}>
                   <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
                   <span {...api.getViewTriggerProps({ view: "month" })}>{api.visibleRange.start.year}</span>
                   <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
                 </div>
 
-                <table {...api.getGridProps({ view: "month", columns: 4 })}>
-                  <tbody>
+                <table {...api.getTableProps({ view: "month", columns: 4 })}>
+                  <tbody {...api.getTableBodyProps({ view: "month" })}>
                     {api.getMonthsGrid({ columns: 4, format: "short" }).map((months, row) => (
-                      <tr key={row}>
+                      <tr key={row} {...api.getTableRowProps()}>
                         {months.map((month, index) => (
-                          <td key={index} {...api.getMonthCellProps(month)}>
-                            <div {...api.getMonthCellTriggerProps(month)}>{month.label}</div>
+                          <td key={index} {...api.getMonthTableCellProps({ ...month, columns: 4 })}>
+                            <div {...api.getMonthTableCellTriggerProps({ ...month, columns: 4 })}>{month.label}</div>
                           </td>
                         ))}
                       </tr>
@@ -133,15 +115,8 @@ export default function Page() {
                 </table>
               </div>
 
-              <div hidden={api.view !== "year"}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBlock: "10px",
-                  }}
-                >
+              <div hidden={api.view !== "year"} style={{ width: "100%" }}>
+                <div {...api.getViewControlProps({ view: "year" })}>
                   <button {...api.getPrevTriggerProps({ view: "year" })}>Prev</button>
                   <span>
                     {api.getDecade().start} - {api.getDecade().end}
@@ -149,13 +124,13 @@ export default function Page() {
                   <button {...api.getNextTriggerProps({ view: "year" })}>Next</button>
                 </div>
 
-                <table {...api.getGridProps({ view: "year", columns: 4 })}>
-                  <tbody>
+                <table {...api.getTableProps({ view: "year", columns: 4 })}>
+                  <tbody {...api.getTableBodyProps()}>
                     {api.getYearsGrid({ columns: 4 }).map((years, row) => (
-                      <tr key={row}>
+                      <tr key={row} {...api.getTableRowProps({ view: "year" })}>
                         {years.map((year, index) => (
-                          <td colSpan={4} key={index} {...api.getYearCellProps(year)}>
-                            <div {...api.getYearCellTriggerProps(year)}>{year.label}</div>
+                          <td key={index} {...api.getYearTableCellProps({ ...year, columns: 4 })}>
+                            <div {...api.getYearTableCellTriggerProps({ ...year, columns: 4 })}>{year.label}</div>
                           </td>
                         ))}
                       </tr>
