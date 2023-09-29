@@ -64,7 +64,7 @@ export default function Page() {
             </select>
           </div>
 
-          <div hidden={api().view !== "day"}>
+          <div hidden={api().view !== "day"} style={{ width: "100%" }}>
             <div {...api().getViewControlProps()}>
               <button {...api().getPrevTriggerProps()}>Prev</button>
               <button
@@ -107,7 +107,7 @@ export default function Page() {
           </div>
 
           <div style={{ display: "flex", gap: "40px", "margin-top": "24px" }}>
-            <div hidden={api().view !== "month"}>
+            <div hidden={api().view !== "month"} style={{ width: "100%" }}>
               <div {...api().getViewControlProps({ view: "month" })}>
                 <button {...api().getPrevTriggerProps({ view: "month" })}>Prev</button>
                 <button {...api().getViewTriggerProps({ view: "month" })}>{api().visibleRange.start.year}</button>
@@ -133,7 +133,7 @@ export default function Page() {
               </table>
             </div>
 
-            <div hidden={api().view !== "year"}>
+            <div hidden={api().view !== "year"} style={{ width: "100%" }}>
               <div {...api().getViewControlProps({ view: "year" })}>
                 <button {...api().getPrevTriggerProps({ view: "year" })}>Prev</button>
                 <span>
