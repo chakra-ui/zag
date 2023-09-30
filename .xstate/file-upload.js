@@ -13,6 +13,7 @@ const fetchMachine = createMachine({
   id: "fileupload",
   initial: "idle",
   context: {
+    "!isWithinRange": false,
     "!isWithinRange": false
   },
   on: {
@@ -31,8 +32,12 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        OPEN: "open",
-        "DROPZONE.CLICK": "open",
+        OPEN: {
+          actions: ["openFilePicker"]
+        },
+        "DROPZONE.CLICK": {
+          actions: ["openFilePicker"]
+        },
         "DROPZONE.FOCUS": "focused",
         "DROPZONE.DRAG_OVER": [{
           cond: "!isWithinRange",
@@ -45,10 +50,19 @@ const fetchMachine = createMachine({
     },
     focused: {
       on: {
-        OPEN: "open",
-        "DROPZONE.CLICK": "open",
-        "DROPZONE.ENTER": "open",
-        "DROPZONE.BLUR": "idle"
+        OPEN: {
+          actions: ["openFilePicker"]
+        },
+        "DROPZONE.CLICK": {
+          actions: ["openFilePicker"]
+        },
+        "DROPZONE.DRAG_OVER": [{
+          cond: "!isWithinRange",
+          target: "dragging",
+          actions: ["setInvalid"]
+        }, {
+          target: "dragging"
+        }]
       }
     },
     dragging: {
@@ -61,13 +75,6 @@ const fetchMachine = createMachine({
           target: "idle",
           actions: ["clearInvalid"]
         }
-      }
-    },
-    open: {
-      activities: ["trackWindowFocus"],
-      entry: ["openFilePicker"],
-      on: {
-        CLOSE: "idle"
       }
     }
   }

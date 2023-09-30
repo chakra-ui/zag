@@ -110,7 +110,7 @@ export interface MachineApi<T extends PropTypes> {
    */
   isDragging: boolean
   /**
-   * Whether the user is focused on the root element
+   * Whether the user is focused on the dropzone element
    */
   isFocused: boolean
   /**

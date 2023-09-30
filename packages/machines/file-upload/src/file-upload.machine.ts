@@ -38,8 +38,12 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         idle: {
           on: {
-            OPEN: "open",
-            "DROPZONE.CLICK": "open",
+            OPEN: {
+              actions: ["openFilePicker"],
+            },
+            "DROPZONE.CLICK": {
+              actions: ["openFilePicker"],
+            },
             "DROPZONE.FOCUS": "focused",
             "DROPZONE.DRAG_OVER": [
               {
@@ -53,10 +57,20 @@ export function machine(userContext: UserDefinedContext) {
         },
         focused: {
           on: {
-            OPEN: "open",
-            "DROPZONE.CLICK": "open",
-            "DROPZONE.ENTER": "open",
-            "DROPZONE.BLUR": "idle",
+            OPEN: {
+              actions: ["openFilePicker"],
+            },
+            "DROPZONE.CLICK": {
+              actions: ["openFilePicker"],
+            },
+            "DROPZONE.DRAG_OVER": [
+              {
+                guard: not("isWithinRange"),
+                target: "dragging",
+                actions: ["setInvalid"],
+              },
+              { target: "dragging" },
+            ],
           },
         },
         dragging: {
@@ -71,28 +85,11 @@ export function machine(userContext: UserDefinedContext) {
             },
           },
         },
-        open: {
-          activities: ["trackWindowFocus"],
-          entry: ["openFilePicker"],
-          on: {
-            CLOSE: "idle",
-          },
-        },
       },
     },
     {
       guards: {
         isWithinRange: (ctx, evt) => isFilesWithinRange(ctx, evt.count),
-      },
-      activities: {
-        trackWindowFocus(ctx, _evt, { send }) {
-          const win = dom.getWin(ctx)
-          const onWindowFocus = () => {
-            raf(() => send("CLOSE"))
-          }
-          win.addEventListener("focus", onWindowFocus)
-          return () => win.removeEventListener("focus", onWindowFocus)
-        },
       },
       actions: {
         openFilePicker(ctx) {

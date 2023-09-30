@@ -1108,7 +1108,7 @@
       },
       "isFocused": {
         "type": "boolean",
-        "description": "Whether the user is focused on the root element"
+        "description": "Whether the user is focused on the dropzone element"
       },
       "open": {
         "type": "() => void",
