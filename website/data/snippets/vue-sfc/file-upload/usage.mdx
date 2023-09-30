@@ -20,10 +20,14 @@
 
     <button v-bind="api.triggerProps">Choose Files...</button>
 
-    <ul>
-      <li v-for="file in api.files" :key="{file.name}">
-        <div>{{ file.name }}</div>
-        <button v-bind="api.getDeleteTriggerProps({ file })" }>Delete</button>
+    <ul v-bind="api.itemGroupProps">
+      <li
+        v-for="file in api.files"
+        :key="file.name"
+        v-bind="api.getItemProps({ file })"
+      >
+        <div v-bind="api.getItemNameProps({ file })">{{ file.name }}</div>
+        <button v-bind="api.getItemDeleteTriggerProps({ file })">Delete</button>
       </li>
     </ul>
   </div>

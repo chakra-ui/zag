@@ -39,6 +39,7 @@ export function FileUpload(props: { controls: any }) {
       <Stack>
         {api.files.map((file) => (
           <HStack
+            {...api.getItemProps({ file })}
             key={file.name}
             px="3"
             py="2"
@@ -46,9 +47,9 @@ export function FileUpload(props: { controls: any }) {
             borderWidth="1px"
           >
             <chakra.div flex="1" fontSize="sm">
-              {file.name}
+              {file.name} {api.getFileSize(file)}
             </chakra.div>
-            <button {...api.getDeleteTriggerProps({ file })}>
+            <button {...api.getItemDeleteTriggerProps({ file })}>
               <HiX />
             </button>
           </HStack>

@@ -1,7 +1,7 @@
 ```jsx
 import * as fileUpload from "@zag-js/file-upload"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createUniqueId, createMemo } from "solid-js"
+import { createUniqueId, createMemo, Index } from "solid-js"
 
 export function FileUpload() {
   const [state, send] = useMachine(
@@ -21,15 +21,19 @@ export function FileUpload() {
 
       <button {...api().triggerProps}>Choose file(s)</button>
 
-      <ul>
-        <For each={api().files}>
+      <ul {...api().itemGroupProps}>
+        <Index each={api().files}>
           {(file) => (
-            <li>
-              <div>{file.name}</div>
-              <button {...api().getDeleteTriggerProps({ file })}>Delete</button>
+            <li {...api.getItemProps({ file: file() })}>
+              <div {...api.getItemNameProps({ file: file() })}>
+                {file().name}
+              </div>
+              <button {...api().getItemDeleteTriggerProps({ file: file() })}>
+                Delete
+              </button>
             </li>
           )}
-        </For>
+        </Index>
       </ul>
     </div>
   )

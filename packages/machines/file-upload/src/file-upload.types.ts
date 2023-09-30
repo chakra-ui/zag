@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -19,7 +19,7 @@ export interface FileChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext extends CommonProperties {
+interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * The name of the underlying file input
    */
@@ -104,6 +104,10 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface ItemProps {
+  file: File
+}
+
 export interface MachineApi<T extends PropTypes> {
   /**
    * Whether the user is dragging something over the root element
@@ -133,11 +137,19 @@ export interface MachineApi<T extends PropTypes> {
    * Function to clear the value
    */
   clearFiles(): void
+  /**
+   * Function to format the file size (e.g. 1.2MB)
+   */
+  getFileSize(file: File): string
 
+  labelProps: T["label"]
   rootProps: T["element"]
   dropzoneProps: T["element"]
   triggerProps: T["button"]
   hiddenInputProps: T["input"]
-  getDeleteTriggerProps(props: { file: File }): T["button"]
-  labelProps: T["label"]
+  itemGroupProps: T["element"]
+  getItemProps(props: ItemProps): T["element"]
+  getItemNameProps(props: ItemProps): T["element"]
+  getItemSizeTextProps(props: ItemProps): T["element"]
+  getItemDeleteTriggerProps(props: ItemProps): T["button"]
 }

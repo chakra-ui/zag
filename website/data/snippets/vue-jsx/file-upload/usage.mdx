@@ -26,17 +26,15 @@ export const FileUpload = defineComponent({
 
           <button {...api.triggerProps}>Choose Files...</button>
 
-          <ul>
-            {api.files.map((file) => {
-              return (
-                <li key={file.name}>
-                  <div>{file.name}</div>
-                  <button {...api.getDeleteTriggerProps({ file })}>
-                    Delete
-                  </button>
-                </li>
-              )
-            })}
+          <ul {...api.itemGroupProps}>
+            {api.files.map((file) => (
+              <li key={file.name} {...api.getItemProps({ file })}>
+                <div {...api.getItemNameProps({ file })}>{file.name}</div>
+                <button {...api.getItemDeleteTriggerProps({ file })}>
+                  Delete
+                </button>
+              </li>
+            ))}
           </ul>
         </div>
       )

@@ -50,6 +50,7 @@ const fetchMachine = createMachine({
     },
     focused: {
       on: {
+        "DROPZONE.BLUR": "idle",
         OPEN: {
           actions: ["openFilePicker"]
         },

@@ -31,19 +31,17 @@ export default defineComponent({
 
               <button {...api.triggerProps}>Choose Files...</button>
 
-              <ul>
-                {api.files.map((file) => {
-                  return (
-                    <li class="file" key={file.name}>
-                      <div>
-                        <b>{file.name}</b>
-                      </div>
-                      <div>{formatFileSize(file.size)}</div>
-                      <div>{file.type}</div>
-                      <button {...api.getDeleteTriggerProps({ file })}>X</button>
-                    </li>
-                  )
-                })}
+              <ul {...api.itemGroupProps}>
+                {api.files.map((file) => (
+                  <li class="file" key={file.name} {...api.getItemProps({ file })}>
+                    <div {...api.getItemNameProps({ file })}>
+                      <b>{file.name}</b>
+                    </div>
+                    <div {...api.getItemSizeTextProps({ file })}>{formatFileSize(file.size)}</div>
+                    <div>{file.type}</div>
+                    <button {...api.getItemDeleteTriggerProps({ file })}>X</button>
+                  </li>
+                ))}
               </ul>
             </div>
           </main>

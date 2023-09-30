@@ -1710,6 +1710,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/file-utils':
+        specifier: workspace:*
+        version: link:../../utilities/file-utils
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -7759,9 +7762,9 @@ packages:
       '@babel/core': ^7.0.0-0
     dependencies:
       '@babel/core': 7.23.0
-      '@babel/helper-module-imports': 7.22.15
+      '@babel/helper-module-imports': 7.22.5
       '@babel/plugin-syntax-jsx': 7.22.5(@babel/core@7.23.0)
-      '@babel/template': 7.22.15
+      '@babel/template': 7.22.5
       '@babel/traverse': 7.23.0
       '@babel/types': 7.23.0
       '@vue/babel-helper-vue-transform-on': 1.1.5

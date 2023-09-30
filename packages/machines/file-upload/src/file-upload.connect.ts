@@ -1,4 +1,5 @@
 import { contains, dataAttr, isSelfEvent } from "@zag-js/dom-query"
+import { formatFileSize } from "@zag-js/file-utils"
 import { type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./file-upload.anatomy"
@@ -8,21 +9,25 @@ import { isEventWithFiles } from "./file-upload.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const disabled = state.context.disabled
-  const isDragging = state.matches("dragging")
-  const isFocused = state.matches("focused") && !disabled
   const allowDrop = state.context.allowDrop
 
+  const isDragging = state.matches("dragging")
+  const isFocused = state.matches("focused") && !disabled
+
   return {
+    getFileSize(file) {
+      return formatFileSize(file.size, { locale: state.context.locale })
+    },
     isDragging,
     isFocused,
     open() {
       send("OPEN")
     },
-    deleteFile(file: File) {
+    deleteFile(file) {
       send({ type: "FILE.DELETE", file })
     },
     files: state.context.files,
-    setFiles(files: File[]) {
+    setFiles(files) {
       const count = files.length
       send({ type: "VALUE.SET", files, count })
     },
@@ -32,6 +37,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
+      dir: state.context.dir,
       id: dom.getRootId(state.context),
       "data-disabled": dataAttr(disabled),
       "data-dragging": dataAttr(isDragging),
@@ -39,6 +45,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     dropzoneProps: normalize.element({
       ...parts.dropzone.attrs,
+      dir: state.context.dir,
       id: dom.getDropzoneId(state.context),
       tabIndex: disabled ? undefined : 0,
       "aria-disabled": disabled,
@@ -97,12 +104,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
+      dir: state.context.dir,
       id: dom.getTriggerId(state.context),
       disabled,
       "data-disabled": dataAttr(disabled),
       type: "button",
-      onClick() {
+      onClick(event) {
         if (disabled) return
+        // if trigger is wrapped within the dropzone, stop propagation to avoid double opening
+        if (contains(dom.getDropzoneEl(state.context), event.currentTarget)) {
+          event.stopPropagation()
+        }
         send("OPEN")
       },
     }),
@@ -128,14 +140,47 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: visuallyHiddenStyle,
     }),
 
-    getDeleteTriggerProps(props: { file: File }) {
+    itemGroupProps: normalize.element({
+      ...parts.itemGroup.attrs,
+      dir: state.context.dir,
+      "data-disabled": dataAttr(disabled),
+    }),
+
+    getItemProps(props) {
+      const { file } = props
+      return normalize.element({
+        ...parts.item.attrs,
+        dir: state.context.dir,
+        id: dom.getItemId(state.context, file.name),
+        "data-disabled": dataAttr(disabled),
+      })
+    },
+
+    getItemNameProps(props) {
+      return normalize.element({
+        ...parts.itemName.attrs,
+        id: dom.getItemNameId(state.context, props.file.name),
+        "data-disabled": dataAttr(disabled),
+      })
+    },
+
+    getItemSizeTextProps(props) {
+      const { file } = props
+      return normalize.element({
+        ...parts.itemSizeText.attrs,
+        id: dom.getItemSizeTextId(state.context, file.name),
+        "data-disabled": dataAttr(disabled),
+      })
+    },
+
+    getItemDeleteTriggerProps(props) {
       const { file } = props
       return normalize.button({
-        ...parts.deleteTrigger.attrs,
+        ...parts.itemDeleteTrigger.attrs,
         type: "button",
         disabled,
         "data-disabled": dataAttr(disabled),
-        "aria-label": `Delete ${file.name} file`,
+        "aria-label": `Delete file - ${file.name}`,
         onClick() {
           if (disabled) return
           send({ type: "FILE.DELETE", file })
@@ -145,6 +190,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.label({
       ...parts.label.attrs,
+      dir: state.context.dir,
       id: dom.getLabelId(state.context),
       htmlFor: dom.getHiddenInputId(state.context),
       "data-disabled": dataAttr(disabled),

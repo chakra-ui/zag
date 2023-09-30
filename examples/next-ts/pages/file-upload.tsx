@@ -1,6 +1,6 @@
 import * as fileUpload from "@zag-js/file-upload"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { fileUploadControls, formatFileSize } from "@zag-js/shared"
+import { fileUploadControls } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -22,16 +22,16 @@ export default function Page() {
 
           <button {...api.triggerProps}>Choose Files...</button>
 
-          <ul>
+          <ul {...api.itemGroupProps}>
             {api.files.map((file) => {
               return (
-                <li className="file" key={file.name}>
+                <li className="file" key={file.name} {...api.getItemProps({ file })}>
                   <div>
                     <b>{file.name}</b>
                   </div>
-                  <div>{formatFileSize(file.size)}</div>
+                  <div {...api.getItemSizeTextProps({ file })}>{api.getFileSize(file)}</div>
                   <div>{file.type}</div>
-                  <button {...api.getDeleteTriggerProps({ file })}>X</button>
+                  <button {...api.getItemDeleteTriggerProps({ file })}>X</button>
                 </li>
               )
             })}

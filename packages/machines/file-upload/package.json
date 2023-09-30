@@ -38,6 +38,7 @@
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
+    "@zag-js/file-utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/types": "workspace:*"

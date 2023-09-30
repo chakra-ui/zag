@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as fileUpload from "@zag-js/file-upload"
-import { fileUploadControls, formatFileSize } from "@zag-js/shared"
+import { fileUploadControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(fileUploadControls)
@@ -22,14 +22,14 @@ const api = computed(() => fileUpload.connect(state.value, send, normalizeProps)
 
       <button v-bind="api.triggerProps">Choose Files...</button>
 
-      <ul>
-        <li v-for="file in api.files" :key="file.name" class="file">
-          <div>
+      <ul v-bind="api.itemGroupProps">
+        <li v-for="file in api.files" :key="file.name" class="file" v-bind="api.getItemProps({ file })">
+          <div v-bind="api.getItemNameProps({ file })">
             <b>{file.name}</b>
           </div>
-          <div>{formatFileSize(file.size)}</div>
-          <div>{file.type}</div>
-          <button v-bind="api.getDeleteTriggerProps({ file })">X</button>
+          <div>{{ api.getFileSize(file) }}</div>
+          <div>{{ file.type }}</div>
+          <button v-bind="api.getItemDeleteTriggerProps({ file })">X</button>
         </li>
       </ul>
     </div>

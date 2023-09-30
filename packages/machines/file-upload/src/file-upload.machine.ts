@@ -1,9 +1,10 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
+import { getAcceptAttrString, isFileEqual } from "@zag-js/file-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./file-upload.dom"
 import type { MachineContext, MachineState, RejectedFile, UserDefinedContext } from "./file-upload.types"
-import { getAcceptAttrString, getFilesFromEvent, isFilesWithinRange } from "./file-upload.utils"
+import { getFilesFromEvent, isFilesWithinRange } from "./file-upload.utils"
 
 const { not } = guards
 
@@ -57,6 +58,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focused: {
           on: {
+            "DROPZONE.BLUR": "idle",
             OPEN: {
               actions: ["openFilePicker"],
             },
@@ -124,7 +126,7 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       compareFns: {
-        files: (a, b) => a.length === b.length && a.every((file, i) => file === b[i]),
+        files: (a, b) => a.length === b.length && a.every((file, i) => isFileEqual(file, b[i])),
       },
     },
   )
