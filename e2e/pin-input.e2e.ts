@@ -12,17 +12,23 @@ test.describe("pin input", () => {
   })
 
   test("on type: should move focus to the next input", async ({ page }) => {
-    await page.locator(first).type("1")
+    await page.locator(first).fill("1")
     await expect(page.locator(second)).toBeFocused()
-    await page.locator(second).type("2")
+    await page.locator(second).fill("2")
     await expect(page.locator(third)).toBeFocused()
-    await page.locator(third).type("3")
+    await page.locator(third).fill("3")
+  })
+
+  test("on type: should not allow multiple keys at once ", async ({ page }) => {
+    await page.locator(first).fill("12")
+    // it takes the last key and ignores the rest
+    await expect(page.locator(first)).toHaveValue("2")
   })
 
   test("on backspace: should clear value and move focus to prev input", async ({ page }) => {
-    await page.locator(first).type("1")
+    await page.locator(first).fill("1")
     await expect(page.locator(second)).toBeFocused()
-    await page.locator(second).type("2")
+    await page.locator(second).fill("2")
     await expect(page.locator(third)).toBeFocused()
     await page.locator(third).press("Backspace")
     await expect(page.locator(second)).toBeFocused()
@@ -31,9 +37,9 @@ test.describe("pin input", () => {
 
   test("on arrow: should change focus between inputs", async ({ page }) => {
     // fill out all fields
-    await page.locator(first).type("1")
-    await page.locator(second).type("2")
-    await page.locator(third).type("3")
+    await page.locator(first).fill("1")
+    await page.locator(second).fill("2")
+    await page.locator(third).fill("3")
 
     // navigate with arrow keys
     await page.keyboard.press("ArrowLeft")
@@ -44,9 +50,9 @@ test.describe("pin input", () => {
 
   test("on clear: should clear values and focus first", async ({ page }) => {
     // fill out all fields
-    await page.locator(first).type("1")
-    await page.locator(second).type("2")
-    await page.locator(third).type("3")
+    await page.locator(first).fill("1")
+    await page.locator(second).fill("2")
+    await page.locator(third).fill("3")
 
     // click clear
     await page.locator(clear).click()
@@ -66,7 +72,7 @@ test.describe("pin input", () => {
   })
 
   test("on paste: should autofill all fields if focused field is not empty", async ({ page }) => {
-    await page.locator(first).type("1")
+    await page.locator(first).fill("1")
     await page.locator(first).focus()
     await page.$eval(first, nativeInput, "123")
     await expect(page.locator(first)).toHaveValue("1")
@@ -76,17 +82,17 @@ test.describe("pin input", () => {
   })
 
   test("[different] should allow only single character", async ({ page }) => {
-    await page.locator(first).type("1")
-    await page.locator(second).type("2")
+    await page.locator(first).fill("1")
+    await page.locator(second).fill("2")
     await page.locator(first).focus()
-    await page.locator(first).type("3")
+    await page.locator(first).fill("3")
     await expect(page.locator(first)).toHaveValue("3")
   })
 
   test("[same] should allow only single character", async ({ page }) => {
-    await page.locator(first).type("1")
+    await page.locator(first).fill("1")
     await page.locator(first).focus()
-    await page.locator(first).type("1")
+    await page.locator(first).fill("1")
     await expect(page.locator(first)).toHaveValue("1")
   })
 })

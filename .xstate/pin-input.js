@@ -11,32 +11,31 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "pin-input",
-  initial: ctx.autoFocus ? "focused" : "idle",
+  initial: "idle",
   context: {
+    "autoFocus": false,
     "hasIndex": false,
-    "isDisabled": false,
-    "isFinalValue && isValidValue": false,
-    "isValidValue": false,
-    "isValidValue": false,
+    "isFinalValue": false,
     "hasValue": false,
     "hasValue": false,
-    "isValueComplete": false,
-    "!isValidValue": false
+    "isValueComplete": false
   },
-  entry: ctx.autoFocus ? ["setupValue", "setFocusIndexToFirst"] : ["setupValue"],
+  entry: choose([{
+    cond: "autoFocus",
+    actions: ["setupValue", "setFocusIndexToFirst"]
+  }, {
+    actions: ["setupValue"]
+  }]),
   on: {
-    SET_VALUE: [{
+    "VALUE.SET": [{
       cond: "hasIndex",
       actions: ["setValueAtIndex"]
     }, {
       actions: ["setValue"]
     }],
-    CLEAR_VALUE: [{
-      cond: "isDisabled",
-      actions: ["clearValue"]
-    }, {
+    "VALUE.CLEAR": {
       actions: ["clearValue", "setFocusIndexToFirst"]
-    }]
+    }
   },
   on: {
     UPDATE_CONTEXT: {
@@ -46,7 +45,7 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        FOCUS: {
+        "INPUT.FOCUS": {
           target: "focused",
           actions: "setFocusedIndex"
         }
@@ -54,46 +53,41 @@ const fetchMachine = createMachine({
     },
     focused: {
       on: {
-        INPUT: [{
-          cond: "isFinalValue && isValidValue",
+        "INPUT.CHANGE": [{
+          cond: "isFinalValue",
           actions: ["setFocusedValue", "syncInputValue"]
         }, {
-          cond: "isValidValue",
           actions: ["setFocusedValue", "setNextFocusedIndex", "syncInputValue"]
         }],
-        PASTE: [{
-          cond: "isValidValue",
+        "INPUT.PASTE": {
           actions: ["setPastedValue", "setLastValueFocusIndex"]
-        }, {
-          actions: ["revertInputValue"]
-        }],
-        BLUR: {
+        },
+        "INPUT.BLUR": {
           target: "idle",
           actions: "clearFocusedIndex"
         },
-        DELETE: {
+        "INPUT.DELETE": {
           cond: "hasValue",
-          actions: ["clearFocusedValue"]
+          actions: "clearFocusedValue"
         },
-        ARROW_LEFT: {
+        "INPUT.ARROW_LEFT": {
           actions: "setPrevFocusedIndex"
         },
-        ARROW_RIGHT: {
+        "INPUT.ARROW_RIGHT": {
           actions: "setNextFocusedIndex"
         },
-        BACKSPACE: [{
+        "INPUT.BACKSPACE": [{
           cond: "hasValue",
           actions: ["clearFocusedValue"]
         }, {
           actions: ["setPrevFocusedIndex", "clearFocusedValue"]
         }],
-        ENTER: {
+        "INPUT.ENTER": {
           cond: "isValueComplete",
           actions: "requestFormSubmit"
         },
-        KEY_DOWN: {
-          cond: "!isValidValue",
-          actions: ["preventDefault", "invokeOnInvalid"]
+        "VALUE.INVALID": {
+          actions: "invokeOnInvalid"
         }
       }
     }
@@ -107,12 +101,10 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "autoFocus": ctx => ctx["autoFocus"],
     "hasIndex": ctx => ctx["hasIndex"],
-    "isDisabled": ctx => ctx["isDisabled"],
-    "isFinalValue && isValidValue": ctx => ctx["isFinalValue && isValidValue"],
-    "isValidValue": ctx => ctx["isValidValue"],
+    "isFinalValue": ctx => ctx["isFinalValue"],
     "hasValue": ctx => ctx["hasValue"],
-    "isValueComplete": ctx => ctx["isValueComplete"],
-    "!isValidValue": ctx => ctx["!isValidValue"]
+    "isValueComplete": ctx => ctx["isValueComplete"]
   }
 });

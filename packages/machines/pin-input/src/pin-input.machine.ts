@@ -1,18 +1,16 @@
-import { createMachine, guards } from "@zag-js/core"
+import { choose, createMachine } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./pin-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./pin-input.types"
 
-const { and, not } = guards
-
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "pin-input",
-      initial: ctx.autoFocus ? "focused" : "idle",
+      initial: "idle",
       context: {
         value: [],
         focusedIndex: -1,
@@ -31,8 +29,16 @@ export function machine(userContext: UserDefinedContext) {
         filledValueLength: (ctx) => ctx.value.filter((v) => v?.trim() !== "").length,
         isValueComplete: (ctx) => ctx.valueLength === ctx.filledValueLength,
         valueAsString: (ctx) => ctx.value.join(""),
-        focusedValue: (ctx) => ctx.value[ctx.focusedIndex],
+        focusedValue: (ctx) => ctx.value[ctx.focusedIndex] || "",
       },
+
+      entry: choose([
+        {
+          guard: "autoFocus",
+          actions: ["setupValue", "setFocusIndexToFirst"],
+        },
+        { actions: ["setupValue"] },
+      ]),
 
       watch: {
         focusedIndex: ["focusInput", "selectInputIfNeeded"],
@@ -40,31 +46,23 @@ export function machine(userContext: UserDefinedContext) {
         isValueComplete: ["invokeOnComplete", "blurFocusedInputIfNeeded"],
       },
 
-      entry: ctx.autoFocus ? ["setupValue", "setFocusIndexToFirst"] : ["setupValue"],
-
       on: {
-        SET_VALUE: [
+        "VALUE.SET": [
           {
             guard: "hasIndex",
             actions: ["setValueAtIndex"],
           },
           { actions: ["setValue"] },
         ],
-        CLEAR_VALUE: [
-          {
-            guard: "isDisabled",
-            actions: ["clearValue"],
-          },
-          {
-            actions: ["clearValue", "setFocusIndexToFirst"],
-          },
-        ],
+        "VALUE.CLEAR": {
+          actions: ["clearValue", "setFocusIndexToFirst"],
+        },
       },
 
       states: {
         idle: {
           on: {
-            FOCUS: {
+            "INPUT.FOCUS": {
               target: "focused",
               actions: "setFocusedIndex",
             },
@@ -72,38 +70,33 @@ export function machine(userContext: UserDefinedContext) {
         },
         focused: {
           on: {
-            INPUT: [
+            "INPUT.CHANGE": [
               {
-                guard: and("isFinalValue", "isValidValue"),
+                guard: "isFinalValue",
                 actions: ["setFocusedValue", "syncInputValue"],
               },
               {
-                guard: "isValidValue",
                 actions: ["setFocusedValue", "setNextFocusedIndex", "syncInputValue"],
               },
             ],
-            PASTE: [
-              {
-                guard: "isValidValue",
-                actions: ["setPastedValue", "setLastValueFocusIndex"],
-              },
-              { actions: ["revertInputValue"] },
-            ],
-            BLUR: {
+            "INPUT.PASTE": {
+              actions: ["setPastedValue", "setLastValueFocusIndex"],
+            },
+            "INPUT.BLUR": {
               target: "idle",
               actions: "clearFocusedIndex",
             },
-            DELETE: {
+            "INPUT.DELETE": {
               guard: "hasValue",
-              actions: ["clearFocusedValue"],
+              actions: "clearFocusedValue",
             },
-            ARROW_LEFT: {
+            "INPUT.ARROW_LEFT": {
               actions: "setPrevFocusedIndex",
             },
-            ARROW_RIGHT: {
+            "INPUT.ARROW_RIGHT": {
               actions: "setNextFocusedIndex",
             },
-            BACKSPACE: [
+            "INPUT.BACKSPACE": [
               {
                 guard: "hasValue",
                 actions: ["clearFocusedValue"],
@@ -112,13 +105,12 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setPrevFocusedIndex", "clearFocusedValue"],
               },
             ],
-            ENTER: {
+            "INPUT.ENTER": {
               guard: "isValueComplete",
               actions: "requestFormSubmit",
             },
-            KEY_DOWN: {
-              guard: not("isValidValue"),
-              actions: ["preventDefault", "invokeOnInvalid"],
+            "VALUE.INVALID": {
+              actions: "invokeOnInvalid",
             },
           },
         },
@@ -130,41 +122,27 @@ export function machine(userContext: UserDefinedContext) {
         isValueEmpty: (_ctx, evt) => evt.value === "",
         hasValue: (ctx) => ctx.value[ctx.focusedIndex] !== "",
         isValueComplete: (ctx) => ctx.isValueComplete,
-        isValidValue(ctx, evt) {
-          if (!ctx.pattern) return isValidType(evt.value, ctx.type)
-          const regex = new RegExp(ctx.pattern, "g")
-          return regex.test(evt.value)
-        },
-        isFinalValue(ctx) {
-          return (
-            ctx.filledValueLength + 1 === ctx.valueLength &&
-            ctx.value.findIndex((v) => v.trim() === "") === ctx.focusedIndex
-          )
-        },
-        isLastInputFocused: (ctx) => ctx.focusedIndex === ctx.valueLength - 1,
+        isFinalValue: (ctx) =>
+          ctx.filledValueLength + 1 === ctx.valueLength &&
+          ctx.value.findIndex((v) => v.trim() === "") === ctx.focusedIndex,
         hasIndex: (_ctx, evt) => evt.index !== undefined,
         isDisabled: (ctx) => !!ctx.disabled,
       },
       actions: {
         setupValue(ctx) {
           if (ctx.value.length) return
-          const inputs = dom.getInputEls(ctx)
-          const emptyValues = Array.from<string>({ length: inputs.length }).fill("")
+          const inputEls = dom.getInputEls(ctx)
+          const emptyValues = Array.from<string>({ length: inputEls.length }).fill("")
           assignValue(ctx, emptyValues)
         },
         focusInput(ctx) {
-          raf(() => {
-            if (ctx.focusedIndex === -1) return
-            dom.getFocusedInputEl(ctx)?.focus()
-          })
+          if (ctx.focusedIndex === -1) return
+          dom.getFocusedInputEl(ctx)?.focus({ preventScroll: true })
         },
         selectInputIfNeeded(ctx) {
+          if (!ctx.selectOnFocus || ctx.focusedIndex === -1) return
           raf(() => {
-            if (ctx.focusedIndex === -1) return
-            const input = dom.getFocusedInputEl(ctx)
-            const length = input.value.length
-            input.selectionStart = ctx.selectOnFocus ? 0 : length
-            input.selectionEnd = length
+            dom.getFocusedInputEl(ctx)?.select()
           })
         },
         invokeOnComplete(ctx) {
@@ -239,9 +217,6 @@ export function machine(userContext: UserDefinedContext) {
             ctx.focusedIndex = Math.min(ctx.filledValueLength, ctx.valueLength - 1)
           })
         },
-        preventDefault(_, evt) {
-          evt.preventDefault()
-        },
         blurFocusedInputIfNeeded(ctx) {
           if (!ctx.blurOnComplete) return
           raf(() => {
@@ -258,17 +233,6 @@ export function machine(userContext: UserDefinedContext) {
   )
 }
 
-const REGEX = {
-  numeric: /^[0-9]+$/,
-  alphabetic: /^[A-Za-z]+$/,
-  alphanumeric: /^[a-zA-Z0-9]+$/i,
-}
-
-function isValidType(value: string, type: MachineContext["type"]) {
-  if (!type) return true
-  return !!REGEX[type]?.test(value)
-}
-
 function assignValue(ctx: MachineContext, value: string | string[]) {
   const arr = Array.isArray(value) ? value : value.split("").filter(Boolean)
   arr.forEach((value, index) => {
@@ -280,7 +244,7 @@ function getNextValue(current: string, next: string) {
   let nextValue = next
   if (current[0] === next[0]) nextValue = next[1]
   else if (current[0] === next[1]) nextValue = next[0]
-  return nextValue
+  return nextValue.split("")[nextValue.length - 1]
 }
 
 const invoke = {
