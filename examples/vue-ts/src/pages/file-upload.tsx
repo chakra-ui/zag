@@ -1,7 +1,7 @@
 import * as fileUpload from "@zag-js/file-upload"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
-import { fileUploadControls, formatFileSize } from "@zag-js/shared"
+import { fileUploadControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -37,7 +37,7 @@ export default defineComponent({
                     <div {...api.getItemNameProps({ file })}>
                       <b>{file.name}</b>
                     </div>
-                    <div {...api.getItemSizeTextProps({ file })}>{formatFileSize(file.size)}</div>
+                    <div {...api.getItemSizeTextProps({ file })}>{api.getFileSize(file)}</div>
                     <div>{file.type}</div>
                     <button {...api.getItemDeleteTriggerProps({ file })}>X</button>
                   </li>
