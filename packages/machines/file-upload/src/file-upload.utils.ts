@@ -1,5 +1,5 @@
 import { isValidFileSize, isValidFileType } from "@zag-js/file-utils"
-import { type MachineContext, type RejectedFile } from "./file-upload.types"
+import { type MachineContext, type FileRejection } from "./file-upload.types"
 
 export function isEventWithFiles(event: Pick<DragEvent, "dataTransfer" | "target">) {
   if (!event.dataTransfer) return !!event.target && "files" in event.target
@@ -17,7 +17,7 @@ export function isFilesWithinRange(ctx: MachineContext, incomingCount: number) {
 
 export function getFilesFromEvent(ctx: MachineContext, files: File[]) {
   const acceptedFiles: File[] = []
-  const rejectedFiles: RejectedFile[] = []
+  const rejectedFiles: FileRejection[] = []
 
   files.forEach((file) => {
     const [accepted, acceptError] = isValidFileType(file, ctx.acceptAttr)

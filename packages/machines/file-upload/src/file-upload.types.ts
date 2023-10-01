@@ -5,14 +5,14 @@ import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export interface RejectedFile {
+export interface FileRejection {
   file: File
   errors: (string | null)[]
 }
 
 export interface FileChangeDetails {
   acceptedFiles: File[]
-  rejectedFiles: RejectedFile[]
+  rejectedFiles: FileRejection[]
 }
 
 /* -----------------------------------------------------------------------------
@@ -72,7 +72,7 @@ interface PrivateContext {
    * @internal
    * The rejected files
    */
-  rejectedFiles: RejectedFile[]
+  rejectedFiles: FileRejection[]
 }
 
 type ComputedContext = Readonly<{
@@ -108,6 +108,10 @@ export interface ItemProps {
   file: File
 }
 
+export interface ItemPreviewProps extends ItemProps {
+  url: string
+}
+
 export interface MachineApi<T extends PropTypes> {
   /**
    * Whether the user is dragging something over the root element
@@ -141,6 +145,11 @@ export interface MachineApi<T extends PropTypes> {
    * Function to format the file size (e.g. 1.2MB)
    */
   getFileSize(file: File): string
+  /**
+   * Function to get the preview url of a file.
+   * It returns a function to revoke the url.
+   */
+  createFileUrl(file: File, cb: (url: string) => void): VoidFunction
 
   labelProps: T["label"]
   rootProps: T["element"]
@@ -150,6 +159,7 @@ export interface MachineApi<T extends PropTypes> {
   itemGroupProps: T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemNameProps(props: ItemProps): T["element"]
+  getItemPreviewProps(props: ItemPreviewProps): T["img"]
   getItemSizeTextProps(props: ItemProps): T["element"]
   getItemDeleteTriggerProps(props: ItemProps): T["button"]
 }

@@ -15,9 +15,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isFocused = state.matches("focused") && !disabled
 
   return {
-    getFileSize(file) {
-      return formatFileSize(file.size, { locale: state.context.locale })
-    },
     isDragging,
     isFocused,
     open() {
@@ -33,6 +30,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     clearFiles() {
       send({ type: "VALUE.SET", files: [] })
+    },
+    getFileSize(file) {
+      return formatFileSize(file.size, { locale: state.context.locale })
+    },
+    createFileUrl(file: File, cb: (url: string) => void) {
+      const win = dom.getWin(state.context)
+      const url = win.URL.createObjectURL(file)
+      cb(url)
+      return () => win.URL.revokeObjectURL(url)
     },
 
     rootProps: normalize.element({
@@ -157,9 +163,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getItemNameProps(props) {
+      const { file } = props
       return normalize.element({
         ...parts.itemName.attrs,
-        id: dom.getItemNameId(state.context, props.file.name),
+        id: dom.getItemNameId(state.context, file.name),
         "data-disabled": dataAttr(disabled),
       })
     },
@@ -169,6 +176,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.itemSizeText.attrs,
         id: dom.getItemSizeTextId(state.context, file.name),
+        "data-disabled": dataAttr(disabled),
+      })
+    },
+
+    getItemPreviewProps(props) {
+      const { file, url } = props
+      const isImage = file.type.startsWith("image/")
+      if (!isImage) {
+        throw new Error("Preview is only supported for image files")
+      }
+      return normalize.img({
+        ...parts.itemPreview.attrs,
+        alt: `Preview of ${file.name}`,
+        src: url,
+        id: dom.getItemPreviewId(state.context, file.name),
         "data-disabled": dataAttr(disabled),
       })
     },

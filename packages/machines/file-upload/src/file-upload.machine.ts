@@ -3,7 +3,7 @@ import { raf } from "@zag-js/dom-query"
 import { getAcceptAttrString, isFileEqual } from "@zag-js/file-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./file-upload.dom"
-import type { MachineContext, MachineState, RejectedFile, UserDefinedContext } from "./file-upload.types"
+import type { MachineContext, MachineState, FileRejection, UserDefinedContext } from "./file-upload.types"
 import { getFilesFromEvent, isFilesWithinRange } from "./file-upload.utils"
 
 const { not } = guards
@@ -142,7 +142,7 @@ const invoke = {
 }
 
 const set = {
-  files: (ctx: MachineContext, acceptedFiles: File[], rejectedFiles?: RejectedFile[]) => {
+  files: (ctx: MachineContext, acceptedFiles: File[], rejectedFiles?: FileRejection[]) => {
     ctx.files = ref(acceptedFiles)
     if (rejectedFiles) ctx.rejectedFiles = ref(rejectedFiles)
     invoke.change(ctx)

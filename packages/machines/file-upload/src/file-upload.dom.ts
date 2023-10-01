@@ -10,6 +10,7 @@ export const dom = createScope({
   getItemId: (ctx: Ctx, size: string) => `file:${ctx.id}:item:${size}`,
   getItemNameId: (ctx: Ctx, size: string) => `file:${ctx.id}:item-name:${size}`,
   getItemSizeTextId: (ctx: Ctx, size: string) => `file:${ctx.id}:item-size:${size}`,
+  getItemPreviewId: (ctx: Ctx, size: string) => `file:${ctx.id}:item-preview:${size}`,
   getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
   getDropzoneEl: (ctx: Ctx) => dom.getById(ctx, dom.getDropzoneId(ctx)),
 })

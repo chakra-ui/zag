@@ -7,6 +7,7 @@ export const anatomy = createAnatomy("file-upload").parts(
   "label",
   "item",
   "itemName",
+  "itemPreview",
   "itemSizeText",
   "itemDeleteTrigger",
   "itemGroup",
