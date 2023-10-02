@@ -1,5 +1,31 @@
 # @zag-js/file-upload
 
+## 0.23.0
+
+### Minor Changes
+
+- [#869](https://github.com/chakra-ui/zag/pull/869)
+  [`bf574e5e`](https://github.com/chakra-ui/zag/commit/bf574e5e679f6047a40e0ea25804a3164d92c363) Thanks
+  [@srflp](https://github.com/srflp)! - - Fix reopening the system file picker in file-upload on browsers other than
+  Chrome
+  - Redesign the file-upload component to include new parts:
+    - `Item`: The element that represents a file
+    - `ItemSizeText`: The element that represents the size of a file
+    - `ItemName`: The element that represents the name of a file
+    - `ItemDeleteTrigger`: The buttonelement used to delete a file
+  - Added new `api.getFileSize` method to get the size of a file in a human readable format
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.23.0
+  - @zag-js/core@0.23.0
+  - @zag-js/types@0.23.0
+  - @zag-js/utils@0.23.0
+  - @zag-js/dom-query@0.23.0
+  - @zag-js/file-utils@0.23.0
+  - @zag-js/visually-hidden@0.23.0
+
 ## 0.22.0
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @zag-js/rating-group
 
+## 0.23.0
+
+### Minor Changes
+
+- [`c842c3c8`](https://github.com/chakra-ui/zag/commit/c842c3c831465e8a69f063986575433efbc9c315) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Rename `api.sizeArray` to `api.items`
+  - Rename `max` to `count`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.23.0
+  - @zag-js/core@0.23.0
+  - @zag-js/types@0.23.0
+  - @zag-js/utils@0.23.0
+  - @zag-js/dom-event@0.23.0
+  - @zag-js/dom-query@0.23.0
+  - @zag-js/form-utils@0.23.0
+
 ## 0.22.0
 
 ### Patch Changes
