@@ -6,6 +6,31 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.23.0] - 2023-10-02
+
+### Fixed
+
+- **All Machines**: Ensure `dir` is applied to all positioner elements
+- **FileUpload**: Fix reopening the system file picker in file-upload on browsers other than Chrome
+- **PinInput**: Fix issue where multiple values can be entered in a single input
+
+### Changed
+
+> Breaking changes
+
+- **FileUpload**:
+
+  - Redesign the file-upload component to include new parts:
+    - `Item`: The element that represents a file
+    - `ItemSizeText`: The element that represents the size of a file
+    - `ItemName`: The element that represents the name of a file
+    - `ItemDeleteTrigger`: The buttonelement used to delete a file
+  - Added new `api.getFileSize` method to get the size of a file in a human readable format
+
+- **RatingGroup**:
+  - Rename `api.sizeArray` to `api.items`
+  - Rename `max` to `count`
+
 ## [0.22.0] - 2023-09-26
 
 ### Fixed
