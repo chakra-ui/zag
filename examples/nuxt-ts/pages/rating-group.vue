@@ -16,7 +16,7 @@ const [state, send] = useMachine(
 const api = computed(() => rating.connect(state.value, send, normalizeProps))
 
 const items = computed(() =>
-  api.value.sizeArray.map((index) => {
+  api.value.items.map((index) => {
     return [index, api.value.getItemState({ index })] as const
   }),
 )

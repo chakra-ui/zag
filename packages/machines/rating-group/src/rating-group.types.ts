@@ -39,9 +39,9 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   translations: IntlTranslations
   /**
-   * The maximum rating value.
+   * The total number of ratings.
    */
-  max: number
+  count: number
   /**
    * The name attribute of the rating element (used in forms).
    */
@@ -159,13 +159,13 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   hoveredValue: number
   /**
-   * The maximum value of the rating group
+   * The total number of ratings
    */
-  size: number
+  count: number
   /**
    * The array of rating values. Returns an array of numbers from 1 to the max value.
    */
-  sizeArray: number[]
+  items: number[]
   /**
    * Returns the state of a rating item
    */

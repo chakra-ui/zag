@@ -602,14 +602,14 @@
         "description": "The current view of the date picker"
       },
       "getDaysInWeek": {
-        "type": "(weekIndex: number, from?: DateValue) => DateValue[]",
+        "type": "(week: number, from?: DateValue) => DateValue[]",
         "description": "Returns an array of days in the week index counted from the provided start date, or the first visible date if not given."
       },
       "getOffset": {
-        "type": "(months: number) => { amount: number; visibleRange: { start: DateValue[][]; }",
+        "type": "(duration: DateDuration) => DateValueOffset",
         "description": "Returns the offset of the month based on the provided number of months."
       },
-      "getMonthDays": {
+      "getMonthWeeks": {
         "type": "(from?: DateValue) => DateValue[][]",
         "description": "Returns the weeks of the month from the provided date. Represented as an array of arrays of dates."
       },
@@ -622,11 +622,15 @@
         "description": "The weeks of the month. Represented as an array of arrays of dates."
       },
       "weekDays": {
-        "type": "{ value: ZonedDateTime; short: string; long: string; narrow: string; }[]",
+        "type": "WeekDay[]",
         "description": "The days of the week. Represented as an array of strings."
       },
+      "visibleRange": {
+        "type": "VisibleRange",
+        "description": "The visible range of dates."
+      },
       "visibleRangeText": {
-        "type": "{ start: string; end: string; formatted: string; }",
+        "type": "VisibleRangeText",
         "description": "The human readable text for the visible range of dates."
       },
       "value": {
@@ -685,12 +689,8 @@
         "type": "(year: number) => void",
         "description": "Function to set the selected year."
       },
-      "visibleRange": {
-        "type": "{ start: DateValue; }",
-        "description": "The visible range of dates."
-      },
       "getYears": {
-        "type": "() => GridItem[]",
+        "type": "() => Cell[]",
         "description": "Returns the months of the year"
       },
       "getYearsGrid": {
@@ -698,11 +698,11 @@
         "description": "Returns the years of the decade based on the columns.\nRepresented as an array of arrays of years."
       },
       "getDecade": {
-        "type": "() => { start: number; end: number; }",
+        "type": "() => Range<number>",
         "description": "Returns the start and end years of the decade."
       },
       "getMonths": {
-        "type": "(props?: { format?: \"short\" | \"long\"; }) => GridItem[]",
+        "type": "(props?: MonthFormatOptions) => Cell[]",
         "description": "Returns the months of the year"
       },
       "getMonthsGrid": {
@@ -725,31 +725,35 @@
         "type": "() => void",
         "description": "Goes to the previous month/year/decade."
       },
-      "getDayCellState": {
-        "type": "(props: DayCellProps) => DayCellState",
+      "getDayTableCellState": {
+        "type": "(props: DayTableCellProps) => DayTableCellState",
         "description": "Returns the state details for a given cell."
       },
-      "getMonthCellState": {
-        "type": "(props: CellProps) => CellState",
+      "getMonthTableCellState": {
+        "type": "(props: TableCellProps) => TableCellState",
         "description": "Returns the state details for a given month cell."
+      },
+      "getYearTableCellState": {
+        "type": "(props: TableCellProps) => TableCellState",
+        "description": "Returns the state details for a given year cell."
       }
     },
     "context": {
+      "locale": {
+        "type": "string",
+        "description": "The locale (BCP 47 language tag) to use when formatting the date."
+      },
       "messages": {
         "type": "IntlMessages",
         "description": "The localized messages to use."
       },
       "ids": {
-        "type": "Partial<{ grid(id: string): string; header: string; content: string; cellTrigger(id: string): string; prevTrigger(view: DateView): string; clearTrigger: string; control: string; input: string; trigger: string; monthSelect: string; yearSelect: string; positioner: string; }>",
+        "type": "Partial<{ root: string; table(id: string): string; tableHeader(id: string): string; tableBody(id: string): string; tableRow(id: string): string; content: string; cellTrigger(id: string): string; prevTrigger(view: DateView): string; clearTrigger: string; control: string; input: string; trigger: string; monthSelect: string; yearSelect: string; positioner: string; }>",
         "description": "The ids of the elements in the date picker. Useful for composition."
       },
       "name": {
         "type": "string",
         "description": "The `name` attribute of the input element."
-      },
-      "locale": {
-        "type": "string",
-        "description": "The locale (BCP 47 language tag) to use when formatting the date."
       },
       "timeZone": {
         "type": "string",
@@ -1129,6 +1133,14 @@
       "clearFiles": {
         "type": "() => void",
         "description": "Function to clear the value"
+      },
+      "getFileSize": {
+        "type": "(file: File) => string",
+        "description": "Function to format the file size (e.g. 1.2MB)"
+      },
+      "createFileUrl": {
+        "type": "(file: File, cb: (url: string) => void) => VoidFunction",
+        "description": "Function to get the preview url of a file.\nIt returns a function to revoke the url."
       }
     },
     "context": {
@@ -1171,6 +1183,16 @@
       "onFilesChange": {
         "type": "(details: FileChangeDetails) => void",
         "description": "Function called when the value changes"
+      },
+      "locale": {
+        "type": "string",
+        "description": "The current locale. Based on the BCP 47 definition.",
+        "defaultValue": "\"en-US\""
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
       },
       "id": {
         "type": "string",
@@ -2168,11 +2190,11 @@
         "type": "number",
         "description": "The value of the currently hovered rating"
       },
-      "size": {
+      "count": {
         "type": "number",
-        "description": "The maximum value of the rating group"
+        "description": "The total number of ratings"
       },
-      "sizeArray": {
+      "items": {
         "type": "number[]",
         "description": "The array of rating values. Returns an array of numbers from 1 to the max value."
       },
@@ -2190,9 +2212,9 @@
         "type": "IntlTranslations",
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
-      "max": {
+      "count": {
         "type": "number",
-        "description": "The maximum rating value."
+        "description": "The total number of ratings."
       },
       "name": {
         "type": "string",
@@ -3148,6 +3170,11 @@
       "open": {
         "type": "boolean",
         "description": "Whether the tooltip is open"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
       },
       "getRootNode": {
         "type": "() => ShadowRoot | Node | Document",

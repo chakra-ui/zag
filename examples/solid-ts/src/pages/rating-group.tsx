@@ -1,6 +1,6 @@
 import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, For } from "solid-js"
+import { createMemo, createUniqueId, Index } from "solid-js"
 import { ratingControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -58,12 +58,14 @@ export default function Page() {
           <div {...api().rootProps}>
             <label {...api().labelProps}>Rate:</label>
             <div {...api().controlProps}>
-              <For each={api().sizeArray}>
+              <Index each={api().items}>
                 {(index) => {
-                  const state = createMemo(() => api().getItemState({ index }))
-                  return <span {...api().getItemProps({ index })}>{state().isHalf ? <HalfStar /> : <Star />}</span>
+                  const state = createMemo(() => api().getItemState({ index: index() }))
+                  return (
+                    <span {...api().getItemProps({ index: index() })}>{state().isHalf ? <HalfStar /> : <Star />}</span>
+                  )
                 }}
-              </For>
+              </Index>
             </div>
           </div>
           <input {...api().hiddenInputProps} data-testid="hidden-input" />

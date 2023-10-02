@@ -34,20 +34,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
-    setValue(value: number) {
-      send({ type: "SET_VALUE", value })
-    },
-
-    clearValue() {
-      send("CLEAR_VALUE")
-    },
-
     isHovering: state.context.isHovering,
     value,
     hoveredValue,
-    size: state.context.max,
-    sizeArray: Array.from({ length: state.context.max }).map((_, index) => index + 1),
+    count: state.context.count,
+    items: Array.from({ length: state.context.count }).map((_, index) => index + 1),
     getItemState,
+    setValue(value) {
+      send({ type: "SET_VALUE", value })
+    },
+    clearValue() {
+      send("CLEAR_VALUE")
+    },
 
     rootProps: normalize.element({
       dir: state.context.dir,
@@ -90,7 +88,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getItemProps(props: ItemProps) {
+    getItemProps(props) {
       const { index } = props
       const itemState = getItemState(props)
       const valueText = translations.ratingValueText(index)
@@ -107,7 +105,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(isDisabled),
         "aria-readonly": ariaAttr(state.context.readOnly),
         "data-readonly": dataAttr(state.context.readOnly),
-        "aria-setsize": state.context.max,
+        "aria-setsize": state.context.count,
         "aria-checked": itemState.isChecked,
         "data-checked": dataAttr(itemState.isChecked),
         "aria-posinset": index,

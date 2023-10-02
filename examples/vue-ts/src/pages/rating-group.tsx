@@ -67,7 +67,7 @@ export default defineComponent({
           <main class="rating">
             <div {...api.rootProps}>
               <div {...api.controlProps}>
-                {api.sizeArray.map((index) => {
+                {api.items.map((index) => {
                   const state = api.getItemState({ index })
                   return (
                     <span key={index} {...api.getItemProps({ index })}>

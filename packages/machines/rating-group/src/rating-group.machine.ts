@@ -13,7 +13,7 @@ export function machine(userContext: UserDefinedContext) {
       initial: "idle",
       context: {
         name: "rating",
-        max: 5,
+        count: 5,
         dir: "ltr",
         value: -1,
         hoveredValue: -1,
@@ -149,13 +149,13 @@ export function machine(userContext: UserDefinedContext) {
         setNextValue(ctx) {
           const factor = ctx.allowHalf ? 0.5 : 1
           const value = ctx.value === -1 ? 0 : ctx.value
-          set.value(ctx, Math.min(ctx.max, value + factor))
+          set.value(ctx, Math.min(ctx.count, value + factor))
         },
         setValueToMin(ctx) {
           set.value(ctx, 1)
         },
         setValueToMax(ctx) {
-          set.value(ctx, ctx.max)
+          set.value(ctx, ctx.count)
         },
         setValue(ctx, evt) {
           const value = ctx.hoveredValue === -1 ? evt.value : ctx.hoveredValue

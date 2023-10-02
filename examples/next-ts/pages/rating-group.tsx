@@ -58,7 +58,7 @@ export default function Page() {
           <div {...api.rootProps}>
             <label {...api.labelProps}>Rate:</label>
             <div {...api.controlProps}>
-              {api.sizeArray.map((index) => {
+              {api.items.map((index) => {
                 const state = api.getItemState({ index })
                 return (
                   <span key={index} {...api.getItemProps({ index })}>
