@@ -1,5 +1,22 @@
 # @zag-js/pin-input
 
+## 0.23.0
+
+### Patch Changes
+
+- [`e4bc1797`](https://github.com/chakra-ui/zag/commit/e4bc17973ec5633caec2d30e3d53a8a7b495a845) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where multiple values can be entered in a single input
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.23.0
+  - @zag-js/core@0.23.0
+  - @zag-js/types@0.23.0
+  - @zag-js/utils@0.23.0
+  - @zag-js/dom-event@0.23.0
+  - @zag-js/dom-query@0.23.0
+  - @zag-js/form-utils@0.23.0
+  - @zag-js/visually-hidden@0.23.0
+
 ## 0.22.0
 
 ### Patch Changes
