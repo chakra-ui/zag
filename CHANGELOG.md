@@ -106,6 +106,7 @@ See the [Changesets](./.changeset) for the latest changes.
     - `getRadioProps` => `getItemProps`
     - `getRadioControlProps` => `getItemControlProps`
     - `getRadioLabelProps` => `getItemTextProps`
+    - `getRadioHiddenInputProps` => `getItemHiddenInputProps`
     - `getRatingState` => `getItemState`
     - `getRatingProps` => `getItemProps`
 
