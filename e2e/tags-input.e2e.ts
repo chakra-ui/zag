@@ -142,6 +142,30 @@ test.describe("tags-input", () => {
     await expect(page.locator(input)).toBeFocused()
   })
 
+  test("edit tag with mouse double click", async ({ page }) => {
+    const svelte = item("Svelte")
+    await page.type(input, svelte.text)
+    await page.keyboard.press("Enter")
+
+    const solid = item("Solid")
+    await page.type(input, solid.text)
+    await page.keyboard.press("Enter")
+
+    await page.locator(svelte.tag).dblclick()
+
+    await expect(page.locator(svelte.input)).toBeFocused()
+    await expect(page.locator(svelte.input)).toHaveValue("Svelte")
+
+    const jenkins = item("Jenkins")
+    await page.keyboard.type(jenkins.text)
+    await page.keyboard.press("Enter")
+
+    await expectToBeHighlighted(page.locator(jenkins.tag))
+    await expect(page.locator(jenkins.input)).toBeHidden()
+
+    await expect(page.locator(input)).toBeFocused()
+  })
+
   test("add tags from paste event", async ({ page }) => {
     await page.check(testid("addOnPaste"))
     await page.focus(input)
