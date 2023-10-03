@@ -38,6 +38,7 @@ export function getPlacementStyles(options: PositioningOptions = {}) {
 
     floating: {
       position: strategy,
+      isolation: "isolate",
       minWidth: sameWidth ? undefined : "max-content",
       width: sameWidth ? "var(--reference-width)" : undefined,
       maxWidth: fitViewport ? "var(--available-width)" : undefined,
