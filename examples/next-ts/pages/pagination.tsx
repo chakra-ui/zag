@@ -56,7 +56,7 @@ export default function Page() {
           <nav {...api.rootProps}>
             <ul>
               <li>
-                <button {...api.prevPageTriggerProps}>
+                <button {...api.prevTriggerProps}>
                   Previous <span style={visuallyHiddenStyle}>Page</span>
                 </button>
               </li>
@@ -64,7 +64,7 @@ export default function Page() {
                 if (page.type === "page")
                   return (
                     <li key={page.value}>
-                      <button data-testid={`item-${page.value}`} {...api.getPageTriggerProps(page)}>
+                      <button data-testid={`item-${page.value}`} {...api.getItemProps(page)}>
                         {page.value}
                       </button>
                     </li>
@@ -77,7 +77,7 @@ export default function Page() {
                   )
               })}
               <li>
-                <button {...api.nextPageTriggerProps}>
+                <button {...api.nextTriggerProps}>
                   Next <span style={visuallyHiddenStyle}>Page</span>
                 </button>
               </li>

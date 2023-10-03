@@ -14,19 +14,24 @@ export interface PageChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+interface ItemLabelDetails {
+  page: number
+  totalPages: number
+}
+
 interface IntlTranslations {
   rootLabel?: string
-  prevPageTriggerLabel?: string
-  nextPageTriggerLabel?: string
-  pageTriggerLabel?(details: { page: number; totalPages: number }): string
+  prevTriggerLabel?: string
+  nextTriggerLabel?: string
+  itemLabel?(details: ItemLabelDetails): string
 }
 
 type ElementIds = Partial<{
   root: string
   ellipsis(index: number): string
-  prevPageTrigger: string
-  nextPageTrigger: string
-  pageTrigger(page: number): string
+  prevTrigger: string
+  nextTrigger: string
+  item(page: number): string
 }>
 
 interface PublicContext extends DirectionProperty, CommonProperties {
@@ -104,7 +109,7 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id" | "count">
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
-export type MachineState = {
+export interface MachineState {
   value: "idle"
 }
 
@@ -116,7 +121,7 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface PageTriggerProps {
+export interface ItemProps {
   type: "page"
   value: number
 }
@@ -181,9 +186,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to set the current page.
    */
   setPage(page: number): void
+
   rootProps: T["element"]
   getEllipsisProps(props: EllipsisProps): T["element"]
-  getPageTriggerProps(page: PageTriggerProps): T["element"]
-  prevPageTriggerProps: T["element"]
-  nextPageTriggerProps: T["element"]
+  getItemProps(page: ItemProps): T["element"]
+  prevTriggerProps: T["element"]
+  nextTriggerProps: T["element"]
 }

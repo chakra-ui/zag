@@ -60,7 +60,7 @@ export default defineComponent({
               <nav {...api.rootProps}>
                 <ul>
                   <li>
-                    <button {...api.prevPageTriggerProps}>
+                    <button {...api.prevTriggerProps}>
                       Previous <span style={visuallyHiddenStyle}>Page</span>
                     </button>
                   </li>
@@ -68,7 +68,7 @@ export default defineComponent({
                     if (page.type === "page")
                       return (
                         <li key={page.value}>
-                          <button data-testid={`item-${page.value}`} {...api.getPageTriggerProps(page)}>
+                          <button data-testid={`item-${page.value}`} {...api.getItemProps(page)}>
                             {page.value}
                           </button>
                         </li>
@@ -81,7 +81,7 @@ export default defineComponent({
                       )
                   })}
                   <li>
-                    <button {...api.nextPageTriggerProps}>
+                    <button {...api.nextTriggerProps}>
                       Next <span style={visuallyHiddenStyle}>Page</span>
                     </button>
                   </li>

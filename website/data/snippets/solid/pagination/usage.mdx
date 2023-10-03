@@ -17,7 +17,7 @@ function Pagination() {
         <nav {...api().rootProps}>
           <ul>
             <li>
-              <a href="#previous" {...api().prevPageTriggerProps}>
+              <a href="#previous" {...api().prevTriggerProps}>
                 Previous <span class="visually-hidden">Page</span>
               </a>
             </li>
@@ -26,7 +26,7 @@ function Pagination() {
                 if (page.type === "page")
                   return (
                     <li>
-                      <a href={`#${page.value}`} {...api().getPageTriggerProps(page)}>
+                      <a href={`#${page.value}`} {...api().getItemProps(page)}>
                         {page.value}
                       </a>
                     </li>
@@ -41,7 +41,7 @@ function Pagination() {
               }}
             </For>
             <li>
-              <a href="#next" {...api().nextPageTriggerProps}>
+              <a href="#next" {...api().nextTriggerProps}>
                 Next <span class="visually-hidden">Page</span>
               </a>
             </li>

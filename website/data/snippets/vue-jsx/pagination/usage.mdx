@@ -23,7 +23,7 @@ export default defineComponent({
             <nav {...api.rootProps}>
               <ul>
                 <li>
-                  <a href="#previous" {...api.prevPageTriggerProps}>
+                  <a href="#previous" {...api.prevTriggerProps}>
                     Previous <span class="visually-hidden">Page</span>
                   </a>
                 </li>
@@ -31,7 +31,7 @@ export default defineComponent({
                   if (page.type === "page")
                     return (
                       <li key={page.value}>
-                        <a href={`#${page.value}`} {...api.getPageTriggerProps(page)}>
+                        <a href={`#${page.value}`} {...api.getItemProps(page)}>
                           {page.value}
                         </a>
                       </li>
@@ -46,7 +46,7 @@ export default defineComponent({
                     )
                 })}
                 <li>
-                  <a href="#next" {...api.nextPageTriggerProps}>
+                  <a href="#next" {...api.nextTriggerProps}>
                     Next <span class="visually-hidden">Page</span>
                   </a>
                 </li>

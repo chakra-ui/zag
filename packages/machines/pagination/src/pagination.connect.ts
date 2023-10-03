@@ -59,16 +59,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getPageTriggerProps(page) {
-      const index = page.value
+    getItemProps(props) {
+      const index = props.value
       const isCurrentPage = index === state.context.page
 
       return normalize.element({
-        id: dom.getPageTriggerId(state.context, index),
-        ...parts.pageTrigger.attrs,
+        id: dom.getItemId(state.context, index),
+        ...parts.item.attrs,
+        "data-index": index,
         "data-selected": dataAttr(isCurrentPage),
         "aria-current": isCurrentPage ? "page" : undefined,
-        "aria-label": translations.pageTriggerLabel?.({ page: index, totalPages }),
+        "aria-label": translations.itemLabel?.({ page: index, totalPages }),
         onClick() {
           send({ type: "SET_PAGE", page: index })
         },
@@ -76,22 +77,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    prevPageTriggerProps: normalize.element({
-      id: dom.getPrevPageTriggerId(state.context),
-      ...parts.prevPageTrigger.attrs,
+    prevTriggerProps: normalize.element({
+      id: dom.getPrevTriggerId(state.context),
+      ...parts.prevTrigger.attrs,
       "data-disabled": dataAttr(isFirstPage),
-      "aria-label": translations.prevPageTriggerLabel,
+      "aria-label": translations.prevTriggerLabel,
       onClick() {
         send({ type: "PREVIOUS_PAGE" })
       },
       ...(isButton && { disabled: isFirstPage, type: "button" }),
     }),
 
-    nextPageTriggerProps: normalize.element({
-      id: dom.getNextPageTriggerId(state.context),
-      ...parts.nextPageTrigger.attrs,
+    nextTriggerProps: normalize.element({
+      id: dom.getNextTriggerId(state.context),
+      ...parts.nextTrigger.attrs,
       "data-disabled": dataAttr(isLastPage),
-      "aria-label": translations.nextPageTriggerLabel,
+      "aria-label": translations.nextTriggerLabel,
       onClick() {
         send({ type: "NEXT_PAGE" })
       },

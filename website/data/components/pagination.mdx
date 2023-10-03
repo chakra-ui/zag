@@ -42,8 +42,8 @@ On a high level, the pagination consists of:
 - **Root**: The root container for the pagination
 - **Item**: Each pagination item
 - **Ellipsis**: Ellipsis shown when some items are hidden
-- **Previous Button**: Used to go to previous page in pagination
-- **Next Button**: Used to go to next page in pagination
+- **Previous Trigger**: Used to go to previous page in pagination
+- **Next Trigger**: Used to go to next page in pagination
 
 ## Usage
 
@@ -124,7 +124,7 @@ added to them to select and style them in the DOM.
   /* styles for the pagination's root */
 }
 
-[data-part="page-trigger"] {
+[data-part="item"] {
   /* styles for the pagination's items */
 }
 
@@ -132,21 +132,21 @@ added to them to select and style them in the DOM.
   /* styles for the pagination's ellipsis */
 }
 
-[data-part="prev-page-trigger"] {
+[data-part="prev-trigger"] {
   /* styles for the pagination's previous page trigger */
 }
 
-[data-part="next-page-trigger"] {
+[data-part="next-trigger"] {
   /* styles for the pagination's next page trigger */
 }
 
 /* We add a data-disabled attribute to the prev/next items when on the first/last page  */
 
-[data-part="prev-page-trigger"][data-disabled] {
+[data-part="prev-trigger"][data-disabled] {
   /* styles for the pagination's previous page trigger when on first page */
 }
 
-[data-part="next-page-trigger"][data-disabled] {
+[data-part="next-trigger"][data-disabled] {
   /* styles for the pagination's next page trigger when on first page */
 }
 ```

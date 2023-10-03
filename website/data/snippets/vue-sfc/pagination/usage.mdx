@@ -14,7 +14,7 @@ const api = computed(() => pagination.connect(state.value, send, normalizeProps)
   <nav v-if="api.totalPages > 1" v-bind="api.rootProps">
     <ul>
       <li>
-        <a href="#previous" v-bind="api.prevPageTriggerProps">
+        <a href="#previous" v-bind="api.prevTriggerProps">
           Previous <span class="visually-hidden">Page</span>
         </a>
       </li>
@@ -23,7 +23,7 @@ const api = computed(() => pagination.connect(state.value, send, normalizeProps)
         :key="page.type === 'page' ? page.value : `ellipsis-${i}`"
       >
         <span v-if="page.type === 'page'">
-          <a :href="`#${page.value}`" v-bind="api.getPageTriggerProps(page)">
+          <a :href="`#${page.value}`" v-bind="api.getItemProps(page)">
             {{page.value}}
           </a></span
         >
@@ -32,7 +32,7 @@ const api = computed(() => pagination.connect(state.value, send, normalizeProps)
         </span>
       </li>
       <li>
-        <a href="#next" v-bind="api.nextPageTriggerProps">
+        <a href="#next" v-bind="api.nextTriggerProps">
           Next <span class="visually-hidden">Page</span>
         </a>
       </li>
