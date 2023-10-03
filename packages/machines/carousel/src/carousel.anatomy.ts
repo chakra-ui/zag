@@ -3,10 +3,10 @@ import { createAnatomy } from "@zag-js/anatomy"
 export const anatomy = createAnatomy("carousel").parts(
   "root",
   "viewport",
-  "slideGroup",
-  "slide",
-  "nextSlideTrigger",
-  "prevSlideTrigger",
+  "itemGroup",
+  "item",
+  "nextTrigger",
+  "prevTrigger",
   "indicatorGroup",
   "indicator",
 )

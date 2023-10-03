@@ -97,11 +97,11 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface SlideProps {
+export interface ItemProps {
   index: number
 }
 
-export interface SlideState {
+export interface ItemState {
   valueText: string
   isCurrent: boolean
   isNext: boolean
@@ -109,7 +109,7 @@ export interface SlideState {
   isInView: boolean
 }
 
-export interface SlideIndicatorProps {
+export interface IndicatorProps {
   index: number
   readOnly?: boolean
 }
@@ -150,7 +150,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    *  Returns the state of a specific slide
    */
-  getSlideState(props: SlideProps): SlideState
+  getItemState(props: ItemProps): ItemState
   /**
    * Function to start/resume autoplay
    */
@@ -159,12 +159,13 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to pause autoplay
    */
   pause(): void
+
   rootProps: T["element"]
   viewportProps: T["element"]
-  slideGroupProps: T["element"]
-  getSlideProps(props: SlideProps): T["element"]
-  prevSlideTriggerProps: T["button"]
-  nextSlideTriggerProps: T["button"]
+  itemGroupProps: T["element"]
+  getItemProps(props: ItemProps): T["element"]
+  prevTriggerProps: T["button"]
+  nextTriggerProps: T["button"]
   indicatorGroupProps: T["element"]
-  getIndicatorProps(props: SlideIndicatorProps): T["button"]
+  getIndicatorProps(props: IndicatorProps): T["button"]
 }

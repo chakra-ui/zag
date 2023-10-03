@@ -24,12 +24,12 @@ export default defineComponent({
         <>
           <main class="carousel">
             <div {...api.rootProps}>
-              <button {...api.prevSlideTriggerProps}>Prev</button>
-              <button {...api.nextSlideTriggerProps}>Next</button>
+              <button {...api.prevTriggerProps}>Prev</button>
+              <button {...api.nextTriggerProps}>Next</button>
               <div {...api.viewportProps}>
-                <div {...api.slideGroupProps}>
+                <div {...api.itemGroupProps}>
                   {carouselData.map((image, index) => (
-                    <div {...api.getSlideProps({ index })} key={index}>
+                    <div {...api.getItemProps({ index })} key={index}>
                       <img src={image} alt="" style={{ height: "300px", width: "100%", objectFit: "cover" }} />
                     </div>
                   ))}

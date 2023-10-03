@@ -2,8 +2,9 @@ export { anatomy } from "./carousel.anatomy"
 export { connect } from "./carousel.connect"
 export { machine } from "./carousel.machine"
 export type {
-  UserDefinedContext as Context,
   MachineApi as Api,
-  SlideIndicatorProps,
-  SlideProps,
+  UserDefinedContext as Context,
+  IndicatorProps,
+  ItemProps,
+  ItemState,
 } from "./carousel.types"

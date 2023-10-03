@@ -2,7 +2,7 @@ import { dataAttr, isDom } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
-import type { MachineApi, Send, SlideIndicatorProps, SlideProps, State } from "./carousel.types"
+import type { MachineApi, Send, IndicatorProps, ItemProps, State, ItemState } from "./carousel.types"
 import { getSlidesInView } from "./utils/get-slide-in-view"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
@@ -14,7 +14,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const activeSnap = state.context.scrollSnaps[state.context.index]
   const slidesInView = isDom() ? getSlidesInView(state.context)(activeSnap) : []
 
-  function getSlideState(props: SlideProps) {
+  function getItemStateState(props: ItemProps): ItemState {
     const { index } = props
     return {
       valueText: `Slide ${index + 1}`,
@@ -44,7 +44,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("PREV")
     },
 
-    getSlideState,
+    getItemState: getItemStateState,
 
     play() {
       send("PLAY")
@@ -75,9 +75,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-orientation": state.context.orientation,
     }),
 
-    slideGroupProps: normalize.element({
-      ...parts.slideGroup.attrs,
-      id: dom.getSlideGroupId(state.context),
+    itemGroupProps: normalize.element({
+      ...parts.itemGroup.attrs,
+      id: dom.getItemGroupId(state.context),
       "data-orientation": state.context.orientation,
       dir: state.context.dir,
       style: {
@@ -93,13 +93,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getSlideProps(props: SlideProps) {
+    getItemProps(props: ItemProps) {
       const { index } = props
-      const sliderState = getSlideState(props)
+      const sliderState = getItemStateState(props)
 
       return normalize.element({
-        ...parts.slide.attrs,
-        id: dom.getSlideId(state.context, index),
+        ...parts.item.attrs,
+        id: dom.getItemId(state.context, index),
         "data-current": dataAttr(sliderState.isCurrent),
         "data-inview": dataAttr(sliderState.isInView),
         role: "group",
@@ -115,30 +115,30 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    prevSlideTriggerProps: normalize.button({
-      ...parts.prevSlideTrigger.attrs,
-      id: dom.getPrevSliderTriggerId(state.context),
+    prevTriggerProps: normalize.button({
+      ...parts.prevTrigger.attrs,
+      id: dom.getPrevTriggerId(state.context),
       type: "button",
       tabIndex: -1,
       disabled: !canScrollPrev,
       dir: state.context.dir,
       "aria-label": "Previous Slide",
       "data-orientation": state.context.orientation,
-      "aria-controls": dom.getSlideGroupId(state.context),
+      "aria-controls": dom.getItemGroupId(state.context),
       onClick() {
         send("PREV")
       },
     }),
 
-    nextSlideTriggerProps: normalize.button({
-      ...parts.nextSlideTrigger.attrs,
+    nextTriggerProps: normalize.button({
+      ...parts.nextTrigger.attrs,
       dir: state.context.dir,
-      id: dom.getNextSliderTriggerId(state.context),
+      id: dom.getNextTriggerId(state.context),
       type: "button",
       tabIndex: -1,
       "aria-label": "Next Slide",
       "data-orientation": state.context.orientation,
-      "aria-controls": dom.getSlideGroupId(state.context),
+      "aria-controls": dom.getItemGroupId(state.context),
       disabled: !canScrollNext,
       onClick() {
         send("NEXT")
@@ -152,7 +152,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-orientation": state.context.orientation,
     }),
 
-    getIndicatorProps(props: SlideIndicatorProps) {
+    getIndicatorProps(props: IndicatorProps) {
       const { index, readOnly } = props
       return normalize.button({
         ...parts.indicator.attrs,
