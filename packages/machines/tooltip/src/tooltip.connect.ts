@@ -30,7 +30,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     close() {
       send("CLOSE")
     },
-    setPositioning(options: Partial<PositioningOptions> = {}) {
+    reposition(options: Partial<PositioningOptions> = {}) {
       send({ type: "SET_POSITIONING", options })
     },
 

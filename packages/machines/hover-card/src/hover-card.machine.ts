@@ -89,7 +89,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["invokeOnClose"],
             },
             SET_POSITIONING: {
-              actions: "setPositioning",
+              actions: "reposition",
             },
           },
         },
@@ -159,7 +159,7 @@ export function machine(userContext: UserDefinedContext) {
         clearIsPointer(ctx) {
           ctx.isPointer = false
         },
-        setPositioning(ctx, evt) {
+        reposition(ctx, evt) {
           const getPositionerEl = () => dom.getPositionerEl(ctx)
           getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
             ...ctx.positioning,

@@ -92,7 +92,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           actions: ["setCollection"],
         },
         "POSITIONING.SET": {
-          actions: ["setPositioning"],
+          actions: ["reposition"],
         },
       },
 
@@ -469,7 +469,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
       },
 
       actions: {
-        setPositioning(ctx, evt) {
+        reposition(ctx, evt) {
           const controlEl = () => dom.getControlEl(ctx)
           const positionerEl = () => dom.getPositionerEl(ctx)
           getPlacement(controlEl, positionerEl, {

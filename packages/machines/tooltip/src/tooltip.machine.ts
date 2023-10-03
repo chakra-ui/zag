@@ -128,7 +128,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             CLICK: "closed",
             SET_POSITIONING: {
-              actions: "setPositioning",
+              actions: "reposition",
             },
           },
         },
@@ -232,7 +232,7 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.disabled) return
           send("CLOSE")
         },
-        setPositioning(ctx, evt) {
+        reposition(ctx, evt) {
           const getPositionerEl = () => dom.getPositionerEl(ctx)
           getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
             ...ctx.positioning,

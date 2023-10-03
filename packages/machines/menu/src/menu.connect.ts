@@ -120,7 +120,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setValue(name, value) {
       send({ type: "SET_VALUE", name, value })
     },
-    setPositioning(options = {}) {
+    reposition(options = {}) {
       send({ type: "SET_POSITIONING", options })
     },
 

@@ -256,7 +256,7 @@ const fetchMachine = createMachine({
           actions: "focusMenu"
         },
         SET_POSITIONING: {
-          actions: "setPositioning"
+          actions: "reposition"
         }
       }
     }

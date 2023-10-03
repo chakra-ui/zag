@@ -45,7 +45,7 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         isSubmenu: "setSubmenuPlacement",
-        anchorPoint: "setPositioning",
+        anchorPoint: "reposition",
       },
 
       on: {
@@ -293,7 +293,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: "focusMenu",
             },
             SET_POSITIONING: {
-              actions: "setPositioning",
+              actions: "reposition",
             },
           },
         },
@@ -400,7 +400,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.positioning.placement = ctx.isRtl ? "left-start" : "right-start"
           ctx.positioning.gutter = 0
         },
-        setPositioning(ctx, evt) {
+        reposition(ctx, evt) {
           const getPositionerEl = () => dom.getPositionerEl(ctx)
 
           const virtualAnchorEl = ctx.anchorPoint

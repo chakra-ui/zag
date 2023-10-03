@@ -53,7 +53,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     setCollection(collection) {
       send({ type: "COLLECTION.SET", value: collection })
     },
-    setPositioning(options = {}) {
+    reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
     focus() {

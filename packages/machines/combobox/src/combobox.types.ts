@@ -344,7 +344,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Function to set the positioning options
    */
-  setPositioning(options: Partial<PositioningOptions>): void
+  reposition(options: Partial<PositioningOptions>): void
 
   rootProps: T["element"]
   labelProps: T["label"]

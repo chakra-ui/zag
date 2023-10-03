@@ -140,8 +140,8 @@
         "type": "() => void",
         "description": "Function to scroll to the previous slide"
       },
-      "getSlideState": {
-        "type": "(props: SlideProps) => SlideState",
+      "getItemState": {
+        "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a specific slide"
       },
       "play": {
@@ -450,7 +450,7 @@
         "type": "(collection: Collection<V>) => void",
         "description": "Function to set the collection of items"
       },
-      "setPositioning": {
+      "reposition": {
         "type": "(options: Partial<PositioningOptions>) => void",
         "description": "Function to set the positioning options"
       }
@@ -1218,7 +1218,7 @@
         "type": "() => void",
         "description": "Function to close the hover card"
       },
-      "setPositioning": {
+      "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
       }
@@ -1301,7 +1301,7 @@
         "type": "(name: string, value: any) => void",
         "description": "Function to set the value of the menu options item"
       },
-      "setPositioning": {
+      "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
       },
@@ -1788,7 +1788,7 @@
         "type": "() => void",
         "description": "Function to close the popover"
       },
-      "setPositioning": {
+      "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
       }
@@ -2337,7 +2337,7 @@
         "type": "(collection: Collection<V>) => void",
         "description": "Function to set the collection of items"
       },
-      "setPositioning": {
+      "reposition": {
         "type": "(options: Partial<PositioningOptions>) => void",
         "description": "Function to set the positioning options of the select"
       }
@@ -3117,7 +3117,7 @@
         "type": "() => void",
         "description": "Function to close the tooltip."
       },
-      "setPositioning": {
+      "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to reposition the popover"
       }

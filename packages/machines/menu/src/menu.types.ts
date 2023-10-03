@@ -271,7 +271,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Function to reposition the popover
    */
-  setPositioning: (options?: Partial<PositioningOptions>) => void
+  reposition: (options?: Partial<PositioningOptions>) => void
   /**
    * Returns the state of the option item
    */
