@@ -29,7 +29,7 @@ export const comboboxControls = defineControls({
   placeholder: { type: "string", defaultValue: "Type or select a country" },
   inputBehavior: {
     type: "select",
-    defaultValue: "none",
+    defaultValue: "autohighlight",
     options: ["autohighlight", "autocomplete", "none"] as const,
   },
   selectionBehavior: {
