@@ -86,7 +86,6 @@ export function Combobox(props: ComboboxProps) {
         )
         setOptions(filtered.length > 0 ? filtered : comboboxData)
       },
-      placeholder: "Type or select country",
     }),
     { context: { ...props.controls, collection } },
   )

@@ -18,9 +18,18 @@ export const switchControls = defineControls({
 })
 
 export const comboboxControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+  multiple: { type: "boolean", defaultValue: false },
+  allowCustomValue: { type: "boolean", defaultValue: false },
+  loop: { type: "boolean", defaultValue: true },
+  openOnClick: { type: "boolean", defaultValue: false },
+  closeOnSelect: { type: "boolean", defaultValue: true },
+  selectOnBlur: { type: "boolean", defaultValue: true },
+  placeholder: { type: "string", defaultValue: "Type or select a country" },
   inputBehavior: {
     type: "select",
-    defaultValue: "autohighlight",
+    defaultValue: "none",
     options: ["autohighlight", "autocomplete", "none"] as const,
   },
   selectionBehavior: {
@@ -28,11 +37,6 @@ export const comboboxControls = defineControls({
     defaultValue: "replace",
     options: ["replace", "clear", "preserve"] as const,
   },
-  disabled: { type: "boolean", defaultValue: false },
-  multiple: { type: "boolean", defaultValue: false },
-  loop: { type: "boolean", defaultValue: true },
-  openOnClick: { type: "boolean", defaultValue: false },
-  selectOnBlur: { type: "boolean", defaultValue: true },
 })
 
 export const editableControls = defineControls({

@@ -54,10 +54,20 @@ const components = {
       defaultProps={{
         disabled: false,
         readOnly: false,
-        loop: false,
+        multiple: false,
+        allowCustomValue: false,
+        loop: true,
+        openOnClick: false,
+        closeOnSelect: true,
+        selectOnBlur: true,
+        placeholder: "Type or select a country",
         inputBehavior: {
-          default: "autohighlight",
+          default: "none",
           options: ["autohighlight", "autocomplete", "none"],
+        },
+        selectionBehavior: {
+          default: "replace",
+          options: ["replace", "clear", "preserve"],
         },
       }}
     />
