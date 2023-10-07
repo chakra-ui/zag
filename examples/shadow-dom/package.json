@@ -59,7 +59,6 @@
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/select": "workspace:*",
-    "@zag-js/slider": "workspace:*",
     "@zag-js/splitter": "workspace:*",
     "@zag-js/store": "workspace:*",
     "@zag-js/switch": "workspace:*",

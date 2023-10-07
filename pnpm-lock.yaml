@@ -290,9 +290,6 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
-      '@zag-js/slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/slider
       '@zag-js/splitter':
         specifier: workspace:*
         version: link:../../packages/machines/splitter
@@ -525,9 +522,6 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
-      '@zag-js/slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/slider
       '@zag-js/splitter':
         specifier: workspace:*
         version: link:../../packages/machines/splitter
@@ -739,9 +733,6 @@ importers:
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
-      '@zag-js/slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/slider
       '@zag-js/splitter':
         specifier: workspace:*
         version: link:../../packages/machines/splitter
@@ -962,9 +953,6 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
-      '@zag-js/slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/slider
       '@zag-js/solid':
         specifier: workspace:*
         version: link:../../packages/frameworks/solid
@@ -1179,9 +1167,6 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
-      '@zag-js/slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/slider
       '@zag-js/splitter':
         specifier: workspace:*
         version: link:../../packages/machines/splitter
@@ -2017,9 +2002,6 @@ importers:
       '@zag-js/numeric-range':
         specifier: workspace:*
         version: link:../../utilities/numeric-range
-      '@zag-js/slider':
-        specifier: workspace:*
-        version: link:../slider
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2100,40 +2082,6 @@ importers:
       '@zag-js/visually-hidden':
         specifier: workspace:*
         version: link:../../utilities/visually-hidden
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/machines/slider:
-    dependencies:
-      '@zag-js/anatomy':
-        specifier: workspace:*
-        version: link:../../anatomy
-      '@zag-js/core':
-        specifier: workspace:*
-        version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../../utilities/dom-query
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../utilities/element-size
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../utilities/numeric-range
-      '@zag-js/types':
-        specifier: workspace:*
-        version: link:../../types
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../../utilities/core
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -2723,9 +2671,6 @@ importers:
       '@zag-js/select':
         specifier: workspace:*
         version: link:../packages/machines/select
-      '@zag-js/slider':
-        specifier: workspace:*
-        version: link:../packages/machines/slider
       '@zag-js/splitter':
         specifier: workspace:*
         version: link:../packages/machines/splitter

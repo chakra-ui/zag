@@ -35,7 +35,6 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/numeric-range": "workspace:*",
     "@zag-js/element-size": "workspace:*",
-    "@zag-js/slider": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {

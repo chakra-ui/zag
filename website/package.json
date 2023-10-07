@@ -45,7 +45,6 @@
     "@zag-js/rating-group": "workspace:*",
     "@zag-js/react": "workspace:*",
     "@zag-js/select": "workspace:*",
-    "@zag-js/slider": "workspace:*",
     "@zag-js/splitter": "workspace:*",
     "@zag-js/switch": "workspace:*",
     "@zag-js/tabs": "workspace:*",
