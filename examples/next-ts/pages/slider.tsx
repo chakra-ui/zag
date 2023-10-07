@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { sliderControls } from "@zag-js/shared"
-import * as slider from "@zag-js/slider"
+import { rangeSliderControls } from "@zag-js/shared"
+import * as slider from "@zag-js/range-slider"
 import serialize from "form-serialize"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -8,12 +8,13 @@ import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls(sliderControls)
+  const controls = useControls(rangeSliderControls)
 
   const [state, send] = useMachine(
     slider.machine({
       id: useId(),
       name: "quantity",
+      value: [0],
     }),
     {
       context: controls.context,
@@ -46,9 +47,11 @@ export default function Page() {
                 <div data-testid="track" {...api.trackProps}>
                   <div {...api.rangeProps} />
                 </div>
-                <div data-testid="thumb" {...api.thumbProps}>
-                  <input {...api.hiddenInputProps} />
-                </div>
+                {api.value.map((_, index) => (
+                  <div key={index} {...api.getThumbProps(index)}>
+                    <input {...api.getHiddenInputProps(index)} />
+                  </div>
+                ))}
               </div>
               <div {...api.markerGroupProps}>
                 <span {...api.getMarkerProps({ value: 10 })}>*</span>

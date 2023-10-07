@@ -196,6 +196,11 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+interface Size {
+  width: number
+  height: number
+}
+
 export interface MarkerProps {
   value: number
 }
@@ -271,4 +276,23 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   controlProps: T["element"]
   markerGroupProps: T["element"]
   getMarkerProps(props: MarkerProps): T["element"]
+}
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export interface SharedContext {
+  min: number
+  max: number
+  step: number
+  dir?: "ltr" | "rtl"
+  isRtl: boolean
+  isVertical: boolean
+  isHorizontal: boolean
+  value: number
+  thumbSize: Size | null
+  thumbAlignment?: "contain" | "center"
+  orientation?: "horizontal" | "vertical"
+  readonly hasMeasuredThumbSize: boolean
 }
