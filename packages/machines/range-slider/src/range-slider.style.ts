@@ -14,6 +14,19 @@ function getBounds<T>(value: T[]): [T, T] {
 
 export function getRangeOffsets(ctx: Ctx) {
   const [firstPercent, lastPercent] = getBounds(ctx.valuePercent)
+
+  if (ctx.valuePercent.length === 1) {
+    if (ctx.origin === "center") {
+      const isNegative = ctx.valuePercent[0] < 50
+      const start = isNegative ? `${ctx.valuePercent}%` : "50%"
+      const end = isNegative ? "50%" : `${100 - ctx.valuePercent[0]}%`
+
+      return { start, end }
+    }
+
+    return { start: "0%", end: `${100 - lastPercent}%` }
+  }
+
   return { start: `${firstPercent}%`, end: `${100 - lastPercent}%` }
 }
 

@@ -99,6 +99,7 @@ export const rangeSliderControls = defineControls({
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
   thumbAlignment: { type: "select", options: ["contain", "center"] as const, defaultValue: "contain" },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  origin: { type: "select", options: ["center", "start"] as const, defaultValue: "start" },
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 100 },
   step: { type: "number", defaultValue: 1 },

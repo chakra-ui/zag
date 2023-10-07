@@ -37,6 +37,7 @@ export function machine(userContext: UserDefinedContext) {
         max: 100,
         step: 1,
         value: [0, 100],
+        origin: "start",
         orientation: "horizontal",
         dir: "ltr",
         minStepsBetweenThumbs: 0,

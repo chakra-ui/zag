@@ -107,6 +107,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   orientation: "vertical" | "horizontal"
   /**
+   * - "start": Useful when the value represents an absolute value
+   * - "center": Useful when the value represents an offset (relative)
+   */
+  origin?: "start" | "center"
+  /**
    * The alignment of the slider thumb relative to the track
    * - `center`: the thumb will extend beyond the bounds of the slider track.
    * - `contain`: the thumb will be contained within the bounds of the track.
