@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import * as slider from "@zag-js/slider"
-import { sliderControls } from "@zag-js/shared"
+import * as slider from "@zag-js/range-slider"
+import { rangeSliderControls } from "@zag-js/shared"
 import serialize from "form-serialize"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
-const controls = useControls(sliderControls)
+const controls = useControls(rangeSliderControls)
 
 const [state, send] = useMachine(
   slider.machine({
     id: "1",
     name: "quantity",
+    value: [0],
   }),
   { context: controls.context },
 )
@@ -31,15 +32,15 @@ const api = computed(() => slider.connect(state.value, send, normalizeProps))
       <div v-bind="api.rootProps">
         <div>
           <label data-testid="label" v-bind="api.labelProps"> Slider Label </label>
-          <output data-testid="output" v-bind="api.outputProps"> {api.value} </output>
+          <output data-testid="output" v-bind="api.outputProps"> {{ api.value.at(0) }} </output>
         </div>
         <div class="control-area">
           <div v-bind="api.controlProps">
             <div data-testid="track" v-bind="api.trackProps">
               <div v-bind="api.rangeProps" />
             </div>
-            <div data-testid="thumb" v-bind="api.thumbProps">
-              <input v-bind="api.hiddenInputProps" />
+            <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps(index)">
+              <input v-bind="api.getHiddenInputProps(index)" />
             </div>
           </div>
           <div v-bind="api.markerGroupProps">

@@ -1,10 +1,10 @@
 ```md
 <script setup>
-import * as slider from "@zag-js/slider";
+import * as slider from "@zag-js/range-slider";
 import { normalizeProps, useMachine } from "@zag-js/vue";
 import { computed } from "vue";
 
-const [state, send] = useMachine(slider.machine({ id: "1" }));
+const [state, send] = useMachine(slider.machine({ id: "1", value: [0] }));
 const api = computed(() => slider.connect(state.value, send, normalizeProps));
 </script>
 
@@ -12,14 +12,18 @@ const api = computed(() => slider.connect(state.value, send, normalizeProps));
   <div ref="ref" v-bind="api.rootProps">
     <div>
       <label v-bind="api.labelProps">Slider Label</label>
-      <output v-bind="api.outputProps">{{ api.value }}</output>
+      <output v-bind="api.outputProps">{{ api.value.at(0) }}</output>
     </div>
     <div v-bind="api.controlProps">
       <div v-bind="api.trackProps">
         <div v-bind="api.rangeProps" />
       </div>
-      <div v-bind="api.thumbProps">
-        <input v-bind="api.hiddenInputProps" />
+      <div
+        v-for="(_, index) in api.value"
+        :key="index"
+        v-bind="api.getThumbProps(index)"
+      >
+        <input v-bind="api.getHiddenInputProps(index)" />
       </div>
     </div>
   </div>

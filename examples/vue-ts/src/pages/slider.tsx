@@ -1,5 +1,5 @@
-import { sliderControls } from "@zag-js/shared"
-import * as slider from "@zag-js/slider"
+import { rangeSliderControls } from "@zag-js/shared"
+import * as slider from "@zag-js/range-slider"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import serialize from "form-serialize"
 import { computed, defineComponent } from "vue"
@@ -11,12 +11,13 @@ import { Toolbar } from "../components/toolbar"
 export default defineComponent({
   name: "Slider",
   setup() {
-    const controls = useControls(sliderControls)
+    const controls = useControls(rangeSliderControls)
 
     const [state, send] = useMachine(
       slider.machine({
         id: "1",
         name: "quantity",
+        value: [0],
       }),
       {
         context: controls.context,
@@ -55,9 +56,11 @@ export default defineComponent({
                     <div data-testid="track" {...api.trackProps}>
                       <div {...api.rangeProps} />
                     </div>
-                    <div data-testid="thumb" {...api.thumbProps}>
-                      <input {...api.hiddenInputProps} />
-                    </div>
+                    {api.value.map((_, index) => (
+                      <div key={index} {...api.getThumbProps(index)}>
+                        <input {...api.getHiddenInputProps(index)} />
+                      </div>
+                    ))}
                   </div>
                   <div {...api.markerGroupProps}>
                     <span {...api.getMarkerProps({ value: 10 })}>*</span>

@@ -1,16 +1,16 @@
-import * as slider from "@zag-js/slider"
+import * as slider from "@zag-js/range-slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
-import { createMemo, createUniqueId } from "solid-js"
-import { sliderControls } from "@zag-js/shared"
+import { For, createMemo, createUniqueId } from "solid-js"
+import { rangeSliderControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls(sliderControls)
+  const controls = useControls(rangeSliderControls)
 
-  const [state, send] = useMachine(slider.machine({ id: createUniqueId() }), {
+  const [state, send] = useMachine(slider.machine({ id: createUniqueId(), value: [0] }), {
     context: controls.context,
   })
 
@@ -32,7 +32,7 @@ export default function Page() {
                 Slider Label
               </label>
               <output data-testid="output" {...api().outputProps}>
-                {api().value}
+                {api().value.at(0)}
               </output>
             </div>
             <div class="control-area">
@@ -40,9 +40,13 @@ export default function Page() {
                 <div data-testid="track" {...api().trackProps}>
                   <div {...api().rangeProps} />
                 </div>
-                <div data-testid="thumb" {...api().thumbProps}>
-                  <input {...api().hiddenInputProps} />
-                </div>
+                <For each={api().value}>
+                  {(_, index) => (
+                    <div class="slider__thumb" {...api().getThumbProps(index())}>
+                      <input {...api().getHiddenInputProps(index())} />
+                    </div>
+                  )}
+                </For>
               </div>
               <div {...api().markerGroupProps}>
                 <span {...api().getMarkerProps({ value: 10 })}>*</span>
