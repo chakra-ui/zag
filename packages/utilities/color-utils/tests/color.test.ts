@@ -6,49 +6,44 @@ describe("color.test.ts", () => {
     const color = parseColor("#361717").toFormat("hsl")
 
     expect(color).toMatchInlineSnapshot(`
-      HSLColor {
-        "alpha": 1,
-        "hue": 0,
-        "lightness": 15.1,
-        "saturation": 40.26,
+      {
+        "h": 0,
+        "l": 15.1,
+        "s": 40.26,
       }
     `)
 
     expect(color.decrementChannel("saturation", 1)).toMatchInlineSnapshot(`
-      HSLColor {
-        "alpha": 1,
-        "hue": 0,
-        "lightness": 15.1,
-        "saturation": 39,
+      {
+        "h": 0,
+        "l": 15.1,
+        "s": 39,
       }
     `)
 
     expect(color.decrementChannel("lightness", 1)).toMatchInlineSnapshot(`
-      HSLColor {
-        "alpha": 1,
-        "hue": 0,
-        "lightness": 14,
-        "saturation": 40.26,
+      {
+        "h": 0,
+        "l": 14,
+        "s": 40.26,
       }
     `)
   })
 
   test("hexint", () => {
     expect(parseColor("hsl(0, 92%, 13%)")).toMatchInlineSnapshot(`
-      HSLColor {
-        "alpha": 1,
-        "hue": 0,
-        "lightness": 13,
-        "saturation": 92,
+      {
+        "h": 0,
+        "l": 13,
+        "s": 92,
       }
     `)
 
     expect(parseColor("hsl(0, 76%, 31%)")).toMatchInlineSnapshot(`
-      HSLColor {
-        "alpha": 1,
-        "hue": 0,
-        "lightness": 31,
-        "saturation": 76,
+      {
+        "h": 0,
+        "l": 31,
+        "s": 76,
       }
     `)
   })
