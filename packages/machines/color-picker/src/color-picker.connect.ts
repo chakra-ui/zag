@@ -104,6 +104,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
       dir: state.context.dir,
+      "aria-labelledby": dom.getLabelId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-readonly": dataAttr(state.context.readOnly),
       "data-placement": currentPlacement,
@@ -123,6 +124,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isDisabled),
       "data-readonly": dataAttr(state.context.readOnly),
       disabled: isDisabled,
+      "aria-labelledby": dom.getLabelId(state.context),
       readOnly: state.context.readOnly,
       defaultValue: value.toString("hex"),
       onFocus(event) {
