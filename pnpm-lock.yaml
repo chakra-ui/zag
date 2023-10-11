@@ -1519,6 +1519,9 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
+      '@zag-js/dismissable':
+        specifier: workspace:*
+        version: link:../../utilities/dismissable
       '@zag-js/dom-event':
         specifier: workspace:*
         version: link:../../utilities/dom-event
@@ -1528,9 +1531,12 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../utilities/form-utils
-      '@zag-js/numeric-range':
+      '@zag-js/popper':
         specifier: workspace:*
-        version: link:../../utilities/numeric-range
+        version: link:../../utilities/popper
+      '@zag-js/tabbable':
+        specifier: workspace:*
+        version: link:../../utilities/tabbable
       '@zag-js/text-selection':
         specifier: workspace:*
         version: link:../../utilities/text-selection
@@ -2388,6 +2394,10 @@ importers:
         version: 2.2.0
 
   packages/utilities/color-utils:
+    dependencies:
+      '@zag-js/numeric-range':
+        specifier: workspace:*
+        version: link:../numeric-range
     devDependencies:
       clean-package:
         specifier: 2.2.0

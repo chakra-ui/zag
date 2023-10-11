@@ -530,6 +530,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getYearTableCellState(props: TableCellProps): TableCellState
 
   rootProps: T["element"]
+  labelProps: T["label"]
   controlProps: T["element"]
   contentProps: T["element"]
   positionerProps: T["element"]

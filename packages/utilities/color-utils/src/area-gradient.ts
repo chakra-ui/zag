@@ -26,7 +26,7 @@ interface GradientStyles {
 export function getColorAreaGradient(color: Color, options: GradientOptions): GradientStyles {
   const { xChannel, yChannel, dir: dirProp } = options
 
-  const { zChannel } = color.getColorSpaceAxes({ xChannel, yChannel })
+  const { zChannel } = color.getColorAxes({ xChannel, yChannel })
   const zValue = color.getChannelValue(zChannel)
 
   const { minValue: zMin, maxValue: zMax } = color.getChannelRange(zChannel)
@@ -37,7 +37,7 @@ export function getColorAreaGradient(color: Color, options: GradientOptions): Gr
   let background = { areaStyles: {}, areaGradientStyles: {} }
 
   let alphaValue = (zValue - zMin) / (zMax - zMin)
-  let isHSL = color.getColorFormat() === "hsl"
+  let isHSL = color.getFormat() === "hsl"
 
   switch (zChannel) {
     case "red": {

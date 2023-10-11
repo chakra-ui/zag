@@ -1,17 +1,24 @@
 import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("color-picker", [
+  "root",
+  "label",
+  "control",
+  "input",
+  "trigger",
+  "positioner",
+  "content",
   "area",
   "areaThumb",
-  "areaGradient",
+  "areaBackground",
+  "channelSlider",
   "channelSliderTrack",
-  "channelSliderTrackBackground",
   "channelSliderThumb",
   "channelInput",
+  "transparancyGrid",
+  "swatchGroup",
+  "swatchTrigger",
   "swatch",
-  "swatchBackground",
-  "content",
-  "label",
   "eyeDropperTrigger",
 ])
 
