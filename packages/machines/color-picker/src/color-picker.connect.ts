@@ -498,6 +498,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.swatchTrigger.attrs,
         disabled: isDisabled,
         type: "button",
+        "data-value": color.toString("hex"),
         onClick() {
           if (!isInteractive) return
           send({ type: "VALUE.SET", value: color })
@@ -510,9 +511,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getSwatchProps(props) {
       const { value: valueProp, respectAlpha = true } = props
-      const color = normalizeColor(valueProp).toFormat(value.getFormat())
+      const colorValue = normalizeColor(valueProp)
+      const color = colorValue.toFormat(value.getFormat())
       return normalize.element({
         ...parts.swatch.attrs,
+        "data-state": colorValue.isEqual(value) ? "selected" : "unselected",
+        "data-value": color.toString("hex"),
         style: {
           position: "relative",
           background: color.toString(respectAlpha ? "css" : "hex"),

@@ -1554,7 +1554,8 @@ main [data-testid="scrubber"] {
 [data-scope="color-picker"][data-part="root"] {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 [data-scope="color-picker"][data-part="control"] {

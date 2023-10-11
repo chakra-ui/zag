@@ -49,7 +49,9 @@ export default function Page() {
         >
           <input {...api.hiddenInputProps} />
           <div {...api.rootProps}>
-            <label {...api.labelProps}>Select Color</label>
+            <label {...api.labelProps}>
+              Select Color: <span data-testid="value-text">{api.valueAsString}</span>
+            </label>
             <div {...api.controlProps}>
               <button {...api.triggerProps}>
                 <div {...api.getTransparencyGridProps({ size: "10px" })} />
@@ -88,7 +90,7 @@ export default function Page() {
                       <div {...api.getTransparencyGridProps({ size: "4px" })} />
                       <div {...api.getSwatchProps({ value: api.value })} data-testid="readonly-swatch" />
                     </div>
-                    <p data-testid="value">{api.valueAsString}</p>
+                    <p data-testid="value-text">{api.valueAsString}</p>
                   </div>
                   <input {...api.getChannelInputProps({ channel: "hex" })} />
                   <div {...api.swatchGroupProps} style={{ display: "flex", gap: "10px" }}>

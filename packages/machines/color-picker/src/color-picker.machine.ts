@@ -29,7 +29,7 @@ export function machine(userContext: UserDefinedContext) {
       initial: ctx.inline ? "open" : "idle",
       context: {
         dir: "ltr",
-        value: parse("#D9D9D9"),
+        value: parse("#000000"),
         disabled: false,
         ...ctx,
         activeId: null,
@@ -366,15 +366,7 @@ export function machine(userContext: UserDefinedContext) {
           set.value(ctx, evt.value)
         },
         syncInputElements(ctx) {
-          // sync channel inputs
-          const inputs = dom.getChannelInputEls(ctx)
-          inputs.forEach((input) => {
-            const channel = input.dataset.channel as ExtendedColorChannel | null
-            dom.setValue(input, getChannelInputValue(ctx.value, channel))
-          })
-
-          // sync main input
-          dom.setValue(dom.getInputEl(ctx), getChannelInputValue(ctx.value, "hex"))
+          sync.inputs(ctx)
         },
         invokeOnChangeEnd(ctx) {
           invoke.changeEnd(ctx)
@@ -402,7 +394,6 @@ export function machine(userContext: UserDefinedContext) {
             // set channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
             const inputEl = dom.getChannelInputEl(ctx, channel)
             dom.setValue(inputEl, getChannelInputValue(ctx.value, channel))
-
             set.value(ctx, color)
             return
           }
@@ -480,6 +471,20 @@ export function machine(userContext: UserDefinedContext) {
   )
 }
 
+const sync = {
+  inputs(ctx: MachineContext) {
+    // sync channel inputs
+    const channelInputs = dom.getChannelInputEls(ctx)
+    channelInputs.forEach((inputEl) => {
+      const channel = inputEl.dataset.channel as ExtendedColorChannel | null
+      dom.setValue(inputEl, getChannelInputValue(ctx.value, channel))
+    })
+
+    // sync main input
+    dom.setValue(dom.getInputEl(ctx), getChannelInputValue(ctx.value, "hex"))
+  },
+}
+
 const invoke = {
   changeEnd(ctx: MachineContext) {
     ctx.onValueChangeEnd?.({
@@ -499,6 +504,7 @@ const invoke = {
 
 const set = {
   value(ctx: MachineContext, color: Color | ColorType | undefined) {
+    sync.inputs(ctx)
     if (!color || ctx.value.isEqual(color)) return
     ctx.value = ref(color) as Color
     invoke.change(ctx)
