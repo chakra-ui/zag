@@ -26,7 +26,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "color-picker",
-      initial: ctx.inline ? "open" : "idle",
+      initial: "idle",
       context: {
         dir: "ltr",
         value: parse("#000000"),

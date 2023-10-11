@@ -91,10 +91,6 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
    */
   positioning: PositioningOptions
   /**
-   * Whether the color picker should be rendered inline
-   */
-  inline?: boolean
-  /**
    * Whether to automatically set focus on the first focusable
    * content within the color picker when opened.
    */
