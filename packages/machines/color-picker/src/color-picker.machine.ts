@@ -261,21 +261,12 @@ export function machine(userContext: UserDefinedContext) {
           const getContentEl = () => dom.getContentEl(ctx)
           let restoreFocus = true
           return trackDismissableElement(getContentEl, {
-            // pointerBlocking: ctx.modal,
             exclude: dom.getTriggerEl(ctx),
             defer: true,
-            onEscapeKeyDown(_event) {
-              // ctx.onEscapeKeyDown?.(event)
-              // if (ctx.closeOnEsc) return
-              // event.preventDefault()
-            },
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
               if (event.defaultPrevented) return
               restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
-              // if (!ctx.closeOnInteractOutside) {
-              //   event.preventDefault()
-              // }
             },
             onPointerDownOutside: ctx.onPointerDownOutside,
             onFocusOutside: ctx.onFocusOutside,
