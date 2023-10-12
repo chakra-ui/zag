@@ -541,6 +541,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   rangeTextProps: T["element"]
 
   getTableProps(props?: TableProps): T["element"]
+  getTableHeadProps(props?: TableProps): T["element"]
   getTableHeaderProps(props?: TableProps): T["element"]
   getTableBodyProps(props?: TableProps): T["element"]
   getTableRowProps(props?: TableProps): T["element"]
