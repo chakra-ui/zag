@@ -85,7 +85,7 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.4.0",
     "@types/form-serialize": "0.7.2",
-    "@types/node": "20.6.5",
+    "@types/node": "20.8.4",
     "@vitejs/plugin-vue": "4.3.4",
     "@vitejs/plugin-vue-jsx": "^3.0.2",
     "@vue/eslint-config-prettier": "^8.0.0",

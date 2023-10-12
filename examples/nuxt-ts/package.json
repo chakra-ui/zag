@@ -80,7 +80,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@types/node": "^20.6.5",
+    "@types/node": "^20.8.4",
     "nuxt": "^3.7.3"
   }
 }
