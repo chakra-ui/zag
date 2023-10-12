@@ -176,6 +176,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getIndicatorId(state.context),
       ...parts.indicator.attrs,
       dir: state.context.dir,
+      hidden: state.context.value == null,
       "data-disabled": dataAttr(isGroupDisabled),
       "data-orientation": state.context.orientation,
       style: {
@@ -186,7 +187,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         transitionProperty: "var(--transition-property)",
         transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration)" : "0ms",
         transitionTimingFunction: "var(--transition-timing-function)",
-        ...(state.context.value === null && { display: "none" }),
         ...state.context.indicatorRect,
       },
     }),
