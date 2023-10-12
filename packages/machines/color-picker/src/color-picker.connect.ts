@@ -1,10 +1,4 @@
-import {
-  getColorAreaGradient,
-  normalizeColor,
-  type Color,
-  type ColorChannel,
-  type ColorFormat,
-} from "@zag-js/color-utils"
+import { getColorAreaGradient, normalizeColor } from "@zag-js/color-utils"
 import {
   getEventKey,
   getEventPoint,
@@ -14,69 +8,136 @@ import {
   isModifiedEvent,
   type EventKeyMap,
 } from "@zag-js/dom-event"
-import { dataAttr, raf } from "@zag-js/dom-query"
+import { dataAttr, query } from "@zag-js/dom-query"
+import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./color-picker.anatomy"
 import { dom } from "./color-picker.dom"
-import type {
-  ColorAreaProps,
-  ColorChannelInputProps,
-  ColorChannelProps,
-  ColorSwatchProps,
-  MachineApi,
-  Send,
-  State,
-} from "./color-picker.types"
-import { getChannelDetails } from "./utils/get-channel-details"
+import type { AreaProps, MachineApi, Send, State } from "./color-picker.types"
 import { getChannelDisplayColor } from "./utils/get-channel-display-color"
-import { getChannelInputRange, getChannelInputValue } from "./utils/get-channel-input-value"
-import { getSliderBgImage } from "./utils/get-slider-background"
+import { getChannelRange, getChannelValue } from "./utils/get-channel-input-value"
+import { getSliderBackground } from "./utils/get-slider-background"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const valueAsColor = state.context.valueAsColor
   const value = state.context.value
+  const valueAsString = state.context.valueAsString
   const isDisabled = state.context.isDisabled
   const isInteractive = state.context.isInteractive
-  const isDragging = state.matches("dragging")
 
-  const channels = valueAsColor.getColorChannels()
+  const isDragging = state.hasTag("dragging")
+  const isOpen = state.hasTag("open")
+
+  const channels = value.getChannels()
+
+  const getAreaChannels = (props: AreaProps) => ({
+    value: value.toFormat("hsl"),
+    xChannel: props.xChannel ?? "saturation",
+    yChannel: props.yChannel ?? "lightness",
+  })
+
+  const currentPlacement = state.context.currentPlacement
+  const popperStyles = getPlacementStyles({
+    ...state.context.positioning,
+    placement: currentPlacement,
+  })
 
   return {
     isDragging,
-    value,
-    valueAsColor,
-    alpha: valueAsColor.getChannelValue("alpha"),
+    isOpen,
+    valueAsString,
+    value: value,
     channels,
-
-    setColor(value: string | Color) {
+    setColor(value) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })
     },
-
-    setChannelValue(channel: ColorChannel, value: number) {
-      const color = valueAsColor.withChannelValue(channel, value)
+    getChannelValue(channel) {
+      return getChannelValue(value, channel)
+    },
+    setChannelValue(channel, channelValue) {
+      const color = value.withChannelValue(channel, channelValue)
       send({ type: "VALUE.SET", value: color, src: "set-channel" })
     },
-
-    setFormat(format: ColorFormat) {
-      const value = valueAsColor.toFormat(format)
-      send({ type: "VALUE.SET", value, src: "set-format" })
+    setFormat(format) {
+      const formatValue = value.toFormat(format)
+      send({ type: "VALUE.SET", value: formatValue, src: "set-format" })
     },
-
-    setAlpha(value: number) {
-      const color = valueAsColor.withChannelValue("alpha", value)
+    getAlpha() {
+      return value.getChannelValue("alpha")
+    },
+    setAlpha(alphaValue) {
+      const color = value.withChannelValue("alpha", alphaValue)
       send({ type: "VALUE.SET", value: color, src: "set-alpha" })
     },
+
+    rootProps: normalize.element({
+      ...parts.root.attrs,
+      dir: state.context.dir,
+      id: dom.getRootId(state.context),
+      "data-disabled": dataAttr(isDisabled),
+      "data-readonly": dataAttr(state.context.readOnly),
+      style: {
+        "--value": value.toString("css"),
+      },
+    }),
+
+    labelProps: normalize.element({
+      ...parts.label.attrs,
+      dir: state.context.dir,
+      id: dom.getLabelId(state.context),
+      htmlFor: dom.getHiddenInputId(state.context),
+      "data-disabled": dataAttr(isDisabled),
+      "data-readonly": dataAttr(state.context.readOnly),
+      onClick(event) {
+        event.preventDefault()
+        const inputEl = query(dom.getControlEl(state.context), "[data-channel=hex]")
+        inputEl?.focus({ preventScroll: true })
+      },
+    }),
+
+    controlProps: normalize.element({
+      ...parts.control.attrs,
+      id: dom.getControlId(state.context),
+      dir: state.context.dir,
+      "data-disabled": dataAttr(isDisabled),
+      "data-readonly": dataAttr(state.context.readOnly),
+    }),
+
+    triggerProps: normalize.button({
+      ...parts.trigger.attrs,
+      id: dom.getTriggerId(state.context),
+      dir: state.context.dir,
+      "aria-labelledby": dom.getLabelId(state.context),
+      "data-disabled": dataAttr(isDisabled),
+      "data-readonly": dataAttr(state.context.readOnly),
+      "data-placement": currentPlacement,
+      type: "button",
+      onClick() {
+        send({ type: "TRIGGER.CLICK" })
+      },
+      style: {
+        position: "relative",
+      },
+    }),
+
+    positionerProps: normalize.element({
+      ...parts.positioner.attrs,
+      id: dom.getPositionerId(state.context),
+      dir: state.context.dir,
+      style: popperStyles.floating,
+    }),
 
     contentProps: normalize.element({
       ...parts.content.attrs,
       id: dom.getContentId(state.context),
       dir: state.context.dir,
+      "data-placement": currentPlacement,
+      hidden: !isOpen,
     }),
 
-    getAreaProps(props: ColorAreaProps) {
-      const { xChannel, yChannel } = props
-      const { areaStyles } = getColorAreaGradient(state.context.valueAsColor, {
+    getAreaProps(props = {}) {
+      const { xChannel, yChannel } = getAreaChannels(props)
+      const { areaStyles } = getColorAreaGradient(value, {
         xChannel,
         yChannel,
         dir: state.context.dir,
@@ -96,6 +157,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const channel = { xChannel, yChannel }
 
           send({ type: "AREA.POINTER_DOWN", point, channel, id: "area" })
+          event.preventDefault()
         },
         style: {
           position: "relative",
@@ -106,16 +168,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getAreaGradientProps(props: ColorAreaProps) {
-      const { xChannel, yChannel } = props
-      const { areaGradientStyles } = getColorAreaGradient(valueAsColor, {
+    getAreaBackgroundProps(props = {}) {
+      const { xChannel, yChannel } = getAreaChannels(props)
+      const { areaGradientStyles } = getColorAreaGradient(value, {
         xChannel,
         yChannel,
         dir: state.context.dir,
       })
 
       return normalize.element({
-        ...parts.areaGradient.attrs,
+        ...parts.areaBackground.attrs,
         id: dom.getAreaGradientId(state.context),
         style: {
           position: "relative",
@@ -126,16 +188,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getAreaThumbProps(props: ColorAreaProps) {
-      const { xChannel, yChannel } = props
-      const { getThumbPosition } = getChannelDetails(valueAsColor, xChannel, yChannel)
-      const { x, y } = getThumbPosition()
-
+    getAreaThumbProps(props = {}) {
+      const { xChannel, yChannel, value: valueAsHSL } = getAreaChannels(props)
       const channel = { xChannel, yChannel }
+
+      const x = valueAsHSL.getChannelValuePercent(xChannel)
+      const y = 1 - valueAsHSL.getChannelValuePercent(yChannel)
 
       return normalize.element({
         ...parts.areaThumb.attrs,
         id: dom.getAreaThumbId(state.context),
+        dir: state.context.dir,
         tabIndex: isDisabled ? undefined : 0,
         "data-disabled": dataAttr(isDisabled),
         role: "presentation",
@@ -146,13 +209,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           transform: "translate(-50%, -50%)",
           touchAction: "none",
           forcedColorAdjust: "none",
-          background: valueAsColor.withChannelValue("alpha", 1).toString("css"),
-        },
-        onBlur() {
-          send("AREA.BLUR")
+          background: value.withChannelValue("alpha", 1).toString("css"),
         },
         onFocus() {
-          send({ type: "AREA.FOCUS", id: "area" })
+          send({ type: "AREA.FOCUS", id: "area", channel })
         },
         onKeyDown(event) {
           if (!isInteractive) return
@@ -178,6 +238,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             PageDown() {
               send({ type: "AREA.PAGE_DOWN", channel, step })
             },
+            Escape(event) {
+              event.stopPropagation()
+            },
           }
 
           const exec = keyMap[getEventKey(event, state.context)]
@@ -190,15 +253,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getChannelSliderTrackProps(props: ColorChannelProps) {
-      const { orientation = "horizontal", channel } = props
-
+    getTransparencyGridProps(props) {
+      const { size } = props
       return normalize.element({
-        ...parts.channelSliderTrack.attrs,
-        id: dom.getChannelSliderTrackId(state.context, channel),
-        role: "group",
+        ...parts.transparancyGrid.attrs,
+        style: {
+          "--size": size,
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          backgroundColor: "#fff",
+          backgroundImage: "conic-gradient(#eeeeee 0 25%, transparent 0 50%, #eeeeee 0 75%, transparent 0)",
+          backgroundSize: "var(--size) var(--size)",
+          inset: "0px",
+          zIndex: "auto",
+          pointerEvents: "none",
+        },
+      })
+    },
+
+    getChannelSliderProps(props) {
+      const { orientation = "horizontal", channel } = props
+      return normalize.element({
+        ...parts.channelSlider.attrs,
         "data-channel": channel,
         "data-orientation": orientation,
+        role: "presentation",
         onPointerDown(event) {
           if (!isInteractive) return
 
@@ -207,43 +287,37 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
           const point = getEventPoint(evt)
           send({ type: "CHANNEL_SLIDER.POINTER_DOWN", channel, point, id: channel, orientation })
+
+          event.preventDefault()
         },
         style: {
           position: "relative",
           touchAction: "none",
-          forcedColorAdjust: "none",
-          backgroundImage: getSliderBgImage(state.context, { orientation, channel }),
         },
       })
     },
 
-    getChannelSliderBackgroundProps(props: ColorChannelProps) {
+    getChannelSliderTrackProps(props) {
       const { orientation = "horizontal", channel } = props
+
       return normalize.element({
-        ...parts.channelSliderTrackBackground.attrs,
-        "data-orientation": orientation,
+        ...parts.channelSliderTrack.attrs,
+        id: dom.getChannelSliderId(state.context, channel),
+        role: "group",
         "data-channel": channel,
+        "data-orientation": orientation,
         style: {
-          position: "absolute",
-          backgroundColor: "#fff",
-          backgroundImage: [
-            "linear-gradient(-45deg,#0000 75.5%,#bcbcbc 75.5%)",
-            "linear-gradient(45deg,#0000 75.5%,#bcbcbc 75.5%)",
-            "linear-gradient(-45deg,#bcbcbc 25.5%,#0000 25.5%)",
-            "linear-gradient(45deg,#bcbcbc 25.5%,#0000 25.5%)",
-          ].join(","),
-          backgroundSize: "16px 16px",
-          backgroundPosition: "-2px -2px,-2px 6px,6px -10px,-10px -2px",
-          inset: 0,
-          zIndex: -1,
+          position: "relative",
+          forcedColorAdjust: "none",
+          backgroundImage: getSliderBackground(state.context, { orientation, channel }),
         },
       })
     },
 
-    getChannelSliderThumbProps(props: ColorChannelProps) {
+    getChannelSliderThumbProps(props) {
       const { orientation = "horizontal", channel } = props
-      const { minValue, maxValue, step: stepValue } = valueAsColor.getChannelRange(channel)
-      const channelValue = valueAsColor.getChannelValue(channel)
+      const { minValue, maxValue, step: stepValue } = value.getChannelRange(channel)
+      const channelValue = value.getChannelValue(channel)
 
       const offset = (channelValue - minValue) / (maxValue - minValue)
 
@@ -269,16 +343,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           forcedColorAdjust: "none",
           position: "absolute",
-          background: getChannelDisplayColor(valueAsColor, channel).toString("css"),
+          background: getChannelDisplayColor(value, channel).toString("css"),
           ...placementStyles,
         },
         onFocus() {
           if (!isInteractive) return
           send({ type: "CHANNEL_SLIDER.FOCUS", channel })
-        },
-        onBlur() {
-          if (!isInteractive) return
-          send({ type: "CHANNEL_SLIDER.BLUR", channel })
         },
         onKeyDown(event) {
           if (!isInteractive) return
@@ -309,6 +379,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             End() {
               send({ type: "CHANNEL_SLIDER.END", channel })
             },
+            Escape(event) {
+              event.stopPropagation()
+            },
           }
 
           const exec = keyMap[getEventKey(event, state.context)]
@@ -321,10 +394,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getChannelInputProps(props: ColorChannelInputProps) {
+    getChannelInputProps(props) {
       const { channel } = props
       const isTextField = channel === "hex" || channel === "css"
-      const range = getChannelInputRange(valueAsColor, channel)
+      const range = getChannelRange(value, channel)
 
       return normalize.input({
         ...parts.channelInput.attrs,
@@ -335,22 +408,30 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(isDisabled),
         readOnly: state.context.readOnly,
         id: dom.getChannelInputId(state.context, channel),
-        defaultValue: getChannelInputValue(valueAsColor, channel),
+        defaultValue: getChannelValue(value, channel),
         min: range?.minValue,
         max: range?.maxValue,
         step: range?.step,
+        onBeforeInput(event) {
+          if (isTextField) return
+          const value = event.currentTarget.value
+          if (value.match(/[^0-9.]/g)) {
+            event.preventDefault()
+          }
+        },
         onFocus(event) {
           send({ type: "CHANNEL_INPUT.FOCUS", channel })
-          raf(() => event.target.select())
+          event.target.select()
         },
         onBlur(event) {
-          const value = event.currentTarget.value
-          send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
+          const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber
+          send({ type: "CHANNEL_INPUT.BLUR", channel, value, isTextField })
         },
         onKeyDown(event) {
           if (event.key === "Enter") {
-            const value = event.currentTarget.value
+            const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber
             send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
+            event.preventDefault()
           }
         },
         style: {
@@ -367,15 +448,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       name: state.context.name,
       id: dom.getHiddenInputId(state.context),
       style: visuallyHiddenStyle,
-      defaultValue: value,
-      onChange(event) {
-        const value = event.currentTarget.value
-        send({ type: "VALUE.SET", value, src: "input.change" })
-      },
+      defaultValue: valueAsString,
     }),
 
     eyeDropperTriggerProps: normalize.button({
       ...parts.eyeDropperTrigger.attrs,
+      type: "button",
       disabled: isDisabled,
       "data-disabled": dataAttr(isDisabled),
       "aria-label": "Pick a color from the screen",
@@ -385,43 +463,40 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getSwatchBackgroundProps(props: ColorSwatchProps) {
-      const { value } = props
-      const alpha = normalizeColor(value).getChannelValue("alpha")
-      return normalize.element({
-        ...parts.swatchBackground.attrs,
-        "data-alpha": alpha,
-        style: {
-          width: "100%",
-          height: "100%",
-          background: "#fff",
-          backgroundImage: [
-            "linear-gradient(-45deg,#0000 75.5%,#bcbcbc 75.5%)",
-            "linear-gradient(45deg,#0000 75.5%,#bcbcbc 75.5%)",
-            "linear-gradient(-45deg,#bcbcbc 25.5%,#0000 25.5%)",
-            "linear-gradient(45deg,#bcbcbc 25.5%,#0000 25.5%)",
-          ].join(","),
-          backgroundPosition: "-2px -2px,-2px 6px,6px -10px,-10px -2px",
-          backgroundSize: "16px 16px",
-          position: "absolute",
-          inset: "0px",
-          zIndex: -1,
-        },
-      })
-    },
+    swatchGroupProps: normalize.element({
+      ...parts.swatchGroup.attrs,
+      role: "group",
+    }),
 
-    getSwatchProps(props: ColorSwatchProps) {
-      const { value, readOnly } = props
-      const color = normalizeColor(value).toFormat(valueAsColor.getColorFormat())
-      return normalize.element({
-        ...parts.swatch.attrs,
+    getSwatchTriggerProps(props) {
+      const { value: valueProp } = props
+      const color = normalizeColor(valueProp).toFormat(value.getFormat())
+      return normalize.button({
+        ...parts.swatchTrigger.attrs,
+        disabled: isDisabled,
+        type: "button",
+        "data-value": color.toString("hex"),
         onClick() {
-          if (readOnly || !isInteractive) return
+          if (!isInteractive) return
           send({ type: "VALUE.SET", value: color })
         },
         style: {
           position: "relative",
-          background: color.toString("css"),
+        },
+      })
+    },
+
+    getSwatchProps(props) {
+      const { value: valueProp, respectAlpha = true } = props
+      const colorValue = normalizeColor(valueProp)
+      const color = colorValue.toFormat(value.getFormat())
+      return normalize.element({
+        ...parts.swatch.attrs,
+        "data-state": colorValue.isEqual(value) ? "selected" : "unselected",
+        "data-value": color.toString("hex"),
+        style: {
+          position: "relative",
+          background: color.toString(respectAlpha ? "css" : "hex"),
         },
       })
     },

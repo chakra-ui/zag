@@ -1,44 +1,78 @@
-import type { Color } from "@zag-js/color-utils"
+import { parseColor, type Color, type ColorChannelRange } from "@zag-js/color-utils"
 import type { ExtendedColorChannel } from "../color-picker.types"
 
-export function getChannelInputValue(color: Color, channel: ExtendedColorChannel | null | undefined) {
-  if (channel == null) return
+export function getChannelValue(color: Color, channel: ExtendedColorChannel | null | undefined): string {
+  if (channel == null) return ""
+
+  if (channel === "hex") {
+    return color.toString("hex")
+  }
+
+  if (channel === "css") {
+    return color.toString("css")
+  }
+
+  if (channel in color) {
+    return color.getChannelValue(channel).toString()
+  }
+
+  const isHSL = color.getFormat() === "hsl"
 
   switch (channel) {
-    case "hex":
-      return color.toString("hex")
-    case "css":
-      return color.toString("css")
     case "hue":
+      return isHSL
+        ? color.toFormat("hsla").getChannelValue("hue").toString()
+        : color.toFormat("hsba").getChannelValue("hue").toString()
+
     case "saturation":
+      return isHSL
+        ? color.toFormat("hsl").getChannelValue("saturation").toString()
+        : color.toFormat("hsb").getChannelValue("saturation").toString()
+
     case "lightness":
-      return color.toFormat("hsl").getChannelValue("lightness").toString()
+      return color.toFormat("hsla").getChannelValue("lightness").toString()
+
     case "brightness":
-      return color.toFormat("hsb").getChannelValue("brightness").toString()
+      return color.toFormat("hsba").getChannelValue("brightness").toString()
+
     case "red":
     case "green":
     case "blue":
-      return color.toFormat("rgb").getChannelValue(channel).toString()
+      return color.toFormat("rgba").getChannelValue(channel).toString()
+
     default:
       return color.getChannelValue(channel).toString()
   }
 }
 
-export function getChannelInputRange(color: Color, channel: ExtendedColorChannel) {
+export function getChannelRange(color: Color, channel: ExtendedColorChannel): ColorChannelRange | undefined {
   switch (channel) {
     case "hex":
+      const minColor = parseColor("#000000")
+      const maxColor = parseColor("#FFFFFF")
+      return {
+        minValue: minColor.toHexInt(),
+        maxValue: maxColor.toHexInt(),
+        pageSize: 10,
+        step: 1,
+      }
+
     case "css":
       return undefined
+
     case "hue":
     case "saturation":
     case "lightness":
       return color.toFormat("hsl").getChannelRange(channel)
+
     case "brightness":
       return color.toFormat("hsb").getChannelRange(channel)
+
     case "red":
     case "green":
     case "blue":
       return color.toFormat("rgb").getChannelRange(channel)
+
     default:
       return color.getChannelRange(channel)
   }

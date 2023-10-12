@@ -140,3 +140,12 @@ export function getValueTransformer(valueA: number[], valueB: number[]) {
     return output.min + ratio * (value - input.min)
   }
 }
+
+export function toFixedNumber(value: number, digits: number, base: number = 10): number {
+  const pow = Math.pow(base, digits)
+  return Math.round(value * pow) / pow
+}
+
+export function mod(value: number, modulo: number) {
+  return ((value % modulo) + modulo) % modulo
+}

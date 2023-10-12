@@ -11,14 +11,34 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "color-picker",
-  initial: "idle",
-  context: {},
+  initial: ctx.open ? "open" : "idle",
+  context: {
+    "shouldRestoreFocus": false,
+    "shouldRestoreFocus": false
+  },
+  activities: ["trackFormControl"],
   on: {
     "VALUE.SET": {
       actions: ["setValue"]
+    },
+    "CHANNEL_INPUT.FOCUS": [{
+      cond: stateIn("idle"),
+      target: "focused",
+      actions: ["setActiveChannel"]
+    }, {
+      actions: ["setActiveChannel"]
+    }],
+    "CHANNEL_INPUT.BLUR": [{
+      cond: stateIn("focused"),
+      target: "idle",
+      actions: ["setChannelColorFromInput"]
+    }, {
+      actions: ["setChannelColorFromInput"]
+    }],
+    "CHANNEL_INPUT.CHANGE": {
+      actions: ["setChannelColorFromInput"]
     }
   },
-  activities: ["trackFormControl"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -26,44 +46,55 @@ const fetchMachine = createMachine({
   },
   states: {
     idle: {
+      tags: ["closed"],
       on: {
-        "EYEDROPPER.CLICK": {
-          actions: ["openEyeDropper"]
+        OPEN: {
+          target: "open",
+          actions: ["setInitialFocus", "invokeOnOpen"]
         },
-        "AREA.POINTER_DOWN": {
-          target: "dragging",
-          actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"]
-        },
-        "AREA.FOCUS": {
-          target: "focused",
-          actions: ["setActiveChannel"]
-        },
-        "CHANNEL_SLIDER.POINTER_DOWN": {
-          target: "dragging",
-          actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"]
-        },
-        "CHANNEL_SLIDER.FOCUS": {
-          target: "focused",
-          actions: ["setActiveChannel"]
-        },
-        "CHANNEL_INPUT.FOCUS": {
-          target: "focused",
-          actions: ["setActiveChannel"]
-        },
-        "CHANNEL_INPUT.CHANGE": {
-          actions: ["setChannelColorFromInput"]
+        "TRIGGER.CLICK": {
+          target: "open",
+          actions: ["setInitialFocus", "invokeOnOpen"]
         }
       }
     },
     focused: {
+      tags: ["closed", "focused"],
       on: {
+        OPEN: {
+          target: "open",
+          actions: ["setInitialFocus", "invokeOnOpen"]
+        },
+        "TRIGGER.CLICK": {
+          target: "open",
+          actions: ["setInitialFocus", "invokeOnOpen"]
+        }
+      }
+    },
+    open: {
+      tags: ["open"],
+      activities: ["trackPositioning", "trackDismissableElement"],
+      on: {
+        "TRIGGER.CLICK": {
+          target: "idle",
+          actions: ["invokeOnClose"]
+        },
+        "EYEDROPPER.CLICK": {
+          actions: ["openEyeDropper"]
+        },
         "AREA.POINTER_DOWN": {
-          target: "dragging",
+          target: "open:dragging",
           actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"]
         },
+        "AREA.FOCUS": {
+          actions: ["setActiveChannel"]
+        },
         "CHANNEL_SLIDER.POINTER_DOWN": {
-          target: "dragging",
+          target: "open:dragging",
           actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"]
+        },
+        "CHANNEL_SLIDER.FOCUS": {
+          actions: ["setActiveChannel"]
         },
         "AREA.ARROW_LEFT": {
           actions: ["decrementXChannel"]
@@ -107,37 +138,50 @@ const fetchMachine = createMachine({
         "CHANNEL_SLIDER.END": {
           actions: ["setChannelToMax"]
         },
-        "CHANNEL_INPUT.FOCUS": {
-          actions: ["setActiveChannel"]
-        },
-        "CHANNEL_INPUT.CHANGE": {
-          actions: ["setChannelColorFromInput"]
-        },
-        "CHANNEL_SLIDER.BLUR": {
-          target: "idle"
-        },
-        "AREA.BLUR": {
-          target: "idle"
+        INTERACT_OUTSIDE: [{
+          cond: "shouldRestoreFocus",
+          target: "focused",
+          actions: ["setReturnFocus", "invokeOnClose"]
+        }, {
+          target: "idle",
+          actions: ["invokeOnClose"]
+        }],
+        CLOSE: {
+          target: "idle",
+          actions: ["invokeOnClose"]
         }
       }
     },
-    dragging: {
+    "open:dragging": {
+      tags: ["open"],
       exit: ["clearActiveChannel"],
-      activities: ["trackPointerMove", "disableTextSelection"],
+      activities: ["trackPointerMove", "disableTextSelection", "trackPositioning", "trackDismissableElement"],
       on: {
         "AREA.POINTER_MOVE": {
-          actions: ["setAreaColorFromPoint"]
+          actions: ["setAreaColorFromPoint", "focusAreaThumb"]
         },
         "AREA.POINTER_UP": {
-          target: "focused",
+          target: "open",
           actions: ["invokeOnChangeEnd"]
         },
         "CHANNEL_SLIDER.POINTER_MOVE": {
-          actions: ["setChannelColorFromPoint"]
+          actions: ["setChannelColorFromPoint", "focusChannelThumb"]
         },
         "CHANNEL_SLIDER.POINTER_UP": {
-          target: "focused",
+          target: "open",
           actions: ["invokeOnChangeEnd"]
+        },
+        INTERACT_OUTSIDE: [{
+          cond: "shouldRestoreFocus",
+          target: "focused",
+          actions: ["setReturnFocus", "invokeOnClose"]
+        }, {
+          target: "idle",
+          actions: ["invokeOnClose"]
+        }],
+        CLOSE: {
+          target: "idle",
+          actions: ["invokeOnClose"]
         }
       }
     }
@@ -150,5 +194,7 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {}
+  guards: {
+    "shouldRestoreFocus": ctx => ctx["shouldRestoreFocus"]
+  }
 });

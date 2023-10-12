@@ -2,7 +2,14 @@ export type ColorFormat = "hex" | "hexa" | "rgb" | "rgba" | "hsl" | "hsla" | "hs
 
 export type ColorChannel = "hue" | "saturation" | "brightness" | "lightness" | "red" | "green" | "blue" | "alpha"
 
-export type ColorAxes = { xChannel: ColorChannel; yChannel: ColorChannel; zChannel: ColorChannel }
+export interface Color2DAxes {
+  xChannel: ColorChannel
+  yChannel: ColorChannel
+}
+
+export interface ColorAxes extends Color2DAxes {
+  zChannel: ColorChannel
+}
 
 export interface ColorChannelRange {
   /** The minimum value of the color channel. */
@@ -18,6 +25,8 @@ export interface ColorChannelRange {
 export interface ColorType {
   /** Converts the color to the given color format, and returns a new Color object. */
   toFormat(format: ColorFormat): ColorType
+  /** Converts the color to a JSON object. */
+  toJSON(): Record<string, number>
   /** Converts the color to a string in the given format. */
   toString(format: ColorFormat | "css"): string
   /** Converts the color to hex, and returns an integer representation. */
@@ -39,15 +48,15 @@ export interface ColorType {
   /**
    * Returns the color space, 'rgb', 'hsb' or 'hsl', for the current color.
    */
-  getColorFormat(): ColorFormat
+  getFormat(): ColorFormat
   /**
    * Returns the color space axes, xChannel, yChannel, zChannel.
    */
-  getColorSpaceAxes(xyChannels: { xChannel?: ColorChannel; yChannel?: ColorChannel }): ColorAxes
+  getColorAxes(xyChannels: Color2DAxes): ColorAxes
   /**
    * Returns an array of the color channels within the current color space space.
    */
-  getColorChannels(): [ColorChannel, ColorChannel, ColorChannel]
+  getChannels(): [ColorChannel, ColorChannel, ColorChannel]
   /**
    * Returns a new Color object with the same values as the current color.
    */
@@ -56,4 +65,20 @@ export interface ColorType {
    * Whether the color is equal to another color.
    */
   isEqual(color: ColorType): boolean
+  /**
+   * Increments the color channel by the given step size, and returns a new Color object.
+   */
+  incrementChannel(channel: ColorChannel, stepSize: number): ColorType
+  /**
+   * Decrements the color channel by the given step size, and returns a new Color object.
+   */
+  decrementChannel(channel: ColorChannel, stepSize: number): ColorType
+  /**
+   * Returns the color channel value as a percentage of the channel range.
+   */
+  getChannelValuePercent(channel: ColorChannel, value?: number): number
+  /**
+   * Returns the color channel value for a given percentage of the channel range.
+   */
+  getChannelPercentValue(channel: ColorChannel, percent: number): number
 }

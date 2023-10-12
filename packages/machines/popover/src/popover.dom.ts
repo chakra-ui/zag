@@ -1,5 +1,5 @@
 import { createScope } from "@zag-js/dom-query"
-import { getFirstTabbable, getFocusables, getLastTabbable, getTabbables } from "@zag-js/tabbable"
+import { getFocusables } from "@zag-js/tabbable"
 import { runIfFn } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./popover.types"
 
@@ -24,11 +24,6 @@ export const dom = createScope({
 
   getFocusableEls: (ctx: Ctx) => getFocusables(dom.getContentEl(ctx)),
   getFirstFocusableEl: (ctx: Ctx) => dom.getFocusableEls(ctx)[0],
-
-  getDocTabbableEls: (ctx: Ctx) => getTabbables(dom.getDoc(ctx).body),
-  getTabbableEls: (ctx: Ctx) => getTabbables(dom.getContentEl(ctx), "if-empty"),
-  getFirstTabbableEl: (ctx: Ctx) => getFirstTabbable(dom.getContentEl(ctx), "if-empty"),
-  getLastTabbableEl: (ctx: Ctx) => getLastTabbable(dom.getContentEl(ctx), "if-empty"),
 
   getInitialFocusEl: (ctx: Ctx) => {
     let el: HTMLElement | null = runIfFn(ctx.initialFocusEl)

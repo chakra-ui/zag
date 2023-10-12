@@ -115,13 +115,12 @@ export function machine(userContext: UserDefinedContext) {
 
           const value = ctx.value
 
-          if (value == null) {
+          const radioEl = dom.getActiveRadioEl(ctx)
+
+          if (value == null || !radioEl) {
             ctx.indicatorRect = {}
             return
           }
-
-          const radioEl = dom.getActiveRadioEl(ctx)
-          if (!radioEl) return
 
           ctx.indicatorCleanup = trackElementRect(radioEl, {
             getRect(el) {
