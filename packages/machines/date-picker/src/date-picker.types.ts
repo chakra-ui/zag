@@ -184,6 +184,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The user provided options used to position the date picker content
    */
   positioning: PositioningOptions
+  /**
+   * Whether the datepicker is open
+   */
+  open?: boolean
 }
 
 type PrivateContext = Context<{

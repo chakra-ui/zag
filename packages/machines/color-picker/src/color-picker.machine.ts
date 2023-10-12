@@ -26,7 +26,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "color-picker",
-      initial: "idle",
+      initial: ctx.open ? "open" : "idle",
       context: {
         dir: "ltr",
         value: parse("#000000"),
@@ -54,6 +54,7 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         valueAsString: ["syncInputElements"],
+        open: ["toggleVisibility"],
       },
 
       on: {
@@ -457,6 +458,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnClose(ctx) {
           ctx.onOpenChange?.({ open: false })
+        },
+        toggleVisibility(ctx, _evt, { send }) {
+          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },
       },
     },

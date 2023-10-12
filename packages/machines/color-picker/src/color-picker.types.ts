@@ -99,6 +99,10 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
    * The initial focus element when the color picker is opened.
    */
   initialFocusEl?: MaybeFunction<MaybeElement>
+  /**
+   * Whether the color picker is open
+   */
+  open?: boolean
 }
 
 type PrivateContext = Context<{

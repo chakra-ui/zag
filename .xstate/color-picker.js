@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "color-picker",
-  initial: "idle",
+  initial: ctx.open ? "open" : "idle",
   context: {
     "shouldRestoreFocus": false,
     "shouldRestoreFocus": false

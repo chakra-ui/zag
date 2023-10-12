@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "datepicker",
-  initial: ctx.inline ? "open" : "idle",
+  initial: ctx.inline || ctx.open ? "open" : "idle",
   context: {
     "isYearView": false,
     "isMonthView": false,
@@ -103,6 +103,10 @@ const fetchMachine = createMachine({
         "TRIGGER.CLICK": {
           target: "open",
           actions: ["focusFirstSelectedDate", "invokeOnOpen"]
+        },
+        OPEN: {
+          target: "open",
+          actions: ["invokeOnOpen"]
         }
       }
     },
@@ -125,6 +129,10 @@ const fetchMachine = createMachine({
         "CELL.FOCUS": {
           target: "open",
           actions: ["setView", "invokeOnOpen"]
+        },
+        OPEN: {
+          target: "open",
+          actions: ["invokeOnOpen"]
         }
       }
     },
@@ -315,7 +323,11 @@ const fetchMachine = createMachine({
         }, {
           target: "focused",
           actions: ["focusTriggerElement", "setStartIndex", "invokeOnClose"]
-        }]
+        }],
+        CLOSE: {
+          target: "idle",
+          actions: ["setStartIndex", "invokeOnClose"]
+        }
       }
     }
   }
