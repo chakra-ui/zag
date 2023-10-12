@@ -31,6 +31,9 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "clean-package": "../../../clean-package.config.json",
+  "dependencies": {
+    "@zag-js/numeric-range": "workspace:*"
+  },
   "devDependencies": {
     "clean-package": "2.2.0"
   }

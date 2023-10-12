@@ -1,12 +1,14 @@
 import { parseColor, type Color } from "@zag-js/color-utils"
-import { createMachine } from "@zag-js/core"
+import { createMachine, guards, ref } from "@zag-js/core"
+import { trackDismissableElement } from "@zag-js/dismissable"
 import { trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
-import { trackFormControl } from "@zag-js/form-utils"
-import { clampValue, getPercentValue, snapValueToStep } from "@zag-js/numeric-range"
+import { dispatchInputValueEvent, trackFormControl } from "@zag-js/form-utils"
+import { getPlacement } from "@zag-js/popper"
 import { disableTextSelection } from "@zag-js/text-selection"
 import { compact, tryCatch } from "@zag-js/utils"
 import { dom } from "./color-picker.dom"
+import { parse } from "./color-picker.parse"
 import type {
   ColorFormat,
   ColorType,
@@ -15,86 +17,128 @@ import type {
   MachineState,
   UserDefinedContext,
 } from "./color-picker.types"
-import { getChannelDetails } from "./utils/get-channel-details"
-import { getChannelInputValue } from "./utils/get-channel-input-value"
+import { getChannelValue } from "./utils/get-channel-input-value"
+
+const { stateIn } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "color-picker",
-      initial: "idle",
+      initial: ctx.open ? "open" : "idle",
       context: {
         dir: "ltr",
-        value: "#D9D9D9",
+        value: parse("#000000"),
         disabled: false,
         ...ctx,
         activeId: null,
         activeChannel: null,
         activeOrientation: null,
         fieldsetDisabled: false,
+        autoFocus: true,
+        positioning: {
+          ...ctx.positioning,
+          placement: "bottom",
+        },
       },
 
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
-        valueAsColor: (ctx) => parseColor(ctx.value) as Color,
+        valueAsString: (ctx) => ctx.value.toString("css"),
+      },
+
+      activities: ["trackFormControl"],
+
+      watch: {
+        valueAsString: ["syncInputElements"],
+        open: ["toggleVisibility"],
       },
 
       on: {
         "VALUE.SET": {
           actions: ["setValue"],
         },
-      },
-
-      activities: ["trackFormControl"],
-
-      watch: {
-        value: ["syncInputElements"],
+        "CHANNEL_INPUT.FOCUS": [
+          {
+            guard: stateIn("idle"),
+            target: "focused",
+            actions: ["setActiveChannel"],
+          },
+          {
+            actions: ["setActiveChannel"],
+          },
+        ],
+        "CHANNEL_INPUT.BLUR": [
+          {
+            guard: stateIn("focused"),
+            target: "idle",
+            actions: ["setChannelColorFromInput"],
+          },
+          {
+            actions: ["setChannelColorFromInput"],
+          },
+        ],
+        "CHANNEL_INPUT.CHANGE": {
+          actions: ["setChannelColorFromInput"],
+        },
       },
 
       states: {
         idle: {
+          tags: ["closed"],
           on: {
-            "EYEDROPPER.CLICK": {
-              actions: ["openEyeDropper"],
+            OPEN: {
+              target: "open",
+              actions: ["setInitialFocus", "invokeOnOpen"],
             },
-            "AREA.POINTER_DOWN": {
-              target: "dragging",
-              actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
-            },
-            "AREA.FOCUS": {
-              target: "focused",
-              actions: ["setActiveChannel"],
-            },
-            "CHANNEL_SLIDER.POINTER_DOWN": {
-              target: "dragging",
-              actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
-            },
-            "CHANNEL_SLIDER.FOCUS": {
-              target: "focused",
-              actions: ["setActiveChannel"],
-            },
-            "CHANNEL_INPUT.FOCUS": {
-              target: "focused",
-              actions: ["setActiveChannel"],
-            },
-            "CHANNEL_INPUT.CHANGE": {
-              actions: ["setChannelColorFromInput"],
+            "TRIGGER.CLICK": {
+              target: "open",
+              actions: ["setInitialFocus", "invokeOnOpen"],
             },
           },
         },
 
         focused: {
+          tags: ["closed", "focused"],
           on: {
+            OPEN: {
+              target: "open",
+              actions: ["setInitialFocus", "invokeOnOpen"],
+            },
+            "TRIGGER.CLICK": {
+              target: "open",
+              actions: ["setInitialFocus", "invokeOnOpen"],
+            },
+          },
+        },
+
+        open: {
+          tags: ["open"],
+          activities: ["trackPositioning", "trackDismissableElement"],
+          on: {
+            "TRIGGER.CLICK": {
+              target: "idle",
+              actions: ["invokeOnClose"],
+            },
+            "EYEDROPPER.CLICK": {
+              actions: ["openEyeDropper"],
+            },
             "AREA.POINTER_DOWN": {
-              target: "dragging",
+              target: "open:dragging",
               actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
             },
+            "AREA.FOCUS": {
+              actions: ["setActiveChannel"],
+            },
             "CHANNEL_SLIDER.POINTER_DOWN": {
-              target: "dragging",
+              target: "open:dragging",
               actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
+            },
+            "CHANNEL_SLIDER.FOCUS": {
+              actions: ["setActiveChannel"],
             },
             "AREA.ARROW_LEFT": {
               actions: ["decrementXChannel"],
@@ -138,45 +182,100 @@ export function machine(userContext: UserDefinedContext) {
             "CHANNEL_SLIDER.END": {
               actions: ["setChannelToMax"],
             },
-            "CHANNEL_INPUT.FOCUS": {
-              actions: ["setActiveChannel"],
-            },
-            "CHANNEL_INPUT.CHANGE": {
-              actions: ["setChannelColorFromInput"],
-            },
-            "CHANNEL_SLIDER.BLUR": {
+            INTERACT_OUTSIDE: [
+              {
+                guard: "shouldRestoreFocus",
+                target: "focused",
+                actions: ["setReturnFocus", "invokeOnClose"],
+              },
+              {
+                target: "idle",
+                actions: ["invokeOnClose"],
+              },
+            ],
+            CLOSE: {
               target: "idle",
-            },
-            "AREA.BLUR": {
-              target: "idle",
+              actions: ["invokeOnClose"],
             },
           },
         },
 
-        dragging: {
+        "open:dragging": {
+          tags: ["open"],
           exit: ["clearActiveChannel"],
-          activities: ["trackPointerMove", "disableTextSelection"],
+          activities: ["trackPointerMove", "disableTextSelection", "trackPositioning", "trackDismissableElement"],
           on: {
             "AREA.POINTER_MOVE": {
-              actions: ["setAreaColorFromPoint"],
+              actions: ["setAreaColorFromPoint", "focusAreaThumb"],
             },
             "AREA.POINTER_UP": {
-              target: "focused",
+              target: "open",
               actions: ["invokeOnChangeEnd"],
             },
             "CHANNEL_SLIDER.POINTER_MOVE": {
-              actions: ["setChannelColorFromPoint"],
+              actions: ["setChannelColorFromPoint", "focusChannelThumb"],
             },
             "CHANNEL_SLIDER.POINTER_UP": {
-              target: "focused",
+              target: "open",
               actions: ["invokeOnChangeEnd"],
+            },
+            INTERACT_OUTSIDE: [
+              {
+                guard: "shouldRestoreFocus",
+                target: "focused",
+                actions: ["setReturnFocus", "invokeOnClose"],
+              },
+              {
+                target: "idle",
+                actions: ["invokeOnClose"],
+              },
+            ],
+            CLOSE: {
+              target: "idle",
+              actions: ["invokeOnClose"],
             },
           },
         },
       },
     },
     {
+      guards: {
+        isTargetFocusable: (_ctx, evt) => evt.restoreFocus,
+      },
       activities: {
+        trackPositioning(ctx) {
+          ctx.currentPlacement = ctx.positioning.placement
+          const anchorEl = dom.getTriggerEl(ctx)
+          const getPositionerEl = () => dom.getPositionerEl(ctx)
+          return getPlacement(anchorEl, getPositionerEl, {
+            ...ctx.positioning,
+            defer: true,
+            onComplete(data) {
+              ctx.currentPlacement = data.placement
+            },
+            onCleanup() {
+              ctx.currentPlacement = undefined
+            },
+          })
+        },
+        trackDismissableElement(ctx, _evt, { send }) {
+          const getContentEl = () => dom.getContentEl(ctx)
+          let restoreFocus = true
+          return trackDismissableElement(getContentEl, {
+            exclude: dom.getTriggerEl(ctx),
+            defer: true,
+            onInteractOutside(event) {
+              ctx.onInteractOutside?.(event)
+              if (event.defaultPrevented) return
+              restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
+            },
+            onPointerDownOutside: ctx.onPointerDownOutside,
+            onFocusOutside: ctx.onFocusOutside,
+            onDismiss() {
+              send({ type: "INTERACT_OUTSIDE", restoreFocus })
+            },
+          })
+        },
         trackFormControl(ctx, _evt, { send, initialContext }) {
           const inputEl = dom.getHiddenInputEl(ctx)
           return trackFormControl(inputEl, {
@@ -213,21 +312,17 @@ export function machine(userContext: UserDefinedContext) {
           picker
             .open()
             .then(({ sRGBHex }: { sRGBHex: string }) => {
-              const format = ctx.valueAsColor.getColorFormat()
+              const format = ctx.value.getFormat()
               const color = parseColor(sRGBHex).toFormat(format) as Color
               set.value(ctx, color)
-              ctx.onValueChangeEnd?.({ value: ctx.value, valueAsColor: color })
+              ctx.onValueChangeEnd?.({ value: ctx.value, valueAsString: ctx.valueAsString })
             })
             .catch(() => void 0)
         },
         setActiveChannel(ctx, evt) {
           ctx.activeId = evt.id
-          if (evt.channel) {
-            ctx.activeChannel = evt.channel
-          }
-          if (evt.orientation) {
-            ctx.activeOrientation = evt.orientation
-          }
+          if (evt.channel) ctx.activeChannel = evt.channel
+          if (evt.orientation) ctx.activeOrientation = evt.orientation
         },
         clearActiveChannel(ctx) {
           ctx.activeChannel = null
@@ -240,10 +335,10 @@ export function machine(userContext: UserDefinedContext) {
           const percent = dom.getAreaValueFromPoint(ctx, evt.point)
           if (!percent) return
 
-          const { getColorFromPoint } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
-          const color = getColorFromPoint(percent.x, percent.y)
+          const xValue = ctx.value.getChannelPercentValue(xChannel, percent.x)
+          const yValue = ctx.value.getChannelPercentValue(yChannel, 1 - percent.y)
 
-          if (!color) return
+          const color = ctx.value.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
           set.value(ctx, color)
         },
         setChannelColorFromPoint(ctx, evt) {
@@ -252,30 +347,18 @@ export function machine(userContext: UserDefinedContext) {
           const percent = dom.getChannelSliderValueFromPoint(ctx, evt.point, channel)
           if (!percent) return
 
-          const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(channel)
           const orientation = ctx.activeOrientation || "horizontal"
+          const channelPercent = orientation === "horizontal" ? percent.x : percent.y
 
-          const point = orientation === "horizontal" ? percent.x : percent.y
-          const channelValue = getPercentValue(point, minValue, maxValue, step)
-
-          const value = snapValueToStep(channelValue - step, minValue, maxValue, step)
-          const newColor = ctx.valueAsColor.withChannelValue(channel, value)
-
-          set.value(ctx, newColor)
+          const value = ctx.value.getChannelPercentValue(channel, channelPercent)
+          const color = ctx.value.withChannelValue(channel, value)
+          set.value(ctx, color)
         },
         setValue(ctx, evt) {
           set.value(ctx, evt.value)
         },
         syncInputElements(ctx) {
-          // sync channel inputs
-          const inputs = dom.getChannelInputEls(ctx)
-          inputs.forEach((input) => {
-            const channel = input.dataset.channel as ExtendedColorChannel | null
-            dom.setValue(input, getChannelInputValue(ctx.valueAsColor, channel))
-          })
-
-          // sync hidden input
-          dom.setValue(dom.getHiddenInputEl(ctx), ctx.value)
+          sync.inputs(ctx)
         },
         invokeOnChangeEnd(ctx) {
           invoke.changeEnd(ctx)
@@ -285,7 +368,7 @@ export function machine(userContext: UserDefinedContext) {
 
           // handle alpha channel
           if (channel === "alpha") {
-            const newColor = ctx.valueAsColor.withChannelValue("alpha", value)
+            const newColor = ctx.value.withChannelValue("alpha", parseFloat(value))
             set.value(ctx, newColor)
             return
           }
@@ -293,111 +376,130 @@ export function machine(userContext: UserDefinedContext) {
           // handle other text channels
           if (isTextField) {
             const format: ColorFormat = "hsl"
-            const currentAlpha = ctx.valueAsColor.getChannelValue("alpha")
+            const currentAlpha = ctx.value.getChannelValue("alpha")
 
-            const newColor = tryCatch(
+            const color = tryCatch(
               () => parseColor(value).toFormat(format).withChannelValue("alpha", currentAlpha),
-              () => ctx.valueAsColor,
+              () => ctx.value,
             )
 
             // set channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
             const inputEl = dom.getChannelInputEl(ctx, channel)
-            dom.setValue(inputEl, getChannelInputValue(ctx.valueAsColor, channel))
+            dom.setValue(inputEl, getChannelValue(color, channel))
 
-            set.value(ctx, newColor)
+            set.value(ctx, color)
             return
           }
 
           // handle other channels
-          const newColor = ctx.valueAsColor.withChannelValue(channel, value)
-          set.value(ctx, newColor)
+          const color = ctx.value.withChannelValue(channel, value)
+          set.value(ctx, color)
         },
-
         incrementChannel(ctx, evt) {
-          const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(evt.channel)
-          const channelValue = ctx.valueAsColor.getChannelValue(evt.channel)
-          const value = snapValueToStep(channelValue + evt.step, minValue, maxValue, step)
-          const color = ctx.valueAsColor.withChannelValue(evt.channel, clampValue(value, minValue, maxValue))
+          const color = ctx.value.incrementChannel(evt.channel, evt.step)
           set.value(ctx, color)
         },
         decrementChannel(ctx, evt) {
-          const { minValue, maxValue, step } = ctx.valueAsColor.getChannelRange(evt.channel)
-          const channelValue = ctx.valueAsColor.getChannelValue(evt.channel)
-          const value = snapValueToStep(channelValue - evt.step, minValue, maxValue, step)
-          const color = ctx.valueAsColor.withChannelValue(evt.channel, clampValue(value, minValue, maxValue))
+          const color = ctx.value.decrementChannel(evt.channel, evt.step)
           set.value(ctx, color)
         },
-
         incrementXChannel(ctx, evt) {
-          const { xChannel, yChannel } = evt.channel
-          const { incrementX } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
-          const color = ctx.valueAsColor.withChannelValue(xChannel, incrementX(evt.step))
+          const { xChannel } = evt.channel
+          const color = ctx.value.incrementChannel(xChannel, evt.step)
           set.value(ctx, color)
         },
         decrementXChannel(ctx, evt) {
-          const { xChannel, yChannel } = evt.channel
-          const { decrementX } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
-          const color = ctx.valueAsColor.withChannelValue(xChannel, decrementX(evt.step))
+          const { xChannel } = evt.channel
+          const color = ctx.value.decrementChannel(xChannel, evt.step)
           set.value(ctx, color)
         },
-
         incrementYChannel(ctx, evt) {
-          const { xChannel, yChannel } = evt.channel
-          const { incrementY } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
-          const color = ctx.valueAsColor.withChannelValue(yChannel, incrementY(evt.step))
+          const { yChannel } = evt.channel
+          const color = ctx.value.incrementChannel(yChannel, evt.step)
           set.value(ctx, color)
         },
         decrementYChannel(ctx, evt) {
-          const { xChannel, yChannel } = evt.channel
-          const { decrementY } = getChannelDetails(ctx.valueAsColor, xChannel, yChannel)
-          const color = ctx.valueAsColor.withChannelValue(yChannel, decrementY(evt.step))
+          const { yChannel } = evt.channel
+          const color = ctx.value.decrementChannel(yChannel, evt.step)
           set.value(ctx, color)
         },
-
         setChannelToMax(ctx, evt) {
-          const { maxValue } = ctx.valueAsColor.getChannelRange(evt.channel)
-          const color = ctx.valueAsColor.withChannelValue(evt.channel, maxValue)
+          const range = ctx.value.getChannelRange(evt.channel)
+          const color = ctx.value.withChannelValue(evt.channel, range.maxValue)
           set.value(ctx, color)
         },
         setChannelToMin(ctx, evt) {
-          const { minValue } = ctx.valueAsColor.getChannelRange(evt.channel)
-          const color = ctx.valueAsColor.withChannelValue(evt.channel, minValue)
+          const range = ctx.value.getChannelRange(evt.channel)
+          const color = ctx.value.withChannelValue(evt.channel, range.minValue)
           set.value(ctx, color)
         },
         focusAreaThumb(ctx) {
           raf(() => {
-            dom.getAreaThumbEl(ctx)?.focus({ preventScroll: true })
+            dom?.focus(ctx, dom.getAreaThumbEl(ctx))
           })
         },
         focusChannelThumb(ctx, evt) {
           raf(() => {
-            dom.getChannelSliderThumbEl(ctx, evt.channel)?.focus({ preventScroll: true })
+            dom?.focus(ctx, dom.getChannelSliderThumbEl(ctx, evt.channel))
           })
+        },
+        setInitialFocus(ctx) {
+          raf(() => {
+            dom.getInitialFocusEl(ctx)?.focus({ preventScroll: true })
+          })
+        },
+        setReturnFocus(ctx) {
+          raf(() => {
+            dom?.focus(ctx, dom.getTriggerEl(ctx))
+          })
+        },
+        invokeOnOpen(ctx) {
+          ctx.onOpenChange?.({ open: true })
+        },
+        invokeOnClose(ctx) {
+          ctx.onOpenChange?.({ open: false })
+        },
+        toggleVisibility(ctx, _evt, { send }) {
+          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },
       },
     },
   )
 }
 
+const sync = {
+  inputs(ctx: MachineContext) {
+    // sync channel inputs
+    const channelInputs = dom.getChannelInputEls(ctx)
+    channelInputs.forEach((inputEl) => {
+      const channel = inputEl.dataset.channel as ExtendedColorChannel | null
+      dom.setValue(inputEl, getChannelValue(ctx.value, channel))
+    })
+  },
+}
+
 const invoke = {
   changeEnd(ctx: MachineContext) {
     ctx.onValueChangeEnd?.({
       value: ctx.value,
-      valueAsColor: ctx.valueAsColor,
+      valueAsString: ctx.valueAsString,
     })
   },
   change(ctx: MachineContext) {
     ctx.onValueChange?.({
       value: ctx.value,
-      valueAsColor: ctx.valueAsColor,
+      valueAsString: ctx.valueAsString,
     })
+
+    dispatchInputValueEvent(dom.getHiddenInputEl(ctx), { value: ctx.valueAsString })
   },
 }
 
 const set = {
-  value(ctx: MachineContext, color: Color | ColorType) {
-    if (ctx.valueAsColor.isEqual(color)) return
-    ctx.value = color.toString("css")
+  value(ctx: MachineContext, color: Color | ColorType | undefined) {
+    sync.inputs(ctx)
+    if (!color || ctx.value.isEqual(color)) return
+    ctx.value = ref(color) as Color
     invoke.change(ctx)
   },
 }

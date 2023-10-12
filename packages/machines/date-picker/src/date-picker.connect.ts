@@ -267,6 +267,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-readonly": dataAttr(readOnly),
     }),
 
+    labelProps: normalize.label({
+      ...parts.label.attrs,
+      htmlFor: dom.getInputId(state.context),
+      "data-state": isOpen ? "open" : "closed",
+      "data-disabled": dataAttr(disabled),
+      "data-readonly": dataAttr(readOnly),
+    }),
+
     controlProps: normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
@@ -352,6 +360,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onPointerUp() {
           send({ type: "TABLE.POINTER_UP", view })
         },
+      })
+    },
+
+    getTableHeadProps(props = {}) {
+      const { view = "day" } = props
+      return normalize.element({
+        ...parts.tableHeader.attrs,
+        dir: state.context.dir,
+        "data-view": view,
+        "data-disabled": dataAttr(disabled),
       })
     },
 

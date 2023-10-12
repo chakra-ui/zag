@@ -1,14 +1,21 @@
 import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@zag-js/color-utils"
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
+import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { PositioningOptions } from "@zag-js/popper"
+import type { CommonProperties, Context, MaybeElement, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
+import type { MaybeFunction } from "@zag-js/utils"
 
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
 
 export interface ValueChangeDetails {
-  value: string
-  valueAsColor: Color
+  value: Color
+  valueAsString: string
+}
+
+export interface OpenChangeDetails {
+  open: boolean
 }
 
 /* -----------------------------------------------------------------------------
@@ -18,6 +25,11 @@ export interface ValueChangeDetails {
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
 type ElementIds = Partial<{
+  root: string
+  control: string
+  trigger: string
+  label: string
+  input: string
   content: string
   area: string
   areaGradient: string
@@ -27,7 +39,7 @@ type ElementIds = Partial<{
   channelSliderThumb(id: ColorChannel): string
 }>
 
-interface PublicContext extends CommonProperties {
+interface PublicContext extends CommonProperties, InteractOutsideHandlers {
   /**
    * The ids of the elements in the color picker. Useful for composition.
    */
@@ -39,7 +51,7 @@ interface PublicContext extends CommonProperties {
   /**
    * The current color value
    */
-  value: string
+  value: Color
   /**
    * Whether the color picker is disabled
    */
@@ -57,9 +69,40 @@ interface PublicContext extends CommonProperties {
    */
   onValueChangeEnd?: (details: ValueChangeDetails) => void
   /**
-   *  The name for the form input
+   * Handler that is called when the user opens or closes the color picker.
+   */
+  onOpenChange?: (details: OpenChangeDetails) => void
+  /**
+   * The name for the form input
    */
   name?: string
+  /**
+   * The color format to use (rgb, hsl, hsb)
+   * @default "hsl"
+   */
+  format?: ColorFormat
+  /**
+   * The alpha format to use (decimal, percent)
+   * @default "decimal"
+   */
+  alphaFormat?: "decimal" | "percent"
+  /**
+   * The positioning options for the color picker
+   */
+  positioning: PositioningOptions
+  /**
+   * Whether to automatically set focus on the first focusable
+   * content within the color picker when opened.
+   */
+  autoFocus?: boolean
+  /**
+   * The initial focus element when the color picker is opened.
+   */
+  initialFocusEl?: MaybeFunction<MaybeElement>
+  /**
+   * Whether the color picker is open
+   */
+  open?: boolean
 }
 
 type PrivateContext = Context<{
@@ -83,6 +126,11 @@ type PrivateContext = Context<{
    * Whether the checkbox's fieldset is disabled
    */
   fieldsetDisabled: boolean
+  /**
+   * @internal
+   * The current placement of the color picker
+   */
+  currentPlacement?: PositioningOptions["placement"]
 }>
 
 type ComputedContext = Readonly<{
@@ -100,7 +148,7 @@ type ComputedContext = Readonly<{
    * @computed
    * The color value as a Color object
    */
-  valueAsColor: Color
+  valueAsString: string
   /**
    * @computed
    * Whether the color picker is disabled
@@ -113,7 +161,8 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
 export interface MachineState {
-  value: "idle" | "focused" | "dragging"
+  tags: "open" | "closed" | "dragging" | "focused"
+  value: "idle" | "focused" | "open" | "open:dragging"
 }
 
 export type State = S.State<MachineContext, MachineState>
@@ -124,24 +173,41 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface ColorChannelProps {
+export interface ChannelProps {
   channel: ColorChannel
   orientation?: Orientation
 }
 
-export interface ColorChannelInputProps {
+export interface ChannelInputProps {
   channel: ExtendedColorChannel
   orientation?: Orientation
 }
 
-export interface ColorAreaProps {
-  xChannel: ColorChannel
-  yChannel: ColorChannel
+export interface AreaProps {
+  xChannel?: ColorChannel
+  yChannel?: ColorChannel
 }
 
-export interface ColorSwatchProps {
-  readOnly?: boolean
+export interface SwatchTriggerProps {
+  /**
+   * The color value
+   */
   value: string | Color
+}
+
+export interface SwatchProps {
+  /**
+   * The color value
+   */
+  value: string | Color
+  /**
+   * Whether to include the alpha channel in the color
+   */
+  respectAlpha?: boolean
+}
+
+export interface TransparancyGridProps {
+  size: string
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -150,17 +216,17 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   isDragging: boolean
   /**
+   * Whether the color picker is open
+   */
+  isOpen: boolean
+  /**
    * The current color value (as a string)
    */
-  value: string
+  value: Color
   /**
    * The current color value (as a Color object)
    */
-  valueAsColor: Color
-  /**
-   * The alpha value of the color
-   */
-  alpha: number
+  valueAsString: string
   /**
    * The current color channels of the color
    */
@@ -170,6 +236,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   setColor(value: string | Color): void
   /**
+   * Function to set the color value
+   */
+  getChannelValue(channel: ColorChannel): string
+  /**
    * Function to set the color value of a specific channel
    */
   setChannelValue(channel: ColorChannel, value: number): void
@@ -178,22 +248,38 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   setFormat(format: ColorFormat): void
   /**
+   * The alpha value of the color
+   */
+  getAlpha(): number
+  /**
    * Function to set the color alpha
    */
   setAlpha(value: number): void
 
+  rootProps: T["element"]
+  labelProps: T["element"]
+  controlProps: T["element"]
+  triggerProps: T["button"]
+  positionerProps: T["element"]
   contentProps: T["element"]
   hiddenInputProps: T["input"]
-  getAreaProps(props: ColorAreaProps): T["element"]
-  getAreaGradientProps(props: ColorAreaProps): T["element"]
-  getAreaThumbProps(props: ColorAreaProps): T["element"]
-  getChannelSliderTrackProps(props: ColorChannelProps): T["element"]
-  getChannelSliderBackgroundProps(props: ColorChannelProps): T["element"]
-  getChannelSliderThumbProps(props: ColorChannelProps): T["element"]
-  getChannelInputProps(props: ColorChannelInputProps): T["input"]
+
+  getAreaProps(props?: AreaProps): T["element"]
+  getAreaBackgroundProps(props?: AreaProps): T["element"]
+  getAreaThumbProps(props?: AreaProps): T["element"]
+
+  getChannelSliderProps(props: ChannelProps): T["element"]
+  getChannelSliderTrackProps(props: ChannelProps): T["element"]
+  getChannelSliderThumbProps(props: ChannelProps): T["element"]
+  getChannelInputProps(props: ChannelInputProps): T["input"]
+
+  getTransparencyGridProps(props: TransparancyGridProps): T["element"]
+
   eyeDropperTriggerProps: T["button"]
-  getSwatchBackgroundProps(props: ColorSwatchProps): T["element"]
-  getSwatchProps(props: ColorSwatchProps): T["element"]
+
+  swatchGroupProps: T["element"]
+  getSwatchTriggerProps(props: SwatchTriggerProps): T["button"]
+  getSwatchProps(props: SwatchProps): T["element"]
 }
 
 /* -----------------------------------------------------------------------------

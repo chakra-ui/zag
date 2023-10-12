@@ -1,8 +1,8 @@
+import { clampValue, toFixedNumber } from "@zag-js/numeric-range"
 import { Color } from "./color"
 import { HSBColor } from "./hsb-color"
 import { HSLColor } from "./hsl-color"
 import type { ColorChannel, ColorChannelRange, ColorFormat, ColorType } from "./types"
-import { clampValue, toFixedNumber } from "./utils"
 
 export class RGBColor extends Color {
   constructor(
@@ -130,7 +130,7 @@ export class RGBColor extends Color {
       toFixedNumber(hue * 360, 2),
       toFixedNumber(saturation * 100, 2),
       toFixedNumber(brightness * 100, 2),
-      this.alpha,
+      toFixedNumber(this.alpha, 2),
     )
   }
 
@@ -175,7 +175,7 @@ export class RGBColor extends Color {
       toFixedNumber(hue * 360, 2),
       toFixedNumber(saturation * 100, 2),
       toFixedNumber(lightness * 100, 2),
-      this.alpha,
+      toFixedNumber(this.alpha, 2),
     )
   }
 
@@ -196,13 +196,17 @@ export class RGBColor extends Color {
     }
   }
 
-  getColorFormat(): ColorFormat {
+  toJSON(): Record<string, number> {
+    return { r: this.red, g: this.green, b: this.blue }
+  }
+
+  getFormat(): ColorFormat {
     return "rgb"
   }
 
   private static colorChannels: [ColorChannel, ColorChannel, ColorChannel] = ["red", "green", "blue"]
 
-  getColorChannels(): [ColorChannel, ColorChannel, ColorChannel] {
+  getChannels(): [ColorChannel, ColorChannel, ColorChannel] {
     return RGBColor.colorChannels
   }
 }
