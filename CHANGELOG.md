@@ -6,6 +6,42 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.24.0] - 2023-10-12
+
+### Fixed
+
+- **FileUpload**: Issue where `api.setFiles` and `api.clearFiles` does not work
+- **NumberInput**: Fix issue where before input gets called with incorrect event data
+
+### Added
+
+- **DatePickcer**: Add new table head component to allow for customizing the table head
+
+### Changed
+
+> 💥 Breaking changes
+
+- **Combobox, Select, HoverCard**: Rename `api.setPositioning(...)` to `api.reposition(...)`
+
+- **Carousel**: Refactor components to ensure consistent naming convention
+
+  - `slideGroupProps` -> `itemGroupProps`
+  - `getSlideProps` -> `getItemProps`
+  - `nextSlideTrigger` -> `nextTrigger`
+  - `prevSlideTrigger` -> `prevTrigger`
+
+- **ColorPicker**:
+
+  - Redesigned components to ensure consistent naming convention
+  - Added support for trigger and content parts to control the open/close behavior
+  - Add new `api.getChannelValue` API to get the value of a specific color channel
+
+- **Pagination**: Rename component anatomy and parts
+
+  - `getPageTriggerProps` => `getTriggerProps`
+  - `getNextPageTriggerProps` => `getNextTriggerProps`
+  - `getPrevPageTriggerProps` => `getPrevTriggerProps`
+
 ## [0.23.0] - 2023-10-02
 
 ### Fixed
@@ -16,7 +52,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 ### Changed
 
-> Breaking changes
+> 💥 Breaking changes
 
 - **FileUpload**:
 
