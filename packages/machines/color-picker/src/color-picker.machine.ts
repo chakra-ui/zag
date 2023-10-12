@@ -17,7 +17,7 @@ import type {
   MachineState,
   UserDefinedContext,
 } from "./color-picker.types"
-import { getChannelInputValue } from "./utils/get-channel-input-value"
+import { getChannelValue } from "./utils/get-channel-input-value"
 
 const { stateIn } = guards
 
@@ -384,7 +384,8 @@ export function machine(userContext: UserDefinedContext) {
 
             // set channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
             const inputEl = dom.getChannelInputEl(ctx, channel)
-            dom.setValue(inputEl, getChannelInputValue(ctx.value, channel))
+            dom.setValue(inputEl, getChannelValue(color, channel))
+
             set.value(ctx, color)
             return
           }
@@ -468,11 +469,8 @@ const sync = {
     const channelInputs = dom.getChannelInputEls(ctx)
     channelInputs.forEach((inputEl) => {
       const channel = inputEl.dataset.channel as ExtendedColorChannel | null
-      dom.setValue(inputEl, getChannelInputValue(ctx.value, channel))
+      dom.setValue(inputEl, getChannelValue(ctx.value, channel))
     })
-
-    // sync main input
-    dom.setValue(dom.getInputEl(ctx), getChannelInputValue(ctx.value, "hex"))
   },
 }
 

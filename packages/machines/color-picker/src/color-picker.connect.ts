@@ -8,7 +8,7 @@ import {
   isModifiedEvent,
   type EventKeyMap,
 } from "@zag-js/dom-event"
-import { dataAttr, raf } from "@zag-js/dom-query"
+import { dataAttr, query } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
@@ -16,7 +16,7 @@ import { parts } from "./color-picker.anatomy"
 import { dom } from "./color-picker.dom"
 import type { AreaProps, MachineApi, Send, State } from "./color-picker.types"
 import { getChannelDisplayColor } from "./utils/get-channel-display-color"
-import { getChannelInputRange, getChannelInputValue } from "./utils/get-channel-input-value"
+import { getChannelRange, getChannelValue } from "./utils/get-channel-input-value"
 import { getSliderBackground } from "./utils/get-slider-background"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
@@ -30,9 +30,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const channels = value.getChannels()
 
-  const getResolvedChannels = (props: AreaProps) => ({
-    xChannel: props.xChannel ?? channels[0],
-    yChannel: props.yChannel ?? channels[1],
+  const getAreaChannels = (props: AreaProps) => ({
+    value: value.toFormat("hsl"),
+    xChannel: props.xChannel ?? "saturation",
+    yChannel: props.yChannel ?? "lightness",
   })
 
   const currentPlacement = state.context.currentPlacement
@@ -46,23 +47,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isOpen,
     valueAsString,
     value: value,
-    alpha: value.getChannelValue("alpha"),
     channels,
-
     setColor(value) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })
     },
-
+    getChannelValue(channel) {
+      return getChannelValue(value, channel)
+    },
     setChannelValue(channel, channelValue) {
       const color = value.withChannelValue(channel, channelValue)
       send({ type: "VALUE.SET", value: color, src: "set-channel" })
     },
-
     setFormat(format) {
       const formatValue = value.toFormat(format)
       send({ type: "VALUE.SET", value: formatValue, src: "set-format" })
     },
-
+    getAlpha() {
+      return value.getChannelValue("alpha")
+    },
     setAlpha(alphaValue) {
       const color = value.withChannelValue("alpha", alphaValue)
       send({ type: "VALUE.SET", value: color, src: "set-alpha" })
@@ -88,7 +90,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-readonly": dataAttr(state.context.readOnly),
       onClick(event) {
         event.preventDefault()
-        dom.getInputEl(state.context)?.focus({ preventScroll: true })
+        const inputEl = query(dom.getControlEl(state.context), "[data-channel=hex]")
+        inputEl?.focus({ preventScroll: true })
       },
     }),
 
@@ -117,33 +120,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    inputProps: normalize.input({
-      ...parts.input.attrs,
-      dir: state.context.dir,
-      id: dom.getInputId(state.context),
-      "data-disabled": dataAttr(isDisabled),
-      "data-readonly": dataAttr(state.context.readOnly),
-      disabled: isDisabled,
-      "aria-labelledby": dom.getLabelId(state.context),
-      readOnly: state.context.readOnly,
-      defaultValue: value.toString("hex"),
-      onFocus(event) {
-        send({ type: "CHANNEL_INPUT.FOCUS", channel: "hex" })
-        raf(() => event.target.select())
-      },
-      onBlur(event) {
-        const value = event.currentTarget.value
-        send({ type: "CHANNEL_INPUT.BLUR", channel: "hex", value, isTextField: true })
-      },
-      onKeyDown(event) {
-        if (event.key === "Enter") {
-          const value = event.currentTarget.value
-          send({ type: "CHANNEL_INPUT.CHANGE", channel: "hex", value, isTextField: true })
-          event.preventDefault()
-        }
-      },
-    }),
-
     positionerProps: normalize.element({
       ...parts.positioner.attrs,
       id: dom.getPositionerId(state.context),
@@ -159,8 +135,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       hidden: !isOpen,
     }),
 
-    getAreaProps(props) {
-      const { xChannel, yChannel } = getResolvedChannels(props)
+    getAreaProps(props = {}) {
+      const { xChannel, yChannel } = getAreaChannels(props)
       const { areaStyles } = getColorAreaGradient(value, {
         xChannel,
         yChannel,
@@ -192,8 +168,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getAreaBackgroundProps(props) {
-      const { xChannel, yChannel } = getResolvedChannels(props)
+    getAreaBackgroundProps(props = {}) {
+      const { xChannel, yChannel } = getAreaChannels(props)
       const { areaGradientStyles } = getColorAreaGradient(value, {
         xChannel,
         yChannel,
@@ -212,11 +188,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getAreaThumbProps(props) {
-      const { xChannel, yChannel } = getResolvedChannels(props)
+    getAreaThumbProps(props = {}) {
+      const { xChannel, yChannel, value: valueAsHSL } = getAreaChannels(props)
       const channel = { xChannel, yChannel }
 
-      const valueAsHSL = value.toFormat("hsl")
       const x = valueAsHSL.getChannelValuePercent(xChannel)
       const y = 1 - valueAsHSL.getChannelValuePercent(yChannel)
 
@@ -422,7 +397,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getChannelInputProps(props) {
       const { channel } = props
       const isTextField = channel === "hex" || channel === "css"
-      const range = getChannelInputRange(value, channel)
+      const range = getChannelRange(value, channel)
 
       return normalize.input({
         ...parts.channelInput.attrs,
@@ -433,7 +408,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(isDisabled),
         readOnly: state.context.readOnly,
         id: dom.getChannelInputId(state.context, channel),
-        defaultValue: getChannelInputValue(value, channel),
+        defaultValue: getChannelValue(value, channel),
         min: range?.minValue,
         max: range?.maxValue,
         step: range?.step,
@@ -449,12 +424,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           event.target.select()
         },
         onBlur(event) {
-          const value = event.currentTarget.value
+          const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber
           send({ type: "CHANNEL_INPUT.BLUR", channel, value, isTextField })
         },
         onKeyDown(event) {
           if (event.key === "Enter") {
-            const value = event.currentTarget.valueAsNumber
+            const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber
             send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
             event.preventDefault()
           }

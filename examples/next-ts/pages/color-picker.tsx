@@ -36,7 +36,7 @@ export default function Page() {
   )
 
   const api = colorPicker.connect(state, send, normalizeProps)
-  const [hue, saturation, lightness] = api.channels
+
   const presets = ["#f47373", "#697689"]
 
   return (
@@ -52,26 +52,27 @@ export default function Page() {
             <label {...api.labelProps}>
               Select Color: <span data-testid="value-text">{api.valueAsString}</span>
             </label>
+
             <div {...api.controlProps}>
               <button {...api.triggerProps}>
                 <div {...api.getTransparencyGridProps({ size: "10px" })} />
-                <div {...api.getSwatchProps({ value: api.value })} data-testid="readonly-swatch" />
+                <div {...api.getSwatchProps({ value: api.value })} />
               </button>
-              <input {...api.inputProps} />
+              <input {...api.getChannelInputProps({ channel: "hex" })} />
               <input {...api.getChannelInputProps({ channel: "alpha" })} />
             </div>
 
             <div {...api.positionerProps}>
               <div {...api.contentProps}>
                 <div className="content__inner">
-                  <div {...api.getAreaProps({ xChannel: saturation, yChannel: lightness })}>
-                    <div {...api.getAreaBackgroundProps({ xChannel: saturation, yChannel: lightness })} />
-                    <div {...api.getAreaThumbProps({ xChannel: saturation, yChannel: lightness })} />
+                  <div {...api.getAreaProps()}>
+                    <div {...api.getAreaBackgroundProps()} />
+                    <div {...api.getAreaThumbProps()} />
                   </div>
 
-                  <div {...api.getChannelSliderProps({ channel: hue })}>
-                    <div {...api.getChannelSliderTrackProps({ channel: hue })} />
-                    <div {...api.getChannelSliderThumbProps({ channel: hue })} />
+                  <div {...api.getChannelSliderProps({ channel: "hue" })}>
+                    <div {...api.getChannelSliderTrackProps({ channel: "hue" })} />
+                    <div {...api.getChannelSliderThumbProps({ channel: "hue" })} />
                   </div>
 
                   <div {...api.getChannelSliderProps({ channel: "alpha" })}>
@@ -79,30 +80,35 @@ export default function Page() {
                     <div {...api.getChannelSliderTrackProps({ channel: "alpha" })} />
                     <div {...api.getChannelSliderThumbProps({ channel: "alpha" })} />
                   </div>
+
                   <div style={{ display: "flex", width: "100%" }}>
-                    <input {...api.getChannelInputProps({ channel: hue })} />
-                    <input {...api.getChannelInputProps({ channel: saturation })} />
-                    <input {...api.getChannelInputProps({ channel: lightness })} />
+                    <input {...api.getChannelInputProps({ channel: "hue" })} />
+                    <input {...api.getChannelInputProps({ channel: "saturation" })} />
+                    <input {...api.getChannelInputProps({ channel: "lightness" })} />
                     <input {...api.getChannelInputProps({ channel: "alpha" })} />
                   </div>
+
                   <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                     <div style={{ position: "relative" }}>
                       <div {...api.getTransparencyGridProps({ size: "4px" })} />
-                      <div {...api.getSwatchProps({ value: api.value })} data-testid="readonly-swatch" />
+                      <div {...api.getSwatchProps({ value: api.value })} />
                     </div>
                     <p data-testid="value-text">{api.valueAsString}</p>
                   </div>
+
                   <input {...api.getChannelInputProps({ channel: "hex" })} />
+
                   <div {...api.swatchGroupProps} style={{ display: "flex", gap: "10px" }}>
                     {presets.map((preset) => (
                       <button key={preset} {...api.getSwatchTriggerProps({ value: preset })}>
                         <div style={{ position: "relative" }}>
                           <div {...api.getTransparencyGridProps({ size: "4px" })} />
-                          <div {...api.getSwatchProps({ value: preset })} data-testid="clickable-swatch" />
+                          <div {...api.getSwatchProps({ value: preset })} />
                         </div>
                       </button>
                     ))}
                   </div>
+
                   <button {...api.eyeDropperTriggerProps}>
                     <EyeDropIcon />
                   </button>

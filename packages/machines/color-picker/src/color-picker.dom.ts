@@ -8,7 +8,6 @@ import { runIfFn } from "@zag-js/utils"
 export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `color-picker:${ctx.id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `color-picker:${ctx.id}:label`,
-  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `color-picker:${ctx.id}:input`,
   getHiddenInputId: (ctx: Ctx) => `color-picker:${ctx.id}:hidden-input`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `color-picker:${ctx.id}:control`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `color-picker:${ctx.id}:trigger`,
@@ -26,7 +25,6 @@ export const dom = createScope({
   getChannelSliderThumbId: (ctx: Ctx, channel: ColorChannel) =>
     ctx.ids?.channelSliderThumb?.(channel) ?? `color-picker:${ctx.id}:slider-thumb:${channel}`,
 
-  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getAreaThumbEl: (ctx: Ctx) => dom.getById(ctx, dom.getAreaThumbId(ctx)),
   getChannelSliderThumbEl: (ctx: Ctx, channel: ColorChannel) =>
@@ -43,6 +41,7 @@ export const dom = createScope({
     return percent
   },
 
+  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getChannelSliderTrackEl: (ctx: Ctx, channel: ColorChannel) => {

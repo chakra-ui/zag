@@ -1,11 +1,8 @@
 import { parseColor, type Color, type ColorChannelRange } from "@zag-js/color-utils"
 import type { ExtendedColorChannel } from "../color-picker.types"
 
-export function getChannelInputValue(
-  color: Color,
-  channel: ExtendedColorChannel | null | undefined,
-): string | undefined {
-  if (channel == null) return
+export function getChannelValue(color: Color, channel: ExtendedColorChannel | null | undefined): string {
+  if (channel == null) return ""
 
   if (channel === "hex") {
     return color.toString("hex")
@@ -48,7 +45,7 @@ export function getChannelInputValue(
   }
 }
 
-export function getChannelInputRange(color: Color, channel: ExtendedColorChannel): ColorChannelRange | undefined {
+export function getChannelRange(color: Color, channel: ExtendedColorChannel): ColorChannelRange | undefined {
   switch (channel) {
     case "hex":
       const minColor = parseColor("#000000")

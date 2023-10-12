@@ -6,7 +6,7 @@ import { a11y, clickOutside, part } from "./__utils"
  * -----------------------------------------------------------------------------*/
 
 class Parts {
-  constructor(public readonly page: Page) {}
+  constructor(private readonly page: Page) {}
   get trigger(): Locator {
     return this.page.locator(part("trigger"))
   }
@@ -14,7 +14,7 @@ class Parts {
     return this.page.locator(part("content"))
   }
   get input(): Locator {
-    return this.page.locator(part("input"))
+    return this.page.locator(`[data-part=control] [data-channel=hex]`)
   }
   get areaThumb(): Locator {
     return this.page.locator(part("area-thumb"))
@@ -40,6 +40,7 @@ class Parts {
 }
 
 const INITIAL_VALUE = "#FF0000"
+const PINK_VALUE = "#FFC0CB"
 
 const test = base.extend<{ parts: Parts }>({
   parts: async ({ page }, use) => {
@@ -60,10 +61,18 @@ test.describe("color-picker", () => {
     await a11y(page, ".color-picker")
   })
 
-  test("[closed] typing native css colors should update color", async ({ parts }) => {
+  test("[closed] typing the same native css colors switch show hex", async ({ parts }) => {
     await parts.input.fill("red")
     await parts.input.press("Enter")
+    await parts.input.blur()
     await expect(parts.input).toHaveValue(INITIAL_VALUE)
+  })
+
+  test("[closed] typing different native css colors should update color", async ({ parts }) => {
+    await parts.input.fill("pink")
+    await parts.input.press("Enter")
+    await parts.input.blur()
+    await expect(parts.input).toHaveValue(PINK_VALUE)
   })
 
   test("[closed] typing in alpha should update color", async ({ parts, page }) => {
@@ -79,11 +88,11 @@ test.describe("color-picker", () => {
     await expect(parts.content).toBeVisible()
   })
 
-  test("should re-focus trigger on outside click", async ({ parts }) => {
+  test("should re-focus trigger on outside click", async ({ parts, page }) => {
     await parts.trigger.click()
     await expect(parts.content).toBeVisible()
 
-    await clickOutside(parts.page)
+    await clickOutside(page)
     await expect(parts.trigger).toBeFocused()
   })
 

@@ -224,10 +224,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   valueAsString: string
   /**
-   * The alpha value of the color
-   */
-  alpha: number
-  /**
    * The current color channels of the color
    */
   channels: [ColorChannel, ColorChannel, ColorChannel]
@@ -235,6 +231,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to set the color value
    */
   setColor(value: string | Color): void
+  /**
+   * Function to set the color value
+   */
+  getChannelValue(channel: ColorChannel): string
   /**
    * Function to set the color value of a specific channel
    */
@@ -244,6 +244,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   setFormat(format: ColorFormat): void
   /**
+   * The alpha value of the color
+   */
+  getAlpha(): number
+  /**
    * Function to set the color alpha
    */
   setAlpha(value: number): void
@@ -251,15 +255,14 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   rootProps: T["element"]
   labelProps: T["element"]
   controlProps: T["element"]
-  inputProps: T["input"]
   triggerProps: T["button"]
   positionerProps: T["element"]
   contentProps: T["element"]
   hiddenInputProps: T["input"]
 
-  getAreaProps(props: AreaProps): T["element"]
-  getAreaBackgroundProps(props: AreaProps): T["element"]
-  getAreaThumbProps(props: AreaProps): T["element"]
+  getAreaProps(props?: AreaProps): T["element"]
+  getAreaBackgroundProps(props?: AreaProps): T["element"]
+  getAreaThumbProps(props?: AreaProps): T["element"]
 
   getChannelSliderProps(props: ChannelProps): T["element"]
   getChannelSliderTrackProps(props: ChannelProps): T["element"]

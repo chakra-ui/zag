@@ -4,7 +4,6 @@ export const anatomy = createAnatomy("color-picker", [
   "root",
   "label",
   "control",
-  "input",
   "trigger",
   "positioner",
   "content",
