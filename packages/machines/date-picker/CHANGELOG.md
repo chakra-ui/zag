@@ -1,5 +1,26 @@
 # @zag-js/date-picker
 
+## 0.24.0
+
+### Patch Changes
+
+- [`90592285`](https://github.com/chakra-ui/zag/commit/905922852fe7e1725f9bd3af4e09dbb9328b0a7e) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Add missing table head element
+
+- Updated dependencies [[`51712f4b`](https://github.com/chakra-ui/zag/commit/51712f4b22fe977bc02dabeda0350cdce5772619)]:
+  - @zag-js/popper@0.24.0
+  - @zag-js/anatomy@0.24.0
+  - @zag-js/core@0.24.0
+  - @zag-js/types@0.24.0
+  - @zag-js/utils@0.24.0
+  - @zag-js/date-utils@0.24.0
+  - @zag-js/dismissable@0.24.0
+  - @zag-js/dom-event@0.24.0
+  - @zag-js/dom-query@0.24.0
+  - @zag-js/form-utils@0.24.0
+  - @zag-js/live-region@0.24.0
+  - @zag-js/text-selection@0.24.0
+
 ## 0.23.0
 
 ### Minor Changes

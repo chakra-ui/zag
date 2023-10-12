@@ -1,5 +1,25 @@
 # @zag-js/pagination
 
+## 0.24.0
+
+### Minor Changes
+
+- [`29c47f9d`](https://github.com/chakra-ui/zag/commit/29c47f9d68906aaccbd2da3f274b74c2187ff257) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename component anatomy and parts
+
+  - `getPageTriggerProps` => `getTriggerProps`
+  - `getNextPageTriggerProps` => `getNextTriggerProps`
+  - `getPrevPageTriggerProps` => `getPrevTriggerProps`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.24.0
+  - @zag-js/core@0.24.0
+  - @zag-js/types@0.24.0
+  - @zag-js/utils@0.24.0
+  - @zag-js/dom-query@0.24.0
+
 ## 0.23.0
 
 ### Patch Changes

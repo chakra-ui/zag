@@ -1,5 +1,12 @@
 # @zag-js/auto-resize
 
+## 0.24.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.24.0
+
 ## 0.23.0
 
 ### Patch Changes
