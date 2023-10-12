@@ -21,6 +21,8 @@ const EyeDropIcon = () => (
   </svg>
 )
 
+const presets = ["#f47373", "#697689"]
+
 export default function Page() {
   const controls = useControls(colorPickerControls)
 
@@ -36,8 +38,6 @@ export default function Page() {
   )
 
   const api = colorPicker.connect(state, send, normalizeProps)
-
-  const presets = ["#f47373", "#697689"]
 
   return (
     <>
