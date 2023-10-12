@@ -1,5 +1,26 @@
 # @zag-js/carousel
 
+## 0.24.0
+
+### Minor Changes
+
+- [`be34b47d`](https://github.com/chakra-ui/zag/commit/be34b47dcb1e0ed42f9eb889320f7ed4ba2d26f5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor component naming convention
+
+  - `slideGroupProps` -> `itemGroupProps`
+  - `getSlideProps` -> `getItemProps`
+  - `nextSlideTrigger` -> `nextTrigger`
+  - `prevSlideTrigger` -> `prevTrigger`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.24.0
+  - @zag-js/core@0.24.0
+  - @zag-js/types@0.24.0
+  - @zag-js/utils@0.24.0
+  - @zag-js/dom-query@0.24.0
+
 ## 0.23.0
 
 ### Patch Changes

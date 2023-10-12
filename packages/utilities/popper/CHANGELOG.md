@@ -1,5 +1,19 @@
 # @zag-js/popper
 
+## 0.24.0
+
+### Minor Changes
+
+- [`51712f4b`](https://github.com/chakra-ui/zag/commit/51712f4b22fe977bc02dabeda0350cdce5772619) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `api.setPositioning` to `api.reposition`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.24.0
+  - @zag-js/dom-query@0.24.0
+  - @zag-js/element-rect@0.24.0
+
 ## 0.23.0
 
 ### Patch Changes

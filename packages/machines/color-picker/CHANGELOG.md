@@ -1,5 +1,30 @@
 # @zag-js/color-picker
 
+## 0.24.0
+
+### Minor Changes
+
+- [#934](https://github.com/chakra-ui/zag/pull/934)
+  [`9f5e5a8b`](https://github.com/chakra-ui/zag/commit/9f5e5a8bc888d5277469aae136fad3e16295f156) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Redesign the color picker API
+
+### Patch Changes
+
+- Updated dependencies [[`51712f4b`](https://github.com/chakra-ui/zag/commit/51712f4b22fe977bc02dabeda0350cdce5772619)]:
+  - @zag-js/popper@0.24.0
+  - @zag-js/anatomy@0.24.0
+  - @zag-js/core@0.24.0
+  - @zag-js/types@0.24.0
+  - @zag-js/color-utils@0.24.0
+  - @zag-js/utils@0.24.0
+  - @zag-js/dismissable@0.24.0
+  - @zag-js/dom-event@0.24.0
+  - @zag-js/dom-query@0.24.0
+  - @zag-js/form-utils@0.24.0
+  - @zag-js/tabbable@0.24.0
+  - @zag-js/text-selection@0.24.0
+  - @zag-js/visually-hidden@0.24.0
+
 ## 0.23.0
 
 ### Patch Changes
