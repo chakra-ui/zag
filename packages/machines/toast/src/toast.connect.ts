@@ -31,20 +31,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("DISMISS")
     },
 
-    render() {
-      return state.context.render?.({
-        id: state.context.id,
-        type: state.context.type,
-        duration: state.context.duration,
-        title: state.context.title,
-        placement: state.context.placement,
-        description: state.context.description,
-        dismiss() {
-          send("DISMISS")
-        },
-      })
-    },
-
     rootProps: normalize.element({
       ...parts.root.attrs,
       dir: state.context.dir,
@@ -55,11 +41,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "status",
       "aria-atomic": "true",
       tabIndex: 0,
+      onAnimationEnd() {
+        send("ANIMATION_END")
+      },
       style: {
         position: "relative",
         pointerEvents: "auto",
         margin: "calc(var(--toast-gutter) / 2)",
-        "--remove-delay": `${state.context.removeDelay}ms`,
         "--duration": `${state.context.duration}ms`,
       },
       onKeyDown(event) {

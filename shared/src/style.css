@@ -930,7 +930,7 @@ main [data-testid="scrubber"] {
 }
 
 [data-scope="toast"][data-part="root"][data-state="closed"] {
-  animation-duration: var(--toast-remove-delay);
+  animation-duration: 250ms;
   animation-name: fadeOut;
 }
 

@@ -8,4 +8,5 @@ export const dom = createScope({
   getDescriptionId: (ctx: Ctx) => `toast:${ctx.id}:description`,
   getCloseTriggerId: (ctx: Ctx) => `toast${ctx.id}:close`,
   getPortalId: (ctx: GroupCtx) => `toast-portal:${ctx.id}`,
+  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
 })

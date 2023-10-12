@@ -16,7 +16,10 @@ const fetchMachine = createMachine({
   context: {
     "hasTypeChanged && isChangingToLoading": false,
     "hasDurationChanged || hasTypeChanged": false,
-    "!isLoadingType": false
+    "!isLoadingType": false,
+    "hasAnimation": false,
+    "hasAnimation": false,
+    "hasAnimation": false
   },
   on: {
     UPDATE: [{
@@ -52,17 +55,38 @@ const fetchMachine = createMachine({
           target: "active",
           actions: ["setCreatedAt"]
         },
-        DISMISS: "dismissing"
+        DISMISS: [{
+          cond: "hasAnimation",
+          target: "dismissing",
+          actions: "invokeOnClosing"
+        }, {
+          target: "inactive",
+          actions: ["invokeOnClosing", "notifyParentToRemove"]
+        }]
       }
     },
     active: {
       tags: ["visible"],
       activities: "trackDocumentVisibility",
       after: {
-        VISIBLE_DURATION: "dismissing"
+        VISIBLE_DURATION: [{
+          cond: "hasAnimation",
+          target: "dismissing",
+          actions: "invokeOnClosing"
+        }, {
+          target: "inactive",
+          actions: ["invokeOnClosing", "notifyParentToRemove"]
+        }]
       },
       on: {
-        DISMISS: "dismissing",
+        DISMISS: [{
+          cond: "hasAnimation",
+          target: "dismissing",
+          actions: "invokeOnClosing"
+        }, {
+          target: "inactive",
+          actions: ["invokeOnClosing", "notifyParentToRemove"]
+        }],
         PAUSE: {
           target: "persist",
           actions: "setRemainingDuration"
@@ -70,9 +94,8 @@ const fetchMachine = createMachine({
       }
     },
     dismissing: {
-      entry: "invokeOnClosing",
-      after: {
-        REMOVE_DELAY: {
+      on: {
+        ANIMATION_END: {
           target: "inactive",
           actions: "notifyParentToRemove"
         }
@@ -94,6 +117,7 @@ const fetchMachine = createMachine({
   guards: {
     "hasTypeChanged && isChangingToLoading": ctx => ctx["hasTypeChanged && isChangingToLoading"],
     "hasDurationChanged || hasTypeChanged": ctx => ctx["hasDurationChanged || hasTypeChanged"],
-    "!isLoadingType": ctx => ctx["!isLoadingType"]
+    "!isLoadingType": ctx => ctx["!isLoadingType"],
+    "hasAnimation": ctx => ctx["hasAnimation"]
   }
 });

@@ -24,6 +24,10 @@ function ToastItem({ actor }: { actor: toast.Service }) {
     },
   }
 
+  if (state.context.render) {
+    return state.context.render(api)
+  }
+
   return (
     <pre {...api.rootProps}>
       <div {...progressbarProps} />
@@ -41,9 +45,6 @@ export default function Page() {
   const [state, send] = useMachine(
     toast.group.machine({
       id: useId(),
-      defaultOptions: {
-        placement: "top-start",
-      },
     }),
     {
       context: controls.context,
@@ -76,10 +77,13 @@ export default function Page() {
                 placement: "bottom-start",
                 title: "Ooops! Something was wrong",
                 type: "error",
+                render: (props) => {
+                  return <div>{props.title}</div>
+                },
               })
             }}
           >
-            Notify (Error)
+            Custom Render Notify (Error)
           </button>
           <button
             onClick={() => {

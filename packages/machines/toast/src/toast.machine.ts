@@ -8,7 +8,7 @@ import { getToastDuration } from "./toast.utils"
 const { not, and, or } = guards
 
 export function createToastMachine(options: Options = {}) {
-  const { type = "info", duration, id = "toast", placement = "bottom", removeDelay = 0, ...restProps } = options
+  const { type = "info", duration, id = "toast", placement = "bottom", ...restProps } = options
   const ctx = compact(restProps)
 
   const computedDuration = getToastDuration(duration, type)
@@ -18,12 +18,12 @@ export function createToastMachine(options: Options = {}) {
       id,
       entry: "invokeOnOpen",
       initial: type === "loading" ? "persist" : "active",
+      onEvent: console.log,
       context: {
         id,
         type,
         remaining: computedDuration,
         duration: computedDuration,
-        removeDelay,
         createdAt: Date.now(),
         placement,
         ...ctx,
@@ -64,7 +64,10 @@ export function createToastMachine(options: Options = {}) {
               target: "active",
               actions: ["setCreatedAt"],
             },
-            DISMISS: "dismissing",
+            DISMISS: [
+              { guard: "hasAnimation", target: "dismissing", actions: "invokeOnClosing" },
+              { target: "inactive", actions: ["invokeOnClosing", "notifyParentToRemove"] },
+            ],
           },
         },
 
@@ -72,10 +75,16 @@ export function createToastMachine(options: Options = {}) {
           tags: ["visible"],
           activities: "trackDocumentVisibility",
           after: {
-            VISIBLE_DURATION: "dismissing",
+            VISIBLE_DURATION: [
+              { guard: "hasAnimation", target: "dismissing", actions: "invokeOnClosing" },
+              { target: "inactive", actions: ["invokeOnClosing", "notifyParentToRemove"] },
+            ],
           },
           on: {
-            DISMISS: "dismissing",
+            DISMISS: [
+              { guard: "hasAnimation", target: "dismissing", actions: "invokeOnClosing" },
+              { target: "inactive", actions: ["invokeOnClosing", "notifyParentToRemove"] },
+            ],
             PAUSE: {
               target: "persist",
               actions: "setRemainingDuration",
@@ -84,9 +93,8 @@ export function createToastMachine(options: Options = {}) {
         },
 
         dismissing: {
-          entry: "invokeOnClosing",
-          after: {
-            REMOVE_DELAY: {
+          on: {
+            ANIMATION_END: {
               target: "inactive",
               actions: "notifyParentToRemove",
             },
@@ -115,11 +123,11 @@ export function createToastMachine(options: Options = {}) {
         isLoadingType: (ctx) => ctx.type === "loading",
         hasTypeChanged: (ctx, evt) => evt.toast?.type !== ctx.type,
         hasDurationChanged: (ctx, evt) => evt.toast?.duration !== ctx.duration,
+        hasAnimation: (ctx) => (dom.getRootEl(ctx)?.getAnimations() ?? []).length > 0,
       },
 
       delays: {
         VISIBLE_DURATION: (ctx) => ctx.remaining,
-        REMOVE_DELAY: (ctx) => ctx.removeDelay,
       },
 
       actions: {

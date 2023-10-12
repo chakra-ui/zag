@@ -41,12 +41,7 @@ export interface ToastOptions {
   /**
    * Custom function to render the toast element.
    */
-  render?: (options: RenderOptions) => any
-  /**
-   * The duration for the toast to kept alive before it is removed.
-   * Useful for exit transitions.
-   */
-  removeDelay?: number
+  render?: (options: MachineApi) => any
   /**
    * Function called when the toast has been closed and removed
    */
@@ -67,10 +62,6 @@ export interface ToastOptions {
 
 export type Options = Partial<ToastOptions>
 
-export type RenderOptions = Omit<ToastOptions, "render"> & {
-  dismiss(): void
-}
-
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -84,23 +75,21 @@ interface SharedContext {
    * Whether to pause the toast when interacted with
    */
   pauseOnInteraction?: boolean
-
   /**
-   * The default options for the toast
+   * The placement of the toast
    */
-  defaultOptions?: Partial<Pick<ToastOptions, "duration" | "removeDelay" | "placement">>
+  placement?: Placement
+  /**
+   * The duration the toast will be visible
+   */
+  duration?: number
 }
 
 export interface MachineContext
-  extends SharedContext,
+  extends Omit<SharedContext, "duration" | "placement">,
     RootProperties,
     CommonProperties,
-    Omit<ToastOptions, "removeDelay"> {
-  /**
-   * The duration for the toast to kept alive before it is removed.
-   * Useful for exit transitions.
-   */
-  removeDelay: number
+    ToastOptions {
   /**
    * The document's text/writing direction.
    */
@@ -143,6 +132,11 @@ interface GroupPublicContext extends SharedContext, DirectionProperty, CommonPro
    * The offset from the safe environment edge of the viewport
    */
   offsets: string | Record<"left" | "right" | "bottom" | "top", string>
+
+  /**
+   * Custom function to render the toast element.
+   */
+  render?: (options: MachineApi) => any
 }
 
 export type UserDefinedGroupContext = RequiredBy<GroupPublicContext, "id">
@@ -303,10 +297,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to instantly dismiss the toast.
    */
   dismiss(): void
-  /**
-   * Function render the toast in the DOM (based on the defined `render` property)
-   */
-  render(): any
+
   rootProps: T["element"]
   titleProps: T["element"]
   descriptionProps: T["element"]
