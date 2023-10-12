@@ -10,25 +10,19 @@ export function getWindowFrames(win: Window) {
       frames.each((frame) => {
         try {
           frame.document.addEventListener(event, listener, options)
-        } catch (err) {
-          console.warn(err)
-        }
+        } catch {}
       })
       return () => {
         try {
           frames.removeEventListener(event, listener, options)
-        } catch (err) {
-          console.warn(err)
-        }
+        } catch {}
       }
     },
     removeEventListener(event: string, listener: any, options?: any) {
       frames.each((frame) => {
         try {
           frame.document.removeEventListener(event, listener, options)
-        } catch (err) {
-          console.warn(err)
-        }
+        } catch {}
       })
     },
   }
