@@ -504,9 +504,10 @@ const set = {
     sync.inputs(ctx)
     if (!color || ctx.value.isEqual(color)) return
     const currentFormat = ctx.value.getFormat()
-
     const outputColor = color.toFormat(currentFormat)
-    outputColor.outputFormat = ctx.value.outputFormat
+    try {
+      outputColor.outputFormat = ctx.value.outputFormat
+    } catch {}
 
     ctx.value = ref(outputColor) as Color
     invoke.change(ctx)
