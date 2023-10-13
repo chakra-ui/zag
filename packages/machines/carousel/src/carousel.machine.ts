@@ -171,8 +171,8 @@ const measureElements = (ctx: MachineContext) => {
 }
 
 const invoke = {
-  slideChange: (ctx: MachineContext) => {
-    ctx.onSlideChange?.({ index: ctx.index })
+  change: (ctx: MachineContext) => {
+    ctx.onIndexChange?.({ index: ctx.index })
   },
 }
 
@@ -180,6 +180,6 @@ const set = {
   index: (ctx: MachineContext, index: number) => {
     if (isEqual(ctx.index, index)) return
     ctx.index = index
-    invoke.slideChange(ctx)
+    invoke.change(ctx)
   },
 }

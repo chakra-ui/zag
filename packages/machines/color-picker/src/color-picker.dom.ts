@@ -54,7 +54,10 @@ export const dom = createScope({
     return percent
   },
   getChannelInputEls: (ctx: Ctx) => {
-    return queryAll<HTMLInputElement>(dom.getContentEl(ctx), "input[data-channel]")
+    return [
+      ...queryAll<HTMLInputElement>(dom.getContentEl(ctx), "input[data-channel]"),
+      ...queryAll<HTMLInputElement>(dom.getControlEl(ctx), "input[data-channel]"),
+    ]
   },
   getFirstFocusableEl: (ctx: Ctx) => getFirstFocusable(dom.getContentEl(ctx), "if-empty"),
   getInitialFocusEl: (ctx: Ctx): HTMLElement | undefined => {

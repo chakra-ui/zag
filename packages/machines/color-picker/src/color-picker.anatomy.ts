@@ -14,7 +14,7 @@ export const anatomy = createAnatomy("color-picker", [
   "channelSliderTrack",
   "channelSliderThumb",
   "channelInput",
-  "transparancyGrid",
+  "transparencyGrid",
   "swatchGroup",
   "swatchTrigger",
   "swatch",

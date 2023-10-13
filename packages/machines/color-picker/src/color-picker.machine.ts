@@ -10,7 +10,6 @@ import { compact, tryCatch } from "@zag-js/utils"
 import { dom } from "./color-picker.dom"
 import { parse } from "./color-picker.parse"
 import type {
-  ColorFormat,
   ColorType,
   ExtendedColorChannel,
   MachineContext,
@@ -47,7 +46,10 @@ export function machine(userContext: UserDefinedContext) {
         isRtl: (ctx) => ctx.dir === "rtl",
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
-        valueAsString: (ctx) => ctx.value.toString("css"),
+        valueAsString: (ctx) => {
+          const color = ctx.value.outputFormat ? ctx.value.toFormat(ctx.value.outputFormat) : ctx.value
+          return color.toString("css")
+        },
       },
 
       activities: ["trackFormControl"],
@@ -375,11 +377,10 @@ export function machine(userContext: UserDefinedContext) {
 
           // handle other text channels
           if (isTextField) {
-            const format: ColorFormat = "hsl"
             const currentAlpha = ctx.value.getChannelValue("alpha")
 
             const color = tryCatch(
-              () => parseColor(value).toFormat(format).withChannelValue("alpha", currentAlpha),
+              () => parse(value).withChannelValue("alpha", currentAlpha),
               () => ctx.value,
             )
 
@@ -392,7 +393,7 @@ export function machine(userContext: UserDefinedContext) {
           }
 
           // handle other channels
-          const color = ctx.value.withChannelValue(channel, value)
+          const color = ctx.value.toFormat(ctx.value.outputFormat!).withChannelValue(channel, value)
           set.value(ctx, color)
         },
         incrementChannel(ctx, evt) {
@@ -463,6 +464,9 @@ export function machine(userContext: UserDefinedContext) {
           send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },
       },
+      compareFns: {
+        value: (a, b) => a.isEqual(b),
+      },
     },
   )
 }
@@ -499,7 +503,12 @@ const set = {
   value(ctx: MachineContext, color: Color | ColorType | undefined) {
     sync.inputs(ctx)
     if (!color || ctx.value.isEqual(color)) return
-    ctx.value = ref(color) as Color
+    const currentFormat = ctx.value.getFormat()
+
+    const outputColor = color.toFormat(currentFormat)
+    outputColor.outputFormat = ctx.value.outputFormat
+
+    ctx.value = ref(outputColor) as Color
     invoke.change(ctx)
   },
 }

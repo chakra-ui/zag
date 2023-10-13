@@ -1,11 +1,12 @@
 import * as colorPicker from "@zag-js/color-picker"
 import { colorPickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import serialize from "form-serialize"
 import { computed, defineComponent } from "vue"
+import { Show } from "../components/show"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-import serialize from "form-serialize"
 
 const presets = ["#f47373", "#697689"]
 
@@ -75,10 +76,32 @@ export default defineComponent({
                         <div {...api.getAreaThumbProps()} />
                       </div>
 
-                      <div {...api.getChannelSliderProps({ channel: "hue" })}>
-                        <div {...api.getChannelSliderTrackProps({ channel: "hue" })} />
-                        <div {...api.getChannelSliderThumbProps({ channel: "hue" })} />
-                      </div>
+                      <Show when={api.format.startsWith("hsl")}>
+                        <div style={{ display: "flex", width: "100%" }}>
+                          <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} />
+                          <span>S</span> <input {...api.getChannelInputProps({ channel: "saturation" })} />
+                          <span>L</span> <input {...api.getChannelInputProps({ channel: "lightness" })} />
+                          <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+                        </div>
+                      </Show>
+
+                      <Show when={api.format.startsWith("rgb")}>
+                        <div style={{ display: "flex", width: "100%" }}>
+                          <span>R</span> <input {...api.getChannelInputProps({ channel: "red" })} />
+                          <span>G</span> <input {...api.getChannelInputProps({ channel: "green" })} />
+                          <span>B</span> <input {...api.getChannelInputProps({ channel: "blue" })} />
+                          <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+                        </div>
+                      </Show>
+
+                      <Show when={api.format.startsWith("hsb")}>
+                        <div style={{ display: "flex", width: "100%" }}>
+                          <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} />
+                          <span>S</span> <input {...api.getChannelInputProps({ channel: "saturation" })} />
+                          <span>B</span> <input {...api.getChannelInputProps({ channel: "brightness" })} />
+                          <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
+                        </div>
+                      </Show>
 
                       <div {...api.getChannelSliderProps({ channel: "alpha" })}>
                         <div {...api.getTransparencyGridProps({ size: "12px" })} />

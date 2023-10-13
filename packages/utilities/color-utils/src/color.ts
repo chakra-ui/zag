@@ -15,6 +15,7 @@ export abstract class Color implements ColorType {
   abstract getChannelRange(channel: ColorChannel): ColorChannelRange
   abstract getFormat(): ColorFormat
   abstract getChannels(): [ColorChannel, ColorChannel, ColorChannel]
+  outputFormat: ColorFormat | undefined
 
   toHexInt(): number {
     return this.toFormat("rgb").toHexInt()

@@ -31,6 +31,9 @@ export interface ColorType {
   toString(format: ColorFormat | "css"): string
   /** Converts the color to hex, and returns an integer representation. */
   toHexInt(): number
+  /** The output format of the color. */
+  outputFormat: ColorFormat | undefined
+
   /**
    * Returns the numeric value for a given channel.
    * Throws an error if the channel is unsupported in the current color format.

@@ -77,16 +77,6 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
    */
   name?: string
   /**
-   * The color format to use (rgb, hsl, hsb)
-   * @default "hsl"
-   */
-  format?: ColorFormat
-  /**
-   * The alpha format to use (decimal, percent)
-   * @default "decimal"
-   */
-  alphaFormat?: "decimal" | "percent"
-  /**
    * The positioning options for the color picker
    */
   positioning: PositioningOptions
@@ -206,8 +196,8 @@ export interface SwatchProps {
   respectAlpha?: boolean
 }
 
-export interface TransparancyGridProps {
-  size: string
+export interface TransparencyGridProps {
+  size?: string
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -244,13 +234,17 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   setChannelValue(channel: ColorChannel, value: number): void
   /**
+   * The current color format
+   */
+  format: ColorFormat
+  /**
    * Function to set the color format
    */
   setFormat(format: ColorFormat): void
   /**
    * The alpha value of the color
    */
-  getAlpha(): number
+  alpha: number
   /**
    * Function to set the color alpha
    */
@@ -273,7 +267,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getChannelSliderThumbProps(props: ChannelProps): T["element"]
   getChannelInputProps(props: ChannelInputProps): T["input"]
 
-  getTransparencyGridProps(props: TransparancyGridProps): T["element"]
+  getTransparencyGridProps(props?: TransparencyGridProps): T["element"]
 
   eyeDropperTriggerProps: T["button"]
 

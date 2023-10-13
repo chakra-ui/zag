@@ -1,7 +1,7 @@
 import * as colorPicker from "@zag-js/color-picker"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { colorPickerControls } from "@zag-js/shared"
-import { Index, createMemo, createUniqueId } from "solid-js"
+import { Index, Show, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -81,12 +81,32 @@ export default function Page() {
                     <div {...api().getChannelSliderThumbProps({ channel: "alpha" })} />
                   </div>
 
-                  <div style={{ display: "flex", width: "100%" }}>
-                    <input {...api().getChannelInputProps({ channel: "hue" })} />
-                    <input {...api().getChannelInputProps({ channel: "saturation" })} />
-                    <input {...api().getChannelInputProps({ channel: "lightness" })} />
-                    <input {...api().getChannelInputProps({ channel: "alpha" })} />
-                  </div>
+                  <Show when={api().format.startsWith("hsl")}>
+                    <div style={{ display: "flex", width: "100%" }}>
+                      <span>H</span> <input {...api().getChannelInputProps({ channel: "hue" })} />
+                      <span>S</span> <input {...api().getChannelInputProps({ channel: "saturation" })} />
+                      <span>L</span> <input {...api().getChannelInputProps({ channel: "lightness" })} />
+                      <span>A</span> <input {...api().getChannelInputProps({ channel: "alpha" })} />
+                    </div>
+                  </Show>
+
+                  <Show when={api().format.startsWith("rgb")}>
+                    <div style={{ display: "flex", width: "100%" }}>
+                      <span>R</span> <input {...api().getChannelInputProps({ channel: "red" })} />
+                      <span>G</span> <input {...api().getChannelInputProps({ channel: "green" })} />
+                      <span>B</span> <input {...api().getChannelInputProps({ channel: "blue" })} />
+                      <span>A</span> <input {...api().getChannelInputProps({ channel: "alpha" })} />
+                    </div>
+                  </Show>
+
+                  <Show when={api().format.startsWith("hsb")}>
+                    <div style={{ display: "flex", width: "100%" }}>
+                      <span>H</span> <input {...api().getChannelInputProps({ channel: "hue" })} />
+                      <span>S</span> <input {...api().getChannelInputProps({ channel: "saturation" })} />
+                      <span>B</span> <input {...api().getChannelInputProps({ channel: "brightness" })} />
+                      <span>A</span> <input {...api().getChannelInputProps({ channel: "alpha" })} />
+                    </div>
+                  </Show>
 
                   <div style={{ display: "flex", gap: "10px", "align-items": "center" }}>
                     <div style={{ position: "relative" }}>

@@ -14,4 +14,6 @@ export type {
   ColorType,
   UserDefinedContext as Context,
   SwatchProps,
+  TransparencyGridProps,
+  SwatchTriggerProps,
 } from "./color-picker.types"

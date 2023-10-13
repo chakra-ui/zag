@@ -55,7 +55,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Function called when the slide changes.
    */
-  onSlideChange?: (details: SlideChangeDetails) => void
+  onIndexChange?: (details: SlideChangeDetails) => void
   /**
    * The ids of the elements in the carousel. Useful for composition.
    */

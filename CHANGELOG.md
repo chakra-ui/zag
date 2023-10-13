@@ -12,6 +12,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 - **FileUpload**: Issue where `api.setFiles` and `api.clearFiles` does not work
 - **NumberInput**: Fix issue where before input gets called with incorrect event data
+- **Popover**: Fix issue where popover shows a `DOMException` warning when third party iframes are present
 
 ### Added
 

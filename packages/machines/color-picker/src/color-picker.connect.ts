@@ -22,6 +22,7 @@ import { getSliderBackground } from "./utils/get-slider-background"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const value = state.context.value
   const valueAsString = state.context.valueAsString
+
   const isDisabled = state.context.isDisabled
   const isInteractive = state.context.isInteractive
 
@@ -30,11 +31,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const channels = value.getChannels()
 
-  const getAreaChannels = (props: AreaProps) => ({
-    value: value.toFormat("hsl"),
-    xChannel: props.xChannel ?? "saturation",
-    yChannel: props.yChannel ?? "lightness",
-  })
+  const getAreaChannels = (props: AreaProps) => {
+    const channels = value.getChannels()
+    return {
+      xChannel: props.xChannel ?? channels[1],
+      yChannel: props.yChannel ?? channels[2],
+    }
+  }
 
   const currentPlacement = state.context.currentPlacement
   const popperStyles = getPlacementStyles({
@@ -46,7 +49,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isDragging,
     isOpen,
     valueAsString,
-    value: value,
+    value,
     channels,
     setColor(value) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })
@@ -58,13 +61,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const color = value.withChannelValue(channel, channelValue)
       send({ type: "VALUE.SET", value: color, src: "set-channel" })
     },
+    format: value.outputFormat ?? value.getFormat(),
     setFormat(format) {
       const formatValue = value.toFormat(format)
       send({ type: "VALUE.SET", value: formatValue, src: "set-format" })
     },
-    getAlpha() {
-      return value.getChannelValue("alpha")
-    },
+    alpha: value.getChannelValue("alpha"),
     setAlpha(alphaValue) {
       const color = value.withChannelValue("alpha", alphaValue)
       send({ type: "VALUE.SET", value: color, src: "set-alpha" })
@@ -189,11 +191,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getAreaThumbProps(props = {}) {
-      const { xChannel, yChannel, value: valueAsHSL } = getAreaChannels(props)
+      const { xChannel, yChannel } = getAreaChannels(props)
       const channel = { xChannel, yChannel }
 
-      const x = valueAsHSL.getChannelValuePercent(xChannel)
-      const y = 1 - valueAsHSL.getChannelValuePercent(yChannel)
+      const x = value.getChannelValuePercent(xChannel)
+      const y = 1 - value.getChannelValuePercent(yChannel)
 
       return normalize.element({
         ...parts.areaThumb.attrs,
@@ -253,10 +255,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getTransparencyGridProps(props) {
-      const { size } = props
+    getTransparencyGridProps(props = {}) {
+      const { size = "12px" } = props
       return normalize.element({
-        ...parts.transparancyGrid.attrs,
+        ...parts.transparencyGrid.attrs,
         style: {
           "--size": size,
           width: "100%",
@@ -309,7 +311,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           position: "relative",
           forcedColorAdjust: "none",
-          backgroundImage: getSliderBackground(state.context, { orientation, channel }),
+          backgroundImage: getSliderBackground({
+            orientation,
+            channel,
+            dir: state.context.dir,
+            value: value,
+          }),
         },
       })
     },
