@@ -11,7 +11,8 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id,
-  entry: "invokeOnOpen",
+  entry: ["invokeOnOpen", "checkAnimation"],
+  exit: "notifyParentToRemove",
   initial: type === "loading" ? "persist" : "active",
   context: {
     "hasTypeChanged && isChangingToLoading": false,
@@ -57,35 +58,32 @@ const fetchMachine = createMachine({
         },
         DISMISS: [{
           cond: "hasAnimation",
-          target: "dismissing",
-          actions: "invokeOnClosing"
+          target: "dismissing"
         }, {
           target: "inactive",
-          actions: ["invokeOnClosing", "notifyParentToRemove"]
+          actions: "invokeOnClosing"
         }]
       }
     },
     active: {
       tags: ["visible"],
       activities: "trackDocumentVisibility",
-      after: {
-        VISIBLE_DURATION: [{
-          cond: "hasAnimation",
-          target: "dismissing",
-          actions: "invokeOnClosing"
-        }, {
-          target: "inactive",
-          actions: ["invokeOnClosing", "notifyParentToRemove"]
-        }]
-      },
+      after: [{
+        delay: "VISIBLE_DURATION",
+        cond: "hasAnimation",
+        target: "dismissing"
+      }, {
+        delay: "VISIBLE_DURATION",
+        target: "inactive",
+        actions: "invokeOnClosing"
+      }],
       on: {
         DISMISS: [{
           cond: "hasAnimation",
-          target: "dismissing",
-          actions: "invokeOnClosing"
+          target: "dismissing"
         }, {
           target: "inactive",
-          actions: ["invokeOnClosing", "notifyParentToRemove"]
+          actions: "invokeOnClosing"
         }],
         PAUSE: {
           target: "persist",
@@ -94,15 +92,16 @@ const fetchMachine = createMachine({
       }
     },
     dismissing: {
+      entry: "invokeOnClosing",
+      activities: ["trackAnimationEvents"],
       on: {
         ANIMATION_END: {
-          target: "inactive",
-          actions: "notifyParentToRemove"
+          target: "inactive"
         }
       }
     },
     inactive: {
-      entry: "invokeOnClose",
+      entry: ["invokeOnClose"],
       type: "final"
     }
   }

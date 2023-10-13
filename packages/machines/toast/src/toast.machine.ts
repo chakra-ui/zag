@@ -1,5 +1,6 @@
 import { createMachine, guards } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-event"
+import { raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./toast.dom"
 import type { MachineContext, MachineState, Options } from "./toast.types"
@@ -16,17 +17,18 @@ export function createToastMachine(options: Options = {}) {
   return createMachine<MachineContext, MachineState>(
     {
       id,
-      entry: "invokeOnOpen",
+      entry: ["invokeOnOpen", "checkAnimation"],
+      exit: "notifyParentToRemove",
       initial: type === "loading" ? "persist" : "active",
-      onEvent: console.log,
       context: {
         id,
         type,
-        remaining: computedDuration,
         duration: computedDuration,
-        createdAt: Date.now(),
         placement,
         ...ctx,
+        createdAt: Date.now(),
+        remaining: computedDuration,
+        hasAnimation: true,
       },
 
       on: {
@@ -65,8 +67,8 @@ export function createToastMachine(options: Options = {}) {
               actions: ["setCreatedAt"],
             },
             DISMISS: [
-              { guard: "hasAnimation", target: "dismissing", actions: "invokeOnClosing" },
-              { target: "inactive", actions: ["invokeOnClosing", "notifyParentToRemove"] },
+              { guard: "hasAnimation", target: "dismissing" },
+              { target: "inactive", actions: "invokeOnClosing" },
             ],
           },
         },
@@ -74,16 +76,14 @@ export function createToastMachine(options: Options = {}) {
         active: {
           tags: ["visible"],
           activities: "trackDocumentVisibility",
-          after: {
-            VISIBLE_DURATION: [
-              { guard: "hasAnimation", target: "dismissing", actions: "invokeOnClosing" },
-              { target: "inactive", actions: ["invokeOnClosing", "notifyParentToRemove"] },
-            ],
-          },
+          after: [
+            { delay: "VISIBLE_DURATION", guard: "hasAnimation", target: "dismissing" },
+            { delay: "VISIBLE_DURATION", target: "inactive", actions: "invokeOnClosing" },
+          ],
           on: {
             DISMISS: [
-              { guard: "hasAnimation", target: "dismissing", actions: "invokeOnClosing" },
-              { target: "inactive", actions: ["invokeOnClosing", "notifyParentToRemove"] },
+              { guard: "hasAnimation", target: "dismissing" },
+              { target: "inactive", actions: "invokeOnClosing" },
             ],
             PAUSE: {
               target: "persist",
@@ -93,22 +93,41 @@ export function createToastMachine(options: Options = {}) {
         },
 
         dismissing: {
+          entry: "invokeOnClosing",
+          activities: ["trackAnimationEvents"],
           on: {
             ANIMATION_END: {
               target: "inactive",
-              actions: "notifyParentToRemove",
             },
           },
         },
 
         inactive: {
-          entry: "invokeOnClose",
+          entry: ["invokeOnClose"],
           type: "final",
         },
       },
     },
     {
       activities: {
+        trackAnimationEvents(ctx, _evt, { send }) {
+          const node = dom.getRootEl(ctx)
+          if (!node) return
+
+          const onEnd = (event: AnimationEvent) => {
+            if (event.currentTarget === node) {
+              send("ANIMATION_END")
+            }
+          }
+
+          node.addEventListener("animationcancel", onEnd)
+          node.addEventListener("animationend", onEnd)
+
+          return () => {
+            node.removeEventListener("animationcancel", onEnd)
+            node.removeEventListener("animationend", onEnd)
+          }
+        },
         trackDocumentVisibility(ctx, _evt, { send }) {
           if (!ctx.pauseOnPageIdle) return
           const doc = dom.getDoc(ctx)
@@ -123,7 +142,7 @@ export function createToastMachine(options: Options = {}) {
         isLoadingType: (ctx) => ctx.type === "loading",
         hasTypeChanged: (ctx, evt) => evt.toast?.type !== ctx.type,
         hasDurationChanged: (ctx, evt) => evt.toast?.duration !== ctx.duration,
-        hasAnimation: (ctx) => (dom.getRootEl(ctx)?.getAnimations() ?? []).length > 0,
+        hasAnimation: (ctx) => ctx.hasAnimation,
       },
 
       delays: {
@@ -138,7 +157,9 @@ export function createToastMachine(options: Options = {}) {
           ctx.createdAt = Date.now()
         },
         notifyParentToRemove(_ctx, _evt, { self }) {
-          self.sendParent({ type: "REMOVE_TOAST", id: self.id })
+          setTimeout(() => {
+            self.sendParent({ type: "REMOVE_TOAST", id: self.id })
+          }, 100)
         },
         invokeOnClosing(ctx) {
           ctx.onClosing?.()
@@ -151,6 +172,12 @@ export function createToastMachine(options: Options = {}) {
         },
         invokeOnUpdate(ctx) {
           ctx.onUpdate?.()
+        },
+        checkAnimation(ctx) {
+          raf(() => {
+            const animations = dom.getRootEl(ctx)?.getAnimations() ?? []
+            ctx.hasAnimation = animations.length > 0
+          })
         },
         setContext(ctx, evt) {
           const { duration, type } = evt.toast

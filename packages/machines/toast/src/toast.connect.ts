@@ -41,9 +41,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "status",
       "aria-atomic": "true",
       tabIndex: 0,
-      onAnimationEnd() {
-        send("ANIMATION_END")
-      },
       style: {
         position: "relative",
         pointerEvents: "auto",

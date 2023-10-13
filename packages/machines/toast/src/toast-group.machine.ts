@@ -26,8 +26,6 @@ export function groupMachine(userContext: UserDefinedGroupContext) {
     },
 
     on: {
-      SETUP: {},
-
       PAUSE_TOAST: {
         actions: (_ctx, evt, { self }) => {
           self.sendChild("PAUSE", evt.id)
@@ -91,7 +89,9 @@ export function groupMachine(userContext: UserDefinedGroupContext) {
 
       REMOVE_TOAST: {
         actions: (ctx, evt, { self }) => {
-          self.stopChild(evt.id)
+          try {
+            self.stopChild(evt.id)
+          } catch {}
           const index = ctx.toasts.findIndex((toast) => toast.id === evt.id)
           ctx.toasts.splice(index, 1)
         },

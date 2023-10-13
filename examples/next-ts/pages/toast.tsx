@@ -77,9 +77,6 @@ export default function Page() {
                 placement: "bottom-start",
                 title: "Ooops! Something was wrong",
                 type: "error",
-                render: (props) => {
-                  return <div>{props.title}</div>
-                },
               })
             }}
           >
@@ -108,7 +105,7 @@ export default function Page() {
           </div>
         ))}
       </main>
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls.ui} viz>
         <StateVisualizer state={state} />
       </Toolbar>
     </>

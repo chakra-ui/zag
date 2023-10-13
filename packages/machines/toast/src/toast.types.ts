@@ -85,10 +85,19 @@ interface SharedContext {
   duration?: number
 }
 
+interface PrivateContext {
+  /**
+   * @internal
+   * Whether the toast root element has animations
+   */
+  hasAnimation: boolean
+}
+
 export interface MachineContext
   extends Omit<SharedContext, "duration" | "placement">,
     RootProperties,
     CommonProperties,
+    PrivateContext,
     ToastOptions {
   /**
    * The document's text/writing direction.
