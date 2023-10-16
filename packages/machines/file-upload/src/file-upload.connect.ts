@@ -26,10 +26,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     files: state.context.files,
     setFiles(files) {
       const count = files.length
-      send({ type: "VALUE.SET", files, count })
+      send({ type: "FILES.SET", files, count })
     },
     clearFiles() {
-      send({ type: "VALUE.SET", files: [] })
+      send({ type: "FILES.CLEAR" })
     },
     getFileSize(file) {
       return formatFileSize(file.size, { locale: state.context.locale })

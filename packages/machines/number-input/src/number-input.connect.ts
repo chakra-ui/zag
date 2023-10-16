@@ -128,7 +128,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         try {
           const { selectionStart, selectionEnd, value } = event.currentTarget
 
-          const nextValue = value.slice(0, selectionStart!) + (event as any).data + value.slice(selectionEnd!)
+          const nextValue = value.slice(0, selectionStart!) + ((event as any).data ?? "") + value.slice(selectionEnd!)
           const isValid = state.context.parser.isValidPartialNumber(nextValue)
 
           if (!isValid) {

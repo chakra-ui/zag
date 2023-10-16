@@ -117,7 +117,6 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       ...parts.positioner.attrs,
       dir: state.context.dir,
       id: dom.getPositionerId(state.context),
-      hidden: !isOpen,
       style: popperStyles.floating,
     }),
 

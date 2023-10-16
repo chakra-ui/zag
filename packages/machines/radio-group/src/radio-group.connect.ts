@@ -176,6 +176,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getIndicatorId(state.context),
       ...parts.indicator.attrs,
       dir: state.context.dir,
+      hidden: state.context.value == null,
       "data-disabled": dataAttr(isGroupDisabled),
       "data-orientation": state.context.orientation,
       style: {

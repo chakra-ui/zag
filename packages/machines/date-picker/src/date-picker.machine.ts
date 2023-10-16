@@ -74,7 +74,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "datepicker",
-      initial: ctx.inline ? "open" : "idle",
+      initial: ctx.inline || ctx.open ? "open" : "idle",
       context: getInitialContext(ctx),
       computed: {
         valueText: (ctx) =>
@@ -109,6 +109,7 @@ export function machine(userContext: UserDefinedContext) {
         valueText: ["announceValueText"],
         inputValue: ["syncInputElement"],
         view: ["focusActiveCell"],
+        open: ["toggleVisibility"],
       },
 
       on: {
@@ -147,6 +148,10 @@ export function machine(userContext: UserDefinedContext) {
               target: "open",
               actions: ["focusFirstSelectedDate", "invokeOnOpen"],
             },
+            OPEN: {
+              target: "open",
+              actions: ["invokeOnOpen"],
+            },
           },
         },
 
@@ -169,6 +174,10 @@ export function machine(userContext: UserDefinedContext) {
             "CELL.FOCUS": {
               target: "open",
               actions: ["setView", "invokeOnOpen"],
+            },
+            OPEN: {
+              target: "open",
+              actions: ["invokeOnOpen"],
             },
           },
         },
@@ -362,6 +371,10 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["focusTriggerElement", "setStartIndex", "invokeOnClose"],
               },
             ],
+            CLOSE: {
+              target: "idle",
+              actions: ["setStartIndex", "invokeOnClose"],
+            },
           },
         },
       },
@@ -672,6 +685,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnClose(ctx) {
           ctx.onOpenChange?.({ open: false })
+        },
+        toggleVisibility(ctx, _evt, { send }) {
+          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },
       },
       compareFns: {

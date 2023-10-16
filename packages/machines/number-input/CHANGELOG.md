@@ -1,5 +1,24 @@
 # @zag-js/number-input
 
+## 0.24.0
+
+### Patch Changes
+
+- [#926](https://github.com/chakra-ui/zag/pull/926)
+  [`e6ba2a53`](https://github.com/chakra-ui/zag/commit/e6ba2a5320eb42c1f99564cdf47deab413dc470d) Thanks
+  [@srflp](https://github.com/srflp)! - Fix issue where before input gets called with incorrect event data
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.24.0
+  - @zag-js/core@0.24.0
+  - @zag-js/types@0.24.0
+  - @zag-js/utils@0.24.0
+  - @zag-js/dom-event@0.24.0
+  - @zag-js/dom-query@0.24.0
+  - @zag-js/form-utils@0.24.0
+  - @zag-js/mutation-observer@0.24.0
+  - @zag-js/number-utils@0.24.0
+
 ## 0.23.0
 
 ### Patch Changes

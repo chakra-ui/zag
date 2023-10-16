@@ -22,6 +22,9 @@ const fetchMachine = createMachine({
     },
     "FILE.DELETE": {
       actions: ["removeFile"]
+    },
+    "FILES.CLEAR": {
+      actions: ["clearFiles"]
     }
   },
   on: {

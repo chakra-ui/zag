@@ -35,6 +35,9 @@ export function machine(userContext: UserDefinedContext) {
         "FILE.DELETE": {
           actions: ["removeFile"],
         },
+        "FILES.CLEAR": {
+          actions: ["clearFiles"],
+        },
       },
       states: {
         idle: {
@@ -123,6 +126,9 @@ export function machine(userContext: UserDefinedContext) {
         removeFile(ctx, evt) {
           const nextFiles = ctx.files.filter((file) => file !== evt.file)
           set.files(ctx, nextFiles)
+        },
+        clearFiles(ctx) {
+          set.files(ctx, [])
         },
       },
       compareFns: {

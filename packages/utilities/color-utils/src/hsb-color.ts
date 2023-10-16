@@ -1,8 +1,8 @@
+import { mod, clampValue, toFixedNumber } from "@zag-js/numeric-range"
 import { Color } from "./color"
 import { HSLColor } from "./hsl-color"
 import { RGBColor } from "./rgb-color"
 import type { ColorChannel, ColorChannelRange, ColorFormat, ColorType } from "./types"
-import { clampValue, mod, toFixedNumber } from "./utils"
 
 const HSB_REGEX =
   /hsb\(([-+]?\d+(?:.\d+)?\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d+(?:.\d+)?%)\)|hsba\(([-+]?\d+(?:.\d+)?\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d(.\d+)?)\)/
@@ -75,7 +75,7 @@ export class HSBColor extends Color {
       toFixedNumber(this.hue, 2),
       toFixedNumber(saturation * 100, 2),
       toFixedNumber(lightness * 100, 2),
-      this.alpha,
+      toFixedNumber(this.alpha, 2),
     )
   }
 
@@ -92,7 +92,12 @@ export class HSBColor extends Color {
     let fn = (n: number, k = (n + hue / 60) % 6) =>
       brightness - saturation * brightness * Math.max(Math.min(k, 4 - k, 1), 0)
 
-    return new RGBColor(Math.round(fn(5) * 255), Math.round(fn(3) * 255), Math.round(fn(1) * 255), this.alpha)
+    return new RGBColor(
+      Math.round(fn(5) * 255),
+      Math.round(fn(3) * 255),
+      Math.round(fn(1) * 255),
+      toFixedNumber(this.alpha, 2),
+    )
   }
 
   clone(): ColorType {
@@ -113,13 +118,17 @@ export class HSBColor extends Color {
     }
   }
 
-  getColorFormat(): ColorFormat {
+  toJSON(): Record<string, number> {
+    return { h: this.hue, s: this.saturation, b: this.brightness }
+  }
+
+  getFormat(): ColorFormat {
     return "hsb"
   }
 
   private static colorChannels: [ColorChannel, ColorChannel, ColorChannel] = ["hue", "saturation", "brightness"]
 
-  getColorChannels(): [ColorChannel, ColorChannel, ColorChannel] {
+  getChannels(): [ColorChannel, ColorChannel, ColorChannel] {
     return HSBColor.colorChannels
   }
 }

@@ -184,6 +184,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The user provided options used to position the date picker content
    */
   positioning: PositioningOptions
+  /**
+   * Whether the datepicker is open
+   */
+  open?: boolean
 }
 
 type PrivateContext = Context<{
@@ -530,6 +534,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getYearTableCellState(props: TableCellProps): TableCellState
 
   rootProps: T["element"]
+  labelProps: T["label"]
   controlProps: T["element"]
   contentProps: T["element"]
   positionerProps: T["element"]
