@@ -33,7 +33,7 @@ export default defineComponent({
                 {parentDialog.isOpen && (
                   <Teleport to="body">
                     <div {...parentDialog.backdropProps} />
-                    <div {...parentDialog.containerProps} data-testid="container-1">
+                    <div {...parentDialog.positionerProps} data-testid="positioner-1">
                       <div {...parentDialog.contentProps}>
                         <h2 {...parentDialog.titleProps}>Edit profile</h2>
                         <p {...parentDialog.descriptionProps}>
@@ -49,15 +49,16 @@ export default defineComponent({
                         </button>
                         {childDialog.isOpen && (
                           <Teleport to="body">
-                            <div {...childDialog.containerProps} data-testid="container-2" />
-                            <div {...childDialog.contentProps}>
-                              <h2 {...childDialog.titleProps}>Nested</h2>
-                              <button {...childDialog.closeTriggerProps} data-testid="close-2">
-                                X
-                              </button>
-                              <button onClick={() => parentDialog.close()} data-testid="special-close">
-                                Close Dialog 1
-                              </button>
+                            <div {...childDialog.positionerProps} data-testid="positioner-2">
+                              <div {...childDialog.contentProps}>
+                                <h2 {...childDialog.titleProps}>Nested</h2>
+                                <button {...childDialog.closeTriggerProps} data-testid="close-2">
+                                  X
+                                </button>
+                                <button onClick={() => parentDialog.close()} data-testid="special-close">
+                                  Close Dialog 1
+                                </button>
+                              </div>
                             </div>
                           </Teleport>
                         )}

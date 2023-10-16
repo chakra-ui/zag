@@ -3,13 +3,13 @@ import { a11y, testid } from "./__utils"
 
 const dialog_1 = {
   trigger: testid("trigger-1"),
-  container: testid("container-1"),
+  positioner: testid("positioner-1"),
   close: testid("close-1"),
 }
 
 const dialog_2 = {
   trigger: testid("trigger-2"),
-  container: testid("container-2"),
+  positioner: testid("positioner-2"),
   close: testid("close-2"),
 }
 
@@ -50,9 +50,9 @@ test.describe("dialog", () => {
     await expect(page.locator(dialog_1.trigger)).toBeFocused()
   })
 
-  test("should close modal on container click", async ({ page }) => {
+  test("should close modal on positioner click", async ({ page }) => {
     await openDialog(page)
-    await page.click(dialog_1.container, { force: true, position: { x: 10, y: 10 } })
+    await page.click(dialog_1.positioner, { force: true, position: { x: 10, y: 10 } })
     await expect(page.locator(dialog_1.trigger)).toBeFocused()
   })
 })
@@ -76,14 +76,14 @@ test.describe("nested dialog", () => {
     await openDialog(page)
     await openNestedDialog(page)
     await page.keyboard.press("Escape")
-    await expect(page.locator(dialog_2.container)).not.toBeVisible()
+    await expect(page.locator(dialog_2.positioner)).not.toBeVisible()
     await expect(page.locator(dialog_2.trigger)).toBeFocused()
   })
 
-  test("should close modal on container click", async ({ page }) => {
+  test("should close modal on positioner click", async ({ page }) => {
     await openDialog(page)
     await openNestedDialog(page)
-    await page.click(dialog_2.container, { force: true, position: { x: 10, y: 10 } })
+    await page.click(dialog_2.positioner, { force: true, position: { x: 10, y: 10 } })
     await expect(page.locator(dialog_2.trigger)).toBeFocused()
   })
 
@@ -91,15 +91,8 @@ test.describe("nested dialog", () => {
     await openDialog(page)
     await openNestedDialog(page)
     await page.click(special_close)
-    await expect(page.locator(dialog_2.container)).not.toBeVisible()
-    await expect(page.locator(dialog_1.container)).not.toBeVisible()
+    await expect(page.locator(dialog_2.positioner)).not.toBeVisible()
+    await expect(page.locator(dialog_1.positioner)).not.toBeVisible()
     await expect(page.locator(dialog_1.trigger)).toBeFocused()
-  })
-})
-
-test.describe("dialog - with default open", () => {
-  test("should be open and focus on close button", async ({ page }) => {
-    await page.goto("/dialog-default-open")
-    await expect(page.locator(dialog_1.close)).toBeFocused()
   })
 })

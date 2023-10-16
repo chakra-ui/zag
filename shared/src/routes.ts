@@ -19,7 +19,6 @@ export const routesData: RouteData[] = [
   { label: "Combobox", path: "/combobox" },
   { label: "Editable", path: "/editable" },
   { label: "Dialog", path: "/dialog" },
-  { label: "Dialog Default Open", path: "/dialog-default-open" },
   { label: "Hover Card", path: "/hover-card" },
   { label: "Menu", path: "/menu" },
   { label: "Nested Menu", path: "/nested-menu" },

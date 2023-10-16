@@ -53,7 +53,7 @@ export function MobileNavigation() {
 
       {api.isOpen && (
         <Portal>
-          <div {...api.containerProps}>
+          <div {...api.positionerProps}>
             <Box
               {...api.contentProps}
               position="fixed"

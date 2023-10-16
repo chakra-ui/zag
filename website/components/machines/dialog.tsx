@@ -33,7 +33,7 @@ export function Dialog(props: { controls: any }) {
             position="fixed"
             zIndex="modal"
             inset="0"
-            {...api.containerProps}
+            {...api.positionerProps}
           >
             <chakra.div
               width="full"

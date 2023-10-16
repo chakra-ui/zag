@@ -10,11 +10,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     isOpen,
-
     open() {
       send("OPEN")
     },
-
     close() {
       send("CLOSE")
     },
@@ -39,10 +37,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-state": isOpen ? "open" : "closed",
     }),
 
-    containerProps: normalize.element({
-      ...parts.container.attrs,
+    positionerProps: normalize.element({
+      ...parts.positioner.attrs,
       hidden: !isOpen,
-      id: dom.getContainerId(state.context),
+      id: dom.getPositionerId(state.context),
       "data-state": isOpen ? "open" : "closed",
       style: {
         pointerEvents: isOpen ? undefined : "none",

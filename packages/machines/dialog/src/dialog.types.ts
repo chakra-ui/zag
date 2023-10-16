@@ -16,7 +16,7 @@ export interface OpenChangeDetails {
 
 type ElementIds = Partial<{
   trigger: string
-  container: string
+  positioner: string
   backdrop: string
   content: string
   closeTrigger: string
@@ -129,7 +129,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
 
   triggerProps: T["button"]
   backdropProps: T["element"]
-  containerProps: T["element"]
+  positionerProps: T["element"]
   contentProps: T["element"]
   titleProps: T["element"]
   descriptionProps: T["element"]

@@ -28,7 +28,7 @@ export default function Page() {
           <Show when={parentDialog().isOpen}>
             <Portal>
               <div {...parentDialog().backdropProps} />
-              <div {...parentDialog().containerProps} data-testid="container-1">
+              <div {...parentDialog().positionerProps} data-testid="positioner-1">
                 <div {...parentDialog().contentProps}>
                   <h2 {...parentDialog().titleProps}>Edit profile</h2>
                   <p {...parentDialog().descriptionProps}>
@@ -46,7 +46,7 @@ export default function Page() {
                   <Show when={childDialog().isOpen}>
                     <Portal>
                       <div {...childDialog().backdropProps} />
-                      <div {...childDialog().containerProps} data-testid="container-2">
+                      <div {...childDialog().positionerProps} data-testid="positioner-2">
                         <div {...childDialog().contentProps}>
                           <h2 {...childDialog().titleProps}>Nested</h2>
                           <button {...childDialog().closeTriggerProps} data-testid="close-2">
@@ -66,15 +66,10 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar
-        controls={null}
-        visualizer={
-          <>
-            <StateVisualizer state={state} />
-            <StateVisualizer state={state2} />
-          </>
-        }
-      />
+      <Toolbar controls={null}>
+        <StateVisualizer state={state} />
+        <StateVisualizer state={state2} />
+      </Toolbar>
     </>
   )
 }

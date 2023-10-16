@@ -13,7 +13,7 @@ const api = computed(() => dialog.connect(state.value, send, normalizeProps));
   <Teleport to="body">
     <div v-if="api.isOpen">
       <div v-bind="api.backdropProps" />
-      <div v-bind="api.containerProps">
+      <div v-bind="api.positionerProps">
         <div v-bind="api.contentProps">
           <h2 v-bind="api.titleProps">Edit profile</h2>
           <p v-bind="api.descriptionProps">

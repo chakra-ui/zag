@@ -13,7 +13,7 @@ export function Dialog() {
       {api.isOpen && (
         <Portal>
           <div {...api.backdropProps} />
-          <div {...api.containerProps}>
+          <div {...api.positionerProps}>
             <div {...api.contentProps}>
               <h2 {...api.titleProps}>Edit profile</h2>
               <p {...api.descriptionProps}>

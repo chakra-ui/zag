@@ -179,7 +179,7 @@
         "type": "string",
         "description": "The amount of space between slides."
       },
-      "onSlideChange": {
+      "onIndexChange": {
         "type": "(details: SlideChangeDetails) => void",
         "description": "Function called when the slide changes."
       },
@@ -292,17 +292,17 @@
         "type": "boolean",
         "description": "Whether the color picker is being dragged"
       },
+      "isOpen": {
+        "type": "boolean",
+        "description": "Whether the color picker is open"
+      },
       "value": {
-        "type": "string",
+        "type": "Color",
         "description": "The current color value (as a string)"
       },
-      "valueAsColor": {
-        "type": "Color",
+      "valueAsString": {
+        "type": "string",
         "description": "The current color value (as a Color object)"
-      },
-      "alpha": {
-        "type": "number",
-        "description": "The alpha value of the color"
       },
       "channels": {
         "type": "[ColorChannel]",
@@ -312,13 +312,25 @@
         "type": "(value: string | Color) => void",
         "description": "Function to set the color value"
       },
+      "getChannelValue": {
+        "type": "(channel: ColorChannel) => string",
+        "description": "Function to set the color value"
+      },
       "setChannelValue": {
         "type": "(channel: ColorChannel, value: number) => void",
         "description": "Function to set the color value of a specific channel"
       },
+      "format": {
+        "type": "ColorFormat",
+        "description": "The current color format"
+      },
       "setFormat": {
         "type": "(format: ColorFormat) => void",
         "description": "Function to set the color format"
+      },
+      "alpha": {
+        "type": "number",
+        "description": "The alpha value of the color"
       },
       "setAlpha": {
         "type": "(value: number) => void",
@@ -327,7 +339,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ content: string; area: string; areaGradient: string; areaThumb: string; channelInput(id: string): string; channelSliderTrack(id: ColorChannel): string; }>",
+        "type": "Partial<{ root: string; control: string; trigger: string; label: string; input: string; content: string; area: string; areaGradient: string; areaThumb: string; channelInput(id: string): string; channelSliderTrack(id: ColorChannel): string; }>",
         "description": "The ids of the elements in the color picker. Useful for composition."
       },
       "dir": {
@@ -335,7 +347,7 @@
         "description": "The direction of the color picker"
       },
       "value": {
-        "type": "string",
+        "type": "Color",
         "description": "The current color value"
       },
       "disabled": {
@@ -354,17 +366,49 @@
         "type": "(details: ValueChangeDetails) => void",
         "description": "Handler that is called when the user stops dragging."
       },
+      "onOpenChange": {
+        "type": "(details: OpenChangeDetails) => void",
+        "description": "Handler that is called when the user opens or closes the color picker."
+      },
       "name": {
         "type": "string",
         "description": "The name for the form input"
+      },
+      "positioning": {
+        "type": "PositioningOptions",
+        "description": "The positioning options for the color picker"
+      },
+      "autoFocus": {
+        "type": "boolean",
+        "description": "Whether to automatically set focus on the first focusable\ncontent within the color picker when opened."
+      },
+      "initialFocusEl": {
+        "type": "MaybeFunction<HTMLElement>",
+        "description": "The initial focus element when the color picker is opened."
+      },
+      "open": {
+        "type": "boolean",
+        "description": "Whether the color picker is open"
       },
       "id": {
         "type": "string",
         "description": "The unique identifier of the machine."
       },
       "getRootNode": {
-        "type": "() => ShadowRoot | Node | Document",
+        "type": "() => Node | ShadowRoot | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "onPointerDownOutside": {
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "description": "Function called when the pointer is pressed down outside the combobox"
+      },
+      "onFocusOutside": {
+        "type": "(event: FocusOutsideEvent) => void",
+        "description": "Function called when the focus is moved outside the combobox"
+      },
+      "onInteractOutside": {
+        "type": "(event: InteractOutsideEvent) => void",
+        "description": "Function called when an interaction happens outside the combobox"
       }
     }
   },
@@ -844,6 +888,10 @@
         "type": "PositioningOptions",
         "description": "The user provided options used to position the date picker content"
       },
+      "open": {
+        "type": "boolean",
+        "description": "Whether the datepicker is open"
+      },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",
@@ -876,7 +924,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ trigger: string; container: string; backdrop: string; content: string; closeTrigger: string; title: string; description: string; }>",
+        "type": "Partial<{ trigger: string; positioner: string; backdrop: string; content: string; closeTrigger: string; title: string; description: string; }>",
         "description": "The ids of the elements in the dialog. Useful for composition."
       },
       "trapFocus": {
@@ -1604,7 +1652,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; ellipsis(index: number): string; prevPageTrigger: string; nextPageTrigger: string; pageTrigger(page: number): string; }>",
+        "type": "Partial<{ root: string; ellipsis(index: number): string; prevTrigger: string; nextTrigger: string; item(page: number): string; }>",
         "description": "The ids of the elements in the accordion. Useful for composition."
       },
       "translations": {
@@ -2005,169 +2053,6 @@
       }
     }
   },
-  "range-slider": {
-    "api": {
-      "value": {
-        "type": "number[]",
-        "description": "The value of the slider."
-      },
-      "isDragging": {
-        "type": "boolean",
-        "description": "Whether the slider is being dragged."
-      },
-      "isFocused": {
-        "type": "boolean",
-        "description": "Whether the slider is focused."
-      },
-      "setValue": {
-        "type": "(value: number[]) => void",
-        "description": "Function to set the value of the slider."
-      },
-      "getThumbValue": {
-        "type": "(index: number) => number",
-        "description": "Returns the value of the thumb at the given index."
-      },
-      "setThumbValue": {
-        "type": "(index: number, value: number) => void",
-        "description": "Sets the value of the thumb at the given index."
-      },
-      "getValuePercent": {
-        "type": "(value: number) => number",
-        "description": "Returns the percent of the thumb at the given index."
-      },
-      "getPercentValue": {
-        "type": "(percent: number) => number",
-        "description": "Returns the value of the thumb at the given percent."
-      },
-      "getThumbPercent": {
-        "type": "(index: number) => number",
-        "description": "Returns the percent of the thumb at the given index."
-      },
-      "setThumbPercent": {
-        "type": "(index: number, percent: number) => void",
-        "description": "Sets the percent of the thumb at the given index."
-      },
-      "getThumbMin": {
-        "type": "(index: number) => number",
-        "description": "Returns the min value of the thumb at the given index."
-      },
-      "getThumbMax": {
-        "type": "(index: number) => number",
-        "description": "Returns the max value of the thumb at the given index."
-      },
-      "increment": {
-        "type": "(index: number) => void",
-        "description": "Function to increment the value of the slider at the given index."
-      },
-      "decrement": {
-        "type": "(index: number) => void",
-        "description": "Function to decrement the value of the slider at the given index."
-      },
-      "focus": {
-        "type": "() => void",
-        "description": "Function to focus the slider. This focuses the first thumb."
-      }
-    },
-    "context": {
-      "ids": {
-        "type": "Partial<{ root: string; thumb(index: number): string; control: string; track: string; range: string; label: string; output: string; marker(index: number): string; }>",
-        "description": "The ids of the elements in the range slider. Useful for composition."
-      },
-      "aria-label": {
-        "type": "string[]",
-        "description": "The aria-label of each slider thumb. Useful for providing an accessible name to the slider"
-      },
-      "aria-labelledby": {
-        "type": "string[]",
-        "description": "The `id` of the elements that labels each slider thumb. Useful for providing an accessible name to the slider"
-      },
-      "name": {
-        "type": "string",
-        "description": "The name associated with each slider thumb (when used in a form)"
-      },
-      "form": {
-        "type": "string",
-        "description": "The associate form of the underlying input element."
-      },
-      "value": {
-        "type": "number[]",
-        "description": "The value of the range slider"
-      },
-      "disabled": {
-        "type": "boolean",
-        "description": "Whether the slider is disabled"
-      },
-      "readOnly": {
-        "type": "boolean",
-        "description": "Whether the slider is read-only"
-      },
-      "invalid": {
-        "type": "boolean",
-        "description": "Whether the slider is invalid"
-      },
-      "onValueChange": {
-        "type": "(details: ValueChangeDetails) => void",
-        "description": "Function invoked when the value of the slider changes"
-      },
-      "onValueChangeStart": {
-        "type": "(details: ValueChangeDetails) => void",
-        "description": "Function invoked when the slider value change is started"
-      },
-      "onValueChangeEnd": {
-        "type": "(details: ValueChangeDetails) => void",
-        "description": "Function invoked when the slider value change is done"
-      },
-      "onFocusChange": {
-        "type": "(details: FocusChangeDetails) => void",
-        "description": "Function invoked when the slider's focused index changes"
-      },
-      "getAriaValueText": {
-        "type": "(value: number, index: number) => string",
-        "description": "Function that returns a human readable value for the slider thumb"
-      },
-      "min": {
-        "type": "number",
-        "description": "The minimum value of the slider"
-      },
-      "max": {
-        "type": "number",
-        "description": "The maximum value of the slider"
-      },
-      "step": {
-        "type": "number",
-        "description": "The step value of the slider"
-      },
-      "minStepsBetweenThumbs": {
-        "type": "number",
-        "description": "The minimum permitted steps between multiple thumbs."
-      },
-      "orientation": {
-        "type": "\"vertical\" | \"horizontal\"",
-        "description": "The orientation of the slider"
-      },
-      "thumbAlignment": {
-        "type": "\"contain\" | \"center\"",
-        "description": "The alignment of the slider thumb relative to the track\n- `center`: the thumb will extend beyond the bounds of the slider track.\n- `contain`: the thumb will be contained within the bounds of the track."
-      },
-      "thumbSize": {
-        "type": "{ width: number; height: number; }",
-        "description": "The slider thumbs dimensions"
-      },
-      "dir": {
-        "type": "\"ltr\" | \"rtl\"",
-        "description": "The document's text/writing direction.",
-        "defaultValue": "\"ltr\""
-      },
-      "id": {
-        "type": "string",
-        "description": "The unique identifier of the machine."
-      },
-      "getRootNode": {
-        "type": "() => ShadowRoot | Node | Document",
-        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
-      }
-    }
-  },
   "rating-group": {
     "api": {
       "setValue": {
@@ -2444,63 +2329,91 @@
   },
   "slider": {
     "api": {
-      "isFocused": {
-        "type": "boolean",
-        "description": "Whether the slider is focused."
+      "value": {
+        "type": "number[]",
+        "description": "The value of the slider."
       },
       "isDragging": {
         "type": "boolean",
         "description": "Whether the slider is being dragged."
       },
-      "value": {
-        "type": "number",
-        "description": "The value of the slider."
-      },
-      "percent": {
-        "type": "number",
-        "description": "The value of the slider as a percent."
+      "isFocused": {
+        "type": "boolean",
+        "description": "Whether the slider is focused."
       },
       "setValue": {
-        "type": "(value: number) => void",
+        "type": "(value: number[]) => void",
         "description": "Function to set the value of the slider."
       },
-      "getPercentValue": {
-        "type": "(percent: number) => number",
-        "description": "Returns the value of the slider at the given percent."
+      "getThumbValue": {
+        "type": "(index: number) => number",
+        "description": "Returns the value of the thumb at the given index."
+      },
+      "setThumbValue": {
+        "type": "(index: number, value: number) => void",
+        "description": "Sets the value of the thumb at the given index."
       },
       "getValuePercent": {
         "type": "(value: number) => number",
-        "description": "Returns the percent of the slider at the given value."
+        "description": "Returns the percent of the thumb at the given index."
+      },
+      "getPercentValue": {
+        "type": "(percent: number) => number",
+        "description": "Returns the value of the thumb at the given percent."
+      },
+      "getThumbPercent": {
+        "type": "(index: number) => number",
+        "description": "Returns the percent of the thumb at the given index."
+      },
+      "setThumbPercent": {
+        "type": "(index: number, percent: number) => void",
+        "description": "Sets the percent of the thumb at the given index."
+      },
+      "getThumbMin": {
+        "type": "(index: number) => number",
+        "description": "Returns the min value of the thumb at the given index."
+      },
+      "getThumbMax": {
+        "type": "(index: number) => number",
+        "description": "Returns the max value of the thumb at the given index."
+      },
+      "increment": {
+        "type": "(index: number) => void",
+        "description": "Function to increment the value of the slider at the given index."
+      },
+      "decrement": {
+        "type": "(index: number) => void",
+        "description": "Function to decrement the value of the slider at the given index."
       },
       "focus": {
         "type": "() => void",
-        "description": "Function to focus the slider."
-      },
-      "increment": {
-        "type": "() => void",
-        "description": "Function to increment the value of the slider by the step."
-      },
-      "decrement": {
-        "type": "() => void",
-        "description": "Function to decrement the value of the slider by the step."
+        "description": "Function to focus the slider. This focuses the first thumb."
       }
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; thumb: string; control: string; track: string; range: string; label: string; output: string; hiddenInput: string; }>",
-        "description": "The ids of the elements in the slider. Useful for composition."
+        "type": "Partial<{ root: string; thumb(index: number): string; control: string; track: string; range: string; label: string; output: string; marker(index: number): string; }>",
+        "description": "The ids of the elements in the range slider. Useful for composition."
       },
-      "value": {
-        "type": "number",
-        "description": "The value of the slider"
+      "aria-label": {
+        "type": "string[]",
+        "description": "The aria-label of each slider thumb. Useful for providing an accessible name to the slider"
+      },
+      "aria-labelledby": {
+        "type": "string[]",
+        "description": "The `id` of the elements that labels each slider thumb. Useful for providing an accessible name to the slider"
       },
       "name": {
         "type": "string",
-        "description": "The name associated with the slider (when used in a form)"
+        "description": "The name associated with each slider thumb (when used in a form)"
       },
       "form": {
         "type": "string",
         "description": "The associate form of the underlying input element."
+      },
+      "value": {
+        "type": "number[]",
+        "description": "The value of the range slider"
       },
       "disabled": {
         "type": "boolean",
@@ -2512,7 +2425,23 @@
       },
       "invalid": {
         "type": "boolean",
-        "description": "Whether the slider value is invalid"
+        "description": "Whether the slider is invalid"
+      },
+      "onValueChange": {
+        "type": "(details: ValueChangeDetails) => void",
+        "description": "Function invoked when the value of the slider changes"
+      },
+      "onValueChangeEnd": {
+        "type": "(details: ValueChangeDetails) => void",
+        "description": "Function invoked when the slider value change is done"
+      },
+      "onFocusChange": {
+        "type": "(details: FocusChangeDetails) => void",
+        "description": "Function invoked when the slider's focused index changes"
+      },
+      "getAriaValueText": {
+        "type": "(value: number, index: number) => string",
+        "description": "Function that returns a human readable value for the slider thumb"
       },
       "min": {
         "type": "number",
@@ -2526,6 +2455,10 @@
         "type": "number",
         "description": "The step value of the slider"
       },
+      "minStepsBetweenThumbs": {
+        "type": "number",
+        "description": "The minimum permitted steps between multiple thumbs."
+      },
       "orientation": {
         "type": "\"vertical\" | \"horizontal\"",
         "description": "The orientation of the slider"
@@ -2534,41 +2467,13 @@
         "type": "\"start\" | \"center\"",
         "description": "- \"start\": Useful when the value represents an absolute value\n- \"center\": Useful when the value represents an offset (relative)"
       },
-      "aria-label": {
-        "type": "string",
-        "description": "The aria-label of the slider. Useful for providing an accessible name to the slider"
-      },
-      "aria-labelledby": {
-        "type": "string",
-        "description": "The `id` of the element that labels the slider. Useful for providing an accessible name to the slider"
-      },
-      "focusThumbOnChange": {
-        "type": "boolean",
-        "description": "Whether to focus the slider thumb after interaction (scrub and keyboard)"
-      },
-      "getAriaValueText": {
-        "type": "(value: number) => string",
-        "description": "Function that returns a human readable value for the slider"
-      },
-      "onValueChange": {
-        "type": "(details: ValueChangeDetails) => void",
-        "description": "Function invoked when the value of the slider changes"
-      },
-      "onValueChangeEnd": {
-        "type": "(details: ValueChangeDetails) => void",
-        "description": "Function invoked when the slider value change is done"
-      },
-      "onValueChangeStart": {
-        "type": "(details: ValueChangeDetails) => void",
-        "description": "Function invoked when the slider value change is started"
-      },
       "thumbAlignment": {
         "type": "\"center\" | \"contain\"",
         "description": "The alignment of the slider thumb relative to the track\n- `center`: the thumb will extend beyond the bounds of the slider track.\n- `contain`: the thumb will be contained within the bounds of the track."
       },
       "thumbSize": {
-        "type": "Size",
-        "description": "The slider thumb dimensions.If not provided, the thumb size will be measured automatically."
+        "type": "{ width: number; height: number; }",
+        "description": "The slider thumbs dimensions"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

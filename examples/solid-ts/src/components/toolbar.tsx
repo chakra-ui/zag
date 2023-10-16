@@ -2,7 +2,7 @@ import { dataAttr } from "@zag-js/dom-query"
 import { createSignal, JSX } from "solid-js"
 
 type ToolbarProps = {
-  controls?: () => JSX.Element
+  controls?: null | (() => JSX.Element)
   children?: JSX.Element
   viz?: boolean
 }

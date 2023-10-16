@@ -20,7 +20,6 @@ export const routes: RouteDefinition[] = [
   { path: "/checkbox", component: lazy(() => import("./pages/checkbox")) },
   { path: "/combobox", component: lazy(() => import("./pages/combobox")) },
   { path: "/dialog", component: lazy(() => import("./pages/dialog")) },
-  { path: "/dialog-default-open", component: lazy(() => import("./pages/dialog-default-open")) },
   { path: "/editable", component: lazy(() => import("./pages/editable")) },
   { path: "/hover-card", component: lazy(() => import("./pages/hover-card")) },
   { path: "/menu", component: lazy(() => import("./pages/menu")) },

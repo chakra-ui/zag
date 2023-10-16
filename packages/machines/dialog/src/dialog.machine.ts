@@ -116,7 +116,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         hideContentBelow(ctx) {
           if (!ctx.modal) return
-          const getElements = () => [dom.getContainerEl(ctx)]
+          const getElements = () => [dom.getContentEl(ctx)]
           return ariaHidden(getElements, { defer: true })
         },
       },

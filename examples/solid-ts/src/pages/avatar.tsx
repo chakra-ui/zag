@@ -1,5 +1,5 @@
 import * as avatar from "@zag-js/avatar"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createSignal, createUniqueId } from "solid-js"
 import { avatarData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"

@@ -7,7 +7,7 @@ export default defineComponent({
   name: "Dialog",
   setup() {
     const [state, send] = useMachine(dialog.machine({ id: "1" }))
-    
+
     const apiRef = computed(() =>
       dialog.connect(state.value, send, normalizeProps),
     )
@@ -16,13 +16,11 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <>
-          <button {...api.triggerProps}>
-            Open Dialog
-          </button>
+          <button {...api.triggerProps}>Open Dialog</button>
           {api.isOpen && (
             <Teleport to="body">
               <div {...api.backdropProps} />
-              <div {...api.containerProps}>
+              <div {...api.positionerProps}>
                 <div {...api.contentProps}>
                   <h2 {...api.titleProps}>Edit profile</h2>
                   <p {...api.descriptionProps}>

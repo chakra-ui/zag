@@ -50,7 +50,7 @@ export default function Page() {
       {api.isOpen && (
         <Portal>
           <div {...api.backdropProps} />
-          <div data-testid="container-1" {...api.containerProps}>
+          <div data-testid="positioner-1" {...api.positionerProps}>
             <div {...api.contentProps}>
               <h2 {...api.titleProps}>Edit profile</h2>
               <p {...api.descriptionProps}>Make changes to your profile here. Click save when you are done.</p>

@@ -20,7 +20,6 @@ export const router = createRouter({
     { path: "/checkbox", component: () => import("./pages/checkbox") },
     { path: "/combobox", component: () => import("./pages/combobox") },
     { path: "/dialog", component: () => import("./pages/dialog") },
-    { path: "/dialog-default-open", component: () => import("./pages/dialog-default-open") },
     { path: "/editable", component: () => import("./pages/editable") },
     { path: "/hover-card", component: () => import("./pages/hover-card") },
     { path: "/menu", component: () => import("./pages/menu") },
