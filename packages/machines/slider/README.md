@@ -1,6 +1,6 @@
 # @zag-js/slider
 
-Core logic for the range-slider widget implemented as a state machine
+Core logic for the slider widget implemented as a state machine
 
 ## Installation
 

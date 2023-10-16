@@ -5,8 +5,8 @@
     <div {...api().trackProps}>
       <div {...api().rangeProps} />
     </div>
-    <div {...api().thumbProps}>
-      <input {...api().hiddenInputProps} />
+    <div {...api().getThumbProps({ index: 0 })}>
+      <input {...api().getHiddenInputProps({ index: 0 })} />
     </div>
   </div>
   <div {...api().markerGroupProps}>

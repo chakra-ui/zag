@@ -1,7 +1,7 @@
 {
   "name": "@zag-js/slider",
   "version": "0.24.0",
-  "description": "Core logic for the range-slider widget implemented as a state machine",
+  "description": "Core logic for the slider widget implemented as a state machine",
   "keywords": [
     "js",
     "machine",
@@ -9,6 +9,7 @@
     "statechart",
     "component",
     "chakra-ui",
+    "slider",
     "range-slider"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",

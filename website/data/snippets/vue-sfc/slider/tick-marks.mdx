@@ -6,8 +6,8 @@
     <div v-bind="api.trackProps">
       <div v-bind="api.rangeProps" />
     </div>
-    <div v-bind="api.thumbProps">
-      <input v-bind="api.hiddenInputProps" />
+    <div v-bind="api.getThumbProps({ index: 0 })">
+      <input v-bind="api.getHiddenInputProps({ index: 0 })" />
     </div>
   </div>
   <div v-bind="api.markerGroupProps">
