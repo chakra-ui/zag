@@ -1,6 +1,6 @@
 import { getValuePercent, getValueTransformer } from "@zag-js/numeric-range"
 import type { Style } from "@zag-js/types"
-import type { MachineContext as Ctx, SharedContext } from "./range-slider.types"
+import type { MachineContext as Ctx, SharedContext } from "./slider.types"
 
 /* -----------------------------------------------------------------------------
  * Range style calculations
@@ -18,7 +18,7 @@ export function getRangeOffsets(ctx: Ctx) {
   if (ctx.valuePercent.length === 1) {
     if (ctx.origin === "center") {
       const isNegative = ctx.valuePercent[0] < 50
-      const start = isNegative ? `${ctx.valuePercent}%` : "50%"
+      const start = isNegative ? `${ctx.valuePercent[0]}%` : "50%"
       const end = isNegative ? "50%" : `${100 - ctx.valuePercent[0]}%`
 
       return { start, end }

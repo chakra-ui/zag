@@ -1,5 +1,5 @@
 ---
-"@zag-js/range-slider": minor
+"@zag-js/slider": minor
 ---
 
 Merge the slider and range slider machines into one to prevent duplication.

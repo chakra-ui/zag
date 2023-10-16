@@ -1,4 +1,4 @@
-import * as slider from "@zag-js/range-slider"
+import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { chakra } from "@chakra-ui/system"
 import { Center, Flex } from "@chakra-ui/layout"
@@ -54,9 +54,9 @@ export function Slider(props: any) {
             shadow="base"
             _disabled={{ bg: "gray.200" }}
             key={index}
-            {...api.getThumbProps(index)}
+            {...api.getThumbProps({ index })}
           >
-            <input {...api.getHiddenInputProps(index)} />
+            <input {...api.getHiddenInputProps({ index })} />
           </Center>
         ))}
       </Flex>

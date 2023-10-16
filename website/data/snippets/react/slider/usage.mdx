@@ -1,5 +1,5 @@
 ```jsx
-import * as slider from "@zag-js/range-slider"
+import * as slider from "@zag-js/slider"
 import { useMachine, normalizeProps } from "@zag-js/react"
 
 export function Slider() {
@@ -18,8 +18,8 @@ export function Slider() {
           <div {...api.rangeProps} />
         </div>
         {api.value.map((_, index) => (
-          <div key={index} {...api.getThumbProps(index)}>
-            <input {...api.getHiddenInputProps(index)} />
+          <div key={index} {...api.getThumbProps({ index })}>
+            <input {...api.getHiddenInputProps({ index })} />
           </div>
         ))}
       </div>

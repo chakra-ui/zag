@@ -23,7 +23,7 @@
   - @zag-js/number-input@0.1.13
   - @zag-js/pin-input@0.1.11
   - @zag-js/popover@0.1.11
-  - @zag-js/range-slider@0.1.11
+  - @zag-js/slider@0.1.11
   - @zag-js/rating@0.1.11
   - @zag-js/slider@0.1.11
   - @zag-js/splitter@0.1.11

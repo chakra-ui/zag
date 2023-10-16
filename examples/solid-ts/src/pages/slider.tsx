@@ -1,4 +1,4 @@
-import * as slider from "@zag-js/range-slider"
+import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
 import { For, createMemo, createUniqueId } from "solid-js"
@@ -42,8 +42,8 @@ export default function Page() {
                 </div>
                 <For each={api().value}>
                   {(_, index) => (
-                    <div class="slider__thumb" {...api().getThumbProps(index())}>
-                      <input {...api().getHiddenInputProps(index())} />
+                    <div class="slider__thumb" {...api().getThumbProps({ index: index() })}>
+                      <input {...api().getHiddenInputProps({ index: index() })} />
                     </div>
                   )}
                 </For>

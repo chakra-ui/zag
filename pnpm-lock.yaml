@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@axe-core/playwright':
         specifier: 4.8.0
-        version: 4.8.0(playwright-core@1.38.1)
+        version: 4.8.0(playwright-core@1.39.0)
       '@babel/generator':
         specifier: 7.23.0
         version: 7.23.0
@@ -269,9 +269,6 @@ importers:
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../../packages/machines/radio-group
-      '@zag-js/range-slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/range-slider
       '@zag-js/rating-group':
         specifier: workspace:*
         version: link:../../packages/machines/rating-group
@@ -290,6 +287,9 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
+      '@zag-js/slider':
+        specifier: workspace:*
+        version: link:../../packages/machines/slider
       '@zag-js/splitter':
         specifier: workspace:*
         version: link:../../packages/machines/splitter
@@ -504,9 +504,6 @@ importers:
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../../packages/machines/radio-group
-      '@zag-js/range-slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/range-slider
       '@zag-js/rating-group':
         specifier: workspace:*
         version: link:../../packages/machines/rating-group
@@ -522,6 +519,9 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
+      '@zag-js/slider':
+        specifier: workspace:*
+        version: link:../../packages/machines/slider
       '@zag-js/splitter':
         specifier: workspace:*
         version: link:../../packages/machines/splitter
@@ -715,9 +715,6 @@ importers:
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../../packages/machines/radio-group
-      '@zag-js/range-slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/range-slider
       '@zag-js/rating-group':
         specifier: workspace:*
         version: link:../../packages/machines/rating-group
@@ -733,6 +730,9 @@ importers:
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
+      '@zag-js/slider':
+        specifier: workspace:*
+        version: link:../../packages/machines/slider
       '@zag-js/splitter':
         specifier: workspace:*
         version: link:../../packages/machines/splitter
@@ -935,9 +935,6 @@ importers:
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../../packages/machines/radio-group
-      '@zag-js/range-slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/range-slider
       '@zag-js/rating-group':
         specifier: workspace:*
         version: link:../../packages/machines/rating-group
@@ -953,6 +950,9 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
+      '@zag-js/slider':
+        specifier: workspace:*
+        version: link:../../packages/machines/slider
       '@zag-js/solid':
         specifier: workspace:*
         version: link:../../packages/frameworks/solid
@@ -1149,9 +1149,6 @@ importers:
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../../packages/machines/radio-group
-      '@zag-js/range-slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/range-slider
       '@zag-js/rating-group':
         specifier: workspace:*
         version: link:../../packages/machines/rating-group
@@ -1167,6 +1164,9 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
+      '@zag-js/slider':
+        specifier: workspace:*
+        version: link:../../packages/machines/slider
       '@zag-js/splitter':
         specifier: workspace:*
         version: link:../../packages/machines/splitter
@@ -1985,40 +1985,6 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  packages/machines/range-slider:
-    dependencies:
-      '@zag-js/anatomy':
-        specifier: workspace:*
-        version: link:../../anatomy
-      '@zag-js/core':
-        specifier: workspace:*
-        version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../../utilities/dom-query
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../utilities/element-size
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../utilities/numeric-range
-      '@zag-js/types':
-        specifier: workspace:*
-        version: link:../../types
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../../utilities/core
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
   packages/machines/rating-group:
     dependencies:
       '@zag-js/anatomy':
@@ -2088,6 +2054,40 @@ importers:
       '@zag-js/visually-hidden':
         specifier: workspace:*
         version: link:../../utilities/visually-hidden
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/slider:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-event':
+        specifier: workspace:*
+        version: link:../../utilities/dom-event
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/element-size':
+        specifier: workspace:*
+        version: link:../../utilities/element-size
+      '@zag-js/form-utils':
+        specifier: workspace:*
+        version: link:../../utilities/form-utils
+      '@zag-js/numeric-range':
+        specifier: workspace:*
+        version: link:../../utilities/numeric-range
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -2669,9 +2669,6 @@ importers:
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../packages/machines/radio-group
-      '@zag-js/range-slider':
-        specifier: workspace:*
-        version: link:../packages/machines/range-slider
       '@zag-js/rating-group':
         specifier: workspace:*
         version: link:../packages/machines/rating-group
@@ -2681,6 +2678,9 @@ importers:
       '@zag-js/select':
         specifier: workspace:*
         version: link:../packages/machines/select
+      '@zag-js/slider':
+        specifier: workspace:*
+        version: link:../packages/machines/slider
       '@zag-js/splitter':
         specifier: workspace:*
         version: link:../packages/machines/splitter
@@ -2799,13 +2799,13 @@ packages:
     resolution: {integrity: sha512-pvFiLP2BeOKA/ZOS6jxx4XhKzdVLHDhGlFEaZ2flWWYf2xOqVniqpk38I04DFRyz+L0ASggl7SkItTc+ZLju4w==}
     dev: true
 
-  /@axe-core/playwright@4.8.0(playwright-core@1.38.1):
+  /@axe-core/playwright@4.8.0(playwright-core@1.39.0):
     resolution: {integrity: sha512-Pf/pkFrJ0PkBvZdDS57SgOT6/TRGPlmh8QJOmm/zpQfQPnfwHfP0LrpqueVhjhvKYD63M7NyLnj0G4Vo3kOaiA==}
     peerDependencies:
       playwright-core: '>= 1.0.0'
     dependencies:
       axe-core: 4.8.2
-      playwright-core: 1.38.1
+      playwright-core: 1.39.0
     dev: false
 
   /@babel/code-frame@7.22.10:
@@ -15017,12 +15017,6 @@ packages:
       jsonc-parser: 3.2.0
       mlly: 1.4.2
       pathe: 1.1.1
-
-  /playwright-core@1.38.1:
-    resolution: {integrity: sha512-tQqNFUKa3OfMf4b2jQ7aGLB8o9bS3bOY0yMEtldtC2+spf8QXG9zvXLTXUeRsoNuxEYMgLYR+NXfAa1rjKRcrg==}
-    engines: {node: '>=16'}
-    hasBin: true
-    dev: false
 
   /playwright-core@1.39.0:
     resolution: {integrity: sha512-+k4pdZgs1qiM+OUkSjx96YiKsXsmb59evFoqv8SKO067qBA+Z2s/dCzJij/ZhdQcs2zlTAgRKfeiiLm8PQ2qvw==}

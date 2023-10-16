@@ -1,4 +1,4 @@
-import * as slider from "@zag-js/range-slider"
+import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { rangeSliderControls } from "@zag-js/shared"
 import serialize from "form-serialize"
@@ -42,8 +42,8 @@ export default function Page() {
                   <div {...api.rangeProps} />
                 </div>
                 {api.value.map((_, index) => (
-                  <div key={index} {...api.getThumbProps(index)}>
-                    <input {...api.getHiddenInputProps(index)} />
+                  <div key={index} {...api.getThumbProps({ index })}>
+                    <input {...api.getHiddenInputProps({ index })} />
                   </div>
                 ))}
               </div>

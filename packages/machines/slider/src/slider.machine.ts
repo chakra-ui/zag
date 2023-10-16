@@ -5,8 +5,8 @@ import { trackElementsSize, type ElementSize } from "@zag-js/element-size"
 import { trackFormControl } from "@zag-js/form-utils"
 import { getValuePercent } from "@zag-js/numeric-range"
 import { compact, isEqual } from "@zag-js/utils"
-import { dom } from "./range-slider.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./range-slider.types"
+import { dom } from "./slider.dom"
+import type { MachineContext, MachineState, UserDefinedContext } from "./slider.types"
 import {
   assignArray,
   constrainValue,
@@ -15,7 +15,7 @@ import {
   getRangeAtIndex,
   increment,
   normalizeValues,
-} from "./range-slider.utils"
+} from "./slider.utils"
 
 const isEqualSize = (a: ElementSize | null, b: ElementSize | null) => {
   return a?.width === b?.width && a?.height === b?.height
@@ -31,12 +31,11 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         thumbSize: null,
         thumbAlignment: "contain",
-        threshold: 5,
         focusedIndex: -1,
         min: 0,
         max: 100,
         step: 1,
-        value: [0, 100],
+        value: [0],
         origin: "start",
         orientation: "horizontal",
         dir: "ltr",
@@ -88,7 +87,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             POINTER_DOWN: {
               target: "dragging",
-              actions: ["setClosestThumbIndex", "setPointerValue", "invokeOnChangeStart", "focusActiveThumb"],
+              actions: ["setClosestThumbIndex", "setPointerValue", "focusActiveThumb"],
             },
             FOCUS: {
               target: "focus",
@@ -96,7 +95,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             THUMB_POINTER_DOWN: {
               target: "dragging",
-              actions: ["setFocusedIndex", "invokeOnChangeStart", "focusActiveThumb"],
+              actions: ["setFocusedIndex", "focusActiveThumb"],
             },
           },
         },
@@ -105,11 +104,11 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             POINTER_DOWN: {
               target: "dragging",
-              actions: ["setClosestThumbIndex", "setPointerValue", "invokeOnChangeStart", "focusActiveThumb"],
+              actions: ["setClosestThumbIndex", "setPointerValue", "focusActiveThumb"],
             },
             THUMB_POINTER_DOWN: {
               target: "dragging",
-              actions: ["setFocusedIndex", "invokeOnChangeStart", "focusActiveThumb"],
+              actions: ["setFocusedIndex", "focusActiveThumb"],
             },
             ARROW_LEFT: {
               guard: "isHorizontal",
@@ -207,9 +206,6 @@ export function machine(userContext: UserDefinedContext) {
             const inputEl = dom.getHiddenInputEl(ctx, index)
             dom.setValue(inputEl, value)
           })
-        },
-        invokeOnChangeStart(ctx) {
-          ctx.onValueChangeStart?.({ value: ctx.value })
         },
         invokeOnChangeEnd(ctx) {
           ctx.onValueChangeEnd?.({ value: ctx.value })

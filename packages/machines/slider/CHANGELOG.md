@@ -1,4 +1,4 @@
-# @zag-js/range-slider
+# @zag-js/slider
 
 ## 0.24.0
 

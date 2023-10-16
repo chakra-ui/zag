@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as slider from "@zag-js/range-slider"
+import * as slider from "@zag-js/slider"
 import { rangeSliderControls } from "@zag-js/shared"
 import serialize from "form-serialize"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -39,8 +39,8 @@ const api = computed(() => slider.connect(state.value, send, normalizeProps))
             <div data-testid="track" v-bind="api.trackProps">
               <div v-bind="api.rangeProps" />
             </div>
-            <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps(index)">
-              <input v-bind="api.getHiddenInputProps(index)" />
+            <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })">
+              <input v-bind="api.getHiddenInputProps({ index })" />
             </div>
           </div>
           <div v-bind="api.markerGroupProps">

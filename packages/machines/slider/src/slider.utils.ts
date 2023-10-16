@@ -6,7 +6,7 @@ import {
   getValueRanges,
   snapValueToStep,
 } from "@zag-js/numeric-range"
-import type { MachineContext as Ctx } from "./range-slider.types"
+import type { MachineContext as Ctx } from "./slider.types"
 
 export function normalizeValues(ctx: Ctx, nextValues: number[]) {
   return nextValues.map((value, index, values) => {

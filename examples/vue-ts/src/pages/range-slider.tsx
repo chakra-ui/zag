@@ -1,4 +1,4 @@
-import * as slider from "@zag-js/range-slider"
+import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import serialize from "form-serialize"
 import { computed, defineComponent, h, Fragment } from "vue"

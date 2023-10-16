@@ -10,10 +10,10 @@ import {
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { parts } from "./range-slider.anatomy"
-import { dom } from "./range-slider.dom"
-import type { MachineApi, Send, State } from "./range-slider.types"
-import { getRangeAtIndex } from "./range-slider.utils"
+import { parts } from "./slider.anatomy"
+import { dom } from "./slider.dom"
+import type { MachineApi, Send, State } from "./slider.types"
+import { getRangeAtIndex } from "./slider.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const ariaLabel = state.context["aria-label"]
@@ -40,15 +40,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isDragging,
     isFocused,
 
-    setValue(value: number[]) {
+    setValue(value) {
       send({ type: "SET_VALUE", value: value })
     },
 
-    getThumbValue(index: number) {
+    getThumbValue(index) {
       return sliderValue[index]
     },
 
-    setThumbValue(index: number, value: number) {
+    setThumbValue(index, value) {
       send({ type: "SET_VALUE", index, value })
     },
 
@@ -56,28 +56,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getPercentValue: getPercentValueFn,
 
-    getThumbPercent(index: number) {
+    getThumbPercent(index) {
       return getValuePercentFn(sliderValue[index])
     },
 
-    setThumbPercent(index: number, percent: number) {
+    setThumbPercent(index, percent) {
       const value = getPercentValueFn(percent)
       send({ type: "SET_VALUE", index, value })
     },
 
-    getThumbMin(index: number) {
+    getThumbMin(index) {
       return getRangeAtIndex(state.context, index).min
     },
 
-    getThumbMax(index: number) {
+    getThumbMax(index) {
       return getRangeAtIndex(state.context, index).max
     },
 
-    increment(index: number) {
+    increment(index) {
       send({ type: "INCREMENT", index })
     },
 
-    decrement(index: number) {
+    decrement(index) {
       send({ type: "DECREMENT", index })
     },
 
@@ -139,7 +139,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: { position: "relative" },
     }),
 
-    getThumbProps(index: number) {
+    getThumbProps(props) {
+      const { index } = props
+
       const value = sliderValue[index]
       const range = getRangeAtIndex(state.context, index)
       const ariaValueText = state.context.getAriaValueText?.(value, index)
@@ -228,7 +230,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getHiddenInputProps(index: number) {
+    getHiddenInputProps(props) {
+      const { index } = props
       return normalize.input({
         name: `${state.context.name}[${index}]`,
         form: state.context.form,
@@ -282,16 +285,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: dom.getMarkerGroupStyle(),
     }),
 
-    getMarkerProps({ value }: { value: number }) {
-      const style = dom.getMarkerStyle(state.context, value)
+    getMarkerProps(props) {
+      const style = dom.getMarkerStyle(state.context, props.value)
       let markerState: "over-value" | "under-value" | "at-value"
 
       const first = state.context.value[0]
       const last = state.context.value[state.context.value.length - 1]
 
-      if (value < first) {
+      if (props.value < first) {
         markerState = "under-value"
-      } else if (value > last) {
+      } else if (props.value > last) {
         markerState = "over-value"
       } else {
         markerState = "at-value"
@@ -299,11 +302,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.marker.attrs,
-        id: dom.getMarkerId(state.context, value),
+        id: dom.getMarkerId(state.context, props.value),
         role: "presentation",
         dir: state.context.dir,
         "data-orientation": state.context.orientation,
-        "data-value": value,
+        "data-value": props.value,
         "data-disabled": dataAttr(isDisabled),
         "data-state": markerState,
         style,

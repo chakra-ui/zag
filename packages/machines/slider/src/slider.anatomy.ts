@@ -1,6 +1,6 @@
 import { createAnatomy } from "@zag-js/anatomy"
 
-export const anatomy = createAnatomy("range-slider").parts(
+export const anatomy = createAnatomy("slider").parts(
   "root",
   "label",
   "thumb",
@@ -11,4 +11,5 @@ export const anatomy = createAnatomy("range-slider").parts(
   "markerGroup",
   "marker",
 )
+
 export const parts = anatomy.build()

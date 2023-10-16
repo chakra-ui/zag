@@ -54,7 +54,7 @@
     "@zag-js/presence": "workspace:*",
     "@zag-js/pressable": "workspace:*",
     "@zag-js/radio-group": "workspace:*",
-    "@zag-js/range-slider": "workspace:*",
+    "@zag-js/slider": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",

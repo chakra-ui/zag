@@ -2,8 +2,8 @@ import { getRelativePoint, type Point } from "@zag-js/dom-event"
 import { createScope, queryAll } from "@zag-js/dom-query"
 import { dispatchInputValueEvent } from "@zag-js/form-utils"
 import { getPercentValue } from "@zag-js/numeric-range"
-import { styleGetterFns } from "./range-slider.style"
-import type { MachineContext as Ctx } from "./range-slider.types"
+import { styleGetterFns } from "./slider.style"
+import type { MachineContext as Ctx } from "./slider.types"
 
 export const dom = createScope({
   ...styleGetterFns,

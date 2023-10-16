@@ -71,10 +71,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   onValueChange?(details: ValueChangeDetails): void
   /**
-   * Function invoked when the slider value change is started
-   */
-  onValueChangeStart?(details: ValueChangeDetails): void
-  /**
    * Function invoked when the slider value change is done
    */
   onValueChangeEnd?(details: ValueChangeDetails): void
@@ -177,11 +173,6 @@ type PrivateContext = Context<{
   focusedIndex: number
   /**
    * @internal
-   * The move threshold of the slider thumb before it is considered to be moved
-   */
-  threshold: number
-  /**
-   * @internal
    * Whether the slider fieldset is disabled
    */
   fieldsetDisabled: boolean
@@ -208,6 +199,10 @@ interface Size {
 
 export interface MarkerProps {
   value: number
+}
+
+export interface ThumbProps {
+  index: number
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -275,8 +270,8 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   rootProps: T["element"]
   outputProps: T["output"]
   trackProps: T["element"]
-  getThumbProps(index: number): T["element"]
-  getHiddenInputProps(index: number): T["input"]
+  getThumbProps(props: ThumbProps): T["element"]
+  getHiddenInputProps(props: ThumbProps): T["input"]
   rangeProps: T["element"]
   controlProps: T["element"]
   markerGroupProps: T["element"]
