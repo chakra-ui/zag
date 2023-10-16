@@ -15,7 +15,7 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/range-slider",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/slider",
   "sideEffects": false,
   "files": [
     "dist",
