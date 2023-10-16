@@ -2937,10 +2937,6 @@
       "dismiss": {
         "type": "() => void",
         "description": "Function to instantly dismiss the toast."
-      },
-      "render": {
-        "type": "() => any",
-        "description": "Function render the toast in the DOM (based on the defined `render` property)"
       }
     },
     "context": {}
