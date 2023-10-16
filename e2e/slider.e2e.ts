@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test"
-import { testid, a11y, rect } from "./__utils"
+import { part, a11y, rect } from "./__utils"
 
-const output = testid("output")
-const thumb = testid("thumb")
-const track = testid("track")
+const output = part("output")
+const thumb = part("thumb")
+const track = part("track")
 
 test.describe("slider", () => {
   test.beforeEach(async ({ page }) => {
