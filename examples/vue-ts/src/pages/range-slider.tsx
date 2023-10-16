@@ -2,7 +2,7 @@ import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import serialize from "form-serialize"
 import { computed, defineComponent, h, Fragment } from "vue"
-import { rangeSliderControls } from "@zag-js/shared"
+import { sliderControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { useControls } from "../hooks/use-controls"
 
@@ -11,7 +11,7 @@ import { Toolbar } from "../components/toolbar"
 export default defineComponent({
   name: "RangeSlider",
   setup() {
-    const controls = useControls(rangeSliderControls)
+    const controls = useControls(sliderControls)
 
     const [state, send] = useMachine(
       slider.machine({

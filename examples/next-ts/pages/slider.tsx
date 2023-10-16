@@ -1,5 +1,5 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { rangeSliderControls } from "@zag-js/shared"
+import { sliderControls } from "@zag-js/shared"
 import * as slider from "@zag-js/slider"
 import serialize from "form-serialize"
 import { useId } from "react"
@@ -8,7 +8,7 @@ import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls(rangeSliderControls)
+  const controls = useControls(sliderControls)
 
   const [state, send] = useMachine(
     slider.machine({

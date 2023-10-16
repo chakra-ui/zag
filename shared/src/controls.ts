@@ -93,7 +93,7 @@ export const radioControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
 })
 
-export const rangeSliderControls = defineControls({
+export const sliderControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
