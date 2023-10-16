@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@axe-core/playwright':
         specifier: 4.8.0
-        version: 4.8.0(playwright-core@1.38.1)
+        version: 4.8.0(playwright-core@1.39.0)
       '@babel/generator':
         specifier: 7.23.0
         version: 7.23.0
@@ -1383,8 +1383,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
       solid-js:
-        specifier: 1.7.12
-        version: 1.7.12
+        specifier: 1.8.1
+        version: 1.8.1
 
   packages/frameworks/vue:
     dependencies:
@@ -2854,13 +2854,13 @@ packages:
     resolution: {integrity: sha512-pvFiLP2BeOKA/ZOS6jxx4XhKzdVLHDhGlFEaZ2flWWYf2xOqVniqpk38I04DFRyz+L0ASggl7SkItTc+ZLju4w==}
     dev: true
 
-  /@axe-core/playwright@4.8.0(playwright-core@1.38.1):
+  /@axe-core/playwright@4.8.0(playwright-core@1.39.0):
     resolution: {integrity: sha512-Pf/pkFrJ0PkBvZdDS57SgOT6/TRGPlmh8QJOmm/zpQfQPnfwHfP0LrpqueVhjhvKYD63M7NyLnj0G4Vo3kOaiA==}
     peerDependencies:
       playwright-core: '>= 1.0.0'
     dependencies:
       axe-core: 4.8.2
-      playwright-core: 1.38.1
+      playwright-core: 1.39.0
     dev: false
 
   /@babel/code-frame@7.22.10:
@@ -15073,12 +15073,6 @@ packages:
       mlly: 1.4.2
       pathe: 1.1.1
 
-  /playwright-core@1.38.1:
-    resolution: {integrity: sha512-tQqNFUKa3OfMf4b2jQ7aGLB8o9bS3bOY0yMEtldtC2+spf8QXG9zvXLTXUeRsoNuxEYMgLYR+NXfAa1rjKRcrg==}
-    engines: {node: '>=16'}
-    hasBin: true
-    dev: false
-
   /playwright-core@1.39.0:
     resolution: {integrity: sha512-+k4pdZgs1qiM+OUkSjx96YiKsXsmb59evFoqv8SKO067qBA+Z2s/dCzJij/ZhdQcs2zlTAgRKfeiiLm8PQ2qvw==}
     engines: {node: '>=16'}
@@ -16309,6 +16303,11 @@ packages:
       randombytes: 2.1.0
     dev: true
 
+  /seroval@0.10.4:
+    resolution: {integrity: sha512-TdaE9JkoATjKu+vjwllieX8zWyBTUVxbgWDnOsDJFfmKbM7vLSukuCXuD3pO3kkCtX4daywOW8ps2VCdPhS8/w==}
+    engines: {node: '>=10'}
+    dev: true
+
   /seroval@0.5.1:
     resolution: {integrity: sha512-ZfhQVB59hmIauJG5Ydynupy8KHyr5imGNtdDhbZG68Ufh1Ynkv9KOYOAABf71oVbQxJ8VkWnMHAjEHE7fWkH5g==}
     engines: {node: '>=10'}
@@ -16502,6 +16501,13 @@ packages:
     dependencies:
       csstype: 3.1.2
       seroval: 0.5.1
+
+  /solid-js@1.8.1:
+    resolution: {integrity: sha512-HU4tB/vWY5/0P9GzbvePjK1aucNqUcF1XlAirZBjKkrkWG8XNIN9HSjscTC/nbl3A6JWjrW+OLcPEvWxsMhdng==}
+    dependencies:
+      csstype: 3.1.2
+      seroval: 0.10.4
+    dev: true
 
   /solid-refresh@0.5.2(solid-js@1.7.12):
     resolution: {integrity: sha512-I69HmFj0LsGRJ3n8CEMVjyQFgVtuM2bSjznu2hCnsY+i5oOxh8ioWj00nnHBv0UYD3WpE/Sq4Q3TNw2IKmKN7A==}
