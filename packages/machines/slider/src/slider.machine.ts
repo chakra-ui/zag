@@ -25,7 +25,7 @@ export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
-      id: "range-slider",
+      id: "slider",
       initial: "idle",
 
       context: {

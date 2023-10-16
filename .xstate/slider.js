@@ -10,7 +10,7 @@ const {
   choose
 } = actions;
 const fetchMachine = createMachine({
-  id: "range-slider",
+  id: "slider",
   initial: "idle",
   context: {
     "hasIndex": false,
