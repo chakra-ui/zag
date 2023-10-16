@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import * as slider from "@zag-js/range-slider"
-import { rangeSliderControls } from "@zag-js/shared"
+import * as slider from "@zag-js/slider"
+import { sliderControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import serialize from "form-serialize"
 
-const controls = useControls(rangeSliderControls)
+const controls = useControls(sliderControls)
 
 const [state, send] = useMachine(
   slider.machine({
@@ -38,8 +38,8 @@ const api = computed(() => slider.connect(state.value, send, normalizeProps))
             <div v-bind="api.trackProps">
               <div v-bind="api.rangeProps" />
             </div>
-            <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps(index)">
-              <input v-bind="api.getHiddenInputProps(index)" />
+            <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })">
+              <input v-bind="api.getHiddenInputProps({ index })" />
             </div>
           </div>
         </div>

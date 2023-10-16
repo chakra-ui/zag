@@ -13,24 +13,28 @@ const fetchMachine = createMachine({
   id: "slider",
   initial: "idle",
   context: {
+    "hasIndex": false,
     "isHorizontal": false,
     "isHorizontal": false,
     "isVertical": false,
     "isVertical": false
   },
-  activities: ["trackFormControlState", "trackThumbSize"],
+  entry: ["coarseValue"],
+  activities: ["trackFormControlState", "trackThumbsSize"],
   on: {
-    SET_VALUE: {
+    SET_VALUE: [{
+      cond: "hasIndex",
+      actions: "setValueAtIndex"
+    }, {
       actions: "setValue"
-    },
+    }],
     INCREMENT: {
-      actions: "increment"
+      actions: "incrementAtIndex"
     },
     DECREMENT: {
-      actions: "decrement"
+      actions: "decrementAtIndex"
     }
   },
-  entry: ["checkValue"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -41,59 +45,65 @@ const fetchMachine = createMachine({
       on: {
         POINTER_DOWN: {
           target: "dragging",
-          actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"]
+          actions: ["setClosestThumbIndex", "setPointerValue", "focusActiveThumb"]
         },
-        FOCUS: "focus",
+        FOCUS: {
+          target: "focus",
+          actions: "setFocusedIndex"
+        },
         THUMB_POINTER_DOWN: {
           target: "dragging",
-          actions: ["invokeOnChangeStart", "focusThumb"]
+          actions: ["setFocusedIndex", "focusActiveThumb"]
         }
       }
     },
     focus: {
-      entry: "focusThumb",
+      entry: "focusActiveThumb",
       on: {
         POINTER_DOWN: {
           target: "dragging",
-          actions: ["setPointerValue", "invokeOnChangeStart", "focusThumb"]
+          actions: ["setClosestThumbIndex", "setPointerValue", "focusActiveThumb"]
         },
         THUMB_POINTER_DOWN: {
           target: "dragging",
-          actions: ["invokeOnChangeStart", "focusThumb"]
+          actions: ["setFocusedIndex", "focusActiveThumb"]
         },
         ARROW_LEFT: {
           cond: "isHorizontal",
-          actions: "decrement"
+          actions: "decrementAtIndex"
         },
         ARROW_RIGHT: {
           cond: "isHorizontal",
-          actions: "increment"
+          actions: "incrementAtIndex"
         },
         ARROW_UP: {
           cond: "isVertical",
-          actions: "increment"
+          actions: "incrementAtIndex"
         },
         ARROW_DOWN: {
           cond: "isVertical",
-          actions: "decrement"
+          actions: "decrementAtIndex"
         },
         PAGE_UP: {
-          actions: "increment"
+          actions: "incrementAtIndex"
         },
         PAGE_DOWN: {
-          actions: "decrement"
+          actions: "decrementAtIndex"
         },
         HOME: {
-          actions: "setToMin"
+          actions: "setActiveThumbToMin"
         },
         END: {
-          actions: "setToMax"
+          actions: "setActiveThumbToMax"
         },
-        BLUR: "idle"
+        BLUR: {
+          target: "idle",
+          actions: "clearFocusedIndex"
+        }
       }
     },
     dragging: {
-      entry: "focusThumb",
+      entry: "focusActiveThumb",
       activities: "trackPointerMove",
       on: {
         POINTER_UP: {
@@ -115,6 +125,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "hasIndex": ctx => ctx["hasIndex"],
     "isHorizontal": ctx => ctx["isHorizontal"],
     "isVertical": ctx => ctx["isVertical"]
   }

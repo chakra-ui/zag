@@ -6,7 +6,7 @@ import { useId } from "react"
 
 export function Slider(props: any) {
   const [state, send] = useMachine(
-    slider.machine({ id: useId(), min: -50, max: 50, value: 20 }),
+    slider.machine({ id: useId(), min: -50, max: 50, value: [20] }),
     { context: props.controls },
   )
 
@@ -19,7 +19,7 @@ export function Slider(props: any) {
           Quantity
         </chakra.label>
         <output {...api.outputProps}>
-          <b>{api.value}</b>
+          <b>{api.value.at(0)}</b>
         </output>
       </Flex>
 
@@ -45,17 +45,20 @@ export function Slider(props: any) {
             {...api.rangeProps}
           />
         </chakra.div>
-        <Center
-          boxSize="20px"
-          rounded="full"
-          bg="white"
-          shadow="base"
-          className="focus-outline"
-          _disabled={{ bg: "gray.200" }}
-          {...api.thumbProps}
-        >
-          <input {...api.hiddenInputProps} />
-        </Center>
+        {api.value.map((_, index) => (
+          <Center
+            className="focus-outline"
+            boxSize="20px"
+            rounded="full"
+            bg="white"
+            shadow="base"
+            _disabled={{ bg: "gray.200" }}
+            key={index}
+            {...api.getThumbProps({ index })}
+          >
+            <input {...api.getHiddenInputProps({ index })} />
+          </Center>
+        ))}
       </Flex>
     </chakra.div>
   )

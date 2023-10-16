@@ -6,7 +6,12 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
  * -----------------------------------------------------------------------------*/
 
 export interface ValueChangeDetails {
-  value: number
+  value: number[]
+}
+
+export interface FocusChangeDetails {
+  focusedIndex: number
+  value: number[]
 }
 
 /* -----------------------------------------------------------------------------
@@ -15,32 +20,40 @@ export interface ValueChangeDetails {
 
 type ElementIds = Partial<{
   root: string
-  thumb: string
+  thumb(index: number): string
   control: string
   track: string
   range: string
   label: string
   output: string
-  hiddenInput: string
+  marker(index: number): string
 }>
 
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
-   * The ids of the elements in the slider. Useful for composition.
+   * The ids of the elements in the range slider. Useful for composition.
    */
   ids?: ElementIds
   /**
-   * The value of the slider
+   * The aria-label of each slider thumb. Useful for providing an accessible name to the slider
    */
-  value: number
+  "aria-label"?: string[]
   /**
-   * The name associated with the slider (when used in a form)
+   * The `id` of the elements that labels each slider thumb. Useful for providing an accessible name to the slider
+   */
+  "aria-labelledby"?: string[]
+  /**
+   * The name associated with each slider thumb (when used in a form)
    */
   name?: string
   /**
    * The associate form of the underlying input element.
    */
   form?: string
+  /**
+   * The value of the range slider
+   */
+  value: number[]
   /**
    * Whether the slider is disabled
    */
@@ -50,9 +63,25 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   readOnly?: boolean
   /**
-   * Whether the slider value is invalid
+   * Whether the slider is invalid
    */
   invalid?: boolean
+  /**
+   * Function invoked when the value of the slider changes
+   */
+  onValueChange?(details: ValueChangeDetails): void
+  /**
+   * Function invoked when the slider value change is done
+   */
+  onValueChangeEnd?(details: ValueChangeDetails): void
+  /**
+   * Function invoked when the slider's focused index changes
+   */
+  onFocusChange?(details: FocusChangeDetails): void
+  /**
+   * Function that returns a human readable value for the slider thumb
+   */
+  getAriaValueText?(value: number, index: number): string
   /**
    * The minimum value of the slider
    */
@@ -66,42 +95,18 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   step: number
   /**
+   * The minimum permitted steps between multiple thumbs.
+   */
+  minStepsBetweenThumbs: number
+  /**
    * The orientation of the slider
    */
-  orientation?: "vertical" | "horizontal"
+  orientation: "vertical" | "horizontal"
   /**
    * - "start": Useful when the value represents an absolute value
    * - "center": Useful when the value represents an offset (relative)
    */
   origin?: "start" | "center"
-  /**
-   * The aria-label of the slider. Useful for providing an accessible name to the slider
-   */
-  "aria-label"?: string
-  /**
-   * The `id` of the element that labels the slider. Useful for providing an accessible name to the slider
-   */
-  "aria-labelledby"?: string
-  /**
-   * Whether to focus the slider thumb after interaction (scrub and keyboard)
-   */
-  focusThumbOnChange?: boolean
-  /**
-   * Function that returns a human readable value for the slider
-   */
-  getAriaValueText?(value: number): string
-  /**
-   * Function invoked when the value of the slider changes
-   */
-  onValueChange?(details: ValueChangeDetails): void
-  /**
-   * Function invoked when the slider value change is done
-   */
-  onValueChangeEnd?(details: ValueChangeDetails): void
-  /**
-   * Function invoked when the slider value change is started
-   */
-  onValueChangeStart?(details: ValueChangeDetails): void
   /**
    * The alignment of the slider thumb relative to the track
    * - `center`: the thumb will extend beyond the bounds of the slider track.
@@ -109,9 +114,9 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   thumbAlignment?: "contain" | "center"
   /**
-   * The slider thumb dimensions.If not provided, the thumb size will be measured automatically.
+   * The slider thumbs dimensions
    */
-  thumbSize: Size | null
+  thumbSize: { width: number; height: number } | null
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -119,19 +124,19 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 type ComputedContext = Readonly<{
   /**
    * @computed
+   * Whether the slider thumb has been measured
+   */
+  hasMeasuredThumbSize: boolean
+  /**
+   * @computed
    * Whether the slider is interactive
    */
   isInteractive: boolean
   /**
    * @computed
-   * Whether the thumb size has been measured
+   * The raw value of the space between each thumb
    */
-  hasMeasuredThumbSize: boolean
-  /**
-   * @computed
-   * Whether the slider is horizontal
-   */
-  isHorizontal: boolean
+  spacing: number
   /**
    * @computed
    * Whether the slider is vertical
@@ -139,14 +144,19 @@ type ComputedContext = Readonly<{
   isVertical: boolean
   /**
    * @computed
+   * Whether the slider is horizontal
+   */
+  isHorizontal: boolean
+  /**
+   * @computed
    * Whether the slider is in RTL mode
    */
   isRtl: boolean
   /**
    * @computed
-   * The value of the slider as a percentage
+   * The percentage of the slider value relative to the slider min/max
    */
-  valuePercent: number
+  valuePercent: number[]
   /**
    * @computed
    * Whether the slider is disabled
@@ -157,9 +167,10 @@ type ComputedContext = Readonly<{
 type PrivateContext = Context<{
   /**
    * @internal
-   * The move threshold of the slider thumb before it is considered to be moved
+   * The active index of the range slider. This represents
+   * the currently dragged/focused thumb.
    */
-  threshold: number
+  focusedIndex: number
   /**
    * @internal
    * Whether the slider fieldset is disabled
@@ -181,68 +192,86 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface Point {
-  x: number
-  y: number
-}
-
 interface Size {
   width: number
   height: number
 }
 
-interface MarkerProps {
+export interface MarkerProps {
   value: number
+}
+
+export interface ThumbProps {
+  index: number
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
-   * Whether the slider is focused.
+   * The value of the slider.
    */
-  isFocused: boolean
+  value: number[]
   /**
    * Whether the slider is being dragged.
    */
   isDragging: boolean
   /**
-   * The value of the slider.
+   * Whether the slider is focused.
    */
-  value: number
-  /**
-   * The value of the slider as a percent.
-   */
-  percent: number
+  isFocused: boolean
   /**
    * Function to set the value of the slider.
    */
-  setValue(value: number): void
+  setValue(value: number[]): void
   /**
-   * Returns the value of the slider at the given percent.
+   * Returns the value of the thumb at the given index.
    */
-  getPercentValue: (percent: number) => number
+  getThumbValue(index: number): number
   /**
-   * Returns the percent of the slider at the given value.
+   * Sets the value of the thumb at the given index.
+   */
+  setThumbValue(index: number, value: number): void
+  /**
+   * Returns the percent of the thumb at the given index.
    */
   getValuePercent: (value: number) => number
   /**
-   * Function to focus the slider.
+   * Returns the value of the thumb at the given percent.
+   */
+  getPercentValue: (percent: number) => number
+  /**
+   * Returns the percent of the thumb at the given index.
+   */
+  getThumbPercent(index: number): number
+  /**
+   * Sets the percent of the thumb at the given index.
+   */
+  setThumbPercent(index: number, percent: number): void
+  /**
+   * Returns the min value of the thumb at the given index.
+   */
+  getThumbMin(index: number): number
+  /**
+   * Returns the max value of the thumb at the given index.
+   */
+  getThumbMax(index: number): number
+  /**
+   * Function to increment the value of the slider at the given index.
+   */
+  increment(index: number): void
+  /**
+   * Function to decrement the value of the slider at the given index.
+   */
+  decrement(index: number): void
+  /**
+   * Function to focus the slider. This focuses the first thumb.
    */
   focus(): void
-  /**
-   * Function to increment the value of the slider by the step.
-   */
-  increment(): void
-  /**
-   * Function to decrement the value of the slider by the step.
-   */
-  decrement(): void
-
-  rootProps: T["element"]
   labelProps: T["label"]
-  thumbProps: T["element"]
-  hiddenInputProps: T["input"]
+  rootProps: T["element"]
   outputProps: T["output"]
   trackProps: T["element"]
+  getThumbProps(props: ThumbProps): T["element"]
+  getHiddenInputProps(props: ThumbProps): T["input"]
   rangeProps: T["element"]
   controlProps: T["element"]
   markerGroupProps: T["element"]

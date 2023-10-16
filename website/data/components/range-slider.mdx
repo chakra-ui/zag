@@ -1,7 +1,7 @@
 ---
 title: Range Slider
 description: Using the range slider machine in your project.
-package: "@zag-js/range-slider"
+package: "@zag-js/slider"
 ---
 
 # Range Slider
@@ -9,7 +9,7 @@ package: "@zag-js/range-slider"
 A range slider is a multi-thumb slider used to select a range between two
 numbers.
 
-<Resources pkg="@zag-js/range-slider" />
+<Resources pkg="@zag-js/slider" />
 
 <Showcase id="RangeSlider" />
 
@@ -55,7 +55,7 @@ On a high level, the slider consists of:
 First, import the range slider package into your project
 
 ```jsx
-import * as rangeSlider from "@zag-js/range-slider"
+import * as rangeSlider from "@zag-js/slider"
 ```
 
 The range slider package exports two key functions:
@@ -86,7 +86,7 @@ increment/decrement its value.
 
 ```jsx {3}
 const [state, send] = useMachine(
-  rangeSlider.machine({
+  slider.machine({
     orientation: "vertical",
   }),
 )
@@ -96,7 +96,7 @@ const [state, send] = useMachine(
 
 ```jsx {3}
 const [state, send] = useMachine(
-  rangeSlider.machine({
+  slider.machine({
     values: [30, 60],
   }),
 )
@@ -112,7 +112,7 @@ For example, to ask the user for a value between `-10` and `10`, you can use:
 
 ```jsx {3-4}
 const [state, send] = useMachine(
-  rangeSlider.machine({
+  slider.machine({
     min: -10,
     max: 10,
   }),
@@ -129,7 +129,7 @@ places, you should set the value of step to `0.01`:
 
 ```jsx {5}
 const [state, send] = useMachine(
-  rangeSlider.machine({
+  slider.machine({
     min: 5,
     max: 10,
     step: 0.01,
@@ -144,7 +144,7 @@ callbacks are invoked. You can use this to setup custom behaviors in your app.
 
 ```jsx {3-8}
 const [state, send] = useMachine(
-  rangeSlider.machine({
+  slider.machine({
     onValueChange(details) {
       // details => { values: number[] }
       console.log("value changing to:", details)
@@ -165,7 +165,7 @@ equal values.
 
 ```jsx {3}
 const [state, send] = useMachine(
-  rangeSlider.machine({
+  slider.machine({
     minStepsBetweenThumbs: 1,
   }),
 )
@@ -180,7 +180,7 @@ to the form correctly.
 
 ```jsx {3}
 const [state, send] = useMachine(
-  rangeSlider.machine({
+  slider.machine({
     name: "quantity",
   }),
 )
@@ -196,7 +196,7 @@ To enable RTL support, pass the `dir: rtl` context property
 
 ```jsx {3}
 const [state, send] = useMachine(
-  rangeSlider.machine({
+  slider.machine({
     dir: "rtl",
   }),
 )
@@ -289,4 +289,4 @@ label, control and thumb.
 The range slider's `api` provides properties and methods you can use to
 programmatically read and set the slider's value.
 
-<ApiTable name="range-slider" />
+<ApiTable name="slider" />

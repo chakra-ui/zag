@@ -3,6 +3,50 @@ import type { Style } from "@zag-js/types"
 import type { MachineContext as Ctx, SharedContext } from "./slider.types"
 
 /* -----------------------------------------------------------------------------
+ * Range style calculations
+ * -----------------------------------------------------------------------------*/
+
+function getBounds<T>(value: T[]): [T, T] {
+  const firstValue = value[0]
+  const lastThumb = value[value.length - 1]
+  return [firstValue, lastThumb]
+}
+
+export function getRangeOffsets(ctx: Ctx) {
+  const [firstPercent, lastPercent] = getBounds(ctx.valuePercent)
+
+  if (ctx.valuePercent.length === 1) {
+    if (ctx.origin === "center") {
+      const isNegative = ctx.valuePercent[0] < 50
+      const start = isNegative ? `${ctx.valuePercent[0]}%` : "50%"
+      const end = isNegative ? "50%" : `${100 - ctx.valuePercent[0]}%`
+
+      return { start, end }
+    }
+
+    return { start: "0%", end: `${100 - lastPercent}%` }
+  }
+
+  return { start: `${firstPercent}%`, end: `${100 - lastPercent}%` }
+}
+
+function getRangeStyle(ctx: Pick<SharedContext, "isVertical" | "isRtl">): Style {
+  if (ctx.isVertical) {
+    return {
+      position: "absolute",
+      bottom: "var(--slider-range-start)",
+      top: "var(--slider-range-end)",
+    }
+  }
+
+  return {
+    position: "absolute",
+    [ctx.isRtl ? "right" : "left"]: "var(--slider-range-start)",
+    [ctx.isRtl ? "left" : "right"]: "var(--slider-range-end)",
+  }
+}
+
+/* -----------------------------------------------------------------------------
  * Thumb style calculations
  * -----------------------------------------------------------------------------*/
 
@@ -35,7 +79,7 @@ function getThumbOffset(ctx: SharedContext) {
   return getOffset(ctx, percent)
 }
 
-function getVisibility(ctx: Pick<SharedContext, "thumbAlignment" | "hasMeasuredThumbSize">) {
+function getVisibility(ctx: Ctx) {
   let visibility: "visible" | "hidden" = "visible"
   if (ctx.thumbAlignment === "contain" && !ctx.hasMeasuredThumbSize) {
     visibility = "hidden"
@@ -43,46 +87,13 @@ function getVisibility(ctx: Pick<SharedContext, "thumbAlignment" | "hasMeasuredT
   return visibility
 }
 
-function getThumbStyle(ctx: SharedContext): Style {
+function getThumbStyle(ctx: Ctx, index: number): Style {
   const placementProp = ctx.isVertical ? "bottom" : "insetInlineStart"
   return {
     visibility: getVisibility(ctx),
     position: "absolute",
     transform: "var(--slider-thumb-transform)",
-    [placementProp]: "var(--slider-thumb-offset)",
-  }
-}
-
-/* -----------------------------------------------------------------------------
- * Range style calculations
- * -----------------------------------------------------------------------------*/
-
-function getRangeOffsets(ctx: Ctx) {
-  let start = "0%"
-  let end = `${100 - ctx.valuePercent}%`
-
-  if (ctx.origin === "center") {
-    const isNegative = ctx.valuePercent < 50
-    start = isNegative ? `${ctx.valuePercent}%` : "50%"
-    end = isNegative ? "50%" : end
-  }
-
-  return { start, end }
-}
-
-function getRangeStyle(ctx: Pick<SharedContext, "isVertical" | "isRtl">): Style {
-  if (ctx.isVertical) {
-    return {
-      position: "absolute",
-      bottom: "var(--slider-range-start)",
-      top: "var(--slider-range-end)",
-    }
-  }
-
-  return {
-    position: "absolute",
-    [ctx.isRtl ? "right" : "left"]: "var(--slider-range-start)",
-    [ctx.isRtl ? "left" : "right"]: "var(--slider-range-end)",
+    [placementProp]: `var(--slider-thumb-offset-${index})`,
   }
 }
 
@@ -104,9 +115,15 @@ function getControlStyle(): Style {
 
 function getRootStyle(ctx: Ctx): Style {
   const range = getRangeOffsets(ctx)
+
+  const offsetStyles = ctx.value.reduce<Style>((styles, value, index) => {
+    const offset = getThumbOffset({ ...ctx, value })
+    return { ...styles, [`--slider-thumb-offset-${index}`]: offset }
+  }, {})
+
   return {
+    ...offsetStyles,
     "--slider-thumb-transform": ctx.isVertical ? "translateY(50%)" : ctx.isRtl ? "translateX(50%)" : "translateX(-50%)",
-    "--slider-thumb-offset": getThumbOffset(ctx),
     "--slider-range-start": range.start,
     "--slider-range-end": range.end,
   }
@@ -121,6 +138,7 @@ function getMarkerStyle(
   value: number,
 ): Style {
   return {
+    // @ts-expect-error
     visibility: getVisibility(ctx),
     position: "absolute",
     pointerEvents: "none",
@@ -136,22 +154,6 @@ function getMarkerStyle(
  * Label style calculations
  * -----------------------------------------------------------------------------*/
 
-function getLabelStyle(): Style {
-  return { userSelect: "none" }
-}
-
-/* -----------------------------------------------------------------------------
- * Label style calculations
- * -----------------------------------------------------------------------------*/
-
-function getTrackStyle(): Style {
-  return { position: "relative" }
-}
-
-/* -----------------------------------------------------------------------------
- * Label style calculations
- * -----------------------------------------------------------------------------*/
-
 function getMarkerGroupStyle(): Style {
   return {
     userSelect: "none",
@@ -160,14 +162,11 @@ function getMarkerGroupStyle(): Style {
   }
 }
 
-export const styles = {
-  getThumbOffset,
+export const styleGetterFns = {
+  getRootStyle,
   getControlStyle,
   getThumbStyle,
   getRangeStyle,
-  getRootStyle,
   getMarkerStyle,
-  getLabelStyle,
-  getTrackStyle,
   getMarkerGroupStyle,
 }

@@ -11,4 +11,5 @@ export const anatomy = createAnatomy("slider").parts(
   "markerGroup",
   "marker",
 )
+
 export const parts = anatomy.build()

@@ -9,7 +9,8 @@
     "statechart",
     "component",
     "chakra-ui",
-    "slider"
+    "slider",
+    "range-slider"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
@@ -29,12 +30,12 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
+    "@zag-js/form-utils": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
-    "@zag-js/form-utils": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "@zag-js/element-size": "workspace:*",
     "@zag-js/numeric-range": "workspace:*",
+    "@zag-js/element-size": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
