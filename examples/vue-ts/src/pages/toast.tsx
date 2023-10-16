@@ -28,12 +28,16 @@ const ToastItem = defineComponent({
         transformOrigin: apiRef.value.isRtl ? "right" : "left",
         animationName: apiRef.value.type === "loading" ? "none" : undefined,
         animationPlayState: apiRef.value.isPaused ? "paused" : "running",
-        animationDuration: `${state.value.context.duration}ms`,
+        animationDuration: "var(--duration)",
       },
     }))
 
     return () => {
       const api = apiRef.value
+
+      if (state.value.context.render) {
+        return state.value.context.render(api)
+      }
 
       return (
         <pre {...api.rootProps}>
@@ -55,9 +59,7 @@ export default defineComponent({
     const [state, send] = useMachine(
       toast.group.machine({
         id: "1",
-        defaultOptions: {
-          placement: "top-start",
-        },
+        placement: "top-start",
       }),
       {
         context: controls.context,

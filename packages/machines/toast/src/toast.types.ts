@@ -9,9 +9,41 @@ import type {
   RootProperties,
 } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Base types
+ * -----------------------------------------------------------------------------*/
+
 export type Type = "success" | "error" | "loading" | "info" | "custom"
 
 export type Placement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
+
+export interface BaseOptions {
+  /**
+   * Whether to pause toast when the user leaves the browser tab
+   */
+  pauseOnPageIdle?: boolean
+  /**
+   * Whether to pause the toast when interacted with
+   */
+  pauseOnInteraction?: boolean
+  /**
+   * The duration the toast will be visible
+   */
+  duration?: number
+  /**
+   * The duration for the toast to kept alive before it is removed.
+   * Useful for exit transitions.
+   */
+  removeDelay?: number
+  /**
+   * The placement of the toast
+   */
+  placement?: Placement
+  /**
+   * Custom function to render the toast element.
+   */
+  render?: (options: MachineApi<any>) => any
+}
 
 export interface ToastOptions {
   /**
@@ -23,10 +55,6 @@ export interface ToastOptions {
    */
   type: Type
   /**
-   * The placement of the toast
-   */
-  placement: Placement
-  /**
    * The message of the toast
    */
   title?: string
@@ -34,19 +62,6 @@ export interface ToastOptions {
    * The description of the toast
    */
   description?: string
-  /**
-   * The duration the toast will be visible
-   */
-  duration: number
-  /**
-   * Custom function to render the toast element.
-   */
-  render?: (options: RenderOptions) => any
-  /**
-   * The duration for the toast to kept alive before it is removed.
-   * Useful for exit transitions.
-   */
-  removeDelay?: number
   /**
    * Function called when the toast has been closed and removed
    */
@@ -65,34 +80,14 @@ export interface ToastOptions {
   onUpdate?: VoidFunction
 }
 
-export type Options = Partial<ToastOptions>
-
-export type RenderOptions = Omit<ToastOptions, "render"> & {
-  dismiss(): void
-}
+export type Options = Partial<ToastOptions & BaseOptions>
 
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface SharedContext {
-  /**
-   * Whether to pause toast when the user leaves the browser tab
-   */
-  pauseOnPageIdle?: boolean
-  /**
-   * Whether to pause the toast when interacted with
-   */
-  pauseOnInteraction?: boolean
-
-  /**
-   * The default options for the toast
-   */
-  defaultOptions?: Partial<Pick<ToastOptions, "duration" | "removeDelay" | "placement">>
-}
-
 export interface MachineContext
-  extends SharedContext,
+  extends BaseOptions,
     RootProperties,
     CommonProperties,
     Omit<ToastOptions, "removeDelay"> {
@@ -126,7 +121,7 @@ export type Send = S.Send
 
 export type Service = Machine<MachineContext, MachineState>
 
-interface GroupPublicContext extends SharedContext, DirectionProperty, CommonProperties {
+interface GroupPublicContext extends BaseOptions, DirectionProperty, CommonProperties {
   /**
    * The gutter or spacing between toasts
    */
@@ -254,7 +249,7 @@ export interface GroupMachineApi<T extends PropTypes = PropTypes> {
    * - When the promise resolves, the toast will be updated with the success options.
    * - When the promise rejects, the toast will be updated with the error options.
    */
-  promise<T>(promise: Promise<T>, options: PromiseOptions<T>, shared?: ToastOptions): Promise<T>
+  promise<T>(promise: Promise<T>, options: PromiseOptions<T>, shared?: Partial<ToastOptions>): Promise<T>
   /**
    * Function to subscribe to the toast group.
    */
@@ -303,10 +298,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to instantly dismiss the toast.
    */
   dismiss(): void
-  /**
-   * Function render the toast in the DOM (based on the defined `render` property)
-   */
-  render(): any
+
   rootProps: T["element"]
   titleProps: T["element"]
   descriptionProps: T["element"]

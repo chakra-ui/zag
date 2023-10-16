@@ -8,7 +8,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isPaused = state.hasTag("paused")
 
   const pauseOnInteraction = state.context.pauseOnInteraction
-  const placement = state.context.placement
+  const placement = state.context.placement!
 
   return {
     type: state.context.type,
@@ -29,20 +29,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     dismiss() {
       send("DISMISS")
-    },
-
-    render() {
-      return state.context.render?.({
-        id: state.context.id,
-        type: state.context.type,
-        duration: state.context.duration,
-        title: state.context.title,
-        placement: state.context.placement,
-        description: state.context.description,
-        dismiss() {
-          send("DISMISS")
-        },
-      })
     },
 
     rootProps: normalize.element({

@@ -39,6 +39,10 @@ function ToastItem(props: { actor: toast.Service }) {
     },
   }))
 
+  if (state.context.render) {
+    return state.context.render(api())
+  }
+
   return (
     <div {...api().rootProps}>
       <div {...progressbarProps()} />
@@ -53,8 +57,13 @@ export default function Page() {
   const controls = useControls(toastControls)
 
   const [state, send] = useMachine(
-    toast.group.machine({ id: createUniqueId(), defaultOptions: { placement: "top-start" } }),
-    { context: controls.context },
+    toast.group.machine({
+      id: createUniqueId(),
+      placement: "top-start",
+    }),
+    {
+      context: controls.context,
+    },
   )
 
   const api = createMemo(() => toast.group.connect(state, send, normalizeProps))

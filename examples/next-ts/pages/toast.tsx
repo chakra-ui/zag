@@ -20,8 +20,12 @@ function ToastItem({ actor }: { actor: toast.Service }) {
       transformOrigin: api.isRtl ? "right" : "left",
       animationName: api.type === "loading" ? "none" : undefined,
       animationPlayState: api.isPaused ? "paused" : "running",
-      animationDuration: `${state.context.duration}ms`,
+      animationDuration: "var(--duration)",
     },
+  }
+
+  if (state.context.render) {
+    return state.context.render(api)
   }
 
   return (
@@ -41,9 +45,7 @@ export default function Page() {
   const [state, send] = useMachine(
     toast.group.machine({
       id: useId(),
-      defaultOptions: {
-        placement: "top-start",
-      },
+      placement: "top-start",
     }),
     {
       context: controls.context,
