@@ -345,14 +345,15 @@ function ToastItem(props) {
   const [state, send] = useActor(props.actor)
   const api = toast.connect(state, send)
 
-  // Custom toast JSX defined when `toast.create()` is called
-  const jsx = api.render()
+  // Custom toast JSX defined when `toast.create({ render: () => {...} })` is called
+  const jsx = state.context.render?.(api)
 
+  // User controlled JSX
   if (jsx) {
-    return <div {...api.rootProps}>{jsx}</div>
+    return jsx
   }
 
-  // Default toast JSX
+  // Default JSX
   return (
     <div {...api.rootProps}>
       <p {...api.titleProps}>{api.title}</p>
@@ -368,12 +369,9 @@ toast.create({
   title: "Welcome",
   description: "This is a toast",
   type: "info",
-  render(props) {
+  render(api) {
     return (
-      <div
-        id={props.id}
-        style={{ background: props.type === "loading" ? "pink" : "red" }}
-      >
+      <div style={{ background: api.type === "loading" ? "pink" : "red" }}>
         <p>{props.title}</p>
         <p>{props.description}</p>
         <button onClick={props.dismiss}>Close</button>
