@@ -43,7 +43,7 @@ export default function Page() {
                 </div>
                 <For each={api().value}>
                   {(_, index) => (
-                    <div class="slider__thumb" {...api().getThumbProps({ index: index() })}>
+                    <div {...api().getThumbProps({ index: index() })}>
                       <input {...api().getHiddenInputProps({ index: index() })} />
                     </div>
                   )}
