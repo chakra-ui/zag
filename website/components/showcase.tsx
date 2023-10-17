@@ -3,7 +3,6 @@ import { ContextMenu } from "components/machines/context-menu"
 import { HoverCard } from "components/machines/hover-card"
 import { NestedMenu } from "components/machines/nested-menu"
 import { Pagination } from "components/machines/pagination"
-import { Pressable } from "components/machines/pressable"
 import { Rating } from "components/machines/rating"
 import { SegmentedControl } from "components/machines/segmented-control"
 import { Switch } from "components/machines/switch"
@@ -146,17 +145,6 @@ const components = {
         },
         blurOnComplete: false,
         mask: false,
-      }}
-    />
-  ),
-  Pressable: () => (
-    <Playground
-      component={Pressable}
-      defaultProps={{
-        disabled: false,
-        preventFocusOnPress: false,
-        cancelOnPointerExit: false,
-        allowTextSelectionOnPress: false,
       }}
     />
   ),

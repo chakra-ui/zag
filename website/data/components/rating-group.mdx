@@ -36,14 +36,6 @@ name its parts.
 
 <Anatomy id="rating-group" />
 
-On a high level, the rating consists of:
-
-- **Root**: The root container for the rating
-- **Label**: The label that gives the user information on the rating
-- **Item**: The element that visually represents the each rating item.
-- **Item Group**: The radiogroup wrapper for the rating items.
-- **Input**: The native html input that is visually hidden in the rating.
-
 ## Usage
 
 First, import the rating package into your project
@@ -201,6 +193,14 @@ When a rating is half, the `data-half` attribute is added to the rating part.
 
 ## Methods and Properties
 
-The rating's `api` provides helpful properties and methods
+### Machine Context
+
+The rating group machine exposes the following context properties:
+
+<ContextTable name="rating-group" />
+
+### Machine API
+
+The rating group `api` exposes the following methods:
 
 <ApiTable name="rating-group" />

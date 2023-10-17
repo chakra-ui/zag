@@ -40,20 +40,6 @@ how we name its parts.
 
 <Anatomy id="dialog" />
 
-The dialog pattern consists of:
-
-- **Trigger**: The button that triggers the dialog
-- **Backdrop**: The dim background overlay that's usually behind the dialog
-  element.
-- **Container**: The container for the dialog's content.
-- **Content**: Used to house the content of the dialog.
-
-The dialog's content consists of:
-
-- **Title**: The title of the dialog.
-- **Description**: The description that supports the title.
-- **Close Button**: The button used to close the dialog.
-
 ## Usage
 
 First, import the dialog package into your project
@@ -203,6 +189,14 @@ attribute to style the dialog or trigger based on its state.
 
 ## Methods and Properties
 
-The dialog's `api` exposes the following methods:
+### Machine Context
+
+The dialog machine exposes the following context properties:
+
+<ContextTable name="dialog" />
+
+### Machine API
+
+The dialog `api` exposes the following methods:
 
 <ApiTable name="dialog" />

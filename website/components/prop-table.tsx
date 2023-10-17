@@ -2,13 +2,18 @@ import { Stack, StackDivider } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
 import apiJson from "@zag-js/docs"
 
-type ApiTableProps = {
+interface ApiTableProps {
+  type: "api" | "context"
   name: keyof typeof apiJson
 }
 
-export const ApiTable = ({ name }: ApiTableProps) => {
-  const { api } = apiJson[name]
-  const entries = Object.entries(api)
+export const PropTable = (props: ApiTableProps) => {
+  const { name, type = "api" } = props
+
+  const data = apiJson[name][type]
+
+  const entries = Object.entries(data)
+
   return (
     <Stack
       as="ul"

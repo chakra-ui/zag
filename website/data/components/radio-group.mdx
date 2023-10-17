@@ -39,16 +39,6 @@ how we name its parts.
 
 <Anatomy id="radio-group" />
 
-On a high level, the radio group consists of:
-
-- **Root**: The root container for the radio group
-- **Label**: The label that gives the user information on the radio group
-- **Radio**: The root container for the each radio item
-- **Radio Label**: The label that gives the user information on each radio item
-- **Radio Control**: The element that visually represents the each radio item.
-- **Radio Hidden Input**: The native html input that is visually hidden in each
-  radio item.
-
 ## Usage
 
 First, import the radio group package into your project
@@ -208,7 +198,14 @@ control and label parts.
 
 ## Methods and Properties
 
-The radio's `api` provides properties and methods you can use to
-programmatically read and set the radio group's value.
+### Machine Context
+
+The radio group machine exposes the following context properties:
+
+<ContextTable name="radio-group" />
+
+### Machine API
+
+The radio group `api` exposes the following methods:
 
 <ApiTable name="radio-group" />

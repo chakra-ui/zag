@@ -45,14 +45,6 @@ how we name its parts.
 
 <Anatomy id="file-upload" />
 
-On a high level, the file upload consists of:
-
-- **Root**: The root element of the file upload.
-- **Dropzone**: The element that handles the drag and drop functionality.
-- **Input**: The visually hidden input element.
-- **Trigger**: The element that triggers the file upload.
-- **Delete Trigger**: The element that triggers the deletion of a file.
-
 ## Usage
 
 First, import the file upload package into your project
@@ -233,6 +225,14 @@ root element.
 
 ## Methods and Properties
 
-The file upload's `api` method exposes the following methods:
+### Machine Context
+
+The file upload machine exposes the following context properties:
+
+<ContextTable name="file-upload" />
+
+### Machine API
+
+The file upload `api` exposes the following methods:
 
 <ApiTable name="file-upload" />

@@ -74,7 +74,6 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Pagination", id: "pagination" },
         { type: "doc", label: "Pin Input", id: "pin-input" },
         { type: "doc", label: "Popover", id: "popover" },
-        { type: "doc", label: "Pressable", id: "pressable" },
         { type: "doc", label: "Radio Group", id: "radio-group" },
         { type: "doc", label: "Segmented Control", id: "segmented-control" },
         { type: "doc", label: "Range Slider", id: "range-slider" },

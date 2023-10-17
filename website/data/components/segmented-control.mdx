@@ -40,15 +40,6 @@ and how we name its parts.
 
 <Anatomy id="segmented-control" />
 
-On a high level, the segmented control consists of:
-
-- **Root**: The root container for the segmented control
-- **Indicator**: The element that visually represents the active radio item.
-- **Radio**: The root container for the each radio item
-- **Radio Label**: The label that gives the user information on each radio item
-- **Radio Hidden Input**: The native html input that is visually hidden in each
-  radio item.
-
 ## Usage
 
 First, import the radio group package into your project
@@ -203,7 +194,14 @@ label parts.
 
 ## Methods and Properties
 
-The segmented control's `api` provides properties and methods you can use to
-programmatically read and set the segmented control's value.
+### Machine Context
+
+The radio group machine exposes the following context properties:
+
+<ContextTable name="radio-group" />
+
+### Machine API
+
+The radio group `api` exposes the following methods:
 
 <ApiTable name="radio-group" />

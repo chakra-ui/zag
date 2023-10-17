@@ -13,7 +13,7 @@ import { HiOutlineCode } from "react-icons/hi"
 import { ImMagicWand } from "react-icons/im"
 import { RiNpmjsFill } from "react-icons/ri"
 import { FRAMEWORKS, frameworks } from "../lib/framework-utils"
-import { ApiTable } from "./api-table"
+import { PropTable } from "./prop-table"
 import { CopyButton } from "./copy-button"
 import { useFramework } from "./framework"
 import { Showcase } from "./showcase"
@@ -118,7 +118,12 @@ const components: Record<string, FC<any>> = {
   inlineCode(props) {
     return <chakra.code className="prose" layerStyle="inlineCode" {...props} />
   },
-  ApiTable,
+  ApiTable(props) {
+    return <PropTable type="api" {...props} />
+  },
+  ContextTable(props) {
+    return <PropTable type="context" {...props} />
+  },
   code(props) {
     if (typeof props.children === "string") {
       return <components.inlineCode {...props} />

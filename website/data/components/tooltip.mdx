@@ -43,13 +43,6 @@ we name its parts.
 
 <Anatomy id="tooltip" />
 
-On a high level, the tooltip consists of:
-
-- **Trigger**: The trigger for the tooltip.
-- **Positioner**: The element that dynamically positions the tooltip.
-- **Arrow**: The arrow that points to the trigger.
-- **Content**: The element that houses the content of the tooltip.
-
 ## Usage
 
 First, import the tooltip package into your project
@@ -271,6 +264,14 @@ When using arrows within the menu, you can style it using css variables.
 
 ## Methods and Properties
 
-The tooltip's `api` exposes the following methods:
+### Machine Context
+
+The tooltip machine exposes the following context properties:
+
+<ContextTable name="tooltip" />
+
+### Machine API
+
+The tooltip `api` exposes the following methods:
 
 <ApiTable name="tooltip" />

@@ -37,11 +37,6 @@ how we name its parts.
 
 <Anatomy id="toggle-group" />
 
-On a high level, the toggle group consists of:
-
-- **Root**: The root container for the toggle group
-- **Toggle**: The individual toggle button
-
 ## Usage
 
 First, import the toggle group package into your project
@@ -208,7 +203,14 @@ matching toggle button.
 
 ## Methods and Properties
 
-The toggle group's `api` provides properties and methods you can use to
-programmatically read and set the toggle group's value.
+### Machine Context
+
+The toggle group machine exposes the following context properties:
+
+<ContextTable name="toggle-group" />
+
+### Machine API
+
+The toggle group `api` exposes the following methods:
 
 <ApiTable name="toggle-group" />

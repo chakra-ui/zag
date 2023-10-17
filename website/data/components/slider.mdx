@@ -43,16 +43,6 @@ name its parts.
 
 <Anatomy id="slider" />
 
-On a high level, the slider consists of:
-
-- **Root**: The root container for the slider
-- **Label**: The accessible label for the slider
-- **Control**: The container for the slider's track and thumb
-- **Track**: The slider's track element
-- **Range**: The element that visually represents the slider's range
-- **Thumb**: The control element used to drag the slider
-- **Output**: The element that displays the current value of the slider
-
 ## Usage
 
 First, import the slider package into your project
@@ -337,7 +327,14 @@ track, range, label, and thumb parts.
 
 ## Methods and Properties
 
-The slider's `api` provides properties and methods you can use to
-programmatically read and set the slider's value.
+### Machine Context
+
+The slider machine exposes the following context properties:
+
+<ContextTable name="slider" />
+
+### Machine API
+
+The slider `api` exposes the following methods:
 
 <ApiTable name="slider" />

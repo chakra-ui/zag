@@ -43,14 +43,6 @@ name its parts.
 
 <Anatomy id="tabs" />
 
-On a high level, the tabs consists of:
-
-- **Root**: The root container for the trigger and content elements.
-- **Trigger**: The button that activates a tab panel.
-- **Content**: The element that holds the content of the tab.
-- **Indicator**: The element that holds the content of the tab.
-- **Delete Button**: An optional element used to close or delete a tab.
-
 ## Usage
 
 First, import the tabs package into your project
@@ -269,6 +261,14 @@ You'll also need to set the styles for the indicator to match your design.
 
 ## Methods and Properties
 
-The tab's `api` exposes the following methods:
+### Machine Context
+
+The tabs machine exposes the following context properties:
+
+<ContextTable name="tabs" />
+
+### Machine API
+
+The tabs `api` exposes the following methods:
 
 <ApiTable name="tabs" />
