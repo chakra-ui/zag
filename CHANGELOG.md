@@ -6,6 +6,38 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.25.0] - 2023-10-17
+
+### Fixed
+
+- **ColorPicker**
+
+  - Fix issue where channel inputs within control doesn't get synced
+  - Fix issue where area selection doesn't work when the value is not `hsl`
+  - Add default `12px` size for transparency grid
+
+- **RadioGroup**: Fix issue where indicator stays visibile when the value is `null`
+
+- **Combobox**: Fix issue where combobox positioner is `hidden` when combobox is not open
+
+### Changed
+
+- **Toast**: Redesign toast render apis to allow for framework control.
+
+  - `defaultOptions` can now be passed directly to the `toast.group` machine context.
+  - You can now pass the default `render` function to the `toast.group` machine context.
+  - Removed `api.render` in favor of userland control. This eliminates the bug in Solid.js for custom toasts.
+
+- **Carousel**: Rename `onSlideChange` to `onIndexChange`
+
+- **Slider, RangeSlider**: Merge the slider and range slider machines into one to prevent logic duplication.
+
+  - `value` and `onValueChange` type has been updated to be `number[]`
+  - Update `api.getThumbProps(index)` to `api.getThumbProps({ index })`
+
+- **Dialog**: Rename dialog container to dialog positioner for better API consistency. This means `api.containerProps`
+  is now `api.positionerProps`
+
 ## [0.24.0] - 2023-10-12
 
 ### Fixed
