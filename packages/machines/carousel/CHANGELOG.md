@@ -1,5 +1,21 @@
 # @zag-js/carousel
 
+## 0.25.0
+
+### Minor Changes
+
+- [`2f386d7e`](https://github.com/chakra-ui/zag/commit/2f386d7e5f02693a56e263626cc3754e346199ac) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `onSlideChange` to `onIndexChange`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.25.0
+  - @zag-js/core@0.25.0
+  - @zag-js/types@0.25.0
+  - @zag-js/utils@0.25.0
+  - @zag-js/dom-query@0.25.0
+
 ## 0.24.0
 
 ### Minor Changes
