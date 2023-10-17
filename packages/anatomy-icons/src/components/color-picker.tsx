@@ -14,8 +14,8 @@ export const ColorPickerAnatomy = createComponent((props) => {
       <rect x={402} y={250} width={652} height={478} rx={5} fill={palette[4]} />
       <rect x={425} y={279} width={606} height={207} rx={4} fill={palette[0]} fillOpacity={0.8} />
       <rect x={425} y={514} width={499} height={36} rx={3} fill={palette[5]} />
-      <rect x={585} y={519} width={26} height={26} rx={13} fill={palette[undefined]} stroke="black" strokeWidth={6} />
-      <rect x={910} y={315} width={43} height={43} rx={21.5} fill={palette[undefined]} stroke="black" strokeWidth={6} />
+      <rect x={585} y={519} width={26} height={26} rx={13} fill={palette[15]} stroke="black" strokeWidth={6} />
+      <rect x={910} y={315} width={43} height={43} rx={21.5} fill={palette[15]} stroke="black" strokeWidth={6} />
       <rect x={951} y={513} width={80} height={80} rx={4} fill={palette[0]} fillOpacity={0.8} />
       <path
         d="M976.107 568.067C975.248 569.31 973.25 572.385 973.25 574.062C973.25 576.233 975.017 578 977.188 578C979.358 578 981.125 576.233 981.125 574.062C981.125 572.385 979.127 569.31 978.268 568.067C977.778 567.357 976.597 567.357 976.107 568.067Z"

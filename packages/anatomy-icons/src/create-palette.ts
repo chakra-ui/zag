@@ -1,3 +1,5 @@
+// http://ethanmuller.github.io/sass-color-function-generator-thing
+
 import { adjustHue, darken, desaturate, lighten, toHex } from "color2k"
 
 export function createPalette(accentColor: string) {
@@ -17,5 +19,6 @@ export function createPalette(accentColor: string) {
     darken(desaturate(adjustHue(accentColor, 4), 0.38), 0.16),
     lighten(adjustHue(accentColor, 5), 0.22),
     darken(desaturate(adjustHue(accentColor, 9), 0.35), 0.43),
+    lighten(desaturate(adjustHue(accentColor, 9), 1), 0.26),
   ].map(toHex)
 }
