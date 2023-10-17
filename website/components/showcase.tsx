@@ -59,6 +59,10 @@ const components = {
           default: "autohighlight",
           options: ["autohighlight", "autocomplete", "none"],
         },
+        selectionBehavior: {
+          default: "replace",
+          options: ["replace", "clear", "preserve"],
+        },
       }}
     />
   ),
