@@ -1,5 +1,26 @@
 # @zag-js/combobox
 
+## 0.25.0
+
+### Patch Changes
+
+- [`e9030baf`](https://github.com/chakra-ui/zag/commit/e9030baf1093271004a104a06d619c7c98f74cb2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where combobox positioner is `hidden` when combobox is
+  not open.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.25.0
+  - @zag-js/core@0.25.0
+  - @zag-js/types@0.25.0
+  - @zag-js/aria-hidden@0.25.0
+  - @zag-js/collection@0.25.0
+  - @zag-js/utils@0.25.0
+  - @zag-js/dismissable@0.25.0
+  - @zag-js/dom-event@0.25.0
+  - @zag-js/dom-query@0.25.0
+  - @zag-js/mutation-observer@0.25.0
+  - @zag-js/popper@0.25.0
+
 ## 0.24.0
 
 ### Minor Changes

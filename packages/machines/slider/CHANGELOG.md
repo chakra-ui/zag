@@ -1,5 +1,32 @@
 # @zag-js/slider
 
+## 0.25.0
+
+### Minor Changes
+
+- [#927](https://github.com/chakra-ui/zag/pull/927)
+  [`4406e667`](https://github.com/chakra-ui/zag/commit/4406e667e471849366a835b41327e77541ae8c9a) Thanks
+  [@Omikorin](https://github.com/Omikorin)! - Merge the slider and range slider machines into one to prevent
+  duplication.
+
+  Some notable changes:
+
+  - `value` and `onValueChange` type has been updated to be `number[]`
+  - Update `api.getThumbProps(index)` to `api.getThumbProps({ index })`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.25.0
+  - @zag-js/core@0.25.0
+  - @zag-js/types@0.25.0
+  - @zag-js/utils@0.25.0
+  - @zag-js/dom-event@0.25.0
+  - @zag-js/dom-query@0.25.0
+  - @zag-js/element-size@0.25.0
+  - @zag-js/form-utils@0.25.0
+  - @zag-js/numeric-range@0.25.0
+
 ## 0.24.0
 
 ### Patch Changes

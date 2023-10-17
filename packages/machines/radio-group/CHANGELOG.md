@@ -1,5 +1,23 @@
 # @zag-js/radio-group
 
+## 0.25.0
+
+### Patch Changes
+
+- [#922](https://github.com/chakra-ui/zag/pull/922)
+  [`d950ce5d`](https://github.com/chakra-ui/zag/commit/d950ce5da2b24b3d123ac6613c48dc92fd07f11c) Thanks
+  [@srflp](https://github.com/srflp)! - Hide indicator when the value is null
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.25.0
+  - @zag-js/core@0.25.0
+  - @zag-js/types@0.25.0
+  - @zag-js/utils@0.25.0
+  - @zag-js/dom-query@0.25.0
+  - @zag-js/element-rect@0.25.0
+  - @zag-js/form-utils@0.25.0
+  - @zag-js/visually-hidden@0.25.0
+
 ## 0.24.0
 
 ### Patch Changes

@@ -1,5 +1,28 @@
 # @zag-js/toast
 
+## 0.25.0
+
+### Minor Changes
+
+- [`cbc78449`](https://github.com/chakra-ui/zag/commit/cbc78449ac849663a3a7cc464bbab91f100d60d2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Redesign toast render apis to allow for framework control.
+
+  **Some breaking changes:**
+
+  - `defaultOptions` can now be passed directly to the `toast.group` machine context.
+  - You can now pass the default `render` function to the `toast.group` machine context.
+  - Removed `api.render` in favor of userland control. This eliminates the bug in Solid.js for custom toasts.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.25.0
+  - @zag-js/core@0.25.0
+  - @zag-js/types@0.25.0
+  - @zag-js/utils@0.25.0
+  - @zag-js/dom-event@0.25.0
+  - @zag-js/dom-query@0.25.0
+
 ## 0.24.0
 
 ### Patch Changes

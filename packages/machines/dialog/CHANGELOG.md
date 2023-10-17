@@ -1,5 +1,25 @@
 # @zag-js/dialog
 
+## 0.25.0
+
+### Minor Changes
+
+- [`068c15d2`](https://github.com/chakra-ui/zag/commit/068c15d2647c364736103f81f174a21def0a3238) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename dialog container to dialog positioner for better API
+  consistency. This means `api.containerProps` is now `api.positionerProps`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.25.0
+  - @zag-js/core@0.25.0
+  - @zag-js/types@0.25.0
+  - @zag-js/aria-hidden@0.25.0
+  - @zag-js/utils@0.25.0
+  - @zag-js/dismissable@0.25.0
+  - @zag-js/dom-query@0.25.0
+  - @zag-js/remove-scroll@0.25.0
+
 ## 0.24.0
 
 ### Patch Changes

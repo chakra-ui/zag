@@ -1,5 +1,31 @@
 # @zag-js/color-picker
 
+## 0.25.0
+
+### Minor Changes
+
+- [`2f386d7e`](https://github.com/chakra-ui/zag/commit/2f386d7e5f02693a56e263626cc3754e346199ac) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where channel inputs within control doesn't get synced
+  - Fix issue where area selection doesn't work when the value is not `hsl`
+  - Add default `12px` size for transparency grid
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.25.0
+  - @zag-js/core@0.25.0
+  - @zag-js/types@0.25.0
+  - @zag-js/color-utils@0.25.0
+  - @zag-js/utils@0.25.0
+  - @zag-js/dismissable@0.25.0
+  - @zag-js/dom-event@0.25.0
+  - @zag-js/dom-query@0.25.0
+  - @zag-js/form-utils@0.25.0
+  - @zag-js/popper@0.25.0
+  - @zag-js/tabbable@0.25.0
+  - @zag-js/text-selection@0.25.0
+  - @zag-js/visually-hidden@0.25.0
+
 ## 0.24.0
 
 ### Minor Changes
