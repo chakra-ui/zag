@@ -691,9 +691,9 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       compareFns: {
-        startValue: (a, b) => a.toString() === b.toString(),
-        focusedValue: (a, b) => a.toString() === b.toString(),
-        value: (a, b) => a?.toString() === b?.toString(),
+        startValue: isDateEqual,
+        focusedValue: isDateEqual,
+        value: isDateEqualFn,
       },
     },
   )
