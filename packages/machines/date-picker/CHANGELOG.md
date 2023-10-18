@@ -1,5 +1,34 @@
 # @zag-js/date-picker
 
+## 0.26.0
+
+### Minor Changes
+
+- [`7fa9cbb4`](https://github.com/chakra-ui/zag/commit/7fa9cbb42cec51ce1a96fd0aaa30f2231f3d9a17) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add parse function to avoid installing additional
+  `@internationalized/date` package
+  - Export more date picker types
+
+### Patch Changes
+
+- [`041a9e00`](https://github.com/chakra-ui/zag/commit/041a9e00e503ce62a198db45ea7b757de7c39263) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `dir` attribute was not applied to all element
+  parts
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.26.0
+  - @zag-js/core@0.26.0
+  - @zag-js/types@0.26.0
+  - @zag-js/utils@0.26.0
+  - @zag-js/date-utils@0.26.0
+  - @zag-js/dismissable@0.26.0
+  - @zag-js/dom-event@0.26.0
+  - @zag-js/dom-query@0.26.0
+  - @zag-js/form-utils@0.26.0
+  - @zag-js/live-region@0.26.0
+  - @zag-js/popper@0.26.0
+  - @zag-js/text-selection@0.26.0
+
 ## 0.25.0
 
 ### Patch Changes
