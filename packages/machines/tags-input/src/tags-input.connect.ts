@@ -34,39 +34,31 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     valueAsString: state.context.valueAsString,
     count: state.context.count,
     isAtMax: state.context.isAtMax,
-
-    setValue(value: string[]) {
+    setValue(value) {
       send({ type: "SET_VALUE", value })
     },
-
-    clearValue(id?: string) {
+    clearValue(id) {
       if (id) {
         send({ type: "CLEAR_TAG", id })
       } else {
         send("CLEAR_VALUE")
       }
     },
-
-    addValue(value: string) {
+    addValue(value) {
       send({ type: "ADD_TAG", value })
     },
-
-    setValueAtIndex(index: number, value: string) {
+    setValueAtIndex(index, value) {
       send({ type: "SET_VALUE_AT_INDEX", index, value })
     },
-
-    setInputValue(value: string) {
+    setInputValue(value) {
       send({ type: "SET_INPUT_VALUE", value })
     },
-
     clearInputValue() {
       send({ type: "SET_INPUT_VALUE", value: "" })
     },
-
     focus() {
       dom.getInputEl(state.context)?.focus()
     },
-
     getItemState,
 
     rootProps: normalize.element({

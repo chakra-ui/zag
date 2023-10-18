@@ -31,7 +31,6 @@ export const routes: RouteDefinition[] = [
   { path: "/pin-input", component: lazy(() => import("./pages/pin-input")) },
   // { path: "/popper", component:  lazy(()=>import("./pages/popper")) },
   { path: "/popover", component: lazy(() => import("./pages/popover")) },
-  { path: "/pressable", component: lazy(() => import("./pages/pressable")) },
   // { path: "/nested-popover", component:  lazy(()=>import("./pages/nested-popover")) },
   { path: "/radio-group", component: lazy(() => import("./pages/radio-group")) },
   { path: "/range-slider", component: lazy(() => import("./pages/range-slider")) },

@@ -408,6 +408,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.input({
         ...parts.channelInput.attrs,
+        dir: state.context.dir,
         type: isTextField ? "text" : "number",
         "data-channel": channel,
         "aria-label": channel,
@@ -461,6 +462,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     eyeDropperTriggerProps: normalize.button({
       ...parts.eyeDropperTrigger.attrs,
       type: "button",
+      dir: state.context.dir,
       disabled: isDisabled,
       "data-disabled": dataAttr(isDisabled),
       "aria-label": "Pick a color from the screen",
@@ -481,6 +483,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.swatchTrigger.attrs,
         disabled: isDisabled,
+        dir: state.context.dir,
         type: "button",
         "data-value": color.toString("hex"),
         onClick() {
@@ -499,6 +502,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const color = colorValue.toFormat(value.getFormat())
       return normalize.element({
         ...parts.swatch.attrs,
+        dir: state.context.dir,
         "data-state": colorValue.isEqual(value) ? "selected" : "unselected",
         "data-value": color.toString("hex"),
         style: {

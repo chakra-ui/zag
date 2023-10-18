@@ -44,18 +44,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
+    focus,
     value: state.context.value,
-
-    setValue(value: string) {
+    setValue(value) {
       send({ type: "SET_VALUE", value, isTrusted: false })
     },
-
     clearValue() {
       send({ type: "SET_VALUE", value: null, isTrusted: false })
     },
-
-    focus,
-
     getItemState,
 
     rootProps: normalize.element({

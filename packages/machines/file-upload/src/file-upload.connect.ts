@@ -166,6 +166,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { file } = props
       return normalize.element({
         ...parts.itemName.attrs,
+        dir: state.context.dir,
         id: dom.getItemNameId(state.context, file.name),
         "data-disabled": dataAttr(disabled),
       })
@@ -175,6 +176,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { file } = props
       return normalize.element({
         ...parts.itemSizeText.attrs,
+        dir: state.context.dir,
         id: dom.getItemSizeTextId(state.context, file.name),
         "data-disabled": dataAttr(disabled),
       })
@@ -188,6 +190,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       }
       return normalize.img({
         ...parts.itemPreview.attrs,
+        dir: state.context.dir,
         alt: `Preview of ${file.name}`,
         src: url,
         id: dom.getItemPreviewId(state.context, file.name),
@@ -199,6 +202,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { file } = props
       return normalize.button({
         ...parts.itemDeleteTrigger.attrs,
+        dir: state.context.dir,
         type: "button",
         disabled,
         "data-disabled": dataAttr(disabled),

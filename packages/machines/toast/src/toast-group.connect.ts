@@ -126,6 +126,7 @@ export function groupConnect<T extends PropTypes>(
       const { placement, label = "Notifications" } = options
       return normalize.element({
         ...parts.group.attrs,
+        dir: state.context.dir,
         tabIndex: -1,
         "aria-label": `${placement} ${label}`,
         id: dom.getGroupId(placement),

@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -13,7 +13,7 @@ export interface StatusChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext extends CommonProperties {
+interface PublicContext extends CommonProperties, DirectionProperty {
   /**
    * Functional called when the image loading status changes.
    */

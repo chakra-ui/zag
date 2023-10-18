@@ -23,11 +23,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isChecked,
     isDisabled,
     isFocused,
-
-    setChecked(checked: boolean) {
+    setChecked(checked) {
       send({ type: "CHECKED.SET", checked, isTrusted: false })
     },
-
     toggleChecked() {
       send({ type: "CHECKED.TOGGLE", checked: isChecked, isTrusted: false })
     },
@@ -35,6 +33,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.label({
       ...parts.root.attrs,
       ...dataAttrs,
+      dir: state.context.dir,
       id: dom.getRootId(state.context),
       htmlFor: dom.getHiddenInputId(state.context),
       onPointerMove() {
@@ -66,12 +65,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     labelProps: normalize.element({
       ...parts.label.attrs,
       ...dataAttrs,
+      dir: state.context.dir,
       id: dom.getLabelId(state.context),
     }),
 
     thumbProps: normalize.element({
       ...parts.thumb.attrs,
       ...dataAttrs,
+      dir: state.context.dir,
       id: dom.getThumbId(state.context),
       "aria-hidden": true,
     }),
@@ -79,6 +80,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     controlProps: normalize.element({
       ...parts.control.attrs,
       ...dataAttrs,
+      dir: state.context.dir,
       id: dom.getControlId(state.context),
       "aria-hidden": true,
     }),

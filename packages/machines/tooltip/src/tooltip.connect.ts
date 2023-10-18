@@ -1,5 +1,5 @@
 import { dataAttr } from "@zag-js/dom-query"
-import { getPlacementStyles, type PositioningOptions } from "@zag-js/popper"
+import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tooltip.anatomy"
 import { dom } from "./tooltip.dom"
@@ -30,13 +30,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     close() {
       send("CLOSE")
     },
-    reposition(options: Partial<PositioningOptions> = {}) {
+    reposition(options = {}) {
       send({ type: "SET_POSITIONING", options })
     },
 
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
       id: triggerId,
+      dir: state.context.dir,
       "data-expanded": dataAttr(isOpen),
       "data-state": isOpen ? "open" : "closed",
       "aria-describedby": isOpen ? contentId : undefined,
@@ -75,11 +76,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
       ...parts.arrow.attrs,
+      dir: state.context.dir,
       style: popperStyles.arrow,
     }),
 
     arrowTipProps: normalize.element({
       ...parts.arrowTip.attrs,
+      dir: state.context.dir,
       style: popperStyles.arrowTip,
     }),
 
@@ -92,6 +95,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     contentProps: normalize.element({
       ...parts.content.attrs,
+      dir: state.context.dir,
       hidden: !isOpen,
       "data-state": isOpen ? "open" : "closed",
       role: hasAriaLabel ? undefined : "tooltip",

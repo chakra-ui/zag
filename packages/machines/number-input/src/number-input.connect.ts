@@ -26,31 +26,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isValueEmpty,
     value: state.context.formattedValue,
     valueAsNumber: state.context.valueAsNumber,
-
-    setValue(value: string | number) {
+    setValue(value) {
       send({ type: "VALUE.SET", value: value.toString() })
     },
-
     clearValue() {
       send("VALUE.CLEAR")
     },
-
     increment() {
       send("VALUE.INCREMENT")
     },
-
     decrement() {
       send("VALUE.DECREMENT")
     },
-
     setToMax() {
       send({ type: "VALUE.SET", value: state.context.max })
     },
-
     setToMin() {
       send({ type: "VALUE.SET", value: state.context.min })
     },
-
     focus() {
       dom.getInputEl(state.context)?.focus()
     },
@@ -230,6 +223,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     scrubberProps: normalize.element({
       ...parts.scrubber.attrs,
+      dir: state.context.dir,
       "data-disabled": dataAttr(isDisabled),
       id: dom.getScrubberId(state.context),
       role: "presentation",

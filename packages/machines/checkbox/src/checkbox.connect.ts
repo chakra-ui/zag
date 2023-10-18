@@ -87,6 +87,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     indicatorProps: normalize.element({
       ...parts.indicator.attrs,
       ...dataAttrs,
+      dir: state.context.dir,
       hidden: !isIndeterminate && !state.context.checked,
     }),
 

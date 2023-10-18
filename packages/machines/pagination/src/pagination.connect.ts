@@ -29,19 +29,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     pageRange,
     isFirstPage,
     isLastPage,
-
     slice(data) {
       return data.slice(pageRange.start, pageRange.end)
     },
-
     setCount(count) {
       send({ type: "SET_COUNT", count })
     },
-
     setPageSize(size) {
       send({ type: "SET_PAGE_SIZE", size })
     },
-
     setPage(page) {
       send({ type: "SET_PAGE", page })
     },
@@ -49,6 +45,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       id: dom.getRootId(state.context),
       ...parts.root.attrs,
+      dir: state.context.dir,
       "aria-label": translations.rootLabel,
     }),
 
@@ -56,6 +53,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         id: dom.getEllipsisId(state.context, props.index),
         ...parts.ellipsis.attrs,
+        dir: state.context.dir,
       })
     },
 
@@ -66,6 +64,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         id: dom.getItemId(state.context, index),
         ...parts.item.attrs,
+        dir: state.context.dir,
         "data-index": index,
         "data-selected": dataAttr(isCurrentPage),
         "aria-current": isCurrentPage ? "page" : undefined,
@@ -80,6 +79,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     prevTriggerProps: normalize.element({
       id: dom.getPrevTriggerId(state.context),
       ...parts.prevTrigger.attrs,
+      dir: state.context.dir,
       "data-disabled": dataAttr(isFirstPage),
       "aria-label": translations.prevTriggerLabel,
       onClick() {
@@ -91,6 +91,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     nextTriggerProps: normalize.element({
       id: dom.getNextTriggerId(state.context),
       ...parts.nextTrigger.attrs,
+      dir: state.context.dir,
       "data-disabled": dataAttr(isLastPage),
       "aria-label": translations.nextTriggerLabel,
       onClick() {

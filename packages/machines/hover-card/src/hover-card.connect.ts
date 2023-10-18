@@ -1,4 +1,4 @@
-import { getPlacementStyles, type PositioningOptions } from "@zag-js/popper"
+import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
 import { dom } from "./hover-card.dom"
@@ -14,32 +14,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     isOpen,
-
     open() {
       send("OPEN")
     },
-
     close() {
       send("CLOSE")
     },
-
-    reposition(options: Partial<PositioningOptions> = {}) {
+    reposition(options = {}) {
       send({ type: "SET_POSITIONING", options })
     },
 
     arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
       ...parts.arrow.attrs,
+      dir: state.context.dir,
       style: popperStyles.arrow,
     }),
 
     arrowTipProps: normalize.element({
       ...parts.arrowTip.attrs,
+      dir: state.context.dir,
       style: popperStyles.arrowTip,
     }),
 
     triggerProps: normalize.element({
       ...parts.trigger.attrs,
+      dir: state.context.dir,
       "data-placement": state.context.currentPlacement,
       id: dom.getTriggerId(state.context),
       "data-state": isOpen ? "open" : "closed",
@@ -71,6 +71,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     contentProps: normalize.element({
       ...parts.content.attrs,
+      dir: state.context.dir,
       id: dom.getContentId(state.context),
       hidden: !isOpen,
       "data-state": isOpen ? "open" : "closed",

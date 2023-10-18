@@ -31,23 +31,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   return {
     isFocused,
     isDragging,
+    getResizeTriggerState,
     bounds: getHandleBounds(state.context),
-
     setToMinSize(id) {
       const panel = panels.find((panel) => panel.id === id)
       send({ type: "SET_PANEL_SIZE", id, size: panel?.minSize, src: "setToMinSize" })
     },
-
     setToMaxSize(id) {
       const panel = panels.find((panel) => panel.id === id)
       send({ type: "SET_PANEL_SIZE", id, size: panel?.maxSize, src: "setToMaxSize" })
     },
-
     setSize(id, size) {
       send({ type: "SET_PANEL_SIZE", id, size })
     },
-
-    getResizeTriggerState,
 
     rootProps: normalize.element({
       ...parts.root.attrs,
