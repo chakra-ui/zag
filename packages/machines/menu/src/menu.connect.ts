@@ -126,6 +126,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     contextTriggerProps: normalize.element({
       ...parts.contextTrigger.attrs,
+      dir: state.context.dir,
       id: dom.getContextTriggerId(state.context),
       onPointerDown(event) {
         if (event.pointerType === "mouse") return
@@ -236,6 +237,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     indicatorProps: normalize.element({
       ...parts.indicator.attrs,
+      dir: state.context.dir,
       "data-state": isOpen ? "open" : "closed",
     }),
 
@@ -249,11 +251,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     arrowProps: normalize.element({
       id: dom.getArrowId(state.context),
       ...parts.arrow.attrs,
+      dir: state.context.dir,
       style: popperStyles.arrow,
     }),
 
     arrowTipProps: normalize.element({
       ...parts.arrowTip.attrs,
+      dir: state.context.dir,
       style: popperStyles.arrowTip,
     }),
 
@@ -340,6 +344,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     separatorProps: normalize.element({
       ...parts.separator.attrs,
       role: "separator",
+      dir: state.context.dir,
       "aria-orientation": "horizontal",
     }),
     getItemState,
@@ -358,6 +363,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           "data-type": type,
           "data-name": name,
           ...parts.optionItem.attrs,
+          dir: state.context.dir,
           "data-value": option.value,
           role: `menuitem${type}`,
           "aria-checked": !!itemState.isChecked,
@@ -384,6 +390,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getOptionItemState(props)
       return normalize.element({
         ...parts.optionItemIndicator.attrs,
+        dir: state.context.dir,
         "data-disabled": dataAttr(itemState.isDisabled),
         "data-highlighted": dataAttr(itemState.isHighlighted),
         "data-state": itemState.isChecked ? "checked" : "unchecked",
@@ -405,6 +412,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getItemGroupLabelProps(props) {
       return normalize.element({
         id: dom.getGroupLabelId(state.context, props.htmlFor),
+        dir: state.context.dir,
         ...parts.itemGroupLabel.attrs,
       })
     },
@@ -413,6 +421,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         id: dom.getGroupId(state.context, props.id),
         ...parts.itemGroup.attrs,
+        dir: state.context.dir,
         "aria-labelledby": dom.getGroupLabelId(state.context, props.id),
         role: "group",
       })

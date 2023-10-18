@@ -34,6 +34,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
+      dir: state.context.dir,
       id: dom.getRootId(state.context),
       "data-orientation": state.context.orientation,
     }),
@@ -71,6 +72,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemIndicator.attrs,
+        dir: state.context.dir,
         "aria-hidden": true,
         "data-state": itemState.isOpen ? "open" : "closed",
         "data-disabled": dataAttr(itemState.isDisabled),
@@ -86,6 +88,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.itemTrigger.attrs,
         type: "button",
+        dir: state.context.dir,
         id: dom.getItemTriggerId(state.context, value),
         "aria-controls": dom.getItemContentId(state.context, value),
         "aria-expanded": itemState.isOpen,

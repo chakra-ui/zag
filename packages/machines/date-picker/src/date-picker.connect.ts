@@ -261,6 +261,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
+      dir: state.context.dir,
       id: dom.getRootId(state.context),
       "data-state": isOpen ? "open" : "closed",
       "data-disabled": dataAttr(disabled),
@@ -269,6 +270,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.label({
       ...parts.label.attrs,
+      dir: state.context.dir,
       htmlFor: dom.getInputId(state.context),
       "data-state": isOpen ? "open" : "closed",
       "data-disabled": dataAttr(disabled),
@@ -277,17 +279,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     controlProps: normalize.element({
       ...parts.control.attrs,
+      dir: state.context.dir,
       id: dom.getControlId(state.context),
       "data-disabled": dataAttr(disabled),
     }),
 
     rangeTextProps: normalize.element({
       ...parts.rangeText.attrs,
+      dir: state.context.dir,
     }),
 
     contentProps: normalize.element({
       ...parts.content.attrs,
       hidden: !isOpen,
+      dir: state.context.dir,
       "data-state": isOpen ? "open" : "closed",
       id: dom.getContentId(state.context),
       role: "application",
@@ -424,6 +429,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.tableCellTrigger.attrs,
         id: dom.getCellTriggerId(state.context, value.toString()),
         role: "button",
+        dir: state.context.dir,
         tabIndex: cellState.isFocused ? 0 : -1,
         "aria-label": cellState.ariaLabel,
         "aria-disabled": ariaAttr(!cellState.isSelectable),
@@ -458,6 +464,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const cellState = getMonthTableCellState(props)
       return normalize.element({
         ...parts.tableCell.attrs,
+        dir: state.context.dir,
         colSpan: columns,
         role: "gridcell",
         "aria-selected": ariaAttr(cellState.isSelected),
@@ -471,6 +478,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const cellState = getMonthTableCellState(props)
       return normalize.element({
         ...parts.tableCellTrigger.attrs,
+        dir: state.context.dir,
         role: "button",
         id: dom.getCellTriggerId(state.context, value.toString()),
         "data-selected": dataAttr(cellState.isSelected),
@@ -494,6 +502,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const cellState = getYearTableCellState(props)
       return normalize.element({
         ...parts.tableCell.attrs,
+        dir: state.context.dir,
         colSpan: columns,
         role: "gridcell",
         "aria-selected": ariaAttr(cellState.isSelected),
@@ -507,6 +516,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const cellState = getYearTableCellState(props)
       return normalize.element({
         ...parts.tableCellTrigger.attrs,
+        dir: state.context.dir,
         role: "button",
         id: dom.getCellTriggerId(state.context, value.toString()),
         "data-selected": dataAttr(cellState.isSelected),
@@ -528,6 +538,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { view = "day" } = props
       return normalize.button({
         ...parts.nextTrigger.attrs,
+        dir: state.context.dir,
         id: dom.getNextTriggerId(state.context, view),
         type: "button",
         "aria-label": getPrevTriggerLabel(view),
@@ -542,6 +553,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { view = "day" } = props
       return normalize.button({
         ...parts.prevTrigger.attrs,
+        dir: state.context.dir,
         id: dom.getPrevTriggerId(state.context, view),
         type: "button",
         "aria-label": getNextTriggerLabel(view),
@@ -555,6 +567,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     clearTriggerProps: normalize.button({
       ...parts.clearTrigger.attrs,
       id: dom.getClearTriggerId(state.context),
+      dir: state.context.dir,
       type: "button",
       "aria-label": "Clear dates",
       hidden: !state.context.value.length,
@@ -566,6 +579,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
+      dir: state.context.dir,
       type: "button",
       "aria-label": isOpen ? "Close calendar" : "Open calendar",
       "data-state": isOpen ? "open" : "closed",
@@ -582,6 +596,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.viewTrigger.attrs,
         "data-view": view,
+        dir: state.context.dir,
         id: dom.getViewTriggerId(state.context, view),
         type: "button",
         disabled,
@@ -598,6 +613,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.viewControl.attrs,
         "data-view": view,
+        dir: state.context.dir,
       })
     },
 

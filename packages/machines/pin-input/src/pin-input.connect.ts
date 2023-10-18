@@ -19,26 +19,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
+    focus,
     value: state.context.value,
     valueAsString: state.context.valueAsString,
     isValueComplete: isValueComplete,
-
     setValue(value) {
       if (!Array.isArray(value)) {
         invariant("[pin-input/setValue] value must be an array")
       }
       send({ type: "VALUE.SET", value })
     },
-
     clearValue() {
       send({ type: "VALUE.CLEAR" })
     },
-
     setValueAtIndex(index, value) {
       send({ type: "VALUE.SET", value, index })
     },
-
-    focus,
 
     rootProps: normalize.element({
       dir: state.context.dir,

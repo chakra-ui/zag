@@ -25,27 +25,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isEditing,
     isValueEmpty: isValueEmpty,
     value: state.context.value,
-
-    setValue(value: string) {
+    setValue(value) {
       send({ type: "SET_VALUE", value })
     },
-
     clearValue() {
       send({ type: "SET_VALUE", value: "" })
     },
-
     edit() {
       if (!isInteractive) return
       send("EDIT")
     },
-    /**
-     * Function to exit edit mode, and discard any changes
-     */
     cancel() {
       if (!isInteractive) return
       send("CANCEL")
     },
-
     submit() {
       if (!isInteractive) return
       send("SUBMIT")
@@ -54,11 +47,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     rootProps: normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
+      dir: state.context.dir,
     }),
 
     areaProps: normalize.element({
       ...parts.area.attrs,
       id: dom.getAreaId(state.context),
+      dir: state.context.dir,
       style: autoResize ? { display: "inline-grid" } : undefined,
       "data-focus": dataAttr(isEditing),
       "data-disabled": dataAttr(isDisabled),
@@ -68,6 +63,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     labelProps: normalize.label({
       ...parts.label.attrs,
       id: dom.getLabelId(state.context),
+      dir: state.context.dir,
       htmlFor: dom.getInputId(state.context),
       "data-focus": dataAttr(isEditing),
       "data-invalid": dataAttr(isInvalid),
@@ -81,6 +77,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     inputProps: normalize.input({
       ...parts.input.attrs,
+      dir: state.context.dir,
       "aria-label": translations.input,
       name: state.context.name,
       form: state.context.form,
@@ -129,6 +126,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     previewProps: normalize.element({
       id: dom.getPreviewId(state.context),
       ...parts.preview.attrs,
+      dir: state.context.dir,
       "data-placeholder-shown": dataAttr(isValueEmpty),
       "aria-readonly": ariaAttr(isReadOnly),
       "data-readonly": dataAttr(isDisabled),
@@ -163,6 +161,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     editTriggerProps: normalize.button({
       ...parts.editTrigger.attrs,
       id: dom.getEditTriggerId(state.context),
+      dir: state.context.dir,
       "aria-label": translations.edit,
       hidden: isEditing,
       type: "button",
@@ -176,10 +175,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     controlProps: normalize.element({
       id: dom.getControlId(state.context),
       ...parts.control.attrs,
+      dir: state.context.dir,
     }),
 
     submitTriggerProps: normalize.button({
       ...parts.submitTrigger.attrs,
+      dir: state.context.dir,
       id: dom.getSubmitTriggerId(state.context),
       "aria-label": translations.submit,
       hidden: !isEditing,
@@ -193,6 +194,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     cancelTriggerProps: normalize.button({
       ...parts.cancelTrigger.attrs,
+      dir: state.context.dir,
       "aria-label": translations.cancel,
       id: dom.getCancelTriggerId(state.context),
       hidden: !isEditing,

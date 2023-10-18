@@ -19,6 +19,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
+      dir: state.context.dir,
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
       type: "button",
@@ -32,6 +33,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     backdropProps: normalize.element({
       ...parts.backdrop.attrs,
+      dir: state.context.dir,
       hidden: !isOpen,
       id: dom.getBackdropId(state.context),
       "data-state": isOpen ? "open" : "closed",
@@ -39,6 +41,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     positionerProps: normalize.element({
       ...parts.positioner.attrs,
+      dir: state.context.dir,
       hidden: !isOpen,
       id: dom.getPositionerId(state.context),
       "data-state": isOpen ? "open" : "closed",
@@ -49,6 +52,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     contentProps: normalize.element({
       ...parts.content.attrs,
+      dir: state.context.dir,
       role: state.context.role,
       hidden: !isOpen,
       id: dom.getContentId(state.context),
@@ -62,16 +66,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     titleProps: normalize.element({
       ...parts.title.attrs,
+      dir: state.context.dir,
       id: dom.getTitleId(state.context),
     }),
 
     descriptionProps: normalize.element({
       ...parts.description.attrs,
+      dir: state.context.dir,
       id: dom.getDescriptionId(state.context),
     }),
 
     closeTriggerProps: normalize.button({
       ...parts.closeTrigger.attrs,
+      dir: state.context.dir,
       id: dom.getCloseTriggerId(state.context),
       type: "button",
       onClick(event) {

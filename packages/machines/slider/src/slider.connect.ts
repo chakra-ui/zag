@@ -39,48 +39,36 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     value: state.context.value,
     isDragging,
     isFocused,
-
     setValue(value) {
       send({ type: "SET_VALUE", value: value })
     },
-
     getThumbValue(index) {
       return sliderValue[index]
     },
-
     setThumbValue(index, value) {
       send({ type: "SET_VALUE", index, value })
     },
-
     getValuePercent: getValuePercentFn,
-
     getPercentValue: getPercentValueFn,
-
     getThumbPercent(index) {
       return getValuePercentFn(sliderValue[index])
     },
-
     setThumbPercent(index, percent) {
       const value = getPercentValueFn(percent)
       send({ type: "SET_VALUE", index, value })
     },
-
     getThumbMin(index) {
       return getRangeAtIndex(state.context, index).min
     },
-
     getThumbMax(index) {
       return getRangeAtIndex(state.context, index).max
     },
-
     increment(index) {
       send({ type: "INCREMENT", index })
     },
-
     decrement(index) {
       send({ type: "DECREMENT", index })
     },
-
     focus() {
       if (!isInteractive) return
       send({ type: "FOCUS", index: 0 })

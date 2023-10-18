@@ -100,13 +100,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.item.attrs,
         id: dom.getItemId(state.context, index),
+        dir: state.context.dir,
         "data-current": dataAttr(sliderState.isCurrent),
         "data-inview": dataAttr(sliderState.isInView),
         role: "group",
         "aria-roledescription": "slide",
         "data-orientation": state.context.orientation,
         "aria-label": sliderState.valueText,
-        dir: state.context.dir,
         style: {
           position: "relative",
           flex: "0 0 var(--slide-size)",

@@ -24,6 +24,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
+      dir: state.context.dir,
       id: dom.getRootId(state.context),
       style: {
         display: "grid",
@@ -34,6 +35,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     imageProps: normalize.img({
       ...parts.image.attrs,
+      dir: state.context.dir,
       id: dom.getImageId(state.context),
       "data-state": isLoaded ? "visible" : "hidden",
       onLoad() {
@@ -50,6 +52,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     fallbackProps: normalize.element({
       ...parts.fallback.attrs,
+      dir: state.context.dir,
       id: dom.getFallbackId(state.context),
       hidden: !showFallback,
       "data-state": isLoaded ? "hidden" : "visible",

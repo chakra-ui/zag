@@ -21,20 +21,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     value: state.context.value,
     focusedValue: state.context.focusedValue,
     previousValues: Array.from(state.context.previousValues),
-
     setValue(value) {
       send({ type: "SET_VALUE", value })
     },
-
     clearValue() {
       send({ type: "CLEAR_VALUE" })
     },
-
     setIndicatorRect(value) {
       const id = dom.getTriggerId(state.context, value)
       send({ type: "SET_INDICATOR_RECT", id })
     },
-
     getTriggerState,
 
     rootProps: normalize.element({
@@ -151,6 +147,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     indicatorProps: normalize.element({
       id: dom.getIndicatorId(state.context),
       ...parts.indicator.attrs,
+      dir: state.context.dir,
       "data-orientation": state.context.orientation,
       style: {
         "--transition-duration": "150ms",
