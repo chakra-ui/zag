@@ -36,7 +36,7 @@ export const comboboxData = [
   { label: "Albania", code: "AL" },
   { label: "Algeria", code: "DZ" },
   { label: "American Samoa", code: "AS" },
-  { label: "AndorrA", code: "AD" },
+  { label: "Andorra", code: "AD" },
   { label: "Angola", code: "AO" },
   // { label: "Angola", code: "AO" },
   { label: "Anguilla", code: "AI" },

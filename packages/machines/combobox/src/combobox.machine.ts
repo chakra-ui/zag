@@ -157,7 +157,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 target: "interacting",
-                actions: ["highlightNextItem", "invokeOnOpen"],
+                actions: ["highlightFirstItem", "invokeOnOpen"],
               },
             ],
             "INPUT.ARROW_DOWN+ALT": {
@@ -558,11 +558,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           set.highlightedItem(ctx, value)
         },
         highlightNextItem(ctx) {
-          const value = ctx.collection.next(ctx.highlightedValue) ?? ctx.collection.first()
+          const value = ctx.collection.next(ctx.highlightedValue) ?? (ctx.loop ? ctx.collection.first() : null)
           set.highlightedItem(ctx, value)
         },
         highlightPrevItem(ctx) {
-          const value = ctx.collection.prev(ctx.highlightedValue) ?? ctx.collection.last()
+          const value = ctx.collection.prev(ctx.highlightedValue) ?? (ctx.loop ? ctx.collection.last() : null)
           set.highlightedItem(ctx, value)
         },
         highlightFirstSelectedItem(ctx) {
