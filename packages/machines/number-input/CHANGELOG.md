@@ -1,5 +1,24 @@
 # @zag-js/number-input
 
+## 0.26.0
+
+### Patch Changes
+
+- [`041a9e00`](https://github.com/chakra-ui/zag/commit/041a9e00e503ce62a198db45ea7b757de7c39263) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `dir` attribute was not applied to all element
+  parts
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.26.0
+  - @zag-js/core@0.26.0
+  - @zag-js/types@0.26.0
+  - @zag-js/utils@0.26.0
+  - @zag-js/dom-event@0.26.0
+  - @zag-js/dom-query@0.26.0
+  - @zag-js/form-utils@0.26.0
+  - @zag-js/mutation-observer@0.26.0
+  - @zag-js/number-utils@0.26.0
+
 ## 0.25.0
 
 ### Patch Changes
