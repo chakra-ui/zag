@@ -28,7 +28,9 @@ const fetchMachine = createMachine({
     "multiple": false,
     "selectOnBlur && hasHighlightedItem": false,
     "isTargetFocusable": false,
+    "hasHighlightedItem && isLoopEnabled && isLastItemHighlighted": false,
     "hasHighlightedItem": false,
+    "hasHighlightedItem && isLoopEnabled && isFirstItemHighlighted": false,
     "hasHighlightedItem": false
   },
   initial: "idle",
@@ -198,12 +200,18 @@ const fetchMachine = createMachine({
           actions: ["highlightLastItem"]
         },
         "CONTENT.ARROW_DOWN": [{
+          cond: "hasHighlightedItem && isLoopEnabled && isLastItemHighlighted",
+          actions: ["highlightFirstItem"]
+        }, {
           cond: "hasHighlightedItem",
           actions: ["highlightNextItem"]
         }, {
           actions: ["highlightFirstItem"]
         }],
         "CONTENT.ARROW_UP": [{
+          cond: "hasHighlightedItem && isLoopEnabled && isFirstItemHighlighted",
+          actions: ["highlightLastItem"]
+        }, {
           cond: "hasHighlightedItem",
           actions: ["highlightPreviousItem"]
         }, {
@@ -237,6 +245,8 @@ const fetchMachine = createMachine({
     "multiple": ctx => ctx["multiple"],
     "selectOnBlur && hasHighlightedItem": ctx => ctx["selectOnBlur && hasHighlightedItem"],
     "isTargetFocusable": ctx => ctx["isTargetFocusable"],
-    "hasHighlightedItem": ctx => ctx["hasHighlightedItem"]
+    "hasHighlightedItem && isLoopEnabled && isLastItemHighlighted": ctx => ctx["hasHighlightedItem && isLoopEnabled && isLastItemHighlighted"],
+    "hasHighlightedItem": ctx => ctx["hasHighlightedItem"],
+    "hasHighlightedItem && isLoopEnabled && isFirstItemHighlighted": ctx => ctx["hasHighlightedItem && isLoopEnabled && isFirstItemHighlighted"]
   }
 });
