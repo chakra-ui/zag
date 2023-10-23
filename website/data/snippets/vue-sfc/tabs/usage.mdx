@@ -22,7 +22,7 @@ const api = computed(() => tabs.connect(state.value, send, normalizeProps));
         v-bind="api.getTriggerProps({ value: item.value })"
         :key="item.value"
       >
-        {item.label}
+        {{ item.label }}
       </button>
     </div>
     <div
@@ -30,7 +30,7 @@ const api = computed(() => tabs.connect(state.value, send, normalizeProps));
       v-bind="api.getContentProps({ value: item.value })"
       key="{item.value}"
     >
-      <p>{item.content}</p>
+      <p>{{ item.content }}</p>
     </div>
   </div>
 </template>
