@@ -57,8 +57,8 @@ importers:
         specifier: ^20.8.6
         version: 20.8.6
       '@types/signale':
-        specifier: 1.4.5
-        version: 1.4.5
+        specifier: 1.4.6
+        version: 1.4.6
       '@typescript-eslint/eslint-plugin':
         specifier: 6.9.0
         version: 6.9.0(@typescript-eslint/parser@6.9.0)(eslint@8.52.0)(typescript@5.2.2)
@@ -7103,8 +7103,8 @@ packages:
   /@types/semver@7.5.0:
     resolution: {integrity: sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==}
 
-  /@types/signale@1.4.5:
-    resolution: {integrity: sha512-ewkOcex4cJH/4nPw9JIG6vQHDTZ5c0EORm1PZ3FHxHxaASQORYlQiG488LB8Vo/fpdTIfk99cbDYk5VFMXuECg==}
+  /@types/signale@1.4.6:
+    resolution: {integrity: sha512-vd2s2P5D0/U+OvEsDhh2JRAKzzhr+Baa+SL2XRxacdJY8+6bh5iJS8r0TXglhO45duTZPxwpmH9lGHRGtCn8cw==}
     dependencies:
       '@types/node': 20.8.6
     dev: false
