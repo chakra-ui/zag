@@ -1353,8 +1353,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
       solid-js:
-        specifier: 1.8.1
-        version: 1.8.1
+        specifier: 1.8.3
+        version: 1.8.3
 
   packages/frameworks/vue:
     dependencies:
@@ -15888,6 +15888,11 @@ packages:
     resolution: {integrity: sha512-TdaE9JkoATjKu+vjwllieX8zWyBTUVxbgWDnOsDJFfmKbM7vLSukuCXuD3pO3kkCtX4daywOW8ps2VCdPhS8/w==}
     engines: {node: '>=10'}
 
+  /seroval@0.11.6:
+    resolution: {integrity: sha512-Lhy+94CNcNza6d0vM4sQKLsaLaX39q0ELqIBc7DkdiFljI8Q387Yb+xKgLxRWXs7uuHRu/ZcJ64xfVJ0Bj4LPg==}
+    engines: {node: '>=10'}
+    dev: true
+
   /serve-placeholder@2.0.1:
     resolution: {integrity: sha512-rUzLlXk4uPFnbEaIz3SW8VISTxMuONas88nYWjAWaM2W9VDbt9tyFOr3lq8RhVOFrT3XISoBw8vni5una8qMnQ==}
     dependencies:
@@ -16077,6 +16082,13 @@ packages:
     dependencies:
       csstype: 3.1.2
       seroval: 0.10.4
+
+  /solid-js@1.8.3:
+    resolution: {integrity: sha512-S7ztgPI6X4tUaWmhZe3aDx0E9F6FGxXVU8NsocrPqqUbxHoFi8eTPlDMcenOlXuo2ITQ97j2URaj0StfJci4KQ==}
+    dependencies:
+      csstype: 3.1.2
+      seroval: 0.11.6
+    dev: true
 
   /solid-refresh@0.5.3(solid-js@1.8.1):
     resolution: {integrity: sha512-Otg5it5sjOdZbQZJnvo99TEBAr6J7PQ5AubZLNU6szZzg3RQQ5MX04oteBIIGDs0y2Qv8aXKm9e44V8z+UnFdw==}
