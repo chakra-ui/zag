@@ -254,3 +254,17 @@ test.describe("select / focused / select option", () => {
     await expectToBeChecked(page.locator(getOption("KE")))
   })
 })
+
+test.describe("select / loop / keyboard", () => {
+  test("should loop through the options when loop is enabled", async ({ page }) => {
+    await controls(page).bool("loop")
+    await page.focus(trigger)
+    await page.keyboard.press("Enter")
+
+    await page.keyboard.press("ArrowUp")
+    await expectToBeHighlighted(page.locator(options).last())
+
+    await page.keyboard.press("ArrowDown")
+    await expectToBeHighlighted(page.locator(options).first())
+  })
+})
