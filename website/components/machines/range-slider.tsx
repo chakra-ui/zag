@@ -22,7 +22,7 @@ export function RangeSlider(props: any) {
         <chakra.label mr="2" {...api.labelProps}>
           Quantity
         </chakra.label>
-        <output {...api.outputProps}>
+        <output {...api.valueTextProps}>
           <b>{api.value.join(" - ")}</b>
         </output>
       </Flex>

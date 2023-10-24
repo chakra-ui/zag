@@ -1,8 +1,8 @@
+import { sliderControls } from "@zag-js/shared"
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
-import { createMemo, For, createUniqueId } from "solid-js"
-import { sliderControls } from "@zag-js/shared"
+import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -34,7 +34,7 @@ export default function Page() {
           <div {...api().rootProps}>
             <div>
               <label {...api().labelProps}>Quantity:</label>
-              <output {...api().outputProps}>{api().value.join(" - ")}</output>
+              <output {...api().valueTextProps}>{api().value.join(" - ")}</output>
             </div>
             <div class="control-area">
               <div {...api().controlProps}>

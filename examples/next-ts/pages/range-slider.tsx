@@ -34,7 +34,7 @@ export default function Page() {
           <div {...api.rootProps}>
             <div>
               <label {...api.labelProps}>Quantity:</label>
-              <output {...api.outputProps}>{api.value.join(" - ")}</output>
+              <output {...api.valueTextProps}>{api.value.join(" - ")}</output>
             </div>
             <div className="control-area">
               <div {...api.controlProps}>

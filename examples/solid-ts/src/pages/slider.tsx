@@ -1,8 +1,8 @@
+import { sliderControls } from "@zag-js/shared"
 import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
 import { For, createMemo, createUniqueId } from "solid-js"
-import { sliderControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -31,7 +31,7 @@ export default function Page() {
               <label data-testid="label" {...api().labelProps}>
                 Slider Label
               </label>
-              <output data-testid="output" {...api().outputProps}>
+              <output data-testid="output" {...api().valueTextProps}>
                 {api().value.at(0)}
               </output>
             </div>

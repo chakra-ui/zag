@@ -593,7 +593,7 @@ main [data-testid="scrubber"] {
   width: 100%;
 }
 
-[data-scope="slider"][data-part="output"] {
+[data-scope="slider"][data-part="value-text"] {
   margin-inline-start: 12px;
 }
 

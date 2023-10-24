@@ -104,14 +104,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: dom.getRootStyle(state.context),
     }),
 
-    outputProps: normalize.output({
-      ...parts.output.attrs,
+    valueTextProps: normalize.output({
+      ...parts.valueText.attrs,
       dir: state.context.dir,
       "data-disabled": dataAttr(isDisabled),
       "data-orientation": state.context.orientation,
       "data-invalid": dataAttr(isInvalid),
       "data-focus": dataAttr(isFocused),
-      id: dom.getOutputId(state.context),
+      id: dom.getValueTextId(state.context),
       htmlFor: sliderValue.map((_v, i) => dom.getHiddenInputId(state.context, i)).join(" "),
       "aria-live": "off",
     }),
