@@ -367,18 +367,19 @@ export function machine(userContext: UserDefinedContext) {
         },
         setChannelColorFromInput(ctx, evt) {
           const { channel, isTextField, value } = evt
+          const currentAlpha = ctx.value.getChannelValue("alpha")
 
           // handle alpha channel
           if (channel === "alpha") {
-            const newColor = ctx.value.withChannelValue("alpha", parseFloat(value))
+            let valueAsNumber = parseFloat(value)
+            valueAsNumber = Number.isNaN(valueAsNumber) ? currentAlpha : valueAsNumber
+            const newColor = ctx.value.withChannelValue("alpha", valueAsNumber)
             set.value(ctx, newColor)
             return
           }
 
           // handle other text channels
           if (isTextField) {
-            const currentAlpha = ctx.value.getChannelValue("alpha")
-
             const color = tryCatch(
               () => parse(value).withChannelValue("alpha", currentAlpha),
               () => ctx.value,
