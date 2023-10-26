@@ -12,7 +12,7 @@ const api = computed(() => slider.connect(state.value, send, normalizeProps));
   <div ref="ref" v-bind="api.rootProps">
     <div>
       <label v-bind="api.labelProps">Slider Label</label>
-      <output v-bind="api.outputProps">{{ api.value.at(0) }}</output>
+      <output v-bind="api.valueTextProps">{{ api.value.at(0) }}</output>
     </div>
     <div v-bind="api.controlProps">
       <div v-bind="api.trackProps">

@@ -40,7 +40,7 @@ export default defineComponent({
               <div {...api.rootProps}>
                 <div>
                   <label {...api.labelProps}>Quantity:</label>
-                  <output {...api.outputProps}>{api.value.join(" - ")}</output>
+                  <output {...api.valueTextProps}>{api.value.join(" - ")}</output>
                 </div>
                 <div class="control-area">
                   <div {...api.controlProps}>

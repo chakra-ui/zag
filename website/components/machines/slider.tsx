@@ -18,7 +18,7 @@ export function Slider(props: any) {
         <chakra.label mr="2" {...api.labelProps}>
           Quantity
         </chakra.label>
-        <output {...api.outputProps}>
+        <output {...api.valueTextProps}>
           <b>{api.value.at(0)}</b>
         </output>
       </Flex>

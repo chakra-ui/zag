@@ -38,7 +38,7 @@ export default function Page() {
               <label data-testid="label" {...api.labelProps}>
                 Slider Label
               </label>
-              <output data-testid="output" {...api.outputProps}>
+              <output data-testid="output" {...api.valueTextProps}>
                 {api.value}
               </output>
             </div>

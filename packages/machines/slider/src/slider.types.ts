@@ -25,7 +25,7 @@ type ElementIds = Partial<{
   track: string
   range: string
   label: string
-  output: string
+  valueText: string
   marker(index: number): string
 }>
 
@@ -268,7 +268,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   focus(): void
   labelProps: T["label"]
   rootProps: T["element"]
-  outputProps: T["output"]
+  valueTextProps: T["output"]
   trackProps: T["element"]
   getThumbProps(props: ThumbProps): T["element"]
   getHiddenInputProps(props: ThumbProps): T["input"]

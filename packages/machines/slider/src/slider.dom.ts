@@ -14,7 +14,7 @@ export const dom = createScope({
   getTrackId: (ctx: Ctx) => ctx.ids?.track ?? `slider:${ctx.id}:track`,
   getRangeId: (ctx: Ctx) => ctx.ids?.range ?? `slider:${ctx.id}:range`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `slider:${ctx.id}:label`,
-  getOutputId: (ctx: Ctx) => ctx.ids?.output ?? `slider:${ctx.id}:output`,
+  getValueTextId: (ctx: Ctx) => ctx.ids?.valueText ?? `slider:${ctx.id}:valueText`,
   getMarkerId: (ctx: Ctx, value: number) => ctx.ids?.marker?.(value) ?? `slider:${ctx.id}:marker:${value}`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),

@@ -1,5 +1,20 @@
 # @zag-js/react
 
+## 0.26.0
+
+### Minor Changes
+
+- [`56ca6a97`](https://github.com/chakra-ui/zag/commit/56ca6a977695fb3993558664f8e185de6ab7eb77) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove support for pressable machine in favor of using native
+  button. We no longer want to maintain this machine due to the internal complexity across devices and browsers.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.26.0
+  - @zag-js/store@0.26.0
+  - @zag-js/types@0.26.0
+
 ## 0.25.0
 
 ### Patch Changes

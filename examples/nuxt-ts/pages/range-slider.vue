@@ -31,7 +31,7 @@ const api = computed(() => slider.connect(state.value, send, normalizeProps))
       <div v-bind="api.rootProps">
         <div>
           <label v-bind="api.labelProps">Quantity:</label>
-          <output v-bind="api.outputProps">{{ api.value.join(" - ") }}</output>
+          <output v-bind="api.valueTextProps">{{ api.value.join(" - ") }}</output>
         </div>
         <div class="control-area">
           <div v-bind="api.controlProps">

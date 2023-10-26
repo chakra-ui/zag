@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test"
 import { part, a11y, rect } from "./__utils"
 
-const output = part("output")
+const output = part("value-text")
 const thumb = part("thumb")
 const track = part("track")
 
