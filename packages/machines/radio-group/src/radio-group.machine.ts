@@ -20,6 +20,7 @@ export function machine(userContext: UserDefinedContext) {
         focusedId: null,
         hoveredId: null,
         disabled: false,
+        orientation: "vertical",
         ...ctx,
         indicatorRect: {},
         canIndicatorTransition: false,

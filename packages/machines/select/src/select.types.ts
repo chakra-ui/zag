@@ -279,6 +279,10 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   close(): void
   /**
+   * Function to toggle the combobox
+   */
+  collection: Collection<V>
+  /**
    * Function to set the collection of items
    */
   setCollection(collection: Collection<V>): void

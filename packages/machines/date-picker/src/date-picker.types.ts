@@ -389,7 +389,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the date picker is open
    */
-  isOpen: boolean | undefined
+  isOpen: boolean
   /**
    * The current view of the date picker
    */

@@ -70,7 +70,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const startOfWeek = state.context.startOfWeek
 
   const isFocused = state.matches("focused")
-  const isOpen = state.matches("open") || state.context.inline
+  const isOpen = Boolean(state.matches("open") || state.context.inline)
   const isRangePicker = state.context.selectionMode === "range"
   const isDateUnavailableFn = state.context.isDateUnavailable
 

@@ -50,6 +50,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     hasSelectedItems: state.context.hasSelectedItems,
     value: state.context.value,
     valueAsString: state.context.valueAsString,
+    collection: state.context.collection,
     setCollection(collection) {
       send({ type: "COLLECTION.SET", value: collection })
     },
