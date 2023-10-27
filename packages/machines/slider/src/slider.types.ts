@@ -268,7 +268,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   focus(): void
   labelProps: T["label"]
   rootProps: T["element"]
-  valueTextProps: T["output"]
+  valueTextProps: T["element"]
   trackProps: T["element"]
   getThumbProps(props: ThumbProps): T["element"]
   getHiddenInputProps(props: ThumbProps): T["input"]

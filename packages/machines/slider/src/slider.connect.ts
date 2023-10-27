@@ -104,7 +104,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: dom.getRootStyle(state.context),
     }),
 
-    valueTextProps: normalize.output({
+    valueTextProps: normalize.element({
       ...parts.valueText.attrs,
       dir: state.context.dir,
       "data-disabled": dataAttr(isDisabled),
@@ -112,8 +112,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(isInvalid),
       "data-focus": dataAttr(isFocused),
       id: dom.getValueTextId(state.context),
-      htmlFor: sliderValue.map((_v, i) => dom.getHiddenInputId(state.context, i)).join(" "),
-      "aria-live": "off",
     }),
 
     trackProps: normalize.element({
