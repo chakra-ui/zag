@@ -29,8 +29,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isDragging = state.hasTag("dragging")
   const isOpen = state.hasTag("open")
 
-  const channels = value.getChannels()
-
   const getAreaChannels = (props: AreaProps) => {
     const channels = value.getChannels()
     return {
@@ -50,8 +48,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isOpen,
     valueAsString,
     value,
-    channels,
-    setColor(value) {
+    setValue(value) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })
     },
     getChannelValue(channel) {
@@ -415,7 +412,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         disabled: isDisabled,
         "data-disabled": dataAttr(isDisabled),
         readOnly: state.context.readOnly,
-        id: dom.getChannelInputId(state.context, channel),
         defaultValue: getChannelValue(value, channel),
         min: range?.minValue,
         max: range?.maxValue,

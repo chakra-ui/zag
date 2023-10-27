@@ -21,20 +21,6 @@ const fetchMachine = createMachine({
     "VALUE.SET": {
       actions: ["setValue"]
     },
-    "CHANNEL_INPUT.FOCUS": [{
-      cond: stateIn("idle"),
-      target: "focused",
-      actions: ["setActiveChannel"]
-    }, {
-      actions: ["setActiveChannel"]
-    }],
-    "CHANNEL_INPUT.BLUR": [{
-      cond: stateIn("focused"),
-      target: "idle",
-      actions: ["setChannelColorFromInput"]
-    }, {
-      actions: ["setChannelColorFromInput"]
-    }],
     "CHANNEL_INPUT.CHANGE": {
       actions: ["setChannelColorFromInput"]
     }
@@ -55,6 +41,10 @@ const fetchMachine = createMachine({
         "TRIGGER.CLICK": {
           target: "open",
           actions: ["setInitialFocus", "invokeOnOpen"]
+        },
+        "CHANNEL_INPUT.FOCUS": {
+          target: "focused",
+          actions: ["setActiveChannel"]
         }
       }
     },
@@ -68,6 +58,13 @@ const fetchMachine = createMachine({
         "TRIGGER.CLICK": {
           target: "open",
           actions: ["setInitialFocus", "invokeOnOpen"]
+        },
+        "CHANNEL_INPUT.FOCUS": {
+          actions: ["setActiveChannel"]
+        },
+        "CHANNEL_INPUT.BLUR": {
+          target: "idle",
+          actions: ["setChannelColorFromInput"]
         }
       }
     },
@@ -137,6 +134,9 @@ const fetchMachine = createMachine({
         },
         "CHANNEL_SLIDER.END": {
           actions: ["setChannelToMax"]
+        },
+        "CHANNEL_INPUT.BLUR": {
+          actions: ["setChannelColorFromInput"]
         },
         INTERACT_OUTSIDE: [{
           cond: "shouldRestoreFocus",

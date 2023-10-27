@@ -20,8 +20,6 @@ export const dom = createScope({
 
   getChannelSliderId: (ctx: Ctx, channel: ColorChannel) =>
     ctx.ids?.channelSliderTrack?.(channel) ?? `color-picker:${ctx.id}:slider-track:${channel}`,
-  getChannelInputId: (ctx: Ctx, channel: string) =>
-    ctx.ids?.channelInput?.(channel) ?? `color-picker:${ctx.id}:input:${channel}`,
   getChannelSliderThumbId: (ctx: Ctx, channel: ColorChannel) =>
     ctx.ids?.channelSliderThumb?.(channel) ?? `color-picker:${ctx.id}:slider-thumb:${channel}`,
 
@@ -29,8 +27,12 @@ export const dom = createScope({
   getAreaThumbEl: (ctx: Ctx) => dom.getById(ctx, dom.getAreaThumbId(ctx)),
   getChannelSliderThumbEl: (ctx: Ctx, channel: ColorChannel) =>
     dom.getById(ctx, dom.getChannelSliderThumbId(ctx, channel)),
-  getChannelInputEl: (ctx: Ctx, channel: string) =>
-    dom.getById<HTMLInputElement>(ctx, dom.getChannelInputId(ctx, channel)),
+  getChannelInputEl: (ctx: Ctx, channel: string): HTMLInputElement[] => {
+    return [
+      ...queryAll<HTMLInputElement>(dom.getContentEl(ctx), `input[data-channel="${channel}"]`),
+      ...queryAll<HTMLInputElement>(dom.getControlEl(ctx), `input[data-channel="${channel}"]`),
+    ]
+  },
 
   getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
   getAreaEl: (ctx: Ctx) => dom.getById(ctx, dom.getAreaId(ctx)),

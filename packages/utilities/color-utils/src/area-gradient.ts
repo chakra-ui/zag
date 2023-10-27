@@ -37,7 +37,7 @@ export function getColorAreaGradient(color: Color, options: GradientOptions): Gr
   let background = { areaStyles: {}, areaGradientStyles: {} }
 
   let alphaValue = (zValue - zMin) / (zMax - zMin)
-  let isHSL = color.getFormat() === "hsl"
+  let isHSL = color.getFormat() === "hsla"
 
   switch (zChannel) {
     case "red": {

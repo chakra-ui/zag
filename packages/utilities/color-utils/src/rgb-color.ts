@@ -197,11 +197,11 @@ export class RGBColor extends Color {
   }
 
   toJSON(): Record<string, number> {
-    return { r: this.red, g: this.green, b: this.blue }
+    return { r: this.red, g: this.green, b: this.blue, a: this.alpha }
   }
 
   getFormat(): ColorFormat {
-    return "rgb"
+    return "rgba"
   }
 
   private static colorChannels: [ColorChannel, ColorChannel, ColorChannel] = ["red", "green", "blue"]

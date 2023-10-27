@@ -218,13 +218,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   valueAsString: string
   /**
-   * The current color channels of the color
-   */
-  channels: [ColorChannel, ColorChannel, ColorChannel]
-  /**
    * Function to set the color value
    */
-  setColor(value: string | Color): void
+  setValue(value: string | Color): void
   /**
    * Function to set the color value
    */

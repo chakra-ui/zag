@@ -114,11 +114,11 @@ export class HSLColor extends Color {
   }
 
   toJSON(): Record<string, number> {
-    return { h: this.hue, s: this.saturation, l: this.lightness }
+    return { h: this.hue, s: this.saturation, l: this.lightness, a: this.alpha }
   }
 
   getFormat(): ColorFormat {
-    return "hsl"
+    return "hsla"
   }
 
   private static colorChannels: [ColorChannel, ColorChannel, ColorChannel] = ["hue", "saturation", "lightness"]

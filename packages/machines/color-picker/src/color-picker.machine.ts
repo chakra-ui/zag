@@ -1,5 +1,5 @@
 import { parseColor, type Color } from "@zag-js/color-utils"
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
@@ -17,8 +17,6 @@ import type {
   UserDefinedContext,
 } from "./color-picker.types"
 import { getChannelValue } from "./utils/get-channel-input-value"
-
-const { stateIn } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -55,7 +53,7 @@ export function machine(userContext: UserDefinedContext) {
       activities: ["trackFormControl"],
 
       watch: {
-        valueAsString: ["syncInputElements"],
+        value: ["syncInputElements"],
         open: ["toggleVisibility"],
       },
 
@@ -63,26 +61,6 @@ export function machine(userContext: UserDefinedContext) {
         "VALUE.SET": {
           actions: ["setValue"],
         },
-        "CHANNEL_INPUT.FOCUS": [
-          {
-            guard: stateIn("idle"),
-            target: "focused",
-            actions: ["setActiveChannel"],
-          },
-          {
-            actions: ["setActiveChannel"],
-          },
-        ],
-        "CHANNEL_INPUT.BLUR": [
-          {
-            guard: stateIn("focused"),
-            target: "idle",
-            actions: ["setChannelColorFromInput"],
-          },
-          {
-            actions: ["setChannelColorFromInput"],
-          },
-        ],
         "CHANNEL_INPUT.CHANGE": {
           actions: ["setChannelColorFromInput"],
         },
@@ -100,6 +78,10 @@ export function machine(userContext: UserDefinedContext) {
               target: "open",
               actions: ["setInitialFocus", "invokeOnOpen"],
             },
+            "CHANNEL_INPUT.FOCUS": {
+              target: "focused",
+              actions: ["setActiveChannel"],
+            },
           },
         },
 
@@ -113,6 +95,13 @@ export function machine(userContext: UserDefinedContext) {
             "TRIGGER.CLICK": {
               target: "open",
               actions: ["setInitialFocus", "invokeOnOpen"],
+            },
+            "CHANNEL_INPUT.FOCUS": {
+              actions: ["setActiveChannel"],
+            },
+            "CHANNEL_INPUT.BLUR": {
+              target: "idle",
+              actions: ["setChannelColorFromInput"],
             },
           },
         },
@@ -183,6 +172,9 @@ export function machine(userContext: UserDefinedContext) {
             },
             "CHANNEL_SLIDER.END": {
               actions: ["setChannelToMax"],
+            },
+            "CHANNEL_INPUT.BLUR": {
+              actions: ["setChannelColorFromInput"],
             },
             INTERACT_OUTSIDE: [
               {
@@ -386,8 +378,10 @@ export function machine(userContext: UserDefinedContext) {
             )
 
             // set channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
-            const inputEl = dom.getChannelInputEl(ctx, channel)
-            dom.setValue(inputEl, getChannelValue(color, channel))
+            const inputEls = dom.getChannelInputEl(ctx, channel)
+            inputEls.forEach((inputEl) => {
+              dom.setValue(inputEl, getChannelValue(color, channel))
+            })
 
             set.value(ctx, color)
             return
@@ -502,7 +496,6 @@ const invoke = {
 
 const set = {
   value(ctx: MachineContext, color: Color | ColorType | undefined) {
-    sync.inputs(ctx)
     if (!color || ctx.value.isEqual(color)) return
     const currentFormat = ctx.value.getFormat()
     const outputColor = color.toFormat(currentFormat)
@@ -510,7 +503,7 @@ const set = {
       outputColor.outputFormat = ctx.value.outputFormat
     } catch {}
 
-    ctx.value = ref(outputColor) as Color
+    ctx.value = outputColor
     invoke.change(ctx)
   },
 }

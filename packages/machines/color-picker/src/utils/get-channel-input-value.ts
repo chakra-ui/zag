@@ -16,7 +16,7 @@ export function getChannelValue(color: Color, channel: ExtendedColorChannel | nu
     return color.getChannelValue(channel).toString()
   }
 
-  const isHSL = color.getFormat() === "hsl"
+  const isHSL = color.getFormat() === "hsla"
 
   switch (channel) {
     case "hue":
