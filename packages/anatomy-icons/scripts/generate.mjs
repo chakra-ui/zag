@@ -47,7 +47,7 @@ const dashName = toDashCase(name)
 
 const defaultPalette = {
   0: "white",
-  1: "#2CFF80",
+  1: "#2CFF80", //accentColor
   2: "#2C7A51",
   3: "#16402D",
   4: "#1C4D37",
@@ -61,6 +61,7 @@ const defaultPalette = {
   12: "#2AB36B",
   13: "#9FFFCD",
   14: "#0E432B",
+  15: "#D9D9D9",
 }
 
 function findColors(code) {
