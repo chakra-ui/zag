@@ -1,5 +1,32 @@
 # @zag-js/color-picker
 
+## 0.27.0
+
+### Patch Changes
+
+- [`35771b95`](https://github.com/chakra-ui/zag/commit/35771b95a480f48fa94e83f5c4b3cb3922290af1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where channel inputs within control and content have
+  similar ids, violating the accessibility tree
+
+- [`245cd74e`](https://github.com/chakra-ui/zag/commit/245cd74ef407e340bc487381056d7c153957155b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where entering empty value in alpha sets value to `NaN`.
+  Now, it reverts back to the previous alpha value.
+
+- Updated dependencies [[`152b0a78`](https://github.com/chakra-ui/zag/commit/152b0a78b6ba18442f38164ce90789bc243f6e00)]:
+  - @zag-js/core@0.27.0
+  - @zag-js/anatomy@0.27.0
+  - @zag-js/types@0.27.0
+  - @zag-js/color-utils@0.27.0
+  - @zag-js/utils@0.27.0
+  - @zag-js/dismissable@0.27.0
+  - @zag-js/dom-event@0.27.0
+  - @zag-js/dom-query@0.27.0
+  - @zag-js/form-utils@0.27.0
+  - @zag-js/popper@0.27.0
+  - @zag-js/tabbable@0.27.0
+  - @zag-js/text-selection@0.27.0
+  - @zag-js/visually-hidden@0.27.0
+
 ## 0.26.0
 
 ### Patch Changes

@@ -1,5 +1,33 @@
 # @zag-js/date-picker
 
+## 0.27.0
+
+### Minor Changes
+
+- [`abaec35b`](https://github.com/chakra-ui/zag/commit/abaec35bc042edd79347254d8d76fa66aa0fb711) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Remove support for `inline` in datepicker and replace with
+  `closeOnSelect` for API consistency.
+  - Add `data-placement` to trigger and content parts for position-aware styling.
+
+### Patch Changes
+
+- [`3f7ea393`](https://github.com/chakra-ui/zag/commit/3f7ea3936cb86231a105f5d919aff44ddaea60e1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `api.isOpen` returned `undefined` in some cases
+
+- Updated dependencies [[`152b0a78`](https://github.com/chakra-ui/zag/commit/152b0a78b6ba18442f38164ce90789bc243f6e00)]:
+  - @zag-js/core@0.27.0
+  - @zag-js/anatomy@0.27.0
+  - @zag-js/types@0.27.0
+  - @zag-js/utils@0.27.0
+  - @zag-js/date-utils@0.27.0
+  - @zag-js/dismissable@0.27.0
+  - @zag-js/dom-event@0.27.0
+  - @zag-js/dom-query@0.27.0
+  - @zag-js/form-utils@0.27.0
+  - @zag-js/live-region@0.27.0
+  - @zag-js/popper@0.27.0
+  - @zag-js/text-selection@0.27.0
+
 ## 0.26.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @zag-js/core
 
+## 0.27.0
+
+### Patch Changes
+
+- [#967](https://github.com/chakra-ui/zag/pull/967)
+  [`152b0a78`](https://github.com/chakra-ui/zag/commit/152b0a78b6ba18442f38164ce90789bc243f6e00) Thanks
+  [@sholzmayer](https://github.com/sholzmayer)! - Fix issue where mergeProps throws when className str is undefined
+
+- Updated dependencies []:
+  - @zag-js/store@0.27.0
+
 ## 0.26.0
 
 ### Patch Changes

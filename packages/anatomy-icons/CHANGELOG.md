@@ -1,5 +1,13 @@
 # @zag-js/anatomy-icons
 
+## 0.27.0
+
+### Patch Changes
+
+- [#948](https://github.com/chakra-ui/zag/pull/948)
+  [`2755db92`](https://github.com/chakra-ui/zag/commit/2755db927e99017fa37c86402ad04db47fea8838) Thanks
+  [@anubra266](https://github.com/anubra266)! - Update Anatomy parts
+
 ## 0.26.0
 
 ## 0.25.0

@@ -1,5 +1,14 @@
 # @zag-js/docs
 
+## 0.27.0
+
+### Minor Changes
+
+- [`abaec35b`](https://github.com/chakra-ui/zag/commit/abaec35bc042edd79347254d8d76fa66aa0fb711) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Remove support for `inline` in datepicker and replace with
+  `closeOnSelect` for API consistency.
+  - Add `data-placement` to trigger and content parts for position-aware styling.
+
 ## 0.26.0
 
 ## 0.25.0
