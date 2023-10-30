@@ -1,5 +1,12 @@
 # @zag-js/tabbable
 
+## 0.27.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.27.0
+
 ## 0.26.0
 
 ### Patch Changes

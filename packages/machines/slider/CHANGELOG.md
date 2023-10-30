@@ -1,5 +1,23 @@
 # @zag-js/slider
 
+## 0.27.0
+
+### Patch Changes
+
+- [`215df8c6`](https://github.com/chakra-ui/zag/commit/215df8c66e953de02904c8419c1650f344e28faa) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Rename output to valueText
+
+- Updated dependencies [[`152b0a78`](https://github.com/chakra-ui/zag/commit/152b0a78b6ba18442f38164ce90789bc243f6e00)]:
+  - @zag-js/core@0.27.0
+  - @zag-js/anatomy@0.27.0
+  - @zag-js/types@0.27.0
+  - @zag-js/utils@0.27.0
+  - @zag-js/dom-event@0.27.0
+  - @zag-js/dom-query@0.27.0
+  - @zag-js/element-size@0.27.0
+  - @zag-js/form-utils@0.27.0
+  - @zag-js/numeric-range@0.27.0
+
 ## 0.26.0
 
 ### Patch Changes
