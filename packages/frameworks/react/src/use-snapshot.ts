@@ -2,11 +2,14 @@
 
 import { snapshot, subscribe, type Snapshot } from "@zag-js/store"
 import { createProxy as createProxyToCompare, isChanged } from "proxy-compare"
-import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore, use } from "react"
+import ReactExport, { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
 
 interface Options {
   sync?: boolean
 }
+
+//@ts-ignore
+const { use } = ReactExport
 
 const targetCache = new WeakMap()
 
