@@ -70,7 +70,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const startOfWeek = state.context.startOfWeek
 
   const isFocused = state.matches("focused")
-  const isOpen = Boolean(state.matches("open") || state.context.inline)
+  const isOpen = state.matches("open")
+
   const isRangePicker = state.context.selectionMode === "range"
   const isDateUnavailableFn = state.context.isDateUnavailable
 
@@ -294,6 +295,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       hidden: !isOpen,
       dir: state.context.dir,
       "data-state": isOpen ? "open" : "closed",
+      "data-placement": currentPlacement,
       id: dom.getContentId(state.context),
       role: "application",
       "aria-roledescription": "datepicker",
@@ -581,6 +583,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getTriggerId(state.context),
       dir: state.context.dir,
       type: "button",
+      "data-placement": currentPlacement,
       "aria-label": isOpen ? "Close calendar" : "Open calendar",
       "data-state": isOpen ? "open" : "closed",
       "aria-haspopup": "grid",

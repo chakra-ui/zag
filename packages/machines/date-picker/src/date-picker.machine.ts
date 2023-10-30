@@ -1,5 +1,5 @@
 import { DateFormatter } from "@internationalized/date"
-import { choose, createMachine, guards } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import {
   alignDate,
   constrainValue,
@@ -27,7 +27,7 @@ import { dom } from "./date-picker.dom"
 import type { DateValue, DateView, MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
 import { adjustStartAndEndDate, formatValue, sortDates } from "./date-picker.utils"
 
-const { and, not } = guards
+const { and } = guards
 
 const getInitialContext = (ctx: Partial<MachineContext>): MachineContext => {
   const locale = ctx.locale || "en-US"
@@ -61,6 +61,7 @@ const getInitialContext = (ctx: Partial<MachineContext>): MachineContext => {
     view: "day",
     activeIndex: 0,
     hoveredValue: null,
+    closeOnSelect: true,
     ...ctx,
     positioning: {
       placement: "bottom",
@@ -74,11 +75,10 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "datepicker",
-      initial: ctx.inline || ctx.open ? "open" : "idle",
+      initial: ctx.open ? "open" : "idle",
       context: getInitialContext(ctx),
       computed: {
-        valueText: (ctx) =>
-          ctx.value.map((date) => formatSelectedDate(date, null, ctx.locale, ctx.timeZone)).join(", "),
+        valueAsString: (ctx) => ctx.value.map((date) => formatSelectedDate(date, null, ctx.locale, ctx.timeZone)),
         isInteractive: (ctx) => !ctx.disabled && !ctx.readOnly,
         visibleDuration: (ctx) => ({ months: ctx.numOfMonths }),
         endValue: (ctx) => getEndDate(ctx.startValue, ctx.visibleDuration),
@@ -106,7 +106,7 @@ export function machine(userContext: UserDefinedContext) {
           "setHoveredValueIfKeyboard",
         ],
         value: ["setInputValue"],
-        valueText: ["announceValueText"],
+        valueAsString: ["announceValueText"],
         inputValue: ["syncInputElement"],
         view: ["focusActiveCell"],
         open: ["toggleVisibility"],
@@ -146,7 +146,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "TRIGGER.CLICK": {
               target: "open",
-              actions: ["focusFirstSelectedDate", "invokeOnOpen"],
+              actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
             },
             OPEN: {
               target: "open",
@@ -160,7 +160,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "TRIGGER.CLICK": {
               target: "open",
-              actions: ["setViewToDay", "focusFirstSelectedDate", "invokeOnOpen"],
+              actions: ["setViewToDay", "focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
             },
             "INPUT.CHANGE": {
               actions: ["focusParsedDate"],
@@ -173,7 +173,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "CELL.FOCUS": {
               target: "open",
-              actions: ["setView", "invokeOnOpen"],
+              actions: ["setView", "focusActiveCell", "invokeOnOpen"],
             },
             OPEN: {
               target: "open",
@@ -185,12 +185,6 @@ export function machine(userContext: UserDefinedContext) {
         open: {
           tags: "open",
           activities: ["trackDismissableElement", "trackPositioning"],
-          entry: choose([
-            {
-              guard: not("isinline"),
-              actions: ["focusActiveCell"],
-            },
-          ]),
           exit: ["clearHoveredDate", "resetView"],
           on: {
             "INPUT.CHANGE": {
@@ -209,14 +203,10 @@ export function machine(userContext: UserDefinedContext) {
                 guard: and("isRangePicker", "hasSelectedRange"),
                 actions: ["setStartIndex", "clearSelectedDate", "setFocusedDate", "setSelectedDate", "setEndIndex"],
               },
-              // === Grouped transitions (based on isInline) ===
+              // === Grouped transitions (based on `closeOnSelect`) ===
               {
-                guard: and("isRangePicker", "isSelectingEndDate", "isInline"),
-                actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate"],
-              },
-              {
+                guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
                 target: "focused",
-                guard: and("isRangePicker", "isSelectingEndDate"),
                 actions: [
                   "setFocusedDate",
                   "setSelectedDate",
@@ -225,6 +215,10 @@ export function machine(userContext: UserDefinedContext) {
                   "focusInputElement",
                   "invokeOnClose",
                 ],
+              },
+              {
+                guard: and("isRangePicker", "isSelectingEndDate"),
+                actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate"],
               },
               // ===
               {
@@ -235,14 +229,14 @@ export function machine(userContext: UserDefinedContext) {
                 guard: "isMultiPicker",
                 actions: ["setFocusedDate", "toggleSelectedDate"],
               },
-              // === Grouped transitions (based on isInline) ===
+              // === Grouped transitions (based on `closeOnSelect`) ===
               {
-                guard: "isInline",
-                actions: ["setFocusedDate", "setSelectedDate"],
-              },
-              {
+                guard: "closeOnSelect",
                 target: "focused",
                 actions: ["setFocusedDate", "setSelectedDate", "focusInputElement", "invokeOnClose"],
+              },
+              {
+                actions: ["setFocusedDate", "setSelectedDate"],
               },
               // ===
             ],
@@ -255,15 +249,12 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["clearHoveredDate"],
             },
             "TABLE.POINTER_DOWN": {
-              guard: not("isInline"),
               actions: ["disableTextSelection"],
             },
             "TABLE.POINTER_UP": {
-              guard: not("isInline"),
               actions: ["enableTextSelection"],
             },
             "TABLE.ESCAPE": {
-              guard: not("isInline"),
               target: "focused",
               actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement", "invokeOnClose"],
             },
@@ -280,15 +271,15 @@ export function machine(userContext: UserDefinedContext) {
                 guard: and("isRangePicker", "hasSelectedRange"),
                 actions: ["setStartIndex", "clearSelectedDate", "setSelectedDate", "setEndIndex"],
               },
-              // === Grouped transitions (based on isInline) ===
+              // === Grouped transitions (based on `closeOnSelect`) ===
               {
-                guard: and("isRangePicker", "isSelectingEndDate", "isInline"),
-                actions: ["setSelectedDate", "setStartIndex"],
+                guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
+                target: "focused",
+                actions: ["setSelectedDate", "setStartIndex", "focusInputElement", "invokeOnClose"],
               },
               {
-                target: "focused",
                 guard: and("isRangePicker", "isSelectingEndDate"),
-                actions: ["setSelectedDate", "setStartIndex", "focusInputElement", "invokeOnClose"],
+                actions: ["setSelectedDate", "setStartIndex"],
               },
               // ===
               {
@@ -299,14 +290,14 @@ export function machine(userContext: UserDefinedContext) {
                 guard: "isMultiPicker",
                 actions: ["toggleSelectedDate"],
               },
-              // === Grouped transitions (based on isInline) ===
+              // === Grouped transitions (based on `closeOnSelect`) ===
               {
-                guard: "isInline",
-                actions: ["selectFocusedDate"],
-              },
-              {
+                guard: "closeOnSelect",
                 target: "focused",
                 actions: ["selectFocusedDate", "focusInputElement", "invokeOnClose"],
+              },
+              {
+                actions: ["selectFocusedDate"],
               },
               // ===
             ],
@@ -389,7 +380,7 @@ export function machine(userContext: UserDefinedContext) {
         isMultiPicker: (ctx) => ctx.selectionMode === "multiple",
         isTargetFocusable: (_ctx, evt) => evt.focusable,
         isSelectingEndDate: (ctx) => ctx.activeIndex === 1,
-        isInline: (ctx) => !!ctx.inline,
+        closeOnSelect: (ctx) => !!ctx.closeOnSelect,
       },
       activities: {
         trackPositioning(ctx) {
@@ -413,7 +404,6 @@ export function machine(userContext: UserDefinedContext) {
           return () => ctx.announcer?.destroy?.()
         },
         trackDismissableElement(ctx, _evt, { send }) {
-          if (ctx.inline) return
           let focusable = false
           return trackDismissableElement(dom.getContentEl(ctx), {
             exclude: [dom.getInputEl(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
@@ -444,7 +434,7 @@ export function machine(userContext: UserDefinedContext) {
           set.view(ctx, evt.cell)
         },
         announceValueText(ctx) {
-          ctx.announcer?.announce(ctx.valueText, 3000)
+          ctx.announcer?.announce(ctx.valueAsString.join(","), 3000)
         },
         announceVisibleRange(ctx) {
           const { formatted } = ctx.visibleRangeText

@@ -11,34 +11,30 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "datepicker",
-  initial: ctx.inline || ctx.open ? "open" : "idle",
+  initial: ctx.open ? "open" : "idle",
   context: {
     "isYearView": false,
     "isMonthView": false,
     "isYearView": false,
     "isMonthView": false,
-    "!isinline": false,
     "isMonthView": false,
     "isYearView": false,
     "isRangePicker && hasSelectedRange": false,
-    "isRangePicker && isSelectingEndDate && isInline": false,
+    "isRangePicker && isSelectingEndDate && closeOnSelect": false,
     "isRangePicker && isSelectingEndDate": false,
     "isRangePicker": false,
     "isMultiPicker": false,
-    "isInline": false,
+    "closeOnSelect": false,
     "isRangePicker && isSelectingEndDate": false,
     "isRangePicker": false,
-    "!isInline": false,
-    "!isInline": false,
-    "!isInline": false,
     "isMonthView": false,
     "isYearView": false,
     "isRangePicker && hasSelectedRange": false,
-    "isRangePicker && isSelectingEndDate && isInline": false,
+    "isRangePicker && isSelectingEndDate && closeOnSelect": false,
     "isRangePicker && isSelectingEndDate": false,
     "isRangePicker": false,
     "isMultiPicker": false,
-    "isInline": false,
+    "closeOnSelect": false,
     "isMonthView": false,
     "isYearView": false,
     "isMonthView": false,
@@ -102,7 +98,7 @@ const fetchMachine = createMachine({
         },
         "TRIGGER.CLICK": {
           target: "open",
-          actions: ["focusFirstSelectedDate", "invokeOnOpen"]
+          actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"]
         },
         OPEN: {
           target: "open",
@@ -115,7 +111,7 @@ const fetchMachine = createMachine({
       on: {
         "TRIGGER.CLICK": {
           target: "open",
-          actions: ["setViewToDay", "focusFirstSelectedDate", "invokeOnOpen"]
+          actions: ["setViewToDay", "focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"]
         },
         "INPUT.CHANGE": {
           actions: ["focusParsedDate"]
@@ -128,7 +124,7 @@ const fetchMachine = createMachine({
         },
         "CELL.FOCUS": {
           target: "open",
-          actions: ["setView", "invokeOnOpen"]
+          actions: ["setView", "focusActiveCell", "invokeOnOpen"]
         },
         OPEN: {
           target: "open",
@@ -139,10 +135,6 @@ const fetchMachine = createMachine({
     open: {
       tags: "open",
       activities: ["trackDismissableElement", "trackPositioning"],
-      entry: choose([{
-        cond: "!isinline",
-        actions: ["focusActiveCell"]
-      }]),
       exit: ["clearHoveredDate", "resetView"],
       on: {
         "INPUT.CHANGE": {
@@ -158,14 +150,14 @@ const fetchMachine = createMachine({
           cond: "isRangePicker && hasSelectedRange",
           actions: ["setStartIndex", "clearSelectedDate", "setFocusedDate", "setSelectedDate", "setEndIndex"]
         },
-        // === Grouped transitions (based on isInline) ===
+        // === Grouped transitions (based on `closeOnSelect`) ===
         {
-          cond: "isRangePicker && isSelectingEndDate && isInline",
-          actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate"]
-        }, {
+          cond: "isRangePicker && isSelectingEndDate && closeOnSelect",
           target: "focused",
-          cond: "isRangePicker && isSelectingEndDate",
           actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate", "focusInputElement", "invokeOnClose"]
+        }, {
+          cond: "isRangePicker && isSelectingEndDate",
+          actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate"]
         },
         // ===
         {
@@ -175,13 +167,13 @@ const fetchMachine = createMachine({
           cond: "isMultiPicker",
           actions: ["setFocusedDate", "toggleSelectedDate"]
         },
-        // === Grouped transitions (based on isInline) ===
+        // === Grouped transitions (based on `closeOnSelect`) ===
         {
-          cond: "isInline",
-          actions: ["setFocusedDate", "setSelectedDate"]
-        }, {
+          cond: "closeOnSelect",
           target: "focused",
           actions: ["setFocusedDate", "setSelectedDate", "focusInputElement", "invokeOnClose"]
+        }, {
+          actions: ["setFocusedDate", "setSelectedDate"]
         }
         // ===
         ],
@@ -195,15 +187,12 @@ const fetchMachine = createMachine({
           actions: ["clearHoveredDate"]
         },
         "TABLE.POINTER_DOWN": {
-          cond: "!isInline",
           actions: ["disableTextSelection"]
         },
         "TABLE.POINTER_UP": {
-          cond: "!isInline",
           actions: ["enableTextSelection"]
         },
         "TABLE.ESCAPE": {
-          cond: "!isInline",
           target: "focused",
           actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement", "invokeOnClose"]
         },
@@ -217,14 +206,14 @@ const fetchMachine = createMachine({
           cond: "isRangePicker && hasSelectedRange",
           actions: ["setStartIndex", "clearSelectedDate", "setSelectedDate", "setEndIndex"]
         },
-        // === Grouped transitions (based on isInline) ===
+        // === Grouped transitions (based on `closeOnSelect`) ===
         {
-          cond: "isRangePicker && isSelectingEndDate && isInline",
-          actions: ["setSelectedDate", "setStartIndex"]
-        }, {
+          cond: "isRangePicker && isSelectingEndDate && closeOnSelect",
           target: "focused",
-          cond: "isRangePicker && isSelectingEndDate",
           actions: ["setSelectedDate", "setStartIndex", "focusInputElement", "invokeOnClose"]
+        }, {
+          cond: "isRangePicker && isSelectingEndDate",
+          actions: ["setSelectedDate", "setStartIndex"]
         },
         // ===
         {
@@ -234,13 +223,13 @@ const fetchMachine = createMachine({
           cond: "isMultiPicker",
           actions: ["toggleSelectedDate"]
         },
-        // === Grouped transitions (based on isInline) ===
+        // === Grouped transitions (based on `closeOnSelect`) ===
         {
-          cond: "isInline",
-          actions: ["selectFocusedDate"]
-        }, {
+          cond: "closeOnSelect",
           target: "focused",
           actions: ["selectFocusedDate", "focusInputElement", "invokeOnClose"]
+        }, {
+          actions: ["selectFocusedDate"]
         }
         // ===
         ],
@@ -342,14 +331,12 @@ const fetchMachine = createMachine({
   guards: {
     "isYearView": ctx => ctx["isYearView"],
     "isMonthView": ctx => ctx["isMonthView"],
-    "!isinline": ctx => ctx["!isinline"],
     "isRangePicker && hasSelectedRange": ctx => ctx["isRangePicker && hasSelectedRange"],
-    "isRangePicker && isSelectingEndDate && isInline": ctx => ctx["isRangePicker && isSelectingEndDate && isInline"],
+    "isRangePicker && isSelectingEndDate && closeOnSelect": ctx => ctx["isRangePicker && isSelectingEndDate && closeOnSelect"],
     "isRangePicker && isSelectingEndDate": ctx => ctx["isRangePicker && isSelectingEndDate"],
     "isRangePicker": ctx => ctx["isRangePicker"],
     "isMultiPicker": ctx => ctx["isMultiPicker"],
-    "isInline": ctx => ctx["isInline"],
-    "!isInline": ctx => ctx["!isInline"],
+    "closeOnSelect": ctx => ctx["closeOnSelect"],
     "isDayView": ctx => ctx["isDayView"],
     "isTargetFocusable": ctx => ctx["isTargetFocusable"]
   }

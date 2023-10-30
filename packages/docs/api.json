@@ -103,6 +103,11 @@
       "getRootNode": {
         "type": "() => ShadowRoot | Node | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
       }
     }
   },
@@ -304,11 +309,7 @@
         "type": "string",
         "description": "The current color value (as a Color object)"
       },
-      "channels": {
-        "type": "[ColorChannel]",
-        "description": "The current color channels of the color"
-      },
-      "setColor": {
+      "setValue": {
         "type": "(value: string | Color) => void",
         "description": "Function to set the color value"
       },
@@ -819,9 +820,10 @@
         "type": "DateValue",
         "description": "The maximum date that can be selected."
       },
-      "inline": {
+      "closeOnSelect": {
         "type": "boolean",
-        "description": "Whether the calendar should be displayed inline."
+        "description": "Whether the calendar should close after the date selection is complete.\nThis is ignored when the selection mode is `multiple`.",
+        "defaultValue": "true"
       },
       "value": {
         "type": "DateValue[]",
@@ -1907,6 +1909,11 @@
       "getRootNode": {
         "type": "() => Node | ShadowRoot | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
       }
     }
   },
@@ -1922,69 +1929,6 @@
       }
     },
     "context": {}
-  },
-  "pressable": {
-    "api": {
-      "isPressed": {
-        "type": "boolean",
-        "description": "Whether the element is pressed."
-      }
-    },
-    "context": {
-      "disabled": {
-        "type": "boolean",
-        "description": "Whether the element is disabled"
-      },
-      "preventFocusOnPress": {
-        "type": "boolean",
-        "description": "Whether the target should not receive focus on press."
-      },
-      "cancelOnPointerExit": {
-        "type": "boolean",
-        "description": "Whether press events should be canceled when the pointer leaves the target while pressed.\n\nBy default, this is `false`, which means if the pointer returns back over the target while\nstill pressed, onPressStart will be fired again.\n\nIf set to `true`, the press is canceled when the pointer leaves the target and\nonPressStart will not be fired if the pointer returns."
-      },
-      "allowTextSelectionOnPress": {
-        "type": "boolean",
-        "description": "Whether text selection should be enabled on the pressable element."
-      },
-      "longPressDelay": {
-        "type": "number",
-        "description": "The amount of time (in milliseconds) to wait before firing the `onLongPress` event."
-      },
-      "dir": {
-        "type": "\"ltr\" | \"rtl\"",
-        "description": "The document's text/writing direction.",
-        "defaultValue": "\"ltr\""
-      },
-      "id": {
-        "type": "string",
-        "description": "The unique identifier of the machine."
-      },
-      "getRootNode": {
-        "type": "() => ShadowRoot | Node | Document",
-        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
-      },
-      "onPress": {
-        "type": "(event: PressEvent) => void",
-        "description": "Handler that is called when the press is released over the target."
-      },
-      "onPressStart": {
-        "type": "(event: PressEvent) => void",
-        "description": "Handler that is called when a press interaction starts."
-      },
-      "onPressEnd": {
-        "type": "(event: PressEvent) => void",
-        "description": "Handler that is called when a press interaction ends, either\nover the target or when the pointer leaves the target."
-      },
-      "onPressUp": {
-        "type": "(event: PressEvent) => void",
-        "description": "Handler that is called when a press is released over the target, regardless of\nwhether it started on the target or not."
-      },
-      "onLongPress": {
-        "type": "(event: PressEvent) => void",
-        "description": "Handler that is called when the element has been pressed for 500 milliseconds"
-      }
-    }
   },
   "radio-group": {
     "api": {
@@ -2218,6 +2162,10 @@
         "type": "() => void",
         "description": "Function to close the combobox"
       },
+      "collection": {
+        "type": "Collection<V>",
+        "description": "Function to toggle the combobox"
+      },
       "setCollection": {
         "type": "(collection: Collection<V>) => void",
         "description": "Function to set the collection of items"
@@ -2392,7 +2340,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; thumb(index: number): string; control: string; track: string; range: string; label: string; output: string; marker(index: number): string; }>",
+        "type": "Partial<{ root: string; thumb(index: number): string; control: string; track: string; range: string; label: string; valueText: string; marker(index: number): string; }>",
         "description": "The ids of the elements in the range slider. Useful for composition."
       },
       "aria-label": {

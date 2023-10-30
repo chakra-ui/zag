@@ -1492,7 +1492,7 @@ main [data-testid="scrubber"] {
 [data-scope="date-picker"][data-part="content"] {
   border: 1px solid gray;
   padding: 1.5rem;
-  width: 320px;
+  min-width: 320px;
   background: white;
   border-radius: 8px;
 }

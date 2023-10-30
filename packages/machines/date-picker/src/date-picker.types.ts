@@ -104,9 +104,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   max?: DateValue
   /**
-   * Whether the calendar should be displayed inline.
+   * Whether the calendar should close after the date selection is complete.
+   * This is ignored when the selection mode is `multiple`.
+   * @default true
    */
-  inline?: boolean
+  closeOnSelect?: boolean
   /**
    * The selected date(s).
    */
@@ -269,7 +271,7 @@ type ComputedContext = Readonly<{
    * @computed
    * The value text to display in the input.
    */
-  valueText: string
+  valueAsString: string[]
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
