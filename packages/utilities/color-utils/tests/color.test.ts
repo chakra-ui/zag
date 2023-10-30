@@ -7,6 +7,7 @@ describe("color.test.ts", () => {
 
     expect(color).toMatchInlineSnapshot(`
       {
+        "a": 1,
         "h": 0,
         "l": 15.1,
         "s": 40.26,
@@ -15,6 +16,7 @@ describe("color.test.ts", () => {
 
     expect(color.decrementChannel("saturation", 1)).toMatchInlineSnapshot(`
       {
+        "a": 1,
         "h": 0,
         "l": 15.1,
         "s": 39,
@@ -23,6 +25,7 @@ describe("color.test.ts", () => {
 
     expect(color.decrementChannel("lightness", 1)).toMatchInlineSnapshot(`
       {
+        "a": 1,
         "h": 0,
         "l": 14,
         "s": 40.26,
@@ -33,6 +36,7 @@ describe("color.test.ts", () => {
   test("hexint", () => {
     expect(parseColor("hsl(0, 92%, 13%)")).toMatchInlineSnapshot(`
       {
+        "a": 1,
         "h": 0,
         "l": 13,
         "s": 92,
@@ -41,6 +45,7 @@ describe("color.test.ts", () => {
 
     expect(parseColor("hsl(0, 76%, 31%)")).toMatchInlineSnapshot(`
       {
+        "a": 1,
         "h": 0,
         "l": 31,
         "s": 76,
