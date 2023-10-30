@@ -6,6 +6,28 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.27.0] - 2023-10-30
+
+### Fixed
+
+- **ColorPicker**:
+  - Fix issue where entering empty value in alpha sets value to `NaN`. Now, it reverts back to the previous alpha value
+  - Fix issue where channel inputs within control and content have similar ids, violating the accessibility tree
+- **Select**: Fix issue where `collection` is not returned in the `api`
+- **React**: Refactor types to reference react `use` directly
+- **DatePicker**: Fix issue where `api.isOpen` returned `undefined` in some cases
+
+### Added
+
+- **RadioGroup**: Set default orientation to `vertical`
+
+### Changed
+
+- **Slider**: Rename `output` part to `valueText` to match naming convention
+- **DatePicker**
+  - Remove support for `inline` in datepicker and replace with `closeOnSelect` for API consistency.
+  - Add `data-placement` to trigger and content parts for position-aware styling.
+
 ## [0.25.0] - 2023-10-17
 
 ### Fixed
