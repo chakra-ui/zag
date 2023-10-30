@@ -1,6 +1,6 @@
 import { createComponent } from "../create-component"
 
-export const RatingAnatomy = createComponent((props) => {
+export const RatingGroupAnatomy = createComponent((props) => {
   const { palette, ...rest } = props
   return (
     <svg width={1456} height={812} viewBox="0 0 1456 812" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>

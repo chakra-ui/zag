@@ -16,7 +16,7 @@ import { CheckboxAnatomy } from "./checkbox"
 import { SelectAnatomy } from "./select"
 import { HoverCardAnatomy } from "./hover-card"
 import { PaginationAnatomy } from "./pagination"
-import { RatingAnatomy } from "./rating"
+import { RatingGroupAnatomy } from "./rating-group"
 import { SwitchAnatomy } from "./switch"
 import { SegmentedControlAnatomy } from "./segmented-control"
 import { AvatarAnatomy } from "./avatar"
@@ -37,7 +37,7 @@ export const allComponents = {
   avatar: AvatarAnatomy,
   "segmented-control": SegmentedControlAnatomy,
   switch: SwitchAnatomy,
-  rating: RatingAnatomy,
+  "rating-group": RatingGroupAnatomy,
   pagination: PaginationAnatomy,
   "hover-card": HoverCardAnatomy,
   select: SelectAnatomy,
