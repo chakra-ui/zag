@@ -1,5 +1,17 @@
 # @zag-js/react
 
+## 0.27.1
+
+### Patch Changes
+
+- [`9e384165`](https://github.com/chakra-ui/zag/commit/9e38416512fb829c36febe830675bc783bfb1a6f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Revert issue with react export for the `use` hook
+
+- Updated dependencies []:
+  - @zag-js/core@0.27.1
+  - @zag-js/store@0.27.1
+  - @zag-js/types@0.27.1
+
 ## 0.27.0
 
 ### Patch Changes
