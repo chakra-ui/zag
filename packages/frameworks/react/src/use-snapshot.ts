@@ -2,11 +2,9 @@
 
 import { snapshot, subscribe, type Snapshot } from "@zag-js/store"
 import { createProxy as createProxyToCompare, isChanged } from "proxy-compare"
-import ReactExports, { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
+import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore, use } from "react"
 
-const { use } = ReactExports
-
-type Options = {
+interface Options {
   sync?: boolean
 }
 
