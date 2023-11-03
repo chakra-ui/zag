@@ -376,10 +376,9 @@ export function machine(userContext: UserDefinedContext) {
           // record cursor position before updating input value
           const sel = recordCursor(inputEl!)
 
-          dom.setValue(inputEl, inputValue)
-
           // restore cursor position after updating input value
           raf(() => {
+            dom.setValue(inputEl, inputValue)
             restoreCursor(inputEl!, sel)
           })
         },
