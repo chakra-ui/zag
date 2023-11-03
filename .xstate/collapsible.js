@@ -11,14 +11,39 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "collapsible",
-  initial: "idle",
+  initial: ctx.open ? "open" : "closed",
   context: {},
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
-  states: {}
+  states: {
+    closed: {
+      on: {
+        TOGGLE: {
+          target: "open",
+          actions: ["invokeOnOpen"]
+        },
+        OPEN: {
+          target: "open",
+          actions: ["invokeOnOpen"]
+        }
+      }
+    },
+    open: {
+      on: {
+        TOGGLE: {
+          target: "closed",
+          actions: ["invokeOnClose"]
+        },
+        CLOSE: {
+          target: "closed",
+          actions: ["invokeOnClose"]
+        }
+      }
+    }
+  }
 }, {
   actions: {
     updateContext: assign((context, event) => {

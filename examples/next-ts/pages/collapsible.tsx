@@ -1,5 +1,5 @@
 import * as collapsible from "@zag-js/collapsible"
-import { useMachine, normalizeProps } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { collapsibleControls, collapsibleData } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -18,7 +18,24 @@ export default function Page() {
   return (
     <>
       <main className="collapsible">
-        <div {...api.rootProps}></div>
+        <div {...api.rootProps}>
+          <div>
+            <span>{collapsibleData.headline}</span>
+            <button {...api.triggerProps}>{api.isOpen ? "Collapse" : "Expand"}</button>
+          </div>
+
+          <div>
+            <span>{collapsibleData.visibleItem}</span>
+          </div>
+
+          <div {...api.contentProps}>
+            {collapsibleData.items.map((item) => (
+              <div key={item}>
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </main>
 
       <Toolbar controls={controls.ui}>

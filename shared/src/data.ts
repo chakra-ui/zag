@@ -26,6 +26,12 @@ export const avatarData = {
     "https://broken.wikia.nocookie.net/naruto/images/e/e9/Itachi_ld_OL.png/revision/latest/top-crop/width/200/height/150?cb=20223303",
 }
 
+export const collapsibleData = {
+  headline: "@Omikorin starred 4 repositories",
+  visibleItem: "@chakra-ui/zag-js",
+  items: ["@chakra-ui/ark-ui", "@chakra-ui/panda", "@chakra-ui/chakra-ui"],
+}
+
 export const comboboxData = [
   { label: "Zambia", code: "ZA" },
   { label: "Benin", code: "BN" },
