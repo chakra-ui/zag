@@ -28,9 +28,9 @@ const fetchMachine = createMachine({
     "multiple": false,
     "selectOnBlur && hasHighlightedItem": false,
     "isTargetFocusable": false,
-    "hasHighlightedItem && isLoopEnabled && isLastItemHighlighted": false,
+    "hasHighlightedItem && loop && isLastItemHighlighted": false,
     "hasHighlightedItem": false,
-    "hasHighlightedItem && isLoopEnabled && isFirstItemHighlighted": false,
+    "hasHighlightedItem && loop && isFirstItemHighlighted": false,
     "hasHighlightedItem": false
   },
   initial: "idle",
@@ -200,7 +200,7 @@ const fetchMachine = createMachine({
           actions: ["highlightLastItem"]
         },
         "CONTENT.ARROW_DOWN": [{
-          cond: "hasHighlightedItem && isLoopEnabled && isLastItemHighlighted",
+          cond: "hasHighlightedItem && loop && isLastItemHighlighted",
           actions: ["highlightFirstItem"]
         }, {
           cond: "hasHighlightedItem",
@@ -209,7 +209,7 @@ const fetchMachine = createMachine({
           actions: ["highlightFirstItem"]
         }],
         "CONTENT.ARROW_UP": [{
-          cond: "hasHighlightedItem && isLoopEnabled && isFirstItemHighlighted",
+          cond: "hasHighlightedItem && loop && isFirstItemHighlighted",
           actions: ["highlightLastItem"]
         }, {
           cond: "hasHighlightedItem",
@@ -245,8 +245,8 @@ const fetchMachine = createMachine({
     "multiple": ctx => ctx["multiple"],
     "selectOnBlur && hasHighlightedItem": ctx => ctx["selectOnBlur && hasHighlightedItem"],
     "isTargetFocusable": ctx => ctx["isTargetFocusable"],
-    "hasHighlightedItem && isLoopEnabled && isLastItemHighlighted": ctx => ctx["hasHighlightedItem && isLoopEnabled && isLastItemHighlighted"],
+    "hasHighlightedItem && loop && isLastItemHighlighted": ctx => ctx["hasHighlightedItem && loop && isLastItemHighlighted"],
     "hasHighlightedItem": ctx => ctx["hasHighlightedItem"],
-    "hasHighlightedItem && isLoopEnabled && isFirstItemHighlighted": ctx => ctx["hasHighlightedItem && isLoopEnabled && isFirstItemHighlighted"]
+    "hasHighlightedItem && loop && isFirstItemHighlighted": ctx => ctx["hasHighlightedItem && loop && isFirstItemHighlighted"]
   }
 });

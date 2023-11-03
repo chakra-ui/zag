@@ -245,7 +245,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             },
             "CONTENT.ARROW_DOWN": [
               {
-                guard: and("hasHighlightedItem", "isLoopEnabled", "isLastItemHighlighted"),
+                guard: and("hasHighlightedItem", "loop", "isLastItemHighlighted"),
                 actions: ["highlightFirstItem"],
               },
               {
@@ -258,7 +258,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             ],
             "CONTENT.ARROW_UP": [
               {
-                guard: and("hasHighlightedItem", "isLoopEnabled", "isFirstItemHighlighted"),
+                guard: and("hasHighlightedItem", "loop", "isFirstItemHighlighted"),
                 actions: ["highlightLastItem"],
               },
               {
@@ -284,12 +284,12 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
     },
     {
       guards: {
-        isLoopEnabled: (ctx) => !!ctx.loop,
+        loop: (ctx) => !!ctx.loop,
         multiple: (ctx) => !!ctx.multiple,
         hasSelectedItems: (ctx) => ctx.hasSelectedItems,
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
-        isFirstItemHighlighted: (ctx) => ctx.highlightedItem["value"] === ctx.collection.first(),
-        isLastItemHighlighted: (ctx) => ctx.highlightedItem["value"] === ctx.collection.last(),
+        isFirstItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.first(),
+        isLastItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.last(),
         selectOnBlur: (ctx) => !!ctx.selectOnBlur,
         closeOnSelect: (ctx, evt) => {
           if (ctx.multiple) return false
