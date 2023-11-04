@@ -13,9 +13,8 @@ const api = computed(() => collapsible.connect(state.value, send, normalizeProps
 
 <template>
   <div ref="ref" v-bind="api.rootProps">
-    <button v-bind="api.triggerProps">
-      {{ state.value === "open" ? "Collapse" : "Expand" }}
-    </button>
+    <button v-if="api.isOpen" v-bind="api.triggerProps">Collapse</button>
+    <button v-if="!api.isOpen" v-bind="api.triggerProps">Expand</button>
     <div v-bind="api.contentProps">
       <div
         v-for="item in data"

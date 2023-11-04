@@ -1,7 +1,7 @@
 import * as collapsible from "@zag-js/collapsible"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
-import { createMemo, createUniqueId } from "solid-js"
 import { collapsibleControls, collapsibleData } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { Index, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -18,7 +18,20 @@ export default function Page() {
   return (
     <>
       <main class="collapsible">
-        <div {...api().rootProps}></div>
+        <div {...api().rootProps}>
+          <div>
+            <span>{collapsibleData.headline}</span>
+            <button {...api().triggerProps}>{api().isOpen ? "Collapse" : "Expand"}</button>
+          </div>
+
+          <div>
+            <span>{collapsibleData.visibleItem}</span>
+          </div>
+
+          <div {...api().contentProps}>
+            <Index each={collapsibleData.items}>{(item) => <div>{item()}</div>}</Index>
+          </div>
+        </div>
       </main>
 
       <Toolbar controls={controls.ui}>
