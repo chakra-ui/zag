@@ -19,6 +19,12 @@ export function machine(userContext: UserDefinedContext) {
         isDisabled: (ctx) => !!ctx.disabled,
       },
 
+      on: {
+        "CONTEXT.SET": {
+          actions: ["setContext"],
+        },
+      },
+
       states: {
         closed: {
           on: {
@@ -49,6 +55,9 @@ export function machine(userContext: UserDefinedContext) {
     {
       guards: {},
       actions: {
+        setContext(ctx, evt) {
+          Object.assign(ctx, evt.context)
+        },
         invokeOnOpen: (ctx) => {
           ctx.onOpenChange?.({ open: true })
         },

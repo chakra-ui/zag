@@ -14,6 +14,11 @@ const fetchMachine = createMachine({
   initial: ctx.open ? "open" : "closed",
   context: {},
   on: {
+    "CONTEXT.SET": {
+      actions: ["setContext"]
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
