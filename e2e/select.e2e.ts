@@ -118,6 +118,18 @@ test.describe("select/ open / keyboard", () => {
     await expectToBeHighlighted(cyprus)
     await expectToBeInViewport(page.locator(menu), cyprus)
   })
+
+  test("should loop through the options when loop is enabled", async ({ page }) => {
+    await controls(page).bool("loop")
+    await page.focus(trigger)
+    await page.keyboard.press("Enter")
+
+    await page.keyboard.press("ArrowUp")
+    await expectToBeHighlighted(page.locator(options).last())
+
+    await page.keyboard.press("ArrowDown")
+    await expectToBeHighlighted(page.locator(options).first())
+  })
 })
 
 test.describe("select / keyboard / close", () => {
