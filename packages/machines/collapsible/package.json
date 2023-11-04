@@ -2,14 +2,25 @@
   "name": "@zag-js/collapsible",
   "version": "0.0.0",
   "description": "Core logic for the collapsible widget implemented as a state machine",
-  "keywords": ["js", "machine", "xstate", "statechart", "component", "chakra-ui", "collapsible"],
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "collapsible"
+  ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
-    "main": "src/index.ts",
+  "main": "src/index.ts",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/collapsible",
   "sideEffects": false,
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "tsup",
     "lint": "eslint src --ext .ts,.tsx",

@@ -1,0 +1,26 @@
+```tsx
+import * as collapsible from "@zag-js/collapsible"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { useId } from "react"
+
+const data = ["@chakra-ui/ark-ui", "@chakra-ui/panda", "@chakra-ui/chakra-ui"]
+
+function Collapsible() {
+  const [state, send] = useMachine(collapsible.machine({ id: useId() }))
+
+  const api = collapsible.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      <button {...api.triggerProps}>
+        {api.isOpen ? "Collapse" : "Expand"}
+      </button>
+      <div {...api.contentProps}>
+        {data.map((item) => (
+          <div key={item}>{item}</div>
+        ))}
+      </div>
+    </div>
+  )
+}
+```

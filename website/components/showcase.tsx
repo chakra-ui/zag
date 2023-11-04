@@ -1,3 +1,4 @@
+import { Collapsible } from "components/machines/collapsible"
 import { Combobox } from "components/machines/combobox"
 import { ContextMenu } from "components/machines/context-menu"
 import { HoverCard } from "components/machines/hover-card"
@@ -44,6 +45,15 @@ const components = {
       component={Checkbox}
       defaultProps={{
         disabled: false,
+      }}
+    />
+  ),
+  Collapsible: () => (
+    <Playground
+      component={Collapsible}
+      defaultProps={{
+        disabled: false,
+        dir: { default: "ltr", options: ["ltr", "rtl"] },
       }}
     />
   ),

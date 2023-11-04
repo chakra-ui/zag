@@ -1,0 +1,29 @@
+```md
+<script setup>
+import * as collapsible from "@zag-js/collapsible"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed } from "vue"
+
+const data = ["@chakra-ui/ark-ui", "@chakra-ui/panda", "@chakra-ui/chakra-ui"]
+
+const [state, send] = useMachine(collapsible.machine({ id: "1" }))
+
+const api = computed(() => collapsible.connect(state.value, send, normalizeProps))
+</script>
+
+<template>
+  <div ref="ref" v-bind="api.rootProps">
+    <button v-bind="api.triggerProps">
+      {{ state.value === "open" ? "Collapse" : "Expand" }}
+    </button>
+    <div v-bind="api.contentProps">
+      <div
+        v-for="item in data"
+        :key="item.id"
+      >
+        <div>{{ item }}</div>
+      </div>
+    </div>
+  </div>
+</template>
+```

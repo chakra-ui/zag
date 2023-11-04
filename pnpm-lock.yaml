@@ -2624,6 +2624,9 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../packages/machines/checkbox
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../packages/machines/collapsible
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../packages/machines/combobox

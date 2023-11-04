@@ -291,6 +291,61 @@
       }
     }
   },
+  "collapsible": {
+    "api": {
+      "isOpen": {
+        "type": "boolean",
+        "description": "Whether the collapsible is open."
+      },
+      "isDisabled": {
+        "type": "boolean",
+        "description": "Whether the collapsible is disabled"
+      },
+      "isFocused": {
+        "type": "boolean",
+        "description": "Whether the checkbox is focused"
+      },
+      "open": {
+        "type": "() => void",
+        "description": "Function to open the collapsible."
+      },
+      "close": {
+        "type": "() => void",
+        "description": "Function to close the collapsible."
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "Partial<{ root: string; content: string; trigger: string; }>",
+        "description": "The ids of the elements in the collapsible. Useful for composition."
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "If `true`, the collapsible will be disabled"
+      },
+      "onOpenChange": {
+        "type": "(details: OpenChangeDetails) => void",
+        "description": "Function called when the popup is opened"
+      },
+      "open": {
+        "type": "boolean",
+        "description": "Whether the collapsible is open"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "color-picker": {
     "api": {
       "isDragging": {

@@ -1,0 +1,197 @@
+---
+title: Collapsible
+description: Using the collapsible machine in your project.
+package: "@zag-js/collapsible"
+---
+
+# Collapsible
+
+A collapsible is a component which expands and collapses a panel.
+
+<Resources pkg="@zag-js/collapsible" />
+
+<Showcase id="Collapsible" />
+
+**Features**
+
+- Full keyboard navigation.
+
+## Installation
+
+To use the collapsible machine in your project, run the following command in
+your command line:
+
+<CodeSnippet id="collapsible/installation.mdx" />
+
+This command will install the framework agnostic collapsible logic and the
+reactive utilities for your framework of choice.
+
+## Usage
+
+First, import the collapsible package into your project
+
+```jsx
+import * as collapsible from "@zag-js/collapsible"
+```
+
+The collapsible package exports two key functions:
+
+- `machine` — The state machine logic for the collapsible widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll also need to provide a unique `id` to the `useMachine` hook. This is
+> used to ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+collapsible machine in your project 🔥
+
+<CodeSnippet id="collapsible/usage.mdx" />
+
+You may have noticed we wrapped each collapsible trigger within an `h3`. This is
+recommended by the
+[WAI-ARIA](https://www.w3.org/TR/wai-aria-practices-1.1/#wai-aria-roles-states-and-properties)
+design pattern to ensure the collapsible has the appropriate hierarchy on the
+page.
+
+## Opening multiple collapsibles at once
+
+To allow multiple items to be expanded at once, set `multiple` to `true`. This
+mode implicitly sets `collapsible` to `true` and ensures that each collapsible
+can be expanded.
+
+```jsx {3}
+const [state, send] = useMachine(
+  collapsible.machine({
+    multiple: true,
+  }),
+)
+```
+
+## Opening specific collapsibles
+
+To set the value of the collapsible(s) that should be opened initially, pass the
+`value` property to the machine function.
+
+```jsx {4,5,12}
+// for multiple collapsibles
+const [state, send] = useMachine(
+  collapsible.machine({
+    multiple: true,
+    value: ["home"],
+  }),
+)
+
+// for single collapsibles
+const [state, send] = useMachine(
+  collapsible.machine({
+    value: "home",
+  }),
+)
+```
+
+## Toggle each collapsible item
+
+To collapse an already expanded collapsible item by clicking on it, set the
+context's `collapsible` property to `true`.
+
+> Note: If `multiple` is `true`, we internally set `collapsible` to be `true`.
+
+```jsx {3}
+const [state, send] = useMachine(
+  collapsible.machine({
+    collapsible: true,
+  }),
+)
+```
+
+## Listening for changes
+
+When the collapsible value changes, the `onValueChange` callback is invoked.
+
+```jsx {3-6}
+const [state, send] = useMachine(
+  collapsible.machine({
+    onValueChange(details) {
+      // details => { value: string[] }
+      console.log("selected collapsible:", details.value)
+    },
+  }),
+)
+```
+
+## Disabling the entire collapsible
+
+You can disable the entire collapsible by passing `disabled` to the
+machine's context.
+
+When a collapsible is disabled, it is skipped from keyboard navigation and
+can't be interacted with.
+
+```jsx {3}
+const [state, send] = useMachine(
+  collapsible.machine({
+    disabled: true,
+  }),
+)
+```
+
+## Styling guide
+
+Earlier, we mentioned that each collapsible part has a `data-part` attribute
+added to them to select and style them in the DOM.
+
+### Open and closed state
+
+When a collapsible is expanded or collapsed, a `data-state` attribute is
+set on the root, trigger and content elements. This attribute is removed when it
+is closed.
+
+```css
+[data-part="root"][data-state="open|closed"] {
+  /* styles for the item is open or closed state */
+}
+
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for the item is open or closed state */
+}
+
+[data-part="content"][data-state="open|closed"] {
+  /* styles for the item is open or closed state */
+}
+```
+
+### Focused state
+
+When a collapsible's trigger is focused, a `data-focused` attribute is set
+on the item and content.
+
+```css
+[data-part="item"][data-focus] {
+  /* styles for the item's focus state */
+}
+
+[data-part="item-trigger"]:focus {
+  /* styles for the trigger's focus state */
+}
+
+[data-part="item-content"][data-focus] {
+  /* styles for the content's focus state */
+}
+```
+
+## Methods and Properties
+
+The collapsible's `api` exposes the following methods and properties:
+
+### Machine Context
+
+The collapsible machine exposes the following context properties:
+
+<ContextTable name="collapsible" />
+
+### Machine API
+
+The collapsible `api` exposes the following methods:
+
+<ApiTable name="collapsible" />
