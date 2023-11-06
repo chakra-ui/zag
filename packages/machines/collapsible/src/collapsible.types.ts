@@ -50,6 +50,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   collapseAnimationName?: string
   /**
    * Duration of the animation in milliseconds
+   * @default 300
    */
   animationDuration: number
 }
@@ -126,15 +127,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the collapsible is disabled
    */
-  isDisabled: boolean | undefined
+  isDisabled: boolean
   /**
    * Whether the checkbox is focused
    */
-  isFocused: boolean | undefined
+  isFocused: boolean
   /**
    * Whether the checkbox is animated
    */
-  isAnimated: boolean | undefined
+  isAnimated: boolean
   /**
    * Function to open the collapsible.
    */

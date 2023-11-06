@@ -48,73 +48,16 @@ collapsible machine in your project 🔥
 
 <CodeSnippet id="collapsible/usage.mdx" />
 
-You may have noticed we wrapped each collapsible trigger within an `h3`. This is
-recommended by the
-[WAI-ARIA](https://www.w3.org/TR/wai-aria-practices-1.1/#wai-aria-roles-states-and-properties)
-design pattern to ensure the collapsible has the appropriate hierarchy on the
-page.
-
-## Opening multiple collapsibles at once
-
-To allow multiple items to be expanded at once, set `multiple` to `true`. This
-mode implicitly sets `collapsible` to `true` and ensures that each collapsible
-can be expanded.
-
-```jsx {3}
-const [state, send] = useMachine(
-  collapsible.machine({
-    multiple: true,
-  }),
-)
-```
-
-## Opening specific collapsibles
-
-To set the value of the collapsible(s) that should be opened initially, pass the
-`value` property to the machine function.
-
-```jsx {4,5,12}
-// for multiple collapsibles
-const [state, send] = useMachine(
-  collapsible.machine({
-    multiple: true,
-    value: ["home"],
-  }),
-)
-
-// for single collapsibles
-const [state, send] = useMachine(
-  collapsible.machine({
-    value: "home",
-  }),
-)
-```
-
-## Toggle each collapsible item
-
-To collapse an already expanded collapsible item by clicking on it, set the
-context's `collapsible` property to `true`.
-
-> Note: If `multiple` is `true`, we internally set `collapsible` to be `true`.
-
-```jsx {3}
-const [state, send] = useMachine(
-  collapsible.machine({
-    collapsible: true,
-  }),
-)
-```
-
 ## Listening for changes
 
-When the collapsible value changes, the `onValueChange` callback is invoked.
+When the collapsible state changes, the `onOpenChange` callback is invoked.
 
 ```jsx {3-6}
 const [state, send] = useMachine(
   collapsible.machine({
-    onValueChange(details) {
-      // details => { value: string[] }
-      console.log("selected collapsible:", details.value)
+    onOpenChange(details) {
+      // details => { open: boolean }
+      console.log("collapsible open:", details.open)
     },
   }),
 )
@@ -122,16 +65,37 @@ const [state, send] = useMachine(
 
 ## Disabling the entire collapsible
 
-You can disable the entire collapsible by passing `disabled` to the
-machine's context.
+You can disable the entire collapsible by passing `disabled` to the machine's
+context.
 
-When a collapsible is disabled, it is skipped from keyboard navigation and
-can't be interacted with.
+When a collapsible is disabled, it is skipped from keyboard navigation and can't
+be interacted with.
 
 ```jsx {3}
 const [state, send] = useMachine(
   collapsible.machine({
     disabled: true,
+  }),
+)
+```
+
+## Animating the collapsible
+
+You can animate the collapsible by passing `animate` to the machine's context.
+
+When a collapsible is animated, you need to pass the `expandAnimationName` and
+`collapseAnimationName` which are names of the keyframes you have in your CSS.
+
+You can also pass the `animationDuration` which is the duration of the animation
+in milliseconds (by default `300` milliseconds).
+
+```jsx {3-6}
+const [state, send] = useMachine(
+  collapsible.machine({
+    animate: true,
+    expandAnimationName: "slideDown",
+    collapseAnimationName: "slideUp",
+    animationDuration: 300,
   }),
 )
 ```
@@ -143,39 +107,39 @@ added to them to select and style them in the DOM.
 
 ### Open and closed state
 
-When a collapsible is expanded or collapsed, a `data-state` attribute is
-set on the root, trigger and content elements. This attribute is removed when it
-is closed.
+When a collapsible is expanded or collapsed, a `data-state` attribute is set on
+the root, trigger and content elements. This attribute is removed when it is
+closed.
 
 ```css
 [data-part="root"][data-state="open|closed"] {
-  /* styles for the item is open or closed state */
+  /* styles for the collapsible is open or closed state */
 }
 
 [data-part="trigger"][data-state="open|closed"] {
-  /* styles for the item is open or closed state */
+  /* styles for the collapsible is open or closed state */
 }
 
 [data-part="content"][data-state="open|closed"] {
-  /* styles for the item is open or closed state */
+  /* styles for the collapsible is open or closed state */
 }
 ```
 
 ### Focused state
 
-When a collapsible's trigger is focused, a `data-focused` attribute is set
-on the item and content.
+When a collapsible's trigger is focused, a `data-focused` attribute is set on
+the root, trigger and content.
 
 ```css
-[data-part="item"][data-focus] {
+[data-part="root"][data-focus] {
   /* styles for the item's focus state */
 }
 
-[data-part="item-trigger"]:focus {
-  /* styles for the trigger's focus state */
+[data-part="trigger"][data-focus] {
+  /* styles for the content's focus state */
 }
 
-[data-part="item-content"][data-focus] {
+[data-part="content"][data-focus] {
   /* styles for the content's focus state */
 }
 ```

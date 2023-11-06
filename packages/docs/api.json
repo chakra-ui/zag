@@ -305,6 +305,10 @@
         "type": "boolean",
         "description": "Whether the checkbox is focused"
       },
+      "isAnimated": {
+        "type": "boolean",
+        "description": "Whether the checkbox is animated"
+      },
       "open": {
         "type": "() => void",
         "description": "Function to open the collapsible."
@@ -330,6 +334,23 @@
       "open": {
         "type": "boolean",
         "description": "Whether the collapsible is open"
+      },
+      "animate": {
+        "type": "boolean",
+        "description": "Whether the collapsible is animated"
+      },
+      "expandAnimationName": {
+        "type": "string",
+        "description": "Name of the expand animation"
+      },
+      "collapseAnimationName": {
+        "type": "string",
+        "description": "Name of the collapse animation"
+      },
+      "animationDuration": {
+        "type": "number",
+        "description": "Duration of the animation in milliseconds",
+        "defaultValue": "300"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
