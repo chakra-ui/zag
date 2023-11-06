@@ -131,7 +131,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the checkbox is focused
    */
-  isFocused: boolean
+  isFocused: boolean | undefined
   /**
    * Whether the checkbox is animated
    */
