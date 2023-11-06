@@ -36,15 +36,41 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the collapsible is open
    */
   open: boolean
+  /**
+   * Whether the collapsible is animated
+   */
+  animate?: boolean
+  /**
+   * Name of the expand animation
+   */
+  expandAnimationName?: string
+  /**
+   * Name of the collapse animation
+   */
+  collapseAnimationName?: string
+  /**
+   * Duration of the animation in milliseconds
+   */
+  animationDuration: number
 }
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
   /**
    * Whether the collapsible is disabled
    */
   isDisabled: boolean
+  /**
+   * Whether the collapsible is open
+   */
+  isOpen: boolean
+  /**
+   * Whether the collapsible is animated
+   */
+  isAnimated: boolean
+  /**
+   * Duration of the collapsible animation, 0 if not animated
+   */
+  duration: number
 }>
 
 type PrivateContext = Context<{
@@ -63,12 +89,25 @@ type PrivateContext = Context<{
    * Whether the trigger is hovered
    */
   hovered?: boolean
+  /**
+   * @internal
+   * Whether the trigger is opening
+   */
+  opening?: boolean
+  /**
+   * @internal
+   * Whether the trigger is closing
+   */
+  closing?: boolean
 }>
+
+export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
 export type MachineState = {
-  value: "open" | "closed"
+  value: "open" | "closed" | "opening" | "closing"
+  tags: "hidden"
 }
 
 export type State = S.State<MachineContext, MachineState>
@@ -92,6 +131,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Whether the checkbox is focused
    */
   isFocused: boolean | undefined
+  /**
+   * Whether the checkbox is animated
+   */
+  isAnimated: boolean | undefined
   /**
    * Function to open the collapsible.
    */

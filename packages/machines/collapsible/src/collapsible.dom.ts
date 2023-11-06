@@ -1,7 +1,9 @@
 import { createScope } from "@zag-js/dom-query"
+import { styleGetterFns } from "./collapsible.style"
 import type { MachineContext as Ctx } from "./collapsible.types"
 
 export const dom = createScope({
+  ...styleGetterFns,
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `collapsible:${ctx.id}`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `collapsible:${ctx.id}:content`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `collapsible:${ctx.id}:trigger`,

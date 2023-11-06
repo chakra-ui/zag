@@ -12,11 +12,17 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         open: false,
         disabled: false,
+        animate: false,
+        expandAnimationName: "",
+        collapseAnimationName: "",
+        animationDuration: 300,
         ...ctx,
       },
 
       computed: {
         isDisabled: (ctx) => !!ctx.disabled,
+        isAnimated: (ctx) => !!ctx.animate,
+        duration: (ctx) => (ctx.isAnimated ? ctx.animationDuration : 0),
       },
 
       on: {
@@ -27,24 +33,44 @@ export function machine(userContext: UserDefinedContext) {
 
       states: {
         closed: {
+          tags: ["hidden"],
           on: {
             TOGGLE: {
-              target: "open",
-              actions: ["invokeOnOpen"],
+              target: "opening",
+              actions: ["invokeOnOpening"],
             },
             OPEN: {
+              target: "opening",
+              actions: ["invokeOnOpening"],
+            },
+          },
+        },
+
+        opening: {
+          after: {
+            ANIMATION_DELAY: {
               target: "open",
               actions: ["invokeOnOpen"],
             },
           },
         },
+
         open: {
           on: {
             TOGGLE: {
-              target: "closed",
-              actions: ["invokeOnClose"],
+              target: "closing",
+              actions: ["invokeOnClosing"],
             },
             CLOSE: {
+              target: "closing",
+              actions: ["invokeOnClosing"],
+            },
+          },
+        },
+
+        closing: {
+          after: {
+            ANIMATION_DELAY: {
               target: "closed",
               actions: ["invokeOnClose"],
             },
@@ -53,16 +79,30 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
+      delays: {
+        ANIMATION_DELAY: (ctx) => ctx.duration,
+      },
+
       guards: {},
       actions: {
         setContext(ctx, evt) {
           Object.assign(ctx, evt.context)
         },
+        invokeOnOpening: (ctx) => {
+          ctx.opening = true
+        },
         invokeOnOpen: (ctx) => {
           ctx.onOpenChange?.({ open: true })
+          ctx.open = true
+          ctx.opening = false
+        },
+        invokeOnClosing: (ctx) => {
+          ctx.closing = true
         },
         invokeOnClose: (ctx) => {
           ctx.onOpenChange?.({ open: false })
+          ctx.open = false
+          ctx.closing = false
         },
       },
     },

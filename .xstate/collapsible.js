@@ -25,12 +25,21 @@ const fetchMachine = createMachine({
   },
   states: {
     closed: {
+      tags: ["hidden"],
       on: {
         TOGGLE: {
-          target: "open",
-          actions: ["invokeOnOpen"]
+          target: "opening",
+          actions: ["invokeOnOpening"]
         },
         OPEN: {
+          target: "opening",
+          actions: ["invokeOnOpening"]
+        }
+      }
+    },
+    opening: {
+      after: {
+        ANIMATION_DELAY: {
           target: "open",
           actions: ["invokeOnOpen"]
         }
@@ -39,10 +48,18 @@ const fetchMachine = createMachine({
     open: {
       on: {
         TOGGLE: {
-          target: "closed",
-          actions: ["invokeOnClose"]
+          target: "closing",
+          actions: ["invokeOnClosing"]
         },
         CLOSE: {
+          target: "closing",
+          actions: ["invokeOnClosing"]
+        }
+      }
+    },
+    closing: {
+      after: {
+        ANIMATION_DELAY: {
           target: "closed",
           actions: ["invokeOnClose"]
         }
