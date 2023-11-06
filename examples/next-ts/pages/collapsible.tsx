@@ -38,27 +38,6 @@ export default function Page() {
         </div>
       </main>
 
-      <style>
-        {`@keyframes slideDown {
-            from {
-              height: 0;
-            }
-            to {
-              height: 100%;
-            }
-          }
-
-          @keyframes slideUp {
-            from {
-              height: 100%;
-            }
-            to {
-              height: 0;
-            }
-          }
-        `}
-      </style>
-
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>
