@@ -106,6 +106,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
       dir: state.context.dir,
+      "aria-controls": dom.getContentId(state.context),
       "aria-labelledby": dom.getLabelId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-readonly": dataAttr(state.context.readOnly),

@@ -585,6 +585,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       "data-placement": currentPlacement,
       "aria-label": isOpen ? "Close calendar" : "Open calendar",
+      "aria-controls": dom.getContentId(state.context),
       "data-state": isOpen ? "open" : "closed",
       "aria-haspopup": "grid",
       disabled,
