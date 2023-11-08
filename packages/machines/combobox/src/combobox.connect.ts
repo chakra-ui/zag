@@ -309,11 +309,6 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (itemState.isDisabled || isContextMenuEvent(event)) return
           send({ type: "ITEM.CLICK", src: "pointerup", value })
         },
-        onAuxClick(event) {
-          if (itemState.isDisabled || isContextMenuEvent(event)) return
-          event.preventDefault()
-          send({ type: "ITEM.CLICK", src: "auxclick", value })
-        },
       })
     },
 
