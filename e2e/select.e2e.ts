@@ -1,5 +1,5 @@
 import { expect, type Locator, test } from "@playwright/test"
-import { a11y, controls, isInViewport, part, pointer, repeat } from "./__utils"
+import { a11y, controls, isInViewport, part, pointer, repeat } from "./_utils"
 
 const label = part("label")
 const trigger = part("trigger")

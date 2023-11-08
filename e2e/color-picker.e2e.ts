@@ -1,5 +1,5 @@
 import { test as base, expect, type Locator, type Page } from "@playwright/test"
-import { a11y, clickOutside, part } from "./__utils"
+import { a11y, clickOutside, part } from "./_utils"
 
 /* -----------------------------------------------------------------------------
  * Setup

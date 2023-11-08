@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { testid } from "./__utils"
+import { testid } from "./_utils"
 
 const item = (id: string) => ({
   trigger: testid(id + "-trigger"),

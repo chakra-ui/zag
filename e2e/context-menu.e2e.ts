@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test"
-import { part, repeat } from "./__utils"
+import { part, repeat } from "./_utils"
 
 const trigger = part("context-trigger")
 const menu = part("content")

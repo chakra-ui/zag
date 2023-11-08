@@ -1,5 +1,5 @@
 import { expect, type Locator, test } from "@playwright/test"
-import { a11y, controls, isInViewport, repeat, testid } from "./__utils"
+import { a11y, controls, isInViewport, repeat, testid } from "./_utils"
 
 const input = testid("input")
 const trigger = testid("trigger")

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { part, a11y, rect } from "./__utils"
+import { part, a11y, rect } from "./_utils"
 
 const output = part("value-text")
 const thumb = part("thumb")

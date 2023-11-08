@@ -1,5 +1,5 @@
 import { expect, test, type Locator } from "@playwright/test"
-import { clickViz, paste, testid } from "./__utils"
+import { clickViz, paste, testid } from "./_utils"
 
 const input = testid("input")
 
