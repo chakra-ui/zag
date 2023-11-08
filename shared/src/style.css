@@ -345,6 +345,7 @@ a[aria-current="page"] {
 }
 
 [data-scope="menu"][data-part="item"],
+[data-scope="menu"][data-part="trigger-item"],
 [data-scope="menu"][data-part="option-item"] {
   all: unset;
   font-size: 14px;
@@ -361,6 +362,7 @@ a[aria-current="page"] {
 }
 
 [data-scope="menu"][data-part="item"][data-highlighted],
+[data-scope="menu"][data-part="trigger-item"][data-highlighted],
 [data-scope="menu"][data-part="option-item"][data-highlighted] {
   outline: none;
   background-color: rgb(110, 86, 207);
@@ -368,6 +370,7 @@ a[aria-current="page"] {
 }
 
 [data-scope="menu"][data-part="item"][data-disabled],
+[data-scope="menu"][data-part="trigger-item"][data-disabled],
 [data-scope="menu"][data-part="option-item"][data-disabled] {
   opacity: 0.4;
 }
