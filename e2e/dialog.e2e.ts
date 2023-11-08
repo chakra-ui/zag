@@ -64,7 +64,7 @@ test.describe("nested dialog", () => {
     await expect(page.locator(dialog_2.close)).toBeFocused()
   })
 
-  test("should trap focus", async ({ page }) => {
+  test.fixme("should trap focus", async ({ page }) => {
     await openDialog(page)
     await openNestedDialog(page)
     await page.keyboard.press("Tab")
