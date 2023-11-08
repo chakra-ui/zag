@@ -15,12 +15,9 @@ export const has = <T>(v: T[], t: any): boolean => v.indexOf(t) !== -1
 
 export const add = <T>(v: T[], ...items: T[]): T[] => v.concat(items)
 
-export const remove = <T>(v: T[], item: T): T[] => removeAt(v, v.indexOf(item))
+export const remove = <T>(v: T[], item: T): T[] => v.filter((t) => t !== item)
 
-export const removeAt = <T>(v: T[], i: number): T[] => {
-  if (i > -1) v.splice(i, 1)
-  return v
-}
+export const removeAt = <T>(v: T[], i: number): T[] => v.filter((_, idx) => idx !== i)
 
 export const addOrRemove = <T>(v: T[], item: T): T[] => {
   if (has(v, item)) return remove(v, item)
