@@ -126,7 +126,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getThumbProps(props) {
-      const { index } = props
+      const { index = 0 } = props
 
       const value = sliderValue[index]
       const range = getRangeAtIndex(state.context, index)
@@ -217,7 +217,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getHiddenInputProps(props) {
-      const { index } = props
+      const { index = 0 } = props
       return normalize.input({
         name: `${state.context.name}[${index}]`,
         form: state.context.form,

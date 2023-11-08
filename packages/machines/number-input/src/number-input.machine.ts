@@ -93,10 +93,13 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         idle: {
           on: {
-            "TRIGGER.PRESS_DOWN": {
-              target: "before:spin",
-              actions: ["focusInput", "invokeOnFocus", "setHint"],
-            },
+            "TRIGGER.PRESS_DOWN": [
+              { guard: "isTouchPointer", target: "before:spin", actions: ["setHint"] },
+              {
+                target: "before:spin",
+                actions: ["focusInput", "invokeOnFocus", "setHint"],
+              },
+            ],
             "SCRUBBER.PRESS_DOWN": {
               target: "scrubbing",
               actions: ["focusInput", "invokeOnFocus", "setHint", "setCursorPoint"],
@@ -110,13 +113,12 @@ export function machine(userContext: UserDefinedContext) {
 
         focused: {
           tags: "focus",
-          entry: "focusInput",
           activities: "attachWheelListener",
           on: {
-            "TRIGGER.PRESS_DOWN": {
-              target: "before:spin",
-              actions: ["focusInput", "setHint"],
-            },
+            "TRIGGER.PRESS_DOWN": [
+              { guard: "isTouchPointer", target: "before:spin", actions: ["setHint"] },
+              { target: "before:spin", actions: ["focusInput", "setHint"] },
+            ],
             "SCRUBBER.PRESS_DOWN": {
               target: "scrubbing",
               actions: ["focusInput", "setHint", "setCursorPoint"],
@@ -170,10 +172,10 @@ export function machine(userContext: UserDefinedContext) {
             },
           },
           on: {
-            "TRIGGER.PRESS_UP": {
-              target: "focused",
-              actions: "clearHint",
-            },
+            "TRIGGER.PRESS_UP": [
+              { guard: "isTouchPointer", target: "focused", actions: "clearHint" },
+              { target: "focused", actions: ["focusInput", "clearHint"] },
+            ],
           },
         },
 
@@ -195,17 +197,19 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "TRIGGER.PRESS_UP": {
               target: "focused",
-              actions: "clearHint",
+              actions: ["focusInput", "clearHint"],
             },
           },
         },
 
         scrubbing: {
           tags: "focus",
-          exit: "clearCursorPoint",
           activities: ["activatePointerLock", "trackMousemove", "setupVirtualCursor", "preventTextSelection"],
           on: {
-            "SCRUBBER.POINTER_UP": "focused",
+            "SCRUBBER.POINTER_UP": {
+              target: "focused",
+              actions: ["focusInput", "clearCursorPoint"],
+            },
             "SCRUBBER.POINTER_MOVE": [
               {
                 guard: "isIncrementHint",
@@ -234,6 +238,7 @@ export function machine(userContext: UserDefinedContext) {
         isInRange: (ctx) => !ctx.isOutOfRange,
         isDecrementHint: (ctx, evt) => (evt.hint ?? ctx.hint) === "decrement",
         isIncrementHint: (ctx, evt) => (evt.hint ?? ctx.hint) === "increment",
+        isTouchPointer: (_ctx, evt) => evt.pointerType === "touch",
       },
 
       activities: {

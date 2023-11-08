@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "menu",
-  initial: "idle",
+  initial: ctx.open ? "open" : "idle",
   context: {
     "!isSubmenu": false,
     "isSubmenu": false,

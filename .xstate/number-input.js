@@ -13,10 +13,13 @@ const fetchMachine = createMachine({
   id: "number-input",
   initial: "idle",
   context: {
+    "isTouchPointer": false,
+    "isTouchPointer": false,
     "clampValueOnBlur && !isInRange": false,
     "isIncrementHint": false,
     "isDecrementHint": false,
     "isInRange && spinOnPress": false,
+    "isTouchPointer": false,
     "isIncrementHint": false,
     "isDecrementHint": false
   },
@@ -44,10 +47,14 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        "TRIGGER.PRESS_DOWN": {
+        "TRIGGER.PRESS_DOWN": [{
+          cond: "isTouchPointer",
+          target: "before:spin",
+          actions: ["setHint"]
+        }, {
           target: "before:spin",
           actions: ["focusInput", "invokeOnFocus", "setHint"]
-        },
+        }],
         "SCRUBBER.PRESS_DOWN": {
           target: "scrubbing",
           actions: ["focusInput", "invokeOnFocus", "setHint", "setCursorPoint"]
@@ -60,13 +67,16 @@ const fetchMachine = createMachine({
     },
     focused: {
       tags: "focus",
-      entry: "focusInput",
       activities: "attachWheelListener",
       on: {
-        "TRIGGER.PRESS_DOWN": {
+        "TRIGGER.PRESS_DOWN": [{
+          cond: "isTouchPointer",
+          target: "before:spin",
+          actions: ["setHint"]
+        }, {
           target: "before:spin",
           actions: ["focusInput", "setHint"]
-        },
+        }],
         "SCRUBBER.PRESS_DOWN": {
           target: "scrubbing",
           actions: ["focusInput", "setHint", "setCursorPoint"]
@@ -119,10 +129,14 @@ const fetchMachine = createMachine({
         }
       },
       on: {
-        "TRIGGER.PRESS_UP": {
+        "TRIGGER.PRESS_UP": [{
+          cond: "isTouchPointer",
           target: "focused",
           actions: "clearHint"
-        }
+        }, {
+          target: "focused",
+          actions: ["focusInput", "clearHint"]
+        }]
       }
     },
     spinning: {
@@ -135,16 +149,18 @@ const fetchMachine = createMachine({
       on: {
         "TRIGGER.PRESS_UP": {
           target: "focused",
-          actions: "clearHint"
+          actions: ["focusInput", "clearHint"]
         }
       }
     },
     scrubbing: {
       tags: "focus",
-      exit: "clearCursorPoint",
       activities: ["activatePointerLock", "trackMousemove", "setupVirtualCursor", "preventTextSelection"],
       on: {
-        "SCRUBBER.POINTER_UP": "focused",
+        "SCRUBBER.POINTER_UP": {
+          target: "focused",
+          actions: ["focusInput", "clearCursorPoint"]
+        },
         "SCRUBBER.POINTER_MOVE": [{
           cond: "isIncrementHint",
           actions: ["increment", "setCursorPoint"]
@@ -168,6 +184,7 @@ const fetchMachine = createMachine({
     CHANGE_INTERVAL: 50
   },
   guards: {
+    "isTouchPointer": ctx => ctx["isTouchPointer"],
     "clampValueOnBlur && !isInRange": ctx => ctx["clampValueOnBlur && !isInRange"],
     "isIncrementHint": ctx => ctx["isIncrementHint"],
     "isDecrementHint": ctx => ctx["isDecrementHint"],

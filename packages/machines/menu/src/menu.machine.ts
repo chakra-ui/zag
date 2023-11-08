@@ -16,7 +16,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "menu",
-      initial: "idle",
+      initial: ctx.open ? "open" : "idle",
       context: {
         highlightedId: null,
         hoverId: null,
@@ -46,6 +46,7 @@ export function machine(userContext: UserDefinedContext) {
       watch: {
         isSubmenu: "setSubmenuPlacement",
         anchorPoint: "reposition",
+        open: "toggleVisibility",
       },
 
       on: {
@@ -551,6 +552,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnClose(ctx) {
           ctx.onOpenChange?.({ open: false })
+        },
+        toggleVisibility(ctx, _evt, { send }) {
+          send({ type: ctx.open ? "OPEN" : "CLOSE" })
         },
       },
     },

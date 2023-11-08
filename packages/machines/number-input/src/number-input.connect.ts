@@ -1,5 +1,5 @@
 import { getEventPoint, getEventStep, getNativeEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, isHTMLElement } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import { roundToDevicePixel } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./number-input.anatomy"
@@ -176,16 +176,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-controls": dom.getInputId(state.context),
       onPointerDown(event) {
         if (isDecrementDisabled || !isLeftClick(event)) return
+        send({ type: "TRIGGER.PRESS_DOWN", hint: "decrement", pointerType: event.pointerType })
         if (event.pointerType === "mouse") {
-          send({ type: "TRIGGER.PRESS_DOWN", hint: "decrement" })
-          return event.preventDefault()
+          event.preventDefault()
         }
-        if (isHTMLElement(event.target)) {
-          event.target?.focus()
+        if (event.pointerType === "touch") {
+          event.currentTarget?.focus({ preventScroll: true })
         }
       },
-      onPointerUp() {
-        send({ type: "TRIGGER.PRESS_UP", hint: "decrement" })
+      onPointerUp(event) {
+        send({ type: "TRIGGER.PRESS_UP", hint: "decrement", pointerType: event.pointerType })
       },
       onPointerLeave() {
         if (isDecrementDisabled) return
@@ -205,19 +205,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-controls": dom.getInputId(state.context),
       onPointerDown(event) {
         if (isIncrementDisabled || !isLeftClick(event)) return
+        send({ type: "TRIGGER.PRESS_DOWN", hint: "increment", pointerType: event.pointerType })
         if (event.pointerType === "mouse") {
-          send({ type: "TRIGGER.PRESS_DOWN", hint: "increment" })
-          return event.preventDefault()
+          event.preventDefault()
         }
-        if (isHTMLElement(event.target)) {
-          event.target?.focus()
+        if (event.pointerType === "touch") {
+          event.currentTarget?.focus({ preventScroll: true })
         }
       },
-      onPointerUp() {
-        send({ type: "TRIGGER.PRESS_UP", hint: "increment" })
+      onPointerUp(event) {
+        send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType })
       },
-      onPointerLeave() {
-        send({ type: "TRIGGER.PRESS_UP", hint: "increment" })
+      onPointerLeave(event) {
+        send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType })
       },
     }),
 

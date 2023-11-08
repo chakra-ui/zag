@@ -573,7 +573,9 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           const inputEl = dom.getInputEl(ctx)
           if (!ctx.autoComplete || !inputEl || !KEYDOWN_EVENT_REGEX.test(evt.type)) return
           const valueText = ctx.collection.valueToString(ctx.highlightedValue)
-          inputEl.value = valueText || ctx.inputValue
+          raf(() => {
+            inputEl.value = valueText || ctx.inputValue
+          })
         },
         setCollection(ctx, evt) {
           ctx.collection = evt.value

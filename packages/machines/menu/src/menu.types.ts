@@ -78,6 +78,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    */
   "aria-label"?: string
   /**
+   * Whether the menu is open
+   */
+  open?: boolean
+  /**
    * Function called when the menu opens or closes
    */
   onOpenChange?: (details: OpenChangeDetails) => void
