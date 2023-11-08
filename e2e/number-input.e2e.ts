@@ -81,7 +81,7 @@ test.describe("number input", () => {
     test("should change for 0.1 steps", async ({ page }) => {
       await controls(page).num("step", "0.1")
 
-      await page.locator(input).pressSequentially("0.10")
+      await page.locator(input).pressSequentially("0.10", { delay: 20 })
       await page.keyboard.press("Control+ArrowUp")
       await expect(page.locator(input)).toHaveValue("0.11")
       await page.keyboard.press("Control+ArrowDown")
@@ -106,7 +106,7 @@ test.describe("number input", () => {
     })
 
     test("should spin value on decrement long press", async ({ page }) => {
-      await page.type(input, "20")
+      await page.locator(input).pressSequentially("20")
 
       const dec_btn = page.locator(dec)
 
