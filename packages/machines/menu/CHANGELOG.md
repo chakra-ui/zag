@@ -1,5 +1,29 @@
 # @zag-js/menu
 
+## 0.28.0
+
+### Minor Changes
+
+- [`4378585c`](https://github.com/chakra-ui/zag/commit/4378585c331472ff510f81509cc00fa39bbd9663) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for controlling menu's open state from context
+
+### Patch Changes
+
+- [`8e2b4303`](https://github.com/chakra-ui/zag/commit/8e2b43031cb9f81957fd9245b971606faa4979dd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue issue where link is not clickable on mobile
+
+- Updated dependencies [[`e433b3ee`](https://github.com/chakra-ui/zag/commit/e433b3ee5b49a1099b8be2df99a4a5056fc1ecfd)]:
+  - @zag-js/utils@0.28.0
+  - @zag-js/core@0.28.0
+  - @zag-js/dismissable@0.28.0
+  - @zag-js/popper@0.28.0
+  - @zag-js/anatomy@0.28.0
+  - @zag-js/types@0.28.0
+  - @zag-js/dom-event@0.28.0
+  - @zag-js/dom-query@0.28.0
+  - @zag-js/mutation-observer@0.28.0
+  - @zag-js/rect-utils@0.28.0
+
 ## 0.27.1
 
 ### Patch Changes

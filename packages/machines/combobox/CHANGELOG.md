@@ -1,5 +1,26 @@
 # @zag-js/combobox
 
+## 0.28.0
+
+### Patch Changes
+
+- [#993](https://github.com/chakra-ui/zag/pull/993)
+  [`d8270022`](https://github.com/chakra-ui/zag/commit/d827002272e9ab70631438f08d97195d47730ff4) Thanks
+  [@niksy](https://github.com/niksy)! - Fix autocomplete input behavior not working in Vue version
+
+- Updated dependencies [[`e433b3ee`](https://github.com/chakra-ui/zag/commit/e433b3ee5b49a1099b8be2df99a4a5056fc1ecfd)]:
+  - @zag-js/utils@0.28.0
+  - @zag-js/core@0.28.0
+  - @zag-js/dismissable@0.28.0
+  - @zag-js/popper@0.28.0
+  - @zag-js/anatomy@0.28.0
+  - @zag-js/types@0.28.0
+  - @zag-js/aria-hidden@0.28.0
+  - @zag-js/collection@0.28.0
+  - @zag-js/dom-event@0.28.0
+  - @zag-js/dom-query@0.28.0
+  - @zag-js/mutation-observer@0.28.0
+
 ## 0.27.1
 
 ### Patch Changes

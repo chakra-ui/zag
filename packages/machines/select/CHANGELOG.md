@@ -1,5 +1,28 @@
 # @zag-js/select
 
+## 0.28.0
+
+### Patch Changes
+
+- [#954](https://github.com/chakra-ui/zag/pull/954)
+  [`19b182ca`](https://github.com/chakra-ui/zag/commit/19b182ca73e97582938ae176ea16a1f191a7a505) Thanks
+  [@acd02](https://github.com/acd02)! - fix: select machine
+
+- Updated dependencies [[`e433b3ee`](https://github.com/chakra-ui/zag/commit/e433b3ee5b49a1099b8be2df99a4a5056fc1ecfd)]:
+  - @zag-js/utils@0.28.0
+  - @zag-js/core@0.28.0
+  - @zag-js/dismissable@0.28.0
+  - @zag-js/popper@0.28.0
+  - @zag-js/anatomy@0.28.0
+  - @zag-js/types@0.28.0
+  - @zag-js/collection@0.28.0
+  - @zag-js/dom-event@0.28.0
+  - @zag-js/dom-query@0.28.0
+  - @zag-js/form-utils@0.28.0
+  - @zag-js/mutation-observer@0.28.0
+  - @zag-js/tabbable@0.28.0
+  - @zag-js/visually-hidden@0.28.0
+
 ## 0.27.1
 
 ### Patch Changes
