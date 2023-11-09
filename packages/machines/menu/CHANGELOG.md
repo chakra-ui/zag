@@ -1,5 +1,21 @@
 # @zag-js/menu
 
+## 0.28.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.28.1
+  - @zag-js/core@0.28.1
+  - @zag-js/types@0.28.1
+  - @zag-js/utils@0.28.1
+  - @zag-js/dismissable@0.28.1
+  - @zag-js/dom-event@0.28.1
+  - @zag-js/dom-query@0.28.1
+  - @zag-js/mutation-observer@0.28.1
+  - @zag-js/popper@0.28.1
+  - @zag-js/rect-utils@0.28.1
+
 ## 0.28.0
 
 ### Minor Changes
