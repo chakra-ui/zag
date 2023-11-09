@@ -1,5 +1,26 @@
 # @zag-js/date-picker
 
+## 0.28.0
+
+### Patch Changes
+
+- [`4671ee78`](https://github.com/chakra-ui/zag/commit/4671ee7805e49d2cfa89845b17251dd54718eaec) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `aria-controls` was not added to trigger
+
+- Updated dependencies [[`e433b3ee`](https://github.com/chakra-ui/zag/commit/e433b3ee5b49a1099b8be2df99a4a5056fc1ecfd)]:
+  - @zag-js/utils@0.28.0
+  - @zag-js/core@0.28.0
+  - @zag-js/dismissable@0.28.0
+  - @zag-js/popper@0.28.0
+  - @zag-js/anatomy@0.28.0
+  - @zag-js/types@0.28.0
+  - @zag-js/date-utils@0.28.0
+  - @zag-js/dom-event@0.28.0
+  - @zag-js/dom-query@0.28.0
+  - @zag-js/form-utils@0.28.0
+  - @zag-js/live-region@0.28.0
+  - @zag-js/text-selection@0.28.0
+
 ## 0.27.1
 
 ### Patch Changes

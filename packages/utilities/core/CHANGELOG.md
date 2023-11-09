@@ -1,5 +1,13 @@
 # @zag-js/utils
 
+## 0.28.0
+
+### Patch Changes
+
+- [`e433b3ee`](https://github.com/chakra-ui/zag/commit/e433b3ee5b49a1099b8be2df99a4a5056fc1ecfd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `remove` and `removeAt` utilities doesn't triger a
+  context update
+
 ## 0.27.1
 
 ## 0.27.0

@@ -1,5 +1,28 @@
 # @zag-js/number-input
 
+## 0.28.0
+
+### Patch Changes
+
+- [`7751c728`](https://github.com/chakra-ui/zag/commit/7751c728ccd9b909b1455345bc4919491e1bc3f2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where "." cannot be entered due to virtual dom timing
+  between frameworks
+
+- [`77478386`](https://github.com/chakra-ui/zag/commit/77478386ec219483c5c9f8acb4b629d8923ae547) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where decrement and increment triggers don't work for
+  touch devices
+
+- Updated dependencies [[`e433b3ee`](https://github.com/chakra-ui/zag/commit/e433b3ee5b49a1099b8be2df99a4a5056fc1ecfd)]:
+  - @zag-js/utils@0.28.0
+  - @zag-js/core@0.28.0
+  - @zag-js/anatomy@0.28.0
+  - @zag-js/types@0.28.0
+  - @zag-js/dom-event@0.28.0
+  - @zag-js/dom-query@0.28.0
+  - @zag-js/form-utils@0.28.0
+  - @zag-js/mutation-observer@0.28.0
+  - @zag-js/number-utils@0.28.0
+
 ## 0.27.1
 
 ### Patch Changes
