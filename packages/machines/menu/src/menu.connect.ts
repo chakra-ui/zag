@@ -88,12 +88,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (!isLeftClick(evt) || itemState.isDisabled) return
         const target = event.currentTarget
         send({ type: "ITEM_CLICK", src: "pointerup", target, id, closeOnSelect })
-      },
-      onAuxClick(event) {
-        if (itemState.isDisabled) return
-        event.preventDefault()
-        const target = event.currentTarget
-        send({ type: "ITEM_CLICK", src: "auxclick", target, id, closeOnSelect })
+        // Fix issue where links don't get clicked in pointerup on touch devices
+        if (target.matches("a[href]") && event.pointerType === "touch") {
+          target.click()
+        }
       },
     })
   }
@@ -373,13 +371,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             if (!isLeftClick(evt) || disabled) return
             const target = event.currentTarget
             send({ type: "ITEM_CLICK", src: "pointerup", target, option, closeOnSelect })
-            onCheckedChange?.(!itemState.isChecked)
-          },
-          onAuxClick(event) {
-            if (disabled) return
-            event.preventDefault()
-            const target = event.currentTarget
-            send({ type: "ITEM_CLICK", src: "auxclick", target, option, closeOnSelect })
             onCheckedChange?.(!itemState.isChecked)
           },
         }),

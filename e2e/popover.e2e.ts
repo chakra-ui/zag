@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test"
-import { testid, a11y, controls } from "./__utils"
+import { testid, a11y, controls } from "./_utils"
 
 const trigger = testid("popover-trigger")
 const content = testid("popover-content")

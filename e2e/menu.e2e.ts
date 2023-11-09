@@ -1,5 +1,5 @@
 import { expect, type Page, test } from "@playwright/test"
-import { controls, part } from "./__utils"
+import { controls, part } from "./_utils"
 
 const trigger = part("trigger")
 const menu = part("content")

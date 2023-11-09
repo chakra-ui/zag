@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { a11y, part, testid } from "./__utils"
+import { a11y, part, testid } from "./_utils"
 
 const prevButton = part("prev-trigger")
 const nextButton = part("next-trigger")

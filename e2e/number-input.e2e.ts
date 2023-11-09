@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { a11y, controls, testid, clickOutside, rect } from "./__utils"
+import { a11y, controls, testid, clickOutside, rect } from "./_utils"
 
 const input = testid("input")
 const inc = testid("inc-button")

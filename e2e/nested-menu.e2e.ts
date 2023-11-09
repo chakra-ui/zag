@@ -1,5 +1,5 @@
 import { expect, type Page, test } from "@playwright/test"
-import { clickOutside, rect, testid } from "./__utils"
+import { clickOutside, rect, testid } from "./_utils"
 
 const menu_1 = {
   trigger: testid("trigger"),

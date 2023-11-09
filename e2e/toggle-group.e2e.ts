@@ -1,5 +1,5 @@
 import { expect, type Page, test, type Locator } from "@playwright/test"
-import { a11y, controls, part } from "./__utils"
+import { a11y, controls, part } from "./_utils"
 
 class PageModel {
   constructor(public readonly page: Page) {}

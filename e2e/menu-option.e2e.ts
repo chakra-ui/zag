@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { testid } from "./__utils"
+import { testid } from "./_utils"
 
 const trigger = testid("trigger")
 const menu = testid("menu")

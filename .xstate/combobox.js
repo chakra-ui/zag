@@ -129,7 +129,7 @@ const fetchMachine = createMachine({
           actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
         }, {
           target: "interacting",
-          actions: ["highlightNextItem", "invokeOnOpen"]
+          actions: ["highlightFirstItem", "invokeOnOpen"]
         }],
         "INPUT.ARROW_DOWN+ALT": {
           target: "interacting",

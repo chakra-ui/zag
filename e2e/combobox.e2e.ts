@@ -1,5 +1,5 @@
 import { expect, type Locator, test } from "@playwright/test"
-import { a11y, controls, isInViewport, repeat, testid } from "./__utils"
+import { a11y, controls, isInViewport, repeat, testid } from "./_utils"
 
 const input = testid("input")
 const trigger = testid("trigger")
@@ -78,7 +78,7 @@ test.describe("combobox", () => {
     await expect(page.locator(content)).toBeHidden()
   })
 
-  test("[keyboard] on arrow down, open and highlight first enabled option", async ({ page }) => {
+  test("[keyboard / loop] on arrow down, open and highlight first enabled option", async ({ page }) => {
     await page.focus(input)
     await page.keyboard.press("ArrowDown")
     const option = page.locator(options).first()
@@ -86,7 +86,27 @@ test.describe("combobox", () => {
     await expectToBeHighlighted(option)
   })
 
-  test("[keyboard] on arrow up, open and highlight last enabled option", async ({ page }) => {
+  test("[keyboard / no-loop] on arrow down, open and highlight first enabled option", async ({ page }) => {
+    await controls(page).bool("loop", false)
+
+    await page.focus(input)
+    await page.keyboard.press("ArrowDown")
+    const option = page.locator(options).first()
+    await expect(page.locator(content)).toBeVisible()
+    await expectToBeHighlighted(option)
+  })
+
+  test("[keyboard / loop] on arrow up, open and highlight last enabled option", async ({ page }) => {
+    await page.focus(input)
+    await page.keyboard.press("ArrowUp")
+    const option = page.locator(options).last()
+    await expect(page.locator(content)).toBeVisible()
+    await expectToBeHighlighted(option)
+  })
+
+  test("[keyboard / no-loop] on arrow up, open and highlight last enabled option", async ({ page }) => {
+    await controls(page).bool("loop", false)
+
     await page.focus(input)
     await page.keyboard.press("ArrowUp")
     const option = page.locator(options).last()
@@ -137,11 +157,34 @@ test.describe("combobox", () => {
     await expectToBeHighlighted(option_els.first())
   })
 
+  test("[keyboard / arrowdown / no-loop]", async ({ page }) => {
+    await controls(page).bool("loop", false)
+
+    await page.type(input, "mal")
+
+    const option_els = page.locator(options)
+
+    await repeat(4, () => page.keyboard.press("ArrowDown"))
+
+    await expectToBeHighlighted(option_els.last())
+    await page.keyboard.press("ArrowDown")
+    await expectToBeHighlighted(option_els.last())
+  })
+
   test("[keyboard / arrowup / loop]", async ({ page }) => {
     await page.type(input, "mal")
     const option_els = page.locator(options)
     await page.keyboard.press("ArrowUp")
     await expectToBeHighlighted(option_els.last())
+  })
+
+  test("[keyboard / arrowup / no-loop]", async ({ page }) => {
+    await controls(page).bool("loop", false)
+
+    await page.type(input, "mal")
+    const option_els = page.locator(options)
+    await page.keyboard.press("ArrowUp")
+    await expectToBeHighlighted(option_els.first())
   })
 
   test("[pointer / open-on-click]", async ({ page }) => {

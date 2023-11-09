@@ -1,5 +1,24 @@
 # @zag-js/slider
 
+## 0.28.0
+
+### Patch Changes
+
+- [`2756577c`](https://github.com/chakra-ui/zag/commit/2756577c4f2a2629ec66a34d756fe27ff90aa806) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where slider thumb throws if index is not provided. We
+  now set `0` as the default index.
+
+- Updated dependencies [[`e433b3ee`](https://github.com/chakra-ui/zag/commit/e433b3ee5b49a1099b8be2df99a4a5056fc1ecfd)]:
+  - @zag-js/utils@0.28.0
+  - @zag-js/core@0.28.0
+  - @zag-js/anatomy@0.28.0
+  - @zag-js/types@0.28.0
+  - @zag-js/dom-event@0.28.0
+  - @zag-js/dom-query@0.28.0
+  - @zag-js/element-size@0.28.0
+  - @zag-js/form-utils@0.28.0
+  - @zag-js/numeric-range@0.28.0
+
 ## 0.27.1
 
 ### Patch Changes

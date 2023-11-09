@@ -1,5 +1,5 @@
 import { test } from "@playwright/test"
-import { a11y } from "./__utils"
+import { a11y } from "./_utils"
 
 test.describe("avatar", () => {
   test.beforeEach(async ({ page }) => {

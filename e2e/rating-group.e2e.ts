@@ -1,5 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test"
-import { a11y, controls as testControls, part, testid } from "./__utils"
+import { a11y, controls as testControls, part, testid } from "./_utils"
 
 const control = part("control")
 const hiddenInput = testid("hidden-input")

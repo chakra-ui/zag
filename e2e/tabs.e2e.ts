@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { a11y, testid } from "./__utils"
+import { a11y, testid } from "./_utils"
 
 const item = (id: string) => ({
   tab: testid(`${id}-tab`),

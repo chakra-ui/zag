@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { a11y, clickOutside, testid } from "./__utils"
+import { a11y, clickOutside, testid } from "./_utils"
 
 const input = testid("input")
 const preview = testid("preview")

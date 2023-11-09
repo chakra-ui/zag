@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { nativeInput, testid } from "./__utils"
+import { nativeInput, testid } from "./_utils"
 
 const first = testid("input-1")
 const second = testid("input-2")
