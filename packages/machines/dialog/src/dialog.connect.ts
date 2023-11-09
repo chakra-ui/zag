@@ -42,9 +42,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     positionerProps: normalize.element({
       ...parts.positioner.attrs,
       dir: state.context.dir,
-      hidden: !isOpen,
       id: dom.getPositionerId(state.context),
-      "data-state": isOpen ? "open" : "closed",
       style: {
         pointerEvents: isOpen ? undefined : "none",
       },
