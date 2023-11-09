@@ -13,7 +13,7 @@
   const options = ref(comboboxData)
 
   const collectionRef = computed(() =>
-    select.collection({
+    combobox.collection({
       items: options.value,
       itemToValue: (item) => item.code,
       itemToString: (item) => item.label,
