@@ -6,6 +6,24 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.28.0] - 2023-11-08
+
+### Fixed
+
+- **Menu**: Fix issue issue where link is not clickable on mobile
+- **Accordion**: Fix issue where `onValueChange` is not called when `multiple` is set to `true`
+- **NumberInput**
+  - Fix issue where "." cannot be entered due to virtual dom timing between frameworks
+  - Fix issue where decrement and increment triggers don't work for touch devices
+- **ColorPicker, DatePicker**: Fix issue where `aria-controls` was not added to trigger
+- **Combobox**: Fix autocomplete input behavior not working in Vue.js
+- **Select**: Fix issue where the `loop` property is not respected
+- **Slider**: Fix issue where slider thumb throws if index is not provided. We now set `0` as the default index.
+
+### Added
+
+- **Menu**: Add support for controlling menu's open state via the `open` context property
+
 ## [0.27.0] - 2023-10-30
 
 ### Fixed
