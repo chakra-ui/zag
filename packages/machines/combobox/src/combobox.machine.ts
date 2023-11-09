@@ -435,6 +435,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           ctx.currentPlacement = ctx.positioning.placement
           return getPlacement(controlEl, positionerEl, {
             ...ctx.positioning,
+            defer: true,
             onComplete(data) {
               ctx.currentPlacement = data.placement
             },
