@@ -1,5 +1,26 @@
 # @zag-js/combobox
 
+## 0.28.1
+
+### Patch Changes
+
+- [#950](https://github.com/chakra-ui/zag/pull/950)
+  [`8fb5e73a`](https://github.com/chakra-ui/zag/commit/8fb5e73a57e195b35c0554b4181bf7f42f558f4c) Thanks
+  [@srflp](https://github.com/srflp)! - Fix a case where item highlight was looping even though loop property was false
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.28.1
+  - @zag-js/core@0.28.1
+  - @zag-js/types@0.28.1
+  - @zag-js/aria-hidden@0.28.1
+  - @zag-js/collection@0.28.1
+  - @zag-js/utils@0.28.1
+  - @zag-js/dismissable@0.28.1
+  - @zag-js/dom-event@0.28.1
+  - @zag-js/dom-query@0.28.1
+  - @zag-js/mutation-observer@0.28.1
+  - @zag-js/popper@0.28.1
+
 ## 0.28.0
 
 ### Patch Changes

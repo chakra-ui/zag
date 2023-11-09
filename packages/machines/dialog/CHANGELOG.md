@@ -1,5 +1,25 @@
 # @zag-js/dialog
 
+## 0.28.1
+
+### Patch Changes
+
+- [`259f3584`](https://github.com/chakra-ui/zag/commit/259f3584d257de7c811dbb4b031fb563f2a7976d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where dialog positioner applied the `hidden` attribute
+  when closed leading to pre-mature exit of css animations applied to the dialog content.
+
+  > Only the backdrop and content should use the `hidden` attribute.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.28.1
+  - @zag-js/core@0.28.1
+  - @zag-js/types@0.28.1
+  - @zag-js/aria-hidden@0.28.1
+  - @zag-js/utils@0.28.1
+  - @zag-js/dismissable@0.28.1
+  - @zag-js/dom-query@0.28.1
+  - @zag-js/remove-scroll@0.28.1
+
 ## 0.28.0
 
 ### Patch Changes
