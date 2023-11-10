@@ -54,7 +54,7 @@ export function machine(ctx: Partial<UserDefinedContext>) {
           },
         },
         unmounted: {
-          entry: ["clearPrevAnimationName"],
+          entry: ["clearPrevAnimationName", "invokeOnExitComplete"],
           on: {
             MOUNT: "mounted",
           },
@@ -71,6 +71,7 @@ export function machine(ctx: Partial<UserDefinedContext>) {
       },
       actions: {
         invokeOnExitComplete(ctx) {
+          console.log("invokeOnExitComplete")
           ctx.onExitComplete?.()
         },
         setNode(ctx, evt) {
