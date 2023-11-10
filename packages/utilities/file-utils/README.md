@@ -5,9 +5,9 @@ JS File API utilities
 ## Installation
 
 ```sh
-yarn add  @zag-js/file-utils
+yarn add @zag-js/file-utils
 # or
-npm i  @zag-js/file-utils
+npm i @zag-js/file-utils
 ```
 
 ## Contribution

@@ -5,9 +5,9 @@ Core logic for the carousel widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/carousel
+yarn add @zag-js/carousel
 # or
-npm i  @zag-js/carousel
+npm i @zag-js/carousel
 ```
 
 ## Contribution

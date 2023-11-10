@@ -5,9 +5,9 @@ Core logic for the select widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/select
+yarn add @zag-js/select
 # or
-npm i  @zag-js/select
+npm i @zag-js/select
 ```
 
 ## Contribution

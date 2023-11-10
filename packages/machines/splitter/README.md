@@ -5,9 +5,9 @@ Core logic for the splitter widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/splitter
+yarn add @zag-js/splitter
 # or
-npm i  @zag-js/splitter
+npm i @zag-js/splitter
 ```
 
 ## Contribution

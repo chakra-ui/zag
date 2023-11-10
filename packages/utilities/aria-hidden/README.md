@@ -5,9 +5,9 @@ Hide targets from screen readers
 ## Installation
 
 ```sh
-yarn add  @zag-js/aria-hidden
+yarn add @zag-js/aria-hidden
 # or
-npm i  @zag-js/aria-hidden
+npm i @zag-js/aria-hidden
 ```
 
 ## Contribution

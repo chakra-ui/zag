@@ -5,9 +5,9 @@ Core logic for the tooltip widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/tooltip
+yarn add @zag-js/tooltip
 # or
-npm i  @zag-js/tooltip
+npm i @zag-js/tooltip
 ```
 
 ## Contribution

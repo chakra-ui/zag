@@ -3,9 +3,9 @@
 ## Installation
 
 ```sh
-yarn add  @zag-js/mutation-observer
+yarn add @zag-js/mutation-observer
 # or
-npm i  @zag-js/mutation-observer
+npm i @zag-js/mutation-observer
 ```
 
 ## Contribution

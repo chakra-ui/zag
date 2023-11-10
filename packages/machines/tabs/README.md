@@ -5,9 +5,9 @@ Core logic for the tabs widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/tabs
+yarn add @zag-js/tabs
 # or
-npm i  @zag-js/tabs
+npm i @zag-js/tabs
 ```
 
 ## Contribution

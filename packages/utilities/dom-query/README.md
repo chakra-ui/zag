@@ -5,9 +5,9 @@ The dom helper library for zag.js machines
 ## Installation
 
 ```sh
-yarn add  @zag-js/dom-query
+yarn add @zag-js/dom-query
 # or
-npm i  @zag-js/dom-query
+npm i @zag-js/dom-query
 ```
 
 ## Contribution

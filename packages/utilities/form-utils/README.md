@@ -3,9 +3,9 @@
 ## Installation
 
 ```sh
-yarn add  @zag-js/form-utils
+yarn add @zag-js/form-utils
 # or
-npm i  @zag-js/form-utils
+npm i @zag-js/form-utils
 ```
 
 ## Contribution

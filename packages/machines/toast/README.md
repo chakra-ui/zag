@@ -5,9 +5,9 @@ Core logic for the toast widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/toast
+yarn add @zag-js/toast
 # or
-npm i  @zag-js/toast
+npm i @zag-js/toast
 ```
 
 ## Contribution

@@ -5,9 +5,9 @@ Core logic for the hover-card widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/hover-card
+yarn add @zag-js/hover-card
 # or
-npm i  @zag-js/hover-card
+npm i @zag-js/hover-card
 ```
 
 ## Contribution

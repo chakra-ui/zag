@@ -5,9 +5,9 @@ Core logic for the combobox widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/combobox
+yarn add @zag-js/combobox
 # or
-npm i  @zag-js/combobox
+npm i @zag-js/combobox
 ```
 
 ## Contribution

@@ -5,9 +5,9 @@ Core logic for the accordion widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/accordion
+yarn add @zag-js/accordion
 # or
-npm i  @zag-js/accordion
+npm i @zag-js/accordion
 ```
 
 ## Contribution

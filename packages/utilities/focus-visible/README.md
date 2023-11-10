@@ -3,9 +3,9 @@
 ## Installation
 
 ```sh
-yarn add  @zag-js/focus-visible
+yarn add @zag-js/focus-visible
 # or
-npm i  @zag-js/focus-visible
+npm i @zag-js/focus-visible
 ```
 
 ## Contribution

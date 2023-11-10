@@ -5,9 +5,9 @@ Core logic for the radio widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/radio-group
+yarn add @zag-js/radio-group
 # or
-npm i  @zag-js/radio-group
+npm i @zag-js/radio-group
 ```
 
 ## Contribution

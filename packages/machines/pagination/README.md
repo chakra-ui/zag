@@ -5,9 +5,9 @@ Core logic for the pagination widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/pagination
+yarn add @zag-js/pagination
 # or
-npm i  @zag-js/pagination
+npm i @zag-js/pagination
 ```
 
 ## Contribution

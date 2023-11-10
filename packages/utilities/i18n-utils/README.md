@@ -5,9 +5,9 @@ Interationalization utilities for Zag.js
 ## Installation
 
 ```sh
-yarn add  @zag-js/i18n-utils
+yarn add @zag-js/i18n-utils
 # or
-npm i  @zag-js/i18n-utils
+npm i @zag-js/i18n-utils
 ```
 
 ## Contribution

@@ -3,9 +3,9 @@
 ## Installation
 
 ```sh
-yarn add  @zag-js/number
+yarn add @zag-js/number
 # or
-npm i  @zag-js/number
+npm i @zag-js/number
 ```
 
 ## Contribution

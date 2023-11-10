@@ -5,9 +5,9 @@ Core logic for the dialog widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/dialog
+yarn add @zag-js/dialog
 # or
-npm i  @zag-js/dialog
+npm i @zag-js/dialog
 ```
 
 ## Contribution

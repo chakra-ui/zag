@@ -3,9 +3,9 @@
 ## Installation
 
 ```sh
-yarn add  @zag-js/dismissable
+yarn add @zag-js/dismissable
 # or
-npm i  @zag-js/dismissable
+npm i @zag-js/dismissable
 ```
 
 ## Features

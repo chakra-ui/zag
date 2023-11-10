@@ -5,9 +5,9 @@ Core logic for the menu widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/menu
+yarn add @zag-js/menu
 # or
-npm i  @zag-js/menu
+npm i @zag-js/menu
 ```
 
 ## Contribution
