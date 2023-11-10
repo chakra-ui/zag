@@ -1,5 +1,30 @@
 # @zag-js/menu
 
+## 0.29.0
+
+### Minor Changes
+
+- [`b34c87f3`](https://github.com/chakra-ui/zag/commit/b34c87f30dd2803fa42551eac135b712814d661c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose more internal for better DX when building component
+  libraries.
+
+### Patch Changes
+
+- [`913c4543`](https://github.com/chakra-ui/zag/commit/913c45435300cc41b6d434e71a4002adfcfe12a8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where menu trigger could still work even when disabled.
+  This is an intermittent issue in react depending on the version used
+- Updated dependencies []:
+  - @zag-js/anatomy@0.29.0
+  - @zag-js/core@0.29.0
+  - @zag-js/types@0.29.0
+  - @zag-js/utils@0.29.0
+  - @zag-js/dismissable@0.29.0
+  - @zag-js/dom-event@0.29.0
+  - @zag-js/dom-query@0.29.0
+  - @zag-js/mutation-observer@0.29.0
+  - @zag-js/popper@0.29.0
+  - @zag-js/rect-utils@0.29.0
+
 ## 0.28.1
 
 ### Patch Changes

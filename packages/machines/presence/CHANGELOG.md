@@ -1,5 +1,17 @@
 # @zag-js/presence
 
+## 0.29.0
+
+### Patch Changes
+
+- [#1002](https://github.com/chakra-ui/zag/pull/1002)
+  [`c788ab92`](https://github.com/chakra-ui/zag/commit/c788ab92bb5125b64266330a4e43e340ad05f46d) Thanks
+  [@Omikorin](https://github.com/Omikorin)! - fix(presence): missing invoke on exit complete
+
+- Updated dependencies []:
+  - @zag-js/core@0.29.0
+  - @zag-js/types@0.29.0
+
 ## 0.28.1
 
 ### Patch Changes

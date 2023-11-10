@@ -1,5 +1,32 @@
 # @zag-js/combobox
 
+## 0.29.0
+
+### Minor Changes
+
+- [`b34c87f3`](https://github.com/chakra-ui/zag/commit/b34c87f30dd2803fa42551eac135b712814d661c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose more internal for better DX when building component
+  libraries.
+
+### Patch Changes
+
+- [`62eeec6b`](https://github.com/chakra-ui/zag/commit/62eeec6bc37e66536d676f926150d3c3cad4cf33) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where placement of the combobox positioner could be
+  incorrect when lazy mounted.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.29.0
+  - @zag-js/core@0.29.0
+  - @zag-js/types@0.29.0
+  - @zag-js/aria-hidden@0.29.0
+  - @zag-js/collection@0.29.0
+  - @zag-js/utils@0.29.0
+  - @zag-js/dismissable@0.29.0
+  - @zag-js/dom-event@0.29.0
+  - @zag-js/dom-query@0.29.0
+  - @zag-js/mutation-observer@0.29.0
+  - @zag-js/popper@0.29.0
+
 ## 0.28.1
 
 ### Patch Changes
