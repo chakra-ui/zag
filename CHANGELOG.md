@@ -6,6 +6,17 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.28.1] - 2023-11-09
+
+### Fixed
+
+- **Dialog**: Fix issue where dialog positioner applied the `hidden` attribute when closed leading to pre-mature exit of
+  css animations applied to the dialog content.
+
+  > Only the backdrop and content should use the `hidden` attribute.
+
+- **Combobox**: Fix a case where item highlight was looping even though loop property was false
+
 ## [0.28.0] - 2023-11-08
 
 ### Fixed
