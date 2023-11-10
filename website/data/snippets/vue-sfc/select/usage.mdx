@@ -4,7 +4,20 @@
   import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed, defineComponent, Teleport } from "vue"
 
-  const [state, send] = useMachine(select.machine({ id: "1" }))
+  const selectData = [
+    { label: "Nigeria", value: "NG" },
+    { label: "Japan", value: "JP" },
+    //...
+  ]
+
+  const [state, send] = useMachine(
+    select.machine({ 
+      id: "1",
+      collection: select.collection({
+        items: selectData,
+      }),
+    })
+  )
 
   const api = computed(() => select.connect(state.value, send, normalizeProps))
 </script>
