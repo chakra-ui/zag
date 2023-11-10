@@ -54,7 +54,7 @@ export function machine(ctx: Partial<UserDefinedContext>) {
           },
         },
         unmounted: {
-          entry: ["clearPrevAnimationName"],
+          entry: ["clearPrevAnimationName", "invokeOnExitComplete"],
           on: {
             MOUNT: "mounted",
           },

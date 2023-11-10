@@ -50,7 +50,7 @@ const fetchMachine = createMachine({
       }
     },
     unmounted: {
-      entry: ["clearPrevAnimationName"],
+      entry: ["clearPrevAnimationName", "invokeOnExitComplete"],
       on: {
         MOUNT: "mounted"
       }
