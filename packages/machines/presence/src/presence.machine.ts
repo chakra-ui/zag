@@ -71,7 +71,6 @@ export function machine(ctx: Partial<UserDefinedContext>) {
       },
       actions: {
         invokeOnExitComplete(ctx) {
-          console.log("invokeOnExitComplete")
           ctx.onExitComplete?.()
         },
         setNode(ctx, evt) {
