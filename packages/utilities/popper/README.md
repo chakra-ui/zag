@@ -5,9 +5,9 @@ Dynamic positioning logic for ui machines
 ## Installation
 
 ```sh
-yarn add  @zag-js/popper
+yarn add @zag-js/popper
 # or
-npm i  @zag-js/popper
+npm i @zag-js/popper
 ```
 
 ## Contribution

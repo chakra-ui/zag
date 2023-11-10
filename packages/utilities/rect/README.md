@@ -3,9 +3,9 @@
 ## Installation
 
 ```sh
-yarn add  @zag-js/geometry
+yarn add @zag-js/geometry
 # or
-npm i  @zag-js/geometry
+npm i @zag-js/geometry
 ```
 
 ## Contribution

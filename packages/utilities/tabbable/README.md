@@ -5,9 +5,9 @@ Small utility that returns an array of all\* tabbable DOM nodes within a contain
 ## Installation
 
 ```sh
-yarn add  @zag-js/tabbable
+yarn add @zag-js/tabbable
 # or
-npm i  @zag-js/tabbable
+npm i @zag-js/tabbable
 ```
 
 ## Contribution

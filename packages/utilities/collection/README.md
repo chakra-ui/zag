@@ -5,9 +5,9 @@ Utilities to manage a collection of items.
 ## Installation
 
 ```sh
-yarn add  @zag-js/collection
+yarn add @zag-js/collection
 # or
-npm i  @zag-js/collection
+npm i @zag-js/collection
 ```
 
 ## Contribution

@@ -5,9 +5,9 @@ Core logic for the rating widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/rating-group
+yarn add @zag-js/rating-group
 # or
-npm i  @zag-js/rating-group
+npm i @zag-js/rating-group
 ```
 
 ## Contribution

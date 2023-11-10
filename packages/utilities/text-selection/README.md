@@ -3,9 +3,9 @@
 ## Installation
 
 ```sh
-yarn add  @zag-js/text-selection
+yarn add @zag-js/text-selection
 # or
-npm i  @zag-js/text-selection
+npm i @zag-js/text-selection
 ```
 
 ## Contribution

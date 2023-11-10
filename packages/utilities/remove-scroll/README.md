@@ -3,9 +3,9 @@
 ## Installation
 
 ```sh
-yarn add  @zag-js/remove-scroll
+yarn add @zag-js/remove-scroll
 # or
-npm i  @zag-js/remove-scroll
+npm i @zag-js/remove-scroll
 ```
 
 ## Contribution

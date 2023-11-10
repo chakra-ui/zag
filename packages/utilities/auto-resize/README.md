@@ -5,9 +5,9 @@ Autoresize utilities for the web
 ## Installation
 
 ```sh
-yarn add  @zag-js/auto-resize
+yarn add @zag-js/auto-resize
 # or
-npm i  @zag-js/auto-resize
+npm i @zag-js/auto-resize
 ```
 
 ## Contribution

@@ -5,9 +5,9 @@ Core logic for the pin-input widget implemented as a state machine
 ## Installation
 
 ```sh
-yarn add  @zag-js/pin-input
+yarn add @zag-js/pin-input
 # or
-npm i  @zag-js/pin-input
+npm i @zag-js/pin-input
 ```
 
 ## Contribution

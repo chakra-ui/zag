@@ -5,9 +5,9 @@ The reactive store package for zag machines
 ## Installation
 
 ```sh
-yarn add  @zag-js/store
+yarn add @zag-js/store
 # or
-npm i  @zag-js/store
+npm i @zag-js/store
 ```
 
 ## Contribution

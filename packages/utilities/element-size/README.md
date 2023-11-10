@@ -5,9 +5,9 @@ Observe the size of an element over time
 ## Installation
 
 ```sh
-yarn add  @zag-js/element-size
+yarn add @zag-js/element-size
 # or
-npm i  @zag-js/element-size
+npm i @zag-js/element-size
 ```
 
 ## Contribution

@@ -3,9 +3,9 @@
 ## Installation
 
 ```sh
-yarn add  @zag-js/dom-event
+yarn add @zag-js/dom-event
 # or
-npm i  @zag-js/dom-event
+npm i @zag-js/dom-event
 ```
 
 ## Contribution

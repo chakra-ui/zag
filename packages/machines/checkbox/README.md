@@ -5,9 +5,9 @@ Core logic for the checkbox widget implemented as a state machine
 ## **Installation**
 
 ```sh
-yarn add  @zag-js/checkbox
+yarn add @zag-js/checkbox
 # or
-npm i  @zag-js/checkbox
+npm i @zag-js/checkbox
 ```
 
 ## Technical Considerations

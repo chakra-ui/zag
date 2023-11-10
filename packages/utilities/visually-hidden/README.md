@@ -3,9 +3,9 @@
 ## Installation
 
 ```sh
-yarn add  @zag-js/visually-hidden
+yarn add @zag-js/visually-hidden
 # or
-npm i  @zag-js/visually-hidden
+npm i @zag-js/visually-hidden
 ```
 
 ## Contribution
