@@ -31,7 +31,7 @@ export const dom = createScope({
     getByTypeahead(dom.getElements(ctx), { state: ctx.typeahead, key, activeId: ctx.highlightedId }),
 
   isTargetDisabled: (v: EventTarget | null) => {
-    return isHTMLElement(v) && v.dataset.disabled === ""
+    return isHTMLElement(v) && (v.dataset.disabled === "" || v.hasAttribute("disabled"))
   },
   isTriggerItem: (el: HTMLElement | null) => {
     return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("aria-controls")
