@@ -18,14 +18,14 @@ export type ActivationMode = "focus" | "dblclick" | "none"
 
 export type SubmitMode = "enter" | "blur" | "both" | "none"
 
-type IntlTranslations = {
+export type IntlTranslations = {
   edit: string
   submit: string
   cancel: string
   input: string
 }
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   area: string
   label: string

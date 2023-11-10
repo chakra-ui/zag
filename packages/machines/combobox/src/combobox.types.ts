@@ -30,12 +30,12 @@ export interface OpenChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface IntlTranslations {
+export interface IntlTranslations {
   triggerLabel?: string
   clearTriggerLabel?: string
 }
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   label: string
   control: string

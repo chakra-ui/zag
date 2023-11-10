@@ -15,7 +15,7 @@ export interface OpenChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   anchor: string
   trigger: string
   content: string

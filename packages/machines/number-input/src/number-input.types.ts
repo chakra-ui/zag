@@ -15,7 +15,7 @@ export interface FocusChangeDetails extends ValueChangeDetails {
   focused: boolean
 }
 
-type ValidityState = "rangeUnderflow" | "rangeOverflow"
+export type ValidityState = "rangeUnderflow" | "rangeOverflow"
 
 export interface ValueInvalidDetails extends ValueChangeDetails {
   reason: ValidityState
@@ -25,9 +25,9 @@ export interface ValueInvalidDetails extends ValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-type InputMode = "text" | "tel" | "numeric" | "decimal"
+export type InputMode = "text" | "tel" | "numeric" | "decimal"
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   label: string
   input: string
@@ -36,7 +36,7 @@ type ElementIds = Partial<{
   scrubber: string
 }>
 
-type IntlTranslations = {
+export type IntlTranslations = {
   /**
    * Function that returns the human-readable value.
    * It is used to set the `aria-valuetext` property of the input

@@ -13,7 +13,10 @@ export type {
   ColorFormat,
   ColorType,
   UserDefinedContext as Context,
+  ElementIds,
+  OpenChangeDetails,
   SwatchProps,
-  TransparencyGridProps,
   SwatchTriggerProps,
+  TransparencyGridProps,
+  ValueChangeDetails,
 } from "./color-picker.types"

@@ -15,7 +15,7 @@ export interface SlideChangeDetails {
 
 type RectEdge = "top" | "right" | "bottom" | "left"
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   viewport: string
   slide(index: number): string

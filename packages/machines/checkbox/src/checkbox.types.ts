@@ -15,7 +15,7 @@ export interface CheckedChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   hiddenInput: string
   control: string

@@ -17,11 +17,11 @@ export interface HoverChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface IntlTranslations {
+export interface IntlTranslations {
   ratingValueText(index: number): string
 }
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   label: string
   hiddenInput: string

@@ -17,7 +17,7 @@ export type Type = "success" | "error" | "loading" | "info" | "custom"
 
 export type Placement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
 
-export interface BaseOptions {
+export interface GlobalToastOptions {
   /**
    * Whether to pause toast when the user leaves the browser tab
    */
@@ -80,14 +80,14 @@ export interface ToastOptions {
   onUpdate?: VoidFunction
 }
 
-export type Options = Partial<ToastOptions & BaseOptions>
+export type Options = Partial<ToastOptions & GlobalToastOptions>
 
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
 export interface MachineContext
-  extends BaseOptions,
+  extends GlobalToastOptions,
     RootProperties,
     CommonProperties,
     Omit<ToastOptions, "removeDelay"> {
@@ -121,7 +121,7 @@ export type Send = S.Send
 
 export type Service = Machine<MachineContext, MachineState>
 
-interface GroupPublicContext extends BaseOptions, DirectionProperty, CommonProperties {
+interface GroupPublicContext extends GlobalToastOptions, DirectionProperty, CommonProperties {
   /**
    * The gutter or spacing between toasts
    */

@@ -2,8 +2,10 @@ export { anatomy } from "./hover-card.anatomy"
 export { connect } from "./hover-card.connect"
 export { machine } from "./hover-card.machine"
 export type {
+  MachineApi as Api,
   UserDefinedContext as Context,
+  ElementIds,
+  OpenChangeDetails,
   Placement,
   PositioningOptions,
-  MachineApi as Api,
 } from "./hover-card.types"

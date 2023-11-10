@@ -14,19 +14,19 @@ export interface PageChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface ItemLabelDetails {
+export interface ItemLabelDetails {
   page: number
   totalPages: number
 }
 
-interface IntlTranslations {
+export interface IntlTranslations {
   rootLabel?: string
   prevTriggerLabel?: string
   nextTriggerLabel?: string
   itemLabel?(details: ItemLabelDetails): string
 }
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   ellipsis(index: number): string
   prevTrigger: string

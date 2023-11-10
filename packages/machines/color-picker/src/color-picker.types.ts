@@ -24,7 +24,7 @@ export interface OpenChangeDetails {
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   control: string
   trigger: string

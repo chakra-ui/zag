@@ -1,16 +1,20 @@
 export { anatomy } from "./combobox.anatomy"
+export { collection } from "./combobox.collection"
 export { connect } from "./combobox.connect"
 export { machine } from "./combobox.machine"
-export { collection } from "./combobox.collection"
 export type {
+  MachineApi as Api,
+  CollectionItem,
+  CollectionOptions,
   UserDefinedContext as Context,
+  ElementIds,
+  HighlightChangeDetails,
+  InputValueChangeDetails,
   ItemGroupLabelProps,
   ItemGroupProps,
   ItemProps,
   ItemState,
   Placement,
   PositioningOptions,
-  MachineApi as Api,
-  CollectionOptions,
-  CollectionItem,
+  ValueChangeDetails,
 } from "./combobox.types"

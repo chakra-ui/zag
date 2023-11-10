@@ -30,7 +30,7 @@ interface ValidateArgs {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface IntlTranslations {
+export interface IntlTranslations {
   clearTriggerLabel: string
   deleteTagTriggerLabel(value: string): string
   tagSelected(value: string): string
@@ -49,7 +49,7 @@ type Log =
   | { type: "paste"; values: string[] }
   | { type: "set"; values: string[] }
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   input: string
   clearBtn: string

@@ -17,11 +17,11 @@ export interface FocusChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface IntlTranslations {
+export interface IntlTranslations {
   tablistLabel?: string
 }
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   trigger: string
   tablist: string

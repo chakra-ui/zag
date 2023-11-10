@@ -7,7 +7,7 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
 
 export type PanelId = string | number
 
-interface PanelSizeData {
+export interface PanelSizeData {
   id: PanelId
   size?: number
   minSize?: number

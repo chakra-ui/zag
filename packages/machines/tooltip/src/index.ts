@@ -1,4 +1,11 @@
 export { anatomy } from "./tooltip.anatomy"
 export { connect } from "./tooltip.connect"
 export { machine } from "./tooltip.machine"
-export type { UserDefinedContext as Context, Placement, PositioningOptions, MachineApi as Api } from "./tooltip.types"
+export type {
+  MachineApi as Api,
+  UserDefinedContext as Context,
+  ElementIds,
+  OpenChangeDetails,
+  Placement,
+  PositioningOptions,
+} from "./tooltip.types"

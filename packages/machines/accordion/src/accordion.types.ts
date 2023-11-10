@@ -17,7 +17,7 @@ export interface FocusChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   item(value: string): string
   content(value: string): string

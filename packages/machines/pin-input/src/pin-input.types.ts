@@ -19,11 +19,11 @@ export interface ValueInvalidDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-type IntlTranslations = {
+export type IntlTranslations = {
   inputLabel: (index: number, length: number) => string
 }
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   hiddenInput: string
   label: string

@@ -42,11 +42,11 @@ export interface OpenChangeDetails {
 
 export type SelectionMode = "single" | "multiple" | "range"
 
-interface IntlMessages {
+export interface IntlMessages {
   placeholder: (locale: string) => { year: string; month: string; day: string }
 }
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   table(id: string): string
   tableHeader(id: string): string

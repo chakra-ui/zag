@@ -8,6 +8,8 @@ export type {
   MachineApi as Api,
   GroupMachineApi as GroupApi,
   GroupMachineContext,
+  GroupProps,
+  GroupState,
   MachineContext,
   MachineState,
   Placement,

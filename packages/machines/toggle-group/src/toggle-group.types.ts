@@ -13,7 +13,7 @@ export interface ValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   toggle(value: string): string
 }>

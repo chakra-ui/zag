@@ -9,4 +9,7 @@ export type {
   OptionItemProps,
   OptionItemState,
   MachineApi as Api,
+  OpenChangeDetails,
+  ValueChangeDetails,
+  SelectionDetails,
 } from "./menu.types"

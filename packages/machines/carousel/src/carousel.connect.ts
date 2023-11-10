@@ -32,7 +32,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     canScrollNext,
     canScrollPrev,
 
-    scrollTo(index: number, jump?: boolean) {
+    scrollTo(index, jump) {
       send({ type: "GOTO", index, jump })
     },
 
@@ -93,7 +93,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getItemProps(props: ItemProps) {
+    getItemProps(props) {
       const { index } = props
       const sliderState = getItemStateState(props)
 
