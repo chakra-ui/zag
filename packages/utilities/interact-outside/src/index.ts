@@ -6,15 +6,15 @@ import { getWindowFrames } from "./get-window-frames"
 
 export interface InteractOutsideHandlers {
   /**
-   * Function called when the pointer is pressed down outside the combobox
+   * Function called when the pointer is pressed down outside the component
    */
   onPointerDownOutside?: (event: PointerDownOutsideEvent) => void
   /**
-   * Function called when the focus is moved outside the combobox
+   * Function called when the focus is moved outside the component
    */
   onFocusOutside?: (event: FocusOutsideEvent) => void
   /**
-   * Function called when an interaction happens outside the combobox
+   * Function called when an interaction happens outside the component
    */
   onInteractOutside?: (event: InteractOutsideEvent) => void
 }
