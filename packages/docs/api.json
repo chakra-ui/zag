@@ -401,15 +401,15 @@
       },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
-        "description": "Function called when the pointer is pressed down outside the combobox"
+        "description": "Function called when the pointer is pressed down outside the component"
       },
       "onFocusOutside": {
         "type": "(event: FocusOutsideEvent) => void",
-        "description": "Function called when the focus is moved outside the combobox"
+        "description": "Function called when the focus is moved outside the component"
       },
       "onInteractOutside": {
         "type": "(event: InteractOutsideEvent) => void",
-        "description": "Function called when an interaction happens outside the combobox"
+        "description": "Function called when an interaction happens outside the component"
       }
     }
   },
@@ -620,15 +620,15 @@
       },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
-        "description": "Function called when the pointer is pressed down outside the combobox"
+        "description": "Function called when the pointer is pressed down outside the component"
       },
       "onFocusOutside": {
         "type": "(event: FocusOutsideEvent) => void",
-        "description": "Function called when the focus is moved outside the combobox"
+        "description": "Function called when the focus is moved outside the component"
       },
       "onInteractOutside": {
         "type": "(event: InteractOutsideEvent) => void",
-        "description": "Function called when an interaction happens outside the combobox"
+        "description": "Function called when an interaction happens outside the component"
       }
     }
   },
@@ -997,15 +997,15 @@
       },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
-        "description": "Function called when the pointer is pressed down outside the combobox"
+        "description": "Function called when the pointer is pressed down outside the component"
       },
       "onFocusOutside": {
         "type": "(event: FocusOutsideEvent) => void",
-        "description": "Function called when the focus is moved outside the combobox"
+        "description": "Function called when the focus is moved outside the component"
       },
       "onInteractOutside": {
         "type": "(event: InteractOutsideEvent) => void",
-        "description": "Function called when an interaction happens outside the combobox"
+        "description": "Function called when an interaction happens outside the component"
       }
     }
   },
@@ -1142,15 +1142,15 @@
       },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
-        "description": "Function called when the pointer is pressed down outside the combobox"
+        "description": "Function called when the pointer is pressed down outside the component"
       },
       "onFocusOutside": {
         "type": "(event: FocusOutsideEvent) => void",
-        "description": "Function called when the focus is moved outside the combobox"
+        "description": "Function called when the focus is moved outside the component"
       },
       "onInteractOutside": {
         "type": "(event: InteractOutsideEvent) => void",
-        "description": "Function called when an interaction happens outside the combobox"
+        "description": "Function called when an interaction happens outside the component"
       }
     }
   },
@@ -1405,6 +1405,10 @@
         "type": "string",
         "description": "The accessibility label for the menu"
       },
+      "open": {
+        "type": "boolean",
+        "description": "Whether the menu is open"
+      },
       "onOpenChange": {
         "type": "(details: OpenChangeDetails) => void",
         "description": "Function called when the menu opens or closes"
@@ -1424,15 +1428,15 @@
       },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
-        "description": "Function called when the pointer is pressed down outside the combobox"
+        "description": "Function called when the pointer is pressed down outside the component"
       },
       "onFocusOutside": {
         "type": "(event: FocusOutsideEvent) => void",
-        "description": "Function called when the focus is moved outside the combobox"
+        "description": "Function called when the focus is moved outside the component"
       },
       "onInteractOutside": {
         "type": "(event: InteractOutsideEvent) => void",
-        "description": "Function called when an interaction happens outside the combobox"
+        "description": "Function called when an interaction happens outside the component"
       }
     }
   },
@@ -1892,15 +1896,15 @@
       },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
-        "description": "Function called when the pointer is pressed down outside the combobox"
+        "description": "Function called when the pointer is pressed down outside the component"
       },
       "onFocusOutside": {
         "type": "(event: FocusOutsideEvent) => void",
-        "description": "Function called when the focus is moved outside the combobox"
+        "description": "Function called when the focus is moved outside the component"
       },
       "onInteractOutside": {
         "type": "(event: InteractOutsideEvent) => void",
-        "description": "Function called when an interaction happens outside the combobox"
+        "description": "Function called when an interaction happens outside the component"
       },
       "id": {
         "type": "string",
@@ -2263,15 +2267,15 @@
       },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
-        "description": "Function called when the pointer is pressed down outside the combobox"
+        "description": "Function called when the pointer is pressed down outside the component"
       },
       "onFocusOutside": {
         "type": "(event: FocusOutsideEvent) => void",
-        "description": "Function called when the focus is moved outside the combobox"
+        "description": "Function called when the focus is moved outside the component"
       },
       "onInteractOutside": {
         "type": "(event: InteractOutsideEvent) => void",
-        "description": "Function called when an interaction happens outside the combobox"
+        "description": "Function called when an interaction happens outside the component"
       }
     }
   },
@@ -2832,15 +2836,15 @@
       },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
-        "description": "Function called when the pointer is pressed down outside the combobox"
+        "description": "Function called when the pointer is pressed down outside the component"
       },
       "onFocusOutside": {
         "type": "(event: FocusOutsideEvent) => void",
-        "description": "Function called when the focus is moved outside the combobox"
+        "description": "Function called when the focus is moved outside the component"
       },
       "onInteractOutside": {
         "type": "(event: InteractOutsideEvent) => void",
-        "description": "Function called when an interaction happens outside the combobox"
+        "description": "Function called when an interaction happens outside the component"
       }
     }
   },
