@@ -158,6 +158,14 @@ a[aria-current="page"] {
 * Avatar
 * -----------------------------------------------------------------------------*/
 
+[data-scope="accordion"][data-part="item-indicator"][data-state="open"] {
+  rotate: 90deg;
+}
+
+/* -----------------------------------------------------------------------------
+* Avatar
+* -----------------------------------------------------------------------------*/
+
 [data-scope="avatar"][data-part="root"] {
   width: 80px;
   height: 80px;
@@ -456,6 +464,10 @@ main [data-testid="scrubber"] {
   --arrow-background: white;
   --arrow-shadow-color: #ebebeb;
   box-shadow: var(--box-shadow);
+}
+
+[data-scope="popover"][data-part="indicator"][data-state="open"] {
+  rotate: 90deg;
 }
 
 /* -----------------------------------------------------------------------------

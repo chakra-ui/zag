@@ -27,7 +27,9 @@ const api = computed(() => tagsInput.connect(state.value, send, normalizeProps))
       <div v-bind="api.controlProps">
         <span v-for="(value, index) in api.value" :key="`${toDashCase(value)}-tag-${index}`">
           <div :data-testid="`${toDashCase(value)}-tag`" v-bind="api.getItemProps({ index, value })">
-            <span>{{ value }} &nbsp;</span>
+            <span :data-testid="`${toDashCase(value)}-valuetext`" v-bind="api.getItemTextProps({ index, value })"
+              >{{ value }} &nbsp;</span
+            >
             <button
               :data-testid="`${toDashCase(value)}-close-button`"
               v-bind="api.getItemDeleteTriggerProps({ index, value })"

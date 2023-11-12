@@ -29,6 +29,7 @@ export default function Page() {
               <h3>
                 <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
                   {item.label}
+                  <div {...api.getItemIndicatorProps({ value: item.id })}>{">"}</div>
                 </button>
               </h3>
               <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })}>

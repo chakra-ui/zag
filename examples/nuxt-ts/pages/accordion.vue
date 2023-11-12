@@ -19,6 +19,7 @@ const api = computed(() => accordion.connect(state.value, send, normalizeProps))
         <h3>
           <button :data-testid="`${item.id}:trigger`" v-bind="api.getItemTriggerProps({ value: item.id })">
             {{ item.label }}
+            <div v-bind="api.getItemIndicatorProps({ value: item.id })">{{ ">" }}</div>
           </button>
         </h3>
         <div :data-testid="`${item.id}:content`" v-bind="api.getItemContentProps({ value: item.id })">
