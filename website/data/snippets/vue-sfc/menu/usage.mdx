@@ -11,7 +11,7 @@ const api = computed(() => menu.connect(state.value, send, normalizeProps));
 <template>
   <div ref="ref">
     <button v-bind="api.triggerProps">
-      Actions <span aria-hidden>▾</span>
+        Actions <span v-bind="api.indicatorProps">▾</span>
     </button>
     <div v-bind="api.positionerProps">
       <ul v-bind="api.contentProps">

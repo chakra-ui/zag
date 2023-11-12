@@ -13,7 +13,7 @@ export function Menu() {
   return (
     <div>
       <button {...api().triggerProps}>
-        Actions <span aria-hidden>▾</span>
+        Actions <span {...api().indicatorProps}>▾</span>
       </button>
       <div {...api().positionerProps}>
         <ul {...api().contentProps}>

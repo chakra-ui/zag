@@ -25,7 +25,7 @@ export function Menu(props: MenuProps) {
     <div>
       <Button size="sm" variant="green" {...api.triggerProps}>
         Actions{" "}
-        <chakra.span ml="2" aria-hidden>
+        <chakra.span ml="2" {...api.indicatorProps}>
           ▾
         </chakra.span>
       </Button>

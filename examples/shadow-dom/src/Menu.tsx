@@ -19,7 +19,7 @@ export const Menu: React.FC<{ id: string }> = ({ id }) => {
   return (
     <div ref={ref}>
       <button {...api.triggerProps}>
-        Actions <span aria-hidden>▾</span>
+        Actions <span {...api.indicatorProps}>▾</span>
       </button>
       <div {...api.positionerProps}>
         <ul {...api.contentProps} style={{ backgroundColor: "white", color: "black" }}>
