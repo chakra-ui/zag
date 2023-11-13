@@ -1,5 +1,13 @@
 import { clampValue, getPercentValue, getValuePercent, snapValueToStep } from "@zag-js/numeric-range"
-import type { Color2DAxes, ColorAxes, ColorChannel, ColorChannelRange, ColorFormat, ColorType } from "./types"
+import type {
+  Color2DAxes,
+  ColorAxes,
+  ColorChannel,
+  ColorChannelRange,
+  ColorFormat,
+  ColorStringFormat,
+  ColorType,
+} from "./types"
 
 const isEqualObject = (a: Record<string, number>, b: Record<string, number>): boolean => {
   if (Object.keys(a).length !== Object.keys(b).length) return false
@@ -10,15 +18,14 @@ const isEqualObject = (a: Record<string, number>, b: Record<string, number>): bo
 export abstract class Color implements ColorType {
   abstract toFormat(format: ColorFormat): ColorType
   abstract toJSON(): Record<string, number>
-  abstract toString(format: ColorFormat | "css"): string
+  abstract toString(format: ColorStringFormat): string
   abstract clone(): ColorType
   abstract getChannelRange(channel: ColorChannel): ColorChannelRange
   abstract getFormat(): ColorFormat
   abstract getChannels(): [ColorChannel, ColorChannel, ColorChannel]
-  outputFormat: ColorFormat | undefined
 
   toHexInt(): number {
-    return this.toFormat("rgb").toHexInt()
+    return this.toFormat("rgba").toHexInt()
   }
 
   getChannelValue(channel: ColorChannel): number {
@@ -39,9 +46,10 @@ export abstract class Color implements ColorType {
   }
 
   withChannelValue(channel: ColorChannel, value: number): ColorType {
+    const { minValue, maxValue } = this.getChannelRange(channel)
     if (channel in this) {
       let clone = this.clone()
-      clone[channel] = value
+      clone[channel] = clampValue(value, minValue, maxValue)
       return clone
     }
 

@@ -2587,6 +2587,9 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../packages/machines/checkbox
+      '@zag-js/color-picker':
+        specifier: workspace:*
+        version: link:../packages/machines/color-picker
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../packages/machines/combobox

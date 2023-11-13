@@ -17,6 +17,7 @@ export type {
   OpenChangeDetails,
   SwatchProps,
   SwatchTriggerProps,
+  SwatchTriggerState,
   TransparencyGridProps,
   ValueChangeDetails,
 } from "./color-picker.types"

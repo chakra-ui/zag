@@ -1,0 +1,37 @@
+```jsx {18-31}
+const ColorPicker = () => {
+  const [state, send] = useMachine(
+    colorPicker.machine({
+      id: useId(),
+      value: colorPicker.parse("hsl(0, 100%, 50%)"),
+    }),
+  )
+
+  const api = colorPicker.connect(state, send, normalizeProps)
+
+  const presets = ["#ff0000", "#00ff00", "#0000ff"]
+
+  return (
+    <div {...api.rootProps}>
+      {/* ... */}
+      <div {...api.positionerProps}>
+        <div {...api.contentProps}>
+          <div {...api.swatchGroupProps}>
+            {presets.map((preset) => (
+              <button
+                key={preset}
+                {...api.getSwatchTriggerProps({ value: preset })}
+              >
+                <div style={{ position: "relative" }}>
+                  <div {...api.getTransparencyGridProps({ size: "4px" })} />
+                  <div {...api.getSwatchProps({ value: preset })} />
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+```

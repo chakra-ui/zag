@@ -26,8 +26,8 @@ export function getChannelValue(color: Color, channel: ExtendedColorChannel | nu
 
     case "saturation":
       return isHSL
-        ? color.toFormat("hsl").getChannelValue("saturation").toString()
-        : color.toFormat("hsb").getChannelValue("saturation").toString()
+        ? color.toFormat("hsla").getChannelValue("saturation").toString()
+        : color.toFormat("hsba").getChannelValue("saturation").toString()
 
     case "lightness":
       return color.toFormat("hsla").getChannelValue("lightness").toString()
@@ -63,15 +63,15 @@ export function getChannelRange(color: Color, channel: ExtendedColorChannel): Co
     case "hue":
     case "saturation":
     case "lightness":
-      return color.toFormat("hsl").getChannelRange(channel)
+      return color.toFormat("hsla").getChannelRange(channel)
 
     case "brightness":
-      return color.toFormat("hsb").getChannelRange(channel)
+      return color.toFormat("hsba").getChannelRange(channel)
 
     case "red":
     case "green":
     case "blue":
-      return color.toFormat("rgb").getChannelRange(channel)
+      return color.toFormat("rgba").getChannelRange(channel)
 
     default:
       return color.getChannelRange(channel)

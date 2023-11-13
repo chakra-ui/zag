@@ -17,8 +17,11 @@ export const anatomy = createAnatomy("color-picker", [
   "transparencyGrid",
   "swatchGroup",
   "swatchTrigger",
+  "swatchIndicator",
   "swatch",
   "eyeDropperTrigger",
+  "formatTrigger",
+  "formatSelect",
 ])
 
 export const parts = anatomy.build()
