@@ -3,16 +3,16 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { runIfFn, uuid } from "@zag-js/utils"
 import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
-import type { GroupMachineApi, GroupSend, GroupState, Options } from "./toast.types"
+import type { GroupMachineApi, GroupSend, GroupState, MachineApi, Options } from "./toast.types"
 import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
 export let toaster = {} as GroupMachineApi
 
-export function groupConnect<T extends PropTypes>(
-  state: GroupState,
+export function groupConnect<T extends PropTypes, S = MachineApi<any>>(
+  state: GroupState<S>,
   send: GroupSend,
   normalize: NormalizeProps<T>,
-): GroupMachineApi<T> {
+): GroupMachineApi<T, S> {
   //
   const toastsByPlacement = getToastsByPlacement(state.context.toasts)
 
@@ -21,7 +21,7 @@ export function groupConnect<T extends PropTypes>(
     return !!state.context.toasts.find((toast) => toast.id == id)
   }
 
-  function create(options: Options) {
+  function create(options: Options<S>) {
     const uid = `toast:${uuid()}`
     const id = options.id ? options.id : uid
 
@@ -31,13 +31,13 @@ export function groupConnect<T extends PropTypes>(
     return id
   }
 
-  function update(id: string, options: Options) {
+  function update(id: string, options: Options<S>) {
     if (!isVisible(id)) return
     send({ type: "UPDATE_TOAST", id, toast: options })
     return id
   }
 
-  function upsert(options: Options) {
+  function upsert(options: Options<S>) {
     const { id } = options
     const visible = id ? isVisible(id) : false
     if (visible && id != null) {
