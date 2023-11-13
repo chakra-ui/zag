@@ -1,7 +1,7 @@
 ```jsx
 import * as colorPicker from "@zag-js/color-picker"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createUniqueId } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 
 function ColorPicker() {
   const [state, send] = useMachine(
