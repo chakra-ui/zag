@@ -36,6 +36,7 @@ export default function Page() {
               <div {...api.controlProps} />
               <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
               <input {...api.hiddenInputProps} data-testid="hidden-input" />
+              <div {...api.indicatorProps}>Indicator</div>
             </label>
 
             <button type="button" disabled={api.isChecked} onClick={() => api.setChecked(true)}>
@@ -48,6 +49,7 @@ export default function Page() {
           </fieldset>
         </form>
       </main>
+
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>

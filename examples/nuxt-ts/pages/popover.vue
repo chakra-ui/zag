@@ -16,7 +16,10 @@ const api = computed(() => popover.connect(state.value, send, normalizeProps))
   <main>
     <div data-part="root">
       <button data-testid="button-before">Button :before</button>
-      <button data-testid="popover-trigger" v-bind="api.triggerProps">Click me</button>
+      <button data-testid="popover-trigger" v-bind="api.triggerProps">
+        Click me
+        <div v-bind="api.indicatorProps">{{ ">" }}</div>
+      </button>
       <Teleport to="body" :disabled="!api.portalled">
         <div v-bind="api.positionerProps">
           <div data-testid="popover-content" class="popover-content" v-bind="api.contentProps">

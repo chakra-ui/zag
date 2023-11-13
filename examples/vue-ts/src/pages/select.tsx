@@ -36,7 +36,7 @@ export default defineComponent({
                 <label {...api.labelProps}>Label</label>
                 <button {...api.triggerProps}>
                   {api.valueAsString || "Select option"}
-                  <span>▼</span>
+                  <span {...api.indicatorProps}>▼</span>
                 </button>
               </div>
 

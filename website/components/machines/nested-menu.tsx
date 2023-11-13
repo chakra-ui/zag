@@ -47,7 +47,7 @@ export function NestedMenu() {
     <div>
       <Button size="sm" variant="green" {...fileMenu.triggerProps}>
         Click me
-        <chakra.span ml="2" aria-hidden>
+        <chakra.span ml="2" {...fileMenu.indicatorProps}>
           ▾
         </chakra.span>
       </Button>
@@ -90,7 +90,7 @@ export function NestedMenu() {
               {...shareMenuTriggerProps}
             >
               Share
-              <chakra.span ml="2" aria-hidden>
+              <chakra.span ml="2" {...shareMenu.indicatorProps}>
                 »
               </chakra.span>
             </chakra.li>

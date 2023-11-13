@@ -32,6 +32,7 @@ const api = computed(() => checkbox.connect(state.value, send, normalizeProps))
           <div v-bind="api.controlProps" />
           <span v-bind="api.labelProps">Input {{ api.isChecked ? "Checked" : "Unchecked" }}</span>
           <input v-bind="api.hiddenInputProps" data-testid="hidden-input" />
+          <div v-bind="api.indicatorProps">Indicator</div>
         </label>
 
         <button type="button" :disabled="api.isChecked" @click="() => api.setChecked(true)">Check</button>

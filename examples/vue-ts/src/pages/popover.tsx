@@ -28,6 +28,7 @@ export default defineComponent({
               <button data-testid="button-before">Button :before</button>
               <button data-testid="popover-trigger" {...api.triggerProps}>
                 Click me
+                <div {...api.indicatorProps}>{">"}</div>
               </button>
               <Teleport to="body" disabled={!api.portalled}>
                 <div {...api.positionerProps}>

@@ -30,6 +30,7 @@ export default function Page() {
 
           <button data-testid="popover-trigger" {...api.triggerProps}>
             Click me
+            <div {...api.indicatorProps}>{">"}</div>
           </button>
 
           <div {...api.anchorProps}>anchor</div>

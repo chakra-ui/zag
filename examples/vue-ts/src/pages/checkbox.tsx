@@ -41,6 +41,7 @@ export default defineComponent({
                   <div {...api.controlProps} />
                   <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
                   <input {...api.hiddenInputProps} data-testid="hidden-input" />
+                  <div {...api.indicatorProps}>Indicator</div>
                 </label>
 
                 <button type="button" disabled={api.isChecked} onClick={() => api.setChecked(true)}>

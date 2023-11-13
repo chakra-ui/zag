@@ -41,7 +41,7 @@ export default function Page() {
           <div {...api.controlProps}>
             <button {...api.triggerProps}>
               <span>{api.valueAsString || "Select option"}</span>
-              <span>▼</span>
+              <span {...api.indicatorProps}>▼</span>
             </button>
             <button {...api.clearTriggerProps}>X</button>
           </div>
