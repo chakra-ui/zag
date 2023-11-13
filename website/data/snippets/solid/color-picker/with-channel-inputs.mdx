@@ -1,0 +1,47 @@
+```jsx {16-38}
+import { Show } from "solid-js"
+
+const ColorPicker = () => {
+  const [state, send] = useMachine(
+    colorPicker.machine({
+      id: createUniqueId(),
+      value: colorPicker.parse("hsl(0, 100%, 50%)"),
+    }),
+  )
+
+  const api = createMemo(() => colorPicker.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      {/* ... */}
+      <div {...api().positionerProps}>
+        <div {...api().contentProps}>
+          <Show when={api().format === "rgba"}>
+            <div>
+              <div>
+                <span>R</span>
+                <input {...api().getChannelInputProps({ channel: "red" })} />
+              </div>
+
+              <div>
+                <span>G</span>
+                <input {...api().getChannelInputProps({ channel: "green" })} />
+              </div>
+
+              <div>
+                <span>B</span>
+                <input {...api().getChannelInputProps({ channel: "blue" })} />
+              </div>
+
+              <div>
+                <span>A</span>
+                <input {...api().getChannelInputProps({ channel: "alpha" })} />
+              </div>
+            </div>
+          </Show>
+        </div>
+      </div>
+    </div>
+  )
+}
+```

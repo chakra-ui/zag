@@ -1,0 +1,22 @@
+```jsx {13-16}
+const ColorPicker = () => {
+  const [state, send] = useMachine(
+    colorPicker.machine({
+      id: createUniqueId(),
+      value: colorPicker.parse("hsl(0, 100%, 50%)"),
+    }),
+  )
+
+  const api = createMemo(() => colorPicker.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <div>
+        <div {...api().getTransparencyGridProps({ size: "4px" })} />
+        <div {...api().getSwatchProps({ value: api().value })} />
+      </div>
+      {/* ... */}
+    </div>
+  )
+}
+```
