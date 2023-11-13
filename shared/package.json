@@ -2,11 +2,5 @@
   "name": "@zag-js/shared",
   "version": "0.0.4",
   "main": "src/index.ts",
-  "private": true,
-  "dependencies": {
-    "country-list": "^2.3.0"
-  },
-  "devDependencies": {
-    "@types/country-list": "^2.1.2"
-  }
+  "private": true
 }

@@ -564,10 +564,16 @@ importers:
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
+      vue-router:
+        specifier: ^4.2.5
+        version: 4.2.5(vue@3.3.7)
     devDependencies:
       '@nuxt/devtools':
         specifier: latest
         version: 1.0.0(nuxt@3.8.0)(vite@4.5.0)
+      '@types/form-serialize':
+        specifier: 0.7.3
+        version: 0.7.3
       '@types/node':
         specifier: ^20.8.6
         version: 20.8.6
@@ -2539,15 +2545,7 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  shared:
-    dependencies:
-      country-list:
-        specifier: ^2.3.0
-        version: 2.3.0
-    devDependencies:
-      '@types/country-list':
-        specifier: ^2.1.2
-        version: 2.1.3
+  shared: {}
 
   website:
     dependencies:
@@ -6580,10 +6578,6 @@ packages:
     resolution: {integrity: sha512-69TtiDzu0bcmKQv3yg1Zx409/Kd7r0b5F1PfpYJfSHzLGtB53547V4u+9iqKYsTu/O2ai6KTb0TInNpvuQ3qmg==}
     dev: false
 
-  /@types/country-list@2.1.3:
-    resolution: {integrity: sha512-xYfQz7i6GGmmBuyiV6cTX0UFSzDrfGHuCnXRIQs4Ko8zN0QIcd7XgawbGOXxfgSUE/+8vXQxCE0sHmnKnONxBA==}
-    dev: true
-
   /@types/debug@4.1.10:
     resolution: {integrity: sha512-tOSCru6s732pofZ+sMv9o4o3Zc+Sa8l3bxd/tweTQudFn06vAzb13ZX46Zi6m6EJ+RUbRTHvgQJ1gBtSgkaUYA==}
     dependencies:
@@ -8582,10 +8576,6 @@ packages:
       parse-json: 5.2.0
       path-type: 4.0.0
       typescript: 5.2.2
-    dev: false
-
-  /country-list@2.3.0:
-    resolution: {integrity: sha512-qZk66RlmQm7fQjMYWku1AyjlKPogjPEorAZJG88owPExoPV8EsyCcuFLvO2afTXHEhi9liVOoyd+5A6ZS5QwaA==}
     dev: false
 
   /crc-32@1.2.2:

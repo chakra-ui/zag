@@ -74,11 +74,13 @@
     "@zag-js/visually-hidden": "workspace:*",
     "@zag-js/vue": "workspace:*",
     "epic-spinners": "2.0.0",
-    "form-serialize": "0.7.2"
+    "form-serialize": "0.7.2",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@types/node": "^20.8.6",
+    "@types/form-serialize": "0.7.3",
     "nuxt": "^3.7.4"
   }
 }
