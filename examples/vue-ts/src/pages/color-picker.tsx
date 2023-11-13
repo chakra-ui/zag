@@ -33,6 +33,7 @@ export default defineComponent({
       colorPicker.machine({
         id: "1",
         name: "color",
+        format: "hsla",
         value: colorPicker.parse("hsl(0, 100%, 50%)"),
       }),
       {

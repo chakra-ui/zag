@@ -30,6 +30,7 @@ export default function Page() {
     colorPicker.machine({
       id: createUniqueId(),
       name: "color",
+      format: "hsla",
       value: colorPicker.parse("hsl(0, 100%, 50%)"),
     }),
     {
