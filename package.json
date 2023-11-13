@@ -73,7 +73,7 @@
     "@types/babel__traverse": "^7.20.2",
     "@types/babel__generator": "^7.6.5",
     "@types/node": "^20.8.6",
-    "@types/signale": "1.4.6",
+    "@types/signale": "1.4.7",
     "@typescript-eslint/eslint-plugin": "6.9.1",
     "@typescript-eslint/parser": "6.9.1",
     "axe-core": "4.8.2",
