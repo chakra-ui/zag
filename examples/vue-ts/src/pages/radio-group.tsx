@@ -33,6 +33,7 @@ export default defineComponent({
               <fieldset disabled={false}>
                 <div {...api.rootProps}>
                   <h3 {...api.labelProps}>Fruits</h3>
+                  <div {...api.indicatorProps} />
                   {radioData.map((opt) => (
                     <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
                       <div data-testid={`control-${opt.id}`} {...api.getItemControlProps({ value: opt.id })} />

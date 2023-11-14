@@ -26,7 +26,7 @@ const api = computed(() => select.connect(state.value, send, normalizeProps))
         <label v-bind="api.labelProps">Label</label>
         <button v-bind="api.triggerProps">
           <span>{{ api.valueAsString || "Select option" }}</span>
-          <span>▼</span>
+          <span v-bind="api.indicatorProps">▼</span>
         </button>
       </div>
       <form

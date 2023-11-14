@@ -27,6 +27,7 @@ export default function Page() {
           <button data-testid="button-before">Button :before</button>
           <button data-testid="popover-trigger" {...api().triggerProps}>
             Click me
+            <div {...api().indicatorProps}>{">"}</div>
           </button>
           <Wrapper guard={api().portalled}>
             <div {...api().positionerProps}>

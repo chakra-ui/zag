@@ -33,7 +33,12 @@ export default function Page() {
               {(value, index) => (
                 <span>
                   <div data-testid={`${toDashCase(value)}-tag`} {...api().getItemProps({ index: index(), value })}>
-                    <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
+                    <span
+                      data-testid={`${toDashCase(value)}-valuetext`}
+                      {...api().getItemTextProps({ index: index(), value })}
+                    >
+                      {value}{" "}
+                    </span>
                     <button
                       data-testid={`${toDashCase(value)}-close-button`}
                       {...api().getItemDeleteTriggerProps({ index: index(), value })}

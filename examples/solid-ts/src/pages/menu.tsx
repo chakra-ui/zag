@@ -20,7 +20,7 @@ export default function Page() {
       <main>
         <div>
           <button {...api().triggerProps}>
-            Actions <span aria-hidden>▾</span>
+            Actions <span {...api().indicatorProps}>▾</span>
           </button>
 
           <Portal>

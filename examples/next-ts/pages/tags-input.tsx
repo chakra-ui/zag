@@ -34,7 +34,9 @@ export default function Page() {
             {api.value.map((value, index) => (
               <span key={`${toDashCase(value)}-tag-${index}`}>
                 <div data-testid={`${toDashCase(value)}-tag`} {...api.getItemProps({ index, value })}>
-                  <span data-testid={`${toDashCase(value)}-valuetext`}>{value} </span>
+                  <span data-testid={`${toDashCase(value)}-valuetext`} {...api.getItemTextProps({ index, value })}>
+                    {value}{" "}
+                  </span>
                   <button
                     data-testid={`${toDashCase(value)}-close-button`}
                     {...api.getItemDeleteTriggerProps({ index, value })}
