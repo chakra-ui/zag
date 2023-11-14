@@ -1,13 +1,13 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
-import type { MachineApi, Send, State, ToastJsxOptions } from "./toast.types"
+import type { MachineApi, Send, State, GenericOptions } from "./toast.types"
 
-export function connect<T extends PropTypes, R extends ToastJsxOptions>(
-  state: State<R>,
+export function connect<T extends PropTypes, O extends GenericOptions>(
+  state: State<O>,
   send: Send,
   normalize: NormalizeProps<T>,
-): MachineApi<T, R> {
+): MachineApi<T, O> {
   const isVisible = state.hasTag("visible")
   const isPaused = state.hasTag("paused")
 

@@ -22,13 +22,13 @@ function Loader() {
   )
 }
 
-interface JsxOptions {
-  render: (api: Accessor<toast.Api<PropTypes, JsxOptions>>) => JSX.Element
+interface Options {
+  render: (api: Accessor<toast.Api<PropTypes, Options>>) => JSX.Element
   title: JSX.Element
   description: JSX.Element
 }
 
-function ToastItem(props: { actor: toast.Service<JsxOptions> }) {
+function ToastItem(props: { actor: toast.Service<Options> }) {
   const [state, send] = useActor(props.actor)
   const api = createMemo(() => toast.connect(state, send, normalizeProps))
 
@@ -63,7 +63,7 @@ export default function Page() {
   const controls = useControls(toastControls)
 
   const [state, send] = useMachine(
-    toast.group.machine<JsxOptions>({
+    toast.group.machine<Options>({
       id: createUniqueId(),
       placement: "top-start",
     }),

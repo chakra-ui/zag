@@ -1,7 +1,7 @@
 import type { Style } from "@zag-js/types"
-import type { GroupMachineContext, MachineContext, Placement, Service, ToastJsxOptions, Type } from "./toast.types"
+import type { GroupMachineContext, MachineContext, Placement, Service, GenericOptions, Type } from "./toast.types"
 
-export function getToastsByPlacement<T extends ToastJsxOptions>(toasts: Service<T>[]) {
+export function getToastsByPlacement<T extends GenericOptions>(toasts: Service<T>[]) {
   const result: Partial<Record<Placement, Service<T>[]>> = {}
 
   for (const toast of toasts) {
@@ -25,7 +25,7 @@ export function getToastDuration(duration: number | undefined, type: MachineCont
   return duration ?? defaultTimeouts[type]
 }
 
-export function getGroupPlacementStyle<T extends ToastJsxOptions>(
+export function getGroupPlacementStyle<T extends GenericOptions>(
   ctx: GroupMachineContext<T>,
   placement: Placement,
 ): Style {

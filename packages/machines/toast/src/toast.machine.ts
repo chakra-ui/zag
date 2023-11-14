@@ -2,12 +2,12 @@ import { createMachine, guards } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-event"
 import { compact } from "@zag-js/utils"
 import { dom } from "./toast.dom"
-import type { DefaultToastJsxOptions, MachineContext, MachineState, Options, ToastJsxOptions } from "./toast.types"
+import type { DefaultGenericOptions, MachineContext, MachineState, Options, GenericOptions } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
 
 const { not, and, or } = guards
 
-export function createToastMachine<T extends ToastJsxOptions = DefaultToastJsxOptions>(options: Options<T> = {}) {
+export function createToastMachine<T extends GenericOptions = DefaultGenericOptions>(options: Options<T> = {}) {
   const { type = "info", duration, id = "toast", placement = "bottom", removeDelay = 0, ...restProps } = options
   const ctx = compact(restProps)
 
