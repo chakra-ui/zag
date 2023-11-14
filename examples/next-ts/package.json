@@ -75,7 +75,7 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "next": "13.5.5",
+    "next": "14.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-spinners": "0.13.8"

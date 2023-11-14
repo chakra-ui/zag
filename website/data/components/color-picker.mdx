@@ -1,0 +1,294 @@
+---
+title: Color Picker
+description: Using the color-picker machine in your project.
+package: "@zag-js/color-picker"
+---
+
+# Color Picker
+
+The color picker is an input widget used to select a color value from a
+predefined list or a color area.
+
+This component builds on top of the native `<input type=color>` experience and
+provides a more customizable and consistent user experience.
+
+<Resources pkg="@zag-js/color-picker" />
+
+<Showcase id="ColorPicker" />
+
+**Features**
+
+- Support for custom color area
+- Support for RGBA, HSLA, HEX, and HSBA formats
+- Support for channel inputs and sliders
+- Support for mouse, touch, and keyboard interactions
+- Support for form submission and reset events
+- Support for named css colors
+
+## Installation
+
+To use the combobox machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="color-picker/installation.mdx" />
+
+This command will install the framework agnostic combobox logic and the reactive
+utilities for your framework of choice.
+
+## Anatomy
+
+To set up the combobox correctly, you'll need to understand its anatomy and how
+we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="color-picker" />
+
+## Usage
+
+First, import the combobox package into your project
+
+```jsx
+import * as colorPicker from "@zag-js/color-picker"
+```
+
+The color picker package exports these functions:
+
+- `machine` — The state machine logic for the color picker widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+- `parse` - The function that parses a color string to an Color object.
+
+Next, import the required hooks and functions for your framework and use the
+color picker machine in your project 🔥
+
+<CodeSnippet id="color-picker/usage.mdx" />
+
+## Setting the initial value
+
+To set the initial value of the color picker, use the `value` context property.
+
+```jsx
+const [current, send] = useMachine(
+  colorPicker.machine({
+    value: colorPicker.parse("#ff0000"),
+  }),
+)
+```
+
+## Listening for change events
+
+When the user selects a color using the color picker, the `onValueChange` and
+`onValueChangeEnd` events will be fired.
+
+- `onValueChange` — Fires in sync as the user selects a color
+- `onValueChangeEnd` — Fires when the user stops selecting a color (useful for
+  debounced updates)
+
+```jsx
+const [current, send] = useMachine(
+  colorPicker.machine({
+    onValueChange: (details) => {
+      // details => { value: Color, valueAsString: string }
+    },
+    onValueChangeEnd: (details) => {
+      // details => { value: Color, valueAsString: string }
+    },
+  }),
+)
+```
+
+> When using the `onValueChange` method in React.js, you might need to use the
+> `flushSync` method from `react-dom` to ensure the value is updated in sync
+
+## Using a custom color format
+
+By default, the color picker's output format is `rgba`. You can change this
+format to either `hsla` or `hsba` by using the `format` context property.
+
+When this property is set, the `value` and `valueAsString` properties of the
+`onValueChange` event will be updated to reflect the new format.
+
+```jsx
+const [current, send] = useMachine(
+  colorPicker.machine({
+    format: "hsla",
+    onValueChange: (details) => {
+      // details => { value: HSLAColor, valueAsString: string }
+    },
+  }),
+)
+```
+
+## Showing color presets
+
+Adding color presets in form of swatches can help users pick colors faster. To
+support this, use the `getSwatchTriggerProps(...)` and `getSwatchProps(...)` to
+get the props needed to show the swatches buttons.
+
+<CodeSnippet id="color-picker/with-swatches.mdx" />
+
+## Disabling the color picker
+
+To disable user interactions with the color picker, set the `disabled` context
+property to `true`.
+
+```jsx
+const [current, send] = useMachine(
+  colorPicker.machine({
+    disabled: true,
+  }),
+)
+```
+
+## Controlling the open and closed state
+
+To control the open and closed state of the color picker, use the `open` and
+`onOpenChange` context properties.
+
+```jsx
+const [current, send] = useMachine(
+  colorPicker.machine({
+    open: true,
+    onOpenChange: (details) => {
+      // details => { open: boolean }
+    },
+  }),
+)
+```
+
+You can also leverage the `api.open()` or `api.close()` methods to control the
+open and closed state of the color picker.
+
+## Controlling individual color channel
+
+In some cases, you may want to allow users to control the values of each color
+channel individually. You can do this using an input element or a slider
+element, or both.
+
+To support this, use the `getChannelInputProps(...)` to show the channel inputs.
+
+> Note: Make sure you only render the channel inputs that match the `format` of
+> the color picker.
+
+<CodeSnippet id="color-picker/with-channel-inputs.mdx" />
+
+## Showing a color preview
+
+To display the value of a color, use the `getSwatchProps(...)` and pass the
+color value. To show the current color value, use the `api.value`
+
+<CodeSnippet id="color-picker/with-preview.mdx" />
+
+> You can pass `respectAlpha: false` to show the color value without the alpha
+> channel
+
+## Adding a eyedropper
+
+The eye dropper tool is a native browser feature that allows a user pick a color
+from a current page's canvas. To support this, use the
+`getEyeDropperTriggerProps(...)`.
+
+> **Note:** The eye dropper tool only works in Chrome and Edge browsers
+
+<CodeSnippet id="color-picker/with-eye-dropper.mdx" />
+
+## Usage within forms
+
+To use the color picker within a form, add the `name` context property to the
+machine and render the visually hidden input using the `hiddenInputProps`.
+
+```jsx {3}
+const [state, send] = useMachine(
+  combobox.machine({
+    name: "color-preference",
+  }),
+)
+```
+
+## Styling guide
+
+Each color picker part has a `data-part` attribute added to them to help you
+identify and style them easily.
+
+### Open and closed state
+
+When the color picker is open or closed, the `data-state` attribute is added to
+the trigger, content, control parts.
+
+```css
+[data-part="control"][data-state="open|closed"] {
+  /* styles for control open or state */
+}
+
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for control open or state */
+}
+
+[data-part="content"][data-state="open|closed"] {
+  /* styles for control open or state */
+}
+```
+
+### Focused State
+
+When the combobox is focused, the `data-focus` attribute is added to the control
+and label parts.
+
+```css
+[data-part="control"][data-focus] {
+  /* styles for control focus state */
+}
+
+[data-part="label"][data-focus] {
+  /* styles for label focus state */
+}
+```
+
+### Disabled State
+
+When the combobox is disabled, the `data-disabled` attribute is added to the
+label, control, trigger and option parts.
+
+```css
+[data-part="label"][data-disabled] {
+  /* styles for label disabled state */
+}
+
+[data-part="control"][data-disabled] {
+  /* styles for control disabled state */
+}
+
+[data-part="trigger"][data-disabled] {
+  /* styles for trigger disabled state */
+}
+
+[data-part="swatch-trigger"][data-disabled] {
+  /* styles for item disabled state */
+}
+```
+
+### Swatch State
+
+When a swatch's color value matches the color picker's value, the
+`data-state=checked` attribute is added to the swatch part.
+
+```css
+[data-part="swatch-trigger"][data-state="checked|unchecked"] {
+  /* styles for swatch's checked state */
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The color picker machine exposes the following context properties:
+
+<ContextTable name="color-picker" />
+
+### Machine API
+
+The color picker `api` exposes the following methods:
+
+<ApiTable name="color-picker" />

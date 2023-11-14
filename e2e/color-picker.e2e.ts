@@ -19,13 +19,13 @@ class Parts {
   get areaThumb(): Locator {
     return this.page.locator(part("area-thumb"))
   }
-  getChannelInput(channel: string) {
+  channelInput(channel: string) {
     return this.page.locator(`[data-part=channel-input][data-channel=${channel}]`)
   }
-  getChannelThumb(channel: string) {
+  channelThumb(channel: string) {
     return this.page.locator(`[data-part=channel-slider-thumb][data-channel=${channel}]`)
   }
-  getChannelSlider(channel: string) {
+  channelSlider(channel: string) {
     return this.page.locator(`[data-part=channel-slider][data-channel=${channel}]`)
   }
   get swatchTriggers() {
@@ -76,7 +76,7 @@ test.describe("color-picker", () => {
   })
 
   test("[closed] typing in alpha should update color", async ({ parts, page }) => {
-    const alpha = parts.getChannelInput("alpha").first()
+    const alpha = parts.channelInput("alpha").first()
     await alpha.fill("0.3")
     await page.keyboard.press("Enter")
 
@@ -108,10 +108,10 @@ test.describe("color-picker", () => {
     await expect(parts.areaThumb).toBeFocused()
 
     await page.keyboard.press("Tab")
-    await expect(parts.getChannelThumb("hue")).toBeFocused()
+    await expect(parts.channelThumb("hue")).toBeFocused()
 
     await page.keyboard.press("Tab")
-    await expect(parts.getChannelThumb("alpha")).toBeFocused()
+    await expect(parts.channelThumb("alpha")).toBeFocused()
   })
 
   test("[swatch] should set value on click swatch", async ({ parts }) => {
@@ -137,10 +137,10 @@ test.describe("color-picker", () => {
   test("hsl channel inputs should work as expected", async ({ page, parts }) => {
     await parts.trigger.click()
 
-    const hue = parts.getChannelInput("hue")
-    const saturation = parts.getChannelInput("saturation")
-    const lightness = parts.getChannelInput("lightness")
-    const alpha = parts.getChannelInput("alpha").nth(1)
+    const hue = parts.channelInput("hue")
+    const saturation = parts.channelInput("saturation")
+    const lightness = parts.channelInput("lightness")
+    const alpha = parts.channelInput("alpha").nth(1)
 
     await hue.fill("20")
     await page.keyboard.press("Enter")
@@ -162,7 +162,7 @@ test.describe("color-picker", () => {
   test("[slider] should change hue when clicking the hue bar", async ({ parts }) => {
     await parts.trigger.click()
 
-    const hue = parts.getChannelSlider("hue")
+    const hue = parts.channelSlider("hue")
     await hue.click()
     await expect(parts.valueText).not.toContainText("hsla(0, 100%, 50%, 1)")
   })
@@ -170,7 +170,7 @@ test.describe("color-picker", () => {
   test("[slider] should change alpha when clicking the alpha bar", async ({ parts }) => {
     await parts.trigger.click()
 
-    const alpha = parts.getChannelSlider("alpha")
+    const alpha = parts.channelSlider("alpha")
     await alpha.click()
     await expect(parts.valueText).not.toContainText("hsla(0, 100%, 50%, 1)")
   })

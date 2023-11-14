@@ -1,4 +1,8 @@
-export type ColorFormat = "hex" | "hexa" | "rgb" | "rgba" | "hsl" | "hsla" | "hsb" | "hsba"
+export type ColorHexFormat = "hex" | "hexa"
+
+export type ColorFormat = "rgba" | "hsla" | "hsba"
+
+export type ColorStringFormat = ColorHexFormat | ColorFormat | "rgb" | "hsl" | "hsb" | "css"
 
 export type ColorChannel = "hue" | "saturation" | "brightness" | "lightness" | "red" | "green" | "blue" | "alpha"
 
@@ -28,11 +32,9 @@ export interface ColorType {
   /** Converts the color to a JSON object. */
   toJSON(): Record<string, number>
   /** Converts the color to a string in the given format. */
-  toString(format: ColorFormat | "css"): string
+  toString(format: ColorStringFormat): string
   /** Converts the color to hex, and returns an integer representation. */
   toHexInt(): number
-  /** The output format of the color. */
-  outputFormat: ColorFormat | undefined
 
   /**
    * Returns the numeric value for a given channel.

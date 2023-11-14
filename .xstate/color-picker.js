@@ -14,6 +14,7 @@ const fetchMachine = createMachine({
   initial: ctx.open ? "open" : "idle",
   context: {
     "shouldRestoreFocus": false,
+    "closeOnSelect": false,
     "shouldRestoreFocus": false
   },
   activities: ["trackFormControl"],
@@ -21,8 +22,14 @@ const fetchMachine = createMachine({
     "VALUE.SET": {
       actions: ["setValue"]
     },
+    "FORMAT.SET": {
+      actions: ["setFormat"]
+    },
     "CHANNEL_INPUT.CHANGE": {
       actions: ["setChannelColorFromInput"]
+    },
+    "EYEDROPPER.CLICK": {
+      actions: ["openEyeDropper"]
     }
   },
   on: {
@@ -65,6 +72,9 @@ const fetchMachine = createMachine({
         "CHANNEL_INPUT.BLUR": {
           target: "idle",
           actions: ["setChannelColorFromInput"]
+        },
+        "TRIGGER.BLUR": {
+          target: "idle"
         }
       }
     },
@@ -75,9 +85,6 @@ const fetchMachine = createMachine({
         "TRIGGER.CLICK": {
           target: "idle",
           actions: ["invokeOnClose"]
-        },
-        "EYEDROPPER.CLICK": {
-          actions: ["openEyeDropper"]
         },
         "AREA.POINTER_DOWN": {
           target: "open:dragging",
@@ -149,7 +156,14 @@ const fetchMachine = createMachine({
         CLOSE: {
           target: "idle",
           actions: ["invokeOnClose"]
-        }
+        },
+        "SWATCH_TRIGGER.CLICK": [{
+          cond: "closeOnSelect",
+          target: "focused",
+          actions: ["setValue", "setReturnFocus", "invokeOnClose"]
+        }, {
+          actions: ["setValue"]
+        }]
       }
     },
     "open:dragging": {
@@ -195,6 +209,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "shouldRestoreFocus": ctx => ctx["shouldRestoreFocus"]
+    "shouldRestoreFocus": ctx => ctx["shouldRestoreFocus"],
+    "closeOnSelect": ctx => ctx["closeOnSelect"]
   }
 });

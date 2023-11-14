@@ -9,7 +9,7 @@ export const frameworks = {
   solid: { icon: AiFillCode, label: "Solid" },
 }
 
-export const FRAMEWORKS = ["react", "vue-jsx", "vue-sfc", "solid"] as const
+export const FRAMEWORKS = ["react", "solid", "vue-jsx", "vue-sfc"] as const
 
 export type Framework = keyof typeof frameworks
 

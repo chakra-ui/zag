@@ -14,13 +14,22 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./color-picker.anatomy"
 import { dom } from "./color-picker.dom"
-import type { AreaProps, MachineApi, Send, State } from "./color-picker.types"
+import type {
+  AreaProps,
+  ColorFormat,
+  MachineApi,
+  Send,
+  State,
+  SwatchTriggerProps,
+  SwatchTriggerState,
+} from "./color-picker.types"
 import { getChannelDisplayColor } from "./utils/get-channel-display-color"
 import { getChannelRange, getChannelValue } from "./utils/get-channel-input-value"
 import { getSliderBackground } from "./utils/get-slider-background"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const value = state.context.value
+  const areaValue = state.context.areaValue
   const valueAsString = state.context.valueAsString
 
   const isDisabled = state.context.isDisabled
@@ -28,9 +37,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const isDragging = state.hasTag("dragging")
   const isOpen = state.hasTag("open")
+  const isFocused = state.hasTag("focused")
 
   const getAreaChannels = (props: AreaProps) => {
-    const channels = value.getChannels()
+    const channels = areaValue.getChannels()
     return {
       xChannel: props.xChannel ?? channels[1],
       yChannel: props.yChannel ?? channels[2],
@@ -43,11 +53,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     placement: currentPlacement,
   })
 
+  function getSwatchTriggerState(props: SwatchTriggerProps): SwatchTriggerState {
+    const color = normalizeColor(props.value).toFormat(state.context.format)
+    return {
+      value: color,
+      valueAsString: color.toString("hex"),
+      isChecked: color.isEqual(value),
+      isDisabled: props.disabled || !isInteractive,
+    }
+  }
+
   return {
     isDragging,
     isOpen,
     valueAsString,
     value,
+    open() {
+      send({ type: "OPEN" })
+    },
+    close() {
+      send({ type: "CLOSE" })
+    },
     setValue(value) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })
     },
@@ -58,7 +84,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const color = value.withChannelValue(channel, channelValue)
       send({ type: "VALUE.SET", value: color, src: "set-channel" })
     },
-    format: value.outputFormat ?? value.getFormat(),
+    format: state.context.format,
     setFormat(format) {
       const formatValue = value.toFormat(format)
       send({ type: "VALUE.SET", value: formatValue, src: "set-format" })
@@ -87,6 +113,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       htmlFor: dom.getHiddenInputId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-readonly": dataAttr(state.context.readOnly),
+      "data-focus": dataAttr(isFocused),
       onClick(event) {
         event.preventDefault()
         const inputEl = query(dom.getControlEl(state.context), "[data-channel=hex]")
@@ -100,20 +127,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       "data-disabled": dataAttr(isDisabled),
       "data-readonly": dataAttr(state.context.readOnly),
+      "data-state": isOpen ? "open" : "closed",
+      "data-focus": dataAttr(isFocused),
     }),
 
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
       dir: state.context.dir,
+      disabled: isDisabled,
+      "aria-label": `select color. current color is ${valueAsString}`,
       "aria-controls": dom.getContentId(state.context),
       "aria-labelledby": dom.getLabelId(state.context),
       "data-disabled": dataAttr(isDisabled),
       "data-readonly": dataAttr(state.context.readOnly),
       "data-placement": currentPlacement,
+      "aria-expanded": dataAttr(isOpen),
+      "data-state": isOpen ? "open" : "closed",
+      "data-focus": dataAttr(isFocused),
       type: "button",
       onClick() {
+        if (!isInteractive) return
         send({ type: "TRIGGER.CLICK" })
+      },
+      onBlur() {
+        if (!isInteractive) return
+        send({ type: "TRIGGER.BLUR" })
       },
       style: {
         position: "relative",
@@ -132,12 +171,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getContentId(state.context),
       dir: state.context.dir,
       "data-placement": currentPlacement,
+      "data-state": isOpen ? "open" : "closed",
       hidden: !isOpen,
     }),
 
     getAreaProps(props = {}) {
       const { xChannel, yChannel } = getAreaChannels(props)
-      const { areaStyles } = getColorAreaGradient(value, {
+      const { areaStyles } = getColorAreaGradient(areaValue, {
         xChannel,
         yChannel,
         dir: state.context.dir,
@@ -170,7 +210,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getAreaBackgroundProps(props = {}) {
       const { xChannel, yChannel } = getAreaChannels(props)
-      const { areaGradientStyles } = getColorAreaGradient(value, {
+      const { areaGradientStyles } = getColorAreaGradient(areaValue, {
         xChannel,
         yChannel,
         dir: state.context.dir,
@@ -192,8 +232,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { xChannel, yChannel } = getAreaChannels(props)
       const channel = { xChannel, yChannel }
 
-      const x = value.getChannelValuePercent(xChannel)
-      const y = 1 - value.getChannelValuePercent(yChannel)
+      const xPercent = areaValue.getChannelValuePercent(xChannel)
+      const yPercent = 1 - areaValue.getChannelValuePercent(yChannel)
+
+      const xValue = areaValue.getChannelValue(xChannel)
+      const yValue = areaValue.getChannelValue(yChannel)
 
       return normalize.element({
         ...parts.areaThumb.attrs,
@@ -201,17 +244,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         tabIndex: isDisabled ? undefined : 0,
         "data-disabled": dataAttr(isDisabled),
-        role: "presentation",
+        role: "slider",
+        "aria-valuemin": 0,
+        "aria-valuemax": 100,
+        "aria-valuenow": xValue,
+        "aria-label": `${xChannel} and ${yChannel}`,
+        "aria-roledescription": "2d slider",
+        "aria-valuetext": `${xChannel} ${xValue}, ${yChannel} ${yValue}`,
         style: {
           position: "absolute",
-          left: `${x * 100}%`,
-          top: `${y * 100}%`,
+          left: `${xPercent * 100}%`,
+          top: `${yPercent * 100}%`,
           transform: "translate(-50%, -50%)",
           touchAction: "none",
           forcedColorAdjust: "none",
-          background: value.withChannelValue("alpha", 1).toString("css"),
+          background: areaValue.withChannelValue("alpha", 1).toString("css"),
         },
         onFocus() {
+          if (!isInteractive) return
           send({ type: "AREA.FOCUS", id: "area", channel })
         },
         onKeyDown(event) {
@@ -313,7 +363,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             orientation,
             channel,
             dir: state.context.dir,
-            value: value,
+            value: areaValue,
           }),
         },
       })
@@ -321,8 +371,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getChannelSliderThumbProps(props) {
       const { orientation = "horizontal", channel } = props
-      const { minValue, maxValue, step: stepValue } = value.getChannelRange(channel)
-      const channelValue = value.getChannelValue(channel)
+      const { minValue, maxValue, step: stepValue } = areaValue.getChannelRange(channel)
+      const channelValue = areaValue.getChannelValue(channel)
 
       const offset = (channelValue - minValue) / (maxValue - minValue)
 
@@ -345,10 +395,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-valuemax": maxValue,
         "aria-valuemin": minValue,
         "aria-valuenow": channelValue,
+        "aria-valuetext": `${channel} ${channelValue}`,
         style: {
           forcedColorAdjust: "none",
           position: "absolute",
-          background: getChannelDisplayColor(value, channel).toString("css"),
+          background: getChannelDisplayColor(areaValue, channel).toString("css"),
           ...placementStyles,
         },
         onFocus() {
@@ -410,6 +461,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: isTextField ? "text" : "number",
         "data-channel": channel,
         "aria-label": channel,
+        spellCheck: false,
+        autoComplete: "off",
         disabled: isDisabled,
         "data-disabled": dataAttr(isDisabled),
         readOnly: state.context.readOnly,
@@ -418,21 +471,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         max: range?.maxValue,
         step: range?.step,
         onBeforeInput(event) {
-          if (isTextField) return
+          if (isTextField || !isInteractive) return
           const value = event.currentTarget.value
           if (value.match(/[^0-9.]/g)) {
             event.preventDefault()
           }
         },
         onFocus(event) {
+          if (!isInteractive) return
           send({ type: "CHANNEL_INPUT.FOCUS", channel })
           event.target.select()
         },
         onBlur(event) {
+          if (!isInteractive) return
           const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber
           send({ type: "CHANNEL_INPUT.BLUR", channel, value, isTextField })
         },
         onKeyDown(event) {
+          if (!isInteractive) return
           if (event.key === "Enter") {
             const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber
             send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
@@ -474,18 +530,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "group",
     }),
 
+    getSwatchTriggerState,
+
     getSwatchTriggerProps(props) {
-      const { value: valueProp } = props
-      const color = normalizeColor(valueProp).toFormat(value.getFormat())
+      const triggerState = getSwatchTriggerState(props)
       return normalize.button({
         ...parts.swatchTrigger.attrs,
-        disabled: isDisabled,
+        disabled: triggerState.isDisabled,
         dir: state.context.dir,
         type: "button",
-        "data-value": color.toString("hex"),
+        "aria-label": `select ${triggerState.valueAsString} as the color`,
+        "data-state": triggerState.isChecked ? "checked" : "unchecked",
+        "data-value": triggerState.valueAsString,
+        "data-disabled": dataAttr(triggerState.isDisabled),
         onClick() {
-          if (!isInteractive) return
-          send({ type: "VALUE.SET", value: color })
+          if (triggerState.isDisabled) return
+          send({ type: "SWATCH_TRIGGER.CLICK", value: triggerState.value })
         },
         style: {
           position: "relative",
@@ -493,20 +553,66 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
+    getSwatchIndicatorProps(props) {
+      const triggerState = getSwatchTriggerState(props)
+      return normalize.element({
+        ...parts.swatchIndicator.attrs,
+        dir: state.context.dir,
+        "aria-hidden": true,
+        "data-state": triggerState.isChecked ? "open" : "closed",
+      })
+    },
+
     getSwatchProps(props) {
-      const { value: valueProp, respectAlpha = true } = props
-      const colorValue = normalizeColor(valueProp)
-      const color = colorValue.toFormat(value.getFormat())
+      const { respectAlpha = true } = props
+      const triggerState = getSwatchTriggerState(props)
       return normalize.element({
         ...parts.swatch.attrs,
         dir: state.context.dir,
-        "data-state": colorValue.isEqual(value) ? "selected" : "unselected",
-        "data-value": color.toString("hex"),
+        "data-state": triggerState.isChecked ? "checked" : "unchecked",
+        "data-value": triggerState.valueAsString,
         style: {
           position: "relative",
-          background: color.toString(respectAlpha ? "css" : "hex"),
+          background: triggerState.value.toString(respectAlpha ? "css" : "hex"),
         },
       })
     },
+
+    formatTriggerProps: normalize.button({
+      ...parts.formatTrigger.attrs,
+      dir: state.context.dir,
+      type: "button",
+      "aria-label": `change color format to ${getNextFormat(state.context.format)}`,
+      onClick(event) {
+        if (event.currentTarget.disabled) return
+        const nextFormat = getNextFormat(state.context.format)
+        send({ type: "FORMAT.SET", format: nextFormat, src: "format-trigger" })
+      },
+    }),
+
+    formatSelectProps: normalize.select({
+      ...parts.formatSelect.attrs,
+      "aria-label": "change color format",
+      dir: state.context.dir,
+      defaultValue: state.context.format,
+      disabled: isDisabled,
+      onChange(event) {
+        const format = assertFormat(event.currentTarget.value)
+        send({ type: "FORMAT.SET", format, src: "format-select" })
+      },
+    }),
   }
+}
+
+const formats: ColorFormat[] = ["hsba", "hsla", "rgba"]
+const formatRegex = new RegExp(`^(${formats.join("|")})$`)
+
+function getNextFormat(format: ColorFormat) {
+  const index = formats.indexOf(format)
+  return formats[index + 1] ?? formats[0]
+}
+
+function assertFormat(format: string) {
+  if (formatRegex.test(format)) return format as ColorFormat
+  throw new Error(`Unsupported color format: ${format}`)
 }

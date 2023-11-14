@@ -1,0 +1,45 @@
+```jsx {16-38}
+const ColorPicker = () => {
+  const [state, send] = useMachine(
+    colorPicker.machine({
+      id: useId(),
+      value: colorPicker.parse("hsl(0, 100%, 50%)"),
+    }),
+  )
+
+  const api = colorPicker.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      {/* ... */}
+      <div {...api.positionerProps}>
+        <div {...api.contentProps}>
+          {api.format === "rgba" && (
+            <div>
+              <div>
+                <span>R</span>
+                <input {...api.getChannelInputProps({ channel: "red" })} />
+              </div>
+
+              <div>
+                <span>G</span>
+                <input {...api.getChannelInputProps({ channel: "green" })} />
+              </div>
+
+              <div>
+                <span>B</span>
+                <input {...api.getChannelInputProps({ channel: "blue" })} />
+              </div>
+
+              <div>
+                <span>A</span>
+                <input {...api.getChannelInputProps({ channel: "alpha" })} />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+```

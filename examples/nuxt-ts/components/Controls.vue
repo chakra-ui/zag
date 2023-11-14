@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ControlRecord, ControlValue } from "@zag-js/shared"
+import { type ControlRecord, type ControlValue } from "@zag-js/shared"
 
 defineProps<{ config: ControlRecord; state: ControlValue<any> }>()
 </script>

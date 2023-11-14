@@ -2,7 +2,7 @@ import { clampValue, toFixedNumber } from "@zag-js/numeric-range"
 import { Color } from "./color"
 import { HSBColor } from "./hsb-color"
 import { HSLColor } from "./hsl-color"
-import type { ColorChannel, ColorChannelRange, ColorFormat, ColorType } from "./types"
+import type { ColorChannel, ColorChannelRange, ColorFormat, ColorStringFormat, ColorType } from "./types"
 
 export class RGBColor extends Color {
   constructor(
@@ -40,7 +40,7 @@ export class RGBColor extends Color {
     return colors.length < 3 ? undefined : new RGBColor(colors[0], colors[1], colors[2], colors[3] ?? 1)
   }
 
-  toString(format: ColorFormat | "css") {
+  toString(format: ColorStringFormat) {
     switch (format) {
       case "hex":
         return (
@@ -68,6 +68,10 @@ export class RGBColor extends Color {
       case "css":
       case "rgba":
         return `rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})`
+      case "hsl":
+        return this.toHSL().toString("hsl")
+      case "hsb":
+        return this.toHSB().toString("hsb")
       default:
         return this.toFormat(format).toString(format)
     }
@@ -75,15 +79,10 @@ export class RGBColor extends Color {
 
   toFormat(format: ColorFormat): ColorType {
     switch (format) {
-      case "hex":
-      case "hexa":
-      case "rgb":
       case "rgba":
         return this
-      case "hsb":
       case "hsba":
         return this.toHSB()
-      case "hsl":
       case "hsla":
         return this.toHSL()
       default:
@@ -196,7 +195,7 @@ export class RGBColor extends Color {
     }
   }
 
-  toJSON(): Record<string, number> {
+  toJSON(): Record<"r" | "g" | "b" | "a", number> {
     return { r: this.red, g: this.green, b: this.blue, a: this.alpha }
   }
 

@@ -1,0 +1,53 @@
+```jsx
+import * as colorPicker from "@zag-js/color-picker"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+function ColorPicker() {
+  const [state, send] = useMachine(
+    colorPicker.machine({
+      id: createUniqueId(),
+      value: colorPicker.parse("hsl(0, 100%, 50%)"),
+    }),
+  )
+
+  const api = createMemo(() => colorPicker.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <label {...api().labelProps}>Select Color: {api.valueAsString}</label>
+
+      <input {...api().hiddenInputProps} />
+
+      <div {...api().controlProps}>
+        <button {...api().triggerProps}>
+          <div {...api().getTransparencyGridProps({ size: "10px" })} />
+          <div {...api().getSwatchProps({ value: api.value })} />
+        </button>
+        <input {...api().getChannelInputProps({ channel: "hex" })} />
+        <input {...api().getChannelInputProps({ channel: "alpha" })} />
+      </div>
+
+      <div {...api().positionerProps}>
+        <div {...api().contentProps}>
+          <div {...api().getAreaProps()}>
+            <div {...api().getAreaBackgroundProps()} />
+            <div {...api().getAreaThumbProps()} />
+          </div>
+
+          <div {...api().getChannelSliderProps({ channel: "hue" })}>
+            <div {...api().getChannelSliderTrackProps({ channel: "hue" })} />
+            <div {...api().getChannelSliderThumbProps({ channel: "hue" })} />
+          </div>
+
+          <div {...api().getChannelSliderProps({ channel: "alpha" })}>
+            <div {...api().getTransparencyGridProps({ size: "12px" })} />
+            <div {...api().getChannelSliderTrackProps({ channel: "alpha" })} />
+            <div {...api().getChannelSliderThumbProps({ channel: "alpha" })} />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+```

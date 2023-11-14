@@ -1,0 +1,25 @@
+```jsx {16-18}
+const ColorPicker = () => {
+  const [state, send] = useMachine(
+    colorPicker.machine({
+      id: useId(),
+      value: colorPicker.parse("hsl(0, 100%, 50%)"),
+    }),
+  )
+
+  const api = colorPicker.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      {/* ... */}
+      <div {...api.positionerProps}>
+        <div {...api.contentProps}>
+          <button {...api.eyeDropperTriggerProps}>
+            <EyeDropIcon />
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
