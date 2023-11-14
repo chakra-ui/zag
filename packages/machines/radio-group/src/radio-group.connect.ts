@@ -63,6 +63,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isGroupDisabled),
       "aria-orientation": state.context.orientation,
       dir: state.context.dir,
+      style: {
+        position: "relative",
+      },
     }),
 
     labelProps: normalize.element({
