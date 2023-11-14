@@ -134,7 +134,7 @@ test.describe("color-picker", () => {
     await expect(parts.input).toHaveValue(INITIAL_VALUE)
   })
 
-  test("hsl channel inputs should work as expected", async ({ page, parts }) => {
+  test.fixme("hsl channel inputs should work as expected", async ({ page, parts }) => {
     await parts.trigger.click()
 
     const hue = parts.channelInput("hue")

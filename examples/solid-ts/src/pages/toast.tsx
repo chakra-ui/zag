@@ -1,6 +1,6 @@
-import { useActor, useMachine, normalizeProps } from "@zag-js/solid"
+import { useActor, useMachine, normalizeProps, PropTypes } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
-import { createMemo, createSignal, createUniqueId, For } from "solid-js"
+import { Accessor, createMemo, createSignal, createUniqueId, For, JSX } from "solid-js"
 import { toastControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -22,7 +22,13 @@ function Loader() {
   )
 }
 
-function ToastItem(props: { actor: toast.Service }) {
+interface Options {
+  render: (api: Accessor<toast.Api<PropTypes, Options>>) => JSX.Element
+  title: JSX.Element
+  description: JSX.Element
+}
+
+function ToastItem(props: { actor: toast.Service<Options> }) {
   const [state, send] = useActor(props.actor)
   const api = createMemo(() => toast.connect(state, send, normalizeProps))
 
@@ -32,15 +38,15 @@ function ToastItem(props: { actor: toast.Service }) {
     "data-type": state.context.type,
     style: {
       opacity: api().isVisible ? 1 : 0,
-      transformOrigin: api().isRtl ? "right" : "left",
-      animationName: api().type === "loading" ? "none" : undefined,
-      animationPlayState: api().isPaused ? "paused" : "running",
-      animationDuration: `${state.context.duration}ms`,
+      "transform-origin": api().isRtl ? "right" : "left",
+      "animation-name": api().type === "loading" ? "none" : undefined,
+      "animation-play-state": api().isPaused ? "paused" : "running",
+      "animation-duration": `${state.context.duration}ms`,
     },
   }))
 
   if (state.context.render) {
-    return state.context.render(api())
+    return state.context.render(api)
   }
 
   return (
@@ -57,7 +63,7 @@ export default function Page() {
   const controls = useControls(toastControls)
 
   const [state, send] = useMachine(
-    toast.group.machine({
+    toast.group.machine<Options>({
       id: createUniqueId(),
       placement: "top-start",
     }),
