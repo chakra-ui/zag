@@ -117,8 +117,8 @@ importers:
         specifier: 7.2.0
         version: 7.2.0(@swc/core@1.3.95)(typescript@5.2.2)
       tsx:
-        specifier: 3.14.0
-        version: 3.14.0
+        specifier: 4.1.2
+        version: 4.1.2
       typescript:
         specifier: 5.2.2
         version: 5.2.2
@@ -16288,8 +16288,9 @@ packages:
       - ts-node
     dev: false
 
-  /tsx@3.14.0:
-    resolution: {integrity: sha512-xHtFaKtHxM9LOklMmJdI3BEnQq/D5F73Of2E1GDrITi9sgoVkvIsrQUTY1G8FlmGtA+awCI4EBlTRRYxkL2sRg==}
+  /tsx@4.1.2:
+    resolution: {integrity: sha512-1spM1bFV6MP2s4tO4tDC7g52fsaFdtEWdO4GfGdqi20qUgPbnAJqixOyIAvCSx1DDj3YIUB4CD06owTWUsOAuQ==}
+    engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
       esbuild: 0.18.20
