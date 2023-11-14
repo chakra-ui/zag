@@ -91,11 +91,11 @@ export function mergeProps<T extends MaybeAccessor<PropsInput>[]>(...sources: T)
           typeof value === "function"
             ? value
             : // jsx event handlers can be tuples of [callback, arg]
-            Array.isArray(value)
-            ? value.length === 1
-              ? value[0]
-              : value[0].bind(void 0, value[1])
-            : void 0
+              Array.isArray(value)
+              ? value.length === 1
+                ? value[0]
+                : value[0].bind(void 0, value[1])
+              : void 0
 
         if (callback) listeners[name] ? listeners[name]!.push(callback) : (listeners[name] = [callback])
         else delete listeners[name]
