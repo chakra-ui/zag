@@ -77,7 +77,7 @@
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
     "vite": "4.5.0",
-    "vue": "3.3.7",
+    "vue": "3.3.8",
     "vue-router": "4.2.5"
   },
   "devDependencies": {

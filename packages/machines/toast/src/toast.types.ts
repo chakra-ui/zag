@@ -17,7 +17,28 @@ export type Type = "success" | "error" | "loading" | "info" | "custom"
 
 export type Placement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
 
-export interface GlobalToastOptions {
+export interface ToastJsxOptions {
+  render?: (api: any) => any
+  title?: any
+  description?: any
+}
+
+export interface DefaultToastJsxOptions {
+  /**
+   * Custom function to render the toast element.
+   */
+  render?: (api: MachineApi<any, DefaultToastJsxOptions>) => any
+  /**
+   * The title of the toast.
+   */
+  title?: string
+  /**
+   * The description of the toast.
+   */
+  description?: string
+}
+
+export type GlobalToastOptions<T extends ToastJsxOptions> = Pick<T, "render"> & {
   /**
    * Whether to pause toast when the user leaves the browser tab
    */
@@ -39,13 +60,9 @@ export interface GlobalToastOptions {
    * The placement of the toast
    */
   placement?: Placement
-  /**
-   * Custom function to render the toast element.
-   */
-  render?: (options: MachineApi<any>) => any
 }
 
-export interface ToastOptions {
+export type ToastOptions<T extends ToastJsxOptions = DefaultToastJsxOptions> = T & {
   /**
    * The unique id of the toast
    */
@@ -54,14 +71,6 @@ export interface ToastOptions {
    * The type of the toast
    */
   type: Type
-  /**
-   * The message of the toast
-   */
-  title?: string
-  /**
-   * The description of the toast
-   */
-  description?: string
   /**
    * Function called when the toast has been closed and removed
    */
@@ -80,67 +89,68 @@ export interface ToastOptions {
   onUpdate?: VoidFunction
 }
 
-export type Options = Partial<ToastOptions & GlobalToastOptions>
+export type Options<T extends ToastJsxOptions> = Partial<ToastOptions<T> & GlobalToastOptions<T>>
 
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export interface MachineContext
-  extends GlobalToastOptions,
-    RootProperties,
-    CommonProperties,
-    Omit<ToastOptions, "removeDelay"> {
-  /**
-   * The duration for the toast to kept alive before it is removed.
-   * Useful for exit transitions.
-   */
-  removeDelay: number
-  /**
-   * The document's text/writing direction.
-   */
-  dir?: Direction
-  /**
-   * The time the toast was created
-   */
-  createdAt: number
-  /**
-   * The time left before the toast is removed
-   */
-  remaining: number
-}
+export type MachineContext<T extends ToastJsxOptions = DefaultToastJsxOptions> = GlobalToastOptions<T> &
+  RootProperties &
+  CommonProperties &
+  Omit<ToastOptions<T>, "removeDelay"> & {
+    /**
+     * The duration for the toast to kept alive before it is removed.
+     * Useful for exit transitions.
+     */
+    removeDelay: number
+    /**
+     * The document's text/writing direction.
+     */
+    dir?: Direction
+    /**
+     * The time the toast was created
+     */
+    createdAt: number
+    /**
+     * The time left before the toast is removed
+     */
+    remaining: number
+  }
 
 export interface MachineState {
   value: "active" | "active:temp" | "dismissing" | "inactive" | "persist"
   tags: "visible" | "paused" | "updating"
 }
 
-export type State = S.State<MachineContext, MachineState>
+export type State<T extends ToastJsxOptions> = S.State<MachineContext<T>, MachineState>
 
 export type Send = S.Send
 
-export type Service = Machine<MachineContext, MachineState>
+export type Service<T extends ToastJsxOptions = DefaultToastJsxOptions> = Machine<MachineContext<T>, MachineState>
 
-interface GroupPublicContext extends GlobalToastOptions, DirectionProperty, CommonProperties {
-  /**
-   * The gutter or spacing between toasts
-   */
-  gutter: string
-  /**
-   * The z-index applied to each toast group
-   */
-  zIndex: number
-  /**
-   * The maximum number of toasts that can be shown at once
-   */
-  max: number
-  /**
-   * The offset from the safe environment edge of the viewport
-   */
-  offsets: string | Record<"left" | "right" | "bottom" | "top", string>
-}
+type GroupPublicContext<T extends ToastJsxOptions> = GlobalToastOptions<T> &
+  DirectionProperty &
+  CommonProperties & {
+    /**
+     * The gutter or spacing between toasts
+     */
+    gutter: string
+    /**
+     * The z-index applied to each toast group
+     */
+    zIndex: number
+    /**
+     * The maximum number of toasts that can be shown at once
+     */
+    max: number
+    /**
+     * The offset from the safe environment edge of the viewport
+     */
+    offsets: string | Record<"left" | "right" | "bottom" | "top", string>
+  }
 
-export type UserDefinedGroupContext = RequiredBy<GroupPublicContext, "id">
+export type UserDefinedGroupContext<T extends ToastJsxOptions> = RequiredBy<GroupPublicContext<T>, "id">
 
 type GroupComputedContext = Readonly<{
   /**
@@ -150,17 +160,20 @@ type GroupComputedContext = Readonly<{
   count: number
 }>
 
-type GroupPrivateContext = Context<{
+type GroupPrivateContext<T extends ToastJsxOptions> = Context<{
   /**
    * @internal
    * The child toast machines (spawned by the toast group)
    */
-  toasts: Service[]
+  toasts: Service<T>[]
 }>
 
-export interface GroupMachineContext extends GroupPublicContext, GroupComputedContext, GroupPrivateContext {}
+export interface GroupMachineContext<T extends ToastJsxOptions = DefaultToastJsxOptions>
+  extends GroupPublicContext<T>,
+    GroupComputedContext,
+    GroupPrivateContext<T> {}
 
-export type GroupState = S.State<GroupMachineContext>
+export type GroupState<T extends ToastJsxOptions = DefaultToastJsxOptions> = S.State<GroupMachineContext<T>>
 
 export type GroupSend = S.Send
 
@@ -170,10 +183,10 @@ export type GroupSend = S.Send
 
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
 
-export interface PromiseOptions<Value> {
-  loading: ToastOptions
-  success: MaybeFunction<ToastOptions, Value>
-  error: MaybeFunction<ToastOptions, Error>
+export interface PromiseOptions<V, O extends ToastJsxOptions = DefaultToastJsxOptions> {
+  loading: ToastOptions<O>
+  success: MaybeFunction<ToastOptions<O>, V>
+  error: MaybeFunction<ToastOptions<O>, Error>
 }
 
 export interface GroupProps {
@@ -181,7 +194,7 @@ export interface GroupProps {
   label?: string
 }
 
-export interface GroupMachineApi<T extends PropTypes = PropTypes> {
+export interface GroupMachineApi<T extends PropTypes = PropTypes, R extends ToastJsxOptions = DefaultToastJsxOptions> {
   /**
    * The total number of toasts
    */
@@ -189,11 +202,11 @@ export interface GroupMachineApi<T extends PropTypes = PropTypes> {
   /**
    * The active toasts
    */
-  toasts: Service[]
+  toasts: Service<R>[]
   /**
    * The active toasts by placement
    */
-  toastsByPlacement: Partial<Record<Placement, Service[]>>
+  toastsByPlacement: Partial<Record<Placement, Service<R>[]>>
   /**
    * Returns whether the toast id is visible
    */
@@ -201,27 +214,27 @@ export interface GroupMachineApi<T extends PropTypes = PropTypes> {
   /**
    * Function to create a toast.
    */
-  create(options: Options): string | undefined
+  create(options: Options<R>): string | undefined
   /**
    * Function to create or update a toast.
    */
-  upsert(options: Options): string | undefined
+  upsert(options: Options<R>): string | undefined
   /**
    * Function to update a toast's options by id.
    */
-  update(id: string, options: Options): void
+  update(id: string, options: Options<R>): void
   /**
    * Function to create a success toast.
    */
-  success(options: Options): string | undefined
+  success(options: Options<R>): string | undefined
   /**
    * Function to create an error toast.
    */
-  error(options: Options): string | undefined
+  error(options: Options<R>): string | undefined
   /**
    * Function to create a loading toast.
    */
-  loading(options: Options): string | undefined
+  loading(options: Options<R>): string | undefined
   /**
    * Function to resume a toast by id.
    */
@@ -249,27 +262,22 @@ export interface GroupMachineApi<T extends PropTypes = PropTypes> {
    * - When the promise resolves, the toast will be updated with the success options.
    * - When the promise rejects, the toast will be updated with the error options.
    */
-  promise<T>(promise: Promise<T>, options: PromiseOptions<T>, shared?: Partial<ToastOptions>): Promise<T>
+  promise<T>(promise: Promise<T>, options: PromiseOptions<T, R>, shared?: Partial<ToastOptions<R>>): Promise<T>
   /**
    * Function to subscribe to the toast group.
    */
-  subscribe(callback: (toasts: Service[]) => void): VoidFunction
+  subscribe(callback: (toasts: Service<R>[]) => void): VoidFunction
   getGroupProps(options: GroupProps): T["element"]
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export type MachineApi<T extends PropTypes = PropTypes, R extends ToastJsxOptions = DefaultToastJsxOptions> = Pick<
+  R,
+  "title" | "description"
+> & {
   /**
    * The type of the toast.
    */
   type: Type
-  /**
-   * The title of the toast.
-   */
-  title: string | undefined
-  /**
-   *  The description of the toast.
-   */
-  description: string | undefined
   /**
    * The current placement of the toast.
    */

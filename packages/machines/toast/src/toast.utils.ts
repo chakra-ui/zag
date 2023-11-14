@@ -1,8 +1,8 @@
 import type { Style } from "@zag-js/types"
-import type { GroupMachineContext, MachineContext, Placement, Service, Type } from "./toast.types"
+import type { GroupMachineContext, MachineContext, Placement, Service, ToastJsxOptions, Type } from "./toast.types"
 
-export function getToastsByPlacement(toasts: Service[]) {
-  const result: Partial<Record<Placement, Service[]>> = {}
+export function getToastsByPlacement<T extends ToastJsxOptions>(toasts: Service<T>[]) {
+  const result: Partial<Record<Placement, Service<T>[]>> = {}
 
   for (const toast of toasts) {
     const placement = toast.state.context.placement!
@@ -25,7 +25,10 @@ export function getToastDuration(duration: number | undefined, type: MachineCont
   return duration ?? defaultTimeouts[type]
 }
 
-export function getGroupPlacementStyle(ctx: GroupMachineContext, placement: Placement): Style {
+export function getGroupPlacementStyle<T extends ToastJsxOptions>(
+  ctx: GroupMachineContext<T>,
+  placement: Placement,
+): Style {
   const offset = ctx.offsets
   const computedOffset =
     typeof offset === "string" ? { left: offset, right: offset, bottom: offset, top: offset } : offset
