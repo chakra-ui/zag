@@ -123,7 +123,7 @@ export interface MachineState {
   tags: "visible" | "paused" | "updating"
 }
 
-export type State<T extends GenericOptions> = S.State<MachineContext<T>, MachineState>
+export type State<T extends GenericOptions = DefaultGenericOptions> = S.State<MachineContext<T>, MachineState>
 
 export type Send = S.Send
 
