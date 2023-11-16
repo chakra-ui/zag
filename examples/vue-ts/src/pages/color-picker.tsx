@@ -33,6 +33,7 @@ export default defineComponent({
       colorPicker.machine({
         id: "1",
         name: "color",
+        format: "hsla",
         value: colorPicker.parse("hsl(0, 100%, 50%)"),
       }),
       {
@@ -76,6 +77,17 @@ export default defineComponent({
                         <div {...api.getAreaThumbProps()} />
                       </div>
 
+                      <div {...api.getChannelSliderProps({ channel: "hue" })}>
+                        <div {...api.getChannelSliderTrackProps({ channel: "hue" })} />
+                        <div {...api.getChannelSliderThumbProps({ channel: "hue" })} />
+                      </div>
+
+                      <div {...api.getChannelSliderProps({ channel: "alpha" })}>
+                        <div {...api.getTransparencyGridProps({ size: "12px" })} />
+                        <div {...api.getChannelSliderTrackProps({ channel: "alpha" })} />
+                        <div {...api.getChannelSliderThumbProps({ channel: "alpha" })} />
+                      </div>
+
                       <Show when={api.format.startsWith("hsl")}>
                         <div style={{ display: "flex", width: "100%" }}>
                           <span>H</span> <input {...api.getChannelInputProps({ channel: "hue" })} />
@@ -102,19 +114,6 @@ export default defineComponent({
                           <span>A</span> <input {...api.getChannelInputProps({ channel: "alpha" })} />
                         </div>
                       </Show>
-
-                      <div {...api.getChannelSliderProps({ channel: "alpha" })}>
-                        <div {...api.getTransparencyGridProps({ size: "12px" })} />
-                        <div {...api.getChannelSliderTrackProps({ channel: "alpha" })} />
-                        <div {...api.getChannelSliderThumbProps({ channel: "alpha" })} />
-                      </div>
-
-                      <div style={{ display: "flex", width: "100%" }}>
-                        <input {...api.getChannelInputProps({ channel: "hue" })} />
-                        <input {...api.getChannelInputProps({ channel: "saturation" })} />
-                        <input {...api.getChannelInputProps({ channel: "lightness" })} />
-                        <input {...api.getChannelInputProps({ channel: "alpha" })} />
-                      </div>
 
                       <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                         <div style={{ position: "relative" }}>

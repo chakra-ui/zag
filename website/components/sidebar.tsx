@@ -1,5 +1,5 @@
 import { Icon } from "@chakra-ui/icon"
-import { Box, Flex, HStack, Stack } from "@chakra-ui/layout"
+import { Badge, Box, Flex, HStack, Stack } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
 import { formatUrl } from "lib/pagination-utils"
 import Link, { type LinkProps } from "next/link"
@@ -8,7 +8,7 @@ import React from "react"
 import sidebar from "sidebar.config"
 import { useFramework } from "./framework"
 
-type DocLinkProps = {
+interface DocLinkProps {
   href: LinkProps["href"]
   children: React.ReactNode
 }
@@ -71,7 +71,19 @@ export function Sidebar() {
                           key={subItem.id + index}
                           href={subItem.href ?? href}
                         >
-                          {subItem.label}
+                          {subItem.label}{" "}
+                          {subItem.new && (
+                            <Badge
+                              bg="purple.500"
+                              color="white"
+                              ms="2"
+                              px="1"
+                              rounded="sm"
+                              fontSize="xs"
+                            >
+                              New
+                            </Badge>
+                          )}
                         </DocLink>
                       )
                     }

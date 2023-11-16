@@ -2,7 +2,7 @@ import { clampValue, mod, toFixedNumber } from "@zag-js/numeric-range"
 import { Color } from "./color"
 import { HSBColor } from "./hsb-color"
 import { RGBColor } from "./rgb-color"
-import type { ColorChannel, ColorChannelRange, ColorFormat, ColorType } from "./types"
+import type { ColorChannel, ColorChannelRange, ColorFormat, ColorStringFormat, ColorType } from "./types"
 
 export const HSL_REGEX =
   /hsl\(([-+]?\d+(?:.\d+)?\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d+(?:.\d+)?%)\)|hsla\(([-+]?\d+(?:.\d+)?\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d+(?:.\d+)?%\s*,\s*[-+]?\d(.\d+)?)\)/
@@ -25,7 +25,7 @@ export class HSLColor extends Color {
     }
   }
 
-  toString(format: ColorFormat | "css") {
+  toString(format: ColorStringFormat) {
     switch (format) {
       case "hex":
         return this.toRGB().toString("hex")
@@ -38,19 +38,21 @@ export class HSLColor extends Color {
         return `hsla(${this.hue}, ${toFixedNumber(this.saturation, 2)}%, ${toFixedNumber(this.lightness, 2)}%, ${
           this.alpha
         })`
+      case "hsb":
+        return this.toHSB().toString("hsb")
+      case "rgb":
+        return this.toRGB().toString("rgb")
       default:
         return this.toFormat(format).toString(format)
     }
   }
+
   toFormat(format: ColorFormat): ColorType {
     switch (format) {
-      case "hsl":
       case "hsla":
         return this
-      case "hsb":
       case "hsba":
         return this.toHSB()
-      case "rgb":
       case "rgba":
         return this.toRGB()
       default:
@@ -113,7 +115,7 @@ export class HSLColor extends Color {
     }
   }
 
-  toJSON(): Record<string, number> {
+  toJSON(): Record<"h" | "s" | "l" | "a", number> {
     return { h: this.hue, s: this.saturation, l: this.lightness, a: this.alpha }
   }
 

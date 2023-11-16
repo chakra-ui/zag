@@ -13,6 +13,7 @@ export const dom = createScope({
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `color-picker:${ctx.id}:trigger`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `color-picker:${ctx.id}:content`,
   getPositionerId: (ctx: Ctx) => `color-picker:${ctx.id}:positioner`,
+  getFormatSelectId: (ctx: Ctx) => `color-picker:${ctx.id}:format-select`,
 
   getAreaId: (ctx: Ctx) => ctx.ids?.area ?? `color-picker:${ctx.id}:area`,
   getAreaGradientId: (ctx: Ctx) => ctx.ids?.areaGradient ?? `color-picker:${ctx.id}:area-gradient`,
@@ -33,6 +34,7 @@ export const dom = createScope({
       ...queryAll<HTMLInputElement>(dom.getControlEl(ctx), `input[data-channel="${channel}"]`),
     ]
   },
+  getFormatSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getFormatSelectId(ctx)),
 
   getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
   getAreaEl: (ctx: Ctx) => dom.getById(ctx, dom.getAreaId(ctx)),
@@ -64,8 +66,7 @@ export const dom = createScope({
   getFirstFocusableEl: (ctx: Ctx) => getFirstFocusable(dom.getContentEl(ctx), "if-empty"),
   getInitialFocusEl: (ctx: Ctx): HTMLElement | undefined => {
     let el: any = runIfFn(ctx.initialFocusEl)
-    if (!el && ctx.autoFocus) el = dom.getFirstFocusableEl(ctx)
-    if (!el) el = dom.getContentEl(ctx)
+    el = dom.getFirstFocusableEl(ctx) ?? dom.getContentEl(ctx)
     return el
   },
 })

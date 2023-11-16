@@ -1,8 +1,9 @@
 import { Box } from "@chakra-ui/layout"
 import { getSnippetDoc } from "lib/contentlayer-utils"
+import * as React from "react"
 import { useMDX } from "./mdx-components"
 
-export function CodeArea({ slug }: { slug: string }) {
+export function CodeArea({ slug }: { slug: string }): React.JSX.Element {
   const doc = getSnippetDoc(slug)
   const Component = useMDX(doc?.body.code ?? "")
   return (

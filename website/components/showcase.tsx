@@ -10,6 +10,7 @@ import { Switch } from "components/machines/switch"
 import { Accordion } from "./machines/accordion"
 import { Avatar } from "./machines/avatar"
 import { Checkbox } from "./machines/checkbox"
+import { ColorPicker } from "./machines/color-picker"
 import { Dialog } from "./machines/dialog"
 import { Editable } from "./machines/editable"
 import { FileUpload } from "./machines/file-upload"
@@ -302,6 +303,16 @@ const components = {
       defaultProps={{
         disabled: false,
         multiple: true,
+      }}
+    />
+  ),
+  ColorPicker: () => (
+    <Playground
+      component={ColorPicker}
+      defaultProps={{
+        disabled: false,
+        readOnly: false,
+        closeOnSelect: false,
       }}
     />
   ),

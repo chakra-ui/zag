@@ -22,12 +22,12 @@ type AnyFunction = (...args: any[]) => any
 export type Snapshot<T> = T extends AnyFunction
   ? T
   : T extends AsRef
-  ? T
-  : T extends Promise<any>
-  ? Awaited<T>
-  : {
-      readonly [K in keyof T]: Snapshot<T[K]>
-    }
+    ? T
+    : T extends Promise<any>
+      ? Awaited<T>
+      : {
+          readonly [K in keyof T]: Snapshot<T[K]>
+        }
 
 type HandlePromise = <P extends Promise<any>>(promise: P) => Awaited<P>
 

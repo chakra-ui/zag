@@ -10,6 +10,7 @@ import { compact, tryCatch } from "@zag-js/utils"
 import { dom } from "./color-picker.dom"
 import { parse } from "./color-picker.parse"
 import type {
+  ColorFormat,
   ColorType,
   ExtendedColorChannel,
   MachineContext,
@@ -27,13 +28,14 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         dir: "ltr",
         value: parse("#000000"),
+        format: "rgba",
         disabled: false,
+        closeOnSelect: false,
         ...ctx,
         activeId: null,
         activeChannel: null,
         activeOrientation: null,
         fieldsetDisabled: false,
-        autoFocus: true,
         positioning: {
           ...ctx.positioning,
           placement: "bottom",
@@ -44,9 +46,10 @@ export function machine(userContext: UserDefinedContext) {
         isRtl: (ctx) => ctx.dir === "rtl",
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
-        valueAsString: (ctx) => {
-          const color = ctx.value.outputFormat ? ctx.value.toFormat(ctx.value.outputFormat) : ctx.value
-          return color.toString("css")
+        valueAsString: (ctx) => ctx.value.toString(ctx.format),
+        areaValue: (ctx) => {
+          const format = ctx.format.startsWith("hsl") ? "hsla" : "hsba"
+          return ctx.value.toFormat(format)
         },
       },
 
@@ -54,6 +57,7 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         value: ["syncInputElements"],
+        format: ["syncFormatSelectElement"],
         open: ["toggleVisibility"],
       },
 
@@ -61,8 +65,14 @@ export function machine(userContext: UserDefinedContext) {
         "VALUE.SET": {
           actions: ["setValue"],
         },
+        "FORMAT.SET": {
+          actions: ["setFormat"],
+        },
         "CHANNEL_INPUT.CHANGE": {
           actions: ["setChannelColorFromInput"],
+        },
+        "EYEDROPPER.CLICK": {
+          actions: ["openEyeDropper"],
         },
       },
 
@@ -103,6 +113,9 @@ export function machine(userContext: UserDefinedContext) {
               target: "idle",
               actions: ["setChannelColorFromInput"],
             },
+            "TRIGGER.BLUR": {
+              target: "idle",
+            },
           },
         },
 
@@ -113,9 +126,6 @@ export function machine(userContext: UserDefinedContext) {
             "TRIGGER.CLICK": {
               target: "idle",
               actions: ["invokeOnClose"],
-            },
-            "EYEDROPPER.CLICK": {
-              actions: ["openEyeDropper"],
             },
             "AREA.POINTER_DOWN": {
               target: "open:dragging",
@@ -191,6 +201,16 @@ export function machine(userContext: UserDefinedContext) {
               target: "idle",
               actions: ["invokeOnClose"],
             },
+            "SWATCH_TRIGGER.CLICK": [
+              {
+                guard: "closeOnSelect",
+                target: "focused",
+                actions: ["setValue", "setReturnFocus", "invokeOnClose"],
+              },
+              {
+                actions: ["setValue"],
+              },
+            ],
           },
         },
 
@@ -235,6 +255,7 @@ export function machine(userContext: UserDefinedContext) {
     {
       guards: {
         isTargetFocusable: (_ctx, evt) => evt.restoreFocus,
+        closeOnSelect: (ctx) => !!ctx.closeOnSelect,
       },
       activities: {
         trackPositioning(ctx) {
@@ -329,10 +350,10 @@ export function machine(userContext: UserDefinedContext) {
           const percent = dom.getAreaValueFromPoint(ctx, evt.point)
           if (!percent) return
 
-          const xValue = ctx.value.getChannelPercentValue(xChannel, percent.x)
-          const yValue = ctx.value.getChannelPercentValue(yChannel, 1 - percent.y)
+          const xValue = ctx.areaValue.getChannelPercentValue(xChannel, percent.x)
+          const yValue = ctx.areaValue.getChannelPercentValue(yChannel, 1 - percent.y)
 
-          const color = ctx.value.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
+          const color = ctx.areaValue.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
           set.value(ctx, color)
         },
         setChannelColorFromPoint(ctx, evt) {
@@ -344,12 +365,15 @@ export function machine(userContext: UserDefinedContext) {
           const orientation = ctx.activeOrientation || "horizontal"
           const channelPercent = orientation === "horizontal" ? percent.x : percent.y
 
-          const value = ctx.value.getChannelPercentValue(channel, channelPercent)
-          const color = ctx.value.withChannelValue(channel, value)
+          const value = ctx.areaValue.getChannelPercentValue(channel, channelPercent)
+          const color = ctx.areaValue.withChannelValue(channel, value)
           set.value(ctx, color)
         },
         setValue(ctx, evt) {
           set.value(ctx, evt.value)
+        },
+        setFormat(ctx, evt) {
+          set.format(ctx, evt.format)
         },
         syncInputElements(ctx) {
           sync.inputs(ctx)
@@ -361,34 +385,35 @@ export function machine(userContext: UserDefinedContext) {
           const { channel, isTextField, value } = evt
           const currentAlpha = ctx.value.getChannelValue("alpha")
 
+          // handle other text channels
+          let color: Color
+
           // handle alpha channel
           if (channel === "alpha") {
+            //
             let valueAsNumber = parseFloat(value)
             valueAsNumber = Number.isNaN(valueAsNumber) ? currentAlpha : valueAsNumber
-            const newColor = ctx.value.withChannelValue("alpha", valueAsNumber)
-            set.value(ctx, newColor)
-            return
-          }
-
-          // handle other text channels
-          if (isTextField) {
-            const color = tryCatch(
+            color = ctx.value.withChannelValue("alpha", valueAsNumber)
+            //
+          } else if (isTextField) {
+            //
+            color = tryCatch(
               () => parse(value).withChannelValue("alpha", currentAlpha),
               () => ctx.value,
             )
-
-            // set channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
-            const inputEls = dom.getChannelInputEl(ctx, channel)
-            inputEls.forEach((inputEl) => {
-              dom.setValue(inputEl, getChannelValue(color, channel))
-            })
-
-            set.value(ctx, color)
-            return
+            //
+          } else {
+            //
+            const current = ctx.value.toFormat(ctx.format)
+            const valueAsNumber = Number.isNaN(value) ? current.getChannelValue(channel) : value
+            color = current.withChannelValue(channel, valueAsNumber)
+            //
           }
 
-          // handle other channels
-          const color = ctx.value.toFormat(ctx.value.outputFormat!).withChannelValue(channel, value)
+          // sync channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
+          sync.inputs(ctx, color)
+
+          // set new color
           set.value(ctx, color)
         },
         incrementChannel(ctx, evt) {
@@ -401,22 +426,22 @@ export function machine(userContext: UserDefinedContext) {
         },
         incrementXChannel(ctx, evt) {
           const { xChannel } = evt.channel
-          const color = ctx.value.incrementChannel(xChannel, evt.step)
+          const color = ctx.areaValue.incrementChannel(xChannel, evt.step)
           set.value(ctx, color)
         },
         decrementXChannel(ctx, evt) {
           const { xChannel } = evt.channel
-          const color = ctx.value.decrementChannel(xChannel, evt.step)
+          const color = ctx.areaValue.decrementChannel(xChannel, evt.step)
           set.value(ctx, color)
         },
         incrementYChannel(ctx, evt) {
           const { yChannel } = evt.channel
-          const color = ctx.value.incrementChannel(yChannel, evt.step)
+          const color = ctx.areaValue.incrementChannel(yChannel, evt.step)
           set.value(ctx, color)
         },
         decrementYChannel(ctx, evt) {
           const { yChannel } = evt.channel
-          const color = ctx.value.decrementChannel(yChannel, evt.step)
+          const color = ctx.areaValue.decrementChannel(yChannel, evt.step)
           set.value(ctx, color)
         },
         setChannelToMax(ctx, evt) {
@@ -449,6 +474,9 @@ export function machine(userContext: UserDefinedContext) {
             dom?.focus(ctx, dom.getTriggerEl(ctx))
           })
         },
+        syncFormatSelectElement(ctx) {
+          sync.formatSelect(ctx)
+        },
         invokeOnOpen(ctx) {
           ctx.onOpenChange?.({ open: true })
         },
@@ -467,43 +495,56 @@ export function machine(userContext: UserDefinedContext) {
 }
 
 const sync = {
-  inputs(ctx: MachineContext) {
-    // sync channel inputs
+  // sync channel inputs
+  inputs(ctx: MachineContext, color?: Color) {
     const channelInputs = dom.getChannelInputEls(ctx)
-    channelInputs.forEach((inputEl) => {
-      const channel = inputEl.dataset.channel as ExtendedColorChannel | null
-      dom.setValue(inputEl, getChannelValue(ctx.value, channel))
+    raf(() => {
+      channelInputs.forEach((inputEl) => {
+        const channel = inputEl.dataset.channel as ExtendedColorChannel | null
+        dom.setValue(inputEl, getChannelValue(color || ctx.value, channel))
+      })
+    })
+  },
+  // sync format select
+  formatSelect(ctx: MachineContext) {
+    const selectEl = dom.getFormatSelectEl(ctx)
+    raf(() => {
+      dom.setValue(selectEl, ctx.format)
     })
   },
 }
 
 const invoke = {
   changeEnd(ctx: MachineContext) {
+    const value = ctx.value.toFormat(ctx.format)
     ctx.onValueChangeEnd?.({
-      value: ctx.value,
+      value,
       valueAsString: ctx.valueAsString,
     })
   },
   change(ctx: MachineContext) {
+    const value = ctx.value.toFormat(ctx.format)
     ctx.onValueChange?.({
-      value: ctx.value,
+      value,
       valueAsString: ctx.valueAsString,
     })
 
     dispatchInputValueEvent(dom.getHiddenInputEl(ctx), { value: ctx.valueAsString })
+  },
+  formatChange(ctx: MachineContext) {
+    ctx.onFormatChange?.({ format: ctx.format })
   },
 }
 
 const set = {
   value(ctx: MachineContext, color: Color | ColorType | undefined) {
     if (!color || ctx.value.isEqual(color)) return
-    const currentFormat = ctx.value.getFormat()
-    const outputColor = color.toFormat(currentFormat)
-    try {
-      outputColor.outputFormat = ctx.value.outputFormat
-    } catch {}
-
-    ctx.value = outputColor
+    ctx.value = color
     invoke.change(ctx)
+  },
+  format(ctx: MachineContext, format: ColorFormat) {
+    if (ctx.format === format) return
+    ctx.format = format
+    invoke.formatChange(ctx)
   },
 }

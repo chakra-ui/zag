@@ -5,6 +5,8 @@ import type { PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, MaybeElement, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 import type { MaybeFunction } from "@zag-js/utils"
 
+export type ExtendedColorChannel = ColorChannel | "hex" | "css"
+
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
@@ -18,11 +20,13 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export interface FormatChangeDetails {
+  format: ColorFormat
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
-
-export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
 export type ElementIds = Partial<{
   root: string
@@ -80,11 +84,7 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
    * The positioning options for the color picker
    */
   positioning: PositioningOptions
-  /**
-   * Whether to automatically set focus on the first focusable
-   * content within the color picker when opened.
-   */
-  autoFocus?: boolean
+
   /**
    * The initial focus element when the color picker is opened.
    */
@@ -93,6 +93,18 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
    * Whether the color picker is open
    */
   open?: boolean
+  /**
+   * The color format to use
+   */
+  format: ColorFormat
+  /**
+   * Function called when the color format changes
+   */
+  onFormatChange?: (details: FormatChangeDetails) => void
+  /**
+   * Whether to close the color picker when a swatch is selected
+   */
+  closeOnSelect?: boolean
 }
 
 type PrivateContext = Context<{
@@ -144,6 +156,11 @@ type ComputedContext = Readonly<{
    * Whether the color picker is disabled
    */
   isDisabled: boolean
+  /**
+   * @computed
+   * The area value as a Color object
+   */
+  areaValue: Color
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -183,6 +200,17 @@ export interface SwatchTriggerProps {
    * The color value
    */
   value: string | Color
+  /**
+   * Whether the swatch trigger is disabled
+   */
+  disabled?: boolean
+}
+
+export interface SwatchTriggerState {
+  value: Color
+  valueAsString: string
+  isChecked: boolean
+  isDisabled: boolean
 }
 
 export interface SwatchProps {
@@ -245,6 +273,14 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to set the color alpha
    */
   setAlpha(value: number): void
+  /**
+   * Function to open the color picker
+   */
+  open(): void
+  /**
+   * Function to close the color picker
+   */
+  close(): void
 
   rootProps: T["element"]
   labelProps: T["element"]
@@ -269,7 +305,12 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
 
   swatchGroupProps: T["element"]
   getSwatchTriggerProps(props: SwatchTriggerProps): T["button"]
+  getSwatchTriggerState(props: SwatchTriggerProps): SwatchTriggerState
   getSwatchProps(props: SwatchProps): T["element"]
+  getSwatchIndicatorProps(props: SwatchProps): T["element"]
+
+  formatSelectProps: T["select"]
+  formatTriggerProps: T["button"]
 }
 
 /* -----------------------------------------------------------------------------

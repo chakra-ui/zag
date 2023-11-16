@@ -16,7 +16,7 @@ pre[class*="language-"] {
   -moz-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 [data-theme="dark"] code[class*="language-"],
@@ -50,6 +50,10 @@ pre[class*="language-"] {
 
 [data-framework] pre {
   border: 0;
+}
+
+[data-framework] > .prose > .prose {
+  max-height: 480px;
 }
 
 * + pre[class*="language-"] {

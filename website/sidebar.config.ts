@@ -1,30 +1,33 @@
-import { type ElementType } from "react"
 import { AiOutlineCompass } from "react-icons/ai"
 import { HiOutlineViewGrid } from "react-icons/hi"
+import { IconType } from "react-icons/lib"
 
-type SidebarItem =
-  | {
-      type: "category"
-      icon?: ElementType
-      id: string
-      label: string
-      collapsible?: boolean
-      collapsed?: boolean
-      items: SidebarItem[]
-    }
-  | {
-      type: "doc"
-      id: string
-      label: string
-      new?: boolean
-      href?: string
-    }
-  | {
-      type: "link"
-      id: string
-      label: string
-      href: string
-    }
+interface CategoryItem {
+  type: "category"
+  icon?: IconType
+  id: string
+  label: string
+  collapsible?: boolean
+  collapsed?: boolean
+  items: SidebarItem[]
+}
+
+interface DocItem {
+  type: "doc"
+  id: string
+  label: string
+  new?: boolean
+  href?: string
+}
+
+interface LinkItem {
+  type: "link"
+  id: string
+  label: string
+  href: string
+}
+
+type SidebarItem = CategoryItem | DocItem | LinkItem
 
 const sidebar: Record<"docs", SidebarItem[]> = {
   docs: [
@@ -62,7 +65,8 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Accordion", id: "accordion" },
         { type: "doc", label: "Avatar", id: "avatar" },
         { type: "doc", label: "Checkbox", id: "checkbox" },
-        { type: "doc", label: "Collapsible", id: "collapsible" },
+        { type: "doc", label: "Collapsible", id: "collapsible", new: true },
+        { type: "doc", label: "ColorPicker", id: "color-picker", new: true },
         { type: "doc", label: "Combobox", id: "combobox" },
         { type: "doc", label: "Dialog", id: "dialog" },
         { type: "doc", label: "Editable", id: "editable" },

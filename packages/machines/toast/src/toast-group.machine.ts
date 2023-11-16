@@ -2,11 +2,11 @@ import { createMachine } from "@zag-js/core"
 import { MAX_Z_INDEX } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { createToastMachine } from "./toast.machine"
-import type { GroupMachineContext, MachineContext, UserDefinedGroupContext } from "./toast.types"
+import type { GroupMachineContext, MachineContext, GenericOptions, UserDefinedGroupContext } from "./toast.types"
 
-export function groupMachine(userContext: UserDefinedGroupContext) {
+export function groupMachine<T extends GenericOptions>(userContext: UserDefinedGroupContext<T>) {
   const ctx = compact(userContext)
-  return createMachine<GroupMachineContext>({
+  return createMachine<GroupMachineContext<T>>({
     id: "toaster",
     initial: "active",
     context: {
@@ -55,7 +55,7 @@ export function groupMachine(userContext: UserDefinedGroupContext) {
       ADD_TOAST: {
         guard: (ctx) => ctx.toasts.length < ctx.max,
         actions: (ctx, evt, { self }) => {
-          const options: MachineContext = {
+          const options: MachineContext<T> = {
             placement: ctx.placement,
             duration: ctx.duration,
             removeDelay: ctx.removeDelay,
@@ -68,7 +68,7 @@ export function groupMachine(userContext: UserDefinedGroupContext) {
           }
           const toast = createToastMachine(options)
           const actor = self.spawn(toast)
-          ctx.toasts.push(actor)
+          ctx.toasts.push(actor as any)
         },
       },
 

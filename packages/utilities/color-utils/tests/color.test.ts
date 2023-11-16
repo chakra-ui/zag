@@ -3,7 +3,7 @@ import { parseColor } from "../src"
 
 describe("color.test.ts", () => {
   test("decrement", () => {
-    const color = parseColor("#361717").toFormat("hsl")
+    const color = parseColor("#361717").toFormat("hsla")
 
     expect(color).toMatchInlineSnapshot(`
       {

@@ -141,7 +141,7 @@ export function getValueTransformer(valueA: number[], valueB: number[]) {
   }
 }
 
-export function toFixedNumber(value: number, digits: number, base: number = 10): number {
+export function toFixedNumber(value: number, digits = 0, base: number = 10): number {
   const pow = Math.pow(base, digits)
   return Math.round(value * pow) / pow
 }

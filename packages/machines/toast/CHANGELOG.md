@@ -1,5 +1,24 @@
 # @zag-js/toast
 
+## 0.30.0
+
+### Minor Changes
+
+- [#1026](https://github.com/chakra-ui/zag/pull/1026)
+  [`a1625911`](https://github.com/chakra-ui/zag/commit/a162591176b4ba74aa0a6acff633c84298e14ebf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add generic support to toast types to support framework-specific
+  types.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.30.0
+  - @zag-js/core@0.30.0
+  - @zag-js/types@0.30.0
+  - @zag-js/utils@0.30.0
+  - @zag-js/dom-event@0.30.0
+  - @zag-js/dom-query@0.30.0
+
 ## 0.29.0
 
 ### Minor Changes

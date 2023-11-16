@@ -1,5 +1,22 @@
 # @zag-js/radio-group
 
+## 0.30.0
+
+### Patch Changes
+
+- [`c2b4fb2a`](https://github.com/chakra-ui/zag/commit/c2b4fb2a405cc18662299bdb2e8b92c3fe057101) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where indicator isn't positioned relative to the root
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.30.0
+  - @zag-js/core@0.30.0
+  - @zag-js/types@0.30.0
+  - @zag-js/utils@0.30.0
+  - @zag-js/dom-query@0.30.0
+  - @zag-js/element-rect@0.30.0
+  - @zag-js/form-utils@0.30.0
+  - @zag-js/visually-hidden@0.30.0
+
 ## 0.29.0
 
 ### Minor Changes
