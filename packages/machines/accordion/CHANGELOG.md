@@ -1,5 +1,17 @@
 # @zag-js/accordion
 
+## 0.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.30.0
+  - @zag-js/core@0.30.0
+  - @zag-js/types@0.30.0
+  - @zag-js/utils@0.30.0
+  - @zag-js/dom-event@0.30.0
+  - @zag-js/dom-query@0.30.0
+
 ## 0.29.0
 
 ### Minor Changes

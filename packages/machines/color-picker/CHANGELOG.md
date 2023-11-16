@@ -1,5 +1,34 @@
 # @zag-js/color-picker
 
+## 0.30.0
+
+### Minor Changes
+
+- [#1021](https://github.com/chakra-ui/zag/pull/1021)
+  [`20a532b5`](https://github.com/chakra-ui/zag/commit/20a532b513f5ad0d873a1ebed6d0df9894d87872) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for setting the desired output format. This format
+  will be used in the `details.valueAsString` for `onValueChange` callback
+  - Add support for format trigger and select parts to help control the format of the output value
+  - Add `onFormatChange` callback to listen for format changes
+  - Add `closeOnSelect` prop to control whether the color picker should close when a swatch color is selected
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.30.0
+  - @zag-js/core@0.30.0
+  - @zag-js/types@0.30.0
+  - @zag-js/color-utils@0.30.0
+  - @zag-js/utils@0.30.0
+  - @zag-js/dismissable@0.30.0
+  - @zag-js/dom-event@0.30.0
+  - @zag-js/dom-query@0.30.0
+  - @zag-js/form-utils@0.30.0
+  - @zag-js/popper@0.30.0
+  - @zag-js/tabbable@0.30.0
+  - @zag-js/text-selection@0.30.0
+  - @zag-js/visually-hidden@0.30.0
+
 ## 0.29.0
 
 ### Minor Changes
