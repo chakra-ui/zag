@@ -1,0 +1,34 @@
+```html
+<script setup>
+import * as colorPicker from "@zag-js/color-picker";
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed, ref } from "vue";
+
+const [state, send] = useMachine(colorPicker.machine({
+  id: "1",
+  value: colorPicker.parse("hsl(0, 100%, 50%)")
+}))
+
+const api = computed(() => colorPicker.connect(state.value, send, normalizeProps));
+
+const presets = ref(["#ff0000", "#00ff00", "#0000ff"]);
+</script>
+
+<template>
+  <div v-bind="api.rootProps">
+    // ...
+    <div v-bind="api.positionerProps">
+      <div v-bind="api.contentProps">
+        <div v-bind="api.swatchGroupProps">
+            <template v-for="preset in presets">
+                <button v-bind="api.getSwatchTriggerProps({ value: preset })">
+                    <div v-bind="api.getTransparencyGridProps({ size: '4px' })" />
+                    <div v-bind="api.getSwatchProps({ value: preset })" />
+                </button>
+            </template>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+```

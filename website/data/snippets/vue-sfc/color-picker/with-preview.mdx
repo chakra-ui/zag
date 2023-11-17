@@ -1,0 +1,24 @@
+```html
+<script setup>
+import * as colorPicker from "@zag-js/color-picker";
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed } from "vue";
+
+const [state, send] = useMachine(colorPicker.machine({
+  id: "1",
+  value: colorPicker.parse("hsl(0, 100%, 50%)")
+}))
+
+const api = computed(() => colorPicker.connect(state.value, send, normalizeProps));
+</script>
+
+<template>
+  <div v-bind="api.rootProps">
+    <div>
+      <div v-bind="api.getTransparencyGridProps({ size: '4px' })" />
+      <div v-bind="api.getSwatchProps({ value: api.value })" />
+    </div>
+    // ...
+  </div>
+</template>
+```
