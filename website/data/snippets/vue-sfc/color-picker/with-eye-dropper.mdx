@@ -1,0 +1,27 @@
+```html
+<script setup>
+import * as colorPicker from "@zag-js/color-picker";
+import { normalizeProps, useMachine } from "@zag-js/vue";
+import { computed } from "vue";
+
+const [state, send] = useMachine(colorPicker.machine({
+  id: "1",
+  value: colorPicker.parse("hsl(0, 100%, 50%)")
+}))
+
+const api = computed(() => colorPicker.connect(state.value, send, normalizeProps));
+</script>
+
+<template>
+  <div v-bind="api.rootProps">
+    // ...
+    <div v-bind="api.positionerProps">
+      <div v-bind="api.contentProps">
+        <button v-bind="api.eyeDropperTriggerProps">
+          <EyeDropIcon />
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+```
