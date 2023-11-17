@@ -4,7 +4,7 @@ import * as toggle from "@zag-js/toggle-group"
 import { normalizeProps, useMachine } from "@zag-js/vue";
 import { computed } from "vue";
 
-const [state, send] = useMachine(toggle.machine({ id: createUniqueId() }))
+const [state, send] = useMachine(toggle.machine({ id: '1' }))
 const api = computed(() => toggle.connect(state.value, send, normalizeProps))
 </script>
 
