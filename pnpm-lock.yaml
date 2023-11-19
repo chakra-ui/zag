@@ -278,6 +278,9 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scroll-area':
+        specifier: workspace:*
+        version: link:../../packages/machines/scroll-area
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
@@ -507,6 +510,9 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scroll-area':
+        specifier: workspace:*
+        version: link:../../packages/machines/scroll-area
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
@@ -724,6 +730,9 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scroll-area':
+        specifier: workspace:*
+        version: link:../../packages/machines/scroll-area
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
@@ -938,6 +947,9 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scroll-area':
+        specifier: workspace:*
+        version: link:../../packages/machines/scroll-area
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
@@ -1149,6 +1161,9 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scroll-area':
+        specifier: workspace:*
+        version: link:../../packages/machines/scroll-area
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
@@ -1965,6 +1980,28 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../utilities/form-utils
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/scroll-area:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

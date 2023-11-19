@@ -1,0 +1,37 @@
+{
+  "name": "@zag-js/scroll-area",
+  "version": "0.0.0",
+  "description": "Core logic for the scroll-area widget implemented as a state machine",
+  "keywords": ["js", "machine", "xstate", "statechart", "component", "chakra-ui", "scroll-area"],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+    "main": "src/index.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/scroll-area",
+  "sideEffects": false,
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
+    "@zag-js/core": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/utils": "workspace:*",
+    "@zag-js/types": "workspace:*"
+  },
+  "devDependencies": {
+    "clean-package": "2.2.0"
+  },
+  "clean-package": "../../../clean-package.config.json"
+}
