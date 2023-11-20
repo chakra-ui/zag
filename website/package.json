@@ -62,7 +62,7 @@
     "plop": "4.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-icons": "4.11.0",
+    "react-icons": "4.12.0",
     "unist-util-visit": "5.0.0",
     "use-match-media-hook": "1.0.1"
   },
