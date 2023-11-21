@@ -144,6 +144,10 @@ ensure that the component works the same way regardless of the framework.
 - `test` : Run the tests for all packages
 - `lint` : Lint all packages
 
+### Website
+
+- `start-website`: Starts the website
+
 ---
 
 ## Inspirations
