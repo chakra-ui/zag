@@ -10,12 +10,12 @@ Zag can be used within most JS frameworks like Vue, React and Solid.
 To get Zag running, you'll need to:
 
 1. Install the machine for the component you're interested in. Let's say you
-   want to use the `toggle` machine.
+   want to use the `tooltip` machine.
 
 ```bash
-npm install @zag-js/toggle
+npm install @zag-js/tooltip
 # or
-yarn add @zag-js/toggle
+yarn add @zag-js/tooltip
 ```
 
 2. Install the adapter for the framework of your choice. At the moment, Zag is
@@ -27,25 +27,30 @@ npm install @zag-js/react
 yarn add @zag-js/react
 ```
 
-> Congrats! You're ready to use toggle machine in your project.
+> Congrats! You're ready to use tooltip machine in your project.
 
 ## Using the machine
 
-Here's an example of the toggle machine used in a React.js project.
+Here's an example of the tooltip machine used in a React.js project.
 
 ```jsx
+import * as tooltip from "@zag-js/tooltip"
 import { useMachine, normalizeProps } from "@zag-js/react"
-import * as toggle from "@zag-js/toggle"
 
-export function Toggle() {
-  const [state, send] = useMachine(toggle.machine({
-    id: "1"
-  }))
-  const api = toggle.connect(state, send, normalizeProps)
+export function Tooltip() {
+  const [state, send] = useMachine(tooltip.machine({ id: "1" }))
+
+  const api = tooltip.connect(state, send, normalizeProps)
+
   return (
-    <button {...api.buttonProps}>
-      {api.isPressed ? "On" : "Off"}
-    </button>
+    <>
+      <button {...api.triggerProps}>Hover me</button>
+      {api.isOpen && (
+        <div {...api.positionerProps}>
+          <div {...api.contentProps}>Tooltip</div>
+        </div>
+      )}
+    </>
   )
 }
 ```
@@ -57,27 +62,35 @@ export function Toggle() {
 
 ### Usage with Vue 3 (JSX)
 
-Zag works seamlessly with Vue's JSX approach. Here's how to use the same toggle
+Zag works seamlessly with Vue's JSX approach. Here's how to use the same tooltip
 logic in Vue:
 
 ```jsx
+import * as tooltip from "@zag-js/tooltip"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment } from "vue"
-import * as toggle from "@zag-js/toggle"
-import { useMachine, normalizeProps } from "@zag-js/vue"
 
 export default defineComponent({
-  name: "Toggle",
+  name: "Tooltip",
   setup() {
-    const [state, send] = useMachine(toggle.machine({
-      id: "1"
-    }))
-    const apiRef = computed(() => toggle.connect(state, send, normalizeProps))
+    const [state, send] = useMachine(tooltip.machine({ id: "1" }))
+    const apiRef = computed(() =>
+      tooltip.connect(state.value, send, normalizeProps),
+    )
+
     return () => {
-      const api = apiRef.value
+      const api = apiRef.current
       return (
-        <button {...api.buttonProps}>
-          {api.isPressed ? "On" : "Off"}
-        </button>
+        <>
+          <div>
+            <button {...api.triggerProps}>Hover me</button>
+            {api.isOpen && (
+              <div {...api.positionerProps}>
+                <div {...api.contentProps}>Tooltip</div>
+              </div>
+            )}
+          </div>
+        </>
       )
     }
   },
@@ -88,28 +101,33 @@ There are some extra functions that need to be used in order to make it work:
 
 - `normalizeProps` - Converts the props of the component into the format that is
   compatible with Vue.
-- `computed` - Ensures that the toggle's `api` is always up to date with the
+- `computed` - Ensures that the tooltip's `api` is always up to date with the
   current state of the machine.
 
 ### Usage with Solid.js
 
 We love Solid.js and we've added support for it. Here's how to use the same
-toggle logic in Solid:
+tooltip logic in Solid:
 
 ```jsx
-import { createMemo } from "solid-js"
-import * as toggle from "@zag-js/toggle"
-import { useMachine, normalizeProps } from "@zag-js/solid"
+import * as tooltip from "@zag-js/tooltip"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, Show } from "solid-js"
 
-export default function Toggle() {
-  const [state, send] = useMachine(toggle.machine({
-    id: "1"
-  }))
-  const api = createMemo(() => toggle.connect(state, send, normalizeProps))
+export function Tooltip() {
+  const [state, send] = useMachine(tooltip.machine({ id: createUniqueId() }))
+
+  const api = createMemo(() => tooltip.connect(state, send, normalizeProps))
+
   return (
-    <button {...api().buttonProps}>
-      {api().isPressed ? "On" : "Off"}
-    </button>
+    <div>
+      <button {...api().triggerProps}>Hover me</button>
+      <Show when={api().isOpen}>
+        <div {...api().positionerProps}>
+          <div {...api().contentProps}>Tooltip</div>
+        </div>
+      </Show>
+    </div>
   )
 }
 ```
@@ -118,7 +136,7 @@ There are some extra functions that need to be used in order to make it work:
 
 - `normalizeProps` - Converts the props of the component into the format that is
   compatible with Solid.
-- `createMemo` - Ensures that the toggle's `api` is always up to date with the
+- `createMemo` - Ensures that the tooltip's `api` is always up to date with the
   current state of the machine.
 
 ### About prop normalization
