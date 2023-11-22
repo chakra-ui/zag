@@ -23,19 +23,14 @@ export default function Page() {
     <>
       <main className="tooltip">
         <div className="root">
-          <button data-testid={`${id}-trigger`} {...api.triggerProps}>
-            Over me
-          </button>
-          {api.isOpen && (
-            <Portal>
+          <>
+            <button {...api.triggerProps}>Hover me</button>
+            {api.isOpen && (
               <div {...api.positionerProps}>
-                <div className="tooltip-content" data-testid={`${id}-tooltip`} {...api.contentProps}>
-                  Tooltip
-                </div>
+                <div {...api.contentProps}>Tooltip!!!</div>
               </div>
-            </Portal>
-          )}
-
+            )}
+          </>
           <button data-testid={`${id2}-trigger`} {...api2.triggerProps}>
             Over me
           </button>
