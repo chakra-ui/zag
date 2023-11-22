@@ -1,0 +1,41 @@
+```tsx
+import * as colorPicker from "@zag-js/color-picker"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, ref } from "vue"
+
+export default defineComponent({
+  name: "ColorPicker",
+  setup() {
+    const [state, send] = useMachine(colorPicker.machine({
+      id: "1",
+      value: colorPicker.parse("hsl(0, 100%, 50%)")
+    }))
+
+    const apiRef = computed(() => colorPicker.connect(state.value, send, normalizeProps))
+
+    const presets = ref(["#ff0000", "#00ff00", "#0000ff"])
+
+    return () => {
+      const api = apiRef.value
+
+      return (
+        <div {...api.rootProps}>
+          {/* ... */}
+          <div {...api.positionerProps}>
+            <div {...api.contentProps}>
+              <div {...api.swatchGroupProps}>
+                {presets.value.map((preset) => (
+                  <button {...api.getSwatchTriggerProps({ value: preset })}>
+                    <div {...api.getTransparencyGridProps({ size: '4px' })} />
+                    <div {...api.getSwatchProps({ value: preset })} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+  }
+})
+```
