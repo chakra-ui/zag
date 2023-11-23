@@ -24,10 +24,14 @@ export default function Page() {
       <main className="tooltip">
         <div className="root">
           <>
-            <button {...api.triggerProps}>Hover me</button>
+            <button data-testid={`${id}-trigger`} {...api.triggerProps}>
+              Hover me
+            </button>
             {api.isOpen && (
               <div {...api.positionerProps}>
-                <div {...api.contentProps}>Tooltip!!!</div>
+                <div className="tooltip-content" data-testid={`${id}-tooltip`} {...api.contentProps}>
+                  Tooltip
+                </div>
               </div>
             )}
           </>
@@ -38,7 +42,7 @@ export default function Page() {
             <Portal>
               <div {...api2.positionerProps}>
                 <div className="tooltip-content" data-testid={`${id2}-tooltip`} {...api2.contentProps}>
-                  Tooltip
+                  Tooltip 2
                 </div>
               </div>
             </Portal>

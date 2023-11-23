@@ -17,7 +17,7 @@ export default function Page() {
       <main class="tooltip" style={{ gap: "12px", "flex-direction": "row" }}>
         <div class="root">
           <button data-testid="tip-1-trigger" {...api().triggerProps}>
-            Over me
+            Hover me
           </button>
 
           <Show when={api().isOpen}>
