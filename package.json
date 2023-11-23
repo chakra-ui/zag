@@ -23,6 +23,7 @@
     "start-vue": "pnpm vue dev",
     "start-vue-sfc": "pnpm vue-sfc dev",
     "start-solid": "pnpm solid dev",
+    "start-website": "pnpm website dev",
     "pw-report": "playwright show-report e2e/report",
     "pw-test": "playwright test",
     "pw-test-debug": "playwright test --debug",
