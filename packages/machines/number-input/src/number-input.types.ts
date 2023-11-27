@@ -283,7 +283,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the input.
    */
-  setValue(value: string | number): void
+  setValue(value: number): void
   /**
    * Function to clear the value of the input.
    */

@@ -1,5 +1,4 @@
-import { NumberParser } from "@internationalized/number"
-import { choose, createMachine, guards, ref } from "@zag-js/core"
+import { choose, createMachine, guards } from "@zag-js/core"
 import { addDomEvent, requestPointerLock } from "@zag-js/dom-event"
 import { isSafari, raf } from "@zag-js/dom-query"
 import { trackFormControl } from "@zag-js/form-utils"
@@ -9,6 +8,7 @@ import { callAll, compact, isEqual } from "@zag-js/utils"
 import { recordCursor, restoreCursor } from "./cursor"
 import { dom } from "./number-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./number-input.types"
+import { createFormatter, createParser, formatValue, parseValue } from "./number-input.utils"
 
 const { not, and } = guards
 
@@ -48,19 +48,16 @@ export function machine(userContext: UserDefinedContext) {
 
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
-        valueAsNumber: (ctx) => ctx.parser.parse(String(ctx.value)) ?? 0,
-        isAtMin: (ctx) => isAtMin(ctx.value, ctx),
-        isAtMax: (ctx) => isAtMax(ctx.value, ctx),
-        isOutOfRange: (ctx) => !isWithinRange(ctx.value, ctx),
+        valueAsNumber: (ctx) => parseValue(ctx, ctx.value),
+        formattedValue: (ctx) => formatValue(ctx, ctx.valueAsNumber),
+        isAtMin: (ctx) => isAtMin(ctx.valueAsNumber, ctx),
+        isAtMax: (ctx) => isAtMax(ctx.valueAsNumber, ctx),
+        isOutOfRange: (ctx) => !isWithinRange(ctx.valueAsNumber, ctx),
         isValueEmpty: (ctx) => ctx.value === "",
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         canIncrement: (ctx) => ctx.allowOverflow || !ctx.isAtMax,
         canDecrement: (ctx) => ctx.allowOverflow || !ctx.isAtMin,
         valueText: (ctx) => ctx.translations.valueText?.(ctx.value),
-        formattedValue: (ctx) => {
-          if (Number.isNaN(ctx.valueAsNumber)) return ctx.value
-          return ctx.formatter.format(ctx.valueAsNumber)
-        },
       },
 
       watch: {
@@ -71,13 +68,11 @@ export function machine(userContext: UserDefinedContext) {
         scrubberCursorPoint: ["setVirtualCursorPosition"],
       },
 
-      entry: ["syncInputValue"],
-
       activities: ["trackFormControl"],
 
       on: {
         "VALUE.SET": {
-          actions: ["setValue", "clampValue", "setHintToSet"],
+          actions: ["setRawValue", "setHintToSet"],
         },
         "VALUE.CLEAR": {
           actions: ["clearValue"],
@@ -142,11 +137,11 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: and("clampValueOnBlur", not("isInRange")),
                 target: "idle",
-                actions: ["clampValue", "syncInputElement", "clearHint", "invokeOnBlur"],
+                actions: ["clampValue", "clearHint", "invokeOnBlur"],
               },
               {
                 target: "idle",
-                actions: ["syncInputElement", "invokeOnBlur"],
+                actions: ["syncInputValue", "clearHint", "invokeOnBlur"],
               },
             ],
             "INPUT.COMPOSITION_START": {
@@ -318,16 +313,22 @@ export function machine(userContext: UserDefinedContext) {
           raf(() => inputEl?.focus({ preventScroll: true }))
         },
         increment(ctx, evt) {
-          const nextValue = increment(ctx.value, evt.step ?? ctx.step)
-          set.value(ctx, String(clamp(nextValue, ctx)))
+          const nextValue = increment(ctx.valueAsNumber, evt.step ?? ctx.step)
+          const value = ctx.formatter.format(clamp(nextValue, ctx))
+          set.value(ctx, value)
         },
         decrement(ctx, evt) {
-          const nextValue = decrement(ctx.value, evt.step ?? ctx.step)
-          set.value(ctx, String(clamp(nextValue, ctx)))
+          const nextValue = decrement(ctx.valueAsNumber, evt.step ?? ctx.step)
+          const value = ctx.formatter.format(clamp(nextValue, ctx))
+          set.value(ctx, value)
         },
         clampValue(ctx) {
-          const nextValue = clamp(ctx.value, ctx)
+          const nextValue = clamp(ctx.valueAsNumber, ctx)
           set.value(ctx, String(nextValue))
+        },
+        setRawValue(ctx, evt) {
+          const value = ctx.formatter.format(clamp(evt.value, ctx))
+          set.value(ctx, value)
         },
         setValue(ctx, evt) {
           const value = evt.target?.value ?? evt.value
@@ -337,10 +338,12 @@ export function machine(userContext: UserDefinedContext) {
           set.value(ctx, "")
         },
         incrementToMax(ctx) {
-          set.value(ctx, String(ctx.max))
+          const value = ctx.formatter.format(ctx.max)
+          set.value(ctx, value)
         },
         decrementToMin(ctx) {
-          set.value(ctx, String(ctx.min))
+          const value = ctx.formatter.format(ctx.min)
+          set.value(ctx, value)
         },
         setHint(ctx, evt) {
           ctx.hint = evt.hint
@@ -375,17 +378,8 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         syncInputElement(ctx, evt) {
-          const inputEl = dom.getInputEl(ctx)
-          const inputValue = evt.type.endsWith("CHANGE") ? ctx.value : ctx.formattedValue
-
-          // record cursor position before updating input value
-          const sel = recordCursor(inputEl!)
-
-          // restore cursor position after updating input value
-          raf(() => {
-            dom.setValue(inputEl, inputValue)
-            restoreCursor(inputEl!, sel)
-          })
+          const value = evt.type.endsWith("CHANGE") ? ctx.value : ctx.formattedValue
+          sync.input(ctx, value)
         },
         syncInputValue(ctx) {
           const inputEl = dom.getInputEl(ctx)
@@ -423,20 +417,20 @@ export function machine(userContext: UserDefinedContext) {
   )
 }
 
-const defaultFormatOptions: Intl.NumberFormatOptions = {
-  style: "decimal",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 20,
-}
+const sync = {
+  input(ctx: MachineContext, value: string) {
+    const inputEl = dom.getInputEl(ctx)
+    if (!inputEl) return
 
-const createFormatter = (locale: string, options: Intl.NumberFormatOptions = {}) => {
-  const formatOptions = Object.assign({}, defaultFormatOptions, options)
-  return ref(new Intl.NumberFormat(locale, formatOptions))
-}
+    // record cursor position before updating input value
+    const sel = recordCursor(inputEl)
 
-const createParser = (locale: string, options: Intl.NumberFormatOptions = {}) => {
-  const formatOptions = Object.assign({}, defaultFormatOptions, options)
-  return ref(new NumberParser(locale, formatOptions))
+    // restore cursor position after updating input value
+    raf(() => {
+      dom.setValue(inputEl, value)
+      restoreCursor(inputEl, sel)
+    })
+  },
 }
 
 const invoke = {

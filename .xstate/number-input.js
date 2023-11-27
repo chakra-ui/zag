@@ -23,11 +23,10 @@ const fetchMachine = createMachine({
     "isIncrementHint": false,
     "isDecrementHint": false
   },
-  entry: ["syncInputValue"],
   activities: ["trackFormControl"],
   on: {
     "VALUE.SET": {
-      actions: ["setValue", "clampValue", "setHintToSet"]
+      actions: ["setRawValue", "setHintToSet"]
     },
     "VALUE.CLEAR": {
       actions: ["clearValue"]
@@ -99,10 +98,10 @@ const fetchMachine = createMachine({
         "INPUT.COMMIT": [{
           cond: "clampValueOnBlur && !isInRange",
           target: "idle",
-          actions: ["clampValue", "syncInputElement", "clearHint", "invokeOnBlur"]
+          actions: ["clampValue", "clearHint", "invokeOnBlur"]
         }, {
           target: "idle",
-          actions: ["syncInputElement", "invokeOnBlur"]
+          actions: ["syncInputValue", "clearHint", "invokeOnBlur"]
         }],
         "INPUT.COMPOSITION_START": {
           actions: "setComposing"

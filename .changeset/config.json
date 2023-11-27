@@ -14,5 +14,5 @@
   "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
     "onlyUpdatePeerDependentsWhenOutOfRange": true
   },
-  "ignore": ["@zag-js/shared", "next-ts", "vue-ts", "solid-ts", "shadow-dom", "nuxt-ts", "website"]
+  "ignore": ["@zag-js/shared", "next-ts", "vue-ts", "solid-ts", "nuxt-ts", "website"]
 }

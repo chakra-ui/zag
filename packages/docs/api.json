@@ -1495,7 +1495,7 @@
         "description": "The value of the input as a number."
       },
       "setValue": {
-        "type": "(value: string | number) => void",
+        "type": "(value: number) => void",
         "description": "Function to set the value of the input."
       },
       "clearValue": {
@@ -2881,48 +2881,7 @@
     }
   },
   "toast": {
-    "api": {
-      "type": {
-        "type": "Type",
-        "description": "The type of the toast."
-      },
-      "title": {
-        "type": "string",
-        "description": "The title of the toast."
-      },
-      "description": {
-        "type": "string",
-        "description": "The description of the toast."
-      },
-      "placement": {
-        "type": "Placement",
-        "description": "The current placement of the toast."
-      },
-      "isVisible": {
-        "type": "boolean",
-        "description": "Whether the toast is visible."
-      },
-      "isPaused": {
-        "type": "boolean",
-        "description": "Whether the toast is paused."
-      },
-      "isRtl": {
-        "type": "boolean",
-        "description": "Whether the toast is in RTL mode."
-      },
-      "pause": {
-        "type": "() => void",
-        "description": "Function to pause the toast (keeping it visible)."
-      },
-      "resume": {
-        "type": "() => void",
-        "description": "Function to resume the toast dismissing."
-      },
-      "dismiss": {
-        "type": "() => void",
-        "description": "Function to instantly dismiss the toast."
-      }
-    },
+    "api": {},
     "context": {}
   },
   "toggle-group": {
