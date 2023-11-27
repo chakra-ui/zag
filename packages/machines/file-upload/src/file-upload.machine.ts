@@ -23,6 +23,11 @@ export function machine(userContext: UserDefinedContext) {
         files: ref(ctx.files ?? []),
         rejectedFiles: ref([]),
         invalid: false,
+        messages: {
+          itemPreview: (file) => `preview of ${file.name}`,
+          deleteFile: (file) => `delete file ${file.name}`,
+          ...ctx.messages,
+        },
       },
       computed: {
         acceptAttr: (ctx) => getAcceptAttrString(ctx.accept),
@@ -145,12 +150,24 @@ const invoke = {
       rejectedFiles: ctx.rejectedFiles,
     })
   },
+  accept: (ctx: MachineContext) => {
+    ctx.onFileAccept?.({ files: ctx.files })
+  },
+  reject: (ctx: MachineContext) => {
+    ctx.onFileReject?.({ files: ctx.rejectedFiles })
+  },
 }
 
 const set = {
   files: (ctx: MachineContext, acceptedFiles: File[], rejectedFiles?: FileRejection[]) => {
     ctx.files = ref(acceptedFiles)
-    if (rejectedFiles) ctx.rejectedFiles = ref(rejectedFiles)
+    invoke.accept(ctx)
+
+    if (rejectedFiles) {
+      ctx.rejectedFiles = ref(rejectedFiles)
+      invoke.reject(ctx)
+    }
+
     invoke.change(ctx)
   },
 }
