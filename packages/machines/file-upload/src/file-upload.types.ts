@@ -42,7 +42,7 @@ export type ElementIds = Partial<{
   itemPreview(id: string): string
 }>
 
-export interface IntlMessages {
+export interface IntlTranslations {
   itemPreview(file: File): string
   deleteFile(file: File): string
 }
@@ -59,7 +59,7 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * The localized messages to use.
    */
-  messages: IntlMessages
+  translations: IntlTranslations
   /**
    * The accept file types
    */

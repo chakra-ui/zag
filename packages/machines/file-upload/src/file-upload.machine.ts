@@ -23,10 +23,10 @@ export function machine(userContext: UserDefinedContext) {
         files: ref(ctx.files ?? []),
         rejectedFiles: ref([]),
         invalid: false,
-        messages: {
+        translations: {
           itemPreview: (file) => `preview of ${file.name}`,
           deleteFile: (file) => `delete file ${file.name}`,
-          ...ctx.messages,
+          ...ctx.translations,
         },
       },
       computed: {
