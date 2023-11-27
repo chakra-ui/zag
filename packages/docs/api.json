@@ -1214,6 +1214,14 @@
         "type": "string",
         "description": "The name of the underlying file input"
       },
+      "ids": {
+        "type": "Partial<{ root: string; dropzone: string; hiddenInput: string; trigger: string; label: string; item(id: string): string; itemName(id: string): string; itemSizeText(id: string): string; itemPreview(id: string): string; }>",
+        "description": "The ids of the elements. Useful for composition."
+      },
+      "messages": {
+        "type": "IntlMessages",
+        "description": "The localized messages to use."
+      },
       "accept": {
         "type": "string | Record<string, string[]>",
         "description": "The accept file types"
@@ -1238,8 +1246,8 @@
         "type": "number",
         "description": "The maximum number of files"
       },
-      "isValidFile": {
-        "type": "(file: File) => boolean",
+      "validate": {
+        "type": "(file: File) => FileError[]",
         "description": "Function to validate a file"
       },
       "files": {
@@ -1248,7 +1256,15 @@
       },
       "onFilesChange": {
         "type": "(details: FileChangeDetails) => void",
-        "description": "Function called when the value changes"
+        "description": "Function called when the value changes, whether accepted or rejected"
+      },
+      "onFileAccept": {
+        "type": "(details: FileAcceptDetails) => void",
+        "description": "Function called when the file is accepted"
+      },
+      "onFileReject": {
+        "type": "(details: FileRejectDetails) => void",
+        "description": "Function called when the file is rejected"
       },
       "locale": {
         "type": "string",
