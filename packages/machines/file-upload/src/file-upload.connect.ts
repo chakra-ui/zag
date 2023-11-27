@@ -10,7 +10,7 @@ import { isEventWithFiles } from "./file-upload.utils"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const disabled = state.context.disabled
   const allowDrop = state.context.allowDrop
-  const messages = state.context.messages
+  const translations = state.context.translations
 
   const isDragging = state.matches("dragging")
   const isFocused = state.matches("focused") && !disabled
@@ -192,7 +192,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.img({
         ...parts.itemPreview.attrs,
         dir: state.context.dir,
-        alt: messages.itemPreview(file),
+        alt: translations.itemPreview(file),
         src: url,
         id: dom.getItemPreviewId(state.context, file.name),
         "data-disabled": dataAttr(disabled),
@@ -207,7 +207,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: "button",
         disabled,
         "data-disabled": dataAttr(disabled),
-        "aria-label": messages.deleteFile(file),
+        "aria-label": translations.deleteFile(file),
         onClick() {
           if (disabled) return
           send({ type: "FILE.DELETE", file })
