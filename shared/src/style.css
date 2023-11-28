@@ -408,6 +408,7 @@ main [data-testid="scrubber"] {
 
 .popover [data-part="root"] {
   display: flex;
+  align-items: flex-start;
   gap: 24px;
 }
 
@@ -464,6 +465,11 @@ main [data-testid="scrubber"] {
   --arrow-background: white;
   --arrow-shadow-color: #ebebeb;
   box-shadow: var(--box-shadow);
+}
+
+[data-scope="popover"][data-part="indicator"] {
+  display: inline-flex;
+  margin-inline-start: 4px;
 }
 
 [data-scope="popover"][data-part="indicator"][data-state="open"] {

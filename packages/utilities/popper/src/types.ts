@@ -1,7 +1,21 @@
-import type { Boundary, ComputePositionReturn, Placement } from "@floating-ui/dom"
+import type { Boundary, ComputePositionReturn, Placement, VirtualElement } from "@floating-ui/dom"
 import type { AutoUpdateOptions } from "./auto-update"
 
-export type { Placement, Boundary, ComputePositionReturn, AutoUpdateOptions }
+export type MaybeRectElement = HTMLElement | VirtualElement | null
+
+export type MaybeElement = HTMLElement | null
+
+export type MaybeFn<T> = T | (() => T)
+
+export type PlacementSide = "top" | "right" | "bottom" | "left"
+export type PlacementAlign = "start" | "center" | "end"
+
+export interface AnchorRect {
+  x?: number
+  y?: number
+  width?: number
+  height?: number
+}
 
 export interface PositioningOptions {
   /**
@@ -21,13 +35,26 @@ export interface PositioningOptions {
    */
   gutter?: number
   /**
+   * The secondary axis offset or gap between the reference and floating elements
+   */
+  shift?: number
+  /**
    * The virtual padding around the viewport edges to check for overflow
    */
   overflowPadding?: number
   /**
+   * The minimum padding between the arrow and the floating element's corner.
+   * @default 4
+   */
+  arrowPadding?: number
+  /**
    * Whether to flip the placement
    */
-  flip?: boolean
+  flip?: boolean | Placement[]
+  /**
+   * Whether the popover should slide when it overflows.
+   */
+  slide?: boolean
   /**
    * Whether the floating element can overlap the reference element
    * @default false
@@ -54,9 +81,22 @@ export interface PositioningOptions {
    */
   onComplete?(data: ComputePositionReturn): void
   /**
+   * Function called when the floating element is positioned or not
+   */
+  onPositioned?(data: { placed: boolean }): void
+  /**
    * Function called on cleanup of all listeners
    */
   onCleanup?: VoidFunction
+  /**
+   *  Function that returns the anchor rect of the combobox
+   */
+  getAnchorRect?: (element: HTMLElement | VirtualElement | null) => AnchorRect | null
+  /**
+   * A callback that will be called when the popover needs to calculate its
+   * position.
+   */
+  updatePosition?: (data: { updatePosition: () => Promise<void> }) => void | Promise<void>
 }
 
-export type BasePlacement = "top" | "right" | "bottom" | "left"
+export type { AutoUpdateOptions, Boundary, ComputePositionReturn, Placement }

@@ -478,6 +478,9 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             ...evt.options,
             defer: true,
             listeners: false,
+            onComplete(data) {
+              ctx.currentPlacement = data.placement
+            },
           })
         },
         setIsComposing(ctx) {
