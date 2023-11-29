@@ -5,7 +5,13 @@ import type { StateMachine as S } from "@zag-js/core"
  * -----------------------------------------------------------------------------*/
 
 interface PublicContext {
+  /**
+   * Whether the node is present (controlled by the user)
+   */
   present: boolean
+  /**
+   * Function called when the animation ends in the closed state.
+   */
   onExitComplete?: () => void
 }
 
@@ -16,7 +22,7 @@ interface PrivateContext {
   prevAnimationName: string
 }
 
-export type UserDefinedContext = PublicContext
+export interface UserDefinedContext extends PublicContext {}
 
 export interface MachineContext extends PublicContext, PrivateContext {}
 

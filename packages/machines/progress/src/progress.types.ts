@@ -77,9 +77,21 @@ export interface IndicatorProps {
 }
 
 export interface MachineApi<T extends PropTypes> {
+  /**
+   * The current value of the progress bar.
+   */
   value: number | null
+  /**
+   * The current value of the progress bar as a string.
+   */
   valueAsString: string
+  /**
+   * Sets the current value of the progress bar.
+   */
   setValue(value: number | null): void
+  /**
+   * Sets the current value of the progress bar to the max value.
+   */
   setToMax(): void
   rootProps: T["element"]
   labelProps: T["element"]
