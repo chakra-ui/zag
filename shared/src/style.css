@@ -1706,6 +1706,51 @@ main [data-testid="scrubber"] {
 }
 
 /* -----------------------------------------------------------------------------
+* Progress
+* -----------------------------------------------------------------------------*/
+
+[data-scope="progress"][data-part="root"] {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 50%;
+}
+
+[data-scope="progress"][data-part="track"] {
+  height: 4px;
+  background-color: #ebebeb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+[data-scope="progress"][data-part="range"] {
+  --translate-x: -100%;
+  height: 100%;
+  background-color: blue;
+  border-radius: 4px;
+  transition: width 0.2s ease-in-out;
+}
+
+[data-scope="progress"][data-part="range"][dir="rtl"] {
+  --translate-x: 100%;
+}
+
+@keyframes progress-animation {
+  0% {
+    transform: scaleX(0) translateX(var(--translate-x));
+  }
+  100% {
+    transform: scaleX(1) translateX(var(--translate-x));
+  }
+}
+
+[data-scope="progress"][data-part="range"][data-state="indeterminate"] {
+  width: 200%;
+  animation: 1s cubic-bezier(0.694, 0.0482, 0.335, 1) 0s infinite normal none running progress-animation;
+}
+
+/* -----------------------------------------------------------------------------
 * Page Shell
 * -----------------------------------------------------------------------------*/
 

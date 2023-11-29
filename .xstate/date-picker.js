@@ -177,7 +177,6 @@ const fetchMachine = createMachine({
         }
         // ===
         ],
-
         "CELL.POINTER_MOVE": {
           cond: "isRangePicker && isSelectingEndDate",
           actions: ["setHoveredDate", "setFocusedDate"]
@@ -233,7 +232,6 @@ const fetchMachine = createMachine({
         }
         // ===
         ],
-
         "TABLE.ARROW_RIGHT": [{
           cond: "isMonthView",
           actions: "focusNextMonth"

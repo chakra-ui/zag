@@ -204,3 +204,7 @@ export const toggleGroupControls = defineControls({
   multiple: { type: "boolean", defaultValue: false },
   rovingFocus: { type: "boolean", defaultValue: true },
 })
+
+export const progressControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+})

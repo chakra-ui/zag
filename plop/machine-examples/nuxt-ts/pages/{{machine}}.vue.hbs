@@ -1,0 +1,20 @@
+<script setup lang="ts">
+import * as {{machine}} from "@zag-js/{{machine}}"
+import { {{machine}}Controls, {{machine}}Data } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+
+const [state, send] = useMachine({{machine}}.machine({ id: "1" }))
+
+const api = computed(() => {{machine}}.connect(state.value, send, normalizeProps))
+</script>
+
+<template>
+  <main className="{{machine}}">
+    <div v-bind="api.rootProps">
+    </div>
+  </main>
+
+  <Toolbar>
+    <StateVisualizer :state="state" />
+  </Toolbar>
+</template>

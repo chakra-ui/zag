@@ -263,6 +263,9 @@ importers:
       '@zag-js/presence':
         specifier: workspace:*
         version: link:../../packages/machines/presence
+      '@zag-js/progress':
+        specifier: workspace:*
+        version: link:../../packages/machines/progress
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../../packages/machines/radio-group
@@ -495,6 +498,9 @@ importers:
       '@zag-js/presence':
         specifier: workspace:*
         version: link:../../packages/machines/presence
+      '@zag-js/progress':
+        specifier: workspace:*
+        version: link:../../packages/machines/progress
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../../packages/machines/radio-group
@@ -715,6 +721,9 @@ importers:
       '@zag-js/presence':
         specifier: workspace:*
         version: link:../../packages/machines/presence
+      '@zag-js/progress':
+        specifier: workspace:*
+        version: link:../../packages/machines/progress
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../../packages/machines/radio-group
@@ -926,6 +935,9 @@ importers:
       '@zag-js/presence':
         specifier: workspace:*
         version: link:../../packages/machines/presence
+      '@zag-js/progress':
+        specifier: workspace:*
+        version: link:../../packages/machines/progress
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../../packages/machines/radio-group
@@ -1701,6 +1713,28 @@ importers:
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/progress:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
     devDependencies:
       clean-package:
         specifier: 2.2.0
