@@ -8,7 +8,7 @@ import {
   isModifiedEvent,
   type EventKeyMap,
 } from "@zag-js/dom-event"
-import { dataAttr, isEditableElement, isSelfEvent } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget, isEditableElement, isSelfEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { match } from "@zag-js/utils"
@@ -276,7 +276,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("MENU_POINTERENTER")
       },
       onKeyDown(event) {
-        if (!isSelfEvent(event)) return
+        const target = getEventTarget<HTMLElement>(getNativeEvent(event))
+        const isKeyDownInside = target?.closest("[role=menu]") === event.currentTarget
+
+        if (!isSelfEvent(event) || !isKeyDownInside) return
 
         const item = dom.getFocusedItem(state.context)
         const isLink = !!item?.matches("a[href]")
