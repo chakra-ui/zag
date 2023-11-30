@@ -184,17 +184,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getItemPreviewProps(props) {
+      const { file } = props
+      return normalize.element({
+        ...parts.itemPreview.attrs,
+        dir: state.context.dir,
+        id: dom.getItemPreviewId(state.context, file.name),
+        "data-disabled": dataAttr(disabled),
+      })
+    },
+
+    getItemPreviewImageProps(props) {
       const { file, url } = props
       const isImage = file.type.startsWith("image/")
       if (!isImage) {
-        throw new Error("Preview is only supported for image files")
+        throw new Error("Preview Image is only supported for image files")
       }
       return normalize.img({
-        ...parts.itemPreview.attrs,
-        dir: state.context.dir,
+        ...parts.itemPreviewImage.attrs,
         alt: translations.itemPreview(file),
         src: url,
-        id: dom.getItemPreviewId(state.context, file.name),
         "data-disabled": dataAttr(disabled),
       })
     },

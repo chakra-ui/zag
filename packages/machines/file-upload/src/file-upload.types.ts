@@ -152,7 +152,7 @@ export interface ItemProps {
   file: File
 }
 
-export interface ItemPreviewProps extends ItemProps {
+export interface ItemPreviewImageProps extends ItemProps {
   url: string
 }
 
@@ -203,7 +203,8 @@ export interface MachineApi<T extends PropTypes> {
   itemGroupProps: T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemNameProps(props: ItemProps): T["element"]
-  getItemPreviewProps(props: ItemPreviewProps): T["img"]
+  getItemPreviewProps(props: ItemProps): T["element"]
+  getItemPreviewImageProps(props: ItemPreviewImageProps): T["img"]
   getItemSizeTextProps(props: ItemProps): T["element"]
   getItemDeleteTriggerProps(props: ItemProps): T["button"]
 }

@@ -9,6 +9,6 @@ export type {
   FileError,
   FileRejection,
   IntlTranslations,
-  ItemPreviewProps,
+  ItemPreviewImageProps,
   ItemProps,
 } from "./file-upload.types"
