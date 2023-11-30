@@ -1750,6 +1750,46 @@ main [data-testid="scrubber"] {
   animation: 1s cubic-bezier(0.694, 0.0482, 0.335, 1) 0s infinite normal none running progress-animation;
 }
 
+[data-scope="progress"][data-part="circle"] {
+  --size: 48px;
+  --thickness: 8px;
+}
+
+[data-scope="progress"][data-part="circle"][data-state="indeterminate"] {
+  animation: spin 2s linear infinite;
+}
+
+[data-scope="progress"][data-part="circle-track"] {
+  stroke: #ebebeb;
+}
+
+[data-scope="progress"][data-part="circle-range"] {
+  stroke: blue;
+  transition-property: stroke-dasharray, stroke;
+  transition-duration: 0.6s;
+}
+
+@keyframes spin-progress {
+  0% {
+    stroke-dasharray: 1, 400;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dasharray: 400, 400;
+    stroke-dashoffset: -100;
+  }
+  100% {
+    stroke-dasharray: 400, 400;
+    stroke-dashoffset: -260;
+  }
+}
+
+[data-scope="progress"][data-part="circle-range"][data-state="indeterminate"] {
+  animation: spin-progress;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+}
+
 /* -----------------------------------------------------------------------------
 * Page Shell
 * -----------------------------------------------------------------------------*/

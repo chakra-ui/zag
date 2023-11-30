@@ -24,6 +24,7 @@ export function machine(userContext: UserDefinedContext) {
         percent: (ctx) => (isNumber(ctx.value) ? Math.round((ctx.value / ctx.max) * 100) : -1),
         isAtMax: (ctx) => ctx.value === ctx.max,
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
+        isRtl: (ctx) => ctx.dir === "rtl",
       },
       states: {
         idle: {

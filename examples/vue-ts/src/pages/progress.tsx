@@ -25,6 +25,10 @@ export default defineComponent({
           <main class="progress">
             <div {...api.rootProps}>
               <div {...api.labelProps}>Upload progress</div>
+              <svg {...api.circleProps}>
+                <circle {...api.circleTrackProps} />
+                <circle {...api.circleRangeProps} />
+              </svg>
               <div {...api.trackProps}>
                 <div {...api.rangeProps} />
               </div>

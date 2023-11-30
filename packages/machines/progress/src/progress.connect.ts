@@ -1,7 +1,7 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./progress.anatomy"
-import type { MachineApi, ProgressState, Send, State } from "./progress.types"
 import { dom } from "./progress.dom"
+import type { MachineApi, MachineContext, ProgressState, Send, State } from "./progress.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const percent = state.context.percent
@@ -13,6 +13,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const value = state.context.value
   const valueAsString = translations.value({ value, max, percent })
   const progressState = getProgressState(value, max)
+
+  const progressbarProps = {
+    role: "progressbar",
+    "aria-label": translations.value({ value, max, percent }),
+    "data-max": max,
+    "aria-valuemin": 0,
+    "aria-valuemax": max,
+    "aria-valuenow": value ?? undefined,
+    "data-orientation": orientation,
+    "data-state": progressState,
+  }
+
+  const circleProps = getCircleProps(state.context)
 
   return {
     value,
@@ -33,7 +46,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-state": progressState,
       "data-orientation": orientation,
       style: {
-        "--progress-percent": indeterminate ? undefined : `${percent}%`,
+        "--percent": indeterminate ? undefined : percent,
       },
     }),
 
@@ -44,23 +57,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-orientation": orientation,
     }),
 
-    trackProps: normalize.element({
-      dir: state.context.dir,
-      ...parts.track.attrs,
-      id: dom.getTrackId(state.context),
-      role: "progressbar",
-      "aria-label": translations.value({ value, max, percent }),
-      "data-max": max,
-      "aria-valuemin": 0,
-      "aria-valuemax": max,
-      "aria-valuenow": value ?? undefined,
-      "data-orientation": orientation,
-    }),
-
     valueTextProps: normalize.element({
       dir: state.context.dir,
       "aria-live": "polite",
       ...parts.valueText.attrs,
+    }),
+
+    trackProps: normalize.element({
+      dir: state.context.dir,
+      id: dom.getTrackId(state.context),
+      ...parts.track.attrs,
+      ...progressbarProps,
     }),
 
     rangeProps: normalize.element({
@@ -71,6 +78,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: {
         [state.context.isHorizontal ? "width" : "height"]: indeterminate ? undefined : `${percent}%`,
       },
+    }),
+
+    circleProps: normalize.element({
+      dir: state.context.dir,
+      id: dom.getCircleId(state.context),
+      ...parts.circle.attrs,
+      ...progressbarProps,
+      ...circleProps.root,
+    }),
+
+    circleTrackProps: normalize.element({
+      dir: state.context.dir,
+      "data-orientation": orientation,
+      ...parts.circleTrack.attrs,
+      ...circleProps.track,
+    }),
+
+    circleRangeProps: normalize.element({
+      dir: state.context.dir,
+      ...parts.circleRange.attrs,
+      ...circleProps.range,
+      "data-state": progressState,
     }),
 
     getIndicatorProps(props) {
@@ -86,4 +115,34 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
 function getProgressState(value: number | null, maxValue: number): ProgressState {
   return value == null ? "indeterminate" : value === maxValue ? "complete" : "loading"
+}
+
+function getCircleProps(ctx: MachineContext) {
+  const determinant = ctx.isIndeterminate ? undefined : ctx.percent * 2.64
+  const circleProps = {
+    style: {
+      cx: "50",
+      cy: "50",
+      r: "42",
+      fill: "transparent",
+      strokeWidth: "var(--thickness)",
+    },
+  }
+  return {
+    root: {
+      viewBox: "0 0 100 100",
+      style: {
+        width: "var(--size)",
+        height: "var(--size)",
+      },
+    },
+    track: circleProps,
+    range: {
+      style: {
+        ...circleProps.style,
+        strokeDashoffset: 66,
+        strokeDasharray: determinant != null ? `${determinant} ${264 - determinant}` : undefined,
+      },
+    },
+  }
 }

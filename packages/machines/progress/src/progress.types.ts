@@ -58,6 +58,11 @@ type ComputedContext = Readonly<{
    *  Whether the progress bar is horizontal.
    */
   isHorizontal: boolean
+  /**
+   * @computed
+   * Whether the progress bar is in RTL mode.
+   */
+  isRtl: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -99,4 +104,7 @@ export interface MachineApi<T extends PropTypes> {
   valueTextProps: T["element"]
   rangeProps: T["element"]
   getIndicatorProps(props: IndicatorProps): T["element"]
+  circleProps: T["svg"]
+  circleTrackProps: T["circle"]
+  circleRangeProps: T["circle"]
 }

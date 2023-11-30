@@ -16,6 +16,10 @@ const api = computed(() => progress.connect(state.value, send, normalizeProps))
   <main className="progress">
     <div v-bind="api.rootProps">
       <div v-bind="api.labelProps">Upload progress</div>
+      <svg v-bind="api.circleProps">
+        <circle v-bind="api.circleTrackProps" />
+        <circle v-bind="api.circleRangeProps" />
+      </svg>
       <div v-bind="api.trackProps">
         <div v-bind="api.rangeProps" />
       </div>

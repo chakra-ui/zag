@@ -20,10 +20,18 @@ export default function Page() {
       <main className="progress">
         <div {...api.rootProps}>
           <div {...api.labelProps}>Upload progress</div>
+
+          <svg {...api.circleProps}>
+            <circle {...api.circleTrackProps} />
+            <circle {...api.circleRangeProps} />
+          </svg>
+
           <div {...api.trackProps}>
             <div {...api.rangeProps} />
           </div>
+
           <div {...api.valueTextProps}>{api.valueAsString}</div>
+
           <div>
             <button onClick={() => api.setValue((api.value ?? 0) - 20)}>Decrease</button>
             <button onClick={() => api.setValue((api.value ?? 0) + 20)}>Increase</button>
