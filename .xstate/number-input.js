@@ -98,10 +98,10 @@ const fetchMachine = createMachine({
         "INPUT.COMMIT": [{
           cond: "clampValueOnBlur && !isInRange",
           target: "idle",
-          actions: ["clampValue", "clearHint", "invokeOnBlur"]
+          actions: ["setClampedValue", "clearHint", "invokeOnBlur"]
         }, {
           target: "idle",
-          actions: ["syncInputValue", "clearHint", "invokeOnBlur"]
+          actions: ["setFormattedValue", "clearHint", "invokeOnBlur"]
         }],
         "INPUT.COMPOSITION_START": {
           actions: "setComposing"

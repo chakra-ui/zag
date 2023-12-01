@@ -137,11 +137,11 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: and("clampValueOnBlur", not("isInRange")),
                 target: "idle",
-                actions: ["clampValue", "clearHint", "invokeOnBlur"],
+                actions: ["setClampedValue", "clearHint", "invokeOnBlur"],
               },
               {
                 target: "idle",
-                actions: ["syncInputValue", "clearHint", "invokeOnBlur"],
+                actions: ["setFormattedValue", "clearHint", "invokeOnBlur"],
               },
             ],
             "INPUT.COMPOSITION_START": {
@@ -322,9 +322,9 @@ export function machine(userContext: UserDefinedContext) {
           const value = ctx.formatter.format(clamp(nextValue, ctx))
           set.value(ctx, value)
         },
-        clampValue(ctx) {
+        setClampedValue(ctx) {
           const nextValue = clamp(ctx.valueAsNumber, ctx)
-          set.value(ctx, String(nextValue))
+          set.value(ctx, ctx.formatter.format(nextValue))
         },
         setRawValue(ctx, evt) {
           const value = ctx.formatter.format(clamp(evt.value, ctx))
@@ -381,10 +381,9 @@ export function machine(userContext: UserDefinedContext) {
           const value = evt.type.endsWith("CHANGE") ? ctx.value : ctx.formattedValue
           sync.input(ctx, value)
         },
-        syncInputValue(ctx) {
-          const inputEl = dom.getInputEl(ctx)
-          if (!inputEl || inputEl.value == ctx.value) return
-          set.value(ctx, ctx.formattedValue)
+        setFormattedValue(ctx) {
+          const value = ctx.formatter.format(ctx.valueAsNumber)
+          set.value(ctx, value)
         },
         setCursorPoint(ctx, evt) {
           ctx.scrubberCursorPoint = evt.point
@@ -412,6 +411,7 @@ export function machine(userContext: UserDefinedContext) {
       },
       compareFns: {
         formatOptions: (a, b) => isEqual(a, b),
+        scrubberCursorPoint: (a, b) => isEqual(a, b),
       },
     },
   )
