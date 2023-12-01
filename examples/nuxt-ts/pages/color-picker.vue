@@ -117,7 +117,7 @@ const presets = ["#f47373", "#697689"]
   <Toolbar>
     <StateVisualizer :state="state" />
     <template #controls>
-      <Controls :config="controls.config" :state="controls.context" />
+      <Controls :control="controls" />
     </template>
   </Toolbar>
 </template>

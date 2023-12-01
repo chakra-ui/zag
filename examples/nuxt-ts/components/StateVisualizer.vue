@@ -3,7 +3,7 @@ import { stringifyState } from "@zag-js/shared"
 import { isRef } from "vue"
 
 const props = defineProps<{
-  state: Record<string, any>
+  state: any
   label?: string
   omit?: string[]
 }>()

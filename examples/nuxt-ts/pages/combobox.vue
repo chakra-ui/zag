@@ -68,7 +68,7 @@ const api = computed(() => combobox.connect(state.value, send, normalizeProps))
   <Toolbar>
     <StateVisualizer :state="state" :omit="['collection']" />
     <template #controls>
-      <Controls :config="controls.config" :state="controls.context" />
+      <Controls :control="controls" />
     </template>
   </Toolbar>
 </template>

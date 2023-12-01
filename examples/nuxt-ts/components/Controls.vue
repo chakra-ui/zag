@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { type ControlRecord, type ControlValue } from "@zag-js/shared"
-
-defineProps<{ config: ControlRecord; state: ControlValue<any> }>()
+defineProps<{ control: any }>()
 </script>
 
 <template>
   <div class="controls-container">
-    <div v-for="(value, key) in config" :key="key">
+    <div v-for="(value, key) in control.config" :key="key">
       <template v-if="value.type === 'boolean'">
         <div class="checkbox">
           <input
             :data-testid="key"
             :id="value.label || key"
             type="checkbox"
-            :checked="state.value[key]"
-            @input="(e) => (state.value[key] = (e.target as HTMLInputElement).checked)"
+            :checked="control.getState(key)"
+            @input="
+              (e) => {
+                control.setState(key, (e.target as HTMLInputElement).checked)
+              }
+            "
           />
           <label :for="value.label || key">{{ value.label || key }}</label>
         </div>
@@ -26,8 +28,12 @@ defineProps<{ config: ControlRecord; state: ControlValue<any> }>()
             :data-testid="key"
             type="text"
             :placeholder="value.placeholder"
-            :value="state.value[key]"
-            @keydown.enter="(event) => (state.value[key] = (event.target as HTMLInputElement).value)"
+            :value="control.getState(key)"
+            @keydown.enter="
+              (event) => {
+                control.setState(key, (event.target as HTMLInputElement).value)
+              }
+            "
           />
         </div>
       </template>
@@ -39,8 +45,12 @@ defineProps<{ config: ControlRecord; state: ControlValue<any> }>()
           <select
             :data-testid="key"
             :id="value.label || key"
-            :value="state.value[key]"
-            @change="(e) => (state.value[key] = (e.target as HTMLSelectElement).value)"
+            :value="control.getState(key)"
+            @change="
+              (e) => {
+                control.setState(key, (e.target as HTMLSelectElement).value)
+              }
+            "
           >
             <option>-----</option>
             <option v-for="option in value.options" :key="option" :value="option">
@@ -60,8 +70,13 @@ defineProps<{ config: ControlRecord; state: ControlValue<any> }>()
             type="number"
             :min="value.min"
             :max="value.max"
-            :value="state.value[key]"
-            @keydown.enter="(e) => (state.value[key] = (e.target as HTMLInputElement).valueAsNumber)"
+            :value="control.getState(key)"
+            @keydown.enter="
+              (e) => {
+                const val = parseFloat((e.target as HTMLInputElement).value)
+                control.setState(key, isNaN(val) ? 0 : val)
+              }
+            "
           />
         </div>
       </template>

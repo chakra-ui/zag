@@ -72,6 +72,8 @@ export const numberInputControls = defineControls({
   step: { type: "number", defaultValue: 1 },
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 100 },
+  "formatOptions.maximumFractionDigits": { type: "number" },
+  "formatOptions.minimumFractionDigits": { type: "number" },
 })
 
 export const pinInputControls = defineControls({
