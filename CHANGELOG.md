@@ -6,6 +6,35 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.29.0] - 2023-29-09
+
+### Fixed
+
+- **ColorPicker**: Fix issue where swatch indicator had incorrect data attributes
+
+- **NumberInput**:
+
+  - Fix issue when value updates due to intl formatting does not trigger `onValueChange`
+  - Fix issue where increment and decrement buttons doesn't respect locales (esp. when locales uses decimal commas and
+    not decimal points)
+
+- **Menu**: Fix issue in non-portalled, nested menus where keyboard interactions within submenu bubble to parent menu
+
+### Added
+
+- **FileUpload**
+  - Add support for `onFileAccept` and `onFileReject` callbacks.
+  - Add support customizing `ids` and aria labels using `messages` context property.
+  - Add item preview image part
+  - **Breaking**: Update file error types
+    - `TOO_MANY_FILES_REJECTION` > `TOO_MANY_FILES`
+    - `TOO_LARGE` > `FILE_TOO_LARGE`
+    - `TOO_SMALL` > `FILE_TOO_SMALL`
+
+### Changed
+
+- **DatePicker**: Rename `messages` context property to `translations`. This property was previously unused
+
 ## [0.28.1] - 2023-11-09
 
 ### Fixed
