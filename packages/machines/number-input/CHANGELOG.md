@@ -1,5 +1,23 @@
 # @zag-js/number-input
 
+## 0.31.1
+
+### Patch Changes
+
+- [`7db5f9fa`](https://github.com/chakra-ui/zag/commit/7db5f9fa213246ba50af10a04409bfabf94b43a5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where formatting on blur doesn't work as expected
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.31.1
+  - @zag-js/core@0.31.1
+  - @zag-js/types@0.31.1
+  - @zag-js/utils@0.31.1
+  - @zag-js/dom-event@0.31.1
+  - @zag-js/dom-query@0.31.1
+  - @zag-js/form-utils@0.31.1
+  - @zag-js/mutation-observer@0.31.1
+  - @zag-js/number-utils@0.31.1
+
 ## 0.31.0
 
 ### Patch Changes
