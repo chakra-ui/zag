@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/store",
-  "version": "0.31.0",
+  "version": "0.31.1",
   "description": "The reactive store package for zag machines",
   "keywords": [
     "js",
