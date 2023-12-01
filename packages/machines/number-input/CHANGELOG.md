@@ -1,5 +1,25 @@
 # @zag-js/number-input
 
+## 0.31.0
+
+### Patch Changes
+
+- [`9d5a152a`](https://github.com/chakra-ui/zag/commit/9d5a152adae1c3b5be222096bf75748b232e3a3a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue when value updates due to intl formatting does not
+  trigger `onValueChange`
+  - Fix issue where increment and decrement buttons doesn't respect locales (esp. when locales uses decimal commas and
+    not decimal points)
+- Updated dependencies []:
+  - @zag-js/anatomy@0.31.0
+  - @zag-js/core@0.31.0
+  - @zag-js/types@0.31.0
+  - @zag-js/utils@0.31.0
+  - @zag-js/dom-event@0.31.0
+  - @zag-js/dom-query@0.31.0
+  - @zag-js/form-utils@0.31.0
+  - @zag-js/mutation-observer@0.31.0
+  - @zag-js/number-utils@0.31.0
+
 ## 0.30.0
 
 ### Patch Changes

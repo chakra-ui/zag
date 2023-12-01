@@ -1,5 +1,21 @@
 # @zag-js/popper
 
+## 0.31.0
+
+### Minor Changes
+
+- [`1b636579`](https://github.com/chakra-ui/zag/commit/1b63657923c69350e2f148e3ab9f22bc384af4a4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `getAnchorRect` to dynamically compute the
+  anchor rect used for positioning
+  - Add support for a custom `updatePosition` function to dynamically update the position of the popper
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.31.0
+  - @zag-js/dom-query@0.31.0
+  - @zag-js/element-rect@0.31.0
+
 ## 0.30.0
 
 ### Patch Changes
