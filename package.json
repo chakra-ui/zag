@@ -92,7 +92,7 @@
     "plop": "4.0.0",
     "prettier": "3.1.0",
     "signale": "1.4.0",
-    "ts-morph": "^20.0.0",
+    "ts-morph": "^21.0.0",
     "tsup": "8.0.1",
     "tsx": "4.6.0",
     "typescript": "5.3.2",
