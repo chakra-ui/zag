@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@axe-core/playwright':
-        specifier: 4.8.1
-        version: 4.8.1(playwright-core@1.40.1)
+        specifier: 4.8.2
+        version: 4.8.2(playwright-core@1.40.1)
       '@babel/generator':
         specifier: 7.23.5
         version: 7.23.5
@@ -2577,8 +2577,8 @@ packages:
     resolution: {integrity: sha512-pvFiLP2BeOKA/ZOS6jxx4XhKzdVLHDhGlFEaZ2flWWYf2xOqVniqpk38I04DFRyz+L0ASggl7SkItTc+ZLju4w==}
     dev: true
 
-  /@axe-core/playwright@4.8.1(playwright-core@1.40.1):
-    resolution: {integrity: sha512-KC1X++UdRAwMLRvB+BIKFheyLHUnbJTL0t0Wbv6TJMozn2V2QyEtAcN6jyUiudtGiLUGhHCtj/eWorBnVZ4dAA==}
+  /@axe-core/playwright@4.8.2(playwright-core@1.40.1):
+    resolution: {integrity: sha512-9KOhX2tNuvqn9DzpBNyqoqNKRZBrexeSiN9irQ0sEdq8zH13JnatepCJxobuXn4UopNy6iIpP4342beMiH+MSQ==}
     peerDependencies:
       playwright-core: '>= 1.0.0'
     dependencies:

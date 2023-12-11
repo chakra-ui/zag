@@ -58,7 +58,7 @@
     ]
   },
   "dependencies": {
-    "@axe-core/playwright": "4.8.1",
+    "@axe-core/playwright": "4.8.2",
     "@babel/generator": "7.23.5",
     "@babel/parser": "7.23.5",
     "@babel/traverse": "7.23.5",
