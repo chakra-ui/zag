@@ -2,16 +2,11 @@
 
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
+import { selectData } from "@zag-js/shared"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useId } from "react"
 
-const items = [
-  { label: "Taubaté", value: "Taubaté" },
-  { label: "São Paulo", value: "São Paulo" },
-  { label: "Rio de Janeiro", value: "Rio de Janeiro" },
-  { label: "Belo Horizonte", value: "Belo Horizonte" },
-  { label: "Curitiba", value: "Curitiba" },
-]
+const items = selectData
 
 function Select({ value, setValue }: { value: string | null | undefined; setValue: (value: string) => void }) {
   const collection = select.collection({
@@ -35,7 +30,7 @@ function Select({ value, setValue }: { value: string | null | undefined; setValu
     <div {...api.rootProps}>
       <div {...api.controlProps}>
         <label {...api.labelProps}>Label</label>
-        <button {...api.triggerProps}>{api.valueAsString || "Select a city"}</button>
+        <button {...api.triggerProps}>{api.valueAsString || "Select a country"}</button>
       </div>
 
       <Portal>

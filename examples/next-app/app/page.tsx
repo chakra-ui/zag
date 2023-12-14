@@ -1,3 +1,3 @@
-export default function Page({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>
+export default function Page() {
+  return <div>Zag with Nextjs</div>
 }
