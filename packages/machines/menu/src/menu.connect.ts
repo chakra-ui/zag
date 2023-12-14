@@ -358,9 +358,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const option = getOptionItemProps(props)
       const itemState = getOptionItemState(props)
 
-      return Object.assign(
-        getItemProps(option),
-        normalize.element({
+      return {
+        ...getItemProps(option),
+        ...normalize.element({
           "data-type": type,
           "data-name": name,
           ...parts.optionItem.attrs,
@@ -377,7 +377,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             onCheckedChange?.(!itemState.isChecked)
           },
         }),
-      )
+      }
     },
 
     getOptionItemIndicatorProps(props) {
