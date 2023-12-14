@@ -1168,10 +1168,12 @@ main [data-testid="scrubber"] {
 }
 
 [data-scope="tabs"][data-part="indicator"][data-orientation="horizontal"] {
+  width: var(--width);
   height: 4px;
 }
 
 [data-scope="tabs"][data-part="indicator"][data-orientation="vertical"] {
+  height: var(--height);
   width: 4px;
 }
 
@@ -1271,6 +1273,12 @@ main [data-testid="scrubber"] {
   width: 100%;
   text-align: center;
 }
+
+.segmented-control [data-part="indicator"] {
+  width: var(--width);
+  height: var(--height);
+}
+
 
 /* -----------------------------------------------------------------------------
 * Pressable

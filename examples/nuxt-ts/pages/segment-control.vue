@@ -5,7 +5,7 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(radioControls)
 
-const [state, send] = useMachine(radio.machine({ id: "1", name: "fruit" }), {
+const [state, send] = useMachine(radio.machine({ id: "1", name: "fruit", orientation: "horizontal" }), {
   context: controls.context,
 })
 

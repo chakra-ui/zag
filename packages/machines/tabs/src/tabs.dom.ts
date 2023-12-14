@@ -44,15 +44,13 @@ export const dom = createScope({
 
   getRectById: (ctx: Ctx, id: string) => {
     const tab = itemById(dom.getElements(ctx), dom.getTriggerId(ctx, id))
-    return dom.resolveRect(dom.getOffsetRect(tab), ctx.orientation)
+    return dom.resolveRect(dom.getOffsetRect(tab))
   },
 
-  resolveRect(rect: Record<"width" | "height" | "left" | "top", number>, orientation?: "horizontal" | "vertical") {
-    const sizeProp = orientation === "vertical" ? "height" : "width"
-    const placementProp = orientation === "vertical" ? "top" : "left"
-    return {
-      [placementProp]: `${rect[placementProp]}px`,
-      [sizeProp]: `${rect[sizeProp]}px`,
-    }
-  },
+  resolveRect: (rect: Record<"width" | "height" | "left" | "top", number>) => ({
+    width: `${rect.width}px`,
+    height: `${rect.height}px`,
+    left: `${rect.left}px`,
+    top: `${rect.top}px`,
+  }),
 })

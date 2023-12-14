@@ -219,7 +219,7 @@ export function machine(userContext: UserDefinedContext) {
               return dom.getOffsetRect(el)
             },
             onChange(rect) {
-              ctx.indicatorRect = dom.resolveRect(rect, ctx.orientation)
+              ctx.indicatorRect = dom.resolveRect(rect)
               nextTick(() => {
                 ctx.canIndicatorTransition = false
               })
