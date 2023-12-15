@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
@@ -8,17 +9,18 @@ import { useId } from "react"
 
 const items = selectData
 
-function Select({ value, setValue }: { value: string | null | undefined; setValue: (value: string) => void }) {
-  const collection = select.collection({
-    items: items,
-    itemToString: (item) => item.label,
-    itemToValue: (item) => item.value,
-  })
+const collection = select.collection({
+  items: selectData,
+  itemToString: (item) => item.label,
+  itemToValue: (item) => item.value,
+})
 
+function Select({ value, setValue }: { value: string | null | undefined; setValue: (value: string) => void }) {
+  //
   const [state, send] = useMachine(select.machine({ id: useId(), collection }), {
     context: {
       value: value ? [value] : undefined,
-      onValueChange(details) {
+      onValueChange: (details: any) => {
         setValue(details.value[0])
       },
     },
@@ -59,7 +61,7 @@ export default function SearchParamClientPage() {
   console.log("search param value:", selectedCountry)
 
   return (
-    <>
+    <div style={{ padding: "40px" }}>
       <h1>{selectedCountry}</h1>
 
       <button
@@ -84,6 +86,6 @@ export default function SearchParamClientPage() {
           router.push(`${pathname}?country=${value}`)
         }}
       />
-    </>
+    </div>
   )
 }

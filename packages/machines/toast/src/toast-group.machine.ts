@@ -26,8 +26,6 @@ export function groupMachine<T extends GenericOptions>(userContext: UserDefinedG
     },
 
     on: {
-      SETUP: {},
-
       PAUSE_TOAST: {
         actions: (_ctx, evt, { self }) => {
           self.sendChild("PAUSE", evt.id)
