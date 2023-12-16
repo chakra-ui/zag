@@ -2,7 +2,7 @@
 
 import type { Machine, StateMachine as S } from "@zag-js/core"
 import { snapshot, subscribe, type Snapshot } from "@zag-js/store"
-import { isEqual } from "@zag-js/utils"
+import { compact, isEqual } from "@zag-js/utils"
 import { createProxy as createProxyToCompare, isChanged } from "proxy-compare"
 import ReactExport, { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
 
@@ -61,26 +61,25 @@ export function useSnapshot<
    * Sync context (if changed) to avoid unnecessary renders
    * -----------------------------------------------------------------------------*/
 
-  useEffect(
-    () => {
-      const entries = Object.entries(context ?? {})
+  const ctx = compact(context ?? {})
 
-      const equality = entries.map(([key, value]) => ({
-        key,
-        curr: value,
-        prev: currSnapshot.context[key],
-        equal: isEqual(currSnapshot.context[key], value),
-      }))
+  useEffect(() => {
+    const entries = Object.entries(ctx)
 
-      const allEqual = equality.every(({ equal }) => equal)
+    const equality = entries.map(([key, value]) => ({
+      key,
+      curr: value,
+      prev: currSnapshot.context[key],
+      equal: isEqual(currSnapshot.context[key], value),
+    }))
 
-      if (!allEqual) {
-        // console.log(equality.filter(({ equal }) => !equal))
-        service.setContext(context)
-      }
-    },
-    Object.values(context ?? {}),
-  )
+    const allEqual = equality.every(({ equal }) => equal)
+
+    if (!allEqual) {
+      // console.log(equality.filter(({ equal }) => !equal))
+      service.setContext(ctx)
+    }
+  }, Object.values(ctx))
 
   const currAffected = new WeakMap()
 
