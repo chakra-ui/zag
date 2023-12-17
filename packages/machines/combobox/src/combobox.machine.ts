@@ -135,6 +135,9 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               guard: and("isCustomValue", not("allowCustomValue")),
               actions: "revertInputValue",
             },
+            "INPUT.BLUR": {
+              target: "idle",
+            },
             "INPUT.CLICK": {
               guard: "openOnClick",
               target: "interacting",
