@@ -34,6 +34,7 @@ export default function Page() {
       </button>
 
       <Select
+        positioning={{ placement: "right-end" }}
         value={selectedCountry}
         setValue={(value) => {
           router.push(`${pathname}?country=${value}`)

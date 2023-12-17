@@ -13,10 +13,17 @@ const collection = select.collection({
   itemToValue: (item) => item.value,
 })
 
-export function Select({ value, setValue }: { value: string | null | undefined; setValue: (value: string) => void }) {
-  //
+interface SelectProps extends Omit<select.Context, "id" | "value" | "onValueChange" | "collection"> {
+  value: string | null | undefined
+  setValue: (value: string) => void
+}
+
+export function Select(props: SelectProps) {
+  const { value, setValue, ...restProps } = props
+
   const [state, send] = useMachine(select.machine({ id: useId(), collection }), {
     context: {
+      ...restProps,
       value: value ? [value] : undefined,
       onValueChange(details: any) {
         setValue(details.value[0])
