@@ -16,7 +16,7 @@ export interface ValueLabelOptions {
   percent: number
 }
 
-interface IntlTranslations {
+export interface IntlTranslations {
   value(opts: ValueLabelOptions): string
 }
 
