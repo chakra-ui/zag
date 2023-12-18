@@ -20,6 +20,7 @@ export type DateView = "day" | "month" | "year"
 
 export interface ValueChangeDetails {
   value: DateValue[]
+  valueAsString: string[]
   view: DateView
 }
 
