@@ -123,11 +123,11 @@ importers:
         specifier: 5.3.2
         version: 5.3.2
       vite:
-        specifier: 5.0.7
-        version: 5.0.7(@types/node@20.10.0)
+        specifier: 5.0.10
+        version: 5.0.10(@types/node@20.10.0)
       vite-plugin-dts:
         specifier: 3.6.3
-        version: 3.6.3(@types/node@20.10.0)(typescript@5.3.2)(vite@5.0.7)
+        version: 3.6.3(@types/node@20.10.0)(typescript@5.3.2)(vite@5.0.10)
       vitest:
         specifier: ^0.34.6
         version: 0.34.6
@@ -17356,7 +17356,7 @@ packages:
       mlly: 1.4.2
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.0.7(@types/node@20.10.0)
+      vite: 5.0.10(@types/node@20.10.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -17421,7 +17421,7 @@ packages:
       vscode-uri: 3.0.8
     dev: true
 
-  /vite-plugin-dts@3.6.3(@types/node@20.10.0)(typescript@5.3.2)(vite@5.0.7):
+  /vite-plugin-dts@3.6.3(@types/node@20.10.0)(typescript@5.3.2)(vite@5.0.10):
     resolution: {integrity: sha512-NyRvgobl15rYj65coi/gH7UAEH+CpSjh539DbGb40DfOTZSvDLNYTzc8CK4460W+LqXuMK7+U3JAxRB3ksrNPw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -17437,7 +17437,7 @@ packages:
       debug: 4.3.4
       kolorist: 1.8.0
       typescript: 5.3.2
-      vite: 5.0.7(@types/node@20.10.0)
+      vite: 5.0.10(@types/node@20.10.0)
       vue-tsc: 1.8.22(typescript@5.3.2)
     transitivePeerDependencies:
       - '@types/node'
@@ -17544,6 +17544,42 @@ packages:
       fsevents: 2.3.3
     dev: true
 
+  /vite@5.0.10(@types/node@20.10.0):
+    resolution: {integrity: sha512-2P8J7WWgmc355HUMlFrwofacvr98DAjoE52BfdbwQtyLH06XKwaL/FMnmKM2crF0iX4MpmMKoDlNCB1ok7zHCw==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 20.10.0
+      esbuild: 0.19.8
+      postcss: 8.4.32
+      rollup: 4.6.1
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: false
+
   /vite@5.0.2(@types/node@20.10.0):
     resolution: {integrity: sha512-6CCq1CAJCNM1ya2ZZA7+jS2KgnhbzvxakmlIjN24cF/PXhRMzpM/z8QgsVJA/Dm5fWUWnVEsmtBoMhmerPxT0g==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -17578,42 +17614,6 @@ packages:
       rollup: 4.6.1
     optionalDependencies:
       fsevents: 2.3.3
-
-  /vite@5.0.7(@types/node@20.10.0):
-    resolution: {integrity: sha512-B4T4rJCDPihrQo2B+h1MbeGL/k/GMAHzhQ8S0LjQ142s6/+l3hHTT095ORvsshj4QCkoWu3Xtmob5mazvakaOw==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^18.0.0 || >=20.0.0
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      '@types/node': 20.10.0
-      esbuild: 0.19.8
-      postcss: 8.4.32
-      rollup: 4.6.1
-    optionalDependencies:
-      fsevents: 2.3.3
-    dev: false
 
   /vitefu@0.2.5(vite@5.0.2):
     resolution: {integrity: sha512-SgHtMLoqaeeGnd2evZ849ZbACbnwQCIwRH57t18FxcXoZop0uQu0uzlIhJBlF/eWVzuce0sHeqPcDo+evVcg8Q==}
@@ -17678,7 +17678,7 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.1
       tinypool: 0.7.0
-      vite: 5.0.7(@types/node@20.10.0)
+      vite: 5.0.10(@types/node@20.10.0)
       vite-node: 0.34.6(@types/node@20.10.0)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
