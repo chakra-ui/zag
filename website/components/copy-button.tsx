@@ -1,9 +1,9 @@
 import { Icon } from "@chakra-ui/icon"
 import { HStack } from "@chakra-ui/layout"
-import { useState } from "react"
+import { useState, type JSX } from "react"
 import { HiCheck, HiOutlineClipboardCopy } from "react-icons/hi"
 
-export function CopyButton({ content }: { content: string }) {
+export function CopyButton({ content }: { content: string }): JSX.Element {
   const [copied, setCopied] = useState(false)
   const icon = copied ? HiCheck : HiOutlineClipboardCopy
   return (
