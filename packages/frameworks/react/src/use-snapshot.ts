@@ -5,6 +5,7 @@ import { snapshot, subscribe, type Snapshot } from "@zag-js/store"
 import { compact, isEqual } from "@zag-js/utils"
 import { createProxy as createProxyToCompare, isChanged } from "proxy-compare"
 import ReactExport, { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
+import { useUpdateEffect } from "./use-update-effect"
 
 //@ts-ignore
 const { use } = ReactExport
@@ -61,9 +62,9 @@ export function useSnapshot<
    * Sync context (if changed) to avoid unnecessary renders
    * -----------------------------------------------------------------------------*/
 
-  const ctx = compact(context ?? {})
+  const ctx = useMemo(() => compact(context ?? {}), [context])
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     const entries = Object.entries(ctx)
 
     const equality = entries.map(([key, value]) => ({
@@ -79,7 +80,7 @@ export function useSnapshot<
       // console.log(equality.filter(({ equal }) => !equal))
       service.setContext(ctx)
     }
-  }, Object.values(ctx))
+  }, [ctx])
 
   const currAffected = new WeakMap()
 
