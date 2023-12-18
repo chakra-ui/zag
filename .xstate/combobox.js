@@ -110,6 +110,9 @@ const fetchMachine = createMachine({
           cond: "isCustomValue && !allowCustomValue",
           actions: "revertInputValue"
         },
+        "INPUT.BLUR": {
+          target: "idle"
+        },
         "INPUT.CLICK": {
           cond: "openOnClick",
           target: "interacting",

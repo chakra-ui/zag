@@ -162,6 +162,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         if (isDisabled) return
         send("INPUT.FOCUS")
       },
+      onBlur() {
+        if (isDisabled) return
+        send("INPUT.BLUR")
+      },
       onChange(event) {
         send({ type: "INPUT.CHANGE", value: event.currentTarget.value })
       },

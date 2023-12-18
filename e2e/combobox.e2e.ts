@@ -48,16 +48,15 @@ test.describe("combobox", () => {
   })
 
   test("[typeahead / autohighlight / selection] should open combobox menu when typing", async ({ page }) => {
-    await page.type(input, "an")
+    await page.locator(input).pressSequentially("an")
     await expect(page.locator(content)).toBeVisible()
 
     const option = page.locator(options).first()
     await expectToBeHighlighted(option)
 
     await page.keyboard.press("Enter")
-    const textValue = await option.textContent()
-    await expect(page.locator(input)).toHaveValue(textValue!)
 
+    await expect(page.locator(input)).toHaveValue("Canada")
     await expect(page.locator(content)).toBeHidden()
   })
 
@@ -133,7 +132,7 @@ test.describe("combobox", () => {
 
   test("[keyboard / closed] on home and end, caret moves to start and end", async ({ page }) => {
     await page.click(trigger)
-    await page.type(input, "an")
+    await page.locator(input).pressSequentially("an")
 
     // close
     await page.keyboard.press("Escape")
@@ -146,7 +145,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / arrowdown / loop]", async ({ page }) => {
-    await page.type(input, "mal")
+    await page.locator(input).pressSequentially("mal")
 
     const option_els = page.locator(options)
 
@@ -160,7 +159,7 @@ test.describe("combobox", () => {
   test("[keyboard / arrowdown / no-loop]", async ({ page }) => {
     await controls(page).bool("loop", false)
 
-    await page.type(input, "mal")
+    await page.locator(input).pressSequentially("mal")
 
     const option_els = page.locator(options)
 
@@ -172,7 +171,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / arrowup / loop]", async ({ page }) => {
-    await page.type(input, "mal")
+    await page.locator(input).pressSequentially("mal")
     const option_els = page.locator(options)
     await page.keyboard.press("ArrowUp")
     await expectToBeHighlighted(option_els.last())
@@ -181,7 +180,7 @@ test.describe("combobox", () => {
   test("[keyboard / arrowup / no-loop]", async ({ page }) => {
     await controls(page).bool("loop", false)
 
-    await page.type(input, "mal")
+    await page.locator(input).pressSequentially("mal")
     const option_els = page.locator(options)
     await page.keyboard.press("ArrowUp")
     await expectToBeHighlighted(option_els.first())
@@ -228,7 +227,7 @@ test.describe("combobox", () => {
     })
 
     test("[keyboard] should autocomplete", async ({ page }) => {
-      await page.type(input, "mal")
+      await page.locator(input).pressSequentially("mal")
 
       // no option should be selected
       const count = await page.locator(highlighted_option).count()
@@ -250,7 +249,7 @@ test.describe("combobox", () => {
     })
 
     test("[keyboard / loop] should loop through the options and previous input value", async ({ page }) => {
-      await page.type(input, "mal")
+      await page.locator(input).pressSequentially("mal")
 
       //press arrow down 5 times
       await page.keyboard.press("ArrowDown")
@@ -270,7 +269,7 @@ test.describe("combobox", () => {
 
     test("[pointer] hovering an option should not update input value", async ({ page }) => {
       await page.click(trigger)
-      await page.type(input, "mal")
+      await page.locator(input).pressSequentially("mal")
 
       const option_els = page.locator(options)
       await option_els.nth(4).hover()

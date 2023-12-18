@@ -23,8 +23,7 @@ export default defineComponent({
       combobox.machine({
         collection: collectionRef.value,
         id: "1",
-        onOpenChange(details) {
-          if (!details.open) return
+        onOpenChange() {
           options.value = comboboxData
         },
         onInputValueChange({ value }) {

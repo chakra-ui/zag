@@ -121,9 +121,9 @@ function getCircleProps(ctx: MachineContext) {
   const determinant = ctx.isIndeterminate ? undefined : ctx.percent * 2.64
   const circleProps = {
     style: {
-      cx: "50",
-      cy: "50",
-      r: "42",
+      cx: "50px",
+      cy: "50px",
+      r: "42px",
       fill: "transparent",
       strokeWidth: "var(--thickness)",
     },
@@ -140,7 +140,7 @@ function getCircleProps(ctx: MachineContext) {
     range: {
       style: {
         ...circleProps.style,
-        strokeDashoffset: 66,
+        strokeDashoffset: "66px",
         strokeDasharray: determinant != null ? `${determinant} ${264 - determinant}` : undefined,
       },
     },
