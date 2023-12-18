@@ -1,0 +1,21 @@
+```jsx
+import * as progress from "@zag-js/progress"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { useId } from "react"
+
+function Progress() {
+  const [state, send] = useMachine(progress.machine({ id: useId() }))
+
+  const api = progress.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      <div {...api.labelProps}>Upload progress</div>
+      <svg {...api.circleProps}>
+        <circle {...api.circleTrackProps} />
+        <circle {...api.circleRangeProps} />
+      </svg>
+    </div>
+  )
+}
+```

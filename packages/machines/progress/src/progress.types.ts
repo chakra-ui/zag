@@ -13,6 +13,7 @@ export type ProgressState = "indeterminate" | "loading" | "complete"
 export interface ValueLabelOptions {
   value: number | null
   max: number
+  min: number
   percent: number
 }
 
@@ -25,6 +26,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    *  The current value of the progress bar.
    */
   value: number | null
+  /**
+   * The minimum allowed value of the progress bar.
+   */
+  min: number
   /**
    * The maximum allowed value of the progress bar.
    */

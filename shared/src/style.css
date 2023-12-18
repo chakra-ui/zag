@@ -1279,7 +1279,6 @@ main [data-testid="scrubber"] {
   height: var(--height);
 }
 
-
 /* -----------------------------------------------------------------------------
 * Pressable
 * -----------------------------------------------------------------------------*/
@@ -1733,7 +1732,7 @@ main [data-testid="scrubber"] {
 }
 
 [data-scope="progress"][data-part="range"] {
-  --translate-x: -100%;
+  --translate-x: 100%;
   height: 100%;
   background-color: blue;
   border-radius: 4px;
@@ -1741,7 +1740,7 @@ main [data-testid="scrubber"] {
 }
 
 [data-scope="progress"][data-part="range"][dir="rtl"] {
-  --translate-x: 100%;
+  --translate-x: -100%;
 }
 
 @keyframes progress-animation {
@@ -1781,10 +1780,6 @@ main [data-testid="scrubber"] {
   0% {
     stroke-dasharray: 1, 400;
     stroke-dashoffset: 0;
-  }
-  100% {
-    stroke-dasharray: 400, 400;
-    stroke-dashoffset: -100;
   }
   100% {
     stroke-dasharray: 400, 400;

@@ -13,6 +13,7 @@ import { ColorPicker } from "./machines/color-picker"
 import { Dialog } from "./machines/dialog"
 import { Editable } from "./machines/editable"
 import { FileUpload } from "./machines/file-upload"
+import { LinearProgress } from "./machines/linear-progress"
 import { Menu } from "./machines/menu"
 import { NumberInput } from "./machines/number-input"
 import { PinInput } from "./machines/pin-input"
@@ -27,6 +28,7 @@ import { ToastGroup } from "./machines/toast"
 import { ToggleGroup } from "./machines/toggle-group"
 import { Tooltip } from "./machines/tooltip"
 import { Playground } from "./playground"
+import { CircularProgress } from "./machines/circular-progress"
 
 const components = {
   Dialog: () => (
@@ -303,6 +305,24 @@ const components = {
         disabled: false,
         readOnly: false,
         closeOnSelect: false,
+      }}
+    />
+  ),
+  LinearProgress: () => (
+    <Playground
+      component={LinearProgress}
+      defaultProps={{
+        min: 0,
+        max: 100,
+      }}
+    />
+  ),
+  CircularProgress: () => (
+    <Playground
+      component={CircularProgress}
+      defaultProps={{
+        min: 0,
+        max: 100,
       }}
     />
   ),

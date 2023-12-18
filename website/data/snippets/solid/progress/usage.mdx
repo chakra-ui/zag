@@ -1,0 +1,20 @@
+```jsx
+import * as progress from "@zag-js/progress"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+function Progress() {
+  const [state, send] = useMachine(progress.machine({ id: useId() }))
+
+  const api = createMemo(() => progress.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <div {...api().labelProps}>Upload progress</div>
+      <div {...api().trackProps}>
+        <div {...api().rangeProps} />
+      </div>
+    </div>
+  )
+}
+```

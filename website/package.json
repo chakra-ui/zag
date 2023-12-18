@@ -39,6 +39,7 @@
     "@zag-js/number-input": "workspace:*",
     "@zag-js/pagination": "workspace:*",
     "@zag-js/pin-input": "workspace:*",
+    "@zag-js/progress": "workspace:*",
     "@zag-js/popover": "workspace:*",
     "@zag-js/radio-group": "workspace:*",
     "@zag-js/slider": "workspace:*",
