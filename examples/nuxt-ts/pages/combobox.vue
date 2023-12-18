@@ -18,8 +18,7 @@ const [state, send] = useMachine(
   combobox.machine({
     id: "1",
     collection: collectionRef.value,
-    onOpenChange(details) {
-      if (!details.open) return
+    onOpenChange() {
       options.value = comboboxData
     },
     onInputValueChange({ value }) {

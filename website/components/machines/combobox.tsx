@@ -3,7 +3,7 @@ import * as combobox from "@zag-js/combobox"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useMemo, useState } from "react"
 
-type ComboboxProps = {
+interface ComboboxProps {
   controls: {
     disabled: boolean
     readOnly: boolean
@@ -75,8 +75,7 @@ export function Combobox(props: ComboboxProps) {
     combobox.machine({
       id: useId(),
       collection,
-      onOpenChange(details) {
-        if (!details.open) return
+      onOpenChange() {
         setOptions(comboboxData)
       },
       onInputValueChange({ value }) {

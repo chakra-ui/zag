@@ -1,3 +1,4 @@
+import { hash } from "./hash"
 import type { CollectionItem, CollectionNode, CollectionOptions, CollectionSearchOptions } from "./types"
 
 const isObject = (v: any): v is Record<string, any> => typeof v === "object" && v !== null && !Array.isArray(v)
@@ -43,8 +44,14 @@ export class Collection<T extends CollectionItem = CollectionItem> {
    */
   private _lastValue: string | null = null
 
+  private hash: string = ""
+
   constructor(private options: CollectionOptions<T>) {
     this.iterate()
+  }
+
+  isEqual = (other: Collection<T>) => {
+    return this.hash === other.hash
   }
 
   /**
@@ -53,12 +60,16 @@ export class Collection<T extends CollectionItem = CollectionItem> {
   private iterate = (): Collection<T> => {
     const { items } = this.options
 
+    const hashSet = new Set<string>()
+
     for (let i = 0; i < items.length; i++) {
       const item = items[i]
 
       const value = this.itemToValue(item)
       const label = this.itemToString(item)
       const disabled = this.itemToDisabled(item)
+
+      hashSet.add(value)
 
       const node: CollectionNode<T> = {
         // freeze item to prevent mutation by frameworks like Solid.js
@@ -84,6 +95,8 @@ export class Collection<T extends CollectionItem = CollectionItem> {
         this._lastValue = value
       }
     }
+
+    this.hash = hash(Array.from(hashSet).join(""))
 
     return this
   }

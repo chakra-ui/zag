@@ -1,18 +1,33 @@
-export const isEqual = (a: any, b: any) => {
+const isArrayLike = (value: any) => value?.constructor.name === "Array"
+
+export const isEqual = (a: any, b: any): boolean => {
   if (Object.is(a, b)) return true
 
-  if (!(a instanceof Object) || !(b instanceof Object)) return false
+  if (typeof a?.isEqual === "function" && typeof b?.isEqual === "function") {
+    return a.isEqual(b)
+  }
 
-  const keys = Object.keys(a)
+  if (typeof a === "function" && typeof b === "function") {
+    return a.toString() === b.toString()
+  }
+
+  if (isArrayLike(a) && isArrayLike(b)) {
+    return Array.from(a).toString() === Array.from(b).toString()
+  }
+
+  if (!(typeof a === "object") || !(typeof b === "object")) return false
+
+  const keys = Object.keys(b)
   const length = keys.length
 
   for (let i = 0; i < length; i++) {
-    if (!(keys[i] in b)) return false
+    if (!(keys[i] in a)) return false
   }
 
   for (let i = 0; i < length; i++) {
-    if (a[keys[i]] !== b[keys[i]]) return false
+    const key = keys[i]
+    if (!isEqual(a[key], b[key])) return false
   }
 
-  return length === Object.keys(b).length
+  return true
 }

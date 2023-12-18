@@ -28,8 +28,7 @@ export default function Page() {
     combobox.machine({
       id: createUniqueId(),
       collection: collection(),
-      onOpenChange(details) {
-        if (!details.open) return
+      onOpenChange() {
         setOptions(comboboxData)
       },
       onInputValueChange({ value }) {
