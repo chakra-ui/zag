@@ -29,7 +29,8 @@
   "dependencies": {
     "@zag-js/core": "workspace:*",
     "@zag-js/store": "workspace:*",
-    "@zag-js/types": "workspace:*"
+    "@zag-js/types": "workspace:*",
+    "proxy-compare": "2.5.1"
   },
   "devDependencies": {
     "@types/react-dom": "18.2.18",
