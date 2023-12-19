@@ -1,12 +1,12 @@
 import * as accordion from "@zag-js/accordion"
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/preact"
 import { accordionControls, accordionData } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
-export default function Page() {
+export default function Accordion() {
   const controls = useControls(accordionControls)
 
   const [state, send] = useMachine(
