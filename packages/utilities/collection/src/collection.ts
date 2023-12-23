@@ -104,7 +104,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
   /**
    * Function to update the collection items
    */
-  setItems = (items: T[]) => {
+  setItems = (items: T[] | readonly T[]) => {
     this.options.items = items
     return this.iterate()
   }
