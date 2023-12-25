@@ -29,10 +29,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
   function getItemState(props: ItemProps) {
     const { item } = props
+    const disabled = collection.isItemDisabled(item)
     const value = collection.itemToValue(item)
     return {
       value,
-      isDisabled: collection.isItemDisabled(item),
+      isDisabled: Boolean(disabled || isDisabled),
       isHighlighted: state.context.highlightedValue === value,
       isSelected: state.context.value.includes(value),
     }
