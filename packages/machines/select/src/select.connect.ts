@@ -287,6 +287,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       id: dom.getClearTriggerId(state.context),
       type: "button",
       "aria-label": "Clear value",
+      disabled: isDisabled,
       hidden: !state.context.hasSelectedItems,
       dir: state.context.dir,
       onClick() {
