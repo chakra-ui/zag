@@ -2872,19 +2872,19 @@ importers:
         version: 2.3.1(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/provider':
         specifier: 2.4.2
-        version: 2.4.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
+        version: 2.4.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
       '@chakra-ui/system':
         specifier: 2.6.2
-        version: 2.6.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
+        version: 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
       '@chakra-ui/theme':
         specifier: 3.3.1
         version: 3.3.1(@chakra-ui/styled-system@2.9.2)
       '@emotion/react':
-        specifier: 11.11.1
-        version: 11.11.1(@types/react@18.2.45)(react@18.2.0)
+        specifier: 11.11.3
+        version: 11.11.3(@types/react@18.2.45)(react@18.2.0)
       '@emotion/styled':
         specifier: 11.11.0
-        version: 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.45)(react@18.2.0)
+        version: 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.45)(react@18.2.0)
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../packages/machines/accordion
@@ -3510,13 +3510,13 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@chakra-ui/css-reset@2.3.0(@emotion/react@11.11.1)(react@18.2.0):
+  /@chakra-ui/css-reset@2.3.0(@emotion/react@11.11.3)(react@18.2.0):
     resolution: {integrity: sha512-cQwwBy5O0jzvl0K7PLTLgp8ijqLPKyuEMiDXwYzl95seD3AoeuoCLyzZcJtVqaUZ573PiBdAbY/IlZcwDOItWg==}
     peerDependencies:
       '@emotion/react': '>=10.0.35'
       react: '>=18'
     dependencies:
-      '@emotion/react': 11.11.1(@types/react@18.2.45)(react@18.2.0)
+      '@emotion/react': 11.11.3(@types/react@18.2.45)(react@18.2.0)
       react: 18.2.0
     dev: false
 
@@ -3527,7 +3527,7 @@ packages:
       react: '>=18'
     dependencies:
       '@chakra-ui/shared-utils': 2.0.5
-      '@chakra-ui/system': 2.6.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
+      '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
       react: 18.2.0
     dev: false
 
@@ -3543,7 +3543,7 @@ packages:
       '@chakra-ui/react-children-utils': 2.0.6(react@18.2.0)
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
-      '@chakra-ui/system': 2.6.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
+      '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
       react: 18.2.0
     dev: false
 
@@ -3563,7 +3563,7 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@chakra-ui/provider@2.4.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0):
+  /@chakra-ui/provider@2.4.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-w0Tef5ZCJK1mlJorcSjItCSbyvVuqpvyWdxZiVQmE6fvSJR83wZof42ux0+sfWD+I7rHSfj+f9nzhNaEWClysw==}
     peerDependencies:
       '@emotion/react': ^11.0.0
@@ -3571,13 +3571,13 @@ packages:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@chakra-ui/css-reset': 2.3.0(@emotion/react@11.11.1)(react@18.2.0)
+      '@chakra-ui/css-reset': 2.3.0(@emotion/react@11.11.3)(react@18.2.0)
       '@chakra-ui/portal': 2.1.0(react-dom@18.2.0)(react@18.2.0)
       '@chakra-ui/react-env': 3.1.0(react@18.2.0)
-      '@chakra-ui/system': 2.6.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
+      '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
       '@chakra-ui/utils': 2.0.15
-      '@emotion/react': 11.11.1(@types/react@18.2.45)(react@18.2.0)
-      '@emotion/styled': 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.45)(react@18.2.0)
+      '@emotion/react': 11.11.3(@types/react@18.2.45)(react@18.2.0)
+      '@emotion/styled': 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.45)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
@@ -3636,7 +3636,7 @@ packages:
       lodash.mergewith: 4.6.2
     dev: false
 
-  /@chakra-ui/system@2.6.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0):
+  /@chakra-ui/system@2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0):
     resolution: {integrity: sha512-EGtpoEjLrUu4W1fHD+a62XR+hzC5YfsWm+6lO0Kybcga3yYEij9beegO0jZgug27V+Rf7vns95VPVP6mFd/DEQ==}
     peerDependencies:
       '@emotion/react': ^11.0.0
@@ -3649,8 +3649,8 @@ packages:
       '@chakra-ui/styled-system': 2.9.2
       '@chakra-ui/theme-utils': 2.0.21
       '@chakra-ui/utils': 2.0.15
-      '@emotion/react': 11.11.1(@types/react@18.2.45)(react@18.2.0)
-      '@emotion/styled': 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.45)(react@18.2.0)
+      '@emotion/react': 11.11.3(@types/react@18.2.45)(react@18.2.0)
+      '@emotion/styled': 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.45)(react@18.2.0)
       react: 18.2.0
       react-fast-compare: 3.2.2
     dev: false
@@ -4253,7 +4253,7 @@ packages:
       '@babel/runtime': 7.23.5
       '@emotion/hash': 0.9.1
       '@emotion/memoize': 0.8.1
-      '@emotion/serialize': 1.1.2
+      '@emotion/serialize': 1.1.3
       babel-plugin-macros: 3.1.0
       convert-source-map: 1.9.0
       escape-string-regexp: 4.0.0
@@ -4286,8 +4286,8 @@ packages:
     resolution: {integrity: sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==}
     dev: false
 
-  /@emotion/react@11.11.1(@types/react@18.2.45)(react@18.2.0):
-    resolution: {integrity: sha512-5mlW1DquU5HaxjLkfkGN1GA/fvVGdyHURRiX/0FHl2cfIfRxSOfmxEH5YS43edp0OldZrZ+dkBKbngxcNCdZvA==}
+  /@emotion/react@11.11.3(@types/react@18.2.45)(react@18.2.0):
+    resolution: {integrity: sha512-Cnn0kuq4DoONOMcnoVsTOR8E+AdnKFf//6kUWc4LCdnxj31pZWn7rIULd6Y7/Js1PiPHzn7SKCM9vB/jBni8eA==}
     peerDependencies:
       '@types/react': '*'
       react: '>=16.8.0'
@@ -4298,7 +4298,7 @@ packages:
       '@babel/runtime': 7.23.5
       '@emotion/babel-plugin': 11.11.0
       '@emotion/cache': 11.11.0
-      '@emotion/serialize': 1.1.2
+      '@emotion/serialize': 1.1.3
       '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(react@18.2.0)
       '@emotion/utils': 1.2.1
       '@emotion/weak-memoize': 0.3.1
@@ -4317,11 +4317,21 @@ packages:
       csstype: 3.1.2
     dev: false
 
+  /@emotion/serialize@1.1.3:
+    resolution: {integrity: sha512-iD4D6QVZFDhcbH0RAG1uVu1CwVLMWUkCvAqqlewO/rxf8+87yIBAlt4+AxMiiKPLs5hFc0owNk/sLLAOROw3cA==}
+    dependencies:
+      '@emotion/hash': 0.9.1
+      '@emotion/memoize': 0.8.1
+      '@emotion/unitless': 0.8.1
+      '@emotion/utils': 1.2.1
+      csstype: 3.1.2
+    dev: false
+
   /@emotion/sheet@1.2.2:
     resolution: {integrity: sha512-0QBtGvaqtWi+nx6doRwDdBIzhNdZrXUppvTM4dtZZWEGTXL/XE/yJxLMGlDT1Gt+UHH5IX1n+jkXyytE/av7OA==}
     dev: false
 
-  /@emotion/styled@11.11.0(@emotion/react@11.11.1)(@types/react@18.2.45)(react@18.2.0):
+  /@emotion/styled@11.11.0(@emotion/react@11.11.3)(@types/react@18.2.45)(react@18.2.0):
     resolution: {integrity: sha512-hM5Nnvu9P3midq5aaXj4I+lnSfNi7Pmd4EWk1fOZ3pxookaQTNew6bp4JaCBYM4HVFZF9g7UjJmsUmC2JlxOng==}
     peerDependencies:
       '@emotion/react': ^11.0.0-rc.0
@@ -4334,7 +4344,7 @@ packages:
       '@babel/runtime': 7.23.5
       '@emotion/babel-plugin': 11.11.0
       '@emotion/is-prop-valid': 1.2.1
-      '@emotion/react': 11.11.1(@types/react@18.2.45)(react@18.2.0)
+      '@emotion/react': 11.11.3(@types/react@18.2.45)(react@18.2.0)
       '@emotion/serialize': 1.1.2
       '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(react@18.2.0)
       '@emotion/utils': 1.2.1
