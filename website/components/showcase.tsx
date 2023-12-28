@@ -47,7 +47,18 @@ const components = {
     <Playground
       component={Carousel}
       defaultProps={{
+        align: {
+          default: "start",
+          options: ["start", "center", "end"],
+        },
+        index: 0,
         loop: false,
+        orientation: {
+          default: "horizontal",
+          options: ["horizontal", "vertical"],
+        },
+        slidesPerView: 1,
+        spacing: "0px",
       }}
     />
   ),
