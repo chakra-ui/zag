@@ -29,6 +29,7 @@ import { ToggleGroup } from "./machines/toggle-group"
 import { Tooltip } from "./machines/tooltip"
 import { Playground } from "./playground"
 import { CircularProgress } from "./machines/circular-progress"
+import { Carousel } from "./machines/carousel"
 
 const components = {
   Dialog: () => (
@@ -39,6 +40,14 @@ const components = {
         closeOnInteractOutside: true,
         closeOnEscapeKeyDown: true,
         role: { options: ["dialog", "alertdialog"], default: "dialog" },
+      }}
+    />
+  ),
+  Carousel: () => (
+    <Playground
+      component={Carousel}
+      defaultProps={{
+        loop: false,
       }}
     />
   ),
