@@ -41,14 +41,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   animate?: boolean
   /**
-   * Name of the expand animation
-   */
-  expandAnimationName?: string
-  /**
-   * Name of the collapse animation
-   */
-  collapseAnimationName?: string
-  /**
    * Duration of the animation in milliseconds
    * @default 300
    */
@@ -85,6 +77,11 @@ type PrivateContext = Context<{
    * Whether the trigger has focus
    */
   focused?: boolean
+  /**
+   * @internal
+   * The height of the content
+   */
+  height?: number
   /**
    * @internal
    * Whether the trigger is hovered

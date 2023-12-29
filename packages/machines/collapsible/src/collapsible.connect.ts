@@ -47,7 +47,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "region",
       hidden: shouldBeHidden,
       "aria-expanded": isOpen,
-      style: dom.getContentStyle(state.context),
+      style: {
+        "--collapsible-height": shouldBeHidden ? 0 : state.context.height,
+      },
     }),
 
     triggerProps: normalize.element({

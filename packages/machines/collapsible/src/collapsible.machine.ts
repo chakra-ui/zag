@@ -13,10 +13,9 @@ export function machine(userContext: UserDefinedContext) {
         open: false,
         disabled: false,
         animate: false,
-        expandAnimationName: "",
-        collapseAnimationName: "",
         animationDuration: 300,
         ...ctx,
+        height: 0,
       },
 
       computed: {

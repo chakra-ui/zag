@@ -210,13 +210,13 @@ a[aria-current="page"] {
     height: 0;
   }
   to {
-    height: 100%;
+    height: var(--collapsible-height);
   }
 }
 
 @keyframes slideUp {
   from {
-    height: 100%;
+    height: var(--collapsible-height);
   }
   to {
     height: 0;
