@@ -18,8 +18,7 @@ const [state, send] = useMachine(
   combobox.machine({
     id: "1",
     collection: collectionRef.value,
-    onOpenChange(details) {
-      if (!details.open) return
+    onOpenChange() {
       options.value = comboboxData
     },
     onInputValueChange({ value }) {
@@ -68,7 +67,7 @@ const api = computed(() => combobox.connect(state.value, send, normalizeProps))
   <Toolbar>
     <StateVisualizer :state="state" :omit="['collection']" />
     <template #controls>
-      <Controls :config="controls.config" :state="controls.context" />
+      <Controls :control="controls" />
     </template>
   </Toolbar>
 </template>

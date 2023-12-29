@@ -20,7 +20,7 @@ export default defineComponent({
         <>
           <main class="tooltip" style={{ gap: "12px", flexDirection: "row" }}>
             <div class="root">
-              <button {...api.triggerProps}>Over me</button>
+              <button {...api.triggerProps}>Hover me</button>
               {api.isOpen && (
                 <Teleport to="body">
                   <div {...api.positionerProps}>

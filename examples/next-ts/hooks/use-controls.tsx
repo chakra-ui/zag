@@ -1,19 +1,17 @@
 /* eslint-disable jsx-a11y/no-onchange */
+import { ControlRecord, deepGet, deepSet, getControlDefaults } from "@zag-js/shared"
 import { useState } from "react"
-import { ControlRecord, ControlValue } from "@zag-js/shared"
-
-function getDefaultValues<T extends ControlRecord>(obj: T) {
-  return Object.keys(obj).reduce(
-    (acc, key) => ({
-      ...acc,
-      [key]: obj[key].defaultValue,
-    }),
-    {} as ControlValue<T>,
-  )
-}
 
 export function useControls<T extends ControlRecord>(config: T) {
-  const [state, setState] = useState(getDefaultValues(config))
+  const [state, __setState] = useState(getControlDefaults(config))
+
+  const setState = (key: string, value: any) => {
+    __setState((s) => {
+      const newState = structuredClone(s)
+      deepSet(newState, key, value)
+      return newState
+    })
+  }
 
   return {
     context: state,
@@ -21,6 +19,7 @@ export function useControls<T extends ControlRecord>(config: T) {
       <div className="controls-container">
         {Object.keys(config).map((key) => {
           const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
+          const value = deepGet(state, key)
           switch (type) {
             case "boolean":
               return (
@@ -29,9 +28,9 @@ export function useControls<T extends ControlRecord>(config: T) {
                     data-testid={key}
                     id={label}
                     type="checkbox"
-                    defaultChecked={state[key] as boolean}
+                    defaultChecked={value}
                     onChange={(e) => {
-                      setState((s) => ({ ...s, [key]: e.target.checked }))
+                      setState(key, e.target.checked)
                     }}
                   />
                   <label htmlFor={label}>{label}</label>
@@ -45,10 +44,10 @@ export function useControls<T extends ControlRecord>(config: T) {
                     data-testid={key}
                     type="text"
                     placeholder={placeholder}
-                    defaultValue={state[key] as string}
+                    defaultValue={value}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        setState((s) => ({ ...s, [key]: (e.target as HTMLInputElement).value }))
+                        setState(key, e.currentTarget.value)
                       }
                     }}
                   />
@@ -63,9 +62,9 @@ export function useControls<T extends ControlRecord>(config: T) {
                   <select
                     data-testid={key}
                     id={label}
-                    defaultValue={state[key] as string}
+                    defaultValue={value}
                     onChange={(e) => {
-                      setState((s) => ({ ...s, [key]: e.target.value }))
+                      setState(key, e.target.value)
                     }}
                   >
                     <option>-----</option>
@@ -89,11 +88,11 @@ export function useControls<T extends ControlRecord>(config: T) {
                     type="number"
                     min={min}
                     max={max}
-                    defaultValue={state[key] as number}
+                    defaultValue={value}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         const val = parseFloat(e.currentTarget.value)
-                        setState((s) => ({ ...s, [key]: isNaN(val) ? 0 : val }))
+                        setState(key, isNaN(val) ? 0 : val)
                       }
                     }}
                   />

@@ -880,8 +880,8 @@
         "type": "string",
         "description": "The locale (BCP 47 language tag) to use when formatting the date."
       },
-      "messages": {
-        "type": "IntlMessages",
+      "translations": {
+        "type": "IntlTranslations",
         "description": "The localized messages to use."
       },
       "ids": {
@@ -1290,6 +1290,14 @@
         "type": "string",
         "description": "The name of the underlying file input"
       },
+      "ids": {
+        "type": "Partial<{ root: string; dropzone: string; hiddenInput: string; trigger: string; label: string; item(id: string): string; itemName(id: string): string; itemSizeText(id: string): string; itemPreview(id: string): string; }>",
+        "description": "The ids of the elements. Useful for composition."
+      },
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "The localized messages to use."
+      },
       "accept": {
         "type": "string | Record<string, string[]>",
         "description": "The accept file types"
@@ -1314,8 +1322,8 @@
         "type": "number",
         "description": "The maximum number of files"
       },
-      "isValidFile": {
-        "type": "(file: File) => boolean",
+      "validate": {
+        "type": "(file: File) => FileError[]",
         "description": "Function to validate a file"
       },
       "files": {
@@ -1324,7 +1332,15 @@
       },
       "onFilesChange": {
         "type": "(details: FileChangeDetails) => void",
-        "description": "Function called when the value changes"
+        "description": "Function called when the value changes, whether accepted or rejected"
+      },
+      "onFileAccept": {
+        "type": "(details: FileAcceptDetails) => void",
+        "description": "Function called when the file is accepted"
+      },
+      "onFileReject": {
+        "type": "(details: FileRejectDetails) => void",
+        "description": "Function called when the file is rejected"
       },
       "locale": {
         "type": "string",
@@ -1555,7 +1571,7 @@
         "description": "The value of the input as a number."
       },
       "setValue": {
-        "type": "(value: string | number) => void",
+        "type": "(value: number) => void",
         "description": "Function to set the value of the input."
       },
       "clearValue": {
@@ -2024,7 +2040,72 @@
         "description": "Function to set the node (as early as possible)"
       }
     },
-    "context": {}
+    "context": {
+      "present": {
+        "type": "boolean",
+        "description": "Whether the node is present (controlled by the user)"
+      },
+      "onExitComplete": {
+        "type": "() => void",
+        "description": "Function called when the animation ends in the closed state."
+      }
+    }
+  },
+  "progress": {
+    "api": {
+      "value": {
+        "type": "number",
+        "description": "The current value of the progress bar."
+      },
+      "valueAsString": {
+        "type": "string",
+        "description": "The current value of the progress bar as a string."
+      },
+      "setValue": {
+        "type": "(value: number) => void",
+        "description": "Sets the current value of the progress bar."
+      },
+      "setToMax": {
+        "type": "() => void",
+        "description": "Sets the current value of the progress bar to the max value."
+      }
+    },
+    "context": {
+      "value": {
+        "type": "number",
+        "description": "The current value of the progress bar."
+      },
+      "min": {
+        "type": "number",
+        "description": "The minimum allowed value of the progress bar."
+      },
+      "max": {
+        "type": "number",
+        "description": "The maximum allowed value of the progress bar."
+      },
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "The localized messages to use."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "orientation": {
+        "type": "Orientation",
+        "description": "The orientation of the element.",
+        "defaultValue": "\"horizontal\""
+      }
+    }
   },
   "radio-group": {
     "api": {
@@ -2941,48 +3022,7 @@
     }
   },
   "toast": {
-    "api": {
-      "type": {
-        "type": "Type",
-        "description": "The type of the toast."
-      },
-      "title": {
-        "type": "string",
-        "description": "The title of the toast."
-      },
-      "description": {
-        "type": "string",
-        "description": "The description of the toast."
-      },
-      "placement": {
-        "type": "Placement",
-        "description": "The current placement of the toast."
-      },
-      "isVisible": {
-        "type": "boolean",
-        "description": "Whether the toast is visible."
-      },
-      "isPaused": {
-        "type": "boolean",
-        "description": "Whether the toast is paused."
-      },
-      "isRtl": {
-        "type": "boolean",
-        "description": "Whether the toast is in RTL mode."
-      },
-      "pause": {
-        "type": "() => void",
-        "description": "Function to pause the toast (keeping it visible)."
-      },
-      "resume": {
-        "type": "() => void",
-        "description": "Function to resume the toast dismissing."
-      },
-      "dismiss": {
-        "type": "() => void",
-        "description": "Function to instantly dismiss the toast."
-      }
-    },
+    "api": {},
     "context": {}
   },
   "toggle-group": {

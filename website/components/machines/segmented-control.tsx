@@ -19,7 +19,7 @@ type SegmentedControlProps = {
 
 export function SegmentedControl(props: SegmentedControlProps) {
   const [state, send] = useMachine(
-    radio.machine({ id: useId(), value: "react" }),
+    radio.machine({ id: useId(), value: "react", orientation: "horizontal" }),
     {
       context: props.controls,
     },

@@ -27,7 +27,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     value: state.context.formattedValue,
     valueAsNumber: state.context.valueAsNumber,
     setValue(value) {
-      send({ type: "VALUE.SET", value: value.toString() })
+      send({ type: "VALUE.SET", value })
     },
     clearValue() {
       send("VALUE.CLEAR")
@@ -231,8 +231,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (isDisabled) return
 
         const evt = getNativeEvent(event)
-
         const point = getEventPoint(evt)
+
         point.x = point.x - roundToDevicePixel(7.5)
         point.y = point.y - roundToDevicePixel(7.5)
 

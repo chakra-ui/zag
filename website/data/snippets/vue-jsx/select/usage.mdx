@@ -39,8 +39,8 @@ export default defineComponent({
             <div {...api.positionerProps}>
               <ul {...api.contentProps}>
                 {selectData.map((item) => (
-                  <li key={value} {...api.getItemProps({ item })}>
-                    <span>{label}</span>
+                  <li key={item.value} {...api.getItemProps({ item })}>
+                    <span>{item.label}</span>
                     <span {...api.getItemIndicatorProps({ item })}>✓</span>
                   </li>
                 ))}

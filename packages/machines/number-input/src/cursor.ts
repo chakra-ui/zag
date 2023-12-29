@@ -27,7 +27,13 @@ export function recordCursor(inputEl: HTMLInputElement): Selection | undefined {
 }
 
 export function restoreCursor(inputEl: HTMLInputElement, selection: Selection | undefined) {
-  if (inputEl.ownerDocument.activeElement !== inputEl || !selection) return
+  if (inputEl.ownerDocument.activeElement !== inputEl) return
+
+  if (!selection) {
+    inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length)
+    return
+  }
+
   try {
     const { value } = inputEl
     const { beforeTxt = "", afterTxt = "", start } = selection

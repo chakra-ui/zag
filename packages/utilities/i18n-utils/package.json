@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/i18n-utils",
-  "version": "0.30.0",
+  "version": "0.31.1",
   "description": "Interationalization utilities for Zag.js",
   "keywords": [
     "js",

@@ -1,4 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
+import type { FileError } from "@zag-js/file-utils"
 import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -7,7 +8,7 @@ import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "
 
 export interface FileRejection {
   file: File
-  errors: (string | null)[]
+  errors: FileError[]
 }
 
 export interface FileChangeDetails {
@@ -15,15 +16,50 @@ export interface FileChangeDetails {
   rejectedFiles: FileRejection[]
 }
 
+export interface FileAcceptDetails {
+  files: File[]
+}
+
+export interface FileRejectDetails {
+  files: FileRejection[]
+}
+
+export type { FileError }
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
+
+export type ElementIds = Partial<{
+  root: string
+  dropzone: string
+  hiddenInput: string
+  trigger: string
+  label: string
+  item(id: string): string
+  itemName(id: string): string
+  itemSizeText(id: string): string
+  itemPreview(id: string): string
+}>
+
+export interface IntlTranslations {
+  itemPreview(file: File): string
+  deleteFile(file: File): string
+}
 
 interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * The name of the underlying file input
    */
   name?: string
+  /**
+   * The ids of the elements. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * The localized messages to use.
+   */
+  translations: IntlTranslations
   /**
    * The accept file types
    */
@@ -51,15 +87,23 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * Function to validate a file
    */
-  isValidFile?: (file: File) => boolean
+  validate?: (file: File) => FileError[] | null
   /**
    * The current value of the file input
    */
   files: File[]
   /**
-   * Function called when the value changes
+   * Function called when the value changes, whether accepted or rejected
    */
   onFilesChange?: (details: FileChangeDetails) => void
+  /**
+   * Function called when the file is accepted
+   */
+  onFileAccept?: (details: FileAcceptDetails) => void
+  /**
+   * Function called when the file is rejected
+   */
+  onFileReject?: (details: FileRejectDetails) => void
 }
 
 interface PrivateContext {
@@ -108,7 +152,7 @@ export interface ItemProps {
   file: File
 }
 
-export interface ItemPreviewProps extends ItemProps {
+export interface ItemPreviewImageProps extends ItemProps {
   url: string
 }
 
@@ -159,7 +203,8 @@ export interface MachineApi<T extends PropTypes> {
   itemGroupProps: T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemNameProps(props: ItemProps): T["element"]
-  getItemPreviewProps(props: ItemPreviewProps): T["img"]
+  getItemPreviewProps(props: ItemProps): T["element"]
+  getItemPreviewImageProps(props: ItemPreviewImageProps): T["img"]
   getItemSizeTextProps(props: ItemProps): T["element"]
   getItemDeleteTriggerProps(props: ItemProps): T["button"]
 }

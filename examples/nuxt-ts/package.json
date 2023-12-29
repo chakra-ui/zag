@@ -53,6 +53,7 @@
     "@zag-js/popover": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/presence": "workspace:*",
+    "@zag-js/progress": "workspace:*",
     "@zag-js/radio-group": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
@@ -80,8 +81,8 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@types/node": "^20.8.6",
-    "@types/form-serialize": "0.7.3",
-    "nuxt": "^3.7.4"
+    "@types/node": "^20.10.0",
+    "@types/form-serialize": "0.7.4",
+    "nuxt": "^3.8.2"
   }
 }

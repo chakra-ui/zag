@@ -9,7 +9,7 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(radioControls)
 
-  const [state, send] = useMachine(radio.machine({ id: createUniqueId(), name: "fruit" }), {
+  const [state, send] = useMachine(radio.machine({ id: createUniqueId(), name: "fruit", orientation: "horizontal" }), {
     context: controls.context,
   })
 

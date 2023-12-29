@@ -1,6 +1,6 @@
 ---
 name: Request a feature or enhancement 🙋
-about: Want a feature to be added to Chakra UI Core?
+about: Want a new component to be added to Zag.js?
 ---
 
 <!---
@@ -16,7 +16,7 @@ might have asked the same thing before 😉!
 
 ## 🧱 Problem Statement / Justification
 
-> Please provide valid reason(s) why this should added to Chakra UI.
+> Please provide valid reason(s) why this should added.
 >
 > If this feaure is related to a problem you've noticed. Mention it as well
 

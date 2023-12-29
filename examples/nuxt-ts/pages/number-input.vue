@@ -28,7 +28,7 @@ const api = computed(() => numberInput.connect(state.value, send, normalizeProps
   <Toolbar>
     <StateVisualizer :state="state" :omit="['formatter', 'parser']" />
     <template #controls>
-      <Controls :config="controls.config" :state="controls.context" />
+      <Controls :control="controls" />
     </template>
   </Toolbar>
 </template>

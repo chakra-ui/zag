@@ -1,0 +1,54 @@
+```tsx
+import * as colorPicker from "@zag-js/color-picker"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed } from "vue"
+
+export default defineComponent({
+  name: "ColorPicker",
+  setup() {
+    const [state, send] = useMachine(colorPicker.machine({
+      id: "1",
+      value: colorPicker.parse("hsl(0, 100%, 50%)")
+    }))
+
+    const apiRef = computed(() => colorPicker.connect(state.value, send, normalizeProps))
+
+    return () => {
+      const api = apiRef.value
+
+      return (
+        <div {...api.rootProps}>
+          {/* ... */}
+          <div {...api.positionerProps}>
+            <div {...api.contentProps}>
+              {api.format === 'rgba' && (
+                <div>
+                  <div>
+                    <span>R</span>
+                    <input {...api.getChannelInputProps({ channel: 'red' })} />
+                  </div>
+
+                  <div>
+                    <span>G</span>
+                    <input {...api.getChannelInputProps({ channel: 'green' })} />
+                  </div>
+
+                  <div>
+                    <span>B</span>
+                    <input {...api.getChannelInputProps({ channel: 'blue' })} />
+                  </div>
+
+                  <div>
+                    <span>A</span>
+                    <input {...api.getChannelInputProps({ channel: 'alpha' })} />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )
+    }
+  }
+})
+```

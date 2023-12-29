@@ -49,9 +49,8 @@ export function snapToStep(value: number | string, step: number) {
 }
 
 export function valueOf(v: string | number) {
-  if (typeof v === "number") return v
-  const num = parseFloat(v.toString().replace(/[^\w.-]+/g, ""))
-  return !Number.isNaN(num) ? num : 0
+  const res = typeof v === "number" ? v : parseFloat(v.toString().replace(/[^\w.-]+/g, ""))
+  return Number.isNaN(res) ? 0 : res
 }
 
 export type FormatDecimalOptions = {

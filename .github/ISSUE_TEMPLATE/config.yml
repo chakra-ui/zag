@@ -3,3 +3,6 @@ contact_links:
   - name: Chat with other community members
     url: https://zagjs.com/discord
     about: The Zag Discord community
+  - name: Consult with the Maintainers (60m)
+    url: https://calendly.com/chakra-ui/technical-consulting-60m
+    about: Discuss your technical questions or feature request with the Zag Maintainers

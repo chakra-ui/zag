@@ -1,5 +1,45 @@
 # @zag-js/date-picker
 
+## 0.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.31.1
+  - @zag-js/core@0.31.1
+  - @zag-js/types@0.31.1
+  - @zag-js/utils@0.31.1
+  - @zag-js/date-utils@0.31.1
+  - @zag-js/dismissable@0.31.1
+  - @zag-js/dom-event@0.31.1
+  - @zag-js/dom-query@0.31.1
+  - @zag-js/form-utils@0.31.1
+  - @zag-js/live-region@0.31.1
+  - @zag-js/popper@0.31.1
+  - @zag-js/text-selection@0.31.1
+
+## 0.31.0
+
+### Patch Changes
+
+- [`08f788ab`](https://github.com/chakra-ui/zag/commit/08f788ab6381ed630ac03826b2f1b1054d66217f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `messages` context property to `translations`. This
+  property was previously unused
+
+- Updated dependencies [[`1b636579`](https://github.com/chakra-ui/zag/commit/1b63657923c69350e2f148e3ab9f22bc384af4a4)]:
+  - @zag-js/popper@0.31.0
+  - @zag-js/anatomy@0.31.0
+  - @zag-js/core@0.31.0
+  - @zag-js/types@0.31.0
+  - @zag-js/utils@0.31.0
+  - @zag-js/date-utils@0.31.0
+  - @zag-js/dismissable@0.31.0
+  - @zag-js/dom-event@0.31.0
+  - @zag-js/dom-query@0.31.0
+  - @zag-js/form-utils@0.31.0
+  - @zag-js/live-region@0.31.0
+  - @zag-js/text-selection@0.31.0
+
 ## 0.30.0
 
 ### Patch Changes

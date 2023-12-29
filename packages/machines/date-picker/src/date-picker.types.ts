@@ -20,6 +20,7 @@ export type DateView = "day" | "month" | "year"
 
 export interface ValueChangeDetails {
   value: DateValue[]
+  valueAsString: string[]
   view: DateView
 }
 
@@ -42,7 +43,7 @@ export interface OpenChangeDetails {
 
 export type SelectionMode = "single" | "multiple" | "range"
 
-export interface IntlMessages {
+export interface IntlTranslations {
   placeholder: (locale: string) => { year: string; month: string; day: string }
 }
 
@@ -74,7 +75,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The localized messages to use.
    */
-  messages?: IntlMessages
+  translations?: IntlTranslations
   /**
    * The ids of the elements in the date picker. Useful for composition.
    */

@@ -1,10 +1,12 @@
-import type { Middleware, Placement, VirtualElement } from "@floating-ui/dom"
-import { arrow, computePosition, flip, offset, shift, size, type ComputePositionConfig } from "@floating-ui/dom"
+import type { Middleware } from "@floating-ui/dom"
+import { arrow, computePosition, flip, offset, shift, size } from "@floating-ui/dom"
 import { getWindow, raf } from "@zag-js/dom-query"
-import { callAll, compact } from "@zag-js/utils"
+import { compact, isNull, runIfFn } from "@zag-js/utils"
 import { autoUpdate } from "./auto-update"
-import { shiftArrow, transformOrigin } from "./middleware"
-import type { BasePlacement, PositioningOptions } from "./types"
+import { getAnchorElement } from "./get-anchor"
+import { __shiftArrow, __transformOrigin } from "./middleware"
+import { getPlacementDetails } from "./placement"
+import type { MaybeElement, MaybeFn, MaybeRectElement, PositioningOptions } from "./types"
 
 const defaultOptions: PositioningOptions = {
   strategy: "absolute",
@@ -12,15 +14,88 @@ const defaultOptions: PositioningOptions = {
   listeners: true,
   gutter: 8,
   flip: true,
+  slide: true,
+  overlap: false,
   sameWidth: false,
+  fitViewport: false,
   overflowPadding: 8,
+  arrowPadding: 4,
 }
 
-type MaybeRectElement = HTMLElement | VirtualElement | null
-type MaybeElement = HTMLElement | null
-type MaybeFn<T> = T | (() => T)
+function __dpr(win: Window, value: number) {
+  const dpr = win.devicePixelRatio || 1
+  return Math.round(value * dpr) / dpr
+}
 
-function getPlacementImpl(reference: MaybeRectElement, floating: MaybeElement, opts: PositioningOptions = {}) {
+function __boundary(opts: PositioningOptions) {
+  return runIfFn(opts.boundary)
+}
+
+function __arrow(arrowElement: HTMLElement | null, opts: PositioningOptions) {
+  if (!arrowElement) return
+  return arrow({
+    element: arrowElement,
+    padding: opts.arrowPadding,
+  })
+}
+
+function __offset(arrowElement: HTMLElement | null, opts: PositioningOptions) {
+  if (isNull(opts.offset ?? opts.gutter)) return
+  return offset(({ placement }) => {
+    const arrowOffset = (arrowElement?.clientHeight || 0) / 2
+
+    const gutter = opts.offset?.mainAxis ?? opts.gutter
+    const mainAxis = typeof gutter === "number" ? gutter + arrowOffset : gutter ?? arrowOffset
+
+    const { hasAlign } = getPlacementDetails(placement)
+
+    return compact({
+      crossAxis: hasAlign ? opts.shift : undefined,
+      mainAxis: mainAxis,
+      alignmentAxis: opts.shift,
+    })
+  })
+}
+
+function __flip(opts: PositioningOptions) {
+  if (!opts.flip) return
+  return flip({
+    boundary: __boundary(opts),
+    padding: opts.overflowPadding,
+    fallbackPlacements: opts.flip === true ? undefined : opts.flip,
+  })
+}
+
+function __shift(opts: PositioningOptions) {
+  if (!opts.slide && !opts.overlap) return
+  return shift({
+    boundary: __boundary(opts),
+    mainAxis: opts.slide,
+    crossAxis: opts.overlap,
+    padding: opts.overflowPadding,
+  })
+}
+
+function __size(opts: PositioningOptions) {
+  return size({
+    padding: opts.overflowPadding,
+    apply({ elements, rects, availableHeight, availableWidth }) {
+      const floating = elements.floating
+
+      const referenceWidth = Math.round(rects.reference.width)
+      availableWidth = Math.floor(availableWidth)
+      availableHeight = Math.floor(availableHeight)
+
+      floating.style.setProperty("--reference-width", `${referenceWidth}px`)
+      floating.style.setProperty("--available-width", `${availableWidth}px`)
+      floating.style.setProperty("--available-height", `${availableHeight}px`)
+    },
+  })
+}
+
+function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeElement, opts: PositioningOptions = {}) {
+  const reference = getAnchorElement(referenceOrVirtual, opts.getAnchorRect)
+
   if (!floating || !reference) return
 
   const options = Object.assign({}, defaultOptions, opts)
@@ -30,104 +105,68 @@ function getPlacementImpl(reference: MaybeRectElement, floating: MaybeElement, o
    * -----------------------------------------------------------------------------*/
 
   const arrowEl = floating.querySelector<HTMLElement>("[data-part=arrow]")
-  const middleware: Middleware[] = []
 
-  const boundary = typeof options.boundary === "function" ? options.boundary() : options.boundary
-
-  if (options.flip) {
-    middleware.push(
-      flip({
-        boundary,
-        padding: options.overflowPadding,
-      }),
-    )
-  }
-
-  if (options.gutter || options.offset) {
-    const arrowOffset = arrowEl ? arrowEl.offsetHeight / 2 : 0
-
-    let mainAxis = options.offset?.mainAxis ?? options.gutter
-    let crossAxis = options.offset?.crossAxis
-
-    if (mainAxis != null) mainAxis += arrowOffset
-
-    const offsetOptions = compact({ mainAxis, crossAxis })
-    middleware.push(offset(offsetOptions))
-  }
-
-  middleware.push(
-    shift({
-      boundary,
-      crossAxis: options.overlap,
-      padding: options.overflowPadding,
-    }),
-  )
-
-  if (arrowEl) {
-    // prettier-ignore
-    middleware.push(
-      arrow({ element: arrowEl, padding: 8 }),
-      shiftArrow({ element: arrowEl }),
-    )
-  }
-
-  middleware.push(transformOrigin)
-
-  middleware.push(
-    size({
-      padding: options.overflowPadding,
-      apply({ rects, availableHeight, availableWidth }) {
-        const referenceWidth = Math.round(rects.reference.width)
-        floating.style.setProperty("--reference-width", `${referenceWidth}px`)
-        floating.style.setProperty("--available-width", `${availableWidth}px`)
-        floating.style.setProperty("--available-height", `${availableHeight}px`)
-      },
-    }),
-  )
+  const middleware: (Middleware | undefined)[] = [
+    __offset(arrowEl, options),
+    __flip(options),
+    __shift(options),
+    __arrow(arrowEl, options),
+    __shiftArrow(arrowEl),
+    __transformOrigin,
+    __size(options),
+  ]
 
   /* -----------------------------------------------------------------------------
    * The actual positioning function
    * -----------------------------------------------------------------------------*/
 
-  function compute(config: Omit<ComputePositionConfig, "platform"> = {}) {
-    const { placement, strategy, onComplete } = options
+  const { placement, strategy, onComplete, onPositioned } = options
 
+  const updatePosition = async () => {
     if (!reference || !floating) return
 
-    computePosition(reference, floating, {
+    const pos = await computePosition(reference, floating, {
       placement,
       middleware,
       strategy,
-      ...config,
-    }).then((data) => {
-      const x = Math.round(data.x)
-      const y = Math.round(data.y)
-
-      floating.style.setProperty("--x", `${x}px`)
-      floating.style.setProperty("--y", `${y}px`)
-
-      const win = getWindow(floating)
-      const contentEl = floating.firstElementChild
-
-      if (contentEl) {
-        const zIndex = win.getComputedStyle(contentEl).zIndex
-        floating.style.setProperty("--z-index", zIndex)
-      }
-
-      onComplete?.(data)
     })
+
+    onComplete?.(pos)
+    onPositioned?.({ placed: true })
+
+    const win = getWindow(floating)
+    const x = __dpr(win, pos.x)
+    const y = __dpr(win, pos.y)
+
+    floating.style.setProperty("--x", `${x}px`)
+    floating.style.setProperty("--y", `${y}px`)
+
+    const contentEl = floating.firstElementChild
+
+    if (contentEl) {
+      const zIndex = win.getComputedStyle(contentEl).zIndex
+      floating.style.setProperty("--z-index", zIndex)
+    }
   }
 
-  compute()
+  const update = async () => {
+    if (opts.updatePosition) {
+      await opts.updatePosition({ updatePosition })
+      onPositioned?.({ placed: true })
+    } else {
+      await updatePosition()
+    }
+  }
 
-  return callAll(
-    options.listeners ? autoUpdate(reference, floating, compute, options.listeners) : undefined,
-    options.onCleanup,
-  )
-}
+  const cancelAutoUpdate = options.listeners ? autoUpdate(reference, floating, update, options.listeners) : undefined
 
-export function getBasePlacement(placement: Placement): BasePlacement {
-  return placement.split("-")[0] as BasePlacement
+  update()
+
+  return () => {
+    cancelAutoUpdate?.()
+    onPositioned?.({ placed: false })
+    options.onCleanup?.()
+  }
 }
 
 export function getPlacement(
@@ -135,14 +174,14 @@ export function getPlacement(
   floatingOrFn: MaybeFn<MaybeElement>,
   opts: PositioningOptions & { defer?: boolean } = {},
 ) {
-  const { defer, ...restOptions } = opts
+  const { defer, ...options } = opts
   const func = defer ? raf : (v: any) => v()
   const cleanups: (VoidFunction | undefined)[] = []
   cleanups.push(
     func(() => {
       const reference = typeof referenceOrFn === "function" ? referenceOrFn() : referenceOrFn
       const floating = typeof floatingOrFn === "function" ? floatingOrFn() : floatingOrFn
-      cleanups.push(getPlacementImpl(reference, floating, restOptions))
+      cleanups.push(getPlacementImpl(reference, floating, options))
     }),
   )
   return () => {

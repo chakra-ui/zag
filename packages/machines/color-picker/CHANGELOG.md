@@ -1,5 +1,46 @@
 # @zag-js/color-picker
 
+## 0.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.31.1
+  - @zag-js/core@0.31.1
+  - @zag-js/types@0.31.1
+  - @zag-js/color-utils@0.31.1
+  - @zag-js/utils@0.31.1
+  - @zag-js/dismissable@0.31.1
+  - @zag-js/dom-event@0.31.1
+  - @zag-js/dom-query@0.31.1
+  - @zag-js/form-utils@0.31.1
+  - @zag-js/popper@0.31.1
+  - @zag-js/tabbable@0.31.1
+  - @zag-js/text-selection@0.31.1
+  - @zag-js/visually-hidden@0.31.1
+
+## 0.31.0
+
+### Patch Changes
+
+- [`977c3b54`](https://github.com/chakra-ui/zag/commit/977c3b540b11bd207378f952be696a56e2fe6790) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where swatch indicator had incorrect data attributes
+
+- Updated dependencies [[`1b636579`](https://github.com/chakra-ui/zag/commit/1b63657923c69350e2f148e3ab9f22bc384af4a4)]:
+  - @zag-js/popper@0.31.0
+  - @zag-js/anatomy@0.31.0
+  - @zag-js/core@0.31.0
+  - @zag-js/types@0.31.0
+  - @zag-js/color-utils@0.31.0
+  - @zag-js/utils@0.31.0
+  - @zag-js/dismissable@0.31.0
+  - @zag-js/dom-event@0.31.0
+  - @zag-js/dom-query@0.31.0
+  - @zag-js/form-utils@0.31.0
+  - @zag-js/tabbable@0.31.0
+  - @zag-js/text-selection@0.31.0
+  - @zag-js/visually-hidden@0.31.0
+
 ## 0.30.0
 
 ### Minor Changes

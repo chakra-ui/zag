@@ -81,6 +81,21 @@ export const numberInputControls = defineControls({
   step: { type: "number", defaultValue: 1 },
   min: { type: "number", defaultValue: 0 },
   max: { type: "number", defaultValue: 100 },
+  locale: {
+    type: "select",
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+  },
+  "formatOptions.maximumFractionDigits": { type: "number" },
+  "formatOptions.minimumFractionDigits": { type: "number" },
+  "formatOptions.style": {
+    type: "select",
+    options: ["decimal", "currency", "percent"] as const,
+  },
+  "formatOptions.currency": {
+    type: "select",
+    defaultValue: "USD",
+    options: ["USD", "EUR", "JPY", "GBP", "MXN", "CNY"] as const,
+  },
 })
 
 export const pinInputControls = defineControls({
@@ -212,4 +227,8 @@ export const toggleGroupControls = defineControls({
   loop: { type: "boolean", defaultValue: true },
   multiple: { type: "boolean", defaultValue: false },
   rovingFocus: { type: "boolean", defaultValue: true },
+})
+
+export const progressControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })

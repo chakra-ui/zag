@@ -1,19 +1,53 @@
-export function downloadFile(fileOrUrl: File | string, win: typeof window) {
+export function isMSEdge(win: Window): win is Window & { navigator: { msSaveOrOpenBlob: Function } } {
+  // @ts-ignore
+  return Boolean(win.navigator && win.navigator.msSaveOrOpenBlob)
+}
+
+interface DownloadFileOptions {
+  /**
+   * The name of the file
+   */
+  name?: string
+  /**
+   * The MIME type of the file
+   */
+  type?: string
+  /**
+   * The file contents
+   */
+  file: File | Blob | string
+  /**
+   * The window environment
+   */
+  win: typeof window
+}
+
+export function downloadFile(options: DownloadFileOptions) {
+  const { file, win, type, name } = options
+
   const doc = win.document
-  const objectUrl = typeof fileOrUrl === "string" ? fileOrUrl : win.URL.createObjectURL(fileOrUrl)
+
+  const obj = typeof file === "string" ? new Blob([file], { type }) : file
+  const fileName = typeof file === "string" ? name : file instanceof File ? file.name : undefined
+
+  if (isMSEdge(win)) {
+    win.navigator.msSaveOrOpenBlob(obj, fileName || "file-download")
+    return
+  }
+
+  const url = win.URL.createObjectURL(obj)
 
   const anchor = doc.createElement("a")
   anchor.style.display = "none"
-  anchor.href = objectUrl
-  anchor.download = typeof fileOrUrl === "string" ? objectUrl : fileOrUrl.name
+  anchor.href = url
+  anchor.rel = "noopener"
+  anchor.download = fileName || "file-download"
 
-  doc.body.appendChild(anchor)
+  doc.documentElement.appendChild(anchor)
   anchor.click()
 
   setTimeout(() => {
-    if (typeof fileOrUrl !== "string") {
-      win.URL.revokeObjectURL(objectUrl)
-    }
-    anchor?.parentNode?.removeChild(anchor)
+    win.URL.revokeObjectURL(url)
+    anchor.remove()
   }, 0)
 }

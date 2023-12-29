@@ -47,7 +47,7 @@ export function SelectWithForm() {
           <div {...api().positionerProps}>
             <ul {...api().contentProps}>
               {selectData.map((item) => (
-                <li key={item.value} {...api().getOptionProps({ item })}>
+                <li key={item.value} {...api().getItemProps({ item })}>
                   <span>{item.label}</span>
                   <span {...api().getItemIndicatorProps({ item })}>✓</span>
                 </li>

@@ -558,8 +558,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.swatchIndicator.attrs,
         dir: state.context.dir,
-        "aria-hidden": true,
-        "data-state": triggerState.isChecked ? "open" : "closed",
+        hidden: !triggerState.isChecked,
       })
     },
 

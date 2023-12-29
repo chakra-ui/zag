@@ -1,8 +1,8 @@
-import type { Placement, ReferenceElement } from "@floating-ui/dom"
+import type { ReferenceElement } from "@floating-ui/dom"
 import { getOverflowAncestors } from "@floating-ui/dom"
+import { isHTMLElement } from "@zag-js/dom-query"
 import { trackElementRect } from "@zag-js/element-rect"
-
-export type { Placement }
+import { callAll } from "@zag-js/utils"
 
 export interface AutoUpdateOptions {
   ancestorScroll?: boolean
@@ -11,15 +11,6 @@ export interface AutoUpdateOptions {
 }
 
 type Ancestors = ReturnType<typeof getOverflowAncestors>
-
-const callAll =
-  (...fns: VoidFunction[]) =>
-  () =>
-    fns.forEach((fn) => fn())
-
-const isHTMLElement = (el: any): el is HTMLElement => {
-  return typeof el === "object" && el !== null && el.nodeType === 1
-}
 
 const addDomEvent = (el: HTMLElement, type: string, fn: VoidFunction, options?: boolean | AddEventListenerOptions) => {
   el.addEventListener(type, fn, options)

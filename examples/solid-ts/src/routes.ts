@@ -5,6 +5,7 @@ import Home from "./pages/home"
 
 export const routes: RouteDefinition[] = [
   { path: "/collapsible", component: lazy(() => import("./pages/collapsible")) },
+  { path: "/progress", component: lazy(() => import("./pages/progress")) },
   { path: "/file-upload", component: lazy(() => import("./pages/file-upload")) },
   { path: "/presence", component: lazy(() => import("./pages/presence")) },
   { path: "/avatar", component: lazy(() => import("./pages/avatar")) },

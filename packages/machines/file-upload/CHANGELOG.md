@@ -1,5 +1,45 @@
 # @zag-js/file-upload
 
+## 0.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.31.1
+  - @zag-js/core@0.31.1
+  - @zag-js/types@0.31.1
+  - @zag-js/utils@0.31.1
+  - @zag-js/dom-query@0.31.1
+  - @zag-js/file-utils@0.31.1
+  - @zag-js/visually-hidden@0.31.1
+
+## 0.31.0
+
+### Minor Changes
+
+- [`e02fc592`](https://github.com/chakra-ui/zag/commit/e02fc59202a8a72f66de6ce63c74df492cc57664) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `onFileAccept` and `onFileReject` callbacks.
+
+  - Add support customizing `ids` and aria labels using `messages` context property.
+  - **Breaking**: Update file error types
+    - `TOO_MANY_FILES_REJECTION` > `TOO_MANY_FILES`
+    - `TOO_LARGE` > `FILE_TOO_LARGE`
+    - `TOO_SMALL` > `FILE_TOO_SMALL`
+
+- [`bbfbeced`](https://github.com/chakra-ui/zag/commit/bbfbeced95302901177d2755bafdc6543f527c54) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Add item preview mage part for File Upload
+
+### Patch Changes
+
+- Updated dependencies [[`e02fc592`](https://github.com/chakra-ui/zag/commit/e02fc59202a8a72f66de6ce63c74df492cc57664)]:
+  - @zag-js/file-utils@0.31.0
+  - @zag-js/anatomy@0.31.0
+  - @zag-js/core@0.31.0
+  - @zag-js/types@0.31.0
+  - @zag-js/utils@0.31.0
+  - @zag-js/dom-query@0.31.0
+  - @zag-js/visually-hidden@0.31.0
+
 ## 0.30.0
 
 ### Patch Changes

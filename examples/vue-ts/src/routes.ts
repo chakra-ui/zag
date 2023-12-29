@@ -5,6 +5,7 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: "/collapsible", component: () => import("./pages/collapsible") },
+    { path: "/progress", component: () => import("./pages/progress") },
     { path: "/file-upload", component: () => import("./pages/file-upload") },
     { path: "/presence", component: () => import("./pages/presence") },
     { path: "/avatar", component: () => import("./pages/avatar") },

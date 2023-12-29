@@ -1,5 +1,33 @@
 # @zag-js/dialog
 
+## 0.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.31.1
+  - @zag-js/core@0.31.1
+  - @zag-js/types@0.31.1
+  - @zag-js/aria-hidden@0.31.1
+  - @zag-js/utils@0.31.1
+  - @zag-js/dismissable@0.31.1
+  - @zag-js/dom-query@0.31.1
+  - @zag-js/remove-scroll@0.31.1
+
+## 0.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.31.0
+  - @zag-js/core@0.31.0
+  - @zag-js/types@0.31.0
+  - @zag-js/aria-hidden@0.31.0
+  - @zag-js/utils@0.31.0
+  - @zag-js/dismissable@0.31.0
+  - @zag-js/dom-query@0.31.0
+  - @zag-js/remove-scroll@0.31.0
+
 ## 0.30.0
 
 ### Patch Changes

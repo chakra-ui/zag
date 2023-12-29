@@ -33,7 +33,7 @@ const api = computed(() => editable.connect(state.value, send, normalizeProps))
   <Toolbar>
     <StateVisualizer :state="state" />
     <template #controls>
-      <Controls :config="controls.config" :state="controls.context" />
+      <Controls :control="controls" />
     </template>
   </Toolbar>
 </template>

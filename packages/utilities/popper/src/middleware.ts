@@ -1,4 +1,5 @@
 import type { Coords, Middleware } from "@floating-ui/dom"
+import type { PlacementSide } from "./types"
 
 /* -----------------------------------------------------------------------------
  * Shared middleware utils
@@ -33,7 +34,7 @@ const getTransformOrigin = (arrow?: Partial<Coords>) => ({
   "right-end": arrow ? `left ${arrow.y}px` : "left bottom",
 })
 
-export const transformOrigin: Middleware = {
+export const __transformOrigin: Middleware = {
   name: "transformOrigin",
   fn({ placement, elements, middlewareData }) {
     const { arrow } = middlewareData
@@ -52,27 +53,22 @@ export const transformOrigin: Middleware = {
  * Arrow Middleware
  * -----------------------------------------------------------------------------*/
 
-type ArrowOptions = { element: HTMLElement }
-
-type BasePlacement = "top" | "bottom" | "left" | "right"
-
-export const shiftArrow = (opts: ArrowOptions): Middleware => ({
-  name: "shiftArrow",
-  fn({ placement, middlewareData }) {
-    const { element: arrow } = opts
-
-    if (middlewareData.arrow) {
+export const __shiftArrow = (arrowEl: HTMLElement | null): Middleware | undefined => {
+  if (!arrowEl) return
+  return {
+    name: "shiftArrow",
+    fn({ placement, middlewareData }) {
+      if (!middlewareData.arrow) return {}
       const { x, y } = middlewareData.arrow
+      const dir = placement.split("-")[0] as PlacementSide
 
-      const dir = placement.split("-")[0] as BasePlacement
-
-      Object.assign(arrow.style, {
+      Object.assign(arrowEl.style, {
         left: x != null ? `${x}px` : "",
         top: y != null ? `${y}px` : "",
         [dir]: `calc(100% + ${cssVars.arrowOffset.reference})`,
       })
-    }
 
-    return {}
-  },
-})
+      return {}
+    },
+  }
+}

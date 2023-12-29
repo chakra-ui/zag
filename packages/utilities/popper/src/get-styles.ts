@@ -14,7 +14,7 @@ const ARROW_FLOATING_STYLE = {
 } as const
 
 export function getPlacementStyles(options: PositioningOptions = {}) {
-  const { placement = "bottom", sameWidth, fitViewport, strategy = "absolute" } = options
+  const { placement, sameWidth, fitViewport, strategy = "absolute" } = options
 
   return {
     arrow: {
@@ -26,7 +26,7 @@ export function getPlacementStyles(options: PositioningOptions = {}) {
     } as const,
 
     arrowTip: {
-      transform: ARROW_FLOATING_STYLE[placement.split("-")[0]],
+      transform: placement ? ARROW_FLOATING_STYLE[placement.split("-")[0]] : undefined,
       background: cssVars.arrowBg.reference,
       top: "0",
       left: "0",
@@ -45,7 +45,8 @@ export function getPlacementStyles(options: PositioningOptions = {}) {
       maxHeight: fitViewport ? "var(--available-height)" : undefined,
       top: "0px",
       left: "0px",
-      transform: `translate3d(var(--x), var(--y), 0)`,
+      // move off-screen if placement is not defined
+      transform: placement ? "translate3d(var(--x), var(--y), 0)" : "translate3d(0, -100vh, 0)",
       zIndex: "var(--z-index)",
     } as const,
   }

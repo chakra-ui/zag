@@ -166,6 +166,9 @@ export function machine(userContext: UserDefinedContext) {
             ...evt.options,
             defer: true,
             listeners: false,
+            onComplete(data) {
+              ctx.currentPlacement = data.placement
+            },
           })
         },
         toggleVisibility(ctx, _evt, { send }) {

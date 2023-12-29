@@ -1,0 +1,29 @@
+```tsx
+import * as progress from "@zag-js/progress"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { defineComponent, h, Fragment, computed } from "vue"
+
+export default defineComponent({
+  name: "Progress",
+  setup() {
+    const [state, send] = useMachine(progress.machine({ id: "1" }))
+
+    const apiRef = computed(() =>
+      progress.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+      return (
+        <div {...api.rootProps}>
+          <div {...api.labelProps}>Upload progress</div>
+          <svg {...api.circleProps}>
+            <circle {...api.circleTrackProps} />
+            <circle {...api.circleRangeProps} />
+          </svg>
+        </div>
+      )
+    }
+  },
+})
+```

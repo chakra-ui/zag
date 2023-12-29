@@ -104,6 +104,49 @@ const [state, send] = useMachine(
 )
 ```
 
+## Using a custom object format
+
+By default, the combobox collection expects an array of items with `label` and
+`value` properties. To use a custom object format, pass the `itemToString` and
+`itemToValue` properties to the collection function.
+
+- `itemToString` — A function that returns the string representation of an item.
+  Used to compare items when filtering.
+- `itemToValue` — A function that returns the unique value of an item.
+- `itemToDisabled` — A function that returns the disabled state of an item.
+
+```jsx
+const collection = combobox.collection({
+  // custom object format
+  items: [
+    { id: 1, fruit: "Banana", available: true, quantity: 10 },
+    { id: 2, fruit: "Apple", available: false, quantity: 5 },
+    { id: 3, fruit: "Orange", available: true, quantity: 3 },
+    //...
+  ],
+  // convert item to string
+  itemToString(item) {
+    return item.fruit
+  },
+  // convert item to value
+  itemToValue(item) {
+    return item.id
+  },
+  // convert item to disabled state
+  itemToDisabled(item) {
+    return !item.available || item.quantity === 0
+  },
+})
+
+// use the collection
+const [state, send] = useMachine(
+  combobox.machine({
+    id: useId(),
+    collection,
+  }),
+)
+```
+
 ## Rendering the selected values outside the combobox
 
 By default, the selected values of a combobox are displayed in the input

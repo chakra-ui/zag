@@ -2,7 +2,7 @@ import { indexOfId } from "./get-by-id"
 
 const getValueText = <T extends HTMLElement>(item: T) => item.dataset.valuetext ?? item.textContent ?? ""
 
-const match = (valueText: string, query: string) => valueText.toLowerCase().startsWith(query.toLowerCase())
+const match = (valueText: string, query: string) => valueText.trim().toLowerCase().startsWith(query.toLowerCase())
 
 const wrap = <T>(v: T[], idx: number) => {
   return v.map((_, index) => v[(Math.max(idx, 0) + index) % v.length])

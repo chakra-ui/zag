@@ -3,7 +3,7 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent } from "@zag-js/dom-event"
 import { contains, getByTypeahead, isEditableElement, raf } from "@zag-js/dom-query"
 import { observeAttributes } from "@zag-js/mutation-observer"
-import { getBasePlacement, getPlacement } from "@zag-js/popper"
+import { getPlacementSide, getPlacement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
 import { add, cast, compact, isArray, remove } from "@zag-js/utils"
 import { dom } from "./menu.dom"
@@ -403,22 +403,15 @@ export function machine(userContext: UserDefinedContext) {
         },
         reposition(ctx, evt) {
           const getPositionerEl = () => dom.getPositionerEl(ctx)
-
-          const virtualAnchorEl = ctx.anchorPoint
-            ? {
-                getBoundingClientRect: () => {
-                  const win = dom.getWin(ctx)
-                  return win.DOMRect.fromRect({ width: 0, height: 0, ...ctx.anchorPoint })
-                },
-              }
-            : undefined
-
-          const anchorEl = virtualAnchorEl ?? dom.getTriggerEl(ctx)
-
-          void getPlacement(anchorEl, getPositionerEl, {
+          const getAnchorRect = ctx.anchorPoint ? () => ({ width: 0, height: 0, ...ctx.anchorPoint }) : undefined
+          getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
             ...ctx.positioning,
+            getAnchorRect,
             ...(evt.options ?? {}),
             listeners: false,
+            onComplete(data) {
+              ctx.currentPlacement = data.placement
+            },
           })
         },
         invokeOnValueChange(ctx, evt) {
@@ -446,8 +439,21 @@ export function machine(userContext: UserDefinedContext) {
         clickFocusedItem(ctx, _evt, { send }) {
           const itemEl = dom.getFocusedItem(ctx)
           if (!itemEl || itemEl.dataset.disabled) return
-          const { id } = itemEl
-          send({ type: "ITEM_CLICK", src: "pointerup", target: itemEl, id })
+          const option = {
+            id: itemEl.id,
+            name: itemEl.dataset.name,
+            value: itemEl.dataset.value,
+            valueText: itemEl.dataset.valueText,
+            type: itemEl.dataset.type,
+          }
+          send({
+            type: "ITEM_CLICK",
+            src: "enter",
+            target: itemEl,
+            id: option.id,
+            option,
+            closeOnSelect: ctx.closeOnSelect,
+          })
         },
         setIntentPolygon(ctx, evt) {
           const menu = dom.getContentEl(ctx)
@@ -459,7 +465,7 @@ export function machine(userContext: UserDefinedContext) {
           const polygon = getElementPolygon(rect, placement)
           if (!polygon) return
 
-          const rightSide = getBasePlacement(placement) === "right"
+          const rightSide = getPlacementSide(placement) === "right"
           const bleed = rightSide ? -5 : +5
 
           ctx.intentPolygon = [{ ...evt.point, x: evt.point.x + bleed }, ...polygon]

@@ -44,7 +44,7 @@ const api = computed(() => popover.connect(state.value, send, normalizeProps))
   <Toolbar>
     <StateVisualizer :state="state" />
     <template #controls>
-      <Controls :config="controls.config" :state="controls.context" />
+      <Controls :control="controls" />
     </template>
   </Toolbar>
 </template>

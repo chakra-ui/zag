@@ -152,12 +152,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: {
         "--transition-duration": "150ms",
         "--transition-property": "left, right, top, bottom, width, height",
+        "--left": state.context.indicatorRect?.left,
+        "--top": state.context.indicatorRect?.top,
+        "--width": state.context.indicatorRect?.width,
+        "--height": state.context.indicatorRect?.height,
         position: "absolute",
         willChange: "var(--transition-property)",
         transitionProperty: "var(--transition-property)",
         transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration)" : "0ms",
         transitionTimingFunction: "var(--transition-timing-function)",
-        ...state.context.indicatorRect,
+        [state.context.orientation === "horizontal" ? "left" : "top"]:
+          state.context.orientation === "horizontal" ? "var(--left)" : "var(--top)",
       },
     }),
   }

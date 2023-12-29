@@ -1,19 +1,16 @@
-import { For } from "solid-js"
-import { createMutable } from "solid-js/store"
-import { ControlRecord, ControlValue } from "@zag-js/shared"
-
-function getDefaultValues<T extends ControlRecord>(obj: T): ControlValue<T> {
-  return Object.keys(obj).reduce(
-    (acc, key) => ({
-      ...acc,
-      [key]: obj[key].defaultValue,
-    }),
-    {} as ControlValue<T>,
-  )
-}
+import { ControlRecord, deepGet, deepSet, getControlDefaults } from "@zag-js/shared"
+import { For, createMemo, createSignal } from "solid-js"
 
 export function useControls<T extends ControlRecord>(config: T) {
-  const state = createMutable(getDefaultValues(config) as any)
+  const [state, __setState] = createSignal(getControlDefaults(config) as any)
+
+  const setState = (key: string, value: any) => {
+    __setState((s) => {
+      const newState = structuredClone(s)
+      deepSet(newState, key, value)
+      return newState
+    })
+  }
 
   return {
     context: state,
@@ -22,6 +19,7 @@ export function useControls<T extends ControlRecord>(config: T) {
         <For each={Object.keys(config)}>
           {(key) => {
             const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
+            const value = createMemo(() => deepGet(state(), key))
             switch (type) {
               case "boolean":
                 return (
@@ -30,9 +28,9 @@ export function useControls<T extends ControlRecord>(config: T) {
                       data-testid={key}
                       id={label}
                       type="checkbox"
-                      checked={state[key] as boolean}
+                      checked={value()}
                       onChange={(e) => {
-                        state[key] = e.currentTarget.checked
+                        setState(key, e.currentTarget.checked)
                       }}
                     />
                     <label for={label}>{label}</label>
@@ -46,10 +44,10 @@ export function useControls<T extends ControlRecord>(config: T) {
                       data-testid={key}
                       type="text"
                       placeholder={placeholder}
-                      value={state[key] as string}
+                      value={value()}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
-                          state[key] = e.currentTarget.value
+                          setState(key, e.currentTarget.value)
                         }
                       }}
                     />
@@ -64,9 +62,9 @@ export function useControls<T extends ControlRecord>(config: T) {
                     <select
                       data-testid={key}
                       id={label}
-                      value={state[key] as string}
+                      value={value()}
                       onChange={(e) => {
-                        state[key] = e.currentTarget.value
+                        setState(key, e.currentTarget.value)
                       }}
                     >
                       <option>-----</option>
@@ -86,13 +84,11 @@ export function useControls<T extends ControlRecord>(config: T) {
                       type="number"
                       min={min}
                       max={max}
-                      value={state[key] as number}
+                      value={value()}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           const val = parseFloat(e.currentTarget.value)
-                          if (!isNaN(val)) {
-                            state[key] = val
-                          }
+                          setState(key, isNaN(val) ? 0 : val)
                         }
                       }}
                     />

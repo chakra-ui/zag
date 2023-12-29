@@ -1,27 +1,22 @@
-import { h, Fragment, ref, inject, provide } from "vue"
+import { h, Fragment, ref, inject, provide, unref } from "vue"
 import type { Ref } from "vue"
-import type { ControlRecord, ControlValue } from "@zag-js/shared"
+import { getControlDefaults, type ControlRecord, type ControlValue, deepGet, deepSet } from "@zag-js/shared"
 
 const ControlsSymbol = Symbol("use-controls")
 
-function getDefaultValues<T extends ControlRecord>(obj: T) {
-  return Object.keys(obj).reduce(
-    (acc, key) => ({
-      ...acc,
-      [key]: obj[key].defaultValue,
-    }),
-    {} as ControlValue<T>,
-  )
-}
-
 export function useControls<T extends ControlRecord>(config: T) {
-  const defaults = getDefaultValues(config)
-  const state = ref(defaults)
+  const state = ref<any>(getControlDefaults(config))
 
   provide(ControlsSymbol, state)
 
   function useControlsState() {
     return inject<Ref<ControlValue<T>>>(ControlsSymbol)!
+  }
+
+  const setState = (key: string, value: any) => {
+    const newState = unref(state)
+    deepSet(newState, key, value)
+    state.value = newState
   }
 
   return {
@@ -31,8 +26,9 @@ export function useControls<T extends ControlRecord>(config: T) {
       const state = useControlsState()
       return (
         <div class="controls-container">
-          {Object.keys(config).map((key: keyof ControlValue<T>) => {
+          {Object.keys(config).map((key: string) => {
             const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
+            const value = deepGet(state.value, key)
             switch (type) {
               case "boolean":
                 return (
@@ -41,10 +37,9 @@ export function useControls<T extends ControlRecord>(config: T) {
                       data-testid={key}
                       id={label}
                       type="checkbox"
-                      checked={state.value[key] as boolean}
+                      checked={value}
                       onInput={(e) => {
-                        //@ts-expect-error
-                        state.value[key] = e.currentTarget.checked
+                        setState(key, (e.target as HTMLInputElement).checked)
                       }}
                     />
                     <label for={label}>{label}</label>
@@ -58,11 +53,10 @@ export function useControls<T extends ControlRecord>(config: T) {
                       data-testid={key}
                       type="text"
                       placeholder={placeholder}
-                      value={state.value[key] as string}
+                      value={value}
                       onKeydown={(event) => {
                         if (event.key === "Enter") {
-                          //@ts-expect-error
-                          state.value[key] = (event.target as HTMLInputElement).value
+                          setState(key, (event.target as HTMLInputElement).value)
                         }
                       }}
                     />
@@ -77,10 +71,9 @@ export function useControls<T extends ControlRecord>(config: T) {
                     <select
                       data-testid={key}
                       id={label}
-                      value={state.value[key] as string}
+                      value={value}
                       onChange={(e) => {
-                        //@ts-expect-error
-                        state.value[key] = (e.target as HTMLSelectElement).value
+                        setState(key, (e.target as HTMLInputElement).value)
                       }}
                     >
                       <option>-----</option>
@@ -104,11 +97,11 @@ export function useControls<T extends ControlRecord>(config: T) {
                       type="number"
                       min={min}
                       max={max}
-                      value={state.value[key] as number}
+                      value={value}
                       onKeydown={(e) => {
                         if (e.key === "Enter") {
-                          //@ts-expect-error
-                          state.value[key] = (e.target as HTMLInputElement).valueAsNumber
+                          const val = parseFloat((e.target as HTMLInputElement).value)
+                          setState(key, isNaN(val) ? 0 : val)
                         }
                       }}
                     />

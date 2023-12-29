@@ -29,10 +29,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
   function getItemState(props: ItemProps) {
     const { item } = props
+    const disabled = collection.isItemDisabled(item)
     const value = collection.itemToValue(item)
     return {
       value,
-      isDisabled: collection.isItemDisabled(item),
+      isDisabled: Boolean(disabled || isDisabled),
       isHighlighted: state.context.highlightedValue === value,
       isSelected: state.context.value.includes(value),
     }
@@ -161,6 +162,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       onFocus() {
         if (isDisabled) return
         send("INPUT.FOCUS")
+      },
+      onBlur() {
+        if (isDisabled) return
+        send("INPUT.BLUR")
       },
       onChange(event) {
         send({ type: "INPUT.CHANGE", value: event.currentTarget.value })

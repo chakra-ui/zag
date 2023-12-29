@@ -19,6 +19,10 @@ export function stringifyState(state: Record<string, any>, omit?: string[]) {
           return v.toString()
         }
 
+        if (Number.isNaN(v)) {
+          return "NaN"
+        }
+
         if (v instanceof File) {
           return v.name
         }

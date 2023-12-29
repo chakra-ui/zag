@@ -17,7 +17,7 @@ export type {
   DayTableCellState,
   ElementIds,
   FocusChangeDetails,
-  IntlMessages,
+  IntlTranslations,
   MonthGridProps,
   OpenChangeDetails,
   SelectionMode,

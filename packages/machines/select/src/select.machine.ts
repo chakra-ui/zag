@@ -361,13 +361,15 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
       },
       actions: {
         reposition(ctx, evt) {
-          const triggerEl = () => dom.getTriggerEl(ctx)
           const positionerEl = () => dom.getPositionerEl(ctx)
-          getPlacement(triggerEl, positionerEl, {
+          getPlacement(dom.getTriggerEl(ctx), positionerEl, {
             ...ctx.positioning,
             ...evt.options,
             defer: true,
             listeners: false,
+            onComplete(data) {
+              ctx.currentPlacement = data.placement
+            },
           })
         },
         toggleVisibility(ctx, _evt, { send }) {

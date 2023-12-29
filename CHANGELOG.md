@@ -6,6 +6,59 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.31.1] - 2023-12-01
+
+### Fixed
+
+- **NumberInput**: Fix issue where formatting on blur doesn't work as expected
+
+## [0.31.0] - 2023-11-27
+
+### Fixed
+
+- **ColorPicker**: Fix issue where swatch indicator had incorrect data attributes
+
+- **NumberInput**:
+
+  - Fix issue when value updates due to intl formatting does not trigger `onValueChange`
+  - Fix issue where increment and decrement buttons doesn't respect locales (esp. when locales uses decimal commas and
+    not decimal points)
+
+- **Menu**: Fix issue in non-portalled, nested menus where keyboard interactions within submenu bubble to parent menu
+
+### Added
+
+- **FileUpload**
+  - Add support for `onFileAccept` and `onFileReject` callbacks.
+  - Add support customizing `ids` and aria labels using `messages` context property.
+  - Add item preview image part
+  - **Breaking**: Update file error types
+    - `TOO_MANY_FILES_REJECTION` > `TOO_MANY_FILES`
+    - `TOO_LARGE` > `FILE_TOO_LARGE`
+    - `TOO_SMALL` > `FILE_TOO_SMALL`
+
+### Changed
+
+- **DatePicker**: Rename `messages` context property to `translations`. This property was previously unused
+
+## [0.30.0] - 2023-11-14
+
+### Fixed
+
+- **RadioGroup**: Fix issue where indicator isn't positioned relative to the root
+
+### Added
+
+- **ColorPicker**:
+
+  - Add support for setting the desired output format. This format will be used in the `details.valueAsString` for
+    `onValueChange` callback
+  - Add support for format trigger and select parts to help control the format of the output value
+  - Add `onFormatChange` callback to listen for format changes
+  - Add `closeOnSelect` prop to control whether the color picker should close when a swatch color is selected
+
+- **Toast**: Add generic support to toast types to support framework-specific types.
+
 ## [0.28.1] - 2023-11-09
 
 ### Fixed
