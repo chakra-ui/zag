@@ -42,8 +42,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getContentId(state.context),
       role: "region",
       "aria-expanded": isOpen,
+      // hidden: !isOpen,
       style: {
-        "--collapsible-height": state.context.height,
+        "--collapsible-height": `${state.context.height}px`,
       },
     }),
 
