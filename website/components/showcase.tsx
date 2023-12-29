@@ -1,45 +1,52 @@
-import { Combobox } from "components/machines/combobox"
-import { ContextMenu } from "components/machines/context-menu"
-import { HoverCard } from "components/machines/hover-card"
-import { NestedMenu } from "components/machines/nested-menu"
-import { Pagination } from "components/machines/pagination"
-import { Rating } from "components/machines/rating"
-import { SegmentedControl } from "components/machines/segmented-control"
-import { Switch } from "components/machines/switch"
 import { Accordion } from "./machines/accordion"
 import { Avatar } from "./machines/avatar"
+import { Carousel } from "./machines/carousel"
 import { Checkbox } from "./machines/checkbox"
+import { CircularProgress } from "./machines/circular-progress"
 import { ColorPicker } from "./machines/color-picker"
+import { Combobox } from "./machines/combobox"
+import { ContextMenu } from "./machines/context-menu"
 import { Dialog } from "./machines/dialog"
 import { Editable } from "./machines/editable"
 import { FileUpload } from "./machines/file-upload"
+import { HoverCard } from "./machines/hover-card"
 import { LinearProgress } from "./machines/linear-progress"
 import { Menu } from "./machines/menu"
+import { NestedMenu } from "./machines/nested-menu"
 import { NumberInput } from "./machines/number-input"
+import { Pagination } from "./machines/pagination"
 import { PinInput } from "./machines/pin-input"
 import { Popover } from "./machines/popover"
 import { Radio } from "./machines/radio"
 import { RangeSlider } from "./machines/range-slider"
+import { Rating } from "./machines/rating"
+import { SegmentedControl } from "./machines/segmented-control"
 import { Select } from "./machines/select"
 import { Slider } from "./machines/slider"
+import { Switch } from "./machines/switch"
 import { Tabs } from "./machines/tabs"
 import { TagsInput } from "./machines/tags-input"
 import { ToastGroup } from "./machines/toast"
 import { ToggleGroup } from "./machines/toggle-group"
 import { Tooltip } from "./machines/tooltip"
 import { Playground } from "./playground"
-import { CircularProgress } from "./machines/circular-progress"
-import { Carousel } from "./machines/carousel"
 
 const components = {
-  Dialog: () => (
+  Accordion: () => (
     <Playground
-      component={Dialog}
+      component={Accordion}
       defaultProps={{
-        preventScroll: true,
-        closeOnInteractOutside: true,
-        closeOnEscapeKeyDown: true,
-        role: { options: ["dialog", "alertdialog"], default: "dialog" },
+        collapsible: true,
+        multiple: false,
+      }}
+    />
+  ),
+  Avatar: () => (
+    <Playground
+      component={Avatar}
+      defaultProps={{
+        name: "Segun Adebayo",
+        src: "https://static.wikia.nocookie.net/naruto/images/d/d6/Naruto_Part_I.png/revision/latest/scale-to-width-down/300?cb=20210223094656",
       }}
     />
   ),
@@ -70,6 +77,16 @@ const components = {
       }}
     />
   ),
+  ColorPicker: () => (
+    <Playground
+      component={ColorPicker}
+      defaultProps={{
+        disabled: false,
+        readOnly: false,
+        closeOnSelect: false,
+      }}
+    />
+  ),
   Combobox: () => (
     <Playground
       component={Combobox}
@@ -88,53 +105,14 @@ const components = {
       }}
     />
   ),
-  Radio: () => (
+  Dialog: () => (
     <Playground
-      component={Radio}
+      component={Dialog}
       defaultProps={{
-        disabled: false,
-      }}
-    />
-  ),
-  HoverCard: () => (
-    <Playground
-      component={HoverCard}
-      defaultProps={{
-        openDelay: 700,
-        closeDelay: 300,
-      }}
-    />
-  ),
-  Pagination: () => (
-    <Playground
-      component={Pagination}
-      defaultProps={{
-        pageSize: 10,
-        siblingCount: 1,
-      }}
-    />
-  ),
-  Rating: () => (
-    <Playground
-      component={Rating}
-      defaultProps={{
-        allowHalf: true,
-        disabled: false,
-        readOnly: false,
-        max: 5,
-        dir: {
-          options: ["ltr", "rtl"],
-          default: "ltr",
-        },
-      }}
-    />
-  ),
-  Accordion: () => (
-    <Playground
-      component={Accordion}
-      defaultProps={{
-        collapsible: true,
-        multiple: false,
+        preventScroll: true,
+        closeOnInteractOutside: true,
+        closeOnEscapeKeyDown: true,
+        role: { options: ["dialog", "alertdialog"], default: "dialog" },
       }}
     />
   ),
@@ -156,6 +134,49 @@ const components = {
       }}
     />
   ),
+  FileUpload: () => (
+    <Playground
+      component={FileUpload}
+      defaultProps={{
+        disabled: false,
+        allowDrop: true,
+        accept: "image/png, image/jpeg",
+      }}
+    />
+  ),
+  HoverCard: () => (
+    <Playground
+      component={HoverCard}
+      defaultProps={{
+        openDelay: 700,
+        closeDelay: 300,
+      }}
+    />
+  ),
+  Menu: () => <Playground component={Menu} />,
+  ContextMenu: () => <Playground component={ContextMenu} />,
+  NestedMenu: () => <Playground component={NestedMenu} />,
+  NumberInput: () => (
+    <Playground
+      component={NumberInput}
+      defaultProps={{
+        disabled: false,
+        min: -10,
+        max: 20,
+        step: 1,
+        allowMouseWheel: false,
+      }}
+    />
+  ),
+  Pagination: () => (
+    <Playground
+      component={Pagination}
+      defaultProps={{
+        pageSize: 10,
+        siblingCount: 1,
+      }}
+    />
+  ),
   PinInput: () => (
     <Playground
       component={PinInput}
@@ -171,15 +192,21 @@ const components = {
       }}
     />
   ),
-  NumberInput: () => (
+  LinearProgress: () => (
     <Playground
-      component={NumberInput}
+      component={LinearProgress}
       defaultProps={{
-        disabled: false,
-        min: -10,
-        max: 20,
-        step: 1,
-        allowMouseWheel: false,
+        min: 0,
+        max: 100,
+      }}
+    />
+  ),
+  CircularProgress: () => (
+    <Playground
+      component={CircularProgress}
+      defaultProps={{
+        min: 0,
+        max: 100,
       }}
     />
   ),
@@ -195,15 +222,56 @@ const components = {
       }}
     />
   ),
-  Tabs: () => (
+  Radio: () => (
     <Playground
-      component={Tabs}
+      component={Radio}
+      defaultProps={{
+        disabled: false,
+      }}
+    />
+  ),
+  SegmentedControl: () => (
+    <Playground
+      component={SegmentedControl}
+      defaultProps={{
+        disabled: false,
+        name: "",
+      }}
+    />
+  ),
+  RangeSlider: () => (
+    <Playground
+      component={RangeSlider}
+      defaultProps={{
+        disabled: false,
+        readOnly: false,
+        dir: { default: "ltr", options: ["ltr", "rtl"] },
+      }}
+    />
+  ),
+  Rating: () => (
+    <Playground
+      component={Rating}
+      defaultProps={{
+        allowHalf: true,
+        disabled: false,
+        readOnly: false,
+        max: 5,
+        dir: {
+          options: ["ltr", "rtl"],
+          default: "ltr",
+        },
+      }}
+    />
+  ),
+  Select: () => (
+    <Playground
+      component={Select}
       defaultProps={{
         loop: false,
-        activationMode: {
-          default: "automatic",
-          options: ["manual", "automatic"],
-        },
+        selectOnBlur: false,
+        disabled: false,
+        readOnly: false,
       }}
     />
   ),
@@ -227,13 +295,15 @@ const components = {
       }}
     />
   ),
-  RangeSlider: () => (
+  Tabs: () => (
     <Playground
-      component={RangeSlider}
+      component={Tabs}
       defaultProps={{
-        disabled: false,
-        readOnly: false,
-        dir: { default: "ltr", options: ["ltr", "rtl"] },
+        loop: false,
+        activationMode: {
+          default: "automatic",
+          options: ["manual", "automatic"],
+        },
       }}
     />
   ),
@@ -248,64 +318,12 @@ const components = {
       }}
     />
   ),
-  Menu: () => <Playground component={Menu} />,
-  ContextMenu: () => <Playground component={ContextMenu} />,
-  NestedMenu: () => <Playground component={NestedMenu} />,
-  Tooltip: () => (
-    <Playground
-      component={Tooltip}
-      defaultProps={{
-        closeOnPointerDown: true,
-        openDelay: 1000,
-        closeDelay: 500,
-      }}
-    />
-  ),
   Toast: () => (
     <Playground
       component={ToastGroup}
       defaultProps={{
         pauseOnPageIdle: false,
         pauseOnInteraction: true,
-      }}
-    />
-  ),
-  Select: () => (
-    <Playground
-      component={Select}
-      defaultProps={{
-        loop: false,
-        selectOnBlur: false,
-        disabled: false,
-        readOnly: false,
-      }}
-    />
-  ),
-  SegmentedControl: () => (
-    <Playground
-      component={SegmentedControl}
-      defaultProps={{
-        disabled: false,
-        name: "",
-      }}
-    />
-  ),
-  Avatar: () => (
-    <Playground
-      component={Avatar}
-      defaultProps={{
-        name: "Segun Adebayo",
-        src: "https://static.wikia.nocookie.net/naruto/images/d/d6/Naruto_Part_I.png/revision/latest/scale-to-width-down/300?cb=20210223094656",
-      }}
-    />
-  ),
-  FileUpload: () => (
-    <Playground
-      component={FileUpload}
-      defaultProps={{
-        disabled: false,
-        allowDrop: true,
-        accept: "image/png, image/jpeg",
       }}
     />
   ),
@@ -318,31 +336,13 @@ const components = {
       }}
     />
   ),
-  ColorPicker: () => (
+  Tooltip: () => (
     <Playground
-      component={ColorPicker}
+      component={Tooltip}
       defaultProps={{
-        disabled: false,
-        readOnly: false,
-        closeOnSelect: false,
-      }}
-    />
-  ),
-  LinearProgress: () => (
-    <Playground
-      component={LinearProgress}
-      defaultProps={{
-        min: 0,
-        max: 100,
-      }}
-    />
-  ),
-  CircularProgress: () => (
-    <Playground
-      component={CircularProgress}
-      defaultProps={{
-        min: 0,
-        max: 100,
+        closeOnPointerDown: true,
+        openDelay: 1000,
+        closeDelay: 500,
       }}
     />
   ),
