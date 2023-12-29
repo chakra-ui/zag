@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { allComponents, allSnippets } from "@/contentlayer"
 import { Icon } from "@chakra-ui/icon"
 import { Box, HStack, Wrap } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
+import { allComponents as Anatomies } from "@zag-js/anatomy-icons"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
 import { type MDX } from "contentlayer/core"
-import { allComponents, allSnippets } from "@/contentlayer"
 import { useMDXComponent } from "next-contentlayer/hooks"
 import Link from "next/link"
 import { type FC } from "react"
@@ -13,11 +14,10 @@ import { HiOutlineCode } from "react-icons/hi"
 import { ImMagicWand } from "react-icons/im"
 import { RiNpmjsFill } from "react-icons/ri"
 import { FRAMEWORKS, frameworks } from "../lib/framework-utils"
-import { PropTable } from "./prop-table"
 import { CopyButton } from "./copy-button"
 import { useFramework } from "./framework"
+import { PropTable } from "./prop-table"
 import { Showcase } from "./showcase"
-import { allComponents as Anatomies } from "@zag-js/anatomy-icons"
 
 function SnippetItem({ body, id }: { body: MDX; id: string }) {
   const content = useMDX(body.code)
@@ -223,6 +223,8 @@ const components: Record<string, FC<any>> = {
     )
   },
   Anatomy: ({ id }: { id: string }) => {
+    if (!(id in Anatomies)) return <Box>No anatomy available for {id}</Box>
+
     const Anatomy = chakra(Anatomies[id])
     return (
       <Box my="8" bg="linear-gradient(90deg, #41B883 -2.23%, #299464 92.64%)">

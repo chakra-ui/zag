@@ -1,2 +1,16 @@
 ```jsx
+import * as {{component}} from "@zag-js/{{component}}"
+import { useMachine, normalizeProps } from "@zag-js/react"
+
+function {{titleCase component}}() {
+  const [state, send] = useMachine({{component}}.machine({ id: "1" }))
+
+  const api = {{component}}.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      <div {...api.controlProps}>...</div>
+    </div>
+  )
+}
 ```

@@ -1,5 +1,5 @@
-import { visit } from "unist-util-visit"
 import { h } from "hastscript"
+import { visit } from "unist-util-visit"
 
 function isDirective(node: { type: string }) {
   return (
