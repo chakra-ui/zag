@@ -1,7 +1,7 @@
 import { Stack } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
-import { useScrollSpy } from "./use-scrollspy"
 import NextLink from "next/link"
+import { useScrollSpy } from "./use-scrollspy"
 
 type TOC = Array<{
   content: string

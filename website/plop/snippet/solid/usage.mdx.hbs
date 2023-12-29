@@ -1,2 +1,17 @@
 ```jsx
+import * as {{component}} from "@zag-js/{{component}}"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+function {{titleCase component}}() {
+  const [state, send] = useMachine({{component}}.machine({ id: createUniqueId() }))
+
+  const api = createMemo(() => {{component}}.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <div {...api().controlProps}>...</div>
+    </div>
+  )
+}
 ```
