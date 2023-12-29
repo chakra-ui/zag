@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 const options: IntersectionObserverInit = {
   rootMargin: "0% 0% -40% 0%",
