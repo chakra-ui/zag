@@ -223,6 +223,8 @@ const components: Record<string, FC<any>> = {
     )
   },
   Anatomy: ({ id }: { id: string }) => {
+    if (!(id in Anatomies)) return <Box>No anatomy available for {id}</Box>
+
     const Anatomy = chakra(Anatomies[id])
     return (
       <Box my="8" bg="linear-gradient(90deg, #41B883 -2.23%, #299464 92.64%)">

@@ -1,4 +1,4 @@
-import { Stack, StackDivider } from "@chakra-ui/layout"
+import { Box, Stack, StackDivider } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
 import apiJson from "@zag-js/docs"
 
@@ -9,6 +9,8 @@ interface ApiTableProps {
 
 export const PropTable = (props: ApiTableProps) => {
   const { name, type = "api" } = props
+
+  if (!(name in apiJson)) return <Box>No data available for {name}</Box>
 
   const data = apiJson[name][type]
 
