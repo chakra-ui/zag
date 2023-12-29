@@ -23,7 +23,12 @@ export function Carousel(props: any) {
   return (
     <>
       <main className="carousel">
-        <chakra.div width="400px" {...api.rootProps}>
+        <chakra.div
+          width="400px"
+          borderWidth="2px"
+          borderColor="border-subtle"
+          {...api.rootProps}
+        >
           <chakra.div overflowX="hidden" {...api.viewportProps}>
             <chakra.div {...api.itemGroupProps}>
               {items.map((image, index) => (
