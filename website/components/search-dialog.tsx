@@ -1,13 +1,13 @@
 import { Icon } from "@chakra-ui/icon"
 import { Box, Flex, HStack, Text } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
+import { Portal } from "@zag-js/react"
 import { useSearch } from "lib/use-search"
 import Link from "next/link"
 import { BiSearch } from "react-icons/bi"
 import { GrReturn } from "react-icons/gr"
 import { HiDocument, HiHashtag } from "react-icons/hi"
 import { SearchTrigger } from "./search-trigger"
-import { Portal } from "@zag-js/react"
 
 export function Search() {
   const { dialog_api, combobox_api, results } = useSearch()

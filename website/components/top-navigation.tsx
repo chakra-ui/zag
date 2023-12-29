@@ -1,4 +1,5 @@
 import { Badge, Box, Flex, HStack } from "@chakra-ui/layout"
+import packageJson from "@zag-js/react/package.json"
 import { GithubIcon } from "components/icons"
 import { ThemeToggle } from "components/theme-toggle"
 import { FaDiscord } from "react-icons/fa"
@@ -6,7 +7,6 @@ import siteConfig from "site.config"
 import { IconLink } from "./icon-link"
 import { LogoWithLink } from "./logo"
 import { MobileNavigation } from "./mobile-navigation"
-import packageJson from "@zag-js/react/package.json"
 // import { WorkshopLink } from "./workshop-link"
 
 export function TopNavigation() {
