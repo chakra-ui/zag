@@ -205,6 +205,18 @@ a[aria-current="page"] {
 * Collapsible
 * -----------------------------------------------------------------------------*/
 
+[data-scope="collapsible"][data-part="content"] {
+  overflow: hidden;
+}
+
+[data-scope="collapsible"][data-part="content"][data-state="open"] {
+  animation: slideDown 300ms ease-out;
+}
+
+[data-scope="collapsible"][data-part="content"][data-state="closed"] {
+  animation: slideUp 300ms ease-out;
+}
+
 @keyframes slideDown {
   from {
     height: 0;

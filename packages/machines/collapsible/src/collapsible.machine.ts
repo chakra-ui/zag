@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { compact } from "@zag-js/utils"
+import { dom } from "./collapsible.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./collapsible.types"
 
 export function machine(userContext: UserDefinedContext) {
@@ -12,16 +13,12 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         open: false,
         disabled: false,
-        animate: false,
-        animationDuration: 300,
-        ...ctx,
         height: 0,
+        ...ctx,
       },
 
       computed: {
         isDisabled: (ctx) => !!ctx.disabled,
-        isAnimated: (ctx) => !!ctx.animate,
-        duration: (ctx) => (ctx.isAnimated ? ctx.animationDuration : 0),
       },
 
       on: {
@@ -32,22 +29,13 @@ export function machine(userContext: UserDefinedContext) {
 
       states: {
         closed: {
-          tags: ["hidden"],
+          entry: ["computeHeight"],
           on: {
             TOGGLE: {
-              target: "opening",
-              actions: ["invokeOnOpening"],
+              target: "open",
+              actions: ["invokeOnOpen"],
             },
             OPEN: {
-              target: "opening",
-              actions: ["invokeOnOpening"],
-            },
-          },
-        },
-
-        opening: {
-          after: {
-            ANIMATION_DELAY: {
               target: "open",
               actions: ["invokeOnOpen"],
             },
@@ -55,21 +43,13 @@ export function machine(userContext: UserDefinedContext) {
         },
 
         open: {
+          entry: ["computeHeight"],
           on: {
             TOGGLE: {
-              target: "closing",
-              actions: ["invokeOnClosing"],
+              target: "closed",
+              actions: ["invokeOnClose"],
             },
             CLOSE: {
-              target: "closing",
-              actions: ["invokeOnClosing"],
-            },
-          },
-        },
-
-        closing: {
-          after: {
-            ANIMATION_DELAY: {
               target: "closed",
               actions: ["invokeOnClose"],
             },
@@ -78,30 +58,21 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
-      delays: {
-        ANIMATION_DELAY: (ctx) => ctx.duration,
-      },
-
       guards: {},
       actions: {
         setContext(ctx, evt) {
           Object.assign(ctx, evt.context)
         },
-        invokeOnOpening: (ctx) => {
-          ctx.opening = true
+        computeHeight: (ctx) => {
+          ctx.height = dom.getContentEl(ctx)?.scrollHeight ?? 0
         },
         invokeOnOpen: (ctx) => {
           ctx.onOpenChange?.({ open: true })
           ctx.open = true
-          ctx.opening = false
-        },
-        invokeOnClosing: (ctx) => {
-          ctx.closing = true
         },
         invokeOnClose: (ctx) => {
           ctx.onOpenChange?.({ open: false })
           ctx.open = false
-          ctx.closing = false
         },
       },
     },

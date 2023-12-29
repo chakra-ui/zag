@@ -25,41 +25,26 @@ const fetchMachine = createMachine({
   },
   states: {
     closed: {
-      tags: ["hidden"],
+      entry: ["computeHeight"],
       on: {
         TOGGLE: {
-          target: "opening",
-          actions: ["invokeOnOpening"]
+          target: "open",
+          actions: ["invokeOnOpen"]
         },
         OPEN: {
-          target: "opening",
-          actions: ["invokeOnOpening"]
-        }
-      }
-    },
-    opening: {
-      after: {
-        ANIMATION_DELAY: {
           target: "open",
           actions: ["invokeOnOpen"]
         }
       }
     },
     open: {
+      entry: ["computeHeight"],
       on: {
         TOGGLE: {
-          target: "closing",
-          actions: ["invokeOnClosing"]
+          target: "closed",
+          actions: ["invokeOnClose"]
         },
         CLOSE: {
-          target: "closing",
-          actions: ["invokeOnClosing"]
-        }
-      }
-    },
-    closing: {
-      after: {
-        ANIMATION_DELAY: {
           target: "closed",
           actions: ["invokeOnClose"]
         }

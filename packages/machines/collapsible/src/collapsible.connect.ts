@@ -8,9 +8,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isOpen = state.matches("open")
   const isDisabled = state.context.isDisabled
   const isFocused = !isDisabled && state.context.focused
-  const isAnimated = state.context.isAnimated
-
-  const shouldBeHidden = state.hasTag("hidden")
 
   const dataAttrs = {
     "data-active": dataAttr(state.context.active),
@@ -24,7 +21,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isOpen,
     isDisabled,
     isFocused,
-    isAnimated,
     open() {
       send("OPEN")
     },
@@ -45,10 +41,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getContentId(state.context),
       role: "region",
-      hidden: shouldBeHidden,
       "aria-expanded": isOpen,
       style: {
-        "--collapsible-height": shouldBeHidden ? 0 : state.context.height,
+        "--collapsible-height": state.context.height,
       },
     }),
 
