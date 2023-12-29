@@ -13,10 +13,6 @@ export const checkboxControls = defineControls({
 })
 
 export const collapsibleControls = defineControls({
-  animate: { type: "boolean", defaultValue: false },
-  expandAnimationName: { type: "string", defaultValue: "slideDown" },
-  collapseAnimationName: { type: "string", defaultValue: "slideUp" },
-  animationDuration: { type: "number", defaultValue: 300 },
   disabled: { type: "boolean", defaultValue: false },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
