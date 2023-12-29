@@ -1,2 +1,17 @@
-```jsx
+```md
+<script setup>
+import * as {{component}} from "@zag-js/{{component}}"
+import { useMachine, normalizeProps } from "@zag-js/vue"
+import { computed } from "vue"
+
+const [state, send] = useMachine({{component}}.machine({ id: "1" }))
+
+const api = computed(() => {{component}}.connect(state.value, send, normalizeProps))
+</script>
+
+<template>
+  <div ref="ref" v-bind="api.rootProps">
+    <div v-bind="api.controlProps">...</div>
+  </div>
+</template>
 ```
