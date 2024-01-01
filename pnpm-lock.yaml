@@ -18,8 +18,8 @@ importers:
         specifier: 7.23.6
         version: 7.23.6
       '@babel/traverse':
-        specifier: 7.23.6
-        version: 7.23.6
+        specifier: 7.23.7
+        version: 7.23.7
       '@babel/types':
         specifier: 7.23.6
         version: 7.23.6
@@ -3101,7 +3101,7 @@ packages:
       '@babel/helpers': 7.23.5
       '@babel/parser': 7.23.6
       '@babel/template': 7.22.15
-      '@babel/traverse': 7.23.6
+      '@babel/traverse': 7.23.7
       '@babel/types': 7.23.6
       convert-source-map: 2.0.0
       debug: 4.3.4
@@ -3279,7 +3279,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/template': 7.22.15
-      '@babel/traverse': 7.23.6
+      '@babel/traverse': 7.23.7
       '@babel/types': 7.23.6
     transitivePeerDependencies:
       - supports-color
@@ -3453,8 +3453,8 @@ packages:
       '@babel/parser': 7.23.6
       '@babel/types': 7.23.6
 
-  /@babel/traverse@7.23.6:
-    resolution: {integrity: sha512-czastdK1e8YByZqezMPFiZ8ahwVMh/ESl9vPgvgdB9AmFMGP5jfpFax74AQgl5zj4XHzqeYAg2l8PuUeRS1MgQ==}
+  /@babel/traverse@7.23.7:
+    resolution: {integrity: sha512-tY3mM8rH9jM0YHFGyfC0/xf+SB5eKUu7HPj7/k3fpi9dAlsMc5YbQvDi0Sh2QTPXqMhyaAtzAr807TIyfQrmyg==}
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/code-frame': 7.23.5
@@ -8058,7 +8058,7 @@ packages:
       '@babel/helper-module-imports': 7.22.15
       '@babel/plugin-syntax-jsx': 7.23.3(@babel/core@7.23.5)
       '@babel/template': 7.22.15
-      '@babel/traverse': 7.23.6
+      '@babel/traverse': 7.23.7
       '@babel/types': 7.23.6
       '@vue/babel-helper-vue-transform-on': 1.1.5
       camelcase: 6.3.0
