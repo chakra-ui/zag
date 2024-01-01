@@ -44,7 +44,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-expanded": isOpen,
       // hidden: !isOpen,
       style: {
-        "--collapsible-height": `${state.context.height}px`,
+        height: isOpen ? `${state.context.height}px` : "0px",
       },
     }),
 

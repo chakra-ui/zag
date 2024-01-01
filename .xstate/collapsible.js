@@ -25,20 +25,18 @@ const fetchMachine = createMachine({
   },
   states: {
     closed: {
-      entry: ["computeHeight"],
       on: {
         TOGGLE: {
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["computeHeight", "invokeOnOpen"]
         },
         OPEN: {
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["computeHeight", "invokeOnOpen"]
         }
       }
     },
     open: {
-      entry: ["computeHeight"],
       on: {
         TOGGLE: {
           target: "closed",

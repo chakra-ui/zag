@@ -36,6 +36,11 @@ export default function Page() {
             ))}
           </div>
         </div>
+
+        <div>
+          some random text
+          <p>paragraph</p>
+        </div>
       </main>
 
       <Toolbar controls={controls.ui}>

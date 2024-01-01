@@ -207,32 +207,7 @@ a[aria-current="page"] {
 
 [data-scope="collapsible"][data-part="content"] {
   overflow: hidden;
-}
-
-[data-scope="collapsible"][data-part="content"][data-state="open"] {
-  animation: slideDown 300ms ease-out;
-}
-
-[data-scope="collapsible"][data-part="content"][data-state="closed"] {
-  animation: slideUp 300ms ease-out;
-}
-
-@keyframes slideDown {
-  from {
-    height: 0;
-  }
-  to {
-    height: var(--collapsible-height);
-  }
-}
-
-@keyframes slideUp {
-  from {
-    height: var(--collapsible-height);
-  }
-  to {
-    height: 0;
-  }
+  transition: height 300ms ease-out;
 }
 
 /* -----------------------------------------------------------------------------
