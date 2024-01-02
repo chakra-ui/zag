@@ -1,5 +1,24 @@
 # @zag-js/combobox
 
+## 0.32.0
+
+### Patch Changes
+
+- [#1118](https://github.com/chakra-ui/zag/pull/1118) [`d3860c5`](https://github.com/chakra-ui/zag/commit/d3860c5f2039e2a43830d373619c879c80942f11) Thanks [@iamdin](https://github.com/iamdin)! - Fix the issue where setting `disabled` on combobox does not reflect in combobox item
+
+- Updated dependencies [[`651346b`](https://github.com/chakra-ui/zag/commit/651346b1cd280b3882253425e9054caf985f83a7)]:
+  - @zag-js/collection@0.32.0
+  - @zag-js/anatomy@0.32.0
+  - @zag-js/core@0.32.0
+  - @zag-js/types@0.32.0
+  - @zag-js/aria-hidden@0.32.0
+  - @zag-js/utils@0.32.0
+  - @zag-js/dismissable@0.32.0
+  - @zag-js/dom-event@0.32.0
+  - @zag-js/dom-query@0.32.0
+  - @zag-js/mutation-observer@0.32.0
+  - @zag-js/popper@0.32.0
+
 ## 0.31.1
 
 ### Patch Changes
@@ -376,12 +395,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -389,7 +408,7 @@
       collection,
       id: useId(),
     }),
-  )
+  );
   ```
 
 ### Patch Changes

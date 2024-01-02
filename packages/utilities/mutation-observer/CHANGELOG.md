@@ -1,5 +1,7 @@
 # @zag-js/mutation-observer
 
+## 0.32.0
+
 ## 0.31.1
 
 ## 0.31.0

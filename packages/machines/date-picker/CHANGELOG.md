@@ -1,5 +1,25 @@
 # @zag-js/date-picker
 
+## 0.32.0
+
+### Patch Changes
+
+- [`83895b3`](https://github.com/chakra-ui/zag/commit/83895b35921461af71a38978da72b7145eb4d007) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where date picker initial value isn't set when using controlled context
+  - Add `valueAsString` to `onValueChange` callback details
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.0
+  - @zag-js/core@0.32.0
+  - @zag-js/types@0.32.0
+  - @zag-js/utils@0.32.0
+  - @zag-js/date-utils@0.32.0
+  - @zag-js/dismissable@0.32.0
+  - @zag-js/dom-event@0.32.0
+  - @zag-js/dom-query@0.32.0
+  - @zag-js/form-utils@0.32.0
+  - @zag-js/live-region@0.32.0
+  - @zag-js/popper@0.32.0
+  - @zag-js/text-selection@0.32.0
+
 ## 0.31.1
 
 ### Patch Changes
