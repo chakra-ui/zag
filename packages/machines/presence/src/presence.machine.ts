@@ -15,6 +15,13 @@ export function machine(ctx: Partial<UserDefinedContext>) {
       watch: {
         present: ["raisePresenceChange", "setPrevPresent"],
       },
+      context: {
+        node: null,
+        styles: null,
+        prevAnimationName: "",
+        present: false,
+        ...ctx,
+      },
       on: {
         "NODE.SET": {
           actions: ["setNode", "setStyles"],
