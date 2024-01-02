@@ -1,5 +1,23 @@
 # @zag-js/radio-group
 
+## 0.32.0
+
+### Minor Changes
+
+- [`76115f7`](https://github.com/chakra-ui/zag/commit/76115f7a56d90fd84e0154c1ed182b7e2be68f93) Thanks [@cschroeter](https://github.com/cschroeter)! - BREAKING: Removed the styling props for indicator and replaced them with CSS variables.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.0
+  - @zag-js/core@0.32.0
+  - @zag-js/types@0.32.0
+  - @zag-js/utils@0.32.0
+  - @zag-js/dom-query@0.32.0
+  - @zag-js/element-rect@0.32.0
+  - @zag-js/form-utils@0.32.0
+  - @zag-js/visually-hidden@0.32.0
+
 ## 0.31.1
 
 ### Patch Changes

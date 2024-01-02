@@ -1,5 +1,24 @@
 # @zag-js/select
 
+## 0.32.0
+
+### Patch Changes
+
+- Updated dependencies [[`651346b`](https://github.com/chakra-ui/zag/commit/651346b1cd280b3882253425e9054caf985f83a7)]:
+  - @zag-js/collection@0.32.0
+  - @zag-js/anatomy@0.32.0
+  - @zag-js/core@0.32.0
+  - @zag-js/types@0.32.0
+  - @zag-js/utils@0.32.0
+  - @zag-js/dismissable@0.32.0
+  - @zag-js/dom-event@0.32.0
+  - @zag-js/dom-query@0.32.0
+  - @zag-js/form-utils@0.32.0
+  - @zag-js/mutation-observer@0.32.0
+  - @zag-js/popper@0.32.0
+  - @zag-js/tabbable@0.32.0
+  - @zag-js/visually-hidden@0.32.0
+
 ## 0.31.1
 
 ### Patch Changes
@@ -435,12 +454,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -448,7 +467,7 @@
       collection,
       id: useId(),
     }),
-  )
+  );
   ```
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @zag-js/menu
 
+## 0.32.0
+
+### Patch Changes
+
+- [`edba754`](https://github.com/chakra-ui/zag/commit/edba75423ad9f347cc115a96efa92fe20d9b9152) Thanks [@cschroeter](https://github.com/cschroeter)! - Resolved an issue that option item could not be activated by keyboard
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.0
+  - @zag-js/core@0.32.0
+  - @zag-js/types@0.32.0
+  - @zag-js/utils@0.32.0
+  - @zag-js/dismissable@0.32.0
+  - @zag-js/dom-event@0.32.0
+  - @zag-js/dom-query@0.32.0
+  - @zag-js/mutation-observer@0.32.0
+  - @zag-js/popper@0.32.0
+  - @zag-js/rect-utils@0.32.0
+
 ## 0.31.1
 
 ### Patch Changes
@@ -760,7 +778,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" })
+  api.setPositioning({ placement: "top" });
   ```
 
 ### Patch Changes
