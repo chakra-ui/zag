@@ -4,7 +4,9 @@
 
 ### Patch Changes
 
-- [#1095](https://github.com/chakra-ui/zag/pull/1095) [`651346b`](https://github.com/chakra-ui/zag/commit/651346b1cd280b3882253425e9054caf985f83a7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add equality method to check if two collections are equal
+- [#1095](https://github.com/chakra-ui/zag/pull/1095)
+  [`651346b`](https://github.com/chakra-ui/zag/commit/651346b1cd280b3882253425e9054caf985f83a7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add equality method to check if two collections are equal
 
 ## 0.31.1
 

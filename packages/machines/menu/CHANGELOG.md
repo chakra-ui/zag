@@ -4,7 +4,8 @@
 
 ### Patch Changes
 
-- [`edba754`](https://github.com/chakra-ui/zag/commit/edba75423ad9f347cc115a96efa92fe20d9b9152) Thanks [@cschroeter](https://github.com/cschroeter)! - Resolved an issue that option item could not be activated by keyboard
+- [`edba754`](https://github.com/chakra-ui/zag/commit/edba75423ad9f347cc115a96efa92fe20d9b9152) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Resolved an issue that option item could not be activated by keyboard
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.32.0
@@ -778,7 +779,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" });
+  api.setPositioning({ placement: "top" })
   ```
 
 ### Patch Changes

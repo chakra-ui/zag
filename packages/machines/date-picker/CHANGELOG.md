@@ -4,7 +4,9 @@
 
 ### Patch Changes
 
-- [`83895b3`](https://github.com/chakra-ui/zag/commit/83895b35921461af71a38978da72b7145eb4d007) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where date picker initial value isn't set when using controlled context
+- [`83895b3`](https://github.com/chakra-ui/zag/commit/83895b35921461af71a38978da72b7145eb4d007) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where date picker initial value isn't set when using
+  controlled context
   - Add `valueAsString` to `onValueChange` callback details
 - Updated dependencies []:
   - @zag-js/anatomy@0.32.0

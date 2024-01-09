@@ -635,10 +635,10 @@
 
   ```js
   // set the value of the rating-group to 3
-  api.setValue(3);
+  api.setValue(3)
 
   // clear the value of the rating-group
-  api.clearValue();
+  api.clearValue()
   ```
 
 ### Patch Changes

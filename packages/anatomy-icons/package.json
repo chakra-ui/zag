@@ -37,12 +37,12 @@
   "clean-package": "../../clean-package.config.json",
   "main": "src/index.ts",
   "devDependencies": {
-    "@types/react": "18.2.45",
+    "@types/react": "18.2.47",
     "clean-package": "2.2.0",
     "react": "18.2.0"
   },
   "dependencies": {
-    "color2k": "^2.0.2",
+    "color2k": "^2.0.3",
     "@svgr/core": "^8.1.0",
     "@svgr/plugin-jsx": "8.1.0"
   },
