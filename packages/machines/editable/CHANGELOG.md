@@ -1038,7 +1038,7 @@
     editable.machine({
       placeholder: { edit: "Enter...", preview: "Add name..." },
     }),
-  );
+  )
   ```
 
 ## 0.1.4

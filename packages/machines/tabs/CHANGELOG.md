@@ -4,7 +4,9 @@
 
 ### Minor Changes
 
-- [`76115f7`](https://github.com/chakra-ui/zag/commit/76115f7a56d90fd84e0154c1ed182b7e2be68f93) Thanks [@cschroeter](https://github.com/cschroeter)! - BREAKING: Removed the styling props for indicator and replaced them with CSS variables.
+- [`76115f7`](https://github.com/chakra-ui/zag/commit/76115f7a56d90fd84e0154c1ed182b7e2be68f93) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - BREAKING: Removed the styling props for indicator and replaced them
+  with CSS variables.
 
 ### Patch Changes
 

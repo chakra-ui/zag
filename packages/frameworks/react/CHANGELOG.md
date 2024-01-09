@@ -4,9 +4,15 @@
 
 ### Patch Changes
 
-- [#1095](https://github.com/chakra-ui/zag/pull/1095) [`651346b`](https://github.com/chakra-ui/zag/commit/651346b1cd280b3882253425e9054caf985f83a7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Redesign `Portal` component to support `getRootNode` and `disabled` props
+- [#1095](https://github.com/chakra-ui/zag/pull/1095)
+  [`651346b`](https://github.com/chakra-ui/zag/commit/651346b1cd280b3882253425e9054caf985f83a7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Redesign `Portal` component to support `getRootNode` and
+  `disabled` props
 
-- [#1095](https://github.com/chakra-ui/zag/pull/1095) [`651346b`](https://github.com/chakra-ui/zag/commit/651346b1cd280b3882253425e9054caf985f83a7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Refactor useSnapshot, useService and useMachine to track context changes
+- [#1095](https://github.com/chakra-ui/zag/pull/1095)
+  [`651346b`](https://github.com/chakra-ui/zag/commit/651346b1cd280b3882253425e9054caf985f83a7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor useSnapshot, useService and useMachine to track context
+  changes
 
 - Updated dependencies []:
   - @zag-js/core@0.32.0

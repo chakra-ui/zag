@@ -4,7 +4,8 @@
 
 ### Patch Changes
 
-- [`d1dc4fa`](https://github.com/chakra-ui/zag/commit/d1dc4fad981024a88c5d84e88b6ae3669d0c5329) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where circular progress does not be render correctly
+- [`d1dc4fa`](https://github.com/chakra-ui/zag/commit/d1dc4fad981024a88c5d84e88b6ae3669d0c5329) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where circular progress does not be render correctly
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.32.0
