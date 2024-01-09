@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@zag-js/utils": "workspace:*",
-    "solid-js": "1.8.6",
+    "solid-js": "1.8.9",
     "clean-package": "2.2.0"
   },
   "peerDependencies": {
