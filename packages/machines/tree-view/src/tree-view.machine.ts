@@ -93,9 +93,7 @@ export function machine(userContext: UserDefinedContext) {
           set.focused(ctx, firstNode.id)
         },
         selectItem(ctx, evt) {
-          const nextSet = new Set(ctx.selectedIds)
-          nextSet.add(evt.id)
-          set.selected(ctx, nextSet)
+          set.selected(ctx, new Set([evt.id]))
         },
         setFocusedItem(ctx, evt) {
           set.focused(ctx, evt.id)
