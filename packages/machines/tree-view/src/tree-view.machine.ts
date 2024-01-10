@@ -87,10 +87,10 @@ export function machine(userContext: UserDefinedContext) {
       actions: {
         activateFirstTreeItemIfNeeded(ctx) {
           if (ctx.focusedId) return
-          const tree = dom.getTreeEl(ctx)
-          const firstNode = tree?.querySelector("[role=treeitem]:not([data-disabled])")
-          if (!firstNode) return
-          set.focused(ctx, firstNode.id)
+          const walker = dom.createWalker(ctx)
+          const firstItem = walker.firstChild()
+          if (!isHTMLElement(firstItem)) return
+          set.focused(ctx, firstItem.id)
         },
         selectItem(ctx, evt) {
           set.selected(ctx, new Set([evt.id]))
