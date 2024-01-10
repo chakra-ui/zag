@@ -8,9 +8,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "preact": "^10.19.3",
-    "preact-iso": "^2.3.2",
-    "preact-render-to-string": "^6.3.1",
     "@internationalized/date": "^3.5.1",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
@@ -53,6 +50,7 @@
     "@zag-js/pin-input": "workspace:*",
     "@zag-js/popover": "workspace:*",
     "@zag-js/popper": "workspace:*",
+    "@zag-js/preact": "workspace:*",
     "@zag-js/presence": "workspace:*",
     "@zag-js/progress": "workspace:*",
     "@zag-js/radio-group": "workspace:*",
@@ -72,10 +70,13 @@
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
+    "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
-    "@zag-js/preact": "workspace:*"
+    "preact": "^10.19.3",
+    "preact-iso": "^2.3.2",
+    "preact-render-to-string": "^6.3.1"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.8.1",

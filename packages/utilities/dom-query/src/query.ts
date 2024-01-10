@@ -5,5 +5,5 @@ export function queryAll<T extends HTMLElement = HTMLElement>(root: Root, select
 }
 
 export function query<T extends HTMLElement = HTMLElement>(root: Root, selector: string) {
-  return root?.querySelector<T>(selector)
+  return root?.querySelector<T>(selector) ?? null
 }
