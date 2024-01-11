@@ -1,6 +1,25 @@
 import { indexOfId } from "./get-by-id"
 
-const getValueText = <T extends HTMLElement>(item: T) => item.dataset.valuetext ?? item.textContent ?? ""
+const sanitize = (str: string) =>
+  str
+    .split("")
+    .map((char) => {
+      const code = char.charCodeAt(0)
+
+      if (code > 0 && code < 128) {
+        return char
+      }
+
+      if (code >= 128 && code <= 255) {
+        return `/x${code.toString(16)}`.replace("/", "\\")
+      }
+
+      return ""
+    })
+    .join("")
+    .trim()
+
+const getValueText = <T extends HTMLElement>(item: T) => sanitize(item.dataset.valuetext ?? item.textContent ?? "")
 
 const match = (valueText: string, query: string) => valueText.trim().toLowerCase().startsWith(query.toLowerCase())
 

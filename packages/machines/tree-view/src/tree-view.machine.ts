@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { isHTMLElement } from "@zag-js/dom-query"
+import { getByTypeahead, isHTMLElement } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./tree-view.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tree-view.types"
@@ -17,6 +17,7 @@ export function machine(userContext: UserDefinedContext) {
         selectedIds: new Set(),
         focusedId: null,
         ...ctx,
+        typeahead: getByTypeahead.defaultOptions,
       },
 
       entry: ["activateFirstTreeItemIfNeeded"],
@@ -75,6 +76,9 @@ export function machine(userContext: UserDefinedContext) {
             "EXPANDED.SET": {
               actions: ["setExpanded"],
             },
+            TYPEAHEAD: {
+              actions: "focusMatchedItem",
+            },
           },
         },
       },
@@ -87,7 +91,7 @@ export function machine(userContext: UserDefinedContext) {
       actions: {
         activateFirstTreeItemIfNeeded(ctx) {
           if (ctx.focusedId) return
-          const walker = dom.createWalker(ctx)
+          const walker = dom.getTreeWalker(ctx)
           const firstItem = walker.firstChild()
           if (!isHTMLElement(firstItem)) return
           set.focused(ctx, firstItem.id)
@@ -122,20 +126,20 @@ export function machine(userContext: UserDefinedContext) {
           set.expanded(ctx, evt.value)
         },
         focusTreeFirstItem(ctx) {
-          const walker = dom.createWalker(ctx)
+          const walker = dom.getTreeWalker(ctx)
           dom.focusNode(walker.firstChild())
         },
         focusTreeLastItem(ctx) {
-          const walker = dom.createWalker(ctx)
+          const walker = dom.getTreeWalker(ctx)
           dom.focusNode(walker.lastChild())
         },
         focusBranchFirstItem(ctx) {
-          const walker = dom.createWalker(ctx)
+          const walker = dom.getTreeWalker(ctx)
           walker.currentNode = document.activeElement as HTMLElement
           dom.focusNode(walker.nextNode())
         },
         focusTreeNextItem(ctx) {
-          const walker = dom.createWalker(ctx)
+          const walker = dom.getTreeWalker(ctx)
           const activeEl = dom.getActiveElement(ctx) as HTMLElement
           if (ctx.focusedId) {
             walker.currentNode = activeEl
@@ -146,7 +150,7 @@ export function machine(userContext: UserDefinedContext) {
           }
         },
         focusTreePrevItem(ctx) {
-          const walker = dom.createWalker(ctx)
+          const walker = dom.getTreeWalker(ctx)
           const activeEl = dom.getActiveElement(ctx) as HTMLElement
           if (ctx.focusedId) {
             walker.currentNode = activeEl
@@ -172,7 +176,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         selectAllItems(ctx) {
           const nextSet = new Set<string>()
-          const walker = dom.createWalker(ctx)
+          const walker = dom.getTreeWalker(ctx)
           let node = walker.firstChild()
           while (node) {
             if (isHTMLElement(node)) {
@@ -181,6 +185,10 @@ export function machine(userContext: UserDefinedContext) {
             node = walker.nextNode()
           }
           set.selected(ctx, nextSet)
+        },
+        focusMatchedItem(ctx, evt) {
+          const node = dom.getMatchingEl(ctx, evt.key)
+          dom.focusNode(node)
         },
       },
     },

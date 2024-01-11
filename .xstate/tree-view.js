@@ -69,6 +69,9 @@ const fetchMachine = createMachine({
         },
         "EXPANDED.SET": {
           actions: ["setExpanded"]
+        },
+        TYPEAHEAD: {
+          actions: "focusMatchedItem"
         }
       }
     }

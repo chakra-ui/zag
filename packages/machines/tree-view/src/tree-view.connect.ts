@@ -1,4 +1,4 @@
-import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventKey, isModifiedEvent, type EventKeyMap } from "@zag-js/dom-event"
 import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tree-view.anatomy"
@@ -7,14 +7,17 @@ import type { BranchProps, BranchState, ItemProps, ItemState, Send, State } from
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const expandedIds = state.context.expandedIds
+  const selectedIds = state.context.selectedIds
+  const isTypingAhead = state.context.isTypingAhead
+  const focusedId = state.context.focusedId
 
   function getItemState(props: ItemProps): ItemState {
     const id = dom.getItemId(state.context, props.id)
     return {
       id,
-      isFocused: state.context.focusedId === id,
       isDisabled: Boolean(props.disabled),
-      isSelected: state.context.selectedIds.has(id),
+      isFocused: focusedId === id,
+      isSelected: selectedIds.has(id),
     }
   }
 
@@ -23,9 +26,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return {
       id,
       isDisabled: Boolean(props.disabled),
-      isFocused: state.context.focusedId === id,
+      isFocused: focusedId === id,
       isExpanded: expandedIds.has(id),
-      isSelected: state.context.selectedIds.has(id),
+      isSelected: selectedIds.has(id),
     }
   }
 
@@ -119,8 +122,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               send({ type: "ITEM.END", id: itemState.id })
             },
             Space(event) {
-              event.preventDefault()
-              send({ type: "ITEM.CLICK", id: itemState.id })
+              if (isTypingAhead) {
+                send({ type: "TYPEAHEAD", key: event.key })
+              } else {
+                keyMap.Enter?.(event)
+              }
             },
             Enter(event) {
               event.preventDefault()
@@ -129,8 +135,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
 
           const key = getEventKey(event, state.context)
-          const handler = keyMap[key]
-          if (handler) handler(event)
+          const exec = keyMap[key]
+
+          if (exec) {
+            exec(event)
+          } else {
+            const isValidTypeahead = event.key.length === 1 && !isModifiedEvent(event)
+            if (!isValidTypeahead) return
+
+            send({ type: "TYPEAHEAD", key: event.key })
+            event.preventDefault()
+          }
         },
         onFocus(event) {
           event.stopPropagation()
@@ -208,9 +223,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
 
           const key = getEventKey(event, state.context)
-          const handler = keyMap[key]
+          const exec = keyMap[key]
 
-          if (handler) handler(event)
+          if (exec) {
+            exec(event)
+          } else {
+            const isValidTypeahead = event.key.length === 1 && !isModifiedEvent(event)
+            if (!isValidTypeahead) return
+
+            send({ type: "TYPEAHEAD", key: event.key })
+            event.preventDefault()
+          }
         },
         onFocus(event) {
           event.stopPropagation()

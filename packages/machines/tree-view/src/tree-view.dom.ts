@@ -1,4 +1,4 @@
-import { createScope, isHTMLElement, isHiddenElement } from "@zag-js/dom-query"
+import { createScope, getByTypeahead, isHTMLElement, isHiddenElement } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./tree-view.types"
 
 export const dom = createScope({
@@ -20,18 +20,23 @@ export const dom = createScope({
     }
     return null
   },
+
   getFocusedEl(ctx: Ctx) {
     if (!ctx.focusedId) return null
     return dom.getById(ctx, ctx.focusedId)
   },
+
   focusNode(node: Node | Element | null | undefined) {
     if (isHTMLElement(node)) node.focus()
   },
-  createWalker(ctx: Ctx) {
+
+  getTreeWalker(ctx: Ctx) {
     const treeEl = dom.getTreeEl(ctx)
     if (!treeEl) throw new Error("Tree view not found")
 
-    return dom.getDoc(ctx).createTreeWalker(treeEl, NodeFilter.SHOW_ELEMENT, {
+    const docEl = dom.getDoc(ctx)
+
+    return docEl.createTreeWalker(treeEl, NodeFilter.SHOW_ELEMENT, {
       acceptNode(node: HTMLElement) {
         if (isHiddenElement(node)) {
           return NodeFilter.FILTER_REJECT
@@ -47,6 +52,24 @@ export const dom = createScope({
 
         return NodeFilter.FILTER_SKIP
       },
+    })
+  },
+
+  getMatchingEl(ctx: Ctx, key: string) {
+    const walker = dom.getTreeWalker(ctx)
+
+    const elements: HTMLElement[] = []
+    let node = walker.firstChild()
+
+    while (node) {
+      if (isHTMLElement(node)) elements.push(node)
+      node = walker.nextNode()
+    }
+
+    return getByTypeahead(elements, {
+      state: ctx.typeahead,
+      key,
+      activeId: ctx.focusedId,
     })
   },
 })

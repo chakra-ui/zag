@@ -1,4 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
+import type { TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
 export interface OpenChangeDetails {
@@ -44,9 +45,21 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   onFocusChange?: (details: FocusChangeDetails) => void
 }
 
-type PrivateContext = Context<{}>
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The typeahead state for faster keyboard navigation
+   */
+  typeahead: TypeaheadState
+}>
 
-type ComputedContext = Readonly<{}>
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * Whether a typeahead search is ongoing
+   */
+  isTypingAhead: boolean
+}>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
