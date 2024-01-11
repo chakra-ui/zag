@@ -14,9 +14,10 @@ const fetchMachine = createMachine({
   initial: "idle",
   context: {
     "isBranchFocused && isBranchExpanded": false,
-    "isBranchFocused && isBranchExpanded": false
+    "isBranchFocused && isBranchExpanded": false,
+    "hasSelectedItems": false
   },
-  entry: ["activateFirstTreeItemIfNeeded"],
+  entry: ["makeFirstTreeItemTabbable"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -72,7 +73,13 @@ const fetchMachine = createMachine({
         },
         TYPEAHEAD: {
           actions: "focusMatchedItem"
-        }
+        },
+        "TREE.BLUR": [{
+          cond: "hasSelectedItems",
+          actions: ["makeFirstSelectedItemTabbable"]
+        }, {
+          actions: ["makeFirstTreeItemTabbable"]
+        }]
       }
     }
   }
@@ -85,6 +92,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isBranchFocused && isBranchExpanded": ctx => ctx["isBranchFocused && isBranchExpanded"]
+    "isBranchFocused && isBranchExpanded": ctx => ctx["isBranchFocused && isBranchExpanded"],
+    "hasSelectedItems": ctx => ctx["hasSelectedItems"]
   }
 });

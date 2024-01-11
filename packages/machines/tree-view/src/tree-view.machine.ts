@@ -20,7 +20,7 @@ export function machine(userContext: UserDefinedContext) {
         typeahead: getByTypeahead.defaultOptions,
       },
 
-      entry: ["activateFirstTreeItemIfNeeded"],
+      entry: ["makeFirstTreeItemTabbable"],
 
       states: {
         idle: {
@@ -79,6 +79,15 @@ export function machine(userContext: UserDefinedContext) {
             TYPEAHEAD: {
               actions: "focusMatchedItem",
             },
+            "TREE.BLUR": [
+              {
+                guard: "hasSelectedItems",
+                actions: ["makeFirstSelectedItemTabbable"],
+              },
+              {
+                actions: ["makeFirstTreeItemTabbable"],
+              },
+            ],
           },
         },
       },
@@ -87,14 +96,20 @@ export function machine(userContext: UserDefinedContext) {
       guards: {
         isBranchFocused: (ctx, evt) => ctx.focusedId === evt.id,
         isBranchExpanded: (ctx, evt) => ctx.expandedIds.has(evt.id),
+        hasSelectedItems: (ctx) => ctx.selectedIds.size > 0,
       },
       actions: {
-        activateFirstTreeItemIfNeeded(ctx) {
+        makeFirstTreeItemTabbable(ctx) {
           if (ctx.focusedId) return
           const walker = dom.getTreeWalker(ctx)
           const firstItem = walker.firstChild()
           if (!isHTMLElement(firstItem)) return
           set.focused(ctx, firstItem.id)
+        },
+        makeFirstSelectedItemTabbable(ctx) {
+          const firstSelectedId = Array.from(ctx.selectedIds)[0]
+          if (!firstSelectedId) return
+          set.focused(ctx, firstSelectedId)
         },
         selectItem(ctx, evt) {
           set.selected(ctx, new Set([evt.id]))

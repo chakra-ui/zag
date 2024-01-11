@@ -1,5 +1,5 @@
 import { getEventKey, isModifiedEvent, type EventKeyMap } from "@zag-js/dom-event"
-import { dataAttr } from "@zag-js/dom-query"
+import { contains, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tree-view.anatomy"
 import { dom } from "./tree-view.dom"
@@ -78,6 +78,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "Tree View",
       "aria-labelledby": dom.getLabelId(state.context),
       "aria-multiselectable": state.context.selectionMode === "multiple" || undefined,
+      onBlur(event) {
+        if (contains(event.currentTarget, event.relatedTarget)) return
+        send({ type: "TREE.BLUR" })
+      },
     }),
 
     getItemState,
