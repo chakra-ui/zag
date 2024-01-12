@@ -13,11 +13,19 @@ const fetchMachine = createMachine({
   id: "tree-view",
   initial: "idle",
   context: {
-    "isBranchFocused && isBranchExpanded": false,
-    "isBranchFocused && isBranchExpanded": false,
-    "hasSelectedItems": false
+    "isBranchExpanded": false,
+    "isBranchFocused && isBranchExpanded": false
   },
-  entry: ["makeFirstTreeItemTabbable"],
+  on: {
+    "EXPANDED.SET": {
+      actions: ["setExpanded"]
+    },
+    "SELECTED.SET": {
+      actions: ["setSelected"]
+    }
+  },
+  activities: ["trackChildrenMutation"],
+  entry: ["setFocusableNode"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -26,6 +34,9 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
+        "ITEM.REMOVE": {
+          actions: ["setSelected", "setFocusedItem"]
+        },
         "ITEM.SELECT_ALL": {
           actions: ["selectAllItems"]
         },
@@ -38,9 +49,12 @@ const fetchMachine = createMachine({
         "ITEM.ARROW_UP": {
           actions: ["focusTreePrevItem"]
         },
-        "ITEM.ARROW_LEFT": [{
-          cond: "isBranchFocused && isBranchExpanded",
-          actions: ["collapseItem"]
+        "ITEM.ARROW_LEFT": {
+          actions: ["focusBranchTrigger"]
+        },
+        "BRANCH.ARROW_LEFT": [{
+          cond: "isBranchExpanded",
+          actions: ["collapseBranch"]
         }, {
           actions: ["focusBranchTrigger"]
         }],
@@ -48,7 +62,7 @@ const fetchMachine = createMachine({
           cond: "isBranchFocused && isBranchExpanded",
           actions: ["focusBranchFirstItem"]
         }, {
-          actions: ["expandItem"]
+          actions: ["expandBranch"]
         }],
         "ITEM.HOME": {
           actions: ["focusTreeFirstItem"]
@@ -59,27 +73,18 @@ const fetchMachine = createMachine({
         "ITEM.CLICK": {
           actions: ["selectItem"]
         },
-        "ITEM.BLUR": {
-          actions: ["clearFocusedItem"]
-        },
         "BRANCH.CLICK": {
-          actions: ["selectItem", "toggleItem"]
+          actions: ["selectItem", "toggleBranch"]
         },
         "BRANCH.TOGGLE": {
-          actions: ["toggleItem"]
-        },
-        "EXPANDED.SET": {
-          actions: ["setExpanded"]
+          actions: ["toggleBranch"]
         },
         TYPEAHEAD: {
           actions: "focusMatchedItem"
         },
-        "TREE.BLUR": [{
-          cond: "hasSelectedItems",
-          actions: ["makeFirstSelectedItemTabbable"]
-        }, {
-          actions: ["makeFirstTreeItemTabbable"]
-        }]
+        "TREE.BLUR": {
+          actions: ["clearFocusedItem"]
+        }
       }
     }
   }
@@ -92,7 +97,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isBranchFocused && isBranchExpanded": ctx => ctx["isBranchFocused && isBranchExpanded"],
-    "hasSelectedItems": ctx => ctx["hasSelectedItems"]
+    "isBranchExpanded": ctx => ctx["isBranchExpanded"],
+    "isBranchFocused && isBranchExpanded": ctx => ctx["isBranchFocused && isBranchExpanded"]
   }
 });

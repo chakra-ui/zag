@@ -39,6 +39,7 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
+    "@zag-js/mutation-observer": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/types": "workspace:*"
   },

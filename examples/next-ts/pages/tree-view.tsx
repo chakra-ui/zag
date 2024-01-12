@@ -14,20 +14,9 @@ export default function Page() {
         <div {...api.rootProps}>
           <h3 {...api.labelProps}>My Documents</h3>
           <div>
-            <button
-              onClick={() => {
-                api.closeAll()
-              }}
-            >
-              Collapse All
-            </button>
-            <button
-              onClick={() => {
-                api.selectAll()
-              }}
-            >
-              Select All
-            </button>
+            <button onClick={() => api.collapseAll()}>Collapse All</button>
+            <button onClick={() => api.expandAll()}>Expand All</button>
+            <button onClick={() => api.selectAll()}>Select All</button>
           </div>
 
           <ul {...api.treeProps}>
@@ -43,7 +32,7 @@ export default function Page() {
                 <li {...api.getBranchProps({ id: "@types", depth: 1 })}>
                   <div {...api.getBranchTriggerProps({ id: "@types", depth: 1 })}> 📂 @types</div>
 
-                  <ul {...api.getBranchContentProps({ id: "@types", depth: 2 })}>
+                  <ul {...api.getBranchContentProps({ id: "@types", depth: 1 })}>
                     <li {...api.getItemProps({ id: "@types/react", depth: 2 })}>📄 react</li>
                     <li {...api.getItemProps({ id: "@types/react-dom", depth: 2 })}>📄 react-dom</li>
                   </ul>

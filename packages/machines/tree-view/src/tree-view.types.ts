@@ -59,6 +59,11 @@ type ComputedContext = Readonly<{
    * Whether a typeahead search is ongoing
    */
   isTypingAhead: boolean
+  /**
+   * @computed
+   * Whether the tree supports multiple selection
+   */
+  isMultipleSelection: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

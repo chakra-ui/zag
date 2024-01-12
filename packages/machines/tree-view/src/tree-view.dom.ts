@@ -1,24 +1,31 @@
 import { createScope, getByTypeahead, isHTMLElement, isHiddenElement } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./tree-view.types"
 
+interface TreeWalkerOpts {
+  skipHidden?: boolean
+  root?: HTMLElement | null
+}
+
 export const dom = createScope({
   getLabelId: (ctx: Ctx) => `tree-label:${ctx.id}`,
   getRootId: (ctx: Ctx) => `tree-root:${ctx.id}`,
   getTreeId: (ctx: Ctx) => `tree-tree:${ctx.id}`,
   getItemId: (ctx: Ctx, id: string) => `tree-item:${ctx.id}:${id}`,
   getBranchId: (ctx: Ctx, id: string) => `tree-branch:${ctx.id}:${id}`,
+  getBranchTriggerId: (ctx: Ctx, id: string) => `tree-branch-trigger:${ctx.id}:${id}`,
 
   getTreeEl(ctx: Ctx) {
     return dom.getById(ctx, dom.getTreeId(ctx))
   },
 
-  getBranchEl(node: HTMLElement) {
-    let parent = node.parentElement
-    while (parent) {
-      if (parent.dataset.part === "branch") return parent
-      parent = parent.parentElement
-    }
-    return null
+  getBranchEl(ctx: Ctx, id: string) {
+    return dom.getById(ctx, dom.getBranchId(ctx, id))
+  },
+  getItemEl(ctx: Ctx, id: string) {
+    return dom.getById(ctx, dom.getItemId(ctx, id))
+  },
+  getBranchTriggerEl(ctx: Ctx, id: string) {
+    return dom.getById(ctx, dom.getBranchTriggerId(ctx, id))
   },
 
   getFocusedEl(ctx: Ctx) {
@@ -30,15 +37,17 @@ export const dom = createScope({
     if (isHTMLElement(node)) node.focus()
   },
 
-  getTreeWalker(ctx: Ctx) {
-    const treeEl = dom.getTreeEl(ctx)
-    if (!treeEl) throw new Error("Tree view not found")
+  getTreeWalker(ctx: Ctx, opts?: TreeWalkerOpts) {
+    const { skipHidden = true, root } = opts ?? {}
 
-    const docEl = dom.getDoc(ctx)
+    const treeEl = root || dom.getTreeEl(ctx)
+    if (!treeEl) throw new Error("Tree or branch root not found")
 
-    return docEl.createTreeWalker(treeEl, NodeFilter.SHOW_ELEMENT, {
+    const doc = dom.getDoc(ctx)
+
+    return doc.createTreeWalker(treeEl, NodeFilter.SHOW_ELEMENT, {
       acceptNode(node: HTMLElement) {
-        if (isHiddenElement(node)) {
+        if (skipHidden && isHiddenElement(node)) {
           return NodeFilter.FILTER_REJECT
         }
 

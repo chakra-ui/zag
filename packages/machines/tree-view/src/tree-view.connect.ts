@@ -1,5 +1,5 @@
-import { getEventKey, isModifiedEvent, type EventKeyMap } from "@zag-js/dom-event"
-import { contains, dataAttr } from "@zag-js/dom-query"
+import { getEventKey, getNativeEvent, isModifiedEvent, type EventKeyMap } from "@zag-js/dom-event"
+import { contains, dataAttr, getEventTarget, isHTMLElement } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tree-view.anatomy"
 import { dom } from "./tree-view.dom"
@@ -33,51 +33,133 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
-    open(ids: Set<number>) {
-      send({ type: "OPEN.ITEMS", ids })
+    selectedIds,
+    expand(ids: Set<string>) {
+      const nextSet = new Set(expandedIds)
+      ids.forEach((id) => nextSet.add(id))
+      send({ type: "EXPANDED.SET", value: nextSet })
     },
-
-    close(id: number) {
-      send({ type: "ITEM.CLOSE", id })
+    expandAll() {
+      const nextSet = new Set<string>()
+      const walker = dom.getTreeWalker(state.context, { skipHidden: false })
+      while (walker.nextNode()) {
+        const node = walker.currentNode
+        if (isHTMLElement(node)) {
+          nextSet.add(node.dataset.branch ?? node.id)
+        }
+      }
+      send({ type: "EXPANDED.SET", value: nextSet })
     },
-
-    closeAll() {
+    collapse(ids: Set<string>) {
+      const nextSet = new Set(expandedIds)
+      ids.forEach((id) => nextSet.delete(id))
+      send({ type: "EXPANDED.SET", value: nextSet })
+    },
+    collapseAll() {
       send({ type: "EXPANDED.SET", value: new Set([]) })
     },
-
-    toggle(id: number) {
-      send({ type: "ITEM.TOGGLE", id })
-    },
-
     selectAll() {
       send({ type: "ITEM.SELECT_ALL" })
     },
+    select(ids: Set<string>) {
+      send({ type: "SELECTED.SET", value: ids })
+    },
+    focusBranch(id: string) {
+      const triggerEl = dom.getBranchTriggerEl(state.context, id)
+      triggerEl?.focus()
+    },
 
-    deselect(ids?: Set<number>) {
-      if (ids) {
-        send({ type: "DESELECT.ITEMS", value: ids })
-      } else {
-        send({ type: "DESELECT.ALL" })
-      }
+    focusItem(id: string) {
+      const itemEl = dom.getItemEl(state.context, id)
+      itemEl?.focus()
     },
 
     rootProps: normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
+      dir: state.context.dir,
     }),
 
     labelProps: normalize.element({
       ...parts.label.attrs,
       id: dom.getLabelId(state.context),
+      dir: state.context.dir,
     }),
 
     treeProps: normalize.element({
       ...parts.tree.attrs,
       id: dom.getTreeId(state.context),
+      dir: state.context.dir,
       role: "tree",
       "aria-label": "Tree View",
       "aria-labelledby": dom.getLabelId(state.context),
       "aria-multiselectable": state.context.selectionMode === "multiple" || undefined,
+      onKeyDown(event) {
+        const evt = getNativeEvent(event)
+        const target = getEventTarget(evt) as HTMLElement | null
+
+        const itemOrBranch = target?.closest<HTMLElement>("[role=treeitem]")
+        if (!itemOrBranch) return
+
+        const isBranchTrigger = !!target?.dataset.branch
+
+        const keyMap: EventKeyMap = {
+          ArrowDown(event) {
+            if (isModifiedEvent(event)) return
+            event.preventDefault()
+            send({ type: "ITEM.ARROW_DOWN", id: itemOrBranch.id, shiftKey: event.shiftKey })
+          },
+          ArrowUp(event) {
+            if (isModifiedEvent(event)) return
+            event.preventDefault()
+            send({ type: "ITEM.ARROW_UP", id: itemOrBranch.id, shiftKey: event.shiftKey })
+          },
+          ArrowLeft(event) {
+            if (isModifiedEvent(event)) return
+            event.preventDefault()
+            send({ type: isBranchTrigger ? "BRANCH.ARROW_LEFT" : "ITEM.ARROW_LEFT", id: itemOrBranch.id })
+          },
+          ArrowRight(event) {
+            if (!isBranchTrigger) return
+            event.preventDefault()
+            send({ type: "BRANCH.ARROW_RIGHT", id: itemOrBranch.id })
+          },
+          Home(event) {
+            if (isModifiedEvent(event)) return
+            event.preventDefault()
+            send({ type: "ITEM.HOME", id: itemOrBranch.id })
+          },
+          End(event) {
+            if (isModifiedEvent(event)) return
+            event.preventDefault()
+            send({ type: "ITEM.END", id: itemOrBranch.id })
+          },
+          Space(event) {
+            if (isTypingAhead) {
+              send({ type: "TYPEAHEAD", key: event.key })
+            } else {
+              keyMap.Enter?.(event)
+            }
+          },
+          Enter(event) {
+            event.preventDefault()
+            send({ type: isBranchTrigger ? "BRANCH.CLICK" : "ITEM.CLICK", id: itemOrBranch.id })
+          },
+        }
+
+        const key = getEventKey(event, state.context)
+        const exec = keyMap[key]
+
+        if (exec) {
+          exec(event)
+        } else {
+          const isValidTypeahead = event.key.length === 1 && !isModifiedEvent(event)
+          if (!isValidTypeahead) return
+
+          send({ type: "TYPEAHEAD", key: event.key })
+          event.preventDefault()
+        }
+      },
       onBlur(event) {
         if (contains(event.currentTarget, event.relatedTarget)) return
         send({ type: "TREE.BLUR" })
@@ -89,6 +171,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
+        dir: state.context.dir,
         "data-ownedby": dom.getTreeId(state.context),
         id: itemState.id,
         tabIndex: itemState.isFocused ? 0 : -1,
@@ -100,63 +183,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-disabled": itemState.isDisabled,
         "data-disabled": dataAttr(itemState.isDisabled),
         "aria-level": props.depth,
+        "data-depth": props.depth,
         style: {
           "--depth": props.depth,
-        },
-        onKeyDown(event) {
-          const keyMap: EventKeyMap = {
-            ArrowDown(event) {
-              event.preventDefault()
-              send({ type: "ITEM.ARROW_DOWN", id: itemState.id })
-            },
-            ArrowUp(event) {
-              event.preventDefault()
-              send({ type: "ITEM.ARROW_UP", id: itemState.id })
-            },
-            ArrowLeft(event) {
-              event.preventDefault()
-              send({ type: "ITEM.ARROW_LEFT", id: itemState.id })
-            },
-            Home(event) {
-              event.preventDefault()
-              send({ type: "ITEM.HOME", id: itemState.id })
-            },
-            End(event) {
-              event.preventDefault()
-              send({ type: "ITEM.END", id: itemState.id })
-            },
-            Space(event) {
-              if (isTypingAhead) {
-                send({ type: "TYPEAHEAD", key: event.key })
-              } else {
-                keyMap.Enter?.(event)
-              }
-            },
-            Enter(event) {
-              event.preventDefault()
-              send({ type: "ITEM.CLICK", id: itemState.id })
-            },
-          }
-
-          const key = getEventKey(event, state.context)
-          const exec = keyMap[key]
-
-          if (exec) {
-            exec(event)
-          } else {
-            const isValidTypeahead = event.key.length === 1 && !isModifiedEvent(event)
-            if (!isValidTypeahead) return
-
-            send({ type: "TYPEAHEAD", key: event.key })
-            event.preventDefault()
-          }
         },
         onFocus(event) {
           event.stopPropagation()
           send({ type: "ITEM.FOCUS", id: itemState.id })
         },
         onClick(event) {
-          send({ type: "ITEM.CLICK", id: itemState.id })
+          send({ type: "ITEM.CLICK", id: itemState.id, shiftKey: event.shiftKey })
           event.stopPropagation()
           event.preventDefault()
         },
@@ -168,6 +204,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const branchState = getBranchState(props)
       return normalize.element({
         ...parts.branch.attrs,
+        "data-depth": props.depth,
+        dir: state.context.dir,
         id: dom.getBranchId(state.context, props.id),
         role: "treeitem",
         "data-ownedby": dom.getTreeId(state.context),
@@ -187,64 +225,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.branchTrigger.attrs,
         role: "button",
+        dir: state.context.dir,
         tabIndex: branchState.isFocused ? 0 : -1,
         "data-selected": dataAttr(branchState.isSelected),
         "data-branch": branchState.id,
-        onKeyDown(event) {
-          const keyMap: EventKeyMap = {
-            ArrowDown(event) {
-              event.preventDefault()
-              send({ type: "ITEM.ARROW_DOWN", id: branchState.id })
-            },
-            ArrowUp(event) {
-              event.preventDefault()
-              send({ type: "ITEM.ARROW_UP", id: branchState.id })
-            },
-            ArrowLeft(event) {
-              event.preventDefault()
-              send({ type: "ITEM.ARROW_LEFT", id: branchState.id })
-            },
-            Home(event) {
-              event.preventDefault()
-              send({ type: "ITEM.HOME", id: branchState.id })
-            },
-            End(event) {
-              event.preventDefault()
-              send({ type: "ITEM.END", id: branchState.id })
-            },
-            ArrowRight(event) {
-              event.preventDefault()
-              send({ type: "BRANCH.ARROW_RIGHT", id: branchState.id })
-            },
-            Space(event) {
-              event.preventDefault()
-              send({ type: "BRANCH.TOGGLE", id: branchState.id })
-            },
-            Enter(event) {
-              event.preventDefault()
-              send({ type: "BRANCH.CLICK", id: branchState.id })
-            },
-          }
-
-          const key = getEventKey(event, state.context)
-          const exec = keyMap[key]
-
-          if (exec) {
-            exec(event)
-          } else {
-            const isValidTypeahead = event.key.length === 1 && !isModifiedEvent(event)
-            if (!isValidTypeahead) return
-
-            send({ type: "TYPEAHEAD", key: event.key })
-            event.preventDefault()
-          }
-        },
+        "data-depth": props.depth,
         onFocus(event) {
           event.stopPropagation()
           send({ type: "ITEM.FOCUS", id: branchState.id })
         },
         onClick(event) {
-          send({ type: "BRANCH.CLICK", id: branchState.id })
+          send({ type: "BRANCH.CLICK", id: branchState.id, shiftKey: event.shiftKey })
           event.stopPropagation()
           event.preventDefault()
         },
@@ -256,6 +247,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.branchContent.attrs,
         role: "group",
+        dir: state.context.dir,
         "data-state": branchState.isExpanded ? "open" : "closed",
         hidden: !branchState.isExpanded,
       })

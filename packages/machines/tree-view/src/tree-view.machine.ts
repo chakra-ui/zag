@@ -1,5 +1,6 @@
 import { createMachine, guards } from "@zag-js/core"
 import { getByTypeahead, isHTMLElement } from "@zag-js/dom-query"
+import { observeChildren } from "@zag-js/mutation-observer"
 import { compact } from "@zag-js/utils"
 import { dom } from "./tree-view.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tree-view.types"
@@ -20,11 +21,33 @@ export function machine(userContext: UserDefinedContext) {
         typeahead: getByTypeahead.defaultOptions,
       },
 
-      entry: ["makeFirstTreeItemTabbable"],
+      computed: {
+        isMultipleSelection: (ctx) => ctx.selectionMode === "multiple",
+      },
+
+      watch: {
+        focusedId: ["setFocusableNode"],
+      },
+
+      on: {
+        "EXPANDED.SET": {
+          actions: ["setExpanded"],
+        },
+        "SELECTED.SET": {
+          actions: ["setSelected"],
+        },
+      },
+
+      activities: ["trackChildrenMutation"],
+
+      entry: ["setFocusableNode"],
 
       states: {
         idle: {
           on: {
+            "ITEM.REMOVE": {
+              actions: ["setSelected", "setFocusedItem"],
+            },
             "ITEM.SELECT_ALL": {
               actions: ["selectAllItems"],
             },
@@ -37,10 +60,13 @@ export function machine(userContext: UserDefinedContext) {
             "ITEM.ARROW_UP": {
               actions: ["focusTreePrevItem"],
             },
-            "ITEM.ARROW_LEFT": [
+            "ITEM.ARROW_LEFT": {
+              actions: ["focusBranchTrigger"],
+            },
+            "BRANCH.ARROW_LEFT": [
               {
-                guard: and("isBranchFocused", "isBranchExpanded"),
-                actions: ["collapseItem"],
+                guard: "isBranchExpanded",
+                actions: ["collapseBranch"],
               },
               {
                 actions: ["focusBranchTrigger"],
@@ -52,7 +78,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["focusBranchFirstItem"],
               },
               {
-                actions: ["expandItem"],
+                actions: ["expandBranch"],
               },
             ],
             "ITEM.HOME": {
@@ -64,30 +90,18 @@ export function machine(userContext: UserDefinedContext) {
             "ITEM.CLICK": {
               actions: ["selectItem"],
             },
-            "ITEM.BLUR": {
-              actions: ["clearFocusedItem"],
-            },
             "BRANCH.CLICK": {
-              actions: ["selectItem", "toggleItem"],
+              actions: ["selectItem", "toggleBranch"],
             },
             "BRANCH.TOGGLE": {
-              actions: ["toggleItem"],
-            },
-            "EXPANDED.SET": {
-              actions: ["setExpanded"],
+              actions: ["toggleBranch"],
             },
             TYPEAHEAD: {
               actions: "focusMatchedItem",
             },
-            "TREE.BLUR": [
-              {
-                guard: "hasSelectedItems",
-                actions: ["makeFirstSelectedItemTabbable"],
-              },
-              {
-                actions: ["makeFirstTreeItemTabbable"],
-              },
-            ],
+            "TREE.BLUR": {
+              actions: ["clearFocusedItem"],
+            },
           },
         },
       },
@@ -98,18 +112,63 @@ export function machine(userContext: UserDefinedContext) {
         isBranchExpanded: (ctx, evt) => ctx.expandedIds.has(evt.id),
         hasSelectedItems: (ctx) => ctx.selectedIds.size > 0,
       },
+      activities: {
+        trackChildrenMutation(ctx, _evt, { send }) {
+          const treeEl = dom.getTreeEl(ctx)
+          return observeChildren(treeEl, (records) => {
+            const removedNodes = records
+              .flatMap((r) => Array.from(r.removedNodes))
+              .filter((node) => {
+                if (!isHTMLElement(node)) return false
+                return node.matches("[role=treeitem]") || node.matches("[role=group]")
+              })
+
+            if (!removedNodes.length) return
+
+            let elementToFocus: HTMLElement | null = null
+            records.forEach((record) => {
+              if (isHTMLElement(record.nextSibling)) {
+                elementToFocus = record.nextSibling
+              } else if (isHTMLElement(record.previousSibling)) {
+                elementToFocus = record.previousSibling
+              }
+            })
+
+            if (elementToFocus) {
+              dom.focusNode(elementToFocus)
+            }
+
+            const removedIds: Set<string> = new Set()
+            removedNodes.forEach((node) => {
+              if (isHTMLElement(node)) {
+                removedIds.add(node.dataset.branch ?? node.id)
+              }
+            })
+
+            const nextSet = new Set(ctx.selectedIds)
+            removedIds.forEach((id) => nextSet.delete(id))
+            send({ type: "SELECTED.SET", value: removedIds })
+          })
+        },
+      },
       actions: {
-        makeFirstTreeItemTabbable(ctx) {
-          if (ctx.focusedId) return
+        setFocusableNode(ctx) {
+          if (ctx.focusedId) {
+            return
+          }
+
+          if (ctx.selectedIds.size > 0) {
+            const firstSelectedId = Array.from(ctx.selectedIds)[0]
+            ctx.focusedId = firstSelectedId
+            return
+          }
+
           const walker = dom.getTreeWalker(ctx)
           const firstItem = walker.firstChild()
+
           if (!isHTMLElement(firstItem)) return
-          set.focused(ctx, firstItem.id)
-        },
-        makeFirstSelectedItemTabbable(ctx) {
-          const firstSelectedId = Array.from(ctx.selectedIds)[0]
-          if (!firstSelectedId) return
-          set.focused(ctx, firstSelectedId)
+          // don't use set.focused here because it will trigger focusChange event
+          ctx.focusedId = firstItem.id
         },
         selectItem(ctx, evt) {
           set.selected(ctx, new Set([evt.id]))
@@ -120,25 +179,37 @@ export function machine(userContext: UserDefinedContext) {
         clearFocusedItem(ctx) {
           set.focused(ctx, null)
         },
-
-        toggleItem(ctx, evt) {
+        clearSelectedItem(ctx) {
+          set.selected(ctx, new Set())
+        },
+        toggleBranch(ctx, evt) {
           const nextSet = new Set(ctx.expandedIds)
-          if (nextSet.has(evt.id)) nextSet.delete(evt.id)
-          else nextSet.add(evt.id)
+
+          if (nextSet.has(evt.id)) {
+            nextSet.delete(evt.id)
+            // collapseEffect(ctx, evt)
+          } else {
+            nextSet.add(evt.id)
+          }
+
           set.expanded(ctx, nextSet)
         },
-        expandItem(ctx, evt) {
+        expandBranch(ctx, evt) {
           const nextSet = new Set(ctx.expandedIds)
           nextSet.add(evt.id)
           set.expanded(ctx, nextSet)
         },
-        collapseItem(ctx, evt) {
+        collapseBranch(ctx, evt) {
           const nextSet = new Set(ctx.expandedIds)
           nextSet.delete(evt.id)
+          collapseEffect(ctx, evt)
           set.expanded(ctx, nextSet)
         },
         setExpanded(ctx, evt) {
           set.expanded(ctx, evt.value)
+        },
+        setSelected(ctx, evt) {
+          set.selected(ctx, evt.value)
         },
         focusTreeFirstItem(ctx) {
           const walker = dom.getTreeWalker(ctx)
@@ -176,18 +247,18 @@ export function machine(userContext: UserDefinedContext) {
           }
         },
         focusBranchTrigger(ctx) {
-          const activeEl = dom.getActiveElement(ctx)
-
           if (!ctx.focusedId) return
+          const activeEl = dom.getActiveElement(ctx)
+          if (!activeEl) return
 
-          let parentBranchEl = dom.getBranchEl(activeEl!)
+          const parentDepth = Number(activeEl.dataset.depth) - 1
+          if (parentDepth < 0) return
 
-          if (parentBranchEl?.id === ctx.focusedId) {
-            parentBranchEl = dom.getBranchEl(parentBranchEl)
-          }
+          const branchSelector = `[data-part=branch][data-depth="${parentDepth}"]`
+          const closestBranch = activeEl.closest(branchSelector)
 
-          const parentBranchTrigger = parentBranchEl?.querySelector("[data-part=branch-trigger]")
-          dom.focusNode(parentBranchTrigger)
+          const branchTrigger = closestBranch?.querySelector("[data-part=branch-trigger]")
+          dom.focusNode(branchTrigger)
         },
         selectAllItems(ctx) {
           const nextSet = new Set<string>()
@@ -208,6 +279,27 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
+}
+
+// if the branch is collapsed, we need to remove all its children from selectedIds
+function collapseEffect(ctx: MachineContext, evt: any) {
+  const walker = dom.getTreeWalker(ctx, {
+    skipHidden: false,
+    root: dom.getBranchEl(ctx, evt.id),
+  })
+
+  const idsToRemove = new Set<string>()
+  let node = walker.firstChild()
+  while (node) {
+    if (isHTMLElement(node)) {
+      idsToRemove.add(node.dataset.branch ?? node.id)
+    }
+    node = walker.nextNode()
+  }
+
+  const nextSelectedSet = new Set(ctx.selectedIds)
+  idsToRemove.forEach((id) => nextSelectedSet.delete(id))
+  set.selected(ctx, nextSelectedSet)
 }
 
 const invoke = {
