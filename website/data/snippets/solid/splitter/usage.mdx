@@ -1,0 +1,40 @@
+```jsx
+import * as splitter from "@zag-js/splitter"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+export function Splitter() {
+  const [state, send] = useMachine(
+    splitter.machine({
+      id: createUniqueId(),
+      size: [
+        { id: "aside", size: 40, maxSize: 60 },
+        { id: "content", size: 20 },
+        { id: "sources" }
+      ],
+    })
+  )
+
+  const api = createMemo(() => splitter.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <div {...api().getPanelProps({ id: "aside" })}>
+        <p>Aside</p>
+      </div>
+      <div {...api().getResizeTriggerProps({ id: "aside:content" })}>
+        <div class="bar" />
+      </div>
+      <div {...api().getPanelProps({ id: "content" })}>
+        <p>Content</p>
+      </div>
+      <div {...api().getResizeTriggerProps({ id: "content:sources" })}>
+        <div class="bar" />
+      </div>
+      <div {...api().getPanelProps({ id: "sources" })}>
+        <p>Sources</p>
+      </div>
+    </div>
+  )
+}
+```

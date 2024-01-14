@@ -1,0 +1,40 @@
+```jsx
+import * as splitter from "@zag-js/splitter"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
+
+export function Splitter() {
+    const [state, send] = useMachine(
+    splitter.machine({
+      id: useId(),
+      size: [
+        { id: "aside", size: 40, maxSize: 60 },
+        { id: "content", size: 20 },
+        { id: "sources" },
+      ],
+    }),
+  )
+
+  const api = slider.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      <div {...api.getPanelProps({ id: "aside" })}>
+        <p>Aside</p>
+      </div>
+      <div {...api.getResizeTriggerProps({ id: "aside:content" })}>
+        <div className="bar" />
+      </div>
+      <div {...api.getPanelProps({ id: "content" })}>
+        <p>Content</p>
+      </div>
+      <div {...api.getResizeTriggerProps({ id: "content:sources" })}>
+        <div className="bar" />
+      </div>
+      <div {...api.getPanelProps({ id: "sources" })}>
+        <p>Sources</p>
+      </div>
+    </div>
+  )
+}
+```

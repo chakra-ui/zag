@@ -1,0 +1,40 @@
+```md
+<script setup>
+import * as splitter from "@zag-js/splitter"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed } from "vue"
+
+const [state, send] = useMachine(
+  splitter.machine({
+    id: "1",
+    size: [
+      { id: "aside", size: 40, maxSize: 60 },
+      { id: "content", size: 20 },
+      { id: "sources" }
+    ]
+  })
+)
+
+const apiRef = computed(() => splitter.connect(state.value, send, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.rootProps">
+    <div v-bind="api.getPanelProps({ id: 'aside' })">
+      <p>Aside</p>
+    </div>
+    <div v-bind="api.getResizeTriggerProps({ id: 'aside:content' })">
+      <div class="bar" />
+    </div>
+    <div v-bind="api.getPanelProps({ id: 'content' })">
+      <p>Content</p>
+    </div>
+    <div v-bind="api.getResizeTriggerProps({ id: 'content:sources' })">
+      <div class="bar" />
+    </div>
+    <div v-bind="api.getPanelProps({ id: 'sources' })">
+      <p>Sources</p>
+    </div>
+  </div>
+</template>
+```
