@@ -394,7 +394,7 @@
         date: (a, b) => a.getTime() === b.getTime(),
       },
     },
-  );
+  )
   ```
 
 - [#462](https://github.com/chakra-ui/zag/pull/462)
@@ -570,9 +570,9 @@
   This helper can be used in inline guards or the gaurds options.
 
   ```js
-  import { guards } from "@zag-js/core";
+  import { guards } from "@zag-js/core"
 
-  const { isIn } = gaurds;
+  const { isIn } = gaurds
 
   const machine = createMachine({
     on: {
@@ -584,7 +584,7 @@
       open: {},
       closed: {},
     },
-  });
+  })
   ```
 
 * [`587cbec9`](https://github.com/chakra-ui/zag/commit/587cbec9b32ee9e8faef5ceeefb779231b152018) Thanks
