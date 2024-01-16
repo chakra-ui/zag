@@ -1,5 +1,19 @@
 # @zag-js/pin-input
 
+## 0.32.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.1
+  - @zag-js/core@0.32.1
+  - @zag-js/types@0.32.1
+  - @zag-js/utils@0.32.1
+  - @zag-js/dom-event@0.32.1
+  - @zag-js/dom-query@0.32.1
+  - @zag-js/form-utils@0.32.1
+  - @zag-js/visually-hidden@0.32.1
+
 ## 0.32.0
 
 ### Patch Changes
@@ -893,7 +907,7 @@
   define their own patterns to validate against.
 
   ```jsx
-  const [state, send] = useMachine(pinInput.machine({ pattern: "^[0-9.-]+$" }))
+  const [state, send] = useMachine(pinInput.machine({ pattern: "^[0-9.-]+$" }));
   ```
 
   Improve form support by exposing `hiddenInputProps`. When the machine is passed a `name` property:

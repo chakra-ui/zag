@@ -1,5 +1,19 @@
 # @zag-js/dialog
 
+## 0.32.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.1
+  - @zag-js/core@0.32.1
+  - @zag-js/types@0.32.1
+  - @zag-js/aria-hidden@0.32.1
+  - @zag-js/utils@0.32.1
+  - @zag-js/dismissable@0.32.1
+  - @zag-js/dom-query@0.32.1
+  - @zag-js/remove-scroll@0.32.1
+
 ## 0.32.0
 
 ### Patch Changes
@@ -639,7 +653,7 @@
 
   ```jsx
   // this is will open the dialog initially
-  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }));
 
   // this will open the dialog when the `open` value changes
   const [state, send] = useMachine(dialog.machine({ id: "1" }), {
@@ -647,7 +661,7 @@
       // when this value changes, the dialog will open/close
       open: true,
     },
-  })
+  });
   ```
 
 ### Patch Changes
