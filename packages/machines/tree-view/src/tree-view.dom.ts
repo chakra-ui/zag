@@ -96,6 +96,7 @@ export const dom = createScope({
       state: ctx.typeahead,
       key,
       activeId: ctx.focusedId,
+      itemToId: (v) => dom.getNodeId(v) ?? v.id,
     })
   },
 

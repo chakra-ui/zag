@@ -1,9 +1,13 @@
-export function itemById<T extends HTMLElement>(v: T[], id: string) {
-  return v.find((node) => node.id === id)
+export type ItemToId<T> = (v: T) => string
+
+export const defaultItemToId = <T extends HTMLElement>(v: T) => v.id
+
+export function itemById<T extends HTMLElement>(v: T[], id: string, itemToId: ItemToId<T> = defaultItemToId) {
+  return v.find((item) => itemToId(item) === id)
 }
 
-export function indexOfId<T extends HTMLElement>(v: T[], id: string) {
-  const item = itemById(v, id)
+export function indexOfId<T extends HTMLElement>(v: T[], id: string, itemToId: ItemToId<T> = defaultItemToId) {
+  const item = itemById(v, id, itemToId)
   return item ? v.indexOf(item) : -1
 }
 

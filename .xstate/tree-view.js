@@ -126,7 +126,7 @@ const fetchMachine = createMachine({
           actions: ["focusMatchedItem"]
         },
         "TREE.BLUR": {
-          actions: ["clearFocusedItem"]
+          actions: ["clearFocusedItem", "setFocusableNode"]
         }
       }
     }

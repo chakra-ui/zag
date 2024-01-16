@@ -25,10 +25,6 @@ export function machine(userContext: UserDefinedContext) {
         isMultipleSelection: (ctx) => ctx.selectionMode === "multiple",
       },
 
-      watch: {
-        focusedId: ["setFocusableNode"],
-      },
-
       on: {
         "EXPANDED.SET": {
           actions: ["setExpanded"],
@@ -155,7 +151,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["focusMatchedItem"],
             },
             "TREE.BLUR": {
-              actions: ["clearFocusedItem"],
+              actions: ["clearFocusedItem", "setFocusableNode"],
             },
           },
         },
@@ -213,6 +209,8 @@ export function machine(userContext: UserDefinedContext) {
       },
       actions: {
         setFocusableNode(ctx) {
+          if (ctx.focusedId) return
+
           if (ctx.selectedIds.size > 0) {
             const firstSelectedId = Array.from(ctx.selectedIds)[0]
             ctx.focusedId = firstSelectedId
