@@ -129,11 +129,12 @@ export function machine(userContext: UserDefinedContext) {
                 guard: and("isShiftKey", "isMultipleSelection"),
                 actions: ["extendSelectionToItem"],
               },
+              // TODO: consider supporting click to expand (instead of using the toggle)
               {
                 actions: ["selectItem", "toggleBranch"],
               },
             ],
-            "BRANCH.TOGGLE": {
+            "BRANCH_TOGGLE.CLICK": {
               actions: ["toggleBranch"],
             },
             TYPEAHEAD: {

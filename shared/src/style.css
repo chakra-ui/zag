@@ -1805,14 +1805,14 @@ main [data-testid="scrubber"] {
 }
 
 [data-scope="tree-view"][data-part="item"],
-[data-scope="tree-view"][data-part="branch-trigger"] {
+[data-scope="tree-view"][data-part="branch-control"] {
   padding-inline: 6px;
   padding-block: 4px;
   user-select: none;
 }
 
 [data-scope="tree-view"][data-part="item"][data-selected],
-[data-scope="tree-view"][data-part="branch-trigger"][data-selected] {
+[data-scope="tree-view"][data-part="branch-control"][data-selected] {
   background: lightblue;
 }
 

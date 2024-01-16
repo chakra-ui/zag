@@ -221,7 +221,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-ownedby": dom.getTreeId(state.context),
         "aria-level": props.depth,
         "aria-expanded": branchState.isExpanded,
-        "data-expanded": dataAttr(branchState.isExpanded),
+        "data-state": branchState.isExpanded ? "open" : "closed",
         "aria-disabled": branchState.isDisabled,
         "data-disabled": dataAttr(branchState.isDisabled),
         style: {
@@ -236,20 +236,51 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.branchTrigger.attrs,
         role: "button",
         dir: state.context.dir,
+        "data-disabled": dataAttr(branchState.isDisabled),
+        "data-state": branchState.isExpanded ? "open" : "closed",
+        onClick(event) {
+          if (branchState.isDisabled) return
+          send({ type: "BRANCH_TOGGLE.CLICK", id: branchState.id })
+          event.stopPropagation()
+        },
+      })
+    },
+
+    getBranchControlProps(props: BranchProps) {
+      const branchState = getBranchState(props)
+      return normalize.element({
+        ...parts.branchControl.attrs,
+        role: "button",
+        dir: state.context.dir,
         tabIndex: branchState.isFocused ? 0 : -1,
+        "data-state": branchState.isExpanded ? "open" : "closed",
+        "data-disabled": dataAttr(branchState.isDisabled),
         "data-selected": dataAttr(branchState.isSelected),
         "data-branch": branchState.id,
         "data-depth": props.depth,
         onFocus(event) {
-          event.stopPropagation()
           send({ type: "ITEM.FOCUS", id: branchState.id })
+          event.stopPropagation()
         },
         onClick(event) {
+          if (branchState.isDisabled) return
+
           const isMetaKey = event.metaKey || event.ctrlKey
           send({ type: "BRANCH.CLICK", id: branchState.id, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
+
           event.stopPropagation()
-          event.preventDefault()
         },
+      })
+    },
+
+    getBranchTextProps(props: BranchProps) {
+      const branchState = getBranchState(props)
+      return normalize.element({
+        ...parts.branchText.attrs,
+        dir: state.context.dir,
+        "data-branch": branchState.id,
+        "data-disabled": dataAttr(branchState.isDisabled),
+        "data-state": branchState.isExpanded ? "open" : "closed",
       })
     },
 
@@ -259,6 +290,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.branchContent.attrs,
         role: "group",
         dir: state.context.dir,
+        "data-branch": branchState.id,
         "data-state": branchState.isExpanded ? "open" : "closed",
         hidden: !branchState.isExpanded,
       })
