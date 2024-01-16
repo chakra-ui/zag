@@ -20,7 +20,9 @@ const fetchMachine = createMachine({
     "isBranchFocused && isBranchExpanded": false,
     "isShiftKey && isMultipleSelection": false,
     "isShiftKey && isMultipleSelection": false,
+    "isCtrlKey && isMultipleSelection": false,
     "isShiftKey && isMultipleSelection": false,
+    "isCtrlKey && isMultipleSelection": false,
     "isShiftKey && isMultipleSelection": false
   },
   on: {
@@ -94,12 +96,18 @@ const fetchMachine = createMachine({
           actions: ["focusTreeLastItem"]
         }],
         "ITEM.CLICK": [{
+          cond: "isCtrlKey && isMultipleSelection",
+          actions: ["addOrRemoveItemFromSelection"]
+        }, {
           cond: "isShiftKey && isMultipleSelection",
           actions: ["extendSelectionToItem"]
         }, {
           actions: ["selectItem"]
         }],
         "BRANCH.CLICK": [{
+          cond: "isCtrlKey && isMultipleSelection",
+          actions: ["addOrRemoveItemFromSelection"]
+        }, {
           cond: "isShiftKey && isMultipleSelection",
           actions: ["extendSelectionToItem"]
         },
@@ -131,6 +139,7 @@ const fetchMachine = createMachine({
     "isMultipleSelection": ctx => ctx["isMultipleSelection"],
     "isShiftKey && isMultipleSelection": ctx => ctx["isShiftKey && isMultipleSelection"],
     "isBranchExpanded": ctx => ctx["isBranchExpanded"],
-    "isBranchFocused && isBranchExpanded": ctx => ctx["isBranchFocused && isBranchExpanded"]
+    "isBranchFocused && isBranchExpanded": ctx => ctx["isBranchFocused && isBranchExpanded"],
+    "isCtrlKey && isMultipleSelection": ctx => ctx["isCtrlKey && isMultipleSelection"]
   }
 });

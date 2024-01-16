@@ -117,6 +117,10 @@ export function machine(userContext: UserDefinedContext) {
             ],
             "ITEM.CLICK": [
               {
+                guard: and("isCtrlKey", "isMultipleSelection"),
+                actions: ["addOrRemoveItemFromSelection"],
+              },
+              {
                 guard: and("isShiftKey", "isMultipleSelection"),
                 actions: ["extendSelectionToItem"],
               },
@@ -125,6 +129,10 @@ export function machine(userContext: UserDefinedContext) {
               },
             ],
             "BRANCH.CLICK": [
+              {
+                guard: and("isCtrlKey", "isMultipleSelection"),
+                actions: ["addOrRemoveItemFromSelection"],
+              },
               {
                 guard: and("isShiftKey", "isMultipleSelection"),
                 actions: ["extendSelectionToItem"],
@@ -152,6 +160,7 @@ export function machine(userContext: UserDefinedContext) {
         isBranchFocused: (ctx, evt) => ctx.focusedId === evt.id,
         isBranchExpanded: (ctx, evt) => ctx.expandedIds.has(evt.id),
         isShiftKey: (_ctx, evt) => evt.shiftKey,
+        isCtrlKey: (_ctx, evt) => evt.ctrlKey,
         hasSelectedItems: (ctx) => ctx.selectedIds.size > 0,
         isMultipleSelection: (ctx) => ctx.isMultipleSelection,
       },
@@ -324,6 +333,23 @@ export function machine(userContext: UserDefinedContext) {
         focusMatchedItem(ctx, evt) {
           const node = dom.getMatchingEl(ctx, evt.key)
           dom.focusNode(node)
+        },
+        addOrRemoveItemFromSelection(ctx, evt) {
+          const focusedEl = dom.getNodeEl(ctx, evt.id)
+          if (!focusedEl) return
+
+          const nextSet = new Set(ctx.selectedIds)
+
+          const nodeId = dom.getNodeId(focusedEl)
+          if (nodeId == null) return
+
+          if (nextSet.has(nodeId)) {
+            nextSet.delete(nodeId)
+          } else {
+            nextSet.add(nodeId)
+          }
+
+          set.selected(ctx, nextSet)
         },
         expandSameLevelBranches(ctx, evt) {
           const focusedEl = dom.getNodeEl(ctx, evt.id)
