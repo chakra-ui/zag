@@ -48,10 +48,6 @@ This project is licensed under the terms of the [MIT license](https://github.com
 
 ### TODO
 
-- control + click: add or remove item from selection
-- shift + click: select all items between the last selected item and the clicked item
 - shift + arrow down: select all items between the last selected item and the item above/below the last selected item
 - shift + arrow right: collapse/expand all items between the last selected item and the item above/below the last
   selected item
-- add branch control part to handle selection
-- refactor expand/collapse logic to the branch trigger
