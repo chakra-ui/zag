@@ -12,23 +12,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const focusedId = state.context.focusedId
 
   function getItemState(props: ItemProps): ItemState {
-    const id = dom.getItemId(state.context, props.id)
     return {
-      id,
+      id: props.id,
       isDisabled: Boolean(props.disabled),
-      isFocused: focusedId === id,
-      isSelected: selectedIds.has(id),
+      isFocused: focusedId === props.id,
+      isSelected: selectedIds.has(props.id),
     }
   }
 
   function getBranchState(props: BranchProps): BranchState {
-    const id = dom.getBranchId(state.context, props.id)
     return {
-      id,
+      id: props.id,
       isDisabled: Boolean(props.disabled),
-      isFocused: focusedId === id,
-      isExpanded: expandedIds.has(id),
-      isSelected: selectedIds.has(id),
+      isFocused: focusedId === props.id,
+      isExpanded: expandedIds.has(props.id),
+      isSelected: selectedIds.has(props.id),
     }
   }
 
@@ -44,8 +42,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const walker = dom.getTreeWalker(state.context, { skipHidden: false })
       while (walker.nextNode()) {
         const node = walker.currentNode
-        if (isHTMLElement(node)) {
-          nextSet.add(node.dataset.branch ?? node.id)
+        const nodeId = dom.getNodeId(node)
+        if (isHTMLElement(node) && node.dataset.part === "branch-control" && nodeId != null) {
+          nextSet.add(nodeId)
         }
       }
       send({ type: "EXPANDED.SET", value: nextSet })
@@ -65,8 +64,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SELECTED.SET", value: ids })
     },
     focusBranch(id: string) {
-      const triggerEl = dom.getBranchTriggerEl(state.context, id)
-      triggerEl?.focus()
+      dom.getBranchControlEl(state.context, id)?.focus()
     },
 
     focusItem(id: string) {
@@ -98,8 +96,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const evt = getNativeEvent(event)
         const target = getEventTarget(evt) as HTMLElement | null
 
-        const itemOrBranch = target?.closest<HTMLElement>("[role=treeitem]")
-        if (!itemOrBranch) return
+        const node = target?.closest<HTMLElement>("[role=treeitem]")
+        if (!node) return
+
+        const nodeId = dom.getNodeId(node)
+        if (nodeId == null) {
+          console.warn(`Node id not found for node`, node)
+          return
+        }
 
         const isBranchTrigger = !!target?.dataset.branch
 
@@ -107,34 +111,36 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           ArrowDown(event) {
             if (isModifiedEvent(event)) return
             event.preventDefault()
-            send({ type: "ITEM.ARROW_DOWN", id: itemOrBranch.id, shiftKey: event.shiftKey })
+            send({ type: "ITEM.ARROW_DOWN", id: nodeId, shiftKey: event.shiftKey })
           },
           ArrowUp(event) {
             if (isModifiedEvent(event)) return
             event.preventDefault()
-            send({ type: "ITEM.ARROW_UP", id: itemOrBranch.id, shiftKey: event.shiftKey })
+            send({ type: "ITEM.ARROW_UP", id: nodeId, shiftKey: event.shiftKey })
           },
           ArrowLeft(event) {
-            if (isModifiedEvent(event)) return
+            if (isModifiedEvent(event) || node.dataset.disabled) return
             event.preventDefault()
-            send({ type: isBranchTrigger ? "BRANCH.ARROW_LEFT" : "ITEM.ARROW_LEFT", id: itemOrBranch.id })
+            send({ type: isBranchTrigger ? "BRANCH.ARROW_LEFT" : "ITEM.ARROW_LEFT", id: nodeId })
           },
           ArrowRight(event) {
-            if (!isBranchTrigger) return
+            if (!isBranchTrigger || node.dataset.disabled) return
             event.preventDefault()
-            send({ type: "BRANCH.ARROW_RIGHT", id: itemOrBranch.id })
+            send({ type: "BRANCH.ARROW_RIGHT", id: nodeId })
           },
           Home(event) {
             if (isModifiedEvent(event)) return
             event.preventDefault()
-            send({ type: "ITEM.HOME", id: itemOrBranch.id, shiftKey: event.shiftKey })
+            send({ type: "ITEM.HOME", id: nodeId, shiftKey: event.shiftKey })
           },
           End(event) {
             if (isModifiedEvent(event)) return
             event.preventDefault()
-            send({ type: "ITEM.END", id: itemOrBranch.id, shiftKey: event.shiftKey })
+            send({ type: "ITEM.END", id: nodeId, shiftKey: event.shiftKey })
           },
           Space(event) {
+            if (node.dataset.disabled) return
+
             if (isTypingAhead) {
               send({ type: "TYPEAHEAD", key: event.key })
             } else {
@@ -142,17 +148,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             }
           },
           Enter(event) {
+            if (node.dataset.disabled) return
+
             event.preventDefault()
-            send({ type: isBranchTrigger ? "BRANCH.CLICK" : "ITEM.CLICK", id: itemOrBranch.id })
+            send({ type: isBranchTrigger ? "BRANCH.CLICK" : "ITEM.CLICK", id: nodeId, src: "keyboard" })
           },
           "*"(event) {
+            if (node.dataset.disabled) return
             event.preventDefault()
-            send({ type: "BRANCH.EXPAND_LEVEL" })
+            send({ type: "BRANCH.EXPAND_LEVEL", id: nodeId })
           },
           a(event) {
-            if (!event.metaKey) return
+            if (!event.metaKey || node.dataset.disabled) return
             event.preventDefault()
-            send({ type: "ITEM.SELECT_ALL" })
+            send({ type: "ITEM.SELECT_ALL", preventScroll: true })
           },
         }
 
@@ -182,7 +191,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.item.attrs,
         dir: state.context.dir,
         "data-ownedby": dom.getTreeId(state.context),
-        id: itemState.id,
+        "data-item": itemState.id,
         tabIndex: itemState.isFocused ? 0 : -1,
         "data-focused": dataAttr(itemState.isFocused),
         role: "treeitem",
@@ -201,6 +210,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "ITEM.FOCUS", id: itemState.id })
         },
         onClick(event) {
+          if (itemState.isDisabled) return
           const isMetaKey = event.metaKey || event.ctrlKey
           send({ type: "ITEM.CLICK", id: itemState.id, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
@@ -216,7 +226,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.branch.attrs,
         "data-depth": props.depth,
         dir: state.context.dir,
-        id: dom.getBranchId(state.context, props.id),
+        "data-branch": branchState.id,
         role: "treeitem",
         "data-ownedby": dom.getTreeId(state.context),
         "aria-level": props.depth,

@@ -46,7 +46,7 @@ const fetchMachine = createMachine({
         },
         "ITEM.SELECT_ALL": {
           cond: "isMultipleSelection",
-          actions: ["selectAllItems"]
+          actions: ["selectAllItems", "focusTreeLastItem"]
         },
         "ITEM.FOCUS": {
           actions: ["setFocusedItem"]
@@ -64,13 +64,13 @@ const fetchMachine = createMachine({
           actions: ["focusTreePrevItem"]
         }],
         "ITEM.ARROW_LEFT": {
-          actions: ["focusBranchTrigger"]
+          actions: ["focusBranchControl"]
         },
         "BRANCH.ARROW_LEFT": [{
           cond: "isBranchExpanded",
           actions: ["collapseBranch"]
         }, {
-          actions: ["focusBranchTrigger"]
+          actions: ["focusBranchControl"]
         }],
         "BRANCH.ARROW_RIGHT": [{
           cond: "isBranchFocused && isBranchExpanded",

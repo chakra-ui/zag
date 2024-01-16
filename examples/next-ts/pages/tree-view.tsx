@@ -37,14 +37,14 @@ export default function Page() {
                 <li {...api.getItemProps({ id: "node_modules/zag-js", depth: 1 })}>📄 zag-js</li>
                 <li {...api.getItemProps({ id: "node_modules/pandacss", depth: 1 })}>📄 panda</li>
 
-                <li {...api.getBranchProps({ id: "@types", depth: 1 })}>
-                  <div {...api.getBranchControlProps({ id: "@types", depth: 1 })}>
-                    <span {...api.getBranchTextProps({ id: "@types", depth: 1 })}> 📂 @types</span>
+                <li {...api.getBranchProps({ id: "node_modules/@types", depth: 1 })}>
+                  <div {...api.getBranchControlProps({ id: "node_modules/@types", depth: 1 })}>
+                    <span {...api.getBranchTextProps({ id: "node_modules/@types", depth: 1 })}> 📂 @types</span>
                   </div>
 
-                  <ul {...api.getBranchContentProps({ id: "@types", depth: 1 })}>
-                    <li {...api.getItemProps({ id: "@types/react", depth: 2 })}>📄 react</li>
-                    <li {...api.getItemProps({ id: "@types/react-dom", depth: 2 })}>📄 react-dom</li>
+                  <ul {...api.getBranchContentProps({ id: "node_modules/@types", depth: 1 })}>
+                    <li {...api.getItemProps({ id: "node_modules/@types/react", depth: 2 })}>📄 react</li>
+                    <li {...api.getItemProps({ id: "node_modules/@types/react-dom", depth: 2 })}>📄 react-dom</li>
                   </ul>
                 </li>
               </ul>

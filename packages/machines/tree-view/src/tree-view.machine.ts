@@ -50,7 +50,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "ITEM.SELECT_ALL": {
               guard: "isMultipleSelection",
-              actions: ["selectAllItems"],
+              actions: ["selectAllItems", "focusTreeLastItem"],
             },
             "ITEM.FOCUS": {
               actions: ["setFocusedItem"],
@@ -74,7 +74,7 @@ export function machine(userContext: UserDefinedContext) {
               },
             ],
             "ITEM.ARROW_LEFT": {
-              actions: ["focusBranchTrigger"],
+              actions: ["focusBranchControl"],
             },
             "BRANCH.ARROW_LEFT": [
               {
@@ -82,7 +82,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["collapseBranch"],
               },
               {
-                actions: ["focusBranchTrigger"],
+                actions: ["focusBranchControl"],
               },
             ],
             "BRANCH.ARROW_RIGHT": [
@@ -183,8 +183,9 @@ export function machine(userContext: UserDefinedContext) {
 
             const removedIds: Set<string> = new Set()
             removedNodes.forEach((node) => {
-              if (isHTMLElement(node)) {
-                removedIds.add(dom.getNodeId(node))
+              const nodeId = dom.getNodeId(node)
+              if (isHTMLElement(node) && nodeId != null) {
+                removedIds.add(nodeId)
               }
             })
 
@@ -196,10 +197,6 @@ export function machine(userContext: UserDefinedContext) {
       },
       actions: {
         setFocusableNode(ctx) {
-          if (ctx.focusedId) {
-            return
-          }
-
           if (ctx.selectedIds.size > 0) {
             const firstSelectedId = Array.from(ctx.selectedIds)[0]
             ctx.focusedId = firstSelectedId
@@ -211,7 +208,7 @@ export function machine(userContext: UserDefinedContext) {
 
           if (!isHTMLElement(firstItem)) return
           // don't use set.focused here because it will trigger focusChange event
-          ctx.focusedId = firstItem.id
+          ctx.focusedId = dom.getNodeId(firstItem)
         },
         selectItem(ctx, evt) {
           set.selected(ctx, new Set([evt.id]))
@@ -245,7 +242,6 @@ export function machine(userContext: UserDefinedContext) {
         collapseBranch(ctx, evt) {
           const nextSet = new Set(ctx.expandedIds)
           nextSet.delete(evt.id)
-          collapseEffect(ctx, evt)
           set.expanded(ctx, nextSet)
         },
         setExpanded(ctx, evt) {
@@ -258,58 +254,68 @@ export function machine(userContext: UserDefinedContext) {
           const walker = dom.getTreeWalker(ctx)
           dom.focusNode(walker.firstChild())
         },
-        focusTreeLastItem(ctx) {
+        focusTreeLastItem(ctx, evt) {
           const walker = dom.getTreeWalker(ctx)
-          dom.focusNode(walker.lastChild())
+          dom.focusNode(walker.lastChild(), { preventScroll: evt.preventScroll })
         },
-        focusBranchFirstItem(ctx) {
+        focusBranchFirstItem(ctx, evt) {
+          const focusedEl = dom.getNodeEl(ctx, evt.id)
+          if (!focusedEl) return
+
           const walker = dom.getTreeWalker(ctx)
-          walker.currentNode = document.activeElement as HTMLElement
+
+          walker.currentNode = focusedEl
           dom.focusNode(walker.nextNode())
         },
-        focusTreeNextItem(ctx) {
+        focusTreeNextItem(ctx, evt) {
+          const focusedEl = dom.getNodeEl(ctx, evt.id)
+          if (!focusedEl) return
+
           const walker = dom.getTreeWalker(ctx)
-          const activeEl = dom.getActiveElement(ctx) as HTMLElement
+
           if (ctx.focusedId) {
-            walker.currentNode = activeEl
+            walker.currentNode = focusedEl
             const nextNode = walker.nextNode()
             dom.focusNode(nextNode)
           } else {
             dom.focusNode(walker.firstChild())
           }
         },
-        focusTreePrevItem(ctx) {
+        focusTreePrevItem(ctx, evt) {
+          const focusedEl = dom.getNodeEl(ctx, evt.id)
+          if (!focusedEl) return
+
           const walker = dom.getTreeWalker(ctx)
-          const activeEl = dom.getActiveElement(ctx) as HTMLElement
+
           if (ctx.focusedId) {
-            walker.currentNode = activeEl
+            walker.currentNode = focusedEl
             const prevNode = walker.previousNode()
             dom.focusNode(prevNode)
           } else {
             dom.focusNode(walker.lastChild())
           }
         },
-        focusBranchTrigger(ctx) {
-          if (!ctx.focusedId) return
-          const activeEl = dom.getActiveElement(ctx)
-          if (!activeEl) return
+        focusBranchControl(ctx, evt) {
+          const focusedEl = dom.getNodeEl(ctx, evt.id)
+          if (!focusedEl) return
 
-          const parentDepth = Number(activeEl.dataset.depth) - 1
+          const parentDepth = Number(focusedEl.dataset.depth) - 1
           if (parentDepth < 0) return
 
           const branchSelector = `[data-part=branch][data-depth="${parentDepth}"]`
-          const closestBranch = activeEl.closest(branchSelector)
+          const closestBranch = focusedEl.closest(branchSelector)
 
-          const branchTrigger = closestBranch?.querySelector("[data-part=branch-trigger]")
-          dom.focusNode(branchTrigger)
+          const branchControl = closestBranch?.querySelector("[data-part=branch-control]")
+          dom.focusNode(branchControl)
         },
         selectAllItems(ctx) {
           const nextSet = new Set<string>()
           const walker = dom.getTreeWalker(ctx)
           let node = walker.firstChild()
           while (node) {
-            if (isHTMLElement(node)) {
-              nextSet.add(dom.getNodeId(node))
+            const nodeId = dom.getNodeId(node)
+            if (isHTMLElement(node) && nodeId != null) {
+              nextSet.add(nodeId)
             }
             node = walker.nextNode()
           }
@@ -320,40 +326,37 @@ export function machine(userContext: UserDefinedContext) {
           dom.focusNode(node)
         },
         expandSameLevelBranches(ctx, evt) {
-          const nodes = dom.getTreeNodes(ctx)
+          const focusedEl = dom.getNodeEl(ctx, evt.id)
+          const nodes = dom.getBranchNodes(ctx, dom.getNodeDepth(focusedEl))
+
           const nextSet = new Set<string>()
-
-          const nodeEl = dom.getNodeEl(ctx, evt.id)
-          if (!nodeEl) return
-
           nodes.forEach((node) => {
-            if (node.dataset.depth === nodeEl.dataset.depth) {
-              nextSet.add(dom.getNodeId(node))
-            }
+            const nodeId = dom.getNodeId(node)
+            if (nodeId == null) return
+            nextSet.add(nodeId)
           })
 
           set.expanded(ctx, nextSet)
         },
         extendSelectionToItem(ctx, evt) {
-          const nodes = dom.getTreeNodes(ctx)
-
-          const selectedIds = Array.from(ctx.selectedIds)
-          const anchorEl = dom.getNodeEl(ctx, selectedIds[0]) || nodes[0]
-
           const focusedEl = dom.getNodeEl(ctx, evt.id)
           if (!focusedEl) return
+
+          const nodes = dom.getTreeNodes(ctx)
+          const selectedIds = Array.from(ctx.selectedIds)
+          const anchorEl = dom.getNodeEl(ctx, selectedIds[0]) || nodes[0]
 
           const nextSet = dom.getNodeIdsBetween(nodes, anchorEl, focusedEl)
 
           set.selected(ctx, nextSet)
         },
         extendSelectionToNextItem(ctx, evt) {
+          const focusedEl = dom.getNodeEl(ctx, evt.id)
+          if (!focusedEl) return
+
           const walker = dom.getTreeWalker(ctx)
 
-          const activeEl = dom.getNodeEl(ctx, evt.id)
-          if (!activeEl) return
-
-          walker.currentNode = activeEl
+          walker.currentNode = focusedEl
           const nextNode = walker.nextNode()
 
           // focus nextNode
@@ -363,26 +366,25 @@ export function machine(userContext: UserDefinedContext) {
           const nextSet = new Set(ctx.selectedIds)
           const nodeId = dom.getNodeId(nextNode)
 
-          if (!nextSet.has(evt.id)) {
-            nextSet.add(evt.id)
-          }
+          // if (!nextSet.has(evt.id)) {
+          //   nextSet.add(evt.id)
+          // }
 
-          if (nextSet.has(nodeId)) {
-            nextSet.delete(nodeId)
-          } else {
-            nextSet.add(nodeId)
-          }
+          // if (nextSet.has(nodeId)) {
+          //   nextSet.delete(nodeId)
+          // } else {
+          //   nextSet.add(nodeId)
+          // }
 
           set.selected(ctx, nextSet)
         },
         extendSelectionToPrevItem(ctx, evt) {
+          const focusedEl = dom.getNodeEl(ctx, evt.id)
+          if (!focusedEl) return
+
           const walker = dom.getTreeWalker(ctx)
 
-          const activeEl = dom.getNodeEl(ctx, evt.id)
-          if (!activeEl) return
-          // debugger
-
-          walker.currentNode = activeEl
+          walker.currentNode = focusedEl
           const prevNode = walker.previousNode()
 
           // focus prevNode
@@ -392,15 +394,15 @@ export function machine(userContext: UserDefinedContext) {
           const nextSet = new Set(ctx.selectedIds)
           const nodeId = dom.getNodeId(prevNode)
 
-          if (!nextSet.has(evt.id)) {
-            nextSet.add(evt.id)
-          }
+          // if (!nextSet.has(evt.id)) {
+          //   nextSet.add(evt.id)
+          // }
 
-          if (nextSet.has(nodeId)) {
-            nextSet.delete(nodeId)
-          } else {
-            nextSet.add(nodeId)
-          }
+          // if (nextSet.has(nodeId)) {
+          //   nextSet.delete(nodeId)
+          // } else {
+          //   nextSet.add(nodeId)
+          // }
 
           set.selected(ctx, nextSet)
         },
@@ -430,25 +432,25 @@ export function machine(userContext: UserDefinedContext) {
 }
 
 // if the branch is collapsed, we need to remove all its children from selectedIds
-function collapseEffect(ctx: MachineContext, evt: any) {
-  const walker = dom.getTreeWalker(ctx, {
-    skipHidden: false,
-    root: dom.getBranchEl(ctx, evt.id),
-  })
+// function collapseEffect(ctx: MachineContext, evt: any) {
+//   const walker = dom.getTreeWalker(ctx, {
+//     skipHidden: false,
+//     root: dom.getBranchEl(ctx, evt.id),
+//   })
 
-  const idsToRemove = new Set<string>()
-  let node = walker.firstChild()
-  while (node) {
-    if (isHTMLElement(node)) {
-      idsToRemove.add(dom.getNodeId(node))
-    }
-    node = walker.nextNode()
-  }
+//   const idsToRemove = new Set<string>()
+//   let node = walker.firstChild()
+//   while (node) {
+//     if (isHTMLElement(node)) {
+//       idsToRemove.add(dom.getNodeId(node))
+//     }
+//     node = walker.nextNode()
+//   }
 
-  const nextSelectedSet = new Set(ctx.selectedIds)
-  idsToRemove.forEach((id) => nextSelectedSet.delete(id))
-  set.selected(ctx, nextSelectedSet)
-}
+//   const nextSelectedSet = new Set(ctx.selectedIds)
+//   idsToRemove.forEach((id) => nextSelectedSet.delete(id))
+//   set.selected(ctx, nextSelectedSet)
+// }
 
 const invoke = {
   focusChange(ctx: MachineContext) {

@@ -1,4 +1,4 @@
-import { createScope, getByTypeahead, isHTMLElement, isHiddenElement } from "@zag-js/dom-query"
+import { createScope, getByTypeahead, isHTMLElement, isHiddenElement, query, queryAll } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./tree-view.types"
 
 interface TreeWalkerOpts {
@@ -10,19 +10,16 @@ export const dom = createScope({
   getLabelId: (ctx: Ctx) => `tree-label:${ctx.id}`,
   getRootId: (ctx: Ctx) => `tree-root:${ctx.id}`,
   getTreeId: (ctx: Ctx) => `tree-tree:${ctx.id}`,
-  getItemId: (ctx: Ctx, id: string) => `tree-item:${ctx.id}:${id}`,
-  getBranchId: (ctx: Ctx, id: string) => `tree-branch:${ctx.id}:${id}`,
-  getBranchTriggerId: (ctx: Ctx, id: string) => `tree-branch-trigger:${ctx.id}:${id}`,
 
   getNodeId(node: Node | null | undefined) {
-    if (!isHTMLElement(node)) return ""
-    return node.dataset.branch ?? node.id
+    if (!isHTMLElement(node)) return null
+    return node.dataset.branch ?? node.dataset.item ?? null
   },
 
   getNodeEl(ctx: Ctx, id: string) {
-    const node = dom.getById(ctx, id)
+    const node = dom.getItemEl(ctx, id) ?? dom.getBranchEl(ctx, id)
     if (node?.dataset.part === "branch") {
-      return node.querySelector<HTMLElement>("[data-part=branch-trigger]")
+      return node.querySelector<HTMLElement>("[data-part=branch-control]")
     }
     return node
   },
@@ -32,14 +29,16 @@ export const dom = createScope({
   },
 
   getBranchEl(ctx: Ctx, id: string) {
-    return dom.getById(ctx, dom.getBranchId(ctx, id))
+    const selector = `[role=treeitem][data-branch="${id}"]`
+    return query(dom.getTreeEl(ctx), selector)
   },
-
   getItemEl(ctx: Ctx, id: string) {
-    return dom.getById(ctx, dom.getItemId(ctx, id))
+    const selector = `[role=treeitem][data-item="${id}"]`
+    return query(dom.getTreeEl(ctx), selector)
   },
-  getBranchTriggerEl(ctx: Ctx, id: string) {
-    return dom.getById(ctx, dom.getBranchTriggerId(ctx, id))
+  getBranchControlEl(ctx: Ctx, id: string) {
+    const selector = "[data-part=branch-control]"
+    return query(dom.getBranchEl(ctx, id), selector)
   },
 
   getFocusedEl(ctx: Ctx) {
@@ -47,8 +46,12 @@ export const dom = createScope({
     return dom.getById(ctx, ctx.focusedId)
   },
 
-  focusNode(node: Node | Element | null | undefined) {
-    if (isHTMLElement(node)) node.focus()
+  focusNode(node: Node | Element | null | undefined, options?: FocusOptions) {
+    if (isHTMLElement(node)) node.focus(options)
+  },
+
+  getNodeDepth(node: HTMLElement | null) {
+    return node?.dataset.depth ? Number(node.dataset.depth) : -1
   },
 
   getTreeWalker(ctx: Ctx, opts?: TreeWalkerOpts) {
@@ -69,7 +72,7 @@ export const dom = createScope({
           return NodeFilter.FILTER_ACCEPT
         }
 
-        if (node.role === "button" && node.dataset.part === "branch-trigger") {
+        if (node.role === "button" && node.dataset.part === "branch-control") {
           return NodeFilter.FILTER_ACCEPT
         }
 
@@ -96,8 +99,8 @@ export const dom = createScope({
     })
   },
 
-  getTreeNodes(ctx: Ctx) {
-    const walker = dom.getTreeWalker(ctx)
+  getTreeNodes(ctx: Ctx, options: TreeWalkerOpts = {}) {
+    const walker = dom.getTreeWalker(ctx, options)
 
     const nodes: HTMLElement[] = []
     let node = walker.firstChild()
@@ -112,14 +115,22 @@ export const dom = createScope({
     return nodes
   },
 
+  getBranchNodes(ctx: Ctx, depth: number | null) {
+    if (depth === -1) return []
+    return queryAll(dom.getTreeEl(ctx), `[role=treeitem][data-part=branch][data-depth="${depth}"]`)
+  },
+
   getNodeIdsBetween(nodes: HTMLElement[], startNode: HTMLElement, endNode: HTMLElement) {
     const nextSet = new Set<string>()
 
     nodes.forEach((node) => {
+      const nodeId = dom.getNodeId(node)
+      if (nodeId == null) return
+
       // compare node position with firstSelectedEl and focusedEl
       // if node is between firstSelectedEl and focusedEl, add it to nextSet
       if (node === startNode || node === endNode) {
-        nextSet.add(dom.getNodeId(node))
+        nextSet.add(nodeId)
         return
       }
 
@@ -131,13 +142,13 @@ export const dom = createScope({
 
       // if node is before firstSelectedEl and after focusedEl, add it to nextSet
       if (startPos & Node.DOCUMENT_POSITION_FOLLOWING && endPos & Node.DOCUMENT_POSITION_PRECEDING) {
-        nextSet.add(dom.getNodeId(node))
+        nextSet.add(nodeId)
         return
       }
 
       // if node is after firstSelectedEl and before focusedEl, add it to nextSet
       if (startPos & Node.DOCUMENT_POSITION_PRECEDING && endPos & Node.DOCUMENT_POSITION_FOLLOWING) {
-        nextSet.add(dom.getNodeId(node))
+        nextSet.add(nodeId)
         return
       }
     })
