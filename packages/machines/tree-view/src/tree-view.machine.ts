@@ -36,6 +36,19 @@ export function machine(userContext: UserDefinedContext) {
         "SELECTED.SET": {
           actions: ["setSelected"],
         },
+        "SELECTED.ALL": [
+          {
+            guard: and("isMultipleSelection", "moveFocus"),
+            actions: ["selectAllItems", "focusTreeLastItem"],
+          },
+          {
+            guard: "isMultipleSelection",
+            actions: ["selectAllItems"],
+          },
+        ],
+        "EXPANDED.ALL": {
+          actions: ["expandAllBranches"],
+        },
       },
 
       activities: ["trackChildrenMutation"],
@@ -45,13 +58,6 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         idle: {
           on: {
-            "ITEM.REMOVE": {
-              actions: ["setSelected", "setFocusedItem"],
-            },
-            "ITEM.SELECT_ALL": {
-              guard: "isMultipleSelection",
-              actions: ["selectAllItems", "focusTreeLastItem"],
-            },
             "ITEM.FOCUS": {
               actions: ["setFocusedItem"],
             },
@@ -94,8 +100,8 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["expandBranch"],
               },
             ],
-            "BRANCH.EXPAND_LEVEL": {
-              actions: ["expandSameLevelBranches"],
+            "EXPAND.SIBLINGS": {
+              actions: ["expandSiblingBranches"],
             },
             "ITEM.HOME": [
               {
@@ -145,8 +151,8 @@ export function machine(userContext: UserDefinedContext) {
             "BRANCH_TOGGLE.CLICK": {
               actions: ["toggleBranch"],
             },
-            TYPEAHEAD: {
-              actions: "focusMatchedItem",
+            "TREE.TYPEAHEAD": {
+              actions: ["focusMatchedItem"],
             },
             "TREE.BLUR": {
               actions: ["clearFocusedItem"],
@@ -163,6 +169,7 @@ export function machine(userContext: UserDefinedContext) {
         isCtrlKey: (_ctx, evt) => evt.ctrlKey,
         hasSelectedItems: (ctx) => ctx.selectedIds.size > 0,
         isMultipleSelection: (ctx) => ctx.isMultipleSelection,
+        moveFocus: (_ctx, evt) => !!evt.moveFocus,
       },
       activities: {
         trackChildrenMutation(ctx, _evt, { send }) {
@@ -331,8 +338,7 @@ export function machine(userContext: UserDefinedContext) {
           set.selected(ctx, nextSet)
         },
         focusMatchedItem(ctx, evt) {
-          const node = dom.getMatchingEl(ctx, evt.key)
-          dom.focusNode(node)
+          dom.focusNode(dom.getMatchingEl(ctx, evt.key))
         },
         addOrRemoveItemFromSelection(ctx, evt) {
           const focusedEl = dom.getNodeEl(ctx, evt.id)
@@ -351,7 +357,19 @@ export function machine(userContext: UserDefinedContext) {
 
           set.selected(ctx, nextSet)
         },
-        expandSameLevelBranches(ctx, evt) {
+        expandAllBranches(ctx) {
+          const nextSet = new Set<string>()
+          const walker = dom.getTreeWalker(ctx, { skipHidden: false })
+          while (walker.nextNode()) {
+            const node = walker.currentNode
+            const nodeId = dom.getNodeId(node)
+            if (isHTMLElement(node) && node.dataset.part === "branch-control" && nodeId != null) {
+              nextSet.add(nodeId)
+            }
+          }
+          set.expanded(ctx, nextSet)
+        },
+        expandSiblingBranches(ctx, evt) {
           const focusedEl = dom.getNodeEl(ctx, evt.id)
           const nodes = dom.getBranchNodes(ctx, dom.getNodeDepth(focusedEl))
 
@@ -377,60 +395,56 @@ export function machine(userContext: UserDefinedContext) {
           set.selected(ctx, nextSet)
         },
         extendSelectionToNextItem(ctx, evt) {
-          const focusedEl = dom.getNodeEl(ctx, evt.id)
-          if (!focusedEl) return
+          const nodeId = evt.id
+
+          const currentNode = dom.getNodeEl(ctx, nodeId)
+          if (!currentNode) return
 
           const walker = dom.getTreeWalker(ctx)
+          walker.currentNode = currentNode
 
-          walker.currentNode = focusedEl
           const nextNode = walker.nextNode()
-
-          // focus nextNode
           dom.focusNode(nextNode)
 
-          // extend selection to nextNode
-          const nextSet = new Set(ctx.selectedIds)
-          const nodeId = dom.getNodeId(nextNode)
+          // extend selection to nextNode (preserve the anchor node)
+          const selectedIds = new Set(ctx.selectedIds)
+          const nextNodeId = dom.getNodeId(nextNode)
 
-          // if (!nextSet.has(evt.id)) {
-          //   nextSet.add(evt.id)
-          // }
+          if (nextNodeId == null) return
 
-          // if (nextSet.has(nodeId)) {
-          //   nextSet.delete(nodeId)
-          // } else {
-          //   nextSet.add(nodeId)
-          // }
+          if (selectedIds.has(nodeId) && selectedIds.has(nextNodeId)) {
+            selectedIds.delete(nodeId)
+          } else if (!selectedIds.has(nextNodeId)) {
+            selectedIds.add(nextNodeId)
+          }
 
-          set.selected(ctx, nextSet)
+          set.selected(ctx, selectedIds)
         },
         extendSelectionToPrevItem(ctx, evt) {
-          const focusedEl = dom.getNodeEl(ctx, evt.id)
-          if (!focusedEl) return
+          const nodeId = evt.id
+
+          const currentNode = dom.getNodeEl(ctx, nodeId)
+          if (!currentNode) return
 
           const walker = dom.getTreeWalker(ctx)
+          walker.currentNode = currentNode
 
-          walker.currentNode = focusedEl
           const prevNode = walker.previousNode()
-
-          // focus prevNode
           dom.focusNode(prevNode)
 
-          // extend selection to prevNode
-          const nextSet = new Set(ctx.selectedIds)
-          const nodeId = dom.getNodeId(prevNode)
+          // extend selection to prevNode (preserve the anchor node)
+          const selectedIds = new Set(ctx.selectedIds)
+          const prevNodeId = dom.getNodeId(prevNode)
 
-          // if (!nextSet.has(evt.id)) {
-          //   nextSet.add(evt.id)
-          // }
+          if (prevNodeId == null) return
 
-          // if (nextSet.has(nodeId)) {
-          //   nextSet.delete(nodeId)
-          // } else {
-          //   nextSet.add(nodeId)
-          // }
+          if (selectedIds.has(nodeId) && selectedIds.has(prevNodeId)) {
+            selectedIds.delete(nodeId)
+          } else if (!selectedIds.has(prevNodeId)) {
+            selectedIds.add(prevNodeId)
+          }
 
-          set.selected(ctx, nextSet)
+          set.selected(ctx, selectedIds)
         },
         extendSelectionToFirstItem(ctx) {
           const nodes = dom.getTreeNodes(ctx)
@@ -438,9 +452,8 @@ export function machine(userContext: UserDefinedContext) {
           const anchorEl = dom.getNodeEl(ctx, [...ctx.selectedIds][0]) || nodes[0]
           const focusedEl = nodes[0]
 
-          const nextSet = dom.getNodeIdsBetween(nodes, anchorEl, focusedEl)
-
-          set.selected(ctx, nextSet)
+          const selectedIds = dom.getNodeIdsBetween(nodes, anchorEl, focusedEl)
+          set.selected(ctx, selectedIds)
         },
         extendSelectionToLastItem(ctx) {
           const nodes = dom.getTreeNodes(ctx)
@@ -448,9 +461,8 @@ export function machine(userContext: UserDefinedContext) {
           const anchorEl = dom.getNodeEl(ctx, [...ctx.selectedIds][0]) || nodes[0]
           const focusedEl = nodes[nodes.length - 1]
 
-          const nextSet = dom.getNodeIdsBetween(nodes, anchorEl, focusedEl)
-
-          set.selected(ctx, nextSet)
+          const selectedIds = dom.getNodeIdsBetween(nodes, anchorEl, focusedEl)
+          set.selected(ctx, selectedIds)
         },
       },
     },

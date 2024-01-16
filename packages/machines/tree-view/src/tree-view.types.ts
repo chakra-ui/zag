@@ -29,8 +29,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   focusedId: string | null
   /**
    * Whether the tree supports multiple selection
+   * - "single": only one node can be selected
+   * - "multiple": multiple nodes can be selected
+   * - "none": no node can be selected
    */
-  selectionMode?: "single" | "multiple"
+  selectionMode?: "single" | "multiple" | "none"
   /**
    * Called when the tree is opened or closed
    */

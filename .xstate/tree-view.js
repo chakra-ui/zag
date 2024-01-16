@@ -13,6 +13,7 @@ const fetchMachine = createMachine({
   id: "tree-view",
   initial: "idle",
   context: {
+    "isMultipleSelection && moveFocus": false,
     "isMultipleSelection": false,
     "isShiftKey && isMultipleSelection": false,
     "isShiftKey && isMultipleSelection": false,
@@ -31,6 +32,16 @@ const fetchMachine = createMachine({
     },
     "SELECTED.SET": {
       actions: ["setSelected"]
+    },
+    "SELECTED.ALL": [{
+      cond: "isMultipleSelection && moveFocus",
+      actions: ["selectAllItems", "focusTreeLastItem"]
+    }, {
+      cond: "isMultipleSelection",
+      actions: ["selectAllItems"]
+    }],
+    "EXPANDED.ALL": {
+      actions: ["expandAllBranches"]
     }
   },
   activities: ["trackChildrenMutation"],
@@ -43,13 +54,6 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        "ITEM.REMOVE": {
-          actions: ["setSelected", "setFocusedItem"]
-        },
-        "ITEM.SELECT_ALL": {
-          cond: "isMultipleSelection",
-          actions: ["selectAllItems", "focusTreeLastItem"]
-        },
         "ITEM.FOCUS": {
           actions: ["setFocusedItem"]
         },
@@ -80,8 +84,8 @@ const fetchMachine = createMachine({
         }, {
           actions: ["expandBranch"]
         }],
-        "BRANCH.EXPAND_LEVEL": {
-          actions: ["expandSameLevelBranches"]
+        "EXPAND.SIBLINGS": {
+          actions: ["expandSiblingBranches"]
         },
         "ITEM.HOME": [{
           cond: "isShiftKey && isMultipleSelection",
@@ -118,8 +122,8 @@ const fetchMachine = createMachine({
         "BRANCH_TOGGLE.CLICK": {
           actions: ["toggleBranch"]
         },
-        TYPEAHEAD: {
-          actions: "focusMatchedItem"
+        "TREE.TYPEAHEAD": {
+          actions: ["focusMatchedItem"]
         },
         "TREE.BLUR": {
           actions: ["clearFocusedItem"]
@@ -136,6 +140,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "isMultipleSelection && moveFocus": ctx => ctx["isMultipleSelection && moveFocus"],
     "isMultipleSelection": ctx => ctx["isMultipleSelection"],
     "isShiftKey && isMultipleSelection": ctx => ctx["isShiftKey && isMultipleSelection"],
     "isBranchExpanded": ctx => ctx["isBranchExpanded"],

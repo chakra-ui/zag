@@ -1,5 +1,5 @@
 import { getEventKey, getNativeEvent, isModifiedEvent, type EventKeyMap } from "@zag-js/dom-event"
-import { contains, dataAttr, getEventTarget, isHTMLElement } from "@zag-js/dom-query"
+import { contains, dataAttr, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tree-view.anatomy"
 import { dom } from "./tree-view.dom"
@@ -38,16 +38,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "EXPANDED.SET", value: nextSet })
     },
     expandAll() {
-      const nextSet = new Set<string>()
-      const walker = dom.getTreeWalker(state.context, { skipHidden: false })
-      while (walker.nextNode()) {
-        const node = walker.currentNode
-        const nodeId = dom.getNodeId(node)
-        if (isHTMLElement(node) && node.dataset.part === "branch-control" && nodeId != null) {
-          nextSet.add(nodeId)
-        }
-      }
-      send({ type: "EXPANDED.SET", value: nextSet })
+      send({ type: "EXPANDED.ALL" })
     },
     collapse(ids: Set<string>) {
       const nextSet = new Set(expandedIds)
@@ -58,10 +49,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "EXPANDED.SET", value: new Set([]) })
     },
     selectAll() {
-      send({ type: "ITEM.SELECT_ALL" })
+      send({ type: "SELECTED.ALL" })
     },
     select(ids: Set<string>) {
-      send({ type: "SELECTED.SET", value: ids })
+      const nextSet = new Set(selectedIds)
+      ids.forEach((id) => nextSet.add(id))
+      send({ type: "SELECTED.SET", value: nextSet })
     },
     focusBranch(id: string) {
       dom.getBranchControlEl(state.context, id)?.focus()
@@ -142,7 +135,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             if (node.dataset.disabled) return
 
             if (isTypingAhead) {
-              send({ type: "TYPEAHEAD", key: event.key })
+              send({ type: "TREE.TYPEAHEAD", key: event.key })
             } else {
               keyMap.Enter?.(event)
             }
@@ -156,12 +149,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           "*"(event) {
             if (node.dataset.disabled) return
             event.preventDefault()
-            send({ type: "BRANCH.EXPAND_LEVEL", id: nodeId })
+            send({ type: "EXPAND.SIBLINGS", id: nodeId })
           },
           a(event) {
             if (!event.metaKey || node.dataset.disabled) return
             event.preventDefault()
-            send({ type: "ITEM.SELECT_ALL", preventScroll: true })
+            send({ type: "SELECTED.ALL", preventScroll: true, moveFocus: true })
           },
         }
 
@@ -174,7 +167,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const isValidTypeahead = event.key.length === 1 && !isModifiedEvent(event)
           if (!isValidTypeahead) return
 
-          send({ type: "TYPEAHEAD", key: event.key })
+          send({ type: "TREE.TYPEAHEAD", key: event.key, id: nodeId })
           event.preventDefault()
         }
       },

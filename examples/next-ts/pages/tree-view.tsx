@@ -26,8 +26,6 @@ export default function Page() {
           </div>
 
           <ul {...api.treeProps}>
-            <li {...api.getItemProps({ id: "readme.md", depth: 0 })}>📄 README.md</li>
-
             <li {...api.getBranchProps({ id: "node_modules", depth: 0 })}>
               <div {...api.getBranchControlProps({ id: "node_modules", depth: 0 })}>
                 <span {...api.getBranchTextProps({ id: "node_modules", depth: 0 })}> 📂 node_modules</span>
@@ -61,7 +59,10 @@ export default function Page() {
               </ul>
             </li>
 
-            <li {...api.getItemProps({ id: "panda.config", depth: 0 })}>📄 panda.config.js</li>
+            <li {...api.getItemProps({ id: "panda.config", depth: 0 })}>📄 panda.config.ts</li>
+            <li {...api.getItemProps({ id: "package.json", depth: 0 })}>📄 package.json</li>
+            <li {...api.getItemProps({ id: "renovate.json", depth: 0 })}>📄 renovate.json</li>
+            <li {...api.getItemProps({ id: "readme.md", depth: 0 })}>📄 README.md</li>
           </ul>
         </div>
       </main>
