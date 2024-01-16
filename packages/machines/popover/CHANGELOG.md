@@ -1,5 +1,21 @@
 # @zag-js/popover
 
+## 0.32.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.1
+  - @zag-js/core@0.32.1
+  - @zag-js/types@0.32.1
+  - @zag-js/aria-hidden@0.32.1
+  - @zag-js/utils@0.32.1
+  - @zag-js/dismissable@0.32.1
+  - @zag-js/dom-query@0.32.1
+  - @zag-js/popper@0.32.1
+  - @zag-js/remove-scroll@0.32.1
+  - @zag-js/tabbable@0.32.1
+
 ## 0.32.0
 
 ### Patch Changes
@@ -739,7 +755,7 @@
 
   ```jsx
   // this is will open the dialog initially
-  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }));
 
   // this will open the dialog when the `open` value changes
   const [state, send] = useMachine(dialog.machine({ id: "1" }), {
@@ -747,7 +763,7 @@
       // when this value changes, the dialog will open/close
       open: true,
     },
-  })
+  });
   ```
 
 ### Patch Changes
@@ -770,7 +786,7 @@
     positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" })
+  api.setPositioning({ placement: "top" });
   ```
 
 - Updated dependencies [[`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c),
