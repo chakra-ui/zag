@@ -907,7 +907,7 @@
   define their own patterns to validate against.
 
   ```jsx
-  const [state, send] = useMachine(pinInput.machine({ pattern: "^[0-9.-]+$" }));
+  const [state, send] = useMachine(pinInput.machine({ pattern: "^[0-9.-]+$" }))
   ```
 
   Improve form support by exposing `hiddenInputProps`. When the machine is passed a `name` property:

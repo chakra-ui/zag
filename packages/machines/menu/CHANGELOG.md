@@ -795,7 +795,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" });
+  api.setPositioning({ placement: "top" })
   ```
 
 ### Patch Changes

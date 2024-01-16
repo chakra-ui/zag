@@ -4,7 +4,9 @@
 
 ### Patch Changes
 
-- [#1156](https://github.com/chakra-ui/zag/pull/1156) [`11399e2`](https://github.com/chakra-ui/zag/commit/11399e224be3cd0d549c9b2a6afb6cace58ada43) Thanks [@Omikorin](https://github.com/Omikorin)! - Fix issue where some change details typings were no exported
+- [#1156](https://github.com/chakra-ui/zag/pull/1156)
+  [`11399e2`](https://github.com/chakra-ui/zag/commit/11399e224be3cd0d549c9b2a6afb6cace58ada43) Thanks
+  [@Omikorin](https://github.com/Omikorin)! - Fix issue where some change details typings were no exported
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.32.1

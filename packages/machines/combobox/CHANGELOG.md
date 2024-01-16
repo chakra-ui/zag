@@ -4,9 +4,14 @@
 
 ### Patch Changes
 
-- [#1134](https://github.com/chakra-ui/zag/pull/1134) [`e7862c9`](https://github.com/chakra-ui/zag/commit/e7862c967d438eb712a9f4548c71146e69fcad3b) Thanks [@fseglard](https://github.com/fseglard)! - Fix an issue that breaks the combobox when clicking on the input while the menu is open
+- [#1134](https://github.com/chakra-ui/zag/pull/1134)
+  [`e7862c9`](https://github.com/chakra-ui/zag/commit/e7862c967d438eb712a9f4548c71146e69fcad3b) Thanks
+  [@fseglard](https://github.com/fseglard)! - Fix an issue that breaks the combobox when clicking on the input while the
+  menu is open
 
-- [#1156](https://github.com/chakra-ui/zag/pull/1156) [`11399e2`](https://github.com/chakra-ui/zag/commit/11399e224be3cd0d549c9b2a6afb6cace58ada43) Thanks [@Omikorin](https://github.com/Omikorin)! - Fix issue where some change details typings were no exported
+- [#1156](https://github.com/chakra-ui/zag/pull/1156)
+  [`11399e2`](https://github.com/chakra-ui/zag/commit/11399e224be3cd0d549c9b2a6afb6cace58ada43) Thanks
+  [@Omikorin](https://github.com/Omikorin)! - Fix issue where some change details typings were no exported
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.32.1
@@ -419,12 +424,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label;
+      return item.label
     },
     itemToValue(item) {
-      return item.value;
+      return item.value
     },
-  });
+  })
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -432,7 +437,7 @@
       collection,
       id: useId(),
     }),
-  );
+  )
   ```
 
 ### Patch Changes
