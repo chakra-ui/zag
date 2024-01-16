@@ -127,12 +127,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           Home(event) {
             if (isModifiedEvent(event)) return
             event.preventDefault()
-            send({ type: "ITEM.HOME", id: itemOrBranch.id })
+            send({ type: "ITEM.HOME", id: itemOrBranch.id, shiftKey: event.shiftKey })
           },
           End(event) {
             if (isModifiedEvent(event)) return
             event.preventDefault()
-            send({ type: "ITEM.END", id: itemOrBranch.id })
+            send({ type: "ITEM.END", id: itemOrBranch.id, shiftKey: event.shiftKey })
           },
           Space(event) {
             if (isTypingAhead) {
@@ -144,6 +144,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           Enter(event) {
             event.preventDefault()
             send({ type: isBranchTrigger ? "BRANCH.CLICK" : "ITEM.CLICK", id: itemOrBranch.id })
+          },
+          "*"(event) {
+            event.preventDefault()
+            send({ type: "BRANCH.EXPAND_LEVEL" })
+          },
+          a(event) {
+            if (!event.metaKey) return
+            event.preventDefault()
+            send({ type: "ITEM.SELECT_ALL" })
           },
         }
 
@@ -192,7 +201,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "ITEM.FOCUS", id: itemState.id })
         },
         onClick(event) {
-          send({ type: "ITEM.CLICK", id: itemState.id, shiftKey: event.shiftKey })
+          const isMetaKey = event.metaKey || event.ctrlKey
+          send({ type: "ITEM.CLICK", id: itemState.id, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
           event.preventDefault()
         },
@@ -235,7 +245,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "ITEM.FOCUS", id: branchState.id })
         },
         onClick(event) {
-          send({ type: "BRANCH.CLICK", id: branchState.id, shiftKey: event.shiftKey })
+          const isMetaKey = event.metaKey || event.ctrlKey
+          send({ type: "BRANCH.CLICK", id: branchState.id, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
           event.preventDefault()
         },

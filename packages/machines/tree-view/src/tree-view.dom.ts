@@ -14,6 +14,19 @@ export const dom = createScope({
   getBranchId: (ctx: Ctx, id: string) => `tree-branch:${ctx.id}:${id}`,
   getBranchTriggerId: (ctx: Ctx, id: string) => `tree-branch-trigger:${ctx.id}:${id}`,
 
+  getNodeId(node: Node | null | undefined) {
+    if (!isHTMLElement(node)) return ""
+    return node.dataset.branch ?? node.id
+  },
+
+  getNodeEl(ctx: Ctx, id: string) {
+    const node = dom.getById(ctx, id)
+    if (node?.dataset.part === "branch") {
+      return node.querySelector<HTMLElement>("[data-part=branch-trigger]")
+    }
+    return node
+  },
+
   getTreeEl(ctx: Ctx) {
     return dom.getById(ctx, dom.getTreeId(ctx))
   },
@@ -21,6 +34,7 @@ export const dom = createScope({
   getBranchEl(ctx: Ctx, id: string) {
     return dom.getById(ctx, dom.getBranchId(ctx, id))
   },
+
   getItemEl(ctx: Ctx, id: string) {
     return dom.getById(ctx, dom.getItemId(ctx, id))
   },
@@ -80,5 +94,54 @@ export const dom = createScope({
       key,
       activeId: ctx.focusedId,
     })
+  },
+
+  getTreeNodes(ctx: Ctx) {
+    const walker = dom.getTreeWalker(ctx)
+
+    const nodes: HTMLElement[] = []
+    let node = walker.firstChild()
+
+    while (node) {
+      if (isHTMLElement(node)) {
+        nodes.push(node)
+      }
+      node = walker.nextNode()
+    }
+
+    return nodes
+  },
+
+  getNodeIdsBetween(nodes: HTMLElement[], startNode: HTMLElement, endNode: HTMLElement) {
+    const nextSet = new Set<string>()
+
+    nodes.forEach((node) => {
+      // compare node position with firstSelectedEl and focusedEl
+      // if node is between firstSelectedEl and focusedEl, add it to nextSet
+      if (node === startNode || node === endNode) {
+        nextSet.add(dom.getNodeId(node))
+        return
+      }
+
+      // use node.compareDocumentPosition to compare node position
+      // https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition
+
+      const startPos = node.compareDocumentPosition(startNode)
+      const endPos = node.compareDocumentPosition(endNode)
+
+      // if node is before firstSelectedEl and after focusedEl, add it to nextSet
+      if (startPos & Node.DOCUMENT_POSITION_FOLLOWING && endPos & Node.DOCUMENT_POSITION_PRECEDING) {
+        nextSet.add(dom.getNodeId(node))
+        return
+      }
+
+      // if node is after firstSelectedEl and before focusedEl, add it to nextSet
+      if (startPos & Node.DOCUMENT_POSITION_PRECEDING && endPos & Node.DOCUMENT_POSITION_FOLLOWING) {
+        nextSet.add(dom.getNodeId(node))
+        return
+      }
+    })
+
+    return nextSet
   },
 })

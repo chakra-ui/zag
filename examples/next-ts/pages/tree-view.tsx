@@ -5,7 +5,13 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
-  const [state, send] = useMachine(tree.machine({ id: useId() }))
+  const [state, send] = useMachine(
+    tree.machine({
+      id: useId(),
+      selectionMode: "multiple",
+    }),
+  )
+
   const api = tree.connect(state, send, normalizeProps)
 
   return (

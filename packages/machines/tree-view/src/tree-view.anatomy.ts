@@ -7,11 +7,12 @@ export const anatomy = createAnatomy("tree-view").parts(
   "tree",
   "item",
   "itemText",
-  "itemIndicator",
 
   "branch",
+  "branchControl",
   "branchTrigger",
   "branchContent",
+  "branchIndicator",
 )
 
 export const parts = anatomy.build()

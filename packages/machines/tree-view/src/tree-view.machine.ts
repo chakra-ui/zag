@@ -49,17 +49,30 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["setSelected", "setFocusedItem"],
             },
             "ITEM.SELECT_ALL": {
+              guard: "isMultipleSelection",
               actions: ["selectAllItems"],
             },
             "ITEM.FOCUS": {
               actions: ["setFocusedItem"],
             },
-            "ITEM.ARROW_DOWN": {
-              actions: ["focusTreeNextItem"],
-            },
-            "ITEM.ARROW_UP": {
-              actions: ["focusTreePrevItem"],
-            },
+            "ITEM.ARROW_DOWN": [
+              {
+                guard: and("isShiftKey", "isMultipleSelection"),
+                actions: ["focusTreeNextItem", "extendSelectionToNextItem"],
+              },
+              {
+                actions: ["focusTreeNextItem"],
+              },
+            ],
+            "ITEM.ARROW_UP": [
+              {
+                guard: and("isShiftKey", "isMultipleSelection"),
+                actions: ["focusTreePrevItem", "extendSelectionToPrevItem"],
+              },
+              {
+                actions: ["focusTreePrevItem"],
+              },
+            ],
             "ITEM.ARROW_LEFT": {
               actions: ["focusBranchTrigger"],
             },
@@ -81,18 +94,45 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["expandBranch"],
               },
             ],
-            "ITEM.HOME": {
-              actions: ["focusTreeFirstItem"],
+            "BRANCH.EXPAND_LEVEL": {
+              actions: ["expandSameLevelBranches"],
             },
-            "ITEM.END": {
-              actions: ["focusTreeLastItem"],
-            },
-            "ITEM.CLICK": {
-              actions: ["selectItem"],
-            },
-            "BRANCH.CLICK": {
-              actions: ["selectItem", "toggleBranch"],
-            },
+            "ITEM.HOME": [
+              {
+                guard: and("isShiftKey", "isMultipleSelection"),
+                actions: ["extendSelectionToFirstItem", "focusTreeFirstItem"],
+              },
+              {
+                actions: ["focusTreeFirstItem"],
+              },
+            ],
+            "ITEM.END": [
+              {
+                guard: and("isShiftKey", "isMultipleSelection"),
+                actions: ["extendSelectionToLastItem", "focusTreeLastItem"],
+              },
+              {
+                actions: ["focusTreeLastItem"],
+              },
+            ],
+            "ITEM.CLICK": [
+              {
+                guard: and("isShiftKey", "isMultipleSelection"),
+                actions: ["extendSelectionToItem"],
+              },
+              {
+                actions: ["selectItem"],
+              },
+            ],
+            "BRANCH.CLICK": [
+              {
+                guard: and("isShiftKey", "isMultipleSelection"),
+                actions: ["extendSelectionToItem"],
+              },
+              {
+                actions: ["selectItem", "toggleBranch"],
+              },
+            ],
             "BRANCH.TOGGLE": {
               actions: ["toggleBranch"],
             },
@@ -110,7 +150,9 @@ export function machine(userContext: UserDefinedContext) {
       guards: {
         isBranchFocused: (ctx, evt) => ctx.focusedId === evt.id,
         isBranchExpanded: (ctx, evt) => ctx.expandedIds.has(evt.id),
+        isShiftKey: (_ctx, evt) => evt.shiftKey,
         hasSelectedItems: (ctx) => ctx.selectedIds.size > 0,
+        isMultipleSelection: (ctx) => ctx.isMultipleSelection,
       },
       activities: {
         trackChildrenMutation(ctx, _evt, { send }) {
@@ -141,7 +183,7 @@ export function machine(userContext: UserDefinedContext) {
             const removedIds: Set<string> = new Set()
             removedNodes.forEach((node) => {
               if (isHTMLElement(node)) {
-                removedIds.add(node.dataset.branch ?? node.id)
+                removedIds.add(dom.getNodeId(node))
               }
             })
 
@@ -266,7 +308,7 @@ export function machine(userContext: UserDefinedContext) {
           let node = walker.firstChild()
           while (node) {
             if (isHTMLElement(node)) {
-              nextSet.add(node.dataset.branch ?? node.id)
+              nextSet.add(dom.getNodeId(node))
             }
             node = walker.nextNode()
           }
@@ -275,6 +317,111 @@ export function machine(userContext: UserDefinedContext) {
         focusMatchedItem(ctx, evt) {
           const node = dom.getMatchingEl(ctx, evt.key)
           dom.focusNode(node)
+        },
+        expandSameLevelBranches(ctx, evt) {
+          const nodes = dom.getTreeNodes(ctx)
+          const nextSet = new Set<string>()
+
+          const nodeEl = dom.getNodeEl(ctx, evt.id)
+          if (!nodeEl) return
+
+          nodes.forEach((node) => {
+            if (node.dataset.depth === nodeEl.dataset.depth) {
+              nextSet.add(dom.getNodeId(node))
+            }
+          })
+
+          set.expanded(ctx, nextSet)
+        },
+        extendSelectionToItem(ctx, evt) {
+          const nodes = dom.getTreeNodes(ctx)
+
+          const selectedIds = Array.from(ctx.selectedIds)
+          const anchorEl = dom.getNodeEl(ctx, selectedIds[0]) || nodes[0]
+
+          const focusedEl = dom.getNodeEl(ctx, evt.id)
+          if (!focusedEl) return
+
+          const nextSet = dom.getNodeIdsBetween(nodes, anchorEl, focusedEl)
+
+          set.selected(ctx, nextSet)
+        },
+        extendSelectionToNextItem(ctx, evt) {
+          const walker = dom.getTreeWalker(ctx)
+
+          const activeEl = dom.getNodeEl(ctx, evt.id)
+          if (!activeEl) return
+
+          walker.currentNode = activeEl
+          const nextNode = walker.nextNode()
+
+          // focus nextNode
+          dom.focusNode(nextNode)
+
+          // extend selection to nextNode
+          const nextSet = new Set(ctx.selectedIds)
+          const nodeId = dom.getNodeId(nextNode)
+
+          if (!nextSet.has(evt.id)) {
+            nextSet.add(evt.id)
+          }
+
+          if (nextSet.has(nodeId)) {
+            nextSet.delete(nodeId)
+          } else {
+            nextSet.add(nodeId)
+          }
+
+          set.selected(ctx, nextSet)
+        },
+        extendSelectionToPrevItem(ctx, evt) {
+          const walker = dom.getTreeWalker(ctx)
+
+          const activeEl = dom.getNodeEl(ctx, evt.id)
+          if (!activeEl) return
+          // debugger
+
+          walker.currentNode = activeEl
+          const prevNode = walker.previousNode()
+
+          // focus prevNode
+          dom.focusNode(prevNode)
+
+          // extend selection to prevNode
+          const nextSet = new Set(ctx.selectedIds)
+          const nodeId = dom.getNodeId(prevNode)
+
+          if (!nextSet.has(evt.id)) {
+            nextSet.add(evt.id)
+          }
+
+          if (nextSet.has(nodeId)) {
+            nextSet.delete(nodeId)
+          } else {
+            nextSet.add(nodeId)
+          }
+
+          set.selected(ctx, nextSet)
+        },
+        extendSelectionToFirstItem(ctx) {
+          const nodes = dom.getTreeNodes(ctx)
+
+          const anchorEl = dom.getNodeEl(ctx, [...ctx.selectedIds][0]) || nodes[0]
+          const focusedEl = nodes[0]
+
+          const nextSet = dom.getNodeIdsBetween(nodes, anchorEl, focusedEl)
+
+          set.selected(ctx, nextSet)
+        },
+        extendSelectionToLastItem(ctx) {
+          const nodes = dom.getTreeNodes(ctx)
+
+          const anchorEl = dom.getNodeEl(ctx, [...ctx.selectedIds][0]) || nodes[0]
+          const focusedEl = nodes[nodes.length - 1]
+
+          const nextSet = dom.getNodeIdsBetween(nodes, anchorEl, focusedEl)
+
+          set.selected(ctx, nextSet)
         },
       },
     },
@@ -292,7 +439,7 @@ function collapseEffect(ctx: MachineContext, evt: any) {
   let node = walker.firstChild()
   while (node) {
     if (isHTMLElement(node)) {
-      idsToRemove.add(node.dataset.branch ?? node.id)
+      idsToRemove.add(dom.getNodeId(node))
     }
     node = walker.nextNode()
   }

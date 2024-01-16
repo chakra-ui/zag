@@ -13,8 +13,15 @@ const fetchMachine = createMachine({
   id: "tree-view",
   initial: "idle",
   context: {
+    "isMultipleSelection": false,
+    "isShiftKey && isMultipleSelection": false,
+    "isShiftKey && isMultipleSelection": false,
     "isBranchExpanded": false,
-    "isBranchFocused && isBranchExpanded": false
+    "isBranchFocused && isBranchExpanded": false,
+    "isShiftKey && isMultipleSelection": false,
+    "isShiftKey && isMultipleSelection": false,
+    "isShiftKey && isMultipleSelection": false,
+    "isShiftKey && isMultipleSelection": false
   },
   on: {
     "EXPANDED.SET": {
@@ -38,17 +45,24 @@ const fetchMachine = createMachine({
           actions: ["setSelected", "setFocusedItem"]
         },
         "ITEM.SELECT_ALL": {
+          cond: "isMultipleSelection",
           actions: ["selectAllItems"]
         },
         "ITEM.FOCUS": {
           actions: ["setFocusedItem"]
         },
-        "ITEM.ARROW_DOWN": {
+        "ITEM.ARROW_DOWN": [{
+          cond: "isShiftKey && isMultipleSelection",
+          actions: ["focusTreeNextItem", "extendSelectionToNextItem"]
+        }, {
           actions: ["focusTreeNextItem"]
-        },
-        "ITEM.ARROW_UP": {
+        }],
+        "ITEM.ARROW_UP": [{
+          cond: "isShiftKey && isMultipleSelection",
+          actions: ["focusTreePrevItem", "extendSelectionToPrevItem"]
+        }, {
           actions: ["focusTreePrevItem"]
-        },
+        }],
         "ITEM.ARROW_LEFT": {
           actions: ["focusBranchTrigger"]
         },
@@ -64,18 +78,33 @@ const fetchMachine = createMachine({
         }, {
           actions: ["expandBranch"]
         }],
-        "ITEM.HOME": {
+        "BRANCH.EXPAND_LEVEL": {
+          actions: ["expandSameLevelBranches"]
+        },
+        "ITEM.HOME": [{
+          cond: "isShiftKey && isMultipleSelection",
+          actions: ["extendSelectionToFirstItem", "focusTreeFirstItem"]
+        }, {
           actions: ["focusTreeFirstItem"]
-        },
-        "ITEM.END": {
+        }],
+        "ITEM.END": [{
+          cond: "isShiftKey && isMultipleSelection",
+          actions: ["extendSelectionToLastItem", "focusTreeLastItem"]
+        }, {
           actions: ["focusTreeLastItem"]
-        },
-        "ITEM.CLICK": {
+        }],
+        "ITEM.CLICK": [{
+          cond: "isShiftKey && isMultipleSelection",
+          actions: ["extendSelectionToItem"]
+        }, {
           actions: ["selectItem"]
-        },
-        "BRANCH.CLICK": {
+        }],
+        "BRANCH.CLICK": [{
+          cond: "isShiftKey && isMultipleSelection",
+          actions: ["extendSelectionToItem"]
+        }, {
           actions: ["selectItem", "toggleBranch"]
-        },
+        }],
         "BRANCH.TOGGLE": {
           actions: ["toggleBranch"]
         },
@@ -97,6 +126,8 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "isMultipleSelection": ctx => ctx["isMultipleSelection"],
+    "isShiftKey && isMultipleSelection": ctx => ctx["isShiftKey && isMultipleSelection"],
     "isBranchExpanded": ctx => ctx["isBranchExpanded"],
     "isBranchFocused && isBranchExpanded": ctx => ctx["isBranchFocused && isBranchExpanded"]
   }
