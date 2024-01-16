@@ -1649,8 +1649,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
       solid-js:
-        specifier: 1.8.9
-        version: 1.8.9
+        specifier: 1.8.11
+        version: 1.8.11
 
   packages/frameworks/vue:
     dependencies:
@@ -17056,6 +17056,14 @@ packages:
     dependencies:
       ip: 2.0.0
       smart-buffer: 4.2.0
+    dev: true
+
+  /solid-js@1.8.11:
+    resolution: {integrity: sha512-WdwmER+TwBJiN4rVQTVBxocg+9pKlOs41KzPYntrC86xO5sek8TzBYozPEZPL1IRWDouf2lMrvSbIs3CanlPvQ==}
+    dependencies:
+      csstype: 3.1.3
+      seroval: 1.0.3
+      seroval-plugins: 1.0.3(seroval@1.0.3)
     dev: true
 
   /solid-js@1.8.9:
