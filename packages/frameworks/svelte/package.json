@@ -38,12 +38,16 @@
     "svelte": ">=5.0.0"
   },
   "scripts": {
-    "build": "svelte-package -i src",
+    "build": "svelte-package -i src -t",
     "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"
   },
-  "clean-package": "../../../clean-package.config.json",
-  "main": "src/index.ts"
+  "clean-package": "./clean-package.config.json",
+  "exports": {
+    ".": {
+      "svelte": "./src/index.ts"
+    }
+  }
 }
