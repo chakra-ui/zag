@@ -13,7 +13,7 @@
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/frameworks/vue",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/frameworks/svelte",
   "sideEffects": false,
   "files": [
     "dist",
