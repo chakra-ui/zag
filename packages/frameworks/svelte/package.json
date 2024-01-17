@@ -1,0 +1,49 @@
+{
+  "name": "@zag-js/svelte",
+  "version": "0.32.1",
+  "description": "The svelte wrapper for zag",
+  "keywords": [
+    "ui-machines",
+    "state-machines",
+    "zag",
+    "svelte",
+    "use-machine",
+    "hook"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/frameworks/vue",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "dependencies": {
+    "@zag-js/core": "workspace:*",
+    "@zag-js/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/package": "^2.2.6",
+    "clean-package": "2.2.0",
+    "svelte": "5.0.0-next.36"
+  },
+  "peerDependencies": {
+    "svelte": ">=5.0.0"
+  },
+  "scripts": {
+    "build": "svelte-package -i src",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "clean-package": "../../../clean-package.config.json",
+  "main": "src/index.ts"
+}
