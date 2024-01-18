@@ -59,7 +59,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     focusBranch(id: string) {
       dom.getBranchControlEl(state.context, id)?.focus()
     },
-
     focusItem(id: string) {
       const itemEl = dom.getItemEl(state.context, id)
       itemEl?.focus()
@@ -223,6 +222,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "treeitem",
         "data-ownedby": dom.getTreeId(state.context),
         "aria-level": props.depth,
+        "aria-selected": branchState.isDisabled ? undefined : branchState.isSelected,
+        "data-selected": dataAttr(branchState.isSelected),
         "aria-expanded": branchState.isExpanded,
         "data-state": branchState.isExpanded ? "open" : "closed",
         "aria-disabled": branchState.isDisabled,

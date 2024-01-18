@@ -26,43 +26,43 @@ export default function Page() {
           </div>
 
           <ul {...api.treeProps}>
-            <li {...api.getBranchProps({ id: "node_modules", depth: 0 })}>
-              <div {...api.getBranchControlProps({ id: "node_modules", depth: 0 })}>
-                <span {...api.getBranchTextProps({ id: "node_modules", depth: 0 })}> 📂 node_modules</span>
+            <li {...api.getBranchProps({ id: "node_modules", depth: 1 })}>
+              <div {...api.getBranchControlProps({ id: "node_modules", depth: 1 })}>
+                <span {...api.getBranchTextProps({ id: "node_modules", depth: 1 })}> 📂 node_modules</span>
               </div>
 
-              <ul {...api.getBranchContentProps({ id: "node_modules", depth: 0 })}>
-                <li {...api.getItemProps({ id: "node_modules/zag-js", depth: 1 })}>📄 zag-js</li>
-                <li {...api.getItemProps({ id: "node_modules/pandacss", depth: 1 })}>📄 panda</li>
+              <ul {...api.getBranchContentProps({ id: "node_modules", depth: 1 })}>
+                <li {...api.getItemProps({ id: "node_modules/zag-js", depth: 2 })}>📄 zag-js</li>
+                <li {...api.getItemProps({ id: "node_modules/pandacss", depth: 2 })}>📄 panda</li>
 
-                <li {...api.getBranchProps({ id: "node_modules/@types", depth: 1 })}>
-                  <div {...api.getBranchControlProps({ id: "node_modules/@types", depth: 1 })}>
-                    <span {...api.getBranchTextProps({ id: "node_modules/@types", depth: 1 })}> 📂 @types</span>
+                <li {...api.getBranchProps({ id: "node_modules/@types", depth: 2 })}>
+                  <div {...api.getBranchControlProps({ id: "node_modules/@types", depth: 2 })}>
+                    <span {...api.getBranchTextProps({ id: "node_modules/@types", depth: 2 })}> 📂 @types</span>
                   </div>
 
-                  <ul {...api.getBranchContentProps({ id: "node_modules/@types", depth: 1 })}>
-                    <li {...api.getItemProps({ id: "node_modules/@types/react", depth: 2 })}>📄 react</li>
-                    <li {...api.getItemProps({ id: "node_modules/@types/react-dom", depth: 2 })}>📄 react-dom</li>
+                  <ul {...api.getBranchContentProps({ id: "node_modules/@types", depth: 2 })}>
+                    <li {...api.getItemProps({ id: "node_modules/@types/react", depth: 3 })}>📄 react</li>
+                    <li {...api.getItemProps({ id: "node_modules/@types/react-dom", depth: 3 })}>📄 react-dom</li>
                   </ul>
                 </li>
               </ul>
             </li>
 
-            <li {...api.getBranchProps({ id: "src", depth: 0 })}>
-              <div {...api.getBranchControlProps({ id: "src", depth: 0 })}>
-                <span {...api.getBranchTextProps({ id: "src", depth: 0 })}> 📂 src</span>
+            <li {...api.getBranchProps({ id: "src", depth: 1 })}>
+              <div {...api.getBranchControlProps({ id: "src", depth: 1 })}>
+                <span {...api.getBranchTextProps({ id: "src", depth: 1 })}> 📂 src</span>
               </div>
 
-              <ul {...api.getBranchContentProps({ id: "src", depth: 0 })}>
-                <li {...api.getItemProps({ id: "src/app.tsx", depth: 1 })}>📄 app.tsx</li>
-                <li {...api.getItemProps({ id: "src/index.ts", depth: 1 })}>📄 index.ts</li>
+              <ul {...api.getBranchContentProps({ id: "src", depth: 1 })}>
+                <li {...api.getItemProps({ id: "src/app.tsx", depth: 2 })}>📄 app.tsx</li>
+                <li {...api.getItemProps({ id: "src/index.ts", depth: 2 })}>📄 index.ts</li>
               </ul>
             </li>
 
-            <li {...api.getItemProps({ id: "panda.config", depth: 0 })}>📄 panda.config.ts</li>
-            <li {...api.getItemProps({ id: "package.json", depth: 0 })}>📄 package.json</li>
-            <li {...api.getItemProps({ id: "renovate.json", depth: 0 })}>📄 renovate.json</li>
-            <li {...api.getItemProps({ id: "readme.md", depth: 0 })}>📄 README.md</li>
+            <li {...api.getItemProps({ id: "panda.config", depth: 1 })}>📄 panda.config.ts</li>
+            <li {...api.getItemProps({ id: "package.json", depth: 1 })}>📄 package.json</li>
+            <li {...api.getItemProps({ id: "renovate.json", depth: 1 })}>📄 renovate.json</li>
+            <li {...api.getItemProps({ id: "readme.md", depth: 1 })}>📄 README.md</li>
           </ul>
         </div>
       </main>
