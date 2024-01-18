@@ -1,61 +1,65 @@
-import { MenuAnatomy } from "./menu"
-import { DialogAnatomy } from "./dialog"
-import { PopoverAnatomy } from "./popover"
-import { SliderAnatomy } from "./slider"
-import { PinInputAnatomy } from "./pin-input"
-import { NumberInputAnatomy } from "./number-input"
-import { TagsInputAnatomy } from "./tags-input"
-import { TooltipAnatomy } from "./tooltip"
-import { SplitterAnatomy } from "./splitter"
-import { ComboboxAnatomy } from "./combobox"
-import { TabsAnatomy } from "./tabs"
-import { EditableAnatomy } from "./editable"
 import { AccordionAnatomy } from "./accordion"
-import { ToastAnatomy } from "./toast"
-import { CheckboxAnatomy } from "./checkbox"
-import { SelectAnatomy } from "./select"
-import { HoverCardAnatomy } from "./hover-card"
-import { PaginationAnatomy } from "./pagination"
-import { RatingGroupAnatomy } from "./rating-group"
-import { SwitchAnatomy } from "./switch"
-import { SegmentedControlAnatomy } from "./segmented-control"
 import { AvatarAnatomy } from "./avatar"
-import { RadioGroupAnatomy } from "./radio-group"
-import { FileUploadAnatomy } from "./file-upload"
-import { ToggleGroupAnatomy } from "./toggle-group"
 import { CarouselAnatomy } from "./carousel"
+import { CheckboxAnatomy } from "./checkbox"
+import { CircularProgressAnatomy } from "./circular-progress"
 import { ColorPickerAnatomy } from "./color-picker"
+import { ComboboxAnatomy } from "./combobox"
 import { DatePickerAnatomy } from "./date-picker"
+import { DialogAnatomy } from "./dialog"
+import { EditableAnatomy } from "./editable"
+import { FileUploadAnatomy } from "./file-upload"
+import { HoverCardAnatomy } from "./hover-card"
+import { LinearProgressAnatomy } from "./linear-progress"
+import { MenuAnatomy } from "./menu"
+import { NumberInputAnatomy } from "./number-input"
+import { PaginationAnatomy } from "./pagination"
+import { PinInputAnatomy } from "./pin-input"
+import { PopoverAnatomy } from "./popover"
+import { RadioGroupAnatomy } from "./radio-group"
+import { RatingGroupAnatomy } from "./rating-group"
+import { SegmentedControlAnatomy } from "./segmented-control"
+import { SelectAnatomy } from "./select"
+import { SliderAnatomy } from "./slider"
+import { SplitterAnatomy } from "./splitter"
+import { SwitchAnatomy } from "./switch"
+import { TabsAnatomy } from "./tabs"
+import { TagsInputAnatomy } from "./tags-input"
+import { ToastAnatomy } from "./toast"
+import { ToggleGroupAnatomy } from "./toggle-group"
+import { TooltipAnatomy } from "./tooltip"
 
 export const allComponents = {
-  "date-picker": DatePickerAnatomy,
+  "circular-progress": CircularProgressAnatomy,
   "color-picker": ColorPickerAnatomy,
-  carousel: CarouselAnatomy,
-  "toggle-group": ToggleGroupAnatomy,
+  "date-picker": DatePickerAnatomy,
   "file-upload": FileUploadAnatomy,
-  "radio-group": RadioGroupAnatomy,
-  avatar: AvatarAnatomy,
-  "segmented-control": SegmentedControlAnatomy,
-  switch: SwitchAnatomy,
-  "rating-group": RatingGroupAnatomy,
-  pagination: PaginationAnatomy,
   "hover-card": HoverCardAnatomy,
-  select: SelectAnatomy,
-  checkbox: CheckboxAnatomy,
-  toast: ToastAnatomy,
-  accordion: AccordionAnatomy,
-  editable: EditableAnatomy,
-  tabs: TabsAnatomy,
-  combobox: ComboboxAnatomy,
-  splitter: SplitterAnatomy,
-  tooltip: TooltipAnatomy,
-  "tags-input": TagsInputAnatomy,
+  "linear-progress": LinearProgressAnatomy,
   "number-input": NumberInputAnatomy,
   "pin-input": PinInputAnatomy,
-  slider: SliderAnatomy,
-  popover: PopoverAnatomy,
+  "radio-group": RadioGroupAnatomy,
+  "rating-group": RatingGroupAnatomy,
+  "segmented-control": SegmentedControlAnatomy,
+  "tags-input": TagsInputAnatomy,
+  "toggle-group": ToggleGroupAnatomy,
+  accordion: AccordionAnatomy,
+  avatar: AvatarAnatomy,
+  carousel: CarouselAnatomy,
+  checkbox: CheckboxAnatomy,
+  combobox: ComboboxAnatomy,
   dialog: DialogAnatomy,
+  editable: EditableAnatomy,
   menu: MenuAnatomy,
+  pagination: PaginationAnatomy,
+  popover: PopoverAnatomy,
+  select: SelectAnatomy,
+  slider: SliderAnatomy,
+  splitter: SplitterAnatomy,
+  switch: SwitchAnatomy,
+  tabs: TabsAnatomy,
+  toast: ToastAnatomy,
+  tooltip: TooltipAnatomy,
 }
 
 export type ComponentAnatomyName = keyof typeof allComponents

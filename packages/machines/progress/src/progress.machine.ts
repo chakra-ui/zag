@@ -11,6 +11,7 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         value: 50,
         max: 100,
+        min: 0,
         orientation: "horizontal",
         translations: {
           value: ({ percent }) => (percent === -1 ? "loading..." : `${percent} percent`),
@@ -21,7 +22,10 @@ export function machine(userContext: UserDefinedContext) {
       created: ["validateContext"],
       computed: {
         isIndeterminate: (ctx) => ctx.value === null,
-        percent: (ctx) => (isNumber(ctx.value) ? Math.round((ctx.value / ctx.max) * 100) : -1),
+        percent(ctx) {
+          if (!isNumber(ctx.value)) return -1
+          return Math.round(((ctx.value - ctx.min) / (ctx.max - ctx.min)) * 100)
+        },
         isAtMax: (ctx) => ctx.value === ctx.max,
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
         isRtl: (ctx) => ctx.dir === "rtl",

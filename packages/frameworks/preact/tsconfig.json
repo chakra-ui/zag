@@ -1,0 +1,9 @@
+{
+  "extends": "../../../tsconfig.json",
+  "include": ["src"],
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "preact",
+    "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo"
+  }
+}

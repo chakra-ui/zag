@@ -1,10 +1,10 @@
 import {
   allComponents,
-  allOverviews,
   allGuides,
+  allOverviews,
   allSnippets,
 } from "@/contentlayer"
-import { type Framework, FRAMEWORKS, isFramework } from "./framework-utils"
+import { FRAMEWORKS, isFramework, type Framework } from "./framework-utils"
 
 function toParams(str: string | string[]) {
   const slug = Array.isArray(str) ? str : [str]

@@ -6,19 +6,21 @@ import type { MachineApi, MachineContext, ProgressState, Send, State } from "./p
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const percent = state.context.percent
   const max = state.context.max
+  const min = state.context.min
+
   const orientation = state.context.orientation
   const translations = state.context.translations
   const indeterminate = state.context.isIndeterminate
 
   const value = state.context.value
-  const valueAsString = translations.value({ value, max, percent })
+  const valueAsString = translations.value({ value, max, percent, min })
   const progressState = getProgressState(value, max)
 
   const progressbarProps = {
     role: "progressbar",
-    "aria-label": translations.value({ value, max, percent }),
+    "aria-label": valueAsString,
     "data-max": max,
-    "aria-valuemin": 0,
+    "aria-valuemin": min,
     "aria-valuemax": max,
     "aria-valuenow": value ?? undefined,
     "data-orientation": orientation,

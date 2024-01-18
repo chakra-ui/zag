@@ -1,6 +1,7 @@
 import { Box, Flex, HStack, Spacer } from "@chakra-ui/layout"
+import { chakra, useToken } from "@chakra-ui/system"
 import * as dialog from "@zag-js/dialog"
-import { normalizeProps, useMachine, Portal } from "@zag-js/react"
+import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useRouteChange } from "lib/use-route-change"
 import { useEffect, useRef } from "react"
 import { HiMenu, HiX } from "react-icons/hi"
@@ -9,7 +10,6 @@ import { Button } from "./button"
 import { FrameworkSelect } from "./framework-select"
 import { LogoWithLink } from "./logo"
 import { Sidebar } from "./sidebar"
-import { chakra, useToken } from "@chakra-ui/system"
 
 export function MobileNavigation() {
   const [state, send] = useMachine(

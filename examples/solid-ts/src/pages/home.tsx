@@ -1,5 +1,5 @@
 import { routesData } from "@zag-js/shared"
-import { Link } from "@solidjs/router"
+import { A } from "@solidjs/router"
 import { For } from "solid-js/web"
 
 export default function Home() {
@@ -10,7 +10,7 @@ export default function Home() {
         <For each={routesData.sort((a, b) => a.label.localeCompare(b.label))}>
           {(route) => (
             <li>
-              <Link href={route.path}>{route.label}</Link>
+              <A href={route.path}>{route.label}</A>
             </li>
           )}
         </For>

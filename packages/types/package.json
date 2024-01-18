@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/types",
-  "version": "0.31.1",
+  "version": "0.32.1",
   "keywords": [
     "js",
     "utils",
@@ -22,7 +22,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "csstype": "3.1.2"
+    "csstype": "3.1.3"
   },
   "scripts": {
     "build": "tsup",

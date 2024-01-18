@@ -1,0 +1,199 @@
+---
+title: Progress
+description: Using the progress machine in your project.
+package: "@zag-js/progress"
+---
+
+# Progress
+
+Progress is a simple progress bar that can be used to show the progress of a
+task such as downloading a file, uploading an image, etc.
+
+<Resources pkg="@zag-js/progress" />
+
+<Showcase id="CircularProgress" />
+
+**Features**
+
+- Support for linear and circular progress bars.
+- Support for minimum and maximum values.
+- Support for indeterminate progress bars.
+
+## Installation
+
+To use the progress machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="progress/installation.mdx" />
+
+This command will install the framework agnostic progress logic and the reactive
+utilities for your framework of choice.
+
+## Anatomy
+
+To set up the progress correctly, you'll need to understand its anatomy and how
+we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="circular-progress" />
+
+## Usage
+
+First, import the progress package into your project
+
+```jsx
+import * as progress from "@zag-js/progress"
+```
+
+The progress package exports two key functions:
+
+- `machine` — The state machine logic for the progress widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll also need to provide a unique `id` to the `useMachine` hook. This is
+> used to ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+progress machine in your project 🔥
+
+<CodeSnippet id="progress/circular.mdx" />
+
+## Setting the value
+
+Use the `api.setValue` method to set the value of the progress bar.
+
+```jsx {3}
+const [state, send] = useMachine(
+  progress.machine({
+    value: 50,
+  }),
+)
+```
+
+## Setting the minimum and maximum values
+
+By default, the progress bar has a minimum value of `0` and a maximum value of
+`100`. You can change these values by passing the `min` and `max` options to the
+machine.
+
+```jsx {3-4}
+const [state, send] = useMachine(
+  progress.machine({
+    min: 0,
+    max: 1000,
+  }),
+)
+```
+
+## Using the indeterminate state
+
+The progress component is determinate by default, with the value and max set to
+`50` and `100` respectively.
+
+Set `value` to `null` to indicate an indeterminate value for operations whose
+progress can't be determined (e.g., attempting to reconnect to a server).
+
+```jsx {3}
+const [state, send] = useMachine(
+  progress.machine({
+    value: null,
+  }),
+)
+```
+
+## Showing a value text
+
+Progress bars can only be interpreted by sighted users. To include a text
+description to support assistive technologies like screen readers, use the
+`valueText` part.
+
+```jsx
+const [state, send] = useMachine(
+  progress.machine({
+    translations: {
+      valueText: ({ value, max }) =>
+        value == null ? "Loading..." : `${value} of ${max} items loaded`,
+    },
+  }),
+)
+```
+
+## Setting the size of the progress bar
+
+Use the `--size` CSS variable to set the size of the progress bar.
+
+```css
+[data-scope="progress"][data-part="circle"] {
+  --size: 400px;
+}
+```
+
+## Setting the thickness of the progress bar
+
+Use the `--thickness` CSS variable to set the size of the progress bar.
+
+```css
+[data-scope="progress"][data-part="circle"] {
+  --thickness: 4px;
+}
+```
+
+Then you need to render the `valueText` part in your component.
+
+```jsx
+<div {...api.valueText}>{api.valueText}</div>
+```
+
+## Styling guide
+
+Earlier, we mentioned that each menu part has a `data-part` attribute added to
+them to select and style them in the DOM.
+
+```css
+[data-scope="progress"][data-part="root"] {
+  /* Styles for the root part */
+}
+
+[data-scope="progress"][data-part="circle-track"] {
+  /* Styles for the track part */
+}
+
+[data-scope="progress"][data-part="circle-range"] {
+  /* Styles for the range part */
+}
+```
+
+### Indeterminate state
+
+To style the indeterminate state, you can use the `[data-state=indeterminate]`
+selector.
+
+```css
+[data-scope="progress"][data-part="root"][data-state="indeterminate"] {
+  /* Styles for the root indeterminate state */
+}
+
+[data-scope="progress"][data-part="circle-track"][data-state="indeterminate"] {
+  /* Styles for the root indeterminate state */
+}
+
+[data-scope="progress"][data-part="circle-range"][data-state="indeterminate"] {
+  /* Styles for the root indeterminate state */
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The progress machine exposes the following context properties:
+
+<ContextTable name="progress" />
+
+### Machine API
+
+The progress `api` exposes the following methods:
+
+<ApiTable name="progress" />

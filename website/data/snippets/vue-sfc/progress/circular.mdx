@@ -1,0 +1,23 @@
+```html
+<script setup>
+  import * as progress from "@zag-js/progress"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const [state, send] = useMachine(progress.machine({ id: "1" }))
+
+  const api = computed(() =>
+    progress.connect(state.value, send, normalizeProps),
+  )
+</script>
+
+<template>
+  <div v-bind="api.rootProps">
+    <div v-bind="api.labelProps">Upload progress</div>
+    <svg v-bind="api.circleProps">
+      <circle v-bind="api.circleTrackProps" />
+      <circle v-bind="api.circleRangeProps" />
+    </svg>
+  </div>
+</template>
+```

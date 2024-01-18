@@ -1,2 +1,24 @@
 ```jsx
+import * as {{component}} from "@zag-js/{{component}}"
+import { useMachine, normalizeProps } from "@zag-js/vue"
+import { computed, defineComponent } from "vue"
+
+export const {{titleCase component}} = defineComponent({
+  name: "{{titleCase component}}",
+  setup() {
+    const [state, send] = useMachine({{component}}.machine({ id: "1" }))
+
+    const apiRef = computed(() =>
+      {{component}}.connect(state.value, send, normalizeProps),
+    )
+    return () => {
+      const api = apiRef.value
+      return (
+        <div {...api.rootProps}>
+          <div {...api.controlProps}>...</div>
+        </div>
+      )
+    }
+  },
+})
 ```

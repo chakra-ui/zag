@@ -29,7 +29,7 @@ import { adjustStartAndEndDate, formatValue, sortDates } from "./date-picker.uti
 
 const { and } = guards
 
-const getInitialContext = (ctx: Partial<MachineContext>): MachineContext => {
+const transformContext = (ctx: Partial<MachineContext>): MachineContext => {
   const locale = ctx.locale || "en-US"
   const timeZone = ctx.timeZone || "UTC"
   const selectionMode = ctx.selectionMode || "single"
@@ -76,7 +76,7 @@ export function machine(userContext: UserDefinedContext) {
     {
       id: "datepicker",
       initial: ctx.open ? "open" : "idle",
-      context: getInitialContext(ctx),
+      context: transformContext(ctx),
       computed: {
         valueAsString: (ctx) => ctx.value.map((date) => formatSelectedDate(date, null, ctx.locale, ctx.timeZone)),
         isInteractive: (ctx) => !ctx.disabled && !ctx.readOnly,
@@ -680,6 +680,9 @@ export function machine(userContext: UserDefinedContext) {
           send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
         },
       },
+      transformContext(ctx) {
+        Object.assign(ctx, transformContext(ctx))
+      },
       compareFns: {
         startValue: isDateEqual,
         focusedValue: isDateEqual,
@@ -691,15 +694,21 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change(ctx: MachineContext) {
+    const value = Array.from(ctx.value)
+    const valueAsString = value.map((date) => date.toString())
     ctx.onValueChange?.({
-      value: Array.from(ctx.value),
+      value,
+      valueAsString,
       view: ctx.view,
     })
   },
   focusChange(ctx: MachineContext) {
+    const value = Array.from(ctx.value)
+    const valueAsString = value.map((date) => date.toString())
     ctx.onFocusChange?.({
       focusedValue: ctx.focusedValue,
-      value: Array.from(ctx.value),
+      value,
+      valueAsString,
       view: ctx.view,
     })
   },

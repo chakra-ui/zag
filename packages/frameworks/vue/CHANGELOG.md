@@ -1,5 +1,28 @@
 # @zag-js/vue
 
+## 0.32.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.32.1
+  - @zag-js/store@0.32.1
+  - @zag-js/types@0.32.1
+
+## 0.32.0
+
+### Patch Changes
+
+- [#1095](https://github.com/chakra-ui/zag/pull/1095)
+  [`651346b`](https://github.com/chakra-ui/zag/commit/651346b1cd280b3882253425e9054caf985f83a7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor useSnapshot, useService and useMachine to track context
+  changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.32.0
+  - @zag-js/store@0.32.0
+  - @zag-js/types@0.32.0
+
 ## 0.31.1
 
 ### Patch Changes
