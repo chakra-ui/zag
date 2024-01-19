@@ -53,7 +53,10 @@ class PageModel {
   expectToBeCollapsed(name: string) {
     return expect(this.branch(name)).toHaveAttribute("aria-expanded", "false")
   }
-  expectToBeTabbable(name: string) {
+  expectBranchToBeTabbable(name: string) {
+    return expect(this.branchButton(name)).toHaveAttribute("tabindex", "0")
+  }
+  expectItemToBeTabbable(name: string) {
     return expect(this.item(name)).toHaveAttribute("tabindex", "0")
   }
 }
@@ -76,20 +79,20 @@ test.describe("tree view / basic", () => {
   })
 
   test("If no selection, first node should be added to tab sequence", async () => {
-    await screen.expectToBeTabbable("node_modules")
+    await screen.expectBranchToBeTabbable("node_modules")
   })
 
   test("If selection exists, first selected node should be added to tab sequence", async ({ page }) => {
     await screen.clickItem("panda.config.ts")
-    await screen.expectToBeTabbable("panda.config.ts")
+    await screen.expectItemToBeTabbable("panda.config.ts")
     await clickOutside(page)
-    await screen.expectToBeTabbable("panda.config.ts")
+    await screen.expectItemToBeTabbable("panda.config.ts")
   })
 
   test("Interaction outside should reset focused node", async ({ page }) => {
     await screen.focusItem("panda.config.ts")
-    await clickOutside(page)
-    await screen.expectToBeTabbable("node_modules")
+    await page.click("text=My Documents")
+    await screen.expectBranchToBeTabbable("node_modules")
   })
 
   test("expand/collapse all button", async () => {
