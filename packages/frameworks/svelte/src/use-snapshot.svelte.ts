@@ -9,13 +9,13 @@ export function useSnapshot<
   //
   const { actions, context } = options ?? {}
 
-  let state = $state.frozen(service.state)
+  let state = $state(service.state)
 
-  $effect.pre(() => {
-    return subscribe(service.state, () => {
-      state = snapshot(service.state) as any
-    })
+  const unsubscribe = subscribe(service.state, () => {
+    state = snapshot(service.state) as any
   })
+
+  onDestroy(unsubscribe)
 
   $effect(() => {
     service.setOptions({ actions: unstate(actions) })
@@ -26,6 +26,7 @@ export function useSnapshot<
   })
 
   return {
+    // Need a getter to get fresh state.
     get state() {
       return state
     },
