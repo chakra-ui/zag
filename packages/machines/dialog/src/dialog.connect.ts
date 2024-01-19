@@ -5,7 +5,7 @@ import type { MachineApi, Send, State } from "./dialog.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const ariaLabel = state.context["aria-label"]
-  const isOpen = state.matches("open")
+  const isOpen = state.matches("open") || !!state.context.open
   const rendered = state.context.renderedElements
 
   return {
