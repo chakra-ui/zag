@@ -18,19 +18,6 @@ env:
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
 jobs:
-  prettier:
-    name: Prettier
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install
-        uses: ./.github/composite-actions/install
-
-      - name: Run Prettier
-        run: pnpm prettier
-
   tests:
     name: Unit Tests
     runs-on: ubuntu-latest
