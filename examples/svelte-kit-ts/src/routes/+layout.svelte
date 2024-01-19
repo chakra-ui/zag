@@ -10,7 +10,7 @@
 <div class="page">
 	<aside class="nav">
 		<header>
-			<a href="/"> Zagjs </a>
+			<a href="/">Zagjs</a>
 		</header>
 		{#each sortedRoutes as route}
 			{@const active = $page.url.pathname === route.path}

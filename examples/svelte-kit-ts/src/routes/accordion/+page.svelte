@@ -1,10 +1,16 @@
 <script lang="ts">
+	import Toolbar from '$lib/components/Toolbar.svelte';
+	import { useControls } from '$lib/use-controls.svelte';
 	import * as accordion from '@zag-js/accordion';
 	import { accordionControls, accordionData } from '@zag-js/shared';
 	import { normalizeProps, useMachine } from '@zag-js/svelte';
 	import { unstate } from 'svelte';
 
-	const machine = useMachine(accordion.machine({ id: '1' }));
+	const controls = useControls(accordionControls);
+
+	const machine = useMachine(accordion.machine({ id: '1' }), {
+		context: controls.state
+	});
 
 	const api = $derived(accordion.connect(unstate(machine.state), machine.send, normalizeProps));
 </script>
@@ -30,3 +36,5 @@
 		{/each}
 	</div>
 </main>
+
+<Toolbar {controls} {machine} />
