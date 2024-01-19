@@ -17,6 +17,8 @@ export function machine(userContext: UserDefinedContext) {
         expandedIds: new Set(),
         selectedIds: new Set(),
         focusedId: null,
+        openOnClick: true,
+        selectionMode: "single",
         ...ctx,
         typeahead: getByTypeahead.defaultOptions,
       },
@@ -139,9 +141,12 @@ export function machine(userContext: UserDefinedContext) {
                 guard: and("isShiftKey", "isMultipleSelection"),
                 actions: ["extendSelectionToItem"],
               },
-              // TODO: consider supporting click to expand (instead of using the toggle)
               {
+                guard: "openOnClick",
                 actions: ["selectItem", "toggleBranch"],
+              },
+              {
+                actions: ["selectItem"],
               },
             ],
             "BRANCH_TOGGLE.CLICK": {
@@ -166,6 +171,7 @@ export function machine(userContext: UserDefinedContext) {
         hasSelectedItems: (ctx) => ctx.selectedIds.size > 0,
         isMultipleSelection: (ctx) => ctx.isMultipleSelection,
         moveFocus: (_ctx, evt) => !!evt.moveFocus,
+        openOnClick: (ctx) => !!ctx.openOnClick,
       },
       activities: {
         trackChildrenMutation(ctx, _evt, { send }) {
@@ -388,7 +394,7 @@ export function machine(userContext: UserDefinedContext) {
           const selectedIds = Array.from(ctx.selectedIds)
           const anchorEl = dom.getNodeEl(ctx, selectedIds[0]) || nodes[0]
 
-          const nextSet = dom.getNodeIdsBetween(nodes, anchorEl, focusedEl)
+          const nextSet = dom.getNodesInRange(nodes, anchorEl, focusedEl)
 
           set.selected(ctx, nextSet)
         },
@@ -450,7 +456,7 @@ export function machine(userContext: UserDefinedContext) {
           const anchorEl = dom.getNodeEl(ctx, [...ctx.selectedIds][0]) || nodes[0]
           const focusedEl = nodes[0]
 
-          const selectedIds = dom.getNodeIdsBetween(nodes, anchorEl, focusedEl)
+          const selectedIds = dom.getNodesInRange(nodes, anchorEl, focusedEl)
           set.selected(ctx, selectedIds)
         },
         extendSelectionToLastItem(ctx) {
@@ -459,7 +465,7 @@ export function machine(userContext: UserDefinedContext) {
           const anchorEl = dom.getNodeEl(ctx, [...ctx.selectedIds][0]) || nodes[0]
           const focusedEl = nodes[nodes.length - 1]
 
-          const selectedIds = dom.getNodeIdsBetween(nodes, anchorEl, focusedEl)
+          const selectedIds = dom.getNodesInRange(nodes, anchorEl, focusedEl)
           set.selected(ctx, selectedIds)
         },
       },
@@ -492,11 +498,17 @@ const invoke = {
   focusChange(ctx: MachineContext) {
     ctx.onFocusChange?.({ focusedId: ctx.focusedId! })
   },
-  openChange(ctx: MachineContext) {
-    ctx.onOpenChange?.({ ids: ctx.expandedIds })
+  expandedChange(ctx: MachineContext) {
+    ctx.onExpandedChange?.({
+      expandedIds: ctx.expandedIds,
+      focusedId: ctx.focusedId!,
+    })
   },
   selectionChange(ctx: MachineContext) {
-    ctx.onSelectionChange?.({ ids: ctx.selectedIds })
+    ctx.onSelectionChange?.({
+      selectedIds: ctx.selectedIds,
+      focusedId: ctx.focusedId!,
+    })
   },
 }
 
@@ -511,6 +523,6 @@ const set = {
   },
   expanded(ctx: MachineContext, set: Set<string>) {
     ctx.expandedIds = set
-    invoke.openChange(ctx)
+    invoke.expandedChange(ctx)
   },
 }

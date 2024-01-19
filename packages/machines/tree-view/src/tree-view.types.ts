@@ -2,16 +2,16 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
 
-export interface OpenChangeDetails {
-  ids: Set<string>
-}
-
-export interface SelectionChangeDetails {
-  ids: Set<string>
-}
-
 export interface FocusChangeDetails {
   focusedId: string
+}
+
+export interface ExpandedChangeDetails extends FocusChangeDetails {
+  expandedIds: Set<string>
+}
+
+export interface SelectionChangeDetails extends FocusChangeDetails {
+  selectedIds: Set<string>
 }
 
 interface PublicContext extends DirectionProperty, CommonProperties {
@@ -20,24 +20,25 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   expandedIds: Set<string>
   /**
-   * The id of the nodes that are selected
+   * The id of the selected nodes
    */
   selectedIds: Set<string>
   /**
-   * The id of the nodes that are focused
+   * The id of the focused node
    */
   focusedId: string | null
   /**
    * Whether the tree supports multiple selection
    * - "single": only one node can be selected
    * - "multiple": multiple nodes can be selected
-   * - "none": no node can be selected
+   *
+   * @default "single"
    */
-  selectionMode?: "single" | "multiple" | "none"
+  selectionMode: "single" | "multiple"
   /**
    * Called when the tree is opened or closed
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onExpandedChange?: (details: ExpandedChangeDetails) => void
   /**
    * Called when the selection changes
    */
@@ -46,6 +47,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Called when the focused node changes
    */
   onFocusChange?: (details: FocusChangeDetails) => void
+  /**
+   * Whether clicking on a branch should open it or not
+   * @default true
+   */
+  openOnClick?: boolean
 }
 
 type PrivateContext = Context<{

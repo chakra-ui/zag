@@ -35,7 +35,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     expand(ids: Set<string>) {
       const nextSet = new Set(expandedIds)
       ids.forEach((id) => nextSet.add(id))
-      send({ type: "EXPANDED.SET", value: nextSet })
+      send({ type: "EXPANDED.SET", value: nextSet, src: "expand" })
     },
     expandAll() {
       send({ type: "EXPANDED.ALL" })
@@ -43,18 +43,26 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     collapse(ids: Set<string>) {
       const nextSet = new Set(expandedIds)
       ids.forEach((id) => nextSet.delete(id))
-      send({ type: "EXPANDED.SET", value: nextSet })
+      send({ type: "EXPANDED.SET", value: nextSet, src: "collapse" })
     },
     collapseAll() {
-      send({ type: "EXPANDED.SET", value: new Set([]) })
+      send({ type: "EXPANDED.SET", value: new Set([]), src: "collapseAll" })
     },
     selectAll() {
       send({ type: "SELECTED.ALL" })
     },
+    deselect(ids: Set<string>) {
+      const nextSet = new Set(selectedIds)
+      ids.forEach((id) => nextSet.delete(id))
+      send({ type: "SELECTED.SET", value: nextSet, src: "deselect" })
+    },
+    deselectAll() {
+      send({ type: "SELECTED.SET", value: new Set([]), src: "deselectAll" })
+    },
     select(ids: Set<string>) {
       const nextSet = new Set(selectedIds)
       ids.forEach((id) => nextSet.add(id))
-      send({ type: "SELECTED.SET", value: nextSet })
+      send({ type: "SELECTED.SET", value: nextSet, src: "select" })
     },
     focusBranch(id: string) {
       dom.getBranchControlEl(state.context, id)?.focus()
@@ -97,7 +105,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           return
         }
 
-        const isBranchTrigger = !!target?.dataset.branch
+        const isBranchNode = !!target?.dataset.branch
 
         const keyMap: EventKeyMap = {
           ArrowDown(event) {
@@ -113,10 +121,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           ArrowLeft(event) {
             if (isModifiedEvent(event) || node.dataset.disabled) return
             event.preventDefault()
-            send({ type: isBranchTrigger ? "BRANCH.ARROW_LEFT" : "ITEM.ARROW_LEFT", id: nodeId })
+            send({ type: isBranchNode ? "BRANCH.ARROW_LEFT" : "ITEM.ARROW_LEFT", id: nodeId })
           },
           ArrowRight(event) {
-            if (!isBranchTrigger || node.dataset.disabled) return
+            if (!isBranchNode || node.dataset.disabled) return
             event.preventDefault()
             send({ type: "BRANCH.ARROW_RIGHT", id: nodeId })
           },
@@ -143,7 +151,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             if (node.dataset.disabled) return
 
             event.preventDefault()
-            send({ type: isBranchTrigger ? "BRANCH.CLICK" : "ITEM.CLICK", id: nodeId, src: "keyboard" })
+            send({ type: isBranchNode ? "BRANCH.CLICK" : "ITEM.CLICK", id: nodeId, src: "keyboard" })
           },
           "*"(event) {
             if (node.dataset.disabled) return

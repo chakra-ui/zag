@@ -24,7 +24,8 @@ const fetchMachine = createMachine({
     "isCtrlKey && isMultipleSelection": false,
     "isShiftKey && isMultipleSelection": false,
     "isCtrlKey && isMultipleSelection": false,
-    "isShiftKey && isMultipleSelection": false
+    "isShiftKey && isMultipleSelection": false,
+    "openOnClick": false
   },
   on: {
     "EXPANDED.SET": {
@@ -114,10 +115,11 @@ const fetchMachine = createMachine({
         }, {
           cond: "isShiftKey && isMultipleSelection",
           actions: ["extendSelectionToItem"]
-        },
-        // TODO: consider supporting click to expand (instead of using the toggle)
-        {
+        }, {
+          cond: "openOnClick",
           actions: ["selectItem", "toggleBranch"]
+        }, {
+          actions: ["selectItem"]
         }],
         "BRANCH_TOGGLE.CLICK": {
           actions: ["toggleBranch"]
@@ -145,6 +147,7 @@ const fetchMachine = createMachine({
     "isShiftKey && isMultipleSelection": ctx => ctx["isShiftKey && isMultipleSelection"],
     "isBranchExpanded": ctx => ctx["isBranchExpanded"],
     "isBranchFocused && isBranchExpanded": ctx => ctx["isBranchFocused && isBranchExpanded"],
-    "isCtrlKey && isMultipleSelection": ctx => ctx["isCtrlKey && isMultipleSelection"]
+    "isCtrlKey && isMultipleSelection": ctx => ctx["isCtrlKey && isMultipleSelection"],
+    "openOnClick": ctx => ctx["openOnClick"]
   }
 });

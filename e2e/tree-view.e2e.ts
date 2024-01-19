@@ -1,72 +1,13 @@
-import { expect, test, type Page } from "@playwright/test"
+import { test } from "@playwright/test"
 import { a11y, clickOutside } from "./_utils"
+import { TreeViewModel } from "./tree-view.model"
 
-// https://sourcegraph.com/github.com/winglang/wing@7624e16278478db4499e3b439e0c70e4ba98a1b0/-/blob/apps/wing-console/console/design-system/src/headless/tree-view.test.tsx
-// https://sourcegraph.com/github.com/microsoft/fluentui@7ee75ce7557b69f3bab5e739bbf242843b756a62/-/blob/packages/react-components/react-tree/src/components/Tree/Tree.cy.tsx
-// https://sourcegraph.com/github.com/dgreene1/react-accessible-treeview@4e82bb37f0d6a5b824ccdb285aebbcbcf29ed38b/-/blob/src/__tests__/ClickActionFocus.test.tsx
-
-class PageModel {
-  constructor(private readonly page: Page) {}
-  item(name: string) {
-    return this.page.getByRole("treeitem", { name })
-  }
-  branch(name: string) {
-    return this.page.locator(`[role=treeitem][data-branch="${name}"]`)
-  }
-  private branchButton(name: string) {
-    return this.page.locator(`[role=button][data-branch="${name}"]`)
-  }
-  button(name: string) {
-    return this.page.getByRole("button", { name })
-  }
-  clickItem(name: string) {
-    return this.item(name).click()
-  }
-  clickBranch(name: string) {
-    return this.branchButton(name).click()
-  }
-  clickButton(name: string) {
-    return this.button(name).click()
-  }
-  focusItem(name: string) {
-    return this.item(name).focus()
-  }
-  focusButton(name: string) {
-    return this.button(name).focus()
-  }
-  async focusTree() {
-    await this.focusButton("Select All")
-    await this.page.keyboard.press("Tab")
-  }
-  expectToBeSelected(name: string) {
-    return expect(this.item(name)).toHaveAttribute("aria-selected", "true")
-  }
-  expectItemToBeFocused(name: string) {
-    return expect(this.item(name)).toBeFocused()
-  }
-  expectBranchToBeFocused(name: string) {
-    return expect(this.branchButton(name)).toBeFocused()
-  }
-  expectToBeExpanded(name: string) {
-    return expect(this.branch(name)).toHaveAttribute("aria-expanded", "true")
-  }
-  expectToBeCollapsed(name: string) {
-    return expect(this.branch(name)).toHaveAttribute("aria-expanded", "false")
-  }
-  expectBranchToBeTabbable(name: string) {
-    return expect(this.branchButton(name)).toHaveAttribute("tabindex", "0")
-  }
-  expectItemToBeTabbable(name: string) {
-    return expect(this.item(name)).toHaveAttribute("tabindex", "0")
-  }
-}
-
-let screen: PageModel
+let screen: TreeViewModel
 
 test.describe("tree view / basic", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/tree-view")
-    screen = new PageModel(page)
+    screen = new TreeViewModel(page)
+    await screen.goto()
   })
 
   test("should have no accessibility violation", async ({ page }) => {
@@ -97,30 +38,31 @@ test.describe("tree view / basic", () => {
 
   test("expand/collapse all button", async () => {
     await screen.clickButton("Expand all")
-    await screen.expectToBeExpanded("node_modules")
-    await screen.expectToBeExpanded("src")
-    await screen.expectToBeExpanded("node_modules/@types")
+    await screen.expectAllToBeExpanded(["node_modules", "src", "node_modules/@types"])
   })
 
   test("select all button", async () => {
+    await screen.controls.select("selectionMode", "multiple")
     await screen.clickButton("Select all")
-    await screen.expectToBeSelected("node_modules")
-    await screen.expectToBeSelected("src")
-    await screen.expectToBeSelected("panda.config.ts")
-    await screen.expectToBeSelected("package.json")
-    await screen.expectToBeSelected("renovate.json")
-    await screen.expectToBeSelected("README.md")
+    await screen.expectAllToBeSelected([
+      "node_modules",
+      "src",
+      "panda.config.ts",
+      "package.json",
+      "renovate.json",
+      "README.md",
+    ])
   })
 })
 
 test.describe("tree view / keyboard", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/tree-view")
-    screen = new PageModel(page)
+    screen = new TreeViewModel(page)
+    await screen.goto()
   })
 
   test("Arrow Down should move focus down", async ({ page }) => {
-    await screen.focusTree()
+    await screen.focusFirstNode()
 
     await page.keyboard.press("ArrowDown")
     await screen.expectBranchToBeFocused("src")
@@ -146,13 +88,13 @@ test.describe("tree view / keyboard", () => {
   })
 
   test("End: should move focus to last tree item", async ({ page }) => {
-    await screen.focusTree()
+    await screen.focusFirstNode()
     await page.keyboard.press("End")
     await screen.focusItem("README.md")
   })
 
   test("Branch: Arrow Right", async ({ page }) => {
-    await screen.focusTree()
+    await screen.focusFirstNode()
 
     await page.keyboard.press("ArrowRight")
     await screen.expectToBeExpanded("node_modules")
@@ -162,7 +104,7 @@ test.describe("tree view / keyboard", () => {
   })
 
   test("Branch: Arrow Left", async ({ page }) => {
-    await screen.focusTree()
+    await screen.focusFirstNode()
 
     await page.keyboard.press("ArrowRight")
     await page.keyboard.press("ArrowRight")
@@ -174,46 +116,105 @@ test.describe("tree view / keyboard", () => {
     await screen.expectToBeCollapsed("node_modules")
   })
 
+  // TODO: This works in the browser but not in playwright
   test.skip("typeahead should move focus to matching item", async ({ page }) => {
-    await screen.focusTree()
+    await screen.focusFirstNode()
 
-    await page.keyboard.press("p")
+    await page.keyboard.down("p")
     await screen.expectItemToBeFocused("panda.config.ts")
 
     // should search expanded nodes
     await screen.clickBranch("node_modules")
-    await page.keyboard.press("z")
+    await page.waitForTimeout(20)
+    await page.keyboard.down("z")
 
     await screen.expectItemToBeFocused("zag-js")
   })
 })
 
-test.describe("tree view / single selection", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/tree-view")
-    screen = new PageModel(page)
-  })
-})
-
 test.describe("tree view / multi selection", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/tree-view")
-    screen = new PageModel(page)
+    screen = new TreeViewModel(page)
+    await screen.goto()
+    await screen.controls.select("selectionMode", "multiple")
   })
 
-  test("Ctrl + Click should toggle selection", async () => {})
+  test("Ctrl + Click should toggle selection", async () => {
+    await screen.clickItem("panda.config.ts", { modifiers: ["Meta"] })
+    await screen.clickItem("package.json", { modifiers: ["Meta"] })
+    await screen.clickBranch("src", { modifiers: ["Meta"] })
+    await screen.expectAllToBeSelected(["panda.config.ts", "package.json", "src"])
+  })
 
-  test("Ctrl + A should select all visible nodes", async () => {})
+  test("Ctrl + A should select all visible nodes", async ({ page }) => {
+    await screen.focusFirstNode()
+    await page.keyboard.press("Meta+a")
 
-  test("Shift + Click should extend selection from anchor node to clicked node", async () => {})
+    const nodes = ["node_modules", "src", "panda.config.ts", "package.json", "renovate.json", "README.md"]
+    await screen.expectAllToBeSelected(nodes)
 
-  test("Shift + Click should extend selection without anchor node", async () => {})
+    await screen.clickBranch("src")
+    await page.keyboard.press("Meta+a")
+    await screen.expectAllToBeSelected([...nodes, "app.tsx", "index.ts"])
+  })
 
-  test("Shift + Arrow Down should extend selection down", async () => {})
+  test("Shift + Click should extend selection from anchor node to clicked node", async () => {
+    await screen.clickBranch("src")
+    await screen.clickItem("package.json", { modifiers: ["Shift"] })
 
-  test("Shift + Arrow Up should extend selection up", async () => {})
+    await screen.expectAllToBeSelected(["src", "app.tsx", "index.ts", "panda.config.ts", "package.json"])
+  })
 
-  test("Shift + Arrow Up + Arrow Down should modify and preserve anchor", async () => {})
+  test("Shift + Click should extend selection without anchor node", async () => {
+    await screen.clickItem("panda.config.ts", { modifiers: ["Shift"] })
+    await screen.expectAllToBeSelected(["node_modules", "src", "panda.config.ts"])
+  })
 
-  test("Asterisk key should select expand siblings", async () => {})
+  test("Shift + Arrow Down should extend selection down", async ({ page }) => {
+    await screen.focusFirstNode()
+    await page.keyboard.press("Shift+ArrowDown")
+    await page.keyboard.press("Shift+ArrowDown")
+    await screen.expectAllToBeSelected(["src", "panda.config.ts"])
+  })
+
+  test("Shift + Arrow Up should extend selection up", async ({ page }) => {
+    await screen.focusItem("README.md")
+    await page.keyboard.press("Shift+ArrowUp")
+    await page.keyboard.press("Shift+ArrowUp")
+    await screen.expectAllToBeSelected(["package.json", "renovate.json"])
+  })
+
+  test("Shift + Arrow Up + Arrow Down should modify", async ({ page }) => {
+    await screen.focusFirstNode()
+
+    await page.keyboard.press("Shift+ArrowDown")
+    await page.keyboard.press("Shift+ArrowDown")
+    await page.keyboard.press("Shift+ArrowDown")
+
+    await screen.expectAllToBeSelected(["src", "panda.config.ts", "package.json"])
+
+    await page.keyboard.press("Shift+ArrowUp")
+    await page.keyboard.press("Shift+ArrowUp")
+
+    await screen.expectAllToBeSelected(["src"])
+  })
+
+  test("Shift + Arrow Up + Arrow Down should modify and preserve anchor", async ({ page }) => {
+    await screen.clickItem("panda.config.ts")
+
+    await page.keyboard.press("Shift+ArrowDown")
+    await page.keyboard.press("Shift+ArrowDown")
+    await screen.expectAllToBeSelected(["panda.config.ts", "package.json", "renovate.json"])
+
+    await page.keyboard.press("Shift+ArrowUp")
+    await page.keyboard.press("Shift+ArrowUp")
+    await page.keyboard.press("Shift+ArrowUp")
+    await screen.expectAllToBeSelected(["panda.config.ts", "src"])
+  })
+
+  test("Asterisk key should select expand siblings", async ({ page }) => {
+    await screen.focusItem("panda.config.ts")
+    await page.keyboard.press("*")
+    await screen.expectAllToBeExpanded(["node_modules", "src"])
+  })
 })

@@ -121,7 +121,7 @@ export const dom = createScope({
     return queryAll(dom.getTreeEl(ctx), `[role=treeitem][data-part=branch][data-depth="${depth}"]`)
   },
 
-  getNodeIdsBetween(nodes: HTMLElement[], startNode: HTMLElement, endNode: HTMLElement) {
+  getNodesInRange(nodes: HTMLElement[], startNode: HTMLElement, endNode: HTMLElement) {
     const nextSet = new Set<string>()
 
     nodes.forEach((node) => {

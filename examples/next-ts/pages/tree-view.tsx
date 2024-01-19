@@ -1,16 +1,17 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
+import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const [state, send] = useMachine(
-    tree.machine({
-      id: useId(),
-      selectionMode: "multiple",
-    }),
-  )
+  const controls = useControls(treeviewControls)
+
+  const [state, send] = useMachine(tree.machine({ id: useId() }), {
+    context: controls.context,
+  })
 
   const api = tree.connect(state, send, normalizeProps)
 
@@ -22,7 +23,9 @@ export default function Page() {
           <div>
             <button onClick={() => api.collapseAll()}>Collapse All</button>
             <button onClick={() => api.expandAll()}>Expand All</button>
+            <span> - </span>
             <button onClick={() => api.selectAll()}>Select All</button>
+            <button onClick={() => api.deselectAll()}>Deselect All</button>
           </div>
 
           <ul {...api.treeProps}>
@@ -67,7 +70,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>
     </>
