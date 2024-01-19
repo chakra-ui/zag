@@ -9,8 +9,8 @@ export function useService<
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: MachineOptions<TContext, TState, TEvent>) {
   const { state: hydratedState, context } = options ?? {}
 
-  const _machine = typeof machine === "function" ? machine() : machine
-  const service = context ? _machine.withContext(unref(context)) : _machine
+  const service = typeof machine === "function" ? machine() : machine
+  if (context) service.setContext(unref(context))
 
   onMounted(() => {
     service.start(hydratedState)
