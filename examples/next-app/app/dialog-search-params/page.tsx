@@ -17,7 +17,6 @@ export default function Page() {
       <h1>{String(showDialog)}</h1>
 
       <button
-        type="button"
         onClick={() => {
           router.push(`${pathname}?show-dialog=true`)
         }}
@@ -26,7 +25,6 @@ export default function Page() {
       </button>
 
       <button
-        type="button"
         onClick={() => {
           router.push(`${pathname}?show-dialog=false`)
         }}

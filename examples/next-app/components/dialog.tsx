@@ -1,8 +1,9 @@
 import * as dialog from "@zag-js/dialog"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
+import { useId } from "react"
 
 export function Dialog({ open, onOpenChange }: { open: boolean; onOpenChange: ({ open }: { open: boolean }) => void }) {
-  const [state, send] = useMachine(dialog.machine({ id: "1" }), {
+  const [state, send] = useMachine(dialog.machine({ id: useId() }), {
     context: {
       open: open,
       onOpenChange: onOpenChange,
