@@ -11,7 +11,7 @@ export default function Page() {
   const showDialog = searchParams.get("show-dialog") === "true"
 
   return (
-    <div style={{ padding: "40px" }}>
+    <div style={{ padding: "40px", height: "200vh" }}>
       <h1>Dialog Search Params</h1>
 
       <h1>{String(showDialog)}</h1>

@@ -7,7 +7,7 @@ export default function Page() {
   const [open, setOpen] = useState(false)
 
   return (
-    <div style={{ padding: "40px" }}>
+    <div style={{ padding: "40px", height: "200vh" }}>
       <h1>Dialog Controlled</h1>
 
       <h1>{String(open)}</h1>
