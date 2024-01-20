@@ -58,12 +58,12 @@ const api = computed(() => inject("toast"))
 // this example uses the Vue app provide method
 const toast = computed(() => inject("toast"))
 
-const topRightToast = () => toast.create({ title: 'Hello', placement: 'top-right' })
+const topRightToast = () => toast.create({ title: "Hello", placement: "top-end" })
 const bottomRightToast = () =>
   toast.create({
     title: "Data submitted!",
     type: "success",
-    placement: "bottom-right",
+    placement: "bottom-end",
   });
 </script>
 
