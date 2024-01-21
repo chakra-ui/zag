@@ -1,5 +1,31 @@
 # @zag-js/combobox
 
+## 0.32.1
+
+### Patch Changes
+
+- [#1134](https://github.com/chakra-ui/zag/pull/1134)
+  [`e7862c9`](https://github.com/chakra-ui/zag/commit/e7862c967d438eb712a9f4548c71146e69fcad3b) Thanks
+  [@fseglard](https://github.com/fseglard)! - Fix an issue that breaks the combobox when clicking on the input while the
+  menu is open
+
+- [#1156](https://github.com/chakra-ui/zag/pull/1156)
+  [`11399e2`](https://github.com/chakra-ui/zag/commit/11399e224be3cd0d549c9b2a6afb6cace58ada43) Thanks
+  [@Omikorin](https://github.com/Omikorin)! - Fix issue where some change details typings were no exported
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.1
+  - @zag-js/core@0.32.1
+  - @zag-js/types@0.32.1
+  - @zag-js/aria-hidden@0.32.1
+  - @zag-js/collection@0.32.1
+  - @zag-js/utils@0.32.1
+  - @zag-js/dismissable@0.32.1
+  - @zag-js/dom-event@0.32.1
+  - @zag-js/dom-query@0.32.1
+  - @zag-js/mutation-observer@0.32.1
+  - @zag-js/popper@0.32.1
+
 ## 0.32.0
 
 ### Patch Changes

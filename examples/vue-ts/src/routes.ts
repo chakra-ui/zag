@@ -4,6 +4,7 @@ import Home from "./pages/index"
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: "/tree-view", component: () => import("./pages/tree-view") },
     { path: "/progress", component: () => import("./pages/progress") },
     { path: "/file-upload", component: () => import("./pages/file-upload") },
     { path: "/presence", component: () => import("./pages/presence") },

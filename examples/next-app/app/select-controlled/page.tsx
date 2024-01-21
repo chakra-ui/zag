@@ -3,6 +3,10 @@
 import { useState } from "react"
 import { Select, items } from "../../components/select"
 
+/**
+ * This page tests that controlling the select should work
+ */
+
 export default function Page() {
   const [value, setValue] = useState<string | null | undefined>(null)
 

@@ -232,10 +232,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         },
         onPointerLeave(event) {
           const isKeyboardNavigationEvent = ["CONTENT.ARROW_UP", "CONTENT.ARROW_DOWN"].includes(state.event.type)
-
           if (itemState.isDisabled || event.pointerType !== "mouse" || isKeyboardNavigationEvent) return
-
           send({ type: "ITEM.POINTER_LEAVE" })
+        },
+        onTouchEnd(event) {
+          // prevent clicking elements behind content
+          event.preventDefault()
+          event.stopPropagation()
         },
       })
     },

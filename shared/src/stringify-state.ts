@@ -27,6 +27,10 @@ export function stringifyState(state: Record<string, any>, omit?: string[]) {
           return v.name
         }
 
+        if (v instanceof Set) {
+          return Array.from(v)
+        }
+
         switch (v?.toString()) {
           case "[object Machine]":
             const id = v.state.context.id ?? v.id

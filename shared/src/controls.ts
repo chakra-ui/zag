@@ -223,3 +223,9 @@ export const toggleGroupControls = defineControls({
 export const progressControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
+
+export const treeviewControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  selectionMode: { type: "select", options: ["single", "multiple"] as const, defaultValue: "single" },
+  openOnClick: { type: "boolean", defaultValue: true },
+})
