@@ -79,7 +79,7 @@
     "@typescript-eslint/parser": "6.19.0",
     "axe-core": "4.8.3",
     "commitlint": "18.4.4",
-    "dotenv": "16.3.1",
+    "dotenv": "16.3.2",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-import": "2.29.1",
