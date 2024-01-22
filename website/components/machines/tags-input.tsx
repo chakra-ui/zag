@@ -30,7 +30,7 @@ export function TagsInput(props: any) {
           {api.value.map((value, index) => {
             const opt = { index, value }
             return (
-              <span key={index}>
+              <span key={index} {...api.getItemProps(opt)}>
                 <chakra.div
                   bg="bg-bold"
                   px="2"
@@ -38,7 +38,7 @@ export function TagsInput(props: any) {
                   margin="4px"
                   _highlighted={{ bg: "bg-primary-bold", color: "white" }}
                   _disabled={{ opacity: 0.6 }}
-                  {...api.getItemProps(opt)}
+                  {...api.getItemPreviewProps(opt)}
                 >
                   <span>{value}</span>
                   <chakra.button ml="1" {...api.getItemDeleteTriggerProps(opt)}>

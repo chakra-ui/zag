@@ -806,7 +806,7 @@ main [data-testid="scrubber"] {
   outline-offset: 2px;
 }
 
-[data-scope="tags-input"][data-part="item"] {
+[data-scope="tags-input"][data-part="item-preview"] {
   background: #eee;
   color: #444;
   padding: 0 4px;
@@ -819,15 +819,15 @@ main [data-testid="scrubber"] {
   display: inline-block;
 }
 
-[data-scope="tags-input"][data-part="item"][hidden] {
+[data-scope="tags-input"][data-part="item-preview"][hidden] {
   display: none !important;
 }
-[data-scope="tags-input"][data-part="item"][data-highlighted] {
+[data-scope="tags-input"][data-part="item-preview"][data-highlighted] {
   background-color: #777;
   border-color: #777;
   color: #eee;
 }
-[data-scope="tags-input"][data-part="item"][data-disabled] {
+[data-scope="tags-input"][data-part="item-preview"][data-disabled] {
   opacity: 0.6;
   cursor: default;
 }

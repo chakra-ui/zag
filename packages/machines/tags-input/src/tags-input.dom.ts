@@ -20,7 +20,7 @@ export const dom = createScope({
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
   getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
   getEditInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getEditInputId(ctx)),
-  getTagElements: (ctx: Ctx) => queryAll(dom.getRootEl(ctx), `[data-part=item]:not([data-disabled])`),
+  getTagElements: (ctx: Ctx) => queryAll(dom.getRootEl(ctx), `[data-part=item-preview]:not([data-disabled])`),
   getFirstEl: (ctx: Ctx) => dom.getTagElements(ctx)[0],
   getLastEl: (ctx: Ctx) => dom.getTagElements(ctx)[dom.getTagElements(ctx).length - 1],
   getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getTagElements(ctx), id, false),
@@ -36,12 +36,12 @@ export const dom = createScope({
     return tagEl?.dataset.value ?? null
   },
   setHoverIntent: (el: Element) => {
-    const tagEl = el.closest<HTMLElement>("[data-part=item]")
+    const tagEl = el.closest<HTMLElement>("[data-part=item-preview]")
     if (!tagEl) return
     tagEl.dataset.deleteIntent = ""
   },
   clearHoverIntent: (el: Element) => {
-    const tagEl = el.closest<HTMLElement>("[data-part=item]")
+    const tagEl = el.closest<HTMLElement>("[data-part=item-preview]")
     if (!tagEl) return
     delete tagEl.dataset.deleteIntent
   },
