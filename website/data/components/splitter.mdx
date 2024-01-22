@@ -55,17 +55,106 @@ The splitter package exports two key functions:
 > used to ensure that every part has a unique identifier.
 
 Next, import the required hooks and functions for your framework and use the
-rating machine in your project 🔥
+splitter machine in your project 🔥
 
 <CodeSnippet id="splitter/usage.mdx" />
 
-## Expand and collapse programmatically
-
 ## Listening for events
 
-## Disabling the resizer
+When the resize trigger of splitter changes, the `onSizeChangeStart` and `onSizeChangeEnd` callback is invoked.
+
+```jsx {9-14}
+const [state, send] = useMachine(
+  splitter.machine({
+    id: useId(),
+    size: [
+      { id: "aside", size: 40, maxSize: 60 },
+      { id: "content", size: 20 },
+      { id: "sources" },
+    ],
+    onSizeChangeStart(detail) {
+      console.log("change start", detail)
+    },
+    onSizeChangeEnd(detail) {
+      console.log("change end", detail)
+    },
+  }),
+)
+```
 
 ## Changing the orientation
+
+By default, the splitter is assumed to be horizontal. To change the orientation to
+vertical, set the `orientation` property in the machine's context to `vertical`.
+
+```jsx {9}
+const [state, send] = useMachine(
+  splitter.machine({
+    id: useId(),
+    size: [
+      { id: "aside", size: 40, maxSize: 60 },
+      { id: "content", size: 20 },
+      { id: "sources" },
+    ],
+    orientation: "vertical"
+  })
+)
+```
+
+## Styling guide
+
+Earlier, we mentioned that each accordion part has a `data-part` attribute added
+to them to select and style them in the DOM.
+
+### Resize trigger
+
+When an splitter item is horizontal or vertical, a `data-state` attribute is set
+on the item and content elements.
+
+```css
+[data-scope="splitter"][data-part="resize-trigger"] {
+  /* styles for the item */
+}
+
+[data-scope="splitter"][data-part="resize-trigger"][data-orientation="horizontal"] {
+  /* styles for the item is horizontal state */
+}
+
+[data-scope="splitter"][data-part="resize-trigger"][data-orientation="vertical"] {
+  /* styles for the item is horizontal state */
+}
+
+[data-scope="splitter"][data-part="resize-trigger"][data-focus] {
+  /* styles for the item is focus state */
+}
+
+[data-scope="splitter"][data-part="resize-trigger"]:active {
+  /* styles for the item is active state */
+}
+
+[data-scope="splitter"][data-part="resize-trigger"][data-disabled] {
+  /* styles for the item is disabled state */
+}
+```
+
+### Bar
+
+When an splitter item is horizontal or vertical, a `data-state` attribute is set
+on the item element.
+
+```css
+[data-scope="splitter"][data-part="resize-trigger"] .bar {
+  /* styles for the item */
+}
+
+[data-scope="splitter"][data-orientation="horizontal"] .bar {
+  /* styles for the item is horizontal state */
+}
+
+[data-scope="splitter"][data-orientation="vertical"] .bar {
+  /* styles for the item is horizontal state */
+}
+```
 
 ## Methods and Properties
 
