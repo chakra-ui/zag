@@ -1,5 +1,12 @@
 # @zag-js/live-region
 
+## 0.33.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/visually-hidden@0.33.0
+
 ## 0.32.1
 
 ### Patch Changes
