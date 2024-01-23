@@ -6,6 +6,50 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.33.0](./#0.33.0) - 2024-01-23
+
+### Fixed
+
+- **All Machines**:
+  - Improve runtime performance by only creating a machine instance once, and updating the context with
+    `setContext(...)` instead of `withContext(...)`.
+  - Fix issue on touch devices where selecting an item within combobox, menu, select triggers click event on element
+    behind the portalled content.
+
+**PinInput**: Fix an issue where paste in pin input would fill the input with all pasted characters instead of 1 per
+input
+
+### Added
+
+- **TreeView**: Add new `TreeView` component to render a tree view of items. This component is useful for rendering
+  nested data structures like a file system.
+
+  > This component is still in beta and is subject to change.
+
+### Changed
+
+- **TagsInput**:Improve `TagsInput` component design by introducing a new `item-preview` part. See the diff below for
+  more details.
+
+```diff
+<div {...api.rootProps}>
+  {api.value.map((value, index) => (
+-    <span key={index}>
++    <span key={index} {...api.getItemProps({ index, value })}>
+-     <div {...api.getItemProps({ index, value })}>
++     <div {...api.getItemPreviewProps({ index, value })}>
+        <span>{value} </span>
+        <button {...api.getItemDeleteTriggerProps({ index, value })}>&#x2715;</button>
+      </div>
+      <input {...api.getItemInputProps({ index, value })} />
+    </span>
+  ))}
+  <input placeholder="Add tag..." {...api.inputProps} />
+</div>
+```
+
+- **Progress**: Rename indicator part to view to better communicate the purpose of the part.
+
 ## [0.32.1](./#0.32.1) - 2024-01-10
 
 ### Fixed
