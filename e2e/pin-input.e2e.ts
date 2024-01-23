@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { nativeInput, testid } from "./_utils"
+import { testid } from "./_utils"
 
 const first = testid("input-1")
 const second = testid("input-2")
@@ -62,19 +62,29 @@ test.describe("pin input", () => {
     await expect(page.locator(third)).toHaveValue("")
   })
 
-  test("on paste: should autofill all fields", async ({ page }) => {
+  test("on paste: should autofill all fields", async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+
     await page.locator(first).focus()
-    await page.$eval(first, nativeInput, "123")
+
+    await page.evaluate(() => navigator.clipboard.writeText("123"))
+    await page.locator(first).press("Meta+v")
+
     await expect(page.locator(first)).toHaveValue("1")
     await expect(page.locator(second)).toHaveValue("2")
     await expect(page.locator(third)).toHaveValue("3")
     await expect(page.locator(third)).toBeFocused()
   })
 
-  test("on paste: should autofill all fields if focused field is not empty", async ({ page }) => {
+  test("on paste: should autofill all fields if focused field is not empty", async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
+
     await page.locator(first).fill("1")
     await page.locator(first).focus()
-    await page.$eval(first, nativeInput, "123")
+
+    await page.evaluate(() => navigator.clipboard.writeText("123"))
+    await page.locator(first).press("Meta+v")
+
     await expect(page.locator(first)).toHaveValue("1")
     await expect(page.locator(second)).toHaveValue("2")
     await expect(page.locator(third)).toHaveValue("3")

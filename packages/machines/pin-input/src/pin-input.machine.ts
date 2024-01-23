@@ -188,13 +188,15 @@ export function machine(userContext: UserDefinedContext) {
         setPastedValue(ctx, evt) {
           raf(() => {
             const startIndex = Math.min(ctx.focusedIndex, ctx.filledValueLength)
+
             // keep value left of cursor
             // replace value from curor to end with pasted text
             const left = startIndex > 0 ? ctx.valueAsString.substring(0, ctx.focusedIndex) : ""
             const right = evt.value.substring(0, ctx.valueLength - startIndex)
+
             const value = left + right
 
-            set.value(ctx, value as any)
+            set.value(ctx, value.split(""))
           })
         },
         setValueAtIndex(ctx, evt) {
