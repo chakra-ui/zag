@@ -1,17 +1,17 @@
 import { getControlDefaults, type ControlRecord, deepSet } from "@zag-js/shared"
 
 export function useControls<T extends ControlRecord>(config: T) {
-  const state = $state(getControlDefaults(config))
+  const context = $state(getControlDefaults(config))
 
   const controls = {
     get config() {
       return config
     },
-    get state() {
-      return state
+    get context() {
+      return context
     },
-    setState(key: string, value: any) {
-      deepSet(state, key, value)
+    setContext(key: string, value: any) {
+      deepSet(context, key, value)
     },
   }
 

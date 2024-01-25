@@ -8,8 +8,10 @@
 
   const controls = useControls(accordionControls)
 
+  console.log(accordionControls)
+
   const machine = useMachine(accordion.machine({ id: "1" }), {
-    context: controls.state,
+    context: controls.context,
   })
 
   const api = $derived(accordion.connect(unstate(machine.state), machine.send, normalizeProps))

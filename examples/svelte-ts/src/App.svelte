@@ -5,6 +5,7 @@
   import Accordion from "./routes/Accordion.svelte"
   import Index from "./routes/Index.svelte"
   import Avatar from "./routes/Avatar.svelte"
+  import Carousel from "./routes/Carousel.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 </script>
@@ -28,6 +29,9 @@
     </Route>
     <Route path="/avatar">
       <Avatar />
+    </Route>
+    <Route path="/carousel">
+      <Carousel />
     </Route>
   </div>
 </Router>

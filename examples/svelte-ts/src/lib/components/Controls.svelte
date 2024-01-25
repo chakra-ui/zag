@@ -10,7 +10,7 @@
 <div class="controls-container">
 	{#each Object.keys(controls.config) as key}
 		{@const { type, label = key, options, placeholder, min, max } = (controls.config[key] ?? {}) as any}
-		{@const value = deepGet(controls.state, key)}
+		{@const value = deepGet(controls.context, key)}
 		{#if type === 'boolean'}
 			<div class="checkbox">
 				<input
@@ -19,14 +19,14 @@
 					type="checkbox"
 					checked={value}
 					oninput={(e) => {
-          controls.setState(key, (e.target as HTMLInputElement).checked)
+          controls.setContext(key, (e.target as HTMLInputElement).checked)
         }}
 				/>
 				<label for={label}>{label}</label>
 			</div>
 		{:else if type === 'string'}
 			<div class="text">
-				<label for={label} style="margin-right: 10px;">{label}</label>
+				<label for={label} style="margin-right:10px;">{label}</label>
 				<input
 					data-testid={key}
 					id={label}
@@ -35,14 +35,14 @@
 					{value}
 					onkeydown={(event) => {
           if (event.key === "Enter") {
-            controls.setState(key, (event.target as HTMLInputElement).value)
+            controls.setContext(key, (event.target as HTMLInputElement).value)
           }
         }}
 				/>
 			</div>
 		{:else if type === 'select'}
 			<div class="text">
-				<label for={label} style="margin-right: 10px;">
+				<label for={label} style="margin-right:10px;">
 					{label}
 				</label>
 				<select
@@ -50,7 +50,7 @@
 					id={label}
 					{value}
 					onchange={(e) => {
-            controls.setState(key, (e.target as HTMLInputElement).value)
+            controls.setContext(key, (e.target as HTMLInputElement).value)
           }}
 				>
 					<option>-----</option>
@@ -63,7 +63,7 @@
 			</div>
 		{:else if type === 'number'}
 			<div class="text">
-				<label for={label} style="margin-right: 10px;">
+				<label for={label} style="margin-right:10px;">
 					{label}
 				</label>
 				<input
@@ -76,7 +76,7 @@
 					onkeydown={(e) => {
           if (e.key === "Enter") {
             const val = parseFloat((e.target as HTMLInputElement).value)
-            controls.setState(key, isNaN(val) ? 0 : val)
+            controls.setContext(key, isNaN(val) ? 0 : val)
           }
         }}
 				/>
