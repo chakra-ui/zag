@@ -4,6 +4,7 @@
   import { routesData } from "@zag-js/shared"
   import Accordion from "./routes/Accordion.svelte"
   import Index from "./routes/Index.svelte"
+  import Avatar from "./routes/Avatar.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 </script>
@@ -24,6 +25,9 @@
     </Route>
     <Route path="/accordion">
       <Accordion />
+    </Route>
+    <Route path="/avatar">
+      <Avatar />
     </Route>
   </div>
 </Router>
