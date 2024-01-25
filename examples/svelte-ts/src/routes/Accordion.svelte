@@ -8,8 +8,6 @@
 
   const controls = useControls(accordionControls)
 
-  console.log(accordionControls)
-
   const machine = useMachine(accordion.machine({ id: "1" }), {
     context: controls.context,
   })

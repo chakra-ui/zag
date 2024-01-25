@@ -6,6 +6,7 @@
   import Index from "./routes/Index.svelte"
   import Avatar from "./routes/Avatar.svelte"
   import Carousel from "./routes/Carousel.svelte"
+  import Checkbox from "./routes/Checkbox.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 </script>
@@ -32,6 +33,9 @@
     </Route>
     <Route path="/carousel">
       <Carousel />
+    </Route>
+    <Route path="/checkbox">
+      <Checkbox />
     </Route>
   </div>
 </Router>

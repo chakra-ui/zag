@@ -1701,6 +1701,9 @@ importers:
       '@tsconfig/svelte':
         specifier: ^5.0.2
         version: 5.0.2
+      '@types/form-serialize':
+        specifier: 0.7.4
+        version: 0.7.4
       svelte:
         specifier: ^5.0.0-next.38
         version: 5.0.0-next.38
