@@ -4,7 +4,6 @@
   import * as accordion from "@zag-js/accordion"
   import { accordionControls, accordionData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { unstate } from "svelte"
 
   const controls = useControls(accordionControls)
 
@@ -12,7 +11,7 @@
     context: controls.context,
   })
 
-  const api = $derived(accordion.connect(unstate(machine.state), machine.send, normalizeProps))
+  const api = $derived(accordion.connect(machine.state, machine.send, normalizeProps))
 </script>
 
 <main class="accordion">
