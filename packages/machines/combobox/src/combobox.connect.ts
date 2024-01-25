@@ -314,6 +314,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (itemState.isDisabled || isContextMenuEvent(event)) return
           send({ type: "ITEM.CLICK", src: "pointerup", value })
         },
+        onTouchEnd(event) {
+          // prevent clicking elements behind content
+          event.preventDefault()
+          event.stopPropagation()
+        },
       })
     },
 

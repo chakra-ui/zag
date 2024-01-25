@@ -456,12 +456,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusAreaThumb(ctx) {
           raf(() => {
-            dom?.focus(ctx, dom.getAreaThumbEl(ctx))
+            dom.getAreaThumbEl(ctx)?.focus({ preventScroll: true })
           })
         },
         focusChannelThumb(ctx, evt) {
           raf(() => {
-            dom?.focus(ctx, dom.getChannelSliderThumbEl(ctx, evt.channel))
+            dom.getChannelSliderThumbEl(ctx, evt.channel)?.focus({ preventScroll: true })
           })
         },
         setInitialFocus(ctx) {
@@ -471,7 +471,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setReturnFocus(ctx) {
           raf(() => {
-            dom?.focus(ctx, dom.getTriggerEl(ctx))
+            dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
           })
         },
         syncFormatSelectElement(ctx) {

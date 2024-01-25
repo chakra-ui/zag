@@ -38,8 +38,8 @@ export default defineComponent({
               <label {...api.labelProps}>Enter frameworks:</label>
               <div {...api.controlProps}>
                 {api.value.map((value, index) => (
-                  <span key={`${toDashCase(value)}-tag-${index}`}>
-                    <div data-testid={`${toDashCase(value)}-tag`} {...api.getItemProps({ index, value })}>
+                  <span key={`${toDashCase(value)}-tag-${index}`} {...api.getItemProps({ index, value })}>
+                    <div data-testid={`${toDashCase(value)}-tag`} {...api.getItemPreviewProps({ index, value })}>
                       <span data-testid={`${toDashCase(value)}-valuetext`} {...api.getItemTextProps({ index, value })}>
                         {value}{" "}
                       </span>

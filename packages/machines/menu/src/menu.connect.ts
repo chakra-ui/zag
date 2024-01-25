@@ -93,6 +93,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           target.click()
         }
       },
+      onTouchEnd(event) {
+        // prevent clicking elements behind content
+        event.preventDefault()
+        event.stopPropagation()
+      },
     })
   }
 

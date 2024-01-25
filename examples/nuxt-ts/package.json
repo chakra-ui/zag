@@ -70,18 +70,20 @@
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
+    "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "@zag-js/vue": "workspace:*",
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
-    "vue-router": "^4.2.5"
+    "vue-router": "4.2.5",
+    "vue": "3.4.15"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@types/node": "^20.10.7",
+    "@types/node": "20.10.7",
     "@types/form-serialize": "0.7.4",
-    "nuxt": "^3.9.1"
+    "nuxt": "3.9.1"
   }
 }
