@@ -38,7 +38,7 @@
     "svelte": ">=5.0.0"
   },
   "scripts": {
-    "build": "svelte-package -i src -t",
+    "build": "svelte-package -i src",
     "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
