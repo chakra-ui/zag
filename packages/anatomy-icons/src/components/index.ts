@@ -28,8 +28,10 @@ import { TagsInputAnatomy } from "./tags-input"
 import { ToastAnatomy } from "./toast"
 import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
+import { TreeViewAnatomy } from "./tree-view"
 
 export const allComponents = {
+  "tree-view": TreeViewAnatomy,
   "circular-progress": CircularProgressAnatomy,
   "color-picker": ColorPickerAnatomy,
   "date-picker": DatePickerAnatomy,

@@ -3,9 +3,9 @@ import { contains, dataAttr, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tree-view.anatomy"
 import { dom } from "./tree-view.dom"
-import type { BranchProps, BranchState, ItemProps, ItemState, Send, State } from "./tree-view.types"
+import type { BranchProps, BranchState, ItemProps, ItemState, MachineApi, Send, State } from "./tree-view.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const expandedIds = state.context.expandedIds
   const selectedIds = state.context.selectedIds
   const isTypingAhead = state.context.isTypingAhead
@@ -31,8 +31,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
+    expandedIds,
     selectedIds,
-    expand(ids: Set<string>) {
+    expand(ids) {
       const nextSet = new Set(expandedIds)
       ids.forEach((id) => nextSet.add(id))
       send({ type: "EXPANDED.SET", value: nextSet, src: "expand" })
@@ -40,7 +41,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     expandAll() {
       send({ type: "EXPANDED.ALL" })
     },
-    collapse(ids: Set<string>) {
+    collapse(ids) {
       const nextSet = new Set(expandedIds)
       ids.forEach((id) => nextSet.delete(id))
       send({ type: "EXPANDED.SET", value: nextSet, src: "collapse" })
@@ -51,7 +52,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     selectAll() {
       send({ type: "SELECTED.ALL" })
     },
-    deselect(ids: Set<string>) {
+    deselect(ids) {
       const nextSet = new Set(selectedIds)
       ids.forEach((id) => nextSet.delete(id))
       send({ type: "SELECTED.SET", value: nextSet, src: "deselect" })
@@ -59,17 +60,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     deselectAll() {
       send({ type: "SELECTED.SET", value: new Set([]), src: "deselectAll" })
     },
-    select(ids: Set<string>) {
+    select(ids) {
       const nextSet = new Set(selectedIds)
       ids.forEach((id) => nextSet.add(id))
       send({ type: "SELECTED.SET", value: nextSet, src: "select" })
     },
-    focusBranch(id: string) {
+    focusBranch(id) {
       dom.getBranchControlEl(state.context, id)?.focus()
     },
-    focusItem(id: string) {
-      const itemEl = dom.getItemEl(state.context, id)
-      itemEl?.focus()
+    focusItem(id) {
+      dom.getItemEl(state.context, id)?.focus()
     },
 
     rootProps: normalize.element({
@@ -94,7 +94,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-multiselectable": state.context.selectionMode === "multiple" || undefined,
       onKeyDown(event) {
         const evt = getNativeEvent(event)
-        const target = getEventTarget(evt) as HTMLElement | null
+        const target = getEventTarget<HTMLElement>(evt)
 
         const node = target?.closest<HTMLElement>("[role=treeitem]")
         if (!node) return
@@ -185,7 +185,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getItemState,
-    getItemProps(props: ItemProps) {
+    getItemProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
@@ -220,7 +220,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getBranchState,
-    getBranchProps(props: BranchProps) {
+    getBranchProps(props) {
       const branchState = getBranchState(props)
       return normalize.element({
         ...parts.branch.attrs,
@@ -242,7 +242,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getBranchTriggerProps(props: BranchProps) {
+    getBranchTriggerProps(props) {
       const branchState = getBranchState(props)
       return normalize.element({
         ...parts.branchTrigger.attrs,
@@ -258,7 +258,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getBranchControlProps(props: BranchProps) {
+    getBranchControlProps(props) {
       const branchState = getBranchState(props)
       return normalize.element({
         ...parts.branchControl.attrs,
@@ -285,7 +285,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getBranchTextProps(props: BranchProps) {
+    getBranchTextProps(props) {
       const branchState = getBranchState(props)
       return normalize.element({
         ...parts.branchText.attrs,
@@ -296,7 +296,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getBranchContentProps(props: BranchProps) {
+    getBranchContentProps(props) {
       const branchState = getBranchState(props)
       return normalize.element({
         ...parts.branchContent.attrs,
