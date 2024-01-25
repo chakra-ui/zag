@@ -1,5 +1,23 @@
 # @zag-js/menu
 
+## 0.33.0
+
+### Patch Changes
+
+- [`c7141e8`](https://github.com/chakra-ui/zag/commit/c7141e8b458c5ac95b39b38a3cd6dbd2987403c8) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue on touch devices where selecting an item within combobox, menu, select triggers click event on element behind the portalled content.
+
+- Updated dependencies [[`7872cdf`](https://github.com/chakra-ui/zag/commit/7872cdf8aeb28b9a30cd4a016bd12e5366054511)]:
+  - @zag-js/core@0.33.0
+  - @zag-js/anatomy@0.33.0
+  - @zag-js/types@0.33.0
+  - @zag-js/utils@0.33.0
+  - @zag-js/dismissable@0.33.0
+  - @zag-js/dom-event@0.33.0
+  - @zag-js/dom-query@0.33.0
+  - @zag-js/mutation-observer@0.33.0
+  - @zag-js/popper@0.33.0
+  - @zag-js/rect-utils@0.33.0
+
 ## 0.32.1
 
 ### Patch Changes
@@ -795,7 +813,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" })
+  api.setPositioning({ placement: "top" });
   ```
 
 ### Patch Changes

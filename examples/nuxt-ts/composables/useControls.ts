@@ -19,7 +19,7 @@ export const useControls = <T extends ControlRecord>(config: T): UseControlsRetu
   }
 
   const getState = (key: string) => {
-    return deepGet(unref(state), key)
+    return computed(() => deepGet(unref(state), key))
   }
 
   return {

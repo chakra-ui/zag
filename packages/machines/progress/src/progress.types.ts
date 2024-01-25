@@ -10,7 +10,7 @@ import type {
 
 export type ProgressState = "indeterminate" | "loading" | "complete"
 
-export interface ValueLabelOptions {
+export interface ValueTranslationDetails {
   value: number | null
   max: number
   min: number
@@ -18,7 +18,7 @@ export interface ValueLabelOptions {
 }
 
 export interface IntlTranslations {
-  value(opts: ValueLabelOptions): string
+  value(details: ValueTranslationDetails): string
 }
 
 interface PublicContext extends DirectionProperty, CommonProperties, OrientationProperty {
@@ -82,7 +82,7 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export interface IndicatorProps {
+export interface ViewProps {
   state: ProgressState
 }
 
@@ -108,7 +108,7 @@ export interface MachineApi<T extends PropTypes> {
   trackProps: T["element"]
   valueTextProps: T["element"]
   rangeProps: T["element"]
-  getIndicatorProps(props: IndicatorProps): T["element"]
+  getViewProps(props: ViewProps): T["element"]
   circleProps: T["svg"]
   circleTrackProps: T["circle"]
   circleRangeProps: T["circle"]

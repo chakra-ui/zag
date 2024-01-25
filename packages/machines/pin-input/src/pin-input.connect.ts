@@ -105,6 +105,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               send({ type: "VALUE.INVALID", value })
               event.preventDefault()
             }
+
+            // select the text so paste always replaces the
+            // current input's value regardless of cursor position
+            if (value.length > 2) {
+              event.currentTarget.setSelectionRange(0, 1, "forward")
+            }
           } catch {
             // noop
           }
@@ -115,6 +121,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
           if (evt.inputType === "insertFromPaste" || value.length > 2) {
             send({ type: "INPUT.PASTE", value })
+            // prevent multiple characters being pasted
+            // into a single input
+            event.target.value = value[0]
+
             event.preventDefault()
             return
           }

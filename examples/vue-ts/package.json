@@ -78,8 +78,8 @@
     "@zag-js/vue": "workspace:*",
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
-    "vite": "5.0.11",
-    "vue": "3.4.7",
+    "vite": "5.0.12",
+    "vue": "3.4.15",
     "vue-router": "4.2.5"
   },
   "devDependencies": {
