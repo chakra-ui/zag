@@ -31,8 +31,11 @@ export default function Page() {
           <div {...api().controlProps}>
             <For each={api().value}>
               {(value, index) => (
-                <span>
-                  <div data-testid={`${toDashCase(value)}-tag`} {...api().getItemProps({ index: index(), value })}>
+                <span {...api().getItemProps({ index: index(), value })}>
+                  <div
+                    data-testid={`${toDashCase(value)}-tag`}
+                    {...api().getItemPreviewProps({ index: index(), value })}
+                  >
                     <span
                       data-testid={`${toDashCase(value)}-valuetext`}
                       {...api().getItemTextProps({ index: index(), value })}

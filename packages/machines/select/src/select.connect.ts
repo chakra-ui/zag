@@ -205,6 +205,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       dir: state.context.dir,
       "aria-hidden": true,
       "data-state": isOpen ? "open" : "closed",
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
+      "data-readonly": dataAttr(isReadOnly), 
     }),
 
     getItemProps(props) {
@@ -232,10 +235,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         },
         onPointerLeave(event) {
           const isKeyboardNavigationEvent = ["CONTENT.ARROW_UP", "CONTENT.ARROW_DOWN"].includes(state.event.type)
-
           if (itemState.isDisabled || event.pointerType !== "mouse" || isKeyboardNavigationEvent) return
-
           send({ type: "ITEM.POINTER_LEAVE" })
+        },
+        onTouchEnd(event) {
+          // prevent clicking elements behind content
+          event.preventDefault()
+          event.stopPropagation()
         },
       })
     },

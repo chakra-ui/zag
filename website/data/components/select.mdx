@@ -329,17 +329,17 @@ attribute.
 
 ### Selected state
 
-When an item is selected, it is given a `data-selected` attribute.
+Items are given a `data-state` attribute, indicating whether they are selected.
 
 ```css
-[data-part="item"][data-selected] {
-  /* styles for selected state */
+[data-part="item"][data-state="checked|unchecked"] {
+  /* styles for selected or unselected state */
 }
 ```
 
 ### Highlighted state
 
-When an item is higlighted, via keyboard navigation or pointer, it is given a
+When an item is highlighted, via keyboard navigation or pointer, it is given a
 `data-highlighted` attribute.
 
 ```css

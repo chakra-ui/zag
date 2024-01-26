@@ -1,11 +1,11 @@
 import { expect, test, type Locator, type Page } from "@playwright/test"
-import { a11y, controls as testControls, part, testid } from "./_utils"
+import { a11y, controls, part, testid } from "./_utils"
 
 const control = part("control")
 const hiddenInput = testid("hidden-input")
 const rating = part("item")
 
-const getRating = (page: Page, value: number) => {
+const getRating = (page: Page, value: number): Locator => {
   return page.locator(rating).nth(value - 1)
 }
 
@@ -58,7 +58,7 @@ test.describe("rating / properties", () => {
   })
 
   test("should not be selectable when disabled", async ({ page }) => {
-    await testControls(page).bool("disabled")
+    await controls(page).bool("disabled")
     await expectToBeDisabled(page.locator(control))
     const items = page.locator(rating)
     const isAllItemsDisabled = await items.evaluateAll((items) => items.every((item) => item.dataset.disabled === ""))
@@ -66,7 +66,7 @@ test.describe("rating / properties", () => {
   })
 
   test("should not be selectable when is readonly", async ({ page }) => {
-    await testControls(page).bool("readOnly")
+    await controls(page).bool("readOnly")
     const items = page.locator(rating)
     const isAllItemsReadonly = await items.evaluateAll((items) => items.every((item) => item.dataset.readonly === ""))
     expect(isAllItemsReadonly).toBeTruthy()
@@ -76,24 +76,22 @@ test.describe("rating / properties", () => {
 test.describe("rating / keyboard", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/rating-group")
-    await page.click("main")
   })
 
   test("should select value on arrow left/right", async ({ page }) => {
-    await page.keyboard.press("Tab")
-    await expect(getRating(page, 3)).toBeFocused()
+    await getRating(page, 3).focus()
 
     await page.keyboard.press("ArrowRight")
     await page.keyboard.press("ArrowRight")
     await expect(getRating(page, 4)).toBeFocused()
 
     await page.keyboard.press("ArrowLeft")
+    await page.keyboard.press("ArrowLeft")
     await expect(getRating(page, 3)).toBeFocused()
   })
 
   test("should select value on arrow home/end", async ({ page }) => {
-    await page.keyboard.press("Tab")
-    await expect(getRating(page, 3)).toBeFocused()
+    await getRating(page, 3).focus()
 
     await page.keyboard.press("Home")
     await expect(getRating(page, 1)).toBeFocused()

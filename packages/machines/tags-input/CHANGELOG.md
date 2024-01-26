@@ -1,5 +1,74 @@
 # @zag-js/tags-input
 
+## 0.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.33.1
+  - @zag-js/anatomy@0.33.1
+  - @zag-js/types@0.33.1
+  - @zag-js/auto-resize@0.33.1
+  - @zag-js/utils@0.33.1
+  - @zag-js/dom-event@0.33.1
+  - @zag-js/dom-query@0.33.1
+  - @zag-js/form-utils@0.33.1
+  - @zag-js/interact-outside@0.33.1
+  - @zag-js/live-region@0.33.1
+
+## 0.33.0
+
+### Minor Changes
+
+- [`436e8da`](https://github.com/chakra-ui/zag/commit/436e8daa420639294294de0866829c304ac7b34a) Thanks [@cschroeter](https://github.com/cschroeter)! - Improve `TagsInput` component design by introducing a new `item-preview` part. See the diff below for more details.
+
+  ```diff
+  <div {...api.rootProps}>
+    {api.value.map((value, index) => (
+  -    <span key={index}>
+  +    <span key={index} {...api.getItemProps({ index, value })}>
+  -     <div {...api.getItemProps({ index, value })}>
+  +     <div {...api.getItemPreviewProps({ index, value })}>
+          <span>{value} </span>
+          <button {...api.getItemDeleteTriggerProps({ index, value })}>&#x2715;</button>
+        </div>
+        <input {...api.getItemInputProps({ index, value })} />
+      </span>
+    ))}
+    <input placeholder="Add tag..." {...api.inputProps} />
+  </div>
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`7872cdf`](https://github.com/chakra-ui/zag/commit/7872cdf8aeb28b9a30cd4a016bd12e5366054511)]:
+  - @zag-js/core@0.33.0
+  - @zag-js/anatomy@0.33.0
+  - @zag-js/types@0.33.0
+  - @zag-js/auto-resize@0.33.0
+  - @zag-js/utils@0.33.0
+  - @zag-js/dom-event@0.33.0
+  - @zag-js/dom-query@0.33.0
+  - @zag-js/form-utils@0.33.0
+  - @zag-js/interact-outside@0.33.0
+  - @zag-js/live-region@0.33.0
+
+## 0.32.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.1
+  - @zag-js/core@0.32.1
+  - @zag-js/types@0.32.1
+  - @zag-js/auto-resize@0.32.1
+  - @zag-js/utils@0.32.1
+  - @zag-js/dom-event@0.32.1
+  - @zag-js/dom-query@0.32.1
+  - @zag-js/form-utils@0.32.1
+  - @zag-js/interact-outside@0.32.1
+  - @zag-js/live-region@0.32.1
+
 ## 0.32.0
 
 ### Patch Changes

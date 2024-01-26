@@ -11,7 +11,8 @@ export function useService<
 
   const service = useConstant(() => {
     const instance = typeof machine === "function" ? machine() : machine
-    return context ? instance.withContext(context) : instance
+    if (context) instance.setContext(context)
+    return instance
   })
 
   useSafeLayoutEffect(() => {

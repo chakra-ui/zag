@@ -1,5 +1,66 @@
 # @zag-js/color-picker
 
+## 0.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.33.1
+  - @zag-js/anatomy@0.33.1
+  - @zag-js/types@0.33.1
+  - @zag-js/color-utils@0.33.1
+  - @zag-js/utils@0.33.1
+  - @zag-js/dismissable@0.33.1
+  - @zag-js/dom-event@0.33.1
+  - @zag-js/dom-query@0.33.1
+  - @zag-js/form-utils@0.33.1
+  - @zag-js/popper@0.33.1
+  - @zag-js/tabbable@0.33.1
+  - @zag-js/text-selection@0.33.1
+  - @zag-js/visually-hidden@0.33.1
+
+## 0.33.0
+
+### Patch Changes
+
+- Updated dependencies [[`7872cdf`](https://github.com/chakra-ui/zag/commit/7872cdf8aeb28b9a30cd4a016bd12e5366054511)]:
+  - @zag-js/core@0.33.0
+  - @zag-js/anatomy@0.33.0
+  - @zag-js/types@0.33.0
+  - @zag-js/color-utils@0.33.0
+  - @zag-js/utils@0.33.0
+  - @zag-js/dismissable@0.33.0
+  - @zag-js/dom-event@0.33.0
+  - @zag-js/dom-query@0.33.0
+  - @zag-js/form-utils@0.33.0
+  - @zag-js/popper@0.33.0
+  - @zag-js/tabbable@0.33.0
+  - @zag-js/text-selection@0.33.0
+  - @zag-js/visually-hidden@0.33.0
+
+## 0.32.1
+
+### Patch Changes
+
+- [#1156](https://github.com/chakra-ui/zag/pull/1156)
+  [`11399e2`](https://github.com/chakra-ui/zag/commit/11399e224be3cd0d549c9b2a6afb6cace58ada43) Thanks
+  [@Omikorin](https://github.com/Omikorin)! - Fix issue where some change details typings were no exported
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.1
+  - @zag-js/core@0.32.1
+  - @zag-js/types@0.32.1
+  - @zag-js/color-utils@0.32.1
+  - @zag-js/utils@0.32.1
+  - @zag-js/dismissable@0.32.1
+  - @zag-js/dom-event@0.32.1
+  - @zag-js/dom-query@0.32.1
+  - @zag-js/form-utils@0.32.1
+  - @zag-js/popper@0.32.1
+  - @zag-js/tabbable@0.32.1
+  - @zag-js/text-selection@0.32.1
+  - @zag-js/visually-hidden@0.32.1
+
 ## 0.32.0
 
 ### Patch Changes

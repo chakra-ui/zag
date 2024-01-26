@@ -17,8 +17,8 @@ const api = computed(() =>
 
 <template>
   <div ref="ref" v-bind="api.rootProps">
-    <span v-for="(value, index) in api.value" :key="index">
-      <div v-bind="api.getItemProps({ index, value })">
+    <span v-for="(value, index) in api.value" :key="index" v-bind="api.getItemProps({ index, value })">
+      <div v-bind="api.getItemPreviewProps({ index, value })">
         <span>{{ value }} </span>
         <button v-bind="api.getItemDeleteTriggerProps({ index, value })">
           &#x2715;

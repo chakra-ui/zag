@@ -10,9 +10,10 @@ export function useService<
   const { state: hydratedState, context } = options ?? {}
 
   const service = (() => {
-    const _machine = typeof machine === "function" ? machine() : machine
-    const contextValue = typeof context === "function" ? context() : context
-    return contextValue ? _machine.withContext(contextValue) : _machine
+    const _service = typeof machine === "function" ? machine() : machine
+    const ctx = typeof context === "function" ? context() : context
+    if (ctx) _service.setContext(ctx)
+    return _service
   })()
 
   onMount(() => {
