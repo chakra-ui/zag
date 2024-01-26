@@ -1,5 +1,26 @@
 # @zag-js/select
 
+## 0.33.1
+
+### Patch Changes
+
+- [#1183](https://github.com/chakra-ui/zag/pull/1183) [`d5d2f7f`](https://github.com/chakra-ui/zag/commit/d5d2f7f3e21091221da741766da75ccc594fafec) Thanks [@iNetJoJo](https://github.com/iNetJoJo)! - Add data-disabled, data-invalid, aria-invalid, data-readonly to indicatorProps for Select
+
+- Updated dependencies []:
+  - @zag-js/core@0.33.1
+  - @zag-js/anatomy@0.33.1
+  - @zag-js/types@0.33.1
+  - @zag-js/collection@0.33.1
+  - @zag-js/utils@0.33.1
+  - @zag-js/dismissable@0.33.1
+  - @zag-js/dom-event@0.33.1
+  - @zag-js/dom-query@0.33.1
+  - @zag-js/form-utils@0.33.1
+  - @zag-js/mutation-observer@0.33.1
+  - @zag-js/popper@0.33.1
+  - @zag-js/tabbable@0.33.1
+  - @zag-js/visually-hidden@0.33.1
+
 ## 0.33.0
 
 ### Patch Changes
