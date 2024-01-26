@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.33.1](./#0.33.1) - 2024-01-26
+
+### Fixed
+
+= **Core**: Fix issue where context mutation updates were missed due to the underlying `proxy-compare` regression.
+
+- **TreeView**: Fix issue where tree view machine types were not exported.
+
+### Added
+
+- **Select**: Add `data-disabled`, `data-invalid`, and `data-readonly` to indicator props
+
 ## [0.33.0](./#0.33.0) - 2024-01-23
 
 ### Fixed
