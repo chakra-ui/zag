@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.33.2](./#0.33.2) - 2024-01-26
+
+### Fixed
+
+- **React**: Fix context reactivity issue where updates were not sent to the machine
+
+### Added
+
+### Changed
+
 ## [0.33.1](./#0.33.1) - 2024-01-26
 
 ### Fixed
