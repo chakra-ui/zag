@@ -31,10 +31,8 @@ export default function Page() {
           <div {...api.getPanelProps({ id: "a" })}>
             <p>A</p>
           </div>
-          <div {...api.getResizeTriggerProps({ id: "a:b" })}>
-            <div className="bar" />
-          </div>
-          <div {...api.getPanelProps({ id: "a" })}>
+          <div {...api.getResizeTriggerProps({ id: "a:b" })} />
+          <div {...api.getPanelProps({ id: "b" })}>
             <p>B</p>
           </div>
         </div>
