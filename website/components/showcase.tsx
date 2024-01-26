@@ -22,6 +22,7 @@ import { Rating } from "./machines/rating"
 import { SegmentedControl } from "./machines/segmented-control"
 import { Select } from "./machines/select"
 import { Slider } from "./machines/slider"
+import { Splitter } from "./machines/splitter"
 import { Switch } from "./machines/switch"
 import { Tabs } from "./machines/tabs"
 import { TagsInput } from "./machines/tags-input"
@@ -263,6 +264,18 @@ const components = {
         readOnly: false,
         origin: { default: "start", options: ["start", "center"] },
         dir: { default: "ltr", options: ["ltr", "rtl"] },
+      }}
+    />
+  ),
+  Splitter: () => (
+    <Playground
+      component={Splitter}
+      defaultProps={{
+        dir: { default: "ltr", options: ["ltr", "rtl"] },
+        orientation: {
+          default: "horizontal",
+          options: ["horizontal", "vertical"],
+        },
       }}
     />
   ),

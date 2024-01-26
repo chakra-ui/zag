@@ -96,6 +96,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Rating Group", id: "rating-group" },
         { type: "doc", label: "Select", id: "select" },
         { type: "doc", label: "Slider", id: "slider" },
+        { type: "doc", label: "Splitter", id: "splitter", new: true },
         { type: "doc", label: "Switch", id: "switch" },
         { type: "doc", label: "Tabs", id: "tabs" },
         { type: "doc", label: "Tags Input", id: "tags-input" },
