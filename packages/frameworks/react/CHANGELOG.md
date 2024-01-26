@@ -1,5 +1,16 @@
 # @zag-js/react
 
+## 0.33.2
+
+### Patch Changes
+
+- [`69d7549`](https://github.com/chakra-ui/zag/commit/69d754936ce2cb694e2027fc034b2b7d817390ec) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix context reactivity issue where updates are not sent to the machine
+
+- Updated dependencies []:
+  - @zag-js/core@0.33.2
+  - @zag-js/store@0.33.2
+  - @zag-js/types@0.33.2
+
 ## 0.33.1
 
 ### Patch Changes
