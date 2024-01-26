@@ -12,7 +12,10 @@ export default function Page() {
   const [state, send] = useMachine(
     splitter.machine({
       id: useId(),
-      size: [{ id: "aside", size: 40, maxSize: 60 }, { id: "content", size: 20 }, { id: "sources" }],
+      size: [
+        { id: "a", size: 50 },
+        { id: "b", size: 50 },
+      ],
     }),
     {
       context: controls.context,
@@ -25,20 +28,14 @@ export default function Page() {
     <>
       <main className="splitter">
         <div {...api.rootProps}>
-          <div {...api.getPanelProps({ id: "aside" })}>
-            <p>Aside</p>
+          <div {...api.getPanelProps({ id: "a" })}>
+            <p>A</p>
           </div>
-          <div {...api.getResizeTriggerProps({ id: "aside:content" })}>
+          <div {...api.getResizeTriggerProps({ id: "a:b" })}>
             <div className="bar" />
           </div>
-          <div {...api.getPanelProps({ id: "content" })}>
-            <p>Content</p>
-          </div>
-          <div {...api.getResizeTriggerProps({ id: "content:sources" })}>
-            <div className="bar" />
-          </div>
-          <div {...api.getPanelProps({ id: "sources" })}>
-            <p>Sources</p>
+          <div {...api.getPanelProps({ id: "a" })}>
+            <p>B</p>
           </div>
         </div>
       </main>

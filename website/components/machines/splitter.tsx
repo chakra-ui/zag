@@ -1,74 +1,56 @@
 import { Flex } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as splitter from "@zag-js/splitter"
 import { useId } from "react"
 
 export function Splitter(props: any) {
+  const context = props.controls
   const [state, send] = useMachine(
     splitter.machine({
       id: useId(),
       size: [
-        { id: "aside", size: 40, maxSize: 60 },
-        { id: "content", size: 20 },
-        { id: "sources" },
+        { id: "a", size: 50 },
+        { id: "b", size: 50 },
       ],
     }),
-    { context: props.controls },
+    { context },
   )
+
+  const isHorizontal = context.orientation === "horizontal"
 
   const api = splitter.connect(state, send, normalizeProps)
 
   return (
-    <Flex
-      align="center"
-      justify="center"
-      padding={10}
-      h={40}
-      {...api.rootProps}
-    >
+    <Flex align="center" justify="center" padding={10} {...api.rootProps}>
       <Flex
-        bg="bg-bold"
-        w="full"
-        padding={2}
-        textAlign="center"
-        {...api.getPanelProps({ id: "aside" })}
+        bg="bg-subtle"
+        borderWidth="1px"
+        align="center"
+        justify="center"
+        h="full"
+        w={isHorizontal ? "auto" : "full"}
+        {...api.getPanelProps({ id: "a" })}
       >
-        <p>Aside</p>
+        <p>A</p>
       </Flex>
       <Flex
-        bg="#e2e8f0"
-        w={1}
-        h={1}
-        {...api.getResizeTriggerProps({ id: "aside:content" })}
-      >
-        <chakra.div className="bar" />
-      </Flex>
+        bg="gray.300"
+        rounded={4}
+        m={2}
+        w={isHorizontal ? 2 : 64}
+        h={isHorizontal ? 24 : 2}
+        {...api.getResizeTriggerProps({ id: "a:b" })}
+      />
       <Flex
-        bg="bg-bold"
-        w="full"
-        padding={2}
-        textAlign="center"
-        {...api.getPanelProps({ id: "content" })}
+        bg="bg-subtle"
+        borderWidth="1px"
+        align="center"
+        justify="center"
+        h="full"
+        w={isHorizontal ? "auto" : "full"}
+        {...api.getPanelProps({ id: "b" })}
       >
-        <p>Content</p>
-      </Flex>
-      <Flex
-        bg="#e2e8f0"
-        w={1}
-        h={1}
-        {...api.getResizeTriggerProps({ id: "content:sources" })}
-      >
-        <chakra.div className="bar" />
-      </Flex>
-      <Flex
-        bg="bg-bold"
-        w="full"
-        padding={2}
-        textAlign="center"
-        {...api.getPanelProps({ id: "sources" })}
-      >
-        <p>Sources</p>
+        <p>B</p>
       </Flex>
     </Flex>
   )

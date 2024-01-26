@@ -63,14 +63,13 @@ splitter machine in your project 🔥
 
 When the resize trigger of splitter changes, the `onSizeChangeStart` and `onSizeChangeEnd` callback is invoked.
 
-```jsx {9-14}
+```jsx {8-13}
 const [state, send] = useMachine(
   splitter.machine({
     id: useId(),
     size: [
-      { id: "aside", size: 40, maxSize: 60 },
-      { id: "content", size: 20 },
-      { id: "sources" },
+      { id: "a", size: 50 },
+      { id: "b", size: 50 },
     ],
     onSizeChangeStart(detail) {
       console.log("change start", detail)
@@ -87,14 +86,13 @@ const [state, send] = useMachine(
 By default, the splitter is assumed to be horizontal. To change the orientation to
 vertical, set the `orientation` property in the machine's context to `vertical`.
 
-```jsx {9}
+```jsx {8}
 const [state, send] = useMachine(
   splitter.machine({
     id: useId(),
     size: [
-      { id: "aside", size: 40, maxSize: 60 },
-      { id: "content", size: 20 },
-      { id: "sources" },
+      { id: "a", size: 50 },
+      { id: "b", size: 50 },
     ],
     orientation: "vertical"
   })
@@ -134,25 +132,6 @@ on the item and content elements.
 
 [data-scope="splitter"][data-part="resize-trigger"][data-disabled] {
   /* styles for the item is disabled state */
-}
-```
-
-### Bar
-
-When an splitter item is horizontal or vertical, a `data-state` attribute is set
-on the item element.
-
-```css
-[data-scope="splitter"][data-part="resize-trigger"] .bar {
-  /* styles for the item */
-}
-
-[data-scope="splitter"][data-orientation="horizontal"] .bar {
-  /* styles for the item is horizontal state */
-}
-
-[data-scope="splitter"][data-orientation="vertical"] .bar {
-  /* styles for the item is horizontal state */
 }
 ```
 

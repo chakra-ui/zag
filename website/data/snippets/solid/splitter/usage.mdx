@@ -8,9 +8,8 @@ export function Splitter() {
     splitter.machine({
       id: createUniqueId(),
       size: [
-        { id: "aside", size: 40, maxSize: 60 },
-        { id: "content", size: 20 },
-        { id: "sources" }
+        { id: "a", size: 50 },
+        { id: "b", size: 50 },
       ],
     })
   )
@@ -19,20 +18,12 @@ export function Splitter() {
 
   return (
     <div {...api().rootProps}>
-      <div {...api().getPanelProps({ id: "aside" })}>
-        <p>Aside</p>
+      <div {...api().getPanelProps({ id: "a" })}>
+        <p>A</p>
       </div>
-      <div {...api().getResizeTriggerProps({ id: "aside:content" })}>
-        <div class="bar" />
-      </div>
-      <div {...api().getPanelProps({ id: "content" })}>
-        <p>Content</p>
-      </div>
-      <div {...api().getResizeTriggerProps({ id: "content:sources" })}>
-        <div class="bar" />
-      </div>
-      <div {...api().getPanelProps({ id: "sources" })}>
-        <p>Sources</p>
+      <div {...api().getResizeTriggerProps({ id: "a:b" })} />
+      <div {...api().getPanelProps({ id: "b" })}>
+        <p>B</p>
       </div>
     </div>
   )
