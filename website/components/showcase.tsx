@@ -60,11 +60,6 @@ const components = {
         },
         index: 0,
         loop: false,
-        orientation: {
-          default: "horizontal",
-          options: ["horizontal", "vertical"],
-        },
-        slidesPerView: 1,
         spacing: "0px",
       }}
     />
