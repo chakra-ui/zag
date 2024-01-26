@@ -1,8 +1,8 @@
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { useId, useRef } from "react"
-import { StateVisualizer } from "../components/state-visualizer"
-import { Toolbar } from "../components/toolbar"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
 
 export default function Page() {
   const inputRef = useRef<HTMLInputElement>(null)
