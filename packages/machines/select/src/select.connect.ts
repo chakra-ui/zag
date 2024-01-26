@@ -205,6 +205,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       dir: state.context.dir,
       "aria-hidden": true,
       "data-state": isOpen ? "open" : "closed",
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
+      "data-readonly": dataAttr(isReadOnly), 
     }),
 
     getItemProps(props) {
