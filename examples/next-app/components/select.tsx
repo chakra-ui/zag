@@ -14,8 +14,8 @@ const collection = select.collection({
 })
 
 interface SelectProps extends Omit<select.Context, "id" | "value" | "onValueChange" | "collection"> {
-  value: string | null | undefined
-  setValue: (value: string) => void
+  value?: string | null | undefined
+  setValue?: (value: string) => void
 }
 
 export function Select(props: SelectProps) {
@@ -26,7 +26,7 @@ export function Select(props: SelectProps) {
       ...restProps,
       value: value ? [value] : undefined,
       onValueChange(details: any) {
-        setValue(details.value[0])
+        setValue?.(details.value[0])
       },
     },
   })

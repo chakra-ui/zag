@@ -806,7 +806,7 @@ main [data-testid="scrubber"] {
   outline-offset: 2px;
 }
 
-[data-scope="tags-input"][data-part="item"] {
+[data-scope="tags-input"][data-part="item-preview"] {
   background: #eee;
   color: #444;
   padding: 0 4px;
@@ -819,15 +819,15 @@ main [data-testid="scrubber"] {
   display: inline-block;
 }
 
-[data-scope="tags-input"][data-part="item"][hidden] {
+[data-scope="tags-input"][data-part="item-preview"][hidden] {
   display: none !important;
 }
-[data-scope="tags-input"][data-part="item"][data-highlighted] {
+[data-scope="tags-input"][data-part="item-preview"][data-highlighted] {
   background-color: #777;
   border-color: #777;
   color: #eee;
 }
-[data-scope="tags-input"][data-part="item"][data-disabled] {
+[data-scope="tags-input"][data-part="item-preview"][data-disabled] {
   opacity: 0.6;
   cursor: default;
 }
@@ -1316,6 +1316,7 @@ main [data-testid="scrubber"] {
 .pagination ul {
   display: flex;
   gap: 4px;
+  align-items: center;
   list-style-type: none;
 }
 
@@ -1328,6 +1329,7 @@ main [data-testid="scrubber"] {
 }
 
 [data-scope="pagination"][data-part*="trigger"],
+[data-scope="pagination"][data-part*="item"],
 [data-scope="pagination"][data-part="ellipsis"] {
   box-sizing: border-box;
   padding: 0 12px;
@@ -1343,17 +1345,17 @@ main [data-testid="scrubber"] {
   text-decoration: none;
 }
 
-[data-scope="pagination"][data-part*="trigger"]:hover {
+[data-scope="pagination"][data-part*="item"]:hover {
   background-color: rgba(0, 0, 0, 0.04);
   cursor: pointer;
 }
 
-[data-scope="pagination"][data-part*="trigger"][data-selected] {
+[data-scope="pagination"][data-part*="item"][data-selected] {
   background-color: blue;
   color: white;
 }
 
-[data-scope="pagination"][data-part*="trigger"]:focus {
+[data-scope="pagination"][data-part*="item"]:focus {
   outline: 2px solid var(--ring-color);
   outline-offset: 1px;
 }
@@ -1794,6 +1796,40 @@ main [data-testid="scrubber"] {
 }
 
 /* -----------------------------------------------------------------------------
+* Tree View
+* -----------------------------------------------------------------------------*/
+
+[data-scope="tree-view"][data-part="tree"] {
+  margin: 0;
+  margin-top: 20px;
+  padding: 0;
+  list-style: none;
+}
+
+[data-scope="tree-view"][data-part="item"],
+[data-scope="tree-view"][data-part="branch-control"] {
+  padding-inline: 6px;
+  padding-block: 4px;
+  user-select: none;
+}
+
+[data-scope="tree-view"][data-part="item"][data-selected],
+[data-scope="tree-view"][data-part="branch-control"][data-selected] {
+  background: lightblue;
+}
+
+[data-scope="tree-view"][data-part="branch-content"] {
+  list-style: none;
+  padding-inline-start: 12px;
+}
+
+[data-scope="tree-view"][data-part="branch-content"] [data-part="item"] {
+  --dx: calc(var(--depth) + 1);
+  padding-inline-start: calc(var(--dx) * 4px);
+  border-inline-start: 1px solid lightgray;
+}
+
+/* -----------------------------------------------------------------------------
 * Page Shell
 * -----------------------------------------------------------------------------*/
 
@@ -1876,4 +1912,15 @@ main [data-testid="scrubber"] {
 
 .toolbar .viz summary + div > * {
   font-family: var(--viz-font);
+}
+
+.output {
+  border: 2px solid black;
+  padding-inline: 40px;
+  padding-block: 10px;
+  padding-bottom: 32px;
+}
+
+.output p {
+  font-weight: 600;
 }

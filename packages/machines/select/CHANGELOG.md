@@ -1,5 +1,66 @@
 # @zag-js/select
 
+## 0.33.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.33.2
+  - @zag-js/core@0.33.2
+  - @zag-js/types@0.33.2
+  - @zag-js/collection@0.33.2
+  - @zag-js/utils@0.33.2
+  - @zag-js/dismissable@0.33.2
+  - @zag-js/dom-event@0.33.2
+  - @zag-js/dom-query@0.33.2
+  - @zag-js/form-utils@0.33.2
+  - @zag-js/mutation-observer@0.33.2
+  - @zag-js/popper@0.33.2
+  - @zag-js/tabbable@0.33.2
+  - @zag-js/visually-hidden@0.33.2
+
+## 0.33.1
+
+### Patch Changes
+
+- [#1183](https://github.com/chakra-ui/zag/pull/1183) [`d5d2f7f`](https://github.com/chakra-ui/zag/commit/d5d2f7f3e21091221da741766da75ccc594fafec) Thanks [@iNetJoJo](https://github.com/iNetJoJo)! - Add data-disabled, data-invalid, aria-invalid, data-readonly to indicatorProps for Select
+
+- Updated dependencies []:
+  - @zag-js/core@0.33.1
+  - @zag-js/anatomy@0.33.1
+  - @zag-js/types@0.33.1
+  - @zag-js/collection@0.33.1
+  - @zag-js/utils@0.33.1
+  - @zag-js/dismissable@0.33.1
+  - @zag-js/dom-event@0.33.1
+  - @zag-js/dom-query@0.33.1
+  - @zag-js/form-utils@0.33.1
+  - @zag-js/mutation-observer@0.33.1
+  - @zag-js/popper@0.33.1
+  - @zag-js/tabbable@0.33.1
+  - @zag-js/visually-hidden@0.33.1
+
+## 0.33.0
+
+### Patch Changes
+
+- [`c7141e8`](https://github.com/chakra-ui/zag/commit/c7141e8b458c5ac95b39b38a3cd6dbd2987403c8) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue on touch devices where selecting an item within combobox, menu, select triggers click event on element behind the portalled content.
+
+- Updated dependencies [[`7872cdf`](https://github.com/chakra-ui/zag/commit/7872cdf8aeb28b9a30cd4a016bd12e5366054511)]:
+  - @zag-js/core@0.33.0
+  - @zag-js/anatomy@0.33.0
+  - @zag-js/types@0.33.0
+  - @zag-js/collection@0.33.0
+  - @zag-js/utils@0.33.0
+  - @zag-js/dismissable@0.33.0
+  - @zag-js/dom-event@0.33.0
+  - @zag-js/dom-query@0.33.0
+  - @zag-js/form-utils@0.33.0
+  - @zag-js/mutation-observer@0.33.0
+  - @zag-js/popper@0.33.0
+  - @zag-js/tabbable@0.33.0
+  - @zag-js/visually-hidden@0.33.0
+
 ## 0.32.1
 
 ### Patch Changes
@@ -473,12 +534,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -486,7 +547,7 @@
       collection,
       id: useId(),
     }),
-  )
+  );
   ```
 
 ### Patch Changes

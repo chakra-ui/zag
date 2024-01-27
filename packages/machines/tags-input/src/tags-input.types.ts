@@ -330,6 +330,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   hiddenInputProps: T["input"]
   clearTriggerProps: T["button"]
   getItemProps(options: ItemProps): T["element"]
+  getItemPreviewProps(options: ItemProps): T["element"]
   getItemTextProps(options: ItemProps): T["element"]
   getItemInputProps(options: ItemProps): T["input"]
   getItemDeleteTriggerProps(options: ItemProps): T["button"]

@@ -64,8 +64,9 @@ const sidebar: Record<"docs", SidebarItem[]> = {
       items: [
         { type: "doc", label: "Accordion", id: "accordion" },
         { type: "doc", label: "Avatar", id: "avatar" },
+        { type: "doc", label: "Carousel", id: "carousel" },
         { type: "doc", label: "Checkbox", id: "checkbox" },
-        { type: "doc", label: "ColorPicker", id: "color-picker", new: true },
+        { type: "doc", label: "ColorPicker", id: "color-picker" },
         { type: "doc", label: "Combobox", id: "combobox" },
         { type: "doc", label: "Dialog", id: "dialog" },
         { type: "doc", label: "Editable", id: "editable" },
@@ -96,6 +97,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Rating Group", id: "rating-group" },
         { type: "doc", label: "Select", id: "select" },
         { type: "doc", label: "Slider", id: "slider" },
+        { type: "doc", label: "Splitter", id: "splitter", new: true },
         { type: "doc", label: "Switch", id: "switch" },
         { type: "doc", label: "Tabs", id: "tabs" },
         { type: "doc", label: "Tags Input", id: "tags-input" },

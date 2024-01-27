@@ -1,6 +1,6 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
 import { snapshot, subscribe } from "@zag-js/store"
-import { onUnmounted, shallowRef, watch, watchEffect, type Ref } from "vue"
+import { onUnmounted, shallowRef, watch, watchEffect, type Ref, unref } from "vue"
 import type { MachineOptions } from "./types"
 
 export function useSnapshot<
@@ -29,7 +29,13 @@ export function useSnapshot<
   })
 
   if (context) {
-    watch(context, service.setContext, { deep: true })
+    watch(
+      context,
+      (ctx) => {
+        service.setContext(unref(ctx))
+      },
+      { deep: true },
+    )
   }
 
   return state

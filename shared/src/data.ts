@@ -142,3 +142,32 @@ export const toggleGroupData = [
   { value: "italic", label: "I" },
   { value: "underline", label: "U" },
 ]
+
+export const treeViewData = {
+  name: "",
+  children: [
+    {
+      name: "src",
+      children: [{ name: "index.js" }, { name: "styles.css" }],
+    },
+    {
+      name: "node_modules",
+      children: [
+        {
+          name: "zag-js",
+          children: [{ name: "treeview.mjs" }],
+        },
+        { name: "react", children: [{ name: "bundle.js" }] },
+      ],
+    },
+    {
+      name: ".npmignore",
+    },
+    {
+      name: "package.json",
+    },
+    {
+      name: "panda.config.ts",
+    },
+  ],
+}
