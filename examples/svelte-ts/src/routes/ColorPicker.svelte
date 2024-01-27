@@ -19,7 +19,7 @@
     {
       context: controls.context,
     }
-    )
+  )
 
   const api = $derived(colorPicker.connect(machine.state, machine.send, normalizeProps))
 </script>
