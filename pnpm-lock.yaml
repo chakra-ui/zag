@@ -1259,238 +1259,6 @@ importers:
         specifier: 2.8.0
         version: 2.8.0(solid-js@1.8.9)(vite@5.0.11)
 
-  examples/svelte-kit-ts:
-    dependencies:
-      '@internationalized/date':
-        specifier: ^3.5.1
-        version: 3.5.1
-      '@zag-js/accordion':
-        specifier: workspace:*
-        version: link:../../packages/machines/accordion
-      '@zag-js/anatomy':
-        specifier: workspace:*
-        version: link:../../packages/anatomy
-      '@zag-js/anatomy-icons':
-        specifier: workspace:*
-        version: link:../../packages/anatomy-icons
-      '@zag-js/aria-hidden':
-        specifier: workspace:*
-        version: link:../../packages/utilities/aria-hidden
-      '@zag-js/auto-resize':
-        specifier: workspace:*
-        version: link:../../packages/utilities/auto-resize
-      '@zag-js/avatar':
-        specifier: workspace:*
-        version: link:../../packages/machines/avatar
-      '@zag-js/carousel':
-        specifier: workspace:*
-        version: link:../../packages/machines/carousel
-      '@zag-js/checkbox':
-        specifier: workspace:*
-        version: link:../../packages/machines/checkbox
-      '@zag-js/collection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/collection
-      '@zag-js/color-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/color-picker
-      '@zag-js/color-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/color-utils
-      '@zag-js/combobox':
-        specifier: workspace:*
-        version: link:../../packages/machines/combobox
-      '@zag-js/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@zag-js/date-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/date-picker
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/date-utils
-      '@zag-js/dialog':
-        specifier: workspace:*
-        version: link:../../packages/machines/dialog
-      '@zag-js/dismissable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dismissable
-      '@zag-js/docs':
-        specifier: workspace:*
-        version: link:../../packages/docs
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-event
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-query
-      '@zag-js/editable':
-        specifier: workspace:*
-        version: link:../../packages/machines/editable
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-rect
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-size
-      '@zag-js/file-upload':
-        specifier: workspace:*
-        version: link:../../packages/machines/file-upload
-      '@zag-js/file-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/file-utils
-      '@zag-js/focus-scope':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-scope
-      '@zag-js/focus-visible':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/form-utils
-      '@zag-js/hover-card':
-        specifier: workspace:*
-        version: link:../../packages/machines/hover-card
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/i18n-utils
-      '@zag-js/interact-outside':
-        specifier: workspace:*
-        version: link:../../packages/utilities/interact-outside
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../packages/utilities/live-region
-      '@zag-js/menu':
-        specifier: workspace:*
-        version: link:../../packages/machines/menu
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../packages/utilities/mutation-observer
-      '@zag-js/number-input':
-        specifier: workspace:*
-        version: link:../../packages/machines/number-input
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/number
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../packages/utilities/numeric-range
-      '@zag-js/pagination':
-        specifier: workspace:*
-        version: link:../../packages/machines/pagination
-      '@zag-js/pin-input':
-        specifier: workspace:*
-        version: link:../../packages/machines/pin-input
-      '@zag-js/popover':
-        specifier: workspace:*
-        version: link:../../packages/machines/popover
-      '@zag-js/popper':
-        specifier: workspace:*
-        version: link:../../packages/utilities/popper
-      '@zag-js/presence':
-        specifier: workspace:*
-        version: link:../../packages/machines/presence
-      '@zag-js/progress':
-        specifier: workspace:*
-        version: link:../../packages/machines/progress
-      '@zag-js/radio-group':
-        specifier: workspace:*
-        version: link:../../packages/machines/radio-group
-      '@zag-js/rating-group':
-        specifier: workspace:*
-        version: link:../../packages/machines/rating-group
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/rect
-      '@zag-js/remove-scroll':
-        specifier: workspace:*
-        version: link:../../packages/utilities/remove-scroll
-      '@zag-js/select':
-        specifier: workspace:*
-        version: link:../../packages/machines/select
-      '@zag-js/shared':
-        specifier: workspace:*
-        version: link:../../shared
-      '@zag-js/slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/slider
-      '@zag-js/splitter':
-        specifier: workspace:*
-        version: link:../../packages/machines/splitter
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../packages/store
-      '@zag-js/svelte':
-        specifier: workspace:*
-        version: link:../../packages/frameworks/svelte
-      '@zag-js/switch':
-        specifier: workspace:*
-        version: link:../../packages/machines/switch
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/tabbable
-      '@zag-js/tabs':
-        specifier: workspace:*
-        version: link:../../packages/machines/tabs
-      '@zag-js/tags-input':
-        specifier: workspace:*
-        version: link:../../packages/machines/tags-input
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/text-selection
-      '@zag-js/toast':
-        specifier: workspace:*
-        version: link:../../packages/machines/toast
-      '@zag-js/toggle-group':
-        specifier: workspace:*
-        version: link:../../packages/machines/toggle-group
-      '@zag-js/tooltip':
-        specifier: workspace:*
-        version: link:../../packages/machines/tooltip
-      '@zag-js/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/core
-      '@zag-js/visually-hidden':
-        specifier: workspace:*
-        version: link:../../packages/utilities/visually-hidden
-      form-serialize:
-        specifier: 0.7.2
-        version: 0.7.2
-    devDependencies:
-      '@sveltejs/adapter-auto':
-        specifier: ^3.1.1
-        version: 3.1.1(@sveltejs/kit@2.4.3)
-      '@sveltejs/kit':
-        specifier: ^2.4.3
-        version: 2.4.3(@sveltejs/vite-plugin-svelte@3.0.1)(svelte@5.0.0-next.38)(vite@5.0.11)
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^3.0.0
-        version: 3.0.1(svelte@5.0.0-next.38)(vite@5.0.11)
-      prettier:
-        specifier: ^3.1.1
-        version: 3.1.1
-      prettier-plugin-svelte:
-        specifier: ^3.1.2
-        version: 3.1.2(prettier@3.1.1)(svelte@5.0.0-next.38)
-      svelte:
-        specifier: ^5.0.0-next.38
-        version: 5.0.0-next.38
-      svelte-check:
-        specifier: ^3.6.0
-        version: 3.6.3(svelte@5.0.0-next.38)
-      tslib:
-        specifier: ^2.4.1
-        version: 2.6.2
-      typescript:
-        specifier: ^5.0.0
-        version: 5.3.3
-      vite:
-        specifier: ^5.0.3
-        version: 5.0.11(@types/node@20.10.7)
-
   examples/svelte-ts:
     dependencies:
       '@internationalized/date':
@@ -7693,42 +7461,6 @@ packages:
       solid-js: 1.8.9
     dev: false
 
-  /@sveltejs/adapter-auto@3.1.1(@sveltejs/kit@2.4.3):
-    resolution: {integrity: sha512-6LeZft2Fo/4HfmLBi5CucMYmgRxgcETweQl/yQoZo/895K3S9YWYN4Sfm/IhwlIpbJp3QNvhKmwCHbsqQNYQpw==}
-    peerDependencies:
-      '@sveltejs/kit': ^2.0.0
-    dependencies:
-      '@sveltejs/kit': 2.4.3(@sveltejs/vite-plugin-svelte@3.0.1)(svelte@5.0.0-next.38)(vite@5.0.11)
-      import-meta-resolve: 4.0.0
-    dev: true
-
-  /@sveltejs/kit@2.4.3(@sveltejs/vite-plugin-svelte@3.0.1)(svelte@5.0.0-next.38)(vite@5.0.11):
-    resolution: {integrity: sha512-nKNhUdt61vtD961kQpUk6vLDhpnV0yku5F1uYNWvrJYFV0+cGfmW7ol0JVMSjHMXlMtmmv2FTc+nPRrTFwb2UA==}
-    engines: {node: '>=18.13'}
-    hasBin: true
-    requiresBuild: true
-    peerDependencies:
-      '@sveltejs/vite-plugin-svelte': ^3.0.0
-      svelte: ^4.0.0 || ^5.0.0-next.0
-      vite: ^5.0.3
-    dependencies:
-      '@sveltejs/vite-plugin-svelte': 3.0.1(svelte@5.0.0-next.38)(vite@5.0.11)
-      '@types/cookie': 0.6.0
-      cookie: 0.6.0
-      devalue: 4.3.2
-      esm-env: 1.0.0
-      import-meta-resolve: 4.0.0
-      kleur: 4.1.5
-      magic-string: 0.30.5
-      mrmime: 2.0.0
-      sade: 1.8.1
-      set-cookie-parser: 2.6.0
-      sirv: 2.0.4
-      svelte: 5.0.0-next.38
-      tiny-glob: 0.2.9
-      vite: 5.0.11(@types/node@20.10.7)
-    dev: true
-
   /@sveltejs/package@2.2.6(svelte@5.0.0-next.38)(typescript@5.3.3):
     resolution: {integrity: sha512-rhKL/96M7LCvFI2xN94qsqHtEWr/ypcMGiii3s6dRW7ADt3tiDm8UfExjRR8v5jW3Femz0+VJ0TNevxI4Q9Quw==}
     engines: {node: ^16.14 || >=18}
@@ -8109,10 +7841,6 @@ packages:
     resolution: {integrity: sha512-WXCyOcRtH37HAUkpXhUduaxdm82b4GSlyTqajXviN4EfiuPgNYR109xMCKvpl6zPIpua0DGlMEDCq+g8EdoheQ==}
     dependencies:
       '@babel/types': 7.23.6
-
-  /@types/cookie@0.6.0:
-    resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
-    dev: true
 
   /@types/debug@4.1.12:
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
@@ -10328,11 +10056,6 @@ packages:
     resolution: {integrity: sha512-mWYvfOLrfEc996hlKcdABeIiPHUPC6DM2QYZdGGOvhOTbA3tjm2eBwqlJpoFdjC89NI4Qt6h0Pu06Mp+1Pj5OQ==}
     dev: true
 
-  /cookie@0.6.0:
-    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
-    engines: {node: '>= 0.6'}
-    dev: true
-
   /core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
 
@@ -12401,10 +12124,6 @@ packages:
     dependencies:
       define-properties: 1.2.1
 
-  /globalyzer@0.1.0:
-    resolution: {integrity: sha512-40oNTM9UfG6aBmuKxk/giHn5nQ8RVz/SS4Ir6zgzOv9/qC3kKZ9v4etGTcJbEl/NyVQH7FGU7d+X1egr57Md2Q==}
-    dev: true
-
   /globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
@@ -13010,10 +12729,6 @@ packages:
     resolution: {integrity: sha512-rKtvo6a868b5Hu3heneU+L4yEQ4jYKLtjpnPeUdK7h0yzXGmyBTypknlkCvHFBqfX9YlorEiMM6Dnq/5atfHkw==}
     engines: {node: '>=8'}
     dev: false
-
-  /import-meta-resolve@4.0.0:
-    resolution: {integrity: sha512-okYUR7ZQPH+efeuMJGlq4f8ubUgO50kByRPyt/Cy1Io4PSRsPjxME+YlVaCOx+NIToW7hCsZNFJyTPFFKepRSA==}
-    dev: true
 
   /imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
@@ -16682,16 +16397,6 @@ packages:
     dependencies:
       fast-diff: 1.3.0
 
-  /prettier-plugin-svelte@3.1.2(prettier@3.1.1)(svelte@5.0.0-next.38):
-    resolution: {integrity: sha512-7xfMZtwgAWHMT0iZc8jN4o65zgbAQ3+O32V6W7pXrqNvKnHnkoyQCGCbKeUyXKZLbYE0YhFRnamfxfkEGxm8qA==}
-    peerDependencies:
-      prettier: ^3.0.0
-      svelte: ^3.2.0 || ^4.0.0-next.0 || ^5.0.0-next.0
-    dependencies:
-      prettier: 3.1.1
-      svelte: 5.0.0-next.38
-    dev: true
-
   /prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
@@ -17546,10 +17251,6 @@ packages:
   /set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
 
-  /set-cookie-parser@2.6.0:
-    resolution: {integrity: sha512-RVnVQxTXuerk653XfuliOxBP81Sf0+qfQE73LIYKcyMYHG94AuH0kgrQpRDuTZnSmjpysHmzxJXKNfa6PjFhyQ==}
-    dev: true
-
   /set-function-length@1.1.1:
     resolution: {integrity: sha512-VoaqjbBJKiWtg4yRcKBQ7g7wnGnLV3M8oLvVWwOk2PdYY6PEFegR1vezXR0tw6fZGF9csVakIRjrJiy2veSBFQ==}
     engines: {node: '>= 0.4'}
@@ -18366,13 +18067,6 @@ packages:
 
   /through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
-
-  /tiny-glob@0.2.9:
-    resolution: {integrity: sha512-g/55ssRPUjShh+xkfx9UPDXqhckHEsHr4Vd9zX55oSdGZc/MD0m3sferOkwWtp98bv+kcVfEHtRJgBVJzelrzg==}
-    dependencies:
-      globalyzer: 0.1.0
-      globrex: 0.1.2
-    dev: true
 
   /tiny-invariant@1.3.1:
     resolution: {integrity: sha512-AD5ih2NlSssTCwsMznbvwMZpJ1cbhkGd2uueNxzv2jDlEeZdU04JQfRnggJQ8DrcVBGjAsCKwFBbDlVNtEMlzw==}
