@@ -27,6 +27,7 @@
     "@zag-js/avatar": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
     "@zag-js/accordion": "workspace:*",
+    "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/combobox": "workspace:*",
     "@zag-js/color-picker": "workspace:*",
