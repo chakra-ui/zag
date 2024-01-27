@@ -6,10 +6,17 @@ export function useService<
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
-  const { state: hydratedState, context } = options ?? {}
+  const { actions, context, state: hydratedState } = options ?? {}
 
-  const machine_ = typeof machine === "function" ? machine() : machine
-  const service = context ? machine_.withContext(unstate(context)) : machine_
+  const service = typeof machine === "function" ? machine() : machine
+
+  $effect(() => {
+    service.setOptions({ actions: unstate(actions) })
+  })
+
+  $effect(() => {
+    service.setContext(unstate(context))
+  })
 
   $effect(() => {
     service.start(hydratedState)

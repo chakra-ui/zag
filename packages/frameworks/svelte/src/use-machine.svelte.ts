@@ -8,7 +8,7 @@ export function useMachine<
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
   const service = useService(machine, options)
-  const snapshot = useSnapshot(service, options)
+  const snapshot = useSnapshot(service)
 
   return {
     send: service.send,
