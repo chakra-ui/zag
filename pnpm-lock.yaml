@@ -1670,8 +1670,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
       solid-js:
-        specifier: 1.8.11
-        version: 1.8.11
+        specifier: 1.8.12
+        version: 1.8.12
 
   packages/frameworks/vue:
     dependencies:
@@ -17307,6 +17307,14 @@ packages:
       csstype: 3.1.3
       seroval: 1.0.3
       seroval-plugins: 1.0.3(seroval@1.0.3)
+
+  /solid-js@1.8.12:
+    resolution: {integrity: sha512-sLE/i6M9FSWlov3a2pTC5ISzanH2aKwqXTZj+bbFt4SUrVb4iGEa7fpILBMOxsQjkv3eXqEk6JVLlogOdTe0UQ==}
+    dependencies:
+      csstype: 3.1.3
+      seroval: 1.0.3
+      seroval-plugins: 1.0.3(seroval@1.0.3)
+    dev: true
 
   /solid-refresh@0.5.3(solid-js@1.8.11):
     resolution: {integrity: sha512-Otg5it5sjOdZbQZJnvo99TEBAr6J7PQ5AubZLNU6szZzg3RQQ5MX04oteBIIGDs0y2Qv8aXKm9e44V8z+UnFdw==}
