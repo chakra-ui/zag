@@ -1,5 +1,23 @@
 # @zag-js/radio-group
 
+## 0.34.0
+
+### Minor Changes
+
+- [`2982ac3`](https://github.com/chakra-ui/zag/commit/2982ac314dff65883e437459cc893dea11d472f8) Thanks [@cschroeter](https://github.com/cschroeter)! - Refactor transition duration for components with indicators
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.34.0
+  - @zag-js/core@0.34.0
+  - @zag-js/types@0.34.0
+  - @zag-js/utils@0.34.0
+  - @zag-js/dom-query@0.34.0
+  - @zag-js/element-rect@0.34.0
+  - @zag-js/form-utils@0.34.0
+  - @zag-js/visually-hidden@0.34.0
+
 ## 0.33.2
 
 ### Patch Changes

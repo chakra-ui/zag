@@ -1,5 +1,24 @@
 # @zag-js/combobox
 
+## 0.34.0
+
+### Patch Changes
+
+- [`e037484`](https://github.com/chakra-ui/zag/commit/e0374847390a88e69d6e4b33f42fc6ab6291b2a8) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioning doesn't work as expected when combined with entry/exit animations in the presence component
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.34.0
+  - @zag-js/core@0.34.0
+  - @zag-js/types@0.34.0
+  - @zag-js/aria-hidden@0.34.0
+  - @zag-js/collection@0.34.0
+  - @zag-js/utils@0.34.0
+  - @zag-js/dismissable@0.34.0
+  - @zag-js/dom-event@0.34.0
+  - @zag-js/dom-query@0.34.0
+  - @zag-js/mutation-observer@0.34.0
+  - @zag-js/popper@0.34.0
+
 ## 0.33.2
 
 ### Patch Changes
@@ -479,12 +498,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -492,7 +511,7 @@
       collection,
       id: useId(),
     }),
-  )
+  );
   ```
 
 ### Patch Changes

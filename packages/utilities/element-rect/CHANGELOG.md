@@ -1,5 +1,7 @@
 # @zag-js/element-rect
 
+## 0.34.0
+
 ## 0.33.2
 
 ## 0.33.1
@@ -116,11 +118,11 @@
   position or rect.
 
   ```js
-  import { trackElementRect } from "@zag-js/element-rect"
+  import { trackElementRect } from "@zag-js/element-rect";
 
-  trackElementRect(element, update, { scope: "size" }) // only track size
-  trackElementRect(element, update, { scope: "position" }) // only track position
-  trackElementRect(element, update, { scope: "rect" }) // track size and position (default)
+  trackElementRect(element, update, { scope: "size" }); // only track size
+  trackElementRect(element, update, { scope: "position" }); // only track position
+  trackElementRect(element, update, { scope: "rect" }); // track size and position (default)
   ```
 
 ## 0.2.2
