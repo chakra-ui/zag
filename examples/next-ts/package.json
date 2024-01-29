@@ -77,15 +77,15 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "next": "14.0.4",
+    "next": "14.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-spinners": "0.13.8"
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "@types/node": "20.10.7",
-    "@types/react": "18.2.47",
+    "@types/node": "20.11.10",
+    "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
