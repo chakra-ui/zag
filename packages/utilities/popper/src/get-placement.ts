@@ -165,7 +165,6 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
   return () => {
     cancelAutoUpdate?.()
     onPositioned?.({ placed: false })
-    options.onCleanup?.()
   }
 }
 
