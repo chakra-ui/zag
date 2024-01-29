@@ -1,5 +1,20 @@
 # @zag-js/hover-card
 
+## 0.34.0
+
+### Patch Changes
+
+- [`e037484`](https://github.com/chakra-ui/zag/commit/e0374847390a88e69d6e4b33f42fc6ab6291b2a8) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioning doesn't work as expected when combined with entry/exit animations in the presence component
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.34.0
+  - @zag-js/core@0.34.0
+  - @zag-js/types@0.34.0
+  - @zag-js/utils@0.34.0
+  - @zag-js/dismissable@0.34.0
+  - @zag-js/dom-query@0.34.0
+  - @zag-js/popper@0.34.0
+
 ## 0.33.2
 
 ### Patch Changes
@@ -639,7 +654,7 @@
 
   ```jsx
   // this is will open the dialog initially
-  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }));
 
   // this will open the dialog when the `open` value changes
   const [state, send] = useMachine(dialog.machine({ id: "1" }), {
@@ -647,7 +662,7 @@
       // when this value changes, the dialog will open/close
       open: true,
     },
-  })
+  });
   ```
 
 ### Patch Changes
@@ -667,7 +682,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" })
+  api.setPositioning({ placement: "top" });
   ```
 
 ### Patch Changes
@@ -761,15 +776,15 @@
   [@TimKolberger](https://github.com/TimKolberger)! - Add `open` and `close` functions to the connect api:
 
   ```ts
-  import * as hoverCard from "@zag-js/hover-card"
+  import * as hoverCard from "@zag-js/hover-card";
 
-  const api = hoverCard.connect(state, send, normalizeProps)
+  const api = hoverCard.connect(state, send, normalizeProps);
 
   // call `open` to open the hover card
-  api.open()
+  api.open();
 
   // call `close` to close the hover card
-  api.close()
+  api.close();
   ```
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @zag-js/switch
 
+## 0.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.34.0
+  - @zag-js/core@0.34.0
+  - @zag-js/types@0.34.0
+  - @zag-js/utils@0.34.0
+  - @zag-js/dom-query@0.34.0
+  - @zag-js/form-utils@0.34.0
+  - @zag-js/visually-hidden@0.34.0
+
 ## 0.33.2
 
 ### Patch Changes
@@ -641,7 +654,7 @@
       id: "1",
       checked: true,
     }),
-  )
+  );
 
   // this will update the checkbox when the `checked` value changes
   const [state, send] = useMachine(checkbox.machine({ id: "1" }), {
@@ -649,7 +662,7 @@
       // when this value changes, the checkbox will be checked/unchecked
       checked: true,
     },
-  })
+  });
   ```
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @zag-js/select
 
+## 0.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.34.0
+  - @zag-js/core@0.34.0
+  - @zag-js/types@0.34.0
+  - @zag-js/collection@0.34.0
+  - @zag-js/utils@0.34.0
+  - @zag-js/dismissable@0.34.0
+  - @zag-js/dom-event@0.34.0
+  - @zag-js/dom-query@0.34.0
+  - @zag-js/form-utils@0.34.0
+  - @zag-js/mutation-observer@0.34.0
+  - @zag-js/popper@0.34.0
+  - @zag-js/tabbable@0.34.0
+  - @zag-js/visually-hidden@0.34.0
+
 ## 0.33.2
 
 ### Patch Changes
@@ -539,12 +558,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -552,7 +571,7 @@
       collection,
       id: useId(),
     }),
-  )
+  );
   ```
 
 ### Patch Changes
