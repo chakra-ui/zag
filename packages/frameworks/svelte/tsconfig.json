@@ -1,15 +1,8 @@
 {
+  "extends": "../../../tsconfig.json",
+  "include": ["src"],
   "compilerOptions": {
-    "isolatedModules": true,
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "noEmit": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "strict": true,
-    "target": "esnext",
-    "verbatimModuleSyntax": true
+    "jsx": "preserve",
+    "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo",
   },
-  "include": ["src/**/*.ts"]
 }
