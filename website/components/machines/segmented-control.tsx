@@ -40,11 +40,12 @@ export function SegmentedControl(props: SegmentedControlProps) {
       {...api.rootProps}
     >
       <chakra.div
-        h="1"
         bg="bg-subtle"
         zIndex="1"
         rounded="md"
         shadow="base"
+        height="var(--height)"
+        width="var(--width)"
         {...api.indicatorProps}
       />
       {items.map((opt) => (
