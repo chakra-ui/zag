@@ -10,7 +10,7 @@
     "jsxImportSource": "solid-js",
     "types": ["vite/client"],
     "paths": {
-      "@zag-js/*": ["../../node_modules/@zag-js/*"]
-    }
-  }
+      "@zag-js/*": ["../../node_modules/@zag-js/*"],
+    },
+  },
 }

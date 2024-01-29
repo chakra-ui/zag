@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Toolbar from "$lib/components/Toolbar.svelte"
+  import Toolbar from "$lib/components/_toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as accordion from "@zag-js/accordion"
   import { accordionControls, accordionData } from "@zag-js/shared"

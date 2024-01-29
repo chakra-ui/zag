@@ -2,12 +2,12 @@
   import { Router, Link, Route } from "svelte-routing"
   import { dataAttr } from "@zag-js/dom-query"
   import { routesData } from "@zag-js/shared"
-  import Accordion from "./routes/Accordion.svelte"
-  import Index from "./routes/Index.svelte"
-  import Avatar from "./routes/Avatar.svelte"
-  import Carousel from "./routes/Carousel.svelte"
-  import Checkbox from "./routes/Checkbox.svelte"
-  import ColorPicker from "./routes/ColorPicker.svelte"
+  import Accordion from "./routes/_accordion.svelte"
+  import Index from "./routes/_index.svelte"
+  import Avatar from "./routes/_avatar.svelte"
+  import Carousel from "./routes/_carousel.svelte"
+  import Checkbox from "./routes/_checkbox.svelte"
+  import ColorPicker from "./routes/color-picker.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 </script>

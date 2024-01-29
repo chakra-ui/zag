@@ -17,9 +17,9 @@
     "baseUrl": ".",
     "paths": {
       "@zag-js/*": ["../../node_modules/@zag-js/*"],
-      "$lib/*": ["./src/lib/*"]
-    }
+      "$lib/*": ["./src/lib/*"],
+    },
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.node.json" }],
 }

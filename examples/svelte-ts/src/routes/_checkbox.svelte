@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Toolbar from "$lib/components/Toolbar.svelte"
+  import Toolbar from "$lib/components/_toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as checkbox from "@zag-js/checkbox"
   import { checkboxControls } from "@zag-js/shared"
