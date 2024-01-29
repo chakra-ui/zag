@@ -695,7 +695,7 @@
 
   ```jsx
   // this is will open the dialog initially
-  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }));
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
 
   // this will open the dialog when the `open` value changes
   const [state, send] = useMachine(dialog.machine({ id: "1" }), {
@@ -703,7 +703,7 @@
       // when this value changes, the dialog will open/close
       open: true,
     },
-  });
+  })
   ```
 
 ### Patch Changes

@@ -36,7 +36,9 @@
 
 ### Minor Changes
 
-- [`436e8da`](https://github.com/chakra-ui/zag/commit/436e8daa420639294294de0866829c304ac7b34a) Thanks [@cschroeter](https://github.com/cschroeter)! - Improve `TagsInput` component design by introducing a new `item-preview` part. See the diff below for more details.
+- [`436e8da`](https://github.com/chakra-ui/zag/commit/436e8daa420639294294de0866829c304ac7b34a) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Improve `TagsInput` component design by introducing a new
+  `item-preview` part. See the diff below for more details.
 
   ```diff
   <div {...api.rootProps}>

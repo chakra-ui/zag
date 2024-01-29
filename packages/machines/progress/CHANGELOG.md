@@ -26,7 +26,8 @@
 
 ### Minor Changes
 
-- [`9f914ea`](https://github.com/chakra-ui/zag/commit/9f914ea7860406f2be8a55b27dc25e28cd20d854) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename indicator part to view
+- [`9f914ea`](https://github.com/chakra-ui/zag/commit/9f914ea7860406f2be8a55b27dc25e28cd20d854) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename indicator part to view
 
 ### Patch Changes
 
