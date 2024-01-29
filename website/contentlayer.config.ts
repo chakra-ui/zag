@@ -12,7 +12,6 @@ import rehypeCodeTitles from "rehype-code-titles"
 import rehypePrism from "rehype-prism-plus"
 import rehypeSlug from "rehype-slug"
 import remarkDirective from "remark-directive"
-import remarkGfm from "remark-gfm"
 import { remarkAdmonition } from "./lib/remark-utils"
 import siteConfig from "./site.config"
 
@@ -141,10 +140,11 @@ export default makeSource({
   disableImportAliasWarning: true,
   onUnknownDocuments: "skip-ignore",
   mdx: {
-    remarkPlugins: [remarkGfm, remarkDirective, remarkAdmonition],
+    remarkPlugins: [remarkDirective, remarkAdmonition],
     rehypePlugins: [
       rehypeSlug,
       rehypeCodeTitles,
+      //@ts-expect-error
       rehypePrism,
       [
         rehypeAutolinkHeadings,

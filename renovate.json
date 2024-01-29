@@ -27,6 +27,5 @@
       "groupName": "eslint",
       "matchPackagePatterns": ["eslint*"]
     }
-  ],
-  "ignoreDeps": ["vite-plugin-dts"]
+  ]
 }

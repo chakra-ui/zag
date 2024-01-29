@@ -100,9 +100,6 @@ export function machine(userContext: UserDefinedContext) {
             onComplete(data) {
               ctx.currentPlacement = data.placement
             },
-            onCleanup() {
-              ctx.currentPlacement = undefined
-            },
           })
         },
         trackDismissableElement(ctx, _evt, { send }) {

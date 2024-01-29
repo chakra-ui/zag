@@ -85,10 +85,6 @@ export interface PositioningOptions {
    */
   onPositioned?(data: { placed: boolean }): void
   /**
-   * Function called on cleanup of all listeners
-   */
-  onCleanup?: VoidFunction
-  /**
    *  Function that returns the anchor rect of the combobox
    */
   getAnchorRect?: (element: HTMLElement | VirtualElement | null) => AnchorRect | null
