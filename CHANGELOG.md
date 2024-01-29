@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.34.0](./#0.34.0) - 2024-02-19
+
+### Fixed
+
+- **All components**: Fix issue where positioning doesn't work as expected when combined with entry/exit animations in
+  the presence component
+
+### Changed
+
+- **Radio, Tabs**: Make it possible to override indicator's transition duration by setting the `--transition-duration`
+  css variable.
+
 ## [0.33.2](./#0.33.2) - 2024-01-26
 
 ### Fixed
