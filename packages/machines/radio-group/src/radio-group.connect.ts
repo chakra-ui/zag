@@ -179,7 +179,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(isGroupDisabled),
       "data-orientation": state.context.orientation,
       style: {
-        "--transition-duration": "150ms",
         "--transition-property": "left, top, width, height",
         "--left": state.context.indicatorRect?.left,
         "--top": state.context.indicatorRect?.top,
@@ -188,7 +187,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         position: "absolute",
         willChange: "var(--transition-property)",
         transitionProperty: "var(--transition-property)",
-        transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration)" : "0ms",
+        transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration, 150ms)" : "0ms",
         transitionTimingFunction: "var(--transition-timing-function)",
         [state.context.orientation === "horizontal" ? "left" : "top"]:
           state.context.orientation === "horizontal" ? "var(--left)" : "var(--top)",
