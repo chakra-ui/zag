@@ -144,6 +144,7 @@ export default makeSource({
     rehypePlugins: [
       rehypeSlug,
       rehypeCodeTitles,
+      //@ts-expect-error
       rehypePrism,
       [
         rehypeAutolinkHeadings,
