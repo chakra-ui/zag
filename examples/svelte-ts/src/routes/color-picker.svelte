@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Toolbar from "$lib/components/_toolbar.svelte"
+  import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as colorPicker from "@zag-js/color-picker"
   import { colorPickerControls } from "@zag-js/shared"

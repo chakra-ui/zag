@@ -4,7 +4,7 @@
   import { stringifyState } from "@zag-js/shared"
   import type { useMachine } from "@zag-js/svelte"
   import { unstate } from "svelte"
-  import Controls from "./_controls.svelte"
+  import Controls from "./controls.svelte"
 
   const { controls, machine } = $props<{
     machine: ReturnType<typeof useMachine<any, any, any>>
