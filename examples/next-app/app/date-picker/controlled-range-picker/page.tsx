@@ -20,7 +20,7 @@ export default function Page() {
         Close
       </button>
 
-      <DateRangePicker open={open} />
+      <DateRangePicker open={open} onOpenChange={({ open }) => setOpen(open)} />
     </div>
   )
 }
