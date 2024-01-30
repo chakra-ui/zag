@@ -94,6 +94,10 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
    */
   open?: boolean
   /**
+   * Whether the color picker open state is controlled by the user
+   */
+  __controlled?: boolean
+  /**
    * The color format to use
    */
   format: ColorFormat
@@ -133,6 +137,11 @@ type PrivateContext = Context<{
    * The current placement of the color picker
    */
   currentPlacement?: PositioningOptions["placement"]
+  /**
+   *  @internal
+   * Whether the color picker should return focus to the trigger when closed
+   */
+  restoreFocus?: boolean
 }>
 
 type ComputedContext = Readonly<{

@@ -1,5 +1,5 @@
 import { parseColor, type Color } from "@zag-js/color-utils"
-import { createMachine } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
@@ -19,6 +19,8 @@ import type {
 } from "./color-picker.types"
 import { getChannelValue } from "./utils/get-channel-input-value"
 
+const { and } = guards
+
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
@@ -36,6 +38,7 @@ export function machine(userContext: UserDefinedContext) {
         activeChannel: null,
         activeOrientation: null,
         fieldsetDisabled: false,
+        restoreFocus: true,
         positioning: {
           ...ctx.positioning,
           placement: "bottom",
@@ -80,14 +83,30 @@ export function machine(userContext: UserDefinedContext) {
         idle: {
           tags: ["closed"],
           on: {
-            OPEN: {
+            "CONTROLLED.OPEN": {
               target: "open",
-              actions: ["setInitialFocus", "invokeOnOpen"],
+              actions: ["setInitialFocus"],
             },
-            "TRIGGER.CLICK": {
-              target: "open",
-              actions: ["setInitialFocus", "invokeOnOpen"],
-            },
+            OPEN: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["invokeOnOpen", "setInitialFocus"],
+              },
+            ],
+            "TRIGGER.CLICK": [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["invokeOnOpen", "setInitialFocus"],
+              },
+            ],
             "CHANNEL_INPUT.FOCUS": {
               target: "focused",
               actions: ["setActiveChannel"],
@@ -98,14 +117,30 @@ export function machine(userContext: UserDefinedContext) {
         focused: {
           tags: ["closed", "focused"],
           on: {
-            OPEN: {
+            "CONTROLLED.OPEN": {
               target: "open",
-              actions: ["setInitialFocus", "invokeOnOpen"],
+              actions: ["setInitialFocus"],
             },
-            "TRIGGER.CLICK": {
-              target: "open",
-              actions: ["setInitialFocus", "invokeOnOpen"],
-            },
+            OPEN: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["invokeOnOpen", "setInitialFocus"],
+              },
+            ],
+            "TRIGGER.CLICK": [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["invokeOnOpen", "setInitialFocus"],
+              },
+            ],
             "CHANNEL_INPUT.FOCUS": {
               actions: ["setActiveChannel"],
             },
@@ -123,10 +158,26 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["open"],
           activities: ["trackPositioning", "trackDismissableElement"],
           on: {
-            "TRIGGER.CLICK": {
-              target: "idle",
-              actions: ["invokeOnClose"],
-            },
+            "CONTROLLED.CLOSE": [
+              {
+                guard: "shouldRestoreFocus",
+                target: "focused",
+                actions: ["setReturnFocus"],
+              },
+              {
+                target: "idle",
+              },
+            ],
+            "TRIGGER.CLICK": [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "idle",
+                actions: ["invokeOnClose"],
+              },
+            ],
             "AREA.POINTER_DOWN": {
               target: "open:dragging",
               actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
@@ -188,24 +239,38 @@ export function machine(userContext: UserDefinedContext) {
             },
             INTERACT_OUTSIDE: [
               {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
                 guard: "shouldRestoreFocus",
                 target: "focused",
-                actions: ["setReturnFocus", "invokeOnClose"],
+                actions: ["invokeOnClose", "setReturnFocus"],
               },
               {
                 target: "idle",
                 actions: ["invokeOnClose"],
               },
             ],
-            CLOSE: {
-              target: "idle",
-              actions: ["invokeOnClose"],
-            },
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "idle",
+                actions: ["invokeOnClose"],
+              },
+            ],
             "SWATCH_TRIGGER.CLICK": [
+              {
+                guard: and("isOpenControlled", "closeOnSelect"),
+                actions: ["setValue", "invokeOnClose"],
+              },
               {
                 guard: "closeOnSelect",
                 target: "focused",
-                actions: ["setValue", "setReturnFocus", "invokeOnClose"],
+                actions: ["setValue", "invokeOnClose", "setReturnFocus"],
               },
               {
                 actions: ["setValue"],
@@ -219,6 +284,16 @@ export function machine(userContext: UserDefinedContext) {
           exit: ["clearActiveChannel"],
           activities: ["trackPointerMove", "disableTextSelection", "trackPositioning", "trackDismissableElement"],
           on: {
+            "CONTROLLED.CLOSE": [
+              {
+                guard: "shouldRestoreFocus",
+                target: "focused",
+                actions: ["setReturnFocus"],
+              },
+              {
+                target: "idle",
+              },
+            ],
             "AREA.POINTER_MOVE": {
               actions: ["setAreaColorFromPoint", "focusAreaThumb"],
             },
@@ -235,27 +310,38 @@ export function machine(userContext: UserDefinedContext) {
             },
             INTERACT_OUTSIDE: [
               {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
                 guard: "shouldRestoreFocus",
                 target: "focused",
-                actions: ["setReturnFocus", "invokeOnClose"],
+                actions: ["invokeOnClose", "setReturnFocus"],
               },
               {
                 target: "idle",
                 actions: ["invokeOnClose"],
               },
             ],
-            CLOSE: {
-              target: "idle",
-              actions: ["invokeOnClose"],
-            },
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "idle",
+                actions: ["invokeOnClose"],
+              },
+            ],
           },
         },
       },
     },
     {
       guards: {
-        isTargetFocusable: (_ctx, evt) => evt.restoreFocus,
         closeOnSelect: (ctx) => !!ctx.closeOnSelect,
+        isOpenControlled: (ctx) => !!ctx.__controlled,
+        shouldRestoreFocus: (ctx) => !!ctx.restoreFocus,
       },
       activities: {
         trackPositioning(ctx) {
@@ -272,19 +358,18 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackDismissableElement(ctx, _evt, { send }) {
           const getContentEl = () => dom.getContentEl(ctx)
-          let restoreFocus = true
           return trackDismissableElement(getContentEl, {
             exclude: dom.getTriggerEl(ctx),
             defer: true,
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
               if (event.defaultPrevented) return
-              restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
+              ctx.restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
             },
             onPointerDownOutside: ctx.onPointerDownOutside,
             onFocusOutside: ctx.onFocusOutside,
             onDismiss() {
-              send({ type: "INTERACT_OUTSIDE", restoreFocus })
+              send({ type: "INTERACT_OUTSIDE" })
             },
           })
         },
@@ -481,7 +566,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.onOpenChange?.({ open: false })
         },
         toggleVisibility(ctx, _evt, { send }) {
-          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
+          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE" })
         },
       },
       compareFns: {

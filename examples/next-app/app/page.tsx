@@ -2,24 +2,28 @@ import Link from "next/link"
 
 const routes = [
   {
-    path: "/mobile-touch-end",
-    name: "Mobile Touch End",
+    path: "/select/mobile-touch-end",
+    name: "Select - Mobile Touch End",
   },
   {
-    path: "/select-controlled",
-    name: "Select Controlled",
+    path: "/select/controlled",
+    name: "Select - Controlled",
   },
   {
-    path: "/select-search-params",
-    name: "Select Search Params",
+    path: "/select/search-params",
+    name: "Select - Search Params",
   },
   {
-    path: "/dialog-controlled",
-    name: "Dialog Controlled",
+    path: "/dialog/controlled",
+    name: "Dialog - Controlled",
   },
   {
-    path: "/popover-controlled",
-    name: "Popover Controlled",
+    path: "/popover/controlled",
+    name: "Popover - Controlled",
+  },
+  {
+    path: "/color-picker/controlled",
+    name: "ColorPicker - Controlled",
   },
 ]
 

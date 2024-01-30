@@ -2,7 +2,7 @@
 "use client"
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Select, items } from "../../components/select"
+import { Select, items } from "../../../components/select"
 
 /**
  * This page tests that using search params to control the select should work

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Select, items } from "../../components/select"
+import { Select, items } from "../../../components/select"
 
 /**
  * This page tests that controlling the select should work

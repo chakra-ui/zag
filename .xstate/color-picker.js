@@ -13,9 +13,21 @@ const fetchMachine = createMachine({
   id: "color-picker",
   initial: ctx.open ? "open" : "idle",
   context: {
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
     "shouldRestoreFocus": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "shouldRestoreFocus": false,
+    "isOpenControlled": false,
+    "isOpenControlled && closeOnSelect": false,
     "closeOnSelect": false,
-    "shouldRestoreFocus": false
+    "shouldRestoreFocus": false,
+    "isOpenControlled": false,
+    "shouldRestoreFocus": false,
+    "isOpenControlled": false
   },
   activities: ["trackFormControl"],
   on: {
@@ -41,14 +53,24 @@ const fetchMachine = createMachine({
     idle: {
       tags: ["closed"],
       on: {
-        OPEN: {
+        "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["setInitialFocus", "invokeOnOpen"]
+          actions: ["setInitialFocus"]
         },
-        "TRIGGER.CLICK": {
+        OPEN: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
           target: "open",
-          actions: ["setInitialFocus", "invokeOnOpen"]
-        },
+          actions: ["invokeOnOpen", "setInitialFocus"]
+        }],
+        "TRIGGER.CLICK": [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
+          target: "open",
+          actions: ["invokeOnOpen", "setInitialFocus"]
+        }],
         "CHANNEL_INPUT.FOCUS": {
           target: "focused",
           actions: ["setActiveChannel"]
@@ -58,14 +80,24 @@ const fetchMachine = createMachine({
     focused: {
       tags: ["closed", "focused"],
       on: {
-        OPEN: {
+        "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["setInitialFocus", "invokeOnOpen"]
+          actions: ["setInitialFocus"]
         },
-        "TRIGGER.CLICK": {
+        OPEN: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
           target: "open",
-          actions: ["setInitialFocus", "invokeOnOpen"]
-        },
+          actions: ["invokeOnOpen", "setInitialFocus"]
+        }],
+        "TRIGGER.CLICK": [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
+          target: "open",
+          actions: ["invokeOnOpen", "setInitialFocus"]
+        }],
         "CHANNEL_INPUT.FOCUS": {
           actions: ["setActiveChannel"]
         },
@@ -82,10 +114,20 @@ const fetchMachine = createMachine({
       tags: ["open"],
       activities: ["trackPositioning", "trackDismissableElement"],
       on: {
-        "TRIGGER.CLICK": {
+        "CONTROLLED.CLOSE": [{
+          cond: "shouldRestoreFocus",
+          target: "focused",
+          actions: ["setReturnFocus"]
+        }, {
+          target: "idle"
+        }],
+        "TRIGGER.CLICK": [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
           target: "idle",
           actions: ["invokeOnClose"]
-        },
+        }],
         "AREA.POINTER_DOWN": {
           target: "open:dragging",
           actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"]
@@ -146,21 +188,30 @@ const fetchMachine = createMachine({
           actions: ["setChannelColorFromInput"]
         },
         INTERACT_OUTSIDE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
           cond: "shouldRestoreFocus",
           target: "focused",
-          actions: ["setReturnFocus", "invokeOnClose"]
+          actions: ["invokeOnClose", "setReturnFocus"]
         }, {
           target: "idle",
           actions: ["invokeOnClose"]
         }],
-        CLOSE: {
+        CLOSE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
           target: "idle",
           actions: ["invokeOnClose"]
-        },
+        }],
         "SWATCH_TRIGGER.CLICK": [{
+          cond: "isOpenControlled && closeOnSelect",
+          actions: ["setValue", "invokeOnClose"]
+        }, {
           cond: "closeOnSelect",
           target: "focused",
-          actions: ["setValue", "setReturnFocus", "invokeOnClose"]
+          actions: ["setValue", "invokeOnClose", "setReturnFocus"]
         }, {
           actions: ["setValue"]
         }]
@@ -171,6 +222,13 @@ const fetchMachine = createMachine({
       exit: ["clearActiveChannel"],
       activities: ["trackPointerMove", "disableTextSelection", "trackPositioning", "trackDismissableElement"],
       on: {
+        "CONTROLLED.CLOSE": [{
+          cond: "shouldRestoreFocus",
+          target: "focused",
+          actions: ["setReturnFocus"]
+        }, {
+          target: "idle"
+        }],
         "AREA.POINTER_MOVE": {
           actions: ["setAreaColorFromPoint", "focusAreaThumb"]
         },
@@ -186,17 +244,23 @@ const fetchMachine = createMachine({
           actions: ["invokeOnChangeEnd"]
         },
         INTERACT_OUTSIDE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
           cond: "shouldRestoreFocus",
           target: "focused",
-          actions: ["setReturnFocus", "invokeOnClose"]
+          actions: ["invokeOnClose", "setReturnFocus"]
         }, {
           target: "idle",
           actions: ["invokeOnClose"]
         }],
-        CLOSE: {
+        CLOSE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
           target: "idle",
           actions: ["invokeOnClose"]
-        }
+        }]
       }
     }
   }
@@ -209,7 +273,9 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "isOpenControlled": ctx => ctx["isOpenControlled"],
     "shouldRestoreFocus": ctx => ctx["shouldRestoreFocus"],
+    "isOpenControlled && closeOnSelect": ctx => ctx["isOpenControlled && closeOnSelect"],
     "closeOnSelect": ctx => ctx["closeOnSelect"]
   }
 });
