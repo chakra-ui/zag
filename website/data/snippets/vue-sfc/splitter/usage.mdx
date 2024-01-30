@@ -14,7 +14,7 @@ const [state, send] = useMachine(
   })
 )
 
-const apiRef = computed(() => splitter.connect(state.value, send, normalizeProps))
+const api = computed(() => splitter.connect(state.value, send, normalizeProps))
 </script>
 
 <template>
