@@ -17,6 +17,10 @@ const routes = [
     path: "/dialog-controlled",
     name: "Dialog Controlled",
   },
+  {
+    path: "/popover-controlled",
+    name: "Popover Controlled",
+  },
 ]
 
 export default function Page() {

@@ -4,15 +4,17 @@ import { useId } from "react"
 
 interface Props {
   open: boolean
+  defaultOpen?: boolean
   onOpenChange?: dialog.Context["onOpenChange"]
 }
 
 export function Dialog(props: Props) {
-  const { open, onOpenChange } = props
+  const { open, defaultOpen, onOpenChange } = props
 
   const [state, send] = useMachine(dialog.machine({ id: useId() }), {
     context: {
-      open: open,
+      __controlled: open !== undefined,
+      open: Boolean(open ?? defaultOpen),
       onOpenChange: onOpenChange,
     },
   })

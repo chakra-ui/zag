@@ -88,7 +88,7 @@ export function machine(userContext: UserDefinedContext) {
               target: "closed",
               actions: ["invokeOnClose"],
             },
-            SET_POSITIONING: {
+            "POSITIONING.SET": {
               actions: "reposition",
             },
           },

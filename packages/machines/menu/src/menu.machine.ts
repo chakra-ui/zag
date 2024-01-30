@@ -293,7 +293,7 @@ export function machine(userContext: UserDefinedContext) {
             FOCUS_MENU: {
               actions: "focusMenu",
             },
-            SET_POSITIONING: {
+            "POSITIONING.SET": {
               actions: "reposition",
             },
           },

@@ -98,7 +98,7 @@ const fetchMachine = createMachine({
           target: "closed"
         },
         CLICK: "closed",
-        SET_POSITIONING: {
+        "POSITIONING.SET": {
           actions: "reposition"
         }
       }

@@ -124,7 +124,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SET_VALUE", name, value })
     },
     reposition(options = {}) {
-      send({ type: "SET_POSITIONING", options })
+      send({ type: "POSITIONING.SET", options })
     },
 
     contextTriggerProps: normalize.element({

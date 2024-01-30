@@ -95,6 +95,9 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
+      guards: {
+        isOpenControlled: (ctx) => !!ctx.__controlled,
+      },
       activities: {
         trackDismissableElement(ctx, _evt, { send }) {
           const getContentEl = () => dom.getContentEl(ctx)
