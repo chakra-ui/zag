@@ -271,7 +271,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const { htmlFor } = props
       return normalize.element({
         ...parts.itemGroupLabel.attrs,
-        id: dom.getItemGroupId(state.context, htmlFor),
+        id: dom.getItemGroupLabelId(state.context, htmlFor),
         role: "group",
         dir: state.context.dir,
       })
