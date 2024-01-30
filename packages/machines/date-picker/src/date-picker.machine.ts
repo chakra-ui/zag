@@ -125,15 +125,34 @@ export function machine(userContext: UserDefinedContext) {
         "VALUE.CLEAR": {
           actions: ["clearSelectedDate", "clearFocusedDate", "focusInputElement"],
         },
+        "INPUT.CHANGE": {
+          actions: ["focusParsedDate"],
+        },
         "GOTO.NEXT": [
-          { guard: "isYearView", actions: ["focusNextDecade", "announceVisibleRange"] },
-          { guard: "isMonthView", actions: ["focusNextYear", "announceVisibleRange"] },
-          { actions: ["focusNextPage"] },
+          {
+            guard: "isYearView",
+            actions: ["focusNextDecade", "announceVisibleRange"],
+          },
+          {
+            guard: "isMonthView",
+            actions: ["focusNextYear", "announceVisibleRange"],
+          },
+          {
+            actions: ["focusNextPage"],
+          },
         ],
         "GOTO.PREV": [
-          { guard: "isYearView", actions: ["focusPreviousDecade", "announceVisibleRange"] },
-          { guard: "isMonthView", actions: ["focusPreviousYear", "announceVisibleRange"] },
-          { actions: ["focusPreviousPage"] },
+          {
+            guard: "isYearView",
+            actions: ["focusPreviousDecade", "announceVisibleRange"],
+          },
+          {
+            guard: "isMonthView",
+            actions: ["focusPreviousYear", "announceVisibleRange"],
+          },
+          {
+            actions: ["focusPreviousPage"],
+          },
         ],
       },
 
@@ -141,44 +160,69 @@ export function machine(userContext: UserDefinedContext) {
         idle: {
           tags: "closed",
           on: {
+            "CONTROLLED.OPEN": {
+              target: "open",
+              actions: ["focusFirstSelectedDate", "focusActiveCell"],
+            },
             "INPUT.FOCUS": {
               target: "focused",
             },
-            "TRIGGER.CLICK": {
-              target: "open",
-              actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
-            },
-            OPEN: {
-              target: "open",
-              actions: ["invokeOnOpen"],
-            },
+            "TRIGGER.CLICK": [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+              },
+            ],
+            OPEN: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+              },
+            ],
           },
         },
 
         focused: {
           tags: "closed",
           on: {
-            "TRIGGER.CLICK": {
+            "CONTROLLED.OPEN": {
               target: "open",
-              actions: ["setViewToDay", "focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+              actions: ["focusFirstSelectedDate", "focusActiveCell"],
             },
-            "INPUT.CHANGE": {
-              actions: ["focusParsedDate"],
-            },
+            "TRIGGER.CLICK": [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+              },
+            ],
             "INPUT.ENTER": {
               actions: ["focusParsedDate", "selectFocusedDate"],
             },
             "INPUT.BLUR": {
               target: "idle",
             },
-            "CELL.FOCUS": {
-              target: "open",
-              actions: ["setView", "focusActiveCell", "invokeOnOpen"],
-            },
-            OPEN: {
-              target: "open",
-              actions: ["invokeOnOpen"],
-            },
+            OPEN: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+              },
+            ],
           },
         },
 
@@ -187,9 +231,16 @@ export function machine(userContext: UserDefinedContext) {
           activities: ["trackDismissableElement", "trackPositioning"],
           exit: ["clearHoveredDate", "resetView"],
           on: {
-            "INPUT.CHANGE": {
-              actions: ["focusParsedDate"],
-            },
+            "CONTROLLED.CLOSE": [
+              {
+                guard: "shouldRestoreFocus",
+                target: "focused",
+                actions: ["focusInputElement"],
+              },
+              {
+                target: "idle",
+              },
+            ],
             "CELL.CLICK": [
               {
                 guard: "isMonthView",
@@ -201,39 +252,52 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 guard: and("isRangePicker", "hasSelectedRange"),
-                actions: ["setStartIndex", "clearSelectedDate", "setFocusedDate", "setSelectedDate", "setEndIndex"],
+                actions: [
+                  "setActiveIndexToStart",
+                  "clearSelectedDate",
+                  "setFocusedDate",
+                  "setSelectedDate",
+                  "setActiveIndexToEnd",
+                ],
               },
-              // === Grouped transitions (based on `closeOnSelect`) ===
+              // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
+              {
+                guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect", "isOpenControlled"),
+                actions: ["setFocusedDate", "setSelectedDate", "setActiveIndexToStart", "invokeOnClose"],
+              },
               {
                 guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
                 target: "focused",
                 actions: [
                   "setFocusedDate",
                   "setSelectedDate",
-                  "setStartIndex",
-                  "clearHoveredDate",
-                  "focusInputElement",
+                  "setActiveIndexToStart",
                   "invokeOnClose",
+                  "focusInputElement",
                 ],
               },
               {
                 guard: and("isRangePicker", "isSelectingEndDate"),
-                actions: ["setFocusedDate", "setSelectedDate", "setStartIndex", "clearHoveredDate"],
+                actions: ["setFocusedDate", "setSelectedDate", "setActiveIndexToStart", "clearHoveredDate"],
               },
               // ===
               {
                 guard: "isRangePicker",
-                actions: ["setFocusedDate", "setSelectedDate", "setEndIndex"],
+                actions: ["setFocusedDate", "setSelectedDate", "setActiveIndexToEnd"],
               },
               {
                 guard: "isMultiPicker",
                 actions: ["setFocusedDate", "toggleSelectedDate"],
               },
-              // === Grouped transitions (based on `closeOnSelect`) ===
+              // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
+              {
+                guard: and("closeOnSelect", "isOpenControlled"),
+                actions: ["setFocusedDate", "setSelectedDate", "invokeOnClose"],
+              },
               {
                 guard: "closeOnSelect",
                 target: "focused",
-                actions: ["setFocusedDate", "setSelectedDate", "focusInputElement", "invokeOnClose"],
+                actions: ["setFocusedDate", "setSelectedDate", "invokeOnClose", "focusInputElement"],
               },
               {
                 actions: ["setFocusedDate", "setSelectedDate"],
@@ -254,10 +318,16 @@ export function machine(userContext: UserDefinedContext) {
             "TABLE.POINTER_UP": {
               actions: ["enableTextSelection"],
             },
-            "TABLE.ESCAPE": {
-              target: "focused",
-              actions: ["setViewToDay", "focusFirstSelectedDate", "focusTriggerElement", "invokeOnClose"],
-            },
+            "TABLE.ESCAPE": [
+              {
+                guard: "isOpenControlled",
+                actions: ["focusFirstSelectedDate", "invokeOnClose"],
+              },
+              {
+                target: "focused",
+                actions: ["focusFirstSelectedDate", "invokeOnClose", "focusTriggerElement"],
+              },
+            ],
             "TABLE.ENTER": [
               {
                 guard: "isMonthView",
@@ -269,32 +339,40 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 guard: and("isRangePicker", "hasSelectedRange"),
-                actions: ["setStartIndex", "clearSelectedDate", "setSelectedDate", "setEndIndex"],
+                actions: ["setActiveIndexToStart", "clearSelectedDate", "setSelectedDate", "setActiveIndexToEnd"],
               },
-              // === Grouped transitions (based on `closeOnSelect`) ===
+              // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
+              {
+                guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect", "isOpenControlled"),
+                actions: ["setSelectedDate", "setActiveIndexToStart", "invokeOnClose"],
+              },
               {
                 guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
                 target: "focused",
-                actions: ["setSelectedDate", "setStartIndex", "focusInputElement", "invokeOnClose"],
+                actions: ["setSelectedDate", "setActiveIndexToStart", "invokeOnClose", "focusInputElement"],
               },
               {
                 guard: and("isRangePicker", "isSelectingEndDate"),
-                actions: ["setSelectedDate", "setStartIndex"],
+                actions: ["setSelectedDate", "setActiveIndexToStart"],
               },
               // ===
               {
                 guard: "isRangePicker",
-                actions: ["setSelectedDate", "setEndIndex", "focusNextDay"],
+                actions: ["setSelectedDate", "setActiveIndexToEnd", "focusNextDay"],
               },
               {
                 guard: "isMultiPicker",
                 actions: ["toggleSelectedDate"],
               },
-              // === Grouped transitions (based on `closeOnSelect`) ===
+              // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
+              {
+                guard: and("closeOnSelect", "isOpenControlled"),
+                actions: ["selectFocusedDate", "invokeOnClose"],
+              },
               {
                 guard: "closeOnSelect",
                 target: "focused",
-                actions: ["selectFocusedDate", "focusInputElement", "invokeOnClose"],
+                actions: ["selectFocusedDate", "invokeOnClose", "focusInputElement"],
               },
               {
                 actions: ["selectFocusedDate"],
@@ -302,24 +380,56 @@ export function machine(userContext: UserDefinedContext) {
               // ===
             ],
             "TABLE.ARROW_RIGHT": [
-              { guard: "isMonthView", actions: "focusNextMonth" },
-              { guard: "isYearView", actions: "focusNextYear" },
-              { actions: ["focusNextDay", "setHoveredDate"] },
+              {
+                guard: "isMonthView",
+                actions: "focusNextMonth",
+              },
+              {
+                guard: "isYearView",
+                actions: "focusNextYear",
+              },
+              {
+                actions: ["focusNextDay", "setHoveredDate"],
+              },
             ],
             "TABLE.ARROW_LEFT": [
-              { guard: "isMonthView", actions: "focusPreviousMonth" },
-              { guard: "isYearView", actions: "focusPreviousYear" },
-              { actions: ["focusPreviousDay"] },
+              {
+                guard: "isMonthView",
+                actions: "focusPreviousMonth",
+              },
+              {
+                guard: "isYearView",
+                actions: "focusPreviousYear",
+              },
+              {
+                actions: ["focusPreviousDay"],
+              },
             ],
             "TABLE.ARROW_UP": [
-              { guard: "isMonthView", actions: "focusPreviousMonthColumn" },
-              { guard: "isYearView", actions: "focusPreviousYearColumn" },
-              { actions: ["focusPreviousWeek"] },
+              {
+                guard: "isMonthView",
+                actions: "focusPreviousMonthColumn",
+              },
+              {
+                guard: "isYearView",
+                actions: "focusPreviousYearColumn",
+              },
+              {
+                actions: ["focusPreviousWeek"],
+              },
             ],
             "TABLE.ARROW_DOWN": [
-              { guard: "isMonthView", actions: "focusNextMonthColumn" },
-              { guard: "isYearView", actions: "focusNextYearColumn" },
-              { actions: ["focusNextWeek"] },
+              {
+                guard: "isMonthView",
+                actions: "focusNextMonthColumn",
+              },
+              {
+                guard: "isYearView",
+                actions: "focusNextYearColumn",
+              },
+              {
+                actions: ["focusNextWeek"],
+              },
             ],
             "TABLE.PAGE_UP": {
               actions: ["focusPreviousSection"],
@@ -328,19 +438,41 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["focusNextSection"],
             },
             "TABLE.HOME": [
-              { guard: "isMonthView", actions: ["focusFirstMonth"] },
-              { guard: "isYearView", actions: ["focusFirstYear"] },
-              { actions: ["focusSectionStart"] },
+              {
+                guard: "isMonthView",
+                actions: ["focusFirstMonth"],
+              },
+              {
+                guard: "isYearView",
+                actions: ["focusFirstYear"],
+              },
+              {
+                actions: ["focusSectionStart"],
+              },
             ],
             "TABLE.END": [
-              { guard: "isMonthView", actions: ["focusLastMonth"] },
-              { guard: "isYearView", actions: ["focusLastYear"] },
-              { actions: ["focusSectionEnd"] },
+              {
+                guard: "isMonthView",
+                actions: ["focusLastMonth"],
+              },
+              {
+                guard: "isYearView",
+                actions: ["focusLastYear"],
+              },
+              {
+                actions: ["focusSectionEnd"],
+              },
             ],
-            "TRIGGER.CLICK": {
-              target: "focused",
-              actions: ["invokeOnClose"],
-            },
+            "TRIGGER.CLICK": [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "focused",
+                actions: ["invokeOnClose"],
+              },
+            ],
             "VIEW.CHANGE": [
               {
                 guard: "isDayView",
@@ -351,21 +483,31 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setViewToYear"],
               },
             ],
-            DISMISS: [
+            INTERACT_OUTSIDE: [
               {
-                guard: "isTargetFocusable",
-                target: "idle",
-                actions: ["setStartIndex", "invokeOnClose"],
+                guard: "isOpenControlled",
+                actions: ["setActiveIndexToStart", "invokeOnClose"],
               },
               {
+                guard: "shouldRestoreFocus",
                 target: "focused",
-                actions: ["focusTriggerElement", "setStartIndex", "invokeOnClose"],
+                actions: ["setActiveIndexToStart", "invokeOnClose", "focusTriggerElement"],
+              },
+              {
+                target: "idle",
+                actions: ["setActiveIndexToStart", "invokeOnClose"],
               },
             ],
-            CLOSE: {
-              target: "idle",
-              actions: ["setStartIndex", "invokeOnClose"],
-            },
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["setActiveIndexToStart", "invokeOnClose"],
+              },
+              {
+                target: "idle",
+                actions: ["setActiveIndexToStart", "invokeOnClose"],
+              },
+            ],
           },
         },
       },
@@ -378,9 +520,10 @@ export function machine(userContext: UserDefinedContext) {
         isRangePicker: (ctx) => ctx.selectionMode === "range",
         hasSelectedRange: (ctx) => ctx.value.length === 2,
         isMultiPicker: (ctx) => ctx.selectionMode === "multiple",
-        isTargetFocusable: (_ctx, evt) => evt.focusable,
+        shouldRestoreFocus: (ctx) => !!ctx.restoreFocus,
         isSelectingEndDate: (ctx) => ctx.activeIndex === 1,
         closeOnSelect: (ctx) => !!ctx.closeOnSelect,
+        isOpenControlled: (ctx) => !!ctx.__controlled,
       },
       activities: {
         trackPositioning(ctx) {
@@ -401,14 +544,13 @@ export function machine(userContext: UserDefinedContext) {
           return () => ctx.announcer?.destroy?.()
         },
         trackDismissableElement(ctx, _evt, { send }) {
-          let focusable = false
           return trackDismissableElement(dom.getContentEl(ctx), {
             exclude: [dom.getInputEl(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
             onInteractOutside(event) {
-              focusable = event.detail.focusable
+              ctx.restoreFocus = !event.detail.focusable
             },
             onDismiss() {
-              send({ type: "DISMISS", src: "dismissable", focusable })
+              send({ type: "INTERACT_OUTSIDE" })
             },
             onEscapeKeyDown(event) {
               event.preventDefault()
@@ -614,10 +756,10 @@ export function machine(userContext: UserDefinedContext) {
           const range = getDecadeRange(ctx.focusedValue.year)
           set.focusedValue(ctx, ctx.focusedValue.set({ year: range.at(-1) }))
         },
-        setEndIndex(ctx) {
+        setActiveIndexToEnd(ctx) {
           ctx.activeIndex = 1
         },
-        setStartIndex(ctx) {
+        setActiveIndexToStart(ctx) {
           ctx.activeIndex = 0
         },
         focusActiveCell(ctx) {
@@ -642,7 +784,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusInputElement(ctx) {
           raf(() => {
-            dom.getInputEl(ctx)?.focus({ preventScroll: true })
+            const inputEl = dom.getInputEl(ctx)
+            inputEl?.focus({ preventScroll: true })
+            inputEl?.setSelectionRange(inputEl.value.length, inputEl.value.length)
           })
         },
         syncMonthSelectElement(ctx) {
@@ -674,11 +818,8 @@ export function machine(userContext: UserDefinedContext) {
           ctx.onOpenChange?.({ open: false })
         },
         toggleVisibility(ctx, _evt, { send }) {
-          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
+          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE" })
         },
-      },
-      transformContext(ctx) {
-        Object.assign(ctx, transformContext(ctx))
       },
       compareFns: {
         startValue: isDateEqual,

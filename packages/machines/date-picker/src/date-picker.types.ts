@@ -191,6 +191,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the datepicker is open
    */
   open?: boolean
+  /**
+   * Whether the datepicker open state is controlled by the user
+   */
+  __controlled?: boolean
 }
 
 type PrivateContext = Context<{
@@ -230,6 +234,11 @@ type PrivateContext = Context<{
    * The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement
+  /**
+   * @internal
+   * Whether the calendar should restore focus to the input when it closes.
+   */
+  restoreFocus?: boolean
 }>
 
 type ComputedContext = Readonly<{
