@@ -1,5 +1,6 @@
 import { Accordion } from "./machines/accordion"
 import { Avatar } from "./machines/avatar"
+import { Carousel } from "./machines/carousel"
 import { Checkbox } from "./machines/checkbox"
 import { CircularProgress } from "./machines/circular-progress"
 import { ColorPicker } from "./machines/color-picker"
@@ -47,6 +48,20 @@ const components = {
       defaultProps={{
         name: "Segun Adebayo",
         src: "https://static.wikia.nocookie.net/naruto/images/d/d6/Naruto_Part_I.png/revision/latest/scale-to-width-down/300?cb=20210223094656",
+      }}
+    />
+  ),
+  Carousel: () => (
+    <Playground
+      component={Carousel}
+      defaultProps={{
+        align: {
+          default: "start",
+          options: ["start", "center", "end"],
+        },
+        index: 0,
+        loop: false,
+        spacing: "0px",
       }}
     />
   ),

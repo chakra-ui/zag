@@ -164,9 +164,6 @@ export function machine(userContext: UserDefinedContext) {
             onComplete(data) {
               ctx.currentPlacement = data.placement
             },
-            onCleanup() {
-              ctx.currentPlacement = undefined
-            },
           })
         },
         trackPointerlockChange(ctx, _evt, { send }) {

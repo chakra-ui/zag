@@ -1,0 +1,11 @@
+{
+  "replace": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "svelte": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    }
+  }
+}

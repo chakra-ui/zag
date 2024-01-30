@@ -1,20 +1,24 @@
 import * as pagination from "@zag-js/pagination"
-import { useMachine, normalizeProps } from "@zag-js/react"
-import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { paginationControls, paginationData } from "@zag-js/shared"
-import { useId } from "react"
+import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
+import { useId, useState } from "react"
+import { Print } from "../components/print"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
   const controls = useControls(paginationControls)
+  const [details, setDetails] = useState({} as any)
 
   const [state, send] = useMachine(
     pagination.machine({
       id: useId(),
       count: paginationData.length,
-      onPageChange: console.log,
+      onPageChange(details) {
+        setDetails(details)
+      },
     }),
     {
       context: controls.context,
@@ -84,6 +88,8 @@ export default function Page() {
             </ul>
           </nav>
         )}
+
+        <Print title="OpenChange Details" value={details} />
       </main>
 
       <Toolbar controls={controls.ui}>

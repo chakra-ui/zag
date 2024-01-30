@@ -447,9 +447,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             onComplete(data) {
               ctx.currentPlacement = data.placement
             },
-            onCleanup() {
-              ctx.currentPlacement = undefined
-            },
           })
         },
         // in event the options are fetched (async), we still want to auto-highlight the first option

@@ -1,10 +1,60 @@
 # @zag-js/tags-input
 
+## 0.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.34.0
+  - @zag-js/core@0.34.0
+  - @zag-js/types@0.34.0
+  - @zag-js/auto-resize@0.34.0
+  - @zag-js/utils@0.34.0
+  - @zag-js/dom-event@0.34.0
+  - @zag-js/dom-query@0.34.0
+  - @zag-js/form-utils@0.34.0
+  - @zag-js/interact-outside@0.34.0
+  - @zag-js/live-region@0.34.0
+
+## 0.33.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.33.2
+  - @zag-js/core@0.33.2
+  - @zag-js/types@0.33.2
+  - @zag-js/auto-resize@0.33.2
+  - @zag-js/utils@0.33.2
+  - @zag-js/dom-event@0.33.2
+  - @zag-js/dom-query@0.33.2
+  - @zag-js/form-utils@0.33.2
+  - @zag-js/interact-outside@0.33.2
+  - @zag-js/live-region@0.33.2
+
+## 0.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.33.1
+  - @zag-js/anatomy@0.33.1
+  - @zag-js/types@0.33.1
+  - @zag-js/auto-resize@0.33.1
+  - @zag-js/utils@0.33.1
+  - @zag-js/dom-event@0.33.1
+  - @zag-js/dom-query@0.33.1
+  - @zag-js/form-utils@0.33.1
+  - @zag-js/interact-outside@0.33.1
+  - @zag-js/live-region@0.33.1
+
 ## 0.33.0
 
 ### Minor Changes
 
-- [`436e8da`](https://github.com/chakra-ui/zag/commit/436e8daa420639294294de0866829c304ac7b34a) Thanks [@cschroeter](https://github.com/cschroeter)! - Improve `TagsInput` component design by introducing a new `item-preview` part. See the diff below for more details.
+- [`436e8da`](https://github.com/chakra-ui/zag/commit/436e8daa420639294294de0866829c304ac7b34a) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Improve `TagsInput` component design by introducing a new
+  `item-preview` part. See the diff below for more details.
 
   ```diff
   <div {...api.rootProps}>
