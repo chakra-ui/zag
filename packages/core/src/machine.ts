@@ -1,4 +1,4 @@
-import { ref, snapshot, subscribe, subscribeKey } from "@zag-js/store"
+import { ref, snapshot, subscribe } from "@zag-js/store"
 import {
   cast,
   clear,
@@ -50,15 +50,11 @@ export class Machine<
 
   // state update listeners the user can opt-in for
   private stateListeners = new Set<S.StateListener<TContext, TState, TEvent>>()
-  private contextListeners = new Set<S.ContextListener<TContext>>()
-  private eventListeners = new Set<S.EventListener<TEvent>>()
   private doneListeners = new Set<S.StateListener<TContext, TState, TEvent>>()
   private contextWatchers = new Set<VoidFunction>()
 
   // Cleanup functions (for `subscribe`)
   private removeStateListener: VoidFunction = noop
-  private removeEventListener: VoidFunction = noop
-  private removeContextListener: VoidFunction = noop
 
   // For Parent <==> Spawned Actor relationship
   private parent?: AnyMachine
@@ -135,31 +131,6 @@ export class Machine<
       this.sync,
     )
 
-    // subscribe to event changes
-    this.removeEventListener = subscribeKey(
-      this.state,
-      "event",
-      (event) => {
-        this.executeActions(this.config.onEvent, event)
-        this.eventListeners.forEach((listener) => {
-          listener(event)
-        })
-      },
-      this.sync,
-    )
-
-    // subscribe to context changes
-    this.removeContextListener = subscribe(
-      this.state.context,
-      () => {
-        this.log("Context:", this.contextSnapshot)
-        this.contextListeners.forEach((listener) => {
-          listener(this.contextSnapshot)
-        })
-      },
-      this.sync || this.options.debug,
-    )
-
     this.setupContextWatchers()
 
     // execute initial actions and activities
@@ -190,19 +161,24 @@ export class Machine<
   }
 
   private setupContextWatchers = () => {
-    for (const [key, fn] of Object.entries(this.config.watch ?? {})) {
-      const compareFn = this.options.compareFns?.[key]
-      const cleanup = subscribeKey(
-        this.state.context,
-        key,
-        () => {
-          this.executeActions(fn, this.state.event as TEvent)
-        },
-        this.sync,
-        compareFn,
-      )
-      this.contextWatchers.add(cleanup)
-    }
+    const { watch } = this.config
+    if (!watch) return
+
+    let prev = snapshot(this.state.context)
+
+    const cleanup = subscribe(this.state.context, () => {
+      const next = snapshot(this.state.context)
+
+      for (const [key, fn] of Object.entries(watch)) {
+        const isEqual = this.options.compareFns?.[key] ?? Object.is
+        if (isEqual(prev[key], next[key])) continue
+        this.executeActions(fn, this.state.event as TEvent)
+      }
+
+      prev = next
+    })
+
+    this.contextWatchers.add(cleanup)
   }
 
   // Stops the interpreted machine
@@ -225,21 +201,9 @@ export class Machine<
     this.stopActivities()
     this.stopDelayedEvents()
     this.stopContextWatchers()
-    this.stopEventListeners()
-    this.stopContextListeners()
 
     this.status = MachineStatus.Stopped
     return this
-  }
-
-  private stopEventListeners = () => {
-    this.eventListeners.clear()
-    this.removeEventListener()
-  }
-
-  private stopContextListeners = () => {
-    this.contextListeners.clear()
-    this.removeContextListener()
   }
 
   private stopStateListeners = () => {
@@ -673,9 +637,6 @@ export class Machine<
 
     // call all exit actions for current state
     this.executeActions(exitActions, event)
-
-    // remove all registered listeners
-    this.eventListeners.clear()
   }
 
   private performEntryEffects = (next: TState["value"], event: TEvent) => {
@@ -835,16 +796,6 @@ export class Machine<
     if (this.status === MachineStatus.Running) {
       listener(this.stateSnapshot)
     }
-    return this
-  }
-
-  public onChange = (listener: S.ContextListener<TContext>) => {
-    this.contextListeners.add(listener)
-    return this
-  }
-
-  public onEvent = (listener: S.EventListener<TEvent>) => {
-    this.eventListeners.add(listener)
     return this
   }
 

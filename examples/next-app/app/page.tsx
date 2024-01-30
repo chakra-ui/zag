@@ -13,6 +13,10 @@ const routes = [
     path: "/select-search-params",
     name: "Select Search Params",
   },
+  {
+    path: "/dialog-controlled",
+    name: "Dialog Controlled",
+  },
 ]
 
 export default function Page() {
