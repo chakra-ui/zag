@@ -3,7 +3,7 @@ import { parts } from "@zag-js/accordion/src//accordion.anatomy"
 import { dom } from "@zag-js/accordion/src/accordion.dom"
 import { normalizeProps } from "@zag-js/react"
 import { accordionControls, accordionData } from "@zag-js/shared"
-import { useId } from "react"
+import { useEffect, useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -26,6 +26,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
  */
 
 type AccordionMachineContext = Omit<MachineContext, "isHorizontal">
+type AccordionMachineInput = Omit<Partial<MachineContext>, "isHorizontal"> & { id: string }
 
 function coarseValue(context: AccordionMachineContext, value: string[]): string[] {
   if (!context.multiple && context.value.length > 1) {
@@ -39,9 +40,9 @@ function coarseValue(context: AccordionMachineContext, value: string[]): string[
 const accordionMachine = setup({
   types: {
     context: {} as AccordionMachineContext,
-    input: {} as Omit<Partial<MachineContext>, "isHorizontal"> & { id: string },
+    input: {} as AccordionMachineInput,
     events: {} as
-      | { type: "context.sync"; updatedContext: MachineContext }
+      | { type: "CONTEXT.SYNC"; updatedContext: Omit<AccordionMachineInput, "id"> }
       | { type: "TRIGGER.FOCUS"; value: string }
       | { type: "GOTO.NEXT" }
       | { type: "GOTO.PREV" }
@@ -105,6 +106,15 @@ const accordionMachine = setup({
         return coarseValue(context, event.value)
       },
     }),
+    syncContext: assign(({ context, event }) => {
+      assertEvent(event, "CONTEXT.SYNC")
+
+      const mergedContext = Object.assign({}, context, event.updatedContext)
+
+      return Object.assign(mergedContext, {
+        value: coarseValue(mergedContext, mergedContext.value),
+      })
+    }),
   },
   guards: {
     isExpanded: ({ context, event }) => {
@@ -138,6 +148,9 @@ const accordionMachine = setup({
   on: {
     "VALUE.SET": {
       actions: "setValue",
+    },
+    "CONTEXT.SYNC": {
+      actions: "syncContext",
     },
   },
 
@@ -220,15 +233,9 @@ function accordionConnect<T extends PropTypes>(
 
   const focusedValue = context.focusedValue
   const value = context.value
-  const multiple = context.multiple
 
-  // TODO: refactor
   function setValue(value: string[]) {
-    let nextValue = value
-    if (multiple && nextValue.length > 1) {
-      nextValue = [nextValue[0]]
-    }
-    send({ type: "VALUE.SET", value: nextValue })
+    send({ type: "VALUE.SET", value })
   }
 
   function getItemState(props: ItemProps): ItemState {
@@ -331,25 +338,25 @@ function accordionConnect<T extends PropTypes>(
           const keyMap: EventKeyMap = {
             ArrowDown() {
               if (context.isHorizontal) return
-              send({ type: "GOTO.NEXT", value })
+              send({ type: "GOTO.NEXT" })
             },
             ArrowUp() {
               if (context.isHorizontal) return
-              send({ type: "GOTO.PREV", value })
+              send({ type: "GOTO.PREV" })
             },
             ArrowRight() {
               if (!context.isHorizontal) return
-              send({ type: "GOTO.NEXT", value })
+              send({ type: "GOTO.NEXT" })
             },
             ArrowLeft() {
               if (!context.isHorizontal) return
-              send({ type: "GOTO.PREV", value })
+              send({ type: "GOTO.PREV" })
             },
             Home() {
-              send({ type: "GOTO.FIRST", value })
+              send({ type: "GOTO.FIRST" })
             },
             End() {
-              send({ type: "GOTO.LAST", value })
+              send({ type: "GOTO.LAST" })
             },
           }
 
@@ -374,6 +381,10 @@ export default function Page() {
   const controls = useControls(accordionControls)
 
   const [state, send] = useActor(accordionMachine, { input: { ...controls.context, id: useId() } })
+
+  useEffect(() => {
+    send({ type: "CONTEXT.SYNC", updatedContext: controls.context })
+  }, [controls.context, send])
 
   console.log(state)
 
