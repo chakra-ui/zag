@@ -9,7 +9,7 @@ import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 import { assertEvent, assign, setup, SnapshotFrom, and, not, EventFrom } from "xstate"
 import { useActor } from "@xstate/react"
-import { add, remove, warn } from "@zag-js/utils"
+import { add, isEqual, remove, warn } from "@zag-js/utils"
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
 import { dataAttr, isSafari } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -18,11 +18,11 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
  * Todo:
  *
  * - [x] Make isHorizontal a computed property
- * - [ ] Call invoke.change and invoke.focusChange when value or focusedValue change
- * - [ ] Reimplement coarseValue (instead, call when assigning to the context? More code to write)
+ * - [x] Call invoke.change and invoke.focusChange when value or focusedValue change
+ * - [x] Reimplement coarseValue (instead, call when assigning to the context? More code to write)
  *   - [x] Call for initial context
- *   - [ ] Call when value changes
- *   - [ ] Call when multiple changes
+ *   - [x] Call when value changes
+ *   - [x] Call when multiple changes (done on context.sync)
  */
 
 type AccordionMachineContext = Omit<MachineContext, "isHorizontal">
@@ -54,8 +54,14 @@ const accordionMachine = setup({
   },
   actions: {
     setFocusedValue: assign({
-      focusedValue: ({ event }) => {
+      focusedValue: ({ context, event }) => {
         assertEvent(event, "TRIGGER.FOCUS")
+
+        if (isEqual(context.focusedValue, event.value)) {
+          return context.focusedValue
+        }
+
+        context?.onFocusChange({ value: event.value })
 
         return event.value
       },
@@ -77,7 +83,15 @@ const accordionMachine = setup({
         assertEvent(event, "TRIGGER.CLICK")
 
         const next = context.multiple ? remove(context.value, event.value) : []
-        return coarseValue(context, context.multiple ? next : [])
+        const nextCoarsed = coarseValue(context, context.multiple ? next : [])
+
+        if (isEqual(context.value, nextCoarsed)) {
+          return context.value
+        }
+
+        context.onValueChange?.({ value: nextCoarsed })
+
+        return nextCoarsed
       },
     }),
     expand: assign({
@@ -85,7 +99,15 @@ const accordionMachine = setup({
         assertEvent(event, "TRIGGER.CLICK")
 
         const next = context.multiple ? add(context.value, event.value) : [event.value]
-        return coarseValue(context, next)
+        const nextCoarsed = coarseValue(context, next)
+
+        if (isEqual(context.value, nextCoarsed)) {
+          return context.value
+        }
+
+        context.onValueChange?.({ value: nextCoarsed })
+
+        return nextCoarsed
       },
     }),
     focusFirstTrigger: ({ context }) => {
@@ -97,13 +119,28 @@ const accordionMachine = setup({
       dom.getLastTriggerEl(contextFakelyAugmented)?.focus()
     },
     clearFocusedValue: assign({
-      focusedValue: null,
+      focusedValue: ({ context }) => {
+        if (isEqual(context.focusedValue, null)) {
+          return context.focusedValue
+        }
+
+        context?.onFocusChange({ value: null })
+
+        return null
+      },
     }),
     setValue: assign({
       value: ({ context, event }) => {
         assertEvent(event, "VALUE.SET")
 
-        return coarseValue(context, event.value)
+        const nextValue = coarseValue(context, event.value)
+        if (isEqual(context.value, nextValue)) {
+          return context.value
+        }
+
+        context.onValueChange?.({ value: nextValue })
+
+        return nextValue
       },
     }),
     syncContext: assign(({ context, event }) => {
@@ -111,9 +148,15 @@ const accordionMachine = setup({
 
       const mergedContext = Object.assign({}, context, event.updatedContext)
 
-      return Object.assign(mergedContext, {
+      const nextContext = Object.assign(mergedContext, {
         value: coarseValue(mergedContext, mergedContext.value),
       })
+
+      if (!isEqual(context.value, nextContext.value)) {
+        context?.onValueChange({ value: nextContext.value })
+      }
+
+      return nextContext
     }),
   },
   guards: {
@@ -380,13 +423,13 @@ function accordionConnect<T extends PropTypes>(
 export default function Page() {
   const controls = useControls(accordionControls)
 
-  const [state, send] = useActor(accordionMachine, { input: { ...controls.context, id: useId() } })
+  const [state, send] = useActor(accordionMachine, {
+    input: { ...controls.context, id: useId() },
+  })
 
   useEffect(() => {
     send({ type: "CONTEXT.SYNC", updatedContext: controls.context })
   }, [controls.context, send])
-
-  console.log(state)
 
   const api = accordionConnect(state, send, normalizeProps)
 
