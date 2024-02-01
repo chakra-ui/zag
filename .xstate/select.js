@@ -17,11 +17,8 @@ const fetchMachine = createMachine({
     "isOpenControlled": false,
     "isOpenControlled": false,
     "isOpenControlled": false,
-    "hasSelectedItems": false,
     "isOpenControlled": false,
-    "hasSelectedItems": false,
     "isOpenControlled": false,
-    "hasSelectedItems": false,
     "!multiple && hasSelectedItems": false,
     "!multiple": false,
     "!multiple && hasSelectedItems": false,
@@ -127,7 +124,6 @@ const fetchMachine = createMachine({
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
-          cond: "hasSelectedItems",
           target: "open",
           actions: ["invokeOnOpen", "highlightComputedFirstItem"]
         }],
@@ -135,7 +131,6 @@ const fetchMachine = createMachine({
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
-          cond: "hasSelectedItems",
           target: "open",
           actions: ["invokeOnOpen", "highlightComputedLastItem"]
         }],
@@ -143,7 +138,6 @@ const fetchMachine = createMachine({
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
-          cond: "hasSelectedItems",
           target: "open",
           actions: ["invokeOnOpen", "highlightComputedFirstItem"]
         }],
@@ -289,7 +283,6 @@ const fetchMachine = createMachine({
   },
   guards: {
     "isOpenControlled": ctx => ctx["isOpenControlled"],
-    "hasSelectedItems": ctx => ctx["hasSelectedItems"],
     "!multiple && hasSelectedItems": ctx => ctx["!multiple && hasSelectedItems"],
     "!multiple": ctx => ctx["!multiple"],
     "shouldRestoreFocus": ctx => ctx["shouldRestoreFocus"],

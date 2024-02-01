@@ -147,7 +147,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
                 actions: ["invokeOnOpen"],
               },
               {
-                guard: "hasSelectedItems",
                 target: "open",
                 actions: ["invokeOnOpen", "highlightComputedFirstItem"],
               },
@@ -158,7 +157,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
                 actions: ["invokeOnOpen"],
               },
               {
-                guard: "hasSelectedItems",
                 target: "open",
                 actions: ["invokeOnOpen", "highlightComputedLastItem"],
               },
@@ -169,7 +167,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
                 actions: ["invokeOnOpen"],
               },
               {
-                guard: "hasSelectedItems",
                 target: "open",
                 actions: ["invokeOnOpen", "highlightComputedFirstItem"],
               },
@@ -345,7 +342,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
       guards: {
         loop: (ctx) => !!ctx.loop,
         multiple: (ctx) => !!ctx.multiple,
-        hasSelectedItems: (ctx) => ctx.hasSelectedItems,
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
         isFirstItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.first(),
         isLastItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.last(),
