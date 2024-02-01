@@ -8,6 +8,8 @@ const routes = [
   { path: "/popover/controlled", name: "Popover - Controlled" },
   { path: "/color-picker/controlled", name: "ColorPicker - Controlled" },
   { path: "/date-picker/controlled-range-picker", name: "DateRangePicker - Controlled" },
+  { path: "/hover-card/controlled", name: "HoverCard - Controlled" },
+  { path: "/tooltip/controlled", name: "Tooltip - Controlled" },
 ]
 
 export default function Page() {
