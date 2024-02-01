@@ -4,6 +4,7 @@
   import * as carousel from "@zag-js/carousel"
   import { carouselControls, carouselData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { unstate } from "svelte"
 
   const controls = useControls(carouselControls)
 
@@ -11,7 +12,7 @@
     // context: controls.context,
   })
 
-  const api = $derived(carousel.connect(machine.state, machine.send, normalizeProps))
+  const api = $derived(carousel.connect(unstate(machine.state), machine.send, normalizeProps))
 </script>
 
 <main class="carousel">
