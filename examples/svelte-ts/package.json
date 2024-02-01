@@ -82,7 +82,7 @@
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
     "@tsconfig/svelte": "^5.0.2",
     "@types/form-serialize": "0.7.4",
-    "svelte": "5.0.0-next.40",
+    "svelte": "5.0.0-next.44",
     "svelte-check": "^3.6.2",
     "tslib": "^2.6.2",
     "typescript": "^5.2.2",

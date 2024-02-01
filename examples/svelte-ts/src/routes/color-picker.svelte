@@ -125,7 +125,7 @@
   </form>
 </main>
 
-<Toolbar {controls} {machine} />
+<Toolbar {controls} state={machine.state} />
 
 {#snippet EyeDropIcon()}
   <svg

@@ -29,4 +29,4 @@
   </div>
 </main>
 
-<Toolbar {machine} />
+<Toolbar state={machine.state} />
