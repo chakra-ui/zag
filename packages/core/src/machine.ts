@@ -3,6 +3,7 @@ import {
   cast,
   clear,
   compact,
+  hasProp,
   invariant,
   isArray,
   isDev,
@@ -374,20 +375,14 @@ export class Machine<
     return info
   }
 
-  private getActionFromDelayedTransition = (transition: S.DelayedTransition<TContext, TState, TEvent>) => {
-    // get the computed delay
-    const event = toEvent<TEvent>(ActionTypes.After)
-
-    const determineDelay = determineDelayFn(transition.delay, this.delayMap)
-    const delay = determineDelay(this.contextSnapshot, event)
-
+  private getAfterActions = (transition: S.Transitions<TContext, TState, TEvent>, delay?: number) => {
     let id: ReturnType<typeof globalThis.setTimeout>
 
     return {
       entry: () => {
         id = globalThis.setTimeout(() => {
-          const next = this.getNextStateInfo(transition, event)
-          this.performStateChangeEffects(this.state.value!, next, event)
+          const next = this.getNextStateInfo(transition, this.state.event)
+          this.performStateChangeEffects(this.state.value!, next, this.state.event)
         }, delay)
       },
       exit: () => {
@@ -405,7 +400,7 @@ export class Machine<
    */
   private getDelayedEventActions = (state: TState["value"]) => {
     const stateNode = this.getStateNode(state)
-    const event = toEvent<TEvent>(ActionTypes.After)
+    const event = this.state.event
 
     if (!stateNode || !stateNode.after) return
 
@@ -415,30 +410,33 @@ export class Machine<
     if (isArray(stateNode.after)) {
       //
       const transition = this.determineTransition(stateNode.after, event)
+
       if (!transition) return
 
-      const actions = this.getActionFromDelayedTransition(transition)
+      if (!hasProp(transition, "delay")) {
+        throw new Error(`[@zag-js/core > after] Delay is required for after transition: ${JSON.stringify(transition)}`)
+      }
+
+      const determineDelay = determineDelayFn((transition as any).delay, this.delayMap)
+      const __delay = determineDelay(this.contextSnapshot, event)
+
+      const actions = this.getAfterActions(transition, __delay)
+
       entries.push(actions.entry)
       exits.push(actions.exit)
-      //
-    } else if (isObject(stateNode.after)) {
+
+      return { entries, exits }
+    }
+
+    if (isObject(stateNode.after)) {
       //
       for (const delay in stateNode.after) {
         const transition = stateNode.after[delay]
-        let resolvedTransition: S.DelayedTransition<TContext, TState, TEvent> = {}
 
-        if (isArray(transition)) {
-          //
-          const picked = this.determineTransition(transition, event)
-          if (picked) resolvedTransition = picked
-          //
-        } else if (isString(transition)) {
-          resolvedTransition = { target: transition, delay }
-        } else {
-          resolvedTransition = { ...transition, delay }
-        }
+        const determineDelay = determineDelayFn(delay, this.delayMap)
+        const __delay = determineDelay(this.contextSnapshot, event)
 
-        const actions = this.getActionFromDelayedTransition(resolvedTransition)
+        const actions = this.getAfterActions(transition, __delay)
 
         entries.push(actions.entry)
         exits.push(actions.exit)
@@ -547,7 +545,6 @@ export class Machine<
     callbackfn: (activity: S.Activity<TContext, TState, TEvent>) => void,
   ) => {
     if (!every) return
-    const event = toEvent<TEvent>(ActionTypes.Every)
 
     // every: [{ interval: 2000, actions: [...], guard: "isValid" },  { interval: 1000, actions: [...] }]
     if (isArray(every)) {
@@ -556,10 +553,10 @@ export class Machine<
         //
         const delayOrFn = transition.delay
         const determineDelay = determineDelayFn(delayOrFn, this.delayMap)
-        const delay = determineDelay(this.contextSnapshot, event)
+        const delay = determineDelay(this.contextSnapshot, this.state.event)
 
         const determineGuard = determineGuardFn(transition.guard, this.guardMap)
-        const guard = determineGuard(this.contextSnapshot, event, this.guardMeta)
+        const guard = determineGuard(this.contextSnapshot, this.state.event, this.guardMeta)
 
         return guard ?? delay != null
       })
@@ -567,11 +564,11 @@ export class Machine<
       if (!picked) return
 
       const determineDelay = determineDelayFn(picked.delay, this.delayMap)
-      const delay = determineDelay(this.contextSnapshot, event)
+      const delay = determineDelay(this.contextSnapshot, this.state.event)
 
       const activity = () => {
         const id = globalThis.setInterval(() => {
-          this.executeActions(picked.actions, event)
+          this.executeActions(picked.actions, this.state.event)
         }, delay)
         return () => {
           globalThis.clearInterval(id)
@@ -586,12 +583,12 @@ export class Machine<
 
         // interval could be a `ref` not the actual interval value, let's determine the actual value
         const determineDelay = determineDelayFn(interval, this.delayMap)
-        const delay = determineDelay(this.contextSnapshot, event)
+        const delay = determineDelay(this.contextSnapshot, this.state.event)
 
         // create the activity to run for each `every` reaction
         const activity = () => {
           const id = globalThis.setInterval(() => {
-            this.executeActions(actions, event)
+            this.executeActions(actions, this.state.event)
           }, delay)
           return () => {
             globalThis.clearInterval(id)

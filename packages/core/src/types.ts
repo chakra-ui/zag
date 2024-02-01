@@ -414,9 +414,6 @@ export enum ActionTypes {
   Start = "machine.start",
   Stop = "machine.stop",
   Created = "machine.created",
-  SendParent = "machine.send-parent",
-  After = "machine.after",
-  Every = "machine.every",
   Init = "machine.init",
 }
 
