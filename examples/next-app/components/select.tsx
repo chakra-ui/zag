@@ -14,22 +14,34 @@ const collection = select.collection({
 })
 
 interface SelectProps extends Omit<select.Context, "id" | "value" | "onValueChange" | "collection"> {
+  defaultValue?: string | null | undefined
+  defaultOpen?: boolean
   value?: string | null | undefined
-  setValue?: (value: string) => void
+  onValueChange?: (value: string) => void
 }
 
 export function Select(props: SelectProps) {
-  const { value, setValue, ...restProps } = props
+  const { value, defaultValue, onValueChange, defaultOpen, open, ...contextProps } = props
 
-  const [state, send] = useMachine(select.machine({ id: useId(), collection }), {
-    context: {
-      ...restProps,
-      value: value ? [value] : undefined,
-      onValueChange(details: any) {
-        setValue?.(details.value[0])
+  const [state, send] = useMachine(
+    select.machine({
+      id: useId(),
+      collection,
+      value: defaultValue ? [defaultValue] : undefined,
+      open: open ?? defaultOpen,
+    }),
+    {
+      context: {
+        ...contextProps,
+        open: open ?? defaultOpen,
+        __controlled: open !== undefined,
+        value: value ? [value] : undefined,
+        onValueChange(details: any) {
+          onValueChange?.(details.value[0])
+        },
       },
     },
-  })
+  )
 
   const api = select.connect(state, send, normalizeProps)
 

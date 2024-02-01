@@ -15,7 +15,7 @@ export const dom = createScope({
   getItemGroupLabelId: (ctx: Ctx, id: string | number) =>
     ctx.ids?.itemGroupLabel?.(id) ?? `select:${ctx.id}:optgroup-label:${id}`,
 
-  getHiddenSelectEl: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenSelectId(ctx)),
+  getHiddenSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getHiddenSelectId(ctx)),
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),

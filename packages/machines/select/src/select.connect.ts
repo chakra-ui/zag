@@ -44,6 +44,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   return {
     isOpen,
     isFocused,
+    isValueEmpty: state.context.value.length === 0,
     highlightedItem,
     highlightedValue: state.context.highlightedValue,
     selectedItems,
@@ -354,7 +355,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             send({ type: "CONTENT.END" })
           },
           Enter() {
-            send({ type: "CONTENT.ENTER" })
+            send({ type: "ITEM.CLICK", src: "keydown.enter" })
           },
           Space(event) {
             if (isTypingAhead) {

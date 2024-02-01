@@ -54,6 +54,7 @@ export default function Page() {
           >
             {/* Hidden select */}
             <select {...api.hiddenSelectProps}>
+              {api.isValueEmpty && <option value="" />}
               {selectData.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
