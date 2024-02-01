@@ -13,36 +13,40 @@ const fetchMachine = createMachine({
   id: "menu",
   initial: ctx.open ? "open" : "idle",
   context: {
+    "isOpenControlled": false,
     "!isSubmenu": false,
     "isSubmenu": false,
     "isTriggerItem": false,
     "!isTriggerItem": false,
     "isForwardTabNavigation": false,
     "isSubmenu": false,
-    "isTriggerItemFocused": false,
-    "isTriggerItemFocused": false,
+    "isTriggerItemHighlighted": false,
+    "isTriggerItemHighlighted": false,
     "closeOnSelect": false,
     "!suspendPointer && !isTargetFocused": false,
     "!isTargetFocused": false,
     "!suspendPointer && !isTriggerItem": false,
-    "!isTriggerItemFocused && !isFocusedItemEditable && closeOnSelect": false,
-    "!isTriggerItemFocused && !isFocusedItemEditable": false
+    "!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect": false,
+    "!isTriggerItemHighlighted && !isHighlightedItemEditable": false
   },
   on: {
-    SET_PARENT: {
+    "PARENT.SET": {
       actions: "setParentMenu"
     },
-    SET_CHILD: {
+    "CHILD.SET": {
       actions: "setChildMenu"
     },
-    OPEN: {
+    OPEN: [{
+      cond: "isOpenControlled",
+      actions: "invokeOnOpen"
+    }, {
       target: "open",
       actions: "invokeOnOpen"
-    },
+    }],
     OPEN_AUTOFOCUS: {
       internal: true,
       target: "open",
-      actions: ["focusFirstItem", "invokeOnOpen"]
+      actions: ["highlightFirstItem", "invokeOnOpen"]
     },
     CLOSE: {
       target: "closed",
@@ -51,11 +55,11 @@ const fetchMachine = createMachine({
     RESTORE_FOCUS: {
       actions: "restoreFocus"
     },
-    SET_VALUE: {
+    "VALUE.SET": {
       actions: ["setOptionValue", "invokeOnValueChange"]
     },
-    SET_HIGHLIGHTED_ID: {
-      actions: "setFocusedItem"
+    "HIGHLIGHTED.SET": {
+      actions: "setHighlightedItem"
     }
   },
   on: {
@@ -65,6 +69,7 @@ const fetchMachine = createMachine({
   },
   states: {
     idle: {
+      tags: ["closed"],
       on: {
         CONTEXT_MENU_START: {
           target: "opening:contextmenu",
@@ -89,6 +94,7 @@ const fetchMachine = createMachine({
       }
     },
     "opening:contextmenu": {
+      tags: ["closed"],
       after: {
         LONG_PRESS_DELAY: {
           target: "open",
@@ -103,6 +109,7 @@ const fetchMachine = createMachine({
       }
     },
     opening: {
+      tags: ["closed"],
       after: {
         SUBMENU_OPEN_DELAY: {
           target: "open",
@@ -121,7 +128,7 @@ const fetchMachine = createMachine({
       }
     },
     closing: {
-      tags: ["visible"],
+      tags: ["open"],
       activities: ["trackPointerMove", "trackInteractOutside"],
       after: {
         SUBMENU_CLOSE_DELAY: {
@@ -141,7 +148,8 @@ const fetchMachine = createMachine({
       }
     },
     closed: {
-      entry: ["clearFocusedItem", "focusTrigger", "clearAnchorPoint", "resumePointer"],
+      tags: ["closed"],
+      entry: ["clearHighlightedItem", "focusTrigger", "clearAnchorPoint", "resumePointer"],
       on: {
         CONTEXT_MENU_START: {
           target: "opening:contextmenu",
@@ -162,16 +170,16 @@ const fetchMachine = createMachine({
         TRIGGER_BLUR: "idle",
         ARROW_DOWN: {
           target: "open",
-          actions: ["focusFirstItem", "invokeOnOpen"]
+          actions: ["highlightFirstItem", "invokeOnOpen"]
         },
         ARROW_UP: {
           target: "open",
-          actions: ["focusLastItem", "invokeOnOpen"]
+          actions: ["highlightLastItem", "invokeOnOpen"]
         }
       }
     },
     open: {
-      tags: ["visible"],
+      tags: ["open"],
       activities: ["trackInteractOutside", "trackPositioning", "scrollToHighlightedItem"],
       entry: ["focusMenu", "resumePointer"],
       on: {
@@ -182,15 +190,15 @@ const fetchMachine = createMachine({
         },
         TAB: [{
           cond: "isForwardTabNavigation",
-          actions: ["focusNextItem"]
+          actions: ["highlightNextItem"]
         }, {
-          actions: ["focusPrevItem"]
+          actions: ["highlightPrevItem"]
         }],
         ARROW_UP: {
-          actions: ["focusPrevItem", "focusMenu"]
+          actions: ["highlightPrevItem", "focusMenu"]
         },
         ARROW_DOWN: {
-          actions: ["focusNextItem", "focusMenu"]
+          actions: ["highlightNextItem", "focusMenu"]
         },
         ARROW_LEFT: {
           cond: "isSubmenu",
@@ -198,59 +206,59 @@ const fetchMachine = createMachine({
           actions: ["focusParentMenu", "invokeOnClose"]
         },
         HOME: {
-          actions: ["focusFirstItem", "focusMenu"]
+          actions: ["highlightFirstItem", "focusMenu"]
         },
         END: {
-          actions: ["focusLastItem", "focusMenu"]
+          actions: ["highlightLastItem", "focusMenu"]
         },
         REQUEST_CLOSE: {
           target: "closed",
           actions: "invokeOnClose"
         },
         ARROW_RIGHT: {
-          cond: "isTriggerItemFocused",
+          cond: "isTriggerItemHighlighted",
           actions: "openSubmenu"
         },
         ENTER: [{
-          cond: "isTriggerItemFocused",
+          cond: "isTriggerItemHighlighted",
           actions: "openSubmenu"
         }, {
           cond: "closeOnSelect",
           target: "closed",
-          actions: "clickFocusedItem"
+          actions: "clickHighlightedItem"
         }, {
-          actions: "clickFocusedItem"
+          actions: "clickHighlightedItem"
         }],
         ITEM_POINTERMOVE: [{
           cond: "!suspendPointer && !isTargetFocused",
-          actions: ["focusItem", "focusMenu"]
+          actions: ["highlightItem", "focusMenu"]
         }, {
           cond: "!isTargetFocused",
           actions: "setHoveredItem"
         }],
         ITEM_POINTERLEAVE: {
           cond: "!suspendPointer && !isTriggerItem",
-          actions: "clearFocusedItem"
+          actions: "clearHighlightedItem"
         },
         ITEM_CLICK: [{
-          cond: "!isTriggerItemFocused && !isFocusedItemEditable && closeOnSelect",
+          cond: "!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect",
           target: "closed",
           actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange", "closeRootMenu", "invokeOnClose"]
         }, {
-          cond: "!isTriggerItemFocused && !isFocusedItemEditable",
+          cond: "!isTriggerItemHighlighted && !isHighlightedItemEditable",
           actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"]
         }, {
-          actions: "focusItem"
+          actions: "highlightItem"
         }],
         TRIGGER_POINTERLEAVE: {
           target: "closing",
           actions: "setIntentPolygon"
         },
         ITEM_POINTERDOWN: {
-          actions: "focusItem"
+          actions: "highlightItem"
         },
         TYPEAHEAD: {
-          actions: "focusMatchedItem"
+          actions: "highlightMatchedItem"
         },
         FOCUS_MENU: {
           actions: "focusMenu"
@@ -275,17 +283,18 @@ const fetchMachine = createMachine({
     SUBMENU_CLOSE_DELAY: 200
   },
   guards: {
+    "isOpenControlled": ctx => ctx["isOpenControlled"],
     "!isSubmenu": ctx => ctx["!isSubmenu"],
     "isSubmenu": ctx => ctx["isSubmenu"],
     "isTriggerItem": ctx => ctx["isTriggerItem"],
     "!isTriggerItem": ctx => ctx["!isTriggerItem"],
     "isForwardTabNavigation": ctx => ctx["isForwardTabNavigation"],
-    "isTriggerItemFocused": ctx => ctx["isTriggerItemFocused"],
+    "isTriggerItemHighlighted": ctx => ctx["isTriggerItemHighlighted"],
     "closeOnSelect": ctx => ctx["closeOnSelect"],
     "!suspendPointer && !isTargetFocused": ctx => ctx["!suspendPointer && !isTargetFocused"],
     "!isTargetFocused": ctx => ctx["!isTargetFocused"],
     "!suspendPointer && !isTriggerItem": ctx => ctx["!suspendPointer && !isTriggerItem"],
-    "!isTriggerItemFocused && !isFocusedItemEditable && closeOnSelect": ctx => ctx["!isTriggerItemFocused && !isFocusedItemEditable && closeOnSelect"],
-    "!isTriggerItemFocused && !isFocusedItemEditable": ctx => ctx["!isTriggerItemFocused && !isFocusedItemEditable"]
+    "!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect": ctx => ctx["!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect"],
+    "!isTriggerItemHighlighted && !isHighlightedItemEditable": ctx => ctx["!isTriggerItemHighlighted && !isHighlightedItemEditable"]
   }
 });
