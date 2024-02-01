@@ -9,19 +9,26 @@ interface Props extends Omit<datePicker.Context, "id" | "__controlled"> {
 }
 
 export function DateRangePicker(props: Props) {
-  const { defaultOpen, defaultValue, ...contextProps } = props
+  const { defaultOpen, defaultValue, value, open, ...contextProps } = props
 
-  const [state, send] = useMachine(datePicker.machine({ id: useId() }), {
-    context: {
-      ...contextProps,
-      selectionMode: "range",
-      locale: "en",
-      numOfMonths: 2,
-      __controlled: contextProps.open !== undefined,
-      open: Boolean(contextProps.open ?? defaultOpen),
-      value: contextProps.value ?? defaultValue,
+  const [state, send] = useMachine(
+    datePicker.machine({
+      id: useId(),
+      value: value ?? defaultValue,
+      open: open ?? defaultOpen,
+    }),
+    {
+      context: {
+        locale: "en",
+        numOfMonths: 2,
+        ...contextProps,
+        selectionMode: "range",
+        __controlled: open !== undefined,
+        open: open ?? defaultOpen,
+        value: value ?? defaultValue,
+      },
     },
-  })
+  )
 
   const api = datePicker.connect(state, send, normalizeProps)
 

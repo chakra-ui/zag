@@ -9,7 +9,7 @@ interface Props extends Omit<tooltip.Context, "id" | "__controlled"> {
 }
 
 export function Tooltip(props: Props) {
-  const { defaultOpen, label, open, children, ...rest } = props
+  const { defaultOpen, label, open, children, ...context } = props
 
   const [state, send] = useMachine(
     tooltip.machine({
@@ -18,7 +18,7 @@ export function Tooltip(props: Props) {
     }),
     {
       context: {
-        ...rest,
+        ...context,
         open: open ?? defaultOpen,
         __controlled: open !== undefined,
       },

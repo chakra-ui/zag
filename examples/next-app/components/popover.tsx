@@ -2,22 +2,26 @@ import * as popover from "@zag-js/popover"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 import { useId } from "react"
 
-interface Props {
-  open: boolean
+interface Props extends Omit<popover.Context, "__controlled" | "id"> {
   defaultOpen?: boolean
-  onOpenChange?: popover.Context["onOpenChange"]
 }
 
 export function Popover(props: Props) {
-  const { open, defaultOpen, onOpenChange } = props
+  const { open, defaultOpen, ...context } = props
 
-  const [state, send] = useMachine(popover.machine({ id: useId() }), {
-    context: {
-      __controlled: open !== undefined,
-      open: Boolean(open ?? defaultOpen),
-      onOpenChange: onOpenChange,
+  const [state, send] = useMachine(
+    popover.machine({
+      id: useId(),
+      open: open ?? defaultOpen,
+    }),
+    {
+      context: {
+        ...context,
+        __controlled: open !== undefined,
+        open: open ?? defaultOpen,
+      },
     },
-  })
+  )
 
   const api = popover.connect(state, send, normalizeProps)
 
