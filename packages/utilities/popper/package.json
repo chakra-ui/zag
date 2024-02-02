@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/element-rect": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@floating-ui/dom": "1.6.1"
   },
