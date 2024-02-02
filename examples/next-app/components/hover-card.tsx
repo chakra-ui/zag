@@ -19,7 +19,7 @@ export function HoverCard(props: Props) {
       context: {
         ...context,
         __controlled: open !== undefined,
-        open: open ?? defaultOpen,
+        open,
       },
     },
   )

@@ -10,6 +10,7 @@ const routes = [
   { path: "/date-picker/controlled-range-picker", name: "DateRangePicker - Controlled" },
   { path: "/hover-card/controlled", name: "HoverCard - Controlled" },
   { path: "/tooltip/controlled", name: "Tooltip - Controlled" },
+  { path: "/menu/controlled", name: "Menu - Controlled" },
 ]
 
 export default function Page() {
@@ -18,8 +19,8 @@ export default function Page() {
       <h1>Zag.js + Next App</h1>
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
           gap: "16px",
         }}
       >

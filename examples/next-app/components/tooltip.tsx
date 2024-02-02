@@ -19,8 +19,8 @@ export function Tooltip(props: Props) {
     {
       context: {
         ...context,
-        open: open ?? defaultOpen,
         __controlled: open !== undefined,
+        open,
       },
     },
   )

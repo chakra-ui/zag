@@ -18,7 +18,7 @@ export function Dialog(props: Props) {
       context: {
         ...context,
         __controlled: open !== undefined,
-        open: open ?? defaultOpen,
+        open,
       },
     },
   )

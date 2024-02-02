@@ -20,6 +20,8 @@ interface SelectProps extends Omit<select.Context, "id" | "value" | "onValueChan
   onValueChange?: (value: string) => void
 }
 
+const toArray = (value: string | null | undefined) => (value ? [value] : undefined)
+
 export function Select(props: SelectProps) {
   const { value, defaultValue, onValueChange, defaultOpen, open, ...contextProps } = props
 
@@ -27,15 +29,15 @@ export function Select(props: SelectProps) {
     select.machine({
       id: useId(),
       collection,
-      value: defaultValue ? [defaultValue] : undefined,
+      value: toArray(value) ?? toArray(defaultValue),
       open: open ?? defaultOpen,
     }),
     {
       context: {
         ...contextProps,
-        open: open ?? defaultOpen,
+        open,
         __controlled: open !== undefined,
-        value: value ? [value] : undefined,
+        value: toArray(value),
         onValueChange(details: any) {
           onValueChange?.(details.value[0])
         },

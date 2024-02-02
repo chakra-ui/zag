@@ -24,8 +24,8 @@ export function DateRangePicker(props: Props) {
         ...contextProps,
         selectionMode: "range",
         __controlled: open !== undefined,
-        open: open ?? defaultOpen,
-        value: value ?? defaultValue,
+        open,
+        value,
       },
     },
   )

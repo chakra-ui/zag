@@ -25,22 +25,22 @@ interface Props extends Omit<colorPicker.Context, "id"> {
 }
 
 export function ColorPicker(props: Props) {
-  const { defaultOpen, defaultValue, open, value, ...contextProps } = props
+  const { defaultOpen, defaultValue = colorPicker.parse("hsl(0, 100%, 50%)"), open, value, ...contextProps } = props
 
   const [state, send] = useMachine(
     colorPicker.machine({
       id: useId(),
       name: "color",
       format: "hsla",
-      value: colorPicker.parse("hsl(0, 100%, 50%)"),
+      value: value ?? defaultValue,
       open: open ?? defaultOpen,
     }),
     {
       context: {
         ...contextProps,
         __controlled: open !== undefined,
-        open: open ?? defaultOpen,
-        value: value ?? defaultValue,
+        open,
+        value,
       },
     },
   )
