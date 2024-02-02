@@ -4,7 +4,9 @@
 
 ### Patch Changes
 
-- [`e037484`](https://github.com/chakra-ui/zag/commit/e0374847390a88e69d6e4b33f42fc6ab6291b2a8) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioning doesn't work as expected when combined with entry/exit animations in the presence component
+- [`e037484`](https://github.com/chakra-ui/zag/commit/e0374847390a88e69d6e4b33f42fc6ab6291b2a8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioning doesn't work as expected when combined
+  with entry/exit animations in the presence component
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.34.0
@@ -678,7 +680,7 @@
 
   ```jsx
   // this is will open the dialog initially
-  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }));
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
 
   // this will open the dialog when the `open` value changes
   const [state, send] = useMachine(dialog.machine({ id: "1" }), {
@@ -686,7 +688,7 @@
       // when this value changes, the dialog will open/close
       open: true,
     },
-  });
+  })
   ```
 
 ### Patch Changes
@@ -706,7 +708,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" });
+  api.setPositioning({ placement: "top" })
   ```
 
 ### Patch Changes

@@ -229,3 +229,7 @@ export const treeviewControls = defineControls({
   selectionMode: { type: "select", options: ["single", "multiple"] as const, defaultValue: "single" },
   openOnClick: { type: "boolean", defaultValue: true },
 })
+
+export const clipboardControls = defineControls({
+  timeout: { type: "number", defaultValue: 3000 },
+})

@@ -18,6 +18,7 @@
     "@zag-js/avatar": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
+    "@zag-js/clipboard": "workspace:*",
     "@zag-js/collection": "workspace:*",
     "@zag-js/color-picker": "workspace:*",
     "@zag-js/color-utils": "workspace:*",
@@ -77,8 +78,8 @@
     "@zag-js/vue": "workspace:*",
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
-    "vue-router": "4.2.5",
-    "vue": "3.4.15"
+    "vue": "3.4.15",
+    "vue-router": "4.2.5"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",

@@ -4,7 +4,8 @@
 
 ### Minor Changes
 
-- [`2982ac3`](https://github.com/chakra-ui/zag/commit/2982ac314dff65883e437459cc893dea11d472f8) Thanks [@cschroeter](https://github.com/cschroeter)! - Refactor transition duration for components with indicators
+- [`2982ac3`](https://github.com/chakra-ui/zag/commit/2982ac314dff65883e437459cc893dea11d472f8) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Refactor transition duration for components with indicators
 
 ### Patch Changes
 
