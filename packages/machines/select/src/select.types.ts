@@ -118,6 +118,10 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether the select menu is open
    */
   open?: boolean
+  /**
+   * Whether the select's open state is controlled by the user
+   */
+  __controlled?: boolean
 }
 
 type PrivateContext = Context<{
@@ -136,6 +140,11 @@ type PrivateContext = Context<{
    * Whether the fieldset is disabled
    */
   fieldsetDisabled: boolean
+  /**
+   * @internal
+   * Whether to restore focus to the trigger after the menu closes
+   */
+  restoreFocus?: boolean
 }>
 
 type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
@@ -222,6 +231,10 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    * Whether the select is open
    */
   isOpen: boolean
+  /**
+   * Whether the select value is empty
+   */
+  isValueEmpty: boolean
   /**
    * The value of the highlighted item
    */

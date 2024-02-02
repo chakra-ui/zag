@@ -27,7 +27,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("CLOSE")
     },
     reposition(options = {}) {
-      send({ type: "SET_POSITIONING", options })
+      send({ type: "POSITIONING.SET", options })
     },
 
     arrowProps: normalize.element({
@@ -113,7 +113,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       "aria-label": "close",
       onClick() {
-        send("REQUEST_CLOSE")
+        send("CLOSE")
       },
     }),
   }

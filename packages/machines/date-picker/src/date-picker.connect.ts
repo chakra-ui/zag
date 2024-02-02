@@ -1,4 +1,4 @@
-import { DateFormatter, isWeekend, type DateValue } from "@internationalized/date"
+import { DateFormatter, isWeekend, type DateValue, isEqualDay } from "@internationalized/date"
 import {
   constrainValue,
   getDayFormatter,
@@ -455,6 +455,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onPointerMove(event) {
           if (event.pointerType === "touch" || !cellState.isSelectable) return
           const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
+          if (hoveredValue && isEqualDay(value, hoveredValue)) return
           send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
         },
       })

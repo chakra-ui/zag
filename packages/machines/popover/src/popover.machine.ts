@@ -47,14 +47,30 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         closed: {
           on: {
-            TOGGLE: {
+            "CONTROLLED.OPEN": {
               target: "open",
-              actions: ["invokeOnOpen"],
+              actions: ["setInitialFocus"],
             },
-            OPEN: {
-              target: "open",
-              actions: ["invokeOnOpen"],
-            },
+            TOGGLE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["invokeOnOpen", "setInitialFocus"],
+              },
+            ],
+            OPEN: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["invokeOnOpen", "setInitialFocus"],
+              },
+            ],
           },
         },
 
@@ -67,21 +83,32 @@ export function machine(userContext: UserDefinedContext) {
             "trackDismissableElement",
             "proxyTabFocus",
           ],
-          entry: ["setInitialFocus"],
           on: {
-            CLOSE: {
+            "CONTROLLED.CLOSE": {
               target: "closed",
-              actions: ["invokeOnClose"],
+              actions: ["restoreFocus"],
             },
-            REQUEST_CLOSE: {
-              target: "closed",
-              actions: ["restoreFocusIfNeeded", "invokeOnClose"],
-            },
-            TOGGLE: {
-              target: "closed",
-              actions: ["invokeOnClose"],
-            },
-            SET_POSITIONING: {
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose", "restoreFocus"],
+              },
+            ],
+            TOGGLE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+            ],
+            "POSITIONING.SET": {
               actions: "reposition",
             },
           },
@@ -89,6 +116,9 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
+      guards: {
+        isOpenControlled: (ctx) => !!ctx.__controlled,
+      },
       activities: {
         trackPositioning(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
@@ -125,7 +155,7 @@ export function machine(userContext: UserDefinedContext) {
             onPointerDownOutside: ctx.onPointerDownOutside,
             onFocusOutside: ctx.onFocusOutside,
             onDismiss() {
-              send({ type: "REQUEST_CLOSE", src: "interact-outside", restoreFocus })
+              send({ type: "CLOSE", src: "interact-outside", restoreFocus })
             },
           })
         },
@@ -198,7 +228,7 @@ export function machine(userContext: UserDefinedContext) {
             dom.getInitialFocusEl(ctx)?.focus({ preventScroll: true })
           })
         },
-        restoreFocusIfNeeded(ctx, evt) {
+        restoreFocus(ctx, evt) {
           if (!evt.restoreFocus) return
           raf(() => {
             dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
@@ -210,8 +240,8 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnClose(ctx) {
           ctx.onOpenChange?.({ open: false })
         },
-        toggleVisibility(ctx, _evt, { send }) {
-          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
+        toggleVisibility(ctx, evt, { send }) {
+          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
         },
       },
     },

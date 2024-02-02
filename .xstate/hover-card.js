@@ -13,8 +13,15 @@ const fetchMachine = createMachine({
   id: "hover-card",
   initial: ctx.open ? "open" : "closed",
   context: {
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled && !isPointer": false,
     "!isPointer": false,
-    "!isPointer": false
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled && !isPointer": false,
+    "!isPointer": false,
+    "isOpenControlled": false
   },
   on: {
     UPDATE_CONTEXT: {
@@ -26,6 +33,7 @@ const fetchMachine = createMachine({
       tags: ["closed"],
       entry: ["clearIsPointer"],
       on: {
+        "CONTROLLED.OPEN": "open",
         POINTER_ENTER: {
           target: "opening",
           actions: ["setIsPointer"]
@@ -37,49 +45,66 @@ const fetchMachine = createMachine({
     opening: {
       tags: ["closed"],
       after: {
-        OPEN_DELAY: {
+        OPEN_DELAY: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
           target: "open",
           actions: ["invokeOnOpen"]
-        }
+        }]
       },
       on: {
-        POINTER_LEAVE: {
+        "CONTROLLED.OPEN": "open",
+        POINTER_LEAVE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
           target: "closed",
           actions: ["invokeOnClose"]
-        },
-        TRIGGER_BLUR: {
+        }],
+        TRIGGER_BLUR: [{
+          cond: "isOpenControlled && !isPointer",
+          actions: ["invokeOnClose"]
+        }, {
           cond: "!isPointer",
           target: "closed",
           actions: ["invokeOnClose"]
-        },
-        CLOSE: {
+        }],
+        CLOSE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
           target: "closed",
           actions: ["invokeOnClose"]
-        }
+        }]
       }
     },
     open: {
       tags: ["open"],
       activities: ["trackDismissableElement", "trackPositioning"],
+      entry: console.log,
       on: {
+        "CONTROLLED.CLOSE": "closed",
         POINTER_ENTER: {
           actions: ["setIsPointer"]
         },
         POINTER_LEAVE: "closing",
-        DISMISS: {
+        CLOSE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
           target: "closed",
           actions: ["invokeOnClose"]
-        },
-        CLOSE: {
-          target: "closed",
+        }],
+        TRIGGER_BLUR: [{
+          cond: "isOpenControlled && !isPointer",
           actions: ["invokeOnClose"]
-        },
-        TRIGGER_BLUR: {
+        }, {
           cond: "!isPointer",
           target: "closed",
           actions: ["invokeOnClose"]
-        },
-        SET_POSITIONING: {
+        }],
+        "POSITIONING.SET": {
           actions: "reposition"
         }
       }
@@ -88,12 +113,16 @@ const fetchMachine = createMachine({
       tags: ["open"],
       activities: ["trackPositioning"],
       after: {
-        CLOSE_DELAY: {
+        CLOSE_DELAY: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
           target: "closed",
           actions: ["invokeOnClose"]
-        }
+        }]
       },
       on: {
+        "CONTROLLED.CLOSE": "closed",
         POINTER_ENTER: {
           target: "open",
           // no need to invokeOnOpen here because it's still open (but about to close)
@@ -111,6 +140,8 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "isOpenControlled": ctx => ctx["isOpenControlled"],
+    "isOpenControlled && !isPointer": ctx => ctx["isOpenControlled && !isPointer"],
     "!isPointer": ctx => ctx["!isPointer"]
   }
 });

@@ -1,18 +1,16 @@
 import Link from "next/link"
 
 const routes = [
-  {
-    path: "/mobile-touch-end",
-    name: "Mobile Touch End",
-  },
-  {
-    path: "/select-controlled",
-    name: "Select Controlled",
-  },
-  {
-    path: "/select-search-params",
-    name: "Select Search Params",
-  },
+  { path: "/select/mobile-touch-end", name: "Select - Mobile Touch End" },
+  { path: "/select/controlled", name: "Select - Controlled" },
+  { path: "/select/search-params", name: "Select - Search Params" },
+  { path: "/dialog/controlled", name: "Dialog - Controlled" },
+  { path: "/popover/controlled", name: "Popover - Controlled" },
+  { path: "/color-picker/controlled", name: "ColorPicker - Controlled" },
+  { path: "/date-picker/controlled-range-picker", name: "DateRangePicker - Controlled" },
+  { path: "/hover-card/controlled", name: "HoverCard - Controlled" },
+  { path: "/tooltip/controlled", name: "Tooltip - Controlled" },
+  { path: "/menu/controlled", name: "Menu - Controlled" },
 ]
 
 export default function Page() {
@@ -21,8 +19,8 @@ export default function Page() {
       <h1>Zag.js + Next App</h1>
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
           gap: "16px",
         }}
       >
