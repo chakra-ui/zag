@@ -7,4 +7,8 @@ export type {
   ExpandedChangeDetails,
   FocusChangeDetails,
   SelectionChangeDetails,
+  ItemProps,
+  ItemState,
+  BranchProps,
+  BranchState,
 } from "./tree-view.types"
