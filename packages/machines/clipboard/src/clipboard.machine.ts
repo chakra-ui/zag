@@ -23,7 +23,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             COPY: {
               target: "copied",
-              actions: ["copyToClipboard"],
+              actions: ["copyToClipboard", "invokeOnCopied"],
             },
           },
         },
@@ -34,7 +34,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             COPY: {
               target: "copied",
-              actions: ["copyToClipboard"],
+              actions: ["copyToClipboard", "invokeOnCopied"],
             },
           },
         },
@@ -48,7 +48,7 @@ export function machine(userContext: UserDefinedContext) {
         copyToClipboard(ctx) {
           navigator.clipboard.writeText(ctx.value)
         },
-        invokeOnCopyStatusChange(ctx) {
+        invokeOnCopied(ctx) {
           ctx.onCopyStatusChange?.({ copied: true })
         },
       },

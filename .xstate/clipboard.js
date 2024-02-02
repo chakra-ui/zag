@@ -28,7 +28,7 @@ const fetchMachine = createMachine({
       on: {
         COPY: {
           target: "copied",
-          actions: ["copyToClipboard"]
+          actions: ["copyToClipboard", "invokeOnCopied"]
         }
       }
     },
@@ -39,7 +39,7 @@ const fetchMachine = createMachine({
       on: {
         COPY: {
           target: "copied",
-          actions: ["copyToClipboard"]
+          actions: ["copyToClipboard", "invokeOnCopied"]
         }
       }
     }

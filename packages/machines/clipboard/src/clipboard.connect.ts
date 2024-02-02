@@ -1,3 +1,4 @@
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./clipboard.anatomy"
 import type { MachineApi, Send, State } from "./clipboard.types"
@@ -13,6 +14,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     triggerProps: normalize.button({
       ...parts.trigger,
+      "data-copied": dataAttr(isCopied),
       onClick() {
         send({ type: "COPY" })
       },
