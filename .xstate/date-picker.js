@@ -21,6 +21,7 @@ const fetchMachine = createMachine({
     "isOpenControlled": false,
     "isOpenControlled": false,
     "isOpenControlled": false,
+    "shouldRestoreFocus && isInteractOutsideEvent": false,
     "shouldRestoreFocus": false,
     "isMonthView": false,
     "isYearView": false,
@@ -167,6 +168,10 @@ const fetchMachine = createMachine({
       exit: ["clearHoveredDate", "resetView"],
       on: {
         "CONTROLLED.CLOSE": [{
+          cond: "shouldRestoreFocus && isInteractOutsideEvent",
+          target: "focused",
+          actions: ["focusTriggerElement"]
+        }, {
           cond: "shouldRestoreFocus",
           target: "focused",
           actions: ["focusInputElement"]
@@ -387,6 +392,7 @@ const fetchMachine = createMachine({
     "isYearView": ctx => ctx["isYearView"],
     "isMonthView": ctx => ctx["isMonthView"],
     "isOpenControlled": ctx => ctx["isOpenControlled"],
+    "shouldRestoreFocus && isInteractOutsideEvent": ctx => ctx["shouldRestoreFocus && isInteractOutsideEvent"],
     "shouldRestoreFocus": ctx => ctx["shouldRestoreFocus"],
     "isRangePicker && hasSelectedRange": ctx => ctx["isRangePicker && hasSelectedRange"],
     "isRangePicker && isSelectingEndDate && closeOnSelect && isOpenControlled": ctx => ctx["isRangePicker && isSelectingEndDate && closeOnSelect && isOpenControlled"],

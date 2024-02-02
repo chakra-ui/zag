@@ -233,6 +233,11 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "CONTROLLED.CLOSE": [
               {
+                guard: and("shouldRestoreFocus", "isInteractOutsideEvent"),
+                target: "focused",
+                actions: ["focusTriggerElement"],
+              },
+              {
                 guard: "shouldRestoreFocus",
                 target: "focused",
                 actions: ["focusInputElement"],
@@ -524,6 +529,7 @@ export function machine(userContext: UserDefinedContext) {
         isSelectingEndDate: (ctx) => ctx.activeIndex === 1,
         closeOnSelect: (ctx) => !!ctx.closeOnSelect,
         isOpenControlled: (ctx) => !!ctx.__controlled,
+        isInteractOutsideEvent: (_ctx, evt) => evt.previousEvent?.type === "INTERACT_OUTSIDE",
       },
       activities: {
         trackPositioning(ctx) {
@@ -817,8 +823,8 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnClose(ctx) {
           ctx.onOpenChange?.({ open: false })
         },
-        toggleVisibility(ctx, _evt, { send }) {
-          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE" })
+        toggleVisibility(ctx, evt, { send }) {
+          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
         },
       },
       compareFns: {
