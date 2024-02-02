@@ -1,5 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { compact } from "@zag-js/utils"
+import { dom } from "./clipboard.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./clipboard.types"
 
 export function machine(userContext: UserDefinedContext) {
@@ -46,7 +47,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.value = evt.value
         },
         copyToClipboard(ctx) {
-          navigator.clipboard.writeText(ctx.value)
+          dom.writeToClipboard(ctx)
         },
         invokeOnCopied(ctx) {
           ctx.onCopyStatusChange?.({ copied: true })

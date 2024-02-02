@@ -18,7 +18,7 @@ export const dom = createScope({
   getRootId: (ctx: Ctx) => `clip-${ctx.id}`,
   getTriggerId: (ctx: Ctx) => `clip-trigger-${ctx.id}`,
   getIndicatorId: (ctx: Ctx) => `clip-indicator-${ctx.id}`,
-  writeToClipboard: (ctx: Ctx, text: string) => copyText(dom.getDoc(ctx), text),
+  writeToClipboard: (ctx: Ctx) => copyText(dom.getDoc(ctx), ctx.value),
 })
 
 function copyNode(node: HTMLElement): Promise<void> {
