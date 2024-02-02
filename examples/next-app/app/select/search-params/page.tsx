@@ -40,7 +40,7 @@ export default function Page() {
       <Select
         positioning={{ placement: "right-end" }}
         value={selectedCountry}
-        setValue={(value) => {
+        onValueChange={(value) => {
           router.push(`${pathname}?country=${value}`)
         }}
       />

@@ -18,7 +18,6 @@ const fetchMachine = createMachine({
     "isOpenControlled": false,
     "isOpenControlled": false,
     "isOpenControlled": false,
-    "!isSubmenu && isOpenControlled": false,
     "!isSubmenu": false,
     "isSubmenu": false,
     "isOpenControlled": false,
@@ -28,11 +27,14 @@ const fetchMachine = createMachine({
     "isOpenControlled": false,
     "isOpenControlled": false,
     "isOpenControlled": false,
+    "isOpenAutoFocusEvent || isArrowDownEvent": false,
+    "isArrowUpEvent": false,
     "isOpenControlled": false,
     "isOpenControlled": false,
     "isTriggerItem": false,
     "isOpenControlled": false,
     "isOpenControlled": false,
+    "isArrowLeftEvent": false,
     "!isTriggerItem && isOpenControlled": false,
     "!isTriggerItem": false,
     "isForwardTabNavigation": false,
@@ -42,8 +44,7 @@ const fetchMachine = createMachine({
     "isTriggerItemHighlighted": false,
     "closeOnSelect && isOpenControlled": false,
     "closeOnSelect": false,
-    "!suspendPointer && !isTargetFocused": false,
-    "!isTargetFocused": false,
+    "!suspendPointer": false,
     "!suspendPointer && !isTriggerItem": false,
     "!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect && isOpenControlled": false,
     "!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect": false,
@@ -64,7 +65,6 @@ const fetchMachine = createMachine({
       actions: "invokeOnOpen"
     }],
     OPEN_AUTOFOCUS: [{
-      internal: true,
       cond: "isOpenControlled",
       actions: ["invokeOnOpen"]
     }, {
@@ -118,13 +118,10 @@ const fetchMachine = createMachine({
           target: "open",
           actions: "invokeOnOpen"
         }],
-        TRIGGER_FOCUS: [{
-          cond: "!isSubmenu && isOpenControlled",
-          actions: "invokeOnClose"
-        }, {
+        TRIGGER_FOCUS: {
           cond: "!isSubmenu",
           target: "closed"
-        }],
+        },
         TRIGGER_POINTERMOVE: {
           cond: "isSubmenu",
           target: "opening"
@@ -197,9 +194,7 @@ const fetchMachine = createMachine({
         }]
       },
       on: {
-        "CONTROLLED.OPEN": {
-          target: "open"
-        },
+        "CONTROLLED.OPEN": "open",
         "CONTROLLED.CLOSE": {
           target: "closed",
           actions: ["focusParentMenu", "restoreParentFocus"]
@@ -222,10 +217,17 @@ const fetchMachine = createMachine({
       tags: ["closed"],
       entry: ["clearHighlightedItem", "focusTrigger", "clearAnchorPoint", "resumePointer"],
       on: {
-        "CONTROLLED.OPEN": {
+        "CONTROLLED.OPEN": [{
+          cond: "isOpenAutoFocusEvent || isArrowDownEvent",
           target: "open",
-          actions: ["highlightBasedOnPreviousEvent"]
-        },
+          actions: "highlightFirstItem"
+        }, {
+          cond: "isArrowUpEvent",
+          target: "open",
+          actions: "highlightLastItem"
+        }, {
+          target: "open"
+        }],
         CONTEXT_MENU_START: {
           target: "opening:contextmenu",
           actions: "setAnchorPoint"
@@ -248,6 +250,7 @@ const fetchMachine = createMachine({
           cond: "isTriggerItem",
           target: "opening"
         },
+        TRIGGER_BLUR: "idle",
         ARROW_DOWN: [{
           cond: "isOpenControlled",
           actions: "invokeOnOpen"
@@ -269,10 +272,13 @@ const fetchMachine = createMachine({
       activities: ["trackInteractOutside", "trackPositioning", "scrollToHighlightedItem"],
       entry: ["focusMenu", "resumePointer"],
       on: {
-        "CONTROLLED.CLOSE": {
+        "CONTROLLED.CLOSE": [{
           target: "closed",
-          actions: ["focusBasedOnPreviousEvent"]
-        },
+          cond: "isArrowLeftEvent",
+          actions: ["focusParentMenu"]
+        }, {
+          target: "closed"
+        }],
         TRIGGER_CLICK: [{
           cond: "!isTriggerItem && isOpenControlled",
           actions: "invokeOnClose"
@@ -329,10 +335,9 @@ const fetchMachine = createMachine({
           actions: "clickHighlightedItem"
         }],
         ITEM_POINTERMOVE: [{
-          cond: "!suspendPointer && !isTargetFocused",
+          cond: "!suspendPointer",
           actions: ["highlightItem", "focusMenu"]
         }, {
-          cond: "!isTargetFocused",
           actions: "setHoveredItem"
         }],
         ITEM_POINTERLEAVE: {
@@ -390,10 +395,12 @@ const fetchMachine = createMachine({
   },
   guards: {
     "isOpenControlled": ctx => ctx["isOpenControlled"],
-    "!isSubmenu && isOpenControlled": ctx => ctx["!isSubmenu && isOpenControlled"],
     "!isSubmenu": ctx => ctx["!isSubmenu"],
     "isSubmenu": ctx => ctx["isSubmenu"],
+    "isOpenAutoFocusEvent || isArrowDownEvent": ctx => ctx["isOpenAutoFocusEvent || isArrowDownEvent"],
+    "isArrowUpEvent": ctx => ctx["isArrowUpEvent"],
     "isTriggerItem": ctx => ctx["isTriggerItem"],
+    "isArrowLeftEvent": ctx => ctx["isArrowLeftEvent"],
     "!isTriggerItem && isOpenControlled": ctx => ctx["!isTriggerItem && isOpenControlled"],
     "!isTriggerItem": ctx => ctx["!isTriggerItem"],
     "isForwardTabNavigation": ctx => ctx["isForwardTabNavigation"],
@@ -401,8 +408,7 @@ const fetchMachine = createMachine({
     "isTriggerItemHighlighted": ctx => ctx["isTriggerItemHighlighted"],
     "closeOnSelect && isOpenControlled": ctx => ctx["closeOnSelect && isOpenControlled"],
     "closeOnSelect": ctx => ctx["closeOnSelect"],
-    "!suspendPointer && !isTargetFocused": ctx => ctx["!suspendPointer && !isTargetFocused"],
-    "!isTargetFocused": ctx => ctx["!isTargetFocused"],
+    "!suspendPointer": ctx => ctx["!suspendPointer"],
     "!suspendPointer && !isTriggerItem": ctx => ctx["!suspendPointer && !isTriggerItem"],
     "!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect && isOpenControlled": ctx => ctx["!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect && isOpenControlled"],
     "!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect": ctx => ctx["!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect"],

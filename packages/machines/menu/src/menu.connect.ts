@@ -76,6 +76,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerMove(event) {
         if (itemState.isDisabled || event.pointerType !== "mouse") return
         const target = event.currentTarget
+        if (itemState.isHighlighted) return
         send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect })
       },
       onPointerDown(event) {
@@ -206,6 +207,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "TRIGGER_CLICK", target: event.currentTarget })
         }
       },
+      onBlur() {
+        send("TRIGGER_BLUR")
+      },
       onFocus() {
         send("TRIGGER_FOCUS")
       },
@@ -218,10 +222,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send("ARROW_UP")
           },
           Enter() {
-            send({ type: "ARROW_DOWN" })
+            send({ type: "ARROW_DOWN", src: "enter" })
           },
           Space() {
-            send({ type: "ARROW_DOWN" })
+            send({ type: "ARROW_DOWN", src: "space" })
           },
         }
 

@@ -8,7 +8,7 @@ export default function Page() {
 
   return (
     <div style={{ padding: "40px", height: "200vh" }}>
-      <h1>Popover Controlled</h1>
+      <h1>DateRange Picker Controlled</h1>
 
       <h1>{String(open)}</h1>
 

@@ -9,7 +9,7 @@ import { add, cast, compact, isArray, remove } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
 
-const { not, and } = guards
+const { not, and, or } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -68,7 +68,6 @@ export function machine(userContext: UserDefinedContext) {
         ],
         OPEN_AUTOFOCUS: [
           {
-            internal: true,
             guard: "isOpenControlled",
             actions: ["invokeOnOpen"],
           },
@@ -129,16 +128,10 @@ export function machine(userContext: UserDefinedContext) {
                 actions: "invokeOnOpen",
               },
             ],
-            TRIGGER_FOCUS: [
-              {
-                guard: and(not("isSubmenu"), "isOpenControlled"),
-                actions: "invokeOnClose",
-              },
-              {
-                guard: not("isSubmenu"),
-                target: "closed",
-              },
-            ],
+            TRIGGER_FOCUS: {
+              guard: not("isSubmenu"),
+              target: "closed",
+            },
             TRIGGER_POINTERMOVE: {
               guard: "isSubmenu",
               target: "opening",
@@ -232,9 +225,7 @@ export function machine(userContext: UserDefinedContext) {
             ],
           },
           on: {
-            "CONTROLLED.OPEN": {
-              target: "open",
-            },
+            "CONTROLLED.OPEN": "open",
             "CONTROLLED.CLOSE": {
               target: "closed",
               actions: ["focusParentMenu", "restoreParentFocus"],
@@ -261,10 +252,21 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["closed"],
           entry: ["clearHighlightedItem", "focusTrigger", "clearAnchorPoint", "resumePointer"],
           on: {
-            "CONTROLLED.OPEN": {
-              target: "open",
-              actions: ["highlightBasedOnPreviousEvent"],
-            },
+            "CONTROLLED.OPEN": [
+              {
+                guard: or("isOpenAutoFocusEvent", "isArrowDownEvent"),
+                target: "open",
+                actions: "highlightFirstItem",
+              },
+              {
+                guard: "isArrowUpEvent",
+                target: "open",
+                actions: "highlightLastItem",
+              },
+              {
+                target: "open",
+              },
+            ],
             CONTEXT_MENU_START: {
               target: "opening:contextmenu",
               actions: "setAnchorPoint",
@@ -293,6 +295,7 @@ export function machine(userContext: UserDefinedContext) {
               guard: "isTriggerItem",
               target: "opening",
             },
+            TRIGGER_BLUR: "idle",
             ARROW_DOWN: [
               {
                 guard: "isOpenControlled",
@@ -321,10 +324,16 @@ export function machine(userContext: UserDefinedContext) {
           activities: ["trackInteractOutside", "trackPositioning", "scrollToHighlightedItem"],
           entry: ["focusMenu", "resumePointer"],
           on: {
-            "CONTROLLED.CLOSE": {
-              target: "closed",
-              actions: ["focusBasedOnPreviousEvent"],
-            },
+            "CONTROLLED.CLOSE": [
+              {
+                target: "closed",
+                guard: "isArrowLeftEvent",
+                actions: ["focusParentMenu"],
+              },
+              {
+                target: "closed",
+              },
+            ],
             TRIGGER_CLICK: [
               {
                 guard: and(not("isTriggerItem"), "isOpenControlled"),
@@ -394,11 +403,10 @@ export function machine(userContext: UserDefinedContext) {
             ],
             ITEM_POINTERMOVE: [
               {
-                guard: and(not("suspendPointer"), not("isTargetFocused")),
+                guard: not("suspendPointer"),
                 actions: ["highlightItem", "focusMenu"],
               },
               {
-                guard: not("isTargetFocused"),
                 actions: "setHoveredItem",
               },
             ],
@@ -470,8 +478,6 @@ export function machine(userContext: UserDefinedContext) {
 
       guards: {
         closeOnSelect: (ctx, evt) => !!(evt?.closeOnSelect ?? ctx.closeOnSelect),
-        isMenuFocused: (ctx) => contains(dom.getContentEl(ctx), dom.getActiveElement(ctx)),
-        isTargetFocused: (ctx, evt) => ctx.highlightedId === evt.target.id,
         // whether the trigger is also a menu item
         isTriggerItem: (_ctx, evt) => dom.isTriggerItem(evt.target),
         // whether the trigger item is the active item
@@ -487,7 +493,12 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.intentPolygon) return false
           return isPointInPolygon(ctx.intentPolygon, evt.point)
         },
+        // guard assertions (for controlled mode)
         isOpenControlled: (ctx) => ctx.__controlled !== undefined,
+        isArrowLeftEvent: (_ctx, evt) => evt.previousEvent?.type === "ARROW_LEFT",
+        isArrowUpEvent: (_ctx, evt) => evt.previousEvent?.type === "ARROW_UP",
+        isArrowDownEvent: (_ctx, evt) => evt.previousEvent?.type === "ARROW_DOWN",
+        isOpenAutoFocusEvent: (_ctx, evt) => evt.previousEvent?.type === "OPEN_AUTOFOCUS",
       },
 
       activities: {
@@ -638,34 +649,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearHighlightedItem(ctx) {
           ctx.highlightedId = null
-        },
-        focusBasedOnPreviousEvent(ctx, evt, meta) {
-          const eventType = evt.previousEvent?.type
-          if (!eventType) return
-
-          const actionType = {
-            ARROW_LEFT: "focusParentMenu",
-          }[eventType]
-
-          if (!actionType) return
-
-          const action = meta.getAction(actionType)
-          action(ctx, evt, meta)
-        },
-        highlightBasedOnPreviousEvent(ctx, evt, meta) {
-          const eventType = evt.previousEvent?.type
-          if (!eventType) return
-
-          const actionType = {
-            OPEN_AUTOFOCUS: "highlightFirstItem",
-            ARROW_DOWN: "highlightFirstItem",
-            ARROW_UP: "highlightLastItem",
-          }[eventType]
-
-          if (!actionType) return
-
-          const action = meta.getAction(actionType)
-          action(ctx, evt, meta)
         },
         focusMenu(ctx) {
           raf(() => {
