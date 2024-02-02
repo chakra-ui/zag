@@ -291,8 +291,8 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
-        toggleVisibility(ctx, _evt, { send }) {
-          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE" })
+        toggleVisibility(ctx, evt, { send }) {
+          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
         },
         setPointerMoveOpened(ctx) {
           ctx.hasPointerMoveOpened = true

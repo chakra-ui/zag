@@ -167,8 +167,8 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnOpen(ctx) {
           ctx.onOpenChange?.({ open: true })
         },
-        toggleVisibility(ctx, _evt, { send }) {
-          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE" })
+        toggleVisibility(ctx, evt, { send }) {
+          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
         },
         restoreFocus(ctx) {
           if (!ctx.restoreFocus) return
