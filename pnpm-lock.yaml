@@ -3107,9 +3107,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../dom-query
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../element-rect
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../core

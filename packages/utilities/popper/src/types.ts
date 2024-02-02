@@ -1,5 +1,4 @@
-import type { Boundary, ComputePositionReturn, Placement, VirtualElement } from "@floating-ui/dom"
-import type { AutoUpdateOptions } from "./auto-update"
+import type { AutoUpdateOptions, Boundary, ComputePositionReturn, Placement, VirtualElement } from "@floating-ui/dom"
 
 export type MaybeRectElement = HTMLElement | VirtualElement | null
 
