@@ -12,8 +12,12 @@ const {
 const fetchMachine = createMachine({
   id: "select",
   context: {
+    "isTriggerClickEvent": false,
     "isOpenControlled": false,
     "isOpenControlled": false,
+    "isTriggerClickEvent": false,
+    "isTriggerArrowUpEvent": false,
+    "isTriggerArrowDownEvent || isTriggerEnterEvent": false,
     "isOpenControlled": false,
     "isOpenControlled": false,
     "isOpenControlled": false,
@@ -72,10 +76,13 @@ const fetchMachine = createMachine({
     idle: {
       tags: ["closed"],
       on: {
-        "CONTROLLED.OPEN": {
+        "CONTROLLED.OPEN": [{
+          cond: "isTriggerClickEvent",
           target: "open",
-          actions: ["highlightBasedOnPreviousEvent"]
-        },
+          actions: ["highlightFirstSelectedItem"]
+        }, {
+          target: "open"
+        }],
         "TRIGGER.CLICK": [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
@@ -99,10 +106,21 @@ const fetchMachine = createMachine({
       tags: ["closed"],
       entry: ["focusTriggerEl"],
       on: {
-        "CONTROLLED.OPEN": {
+        "CONTROLLED.OPEN": [{
+          cond: "isTriggerClickEvent",
           target: "open",
-          actions: ["highlightBasedOnPreviousEvent"]
-        },
+          actions: ["highlightFirstSelectedItem"]
+        }, {
+          cond: "isTriggerArrowUpEvent",
+          target: "open",
+          actions: ["highlightComputedLastItem"]
+        }, {
+          cond: "isTriggerArrowDownEvent || isTriggerEnterEvent",
+          target: "open",
+          actions: ["highlightComputedFirstItem"]
+        }, {
+          target: "open"
+        }],
         OPEN: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
@@ -282,7 +300,10 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "isTriggerClickEvent": ctx => ctx["isTriggerClickEvent"],
     "isOpenControlled": ctx => ctx["isOpenControlled"],
+    "isTriggerArrowUpEvent": ctx => ctx["isTriggerArrowUpEvent"],
+    "isTriggerArrowDownEvent || isTriggerEnterEvent": ctx => ctx["isTriggerArrowDownEvent || isTriggerEnterEvent"],
     "!multiple && hasSelectedItems": ctx => ctx["!multiple && hasSelectedItems"],
     "!multiple": ctx => ctx["!multiple"],
     "shouldRestoreFocus": ctx => ctx["shouldRestoreFocus"],

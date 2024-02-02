@@ -10,7 +10,7 @@ import { collection } from "./select.collection"
 import { dom } from "./select.dom"
 import type { CollectionItem, MachineContext, MachineState, UserDefinedContext } from "./select.types"
 
-const { and, not } = guards
+const { and, not, or } = guards
 
 export function machine<T extends CollectionItem>(userContext: UserDefinedContext<T>) {
   const ctx = compact(userContext)
@@ -80,10 +80,16 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         idle: {
           tags: ["closed"],
           on: {
-            "CONTROLLED.OPEN": {
-              target: "open",
-              actions: ["highlightBasedOnPreviousEvent"],
-            },
+            "CONTROLLED.OPEN": [
+              {
+                guard: "isTriggerClickEvent",
+                target: "open",
+                actions: ["highlightFirstSelectedItem"],
+              },
+              {
+                target: "open",
+              },
+            ],
             "TRIGGER.CLICK": [
               {
                 guard: "isOpenControlled",
@@ -114,10 +120,26 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           tags: ["closed"],
           entry: ["focusTriggerEl"],
           on: {
-            "CONTROLLED.OPEN": {
-              target: "open",
-              actions: ["highlightBasedOnPreviousEvent"],
-            },
+            "CONTROLLED.OPEN": [
+              {
+                guard: "isTriggerClickEvent",
+                target: "open",
+                actions: ["highlightFirstSelectedItem"],
+              },
+              {
+                guard: "isTriggerArrowUpEvent",
+                target: "open",
+                actions: ["highlightComputedLastItem"],
+              },
+              {
+                guard: or("isTriggerArrowDownEvent", "isTriggerEnterEvent"),
+                target: "open",
+                actions: ["highlightComputedFirstItem"],
+              },
+              {
+                target: "open",
+              },
+            ],
             OPEN: [
               {
                 guard: "isOpenControlled",
@@ -342,6 +364,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
       guards: {
         loop: (ctx) => !!ctx.loop,
         multiple: (ctx) => !!ctx.multiple,
+        hasSelectedItems: (ctx) => !!ctx.hasSelectedItems,
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
         isFirstItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.first(),
         isLastItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.last(),
@@ -351,7 +374,12 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           return !!(evt.closeOnSelect ?? ctx.closeOnSelect)
         },
         shouldRestoreFocus: (ctx) => !!ctx.restoreFocus,
+        // guard assertions (for controlled mode)
         isOpenControlled: (ctx) => !!ctx.__controlled,
+        isTriggerClickEvent: (_ctx, evt) => evt.previousEvent?.type === "TRIGGER.CLICK",
+        isTriggerEnterEvent: (_ctx, evt) => evt.previousEvent?.type === "TRIGGER.ENTER",
+        isTriggerArrowUpEvent: (_ctx, evt) => evt.previousEvent?.type === "TRIGGER.ARROW_UP",
+        isTriggerArrowDownEvent: (_ctx, evt) => evt.previousEvent?.type === "TRIGGER.ARROW_DOWN",
       },
       activities: {
         proxyTabFocus(ctx) {
@@ -475,21 +503,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           if (!ctx.hasSelectedItems) return
           const [value] = ctx.collection.sort(ctx.value)
           set.highlightedItem(ctx, value)
-        },
-        highlightBasedOnPreviousEvent(ctx, evt, meta) {
-          const eventType = evt.previousEvent?.type
-
-          const actionType = {
-            "TRIGGER.CLICK": "highlightFirstSelectedItem",
-            "TRIGGER.ENTER": "highlightComputedFirstItem",
-            "TRIGGER.ARROW_UP": "highlightComputedLastItem",
-            "TRIGGER.ARROW_DOWN": "highlightComputedFirstItem",
-          }[eventType]
-
-          if (!actionType) return
-
-          const action = meta.getAction(actionType)
-          action(ctx, evt, meta)
         },
         highlightItem(ctx, evt) {
           set.highlightedItem(ctx, evt.value)

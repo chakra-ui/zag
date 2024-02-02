@@ -237,10 +237,24 @@ test.describe("select / focused / select option", () => {
     await expectToBeChecked(page.locator(getOption("ZW")))
   })
 
-  test("should select last option on arrow right", async ({ page }) => {
+  test("should select first option on arrow right", async ({ page }) => {
     await page.focus(trigger)
+
     await page.keyboard.press("ArrowRight")
     await expectToBeChecked(page.locator(getOption("AD")))
+  })
+
+  test("should select next options on arrow right", async ({ page }) => {
+    await page.focus(trigger)
+
+    await page.keyboard.press("ArrowRight")
+    await expectToBeChecked(page.locator(getOption("AD")))
+
+    await page.keyboard.press("ArrowRight")
+    await expectToBeChecked(page.locator(getOption("AE")))
+
+    await page.keyboard.press("ArrowRight")
+    await expectToBeChecked(page.locator(getOption("AF")))
   })
 
   test("should select with typeahead", async ({ page }) => {
