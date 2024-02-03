@@ -1,4 +1,5 @@
 import * as clipboard from "@zag-js/clipboard"
+import { ClipboardCheck, ClipboardCopyIcon } from "lucide-react"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { clipboardControls } from "@zag-js/shared"
 import { useId } from "react"
@@ -12,7 +13,7 @@ export default function Page() {
   const [state, send] = useMachine(
     clipboard.machine({
       id: useId(),
-      value: "Text to copy!",
+      value: "https://github/com/chakra-ui/zag",
     }),
     {
       context: controls.context,
@@ -24,9 +25,13 @@ export default function Page() {
   return (
     <>
       <main className="clipboard">
-        <div>
-          <button {...api.triggerProps}>Copy Text</button>
-          <div {...api.getIndicatorProps({ copied: true })}>Copied</div>
+        <div {...api.rootProps}>
+          <label {...api.labelProps}>Copy this link</label>
+          <div {...api.controlProps}>
+            <input {...api.inputProps} />
+            <button {...api.triggerProps}>{api.isCopied ? <ClipboardCheck /> : <ClipboardCopyIcon />}</button>
+          </div>
+          <div {...api.getIndicatorProps({ copied: true })}>Copied!</div>
           <div {...api.getIndicatorProps({ copied: false })}>Copy</div>
         </div>
       </main>

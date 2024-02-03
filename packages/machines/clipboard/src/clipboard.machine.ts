@@ -14,6 +14,9 @@ export function machine(userContext: UserDefinedContext) {
         timeout: 3000,
         ...ctx,
       },
+      watch: {
+        value: ["syncInputElement"],
+      },
       on: {
         "VALUE.SET": {
           actions: ["setValue"],
@@ -51,6 +54,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnCopied(ctx) {
           ctx.onCopyStatusChange?.({ copied: true })
+        },
+        syncInputElement(ctx) {
+          dom.setValue(dom.getInputEl(ctx), ctx.value)
         },
       },
       delays: {

@@ -829,8 +829,8 @@ importers:
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
-      lucide-vue:
-        specifier: ^0.321.0
+      lucide-vue-next:
+        specifier: 0.321.0
         version: 0.321.0(vue@3.4.15)
       vue:
         specifier: 3.4.15
@@ -1760,8 +1760,8 @@ importers:
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
-      lucide-vue:
-        specifier: ^0.321.0
+      lucide-vue-next:
+        specifier: 0.321.0
         version: 0.321.0(vue@3.4.15)
       vite:
         specifier: 5.0.12
@@ -12988,10 +12988,10 @@ packages:
       svelte: 5.0.0-next.40
     dev: false
 
-  /lucide-vue@0.321.0(vue@3.4.15):
-    resolution: {integrity: sha512-K6ejuVApso1Mwj7kI9zHhIQRDft0BUULPFvZFB5tA68ZaquvaFVCCVvrbwY88OqA1YT89/p5hJJQ58svj+EyPQ==}
+  /lucide-vue-next@0.321.0(vue@3.4.15):
+    resolution: {integrity: sha512-r4IXuXuFneX2tAJF9TxXY/X5J0zIblI/pBPMR5vcAtDFVAKwWHoGSvCMk3dkH2dmD/uUZfNZiLI5fa07g4pbMA==}
     peerDependencies:
-      vue: ^2.6.12
+      vue: '>=3.0.1'
     dependencies:
       vue: 3.4.15(typescript@5.3.3)
     dev: false

@@ -46,6 +46,10 @@ export interface IndicatorProps {
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
+   * Whether the value has been copied to the clipboard
+   */
+  isCopied: boolean
+  /**
    * The value to be copied to the clipboard
    */
   value: string
@@ -53,16 +57,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Set the value to be copied to the clipboard
    */
   setValue(value: string): void
-  /**
-   * The props for the trigger button
-   */
+
+  rootProps: T["element"]
+  labelProps: T["label"]
+  controlProps: T["element"]
   triggerProps: T["button"]
-  /**
-   * The props for the indicator
-   */
+  inputProps: T["input"]
   getIndicatorProps(props: IndicatorProps): T["element"]
-  /**
-   * Whether the value has been copied to the clipboard
-   */
-  isCopied: boolean
 }

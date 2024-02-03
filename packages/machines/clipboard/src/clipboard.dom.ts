@@ -3,7 +3,10 @@ import { hasProp } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./clipboard.types"
 
 export const dom = createScope({
-  getTriggerId: (ctx: Ctx) => `clip-trigger-${ctx.id}`,
+  getRootId: (ctx: Ctx) => `clip-${ctx.id}`,
+  getInputId: (ctx: Ctx) => `clip-input-${ctx.id}`,
+  getLabelId: (ctx: Ctx) => `clip-label-${ctx.id}`,
+  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
   writeToClipboard: (ctx: Ctx) => copyText(dom.getDoc(ctx), ctx.value),
 })
 
