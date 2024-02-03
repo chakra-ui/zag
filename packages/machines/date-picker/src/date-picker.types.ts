@@ -60,7 +60,7 @@ export type ElementIds = Partial<{
   viewTrigger(view: DateView): string
   clearTrigger: string
   control: string
-  input: string
+  input(index: number): string
   trigger: string
   monthSelect: string
   yearSelect: string
@@ -168,11 +168,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The format of the date to display in the input.
    */
-  format?: (date: DateValue[]) => string
+  format?: (date: DateValue) => string
   /**
    * The format of the date to display in the input.
    */
-  parse?: (value: string) => DateValue[]
+  parse?: (value: string) => DateValue
   /**
    * The view of the calendar
    * @default "day"
@@ -217,7 +217,7 @@ type PrivateContext = Context<{
    * @internal
    * The input element's value
    */
-  inputValue: string
+  inputValue: string[]
   /**
    * @internal
    * The current hovered date. Useful for range selection mode.
@@ -358,6 +358,10 @@ export interface TableProps {
 
 export interface ViewProps {
   view?: DateView
+}
+
+export interface InputProps {
+  index?: number
 }
 
 export interface MonthGridProps {
@@ -574,7 +578,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   triggerProps: T["button"]
   getViewTriggerProps(props?: ViewProps): T["button"]
   getViewControlProps(props?: ViewProps): T["element"]
-  inputProps: T["input"]
+  getInputProps(props?: InputProps): T["input"]
   monthSelectProps: T["select"]
   yearSelectProps: T["select"]
 }

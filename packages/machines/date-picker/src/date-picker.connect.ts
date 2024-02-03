@@ -272,7 +272,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     labelProps: normalize.label({
       ...parts.label.attrs,
       dir: state.context.dir,
-      htmlFor: dom.getInputId(state.context),
+      htmlFor: dom.getInputId(state.context, 0),
       "data-state": isOpen ? "open" : "closed",
       "data-disabled": dataAttr(disabled),
       "data-readonly": dataAttr(readOnly),
@@ -622,41 +622,45 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    inputProps: normalize.input({
-      ...parts.input.attrs,
-      id: dom.getInputId(state.context),
-      autoComplete: "off",
-      autoCorrect: "off",
-      spellCheck: "false",
-      dir: state.context.dir,
-      name: state.context.name,
-      "data-state": isOpen ? "open" : "closed",
-      readOnly,
-      disabled,
-      placeholder: getInputPlaceholder(locale),
-      defaultValue: state.context.inputValue,
-      onBeforeInput(event) {
-        const { data } = getNativeEvent(event)
-        if (!isValidCharacter(data, separator)) {
-          event.preventDefault()
-        }
-      },
-      onFocus() {
-        send("INPUT.FOCUS")
-      },
-      onBlur(event) {
-        send({ type: "INPUT.BLUR", value: event.currentTarget.value })
-      },
-      onKeyDown(event) {
-        if (event.key !== "Enter" || !isInteractive) return
-        if (isUnavailable(state.context.focusedValue)) return
-        send({ type: "INPUT.ENTER", value: event.currentTarget.value })
-      },
-      onChange(event) {
-        const { value } = event.target
-        send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator) })
-      },
-    }),
+    getInputProps(props = {}) {
+      const { index = 0 } = props
+
+      return normalize.input({
+        ...parts.input.attrs,
+        id: dom.getInputId(state.context, index),
+        autoComplete: "off",
+        autoCorrect: "off",
+        spellCheck: "false",
+        dir: state.context.dir,
+        name: state.context.name,
+        "data-state": isOpen ? "open" : "closed",
+        readOnly,
+        disabled,
+        placeholder: getInputPlaceholder(locale),
+        defaultValue: state.context.inputValue[index],
+        onBeforeInput(event) {
+          const { data } = getNativeEvent(event)
+          if (!isValidCharacter(data, separator)) {
+            event.preventDefault()
+          }
+        },
+        onFocus() {
+          send({ type: "INPUT.FOCUS", index })
+        },
+        onBlur(event) {
+          send({ type: "INPUT.BLUR", value: event.currentTarget.value, index })
+        },
+        onKeyDown(event) {
+          if (event.key !== "Enter" || !isInteractive) return
+          if (isUnavailable(state.context.focusedValue)) return
+          send({ type: "INPUT.ENTER", value: event.currentTarget.value, index })
+        },
+        onChange(event) {
+          const { value } = event.target
+          send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator), index })
+        },
+      })
+    },
 
     monthSelectProps: normalize.select({
       ...parts.monthSelect.attrs,

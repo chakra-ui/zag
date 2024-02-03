@@ -38,7 +38,8 @@ export default function Page() {
         </output>
 
         <div {...api.controlProps}>
-          <input {...api.inputProps} />
+          <input {...api.getInputProps({ index: 0 })} />
+          <input {...api.getInputProps({ index: 1 })} />
           <button {...api.clearTriggerProps}>❌</button>
           <button {...api.triggerProps}>🗓</button>
         </div>

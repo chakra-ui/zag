@@ -115,7 +115,8 @@ const fetchMachine = createMachine({
           actions: ["focusFirstSelectedDate", "focusActiveCell"]
         },
         "INPUT.FOCUS": {
-          target: "focused"
+          target: "focused",
+          actions: ["setActiveIndex"]
         },
         "TRIGGER.CLICK": [{
           cond: "isOpenControlled",
@@ -151,7 +152,8 @@ const fetchMachine = createMachine({
           actions: ["focusParsedDate", "selectFocusedDate"]
         },
         "INPUT.BLUR": {
-          target: "idle"
+          target: "idle",
+          actions: ["setActiveIndexToStart"]
         },
         OPEN: [{
           cond: "isOpenControlled",

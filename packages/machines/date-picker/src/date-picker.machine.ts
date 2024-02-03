@@ -47,7 +47,9 @@ const transformContext = (ctx: Partial<MachineContext>): MachineContext => {
   const startValue = alignDate(focusedValue, "start", { months: numOfMonths }, locale)
 
   // format input value
-  const inputValue = ctx.format?.(value) ?? formatValue({ locale, timeZone, selectionMode, value })
+  const inputValue = ctx.format
+    ? value.map((val) => ctx.format!(val))
+    : formatValue({ locale, timeZone, selectionMode, value })
 
   return {
     locale,
@@ -166,6 +168,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "INPUT.FOCUS": {
               target: "focused",
+              actions: ["setActiveIndex"],
             },
             "TRIGGER.CLICK": [
               {
@@ -212,6 +215,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             "INPUT.BLUR": {
               target: "idle",
+              actions: ["setActiveIndexToStart"],
             },
             OPEN: [
               {
@@ -551,7 +555,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackDismissableElement(ctx, _evt, { send }) {
           return trackDismissableElement(dom.getContentEl(ctx), {
-            exclude: [dom.getInputEl(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
+            exclude: [...dom.getInputEls(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
             onInteractOutside(event) {
               ctx.restoreFocus = !event.detail.focusable
             },
@@ -596,17 +600,16 @@ export function machine(userContext: UserDefinedContext) {
           set.focusedValue(ctx, ctx.value[0])
         },
         setInputValue(ctx) {
-          const input = dom.getInputEl(ctx)
-          if (!input) return
-          ctx.inputValue = ctx.format?.(ctx.value) ?? formatValue(ctx)
+          ctx.inputValue = ctx.format ? ctx.value.map((date) => ctx.format!(date)) : formatValue(ctx)
         },
         syncInputElement(ctx) {
-          const inputEl = dom.getInputEl(ctx)
-          if (!inputEl || inputEl.value === ctx.inputValue) return
+          const inputEls = dom.getInputEls(ctx)
           raf(() => {
-            // move cursor to the end
-            inputEl.value = ctx.inputValue
-            inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length)
+            inputEls.forEach((inputEl, index) => {
+              const currentValue = ctx.inputValue[index]
+              if (currentValue == null) return
+              dom.setValue(inputEl, currentValue)
+            })
           })
         },
         setFocusedDate(ctx, evt) {
@@ -762,6 +765,9 @@ export function machine(userContext: UserDefinedContext) {
           const range = getDecadeRange(ctx.focusedValue.year)
           set.focusedValue(ctx, ctx.focusedValue.set({ year: range.at(-1) }))
         },
+        setActiveIndex(ctx, evt) {
+          ctx.activeIndex = evt.index
+        },
         setActiveIndexToEnd(ctx) {
           ctx.activeIndex = 1
         },
@@ -790,8 +796,14 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusInputElement(ctx) {
           raf(() => {
-            const inputEl = dom.getInputEl(ctx)
+            const inputEls = dom.getInputEls(ctx)
+
+            const lastIndexWithValue = inputEls.findLastIndex((inputEl) => inputEl.value !== "")
+            const indexToFocus = Math.max(lastIndexWithValue, 0)
+
+            const inputEl = inputEls[indexToFocus]
             inputEl?.focus({ preventScroll: true })
+            // move cursor to the end
             inputEl?.setSelectionRange(inputEl.value.length, inputEl.value.length)
           })
         },
@@ -806,8 +818,9 @@ export function machine(userContext: UserDefinedContext) {
           yearSelectEl.value = ctx.focusedValue.year.toString()
         },
         focusParsedDate(ctx, evt) {
-          ctx.inputValue = evt.value
-          const date = parseDateString(ctx.inputValue, ctx.locale, ctx.timeZone)
+          if (evt.index == null) return
+          ctx.inputValue[evt.index] = evt.value
+          const date = parseDateString(evt.value, ctx.locale, ctx.timeZone)
           set.focusedValue(ctx, date)
         },
         resetView(ctx, _evt, { initialContext }) {

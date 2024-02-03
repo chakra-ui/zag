@@ -18,7 +18,7 @@ export function sortDates(values: DateValue[]) {
   return values.sort((a, b) => a.compare(b))
 }
 
-export function formatValue(ctx: Pick<MachineContext, "locale" | "timeZone" | "selectionMode" | "value">) {
+export function formatValue(ctx: Pick<MachineContext, "locale" | "timeZone" | "selectionMode" | "value">): string[] {
   const formatter = new DateFormatter(ctx.locale, {
     timeZone: ctx.timeZone,
     day: "2-digit",
@@ -28,17 +28,17 @@ export function formatValue(ctx: Pick<MachineContext, "locale" | "timeZone" | "s
 
   if (ctx.selectionMode === "range") {
     const [startDate, endDate] = ctx.value
-    if (!startDate || !endDate) return ""
-    return `${formatter.format(startDate.toDate(ctx.timeZone))} - ${formatter.format(endDate.toDate(ctx.timeZone))}`
+    if (!startDate || !endDate) return []
+    return [formatter.format(startDate.toDate(ctx.timeZone)), formatter.format(endDate.toDate(ctx.timeZone))]
   }
 
   if (ctx.selectionMode === "single") {
     const [startValue] = ctx.value
-    if (!startValue) return ""
-    return formatter.format(startValue.toDate(ctx.timeZone))
+    if (!startValue) return []
+    return [formatter.format(startValue.toDate(ctx.timeZone))]
   }
 
-  return ctx.value.map((date) => formatter.format(date.toDate(ctx.timeZone))).join(", ")
+  return ctx.value.map((date) => formatter.format(date.toDate(ctx.timeZone)))
 }
 
 export function getNextTriggerLabel(view: DateView) {
