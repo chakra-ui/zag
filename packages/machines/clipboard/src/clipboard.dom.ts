@@ -2,6 +2,11 @@ import { createScope, getWindow } from "@zag-js/dom-query"
 import { hasProp } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./clipboard.types"
 
+export const dom = createScope({
+  getTriggerId: (ctx: Ctx) => `clip-trigger-${ctx.id}`,
+  writeToClipboard: (ctx: Ctx) => copyText(dom.getDoc(ctx), ctx.value),
+})
+
 function createNode(doc: Document, text: string): HTMLElement {
   const node = doc.createElement("pre")
   Object.assign(node.style, {
@@ -13,13 +18,6 @@ function createNode(doc: Document, text: string): HTMLElement {
   node.textContent = text
   return node
 }
-
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => `clip-${ctx.id}`,
-  getTriggerId: (ctx: Ctx) => `clip-trigger-${ctx.id}`,
-  getIndicatorId: (ctx: Ctx) => `clip-indicator-${ctx.id}`,
-  writeToClipboard: (ctx: Ctx) => copyText(dom.getDoc(ctx), ctx.value),
-})
 
 function copyNode(node: HTMLElement): Promise<void> {
   const win = getWindow(node)
