@@ -75,6 +75,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
+    "lucide-preact": "^0.321.0",
     "preact": "^10.19.3",
     "preact-iso": "^2.3.2",
     "preact-render-to-string": "^6.3.1"

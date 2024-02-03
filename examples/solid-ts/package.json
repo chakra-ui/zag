@@ -86,6 +86,7 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
+    "lucide-solid": "^0.321.0",
     "solid-js": "1.8.12"
   }
 }

@@ -78,6 +78,7 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
+    "lucide-svelte": "^0.321.0",
     "svelte-routing": "^2.11.0"
   },
   "devDependencies": {

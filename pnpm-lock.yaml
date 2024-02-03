@@ -341,6 +341,9 @@ importers:
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
+      lucide-react:
+        specifier: ^0.321.0
+        version: 0.321.0(react@18.2.0)
       next:
         specifier: 14.1.0
         version: 14.1.0(@opentelemetry/api@1.7.0)(react-dom@18.2.0)(react@18.2.0)
@@ -579,6 +582,9 @@ importers:
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
+      lucide-react:
+        specifier: ^0.321.0
+        version: 0.321.0(react@18.2.0)
       next:
         specifier: 14.1.0
         version: 14.1.0(@opentelemetry/api@1.7.0)(react-dom@18.2.0)(react@18.2.0)
@@ -823,6 +829,9 @@ importers:
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
+      lucide-vue:
+        specifier: ^0.321.0
+        version: 0.321.0(vue@3.4.15)
       vue:
         specifier: 3.4.15
         version: 3.4.15(typescript@5.3.3)
@@ -1046,6 +1055,9 @@ importers:
       '@zag-js/visually-hidden':
         specifier: workspace:*
         version: link:../../packages/utilities/visually-hidden
+      lucide-preact:
+        specifier: ^0.321.0
+        version: 0.321.0(preact@10.19.3)
       preact:
         specifier: ^10.19.3
         version: 10.19.3
@@ -1281,6 +1293,9 @@ importers:
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
+      lucide-solid:
+        specifier: ^0.321.0
+        version: 0.321.0(solid-js@1.8.12)
       solid-js:
         specifier: 1.8.12
         version: 1.8.12
@@ -1501,6 +1516,9 @@ importers:
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
+      lucide-svelte:
+        specifier: ^0.321.0
+        version: 0.321.0(svelte@5.0.0-next.40)
       svelte-routing:
         specifier: ^2.11.0
         version: 2.11.0
@@ -1742,6 +1760,9 @@ importers:
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
+      lucide-vue:
+        specifier: ^0.321.0
+        version: 0.321.0(vue@3.4.15)
       vite:
         specifier: 5.0.12
         version: 5.0.12(@types/node@20.11.10)
@@ -12934,6 +12955,46 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
+
+  /lucide-preact@0.321.0(preact@10.19.3):
+    resolution: {integrity: sha512-hwAY/WksilCY45iV3TUqzeimBca6OcZXwBiHhs+tIOIgxco3Dk9L1mZninR7NoSZ2j4IKC7FzjtgAAXtUSAokg==}
+    peerDependencies:
+      preact: ^10.5.13
+    dependencies:
+      preact: 10.19.3
+    dev: false
+
+  /lucide-react@0.321.0(react@18.2.0):
+    resolution: {integrity: sha512-Fi9VahIna6642U+2nAGSjnXwUBV3WyfFFPQq4yi3w30jtqxDLfSyiYCtCYCYQZ2KWNZc1MDI+rcsa0t+ChdYpw==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /lucide-solid@0.321.0(solid-js@1.8.12):
+    resolution: {integrity: sha512-fmAPVUXsxPoM0oXyWTIWu6UR3vZGx4m4ww7lMP+cr7kcDZy1BSH9mjPMUobLbpESj1ZQ6aveHMoFCslx7lB+cA==}
+    peerDependencies:
+      solid-js: ^1.4.7
+    dependencies:
+      solid-js: 1.8.12
+    dev: false
+
+  /lucide-svelte@0.321.0(svelte@5.0.0-next.40):
+    resolution: {integrity: sha512-sp5ogKKo8Oth6mcsIwN1HGudeshzSjtTGVwtISD/GdEjBaG4z3fwF6JupnnLEVPXC+TCETwcn6y3Y/Z3ljbs/Q==}
+    peerDependencies:
+      svelte: ^3 || ^4 || ^5.0.0-next.42
+    dependencies:
+      svelte: 5.0.0-next.40
+    dev: false
+
+  /lucide-vue@0.321.0(vue@3.4.15):
+    resolution: {integrity: sha512-K6ejuVApso1Mwj7kI9zHhIQRDft0BUULPFvZFB5tA68ZaquvaFVCCVvrbwY88OqA1YT89/p5hJJQ58svj+EyPQ==}
+    peerDependencies:
+      vue: ^2.6.12
+    dependencies:
+      vue: 3.4.15(typescript@5.3.3)
+    dev: false
 
   /magic-string-ast@0.3.0:
     resolution: {integrity: sha512-0shqecEPgdFpnI3AP90epXyxZy9g6CRZ+SZ7BcqFwYmtFEnZ1jpevcV5HoyVnlDS9gCnc1UIg3Rsvp3Ci7r8OA==}
