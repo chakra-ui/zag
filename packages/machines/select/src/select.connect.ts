@@ -334,7 +334,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       role: "listbox",
       ...parts.content.attrs,
       "data-state": isOpen ? "open" : "closed",
-      "aria-activedescendant": state.context.highlightedValue || "",
+      "aria-activedescendant": state.context.highlightedValue
+        ? dom.getItemId(state.context, state.context.highlightedValue)
+        : "",
       "aria-multiselectable": state.context.multiple ? "true" : undefined,
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: 0,
