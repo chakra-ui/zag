@@ -336,7 +336,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       "data-state": isOpen ? "open" : "closed",
       "aria-activedescendant": state.context.highlightedValue
         ? dom.getItemId(state.context, state.context.highlightedValue)
-        : "",
+        : undefined,
       "aria-multiselectable": state.context.multiple ? "true" : undefined,
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: 0,
