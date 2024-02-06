@@ -20,7 +20,7 @@ export function getCustomWeeksInMonth(from: DateValue, locale: string, firstDayO
   if (firstDayOfWeek == null) {
     return getWeeksInMonth(from, locale)
   }
-  const paddingDays = (getDayOfWeek(startOfMonth(from), "en") - firstDayOfWeek + 7) % 7
+  const paddingDays = (getDayOfWeek(startOfMonth(from), locale) - firstDayOfWeek + 7) % 7
 
   return Math.ceil((paddingDays + from.calendar.getDaysInMonth(from)) / 7)
 }
