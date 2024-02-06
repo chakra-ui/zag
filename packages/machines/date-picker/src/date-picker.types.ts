@@ -8,6 +8,7 @@ import type {
   ZonedDateTime,
 } from "@internationalized/date"
 import type { StateMachine as S } from "@zag-js/core"
+import type { DateRangePreset } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -215,11 +216,6 @@ type PrivateContext = Context<{
   announcer?: LiveRegion
   /**
    * @internal
-   * The input element's value
-   */
-  inputValue: string[]
-  /**
-   * @internal
    * The current hovered date. Useful for range selection mode.
    */
   hoveredValue: DateValue | null
@@ -282,6 +278,11 @@ type ComputedContext = Readonly<{
    * The value text to display in the input.
    */
   valueAsString: string[]
+  /**
+   * @internal
+   * The input element's value
+   */
+  formattedValue: string[]
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -356,6 +357,10 @@ export interface TableProps {
   id?: string
 }
 
+export interface PresetTriggerProps {
+  value: DateValue[] | DateRangePreset
+}
+
 export interface ViewProps {
   view?: DateView
 }
@@ -418,6 +423,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Returns the offset of the month based on the provided number of months.
    */
   getOffset(duration: DateDuration): DateValueOffset
+  /**
+   * Returns the range of dates based on the provided date range preset.
+   */
+  getRangePresetValue(value: DateRangePreset): DateValue[]
   /**
    * Returns the weeks of the month from the provided date. Represented as an array of arrays of dates.
    */
@@ -576,6 +585,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
 
   clearTriggerProps: T["button"]
   triggerProps: T["button"]
+  getPresetTriggerProps(props: PresetTriggerProps): T["button"]
   getViewTriggerProps(props?: ViewProps): T["button"]
   getViewControlProps(props?: ViewProps): T["element"]
   getInputProps(props?: InputProps): T["input"]

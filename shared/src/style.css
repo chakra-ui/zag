@@ -1482,7 +1482,7 @@ main [data-testid="scrubber"] {
 }
 
 [data-scope="date-picker"][data-part="table-cell-trigger"][data-focused] {
-  background: rgba(128, 0, 128, 0.171);
+  background: rgba(165, 151, 165, 0.085);
   color: rgba(128, 0, 128, 0.959);
 }
 
@@ -1491,8 +1491,8 @@ main [data-testid="scrubber"] {
 }
 
 [data-scope="date-picker"][data-part="table-cell-trigger"][data-selected] {
-  background: purple;
-  color: white;
+  background: purple !important;
+  color: white !important ;
 }
 
 [data-scope="date-picker"][data-part="table-cell-trigger"][data-in-range]:not([data-selected]) {

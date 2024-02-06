@@ -13,6 +13,8 @@ const fetchMachine = createMachine({
   id: "datepicker",
   initial: ctx.open ? "open" : "idle",
   context: {
+    "isOpenControlled": false,
+    "isOpenControlled": false,
     "isYearView": false,
     "isMonthView": false,
     "isYearView": false,
@@ -68,7 +70,7 @@ const fetchMachine = createMachine({
   activities: ["setupLiveRegion"],
   on: {
     "VALUE.SET": {
-      actions: ["setSelectedDate", "setFocusedDate"]
+      actions: ["setDateValue", "setFocusedDate"]
     },
     "VIEW.SET": {
       actions: ["setView"]
@@ -77,11 +79,31 @@ const fetchMachine = createMachine({
       actions: ["setFocusedDate"]
     },
     "VALUE.CLEAR": {
-      actions: ["clearSelectedDate", "clearFocusedDate", "focusInputElement"]
+      actions: ["clearDateValue", "clearFocusedDate", "focusFirstInputElement"]
     },
     "INPUT.CHANGE": {
       actions: ["focusParsedDate"]
     },
+    "INPUT.ENTER": {
+      actions: ["focusParsedDate", "selectFocusedDate"]
+    },
+    "INPUT.FOCUS": {
+      actions: ["setActiveIndex"]
+    },
+    "INPUT.BLUR": [{
+      cond: "isOpenControlled",
+      actions: ["setActiveIndexToStart", "selectParsedDate", "invokeOnClose"]
+    }, {
+      target: "idle",
+      actions: ["setActiveIndexToStart", "selectParsedDate"]
+    }],
+    "PRESET.CLICK": [{
+      cond: "isOpenControlled",
+      actions: ["setDateValue", "setFocusedDate", "invokeOnClose"]
+    }, {
+      target: "focused",
+      actions: ["setDateValue", "setFocusedDate", "focusInputElement"]
+    }],
     "GOTO.NEXT": [{
       cond: "isYearView",
       actions: ["focusNextDecade", "announceVisibleRange"]
@@ -114,10 +136,6 @@ const fetchMachine = createMachine({
           target: "open",
           actions: ["focusFirstSelectedDate", "focusActiveCell"]
         },
-        "INPUT.FOCUS": {
-          target: "focused",
-          actions: ["setActiveIndex"]
-        },
         "TRIGGER.CLICK": [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
@@ -148,13 +166,6 @@ const fetchMachine = createMachine({
           target: "open",
           actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"]
         }],
-        "INPUT.ENTER": {
-          actions: ["focusParsedDate", "selectFocusedDate"]
-        },
-        "INPUT.BLUR": {
-          target: "idle",
-          actions: ["setActiveIndexToStart"]
-        },
         OPEN: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
@@ -188,7 +199,7 @@ const fetchMachine = createMachine({
           actions: ["setFocusedYear", "setViewToMonth"]
         }, {
           cond: "isRangePicker && hasSelectedRange",
-          actions: ["setActiveIndexToStart", "clearSelectedDate", "setFocusedDate", "setSelectedDate", "setActiveIndexToEnd"]
+          actions: ["setActiveIndexToStart", "clearDateValue", "setFocusedDate", "setSelectedDate", "setActiveIndexToEnd"]
         },
         // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
         {
@@ -252,7 +263,7 @@ const fetchMachine = createMachine({
           actions: "setViewToMonth"
         }, {
           cond: "isRangePicker && hasSelectedRange",
-          actions: ["setActiveIndexToStart", "clearSelectedDate", "setSelectedDate", "setActiveIndexToEnd"]
+          actions: ["setActiveIndexToStart", "clearDateValue", "setSelectedDate", "setActiveIndexToEnd"]
         },
         // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
         {
@@ -391,9 +402,9 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "isOpenControlled": ctx => ctx["isOpenControlled"],
     "isYearView": ctx => ctx["isYearView"],
     "isMonthView": ctx => ctx["isMonthView"],
-    "isOpenControlled": ctx => ctx["isOpenControlled"],
     "shouldRestoreFocus && isInteractOutsideEvent": ctx => ctx["shouldRestoreFocus && isInteractOutsideEvent"],
     "shouldRestoreFocus": ctx => ctx["shouldRestoreFocus"],
     "isRangePicker && hasSelectedRange": ctx => ctx["isRangePicker && hasSelectedRange"],

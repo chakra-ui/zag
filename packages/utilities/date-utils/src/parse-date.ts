@@ -1,10 +1,10 @@
-import { CalendarDate, DateFormatter } from "@internationalized/date"
+import { CalendarDate, DateFormatter, type DateValue } from "@internationalized/date"
 
 const isValidYear = (year: string | undefined): year is string => year != null && year.length === 4
 const isValidMonth = (month: string | undefined): month is string => month != null && parseFloat(month) <= 12
 const isValidDay = (day: string | undefined): day is string => day != null && parseFloat(day) <= 31
 
-export function parseDateString(date: string, locale: string, timeZone: string) {
+export function parseDateString(date: string, locale: string, timeZone: string): DateValue | undefined {
   const regex = createRegex(locale, timeZone)
 
   let { year, month, day } = extract(regex, date) ?? {}

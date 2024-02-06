@@ -1,6 +1,7 @@
 import { DateFormatter, isWeekend, type DateValue, isEqualDay } from "@internationalized/date"
 import {
   constrainValue,
+  getDateRangePreset,
   getDayFormatter,
   getDaysInWeek,
   getDecadeRange,
@@ -56,6 +57,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const endValue = state.context.endValue
   const selectedValue = state.context.value
   const focusedValue = state.context.focusedValue
+
   const hoveredValue = state.context.hoveredValue
   const hoveredRangeValue = hoveredValue ? adjustStartAndEndDate([selectedValue[0], hoveredValue]) : []
 
@@ -105,12 +107,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   function focusMonth(month: number) {
-    const value = setMonth(focusedValue ?? getTodayDate(timeZone), month)
+    const value = setMonth(startValue ?? getTodayDate(timeZone), month)
     send({ type: "FOCUS.SET", value })
   }
 
   function focusYear(year: number) {
-    const value = setYear(focusedValue ?? getTodayDate(timeZone), year)
+    const value = setYear(startValue ?? getTodayDate(timeZone), year)
     send({ type: "FOCUS.SET", value })
   }
 
@@ -150,6 +152,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     const formatter = getDayFormatter(locale, timeZone)
     const unitDuration = getUnitDuration(state.context.visibleDuration)
+
     const end = visibleRange.start.add(unitDuration).subtract({ days: 1 })
 
     const cellState = {
@@ -189,6 +192,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isFocused,
     isOpen,
     view: state.context.view,
+    getRangePresetValue(preset) {
+      return getDateRangePreset(preset, locale, timeZone)
+    },
     getDaysInWeek(week, from = startValue) {
       return getDaysInWeek(week, from, locale, startOfWeek)
     },
@@ -637,7 +643,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         readOnly,
         disabled,
         placeholder: getInputPlaceholder(locale),
-        defaultValue: state.context.inputValue[index],
+        defaultValue: state.context.formattedValue[index],
         onBeforeInput(event) {
           const { data } = getNativeEvent(event)
           if (!isValidCharacter(data, separator)) {
@@ -654,6 +660,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.key !== "Enter" || !isInteractive) return
           if (isUnavailable(state.context.focusedValue)) return
           send({ type: "INPUT.ENTER", value: event.currentTarget.value, index })
+          event.preventDefault()
         },
         onChange(event) {
           const { value } = event.target
@@ -692,5 +699,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       style: popperStyles.floating,
     }),
+
+    getPresetTriggerProps(props) {
+      const value = Array.isArray(props.value) ? props.value : getDateRangePreset(props.value, locale, timeZone)
+      return normalize.button({
+        ...parts.presetTrigger.attrs,
+        "aria-label": Array.isArray(props.value)
+          ? `select ${value[0].toString()} to ${value[1].toString()}`
+          : `select ${value}`,
+        type: "button",
+        onClick() {
+          send({ type: "PRESET.CLICK", value })
+        },
+      })
+    },
   }
 }
