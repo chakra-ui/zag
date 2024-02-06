@@ -32,6 +32,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the collapsible is open
    */
   open?: boolean
+  /**
+   * Whether the collapsible is disabled
+   */
+  disabled?: boolean
 }
 
 type ComputedContext = Readonly<{}>
@@ -51,7 +55,7 @@ type PrivateContext = Context<{
    * @internal
    * The styles of the content
    */
-  stylesRef: Record<string, string>
+  stylesRef: Record<string, any> | null
   /**
    * @internal
    * Whether the mount animation is prevented
@@ -64,7 +68,7 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
 export type MachineState = {
-  value: "open" | "closed"
+  value: "open" | "closed" | "closing"
 }
 
 export type State = S.State<MachineContext, MachineState>

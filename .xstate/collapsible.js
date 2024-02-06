@@ -21,6 +21,7 @@ const fetchMachine = createMachine({
   },
   states: {
     closed: {
+      tags: ["closed"],
       on: {
         TOGGLE: {
           target: "open",
@@ -32,11 +33,21 @@ const fetchMachine = createMachine({
         }
       }
     },
-    open: {
+    closing: {
+      tags: ["open"],
+      activities: ["trackAnimationEvents"],
       on: {
-        TOGGLE: {
+        "ANIMATION.END": {
           target: "closed",
           actions: ["invokeOnClose"]
+        }
+      }
+    },
+    open: {
+      tags: ["open"],
+      on: {
+        TOGGLE: {
+          target: "closing"
         },
         CLOSE: {
           target: "closed",

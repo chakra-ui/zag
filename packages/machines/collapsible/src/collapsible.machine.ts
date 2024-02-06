@@ -15,7 +15,7 @@ export function machine(userContext: UserDefinedContext) {
         height: 0,
         width: 0,
         isMountAnimationPrevented: !!ctx.open,
-        stylesRef: ref<any>({}),
+        stylesRef: null,
         ...ctx,
       },
 
@@ -23,6 +23,7 @@ export function machine(userContext: UserDefinedContext) {
 
       states: {
         closed: {
+          tags: ["closed"],
           on: {
             TOGGLE: {
               target: "open",
@@ -35,11 +36,22 @@ export function machine(userContext: UserDefinedContext) {
           },
         },
 
-        open: {
+        closing: {
+          tags: ["open"],
+          activities: ["trackAnimationEvents"],
           on: {
-            TOGGLE: {
+            "ANIMATION.END": {
               target: "closed",
               actions: ["invokeOnClose"],
+            },
+          },
+        },
+
+        open: {
+          tags: ["open"],
+          on: {
+            TOGGLE: {
+              target: "closing",
             },
             CLOSE: {
               target: "closed",
@@ -50,31 +62,48 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
+      activities: {
+        trackAnimationEvents(ctx, _evt, { send }) {
+          const contentEl = dom.getContentEl(ctx)
+          if (!contentEl) return
+
+          const onAnimationEnd = () => send("ANIMATION.END")
+          contentEl.addEventListener("animationend", onAnimationEnd)
+
+          return () => contentEl.removeEventListener("animationend", onAnimationEnd)
+        },
+      },
       actions: {
         setMountAnimationPrevented(ctx) {
           raf(() => (ctx.isMountAnimationPrevented = false))
         },
-        computeSize: (ctx) => {
+        computeSize: (ctx, _evt) => {
           const contentEl = dom.getContentEl(ctx)
           if (!contentEl) return
 
-          ctx.stylesRef ||= {
-            transitionDuration: contentEl.style.transitionDuration,
+          ctx.stylesRef ||= ref({
+            animationDuration: contentEl.style.animationDuration,
             animationName: contentEl.style.animationName,
-          }
+            hidden: contentEl.hidden,
+          })
 
           // block any animations/transitions so the element renders at its full dimensions
-          contentEl.style.transitionDuration = "0s"
+          contentEl.style.animationDuration = "0s"
           contentEl.style.animationName = "none"
 
           // get width and height from full dimensions
+          contentEl.hidden = !ctx.stylesRef.hidden
+
           const rect = contentEl.getBoundingClientRect()
+
           ctx.height = rect.height
           ctx.width = rect.width
 
+          contentEl.hidden = ctx.stylesRef.hidden
+
           // kick off any animations/transitions that were originally set up if it isn't the initial mount
           if (!ctx.isMountAnimationPrevented) {
-            contentEl.style.transitionDuration = ctx.stylesRef.transitionDuration
+            contentEl.style.animationDuration = ctx.stylesRef.animationDuration
             contentEl.style.animationName = ctx.stylesRef.animationName
           }
         },

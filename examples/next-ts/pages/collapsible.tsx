@@ -9,9 +9,14 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(collapsibleControls)
 
-  const [state, send] = useMachine(collapsible.machine({ id: useId() }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    collapsible.machine({
+      id: useId(),
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = collapsible.connect(state, send, normalizeProps)
 
