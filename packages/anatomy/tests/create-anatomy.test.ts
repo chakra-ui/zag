@@ -11,7 +11,7 @@ describe("Anatomy", () => {
             "data-part": "root",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"root\\"], & [data-scope=\\"accordion\\"][data-part=\\"root\\"]",
+          "selector": "&[data-scope="accordion"][data-part="root"], & [data-scope="accordion"][data-part="root"]",
         },
       }
     `)
@@ -26,7 +26,7 @@ describe("Anatomy", () => {
             "data-part": "toggle-button",
             "data-scope": "hover-card",
           },
-          "selector": "&[data-scope=\\"hover-card\\"][data-part=\\"toggle-button\\"], & [data-scope=\\"hover-card\\"][data-part=\\"toggle-button\\"]",
+          "selector": "&[data-scope="hover-card"][data-part="toggle-button"], & [data-scope="hover-card"][data-part="toggle-button"]",
         },
       }
     `)
@@ -41,14 +41,14 @@ describe("Anatomy", () => {
             "data-part": "control",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"control\\"], & [data-scope=\\"accordion\\"][data-part=\\"control\\"]",
+          "selector": "&[data-scope="accordion"][data-part="control"], & [data-scope="accordion"][data-part="control"]",
         },
         "root": {
           "attrs": {
             "data-part": "root",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"root\\"], & [data-scope=\\"accordion\\"][data-part=\\"root\\"]",
+          "selector": "&[data-scope="accordion"][data-part="root"], & [data-scope="accordion"][data-part="root"]",
         },
       }
     `)
@@ -65,14 +65,14 @@ describe("Anatomy", () => {
             "data-part": "control",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"control\\"], & [data-scope=\\"accordion\\"][data-part=\\"control\\"]",
+          "selector": "&[data-scope="accordion"][data-part="control"], & [data-scope="accordion"][data-part="control"]",
         },
         "root": {
           "attrs": {
             "data-part": "root",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"root\\"], & [data-scope=\\"accordion\\"][data-part=\\"root\\"]",
+          "selector": "&[data-scope="accordion"][data-part="root"], & [data-scope="accordion"][data-part="root"]",
         },
       }
     `)
@@ -89,14 +89,14 @@ describe("Anatomy", () => {
             "data-part": "control",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"control\\"], & [data-scope=\\"accordion\\"][data-part=\\"control\\"]",
+          "selector": "&[data-scope="accordion"][data-part="control"], & [data-scope="accordion"][data-part="control"]",
         },
         "root": {
           "attrs": {
             "data-part": "root",
             "data-scope": "accordion",
           },
-          "selector": "&[data-scope=\\"accordion\\"][data-part=\\"root\\"], & [data-scope=\\"accordion\\"][data-part=\\"root\\"]",
+          "selector": "&[data-scope="accordion"][data-part="root"], & [data-scope="accordion"][data-part="root"]",
         },
       }
     `)
@@ -111,14 +111,14 @@ describe("Anatomy", () => {
             "data-part": "control",
             "data-scope": "segmented-control",
           },
-          "selector": "&[data-scope=\\"segmented-control\\"][data-part=\\"control\\"], & [data-scope=\\"segmented-control\\"][data-part=\\"control\\"]",
+          "selector": "&[data-scope="segmented-control"][data-part="control"], & [data-scope="segmented-control"][data-part="control"]",
         },
         "root": {
           "attrs": {
             "data-part": "root",
             "data-scope": "segmented-control",
           },
-          "selector": "&[data-scope=\\"segmented-control\\"][data-part=\\"root\\"], & [data-scope=\\"segmented-control\\"][data-part=\\"root\\"]",
+          "selector": "&[data-scope="segmented-control"][data-part="root"], & [data-scope="segmented-control"][data-part="root"]",
         },
       }
     `)

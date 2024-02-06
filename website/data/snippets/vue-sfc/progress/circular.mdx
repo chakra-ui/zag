@@ -6,7 +6,7 @@
 
   const [state, send] = useMachine(progress.machine({ id: "1" }))
 
-  const apiRef = computed(() =>
+  const api = computed(() =>
     progress.connect(state.value, send, normalizeProps),
   )
 </script>

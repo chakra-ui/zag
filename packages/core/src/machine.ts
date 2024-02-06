@@ -1,8 +1,9 @@
-import { ref, snapshot, subscribe, subscribeKey } from "@zag-js/store"
+import { ref, snapshot, subscribe } from "@zag-js/store"
 import {
   cast,
   clear,
   compact,
+  hasProp,
   invariant,
   isArray,
   isDev,
@@ -50,15 +51,11 @@ export class Machine<
 
   // state update listeners the user can opt-in for
   private stateListeners = new Set<S.StateListener<TContext, TState, TEvent>>()
-  private contextListeners = new Set<S.ContextListener<TContext>>()
-  private eventListeners = new Set<S.EventListener<TEvent>>()
   private doneListeners = new Set<S.StateListener<TContext, TState, TEvent>>()
   private contextWatchers = new Set<VoidFunction>()
 
   // Cleanup functions (for `subscribe`)
   private removeStateListener: VoidFunction = noop
-  private removeEventListener: VoidFunction = noop
-  private removeContextListener: VoidFunction = noop
 
   // For Parent <==> Spawned Actor relationship
   private parent?: AnyMachine
@@ -91,7 +88,6 @@ export class Machine<
     // create mutatable state
     this.state = createProxy(this.config)
     this.initialContext = snapshot(this.state.context)
-    this.transformContext(this.state.context)
 
     // created actions
     const event = toEvent<TEvent>(ActionTypes.Created)
@@ -135,31 +131,6 @@ export class Machine<
       this.sync,
     )
 
-    // subscribe to event changes
-    this.removeEventListener = subscribeKey(
-      this.state,
-      "event",
-      (event) => {
-        this.executeActions(this.config.onEvent, event)
-        this.eventListeners.forEach((listener) => {
-          listener(event)
-        })
-      },
-      this.sync,
-    )
-
-    // subscribe to context changes
-    this.removeContextListener = subscribe(
-      this.state.context,
-      () => {
-        this.log("Context:", this.contextSnapshot)
-        this.contextListeners.forEach((listener) => {
-          listener(this.contextSnapshot)
-        })
-      },
-      this.sync || this.options.debug,
-    )
-
     this.setupContextWatchers()
 
     // execute initial actions and activities
@@ -190,19 +161,24 @@ export class Machine<
   }
 
   private setupContextWatchers = () => {
-    for (const [key, fn] of Object.entries(this.config.watch ?? {})) {
-      const compareFn = this.options.compareFns?.[key]
-      const cleanup = subscribeKey(
-        this.state.context,
-        key,
-        () => {
-          this.executeActions(fn, this.state.event as TEvent)
-        },
-        this.sync,
-        compareFn,
-      )
-      this.contextWatchers.add(cleanup)
-    }
+    const { watch } = this.config
+    if (!watch) return
+
+    let prev = snapshot(this.state.context)
+
+    const cleanup = subscribe(this.state.context, () => {
+      const next = snapshot(this.state.context)
+
+      for (const [key, fn] of Object.entries(watch)) {
+        const isEqual = this.options.compareFns?.[key] ?? Object.is
+        if (isEqual(prev[key], next[key])) continue
+        this.executeActions(fn, this.state.event as TEvent)
+      }
+
+      prev = next
+    })
+
+    this.contextWatchers.add(cleanup)
   }
 
   // Stops the interpreted machine
@@ -225,21 +201,9 @@ export class Machine<
     this.stopActivities()
     this.stopDelayedEvents()
     this.stopContextWatchers()
-    this.stopEventListeners()
-    this.stopContextListeners()
 
     this.status = MachineStatus.Stopped
     return this
-  }
-
-  private stopEventListeners = () => {
-    this.eventListeners.clear()
-    this.removeEventListener()
-  }
-
-  private stopContextListeners = () => {
-    this.contextListeners.clear()
-    this.removeContextListener()
   }
 
   private stopStateListeners = () => {
@@ -363,23 +327,12 @@ export class Machine<
     }
   }
 
-  private transformContext = (context: Partial<Writable<TContext>> | Partial<TContext>) => {
-    this.options?.transformContext?.(context)
-    return context as TContext
-  }
-
   /**
    * To used within side effects for React or Vue to update context
    */
   public setContext = (context: Partial<Writable<TContext>> | undefined) => {
     if (!context) return
-    deepMerge(this.state.context, this.transformContext(context))
-  }
-
-  public withContext = (context: Partial<Writable<TContext>>) => {
-    const transformed = this.transformContext(context)
-    const newContext = { ...this.config.context, ...compact(transformed) } as TContext
-    return new Machine({ ...this.config, context: newContext }, this.options)
+    deepMerge(this.state.context, compact(context))
   }
 
   public setOptions = (options: Partial<S.MachineOptions<TContext, TState, TEvent>>) => {
@@ -422,20 +375,14 @@ export class Machine<
     return info
   }
 
-  private getActionFromDelayedTransition = (transition: S.DelayedTransition<TContext, TState, TEvent>) => {
-    // get the computed delay
-    const event = toEvent<TEvent>(ActionTypes.After)
-
-    const determineDelay = determineDelayFn(transition.delay, this.delayMap)
-    const delay = determineDelay(this.contextSnapshot, event)
-
+  private getAfterActions = (transition: S.Transitions<TContext, TState, TEvent>, delay?: number) => {
     let id: ReturnType<typeof globalThis.setTimeout>
 
     return {
       entry: () => {
         id = globalThis.setTimeout(() => {
-          const next = this.getNextStateInfo(transition, event)
-          this.performStateChangeEffects(this.state.value!, next, event)
+          const next = this.getNextStateInfo(transition, this.state.event)
+          this.performStateChangeEffects(this.state.value!, next, this.state.event)
         }, delay)
       },
       exit: () => {
@@ -453,7 +400,7 @@ export class Machine<
    */
   private getDelayedEventActions = (state: TState["value"]) => {
     const stateNode = this.getStateNode(state)
-    const event = toEvent<TEvent>(ActionTypes.After)
+    const event = this.state.event
 
     if (!stateNode || !stateNode.after) return
 
@@ -463,30 +410,33 @@ export class Machine<
     if (isArray(stateNode.after)) {
       //
       const transition = this.determineTransition(stateNode.after, event)
+
       if (!transition) return
 
-      const actions = this.getActionFromDelayedTransition(transition)
+      if (!hasProp(transition, "delay")) {
+        throw new Error(`[@zag-js/core > after] Delay is required for after transition: ${JSON.stringify(transition)}`)
+      }
+
+      const determineDelay = determineDelayFn((transition as any).delay, this.delayMap)
+      const __delay = determineDelay(this.contextSnapshot, event)
+
+      const actions = this.getAfterActions(transition, __delay)
+
       entries.push(actions.entry)
       exits.push(actions.exit)
-      //
-    } else if (isObject(stateNode.after)) {
+
+      return { entries, exits }
+    }
+
+    if (isObject(stateNode.after)) {
       //
       for (const delay in stateNode.after) {
         const transition = stateNode.after[delay]
-        let resolvedTransition: S.DelayedTransition<TContext, TState, TEvent> = {}
 
-        if (isArray(transition)) {
-          //
-          const picked = this.determineTransition(transition, event)
-          if (picked) resolvedTransition = picked
-          //
-        } else if (isString(transition)) {
-          resolvedTransition = { target: transition, delay }
-        } else {
-          resolvedTransition = { ...transition, delay }
-        }
+        const determineDelay = determineDelayFn(delay, this.delayMap)
+        const __delay = determineDelay(this.contextSnapshot, event)
 
-        const actions = this.getActionFromDelayedTransition(resolvedTransition)
+        const actions = this.getAfterActions(transition, __delay)
 
         entries.push(actions.entry)
         exits.push(actions.exit)
@@ -595,7 +545,6 @@ export class Machine<
     callbackfn: (activity: S.Activity<TContext, TState, TEvent>) => void,
   ) => {
     if (!every) return
-    const event = toEvent<TEvent>(ActionTypes.Every)
 
     // every: [{ interval: 2000, actions: [...], guard: "isValid" },  { interval: 1000, actions: [...] }]
     if (isArray(every)) {
@@ -604,10 +553,10 @@ export class Machine<
         //
         const delayOrFn = transition.delay
         const determineDelay = determineDelayFn(delayOrFn, this.delayMap)
-        const delay = determineDelay(this.contextSnapshot, event)
+        const delay = determineDelay(this.contextSnapshot, this.state.event)
 
         const determineGuard = determineGuardFn(transition.guard, this.guardMap)
-        const guard = determineGuard(this.contextSnapshot, event, this.guardMeta)
+        const guard = determineGuard(this.contextSnapshot, this.state.event, this.guardMeta)
 
         return guard ?? delay != null
       })
@@ -615,11 +564,11 @@ export class Machine<
       if (!picked) return
 
       const determineDelay = determineDelayFn(picked.delay, this.delayMap)
-      const delay = determineDelay(this.contextSnapshot, event)
+      const delay = determineDelay(this.contextSnapshot, this.state.event)
 
       const activity = () => {
         const id = globalThis.setInterval(() => {
-          this.executeActions(picked.actions, event)
+          this.executeActions(picked.actions, this.state.event)
         }, delay)
         return () => {
           globalThis.clearInterval(id)
@@ -634,12 +583,12 @@ export class Machine<
 
         // interval could be a `ref` not the actual interval value, let's determine the actual value
         const determineDelay = determineDelayFn(interval, this.delayMap)
-        const delay = determineDelay(this.contextSnapshot, event)
+        const delay = determineDelay(this.contextSnapshot, this.state.event)
 
         // create the activity to run for each `every` reaction
         const activity = () => {
           const id = globalThis.setInterval(() => {
-            this.executeActions(actions, event)
+            this.executeActions(actions, this.state.event)
           }, delay)
           return () => {
             globalThis.clearInterval(id)
@@ -678,9 +627,6 @@ export class Machine<
 
     // call all exit actions for current state
     this.executeActions(exitActions, event)
-
-    // remove all registered listeners
-    this.eventListeners.clear()
   }
 
   private performEntryEffects = (next: TState["value"], event: TEvent) => {
@@ -840,16 +786,6 @@ export class Machine<
     if (this.status === MachineStatus.Running) {
       listener(this.stateSnapshot)
     }
-    return this
-  }
-
-  public onChange = (listener: S.ContextListener<TContext>) => {
-    this.contextListeners.add(listener)
-    return this
-  }
-
-  public onEvent = (listener: S.EventListener<TEvent>) => {
-    this.eventListeners.add(listener)
     return this
   }
 

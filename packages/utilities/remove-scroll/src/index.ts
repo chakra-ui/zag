@@ -71,7 +71,7 @@ export function preventBodyScroll(_document?: Document) {
 
     return () => {
       restoreStyle?.()
-      win.scrollTo(scrollX, scrollY)
+      win.scrollTo({ left: scrollX, top: scrollY, behavior: "instant" })
     }
   }
 

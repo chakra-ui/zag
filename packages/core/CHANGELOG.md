@@ -1,5 +1,51 @@
 # @zag-js/core
 
+## 0.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.34.0
+
+## 0.33.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.33.2
+
+## 0.33.1
+
+### Patch Changes
+
+- Updated dependencies [[`80af758`](https://github.com/chakra-ui/zag/commit/80af758900606b43afc5b1e23edbf043a5e085ae)]:
+  - @zag-js/store@0.33.1
+
+## 0.33.0
+
+### Patch Changes
+
+- [#1144](https://github.com/chakra-ui/zag/pull/1144)
+  [`7872cdf`](https://github.com/chakra-ui/zag/commit/7872cdf8aeb28b9a30cd4a016bd12e5366054511) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve runtime performance by only creating a machine instance
+  once, and updating the context with `setContext(...)` instead of `withContext(...)`.
+- Updated dependencies []:
+  - @zag-js/store@0.33.0
+
+## 0.32.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.32.1
+
+## 0.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.32.0
+
 ## 0.31.1
 
 ### Patch Changes

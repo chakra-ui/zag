@@ -5,7 +5,7 @@ import { useMachine, normalizeProps } from "@zag-js/solid"
 function Avatar() {
   const [state, send] = useMachine(avatar.machine({ id: "1" }))
 
-  const api = avatar.connect(state, send, normalizeProps)
+  const api = createMemo(() => avatar.connect(state, send, normalizeProps))
 
   return (
     <div {...api.rootProps}>

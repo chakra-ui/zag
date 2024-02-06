@@ -1,5 +1,121 @@
 # @zag-js/date-picker
 
+## 0.34.0
+
+### Patch Changes
+
+- [`e037484`](https://github.com/chakra-ui/zag/commit/e0374847390a88e69d6e4b33f42fc6ab6291b2a8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioning doesn't work as expected when combined
+  with entry/exit animations in the presence component
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.34.0
+  - @zag-js/core@0.34.0
+  - @zag-js/types@0.34.0
+  - @zag-js/utils@0.34.0
+  - @zag-js/date-utils@0.34.0
+  - @zag-js/dismissable@0.34.0
+  - @zag-js/dom-event@0.34.0
+  - @zag-js/dom-query@0.34.0
+  - @zag-js/form-utils@0.34.0
+  - @zag-js/live-region@0.34.0
+  - @zag-js/popper@0.34.0
+  - @zag-js/text-selection@0.34.0
+
+## 0.33.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.33.2
+  - @zag-js/core@0.33.2
+  - @zag-js/types@0.33.2
+  - @zag-js/utils@0.33.2
+  - @zag-js/date-utils@0.33.2
+  - @zag-js/dismissable@0.33.2
+  - @zag-js/dom-event@0.33.2
+  - @zag-js/dom-query@0.33.2
+  - @zag-js/form-utils@0.33.2
+  - @zag-js/live-region@0.33.2
+  - @zag-js/popper@0.33.2
+  - @zag-js/text-selection@0.33.2
+
+## 0.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.33.1
+  - @zag-js/anatomy@0.33.1
+  - @zag-js/types@0.33.1
+  - @zag-js/utils@0.33.1
+  - @zag-js/date-utils@0.33.1
+  - @zag-js/dismissable@0.33.1
+  - @zag-js/dom-event@0.33.1
+  - @zag-js/dom-query@0.33.1
+  - @zag-js/form-utils@0.33.1
+  - @zag-js/live-region@0.33.1
+  - @zag-js/popper@0.33.1
+  - @zag-js/text-selection@0.33.1
+
+## 0.33.0
+
+### Patch Changes
+
+- Updated dependencies [[`7872cdf`](https://github.com/chakra-ui/zag/commit/7872cdf8aeb28b9a30cd4a016bd12e5366054511)]:
+  - @zag-js/core@0.33.0
+  - @zag-js/anatomy@0.33.0
+  - @zag-js/types@0.33.0
+  - @zag-js/utils@0.33.0
+  - @zag-js/date-utils@0.33.0
+  - @zag-js/dismissable@0.33.0
+  - @zag-js/dom-event@0.33.0
+  - @zag-js/dom-query@0.33.0
+  - @zag-js/form-utils@0.33.0
+  - @zag-js/live-region@0.33.0
+  - @zag-js/popper@0.33.0
+  - @zag-js/text-selection@0.33.0
+
+## 0.32.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.1
+  - @zag-js/core@0.32.1
+  - @zag-js/types@0.32.1
+  - @zag-js/utils@0.32.1
+  - @zag-js/date-utils@0.32.1
+  - @zag-js/dismissable@0.32.1
+  - @zag-js/dom-event@0.32.1
+  - @zag-js/dom-query@0.32.1
+  - @zag-js/form-utils@0.32.1
+  - @zag-js/live-region@0.32.1
+  - @zag-js/popper@0.32.1
+  - @zag-js/text-selection@0.32.1
+
+## 0.32.0
+
+### Patch Changes
+
+- [`83895b3`](https://github.com/chakra-ui/zag/commit/83895b35921461af71a38978da72b7145eb4d007) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where date picker initial value isn't set when using
+  controlled context
+  - Add `valueAsString` to `onValueChange` callback details
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.0
+  - @zag-js/core@0.32.0
+  - @zag-js/types@0.32.0
+  - @zag-js/utils@0.32.0
+  - @zag-js/date-utils@0.32.0
+  - @zag-js/dismissable@0.32.0
+  - @zag-js/dom-event@0.32.0
+  - @zag-js/dom-query@0.32.0
+  - @zag-js/form-utils@0.32.0
+  - @zag-js/live-region@0.32.0
+  - @zag-js/popper@0.32.0
+  - @zag-js/text-selection@0.32.0
+
 ## 0.31.1
 
 ### Patch Changes

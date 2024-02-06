@@ -11,6 +11,11 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   initial: initialState,
+  context: {
+    "isPresent": false,
+    "isAnimationNone || isDisplayNone": false,
+    "wasPresent && isAnimating": false
+  },
   on: {
     "NODE.SET": {
       actions: ["setNode", "setStyles"]
@@ -27,7 +32,9 @@ const fetchMachine = createMachine({
       target: "unmountSuspended"
     }, {
       target: "unmounted"
-    }],
+    }]
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

@@ -12,7 +12,7 @@ export function Combobox() {
   const [options, setOptions] = useState(comboboxData)
 
   const collection = combobox.collection({
-    items: comboboxData,
+    items: options,
     itemToValue: (item) => item.code,
     itemToString: (item) => item.label,
   })

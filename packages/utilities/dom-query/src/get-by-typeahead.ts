@@ -1,3 +1,4 @@
+import type { ItemToId } from "./get-by-id"
 import { getByText } from "./get-by-text"
 
 export interface TypeaheadState {
@@ -10,10 +11,11 @@ export interface TypeaheadOptions {
   activeId: string | null
   key: string
   timeout?: number
+  itemToId?: ItemToId<HTMLElement>
 }
 
 function getByTypeaheadImpl<T extends HTMLElement>(_items: T[], options: TypeaheadOptions) {
-  const { state, activeId, key, timeout = 350 } = options
+  const { state, activeId, key, timeout = 350, itemToId } = options
 
   const search = state.keysSoFar + key
   const isRepeated = search.length > 1 && Array.from(search).every((char) => char === search[0])
@@ -22,7 +24,7 @@ function getByTypeaheadImpl<T extends HTMLElement>(_items: T[], options: Typeahe
 
   let items = _items.slice()
 
-  const next = getByText(items, query, activeId)
+  const next = getByText(items, query, activeId, itemToId)
 
   function cleanup() {
     clearTimeout(state.timer)

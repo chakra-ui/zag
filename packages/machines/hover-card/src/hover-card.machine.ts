@@ -5,7 +5,7 @@ import { compact } from "@zag-js/utils"
 import { dom } from "./hover-card.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./hover-card.types"
 
-const { not } = guards
+const { not, and } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -33,6 +33,7 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["closed"],
           entry: ["clearIsPointer"],
           on: {
+            "CONTROLLED.OPEN": "open",
             POINTER_ENTER: {
               target: "opening",
               actions: ["setIsPointer"],
@@ -45,50 +46,85 @@ export function machine(userContext: UserDefinedContext) {
         opening: {
           tags: ["closed"],
           after: {
-            OPEN_DELAY: {
-              target: "open",
-              actions: ["invokeOnOpen"],
-            },
+            OPEN_DELAY: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["invokeOnOpen"],
+              },
+            ],
           },
           on: {
-            POINTER_LEAVE: {
-              target: "closed",
-              actions: ["invokeOnClose"],
-            },
-            TRIGGER_BLUR: {
-              guard: not("isPointer"),
-              target: "closed",
-              actions: ["invokeOnClose"],
-            },
-            CLOSE: {
-              target: "closed",
-              actions: ["invokeOnClose"],
-            },
+            "CONTROLLED.OPEN": "open",
+            POINTER_LEAVE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+            ],
+            TRIGGER_BLUR: [
+              {
+                guard: and("isOpenControlled", not("isPointer")),
+                actions: ["invokeOnClose"],
+              },
+              {
+                guard: not("isPointer"),
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+            ],
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+            ],
           },
         },
 
         open: {
           tags: ["open"],
           activities: ["trackDismissableElement", "trackPositioning"],
+          entry: console.log,
           on: {
+            "CONTROLLED.CLOSE": "closed",
             POINTER_ENTER: {
               actions: ["setIsPointer"],
             },
             POINTER_LEAVE: "closing",
-            DISMISS: {
-              target: "closed",
-              actions: ["invokeOnClose"],
-            },
-            CLOSE: {
-              target: "closed",
-              actions: ["invokeOnClose"],
-            },
-            TRIGGER_BLUR: {
-              guard: not("isPointer"),
-              target: "closed",
-              actions: ["invokeOnClose"],
-            },
-            SET_POSITIONING: {
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+            ],
+            TRIGGER_BLUR: [
+              {
+                guard: and("isOpenControlled", not("isPointer")),
+                actions: ["invokeOnClose"],
+              },
+              {
+                guard: not("isPointer"),
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+            ],
+            "POSITIONING.SET": {
               actions: "reposition",
             },
           },
@@ -98,12 +134,19 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["open"],
           activities: ["trackPositioning"],
           after: {
-            CLOSE_DELAY: {
-              target: "closed",
-              actions: ["invokeOnClose"],
-            },
+            CLOSE_DELAY: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+            ],
           },
           on: {
+            "CONTROLLED.CLOSE": "closed",
             POINTER_ENTER: {
               target: "open",
               // no need to invokeOnOpen here because it's still open (but about to close)
@@ -116,6 +159,7 @@ export function machine(userContext: UserDefinedContext) {
     {
       guards: {
         isPointer: (ctx) => !!ctx.isPointer,
+        isOpenControlled: (ctx) => !!ctx.__controlled,
       },
       activities: {
         trackPositioning(ctx) {
@@ -127,9 +171,6 @@ export function machine(userContext: UserDefinedContext) {
             onComplete(data) {
               ctx.currentPlacement = data.placement
             },
-            onCleanup() {
-              ctx.currentPlacement = undefined
-            },
           })
         },
         trackDismissableElement(ctx, _evt, { send }) {
@@ -138,7 +179,7 @@ export function machine(userContext: UserDefinedContext) {
             defer: true,
             exclude: [dom.getTriggerEl(ctx)],
             onDismiss() {
-              send({ type: "DISMISS" })
+              send({ type: "CLOSE", src: "interact-outside" })
             },
             onFocusOutside(event) {
               event.preventDefault()
@@ -171,8 +212,8 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
-        toggleVisibility(ctx, _evt, { send }) {
-          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
+        toggleVisibility(ctx, evt, { send }) {
+          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
         },
       },
       delays: {

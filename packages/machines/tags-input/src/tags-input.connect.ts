@@ -189,9 +189,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getItemProps(props) {
-      const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
+        dir: state.context.dir,
+        "data-value": props.value,
+        "data-disabled": dataAttr(isDisabled),
+      })
+    },
+
+    getItemPreviewProps(props) {
+      const itemState = getItemState(props)
+      return normalize.element({
+        ...parts.itemPreview.attrs,
         id: itemState.id,
         dir: state.context.dir,
         hidden: itemState.isEditing,

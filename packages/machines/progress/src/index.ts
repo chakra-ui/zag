@@ -4,7 +4,8 @@ export { machine } from "./progress.machine"
 export type {
   MachineApi as Api,
   UserDefinedContext as Context,
-  IndicatorProps,
   IntlTranslations,
-  ValueLabelOptions,
+  ValueTranslationDetails,
+  ViewProps,
+  ProgressState,
 } from "./progress.types"

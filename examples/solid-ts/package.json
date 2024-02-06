@@ -13,12 +13,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "vite": "5.0.2",
-    "vite-plugin-solid": "2.7.2"
+    "vite": "5.0.12",
+    "vite-plugin-solid": "2.9.1"
   },
   "dependencies": {
-    "@internationalized/date": "^3.5.0",
-    "@solidjs/router": "^0.9.1",
+    "@internationalized/date": "^3.5.1",
+    "@solidjs/router": "^0.10.7",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -28,6 +28,7 @@
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/collapsible": "workspace:*",
+    "@zag-js/clipboard": "workspace:*",
     "@zag-js/collection": "workspace:*",
     "@zag-js/color-picker": "workspace:*",
     "@zag-js/color-utils": "workspace:*",
@@ -81,10 +82,12 @@
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
+    "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "solid-js": "1.8.6"
+    "lucide-solid": "^0.321.0",
+    "solid-js": "1.8.12"
   }
 }

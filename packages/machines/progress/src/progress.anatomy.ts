@@ -6,7 +6,7 @@ export const anatomy = createAnatomy("progress").parts(
   "track",
   "range",
   "valueText",
-  "indicator",
+  "view",
   "circle",
   "circleTrack",
   "circleRange",

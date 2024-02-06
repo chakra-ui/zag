@@ -63,7 +63,7 @@ function ExampleComponent() {
     <div>
       <button
         onClick={() => {
-          toast().create({ title: "Hello", placement: "top-right" })
+          toast().create({ title: "Hello", placement: "top-end" })
         }}
       >
         Add top-right toast
@@ -73,7 +73,7 @@ function ExampleComponent() {
           toast.create({
             title: "Data submitted!",
             type: "success",
-            placement: "bottom-right",
+            placement: "bottom-end",
           })
         }}
       >

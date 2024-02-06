@@ -1,5 +1,77 @@
 # @zag-js/react
 
+## 0.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.34.0
+  - @zag-js/store@0.34.0
+  - @zag-js/types@0.34.0
+
+## 0.33.2
+
+### Patch Changes
+
+- [`69d7549`](https://github.com/chakra-ui/zag/commit/69d754936ce2cb694e2027fc034b2b7d817390ec) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix context reactivity issue where updates are not sent to the
+  machine
+
+- Updated dependencies []:
+  - @zag-js/core@0.33.2
+  - @zag-js/store@0.33.2
+  - @zag-js/types@0.33.2
+
+## 0.33.1
+
+### Patch Changes
+
+- [`80af758`](https://github.com/chakra-ui/zag/commit/80af758900606b43afc5b1e23edbf043a5e085ae) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where context mutation updates were missed due to the
+  underlying `proxy-compare` regression.
+
+- Updated dependencies [[`80af758`](https://github.com/chakra-ui/zag/commit/80af758900606b43afc5b1e23edbf043a5e085ae)]:
+  - @zag-js/store@0.33.1
+  - @zag-js/core@0.33.1
+  - @zag-js/types@0.33.1
+
+## 0.33.0
+
+### Patch Changes
+
+- Updated dependencies [[`7872cdf`](https://github.com/chakra-ui/zag/commit/7872cdf8aeb28b9a30cd4a016bd12e5366054511)]:
+  - @zag-js/core@0.33.0
+  - @zag-js/store@0.33.0
+  - @zag-js/types@0.33.0
+
+## 0.32.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.32.1
+  - @zag-js/store@0.32.1
+  - @zag-js/types@0.32.1
+
+## 0.32.0
+
+### Patch Changes
+
+- [#1095](https://github.com/chakra-ui/zag/pull/1095)
+  [`651346b`](https://github.com/chakra-ui/zag/commit/651346b1cd280b3882253425e9054caf985f83a7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Redesign `Portal` component to support `getRootNode` and
+  `disabled` props
+
+- [#1095](https://github.com/chakra-ui/zag/pull/1095)
+  [`651346b`](https://github.com/chakra-ui/zag/commit/651346b1cd280b3882253425e9054caf985f83a7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor useSnapshot, useService and useMachine to track context
+  changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.32.0
+  - @zag-js/store@0.32.0
+  - @zag-js/types@0.32.0
+
 ## 0.31.1
 
 ### Patch Changes

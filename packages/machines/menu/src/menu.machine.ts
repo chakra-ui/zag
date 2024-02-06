@@ -9,7 +9,7 @@ import { add, cast, compact, isArray, remove } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
 
-const { not, and } = guards
+const { not, and, or } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -27,7 +27,7 @@ export function machine(userContext: UserDefinedContext) {
         suspendPointer: false,
         anchorPoint: null,
         closeOnSelect: true,
-        focusTriggerOnClose: true,
+        restoreFocus: true,
         ...ctx,
         typeahead: getByTypeahead.defaultOptions,
         positioning: {
@@ -50,51 +50,84 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       on: {
-        SET_PARENT: {
+        "PARENT.SET": {
           actions: "setParentMenu",
         },
-        SET_CHILD: {
+        "CHILD.SET": {
           actions: "setChildMenu",
         },
-        OPEN: {
-          target: "open",
-          actions: "invokeOnOpen",
-        },
-        OPEN_AUTOFOCUS: {
-          internal: true,
-          target: "open",
-          actions: ["focusFirstItem", "invokeOnOpen"],
-        },
-        CLOSE: {
-          target: "closed",
-          actions: "invokeOnClose",
-        },
+        OPEN: [
+          {
+            guard: "isOpenControlled",
+            actions: "invokeOnOpen",
+          },
+          {
+            target: "open",
+            actions: "invokeOnOpen",
+          },
+        ],
+        OPEN_AUTOFOCUS: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            internal: true,
+            target: "open",
+            actions: ["highlightFirstItem", "invokeOnOpen"],
+          },
+        ],
+        CLOSE: [
+          {
+            guard: "isOpenControlled",
+            actions: "invokeOnClose",
+          },
+          {
+            target: "closed",
+            actions: "invokeOnClose",
+          },
+        ],
         RESTORE_FOCUS: {
           actions: "restoreFocus",
         },
-        SET_VALUE: {
+        "VALUE.SET": {
           actions: ["setOptionValue", "invokeOnValueChange"],
         },
-        SET_HIGHLIGHTED_ID: {
-          actions: "setFocusedItem",
+        "HIGHLIGHTED.SET": {
+          actions: "setHighlightedItem",
         },
       },
 
       states: {
         idle: {
+          tags: ["closed"],
           on: {
+            "CONTROLLED.OPEN": "open",
+            "CONTROLLED.CLOSE": "closed",
             CONTEXT_MENU_START: {
               target: "opening:contextmenu",
               actions: "setAnchorPoint",
             },
-            CONTEXT_MENU: {
-              target: "open",
-              actions: ["setAnchorPoint", "invokeOnOpen"],
-            },
-            TRIGGER_CLICK: {
-              target: "open",
-              actions: "invokeOnOpen",
-            },
+            CONTEXT_MENU: [
+              {
+                guard: "isOpenControlled",
+                actions: ["setAnchorPoint", "invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["setAnchorPoint", "invokeOnOpen"],
+              },
+            ],
+            TRIGGER_CLICK: [
+              {
+                guard: "isOpenControlled",
+                actions: "invokeOnOpen",
+              },
+              {
+                target: "open",
+                actions: "invokeOnOpen",
+              },
+            ],
             TRIGGER_FOCUS: {
               guard: not("isSubmenu"),
               target: "closed",
@@ -107,165 +140,289 @@ export function machine(userContext: UserDefinedContext) {
         },
 
         "opening:contextmenu": {
+          tags: ["closed"],
           after: {
-            LONG_PRESS_DELAY: {
-              target: "open",
-              actions: "invokeOnOpen",
-            },
+            LONG_PRESS_DELAY: [
+              {
+                guard: "isOpenControlled",
+                actions: "invokeOnOpen",
+              },
+              {
+                target: "open",
+                actions: "invokeOnOpen",
+              },
+            ],
           },
           on: {
-            CONTEXT_MENU_CANCEL: {
-              target: "closed",
-              actions: "invokeOnClose",
-            },
+            "CONTROLLED.OPEN": "open",
+            "CONTROLLED.CLOSE": "closed",
+            CONTEXT_MENU_CANCEL: [
+              {
+                guard: "isOpenControlled",
+                actions: "invokeOnClose",
+              },
+              {
+                target: "closed",
+                actions: "invokeOnClose",
+              },
+            ],
           },
         },
 
         opening: {
+          tags: ["closed"],
           after: {
-            SUBMENU_OPEN_DELAY: {
-              target: "open",
-              actions: "invokeOnOpen",
-            },
+            SUBMENU_OPEN_DELAY: [
+              {
+                guard: "isOpenControlled",
+                actions: "invokeOnOpen",
+              },
+              {
+                target: "open",
+                actions: "invokeOnOpen",
+              },
+            ],
           },
           on: {
-            BLUR: {
-              target: "closed",
-              actions: "invokeOnClose",
-            },
-            TRIGGER_POINTERLEAVE: {
-              target: "closed",
-              actions: "invokeOnClose",
-            },
+            "CONTROLLED.OPEN": "open",
+            "CONTROLLED.CLOSE": "closed",
+            BLUR: [
+              {
+                guard: "isOpenControlled",
+                actions: "invokeOnClose",
+              },
+              {
+                target: "closed",
+                actions: "invokeOnClose",
+              },
+            ],
+            TRIGGER_POINTERLEAVE: [
+              {
+                guard: "isOpenControlled",
+                actions: "invokeOnClose",
+              },
+              {
+                target: "closed",
+                actions: "invokeOnClose",
+              },
+            ],
           },
         },
 
         closing: {
-          tags: ["visible"],
+          tags: ["open"],
           activities: ["trackPointerMove", "trackInteractOutside"],
           after: {
-            SUBMENU_CLOSE_DELAY: {
-              target: "closed",
-              actions: ["focusParentMenu", "restoreParentFocus", "invokeOnClose"],
-            },
+            SUBMENU_CLOSE_DELAY: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["focusParentMenu", "restoreParentFocus", "invokeOnClose"],
+              },
+            ],
           },
           on: {
+            "CONTROLLED.OPEN": "open",
+            "CONTROLLED.CLOSE": {
+              target: "closed",
+              actions: ["focusParentMenu", "restoreParentFocus"],
+            },
+            // don't invoke on open here since the menu is still open (we're only keeping it open)
             MENU_POINTERENTER: {
               target: "open",
               actions: "clearIntentPolygon",
             },
-            POINTER_MOVED_AWAY_FROM_SUBMENU: {
-              target: "closed",
-              actions: ["focusParentMenu", "restoreParentFocus"],
-            },
+            POINTER_MOVED_AWAY_FROM_SUBMENU: [
+              {
+                guard: "isOpenControlled",
+                actions: "invokeOnClose",
+              },
+              {
+                target: "closed",
+                actions: ["focusParentMenu", "restoreParentFocus"],
+              },
+            ],
           },
         },
 
         closed: {
-          entry: ["clearFocusedItem", "focusTrigger", "clearAnchorPoint", "resumePointer"],
+          tags: ["closed"],
+          entry: ["clearHighlightedItem", "focusTrigger", "clearAnchorPoint", "resumePointer"],
           on: {
+            "CONTROLLED.OPEN": [
+              {
+                guard: or("isOpenAutoFocusEvent", "isArrowDownEvent"),
+                target: "open",
+                actions: "highlightFirstItem",
+              },
+              {
+                guard: "isArrowUpEvent",
+                target: "open",
+                actions: "highlightLastItem",
+              },
+              {
+                target: "open",
+              },
+            ],
             CONTEXT_MENU_START: {
               target: "opening:contextmenu",
               actions: "setAnchorPoint",
             },
-            CONTEXT_MENU: {
-              target: "open",
-              actions: ["setAnchorPoint", "invokeOnOpen"],
-            },
-            TRIGGER_CLICK: {
-              target: "open",
-              actions: "invokeOnOpen",
-            },
+            CONTEXT_MENU: [
+              {
+                guard: "isOpenControlled",
+                actions: ["setAnchorPoint", "invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["setAnchorPoint", "invokeOnOpen"],
+              },
+            ],
+            TRIGGER_CLICK: [
+              {
+                guard: "isOpenControlled",
+                actions: "invokeOnOpen",
+              },
+              {
+                target: "open",
+                actions: "invokeOnOpen",
+              },
+            ],
             TRIGGER_POINTERMOVE: {
               guard: "isTriggerItem",
               target: "opening",
             },
             TRIGGER_BLUR: "idle",
-            ARROW_DOWN: {
-              target: "open",
-              actions: ["focusFirstItem", "invokeOnOpen"],
-            },
-            ARROW_UP: {
-              target: "open",
-              actions: ["focusLastItem", "invokeOnOpen"],
-            },
+            ARROW_DOWN: [
+              {
+                guard: "isOpenControlled",
+                actions: "invokeOnOpen",
+              },
+              {
+                target: "open",
+                actions: ["highlightFirstItem", "invokeOnOpen"],
+              },
+            ],
+            ARROW_UP: [
+              {
+                guard: "isOpenControlled",
+                actions: "invokeOnOpen",
+              },
+              {
+                target: "open",
+                actions: ["highlightLastItem", "invokeOnOpen"],
+              },
+            ],
           },
         },
 
         open: {
-          tags: ["visible"],
+          tags: ["open"],
           activities: ["trackInteractOutside", "trackPositioning", "scrollToHighlightedItem"],
           entry: ["focusMenu", "resumePointer"],
           on: {
-            TRIGGER_CLICK: {
-              guard: not("isTriggerItem"),
-              target: "closed",
-              actions: "invokeOnClose",
-            },
+            "CONTROLLED.CLOSE": [
+              {
+                target: "closed",
+                guard: "isArrowLeftEvent",
+                actions: ["focusParentMenu"],
+              },
+              {
+                target: "closed",
+              },
+            ],
+            TRIGGER_CLICK: [
+              {
+                guard: and(not("isTriggerItem"), "isOpenControlled"),
+                actions: "invokeOnClose",
+              },
+              {
+                guard: not("isTriggerItem"),
+                target: "closed",
+                actions: "invokeOnClose",
+              },
+            ],
             TAB: [
               {
                 guard: "isForwardTabNavigation",
-                actions: ["focusNextItem"],
+                actions: ["highlightNextItem"],
               },
-              { actions: ["focusPrevItem"] },
+              {
+                actions: ["highlightPrevItem"],
+              },
             ],
             ARROW_UP: {
-              actions: ["focusPrevItem", "focusMenu"],
+              actions: ["highlightPrevItem", "focusMenu"],
             },
             ARROW_DOWN: {
-              actions: ["focusNextItem", "focusMenu"],
+              actions: ["highlightNextItem", "focusMenu"],
             },
-            ARROW_LEFT: {
-              guard: "isSubmenu",
-              target: "closed",
-              actions: ["focusParentMenu", "invokeOnClose"],
-            },
+            ARROW_LEFT: [
+              {
+                guard: and("isSubmenu", "isOpenControlled"),
+                actions: "invokeOnClose",
+              },
+              {
+                guard: "isSubmenu",
+                target: "closed",
+                actions: ["focusParentMenu", "invokeOnClose"],
+              },
+            ],
             HOME: {
-              actions: ["focusFirstItem", "focusMenu"],
+              actions: ["highlightFirstItem", "focusMenu"],
             },
             END: {
-              actions: ["focusLastItem", "focusMenu"],
-            },
-            REQUEST_CLOSE: {
-              target: "closed",
-              actions: "invokeOnClose",
+              actions: ["highlightLastItem", "focusMenu"],
             },
             ARROW_RIGHT: {
-              guard: "isTriggerItemFocused",
+              guard: "isTriggerItemHighlighted",
               actions: "openSubmenu",
             },
             ENTER: [
               {
-                guard: "isTriggerItemFocused",
+                guard: "isTriggerItemHighlighted",
                 actions: "openSubmenu",
+              },
+              // == grouped ==
+              {
+                guard: and("closeOnSelect", "isOpenControlled"),
+                actions: ["clickHighlightedItem", "invokeOnClose"],
               },
               {
                 guard: "closeOnSelect",
                 target: "closed",
-                actions: "clickFocusedItem",
+                actions: "clickHighlightedItem",
               },
+              //
               {
-                actions: "clickFocusedItem",
+                actions: "clickHighlightedItem",
               },
             ],
             ITEM_POINTERMOVE: [
               {
-                guard: and(not("suspendPointer"), not("isTargetFocused")),
-                actions: ["focusItem", "focusMenu"],
+                guard: not("suspendPointer"),
+                actions: ["highlightItem", "focusMenu"],
               },
               {
-                guard: not("isTargetFocused"),
                 actions: "setHoveredItem",
               },
             ],
             ITEM_POINTERLEAVE: {
               guard: and(not("suspendPointer"), not("isTriggerItem")),
-              actions: "clearFocusedItem",
+              actions: "clearHighlightedItem",
             },
             ITEM_CLICK: [
+              // == grouped ==
               {
-                guard: and(not("isTriggerItemFocused"), not("isFocusedItemEditable"), "closeOnSelect"),
-                target: "closed",
+                guard: and(
+                  not("isTriggerItemHighlighted"),
+                  not("isHighlightedItemEditable"),
+                  "closeOnSelect",
+                  "isOpenControlled",
+                ),
                 actions: [
                   "invokeOnSelect",
                   "changeOptionValue",
@@ -275,25 +432,37 @@ export function machine(userContext: UserDefinedContext) {
                 ],
               },
               {
-                guard: and(not("isTriggerItemFocused"), not("isFocusedItemEditable")),
+                guard: and(not("isTriggerItemHighlighted"), not("isHighlightedItemEditable"), "closeOnSelect"),
+                target: "closed",
+                actions: [
+                  "invokeOnSelect",
+                  "changeOptionValue",
+                  "invokeOnValueChange",
+                  "closeRootMenu",
+                  "invokeOnClose",
+                ],
+              },
+              //
+              {
+                guard: and(not("isTriggerItemHighlighted"), not("isHighlightedItemEditable")),
                 actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"],
               },
-              { actions: "focusItem" },
+              { actions: "highlightItem" },
             ],
             TRIGGER_POINTERLEAVE: {
               target: "closing",
               actions: "setIntentPolygon",
             },
             ITEM_POINTERDOWN: {
-              actions: "focusItem",
+              actions: "highlightItem",
             },
             TYPEAHEAD: {
-              actions: "focusMatchedItem",
+              actions: "highlightMatchedItem",
             },
             FOCUS_MENU: {
               actions: "focusMenu",
             },
-            SET_POSITIONING: {
+            "POSITIONING.SET": {
               actions: "reposition",
             },
           },
@@ -309,23 +478,27 @@ export function machine(userContext: UserDefinedContext) {
 
       guards: {
         closeOnSelect: (ctx, evt) => !!(evt?.closeOnSelect ?? ctx.closeOnSelect),
-        isMenuFocused: (ctx) => contains(dom.getContentEl(ctx), dom.getActiveElement(ctx)),
-        isTargetFocused: (ctx, evt) => ctx.highlightedId === evt.target.id,
         // whether the trigger is also a menu item
         isTriggerItem: (_ctx, evt) => dom.isTriggerItem(evt.target),
         // whether the trigger item is the active item
-        isTriggerItemFocused: (ctx, evt) => {
-          const target = (evt.target ?? dom.getFocusedItem(ctx)) as HTMLElement | null
+        isTriggerItemHighlighted: (ctx, evt) => {
+          const target = (evt.target ?? dom.getHighlightedItemEl(ctx)) as HTMLElement | null
           return !!target?.hasAttribute("aria-controls")
         },
         isForwardTabNavigation: (_ctx, evt) => !evt.shiftKey,
         isSubmenu: (ctx) => ctx.isSubmenu,
         suspendPointer: (ctx) => ctx.suspendPointer,
-        isFocusedItemEditable: (ctx) => isEditableElement(dom.getFocusedItem(ctx)),
+        isHighlightedItemEditable: (ctx) => isEditableElement(dom.getHighlightedItemEl(ctx)),
         isWithinPolygon: (ctx, evt) => {
           if (!ctx.intentPolygon) return false
           return isPointInPolygon(ctx.intentPolygon, evt.point)
         },
+        // guard assertions (for controlled mode)
+        isOpenControlled: (ctx) => ctx.__controlled !== undefined,
+        isArrowLeftEvent: (_ctx, evt) => evt.previousEvent?.type === "ARROW_LEFT",
+        isArrowUpEvent: (_ctx, evt) => evt.previousEvent?.type === "ARROW_UP",
+        isArrowDownEvent: (_ctx, evt) => evt.previousEvent?.type === "ARROW_DOWN",
+        isOpenAutoFocusEvent: (_ctx, evt) => evt.previousEvent?.type === "OPEN_AUTOFOCUS",
       },
 
       activities: {
@@ -353,11 +526,11 @@ export function machine(userContext: UserDefinedContext) {
               closeRootMenu(ctx)
             },
             onPointerDownOutside(event) {
-              ctx.focusTriggerOnClose = !event.detail.focusable
+              ctx.restoreFocus = !event.detail.focusable
               ctx.onPointerDownOutside?.(event)
             },
             onDismiss() {
-              send({ type: "REQUEST_CLOSE", src: "interact-outside" })
+              send({ type: "CLOSE", src: "interact-outside" })
             },
           })
         },
@@ -381,8 +554,8 @@ export function machine(userContext: UserDefinedContext) {
           const exec = () => {
             const state = getState()
             if (state.event.type.startsWith("ITEM_POINTER")) return
-            const optionEl = dom.getHighlightedOptionEl(ctx)
-            optionEl?.scrollIntoView({ block: "nearest" })
+            const itemEl = dom.getHighlightedItemEl(ctx)
+            itemEl?.scrollIntoView({ block: "nearest" })
           }
           raf(() => exec())
           return observeAttributes(dom.getContentEl(ctx), ["aria-activedescendant"], exec)
@@ -436,16 +609,10 @@ export function machine(userContext: UserDefinedContext) {
             ctx.value[name] = value
           }
         },
-        clickFocusedItem(ctx, _evt, { send }) {
-          const itemEl = dom.getFocusedItem(ctx)
+        clickHighlightedItem(ctx, _evt, { send }) {
+          const itemEl = dom.getHighlightedItemEl(ctx)
           if (!itemEl || itemEl.dataset.disabled) return
-          const option = {
-            id: itemEl.id,
-            name: itemEl.dataset.name,
-            value: itemEl.dataset.value,
-            valueText: itemEl.dataset.valueText,
-            type: itemEl.dataset.type,
-          }
+          const option = dom.getOptionFromItemEl(itemEl)
           send({
             type: "ITEM_CLICK",
             src: "enter",
@@ -477,10 +644,10 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.parent) return
           ctx.parent.state.context.suspendPointer = false
         },
-        setFocusedItem(ctx, evt) {
+        setHighlightedItem(ctx, evt) {
           ctx.highlightedId = evt.id
         },
-        clearFocusedItem(ctx) {
+        clearHighlightedItem(ctx) {
           ctx.highlightedId = null
         },
         focusMenu(ctx) {
@@ -491,21 +658,21 @@ export function machine(userContext: UserDefinedContext) {
             contentEl?.focus({ preventScroll: true })
           })
         },
-        focusFirstItem(ctx) {
+        highlightFirstItem(ctx) {
           const first = dom.getFirstEl(ctx)
           if (!first) return
           ctx.highlightedId = first.id
         },
-        focusLastItem(ctx) {
+        highlightLastItem(ctx) {
           const last = dom.getLastEl(ctx)
           if (!last) return
           ctx.highlightedId = last.id
         },
-        focusNextItem(ctx, evt) {
+        highlightNextItem(ctx, evt) {
           const next = dom.getNextEl(ctx, evt.loop)
           ctx.highlightedId = next?.id ?? null
         },
-        focusPrevItem(ctx, evt) {
+        highlightPrevItem(ctx, evt) {
           const prev = dom.getPrevEl(ctx, evt.loop)
           ctx.highlightedId = prev?.id ?? null
         },
@@ -513,14 +680,14 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.highlightedId) return
           ctx.onSelect?.({ value: ctx.highlightedId })
         },
-        focusItem(ctx, evt) {
+        highlightItem(ctx, evt) {
           ctx.highlightedId = evt.id
         },
         focusTrigger(ctx) {
-          if (ctx.isSubmenu || ctx.anchorPoint || !ctx.focusTriggerOnClose) return
+          if (ctx.isSubmenu || ctx.anchorPoint || !ctx.restoreFocus) return
           raf(() => dom.getTriggerEl(ctx)?.focus({ preventScroll: true }))
         },
-        focusMatchedItem(ctx, evt) {
+        highlightMatchedItem(ctx, evt) {
           const node = dom.getElemByKey(ctx, evt.key)
           if (node) ctx.highlightedId = node.id
         },
@@ -534,7 +701,7 @@ export function machine(userContext: UserDefinedContext) {
           closeRootMenu(ctx)
         },
         openSubmenu(ctx) {
-          const item = dom.getFocusedItem(ctx)
+          const item = dom.getHighlightedItemEl(ctx)
           const id = item?.getAttribute("data-uid")
           const child = id ? ctx.children[id] : null
           child?.send("OPEN_AUTOFOCUS")
@@ -559,8 +726,8 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnClose(ctx) {
           ctx.onOpenChange?.({ open: false })
         },
-        toggleVisibility(ctx, _evt, { send }) {
-          send({ type: ctx.open ? "OPEN" : "CLOSE" })
+        toggleVisibility(ctx, evt, { send }) {
+          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
         },
       },
     },

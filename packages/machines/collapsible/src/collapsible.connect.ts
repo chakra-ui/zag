@@ -1,26 +1,16 @@
-import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./collapsible.anatomy"
 import { dom } from "./collapsible.dom"
-import type { MachineApi, Send, State } from "./collapsible.types"
+import type { Send, State } from "./collapsible.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isOpen = state.matches("open")
-  const isDisabled = state.context.isDisabled
-  const isFocused = !isDisabled && state.context.focused
 
-  const dataAttrs = {
-    "data-active": dataAttr(state.context.active),
-    "data-focus": dataAttr(isFocused),
-    "data-hover": dataAttr(state.context.hovered),
-    "data-disabled": dataAttr(isDisabled),
-    "data-state": isOpen ? "open" : "closed",
-  }
+  const height = state.context.height
+  const width = state.context.width
 
   return {
     isOpen,
-    isDisabled,
-    isFocused,
     open() {
       send("OPEN")
     },
@@ -30,65 +20,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
-      ...dataAttrs,
+      "data-state": isOpen ? "open" : "closed",
       dir: state.context.dir,
       id: dom.getRootId(state.context),
     }),
 
     contentProps: normalize.element({
       ...parts.content.attrs,
-      ...dataAttrs,
-      dir: state.context.dir,
+      "data-state": isOpen ? "open" : "closed",
       id: dom.getContentId(state.context),
       role: "region",
       "aria-expanded": isOpen,
-      // hidden: !isOpen,
+      hidden: !isOpen,
       style: {
-        height: isOpen ? `${state.context.height}px` : "0px",
+        "--height": height != null ? `${height}px` : undefined,
+        "--width": width != null ? `${width}px` : undefined,
       },
     }),
 
     triggerProps: normalize.element({
       ...parts.trigger.attrs,
-      ...dataAttrs,
       id: dom.getTriggerId(state.context),
       dir: state.context.dir,
       type: "button",
-      disabled: isDisabled,
       "aria-controls": dom.getContentId(state.context),
-      "aria-expanded": isOpen,
-      "aria-describedby": isOpen ? dom.getContentId(state.context) : undefined,
-      onPointerMove() {
-        if (isDisabled) return
-        send({ type: "CONTEXT.SET", context: { hovered: true } })
-      },
-      onPointerLeave() {
-        if (isDisabled) return
-        send({ type: "CONTEXT.SET", context: { hovered: false } })
-      },
-      onFocus() {
-        if (isDisabled) return
-        send({ type: "CONTEXT.SET", context: { focused: true } })
-      },
-      onBlur() {
-        if (isDisabled) return
-        send({ type: "CONTEXT.SET", context: { focused: false } })
-      },
-      onPointerDown(event) {
-        if (isDisabled) return
-        // On pointerdown, the input blurs and returns focus to the `body`,
-        // we need to prevent this.
-        if (isFocused && event.pointerType === "mouse") {
-          event.preventDefault()
-        }
-        send({ type: "CONTEXT.SET", context: { active: true } })
-      },
-      onPointerUp() {
-        if (isDisabled) return
-        send({ type: "CONTEXT.SET", context: { active: false } })
-      },
+      "aria-expanded": isOpen || false,
       onClick() {
-        if (isDisabled) return
         send("TOGGLE")
       },
     }),

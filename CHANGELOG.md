@@ -6,13 +6,100 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
-## [0.31.1] - 2023-12-01
+## [0.34.0](./#0.34.0) - 2024-02-19
+
+### Fixed
+
+- **All components**: Fix issue where positioning doesn't work as expected when combined with entry/exit animations in
+  the presence component
+
+### Changed
+
+- **Radio, Tabs**: Make it possible to override indicator's transition duration by setting the `--transition-duration`
+  css variable.
+
+## [0.33.2](./#0.33.2) - 2024-01-26
+
+### Fixed
+
+- **React**: Fix context reactivity issue where updates were not sent to the machine
+
+### Added
+
+### Changed
+
+## [0.33.1](./#0.33.1) - 2024-01-26
+
+### Fixed
+
+= **Core**: Fix issue where context mutation updates were missed due to the underlying `proxy-compare` regression.
+
+- **TreeView**: Fix issue where tree view machine types were not exported.
+
+### Added
+
+- **Select**: Add `data-disabled`, `data-invalid`, and `data-readonly` to indicator props
+
+## [0.33.0](./#0.33.0) - 2024-01-23
+
+### Fixed
+
+- **All Machines**:
+  - Improve runtime performance by only creating a machine instance once, and updating the context with
+    `setContext(...)` instead of `withContext(...)`.
+  - Fix issue on touch devices where selecting an item within combobox, menu, select triggers click event on element
+    behind the portalled content.
+
+**PinInput**: Fix an issue where paste in pin input would fill the input with all pasted characters instead of 1 per
+input
+
+### Added
+
+- **TreeView**: Add new `TreeView` component to render a tree view of items. This component is useful for rendering
+  nested data structures like a file system.
+
+  > This component is still in beta and is subject to change.
+
+### Changed
+
+- **TagsInput**:Improve `TagsInput` component design by introducing a new `item-preview` part. See the diff below for
+  more details.
+
+```diff
+<div {...api.rootProps}>
+  {api.value.map((value, index) => (
+-    <span key={index}>
++    <span key={index} {...api.getItemProps({ index, value })}>
+-     <div {...api.getItemProps({ index, value })}>
++     <div {...api.getItemPreviewProps({ index, value })}>
+        <span>{value} </span>
+        <button {...api.getItemDeleteTriggerProps({ index, value })}>&#x2715;</button>
+      </div>
+      <input {...api.getItemInputProps({ index, value })} />
+    </span>
+  ))}
+  <input placeholder="Add tag..." {...api.inputProps} />
+</div>
+```
+
+- **Progress**: Rename indicator part to view to better communicate the purpose of the part.
+
+## [0.32.1](./#0.32.1) - 2024-01-10
+
+### Fixed
+
+- **ColorPicker**: Fix issue where some change details typings were no exported
+- **Combobox**:
+  - Fix an issue that breaks the combobox when clicking on the input while the menu is open
+  - Fix issue where some change details typings were no exported
+
+## [0.31.1](./#0.31.1) - 2023-12-01
 
 ### Fixed
 
 - **NumberInput**: Fix issue where formatting on blur doesn't work as expected
 
-## [0.31.0] - 2023-11-27
+## [0.31.0](./#0.31.0) - 2023-11-27
 
 ### Fixed
 
@@ -41,7 +128,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 - **DatePicker**: Rename `messages` context property to `translations`. This property was previously unused
 
-## [0.30.0] - 2023-11-14
+## [0.30.0](./#0.30.0) - 2023-11-14
 
 ### Fixed
 
@@ -59,7 +146,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 - **Toast**: Add generic support to toast types to support framework-specific types.
 
-## [0.28.1] - 2023-11-09
+## [0.28.1](./#0.28.1) - 2023-11-09
 
 ### Fixed
 
@@ -70,7 +157,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 - **Combobox**: Fix a case where item highlight was looping even though loop property was false
 
-## [0.28.0] - 2023-11-08
+## [0.28.0](./#0.28.0) - 2023-11-08
 
 ### Fixed
 
@@ -88,7 +175,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 - **Menu**: Add support for controlling menu's open state via the `open` context property
 
-## [0.27.0] - 2023-10-30
+## [0.27.0](./#0.27.0) - 2023-10-30
 
 ### Fixed
 
@@ -110,7 +197,7 @@ See the [Changesets](./.changeset) for the latest changes.
   - Remove support for `inline` in datepicker and replace with `closeOnSelect` for API consistency.
   - Add `data-placement` to trigger and content parts for position-aware styling.
 
-## [0.25.0] - 2023-10-17
+## [0.25.0](./#0.25.0) - 2023-10-17
 
 ### Fixed
 
@@ -142,7 +229,7 @@ See the [Changesets](./.changeset) for the latest changes.
 - **Dialog**: Rename dialog container to dialog positioner for better API consistency. This means `api.containerProps`
   is now `api.positionerProps`
 
-## [0.24.0] - 2023-10-12
+## [0.24.0](./#0.24.0) - 2023-10-12
 
 ### Fixed
 
@@ -179,7 +266,7 @@ See the [Changesets](./.changeset) for the latest changes.
   - `getNextPageTriggerProps` => `getNextTriggerProps`
   - `getPrevPageTriggerProps` => `getPrevTriggerProps`
 
-## [0.23.0] - 2023-10-02
+## [0.23.0](./#0.23.0) - 2023-10-02
 
 ### Fixed
 
@@ -204,7 +291,7 @@ See the [Changesets](./.changeset) for the latest changes.
   - Rename `api.sizeArray` to `api.items`
   - Rename `max` to `count`
 
-## [0.22.0] - 2023-09-26
+## [0.22.0](./#0.22.0) - 2023-09-26
 
 ### Fixed
 
@@ -245,7 +332,7 @@ See the [Changesets](./.changeset) for the latest changes.
   - Hide submit and cancel trigger when not in editing mode
   - Hide edit trigger when in editing mode
 
-## [0.21.0] - 2023-09-19
+## [0.21.0](./#0.21.0) - 2023-09-19
 
 ### Fixed
 
@@ -294,7 +381,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 - **ToggleGroup**: Allow deselecting item when `multiple` is `false`.
 
-## [0.20.0] - 2023-09-14
+## [0.20.0](./#0.20.0) - 2023-09-14
 
 ### Fixed
 
@@ -332,7 +419,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 - **Tabs**: Changed `api.setIndicatorRect(id)` to `api.setIndicatorRect(value)` for better userland control
 
-## [0.19.1] - 2023-09-11
+## [0.19.1](./#0.19.1) - 2023-09-11
 
 ### Fixed
 
@@ -342,7 +429,7 @@ See the [Changesets](./.changeset) for the latest changes.
   - Export `CollectionItem` type
   - Ensure consistent usage of generics across the `connect` and `machine` functions
 
-## [0.19.0] - 2023-09-07
+## [0.19.0](./#0.19.0) - 2023-09-07
 
 ### Fixed
 
@@ -367,7 +454,7 @@ See the [Changesets](./.changeset) for the latest changes.
 - **Checkbox, Switch**: Dispatch change event when checked state is set programmatically to get it working in Solid.js
   form libraries
 
-## [0.18.0] - 2023-09-05
+## [0.18.0](./#0.18.0) - 2023-09-05
 
 ### Fixed
 
@@ -415,7 +502,7 @@ const [state, send] = useMachine(
 )
 ```
 
-## [0.17.0] - 2023-08-26
+## [0.17.0](./#0.17.0) - 2023-08-26
 
 ### Fixed
 
@@ -446,7 +533,7 @@ const [state, send] = useMachine(
   - Rename `onHighlight` to `onFocusChange`
   - Remove `onTagUpdate`, use `onChange` instead
 
-## [0.16.0] - 2023-08-13
+## [0.16.0](./#0.16.0) - 2023-08-13
 
 ## Fixed
 
@@ -459,7 +546,7 @@ const [state, send] = useMachine(
 - **Radio**: Rename `getRadioInputProps` to `getRadioHiddenInputProps`
 - **Tabs**: Rename `tablist` part to `list` to match naming convention
 
-## [0.15.0] - 2023-08-08
+## [0.15.0](./#0.15.0) - 2023-08-08
 
 ## Changed
 
@@ -468,7 +555,7 @@ const [state, send] = useMachine(
 - **Combobox**: Add `optionGroupLabel` part to **Combobox**
 - **Tabs**: Remove content group part
 
-## [0.14.0] - 2023-08-07
+## [0.14.0](./#0.14.0) - 2023-08-07
 
 ## Fixed
 
@@ -490,7 +577,7 @@ const [state, send] = useMachine(
 - **Combobox, Editable, Menu, Select, TagsInput**: Provide interaction event handlers (`onPointerdownOutside`,
   `onFocusOutside` and `onInteractOutside`) to better manage outside interaction
 
-## [0.13.0] - 2023-07-25
+## [0.13.0](./#0.13.0) - 2023-07-25
 
 ## Fixed
 
@@ -518,7 +605,7 @@ const [state, send] = useMachine(
 
 - New ToggleGroup machine
 
-## [0.12.0] - 2023-07-16
+## [0.12.0](./#0.12.0) - 2023-07-16
 
 ## Fixed
 
@@ -541,20 +628,20 @@ const [state, send] = useMachine(
     - `data-indeterminate` maps to `data-state="indeterminate"`
     - `data-open` maps to `data-state="open"`
 
-## [0.11.2] - 2023-07-13
+## [0.11.2](./#0.11.2) - 2023-07-13
 
 ## Fixed
 
 - **All machines**: Fix issue where machine types were not being properly inferred
 
-## [0.11.1] - 2023-07-12
+## [0.11.1](./#0.11.1) - 2023-07-12
 
 ## Fixed
 
 - **Carousel**: Expose the types and add `onClick` to carousel indicator
 - **ColorPicker**: Fix types exports
 
-## [0.11.0] - 2023-07-11
+## [0.11.0](./#0.11.0) - 2023-07-11
 
 ## Fixed
 
@@ -569,39 +656,39 @@ const [state, send] = useMachine(
 
 - New presense machine to manage mount/unmount animation.
 
-## [0.10.5] - 2023-07-06
+## [0.10.5](./#0.10.5) - 2023-07-06
 
 ## Fixed
 
 - **All machines**: Fix an issue where type declarations aren't inferred correctly
 
-## [0.10.4] - 2023-07-05
+## [0.10.4](./#0.10.4) - 2023-07-05
 
 ## Fixed
 
 - **RadioGroup**: Fix issue where indicator part does not transition its size and position after first render
 
-## [0.10.3] - 2023-06-30
+## [0.10.3](./#0.10.3) - 2023-06-30
 
 ## Fixed
 
 - **All machines**: Improve DOM detection code to rely on `document` instead of `window`
 - **Popper**: Fix issue where `offset` is ignored from default gutter
 
-## [0.10.2] - 2023-06-01
+## [0.10.2](./#0.10.2) - 2023-06-01
 
 ## Fixed
 
 - **Avatar**: Fix issue where anatomy was not exported
 - **Splitter**: Set the panel's default `minSize` to `0`
 
-## [0.10.1] - 2023-05-31
+## [0.10.1](./#0.10.1) - 2023-05-31
 
 ## Fixed
 
 - **Splitter**: Fix issue where `api` for controlling panel sizes wasn't implemented
 
-## [0.10.0] - 2023-05-31
+## [0.10.0](./#0.10.0) - 2023-05-31
 
 ## Fixed
 
@@ -623,7 +710,7 @@ const [state, send] = useMachine(
 
 - New Avatar machine
 
-## [0.9.2] - 2023-05-18
+## [0.9.2](./#0.9.2) - 2023-05-18
 
 ## Fixed
 
@@ -631,7 +718,7 @@ const [state, send] = useMachine(
 - **Dialog**: Fix issue where `setReturnFocus` used in `focus-trap` throws a console error
 - **PinInput**: Fix issue where `defaultValue` is always overriden with an array with empty strings when mounted
 
-## [0.9.0] - 2023-05-16
+## [0.9.0](./#0.9.0) - 2023-05-16
 
 ## Fixed
 
@@ -645,7 +732,7 @@ const [state, send] = useMachine(
 
 - **Anatomy**: Add support for renaming component scope/name
 
-## [0.7.0] - 2023-05-03
+## [0.7.0](./#0.7.0) - 2023-05-03
 
 ## Fixed
 
@@ -665,7 +752,7 @@ const [state, send] = useMachine(
 - **Editable**: Add `finalFocusEl` to allow for better return focus management
 - **Pagination**: Add `type` property to the pagination's context to control properties used in trigger element
 
-## [0.6.0] - 2023-04-15
+## [0.6.0](./#0.6.0) - 2023-04-15
 
 ### Fixed
 

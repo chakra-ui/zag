@@ -1,5 +1,94 @@
 # @zag-js/pin-input
 
+## 0.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.34.0
+  - @zag-js/core@0.34.0
+  - @zag-js/types@0.34.0
+  - @zag-js/utils@0.34.0
+  - @zag-js/dom-event@0.34.0
+  - @zag-js/dom-query@0.34.0
+  - @zag-js/form-utils@0.34.0
+  - @zag-js/visually-hidden@0.34.0
+
+## 0.33.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.33.2
+  - @zag-js/core@0.33.2
+  - @zag-js/types@0.33.2
+  - @zag-js/utils@0.33.2
+  - @zag-js/dom-event@0.33.2
+  - @zag-js/dom-query@0.33.2
+  - @zag-js/form-utils@0.33.2
+  - @zag-js/visually-hidden@0.33.2
+
+## 0.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.33.1
+  - @zag-js/anatomy@0.33.1
+  - @zag-js/types@0.33.1
+  - @zag-js/utils@0.33.1
+  - @zag-js/dom-event@0.33.1
+  - @zag-js/dom-query@0.33.1
+  - @zag-js/form-utils@0.33.1
+  - @zag-js/visually-hidden@0.33.1
+
+## 0.33.0
+
+### Patch Changes
+
+- [#1132](https://github.com/chakra-ui/zag/pull/1132)
+  [`8729833`](https://github.com/chakra-ui/zag/commit/8729833bb0914e87b79b35370f712b6329ee6e19) Thanks
+  [@renrizzolo](https://github.com/renrizzolo)! - Fix an issue where paste in pin input would fill the input with all
+  pasted characters instead of 1 per input
+
+- Updated dependencies [[`7872cdf`](https://github.com/chakra-ui/zag/commit/7872cdf8aeb28b9a30cd4a016bd12e5366054511)]:
+  - @zag-js/core@0.33.0
+  - @zag-js/anatomy@0.33.0
+  - @zag-js/types@0.33.0
+  - @zag-js/utils@0.33.0
+  - @zag-js/dom-event@0.33.0
+  - @zag-js/dom-query@0.33.0
+  - @zag-js/form-utils@0.33.0
+  - @zag-js/visually-hidden@0.33.0
+
+## 0.32.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.1
+  - @zag-js/core@0.32.1
+  - @zag-js/types@0.32.1
+  - @zag-js/utils@0.32.1
+  - @zag-js/dom-event@0.32.1
+  - @zag-js/dom-query@0.32.1
+  - @zag-js/form-utils@0.32.1
+  - @zag-js/visually-hidden@0.32.1
+
+## 0.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.0
+  - @zag-js/core@0.32.0
+  - @zag-js/types@0.32.0
+  - @zag-js/utils@0.32.0
+  - @zag-js/dom-event@0.32.0
+  - @zag-js/dom-query@0.32.0
+  - @zag-js/form-utils@0.32.0
+  - @zag-js/visually-hidden@0.32.0
+
 ## 0.31.1
 
 ### Patch Changes

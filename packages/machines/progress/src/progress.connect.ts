@@ -104,10 +104,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-state": progressState,
     }),
 
-    getIndicatorProps(props) {
+    getViewProps(props) {
       return normalize.element({
         dir: state.context.dir,
-        ...parts.indicator.attrs,
+        ...parts.view.attrs,
         "data-state": props.state,
         hidden: props.state !== progressState,
       })

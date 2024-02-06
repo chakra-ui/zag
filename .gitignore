@@ -94,6 +94,9 @@ typings/
 .nuxt
 dist
 
+# SvelteKit sync output
+.svelte-kit
+
 # Storybook build outputs
 .out
 .storybook-out

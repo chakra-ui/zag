@@ -14,6 +14,7 @@ export type {
   ColorType,
   UserDefinedContext as Context,
   ElementIds,
+  FormatChangeDetails,
   OpenChangeDetails,
   SwatchProps,
   SwatchTriggerProps,

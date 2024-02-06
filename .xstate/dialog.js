@@ -12,7 +12,12 @@ const {
 const fetchMachine = createMachine({
   id: "dialog",
   initial: ctx.open ? "open" : "closed",
-  context: {},
+  context: {
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false
+  },
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -23,26 +28,45 @@ const fetchMachine = createMachine({
       entry: ["checkRenderedElements"],
       activities: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
       on: {
-        CLOSE: {
+        "CONTROLLED.CLOSE": {
           target: "closed",
-          actions: ["invokeOnClose", "restoreFocus"]
+          actions: ["restoreFocus"]
         },
-        TOGGLE: {
+        CLOSE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
           target: "closed",
           actions: ["invokeOnClose", "restoreFocus"]
-        }
+        }],
+        TOGGLE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
+          target: "closed",
+          actions: ["invokeOnClose", "restoreFocus"]
+        }]
       }
     },
     closed: {
       on: {
-        OPEN: {
-          target: "open",
-          actions: ["invokeOnOpen"]
+        "CONTROLLED.OPEN": {
+          target: "open"
         },
-        TOGGLE: {
+        OPEN: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
           target: "open",
           actions: ["invokeOnOpen"]
-        }
+        }],
+        TOGGLE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
+          target: "open",
+          actions: ["invokeOnOpen"]
+        }]
       }
     }
   }
@@ -54,5 +78,7 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {}
+  guards: {
+    "isOpenControlled": ctx => ctx["isOpenControlled"]
+  }
 });

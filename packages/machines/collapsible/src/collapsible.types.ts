@@ -25,51 +25,38 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   ids?: ElementIds
   /**
-   * If `true`, the collapsible will be disabled
-   */
-  disabled?: boolean
-  /**
    * Function called when the popup is opened
    */
   onOpenChange?: (details: OpenChangeDetails) => void
   /**
    * Whether the collapsible is open
    */
-  open: boolean
+  open?: boolean
 }
 
-type ComputedContext = Readonly<{
-  /**
-   * Whether the collapsible is disabled
-   */
-  isDisabled: boolean
-  /**
-   * Whether the collapsible is open
-   */
-  isOpen: boolean
-}>
+type ComputedContext = Readonly<{}>
 
 type PrivateContext = Context<{
   /**
    * @internal
-   * Whether the trigger is pressed
-   */
-  active?: boolean
-  /**
-   * @internal
-   * Whether the trigger has focus
-   */
-  focused?: boolean
-  /**
-   * @internal
    * The height of the content
    */
-  height?: number
+  height: number
   /**
    * @internal
-   * Whether the trigger is hovered
+   * The width of the content
    */
-  hovered?: boolean
+  width: number
+  /**
+   * @internal
+   * The styles of the content
+   */
+  stylesRef: Record<string, string>
+  /**
+   * @internal
+   * Whether the mount animation is prevented
+   */
+  isMountAnimationPrevented: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

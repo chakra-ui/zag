@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "../../../shared/src/style.css"
+import Link from "next/link"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -12,7 +13,22 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        {children}
+        <div
+          style={{
+            position: "fixed",
+            left: "24px",
+            bottom: "24px",
+            backgroundColor: "blue",
+            padding: "20px",
+          }}
+        >
+          <Link href="/" style={{ color: "white" }}>
+            ⬅ Back to Home
+          </Link>
+        </div>
+      </body>
     </html>
   )
 }

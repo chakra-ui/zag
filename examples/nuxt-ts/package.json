@@ -9,7 +9,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@internationalized/date": "^3.5.0",
+    "@internationalized/date": "^3.5.1",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -19,6 +19,7 @@
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/collapsible": "workspace:*",
+    "@zag-js/clipboard": "workspace:*",
     "@zag-js/collection": "workspace:*",
     "@zag-js/color-picker": "workspace:*",
     "@zag-js/color-utils": "workspace:*",
@@ -71,18 +72,21 @@
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
+    "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "@zag-js/vue": "workspace:*",
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
-    "vue-router": "^4.2.5"
+    "lucide-vue-next": "0.321.0",
+    "vue": "3.4.15",
+    "vue-router": "4.2.5"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@types/node": "^20.10.0",
     "@types/form-serialize": "0.7.4",
-    "nuxt": "^3.8.2"
+    "@types/node": "20.11.10",
+    "nuxt": "3.9.3"
   }
 }

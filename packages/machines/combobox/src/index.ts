@@ -14,6 +14,7 @@ export type {
   ItemGroupProps,
   ItemProps,
   ItemState,
+  OpenChangeDetails,
   Placement,
   PositioningOptions,
   ValueChangeDetails,

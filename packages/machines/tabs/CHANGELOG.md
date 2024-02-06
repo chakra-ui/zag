@@ -1,5 +1,100 @@
 # @zag-js/tabs
 
+## 0.34.0
+
+### Minor Changes
+
+- [`2982ac3`](https://github.com/chakra-ui/zag/commit/2982ac314dff65883e437459cc893dea11d472f8) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Refactor transition duration for components with indicators
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.34.0
+  - @zag-js/core@0.34.0
+  - @zag-js/types@0.34.0
+  - @zag-js/utils@0.34.0
+  - @zag-js/dom-event@0.34.0
+  - @zag-js/dom-query@0.34.0
+  - @zag-js/element-rect@0.34.0
+  - @zag-js/tabbable@0.34.0
+
+## 0.33.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.33.2
+  - @zag-js/core@0.33.2
+  - @zag-js/types@0.33.2
+  - @zag-js/utils@0.33.2
+  - @zag-js/dom-event@0.33.2
+  - @zag-js/dom-query@0.33.2
+  - @zag-js/element-rect@0.33.2
+  - @zag-js/tabbable@0.33.2
+
+## 0.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.33.1
+  - @zag-js/anatomy@0.33.1
+  - @zag-js/types@0.33.1
+  - @zag-js/utils@0.33.1
+  - @zag-js/dom-event@0.33.1
+  - @zag-js/dom-query@0.33.1
+  - @zag-js/element-rect@0.33.1
+  - @zag-js/tabbable@0.33.1
+
+## 0.33.0
+
+### Patch Changes
+
+- Updated dependencies [[`7872cdf`](https://github.com/chakra-ui/zag/commit/7872cdf8aeb28b9a30cd4a016bd12e5366054511)]:
+  - @zag-js/core@0.33.0
+  - @zag-js/anatomy@0.33.0
+  - @zag-js/types@0.33.0
+  - @zag-js/utils@0.33.0
+  - @zag-js/dom-event@0.33.0
+  - @zag-js/dom-query@0.33.0
+  - @zag-js/element-rect@0.33.0
+  - @zag-js/tabbable@0.33.0
+
+## 0.32.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.1
+  - @zag-js/core@0.32.1
+  - @zag-js/types@0.32.1
+  - @zag-js/utils@0.32.1
+  - @zag-js/dom-event@0.32.1
+  - @zag-js/dom-query@0.32.1
+  - @zag-js/element-rect@0.32.1
+  - @zag-js/tabbable@0.32.1
+
+## 0.32.0
+
+### Minor Changes
+
+- [`76115f7`](https://github.com/chakra-ui/zag/commit/76115f7a56d90fd84e0154c1ed182b7e2be68f93) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - BREAKING: Removed the styling props for indicator and replaced them
+  with CSS variables.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.32.0
+  - @zag-js/core@0.32.0
+  - @zag-js/types@0.32.0
+  - @zag-js/utils@0.32.0
+  - @zag-js/dom-event@0.32.0
+  - @zag-js/dom-query@0.32.0
+  - @zag-js/element-rect@0.32.0
+  - @zag-js/tabbable@0.32.0
+
 ## 0.31.1
 
 ### Patch Changes

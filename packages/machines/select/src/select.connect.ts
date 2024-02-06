@@ -44,6 +44,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   return {
     isOpen,
     isFocused,
+    isValueEmpty: state.context.value.length === 0,
     highlightedItem,
     highlightedValue: state.context.highlightedValue,
     selectedItems,
@@ -205,6 +206,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       dir: state.context.dir,
       "aria-hidden": true,
       "data-state": isOpen ? "open" : "closed",
+      "data-disabled": dataAttr(isDisabled),
+      "data-invalid": dataAttr(isInvalid),
+      "data-readonly": dataAttr(isReadOnly),
     }),
 
     getItemProps(props) {
@@ -232,10 +236,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         },
         onPointerLeave(event) {
           const isKeyboardNavigationEvent = ["CONTENT.ARROW_UP", "CONTENT.ARROW_DOWN"].includes(state.event.type)
-
           if (itemState.isDisabled || event.pointerType !== "mouse" || isKeyboardNavigationEvent) return
-
           send({ type: "ITEM.POINTER_LEAVE" })
+        },
+        onTouchEnd(event) {
+          // prevent clicking elements behind content
+          event.preventDefault()
+          event.stopPropagation()
         },
       })
     },
@@ -265,7 +272,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const { htmlFor } = props
       return normalize.element({
         ...parts.itemGroupLabel.attrs,
-        id: dom.getItemGroupId(state.context, htmlFor),
+        id: dom.getItemGroupLabelId(state.context, htmlFor),
         role: "group",
         dir: state.context.dir,
       })
@@ -327,7 +334,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       role: "listbox",
       ...parts.content.attrs,
       "data-state": isOpen ? "open" : "closed",
-      "aria-activedescendant": state.context.highlightedValue || "",
+      "aria-activedescendant": state.context.highlightedValue
+        ? dom.getItemId(state.context, state.context.highlightedValue)
+        : undefined,
       "aria-multiselectable": state.context.multiple ? "true" : undefined,
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: 0,
@@ -348,7 +357,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             send({ type: "CONTENT.END" })
           },
           Enter() {
-            send({ type: "CONTENT.ENTER" })
+            send({ type: "ITEM.CLICK", src: "keydown.enter" })
           },
           Space(event) {
             if (isTypingAhead) {

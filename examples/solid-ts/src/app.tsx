@@ -1,13 +1,10 @@
-import { Link, useMatch, useRoutes } from "@solidjs/router"
+import { A, useMatch } from "@solidjs/router"
 import { dataAttr } from "@zag-js/dom-query"
 import { routesData } from "@zag-js/shared"
 import { Component, For } from "solid-js"
 import "../../../shared/src/style.css"
-import { routes } from "./routes"
 
-const App: Component = () => {
-  const Route = useRoutes(routes)
-
+const App: Component = (props: any) => {
   return (
     <div class="page">
       <aside class="nav">
@@ -16,14 +13,14 @@ const App: Component = () => {
           {(route) => {
             const match = useMatch(() => route.path)
             return (
-              <Link data-active={dataAttr(!!match())} href={route.path}>
+              <A data-active={dataAttr(!!match())} href={route.path}>
                 {route.label}
-              </Link>
+              </A>
             )
           }}
         </For>
       </aside>
-      <Route />
+      {props.children}
     </div>
   )
 }

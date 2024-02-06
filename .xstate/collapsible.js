@@ -13,11 +13,7 @@ const fetchMachine = createMachine({
   id: "collapsible",
   initial: ctx.open ? "open" : "closed",
   context: {},
-  on: {
-    "CONTEXT.SET": {
-      actions: ["setContext"]
-    }
-  },
+  entry: ["setMountAnimationPrevented"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -28,11 +24,11 @@ const fetchMachine = createMachine({
       on: {
         TOGGLE: {
           target: "open",
-          actions: ["computeHeight", "invokeOnOpen"]
+          actions: ["computeSize", "invokeOnOpen"]
         },
         OPEN: {
           target: "open",
-          actions: ["computeHeight", "invokeOnOpen"]
+          actions: ["computeSize", "invokeOnOpen"]
         }
       }
     },
