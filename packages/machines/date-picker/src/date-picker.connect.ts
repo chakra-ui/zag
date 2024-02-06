@@ -1,4 +1,4 @@
-import { DateFormatter, isWeekend, type DateValue, isEqualDay } from "@internationalized/date"
+import { DateFormatter, isEqualDay, isWeekend, type DateValue } from "@internationalized/date"
 import {
   constrainValue,
   getDateRangePreset,
@@ -28,14 +28,14 @@ import { chunk } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
 import type {
-  TableCellProps,
-  TableCellState,
   DayTableCellProps,
   DayTableCellState,
-  TableProps,
   MachineApi,
   Send,
   State,
+  TableCellProps,
+  TableCellState,
+  TableProps,
 } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
@@ -675,7 +675,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "Select month",
       disabled,
       dir: state.context.dir,
-      defaultValue: focusedValue.month,
+      defaultValue: startValue.month,
       onChange(event) {
         focusMonth(Number(event.currentTarget.value))
       },
@@ -687,7 +687,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled,
       "aria-label": "Select year",
       dir: state.context.dir,
-      defaultValue: focusedValue.year,
+      defaultValue: startValue.year,
       onChange(event) {
         focusYear(Number(event.currentTarget.value))
       },

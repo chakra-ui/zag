@@ -843,12 +843,12 @@ export function machine(userContext: UserDefinedContext) {
         syncMonthSelectElement(ctx) {
           const monthSelectEl = dom.getMonthSelectEl(ctx)
           if (!monthSelectEl) return
-          monthSelectEl.value = ctx.focusedValue.month.toString()
+          monthSelectEl.value = ctx.startValue.month.toString()
         },
         syncYearSelectElement(ctx) {
           const yearSelectEl = dom.getYearSelectEl(ctx)
           if (!yearSelectEl) return
-          yearSelectEl.value = ctx.focusedValue.year.toString()
+          yearSelectEl.value = ctx.startValue.year.toString()
         },
         focusParsedDate(ctx, evt) {
           if (evt.index == null) return
