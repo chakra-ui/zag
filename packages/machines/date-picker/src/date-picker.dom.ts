@@ -1,4 +1,4 @@
-import { createScope, query } from "@zag-js/dom-query"
+import { createScope, query, queryAll } from "@zag-js/dom-query"
 import type { DateView, MachineContext as Ctx } from "./date-picker.types"
 
 export const dom = createScope({
@@ -14,7 +14,7 @@ export const dom = createScope({
   getViewTriggerId: (ctx: Ctx, view: DateView) => ctx.ids?.viewTrigger?.(view) ?? `datepicker:${ctx.id}:view:${view}`,
   getClearTriggerId: (ctx: Ctx) => ctx.ids?.clearTrigger ?? `datepicker:${ctx.id}:clear`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `datepicker:${ctx.id}:control`,
-  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `datepicker:${ctx.id}:input`,
+  getInputId: (ctx: Ctx, index: number) => ctx.ids?.input?.(index) ?? `datepicker:${ctx.id}:input:${index}`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `datepicker:${ctx.id}:trigger`,
   getPositionerId: (ctx: Ctx) => ctx.ids?.positioner ?? `datepicker:${ctx.id}:positioner`,
   getMonthSelectId: (ctx: Ctx) => ctx.ids?.monthSelect ?? `datepicker:${ctx.id}:month-select`,
@@ -27,7 +27,7 @@ export const dom = createScope({
     ),
   getTriggerEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getTriggerId(ctx)),
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
+  getInputEls: (ctx: Ctx) => queryAll<HTMLInputElement>(dom.getControlEl(ctx), `[data-part=input]`),
   getYearSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getYearSelectId(ctx)),
   getMonthSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getMonthSelectId(ctx)),
   getClearTriggerEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getClearTriggerId(ctx)),

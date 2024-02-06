@@ -10,13 +10,22 @@ import { isDateInvalid } from "./assertion"
 import { alignEnd, alignStart, constrainStart, constrainValue } from "./constrain"
 import { getEndDate, getUnitDuration } from "./duration"
 
+export interface AdjustDateParams {
+  startDate: DateValue
+  focusedDate: DateValue
+}
+
+export interface AdjustDateReturn extends AdjustDateParams {
+  endDate: DateValue
+}
+
 export function getAdjustedDateFn(
   visibleDuration: DateDuration,
   locale: string,
   minValue?: DateValue,
   maxValue?: DateValue,
 ) {
-  return function getDate(options: { startDate: DateValue; focusedDate: DateValue }) {
+  return function getDate(options: AdjustDateParams): AdjustDateReturn {
     const { startDate, focusedDate } = options
     const endDate = getEndDate(startDate, visibleDuration)
 
@@ -32,8 +41,8 @@ export function getAdjustedDateFn(
     if (focusedDate.compare(startDate) < 0) {
       return {
         startDate: alignEnd(focusedDate, visibleDuration, locale, minValue, maxValue),
-        endDate,
         focusedDate: constrainValue(focusedDate, minValue, maxValue),
+        endDate,
       }
     }
 

@@ -8,6 +8,7 @@ import type {
   ZonedDateTime,
 } from "@internationalized/date"
 import type { StateMachine as S } from "@zag-js/core"
+import type { DateRangePreset } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -60,7 +61,7 @@ export type ElementIds = Partial<{
   viewTrigger(view: DateView): string
   clearTrigger: string
   control: string
-  input: string
+  input(index: number): string
   trigger: string
   monthSelect: string
   yearSelect: string
@@ -168,11 +169,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The format of the date to display in the input.
    */
-  format?: (date: DateValue[]) => string
+  format?: (date: DateValue) => string
   /**
    * The format of the date to display in the input.
    */
-  parse?: (value: string) => DateValue[]
+  parse?: (value: string) => DateValue
   /**
    * The view of the calendar
    * @default "day"
@@ -213,11 +214,6 @@ type PrivateContext = Context<{
    * The live region to announce changes
    */
   announcer?: LiveRegion
-  /**
-   * @internal
-   * The input element's value
-   */
-  inputValue: string
   /**
    * @internal
    * The current hovered date. Useful for range selection mode.
@@ -282,6 +278,11 @@ type ComputedContext = Readonly<{
    * The value text to display in the input.
    */
   valueAsString: string[]
+  /**
+   * @internal
+   * The input element's value
+   */
+  formattedValue: string[]
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -356,8 +357,16 @@ export interface TableProps {
   id?: string
 }
 
+export interface PresetTriggerProps {
+  value: DateValue[] | DateRangePreset
+}
+
 export interface ViewProps {
   view?: DateView
+}
+
+export interface InputProps {
+  index?: number
 }
 
 export interface MonthGridProps {
@@ -414,6 +423,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Returns the offset of the month based on the provided number of months.
    */
   getOffset(duration: DateDuration): DateValueOffset
+  /**
+   * Returns the range of dates based on the provided date range preset.
+   */
+  getRangePresetValue(value: DateRangePreset): DateValue[]
   /**
    * Returns the weeks of the month from the provided date. Represented as an array of arrays of dates.
    */
@@ -572,9 +585,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
 
   clearTriggerProps: T["button"]
   triggerProps: T["button"]
+  getPresetTriggerProps(props: PresetTriggerProps): T["button"]
   getViewTriggerProps(props?: ViewProps): T["button"]
   getViewControlProps(props?: ViewProps): T["element"]
-  inputProps: T["input"]
+  getInputProps(props?: InputProps): T["input"]
   monthSelectProps: T["select"]
   yearSelectProps: T["select"]
 }
