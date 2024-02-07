@@ -50,6 +50,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     valueAsString: state.context.valueAsString,
     hasSelectedItems: state.context.hasSelectedItems,
     selectedItems: state.context.selectedItems,
+    collection: state.context.collection,
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
