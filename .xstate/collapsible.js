@@ -12,8 +12,15 @@ const {
 const fetchMachine = createMachine({
   id: "collapsible",
   initial: ctx.open ? "open" : "closed",
-  context: {},
-  entry: ["setMountAnimationPrevented"],
+  context: {
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false
+  },
+  entry: ["computeSize"],
+  exit: ["clearAnimationStyles"],
+  activities: ["trackMountAnimation"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -22,37 +29,55 @@ const fetchMachine = createMachine({
   states: {
     closed: {
       tags: ["closed"],
+      entry: ["computeSize"],
       on: {
-        TOGGLE: {
+        "CONTROLLED.OPEN": "open",
+        OPEN: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
           target: "open",
-          actions: ["computeSize", "invokeOnOpen"]
-        },
-        OPEN: {
-          target: "open",
-          actions: ["computeSize", "invokeOnOpen"]
-        }
+          actions: ["invokeOnOpen"]
+        }]
       }
     },
     closing: {
       tags: ["open"],
       activities: ["trackAnimationEvents"],
       on: {
-        "ANIMATION.END": {
-          target: "closed",
+        "CONTROLLED.CLOSE": "closed",
+        "CONTROLLED.OPEN": "open",
+        OPEN: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
+          target: "open",
+          actions: ["invokeOnOpen"]
+        }],
+        CLOSE: [{
+          cond: "isOpenControlled",
           actions: ["invokeOnClose"]
-        }
+        }, {
+          target: "closed",
+          actions: ["computeSize"]
+        }],
+        "ANIMATION.END": "closed"
       }
     },
     open: {
       tags: ["open"],
       on: {
-        TOGGLE: {
-          target: "closing"
+        "CONTROLLED.CLOSE": {
+          target: "closing",
+          actions: ["computeSize"]
         },
-        CLOSE: {
-          target: "closed",
+        CLOSE: [{
+          cond: "isOpenControlled",
           actions: ["invokeOnClose"]
-        }
+        }, {
+          target: "closing",
+          actions: ["computeSize"]
+        }]
       }
     }
   }
@@ -64,5 +89,7 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {}
+  guards: {
+    "isOpenControlled": ctx => ctx["isOpenControlled"]
+  }
 });

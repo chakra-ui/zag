@@ -42,8 +42,7 @@ const fetchMachine = createMachine({
   states: {
     mounted: {
       on: {
-        UNMOUNT: "unmounted",
-        "ANIMATION.OUT": "unmountSuspended"
+        UNMOUNT: "unmounted"
       }
     },
     unmountSuspended: {

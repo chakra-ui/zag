@@ -167,6 +167,9 @@ importers:
       '@zag-js/clipboard':
         specifier: workspace:*
         version: link:../../packages/machines/clipboard
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../../packages/machines/collapsible
       '@zag-js/collection':
         specifier: workspace:*
         version: link:../../packages/utilities/collection

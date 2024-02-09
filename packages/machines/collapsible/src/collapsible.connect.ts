@@ -5,14 +5,17 @@ import type { Send, State } from "./collapsible.types"
 import { dataAttr } from "@zag-js/dom-query"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
-  const isOpen = state.hasTag("open")
+  const isVisible = state.matches("open", "closing")
+  const isOpen = state.matches("open")
 
   const height = state.context.height
   const width = state.context.width
   const disabled = state.context.disabled
 
+  const skipDataAttr = state.context.isMountAnimationPrevented && isOpen
+
   return {
-    isOpen: state.matches("open"),
+    isOpen,
     open() {
       send("OPEN")
     },
@@ -22,19 +25,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": isVisible ? "open" : "closed",
       dir: state.context.dir,
       id: dom.getRootId(state.context),
     }),
 
     contentProps: normalize.element({
       ...parts.content.attrs,
-      "data-state": state.matches("open") ? "open" : "closed",
+      "data-state": skipDataAttr ? undefined : isOpen ? "open" : "closed",
       id: dom.getContentId(state.context),
-      role: "region",
       "data-disabled": dataAttr(disabled),
-      "aria-expanded": isOpen,
-      hidden: !isOpen,
+      hidden: !isVisible,
       style: {
         "--height": height != null ? `${height}px` : undefined,
         "--width": width != null ? `${width}px` : undefined,
@@ -48,10 +49,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       "data-disabled": dataAttr(disabled),
       "aria-controls": dom.getContentId(state.context),
-      "aria-expanded": isOpen || false,
+      "aria-expanded": isVisible || false,
       onClick() {
         if (disabled) return
-        send("TOGGLE")
+        send({ type: isOpen ? "CLOSE" : "OPEN", src: "trigger.click" })
       },
     }),
   }

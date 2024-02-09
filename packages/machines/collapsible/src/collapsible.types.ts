@@ -36,6 +36,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the collapsible is disabled
    */
   disabled?: boolean
+  /**
+   *  Whether the collapsible open state is controlled by the user
+   */
+  __controlled?: boolean
 }
 
 type ComputedContext = Readonly<{}>

@@ -11,6 +11,7 @@ const routes = [
   { path: "/hover-card/controlled", name: "HoverCard - Controlled" },
   { path: "/tooltip/controlled", name: "Tooltip - Controlled" },
   { path: "/menu/controlled", name: "Menu - Controlled" },
+  { path: "/collapsible/controlled", name: "Collapsible - Controlled" },
 ]
 
 export default function Page() {
