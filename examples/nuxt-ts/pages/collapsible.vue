@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as collapsible from "@zag-js/collapsible"
-import { collapsibleControls, collapsibleData } from "@zag-js/shared"
+import { collapsibleControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(collapsibleControls)
@@ -15,20 +15,15 @@ const api = computed(() => collapsible.connect(state.value, send, normalizeProps
 <template>
   <main class="collapsible">
     <div v-bind="api.rootProps">
-      <div>
-        <span>{{ collapsibleData.headline }}</span>
-        <button v-if="api.isOpen" v-bind="api.triggerProps">Collapse</button>
-        <button v-if="!api.isOpen" v-bind="api.triggerProps">Expand</button>
-      </div>
-
-      <div>
-        <span>{{ collapsibleData.visibleItem }}</span>
-      </div>
-
+      <button v-bind="api.triggerProps">Collapsible Trigger</button>
       <div v-bind="api.contentProps">
-        <div v-for="item in data" :key="item.id">
-          <div>{{ item }}</div>
-        </div>
+        <p>
+          Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+          magna sfsd. Ut enim ad minimdfd v eniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+          commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+          nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim
+          id est laborum. <a href="#">Some Link</a>
+        </p>
       </div>
     </div>
   </main>
@@ -36,7 +31,7 @@ const api = computed(() => collapsible.connect(state.value, send, normalizeProps
   <Toolbar>
     <StateVisualizer :state="state" />
     <template #controls>
-      <Controls :config="controls.config" :state="controls.context" />
+      <Controls :control="controls" :state="controls.context" />
     </template>
   </Toolbar>
 </template>

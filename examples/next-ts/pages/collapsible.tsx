@@ -38,7 +38,6 @@ export default function Page() {
 
         <div>
           <div>Toggle Controls</div>
-
           <button onClick={api.open}>Open</button>
           <button onClick={api.close}>Close</button>
         </div>
