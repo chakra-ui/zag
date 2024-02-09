@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@axe-core/playwright':
         specifier: 4.8.4
-        version: 4.8.4(playwright-core@1.41.1)
+        version: 4.8.4(playwright-core@1.41.2)
       '@babel/generator':
         specifier: 7.23.6
         version: 7.23.6
@@ -167,6 +167,9 @@ importers:
       '@zag-js/clipboard':
         specifier: workspace:*
         version: link:../../packages/machines/clipboard
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../../packages/machines/collapsible
       '@zag-js/collection':
         specifier: workspace:*
         version: link:../../packages/utilities/collection
@@ -408,6 +411,9 @@ importers:
       '@zag-js/clipboard':
         specifier: workspace:*
         version: link:../../packages/machines/clipboard
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../../packages/machines/collapsible
       '@zag-js/collection':
         specifier: workspace:*
         version: link:../../packages/utilities/collection
@@ -652,6 +658,9 @@ importers:
       '@zag-js/clipboard':
         specifier: workspace:*
         version: link:../../packages/machines/clipboard
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../../packages/machines/collapsible
       '@zag-js/collection':
         specifier: workspace:*
         version: link:../../packages/utilities/collection
@@ -884,6 +893,9 @@ importers:
       '@zag-js/clipboard':
         specifier: workspace:*
         version: link:../../packages/machines/clipboard
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../../packages/machines/collapsible
       '@zag-js/collection':
         specifier: workspace:*
         version: link:../../packages/utilities/collection
@@ -1119,6 +1131,9 @@ importers:
       '@zag-js/clipboard':
         specifier: workspace:*
         version: link:../../packages/machines/clipboard
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../../packages/machines/collapsible
       '@zag-js/collection':
         specifier: workspace:*
         version: link:../../packages/utilities/collection
@@ -1583,6 +1598,9 @@ importers:
       '@zag-js/clipboard':
         specifier: workspace:*
         version: link:../../packages/machines/clipboard
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../../packages/machines/collapsible
       '@zag-js/collection':
         specifier: workspace:*
         version: link:../../packages/utilities/collection
@@ -2095,6 +2113,28 @@ importers:
         version: 2.2.0
 
   packages/machines/clipboard:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/collapsible:
     dependencies:
       '@zag-js/anatomy':
         specifier: workspace:*
@@ -3267,6 +3307,9 @@ importers:
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../packages/machines/checkbox
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../packages/machines/collapsible
       '@zag-js/color-picker':
         specifier: workspace:*
         version: link:../packages/machines/color-picker
@@ -3436,13 +3479,13 @@ packages:
     resolution: {integrity: sha512-gFPqTG7otEJ8uP6wrhDv6mqwGWYZKNvAcCq6u9hOj0c+IKCEsY4L1oC9trPq2SaWIzAfHvqfBDxF591JkMf+kg==}
     dev: true
 
-  /@axe-core/playwright@4.8.4(playwright-core@1.41.1):
+  /@axe-core/playwright@4.8.4(playwright-core@1.41.2):
     resolution: {integrity: sha512-xpwd+T0BODt19hnXW0eX9xf+H/Ns1rdWwZNmuCV9UoTqjZ9mGm1F80pvh/A1r317ooltq8nwqcoVO9jbHWKSdA==}
     peerDependencies:
       playwright-core: '>= 1.0.0'
     dependencies:
       axe-core: 4.8.3
-      playwright-core: 1.41.1
+      playwright-core: 1.41.2
     dev: false
 
   /@babel/code-frame@7.23.5:
@@ -15343,12 +15386,6 @@ packages:
       jsonc-parser: 3.2.1
       mlly: 1.5.0
       pathe: 1.1.2
-
-  /playwright-core@1.41.1:
-    resolution: {integrity: sha512-/KPO5DzXSMlxSX77wy+HihKGOunh3hqndhqeo/nMxfigiKzogn8kfL0ZBDu0L1RKgan5XHCPmn6zXd2NUJgjhg==}
-    engines: {node: '>=16'}
-    hasBin: true
-    dev: false
 
   /playwright-core@1.41.2:
     resolution: {integrity: sha512-VaTvwCA4Y8kxEe+kfm2+uUUw5Lubf38RxF7FpBxLPmGe5sdNkSg5e3ChEigaGrX7qdqT3pt2m/98LiyvU2x6CA==}

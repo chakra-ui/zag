@@ -1,0 +1,161 @@
+---
+title: Collapsible
+description: Using the collapsible machine in your project.
+package: "@zag-js/collapsible"
+---
+
+# Collapsible
+
+A collapsible is a component which expands and collapses a panel.
+
+<Resources pkg="@zag-js/collapsible" />
+
+<Showcase id="Collapsible" />
+
+**Features**
+
+- Full keyboard navigation.
+
+## Installation
+
+To use the collapsible machine in your project, run the following command in
+your command line:
+
+<CodeSnippet id="collapsible/installation.mdx" />
+
+This command will install the framework agnostic collapsible logic and the
+reactive utilities for your framework of choice.
+
+## Usage
+
+First, import the collapsible package into your project
+
+```jsx
+import * as collapsible from "@zag-js/collapsible"
+```
+
+The collapsible package exports two key functions:
+
+- `machine` — The state machine logic for the collapsible widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll also need to provide a unique `id` to the `useMachine` hook. This is
+> used to ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+collapsible machine in your project 🔥
+
+<CodeSnippet id="collapsible/usage.mdx" />
+
+## Listening for changes
+
+When the collapsible state changes, the `onOpenChange` callback is invoked.
+
+```jsx {3-6}
+const [state, send] = useMachine(
+  collapsible.machine({
+    onOpenChange(details) {
+      // details => { open: boolean }
+      console.log("collapsible open:", details.open)
+    },
+  }),
+)
+```
+
+## Disabling the entire collapsible
+
+You can disable the entire collapsible by passing `disabled` to the machine's
+context.
+
+When a collapsible is disabled, it is skipped from keyboard navigation and can't
+be interacted with.
+
+```jsx {3}
+const [state, send] = useMachine(
+  collapsible.machine({
+    disabled: true,
+  }),
+)
+```
+
+## Animating the collapsible
+
+You can animate the collapsible by passing `animate` to the machine's context.
+
+When a collapsible is animated, you need to pass the `expandAnimationName` and
+`collapseAnimationName` which are names of the keyframes you have in your CSS.
+
+You can also pass the `animationDuration` which is the duration of the animation
+in milliseconds (by default `300` milliseconds).
+
+```jsx {3-6}
+const [state, send] = useMachine(
+  collapsible.machine({
+    animate: true,
+    expandAnimationName: "slideDown",
+    collapseAnimationName: "slideUp",
+    animationDuration: 300,
+  }),
+)
+```
+
+## Styling guide
+
+Earlier, we mentioned that each collapsible part has a `data-part` attribute
+added to them to select and style them in the DOM.
+
+### Open and closed state
+
+When a collapsible is expanded or collapsed, a `data-state` attribute is set on
+the root, trigger and content elements. This attribute is removed when it is
+closed.
+
+```css
+[data-part="root"][data-state="open|closed"] {
+  /* styles for the collapsible is open or closed state */
+}
+
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for the collapsible is open or closed state */
+}
+
+[data-part="content"][data-state="open|closed"] {
+  /* styles for the collapsible is open or closed state */
+}
+```
+
+### Focused state
+
+When a collapsible's trigger is focused, a `data-focused` attribute is set on
+the root, trigger and content.
+
+```css
+[data-part="root"][data-focus] {
+  /* styles for the item's focus state */
+}
+
+[data-part="trigger"][data-focus] {
+  /* styles for the content's focus state */
+}
+
+[data-part="content"][data-focus] {
+  /* styles for the content's focus state */
+}
+```
+
+## Methods and Properties
+
+The collapsible's `api` exposes the following methods and properties:
+
+### Machine Context
+
+The collapsible machine exposes the following context properties:
+
+<ContextTable name="collapsible" />
+
+### Machine API
+
+The collapsible `api` exposes the following methods:
+
+<ApiTable name="collapsible" />

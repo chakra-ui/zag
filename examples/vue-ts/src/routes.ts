@@ -4,6 +4,7 @@ import Home from "./pages/index"
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: "/collapsible", component: () => import("./pages/collapsible") },
     { path: "/clipboard", component: () => import("./pages/clipboard") },
     { path: "/tree-view", component: () => import("./pages/tree-view") },
     { path: "/progress", component: () => import("./pages/progress") },

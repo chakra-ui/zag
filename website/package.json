@@ -29,6 +29,7 @@
     "@zag-js/accordion": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
+    "@zag-js/collapsible": "workspace:*",
     "@zag-js/combobox": "workspace:*",
     "@zag-js/color-picker": "workspace:*",
     "@zag-js/dialog": "workspace:*",

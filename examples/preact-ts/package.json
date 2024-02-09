@@ -17,6 +17,7 @@
     "@zag-js/avatar": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
+    "@zag-js/collapsible": "workspace:*",
     "@zag-js/clipboard": "workspace:*",
     "@zag-js/collection": "workspace:*",
     "@zag-js/color-picker": "workspace:*",

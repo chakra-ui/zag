@@ -47,7 +47,6 @@ export function machine(ctx: Partial<UserDefinedContext>) {
         mounted: {
           on: {
             UNMOUNT: "unmounted",
-            "ANIMATION.OUT": "unmountSuspended",
           },
         },
         unmountSuspended: {

@@ -87,6 +87,7 @@ export class Machine<
 
     // create mutatable state
     this.state = createProxy(this.config)
+
     this.initialContext = snapshot(this.state.context)
 
     // created actions
@@ -112,6 +113,7 @@ export class Machine<
   public start = (init?: S.StateInit<TContext, TState>) => {
     // reset state back to empty (for SSR, we had to set state.value to initial value)
     this.state.value = ""
+    this.state.tags = []
 
     // Don't start if it's already running
     if (this.status === MachineStatus.Running) {
