@@ -16,7 +16,7 @@ export function createProxy<TContext extends Dict, TState extends S.StateSchema,
     previousEvent: cast<Dict>({}),
     context: proxyWithComputed(initialContext, computedContext),
     done: false,
-    tags: initialTags as Array<TState["tags"]>,
+    tags: (initialTags ?? []) as Array<TState["tags"]>,
     hasTag(tag: TState["tags"]): boolean {
       return this.tags.includes(tag)
     },
