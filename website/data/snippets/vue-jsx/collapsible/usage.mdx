@@ -3,8 +3,6 @@ import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { defineComponent, computed } from "vue"
 
-const data = ["@chakra-ui/ark-ui", "@chakra-ui/panda", "@chakra-ui/chakra-ui"]
-
 export default defineComponent({
   name: "Collapsible",
   setup() {
@@ -18,14 +16,8 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <div {...api.rootProps}>
-          <button {...api.triggerProps}>
-            {api.isOpen ? "Collapse" : "Expand"}
-          </button>
-          <div {...api.contentProps}>
-            {data.map((item) => (
-              <div>{item}</div>
-            ))}
-          </div>
+          <button {...api.triggerProps}>Collapse Trigger</button>
+          <div {...api.contentProps}>Collape Content</div>
         </div>
       )
     }

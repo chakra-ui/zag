@@ -3,8 +3,6 @@ import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-const data = ["@chakra-ui/ark-ui", "@chakra-ui/panda", "@chakra-ui/chakra-ui"]
-
 function Collapsible() {
   const [state, send] = useMachine(collapsible.machine({ id: useId() }))
 
@@ -12,14 +10,8 @@ function Collapsible() {
 
   return (
     <div {...api.rootProps}>
-      <button {...api.triggerProps}>
-        {api.isOpen ? "Collapse" : "Expand"}
-      </button>
-      <div {...api.contentProps}>
-        {data.map((item) => (
-          <div key={item}>{item}</div>
-        ))}
-      </div>
+      <button {...api.triggerProps}>Collapse Trigger</button>
+      <div {...api.contentProps}>Collape Content</div>
     </div>
   )
 }
