@@ -1,9 +1,9 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent } from "@zag-js/dom-event"
-import { contains, getByTypeahead, isEditableElement, raf } from "@zag-js/dom-query"
+import { contains, getByTypeahead, isEditableElement, isScrollParent, isScrollable, raf } from "@zag-js/dom-query"
 import { observeAttributes } from "@zag-js/mutation-observer"
-import { getPlacementSide, getPlacement } from "@zag-js/popper"
+import { getPlacement, getPlacementSide } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
 import { add, cast, compact, isArray, remove } from "@zag-js/utils"
 import { dom } from "./menu.dom"
@@ -536,13 +536,17 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackPointerMove(ctx, _evt, { guards, send }) {
           const { isWithinPolygon } = guards
+
           // NOTE: we're mutating parent context here. sending events to parent doesn't work
           ctx.parent!.state.context.suspendPointer = true
 
           const doc = dom.getDoc(ctx)
+
           return addDomEvent(doc, "pointermove", (e) => {
             const point = { x: e.clientX, y: e.clientY }
+
             const isMovingToSubmenu = isWithinPolygon(ctx, { point })
+
             if (!isMovingToSubmenu) {
               send("POINTER_MOVED_AWAY_FROM_SUBMENU")
               // NOTE: we're mutating parent context here. sending events to parent doesn't work
@@ -553,7 +557,12 @@ export function machine(userContext: UserDefinedContext) {
         scrollToHighlightedItem(ctx, _evt, { getState }) {
           const exec = () => {
             const state = getState()
+
             if (state.event.type.startsWith("ITEM_POINTER")) return
+
+            const contentEl = dom.getContentEl(ctx)!
+            if (!isScrollParent(contentEl) || !isScrollable(contentEl)) return
+
             const itemEl = dom.getHighlightedItemEl(ctx)
             itemEl?.scrollIntoView({ block: "nearest" })
           }
