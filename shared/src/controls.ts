@@ -44,6 +44,7 @@ export const editableControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
   autoResize: { type: "boolean", defaultValue: false },
+  maxLength: { type: "number", defaultValue: 1000 },
   placeholder: {
     type: "string",
     defaultValue: "Type something...",

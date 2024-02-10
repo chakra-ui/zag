@@ -1,11 +1,9 @@
-import { createMachine, guards } from "@zag-js/core"
+import { createMachine } from "@zag-js/core"
 import { contains, raf } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./editable.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./editable.types"
-
-const { not } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -76,7 +74,6 @@ export function machine(userContext: UserDefinedContext) {
           activities: ["trackInteractOutside"],
           on: {
             TYPE: {
-              guard: not("isAtMaxLength"),
               actions: "setValue",
             },
             BLUR: [
@@ -111,7 +108,6 @@ export function machine(userContext: UserDefinedContext) {
       guards: {
         submitOnBlur: (ctx) => ctx.submitOnBlur,
         submitOnEnter: (ctx) => ctx.submitOnEnter,
-        isAtMaxLength: (ctx) => ctx.maxLength != null && ctx.value.length === ctx.maxLength,
         activateOnDblClick: (ctx) => ctx.activationMode === "dblclick",
         activateOnFocus: (ctx) => ctx.activationMode === "focus",
       },
@@ -167,7 +163,8 @@ export function machine(userContext: UserDefinedContext) {
           sync.value(ctx)
         },
         setValue(ctx, evt) {
-          set.value(ctx, evt.value)
+          const value = ctx.maxLength != null ? evt.value.slice(0, ctx.maxLength) : evt.value
+          set.value(ctx, value)
         },
         setPreviousValue(ctx) {
           ctx.previousValue = ctx.value

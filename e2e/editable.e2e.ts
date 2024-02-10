@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { a11y, clickOutside, testid } from "./_utils"
+import { a11y, clickOutside, controls, testid } from "./_utils"
 
 const input = testid("input")
 const preview = testid("preview")
@@ -67,6 +67,21 @@ test.describe("editable", () => {
       await clickOutside(page)
 
       await expect(page.locator(preview)).toHaveText("Naruto")
+    })
+
+    test("should respect maxLength", async ({ page }) => {
+      await controls(page).num("maxLength", "4")
+
+      await page.focus(preview)
+      await page.waitForSelector("input:focus")
+
+      await page.locator(input).pressSequentially("Naruto")
+      await expect(page.locator(input)).toHaveValue("Naru")
+
+      // can still modify the value
+      await page.locator(input).press("Backspace")
+      await page.locator(input).press("o")
+      await expect(page.locator(input)).toHaveValue("Naro")
     })
   })
 
