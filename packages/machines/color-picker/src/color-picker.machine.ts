@@ -340,7 +340,7 @@ export function machine(userContext: UserDefinedContext) {
     {
       guards: {
         closeOnSelect: (ctx) => !!ctx.closeOnSelect,
-        isOpenControlled: (ctx) => !!ctx.__controlled,
+        isOpenControlled: (ctx) => !!ctx["open.controlled"],
         shouldRestoreFocus: (ctx) => !!ctx.restoreFocus,
       },
       activities: {

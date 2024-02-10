@@ -38,7 +38,7 @@ export function ColorPicker(props: Props) {
     {
       context: {
         ...contextProps,
-        __controlled: open !== undefined,
+        "open.controlled": open !== undefined,
         open,
         value,
       },

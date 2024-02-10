@@ -2,7 +2,7 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { cloneElement, isValidElement, useId } from "react"
 
-interface Props extends Omit<menu.Context, "id" | "__controlled"> {
+interface Props extends Omit<menu.Context, "id" | "open.controlled"> {
   defaultOpen?: boolean
   children: React.ReactNode
   items: Array<{ value: string; label: React.ReactNode }>
@@ -20,7 +20,7 @@ export function Menu(props: Props) {
       context: {
         ...context,
         open,
-        __controlled: open !== undefined,
+        "open.controlled": open !== undefined,
       },
     },
   )

@@ -306,7 +306,7 @@ export function machine(userContext: UserDefinedContext) {
         isVisible: (ctx) => ctx.id === store.id,
         isInteractive: (ctx) => ctx.interactive,
         hasPointerMoveOpened: (ctx) => !!ctx.hasPointerMoveOpened,
-        isOpenControlled: (ctx) => !!ctx.__controlled,
+        isOpenControlled: (ctx) => !!ctx["open.controlled"],
       },
       delays: {
         OPEN_DELAY: (ctx) => ctx.openDelay,

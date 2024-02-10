@@ -4,6 +4,6 @@
   "compilerOptions": {
     "jsx": "preserve",
     "jsxImportSource": "preact",
-    "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo",
-  },
+    "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo"
+  }
 }

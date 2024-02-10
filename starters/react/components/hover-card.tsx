@@ -3,7 +3,7 @@ import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-interface Props extends Omit<hoverCard.Context, "__controlled" | "id"> {
+interface Props extends Omit<hoverCard.Context, "open.controlled" | "id"> {
   defaultOpen?: boolean
 }
 
@@ -18,7 +18,7 @@ export function HoverCard(props: Props) {
     {
       context: {
         ...context,
-        __controlled: open !== undefined,
+        "open.controlled": open !== undefined,
         open,
       },
     },

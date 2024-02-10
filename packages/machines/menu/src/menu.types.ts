@@ -88,7 +88,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    *  Whether the menu's open state is controlled by the user
    */
-  __controlled?: boolean
+  "open.controlled"?: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

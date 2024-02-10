@@ -2,7 +2,7 @@ import * as popover from "@zag-js/popover"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 import { useId } from "react"
 
-interface Props extends Omit<popover.Context, "__controlled" | "id"> {
+interface Props extends Omit<popover.Context, "open.controlled" | "id"> {
   defaultOpen?: boolean
 }
 
@@ -17,7 +17,7 @@ export function Popover(props: Props) {
     {
       context: {
         ...context,
-        __controlled: open !== undefined,
+        "open.controlled": open !== undefined,
         open,
       },
     },

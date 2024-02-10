@@ -2,7 +2,7 @@ import * as dialog from "@zag-js/dialog"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 import { useId } from "react"
 
-interface Props extends Omit<dialog.Context, "__controlled" | "id"> {
+interface Props extends Omit<dialog.Context, "open.controlled" | "id"> {
   defaultOpen?: boolean
 }
 
@@ -17,7 +17,7 @@ export function Dialog(props: Props) {
     {
       context: {
         ...context,
-        __controlled: open !== undefined,
+        "open.controlled": open !== undefined,
         open,
       },
     },

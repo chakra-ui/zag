@@ -121,7 +121,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * Whether the select's open state is controlled by the user
    */
-  __controlled?: boolean
+  "open.controlled"?: boolean
 }
 
 type PrivateContext = Context<{

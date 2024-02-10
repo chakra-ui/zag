@@ -2,4 +2,4 @@
 "@zag-js/select": patch
 ---
 
-fix ItemGroupLabel id in Select
+Fix issue where item group's label `id` pointed to the wrong element

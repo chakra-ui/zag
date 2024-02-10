@@ -36,7 +36,7 @@ export function Select(props: SelectProps) {
       context: {
         ...contextProps,
         open,
-        __controlled: open !== undefined,
+        "open.controlled": open !== undefined,
         value: toArray(value),
         onValueChange(details: any) {
           onValueChange?.(details.value[0])

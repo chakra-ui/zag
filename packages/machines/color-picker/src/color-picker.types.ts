@@ -96,7 +96,7 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
   /**
    * Whether the color picker open state is controlled by the user
    */
-  __controlled?: boolean
+  "open.controlled"?: boolean
   /**
    * The color format to use
    */

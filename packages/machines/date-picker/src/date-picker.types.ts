@@ -195,7 +195,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the datepicker open state is controlled by the user
    */
-  __controlled?: boolean
+  "open.controlled"?: boolean
 }
 
 type PrivateContext = Context<{

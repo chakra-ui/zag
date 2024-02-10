@@ -546,7 +546,7 @@ export function machine(userContext: UserDefinedContext) {
         shouldRestoreFocus: (ctx) => !!ctx.restoreFocus,
         isSelectingEndDate: (ctx) => ctx.activeIndex === 1,
         closeOnSelect: (ctx) => !!ctx.closeOnSelect,
-        isOpenControlled: (ctx) => !!ctx.__controlled,
+        isOpenControlled: (ctx) => !!ctx["open.controlled"],
         isInteractOutsideEvent: (_ctx, evt) => evt.previousEvent?.type === "INTERACT_OUTSIDE",
       },
       activities: {

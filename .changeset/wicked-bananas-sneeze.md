@@ -2,4 +2,4 @@
 "@zag-js/clipboard": minor
 ---
 
-Initial release of clipboard machine
+Add `Clipboard` machine for copying text to clipboard.

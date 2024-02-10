@@ -3,7 +3,7 @@ import { getYearsRange } from "@zag-js/date-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-interface Props extends Omit<datePicker.Context, "id" | "__controlled"> {
+interface Props extends Omit<datePicker.Context, "id" | "open.controlled"> {
   defaultOpen?: boolean
   defaultValue?: datePicker.Context["value"]
 }
@@ -23,7 +23,7 @@ export function DateRangePicker(props: Props) {
         numOfMonths: 2,
         ...contextProps,
         selectionMode: "range",
-        __controlled: open !== undefined,
+        "open.controlled": open !== undefined,
         open,
         value,
       },

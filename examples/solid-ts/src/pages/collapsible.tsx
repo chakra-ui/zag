@@ -19,6 +19,7 @@ export default function Page() {
     <>
       <main class="collapsible">
         <div {...api().rootProps}>
+          <button {...api().triggerProps}>Collapsible Trigger</button>
           <div {...api().contentProps}>
             <p>
               Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et

@@ -3,6 +3,6 @@
   "include": ["src"],
   "compilerOptions": {
     "jsx": "preserve",
-    "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo",
-  },
+    "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo"
+  }
 }

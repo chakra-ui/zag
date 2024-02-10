@@ -375,7 +375,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
         shouldRestoreFocus: (ctx) => !!ctx.restoreFocus,
         // guard assertions (for controlled mode)
-        isOpenControlled: (ctx) => !!ctx.__controlled,
+        isOpenControlled: (ctx) => !!ctx["open.controlled"],
         isTriggerClickEvent: (_ctx, evt) => evt.previousEvent?.type === "TRIGGER.CLICK",
         isTriggerEnterEvent: (_ctx, evt) => evt.previousEvent?.type === "TRIGGER.ENTER",
         isTriggerArrowUpEvent: (_ctx, evt) => evt.previousEvent?.type === "TRIGGER.ARROW_UP",

@@ -73,7 +73,7 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
-        isOpenControlled: (ctx) => !!ctx.__controlled,
+        isOpenControlled: (ctx) => !!ctx["open.controlled"],
       },
       activities: {
         trackMountAnimation(ctx) {

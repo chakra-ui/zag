@@ -85,7 +85,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * Whether the dialog is controlled by the user
    */
-  __controlled?: boolean
+  "open.controlled"?: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

@@ -2,7 +2,7 @@ import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { cloneElement, isValidElement, useId } from "react"
 
-interface Props extends Omit<collapsible.Context, "id" | "__controlled"> {
+interface Props extends Omit<collapsible.Context, "id" | "open.controlled"> {
   defaultOpen?: boolean
   trigger?: React.ReactNode
   children: React.ReactNode
@@ -15,7 +15,7 @@ export function Collapsible(props: Props) {
     collapsible.machine({
       id: useId(),
       open: open ?? defaultOpen,
-      __controlled: open !== undefined,
+      "open.controlled": open !== undefined,
     }),
     {
       context: {

@@ -494,7 +494,7 @@ export function machine(userContext: UserDefinedContext) {
           return isPointInPolygon(ctx.intentPolygon, evt.point)
         },
         // guard assertions (for controlled mode)
-        isOpenControlled: (ctx) => ctx.__controlled !== undefined,
+        isOpenControlled: (ctx) => !!ctx["open.controlled"],
         isArrowLeftEvent: (_ctx, evt) => evt.previousEvent?.type === "ARROW_LEFT",
         isArrowUpEvent: (_ctx, evt) => evt.previousEvent?.type === "ARROW_UP",
         isArrowDownEvent: (_ctx, evt) => evt.previousEvent?.type === "ARROW_DOWN",

@@ -2,7 +2,7 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
 import { cloneElement, isValidElement, useId } from "react"
 
-interface Props extends Omit<tooltip.Context, "id" | "__controlled"> {
+interface Props extends Omit<tooltip.Context, "id" | "open.controlled"> {
   defaultOpen?: boolean
   children: React.ReactNode
   label: React.ReactNode
@@ -19,7 +19,7 @@ export function Tooltip(props: Props) {
     {
       context: {
         ...context,
-        __controlled: open !== undefined,
+        "open.controlled": open !== undefined,
         open,
       },
     },

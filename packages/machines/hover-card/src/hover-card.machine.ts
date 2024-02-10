@@ -159,7 +159,7 @@ export function machine(userContext: UserDefinedContext) {
     {
       guards: {
         isPointer: (ctx) => !!ctx.isPointer,
-        isOpenControlled: (ctx) => !!ctx.__controlled,
+        isOpenControlled: (ctx) => !!ctx["open.controlled"],
       },
       activities: {
         trackPositioning(ctx) {
