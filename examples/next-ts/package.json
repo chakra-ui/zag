@@ -88,8 +88,8 @@
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
     "@types/node": "20.11.10",
-    "@types/react": "18.2.48",
-    "@types/react-dom": "18.2.18",
+    "@types/react": "18.2.55",
+    "@types/react-dom": "18.2.19",
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
     "typescript": "5.3.3"
