@@ -5,7 +5,17 @@ export interface CopyStatusDetails {
   copied: boolean
 }
 
+export type ElementIds = Partial<{
+  root: string
+  input: string
+  label: string
+}>
+
 interface PublicContext extends CommonProperties {
+  /**
+   * The ids of the elements in the clipboard. Useful for composition.
+   */
+  ids?: ElementIds
   /**
    * The value to be copied to the clipboard
    */
@@ -57,6 +67,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Set the value to be copied to the clipboard
    */
   setValue(value: string): void
+  /**
+   * Copy the value to the clipboard
+   */
+  copy(): void
 
   rootProps: T["element"]
   labelProps: T["label"]

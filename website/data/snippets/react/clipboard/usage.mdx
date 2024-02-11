@@ -1,0 +1,29 @@
+```jsx
+import * as clipboard from "@zag-js/clipboard"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { ClipboardCheck, ClipboardCopyIcon } from "lucide-react"
+import { useId } from "react"
+
+function Clipboard() {
+  const [state, send] = useMachine(
+    clipboard.machine({
+      id: useId(),
+      value: "https://github/com/chakra-ui/zag",
+    }),
+  )
+
+  const api = clipboard.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      <label {...api.labelProps}>Copy this link</label>
+      <div {...api.controlProps}>
+        <input {...api.inputProps} />
+        <button {...api.triggerProps}>
+          {api.isCopied ? <ClipboardCheck /> : <ClipboardCopyIcon />}
+        </button>
+      </div>
+    </div>
+  )
+}
+```

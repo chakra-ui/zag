@@ -29,8 +29,10 @@ import { ToastAnatomy } from "./toast"
 import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
 import { TreeViewAnatomy } from "./tree-view"
+import { ClipboardAnatomy } from "./clipboard"
 
 export const allComponents = {
+  clipboard: ClipboardAnatomy,
   "tree-view": TreeViewAnatomy,
   "circular-progress": CircularProgressAnatomy,
   "color-picker": ColorPickerAnatomy,

@@ -13,6 +13,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
+    copy() {
+      send({ type: "COPY" })
+    },
     rootProps: normalize.element({
       ...parts.root.attrs,
       "data-copied": dataAttr(isCopied),
@@ -37,6 +40,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getInputId(state.context),
       onFocus(event) {
         event.currentTarget.select()
+      },
+      onCopy() {
+        send({ type: "INPUT.COPY" })
       },
     }),
     triggerProps: normalize.button({

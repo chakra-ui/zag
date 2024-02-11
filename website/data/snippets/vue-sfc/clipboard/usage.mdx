@@ -1,0 +1,32 @@
+```html
+<script setup>
+  import * as clipboard from "@zag-js/clipboard"
+  import { useMachine, normalizeProps } from "@zag-js/vue"
+  import { ClipboardCheck, ClipboardCopyIcon } from "lucide-vue-next"
+  import { computed } from "vue"
+
+  const [state, send] = useMachine(
+    clipboard.machine({
+      id: "1",
+      value: "https://github/com/chakra-ui/zag",
+    }),
+  )
+
+  const api = computed(() =>
+    clipboard.connect(state.value, send, normalizeProps),
+  )
+</script>
+
+<template>
+  <div v-bind="api.rootProps">
+    <label v-bind="api.labelProps">Copy this link</label>
+    <div v-bind="api.controlProps">
+      <input v-bind="api.inputProps" style="width: 100%" />
+      <button v-bind="api.triggerProps">
+        <ClipboardCheck v-if="api.isCopied" />
+        <ClipboardCopyIcon v-else />
+      </button>
+    </div>
+  </div>
+</template>
+```

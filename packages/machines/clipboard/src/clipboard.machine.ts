@@ -21,13 +21,17 @@ export function machine(userContext: UserDefinedContext) {
         "VALUE.SET": {
           actions: ["setValue"],
         },
+        COPY: {
+          target: "copied",
+          actions: ["copyToClipboard", "invokeOnCopied"],
+        },
       },
       states: {
         idle: {
           on: {
-            COPY: {
+            "INPUT.COPY": {
               target: "copied",
-              actions: ["copyToClipboard", "invokeOnCopied"],
+              actions: ["invokeOnCopied"],
             },
           },
         },
@@ -39,6 +43,9 @@ export function machine(userContext: UserDefinedContext) {
             COPY: {
               target: "copied",
               actions: ["copyToClipboard", "invokeOnCopied"],
+            },
+            "INPUT.COPY": {
+              actions: ["invokeOnCopied"],
             },
           },
         },
