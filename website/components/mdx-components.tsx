@@ -16,6 +16,7 @@ import { RiNpmjsFill } from "react-icons/ri"
 import { FRAMEWORKS, frameworks } from "../lib/framework-utils"
 import { CopyButton } from "./copy-button"
 import { useFramework } from "./framework"
+import { KeyboardTable } from "./keyboard-table"
 import { PropTable } from "./prop-table"
 import { Showcase } from "./showcase"
 
@@ -121,6 +122,7 @@ const components: Record<string, FC<any>> = {
   ApiTable(props) {
     return <PropTable type="api" {...props} />
   },
+  KeyboardTable,
   ContextTable(props) {
     return <PropTable type="context" {...props} />
   },

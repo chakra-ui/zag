@@ -287,3 +287,67 @@ The slider machine exposes the following context properties:
 The slider `api` exposes the following methods:
 
 <ApiTable name="slider" />
+
+## Accessibility
+
+Adheres to the
+[Slider WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/slidertwothumb).
+
+### Keyboard Interactions
+
+<KeyboardTable
+  data={[
+    {
+      keys: ["ArrowRight"],
+      description: (
+        <span>Increments the focused thumb based on defined step</span>
+      ),
+    },
+    {
+      keys: ["ArrowLeft"],
+      description: (
+        <span>Decrements the focused thumb based on defined step</span>
+      ),
+    },
+    {
+      keys: ["ArrowUp"],
+      description: <span>Increases the focused thumb by the step amount.</span>,
+    },
+    {
+      keys: ["ArrowDown"],
+      description: <span>Decreases the focused thumb by the step amount.</span>,
+    },
+    {
+      keys: ["PageUp"],
+      description: (
+        <span>Increases the focused thumb value by a larger step</span>
+      ),
+    },
+    {
+      keys: ["PageDown"],
+      description: (
+        <span>Decreases the focused thumb value by a larger step</span>
+      ),
+    },
+    {
+      keys: ["Shift + ArrowUp"],
+      description: (
+        <span>Increases the focused thumb value by a larger step</span>
+      ),
+    },
+    {
+      keys: ["Shift + ArrowDown"],
+      description: (
+        <span>Decreases the focused thumb value by a larger step</span>
+      ),
+    },
+    {
+      keys: ["Home"],
+      description: "Sets the focused thumb value to its minimum.",
+    },
+    {
+      keys: ["End"],
+      description: "Sets the focused thumb value to its maximum.",
+    },
+  ]}
+/>
