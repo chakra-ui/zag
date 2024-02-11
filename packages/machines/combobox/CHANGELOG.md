@@ -1,5 +1,26 @@
 # @zag-js/combobox
 
+## 0.35.0
+
+### Patch Changes
+
+- [`374c065`](https://github.com/chakra-ui/zag/commit/374c0659fcb53f04fa403bc287dd0b8b092d4207) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where scrolling into view could result in scrolling the body element.
+
+- [#1227](https://github.com/chakra-ui/zag/pull/1227) [`99c5a68`](https://github.com/chakra-ui/zag/commit/99c5a68890058b26f1d39ac25081ab8d3a6a96b6) Thanks [@erm1116](https://github.com/erm1116)! - Expose `api.collection` for better control over the collection of items in combobox.
+
+- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36), [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e)]:
+  - @zag-js/core@0.35.0
+  - @zag-js/popper@0.35.0
+  - @zag-js/anatomy@0.35.0
+  - @zag-js/types@0.35.0
+  - @zag-js/aria-hidden@0.35.0
+  - @zag-js/collection@0.35.0
+  - @zag-js/utils@0.35.0
+  - @zag-js/dismissable@0.35.0
+  - @zag-js/dom-event@0.35.0
+  - @zag-js/dom-query@0.35.0
+  - @zag-js/mutation-observer@0.35.0
+
 ## 0.34.0
 
 ### Patch Changes
@@ -500,12 +521,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -513,7 +534,7 @@
       collection,
       id: useId(),
     }),
-  )
+  );
   ```
 
 ### Patch Changes

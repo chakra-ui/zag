@@ -1,5 +1,21 @@
 # @zag-js/editable
 
+## 0.35.0
+
+### Patch Changes
+
+- [`8c883f6`](https://github.com/chakra-ui/zag/commit/8c883f6116bd34e13c5c83c1bb105d254e6aae0e) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where cannot delete text when `maxLength` reached
+
+- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36)]:
+  - @zag-js/core@0.35.0
+  - @zag-js/anatomy@0.35.0
+  - @zag-js/types@0.35.0
+  - @zag-js/utils@0.35.0
+  - @zag-js/dom-event@0.35.0
+  - @zag-js/dom-query@0.35.0
+  - @zag-js/form-utils@0.35.0
+  - @zag-js/interact-outside@0.35.0
+
 ## 0.34.0
 
 ### Patch Changes
@@ -1108,7 +1124,7 @@
     editable.machine({
       placeholder: { edit: "Enter...", preview: "Add name..." },
     }),
-  )
+  );
   ```
 
 ## 0.1.4

@@ -1,5 +1,36 @@
 # @zag-js/select
 
+## 0.35.0
+
+### Minor Changes
+
+- [`3881f34`](https://github.com/chakra-ui/zag/commit/3881f34622d7a6067e7a2e4eecbe83fa778bdb9e) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add support for `open.controlled` in the machine context as a way to fully control the machine's open state programmatically.
+
+### Patch Changes
+
+- [`374c065`](https://github.com/chakra-ui/zag/commit/374c0659fcb53f04fa403bc287dd0b8b092d4207) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where scrolling into view could result in scrolling the body element.
+
+- [#1202](https://github.com/chakra-ui/zag/pull/1202) [`ca1e9df`](https://github.com/chakra-ui/zag/commit/ca1e9df907934e77a52b532b9d5460d61584394a) Thanks [@erm1116](https://github.com/erm1116)! - Fix issue where item group's label `id` pointed to the wrong element
+
+- [#1227](https://github.com/chakra-ui/zag/pull/1227) [`99c5a68`](https://github.com/chakra-ui/zag/commit/99c5a68890058b26f1d39ac25081ab8d3a6a96b6) Thanks [@erm1116](https://github.com/erm1116)! - Expose `api.collection` for better control over the collection of items in combobox.
+
+- [#1215](https://github.com/chakra-ui/zag/pull/1215) [`fa82362`](https://github.com/chakra-ui/zag/commit/fa82362a199739a95e6f0d36fb382f8d92a07947) Thanks [@remonke](https://github.com/remonke)! - Fix issue where select uses the incorrect `id` for `aria-activedecesendant` field
+
+- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36), [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e)]:
+  - @zag-js/core@0.35.0
+  - @zag-js/popper@0.35.0
+  - @zag-js/anatomy@0.35.0
+  - @zag-js/types@0.35.0
+  - @zag-js/collection@0.35.0
+  - @zag-js/utils@0.35.0
+  - @zag-js/dismissable@0.35.0
+  - @zag-js/dom-event@0.35.0
+  - @zag-js/dom-query@0.35.0
+  - @zag-js/form-utils@0.35.0
+  - @zag-js/mutation-observer@0.35.0
+  - @zag-js/tabbable@0.35.0
+  - @zag-js/visually-hidden@0.35.0
+
 ## 0.34.0
 
 ### Patch Changes
@@ -558,12 +589,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -571,7 +602,7 @@
       collection,
       id: useId(),
     }),
-  )
+  );
   ```
 
 ### Patch Changes

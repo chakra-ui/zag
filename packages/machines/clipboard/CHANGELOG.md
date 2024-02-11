@@ -1,0 +1,16 @@
+# @zag-js/clipboard
+
+## 0.35.0
+
+### Minor Changes
+
+- [`00a7a7c`](https://github.com/chakra-ui/zag/commit/00a7a7c42e8f3befba1219cd4b2b0ae7f200c331) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add `Clipboard` machine for copying text to clipboard.
+
+### Patch Changes
+
+- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36)]:
+  - @zag-js/core@0.35.0
+  - @zag-js/anatomy@0.35.0
+  - @zag-js/types@0.35.0
+  - @zag-js/utils@0.35.0
+  - @zag-js/dom-query@0.35.0
