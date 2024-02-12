@@ -1,5 +1,22 @@
 # @zag-js/tree-view
 
+## 0.36.0
+
+### Minor Changes
+
+- [`6671d75`](https://github.com/chakra-ui/zag/commit/6671d7539a647827e685b235d72aec477cc51765) Thanks [@cschroeter](https://github.com/cschroeter)! - Extend tree view parts
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.0
+  - @zag-js/core@0.36.0
+  - @zag-js/types@0.36.0
+  - @zag-js/utils@0.36.0
+  - @zag-js/dom-event@0.36.0
+  - @zag-js/dom-query@0.36.0
+  - @zag-js/mutation-observer@0.36.0
+
 ## 0.35.0
 
 ### Patch Changes
