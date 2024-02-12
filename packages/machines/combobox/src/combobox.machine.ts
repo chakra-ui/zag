@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { isScrollParent, isScrollable, raf } from "@zag-js/dom-query"
+import { raf, scrollIntoView } from "@zag-js/dom-query"
 import { observeAttributes, observeChildren } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, compact, isEqual, match } from "@zag-js/utils"
@@ -465,11 +465,10 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             const isPointer = state.event.type.startsWith("ITEM.POINTER")
             if (isPointer || !ctx.highlightedValue) return
 
-            const contentEl = dom.getContentEl(ctx)
-            if (contentEl && (!isScrollParent(contentEl) || !isScrollable(contentEl))) return
-
             const optionEl = dom.getHighlightedItemEl(ctx)
-            optionEl?.scrollIntoView({ block: "nearest" })
+            const contentEl = dom.getContentEl(ctx)
+
+            scrollIntoView(optionEl, { rootEl: contentEl, block: "nearest" })
           }
 
           raf(() => exec())

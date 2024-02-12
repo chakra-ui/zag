@@ -1,4 +1,4 @@
-import { defaultItemToId, indexOfId, type ItemToId } from "./get-by-id"
+import { defaultItemToId, indexOfId, type ItemToId } from "./query"
 import { sanitize } from "./sanitize"
 
 const getValueText = <T extends HTMLElement>(item: T) => sanitize(item.dataset.valuetext ?? item.textContent ?? "")

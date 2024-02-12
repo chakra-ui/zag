@@ -1,6 +1,6 @@
 import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getByTypeahead, isScrollParent, isScrollable, raf } from "@zag-js/dom-query"
+import { getByTypeahead, raf, scrollIntoView } from "@zag-js/dom-query"
 import { setElementValue, trackFormControl } from "@zag-js/form-utils"
 import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
@@ -436,13 +436,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
             // don't scroll into view if we're using the pointer
             if (state.event.type.startsWith("ITEM.POINTER")) return
+
             const optionEl = dom.getHighlightedOptionEl(ctx)
-
-            // don't scroll into view, if contentEl is not a scroll parent
             const contentEl = dom.getContentEl(ctx)
-            if (contentEl && (!isScrollParent(contentEl) || !isScrollable(contentEl))) return
 
-            optionEl?.scrollIntoView({ block: "nearest" })
+            scrollIntoView(optionEl, { rootEl: contentEl, block: "nearest" })
           }
           raf(() => exec())
           return observeAttributes(dom.getContentEl(ctx), ["aria-activedescendant"], exec)

@@ -1,10 +1,12 @@
-import { isDocument } from "./is-document"
-import { isHTMLElement } from "./is-html-element"
-import { isShadowRoot } from "./is-shadow-root"
+import { isHTMLElement, isDocument, isShadowRoot } from "./is"
 
 export function getDocument(el: Element | Node | Document | null) {
   if (isDocument(el)) return el
   return el?.ownerDocument ?? document
+}
+
+export function getDocumentElement(el: Element | Node | Document | null): HTMLElement {
+  return getDocument(el).documentElement
 }
 
 export function getWindow(el: Node | ShadowRoot | Document | undefined) {
@@ -12,4 +14,27 @@ export function getWindow(el: Node | ShadowRoot | Document | undefined) {
   if (isDocument(el)) return el.defaultView ?? window
   if (isHTMLElement(el)) return el.ownerDocument?.defaultView ?? window
   return window
+}
+
+export function getActiveElement(el: HTMLElement): HTMLElement | null {
+  const doc = getDocument(el)
+  let activeElement = doc.activeElement as HTMLElement | null
+
+  while (activeElement?.shadowRoot) {
+    const el = activeElement.shadowRoot.activeElement as HTMLElement | null
+    if (el === activeElement) break
+    else activeElement = el
+  }
+
+  return activeElement
+}
+
+const styleCache = new WeakMap<HTMLElement, any>()
+
+export function getComputedStyle(el: HTMLElement) {
+  if (!styleCache.has(el)) {
+    const win = el.ownerDocument.defaultView || window
+    styleCache.set(el, win.getComputedStyle(el))
+  }
+  return styleCache.get(el)
 }

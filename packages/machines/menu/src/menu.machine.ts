@@ -1,7 +1,7 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent } from "@zag-js/dom-event"
-import { contains, getByTypeahead, isEditableElement, isScrollParent, isScrollable, raf } from "@zag-js/dom-query"
+import { contains, getByTypeahead, isEditableElement, raf, scrollIntoView } from "@zag-js/dom-query"
 import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement, getPlacementSide } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
@@ -560,11 +560,10 @@ export function machine(userContext: UserDefinedContext) {
 
             if (state.event.type.startsWith("ITEM_POINTER")) return
 
-            const contentEl = dom.getContentEl(ctx)
-            if (contentEl && (!isScrollParent(contentEl) || !isScrollable(contentEl))) return
-
             const itemEl = dom.getHighlightedItemEl(ctx)
-            itemEl?.scrollIntoView({ block: "nearest" })
+            const contentEl = dom.getContentEl(ctx)
+
+            scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
           }
           raf(() => exec())
           return observeAttributes(dom.getContentEl(ctx), ["aria-activedescendant"], exec)

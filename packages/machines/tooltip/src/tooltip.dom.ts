@@ -1,4 +1,4 @@
-import { createScope, getScrollParent } from "@zag-js/dom-query"
+import { createScope } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./tooltip.types"
 
 export const dom = createScope({
@@ -11,5 +11,4 @@ export const dom = createScope({
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getArrowEl: (ctx: Ctx) => dom.getById(ctx, dom.getArrowId(ctx)),
-  getScrollParent: (ctx: Ctx) => getScrollParent(dom.getTriggerEl(ctx)!),
 })

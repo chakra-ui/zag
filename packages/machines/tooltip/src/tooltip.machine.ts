@@ -1,6 +1,6 @@
 import { createMachine, guards, subscribe } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-event"
-import { getScrollParents, isHTMLElement, isSafari } from "@zag-js/dom-query"
+import { getOverflowAncestors, isHTMLElement, isSafari } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { compact } from "@zag-js/utils"
 import { dom } from "./tooltip.dom"
@@ -223,13 +223,15 @@ export function machine(userContext: UserDefinedContext) {
         trackScroll(ctx, _evt, { send }) {
           const triggerEl = dom.getTriggerEl(ctx)
           if (!triggerEl) return
-          const scrollParents = getScrollParents(triggerEl)
-          const cleanups = scrollParents.map((scrollParent) => {
-            return addDomEvent(scrollParent, "scroll", () => send({ type: "CLOSE", src: "scroll" }), {
+
+          const overflowParents = getOverflowAncestors(triggerEl)
+          const cleanups = overflowParents.map((overflowParent) =>
+            addDomEvent(overflowParent, "scroll", () => send({ type: "CLOSE", src: "scroll" }), {
               passive: true,
               capture: true,
-            })
-          })
+            }),
+          )
+
           return () => {
             cleanups.forEach((fn) => fn?.())
           }

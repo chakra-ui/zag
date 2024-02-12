@@ -4,4 +4,4 @@
 "@zag-js/menu": patch
 ---
 
-Make isScrollable null safe
+Refactor scroll utilities to safely handle `null` element values in test environment.
