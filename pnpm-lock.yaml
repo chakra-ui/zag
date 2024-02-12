@@ -1724,8 +1724,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
       solid-js:
-        specifier: 1.8.12
-        version: 1.8.12
+        specifier: 1.8.14
+        version: 1.8.14
 
   packages/frameworks/svelte:
     dependencies:
@@ -16783,6 +16783,14 @@ packages:
       csstype: 3.1.3
       seroval: 1.0.4
       seroval-plugins: 1.0.4(seroval@1.0.4)
+
+  /solid-js@1.8.14:
+    resolution: {integrity: sha512-kDfgHBm+ROVLDVuqaXh/jYz0ZVJ29TYfVsKsgDPtNcjoyaPtOvDX2l0tVnthjLdEXr7vDTYeqEYFfMkZakDsOQ==}
+    dependencies:
+      csstype: 3.1.3
+      seroval: 1.0.4
+      seroval-plugins: 1.0.4(seroval@1.0.4)
+    dev: true
 
   /solid-refresh@0.6.3(solid-js@1.8.12):
     resolution: {integrity: sha512-F3aPsX6hVw9ttm5LYlth8Q15x6MlI/J3Dn+o3EQyRTtTxidepSTwAYdozt01/YA+7ObcciagGEyXIopGZzQtbA==}
