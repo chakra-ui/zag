@@ -66,8 +66,8 @@ importers:
         specifier: 6.20.0
         version: 6.20.0(eslint@8.56.0)(typescript@5.3.3)
       axe-core:
-        specifier: 4.8.3
-        version: 4.8.3
+        specifier: 4.8.4
+        version: 4.8.4
       commitlint:
         specifier: 18.6.0
         version: 18.6.0(@types/node@20.11.10)(typescript@5.3.3)
@@ -3484,7 +3484,7 @@ packages:
     peerDependencies:
       playwright-core: '>= 1.0.0'
     dependencies:
-      axe-core: 4.8.3
+      axe-core: 4.8.4
       playwright-core: 1.41.2
     dev: false
 
@@ -8790,8 +8790,8 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /axe-core@4.8.3:
-    resolution: {integrity: sha512-d5ZQHPSPkF9Tw+yfyDcRoUOc4g/8UloJJe5J8m4L5+c7AtDdjDLRxew/knnI4CxvtdxEUVgWz4x3OIQUIFiMfw==}
+  /axe-core@4.8.4:
+    resolution: {integrity: sha512-CZLSKisu/bhJ2awW4kJndluz2HLZYIHh5Uy1+ZwDRkJi69811xgIXXfdU9HSLX0Th+ILrHj8qfL/5wzamsFtQg==}
     engines: {node: '>=4'}
     dev: false
 
