@@ -117,8 +117,8 @@ importers:
         specifier: ^21.0.1
         version: 21.0.1
       tsup:
-        specifier: 8.0.1
-        version: 8.0.1(@swc/core@1.4.0)(typescript@5.3.3)
+        specifier: 8.0.2
+        version: 8.0.2(@swc/core@1.4.0)(typescript@5.3.3)
       tsx:
         specifier: 4.7.0
         version: 4.7.0
@@ -17545,8 +17545,8 @@ packages:
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
-  /tsup@8.0.1(@swc/core@1.4.0)(typescript@5.3.3):
-    resolution: {integrity: sha512-hvW7gUSG96j53ZTSlT4j/KL0q1Q2l6TqGBFc6/mu/L46IoNWqLLUzLRLP1R8Q7xrJTmkDxxDoojV5uCVs1sVOg==}
+  /tsup@8.0.2(@swc/core@1.4.0)(typescript@5.3.3):
+    resolution: {integrity: sha512-NY8xtQXdH7hDUAZwcQdY/Vzlw9johQsaqf7iwZ6g1DOUlFYQ5/AtVAjTvihhEyeRlGo4dLRVHtrRaL35M1daqQ==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
