@@ -251,7 +251,6 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemText.attrs,
-        dir: state.context.dir,
         "data-disabled": dataAttr(itemState.isDisabled),
         "data-highlighted": dataAttr(itemState.isHighlighted),
       })
@@ -262,7 +261,6 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         "aria-hidden": true,
         ...parts.itemIndicator.attrs,
-        dir: state.context.dir,
         "data-state": itemState.isSelected ? "checked" : "unchecked",
         hidden: !itemState.isSelected,
       })
