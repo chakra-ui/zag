@@ -439,8 +439,8 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             const optionEl = dom.getHighlightedOptionEl(ctx)
 
             // don't scroll into view, if contentEl is not a scroll parent
-            const contentEl = dom.getContentEl(ctx)!
-            if (!isScrollParent(contentEl) || !isScrollable(contentEl)) return
+            const contentEl = dom.getContentEl(ctx)
+            if (contentEl && (!isScrollParent(contentEl) || !isScrollable(contentEl))) return
 
             optionEl?.scrollIntoView({ block: "nearest" })
           }

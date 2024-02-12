@@ -560,8 +560,8 @@ export function machine(userContext: UserDefinedContext) {
 
             if (state.event.type.startsWith("ITEM_POINTER")) return
 
-            const contentEl = dom.getContentEl(ctx)!
-            if (!isScrollParent(contentEl) || !isScrollable(contentEl)) return
+            const contentEl = dom.getContentEl(ctx)
+            if (contentEl && (!isScrollParent(contentEl) || !isScrollable(contentEl))) return
 
             const itemEl = dom.getHighlightedItemEl(ctx)
             itemEl?.scrollIntoView({ block: "nearest" })

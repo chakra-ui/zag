@@ -465,8 +465,8 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             const isPointer = state.event.type.startsWith("ITEM.POINTER")
             if (isPointer || !ctx.highlightedValue) return
 
-            const contentEl = dom.getContentEl(ctx)!
-            if (!isScrollParent(contentEl) || !isScrollable(contentEl)) return
+            const contentEl = dom.getContentEl(ctx)
+            if (contentEl && (!isScrollParent(contentEl) || !isScrollable(contentEl))) return
 
             const optionEl = dom.getHighlightedItemEl(ctx)
             optionEl?.scrollIntoView({ block: "nearest" })
