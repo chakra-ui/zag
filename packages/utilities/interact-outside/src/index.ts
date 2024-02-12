@@ -66,6 +66,19 @@ function isEventPointWithin(node: MaybeElement, event: Event) {
   )
 }
 
+function isEventWithinScrollbar(event: Event): boolean {
+  const target = getEventTarget<HTMLElement>(event)
+  if (!target || !isPointerEvent(event)) return false
+
+  const isScrollableY = target.scrollHeight > target.clientHeight
+  const onScrollbarY = isScrollableY && event.clientX > target.clientWidth
+
+  const isScrollableX = target.scrollWidth > target.clientWidth
+  const onScrollbarX = isScrollableX && event.clientY > target.clientHeight
+
+  return onScrollbarY || onScrollbarX
+}
+
 function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOptions) {
   const { exclude, onFocusOutside, onPointerDownOutside, onInteractOutside } = options
 
@@ -80,6 +93,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     if (!isHTMLElement(target)) return false
     if (contains(node, target)) return false
     if (isEventPointWithin(node, event)) return false
+    if (isEventWithinScrollbar(event)) return false
     return !exclude?.(target)
   }
 
