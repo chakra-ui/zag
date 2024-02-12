@@ -1,5 +1,23 @@
 # @zag-js/menu
 
+## 0.36.0
+
+### Patch Changes
+
+- [`d875e55`](https://github.com/chakra-ui/zag/commit/d875e551a1aed480901d6b2d3efa3aa5263986f0) Thanks [@cschroeter](https://github.com/cschroeter)! - Refactor scroll utilities to safely handle `null` element values in test environment.
+
+- Updated dependencies []:
+  - @zag-js/dismissable@0.36.0
+  - @zag-js/anatomy@0.36.0
+  - @zag-js/core@0.36.0
+  - @zag-js/types@0.36.0
+  - @zag-js/utils@0.36.0
+  - @zag-js/dom-event@0.36.0
+  - @zag-js/dom-query@0.36.0
+  - @zag-js/mutation-observer@0.36.0
+  - @zag-js/popper@0.36.0
+  - @zag-js/rect-utils@0.36.0
+
 ## 0.35.0
 
 ### Minor Changes
