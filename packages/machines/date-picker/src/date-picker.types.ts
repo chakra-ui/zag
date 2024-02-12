@@ -597,4 +597,13 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
  * Re-exported types
  * -----------------------------------------------------------------------------*/
 
-export type { Calendar, CalendarDate, CalendarDateTime, DateDuration, DateFormatter, DateValue, ZonedDateTime }
+export type {
+  Calendar,
+  CalendarDate,
+  CalendarDateTime,
+  DateDuration,
+  DateFormatter,
+  DateRangePreset,
+  DateValue,
+  ZonedDateTime,
+}
