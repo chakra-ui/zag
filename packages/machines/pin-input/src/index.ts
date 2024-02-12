@@ -5,6 +5,7 @@ export type {
   MachineApi as Api,
   UserDefinedContext as Context,
   ElementIds,
+  InputProps,
   IntlTranslations,
   ValueChangeDetails,
   ValueInvalidDetails,
