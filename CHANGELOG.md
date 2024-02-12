@@ -6,7 +6,47 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
-## [0.34.0](./#0.34.0) - 2024-02-19
+## [0.35.0](./#0.35.0) - 2024-02-11
+
+### Fixed
+
+- **All components**
+
+  - Improve runtime performance when using watchers by subscribing to context once.
+  - Fix issue where restoring scroll causes a smooth scroll transition back to the initial scroll point.
+
+- Fix issue where scrolling into view could result in scrolling the body element.
+
+  > Affected components: Select, Menu, Combobox
+
+- **Select**:
+
+  - Fix issue where item group's label id pointed to the wrong element
+  - Fix issue where select uses the incorrect id for `aria-activedecesendant` field
+
+- **DatePicker**: Fix issue where date picker does not show correct number of weeks when `startOfWeek` is set
+
+### Added
+
+- **[NEW] Clipboard**: Add Clipboard machine for copying text to clipboard.
+
+- **[NEW] Collapsible**: Add Collapsible machine for interactive component which expands/collapses a panel.
+
+- Add support for open.controlled in the machine context as a way to fully control the machine's open state
+  programmatically.
+
+  > Affected components: Dialog, HoverCard, Popover, ColorPicker, DatePicker, Tooltip, Menu, HoverCard, and Combobox.
+
+- **Combobox**: Expose api.collection for better control over the collection of items in combobox.
+
+### Changed
+
+- **DatePicker**
+  - [BREAKING] Change date picker from `api.inputProps` to `api.getInputProps(...)` to support multiple inputs.
+  - Added a new prop `getPresetTriggerProps` to support custom trigger for common date presets (e.g. Last 7 days, Last
+    30 days, etc.)
+
+## [0.34.0](./#0.34.0) - 2024-01-19
 
 ### Fixed
 
