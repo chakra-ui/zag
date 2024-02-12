@@ -1,5 +1,18 @@
 # @zag-js/clipboard
 
+## 0.36.0
+
+### Patch Changes
+
+- [`84aec94`](https://github.com/chakra-ui/zag/commit/84aec94f8d7ac3a9286b6c40cf3f373e8cdb7481) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Expose types for callback functions
+  - Add `api.copy()` function
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.0
+  - @zag-js/core@0.36.0
+  - @zag-js/types@0.36.0
+  - @zag-js/utils@0.36.0
+  - @zag-js/dom-query@0.36.0
+
 ## 0.35.0
 
 ### Minor Changes
