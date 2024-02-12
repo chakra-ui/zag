@@ -159,6 +159,10 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface InputProps {
+  index: number
+}
+
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the input as an array of strings.
@@ -192,5 +196,5 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   labelProps: T["label"]
   hiddenInputProps: T["input"]
   controlProps: T["element"]
-  getInputProps({ index }: { index: number }): T["input"]
+  getInputProps(props: InputProps): T["input"]
 }
