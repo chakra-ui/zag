@@ -3,6 +3,7 @@ import { Avatar } from "./machines/avatar"
 import { Carousel } from "./machines/carousel"
 import { Checkbox } from "./machines/checkbox"
 import { CircularProgress } from "./machines/circular-progress"
+import { Clipboard } from "./machines/clipboard"
 import { Collapsible } from "./machines/collapsible"
 import { ColorPicker } from "./machines/color-picker"
 import { Combobox } from "./machines/combobox"
@@ -361,6 +362,15 @@ const components = {
         closeOnPointerDown: true,
         openDelay: 1000,
         closeDelay: 500,
+      }}
+    />
+  ),
+  Clipboard: () => (
+    <Playground
+      component={Clipboard}
+      defaultProps={{
+        value: "Hello, World!",
+        timeout: 1500,
       }}
     />
   ),
