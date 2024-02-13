@@ -96,7 +96,6 @@ export function machine(userContext: UserDefinedContext) {
         open: {
           tags: ["open"],
           activities: ["trackDismissableElement", "trackPositioning"],
-          entry: console.log,
           on: {
             "CONTROLLED.CLOSE": "closed",
             POINTER_ENTER: {

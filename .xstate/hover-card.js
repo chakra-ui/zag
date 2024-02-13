@@ -82,7 +82,6 @@ const fetchMachine = createMachine({
     open: {
       tags: ["open"],
       activities: ["trackDismissableElement", "trackPositioning"],
-      entry: console.log,
       on: {
         "CONTROLLED.CLOSE": "closed",
         POINTER_ENTER: {
