@@ -1,5 +1,18 @@
 # @zag-js/tree-view
 
+## 0.36.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.1
+  - @zag-js/core@0.36.1
+  - @zag-js/types@0.36.1
+  - @zag-js/utils@0.36.1
+  - @zag-js/dom-event@0.36.1
+  - @zag-js/dom-query@0.36.1
+  - @zag-js/mutation-observer@0.36.1
+
 ## 0.36.0
 
 ### Minor Changes
