@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.36.0](./#0.36.0) - 2024-02-13
+
+### Fixed
+
+- Refactor scroll utilities to safely handle null element values in test environment
+- **Dialog**: Prevent calling interaction outside logic when scrollbar is clicked
+
+### Added
+
+- **TreeView**: Extend anatomy to include tree item text and indicator parts.
+- **Clipboard**: Add `api.copy()` to copy text to clipboard
+
 ## [0.35.0](./#0.35.0) - 2024-02-11
 
 ### Fixed
