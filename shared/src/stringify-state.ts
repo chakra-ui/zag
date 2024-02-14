@@ -19,6 +19,10 @@ export function stringifyState(state: Record<string, any>, omit?: string[]) {
           return v.toString()
         }
 
+        if (v?.toJSON) {
+          return v.toJSON()
+        }
+
         if (Number.isNaN(v)) {
           return "NaN"
         }

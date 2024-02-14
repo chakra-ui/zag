@@ -171,3 +171,29 @@ export const treeViewData = {
     },
   ],
 }
+
+export const tourData = [
+  {
+    id: "step-1",
+    title: "Welcome",
+    description: "To the new world",
+    target: () => document.querySelector<HTMLElement>("#step-1"),
+  },
+  {
+    id: "step-2",
+    title: "About",
+    description: "The new world is a great place",
+    target: () => document.querySelector<HTMLElement>("#step-2"),
+  },
+  {
+    id: "step-3a",
+    title: "Centered tour?",
+    description: "This is the center of the world",
+  },
+  {
+    id: "step-3",
+    title: "Contact",
+    description: "Get in touch with us",
+    target: () => document.querySelector<HTMLElement>("#step-3"),
+  },
+]

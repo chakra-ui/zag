@@ -329,6 +329,9 @@ importers:
       '@zag-js/tooltip':
         specifier: workspace:*
         version: link:../../packages/machines/tooltip
+      '@zag-js/tour':
+        specifier: workspace:*
+        version: link:../../packages/machines/tour
       '@zag-js/tree-view':
         specifier: workspace:*
         version: link:../../packages/machines/tree-view
@@ -573,6 +576,9 @@ importers:
       '@zag-js/tooltip':
         specifier: workspace:*
         version: link:../../packages/machines/tooltip
+      '@zag-js/tour':
+        specifier: workspace:*
+        version: link:../../packages/machines/tour
       '@zag-js/tree-view':
         specifier: workspace:*
         version: link:../../packages/machines/tree-view
@@ -811,6 +817,9 @@ importers:
       '@zag-js/tooltip':
         specifier: workspace:*
         version: link:../../packages/machines/tooltip
+      '@zag-js/tour':
+        specifier: workspace:*
+        version: link:../../packages/machines/tour
       '@zag-js/tree-view':
         specifier: workspace:*
         version: link:../../packages/machines/tree-view
@@ -1049,6 +1058,9 @@ importers:
       '@zag-js/tooltip':
         specifier: workspace:*
         version: link:../../packages/machines/tooltip
+      '@zag-js/tour':
+        specifier: workspace:*
+        version: link:../../packages/machines/tour
       '@zag-js/tree-view':
         specifier: workspace:*
         version: link:../../packages/machines/tree-view
@@ -1113,6 +1125,9 @@ importers:
       '@zag-js/clipboard':
         specifier: workspace:*
         version: link:../../packages/machines/clipboard
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../../packages/machines/collapsible
       '@zag-js/collection':
         specifier: workspace:*
         version: link:../../packages/utilities/collection
@@ -1272,6 +1287,9 @@ importers:
       '@zag-js/tooltip':
         specifier: workspace:*
         version: link:../../packages/machines/tooltip
+      '@zag-js/tour':
+        specifier: workspace:*
+        version: link:../../packages/machines/tour
       '@zag-js/tree-view':
         specifier: workspace:*
         version: link:../../packages/machines/tree-view
@@ -1513,6 +1531,9 @@ importers:
       '@zag-js/tooltip':
         specifier: workspace:*
         version: link:../../packages/machines/tooltip
+      '@zag-js/tour':
+        specifier: workspace:*
+        version: link:../../packages/machines/tour
       '@zag-js/tree-view':
         specifier: workspace:*
         version: link:../../packages/machines/tree-view
@@ -2703,6 +2724,37 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/tour:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dismissable':
+        specifier: workspace:*
+        version: link:../../utilities/dismissable
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/popper':
+        specifier: workspace:*
+        version: link:../../utilities/popper
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+      focus-trap:
+        specifier: 7.5.4
+        version: 7.5.4
     devDependencies:
       clean-package:
         specifier: 2.2.0

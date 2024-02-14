@@ -239,3 +239,10 @@ export const treeviewControls = defineControls({
 export const clipboardControls = defineControls({
   timeout: { type: "number", defaultValue: 3000 },
 })
+
+export const tourControls = defineControls({
+  keyboardNavigation: { type: "boolean", defaultValue: true },
+  closeOnEsc: { type: "boolean", defaultValue: true },
+  closeOnInteractOutside: { type: "boolean", defaultValue: true },
+  preventInteraction: { type: "boolean", defaultValue: true },
+})
