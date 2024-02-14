@@ -42,13 +42,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-state": isOpen ? "open" : "closed",
       "aria-describedby": isOpen ? contentId : undefined,
       onClick() {
+        if (isDisabled) return
         send("CLOSE")
       },
       onFocus() {
-        if (state.event.type === "POINTER_DOWN") return
+        if (isDisabled || state.event.type === "POINTER_DOWN") return
         send("OPEN")
       },
       onBlur() {
+        if (isDisabled) return
         if (id === store.id) {
           send("CLOSE")
         }
