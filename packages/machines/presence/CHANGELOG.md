@@ -1,5 +1,13 @@
 # @zag-js/presence
 
+## 0.36.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.36.3
+  - @zag-js/types@0.36.3
+
 ## 0.36.2
 
 ### Patch Changes

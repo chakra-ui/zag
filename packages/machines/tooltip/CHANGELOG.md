@@ -1,5 +1,20 @@
 # @zag-js/tooltip
 
+## 0.36.3
+
+### Patch Changes
+
+- [#1248](https://github.com/chakra-ui/zag/pull/1248) [`ecd4496`](https://github.com/chakra-ui/zag/commit/ecd4496fb950442e49e68e4def81bb0b29c6bb20) Thanks [@erm1116](https://github.com/erm1116)! - fix disabled tooltip flashing when hovering and clicking the trigger
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.3
+  - @zag-js/core@0.36.3
+  - @zag-js/types@0.36.3
+  - @zag-js/utils@0.36.3
+  - @zag-js/dom-event@0.36.3
+  - @zag-js/dom-query@0.36.3
+  - @zag-js/popper@0.36.3
+
 ## 0.36.2
 
 ### Patch Changes
