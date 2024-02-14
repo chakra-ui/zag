@@ -1,5 +1,15 @@
 # @zag-js/dismissable
 
+## 0.36.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.36.2
+  - @zag-js/dom-event@0.36.2
+  - @zag-js/dom-query@0.36.2
+  - @zag-js/interact-outside@0.36.2
+
 ## 0.36.1
 
 ### Patch Changes

@@ -1,5 +1,20 @@
 # @zag-js/slider
 
+## 0.36.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.2
+  - @zag-js/core@0.36.2
+  - @zag-js/types@0.36.2
+  - @zag-js/utils@0.36.2
+  - @zag-js/dom-event@0.36.2
+  - @zag-js/dom-query@0.36.2
+  - @zag-js/element-size@0.36.2
+  - @zag-js/form-utils@0.36.2
+  - @zag-js/numeric-range@0.36.2
+
 ## 0.36.1
 
 ### Patch Changes
