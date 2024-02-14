@@ -12,7 +12,7 @@ export interface StepDetails {
 }
 
 export interface StepChangeDetails {
-  step: string
+  step: string | null
   index: number
   count: number
   complete: boolean

@@ -2,7 +2,7 @@ import { createMachine, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
-import { compact, nextIndex, prevIndex } from "@zag-js/utils"
+import { compact, isEqual, nextIndex, prevIndex } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./tour.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tour.types"
@@ -116,29 +116,25 @@ export function machine(userContext: UserDefinedContext) {
 
           ctx.currentRect = { x, y, width, height }
         },
-        setWindowSize(ctx) {
-          const win = dom.getWin(ctx)
-          ctx.windowSize = { width: win.innerWidth, height: win.innerHeight }
-        },
         clearStep(ctx) {
-          ctx.step = null
           ctx.currentRect = ref<any>({})
+          set.step(ctx, null)
         },
         setInitialStep(ctx) {
           if (ctx.steps.length === 0) return
-          ctx.step = ctx.steps[0].id
+          set.step(ctx, ctx.steps[0].id)
         },
         setNextStep(ctx) {
           const idx = nextIndex(ctx.steps, ctx.currentStepIndex)
           const nextStep = ctx.steps[idx]
           if (!nextStep) return
-          ctx.step = nextStep.id
+          set.step(ctx, nextStep.id)
         },
         setPrevStep(ctx) {
           const idx = prevIndex(ctx.steps, ctx.currentStepIndex)
           const prevStep = ctx.steps[idx]
           if (!prevStep) return
-          ctx.step = prevStep.id
+          set.step(ctx, prevStep.id)
         },
         invokeOnOpen(ctx) {
           ctx.onOpenChange?.({ open: true })
@@ -245,4 +241,23 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
+}
+
+const invoke = {
+  stepChange(ctx: MachineContext) {
+    ctx.onStepChange?.({
+      complete: ctx.isLastStep,
+      step: ctx.step,
+      count: ctx.steps.length,
+      index: ctx.currentStepIndex,
+    })
+  },
+}
+
+const set = {
+  step(ctx: MachineContext, stepId: string | null) {
+    if (isEqual(ctx.step, stepId)) return
+    ctx.step = stepId
+    invoke.stepChange(ctx)
+  },
 }
