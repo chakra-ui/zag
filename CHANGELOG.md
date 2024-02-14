@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.36.2](./#0.36.0) - 2024-02-13
+
+### Fixed
+
+- **Clipboard**: Export missing types for clipboard machine
+
+## [0.36.1](./#0.36.0) - 2024-02-13
+
+### Fixed
+
+- **HoverCard**: Remove superfluous log message when card was hovered
+
 ## [0.36.0](./#0.36.0) - 2024-02-13
 
 ### Fixed
