@@ -1,5 +1,18 @@
 # @zag-js/clipboard
 
+## 0.36.2
+
+### Patch Changes
+
+- [`d98c990`](https://github.com/chakra-ui/zag/commit/d98c990f5f5d503222d9e22b436ae9735633800c) Thanks [@cschroeter](https://github.com/cschroeter)! - Export missing Machine API type
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.2
+  - @zag-js/core@0.36.2
+  - @zag-js/types@0.36.2
+  - @zag-js/utils@0.36.2
+  - @zag-js/dom-query@0.36.2
+
 ## 0.36.1
 
 ### Patch Changes
