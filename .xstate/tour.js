@@ -21,6 +21,12 @@ const fetchMachine = createMachine({
     "STEP.CHANGED": {
       cond: "isValidStep",
       target: "open:prepare"
+    },
+    "STEPS.SET": {
+      actions: ["setSteps"]
+    },
+    "STEP.SET": {
+      actions: ["setStep"]
     }
   },
   on: {
@@ -34,7 +40,11 @@ const fetchMachine = createMachine({
       on: {
         START: {
           target: "open",
-          actions: ["setInitialStep", "invokeOnStart"]
+          actions: ["setInitialStep", "invokeOnOpen"]
+        },
+        OPEN: {
+          target: "open",
+          actions: ["invokeOnOpen"]
         }
       }
     },

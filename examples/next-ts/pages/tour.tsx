@@ -26,10 +26,15 @@ export default function Page() {
       <main className="tour">
         <div>
           <button onClick={api.start}>Start Tour</button>
-          <div style={{ display: "flex", flexDirection: "column", gap: "50vh" }}>
+          <div className="steps__container">
             <h3 id="step-1">Step 1</h3>
-            <h3 id="step-2">Step 2</h3>
+            <div className="overflow__container">
+              <div className="h-200px" />
+              <div id="step-2">Step 2</div>
+              <div className="h-100px" />
+            </div>
             <h3 id="step-3">Step 3</h3>
+            <h3 id="step-4">Step 4</h3>
           </div>
         </div>
 
@@ -44,8 +49,15 @@ export default function Page() {
                 <p {...api.titleProps}>{api.currentStep.title}</p>
                 <div {...api.descriptionProps}>{api.currentStep.description}</div>
 
-                <button {...api.prevTriggerProps}>Prev</button>
-                <button {...api.nextTriggerProps}>Next</button>
+                <div className="tour button__group">
+                  <button {...api.prevTriggerProps}>Prev</button>
+                  <button {...api.nextTriggerProps}>Next</button>
+                  {api.isLastStep && (
+                    <button {...api.closeTriggerProps} style={{ marginLeft: "auto" }}>
+                      Close
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>

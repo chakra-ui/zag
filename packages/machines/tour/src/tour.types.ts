@@ -67,6 +67,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *  Whether the tour's open state is controlled by the user
    */
   "open.controlled"?: boolean
+  /**
+   * The offsets to apply to the overlay
+   */
+  offset: { x: number; y: number }
 }
 
 type PrivateContext = Context<{
@@ -74,7 +78,7 @@ type PrivateContext = Context<{
    * @internal
    * The rect of the current step's target element
    */
-  currentRect: AnchorRect
+  currentRect: Required<AnchorRect>
   /**
    * @internal
    * The current placement of the menu
@@ -87,9 +91,9 @@ type PrivateContext = Context<{
   windowSize: { width: number; height: number }
   /**
    * @internal
-   * The function to cleanup the inert attribute activity
+   * The function to cleanup
    */
-  _inertCleanup?: () => void
+  _cleanup?: () => void
 }>
 
 type ComputedContext = Readonly<{

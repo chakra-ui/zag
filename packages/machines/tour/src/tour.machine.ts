@@ -1,16 +1,13 @@
 import { createMachine, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
-import { getPlacement } from "@zag-js/popper"
+import { getPlacement, type AnchorRect } from "@zag-js/popper"
 import { compact, isEqual, nextIndex, prevIndex } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./tour.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tour.types"
 import { autoUpdate } from "./utils/auto-update"
-
-const getCentered = (size: MachineContext["windowSize"]) => {
-  return { x: size.width / 2, y: size.height / 2, width: 0, height: 0 }
-}
+import { getCenterRect, isEventInRect, offset } from "./utils/rect"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -27,8 +24,9 @@ export function machine(userContext: UserDefinedContext) {
         closeOnInteractOutside: true,
         closeOnEsc: true,
         keyboardNavigation: true,
+        offset: { x: 20, y: 20 },
         ...ctx,
-        currentRect: ref<any>({}),
+        currentRect: ref({ width: 0, height: 0, x: 0, y: 0 }),
         windowSize: ref({ width: 0, height: 0 }),
       },
 
@@ -48,7 +46,8 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        step: ["raiseStepChange", "makeStepTargetInert"],
+        step: ["raiseStepChange", "syncTargetEl"],
+        open: ["toggleVisibility"],
       },
 
       activities: ["trackWindowSize"],
@@ -59,6 +58,12 @@ export function machine(userContext: UserDefinedContext) {
           guard: "isValidStep",
           target: "open:prepare",
         },
+        "STEPS.SET": {
+          actions: ["setSteps"],
+        },
+        "STEP.SET": {
+          actions: ["setStep"],
+        },
       },
 
       states: {
@@ -67,7 +72,11 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             START: {
               target: "open",
-              actions: ["setInitialStep", "invokeOnStart"],
+              actions: ["setInitialStep", "invokeOnOpen"],
+            },
+            OPEN: {
+              target: "open",
+              actions: ["invokeOnOpen"],
             },
           },
         },
@@ -105,19 +114,22 @@ export function machine(userContext: UserDefinedContext) {
       actions: {
         prepareStepTarget(ctx, _evt) {
           const targetEl = ctx.currentStep?.target?.()
+
           if (!targetEl) {
-            ctx.currentRect = getCentered(ctx.windowSize)
+            set.currentRect(ctx, getCenterRect(ctx.windowSize))
             return
           }
 
+          targetEl.scrollIntoView({ behavior: "instant", block: "center", inline: "center" })
+
           const { x, y, width, height } = targetEl.getBoundingClientRect()
-
-          targetEl.scrollIntoView({ behavior: "instant", block: "nearest", inline: "nearest" })
-
-          ctx.currentRect = { x, y, width, height }
+          set.currentRect(ctx, { x, y, width, height })
+        },
+        setStep(ctx, evt) {
+          set.step(ctx, evt.value)
         },
         clearStep(ctx) {
-          ctx.currentRect = ref<any>({})
+          ctx.currentRect = ref({ width: 0, height: 0, x: 0, y: 0 })
           set.step(ctx, null)
         },
         setInitialStep(ctx) {
@@ -145,17 +157,28 @@ export function machine(userContext: UserDefinedContext) {
         raiseStepChange(_ctx, _evt, { send }) {
           send({ type: "STEP.CHANGED" })
         },
-        makeStepTargetInert(ctx) {
-          ctx._inertCleanup?.()
+        syncTargetEl(ctx) {
+          ctx._cleanup?.()
+          ctx._cleanup = undefined
 
           const targetEl = ctx.currentStep?.target?.()
           if (!targetEl) return
 
-          targetEl.inert = true
-
-          ctx._inertCleanup = () => {
-            targetEl.inert = false
+          if (ctx.preventInteraction) {
+            targetEl.inert = true
           }
+
+          targetEl.dataset.tour = ""
+
+          ctx._cleanup = () => {
+            if (ctx.preventInteraction) {
+              targetEl.inert = false
+            }
+            delete targetEl.dataset.tour
+          }
+        },
+        toggleVisibility(ctx, _evt, { send }) {
+          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE" })
         },
       },
       activities: {
@@ -170,10 +193,22 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackDismissableElement(ctx, _evt, { send }) {
           if (ctx.currentStep == null) return
-          return trackDismissableElement(dom.getContentEl(ctx), {
-            exclude: [ctx.currentStep?.target?.() ?? null],
+          let dismiss = true
+          const contentEl = () => dom.getContentEl(ctx)
+          return trackDismissableElement(contentEl, {
+            defer: true,
+            onEscapeKeyDown(event) {
+              event.preventDefault()
+              if (!ctx.closeOnEsc) return
+              send({ type: "CLOSE", src: "keydown" })
+            },
+            onPointerDownOutside(event) {
+              dismiss = !isEventInRect(ctx.currentRect, event.detail.originalEvent)
+            },
             onDismiss() {
-              send({ type: "CLOSE", src: "interact-outside" })
+              if (dismiss) {
+                send({ type: "CLOSE", src: "interact-outside" })
+              }
             },
           })
         },
@@ -183,28 +218,34 @@ export function machine(userContext: UserDefinedContext) {
           if (!targetEl) return
           return autoUpdate(targetEl, () => {
             const { x, y, width, height } = targetEl.getBoundingClientRect()
-            ctx.currentRect = { x, y, width, height }
+            set.currentRect(ctx, { x, y, width, height })
           })
         },
         trapFocus(ctx) {
           let trap: FocusTrap | undefined
-          raf(() => {
-            const el = dom.getContentEl(ctx)
-            if (!el) return
-            trap = createFocusTrap(el, {
+
+          const _cleanup = raf(() => {
+            const contentEl = dom.getContentEl(ctx)
+            if (!contentEl) return
+
+            trap = createFocusTrap(contentEl, {
               escapeDeactivates: false,
               allowOutsideClick: true,
               preventScroll: true,
-              returnFocusOnDeactivate: true,
+              returnFocusOnDeactivate: false,
               document: dom.getDoc(ctx),
-              fallbackFocus: el,
-              setReturnFocus: false,
+              fallbackFocus: contentEl,
             })
+
             try {
               trap.activate()
             } catch {}
           })
-          return () => trap?.deactivate()
+
+          return () => {
+            trap?.deactivate()
+            _cleanup?.()
+          }
         },
         trackPlacement(ctx) {
           if (ctx.currentStep == null) return
@@ -217,21 +258,30 @@ export function machine(userContext: UserDefinedContext) {
             defer: true,
             placement: ctx.currentStep.placement ?? "bottom",
             strategy: "absolute",
+            getAnchorRect(el) {
+              if (!el) return null
+              const { x, y, width, height } = el.getBoundingClientRect()
+              return offset({ x, y, width, height }, [ctx.offset.x, ctx.offset.y])
+            },
             updatePosition({ updatePosition }) {
               if (targetEl()) {
                 updatePosition()
-              } else {
-                ctx.currentRect = getCentered(ctx.windowSize)
-                const positioner = positionerEl()
-                // given the positioner's width and height, and the window size, we can center it
-                const midX = ctx.windowSize.width / 2 - positioner!.offsetWidth / 2
-                const midY = ctx.windowSize.height / 2 - positioner!.offsetHeight / 2
-
-                if (positioner) {
-                  positioner.style.setProperty("--x", `${midX}px`)
-                  positioner.style.setProperty("--y", `${midY}px`)
-                }
+                return
               }
+
+              // Center the tour (if no target is defined)
+              // given the positioner's width and height, and the window size, we can center it
+
+              set.currentRect(ctx, getCenterRect(ctx.windowSize))
+
+              const positioner = positionerEl()
+              if (!positioner) return
+
+              const midX = ctx.windowSize.width / 2 - positioner.offsetWidth / 2
+              const midY = ctx.windowSize.height / 2 - positioner.offsetHeight / 2
+
+              positioner.style.setProperty("--x", `${midX}px`)
+              positioner.style.setProperty("--y", `${midY}px`)
             },
             onComplete(data) {
               ctx.currentPlacement = data.placement
@@ -259,5 +309,8 @@ const set = {
     if (isEqual(ctx.step, stepId)) return
     ctx.step = stepId
     invoke.stepChange(ctx)
+  },
+  currentRect(ctx: MachineContext, rect: Required<AnchorRect>) {
+    ctx.currentRect = offset(rect, [ctx.offset.x, ctx.offset.y])
   },
 }

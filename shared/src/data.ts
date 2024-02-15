@@ -174,26 +174,37 @@ export const treeViewData = {
 
 export const tourData = [
   {
+    id: "step-0",
+    title: "Centered tour (no target)",
+    description: "This is the center of the world. Ready to start the tour?",
+  },
+  {
     id: "step-1",
-    title: "Welcome",
+    title: "Step 1. Welcome",
     description: "To the new world",
     target: () => document.querySelector<HTMLElement>("#step-1"),
   },
   {
     id: "step-2",
-    title: "About",
-    description: "The new world is a great place",
+    title: "Step 2. Inside a scrollable container",
+    description: "Using scrollIntoView(...) rocks!",
     target: () => document.querySelector<HTMLElement>("#step-2"),
   },
   {
-    id: "step-3a",
-    title: "Centered tour?",
-    description: "This is the center of the world",
+    id: "step-3",
+    title: "Step 3. Normal scrolling",
+    description: "The new world is a great place",
+    target: () => document.querySelector<HTMLElement>("#step-3"),
   },
   {
-    id: "step-3",
-    title: "Contact",
-    description: "Get in touch with us",
-    target: () => document.querySelector<HTMLElement>("#step-3"),
+    id: "step-4",
+    title: "Step 4. Close to bottom",
+    description: "So nice to see the scrolling works!",
+    target: () => document.querySelector<HTMLElement>("#step-4"),
+  },
+  {
+    id: "step-5",
+    title: "You're all sorted! (no target)",
+    description: "Thanks for trying out the tour. Enjoy the app!",
   },
 ]

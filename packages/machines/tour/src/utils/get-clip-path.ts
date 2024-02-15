@@ -8,7 +8,7 @@ interface CompositeRadius {
 }
 
 interface Options {
-  rect: AnchorRect
+  rect: Required<AnchorRect>
   rootSize: { width: number; height: number }
   radius: number | CompositeRadius
 }
@@ -16,8 +16,8 @@ interface Options {
 export function getClipPath(options: Options) {
   const {
     radius = 0,
-    rootSize: { width: w = 0, height: h = 0 },
-    rect: { width = 0, height = 0, x = 0, y = 0 },
+    rootSize: { width: w, height: h },
+    rect: { width, height, x, y },
   } = options
 
   const {
