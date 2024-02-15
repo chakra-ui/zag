@@ -1,7 +1,7 @@
 import { createMachine, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getBoundingClientRect, isHTMLElement, raf } from "@zag-js/dom-query"
-import { getPlacement, type AnchorRect } from "@zag-js/popper"
+import { isHTMLElement, raf } from "@zag-js/dom-query"
+import { getPlacement } from "@zag-js/popper"
 import { compact, isEqual, isString, nextIndex, prevIndex } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./tour.dom"
@@ -261,7 +261,7 @@ export function machine(userContext: UserDefinedContext) {
             gutter: 10,
             getAnchorRect(el) {
               if (!isHTMLElement(el)) return null
-              const { x, y, width, height } = getBoundingClientRect(el)
+              const { x, y, width, height } = el.getBoundingClientRect()
               return offset({ x, y, width, height }, [ctx.offset.x, ctx.offset.y])
             },
             updatePosition({ updatePosition }) {
@@ -273,7 +273,7 @@ export function machine(userContext: UserDefinedContext) {
               // Center the tour (if no target is defined)
               // given the positioner's width and height, and the window size, we can center it
 
-              set.currentRect(ctx, getCenterRect(ctx.windowSize))
+              ctx.currentRect = getCenterRect(ctx.windowSize)
 
               const positioner = positionerEl()
               if (!positioner) return
@@ -287,7 +287,7 @@ export function machine(userContext: UserDefinedContext) {
             onComplete(data) {
               const { log } = data.middlewareData
               ctx.currentPlacement = data.placement
-              set.currentRect(ctx, log.rects.reference)
+              ctx.currentRect = log.rects.reference
             },
           })
         },
@@ -312,8 +312,5 @@ const set = {
     if (isEqual(ctx.step, stepId)) return
     ctx.step = stepId
     invoke.stepChange(ctx)
-  },
-  currentRect(ctx: MachineContext, rect: Required<AnchorRect>) {
-    ctx.currentRect = offset(rect, [ctx.offset.x, ctx.offset.y])
   },
 }
