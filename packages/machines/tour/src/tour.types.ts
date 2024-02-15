@@ -6,13 +6,22 @@ import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredB
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export interface StepDetails {
-  id: string
+export interface StepEffectArgs {
+  next(): void
+  update(args: Partial<StepInit>): void
+}
+
+export interface StepInit {
   target?(): HTMLElement | null
   title: any
   description: any
   placement?: Placement
-  [key: string]: any
+  meta?: Record<string, any>
+}
+
+export interface StepDetails extends StepInit {
+  id: string
+  effect?(args: StepEffectArgs): VoidFunction
 }
 
 export interface StepChangeDetails {
@@ -116,7 +125,8 @@ type PrivateContext = Context<{
    * @internal
    * The function to cleanup
    */
-  _cleanup?: () => void
+  _cleanup?: VoidFunction
+  _effectCleanup?: VoidFunction
 }>
 
 type ComputedContext = Readonly<{

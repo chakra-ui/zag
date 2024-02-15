@@ -20,18 +20,8 @@ This project is licensed under the terms of the [MIT license](https://github.com
 
 ## TODOs
 
-- Async renders, via a before hook (maybe the step can be async?)
 - `onComplete` callback
-  <!-- - Review callbacks:
-    - start
-    - stop
-    - next/prev
-    - skip
-    - finish -->
-  <!-- - prevent scroll? per step or globally? -->
 - Interaction outside callbacks
-  <!-- - Multiple Targets.`getOverlayProps` and `getMaskProps` -->
-  <!-- - Pausing a tour -->
 
 ### Docs Examples
 
@@ -48,6 +38,7 @@ Useful for designing product tours, feature highlights, contextual help in your 
 - Handling Cross frame elements (iframes)
 - RTL Support (right to left)
 - Customizing the accessibility labels
+- Asynchronous steps using `effects`
 - Accessibility
   - Keyboard navigation
   - Screen reader support

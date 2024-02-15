@@ -5,7 +5,7 @@ import { getPlacement } from "@zag-js/popper"
 import { compact, isEqual, isString, nextIndex, prevIndex } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./tour.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./tour.types"
+import type { MachineContext, MachineState, StepInit, UserDefinedContext } from "./tour.types"
 import { getCenterRect, isEventInRect, offset } from "./utils/rect"
 
 export function machine(userContext: UserDefinedContext) {
@@ -130,25 +130,26 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearStep(ctx) {
           ctx.currentRect = ref({ width: 0, height: 0, x: 0, y: 0 })
-          set.step(ctx, null)
+          set.step(ctx, -1)
         },
         setInitialStep(ctx, evt) {
           if (ctx.steps.length === 0) return
-          const id = evt.id || ctx.steps[0].id
-          if (!isString(id)) return
-          set.step(ctx, id)
+
+          if (isString(evt.id)) {
+            const idx = ctx.steps.findIndex((s) => s.id === evt.id)
+            set.step(ctx, idx)
+            return
+          }
+
+          set.step(ctx, 0)
         },
         setNextStep(ctx) {
           const idx = nextIndex(ctx.steps, ctx.currentStepIndex)
-          const nextStep = ctx.steps[idx]
-          if (!nextStep) return
-          set.step(ctx, nextStep.id)
+          set.step(ctx, idx)
         },
         setPrevStep(ctx) {
           const idx = prevIndex(ctx.steps, ctx.currentStepIndex)
-          const prevStep = ctx.steps[idx]
-          if (!prevStep) return
-          set.step(ctx, prevStep.id)
+          set.step(ctx, idx)
         },
         invokeOnOpen(ctx) {
           ctx.onOpenChange?.({ open: true })
@@ -308,9 +309,32 @@ const invoke = {
 }
 
 const set = {
-  step(ctx: MachineContext, stepId: string | null) {
-    if (isEqual(ctx.step, stepId)) return
-    ctx.step = stepId
-    invoke.stepChange(ctx)
+  step(ctx: MachineContext, idx: number) {
+    ctx._effectCleanup?.()
+
+    const step = ctx.steps[idx]
+
+    if (!step) {
+      ctx.step = null
+      return
+    }
+
+    if (isEqual(ctx.step, step.id)) return
+
+    const update = (data: Partial<StepInit>) => {
+      ctx.steps[idx] = { ...step, ...data }
+    }
+
+    const next = () => {
+      ctx.step = step.id
+      invoke.stepChange(ctx)
+    }
+
+    if (!step.effect) {
+      next()
+      return
+    }
+
+    ctx._effectCleanup = step.effect({ next, update })
   },
 }
