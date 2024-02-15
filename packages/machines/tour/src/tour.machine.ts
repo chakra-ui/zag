@@ -1,12 +1,11 @@
 import { createMachine, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { raf } from "@zag-js/dom-query"
+import { getBoundingClientRect, isHTMLElement, raf } from "@zag-js/dom-query"
 import { getPlacement, type AnchorRect } from "@zag-js/popper"
 import { compact, isEqual, nextIndex, prevIndex } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./tour.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tour.types"
-import { autoUpdate } from "./utils/auto-update"
 import { getCenterRect, isEventInRect, offset } from "./utils/rect"
 
 export function machine(userContext: UserDefinedContext) {
@@ -24,7 +23,8 @@ export function machine(userContext: UserDefinedContext) {
         closeOnInteractOutside: true,
         closeOnEsc: true,
         keyboardNavigation: true,
-        offset: { x: 20, y: 20 },
+        offset: { x: 10, y: 10 },
+        overlayRadius: 4,
         ...ctx,
         currentRect: ref({ width: 0, height: 0, x: 0, y: 0 }),
         windowSize: ref({ width: 0, height: 0 }),
@@ -83,14 +83,14 @@ export function machine(userContext: UserDefinedContext) {
         "open:prepare": {
           tags: ["open"],
           entry: ["prepareStepTarget"],
-          activities: ["trackStepTarget", "trapFocus", "trackPlacement", "trackDismissableElement"],
+          activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
           after: {
             0: "open",
           },
         },
         open: {
           tags: ["open"],
-          activities: ["trackStepTarget", "trapFocus", "trackPlacement", "trackDismissableElement"],
+          activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
           on: {
             NEXT: {
               actions: ["setNextStep"],
@@ -121,9 +121,6 @@ export function machine(userContext: UserDefinedContext) {
           }
 
           targetEl.scrollIntoView({ behavior: "instant", block: "center", inline: "center" })
-
-          const { x, y, width, height } = targetEl.getBoundingClientRect()
-          set.currentRect(ctx, { x, y, width, height })
         },
         setStep(ctx, evt) {
           set.step(ctx, evt.value)
@@ -191,6 +188,7 @@ export function machine(userContext: UserDefinedContext) {
           win.addEventListener("resize", onResize)
           return () => win.removeEventListener("resize", onResize)
         },
+
         trackDismissableElement(ctx, _evt, { send }) {
           if (ctx.currentStep == null) return
           let dismiss = true
@@ -205,6 +203,11 @@ export function machine(userContext: UserDefinedContext) {
             onPointerDownOutside(event) {
               dismiss = !isEventInRect(ctx.currentRect, event.detail.originalEvent)
             },
+            onInteractOutside(event) {
+              if (!ctx.closeOnInteractOutside) {
+                event.preventDefault()
+              }
+            },
             onDismiss() {
               if (dismiss) {
                 send({ type: "CLOSE", src: "interact-outside" })
@@ -212,15 +215,7 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
-        trackStepTarget(ctx) {
-          if (ctx.currentStep == null) return
-          const targetEl = ctx.currentStep.target?.()
-          if (!targetEl) return
-          return autoUpdate(targetEl, () => {
-            const { x, y, width, height } = targetEl.getBoundingClientRect()
-            set.currentRect(ctx, { x, y, width, height })
-          })
-        },
+
         trapFocus(ctx) {
           let trap: FocusTrap | undefined
 
@@ -259,8 +254,9 @@ export function machine(userContext: UserDefinedContext) {
             placement: ctx.currentStep.placement ?? "bottom",
             strategy: "absolute",
             getAnchorRect(el) {
-              if (!el) return null
-              const { x, y, width, height } = el.getBoundingClientRect()
+              if (!isHTMLElement(el)) return null
+              // for some reason, we have use `getBoundingClientRect` instead of `getRectRelativeToOffsetParent` here
+              const { x, y, width, height } = getBoundingClientRect(el)
               return offset({ x, y, width, height }, [ctx.offset.x, ctx.offset.y])
             },
             updatePosition({ updatePosition }) {
@@ -284,7 +280,9 @@ export function machine(userContext: UserDefinedContext) {
               positioner.style.setProperty("--y", `${midY}px`)
             },
             onComplete(data) {
+              const { log } = data.middlewareData
               ctx.currentPlacement = data.placement
+              set.currentRect(ctx, log.rects.reference)
             },
           })
         },

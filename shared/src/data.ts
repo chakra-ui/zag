@@ -182,7 +182,10 @@ export const tourData = [
     id: "step-1",
     title: "Step 1. Welcome",
     description: "To the new world",
-    target: () => document.querySelector<HTMLElement>("#step-1"),
+    target: () => {
+      const [frameEl] = Array.from(frames)
+      return frameEl?.document.querySelector<HTMLElement>("#step-1")
+    },
   },
   {
     id: "step-2",

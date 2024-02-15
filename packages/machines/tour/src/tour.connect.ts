@@ -25,10 +25,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     placement: state.context.currentPlacement,
   })
 
+  const currentRect = state.context.currentRect
+
   const clipPath = getClipPath({
-    rect: state.context.currentRect,
+    rect: currentRect,
     rootSize: state.context.windowSize,
-    radius: 4,
+    radius: state.context.overlayRadius,
   })
 
   return {
@@ -82,11 +84,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       hidden: !isOpen,
       "data-state": isOpen ? "open" : "closed",
       style: {
-        background: "rgba(0,0,0,0.5)",
         clipPath: `path("${clipPath}")`,
         position: "absolute",
         inset: "0",
         willChange: "clip-path",
+      },
+    }),
+
+    strokeProps: normalize.element({
+      ...parts.stroke.attrs,
+      hidden: !isOpen,
+      style: {
+        position: "absolute",
+        width: `${currentRect.width}px`,
+        height: `${currentRect.height}px`,
+        left: `${currentRect.x}px`,
+        top: `${currentRect.y}px`,
+        borderRadius: `${state.context.overlayRadius}px`,
       },
     }),
 

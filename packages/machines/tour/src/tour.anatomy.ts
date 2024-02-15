@@ -12,6 +12,7 @@ export const anatomy = createAnatomy("tour").parts(
   "positioner",
   "arrow",
   "arrowTip",
+  "stroke",
 )
 
 export const parts = anatomy.build()

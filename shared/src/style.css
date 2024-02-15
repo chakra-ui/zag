@@ -1937,6 +1937,14 @@ main [data-testid="scrubber"] {
   margin-bottom: 20px;
 }
 
+[data-scope="tour"][data-part="overlay"] {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+[data-scope="tour"][data-part="stroke"] {
+  border: 3px solid pink;
+}
+
 .tour.button__group {
   display: flex;
   align-items: flex-start;

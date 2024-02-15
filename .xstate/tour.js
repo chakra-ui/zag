@@ -51,14 +51,14 @@ const fetchMachine = createMachine({
     "open:prepare": {
       tags: ["open"],
       entry: ["prepareStepTarget"],
-      activities: ["trackStepTarget", "trapFocus", "trackPlacement", "trackDismissableElement"],
+      activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
       after: {
         0: "open"
       }
     },
     open: {
       tags: ["open"],
-      activities: ["trackStepTarget", "trapFocus", "trackPlacement", "trackDismissableElement"],
+      activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
       on: {
         NEXT: {
           actions: ["setNextStep"]

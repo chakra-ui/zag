@@ -3,7 +3,7 @@ import { arrow, autoUpdate, computePosition, flip, offset, shift, size } from "@
 import { getWindow, raf } from "@zag-js/dom-query"
 import { compact, isNull, noop, runIfFn } from "@zag-js/utils"
 import { getAnchorElement } from "./get-anchor"
-import { __shiftArrow, __transformOrigin } from "./middleware"
+import { __log, __shiftArrow, __transformOrigin } from "./middleware"
 import { getPlacementDetails } from "./placement"
 import type { MaybeElement, MaybeFn, MaybeRectElement, PositioningOptions } from "./types"
 
@@ -102,9 +102,7 @@ function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOpt
 
 function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeElement, opts: PositioningOptions = {}) {
   const reference = getAnchorElement(referenceOrVirtual, opts.getAnchorRect)
-
   if (!floating || !reference) return
-
   const options = Object.assign({}, defaultOptions, opts)
 
   /* -----------------------------------------------------------------------------
@@ -121,6 +119,7 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     __shiftArrow(arrowEl),
     __transformOrigin,
     __size(options),
+    __log,
   ]
 
   /* -----------------------------------------------------------------------------

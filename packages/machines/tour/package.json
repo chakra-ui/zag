@@ -9,7 +9,11 @@
     "statechart",
     "component",
     "chakra-ui",
-    "tour"
+    "tour",
+    "guide",
+    "app",
+    "walkthrough",
+    "intro"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",

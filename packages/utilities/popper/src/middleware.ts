@@ -49,6 +49,15 @@ export const __transformOrigin: Middleware = {
   },
 }
 
+export const __log: Middleware = {
+  name: "log",
+  fn({ rects }) {
+    return {
+      data: { rects },
+    }
+  },
+}
+
 /* -----------------------------------------------------------------------------
  * Arrow Middleware
  * -----------------------------------------------------------------------------*/

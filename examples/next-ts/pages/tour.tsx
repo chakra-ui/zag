@@ -2,6 +2,7 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { tourControls, tourData } from "@zag-js/shared"
 import * as tour from "@zag-js/tour"
 import { useId } from "react"
+import { IFrame } from "../components/iframe"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -24,10 +25,14 @@ export default function Page() {
   return (
     <>
       <main className="tour">
+        <IFrame>
+          <h1 id="step-1">Welcome home</h1>
+          <button>Click me</button>
+        </IFrame>
         <div>
           <button onClick={api.start}>Start Tour</button>
           <div className="steps__container">
-            <h3 id="step-1">Step 1</h3>
+            {/* <h3 id="step-1">Step 1</h3> */}
             <div className="overflow__container">
               <div className="h-200px" />
               <h3 id="step-2">Step 2</h3>
@@ -40,6 +45,7 @@ export default function Page() {
 
         <Portal>
           <div {...api.overlayProps} />
+          <div {...api.strokeProps} />
           <div {...api.positionerProps}>
             {api.currentStep && (
               <div {...api.contentProps}>

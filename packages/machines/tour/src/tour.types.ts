@@ -71,6 +71,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The offsets to apply to the overlay
    */
   offset: { x: number; y: number }
+  /**
+   * The radius of the overlay clip path
+   */
+  overlayRadius: number
 }
 
 type PrivateContext = Context<{
