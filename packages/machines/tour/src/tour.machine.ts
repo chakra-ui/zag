@@ -82,7 +82,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         "open:prepare": {
           tags: ["open"],
-          entry: ["prepareStepTarget"],
+          entry: ["scrollTargetIntoView"],
           activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
           after: {
             0: "open",
@@ -112,15 +112,9 @@ export function machine(userContext: UserDefinedContext) {
         isOpenControlled: (ctx) => ctx["open.controlled"] !== undefined,
       },
       actions: {
-        prepareStepTarget(ctx, _evt) {
+        scrollTargetIntoView(ctx, _evt) {
           const targetEl = ctx.currentStep?.target?.()
-
-          if (!targetEl) {
-            set.currentRect(ctx, getCenterRect(ctx.windowSize))
-            return
-          }
-
-          targetEl.scrollIntoView({ behavior: "instant", block: "center", inline: "center" })
+          targetEl?.scrollIntoView({ behavior: "instant", block: "center", inline: "center" })
         },
         setStep(ctx, evt) {
           set.step(ctx, evt.value)
@@ -253,9 +247,9 @@ export function machine(userContext: UserDefinedContext) {
             defer: true,
             placement: ctx.currentStep.placement ?? "bottom",
             strategy: "absolute",
+            gutter: 10,
             getAnchorRect(el) {
               if (!isHTMLElement(el)) return null
-              // for some reason, we have use `getBoundingClientRect` instead of `getRectRelativeToOffsetParent` here
               const { x, y, width, height } = getBoundingClientRect(el)
               return offset({ x, y, width, height }, [ctx.offset.x, ctx.offset.y])
             },

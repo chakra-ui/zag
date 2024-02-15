@@ -1,11 +1,12 @@
-import * as tour from "@zag-js/tour"
-import { normalizeProps, useMachine } from "@zag-js/solid"
-import { Show, createMemo, createUniqueId } from "solid-js"
 import { tourControls, tourData } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import * as tour from "@zag-js/tour"
+import { Show, createMemo, createUniqueId } from "solid-js"
+import { Portal } from "solid-js/web"
+import { IFrame } from "../components/iframe"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-import { Portal } from "solid-js/web"
 
 export default function Page() {
   const controls = useControls(tourControls)
@@ -21,6 +22,7 @@ export default function Page() {
       <main class="tour">
         <div>
           <button onClick={api().start}>Start Tour</button>
+
           <div class="steps__container">
             <h3 id="step-1">Step 1</h3>
             <div class="overflow__container">
@@ -28,6 +30,13 @@ export default function Page() {
               <h3 id="step-2">Step 2</h3>
               <div class="h-100px" />
             </div>
+            <IFrame>
+              <h1 id="step-2a">Iframe Content</h1>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.
+              </p>
+            </IFrame>
             <h3 id="step-3">Step 3</h3>
             <h3 id="step-4">Step 4</h3>
           </div>

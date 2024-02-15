@@ -50,7 +50,7 @@ const fetchMachine = createMachine({
     },
     "open:prepare": {
       tags: ["open"],
-      entry: ["prepareStepTarget"],
+      entry: ["scrollTargetIntoView"],
       activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
       after: {
         0: "open"

@@ -182,16 +182,22 @@ export const tourData = [
     id: "step-1",
     title: "Step 1. Welcome",
     description: "To the new world",
-    target: () => {
-      const [frameEl] = Array.from(frames)
-      return frameEl?.document.querySelector<HTMLElement>("#step-1")
-    },
+    target: () => document.querySelector<HTMLElement>("#step-1"),
   },
   {
     id: "step-2",
     title: "Step 2. Inside a scrollable container",
     description: "Using scrollIntoView(...) rocks!",
     target: () => document.querySelector<HTMLElement>("#step-2"),
+  },
+  {
+    id: "step-2a",
+    title: "Step 2a. Inside an Iframe container",
+    description: "It calculates the offset rect correctly. Thanks to floating UI!",
+    target: () => {
+      const [frameEl] = Array.from(frames)
+      return frameEl?.document.querySelector<HTMLElement>("#step-2a")
+    },
   },
   {
     id: "step-3",

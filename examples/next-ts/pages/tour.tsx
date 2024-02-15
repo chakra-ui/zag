@@ -25,19 +25,22 @@ export default function Page() {
   return (
     <>
       <main className="tour">
-        <IFrame>
-          <h1 id="step-1">Welcome home</h1>
-          <button>Click me</button>
-        </IFrame>
         <div>
           <button onClick={api.start}>Start Tour</button>
           <div className="steps__container">
-            {/* <h3 id="step-1">Step 1</h3> */}
+            <h3 id="step-1">Step 1</h3>
             <div className="overflow__container">
               <div className="h-200px" />
               <h3 id="step-2">Step 2</h3>
               <div className="h-100px" />
             </div>
+            <IFrame>
+              <h1 id="step-2a">Iframe Content</h1>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.
+              </p>
+            </IFrame>
             <h3 id="step-3">Step 3</h3>
             <h3 id="step-4">Step 4</h3>
           </div>
