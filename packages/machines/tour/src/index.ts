@@ -8,4 +8,6 @@ export type {
   OpenChangeDetails,
   StepChangeDetails,
   StepDetails,
+  StepEffectArgs,
+  StepInit,
 } from "./tour.types"
