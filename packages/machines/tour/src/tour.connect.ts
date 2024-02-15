@@ -142,7 +142,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       role: "alertdialog",
       "aria-modal": "true",
-      "aria-live": "assertive",
+      "aria-live": "polite",
       hidden: !isOpen,
       "data-state": isOpen ? "open" : "closed",
       "data-placement": hasTarget ? state.context.currentPlacement : "center",
