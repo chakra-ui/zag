@@ -21,20 +21,19 @@ This project is licensed under the terms of the [MIT license](https://github.com
 ## TODOs
 
 - Async renders, via a before hook (maybe the step can be async?)
-- Multiple Targets.`getOverlayProps` and `getMaskProps`
 - `onComplete` callback
-- Review callbacks:
-  - start
-  - stop
-  - next/prev
-  - skip
-  - finish
-- prevent scroll? per step or globally?
-- Customize aria-labels
+  <!-- - Review callbacks:
+    - start
+    - stop
+    - next/prev
+    - skip
+    - finish -->
+  <!-- - prevent scroll? per step or globally? -->
 - Interaction outside callbacks
-- Pausing a tour
+  <!-- - Multiple Targets.`getOverlayProps` and `getMaskProps` -->
+  <!-- - Pausing a tour -->
 
-### Examples
+### Docs Examples
 
 Useful for designing product tours, feature highlights, contextual help in your application.
 
@@ -48,6 +47,7 @@ Useful for designing product tours, feature highlights, contextual help in your 
 - Disabling keyboard navigation
 - Handling Cross frame elements (iframes)
 - RTL Support (right to left)
+- Customizing the accessibility labels
 - Accessibility
   - Keyboard navigation
   - Screen reader support
