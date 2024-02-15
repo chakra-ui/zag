@@ -30,7 +30,7 @@ export default function Page() {
             <h3 id="step-1">Step 1</h3>
             <div className="overflow__container">
               <div className="h-200px" />
-              <div id="step-2">Step 2</div>
+              <h3 id="step-2">Step 2</h3>
               <div className="h-100px" />
             </div>
             <h3 id="step-3">Step 3</h3>
