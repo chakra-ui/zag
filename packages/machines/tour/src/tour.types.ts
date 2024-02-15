@@ -1,6 +1,10 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { AnchorRect, Placement } from "@zag-js/popper"
-import type { CommonProperties, Context, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
 
 export interface StepDetails {
   id: string
@@ -21,6 +25,17 @@ export interface StepChangeDetails {
 export interface OpenChangeDetails {
   open: boolean
 }
+
+export interface IntlTranslations {
+  progressText?({ current, total }: { current: number; total: number }): string
+  nextStepLabel?: string
+  prevStepLabel?: string
+  closeLabel?: string
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
@@ -75,6 +90,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The radius of the overlay clip path
    */
   overlayRadius: number
+  /**
+   * The translations for the tour
+   */
+  translations: IntlTranslations
 }
 
 type PrivateContext = Context<{
@@ -139,3 +158,98 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
+  /**
+   * The index of the current step
+   */
+  currentIndex: number
+  /**
+   * The current step details
+   */
+  currentStep: StepDetails | null
+  /**
+   * Whether there is a next step
+   */
+  hasNextStep: boolean
+  /**
+   * Whether there is a previous step
+   */
+  hasPrevStep: boolean
+  /**
+   * Whether the current step is the first step
+   */
+  isFirstStep: boolean
+  /**
+   * Whether the current step is the last step
+   */
+  isLastStep: boolean
+  /**
+   * Add a new step to the tour
+   */
+  addStep(step: StepDetails): void
+  /**
+   * Remove a step from the tour
+   */
+  removeStep(id: string): void
+  /**
+   * Update a step in the tour with partial details
+   */
+  updateStep(id: string, stepOverrides: Partial<StepDetails>): void
+  /**
+   * Set the steps of the tour
+   */
+  setSteps(steps: StepDetails[]): void
+  /**
+   * Set the current step of the tour
+   */
+  setStep(id: string): void
+  /**
+   * Start the tour at a specific step (or the first step if not provided)
+   */
+  start(id?: string): void
+  /**
+   * Check if a step is valid
+   */
+  isValidStep(id: string): boolean
+  /**
+   * Move to the next step
+   */
+  next(): void
+  /**
+   * Move to the previous step
+   */
+  prev(): void
+  /**
+   * Open the tour
+   */
+  close(): void
+  /**
+   * Close the tour
+   */
+  open(): void
+  /**
+   * Get the progress text
+   */
+  getProgressText(): string
+
+  overlayProps: T["element"]
+  spotlightProps: T["element"]
+  progressTextProps: T["element"]
+
+  positionerProps: T["element"]
+  arrowProps: T["element"]
+  arrowTipProps: T["element"]
+  contentProps: T["element"]
+
+  titleProps: T["element"]
+  descriptionProps: T["element"]
+
+  nextTriggerProps: T["button"]
+  prevTriggerProps: T["button"]
+  closeTriggerProps: T["button"]
+}

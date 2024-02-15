@@ -24,7 +24,7 @@ export default defineComponent({
         <>
           <main class="tour">
             <div>
-              <button onClick={api.start}>Start Tour</button>
+              <button onClick={() => api.start()}>Start Tour</button>
               <div class="steps__container">
                 <h3 id="step-1">Step 1</h3>
                 <div class="overflow__container">
@@ -39,7 +39,7 @@ export default defineComponent({
 
             <Teleport to="body">
               <div {...api.overlayProps} />
-              <div {...api.strokeProps} />
+              <div {...api.spotlightProps} />
               <div {...api.positionerProps}>
                 {api.currentStep && (
                   <div {...api.contentProps}>

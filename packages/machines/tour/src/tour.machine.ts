@@ -2,7 +2,7 @@ import { createMachine, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { getBoundingClientRect, isHTMLElement, raf } from "@zag-js/dom-query"
 import { getPlacement, type AnchorRect } from "@zag-js/popper"
-import { compact, isEqual, nextIndex, prevIndex } from "@zag-js/utils"
+import { compact, isEqual, isString, nextIndex, prevIndex } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./tour.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tour.types"
@@ -25,6 +25,15 @@ export function machine(userContext: UserDefinedContext) {
         keyboardNavigation: true,
         offset: { x: 10, y: 10 },
         overlayRadius: 4,
+        translations: {
+          nextStepLabel: "next step",
+          prevStepLabel: "previous step",
+          closeLabel: "Close tour",
+          progressText({ current, total }) {
+            return `${current + 1} of ${total}`
+          },
+          ...ctx.translations,
+        },
         ...ctx,
         currentRect: ref({ width: 0, height: 0, x: 0, y: 0 }),
         windowSize: ref({ width: 0, height: 0 }),
@@ -123,9 +132,11 @@ export function machine(userContext: UserDefinedContext) {
           ctx.currentRect = ref({ width: 0, height: 0, x: 0, y: 0 })
           set.step(ctx, null)
         },
-        setInitialStep(ctx) {
+        setInitialStep(ctx, evt) {
           if (ctx.steps.length === 0) return
-          set.step(ctx, ctx.steps[0].id)
+          const id = evt.id || ctx.steps[0].id
+          if (!isString(id)) return
+          set.step(ctx, id)
         },
         setNextStep(ctx) {
           const idx = nextIndex(ctx.steps, ctx.currentStepIndex)
@@ -159,13 +170,13 @@ export function machine(userContext: UserDefinedContext) {
             targetEl.inert = true
           }
 
-          targetEl.dataset.tour = ""
+          targetEl.setAttribute("data-tour-highlighted", "")
 
           ctx._cleanup = () => {
             if (ctx.preventInteraction) {
               targetEl.inert = false
             }
-            delete targetEl.dataset.tour
+            targetEl.removeAttribute("data-tour-highlighted")
           }
         },
         toggleVisibility(ctx, _evt, { send }) {

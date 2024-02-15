@@ -2,7 +2,6 @@ import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("tour").parts(
   "content",
-  "overlay",
   "nextTrigger",
   "prevTrigger",
   "closeTrigger",
@@ -12,7 +11,8 @@ export const anatomy = createAnatomy("tour").parts(
   "positioner",
   "arrow",
   "arrowTip",
-  "stroke",
+  "overlay",
+  "spotlight",
 )
 
 export const parts = anatomy.build()

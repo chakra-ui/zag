@@ -26,7 +26,7 @@ export default function Page() {
     <>
       <main className="tour">
         <div>
-          <button onClick={api.start}>Start Tour</button>
+          <button onClick={() => api.start()}>Start Tour</button>
           <div className="steps__container">
             <h3 id="step-1">Step 1</h3>
             <div className="overflow__container">
@@ -48,7 +48,7 @@ export default function Page() {
 
         <Portal>
           <div {...api.overlayProps} />
-          <div {...api.strokeProps} />
+          <div {...api.spotlightProps} />
           <div {...api.positionerProps}>
             {api.currentStep && (
               <div {...api.contentProps}>

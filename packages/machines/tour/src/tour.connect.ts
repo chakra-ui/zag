@@ -3,10 +3,10 @@ import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tour.anatomy"
 import { dom } from "./tour.dom"
-import type { Send, State, StepDetails } from "./tour.types"
+import type { MachineApi, Send, State } from "./tour.types"
 import { getClipPath } from "./utils/get-clip-path"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isOpen = state.hasTag("open")
 
   const steps = Array.from(state.context.steps)
@@ -40,26 +40,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     hasPrevStep,
     isFirstStep,
     isLastStep,
-    addStep(step: StepDetails) {
+    addStep(step) {
       const next = steps.concat(step)
       send({ type: "STEPS.SET", value: next, src: "addStep" })
     },
-    removeStep(id: string) {
+    removeStep(id) {
       const next = steps.filter((step) => step.id !== id)
       send({ type: "STEPS.SET", value: next, src: "removeStep" })
     },
-    updateStep(id: string, stepOverrides: Partial<StepDetails>) {
+    updateStep(id, stepOverrides) {
       const next = steps.map((step) => (step.id === id ? mergeProps(step, stepOverrides) : step))
-      send({ type: "STEPS.SET", id, value: next, src: "updateStep" })
+      send({ type: "STEPS.SET", value: next, src: "updateStep" })
     },
-    setSteps(steps: StepDetails[]) {
+    setSteps(steps) {
       send({ type: "STEPS.SET", value: steps, src: "setSteps" })
     },
-    setStep(id: string) {
+    setStep(id) {
       send({ type: "STEP.SET", value: id })
     },
-    start() {
-      send({ type: "START" })
+    start(id) {
+      send({ type: "START", id })
+    },
+    isValidStep(id) {
+      return steps.some((step) => step.id === id)
     },
     next() {
       send({ type: "NEXT" })
@@ -74,13 +77,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "CLOSE" })
     },
     getProgressText() {
-      if (index === -1) return ""
-      return `Step ${index} / ${steps.length}`
+      const details = { current: index + 1, total: steps.length }
+      return state.context.translations.progressText?.(details) ?? ""
     },
 
     overlayProps: normalize.element({
       ...parts.overlay.attrs,
       id: dom.getOverlayId(state.context),
+      dir: state.context.dir,
       hidden: !isOpen,
       "data-state": isOpen ? "open" : "closed",
       style: {
@@ -91,8 +95,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    strokeProps: normalize.element({
-      ...parts.stroke.attrs,
+    spotlightProps: normalize.element({
+      ...parts.spotlight.attrs,
       hidden: !isOpen,
       style: {
         position: "absolute",
@@ -101,6 +105,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         left: `${currentRect.x}px`,
         top: `${currentRect.y}px`,
         borderRadius: `${state.context.overlayRadius}px`,
+        pointerEvents: "none",
       },
     }),
 
@@ -134,8 +139,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     contentProps: normalize.element({
       ...parts.content.attrs,
       id: dom.getContentId(state.context),
-      role: "dialog",
+      dir: state.context.dir,
+      role: "alertdialog",
       "aria-modal": "true",
+      "aria-live": "assertive",
       hidden: !isOpen,
       "data-state": isOpen ? "open" : "closed",
       "data-placement": hasTarget ? state.context.currentPlacement : "center",
@@ -144,14 +151,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-describedby": dom.getDescriptionId(state.context),
       tabIndex: -1,
       onKeyDown(event) {
+        const isRtl = state.context.dir === "rtl"
         switch (event.key) {
           case "ArrowRight":
             if (!hasNextStep) return
-            send({ type: "NEXT", src: "keydown" })
+            send({ type: isRtl ? "PREV" : "NEXT", src: "keydown" })
             break
           case "ArrowLeft":
             if (!hasPrevStep) return
-            send({ type: "PREV", src: "keydown" })
+            send({ type: isRtl ? "NEXT" : "PREV", src: "keydown" })
             break
           default:
             break
@@ -174,7 +182,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     nextTriggerProps: normalize.button({
       disabled: !hasNextStep,
       ...parts.nextTrigger.attrs,
-      "aria-label": "Go to next step",
+      "aria-label": state.context.translations.nextStepLabel,
       onClick() {
         send({ type: "NEXT", src: "nextTrigger" })
       },
@@ -184,7 +192,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled: !hasPrevStep,
       ...parts.prevTrigger.attrs,
       type: "button",
-      "aria-label": "Go to previous step",
+      "aria-label": state.context.translations.prevStepLabel,
       onClick() {
         send({ type: "PREV", src: "prevTrigger" })
       },
@@ -193,7 +201,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     closeTriggerProps: normalize.button({
       ...parts.closeTrigger.attrs,
       type: "button",
-      "aria-label": "Close tour",
+      "aria-label": state.context.translations.closeLabel,
       onClick() {
         send({ type: "CLOSE", src: "closeTrigger" })
       },
