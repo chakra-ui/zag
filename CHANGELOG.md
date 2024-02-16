@@ -10,7 +10,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 ### Fixed
 
-- **Collpasible**: Export missing types for clipboard machine
+- **Collapsible**: Export missing types for clipboard machine
 - **Tooltip**: Fix issue where disabled tooltip flashes when hovering and clicking the trigger
 
 ## [0.36.2](./#0.36.2) - 2024-02-13
