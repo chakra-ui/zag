@@ -3,7 +3,7 @@ import { arrow, autoUpdate, computePosition, flip, offset, shift, size } from "@
 import { getWindow, raf } from "@zag-js/dom-query"
 import { compact, isNull, noop, runIfFn } from "@zag-js/utils"
 import { getAnchorElement } from "./get-anchor"
-import { __log, __shiftArrow, __transformOrigin } from "./middleware"
+import { __rects, __shiftArrow, __transformOrigin } from "./middleware"
 import { getPlacementDetails } from "./placement"
 import type { MaybeElement, MaybeFn, MaybeRectElement, PositioningOptions } from "./types"
 
@@ -119,7 +119,7 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     __shiftArrow(arrowEl),
     __transformOrigin,
     __size(options),
-    __log,
+    __rects,
   ]
 
   /* -----------------------------------------------------------------------------

@@ -5,6 +5,7 @@ export const anatomy = createAnatomy("tour").parts(
   "nextTrigger",
   "prevTrigger",
   "closeTrigger",
+  "skipTrigger",
   "progressText",
   "title",
   "description",

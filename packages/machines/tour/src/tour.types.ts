@@ -1,4 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
+import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { AnchorRect, Placement } from "@zag-js/popper"
 import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -12,15 +13,40 @@ export interface StepEffectArgs {
 }
 
 export interface StepInit {
+  /**
+   * Function to return the target element to highlight
+   */
   target?(): HTMLElement | null
+  /**
+   * The title of the step
+   */
   title: any
+  /**
+   * The description of the step
+   */
   description: any
+  /**
+   * The image or video to display in the step
+   */
+  media?: any
+  /**
+   * The placement of the step
+   */
   placement?: Placement
+  /**
+   * Additional metadata of the step
+   */
   meta?: Record<string, any>
 }
 
 export interface StepDetails extends StepInit {
+  /**
+   * The unique identifier of the step
+   */
   id: string
+  /**
+   * The effect to run before the step is shown
+   */
   effect?(args: StepEffectArgs): VoidFunction
 }
 
@@ -31,22 +57,36 @@ export interface StepChangeDetails {
   complete: boolean
 }
 
-export interface OpenChangeDetails {
-  open: boolean
+export type StepStatus = "idle" | "started" | "skipped" | "completed" | "stopped"
+
+export interface StatusChangeDetails {
+  status: StepStatus
+  step: string | null
+}
+
+export interface ProgressTextDetails {
+  current: number
+  total: number
 }
 
 export interface IntlTranslations {
-  progressText?({ current, total }: { current: number; total: number }): string
-  nextStepLabel?: string
-  prevStepLabel?: string
-  closeLabel?: string
+  progressText?(details: ProgressTextDetails): string
+  nextStep?: string
+  prevStep?: string
+  close?: string
+  skip?: string
+}
+
+export interface Offset {
+  x: number
+  y: number
 }
 
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The steps of the tour
    */
@@ -62,11 +102,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Callback when the tour is opened or closed
    */
-  onOpenChange?(details: OpenChangeDetails): void
-  /**
-   * Callback when the tour is completed
-   */
-  onCompleted?(): void
+  onStatusChange?(details: StatusChangeDetails): void
   /**
    * Whether to close the tour when the user clicks outside the tour
    */
@@ -84,25 +120,21 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   preventInteraction: boolean
   /**
-   * Whether the tour is open
-   */
-  open?: boolean
-  /**
-   *  Whether the tour's open state is controlled by the user
-   */
-  "open.controlled"?: boolean
-  /**
    * The offsets to apply to the overlay
    */
-  offset: { x: number; y: number }
+  offset: Offset
   /**
    * The radius of the overlay clip path
    */
-  overlayRadius: number
+  radius: number
   /**
    * The translations for the tour
    */
   translations: IntlTranslations
+  /**
+   * The behavior when the tour is skipped
+   */
+  skipBehavior: "skip-step" | "complete"
 }
 
 type PrivateContext = Context<{
@@ -118,14 +150,18 @@ type PrivateContext = Context<{
   currentPlacement?: Placement
   /**
    * @internal
-   * The size of the window
+   * The size of the boundary element (default to the window size)
    */
-  windowSize: { width: number; height: number }
+  boundarySize: { width: number; height: number }
   /**
    * @internal
-   * The function to cleanup
+   * The function to cleanup the target attributes
    */
-  _cleanup?: VoidFunction
+  _targetCleanup?: VoidFunction
+  /**
+   * @internal
+   * The function to cleanup the step effects
+   */
   _effectCleanup?: VoidFunction
 }>
 
@@ -162,7 +198,7 @@ export interface MachineContext extends PublicContext, PrivateContext, ComputedC
 
 export interface MachineState {
   tags: "closed" | "open"
-  value: "closed" | "open" | "open:prepare"
+  value: "closed" | "open" | "scrolling"
 }
 
 export type State = S.State<MachineContext, MachineState>
@@ -227,6 +263,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   isValidStep(id: string): boolean
   /**
+   * Check if a step is visible
+   */
+  isCurrentStep(id: string): boolean
+  /**
    * Move to the next step
    */
   next(): void
@@ -235,13 +275,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   prev(): void
   /**
-   * Open the tour
+   * Skip the tour. The behavior is defined by the `skipBehavior` option
    */
-  close(): void
-  /**
-   * Close the tour
-   */
-  open(): void
+  skip(): void
   /**
    * Get the progress text
    */
@@ -262,4 +298,5 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   nextTriggerProps: T["button"]
   prevTriggerProps: T["button"]
   closeTriggerProps: T["button"]
+  skipTriggerProps: T["button"]
 }

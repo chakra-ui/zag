@@ -49,11 +49,15 @@ export const __transformOrigin: Middleware = {
   },
 }
 
-export const __log: Middleware = {
-  name: "log",
+/* -----------------------------------------------------------------------------
+ * Rect Middleware (to expose the rect data)
+ * -----------------------------------------------------------------------------*/
+
+export const __rects: Middleware = {
+  name: "rects",
   fn({ rects }) {
     return {
-      data: { rects },
+      data: rects,
     }
   },
 }

@@ -5,6 +5,7 @@ import { parts } from "./tour.anatomy"
 import { dom } from "./tour.dom"
 import type { MachineApi, Send, State } from "./tour.types"
 import { getClipPath } from "./utils/get-clip-path"
+import { dataAttr } from "@zag-js/dom-query"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isOpen = state.hasTag("open")
@@ -29,8 +30,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const clipPath = getClipPath({
     rect: currentRect,
-    rootSize: state.context.windowSize,
-    radius: state.context.overlayRadius,
+    rootSize: state.context.boundarySize,
+    radius: state.context.radius,
   })
 
   return {
@@ -64,17 +65,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isValidStep(id) {
       return steps.some((step) => step.id === id)
     },
+    isCurrentStep(id) {
+      return Boolean(step?.id === id)
+    },
     next() {
       send({ type: "NEXT" })
     },
     prev() {
       send({ type: "PREV" })
     },
-    open() {
-      send({ type: "OPEN" })
-    },
-    close() {
-      send({ type: "CLOSE" })
+    skip() {
+      send({ type: "SKIP" })
     },
     getProgressText() {
       const details = { current: index + 1, total: steps.length }
@@ -104,7 +105,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         height: `${currentRect.height}px`,
         left: `${currentRect.x}px`,
         top: `${currentRect.y}px`,
-        borderRadius: `${state.context.overlayRadius}px`,
+        borderRadius: `${state.context.radius}px`,
         pointerEvents: "none",
       },
     }),
@@ -181,19 +182,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     nextTriggerProps: normalize.button({
-      disabled: !hasNextStep,
       ...parts.nextTrigger.attrs,
-      "aria-label": state.context.translations.nextStepLabel,
+      disabled: !hasNextStep,
+      "data-disabled": dataAttr(!hasNextStep),
+      "aria-label": state.context.translations.nextStep,
       onClick() {
         send({ type: "NEXT", src: "nextTrigger" })
       },
     }),
 
     prevTriggerProps: normalize.button({
-      disabled: !hasPrevStep,
       ...parts.prevTrigger.attrs,
+      disabled: !hasPrevStep,
+      "data-disabled": dataAttr(!hasPrevStep),
       type: "button",
-      "aria-label": state.context.translations.prevStepLabel,
+      "aria-label": state.context.translations.prevStep,
       onClick() {
         send({ type: "PREV", src: "prevTrigger" })
       },
@@ -202,9 +205,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     closeTriggerProps: normalize.button({
       ...parts.closeTrigger.attrs,
       type: "button",
-      "aria-label": state.context.translations.closeLabel,
+      "aria-label": state.context.translations.close,
       onClick() {
-        send({ type: "CLOSE", src: "closeTrigger" })
+        send({ type: "STOP", src: "closeTrigger" })
+      },
+    }),
+
+    skipTriggerProps: normalize.button({
+      ...parts.skipTrigger.attrs,
+      type: "button",
+      "aria-label": state.context.translations.skip,
+      onClick() {
+        send({ type: "SKIP" })
       },
     }),
   }

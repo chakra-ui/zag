@@ -13,8 +13,7 @@ export function machine(userContext: UserDefinedContext) {
   return createMachine<MachineContext, MachineState>(
     {
       id: "tour",
-
-      initial: ctx.open ? "open" : "closed",
+      initial: "closed",
 
       context: {
         step: null,
@@ -24,19 +23,19 @@ export function machine(userContext: UserDefinedContext) {
         closeOnEsc: true,
         keyboardNavigation: true,
         offset: { x: 10, y: 10 },
-        overlayRadius: 4,
+        radius: 4,
+        skipBehavior: "complete",
         translations: {
-          nextStepLabel: "next step",
-          prevStepLabel: "previous step",
-          closeLabel: "Close tour",
-          progressText({ current, total }) {
-            return `${current + 1} of ${total}`
-          },
+          nextStep: "next step",
+          prevStep: "previous step",
+          close: "close tour",
+          progressText: ({ current, total }) => `${current + 1} of ${total}`,
+          skip: "skip tour",
           ...ctx.translations,
         },
         ...ctx,
         currentRect: ref({ width: 0, height: 0, x: 0, y: 0 }),
-        windowSize: ref({ width: 0, height: 0 }),
+        boundarySize: ref({ width: 0, height: 0 }),
       },
 
       computed: {
@@ -55,18 +54,14 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        step: ["raiseStepChange", "syncTargetEl"],
-        open: ["toggleVisibility"],
+        step: ["raiseStepChange", "syncTargetAttrs"],
       },
 
-      activities: ["trackWindowSize"],
-      exit: ["clearStep"],
+      activities: ["trackBoundarySize"],
+
+      exit: ["clearStep", "cleanupFns"],
 
       on: {
-        "STEP.CHANGED": {
-          guard: "isValidStep",
-          target: "open:prepare",
-        },
         "STEPS.SET": {
           actions: ["setSteps"],
         },
@@ -81,17 +76,17 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             START: {
               target: "open",
-              actions: ["setInitialStep", "invokeOnOpen"],
+              actions: ["setInitialStep", "invokeOnStart"],
             },
-            OPEN: {
-              target: "open",
-              actions: ["invokeOnOpen"],
+            RESUME: {
+              target: "scrolling",
+              actions: ["invokeOnStart"],
             },
           },
         },
-        "open:prepare": {
+        scrolling: {
           tags: ["open"],
-          entry: ["scrollTargetIntoView"],
+          entry: ["scrollStepTargetIntoView"],
           activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
           after: {
             0: "open",
@@ -101,29 +96,59 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["open"],
           activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
           on: {
+            "STEP.CHANGED": {
+              guard: "isValidStep",
+              target: "scrolling",
+            },
             NEXT: {
               actions: ["setNextStep"],
             },
             PREV: {
               actions: ["setPrevStep"],
             },
-            CLOSE: {
+            PAUSE: {
               target: "closed",
-              actions: ["clearStep", "invokeOnClose"],
+              actions: ["invokeOnStop"],
             },
+            SKIP: [
+              {
+                guard: "completeOnSkip",
+                target: "closed",
+                actions: ["invokeOnComplete", "invokeOnSkip", "clearStep"],
+              },
+              {
+                actions: ["invokeOnSkip", "setNextStep"],
+              },
+            ],
+            STOP: [
+              {
+                guard: "isLastStep",
+                target: "closed",
+                actions: ["invokeOnStop", "invokeOnComplete", "clearStep"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnStop", "clearStep"],
+              },
+            ],
           },
         },
       },
     },
     {
       guards: {
+        isLastStep: (ctx) => ctx.isLastStep,
         isValidStep: (ctx) => ctx.step != null,
-        isOpenControlled: (ctx) => ctx["open.controlled"] !== undefined,
+        completeOnSkip: (ctx) => ctx.skipBehavior === "complete",
       },
       actions: {
-        scrollTargetIntoView(ctx, _evt) {
+        scrollStepTargetIntoView(ctx, _evt) {
           const targetEl = ctx.currentStep?.target?.()
-          targetEl?.scrollIntoView({ behavior: "instant", block: "center", inline: "center" })
+          targetEl?.scrollIntoView({
+            behavior: "instant",
+            block: "center",
+            inline: "center",
+          })
         },
         setStep(ctx, evt) {
           set.step(ctx, evt.value)
@@ -151,72 +176,87 @@ export function machine(userContext: UserDefinedContext) {
           const idx = prevIndex(ctx.steps, ctx.currentStepIndex)
           set.step(ctx, idx)
         },
-        invokeOnOpen(ctx) {
-          ctx.onOpenChange?.({ open: true })
+        invokeOnStart(ctx) {
+          ctx.onStatusChange?.({ status: "started", step: ctx.step })
         },
-        invokeOnClose(ctx) {
-          ctx.onOpenChange?.({ open: false })
+        invokeOnStop(ctx) {
+          ctx.onStatusChange?.({ status: "stopped", step: ctx.step })
+        },
+        invokeOnComplete(ctx) {
+          ctx.onStatusChange?.({ status: "completed", step: ctx.step })
+        },
+        invokeOnSkip(ctx) {
+          ctx.onStatusChange?.({ status: "skipped", step: ctx.step })
         },
         raiseStepChange(_ctx, _evt, { send }) {
           send({ type: "STEP.CHANGED" })
         },
-        syncTargetEl(ctx) {
-          ctx._cleanup?.()
-          ctx._cleanup = undefined
+        syncTargetAttrs(ctx) {
+          ctx._targetCleanup?.()
+          ctx._targetCleanup = undefined
 
           const targetEl = ctx.currentStep?.target?.()
           if (!targetEl) return
 
-          if (ctx.preventInteraction) {
-            targetEl.inert = true
-          }
+          if (ctx.preventInteraction) targetEl.inert = true
 
           targetEl.setAttribute("data-tour-highlighted", "")
 
-          ctx._cleanup = () => {
-            if (ctx.preventInteraction) {
-              targetEl.inert = false
-            }
+          ctx._targetCleanup = () => {
+            if (ctx.preventInteraction) targetEl.inert = false
             targetEl.removeAttribute("data-tour-highlighted")
           }
         },
-        toggleVisibility(ctx, _evt, { send }) {
-          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE" })
+        cleanupFns(ctx) {
+          ctx._targetCleanup?.()
+          ctx._targetCleanup = undefined
+
+          ctx._effectCleanup?.()
+          ctx._effectCleanup = undefined
         },
       },
       activities: {
-        trackWindowSize(ctx) {
+        trackBoundarySize(ctx) {
+          // Use window size as boundary for now
           const win = dom.getWin(ctx)
           const onResize = () => {
-            ctx.windowSize = { width: win.innerWidth, height: win.innerHeight }
+            ctx.boundarySize = { width: win.innerWidth, height: win.innerHeight }
           }
           onResize()
+
           win.addEventListener("resize", onResize)
-          return () => win.removeEventListener("resize", onResize)
+          return () => {
+            win.removeEventListener("resize", onResize)
+          }
         },
 
         trackDismissableElement(ctx, _evt, { send }) {
           if (ctx.currentStep == null) return
+
           let dismiss = true
-          const contentEl = () => dom.getContentEl(ctx)
-          return trackDismissableElement(contentEl, {
+          const getContentEl = () => dom.getContentEl(ctx)
+
+          return trackDismissableElement(getContentEl, {
             defer: true,
             onEscapeKeyDown(event) {
               event.preventDefault()
               if (!ctx.closeOnEsc) return
-              send({ type: "CLOSE", src: "keydown" })
+              send({ type: "STOP", src: "esc" })
             },
+            onFocusOutside: ctx.onFocusOutside,
             onPointerDownOutside(event) {
+              ctx.onPointerDownOutside?.(event)
               dismiss = !isEventInRect(ctx.currentRect, event.detail.originalEvent)
             },
             onInteractOutside(event) {
+              ctx.onInteractOutside?.(event)
               if (!ctx.closeOnInteractOutside) {
                 event.preventDefault()
               }
             },
             onDismiss() {
               if (dismiss) {
-                send({ type: "CLOSE", src: "interact-outside" })
+                send({ type: "STOP", src: "interact-outside" })
               }
             },
           })
@@ -225,7 +265,7 @@ export function machine(userContext: UserDefinedContext) {
         trapFocus(ctx) {
           let trap: FocusTrap | undefined
 
-          const _cleanup = raf(() => {
+          const rafCleanup = raf(() => {
             const contentEl = dom.getContentEl(ctx)
             if (!contentEl) return
 
@@ -245,7 +285,7 @@ export function machine(userContext: UserDefinedContext) {
 
           return () => {
             trap?.deactivate()
-            _cleanup?.()
+            rafCleanup?.()
           }
         },
         trackPlacement(ctx) {
@@ -263,7 +303,7 @@ export function machine(userContext: UserDefinedContext) {
             getAnchorRect(el) {
               if (!isHTMLElement(el)) return null
               const { x, y, width, height } = el.getBoundingClientRect()
-              return offset({ x, y, width, height }, [ctx.offset.x, ctx.offset.y])
+              return offset({ x, y, width, height }, ctx.offset)
             },
             updatePosition({ updatePosition }) {
               if (targetEl()) {
@@ -272,23 +312,23 @@ export function machine(userContext: UserDefinedContext) {
               }
 
               // Center the tour (if no target is defined)
-              // given the positioner's width and height, and the window size, we can center it
+              // given the positioner's width and height, and the boundary size, we can center it
 
-              ctx.currentRect = getCenterRect(ctx.windowSize)
+              ctx.currentRect = getCenterRect(ctx.boundarySize)
 
               const positioner = positionerEl()
               if (!positioner) return
 
-              const midX = ctx.windowSize.width / 2 - positioner.offsetWidth / 2
-              const midY = ctx.windowSize.height / 2 - positioner.offsetHeight / 2
+              const midX = ctx.boundarySize.width / 2 - positioner.offsetWidth / 2
+              const midY = ctx.boundarySize.height / 2 - positioner.offsetHeight / 2
 
               positioner.style.setProperty("--x", `${midX}px`)
               positioner.style.setProperty("--y", `${midY}px`)
             },
             onComplete(data) {
-              const { log } = data.middlewareData
+              const { rects } = data.middlewareData
               ctx.currentPlacement = data.placement
-              ctx.currentRect = log.rects.reference
+              ctx.currentRect = rects.reference
             },
           })
         },

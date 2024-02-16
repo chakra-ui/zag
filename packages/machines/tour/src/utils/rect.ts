@@ -1,12 +1,12 @@
-import type { MachineContext } from "../tour.types"
+import type { MachineContext, Offset } from "../tour.types"
 
 type Rect = Required<MachineContext["currentRect"]>
 
-export const getCenterRect = (size: MachineContext["windowSize"]) => {
+export function getCenterRect(size: MachineContext["boundarySize"]) {
   return { x: size.width / 2, y: size.height / 2, width: 0, height: 0 }
 }
 
-export const isEventInRect = (rect: Rect, event: PointerEvent) => {
+export function isEventInRect(rect: Rect, event: PointerEvent) {
   return (
     rect.y <= event.clientY &&
     event.clientY <= rect.y + rect.height &&
@@ -15,8 +15,9 @@ export const isEventInRect = (rect: Rect, event: PointerEvent) => {
   )
 }
 
-export function offset(r: Rect, i: [dx: number, dy: number]): Rect {
-  const [dx = 0, dy = 0] = i
+export function offset(r: Rect, i: Offset): Rect {
+  const dx = i.x || 0
+  const dy = i.y || 0
   return {
     x: r.x - dx,
     y: r.y - dy,

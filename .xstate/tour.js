@@ -11,17 +11,15 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "tour",
-  initial: ctx.open ? "open" : "closed",
+  initial: "closed",
   context: {
-    "isValidStep": false
+    "isValidStep": false,
+    "completeOnSkip": false,
+    "isLastStep": false
   },
-  activities: ["trackWindowSize"],
-  exit: ["clearStep"],
+  activities: ["trackBoundarySize"],
+  exit: ["clearStep", "cleanupFns"],
   on: {
-    "STEP.CHANGED": {
-      cond: "isValidStep",
-      target: "open:prepare"
-    },
     "STEPS.SET": {
       actions: ["setSteps"]
     },
@@ -40,17 +38,17 @@ const fetchMachine = createMachine({
       on: {
         START: {
           target: "open",
-          actions: ["setInitialStep", "invokeOnOpen"]
+          actions: ["setInitialStep", "invokeOnStart"]
         },
-        OPEN: {
-          target: "open",
-          actions: ["invokeOnOpen"]
+        RESUME: {
+          target: "scrolling",
+          actions: ["invokeOnStart"]
         }
       }
     },
-    "open:prepare": {
+    scrolling: {
       tags: ["open"],
-      entry: ["scrollTargetIntoView"],
+      entry: ["scrollStepTargetIntoView"],
       activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
       after: {
         0: "open"
@@ -60,16 +58,35 @@ const fetchMachine = createMachine({
       tags: ["open"],
       activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
       on: {
+        "STEP.CHANGED": {
+          cond: "isValidStep",
+          target: "scrolling"
+        },
         NEXT: {
           actions: ["setNextStep"]
         },
         PREV: {
           actions: ["setPrevStep"]
         },
-        CLOSE: {
+        PAUSE: {
           target: "closed",
-          actions: ["clearStep", "invokeOnClose"]
-        }
+          actions: ["invokeOnStop"]
+        },
+        SKIP: [{
+          cond: "completeOnSkip",
+          target: "closed",
+          actions: ["invokeOnComplete", "invokeOnSkip", "clearStep"]
+        }, {
+          actions: ["invokeOnSkip", "setNextStep"]
+        }],
+        STOP: [{
+          cond: "isLastStep",
+          target: "closed",
+          actions: ["invokeOnStop", "invokeOnComplete", "clearStep"]
+        }, {
+          target: "closed",
+          actions: ["invokeOnStop", "clearStep"]
+        }]
       }
     }
   }
@@ -82,6 +99,8 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isValidStep": ctx => ctx["isValidStep"]
+    "isValidStep": ctx => ctx["isValidStep"],
+    "completeOnSkip": ctx => ctx["completeOnSkip"],
+    "isLastStep": ctx => ctx["isLastStep"]
   }
 });
