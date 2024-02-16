@@ -3,6 +3,7 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, defineComponent, h, Fragment, Teleport } from "vue"
 import { tourControls, tourData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
+import { IFrame } from "../components/iframe"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
@@ -32,6 +33,13 @@ export default defineComponent({
                   <h3 id="step-2">Step 2</h3>
                   <div class="h-100px" />
                 </div>
+                <IFrame>
+                  <h1 id="step-2a">Iframe Content</h1>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua.
+                  </p>
+                </IFrame>
                 <h3 id="step-3">Step 3</h3>
                 <h3 id="step-4">Step 4</h3>
               </div>
