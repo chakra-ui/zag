@@ -1,5 +1,18 @@
 # @zag-js/collapsible
 
+## 0.36.3
+
+### Patch Changes
+
+- [#1252](https://github.com/chakra-ui/zag/pull/1252) [`80416ac`](https://github.com/chakra-ui/zag/commit/80416acdc19603be72242afa9d998ba8c819d2d8) Thanks [@Omikorin](https://github.com/Omikorin)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.3
+  - @zag-js/core@0.36.3
+  - @zag-js/types@0.36.3
+  - @zag-js/utils@0.36.3
+  - @zag-js/dom-query@0.36.3
+
 ## 0.36.2
 
 ### Patch Changes
