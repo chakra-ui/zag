@@ -15,21 +15,23 @@ export default defineComponent({
     )
 
     const apiRef = computed(() =>
-      rangeSlider.connect(state.value, send, normalizeProps),
+      slider.connect(state.value, send, normalizeProps),
     )
 
     return () => {
       const api = apiRef.value
       return (
         <div {...api.rootProps}>
-          <div {...api.trackProps}>
-            <div {...api.rangeProps} />
-          </div>
-          {api.value.map((_, index) => (
-            <div key={index} {...api.getThumbProps({ index })}>
-              <input {...api.getHiddenInputProps({ index })} />
+          <div {...api.controlProps}>
+            <div {...api.trackProps}>
+              <div {...api.rangeProps} />
             </div>
-          ))}
+            {api.value.map((_, index) => (
+              <div key={index} {...api.getThumbProps({ index })}>
+                <input {...api.getHiddenInputProps({ index })} />
+              </div>
+            ))}
+          </div>
         </div>
       )
     }
