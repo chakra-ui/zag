@@ -6,13 +6,20 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
-## [0.36.2](./#0.36.0) - 2024-02-13
+## [0.36.3](./#0.36.3) - 2024-02-16
+
+### Fixed
+
+- **Collpasible**: Export missing types for clipboard machine
+- **Tooltip**: Fix issue where disabled tooltip flashes when hovering and clicking the trigger
+
+## [0.36.2](./#0.36.2) - 2024-02-13
 
 ### Fixed
 
 - **Clipboard**: Export missing types for clipboard machine
 
-## [0.36.1](./#0.36.0) - 2024-02-13
+## [0.36.1](./#0.36.1) - 2024-02-13
 
 ### Fixed
 
