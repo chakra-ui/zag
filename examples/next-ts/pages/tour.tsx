@@ -73,7 +73,7 @@ export default function Page() {
         </Portal>
       </main>
 
-      <Toolbar controls={controls.ui} viz>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} omit={["steps"]} />
       </Toolbar>
     </>
