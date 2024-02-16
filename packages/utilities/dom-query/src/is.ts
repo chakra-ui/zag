@@ -3,6 +3,11 @@ export const isHTMLElement = (v: any): v is HTMLElement =>
 
 export const isDocument = (el: any): el is Document => el.nodeType === Node.DOCUMENT_NODE
 
+export const isWindow = (el: any): el is Window => el != null && el === el.window
+
+export const isVisualViewport = (el: any): el is VisualViewport =>
+  el != null && el.constructor.name === "VisualViewport"
+
 export const getNodeName = (node: Node | Window): string => {
   if (isHTMLElement(node)) return node.localName || ""
   return "#document"

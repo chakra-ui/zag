@@ -63,6 +63,7 @@ ul {
 body {
   margin: 0;
   font-size: 14px;
+  overflow: hidden;
 }
 
 .page {
@@ -1901,6 +1902,86 @@ main [data-testid="scrubber"] {
 [data-scope="clipboard"][data-part="indicator"] {
   background: lightgray;
   padding: 8px;
+}
+
+/* -----------------------------------------------------------------------------
+* Tour
+* -----------------------------------------------------------------------------*/
+
+[data-scope="tour"][data-part="content"] {
+  --arrow-background: white;
+  --arrow-size: 10px;
+  background: white;
+  padding: 24px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+[data-scope="tour"][data-part="content"][data-placement="center"] {
+  width: 500px;
+  background: lightblue;
+}
+
+[data-scope="tour"][data-part="arrow"] {
+  --arrow-background: white;
+  --arrow-shadow-color: #ebebeb;
+  box-shadow: var(--box-shadow);
+}
+
+[data-scope="tour"][data-part="title"] {
+  font-weight: 600;
+}
+
+[data-scope="tour"][data-part="description"] {
+  margin-bottom: 20px;
+}
+
+[data-scope="tour"][data-part="overlay"] {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+[data-scope="tour"][data-part="spotlight"] {
+  border: 3px solid pink;
+}
+
+.tour.button__group {
+  display: flex;
+  align-items: flex-start;
+}
+
+.tour .steps__container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 50vh;
+}
+
+.tour .overflow__container {
+  width: 500px;
+  height: 400px;
+  max-height: 200px;
+  overflow: auto;
+  border: 2px solid teal;
+  position: relative;
+}
+
+.tour .overflow__container::before {
+  content: "Overflow";
+  display: block;
+  position: sticky;
+  background-color: teal;
+  color: white;
+  padding: 2px 4px 3px;
+  top: 0px;
+}
+
+.tour .overflow__container .h-200px {
+  height: 200px;
+}
+
+.tour .overflow__container .h-100px {
+  height: 100px;
 }
 
 /* -----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 import { getByText } from "./get-by-text"
-import type { ItemToId } from "./query"
+import type { ItemToId } from "./get-by-id"
 
 export interface TypeaheadState {
   keysSoFar: string

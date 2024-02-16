@@ -1,11 +1,12 @@
-import { isHTMLElement, isDocument, isShadowRoot } from "./is"
+import { isHTMLElement, isDocument, isShadowRoot, isWindow } from "./is"
 
-export function getDocument(el: Element | Node | Document | null) {
+export function getDocument(el: Element | Window | Node | Document | null) {
   if (isDocument(el)) return el
+  if (isWindow(el)) return el.document
   return el?.ownerDocument ?? document
 }
 
-export function getDocumentElement(el: Element | Node | Document | null): HTMLElement {
+export function getDocumentElement(el: Element | Node | Window | Document | null): HTMLElement {
   return getDocument(el).documentElement
 }
 
@@ -27,14 +28,4 @@ export function getActiveElement(el: HTMLElement): HTMLElement | null {
   }
 
   return activeElement
-}
-
-const styleCache = new WeakMap<HTMLElement, any>()
-
-export function getComputedStyle(el: HTMLElement) {
-  if (!styleCache.has(el)) {
-    const win = el.ownerDocument.defaultView || window
-    styleCache.set(el, win.getComputedStyle(el))
-  }
-  return styleCache.get(el)
 }

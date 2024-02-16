@@ -13,7 +13,9 @@ const ARROW_FLOATING_STYLE = {
   right: "rotate(315deg)",
 } as const
 
-export function getPlacementStyles(options: PositioningOptions = {}) {
+export function getPlacementStyles(
+  options: Pick<PositioningOptions, "placement" | "sameWidth" | "fitViewport" | "strategy"> = {},
+) {
   const { placement, sameWidth, fitViewport, strategy = "absolute" } = options
 
   return {

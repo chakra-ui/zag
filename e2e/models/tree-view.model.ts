@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { clickViz, controls } from "./_utils"
+import { clickViz, controls } from "../_utils"
 
 interface ClickOptions {
   modifiers?: Array<"Alt" | "Control" | "Meta" | "Shift">

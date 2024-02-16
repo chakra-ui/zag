@@ -84,7 +84,7 @@ export interface PositioningOptions {
    */
   onPositioned?(data: { placed: boolean }): void
   /**
-   *  Function that returns the anchor rect of the combobox
+   *  Function that returns the anchor rect
    */
   getAnchorRect?: (element: HTMLElement | VirtualElement | null) => AnchorRect | null
   /**

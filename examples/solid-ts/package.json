@@ -27,8 +27,8 @@
     "@zag-js/avatar": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
-    "@zag-js/collapsible": "workspace:*",
     "@zag-js/clipboard": "workspace:*",
+    "@zag-js/collapsible": "workspace:*",
     "@zag-js/collection": "workspace:*",
     "@zag-js/color-picker": "workspace:*",
     "@zag-js/color-utils": "workspace:*",
@@ -82,12 +82,13 @@
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
+    "@zag-js/tour": "workspace:*",
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
     "lucide-solid": "^0.325.0",
-    "solid-js": "1.8.14"
+    "solid-js": "1.8.15"
   }
 }
