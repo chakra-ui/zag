@@ -1,6 +1,6 @@
 import { test } from "@playwright/test"
 import { a11y, clickOutside } from "./_utils"
-import { TreeViewModel } from "./tree-view.model"
+import { TreeViewModel } from "./models/tree-view.model"
 
 let screen: TreeViewModel
 
