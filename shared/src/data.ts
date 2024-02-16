@@ -183,20 +183,20 @@ export const tourData = [
     title: "Step 1. Welcome",
     description: "To the new world",
     target: () => document.querySelector<HTMLElement>("#step-1"),
-    effect({ next, update }: any) {
-      const abort = new AbortController()
+    // effect({ next, update }: any) {
+    //   const abort = new AbortController()
 
-      fetch("https://api.github.com/users/octocat", { signal: abort.signal })
-        .then((res) => res.json())
-        .then((data) => {
-          update({ title: data.name })
-          next()
-        })
+    //   fetch("https://api.github.com/users/octocat", { signal: abort.signal })
+    //     .then((res) => res.json())
+    //     .then((data) => {
+    //       update({ title: data.name })
+    //       next()
+    //     })
 
-      return () => {
-        abort.abort()
-      }
-    },
+    //   return () => {
+    //     abort.abort()
+    //   }
+    // },
   },
   {
     id: "step-2",
