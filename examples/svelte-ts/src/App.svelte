@@ -11,6 +11,7 @@
   import Combobox from "./routes/combobox.svelte"
   import Clipboard from "./routes/clipboard.svelte"
   import Collapsible from "./routes/collapsible.svelte"
+  import ContextMenu from "./routes/context-menu.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 </script>
@@ -52,6 +53,9 @@
     </Route>
     <Route path="/collapsible">
       <Collapsible />
+    </Route>
+    <Route path="/context-menu">
+      <ContextMenu />
     </Route>
   </div>
 </Router>
