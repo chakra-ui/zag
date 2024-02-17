@@ -60,6 +60,32 @@ test.describe("combobox", () => {
     await expect(page.locator(content)).toBeHidden()
   })
 
+  test("[keyboard / selected / opened] empty input value should not be replaced by selected value", async ({
+    page,
+  }) => {
+    await page.locator(input).pressSequentially("an")
+    await expect(page.locator(content)).toBeVisible()
+
+    const option = page.locator(options).first()
+    await expectToBeHighlighted(option)
+
+    await page.keyboard.press("Enter")
+
+    await expect(page.locator(input)).toHaveValue("Canada")
+    await expect(page.locator(content)).toBeHidden()
+
+    // press backspace 6 times to make input empty
+    await page.locator(input).press("Backspace")
+    await page.keyboard.press("Backspace")
+    await page.keyboard.press("Backspace")
+    await page.keyboard.press("Backspace")
+    await page.keyboard.press("Backspace")
+    await page.keyboard.press("Backspace")
+
+    await expect(page.locator(content)).toBeVisible()
+    await expect(page.locator(input)).toHaveValue("")
+  })
+
   test("[pointer / selection]", async ({ page }) => {
     await page.click(trigger)
 
