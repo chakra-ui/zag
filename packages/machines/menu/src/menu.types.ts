@@ -85,6 +85,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * Function called when the menu opens or closes
    */
   onOpenChange?: (details: OpenChangeDetails) => void
+  /**
+   *  Whether the menu's open state is controlled by the user
+   */
+  "open.controlled"?: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -148,14 +152,14 @@ type PrivateContext = Context<{
    * @internal
    * Whether to return focus to the trigger when the menu is closed
    */
-  focusTriggerOnClose?: boolean
+  restoreFocus?: boolean
 }>
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
 export interface MachineState {
   value: "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
-  tags: "visible"
+  tags: "open" | "closed"
 }
 
 export type State = S.State<MachineContext, MachineState>

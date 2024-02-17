@@ -359,3 +359,43 @@ The tags input machine exposes the following context properties:
 The tags input `api` exposes the following methods:
 
 <ApiTable name="tags-input" />
+
+## Accessibility
+
+### Keyboard Interactions
+
+<KeyboardTable
+  data={[
+    {
+      keys: ["ArrowLeft"],
+      description: "Moves focus to the previous tag item",
+    },
+    {
+      keys: ["ArrowRight"],
+      description: "Moves focus to the next tag item",
+    },
+    {
+      keys: ["Backspace"],
+      description:
+        "Deletes the tag item that has visual focus or the last tag item",
+    },
+    {
+      keys: ["Enter"],
+      description: (
+        <span>
+          When a tag item has visual focus, it puts the tag in edit mode.
+          <br />
+          When the input has focus, it adds the value to the list of tags
+        </span>
+      ),
+    },
+    {
+      keys: ["Delete"],
+      description: "Deletes the tag item that has visual focus",
+    },
+    {
+      keys: ["Control + V"],
+      description: "When `addOnPaste` is set. Adds the pasted value as a tags",
+    },
+  ]}
+/>

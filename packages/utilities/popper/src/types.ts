@@ -1,5 +1,4 @@
-import type { Boundary, ComputePositionReturn, Placement, VirtualElement } from "@floating-ui/dom"
-import type { AutoUpdateOptions } from "./auto-update"
+import type { AutoUpdateOptions, Boundary, ComputePositionReturn, Placement, VirtualElement } from "@floating-ui/dom"
 
 export type MaybeRectElement = HTMLElement | VirtualElement | null
 
@@ -85,7 +84,7 @@ export interface PositioningOptions {
    */
   onPositioned?(data: { placed: boolean }): void
   /**
-   *  Function that returns the anchor rect of the combobox
+   *  Function that returns the anchor rect
    */
   getAnchorRect?: (element: HTMLElement | VirtualElement | null) => AnchorRect | null
   /**

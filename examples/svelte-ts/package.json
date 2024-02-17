@@ -19,6 +19,8 @@
     "@zag-js/avatar": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
+    "@zag-js/clipboard": "workspace:*",
+    "@zag-js/collapsible": "workspace:*",
     "@zag-js/collection": "workspace:*",
     "@zag-js/color-picker": "workspace:*",
     "@zag-js/color-utils": "workspace:*",
@@ -72,21 +74,24 @@
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
+    "@zag-js/tour": "workspace:*",
+    "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "svelte-routing": "^2.11.0"
+    "lucide-svelte": "^0.325.0",
+    "svelte-routing": "^2.12.0"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^3.0.1",
+    "@sveltejs/vite-plugin-svelte": "^3.0.2",
     "@tsconfig/svelte": "^5.0.2",
     "@types/form-serialize": "0.7.4",
-    "svelte": "5.0.0-next.44",
-    "svelte-check": "^3.6.2",
+    "svelte": "5.0.0-next.40",
+    "svelte-check": "^3.6.4",
     "tslib": "^2.6.2",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.8",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.1",
     "vite-tsconfig-paths": "^4.3.1"
   }
 }

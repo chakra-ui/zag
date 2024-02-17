@@ -1,10 +1,109 @@
 # @zag-js/date-picker
 
+## 0.36.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.3
+  - @zag-js/core@0.36.3
+  - @zag-js/types@0.36.3
+  - @zag-js/utils@0.36.3
+  - @zag-js/date-utils@0.36.3
+  - @zag-js/dismissable@0.36.3
+  - @zag-js/dom-event@0.36.3
+  - @zag-js/dom-query@0.36.3
+  - @zag-js/form-utils@0.36.3
+  - @zag-js/live-region@0.36.3
+  - @zag-js/popper@0.36.3
+  - @zag-js/text-selection@0.36.3
+
+## 0.36.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.2
+  - @zag-js/core@0.36.2
+  - @zag-js/types@0.36.2
+  - @zag-js/utils@0.36.2
+  - @zag-js/date-utils@0.36.2
+  - @zag-js/dismissable@0.36.2
+  - @zag-js/dom-event@0.36.2
+  - @zag-js/dom-query@0.36.2
+  - @zag-js/form-utils@0.36.2
+  - @zag-js/live-region@0.36.2
+  - @zag-js/popper@0.36.2
+  - @zag-js/text-selection@0.36.2
+
+## 0.36.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.1
+  - @zag-js/core@0.36.1
+  - @zag-js/types@0.36.1
+  - @zag-js/utils@0.36.1
+  - @zag-js/date-utils@0.36.1
+  - @zag-js/dismissable@0.36.1
+  - @zag-js/dom-event@0.36.1
+  - @zag-js/dom-query@0.36.1
+  - @zag-js/form-utils@0.36.1
+  - @zag-js/live-region@0.36.1
+  - @zag-js/popper@0.36.1
+  - @zag-js/text-selection@0.36.1
+
+## 0.36.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dismissable@0.36.0
+  - @zag-js/anatomy@0.36.0
+  - @zag-js/core@0.36.0
+  - @zag-js/types@0.36.0
+  - @zag-js/utils@0.36.0
+  - @zag-js/date-utils@0.36.0
+  - @zag-js/dom-event@0.36.0
+  - @zag-js/dom-query@0.36.0
+  - @zag-js/form-utils@0.36.0
+  - @zag-js/live-region@0.36.0
+  - @zag-js/popper@0.36.0
+  - @zag-js/text-selection@0.36.0
+
+## 0.35.0
+
+### Minor Changes
+
+- [#1214](https://github.com/chakra-ui/zag/pull/1214) [`36958b5`](https://github.com/chakra-ui/zag/commit/36958b59d51f3ad9f2193e107f8ca8952c698438) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - [BREAKING] Change date picker from `inputProps` to `getInputProps` to support multiple inputs.
+
+  - Added a new prop `getPresetTriggerProps` to support custom trigger for common date presets (e.g. Last 7 days, Last 30
+    days, etc.)
+
+### Patch Changes
+
+- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36), [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e), [`2b3edb1`](https://github.com/chakra-ui/zag/commit/2b3edb14d2e892ea70e289b54ba83fcd71e1bcab)]:
+  - @zag-js/core@0.35.0
+  - @zag-js/popper@0.35.0
+  - @zag-js/date-utils@0.35.0
+  - @zag-js/anatomy@0.35.0
+  - @zag-js/types@0.35.0
+  - @zag-js/utils@0.35.0
+  - @zag-js/dismissable@0.35.0
+  - @zag-js/dom-event@0.35.0
+  - @zag-js/dom-query@0.35.0
+  - @zag-js/form-utils@0.35.0
+  - @zag-js/live-region@0.35.0
+  - @zag-js/text-selection@0.35.0
+
 ## 0.34.0
 
 ### Patch Changes
 
-- [`e037484`](https://github.com/chakra-ui/zag/commit/e0374847390a88e69d6e4b33f42fc6ab6291b2a8) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioning doesn't work as expected when combined with entry/exit animations in the presence component
+- [`e037484`](https://github.com/chakra-ui/zag/commit/e0374847390a88e69d6e4b33f42fc6ab6291b2a8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioning doesn't work as expected when combined
+  with entry/exit animations in the presence component
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.34.0

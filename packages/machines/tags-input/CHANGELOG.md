@@ -1,5 +1,85 @@
 # @zag-js/tags-input
 
+## 0.36.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.3
+  - @zag-js/core@0.36.3
+  - @zag-js/types@0.36.3
+  - @zag-js/auto-resize@0.36.3
+  - @zag-js/utils@0.36.3
+  - @zag-js/dom-event@0.36.3
+  - @zag-js/dom-query@0.36.3
+  - @zag-js/form-utils@0.36.3
+  - @zag-js/interact-outside@0.36.3
+  - @zag-js/live-region@0.36.3
+
+## 0.36.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.2
+  - @zag-js/core@0.36.2
+  - @zag-js/types@0.36.2
+  - @zag-js/auto-resize@0.36.2
+  - @zag-js/utils@0.36.2
+  - @zag-js/dom-event@0.36.2
+  - @zag-js/dom-query@0.36.2
+  - @zag-js/form-utils@0.36.2
+  - @zag-js/interact-outside@0.36.2
+  - @zag-js/live-region@0.36.2
+
+## 0.36.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.1
+  - @zag-js/core@0.36.1
+  - @zag-js/types@0.36.1
+  - @zag-js/auto-resize@0.36.1
+  - @zag-js/utils@0.36.1
+  - @zag-js/dom-event@0.36.1
+  - @zag-js/dom-query@0.36.1
+  - @zag-js/form-utils@0.36.1
+  - @zag-js/interact-outside@0.36.1
+  - @zag-js/live-region@0.36.1
+
+## 0.36.0
+
+### Patch Changes
+
+- Updated dependencies [[`0535ae2`](https://github.com/chakra-ui/zag/commit/0535ae2f836c2a270132f6bb4e3f518d9198c33d)]:
+  - @zag-js/interact-outside@0.36.0
+  - @zag-js/anatomy@0.36.0
+  - @zag-js/core@0.36.0
+  - @zag-js/types@0.36.0
+  - @zag-js/auto-resize@0.36.0
+  - @zag-js/utils@0.36.0
+  - @zag-js/dom-event@0.36.0
+  - @zag-js/dom-query@0.36.0
+  - @zag-js/form-utils@0.36.0
+  - @zag-js/live-region@0.36.0
+
+## 0.35.0
+
+### Patch Changes
+
+- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36)]:
+  - @zag-js/core@0.35.0
+  - @zag-js/anatomy@0.35.0
+  - @zag-js/types@0.35.0
+  - @zag-js/auto-resize@0.35.0
+  - @zag-js/utils@0.35.0
+  - @zag-js/dom-event@0.35.0
+  - @zag-js/dom-query@0.35.0
+  - @zag-js/form-utils@0.35.0
+  - @zag-js/interact-outside@0.35.0
+  - @zag-js/live-region@0.35.0
+
 ## 0.34.0
 
 ### Patch Changes

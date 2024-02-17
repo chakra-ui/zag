@@ -12,7 +12,12 @@ const {
 const fetchMachine = createMachine({
   id: "popover",
   initial: ctx.open ? "open" : "closed",
-  context: {},
+  context: {
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false
+  },
   entry: ["checkRenderedElements"],
   on: {
     UPDATE_CONTEXT: {
@@ -22,33 +27,48 @@ const fetchMachine = createMachine({
   states: {
     closed: {
       on: {
-        TOGGLE: {
+        "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["setInitialFocus"]
         },
-        OPEN: {
-          target: "open",
+        TOGGLE: [{
+          cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
-        }
+        }, {
+          target: "open",
+          actions: ["invokeOnOpen", "setInitialFocus"]
+        }],
+        OPEN: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
+          target: "open",
+          actions: ["invokeOnOpen", "setInitialFocus"]
+        }]
       }
     },
     open: {
       activities: ["trapFocus", "preventScroll", "hideContentBelow", "trackPositioning", "trackDismissableElement", "proxyTabFocus"],
-      entry: ["setInitialFocus"],
       on: {
-        CLOSE: {
+        "CONTROLLED.CLOSE": {
+          target: "closed",
+          actions: ["restoreFocus"]
+        },
+        CLOSE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
+          target: "closed",
+          actions: ["invokeOnClose", "restoreFocus"]
+        }],
+        TOGGLE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
           target: "closed",
           actions: ["invokeOnClose"]
-        },
-        REQUEST_CLOSE: {
-          target: "closed",
-          actions: ["restoreFocusIfNeeded", "invokeOnClose"]
-        },
-        TOGGLE: {
-          target: "closed",
-          actions: ["invokeOnClose"]
-        },
-        SET_POSITIONING: {
+        }],
+        "POSITIONING.SET": {
           actions: "reposition"
         }
       }
@@ -62,5 +82,7 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {}
+  guards: {
+    "isOpenControlled": ctx => ctx["isOpenControlled"]
+  }
 });

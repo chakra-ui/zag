@@ -1,10 +1,9 @@
-import type { Middleware } from "@floating-ui/dom"
-import { arrow, computePosition, flip, offset, shift, size } from "@floating-ui/dom"
+import type { AutoUpdateOptions, Middleware } from "@floating-ui/dom"
+import { arrow, autoUpdate, computePosition, flip, offset, shift, size } from "@floating-ui/dom"
 import { getWindow, raf } from "@zag-js/dom-query"
-import { compact, isNull, runIfFn } from "@zag-js/utils"
-import { autoUpdate } from "./auto-update"
+import { compact, isNull, noop, runIfFn } from "@zag-js/utils"
 import { getAnchorElement } from "./get-anchor"
-import { __shiftArrow, __transformOrigin } from "./middleware"
+import { __rects, __shiftArrow, __transformOrigin } from "./middleware"
 import { getPlacementDetails } from "./placement"
 import type { MaybeElement, MaybeFn, MaybeRectElement, PositioningOptions } from "./types"
 
@@ -93,11 +92,17 @@ function __size(opts: PositioningOptions) {
   })
 }
 
+function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOptions {
+  if (!opts) return {}
+  if (opts === true) {
+    return { ancestorResize: true, ancestorScroll: true, elementResize: true, layoutShift: true }
+  }
+  return opts
+}
+
 function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeElement, opts: PositioningOptions = {}) {
   const reference = getAnchorElement(referenceOrVirtual, opts.getAnchorRect)
-
   if (!floating || !reference) return
-
   const options = Object.assign({}, defaultOptions, opts)
 
   /* -----------------------------------------------------------------------------
@@ -114,6 +119,7 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     __shiftArrow(arrowEl),
     __transformOrigin,
     __size(options),
+    __rects,
   ]
 
   /* -----------------------------------------------------------------------------
@@ -158,7 +164,8 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     }
   }
 
-  const cancelAutoUpdate = options.listeners ? autoUpdate(reference, floating, update, options.listeners) : undefined
+  const autoUpdateOptions = getAutoUpdateOptions(options.listeners)
+  const cancelAutoUpdate = options.listeners ? autoUpdate(reference, floating, update, autoUpdateOptions) : noop
 
   update()
 

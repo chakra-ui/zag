@@ -105,3 +105,7 @@ export const pointer = {
     return el.dispatchEvent("pointermove", { button: 0 })
   },
 }
+
+export const textSelection = (page: Page) => {
+  return page.evaluate(() => window.getSelection()?.toString())
+}

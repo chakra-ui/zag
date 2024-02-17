@@ -18,6 +18,8 @@
     "@zag-js/avatar": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
+    "@zag-js/clipboard": "workspace:*",
+    "@zag-js/collapsible": "workspace:*",
     "@zag-js/collection": "workspace:*",
     "@zag-js/color-picker": "workspace:*",
     "@zag-js/color-utils": "workspace:*",
@@ -70,6 +72,7 @@
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
+    "@zag-js/tour": "workspace:*",
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
@@ -77,13 +80,14 @@
     "@zag-js/vue": "workspace:*",
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
-    "vue-router": "4.2.5",
-    "vue": "3.4.15"
+    "lucide-vue-next": "0.325.0",
+    "vue": "3.4.18",
+    "vue-router": "4.2.5"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@types/node": "20.11.10",
     "@types/form-serialize": "0.7.4",
-    "nuxt": "3.9.3"
+    "@types/node": "20.11.17",
+    "nuxt": "3.10.1"
   }
 }

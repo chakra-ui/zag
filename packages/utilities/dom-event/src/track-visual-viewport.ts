@@ -1,6 +1,6 @@
 import { addDomEvent } from "./add-dom-event"
 
-type ViewportSize = {
+export interface ViewportSize {
   width: number
   height: number
 }

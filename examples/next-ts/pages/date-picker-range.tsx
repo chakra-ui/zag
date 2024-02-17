@@ -12,6 +12,7 @@ export default function Page() {
   const [state, send] = useMachine(
     datePicker.machine({
       id: useId(),
+      name: "date[]",
       locale: "en",
       numOfMonths: 2,
       selectionMode: "range",
@@ -33,12 +34,13 @@ export default function Page() {
         <p>{`Visible range: ${api.visibleRangeText.formatted}`}</p>
 
         <output className="date-output">
-          <div>Selected: {api.valueAsString ?? "-"}</div>
+          <div>Selected: {api.valueAsString.join(", ") ?? "-"}</div>
           <div>Focused: {api.focusedValueAsString}</div>
         </output>
 
         <div {...api.controlProps}>
-          <input {...api.inputProps} />
+          <input {...api.getInputProps({ index: 0 })} />
+          <input {...api.getInputProps({ index: 1 })} />
           <button {...api.clearTriggerProps}>❌</button>
           <button {...api.triggerProps}>🗓</button>
         </div>
@@ -75,7 +77,7 @@ export default function Page() {
               </div>
 
               <div style={{ display: "flex", gap: "24px" }}>
-                <table {...api.getTableProps({ id: "r1" })}>
+                <table {...api.getTableProps({ id: useId() })}>
                   <thead {...api.getTableHeaderProps()}>
                     <tr {...api.getTableRowProps()}>
                       {api.weekDays.map((day, i) => (
@@ -98,7 +100,7 @@ export default function Page() {
                   </tbody>
                 </table>
 
-                <table {...api.getTableProps({ id: "r2" })}>
+                <table {...api.getTableProps({ id: useId() })}>
                   <thead {...api.getTableHeaderProps()}>
                     <tr {...api.getTableRowProps()}>
                       {api.weekDays.map((day, i) => (
@@ -122,6 +124,15 @@ export default function Page() {
                     ))}
                   </tbody>
                 </table>
+
+                <div style={{ minWidth: "80px", display: "flex", flexDirection: "column", gap: "4px" }}>
+                  <b>Presets</b>
+                  <button {...api.getPresetTriggerProps({ value: "last3Days" })}>Last 3 Days</button>
+                  <button {...api.getPresetTriggerProps({ value: "last7Days" })}>Last 7 Days</button>
+                  <button {...api.getPresetTriggerProps({ value: "last14Days" })}>Last 14 Days</button>
+                  <button {...api.getPresetTriggerProps({ value: "last30Days" })}>Last 30 Days</button>
+                  <button {...api.getPresetTriggerProps({ value: "last90Days" })}>Last 90 Days</button>
+                </div>
               </div>
             </div>
           </div>

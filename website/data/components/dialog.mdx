@@ -90,6 +90,22 @@ const [state, send] = useMachine(
 )
 ```
 
+You can also customize the behavior by passing a function to the
+`onInteractOutside` context and calling `event.preventDefault()`
+
+```jsx {3-8}
+const [state, send] = useMachine(
+  dialog.machine({
+    onInteractOutside(event) {
+      const target = event.target
+      if (target?.closest("<selector>")) {
+        return event.preventDefault()
+      }
+    },
+  }),
+)
+```
+
 ## Listening for open state changes
 
 When the dialog is opened or closed, the `onOpenChange` callback is invoked.
@@ -200,3 +216,35 @@ The dialog machine exposes the following context properties:
 The dialog `api` exposes the following methods:
 
 <ApiTable name="dialog" />
+
+## Accessibility
+
+Adheres to the
+[Alert and Message Dialogs WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog).
+
+### Keyboard Interactions
+
+<KeyboardTable
+  data={[
+    {
+      keys: ["Space"],
+      description: "Opens/closes the dialog.",
+    },
+    {
+      keys: ["Enter"],
+      description: "Opens/closes the dialog.",
+    },
+    {
+      keys: ["Tab"],
+      description: "Moves focus to the next focusable element.",
+    },
+    {
+      keys: ["Shift + Tab"],
+      description: "Moves focus to the previous focusable element.",
+    },
+    {
+      keys: ["Esc"],
+      description: "Closes the dialog and moves focus to trigger</span>",
+    },
+  ]}
+/>

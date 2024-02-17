@@ -1,24 +1,45 @@
-import { CalendarDateTime, DateFormatter } from "@internationalized/date"
+import { CalendarDate, DateFormatter, type DateValue } from "@internationalized/date"
 
-export function parseDateString(date: string, locale: string, timeZone: string) {
+const isValidYear = (year: string | undefined): year is string => year != null && year.length === 4
+const isValidMonth = (month: string | undefined): month is string => month != null && parseFloat(month) <= 12
+const isValidDay = (day: string | undefined): day is string => day != null && parseFloat(day) <= 31
+
+export function parseDateString(date: string, locale: string, timeZone: string): DateValue | undefined {
   const regex = createRegex(locale, timeZone)
-  const { year, month, day } = extract(regex, date) ?? {}
 
-  if (year != null && year.length === 4 && month != null && +month <= 12 && day != null && +day <= 31) {
-    return new CalendarDateTime(+year, +month, +day)
+  let { year, month, day } = extract(regex, date) ?? {}
+
+  const hasMatch = year != null || month != null || day != null
+
+  if (hasMatch) {
+    const curr = new Date()
+    year ||= curr.getFullYear().toString()
+    month ||= (curr.getMonth() + 1).toString()
+    day ||= curr.getDate().toString()
   }
 
+  if (isValidYear(year) && isValidMonth(month) && isValidDay(day)) {
+    return new CalendarDate(+year, +month, +day)
+  }
+
+  // We should never get here, but just in case
   const time = Date.parse(date)
   if (!isNaN(time)) {
     const date = new Date(time)
-    return new CalendarDateTime(date.getFullYear(), date.getMonth() + 1, date.getDate())
+    return new CalendarDate(date.getFullYear(), date.getMonth() + 1, date.getDate())
   }
 }
 
 function createRegex(locale: string, timeZone: string) {
   const formatter = new DateFormatter(locale, { day: "numeric", month: "numeric", year: "numeric", timeZone })
   const parts = formatter.formatToParts(new Date(2000, 11, 25))
-  return parts.map(({ type, value }) => (type === "literal" ? value : `((?!=<${type}>)\\d+)`)).join("")
+  return parts.map(({ type, value }) => (type === "literal" ? `${value}?` : `((?!=<${type}>)\\d+)?`)).join("")
+}
+
+interface DateParts {
+  year: string
+  month: string
+  day: string
 }
 
 function extract(pattern: string | RegExp, str: string) {
@@ -33,16 +54,13 @@ function extract(pattern: string | RegExp, str: string) {
       }
       return group.match(/<(.+)>/)?.[1]
     })
-    .reduce(
-      (acc, curr, index) => {
-        if (!curr) return acc
-        if (matches && matches.length > index) {
-          acc[curr] = matches[index + 1]
-        } else {
-          acc[curr] = null
-        }
-        return acc
-      },
-      {} as { year: string; month: string; day: string },
-    )
+    .reduce((acc, curr, index) => {
+      if (!curr) return acc
+      if (matches && matches.length > index) {
+        acc[curr] = matches[index + 1]
+      } else {
+        acc[curr] = null
+      }
+      return acc
+    }, {} as DateParts)
 }

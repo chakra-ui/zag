@@ -1,9 +1,10 @@
-const styleCache = new WeakMap<HTMLElement, any>()
+import { getWindow } from "./env"
 
-export function getComputedStyle(el: HTMLElement) {
+const styleCache = new WeakMap<Element, any>()
+
+export function getComputedStyle(el: Element) {
   if (!styleCache.has(el)) {
-    const win = el.ownerDocument.defaultView || window
-    styleCache.set(el, win.getComputedStyle(el))
+    styleCache.set(el, getWindow(el).getComputedStyle(el))
   }
   return styleCache.get(el)
 }

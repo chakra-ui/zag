@@ -1,0 +1,31 @@
+```jsx
+import * as clipboard from "@zag-js/clipboard"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+import { ClipboardCheck, ClipboardCopyIcon } from "lucide-solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+function Clipboard() {
+  const [state, send] = useMachine(
+    clipboard.machine({
+      id: createUniqueId(),
+      value: "https://github/com/chakra-ui/zag",
+    }),
+  )
+
+  const api = createMemo(() => clipboard.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().rootProps}>
+      <label {...api().labelProps}>Copy this link</label>
+      <div {...api().controlProps}>
+        <input {...api().inputProps} />
+        <button {...api().triggerProps}>
+          <Show when={api().isCopied} fallback={<ClipboardCopyIcon />}>
+            <ClipboardCheck />
+          </Show>
+        </button>
+      </div>
+    </div>
+  )
+}
+```

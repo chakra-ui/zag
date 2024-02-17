@@ -419,3 +419,58 @@ The combobox machine exposes the following context properties:
 The combobox `api` exposes the following methods:
 
 <ApiTable name="combobox" />
+
+## Accessibility
+
+Adheres to the
+[Combobox WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/).
+
+### Keyboard Interactions
+
+<KeyboardTable
+  data={[
+    {
+      keys: ["ArrowDown"],
+      description: (
+        <span>
+          When the combobox is closed, opens the listbox and highlights to the
+          first option.
+          <br />
+          When the combobox is open, moves focus to the next option.
+        </span>
+      ),
+    },
+    {
+      keys: ["ArrowUp"],
+      description: (
+        <span>
+          When the combobox is closed, opens the listbox and highlights to the
+          last option.
+          <br />
+          When the combobox is open, moves focus to the previous option.
+        </span>
+      ),
+    },
+    {
+      keys: ["Home"],
+      description:
+        "When the combobox is open, moves focus to the first option.",
+    },
+    {
+      keys: ["End"],
+      description: "When the combobox is open, moves focus to the last option.",
+    },
+    {
+      keys: ["Escape"],
+      description: "Closes the listbox.",
+    },
+    {
+      keys: ["Enter"],
+      description: "Selects the highlighted option and closes the combobox.",
+    },
+    {
+      keys: ["Esc"],
+      description: "Closes the combobox",
+    },
+  ]}
+/>

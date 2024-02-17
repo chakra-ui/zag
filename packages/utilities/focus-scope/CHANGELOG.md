@@ -1,5 +1,60 @@
 # @zag-js/focus-scope
 
+## 0.36.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.36.3
+  - @zag-js/dom-event@0.36.3
+  - @zag-js/dom-query@0.36.3
+  - @zag-js/tabbable@0.36.3
+  - @zag-js/visually-hidden@0.36.3
+
+## 0.36.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.36.2
+  - @zag-js/dom-event@0.36.2
+  - @zag-js/dom-query@0.36.2
+  - @zag-js/tabbable@0.36.2
+  - @zag-js/visually-hidden@0.36.2
+
+## 0.36.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.36.1
+  - @zag-js/dom-event@0.36.1
+  - @zag-js/dom-query@0.36.1
+  - @zag-js/tabbable@0.36.1
+  - @zag-js/visually-hidden@0.36.1
+
+## 0.36.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.36.0
+  - @zag-js/dom-event@0.36.0
+  - @zag-js/dom-query@0.36.0
+  - @zag-js/tabbable@0.36.0
+  - @zag-js/visually-hidden@0.36.0
+
+## 0.35.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.35.0
+  - @zag-js/dom-event@0.35.0
+  - @zag-js/dom-query@0.35.0
+  - @zag-js/tabbable@0.35.0
+  - @zag-js/visually-hidden@0.35.0
+
 ## 0.34.0
 
 ### Patch Changes

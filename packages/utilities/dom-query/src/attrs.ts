@@ -1,9 +1,4 @@
-type Booleanish = boolean | "true" | "false"
+import type { Booleanish } from "./types"
 
-export const dataAttr = (guard: boolean | undefined) => {
-  return (guard ? "" : undefined) as Booleanish
-}
-
-export const ariaAttr = (guard: boolean | undefined) => {
-  return guard ? "true" : undefined
-}
+export const dataAttr = (guard: boolean | undefined) => (guard ? "" : undefined) as Booleanish
+export const ariaAttr = (guard: boolean | undefined) => (guard ? "true" : undefined)

@@ -12,6 +12,11 @@ export const checkboxControls = defineControls({
   value: { type: "string", defaultValue: "on" },
 })
 
+export const collapsibleControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+})
+
 export const switchControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
@@ -39,6 +44,7 @@ export const editableControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
   autoResize: { type: "boolean", defaultValue: false },
+  maxLength: { type: "number", defaultValue: 1000 },
   placeholder: {
     type: "string",
     defaultValue: "Type something...",
@@ -228,4 +234,15 @@ export const treeviewControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   selectionMode: { type: "select", options: ["single", "multiple"] as const, defaultValue: "single" },
   openOnClick: { type: "boolean", defaultValue: true },
+})
+
+export const clipboardControls = defineControls({
+  timeout: { type: "number", defaultValue: 3000 },
+})
+
+export const tourControls = defineControls({
+  keyboardNavigation: { type: "boolean", defaultValue: true },
+  closeOnEsc: { type: "boolean", defaultValue: true },
+  closeOnInteractOutside: { type: "boolean", defaultValue: true },
+  preventInteraction: { type: "boolean", defaultValue: true },
 })

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/anatomy-icons",
-  "version": "0.34.0",
+  "version": "0.36.3",
   "keywords": [
     "ui-machines",
     "state-machines",
@@ -37,7 +37,7 @@
   "clean-package": "../../clean-package.config.json",
   "main": "src/index.ts",
   "devDependencies": {
-    "@types/react": "18.2.48",
+    "@types/react": "18.2.55",
     "clean-package": "2.2.0",
     "react": "18.2.0"
   },

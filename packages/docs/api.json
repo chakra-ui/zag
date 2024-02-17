@@ -291,6 +291,103 @@
       }
     }
   },
+  "clipboard": {
+    "api": {
+      "isCopied": {
+        "type": "boolean",
+        "description": "Whether the value has been copied to the clipboard"
+      },
+      "value": {
+        "type": "string",
+        "description": "The value to be copied to the clipboard"
+      },
+      "setValue": {
+        "type": "(value: string) => void",
+        "description": "Set the value to be copied to the clipboard"
+      }
+    },
+    "context": {
+      "value": {
+        "type": "string",
+        "description": "The value to be copied to the clipboard"
+      },
+      "onCopyStatusChange": {
+        "type": "(details: CopyStatusDetails) => void",
+        "description": "The function to be called when the value is copied to the clipboard"
+      },
+      "timeout": {
+        "type": "number",
+        "description": "The timeout for the copy operation"
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
+  "collapsible": {
+    "api": {
+      "isOpen": {
+        "type": "boolean",
+        "description": "Whether the collapsible is open."
+      },
+      "isDisabled": {
+        "type": "boolean",
+        "description": "Whether the collapsible is disabled"
+      },
+      "isFocused": {
+        "type": "boolean",
+        "description": "Whether the checkbox is focused"
+      },
+      "open": {
+        "type": "() => void",
+        "description": "Function to open the collapsible."
+      },
+      "close": {
+        "type": "() => void",
+        "description": "Function to close the collapsible."
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "Partial<{ root: string; content: string; trigger: string; }>",
+        "description": "The ids of the elements in the collapsible. Useful for composition."
+      },
+      "onOpenChange": {
+        "type": "(details: OpenChangeDetails) => void",
+        "description": "Function called when the popup is opened"
+      },
+      "open": {
+        "type": "boolean",
+        "description": "Whether the collapsible is open"
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the collapsible is disabled"
+      },
+      "open.controlled": {
+        "type": "boolean",
+        "description": "Whether the collapsible open state is controlled by the user"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "color-picker": {
     "api": {
       "isDragging": {
@@ -394,6 +491,10 @@
       "open": {
         "type": "boolean",
         "description": "Whether the color picker is open"
+      },
+      "open.controlled": {
+        "type": "boolean",
+        "description": "Whether the color picker open state is controlled by the user"
       },
       "format": {
         "type": "ColorFormat",
@@ -506,6 +607,10 @@
       "close": {
         "type": "() => void",
         "description": "Function to close the combobox"
+      },
+      "collection": {
+        "type": "Collection<V>",
+        "description": "Function to toggle the combobox"
       },
       "setCollection": {
         "type": "(collection: Collection<V>) => void",
@@ -670,6 +775,10 @@
         "type": "(duration: DateDuration) => DateValueOffset",
         "description": "Returns the offset of the month based on the provided number of months."
       },
+      "getRangePresetValue": {
+        "type": "(value: DateRangePreset) => DateValue[]",
+        "description": "Returns the range of dates based on the provided date range preset."
+      },
       "getMonthWeeks": {
         "type": "(from?: DateValue) => DateValue[][]",
         "description": "Returns the weeks of the month from the provided date. Represented as an array of arrays of dates."
@@ -809,7 +918,7 @@
         "description": "The localized messages to use."
       },
       "ids": {
-        "type": "Partial<{ root: string; table(id: string): string; tableHeader(id: string): string; tableBody(id: string): string; tableRow(id: string): string; content: string; cellTrigger(id: string): string; prevTrigger(view: DateView): string; clearTrigger: string; control: string; input: string; trigger: string; monthSelect: string; yearSelect: string; positioner: string; }>",
+        "type": "Partial<{ root: string; table(id: string): string; tableHeader(id: string): string; tableBody(id: string): string; tableRow(id: string): string; content: string; cellTrigger(id: string): string; prevTrigger(view: DateView): string; clearTrigger: string; control: string; input(index: number): string; trigger: string; monthSelect: string; yearSelect: string; positioner: string; }>",
         "description": "The ids of the elements in the date picker. Useful for composition."
       },
       "name": {
@@ -886,11 +995,11 @@
         "description": "The selection mode of the calendar.\n- `single` - only one date can be selected\n- `multiple` - multiple dates can be selected\n- `range` - a range of dates can be selected"
       },
       "format": {
-        "type": "(date: DateValue[]) => string",
+        "type": "(date: DateValue) => string",
         "description": "The format of the date to display in the input."
       },
       "parse": {
-        "type": "(value: string) => DateValue[]",
+        "type": "(value: string) => DateValue",
         "description": "The format of the date to display in the input."
       },
       "view": {
@@ -909,6 +1018,10 @@
       "open": {
         "type": "boolean",
         "description": "Whether the datepicker is open"
+      },
+      "open.controlled": {
+        "type": "boolean",
+        "description": "Whether the datepicker open state is controlled by the user"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -997,6 +1110,10 @@
       "open": {
         "type": "boolean",
         "description": "Whether the dialog is open"
+      },
+      "open.controlled": {
+        "type": "boolean",
+        "description": "Whether the dialog is controlled by the user"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -1326,6 +1443,10 @@
         "type": "boolean",
         "description": "Whether the hover card is open"
       },
+      "open.controlled": {
+        "type": "boolean",
+        "description": "Whether the hover card is controlled by the user"
+      },
       "positioning": {
         "type": "PositioningOptions",
         "description": "The user provided options used to position the popover content"
@@ -1444,6 +1565,10 @@
       "onOpenChange": {
         "type": "(details: OpenChangeDetails) => void",
         "description": "Function called when the menu opens or closes"
+      },
+      "open.controlled": {
+        "type": "boolean",
+        "description": "Whether the menu's open state is controlled by the user"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -1922,6 +2047,10 @@
         "type": "boolean",
         "description": "Whether the popover is open"
       },
+      "open.controlled": {
+        "type": "boolean",
+        "description": "Whether the popover is controlled by the user"
+      },
       "onEscapeKeyDown": {
         "type": "(event: KeyboardEvent) => void",
         "description": "Function called when the escape key is pressed"
@@ -2207,6 +2336,10 @@
         "type": "boolean",
         "description": "Whether the select is open"
       },
+      "isValueEmpty": {
+        "type": "boolean",
+        "description": "Whether the select value is empty"
+      },
       "highlightedValue": {
         "type": "string",
         "description": "The value of the highlighted item"
@@ -2217,7 +2350,7 @@
       },
       "highlightValue": {
         "type": "(value: string) => void",
-        "description": "The value of the combobox input"
+        "description": "The value of the select input"
       },
       "selectedItems": {
         "type": "V[]",
@@ -2241,31 +2374,31 @@
       },
       "setValue": {
         "type": "(value: string[]) => void",
-        "description": "Function to set the value of the combobox"
+        "description": "Function to set the value of the select"
       },
       "clearValue": {
         "type": "(value?: string) => void",
-        "description": "Function to clear the value of the combobox"
+        "description": "Function to clear the value of the select"
       },
       "focus": {
         "type": "() => void",
-        "description": "Function to focus on the combobox input"
+        "description": "Function to focus on the select input"
       },
       "getItemState": {
         "type": "(props: ItemProps<any>) => ItemState",
-        "description": "Returns the state of a combobox item"
+        "description": "Returns the state of a select item"
       },
       "open": {
         "type": "() => void",
-        "description": "Function to open the combobox"
+        "description": "Function to open the select"
       },
       "close": {
         "type": "() => void",
-        "description": "Function to close the combobox"
+        "description": "Function to close the select"
       },
       "collection": {
         "type": "Collection<V>",
-        "description": "Function to toggle the combobox"
+        "description": "Function to toggle the select"
       },
       "setCollection": {
         "type": "(collection: Collection<V>) => void",
@@ -2348,6 +2481,10 @@
       "open": {
         "type": "boolean",
         "description": "Whether the select menu is open"
+      },
+      "open.controlled": {
+        "type": "boolean",
+        "description": "Whether the select's open state is controlled by the user"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -3080,10 +3217,66 @@
         "type": "boolean",
         "description": "Whether the tooltip is open"
       },
+      "open.controlled": {
+        "type": "boolean",
+        "description": "Whether the tooltip is controlled by the user"
+      },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",
         "defaultValue": "\"ltr\""
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
+  "tree-view": {
+    "api": {},
+    "context": {
+      "expandedIds": {
+        "type": "Set<string>",
+        "description": "The id of the expanded nodes"
+      },
+      "selectedIds": {
+        "type": "Set<string>",
+        "description": "The id of the selected nodes"
+      },
+      "focusedId": {
+        "type": "string",
+        "description": "The id of the focused node"
+      },
+      "selectionMode": {
+        "type": "\"single\" | \"multiple\"",
+        "description": "Whether the tree supports multiple selection\n- \"single\": only one node can be selected\n- \"multiple\": multiple nodes can be selected",
+        "defaultValue": "\"single\""
+      },
+      "onExpandedChange": {
+        "type": "(details: ExpandedChangeDetails) => void",
+        "description": "Called when the tree is opened or closed"
+      },
+      "onSelectionChange": {
+        "type": "(details: SelectionChangeDetails) => void",
+        "description": "Called when the selection changes"
+      },
+      "onFocusChange": {
+        "type": "(details: FocusChangeDetails) => void",
+        "description": "Called when the focused node changes"
+      },
+      "openOnClick": {
+        "type": "boolean",
+        "description": "Whether clicking on a branch should open it or not",
+        "defaultValue": "true"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
       },
       "getRootNode": {
         "type": "() => ShadowRoot | Node | Document",

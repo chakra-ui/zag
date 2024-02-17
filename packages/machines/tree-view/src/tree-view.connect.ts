@@ -219,6 +219,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
+    getItemTextProps(props) {
+      const itemState = getItemState(props)
+      return normalize.element({
+        ...parts.itemText.attrs,
+        "data-disabled": dataAttr(itemState.isDisabled),
+        "data-selected": dataAttr(itemState.isSelected),
+        "data-focused": dataAttr(itemState.isFocused),
+      })
+    },
+
+    getItemIndicatorProps(props) {
+      const itemState = getItemState(props)
+      return normalize.element({
+        ...parts.itemIndicator.attrs,
+        "aria-hidden": true,
+        "data-disabled": dataAttr(itemState.isDisabled),
+        "data-selected": dataAttr(itemState.isSelected),
+        "data-focused": dataAttr(itemState.isFocused),
+        hidden: !itemState.isSelected,
+      })
+    },
+
     getBranchState,
     getBranchProps(props) {
       const branchState = getBranchState(props)

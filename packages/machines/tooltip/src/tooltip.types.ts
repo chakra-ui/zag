@@ -72,6 +72,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the tooltip is open
    */
   open?: boolean
+  /**
+   * Whether the tooltip is controlled by the user
+   */
+  "open.controlled"?: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

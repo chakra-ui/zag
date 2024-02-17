@@ -1,0 +1,18 @@
+```tsx
+import * as collapsible from "@zag-js/collapsible"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { useId } from "react"
+
+function Collapsible() {
+  const [state, send] = useMachine(collapsible.machine({ id: useId() }))
+
+  const api = collapsible.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      <button {...api.triggerProps}>Collapse Trigger</button>
+      <div {...api.contentProps}>Collape Content</div>
+    </div>
+  )
+}
+```

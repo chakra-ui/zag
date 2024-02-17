@@ -1,10 +1,83 @@
 # @zag-js/tooltip
 
+## 0.36.3
+
+### Patch Changes
+
+- [#1248](https://github.com/chakra-ui/zag/pull/1248) [`ecd4496`](https://github.com/chakra-ui/zag/commit/ecd4496fb950442e49e68e4def81bb0b29c6bb20) Thanks [@erm1116](https://github.com/erm1116)! - fix disabled tooltip flashing when hovering and clicking the trigger
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.3
+  - @zag-js/core@0.36.3
+  - @zag-js/types@0.36.3
+  - @zag-js/utils@0.36.3
+  - @zag-js/dom-event@0.36.3
+  - @zag-js/dom-query@0.36.3
+  - @zag-js/popper@0.36.3
+
+## 0.36.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.2
+  - @zag-js/core@0.36.2
+  - @zag-js/types@0.36.2
+  - @zag-js/utils@0.36.2
+  - @zag-js/dom-event@0.36.2
+  - @zag-js/dom-query@0.36.2
+  - @zag-js/popper@0.36.2
+
+## 0.36.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.1
+  - @zag-js/core@0.36.1
+  - @zag-js/types@0.36.1
+  - @zag-js/utils@0.36.1
+  - @zag-js/dom-event@0.36.1
+  - @zag-js/dom-query@0.36.1
+  - @zag-js/popper@0.36.1
+
+## 0.36.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.0
+  - @zag-js/core@0.36.0
+  - @zag-js/types@0.36.0
+  - @zag-js/utils@0.36.0
+  - @zag-js/dom-event@0.36.0
+  - @zag-js/dom-query@0.36.0
+  - @zag-js/popper@0.36.0
+
+## 0.35.0
+
+### Minor Changes
+
+- [`3881f34`](https://github.com/chakra-ui/zag/commit/3881f34622d7a6067e7a2e4eecbe83fa778bdb9e) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add support for `open.controlled` in the machine context as a way to fully control the machine's open state programmatically.
+
+### Patch Changes
+
+- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36), [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e)]:
+  - @zag-js/core@0.35.0
+  - @zag-js/popper@0.35.0
+  - @zag-js/anatomy@0.35.0
+  - @zag-js/types@0.35.0
+  - @zag-js/utils@0.35.0
+  - @zag-js/dom-event@0.35.0
+  - @zag-js/dom-query@0.35.0
+
 ## 0.34.0
 
 ### Patch Changes
 
-- [`e037484`](https://github.com/chakra-ui/zag/commit/e0374847390a88e69d6e4b33f42fc6ab6291b2a8) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioning doesn't work as expected when combined with entry/exit animations in the presence component
+- [`e037484`](https://github.com/chakra-ui/zag/commit/e0374847390a88e69d6e4b33f42fc6ab6291b2a8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioning doesn't work as expected when combined
+  with entry/exit animations in the presence component
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.34.0

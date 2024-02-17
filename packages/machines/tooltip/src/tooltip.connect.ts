@@ -31,7 +31,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("CLOSE")
     },
     reposition(options = {}) {
-      send({ type: "SET_POSITIONING", options })
+      send({ type: "POSITIONING.SET", options })
     },
 
     triggerProps: normalize.button({
@@ -42,21 +42,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-state": isOpen ? "open" : "closed",
       "aria-describedby": isOpen ? contentId : undefined,
       onClick() {
-        send("CLICK")
+        if (isDisabled) return
+        send("CLOSE")
       },
       onFocus() {
-        if (state.event.type === "POINTER_DOWN") return
-        send("FOCUS")
+        if (isDisabled || state.event.type === "POINTER_DOWN") return
+        send("OPEN")
       },
       onBlur() {
+        if (isDisabled) return
         if (id === store.id) {
-          send("BLUR")
+          send("CLOSE")
         }
       },
       onPointerDown() {
-        if (isDisabled) return
+        if (isDisabled || !state.context.closeOnPointerDown) return
         if (id === store.id) {
-          send("POINTER_DOWN")
+          send("CLOSE")
         }
       },
       onPointerMove(event) {

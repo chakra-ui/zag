@@ -23,6 +23,7 @@ export const anatomy = createAnatomy("date-picker").parts(
   "viewTrigger",
   "viewControl",
   "yearSelect",
+  "presetTrigger",
 )
 
 export const parts = anatomy.build()

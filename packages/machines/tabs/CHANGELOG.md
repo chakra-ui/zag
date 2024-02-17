@@ -1,10 +1,81 @@
 # @zag-js/tabs
 
+## 0.36.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.3
+  - @zag-js/core@0.36.3
+  - @zag-js/types@0.36.3
+  - @zag-js/utils@0.36.3
+  - @zag-js/dom-event@0.36.3
+  - @zag-js/dom-query@0.36.3
+  - @zag-js/element-rect@0.36.3
+  - @zag-js/tabbable@0.36.3
+
+## 0.36.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.2
+  - @zag-js/core@0.36.2
+  - @zag-js/types@0.36.2
+  - @zag-js/utils@0.36.2
+  - @zag-js/dom-event@0.36.2
+  - @zag-js/dom-query@0.36.2
+  - @zag-js/element-rect@0.36.2
+  - @zag-js/tabbable@0.36.2
+
+## 0.36.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.1
+  - @zag-js/core@0.36.1
+  - @zag-js/types@0.36.1
+  - @zag-js/utils@0.36.1
+  - @zag-js/dom-event@0.36.1
+  - @zag-js/dom-query@0.36.1
+  - @zag-js/element-rect@0.36.1
+  - @zag-js/tabbable@0.36.1
+
+## 0.36.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.0
+  - @zag-js/core@0.36.0
+  - @zag-js/types@0.36.0
+  - @zag-js/utils@0.36.0
+  - @zag-js/dom-event@0.36.0
+  - @zag-js/dom-query@0.36.0
+  - @zag-js/element-rect@0.36.0
+  - @zag-js/tabbable@0.36.0
+
+## 0.35.0
+
+### Patch Changes
+
+- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36)]:
+  - @zag-js/core@0.35.0
+  - @zag-js/anatomy@0.35.0
+  - @zag-js/types@0.35.0
+  - @zag-js/utils@0.35.0
+  - @zag-js/dom-event@0.35.0
+  - @zag-js/dom-query@0.35.0
+  - @zag-js/element-rect@0.35.0
+  - @zag-js/tabbable@0.35.0
+
 ## 0.34.0
 
 ### Minor Changes
 
-- [`2982ac3`](https://github.com/chakra-ui/zag/commit/2982ac314dff65883e437459cc893dea11d472f8) Thanks [@cschroeter](https://github.com/cschroeter)! - Refactor transition duration for components with indicators
+- [`2982ac3`](https://github.com/chakra-ui/zag/commit/2982ac314dff65883e437459cc893dea11d472f8) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Refactor transition duration for components with indicators
 
 ### Patch Changes
 

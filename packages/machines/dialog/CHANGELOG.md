@@ -1,5 +1,79 @@
 # @zag-js/dialog
 
+## 0.36.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.3
+  - @zag-js/core@0.36.3
+  - @zag-js/types@0.36.3
+  - @zag-js/aria-hidden@0.36.3
+  - @zag-js/utils@0.36.3
+  - @zag-js/dismissable@0.36.3
+  - @zag-js/dom-query@0.36.3
+  - @zag-js/remove-scroll@0.36.3
+
+## 0.36.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.2
+  - @zag-js/core@0.36.2
+  - @zag-js/types@0.36.2
+  - @zag-js/aria-hidden@0.36.2
+  - @zag-js/utils@0.36.2
+  - @zag-js/dismissable@0.36.2
+  - @zag-js/dom-query@0.36.2
+  - @zag-js/remove-scroll@0.36.2
+
+## 0.36.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.36.1
+  - @zag-js/core@0.36.1
+  - @zag-js/types@0.36.1
+  - @zag-js/aria-hidden@0.36.1
+  - @zag-js/utils@0.36.1
+  - @zag-js/dismissable@0.36.1
+  - @zag-js/dom-query@0.36.1
+  - @zag-js/remove-scroll@0.36.1
+
+## 0.36.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dismissable@0.36.0
+  - @zag-js/anatomy@0.36.0
+  - @zag-js/core@0.36.0
+  - @zag-js/types@0.36.0
+  - @zag-js/aria-hidden@0.36.0
+  - @zag-js/utils@0.36.0
+  - @zag-js/dom-query@0.36.0
+  - @zag-js/remove-scroll@0.36.0
+
+## 0.35.0
+
+### Minor Changes
+
+- [`3881f34`](https://github.com/chakra-ui/zag/commit/3881f34622d7a6067e7a2e4eecbe83fa778bdb9e) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add support for `open.controlled` in the machine context as a way to fully control the machine's open state programmatically.
+
+### Patch Changes
+
+- Updated dependencies [[`76c1231`](https://github.com/chakra-ui/zag/commit/76c12313f68da94651360c23b065eab9b3d9d6f0), [`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36)]:
+  - @zag-js/remove-scroll@0.35.0
+  - @zag-js/core@0.35.0
+  - @zag-js/anatomy@0.35.0
+  - @zag-js/types@0.35.0
+  - @zag-js/aria-hidden@0.35.0
+  - @zag-js/utils@0.35.0
+  - @zag-js/dismissable@0.35.0
+  - @zag-js/dom-query@0.35.0
+
 ## 0.34.0
 
 ### Patch Changes

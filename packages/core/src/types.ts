@@ -302,10 +302,6 @@ export declare namespace StateMachine {
 
   export interface MachineConfig<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> {
     /**
-     * Function called whenever the state receives an event through its send method
-     */
-    onEvent?: Actions<TContext, TState, TEvent>
-    /**
      * Function called synchronously after the machine has been instantiated,
      * before it is started.
      */
@@ -384,7 +380,6 @@ export declare namespace StateMachine {
     delays?: DelayMap<TContext, TEvent>
     activities?: ActivityMap<TContext, TState, TEvent>
     sync?: boolean
-    transformContext?: (context: Partial<Writable<TContext>>) => void
     compareFns?: { [K in keyof TContext]?: CompareFn<TContext[K]> }
   }
 
@@ -419,9 +414,6 @@ export enum ActionTypes {
   Start = "machine.start",
   Stop = "machine.stop",
   Created = "machine.created",
-  SendParent = "machine.send-parent",
-  After = "machine.after",
-  Every = "machine.every",
   Init = "machine.init",
 }
 

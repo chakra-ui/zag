@@ -14,7 +14,7 @@ export const dom = createScope({
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
-  getFocusedItem: (ctx: Ctx) => (ctx.highlightedId ? dom.getById(ctx, ctx.highlightedId) : null),
+  getHighlightedItemEl: (ctx: Ctx) => (ctx.highlightedId ? dom.getById(ctx, ctx.highlightedId) : null),
   getArrowEl: (ctx: Ctx) => dom.getById(ctx, dom.getArrowId(ctx)),
 
   getElements: (ctx: Ctx) => {
@@ -36,8 +36,14 @@ export const dom = createScope({
   isTriggerItem: (el: HTMLElement | null) => {
     return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("aria-controls")
   },
-  getHighlightedOptionEl(ctx: Ctx) {
-    if (!ctx.highlightedId) return null
-    return dom.getById(ctx, ctx.highlightedId)
+
+  getOptionFromItemEl(el: HTMLElement) {
+    return {
+      id: el.id,
+      name: el.dataset.name,
+      value: el.dataset.value,
+      valueText: el.dataset.valueText,
+      type: el.dataset.type,
+    }
   },
 })

@@ -39,31 +39,65 @@ export function machine(userContext: UserDefinedContext) {
           entry: ["checkRenderedElements"],
           activities: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
           on: {
-            CLOSE: {
+            "CONTROLLED.CLOSE": {
               target: "closed",
-              actions: ["invokeOnClose", "restoreFocus"],
+              actions: ["restoreFocus"],
             },
-            TOGGLE: {
-              target: "closed",
-              actions: ["invokeOnClose", "restoreFocus"],
-            },
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose", "restoreFocus"],
+              },
+            ],
+            TOGGLE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose", "restoreFocus"],
+              },
+            ],
           },
         },
         closed: {
           on: {
-            OPEN: {
+            "CONTROLLED.OPEN": {
               target: "open",
-              actions: ["invokeOnOpen"],
             },
-            TOGGLE: {
-              target: "open",
-              actions: ["invokeOnOpen"],
-            },
+            OPEN: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["invokeOnOpen"],
+              },
+            ],
+            TOGGLE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["invokeOnOpen"],
+              },
+            ],
           },
         },
       },
     },
     {
+      guards: {
+        isOpenControlled: (ctx) => !!ctx["open.controlled"],
+      },
       activities: {
         trackDismissableElement(ctx, _evt, { send }) {
           const getContentEl = () => dom.getContentEl(ctx)
@@ -133,8 +167,8 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnOpen(ctx) {
           ctx.onOpenChange?.({ open: true })
         },
-        toggleVisibility(ctx, _evt, { send }) {
-          send({ type: ctx.open ? "OPEN" : "CLOSE", src: "controlled" })
+        toggleVisibility(ctx, evt, { send }) {
+          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
         },
         restoreFocus(ctx) {
           if (!ctx.restoreFocus) return

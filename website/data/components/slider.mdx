@@ -338,3 +338,55 @@ The slider machine exposes the following context properties:
 The slider `api` exposes the following methods:
 
 <ApiTable name="slider" />
+
+## Accessibility
+
+Adheres to the
+[Slider WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/slidertwothumb).
+
+### Keyboard Interactions
+
+<KeyboardTable
+  data={[
+    {
+      keys: ["ArrowRight"],
+      description: <span>Increments the slider based on defined step</span>,
+    },
+    {
+      keys: ["ArrowLeft"],
+      description: <span>Decrements the slider based on defined step</span>,
+    },
+    {
+      keys: ["ArrowUp"],
+      description: <span>Increases the value by the step amount.</span>,
+    },
+    {
+      keys: ["ArrowDown"],
+      description: <span>Decreases the value by the step amount.</span>,
+    },
+    {
+      keys: ["PageUp"],
+      description: <span>Increases the value by a larger step</span>,
+    },
+    {
+      keys: ["PageDown"],
+      description: <span>Decreases the value by a larger step</span>,
+    },
+    {
+      keys: ["Shift + ArrowUp"],
+      description: <span>Increases the value by a larger step</span>,
+    },
+    {
+      keys: ["Shift + ArrowDown"],
+      description: <span>Decreases the value by a larger step</span>,
+    },
+    {
+      keys: ["Home"],
+      description: "Sets the value to its minimum.",
+    },
+    {
+      keys: ["End"],
+      description: "Sets the value to its maximum.",
+    },
+  ]}
+/>

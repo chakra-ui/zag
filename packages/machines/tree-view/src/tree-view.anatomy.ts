@@ -5,6 +5,7 @@ export const anatomy = createAnatomy("tree-view").parts(
   "label",
   "tree",
   "item",
+  "itemIndicator",
   "itemText",
   "branch",
   "branchControl",

@@ -84,6 +84,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getInputId(state.context),
       hidden: autoResize ? undefined : !isEditing,
       placeholder: placeholder?.edit,
+      maxLength: state.context.maxLength,
       disabled: isDisabled,
       "data-disabled": dataAttr(isDisabled),
       readOnly: isReadOnly,

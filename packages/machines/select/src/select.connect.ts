@@ -44,6 +44,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   return {
     isOpen,
     isFocused,
+    isValueEmpty: state.context.value.length === 0,
     highlightedItem,
     highlightedValue: state.context.highlightedValue,
     selectedItems,
@@ -250,7 +251,6 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemText.attrs,
-        dir: state.context.dir,
         "data-disabled": dataAttr(itemState.isDisabled),
         "data-highlighted": dataAttr(itemState.isHighlighted),
       })
@@ -261,7 +261,6 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         "aria-hidden": true,
         ...parts.itemIndicator.attrs,
-        dir: state.context.dir,
         "data-state": itemState.isSelected ? "checked" : "unchecked",
         hidden: !itemState.isSelected,
       })
@@ -333,7 +332,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       role: "listbox",
       ...parts.content.attrs,
       "data-state": isOpen ? "open" : "closed",
-      "aria-activedescendant": state.context.highlightedValue || "",
+      "aria-activedescendant": state.context.highlightedValue
+        ? dom.getItemId(state.context, state.context.highlightedValue)
+        : undefined,
       "aria-multiselectable": state.context.multiple ? "true" : undefined,
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: 0,
@@ -354,7 +355,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             send({ type: "CONTENT.END" })
           },
           Enter() {
-            send({ type: "CONTENT.ENTER" })
+            send({ type: "ITEM.CLICK", src: "keydown.enter" })
           },
           Space(event) {
             if (isTypingAhead) {

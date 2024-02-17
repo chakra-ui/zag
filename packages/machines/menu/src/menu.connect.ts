@@ -21,7 +21,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const values = state.context.value
   const isTypingAhead = state.context.isTypingAhead
 
-  const isOpen = state.hasTag("visible")
+  const isOpen = state.hasTag("open")
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
@@ -76,6 +76,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerMove(event) {
         if (itemState.isDisabled || event.pointerType !== "mouse") return
         const target = event.currentTarget
+        if (itemState.isHighlighted) return
         send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect })
       },
       onPointerDown(event) {
@@ -111,20 +112,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("CLOSE")
     },
     setHighlightedId(id) {
-      send({ type: "SET_HIGHLIGHTED_ID", id })
+      send({ type: "HIGHLIGHTED.SET", id })
     },
     setParent(parent) {
-      send({ type: "SET_PARENT", value: parent, id: parent.state.context.id })
+      send({ type: "PARENT.SET", value: parent, id: parent.state.context.id })
     },
     setChild(child) {
-      send({ type: "SET_CHILD", value: child, id: child.state.context.id })
+      send({ type: "CHILD.SET", value: child, id: child.state.context.id })
     },
     value: values,
     setValue(name, value) {
-      send({ type: "SET_VALUE", name, value })
+      send({ type: "VALUE.SET", name, value })
     },
     reposition(options = {}) {
-      send({ type: "SET_POSITIONING", options })
+      send({ type: "POSITIONING.SET", options })
     },
 
     contextTriggerProps: normalize.element({
@@ -221,10 +222,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send("ARROW_UP")
           },
           Enter() {
-            send({ type: "ARROW_DOWN" })
+            send({ type: "ARROW_DOWN", src: "enter" })
           },
           Space() {
-            send({ type: "ARROW_DOWN" })
+            send({ type: "ARROW_DOWN", src: "space" })
           },
         }
 
@@ -286,7 +287,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         if (!isSelfEvent(event) || !isKeyDownInside) return
 
-        const item = dom.getFocusedItem(state.context)
+        const item = dom.getHighlightedItemEl(state.context)
         const isLink = !!item?.matches("a[href]")
 
         const keyMap: EventKeyMap = {

@@ -76,6 +76,10 @@ interface PublicContext extends DismissableElementHandlers, CommonProperties, Di
    * Whether the popover is open
    */
   open?: boolean
+  /**
+   * Whether the popover is controlled by the user
+   */
+  "open.controlled"?: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

@@ -214,3 +214,53 @@ The toggle group machine exposes the following context properties:
 The toggle group `api` exposes the following methods:
 
 <ApiTable name="toggle-group" />
+
+## Accessibility
+
+Uses
+[roving tabindex](https://www.w3.org/TR/wai-aria-practices-1.2/examples/radio/radio.html)
+to manage focus movement among items.
+
+### Keyboard Interactions
+
+<KeyboardTable
+  data={[
+    {
+      keys: ["Tab"],
+      description:
+        "Moves focus to either the pressed item or the first item in the group.",
+    },
+    {
+      keys: ["Space"],
+      description: "Activates/deactivates the item.",
+    },
+    {
+      keys: ["Enter"],
+      description: "Activates/deactivates the item.",
+    },
+    {
+      keys: ["ArrowDown"],
+      description: "Moves focus to the next item in the group.",
+    },
+    {
+      keys: ["ArrowRight"],
+      description: "Moves focus to the next item in the group.",
+    },
+    {
+      keys: ["ArrowUp"],
+      description: "Moves focus to the previous item in the group.",
+    },
+    {
+      keys: ["ArrowLeft"],
+      description: "Moves focus to the previous item in the group.",
+    },
+    {
+      keys: ["Home"],
+      description: "Moves focus to the first item.",
+    },
+    {
+      keys: ["End"],
+      description: "Moves focus to the last item.",
+    },
+  ]}
+/>

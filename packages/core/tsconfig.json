@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src"],
+  "include": ["src", "tests"],
   "compilerOptions": {
-    "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo",
-  },
+    "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo"
+  }
 }

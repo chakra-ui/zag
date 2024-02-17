@@ -6,7 +6,78 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
-## [0.34.0](./#0.34.0) - 2024-02-19
+## [0.36.3](./#0.36.3) - 2024-02-16
+
+### Fixed
+
+- **Collapsible**: Export missing types for clipboard machine
+- **Tooltip**: Fix issue where disabled tooltip flashes when hovering and clicking the trigger
+
+## [0.36.2](./#0.36.2) - 2024-02-13
+
+### Fixed
+
+- **Clipboard**: Export missing types for clipboard machine
+
+## [0.36.1](./#0.36.1) - 2024-02-13
+
+### Fixed
+
+- **HoverCard**: Remove superfluous log message when card was hovered
+
+## [0.36.0](./#0.36.0) - 2024-02-13
+
+### Fixed
+
+- Refactor scroll utilities to safely handle null element values in test environment
+- **Dialog**: Prevent calling interaction outside logic when scrollbar is clicked
+
+### Added
+
+- **TreeView**: Extend anatomy to include tree item text and indicator parts.
+- **Clipboard**: Add `api.copy()` to copy text to clipboard
+
+## [0.35.0](./#0.35.0) - 2024-02-11
+
+### Fixed
+
+- **All components**
+
+  - Improve runtime performance when using watchers by subscribing to context once.
+  - Fix issue where restoring scroll causes a smooth scroll transition back to the initial scroll point.
+
+- Fix issue where scrolling into view could result in scrolling the body element.
+
+  > Affected components: Select, Menu, Combobox
+
+- **Select**:
+
+  - Fix issue where item group's label id pointed to the wrong element
+  - Fix issue where select uses the incorrect id for `aria-activedecesendant` field
+
+- **DatePicker**: Fix issue where date picker does not show correct number of weeks when `startOfWeek` is set
+
+### Added
+
+- **[NEW] Clipboard**: Add Clipboard machine for copying text to clipboard.
+
+- **[NEW] Collapsible**: Add Collapsible machine for interactive component which expands/collapses a panel.
+
+- Add support for open.controlled in the machine context as a way to fully control the machine's open state
+  programmatically.
+
+  > Affected components: Dialog, HoverCard, Popover, ColorPicker, DatePicker, Tooltip, Menu, HoverCard, and Combobox.
+
+- **Combobox**: Expose api.collection for better control over the collection of items in combobox.
+
+### Changed
+
+- **DatePicker**
+  - [BREAKING] Change date picker from `api.inputProps` to `api.getInputProps(...)` to support multiple inputs.
+  - Added a new prop `getPresetTriggerProps` to support custom trigger for common date presets (e.g. Last 7 days, Last
+    30 days, etc.)
+
+## [0.34.0](./#0.34.0) - 2024-01-19
 
 ### Fixed
 

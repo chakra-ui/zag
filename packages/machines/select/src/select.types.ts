@@ -118,6 +118,10 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether the select menu is open
    */
   open?: boolean
+  /**
+   * Whether the select's open state is controlled by the user
+   */
+  "open.controlled"?: boolean
 }
 
 type PrivateContext = Context<{
@@ -136,6 +140,11 @@ type PrivateContext = Context<{
    * Whether the fieldset is disabled
    */
   fieldsetDisabled: boolean
+  /**
+   * @internal
+   * Whether to restore focus to the trigger after the menu closes
+   */
+  restoreFocus?: boolean
 }>
 
 type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
@@ -223,6 +232,10 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   isOpen: boolean
   /**
+   * Whether the select value is empty
+   */
+  isValueEmpty: boolean
+  /**
    * The value of the highlighted item
    */
   highlightedValue: string | null
@@ -231,7 +244,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   highlightedItem: V | null
   /**
-   * The value of the combobox input
+   * The value of the select input
    */
   highlightValue(value: string): void
   /**
@@ -255,31 +268,31 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   selectValue(value: string): void
   /**
-   * Function to set the value of the combobox
+   * Function to set the value of the select
    */
   setValue(value: string[]): void
   /**
-   * Function to clear the value of the combobox
+   * Function to clear the value of the select
    */
   clearValue(value?: string): void
   /**
-   * Function to focus on the combobox input
+   * Function to focus on the select input
    */
   focus(): void
   /**
-   * Returns the state of a combobox item
+   * Returns the state of a select item
    */
   getItemState(props: ItemProps): ItemState
   /**
-   * Function to open the combobox
+   * Function to open the select
    */
   open(): void
   /**
-   * Function to close the combobox
+   * Function to close the select
    */
   close(): void
   /**
-   * Function to toggle the combobox
+   * Function to toggle the select
    */
   collection: Collection<V>
   /**

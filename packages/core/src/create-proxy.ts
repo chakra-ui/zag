@@ -7,6 +7,7 @@ export function createProxy<TContext extends Dict, TState extends S.StateSchema,
 ) {
   const computedContext: Dict = config.computed ?? cast<S.TComputedContext<TContext>>({})
   const initialContext = config.context ?? cast<TContext>({})
+  const initialTags = config.initial ? config.states?.[config.initial]?.tags : []
 
   const state = proxy({
     value: config.initial ?? "",
@@ -15,7 +16,7 @@ export function createProxy<TContext extends Dict, TState extends S.StateSchema,
     previousEvent: cast<Dict>({}),
     context: proxyWithComputed(initialContext, computedContext),
     done: false,
-    tags: [] as Array<TState["tags"]>,
+    tags: (initialTags ?? []) as Array<TState["tags"]>,
     hasTag(tag: TState["tags"]): boolean {
       return this.tags.includes(tag)
     },

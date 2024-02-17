@@ -16,7 +16,6 @@ const fetchMachine = createMachine({
   context: {
     "activateOnDblClick": false,
     "activateOnFocus": false,
-    "!isAtMaxLength": false,
     "submitOnBlur": false,
     "submitOnEnter": false
   },
@@ -55,7 +54,6 @@ const fetchMachine = createMachine({
       activities: ["trackInteractOutside"],
       on: {
         TYPE: {
-          cond: "!isAtMaxLength",
           actions: "setValue"
         },
         BLUR: [{
@@ -93,7 +91,6 @@ const fetchMachine = createMachine({
   guards: {
     "activateOnDblClick": ctx => ctx["activateOnDblClick"],
     "activateOnFocus": ctx => ctx["activateOnFocus"],
-    "!isAtMaxLength": ctx => ctx["!isAtMaxLength"],
     "submitOnBlur": ctx => ctx["submitOnBlur"],
     "submitOnEnter": ctx => ctx["submitOnEnter"]
   }

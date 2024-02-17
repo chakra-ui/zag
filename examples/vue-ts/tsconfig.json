@@ -5,15 +5,15 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@zag-js/*": ["../../node_modules/@zag-js/*"],
+      "@zag-js/*": ["../../node_modules/@zag-js/*"]
     },
     "jsx": "preserve",
-    "jsxImportSource": "vue",
+    "jsxImportSource": "vue"
   },
 
   "references": [
     {
-      "path": "./tsconfig.config.json",
-    },
-  ],
+      "path": "./tsconfig.config.json"
+    }
+  ]
 }

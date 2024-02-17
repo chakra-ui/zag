@@ -1,4 +1,5 @@
-import { isHTMLElement } from "./is-html-element"
+import { getWindow } from "./env"
+import { isHTMLElement } from "./is"
 
 export function isEditableElement(el: HTMLElement | EventTarget | null) {
   if (el == null || !isHTMLElement(el)) {
@@ -6,7 +7,7 @@ export function isEditableElement(el: HTMLElement | EventTarget | null) {
   }
 
   try {
-    const win = el.ownerDocument.defaultView || window
+    const win = getWindow(el)
     return (
       (el instanceof win.HTMLInputElement && el.selectionStart != null) ||
       /(textarea|select)/.test(el.localName) ||
