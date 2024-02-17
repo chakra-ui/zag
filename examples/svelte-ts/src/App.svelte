@@ -8,6 +8,7 @@
   import Carousel from "./routes/carousel.svelte"
   import Checkbox from "./routes/checkbox.svelte"
   import ColorPicker from "./routes/color-picker.svelte"
+  import Combobox from "./routes/combobox.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 </script>
@@ -40,6 +41,9 @@
     </Route>
     <Route path="/color-picker">
       <ColorPicker />
+    </Route>
+    <Route path="/combobox">
+      <Combobox />
     </Route>
   </div>
 </Router>
