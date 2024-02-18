@@ -15,7 +15,8 @@
 
 ### Patch Changes
 
-- [`d98c990`](https://github.com/chakra-ui/zag/commit/d98c990f5f5d503222d9e22b436ae9735633800c) Thanks [@cschroeter](https://github.com/cschroeter)! - Export missing Machine API type
+- [`d98c990`](https://github.com/chakra-ui/zag/commit/d98c990f5f5d503222d9e22b436ae9735633800c) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export missing Machine API type
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.36.2
@@ -39,7 +40,8 @@
 
 ### Patch Changes
 
-- [`84aec94`](https://github.com/chakra-ui/zag/commit/84aec94f8d7ac3a9286b6c40cf3f373e8cdb7481) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Expose types for callback functions
+- [`84aec94`](https://github.com/chakra-ui/zag/commit/84aec94f8d7ac3a9286b6c40cf3f373e8cdb7481) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Expose types for callback functions
   - Add `api.copy()` function
 - Updated dependencies []:
   - @zag-js/anatomy@0.36.0
@@ -52,7 +54,8 @@
 
 ### Minor Changes
 
-- [`00a7a7c`](https://github.com/chakra-ui/zag/commit/00a7a7c42e8f3befba1219cd4b2b0ae7f200c331) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add `Clipboard` machine for copying text to clipboard.
+- [`00a7a7c`](https://github.com/chakra-ui/zag/commit/00a7a7c42e8f3befba1219cd4b2b0ae7f200c331) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `Clipboard` machine for copying text to clipboard.
 
 ### Patch Changes
 

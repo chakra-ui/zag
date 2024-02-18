@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, Context, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -92,7 +92,7 @@ type ComputedContext = Readonly<{
   currentPortalled: boolean
 }>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The elements that are rendered on mount
@@ -106,7 +106,7 @@ type PrivateContext = Context<{
    * The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement
-}>
+}
 
 export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
 

@@ -12,7 +12,10 @@
 
 ### Patch Changes
 
-- [#1209](https://github.com/chakra-ui/zag/pull/1209) [`2b3edb1`](https://github.com/chakra-ui/zag/commit/2b3edb14d2e892ea70e289b54ba83fcd71e1bcab) Thanks [@zhengkyl](https://github.com/zhengkyl)! - Fix issue where date picker does not show correct number of weeks when `startOfWeek` is set
+- [#1209](https://github.com/chakra-ui/zag/pull/1209)
+  [`2b3edb1`](https://github.com/chakra-ui/zag/commit/2b3edb14d2e892ea70e289b54ba83fcd71e1bcab) Thanks
+  [@zhengkyl](https://github.com/zhengkyl)! - Fix issue where date picker does not show correct number of weeks when
+  `startOfWeek` is set
 
 ## 0.34.0
 

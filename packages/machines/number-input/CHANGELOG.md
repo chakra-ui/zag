@@ -1080,7 +1080,7 @@
         // details => { value: string, valueAsNumber: number }
       },
     }),
-  );
+  )
   ```
 
   - Add `focus()` and `blur()` methods to the machine's `api`

@@ -20,7 +20,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   return {
     value: state.context.value,
     focusedValue: state.context.focusedValue,
-    previousValues: Array.from(state.context.previousValues),
     setValue(value) {
       send({ type: "SET_VALUE", value })
     },

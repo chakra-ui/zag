@@ -11,7 +11,7 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { DateRangePreset } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -198,7 +198,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   "open.controlled"?: boolean
 }
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The start date of the current visible duration.
@@ -235,7 +235,7 @@ type PrivateContext = Context<{
    * Whether the calendar should restore focus to the input when it closes.
    */
   restoreFocus?: boolean
-}>
+}
 
 type ComputedContext = Readonly<{
   /**

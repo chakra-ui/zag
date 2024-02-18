@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -62,13 +62,13 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   openOnClick?: boolean
 }
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The typeahead state for faster keyboard navigation
    */
   typeahead: TypeaheadState
-}>
+}
 
 type ComputedContext = Readonly<{
   /**

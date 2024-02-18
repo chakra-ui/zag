@@ -43,7 +43,8 @@
 
 ### Minor Changes
 
-- [`6671d75`](https://github.com/chakra-ui/zag/commit/6671d7539a647827e685b235d72aec477cc51765) Thanks [@cschroeter](https://github.com/cschroeter)! - Extend tree view parts
+- [`6671d75`](https://github.com/chakra-ui/zag/commit/6671d7539a647827e685b235d72aec477cc51765) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Extend tree view parts
 
 ### Patch Changes
 

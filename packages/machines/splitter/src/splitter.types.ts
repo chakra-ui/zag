@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -76,12 +76,12 @@ type ComputedContext = Readonly<{
   activeResizePanels?: { before: PanelSizeData; after: PanelSizeData }
 }>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   activeResizeId: string | null
   previousPanels: NormalizedPanelData
   activeResizeState: { isAtMin: boolean; isAtMax: boolean }
   initialSize: Array<Required<Pick<PanelSizeData, "id" | "size">>>
-}>
+}
 
 export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
 

@@ -3,7 +3,7 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -124,7 +124,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   "open.controlled"?: boolean
 }
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * Internal state of the typeahead
@@ -145,7 +145,7 @@ type PrivateContext = Context<{
    * Whether to restore focus to the trigger after the menu closes
    */
   restoreFocus?: boolean
-}>
+}
 
 type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
   /**

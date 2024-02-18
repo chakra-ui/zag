@@ -80,7 +80,8 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36), [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e)]:
+- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36),
+  [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e)]:
   - @zag-js/core@0.35.0
   - @zag-js/popper@0.35.0
   - @zag-js/anatomy@0.35.0

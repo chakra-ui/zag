@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -164,13 +164,13 @@ type ComputedContext = Readonly<{
   submitOnBlur: boolean
 }>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The previous value of the editable. Used to revert in case of cancel/escape
    */
   previousValue: string
-}>
+}
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 

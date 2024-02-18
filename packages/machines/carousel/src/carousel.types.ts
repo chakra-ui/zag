@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -62,13 +62,13 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   ids?: ElementIds
 }
 
-type PrivateContext = Context<{
+interface PrivateContext {
   slideRects: DOMRect[]
   containerRect?: DOMRect
   containerSize: number
   scrollSnaps: number[]
   scrollProgress: number
-}>
+}
 
 type ComputedContext = Readonly<{
   isRtl: boolean

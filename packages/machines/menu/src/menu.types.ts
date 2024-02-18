@@ -3,7 +3,7 @@ import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -111,7 +111,7 @@ type ComputedContext = Readonly<{
   isTypingAhead: boolean
 }>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The menu's parent. Used for submenus.
@@ -153,7 +153,7 @@ type PrivateContext = Context<{
    * Whether to return focus to the trigger when the menu is closed
    */
   restoreFocus?: boolean
-}>
+}
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 

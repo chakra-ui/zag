@@ -34,7 +34,8 @@
 
 ### Patch Changes
 
-- [`0535ae2`](https://github.com/chakra-ui/zag/commit/0535ae2f836c2a270132f6bb4e3f518d9198c33d) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Prevent calling interaction outside when scrollbar is clicked
+- [`0535ae2`](https://github.com/chakra-ui/zag/commit/0535ae2f836c2a270132f6bb4e3f518d9198c33d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Prevent calling interaction outside when scrollbar is clicked
 
 - Updated dependencies []:
   - @zag-js/utils@0.36.0

@@ -304,9 +304,17 @@
       "setValue": {
         "type": "(value: string) => void",
         "description": "Set the value to be copied to the clipboard"
+      },
+      "copy": {
+        "type": "() => void",
+        "description": "Copy the value to the clipboard"
       }
     },
     "context": {
+      "ids": {
+        "type": "Partial<{ root: string; input: string; label: string; }>",
+        "description": "The ids of the elements in the clipboard. Useful for composition."
+      },
       "value": {
         "type": "string",
         "description": "The value to be copied to the clipboard"
@@ -2837,10 +2845,6 @@
         "type": "string",
         "description": "The value of the tab that is currently focused."
       },
-      "previousValues": {
-        "type": "string[]",
-        "description": "The previous values of the tabs in sequence of selection."
-      },
       "setValue": {
         "type": "(value: string) => void",
         "description": "Sets the value of the tabs."
@@ -3229,6 +3233,157 @@
       "getRootNode": {
         "type": "() => ShadowRoot | Node | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
+  "tour": {
+    "api": {
+      "currentIndex": {
+        "type": "number",
+        "description": "The index of the current step"
+      },
+      "currentStep": {
+        "type": "StepDetails",
+        "description": "The current step details"
+      },
+      "hasNextStep": {
+        "type": "boolean",
+        "description": "Whether there is a next step"
+      },
+      "hasPrevStep": {
+        "type": "boolean",
+        "description": "Whether there is a previous step"
+      },
+      "isFirstStep": {
+        "type": "boolean",
+        "description": "Whether the current step is the first step"
+      },
+      "isLastStep": {
+        "type": "boolean",
+        "description": "Whether the current step is the last step"
+      },
+      "addStep": {
+        "type": "(step: StepDetails) => void",
+        "description": "Add a new step to the tour"
+      },
+      "removeStep": {
+        "type": "(id: string) => void",
+        "description": "Remove a step from the tour"
+      },
+      "updateStep": {
+        "type": "(id: string, stepOverrides: Partial<StepDetails>) => void",
+        "description": "Update a step in the tour with partial details"
+      },
+      "setSteps": {
+        "type": "(steps: StepDetails[]) => void",
+        "description": "Set the steps of the tour"
+      },
+      "setStep": {
+        "type": "(id: string) => void",
+        "description": "Set the current step of the tour"
+      },
+      "start": {
+        "type": "(id?: string) => void",
+        "description": "Start the tour at a specific step (or the first step if not provided)"
+      },
+      "isValidStep": {
+        "type": "(id: string) => boolean",
+        "description": "Check if a step is valid"
+      },
+      "isCurrentStep": {
+        "type": "(id: string) => boolean",
+        "description": "Check if a step is visible"
+      },
+      "next": {
+        "type": "() => void",
+        "description": "Move to the next step"
+      },
+      "prev": {
+        "type": "() => void",
+        "description": "Move to the previous step"
+      },
+      "skip": {
+        "type": "() => void",
+        "description": "Skip the tour. The behavior is defined by the `skipBehavior` option"
+      },
+      "getProgressText": {
+        "type": "() => string",
+        "description": "Get the progress text"
+      }
+    },
+    "context": {
+      "steps": {
+        "type": "StepDetails[]",
+        "description": "The steps of the tour"
+      },
+      "step": {
+        "type": "string",
+        "description": "The index of the currently highlighted step"
+      },
+      "onStepChange": {
+        "type": "(details: StepChangeDetails) => void",
+        "description": "Callback when the highlighted step changes"
+      },
+      "onStatusChange": {
+        "type": "(details: StatusChangeDetails) => void",
+        "description": "Callback when the tour is opened or closed"
+      },
+      "closeOnInteractOutside": {
+        "type": "boolean",
+        "description": "Whether to close the tour when the user clicks outside the tour"
+      },
+      "closeOnEsc": {
+        "type": "boolean",
+        "description": "Whether to close the tour when the user presses the escape key"
+      },
+      "keyboardNavigation": {
+        "type": "boolean",
+        "description": "Whether to allow keyboard navigation (right/left arrow keys to navigate between steps)"
+      },
+      "preventInteraction": {
+        "type": "boolean",
+        "description": "Prevents interaction with the rest of the page while the tour is open"
+      },
+      "offset": {
+        "type": "Offset",
+        "description": "The offsets to apply to the overlay"
+      },
+      "radius": {
+        "type": "number",
+        "description": "The radius of the overlay clip path"
+      },
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "The translations for the tour"
+      },
+      "skipBehavior": {
+        "type": "\"skip-step\" | \"complete\"",
+        "description": "The behavior when the tour is skipped"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "onPointerDownOutside": {
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "description": "Function called when the pointer is pressed down outside the component"
+      },
+      "onFocusOutside": {
+        "type": "(event: FocusOutsideEvent) => void",
+        "description": "Function called when the focus is moved outside the component"
+      },
+      "onInteractOutside": {
+        "type": "(event: InteractOutsideEvent) => void",
+        "description": "Function called when an interaction happens outside the component"
       }
     }
   },

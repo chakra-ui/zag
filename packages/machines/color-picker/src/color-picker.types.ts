@@ -2,7 +2,7 @@ import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@za
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, Context, MaybeElement, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, MaybeElement, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 import type { MaybeFunction } from "@zag-js/utils"
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
@@ -111,7 +111,7 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
   closeOnSelect?: boolean
 }
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The id of the thumb that is currently being dragged
@@ -142,7 +142,7 @@ type PrivateContext = Context<{
    * Whether the color picker should return focus to the trigger when closed
    */
   restoreFocus?: boolean
-}>
+}
 
 type ComputedContext = Readonly<{
   /**

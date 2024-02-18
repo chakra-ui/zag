@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -44,7 +44,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
 
 type ComputedContext = Readonly<{}>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The height of the content
@@ -65,7 +65,7 @@ type PrivateContext = Context<{
    * Whether the mount animation is prevented
    */
   isMountAnimationPrevented: boolean
-}>
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 

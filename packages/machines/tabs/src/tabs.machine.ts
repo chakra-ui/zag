@@ -20,7 +20,6 @@ export function machine(userContext: UserDefinedContext) {
         activationMode: "automatic",
         value: null,
         focusedValue: null,
-        previousValues: [],
         indicatorRect: {
           left: "0px",
           top: "0px",
@@ -39,14 +38,12 @@ export function machine(userContext: UserDefinedContext) {
         isVertical: (ctx) => ctx.orientation === "vertical",
       },
 
-      created: ["setPrevSelectedTabs"],
-
       entry: ["checkRenderedElements", "syncIndicatorRect", "setContentTabIndex"],
 
       exit: ["cleanupObserver"],
 
       watch: {
-        value: ["enableIndicatorTransition", "setPrevSelectedTabs", "syncIndicatorRect", "setContentTabIndex"],
+        value: ["enableIndicatorTransition", "syncIndicatorRect", "setContentTabIndex"],
         dir: ["syncIndicatorRect"],
         orientation: ["syncIndicatorRect"],
       },
@@ -169,11 +166,6 @@ export function machine(userContext: UserDefinedContext) {
         checkRenderedElements(ctx) {
           ctx.isIndicatorRendered = !!dom.getIndicatorEl(ctx)
         },
-        setPrevSelectedTabs(ctx) {
-          if (ctx.value != null) {
-            ctx.previousValues = pushUnique(ctx.previousValues, ctx.value)
-          }
-        },
         // if tab panel contains focusable elements, remove the tabindex attribute
         setContentTabIndex(ctx) {
           raf(() => {
@@ -229,17 +221,6 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
-}
-
-// function to push value array and remove previous instances of value
-function pushUnique(arr: string[], value: any) {
-  const newArr = Array.from(arr).slice()
-  const index = newArr.indexOf(value)
-  if (index > -1) {
-    newArr.splice(index, 1)
-  }
-  newArr.push(value)
-  return newArr
 }
 
 const invoke = {

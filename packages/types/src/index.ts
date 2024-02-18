@@ -43,24 +43,6 @@ export interface CommonProperties {
   getRootNode?: () => ShadowRoot | Document | Node
 }
 
-export interface RootProperties {
-  /**
-   * The owner document of the machine.
-   */
-  doc?: Document
-  /**
-   * The root node of the machine. Useful for shadow DOM.
-   */
-  rootNode?: ShadowRoot
-  /**
-   * The related target when the element is blurred.
-   * Used as a polyfill for `e.relatedTarget`
-   */
-  pointerdownNode?: HTMLElement | null
-}
-
-export type Context<T> = T & RootProperties
-
 export type Style = JSX.CSSProperties
 
 export * from "./prop-types"

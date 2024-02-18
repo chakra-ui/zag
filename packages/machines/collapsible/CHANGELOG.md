@@ -4,7 +4,9 @@
 
 ### Patch Changes
 
-- [#1252](https://github.com/chakra-ui/zag/pull/1252) [`80416ac`](https://github.com/chakra-ui/zag/commit/80416acdc19603be72242afa9d998ba8c819d2d8) Thanks [@Omikorin](https://github.com/Omikorin)! - Export missing types
+- [#1252](https://github.com/chakra-ui/zag/pull/1252)
+  [`80416ac`](https://github.com/chakra-ui/zag/commit/80416acdc19603be72242afa9d998ba8c819d2d8) Thanks
+  [@Omikorin](https://github.com/Omikorin)! - Export missing types
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.36.3
@@ -50,7 +52,10 @@
 
 ### Minor Changes
 
-- [#986](https://github.com/chakra-ui/zag/pull/986) [`99ea9b0`](https://github.com/chakra-ui/zag/commit/99ea9b0931c44a70c3bfbddbb5dc7fc59f531eed) Thanks [@Omikorin](https://github.com/Omikorin)! - Add `Collapsible` machine for interactive component which expands/collapses a panel.
+- [#986](https://github.com/chakra-ui/zag/pull/986)
+  [`99ea9b0`](https://github.com/chakra-ui/zag/commit/99ea9b0931c44a70c3bfbddbb5dc7fc59f531eed) Thanks
+  [@Omikorin](https://github.com/Omikorin)! - Add `Collapsible` machine for interactive component which
+  expands/collapses a panel.
 
 ### Patch Changes
 

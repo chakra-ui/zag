@@ -36,7 +36,10 @@
 
 ### Patch Changes
 
-- [#1213](https://github.com/chakra-ui/zag/pull/1213) [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioned components don't respond to window resizing.
+- [#1213](https://github.com/chakra-ui/zag/pull/1213)
+  [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioned components don't respond to window
+  resizing.
 
 - Updated dependencies []:
   - @zag-js/utils@0.35.0
