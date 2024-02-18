@@ -15,6 +15,7 @@ const KEYDOWN_EVENT_REGEX = /(ARROW_UP|ARROW_DOWN|HOME|END|ENTER|ESCAPE)/
 
 export function machine<T extends CollectionItem>(userContext: UserDefinedContext<T>) {
   const ctx = compact(userContext)
+  const initialCollection = ctx.collection ?? collection.empty()
   return createMachine<MachineContext, MachineState>(
     {
       id: "combobox",
@@ -25,14 +26,14 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         composing: false,
         value: ctx.value ?? [],
         highlightedValue: null,
-        inputValue: ctx.collection && ctx.value ? ctx.collection.itemsToString(ctx.collection.items(ctx.value)) : "",
+        inputValue: ctx.value ? initialCollection.itemsToString(initialCollection.items(ctx.value)) : "",
         selectOnBlur: true,
         allowCustomValue: false,
         closeOnSelect: true,
         inputBehavior: "none",
         selectionBehavior: "replace",
         ...ctx,
-        collection: ctx.collection ?? collection.empty(),
+        collection: initialCollection,
         positioning: {
           placement: "bottom",
           flip: false,
