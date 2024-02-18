@@ -1,15 +1,17 @@
 export { anatomy } from "./menu.anatomy"
 export { connect } from "./menu.connect"
 export { machine } from "./menu.machine"
+export * from "./menu.props"
 export type {
+  MachineApi as Api,
   UserDefinedContext as Context,
-  GroupProps,
+  ItemGroupLabelProps,
+  ItemGroupProps,
   ItemProps,
   ItemState,
+  OpenChangeDetails,
   OptionItemProps,
   OptionItemState,
-  MachineApi as Api,
-  OpenChangeDetails,
-  ValueChangeDetails,
   SelectionDetails,
+  ValueChangeDetails,
 } from "./menu.types"

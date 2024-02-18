@@ -55,6 +55,7 @@ export type NormalizeProps<T extends PropTypes> = {
   element(props: DataAttr & JSX.HTMLAttributes<HTMLElement> & Record<string, any>): T["element"]
   style: JSX.CSSProperties
 }
+
 export function createNormalizer<T extends PropTypes>(fn: (props: Dict) => Dict): NormalizeProps<T> {
   return new Proxy({} as any, {
     get() {

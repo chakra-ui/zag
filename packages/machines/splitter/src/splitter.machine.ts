@@ -66,7 +66,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             POINTER_DOWN: {
               target: "dragging",
-              actions: ["setActiveHandleId", "invokeOnResizeStart"],
+              actions: ["setActiveHandleId"],
             },
             POINTER_LEAVE: "idle",
           },
@@ -75,10 +75,7 @@ export function machine(userContext: UserDefinedContext) {
         hover: {
           tags: ["focus"],
           on: {
-            POINTER_DOWN: {
-              target: "dragging",
-              actions: ["invokeOnResizeStart"],
-            },
+            POINTER_DOWN: "dragging",
             POINTER_LEAVE: "idle",
           },
         },
@@ -89,7 +86,7 @@ export function machine(userContext: UserDefinedContext) {
             BLUR: "idle",
             POINTER_DOWN: {
               target: "dragging",
-              actions: ["setActiveHandleId", "invokeOnResizeStart"],
+              actions: ["setActiveHandleId"],
             },
             ARROW_LEFT: {
               guard: "isHorizontal",
@@ -171,9 +168,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnResize(ctx) {
           ctx.onSizeChange?.({ size: Array.from(ctx.size), activeHandleId: ctx.activeResizeId })
-        },
-        invokeOnResizeStart(ctx) {
-          ctx.onSizeChangeStart?.({ size: Array.from(ctx.size), activeHandleId: ctx.activeResizeId })
         },
         invokeOnResizeEnd(ctx) {
           ctx.onSizeChangeEnd?.({ size: Array.from(ctx.size), activeHandleId: ctx.activeResizeId })

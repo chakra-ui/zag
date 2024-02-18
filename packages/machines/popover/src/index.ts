@@ -1,6 +1,7 @@
 export { anatomy } from "./popover.anatomy"
 export { connect } from "./popover.connect"
 export { machine } from "./popover.machine"
+export * from "./popover.props"
 export type {
   MachineApi as Api,
   UserDefinedContext as Context,

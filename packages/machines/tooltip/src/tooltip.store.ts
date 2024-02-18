@@ -2,13 +2,13 @@ import { proxy } from "@zag-js/core"
 
 type Id = string | null
 
-type Store = {
+interface TooltipStore {
   id: Id
   prevId: Id
   setId: (val: Id) => void
 }
 
-export const store = proxy<Store>({
+export const store = proxy<TooltipStore>({
   id: null,
   prevId: null,
   setId(val) {

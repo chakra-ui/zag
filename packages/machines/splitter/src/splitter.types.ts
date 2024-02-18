@@ -44,10 +44,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   onSizeChange?: (details: SizeChangeDetails) => void
   /**
-   * Function called when the splitter resize starts.
-   */
-  onSizeChangeStart?: (details: SizeChangeDetails) => void
-  /**
    * Function called when the splitter resize ends.
    */
   onSizeChangeEnd?: (details: SizeChangeDetails) => void

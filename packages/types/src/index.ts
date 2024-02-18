@@ -47,3 +47,4 @@ export type Style = JSX.CSSProperties
 
 export * from "./prop-types"
 export type { JSX }
+export * from "./create-props"

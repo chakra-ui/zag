@@ -225,14 +225,14 @@ export interface OptionItemState extends ItemState {
   isChecked: boolean
 }
 
-export interface GroupProps {
+export interface ItemGroupProps {
   /**
    * The `id` of the element that provides accessibility label to the option group
    */
   id: string
 }
 
-export interface LabelProps {
+export interface ItemGroupLabelProps {
   /**
    * The `id` of the group this refers to
    */
@@ -301,6 +301,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getOptionItemProps(option: OptionItemProps): T["element"]
   getOptionItemIndicatorProps(option: OptionItemProps): T["element"]
   getOptionItemTextProps(option: OptionItemProps): T["element"]
-  getItemGroupLabelProps(options: LabelProps): T["element"]
-  getItemGroupProps(options: GroupProps): T["element"]
+  getItemGroupLabelProps(options: ItemGroupLabelProps): T["element"]
+  getItemGroupProps(options: ItemGroupProps): T["element"]
 }
