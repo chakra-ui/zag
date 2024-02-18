@@ -154,6 +154,6 @@ export const dom = createScope({
       }
     })
 
-    return nextSet
+    return Array.from(nextSet)
   },
 })

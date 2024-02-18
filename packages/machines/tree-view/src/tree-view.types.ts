@@ -7,15 +7,15 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
  * -----------------------------------------------------------------------------*/
 
 export interface FocusChangeDetails {
-  focusedId: string
+  focusedId: string | null
 }
 
 export interface ExpandedChangeDetails extends FocusChangeDetails {
-  expandedIds: Set<string>
+  expandedIds: string[]
 }
 
 export interface SelectionChangeDetails extends FocusChangeDetails {
-  selectedIds: Set<string>
+  selectedIds: string[]
 }
 
 /* -----------------------------------------------------------------------------
@@ -26,11 +26,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The id of the expanded nodes
    */
-  expandedIds: Set<string>
+  expandedIds: string[]
   /**
    * The id of the selected nodes
    */
-  selectedIds: Set<string>
+  selectedIds: string[]
   /**
    * The id of the focused node
    */
@@ -100,8 +100,17 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface ItemProps {
+  /**
+   * The depth of the item or branch
+   */
   depth: number
+  /**
+   * The id of the item or branch
+   */
   id: string
+  /**
+   * Whether the item or branch is disabled
+   */
   disabled?: boolean
 }
 
@@ -119,17 +128,53 @@ export interface BranchState extends ItemState {
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
-  expandedIds: Set<string>
-  selectedIds: Set<string>
-  expand(ids: Set<string>): void
+  /**
+   * The id of the expanded nodes
+   */
+  expandedIds: string[]
+  /**
+   * The id of the selected nodes
+   */
+  selectedIds: string[]
+  /**
+   * Function to expand nodes
+   */
+  expand(ids: string[]): void
+  /**
+   * Function to expand all nodes
+   */
   expandAll(): void
-  collapse(ids: Set<string>): void
+  /**
+   * Function to collapse nodes
+   */
+  collapse(ids: string[]): void
+  /**
+   * Function to collapse all nodes
+   */
   collapseAll(): void
-  select(ids: Set<string>): void
+  /**
+   * Function to select nodes
+   */
+  select(ids: string[]): void
+  /**
+   * Function to select all nodes
+   */
   selectAll(): void
-  deselect(ids: Set<string>): void
+  /**
+   * Function to deselect nodes
+   */
+  deselect(ids: string[]): void
+  /**
+   * Function to deselect all nodes
+   */
   deselectAll(): void
+  /**
+   * Function to focus a branch node
+   */
   focusBranch(id: string): void
+  /**
+   * Function to focus an item node
+   */
   focusItem(id: string): void
 
   rootProps: T["element"]

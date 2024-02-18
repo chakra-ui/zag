@@ -93,10 +93,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   isDisabled: boolean
   /**
-   * Whether the checkbox is focused
-   */
-  isFocused: boolean | undefined
-  /**
    * Function to open the collapsible.
    */
   open(): void

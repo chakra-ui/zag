@@ -16,7 +16,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: props.id,
       isDisabled: Boolean(props.disabled),
       isFocused: focusedId === props.id,
-      isSelected: selectedIds.has(props.id),
+      isSelected: selectedIds.includes(props.id),
     }
   }
 
@@ -25,8 +25,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: props.id,
       isDisabled: Boolean(props.disabled),
       isFocused: focusedId === props.id,
-      isExpanded: expandedIds.has(props.id),
-      isSelected: selectedIds.has(props.id),
+      isExpanded: expandedIds.includes(props.id),
+      isSelected: selectedIds.includes(props.id),
     }
   }
 

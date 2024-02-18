@@ -1,10 +1,10 @@
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./collapsible.anatomy"
 import { dom } from "./collapsible.dom"
-import type { Send, State } from "./collapsible.types"
-import { dataAttr } from "@zag-js/dom-query"
+import type { MachineApi, Send, State } from "./collapsible.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isVisible = state.matches("open", "closing")
   const isOpen = state.matches("open")
 
@@ -15,6 +15,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const skipDataAttr = state.context.isMountAnimationPrevented && isOpen
 
   return {
+    isDisabled: !!disabled,
     isOpen,
     open() {
       send("OPEN")

@@ -347,10 +347,6 @@
         "type": "boolean",
         "description": "Whether the collapsible is disabled"
       },
-      "isFocused": {
-        "type": "boolean",
-        "description": "Whether the checkbox is focused"
-      },
       "open": {
         "type": "() => void",
         "description": "Function to open the collapsible."
@@ -3388,14 +3384,63 @@
     }
   },
   "tree-view": {
-    "api": {},
-    "context": {
+    "api": {
       "expandedIds": {
-        "type": "Set<string>",
+        "type": "string[]",
         "description": "The id of the expanded nodes"
       },
       "selectedIds": {
-        "type": "Set<string>",
+        "type": "string[]",
+        "description": "The id of the selected nodes"
+      },
+      "expand": {
+        "type": "(ids: string[]) => void",
+        "description": "Function to expand nodes"
+      },
+      "expandAll": {
+        "type": "() => void",
+        "description": "Function to expand all nodes"
+      },
+      "collapse": {
+        "type": "(ids: string[]) => void",
+        "description": "Function to collapse nodes"
+      },
+      "collapseAll": {
+        "type": "() => void",
+        "description": "Function to collapse all nodes"
+      },
+      "select": {
+        "type": "(ids: string[]) => void",
+        "description": "Function to select nodes"
+      },
+      "selectAll": {
+        "type": "() => void",
+        "description": "Function to select all nodes"
+      },
+      "deselect": {
+        "type": "(ids: string[]) => void",
+        "description": "Function to deselect nodes"
+      },
+      "deselectAll": {
+        "type": "() => void",
+        "description": "Function to deselect all nodes"
+      },
+      "focusBranch": {
+        "type": "(id: string) => void",
+        "description": "Function to focus a branch node"
+      },
+      "focusItem": {
+        "type": "(id: string) => void",
+        "description": "Function to focus an item node"
+      }
+    },
+    "context": {
+      "expandedIds": {
+        "type": "string[]",
+        "description": "The id of the expanded nodes"
+      },
+      "selectedIds": {
+        "type": "string[]",
         "description": "The id of the selected nodes"
       },
       "focusedId": {
