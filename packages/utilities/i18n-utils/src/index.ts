@@ -1,5 +1,7 @@
 export { getDefaultLocale } from "./get-default-locale"
 export type { Locale } from "./get-default-locale"
-export { isRTL, getLocaleDir } from "./is-rtl"
+export { getLocaleDir, isRTL } from "./is-rtl"
+export * from "./number-format"
+export * from "./relative-time-format"
 export { trackLocale } from "./track-locale"
 export type { LocaleOptions } from "./track-locale"

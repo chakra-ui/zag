@@ -30,6 +30,9 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "clean-package": "../../../clean-package.config.json",
+  "dependencies": {
+    "@zag-js/i18n-utils": "workspace:*"
+  },
   "devDependencies": {
     "clean-package": "2.2.0"
   }

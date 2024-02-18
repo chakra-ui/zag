@@ -2910,6 +2910,10 @@ importers:
         version: 2.2.0
 
   packages/utilities/file-utils:
+    dependencies:
+      '@zag-js/i18n-utils':
+        specifier: workspace:*
+        version: link:../i18n-utils
     devDependencies:
       clean-package:
         specifier: 2.2.0
