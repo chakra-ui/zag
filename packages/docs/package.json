@@ -1,14 +1,10 @@
 {
   "name": "@zag-js/docs",
   "version": "0.36.3",
-  "description": "Docs for zag-js machines",
+  "description": "Docs for zag.js machines",
   "keywords": [
-    "ui-machines",
-    "state-machines",
     "zag",
-    "fsm",
-    "xstate",
-    "finite state machine"
+    "docs"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
@@ -17,6 +13,7 @@
   "sideEffects": false,
   "files": [
     "dist",
+    "data",
     "src"
   ],
   "scripts": {

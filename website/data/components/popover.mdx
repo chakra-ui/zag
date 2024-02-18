@@ -271,43 +271,4 @@ Adheres to the
 
 ### Keyboard Interactions
 
-<KeyboardTable
-  data={[
-    {
-      keys: ["Space"],
-      description: "Opens/closes the popover.",
-    },
-    {
-      keys: ["Enter"],
-      description: "Opens/closes the popover.",
-    },
-    {
-      keys: ["Tab"],
-      description: (
-        <span>
-          Moves focus to the next focusable element within the content.
-          <br />
-          <strong>Note:</strong> If there are no focusable elements, focus is
-          moved to the next focusable element after the trigger.
-        </span>
-      ),
-    },
-    {
-      keys: ["Shift + Tab"],
-      description: (
-        <span>
-          Moves focus to the previous focusable element within the content
-          <br />
-          <strong>Note:</strong> If there are no focusable elements, focus is
-          moved to the trigger.
-        </span>
-      ),
-    },
-    {
-      keys: ["Esc"],
-      description: (
-        <span>Closes the popover and moves focus to the trigger.</span>
-      ),
-    },
-  ]}
-/>
+<KeyboardTable id="popover" />
