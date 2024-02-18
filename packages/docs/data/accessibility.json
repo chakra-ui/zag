@@ -85,32 +85,30 @@
   },
   "menu": {
     "keyboard": [
-      [
-        {
-          "keys": ["Space"],
-          "description": "Activates/Selects the highlighted item"
-        },
-        {
-          "keys": ["Enter"],
-          "description": "Activates/Selects the highlighted item"
-        },
-        {
-          "keys": ["ArrowDown"],
-          "description": "Highlights the next item in the menu"
-        },
-        {
-          "keys": ["ArrowUp"],
-          "description": "Highlights the previous item in the menu"
-        },
-        {
-          "keys": ["ArrowRight", "ArrowLeft"],
-          "description": "<span>When focus is on trigger, opens or closes the submenu depending on reading direction.</span>"
-        },
-        {
-          "keys": ["Esc"],
-          "description": "Closes the menu and moves focus to the trigger"
-        }
-      ]
+      {
+        "keys": ["Space"],
+        "description": "Activates/Selects the highlighted item"
+      },
+      {
+        "keys": ["Enter"],
+        "description": "Activates/Selects the highlighted item"
+      },
+      {
+        "keys": ["ArrowDown"],
+        "description": "Highlights the next item in the menu"
+      },
+      {
+        "keys": ["ArrowUp"],
+        "description": "Highlights the previous item in the menu"
+      },
+      {
+        "keys": ["ArrowRight", "ArrowLeft"],
+        "description": "<span>When focus is on trigger, opens or closes the submenu depending on reading direction.</span>"
+      },
+      {
+        "keys": ["Esc"],
+        "description": "Closes the menu and moves focus to the trigger"
+      }
     ]
   },
   "nested-menu": {
