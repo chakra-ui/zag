@@ -210,7 +210,7 @@ a[aria-current="page"] {
   from {
     opacity: 0.01;
     height: 0;
-    translate: -10% 0%;
+    translate: 0% -10%;
   }
   to {
     opacity: 1;
@@ -228,7 +228,7 @@ a[aria-current="page"] {
   to {
     opacity: 0.01;
     height: 0;
-    translate: -10% 0%;
+    translate: 0% -10%;
   }
 }
 
