@@ -264,6 +264,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
+    getBranchIndicatorProps(props) {
+      const branchState = getBranchState(props)
+      return normalize.element({
+        ...parts.branchIndicator.attrs,
+        "aria-hidden": true,
+        "data-disabled": dataAttr(branchState.isDisabled),
+        "data-selected": dataAttr(branchState.isSelected),
+        "data-focused": dataAttr(branchState.isFocused),
+        hidden: !branchState.isSelected,
+      })
+    },
+
     getBranchTriggerProps(props) {
       const branchState = getBranchState(props)
       return normalize.element({
