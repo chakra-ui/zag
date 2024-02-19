@@ -72,8 +72,8 @@ importers:
         specifier: 18.6.0
         version: 18.6.0(@types/node@20.11.17)(typescript@5.3.3)
       dotenv:
-        specifier: 16.4.2
-        version: 16.4.2
+        specifier: 16.4.4
+        version: 16.4.4
       eslint:
         specifier: 8.56.0
         version: 8.56.0
@@ -6110,7 +6110,7 @@ packages:
       create-require: 1.1.1
       defu: 6.1.4
       destr: 2.0.2
-      dotenv: 16.4.2
+      dotenv: 16.4.4
       git-url-parse: 13.1.1
       is-docker: 3.0.0
       jiti: 1.21.0
@@ -9123,7 +9123,7 @@ packages:
     dependencies:
       chokidar: 3.5.3
       defu: 6.1.4
-      dotenv: 16.4.2
+      dotenv: 16.4.4
       giget: 1.2.1
       jiti: 1.21.0
       mlly: 1.5.0
@@ -10212,8 +10212,8 @@ packages:
       type-fest: 3.13.1
     dev: true
 
-  /dotenv@16.4.2:
-    resolution: {integrity: sha512-rZSSFxke7d9nYQ5NeMIwp5PP+f8wXgKNljpOb7KtH6SKW1cEqcXAz9VSJYVLKe7Jhup/gUYOkaeSVyK8GJ+nBg==}
+  /dotenv@16.4.4:
+    resolution: {integrity: sha512-XvPXc8XAQThSjAbY6cQ/9PcBXmFoWuw1sQ3b8HqUCR6ziGXjkTi//kB9SWa2UwqlgdAIuRqAa/9hVljzPehbYg==}
     engines: {node: '>=12'}
 
   /dotenv@8.6.0:
