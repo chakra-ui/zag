@@ -85,6 +85,49 @@ export const tabsData = [
   },
 ]
 
+export const navMenuData = [
+  {
+    menu: { label: "Home", id: "home" },
+    menuList: [
+      {
+        label: "Submenu 1",
+        id: "submenu-1",
+        href: "#",
+      },
+      {
+        label: "Submenu 2",
+        id: "submenu-2",
+        href: "#",
+      },
+      {
+        label: "Submenu 3",
+        id: "submenu-3",
+        href: "#",
+      },
+    ],
+  },
+  {
+    menu: { label: "About", id: "about" },
+    menuList: [
+      {
+        label: "Submenu2 1",
+        id: "submenu2-1",
+        href: "#",
+      },
+      {
+        label: "Submenu2 2",
+        id: "submenu2-2",
+        href: "#",
+      },
+      {
+        label: "Submenu2 3",
+        id: "submenu2-3",
+        href: "#",
+      },
+    ],
+  },
+]
+
 export const menuData = [
   [
     { label: "New File", id: "new-file" },

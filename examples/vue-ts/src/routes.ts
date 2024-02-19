@@ -5,6 +5,7 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: "/tour", component: () => import("./pages/tour") },
+    { path: "/nav-menu", component: () => import("./pages/nav-menu") },
     { path: "/collapsible", component: () => import("./pages/collapsible") },
     { path: "/clipboard", component: () => import("./pages/clipboard") },
     { path: "/tree-view", component: () => import("./pages/tree-view") },

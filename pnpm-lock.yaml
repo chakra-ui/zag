@@ -82,7 +82,7 @@ importers:
         version: 9.1.0(eslint@8.56.0)
       eslint-plugin-import:
         specifier: 2.29.1
-        version: 2.29.1(@typescript-eslint/parser@6.21.0)(eslint@8.56.0)
+        version: 2.29.1(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
       eslint-plugin-prettier:
         specifier: 5.1.3
         version: 5.1.3(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.2.5)
@@ -248,6 +248,9 @@ importers:
       '@zag-js/mutation-observer':
         specifier: workspace:*
         version: link:../../packages/utilities/mutation-observer
+      '@zag-js/nav-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/nav-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -498,6 +501,9 @@ importers:
       '@zag-js/mutation-observer':
         specifier: workspace:*
         version: link:../../packages/utilities/mutation-observer
+      '@zag-js/nav-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/nav-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -736,6 +742,9 @@ importers:
       '@zag-js/mutation-observer':
         specifier: workspace:*
         version: link:../../packages/utilities/mutation-observer
+      '@zag-js/nav-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/nav-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -834,20 +843,20 @@ importers:
         version: link:../../packages/utilities/visually-hidden
       lucide-preact:
         specifier: ^0.325.0
-        version: 0.325.0(preact@10.19.4)
+        version: 0.325.0(preact@10.19.5)
       preact:
         specifier: ^10.19.4
-        version: 10.19.4
+        version: 10.19.5
       preact-iso:
         specifier: ^2.3.2
-        version: 2.3.2(preact-render-to-string@6.3.1)(preact@10.19.4)
+        version: 2.3.2(preact-render-to-string@6.3.1)(preact@10.19.5)
       preact-render-to-string:
         specifier: ^6.3.1
-        version: 6.3.1(preact@10.19.4)
+        version: 6.3.1(preact@10.19.5)
     devDependencies:
       '@preact/preset-vite':
         specifier: ^2.8.1
-        version: 2.8.1(@babel/core@7.23.9)(preact@10.19.4)(vite@5.1.1)
+        version: 2.8.1(@babel/core@7.23.9)(preact@10.19.5)(vite@5.1.1)
       eslint:
         specifier: ^8.56.0
         version: 8.56.0
@@ -868,7 +877,7 @@ importers:
         version: 3.5.1
       '@solidjs/router':
         specifier: ^0.12.0
-        version: 0.12.0(solid-js@1.8.15)
+        version: 0.12.3(solid-js@1.8.15)
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
@@ -977,6 +986,9 @@ importers:
       '@zag-js/mutation-observer':
         specifier: workspace:*
         version: link:../../packages/utilities/mutation-observer
+      '@zag-js/nav-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/nav-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -1206,6 +1218,9 @@ importers:
       '@zag-js/mutation-observer':
         specifier: workspace:*
         version: link:../../packages/utilities/mutation-observer
+      '@zag-js/nav-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/nav-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -1453,6 +1468,9 @@ importers:
       '@zag-js/mutation-observer':
         specifier: workspace:*
         version: link:../../packages/utilities/mutation-observer
+      '@zag-js/nav-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/nav-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -1687,7 +1705,7 @@ importers:
         version: 2.2.0
       preact:
         specifier: ^10.19.4
-        version: 10.19.4
+        version: 10.19.5
 
   packages/frameworks/react:
     dependencies:
@@ -2212,6 +2230,37 @@ importers:
       '@zag-js/rect-utils':
         specifier: workspace:*
         version: link:../../utilities/rect
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/nav-menu:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dismissable':
+        specifier: workspace:*
+        version: link:../../utilities/dismissable
+      '@zag-js/dom-event':
+        specifier: workspace:*
+        version: link:../../utilities/dom-event
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/popper':
+        specifier: workspace:*
+        version: link:../../utilities/popper
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3191,6 +3240,9 @@ importers:
       '@zag-js/mutation-observer':
         specifier: workspace:*
         version: link:../../packages/utilities/mutation-observer
+      '@zag-js/nav-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/nav-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -6733,7 +6785,7 @@ packages:
     resolution: {integrity: sha512-2LuNTFBIO0m7kKIQvvPHN6UE63VjpmL9rnEEaOOaiSPbZK+zUOYIzBAWcED+3XYzhYsd/0mD57VdxAEqqV52CQ==}
     dev: true
 
-  /@preact/preset-vite@2.8.1(@babel/core@7.23.9)(preact@10.19.4)(vite@5.1.1):
+  /@preact/preset-vite@2.8.1(@babel/core@7.23.9)(preact@10.19.5)(vite@5.1.1):
     resolution: {integrity: sha512-a9KV4opdj17X2gOFuGup0aE+sXYABX/tJi/QDptOrleX4FlnoZgDWvz45tHOdVfrZX+3uvVsIYPHxRsTerkDNA==}
     peerDependencies:
       '@babel/core': 7.x
@@ -6742,7 +6794,7 @@ packages:
       '@babel/core': 7.23.9
       '@babel/plugin-transform-react-jsx': 7.23.4(@babel/core@7.23.9)
       '@babel/plugin-transform-react-jsx-development': 7.22.5(@babel/core@7.23.9)
-      '@prefresh/vite': 2.4.5(preact@10.19.4)(vite@5.1.1)
+      '@prefresh/vite': 2.4.5(preact@10.19.5)(vite@5.1.1)
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.23.9)
       debug: 4.3.4
@@ -6760,19 +6812,19 @@ packages:
     resolution: {integrity: sha512-uG3jGEAysxWoyG3XkYfjYHgaySFrSsaEb4GagLzYaxlydbuREtaX+FTxuIidp241RaLl85XoHg9Ej6E4+V1pcg==}
     dev: true
 
-  /@prefresh/core@1.5.2(preact@10.19.4):
+  /@prefresh/core@1.5.2(preact@10.19.5):
     resolution: {integrity: sha512-A/08vkaM1FogrCII5PZKCrygxSsc11obExBScm3JF1CryK2uDS3ZXeni7FeKCx1nYdUkj4UcJxzPzc1WliMzZA==}
     peerDependencies:
       preact: ^10.0.0
     dependencies:
-      preact: 10.19.4
+      preact: 10.19.5
     dev: true
 
   /@prefresh/utils@1.2.0:
     resolution: {integrity: sha512-KtC/fZw+oqtwOLUFM9UtiitB0JsVX0zLKNyRTA332sqREqSALIIQQxdUCS1P3xR/jT1e2e8/5rwH6gdcMLEmsQ==}
     dev: true
 
-  /@prefresh/vite@2.4.5(preact@10.19.4)(vite@5.1.1):
+  /@prefresh/vite@2.4.5(preact@10.19.5)(vite@5.1.1):
     resolution: {integrity: sha512-iForDVJ2M8gQYnm5pHumvTEJjGGc7YNYC0GVKnHFL+GvFfKHfH9Rpq67nUAzNbjuLEpqEOUuQVQajMazWu2ZNQ==}
     peerDependencies:
       preact: ^10.4.0
@@ -6780,10 +6832,10 @@ packages:
     dependencies:
       '@babel/core': 7.23.9
       '@prefresh/babel-plugin': 0.5.1
-      '@prefresh/core': 1.5.2(preact@10.19.4)
+      '@prefresh/core': 1.5.2(preact@10.19.5)
       '@prefresh/utils': 1.2.0
       '@rollup/pluginutils': 4.2.1
-      preact: 10.19.4
+      preact: 10.19.5
       vite: 5.1.1(@types/node@20.11.17)
     transitivePeerDependencies:
       - supports-color
@@ -7159,8 +7211,8 @@ packages:
     engines: {node: '>=18'}
     dev: true
 
-  /@solidjs/router@0.12.0(solid-js@1.8.15):
-    resolution: {integrity: sha512-9dyBL35T7x86RBSJBMu9jLGytBTmWQehb0uxez7TfzYtwI+v9poo2fzRbcCCrWVTQkwGD/rWvqmxUvczp2at3A==}
+  /@solidjs/router@0.12.3(solid-js@1.8.15):
+    resolution: {integrity: sha512-s5HunmOt5BXt514kHD9aDbiQ6la33297h9XKUGuMKpzJD1wgXhWTm+HmtG3SXirRfGc0UJ3yDDhNoAD8b2Om1w==}
     peerDependencies:
       solid-js: ^1.8.6
     dependencies:
@@ -7807,27 +7859,6 @@ packages:
       - supports-color
     dev: true
 
-  /@typescript-eslint/parser@6.20.0(eslint@8.56.0)(typescript@5.3.3):
-    resolution: {integrity: sha512-bYerPDF/H5v6V76MdMYhjwmwgMA+jlPVqjSDq2cRqMi8bP5sR3Z+RLOiOMad3nsnmDVmn2gAFCyNgh/dIrfP/w==}
-    engines: {node: ^16.0.0 || >=18.0.0}
-    peerDependencies:
-      eslint: ^7.0.0 || ^8.0.0
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@typescript-eslint/scope-manager': 6.20.0
-      '@typescript-eslint/types': 6.20.0
-      '@typescript-eslint/typescript-estree': 6.20.0(typescript@5.3.3)
-      '@typescript-eslint/visitor-keys': 6.20.0
-      debug: 4.3.4
-      eslint: 8.56.0
-      typescript: 5.3.3
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.3.3):
     resolution: {integrity: sha512-tbsV1jPne5CkFQCgPBcDOt30ItF7aJoZL997JSF7MhGQqOeT3svWRYxiqlfA5RUdlHN6Fi+EI9bxqbdyAUZjYQ==}
     engines: {node: ^16.0.0 || >=18.0.0}
@@ -7862,14 +7893,6 @@ packages:
     dependencies:
       '@typescript-eslint/types': 6.19.1
       '@typescript-eslint/visitor-keys': 6.19.1
-    dev: true
-
-  /@typescript-eslint/scope-manager@6.20.0:
-    resolution: {integrity: sha512-p4rvHQRDTI1tGGMDFQm+GtxP1ZHyAh64WANVoyEcNMpaTFn3ox/3CcgtIlELnRfKzSs/DwYlDccJEtr3O6qBvA==}
-    engines: {node: ^16.0.0 || >=18.0.0}
-    dependencies:
-      '@typescript-eslint/types': 6.20.0
-      '@typescript-eslint/visitor-keys': 6.20.0
     dev: true
 
   /@typescript-eslint/scope-manager@6.21.0:
@@ -7928,11 +7951,6 @@ packages:
     engines: {node: ^16.0.0 || >=18.0.0}
     dev: true
 
-  /@typescript-eslint/types@6.20.0:
-    resolution: {integrity: sha512-MM9mfZMAhiN4cOEcUOEx+0HmuaW3WBfukBZPCfwSqFnQy0grXYtngKCqpQN339X3RrwtzspWJrpbrupKYUSBXQ==}
-    engines: {node: ^16.0.0 || >=18.0.0}
-    dev: true
-
   /@typescript-eslint/types@6.21.0:
     resolution: {integrity: sha512-1kFmZ1rOm5epu9NZEZm1kckCDGj5UJEf7P1kliH4LKu/RkwpsfqqGmY2OOcUs18lSlQBKLDYBOGxRVtrMN5lpg==}
     engines: {node: ^16.0.0 || >=18.0.0}
@@ -7969,28 +7987,6 @@ packages:
     dependencies:
       '@typescript-eslint/types': 6.19.1
       '@typescript-eslint/visitor-keys': 6.19.1
-      debug: 4.3.4
-      globby: 11.1.0
-      is-glob: 4.0.3
-      minimatch: 9.0.3
-      semver: 7.5.4
-      ts-api-utils: 1.0.3(typescript@5.3.3)
-      typescript: 5.3.3
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /@typescript-eslint/typescript-estree@6.20.0(typescript@5.3.3):
-    resolution: {integrity: sha512-RnRya9q5m6YYSpBN7IzKu9FmLcYtErkDkc8/dKv81I9QiLLtVBHrjz+Ev/crAqgMNW2FCsoZF4g2QUylMnJz+g==}
-    engines: {node: ^16.0.0 || >=18.0.0}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@typescript-eslint/types': 6.20.0
-      '@typescript-eslint/visitor-keys': 6.20.0
       debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
@@ -8093,14 +8089,6 @@ packages:
     engines: {node: ^16.0.0 || >=18.0.0}
     dependencies:
       '@typescript-eslint/types': 6.19.1
-      eslint-visitor-keys: 3.4.3
-    dev: true
-
-  /@typescript-eslint/visitor-keys@6.20.0:
-    resolution: {integrity: sha512-E8Cp98kRe4gKHjJD4NExXKz/zOJ1A2hhZc+IMVD6i7w4yjIvh6VyuRI0gRtxAsXtoC35uGMaQ9rjI2zJaXDEAw==}
-    engines: {node: ^16.0.0 || >=18.0.0}
-    dependencies:
-      '@typescript-eslint/types': 6.20.0
       eslint-visitor-keys: 3.4.3
     dev: true
 
@@ -10264,7 +10252,6 @@ packages:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.2.1
-    dev: true
 
   /enquirer@2.4.1:
     resolution: {integrity: sha512-rRqJg/6gd538VHvR3PSrdRBb/1Vy2YfzHqzvbhGIQpDRKIa4FgV/54b5Q1xYSxOOwKvjXweS26E0Q+nAMwp2pQ==}
@@ -10514,11 +10501,11 @@ packages:
     dependencies:
       '@next/eslint-plugin-next': 14.1.0
       '@rushstack/eslint-patch': 1.7.2
-      '@typescript-eslint/parser': 6.20.0(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser': 6.21.0(eslint@8.56.0)(typescript@5.3.3)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.20.0)(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0)(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
       eslint-plugin-jsx-a11y: 6.8.0(eslint@8.56.0)
       eslint-plugin-react: 7.33.2(eslint@8.56.0)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.56.0)
@@ -10567,7 +10554,7 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.20.0)(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.56.0):
+  /eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.56.0):
     resolution: {integrity: sha512-xgdptdoi5W3niYeuQxKmzVDTATvLYqhpwmykwsh7f6HIOStGWEIL9iqZgQDF9u9OEzrRwR8no5q2VT+bjAujTg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -10577,8 +10564,8 @@ packages:
       debug: 4.3.4
       enhanced-resolve: 5.15.0
       eslint: 8.56.0
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.20.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0)(eslint@8.56.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.2
       is-core-module: 2.13.1
@@ -10588,39 +10575,8 @@ packages:
       - eslint-import-resolver-node
       - eslint-import-resolver-webpack
       - supports-color
-    dev: true
 
-  /eslint-module-utils@2.8.0(@typescript-eslint/parser@6.20.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0):
-    resolution: {integrity: sha512-aWajIYfsqCKRDgUfjEXNN/JlrzauMuSEy5sbd7WXbtW3EH6A6MpwEh42c7qD+MqQo9QMJ6fWLAeIJynx0g6OAw==}
-    engines: {node: '>=4'}
-    peerDependencies:
-      '@typescript-eslint/parser': '*'
-      eslint: '*'
-      eslint-import-resolver-node: '*'
-      eslint-import-resolver-typescript: '*'
-      eslint-import-resolver-webpack: '*'
-    peerDependenciesMeta:
-      '@typescript-eslint/parser':
-        optional: true
-      eslint:
-        optional: true
-      eslint-import-resolver-node:
-        optional: true
-      eslint-import-resolver-typescript:
-        optional: true
-      eslint-import-resolver-webpack:
-        optional: true
-    dependencies:
-      '@typescript-eslint/parser': 6.20.0(eslint@8.56.0)(typescript@5.3.3)
-      debug: 3.2.7
-      eslint: 8.56.0
-      eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.20.0)(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /eslint-module-utils@2.8.0(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-node@0.3.9)(eslint@8.56.0):
+  /eslint-module-utils@2.8.0(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0):
     resolution: {integrity: sha512-aWajIYfsqCKRDgUfjEXNN/JlrzauMuSEy5sbd7WXbtW3EH6A6MpwEh42c7qD+MqQo9QMJ6fWLAeIJynx0g6OAw==}
     engines: {node: '>=4'}
     peerDependencies:
@@ -10645,6 +10601,7 @@ packages:
       debug: 3.2.7
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
+      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -10664,7 +10621,7 @@ packages:
       semver: 7.5.4
     dev: true
 
-  /eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0)(eslint@8.56.0):
+  /eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0):
     resolution: {integrity: sha512-BbPC0cuExzhiMo4Ff1BTVwHpjjv28C5R+btTOGaCRC7UEz801up0JadwkeSk5Ued6TG34uaczuVuH6qyy5YUxw==}
     engines: {node: '>=4'}
     peerDependencies:
@@ -10683,7 +10640,7 @@ packages:
       doctrine: 2.1.0
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-node@0.3.9)(eslint@8.56.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.21.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
       hasown: 2.0.0
       is-core-module: 2.13.1
       is-glob: 4.0.3
@@ -13302,12 +13259,12 @@ packages:
     dependencies:
       yallist: 4.0.0
 
-  /lucide-preact@0.325.0(preact@10.19.4):
+  /lucide-preact@0.325.0(preact@10.19.5):
     resolution: {integrity: sha512-ZnWEH3FVnVviPCbLuAsveG9XjS5YQWes04KWvxOgl/Xq8jYWChY0/MSkHfanAPcdLsWTn7wnqAoo6uww8hiANA==}
     peerDependencies:
       preact: ^10.5.13
     dependencies:
-      preact: 10.19.4
+      preact: 10.19.5
     dev: false
 
   /lucide-react@0.325.0(react@18.2.0):
@@ -15893,7 +15850,7 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
 
-  /preact-iso@2.3.2(preact-render-to-string@6.3.1)(preact@10.19.4):
+  /preact-iso@2.3.2(preact-render-to-string@6.3.1)(preact@10.19.5):
     resolution: {integrity: sha512-OU+6dzX1/qAyWfH4zKVqp/apNLfAr8yx4aBUVKyBWoOyPT08bNJk4o08KWIwyQyEkpayW5q+5+GAkYBSky8ndw==}
     peerDependencies:
       preact: '>=10'
@@ -15902,21 +15859,21 @@ packages:
       preact-render-to-string:
         optional: true
     dependencies:
-      preact: 10.19.4
-      preact-render-to-string: 6.3.1(preact@10.19.4)
+      preact: 10.19.5
+      preact-render-to-string: 6.3.1(preact@10.19.5)
     dev: false
 
-  /preact-render-to-string@6.3.1(preact@10.19.4):
+  /preact-render-to-string@6.3.1(preact@10.19.5):
     resolution: {integrity: sha512-NQ28WrjLtWY6lKDlTxnFpKHZdpjfF+oE6V4tZ0rTrunHrtZp6Dm0oFrcJalt/5PNeqJz4j1DuZDS0Y6rCBoqDA==}
     peerDependencies:
       preact: '>=10'
     dependencies:
-      preact: 10.19.4
+      preact: 10.19.5
       pretty-format: 3.8.0
     dev: false
 
-  /preact@10.19.4:
-    resolution: {integrity: sha512-dwaX5jAh0Ga8uENBX1hSOujmKWgx9RtL80KaKUFLc6jb4vCEAc3EeZ0rnQO/FO4VgjfPMfoLFWnNG8bHuZ9VLw==}
+  /preact@10.19.5:
+    resolution: {integrity: sha512-OPELkDmSVbKjbFqF9tgvOowiiQ9TmsJljIzXRyNE8nGiis94pwv1siF78rQkAP1Q1738Ce6pellRg/Ns/CtHqQ==}
 
   /preferred-pm@3.1.2:
     resolution: {integrity: sha512-nk7dKrcW8hfCZ4H6klWcdRknBOXWzNQByJ0oJyX97BOupsYD+FzLS4hflgEu/uPUEHZCuRfMxzCBsuWd7OzT8Q==}
@@ -17506,7 +17463,6 @@ packages:
   /tapable@2.2.1:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
-    dev: true
 
   /tar-stream@3.1.7:
     resolution: {integrity: sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==}
