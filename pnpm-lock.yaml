@@ -3463,8 +3463,8 @@ importers:
         specifier: 0.3.4
         version: 0.3.4(contentlayer@0.3.4)(esbuild@0.20.0)(next@14.1.0)(react-dom@18.2.0)(react@18.2.0)
       next-seo:
-        specifier: 6.4.0
-        version: 6.4.0(next@14.1.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: 6.5.0
+        version: 6.5.0(next@14.1.0)(react-dom@18.2.0)(react@18.2.0)
       plop:
         specifier: 4.0.1
         version: 4.0.1
@@ -14461,8 +14461,8 @@ packages:
       - supports-color
     dev: false
 
-  /next-seo@6.4.0(next@14.1.0)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-XQFxkOL2hw0YE+P100HbI3EAvcludlHPxuzMgaIjKb7kPK0CvjGvLFjd9hszZFEDc5oiQkGFA8+cuWcnip7eYA==}
+  /next-seo@6.5.0(next@14.1.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-MfzUeWTN/x/rsKp/1n0213eojO97lIl0unxqbeCY+6pAucViHDA8GSLRRcXpgjsSmBxfCFdfpu7LXbt4ANQoNQ==}
     peerDependencies:
       next: ^8.1.1-canary.54 || >=9.0.0
       react: '>=16.0.0'
