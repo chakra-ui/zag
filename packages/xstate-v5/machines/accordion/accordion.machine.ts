@@ -1,32 +1,14 @@
-import type { MachineContext, ItemProps, ItemState, MachineApi } from "@zag-js/accordion/src/accordion.types"
-import { parts } from "@zag-js/accordion/src//accordion.anatomy"
-import { dom } from "@zag-js/accordion/src/accordion.dom"
-import { normalizeProps } from "@zag-js/react"
-import { accordionControls, accordionData } from "@zag-js/shared"
-import { useEffect, useId } from "react"
-import { StateVisualizer } from "../components/state-visualizer"
-import { Toolbar } from "../components/toolbar"
-import { useControls } from "../hooks/use-controls"
+import type { MachineContext, ItemProps, ItemState, MachineApi } from "./accordion.types"
+import { parts } from "./accordion.anatomy"
+import { dom } from "./accordion.dom"
 import { assertEvent, assign, setup, SnapshotFrom, and, not, EventFrom } from "xstate"
-import { useActor } from "@xstate/react"
 import { add, isEqual, remove, warn } from "@zag-js/utils"
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
 import { dataAttr, isSafari } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 
-/**
- * Todo:
- *
- * - [x] Make isHorizontal a computed property
- * - [x] Call invoke.change and invoke.focusChange when value or focusedValue change
- * - [x] Reimplement coarseValue (instead, call when assigning to the context? More code to write)
- *   - [x] Call for initial context
- *   - [x] Call when value changes
- *   - [x] Call when multiple changes (done on context.sync)
- */
-
-type AccordionMachineContext = Omit<MachineContext, "isHorizontal">
-type AccordionMachineInput = Omit<Partial<MachineContext>, "isHorizontal"> & { id: string }
+type AccordionMachineContext = MachineContext
+type AccordionMachineInput = Partial<MachineContext> & { id: string }
 
 function coarseValue(context: AccordionMachineContext, value: string[]): string[] {
   if (!context.multiple && context.value.length > 1) {
@@ -37,7 +19,7 @@ function coarseValue(context: AccordionMachineContext, value: string[]): string[
   return value
 }
 
-const accordionMachine = setup({
+export const accordionMachine = setup({
   types: {
     context: {} as AccordionMachineContext,
     input: {} as AccordionMachineInput,
@@ -61,21 +43,19 @@ const accordionMachine = setup({
           return context.focusedValue
         }
 
-        context?.onFocusChange({ value: event.value })
+        context.onFocusChange?.({ value: event.value })
 
         return event.value
       },
     }),
     focusNextTrigger: ({ context }) => {
       if (!context.focusedValue) return
-      const contextFakelyAugmented = context as typeof context & { isHorizontal: boolean }
-      const triggerEl = dom.getNextTriggerEl(contextFakelyAugmented, context.focusedValue)
+      const triggerEl = dom.getNextTriggerEl(context, context.focusedValue)
       triggerEl?.focus()
     },
     focusPrevTrigger: ({ context }) => {
       if (!context.focusedValue) return
-      const contextFakelyAugmented = context as typeof context & { isHorizontal: boolean }
-      const triggerEl = dom.getPrevTriggerEl(contextFakelyAugmented, context.focusedValue)
+      const triggerEl = dom.getPrevTriggerEl(context, context.focusedValue)
       triggerEl?.focus()
     },
     collapse: assign({
@@ -111,12 +91,10 @@ const accordionMachine = setup({
       },
     }),
     focusFirstTrigger: ({ context }) => {
-      const contextFakelyAugmented = context as typeof context & { isHorizontal: boolean }
-      dom.getFirstTriggerEl(contextFakelyAugmented)?.focus()
+      dom.getFirstTriggerEl(context)?.focus()
     },
     focusLastTrigger: ({ context }) => {
-      const contextFakelyAugmented = context as typeof context & { isHorizontal: boolean }
-      dom.getLastTriggerEl(contextFakelyAugmented)?.focus()
+      dom.getLastTriggerEl(context)?.focus()
     },
     clearFocusedValue: assign({
       focusedValue: ({ context }) => {
@@ -124,7 +102,7 @@ const accordionMachine = setup({
           return context.focusedValue
         }
 
-        context?.onFocusChange({ value: null })
+        context.onFocusChange?.({ value: null })
 
         return null
       },
@@ -153,7 +131,7 @@ const accordionMachine = setup({
       })
 
       if (!isEqual(context.value, nextContext.value)) {
-        context?.onValueChange({ value: nextContext.value })
+        context.onValueChange?.({ value: nextContext.value })
       }
 
       return nextContext
@@ -267,7 +245,7 @@ function getComputedContext(state: SnapshotFrom<typeof accordionMachine>): Resol
   return resolvedContext
 }
 
-function accordionConnect<T extends PropTypes>(
+export function accordionConnect<T extends PropTypes>(
   state: SnapshotFrom<typeof accordionMachine>,
   send: (event: EventFrom<typeof accordionMachine>) => void,
   normalize: NormalizeProps<T>,
@@ -418,45 +396,4 @@ function accordionConnect<T extends PropTypes>(
       })
     },
   }
-}
-
-export default function Page() {
-  const controls = useControls(accordionControls)
-
-  const [state, send] = useActor(accordionMachine, {
-    input: { ...controls.context, id: useId() },
-  })
-
-  useEffect(() => {
-    send({ type: "CONTEXT.SYNC", updatedContext: controls.context })
-  }, [controls.context, send])
-
-  const api = accordionConnect(state, send, normalizeProps)
-
-  return (
-    <>
-      <main className="accordion">
-        <div {...api.rootProps}>
-          {accordionData.map((item) => (
-            <div key={item.id} {...api.getItemProps({ value: item.id })}>
-              <h3>
-                <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
-                  {item.label}
-                  <div {...api.getItemIndicatorProps({ value: item.id })}>{">"}</div>
-                </button>
-              </h3>
-              <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua.
-              </div>
-            </div>
-          ))}
-        </div>
-      </main>
-
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
-      </Toolbar>
-    </>
-  )
 }
