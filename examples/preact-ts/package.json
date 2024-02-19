@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@internationalized/date": "^3.5.1",
+    "@internationalized/date": "3.5.2",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -78,16 +78,16 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
-    "lucide-preact": "^0.325.0",
-    "preact": "^10.19.4",
-    "preact-iso": "^2.3.2",
-    "preact-render-to-string": "^6.3.1"
+    "lucide-preact": "0.334.0",
+    "preact": "10.19.5",
+    "preact-iso": "2.4.0",
+    "preact-render-to-string": "6.3.1"
   },
   "devDependencies": {
-    "@preact/preset-vite": "^2.8.1",
-    "eslint": "^8.56.0",
-    "eslint-config-preact": "^1.3.0",
-    "typescript": "^5.3.3",
-    "vite": "^5.1.1"
+    "@preact/preset-vite": "2.8.1",
+    "eslint": "8.56.0",
+    "eslint-config-preact": "1.3.0",
+    "typescript": "5.3.3",
+    "vite": "5.1.3"
   }
 }

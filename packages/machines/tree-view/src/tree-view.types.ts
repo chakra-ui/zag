@@ -186,6 +186,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getItemTextProps(props: ItemProps): T["element"]
   getBranchState(props: BranchProps): BranchState
   getBranchProps(props: BranchProps): T["element"]
+  getBranchIndicatorProps(props: BranchProps): T["element"]
   getBranchTriggerProps(props: BranchProps): T["element"]
   getBranchControlProps(props: BranchProps): T["element"]
   getBranchContentProps(props: BranchProps): T["element"]
