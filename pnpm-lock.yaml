@@ -109,7 +109,7 @@ importers:
         version: 3.2.5
       prettier-plugin-svelte:
         specifier: 3.1.2
-        version: 3.1.2(prettier@3.2.5)(svelte@5.0.0-next.46)
+        version: 3.1.2(prettier@3.2.5)(svelte@5.0.0-next.59)
       signale:
         specifier: 1.4.0
         version: 1.4.0
@@ -1759,13 +1759,13 @@ importers:
     devDependencies:
       '@sveltejs/package':
         specifier: ^2.2.6
-        version: 2.2.6(svelte@5.0.0-next.46)(typescript@5.3.3)
+        version: 2.2.6(svelte@5.0.0-next.59)(typescript@5.3.3)
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
       svelte:
-        specifier: 5.0.0-next.46
-        version: 5.0.0-next.46
+        specifier: 5.0.0-next.59
+        version: 5.0.0-next.59
 
   packages/frameworks/vue:
     dependencies:
@@ -7167,7 +7167,7 @@ packages:
       solid-js: 1.8.15
     dev: false
 
-  /@sveltejs/package@2.2.6(svelte@5.0.0-next.46)(typescript@5.3.3):
+  /@sveltejs/package@2.2.6(svelte@5.0.0-next.59)(typescript@5.3.3):
     resolution: {integrity: sha512-rhKL/96M7LCvFI2xN94qsqHtEWr/ypcMGiii3s6dRW7ADt3tiDm8UfExjRR8v5jW3Femz0+VJ0TNevxI4Q9Quw==}
     engines: {node: ^16.14 || >=18}
     hasBin: true
@@ -7178,8 +7178,8 @@ packages:
       kleur: 4.1.5
       sade: 1.8.1
       semver: 7.5.4
-      svelte: 5.0.0-next.46
-      svelte2tsx: 0.7.0(svelte@5.0.0-next.46)(typescript@5.3.3)
+      svelte: 5.0.0-next.59
+      svelte2tsx: 0.7.0(svelte@5.0.0-next.59)(typescript@5.3.3)
     transitivePeerDependencies:
       - typescript
     dev: true
@@ -15938,14 +15938,14 @@ packages:
     dependencies:
       fast-diff: 1.3.0
 
-  /prettier-plugin-svelte@3.1.2(prettier@3.2.5)(svelte@5.0.0-next.46):
+  /prettier-plugin-svelte@3.1.2(prettier@3.2.5)(svelte@5.0.0-next.59):
     resolution: {integrity: sha512-7xfMZtwgAWHMT0iZc8jN4o65zgbAQ3+O32V6W7pXrqNvKnHnkoyQCGCbKeUyXKZLbYE0YhFRnamfxfkEGxm8qA==}
     peerDependencies:
       prettier: ^3.0.0
       svelte: ^3.2.0 || ^4.0.0-next.0 || ^5.0.0-next.0
     dependencies:
       prettier: 3.2.5
-      svelte: 5.0.0-next.46
+      svelte: 5.0.0-next.59
     dev: false
 
   /prettier@2.8.8:
@@ -17417,7 +17417,7 @@ packages:
     resolution: {integrity: sha512-6i4Mncy4P2b7gD7+BOT9JzQvrfGfGXqFra8VXYU5//bpn6AzJ0PLEhH1E/KwY2AxleOiS/8Nm37MGuic2kn15A==}
     dev: false
 
-  /svelte2tsx@0.7.0(svelte@5.0.0-next.46)(typescript@5.3.3):
+  /svelte2tsx@0.7.0(svelte@5.0.0-next.59)(typescript@5.3.3):
     resolution: {integrity: sha512-qAelcydnmuiDvD1HsrWi23RWx24RZTKRv6n4JaGC/pkoJfbLkJPQT2wa1qN0ZyfKTNLSyoj2FW9z62l/AUzUNA==}
     peerDependencies:
       svelte: ^3.55 || ^4.0.0-next.0 || ^4.0 || ^5.0.0-next.0
@@ -17425,7 +17425,7 @@ packages:
     dependencies:
       dedent-js: 1.0.1
       pascal-case: 3.1.2
-      svelte: 5.0.0-next.46
+      svelte: 5.0.0-next.59
       typescript: 5.3.3
     dev: true
 
@@ -17447,8 +17447,8 @@ packages:
       magic-string: 0.30.6
       zimmerframe: 1.1.0
 
-  /svelte@5.0.0-next.46:
-    resolution: {integrity: sha512-tZtzebnFZy4RK+8xUBBX6T/5zFM5XecI1XNpY9PcP57PnuPs5zLax6Suq6PvZaSaLQoE+ycgZCX1iJaBdayB9w==}
+  /svelte@5.0.0-next.59:
+    resolution: {integrity: sha512-+JXAUjTk7eX/rayIysKy7GrbMIO+V3QuwwhakznXmNJGjv4OCA+1uPrtFzUTb8l8CbwRmGHRiF0cPZlI8xdljw==}
     engines: {node: '>=18'}
     dependencies:
       '@ampproject/remapping': 2.2.1
@@ -17463,7 +17463,7 @@ packages:
       is-reference: 3.0.2
       locate-character: 3.0.0
       magic-string: 0.30.6
-      zimmerframe: 1.1.0
+      zimmerframe: 1.1.2
 
   /svg-parser@2.0.4:
     resolution: {integrity: sha512-e4hG1hRwoOdRb37cIMSgzNsxyzKfayW6VOflrwvR+/bzrkyxY/31WkbgnQpgtrNp1SdpJvpUAGTa/ZoiPNDuRQ==}
@@ -19148,6 +19148,9 @@ packages:
 
   /zimmerframe@1.1.0:
     resolution: {integrity: sha512-+AmV37r9NPUy7KcuG0Fde9AAFSD88kN5pnqvD7Pkp5WLLK0jct7hAtIDXXFDCRk3l5Mc1r2Sth3gfP2ZLE+/Qw==}
+
+  /zimmerframe@1.1.2:
+    resolution: {integrity: sha512-rAbqEGa8ovJy4pyBxZM70hg4pE6gDgaQ0Sl9M3enG3I0d6H4XSAM3GeNGLKnsBpuijUow064sf7ww1nutC5/3w==}
 
   /zip-stream@5.0.1:
     resolution: {integrity: sha512-UfZ0oa0C8LI58wJ+moL46BDIMgCQbnsb+2PoiJYtonhBsMh2bq1eRBVkvjfVsqbEHd9/EgKPUuL9saSSsec8OA==}
