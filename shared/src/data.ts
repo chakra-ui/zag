@@ -126,6 +126,26 @@ export const navMenuData = [
       },
     ],
   },
+  {
+    menu: { label: "Portfolio", id: "portfolio" },
+    menuList: [
+      {
+        label: "Submenu3 1",
+        id: "submenu3-1",
+        href: "#",
+      },
+      {
+        label: "Submenu3 2",
+        id: "submenu3-2",
+        href: "#",
+      },
+      {
+        label: "Submenu3 3",
+        id: "submenu3-3",
+        href: "#",
+      },
+    ],
+  },
 ]
 
 export const menuData = [
