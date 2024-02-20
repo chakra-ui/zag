@@ -276,7 +276,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(branchState.isDisabled),
         "data-selected": dataAttr(branchState.isSelected),
         "data-focused": dataAttr(branchState.isFocused),
-        hidden: !branchState.isSelected,
       })
     },
 
