@@ -1,5 +1,26 @@
 # @zag-js/tree-view
 
+## 0.37.0
+
+### Minor Changes
+
+- [`4a7d739`](https://github.com/chakra-ui/zag/commit/4a7d73970df14a27473c3dda44f7fb24ef236ebb) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Change value type for `expandedIds` and `selectedIds` from `Set<string>` to `string[]`
+
+### Patch Changes
+
+- [`025b98f`](https://github.com/chakra-ui/zag/commit/025b98fbe41980c19e7d96ed2a4d18012bf5cc7d) Thanks [@cschroeter](https://github.com/cschroeter)! - Add missing getBranchIndicator fn
+
+- [`d90da1c`](https://github.com/chakra-ui/zag/commit/d90da1cb825964a5ad80f2e2ac7cdc47d0293ff1) Thanks [@cschroeter](https://github.com/cschroeter)! - Allow users to open links in tree view
+
+- Updated dependencies [[`2a024fb`](https://github.com/chakra-ui/zag/commit/2a024fbd2e98343218d4d658e91f1d8c751e1a4d)]:
+  - @zag-js/types@0.37.0
+  - @zag-js/dom-event@0.37.0
+  - @zag-js/anatomy@0.37.0
+  - @zag-js/core@0.37.0
+  - @zag-js/utils@0.37.0
+  - @zag-js/dom-query@0.37.0
+  - @zag-js/mutation-observer@0.37.0
+
 ## 0.36.3
 
 ### Patch Changes

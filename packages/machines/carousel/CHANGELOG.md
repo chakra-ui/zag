@@ -1,5 +1,20 @@
 # @zag-js/carousel
 
+## 0.37.0
+
+### Minor Changes
+
+- [`2a024fb`](https://github.com/chakra-ui/zag/commit/2a024fbd2e98343218d4d658e91f1d8c751e1a4d) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Expose all machine context properties as array to improve DX of building design system components.
+
+### Patch Changes
+
+- Updated dependencies [[`2a024fb`](https://github.com/chakra-ui/zag/commit/2a024fbd2e98343218d4d658e91f1d8c751e1a4d)]:
+  - @zag-js/types@0.37.0
+  - @zag-js/anatomy@0.37.0
+  - @zag-js/core@0.37.0
+  - @zag-js/utils@0.37.0
+  - @zag-js/dom-query@0.37.0
+
 ## 0.36.3
 
 ### Patch Changes

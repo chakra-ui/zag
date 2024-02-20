@@ -1,5 +1,16 @@
 # @zag-js/file-utils
 
+## 0.37.0
+
+### Minor Changes
+
+- [`170c115`](https://github.com/chakra-ui/zag/commit/170c115afe6f1e5f5bf744508ddb98230a741391) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add support for `formatNumber`, `formatRelativeTime` and `formatBytes` functions
+
+### Patch Changes
+
+- Updated dependencies [[`170c115`](https://github.com/chakra-ui/zag/commit/170c115afe6f1e5f5bf744508ddb98230a741391)]:
+  - @zag-js/i18n-utils@0.37.0
+
 ## 0.36.3
 
 ## 0.36.2
