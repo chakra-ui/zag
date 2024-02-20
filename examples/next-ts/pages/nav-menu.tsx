@@ -6,15 +6,6 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
-const exampleStyles = {
-  ul: {
-    display: "flex",
-  },
-  li: {
-    listStyle: "none",
-  },
-}
-
 export default function Page() {
   const controls = useControls(navMenuControls)
 
@@ -28,14 +19,14 @@ export default function Page() {
     <>
       <main className="nav-menu">
         <nav {...api.rootProps}>
-          <ul style={{ ...exampleStyles.ul }}>
+          <ul style={{ display: "flex", listStyle: "none" }}>
             {navMenuData.map(({ menu, menuList }) => (
-              <li key={menu.id} style={{ ...exampleStyles.li }}>
+              <li key={menu.id}>
                 <button {...api.getTriggerProps({ id: menu.id })}>{menu.label}</button>
                 <div {...api.getPositionerProps({ id: menu.id })}>
-                  <ul {...api.getContentProps({ id: menu.id })}>
+                  <ul {...api.getContentProps({ id: menu.id })} style={{ listStyle: "none" }}>
                     {menuList.map((item) => (
-                      <li key={JSON.stringify(item)} style={{ ...exampleStyles.li }}>
+                      <li key={JSON.stringify(item)}>
                         <a href={item.href} {...api.getMenuItemProps({ id: item.id })}>
                           {item.label}
                         </a>
