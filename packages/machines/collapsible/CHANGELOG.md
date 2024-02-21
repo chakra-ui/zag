@@ -1,5 +1,18 @@
 # @zag-js/collapsible
 
+## 0.37.0
+
+### Patch Changes
+
+- [`4a7d739`](https://github.com/chakra-ui/zag/commit/4a7d73970df14a27473c3dda44f7fb24ef236ebb) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where collapsible `MachineApi` wasn't used
+
+- Updated dependencies [[`2a024fb`](https://github.com/chakra-ui/zag/commit/2a024fbd2e98343218d4d658e91f1d8c751e1a4d)]:
+  - @zag-js/types@0.37.0
+  - @zag-js/anatomy@0.37.0
+  - @zag-js/core@0.37.0
+  - @zag-js/utils@0.37.0
+  - @zag-js/dom-query@0.37.0
+
 ## 0.36.3
 
 ### Patch Changes
