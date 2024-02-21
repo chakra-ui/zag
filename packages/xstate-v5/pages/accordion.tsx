@@ -5,7 +5,8 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 import { useActor } from "@xstate/react"
-import { accordionConnect, accordionMachine } from "../machines/accordion/accordion.machine"
+import { accordionMachine } from "../machines/accordion/accordion.machine"
+import { connect } from "../machines/accordion/accordion.connect"
 
 export default function Page() {
   const controls = useControls(accordionControls)
@@ -18,7 +19,7 @@ export default function Page() {
     send({ type: "CONTEXT.SYNC", updatedContext: controls.context })
   }, [controls.context, send])
 
-  const api = accordionConnect(state, send, normalizeProps)
+  const api = connect(state, send, normalizeProps)
 
   return (
     <>
