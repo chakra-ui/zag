@@ -15,7 +15,9 @@ const api = computed(() => navMenu.connect(state.value, send, normalizeProps))
     <nav v-bind="api.rootProps">
       <ul :style="{ display: 'flex' }">
         <li v-for="{ menu, menuList } in navMenuData" :key="menu.id">
-          <button v-bind="api.getTriggerProps({ id: menu.id })">{{ menu.label }}</button>
+          <button v-bind="api.getTriggerProps({ id: menu.id })">
+            {{ menu.label }} <span v-bind="api.indicatorProps">▾</span>
+          </button>
           <div v-bind="api.getPositionerProps({ id: menu.id })">
             <ul v-bind="api.getContentProps({ id: menu.id })">
               <li v-for="item in menuList" :key="JSON.stringify(item)">

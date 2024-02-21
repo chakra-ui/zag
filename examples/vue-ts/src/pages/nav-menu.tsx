@@ -25,7 +25,9 @@ export default defineComponent({
               <ul style={{ display: "flex", listStyle: "none" }}>
                 {navMenuData.map(({ menu, menuList }) => (
                   <li key={menu.id}>
-                    <button {...api.getTriggerProps({ id: menu.id })}>{menu.label}</button>
+                    <button {...api.getTriggerProps({ id: menu.id })}>
+                      {menu.label} <span {...api.indicatorProps}>▾</span>
+                    </button>
                     <div {...api.getPositionerProps({ id: menu.id })}>
                       <ul {...api.getContentProps({ id: menu.id })} style={{ listStyle: "none" }}>
                         {menuList.map((item) => (

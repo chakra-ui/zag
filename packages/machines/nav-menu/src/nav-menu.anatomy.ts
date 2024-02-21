@@ -4,6 +4,7 @@ export const anatomy = createAnatomy("nav-menu").parts(
   "root",
   "trigger",
   "positioner",
+  "indicator",
   "content",
   "separator",
   "menu-item",

@@ -28,6 +28,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
       "data-orientation": state.context.orientation,
     }),
+    indicatorProps: normalize.element({
+      ...parts.indicator.attrs,
+      dir: state.context.dir,
+      "data-state": activeId ? "open" : "closed",
+    }),
     separatorProps: normalize.element({
       ...parts.separator.attrs,
       role: "separator",

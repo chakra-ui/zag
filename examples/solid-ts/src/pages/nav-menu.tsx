@@ -23,7 +23,9 @@ export default function Page() {
             <For each={navMenuData}>
               {({ menu, menuList }) => (
                 <li>
-                  <button {...api().getTriggerProps({ id: menu.id })}>{menu.label}</button>
+                  <button {...api().getTriggerProps({ id: menu.id })}>
+                    {menu.label} <span {...api().indicatorProps}>▾</span>
+                  </button>
                   <div {...api().getPositionerProps({ id: menu.id })}>
                     <ul {...api().getContentProps({ id: menu.id })} style={{ "list-style": "none" }}>
                       <For each={menuList}>
