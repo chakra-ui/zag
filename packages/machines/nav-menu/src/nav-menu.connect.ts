@@ -14,6 +14,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     placement: state.context.currentPlacement,
   })
 
+  const dispatchArrowUpLeft = (id: string) => {
+    send({ type: "ITEM_PREV", id })
+  }
+  const dispatchArrowDownRight = (id: string) => {
+    send({ type: "ITEM_NEXT", id })
+  }
+
   return {
     rootProps: normalize.element({
       ...parts.root.attrs,
@@ -29,6 +36,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
     getTriggerProps(props) {
       const { id } = props
+
       return normalize.element({
         ...parts.trigger.attrs,
         dir: state.context.dir,
@@ -49,26 +57,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
             ArrowDown() {
-              if (state.context.isVertical) {
-                return send({ type: "ITEM_NEXT", id })
-              }
-              return send({ type: "TRIGGER_CLICK", id })
+              dispatchArrowDownRight(id)
             },
             ArrowUp() {
-              if (state.context.isVertical) {
-                return send({ type: "ITEM_PREV", id })
-              }
+              dispatchArrowUpLeft(id)
             },
             ArrowLeft() {
-              if (!state.context.isVertical) {
-                return send({ type: "ITEM_PREV", id })
-              }
+              dispatchArrowUpLeft(id)
             },
             ArrowRight() {
-              if (!state.context.isVertical) {
-                return send({ type: "ITEM_NEXT", id })
-              }
-              return send({ type: "TRIGGER_CLICK", id })
+              dispatchArrowDownRight(id)
             },
             Home() {
               send("HOME")
@@ -103,12 +101,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getContentProps(props) {
       const { id } = props
-      const dispatchArrowUpLeft = () => {
-        send({ type: "ITEM_PREV", id })
-      }
-      const dispatchArrowDownRight = () => {
-        send({ type: "ITEM_NEXT", id })
-      }
       return normalize.element({
         ...parts.content.attrs,
         dir: state.context.dir,
@@ -121,16 +113,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onKeyDown(event) {
           const keyMap: EventKeyMap = {
             ArrowUp() {
-              dispatchArrowUpLeft()
+              dispatchArrowUpLeft(id)
             },
             ArrowDown() {
-              dispatchArrowDownRight()
+              dispatchArrowDownRight(id)
             },
             ArrowLeft() {
-              dispatchArrowUpLeft()
+              dispatchArrowUpLeft(id)
             },
             ArrowRight() {
-              dispatchArrowDownRight()
+              dispatchArrowDownRight(id)
             },
             Home() {
               send({ type: "HOME", id })
