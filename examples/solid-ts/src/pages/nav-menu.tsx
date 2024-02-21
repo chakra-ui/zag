@@ -31,9 +31,7 @@ export default function Page() {
                       <For each={menuList}>
                         {(item) => (
                           <li>
-                            <a href={item.href} {...api().getMenuItemProps({ id: item.id })}>
-                              {item.label}
-                            </a>
+                            <a {...api().getMenuItemProps({ id: item.id, href: item.href })}>{item.label}</a>
                           </li>
                         )}
                       </For>

@@ -27,6 +27,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * The options used to dynamically position the menu
    */
   positioning: PositioningOptions
+  /**
+   * The link tied to the current page
+   */
+  activeLink?: string | null
 }
 
 type PrivateContext = {
@@ -99,5 +103,5 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getTriggerProps(props: ItemProps): T["element"]
   getPositionerProps(props: ItemProps): T["element"]
   getContentProps(props: ItemProps): T["element"]
-  getMenuItemProps(props: ItemProps): T["element"]
+  getMenuItemProps(props: ItemProps & { href: string }): T["a"]
 }

@@ -21,7 +21,7 @@ const api = computed(() => navMenu.connect(state.value, send, normalizeProps))
           <div v-bind="api.getPositionerProps({ id: menu.id })">
             <ul v-bind="api.getContentProps({ id: menu.id })">
               <li v-for="item in menuList" :key="JSON.stringify(item)">
-                <a :href="item.href" v-bind="api.getMenuItemProps({ id: item.id })">{{ item.label }}</a>
+                <a v-bind="api.getMenuItemProps({ id: item.id, href: item.href })">{{ item.label }}</a>
               </li>
             </ul>
           </div>

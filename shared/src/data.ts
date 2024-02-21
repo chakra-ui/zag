@@ -87,62 +87,62 @@ export const tabsData = [
 
 export const navMenuData = [
   {
-    menu: { label: "Home", id: "home" },
+    menu: { label: "Libraries", id: "Libraries" },
     menuList: [
       {
-        label: "Submenu 1",
-        id: "submenu-1",
-        href: "#",
+        label: "React",
+        id: "react",
+        href: "#react",
       },
       {
-        label: "Submenu 2",
-        id: "submenu-2",
-        href: "#",
+        label: "Vue",
+        id: "vuejs",
+        href: "#vuejs",
       },
       {
-        label: "Submenu 3",
-        id: "submenu-3",
-        href: "#",
+        label: "SolidJS",
+        id: "solidjs",
+        href: "#solidjs",
       },
     ],
   },
   {
-    menu: { label: "About", id: "about" },
+    menu: { label: "Frameworks", id: "frameworks" },
     menuList: [
       {
-        label: "Submenu2 1",
-        id: "submenu2-1",
-        href: "#",
+        label: "NuxtJS",
+        id: "nuxtjs",
+        href: "#nuxtjs",
       },
       {
-        label: "Submenu2 2",
-        id: "submenu2-2",
-        href: "#",
+        label: "NextJS",
+        id: "nextjs",
+        href: "#nextjs",
       },
       {
-        label: "Submenu2 3",
-        id: "submenu2-3",
-        href: "#",
+        label: "Gatsby",
+        id: "gatsby",
+        href: "#gatsby",
       },
     ],
   },
   {
-    menu: { label: "Portfolio", id: "portfolio" },
+    menu: { label: "Styles", id: "styles" },
     menuList: [
       {
-        label: "Submenu3 1",
-        id: "submenu3-1",
-        href: "#",
+        label: "Material UI",
+        id: "material-ui",
+        href: "#material-ui",
       },
       {
-        label: "Submenu3 2",
-        id: "submenu3-2",
-        href: "#",
+        label: "TailwindCSS",
+        id: "tailwindcss",
+        href: "#tailwindcss",
       },
       {
-        label: "Submenu3 3",
-        id: "submenu3-3",
-        href: "#",
+        label: "pandacss",
+        id: "pandacss",
+        href: "#pandacss",
       },
     ],
   },

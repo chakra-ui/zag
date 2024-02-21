@@ -22,6 +22,7 @@ export function machine(userContext: UserDefinedContext) {
         orientation: "horizontal",
         anchorPoint: null,
         restoreFocus: true,
+        activeLink: null,
         ...ctx,
         positioning: {
           placement: "bottom-start",
@@ -110,6 +111,10 @@ export function machine(userContext: UserDefinedContext) {
             END: {
               actions: "highlightLastItem",
             },
+            LINK_ACTIVE: {
+              target: "focused",
+              actions: ["collapseMenu", "setActiveLink"],
+            },
           },
         },
       },
@@ -196,6 +201,9 @@ export function machine(userContext: UserDefinedContext) {
             ctx.activeContentId = contentEl?.id ?? null
             contentEl?.focus({ preventScroll: true })
           })
+        },
+        setActiveLink(ctx, evt) {
+          return (ctx.activeLink = evt.href)
         },
       },
       activities: {

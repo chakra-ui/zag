@@ -29,9 +29,7 @@ export default function Page() {
                   <ul {...api.getContentProps({ id: menu.id })} style={{ listStyle: "none" }}>
                     {menuList.map((item) => (
                       <li key={JSON.stringify(item)}>
-                        <a href={item.href} {...api.getMenuItemProps({ id: item.id })}>
-                          {item.label}
-                        </a>
+                        <a {...api.getMenuItemProps({ id: item.id, href: item.href })}>{item.label}</a>
                       </li>
                     ))}
                   </ul>

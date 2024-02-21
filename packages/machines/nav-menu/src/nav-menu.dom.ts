@@ -1,4 +1,4 @@
-import { createScope, nextById, prevById, queryAll } from "@zag-js/dom-query"
+import { createScope, itemById, nextById, prevById, queryAll } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./nav-menu.types"
 import { first, last } from "@zag-js/utils"
 
@@ -25,6 +25,7 @@ export const dom = createScope({
     const selector = `[data-ownedby='${ownerId}']`
     return queryAll(dom.getMenuContentEl(ctx, id), selector)
   },
+  getMenuItemEl: (ctx: Ctx, id: string, itemId: string) => itemById(dom.getMenuItems(ctx, id), itemId),
   getFirstMenuItemEl: (ctx: Ctx, id: string) => first(dom.getMenuItems(ctx, id)),
   getLastMenuItemEl: (ctx: Ctx, id: string) => last(dom.getMenuItems(ctx, id)),
   getNextMenuItemEl: (ctx: Ctx, id: string, itemId: string) => nextById(dom.getMenuItems(ctx, id), itemId),

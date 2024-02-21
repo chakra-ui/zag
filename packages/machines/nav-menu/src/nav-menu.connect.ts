@@ -152,11 +152,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
     getMenuItemProps(props) {
-      const { id } = props
-      return normalize.element({
+      const { id, href } = props
+      return normalize.a({
         ...parts["menu-item"].attrs,
+        href,
         id,
+        "aria-current": href === state.context.activeLink ? "page" : undefined,
         "data-ownedby": state.context.activeContentId ?? undefined,
+        onPointerDown() {
+          send({ type: "LINK_ACTIVE", href })
+        },
       })
     },
   }

@@ -93,6 +93,10 @@ const fetchMachine = createMachine({
         },
         END: {
           actions: "highlightLastItem"
+        },
+        LINK_ACTIVE: {
+          target: "focused",
+          actions: ["collapseMenu", "setActiveLink"]
         }
       }
     }
