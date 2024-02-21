@@ -81,6 +81,19 @@ type PrivateContext = Context<{
 
 export interface MachineContext extends PublicContext, PrivateContext {}
 
+export type MachineInput = Partial<MachineContext> & { id: string }
+
+export type MachineEvent =
+  | { type: "CONTEXT.SYNC"; updatedContext: Omit<MachineInput, "id"> }
+  | { type: "TRIGGER.FOCUS"; value: string }
+  | { type: "GOTO.NEXT" }
+  | { type: "GOTO.PREV" }
+  | { type: "TRIGGER.CLICK"; value: string }
+  | { type: "GOTO.FIRST" }
+  | { type: "GOTO.LAST" }
+  | { type: "TRIGGER.BLUR" }
+  | { type: "VALUE.SET"; value: string[] }
+
 export interface MachineState {
   value: "idle" | "focused"
 }

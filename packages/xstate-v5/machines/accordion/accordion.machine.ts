@@ -1,4 +1,4 @@
-import type { MachineContext, ItemProps, ItemState, MachineApi } from "./accordion.types"
+import type { MachineContext, ItemProps, ItemState, MachineApi, MachineEvent, MachineInput } from "./accordion.types"
 import { parts } from "./accordion.anatomy"
 import { dom } from "./accordion.dom"
 import { assertEvent, assign, setup, SnapshotFrom, and, not, EventFrom } from "xstate"
@@ -7,10 +7,7 @@ import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
 import { dataAttr, isSafari } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 
-type AccordionMachineContext = MachineContext
-type AccordionMachineInput = Partial<MachineContext> & { id: string }
-
-function coarseValue(context: AccordionMachineContext, value: string[]): string[] {
+function coarseValue(context: MachineContext, value: string[]): string[] {
   if (!context.multiple && context.value.length > 1) {
     warn(`The value of accordion should be a single value when multiple is false.`)
     return [value[0]]
@@ -21,18 +18,9 @@ function coarseValue(context: AccordionMachineContext, value: string[]): string[
 
 export const accordionMachine = setup({
   types: {
-    context: {} as AccordionMachineContext,
-    input: {} as AccordionMachineInput,
-    events: {} as
-      | { type: "CONTEXT.SYNC"; updatedContext: Omit<AccordionMachineInput, "id"> }
-      | { type: "TRIGGER.FOCUS"; value: string }
-      | { type: "GOTO.NEXT" }
-      | { type: "GOTO.PREV" }
-      | { type: "TRIGGER.CLICK"; value: string }
-      | { type: "GOTO.FIRST" }
-      | { type: "GOTO.LAST" }
-      | { type: "TRIGGER.BLUR" }
-      | { type: "VALUE.SET"; value: string[] },
+    context: {} as MachineContext,
+    input: {} as MachineInput,
+    events: {} as MachineEvent,
   },
   actions: {
     setFocusedValue: assign({
@@ -149,7 +137,7 @@ export const accordionMachine = setup({
   id: "accordion",
 
   context: ({ input }) => {
-    const initialContext: AccordionMachineContext = {
+    const initialContext: MachineContext = {
       focusedValue: null,
       value: [],
       collapsible: false,
