@@ -1,13 +1,16 @@
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import type { State, Send, MachineApi } from "./nav-menu.types"
+import type { State, Send, MachineApi, ItemProps } from "./nav-menu.types"
 import { parts } from "./nav-menu.anatomy"
 import { dom } from "./nav-menu.dom"
 import { isSafari } from "@zag-js/dom-query"
+import { mergeProps } from "@zag-js/core"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const activeId = state.context.activeId
+  const isSubmenu = state.context.isSubmenu
+  const activeContentId = state.context.activeContentId
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
@@ -21,7 +24,87 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     send({ type: "ITEM_NEXT", id })
   }
 
+  function getTriggerProps(props: ItemProps) {
+    const { id } = props
+
+    return normalize.button({
+      ...(isSubmenu ? parts.triggerMenuItem.attrs : parts.trigger.attrs),
+      dir: state.context.dir,
+      id: dom.getTriggerId(state.context, id),
+      "data-placement": state.context.currentPlacement,
+      "aria-expanded": activeId === id || undefined,
+      "aria-controls": dom.getMenuContentId(state.context, id),
+      "data-ownedby": isSubmenu ? activeContentId ?? undefined : dom.getRootId(state.context),
+      onFocus() {
+        send({ type: "TRIGGER_FOCUS", id })
+      },
+      onBlur() {
+        send({ type: "TRIGGER_BLUR", id: null })
+      },
+      onClick(event) {
+        if (isSafari()) {
+          event.currentTarget.focus()
+        }
+        send({ type: "TRIGGER_CLICK", id })
+      },
+      onKeyDown(event) {
+        const keyMap: EventKeyMap = {
+          ArrowDown() {
+            dispatchArrowDownRight(id)
+          },
+          ArrowUp() {
+            dispatchArrowUpLeft(id)
+          },
+          ArrowLeft() {
+            dispatchArrowUpLeft(id)
+          },
+          ArrowRight() {
+            dispatchArrowDownRight(id)
+          },
+          Home() {
+            send("HOME")
+          },
+          End() {
+            send("END")
+          },
+        }
+
+        const key = getEventKey(event, {
+          dir: state.context.dir,
+          orientation: state.context.orientation,
+        })
+
+        const exec = keyMap[key]
+
+        if (exec) {
+          exec(event)
+          event.preventDefault()
+        }
+      },
+    })
+  }
+
+  function getMenuItemProps(props: ItemProps & { href?: string }) {
+    const { id, href } = props
+    return normalize.element({
+      ...parts["menu-item"].attrs,
+      href,
+      id,
+      "aria-current": href === state.context.activeLink ? "page" : undefined,
+      "data-ownedby": activeContentId ?? undefined,
+      onPointerDown() {
+        send({ type: "LINK_ACTIVE", href })
+      },
+    })
+  }
+
   return {
+    setParent(parent) {
+      send({ type: "PARENT.SET", value: parent, id: parent.state.context.id })
+    },
+    setChild(child) {
+      send({ type: "CHILD.SET", value: child, id: child.state.context.id })
+    },
     rootProps: normalize.element({
       ...parts.root.attrs,
       dir: state.context.dir,
@@ -39,64 +122,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       "aria-orientation": "horizontal",
     }),
-    getTriggerProps(props) {
-      const { id } = props
-
-      return normalize.element({
-        ...parts.trigger.attrs,
-        dir: state.context.dir,
-        id: dom.getTriggerId(state.context, id),
-        "data-placement": state.context.currentPlacement,
-        "aria-expanded": activeId === id || undefined,
-        "aria-controls": dom.getMenuContentId(state.context, id),
-        "data-ownedby": dom.getRootId(state.context),
-        onFocus() {
-          send({ type: "TRIGGER_FOCUS", id })
-        },
-        onBlur() {
-          send({ type: "TRIGGER_BLUR", id: null })
-        },
-        onClick(event) {
-          if (isSafari()) {
-            event.currentTarget.focus()
-          }
-          send({ type: "TRIGGER_CLICK", id })
-        },
-        onKeyDown(event) {
-          const keyMap: EventKeyMap = {
-            ArrowDown() {
-              dispatchArrowDownRight(id)
-            },
-            ArrowUp() {
-              dispatchArrowUpLeft(id)
-            },
-            ArrowLeft() {
-              dispatchArrowUpLeft(id)
-            },
-            ArrowRight() {
-              dispatchArrowDownRight(id)
-            },
-            Home() {
-              send("HOME")
-            },
-            End() {
-              send("END")
-            },
-          }
-
-          const key = getEventKey(event, {
-            dir: state.context.dir,
-            orientation: state.context.orientation,
-          })
-
-          const exec = keyMap[key]
-
-          if (exec) {
-            exec(event)
-            event.preventDefault()
-          }
-        },
-      })
+    getTriggerProps,
+    getTriggerMenuItemProps(childApi, id) {
+      return mergeProps(getMenuItemProps({ id: childApi.getTriggerProps({ id }).id }), childApi.getTriggerProps({ id }))
     },
     getPositionerProps(props) {
       const { id } = props
@@ -154,18 +182,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
       })
     },
-    getMenuItemProps(props) {
-      const { id, href } = props
-      return normalize.a({
-        ...parts["menu-item"].attrs,
-        href,
-        id,
-        "aria-current": href === state.context.activeLink ? "page" : undefined,
-        "data-ownedby": state.context.activeContentId ?? undefined,
-        onPointerDown() {
-          send({ type: "LINK_ACTIVE", href })
-        },
-      })
-    },
+    getMenuItemProps,
   }
 }

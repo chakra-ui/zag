@@ -148,6 +148,50 @@ export const navMenuData = [
   },
 ]
 
+export const nestedNavMenuData = [
+  {
+    menu: { label: "Libraries", id: "Libraries" },
+    menuList: [
+      {
+        label: "React",
+        id: "react",
+        href: "#react",
+      },
+      {
+        label: "Vue",
+        id: "vuejs",
+        href: "#vuejs",
+      },
+      {
+        label: "SolidJS",
+        id: "solidjs",
+        href: "#solidjs",
+      },
+      {
+        label: "More →",
+        id: "more",
+        subList: [
+          {
+            label: "Svelte",
+            id: "svelte",
+            href: "#svelte",
+          },
+          {
+            label: "Angular",
+            id: "angular",
+            href: "#angular",
+          },
+          {
+            label: "Ember",
+            id: "ember",
+            href: "#ember",
+          },
+        ],
+      },
+    ],
+  },
+]
+
 export const menuData = [
   [
     { label: "New File", id: "new-file" },

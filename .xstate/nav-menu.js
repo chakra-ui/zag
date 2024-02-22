@@ -20,6 +20,12 @@ const fetchMachine = createMachine({
     "isNotItemFocused": false
   },
   on: {
+    "PARENT.SET": {
+      actions: "setParentMenu"
+    },
+    "CHILD.SET": {
+      actions: "setChildMenu"
+    },
     CLOSE: {
       target: "focused",
       actions: ["collapseMenu", "removeActiveContentId"]

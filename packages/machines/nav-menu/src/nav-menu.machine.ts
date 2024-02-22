@@ -1,6 +1,6 @@
-import { createMachine, guards } from "@zag-js/core"
+import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { compact, isEqual } from "@zag-js/utils"
+import { cast, compact, isEqual } from "@zag-js/utils"
 import type { MachineContext, MachineState, UserDefinedContext } from "./nav-menu.types"
 import { dom } from "./nav-menu.dom"
 import { getPlacement } from "@zag-js/popper"
@@ -15,6 +15,8 @@ export function machine(userContext: UserDefinedContext) {
       id: "nav-menu",
       initial: "idle",
       context: {
+        parent: null,
+        children: cast(ref({})),
         focusedMenuId: null,
         activeId: null,
         highlightedItemId: null,
@@ -30,9 +32,16 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       computed: {
+        isSubmenu: (ctx) => ctx.parent !== null,
         isVertical: (ctx) => ctx.orientation === "vertical",
       },
       on: {
+        "PARENT.SET": {
+          actions: "setParentMenu",
+        },
+        "CHILD.SET": {
+          actions: "setChildMenu",
+        },
         CLOSE: {
           target: "focused",
           actions: ["collapseMenu", "removeActiveContentId"],
@@ -129,6 +138,12 @@ export function machine(userContext: UserDefinedContext) {
         isNotItemFocused: (ctx) => !ctx.highlightedItemId,
       },
       actions: {
+        setParentMenu(ctx, evt) {
+          ctx.parent = ref(evt.value)
+        },
+        setChildMenu(ctx, evt) {
+          ctx.children[evt.id] = ref(evt.value)
+        },
         setFocusedMenuId(ctx, evt) {
           set.focusedMenuId(ctx, evt.id)
         },
@@ -168,7 +183,7 @@ export function machine(userContext: UserDefinedContext) {
           prevItemEl.focus()
         },
         focusTrigger(ctx) {
-          if (ctx.anchorPoint || !ctx.restoreFocus) return
+          if (ctx.isSubmenu || ctx.anchorPoint || !ctx.restoreFocus) return
           raf(() => {
             if (!ctx.focusedMenuId) return
             dom.getTriggerEl(ctx, ctx.focusedMenuId)?.focus({ preventScroll: true })
