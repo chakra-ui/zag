@@ -46,6 +46,10 @@ const fetchMachine = createMachine({
         TRIGGER_FOCUS: {
           actions: "setFocusedMenuId"
         },
+        TRIGGER_BLUR: {
+          target: "idle",
+          actions: "setFocusedMenuId"
+        },
         TRIGGER_CLICK: [{
           cond: "isExpanded",
           actions: ["collapseMenu"]

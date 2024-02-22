@@ -53,6 +53,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onFocus() {
           send({ type: "TRIGGER_FOCUS", id })
         },
+        onBlur() {
+          send({ type: "TRIGGER_BLUR", id: null })
+        },
         onClick(event) {
           if (isSafari()) {
             event.currentTarget.focus()

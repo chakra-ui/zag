@@ -54,6 +54,10 @@ export function machine(userContext: UserDefinedContext) {
             TRIGGER_FOCUS: {
               actions: "setFocusedMenuId",
             },
+            TRIGGER_BLUR: {
+              target: "idle",
+              actions: "setFocusedMenuId",
+            },
             TRIGGER_CLICK: [
               {
                 guard: "isExpanded",
