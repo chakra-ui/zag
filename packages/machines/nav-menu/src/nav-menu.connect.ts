@@ -124,7 +124,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
     getTriggerProps,
     getTriggerMenuItemProps(childApi, id) {
-      return mergeProps(getMenuItemProps({ id: childApi.getTriggerProps({ id }).id }), childApi.getTriggerProps({ id }))
+      return mergeProps(
+        {
+          ...getMenuItemProps({ id: childApi.getTriggerProps({ id }).id }),
+          // Because a trigger button is not a link that defines an active page
+          "aria-current": null,
+        },
+        childApi.getTriggerProps({ id }),
+      )
     },
     getPositionerProps(props) {
       const { id } = props
