@@ -7,7 +7,7 @@ export default function Page() {
     <div style={{ padding: "40px", height: "200vh" }}>
       <h1>Collapsible Uncontrolled</h1>
 
-      <Collapsible defaultOpen>
+      <Collapsible defaultOpen trigger={<button>Toggle</button>}>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
           magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo

@@ -1,5 +1,5 @@
 import { createMachine, ref } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
+import { getComputedStyle, raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./collapsible.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./collapsible.types"
@@ -20,23 +20,29 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        open: ["toggleVisibility"],
+        open: ["allowAnimation", "toggleVisibility"],
       },
 
       entry: ["computeSize"],
-      exit: ["clearAnimationStyles"],
-
-      activities: ["trackMountAnimation"],
 
       states: {
         closed: {
           tags: ["closed"],
           entry: ["computeSize"],
           on: {
-            "CONTROLLED.OPEN": "open",
+            "CONTROLLED.OPEN": {
+              target: "open",
+              actions: ["computeSize"],
+            },
             OPEN: [
-              { guard: "isOpenControlled", actions: ["invokeOnOpen"] },
-              { target: "open", actions: ["invokeOnOpen"] },
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["allowAnimation", "invokeOnOpen"],
+              },
             ],
           },
         },
@@ -48,12 +54,24 @@ export function machine(userContext: UserDefinedContext) {
             "CONTROLLED.CLOSE": "closed",
             "CONTROLLED.OPEN": "open",
             OPEN: [
-              { guard: "isOpenControlled", actions: ["invokeOnOpen"] },
-              { target: "open", actions: ["invokeOnOpen"] },
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["allowAnimation", "invokeOnOpen"],
+              },
             ],
             CLOSE: [
-              { guard: "isOpenControlled", actions: ["invokeOnClose"] },
-              { target: "closed", actions: ["computeSize"] },
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["allowAnimation", "computeSize"],
+              },
             ],
             "ANIMATION.END": "closed",
           },
@@ -62,10 +80,19 @@ export function machine(userContext: UserDefinedContext) {
         open: {
           tags: ["open"],
           on: {
-            "CONTROLLED.CLOSE": { target: "closing", actions: ["computeSize"] },
+            "CONTROLLED.CLOSE": {
+              target: "closing",
+              actions: ["computeSize"],
+            },
             CLOSE: [
-              { guard: "isOpenControlled", actions: ["invokeOnClose"] },
-              { target: "closing", actions: ["computeSize"] },
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closing",
+                actions: ["allowAnimation", "computeSize"],
+              },
             ],
           },
         },
@@ -76,60 +103,74 @@ export function machine(userContext: UserDefinedContext) {
         isOpenControlled: (ctx) => !!ctx["open.controlled"],
       },
       activities: {
-        trackMountAnimation(ctx) {
-          const cleanup = raf(() => {
-            ctx.isMountAnimationPrevented = false
-          })
-          return () => {
-            ctx.isMountAnimationPrevented = true
-            cleanup()
-          }
-        },
         trackAnimationEvents(ctx, _evt, { send }) {
-          const contentEl = dom.getContentEl(ctx)
-          if (!contentEl) return
+          let cleanup: VoidFunction | undefined
 
-          const onEnd = (event: AnimationEvent) => {
-            if (event.target !== contentEl) return
-            send({ type: "ANIMATION.END" })
-          }
+          const rafCleanup = raf(() => {
+            const contentEl = dom.getContentEl(ctx)
+            if (!contentEl) return
 
-          contentEl.addEventListener("animationend", onEnd)
-          contentEl.addEventListener("animationcancel", onEnd)
+            // if there's no animation, send ANIMATION.END immediately
+            const isAnimationNone = getComputedStyle(contentEl).animationName === "none"
+
+            if (isAnimationNone) {
+              send({ type: "ANIMATION.END" })
+              return
+            }
+
+            const onEnd = (event: AnimationEvent) => {
+              if (event.target !== contentEl) return
+              send({ type: "ANIMATION.END" })
+            }
+
+            contentEl.addEventListener("animationend", onEnd)
+            contentEl.addEventListener("animationcancel", onEnd)
+
+            cleanup = () => {
+              contentEl.removeEventListener("animationend", onEnd)
+              contentEl.removeEventListener("animationcancel", onEnd)
+            }
+          })
+
           return () => {
-            contentEl.removeEventListener("animationend", onEnd)
-            contentEl.removeEventListener("animationcancel", onEnd)
+            rafCleanup()
+            cleanup?.()
           }
         },
       },
       actions: {
+        allowAnimation(ctx) {
+          ctx.isMountAnimationPrevented = false
+        },
         computeSize: (ctx) => {
-          const contentEl = dom.getContentEl(ctx)
-          if (!contentEl) return
+          raf(() => {
+            const contentEl = dom.getContentEl(ctx)
+            if (!contentEl) return
 
-          ctx.stylesRef ||= ref({
-            animationName: contentEl.style.animationName,
-            animationDuration: contentEl.style.animationDuration,
+            ctx.stylesRef ||= ref({
+              animationName: contentEl.style.animationName,
+              animationDuration: contentEl.style.animationDuration,
+            })
+
+            const hidden = contentEl.hidden
+
+            // block any animations/transitions so the element renders at its full dimensions
+            contentEl.style.animationName = "none"
+            contentEl.style.animationDuration = "0s"
+            contentEl.hidden = false
+
+            const rect = contentEl.getBoundingClientRect()
+            ctx.height = rect.height
+            ctx.width = rect.width
+
+            // kick off any animations/transitions that were originally set up if it isn't the initial mount
+            if (!ctx.isMountAnimationPrevented) {
+              contentEl.style.animationName = ctx.stylesRef.animationName
+              contentEl.style.animationDuration = ctx.stylesRef.animationDuration
+            }
+
+            contentEl.hidden = hidden
           })
-
-          const hidden = contentEl.hidden
-
-          // block any animations/transitions so the element renders at its full dimensions
-          contentEl.style.animationName = "none"
-          contentEl.style.animationDuration = "0s"
-          contentEl.hidden = false
-
-          const rect = contentEl.getBoundingClientRect()
-          ctx.height = rect.height
-          ctx.width = rect.width
-
-          // kick off any animations/transitions that were originally set up if it isn't the initial mount
-          if (!ctx.isMountAnimationPrevented) {
-            contentEl.style.animationName = ctx.stylesRef.animationName
-            contentEl.style.animationDuration = ctx.stylesRef.animationDuration
-          }
-
-          contentEl.hidden = hidden
         },
         invokeOnOpen: (ctx) => {
           ctx.onOpenChange?.({ open: true })
@@ -139,15 +180,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         toggleVisibility: (ctx, _evt, { send }) => {
           send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE" })
-        },
-        clearAnimationStyles: (ctx) => {
-          // cleanup any animation properties that were set (esp for React.StrictMode)
-          const contentEl = dom.getContentEl(ctx)
-          if (!contentEl) return
-          raf(() => {
-            contentEl.style.animationName = ""
-            contentEl.style.animationDuration = ""
-          })
         },
       },
     },
