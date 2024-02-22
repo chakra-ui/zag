@@ -1,4 +1,5 @@
 import { createProps } from "@zag-js/types"
+import { createSplitProps } from "@zag-js/utils"
 import type {
   InputProps,
   PresetTriggerProps,
@@ -42,13 +43,19 @@ export const props = createProps<UserDefinedContext>()([
   "value",
   "view",
 ])
+export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 
 export const inputProps = createProps<InputProps>()(["index"])
+export const splitInputProps = createSplitProps<InputProps>(inputProps)
 
 export const presetTriggerProps = createProps<PresetTriggerProps>()(["value"])
+export const splitPresetTriggerProps = createSplitProps<PresetTriggerProps>(presetTriggerProps)
 
 export const tableProps = createProps<TableProps>()(["columns", "id", "view"])
+export const splitTableProps = createSplitProps<TableProps>(tableProps)
 
 export const tableCellProps = createProps<TableCellProps>()(["disabled", "value", "columns"])
+export const splitTableCellProps = createSplitProps<TableCellProps>(tableCellProps)
 
 export const viewProps = createProps<ViewProps>()(["view"])
+export const splitViewProps = createSplitProps<ViewProps>(viewProps)

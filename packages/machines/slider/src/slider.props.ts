@@ -1,4 +1,5 @@
 import { createProps } from "@zag-js/types"
+import { createSplitProps } from "@zag-js/utils"
 import type { ThumbProps, UserDefinedContext } from "./slider.types"
 
 export const props = createProps<UserDefinedContext>()([
@@ -29,4 +30,7 @@ export const props = createProps<UserDefinedContext>()([
   "value",
 ])
 
+export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+
 export const thumbProps = createProps<ThumbProps>()(["index"])
+export const splitThumbProps = createSplitProps<ThumbProps>(thumbProps)

@@ -1,4 +1,5 @@
 import { createProps } from "@zag-js/types"
+import { createSplitProps } from "@zag-js/utils"
 import type { ItemProps, UserDefinedContext } from "./tags-input.types"
 
 export const props = createProps<UserDefinedContext>()([
@@ -31,4 +32,8 @@ export const props = createProps<UserDefinedContext>()([
   "value",
 ])
 
+export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+
 export const itemProps = createProps<ItemProps>()(["index", "disabled", "value"])
+
+export const splitItemProps = createSplitProps<ItemProps>(itemProps)

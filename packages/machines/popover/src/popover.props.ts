@@ -1,4 +1,5 @@
 import { createProps } from "@zag-js/types"
+import { createSplitProps } from "@zag-js/utils"
 import type { UserDefinedContext } from "./popover.types"
 
 export const props = createProps<UserDefinedContext>()([
@@ -21,3 +22,5 @@ export const props = createProps<UserDefinedContext>()([
   "portalled",
   "positioning",
 ])
+
+export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)

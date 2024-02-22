@@ -1,4 +1,5 @@
 import { createProps } from "@zag-js/types"
+import { createSplitProps } from "@zag-js/utils"
 import type { ItemProps, UserDefinedContext } from "./rating-group.types"
 
 export const props = createProps<UserDefinedContext>()([
@@ -18,5 +19,7 @@ export const props = createProps<UserDefinedContext>()([
   "translations",
   "value",
 ])
+export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 
 export const itemProps = createProps<ItemProps>()(["index"])
+export const splitItemProps = createSplitProps<ItemProps>(itemProps)

@@ -1,4 +1,5 @@
 import { createProps } from "@zag-js/types"
+import { createSplitProps } from "@zag-js/utils"
 import type { UserDefinedContext } from "./pin-input.types"
 
 export const props = createProps<UserDefinedContext>()([
@@ -24,3 +25,5 @@ export const props = createProps<UserDefinedContext>()([
   "type",
   "value",
 ])
+
+export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
