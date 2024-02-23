@@ -1,5 +1,46 @@
 # @zag-js/file-upload
 
+## 0.37.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.37.2
+  - @zag-js/core@0.37.2
+  - @zag-js/types@0.37.2
+  - @zag-js/utils@0.37.2
+  - @zag-js/dom-query@0.37.2
+  - @zag-js/file-utils@0.37.2
+  - @zag-js/visually-hidden@0.37.2
+
+## 0.37.1
+
+### Patch Changes
+
+- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom components on top of Zag.js
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.37.1
+  - @zag-js/core@0.37.1
+  - @zag-js/types@0.37.1
+  - @zag-js/utils@0.37.1
+  - @zag-js/dom-query@0.37.1
+  - @zag-js/file-utils@0.37.1
+  - @zag-js/visually-hidden@0.37.1
+
+## 0.37.0
+
+### Patch Changes
+
+- Updated dependencies [[`170c115`](https://github.com/chakra-ui/zag/commit/170c115afe6f1e5f5bf744508ddb98230a741391), [`2a024fb`](https://github.com/chakra-ui/zag/commit/2a024fbd2e98343218d4d658e91f1d8c751e1a4d)]:
+  - @zag-js/file-utils@0.37.0
+  - @zag-js/types@0.37.0
+  - @zag-js/anatomy@0.37.0
+  - @zag-js/core@0.37.0
+  - @zag-js/utils@0.37.0
+  - @zag-js/dom-query@0.37.0
+  - @zag-js/visually-hidden@0.37.0
+
 ## 0.36.3
 
 ### Patch Changes

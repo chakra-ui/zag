@@ -273,10 +273,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.branchIndicator.attrs,
         "aria-hidden": true,
+        "data-state": branchState.isExpanded ? "open" : "closed",
         "data-disabled": dataAttr(branchState.isDisabled),
         "data-selected": dataAttr(branchState.isSelected),
         "data-focused": dataAttr(branchState.isFocused),
-        hidden: !branchState.isSelected,
       })
     },
 

@@ -89,6 +89,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   isOpen: boolean
   /**
+   * Whether the collapsible is visible (open or closing)
+   */
+  isVisible: boolean
+  /**
    * Whether the collapsible is disabled
    */
   isDisabled: boolean
