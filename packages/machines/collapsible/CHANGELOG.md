@@ -1,5 +1,20 @@
 # @zag-js/collapsible
 
+## 0.37.1
+
+### Patch Changes
+
+- [`35d10b9`](https://github.com/chakra-ui/zag/commit/35d10b94479a76876d082bfaba47d13dae40860e) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where collapsible doesn't work when content is initially unmounted, or no animation is attached.
+
+- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom components on top of Zag.js
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.37.1
+  - @zag-js/core@0.37.1
+  - @zag-js/types@0.37.1
+  - @zag-js/utils@0.37.1
+  - @zag-js/dom-query@0.37.1
+
 ## 0.37.0
 
 ### Patch Changes
