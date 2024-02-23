@@ -6,6 +6,23 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.37.1](./#0.37.1) - 2024-02-34
+
+### Fixed
+
+- **Collapsible**: Fix issue where collapsible doesn't work when content is initially unmounted, or no animation is attached.
+
+## [0.37.0](./#0.37.0) - 2024-02-21
+
+### Added
+
+- **Tour**: Add new `Tour` component to guide users through a series of steps in an application.
+- Expose all machine context properties as array to improve DX of building design system components.
+
+### Fixed
+
+- **TreeView**: Add missing `getBranchIndicator` function and other minor fixes.
+
 ## [0.36.3](./#0.36.3) - 2024-02-16
 
 ### Fixed
