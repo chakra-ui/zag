@@ -111,9 +111,10 @@ export function machine(userContext: UserDefinedContext) {
             if (!contentEl) return
 
             // if there's no animation, send ANIMATION.END immediately
-            const isAnimationNone = getComputedStyle(contentEl).animationName === "none"
+            const animationName = getComputedStyle(contentEl).animationName
+            const hasNoAnimation = animationName === "none" || animationName === ""
 
-            if (isAnimationNone) {
+            if (hasNoAnimation) {
               send({ type: "ANIMATION.END" })
               return
             }
