@@ -17,15 +17,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     placement: state.context.currentPlacement,
   })
 
-  const dispatchArrowUpLeft = (id: string) => {
-    send({ type: "ITEM_PREV", id })
-  }
-  const dispatchArrowDownRight = (id: string) => {
-    send({ type: "ITEM_NEXT", id })
-  }
-
   function getTriggerProps(props: ItemProps) {
     const { id } = props
+
+    const isActiveId = state.context.activeId === id
+
+    const dispatchArrowUpLeft = (id: string) => {
+      send({ type: "ARROW_LEFT", id })
+    }
+    const dispatchArrowDownRight = (id: string) => {
+      send({ type: "ARROW_RIGHT", id })
+    }
 
     return normalize.button({
       ...(isSubmenu ? parts.triggerMenuItem.attrs : parts.trigger.attrs),
@@ -50,6 +52,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
           ArrowDown() {
+            if (isActiveId && !state.context.isVertical) {
+              console.log("open TO_FIRST_ITEM")
+              return send({ type: "TO_FIRST_ITEM", id })
+            }
             dispatchArrowDownRight(id)
           },
           ArrowUp() {
@@ -59,6 +65,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             dispatchArrowUpLeft(id)
           },
           ArrowRight() {
+            if (isActiveId && state.context.isVertical) {
+              console.log("open TO_FIRST_ITEM")
+              return send({ type: "TO_FIRST_ITEM", id })
+            }
             dispatchArrowDownRight(id)
           },
           Home() {
@@ -86,12 +96,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   function getMenuItemProps(props: ItemProps & { href?: string }) {
     const { id, href } = props
+    const ownedId = state.context.activeId ? dom.getMenuContentId(state.context, state.context.activeId) : undefined
     return normalize.element({
       ...parts["menu-item"].attrs,
       href,
       id,
       "aria-current": href === state.context.activeLink ? "page" : undefined,
-      "data-ownedby": activeContentId ?? undefined,
+      "data-ownedby": ownedId,
       onPointerDown() {
         send({ type: "LINK_ACTIVE", href })
       },
@@ -144,6 +155,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getContentProps(props) {
       const { id } = props
+      const dispatchArrowUpLeft = (id: string) => {
+        send({ type: "ITEM_PREV", id })
+      }
+      const dispatchArrowDownRight = (id: string) => {
+        send({ type: "ITEM_NEXT", id })
+      }
       return normalize.element({
         ...parts.content.attrs,
         dir: state.context.dir,

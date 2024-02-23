@@ -23,10 +23,6 @@ export const dom = createScope({
   getMenuItems: (ctx: Ctx, id: string) => {
     const ownerId = CSS.escape(dom.getMenuContentId(ctx, id))
     const selector = `[data-ownedby='${ownerId}']`
-    console.log(
-      "🚀 ~ queryAll(dom.getMenuContentEl(ctx, id), selector):",
-      queryAll(dom.getMenuContentEl(ctx, id), selector),
-    )
     return queryAll(dom.getMenuContentEl(ctx, id), selector)
   },
   getMenuItemEl: (ctx: Ctx, id: string, itemId: string) => itemById(dom.getMenuItems(ctx, id), itemId),

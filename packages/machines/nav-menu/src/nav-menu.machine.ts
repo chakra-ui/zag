@@ -43,7 +43,7 @@ export function machine(userContext: UserDefinedContext) {
           actions: "setChildMenu",
         },
         CLOSE: {
-          target: "focused",
+          target: "closed",
           actions: ["collapseMenu", "removeActiveContentId"],
         },
       },
@@ -51,13 +51,13 @@ export function machine(userContext: UserDefinedContext) {
         idle: {
           on: {
             TRIGGER_FOCUS: {
-              target: "focused",
+              target: "closed",
               actions: "setFocusedMenuId",
             },
           },
         },
-        focused: {
-          activities: ["trackPositioning"],
+        closed: {
+          tags: ["closed"],
           entry: ["clearAnchorPoint", "focusTrigger"],
           on: {
             TRIGGER_FOCUS: {
@@ -74,15 +74,15 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 guard: not("isExpanded"),
-                actions: ["expandMenu", "focusMenu"],
+                actions: ["expandMenu"],
                 target: "open",
               },
             ],
-            ITEM_NEXT: {
-              actions: "focusNextTrigger",
-            },
-            ITEM_PREV: {
+            ARROW_LEFT: {
               actions: "focusPrevTrigger",
+            },
+            ARROW_RIGHT: {
+              actions: "focusNextTrigger",
             },
             HOME: {
               actions: "focusFirstTrigger",
@@ -93,19 +93,28 @@ export function machine(userContext: UserDefinedContext) {
           },
         },
         open: {
+          tags: ["open"],
           activities: ["trackPositioning", "trackInteractOutside"],
           on: {
+            TRIGGER_FOCUS: {
+              actions: ["setFocusedMenuId", "collapseMenu"],
+              target: "closed",
+            },
             TRIGGER_CLICK: [
               {
                 guard: "isExpanded",
                 actions: ["collapseMenu"],
-                target: "focused",
+                target: "closed",
               },
               {
                 guard: not("isExpanded"),
-                actions: ["expandMenu", "focusMenu"],
+                actions: ["expandMenu"],
               },
             ],
+            TO_FIRST_ITEM: {
+              guard: "isExpanded",
+              actions: "highlightFirstItem",
+            },
             ITEM_NEXT: [
               {
                 guard: "isNotItemFocused",
@@ -118,6 +127,16 @@ export function machine(userContext: UserDefinedContext) {
             ITEM_PREV: {
               actions: "highlightPrevItem",
             },
+            ARROW_LEFT: {
+              guard: "isExpanded",
+              actions: ["focusPrevTrigger", "collapseMenu"],
+              target: "closed",
+            },
+            ARROW_RIGHT: {
+              guard: "isExpanded",
+              actions: ["focusNextTrigger", "collapseMenu"],
+              target: "closed",
+            },
             HOME: {
               actions: "highlightFirstItem",
             },
@@ -125,7 +144,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: "highlightLastItem",
             },
             LINK_ACTIVE: {
-              target: "focused",
+              target: "closed",
               actions: ["collapseMenu", "setActiveLink"],
             },
           },
@@ -248,7 +267,11 @@ export function machine(userContext: UserDefinedContext) {
             defer: true,
             exclude: [triggerEl],
             onInteractOutside: ctx.onInteractOutside,
-            onFocusOutside: ctx.onFocusOutside,
+            onFocusOutside(evt) {
+              evt.preventDefault()
+
+              ctx.onFocusOutside
+            },
             onEscapeKeyDown() {
               // if (ctx.isSubmenu) event.preventDefault()
               // closeRootMenu(ctx)

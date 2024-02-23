@@ -100,7 +100,8 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
 export interface MachineState {
-  value: "idle" | "focused" | "open"
+  value: "idle" | "closed" | "open"
+  tags: "open" | "closed"
 }
 
 export type State = S.State<MachineContext, MachineState>

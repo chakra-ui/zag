@@ -17,7 +17,10 @@ const fetchMachine = createMachine({
     "!isExpanded": false,
     "isExpanded": false,
     "!isExpanded": false,
-    "isNotItemFocused": false
+    "isExpanded": false,
+    "isNotItemFocused": false,
+    "isExpanded": false,
+    "isExpanded": false
   },
   on: {
     "PARENT.SET": {
@@ -27,7 +30,7 @@ const fetchMachine = createMachine({
       actions: "setChildMenu"
     },
     CLOSE: {
-      target: "focused",
+      target: "closed",
       actions: ["collapseMenu", "removeActiveContentId"]
     }
   },
@@ -40,13 +43,13 @@ const fetchMachine = createMachine({
     idle: {
       on: {
         TRIGGER_FOCUS: {
-          target: "focused",
+          target: "closed",
           actions: "setFocusedMenuId"
         }
       }
     },
-    focused: {
-      activities: ["trackPositioning"],
+    closed: {
+      tags: ["closed"],
       entry: ["clearAnchorPoint", "focusTrigger"],
       on: {
         TRIGGER_FOCUS: {
@@ -61,14 +64,14 @@ const fetchMachine = createMachine({
           actions: ["collapseMenu"]
         }, {
           cond: "!isExpanded",
-          actions: ["expandMenu", "focusMenu"],
+          actions: ["expandMenu"],
           target: "open"
         }],
-        ITEM_NEXT: {
-          actions: "focusNextTrigger"
-        },
-        ITEM_PREV: {
+        ARROW_LEFT: {
           actions: "focusPrevTrigger"
+        },
+        ARROW_RIGHT: {
+          actions: "focusNextTrigger"
         },
         HOME: {
           actions: "focusFirstTrigger"
@@ -79,16 +82,25 @@ const fetchMachine = createMachine({
       }
     },
     open: {
+      tags: ["open"],
       activities: ["trackPositioning", "trackInteractOutside"],
       on: {
+        TRIGGER_FOCUS: {
+          actions: ["setFocusedMenuId", "collapseMenu"],
+          target: "closed"
+        },
         TRIGGER_CLICK: [{
           cond: "isExpanded",
           actions: ["collapseMenu"],
-          target: "focused"
+          target: "closed"
         }, {
           cond: "!isExpanded",
-          actions: ["expandMenu", "focusMenu"]
+          actions: ["expandMenu"]
         }],
+        TO_FIRST_ITEM: {
+          cond: "isExpanded",
+          actions: "highlightFirstItem"
+        },
         ITEM_NEXT: [{
           cond: "isNotItemFocused",
           actions: "highlightFirstItem"
@@ -98,6 +110,16 @@ const fetchMachine = createMachine({
         ITEM_PREV: {
           actions: "highlightPrevItem"
         },
+        ARROW_LEFT: {
+          cond: "isExpanded",
+          actions: ["focusPrevTrigger", "collapseMenu"],
+          target: "closed"
+        },
+        ARROW_RIGHT: {
+          cond: "isExpanded",
+          actions: ["focusNextTrigger", "collapseMenu"],
+          target: "closed"
+        },
         HOME: {
           actions: "highlightFirstItem"
         },
@@ -105,7 +127,7 @@ const fetchMachine = createMachine({
           actions: "highlightLastItem"
         },
         LINK_ACTIVE: {
-          target: "focused",
+          target: "closed",
           actions: ["collapseMenu", "setActiveLink"]
         }
       }
