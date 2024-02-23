@@ -1,5 +1,18 @@
 # @zag-js/collapsible
 
+## 0.37.2
+
+### Patch Changes
+
+- [`b5c9259`](https://github.com/chakra-ui/zag/commit/b5c92594c2aa7d696ea64417ed46e56deb2b7986) Thanks [@cschroeter](https://github.com/cschroeter)! - Fix jsdom issue looking for animations
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.37.2
+  - @zag-js/core@0.37.2
+  - @zag-js/types@0.37.2
+  - @zag-js/utils@0.37.2
+  - @zag-js/dom-query@0.37.2
+
 ## 0.37.1
 
 ### Patch Changes
