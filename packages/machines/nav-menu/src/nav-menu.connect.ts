@@ -34,7 +34,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getTriggerId(state.context, id),
       "data-placement": state.context.currentPlacement,
-      "aria-expanded": activeId === id || undefined,
+      "aria-expanded": activeId === id,
       "aria-controls": dom.getMenuContentId(state.context, id),
       "data-ownedby": isSubmenu ? activeContentId ?? undefined : dom.getRootId(state.context),
       onFocus() {
