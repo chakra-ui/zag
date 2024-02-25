@@ -1,5 +1,18 @@
 # @zag-js/collapsible
 
+## 0.37.3
+
+### Patch Changes
+
+- [`94ed99b`](https://github.com/chakra-ui/zag/commit/94ed99bd54109882dd7c51e479ca8b334ef065b3) Thanks [@cschroeter](https://github.com/cschroeter)! - Consider undefined as no animation
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.37.3
+  - @zag-js/core@0.37.3
+  - @zag-js/types@0.37.3
+  - @zag-js/utils@0.37.3
+  - @zag-js/dom-query@0.37.3
+
 ## 0.37.2
 
 ### Patch Changes
