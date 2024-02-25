@@ -1,5 +1,19 @@
 # @zag-js/tabs
 
+## 0.37.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.37.3
+  - @zag-js/core@0.37.3
+  - @zag-js/types@0.37.3
+  - @zag-js/utils@0.37.3
+  - @zag-js/dom-event@0.37.3
+  - @zag-js/dom-query@0.37.3
+  - @zag-js/element-rect@0.37.3
+  - @zag-js/tabbable@0.37.3
+
 ## 0.37.2
 
 ### Patch Changes
