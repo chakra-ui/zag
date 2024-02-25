@@ -22,14 +22,23 @@ export default function Page() {
           <ul style={{ display: "flex", listStyle: "none" }}>
             {navMenuData.map(({ menu, menuList }) => (
               <li key={menu.id}>
-                <button {...api.getTriggerProps({ id: menu.id })}>
+                <button data-testid={`${menu.id}:trigger`} {...api.getTriggerProps({ id: menu.id })}>
                   {menu.label} <span {...api.indicatorProps}>▾</span>
                 </button>
                 <div {...api.getPositionerProps({ id: menu.id })}>
-                  <ul {...api.getContentProps({ id: menu.id })} style={{ listStyle: "none" }}>
+                  <ul
+                    data-testid={`${menu.id}:content`}
+                    {...api.getContentProps({ id: menu.id })}
+                    style={{ listStyle: "none" }}
+                  >
                     {menuList.map((item) => (
                       <li key={JSON.stringify(item)}>
-                        <a {...api.getMenuItemProps({ id: item.id, href: item.href })}>{item.label}</a>
+                        <a
+                          data-testid={`${item.id}:menu-item`}
+                          {...api.getMenuItemProps({ id: item.id, href: item.href })}
+                        >
+                          {item.label}
+                        </a>
                       </li>
                     ))}
                   </ul>

@@ -87,7 +87,7 @@ export const tabsData = [
 
 export const navMenuData = [
   {
-    menu: { label: "Libraries", id: "Libraries" },
+    menu: { label: "Libraries", id: "libraries" },
     menuList: [
       {
         label: "React",
