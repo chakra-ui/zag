@@ -1,5 +1,5 @@
 import { createMachine, ref } from "@zag-js/core"
-import { getComputedStyle, raf } from "@zag-js/dom-query"
+import { raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./collapsible.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./collapsible.types"
@@ -110,10 +110,8 @@ export function machine(userContext: UserDefinedContext) {
             const contentEl = dom.getContentEl(ctx)
             if (!contentEl) return
 
-            // if there's no animation, send ANIMATION.END immediately
-            const animationName = getComputedStyle(contentEl).animationName
-            const hasNoAnimation = animationName === "none" || animationName === ""
-
+            // if there's no animation, send ANIMATION.END immediately @segunadebayo verify this is correct
+            const hasNoAnimation = contentEl.getAnimations().length === 0
             if (hasNoAnimation) {
               send({ type: "ANIMATION.END" })
               return
