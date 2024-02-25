@@ -53,7 +53,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const keyMap: EventKeyMap = {
           ArrowDown() {
             if (isActiveId && !state.context.isVertical) {
-              console.log("open TO_FIRST_ITEM")
               return send({ type: "TO_FIRST_ITEM", id })
             }
             dispatchArrowDownRight(id)
@@ -66,7 +65,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           },
           ArrowRight() {
             if (isActiveId && state.context.isVertical) {
-              console.log("open TO_FIRST_ITEM")
               return send({ type: "TO_FIRST_ITEM", id })
             }
             dispatchArrowDownRight(id)
@@ -105,6 +103,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-ownedby": ownedId,
       onPointerDown() {
         send({ type: "LINK_ACTIVE", href })
+      },
+      onKeyDown(event) {
+        const keyMap: EventKeyMap = {
+          Enter() {
+            send({ type: "LINK_ACTIVE", href })
+          },
+          Space() {
+            send({ type: "LINK_ACTIVE", href })
+          },
+        }
+
+        const key = getEventKey(event)
+
+        const exec = keyMap[key]
+
+        if (!!exec) {
+          exec(event)
+        }
       },
     })
   }
