@@ -35,12 +35,13 @@ export function machine(ctx: Partial<UserDefinedContext>) {
           {
             guard: or("isAnimationNone", "isDisplayNone"),
             target: "unmounted",
+            actions: ["invokeOnExitComplete"],
           },
           {
             guard: and("wasPresent", "isAnimating"),
             target: "unmountSuspended",
           },
-          { target: "unmounted" },
+          { target: "unmounted", actions: ["invokeOnExitComplete"] },
         ],
       },
       states: {
@@ -56,11 +57,14 @@ export function machine(ctx: Partial<UserDefinedContext>) {
               target: "mounted",
               actions: ["setPrevAnimationName"],
             },
-            "ANIMATION.END": "unmounted",
+            "ANIMATION.END": {
+              target: "unmounted",
+              actions: ["invokeOnExitComplete"],
+            },
           },
         },
         unmounted: {
-          entry: ["clearPrevAnimationName", "invokeOnExitComplete"],
+          entry: ["clearPrevAnimationName"],
           on: {
             MOUNT: "mounted",
           },

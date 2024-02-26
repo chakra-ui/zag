@@ -25,6 +25,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   ids?: ElementIds
   /**
+   * Function called when the animation ends in the closed state.
+   */
+  onExitComplete?: () => void
+  /**
    * Function called when the popup is opened
    */
   onOpenChange?: (details: OpenChangeDetails) => void

@@ -8,6 +8,7 @@ export const props = createProps<UserDefinedContext>()([
   "getRootNode",
   "id",
   "ids",
+  "onExitComplete",
   "onOpenChange",
   "open.controlled",
   "open",
