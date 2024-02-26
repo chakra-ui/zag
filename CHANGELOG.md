@@ -6,7 +6,19 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
-## [0.37.1](./#0.37.1) - 2024-02-34
+## [0.38.0](./#0.38.0) - 2024-02-26
+
+### Added
+
+- **Collapsible**: Add `onExitComplete` to listen for exit animation completion.
+
+## [0.37.2](./#0.37.2) - 2024-02-25
+
+### Fixed
+
+- **Collapsible**: Fix issue where collapsible doesn't work when content is initially unmounted, or no animation is attached.
+
+## [0.37.1](./#0.37.1) - 2024-02-24
 
 ### Fixed
 
