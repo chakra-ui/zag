@@ -4,7 +4,7 @@ import { cast, compact, isEqual } from "@zag-js/utils"
 import type { MachineContext, MachineState, UserDefinedContext } from "./nav-menu.types"
 import { dom } from "./nav-menu.dom"
 import { getPlacement } from "@zag-js/popper"
-import { contains, raf } from "@zag-js/dom-query"
+import { raf } from "@zag-js/dom-query"
 
 const { not } = guards
 
@@ -171,10 +171,13 @@ export function machine(userContext: UserDefinedContext) {
         },
         expandMenu(ctx, evt) {
           set.activeId(ctx, evt.id)
+          const contentEl = dom.getMenuContentEl(ctx, evt.id)
+          ctx.activeContentId = contentEl?.id ?? null
         },
         collapseMenu(ctx) {
           set.activeId(ctx, null)
           ctx.highlightedItemId = null
+          ctx.activeContentId = null
         },
         highlightFirstItem(ctx, evt) {
           const firstItemEl = dom.getFirstMenuItemEl(ctx, evt.id)
@@ -230,15 +233,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearAnchorPoint(ctx) {
           ctx.anchorPoint = null
-        },
-        focusMenu(ctx, evt) {
-          raf(() => {
-            const activeEl = dom.getActiveElement(ctx)
-            const contentEl = dom.getMenuContentEl(ctx, evt.id)
-            if (contains(contentEl, activeEl)) return
-            ctx.activeContentId = contentEl?.id ?? null
-            contentEl?.focus({ preventScroll: true })
-          })
         },
         setActiveLink(ctx, evt) {
           return (ctx.activeLink = evt.href)
