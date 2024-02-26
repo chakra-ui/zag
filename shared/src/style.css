@@ -234,11 +234,11 @@ a[aria-current="page"] {
 }
 
 [data-scope="collapsible"][data-part="content"][data-state="open"] {
-  animation: slideDown 110ms cubic-bezier(0, 0, 0.38, 0.9);
+  animation: slideDown 250ms cubic-bezier(0, 0, 0.38, 0.9);
 }
 
 [data-scope="collapsible"][data-part="content"][data-state="closed"] {
-  animation: slideUp 110ms cubic-bezier(0, 0, 0.38, 0.9);
+  animation: slideUp 200ms cubic-bezier(0, 0, 0.38, 0.9);
 }
 
 /* -----------------------------------------------------------------------------

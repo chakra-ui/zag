@@ -17,7 +17,7 @@ export function Collapsible(props: Props) {
     collapsible.machine({
       id: useId(),
       open: machineProps.open ?? defaultOpen,
-      "open.controlled": open !== undefined,
+      "open.controlled": machineProps.open !== undefined,
     }),
     {
       context: {

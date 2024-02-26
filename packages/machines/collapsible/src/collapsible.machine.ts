@@ -51,7 +51,10 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["open"],
           activities: ["trackAnimationEvents"],
           on: {
-            "CONTROLLED.CLOSE": "closed",
+            "CONTROLLED.CLOSE": {
+              target: "closed",
+              actions: ["invokeOnExitComplete"],
+            },
             "CONTROLLED.OPEN": "open",
             OPEN: [
               {
@@ -70,13 +73,15 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "closed",
-                actions: ["allowAnimation", "computeSize"],
+                actions: ["allowAnimation", "computeSize", "invokeOnExitComplete"],
               },
             ],
-            "ANIMATION.END": "closed",
+            "ANIMATION.END": {
+              target: "closed",
+              actions: ["invokeOnExitComplete"],
+            },
           },
         },
-
         open: {
           tags: ["open"],
           on: {
@@ -177,6 +182,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnClose: (ctx) => {
           ctx.onOpenChange?.({ open: false })
+        },
+        invokeOnExitComplete(ctx) {
+          ctx.onExitComplete?.()
         },
         toggleVisibility: (ctx, _evt, { send }) => {
           send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE" })

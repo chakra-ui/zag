@@ -46,7 +46,10 @@ const fetchMachine = createMachine({
       tags: ["open"],
       activities: ["trackAnimationEvents"],
       on: {
-        "CONTROLLED.CLOSE": "closed",
+        "CONTROLLED.CLOSE": {
+          target: "closed",
+          actions: ["invokeOnExitComplete"]
+        },
         "CONTROLLED.OPEN": "open",
         OPEN: [{
           cond: "isOpenControlled",
@@ -60,9 +63,12 @@ const fetchMachine = createMachine({
           actions: ["invokeOnClose"]
         }, {
           target: "closed",
-          actions: ["allowAnimation", "computeSize"]
+          actions: ["allowAnimation", "computeSize", "invokeOnExitComplete"]
         }],
-        "ANIMATION.END": "closed"
+        "ANIMATION.END": {
+          target: "closed",
+          actions: ["invokeOnExitComplete"]
+        }
       }
     },
     open: {
