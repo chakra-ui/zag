@@ -1,7 +1,7 @@
+import { SidebarNavigation } from "@/components/sidebar"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "../../../shared/src/style.css"
-import Link from "next/link"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -20,13 +20,39 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             position: "fixed",
             left: "24px",
             bottom: "24px",
-            backgroundColor: "blue",
+            // backgroundColor: "blue",
             padding: "20px",
           }}
         >
-          <Link href="/" style={{ color: "white" }}>
+          <SidebarNavigation
+            items={[
+              {
+                id: "components",
+                name: "Components",
+                items: [
+                  {
+                    id: "components:collapsible",
+                    name: "Collapsible",
+                    items: [
+                      {
+                        id: "components:collapsible:controlled",
+                        name: "Collapsible",
+                        href: "/collapsible/controlled",
+                      },
+                      {
+                        id: "components:collapsible:uncontrolled",
+                        name: "Uncontrolled",
+                        href: "/collapsible/uncontrolled",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ]}
+          />
+          {/* <Link href="/" style={{ color: "white" }}>
             ⬅ Back to Home
-          </Link>
+          </Link> */}
         </div>
       </body>
     </html>
