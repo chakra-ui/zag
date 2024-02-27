@@ -1,6 +1,6 @@
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
 import { getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { State, Send, MachineApi, ItemProps } from "./nav-menu.types"
 import { parts } from "./nav-menu.anatomy"
 import { dom } from "./nav-menu.dom"
@@ -75,6 +75,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           End() {
             send("END")
           },
+          Enter() {
+            if (isSafari()) {
+              event.currentTarget.focus()
+            }
+            send({ type: "TRIGGER_CLICK", id })
+          },
+          Space() {
+            if (isSafari()) {
+              event.currentTarget.focus()
+            }
+            send({ type: "TRIGGER_CLICK", id })
+          },
         }
 
         const key = getEventKey(event, {
@@ -104,14 +116,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       if (!id) return
       send({ type: "ITEM_NEXT", id })
     }
+
+    const isTriggerItem = (evt: JSX.BaseSyntheticEvent) => {
+      return dom.isTriggerItem(evt.currentTarget)
+    }
+
     return normalize.element({
       ...parts["menu-item"].attrs,
       href,
       id,
       "aria-current": href === state.context.activeLink ? "page" : undefined,
       "data-ownedby": ownedId,
-      onPointerDown() {
-        send({ type: "LINK_ACTIVE", href })
+      onPointerDown(event) {
+        if (!isTriggerItem(event)) {
+          send({ type: "LINK_ACTIVE", href })
+        }
       },
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
@@ -134,10 +153,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send({ type: "END", id: state.context.activeId })
           },
           Enter() {
-            send({ type: "LINK_ACTIVE", href })
+            if (!isTriggerItem(event)) {
+              send({ type: "LINK_ACTIVE", href })
+            }
           },
           Space() {
-            send({ type: "LINK_ACTIVE", href })
+            if (!isTriggerItem(event)) {
+              send({ type: "LINK_ACTIVE", href })
+            }
           },
         }
 

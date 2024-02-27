@@ -30,4 +30,7 @@ export const dom = createScope({
   getLastMenuItemEl: (ctx: Ctx, id: string) => last(dom.getMenuItems(ctx, id)),
   getNextMenuItemEl: (ctx: Ctx, id: string, itemId: string) => nextById(dom.getMenuItems(ctx, id), itemId),
   getPrevMenuItemEl: (ctx: Ctx, id: string, itemId: string) => prevById(dom.getMenuItems(ctx, id), itemId),
+  isTriggerItem: (el: HTMLElement | null) => {
+    return !!el?.getAttribute("data-part")?.startsWith("trigger") && el?.hasAttribute("aria-controls")
+  },
 })
