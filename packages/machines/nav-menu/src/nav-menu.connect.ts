@@ -95,6 +95,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   function getMenuItemProps(props: ItemProps & { href?: string }) {
     const { id, href } = props
     const ownedId = state.context.activeId ? dom.getMenuContentId(state.context, state.context.activeId) : undefined
+
+    const dispatchArrowUpLeft = (id: string | null) => {
+      if (!id) return
+      send({ type: "ITEM_PREV", id })
+    }
+    const dispatchArrowDownRight = (id: string | null) => {
+      if (!id) return
+      send({ type: "ITEM_NEXT", id })
+    }
     return normalize.element({
       ...parts["menu-item"].attrs,
       href,
@@ -106,6 +115,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
+          ArrowUp() {
+            dispatchArrowUpLeft(state.context.activeId)
+          },
+          ArrowDown() {
+            dispatchArrowDownRight(state.context.activeId)
+          },
+          ArrowLeft() {
+            dispatchArrowUpLeft(state.context.activeId)
+          },
+          ArrowRight() {
+            dispatchArrowDownRight(state.context.activeId)
+          },
+          Home() {
+            send({ type: "HOME", id: state.context.activeId })
+          },
+          End() {
+            send({ type: "END", id: state.context.activeId })
+          },
           Enter() {
             send({ type: "LINK_ACTIVE", href })
           },
@@ -114,12 +141,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           },
         }
 
-        const key = getEventKey(event)
+        const key = getEventKey(event, {
+          dir: state.context.dir,
+          orientation: state.context.orientation,
+        })
 
         const exec = keyMap[key]
 
-        if (!!exec) {
+        if (exec) {
           exec(event)
+          event.preventDefault()
         }
       },
     })
@@ -171,12 +202,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getContentProps(props) {
       const { id } = props
-      const dispatchArrowUpLeft = (id: string) => {
-        send({ type: "ITEM_PREV", id })
-      }
-      const dispatchArrowDownRight = (id: string) => {
-        send({ type: "ITEM_NEXT", id })
-      }
       return normalize.element({
         ...parts.content.attrs,
         dir: state.context.dir,
@@ -186,40 +211,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: activeId !== id,
         "aria-labelledby": dom.getTriggerId(state.context, id),
         "aria-activedescendant": state.context.highlightedItemId ?? undefined,
-        onKeyDown(event) {
-          const keyMap: EventKeyMap = {
-            ArrowUp() {
-              dispatchArrowUpLeft(id)
-            },
-            ArrowDown() {
-              dispatchArrowDownRight(id)
-            },
-            ArrowLeft() {
-              dispatchArrowUpLeft(id)
-            },
-            ArrowRight() {
-              dispatchArrowDownRight(id)
-            },
-            Home() {
-              send({ type: "HOME", id })
-            },
-            End() {
-              send({ type: "END", id })
-            },
-          }
-
-          const key = getEventKey(event, {
-            dir: state.context.dir,
-            orientation: state.context.orientation,
-          })
-
-          const exec = keyMap[key]
-
-          if (exec) {
-            exec(event)
-            event.preventDefault()
-          }
-        },
       })
     },
     getMenuItemProps,

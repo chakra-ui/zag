@@ -181,12 +181,14 @@ export function machine(userContext: UserDefinedContext) {
         },
         highlightFirstItem(ctx, evt) {
           const firstItemEl = dom.getFirstMenuItemEl(ctx, evt.id)
+          console.log("🚀 ~ highlightFirstItem ~ firstItemEl:", firstItemEl)
           if (!firstItemEl) return
           firstItemEl.focus()
           ctx.highlightedItemId = firstItemEl.id
         },
         highlightLastItem(ctx, evt) {
           const lastItemEl = dom.getLastMenuItemEl(ctx, evt.id)
+          console.log("🚀 ~ highlightLastItem ~ lastItemEl:", lastItemEl)
           if (!lastItemEl) return
           lastItemEl.focus()
           ctx.highlightedItemId = lastItemEl.id
