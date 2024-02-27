@@ -44,7 +44,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         CLOSE: {
           target: "closed",
-          actions: ["collapseMenu", "removeActiveContentId"],
+          actions: ["collapseMenu"],
         },
       },
       states: {
@@ -166,18 +166,22 @@ export function machine(userContext: UserDefinedContext) {
         setFocusedMenuId(ctx, evt) {
           set.focusedMenuId(ctx, evt.id)
         },
-        removeActiveContentId(ctx) {
-          ctx.activeContentId = null
-        },
         expandMenu(ctx, evt) {
           set.activeId(ctx, evt.id)
           const contentEl = dom.getMenuContentEl(ctx, evt.id)
           ctx.activeContentId = contentEl?.id ?? null
         },
-        collapseMenu(ctx) {
+        collapseMenu(ctx, evt) {
           set.activeId(ctx, null)
           ctx.highlightedItemId = null
           ctx.activeContentId = null
+          let parentContext = ctx.parent?.state.context
+          if (evt.type === "LINK_ACTIVE" && parentContext) {
+            // On click of link in nested menu, ensure the entire nav is collapsed
+            parentContext.activeContentId = null
+            parentContext.activeId = null
+            parentContext.highlightedItemId = null
+          }
         },
         highlightFirstItem(ctx, evt) {
           const firstItemEl = dom.getFirstMenuItemEl(ctx, evt.id)
@@ -205,7 +209,7 @@ export function machine(userContext: UserDefinedContext) {
           prevItemEl.focus()
         },
         focusTrigger(ctx) {
-          if (ctx.isSubmenu || ctx.anchorPoint || !ctx.restoreFocus) return
+          if (!ctx.restoreFocus) return
           raf(() => {
             if (!ctx.focusedMenuId) return
             dom.getTriggerEl(ctx, ctx.focusedMenuId)?.focus({ preventScroll: true })
@@ -268,7 +272,6 @@ export function machine(userContext: UserDefinedContext) {
             },
             onEscapeKeyDown(event) {
               if (ctx.isSubmenu) event.preventDefault()
-              // closeRootMenu(ctx)
               dispatch()
             },
             onPointerDownOutside(event) {

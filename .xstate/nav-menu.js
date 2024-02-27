@@ -31,7 +31,7 @@ const fetchMachine = createMachine({
     },
     CLOSE: {
       target: "closed",
-      actions: ["collapseMenu", "removeActiveContentId"]
+      actions: ["collapseMenu"]
     }
   },
   on: {
