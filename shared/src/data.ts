@@ -150,7 +150,7 @@ export const navMenuData = [
 
 export const nestedNavMenuData = [
   {
-    menu: { label: "Libraries", id: "Libraries" },
+    menu: { label: "Libraries", id: "libraries" },
     menuList: [
       {
         label: "React",
@@ -168,7 +168,7 @@ export const nestedNavMenuData = [
         href: "#solidjs",
       },
       {
-        label: "More →",
+        label: "More",
         id: "more",
         subList: [
           {
