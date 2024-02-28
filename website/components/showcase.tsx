@@ -101,6 +101,7 @@ const components = {
         disabled: false,
         readOnly: false,
         loop: false,
+        multiple: false,
         inputBehavior: {
           default: "autohighlight",
           options: ["autohighlight", "autocomplete", "none"],

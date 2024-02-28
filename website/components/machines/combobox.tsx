@@ -9,6 +9,7 @@ interface ComboboxProps {
     readOnly: boolean
     blurOnSelect: boolean
     loop: boolean
+    multiple: boolean
   }
 }
 
