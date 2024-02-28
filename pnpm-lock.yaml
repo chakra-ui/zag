@@ -1780,8 +1780,8 @@ importers:
         version: link:../../types
     devDependencies:
       '@sveltejs/package':
-        specifier: 2.2.6
-        version: 2.2.6(svelte@5.0.0-next.46)(typescript@5.3.3)
+        specifier: 2.2.7
+        version: 2.2.7(svelte@5.0.0-next.46)(typescript@5.3.3)
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -7254,8 +7254,8 @@ packages:
       solid-js: 1.8.15
     dev: false
 
-  /@sveltejs/package@2.2.6(svelte@5.0.0-next.46)(typescript@5.3.3):
-    resolution: {integrity: sha512-rhKL/96M7LCvFI2xN94qsqHtEWr/ypcMGiii3s6dRW7ADt3tiDm8UfExjRR8v5jW3Femz0+VJ0TNevxI4Q9Quw==}
+  /@sveltejs/package@2.2.7(svelte@5.0.0-next.46)(typescript@5.3.3):
+    resolution: {integrity: sha512-/vvmrQO2mMvROdM/iGRHtRn+ValnK9xzB50pqRcX0IvoeVoTq7uhYf+KifrZTluBA+km6AX/WXRXajrgrgbmvw==}
     engines: {node: ^16.14 || >=18}
     hasBin: true
     peerDependencies:
