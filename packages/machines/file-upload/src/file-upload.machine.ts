@@ -126,6 +126,8 @@ export function machine(userContext: UserDefinedContext) {
           if (acceptedFiles.length) {
             const files = ref([acceptedFiles[0]])
             set.files(ctx, files, rejectedFiles)
+          } else if (rejectedFiles.length) {
+            set.files(ctx, [], rejectedFiles)
           }
         },
         removeFile(ctx, evt) {
