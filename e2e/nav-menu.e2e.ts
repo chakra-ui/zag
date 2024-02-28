@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test"
-import { a11y, testid } from "./_utils"
+import { a11y, clickOutside, testid } from "./_utils"
 
 const menu = (id: string) => ({
   trigger: testid(`${id}:trigger`),
@@ -114,6 +114,25 @@ test.describe("nav-menu", () => {
       await page.keyboard.press("Tab")
       await page.keyboard.press("Tab")
       await expect(page.locator(frameworks.trigger)).toBeFocused()
+      await expect(page.locator(libraries.content)).not.toBeVisible()
+    })
+  })
+
+  test.describe("click", () => {
+    test("should open menu on trigger click", async ({ page }) => {
+      await page.click(libraries.trigger)
+      await expect(page.locator(libraries.content)).toBeVisible()
+    })
+
+    test("should collapse menu when clicking a link", async ({ page }) => {
+      await page.click(libraries.trigger)
+      await page.click(menuItem("react"))
+      await expect(page.locator(libraries.content)).not.toBeVisible()
+    })
+
+    test("clicking outside the open menu will collapse it", async ({ page }) => {
+      await page.click(libraries.trigger)
+      await clickOutside(page)
       await expect(page.locator(libraries.content)).not.toBeVisible()
     })
   })
