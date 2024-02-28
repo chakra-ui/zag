@@ -6,6 +6,7 @@ export const router = createRouter({
   routes: [
     { path: "/tour", component: () => import("./pages/tour") },
     { path: "/nav-menu", component: () => import("./pages/nav-menu") },
+    { path: "/nested-nav-menu", component: () => import("./pages/nested-nav-menu") },
     { path: "/collapsible", component: () => import("./pages/collapsible") },
     { path: "/clipboard", component: () => import("./pages/clipboard") },
     { path: "/tree-view", component: () => import("./pages/tree-view") },
