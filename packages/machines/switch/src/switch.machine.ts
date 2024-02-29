@@ -17,6 +17,7 @@ export function machine(userContext: UserDefinedContext) {
         checked: false,
         label: "switch",
         value: "on",
+        readOnly: false,
         disabled: false,
         ...ctx,
         fieldsetDisabled: false,
@@ -24,7 +25,7 @@ export function machine(userContext: UserDefinedContext) {
 
       computed: {
         isDisabled: (ctx) => ctx.disabled || ctx.fieldsetDisabled,
-        isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
+        isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
       },
 
       watch: {
@@ -65,6 +66,7 @@ export function machine(userContext: UserDefinedContext) {
     {
       guards: {
         isTrusted: (_ctx, evt) => !!evt.isTrusted,
+        isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
       },
       activities: {
         trackFormControlState(ctx, _evt, { send, initialContext }) {
