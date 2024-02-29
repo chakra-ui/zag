@@ -4,7 +4,7 @@ import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { State, Send, MachineApi, ItemProps } from "./nav-menu.types"
 import { parts } from "./nav-menu.anatomy"
 import { dom } from "./nav-menu.dom"
-import { isSafari } from "@zag-js/dom-query"
+import { dataAttr, isSafari } from "@zag-js/dom-query"
 import { mergeProps } from "@zag-js/core"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
@@ -127,6 +127,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id,
       "aria-current": href === state.context.activeLink ? "page" : undefined,
       "data-ownedby": ownedId,
+      "data-highlighted": dataAttr(state.context.highlightedItemId === id),
+      onPointerEnter() {
+        send({ type: "ITEM_POINTER_ENTER", id })
+      },
+      onPointerLeave() {
+        send({ type: "ITEM_POINTER_LEAVE", id })
+      },
       onPointerDown(event) {
         if (!isTriggerItem(event)) {
           send({ type: "LINK_ACTIVE", href })

@@ -10,7 +10,13 @@ export default function Page() {
   const controls = useControls(navMenuControls)
 
   const [state, send] = useMachine(navMenu.machine({ id: useId() }), {
-    context: controls.context,
+    context: {
+      positioning: {
+        fitViewport: true,
+        gutter: 8,
+      },
+      ...controls.context,
+    },
   })
 
   const api = navMenu.connect(state, send, normalizeProps)
@@ -19,9 +25,9 @@ export default function Page() {
     <>
       <main className="nav-menu">
         <nav {...api.rootProps}>
-          <ul style={{ display: "flex", listStyle: "none" }}>
+          <ul>
             {navMenuData.map(({ menu, menuList }) => (
-              <li key={menu.id}>
+              <li key={menu.id} style={{ position: "relative" }}>
                 <button data-testid={`${menu.id}:trigger`} {...api.getTriggerProps({ id: menu.id })}>
                   {menu.label} <span {...api.indicatorProps}>▾</span>
                 </button>

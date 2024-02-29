@@ -28,6 +28,7 @@ export function machine(userContext: UserDefinedContext) {
         ...ctx,
         positioning: {
           placement: "bottom-start",
+          gutter: 0,
           ...ctx.positioning,
         },
       },
@@ -115,6 +116,9 @@ export function machine(userContext: UserDefinedContext) {
               guard: "isExpanded",
               actions: "highlightFirstItem",
             },
+            ITEM_POINTER_ENTER: {
+              actions: "highlightItem",
+            },
             ITEM_NEXT: [
               {
                 guard: "isNotItemFocused",
@@ -183,6 +187,9 @@ export function machine(userContext: UserDefinedContext) {
             parentContext.highlightedItemId = null
           }
         },
+        highlightItem(ctx, evt) {
+          ctx.highlightedItemId = evt.id
+        },
         highlightFirstItem(ctx, evt) {
           const firstItemEl = dom.getFirstMenuItemEl(ctx, evt.id)
           if (!firstItemEl) return
@@ -246,6 +253,7 @@ export function machine(userContext: UserDefinedContext) {
         trackPositioning(ctx, evt) {
           if (ctx.anchorPoint) return
           ctx.currentPlacement = ctx.positioning.placement
+          console.log("🚀 ~ trackPositioning ~ ctx.currentPlacement:", ctx.currentPlacement)
           const getPositionerEl = () => dom.getPositionerEl(ctx, evt.id)
           return getPlacement(dom.getTriggerEl(ctx, evt.id), getPositionerEl, {
             ...ctx.positioning,

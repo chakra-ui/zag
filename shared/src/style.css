@@ -433,6 +433,61 @@ a[aria-current="page"] {
 }
 
 /* -----------------------------------------------------------------------------
+* Nav Menu
+* -----------------------------------------------------------------------------*/
+
+[data-scope="nav-menu"][data-part="root"] ul {
+  list-style-type: none;
+  margin: 0;
+}
+
+[data-scope="nav-menu"][data-part="root"][data-orientation="horizontal"] > ul {
+  display: flex;
+  gap: 8px
+}
+
+[data-scope="nav-menu"][data-part="trigger"] {
+  border: none;
+  padding: 8px;
+}
+
+[data-scope="nav-menu"][data-part="trigger"]:hover,
+[data-scope="nav-menu"][data-part="trigger"][aria-expanded="true"] {
+  background: #0A6CBD;
+  color: #f3f2f2;
+}
+
+[data-scope="nav-menu"][data-part="positioner"] {
+  background: #ccc;
+  width: 100vw
+}
+
+[data-scope="nav-menu"][data-part="menu-item"] {
+  text-decoration: none;
+  display: block;
+  padding: 8px;
+  background: #999;
+  color: #303030;
+  width: 100%;
+  max-width: 100px;
+}
+
+[data-scope="nav-menu"][data-part="menu-item"][data-highlighted] {
+  background: #1c0abd;
+  color: #f3f2f2;
+
+}
+
+[data-scope="nav-menu"][data-part="menu-item"][aria-current] {
+  background: #0A6CBD;
+  color: #f3f2f2;
+  /* Override font-weight set by '.nav a[data-active],
+    a[aria-current="page"]' */
+  font-weight: normal;
+}
+
+
+/* -----------------------------------------------------------------------------
 * Number input
 * -----------------------------------------------------------------------------*/
 

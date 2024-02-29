@@ -101,6 +101,9 @@ const fetchMachine = createMachine({
           cond: "isExpanded",
           actions: "highlightFirstItem"
         },
+        ITEM_POINTER_ENTER: {
+          actions: "highlightItem"
+        },
         ITEM_NEXT: [{
           cond: "isNotItemFocused",
           actions: "highlightFirstItem"
