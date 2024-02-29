@@ -24,7 +24,7 @@ export function machine(userContext: UserDefinedContext) {
 
       computed: {
         isDisabled: (ctx) => ctx.disabled || ctx.fieldsetDisabled,
-        isInteractive: (ctx) => !ctx.readOnly,
+        isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
       },
 
       watch: {

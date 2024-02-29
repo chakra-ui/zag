@@ -6,6 +6,7 @@ import { dom } from "./switch.dom"
 import type { MachineApi, Send, State } from "./switch.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+  const isInteractive = state.context.isInteractive
   const isDisabled = state.context.isDisabled
   const isReadOnly = state.context.readOnly
   const isFocused = !isDisabled && state.context.focused
@@ -39,22 +40,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
       htmlFor: dom.getHiddenInputId(state.context),
       onPointerMove() {
-        if (isDisabled) return
+        if (!isInteractive) return
         send({ type: "CONTEXT.SET", context: { hovered: true } })
       },
       onPointerLeave() {
-        if (isDisabled) return
+        if (!isInteractive) return
         send({ type: "CONTEXT.SET", context: { hovered: false } })
       },
       onPointerDown(event) {
-        if (isDisabled) return
+        if (!isInteractive) return
         // On pointerdown, the input blurs and returns focus to the `body`,
         // we need to prevent this.
-        if (isFocused) event.preventDefault()
+        if (!isInteractive) event.preventDefault()
         send({ type: "CONTEXT.SET", context: { active: true } })
       },
       onPointerUp() {
-        if (isDisabled) return
+        if (!isInteractive) return
         send({ type: "CONTEXT.SET", context: { active: false } })
       },
       onClick(event) {
@@ -100,7 +101,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       value: state.context.value,
       style: visuallyHiddenStyle,
       onChange(event) {
-        if (isReadOnly) return
+        if (!isInteractive) return
         const checked = event.currentTarget.checked
         send({ type: "CHECKED.SET", checked, isTrusted: true })
       },
