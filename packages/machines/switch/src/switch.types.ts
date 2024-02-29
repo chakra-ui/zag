@@ -39,6 +39,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   invalid?: boolean
   /**
+   * Whether the switch is read-only
+   */
+  readOnly?: boolean
+  /**
    * If `true`, the switch input is marked as required,
    */
   required?: boolean
@@ -73,6 +77,11 @@ type ComputedContext = Readonly<{
    * Whether the switch is disabled
    */
   isDisabled: boolean
+  /**
+   * @computed
+   * Whether the switch is interactive
+   */
+  isInteractive: boolean
 }>
 
 interface PrivateContext {

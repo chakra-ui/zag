@@ -7,6 +7,7 @@ import type { MachineApi, Send, State } from "./switch.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isDisabled = state.context.isDisabled
+  const isReadOnly = state.context.readOnly
   const isFocused = !isDisabled && state.context.focused
   const isChecked = state.context.checked
 
@@ -17,6 +18,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     "data-disabled": dataAttr(isDisabled),
     "data-state": state.context.checked ? "checked" : "unchecked",
     "data-invalid": dataAttr(state.context.invalid),
+    "data-readonly": dataAttr(isReadOnly),
   }
 
   return {
@@ -98,6 +100,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       value: state.context.value,
       style: visuallyHiddenStyle,
       onChange(event) {
+        if (isReadOnly) return
         const checked = event.currentTarget.checked
         send({ type: "CHECKED.SET", checked, isTrusted: true })
       },

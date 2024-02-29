@@ -16,6 +16,7 @@ export const props = createProps<UserDefinedContext>()([
   "onCheckedChange",
   "required",
   "value",
+  "readOnly",
 ])
 
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
