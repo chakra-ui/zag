@@ -310,7 +310,6 @@ const components = {
       component={Switch}
       defaultProps={{
         disabled: false,
-        readOnly: false,
       }}
     />
   ),

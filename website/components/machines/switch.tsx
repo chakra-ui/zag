@@ -6,7 +6,6 @@ import { useId } from "react"
 type SwitchProps = {
   controls: {
     disabled: boolean
-    readOnly: boolean
   }
 }
 
