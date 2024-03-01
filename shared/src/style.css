@@ -446,8 +446,13 @@ a[aria-current="page"] {
   gap: 8px
 }
 
-[data-scope="nav-menu"][data-part="trigger"] {
+[data-scope="nav-menu"][data-part="trigger"],
+[data-scope="nav-menu"][data-part="trigger-menu-item"] {
   border: none;
+  cursor: pointer
+}
+
+[data-scope="nav-menu"][data-part="trigger"] {
   padding: 8px;
 }
 
@@ -462,7 +467,12 @@ a[aria-current="page"] {
   width: 100vw
 }
 
-[data-scope="nav-menu"][data-part="menu-item"] {
+[data-scope="nav-menu"][data-part="trigger-menu-item"] {
+  text-align: inherit;
+}
+
+[data-scope="nav-menu"][data-part="menu-item"],
+[data-scope="nav-menu"][data-part="trigger-menu-item"] {
   text-decoration: none;
   display: block;
   padding: 8px;
@@ -472,7 +482,8 @@ a[aria-current="page"] {
   max-width: 100px;
 }
 
-[data-scope="nav-menu"][data-part="menu-item"][data-highlighted] {
+[data-scope="nav-menu"][data-part="menu-item"][data-highlighted],
+[data-scope="nav-menu"][data-part="trigger-menu-item"][data-highlighted] {
   background: #1c0abd;
   color: #f3f2f2;
 

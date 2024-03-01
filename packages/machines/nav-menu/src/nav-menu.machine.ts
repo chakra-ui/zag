@@ -34,7 +34,11 @@ export function machine(userContext: UserDefinedContext) {
       },
       computed: {
         isSubmenu: (ctx) => ctx.parent !== null,
+        isRtl: (ctx) => ctx.dir === "rtl",
         isVertical: (ctx) => ctx.orientation === "vertical",
+      },
+      watch: {
+        isSubmenu: "setSubmenuPlacement",
       },
       on: {
         "PARENT.SET": {
@@ -186,6 +190,12 @@ export function machine(userContext: UserDefinedContext) {
             parentContext.activeId = null
             parentContext.highlightedItemId = null
           }
+        },
+        setSubmenuPlacement(ctx) {
+          console.log("🚀 ~ setSubmenuPlacement ~ ctx:", ctx)
+          if (!ctx.isSubmenu) return
+          ctx.positioning.placement = ctx.isRtl ? "left-end" : "right-end"
+          ctx.positioning.gutter = 0
         },
         highlightItem(ctx, evt) {
           ctx.highlightedItemId = evt.id

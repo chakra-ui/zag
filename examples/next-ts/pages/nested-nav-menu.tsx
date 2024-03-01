@@ -26,7 +26,7 @@ export default function Page() {
         <nav {...root.rootProps}>
           <ul style={{ display: "flex", listStyle: "none" }}>
             {nestedNavMenuData.map(({ menu, menuList }) => (
-              <li key={menu.id}>
+              <li key={menu.id} style={{ position: "relative" }}>
                 <button data-testid={`${menu.id}:trigger`} {...root.getTriggerProps({ id: menu.id })}>
                   {menu.label} <span {...root.indicatorProps}>▾</span>
                 </button>
@@ -43,22 +43,24 @@ export default function Page() {
                                 {label}
                                 <span {...sub.indicatorProps}>→</span>
                               </button>
-                              <ul
-                                data-testid={`${id}:content`}
-                                {...sub.getContentProps({ id })}
-                                style={{ listStyle: "none" }}
-                              >
-                                {subList.map((item) => (
-                                  <li key={JSON.stringify(item)}>
-                                    <a
-                                      data-testid={`${item.id}:menu-item`}
-                                      {...sub.getMenuItemProps({ id: item.id, href: item.href })}
-                                    >
-                                      {item.label}
-                                    </a>
-                                  </li>
-                                ))}
-                              </ul>
+                              <div {...sub.getPositionerProps({ id })}>
+                                <ul
+                                  data-testid={`${id}:content`}
+                                  {...sub.getContentProps({ id })}
+                                  style={{ listStyle: "none" }}
+                                >
+                                  {subList.map((item) => (
+                                    <li key={JSON.stringify(item)}>
+                                      <a
+                                        data-testid={`${item.id}:menu-item`}
+                                        {...sub.getMenuItemProps({ id: item.id, href: item.href })}
+                                      >
+                                        {item.label}
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
                             </>
                           ) : (
                             <a data-testid={`${item.id}:menu-item`} {...root.getMenuItemProps({ id, href })}>

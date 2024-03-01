@@ -90,6 +90,11 @@ type ComputedContext = Readonly<{
   isSubmenu: boolean
   /**
    * @computed
+   * Whether the writing direction is rtl
+   */
+  isRtl: boolean
+  /**
+   * @computed
    * Whether the nav menu items are vertical.
    */
   isVertical: boolean
