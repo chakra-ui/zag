@@ -76,6 +76,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "radiogroup",
       "aria-orientation": "horizontal",
       "aria-labelledby": dom.getLabelId(state.context),
+      "aria-readonly": ariaAttr(state.context.readOnly),
+      "data-readonly": dataAttr(state.context.readOnly),
       tabIndex: state.context.readOnly ? 0 : -1,
       "data-disabled": dataAttr(isDisabled),
       onPointerMove(event) {
@@ -103,7 +105,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": valueText,
         "aria-disabled": isDisabled,
         "data-disabled": dataAttr(isDisabled),
-        "aria-readonly": ariaAttr(state.context.readOnly),
         "data-readonly": dataAttr(state.context.readOnly),
         "aria-setsize": state.context.count,
         "aria-checked": itemState.isChecked,
