@@ -569,6 +569,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackDismissableElement(ctx, _evt, { send }) {
           return trackDismissableElement(dom.getContentEl(ctx), {
+            defer: true,
             exclude: [...dom.getInputEls(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
             onInteractOutside(event) {
               ctx.restoreFocus = !event.detail.focusable
