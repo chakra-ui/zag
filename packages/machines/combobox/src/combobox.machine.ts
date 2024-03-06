@@ -541,7 +541,14 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           set.inputValue(ctx, "")
         },
         revertInputValue(ctx) {
-          set.inputValue(ctx, ctx.hasSelectedItems ? ctx.valueAsString : "")
+          set.inputValue(
+            ctx,
+            match(ctx.selectionBehavior, {
+              replace: ctx.hasSelectedItems ? ctx.valueAsString : "",
+              clear: "",
+              preserve: ctx.inputValue,
+            }),
+          )
         },
         setSelectedItems(ctx, evt) {
           set.selectedItems(ctx, evt.value)
