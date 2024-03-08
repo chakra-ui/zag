@@ -1,0 +1,12 @@
+@import url(./accordion.css);
+
+/* Variables */
+:where(:root, :host) {
+  --colors-bg-subtle: #ffffff;
+  --colors-text-subtle: #4a5568;
+}
+
+.chakra-ui-dark {
+  --colors-bg-subtle: #1a202c;
+  --colors-text-subtle: #a0aec0;
+}
