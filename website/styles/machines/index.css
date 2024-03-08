@@ -1,4 +1,5 @@
 @import url(./accordion.css);
+@import url(./avatar.css);
 
 /* Variables */
 :where(:root, :host) {
