@@ -9,7 +9,7 @@ const controls = useControls(clipboardControls)
 const [state, send] = useMachine(
   clipboard.machine({
     id: "1",
-    value: "https://github/com/chakra-ui/zag",
+    value: "https://github.com/chakra-ui/zag",
   }),
   {
     context: controls.context,
