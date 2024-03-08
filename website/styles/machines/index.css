@@ -1,13 +1,18 @@
 @import url(./accordion.css);
 @import url(./avatar.css);
+@import url(./carousel.css);
 
 /* Variables */
 :where(:root, :host) {
   --colors-bg-subtle: #ffffff;
   --colors-text-subtle: #4a5568;
+  --colors-border-subtle: #edf2f7;
+  --colors-bg-primary-bold: #2f855a;
 }
 
 .chakra-ui-dark {
   --colors-bg-subtle: #1a202c;
   --colors-text-subtle: #a0aec0;
+  --colors-border-subtle: #2d3748;
+  --colors-bg-primary-bold: #48bb78;
 }
