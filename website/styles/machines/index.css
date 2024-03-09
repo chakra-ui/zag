@@ -5,6 +5,7 @@
 @import url(./clipboard.css);
 @import url(./collapsible.css);
 @import url(./color-picker.css);
+@import url(./combobox.css);
 
 /* Variables */
 :where(:root, :host) {
