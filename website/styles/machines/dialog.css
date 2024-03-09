@@ -61,7 +61,7 @@
 
 [data-scope="dialog"][data-part="description"] + div > input {
   flex: 1;
-  font-size:  0.875rem;
+  font-size: 0.875rem;
   border-width: 1px;
   padding-inline-start: 0.5rem;
   padding-inline-end: 0.5rem;
