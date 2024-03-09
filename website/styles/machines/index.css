@@ -3,6 +3,7 @@
 @import url(./carousel.css);
 @import url(./checkbox.css);
 @import url(./clipboard.css);
+@import url(./collapsible.css);
 
 /* Variables */
 :where(:root, :host) {
@@ -10,6 +11,7 @@
   --colors-text-subtle: #4a5568;
   --colors-border-subtle: #edf2f7;
   --colors-bg-primary-bold: #2f855a;
+  --colors-bg-primary-subtle: #38a169;
   --colors-bg-bold: #edf2f7;
 }
 
