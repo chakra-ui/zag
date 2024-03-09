@@ -225,6 +225,9 @@ importers:
       '@zag-js/file-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/file-utils
+      '@zag-js/floating-panel':
+        specifier: workspace:*
+        version: link:../../packages/machines/floating-panel
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -475,6 +478,9 @@ importers:
       '@zag-js/file-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/file-utils
+      '@zag-js/floating-panel':
+        specifier: workspace:*
+        version: link:../../packages/machines/floating-panel
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -713,6 +719,9 @@ importers:
       '@zag-js/file-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/file-utils
+      '@zag-js/floating-panel':
+        specifier: workspace:*
+        version: link:../../packages/machines/floating-panel
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -954,6 +963,9 @@ importers:
       '@zag-js/file-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/file-utils
+      '@zag-js/floating-panel':
+        specifier: workspace:*
+        version: link:../../packages/machines/floating-panel
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -1183,6 +1195,9 @@ importers:
       '@zag-js/file-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/file-utils
+      '@zag-js/floating-panel':
+        specifier: workspace:*
+        version: link:../../packages/machines/floating-panel
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -1430,6 +1445,9 @@ importers:
       '@zag-js/file-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/file-utils
+      '@zag-js/floating-panel':
+        specifier: workspace:*
+        version: link:../../packages/machines/floating-panel
       '@zag-js/focus-scope':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-scope
@@ -2157,6 +2175,28 @@ importers:
       '@zag-js/visually-hidden':
         specifier: workspace:*
         version: link:../../utilities/visually-hidden
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/floating-panel:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
     devDependencies:
       clean-package:
         specifier: 2.2.0
