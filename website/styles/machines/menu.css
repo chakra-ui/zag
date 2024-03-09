@@ -13,6 +13,13 @@
   color: #ffffff;
 }
 
+[data-scope="menu"][data-part="context-trigger"] {
+  background: var(--colors-bg-subtle);
+  padding: 1rem;
+  border-width: 2px;
+  border-style: dashed;
+}
+
 [data-scope="menu"][data-part="trigger-item"] {
   padding-inline-start: 0.5rem;
   padding-inline-end: 0.5rem;
