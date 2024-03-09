@@ -1,4 +1,5 @@
-[data-scope="dialog"][data-part="trigger"] {
+[data-scope="dialog"][data-part="trigger"],
+[data-scope="dialog"][data-part="description"] + div > button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -69,33 +70,9 @@
   padding-bottom: 0.25rem;
 }
 
-[data-scope="dialog"][data-part="description"] + div > button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: start;
-  cursor: pointer;
-  font-weight: 500;
-  padding-inline-start: 1rem;
-  padding-inline-end: 1rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  background: var(--colors-bg-primary-subtle);
-  color: #ffffff;
-}
-
 [data-scope="dialog"][data-part="close-trigger"] {
   display: flex;
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-}
-
-[data-scope="dialog"][data-part="close-trigger"] > svg {
-  width: 1em;
-  height: 1em;
-  display: inline-block;
-  line-height: 1em;
-  flex-shrink: 0;
-  color: currentColor;
 }

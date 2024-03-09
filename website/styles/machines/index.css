@@ -11,6 +11,7 @@
 @import url(./file-upload.css);
 @import url(./hover-card.css);
 @import url(./menu.css);
+@import url(./number-input.css);
 
 * {
   border-color: var(--colors-border-bold);

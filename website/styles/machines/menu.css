@@ -20,14 +20,6 @@
   border-style: dashed;
 }
 
-[data-scope="menu"][data-part="trigger-item"] {
-  padding-inline-start: 0.5rem;
-  padding-inline-end: 0.5rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  cursor: pointer;
-}
-
 [data-scope="menu"][data-part="indicator"] {
   margin-left: 0.5rem;
 }
@@ -47,7 +39,7 @@
   outline: 2px solid hsl(204, 100%, 40%);
 }
 
-[data-scope="menu"][data-part="item"] {
+[data-scope="menu"]:is([data-part="item"], [data-part="trigger-item"]) {
   padding-inline-start: 0.5rem;
   padding-inline-end: 0.5rem;
   padding-top: 0.25rem;
@@ -55,8 +47,10 @@
   cursor: pointer;
 }
 
-[data-scope="menu"][data-part="item"][data-highlighted],
-[data-scope="menu"][data-part="trigger-item"][data-highlighted] {
+[data-scope="menu"]:is(
+    [data-part="item"],
+    [data-part="trigger-item"]
+  )[data-highlighted] {
   background-color: var(--colors-bg-primary-bold);
   color: #ffffff;
 }

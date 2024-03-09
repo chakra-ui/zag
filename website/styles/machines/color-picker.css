@@ -119,7 +119,6 @@ div:has(> [data-scope="color-picker"][data-part="channel-input"] ~ span) {
 }
 
 [data-scope="color-picker"][data-part="area"] + div > div {
-  display: -ms-flexbox;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -134,7 +133,6 @@ div:has(> [data-scope="color-picker"][data-part="channel-input"] ~ span) {
 [data-scope="color-picker"][data-part="eye-dropper-trigger"] {
   width: 40px;
   height: 40px;
-  display: -webkit-box;
   display: flex;
   flex-direction: column;
   align-items: center;
