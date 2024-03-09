@@ -9,6 +9,12 @@
 @import url(./dialog.css);
 @import url(./editable.css);
 @import url(./file-upload.css);
+@import url(./hover-card.css);
+
+* {
+  border-color: var(--colors-border-bold);
+  border-style: solid;
+}
 
 /* Variables */
 :where(:root, :host) {
@@ -18,6 +24,7 @@
   --colors-bg-primary-bold: #2f855a;
   --colors-bg-primary-subtle: #38a169;
   --colors-bg-bold: #edf2f7;
+  --colors-border-bold: #e2e8f0;
 }
 
 .chakra-ui-dark {
@@ -26,4 +33,5 @@
   --colors-border-subtle: #2d3748;
   --colors-bg-primary-bold: #48bb78;
   --colors-bg-bold: #2d3748;
+  --colors-border-bold: #2d3748;
 }
