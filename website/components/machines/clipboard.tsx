@@ -1,8 +1,5 @@
-import { HStack, Stack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
 import * as clipboard from "@zag-js/clipboard"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { Button } from "components/button"
 import { useId } from "react"
 import { HiCheck, HiOutlineClipboard } from "react-icons/hi"
 
@@ -21,30 +18,14 @@ export function Clipboard(props: Props) {
   const api = clipboard.connect(state, send, normalizeProps)
 
   return (
-    <Stack spacing="1" {...api.rootProps}>
-      <chakra.label fontSize="sm" fontWeight="medium" {...api.labelProps}>
-        Copy this link
-      </chakra.label>
-      <HStack align="stretch" {...api.controlProps}>
-        <chakra.input
-          borderWidth="1px"
-          height="10"
-          pr="5"
-          pl="3"
-          bg="bg-subtle"
-          borderColor="border-subtle"
-          {...api.inputProps}
-        />
-        <Button
-          borderWidth="1px"
-          px="3"
-          size="sm"
-          variant="outline"
-          {...api.triggerProps}
-        >
+    <div {...api.rootProps}>
+      <label {...api.labelProps}>Copy this link</label>
+      <div {...api.controlProps}>
+        <input {...api.inputProps} />
+        <button {...api.triggerProps}>
           {api.isCopied ? <HiCheck /> : <HiOutlineClipboard />}
-        </Button>
-      </HStack>
-    </Stack>
+        </button>
+      </div>
+    </div>
   )
 }

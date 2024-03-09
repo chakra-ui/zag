@@ -2,6 +2,7 @@
 @import url(./avatar.css);
 @import url(./carousel.css);
 @import url(./checkbox.css);
+@import url(./clipboard.css);
 
 /* Variables */
 :where(:root, :host) {
