@@ -12,6 +12,7 @@
 @import url(./hover-card.css);
 @import url(./menu.css);
 @import url(./number-input.css);
+@import url(./pagination.css);
 
 * {
   border-color: var(--colors-border-bold);
@@ -22,6 +23,7 @@
 :where(:root, :host) {
   --colors-bg-subtle: #ffffff;
   --colors-text-subtle: #4a5568;
+  --colors-text-bold: #171923;
   --colors-border-subtle: #edf2f7;
   --colors-bg-primary-bold: #2f855a;
   --colors-bg-primary-subtle: #38a169;
@@ -32,6 +34,7 @@
 .chakra-ui-dark {
   --colors-bg-subtle: #1a202c;
   --colors-text-subtle: #a0aec0;
+  --colors-text-bold: #f7fafc;
   --colors-border-subtle: #2d3748;
   --colors-bg-primary-bold: #48bb78;
   --colors-bg-bold: #2d3748;
