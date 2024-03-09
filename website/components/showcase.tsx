@@ -72,6 +72,7 @@ const components = {
       component={Checkbox}
       defaultProps={{
         disabled: false,
+        indeterminate: false,
       }}
     />
   ),
