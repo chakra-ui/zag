@@ -8,6 +8,7 @@
 @import url(./combobox.css);
 @import url(./dialog.css);
 @import url(./editable.css);
+@import url(./file-upload.css);
 
 /* Variables */
 :where(:root, :host) {
