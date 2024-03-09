@@ -1,5 +1,20 @@
 # @zag-js/rating-group
 
+## 0.38.1
+
+### Patch Changes
+
+- [`def93df`](https://github.com/chakra-ui/zag/commit/def93dffcb2915d918cf002ff94696fa3fb307f1) Thanks [@cschroeter](https://github.com/cschroeter)! - Fix a11y issue with readonly
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.38.1
+  - @zag-js/core@0.38.1
+  - @zag-js/types@0.38.1
+  - @zag-js/utils@0.38.1
+  - @zag-js/dom-event@0.38.1
+  - @zag-js/dom-query@0.38.1
+  - @zag-js/form-utils@0.38.1
+
 ## 0.38.0
 
 ### Patch Changes
