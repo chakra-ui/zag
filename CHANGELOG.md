@@ -6,6 +6,19 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.38.1](./#0.38.1) - 2024-03-08
+
+### Fixed
+
+- **DatePicker**
+
+  - Fix issue where next and previous had the wrong aria labels
+  - Fix an issue wher close on click outside does not get called when conditionally rendered
+
+- **FileUpload**: Fix an issue where `onFileReject` would not be called
+
+- **Switch**: Fix accessibility issue where `aria-readonly` was incorrectly set on the wrong element.
+
 ## [0.38.0](./#0.38.0) - 2024-02-26
 
 ### Added
@@ -16,13 +29,15 @@ See the [Changesets](./.changeset) for the latest changes.
 
 ### Fixed
 
-- **Collapsible**: Fix issue where collapsible doesn't work when content is initially unmounted, or no animation is attached.
+- **Collapsible**: Fix issue where collapsible doesn't work when content is initially unmounted, or no animation is
+  attached.
 
 ## [0.37.1](./#0.37.1) - 2024-02-24
 
 ### Fixed
 
-- **Collapsible**: Fix issue where collapsible doesn't work when content is initially unmounted, or no animation is attached.
+- **Collapsible**: Fix issue where collapsible doesn't work when content is initially unmounted, or no animation is
+  attached.
 
 ## [0.37.0](./#0.37.0) - 2024-02-21
 
