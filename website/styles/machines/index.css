@@ -4,6 +4,7 @@
 @import url(./checkbox.css);
 @import url(./clipboard.css);
 @import url(./collapsible.css);
+@import url(./color-picker.css);
 
 /* Variables */
 :where(:root, :host) {

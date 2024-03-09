@@ -92,6 +92,11 @@ const components = {
         disabled: false,
         readOnly: false,
         closeOnSelect: false,
+        format: {
+          default: "rgba",
+          options: ["rgba", "hsla", "hsba"],
+          required: true,
+        },
       }}
     />
   ),
