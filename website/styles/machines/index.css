@@ -10,6 +10,7 @@
 @import url(./editable.css);
 @import url(./file-upload.css);
 @import url(./hover-card.css);
+@import url(./menu.css);
 
 * {
   border-color: var(--colors-border-bold);
