@@ -17,6 +17,7 @@
 @import url(./popover.css);
 @import url(./progress.css);
 @import url(./radio.css);
+@import url(./segmented-control.css);
 
 * {
   border-color: var(--colors-border-bold);

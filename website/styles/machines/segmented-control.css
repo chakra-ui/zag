@@ -1,0 +1,10 @@
+.segmented-control {
+  &[data-scope="radio-group"][data-part="root"] {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  &[data-scope="radio-group"][data-part="root"][data-orientation="horizontal"] {
+    flex-direction: row;
+  }
+}

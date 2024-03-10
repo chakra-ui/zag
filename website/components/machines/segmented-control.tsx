@@ -28,8 +28,7 @@ export function SegmentedControl(props: SegmentedControlProps) {
   const api = radio.connect(state, send, normalizeProps)
 
   return (
-    <Flex
-      align="center"
+    <chakra.div
       pos="relative"
       bg="blackAlpha.200"
       _dark={{
@@ -37,6 +36,7 @@ export function SegmentedControl(props: SegmentedControlProps) {
       }}
       p="1.5"
       rounded="md"
+      className="segmented-control"
       {...api.rootProps}
     >
       <chakra.div
@@ -68,18 +68,12 @@ export function SegmentedControl(props: SegmentedControlProps) {
           key={opt.value}
           {...api.getItemProps({ value: opt.value })}
         >
-          <chakra.span
-            order="2"
-            {...api.getItemTextProps({ value: opt.value })}
-          >
+          <span {...api.getItemTextProps({ value: opt.value })}>
             {opt.label}
-          </chakra.span>
-          <input
-            data-peer
-            {...api.getItemHiddenInputProps({ value: opt.value })}
-          />
+          </span>
+          <input {...api.getItemHiddenInputProps({ value: opt.value })} />
         </chakra.label>
       ))}
-    </Flex>
+    </chakra.div>
   )
 }

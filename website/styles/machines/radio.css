@@ -1,7 +1,10 @@
 [data-scope="radio-group"][data-part="root"] {
   display: flex;
-  flex-direction: column;
   gap: 0.75rem;
+}
+
+[data-scope="radio-group"][data-part="root"][data-orientation="vertical"] {
+  flex-direction: column;
 }
 
 [data-scope="radio-group"][data-part="label"] + div {

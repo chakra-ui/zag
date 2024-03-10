@@ -1,5 +1,3 @@
-import { Stack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
 import * as radio from "@zag-js/radio-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -40,16 +38,7 @@ export function Radio(props: RadioProps) {
               data-peer=""
               {...api.getItemHiddenInputProps({ value: opt.id })}
             />
-            <chakra.div
-              order="1"
-              boxSize="25px"
-              rounded="full"
-              border="solid 2px"
-              borderColor="gray.400"
-              color="white"
-              p="px"
-              {...api.getItemControlProps({ value: opt.id })}
-            >
+            <div {...api.getItemControlProps({ value: opt.id })}>
               {api.value === opt.id && (
                 <svg
                   viewBox="0 0 24 24"
@@ -59,7 +48,7 @@ export function Radio(props: RadioProps) {
                   <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
                 </svg>
               )}
-            </chakra.div>
+            </div>
           </label>
         ))}
       </div>
