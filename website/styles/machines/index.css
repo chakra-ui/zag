@@ -18,6 +18,7 @@
 @import url(./progress.css);
 @import url(./radio.css);
 @import url(./segmented-control.css);
+@import url(./select.css);
 @import url(./slider.css);
 
 * {
