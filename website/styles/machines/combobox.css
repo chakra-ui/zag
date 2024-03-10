@@ -17,8 +17,7 @@
   width: 300px;
   background: var(--colors-bg-subtle);
   border-width: 1px;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding-block: 0.25rem;
   padding-inline: 0.75rem;
 }
 
@@ -51,8 +50,7 @@
 
 [data-scope="combobox"][data-part="item"] {
   padding-inline: 0.5rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding-block: 0.25rem;
   display: flex;
   align-items: center;
   cursor: pointer;

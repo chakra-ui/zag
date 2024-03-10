@@ -26,8 +26,7 @@
   cursor: pointer;
   font-weight: 500;
   padding-inline: 1rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding-block: 0.25rem;
 }
 
 [data-scope="editable"]:is(

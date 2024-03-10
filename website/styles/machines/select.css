@@ -60,8 +60,7 @@
 
 [data-scope="select"][data-part="item"] {
   padding-inline: 0.5rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding-block: 0.25rem;
   cursor: pointer;
   display: flex;
   align-items: center;

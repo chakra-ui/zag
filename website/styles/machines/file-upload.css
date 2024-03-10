@@ -12,8 +12,7 @@
   gap: 0.5rem;
   border-width: 2px;
   border-style: dashed;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding-block: 2rem;
   padding-inline: 0.5rem;
 }
 
@@ -29,8 +28,7 @@
   cursor: pointer;
   font-weight: 500;
   padding-inline: 1rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding-block: 0.25rem;
   background: var(--colors-bg-primary-subtle);
   color: #ffffff;
 }
@@ -51,8 +49,7 @@
   flex-direction: row;
   gap: 0.5rem;
   padding-inline: 0.75rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-block: 0.5rem;
   background: var(--colors-bg-subtle);
   border-width: 1px;
 }
