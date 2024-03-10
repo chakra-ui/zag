@@ -3,58 +3,32 @@ import type { ResizeTriggerAxis } from "../floating-panel.types"
 
 export function getResizeAxisStyle(axis: ResizeTriggerAxis): JSX.CSSProperties {
   switch (axis) {
-    case "s":
+    case "n":
       return {
-        cursor: "ns-resize",
-        bottom: 0,
+        cursor: "n-resize",
         left: 0,
-        right: 0,
-        height: 8,
-      }
-
-    case "w":
-      return {
-        cursor: "ew-resize",
-        top: 0,
-        left: 0,
-        bottom: 0,
-        width: 8,
+        width: "100%",
       }
 
     case "e":
       return {
-        cursor: "ew-resize",
-        top: 0,
+        cursor: "e-resize",
         right: 0,
+        height: "100%",
+      }
+
+    case "s":
+      return {
+        cursor: "s-resize",
         bottom: 0,
-        width: 8,
+        width: "100%",
       }
 
-    case "n":
+    case "w":
       return {
-        cursor: "ns-resize",
-        top: 0,
+        cursor: "w-resize",
         left: 0,
-        right: 0,
-        height: 8,
-      }
-
-    case "sw":
-      return {
-        cursor: "sw-resize",
-        bottom: 0,
-        left: 0,
-        width: 8,
-        height: 8,
-      }
-
-    case "nw":
-      return {
-        cursor: "nw-resize",
-        top: 0,
-        left: 0,
-        width: 8,
-        height: 8,
+        height: "100%",
       }
 
     case "se":
@@ -62,8 +36,13 @@ export function getResizeAxisStyle(axis: ResizeTriggerAxis): JSX.CSSProperties {
         cursor: "se-resize",
         bottom: 0,
         right: 0,
-        width: 8,
-        height: 8,
+      }
+
+    case "sw":
+      return {
+        cursor: "sw-resize",
+        bottom: 0,
+        left: 0,
       }
 
     case "ne":
@@ -71,8 +50,13 @@ export function getResizeAxisStyle(axis: ResizeTriggerAxis): JSX.CSSProperties {
         cursor: "ne-resize",
         top: 0,
         right: 0,
-        width: 8,
-        height: 8,
+      }
+
+    case "nw":
+      return {
+        cursor: "nw-resize",
+        top: 0,
+        left: 0,
       }
 
     default:

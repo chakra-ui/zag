@@ -65,11 +65,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Function called when the position of the panel changes via dragging
    */
-  onPositionChange?(details: DragDetails): void
+  onDrag?(details: DragDetails): void
   /**
    * Function called when the position of the panel changes via dragging ends
    */
-  onPositionChangeEnd?(details: DragDetails): void
+  onDragEnd?(details: DragDetails): void
   /**
    * Function called when the panel is opened or closed
    */
@@ -77,11 +77,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Function called when the size of the panel changes via resizing
    */
-  onSizeChange?(details: ResizeDetails): void
+  onResize?(details: ResizeDetails): void
   /**
    * Function called when the size of the panel changes via resizing ends
    */
-  onSizeChangeEnd?(details: ResizeDetails): void
+  onResizeEnd?(details: ResizeDetails): void
 }
 
 interface PrivateContext {
@@ -107,7 +107,7 @@ export type Send = S.Send<S.AnyEventObject>
 export type ResizeTriggerAxis = "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne"
 
 export interface ResizeTriggerProps {
-  axis?: ResizeTriggerAxis
+  axis: ResizeTriggerAxis
 }
 
 export interface DockProps {

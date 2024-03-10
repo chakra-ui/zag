@@ -1,8 +1,10 @@
 import { dataAttr } from "@zag-js/dom-query"
+import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./floating-panel.anatomy"
 import { dom } from "./floating-panel.dom"
 import type { DockProps, ResizeTriggerProps, Send, State } from "./floating-panel.types"
+import { getResizeAxisStyle } from "./utils/get-resize-axis-style"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isOpen = state.hasTag("open")
@@ -27,10 +29,26 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     contentProps: normalize.element({
       ...parts.content.attrs,
-      role: "application",
+      role: "dialog",
+      tabIndex: 0,
       id: dom.getContentId(state.context),
       style: {
         position: "relative",
+      },
+      onKeyDown(event) {
+        const keyMap: EventKeyMap = {
+          ArrowLeft() {},
+          ArrowRight() {},
+          ArrowUp() {},
+          ArrowDown() {},
+        }
+
+        const handler = keyMap[getEventKey(event, state.context)]
+
+        if (handler) {
+          event.preventDefault()
+          handler(event)
+        }
       },
     }),
 
@@ -49,6 +67,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.resizeTrigger.attrs,
         disabled,
         "data-disabled": dataAttr(disabled),
+        "data-axis": props.axis,
         type: "button",
         onPointerDown(event) {
           if (disabled) return
@@ -58,6 +77,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             position: { x: event.clientX, y: event.clientY },
           })
         },
+        style: {
+          position: "absolute",
+          touchAction: "none",
+          ...getResizeAxisStyle(props.axis),
+        },
       })
     },
 
@@ -65,6 +89,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.dragTrigger.attrs,
       disabled: state.context.draggable || state.context.disabled,
       type: "button",
+      onPointerDown(event) {
+        if (state.context.disabled) return
+        send({
+          type: "DRAG_START",
+          position: { x: event.clientX, y: event.clientY },
+        })
+      },
     }),
 
     getDockProps(props: DockProps) {
