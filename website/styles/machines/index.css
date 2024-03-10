@@ -15,6 +15,7 @@
 @import url(./pagination.css);
 @import url(./pin-input.css);
 @import url(./popover.css);
+@import url(./progress.css);
 
 * {
   border-color: var(--colors-border-bold);
