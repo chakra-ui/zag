@@ -37,6 +37,10 @@
   color: #ffffff;
 }
 
+[data-scope="file-upload"][data-part="trigger"]:hover {
+  background: var(--colors-bg-primary-bold);
+}
+
 [data-scope="file-upload"][data-part="dropzone"] + div {
   display: flex;
   flex-direction: column;

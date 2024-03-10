@@ -13,6 +13,10 @@
   color: #ffffff;
 }
 
+[data-scope="menu"][data-part="trigger"]:hover {
+  background: var(--colors-bg-primary-bold);
+}
+
 [data-scope="menu"][data-part="context-trigger"] {
   background: var(--colors-bg-subtle);
   padding: 1rem;

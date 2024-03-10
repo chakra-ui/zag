@@ -17,6 +17,10 @@
   font-size: 1.25rem;
 }
 
+[data-scope="toggle-group"][data-part="item"]:hover {
+  background: var(--colors-bg-bold);
+}
+
 [data-scope="toggle-group"][data-part="item"][data-state="on"] {
   background: var(--colors-bg-primary-bold);
   color: var(--colors-text-inverse);

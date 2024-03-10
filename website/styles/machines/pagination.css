@@ -28,6 +28,7 @@
   border: solid 1px;
   border-color: var(--colors-border-bold);
   background: var(--colors-bg-subtle);
+  cursor: pointer;
 }
 
 [data-scope="pagination"]:is(
@@ -36,7 +37,6 @@
     [data-part="item"]
   ):hover {
   background: var(--colors-bg-bold);
-  cursor: pointer;
 }
 
 [data-scope="pagination"]:is(

@@ -8,7 +8,8 @@
 }
 
 [data-scope="hover-card"][data-part="content"] {
-  background: var(--colors-bg-subtle);
+  --background: var(--colors-bg-subtle);
+  background: var(--background);
   padding: 1rem;
   border-width: 1px;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 15%));
@@ -19,7 +20,7 @@
 }
 
 [data-scope="hover-card"][data-part="arrow"] {
-  --arrow-background: var(--colors-bg-subtle);
+  --arrow-background: var(--background);
   --arrow-size: 8px;
 }
 

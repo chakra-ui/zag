@@ -21,6 +21,10 @@
   color: #ffffff;
 }
 
+[data-scope="collapsible"][data-part="trigger"]:hover {
+  background: var(--colors-bg-primary-bold);
+}
+
 [data-scope="collapsible"][data-part="content"] {
   display: flex;
   flex-direction: column;

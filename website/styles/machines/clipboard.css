@@ -39,3 +39,7 @@
   padding-inline-start: 0.75rem;
   padding-inline-end: 0.75rem;
 }
+
+[data-scope="clipboard"][data-part="trigger"]:hover {
+  background: var(--colors-bg-bold);
+}

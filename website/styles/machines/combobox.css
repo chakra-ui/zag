@@ -65,6 +65,10 @@
   color: #ffffff;
 }
 
+[data-scope="combobox"][data-part="item"][data-highlighted]:hover {
+  background: var(--colors-bg-primary-bold);
+}
+
 [data-scope="combobox"][data-part="item"][data-disabled] {
   opacity: 0.5;
   cursor: unset;
