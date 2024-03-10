@@ -23,7 +23,8 @@ const fetchMachine = createMachine({
       tags: ["closed"],
       on: {
         OPEN: {
-          target: "open"
+          target: "open",
+          actions: ["invokeOnOpen"]
         }
       }
     },
@@ -48,7 +49,10 @@ const fetchMachine = createMachine({
       exit: ["resetDragDiff"],
       on: {
         DRAG: {},
-        DRAG_END: {},
+        DRAG_END: {
+          target: "open",
+          actions: ["invokeOnDragEnd"]
+        },
         CLOSE: {
           target: "closed"
         }
@@ -60,9 +64,13 @@ const fetchMachine = createMachine({
       exit: ["resetResizeDiff"],
       on: {
         RESIZE: {},
-        RESIZE_END: {},
+        RESIZE_END: {
+          target: "open",
+          actions: ["invokeOnResizeEnd"]
+        },
         CLOSE: {
-          target: "closed"
+          target: "closed",
+          actions: ["invokeOnClose"]
         }
       }
     }

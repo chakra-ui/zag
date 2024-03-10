@@ -1,5 +1,7 @@
 import { createMachine } from "@zag-js/core"
+import { trackPointerMove } from "@zag-js/dom-event"
 import { compact } from "@zag-js/utils"
+import { dom } from "./floating-panel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./floating-panel.types"
 
 export function machine(userContext: UserDefinedContext) {
@@ -19,7 +21,10 @@ export function machine(userContext: UserDefinedContext) {
         closed: {
           tags: ["closed"],
           on: {
-            OPEN: { target: "open" },
+            OPEN: {
+              target: "open",
+              actions: ["invokeOnOpen"],
+            },
           },
         },
 
@@ -45,7 +50,10 @@ export function machine(userContext: UserDefinedContext) {
           exit: ["resetDragDiff"],
           on: {
             DRAG: {},
-            DRAG_END: {},
+            DRAG_END: {
+              target: "open",
+              actions: ["invokeOnDragEnd"],
+            },
             CLOSE: {
               target: "closed",
             },
@@ -58,9 +66,13 @@ export function machine(userContext: UserDefinedContext) {
           exit: ["resetResizeDiff"],
           on: {
             RESIZE: {},
-            RESIZE_END: {},
+            RESIZE_END: {
+              target: "open",
+              actions: ["invokeOnResizeEnd"],
+            },
             CLOSE: {
               target: "closed",
+              actions: ["invokeOnClose"],
             },
           },
         },
@@ -68,12 +80,37 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {},
+      activities: {
+        trackPointerMove(ctx, _evt, { send }) {
+          const doc = dom.getDoc(ctx)
+          return trackPointerMove(doc, {
+            onPointerMove(details) {
+              console.log(details)
+            },
+            onPointerUp() {
+              send("DRAG_END")
+            },
+          })
+        },
+      },
       actions: {
         resetDragDiff(ctx) {
           ctx.dragDiff = { x: 0, y: 0 }
         },
         resetResizeDiff(ctx) {
           ctx.resizeDiff = { x: 0, y: 0 }
+        },
+        invokeOnOpen(ctx) {
+          ctx.onOpenChange?.({ open: true })
+        },
+        invokeOnClose(ctx) {
+          ctx.onOpenChange?.({ open: false })
+        },
+        invokeOnDragEnd(ctx) {
+          ctx.onDragEnd?.({ position: ctx.position })
+        },
+        invokeOnResizeEnd(ctx) {
+          ctx.onResizeEnd?.({ size: ctx.size })
         },
       },
     },

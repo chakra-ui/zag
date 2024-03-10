@@ -20,6 +20,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.trigger.attrs,
       type: "button",
       id: dom.getTriggerId(state.context),
+      onClick() {
+        send({ type: "OPEN" })
+      },
     }),
 
     positionerProps: normalize.element({
@@ -39,6 +42,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.content.attrs,
       role: "dialog",
       tabIndex: 0,
+      hidden: !isOpen,
+      "data-state": isOpen ? "open" : "closed",
       id: dom.getContentId(state.context),
       "aria-labelledby": dom.getTitleId(state.context),
       "data-dragging": dataAttr(isDragging),
@@ -97,10 +102,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    dragTriggerProps: normalize.button({
+    dragTriggerProps: normalize.element({
       ...parts.dragTrigger.attrs,
       disabled: state.context.draggable || state.context.disabled,
-      type: "button",
       onPointerDown(event) {
         if (state.context.disabled) return
         event.preventDefault()
@@ -108,6 +112,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           type: "DRAG_START",
           position: { x: event.clientX, y: event.clientY },
         })
+      },
+      style: {
+        userSelect: "none",
       },
     }),
 

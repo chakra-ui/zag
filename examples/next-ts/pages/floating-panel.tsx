@@ -27,11 +27,13 @@ export default function Page() {
               <div {...api.getResizeTriggerProps({ axis: "e" })} />
               <div {...api.getResizeTriggerProps({ axis: "w" })} />
               <div {...api.getResizeTriggerProps({ axis: "s" })} />
-              <div {...api.headerProps}>
-                <p {...api.titleProps}>Floating Panel</p>
-                <button {...api.closeTriggerProps}>
-                  <XIcon />
-                </button>
+              <div {...api.dragTriggerProps}>
+                <div {...api.headerProps}>
+                  <p {...api.titleProps}>Floating Panel</p>
+                  <button {...api.closeTriggerProps}>
+                    <XIcon />
+                  </button>
+                </div>
               </div>
               <div {...api.bodyProps}>
                 <p>Some content</p>
@@ -41,7 +43,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls.ui} viz>
         <StateVisualizer state={state} />
       </Toolbar>
     </>
