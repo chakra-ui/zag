@@ -9,6 +9,8 @@ export function machine(userContext: UserDefinedContext) {
       id: "floating-panel",
       initial: ctx.open ? "open" : "closed",
       context: {
+        size: { width: 300, height: 300 },
+        position: { x: 0, y: 0 },
         ...ctx,
         dragDiff: { x: 0, y: 0 },
         resizeDiff: { x: 0, y: 0 },

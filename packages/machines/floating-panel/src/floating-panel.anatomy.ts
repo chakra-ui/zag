@@ -5,6 +5,8 @@ export const anatomy = createAnatomy("floating-panel").parts(
   "positioner",
   "content",
   "header",
+  "body",
+  "title",
   "resizeTrigger",
   "dragTrigger",
   "minimizeTrigger",

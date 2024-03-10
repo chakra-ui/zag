@@ -1,5 +1,5 @@
-import { dataAttr } from "@zag-js/dom-query"
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./floating-panel.anatomy"
 import { dom } from "./floating-panel.dom"
@@ -16,7 +16,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isDragging,
     isResizing,
 
-    trigger: normalize.button({
+    triggerProps: normalize.button({
       ...parts.trigger.attrs,
       type: "button",
       id: dom.getTriggerId(state.context),
@@ -25,6 +25,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     positionerProps: normalize.element({
       ...parts.positioner.attrs,
       id: dom.getPositionerId(state.context),
+      style: {
+        position: "absolute",
+        "--x": `${state.context.position.x}px`,
+        "--y": `${state.context.position.y}px`,
+        "--width": `${state.context.size.width}px`,
+        "--height": `${state.context.size.height}px`,
+        translate: `var(--x) var(--y)`,
+      },
     }),
 
     contentProps: normalize.element({
@@ -32,8 +40,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "dialog",
       tabIndex: 0,
       id: dom.getContentId(state.context),
+      "aria-labelledby": dom.getTitleId(state.context),
+      "data-dragging": dataAttr(isDragging),
       style: {
         position: "relative",
+        width: "var(--width)",
+        height: "var(--height)",
       },
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
@@ -63,14 +75,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getResizeTriggerProps(props: ResizeTriggerProps) {
       const disabled = state.context.resizable || state.context.disabled
-      return normalize.button({
+      return normalize.element({
         ...parts.resizeTrigger.attrs,
         disabled,
         "data-disabled": dataAttr(disabled),
         "data-axis": props.axis,
-        type: "button",
         onPointerDown(event) {
           if (disabled) return
+          event.preventDefault()
           send({
             type: "RESIZE_START",
             axis: props.axis,
@@ -91,6 +103,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       onPointerDown(event) {
         if (state.context.disabled) return
+        event.preventDefault()
         send({
           type: "DRAG_START",
           position: { x: event.clientX, y: event.clientY },
@@ -102,9 +115,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const isIntersecting = true
       return normalize.element({
         ...parts.dock.attrs,
-        "data-uid": props.id,
+        "data-ownedby": state.context.id,
+        "data-dock": props.id,
         "data-intersecting": dataAttr(isIntersecting),
       })
     },
+
+    titleProps: normalize.element({
+      ...parts.title.attrs,
+      id: dom.getTitleId(state.context),
+    }),
+
+    headerProps: normalize.element({
+      ...parts.header.attrs,
+      "data-dragging": dataAttr(isDragging),
+    }),
+
+    bodyProps: normalize.element({
+      ...parts.body.attrs,
+      "data-dragging": dataAttr(isDragging),
+    }),
   }
 }

@@ -41,11 +41,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The size of the panel
    */
-  size?: Size
+  size: Size
   /**
    * The position of the panel
    */
-  position?: Position
+  position: Position
   /**
    * Whether the panel is locked to its aspect ratio
    */

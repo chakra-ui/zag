@@ -1981,6 +1981,57 @@ main [data-testid="scrubber"] {
 }
 
 /* -----------------------------------------------------------------------------
+* Floating Panel
+* -----------------------------------------------------------------------------*/
+
+[data-scope="floating-panel"][data-part="content"] {
+  border: 1px solid #ebebeb;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+[data-scope="floating-panel"][data-part="body"] {
+  padding: 24px;
+  background-color: white;
+}
+
+[data-scope="floating-panel"][data-part="header"] {
+  padding-inline: 16px;
+  padding-block: 4px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ebebeb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+[data-scope="floating-panel"][data-part="close-trigger"] {
+  svg {
+    width: 1em;
+    height: 1em;
+  }
+}
+
+[data-scope="floating-panel"][data-part="resize-trigger"] {
+  [data-axis="n"],
+  [data-axis="s"] {
+    height: 6px;
+  }
+
+  [data-axis="e"],
+  [data-axis="w"] {
+    width: 6px;
+  }
+
+  [data-axis="ne"],
+  [data-axis="nw"],
+  [data-axis="se"],
+  [data-axis="sw"] {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* -----------------------------------------------------------------------------
 * Page Shell
 * -----------------------------------------------------------------------------*/
 

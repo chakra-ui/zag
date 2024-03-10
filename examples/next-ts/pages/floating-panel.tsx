@@ -1,24 +1,45 @@
-import * as floating-panel from "@zag-js/floating-panel"
-import { useMachine, normalizeProps } from "@zag-js/react"
-import { floating-panelControls, floating-panelData } from "@zag-js/shared"
+import * as floatingPanel from "@zag-js/floating-panel"
+import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { floatingPanelControls } from "@zag-js/shared"
+import { XIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls(floating-panelControls)
+  const controls = useControls(floatingPanelControls)
 
-  const [state, send] = useMachine(floating-panel.machine({ id: useId() }), {
+  const [state, send] = useMachine(floatingPanel.machine({ id: useId() }), {
     context: controls.context,
   })
 
-  const api = floating-panel.connect(state, send, normalizeProps)
+  const api = floatingPanel.connect(state, send, normalizeProps)
 
   return (
     <>
       <main className="floating-panel">
-        <div {...api.rootProps}>
+        <div>
+          <button {...api.triggerProps}>Toggle Panel</button>
+          <Portal>
+            <div {...api.positionerProps}>
+              <div {...api.contentProps}>
+                <div {...api.getResizeTriggerProps({ axis: "n" })} />
+                <div {...api.getResizeTriggerProps({ axis: "e" })} />
+                <div {...api.getResizeTriggerProps({ axis: "w" })} />
+                <div {...api.getResizeTriggerProps({ axis: "s" })} />
+                <div {...api.headerProps}>
+                  <p {...api.titleProps}>Floating Panel</p>
+                  <button {...api.closeTriggerProps}>
+                    <XIcon />
+                  </button>
+                </div>
+                <div {...api.bodyProps}>
+                  <p>Some content</p>
+                </div>
+              </div>
+            </div>
+          </Portal>
         </div>
       </main>
 
