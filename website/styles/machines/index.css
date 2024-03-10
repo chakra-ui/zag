@@ -16,6 +16,7 @@
 @import url(./pin-input.css);
 @import url(./popover.css);
 @import url(./progress.css);
+@import url(./radio.css);
 
 * {
   border-color: var(--colors-border-bold);

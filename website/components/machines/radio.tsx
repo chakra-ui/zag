@@ -28,70 +28,41 @@ export function Radio(props: RadioProps) {
   const api = radio.connect(state, send, normalizeProps)
 
   return (
-    <Stack gap="3" {...api.rootProps}>
+    <div {...api.rootProps}>
       <h2 {...api.labelProps}>Fruits</h2>
-      <Stack gap="2">
+      <div>
         {items.map((opt) => (
-          <chakra.label
-            display="flex"
-            gap="2"
-            userSelect="none"
-            cursor="pointer"
-            fontSize="16"
-            _disabled={{
-              cursor: "not-allowed",
-              opacity: 0.4,
-            }}
-            key={opt.id}
-            {...api.getItemProps({ value: opt.id })}
-          >
-            <chakra.span order="2" {...api.getItemTextProps({ value: opt.id })}>
+          <label key={opt.id} {...api.getItemProps({ value: opt.id })}>
+            <span {...api.getItemTextProps({ value: opt.id })}>
               {opt.label}
-            </chakra.span>
+            </span>
             <input
-              data-peer
+              data-peer=""
               {...api.getItemHiddenInputProps({ value: opt.id })}
             />
             <chakra.div
               order="1"
-              data-testid={`control-${opt.id}`}
               boxSize="25px"
               rounded="full"
               border="solid 2px"
               borderColor="gray.400"
               color="white"
               p="px"
-              _hover={{
-                bg: "bg-subtle",
-              }}
-              _disabled={{
-                bg: "gray.400",
-                borderColor: "gray.400",
-              }}
-              _peerFocusVisible={{
-                outline: "2px solid royalblue",
-              }}
-              sx={{
-                "&[data-state=checked]:not([data-disabled])": {
-                  bg: "blue.500",
-                  borderColor: "blue.500",
-                },
-              }}
               {...api.getItemControlProps({ value: opt.id })}
             >
               {api.value === opt.id && (
-                <chakra.svg
+                <svg
                   viewBox="0 0 24 24"
                   fill="currentcolor"
                   transform="scale(0.7)"
                 >
                   <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
-                </chakra.svg>
+                </svg>
               )}
             </chakra.div>
-          </chakra.label>
+          </label>
         ))}
-      </Stack>
-    </Stack>
+      </div>
+    </div>
   )
 }
