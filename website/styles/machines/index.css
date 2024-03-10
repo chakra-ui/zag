@@ -27,6 +27,7 @@
 @import url(./tags-input.css);
 @import url(./toast.css);
 @import url(./toggle-group.css);
+@import url(./tooltip.css);
 
 * {
   border-color: var(--colors-border-bold);
