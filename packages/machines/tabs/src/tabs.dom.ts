@@ -4,20 +4,20 @@ import type { MachineContext as Ctx } from "./tabs.types"
 
 export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tabs:${ctx.id}`,
-  getTablistId: (ctx: Ctx) => ctx.ids?.tablist ?? `tabs:${ctx.id}:list`,
+  getListId: (ctx: Ctx) => ctx.ids?.list ?? `tabs:${ctx.id}:list`,
   getContentId: (ctx: Ctx, id: string) => ctx.ids?.content ?? `tabs:${ctx.id}:content-${id}`,
   getTriggerId: (ctx: Ctx, id: string) => ctx.ids?.trigger ?? `tabs:${ctx.id}:trigger-${id}`,
   getIndicatorId: (ctx: Ctx) => ctx.ids?.indicator ?? `tabs:${ctx.id}:indicator`,
 
-  getTablistEl: (ctx: Ctx) => dom.getById(ctx, dom.getTablistId(ctx)),
+  getListEl: (ctx: Ctx) => dom.getById(ctx, dom.getListId(ctx)),
   getContentEl: (ctx: Ctx, id: string) => dom.getById(ctx, dom.getContentId(ctx, id)),
   getTriggerEl: (ctx: Ctx, id: string) => dom.getById(ctx, dom.getTriggerId(ctx, id)),
   getIndicatorEl: (ctx: Ctx) => dom.getById(ctx, dom.getIndicatorId(ctx)),
 
   getElements: (ctx: Ctx) => {
-    const ownerId = CSS.escape(dom.getTablistId(ctx))
+    const ownerId = CSS.escape(dom.getListId(ctx))
     const selector = `[role=tab][data-ownedby='${ownerId}']:not([disabled])`
-    return queryAll(dom.getTablistEl(ctx), selector)
+    return queryAll(dom.getListEl(ctx), selector)
   },
 
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),

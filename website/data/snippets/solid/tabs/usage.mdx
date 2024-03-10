@@ -10,13 +10,15 @@ const data = [
 ]
 
 export function Tabs() {
-  const [state, send] = useMachine(tabs.machine({ id: createUniqueId(), value: "item-1" }))
+  const [state, send] = useMachine(
+    tabs.machine({ id: createUniqueId(), value: "item-1" }),
+  )
 
   const api = createMemo(() => tabs.connect(state, send, normalizeProps))
 
   return (
     <div {...api().rootProps}>
-      <div {...api().tablistProps}>
+      <div {...api().listProps}>
         <For each={data}>
           {(item) => (
             <button {...api().getTriggerProps({ value: item.value })}>
