@@ -50,8 +50,7 @@
   text-align: start;
   cursor: pointer;
   font-weight: 500;
-  padding-inline-start: 1rem;
-  padding-inline-end: 1rem;
+  padding-inline: 1rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   border-width: 1px;

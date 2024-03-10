@@ -58,8 +58,7 @@ div:has(> [data-scope="color-picker"][data-part="channel-input"] ~ span) {
   border-radius: 4px;
   width: 100%;
   border-width: 1px;
-  padding-inline-start: 0.5rem;
-  padding-inline-end: 0.5rem;
+  padding-inline: 0.5rem;
   background: var(--colors-bg-subtle);
   font-size: 0.875rem;
   min-height: 32px;

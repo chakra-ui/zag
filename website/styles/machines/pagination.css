@@ -11,8 +11,7 @@
     [data-part="item"],
 
   ) {
-  padding-inline-start: 0.75rem;
-  padding-inline-end: 0.75rem;
+  padding-inline: 0.75rem;
   height: 2rem;
   text-align: center;
   margin: auto 4px;

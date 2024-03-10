@@ -14,8 +14,7 @@
   border-style: dashed;
   padding-top: 2rem;
   padding-bottom: 2rem;
-  padding-inline-start: 0.5rem;
-  padding-inline-end: 0.5rem;
+  padding-inline: 0.5rem;
 }
 
 [data-scope="file-upload"][data-part="dropzone"][data-dragging] {
@@ -29,8 +28,7 @@
   text-align: start;
   cursor: pointer;
   font-weight: 500;
-  padding-inline-start: 1rem;
-  padding-inline-end: 1rem;
+  padding-inline: 1rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   background: var(--colors-bg-primary-subtle);
@@ -52,8 +50,7 @@
   align-items: center;
   flex-direction: row;
   gap: 0.5rem;
-  padding-inline-start: 0.75rem;
-  padding-inline-end: 0.75rem;
+  padding-inline: 0.75rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   background: var(--colors-bg-subtle);

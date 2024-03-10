@@ -6,8 +6,7 @@
   text-align: start;
   cursor: pointer;
   font-weight: 500;
-  padding-inline-start: 1rem;
-  padding-inline-end: 1rem;
+  padding-inline: 1rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   background: var(--colors-bg-primary-subtle);
@@ -68,8 +67,7 @@
   flex: 1;
   font-size: 0.875rem;
   border-width: 1px;
-  padding-inline-start: 0.5rem;
-  padding-inline-end: 0.5rem;
+  padding-inline: 0.5rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
 }

@@ -19,8 +19,7 @@
   border-width: 1px;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
-  padding-inline-start: 0.75rem;
-  padding-inline-end: 0.75rem;
+  padding-inline: 0.75rem;
 }
 
 [data-scope="combobox"][data-part="control"][data-disabled] {
@@ -51,8 +50,7 @@
 }
 
 [data-scope="combobox"][data-part="item"] {
-  padding-inline-start: 0.5rem;
-  padding-inline-end: 0.5rem;
+  padding-inline: 0.5rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   display: flex;

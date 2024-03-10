@@ -5,8 +5,7 @@
   text-align: start;
   cursor: pointer;
   font-weight: 500;
-  padding-inline-start: 1rem;
-  padding-inline-end: 1rem;
+  padding-inline: 1rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   background: var(--colors-bg-primary-subtle);
@@ -44,8 +43,7 @@
 }
 
 [data-scope="menu"]:is([data-part="item"], [data-part="trigger-item"]) {
-  padding-inline-start: 0.5rem;
-  padding-inline-end: 0.5rem;
+  padding-inline: 0.5rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   cursor: pointer;
