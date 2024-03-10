@@ -1,6 +1,5 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
-import { chakra } from "@chakra-ui/system"
 import { useId } from "react"
 
 const data = [
@@ -20,36 +19,22 @@ export function Tabs(props: any) {
   const api = tabs.connect(state, send, normalizeProps)
 
   return (
-    <chakra.div width="full" maxW="400px" borderWidth="1px" fontSize="sm">
-      <chakra.div bg="bg-subtle" borderBottomWidth="1px" {...api.tablistProps}>
+    <div>
+      <div {...api.tablistProps}>
         {data.map((item) => (
-          <chakra.button
-            py="2"
-            px="4"
-            borderBottomWidth="2px"
-            borderBottomColor="transparent"
-            _selected={{
-              color: "text-primary-bold",
-              borderBottomColor: "border-primary-subtle",
-            }}
+          <button
             {...api.getTriggerProps({ value: item.value })}
             key={item.value}
           >
             {item.label}
-          </chakra.button>
+          </button>
         ))}
-      </chakra.div>
+      </div>
       {data.map((item) => (
-        <chakra.div
-          padding="4"
-          bg="bg-subtle"
-          minHeight="20"
-          {...api.getContentProps({ value: item.value })}
-          key={item.value}
-        >
+        <div {...api.getContentProps({ value: item.value })} key={item.value}>
           <p>{item.content}</p>
-        </chakra.div>
+        </div>
       ))}
-    </chakra.div>
+    </div>
   )
 }

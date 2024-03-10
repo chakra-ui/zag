@@ -23,6 +23,7 @@
 @import url(./slider.css);
 @import url(./splitter.css);
 @import url(./switch.css);
+@import url(./tabs.css);
 
 * {
   border-color: var(--colors-border-bold);
