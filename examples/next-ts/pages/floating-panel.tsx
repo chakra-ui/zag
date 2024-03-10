@@ -1,5 +1,5 @@
 import * as floatingPanel from "@zag-js/floating-panel"
-import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { floatingPanelControls } from "@zag-js/shared"
 import { XIcon } from "lucide-react"
 import { useId } from "react"
@@ -21,25 +21,23 @@ export default function Page() {
       <main className="floating-panel">
         <div>
           <button {...api.triggerProps}>Toggle Panel</button>
-          <Portal>
-            <div {...api.positionerProps}>
-              <div {...api.contentProps}>
-                <div {...api.getResizeTriggerProps({ axis: "n" })} />
-                <div {...api.getResizeTriggerProps({ axis: "e" })} />
-                <div {...api.getResizeTriggerProps({ axis: "w" })} />
-                <div {...api.getResizeTriggerProps({ axis: "s" })} />
-                <div {...api.headerProps}>
-                  <p {...api.titleProps}>Floating Panel</p>
-                  <button {...api.closeTriggerProps}>
-                    <XIcon />
-                  </button>
-                </div>
-                <div {...api.bodyProps}>
-                  <p>Some content</p>
-                </div>
+          <div {...api.positionerProps}>
+            <div {...api.contentProps}>
+              <div {...api.getResizeTriggerProps({ axis: "n" })} />
+              <div {...api.getResizeTriggerProps({ axis: "e" })} />
+              <div {...api.getResizeTriggerProps({ axis: "w" })} />
+              <div {...api.getResizeTriggerProps({ axis: "s" })} />
+              <div {...api.headerProps}>
+                <p {...api.titleProps}>Floating Panel</p>
+                <button {...api.closeTriggerProps}>
+                  <XIcon />
+                </button>
+              </div>
+              <div {...api.bodyProps}>
+                <p>Some content</p>
               </div>
             </div>
-          </Portal>
+          </div>
         </div>
       </main>
 
