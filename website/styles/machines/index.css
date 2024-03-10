@@ -24,6 +24,7 @@
 @import url(./splitter.css);
 @import url(./switch.css);
 @import url(./tabs.css);
+@import url(./tags-input.css);
 
 * {
   border-color: var(--colors-border-bold);
