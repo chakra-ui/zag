@@ -35,7 +35,7 @@
 }
 
 [data-scope="checkbox"][data-part="control"][data-state="indeterminate"] {
-  background-color: #ffffff;
+  background: #ffffff;
   border-color: grey;
   color: grey;
 }

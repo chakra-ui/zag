@@ -7,7 +7,7 @@
 
 [data-scope="splitter"][data-part="panel"] {
   display: flex;
-  background-color: var(--colors-bg-subtle);
+  background: var(--colors-bg-subtle);
   border-width: 1px;
   align-items: center;
   justify-content: center;
@@ -23,7 +23,7 @@
 }
 
 [data-scope="splitter"][data-part="resize-trigger"] {
-  background-color: #cbd5e0;
+  background: #cbd5e0;
   border-radius: 4px;
   margin: 0.5rem;
   display: flex;

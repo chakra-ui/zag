@@ -6,7 +6,7 @@ div:has(> [data-scope="tabs"][data-part="list"]) {
 }
 
 [data-scope="tabs"][data-part="list"] {
-  background-color: var(--colors-bg-subtle);
+  background: var(--colors-bg-subtle);
   border-bottom-width: 1px;
 }
 
@@ -24,6 +24,6 @@ div:has(> [data-scope="tabs"][data-part="list"]) {
 
 [data-scope="tabs"][data-part="content"] {
   padding: 1rem;
-  background-color: var(--colors-bg-subtle);
+  background: var(--colors-bg-subtle);
   min-height: 20px;
 }

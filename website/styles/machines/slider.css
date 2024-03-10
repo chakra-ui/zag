@@ -23,17 +23,17 @@
   height: 4px;
   border-radius: 9999px;
   flex: 1;
-  background-color: var(--colors-bg-bold);
+  background: var(--colors-bg-bold);
 }
 
 [data-scope="slider"][data-part="range"] {
   height: 100%;
   border-radius: inherit;
-  background-color: #38a169;
+  background: #38a169;
 }
 
 [data-scope="slider"][data-part="range"][data-disabled] {
-  background-color: #9ae6b4;
+  background: #9ae6b4;
 }
 
 [data-scope="slider"][data-part="thumb"] {
@@ -54,5 +54,5 @@
 }
 
 [data-scope="slider"][data-part="thumb"][data-disabled] {
-  background-color: #e2e8f0;
+  background: #e2e8f0;
 }

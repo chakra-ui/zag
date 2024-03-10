@@ -42,7 +42,7 @@
 }
 
 [data-scope="radio-group"][data-part="item-control"]:hover {
-  background-color: var(--colors-bg-subtle);
+  background: var(--colors-bg-subtle);
 }
 
 [data-peer]:focus-visible

@@ -19,7 +19,7 @@
 }
 
 [data-scope="file-upload"][data-part="dropzone"][data-dragging] {
-  background-color: var(--colors-bg-primary-bold);
+  background: var(--colors-bg-primary-bold);
 }
 
 [data-scope="file-upload"][data-part="trigger"] {

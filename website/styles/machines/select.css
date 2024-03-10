@@ -69,6 +69,6 @@
 }
 
 [data-scope="select"][data-part="item"][data-highlighted] {
-  background-color: var(--colors-bg-primary-bold);
+  background: var(--colors-bg-primary-bold);
   color: #ffffff;
 }

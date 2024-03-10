@@ -51,6 +51,6 @@
     [data-part="item"],
     [data-part="trigger-item"]
   )[data-highlighted] {
-  background-color: var(--colors-bg-primary-bold);
+  background: var(--colors-bg-primary-bold);
   color: #ffffff;
 }

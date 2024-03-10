@@ -67,7 +67,7 @@
   --thumb-size: calc(var(--switch-track-height) + 0.7rem);
   height: var(--thumb-size);
   width: var(--thumb-size);
-  background-color: transparent;
+  background: transparent;
   content: "";
   z-index: 1;
   top: 50%;
