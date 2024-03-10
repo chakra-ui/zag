@@ -1,5 +1,3 @@
-import { Stack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
 import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -59,47 +57,20 @@ export function Rating(props: RadioProps) {
 
   return (
     <div>
-      <Stack
-        {...api.rootProps}
-        _rtl={{
-          '& [data-half] [data-part="star"]': {
-            transform: "scale(-1, 1)",
-          },
-        }}
-      >
+      <div {...api.rootProps}>
         <label {...api.labelProps}>Rate Us:</label>
-        <chakra.div {...api.controlProps} display="inline-flex">
+        <div {...api.controlProps}>
           {api.items.map((index) => {
             const state = api.getItemState({ index })
             return (
-              <chakra.span
-                key={index}
-                {...api.getItemProps({ index })}
-                boxSize="8"
-                p="1"
-                sx={{
-                  '[data-part="star"]': {
-                    color: "#bdbdbd",
-                  },
-                }}
-                _highlighted={{
-                  '[data-part="star"]': {
-                    color: "#ffb400",
-                  },
-                  _disabled: {
-                    '[data-part="star"]': {
-                      color: "#a1a1a1",
-                    },
-                  },
-                }}
-              >
+              <span key={index} {...api.getItemProps({ index })}>
                 {state.isHalf ? <HalfStar /> : <Star />}
-              </chakra.span>
+              </span>
             )
           })}
-        </chakra.div>
+        </div>
         <input {...api.hiddenInputProps} />
-      </Stack>
+      </div>
     </div>
   )
 }
