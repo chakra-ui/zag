@@ -1,0 +1,86 @@
+[data-scope="switch"][data-part="root"] {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: relative;
+  line-height: 0;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  --switch-track-diff: calc(
+    var(--switch-track-width) - var(--switch-track-height)
+  );
+  --switch-thumb-x: var(--switch-track-diff);
+  --switch-track-width: 2.7rem;
+  --switch-track-height: 1.5rem;
+}
+
+[data-scope="switch"][data-part="control"] {
+  display: inline-flex;
+  flex-shrink: 0;
+  justify-content: flex-start;
+  box-sizing: content-box;
+  cursor: pointer;
+  border-radius: 9999px;
+  padding: 0.125rem;
+  width: var(--switch-track-width);
+  height: var(--switch-track-height);
+  transition-property: background-color, border-color, color, fill, stroke,
+    opacity, box-shadow, transform;
+  transition-duration: 150ms;
+  background: #cbd5e0;
+  -webkit-box-pack: start;
+}
+
+[data-scope="switch"][data-part="control"][data-state="checked"] {
+  background: #2ab26b;
+}
+
+[data-scope="switch"][data-part="control"][data-focus] {
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.6);
+}
+
+[data-scope="switch"][data-part="control"][data-disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+[data-scope="switch"][data-part="thumb"] {
+  background: #ffffff;
+  transition-property: transform;
+  transition-duration: 200ms;
+  border-radius: inherit;
+  width: var(--switch-track-height);
+  height: var(--switch-track-height);
+  position: relative;
+}
+
+[data-scope="switch"][data-part="thumb"]::before {
+  -webkit-transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out;
+  position: absolute;
+  --thumb-size: calc(var(--switch-track-height) + 0.7rem);
+  height: var(--thumb-size);
+  width: var(--thumb-size);
+  background-color: transparent;
+  content: "";
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: inherit;
+}
+
+[data-scope="switch"][data-part="thumb"][data-state="checked"] {
+  transform: translateX(var(--switch-thumb-x));
+}
+
+[data-scope="switch"][data-part="label"] {
+  user-select: none;
+  margin-inline-start: 0.5rem;
+}

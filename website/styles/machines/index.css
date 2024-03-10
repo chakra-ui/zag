@@ -22,6 +22,7 @@
 @import url(./select.css);
 @import url(./slider.css);
 @import url(./splitter.css);
+@import url(./switch.css);
 
 * {
   border-color: var(--colors-border-bold);
