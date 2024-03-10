@@ -25,6 +25,7 @@
 @import url(./switch.css);
 @import url(./tabs.css);
 @import url(./tags-input.css);
+@import url(./toast.css);
 
 * {
   border-color: var(--colors-border-bold);
