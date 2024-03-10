@@ -21,6 +21,7 @@
 @import url(./segmented-control.css);
 @import url(./select.css);
 @import url(./slider.css);
+@import url(./splitter.css);
 
 * {
   border-color: var(--colors-border-bold);
