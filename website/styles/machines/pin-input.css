@@ -15,7 +15,7 @@
   text-align: center;
 }
 
-button:is(button) {
+[data-scope="pin-input"][data-part="root"] + button {
   display: inline-flex;
   align-items: center;
   justify-content: center;

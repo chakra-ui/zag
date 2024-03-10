@@ -14,6 +14,7 @@
 @import url(./number-input.css);
 @import url(./pagination.css);
 @import url(./pin-input.css);
+@import url(./popover.css);
 
 * {
   border-color: var(--colors-border-bold);

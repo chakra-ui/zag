@@ -80,6 +80,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Number Input", id: "number-input" },
         { type: "doc", label: "Pagination", id: "pagination" },
         { type: "doc", label: "Pin Input", id: "pin-input" },
+        { type: "doc", label: "Popover", id: "popover" },
         {
           type: "doc",
           label: "Progress - Linear",
@@ -90,7 +91,6 @@ const sidebar: Record<"docs", SidebarItem[]> = {
           label: "Progress - Circular",
           id: "circular-progress",
         },
-        { type: "doc", label: "Popover", id: "popover" },
         { type: "doc", label: "Radio Group", id: "radio-group" },
         { type: "doc", label: "Segmented Control", id: "segmented-control" },
         { type: "doc", label: "Range Slider", id: "range-slider" },
