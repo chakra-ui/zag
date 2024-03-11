@@ -34,6 +34,11 @@ export function Combobox() {
         setOptions(filtered.length > 0 ? filtered : comboboxData)
       },
     }),
+    {
+      context: createMemo(() => ({
+        collection: collection(),
+      })),
+    },
   )
 
   const api = createMemo(() => combobox.connect(state, send, normalizeProps))
