@@ -427,10 +427,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             onInteractOutside: ctx.onInteractOutside,
             onEscapeKeyDown(event) {
               event.preventDefault()
+              event.stopPropagation()
               send("LAYER.ESCAPE")
             },
             onDismiss() {
-              send({ type: "LAYER.INTERACT_OUTSIDE" })
+              send("LAYER.INTERACT_OUTSIDE")
             },
           })
         },
