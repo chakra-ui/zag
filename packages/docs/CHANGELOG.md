@@ -14,7 +14,8 @@
 
 ### Minor Changes
 
-- [`9e71564`](https://github.com/chakra-ui/zag/commit/9e715647dc2b12319bb9a98b309bb5a0eb371ec6) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add accessibility documentation for use in Ark UI and Chakra UI
+- [`9e71564`](https://github.com/chakra-ui/zag/commit/9e715647dc2b12319bb9a98b309bb5a0eb371ec6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add accessibility documentation for use in Ark UI and Chakra UI
 
 ## 0.36.3
 

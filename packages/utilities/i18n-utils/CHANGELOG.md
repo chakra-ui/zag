@@ -39,7 +39,9 @@
 
 ### Minor Changes
 
-- [`170c115`](https://github.com/chakra-ui/zag/commit/170c115afe6f1e5f5bf744508ddb98230a741391) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add support for `formatNumber`, `formatRelativeTime` and `formatBytes` functions
+- [`170c115`](https://github.com/chakra-ui/zag/commit/170c115afe6f1e5f5bf744508ddb98230a741391) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `formatNumber`, `formatRelativeTime` and
+  `formatBytes` functions
 
 ### Patch Changes
 
