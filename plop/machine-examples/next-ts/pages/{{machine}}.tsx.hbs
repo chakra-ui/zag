@@ -1,19 +1,19 @@
-import * as {{machine}} from "@zag-js/{{machine}}"
+import * as {{camelize machine}} from "@zag-js/{{machine}}"
 import { useMachine, normalizeProps } from "@zag-js/react"
-import { {{machine}}Controls, {{machine}}Data } from "@zag-js/shared"
+import { {{camelize machine}}Controls, {{camelize machine}}Data } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls({{machine}}Controls)
+  const controls = useControls({{camelize machine}}Controls)
 
-  const [state, send] = useMachine({{machine}}.machine({ id: useId() }), {
+  const [state, send] = useMachine({{camelize machine}}.machine({ id: useId() }), {
     context: controls.context,
   })
 
-  const api = {{machine}}.connect(state, send, normalizeProps)
+  const api = {{camelize machine}}.connect(state, send, normalizeProps)
 
   return (
     <>

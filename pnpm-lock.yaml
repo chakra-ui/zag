@@ -109,7 +109,7 @@ importers:
         version: 3.2.5
       prettier-plugin-svelte:
         specifier: 3.2.2
-        version: 3.2.2(prettier@3.2.5)(svelte@5.0.0-next.71)
+        version: 3.2.2(prettier@3.2.5)(svelte@5.0.0-next.74)
       signale:
         specifier: 1.4.0
         version: 1.4.0
@@ -1763,13 +1763,13 @@ importers:
     devDependencies:
       '@sveltejs/package':
         specifier: 2.3.0
-        version: 2.3.0(svelte@5.0.0-next.71)(typescript@5.4.2)
+        version: 2.3.0(svelte@5.0.0-next.74)(typescript@5.4.2)
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
       svelte:
-        specifier: 5.0.0-next.71
-        version: 5.0.0-next.71
+        specifier: 5.0.0-next.74
+        version: 5.0.0-next.74
 
   packages/frameworks/vue:
     dependencies:
@@ -7105,7 +7105,7 @@ packages:
       solid-js: 1.8.15
     dev: false
 
-  /@sveltejs/package@2.3.0(svelte@5.0.0-next.71)(typescript@5.4.2):
+  /@sveltejs/package@2.3.0(svelte@5.0.0-next.74)(typescript@5.4.2):
     resolution: {integrity: sha512-wmtwEfi3gQnmtotAjygRHR6cmLfpblQl1dU764f3N2I5DPe34llFs44bHOYcuk91Bp2sSq6bWUmNwxGlYCchOA==}
     engines: {node: ^16.14 || >=18}
     hasBin: true
@@ -7116,8 +7116,8 @@ packages:
       kleur: 4.1.5
       sade: 1.8.1
       semver: 7.6.0
-      svelte: 5.0.0-next.71
-      svelte2tsx: 0.7.3(svelte@5.0.0-next.71)(typescript@5.4.2)
+      svelte: 5.0.0-next.74
+      svelte2tsx: 0.7.3(svelte@5.0.0-next.74)(typescript@5.4.2)
     transitivePeerDependencies:
       - typescript
     dev: true
@@ -15854,14 +15854,14 @@ packages:
     dependencies:
       fast-diff: 1.3.0
 
-  /prettier-plugin-svelte@3.2.2(prettier@3.2.5)(svelte@5.0.0-next.71):
+  /prettier-plugin-svelte@3.2.2(prettier@3.2.5)(svelte@5.0.0-next.74):
     resolution: {integrity: sha512-ZzzE/wMuf48/1+Lf2Ffko0uDa6pyCfgHV6+uAhtg2U0AAXGrhCSW88vEJNAkAxW5qyrFY1y1zZ4J8TgHrjW++Q==}
     peerDependencies:
       prettier: ^3.0.0
       svelte: ^3.2.0 || ^4.0.0-next.0 || ^5.0.0-next.0
     dependencies:
       prettier: 3.2.5
-      svelte: 5.0.0-next.71
+      svelte: 5.0.0-next.74
     dev: false
 
   /prettier@2.8.8:
@@ -17340,7 +17340,7 @@ packages:
     resolution: {integrity: sha512-6i4Mncy4P2b7gD7+BOT9JzQvrfGfGXqFra8VXYU5//bpn6AzJ0PLEhH1E/KwY2AxleOiS/8Nm37MGuic2kn15A==}
     dev: false
 
-  /svelte2tsx@0.7.3(svelte@5.0.0-next.71)(typescript@5.4.2):
+  /svelte2tsx@0.7.3(svelte@5.0.0-next.74)(typescript@5.4.2):
     resolution: {integrity: sha512-yrjJFvqp32Ag4Oke+T1xXZLqMNrS0gjzAM//+L6+7OhXWMDuMs0fkyb9ymixK9keVOLJ1GbeEVfg59c3E2IN+w==}
     peerDependencies:
       svelte: ^3.55 || ^4.0.0-next.0 || ^4.0 || ^5.0.0-next.0
@@ -17348,7 +17348,7 @@ packages:
     dependencies:
       dedent-js: 1.0.1
       pascal-case: 3.1.2
-      svelte: 5.0.0-next.71
+      svelte: 5.0.0-next.74
       typescript: 5.4.2
     dev: true
 
@@ -17370,8 +17370,8 @@ packages:
       magic-string: 0.30.7
       zimmerframe: 1.1.2
 
-  /svelte@5.0.0-next.71:
-    resolution: {integrity: sha512-KHTaNqEAef6SBzq+RMo/h+lKoNRZ8GYbKNNzDLMqJXUoLspo6MfpJslNq8IE4nsboTrP780cdQc+pNYlDBKwGg==}
+  /svelte@5.0.0-next.74:
+    resolution: {integrity: sha512-V5o/wkBQp+k8t4oYk+29GrE4i8XZn5kXT7/YJmJUifPt32dFBqwZX/6o4klbiRX++ypO6XcJ18GHKWbBl2c0YQ==}
     engines: {node: '>=18'}
     dependencies:
       '@ampproject/remapping': 2.2.1
