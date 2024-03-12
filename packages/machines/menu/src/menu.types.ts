@@ -1,5 +1,5 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
@@ -36,7 +36,7 @@ type ElementIds = Partial<{
   arrow: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+interface PublicContext extends DirectionProperty, CommonProperties, DismissableElementHandlers {
   /**
    * The ids of the elements in the menu. Useful for composition.
    */

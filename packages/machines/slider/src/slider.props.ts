@@ -32,5 +32,5 @@ export const props = createProps<UserDefinedContext>()([
 
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 
-export const thumbProps = createProps<ThumbProps>()(["index"])
+export const thumbProps = createProps<ThumbProps>()(["index", "name"])
 export const splitThumbProps = createSplitProps<ThumbProps>(thumbProps)

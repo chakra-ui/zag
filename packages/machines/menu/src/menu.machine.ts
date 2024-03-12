@@ -522,6 +522,7 @@ export function machine(userContext: UserDefinedContext) {
             onInteractOutside: ctx.onInteractOutside,
             onFocusOutside: ctx.onFocusOutside,
             onEscapeKeyDown(event) {
+              ctx.onEscapeKeyDown?.(event)
               if (ctx.isSubmenu) event.preventDefault()
               closeRootMenu(ctx)
             },

@@ -4,9 +4,12 @@
 
 ### Patch Changes
 
-- [#1305](https://github.com/chakra-ui/zag/pull/1305) [`5a11b9d`](https://github.com/chakra-ui/zag/commit/5a11b9de76345a883c381489354e72acd6981f0a) Thanks [@colinlienard](https://github.com/colinlienard)! - fix(date-picker): next and previous aria labels
+- [#1305](https://github.com/chakra-ui/zag/pull/1305)
+  [`5a11b9d`](https://github.com/chakra-ui/zag/commit/5a11b9de76345a883c381489354e72acd6981f0a) Thanks
+  [@colinlienard](https://github.com/colinlienard)! - fix(date-picker): next and previous aria labels
 
-- [`ffda06f`](https://github.com/chakra-ui/zag/commit/ffda06f1c30790da1331824f5b0ad6eb86c7dad3) Thanks [@cschroeter](https://github.com/cschroeter)! - Fix an issue that DatePicker does not close on click outside
+- [`ffda06f`](https://github.com/chakra-ui/zag/commit/ffda06f1c30790da1331824f5b0ad6eb86c7dad3) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Fix an issue that DatePicker does not close on click outside
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.38.1
@@ -80,7 +83,9 @@
 
 ### Patch Changes
 
-- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom components on top of Zag.js
+- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom
+  components on top of Zag.js
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.37.1
