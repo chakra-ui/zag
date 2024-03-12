@@ -18,13 +18,13 @@ export interface FocusChangeDetails {
  * -----------------------------------------------------------------------------*/
 
 export interface IntlTranslations {
-  tablistLabel?: string
+  listLabel?: string
 }
 
 export type ElementIds = Partial<{
   root: string
   trigger: string
-  tablist: string
+  list: string
   content: string
   indicator: string
 }>
@@ -170,7 +170,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getTriggerState(props: TriggerProps): TriggerState
 
   rootProps: T["element"]
-  tablistProps: T["element"]
+  listProps: T["element"]
   getTriggerProps(props: TriggerProps): T["button"]
   getContentProps(props: ContentProps): T["element"]
   indicatorProps: T["element"]

@@ -160,7 +160,7 @@ const components: Record<string, FC<any>> = {
         rounded="6px"
         {...api.rootProps}
       >
-        <Box {...api.tablistProps}>
+        <Box {...api.listProps}>
           {FRAMEWORKS.map((framework) => (
             <chakra.button
               py="2"
