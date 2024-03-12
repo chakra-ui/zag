@@ -1,10 +1,8 @@
-import { createMachine, guards, ref } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
-import { cast, compact, isEqual } from "@zag-js/utils"
+import { createMachine, guards } from "@zag-js/core"
+import { compact, isEqual } from "@zag-js/utils"
 import type { MachineContext, MachineState, UserDefinedContext } from "./nav-menu.types"
+import { trackDismissableElement } from "@zag-js/dismissable"
 import { dom } from "./nav-menu.dom"
-import { getPlacement } from "@zag-js/popper"
-import { raf } from "@zag-js/dom-query"
 
 const { not } = guards
 
@@ -15,145 +13,128 @@ export function machine(userContext: UserDefinedContext) {
       id: "nav-menu",
       initial: "idle",
       context: {
-        parent: null,
-        children: cast(ref({})),
-        focusedMenuId: null,
-        activeId: null,
-        highlightedItemId: null,
-        activeContentId: null,
         orientation: "horizontal",
-        anchorPoint: null,
-        restoreFocus: true,
-        activeLink: null,
+        focusedId: null,
+        activeId: null,
+        highlightedLinkId: null,
+        activeLinkId: null,
         ...ctx,
-        positioning: {
-          placement: "bottom-start",
-          gutter: 0,
-          ...ctx.positioning,
-        },
-      },
-      computed: {
-        isSubmenu: (ctx) => ctx.parent !== null,
-        isRtl: (ctx) => ctx.dir === "rtl",
-        isVertical: (ctx) => ctx.orientation === "vertical",
-      },
-      watch: {
-        isSubmenu: "setSubmenuPlacement",
       },
       on: {
-        "PARENT.SET": {
-          actions: "setParentMenu",
-        },
-        "CHILD.SET": {
-          actions: "setChildMenu",
-        },
         CLOSE: {
-          target: "closed",
-          actions: ["collapseMenu"],
+          actions: ["collapseMenu", "focusTrigger"],
+          target: "collapsed",
         },
+        ITEM_CLICK: [
+          {
+            guard: "isExpanded",
+            actions: "collapseMenu",
+            target: "collapsed",
+          },
+          {
+            actions: "expandMenu",
+            target: "expanded",
+          },
+        ],
+
+        ITEM_POINTERMOVE: {
+          actions: ["setFocusedId", "removeHighlightedLinkId"],
+        },
+        ITEM_POINTERLEAVE: {
+          actions: "removeFocusedId",
+        },
+        LINK_CLICK: {
+          actions: ["setActiveLink", "collapseMenu", "removeFocusedId"],
+        },
+        LINK_FOCUS: [
+          {
+            guard: not("isItemEl"),
+            actions: "highlightLink",
+          },
+          {
+            actions: ["setFocusedId", "removeHighlightedLinkId"],
+          },
+        ],
+        LINK_POINTERMOVE: [
+          {
+            guard: not("isItemEl"),
+            actions: "highlightLink",
+          },
+          {
+            actions: ["setFocusedId", "removeHighlightedLinkId"],
+          },
+        ],
+        LINK_POINTERLEAVE: [
+          {
+            guard: not("isItemEl"),
+            actions: "removeHighlightedLinkId",
+          },
+          {
+            actions: ["removeFocusedId"],
+          },
+        ],
       },
       states: {
         idle: {
           on: {
-            TRIGGER_FOCUS: {
-              target: "closed",
-              actions: "setFocusedMenuId",
+            ITEM_FOCUS: {
+              actions: ["setFocusedId", "removeHighlightedLinkId"],
+              target: "collapsed",
             },
           },
         },
-        closed: {
-          tags: ["closed"],
-          entry: ["clearAnchorPoint", "focusTrigger"],
+        collapsed: {
           on: {
-            TRIGGER_FOCUS: {
-              actions: "setFocusedMenuId",
+            ITEM_FOCUS: {
+              actions: ["setFocusedId", "removeHighlightedLinkId"],
             },
-            TRIGGER_BLUR: {
-              target: "idle",
-              actions: "setFocusedMenuId",
+            ITEM_BLUR: {
+              actions: "removeFocusedId",
             },
-            TRIGGER_CLICK: [
-              {
-                guard: "isExpanded",
-                actions: ["collapseMenu"],
-              },
-              {
-                guard: not("isExpanded"),
-                actions: ["expandMenu"],
-                target: "open",
-              },
-            ],
-            ARROW_LEFT: {
-              actions: "focusPrevTrigger",
+            ITEM_NEXT: {
+              actions: "focusNextItem",
             },
-            ARROW_RIGHT: {
-              actions: "focusNextTrigger",
-            },
-            HOME: {
-              actions: "focusFirstTrigger",
-            },
-            END: {
-              actions: "focusLastTrigger",
-            },
-          },
-        },
-        open: {
-          tags: ["open"],
-          activities: ["trackPositioning", "trackInteractOutside"],
-          on: {
-            TRIGGER_FOCUS: {
-              actions: ["setFocusedMenuId", "collapseMenu"],
-              target: "closed",
-            },
-            TRIGGER_CLICK: [
-              {
-                guard: "isExpanded",
-                actions: ["collapseMenu"],
-                target: "closed",
-              },
-              {
-                guard: not("isExpanded"),
-                actions: ["expandMenu"],
-              },
-            ],
-            TO_FIRST_ITEM: {
-              guard: "isExpanded",
-              actions: "highlightFirstItem",
-            },
-            ITEM_POINTER_ENTER: {
-              actions: "highlightItem",
-            },
-            ITEM_NEXT: [
-              {
-                guard: "isNotItemFocused",
-                actions: "highlightFirstItem",
-              },
-              {
-                actions: "highlightNextItem",
-              },
-            ],
             ITEM_PREV: {
-              actions: "highlightPrevItem",
+              actions: "focusPrevItem",
             },
-            ARROW_LEFT: {
-              guard: "isExpanded",
-              actions: ["focusPrevTrigger", "collapseMenu"],
-              target: "closed",
+            ITEM_FIRST: {
+              actions: "focusFirstItem",
             },
-            ARROW_RIGHT: {
-              guard: "isExpanded",
-              actions: ["focusNextTrigger", "collapseMenu"],
-              target: "closed",
+            ITEM_LAST: {
+              actions: "focusLastItem",
             },
-            HOME: {
-              actions: "highlightFirstItem",
+          },
+        },
+        expanded: {
+          tags: ["expanded"],
+          activities: ["trackInteractOutside"],
+          on: {
+            ITEM_FOCUS: {
+              actions: ["setFocusedId", "removeHighlightedLinkId"],
             },
-            END: {
-              actions: "highlightLastItem",
+            ITEM_NEXT: {
+              actions: "focusNextItem",
             },
-            LINK_ACTIVE: {
-              target: "closed",
-              actions: ["collapseMenu", "setActiveLink"],
+            ITEM_PREV: {
+              actions: "focusPrevItem",
+            },
+            ITEM_FIRST: {
+              actions: "focusFirstItem",
+            },
+            ITEM_LAST: {
+              actions: "focusLastItem",
+            },
+            LINK_FIRST: {
+              actions: "highlightFirstLink",
+            },
+            LINK_LAST: {
+              actions: "highlightLastLink",
+            },
+            LINK_NEXT: {
+              actions: "highlightNextLink",
+            },
+            LINK_PREV: {
+              actions: "highlightPrevLink",
             },
           },
         },
@@ -161,125 +142,90 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
-        isExpanded: (ctx, evt) => ctx.activeId === evt.id,
-        isNotItemFocused: (ctx) => !ctx.highlightedItemId,
+        isExpanded: (ctx, evt) => evt.id === ctx.activeId,
+        isItemEl: (_ctx, evt) => !!dom.isItemEl(evt.target),
       },
       actions: {
-        setParentMenu(ctx, evt) {
-          ctx.parent = ref(evt.value)
+        setFocusedId: (ctx, evt) => {
+          ctx.focusedId = evt.id
         },
-        setChildMenu(ctx, evt) {
-          ctx.children[evt.id] = ref(evt.value)
+        removeFocusedId: (ctx) => {
+          ctx.focusedId = null
         },
-        setFocusedMenuId(ctx, evt) {
-          set.focusedMenuId(ctx, evt.id)
+        focusTrigger: (ctx, evt) => {
+          const trigger = dom.getTriggerEl(ctx, evt.id)
+          trigger?.focus()
+          ctx.focusedId = trigger?.id ?? null
         },
-        expandMenu(ctx, evt) {
+        focusNextItem: (ctx) => {
+          const nextItem = dom.getNextItemEl(ctx)
+          nextItem.focus()
+          ctx.focusedId = nextItem?.id ?? null
+        },
+        focusPrevItem: (ctx) => {
+          const prevItem = dom.getPrevItemEl(ctx)
+          prevItem?.focus()
+          ctx.focusedId = prevItem?.id ?? null
+        },
+        focusFirstItem: (ctx) => {
+          const firstItem = dom.getFirstItemEl(ctx)
+          firstItem?.focus()
+          ctx.focusedId = firstItem?.id ?? null
+        },
+        focusLastItem: (ctx) => {
+          const lastItem = dom.getLastItemEl(ctx)
+          lastItem?.focus()
+          ctx.focusedId = lastItem?.id ?? null
+        },
+        expandMenu: (ctx, evt) => {
           set.activeId(ctx, evt.id)
-          const contentEl = dom.getMenuContentEl(ctx, evt.id)
-          ctx.activeContentId = contentEl?.id ?? null
         },
-        collapseMenu(ctx, evt) {
+        collapseMenu: (ctx) => {
           set.activeId(ctx, null)
-          ctx.highlightedItemId = null
-          ctx.activeContentId = null
-          let parentContext = ctx.parent?.state.context
-          if (evt.type === "LINK_ACTIVE" && parentContext) {
-            // On click of link in nested menu, ensure the entire nav is collapsed
-            parentContext.activeContentId = null
-            parentContext.activeId = null
-            parentContext.highlightedItemId = null
-          }
+          ctx.highlightedLinkId = null
         },
-        setSubmenuPlacement(ctx) {
-          console.log("🚀 ~ setSubmenuPlacement ~ ctx:", ctx)
-          if (!ctx.isSubmenu) return
-          ctx.positioning.placement = ctx.isRtl ? "left-end" : "right-end"
-          ctx.positioning.gutter = 0
+        highlightLink: (ctx, evt) => {
+          ctx.highlightedLinkId = evt.id
         },
-        highlightItem(ctx, evt) {
-          ctx.highlightedItemId = evt.id
+        highlightFirstLink: (ctx, evt) => {
+          const firstLink = dom.getFirstMenuLinkEl(ctx, evt.id)
+          firstLink?.focus()
+          ctx.highlightedLinkId = firstLink?.id ?? null
         },
-        highlightFirstItem(ctx, evt) {
-          const firstItemEl = dom.getFirstMenuItemEl(ctx, evt.id)
-          if (!firstItemEl) return
-          firstItemEl.focus()
-          ctx.highlightedItemId = firstItemEl.id
+        highlightLastLink: (ctx, evt) => {
+          const lastLink = dom.getLastMenuLinkEl(ctx, evt.id)
+          lastLink?.focus()
+          ctx.highlightedLinkId = lastLink?.id ?? null
         },
-        highlightLastItem(ctx, evt) {
-          const lastItemEl = dom.getLastMenuItemEl(ctx, evt.id)
-          if (!lastItemEl) return
-          lastItemEl.focus()
-          ctx.highlightedItemId = lastItemEl.id
+        highlightNextLink: (ctx, evt) => {
+          if (!ctx.highlightedLinkId) return
+          const nextLink = dom.getNextMenuLinkEl(ctx, evt.id)
+          if (!nextLink) return
+          nextLink.focus()
+          ctx.highlightedLinkId = nextLink?.id ?? null
         },
-        highlightNextItem(ctx, evt) {
-          if (!ctx.highlightedItemId) return
-          const nextItemEl = dom.getNextMenuItemEl(ctx, evt.id, ctx.highlightedItemId)
-          ctx.highlightedItemId = nextItemEl.id
-          nextItemEl.focus()
+        highlightPrevLink: (ctx, evt) => {
+          if (!ctx.highlightedLinkId) return
+          const prevLink = dom.getPrevMenuLinkEl(ctx, evt.id)
+          if (!prevLink) return
+          prevLink.focus()
+          ctx.highlightedLinkId = prevLink?.id ?? null
         },
-        highlightPrevItem(ctx, evt) {
-          if (!ctx.highlightedItemId) return
-          const prevItemEl = dom.getPrevMenuItemEl(ctx, evt.id, ctx.highlightedItemId)
-          if (!prevItemEl) return
-          ctx.highlightedItemId = prevItemEl.id
-          prevItemEl.focus()
+        removeHighlightedLinkId: (ctx) => {
+          ctx.highlightedLinkId = null
         },
-        focusTrigger(ctx) {
-          if (!ctx.restoreFocus) return
-          raf(() => {
-            if (!ctx.focusedMenuId) return
-            dom.getTriggerEl(ctx, ctx.focusedMenuId)?.focus({ preventScroll: true })
-          })
-        },
-        focusFirstTrigger(ctx) {
-          if (!ctx.focusedMenuId) return
-          const triggerEl = dom.getFirstTriggerEl(ctx)
-          triggerEl?.focus()
-        },
-        focusLastTrigger(ctx) {
-          if (!ctx.focusedMenuId) return
-          const triggerEl = dom.getLastTriggerEl(ctx)
-          triggerEl?.focus()
-        },
-        focusNextTrigger(ctx) {
-          if (!ctx.focusedMenuId) return
-          const triggerEl = dom.getNextTriggerEl(ctx, ctx.focusedMenuId)
-          triggerEl?.focus()
-        },
-        focusPrevTrigger(ctx) {
-          if (!ctx.focusedMenuId) return
-          const triggerEl = dom.getPrevTriggerEl(ctx, ctx.focusedMenuId)
-          triggerEl?.focus()
-        },
-        clearAnchorPoint(ctx) {
-          ctx.anchorPoint = null
-        },
-        setActiveLink(ctx, evt) {
-          return (ctx.activeLink = evt.href)
+        setActiveLink: (ctx, evt) => {
+          set.activeLinkId(ctx, evt.id)
         },
       },
       activities: {
-        trackPositioning(ctx, evt) {
-          if (ctx.anchorPoint) return
-          ctx.currentPlacement = ctx.positioning.placement
-          console.log("🚀 ~ trackPositioning ~ ctx.currentPlacement:", ctx.currentPlacement)
-          const getPositionerEl = () => dom.getPositionerEl(ctx, evt.id)
-          return getPlacement(dom.getTriggerEl(ctx, evt.id), getPositionerEl, {
-            ...ctx.positioning,
-            defer: true,
-            onComplete(data) {
-              ctx.currentPlacement = data.placement
-            },
-          })
-        },
         trackInteractOutside(ctx, evt, { send }) {
           const triggerEl = dom.getTriggerEl(ctx, evt.id)
-          const positionerEl = dom.getPositionerEl(ctx, evt.id)
+          const contentEl = dom.getContentEl(ctx, evt.id)
           // Do not reach tracker if trigger is a link with no existance of matching portal
-          if (triggerEl?.matches("a[href]") && !positionerEl) return
-          const dispatch = () => send({ type: "CLOSE", src: "interact-outside" })
-          return trackDismissableElement(dom.getMenuContentEl(ctx, evt.id), {
+          if (dom.isItemEl(dom.getItemEl(ctx, evt.id))) return
+          const dispatch = () => send({ type: "CLOSE", src: "interact-outside", id: evt.id })
+          return trackDismissableElement(contentEl, {
             defer: true,
             exclude: [triggerEl],
             onInteractOutside: ctx.onInteractOutside,
@@ -288,12 +234,12 @@ export function machine(userContext: UserDefinedContext) {
 
               ctx.onFocusOutside
             },
-            onEscapeKeyDown(event) {
-              if (ctx.isSubmenu) event.preventDefault()
+            onEscapeKeyDown() {
+              // if (ctx.isSubmenu) event.preventDefault()
               dispatch()
             },
             onPointerDownOutside(event) {
-              ctx.restoreFocus = !event.detail.focusable
+              // ctx.restoreFocus = !event.detail.focusable
               ctx.onPointerDownOutside?.(event)
               dispatch()
             },
@@ -312,8 +258,7 @@ const set = {
     if (isEqual(ctx.activeId, id)) return
     ctx.activeId = id
   },
-  focusedMenuId(ctx: MachineContext, id: string | null) {
-    if (isEqual(ctx.focusedMenuId, id)) return
-    ctx.focusedMenuId = id
+  activeLinkId(ctx: MachineContext, id: string | null) {
+    ctx.activeLinkId = id
   },
 }

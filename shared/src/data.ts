@@ -87,108 +87,31 @@ export const tabsData = [
 
 export const navMenuData = [
   {
-    menu: { label: "Libraries", id: "libraries" },
-    menuList: [
-      {
-        label: "React",
-        id: "react",
-        href: "#react",
-      },
-      {
-        label: "Vue",
-        id: "vuejs",
-        href: "#vuejs",
-      },
-      {
-        label: "SolidJS",
-        id: "solidjs",
-        href: "#solidjs",
-      },
+    label: "Libraries",
+    id: "libraries",
+    trigger: true,
+    links: [
+      { label: "React", id: "react", href: "#" },
+      { label: "Vue", id: "vue", href: "#" },
+      { label: "Angular", id: "angular", href: "#" },
+      { label: "Solid", id: "solid", href: "#" },
     ],
   },
   {
-    menu: { label: "Frameworks", id: "frameworks" },
-    menuList: [
-      {
-        label: "NuxtJS",
-        id: "nuxtjs",
-        href: "#nuxtjs",
-      },
-      {
-        label: "NextJS",
-        id: "nextjs",
-        href: "#nextjs",
-      },
-      {
-        label: "Gatsby",
-        id: "gatsby",
-        href: "#gatsby",
-      },
+    label: "Frameworks",
+    id: "frameworks",
+    trigger: true,
+    links: [
+      { label: "Next.js", id: "next", href: "#" },
+      { label: "Nuxt.js", id: "nuxt", href: "#" },
+      { label: "Gatsby", id: "gatsby", href: "#" },
     ],
   },
   {
-    menu: { label: "Styles", id: "styles" },
-    menuList: [
-      {
-        label: "Material UI",
-        id: "material-ui",
-        href: "#material-ui",
-      },
-      {
-        label: "TailwindCSS",
-        id: "tailwindcss",
-        href: "#tailwindcss",
-      },
-      {
-        label: "pandacss",
-        id: "pandacss",
-        href: "#pandacss",
-      },
-    ],
-  },
-]
-
-export const nestedNavMenuData = [
-  {
-    menu: { label: "Libraries", id: "libraries" },
-    menuList: [
-      {
-        label: "React",
-        id: "react",
-        href: "#react",
-      },
-      {
-        label: "Vue",
-        id: "vuejs",
-        href: "#vuejs",
-      },
-      {
-        label: "SolidJS",
-        id: "solidjs",
-        href: "#solidjs",
-      },
-      {
-        label: "More",
-        id: "more",
-        subList: [
-          {
-            label: "Svelte",
-            id: "svelte",
-            href: "#svelte",
-          },
-          {
-            label: "Angular",
-            id: "angular",
-            href: "#angular",
-          },
-          {
-            label: "Ember",
-            id: "ember",
-            href: "#ember",
-          },
-        ],
-      },
-    ],
+    label: "Tools",
+    id: "tools",
+    href: "#",
+    trigger: false,
   },
 ]
 

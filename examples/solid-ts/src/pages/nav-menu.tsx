@@ -1,17 +1,12 @@
 import * as navMenu from "@zag-js/nav-menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, For } from "solid-js"
-import { navMenuControls, navMenuData } from "@zag-js/shared"
+import { createMemo, createUniqueId } from "solid-js"
+import { navMenuData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls(navMenuControls)
-
-  const [state, send] = useMachine(navMenu.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(navMenu.machine({ id: createUniqueId() }))
 
   const api = createMemo(() => navMenu.connect(state, send, normalizeProps))
 
@@ -19,32 +14,38 @@ export default function Page() {
     <>
       <main class="nav-menu">
         <nav {...api().rootProps}>
-          <ul style={{ display: "flex", "list-style": "none" }}>
-            <For each={navMenuData}>
-              {({ menu, menuList }) => (
-                <li>
-                  <button {...api().getTriggerProps({ id: menu.id })}>
-                    {menu.label} <span {...api().indicatorProps}>▾</span>
+          <ul {...api().listProps}>
+            {navMenuData.map((item) =>
+              item.trigger ? (
+                <li {...api().itemProps}>
+                  <button data-testid={`${item.id}:trigger`} {...api().getTriggerProps({ id: item.id })}>
+                    {item.label} <span {...api().indicatorProps}>▾</span>
                   </button>
-                  <div {...api().getPositionerProps({ id: menu.id })}>
-                    <ul {...api().getContentProps({ id: menu.id })} style={{ "list-style": "none" }}>
-                      <For each={menuList}>
-                        {(item) => (
-                          <li>
-                            <a {...api().getMenuItemProps({ id: item.id, href: item.href })}>{item.label}</a>
-                          </li>
-                        )}
-                      </For>
+                  <div data-testid={`${item.id}:content`} {...api().getContentProps({ id: item.id })}>
+                    <ul {...api().linkContentGroupProps}>
+                      {item.links?.map(({ label, id, href }) => (
+                        <li>
+                          <a data-testid={`${id}:link`} {...api().getLinkProps({ id })} href={href}>
+                            {label}
+                          </a>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 </li>
-              )}
-            </For>
+              ) : (
+                <li {...api().itemProps}>
+                  <a data-testid={`${item.id}:link`} {...api().getLinkProps({ id: item.id })} href={item.href}>
+                    {item.label}
+                  </a>
+                </li>
+              ),
+            )}
           </ul>
         </nav>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar>
         <StateVisualizer state={state} />
       </Toolbar>
     </>

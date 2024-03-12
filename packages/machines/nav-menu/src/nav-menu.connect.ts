@@ -1,248 +1,176 @@
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
-import { getPlacementStyles } from "@zag-js/popper"
-import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
-import type { State, Send, MachineApi, ItemProps } from "./nav-menu.types"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { State, Send } from "./nav-menu.types"
 import { parts } from "./nav-menu.anatomy"
 import { dom } from "./nav-menu.dom"
-import { dataAttr, isSafari } from "@zag-js/dom-query"
-import { mergeProps } from "@zag-js/core"
+import { dataAttr } from "@zag-js/dom-query"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const activeId = state.context.activeId
-  const isSubmenu = state.context.isSubmenu
-  const activeContentId = state.context.activeContentId
-
-  const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
-    placement: state.context.currentPlacement,
-  })
-
-  function getTriggerProps(props: ItemProps) {
-    const { id } = props
-
-    const isActiveId = state.context.activeId === id
-
-    const dispatchArrowUpLeft = (id: string) => {
-      send({ type: "ARROW_LEFT", id })
-    }
-    const dispatchArrowDownRight = (id: string) => {
-      send({ type: "ARROW_RIGHT", id })
-    }
-
-    return normalize.button({
-      ...(isSubmenu ? parts.triggerMenuItem.attrs : parts.trigger.attrs),
-      dir: state.context.dir,
-      id: dom.getTriggerId(state.context, id),
-      "data-placement": state.context.currentPlacement,
-      "aria-expanded": activeId === id,
-      "aria-controls": dom.getMenuContentId(state.context, id),
-      "data-ownedby": isSubmenu ? activeContentId ?? undefined : dom.getRootId(state.context),
-      onFocus() {
-        send({ type: "TRIGGER_FOCUS", id })
-      },
-      onBlur() {
-        send({ type: "TRIGGER_BLUR", id: null })
-      },
-      onClick(event) {
-        if (isSafari()) {
-          event.currentTarget.focus()
-        }
-        send({ type: "TRIGGER_CLICK", id })
-      },
-      onKeyDown(event) {
-        const keyMap: EventKeyMap = {
-          ArrowDown() {
-            if (isActiveId && !state.context.isVertical) {
-              return send({ type: "TO_FIRST_ITEM", id })
-            }
-            dispatchArrowDownRight(id)
-          },
-          ArrowUp() {
-            dispatchArrowUpLeft(id)
-          },
-          ArrowLeft() {
-            dispatchArrowUpLeft(id)
-          },
-          ArrowRight() {
-            if (isActiveId && state.context.isVertical) {
-              return send({ type: "TO_FIRST_ITEM", id })
-            }
-            dispatchArrowDownRight(id)
-          },
-          Home() {
-            send("HOME")
-          },
-          End() {
-            send("END")
-          },
-          Enter() {
-            if (isSafari()) {
-              event.currentTarget.focus()
-            }
-            send({ type: "TRIGGER_CLICK", id })
-          },
-          Space() {
-            if (isSafari()) {
-              event.currentTarget.focus()
-            }
-            send({ type: "TRIGGER_CLICK", id })
-          },
-        }
-
-        const key = getEventKey(event, {
-          dir: state.context.dir,
-          orientation: state.context.orientation,
-        })
-
-        const exec = keyMap[key]
-
-        if (exec) {
-          exec(event)
-          event.preventDefault()
-        }
-      },
-    })
-  }
-
-  function getMenuItemProps(props: ItemProps & { href?: string }) {
-    const { id, href } = props
-    const ownedId = state.context.activeId ? dom.getMenuContentId(state.context, state.context.activeId) : undefined
-
-    const dispatchArrowUpLeft = (id: string | null) => {
-      if (!id) return
-      send({ type: "ITEM_PREV", id })
-    }
-    const dispatchArrowDownRight = (id: string | null) => {
-      if (!id) return
-      send({ type: "ITEM_NEXT", id })
-    }
-
-    const isTriggerItem = (evt: JSX.BaseSyntheticEvent) => {
-      return dom.isTriggerItem(evt.currentTarget)
-    }
-
-    return normalize.element({
-      ...parts["menu-item"].attrs,
-      href,
-      id,
-      "aria-current": href === state.context.activeLink ? "page" : undefined,
-      "data-ownedby": ownedId,
-      "data-highlighted": dataAttr(state.context.highlightedItemId === id),
-      onPointerEnter() {
-        send({ type: "ITEM_POINTER_ENTER", id })
-      },
-      onPointerLeave() {
-        send({ type: "ITEM_POINTER_LEAVE", id })
-      },
-      onPointerDown(event) {
-        if (!isTriggerItem(event)) {
-          send({ type: "LINK_ACTIVE", href })
-        }
-      },
-      onKeyDown(event) {
-        const keyMap: EventKeyMap = {
-          ArrowUp() {
-            dispatchArrowUpLeft(state.context.activeId)
-          },
-          ArrowDown() {
-            dispatchArrowDownRight(state.context.activeId)
-          },
-          ArrowLeft() {
-            dispatchArrowUpLeft(state.context.activeId)
-          },
-          ArrowRight() {
-            dispatchArrowDownRight(state.context.activeId)
-          },
-          Home() {
-            send({ type: "HOME", id: state.context.activeId })
-          },
-          End() {
-            send({ type: "END", id: state.context.activeId })
-          },
-          Enter() {
-            if (!isTriggerItem(event)) {
-              send({ type: "LINK_ACTIVE", href })
-            }
-          },
-          Space() {
-            if (!isTriggerItem(event)) {
-              send({ type: "LINK_ACTIVE", href })
-            }
-          },
-        }
-
-        const key = getEventKey(event, {
-          dir: state.context.dir,
-          orientation: state.context.orientation,
-        })
-
-        const exec = keyMap[key]
-
-        if (exec) {
-          exec(event)
-          event.preventDefault()
-        }
-      },
-    })
-  }
-
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   return {
-    setParent(parent) {
-      send({ type: "PARENT.SET", value: parent, id: parent.state.context.id })
-    },
-    setChild(child) {
-      send({ type: "CHILD.SET", value: child, id: child.state.context.id })
-    },
     rootProps: normalize.element({
       ...parts.root.attrs,
-      dir: state.context.dir,
       id: dom.getRootId(state.context),
       "data-orientation": state.context.orientation,
     }),
+    listProps: normalize.element({
+      ...parts.list.attrs,
+      id: dom.getListId(state.context),
+      "data-orientation": state.context.orientation,
+      onKeyDown(event) {
+        // Do not fire events when interacting with menu links
+        if (state.context.highlightedLinkId) return
+
+        const keyMap: EventKeyMap = {
+          ArrowRight() {
+            if (state.hasTag("expanded") && state.context.orientation === "vertical") {
+              return send({ type: "LINK_FIRST", id: state.context.activeId })
+            }
+            send("ITEM_NEXT")
+          },
+          ArrowLeft() {
+            send("ITEM_PREV")
+          },
+          ArrowDown() {
+            if (state.hasTag("expanded") && state.context.orientation === "horizontal") {
+              return send({ type: "LINK_FIRST", id: state.context.activeId })
+            }
+            send("ITEM_NEXT")
+          },
+          ArrowUp() {
+            send("ITEM_PREV")
+          },
+          Home() {
+            send("ITEM_FIRST")
+          },
+          End() {
+            send("ITEM_LAST")
+          },
+        }
+
+        const key = getEventKey(event, state.context)
+        const exec = keyMap[key]
+
+        if (exec) {
+          event.preventDefault()
+          exec(event)
+        }
+      },
+    }),
+    itemProps: normalize.element({
+      ...parts.item.attrs,
+      "data-ownedby": dom.getListId(state.context),
+    }),
+    getTriggerProps(props: { id: string }) {
+      const { id } = props
+
+      const triggerId = dom.getTriggerId(state.context, id)
+
+      return normalize.button({
+        ...parts.trigger.attrs,
+        type: "button",
+        id: triggerId,
+        "aria-expanded": id === state.context.activeId,
+        "aria-controls": dom.getContentId(state.context, id),
+        "data-focus": dataAttr(state.context.focusedId === triggerId),
+        onFocus() {
+          send({ type: "ITEM_FOCUS", id: triggerId })
+        },
+        onBlur() {
+          send("ITEM_BLUR")
+        },
+        onClick() {
+          send({ type: "ITEM_CLICK", id })
+        },
+        onPointerMove(event) {
+          if (event.pointerType !== "mouse") return
+          send({ type: "ITEM_POINTERMOVE", id: triggerId })
+        },
+        onPointerLeave(event) {
+          if (event.pointerType !== "mouse") return
+          send({ type: "ITEM_POINTERLEAVE", id: triggerId })
+        },
+      })
+    },
     indicatorProps: normalize.element({
       ...parts.indicator.attrs,
-      dir: state.context.dir,
-      "data-state": activeId ? "open" : "closed",
     }),
-    separatorProps: normalize.element({
-      ...parts.separator.attrs,
-      role: "separator",
-      dir: state.context.dir,
-      "aria-orientation": "horizontal",
+    getContentProps(props: { id: string }) {
+      const { id } = props
+
+      return normalize.element({
+        id: dom.getContentId(state.context, id),
+        hidden: id !== state.context.activeId,
+      })
+    },
+    linkContentGroupProps: normalize.element({
+      ...parts.linkContentGroup.attrs,
+      onKeyDown(event) {
+        const keyMap: EventKeyMap = {
+          ArrowDown() {
+            send({ type: "LINK_NEXT", id: state.context.activeId })
+          },
+          ArrowUp() {
+            send({ type: "LINK_PREV", id: state.context.activeId })
+          },
+          ArrowLeft() {
+            send({ type: "LINK_PREV", id: state.context.activeId })
+          },
+          ArrowRight() {
+            send({ type: "LINK_NEXT", id: state.context.activeId })
+          },
+          Home() {
+            send({ type: "LINK_FIRST", id: state.context.activeId })
+          },
+          End() {
+            send({ type: "LINK_LAST", id: state.context.activeId })
+          },
+        }
+
+        const key = getEventKey(event, state.context)
+        const exec = keyMap[key]
+
+        if (exec) {
+          event.preventDefault()
+          exec(event)
+        }
+      },
     }),
-    getTriggerProps,
-    getTriggerMenuItemProps(childApi, id) {
-      return mergeProps(
-        {
-          ...getMenuItemProps({ id: childApi.getTriggerProps({ id }).id }),
-          // Because a trigger button is not a link that defines an active page
-          "aria-current": null,
+    getLinkProps(props: { id: string }) {
+      const { id } = props
+
+      const isActiveLink = state.context.activeLinkId === id
+
+      const linkId = dom.getLinkId(state.context, id)
+
+      return normalize.a({
+        ...parts.link.attrs,
+        id: linkId,
+        "data-highlighted": dataAttr(!isActiveLink && state.context.highlightedLinkId === linkId),
+        "data-focus": dataAttr(!isActiveLink && state.context.focusedId === linkId),
+        "aria-current": isActiveLink ? "page" : undefined,
+        onFocus(event) {
+          if (dom.isItemEl(event.target)) {
+            return send({ type: "ITEM_FOCUS", id: linkId })
+          }
+          send({ type: "LINK_FOCUS", id: linkId })
         },
-        childApi.getTriggerProps({ id }),
-      )
-    },
-    getPositionerProps(props) {
-      const { id } = props
-      return normalize.element({
-        ...parts.positioner.attrs,
-        dir: state.context.dir,
-        id: dom.getPositionerId(state.context, id),
-        style: popperStyles.floating,
+        onPointerMove(event) {
+          if (event.pointerType !== "mouse") return
+          send({ type: "LINK_POINTERMOVE", id: linkId, target: event.target })
+        },
+        onPointerLeave(event) {
+          if (event.pointerType !== "mouse") return
+          send({ type: "LINK_POINTERLEAVE", id: linkId, target: event.target })
+        },
+        onBlur(event) {
+          if (dom.isItemEl(event.target)) {
+            send("ITEM_BLUR")
+          }
+        },
+        onClick() {
+          send({ type: "LINK_CLICK", id })
+        },
       })
     },
-    getContentProps(props) {
-      const { id } = props
-      return normalize.element({
-        ...parts.content.attrs,
-        dir: state.context.dir,
-        id: dom.getMenuContentId(state.context, id),
-        tabIndex: 0,
-        "data-state": activeId === id ? "open" : "closed",
-        hidden: activeId !== id,
-        "aria-labelledby": dom.getTriggerId(state.context, id),
-        "aria-activedescendant": state.context.highlightedItemId ?? undefined,
-      })
-    },
-    getMenuItemProps,
   }
 }

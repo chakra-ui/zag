@@ -2,13 +2,12 @@ import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("nav-menu").parts(
   "root",
+  "list",
+  "item",
   "trigger",
-  "triggerMenuItem",
-  "positioner",
   "indicator",
-  "content",
-  "separator",
-  "menu-item",
+  "linkContentGroup",
+  "link",
 )
 
 export const parts = anatomy.build()

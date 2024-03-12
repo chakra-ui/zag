@@ -14,25 +14,50 @@ const fetchMachine = createMachine({
   initial: "idle",
   context: {
     "isExpanded": false,
-    "!isExpanded": false,
-    "isExpanded": false,
-    "!isExpanded": false,
-    "isExpanded": false,
-    "isNotItemFocused": false,
-    "isExpanded": false,
-    "isExpanded": false
+    "!isItemEl": false,
+    "!isItemEl": false,
+    "!isItemEl": false
   },
   on: {
-    "PARENT.SET": {
-      actions: "setParentMenu"
-    },
-    "CHILD.SET": {
-      actions: "setChildMenu"
-    },
     CLOSE: {
-      target: "closed",
-      actions: ["collapseMenu"]
-    }
+      actions: ["collapseMenu", "focusTrigger"],
+      target: "collapsed"
+    },
+    ITEM_CLICK: [{
+      cond: "isExpanded",
+      actions: "collapseMenu",
+      target: "collapsed"
+    }, {
+      actions: "expandMenu",
+      target: "expanded"
+    }],
+    ITEM_POINTERMOVE: {
+      actions: ["setFocusedId", "removeHighlightedLinkId"]
+    },
+    ITEM_POINTERLEAVE: {
+      actions: "removeFocusedId"
+    },
+    LINK_CLICK: {
+      actions: ["setActiveLink", "collapseMenu", "removeFocusedId"]
+    },
+    LINK_FOCUS: [{
+      cond: "!isItemEl",
+      actions: "highlightLink"
+    }, {
+      actions: ["setFocusedId", "removeHighlightedLinkId"]
+    }],
+    LINK_POINTERMOVE: [{
+      cond: "!isItemEl",
+      actions: "highlightLink"
+    }, {
+      actions: ["setFocusedId", "removeHighlightedLinkId"]
+    }],
+    LINK_POINTERLEAVE: [{
+      cond: "!isItemEl",
+      actions: "removeHighlightedLinkId"
+    }, {
+      actions: ["removeFocusedId"]
+    }]
   },
   on: {
     UPDATE_CONTEXT: {
@@ -42,96 +67,64 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        TRIGGER_FOCUS: {
-          target: "closed",
-          actions: "setFocusedMenuId"
+        ITEM_FOCUS: {
+          actions: ["setFocusedId", "removeHighlightedLinkId"],
+          target: "collapsed"
         }
       }
     },
-    closed: {
-      tags: ["closed"],
-      entry: ["clearAnchorPoint", "focusTrigger"],
+    collapsed: {
       on: {
-        TRIGGER_FOCUS: {
-          actions: "setFocusedMenuId"
+        ITEM_FOCUS: {
+          actions: ["setFocusedId", "removeHighlightedLinkId"]
         },
-        TRIGGER_BLUR: {
-          target: "idle",
-          actions: "setFocusedMenuId"
+        ITEM_BLUR: {
+          actions: "removeFocusedId"
         },
-        TRIGGER_CLICK: [{
-          cond: "isExpanded",
-          actions: ["collapseMenu"]
-        }, {
-          cond: "!isExpanded",
-          actions: ["expandMenu"],
-          target: "open"
-        }],
-        ARROW_LEFT: {
-          actions: "focusPrevTrigger"
+        ITEM_NEXT: {
+          actions: "focusNextItem"
         },
-        ARROW_RIGHT: {
-          actions: "focusNextTrigger"
-        },
-        HOME: {
-          actions: "focusFirstTrigger"
-        },
-        END: {
-          actions: "focusLastTrigger"
-        }
-      }
-    },
-    open: {
-      tags: ["open"],
-      activities: ["trackPositioning", "trackInteractOutside"],
-      on: {
-        TRIGGER_FOCUS: {
-          actions: ["setFocusedMenuId", "collapseMenu"],
-          target: "closed"
-        },
-        TRIGGER_CLICK: [{
-          cond: "isExpanded",
-          actions: ["collapseMenu"],
-          target: "closed"
-        }, {
-          cond: "!isExpanded",
-          actions: ["expandMenu"]
-        }],
-        TO_FIRST_ITEM: {
-          cond: "isExpanded",
-          actions: "highlightFirstItem"
-        },
-        ITEM_POINTER_ENTER: {
-          actions: "highlightItem"
-        },
-        ITEM_NEXT: [{
-          cond: "isNotItemFocused",
-          actions: "highlightFirstItem"
-        }, {
-          actions: "highlightNextItem"
-        }],
         ITEM_PREV: {
-          actions: "highlightPrevItem"
+          actions: "focusPrevItem"
         },
-        ARROW_LEFT: {
-          cond: "isExpanded",
-          actions: ["focusPrevTrigger", "collapseMenu"],
-          target: "closed"
+        ITEM_FIRST: {
+          actions: "focusFirstItem"
         },
-        ARROW_RIGHT: {
-          cond: "isExpanded",
-          actions: ["focusNextTrigger", "collapseMenu"],
-          target: "closed"
+        ITEM_LAST: {
+          actions: "focusLastItem"
+        }
+      }
+    },
+    expanded: {
+      tags: ["expanded"],
+      activities: ["trackInteractOutside"],
+      on: {
+        ITEM_FOCUS: {
+          actions: ["setFocusedId", "removeHighlightedLinkId"]
         },
-        HOME: {
-          actions: "highlightFirstItem"
+        ITEM_NEXT: {
+          actions: "focusNextItem"
         },
-        END: {
-          actions: "highlightLastItem"
+        ITEM_PREV: {
+          actions: "focusPrevItem"
         },
-        LINK_ACTIVE: {
-          target: "closed",
-          actions: ["collapseMenu", "setActiveLink"]
+        ITEM_FIRST: {
+          actions: "focusFirstItem"
+        },
+        ITEM_LAST: {
+          actions: "focusLastItem"
+        },
+        LINK_FIRST: {
+          actions: "highlightFirstLink"
+        },
+        LINK_LAST: {
+          actions: "highlightLastLink"
+        },
+        LINK_NEXT: {
+          actions: "highlightNextLink"
+        },
+        LINK_PREV: {
+          actions: "highlightPrevLink"
         }
       }
     }
@@ -146,7 +139,6 @@ const fetchMachine = createMachine({
   },
   guards: {
     "isExpanded": ctx => ctx["isExpanded"],
-    "!isExpanded": ctx => ctx["!isExpanded"],
-    "isNotItemFocused": ctx => ctx["isNotItemFocused"]
+    "!isItemEl": ctx => ctx["!isItemEl"]
   }
 });

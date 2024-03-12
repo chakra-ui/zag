@@ -1,17 +1,14 @@
 import * as navMenu from "@zag-js/nav-menu"
-import { navMenuControls, navMenuData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, defineComponent } from "vue"
+import { navMenuData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-import { useControls } from "../hooks/use-controls"
-import { computed, defineComponent } from "vue"
 
 export default defineComponent({
   name: "nav-menu",
   setup() {
-    const controls = useControls(navMenuControls)
-
-    const [state, send] = useMachine(navMenu.machine({ id: "1" }), { context: controls.context })
+    const [state, send] = useMachine(navMenu.machine({ id: "1" }))
 
     const apiRef = computed(() => navMenu.connect(state.value, send, normalizeProps))
 
@@ -22,28 +19,38 @@ export default defineComponent({
         <>
           <main class="nav-menu">
             <nav {...api.rootProps}>
-              <ul style={{ display: "flex", listStyle: "none" }}>
-                {navMenuData.map(({ menu, menuList }) => (
-                  <li key={menu.id}>
-                    <button {...api.getTriggerProps({ id: menu.id })}>
-                      {menu.label} <span {...api.indicatorProps}>▾</span>
-                    </button>
-                    <div {...api.getPositionerProps({ id: menu.id })}>
-                      <ul {...api.getContentProps({ id: menu.id })} style={{ listStyle: "none" }}>
-                        {menuList.map((item) => (
-                          <li key={JSON.stringify(item)}>
-                            <a {...api.getMenuItemProps({ id: item.id, href: item.href })}>{item.label}</a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </li>
-                ))}
+              <ul {...api.listProps}>
+                {navMenuData.map((item) =>
+                  item.trigger ? (
+                    <li key={item.id} {...api.itemProps}>
+                      <button data-testid={`${item.id}:trigger`} {...api.getTriggerProps({ id: item.id })}>
+                        {item.label} <span {...api.indicatorProps}>▾</span>
+                      </button>
+                      <div data-testid={`${item.id}:content`} {...api.getContentProps({ id: item.id })}>
+                        <ul {...api.linkContentGroupProps}>
+                          {item.links?.map(({ label, id, href }) => (
+                            <li key={id}>
+                              <a data-testid={`${id}:link`} {...api.getLinkProps({ id })} href={href}>
+                                {label}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </li>
+                  ) : (
+                    <li key={item.id} {...api.itemProps}>
+                      <a data-testid={`${item.id}:link`} {...api.getLinkProps({ id: item.id })} href={item.href}>
+                        {item.label}
+                      </a>
+                    </li>
+                  ),
+                )}
               </ul>
             </nav>
           </main>
 
-          <Toolbar controls={controls.ui}>
+          <Toolbar>
             <StateVisualizer state={state} />
           </Toolbar>
         </>

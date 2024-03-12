@@ -379,6 +379,61 @@ a[aria-current="page"] {
 }
 
 /* -----------------------------------------------------------------------------
+* Nav-Menu
+* -----------------------------------------------------------------------------*/
+
+[data-scope="nav-menu"] ul {
+  list-style: none;
+  margin: 0
+}
+
+[data-scope="nav-menu"][data-part="list"][data-orientation="horizontal"] {
+  display: flex;
+  gap: 8px;
+}
+
+[data-scope="nav-menu"][data-part='item'] > :is([data-part="trigger"], [data-part="link"]) {
+  border: none;
+  background: #eee;
+  padding: 8px;
+  cursor: pointer;
+}
+
+[data-scope="nav-menu"][data-part='item'] > :is([data-part="trigger"], [data-part="link"])[data-focus] {
+  background: #0a6cbd;
+  color: #F3F2F2;
+}
+
+[data-scope="nav-menu"][data-part='item']>[data-part="trigger"][aria-expanded="true"] {
+  background: #2b9fff;
+    color: #0E0B0B;
+}
+
+[data-scope="nav-menu"][data-part="link"] {
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+[data-scope="nav-menu"][data-part="link-content-group"] [data-part="link"] {
+  padding: 8px;
+  background: #999;
+  color: #303030;
+  width: 100%;
+  max-width: 100px;
+}
+
+[data-scope="nav-menu"][data-part="link-content-group"] [data-part="link"][data-highlighted] {
+  background: #1C0ABD;
+  color: #F3F2F2
+}
+
+[data-scope="nav-menu"][data-part="link"][aria-current] {
+  background: green;
+  color: white;
+}
+
+/* -----------------------------------------------------------------------------
 * Menu
 * -----------------------------------------------------------------------------*/
 
