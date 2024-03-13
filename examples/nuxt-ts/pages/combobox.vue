@@ -42,7 +42,7 @@ const api = computed(() => combobox.connect(state.value, send, normalizeProps))
     <div>
       <button @click="() => api.setValue(['TG'])">Set to Togo</button>
       <button data-testid="clear-value-button" @click="api.clearValue">Clear Value</button>
-
+      <button v-bind="api.clearTriggerProps">Clear Trigger</button>
       <br />
 
       <div v-bind="api.rootProps">

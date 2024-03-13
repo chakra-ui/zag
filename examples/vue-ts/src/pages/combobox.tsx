@@ -52,6 +52,7 @@ export default defineComponent({
               <button data-testid="clear-value-button" onClick={() => api.clearValue()}>
                 Clear Value
               </button>
+              <button {...api.clearTriggerProps}>Clear Trigger</button>
 
               <br />
 
