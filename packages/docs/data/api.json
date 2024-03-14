@@ -1010,10 +1010,6 @@
         "type": "(date: DateValue) => string",
         "description": "The format of the date to display in the input."
       },
-      "parse": {
-        "type": "(value: string) => DateValue",
-        "description": "The format of the date to display in the input."
-      },
       "view": {
         "type": "DateView",
         "description": "The view of the calendar",
