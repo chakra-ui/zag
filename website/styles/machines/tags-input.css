@@ -30,7 +30,7 @@
   opacity: 0.6;
 }
 
-[data-scope="tags-input"][data-part="item-delete"] {
+[data-scope="tags-input"][data-part="item-delete-trigger"] {
   margin-left: 0.25rem;
 }
 

@@ -12,13 +12,17 @@ export function Dialog(props: { controls: any }) {
 
   return (
     <>
-      <button {...api.triggerProps}>Open Dialog</button>
+      <button className="dialog" {...api.triggerProps}>
+        Open Dialog
+      </button>
       <Portal>
-        <div {...api.backdropProps} />
-        <div {...api.positionerProps}>
-          <div {...api.contentProps}>
-            <h2 {...api.titleProps}>Edit profile</h2>
-            <p {...api.descriptionProps}>
+        <div className="dialog" {...api.backdropProps} />
+        <div className="dialog" {...api.positionerProps}>
+          <div className="dialog" {...api.contentProps}>
+            <h2 className="dialog" {...api.titleProps}>
+              Edit profile
+            </h2>
+            <p className="dialog" {...api.descriptionProps}>
               Make changes to your profile here. Click save when you are done.
             </p>
 
@@ -26,7 +30,7 @@ export function Dialog(props: { controls: any }) {
               <input placeholder="Enter name..." />
               <button>Save</button>
             </div>
-            <button {...api.closeTriggerProps}>
+            <button className="dialog" {...api.closeTriggerProps}>
               <HiX />
             </button>
           </div>
