@@ -1,10 +1,10 @@
-import { createMachine, guards } from "@zag-js/core"
-import { compact, isEqual } from "@zag-js/utils"
+import { createMachine, guards, ref } from "@zag-js/core"
+import { cast, compact, isEqual } from "@zag-js/utils"
 import type { MachineContext, MachineState, UserDefinedContext } from "./nav-menu.types"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { dom } from "./nav-menu.dom"
 
-const { not } = guards
+const { not, and } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -13,6 +13,8 @@ export function machine(userContext: UserDefinedContext) {
       id: "nav-menu",
       initial: "idle",
       context: {
+        parent: null,
+        children: cast(ref({})),
         orientation: "horizontal",
         focusedId: null,
         activeId: null,
@@ -20,7 +22,19 @@ export function machine(userContext: UserDefinedContext) {
         activeLinkId: null,
         ...ctx,
       },
+
+      computed: {
+        isSubmenu: (ctx) => ctx.parent !== null,
+        childrenIds: (ctx) => Object.keys(ctx.children),
+      },
+
       on: {
+        SET_PARENT: {
+          actions: "setParentMenu",
+        },
+        SET_CHILD: {
+          actions: "setChildMenu",
+        },
         CLOSE: {
           actions: ["collapseMenu", "focusTrigger"],
           target: "collapsed",
@@ -73,6 +87,11 @@ export function machine(userContext: UserDefinedContext) {
             actions: ["removeFocusedId"],
           },
         ],
+        SUB_ITEMFOCUS: {
+          internal: true,
+          actions: "focusFirstItem",
+          target: "collapsed",
+        },
       },
       states: {
         idle: {
@@ -91,10 +110,13 @@ export function machine(userContext: UserDefinedContext) {
             ITEM_BLUR: {
               actions: "removeFocusedId",
             },
-            ITEM_NEXT: {
+            ITEM_ARROWRIGHT: {
               actions: "focusNextItem",
             },
-            ITEM_PREV: {
+            ITEM_ARROWDOWN: {
+              actions: "focusNextItem",
+            },
+            ITEM_ARROWLEFT: {
               actions: "focusPrevItem",
             },
             ITEM_FIRST: {
@@ -112,10 +134,33 @@ export function machine(userContext: UserDefinedContext) {
             ITEM_FOCUS: {
               actions: ["setFocusedId", "removeHighlightedLinkId"],
             },
-            ITEM_NEXT: {
-              actions: "focusNextItem",
-            },
-            ITEM_PREV: {
+            ITEM_ARROWRIGHT: [
+              {
+                guard: and("isVertical", "hasSubmenu"),
+                actions: "focusSubMenu",
+              },
+              {
+                guard: "isVertical",
+                actions: "highlightFirstLink",
+              },
+              {
+                actions: "focusNextItem",
+              },
+            ],
+            ITEM_ARROWDOWN: [
+              {
+                guard: and(not("isVertical"), "hasSubmenu"),
+                actions: "focusSubMenu",
+              },
+              {
+                guard: not("isVertical"),
+                actions: "highlightFirstLink",
+              },
+              {
+                actions: "focusNextItem",
+              },
+            ],
+            ITEM_ARROWLEFT: {
               actions: "focusPrevItem",
             },
             ITEM_FIRST: {
@@ -144,8 +189,18 @@ export function machine(userContext: UserDefinedContext) {
       guards: {
         isExpanded: (ctx, evt) => evt.id === ctx.activeId,
         isItemEl: (_ctx, evt) => !!dom.isItemEl(evt.target),
+        hasSubmenu: (ctx, evt) => {
+          return !!get.currentChildId(ctx, evt.id)
+        },
+        isVertical: (ctx) => ctx.orientation === "vertical",
       },
       actions: {
+        setParentMenu(ctx, evt) {
+          ctx.parent = ref(evt.value)
+        },
+        setChildMenu(ctx, evt) {
+          ctx.children[evt.id] = ref(evt.value)
+        },
         setFocusedId: (ctx, evt) => {
           ctx.focusedId = evt.id
         },
@@ -217,6 +272,11 @@ export function machine(userContext: UserDefinedContext) {
         setActiveLink: (ctx, evt) => {
           set.activeLinkId(ctx, evt.id)
         },
+        focusSubMenu: (ctx, evt) => {
+          const currentChildId = get.currentChildId(ctx, evt.id)
+          if (!currentChildId) return
+          return ctx.children[currentChildId].send("SUB_ITEMFOCUS")
+        },
       },
       activities: {
         trackInteractOutside(ctx, evt, { send }) {
@@ -260,5 +320,11 @@ const set = {
   },
   activeLinkId(ctx: MachineContext, id: string | null) {
     ctx.activeLinkId = id
+  },
+}
+
+const get = {
+  currentChildId(ctx: MachineContext, id: string) {
+    return ctx.childrenIds.find((childId) => childId.startsWith(id))
   },
 }

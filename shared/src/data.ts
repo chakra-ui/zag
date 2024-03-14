@@ -115,6 +115,46 @@ export const navMenuData = [
   },
 ]
 
+export const nestNavMenuData = [
+  {
+    label: "Libraries",
+    id: "libraries",
+    trigger: true,
+    subMenu: [
+      { label: "React", id: "react", href: "#", trigger: false },
+      { label: "Vue", id: "vue", href: "#", trigger: false },
+      { label: "Angular", id: "angular", href: "#", trigger: false },
+      { label: "Solid", id: "solid", href: "#", trigger: false },
+      {
+        label: "Other",
+        id: "other",
+        trigger: true,
+        links: [
+          { label: "Svelte", id: "svelte", href: "#" },
+          { label: "Preact", id: "preact", href: "#" },
+          { label: "Ember", id: "ember", href: "#" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Frameworks",
+    id: "frameworks",
+    trigger: true,
+    links: [
+      { label: "Next.js", id: "next", href: "#" },
+      { label: "Nuxt.js", id: "nuxt", href: "#" },
+      { label: "Gatsby", id: "gatsby", href: "#" },
+    ],
+  },
+  {
+    label: "Tools",
+    id: "tools",
+    href: "#",
+    trigger: false,
+  },
+]
+
 export const menuData = [
   [
     { label: "New File", id: "new-file" },

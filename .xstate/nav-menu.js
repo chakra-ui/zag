@@ -16,9 +16,19 @@ const fetchMachine = createMachine({
     "isExpanded": false,
     "!isItemEl": false,
     "!isItemEl": false,
-    "!isItemEl": false
+    "!isItemEl": false,
+    "isVertical && hasSubmenu": false,
+    "isVertical": false,
+    "!isVertical && hasSubmenu": false,
+    "!isVertical": false
   },
   on: {
+    SET_PARENT: {
+      actions: "setParentMenu"
+    },
+    SET_CHILD: {
+      actions: "setChildMenu"
+    },
     CLOSE: {
       actions: ["collapseMenu", "focusTrigger"],
       target: "collapsed"
@@ -57,7 +67,12 @@ const fetchMachine = createMachine({
       actions: "removeHighlightedLinkId"
     }, {
       actions: ["removeFocusedId"]
-    }]
+    }],
+    SUB_ITEMFOCUS: {
+      internal: true,
+      actions: "focusFirstItem",
+      target: "collapsed"
+    }
   },
   on: {
     UPDATE_CONTEXT: {
@@ -81,10 +96,13 @@ const fetchMachine = createMachine({
         ITEM_BLUR: {
           actions: "removeFocusedId"
         },
-        ITEM_NEXT: {
+        ITEM_ARROWRIGHT: {
           actions: "focusNextItem"
         },
-        ITEM_PREV: {
+        ITEM_ARROWDOWN: {
+          actions: "focusNextItem"
+        },
+        ITEM_ARROWLEFT: {
           actions: "focusPrevItem"
         },
         ITEM_FIRST: {
@@ -102,10 +120,25 @@ const fetchMachine = createMachine({
         ITEM_FOCUS: {
           actions: ["setFocusedId", "removeHighlightedLinkId"]
         },
-        ITEM_NEXT: {
+        ITEM_ARROWRIGHT: [{
+          cond: "isVertical && hasSubmenu",
+          actions: "focusSubMenu"
+        }, {
+          cond: "isVertical",
+          actions: "highlightFirstLink"
+        }, {
           actions: "focusNextItem"
-        },
-        ITEM_PREV: {
+        }],
+        ITEM_ARROWDOWN: [{
+          cond: "!isVertical && hasSubmenu",
+          actions: "focusSubMenu"
+        }, {
+          cond: "!isVertical",
+          actions: "highlightFirstLink"
+        }, {
+          actions: "focusNextItem"
+        }],
+        ITEM_ARROWLEFT: {
           actions: "focusPrevItem"
         },
         ITEM_FIRST: {
@@ -139,6 +172,10 @@ const fetchMachine = createMachine({
   },
   guards: {
     "isExpanded": ctx => ctx["isExpanded"],
-    "!isItemEl": ctx => ctx["!isItemEl"]
+    "!isItemEl": ctx => ctx["!isItemEl"],
+    "isVertical && hasSubmenu": ctx => ctx["isVertical && hasSubmenu"],
+    "isVertical": ctx => ctx["isVertical"],
+    "!isVertical && hasSubmenu": ctx => ctx["!isVertical && hasSubmenu"],
+    "!isVertical": ctx => ctx["!isVertical"]
   }
 });

@@ -1,43 +1,41 @@
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import type { State, Send } from "./nav-menu.types"
+import type { State, Send, MachineApi } from "./nav-menu.types"
 import { parts } from "./nav-menu.anatomy"
 import { dom } from "./nav-menu.dom"
 import { dataAttr } from "@zag-js/dom-query"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   return {
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      id: dom.getRootId(state.context),
-      "data-orientation": state.context.orientation,
-    }),
+    setParent(parent) {
+      send({ type: "SET_PARENT", value: parent, id: parent.state.context.id })
+    },
+    setChild(child, parentTriggerId) {
+      send({ type: "SET_CHILD", value: child, id: [parentTriggerId, child.state.context.id].join("") })
+    },
     listProps: normalize.element({
       ...parts.list.attrs,
       id: dom.getListId(state.context),
       "data-orientation": state.context.orientation,
       onKeyDown(event) {
-        // Do not fire events when interacting with menu links
-        if (state.context.highlightedLinkId) return
+        const matchingChildId = state.context.childrenIds.find((id) => id.includes(state.context.activeId!))
+        const matchingChild = !!matchingChildId ? state.context.children[matchingChildId] : null
+
+        // Do not fire events when interacting with menu links or a submenu has focus
+        if (state.context.highlightedLinkId || !!matchingChild?.state.context.focusedId) return
 
         const keyMap: EventKeyMap = {
           ArrowRight() {
-            if (state.hasTag("expanded") && state.context.orientation === "vertical") {
-              return send({ type: "LINK_FIRST", id: state.context.activeId })
-            }
-            send("ITEM_NEXT")
+            send({ type: "ITEM_ARROWRIGHT", id: state.context.activeId })
           },
           ArrowLeft() {
-            send("ITEM_PREV")
+            send("ITEM_ARROWLEFT")
           },
           ArrowDown() {
-            if (state.hasTag("expanded") && state.context.orientation === "horizontal") {
-              return send({ type: "LINK_FIRST", id: state.context.activeId })
-            }
-            send("ITEM_NEXT")
+            send({ type: "ITEM_ARROWDOWN", id: state.context.activeId })
           },
           ArrowUp() {
-            send("ITEM_PREV")
+            send("ITEM_ARROWLEFT")
           },
           Home() {
             send("ITEM_FIRST")
@@ -60,7 +58,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.item.attrs,
       "data-ownedby": dom.getListId(state.context),
     }),
-    getTriggerProps(props: { id: string }) {
+    getTriggerProps(props) {
       const { id } = props
 
       const triggerId = dom.getTriggerId(state.context, id)
@@ -94,7 +92,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     indicatorProps: normalize.element({
       ...parts.indicator.attrs,
     }),
-    getContentProps(props: { id: string }) {
+    getContentProps(props) {
       const { id } = props
 
       return normalize.element({
@@ -135,7 +133,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         }
       },
     }),
-    getLinkProps(props: { id: string }) {
+    getLinkProps(props) {
       const { id } = props
 
       const isActiveLink = state.context.activeLinkId === id

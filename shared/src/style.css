@@ -382,7 +382,7 @@ a[aria-current="page"] {
 * Nav-Menu
 * -----------------------------------------------------------------------------*/
 
-[data-scope="nav-menu"] ul {
+ul[data-scope="nav-menu"] {
   list-style: none;
   margin: 0
 }

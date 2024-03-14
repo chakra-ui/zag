@@ -13,7 +13,7 @@ export default function Page() {
   return (
     <>
       <main className="nav-menu">
-        <nav {...api.rootProps}>
+        <nav>
           <ul {...api.listProps}>
             {navMenuData.map((item) =>
               item.trigger ? (
