@@ -19,7 +19,7 @@ export function Tabs(props: any) {
   const api = tabs.connect(state, send, normalizeProps)
 
   return (
-    <div>
+    <div className="tabs">
       <div {...api.listProps}>
         {data.map((item) => (
           <button
