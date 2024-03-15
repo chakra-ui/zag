@@ -1,0 +1,32 @@
+[data-scope="toggle-group"][data-part="root"] {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0px;
+  margin-top: 2.5rem;
+}
+
+[data-scope="toggle-group"][data-part="item"] {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--colors-bg-subtle);
+  border-width: 1px;
+  font-size: 1.25rem;
+}
+
+[data-scope="toggle-group"][data-part="item"]:hover {
+  background: var(--colors-bg-bold);
+}
+
+[data-scope="toggle-group"][data-part="item"][data-state="on"] {
+  background: var(--colors-bg-primary-bold);
+  color: var(--colors-text-inverse);
+}
+
+[data-scope="toggle-group"][data-part="item"][data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

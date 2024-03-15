@@ -1,4 +1,3 @@
-import { chakra } from "@chakra-ui/system"
 import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -25,94 +24,39 @@ export function Pagination(props: PaginationProps) {
   const api = pagination.connect(state, send, normalizeProps)
 
   return (
-    <chakra.div px="2" w="full" display="flex" justifyContent="center">
+    <>
       {api.totalPages > 1 && (
         <nav {...api.rootProps}>
-          <chakra.ul
-            display="flex"
-            flexWrap={{ base: "wrap", md: "nowrap" }}
-            gap="1"
-            pl="0 !important"
-            listStyleType="none"
-          >
+          <ul role="pagination">
             <li>
-              <PaginationLink href="#previous" {...api.prevTriggerProps}>
-                &lt; <chakra.span srOnly>Previous Page</chakra.span>
-              </PaginationLink>
+              <a href="#previous" {...api.prevTriggerProps}>
+                &lt; <span>Previous Page</span>
+              </a>
             </li>
             {api.pages.map((page, i) => {
               if (page.type === "page")
                 return (
                   <li key={page.value}>
-                    <PaginationLink
-                      href={`#${page.value}`}
-                      {...api.getItemProps(page)}
-                    >
+                    <a href={`#${page.value}`} {...api.getItemProps(page)}>
                       {page.value}
-                    </PaginationLink>
+                    </a>
                   </li>
                 )
               else
                 return (
                   <li key={`ellipsis-${i}`}>
-                    <chakra.span
-                      cursor="default"
-                      {...api.getEllipsisProps({ index: i })}
-                    >
-                      &#8230;
-                    </chakra.span>
+                    <span {...api.getEllipsisProps({ index: i })}>&#8230;</span>
                   </li>
                 )
             })}
             <li>
-              <PaginationLink href="#next" {...api.nextTriggerProps}>
-                &gt; <chakra.span srOnly>Next Page</chakra.span>
-              </PaginationLink>
+              <a href="#next" {...api.nextTriggerProps}>
+                &gt; <span>Next Page</span>
+              </a>
             </li>
-          </chakra.ul>
+          </ul>
         </nav>
       )}
-    </chakra.div>
+    </>
   )
 }
-
-const PaginationLink = chakra("a", {
-  baseStyle: {
-    px: 3,
-    h: 8,
-    textAlign: "center",
-    m: "auto 4px",
-    color: "text-bold",
-    display: "flex",
-    boxSizing: "border-box",
-    alignItems: "center",
-    letterSpacing: "0.01071em",
-    lineHeight: 1.43,
-    fontSize: "13px",
-    userSelect: "none",
-    textDecoration: "none",
-    border: "solid 1px",
-    borderColor: "border-bold",
-    bg: "bg-subtle",
-
-    _hover: {
-      bg: "bg-bold",
-      cursor: "pointer",
-    },
-    _focus: {
-      outline: "2px solid royalblue",
-      outlineOffset: "1px",
-    },
-
-    _disabled: {
-      opacity: 0.6,
-      cursor: "not-allowed",
-      background: "none",
-    },
-
-    _selected: {
-      bg: "green.500",
-      color: "white",
-    },
-  },
-})

@@ -1,5 +1,3 @@
-import { Divider, Flex, Stack, VStack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
 import * as colorPicker from "@zag-js/color-picker"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -9,6 +7,7 @@ type Props = {
     disabled: boolean
     readOnly: boolean
     closeOnSelect: boolean
+    format: "rgba" | "hsla" | "hsba"
   }
 }
 
@@ -33,69 +32,6 @@ const EyeDropIcon = () => (
   </svg>
 )
 
-const Swatch = chakra("div", {
-  baseStyle: {
-    width: "5",
-    height: "5",
-    flexShrink: "0",
-  },
-})
-
-const TransparentGrid = chakra("div", {
-  baseStyle: {
-    borderRadius: "4px",
-  },
-})
-
-const ChannelInput = chakra("input", {
-  baseStyle: {
-    borderRadius: "4px",
-    width: "100%",
-    borderWidth: "1px",
-    paddingX: "2",
-    bg: "bg-subtle",
-    fontSize: "sm",
-    minHeight: "32px",
-  },
-})
-
-const SliderTrack = chakra("div", {
-  baseStyle: {
-    height: "3",
-    rounded: "4px",
-  },
-})
-
-const Thumb = chakra("div", {
-  baseStyle: {
-    border: "2px solid white",
-    borderRadius: "full",
-    transform: "translate(-50%, -50%)",
-    shadow: "black 0px 0px 0px 1px, black 0px 0px 0px 1px inset",
-    width: "4",
-    height: "4",
-  },
-})
-
-const ChannelLabel = chakra("span", {
-  baseStyle: {
-    fontSize: "sm",
-    fontWeight: "medium",
-  },
-})
-
-const EyeDropButton = chakra("button", {
-  baseStyle: {
-    width: "40px",
-    height: "40px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: "1px",
-  },
-})
-
 export function ColorPicker(props: Props) {
   const [state, send] = useMachine(
     colorPicker.machine({
@@ -111,208 +47,153 @@ export function ColorPicker(props: Props) {
 
   return (
     <div {...api.rootProps}>
-      <chakra.label
-        fontSize="sm"
-        display="block"
-        mb="2"
-        _disabled={{ opacity: "0.6" }}
-        {...api.labelProps}
-      >
-        <span>
-          <chakra.span fontWeight="medium">Color</chakra.span>:{" "}
-          {api.valueAsString}
-        </span>
-      </chakra.label>
+      <label {...api.labelProps}>
+        <span>Color</span>: {api.valueAsString}
+      </label>
 
-      <chakra.div
-        display="flex"
-        alignItems="flex-start"
-        gap="2"
-        {...api.controlProps}
-      >
-        <Flex
-          align="center"
-          justify="center"
-          p="1"
-          bg="bg-subtle"
-          borderWidth="1px"
-        >
-          <chakra.button bg="bg-subtle" {...api.triggerProps}>
-            <TransparentGrid
-              {...api.getTransparencyGridProps({ size: "10px" })}
-            />
-            <Swatch {...api.getSwatchProps({ value: api.value })} />
-          </chakra.button>
-        </Flex>
-        <ChannelInput {...api.getChannelInputProps({ channel: "hex" })} />
-        <ChannelInput
-          maxWidth="64px"
-          {...api.getChannelInputProps({ channel: "alpha" })}
-        />
-      </chakra.div>
+      <div {...api.controlProps}>
+        <div>
+          <button {...api.triggerProps}>
+            <div {...api.getTransparencyGridProps({ size: "10px" })} />
+            <div {...api.getSwatchProps({ value: api.value })} />
+          </button>
+        </div>
+        <input {...api.getChannelInputProps({ channel: "hex" })} />
+        <input {...api.getChannelInputProps({ channel: "alpha" })} />
+      </div>
 
       <Portal>
         <div {...api.positionerProps}>
-          <chakra.div
-            shadow="base"
-            isolation="isolate"
-            padding="4"
-            bg="bg-subtle"
-            {...api.contentProps}
-          >
-            <chakra.div display="flex" flexDir="column" gap="2">
-              <chakra.div
-                height="200px"
-                rounded="4px"
-                borderWidth="1px"
-                {...api.getAreaProps()}
-              >
-                <chakra.div
-                  height="inherit"
-                  rounded="inherit"
-                  {...api.getAreaBackgroundProps()}
-                />
-                <Thumb {...api.getAreaThumbProps()} />
-              </chakra.div>
+          <div {...api.contentProps}>
+            <div>
+              <div {...api.getAreaProps()}>
+                <div {...api.getAreaBackgroundProps()} />
+                <div {...api.getAreaThumbProps()} />
+              </div>
 
-              <Flex gap="20px" my="2">
-                <Stack flex="1">
+              <div>
+                <div>
                   <div {...api.getChannelSliderProps({ channel: "hue" })}>
-                    <SliderTrack
+                    <div
                       {...api.getChannelSliderTrackProps({ channel: "hue" })}
                     />
-                    <Thumb
+                    <div
                       {...api.getChannelSliderThumbProps({ channel: "hue" })}
                     />
                   </div>
 
                   <div {...api.getChannelSliderProps({ channel: "alpha" })}>
-                    <TransparentGrid
-                      {...api.getTransparencyGridProps({ size: "12px" })}
-                    />
-                    <SliderTrack
+                    <div {...api.getTransparencyGridProps({ size: "12px" })} />
+                    <div
                       {...api.getChannelSliderTrackProps({ channel: "alpha" })}
                     />
-                    <Thumb
+                    <div
                       {...api.getChannelSliderThumbProps({ channel: "alpha" })}
                     />
                   </div>
-                </Stack>
-                <EyeDropButton {...api.eyeDropperTriggerProps}>
+                </div>
+                <button {...api.eyeDropperTriggerProps}>
                   <EyeDropIcon />
-                </EyeDropButton>
-              </Flex>
+                </button>
+              </div>
 
               <Show when={api.format.startsWith("hsl")}>
-                <Flex width="100%" gap="0.5">
-                  <VStack>
-                    <ChannelInput
-                      {...api.getChannelInputProps({ channel: "hue" })}
-                    />
-                    <ChannelLabel>H</ChannelLabel>
-                  </VStack>
-                  <VStack>
-                    <ChannelInput
+                <div>
+                  <div>
+                    <input {...api.getChannelInputProps({ channel: "hue" })} />
+                    <span>H</span>
+                  </div>
+                  <div>
+                    <input
                       {...api.getChannelInputProps({ channel: "saturation" })}
                     />
-                    <ChannelLabel>S</ChannelLabel>
-                  </VStack>
-                  <VStack>
-                    <ChannelInput
+                    <span>S</span>
+                  </div>
+                  <div>
+                    <input
                       {...api.getChannelInputProps({ channel: "lightness" })}
                     />
-                    <ChannelLabel>L</ChannelLabel>
-                  </VStack>
-                  <VStack>
-                    <ChannelInput
+                    <span>L</span>
+                  </div>
+                  <div>
+                    <input
                       {...api.getChannelInputProps({ channel: "alpha" })}
                     />
-                    <ChannelLabel>A</ChannelLabel>
-                  </VStack>
-                </Flex>
+                    <span>A</span>
+                  </div>
+                </div>
               </Show>
 
               <Show when={api.format.startsWith("rgb")}>
-                <Flex width="100%" gap="0.5">
-                  <VStack>
-                    <ChannelInput
-                      {...api.getChannelInputProps({ channel: "red" })}
-                    />
-                    <ChannelLabel>R</ChannelLabel>
-                  </VStack>
-                  <VStack>
-                    <ChannelInput
+                <div>
+                  <div>
+                    <input {...api.getChannelInputProps({ channel: "red" })} />
+                    <span>R</span>
+                  </div>
+                  <div>
+                    <input
                       {...api.getChannelInputProps({ channel: "green" })}
                     />
-                    <ChannelLabel>G</ChannelLabel>
-                  </VStack>
-                  <VStack>
-                    <ChannelInput
-                      {...api.getChannelInputProps({ channel: "blue" })}
-                    />
-                    <ChannelLabel>B</ChannelLabel>
-                  </VStack>
-                  <VStack>
-                    <ChannelInput
+                    <span>G</span>
+                  </div>
+                  <div>
+                    <input {...api.getChannelInputProps({ channel: "blue" })} />
+                    <span>B</span>
+                  </div>
+                  <div>
+                    <input
                       {...api.getChannelInputProps({ channel: "alpha" })}
                     />
-                    <ChannelLabel>A</ChannelLabel>
-                  </VStack>
-                </Flex>
+                    <span>A</span>
+                  </div>
+                </div>
               </Show>
 
               <Show when={api.format.startsWith("hsb")}>
-                <Flex width="100%" gap="0.5">
-                  <VStack>
-                    <ChannelInput
-                      {...api.getChannelInputProps({ channel: "hue" })}
-                    />
-                    <ChannelLabel>H</ChannelLabel>
-                  </VStack>
-                  <VStack>
-                    <ChannelInput
+                <div>
+                  <div>
+                    <input {...api.getChannelInputProps({ channel: "hue" })} />
+                    <span>H</span>
+                  </div>
+                  <div>
+                    <input
                       {...api.getChannelInputProps({ channel: "saturation" })}
                     />
-                    <ChannelLabel>S</ChannelLabel>
-                  </VStack>
-                  <VStack>
-                    <ChannelInput
+                    <span>S</span>
+                  </div>
+                  <div>
+                    <input
                       {...api.getChannelInputProps({ channel: "brightness" })}
                     />
-                    <ChannelLabel>B</ChannelLabel>
-                  </VStack>
-                  <VStack>
-                    <ChannelInput
+                    <span>B</span>
+                  </div>
+                  <div>
+                    <input
                       {...api.getChannelInputProps({ channel: "alpha" })}
                     />
-                    <ChannelLabel>A</ChannelLabel>
-                  </VStack>
-                </Flex>
+                    <span>A</span>
+                  </div>
+                </div>
               </Show>
 
-              <Divider borderWidth="1px" />
+              <hr />
 
-              <div
-                {...api.swatchGroupProps}
-                style={{ display: "flex", gap: "10px" }}
-              >
+              <div {...api.swatchGroupProps}>
                 <p>Swatches</p>
                 {presets.map((preset) => (
                   <button
                     key={preset}
                     {...api.getSwatchTriggerProps({ value: preset })}
                   >
-                    <div style={{ position: "relative" }}>
-                      <TransparentGrid
-                        {...api.getTransparencyGridProps({ size: "4px" })}
-                      />
-                      <Swatch {...api.getSwatchProps({ value: preset })} />
+                    <div>
+                      <div {...api.getTransparencyGridProps({ size: "4px" })} />
+                      <div {...api.getSwatchProps({ value: preset })} />
                     </div>
                   </button>
                 ))}
               </div>
-            </chakra.div>
-          </chakra.div>
+            </div>
+          </div>
         </div>
       </Portal>
     </div>

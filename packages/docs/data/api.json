@@ -2864,7 +2864,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; trigger: string; tablist: string; content: string; indicator: string; }>",
+        "type": "Partial<{ root: string; trigger: string; list: string; content: string; indicator: string; }>",
         "description": "The ids of the elements in the tabs. Useful for composition."
       },
       "translations": {

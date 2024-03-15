@@ -1,5 +1,3 @@
-import { Box } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
 import * as accordion from "@zag-js/accordion"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -40,43 +38,20 @@ export function Accordion(props: AccordionProps) {
   const api = accordion.connect(state, send, normalizeProps)
 
   return (
-    <Box width="400px" {...api.rootProps}>
+    <div {...api.rootProps}>
       {items.map((item) => (
-        <Box
-          bg="bg-subtle"
-          borderWidth="1px"
-          fontSize="sm"
-          key={item.title}
-          {...api.getItemProps({ value: item.title })}
-        >
+        <div key={item.title} {...api.getItemProps({ value: item.title })}>
           <h3>
-            <chakra.button
-              width="full"
-              py="2"
-              px="3"
-              textAlign="start"
-              cursor="pointer"
-              {...api.getItemTriggerProps({ value: item.title })}
-              _focusVisible={{
-                outline: "2px solid #0070f3",
-              }}
-            >
-              <Box fontWeight="semibold">{item.title}</Box>
-              <Box fontSize="xs" color="text-subtle">
-                {item.desc}
-              </Box>
-            </chakra.button>
+            <button {...api.getItemTriggerProps({ value: item.title })}>
+              <div>{item.title}</div>
+              <div>{item.desc}</div>
+            </button>
           </h3>
-          <Box
-            width="full"
-            py="2"
-            px="3"
-            {...api.getItemContentProps({ value: item.title })}
-          >
+          <div {...api.getItemContentProps({ value: item.title })}>
             {item.content}
-          </Box>
-        </Box>
+          </div>
+        </div>
       ))}
-    </Box>
+    </div>
   )
 }

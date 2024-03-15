@@ -1,0 +1,56 @@
+[data-scope="menu"][data-part="trigger"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: start;
+  cursor: pointer;
+  font-weight: 500;
+  padding-inline: 1rem;
+  padding-block: 0.25rem;
+  background: var(--colors-bg-primary-subtle);
+  color: #ffffff;
+}
+
+[data-scope="menu"][data-part="trigger"]:hover {
+  background: var(--colors-bg-primary-bold);
+}
+
+[data-scope="menu"][data-part="context-trigger"] {
+  background: var(--colors-bg-subtle);
+  padding: 1rem;
+  border-width: 2px;
+  border-style: dashed;
+}
+
+[data-scope="menu"][data-part="indicator"] {
+  margin-left: 0.5rem;
+}
+
+[data-scope="menu"][data-part="content"] {
+  background: var(--colors-bg-subtle);
+  width: 240px;
+  padding: 0.5rem;
+  isolation: isolate;
+  list-style-type: none;
+  box-shadow:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+[data-scope="menu"][data-part="content"]:is(:focus, [data-focus]) {
+  outline: 2px solid hsl(204, 100%, 40%);
+}
+
+[data-scope="menu"]:is([data-part="item"], [data-part="trigger-item"]) {
+  padding-inline: 0.5rem;
+  padding-block: 0.25rem;
+  cursor: pointer;
+}
+
+[data-scope="menu"]:is(
+    [data-part="item"],
+    [data-part="trigger-item"]
+  )[data-highlighted] {
+  background: var(--colors-bg-primary-bold);
+  color: #ffffff;
+}

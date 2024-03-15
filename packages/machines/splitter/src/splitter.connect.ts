@@ -63,6 +63,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { id } = props
       return normalize.element({
         ...parts.panel.attrs,
+        "data-orientation": state.context.orientation,
         dir: state.context.dir,
         id: dom.getPanelId(state.context, id),
         "data-ownedby": dom.getRootId(state.context),

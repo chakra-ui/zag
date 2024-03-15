@@ -1,7 +1,5 @@
 import * as select from "@zag-js/select"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
-import { chakra } from "@chakra-ui/system"
-import { Button } from "components/button"
 import { useId } from "react"
 import { MdCheck } from "react-icons/md"
 
@@ -47,66 +45,26 @@ export function Select(props: SelectProps) {
   const api = select.connect(state, send, normalizeProps)
 
   return (
-    <div>
-      <chakra.div display="flex" flexDir="column" gap="1">
-        <chakra.label
-          fontSize="lg"
-          _disabled={{
-            opacity: 0.6,
-          }}
-          {...api.labelProps}
-        >
-          Label
-        </chakra.label>
-        <Button
-          minW="200px"
-          size="sm"
-          className="focus-outline"
-          bg="bg-subtle"
-          _disabled={{
-            opacity: 0.6,
-          }}
-          {...api.triggerProps}
-        >
-          <chakra.span p="1" flex="1">
-            {api.valueAsString || "Select option"}
-          </chakra.span>
+    <div {...api.rootProps}>
+      <label {...api.labelProps}>Label</label>
+      <div {...api.controlProps}>
+        <button {...api.triggerProps}>
+          <span>{api.valueAsString || "Select option"}</span>
           <CaretIcon />
-        </Button>
-      </chakra.div>
+        </button>
+      </div>
       <Portal>
         <div {...api.positionerProps}>
-          <chakra.ul
-            bg="bg-subtle"
-            width="240px"
-            maxHeight="min(var(--available-height), 400px)"
-            padding="2"
-            isolation="isolate"
-            listStyleType="none"
-            shadow="base"
-            className="focus-outline"
-            {...api.contentProps}
-          >
+          <ul {...api.contentProps}>
             {data.map((item) => (
-              <chakra.li
-                px="2"
-                py="1"
-                display="flex"
-                alignItems="center"
-                cursor="pointer"
-                _highlighted={{ bg: "bg-primary-subtle", color: "white" }}
-                key={item.value}
-                {...api.getItemProps({ item })}
-              >
-                <chakra.span flex={1} {...api.getItemTextProps({ item })}>
-                  {item.label}
-                </chakra.span>
+              <li key={item.value} {...api.getItemProps({ item })}>
+                <span {...api.getItemTextProps({ item })}>{item.label}</span>
                 <span {...api.getItemIndicatorProps({ item })}>
                   <MdCheck />
                 </span>
-              </chakra.li>
+              </li>
             ))}
-          </chakra.ul>
+          </ul>
         </div>
       </Portal>
     </div>

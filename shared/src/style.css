@@ -1108,7 +1108,7 @@ main [data-testid="scrubber"] {
   display: flex;
 }
 
-[data-scope="tabs"][data-part="tablist"] {
+[data-scope="tabs"][data-part="list"] {
   margin: 0 0 -0.1em;
   overflow: visible;
 }
