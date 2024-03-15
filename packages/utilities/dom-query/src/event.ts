@@ -5,9 +5,10 @@ export function getBeforeInputValue(event: Pick<InputEvent, "currentTarget">) {
   return value.slice(0, selectionStart!) + (event as any).data + value.slice(selectionEnd!)
 }
 
-export function getEventTarget<T extends EventTarget>(event: Event): T | null {
+export function getEventTarget<T extends EventTarget>(event: Pick<UIEvent, "target" | "composedPath">): T | null {
   return (event.composedPath?.()[0] ?? event.target) as T | null
 }
 
-export const isSelfEvent = (event: Pick<UIEvent, "currentTarget" | "target">) =>
-  contains(event.currentTarget, event.target)
+export const isSelfEvent = (event: Pick<UIEvent, "currentTarget" | "target" | "composedPath">) => {
+  return contains(event.currentTarget, getEventTarget(event))
+}
