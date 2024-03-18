@@ -104,7 +104,7 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "packageManager": "pnpm@8.15.4",
+  "packageManager": "pnpm@8.15.5",
   "devDependencies": {
     "cross-env": "^7.0.3"
   }
