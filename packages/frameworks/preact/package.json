@@ -33,7 +33,7 @@
     "proxy-compare": "2.6.0"
   },
   "devDependencies": {
-    "@types/react-dom": "18.2.21",
+    "@types/react-dom": "18.2.22",
     "@zag-js/utils": "workspace:*",
     "preact": "10.19.6",
     "clean-package": "2.2.0"
