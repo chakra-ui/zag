@@ -1,5 +1,18 @@
 # @zag-js/rating-group
 
+## 0.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.39.0
+  - @zag-js/core@0.39.0
+  - @zag-js/types@0.39.0
+  - @zag-js/utils@0.39.0
+  - @zag-js/dom-event@0.39.0
+  - @zag-js/dom-query@0.39.0
+  - @zag-js/form-utils@0.39.0
+
 ## 0.38.1
 
 ### Patch Changes
@@ -850,10 +863,10 @@
 
   ```js
   // set the value of the rating-group to 3
-  api.setValue(3)
+  api.setValue(3);
 
   // clear the value of the rating-group
-  api.clearValue()
+  api.clearValue();
   ```
 
 ### Patch Changes

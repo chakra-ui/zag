@@ -1,5 +1,19 @@
 # @zag-js/editable
 
+## 0.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.39.0
+  - @zag-js/core@0.39.0
+  - @zag-js/types@0.39.0
+  - @zag-js/utils@0.39.0
+  - @zag-js/dom-event@0.39.0
+  - @zag-js/dom-query@0.39.0
+  - @zag-js/form-utils@0.39.0
+  - @zag-js/interact-outside@0.39.0
+
 ## 0.38.1
 
 ### Patch Changes
@@ -1269,7 +1283,7 @@
     editable.machine({
       placeholder: { edit: "Enter...", preview: "Add name..." },
     }),
-  )
+  );
   ```
 
 ## 0.1.4
