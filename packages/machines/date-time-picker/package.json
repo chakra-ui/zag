@@ -1,0 +1,56 @@
+{
+  "name": "@zag-js/date-time-picker",
+  "version": "0.38.1",
+  "description": "Core logic for the date-time-picker widget implemented as a state machine",
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "date-time-picker"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/date-time-picker",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "dependencies": {
+    "@internationalized/date": "3.5.2",
+    "@zag-js/anatomy": "workspace:*",
+    "@zag-js/core": "workspace:*",
+    "@zag-js/live-region": "workspace:*",
+    "@zag-js/text-selection": "workspace:*",
+    "@zag-js/dismissable": "workspace:*",
+    "@zag-js/types": "workspace:*",
+    "@zag-js/date-utils": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/dom-event": "workspace:*",
+    "@zag-js/form-utils": "workspace:*",
+    "@zag-js/popper": "workspace:*",
+    "@zag-js/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "clean-package": "2.2.0"
+  },
+  "clean-package": "../../../clean-package.config.json"
+}

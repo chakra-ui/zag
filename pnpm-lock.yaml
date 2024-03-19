@@ -192,6 +192,9 @@ importers:
       '@zag-js/date-picker':
         specifier: workspace:*
         version: link:../../packages/machines/date-picker
+      '@zag-js/date-time-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/date-time-picker
       '@zag-js/date-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/date-utils
@@ -2024,6 +2027,52 @@ importers:
         version: 2.2.0
 
   packages/machines/date-picker:
+    dependencies:
+      '@internationalized/date':
+        specifier: 3.5.2
+        version: 3.5.2
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/date-utils':
+        specifier: workspace:*
+        version: link:../../utilities/date-utils
+      '@zag-js/dismissable':
+        specifier: workspace:*
+        version: link:../../utilities/dismissable
+      '@zag-js/dom-event':
+        specifier: workspace:*
+        version: link:../../utilities/dom-event
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/form-utils':
+        specifier: workspace:*
+        version: link:../../utilities/form-utils
+      '@zag-js/live-region':
+        specifier: workspace:*
+        version: link:../../utilities/live-region
+      '@zag-js/popper':
+        specifier: workspace:*
+        version: link:../../utilities/popper
+      '@zag-js/text-selection':
+        specifier: workspace:*
+        version: link:../../utilities/text-selection
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/date-time-picker:
     dependencies:
       '@internationalized/date':
         specifier: 3.5.2
