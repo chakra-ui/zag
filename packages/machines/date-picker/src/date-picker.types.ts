@@ -171,10 +171,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   format?: (date: DateValue) => string
   /**
-   * The format of the date to display in the input.
-   */
-  parse?: (value: string) => DateValue
-  /**
    * The view of the calendar
    * @default "day"
    */

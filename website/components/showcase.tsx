@@ -2,7 +2,7 @@ import { Accordion } from "./machines/accordion"
 import { Avatar } from "./machines/avatar"
 import { Carousel } from "./machines/carousel"
 import { Checkbox } from "./machines/checkbox"
-import { CircularProgress } from "./machines/circular-progress"
+import { CircularProgress } from "./machines/progress-circular"
 import { Clipboard } from "./machines/clipboard"
 import { Collapsible } from "./machines/collapsible"
 import { ColorPicker } from "./machines/color-picker"
@@ -12,7 +12,7 @@ import { Dialog } from "./machines/dialog"
 import { Editable } from "./machines/editable"
 import { FileUpload } from "./machines/file-upload"
 import { HoverCard } from "./machines/hover-card"
-import { LinearProgress } from "./machines/linear-progress"
+import { LinearProgress } from "./machines/progress-linear"
 import { Menu } from "./machines/menu"
 import { NestedMenu } from "./machines/nested-menu"
 import { NumberInput } from "./machines/number-input"
@@ -72,6 +72,7 @@ const components = {
       component={Checkbox}
       defaultProps={{
         disabled: false,
+        indeterminate: false,
       }}
     />
   ),
@@ -91,6 +92,11 @@ const components = {
         disabled: false,
         readOnly: false,
         closeOnSelect: false,
+        format: {
+          default: "rgba",
+          options: ["rgba", "hsla", "hsba"],
+          required: true,
+        },
       }}
     />
   ),

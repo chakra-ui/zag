@@ -1,8 +1,5 @@
-import { HStack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
 import * as pinInput from "@zag-js/pin-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { Button } from "components/button"
 import { useId } from "react"
 
 export function PinInput(props: any) {
@@ -14,29 +11,12 @@ export function PinInput(props: any) {
 
   return (
     <div>
-      <HStack mb="4" {...api.rootProps}>
+      <div {...api.rootProps}>
         {[1, 2, 3].map((_, index) => (
-          <chakra.input
-            bg="bg-subtle"
-            borderWidth="1px"
-            width="50px"
-            height="50px"
-            fontSize="lg"
-            textAlign="center"
-            key={index}
-            {...api.getInputProps({ index })}
-          />
+          <input key={index} {...api.getInputProps({ index })} />
         ))}
-      </HStack>
-      <Button
-        borderWidth="1px"
-        px="2"
-        size="sm"
-        variant="outline"
-        onClick={api.clearValue}
-      >
-        Clear
-      </Button>
+      </div>
+      <button onClick={api.clearValue}>Clear</button>
     </div>
   )
 }

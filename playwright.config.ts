@@ -8,6 +8,7 @@ export function getWebServer() {
       cwd: "./examples/next-ts",
       command: "cross-env PORT=3000 pnpm dev",
       url: "http://localhost:3000",
+      reuseExistingServer: !process.env.CI,
     },
     vue: {
       cwd: "./examples/vue-ts",

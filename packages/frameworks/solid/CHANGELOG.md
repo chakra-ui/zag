@@ -557,7 +557,7 @@
         max: props.max,
         min: props.min,
       })),
-    });
+    })
   }
   ```
 

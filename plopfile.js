@@ -6,12 +6,17 @@ const capitalize = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
+const multiCapitalize = (str) => {
+  return str.split("-").map(capitalize).join(" ")
+}
+
 /**
  * @param {import("plop").NodePlopAPI} plop
  */
 module.exports = function main(plop) {
   plop.setHelper("camelize", camelCase)
   plop.setHelper("capitalize", capitalize)
+  plop.setHelper("multiCapitalize", multiCapitalize)
 
   plop.setGenerator("machine", {
     description: "Generates a new ui machine",
@@ -51,7 +56,7 @@ module.exports = function main(plop) {
         type: "modify",
         path: "shared/src/routes.ts",
         pattern: /\= \[/,
-        template: '= [\n  { label: "{{capitalize machine}}", path: "/{{machine}}" },',
+        template: '= [\n  { label: "{{multiCapitalize machine}}", path: "/{{machine}}" },',
       })
 
       actions.push({

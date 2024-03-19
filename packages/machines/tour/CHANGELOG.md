@@ -56,7 +56,9 @@
 
 ### Patch Changes
 
-- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom components on top of Zag.js
+- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom
+  components on top of Zag.js
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.37.1
@@ -71,7 +73,9 @@
 
 ### Minor Changes
 
-- [#1253](https://github.com/chakra-ui/zag/pull/1253) [`7a957af`](https://github.com/chakra-ui/zag/commit/7a957af150d1577cb4aab70f385ce23277d724d9) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Introduce new guided tour component
+- [#1253](https://github.com/chakra-ui/zag/pull/1253)
+  [`7a957af`](https://github.com/chakra-ui/zag/commit/7a957af150d1577cb4aab70f385ce23277d724d9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Introduce new guided tour component
 
 ### Patch Changes
 

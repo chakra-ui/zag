@@ -1,0 +1,51 @@
+[data-scope="tags-input"][data-part="root"] {
+  width: 400px;
+}
+
+[data-scope="tags-input"][data-part="control"] {
+  background: var(--colors-bg-subtle);
+  border-width: 1px;
+  margin-top: 0.5rem;
+  padding-block: 2px;
+  padding-inline: 0.25rem;
+}
+
+[data-scope="tags-input"][data-part="control"][data-focus] {
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.6);
+}
+
+[data-scope="tags-input"][data-part="item-preview"] {
+  background: var(--colors-bg-bold);
+  padding-inline: 0.5rem;
+  display: inline-block;
+  margin: 4px;
+}
+
+[data-scope="tags-input"][data-part="item-preview"][data-highlighted] {
+  background: var(--colors-bg-primary-bold);
+  color: #ffffff;
+}
+
+[data-scope="tags-input"][data-part="item-preview"][data-disabled] {
+  opacity: 0.6;
+}
+
+[data-scope="tags-input"][data-part="item-delete-trigger"] {
+  margin-left: 0.25rem;
+}
+
+[data-scope="tags-input"][data-part="item-input"] {
+  padding-inline: 0.5rem;
+  width: 2.5rem;
+  outline: 0;
+}
+
+[data-scope="tags-input"][data-part="input"] {
+  background: var(--colors-bg-subtle);
+  padding-inline: 0.5rem;
+  margin: 4px;
+}
+
+[data-scope="tags-input"][data-part="input"]:focus {
+  outline: 0;
+}

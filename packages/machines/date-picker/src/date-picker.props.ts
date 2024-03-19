@@ -33,7 +33,6 @@ export const props = createProps<UserDefinedContext>()([
   "onViewChange",
   "open",
   "open.controlled",
-  "parse",
   "positioning",
   "readOnly",
   "selectionMode",

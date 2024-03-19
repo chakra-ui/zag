@@ -12,8 +12,10 @@ const data = [
 export default defineComponent({
   name: "Tabs",
   setup() {
-    const [state, send] = useMachine(tabs.machine({ id: "tabs", value: "item-1" }))
-    
+    const [state, send] = useMachine(
+      tabs.machine({ id: "tabs", value: "item-1" }),
+    )
+
     const apiRef = computed(() =>
       tabs.connect(state.value, send, normalizeProps),
     )
@@ -22,7 +24,7 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <div {...api.rootProps}>
-          <div {...api.tablistProps}>
+          <div {...api.listProps}>
             {data.map((item) => (
               <button
                 {...api.getTriggerProps({ value: item.value })}

@@ -32,7 +32,7 @@ export function MultiframeworkTabs() {
   const api = tabs.connect(state, send, normalizeProps)
   return (
     <Box {...api.rootProps}>
-      <HStack {...api.tablistProps}>
+      <HStack {...api.listProps}>
         <FrameworkButton {...api.getTriggerProps({ value: "react" })}>
           <VStack>
             <ReactIcon />

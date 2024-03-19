@@ -56,7 +56,9 @@
 
 ### Patch Changes
 
-- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom components on top of Zag.js
+- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom
+  components on top of Zag.js
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.37.1
@@ -71,7 +73,9 @@
 
 ### Minor Changes
 
-- [`2a024fb`](https://github.com/chakra-ui/zag/commit/2a024fbd2e98343218d4d658e91f1d8c751e1a4d) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Expose all machine context properties as array to improve DX of building design system components.
+- [`2a024fb`](https://github.com/chakra-ui/zag/commit/2a024fbd2e98343218d4d658e91f1d8c751e1a4d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose all machine context properties as array to improve DX of
+  building design system components.
 
 ### Patch Changes
 
@@ -853,7 +857,7 @@
       id: "1",
       checked: true,
     }),
-  );
+  )
 
   // this will update the checkbox when the `checked` value changes
   const [state, send] = useMachine(checkbox.machine({ id: "1" }), {
@@ -861,7 +865,7 @@
       // when this value changes, the checkbox will be checked/unchecked
       checked: true,
     },
-  });
+  })
   ```
 
 ### Patch Changes
