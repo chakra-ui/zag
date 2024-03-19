@@ -1,5 +1,23 @@
 # @zag-js/tags-input
 
+## 0.39.0
+
+### Patch Changes
+
+- [`409caad`](https://github.com/chakra-ui/zag/commit/409caad0332e8893ed3cf9f44c9bc21aa3308e74) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where setting `addOnPaste` to `false` and pasting text prevents subsequent tags from being added
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.39.0
+  - @zag-js/core@0.39.0
+  - @zag-js/types@0.39.0
+  - @zag-js/auto-resize@0.39.0
+  - @zag-js/utils@0.39.0
+  - @zag-js/dom-event@0.39.0
+  - @zag-js/dom-query@0.39.0
+  - @zag-js/form-utils@0.39.0
+  - @zag-js/interact-outside@0.39.0
+  - @zag-js/live-region@0.39.0
+
 ## 0.38.1
 
 ### Patch Changes
