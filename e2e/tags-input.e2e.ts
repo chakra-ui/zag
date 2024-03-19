@@ -125,4 +125,15 @@ test.describe("tags-input", () => {
     await user.expectTagToBeVisible("Github")
     await user.expectTagToBeVisible("Jenkins")
   })
+
+  test("[addOnPaste: true] when input is empty, should work", async () => {
+    await user.controls.bool("addOnPaste", true)
+    // clear input
+    await user.deleteLastTag()
+    await user.deleteLastTag()
+
+    // paste
+    await user.paste("Github")
+    await user.expectTagToBeVisible("Github")
+  })
 })
