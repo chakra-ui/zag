@@ -1,5 +1,5 @@
 import { contains, dataAttr, isSelfEvent } from "@zag-js/dom-query"
-import { formatBytes } from "@zag-js/file-utils"
+import { formatBytes } from "@zag-js/i18n-utils"
 import { type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./file-upload.anatomy"

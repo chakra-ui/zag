@@ -1,4 +1,4 @@
-import { i18nCache } from "./i18n-cache"
+import { i18nCache } from "./cache"
 
 const getNumberFormatter = i18nCache(Intl.NumberFormat)
 

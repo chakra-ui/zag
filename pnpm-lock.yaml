@@ -2148,6 +2148,9 @@ importers:
       '@zag-js/file-utils':
         specifier: workspace:*
         version: link:../../utilities/file-utils
+      '@zag-js/i18n-utils':
+        specifier: workspace:*
+        version: link:../../utilities/i18n-utils
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
