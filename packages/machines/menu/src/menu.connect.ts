@@ -282,10 +282,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("MENU_POINTERENTER")
       },
       onKeyDown(event) {
-        const target = getEventTarget<HTMLElement>(getNativeEvent(event))
-        const isKeyDownInside = target?.closest("[role=menu]") === event.currentTarget
+        const evt = getNativeEvent(event)
+        const target = getEventTarget<HTMLElement>(evt)
 
-        if (!isSelfEvent(event) || !isKeyDownInside) return
+        const isKeyDownInside = target?.closest("[role=menu]") === event.currentTarget
+        if (!isSelfEvent(evt) || !isKeyDownInside) return
 
         const item = dom.getHighlightedItemEl(state.context)
         const isLink = !!item?.matches("a[href]")

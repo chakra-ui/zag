@@ -1,7 +1,7 @@
 import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { getByTypeahead, raf, scrollIntoView } from "@zag-js/dom-query"
-import { setElementValue, trackFormControl } from "@zag-js/form-utils"
+import { trackFormControl } from "@zag-js/form-utils"
 import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
 import { proxyTabFocus } from "@zag-js/tabbable"
@@ -578,7 +578,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           for (const option of selectEl.options) {
             option.selected = ctx.value.includes(option.value)
           }
-          setElementValue(selectEl, ctx.value.join(","), { type: "HTMLSelectElement" })
         },
         setCollection(ctx, evt) {
           ctx.collection = evt.value
@@ -589,11 +588,13 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 }
 
 function dispatchChangeEvent(ctx: MachineContext) {
-  const node = dom.getHiddenSelectEl(ctx)
-  if (!node) return
-  const win = dom.getWin(ctx)
-  const changeEvent = new win.Event("change", { bubbles: true })
-  node.dispatchEvent(changeEvent)
+  raf(() => {
+    const node = dom.getHiddenSelectEl(ctx)
+    if (!node) return
+    const win = dom.getWin(ctx)
+    const changeEvent = new win.Event("change", { bubbles: true, composed: true })
+    node.dispatchEvent(changeEvent)
+  })
 }
 
 const invoke = {

@@ -20,7 +20,10 @@ type PlaygroundProps = {
   defaultContext?: Record<string, any>
   defaultProps?: Record<
     string,
-    string | number | boolean | { options: string[]; default: string }
+    | string
+    | number
+    | boolean
+    | { options: string[]; default: string; required?: boolean }
   >
   hideControls?: boolean
   debug?: boolean
@@ -165,7 +168,7 @@ export function Playground(props: PlaygroundProps) {
                     setState((s) => ({ ...s, [key]: e.target.value }))
                   }}
                 >
-                  <option>-----</option>
+                  {!type.required && <option>-----</option>}
                   {type.options.map((option) => (
                     <option key={option} value={option}>
                       {option}

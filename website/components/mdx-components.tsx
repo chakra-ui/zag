@@ -126,6 +126,44 @@ const components: Record<string, FC<any>> = {
   ContextTable(props) {
     return <PropTable type="context" {...props} />
   },
+  DefaultValuesTable: ({
+    tableData,
+  }: {
+    tableData: {
+      headings: string[]
+      data: Array<[string, string]>
+    }
+  }) => {
+    const { data, headings } = tableData
+
+    return (
+      <table>
+        <thead>
+          <tr>
+            {headings.map((heading) => (
+              <th key={heading}>{heading}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map(([prop, value], idx) => (
+            <tr key={idx}>
+              <td>
+                <chakra.code className="prose" layerStyle="inlineCode">
+                  {prop}
+                </chakra.code>
+              </td>
+              <td>
+                <chakra.code fontSize="sm" whiteSpace="pre-wrap">
+                  {value}
+                </chakra.code>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )
+  },
   code(props) {
     if (typeof props.children === "string") {
       return <components.inlineCode {...props} />
@@ -160,7 +198,7 @@ const components: Record<string, FC<any>> = {
         rounded="6px"
         {...api.rootProps}
       >
-        <Box {...api.tablistProps}>
+        <Box {...api.listProps}>
           {FRAMEWORKS.map((framework) => (
             <chakra.button
               py="2"

@@ -154,10 +154,15 @@ export function machine(userContext: UserDefinedContext) {
               guard: and("hasTags", "isInputCaretAtStart"),
               actions: "highlightLastTag",
             },
-            PASTE: {
-              guard: "addOnPaste",
-              actions: ["setInputValue", "addTagFromPaste"],
-            },
+            PASTE: [
+              {
+                guard: "addOnPaste",
+                actions: ["setInputValue", "addTagFromPaste"],
+              },
+              {
+                actions: "setInputValue",
+              },
+            ],
           },
         },
 
@@ -242,8 +247,15 @@ export function machine(userContext: UserDefinedContext) {
         isAtMax: (ctx) => ctx.isAtMax,
         hasHighlightedTag: (ctx) => ctx.highlightedTagId !== null,
         isTagHighlighted: (ctx, evt) => ctx.highlightedTagId === evt.id,
-        isFirstTagHighlighted: (ctx) => dom.getFirstEl(ctx)?.id === ctx.highlightedTagId,
-        isLastTagHighlighted: (ctx) => dom.getLastEl(ctx)?.id === ctx.highlightedTagId,
+        isFirstTagHighlighted: (ctx) => {
+          const firstItemId = dom.getItemId(ctx, { value: ctx.value[0], index: 0 })
+          return firstItemId === ctx.highlightedTagId
+        },
+        isLastTagHighlighted: (ctx) => {
+          const lastIndex = ctx.value.length - 1
+          const lastItemId = dom.getItemId(ctx, { value: ctx.value[lastIndex], index: lastIndex })
+          return lastItemId === ctx.highlightedTagId
+        },
         isInputValueEmpty: (ctx) => ctx.trimmedInputValue.length === 0,
         hasTags: (ctx) => ctx.value.length > 0,
         allowOverflow: (ctx) => !!ctx.allowOverflow,
@@ -315,25 +327,22 @@ export function machine(userContext: UserDefinedContext) {
         highlightNextTag(ctx) {
           if (ctx.highlightedTagId == null) return
           const next = dom.getNextEl(ctx, ctx.highlightedTagId)
-          if (next == null) return
-          set.highlightedId(ctx, next.id)
+          set.highlightedId(ctx, next?.id ?? null)
         },
         highlightFirstTag(ctx) {
           raf(() => {
             const first = dom.getFirstEl(ctx)
-            if (first == null) return
-            set.highlightedId(ctx, first.id)
+            set.highlightedId(ctx, first?.id ?? null)
           })
         },
         highlightLastTag(ctx) {
           const last = dom.getLastEl(ctx)
-          if (last == null) return
-          set.highlightedId(ctx, last.id)
+          set.highlightedId(ctx, last?.id ?? null)
         },
         highlightPrevTag(ctx) {
           if (ctx.highlightedTagId == null) return
           const prev = dom.getPrevEl(ctx, ctx.highlightedTagId)
-          set.highlightedId(ctx, prev?.id || null)
+          set.highlightedId(ctx, prev?.id ?? null)
         },
         highlightTag(ctx, evt) {
           set.highlightedId(ctx, evt.id)

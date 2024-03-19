@@ -1,5 +1,18 @@
 # @zag-js/progress
 
+## 0.39.0
+
+### Patch Changes
+
+- [`a621fe5`](https://github.com/chakra-ui/zag/commit/a621fe5445f938341e761539471e737eaa149da5) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where progress throws when value is initially set to `null`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.39.0
+  - @zag-js/core@0.39.0
+  - @zag-js/types@0.39.0
+  - @zag-js/utils@0.39.0
+  - @zag-js/dom-query@0.39.0
+
 ## 0.38.1
 
 ### Patch Changes
@@ -48,7 +61,9 @@
 
 ### Patch Changes
 
-- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom components on top of Zag.js
+- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom
+  components on top of Zag.js
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.37.1

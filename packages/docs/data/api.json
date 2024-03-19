@@ -343,6 +343,10 @@
         "type": "boolean",
         "description": "Whether the collapsible is open."
       },
+      "isVisible": {
+        "type": "boolean",
+        "description": "Whether the collapsible is visible (open or closing)"
+      },
       "isDisabled": {
         "type": "boolean",
         "description": "Whether the collapsible is disabled"
@@ -360,6 +364,10 @@
       "ids": {
         "type": "Partial<{ root: string; content: string; trigger: string; }>",
         "description": "The ids of the elements in the collapsible. Useful for composition."
+      },
+      "onExitComplete": {
+        "type": "() => void",
+        "description": "Function called when the animation ends in the closed state."
       },
       "onOpenChange": {
         "type": "(details: OpenChangeDetails) => void",
@@ -1002,10 +1010,6 @@
         "type": "(date: DateValue) => string",
         "description": "The format of the date to display in the input."
       },
-      "parse": {
-        "type": "(value: string) => DateValue",
-        "description": "The format of the date to display in the input."
-      },
       "view": {
         "type": "DateView",
         "description": "The view of the calendar",
@@ -1586,6 +1590,10 @@
       "getRootNode": {
         "type": "() => ShadowRoot | Node | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "onEscapeKeyDown": {
+        "type": "(event: KeyboardEvent) => void",
+        "description": "Function called when the escape key is pressed"
       },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
@@ -2724,10 +2732,6 @@
         "type": "(details: SizeChangeDetails) => void",
         "description": "Function called when the splitter is resized."
       },
-      "onSizeChangeStart": {
-        "type": "(details: SizeChangeDetails) => void",
-        "description": "Function called when the splitter resize starts."
-      },
       "onSizeChangeEnd": {
         "type": "(details: SizeChangeDetails) => void",
         "description": "Function called when the splitter resize ends."
@@ -2860,7 +2864,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; trigger: string; tablist: string; content: string; indicator: string; }>",
+        "type": "Partial<{ root: string; trigger: string; list: string; content: string; indicator: string; }>",
         "description": "The ids of the elements in the tabs. Useful for composition."
       },
       "translations": {

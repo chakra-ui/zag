@@ -6,6 +6,31 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.39.0](./#0.39.0) - 2024-03-19
+
+### Fixed
+
+- **Select**: Fix issue where multiple select doesn't work correctly in forms.
+- **DatePicker**: Remove unused `parse` function
+- **TagsInput**: Fix issue where setting `addOnPaste` to `false` and pasting text prevents subsequent tags from being
+  added
+- **Progress**: Fix issue where progress throws when value is initially set to `null`
+- **Popper**: Fix issue where `crossAxis` positioning property doesn't work in some cases.
+- **Combobox**: Fix issue where clear trigger remains hidden when initial value is set.
+
+### Added
+
+- **Slider**: Add support for custom `name` attribute on the thumb element
+- **Splitter**: Add `data-orientation` attribute to splitter panel
+- **Menu**: Expose `onEscapeKeyDown` event handler
+
+### Changed
+
+> 💥 Breaking changes
+
+- **Tabs**: Rename `api.tablistProps` to `api.listProps` to match naming convention
+- **Dismissable**: Use capture phase for escape keydown handling
+
 ## [0.38.1](./#0.38.1) - 2024-03-08
 
 ### Fixed

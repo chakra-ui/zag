@@ -1,0 +1,35 @@
+[data-scope="rating-group"][data-part="root"] {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+[data-scope="rating-group"][data-part="root"][dir="rtl"]
+  [data-half]
+  [data-part="star"] {
+  transform: scale(-1, 1);
+}
+
+[data-scope="rating-group"][data-part="control"] {
+  display: inline-flex;
+}
+
+[data-scope="rating-group"][data-part="item"] {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.25rem;
+}
+
+[data-scope="rating-group"][data-part="item"] [data-part="star"] {
+  color: #bdbdbd;
+}
+
+[data-scope="rating-group"][data-part="item"][data-highlighted]
+  [data-part="star"] {
+  color: #ffb400;
+}
+
+[data-scope="rating-group"][data-part="item"][data-highlighted][data-disabled]
+  [data-part="star"] {
+  color: #a1a1a1;
+}

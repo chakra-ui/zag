@@ -1,7 +1,5 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
-import { chakra } from "@chakra-ui/system"
-import { Button } from "components/button"
 import { useId } from "react"
 
 const data = [
@@ -23,40 +21,18 @@ export function Menu(props: MenuProps) {
 
   return (
     <div>
-      <Button size="sm" variant="green" {...api.triggerProps}>
-        Actions{" "}
-        <chakra.span ml="2" {...api.indicatorProps}>
-          ▾
-        </chakra.span>
-      </Button>
+      <button {...api.triggerProps}>
+        Actions <span {...api.indicatorProps}>▾</span>
+      </button>
       <Portal>
         <div {...api.positionerProps}>
-          <chakra.ul
-            bg="bg-subtle"
-            width="240px"
-            padding="2"
-            isolation="isolate"
-            listStyleType="none"
-            shadow="base"
-            className="focus-outline"
-            {...api.contentProps}
-          >
+          <ul {...api.contentProps}>
             {data.map((item) => (
-              <chakra.li
-                px="2"
-                py="1"
-                cursor="pointer"
-                key={item.value}
-                _highlighted={{
-                  bg: "bg-primary-bold",
-                  color: "white",
-                }}
-                {...api.getItemProps({ id: item.value })}
-              >
+              <li key={item.value} {...api.getItemProps({ id: item.value })}>
                 {item.label}
-              </chakra.li>
+              </li>
             ))}
-          </chakra.ul>
+          </ul>
         </div>
       </Portal>
     </div>

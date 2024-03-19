@@ -126,6 +126,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("FOCUS")
       },
       onPaste(event) {
+        event.preventDefault()
         const value = event.clipboardData.getData("text/plain")
         send({ type: "PASTE", value })
       },

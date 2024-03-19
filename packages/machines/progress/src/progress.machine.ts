@@ -63,6 +63,7 @@ function isValidMaxNumber(max: any): max is number {
   return isNumber(max) && !isNaN(max) && max > 0
 }
 
-function isValidValueNumber(value: any, max: number): value is number {
+function isValidValueNumber(value: number | null, max: number): value is number {
+  if (value == null) return true
   return isNumber(value) && !isNaN(value) && value <= max && value >= 0
 }

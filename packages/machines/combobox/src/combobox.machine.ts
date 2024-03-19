@@ -45,7 +45,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           ...ctx.translations,
         },
       },
-
       computed: {
         isInputValueEmpty: (ctx) => ctx.inputValue.length === 0,
         isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
@@ -427,10 +426,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             onInteractOutside: ctx.onInteractOutside,
             onEscapeKeyDown(event) {
               event.preventDefault()
+              event.stopPropagation()
               send("LAYER.ESCAPE")
             },
             onDismiss() {
-              send({ type: "LAYER.INTERACT_OUTSIDE" })
+              send("LAYER.INTERACT_OUTSIDE")
             },
           })
         },
@@ -632,7 +632,6 @@ const set = {
       invoke.selectionChange(ctx)
       return
     }
-
     ctx.value = ctx.multiple ? addOrRemove(ctx.value, value!) : [value!]
     invoke.selectionChange(ctx)
   },

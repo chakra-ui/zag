@@ -1,5 +1,5 @@
 import { getWindow } from "@zag-js/dom-query"
-import { getDefaultLocale, type Locale } from "./get-default-locale"
+import { getDefaultLocale, type Locale } from "./locale"
 
 export interface LocaleOptions {
   locale?: string

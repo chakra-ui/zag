@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/react",
-  "version": "0.38.1",
+  "version": "0.39.0",
   "description": "The react wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -32,8 +32,8 @@
     "proxy-compare": "2.6.0"
   },
   "devDependencies": {
-    "@types/react": "18.2.64",
-    "@types/react-dom": "18.2.21",
+    "@types/react": "18.2.67",
+    "@types/react-dom": "18.2.22",
     "@zag-js/utils": "workspace:*",
     "react": "18.2.0",
     "react-dom": "18.2.0",

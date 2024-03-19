@@ -1,6 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-import { chakra } from "@chakra-ui/system"
-import { Center, Circle } from "@chakra-ui/layout"
 import * as avatar from "@zag-js/avatar"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -19,32 +16,17 @@ export function Avatar(props: { controls: { src: string; name: string } }) {
   return (
     <>
       <main className="avatar">
-        <Circle size="80px" overflow="hidden" {...api.rootProps}>
-          <chakra.div
-            width="80px"
-            height="80px"
-            fontSize="sm"
-            lineHeight="1"
-            fontWeight="semibold"
-            color="white"
-            bg="gray.500"
-            {...api.fallbackProps}
-          >
-            <Center width="full" height="full">
-              {initial}
-            </Center>
-          </chakra.div>
-          <chakra.img
-            width="80px"
-            height="80px"
-            objectFit="cover"
-            borderRadius="9999px"
+        <div {...api.rootProps}>
+          <div {...api.fallbackProps}>
+            <div>{initial}</div>
+          </div>
+          <img
             alt={name}
             referrerPolicy="no-referrer"
             src={src}
             {...api.imageProps}
           />
-        </Circle>
+        </div>
       </main>
     </>
   )

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/preact",
-  "version": "0.38.1",
+  "version": "0.39.0",
   "description": "The react wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -33,9 +33,9 @@
     "proxy-compare": "2.6.0"
   },
   "devDependencies": {
-    "@types/react-dom": "18.2.21",
+    "@types/react-dom": "18.2.22",
     "@zag-js/utils": "workspace:*",
-    "preact": "10.19.6",
+    "preact": "10.19.7",
     "clean-package": "2.2.0"
   },
   "peerDependencies": {

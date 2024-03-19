@@ -1,5 +1,24 @@
 # @zag-js/combobox
 
+## 0.39.0
+
+### Patch Changes
+
+- [#1324](https://github.com/chakra-ui/zag/pull/1324) [`ce5b7ce`](https://github.com/chakra-ui/zag/commit/ce5b7ce9ab48cd0dfb750a3fc7c0452912625b6d) Thanks [@TylerAPfledderer](https://github.com/TylerAPfledderer)! - Fixes issue where on load -- if the user set initial `value` to context -- `value` should be used to check whether a
+  trigger button using `clearTriggerProps` should be visible on the page.
+- Updated dependencies [[`27f9ec0`](https://github.com/chakra-ui/zag/commit/27f9ec0812f19228921158885107ed43d559544a), [`565a7e4`](https://github.com/chakra-ui/zag/commit/565a7e46070edb7bb2a39ed9d065dcaee418db83)]:
+  - @zag-js/dismissable@0.39.0
+  - @zag-js/popper@0.39.0
+  - @zag-js/anatomy@0.39.0
+  - @zag-js/core@0.39.0
+  - @zag-js/types@0.39.0
+  - @zag-js/aria-hidden@0.39.0
+  - @zag-js/collection@0.39.0
+  - @zag-js/utils@0.39.0
+  - @zag-js/dom-event@0.39.0
+  - @zag-js/dom-query@0.39.0
+  - @zag-js/mutation-observer@0.39.0
+
 ## 0.38.1
 
 ### Patch Changes
@@ -72,7 +91,9 @@
 
 ### Patch Changes
 
-- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom components on top of Zag.js
+- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom
+  components on top of Zag.js
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.37.1

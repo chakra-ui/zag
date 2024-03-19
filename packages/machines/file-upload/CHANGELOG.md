@@ -1,10 +1,26 @@
 # @zag-js/file-upload
 
+## 0.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.39.0
+  - @zag-js/core@0.39.0
+  - @zag-js/types@0.39.0
+  - @zag-js/utils@0.39.0
+  - @zag-js/dom-query@0.39.0
+  - @zag-js/file-utils@0.39.0
+  - @zag-js/i18n-utils@0.39.0
+  - @zag-js/visually-hidden@0.39.0
+
 ## 0.38.1
 
 ### Patch Changes
 
-- [#1331](https://github.com/chakra-ui/zag/pull/1331) [`dd1eeb9`](https://github.com/chakra-ui/zag/commit/dd1eeb919af569f7bbf730828b216e9f01d11af1) Thanks [@Pagebakers](https://github.com/Pagebakers)! - Fixed an issue where onFileReject would not be called
+- [#1331](https://github.com/chakra-ui/zag/pull/1331)
+  [`dd1eeb9`](https://github.com/chakra-ui/zag/commit/dd1eeb919af569f7bbf730828b216e9f01d11af1) Thanks
+  [@Pagebakers](https://github.com/Pagebakers)! - Fixed an issue where onFileReject would not be called
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.38.1
@@ -58,7 +74,9 @@
 
 ### Patch Changes
 
-- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom components on top of Zag.js
+- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom
+  components on top of Zag.js
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.37.1
@@ -73,7 +91,8 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`170c115`](https://github.com/chakra-ui/zag/commit/170c115afe6f1e5f5bf744508ddb98230a741391), [`2a024fb`](https://github.com/chakra-ui/zag/commit/2a024fbd2e98343218d4d658e91f1d8c751e1a4d)]:
+- Updated dependencies [[`170c115`](https://github.com/chakra-ui/zag/commit/170c115afe6f1e5f5bf744508ddb98230a741391),
+  [`2a024fb`](https://github.com/chakra-ui/zag/commit/2a024fbd2e98343218d4d658e91f1d8c751e1a4d)]:
   - @zag-js/file-utils@0.37.0
   - @zag-js/types@0.37.0
   - @zag-js/anatomy@0.37.0
