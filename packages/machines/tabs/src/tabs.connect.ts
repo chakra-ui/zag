@@ -50,7 +50,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-orientation": state.context.orientation,
       "aria-label": translations.listLabel,
       onKeyDown(event) {
-        if (!isSelfEvent(event)) return
+        const evt = event.nativeEvent || event
+        if (!isSelfEvent(evt)) return
 
         const keyMap: EventKeyMap = {
           ArrowDown() {

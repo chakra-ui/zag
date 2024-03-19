@@ -1,4 +1,4 @@
-import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr, getByTypeahead, isEditableElement, isSelfEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -339,7 +339,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: 0,
       onKeyDown(event) {
-        if (!isInteractive || !isSelfEvent(event)) return
+        const evt = getNativeEvent(event)
+        if (!isInteractive || !isSelfEvent(evt)) return
 
         const keyMap: EventKeyMap = {
           ArrowUp() {

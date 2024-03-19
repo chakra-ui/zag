@@ -61,7 +61,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(disabled),
       "data-dragging": dataAttr(isDragging),
       onKeyDown(event) {
-        if (!isSelfEvent(event)) return
+        const evt = event.nativeEvent || event
+        if (!isSelfEvent(evt)) return
         if (event.key !== "Enter" && event.key !== " ") return
         send({ type: "DROPZONE.CLICK", src: "keydown" })
       },
