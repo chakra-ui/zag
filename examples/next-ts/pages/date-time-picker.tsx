@@ -1,5 +1,5 @@
 import * as dateTimePicker from "@zag-js/date-time-picker"
-import { getYearsRange } from "@zag-js/date-utils"
+import { getYearsRange, getHours, getMinutes } from "@zag-js/date-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { dateTimePickerControls } from "@zag-js/shared"
 import { useId } from "react"
@@ -140,17 +140,17 @@ export default function Page() {
 
               <div>
                 <select {...api.monthSelectProps}>
-                  {api.getMonths().map((month, i) => (
-                    <option key={i} value={month.value}>
-                      {month.label}
+                  {getHours().map((hour, i) => (
+                    <option key={i} value={hour}>
+                      {hour}
                     </option>
                   ))}
                 </select>
 
                 <select {...api.yearSelectProps}>
-                  {getYearsRange({ from: 1_000, to: 4_000 }).map((year, i) => (
-                    <option key={i} value={year}>
-                      {year}
+                  {getMinutes().map((minute, i) => (
+                    <option key={i} value={minute}>
+                      {minute}
                     </option>
                   ))}
                 </select>
