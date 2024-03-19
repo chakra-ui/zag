@@ -87,6 +87,8 @@ interface PublicContext extends DirectionProperty, CommonProperties {
 interface PrivateContext {
   dragDiff: Position
   resizeDiff: Position
+  lastPosition: Position | null
+  lastSize: Size | null
 }
 
 type ComputedContext = Readonly<{}>

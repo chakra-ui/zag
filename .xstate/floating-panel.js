@@ -33,7 +33,8 @@ const fetchMachine = createMachine({
       activities: ["trackBoundaryRect"],
       on: {
         DRAG_START: {
-          target: "open.dragging"
+          target: "open.dragging",
+          actions: ["setLastPosition"]
         },
         RESIZE_START: {
           target: "open.resizing"
@@ -48,7 +49,9 @@ const fetchMachine = createMachine({
       activities: ["trackBoundaryRect", "trackPointerMove", "trackDockRects"],
       exit: ["resetDragDiff"],
       on: {
-        DRAG: {},
+        DRAG: {
+          actions: ["setPosition"]
+        },
         DRAG_END: {
           target: "open",
           actions: ["invokeOnDragEnd"]
@@ -63,7 +66,9 @@ const fetchMachine = createMachine({
       activities: ["trackBoundaryRect", "trackPointerMove"],
       exit: ["resetResizeDiff"],
       on: {
-        RESIZE: {},
+        RESIZE: {
+          actions: ["setSize"]
+        },
         RESIZE_END: {
           target: "open",
           actions: ["invokeOnResizeEnd"]

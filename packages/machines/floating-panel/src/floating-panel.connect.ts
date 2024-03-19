@@ -34,7 +34,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "--y": `${state.context.position.y}px`,
         "--width": `${state.context.size.width}px`,
         "--height": `${state.context.size.height}px`,
-        translate: `var(--x) var(--y)`,
+        top: "var(--y)",
+        left: "var(--x)",
       },
     }),
 
@@ -87,6 +88,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-axis": props.axis,
         onPointerDown(event) {
           if (disabled) return
+          event.currentTarget.setPointerCapture(event.pointerId)
           event.preventDefault()
           send({
             type: "RESIZE_START",
@@ -107,6 +109,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled: state.context.draggable || state.context.disabled,
       onPointerDown(event) {
         if (state.context.disabled) return
+        event.currentTarget.setPointerCapture(event.pointerId)
         event.preventDefault()
         send({
           type: "DRAG_START",

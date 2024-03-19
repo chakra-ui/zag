@@ -1988,6 +1988,7 @@ main [data-testid="scrubber"] {
   border: 1px solid #ebebeb;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   outline: 0 !important;
+  background-color: white;
 }
 
 [data-scope="floating-panel"][data-part="body"] {

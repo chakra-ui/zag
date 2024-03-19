@@ -12,8 +12,10 @@ export function machine(userContext: UserDefinedContext) {
       initial: ctx.open ? "open" : "closed",
       context: {
         size: { width: 300, height: 300 },
-        position: { x: 0, y: 0 },
+        position: { x: 300, y: 100 },
         ...ctx,
+        lastPosition: null,
+        lastSize: null,
         dragDiff: { x: 0, y: 0 },
         resizeDiff: { x: 0, y: 0 },
       },
@@ -34,6 +36,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             DRAG_START: {
               target: "open.dragging",
+              actions: ["setLastPosition"],
             },
             RESIZE_START: {
               target: "open.resizing",
@@ -49,7 +52,9 @@ export function machine(userContext: UserDefinedContext) {
           activities: ["trackBoundaryRect", "trackPointerMove", "trackDockRects"],
           exit: ["resetDragDiff"],
           on: {
-            DRAG: {},
+            DRAG: {
+              actions: ["setPosition"],
+            },
             DRAG_END: {
               target: "open",
               actions: ["invokeOnDragEnd"],
@@ -65,7 +70,9 @@ export function machine(userContext: UserDefinedContext) {
           activities: ["trackBoundaryRect", "trackPointerMove"],
           exit: ["resetResizeDiff"],
           on: {
-            RESIZE: {},
+            RESIZE: {
+              actions: ["setSize"],
+            },
             RESIZE_END: {
               target: "open",
               actions: ["invokeOnResizeEnd"],
@@ -85,7 +92,7 @@ export function machine(userContext: UserDefinedContext) {
           const doc = dom.getDoc(ctx)
           return trackPointerMove(doc, {
             onPointerMove(details) {
-              console.log(details)
+              send({ type: "DRAG", position: details.point })
             },
             onPointerUp() {
               send("DRAG_END")
@@ -94,6 +101,29 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
+        setLastPosition(ctx, evt) {
+          ctx.lastPosition = evt.position
+        },
+        setPosition(ctx, evt) {
+          const diff = {
+            x: evt.position.x - ctx.lastPosition!.x,
+            y: evt.position.y - ctx.lastPosition!.y,
+          }
+          ctx.position = {
+            x: ctx.position.x + diff.x,
+            y: ctx.position.y + diff.y,
+          }
+        },
+        setSize(ctx, evt) {
+          const diff = {
+            x: evt.position.x - ctx.lastPosition!.x,
+            y: evt.position.y - ctx.lastPosition!.y,
+          }
+          ctx.size = {
+            width: ctx.size.width + diff.x,
+            height: ctx.size.height + diff.y,
+          }
+        },
         resetDragDiff(ctx) {
           ctx.dragDiff = { x: 0, y: 0 }
         },
