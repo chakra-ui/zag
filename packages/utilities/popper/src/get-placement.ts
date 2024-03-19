@@ -49,7 +49,7 @@ function __offset(arrowElement: HTMLElement | null, opts: PositioningOptions) {
     const { hasAlign } = getPlacementDetails(placement)
 
     return compact({
-      crossAxis: hasAlign ? opts.shift : undefined,
+      crossAxis: hasAlign ? opts.shift : opts.offset?.crossAxis,
       mainAxis: mainAxis,
       alignmentAxis: opts.shift,
     })
