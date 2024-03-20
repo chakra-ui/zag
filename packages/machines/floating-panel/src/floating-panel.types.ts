@@ -90,6 +90,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Function called when the size of the panel changes via resizing ends
    */
   onResizeEnd?(details: ResizeDetails): void
+  /**
+   * Whether the panel size and position should be preserved when it is closed
+   */
+  preserveOnClose?: boolean
 }
 
 interface PrivateContext {

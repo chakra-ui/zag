@@ -88,7 +88,7 @@ export function machine(userContext: UserDefinedContext) {
         "open.resizing": {
           tags: ["open"],
           activities: ["trackPointerMove"],
-          exit: ["clearLastSize"],
+          exit: ["clearPrevSize"],
           on: {
             DRAG: {
               actions: ["setSize"],
@@ -109,7 +109,6 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
     {
-      guards: {},
       activities: {
         trackPointerMove(ctx, _evt, { send }) {
           const doc = dom.getDoc(ctx)
@@ -138,7 +137,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.lastEventPosition = evt.position
         },
         clearPrevPosition(ctx) {
-          ctx.prevPosition = null
+          if (!ctx.preserveOnClose) ctx.prevPosition = null
           ctx.lastEventPosition = null
         },
         setPosition(ctx, evt) {
@@ -164,8 +163,8 @@ export function machine(userContext: UserDefinedContext) {
           ctx.lastEventPosition = evt.position
         },
         clearPrevSize(ctx) {
-          ctx.prevSize = null
-          ctx.prevPosition = null
+          if (!ctx.preserveOnClose) ctx.prevSize = null
+          if (!ctx.preserveOnClose) ctx.prevPosition = null
           ctx.lastEventPosition = null
         },
         setSize(ctx, evt) {

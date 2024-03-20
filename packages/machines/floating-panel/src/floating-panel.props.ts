@@ -14,6 +14,7 @@ export const props = createProps<UserDefinedContext>()([
   "onDrag",
   "onDragEnd",
   "onOpenChange",
+  "preserveOnClose",
   "onResize",
   "onResizeEnd",
   "open",

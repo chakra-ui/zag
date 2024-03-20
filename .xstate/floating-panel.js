@@ -74,7 +74,7 @@ const fetchMachine = createMachine({
     "open.resizing": {
       tags: ["open"],
       activities: ["trackPointerMove"],
-      exit: ["clearLastSize"],
+      exit: ["clearPrevSize"],
       on: {
         DRAG: {
           actions: ["setSize"]
