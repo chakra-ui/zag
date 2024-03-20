@@ -42,48 +42,39 @@ export default function Page() {
           <button data-testid="trigger" {...root.triggerProps}>
             Click me
           </button>
-
-          <Portal>
-            <div {...root.positionerProps}>
-              <ul data-testid="menu" {...root.contentProps}>
-                {level1.map((item) => {
-                  const props = item.trigger ? triggerItemProps : root.getItemProps({ id: item.id })
-                  return (
-                    <li key={item.id} data-testid={item.id} {...props}>
-                      {item.label}
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          </Portal>
-
-          <Portal>
-            <div {...sub.positionerProps}>
-              <ul data-testid="more-tools-submenu" {...sub.contentProps}>
-                {level2.map((item) => {
-                  const props = item.trigger ? triggerItem2Props : sub.getItemProps({ id: item.id })
-                  return (
-                    <li key={item.id} data-testid={item.id} {...props}>
-                      {item.label}
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          </Portal>
-
-          <Portal>
-            <div {...sub2.positionerProps}>
-              <ul data-testid="open-nested-submenu" {...sub2.contentProps}>
-                {level3.map((item) => (
-                  <li key={item.id} data-testid={item.id} {...sub2.getItemProps({ id: item.id })}>
+          <div {...root.positionerProps}>
+            <ul data-testid="menu" {...root.contentProps}>
+              {level1.map((item) => {
+                const props = item.trigger ? triggerItemProps : root.getItemProps({ id: item.id })
+                return (
+                  <li key={item.id} data-testid={item.id} {...props}>
                     {item.label}
+                    <div {...sub.positionerProps}>
+                      <ul data-testid="more-tools-submenu" {...sub.contentProps}>
+                        {level2.map((item) => {
+                          const props = item.trigger ? triggerItem2Props : sub.getItemProps({ id: item.id })
+                          return (
+                            <li key={item.id} data-testid={item.id} {...props}>
+                              {item.label}
+                              <div {...sub2.positionerProps}>
+                                <ul data-testid="open-nested-submenu" {...sub2.contentProps}>
+                                  {level3.map((item) => (
+                                    <li key={item.id} data-testid={item.id} {...sub2.getItemProps({ id: item.id })}>
+                                      {item.label}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    </div>
                   </li>
-                ))}
-              </ul>
-            </div>
-          </Portal>
+                )
+              })}
+            </ul>
+          </div>
         </div>
       </main>
 

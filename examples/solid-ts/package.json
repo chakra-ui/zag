@@ -55,6 +55,7 @@
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
     "@zag-js/mutation-observer": "workspace:*",
+    "@zag-js/nav-menu": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/number-utils": "workspace:*",
     "@zag-js/numeric-range": "workspace:*",

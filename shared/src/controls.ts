@@ -246,3 +246,7 @@ export const tourControls = defineControls({
   closeOnInteractOutside: { type: "boolean", defaultValue: true },
   preventInteraction: { type: "boolean", defaultValue: true },
 })
+
+export const navMenuControls = defineControls({
+  orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
+})
