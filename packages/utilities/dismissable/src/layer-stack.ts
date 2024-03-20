@@ -42,7 +42,8 @@ export const layerStack = {
     return Array.from(this.branches).some((branch) => contains(branch, target))
   },
   add(layer: Layer) {
-    this.layers.push(layer)
+    const num = this.layers.push(layer)
+    layer.node.style.setProperty("--stack-index", `${num}`)
   },
   addBranch(node: HTMLElement) {
     this.branches.push(node)
@@ -58,6 +59,7 @@ export const layerStack = {
     }
     // remove this layer
     this.layers.splice(index, 1)
+    node.style.removeProperty("--stack-index")
   },
   removeBranch(node: HTMLElement) {
     const index = this.branches.indexOf(node)

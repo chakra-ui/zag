@@ -20,6 +20,8 @@ export const props = createProps<UserDefinedContext>()([
   "position",
   "resizable",
   "size",
+  "minSize",
+  "maxSize",
 ])
 
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)

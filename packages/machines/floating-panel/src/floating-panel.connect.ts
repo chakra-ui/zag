@@ -20,6 +20,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.trigger.attrs,
       type: "button",
       id: dom.getTriggerId(state.context),
+      "data-state": isOpen ? "open" : "closed",
+      "aria-controls": dom.getContentId(state.context),
       onClick() {
         send({ type: "OPEN" })
       },
@@ -51,6 +53,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
+          Escape() {
+            send("ESCAPE")
+          },
           ArrowLeft() {},
           ArrowRight() {},
           ArrowUp() {},
@@ -69,15 +74,35 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     closeTriggerProps: normalize.button({
       ...parts.closeTrigger.attrs,
       disabled: state.context.disabled,
+      "aria-label": "Close Window",
       type: "button",
       onClick() {
-        debugger
         send("CLOSE")
       },
     }),
 
+    minimizeTriggerProps: normalize.button({
+      ...parts.minimizeTrigger.attrs,
+      disabled: state.context.disabled,
+      "aria-label": "Minimize Window",
+      type: "button",
+      onClick() {
+        send("MINIMIZE")
+      },
+    }),
+
+    maximizeTriggerProps: normalize.button({
+      ...parts.maximizeTrigger.attrs,
+      disabled: state.context.disabled,
+      "aria-label": "Maximize Window",
+      type: "button",
+      onClick() {
+        send("MAXIMIZE")
+      },
+    }),
+
     getResizeTriggerProps(props: ResizeTriggerProps) {
-      const disabled = state.context.resizable || state.context.disabled
+      const disabled = !state.context.resizable || state.context.disabled
       return normalize.element({
         ...parts.resizeTrigger.attrs,
         disabled,
@@ -87,7 +112,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (disabled || event.button == 2) return
           event.currentTarget.setPointerCapture(event.pointerId)
 
-          event.preventDefault()
           event.stopPropagation()
 
           send({
@@ -108,8 +132,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.dragTrigger.attrs,
       disabled: state.context.draggable || state.context.disabled,
       onPointerDown(event) {
-        if (state.context.draggable || state.context.disabled || event.button == 2) return
-        event.currentTarget.setPointerCapture(event.pointerId)
+        if (!state.context.draggable || state.context.disabled || event.button == 2) return
 
         const target = getEventTarget<HTMLElement>(getNativeEvent(event))
 
@@ -117,7 +140,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           return
         }
 
-        event.preventDefault()
+        event.currentTarget.setPointerCapture(event.pointerId)
         event.stopPropagation()
 
         send({
@@ -126,8 +149,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           position: { x: event.clientX, y: event.clientY },
         })
       },
+      onDoubleClick() {
+        send("MAXIMIZE")
+      },
       style: {
         userSelect: "none",
+        touchAction: "none",
+        cursor: "move",
       },
     }),
 

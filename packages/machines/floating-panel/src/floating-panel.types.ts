@@ -43,6 +43,14 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   size: Size
   /**
+   * The minimum size of the panel
+   */
+  minSize?: Size
+  /**
+   * The maximum size of the panel
+   */
+  maxSize?: Size
+  /**
    * The position of the panel
    */
   position: Position
@@ -57,7 +65,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The boundary of the panel. Defaults to the window
    */
-  getBoundaryEl?(): { getBoundingClientRect(): DOMRect }
+  getBoundaryEl?(): HTMLElement
   /**
    *  Whether the panel is disabled
    */
@@ -85,6 +93,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
 }
 
 interface PrivateContext {
+  boundaryRect: Rect | null
   lastEventPosition: Position | null
   prevPosition: Position | null
   prevSize: Size | null

@@ -1,16 +1,12 @@
 import { createMachine } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-event"
+import { isHTMLElement } from "@zag-js/dom-query"
+import { getElementRect, getWindowRect } from "@zag-js/rect-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./floating-panel.dom"
-import type {
-  MachineContext,
-  MachineState,
-  Position,
-  ResizeTriggerAxis,
-  Size,
-  UserDefinedContext,
-} from "./floating-panel.types"
-import { addPosition, subtractPosition } from "./utils/math"
+import type { MachineContext, MachineState, UserDefinedContext } from "./floating-panel.types"
+import { getDiffRect } from "./utils/get-diff-rect"
+import { addPosition, clampPosition, clampSize, subtractPosition } from "./utils/math"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -19,17 +15,20 @@ export function machine(userContext: UserDefinedContext) {
       id: "floating-panel",
       initial: ctx.open ? "open" : "closed",
       context: {
-        size: { width: 300, height: 300 },
+        size: { width: 320, height: 400 },
         position: { x: 300, y: 100 },
         ...ctx,
         lastEventPosition: null,
         prevPosition: null,
         prevSize: null,
+        boundaryRect: null,
       },
+
       watch: {
         position: ["setPositionStyle"],
         size: ["setSizeStyle"],
       },
+
       states: {
         closed: {
           tags: ["closed"],
@@ -43,6 +42,7 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["open"],
+          entry: ["setBoundaryRect"],
           on: {
             DRAG_START: {
               target: "open.dragging",
@@ -54,6 +54,11 @@ export function machine(userContext: UserDefinedContext) {
             },
             CLOSE: {
               target: "closed",
+              actions: ["invokeOnClose", "resetPosition", "resetSize"],
+            },
+            ESCAPE: {
+              target: "closed",
+              actions: ["invokeOnClose", "resetPosition", "resetSize"],
             },
           },
         },
@@ -72,6 +77,10 @@ export function machine(userContext: UserDefinedContext) {
             },
             CLOSE: {
               target: "closed",
+              actions: ["invokeOnClose", "resetPosition", "resetSize"],
+            },
+            ESCAPE: {
+              target: "open",
             },
           },
         },
@@ -90,7 +99,10 @@ export function machine(userContext: UserDefinedContext) {
             },
             CLOSE: {
               target: "closed",
-              actions: ["invokeOnClose"],
+              actions: ["invokeOnClose", "resetPosition", "resetSize"],
+            },
+            ESCAPE: {
+              target: "open",
             },
           },
         },
@@ -103,8 +115,8 @@ export function machine(userContext: UserDefinedContext) {
           const doc = dom.getDoc(ctx)
           return trackPointerMove(doc, {
             onPointerMove({ point, event }) {
-              const altKey = event.altKey
-              send({ type: "DRAG", position: point, axis: _evt.axis, altKey })
+              const { altKey, shiftKey } = event
+              send({ type: "DRAG", position: point, axis: _evt.axis, altKey, shiftKey })
             },
             onPointerUp() {
               send("DRAG_END")
@@ -113,6 +125,14 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
+        setBoundaryRect(ctx) {
+          const el = ctx.getBoundaryEl?.()
+          const rect = (() => {
+            if (isHTMLElement(el)) return getElementRect(el)
+            return getWindowRect(dom.getWin(ctx))
+          })()
+          ctx.boundaryRect = { x: rect.x, y: rect.y, width: rect.width, height: rect.height }
+        },
         setPrevPosition(ctx, evt) {
           ctx.prevPosition = { ...ctx.position }
           ctx.lastEventPosition = evt.position
@@ -123,12 +143,20 @@ export function machine(userContext: UserDefinedContext) {
         },
         setPosition(ctx, evt) {
           const diff = subtractPosition(evt.position, ctx.lastEventPosition!)
-          ctx.position = addPosition(ctx.prevPosition!, diff)
+          let position = addPosition(ctx.prevPosition!, diff)
+          position = clampPosition(position, ctx.size, ctx.boundaryRect!)
+          ctx.position = position
         },
         setPositionStyle(ctx) {
           const el = dom.getPositionerEl(ctx)
           el?.style.setProperty("--x", `${ctx.position.x}px`)
           el?.style.setProperty("--y", `${ctx.position.y}px`)
+        },
+        resetPosition(ctx, _evt, { initialContext }) {
+          ctx.position = initialContext.position
+        },
+        resetSize(ctx, _evt, { initialContext }) {
+          ctx.size = initialContext.size
         },
         setPrevSize(ctx, evt) {
           ctx.prevSize = { ...ctx.size }
@@ -144,109 +172,21 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.prevSize || !ctx.prevPosition || !ctx.lastEventPosition) return
 
           const diff = subtractPosition(evt.position, ctx.lastEventPosition)
-          const factor = evt.altKey ? 2 : 1
 
-          let nextSize: Size | undefined
-          let nextPosition: Position | undefined
+          const { nextSize, nextPosition } = getDiffRect({
+            diff,
+            axis: evt.axis,
+            prevPosition: ctx.prevPosition,
+            prevSize: ctx.prevSize,
+            altKey: evt.altKey,
+          })
 
-          switch (evt.axis as ResizeTriggerAxis) {
-            case "n": {
-              nextSize = {
-                width: ctx.prevSize!.width,
-                height: ctx.prevSize.height - diff.y * factor,
-              }
-              nextPosition = {
-                y: ctx.prevPosition.y + diff.y,
-                x: ctx.prevPosition.x,
-              }
-              break
-            }
-            case "e": {
-              nextSize = {
-                width: ctx.prevSize.width + diff.x * factor,
-                height: ctx.prevSize.height,
-              }
-              nextPosition = {
-                y: ctx.prevPosition.y,
-                x: evt.altKey ? ctx.prevPosition.x - diff.x : ctx.prevPosition.x,
-              }
-              break
-            }
-            case "w": {
-              nextSize = {
-                width: ctx.prevSize.width - diff.x * factor,
-                height: ctx.prevSize.height,
-              }
-              nextPosition = {
-                y: ctx.prevPosition.y,
-                x: evt.altKey ? ctx.prevPosition.x + diff.x : ctx.prevPosition.x,
-              }
-              break
-            }
-            case "s": {
-              nextSize = {
-                width: ctx.prevSize.width,
-                height: ctx.prevSize.height + diff.y * factor,
-              }
-              nextPosition = {
-                y: evt.altKey ? ctx.prevPosition.y - diff.y : ctx.prevPosition.y,
-                x: ctx.prevPosition.x,
-              }
-              break
-            }
-            case "ne": {
-              nextSize = {
-                width: ctx.prevSize.width + diff.x * factor,
-                height: ctx.prevSize.height - diff.y * factor,
-              }
-              nextPosition = {
-                y: ctx.prevPosition.y + diff.y,
-                x: evt.altKey ? ctx.prevPosition.x - diff.x : ctx.prevPosition.x,
-              }
-              break
-            }
-            case "se": {
-              nextSize = {
-                width: ctx.prevSize.width + diff.x * factor,
-                height: ctx.prevSize.height + diff.y * factor,
-              }
-              nextPosition = {
-                x: evt.altKey ? ctx.prevPosition.x - diff.x : ctx.prevPosition.x,
-                y: evt.altKey ? ctx.prevPosition.y - diff.y : ctx.prevPosition.y,
-              }
-              break
-            }
-            case "sw": {
-              nextSize = {
-                width: ctx.prevSize.width - diff.x,
-                height: ctx.prevSize.height + diff.y,
-              }
-              nextPosition = {
-                y: ctx.prevPosition.y,
-                x: ctx.prevPosition.x + diff.x,
-              }
-              break
-            }
-            case "nw": {
-              nextSize = {
-                width: ctx.prevSize.width - diff.x,
-                height: ctx.prevSize.height - diff.y,
-              }
-              nextPosition = {
-                y: ctx.prevPosition.y + diff.y,
-                x: ctx.prevPosition.x + diff.x,
-              }
-              break
-            }
-            default: {
-              throw new Error(`Invalid axis: ${evt.axis}`)
-            }
-          }
-
-          ctx.size = nextSize
+          const size = clampSize(nextSize, ctx.minSize, ctx.maxSize)
+          ctx.size = size
 
           if (nextPosition) {
-            ctx.position = nextPosition
+            const position = clampPosition(nextPosition, size, ctx.boundaryRect!)
+            ctx.position = position
           }
         },
         setSizeStyle(ctx) {

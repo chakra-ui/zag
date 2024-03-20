@@ -249,8 +249,8 @@ export const tourControls = defineControls({
 
 export const floatingPanelControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
-  resizable: { type: "boolean", defaultValue: false },
-  draggable: { type: "boolean", defaultValue: false },
+  resizable: { type: "boolean", defaultValue: true },
+  draggable: { type: "boolean", defaultValue: true },
   lockAspectRatio: { type: "boolean", defaultValue: false },
   closeOnEscape: { type: "boolean", defaultValue: true },
 })

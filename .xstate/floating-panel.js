@@ -30,6 +30,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
+      entry: ["setBoundaryRect"],
       on: {
         DRAG_START: {
           target: "open.dragging",
@@ -40,7 +41,12 @@ const fetchMachine = createMachine({
           actions: ["setPrevSize"]
         },
         CLOSE: {
-          target: "closed"
+          target: "closed",
+          actions: ["invokeOnClose", "resetPosition", "resetSize"]
+        },
+        ESCAPE: {
+          target: "closed",
+          actions: ["invokeOnClose", "resetPosition", "resetSize"]
         }
       }
     },
@@ -57,7 +63,11 @@ const fetchMachine = createMachine({
           actions: ["invokeOnDragEnd"]
         },
         CLOSE: {
-          target: "closed"
+          target: "closed",
+          actions: ["invokeOnClose", "resetPosition", "resetSize"]
+        },
+        ESCAPE: {
+          target: "open"
         }
       }
     },
@@ -75,7 +85,10 @@ const fetchMachine = createMachine({
         },
         CLOSE: {
           target: "closed",
-          actions: ["invokeOnClose"]
+          actions: ["invokeOnClose", "resetPosition", "resetSize"]
+        },
+        ESCAPE: {
+          target: "open"
         }
       }
     }
