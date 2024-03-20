@@ -1,5 +1,5 @@
-import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
-import { dataAttr } from "@zag-js/dom-query"
+import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
+import { dataAttr, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./floating-panel.anatomy"
 import { dom } from "./floating-panel.dom"
@@ -30,10 +30,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getPositionerId(state.context),
       style: {
         position: "absolute",
-        "--x": `${state.context.position.x}px`,
-        "--y": `${state.context.position.y}px`,
-        "--width": `${state.context.size.width}px`,
-        "--height": `${state.context.size.height}px`,
         top: "var(--y)",
         left: "var(--x)",
       },
@@ -75,6 +71,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled: state.context.disabled,
       type: "button",
       onClick() {
+        debugger
         send("CLOSE")
       },
     }),
@@ -87,9 +84,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(disabled),
         "data-axis": props.axis,
         onPointerDown(event) {
-          if (disabled) return
+          if (disabled || event.button == 2) return
           event.currentTarget.setPointerCapture(event.pointerId)
+
           event.preventDefault()
+          event.stopPropagation()
+
           send({
             type: "RESIZE_START",
             axis: props.axis,
@@ -108,11 +108,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.dragTrigger.attrs,
       disabled: state.context.draggable || state.context.disabled,
       onPointerDown(event) {
-        if (state.context.disabled) return
+        if (state.context.draggable || state.context.disabled || event.button == 2) return
         event.currentTarget.setPointerCapture(event.pointerId)
+
+        const target = getEventTarget<HTMLElement>(getNativeEvent(event))
+
+        if (target?.closest("[data-part=close-trigger]")) {
+          return
+        }
+
         event.preventDefault()
+        event.stopPropagation()
+
         send({
           type: "DRAG_START",
+          pointerId: event.pointerId,
           position: { x: event.clientX, y: event.clientY },
         })
       },

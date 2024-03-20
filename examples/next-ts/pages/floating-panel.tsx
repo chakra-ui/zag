@@ -27,6 +27,10 @@ export default function Page() {
               <div {...api.getResizeTriggerProps({ axis: "e" })} />
               <div {...api.getResizeTriggerProps({ axis: "w" })} />
               <div {...api.getResizeTriggerProps({ axis: "s" })} />
+              <div {...api.getResizeTriggerProps({ axis: "ne" })} />
+              <div {...api.getResizeTriggerProps({ axis: "se" })} />
+              <div {...api.getResizeTriggerProps({ axis: "sw" })} />
+              <div {...api.getResizeTriggerProps({ axis: "nw" })} />
               <div {...api.dragTriggerProps}>
                 <div {...api.headerProps}>
                   <p {...api.titleProps}>Floating Panel</p>

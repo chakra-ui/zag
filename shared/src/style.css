@@ -2014,22 +2014,26 @@ main [data-testid="scrubber"] {
 }
 
 [data-scope="floating-panel"][data-part="resize-trigger"] {
-  [data-axis="n"],
-  [data-axis="s"] {
+  background-color: rgba(154, 18, 18, 0.396);
+
+  &[data-axis="n"],
+  &[data-axis="s"] {
     height: 6px;
+    max-width: 90%;
   }
 
-  [data-axis="e"],
-  [data-axis="w"] {
+  &[data-axis="e"],
+  &[data-axis="w"] {
     width: 6px;
+    max-height: 90%;
   }
 
-  [data-axis="ne"],
-  [data-axis="nw"],
-  [data-axis="se"],
-  [data-axis="sw"] {
-    width: 6px;
-    height: 6px;
+  &[data-axis="ne"],
+  &[data-axis="nw"],
+  &[data-axis="se"],
+  &[data-axis="sw"] {
+    width: 10px;
+    height: 10px;
   }
 }
 

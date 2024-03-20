@@ -6,29 +6,36 @@ export function getResizeAxisStyle(axis: ResizeTriggerAxis): JSX.CSSProperties {
     case "n":
       return {
         cursor: "n-resize",
-        left: 0,
         width: "100%",
+        left: "50%",
+        translate: "-50%",
       }
 
     case "e":
       return {
         cursor: "e-resize",
-        right: 0,
         height: "100%",
+        right: 0,
+        top: "50%",
+        translate: "0 -50%",
       }
 
     case "s":
       return {
         cursor: "s-resize",
-        bottom: 0,
         width: "100%",
+        bottom: 0,
+        left: "50%",
+        translate: "-50%",
       }
 
     case "w":
       return {
         cursor: "w-resize",
-        left: 0,
         height: "100%",
+        left: 0,
+        top: "50%",
+        translate: "0 -50%",
       }
 
     case "se":
