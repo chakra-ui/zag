@@ -120,19 +120,19 @@ function getProgressState(value: number | null, maxValue: number): ProgressState
 }
 
 function getCircleProps(ctx: MachineContext) {
-  const determinant = ctx.isIndeterminate ? undefined : ctx.percent * 2.64
   const circleProps = {
     style: {
-      cx: "50px",
-      cy: "50px",
-      r: "42px",
+      "--radius": "calc(var(--size) / 2 - var(--thickness) / 2)",
+      cx: "calc(var(--size) / 2)",
+      cy: "calc(var(--size) / 2)",
+      r: "var(--radius)",
       fill: "transparent",
       strokeWidth: "var(--thickness)",
     },
   }
   return {
     root: {
-      viewBox: "0 0 100 100",
+      viewBox: "0 0 var(--size) var(--size)",
       style: {
         width: "var(--size)",
         height: "var(--size)",
@@ -142,8 +142,13 @@ function getCircleProps(ctx: MachineContext) {
     range: {
       style: {
         ...circleProps.style,
-        strokeDashoffset: "66px",
-        strokeDasharray: determinant != null ? `${determinant} ${264 - determinant}` : undefined,
+
+        "--circumference": `calc(${2 * Math.PI} * var(--radius))`,
+        "--offset": `calc(var(--circumference) * (100 - ${ctx.percent}) / 100}))`,
+        strokeDashoffset: `calc(var(--circumference) * ((100 - ${ctx.percent}) / 100))`,
+        strokeDasharray: ctx.isIndeterminate ? undefined : `var(--circumference)`,
+        transformOrigin: "center",
+        transform: ctx.isIndeterminate ? undefined : `rotate(-90deg)`,
       },
     },
   }
