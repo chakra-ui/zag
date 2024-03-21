@@ -142,9 +142,10 @@ function getCircleProps(ctx: MachineContext) {
     range: {
       style: {
         ...circleProps.style,
+        "--percent": ctx.percent,
         "--circumference": `calc(2 * 3.14159 * var(--radius))`,
-        "--offset": `calc(var(--circumference) * (100 - ${ctx.percent}) / 100}))`,
-        strokeDashoffset: `calc(var(--circumference) * ((100 - ${ctx.percent}) / 100))`,
+        "--offset": `calc(var(--circumference) * (100 - var(--percent)) / 100}))`,
+        strokeDashoffset: `calc(var(--circumference) * ((100 - var(--percent)) / 100))`,
         strokeDasharray: ctx.isIndeterminate ? undefined : `var(--circumference)`,
         transformOrigin: "center",
         transform: ctx.isIndeterminate ? undefined : `rotate(-90deg)`,
