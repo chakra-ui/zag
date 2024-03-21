@@ -152,9 +152,11 @@ export function machine(userContext: UserDefinedContext) {
           el?.style.setProperty("--y", `${ctx.position.y}px`)
         },
         resetPosition(ctx, _evt, { initialContext }) {
+          if (ctx.preserveOnClose) return
           ctx.position = initialContext.position
         },
         resetSize(ctx, _evt, { initialContext }) {
+          if (ctx.preserveOnClose) return
           ctx.size = initialContext.size
         },
         setPrevSize(ctx, evt) {
@@ -163,8 +165,8 @@ export function machine(userContext: UserDefinedContext) {
           ctx.lastEventPosition = evt.position
         },
         clearPrevSize(ctx) {
-          if (!ctx.preserveOnClose) ctx.prevSize = null
-          if (!ctx.preserveOnClose) ctx.prevPosition = null
+          ctx.prevSize = null
+          ctx.prevPosition = null
           ctx.lastEventPosition = null
         },
         setSize(ctx, evt) {
