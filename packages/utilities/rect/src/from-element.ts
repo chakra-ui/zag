@@ -1,6 +1,8 @@
-import { createRect, type Rect } from "./rect"
+import { createRect } from "./rect"
+import type { Rect } from "./types"
 
 const styleCache = new WeakMap<HTMLElement, any>()
+
 function getCacheComputedStyle(el: HTMLElement) {
   if (!styleCache.has(el)) {
     const win = el.ownerDocument.defaultView || window

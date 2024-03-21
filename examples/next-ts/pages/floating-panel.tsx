@@ -1,7 +1,7 @@
 import * as floatingPanel from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { floatingPanelControls } from "@zag-js/shared"
-import { XIcon } from "lucide-react"
+import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -23,6 +23,29 @@ export default function Page() {
           <button {...api.triggerProps}>Toggle Panel</button>
           <div {...api.positionerProps}>
             <div {...api.contentProps}>
+              <div {...api.dragTriggerProps}>
+                <div {...api.headerProps}>
+                  <p {...api.titleProps}>Floating Panel</p>
+                  <div data-scope="floating-panel" data-part="trigger-group">
+                    <button {...api.minimizeTriggerProps}>
+                      <Minus />
+                    </button>
+                    <button {...api.maximizeTriggerProps}>
+                      <Maximize2 />
+                    </button>
+                    <button {...api.restoreTriggerProps}>
+                      <ArrowDownLeft />
+                    </button>
+                    <button {...api.closeTriggerProps}>
+                      <XIcon />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div {...api.bodyProps}>
+                <p>Some content</p>
+              </div>
+
               <div {...api.getResizeTriggerProps({ axis: "n" })} />
               <div {...api.getResizeTriggerProps({ axis: "e" })} />
               <div {...api.getResizeTriggerProps({ axis: "w" })} />
@@ -31,17 +54,6 @@ export default function Page() {
               <div {...api.getResizeTriggerProps({ axis: "se" })} />
               <div {...api.getResizeTriggerProps({ axis: "sw" })} />
               <div {...api.getResizeTriggerProps({ axis: "nw" })} />
-              <div {...api.dragTriggerProps}>
-                <div {...api.headerProps}>
-                  <p {...api.titleProps}>Floating Panel</p>
-                  <button {...api.closeTriggerProps}>
-                    <XIcon />
-                  </button>
-                </div>
-              </div>
-              <div {...api.bodyProps}>
-                <p>Some content</p>
-              </div>
             </div>
           </div>
         </div>

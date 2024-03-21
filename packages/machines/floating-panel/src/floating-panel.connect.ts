@@ -11,6 +11,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isDragging = state.matches("open.dragging")
   const isResizing = state.matches("open.resizing")
 
+  const isMaximized = state.context.stage === "maximized"
+  const isMinimized = state.context.stage === "minimized"
+
   return {
     isOpen,
     isDragging,
@@ -85,6 +88,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.minimizeTrigger.attrs,
       disabled: state.context.disabled,
       "aria-label": "Minimize Window",
+      hidden: isMinimized || isMaximized,
       type: "button",
       onClick() {
         send("MINIMIZE")
@@ -95,9 +99,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.maximizeTrigger.attrs,
       disabled: state.context.disabled,
       "aria-label": "Maximize Window",
+      hidden: isMaximized || isMinimized,
       type: "button",
       onClick() {
         send("MAXIMIZE")
+      },
+    }),
+
+    restoreTriggerProps: normalize.button({
+      ...parts.restoreTrigger.attrs,
+      disabled: state.context.disabled,
+      "aria-label": "Restore Window",
+      hidden: !(isMaximized || isMinimized),
+      type: "button",
+      onClick() {
+        send("RESTORE")
       },
     }),
 
@@ -136,7 +152,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         const target = getEventTarget<HTMLElement>(getNativeEvent(event))
 
-        if (target?.closest("[data-part=close-trigger]")) {
+        if (target?.closest("button")) {
           return
         }
 
@@ -182,6 +198,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     bodyProps: normalize.element({
       ...parts.body.attrs,
       "data-dragging": dataAttr(isDragging),
+      hidden: isMinimized,
     }),
   }
 }

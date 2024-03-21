@@ -12,6 +12,7 @@ export const anatomy = createAnatomy("floating-panel").parts(
   "minimizeTrigger",
   "maximizeTrigger",
   "closeTrigger",
+  "restoreTrigger",
   "dock",
 )
 

@@ -12,7 +12,11 @@ const {
 const fetchMachine = createMachine({
   id: "floating-panel",
   initial: ctx.open ? "open" : "closed",
-  context: {},
+  context: {
+    "!isMaximized": false,
+    "!isMinimized": false,
+    "closeOnEsc": false
+  },
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -33,20 +37,32 @@ const fetchMachine = createMachine({
       entry: ["setBoundaryRect"],
       on: {
         DRAG_START: {
+          cond: "!isMaximized",
           target: "open.dragging",
           actions: ["setPrevPosition"]
         },
         RESIZE_START: {
+          cond: "!isMinimized",
           target: "open.resizing",
           actions: ["setPrevSize"]
         },
         CLOSE: {
           target: "closed",
-          actions: ["invokeOnClose", "resetPosition", "resetSize"]
+          actions: ["invokeOnClose", "resetRect"]
         },
         ESCAPE: {
+          cond: "closeOnEsc",
           target: "closed",
-          actions: ["invokeOnClose", "resetPosition", "resetSize"]
+          actions: ["invokeOnClose", "resetRect"]
+        },
+        MINIMIZE: {
+          actions: ["setMinimized", "invokeOnMinimize"]
+        },
+        MAXIMIZE: {
+          actions: ["setMaximized", "invokeOnMaximize"]
+        },
+        RESTORE: {
+          actions: ["setRestored"]
         }
       }
     },
@@ -64,7 +80,7 @@ const fetchMachine = createMachine({
         },
         CLOSE: {
           target: "closed",
-          actions: ["invokeOnClose", "resetPosition", "resetSize"]
+          actions: ["invokeOnClose", "resetRect"]
         },
         ESCAPE: {
           target: "open"
@@ -85,7 +101,7 @@ const fetchMachine = createMachine({
         },
         CLOSE: {
           target: "closed",
-          actions: ["invokeOnClose", "resetPosition", "resetSize"]
+          actions: ["invokeOnClose", "resetRect"]
         },
         ESCAPE: {
           target: "open"
@@ -101,5 +117,9 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {}
+  guards: {
+    "!isMaximized": ctx => ctx["!isMaximized"],
+    "!isMinimized": ctx => ctx["!isMinimized"],
+    "closeOnEsc": ctx => ctx["closeOnEsc"]
+  }
 });

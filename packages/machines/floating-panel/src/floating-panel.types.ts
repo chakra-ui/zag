@@ -1,20 +1,9 @@
 import type { StateMachine as S } from "@zag-js/core"
+import type { Point, RectInit, Size } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, RequiredBy } from "@zag-js/types"
 
-export interface Position {
-  x: number
-  y: number
-}
-
-export interface Size {
-  width: number
-  height: number
-}
-
-export interface Rect extends Position, Size {}
-
 export interface DragDetails {
-  position: Position
+  position: Point
 }
 
 export interface ResizeDetails {
@@ -53,7 +42,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The position of the panel
    */
-  position: Position
+  position: Point
   /**
    * Whether the panel is locked to its aspect ratio
    */
@@ -94,13 +83,41 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the panel size and position should be preserved when it is closed
    */
   preserveOnClose?: boolean
+  /**
+   * The snap grid for the panel
+   */
+  gridSize: number
+  /**
+   * Function called when the panel is minimized
+   */
+  onMinimize?(): void
+  /**
+   * Function called when the panel is maximized
+   */
+  onMaximize?(): void
 }
 
 interface PrivateContext {
-  boundaryRect: Rect | null
-  lastEventPosition: Position | null
-  prevPosition: Position | null
+  /**
+   * The rect of the boundary
+   */
+  boundaryRect: RectInit | null
+  /**
+   * The last position of the mouse event
+   */
+  lastEventPosition: Point | null
+  /**
+   * The previous position of the panel before dragging
+   */
+  prevPosition: Point | null
+  /**
+   * The previous size of the panel before resizing
+   */
   prevSize: Size | null
+  /**
+   * The stage of the panel
+   */
+  stage?: "minimized" | "maximized"
 }
 
 type ComputedContext = Readonly<{}>
