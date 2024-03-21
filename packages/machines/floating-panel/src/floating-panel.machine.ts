@@ -275,6 +275,12 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnResizeEnd(ctx) {
           ctx.onResizeEnd?.({ size: ctx.size })
         },
+        invokeOnMinimize(ctx) {
+          ctx.onStageChange?.({ stage: "minimized" })
+        },
+        invokeOnMaximize(ctx) {
+          ctx.onStageChange?.({ stage: "maximized" })
+        },
       },
     },
   )

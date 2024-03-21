@@ -14,6 +14,12 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export type Stage = "minimized" | "maximized"
+
+export interface StageChangeDetails {
+  stage: Stage
+}
+
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the panel is open
@@ -88,13 +94,9 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   gridSize: number
   /**
-   * Function called when the panel is minimized
+   * Function called when the stage of the panel changes
    */
-  onMinimize?(): void
-  /**
-   * Function called when the panel is maximized
-   */
-  onMaximize?(): void
+  onStageChange?(details: StageChangeDetails): void
 }
 
 interface PrivateContext {
@@ -117,7 +119,7 @@ interface PrivateContext {
   /**
    * The stage of the panel
    */
-  stage?: "minimized" | "maximized"
+  stage?: Stage
 }
 
 type ComputedContext = Readonly<{}>
