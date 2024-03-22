@@ -4,11 +4,13 @@
 
 ### Minor Changes
 
-- [`492d152`](https://github.com/chakra-ui/zag/commit/492d152c04ab367e6c4fd80b1a1f1a68bb287e46) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Expose `onEscapeKeyDown` event handler
+- [`492d152`](https://github.com/chakra-ui/zag/commit/492d152c04ab367e6c4fd80b1a1f1a68bb287e46) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `onEscapeKeyDown` event handler
 
 ### Patch Changes
 
-- Updated dependencies [[`27f9ec0`](https://github.com/chakra-ui/zag/commit/27f9ec0812f19228921158885107ed43d559544a), [`565a7e4`](https://github.com/chakra-ui/zag/commit/565a7e46070edb7bb2a39ed9d065dcaee418db83)]:
+- Updated dependencies [[`27f9ec0`](https://github.com/chakra-ui/zag/commit/27f9ec0812f19228921158885107ed43d559544a),
+  [`565a7e4`](https://github.com/chakra-ui/zag/commit/565a7e46070edb7bb2a39ed9d065dcaee418db83)]:
   - @zag-js/dismissable@0.39.0
   - @zag-js/popper@0.39.0
   - @zag-js/anatomy@0.39.0
@@ -1084,7 +1086,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" });
+  api.setPositioning({ placement: "top" })
   ```
 
 ### Patch Changes

@@ -4,11 +4,13 @@
 
 ### Minor Changes
 
-- [`6b93232`](https://github.com/chakra-ui/zag/commit/6b932324a776ab66fc34b9dc8673400b60500f1c) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Remove unused `parse` function
+- [`6b93232`](https://github.com/chakra-ui/zag/commit/6b932324a776ab66fc34b9dc8673400b60500f1c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove unused `parse` function
 
 ### Patch Changes
 
-- Updated dependencies [[`27f9ec0`](https://github.com/chakra-ui/zag/commit/27f9ec0812f19228921158885107ed43d559544a), [`565a7e4`](https://github.com/chakra-ui/zag/commit/565a7e46070edb7bb2a39ed9d065dcaee418db83)]:
+- Updated dependencies [[`27f9ec0`](https://github.com/chakra-ui/zag/commit/27f9ec0812f19228921158885107ed43d559544a),
+  [`565a7e4`](https://github.com/chakra-ui/zag/commit/565a7e46070edb7bb2a39ed9d065dcaee418db83)]:
   - @zag-js/dismissable@0.39.0
   - @zag-js/popper@0.39.0
   - @zag-js/anatomy@0.39.0

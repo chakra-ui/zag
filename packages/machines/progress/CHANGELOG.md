@@ -4,7 +4,9 @@
 
 ### Patch Changes
 
-- [`a621fe5`](https://github.com/chakra-ui/zag/commit/a621fe5445f938341e761539471e737eaa149da5) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where progress throws when value is initially set to `null`
+- [`a621fe5`](https://github.com/chakra-ui/zag/commit/a621fe5445f938341e761539471e737eaa149da5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where progress throws when value is initially set to
+  `null`
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.39.0

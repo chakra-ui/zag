@@ -4,7 +4,8 @@
 
 ### Patch Changes
 
-- [`27f9ec0`](https://github.com/chakra-ui/zag/commit/27f9ec0812f19228921158885107ed43d559544a) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Use capture phase for escape keydown dismissing
+- [`27f9ec0`](https://github.com/chakra-ui/zag/commit/27f9ec0812f19228921158885107ed43d559544a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Use capture phase for escape keydown dismissing
 
 - Updated dependencies []:
   - @zag-js/utils@0.39.0
