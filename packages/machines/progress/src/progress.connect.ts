@@ -148,7 +148,7 @@ function getCircleProps(ctx: MachineContext) {
         strokeDashoffset: `calc(var(--circumference) * ((100 - var(--percent)) / 100))`,
         strokeDasharray: ctx.isIndeterminate ? undefined : `var(--circumference)`,
         transformOrigin: "center",
-        transform: ctx.isIndeterminate ? undefined : `rotate(-90deg)`,
+        transform: "rotate(-90deg)",
       },
     },
   }

@@ -1805,7 +1805,7 @@ main [data-testid="scrubber"] {
 
 [data-scope="progress"][data-part="circle"] {
   --size: 48px;
-  --thickness: 8px;
+  --thickness: 4px;
 }
 
 [data-scope="progress"][data-part="circle"][data-state="indeterminate"] {
