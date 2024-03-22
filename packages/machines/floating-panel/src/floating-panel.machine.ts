@@ -5,13 +5,19 @@ import {
   addPoints,
   clampPoint,
   clampSize,
+  constrainRect,
   createRect,
   getElementRect,
   getWindowRect,
+  isPointEqual,
+  isSizeEqual,
   resizeRect,
   subtractPoints,
+  type Point,
+  type Rect,
+  type Size,
 } from "@zag-js/rect-utils"
-import { compact } from "@zag-js/utils"
+import { compact, pick } from "@zag-js/utils"
 import { dom } from "./floating-panel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./floating-panel.types"
 
@@ -27,11 +33,24 @@ export function machine(userContext: UserDefinedContext) {
         size: { width: 320, height: 400 },
         position: { x: 300, y: 100 },
         gridSize: 1,
+        disabled: false,
+        resizable: true,
+        draggable: true,
         ...ctx,
+        stage: undefined,
         lastEventPosition: null,
         prevPosition: null,
         prevSize: null,
         boundaryRect: null,
+      },
+
+      computed: {
+        isMaximized: (ctx) => ctx.stage === "maximized",
+        isMinimized: (ctx) => ctx.stage === "minimized",
+        isStaged: (ctx) => !!ctx.stage,
+        isDisabled: (ctx) => !!ctx.disabled,
+        canResize: (ctx) => (ctx.resizable || !ctx.isDisabled) && !ctx.stage,
+        canDrag: (ctx) => (ctx.draggable || !ctx.isDisabled) && !ctx.isMaximized,
       },
 
       watch: {
@@ -133,8 +152,8 @@ export function machine(userContext: UserDefinedContext) {
     {
       guards: {
         closeOnEsc: (ctx) => !!ctx.closeOnEscape,
-        isMaximized: (ctx) => ctx.stage === "maximized",
-        isMinimized: (ctx) => ctx.stage === "minimized",
+        isMaximized: (ctx) => ctx.isMaximized,
+        isMinimized: (ctx) => ctx.isMinimized,
       },
       activities: {
         trackPointerMove(ctx, _evt, { send }) {
@@ -153,19 +172,35 @@ export function machine(userContext: UserDefinedContext) {
           const win = dom.getWin(ctx)
           const el = ctx.getBoundaryEl?.()
 
+          const adjust = (boundary: Rect) => {
+            const boundaryRect = pick(boundary, ["width", "height", "x", "y"])
+            ctx.boundaryRect = boundaryRect
+
+            const res = ctx.isMaximized
+              ? boundaryRect
+              : constrainRect(
+                  {
+                    ...ctx.position,
+                    ...ctx.size,
+                  },
+                  boundaryRect,
+                )
+
+            set.size(ctx, pick(res, ["width", "height"]))
+            set.position(ctx, pick(res, ["x", "y"]))
+          }
+
           if (isHTMLElement(el)) {
-            ctx.boundaryRect = getElementRect(el)
-            const obs = new win.ResizeObserver(() => {
-              ctx.boundaryRect = getElementRect(el)
-            })
+            const exec = () => adjust(getElementRect(el))
+            exec()
+            const obs = new win.ResizeObserver(exec)
             obs.observe(el)
             return () => obs.disconnect()
           }
 
-          ctx.boundaryRect = getWindowRect(win)
-          return addDomEvent(win, "resize", () => {
-            ctx.boundaryRect = getWindowRect(win)
-          })
+          const exec = () => adjust(getWindowRect(win))
+          exec()
+          return addDomEvent(win, "resize", exec)
         },
       },
       actions: {
@@ -183,9 +218,10 @@ export function machine(userContext: UserDefinedContext) {
           diff.x = Math.round(diff.x / ctx.gridSize!) * ctx.gridSize!
           diff.y = Math.round(diff.y / ctx.gridSize!) * ctx.gridSize!
 
-          const position = addPoints(ctx.prevPosition!, diff)
-          const point = clampPoint(position, ctx.size, ctx.boundaryRect!)
-          ctx.position = point
+          let position = addPoints(ctx.prevPosition!, diff)
+          position = clampPoint(position, ctx.size, ctx.boundaryRect!)
+
+          set.position(ctx, position)
         },
         setPositionStyle(ctx) {
           const el = dom.getPositionerEl(ctx)
@@ -195,8 +231,8 @@ export function machine(userContext: UserDefinedContext) {
         resetRect(ctx, _evt, { initialContext }) {
           ctx.stage = undefined
           if (!ctx.preserveOnClose) {
-            ctx.position = initialContext.position
-            ctx.size = initialContext.size
+            set.position(ctx, initialContext.position)
+            set.size(ctx, initialContext.size)
           }
         },
         setPrevSize(ctx, evt) {
@@ -220,58 +256,61 @@ export function machine(userContext: UserDefinedContext) {
             lockAspectRatio: !!ctx.lockAspectRatio || evt.shiftKey,
           })
 
-          let nextSize = { width: nextRect.width, height: nextRect.height }
-          let nextPosition = { x: nextRect.x, y: nextRect.y }
+          let nextSize = pick(nextRect, ["width", "height"])
+          let nextPosition = pick(nextRect, ["x", "y"])
 
           nextSize = clampSize(nextSize, ctx.minSize, ctx.maxSize)
-          ctx.size = nextSize
+          set.size(ctx, nextSize)
 
           if (nextPosition) {
             const point = clampPoint(nextPosition, nextSize, ctx.boundaryRect!)
-            ctx.position = point
+            set.position(ctx, point)
           }
         },
         setSizeStyle(ctx) {
           const el = dom.getPositionerEl(ctx)
-
-          if (ctx.size.width != null) {
-            el?.style.setProperty("--width", `${ctx.size.width}px`)
-          } else {
-            el?.style.removeProperty("--width")
-          }
-
-          if (ctx.size.height != null) {
-            el?.style.setProperty("--height", `${ctx.size.height}px`)
-          } else {
-            el?.style.removeProperty("--height")
-          }
+          el?.style.setProperty("--width", `${ctx.size.width}px`)
+          el?.style.setProperty("--height", `${ctx.size.height}px`)
         },
         setMaximized(ctx) {
-          // set max size
+          // set max stage
           ctx.stage = "maximized"
+
+          // save previous
           ctx.prevSize = ctx.size
           ctx.prevPosition = ctx.position
+
           // update size
-          ctx.position = { x: 0, y: 0 }
-          ctx.size = { width: ctx.boundaryRect!.width, height: ctx.boundaryRect!.height }
+          set.position(ctx, { x: 0, y: 0 })
+          set.size(ctx, pick(ctx.boundaryRect!, ["height", "width"]))
         },
         setMinimized(ctx) {
-          // set min size
+          // set min stage
           ctx.stage = "minimized"
+
+          // save previous
           ctx.prevSize = ctx.size
           ctx.prevPosition = ctx.position
+
           // update size
-          const size: any = { ...ctx.size }
-          delete size.height
-          ctx.size = size
+          const headerEl = dom.getHeaderEl(ctx)
+          if (!headerEl) return
+          const size = {
+            ...ctx.size,
+            height: headerEl?.offsetHeight,
+          }
+          set.size(ctx, size)
         },
         setRestored(ctx) {
+          // remove stage
           ctx.stage = undefined
-          if (!ctx.prevSize || !ctx.prevPosition) return
+
           // restore size
+          if (!ctx.prevSize || !ctx.prevPosition) return
           ctx.size = ctx.prevSize
           ctx.position = ctx.prevPosition
-          // clear prev size
+
+          // clear previous
           ctx.prevSize = null
           ctx.prevPosition = null
         },
@@ -282,10 +321,10 @@ export function machine(userContext: UserDefinedContext) {
           ctx.onOpenChange?.({ open: false })
         },
         invokeOnDragEnd(ctx) {
-          ctx.onDragEnd?.({ position: ctx.position })
+          ctx.onPositionChangeEnd?.({ position: ctx.position })
         },
         invokeOnResizeEnd(ctx) {
-          ctx.onResizeEnd?.({ size: ctx.size })
+          ctx.onSizeChangeEnd?.({ size: ctx.size })
         },
         invokeOnMinimize(ctx) {
           ctx.onStageChange?.({ stage: "minimized" })
@@ -296,4 +335,17 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
+}
+
+const set = {
+  size(ctx: MachineContext, value: Size) {
+    if (isSizeEqual(ctx.size, value)) return
+    ctx.size = value
+    ctx.onSizeChange?.({ size: value })
+  },
+  position(ctx: MachineContext, value: Point) {
+    if (isPointEqual(ctx.position, value)) return
+    ctx.position = value
+    ctx.onPositionChange?.({ position: value })
+  },
 }

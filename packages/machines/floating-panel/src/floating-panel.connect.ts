@@ -3,16 +3,13 @@ import { dataAttr, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./floating-panel.anatomy"
 import { dom } from "./floating-panel.dom"
-import type { DockProps, ResizeTriggerProps, Send, State } from "./floating-panel.types"
-import { getResizeAxisStyle } from "./utils/get-resize-axis-style"
+import type { MachineApi, ResizeTriggerProps, Send, State } from "./floating-panel.types"
+import { getResizeAxisStyle } from "./get-resize-axis-style"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isOpen = state.hasTag("open")
   const isDragging = state.matches("open.dragging")
   const isResizing = state.matches("open.resizing")
-
-  const isMaximized = state.context.stage === "maximized"
-  const isMinimized = state.context.stage === "minimized"
 
   return {
     isOpen,
@@ -22,10 +19,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
       type: "button",
+      disabled: state.context.isDisabled,
       id: dom.getTriggerId(state.context),
       "data-state": isOpen ? "open" : "closed",
+      "data-dragging": dataAttr(isDragging),
       "aria-controls": dom.getContentId(state.context),
       onClick() {
+        if (state.context.isDisabled) return
         send({ type: "OPEN" })
       },
     }),
@@ -45,14 +45,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "dialog",
       tabIndex: 0,
       hidden: !isOpen,
-      "data-state": isOpen ? "open" : "closed",
       id: dom.getContentId(state.context),
       "aria-labelledby": dom.getTitleId(state.context),
+      "data-state": isOpen ? "open" : "closed",
       "data-dragging": dataAttr(isDragging),
       style: {
         position: "relative",
         width: "var(--width)",
         height: "var(--height)",
+        overflow: state.context.isMinimized ? "hidden" : undefined,
       },
       onKeyDown(event) {
         const keyMap: EventKeyMap = {
@@ -76,7 +77,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     closeTriggerProps: normalize.button({
       ...parts.closeTrigger.attrs,
-      disabled: state.context.disabled,
+      disabled: state.context.isDisabled,
       "aria-label": "Close Window",
       type: "button",
       onClick() {
@@ -86,9 +87,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     minimizeTriggerProps: normalize.button({
       ...parts.minimizeTrigger.attrs,
-      disabled: state.context.disabled,
+      disabled: state.context.isDisabled,
       "aria-label": "Minimize Window",
-      hidden: isMinimized || isMaximized,
+      hidden: state.context.isStaged,
       type: "button",
       onClick() {
         send("MINIMIZE")
@@ -97,9 +98,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     maximizeTriggerProps: normalize.button({
       ...parts.maximizeTrigger.attrs,
-      disabled: state.context.disabled,
+      disabled: state.context.isDisabled,
       "aria-label": "Maximize Window",
-      hidden: isMaximized || isMinimized,
+      hidden: state.context.isStaged,
       type: "button",
       onClick() {
         send("MAXIMIZE")
@@ -108,9 +109,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     restoreTriggerProps: normalize.button({
       ...parts.restoreTrigger.attrs,
-      disabled: state.context.disabled,
+      disabled: state.context.isDisabled,
       "aria-label": "Restore Window",
-      hidden: !(isMaximized || isMinimized),
+      hidden: !state.context.isStaged,
       type: "button",
       onClick() {
         send("RESTORE")
@@ -118,16 +119,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getResizeTriggerProps(props: ResizeTriggerProps) {
-      const disabled = !state.context.resizable || state.context.disabled
       return normalize.element({
         ...parts.resizeTrigger.attrs,
-        disabled,
-        "data-disabled": dataAttr(disabled),
+        "data-disabled": dataAttr(!state.context.canResize),
         "data-axis": props.axis,
         onPointerDown(event) {
-          if (disabled || event.button == 2) return
-          event.currentTarget.setPointerCapture(event.pointerId)
+          if (!state.context.canResize || event.button == 2) return
 
+          event.currentTarget.setPointerCapture(event.pointerId)
           event.stopPropagation()
 
           send({
@@ -146,13 +145,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     dragTriggerProps: normalize.element({
       ...parts.dragTrigger.attrs,
-      disabled: state.context.draggable || state.context.disabled,
+      "data-disabled": dataAttr(!state.context.canDrag),
       onPointerDown(event) {
-        if (!state.context.draggable || state.context.disabled || event.button == 2) return
+        if (!state.context.canDrag || event.button == 2) return
 
         const target = getEventTarget<HTMLElement>(getNativeEvent(event))
 
         if (target?.closest("button")) {
+          console.log(target?.closest("button"))
           return
         }
 
@@ -166,7 +166,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         })
       },
       onDoubleClick() {
-        send("MAXIMIZE")
+        send(state.context.isMaximized ? "RESTORE" : "MAXIMIZE")
       },
       style: {
         userSelect: "none",
@@ -175,16 +175,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getDockProps(props: DockProps) {
-      const isIntersecting = true
-      return normalize.element({
-        ...parts.dock.attrs,
-        "data-ownedby": state.context.id,
-        "data-dock": props.id,
-        "data-intersecting": dataAttr(isIntersecting),
-      })
-    },
-
     titleProps: normalize.element({
       ...parts.title.attrs,
       id: dom.getTitleId(state.context),
@@ -192,13 +182,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     headerProps: normalize.element({
       ...parts.header.attrs,
+      id: dom.getHeaderId(state.context),
       "data-dragging": dataAttr(isDragging),
     }),
 
     bodyProps: normalize.element({
       ...parts.body.attrs,
       "data-dragging": dataAttr(isDragging),
-      hidden: isMinimized,
+      hidden: state.context.isMinimized,
     }),
   }
 }

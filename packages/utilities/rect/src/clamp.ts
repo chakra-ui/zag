@@ -9,8 +9,8 @@ export const clampPoint = (position: Point, size: Size, boundaryRect: RectInit) 
 }
 
 const defaultMinSize: Size = {
-  width: -Infinity,
-  height: -Infinity,
+  width: 0,
+  height: 0,
 }
 
 const defaultMaxSize: Size = {

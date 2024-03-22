@@ -4,11 +4,11 @@ export { machine } from "./floating-panel.machine"
 export * from "./floating-panel.props"
 export type {
   UserDefinedContext as Context,
-  DockProps,
-  DragDetails,
+  PositionChangeDetails,
   OpenChangeDetails,
-  ResizeDetails,
+  SizeChangeDetails,
   ResizeTriggerAxis,
   ResizeTriggerProps,
   StageChangeDetails,
+  MachineApi as Api,
 } from "./floating-panel.types"

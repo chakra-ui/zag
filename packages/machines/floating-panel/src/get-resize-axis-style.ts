@@ -1,5 +1,5 @@
 import type { JSX } from "@zag-js/types"
-import type { ResizeTriggerAxis } from "../floating-panel.types"
+import type { ResizeTriggerAxis } from "./floating-panel.types"
 
 export function getResizeAxisStyle(axis: ResizeTriggerAxis): JSX.CSSProperties {
   switch (axis) {

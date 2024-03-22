@@ -1,12 +1,12 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { Point, RectInit, Size } from "@zag-js/rect-utils"
-import type { CommonProperties, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-export interface DragDetails {
+export interface PositionChangeDetails {
   position: Point
 }
 
-export interface ResizeDetails {
+export interface SizeChangeDetails {
   size: Size
 }
 
@@ -68,11 +68,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Function called when the position of the panel changes via dragging
    */
-  onDrag?(details: DragDetails): void
+  onPositionChange?(details: PositionChangeDetails): void
   /**
    * Function called when the position of the panel changes via dragging ends
    */
-  onDragEnd?(details: DragDetails): void
+  onPositionChangeEnd?(details: PositionChangeDetails): void
   /**
    * Function called when the panel is opened or closed
    */
@@ -80,11 +80,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Function called when the size of the panel changes via resizing
    */
-  onResize?(details: ResizeDetails): void
+  onSizeChange?(details: SizeChangeDetails): void
   /**
    * Function called when the size of the panel changes via resizing ends
    */
-  onResizeEnd?(details: ResizeDetails): void
+  onSizeChangeEnd?(details: SizeChangeDetails): void
   /**
    * Whether the panel size and position should be preserved when it is closed
    */
@@ -122,7 +122,14 @@ interface PrivateContext {
   stage?: Stage
 }
 
-type ComputedContext = Readonly<{}>
+type ComputedContext = Readonly<{
+  isMaximized: boolean
+  isMinimized: boolean
+  isStaged: boolean
+  isDisabled: boolean
+  canResize: boolean
+  canDrag: boolean
+}>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
@@ -137,12 +144,40 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+/* -----------------------------------------------------------------------------
+ * Component props
+ * -----------------------------------------------------------------------------*/
+
 export type ResizeTriggerAxis = "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne"
 
 export interface ResizeTriggerProps {
   axis: ResizeTriggerAxis
 }
 
-export interface DockProps {
-  id: string
+export interface MachineApi<T extends PropTypes = PropTypes> {
+  /**
+   * Whether the panel is open
+   */
+  isOpen: boolean
+  /**
+   * Whether the panel is being dragged
+   */
+  isDragging: boolean
+  /**
+   * Whether the panel is being resized
+   */
+  isResizing: boolean
+
+  dragTriggerProps: T["element"]
+  getResizeTriggerProps(props: ResizeTriggerProps): T["element"]
+  triggerProps: T["button"]
+  positionerProps: T["element"]
+  contentProps: T["element"]
+  titleProps: T["element"]
+  headerProps: T["element"]
+  bodyProps: T["element"]
+  closeTriggerProps: T["button"]
+  minimizeTriggerProps: T["button"]
+  maximizeTriggerProps: T["button"]
+  restoreTriggerProps: T["button"]
 }
