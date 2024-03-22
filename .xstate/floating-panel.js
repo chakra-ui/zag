@@ -63,6 +63,9 @@ const fetchMachine = createMachine({
         },
         RESTORE: {
           actions: ["setRestored"]
+        },
+        MOVE: {
+          actions: ["setPositionFromKeybord"]
         }
       }
     },

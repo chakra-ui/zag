@@ -17,7 +17,7 @@ export interface OpenChangeDetails {
 export type Stage = "minimized" | "maximized"
 
 export interface StageChangeDetails {
-  stage: Stage
+  stage: Stage | undefined
 }
 
 interface PublicContext extends DirectionProperty, CommonProperties {

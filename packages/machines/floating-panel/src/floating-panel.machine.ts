@@ -17,9 +17,9 @@ import {
   type Rect,
   type Size,
 } from "@zag-js/rect-utils"
-import { compact, pick } from "@zag-js/utils"
+import { compact, invariant, isEqual, match, pick } from "@zag-js/utils"
 import { dom } from "./floating-panel.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./floating-panel.types"
+import type { MachineContext, MachineState, Stage, UserDefinedContext } from "./floating-panel.types"
 
 const { not } = guards
 
@@ -100,6 +100,9 @@ export function machine(userContext: UserDefinedContext) {
             },
             RESTORE: {
               actions: ["setRestored"],
+            },
+            MOVE: {
+              actions: ["setPositionFromKeybord"],
             },
           },
         },
@@ -215,8 +218,8 @@ export function machine(userContext: UserDefinedContext) {
         setPosition(ctx, evt) {
           let diff = subtractPoints(evt.position, ctx.lastEventPosition!)
 
-          diff.x = Math.round(diff.x / ctx.gridSize!) * ctx.gridSize!
-          diff.y = Math.round(diff.y / ctx.gridSize!) * ctx.gridSize!
+          diff.x = Math.round(diff.x / ctx.gridSize) * ctx.gridSize
+          diff.y = Math.round(diff.y / ctx.gridSize) * ctx.gridSize
 
           let position = addPoints(ctx.prevPosition!, diff)
           position = clampPoint(position, ctx.size, ctx.boundaryRect!)
@@ -274,7 +277,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setMaximized(ctx) {
           // set max stage
-          ctx.stage = "maximized"
+          set.stage(ctx, "maximized")
 
           // save previous
           ctx.prevSize = ctx.size
@@ -286,7 +289,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setMinimized(ctx) {
           // set min stage
-          ctx.stage = "minimized"
+          set.stage(ctx, "minimized")
 
           // save previous
           ctx.prevSize = ctx.size
@@ -303,16 +306,29 @@ export function machine(userContext: UserDefinedContext) {
         },
         setRestored(ctx) {
           // remove stage
-          ctx.stage = undefined
+          set.stage(ctx, undefined)
 
           // restore size
           if (!ctx.prevSize || !ctx.prevPosition) return
-          ctx.size = ctx.prevSize
-          ctx.position = ctx.prevPosition
+          set.size(ctx, ctx.prevSize)
+          set.position(ctx, ctx.prevPosition)
 
           // clear previous
           ctx.prevSize = null
           ctx.prevPosition = null
+        },
+        setPositionFromKeybord(ctx, evt) {
+          invariant(evt.step == null, "step is required")
+
+          let nextPosition = match(evt.direction, {
+            left: { x: ctx.position.x - evt.step, y: ctx.position.y },
+            right: { x: ctx.position.x + evt.step, y: ctx.position.y },
+            up: { x: ctx.position.x, y: ctx.position.y - evt.step },
+            down: { x: ctx.position.x, y: ctx.position.y + evt.step },
+          })
+
+          nextPosition = clampPoint(nextPosition, ctx.size, ctx.boundaryRect!)
+          set.position(ctx, nextPosition)
         },
         invokeOnOpen(ctx) {
           ctx.onOpenChange?.({ open: true })
@@ -347,5 +363,10 @@ const set = {
     if (isPointEqual(ctx.position, value)) return
     ctx.position = value
     ctx.onPositionChange?.({ position: value })
+  },
+  stage(ctx: MachineContext, value: Stage | undefined) {
+    if (isEqual(ctx.stage, value)) return
+    ctx.stage = value
+    ctx.onStageChange?.({ stage: value })
   },
 }
