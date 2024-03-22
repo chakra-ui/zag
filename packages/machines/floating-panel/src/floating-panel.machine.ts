@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { trackPointerMove } from "@zag-js/dom-event"
+import { addDomEvent, trackPointerMove } from "@zag-js/dom-event"
 import { isHTMLElement } from "@zag-js/dom-query"
 import {
   addPoints,
@@ -52,7 +52,7 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["open"],
-          entry: ["setBoundaryRect"],
+          activities: ["trackBoundaryRect"],
           on: {
             DRAG_START: {
               guard: not("isMaximized"),
@@ -87,7 +87,7 @@ export function machine(userContext: UserDefinedContext) {
 
         "open.dragging": {
           tags: ["open"],
-          activities: ["trackPointerMove"],
+          activities: ["trackPointerMove", "trackBoundaryRect"],
           exit: ["clearPrevPosition"],
           on: {
             DRAG: {
@@ -109,7 +109,7 @@ export function machine(userContext: UserDefinedContext) {
 
         "open.resizing": {
           tags: ["open"],
-          activities: ["trackPointerMove"],
+          activities: ["trackPointerMove", "trackBoundaryRect"],
           exit: ["clearPrevSize"],
           on: {
             DRAG: {
@@ -149,14 +149,26 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
+        trackBoundaryRect(ctx) {
+          const win = dom.getWin(ctx)
+          const el = ctx.getBoundaryEl?.()
+
+          if (isHTMLElement(el)) {
+            ctx.boundaryRect = getElementRect(el)
+            const obs = new win.ResizeObserver(() => {
+              ctx.boundaryRect = getElementRect(el)
+            })
+            obs.observe(el)
+            return () => obs.disconnect()
+          }
+
+          ctx.boundaryRect = getWindowRect(win)
+          return addDomEvent(win, "resize", () => {
+            ctx.boundaryRect = getWindowRect(win)
+          })
+        },
       },
       actions: {
-        setBoundaryRect(ctx) {
-          const el = ctx.getBoundaryEl?.()
-          const win = dom.getWin(ctx)
-          const rect = isHTMLElement(el) ? getElementRect(el) : getWindowRect(win)
-          ctx.boundaryRect = { x: rect.x, y: rect.y, width: rect.width, height: rect.height }
-        },
         setPrevPosition(ctx, evt) {
           ctx.prevPosition = { ...ctx.position }
           ctx.lastEventPosition = evt.position
