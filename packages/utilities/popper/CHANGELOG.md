@@ -4,7 +4,9 @@
 
 ### Patch Changes
 
-- [`565a7e4`](https://github.com/chakra-ui/zag/commit/565a7e46070edb7bb2a39ed9d065dcaee418db83) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `crossAxis` positioning property doesn't work in some cases.
+- [`565a7e4`](https://github.com/chakra-ui/zag/commit/565a7e46070edb7bb2a39ed9d065dcaee418db83) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `crossAxis` positioning property doesn't work in
+  some cases.
 
 - Updated dependencies []:
   - @zag-js/utils@0.39.0

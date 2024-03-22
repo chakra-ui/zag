@@ -1,6 +1,5 @@
 import { distance } from "./distance"
-import type { Rect } from "./rect"
-import type { Point, RectSide } from "./types"
+import type { Point, Rect, RectSide } from "./types"
 
 export function closest(...pts: Point[]) {
   return (a: Point): Point => {
@@ -11,18 +10,10 @@ export function closest(...pts: Point[]) {
 }
 
 export function closestSideToRect(ref: Rect, r: Rect): RectSide {
-  if (r.maxX <= ref.minX) {
-    return "left"
-  }
-  if (r.minX >= ref.maxX) {
-    return "right"
-  }
-  if (r.maxY <= ref.minY) {
-    return "top"
-  }
-  if (r.minY >= ref.maxY) {
-    return "bottom"
-  }
+  if (r.maxX <= ref.minX) return "left"
+  if (r.minX >= ref.maxX) return "right"
+  if (r.maxY <= ref.minY) return "top"
+  if (r.minY >= ref.maxY) return "bottom"
   return "left"
 }
 

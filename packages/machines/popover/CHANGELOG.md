@@ -4,7 +4,8 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`27f9ec0`](https://github.com/chakra-ui/zag/commit/27f9ec0812f19228921158885107ed43d559544a), [`565a7e4`](https://github.com/chakra-ui/zag/commit/565a7e46070edb7bb2a39ed9d065dcaee418db83)]:
+- Updated dependencies [[`27f9ec0`](https://github.com/chakra-ui/zag/commit/27f9ec0812f19228921158885107ed43d559544a),
+  [`565a7e4`](https://github.com/chakra-ui/zag/commit/565a7e46070edb7bb2a39ed9d065dcaee418db83)]:
   - @zag-js/dismissable@0.39.0
   - @zag-js/popper@0.39.0
   - @zag-js/anatomy@0.39.0
@@ -1027,7 +1028,7 @@
 
   ```jsx
   // this is will open the dialog initially
-  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }));
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
 
   // this will open the dialog when the `open` value changes
   const [state, send] = useMachine(dialog.machine({ id: "1" }), {
@@ -1035,7 +1036,7 @@
       // when this value changes, the dialog will open/close
       open: true,
     },
-  });
+  })
   ```
 
 ### Patch Changes
@@ -1058,7 +1059,7 @@
     positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" });
+  api.setPositioning({ placement: "top" })
   ```
 
 - Updated dependencies [[`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c),
