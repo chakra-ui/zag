@@ -145,6 +145,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             position: { x: event.clientX, y: event.clientY },
           })
         },
+        onPointerUp(event) {
+          if (!state.context.canResize) return
+          const node = event.currentTarget
+          if (node.hasPointerCapture(event.pointerId)) {
+            node.releasePointerCapture(event.pointerId)
+          }
+        },
         style: {
           position: "absolute",
           touchAction: "none",
@@ -162,7 +169,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const target = getEventTarget<HTMLElement>(getNativeEvent(event))
 
         if (target?.closest("button")) {
-          console.log(target?.closest("button"))
           return
         }
 
@@ -174,6 +180,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           pointerId: event.pointerId,
           position: { x: event.clientX, y: event.clientY },
         })
+      },
+      onPointerUp(event) {
+        if (!state.context.canDrag) return
+        const node = event.currentTarget
+        if (node.hasPointerCapture(event.pointerId)) {
+          node.releasePointerCapture(event.pointerId)
+        }
       },
       onDoubleClick() {
         send(state.context.isMaximized ? "RESTORE" : "MAXIMIZE")
