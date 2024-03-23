@@ -1,0 +1,19 @@
+[data-scope="file-upload"][data-part="dropzone"] {
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  gap: 16px;
+  padding: 24px;
+  border: 2px dashed #d5d5d5;
+}
+
+[data-scope="file-upload"][data-part="dropzone"][data-dragging] {
+  border-color: blue;
+  background-color: lightblue;
+}
+
+[data-scope="file-upload"][data-part="dropzone"][data-invalid] {
+  border-color: red;
+  background-color: lightpink;
+}

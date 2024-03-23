@@ -1,0 +1,27 @@
+.anatomy {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+  max-height: 100%;
+}
+
+.anatomy .anatomy__item {
+  display: flex;
+  overflow: auto;
+  width: 100%;
+  position: relative;
+}
+
+.anatomy span {
+  position: absolute;
+  top: 2;
+  left: 2;
+  font-weight: 500;
+}
+
+.anatomy svg {
+  width: calc(100vw / 3);
+  height: fit-content;
+}

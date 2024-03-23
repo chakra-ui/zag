@@ -1,0 +1,8 @@
+.accordion [data-part="root"] {
+  width: 100%;
+  max-width: 40ch;
+}
+
+[data-scope="accordion"][data-part="item-indicator"][data-state="open"] {
+  rotate: 90deg;
+}
