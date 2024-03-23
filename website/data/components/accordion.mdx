@@ -132,9 +132,9 @@ const [state, send] = useMachine(
 )
 ```
 
-## Disabling specific accordion items
+## Disabling an accordion item
 
-To disable a specific accordion, pass the `disabled: true` property to the
+To disable a specific accordion item, pass the `disabled: true` property to the
 `getItemProps`, `getItemTriggerProps` and `getItemContentProps`.
 
 When an accordion item is disabled, it is skipped from keyboard navigation and
@@ -209,6 +209,22 @@ on the item and content.
   /* styles for the content's focus state */
 }
 ```
+
+## Creating Component
+
+Create your accordion component by abstracting the machine into your own
+component.
+
+### Usage
+
+<CodeSnippet id="accordion/component.usage.mdx" />
+
+### Implementation
+
+Use the the `splitProps` utility to separate the machine's props from the
+component's props.
+
+<CodeSnippet id="accordion/component.api.mdx" />
 
 ## Methods and Properties
 

@@ -1,6 +1,6 @@
 [data-scope="collapsible"][data-part="root"] {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   flex-direction: column;
   gap: 0.5rem;
   width: 400px;
