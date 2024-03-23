@@ -309,13 +309,16 @@ export function machine(userContext: UserDefinedContext) {
           set.stage(ctx, undefined)
 
           // restore size
-          if (!ctx.prevSize || !ctx.prevPosition) return
-          set.size(ctx, ctx.prevSize)
-          set.position(ctx, ctx.prevPosition)
+          if (ctx.prevSize) {
+            set.size(ctx, ctx.prevSize)
+            ctx.prevSize = null
+          }
 
-          // clear previous
-          ctx.prevSize = null
-          ctx.prevPosition = null
+          // restore position
+          if (ctx.prevPosition) {
+            set.position(ctx, ctx.prevPosition)
+            ctx.prevPosition = null
+          }
         },
         setPositionFromKeybord(ctx, evt) {
           invariant(evt.step == null, "step is required")
