@@ -1829,7 +1829,7 @@ main [data-testid="scrubber"] {
   }
   100% {
     stroke-dasharray: 400, 400;
-    stroke-dashoffset: -260;
+    stroke-dashoffset: -140;
   }
 }
 
