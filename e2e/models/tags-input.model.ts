@@ -43,7 +43,7 @@ export class TagsInputModel extends Model {
   }
 
   deleteLastTag() {
-    return this.backspace(2)
+    return this.pressBackspace(2)
   }
 
   dblClick(value: string) {
