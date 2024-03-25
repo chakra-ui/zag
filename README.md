@@ -61,18 +61,21 @@ For framework specific solutions, we provide simple wrappers to help you consume
 ## Usage
 
 ```jsx
-import * as toggle from "@zag-js/toggle"
 import { normalizeProps, useMachine } from "@zag-js/react"
+import * as toggle from "@zag-js/toggle-group"
+import { useId } from "react"
 
-function Example() {
-  // if you need access to `state` or `send` from machine
-  const [state, send] = useMachine(toggle.machine({ id: "2" }))
-
-  // convert machine details into `DOM` props
+export function ToggleGroup() {
+  const [state, send] = useMachine(toggle.machine({ id: useId() }))
   const api = toggle.connect(state, send, normalizeProps)
 
-  // consume into components
-  return <button {...api.buttonProps}>Toggle me</button>
+  return (
+    <div {...api.rootProps}>
+      <button {...api.getItemProps({ value: "bold" })}>B</button>
+      <button {...api.getItemProps({ value: "italic" })}>I</button>
+      <button {...api.getItemProps({ value: "underline" })}>U</button>
+    </div>
+  )
 }
 ```
 
