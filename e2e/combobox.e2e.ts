@@ -1,279 +1,225 @@
-import { expect, type Locator, test } from "@playwright/test"
-import { a11y, controls, isInViewport, repeat, testid } from "./_utils"
+import { test } from "@playwright/test"
+import { ComboboxModel } from "./models/combobox.model"
 
-const input = testid("input")
-const trigger = testid("trigger")
-const content = testid("combobox-content")
-const clear_value_button = testid("clear-value-button")
-
-const options = "[data-part=item]:not([data-disabled])"
-const highlighted_option = "[data-part=item][data-highlighted]"
-
-const expectToBeHighlighted = async (el: Locator) => {
-  await expect(el).toHaveAttribute("data-highlighted", "")
-}
-
-const expectToBeChecked = async (el: Locator) => {
-  await expect(el).toHaveAttribute("data-state", "checked")
-}
-
-const expectNotToBeChecked = async (el: Locator) => {
-  await expect(el).not.toHaveAttribute("data-state", "checked")
-}
-
-const expectToBeInViewport = async (viewport: Locator, option: Locator) => {
-  expect(await isInViewport(viewport, option)).toBe(true)
-}
+let I: ComboboxModel
 
 test.describe("combobox", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/combobox")
+    I = new ComboboxModel(page)
+    await I.goto()
   })
 
-  test("should have no accessibility violations", async ({ page }) => {
-    await a11y(page)
+  test("should have no accessibility violations", async () => {
+    await I.checkAccessibility()
   })
 
-  test("[pointer] should open combobox menu when arrow is clicked", async ({ page }) => {
-    await page.click(trigger)
-    await expect(page.locator(content)).toBeVisible()
-    await expect(page.locator(input)).toBeFocused()
+  test("[pointer] should open combobox menu when arrow is clicked", async () => {
+    await I.clickTrigger()
+    await I.seeDropdown()
+    await I.seeInputIsFocused()
   })
 
-  test("[keyboard] Escape should close content", async ({ page }) => {
-    await page.click(trigger)
-    await expect(page.locator(content)).toBeVisible()
-    await page.keyboard.press("Escape")
-    await expect(page.locator(content)).not.toBeVisible()
+  test("[keyboard] Escape should close content", async () => {
+    await I.clickTrigger()
+    await I.seeDropdown()
+    await I.pressEsc()
+    await I.dontSeeDropdown()
   })
 
-  test("[typeahead / autohighlight / selection] should open combobox menu when typing", async ({ page }) => {
-    await page.locator(input).pressSequentially("an")
-    await expect(page.locator(content)).toBeVisible()
+  test("[typeahead / autohighlight / selection] should open combobox menu when typing", async () => {
+    await I.type("an")
+    await I.seeDropdown()
+    await I.seeItemIsHighlighted("Canada")
 
-    const option = page.locator(options).first()
-    await expectToBeHighlighted(option)
-
-    await page.keyboard.press("Enter")
-
-    await expect(page.locator(input)).toHaveValue("Canada")
-    await expect(page.locator(content)).toBeHidden()
+    await I.pressEnter()
+    await I.seeInputHasValue("Canada")
+    await I.dontSeeDropdown()
   })
 
-  test("[pointer / selection]", async ({ page }) => {
-    await page.click(trigger)
+  test("[pointer / selection]", async () => {
+    await I.clickTrigger()
 
-    const option_els = page.locator(options)
-    await option_els.nth(0).hover()
-    await expectToBeHighlighted(option_els.nth(0))
+    await I.hoverItem("Zambia")
+    await I.seeItemIsHighlighted("Zambia")
 
-    await option_els.nth(1).hover()
-    await option_els.nth(3).hover()
-    const option = option_els.nth(3)
-    option.click()
-
-    const textValue = await option.textContent()
-    await expect(page.locator(input)).toHaveValue(textValue!)
-    await expect(page.locator(content)).toBeHidden()
+    await I.clickItem("Zambia")
+    await I.seeInputHasValue("Zambia")
+    await I.dontSeeDropdown()
   })
 
-  test("[keyboard / loop] on arrow down, open and highlight first enabled option", async ({ page }) => {
-    await page.focus(input)
-    await page.keyboard.press("ArrowDown")
-    const option = page.locator(options).first()
-    await expect(page.locator(content)).toBeVisible()
-    await expectToBeHighlighted(option)
+  test("[keyboard / loop] on arrow down, open and highlight first enabled option", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowDown")
+
+    await I.seeDropdown()
+    await I.seeItemIsHighlighted("Zambia")
+
+    await I.pressKey("ArrowUp")
+    await I.seeItemIsHighlighted("Tunisia")
   })
 
-  test("[keyboard / no-loop] on arrow down, open and highlight first enabled option", async ({ page }) => {
-    await controls(page).bool("loop", false)
+  test("[keyboard / no-loop] on arrow down, open and highlight first enabled option", async () => {
+    await I.setContext.bool("loop", false)
 
-    await page.focus(input)
-    await page.keyboard.press("ArrowDown")
-    const option = page.locator(options).first()
-    await expect(page.locator(content)).toBeVisible()
-    await expectToBeHighlighted(option)
+    await I.focusInput()
+    await I.pressKey("ArrowDown")
+
+    await I.seeDropdown()
+    await I.seeItemIsHighlighted("Zambia")
+
+    await I.pressKey("ArrowUp")
+    await I.seeItemIsHighlighted("Zambia")
   })
 
-  test("[keyboard / loop] on arrow up, open and highlight last enabled option", async ({ page }) => {
-    await page.focus(input)
-    await page.keyboard.press("ArrowUp")
-    const option = page.locator(options).last()
-    await expect(page.locator(content)).toBeVisible()
-    await expectToBeHighlighted(option)
+  test("[keyboard / loop] on arrow up, open and highlight last enabled option", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowUp")
+
+    await I.seeDropdown()
+    await I.seeItemIsHighlighted("Tunisia")
   })
 
-  test("[keyboard / no-loop] on arrow up, open and highlight last enabled option", async ({ page }) => {
-    await controls(page).bool("loop", false)
+  test("[keyboard / no-loop] on arrow up, open and highlight last enabled option", async () => {
+    await I.setContext.bool("loop", false)
 
-    await page.focus(input)
-    await page.keyboard.press("ArrowUp")
-    const option = page.locator(options).last()
-    await expect(page.locator(content)).toBeVisible()
-    await expectToBeHighlighted(option)
+    await I.focusInput()
+    await I.pressKey("ArrowUp")
+
+    await I.seeDropdown()
+    await I.seeItemIsHighlighted("Tunisia")
   })
 
-  test("[keyboard / opened] on home and end, when open, focus first and last option", async ({ page }) => {
-    const option_els = page.locator(options)
+  test("[keyboard / opened] on home and end, when open, focus first and last option", async () => {
+    await I.clickTrigger()
 
-    await page.click(trigger)
+    await I.pressKey("ArrowDown", 3)
+    await I.seeItemIsHighlighted("Canada")
 
-    // navigate a bit with the keyboard
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("ArrowDown")
+    await I.pressKey("Home")
+    await I.seeItemIsHighlighted("Zambia")
 
-    await page.keyboard.press("Home")
-    await expectToBeHighlighted(option_els.first())
-
-    await page.keyboard.press("End")
-    await expectToBeHighlighted(option_els.last())
+    await I.pressKey("End")
+    await I.seeItemIsHighlighted("Tunisia")
   })
 
-  test("[keyboard / closed] on home and end, caret moves to start and end", async ({ page }) => {
-    await page.click(trigger)
-    await page.locator(input).pressSequentially("an")
+  test("[keyboard / closed] on home and end, caret moves to start and end", async () => {
+    await I.clickTrigger()
+    await I.type("an")
+    await I.pressEsc()
 
-    // close
-    await page.keyboard.press("Escape")
+    await I.pressKey("Home")
+    await I.seeCaretAt(0)
 
-    await page.keyboard.press("Home")
-    expect(await page.evaluate(() => (document.activeElement as HTMLInputElement).selectionStart)).toBe(0)
-
-    await page.keyboard.press("End")
-    expect(await page.evaluate(() => (document.activeElement as HTMLInputElement).selectionStart)).toBe(2)
+    await I.pressKey("End")
+    await I.seeCaretAt(2)
   })
 
-  test("[keyboard / arrowdown / loop]", async ({ page }) => {
-    await page.locator(input).pressSequentially("mal")
+  test("[keyboard / arrowdown / loop]", async () => {
+    await I.type("mal")
 
-    const option_els = page.locator(options)
+    await I.pressKey("ArrowDown", 4)
+    await I.seeItemIsHighlighted("Malta")
 
-    await repeat(4, () => page.keyboard.press("ArrowDown"))
-
-    await expectToBeHighlighted(option_els.last())
-    await page.keyboard.press("ArrowDown")
-    await expectToBeHighlighted(option_els.first())
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Malawi")
   })
 
-  test("[keyboard / arrowdown / no-loop]", async ({ page }) => {
-    await controls(page).bool("loop", false)
+  test("[keyboard / arrowdown / no-loop]", async () => {
+    await I.setContext.bool("loop", false)
 
-    await page.locator(input).pressSequentially("mal")
+    await I.type("mal")
+    await I.pressKey("ArrowDown", 4)
+    await I.seeItemIsHighlighted("Malta")
 
-    const option_els = page.locator(options)
-
-    await repeat(4, () => page.keyboard.press("ArrowDown"))
-
-    await expectToBeHighlighted(option_els.last())
-    await page.keyboard.press("ArrowDown")
-    await expectToBeHighlighted(option_els.last())
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Malta")
   })
 
-  test("[keyboard / arrowup / loop]", async ({ page }) => {
-    await page.locator(input).pressSequentially("mal")
-    const option_els = page.locator(options)
-    await page.keyboard.press("ArrowUp")
-    await expectToBeHighlighted(option_els.last())
+  test("[keyboard / arrowup / loop]", async () => {
+    await I.type("mal")
+    await I.pressKey("ArrowUp")
+    await I.seeItemIsHighlighted("Malta")
   })
 
-  test("[keyboard / arrowup / no-loop]", async ({ page }) => {
-    await controls(page).bool("loop", false)
-
-    await page.locator(input).pressSequentially("mal")
-    const option_els = page.locator(options)
-    await page.keyboard.press("ArrowUp")
-    await expectToBeHighlighted(option_els.first())
+  test("[keyboard / arrowup / no-loop]", async () => {
+    await I.setContext.bool("loop", false)
+    await I.type("mal")
+    await I.pressKey("ArrowUp")
+    await I.seeItemIsHighlighted("Malawi")
   })
 
-  test("[pointer / open-on-click]", async ({ page }) => {
-    await controls(page).bool("openOnClick")
-    await page.click(input, { force: true })
-    await expect(page.locator(content)).toBeVisible()
+  test("[pointer / open-on-click]", async () => {
+    await I.setContext.bool("openOnClick", true)
+    await I.clickInput()
+    await I.seeDropdown()
   })
 
-  test("selects value on click", async ({ page }) => {
-    await page.click(trigger)
-    const option_els = page.locator(options)
-    await option_els.first().click()
-    await page.click(trigger)
-    await expectToBeChecked(option_els.first())
+  test("selects value on click", async () => {
+    await I.clickTrigger()
+    await I.clickItem("Zambia")
+    await I.seeItemIsChecked("Zambia")
   })
 
-  test("can clear value", async ({ page }) => {
-    await page.click(trigger)
-    const option_els = page.locator(options)
-    await option_els.first().click()
-    await page.click(trigger)
-    await page.locator(clear_value_button).click()
-
-    await expect(page.locator(input)).toHaveValue("")
-    await expectNotToBeChecked(option_els.first())
+  test("can clear value", async () => {
+    await I.clickTrigger()
+    await I.clickItem("Zambia")
+    await I.clickTrigger()
+    await I.clickClearTrigger()
+    await I.seeInputHasValue("")
+    await I.seeItemIsNotChecked("Zambia")
   })
 
-  test("should scroll selected option into view", async ({ page }) => {
-    await page.click(trigger)
-    const malta = page.locator(options).locator("text=Malta").first()
-    await malta.click()
-    await page.click(trigger)
-
-    await expectToBeHighlighted(malta)
-    await expectToBeInViewport(page.locator(content), malta)
+  test("should scroll selected option into view", async () => {
+    await I.clickTrigger()
+    await I.clickItem("Malta")
+    await I.clickTrigger()
+    await I.seeItemIsHighlighted("Malta")
+    await I.seeItemInViewport("Malta")
   })
 
-  test.describe("[auto-complete]", () => {
-    test.beforeEach(async ({ page }) => {
-      await controls(page).select("inputBehavior", "autocomplete")
-    })
+  test("[selection=clear] should clear input value", async () => {
+    await I.setContext.select("selectionBehavior", "clear")
+    await I.type("mal")
+    await I.pressEnter()
+    await I.seeInputHasValue("")
+  })
+})
 
-    test("[keyboard] should autocomplete", async ({ page }) => {
-      await page.locator(input).pressSequentially("mal")
+test.describe("combobox / autocomplete", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ComboboxModel(page)
+    await I.goto()
+    await I.setContext.select("inputBehavior", "autocomplete")
+  })
 
-      // no option should be selected
-      const count = await page.locator(highlighted_option).count()
-      expect(count).toBe(0)
+  test("[keyboard] should autocomplete", async () => {
+    await I.type("mal")
+    await I.dontSeeHighlightedItem()
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Malawi")
+    await I.pressEnter()
+    await I.seeInputHasValue("Malawi")
+    await I.dontSeeDropdown()
+  })
 
-      // autocomplete
-      const option_els = page.locator(options)
-      await page.keyboard.press("ArrowDown")
+  test("[keyboard / loop] should loop through the options and previous input value", async () => {
+    await I.type("mal")
+    await I.pressKey("ArrowDown", 5)
+    await I.seeItemIsHighlighted("Malta")
 
-      await expectToBeHighlighted(option_els.first())
-      const textValue = await option_els.first().textContent()
-      await expect(page.locator(input)).toHaveValue(textValue!)
+    // at the end of the list, press arrow down to return to previous input value
+    await I.pressKey("ArrowDown")
+    await I.seeInputHasValue("mal")
 
-      await page.keyboard.press("Enter")
+    // no option should be selected
+    await I.dontSeeHighlightedItem()
+  })
 
-      await expect(page.locator(input)).toHaveValue(textValue!)
-      await expect(page.locator(content)).toBeHidden()
-      await expect(page.locator(input)).toBeFocused()
-    })
+  test("[pointer] hovering an option should not update input value", async () => {
+    await I.clickTrigger()
+    await I.type("mal")
 
-    test("[keyboard / loop] should loop through the options and previous input value", async ({ page }) => {
-      await page.locator(input).pressSequentially("mal")
-
-      //press arrow down 5 times
-      await page.keyboard.press("ArrowDown")
-      await page.keyboard.press("ArrowDown")
-      await page.keyboard.press("ArrowDown")
-      await page.keyboard.press("ArrowDown")
-      await page.keyboard.press("ArrowDown", { delay: 10 }) // reached the end
-
-      // at the end of the list, press arrow down to return to previous input value
-      await page.keyboard.press("ArrowDown")
-      await expect(page.locator(input)).toHaveValue("mal")
-
-      // no option should be selected
-      const count = await page.locator(highlighted_option).count()
-      expect(count).toBe(0)
-    })
-
-    test("[pointer] hovering an option should not update input value", async ({ page }) => {
-      await page.click(trigger)
-      await page.locator(input).pressSequentially("mal")
-
-      const option_els = page.locator(options)
-      await option_els.nth(4).hover()
-      await expect(page.locator(input)).toHaveValue("mal")
-    })
+    await I.hoverItem("Malawi")
+    await I.seeInputHasValue("mal")
   })
 })

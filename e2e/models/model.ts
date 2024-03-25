@@ -1,34 +1,62 @@
-import { type Page } from "@playwright/test"
+import { type Page, expect } from "@playwright/test"
 import { controls, repeat } from "../_utils"
 
 export class Model {
   constructor(public page: Page) {}
 
-  get controls() {
+  get setContext() {
     return controls(this.page)
   }
 
-  esc(times = 1) {
+  pressEsc(times = 1) {
     return repeat(times, () => this.page.keyboard.press("Escape"))
   }
 
-  enter(times = 1) {
+  pressEnter(times = 1) {
     return repeat(times, () => this.page.keyboard.press("Enter"))
   }
 
-  backspace(times = 1) {
+  pressBackspace(times = 1) {
     return repeat(times, () => this.page.keyboard.press("Backspace"))
   }
 
-  arrowLeft(times = 1) {
+  pressArrowLeft(times = 1) {
     return repeat(times, () => this.page.keyboard.press("ArrowLeft"))
   }
 
-  arrowRight(times = 1) {
+  pressArrowRight(times = 1) {
     return repeat(times, () => this.page.keyboard.press("ArrowRight"))
+  }
+
+  pressKey(key: string, times = 1) {
+    return repeat(times, () => this.page.keyboard.press(key))
+  }
+
+  pressKeyDown(key: string, times = 1) {
+    return repeat(times, () => this.page.keyboard.down("ArrowDown"))
+  }
+
+  pressKeyUp(key: string, times = 1) {
+    return repeat(times, () => this.page.keyboard.up("ArrowUp"))
+  }
+
+  rightClick(selector: string) {
+    return this.page.locator(selector).click({ button: "right" })
   }
 
   type(value: string) {
     return this.page.keyboard.type(value)
+  }
+
+  seeCaretAt = async (position: number) => {
+    const value = await this.page.evaluate(() => {
+      const el = document.activeElement
+      try {
+        return (el as any).selectionStart
+      } catch (error) {
+        return -1
+      }
+    })
+    expect(value).toBe(position)
   }
 }

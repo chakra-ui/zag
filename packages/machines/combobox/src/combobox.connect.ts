@@ -140,7 +140,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       id: dom.getInputId(state.context),
       type: "text",
       role: "combobox",
-      defaultValue: state.context.inputValue || state.context.valueAsString,
+      defaultValue: state.context.inputValue,
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
       "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       "aria-expanded": isOpen,
