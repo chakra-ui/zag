@@ -1,5 +1,5 @@
-import { createRect, type Rect } from "./rect"
-import type { Point } from "./types"
+import { createRect } from "./rect"
+import type { Point, Rect } from "./types"
 
 export function getRectFromPoints(...pts: Point[]): Rect {
   const xs = pts.map((p) => p.x)

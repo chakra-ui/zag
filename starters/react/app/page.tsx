@@ -4,6 +4,7 @@ const routes = [
   { path: "/select/mobile-touch-end", name: "Select - Mobile Touch End" },
   { path: "/select/controlled", name: "Select - Controlled" },
   { path: "/select/search-params", name: "Select - Search Params" },
+  { path: "/select/virtualized", name: "Select - Virtualized" },
   { path: "/dialog/controlled", name: "Dialog - Controlled" },
   { path: "/popover/controlled", name: "Popover - Controlled" },
   { path: "/color-picker/controlled", name: "ColorPicker - Controlled" },
@@ -12,6 +13,8 @@ const routes = [
   { path: "/tooltip/controlled", name: "Tooltip - Controlled" },
   { path: "/menu/controlled", name: "Menu - Controlled" },
   { path: "/collapsible/controlled", name: "Collapsible - Controlled" },
+  { path: "/collapsible/uncontrolled", name: "Collapsible - Uncontrolled" },
+  { path: "/accordion/collapsible", name: "Accordion + Collapsible" },
 ]
 
 export default function Page() {

@@ -49,7 +49,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onFocus(event) {
         if (disabled) return
-        if (!isSelfEvent(event) || !!state.context.isClickFocus || state.context.isTabbingBackward) return
+        const evt = event.nativeEvent || event
+        if (!isSelfEvent(evt) || !!state.context.isClickFocus || state.context.isTabbingBackward) return
         send("ROOT.FOCUS")
       },
       onBlur() {
@@ -91,7 +92,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
         },
         onKeyDown(event) {
-          if (itemState.isDisabled || !isSelfEvent(event)) return
+          const evt = event.nativeEvent || event
+          if (itemState.isDisabled || !isSelfEvent(evt)) return
 
           const keyMap: EventKeyMap = {
             Tab(event) {

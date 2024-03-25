@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@internationalized/date": "^3.5.1",
+    "@internationalized/date": "3.5.2",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -38,6 +38,7 @@
     "@zag-js/element-size": "workspace:*",
     "@zag-js/file-upload": "workspace:*",
     "@zag-js/file-utils": "workspace:*",
+    "@zag-js/floating-panel": "workspace:*",
     "@zag-js/focus-scope": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
@@ -80,20 +81,20 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-react": "^0.325.0",
-    "next": "14.1.0",
+    "lucide-react": "0.363.0",
+    "next": "14.1.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-spinners": "0.13.8"
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "@types/node": "20.11.17",
-    "@types/react": "18.2.55",
-    "@types/react-dom": "18.2.19",
-    "eslint-plugin-react": "7.33.2",
+    "@types/node": "20.11.30",
+    "@types/react": "18.2.70",
+    "@types/react-dom": "18.2.22",
+    "eslint-plugin-react": "7.34.1",
     "eslint-plugin-react-hooks": "4.6.0",
-    "typescript": "5.3.3"
+    "typescript": "5.4.3"
   },
   "license": "MIT"
 }

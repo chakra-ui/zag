@@ -1,12 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type {
-  CommonProperties,
-  Context,
-  DirectionProperty,
-  OrientationProperty,
-  PropTypes,
-  RequiredBy,
-} from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 export type ProgressState = "indeterminate" | "loading" | "complete"
 
@@ -40,7 +33,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
   translations: IntlTranslations
 }
 
-type PrivateContext = Context<{}>
+interface PrivateContext {}
 
 type ComputedContext = Readonly<{
   /**

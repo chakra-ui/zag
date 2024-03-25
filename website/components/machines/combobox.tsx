@@ -1,4 +1,3 @@
-import { chakra } from "@chakra-ui/system"
 import * as combobox from "@zag-js/combobox"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useMemo, useState } from "react"
@@ -93,79 +92,28 @@ export function Combobox(props: ComboboxProps) {
 
   return (
     <div>
-      <chakra.div
-        display="flex"
-        flexDirection="column"
-        gap="1"
-        {...api.rootProps}
-      >
-        <chakra.label
-          fontSize="lg"
-          _disabled={{
-            opacity: 0.6,
-          }}
-          {...api.labelProps}
-        >
-          Nationality
-        </chakra.label>
-        <chakra.div
-          display="inline-flex"
-          width="300px"
-          className="focus-outline"
-          bg="bg-subtle"
-          borderWidth="1px"
-          _disabled={{
-            opacity: 0.6,
-          }}
-          py="1"
-          px="3"
-          {...api.controlProps}
-        >
-          <chakra.input
-            bg="bg-subtle"
-            _focus={{ outline: "0" }}
-            flex="1"
-            p="1"
-            {...api.inputProps}
-          />
+      <div {...api.rootProps}>
+        <label {...api.labelProps}>Nationality</label>
+        <div {...api.controlProps}>
+          <input {...api.inputProps} />
           <button {...api.triggerProps}>
             <CaretIcon />
           </button>
-        </chakra.div>
-      </chakra.div>
+        </div>
+      </div>
       <Portal>
         <div {...api.positionerProps}>
           {options.length > 0 && (
-            <chakra.ul
-              listStyleType="none"
-              m="0"
-              maxH="56"
-              overflow="auto"
-              shadow="base"
-              isolation="isolate"
-              p="2"
-              bg="bg-subtle"
-              {...api.contentProps}
-            >
+            <ul {...api.contentProps}>
               {options.map((item, index) => (
-                <chakra.li
-                  px="2"
-                  py="1"
-                  display="flex"
-                  alignItems="center"
-                  cursor="pointer"
-                  _highlighted={{ bg: "bg-primary-subtle", color: "white" }}
-                  _disabled={{
-                    opacity: 0.5,
-                    cursor: "unset",
-                  }}
+                <li
                   key={`${item.code}:${index}`}
                   {...api.getItemProps({ item })}
                 >
                   {item.label}
-                </chakra.li>
+                </li>
               ))}
-            </chakra.ul>
+            </ul>
           )}
         </div>
       </Portal>

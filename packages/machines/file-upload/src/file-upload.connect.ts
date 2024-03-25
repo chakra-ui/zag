@@ -1,5 +1,5 @@
 import { contains, dataAttr, isSelfEvent } from "@zag-js/dom-query"
-import { formatFileSize } from "@zag-js/file-utils"
+import { formatBytes } from "@zag-js/i18n-utils"
 import { type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./file-upload.anatomy"
@@ -33,7 +33,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "FILES.CLEAR" })
     },
     getFileSize(file) {
-      return formatFileSize(file.size, { locale: state.context.locale })
+      return formatBytes(file.size, state.context.locale)
     },
     createFileUrl(file: File, cb: (url: string) => void) {
       const win = dom.getWin(state.context)
@@ -61,7 +61,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(disabled),
       "data-dragging": dataAttr(isDragging),
       onKeyDown(event) {
-        if (!isSelfEvent(event)) return
+        const evt = event.nativeEvent || event
+        if (!isSelfEvent(evt)) return
         if (event.key !== "Enter" && event.key !== " ") return
         send({ type: "DROPZONE.CLICK", src: "keydown" })
       },

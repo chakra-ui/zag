@@ -1,5 +1,19 @@
 # @zag-js/store
 
+## 0.39.0
+
+## 0.38.1
+
+## 0.38.0
+
+## 0.37.3
+
+## 0.37.2
+
+## 0.37.1
+
+## 0.37.0
+
 ## 0.36.3
 
 ## 0.36.2
@@ -12,7 +26,10 @@
 
 ### Patch Changes
 
-- [#1203](https://github.com/chakra-ui/zag/pull/1203) [`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Improve runtime performance when using watchers by subscribing to context once.
+- [#1203](https://github.com/chakra-ui/zag/pull/1203)
+  [`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve runtime performance when using watchers by subscribing to
+  context once.
 
 ## 0.34.0
 

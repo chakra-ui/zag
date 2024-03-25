@@ -1,5 +1,65 @@
 # @zag-js/popper
 
+## 0.39.0
+
+### Patch Changes
+
+- [`565a7e4`](https://github.com/chakra-ui/zag/commit/565a7e46070edb7bb2a39ed9d065dcaee418db83) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `crossAxis` positioning property doesn't work in
+  some cases.
+
+- Updated dependencies []:
+  - @zag-js/utils@0.39.0
+  - @zag-js/dom-query@0.39.0
+
+## 0.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.38.1
+  - @zag-js/dom-query@0.38.1
+
+## 0.38.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.38.0
+  - @zag-js/dom-query@0.38.0
+
+## 0.37.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.37.3
+  - @zag-js/dom-query@0.37.3
+
+## 0.37.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.37.2
+  - @zag-js/dom-query@0.37.2
+
+## 0.37.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.37.1
+  - @zag-js/dom-query@0.37.1
+
+## 0.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.37.0
+  - @zag-js/dom-query@0.37.0
+
 ## 0.36.3
 
 ### Patch Changes
@@ -36,7 +96,10 @@
 
 ### Patch Changes
 
-- [#1213](https://github.com/chakra-ui/zag/pull/1213) [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioned components don't respond to window resizing.
+- [#1213](https://github.com/chakra-ui/zag/pull/1213)
+  [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioned components don't respond to window
+  resizing.
 
 - Updated dependencies []:
   - @zag-js/utils@0.35.0

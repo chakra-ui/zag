@@ -19,8 +19,6 @@ const fetchMachine = createMachine({
     "isOpenControlled": false
   },
   entry: ["computeSize"],
-  exit: ["clearAnimationStyles"],
-  activities: ["trackMountAnimation"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -31,13 +29,16 @@ const fetchMachine = createMachine({
       tags: ["closed"],
       entry: ["computeSize"],
       on: {
-        "CONTROLLED.OPEN": "open",
+        "CONTROLLED.OPEN": {
+          target: "open",
+          actions: ["computeSize"]
+        },
         OPEN: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["allowAnimation", "invokeOnOpen"]
         }]
       }
     },
@@ -45,23 +46,29 @@ const fetchMachine = createMachine({
       tags: ["open"],
       activities: ["trackAnimationEvents"],
       on: {
-        "CONTROLLED.CLOSE": "closed",
+        "CONTROLLED.CLOSE": {
+          target: "closed",
+          actions: ["invokeOnExitComplete"]
+        },
         "CONTROLLED.OPEN": "open",
         OPEN: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["allowAnimation", "invokeOnOpen"]
         }],
         CLOSE: [{
           cond: "isOpenControlled",
           actions: ["invokeOnClose"]
         }, {
           target: "closed",
-          actions: ["computeSize"]
+          actions: ["allowAnimation", "computeSize", "invokeOnExitComplete"]
         }],
-        "ANIMATION.END": "closed"
+        "ANIMATION.END": {
+          target: "closed",
+          actions: ["invokeOnExitComplete"]
+        }
       }
     },
     open: {
@@ -76,7 +83,7 @@ const fetchMachine = createMachine({
           actions: ["invokeOnClose"]
         }, {
           target: "closing",
-          actions: ["computeSize"]
+          actions: ["allowAnimation", "computeSize"]
         }]
       }
     }

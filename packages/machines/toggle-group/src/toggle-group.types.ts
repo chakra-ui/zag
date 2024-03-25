@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -59,7 +59,7 @@ type ComputedContext = Readonly<{
   currentLoop: boolean
 }>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * Whether the user is tabbing backward.
@@ -86,7 +86,7 @@ type PrivateContext = Context<{
    * This is used to determine whether to use roving tab index.
    */
   isWithinToolbar: boolean
-}>
+}
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 

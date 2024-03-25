@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -52,7 +52,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   positioning: PositioningOptions
 }
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The computed placement of the tooltip.
@@ -63,7 +63,7 @@ type PrivateContext = Context<{
    * Whether the hover card is open by pointer
    */
   isPointer?: boolean
-}>
+}
 
 type ComputedContext = Readonly<{}>
 

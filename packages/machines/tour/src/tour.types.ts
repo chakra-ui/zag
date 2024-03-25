@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { AnchorRect, Placement } from "@zag-js/popper"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -137,7 +137,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   skipBehavior: "skip-step" | "complete"
 }
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The rect of the current step's target element
@@ -163,7 +163,7 @@ type PrivateContext = Context<{
    * The function to cleanup the step effects
    */
   _effectCleanup?: VoidFunction
-}>
+}
 
 type ComputedContext = Readonly<{
   /**

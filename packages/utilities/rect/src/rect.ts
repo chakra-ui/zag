@@ -1,8 +1,23 @@
-import type { RectEdge, RectValue } from "./types"
+import type { Point, Rect, RectEdge, RectInit } from "./types"
 
-const point = (x: number, y: number) => ({ x, y })
+/* -----------------------------------------------------------------------------
+ * Point
+ * -----------------------------------------------------------------------------*/
 
-export function createRect(r: RectValue) {
+export const createPoint = (x: number, y: number) => ({ x, y })
+
+export const subtractPoints = (a: Point, b: Point) => createPoint(a.x - b.x, a.y - b.y)
+export const addPoints = (a: Point, b: Point) => createPoint(a.x + b.x, a.y + b.y)
+
+export function isPoint(v: any): v is Point {
+  return Reflect.has(v, "x") && Reflect.has(v, "y")
+}
+
+/* -----------------------------------------------------------------------------
+ * Rect
+ * -----------------------------------------------------------------------------*/
+
+export function createRect(r: RectInit): Rect {
   const { x, y, width, height } = r
   const midX = x + width / 2
   const midY = y + height / 2
@@ -17,32 +32,27 @@ export function createRect(r: RectValue) {
     maxY: y + height,
     midX,
     midY,
-    center: point(midX, midY),
+    center: createPoint(midX, midY),
   }
 }
 
-export type Rect = ReturnType<typeof createRect>
-
-const hasProp = <T extends string>(obj: any, prop: T): obj is Record<T, any> =>
-  Object.prototype.hasOwnProperty.call(obj, prop)
-
 export function isRect(v: any): v is Rect {
-  return hasProp(v, "x") && hasProp(v, "y") && hasProp(v, "width") && hasProp(v, "height")
+  return Reflect.has(v, "x") && Reflect.has(v, "y") && Reflect.has(v, "width") && Reflect.has(v, "height")
 }
 
 export function getRectCenters(v: Rect) {
-  const top = point(v.midX, v.minY)
-  const right = point(v.maxX, v.midY)
-  const bottom = point(v.midX, v.maxY)
-  const left = point(v.minX, v.midY)
+  const top = createPoint(v.midX, v.minY)
+  const right = createPoint(v.maxX, v.midY)
+  const bottom = createPoint(v.midX, v.maxY)
+  const left = createPoint(v.minX, v.midY)
   return { top, right, bottom, left }
 }
 
 export function getRectCorners(v: Rect) {
-  const top = point(v.minX, v.minY)
-  const right = point(v.maxX, v.minY)
-  const bottom = point(v.maxX, v.maxY)
-  const left = point(v.minX, v.maxY)
+  const top = createPoint(v.minX, v.minY)
+  const right = createPoint(v.maxX, v.minY)
+  const bottom = createPoint(v.maxX, v.maxY)
+  const left = createPoint(v.minX, v.maxY)
   return { top, right, bottom, left }
 }
 

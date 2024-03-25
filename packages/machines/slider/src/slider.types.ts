@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -164,7 +164,7 @@ type ComputedContext = Readonly<{
   isDisabled: boolean
 }>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The active index of the range slider. This represents
@@ -176,7 +176,7 @@ type PrivateContext = Context<{
    * Whether the slider fieldset is disabled
    */
   fieldsetDisabled: boolean
-}>
+}
 
 export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
 
@@ -203,6 +203,7 @@ export interface MarkerProps {
 
 export interface ThumbProps {
   index: number
+  name?: string
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {

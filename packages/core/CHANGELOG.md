@@ -1,5 +1,54 @@
 # @zag-js/core
 
+## 0.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.39.0
+
+## 0.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.38.1
+
+## 0.38.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.38.0
+
+## 0.37.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.37.3
+
+## 0.37.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.37.2
+
+## 0.37.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.37.1
+
+## 0.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.37.0
+
 ## 0.36.3
 
 ### Patch Changes
@@ -32,7 +81,10 @@
 
 ### Patch Changes
 
-- [#1203](https://github.com/chakra-ui/zag/pull/1203) [`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Improve runtime performance when using watchers by subscribing to context once.
+- [#1203](https://github.com/chakra-ui/zag/pull/1203)
+  [`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve runtime performance when using watchers by subscribing to
+  context once.
 
 - Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36)]:
   - @zag-js/store@0.35.0
@@ -470,7 +522,7 @@
         date: (a, b) => a.getTime() === b.getTime(),
       },
     },
-  );
+  )
   ```
 
 - [#462](https://github.com/chakra-ui/zag/pull/462)
@@ -646,9 +698,9 @@
   This helper can be used in inline guards or the gaurds options.
 
   ```js
-  import { guards } from "@zag-js/core";
+  import { guards } from "@zag-js/core"
 
-  const { isIn } = gaurds;
+  const { isIn } = gaurds
 
   const machine = createMachine({
     on: {
@@ -660,7 +712,7 @@
       open: {},
       closed: {},
     },
-  });
+  })
   ```
 
 * [`587cbec9`](https://github.com/chakra-ui/zag/commit/587cbec9b32ee9e8faef5ceeefb779231b152018) Thanks

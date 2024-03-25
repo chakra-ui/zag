@@ -68,18 +68,6 @@ const [state, send] = useMachine(
 )
 ```
 
-## Making the switch readonly
-
-To make a switch readonly, set the context's `readOnly` property to true
-
-```jsx {3}
-const [state, send] = useMachine(
-  zagSwitch.machine({
-    readOnly: true,
-  }),
-)
-```
-
 ## Making it checked by default
 
 To make a switch checked by default, set the context's `checked` property to
@@ -206,11 +194,4 @@ Adheres to the
 
 ### Keyboard Interactions
 
-<KeyboardTable
-  data={[
-    {
-      keys: ["Space", "Enter"],
-      description: "Toggle the switch",
-    },
-  ]}
-/>
+<KeyboardTable id="switch" />

@@ -1,0 +1,43 @@
+[data-scope="clipboard"][data-part="root"] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+[data-scope="clipboard"][data-part="label"] {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+[data-scope="clipboard"][data-part="control"] {
+  display: flex;
+  align-items: stretch;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+[data-scope="clipboard"][data-part="input"] {
+  border-width: 1px;
+  height: 2.5rem;
+  padding-right: 1.25rem;
+  padding-left: 0.75rem;
+  background: var(--colors-bg-subtle);
+  border-color: var(--colors-border-subtle);
+}
+
+[data-scope="clipboard"][data-part="trigger"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: start;
+  cursor: pointer;
+  font-weight: 500;
+  padding-block: 0.25rem;
+  background: var(--colors-bg-subtle);
+  border-width: 1px;
+  padding-inline: 0.75rem;
+}
+
+[data-scope="clipboard"][data-part="trigger"]:hover {
+  background: var(--colors-bg-bold);
+}

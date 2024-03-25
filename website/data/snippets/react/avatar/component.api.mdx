@@ -1,0 +1,48 @@
+```tsx
+import * as avatar from "@zag-js/avatar"
+import { useMachine, normalizeProps } from "@zag-js/react"
+
+export interface AvatarProps extends Omit<avatar.Context, "id"> {
+  /**
+   * The src of the avatar image
+   */
+  src?: string
+  /**
+   * The srcSet of the avatar image
+   */
+  srcSet?: string
+  /**
+   * The name of the avatar
+   */
+  name: string
+}
+
+function Avatar(props: AvatarProps) {
+  const [machineProps, localProps] = avatar.splitProps(props)
+
+  const [state, send] = useMachine(avatar.machine({ id: useId() }), {
+    context: machineProps,
+  })
+
+  const api = avatar.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      <span {...api.fallbackProps}>{getInitials(localProps.name)}</span>
+      <img
+        alt="PA"
+        src={localProps.src}
+        srcSet={localProps.srcSet}
+        {...api.imageProps}
+      />
+    </div>
+  )
+}
+
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+}
+```

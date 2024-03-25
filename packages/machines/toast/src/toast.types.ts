@@ -1,13 +1,5 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import type {
-  CommonProperties,
-  Context,
-  Direction,
-  DirectionProperty,
-  PropTypes,
-  RequiredBy,
-  RootProperties,
-} from "@zag-js/types"
+import type { CommonProperties, Direction, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Base types
@@ -96,7 +88,6 @@ export type Options<T extends GenericOptions> = Partial<ToastOptions<T> & Global
  * -----------------------------------------------------------------------------*/
 
 export type MachineContext<T extends GenericOptions = DefaultGenericOptions> = GlobalToastOptions<T> &
-  RootProperties &
   CommonProperties &
   Omit<ToastOptions<T>, "removeDelay"> & {
     /**
@@ -160,13 +151,13 @@ type GroupComputedContext = Readonly<{
   count: number
 }>
 
-type GroupPrivateContext<T extends GenericOptions> = Context<{
+interface GroupPrivateContext<T extends GenericOptions> {
   /**
    * @internal
    * The child toast machines (spawned by the toast group)
    */
   toasts: Service<T>[]
-}>
+}
 
 export interface GroupMachineContext<T extends GenericOptions = DefaultGenericOptions>
   extends GroupPublicContext<T>,

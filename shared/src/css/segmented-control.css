@@ -1,0 +1,19 @@
+.segmented-control [data-part="root"] {
+  width: fit-content;
+  padding: 4px;
+  background-color: #f1f3f5;
+  border-radius: 4px;
+  gap: 8px;
+}
+
+.segmented-control [data-part="item"] {
+  padding-left: 0;
+  padding: 8px;
+  width: 100%;
+  text-align: center;
+}
+
+.segmented-control [data-part="indicator"] {
+  width: var(--width);
+  height: var(--height);
+}

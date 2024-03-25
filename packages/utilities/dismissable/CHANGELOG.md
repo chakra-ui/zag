@@ -1,5 +1,78 @@
 # @zag-js/dismissable
 
+## 0.39.0
+
+### Patch Changes
+
+- [`27f9ec0`](https://github.com/chakra-ui/zag/commit/27f9ec0812f19228921158885107ed43d559544a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Use capture phase for escape keydown dismissing
+
+- Updated dependencies []:
+  - @zag-js/utils@0.39.0
+  - @zag-js/dom-event@0.39.0
+  - @zag-js/dom-query@0.39.0
+  - @zag-js/interact-outside@0.39.0
+
+## 0.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.38.1
+  - @zag-js/dom-event@0.38.1
+  - @zag-js/dom-query@0.38.1
+  - @zag-js/interact-outside@0.38.1
+
+## 0.38.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.38.0
+  - @zag-js/dom-event@0.38.0
+  - @zag-js/dom-query@0.38.0
+  - @zag-js/interact-outside@0.38.0
+
+## 0.37.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.37.3
+  - @zag-js/dom-event@0.37.3
+  - @zag-js/dom-query@0.37.3
+  - @zag-js/interact-outside@0.37.3
+
+## 0.37.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.37.2
+  - @zag-js/dom-event@0.37.2
+  - @zag-js/dom-query@0.37.2
+  - @zag-js/interact-outside@0.37.2
+
+## 0.37.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.37.1
+  - @zag-js/dom-event@0.37.1
+  - @zag-js/dom-query@0.37.1
+  - @zag-js/interact-outside@0.37.1
+
+## 0.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-event@0.37.0
+  - @zag-js/interact-outside@0.37.0
+  - @zag-js/utils@0.37.0
+  - @zag-js/dom-query@0.37.0
+
 ## 0.36.3
 
 ### Patch Changes

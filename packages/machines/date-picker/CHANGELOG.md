@@ -1,5 +1,148 @@
 # @zag-js/date-picker
 
+## 0.39.0
+
+### Minor Changes
+
+- [`6b93232`](https://github.com/chakra-ui/zag/commit/6b932324a776ab66fc34b9dc8673400b60500f1c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove unused `parse` function
+
+### Patch Changes
+
+- Updated dependencies [[`27f9ec0`](https://github.com/chakra-ui/zag/commit/27f9ec0812f19228921158885107ed43d559544a),
+  [`565a7e4`](https://github.com/chakra-ui/zag/commit/565a7e46070edb7bb2a39ed9d065dcaee418db83)]:
+  - @zag-js/dismissable@0.39.0
+  - @zag-js/popper@0.39.0
+  - @zag-js/anatomy@0.39.0
+  - @zag-js/core@0.39.0
+  - @zag-js/types@0.39.0
+  - @zag-js/utils@0.39.0
+  - @zag-js/date-utils@0.39.0
+  - @zag-js/dom-event@0.39.0
+  - @zag-js/dom-query@0.39.0
+  - @zag-js/form-utils@0.39.0
+  - @zag-js/live-region@0.39.0
+  - @zag-js/text-selection@0.39.0
+
+## 0.38.1
+
+### Patch Changes
+
+- [#1305](https://github.com/chakra-ui/zag/pull/1305)
+  [`5a11b9d`](https://github.com/chakra-ui/zag/commit/5a11b9de76345a883c381489354e72acd6981f0a) Thanks
+  [@colinlienard](https://github.com/colinlienard)! - fix(date-picker): next and previous aria labels
+
+- [`ffda06f`](https://github.com/chakra-ui/zag/commit/ffda06f1c30790da1331824f5b0ad6eb86c7dad3) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Fix an issue that DatePicker does not close on click outside
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.38.1
+  - @zag-js/core@0.38.1
+  - @zag-js/types@0.38.1
+  - @zag-js/utils@0.38.1
+  - @zag-js/date-utils@0.38.1
+  - @zag-js/dismissable@0.38.1
+  - @zag-js/dom-event@0.38.1
+  - @zag-js/dom-query@0.38.1
+  - @zag-js/form-utils@0.38.1
+  - @zag-js/live-region@0.38.1
+  - @zag-js/popper@0.38.1
+  - @zag-js/text-selection@0.38.1
+
+## 0.38.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.38.0
+  - @zag-js/core@0.38.0
+  - @zag-js/types@0.38.0
+  - @zag-js/utils@0.38.0
+  - @zag-js/date-utils@0.38.0
+  - @zag-js/dismissable@0.38.0
+  - @zag-js/dom-event@0.38.0
+  - @zag-js/dom-query@0.38.0
+  - @zag-js/form-utils@0.38.0
+  - @zag-js/live-region@0.38.0
+  - @zag-js/popper@0.38.0
+  - @zag-js/text-selection@0.38.0
+
+## 0.37.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.37.3
+  - @zag-js/core@0.37.3
+  - @zag-js/types@0.37.3
+  - @zag-js/utils@0.37.3
+  - @zag-js/date-utils@0.37.3
+  - @zag-js/dismissable@0.37.3
+  - @zag-js/dom-event@0.37.3
+  - @zag-js/dom-query@0.37.3
+  - @zag-js/form-utils@0.37.3
+  - @zag-js/live-region@0.37.3
+  - @zag-js/popper@0.37.3
+  - @zag-js/text-selection@0.37.3
+
+## 0.37.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.37.2
+  - @zag-js/core@0.37.2
+  - @zag-js/types@0.37.2
+  - @zag-js/utils@0.37.2
+  - @zag-js/date-utils@0.37.2
+  - @zag-js/dismissable@0.37.2
+  - @zag-js/dom-event@0.37.2
+  - @zag-js/dom-query@0.37.2
+  - @zag-js/form-utils@0.37.2
+  - @zag-js/live-region@0.37.2
+  - @zag-js/popper@0.37.2
+  - @zag-js/text-selection@0.37.2
+
+## 0.37.1
+
+### Patch Changes
+
+- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom
+  components on top of Zag.js
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.37.1
+  - @zag-js/core@0.37.1
+  - @zag-js/types@0.37.1
+  - @zag-js/utils@0.37.1
+  - @zag-js/date-utils@0.37.1
+  - @zag-js/dismissable@0.37.1
+  - @zag-js/dom-event@0.37.1
+  - @zag-js/dom-query@0.37.1
+  - @zag-js/form-utils@0.37.1
+  - @zag-js/live-region@0.37.1
+  - @zag-js/popper@0.37.1
+  - @zag-js/text-selection@0.37.1
+
+## 0.37.0
+
+### Patch Changes
+
+- Updated dependencies [[`2a024fb`](https://github.com/chakra-ui/zag/commit/2a024fbd2e98343218d4d658e91f1d8c751e1a4d)]:
+  - @zag-js/types@0.37.0
+  - @zag-js/dom-event@0.37.0
+  - @zag-js/dismissable@0.37.0
+  - @zag-js/anatomy@0.37.0
+  - @zag-js/core@0.37.0
+  - @zag-js/utils@0.37.0
+  - @zag-js/date-utils@0.37.0
+  - @zag-js/dom-query@0.37.0
+  - @zag-js/form-utils@0.37.0
+  - @zag-js/live-region@0.37.0
+  - @zag-js/popper@0.37.0
+  - @zag-js/text-selection@0.37.0
+
 ## 0.36.3
 
 ### Patch Changes
@@ -76,14 +219,19 @@
 
 ### Minor Changes
 
-- [#1214](https://github.com/chakra-ui/zag/pull/1214) [`36958b5`](https://github.com/chakra-ui/zag/commit/36958b59d51f3ad9f2193e107f8ca8952c698438) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - [BREAKING] Change date picker from `inputProps` to `getInputProps` to support multiple inputs.
+- [#1214](https://github.com/chakra-ui/zag/pull/1214)
+  [`36958b5`](https://github.com/chakra-ui/zag/commit/36958b59d51f3ad9f2193e107f8ca8952c698438) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - [BREAKING] Change date picker from `inputProps` to
+  `getInputProps` to support multiple inputs.
 
-  - Added a new prop `getPresetTriggerProps` to support custom trigger for common date presets (e.g. Last 7 days, Last 30
-    days, etc.)
+  - Added a new prop `getPresetTriggerProps` to support custom trigger for common date presets (e.g. Last 7 days, Last
+    30 days, etc.)
 
 ### Patch Changes
 
-- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36), [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e), [`2b3edb1`](https://github.com/chakra-ui/zag/commit/2b3edb14d2e892ea70e289b54ba83fcd71e1bcab)]:
+- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36),
+  [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e),
+  [`2b3edb1`](https://github.com/chakra-ui/zag/commit/2b3edb14d2e892ea70e289b54ba83fcd71e1bcab)]:
   - @zag-js/core@0.35.0
   - @zag-js/popper@0.35.0
   - @zag-js/date-utils@0.35.0

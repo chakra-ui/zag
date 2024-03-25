@@ -550,7 +550,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         id: dom.getNextTriggerId(state.context, view),
         type: "button",
-        "aria-label": getPrevTriggerLabel(view),
+        "aria-label": getNextTriggerLabel(view),
         disabled: disabled || !state.context.isNextVisibleRangeValid,
         onClick() {
           send({ type: "GOTO.NEXT", view })
@@ -565,7 +565,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         id: dom.getPrevTriggerId(state.context, view),
         type: "button",
-        "aria-label": getNextTriggerLabel(view),
+        "aria-label": getPrevTriggerLabel(view),
         disabled: disabled || !state.context.isPrevVisibleRangeValid,
         onClick() {
           send({ type: "GOTO.PREV", view })

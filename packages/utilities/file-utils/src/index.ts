@@ -1,6 +1,5 @@
 export * from "./data-url-to-blob"
 export * from "./download-file"
-export * from "./format-file-size"
 export * from "./get-accept-attr"
 export * from "./get-file-data-url"
 export * from "./get-total-file-size"

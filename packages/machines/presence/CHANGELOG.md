@@ -1,5 +1,64 @@
 # @zag-js/presence
 
+## 0.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.39.0
+  - @zag-js/types@0.39.0
+
+## 0.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.38.1
+  - @zag-js/types@0.38.1
+
+## 0.38.0
+
+### Patch Changes
+
+- [`039752e`](https://github.com/chakra-ui/zag/commit/039752e720f9c781e5858fcbb9a0243c978a6769) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Fix onExitComplete call invoke
+
+- Updated dependencies []:
+  - @zag-js/core@0.38.0
+  - @zag-js/types@0.38.0
+
+## 0.37.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.37.3
+  - @zag-js/types@0.37.3
+
+## 0.37.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.37.2
+  - @zag-js/types@0.37.2
+
+## 0.37.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.37.1
+  - @zag-js/types@0.37.1
+
+## 0.37.0
+
+### Patch Changes
+
+- Updated dependencies [[`2a024fb`](https://github.com/chakra-ui/zag/commit/2a024fbd2e98343218d4d658e91f1d8c751e1a4d)]:
+  - @zag-js/types@0.37.0
+  - @zag-js/core@0.37.0
+
 ## 0.36.3
 
 ### Patch Changes

@@ -1,5 +1,75 @@
 # @zag-js/interact-outside
 
+## 0.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.39.0
+  - @zag-js/dom-event@0.39.0
+  - @zag-js/dom-query@0.39.0
+  - @zag-js/tabbable@0.39.0
+
+## 0.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.38.1
+  - @zag-js/dom-event@0.38.1
+  - @zag-js/dom-query@0.38.1
+  - @zag-js/tabbable@0.38.1
+
+## 0.38.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.38.0
+  - @zag-js/dom-event@0.38.0
+  - @zag-js/dom-query@0.38.0
+  - @zag-js/tabbable@0.38.0
+
+## 0.37.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.37.3
+  - @zag-js/dom-event@0.37.3
+  - @zag-js/dom-query@0.37.3
+  - @zag-js/tabbable@0.37.3
+
+## 0.37.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.37.2
+  - @zag-js/dom-event@0.37.2
+  - @zag-js/dom-query@0.37.2
+  - @zag-js/tabbable@0.37.2
+
+## 0.37.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.37.1
+  - @zag-js/dom-event@0.37.1
+  - @zag-js/dom-query@0.37.1
+  - @zag-js/tabbable@0.37.1
+
+## 0.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-event@0.37.0
+  - @zag-js/utils@0.37.0
+  - @zag-js/dom-query@0.37.0
+  - @zag-js/tabbable@0.37.0
+
 ## 0.36.3
 
 ### Patch Changes
@@ -34,7 +104,8 @@
 
 ### Patch Changes
 
-- [`0535ae2`](https://github.com/chakra-ui/zag/commit/0535ae2f836c2a270132f6bb4e3f518d9198c33d) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Prevent calling interaction outside when scrollbar is clicked
+- [`0535ae2`](https://github.com/chakra-ui/zag/commit/0535ae2f836c2a270132f6bb4e3f518d9198c33d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Prevent calling interaction outside when scrollbar is clicked
 
 - Updated dependencies []:
   - @zag-js/utils@0.36.0

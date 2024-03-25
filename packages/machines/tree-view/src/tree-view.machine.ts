@@ -14,8 +14,8 @@ export function machine(userContext: UserDefinedContext) {
       id: "tree-view",
       initial: "idle",
       context: {
-        expandedIds: new Set(),
-        selectedIds: new Set(),
+        expandedIds: [],
+        selectedIds: [],
         focusedId: null,
         openOnClick: true,
         selectionMode: "single",
@@ -165,10 +165,10 @@ export function machine(userContext: UserDefinedContext) {
     {
       guards: {
         isBranchFocused: (ctx, evt) => ctx.focusedId === evt.id,
-        isBranchExpanded: (ctx, evt) => ctx.expandedIds.has(evt.id),
+        isBranchExpanded: (ctx, evt) => ctx.expandedIds.includes(evt.id),
         isShiftKey: (_ctx, evt) => evt.shiftKey,
         isCtrlKey: (_ctx, evt) => evt.ctrlKey,
-        hasSelectedItems: (ctx) => ctx.selectedIds.size > 0,
+        hasSelectedItems: (ctx) => ctx.selectedIds.length > 0,
         isMultipleSelection: (ctx) => ctx.isMultipleSelection,
         moveFocus: (_ctx, evt) => !!evt.moveFocus,
         openOnClick: (ctx) => !!ctx.openOnClick,
@@ -217,7 +217,7 @@ export function machine(userContext: UserDefinedContext) {
         setFocusableNode(ctx) {
           if (ctx.focusedId) return
 
-          if (ctx.selectedIds.size > 0) {
+          if (ctx.selectedIds.length > 0) {
             const firstSelectedId = Array.from(ctx.selectedIds)[0]
             ctx.focusedId = firstSelectedId
             return
@@ -231,7 +231,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.focusedId = dom.getNodeId(firstItem)
         },
         selectItem(ctx, evt) {
-          set.selected(ctx, new Set([evt.id]))
+          set.selected(ctx, [evt.id])
         },
         setFocusedItem(ctx, evt) {
           set.focused(ctx, evt.id)
@@ -240,7 +240,7 @@ export function machine(userContext: UserDefinedContext) {
           set.focused(ctx, null)
         },
         clearSelectedItem(ctx) {
-          set.selected(ctx, new Set())
+          set.selected(ctx, [])
         },
         toggleBranch(ctx, evt) {
           const nextSet = new Set(ctx.expandedIds)
@@ -252,17 +252,17 @@ export function machine(userContext: UserDefinedContext) {
             nextSet.add(evt.id)
           }
 
-          set.expanded(ctx, nextSet)
+          set.expanded(ctx, Array.from(nextSet))
         },
         expandBranch(ctx, evt) {
           const nextSet = new Set(ctx.expandedIds)
           nextSet.add(evt.id)
-          set.expanded(ctx, nextSet)
+          set.expanded(ctx, Array.from(nextSet))
         },
         collapseBranch(ctx, evt) {
           const nextSet = new Set(ctx.expandedIds)
           nextSet.delete(evt.id)
-          set.expanded(ctx, nextSet)
+          set.expanded(ctx, Array.from(nextSet))
         },
         setExpanded(ctx, evt) {
           set.expanded(ctx, evt.value)
@@ -339,7 +339,7 @@ export function machine(userContext: UserDefinedContext) {
             }
             node = walker.nextNode()
           }
-          set.selected(ctx, nextSet)
+          set.selected(ctx, Array.from(nextSet))
         },
         focusMatchedItem(ctx, evt) {
           dom.focusNode(dom.getMatchingEl(ctx, evt.key))
@@ -359,7 +359,7 @@ export function machine(userContext: UserDefinedContext) {
             nextSet.add(nodeId)
           }
 
-          set.selected(ctx, nextSet)
+          set.selected(ctx, Array.from(nextSet))
         },
         expandAllBranches(ctx) {
           const nextSet = new Set<string>()
@@ -371,7 +371,7 @@ export function machine(userContext: UserDefinedContext) {
               nextSet.add(nodeId)
             }
           }
-          set.expanded(ctx, nextSet)
+          set.expanded(ctx, Array.from(nextSet))
         },
         expandSiblingBranches(ctx, evt) {
           const focusedEl = dom.getNodeEl(ctx, evt.id)
@@ -384,7 +384,7 @@ export function machine(userContext: UserDefinedContext) {
             nextSet.add(nodeId)
           })
 
-          set.expanded(ctx, nextSet)
+          set.expanded(ctx, Array.from(nextSet))
         },
         extendSelectionToItem(ctx, evt) {
           const focusedEl = dom.getNodeEl(ctx, evt.id)
@@ -422,7 +422,7 @@ export function machine(userContext: UserDefinedContext) {
             selectedIds.add(nextNodeId)
           }
 
-          set.selected(ctx, selectedIds)
+          set.selected(ctx, Array.from(selectedIds))
         },
         extendSelectionToPrevItem(ctx, evt) {
           const nodeId = evt.id
@@ -448,7 +448,7 @@ export function machine(userContext: UserDefinedContext) {
             selectedIds.add(prevNodeId)
           }
 
-          set.selected(ctx, selectedIds)
+          set.selected(ctx, Array.from(selectedIds))
         },
         extendSelectionToFirstItem(ctx) {
           const nodes = dom.getTreeNodes(ctx)
@@ -473,27 +473,6 @@ export function machine(userContext: UserDefinedContext) {
   )
 }
 
-// if the branch is collapsed, we need to remove all its children from selectedIds
-// function collapseEffect(ctx: MachineContext, evt: any) {
-//   const walker = dom.getTreeWalker(ctx, {
-//     skipHidden: false,
-//     root: dom.getBranchEl(ctx, evt.id),
-//   })
-
-//   const idsToRemove = new Set<string>()
-//   let node = walker.firstChild()
-//   while (node) {
-//     if (isHTMLElement(node)) {
-//       idsToRemove.add(dom.getNodeId(node))
-//     }
-//     node = walker.nextNode()
-//   }
-
-//   const nextSelectedSet = new Set(ctx.selectedIds)
-//   idsToRemove.forEach((id) => nextSelectedSet.delete(id))
-//   set.selected(ctx, nextSelectedSet)
-// }
-
 const invoke = {
   focusChange(ctx: MachineContext) {
     ctx.onFocusChange?.({ focusedId: ctx.focusedId! })
@@ -507,22 +486,22 @@ const invoke = {
   selectionChange(ctx: MachineContext) {
     ctx.onSelectionChange?.({
       selectedIds: ctx.selectedIds,
-      focusedId: ctx.focusedId!,
+      focusedId: ctx.focusedId,
     })
   },
 }
 
 const set = {
-  selected(ctx: MachineContext, set: Set<string>) {
-    ctx.selectedIds = set
+  selected(ctx: MachineContext, ids: string[]) {
+    ctx.selectedIds = ids
     invoke.selectionChange(ctx)
   },
   focused(ctx: MachineContext, id: string | null) {
     ctx.focusedId = id
     invoke.focusChange(ctx)
   },
-  expanded(ctx: MachineContext, set: Set<string>) {
-    ctx.expandedIds = set
+  expanded(ctx: MachineContext, ids: string[]) {
+    ctx.expandedIds = ids
     invoke.expandedChange(ctx)
   },
 }

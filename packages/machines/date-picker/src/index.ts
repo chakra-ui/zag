@@ -2,6 +2,7 @@ export { anatomy } from "./date-picker.anatomy"
 export { connect } from "./date-picker.connect"
 export { machine } from "./date-picker.machine"
 export { parse } from "./date-picker.parse"
+export * from "./date-picker.props"
 export type {
   MachineApi as Api,
   Calendar,

@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 export interface CopyStatusDetails {
   copied: boolean
@@ -30,7 +30,7 @@ interface PublicContext extends CommonProperties {
   timeout: number
 }
 
-type PrivateContext = Context<{}>
+interface PrivateContext {}
 
 type ComputedContext = Readonly<{}>
 

@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -70,7 +70,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   type: "button" | "link"
 }
 
-type PrivateContext = Context<{}>
+interface PrivateContext {}
 
 type ComputedContext = Readonly<{
   /**

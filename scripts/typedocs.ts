@@ -77,7 +77,7 @@ async function main() {
     }
   }
 
-  const outPath = join(process.cwd(), "packages", "docs", "api.json")
+  const outPath = join(process.cwd(), "packages", "docs", "data", "api.json")
 
   writeFileSync(outPath, JSON.stringify(result, null, 2))
 }

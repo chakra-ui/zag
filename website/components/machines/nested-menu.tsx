@@ -1,7 +1,5 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
-import { chakra } from "@chakra-ui/system"
-import { Button } from "components/button"
 import { useEffect } from "react"
 
 const data = [
@@ -45,87 +43,42 @@ export function NestedMenu() {
 
   return (
     <div>
-      <Button size="sm" variant="green" {...fileMenu.triggerProps}>
+      <button {...fileMenu.triggerProps}>
         Click me
-        <chakra.span ml="2" {...fileMenu.indicatorProps}>
-          ▾
-        </chakra.span>
-      </Button>
+        <span {...fileMenu.indicatorProps}>▾</span>
+      </button>
 
       <Portal>
         <div {...fileMenu.positionerProps}>
-          <chakra.ul
-            bg="bg-subtle"
-            width="240px"
-            padding="2"
-            isolation="isolate"
-            listStyleType="none"
-            shadow="base"
-            className="focus-outline"
-            {...fileMenu.contentProps}
-          >
+          <ul {...fileMenu.contentProps}>
             {data.map((item) => (
-              <chakra.li
-                px="2"
-                py="1"
-                cursor="pointer"
+              <li
                 key={item.value}
-                _highlighted={{
-                  bg: "bg-primary-bold",
-                  color: "white",
-                }}
                 {...fileMenu.getItemProps({ id: item.value })}
               >
                 {item.label}
-              </chakra.li>
+              </li>
             ))}
-            <chakra.li
-              px="2"
-              py="1"
-              cursor="pointer"
-              _highlighted={{
-                bg: "bg-primary-bold",
-                color: "white",
-              }}
-              {...shareMenuTriggerProps}
-            >
+            <li {...shareMenuTriggerProps}>
               Share
-              <chakra.span ml="2" {...shareMenu.indicatorProps}>
-                »
-              </chakra.span>
-            </chakra.li>
-          </chakra.ul>
+              <span {...shareMenu.indicatorProps}>»</span>
+            </li>
+          </ul>
         </div>
       </Portal>
 
       <Portal>
         <div {...shareMenu.positionerProps}>
-          <chakra.ul
-            bg="bg-subtle"
-            width="240px"
-            padding="2"
-            isolation="isolate"
-            listStyleType="none"
-            shadow="base"
-            className="focus-outline"
-            {...shareMenu.contentProps}
-          >
+          <ul {...shareMenu.contentProps}>
             {shareMenuData.map((item) => (
-              <chakra.li
-                px="2"
-                py="1"
-                cursor="pointer"
+              <li
                 key={item.value}
-                _highlighted={{
-                  bg: "bg-primary-bold",
-                  color: "white",
-                }}
                 {...shareMenu.getItemProps({ id: item.value })}
               >
                 {item.label}
-              </chakra.li>
+              </li>
             ))}
-          </chakra.ul>
+          </ul>
         </div>
       </Portal>
     </div>

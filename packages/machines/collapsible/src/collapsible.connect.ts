@@ -1,20 +1,22 @@
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./collapsible.anatomy"
 import { dom } from "./collapsible.dom"
-import type { Send, State } from "./collapsible.types"
-import { dataAttr } from "@zag-js/dom-query"
+import type { MachineApi, Send, State } from "./collapsible.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isVisible = state.matches("open", "closing")
   const isOpen = state.matches("open")
 
   const height = state.context.height
   const width = state.context.width
-  const disabled = state.context.disabled
+  const isDisabled = !!state.context.disabled
 
-  const skipDataAttr = state.context.isMountAnimationPrevented && isOpen
+  const skipMountAnimation = state.context.isMountAnimationPrevented && isOpen
 
   return {
+    isDisabled,
+    isVisible,
     isOpen,
     open() {
       send("OPEN")
@@ -25,16 +27,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
-      "data-state": isVisible ? "open" : "closed",
+      "data-state": isOpen ? "open" : "closed",
       dir: state.context.dir,
       id: dom.getRootId(state.context),
     }),
 
     contentProps: normalize.element({
       ...parts.content.attrs,
-      "data-state": skipDataAttr ? undefined : isOpen ? "open" : "closed",
+      "data-state": skipMountAnimation ? undefined : isOpen ? "open" : "closed",
       id: dom.getContentId(state.context),
-      "data-disabled": dataAttr(disabled),
+      "data-disabled": dataAttr(isDisabled),
       hidden: !isVisible,
       style: {
         "--height": height != null ? `${height}px` : undefined,
@@ -47,11 +49,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getTriggerId(state.context),
       dir: state.context.dir,
       type: "button",
-      "data-disabled": dataAttr(disabled),
+      "data-state": isOpen ? "open" : "closed",
+      "data-disabled": dataAttr(isDisabled),
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": isVisible || false,
       onClick() {
-        if (disabled) return
+        if (isDisabled) return
         send({ type: isOpen ? "CLOSE" : "OPEN", src: "trigger.click" })
       },
     }),

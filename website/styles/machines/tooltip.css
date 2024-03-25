@@ -1,0 +1,34 @@
+[data-scope="tooltip"][data-part="trigger"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: start;
+  cursor: pointer;
+  font-weight: 500;
+  padding-inline: 1rem;
+  padding-block: 0.25rem;
+  background: var(--colors-bg-primary-subtle);
+  color: #ffffff;
+}
+
+[data-scope="tooltip"][data-part="trigger"]:hover {
+  background: var(--colors-bg-primary-bold);
+}
+
+[data-scope="tooltip"][data-part="content"] {
+  padding-inline: 0.5rem;
+  padding-block: 0.25rem;
+  font-size: 0.875rem;
+  --background: #2d3748;
+  background: var(--background);
+  color: #ffffff;
+}
+
+[data-scope="tooltip"][data-part="arrow"] {
+  --arrow-background: var(--background);
+  --arrow-size: 8px;
+}
+
+[data-scope="tooltip"][data-part="arrow-tip"] {
+  border-radius: 0.125rem;
+}

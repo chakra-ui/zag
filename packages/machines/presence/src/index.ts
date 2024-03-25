@@ -1,3 +1,4 @@
 export { connect } from "./presence.connect"
 export { machine } from "./presence.machine"
-export type { UserDefinedContext as Context, MachineApi as Api } from "./presence.types"
+export * from "./presence.props"
+export type { MachineApi as Api, UserDefinedContext as Context } from "./presence.types"

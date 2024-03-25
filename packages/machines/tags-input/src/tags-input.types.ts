@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { LiveRegion } from "@zag-js/live-region"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 
 /* -----------------------------------------------------------------------------
@@ -199,7 +199,7 @@ type ComputedContext = Readonly<{
   isDisabled: boolean
 }>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The output log for the screen reader to speak
@@ -235,7 +235,7 @@ type PrivateContext = Context<{
    * Whether the fieldset is disabled
    */
   fieldsetDisabled: boolean
-}>
+}
 
 export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
 

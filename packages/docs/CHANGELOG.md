@@ -1,5 +1,24 @@
 # @zag-js/docs
 
+## 0.39.0
+
+## 0.38.1
+
+## 0.38.0
+
+## 0.37.3
+
+## 0.37.2
+
+## 0.37.1
+
+## 0.37.0
+
+### Minor Changes
+
+- [`9e71564`](https://github.com/chakra-ui/zag/commit/9e715647dc2b12319bb9a98b309bb5a0eb371ec6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add accessibility documentation for use in Ark UI and Chakra UI
+
 ## 0.36.3
 
 ## 0.36.2

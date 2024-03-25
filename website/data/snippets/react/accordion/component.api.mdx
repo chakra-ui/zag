@@ -1,0 +1,43 @@
+```tsx
+import * as accordion from "@zag-js/accordion"
+import { useMachine, normalizeProps } from "@zag-js/react"
+
+interface Item {
+  value: string
+  title: React.ReactNode
+  content: React.ReactNode
+}
+
+export interface AccordionProps extends Omit<accordion.Context, "id"> {
+  defaultValue?: accordion.Context["value"]
+  items: Item[]
+}
+
+export function Accordion(props: AccordionProps) {
+  const [machineProps, localProps] = accordion.splitProps(props)
+
+  const [state, send] = useMachine(
+    accordion.machine({ id: useId(), value: defaultValue }),
+    { context: machineProps },
+  )
+
+  const api = accordion.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      {localProps.items.map((item) => (
+        <div {...api.getItemProps({ value: item.value })}>
+          <h3>
+            <button {...api.getItemTriggerProps({ value: item.value })}>
+              {item.title}
+            </button>
+          </h3>
+          <div {...api.getItemContentProps({ value: item.value })}>
+            {item.content}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+```

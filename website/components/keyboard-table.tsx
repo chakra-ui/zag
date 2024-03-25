@@ -1,14 +1,13 @@
 import { HStack, Stack, StackDivider } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { AccessibilityDocKey, getAccessibilityDoc } from "@zag-js/docs"
 import { Kbd } from "./kbd"
 
-interface KeyboardData {
-  keys: string[]
-  description: React.ReactNode
+interface Props {
+  id: AccessibilityDocKey
 }
 
-export const KeyboardTable = (props: { data: KeyboardData[] }) => {
-  const { data } = props
+export const KeyboardTable = (props: Props) => {
+  const data = getAccessibilityDoc(props.id)
 
   return (
     <Stack
@@ -19,14 +18,14 @@ export const KeyboardTable = (props: { data: KeyboardData[] }) => {
       listStylePosition="inside"
       divider={<StackDivider />}
     >
-      {data.map(({ keys, description }, index) => (
+      {data.keyboard.map(({ keys, description }, index) => (
         <Stack align="flex-start" spacing="2" as="li" key={index}>
           <HStack>
             {keys.map((k) => (
               <Kbd key={k}>{k}</Kbd>
             ))}
           </HStack>
-          <chakra.span display="block">{description}</chakra.span>
+          <div dangerouslySetInnerHTML={{ __html: description }} />
         </Stack>
       ))}
     </Stack>

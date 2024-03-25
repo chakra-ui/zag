@@ -3,7 +3,7 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -17,10 +17,16 @@ export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
 export interface HighlightChangeDetails<T extends CollectionItem = CollectionItem> {
   highlightedValue: string | null
   highlightedItem: T | null
+  highlightedIndex: number
 }
 
 export interface OpenChangeDetails {
   open: boolean
+}
+
+export interface ScrollToIndexDetails {
+  index: number
+  immediate?: boolean
 }
 
 /* -----------------------------------------------------------------------------
@@ -122,9 +128,13 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether the select's open state is controlled by the user
    */
   "open.controlled"?: boolean
+  /**
+   * Function to scroll to a specific index
+   */
+  scrollToIndexFn?: (details: ScrollToIndexDetails) => void
 }
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * Internal state of the typeahead
@@ -145,7 +155,7 @@ type PrivateContext = Context<{
    * Whether to restore focus to the trigger after the menu closes
    */
   restoreFocus?: boolean
-}>
+}
 
 type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
   /**

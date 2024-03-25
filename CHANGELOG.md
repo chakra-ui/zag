@@ -6,6 +6,75 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.39.0](./#0.39.0) - 2024-03-19
+
+### Fixed
+
+- **Select**: Fix issue where multiple select doesn't work correctly in forms.
+- **DatePicker**: Remove unused `parse` function
+- **TagsInput**: Fix issue where setting `addOnPaste` to `false` and pasting text prevents subsequent tags from being
+  added
+- **Progress**: Fix issue where progress throws when value is initially set to `null`
+- **Popper**: Fix issue where `crossAxis` positioning property doesn't work in some cases.
+- **Combobox**: Fix issue where clear trigger remains hidden when initial value is set.
+
+### Added
+
+- **Slider**: Add support for custom `name` attribute on the thumb element
+- **Splitter**: Add `data-orientation` attribute to splitter panel
+- **Menu**: Expose `onEscapeKeyDown` event handler
+
+### Changed
+
+> 💥 Breaking changes
+
+- **Tabs**: Rename `api.tablistProps` to `api.listProps` to match naming convention
+- **Dismissable**: Use capture phase for escape keydown handling
+
+## [0.38.1](./#0.38.1) - 2024-03-08
+
+### Fixed
+
+- **DatePicker**
+
+  - Fix issue where next and previous had the wrong aria labels
+  - Fix an issue wher close on click outside does not get called when conditionally rendered
+
+- **FileUpload**: Fix an issue where `onFileReject` would not be called
+
+- **Switch**: Fix accessibility issue where `aria-readonly` was incorrectly set on the wrong element.
+
+## [0.38.0](./#0.38.0) - 2024-02-26
+
+### Added
+
+- **Collapsible**: Add `onExitComplete` to listen for exit animation completion.
+
+## [0.37.2](./#0.37.2) - 2024-02-25
+
+### Fixed
+
+- **Collapsible**: Fix issue where collapsible doesn't work when content is initially unmounted, or no animation is
+  attached.
+
+## [0.37.1](./#0.37.1) - 2024-02-24
+
+### Fixed
+
+- **Collapsible**: Fix issue where collapsible doesn't work when content is initially unmounted, or no animation is
+  attached.
+
+## [0.37.0](./#0.37.0) - 2024-02-21
+
+### Added
+
+- **Tour**: Add new `Tour` component to guide users through a series of steps in an application.
+- Expose all machine context properties as array to improve DX of building design system components.
+
+### Fixed
+
+- **TreeView**: Add missing `getBranchIndicator` function and other minor fixes.
+
 ## [0.36.3](./#0.36.3) - 2024-02-16
 
 ### Fixed

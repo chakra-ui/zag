@@ -1,5 +1,54 @@
 # @zag-js/remove-scroll
 
+## 0.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.39.0
+
+## 0.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.38.1
+
+## 0.38.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.38.0
+
+## 0.37.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.37.3
+
+## 0.37.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.37.2
+
+## 0.37.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.37.1
+
+## 0.37.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.37.0
+
 ## 0.36.3
 
 ### Patch Changes
@@ -32,7 +81,9 @@
 
 ### Patch Changes
 
-- [`76c1231`](https://github.com/chakra-ui/zag/commit/76c12313f68da94651360c23b065eab9b3d9d6f0) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where restoring scroll causes a smooth scroll transition back to the initial scroll point.
+- [`76c1231`](https://github.com/chakra-ui/zag/commit/76c12313f68da94651360c23b065eab9b3d9d6f0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where restoring scroll causes a smooth scroll transition
+  back to the initial scroll point.
 
 - Updated dependencies []:
   - @zag-js/dom-query@0.35.0

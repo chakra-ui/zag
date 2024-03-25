@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -44,10 +44,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   onSizeChange?: (details: SizeChangeDetails) => void
   /**
-   * Function called when the splitter resize starts.
-   */
-  onSizeChangeStart?: (details: SizeChangeDetails) => void
-  /**
    * Function called when the splitter resize ends.
    */
   onSizeChangeEnd?: (details: SizeChangeDetails) => void
@@ -76,12 +72,12 @@ type ComputedContext = Readonly<{
   activeResizePanels?: { before: PanelSizeData; after: PanelSizeData }
 }>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   activeResizeId: string | null
   previousPanels: NormalizedPanelData
   activeResizeState: { isAtMin: boolean; isAtMax: boolean }
   initialSize: Array<Required<Pick<PanelSizeData, "id" | "size">>>
-}>
+}
 
 export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
 

@@ -1,5 +1,3 @@
-import { Flex } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
 import * as radio from "@zag-js/radio-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
@@ -13,7 +11,6 @@ const items = [
 type SegmentedControlProps = {
   controls: {
     disabled: boolean
-    readonly: boolean
   }
 }
 
@@ -28,58 +25,18 @@ export function SegmentedControl(props: SegmentedControlProps) {
   const api = radio.connect(state, send, normalizeProps)
 
   return (
-    <Flex
-      align="center"
-      pos="relative"
-      bg="blackAlpha.200"
-      _dark={{
-        bg: "blackAlpha.400",
-      }}
-      p="1.5"
-      rounded="md"
-      {...api.rootProps}
-    >
-      <chakra.div
-        bg="bg-subtle"
-        zIndex="1"
-        rounded="md"
-        shadow="base"
-        height="var(--height)"
-        width="var(--width)"
-        {...api.indicatorProps}
-      />
-      {items.map((opt) => (
-        <chakra.label
-          display="flex"
-          gap="2"
-          userSelect="none"
-          cursor="pointer"
-          fontSize="16"
-          px="3"
-          py="1"
-          zIndex="2"
-          _disabled={{
-            cursor: "not-allowed",
-            opacity: 0.4,
-          }}
-          _readOnly={{
-            cursor: "default",
-          }}
-          key={opt.value}
-          {...api.getItemProps({ value: opt.value })}
-        >
-          <chakra.span
-            order="2"
-            {...api.getItemTextProps({ value: opt.value })}
-          >
-            {opt.label}
-          </chakra.span>
-          <input
-            data-peer
-            {...api.getItemHiddenInputProps({ value: opt.value })}
-          />
-        </chakra.label>
-      ))}
-    </Flex>
+    <div className="segmented-control">
+      <div {...api.rootProps}>
+        <div {...api.indicatorProps} />
+        {items.map((opt) => (
+          <label key={opt.value} {...api.getItemProps({ value: opt.value })}>
+            <span {...api.getItemTextProps({ value: opt.value })}>
+              {opt.label}
+            </span>
+            <input {...api.getItemHiddenInputProps({ value: opt.value })} />
+          </label>
+        ))}
+      </div>
+    </div>
   )
 }

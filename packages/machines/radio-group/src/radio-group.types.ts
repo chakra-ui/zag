@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 export interface ValueChangeDetails {
   value: string
@@ -53,7 +53,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   orientation?: "horizontal" | "vertical"
 }
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The id of the active radio
@@ -89,7 +89,7 @@ type PrivateContext = Context<{
    * Whether the radio group's fieldset is disabled
    */
   fieldsetDisabled: boolean
-}>
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 

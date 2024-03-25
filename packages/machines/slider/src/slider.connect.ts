@@ -126,7 +126,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getThumbProps(props) {
-      const { index = 0 } = props
+      const { index = 0, name } = props
 
       const value = sliderValue[index]
       const range = getRangeAtIndex(state.context, index)
@@ -138,6 +138,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.thumb.attrs,
         dir: state.context.dir,
         "data-index": index,
+        "data-name": name,
         id: dom.getThumbId(state.context, index),
         "data-disabled": dataAttr(isDisabled),
         "data-orientation": state.context.orientation,
@@ -217,9 +218,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getHiddenInputProps(props) {
-      const { index = 0 } = props
+      const { index = 0, name } = props
       return normalize.input({
-        name: `${state.context.name}[${index}]`,
+        name:
+          name ?? (state.context.name ? state.context.name + (state.context.value.length > 1 ? "[]" : "") : undefined),
         form: state.context.form,
         type: "text",
         hidden: true,

@@ -14,7 +14,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const activeSnap = state.context.scrollSnaps[state.context.index]
   const slidesInView = isDom() ? getSlidesInView(state.context)(activeSnap) : []
 
-  function getItemStateState(props: ItemProps): ItemState {
+  function getItemState(props: ItemProps): ItemState {
     const { index } = props
     return {
       valueText: `Slide ${index + 1}`,
@@ -44,7 +44,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("PREV")
     },
 
-    getItemState: getItemStateState,
+    getItemState: getItemState,
 
     play() {
       send("PLAY")
@@ -95,7 +95,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getItemProps(props) {
       const { index } = props
-      const sliderState = getItemStateState(props)
+      const sliderState = getItemState(props)
 
       return normalize.element({
         ...parts.item.attrs,

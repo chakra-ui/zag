@@ -21,3 +21,16 @@ export function json(value: any) {
 const isPlainObject = (value: any) => {
   return value && typeof value === "object" && value.constructor === Object
 }
+
+export function pick<T extends Record<string, any>, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+  const filtered: Partial<T> = {}
+
+  for (const key of keys) {
+    const value = obj[key]
+    if (value !== undefined) {
+      filtered[key] = value
+    }
+  }
+
+  return filtered as any
+}

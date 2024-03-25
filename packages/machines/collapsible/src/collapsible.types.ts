@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -25,6 +25,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   ids?: ElementIds
   /**
+   * Function called when the animation ends in the closed state.
+   */
+  onExitComplete?: () => void
+  /**
    * Function called when the popup is opened
    */
   onOpenChange?: (details: OpenChangeDetails) => void
@@ -44,7 +48,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
 
 type ComputedContext = Readonly<{}>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The height of the content
@@ -65,7 +69,7 @@ type PrivateContext = Context<{
    * Whether the mount animation is prevented
    */
   isMountAnimationPrevented: boolean
-}>
+}
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
@@ -89,13 +93,13 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   isOpen: boolean
   /**
+   * Whether the collapsible is visible (open or closing)
+   */
+  isVisible: boolean
+  /**
    * Whether the collapsible is disabled
    */
   isDisabled: boolean
-  /**
-   * Whether the checkbox is focused
-   */
-  isFocused: boolean | undefined
   /**
    * Function to open the collapsible.
    */

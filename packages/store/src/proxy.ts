@@ -10,11 +10,13 @@ type AsRef = { $$valtioRef: true }
 type ProxyObject = object
 
 type Path = (string | symbol)[]
+
 type Op =
   | [op: "set", path: Path, value: unknown, prevValue: unknown]
   | [op: "delete", path: Path, prevValue: unknown]
   | [op: "resolve", path: Path, value: unknown]
   | [op: "reject", path: Path, error: unknown]
+
 type Listener = (op: Op, nextVersion: number) => void
 
 type AnyFunction = (...args: any[]) => any
@@ -229,13 +231,11 @@ const buildProxyFunction = (
         } else if (value instanceof Promise) {
           value
             .then((v) => {
-              value.status = "fulfilled"
-              value.value = v
+              Object.assign(value, { status: "fulfilled", value: v })
               notifyUpdate(["resolve", [prop], v])
             })
             .catch((e) => {
-              value.status = "rejected"
-              value.reason = e
+              Object.assign(value, { status: "rejected", reason: e })
               notifyUpdate(["reject", [prop], e])
             })
         } else {

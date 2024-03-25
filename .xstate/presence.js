@@ -26,12 +26,14 @@ const fetchMachine = createMachine({
       actions: ["setPrevAnimationName"]
     }, {
       cond: "isAnimationNone || isDisplayNone",
-      target: "unmounted"
+      target: "unmounted",
+      actions: ["invokeOnExitComplete"]
     }, {
       cond: "wasPresent && isAnimating",
       target: "unmountSuspended"
     }, {
-      target: "unmounted"
+      target: "unmounted",
+      actions: ["invokeOnExitComplete"]
     }]
   },
   on: {
@@ -52,11 +54,14 @@ const fetchMachine = createMachine({
           target: "mounted",
           actions: ["setPrevAnimationName"]
         },
-        "ANIMATION.END": "unmounted"
+        "ANIMATION.END": {
+          target: "unmounted",
+          actions: ["invokeOnExitComplete"]
+        }
       }
     },
     unmounted: {
-      entry: ["clearPrevAnimationName", "invokeOnExitComplete"],
+      entry: ["clearPrevAnimationName"],
       on: {
         MOUNT: "mounted"
       }

@@ -2,7 +2,7 @@ import type { Collection, CollectionItem, CollectionOptions } from "@zag-js/coll
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -213,7 +213,7 @@ type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
   valueAsString: string
 }>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The placement of the combobox popover.
@@ -224,7 +224,7 @@ type PrivateContext = Context<{
    * Whether the user is composing text in the input
    */
   composing: boolean
-}>
+}
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 

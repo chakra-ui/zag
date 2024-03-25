@@ -53,7 +53,7 @@ const fetchMachine = createMachine({
       on: {
         POINTER_DOWN: {
           target: "dragging",
-          actions: ["setActiveHandleId", "invokeOnResizeStart"]
+          actions: ["setActiveHandleId"]
         },
         POINTER_LEAVE: "idle"
       }
@@ -61,10 +61,7 @@ const fetchMachine = createMachine({
     hover: {
       tags: ["focus"],
       on: {
-        POINTER_DOWN: {
-          target: "dragging",
-          actions: ["invokeOnResizeStart"]
-        },
+        POINTER_DOWN: "dragging",
         POINTER_LEAVE: "idle"
       }
     },
@@ -74,7 +71,7 @@ const fetchMachine = createMachine({
         BLUR: "idle",
         POINTER_DOWN: {
           target: "dragging",
-          actions: ["setActiveHandleId", "invokeOnResizeStart"]
+          actions: ["setActiveHandleId"]
         },
         ARROW_LEFT: {
           cond: "isHorizontal",

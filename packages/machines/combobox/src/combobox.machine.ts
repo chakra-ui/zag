@@ -46,6 +46,8 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
       },
 
+      created: ["setInitialInputValue"],
+
       computed: {
         isInputValueEmpty: (ctx) => ctx.inputValue.length === 0,
         isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
@@ -427,10 +429,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             onInteractOutside: ctx.onInteractOutside,
             onEscapeKeyDown(event) {
               event.preventDefault()
+              event.stopPropagation()
               send("LAYER.ESCAPE")
             },
             onDismiss() {
-              send({ type: "LAYER.INTERACT_OUTSIDE" })
+              send("LAYER.INTERACT_OUTSIDE")
             },
           })
         },
@@ -541,7 +544,18 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           set.inputValue(ctx, "")
         },
         revertInputValue(ctx) {
-          set.inputValue(ctx, ctx.hasSelectedItems ? ctx.valueAsString : "")
+          set.inputValue(
+            ctx,
+            match(ctx.selectionBehavior, {
+              replace: ctx.hasSelectedItems ? ctx.valueAsString : "",
+              clear: "",
+              preserve: ctx.inputValue,
+            }),
+          )
+        },
+        setInitialInputValue(ctx) {
+          const items = ctx.collection.items(ctx.value)
+          ctx.inputValue = ctx.collection.itemsToString(items)
         },
         setSelectedItems(ctx, evt) {
           set.selectedItems(ctx, evt.value)
@@ -632,7 +646,6 @@ const set = {
       invoke.selectionChange(ctx)
       return
     }
-
     ctx.value = ctx.multiple ? addOrRemove(ctx.value, value!) : [value!]
     invoke.selectionChange(ctx)
   },

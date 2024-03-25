@@ -1,9 +1,9 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
-import type { CommonProperties, Context, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -36,7 +36,7 @@ type ElementIds = Partial<{
   arrow: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+interface PublicContext extends DirectionProperty, CommonProperties, DismissableElementHandlers {
   /**
    * The ids of the elements in the menu. Useful for composition.
    */
@@ -111,7 +111,7 @@ type ComputedContext = Readonly<{
   isTypingAhead: boolean
 }>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * The menu's parent. Used for submenus.
@@ -153,7 +153,7 @@ type PrivateContext = Context<{
    * Whether to return focus to the trigger when the menu is closed
    */
   restoreFocus?: boolean
-}>
+}
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
@@ -225,14 +225,14 @@ export interface OptionItemState extends ItemState {
   isChecked: boolean
 }
 
-export interface GroupProps {
+export interface ItemGroupProps {
   /**
    * The `id` of the element that provides accessibility label to the option group
    */
   id: string
 }
 
-export interface LabelProps {
+export interface ItemGroupLabelProps {
   /**
    * The `id` of the group this refers to
    */
@@ -301,6 +301,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getOptionItemProps(option: OptionItemProps): T["element"]
   getOptionItemIndicatorProps(option: OptionItemProps): T["element"]
   getOptionItemTextProps(option: OptionItemProps): T["element"]
-  getItemGroupLabelProps(options: LabelProps): T["element"]
-  getItemGroupProps(options: GroupProps): T["element"]
+  getItemGroupLabelProps(options: ItemGroupLabelProps): T["element"]
+  getItemGroupProps(options: ItemGroupProps): T["element"]
 }

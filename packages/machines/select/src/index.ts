@@ -2,6 +2,7 @@ export { anatomy } from "./select.anatomy"
 export { collection } from "./select.collection"
 export { connect } from "./select.connect"
 export { machine } from "./select.machine"
+export * from "./select.props"
 export type {
   MachineApi as Api,
   CollectionItem,
@@ -9,6 +10,7 @@ export type {
   UserDefinedContext as Context,
   ElementIds,
   HighlightChangeDetails,
+  ScrollToIndexDetails,
   ItemGroupLabelProps,
   ItemGroupProps,
   ItemProps,

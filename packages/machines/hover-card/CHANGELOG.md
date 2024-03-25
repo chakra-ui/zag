@@ -1,5 +1,101 @@
 # @zag-js/hover-card
 
+## 0.39.0
+
+### Patch Changes
+
+- Updated dependencies [[`27f9ec0`](https://github.com/chakra-ui/zag/commit/27f9ec0812f19228921158885107ed43d559544a),
+  [`565a7e4`](https://github.com/chakra-ui/zag/commit/565a7e46070edb7bb2a39ed9d065dcaee418db83)]:
+  - @zag-js/dismissable@0.39.0
+  - @zag-js/popper@0.39.0
+  - @zag-js/anatomy@0.39.0
+  - @zag-js/core@0.39.0
+  - @zag-js/types@0.39.0
+  - @zag-js/utils@0.39.0
+  - @zag-js/dom-query@0.39.0
+
+## 0.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.38.1
+  - @zag-js/core@0.38.1
+  - @zag-js/types@0.38.1
+  - @zag-js/utils@0.38.1
+  - @zag-js/dismissable@0.38.1
+  - @zag-js/dom-query@0.38.1
+  - @zag-js/popper@0.38.1
+
+## 0.38.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.38.0
+  - @zag-js/core@0.38.0
+  - @zag-js/types@0.38.0
+  - @zag-js/utils@0.38.0
+  - @zag-js/dismissable@0.38.0
+  - @zag-js/dom-query@0.38.0
+  - @zag-js/popper@0.38.0
+
+## 0.37.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.37.3
+  - @zag-js/core@0.37.3
+  - @zag-js/types@0.37.3
+  - @zag-js/utils@0.37.3
+  - @zag-js/dismissable@0.37.3
+  - @zag-js/dom-query@0.37.3
+  - @zag-js/popper@0.37.3
+
+## 0.37.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.37.2
+  - @zag-js/core@0.37.2
+  - @zag-js/types@0.37.2
+  - @zag-js/utils@0.37.2
+  - @zag-js/dismissable@0.37.2
+  - @zag-js/dom-query@0.37.2
+  - @zag-js/popper@0.37.2
+
+## 0.37.1
+
+### Patch Changes
+
+- [`d9d5263`](https://github.com/chakra-ui/zag/commit/d9d52636fbd3a731a4764b865ac82afd4f163baf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `splitProps` function to improve DX of creating custom
+  components on top of Zag.js
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.37.1
+  - @zag-js/core@0.37.1
+  - @zag-js/types@0.37.1
+  - @zag-js/utils@0.37.1
+  - @zag-js/dismissable@0.37.1
+  - @zag-js/dom-query@0.37.1
+  - @zag-js/popper@0.37.1
+
+## 0.37.0
+
+### Patch Changes
+
+- Updated dependencies [[`2a024fb`](https://github.com/chakra-ui/zag/commit/2a024fbd2e98343218d4d658e91f1d8c751e1a4d)]:
+  - @zag-js/types@0.37.0
+  - @zag-js/dismissable@0.37.0
+  - @zag-js/anatomy@0.37.0
+  - @zag-js/core@0.37.0
+  - @zag-js/utils@0.37.0
+  - @zag-js/dom-query@0.37.0
+  - @zag-js/popper@0.37.0
+
 ## 0.36.3
 
 ### Patch Changes
@@ -30,7 +126,8 @@
 
 ### Patch Changes
 
-- [`2668b0c`](https://github.com/chakra-ui/zag/commit/2668b0c7a0702fa31f3cff4ae904335c897042d8) Thanks [@cschroeter](https://github.com/cschroeter)! - Remove a superfluous log
+- [`2668b0c`](https://github.com/chakra-ui/zag/commit/2668b0c7a0702fa31f3cff4ae904335c897042d8) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Remove a superfluous log
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.36.1
@@ -58,11 +155,14 @@
 
 ### Minor Changes
 
-- [`3881f34`](https://github.com/chakra-ui/zag/commit/3881f34622d7a6067e7a2e4eecbe83fa778bdb9e) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add support for `open.controlled` in the machine context as a way to fully control the machine's open state programmatically.
+- [`3881f34`](https://github.com/chakra-ui/zag/commit/3881f34622d7a6067e7a2e4eecbe83fa778bdb9e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `open.controlled` in the machine context as a way
+  to fully control the machine's open state programmatically.
 
 ### Patch Changes
 
-- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36), [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e)]:
+- Updated dependencies [[`0216161`](https://github.com/chakra-ui/zag/commit/0216161fd3d429409abc96941d33a0c333ef8d36),
+  [`d206b3a`](https://github.com/chakra-ui/zag/commit/d206b3a9df7f375da640e12590939a7994f41b9e)]:
   - @zag-js/core@0.35.0
   - @zag-js/popper@0.35.0
   - @zag-js/anatomy@0.35.0
@@ -727,7 +827,7 @@
 
   ```jsx
   // this is will open the dialog initially
-  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }));
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
 
   // this will open the dialog when the `open` value changes
   const [state, send] = useMachine(dialog.machine({ id: "1" }), {
@@ -735,7 +835,7 @@
       // when this value changes, the dialog will open/close
       open: true,
     },
-  });
+  })
   ```
 
 ### Patch Changes
@@ -755,7 +855,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" });
+  api.setPositioning({ placement: "top" })
   ```
 
 ### Patch Changes
@@ -849,15 +949,15 @@
   [@TimKolberger](https://github.com/TimKolberger)! - Add `open` and `close` functions to the connect api:
 
   ```ts
-  import * as hoverCard from "@zag-js/hover-card";
+  import * as hoverCard from "@zag-js/hover-card"
 
-  const api = hoverCard.connect(state, send, normalizeProps);
+  const api = hoverCard.connect(state, send, normalizeProps)
 
   // call `open` to open the hover card
-  api.open();
+  api.open()
 
   // call `close` to close the hover card
-  api.close();
+  api.close()
   ```
 
 ### Patch Changes

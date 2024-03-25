@@ -13,7 +13,7 @@ export default function Page() {
   const [state, send] = useMachine(
     clipboard.machine({
       id: createUniqueId(),
-      value: "https://github/com/chakra-ui/zag",
+      value: "https://github.com/chakra-ui/zag",
     }),
     {
       context: controls.context,

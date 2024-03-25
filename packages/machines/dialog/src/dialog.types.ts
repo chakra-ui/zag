@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
-import type { CommonProperties, Context, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -92,7 +92,7 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{}>
 
-type PrivateContext = Context<{
+interface PrivateContext {
   /**
    * @internal
    * Whether some elements are rendered
@@ -101,7 +101,7 @@ type PrivateContext = Context<{
     title: boolean
     description: boolean
   }
-}>
+}
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 

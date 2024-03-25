@@ -132,9 +132,9 @@ const [state, send] = useMachine(
 )
 ```
 
-## Disabling specific accordion items
+## Disabling an accordion item
 
-To disable a specific accordion, pass the `disabled: true` property to the
+To disable a specific accordion item, pass the `disabled: true` property to the
 `getItemProps`, `getItemTriggerProps` and `getItemContentProps`.
 
 When an accordion item is disabled, it is skipped from keyboard navigation and
@@ -210,6 +210,22 @@ on the item and content.
 }
 ```
 
+## Creating Component
+
+Create your accordion component by abstracting the machine into your own
+component.
+
+### Usage
+
+<CodeSnippet id="accordion/component.usage.mdx" />
+
+### Implementation
+
+Use the the `splitProps` utility to separate the machine's props from the
+component's props.
+
+<CodeSnippet id="accordion/component.api.mdx" />
+
 ## Methods and Properties
 
 The accordion's `api` exposes the following methods and properties:
@@ -230,43 +246,4 @@ The accordion `api` exposes the following methods:
 
 ### Keyboard Interactions
 
-<KeyboardTable
-  data={[
-    {
-      keys: ["Space"],
-      description:
-        "When focus is on an trigger of a collapsed item, the item is expanded",
-    },
-    {
-      keys: ["Enter"],
-      description:
-        "When focus is on an trigger of a collapsed section, expands the section.",
-    },
-    {
-      keys: ["Tab"],
-      description: "Moves focus to the next focusable element",
-    },
-    {
-      keys: ["Shift + Tab"],
-      description: "Moves focus to the previous focusable element",
-    },
-    {
-      keys: ["ArrowDown"],
-      description: "Moves focus to the next trigger",
-    },
-    {
-      keys: ["ArrowUp"],
-      description: "Moves focus to the previous trigger.",
-    },
-    {
-      keys: ["Home"],
-      description:
-        "When focus is on an trigger, moves focus to the first trigger.",
-    },
-    {
-      keys: ["End"],
-      description:
-        "When focus is on an trigger, moves focus to the last trigger.",
-    },
-  ]}
-/>
+<KeyboardTable id="accordion" />

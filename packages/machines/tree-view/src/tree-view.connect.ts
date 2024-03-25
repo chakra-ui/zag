@@ -16,7 +16,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: props.id,
       isDisabled: Boolean(props.disabled),
       isFocused: focusedId === props.id,
-      isSelected: selectedIds.has(props.id),
+      isSelected: selectedIds.includes(props.id),
     }
   }
 
@@ -25,8 +25,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: props.id,
       isDisabled: Boolean(props.disabled),
       isFocused: focusedId === props.id,
-      isExpanded: expandedIds.has(props.id),
-      isSelected: selectedIds.has(props.id),
+      isExpanded: expandedIds.includes(props.id),
+      isSelected: selectedIds.includes(props.id),
     }
   }
 
@@ -150,7 +150,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           Enter(event) {
             if (node.dataset.disabled) return
 
-            event.preventDefault()
+            const isLink = target?.closest("a[href]")
+            if (!isLink) event.preventDefault()
+
             send({ type: isBranchNode ? "BRANCH.CLICK" : "ITEM.CLICK", id: nodeId, src: "keyboard" })
           },
           "*"(event) {
@@ -214,7 +216,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const isMetaKey = event.metaKey || event.ctrlKey
           send({ type: "ITEM.CLICK", id: itemState.id, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
-          event.preventDefault()
+
+          const isLink = event.currentTarget.matches("a[href]")
+          if (!isLink) event.preventDefault()
         },
       })
     },
@@ -261,6 +265,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           "--depth": props.depth,
         },
+      })
+    },
+
+    getBranchIndicatorProps(props) {
+      const branchState = getBranchState(props)
+      return normalize.element({
+        ...parts.branchIndicator.attrs,
+        "aria-hidden": true,
+        "data-state": branchState.isExpanded ? "open" : "closed",
+        "data-disabled": dataAttr(branchState.isDisabled),
+        "data-selected": dataAttr(branchState.isSelected),
+        "data-focused": dataAttr(branchState.isFocused),
       })
     },
 

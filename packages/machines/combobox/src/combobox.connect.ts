@@ -140,7 +140,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       id: dom.getInputId(state.context),
       type: "text",
       role: "combobox",
-      defaultValue: state.context.inputValue || state.context.valueAsString,
+      defaultValue: state.context.inputValue,
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
       "aria-controls": isOpen ? dom.getContentId(state.context) : undefined,
       "aria-expanded": isOpen,
@@ -276,7 +276,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       tabIndex: -1,
       disabled: isDisabled,
       "aria-label": translations.clearTriggerLabel,
-      hidden: state.context.isInputValueEmpty,
+      hidden: !state.context.value.length,
       onPointerDown(event) {
         const evt = getNativeEvent(event)
         if (!isInteractive || !isLeftClick(evt)) return
