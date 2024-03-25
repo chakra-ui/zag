@@ -28,6 +28,7 @@ export const props = createProps<UserDefinedContext>()([
   "readOnly",
   "selectOnBlur",
   "value",
+  "scrollToIndexFn",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 

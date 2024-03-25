@@ -17,6 +17,7 @@ export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
 export interface HighlightChangeDetails<T extends CollectionItem = CollectionItem> {
   highlightedValue: string | null
   highlightedItem: T | null
+  highlightedIndex: number
 }
 
 export interface OpenChangeDetails {
@@ -122,6 +123,10 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether the select's open state is controlled by the user
    */
   "open.controlled"?: boolean
+  /**
+   * Function to scroll to a specific index
+   */
+  scrollToIndexFn?: (index: number) => void
 }
 
 interface PrivateContext {

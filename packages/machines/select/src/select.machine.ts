@@ -440,6 +440,12 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             const optionEl = dom.getHighlightedOptionEl(ctx)
             const contentEl = dom.getContentEl(ctx)
 
+            if (ctx.scrollToIndexFn) {
+              const highlightedIndex = ctx.collection.indexOf(ctx.highlightedValue)
+              ctx.scrollToIndexFn(highlightedIndex)
+              return
+            }
+
             scrollIntoView(optionEl, { rootEl: contentEl, block: "nearest" })
           }
           raf(() => exec())
@@ -564,7 +570,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           set.selectedItem(ctx, value)
         },
         scrollContentToTop(ctx) {
-          dom.getContentEl(ctx)?.scrollTo(0, 0)
+          if (ctx.scrollToIndexFn) {
+            ctx.scrollToIndexFn(0)
+          } else {
+            dom.getContentEl(ctx)?.scrollTo(0, 0)
+          }
         },
         invokeOnOpen(ctx) {
           ctx.onOpenChange?.({ open: true })
@@ -609,6 +619,7 @@ const invoke = {
     ctx.onHighlightChange?.({
       highlightedValue: ctx.highlightedValue,
       highlightedItem: ctx.highlightedItem,
+      highlightedIndex: ctx.collection.indexOf(ctx.highlightedValue),
     })
   },
 }
