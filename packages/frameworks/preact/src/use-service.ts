@@ -12,6 +12,7 @@ export function useService<
   const service = useConstant(() => {
     const instance = typeof machine === "function" ? machine() : machine
     if (context) instance.setContext(context)
+    instance._created()
     return instance
   })
 

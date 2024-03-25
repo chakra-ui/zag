@@ -11,6 +11,7 @@ export function useService<
 
   const service = typeof machine === "function" ? machine() : machine
   if (context) service.setContext(unref(context))
+  service._created()
 
   onMounted(() => {
     service.start(hydratedState)

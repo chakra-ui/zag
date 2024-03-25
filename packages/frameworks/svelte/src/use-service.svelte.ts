@@ -16,6 +16,7 @@ export function useService<
 
   $effect(() => {
     service.setContext(unstate(context))
+    service._created()
   })
 
   $effect(() => {

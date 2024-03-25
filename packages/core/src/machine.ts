@@ -89,10 +89,6 @@ export class Machine<
     this.state = createProxy(this.config)
 
     this.initialContext = snapshot(this.state.context)
-
-    // created actions
-    const event = toEvent<TEvent>(ActionTypes.Created)
-    this.executeActions(this.config?.created, event)
   }
 
   // immutable state value
@@ -107,6 +103,12 @@ export class Machine<
   // immutable context value
   private get contextSnapshot(): TContext {
     return this.stateSnapshot.context
+  }
+
+  public _created = () => {
+    // created actions
+    const event = toEvent<TEvent>(ActionTypes.Created)
+    this.executeActions(this.config?.created, event)
   }
 
   // Starts the interpreted machine.

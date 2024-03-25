@@ -46,7 +46,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
       },
 
-      created: ["setInitialInputValue"],
+      created: ["initialize"],
 
       computed: {
         isInputValueEmpty: (ctx) => ctx.inputValue.length === 0,
@@ -553,9 +553,14 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             }),
           )
         },
-        setInitialInputValue(ctx) {
+        initialize(ctx) {
           const items = ctx.collection.items(ctx.value)
-          ctx.inputValue = ctx.collection.itemsToString(items)
+          const valueAsString = ctx.collection.itemsToString(items)
+          ctx.inputValue = match(ctx.selectionBehavior, {
+            preserve: valueAsString,
+            replace: valueAsString,
+            clear: "",
+          })
         },
         setSelectedItems(ctx, evt) {
           set.selectedItems(ctx, evt.value)
