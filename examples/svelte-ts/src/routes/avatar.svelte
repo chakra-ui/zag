@@ -3,6 +3,7 @@
   import { avatarData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
+  import { unstate } from "svelte"
 
   const images = avatarData.full
   const getRandomImage = () => images[Math.floor(Math.random() * images.length)]
@@ -11,7 +12,7 @@
   let showImage = $state(true)
 
   const machine = useMachine(avatar.machine({ id: "1" }))
-  const api = $derived(avatar.connect(machine.state, machine.send, normalizeProps))
+  const api = $derived(avatar.connect(unstate(machine.state), machine.send, normalizeProps))
 </script>
 
 <main class="avatar">
@@ -29,4 +30,4 @@
   </div>
 </main>
 
-<Toolbar {machine} />
+<Toolbar state={machine.state} />

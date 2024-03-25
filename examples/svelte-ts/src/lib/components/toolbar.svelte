@@ -6,8 +6,8 @@
   import { unstate } from "svelte"
   import Controls from "./controls.svelte"
 
-  const { controls, machine } = $props<{
-    machine: ReturnType<typeof useMachine<any, any, any>>
+  const { controls, state: state_ } = $props<{
+    state: ReturnType<typeof useMachine<any, any, any>>["state"]
     controls?: UseControlsReturn
   }>()
 
@@ -31,7 +31,7 @@
       <pre>
         <details open>
           <summary>Visualizer</summary>
-          <div>{@html stringifyState(unstate(machine.state))}</div>
+          <div>{@html stringifyState(unstate(state_))}</div>
         </details>
       </pre>
     </div>

@@ -6,8 +6,6 @@ export function useSnapshot<
   TState extends S.StateSchema,
   TEvent extends S.EventObject = S.AnyEventObject,
 >(service: Machine<TContext, TState, TEvent>) {
-  //
-
   let state = $state(service.state)
 
   const unsubscribe = subscribe(service.state, () => {
