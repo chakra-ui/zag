@@ -45,6 +45,9 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           ...ctx.translations,
         },
       },
+
+      created: ["setInitialInputValue"],
+
       computed: {
         isInputValueEmpty: (ctx) => ctx.inputValue.length === 0,
         isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
@@ -549,6 +552,10 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               preserve: ctx.inputValue,
             }),
           )
+        },
+        setInitialInputValue(ctx) {
+          const items = ctx.collection.items(ctx.value)
+          ctx.inputValue = ctx.collection.itemsToString(items)
         },
         setSelectedItems(ctx, evt) {
           set.selectedItems(ctx, evt.value)
