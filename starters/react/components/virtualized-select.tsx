@@ -41,11 +41,15 @@ export function VirtualizedSelect(props: SelectProps) {
       collection,
       value: toArray(value) ?? toArray(defaultValue),
       open: open ?? defaultOpen,
-      scrollToIndexFn(index) {
-        clearTimeout(timerRef.current)
-        timerRef.current = setTimeout(() => {
-          rowVirtualizer.scrollToIndex(index, { align: "center", behavior: "auto" })
-        })
+      scrollToIndexFn(details) {
+        if (!details.immediate) {
+          rowVirtualizer.scrollToIndex(details.index, { align: "center", behavior: "auto" })
+        } else {
+          clearTimeout(timerRef.current)
+          timerRef.current = setTimeout(() => {
+            rowVirtualizer.scrollToIndex(details.index, { align: "center", behavior: "auto" })
+          })
+        }
       },
     }),
     {

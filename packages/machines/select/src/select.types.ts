@@ -24,6 +24,11 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export interface ScrollToIndexDetails {
+  index: number
+  immediate?: boolean
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -126,7 +131,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * Function to scroll to a specific index
    */
-  scrollToIndexFn?: (index: number) => void
+  scrollToIndexFn?: (details: ScrollToIndexDetails) => void
 }
 
 interface PrivateContext {

@@ -431,7 +431,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           })
         },
         scrollToHighlightedItem(ctx, _evt, { getState }) {
-          const exec = () => {
+          const exec = (immediate: boolean) => {
             const state = getState()
 
             // don't scroll into view if we're using the pointer
@@ -442,14 +442,14 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
             if (ctx.scrollToIndexFn) {
               const highlightedIndex = ctx.collection.indexOf(ctx.highlightedValue)
-              ctx.scrollToIndexFn(highlightedIndex)
+              ctx.scrollToIndexFn({ index: highlightedIndex, immediate })
               return
             }
 
             scrollIntoView(optionEl, { rootEl: contentEl, block: "nearest" })
           }
-          raf(() => exec())
-          return observeAttributes(dom.getContentEl(ctx), ["aria-activedescendant"], exec)
+          raf(() => exec(true))
+          return observeAttributes(dom.getContentEl(ctx), ["aria-activedescendant"], () => exec(false))
         },
       },
       actions: {
@@ -571,7 +571,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
         scrollContentToTop(ctx) {
           if (ctx.scrollToIndexFn) {
-            ctx.scrollToIndexFn(0)
+            ctx.scrollToIndexFn({ index: 0, immediate: true })
           } else {
             dom.getContentEl(ctx)?.scrollTo(0, 0)
           }
