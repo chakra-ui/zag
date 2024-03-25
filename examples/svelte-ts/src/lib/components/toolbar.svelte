@@ -2,14 +2,16 @@
   import type { UseControlsReturn } from "$lib/use-controls.svelte"
   import { dataAttr } from "@zag-js/dom-query"
   import { stringifyState } from "@zag-js/shared"
-  import type { useMachine } from "@zag-js/svelte"
   import { unstate } from "svelte"
   import Controls from "./controls.svelte"
 
-  const { controls, state: state_ } = $props<{
-    state: ReturnType<typeof useMachine<any, any, any>>["state"]
+  const {
+    controls,
+    state: state_,
+  }: {
+    state: any
     controls?: UseControlsReturn
-  }>()
+  } = $props()
 
   let active = $state(controls !== undefined ? 0 : 1)
 </script>

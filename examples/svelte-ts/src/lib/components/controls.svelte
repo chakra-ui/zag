@@ -2,9 +2,7 @@
   import type { UseControlsReturn } from "$lib/use-controls.svelte"
   import { deepGet } from "@zag-js/shared"
 
-  const { controls } = $props<{
-    controls: UseControlsReturn
-  }>()
+  const { controls }: { controls: UseControlsReturn } = $props()
 </script>
 
 <div class="controls-container">

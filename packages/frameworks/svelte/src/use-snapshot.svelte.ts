@@ -14,10 +14,9 @@ export function useSnapshot<
 
   onDestroy(unsubscribe)
 
-  return {
-    // Need a getter to get fresh state.
-    get state() {
-      return state
+  return new Proxy(state, {
+    get(_, key) {
+      return state[key]
     },
-  }
+  })
 }

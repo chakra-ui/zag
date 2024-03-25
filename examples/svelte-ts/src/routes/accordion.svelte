@@ -4,15 +4,14 @@
   import * as accordion from "@zag-js/accordion"
   import { accordionControls, accordionData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { unstate } from "svelte"
 
   const controls = useControls(accordionControls)
 
-  const machine = useMachine(accordion.machine({ id: "1" }), {
+  const [_state, send] = useMachine(accordion.machine({ id: "1" }), {
     context: controls.context,
   })
 
-  const api = $derived(accordion.connect(unstate(machine.state), machine.send, normalizeProps))
+  const api = $derived(accordion.connect(_state, send, normalizeProps))
 </script>
 
 <main class="accordion">
@@ -34,4 +33,4 @@
   </div>
 </main>
 
-<Toolbar {controls} state={machine.state} />
+<Toolbar {controls} state={_state} />

@@ -4,7 +4,6 @@
   import * as combobox from "@zag-js/combobox"
   import { comboboxControls, comboboxData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { unstate } from "svelte"
 
   const controls = useControls(comboboxControls)
 
@@ -18,7 +17,7 @@
 
   controls.setContext("collection", collection)
 
-  const machine = useMachine(
+  const [_state, send] = useMachine(
     combobox.machine({
       id: "1",
       collection,
@@ -38,7 +37,7 @@
     },
   )
 
-  const api = $derived(combobox.connect(unstate(machine.state), machine.send, normalizeProps))
+  const api = $derived(combobox.connect(_state, send, normalizeProps))
   $inspect(api.inputValue)
 </script>
 
@@ -68,4 +67,4 @@
   </div>
 </main>
 
-<Toolbar {controls} state={machine.state} />
+<Toolbar {controls} state={_state} />

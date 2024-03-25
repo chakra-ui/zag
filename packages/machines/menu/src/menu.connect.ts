@@ -25,7 +25,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
-    placement: state.context.currentPlacement,
+    placement: state.context.anchorPoint ? "bottom" : state.context.currentPlacement,
   })
 
   function getItemState(props: ItemProps): ItemState {

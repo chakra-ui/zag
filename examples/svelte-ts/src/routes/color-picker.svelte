@@ -5,13 +5,12 @@
   import { colorPickerControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import serialize from "form-serialize"
-  import { unstate } from "svelte"
 
   const presets = ["#f47373", "#697689"]
 
   const controls = useControls(colorPickerControls)
 
-  const machine = useMachine(
+  const [_state, send] = useMachine(
     colorPicker.machine({
       id: "1",
       name: "color",
@@ -23,7 +22,7 @@
     },
   )
 
-  const api = $derived(colorPicker.connect(unstate(machine.state), machine.send, normalizeProps))
+  const api = $derived(colorPicker.connect(_state, send, normalizeProps))
 </script>
 
 <main class="color-picker">
@@ -126,7 +125,7 @@
   </form>
 </main>
 
-<Toolbar {controls} state={machine.state} />
+<Toolbar {controls} state={_state} />
 
 {#snippet EyeDropIcon()}
   <svg

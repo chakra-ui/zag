@@ -1,9 +1,8 @@
 <script lang="ts">
+  import Toolbar from "$lib/components/toolbar.svelte"
   import * as avatar from "@zag-js/avatar"
   import { avatarData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import { unstate } from "svelte"
 
   const images = avatarData.full
   const getRandomImage = () => images[Math.floor(Math.random() * images.length)]
@@ -11,8 +10,8 @@
   let src = $state(images[0])
   let showImage = $state(true)
 
-  const machine = useMachine(avatar.machine({ id: "1" }))
-  const api = $derived(avatar.connect(unstate(machine.state), machine.send, normalizeProps))
+  const [_state, send] = useMachine(avatar.machine({ id: "1" }))
+  const api = $derived(avatar.connect(_state, send, normalizeProps))
 </script>
 
 <main class="avatar">
@@ -30,4 +29,4 @@
   </div>
 </main>
 
-<Toolbar state={machine.state} />
+<Toolbar state={_state} />

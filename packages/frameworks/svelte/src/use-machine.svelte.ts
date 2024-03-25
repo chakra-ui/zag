@@ -8,14 +8,6 @@ export function useMachine<
   TEvent extends S.EventObject = S.AnyEventObject,
 >(machine: MachineSrc<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
   const service = useService(machine, options)
-  const snapshot = useSnapshot(service)
-
-  return {
-    send: service.send,
-    service,
-    // Need a getter to get fresh state.
-    get state() {
-      return snapshot.state
-    },
-  } as const
+  const state = useSnapshot(service)
+  return [state, service.send, service] as const
 }

@@ -4,20 +4,14 @@
   import * as collapsible from "@zag-js/collapsible"
   import { collapsibleControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { unstate } from "svelte"
 
   const controls = useControls(collapsibleControls)
 
-  const machine = useMachine(
-    collapsible.machine({
-      id: "1",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const [_state, send] = useMachine(collapsible.machine({ id: "1" }), {
+    context: controls.context,
+  })
 
-  const api = $derived(collapsible.connect(unstate(machine.state), machine.send, normalizeProps))
+  const api = $derived(collapsible.connect(_state, send, normalizeProps))
 </script>
 
 <main class="collapsible">
@@ -41,4 +35,4 @@
   </div>
 </main>
 
-<Toolbar {controls} state={machine.state} />
+<Toolbar {controls} state={_state} />

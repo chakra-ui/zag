@@ -5,11 +5,10 @@
   import { clipboardControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { ClipboardCheckIcon, ClipboardCopyIcon } from "lucide-svelte"
-  import { unstate } from "svelte"
 
   const controls = useControls(clipboardControls)
 
-  const machine = useMachine(
+  const [_state, send] = useMachine(
     clipboard.machine({
       id: "1",
       value: "https://github/com/chakra-ui/zag",
@@ -19,7 +18,7 @@
     },
   )
 
-  const api = $derived(clipboard.connect(unstate(machine.state), machine.send, normalizeProps))
+  const api = $derived(clipboard.connect(_state, send, normalizeProps))
 </script>
 
 <main class="clipboard">
@@ -40,4 +39,4 @@
   </div>
 </main>
 
-<Toolbar {controls} state={machine.state} />
+<Toolbar {controls} state={_state} />
