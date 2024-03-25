@@ -343,6 +343,10 @@
         "type": "boolean",
         "description": "Whether the collapsible is open."
       },
+      "isVisible": {
+        "type": "boolean",
+        "description": "Whether the collapsible is visible (open or closing)"
+      },
       "isDisabled": {
         "type": "boolean",
         "description": "Whether the collapsible is disabled"
@@ -360,6 +364,10 @@
       "ids": {
         "type": "Partial<{ root: string; content: string; trigger: string; }>",
         "description": "The ids of the elements in the collapsible. Useful for composition."
+      },
+      "onExitComplete": {
+        "type": "() => void",
+        "description": "Function called when the animation ends in the closed state."
       },
       "onOpenChange": {
         "type": "(details: OpenChangeDetails) => void",
@@ -1002,10 +1010,6 @@
         "type": "(date: DateValue) => string",
         "description": "The format of the date to display in the input."
       },
-      "parse": {
-        "type": "(value: string) => DateValue",
-        "description": "The format of the date to display in the input."
-      },
       "view": {
         "type": "DateView",
         "description": "The view of the calendar",
@@ -1407,6 +1411,113 @@
       }
     }
   },
+  "floating-panel": {
+    "api": {
+      "isOpen": {
+        "type": "boolean",
+        "description": "Whether the panel is open"
+      },
+      "isDragging": {
+        "type": "boolean",
+        "description": "Whether the panel is being dragged"
+      },
+      "isResizing": {
+        "type": "boolean",
+        "description": "Whether the panel is being resized"
+      }
+    },
+    "context": {
+      "open": {
+        "type": "boolean",
+        "description": "Whether the panel is open"
+      },
+      "draggable": {
+        "type": "boolean",
+        "description": "Whether the panel is draggable"
+      },
+      "resizable": {
+        "type": "boolean",
+        "description": "Whether the panel is resizable"
+      },
+      "size": {
+        "type": "Size",
+        "description": "The size of the panel"
+      },
+      "minSize": {
+        "type": "Size",
+        "description": "The minimum size of the panel"
+      },
+      "maxSize": {
+        "type": "Size",
+        "description": "The maximum size of the panel"
+      },
+      "position": {
+        "type": "Point",
+        "description": "The position of the panel"
+      },
+      "lockAspectRatio": {
+        "type": "boolean",
+        "description": "Whether the panel is locked to its aspect ratio"
+      },
+      "closeOnEscape": {
+        "type": "boolean",
+        "description": "Whether the panel should close when the escape key is pressed"
+      },
+      "getBoundaryEl": {
+        "type": "() => HTMLElement",
+        "description": "The boundary of the panel. Defaults to the window"
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the panel is disabled"
+      },
+      "onPositionChange": {
+        "type": "(details: PositionChangeDetails) => void",
+        "description": "Function called when the position of the panel changes via dragging"
+      },
+      "onPositionChangeEnd": {
+        "type": "(details: PositionChangeDetails) => void",
+        "description": "Function called when the position of the panel changes via dragging ends"
+      },
+      "onOpenChange": {
+        "type": "(details: OpenChangeDetails) => void",
+        "description": "Function called when the panel is opened or closed"
+      },
+      "onSizeChange": {
+        "type": "(details: SizeChangeDetails) => void",
+        "description": "Function called when the size of the panel changes via resizing"
+      },
+      "onSizeChangeEnd": {
+        "type": "(details: SizeChangeDetails) => void",
+        "description": "Function called when the size of the panel changes via resizing ends"
+      },
+      "preserveOnClose": {
+        "type": "boolean",
+        "description": "Whether the panel size and position should be preserved when it is closed"
+      },
+      "gridSize": {
+        "type": "number",
+        "description": "The snap grid for the panel"
+      },
+      "onStageChange": {
+        "type": "(details: StageChangeDetails) => void",
+        "description": "Function called when the stage of the panel changes"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => Node | ShadowRoot | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "hover-card": {
     "api": {
       "isOpen": {
@@ -1586,6 +1697,10 @@
       "getRootNode": {
         "type": "() => ShadowRoot | Node | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "onEscapeKeyDown": {
+        "type": "(event: KeyboardEvent) => void",
+        "description": "Function called when the escape key is pressed"
       },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
@@ -2490,6 +2605,10 @@
         "type": "boolean",
         "description": "Whether the select's open state is controlled by the user"
       },
+      "scrollToIndexFn": {
+        "type": "(index: number) => void",
+        "description": "Function to scroll to a specific index"
+      },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",
@@ -2724,10 +2843,6 @@
         "type": "(details: SizeChangeDetails) => void",
         "description": "Function called when the splitter is resized."
       },
-      "onSizeChangeStart": {
-        "type": "(details: SizeChangeDetails) => void",
-        "description": "Function called when the splitter resize starts."
-      },
       "onSizeChangeEnd": {
         "type": "(details: SizeChangeDetails) => void",
         "description": "Function called when the splitter resize ends."
@@ -2860,7 +2975,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; trigger: string; tablist: string; content: string; indicator: string; }>",
+        "type": "Partial<{ root: string; trigger: string; list: string; content: string; indicator: string; }>",
         "description": "The ids of the elements in the tabs. Useful for composition."
       },
       "translations": {

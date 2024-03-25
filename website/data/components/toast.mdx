@@ -103,15 +103,20 @@ The options you can pass in are:
 ## Setting custom duration
 
 Every toast has a default visible duration depending on the `type` set. Here's
-the table showing the toast type and duration.
+the following toast types and matching default durations:
 
-| type      | duration   |
-| --------- | ---------- |
-| `info`    | `5000`     |
-| `error`   | `5000`     |
-| `success` | `2000`     |
-| `custom`  | `5000`     |
-| `loading` | `Infinity` |
+<DefaultValuesTable 
+  tableData={{
+    headings: ['type', 'duration'],
+    data: [
+      ['info', '5000'],
+      ['error', '5000'],
+      ['success', '2000'],
+      ['custom', '5000'],
+      ['loading', 'Infinity'],
+    ]
+  }}
+/>
 
 You can override the duration of the toast by passing the `duration` property to
 the `toast.create(...)` function.

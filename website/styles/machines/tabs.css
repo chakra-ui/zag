@@ -1,0 +1,31 @@
+.tabs {
+  div:has(> [data-scope="tabs"][data-part="list"]) {
+    width: 100%;
+    max-width: 400px;
+    border-width: 1px;
+    font-size: 0.875rem;
+  }
+
+  [data-scope="tabs"][data-part="list"] {
+    background: var(--colors-bg-subtle);
+    border-bottom-width: 1px;
+  }
+
+  [data-scope="tabs"][data-part="trigger"] {
+    padding-inline: 1rem;
+    padding-block: 0.5rem;
+    border-bottom-width: 2px;
+    border-bottom-color: transparent;
+  }
+
+  [data-scope="tabs"][data-part="trigger"][data-selected] {
+    color: var(--colors-text-primary-bold);
+    border-bottom-color: var(--colors-border-primary-subtle);
+  }
+
+  [data-scope="tabs"][data-part="content"] {
+    padding: 1rem;
+    background: var(--colors-bg-subtle);
+    min-height: 20px;
+  }
+}

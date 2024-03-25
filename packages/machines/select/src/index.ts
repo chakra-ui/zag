@@ -10,6 +10,7 @@ export type {
   UserDefinedContext as Context,
   ElementIds,
   HighlightChangeDetails,
+  ScrollToIndexDetails,
   ItemGroupLabelProps,
   ItemGroupProps,
   ItemProps,

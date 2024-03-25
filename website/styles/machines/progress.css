@@ -1,0 +1,109 @@
+[data-scope="progress"][data-part="root"] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.centre[data-scope="progress"][data-part="root"] {
+  align-items: center;
+}
+
+[data-scope="progress"][data-part="track"] {
+  border-width: 1px;
+  height: 20px;
+  border-radius: 0.125rem;
+  background: var(--colors-bg-subtle);
+  overflow: hidden;
+}
+
+[data-scope="progress"][data-part="range"] {
+  --translate-x: -100%;
+  height: 100%;
+  transition: width 0.2s ease-in-out;
+  background: #38a169;
+}
+
+[data-scope="progress"][data-part="range"][dir="rtl"] {
+  --translate-x: 100%;
+}
+
+[data-scope="progress"][data-part="range"][data-state="indeterminate"] {
+  width: 210%;
+  animation: 1s cubic-bezier(0.694, 0.0482, 0.335, 1) 0s infinite normal none
+    running linear_range;
+}
+
+[data-scope="progress"][data-part="circle"] {
+  --size: 120px;
+  --thickness: 12px;
+}
+
+[data-scope="progress"][data-part="circle"][data-state="indeterminate"] {
+  animation: circle 2s linear infinite;
+}
+
+[data-scope="progress"][data-part="circle-range"] {
+  stroke: #38a169;
+  transition-property: stroke-dasharray, stroke;
+  transition-duration: 0.6s;
+}
+
+[data-scope="progress"][data-part="circle-range"][data-state="indeterminate"] {
+  animation: circle_range 1.5s ease-in-out infinite;
+}
+
+[data-scope="progress"][data-part="circle-track"] {
+  stroke: var(--colors-bg-subtle);
+}
+
+[data-scope="progress"][data-part="root"] + div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+[data-scope="progress"][data-part="root"] + div > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: start;
+  cursor: pointer;
+  font-weight: 500;
+  padding-inline: 1rem;
+  padding-block: 0.25rem;
+  background: var(--colors-bg-subtle);
+  border-width: 1px;
+}
+
+[data-scope="progress"][data-part="root"] + div > button:hover {
+  background: var(--colors-bg-bold);
+}
+
+@keyframes linear_range {
+  from {
+    transform: scaleX(1) translateX(var(--translate-x));
+  }
+  to {
+    transform: scaleX(0) translateX(var(--translate-x));
+  }
+}
+
+@keyframes circle {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes circle_range {
+  0% {
+    stroke-dasharray: 1, 400;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dasharray: 400, 400;
+    stroke-dashoffset: -260;
+  }
+}

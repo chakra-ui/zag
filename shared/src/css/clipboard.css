@@ -1,0 +1,26 @@
+[data-scope="clipboard"][data-part="root"] {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+[data-scope="clipboard"][data-part="control"] {
+  display: flex;
+  width: 100%;
+}
+
+[data-scope="clipboard"][data-part="input"] {
+  width: 100%;
+}
+
+[data-scope="clipboard"][data-part="trigger"] svg {
+  height: 1em;
+  font-size: 16px;
+}
+
+[data-scope="clipboard"][data-part="indicator"] {
+  background: lightgray;
+  padding: 8px;
+}

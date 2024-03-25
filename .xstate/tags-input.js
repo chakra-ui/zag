@@ -122,10 +122,12 @@ const fetchMachine = createMachine({
           cond: "hasTags && isInputCaretAtStart",
           actions: "highlightLastTag"
         },
-        PASTE: {
+        PASTE: [{
           cond: "addOnPaste",
           actions: ["setInputValue", "addTagFromPaste"]
-        }
+        }, {
+          actions: "setInputValue"
+        }]
       }
     },
     "navigating:tag": {

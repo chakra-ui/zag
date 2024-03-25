@@ -1,7 +1,7 @@
 import * as clipboard from "@zag-js/clipboard"
-import { ClipboardCheck, ClipboardCopyIcon } from "lucide-react"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { clipboardControls } from "@zag-js/shared"
+import { ClipboardCheck, ClipboardCopyIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -13,7 +13,7 @@ export default function Page() {
   const [state, send] = useMachine(
     clipboard.machine({
       id: useId(),
-      value: "https://github/com/chakra-ui/zag",
+      value: "https://github.com/chakra-ui/zag",
     }),
     {
       context: controls.context,

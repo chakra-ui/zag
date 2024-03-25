@@ -1,0 +1,29 @@
+[data-scope="pin-input"][data-part="root"] {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+[data-scope="pin-input"][data-part="input"] {
+  background: var(--colors-bg-subtle);
+  border-width: 1px;
+  width: 50px;
+  height: 50px;
+  font-size: 1.125rem;
+  text-align: center;
+}
+
+[data-scope="pin-input"][data-part="root"] + button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: start;
+  cursor: pointer;
+  font-weight: 500;
+  padding-block: 0.25rem;
+  background: var(--colors-bg-subtle);
+  border-width: 1px;
+  padding-inline: 0.5rem;
+}

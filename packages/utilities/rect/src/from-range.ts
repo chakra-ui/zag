@@ -1,6 +1,7 @@
-import { createRect, type Rect } from "./rect"
+import { createRect } from "./rect"
 import { getElementRect } from "./from-element"
 import { union } from "./union"
+import type { Rect } from "./types"
 
 export function fromRange(range: Range): Rect {
   let rs: Rect[] = []

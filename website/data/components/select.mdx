@@ -298,6 +298,85 @@ const [state, send] = useMachine(
 )
 ```
 
+## Usage with large data
+
+Combine the select machine with the virtualization library like `react-window`
+or `@tanstack/react-virtual` to handle large data.
+
+Here's an example using `@tanstack/react-virtual`:
+
+```jsx
+function Demo() {
+  const selectData = []
+
+  const contentRef = useRef(null)
+
+  const rowVirtualizer = useVirtualizer({
+    count: selectData.length,
+    getScrollElement: () => contentRef.current,
+    estimateSize: () => 32,
+  })
+
+  const [state, send] = useMachine(
+    select.machine({
+      id: useId(),
+      collection,
+      scrollToIndexFn(details) {
+        rowVirtualizer.scrollToIndex(details.index, {
+          align: "center",
+          behavior: "auto",
+        })
+      },
+    }),
+  )
+
+  const api = select.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      {/* ... */}
+      <Portal>
+        <div {...api.positionerProps}>
+          <div ref={contentRef} {...api.contentProps}>
+            <div
+              style={{
+                height: `${rowVirtualizer.getTotalSize()}px`,
+                width: "100%",
+                position: "relative",
+              }}
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+                const item = selectData[virtualItem.index]
+                return (
+                  <div
+                    key={item.value}
+                    {...api.getItemProps({ item })}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: `${virtualItem.size}px`,
+                      transform: `translateY(${virtualItem.start}px)`,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    <span>{item.label}</span>
+                    <span {...api.getItemIndicatorProps({ item })}>✓</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </Portal>
+    </div>
+  )
+}
+```
+
 ## Usage within dialog
 
 When using the select within a dialog, you'll need to avoid rendering the select

@@ -1,5 +1,5 @@
-import { createRect, type Rect } from "./rect"
-import type { Point, RectInset, SymmetricRectInset } from "./types"
+import { createRect } from "./rect"
+import type { Point, Rect, RectInset, SymmetricRectInset } from "./types"
 
 export const isSymmetric = (v: any): v is SymmetricRectInset => "dx" in v || "dy" in v
 

@@ -47,6 +47,7 @@ export default function Page() {
           <button data-testid="clear-value-button" onClick={() => api.clearValue()}>
             Clear Value
           </button>
+          <button {...api.clearTriggerProps}>Clear Trigger</button>
           <br />
           <div {...api.rootProps}>
             <label {...api.labelProps}>Select country</label>

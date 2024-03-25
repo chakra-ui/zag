@@ -1,0 +1,15 @@
+[data-scope="toggle-group"][data-part="root"] {
+  display: flex;
+}
+
+[data-scope="toggle-group"][data-part="item"] {
+  border-radius: 0px;
+  border: 0;
+  width: 40px;
+  height: 40px;
+}
+
+[data-scope="toggle-group"][data-part="item"][data-state="on"] {
+  background-color: blue;
+  color: white;
+}

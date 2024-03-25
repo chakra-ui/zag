@@ -1,0 +1,33 @@
+[data-scope="presence"] {
+  background-color: red;
+  padding: 24px;
+  width: 240px;
+  transform-origin: left top;
+}
+
+[data-scope="presence"][data-state="open"] {
+  animation: fadeIn 0.15s ease-out;
+}
+
+[data-scope="presence"][data-state="closed"] {
+  animation: fadeOut 0.1s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    scale: 0.9;
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    scale: 0.9;
+  }
+}

@@ -1,5 +1,23 @@
 # @zag-js/solid
 
+## 0.39.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.39.0
+  - @zag-js/store@0.39.0
+  - @zag-js/types@0.39.0
+
+## 0.38.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.38.1
+  - @zag-js/store@0.38.1
+  - @zag-js/types@0.38.1
+
 ## 0.38.0
 
 ### Patch Changes
@@ -548,7 +566,7 @@
         max: props.max,
         min: props.min,
       })),
-    });
+    })
   }
   ```
 

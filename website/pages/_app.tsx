@@ -2,6 +2,7 @@ import { ChakraProvider } from "@chakra-ui/provider"
 import { DefaultSeo } from "next-seo"
 import siteConfig from "site.config"
 import "../styles/other.css"
+import "../styles/machines/index.css"
 import "../styles/prism.css"
 import theme from "../theme"
 

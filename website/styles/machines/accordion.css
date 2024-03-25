@@ -1,0 +1,34 @@
+[data-scope="accordion"][data-part="root"] {
+  width: 400px;
+}
+
+[data-scope="accordion"][data-part="item"] {
+  border-width: 1px;
+  font-size: 0.875rem;
+  background: var(--colors-bg-subtle);
+}
+
+[data-scope="accordion"][data-part="item-trigger"] {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  text-align: start;
+  cursor: pointer;
+}
+
+[data-scope="accordion"][data-part="item-trigger"] div:nth-child(1) {
+  font-weight: 600;
+}
+
+[data-scope="accordion"][data-part="item-trigger"] div:nth-child(2) {
+  font-size: 0.75rem;
+  color: var(--colors-text-subtle);
+}
+
+[data-scope="accordion"][data-part="item-trigger"]:focus-visible {
+  outline: 2px solid #0070f3;
+}
+
+[data-scope="accordion"][data-part="item-content"] {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+}

@@ -203,6 +203,7 @@ export interface MarkerProps {
 
 export interface ThumbProps {
   index: number
+  name?: string
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {

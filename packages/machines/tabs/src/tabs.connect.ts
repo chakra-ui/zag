@@ -40,17 +40,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
     }),
 
-    tablistProps: normalize.element({
+    listProps: normalize.element({
       ...parts.list.attrs,
-      id: dom.getTablistId(state.context),
+      id: dom.getListId(state.context),
       role: "tablist",
       dir: state.context.dir,
       "data-focus": dataAttr(isFocused),
       "aria-orientation": state.context.orientation,
       "data-orientation": state.context.orientation,
-      "aria-label": translations.tablistLabel,
+      "aria-label": translations.listLabel,
       onKeyDown(event) {
-        if (!isSelfEvent(event)) return
+        const evt = event.nativeEvent || event
+        if (!isSelfEvent(evt)) return
 
         const keyMap: EventKeyMap = {
           ArrowDown() {
@@ -104,7 +105,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-selected": dataAttr(triggerState.isSelected),
         "data-focus": dataAttr(triggerState.isFocused),
         "aria-controls": dom.getContentId(state.context, value),
-        "data-ownedby": dom.getTablistId(state.context),
+        "data-ownedby": dom.getListId(state.context),
         id: dom.getTriggerId(state.context, value),
         tabIndex: triggerState.isSelected ? 0 : -1,
         onFocus() {
@@ -136,7 +137,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: 0,
         "aria-labelledby": dom.getTriggerId(state.context, value),
         role: "tabpanel",
-        "data-ownedby": dom.getTablistId(state.context),
+        "data-ownedby": dom.getListId(state.context),
         "data-selected": dataAttr(selected),
         "data-orientation": state.context.orientation,
         hidden: !selected,

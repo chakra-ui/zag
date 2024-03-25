@@ -1,0 +1,54 @@
+[data-scope="carousel"][data-part="root"] {
+  width: 400px;
+  border-width: 2px;
+  border-color: var(--colors-border-subtle);
+}
+
+[data-scope="carousel"][data-part="viewport"] {
+  overflow-x: hidden;
+  position: relative;
+}
+
+[data-scope="carousel"][data-part="item"] > img {
+  height: 250px;
+  width: 100%;
+  object-fit: cover;
+}
+
+[data-scope="carousel"][data-part="control"] {
+  border-width: 1px;
+  border-color: var(--colors-border-subtle);
+  background: var(--colors-bg-subtle);
+  padding: 0.5rem;
+  gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 1rem;
+}
+
+[data-scope="carousel"]:is(
+    [data-part="prev-trigger"],
+    [data-part="next-trigger"]
+  ):disabled {
+  opacity: 0.5;
+}
+
+[data-scope="carousel"][data-part="indicator-group"] {
+  display: flex;
+  gap: 0.75rem;
+}
+
+[data-scope="carousel"][data-part="indicator"] {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 9999px;
+  background: gray;
+  cursor: pointer;
+}
+
+[data-scope="carousel"][data-part="indicator"][data-current] {
+  background: var(--colors-bg-primary-bold);
+}

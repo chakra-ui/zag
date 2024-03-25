@@ -1,9 +1,9 @@
-import { formatNumber } from "@zag-js/i18n-utils"
+import { formatNumber } from "./number-format"
 
 const bitPrefixes = ["", "kilo", "mega", "giga", "tera"]
 const bytePrefixes = ["", "kilo", "mega", "giga", "tera", "peta"]
 
-interface FormatBytesOptions {
+export interface FormatBytesOptions {
   unit?: "bit" | "byte"
   unitDisplay?: "long" | "short" | "narrow"
 }
