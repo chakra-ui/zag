@@ -6,6 +6,28 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.40.0](./#0.40.0) - 2024-03-26
+
+### Fixed
+
+- **Circular Progress**: Fix issue where circular progress circle diameter doesn't get calculated correctly
+- **Combobox**:
+  - Fix issue where input doesn't clear when `selectionBehavior` is set to `clear`
+  - Fix issue where input doesn't show initially selected `value`
+  - Fix issue where empty input was replaced by selected value string when typing
+
+### Added
+
+- **[NEW]** Introduce new floating panel machine for draggable and resizable panels
+- **Select**
+  - Add `data-placement` to the select content to make it easier to style
+  - Add support for `scrollToIndexFn` to be used with virtualization libraries
+  - Add support for `highlightedIndex` in the `onHighlightChange` callback
+
+### Changed
+
+- **Svelte**: Unify API for `useService` and `useMachine` with other frameworks
+
 ## [0.39.0](./#0.39.0) - 2024-03-19
 
 ### Fixed
