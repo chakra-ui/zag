@@ -1,5 +1,31 @@
 # @zag-js/select
 
+## 0.40.0
+
+### Minor Changes
+
+- [`04a3b36`](https://github.com/chakra-ui/zag/commit/04a3b369bcfe644b3e408d490fd9b82ead66bee2) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add `data-placement` to the select content to make it easier to style
+
+- [`5c185d4`](https://github.com/chakra-ui/zag/commit/5c185d4fb85202db40fe21f4c8e297a5fbb17874) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `scrollToIndexFn` to be used with virtualization libraries
+  - Add support for `highlightedIndex` in the `onHighlightChange` callback
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.40.0
+  - @zag-js/core@0.40.0
+  - @zag-js/types@0.40.0
+  - @zag-js/collection@0.40.0
+  - @zag-js/utils@0.40.0
+  - @zag-js/dismissable@0.40.0
+  - @zag-js/dom-event@0.40.0
+  - @zag-js/dom-query@0.40.0
+  - @zag-js/form-utils@0.40.0
+  - @zag-js/mutation-observer@0.40.0
+  - @zag-js/popper@0.40.0
+  - @zag-js/tabbable@0.40.0
+  - @zag-js/visually-hidden@0.40.0
+
 ## 0.39.0
 
 ### Patch Changes
@@ -828,12 +854,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -841,7 +867,7 @@
       collection,
       id: useId(),
     }),
-  )
+  );
   ```
 
 ### Patch Changes

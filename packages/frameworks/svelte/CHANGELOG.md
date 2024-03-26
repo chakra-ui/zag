@@ -1,5 +1,17 @@
 # @zag-js/svelte
 
+## 0.40.0
+
+### Minor Changes
+
+- [`c68fb4c`](https://github.com/chakra-ui/zag/commit/c68fb4c72c0758c76106b6b8db3718a6bd04256b) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Unify API for `useService` and `useMachine` with other frameworks
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.40.0
+  - @zag-js/types@0.40.0
+
 ## 0.39.0
 
 ### Patch Changes

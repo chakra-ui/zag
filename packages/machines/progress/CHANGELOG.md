@@ -1,5 +1,18 @@
 # @zag-js/progress
 
+## 0.40.0
+
+### Patch Changes
+
+- [#1362](https://github.com/chakra-ui/zag/pull/1362) [`f71a5b0`](https://github.com/chakra-ui/zag/commit/f71a5b03cc06853b66952aa7e6e2b5e2cda1a36f) Thanks [@iNetJoJo](https://github.com/iNetJoJo)! - Fix issue where circular progress circle diameter doesn't get calculated correctly
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.40.0
+  - @zag-js/core@0.40.0
+  - @zag-js/types@0.40.0
+  - @zag-js/utils@0.40.0
+  - @zag-js/dom-query@0.40.0
+
 ## 0.39.0
 
 ### Patch Changes

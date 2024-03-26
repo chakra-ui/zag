@@ -1,5 +1,25 @@
 # @zag-js/combobox
 
+## 0.40.0
+
+### Patch Changes
+
+- [#1323](https://github.com/chakra-ui/zag/pull/1323) [`7212f86`](https://github.com/chakra-ui/zag/commit/7212f86a2b627d2b68cd267058651a3b77a7e131) Thanks [@erm1116](https://github.com/erm1116)! - - Fix issue where input doesn't clear when `selectionBehavior` is set to `clear`
+  - Fix issue where input doesn't show initially selected `value`
+  - Fix issue where empty input was replaced by selected value string when typing
+- Updated dependencies []:
+  - @zag-js/anatomy@0.40.0
+  - @zag-js/core@0.40.0
+  - @zag-js/types@0.40.0
+  - @zag-js/aria-hidden@0.40.0
+  - @zag-js/collection@0.40.0
+  - @zag-js/utils@0.40.0
+  - @zag-js/dismissable@0.40.0
+  - @zag-js/dom-event@0.40.0
+  - @zag-js/dom-query@0.40.0
+  - @zag-js/mutation-observer@0.40.0
+  - @zag-js/popper@0.40.0
+
 ## 0.39.0
 
 ### Patch Changes
@@ -728,12 +748,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -741,7 +761,7 @@
       collection,
       id: useId(),
     }),
-  )
+  );
   ```
 
 ### Patch Changes
