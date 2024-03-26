@@ -11,7 +11,7 @@ export class TagsInputModel extends Model {
     return this.page.goto("/tags-input")
   }
 
-  get input() {
+  private get input() {
     return this.page.locator("[data-testid=input]")
   }
 
@@ -38,15 +38,19 @@ export class TagsInputModel extends Model {
   }
 
   async editTag(value: string) {
-    await this.type(value)
+    await this.typeInHexInput(value)
     await this.page.keyboard.press("Enter")
   }
 
-  deleteLastTag() {
-    return this.pressBackspace(2)
+  focusInput() {
+    return this.input.focus()
   }
 
-  dblClick(value: string) {
+  deleteLastTag() {
+    return this.pressKey("Backspace", 2)
+  }
+
+  doubleClickTag(value: string) {
     return this.getTag(value).dblclick()
   }
 
@@ -58,43 +62,37 @@ export class TagsInputModel extends Model {
     return this.getTagClose(value).click({ force: true })
   }
 
-  async expectTagToBeHighlighted(value: string) {
+  async seeTagIsHighlighted(value: string) {
     const el = this.getTag(value)
     await expect(el).toHaveAttribute("data-highlighted", "")
   }
 
-  async expectTagToBeVisible(value: string) {
-    const el = this.getTag(value)
-    await expect(el).toBeVisible()
+  async seeTag(value: string) {
+    await expect(this.getTag(value)).toBeVisible()
   }
 
-  async expectTagToBeRemoved(value: string) {
-    const el = this.getTag(value)
-    await expect(el).toBeHidden()
+  async dontSeeTag(value: string) {
+    await expect(this.getTag(value)).toBeHidden()
   }
 
-  async expectInputToBeFocused() {
+  async seeInputIsFocused() {
     await expect(this.input).toBeFocused()
   }
 
-  async expectInputToHaveValue(value: string) {
+  async seeInputHasValue(value: string) {
     await expect(this.input).toHaveValue(value)
   }
 
-  async expectTagInputToBeFocused(value: string) {
+  async seeTagInputIsFocused(value: string) {
     await expect(this.getTagInput(value)).toBeFocused()
   }
 
-  async expectTagInputToBeHidden(value: string) {
+  async dontSeeTagInput(value: string) {
     await expect(this.getTagInput(value)).toBeHidden()
   }
 
-  async expectTagInputToHaveValue(value: string) {
+  async seeTagInputHasValue(value: string) {
     await expect(this.getTagInput(value)).toHaveValue(value)
-  }
-
-  async expectInputToBeEmpty() {
-    await expect(this.input).toBeEmpty()
   }
 
   async expectNoTagToBeHighlighted() {

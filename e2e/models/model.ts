@@ -1,31 +1,23 @@
 import { type Page, expect } from "@playwright/test"
-import { controls, repeat } from "../_utils"
+import { a11y, clickOutside, clickViz, controls, repeat } from "../_utils"
 
 export class Model {
   constructor(public page: Page) {}
 
-  get setContext() {
+  get controls() {
     return controls(this.page)
   }
 
-  pressEsc(times = 1) {
-    return repeat(times, () => this.page.keyboard.press("Escape"))
+  clickViz() {
+    return clickViz(this.page)
   }
 
-  pressEnter(times = 1) {
-    return repeat(times, () => this.page.keyboard.press("Enter"))
+  clickOutside() {
+    return clickOutside(this.page)
   }
 
-  pressBackspace(times = 1) {
-    return repeat(times, () => this.page.keyboard.press("Backspace"))
-  }
-
-  pressArrowLeft(times = 1) {
-    return repeat(times, () => this.page.keyboard.press("ArrowLeft"))
-  }
-
-  pressArrowRight(times = 1) {
-    return repeat(times, () => this.page.keyboard.press("ArrowRight"))
+  checkAccessibility(selector?: string) {
+    return a11y(this.page, selector)
   }
 
   pressKey(key: string, times = 1) {
@@ -44,7 +36,7 @@ export class Model {
     return this.page.locator(selector).click({ button: "right" })
   }
 
-  type(value: string) {
+  typeInHexInput(value: string) {
     return this.page.keyboard.type(value)
   }
 
@@ -58,5 +50,17 @@ export class Model {
       }
     })
     expect(value).toBe(position)
+  }
+
+  moveCursorTo(pos: { x: number; y: number }) {
+    return this.page.mouse.move(pos.x, pos.y)
+  }
+
+  attachFile(selector: string, path: string) {
+    return this.page.setInputFiles(selector, path)
+  }
+
+  resizeWindow(size: { width: number; height: number }) {
+    return this.page.setViewportSize(size)
   }
 }

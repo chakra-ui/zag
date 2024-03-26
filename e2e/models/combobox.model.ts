@@ -44,7 +44,7 @@ export class ComboboxModel extends Model {
     return this.page.locator("[data-part=item][data-highlighted]")
   }
 
-  type(input: string) {
+  typeInHexInput(input: string) {
     return this.input.pressSequentially(input)
   }
 

@@ -1,76 +1,92 @@
 import { expect, type Page } from "@playwright/test"
-import { clickViz, controls } from "../_utils"
+import { Model } from "./model"
 
 interface ClickOptions {
   modifiers?: Array<"Alt" | "Control" | "Meta" | "Shift">
 }
 
-export class TreeViewModel {
-  constructor(private readonly page: Page) {}
+export class TreeViewModel extends Model {
+  constructor(page: Page) {
+    super(page)
+  }
+
   goto() {
     return this.page.goto("/tree-view")
   }
-  item(name: string) {
+
+  private item(name: string) {
     return this.page.getByRole("treeitem", { name })
   }
-  branch(name: string) {
+
+  private branch(name: string) {
     return this.page.locator(`[role=treeitem][data-branch="${name}"]`)
   }
-  branchButton(name: string) {
+
+  private branchTrigger(name: string) {
     return this.page.locator(`[role=button][data-branch="${name}"]`)
   }
-  get controls() {
-    return controls(this.page)
-  }
-  clickViz() {
-    return clickViz(this.page)
-  }
-  button(name: string) {
+
+  private button(name: string) {
     return this.page.getByRole("button", { name }).first()
   }
+
   clickItem(name: string, options?: ClickOptions) {
     return this.item(name).click(options)
   }
+
   clickBranch(name: string, options?: ClickOptions) {
-    return this.branchButton(name).click(options)
+    return this.branchTrigger(name).click(options)
   }
+
   clickButton(name: string, options?: ClickOptions) {
     return this.button(name).click(options)
   }
+
   focusItem(name: string) {
     return this.item(name).focus()
   }
+
   focusButton(name: string) {
     return this.button(name).focus()
   }
+
   async focusFirstNode() {
-    await this.branchButton("node_modules").focus()
+    await this.branchTrigger("node_modules").focus()
   }
-  expectToBeSelected(name: string) {
+
+  private _seeItemIsSelected(name: string) {
     return expect(this.item(name)).toHaveAttribute("aria-selected", "true")
   }
-  expectAllToBeSelected(nodes: string[]) {
-    return Promise.all(nodes.map((node) => this.expectToBeSelected(node)))
+
+  seeItemIsSelected(nodes: string[]) {
+    return Promise.all(nodes.map((node) => this._seeItemIsSelected(node)))
   }
-  expectItemToBeFocused(name: string) {
+
+  seeItemIsFocused(name: string) {
     return expect(this.item(name)).toBeFocused()
   }
-  expectBranchToBeFocused(name: string) {
-    return expect(this.branchButton(name)).toBeFocused()
+
+  seeBranchIsFocused(name: string) {
+    return expect(this.branchTrigger(name)).toBeFocused()
   }
-  expectToBeExpanded(name: string) {
+
+  private _expectToBeExpanded(name: string) {
     return expect(this.branch(name)).toHaveAttribute("aria-expanded", "true")
   }
-  expectAllToBeExpanded(nodes: string[]) {
-    return Promise.all(nodes.map((node) => this.expectToBeExpanded(node)))
+
+  seeBranchIsExpanded(nodes: string[]) {
+    return Promise.all(nodes.map((node) => this._expectToBeExpanded(node)))
   }
-  expectToBeCollapsed(name: string) {
+
+  seeBranchIsCollapsed(name: string) {
     return expect(this.branch(name)).toHaveAttribute("aria-expanded", "false")
   }
-  expectBranchToBeTabbable(name: string) {
-    return expect(this.branchButton(name)).toHaveAttribute("tabindex", "0")
+
+  seeBranchIsTabbable(name: string) {
+    return expect(this.branchTrigger(name)).toHaveAttribute("tabindex", "0")
   }
-  expectItemToBeTabbable(name: string) {
+
+  seeItemIsTabbable(name: string) {
     return expect(this.item(name)).toHaveAttribute("tabindex", "0")
   }
 }

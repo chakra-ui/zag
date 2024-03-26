@@ -22,16 +22,16 @@ test.describe("combobox", () => {
   test("[keyboard] Escape should close content", async () => {
     await I.clickTrigger()
     await I.seeDropdown()
-    await I.pressEsc()
+    await I.pressKey("Escape")
     await I.dontSeeDropdown()
   })
 
   test("[typeahead / autohighlight / selection] should open combobox menu when typing", async () => {
-    await I.type("an")
+    await I.typeInHexInput("an")
     await I.seeDropdown()
     await I.seeItemIsHighlighted("Canada")
 
-    await I.pressEnter()
+    await I.pressKey("Enter")
     await I.seeInputHasValue("Canada")
     await I.dontSeeDropdown()
   })
@@ -59,7 +59,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / no-loop] on arrow down, open and highlight first enabled option", async () => {
-    await I.setContext.bool("loop", false)
+    await I.controls.bool("loop", false)
 
     await I.focusInput()
     await I.pressKey("ArrowDown")
@@ -80,7 +80,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / no-loop] on arrow up, open and highlight last enabled option", async () => {
-    await I.setContext.bool("loop", false)
+    await I.controls.bool("loop", false)
 
     await I.focusInput()
     await I.pressKey("ArrowUp")
@@ -104,8 +104,8 @@ test.describe("combobox", () => {
 
   test("[keyboard / closed] on home and end, caret moves to start and end", async () => {
     await I.clickTrigger()
-    await I.type("an")
-    await I.pressEsc()
+    await I.typeInHexInput("an")
+    await I.pressKey("Escape")
 
     await I.pressKey("Home")
     await I.seeCaretAt(0)
@@ -115,7 +115,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / arrowdown / loop]", async () => {
-    await I.type("mal")
+    await I.typeInHexInput("mal")
 
     await I.pressKey("ArrowDown", 4)
     await I.seeItemIsHighlighted("Malta")
@@ -125,9 +125,9 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / arrowdown / no-loop]", async () => {
-    await I.setContext.bool("loop", false)
+    await I.controls.bool("loop", false)
 
-    await I.type("mal")
+    await I.typeInHexInput("mal")
     await I.pressKey("ArrowDown", 4)
     await I.seeItemIsHighlighted("Malta")
 
@@ -136,20 +136,20 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / arrowup / loop]", async () => {
-    await I.type("mal")
+    await I.typeInHexInput("mal")
     await I.pressKey("ArrowUp")
     await I.seeItemIsHighlighted("Malta")
   })
 
   test("[keyboard / arrowup / no-loop]", async () => {
-    await I.setContext.bool("loop", false)
-    await I.type("mal")
+    await I.controls.bool("loop", false)
+    await I.typeInHexInput("mal")
     await I.pressKey("ArrowUp")
     await I.seeItemIsHighlighted("Malawi")
   })
 
   test("[pointer / open-on-click]", async () => {
-    await I.setContext.bool("openOnClick", true)
+    await I.controls.bool("openOnClick", true)
     await I.clickInput()
     await I.seeDropdown()
   })
@@ -178,9 +178,9 @@ test.describe("combobox", () => {
   })
 
   test("[selection=clear] should clear input value", async () => {
-    await I.setContext.select("selectionBehavior", "clear")
-    await I.type("mal")
-    await I.pressEnter()
+    await I.controls.select("selectionBehavior", "clear")
+    await I.typeInHexInput("mal")
+    await I.pressKey("Enter")
     await I.seeInputHasValue("")
   })
 })
@@ -189,21 +189,21 @@ test.describe("combobox / autocomplete", () => {
   test.beforeEach(async ({ page }) => {
     I = new ComboboxModel(page)
     await I.goto()
-    await I.setContext.select("inputBehavior", "autocomplete")
+    await I.controls.select("inputBehavior", "autocomplete")
   })
 
   test("[keyboard] should autocomplete", async () => {
-    await I.type("mal")
+    await I.typeInHexInput("mal")
     await I.dontSeeHighlightedItem()
     await I.pressKey("ArrowDown")
     await I.seeItemIsHighlighted("Malawi")
-    await I.pressEnter()
+    await I.pressKey("Enter")
     await I.seeInputHasValue("Malawi")
     await I.dontSeeDropdown()
   })
 
   test("[keyboard / loop] should loop through the options and previous input value", async () => {
-    await I.type("mal")
+    await I.typeInHexInput("mal")
     await I.pressKey("ArrowDown", 5)
     await I.seeItemIsHighlighted("Malta")
 
@@ -217,7 +217,7 @@ test.describe("combobox / autocomplete", () => {
 
   test("[pointer] hovering an option should not update input value", async () => {
     await I.clickTrigger()
-    await I.type("mal")
+    await I.typeInHexInput("mal")
 
     await I.hoverItem("Malawi")
     await I.seeInputHasValue("mal")
