@@ -1,4 +1,4 @@
-import { formatNumber } from "./number-format"
+import { formatNumber } from "./format-number"
 
 const bitPrefixes = ["", "kilo", "mega", "giga", "tera"]
 const bytePrefixes = ["", "kilo", "mega", "giga", "tera", "peta"]

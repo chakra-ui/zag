@@ -4,14 +4,17 @@ const getRelativeTimeFormatter = i18nCache(Intl.RelativeTimeFormat)
 
 export function formatRelativeTime(value: Date, locale: string, options: Intl.RelativeTimeFormatOptions = {}) {
   const rtf = getRelativeTimeFormatter(locale, options)
+
   const now = new Date()
   const diff = getDistance(now, value)
+
   if (diff.years > 0) return rtf.format(diff.years * diff.sign, "year")
   if (diff.months > 0) return rtf.format(diff.months * diff.sign, "month")
   if (diff.weeks > 0) return rtf.format(diff.weeks * diff.sign, "week")
   if (diff.days > 0) return rtf.format(diff.days * diff.sign, "day")
   if (diff.hours > 0) return rtf.format(diff.hours * diff.sign, "hour")
   if (diff.minutes > 0) return rtf.format(diff.minutes * diff.sign, "minute")
+
   return rtf.format(diff.seconds * diff.sign, "second")
 }
 

@@ -4,7 +4,11 @@ type FormatOptions<T> = T extends Intl.NumberFormat
     ? Intl.DateTimeFormatOptions
     : T extends Intl.RelativeTimeFormat
       ? Intl.RelativeTimeFormatOptions
-      : never
+      : T extends Intl.ListFormat
+        ? Intl.ListFormatOptions
+        : T extends Intl.PluralRules
+          ? Intl.PluralRulesOptions
+          : never
 
 export function i18nCache<T extends abstract new (...args: any) => any>(Ins: T) {
   const formatterCache = new Map<string, T>()
