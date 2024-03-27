@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/focus-visible",
-  "version": "0.40.0",
+  "version": "0.41.0",
   "description": "Focus visible polyfill utility based on WICG",
   "keywords": [
     "js",
