@@ -303,11 +303,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     hiddenSelectProps: normalize.select({
       name: state.context.name,
       form: state.context.form,
-      disabled: !isInteractive,
+      disabled: isDisabled,
       multiple: state.context.multiple,
       "aria-hidden": true,
       id: dom.getHiddenSelectId(state.context),
-      // defaultValue: state.context.selectedOption?.value,
+      defaultValue: state.context.multiple ? state.context.value : state.context.value[0],
       style: visuallyHiddenStyle,
       tabIndex: -1,
       // Some browser extensions will focus the hidden select.

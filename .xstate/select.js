@@ -46,6 +46,7 @@ const fetchMachine = createMachine({
     "hasHighlightedItem": false
   },
   initial: ctx.open ? "open" : "idle",
+  entry: ["syncSelectElement"],
   on: {
     "HIGHLIGHTED_VALUE.SET": {
       actions: ["setHighlightedItem"]

@@ -48,6 +48,8 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
       initial: ctx.open ? "open" : "idle",
 
+      entry: ["syncSelectElement"],
+
       watch: {
         open: ["toggleVisibility"],
         value: ["syncSelectElement"],
@@ -585,6 +587,12 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         syncSelectElement(ctx) {
           const selectEl = dom.getHiddenSelectEl(ctx)
           if (!selectEl) return
+
+          if (ctx.value.length === 0 && !ctx.multiple) {
+            selectEl.selectedIndex = -1
+            return
+          }
+
           for (const option of selectEl.options) {
             option.selected = ctx.value.includes(option.value)
           }
