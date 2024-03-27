@@ -1,5 +1,19 @@
 # @zag-js/file-upload
 
+## 0.41.0
+
+### Patch Changes
+
+- Updated dependencies [[`d19851a`](https://github.com/chakra-ui/zag/commit/d19851adf36ee291b8e3284def27700864304a50)]:
+  - @zag-js/i18n-utils@0.41.0
+  - @zag-js/file-utils@0.41.0
+  - @zag-js/anatomy@0.41.0
+  - @zag-js/core@0.41.0
+  - @zag-js/types@0.41.0
+  - @zag-js/utils@0.41.0
+  - @zag-js/dom-query@0.41.0
+  - @zag-js/visually-hidden@0.41.0
+
 ## 0.40.0
 
 ### Patch Changes
