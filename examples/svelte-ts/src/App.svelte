@@ -13,7 +13,14 @@
   import ContextMenu from "./routes/context-menu.svelte"
   import FloatingPanel from "./routes/floating-panel.svelte"
   import Index from "./routes/index.svelte"
+  import NumberInput from "./routes/number-input.svelte"
+  import PinInput from "./routes/pin-input.svelte"
+  import Progress from "./routes/progress.svelte"
   import Select from "./routes/select.svelte"
+  import Slider from "./routes/slider.svelte"
+  import Tabs from "./routes/tabs.svelte"
+  import TagsInput from "./routes/tags-input.svelte"
+  import ToggleGroup from "./routes/toggle-group.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 
@@ -30,6 +37,13 @@
     { path: "/context-menu", component: ContextMenu },
     { path: "/select", component: Select },
     { path: "/floating-panel", component: FloatingPanel },
+    { path: "/toggle-group", component: ToggleGroup },
+    { path: "/tags-input", component: TagsInput },
+    { path: "/pin-input", component: PinInput },
+    { path: "/slider", component: Slider },
+    { path: "/progress", component: Progress },
+    { path: "/tabs", component: Tabs },
+    { path: "/number-input", component: NumberInput },
   ]
 </script>
 

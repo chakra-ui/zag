@@ -10,6 +10,7 @@ const propMap: Record<string, string> = {
   onBlur: "onfocusout",
   onChange: "oninput",
   onFocus: "onfocusin",
+  onDoubleClick: "ondblclick",
 }
 
 function toStyleString(style: Record<string, number | string>) {
