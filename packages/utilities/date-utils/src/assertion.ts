@@ -9,6 +9,10 @@ export function isDateEqual(dateA: DateValue, dateB?: DateValue | null) {
   return dateB != null && isSameDay(dateA, dateB)
 }
 
+export function isDateTimeEqual(dateA: DateValue, dateB?: DateValue | null) {
+  return dateB != null && dateA.compare(dateB) == 0
+}
+
 export function isDateInvalid(date: DateValue, minValue?: DateValue | null, maxValue?: DateValue | null) {
   return (minValue != null && date.compare(minValue) < 0) || (maxValue != null && date.compare(maxValue) > 0)
 }
