@@ -8,9 +8,11 @@
   const {
     controls,
     state: state_,
+    omit,
   }: {
     state: any
     controls?: UseControlsReturn
+    omit?: string[]
   } = $props()
 
   let active = $state(controls !== undefined ? 0 : 1)
@@ -33,7 +35,7 @@
       <pre>
         <details open>
           <summary>Visualizer</summary>
-          <div>{@html stringifyState(unstate(state_))}</div>
+          <div>{@html stringifyState(unstate(state_), omit)}</div>
         </details>
       </pre>
     </div>

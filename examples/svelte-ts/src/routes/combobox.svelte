@@ -47,6 +47,7 @@
     <button data-testid="clear-value-button" onclick={() => api.clearValue()}> Clear Value </button>
     <br />
     <div {...api.rootProps}>
+      <!-- svelte-ignore a11y-label-has-associated-control -->
       <label {...api.labelProps}>Select country</label>
       <div {...api.controlProps}>
         <input data-testid="input" {...api.inputProps} />
