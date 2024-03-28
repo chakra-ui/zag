@@ -14,4 +14,6 @@ export type {
   OptionItemState,
   SelectionDetails,
   ValueChangeDetails,
+  MachineContext,
+  MachineState,
 } from "./menu.types"
