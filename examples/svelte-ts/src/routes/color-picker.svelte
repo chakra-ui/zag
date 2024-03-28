@@ -33,6 +33,7 @@
   >
     <input {...api.hiddenInputProps} />
     <div {...api.rootProps}>
+      <!-- svelte-ignore a11y-label-has-associated-control -->
       <label {...api.labelProps}>
         Select Color: <span data-testid="value-text">{api.valueAsString}</span>
       </label>

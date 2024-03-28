@@ -39,8 +39,8 @@
       </div>
       <input {...api.hiddenInputProps} />
     </div>
-    <button data-testid="clear-button" onClick={api.clearValue}> Clear </button>
-    <button onClick={api.focus}>Focus</button>
+    <button data-testid="clear-button" onclick={api.clearValue}> Clear </button>
+    <button onclick={api.focus}>Focus</button>
   </form>
 </main>
 

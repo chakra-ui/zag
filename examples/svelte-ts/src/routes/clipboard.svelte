@@ -23,6 +23,7 @@
 
 <main class="clipboard">
   <div {...api.rootProps}>
+    <!-- svelte-ignore a11y-label-has-associated-control -->
     <label {...api.labelProps}>Copy this link</label>
     <div {...api.controlProps}>
       <input {...api.inputProps} />
