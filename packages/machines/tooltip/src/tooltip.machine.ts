@@ -21,7 +21,7 @@ export function machine(userContext: UserDefinedContext) {
         closeDelay: 500,
         closeOnPointerDown: true,
         closeOnEsc: true,
-        interactive: true,
+        interactive: false,
         currentPlacement: undefined,
         ...ctx,
         hasPointerMoveOpened: false,
