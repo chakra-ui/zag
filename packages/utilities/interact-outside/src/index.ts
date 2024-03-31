@@ -42,8 +42,7 @@ export type InteractOutsideEvent = PointerDownOutsideEvent | FocusOutsideEvent
 export type MaybeElement = HTMLElement | null | undefined
 export type NodeOrFn = MaybeElement | (() => MaybeElement)
 
-function isComposedPathFocusable(event: Event) {
-  const composedPath = event.composedPath() ?? [event.target as HTMLElement]
+function isComposedPathFocusable(composedPath: EventTarget[]) {
   for (const node of composedPath) {
     if (isHTMLElement(node) && isFocusable(node)) return true
   }
@@ -80,7 +79,7 @@ function isEventWithinScrollbar(event: Event): boolean {
 }
 
 function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOptions) {
-  const { exclude, onFocusOutside, onPointerDownOutside, onInteractOutside } = options
+  const { exclude, onFocusOutside, onPointerDownOutside, onInteractOutside, defer } = options
 
   if (!node) return
 
@@ -102,21 +101,25 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   function onPointerDown(event: PointerEvent) {
     //
     function handler() {
-      if (!node || !isEventOutside(event)) return
+      const func = defer ? raf : (v: any) => v()
+      const composedPath = [...event.composedPath()] ?? [getEventTarget(event)]
+      func(() => {
+        if (!node || !isEventOutside(event)) return
 
-      if (onPointerDownOutside || onInteractOutside) {
-        const handler = callAll(onPointerDownOutside, onInteractOutside) as EventListener
-        node.addEventListener(POINTER_OUTSIDE_EVENT, handler, { once: true })
-      }
+        if (onPointerDownOutside || onInteractOutside) {
+          const handler = callAll(onPointerDownOutside, onInteractOutside) as EventListener
+          node.addEventListener(POINTER_OUTSIDE_EVENT, handler, { once: true })
+        }
 
-      fireCustomEvent(node, POINTER_OUTSIDE_EVENT, {
-        bubbles: false,
-        cancelable: true,
-        detail: {
-          originalEvent: event,
-          contextmenu: isContextMenuEvent(event),
-          focusable: isComposedPathFocusable(event),
-        },
+        fireCustomEvent(node, POINTER_OUTSIDE_EVENT, {
+          bubbles: false,
+          cancelable: true,
+          detail: {
+            originalEvent: event,
+            contextmenu: isContextMenuEvent(event),
+            focusable: isComposedPathFocusable(composedPath),
+          },
+        })
       })
     }
 
@@ -141,21 +144,24 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
 
   function onFocusin(event: FocusEvent) {
     //
-    if (!node || !isEventOutside(event)) return
+    const func = defer ? raf : (v: any) => v()
+    func(() => {
+      if (!node || !isEventOutside(event)) return
 
-    if (onFocusOutside || onInteractOutside) {
-      const handler = callAll(onFocusOutside, onInteractOutside) as EventListener
-      node.addEventListener(FOCUS_OUTSIDE_EVENT, handler, { once: true })
-    }
+      if (onFocusOutside || onInteractOutside) {
+        const handler = callAll(onFocusOutside, onInteractOutside) as EventListener
+        node.addEventListener(FOCUS_OUTSIDE_EVENT, handler, { once: true })
+      }
 
-    fireCustomEvent(node, FOCUS_OUTSIDE_EVENT, {
-      bubbles: false,
-      cancelable: true,
-      detail: {
-        originalEvent: event,
-        contextmenu: false,
-        focusable: isFocusable(getEventTarget(event)),
-      },
+      fireCustomEvent(node, FOCUS_OUTSIDE_EVENT, {
+        bubbles: false,
+        cancelable: true,
+        detail: {
+          originalEvent: event,
+          contextmenu: false,
+          focusable: isFocusable(getEventTarget(event)),
+        },
+      })
     })
   }
 

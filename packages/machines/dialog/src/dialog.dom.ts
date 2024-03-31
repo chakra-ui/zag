@@ -11,6 +11,8 @@ export const dom = createScope({
   getCloseTriggerId: (ctx: Ctx) => ctx.ids?.closeTrigger ?? `dialog:${ctx.id}:close`,
 
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
+  getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
+  getBackdropEl: (ctx: Ctx) => dom.getById(ctx, dom.getBackdropId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
   getTitleEl: (ctx: Ctx) => dom.getById(ctx, dom.getTitleId(ctx)),
   getDescriptionEl: (ctx: Ctx) => dom.getById(ctx, dom.getDescriptionId(ctx)),

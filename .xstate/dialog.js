@@ -25,7 +25,7 @@ const fetchMachine = createMachine({
   },
   states: {
     open: {
-      entry: ["checkRenderedElements"],
+      entry: ["checkRenderedElements", "syncZIndex"],
       activities: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
       on: {
         "CONTROLLED.CLOSE": {

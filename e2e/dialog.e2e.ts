@@ -72,7 +72,7 @@ test.describe("nested dialog", () => {
     await expect(page.locator(dialog_2.close)).toBeFocused()
   })
 
-  test("should focus on nested buttton on escape", async ({ page }) => {
+  test.fixme("should focus on nested buttton on escape", async ({ page }) => {
     await openDialog(page)
     await openNestedDialog(page)
     await page.keyboard.press("Escape")

@@ -36,7 +36,7 @@ export function machine(userContext: UserDefinedContext) {
 
       states: {
         open: {
-          entry: ["checkRenderedElements"],
+          entry: ["checkRenderedElements", "syncZIndex"],
           activities: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
           on: {
             "CONTROLLED.CLOSE": {
@@ -130,7 +130,7 @@ export function machine(userContext: UserDefinedContext) {
         trapFocus(ctx) {
           if (!ctx.trapFocus || !ctx.modal) return
           let trap: FocusTrap
-          nextTick(() => {
+          let rafCleanup = nextTick(() => {
             const contentEl = dom.getContentEl(ctx)
             if (!contentEl) return
             trap = createFocusTrap(contentEl, {
@@ -146,7 +146,10 @@ export function machine(userContext: UserDefinedContext) {
               trap.activate()
             } catch {}
           })
-          return () => trap?.deactivate()
+          return () => {
+            trap?.deactivate()
+            rafCleanup()
+          }
         },
         hideContentBelow(ctx) {
           if (!ctx.modal) return
@@ -161,6 +164,21 @@ export function machine(userContext: UserDefinedContext) {
             ctx.renderedElements.description = !!dom.getDescriptionEl(ctx)
           })
         },
+        syncZIndex(ctx) {
+          raf(() => {
+            // sync z-index of positioner with content
+            const contentEl = dom.getContentEl(ctx)
+            if (!contentEl) return
+
+            const win = dom.getWin(ctx)
+            const styles = win.getComputedStyle(contentEl)
+
+            const elems = [dom.getPositionerEl(ctx), dom.getBackdropEl(ctx)]
+            elems.forEach((node) => {
+              node?.style.setProperty("--z-index", styles.zIndex)
+            })
+          })
+        },
         invokeOnClose(ctx) {
           ctx.onOpenChange?.({ open: false })
         },
@@ -172,7 +190,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         restoreFocus(ctx) {
           if (!ctx.restoreFocus) return
-          raf(() => {
+          queueMicrotask(() => {
             const el = runIfFn(ctx.finalFocusEl) ?? dom.getTriggerEl(ctx)
             el?.focus({ preventScroll: true })
           })

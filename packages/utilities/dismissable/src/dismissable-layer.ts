@@ -5,14 +5,14 @@ import {
   type InteractOutsideHandlers,
   type PointerDownOutsideEvent,
 } from "@zag-js/interact-outside"
-import { warn } from "@zag-js/utils"
+import { isFunction, warn, type MaybeFunction } from "@zag-js/utils"
 import { trackEscapeKeydown } from "./escape-keydown"
 import { layerStack, type Layer } from "./layer-stack"
 import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
 
 type MaybeElement = HTMLElement | null
 type Container = MaybeElement | Array<MaybeElement>
-type NodeOrFn = MaybeElement | (() => MaybeElement)
+type NodeOrFn = MaybeFunction<MaybeElement>
 
 export interface DismissableElementHandlers extends InteractOutsideHandlers {
   /**
@@ -22,10 +22,25 @@ export interface DismissableElementHandlers extends InteractOutsideHandlers {
 }
 
 export interface DismissableElementOptions extends DismissableElementHandlers {
+  /**
+   * Whether to log debug information
+   */
   debug?: boolean
+  /**
+   * Whether to block pointer events outside the dismissable element
+   */
   pointerBlocking?: boolean
-  onDismiss: () => void
-  exclude?: Container | (() => Container)
+  /**
+   * Function called when the dismissable element is dismissed
+   */
+  onDismiss: VoidFunction
+  /**
+   * Exclude containers from the interact outside event
+   */
+  exclude?: MaybeFunction<Container>
+  /**
+   * Defer the interact outside event to the next frame
+   */
   defer?: boolean
 }
 
@@ -85,7 +100,7 @@ function trackDismissableElementImpl(node: MaybeElement, options: DismissableEle
   const cleanups = [
     pointerBlocking ? disablePointerEventsOutside(node) : undefined,
     trackEscapeKeydown(node, onEscapeKeyDown),
-    trackInteractOutside(node, { exclude, onFocusOutside, onPointerDownOutside }),
+    trackInteractOutside(node, { exclude, onFocusOutside, onPointerDownOutside, defer: options.defer }),
   ]
 
   return () => {
@@ -104,7 +119,7 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
   const cleanups: (VoidFunction | undefined)[] = []
   cleanups.push(
     func(() => {
-      const node = typeof nodeOrFn === "function" ? nodeOrFn() : nodeOrFn
+      const node = isFunction(nodeOrFn) ? nodeOrFn() : nodeOrFn
       cleanups.push(trackDismissableElementImpl(node, options))
     }),
   )
