@@ -39,7 +39,10 @@ export function isTabbable(el: HTMLElement | null): el is HTMLElement {
 /**
  * Returns the first focusable element within the element
  */
-export function getFirstTabbable(container: HTMLElement | null, includeContainer?: IncludeContainerType) {
+export function getFirstTabbable(
+  container: HTMLElement | null,
+  includeContainer?: IncludeContainerType,
+): HTMLElement | null {
   const [first] = getTabbables(container, includeContainer)
   return first || null
 }
@@ -47,7 +50,10 @@ export function getFirstTabbable(container: HTMLElement | null, includeContainer
 /**
  * Returns the last focusable element within the element
  */
-export function getLastTabbable(container: HTMLElement | null, includeContainer?: IncludeContainerType) {
+export function getLastTabbable(
+  container: HTMLElement | null,
+  includeContainer?: IncludeContainerType,
+): HTMLElement | null {
   const elements = getTabbables(container, includeContainer)
   return elements[elements.length - 1] || null
 }
@@ -55,7 +61,10 @@ export function getLastTabbable(container: HTMLElement | null, includeContainer?
 /**
  * Returns the first and last focusable elements within the element
  */
-export function getTabbableEdges(container: HTMLElement | null, includeContainer?: IncludeContainerType) {
+export function getTabbableEdges(
+  container: HTMLElement | null,
+  includeContainer?: IncludeContainerType,
+): [HTMLElement, HTMLElement] | [null, null] {
   const elements = getTabbables(container, includeContainer)
   const first = elements[0] || null
   const last = elements[elements.length - 1] || null
@@ -65,7 +74,7 @@ export function getTabbableEdges(container: HTMLElement | null, includeContainer
 /**
  * Returns the next tabbable element after the current element
  */
-export function getNextTabbable(container: HTMLElement | null, current?: HTMLElement | null) {
+export function getNextTabbable(container: HTMLElement | null, current?: HTMLElement | null): HTMLElement | null {
   const tabbables = getTabbables(container)
   const doc = container?.ownerDocument || document
   const currentElement = current ?? (doc.activeElement as HTMLElement | null)

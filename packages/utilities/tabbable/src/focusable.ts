@@ -36,7 +36,10 @@ export function isFocusable(element: HTMLElement | null): element is HTMLElement
   return element.matches(focusableSelector) && isVisible(element)
 }
 
-export function getFirstFocusable(container: HTMLElement | null, includeContainer?: IncludeContainerType) {
+export function getFirstFocusable(
+  container: HTMLElement | null,
+  includeContainer?: IncludeContainerType,
+): HTMLElement | null {
   const [first] = getFocusables(container, includeContainer)
   return first || null
 }
