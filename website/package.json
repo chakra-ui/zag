@@ -23,7 +23,7 @@
     "@chakra-ui/system": "2.6.2",
     "@chakra-ui/theme": "3.3.1",
     "@emotion/react": "11.11.4",
-    "@emotion/styled": "11.11.0",
+    "@emotion/styled": "11.11.5",
     "@zag-js/avatar": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
     "@zag-js/accordion": "workspace:*",
@@ -71,7 +71,7 @@
     "use-match-media-hook": "1.0.1"
   },
   "devDependencies": {
-    "@types/react": "18.2.71",
+    "@types/react": "18.2.73",
     "all-contributors-cli": "6.26.1",
     "eslint": "8.57.0",
     "eslint-config-next": "14.1.4",

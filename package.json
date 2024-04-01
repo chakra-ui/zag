@@ -75,7 +75,7 @@
     "@swc/core": "1.4.11",
     "@types/babel__generator": "7.6.8",
     "@types/babel__traverse": "7.20.5",
-    "@types/node": "20.11.30",
+    "@types/node": "20.12.2",
     "@types/signale": "1.4.7",
     "@typescript-eslint/eslint-plugin": "7.4.0",
     "@typescript-eslint/parser": "7.4.0",
@@ -99,8 +99,8 @@
     "tsup": "8.0.2",
     "tsx": "4.7.1",
     "typescript": "5.4.3",
-    "vite": "5.2.6",
-    "vite-plugin-dts": "3.7.3",
+    "vite": "5.2.7",
+    "vite-plugin-dts": "3.8.1",
     "vitest": "1.4.0"
   },
   "engines": {
