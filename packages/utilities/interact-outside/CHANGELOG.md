@@ -1,5 +1,17 @@
 # @zag-js/interact-outside
 
+## 0.41.0
+
+### Patch Changes
+
+- [`e47d60d`](https://github.com/chakra-ui/zag/commit/e47d60d2d9357eb24331d12f330d46e2f545f45d) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where deferred nested + portalled layers don't work as expected
+
+- Updated dependencies []:
+  - @zag-js/utils@0.41.0
+  - @zag-js/dom-event@0.41.0
+  - @zag-js/dom-query@0.41.0
+  - @zag-js/tabbable@0.41.0
+
 ## 0.40.0
 
 ### Patch Changes

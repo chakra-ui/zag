@@ -1,5 +1,22 @@
 # @zag-js/tooltip
 
+## 0.41.0
+
+### Minor Changes
+
+- [`d161ebf`](https://github.com/chakra-ui/zag/commit/d161ebfe4960ed0cf4697380edf8ee3ad7d4be31) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Set tooltip `interactive` to `false` by default
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.41.0
+  - @zag-js/core@0.41.0
+  - @zag-js/types@0.41.0
+  - @zag-js/utils@0.41.0
+  - @zag-js/dom-event@0.41.0
+  - @zag-js/dom-query@0.41.0
+  - @zag-js/popper@0.41.0
+
 ## 0.40.0
 
 ### Patch Changes

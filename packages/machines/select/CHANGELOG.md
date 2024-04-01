@@ -1,5 +1,26 @@
 # @zag-js/select
 
+## 0.41.0
+
+### Patch Changes
+
+- [`b55cf5a`](https://github.com/chakra-ui/zag/commit/b55cf5ac663dc3f37610150a7399f02dccf4d518) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where select doesn't work in forms when `readOnly: true` is set
+  - Fix issue where initial value was not synced with hidden select element
+- Updated dependencies [[`e47d60d`](https://github.com/chakra-ui/zag/commit/e47d60d2d9357eb24331d12f330d46e2f545f45d)]:
+  - @zag-js/dismissable@0.41.0
+  - @zag-js/anatomy@0.41.0
+  - @zag-js/core@0.41.0
+  - @zag-js/types@0.41.0
+  - @zag-js/collection@0.41.0
+  - @zag-js/utils@0.41.0
+  - @zag-js/dom-event@0.41.0
+  - @zag-js/dom-query@0.41.0
+  - @zag-js/form-utils@0.41.0
+  - @zag-js/mutation-observer@0.41.0
+  - @zag-js/popper@0.41.0
+  - @zag-js/tabbable@0.41.0
+  - @zag-js/visually-hidden@0.41.0
+
 ## 0.40.0
 
 ### Minor Changes
