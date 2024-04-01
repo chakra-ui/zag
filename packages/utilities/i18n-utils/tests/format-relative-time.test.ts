@@ -1,4 +1,13 @@
 import { formatRelativeTime } from "../src"
+import MockDate from "mockdate"
+
+beforeAll(() => {
+  MockDate.set("2024-01-01")
+})
+
+afterAll(() => {
+  MockDate.reset()
+})
 
 const addDays = (days: number) => {
   const now = new Date()
