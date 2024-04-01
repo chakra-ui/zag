@@ -252,7 +252,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the highlighted menuitem
    */
-  setHighlightedValue(id: string): void
+  setHighlightedValue(value: string): void
   /**
    * Function to register a parent menu. This is used for submenus
    */
@@ -264,15 +264,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Function to reposition the popover
    */
-  reposition: (options?: Partial<PositioningOptions>) => void
+  reposition(options?: Partial<PositioningOptions>): void
   /**
    * Returns the state of the option item
    */
-  getOptionItemState: (props: OptionItemProps) => OptionItemState
+  getOptionItemState(props: OptionItemProps): OptionItemState
   /**
    * Returns the state of the menu item
    */
-  getItemState: (props: ItemProps) => ItemState
+  getItemState(props: ItemProps): ItemState
   contextTriggerProps: T["element"]
   getTriggerItemProps<A extends Api>(childApi: A): T["element"]
   triggerProps: T["button"]

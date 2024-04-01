@@ -105,8 +105,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     close() {
       send("CLOSE")
     },
-    setHighlightedValue(id) {
-      send({ type: "HIGHLIGHTED.SET", id })
+    setHighlightedValue(value) {
+      send({ type: "HIGHLIGHTED.SET", id: value })
     },
     setParent(parent) {
       send({ type: "PARENT.SET", value: parent, id: parent.state.context.id })
