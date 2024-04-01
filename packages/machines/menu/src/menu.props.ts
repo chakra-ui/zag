@@ -18,6 +18,7 @@ export const props = createProps<UserDefinedContext>()([
   "onPointerDownOutside",
   "onEscapeKeyDown",
   "onSelect",
+  "onHighlightChange",
   "open",
   "open.controlled",
   "positioning",
