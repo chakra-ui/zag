@@ -21,7 +21,8 @@ type DocsLayoutProps = {
   }
 }
 
-export default function DocsLayout({ children, doc, toc }: DocsLayoutProps) {
+export default function DocsLayout(props: DocsLayoutProps) {
+  const { children, doc, toc } = props
   const tableOfContent = toc?.data ?? doc.frontmatter.toc
   const hideToc = tableOfContent.length < 2
 

@@ -1,11 +1,6 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  // "extends": [
-  //   "eslint:recommended",
-  //   "plugin:@typescript-eslint/eslint-recommended",
-  //   "plugin:@typescript-eslint/recommended"
-  // ],
   "plugins": ["@typescript-eslint/eslint-plugin"],
   "env": { "node": true },
   "rules": {
@@ -49,17 +44,17 @@
       {
         "varsIgnorePattern": "^_",
         "argsIgnorePattern": "^_",
-        "ignoreRestSiblings": true
-      }
+        "ignoreRestSiblings": true,
+      },
     ],
-    "default-case": "off"
+    "default-case": "off",
   },
   "overrides": [
     {
       "files": ["*.js", "*.jsx"],
       "parserOptions": {
-        "project": "tsconfig.eslint.json"
-      }
-    }
-  ]
+        "project": "tsconfig.eslint.json",
+      },
+    },
+  ],
 }
