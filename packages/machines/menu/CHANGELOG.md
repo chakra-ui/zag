@@ -1,5 +1,29 @@
 # @zag-js/menu
 
+## 0.42.0
+
+### Minor Changes
+
+- [#1387](https://github.com/chakra-ui/zag/pull/1387) [`b119136`](https://github.com/chakra-ui/zag/commit/b119136d6e993f973dab71799f2fa26e157fe8d7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - > Breaking changes to the menu component
+
+  - Removed `value` and `onValueChange` in favor of using explicit state to manage option items.
+  - Prefer `value` over `id` in `getItemProps` and `getOptionItemProps` for consistency with other machine.
+  - `onSelect` now provides `value` not `id` in its details.
+
+### Patch Changes
+
+- Updated dependencies [[`6122eee`](https://github.com/chakra-ui/zag/commit/6122eee55632899cbaa3cb5505625a25df57f7ce)]:
+  - @zag-js/dom-event@0.42.0
+  - @zag-js/dismissable@0.42.0
+  - @zag-js/anatomy@0.42.0
+  - @zag-js/core@0.42.0
+  - @zag-js/types@0.42.0
+  - @zag-js/utils@0.42.0
+  - @zag-js/dom-query@0.42.0
+  - @zag-js/mutation-observer@0.42.0
+  - @zag-js/popper@0.42.0
+  - @zag-js/rect-utils@0.42.0
+
 ## 0.41.0
 
 ### Patch Changes

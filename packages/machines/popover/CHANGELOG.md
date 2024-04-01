@@ -1,5 +1,21 @@
 # @zag-js/popover
 
+## 0.42.0
+
+### Patch Changes
+
+- Updated dependencies [[`c55ff29`](https://github.com/chakra-ui/zag/commit/c55ff297a408779232146953daa0b5aba6e14d9e)]:
+  - @zag-js/tabbable@0.42.0
+  - @zag-js/dismissable@0.42.0
+  - @zag-js/anatomy@0.42.0
+  - @zag-js/core@0.42.0
+  - @zag-js/types@0.42.0
+  - @zag-js/aria-hidden@0.42.0
+  - @zag-js/utils@0.42.0
+  - @zag-js/dom-query@0.42.0
+  - @zag-js/popper@0.42.0
+  - @zag-js/remove-scroll@0.42.0
+
 ## 0.41.0
 
 ### Patch Changes
