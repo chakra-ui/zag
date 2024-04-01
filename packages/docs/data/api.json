@@ -1595,12 +1595,12 @@
         "type": "() => void",
         "description": "Function to close the menu"
       },
-      "highlightedId": {
+      "highlightedValue": {
         "type": "string",
         "description": "The id of the currently highlighted menuitem"
       },
-      "setHighlightedId": {
-        "type": "(id: string) => void",
+      "setHighlightedValue": {
+        "type": "(value: string) => void",
         "description": "Function to set the highlighted menuitem"
       },
       "setParent": {
@@ -1610,14 +1610,6 @@
       "setChild": {
         "type": "(child: Service) => void",
         "description": "Function to register a child menu. This is used for submenus"
-      },
-      "value": {
-        "type": "Record<string, string | string[]>",
-        "description": "The value of the menu options item"
-      },
-      "setValue": {
-        "type": "(name: string, value: any) => void",
-        "description": "Function to set the value of the menu options item"
       },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
@@ -1637,15 +1629,7 @@
         "type": "Partial<{ trigger: string; contextTrigger: string; content: string; label(id: string): string; group(id: string): string; positioner: string; arrow: string; }>",
         "description": "The ids of the elements in the menu. Useful for composition."
       },
-      "value": {
-        "type": "Record<string, string | string[]>",
-        "description": "The values of radios and checkboxes in the menu."
-      },
-      "onValueChange": {
-        "type": "(details: ValueChangeDetails) => void",
-        "description": "Callback to be called when the menu values change (for radios and checkboxes)."
-      },
-      "highlightedId": {
+      "highlightedValue": {
         "type": "string",
         "description": "The `id` of the active menu item."
       },
@@ -2606,7 +2590,7 @@
         "description": "Whether the select's open state is controlled by the user"
       },
       "scrollToIndexFn": {
-        "type": "(index: number) => void",
+        "type": "(details: ScrollToIndexDetails) => void",
         "description": "Function to scroll to a specific index"
       },
       "dir": {
