@@ -1,5 +1,17 @@
 # @zag-js/dom-event
 
+## 0.42.0
+
+### Minor Changes
+
+- [`6122eee`](https://github.com/chakra-ui/zag/commit/6122eee55632899cbaa3cb5505625a25df57f7ce) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add velocity data to track pointer move helper
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@0.42.0
+  - @zag-js/text-selection@0.42.0
+
 ## 0.41.0
 
 ### Patch Changes

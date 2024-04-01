@@ -1,5 +1,7 @@
 # @zag-js/date-utils
 
+## 0.42.0
+
 ## 0.41.0
 
 ### Minor Changes

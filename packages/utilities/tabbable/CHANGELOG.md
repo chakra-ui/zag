@@ -1,5 +1,14 @@
 # @zag-js/tabbable
 
+## 0.42.0
+
+### Patch Changes
+
+- [#1385](https://github.com/chakra-ui/zag/pull/1385) [`c55ff29`](https://github.com/chakra-ui/zag/commit/c55ff297a408779232146953daa0b5aba6e14d9e) Thanks [@ocavue](https://github.com/ocavue)! - Correct some returned types.
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.42.0
+
 ## 0.41.0
 
 ### Patch Changes

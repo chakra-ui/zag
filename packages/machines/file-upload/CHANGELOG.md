@@ -1,5 +1,24 @@
 # @zag-js/file-upload
 
+## 0.42.0
+
+### Minor Changes
+
+- [`9a6d65a`](https://github.com/chakra-ui/zag/commit/9a6d65acc45b545cd09b79397589c859d692d86b) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Add support selecting directories via `directory` prop
+  - Add support for `capture` property that specifies which camera to use for capture of image or video
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.42.0
+  - @zag-js/core@0.42.0
+  - @zag-js/types@0.42.0
+  - @zag-js/utils@0.42.0
+  - @zag-js/dom-query@0.42.0
+  - @zag-js/file-utils@0.42.0
+  - @zag-js/i18n-utils@0.42.0
+  - @zag-js/visually-hidden@0.42.0
+
 ## 0.41.0
 
 ### Patch Changes
