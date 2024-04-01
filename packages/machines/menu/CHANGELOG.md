@@ -1,5 +1,23 @@
 # @zag-js/menu
 
+## 0.41.0
+
+### Patch Changes
+
+- [`4f97e65`](https://github.com/chakra-ui/zag/commit/4f97e659859617748b471905dffbcef170fbba3f) Thanks [@cschroeter](https://github.com/cschroeter)! - Export machine types
+
+- Updated dependencies [[`e47d60d`](https://github.com/chakra-ui/zag/commit/e47d60d2d9357eb24331d12f330d46e2f545f45d)]:
+  - @zag-js/dismissable@0.41.0
+  - @zag-js/anatomy@0.41.0
+  - @zag-js/core@0.41.0
+  - @zag-js/types@0.41.0
+  - @zag-js/utils@0.41.0
+  - @zag-js/dom-event@0.41.0
+  - @zag-js/dom-query@0.41.0
+  - @zag-js/mutation-observer@0.41.0
+  - @zag-js/popper@0.41.0
+  - @zag-js/rect-utils@0.41.0
+
 ## 0.40.0
 
 ### Patch Changes
