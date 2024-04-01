@@ -951,6 +951,7 @@ export namespace JSX {
     | (string & {})
 
   export interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
+    webkitdirectory?: any
     accept?: string | undefined
     alt?: string | undefined
     autoComplete?: string | undefined

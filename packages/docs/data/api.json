@@ -1391,6 +1391,14 @@
         "type": "(details: FileRejectDetails) => void",
         "description": "Function called when the file is rejected"
       },
+      "capture": {
+        "type": "\"user\" | \"environment\"",
+        "description": "The default camera to use when capturing media"
+      },
+      "directory": {
+        "type": "boolean",
+        "description": "Whether to accept directories, only works in webkit browsers"
+      },
       "locale": {
         "type": "string",
         "description": "The current locale. Based on the BCP 47 definition.",

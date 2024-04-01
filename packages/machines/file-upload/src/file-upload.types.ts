@@ -104,6 +104,14 @@ interface PublicContext extends LocaleProperties, CommonProperties {
    * Function called when the file is rejected
    */
   onFileReject?: (details: FileRejectDetails) => void
+  /**
+   * The default camera to use when capturing media
+   */
+  capture?: "user" | "environment"
+  /**
+   * Whether to accept directories, only works in webkit browsers
+   */
+  directory?: boolean
 }
 
 interface PrivateContext {

@@ -5,7 +5,9 @@ import type { ItemProps, UserDefinedContext } from "./file-upload.types"
 export const props = createProps<UserDefinedContext>()([
   "accept",
   "allowDrop",
+  "capture",
   "dir",
+  "directory",
   "disabled",
   "files",
   "getRootNode",
