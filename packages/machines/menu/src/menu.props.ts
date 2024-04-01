@@ -8,7 +8,7 @@ export const props = createProps<UserDefinedContext>()([
   "closeOnSelect",
   "dir",
   "getRootNode",
-  "highlightedId",
+  "highlightedValue",
   "id",
   "ids",
   "loop",
@@ -18,15 +18,14 @@ export const props = createProps<UserDefinedContext>()([
   "onPointerDownOutside",
   "onEscapeKeyDown",
   "onSelect",
-  "onValueChange",
   "open",
   "open.controlled",
   "positioning",
-  "value",
 ])
+
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 
-export const itemProps = createProps<ItemProps>()(["closeOnSelect", "disabled", "id", "valueText"])
+export const itemProps = createProps<ItemProps>()(["closeOnSelect", "disabled", "value", "valueText"])
 export const splitItemProps = createSplitProps<ItemProps>(itemProps)
 
 export const itemGroupLabelProps = createProps<ItemGroupLabelProps>()(["htmlFor"])
@@ -36,13 +35,13 @@ export const itemGroupProps = createProps<ItemGroupProps>()(["id"])
 export const splitItemGroupProps = createSplitProps<ItemGroupProps>(itemGroupProps)
 
 export const optionItemProps = createProps<OptionItemProps>()([
-  "id",
   "disabled",
   "valueText",
   "closeOnSelect",
-  "name",
   "type",
   "value",
+  "checked",
   "onCheckedChange",
 ])
+
 export const splitOptionItemProps = createSplitProps<OptionItemProps>(optionItemProps)
