@@ -11,14 +11,12 @@ import {
 import { dataAttr, getEventTarget, isEditableElement, isSelfEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { match } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
 import { dom } from "./menu.dom"
 import type { ItemProps, ItemState, MachineApi, OptionItemProps, OptionItemState, Send, State } from "./menu.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isSubmenu = state.context.isSubmenu
-  const values = state.context.value
   const isTypingAhead = state.context.isTypingAhead
 
   const isOpen = state.hasTag("open")
@@ -31,29 +29,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   function getItemState(props: ItemProps): ItemState {
     return {
       isDisabled: !!props.disabled,
-      isHighlighted: state.context.highlightedId === props.id,
+      isHighlighted: state.context.highlightedValue === props.value,
     }
   }
 
   function getOptionItemProps(props: OptionItemProps) {
-    const id = props.id ?? props.value
     const valueText = props.valueText ?? props.value
-    return { ...props, id, valueText }
+    return { ...props, id: props.value, valueText }
   }
 
   function getOptionItemState(props: OptionItemProps): OptionItemState {
     const itemState = getItemState(getOptionItemProps(props))
     return {
       ...itemState,
-      isChecked: !!match(props.type, {
-        radio: () => values?.[props.name] === props.value,
-        checkbox: () => values?.[props.name].includes(props.value),
-      }),
+      isChecked: !!props.checked,
     }
   }
 
   function getItemProps(props: ItemProps) {
-    const { id, closeOnSelect, valueText } = props
+    const { value: id, closeOnSelect, valueText } = props
     const itemState = getItemState(props)
     return normalize.element({
       ...parts.item.attrs,
@@ -103,7 +97,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
-    highlightedId: state.context.highlightedId,
+    highlightedValue: state.context.highlightedValue,
     isOpen,
     open() {
       send("OPEN")
@@ -111,18 +105,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     close() {
       send("CLOSE")
     },
-    setHighlightedId(id) {
-      send({ type: "HIGHLIGHTED.SET", id })
+    setHighlightedValue(value) {
+      send({ type: "HIGHLIGHTED.SET", id: value })
     },
     setParent(parent) {
       send({ type: "PARENT.SET", value: parent, id: parent.state.context.id })
     },
     setChild(child) {
       send({ type: "CHILD.SET", value: child, id: child.state.context.id })
-    },
-    value: values,
-    setValue(name, value) {
-      send({ type: "VALUE.SET", name, value })
     },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
@@ -163,7 +153,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getTriggerItemProps(childApi) {
-      return mergeProps(getItemProps({ id: childApi.triggerProps.id }), childApi.triggerProps) as T["element"]
+      return mergeProps(getItemProps({ value: childApi.triggerProps.id }), childApi.triggerProps) as T["element"]
     },
 
     triggerProps: normalize.button({
@@ -274,7 +264,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       role: "menu",
       tabIndex: 0,
       dir: state.context.dir,
-      "aria-activedescendant": state.context.highlightedId ?? undefined,
+      "aria-activedescendant": state.context.highlightedValue ?? undefined,
       "aria-labelledby": dom.getTriggerId(state.context),
       "data-placement": state.context.currentPlacement,
       onPointerEnter(event) {
@@ -360,7 +350,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getOptionItemState,
     getOptionItemProps(props) {
-      const { name, type, disabled, onCheckedChange, closeOnSelect } = props
+      const { type, disabled, onCheckedChange, closeOnSelect } = props
 
       const option = getOptionItemProps(props)
       const itemState = getOptionItemState(props)
@@ -369,7 +359,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...getItemProps(option),
         ...normalize.element({
           "data-type": type,
-          "data-name": name,
           ...parts.optionItem.attrs,
           dir: state.context.dir,
           "data-value": option.value,

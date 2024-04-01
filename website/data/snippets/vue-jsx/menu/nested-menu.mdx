@@ -24,7 +24,7 @@ export default defineComponent({
 
     // Level 2 - Share Menu
     const [shareMenuState, shareMenuSend, shareMenuMachine] = useMachine(
-      menu.machine({ "aria-label": "Share" }),
+      menu.machine({ id: "2", "aria-label": "Share" }),
     )
 
     const shareMenuApi = computed(() =>
@@ -40,7 +40,7 @@ export default defineComponent({
 
     // Share menu trigger
     const shareMenuTriggerProps = computed(() =>
-      fileMenu.value.getTriggerItemProps(shareMenuApi.value)
+      fileMenu.value.getTriggerItemProps(shareMenuApi.value),
     )
 
     return () => {
@@ -53,13 +53,15 @@ export default defineComponent({
           <Teleport to="body">
             <div {...fileMenu.positionerProps}>
               <ul {...fileMenu.contentProps}>
-                <li {...fileMenu.getItemProps({ id: "new-tab" })}>New tab</li>
-                <li {...fileMenu.getItemProps({ id: "new-win" })}>
+                <li {...fileMenu.getItemProps({ value: "new-tab" })}>
+                  New tab
+                </li>
+                <li {...fileMenu.getItemProps({ value: "new-win" })}>
                   New window
                 </li>
                 <li {...shareMenuTriggerProps.value}>Share</li>
-                <li {...fileMenu.getItemProps({ id: "print" })}>Print...</li>
-                <li {...fileMenu.getItemProps({ id: "help" })}>Help</li>
+                <li {...fileMenu.getItemProps({ value: "print" })}>Print...</li>
+                <li {...fileMenu.getItemProps({ value: "help" })}>Help</li>
               </ul>
             </div>
           </Teleport>
@@ -67,11 +69,13 @@ export default defineComponent({
           <Teleport to="body">
             <div {...shareMenu.positionerProps}>
               <ul {...shareMenu.contentProps}>
-                <li {...shareMenu.getItemProps({ id: "messages" })}>
+                <li {...shareMenu.getItemProps({ value: "messages" })}>
                   Messages
                 </li>
-                <li {...shareMenu.getItemProps({ id: "airdrop" })}>Airdrop</li>
-                <li {...shareMenu.getItemProps({ id: "whatsapp" })}>
+                <li {...shareMenu.getItemProps({ value: "airdrop" })}>
+                  Airdrop
+                </li>
+                <li {...shareMenu.getItemProps({ value: "whatsapp" })}>
                   WhatsApp
                 </li>
               </ul>

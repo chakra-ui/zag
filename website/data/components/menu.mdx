@@ -127,27 +127,12 @@ To use checkbox or radio option items, you'll need to:
 A common requirement for the option item that you pass the `name`, `value` and
 `type` properties.
 
-- `name` — The property key in the `value` context that this option is for.
 - `type` — The type of option item. Either `"checkbox"` or `"radio"`.
 - `value` — The value of the option item.
+- `checked` — The checked state of the option item.
+- `onCheckedChange` — The callback to invoke when the checked state changes.
 
 <CodeSnippet id="menu/option-items.mdx" />
-
-The machine invokes an `onValueChange` callback when an radio or checkbox option
-checked state changes. This callback is invoked with the `name` of the option
-and its new value.
-
-```jsx {3-6}
-const [state, send] = useMachine(
-  menu.machine({
-    value: { order: "", type: [] },
-    onValueChange(data) {
-      // data => { name: string, value: string | string[] }
-      console.log("values changed", data.value)
-    },
-  }),
-)
-```
 
 ## Styling guide
 

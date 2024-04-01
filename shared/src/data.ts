@@ -87,38 +87,38 @@ export const tabsData = [
 
 export const menuData = [
   [
-    { label: "New File", id: "new-file" },
-    { label: "New Tab", id: "new-tab" },
-    { label: "New Window", id: "new-win" },
-    { label: "More Tools →", id: "more-tools", trigger: true },
-    { label: "Export", id: "export" },
-    { label: "Go to Google...", id: "google" },
+    { label: "New File", value: "new-file" },
+    { label: "New Tab", value: "new-tab" },
+    { label: "New Window", value: "new-win" },
+    { label: "More Tools →", value: "more-tools", trigger: true },
+    { label: "Export", value: "export" },
+    { label: "Go to Google...", value: "google" },
   ],
   [
-    { label: "Save Page As...", id: "save-page" },
-    { label: "Create Shortcuts", id: "shortcut" },
-    { label: "Name Window...", id: "name-win" },
-    { label: "Open nested →", id: "open-nested", trigger: true },
-    { label: "Switch Window", id: "switch-win" },
-    { label: "New Terminal", id: "new-term" },
+    { label: "Save Page As...", value: "save-page" },
+    { label: "Create Shortcuts", value: "shortcut" },
+    { label: "Name Window...", value: "name-win" },
+    { label: "Open nested →", value: "open-nested", trigger: true },
+    { label: "Switch Window", value: "switch-win" },
+    { label: "New Terminal", value: "new-term" },
   ],
   [
-    { label: "Welcome", id: "welcome" },
-    { label: "Playground", id: "playground" },
-    { label: "Export", id: "export" },
+    { label: "Welcome", value: "welcome" },
+    { label: "Playground", value: "playground" },
+    { label: "Export", value: "export" },
   ],
 ]
 
 export const menuOptionData = {
   order: [
-    { label: "Ascending", id: "asc" },
-    { label: "Descending", id: "desc" },
-    { label: "None", id: "none" },
+    { label: "Ascending", value: "asc" },
+    { label: "Descending", value: "desc" },
+    { label: "None", value: "none" },
   ],
   type: [
-    { label: "Email", id: "email" },
-    { label: "Phone", id: "phone" },
-    { label: "Address", id: "address" },
+    { label: "Email", value: "email" },
+    { label: "Phone", value: "phone" },
+    { label: "Address", value: "address" },
   ],
 }
 

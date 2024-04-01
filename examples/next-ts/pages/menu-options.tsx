@@ -1,7 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
-import { menuOptionData as data, menuControls } from "@zag-js/shared"
-import { useId } from "react"
+import { menuOptionData, menuControls } from "@zag-js/shared"
+import { useId, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -9,16 +9,33 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(menuControls)
 
-  const [state, send] = useMachine(
-    menu.machine({
-      id: useId(),
-      value: { order: "", type: [] },
-      onValueChange: console.log,
-    }),
-    { context: controls.context },
-  )
+  const [order, setOrder] = useState("")
+  const [type, setType] = useState<string[]>([])
+
+  const [state, send] = useMachine(menu.machine({ id: useId() }), {
+    context: controls.context,
+  })
 
   const api = menu.connect(state, send, normalizeProps)
+
+  const radios = menuOptionData.order.map((item) => ({
+    type: "radio" as const,
+    name: "order",
+    value: item.value,
+    label: item.label,
+    checked: order === item.value,
+    onCheckedChange: (checked: boolean) => setOrder(checked ? item.value : ""),
+  }))
+
+  const checkboxes = menuOptionData.type.map((item) => ({
+    type: "checkbox" as const,
+    name: "type",
+    value: item.value,
+    label: item.label,
+    checked: type.includes(item.value),
+    onCheckedChange: (checked: boolean) =>
+      setType((prev) => (checked ? [...prev, item.value] : prev.filter((x) => x !== item.value))),
+  }))
 
   return (
     <>
@@ -31,22 +48,20 @@ export default function Page() {
           <Portal>
             <div {...api.positionerProps}>
               <div {...api.contentProps}>
-                {data.order.map((item) => {
-                  const opts = { type: "radio", name: "order", value: item.id } as const
+                {radios.map((item) => {
                   return (
-                    <div key={item.id} {...api.getOptionItemProps(opts)}>
-                      <span {...api.getOptionItemIndicatorProps(opts)}>✅</span>
-                      <span {...api.getOptionItemTextProps(opts)}>{item.label}</span>
+                    <div key={item.value} {...api.getOptionItemProps(item)}>
+                      <span {...api.getOptionItemIndicatorProps(item)}>✅</span>
+                      <span {...api.getOptionItemTextProps(item)}>{item.label}</span>
                     </div>
                   )
                 })}
                 <hr />
-                {data.type.map((item) => {
-                  const opts = { type: "checkbox", name: "type", value: item.id } as const
+                {checkboxes.map((item) => {
                   return (
-                    <div key={item.id} {...api.getOptionItemProps(opts)}>
-                      <span {...api.getOptionItemIndicatorProps(opts)}>✅</span>
-                      <span {...api.getOptionItemTextProps(opts)}>{item.label}</span>
+                    <div key={item.value} {...api.getOptionItemProps(item)}>
+                      <span {...api.getOptionItemIndicatorProps(item)}>✅</span>
+                      <span {...api.getOptionItemTextProps(item)}>{item.label}</span>
                     </div>
                   )
                 })}

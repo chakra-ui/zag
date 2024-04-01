@@ -46,10 +46,10 @@ export default function Page() {
                 <For each={level1}>
                   {(item) => {
                     const props = createMemo(() =>
-                      item.trigger ? triggerItemProps() : root().getItemProps({ id: item.id }),
+                      item.trigger ? triggerItemProps() : root().getItemProps({ value: item.value }),
                     )
                     return (
-                      <li data-testid={item.id} {...props()}>
+                      <li data-testid={item.value} {...props()}>
                         {item.label}
                       </li>
                     )
@@ -65,10 +65,10 @@ export default function Page() {
                 <For each={level2}>
                   {(item) => {
                     const props = createMemo(() =>
-                      item.trigger ? triggerItem2Props() : sub().getItemProps({ id: item.id }),
+                      item.trigger ? triggerItem2Props() : sub().getItemProps({ value: item.value }),
                     )
                     return (
-                      <li data-testid={item.id} {...props}>
+                      <li data-testid={item.value} {...props}>
                         {item.label}
                       </li>
                     )
@@ -83,7 +83,7 @@ export default function Page() {
               <ul data-testid="open-nested-submenu" {...sub2().contentProps}>
                 <For each={level3}>
                   {(item) => (
-                    <li data-testid={item.id} {...sub2().getItemProps({ id: item.id })}>
+                    <li data-testid={item.value} {...sub2().getItemProps({ value: item.value })}>
                       {item.label}
                     </li>
                   )}

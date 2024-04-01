@@ -54,7 +54,7 @@ export function NestedMenu() {
             {data.map((item) => (
               <li
                 key={item.value}
-                {...fileMenu.getItemProps({ id: item.value })}
+                {...fileMenu.getItemProps({ value: item.value })}
               >
                 {item.label}
               </li>
@@ -73,7 +73,7 @@ export function NestedMenu() {
             {shareMenuData.map((item) => (
               <li
                 key={item.value}
-                {...shareMenu.getItemProps({ id: item.value })}
+                {...shareMenu.getItemProps({ value: item.value })}
               >
                 {item.label}
               </li>

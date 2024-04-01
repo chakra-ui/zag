@@ -28,7 +28,7 @@ export function ContextMenu(props: ContextMenuProps) {
       <div {...api.positionerProps}>
         <ul {...api.contentProps}>
           {data.map((item) => (
-            <li key={item.value} {...api.getItemProps({ id: item.value })}>
+            <li key={item.value} {...api.getItemProps({ value: item.value })}>
               {item.label}
             </li>
           ))}

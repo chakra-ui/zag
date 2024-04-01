@@ -2,7 +2,7 @@ import * as menu from "@zag-js/menu"
 import { menuControls, menuOptionData as data } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { useControls } from "../hooks/use-controls"
-import { computed, defineComponent, Teleport } from "vue"
+import { computed, defineComponent, ref, Teleport } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 
 import { Toolbar } from "../components/toolbar"
@@ -11,15 +11,34 @@ export default defineComponent({
   name: "Menu",
   setup() {
     const controls = useControls(menuControls)
-    const [state, send] = useMachine(
-      menu.machine({
-        id: "1",
-        value: { order: "", type: [] },
-        onValueChange: console.log,
-      }),
-    )
+
+    const orderRef = ref("")
+    const typeRef = ref<string[]>([])
+
+    const [state, send] = useMachine(menu.machine({ id: "1" }))
 
     const apiRef = computed(() => menu.connect(state.value, send, normalizeProps))
+
+    const radios = computed(() =>
+      data.order.map((item) => ({
+        type: "radio" as const,
+        value: item.value,
+        label: item.label,
+        checked: orderRef.value === item.value,
+        onCheckedChange: (checked: boolean) => (orderRef.value = checked ? item.value : ""),
+      })),
+    )
+
+    const checkboxes = computed(() =>
+      data.type.map((item) => ({
+        type: "checkbox" as const,
+        value: item.value,
+        label: item.label,
+        checked: typeRef.value.includes(item.value),
+        onCheckedChange: (checked: boolean) =>
+          (typeRef.value = checked ? [...typeRef.value, item.value] : typeRef.value.filter((x) => x !== item.value)),
+      })),
+    )
 
     return () => {
       const api = apiRef.value
@@ -33,25 +52,19 @@ export default defineComponent({
               <Teleport to="body">
                 <div {...api.positionerProps}>
                   <div {...api.contentProps}>
-                    {data.order.map((item) => {
-                      const opts = { type: "radio", name: "order", value: item.id } as const
-                      return (
-                        <div key={item.id} {...api.getOptionItemProps(opts)}>
-                          <span {...api.getOptionItemIndicatorProps(opts)}>✅</span>
-                          <span {...api.getOptionItemTextProps(opts)}>{item.label}</span>
-                        </div>
-                      )
-                    })}
-                    <hr />
-                    {data.type.map((item) => {
-                      const opts = { type: "checkbox", name: "type", value: item.id } as const
-                      return (
-                        <div key={item.id} {...api.getOptionItemProps(opts)}>
-                          <span {...api.getOptionItemIndicatorProps(opts)}>✅</span>
-                          <span {...api.getOptionItemTextProps(opts)}>{item.label}</span>
-                        </div>
-                      )
-                    })}
+                    {radios.value.map((item) => (
+                      <div key={item.value} {...api.getOptionItemProps(item)}>
+                        <span {...api.getOptionItemIndicatorProps(item)}>✅</span>
+                        <span {...api.getOptionItemTextProps(item)}>{item.label}</span>
+                      </div>
+                    ))}
+                    <hr {...api.separatorProps} />
+                    {checkboxes.value.map((item) => (
+                      <div key={item.value} {...api.getOptionItemProps(item)}>
+                        <span {...api.getOptionItemIndicatorProps(item)}>✅</span>
+                        <span {...api.getOptionItemTextProps(item)}>{item.label}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </Teleport>

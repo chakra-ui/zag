@@ -47,9 +47,9 @@ export default function Page() {
             <div {...root.positionerProps}>
               <ul data-testid="menu" {...root.contentProps}>
                 {level1.map((item) => {
-                  const props = item.trigger ? triggerItemProps : root.getItemProps({ id: item.id })
+                  const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })
                   return (
-                    <li key={item.id} data-testid={item.id} {...props}>
+                    <li key={item.value} data-testid={item.value} {...props}>
                       {item.label}
                     </li>
                   )
@@ -62,9 +62,9 @@ export default function Page() {
             <div {...sub.positionerProps}>
               <ul data-testid="more-tools-submenu" {...sub.contentProps}>
                 {level2.map((item) => {
-                  const props = item.trigger ? triggerItem2Props : sub.getItemProps({ id: item.id })
+                  const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })
                   return (
-                    <li key={item.id} data-testid={item.id} {...props}>
+                    <li key={item.value} data-testid={item.value} {...props}>
                       {item.label}
                     </li>
                   )
@@ -77,7 +77,7 @@ export default function Page() {
             <div {...sub2.positionerProps}>
               <ul data-testid="open-nested-submenu" {...sub2.contentProps}>
                 {level3.map((item) => (
-                  <li key={item.id} data-testid={item.id} {...sub2.getItemProps({ id: item.id })}>
+                  <li key={item.value} data-testid={item.value} {...sub2.getItemProps({ value: item.value })}>
                     {item.label}
                   </li>
                 ))}

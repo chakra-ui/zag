@@ -18,10 +18,10 @@ const api = computed(() => menu.connect(state.value, send, normalizeProps))
     <Teleport to="body">
       <div v-bind="api.positionerProps">
         <ul v-bind="api.contentProps">
-          <li v-bind="api.getItemProps({ id: 'edit' })">Edit</li>
-          <li v-bind="api.getItemProps({ id: 'duplicate' })">Duplicate</li>
-          <li v-bind="api.getItemProps({ id: 'delete' })">Delete</li>
-          <li v-bind="api.getItemProps({ id: 'export' })">Export...</li>
+          <li v-bind="api.getItemProps({ value: 'edit' })">Edit</li>
+          <li v-bind="api.getItemProps({ value: 'duplicate' })">Duplicate</li>
+          <li v-bind="api.getItemProps({ value: 'delete' })">Delete</li>
+          <li v-bind="api.getItemProps({ value: 'export' })">Export...</li>
         </ul>
       </div>
     </Teleport>

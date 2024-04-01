@@ -4,49 +4,65 @@ import { useMachine, normalizeProps } from "@zag-js/react"
 
 const data = {
   order: [
-    { label: "Ascending", id: "asc" },
-    { label: "Descending", id: "desc" },
-    { label: "None", id: "none" },
+    { label: "Ascending", value: "asc" },
+    { label: "Descending", value: "desc" },
+    { label: "None", value: "none" },
   ],
   type: [
-    { label: "Email", id: "email" },
-    { label: "Phone", id: "phone" },
-    { label: "Address", id: "address" },
+    { label: "Email", value: "email" },
+    { label: "Phone", value: "phone" },
+    { label: "Address", value: "address" },
   ],
 }
 
 export function Menu() {
-  const [state, send] = useMachine(
-    menu.machine({
-      id: "1",
-      "aria-label": "Sort by",
-      value: { order: "", type: [] },
-    }),
-  )
+  const [order, setOrder] = useState("")
+  const [type, setType] = useState([])
+
+  const [state, send] = useMachine(menu.machine({ id: "1" }))
 
   const api = menu.connect(state, send, normalizeProps)
+
+  const radios = menuOptionData.order.map((item) => ({
+    type: "radio",
+    name: "order",
+    value: item.value,
+    label: item.label,
+    checked: order === item.value,
+    onCheckedChange: (checked) => setOrder(checked ? item.value : ""),
+  }))
+
+  const checkboxes = menuOptionData.type.map((item) => ({
+    type: "checkbox",
+    name: "type",
+    value: item.value,
+    label: item.label,
+    checked: type.includes(item.value),
+    onCheckedChange: (checked) =>
+      setType((prev) =>
+        checked ? [...prev, item.value] : prev.filter((x) => x !== item.value),
+      ),
+  }))
 
   return (
     <>
       <button {...api.triggerProps}>Trigger</button>
       <div {...api.positionerProps}>
         <div {...api.contentProps}>
-          {data.order.map((item) => {
-            const option = { type: "radio", name: "order", value: item.id }
+          {radios.map((item) => {
             return (
-              <div key={item.id} {...api.getOptionItemProps(option)}>
-                <span {...api.getOptionItemIndicatorProps(opts)}>✅</span>
-                <span {...api.getOptionItemTextProps(opts)}>{item.label}</span>
+              <div key={item.value} {...api.getOptionItemProps(item)}>
+                <span {...api.getOptionItemIndicatorProps(item)}>✅</span>
+                <span {...api.getOptionItemTextProps(item)}>{item.label}</span>
               </div>
             )
           })}
           <hr {...api.separatorProps} />
-          {data.type.map((item) => {
-            const option = { type: "checkbox", name: "type", value: item.id }
+          {checkboxes.map((item) => {
             return (
-              <div key={item.id} {...api.getOptionItemProps(option)}>
-                <span {...api.getOptionItemIndicatorProps(opts)}>✅</span>
-                <span {...api.getOptionItemTextProps(opts)}>{item.label}</span>
+              <div key={item.value} {...api.getOptionItemProps(item)}>
+                <span {...api.getOptionItemIndicatorProps(item)}>✅</span>
+                <span {...api.getOptionItemTextProps(item)}>{item.label}</span>
               </div>
             )
           })}

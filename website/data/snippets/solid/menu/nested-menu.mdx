@@ -7,14 +7,14 @@ import { Portal } from "solid-js/web"
 export default function Page() {
   // Level 1 - File Menu
   const [fileMenuState, fileMenuSend, fileMenuMachine] = useMachine(
-    menu.machine({ "aria-label": "File", id: createUniqueId() }),
+    menu.machine({ "aria-label": "File", value: createUniqueId() }),
   )
 
   const fileMenu = createMemo(() => menu.connect(state, send, normalizeProps))
 
   // Level 2 - Share Menu
   const [shareMenuState, shareMenuSend, shareMenuMachine] = useMachine(
-    menu.machine({ "aria-label": "Share", id: createUniqueId() }),
+    menu.machine({ "aria-label": "Share", value: createUniqueId() }),
   )
 
   const shareMenu = createMemo(() =>
@@ -40,11 +40,13 @@ export default function Page() {
       <Portal>
         <div {...fileMenu().positionerProps}>
           <ul {...fileMenu().contentProps}>
-            <li {...fileMenu().getItemProps({ id: "new-tab" })}>New tab</li>
-            <li {...fileMenu().getItemProps({ id: "new-win" })}>New window</li>
+            <li {...fileMenu().getItemProps({ value: "new-tab" })}>New tab</li>
+            <li {...fileMenu().getItemProps({ value: "new-win" })}>
+              New window
+            </li>
             <li {...shareMenuTriggerProps()}>Share</li>
-            <li {...fileMenu().getItemProps({ id: "print" })}>Print...</li>
-            <li {...fileMenu().getItemProps({ id: "help" })}>Help</li>
+            <li {...fileMenu().getItemProps({ value: "print" })}>Print...</li>
+            <li {...fileMenu().getItemProps({ value: "help" })}>Help</li>
           </ul>
         </div>
       </Portal>
@@ -52,9 +54,13 @@ export default function Page() {
       <Portal>
         <div {...shareMenu().positionerProps}>
           <ul {...shareMenu().contentProps}>
-            <li {...shareMenu().getItemProps({ id: "messages" })}>Messages</li>
-            <li {...shareMenu().getItemProps({ id: "airdrop" })}>Airdrop</li>
-            <li {...shareMenu().getItemProps({ id: "whatsapp" })}>WhatsApp</li>
+            <li {...shareMenu().getItemProps({ value: "messages" })}>
+              Messages
+            </li>
+            <li {...shareMenu().getItemProps({ value: "airdrop" })}>Airdrop</li>
+            <li {...shareMenu().getItemProps({ value: "whatsapp" })}>
+              WhatsApp
+            </li>
           </ul>
         </div>
       </Portal>

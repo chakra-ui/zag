@@ -1,10 +1,11 @@
 ```jsx
 import * as numberInput from "@zag-js/number-input"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
 
 export function NumberInput() {
   // 1. Consume the machine
-  const [state, send] = useMachine(numberInput.machine({ id: "1" }))
+  const [state, send] = useMachine(numberInput.machine({ id: useId() }))
 
   // 2. Convert machine to the provided API
   const api = numberInput.connect(state, send, normalizeProps)
@@ -14,9 +15,9 @@ export function NumberInput() {
     <div {...api.rootProps}>
       <label {...api.labelProps}>Enter number:</label>
       <div>
-        <button {...api.decrementButtonProps}>DEC</button>
+        <button {...api.decrementTriggerProps}>DEC</button>
         <input {...api.inputProps} />
-        <button {...api.incrementButtonProps}>INC</button>
+        <button {...api.incrementTriggerProps}>INC</button>
       </div>
     </div>
   )

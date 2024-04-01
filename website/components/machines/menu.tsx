@@ -8,6 +8,7 @@ const data = [
   { label: "Export", value: "export" },
   { label: "Duplicate", value: "duplicate" },
 ]
+
 type MenuProps = {
   controls: {}
 }
@@ -28,7 +29,7 @@ export function Menu(props: MenuProps) {
         <div {...api.positionerProps}>
           <ul {...api.contentProps}>
             {data.map((item) => (
-              <li key={item.value} {...api.getItemProps({ id: item.value })}>
+              <li key={item.value} {...api.getItemProps({ value: item.value })}>
                 {item.label}
               </li>
             ))}
