@@ -166,6 +166,43 @@ const [state, send] = useMachine(
 )
 ```
 
+## Allowing directory selection
+
+Set the `directory` property to `true` to enable selecting directories instead
+of files.
+
+This maps to the native input `webkitdirectory` HTML attribute and allows users
+to select directories and their contents.
+
+> Please note that support for this feature varies from browser to browser.
+
+```jsx
+const [state, send] = useMachine(
+  fileUpload.machine({
+    directory: true,
+  }),
+)
+```
+
+## Supporting media capture on mobile devices
+
+Set the `capture` property to specify the media capture mechanism to capture
+media on the spot. The value can be:
+
+- `user` for capturing media from the user-facing camera
+- `environment` for the outward-facing camera
+
+> This behavior only works on mobile devices. On desktop devices, it will open
+> the file system like normal.
+
+```jsx
+const [state, send] = useMachine(
+  fileUpload.machine({
+    capture: "user",
+  }),
+)
+```
+
 ## Styling guide
 
 Earlier, we mentioned that each file upload part has a `data-part` attribute
