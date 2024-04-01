@@ -79,11 +79,8 @@ const fetchMachine = createMachine({
       target: "closed",
       actions: "invokeOnClose"
     }],
-    RESTORE_FOCUS: {
-      actions: "restoreFocus"
-    },
-    "VALUE.SET": {
-      actions: ["setOptionValue", "invokeOnValueChange"]
+    "HIGHLIGHTED.RESTORE": {
+      actions: "restoreHighlightedItem"
     },
     "HIGHLIGHTED.SET": {
       actions: "setHighlightedItem"
@@ -190,14 +187,14 @@ const fetchMachine = createMachine({
           actions: ["invokeOnClose"]
         }, {
           target: "closed",
-          actions: ["focusParentMenu", "restoreParentFocus", "invokeOnClose"]
+          actions: ["focusParentMenu", "restoreParentHiglightedItem", "invokeOnClose"]
         }]
       },
       on: {
         "CONTROLLED.OPEN": "open",
         "CONTROLLED.CLOSE": {
           target: "closed",
-          actions: ["focusParentMenu", "restoreParentFocus"]
+          actions: ["focusParentMenu", "restoreParentHiglightedItem"]
         },
         // don't invoke on open here since the menu is still open (we're only keeping it open)
         MENU_POINTERENTER: {
@@ -209,7 +206,7 @@ const fetchMachine = createMachine({
           actions: "invokeOnClose"
         }, {
           target: "closed",
-          actions: ["focusParentMenu", "restoreParentFocus"]
+          actions: ["focusParentMenu", "restoreParentHiglightedItem"]
         }]
       }
     },
@@ -338,7 +335,7 @@ const fetchMachine = createMachine({
           cond: "!suspendPointer",
           actions: ["highlightItem", "focusMenu"]
         }, {
-          actions: "setHoveredItem"
+          actions: "setLastHighlightedItem"
         }],
         ITEM_POINTERLEAVE: {
           cond: "!suspendPointer && !isTriggerItem",
@@ -348,16 +345,16 @@ const fetchMachine = createMachine({
         // == grouped ==
         {
           cond: "!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect && isOpenControlled",
-          actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange", "closeRootMenu", "invokeOnClose"]
+          actions: ["invokeOnSelect", "setOptionState", "closeRootMenu", "invokeOnClose"]
         }, {
           cond: "!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect",
           target: "closed",
-          actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange", "closeRootMenu", "invokeOnClose"]
+          actions: ["invokeOnSelect", "setOptionState", "closeRootMenu", "invokeOnClose"]
         },
         //
         {
           cond: "!isTriggerItemHighlighted && !isHighlightedItemEditable",
-          actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"]
+          actions: ["invokeOnSelect", "setOptionState"]
         }, {
           actions: "highlightItem"
         }],

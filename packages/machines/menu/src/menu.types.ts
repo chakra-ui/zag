@@ -10,15 +10,16 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
  * -----------------------------------------------------------------------------*/
 
 export interface OpenChangeDetails {
+  /**
+   * Whether the menu is open
+   */
   open: boolean
 }
 
-export interface ValueChangeDetails {
-  name: string
-  value: string | string[]
-}
-
 export interface SelectionDetails {
+  /**
+   * The value of the selected menu item
+   */
   value: string
 }
 
@@ -42,17 +43,9 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
    */
   ids?: ElementIds
   /**
-   * The values of radios and checkboxes in the menu.
-   */
-  value?: Record<string, string | string[]>
-  /**
-   * Callback to be called when the menu values change (for radios and checkboxes).
-   */
-  onValueChange?: (details: ValueChangeDetails) => void
-  /**
    * The `id` of the active menu item.
    */
-  highlightedId: string | null
+  highlightedValue: string | null
   /**
    * Function called when a menu item is selected.
    */
@@ -135,9 +128,9 @@ interface PrivateContext {
   suspendPointer: boolean
   /**
    * @internal
-   * The `id` of the menu item that is currently being hovered.
+   * The `id` of the menu item that is currently being highlighted.
    */
-  hoverId: string | null
+  lastHighlightedValue: string | null
   /**
    * @internal
    * The computed placement (maybe different from initial placement)
@@ -179,9 +172,9 @@ export interface Api {
 
 export interface ItemProps {
   /**
-   * The `id` of the menu item option.
+   * The unique value of the menu item option.
    */
-  id: string
+  value: string
   /**
    * Whether the menu item is disabled
    */
@@ -199,9 +192,9 @@ export interface ItemProps {
 
 export interface OptionItemProps extends Partial<ItemProps> {
   /**
-   * The option's name as specified in menu's `context.values` object
+   * Whether the option is checked
    */
-  name: string
+  checked: boolean
   /**
    * Whether the option is a radio or a checkbox
    */
@@ -255,11 +248,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The id of the currently highlighted menuitem
    */
-  highlightedId: string | null
+  highlightedValue: string | null
   /**
    * Function to set the highlighted menuitem
    */
-  setHighlightedId(id: string): void
+  setHighlightedValue(id: string): void
   /**
    * Function to register a parent menu. This is used for submenus
    */
@@ -268,14 +261,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to register a child menu. This is used for submenus
    */
   setChild(child: Service): void
-  /**
-   * The value of the menu options item
-   */
-  value: Record<string, string | string[]> | undefined
-  /**
-   * Function to set the value of the menu options item
-   */
-  setValue: (name: string, value: any) => void
   /**
    * Function to reposition the popover
    */

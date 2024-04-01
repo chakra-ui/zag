@@ -21,10 +21,10 @@ export default function Page() {
         <Portal>
           <div {...api.positionerProps}>
             <ul {...api.contentProps}>
-              <li {...api.getItemProps({ id: "edit" })}>Edit</li>
-              <li {...api.getItemProps({ id: "duplicate" })}>Duplicate</li>
-              <li {...api.getItemProps({ id: "delete" })}>Delete</li>
-              <li {...api.getItemProps({ id: "export" })}>Export...</li>
+              <li {...api.getItemProps({ value: "edit" })}>Edit</li>
+              <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
+              <li {...api.getItemProps({ value: "delete" })}>Delete</li>
+              <li {...api.getItemProps({ value: "export" })}>Export...</li>
             </ul>
           </div>
         </Portal>

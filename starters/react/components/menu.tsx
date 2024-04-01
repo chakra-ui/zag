@@ -34,7 +34,7 @@ export function Menu(props: Props) {
         <div {...api.positionerProps}>
           <ul {...api.contentProps}>
             {items.map((item) => (
-              <li key={item.value} {...api.getItemProps({ id: item.value })}>
+              <li key={item.value} {...api.getItemProps({ value: item.value })}>
                 {item.label}
               </li>
             ))}

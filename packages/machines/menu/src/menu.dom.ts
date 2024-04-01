@@ -14,7 +14,7 @@ export const dom = createScope({
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
-  getHighlightedItemEl: (ctx: Ctx) => (ctx.highlightedId ? dom.getById(ctx, ctx.highlightedId) : null),
+  getHighlightedItemEl: (ctx: Ctx) => (ctx.highlightedValue ? dom.getById(ctx, ctx.highlightedValue) : null),
   getArrowEl: (ctx: Ctx) => dom.getById(ctx, dom.getArrowId(ctx)),
 
   getElements: (ctx: Ctx) => {
@@ -24,11 +24,11 @@ export const dom = createScope({
   },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
-  getNextEl: (ctx: Ctx, loop?: boolean) => nextById(dom.getElements(ctx), ctx.highlightedId!, loop ?? ctx.loop),
-  getPrevEl: (ctx: Ctx, loop?: boolean) => prevById(dom.getElements(ctx), ctx.highlightedId!, loop ?? ctx.loop),
+  getNextEl: (ctx: Ctx, loop?: boolean) => nextById(dom.getElements(ctx), ctx.highlightedValue!, loop ?? ctx.loop),
+  getPrevEl: (ctx: Ctx, loop?: boolean) => prevById(dom.getElements(ctx), ctx.highlightedValue!, loop ?? ctx.loop),
 
   getElemByKey: (ctx: Ctx, key: string) =>
-    getByTypeahead(dom.getElements(ctx), { state: ctx.typeahead, key, activeId: ctx.highlightedId }),
+    getByTypeahead(dom.getElements(ctx), { state: ctx.typeahead, key, activeId: ctx.highlightedValue }),
 
   isTargetDisabled: (v: EventTarget | null) => {
     return isHTMLElement(v) && (v.dataset.disabled === "" || v.hasAttribute("disabled"))

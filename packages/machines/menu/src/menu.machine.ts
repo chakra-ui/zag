@@ -5,7 +5,7 @@ import { contains, getByTypeahead, isEditableElement, raf, scrollIntoView } from
 import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement, getPlacementSide } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
-import { add, cast, compact, isArray, remove } from "@zag-js/utils"
+import { cast, compact } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
 
@@ -18,23 +18,23 @@ export function machine(userContext: UserDefinedContext) {
       id: "menu",
       initial: ctx.open ? "open" : "idle",
       context: {
-        highlightedId: null,
-        hoverId: null,
-        parent: null,
-        children: cast(ref({})),
-        intentPolygon: null,
+        highlightedValue: null,
         loop: false,
-        suspendPointer: false,
         anchorPoint: null,
         closeOnSelect: true,
-        restoreFocus: true,
         ...ctx,
-        typeahead: getByTypeahead.defaultOptions,
         positioning: {
           placement: "bottom-start",
           gutter: 8,
           ...ctx.positioning,
         },
+        intentPolygon: null,
+        parent: null,
+        lastHighlightedValue: null,
+        children: cast(ref({})),
+        suspendPointer: false,
+        restoreFocus: true,
+        typeahead: getByTypeahead.defaultOptions,
       },
 
       computed: {
@@ -87,11 +87,8 @@ export function machine(userContext: UserDefinedContext) {
             actions: "invokeOnClose",
           },
         ],
-        RESTORE_FOCUS: {
-          actions: "restoreFocus",
-        },
-        "VALUE.SET": {
-          actions: ["setOptionValue", "invokeOnValueChange"],
+        "HIGHLIGHTED.RESTORE": {
+          actions: "restoreHighlightedItem",
         },
         "HIGHLIGHTED.SET": {
           actions: "setHighlightedItem",
@@ -220,7 +217,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "closed",
-                actions: ["focusParentMenu", "restoreParentFocus", "invokeOnClose"],
+                actions: ["focusParentMenu", "restoreParentHiglightedItem", "invokeOnClose"],
               },
             ],
           },
@@ -228,7 +225,7 @@ export function machine(userContext: UserDefinedContext) {
             "CONTROLLED.OPEN": "open",
             "CONTROLLED.CLOSE": {
               target: "closed",
-              actions: ["focusParentMenu", "restoreParentFocus"],
+              actions: ["focusParentMenu", "restoreParentHiglightedItem"],
             },
             // don't invoke on open here since the menu is still open (we're only keeping it open)
             MENU_POINTERENTER: {
@@ -242,7 +239,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "closed",
-                actions: ["focusParentMenu", "restoreParentFocus"],
+                actions: ["focusParentMenu", "restoreParentHiglightedItem"],
               },
             ],
           },
@@ -407,7 +404,7 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["highlightItem", "focusMenu"],
               },
               {
-                actions: "setHoveredItem",
+                actions: "setLastHighlightedItem",
               },
             ],
             ITEM_POINTERLEAVE: {
@@ -423,29 +420,17 @@ export function machine(userContext: UserDefinedContext) {
                   "closeOnSelect",
                   "isOpenControlled",
                 ),
-                actions: [
-                  "invokeOnSelect",
-                  "changeOptionValue",
-                  "invokeOnValueChange",
-                  "closeRootMenu",
-                  "invokeOnClose",
-                ],
+                actions: ["invokeOnSelect", "setOptionState", "closeRootMenu", "invokeOnClose"],
               },
               {
                 guard: and(not("isTriggerItemHighlighted"), not("isHighlightedItemEditable"), "closeOnSelect"),
                 target: "closed",
-                actions: [
-                  "invokeOnSelect",
-                  "changeOptionValue",
-                  "invokeOnValueChange",
-                  "closeRootMenu",
-                  "invokeOnClose",
-                ],
+                actions: ["invokeOnSelect", "setOptionState", "closeRootMenu", "invokeOnClose"],
               },
               //
               {
                 guard: and(not("isTriggerItemHighlighted"), not("isHighlightedItemEditable")),
-                actions: ["invokeOnSelect", "changeOptionValue", "invokeOnValueChange"],
+                actions: ["invokeOnSelect", "setOptionState"],
               },
               { actions: "highlightItem" },
             ],
@@ -596,26 +581,14 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
-        invokeOnValueChange(ctx, evt) {
-          if (!ctx.value) return
-          const name = evt.name ?? evt.option?.name
-          if (!name) return
-          const values = ctx.value[name]
-          const valueAsArray = isArray(values) ? Array.from(values) : values
-          ctx.onValueChange?.({ name, value: valueAsArray })
-        },
-        setOptionValue(ctx, evt) {
-          if (!ctx.value) return
-          ctx.value[evt.name] = evt.value
-        },
-        changeOptionValue(ctx, evt) {
-          if (!evt.option || !ctx.value) return
-          const { value, type, name } = evt.option
-          const values = ctx.value[name]
-          if (type === "checkbox" && isArray(values)) {
-            ctx.value[name] = values.includes(value) ? remove(values, value) : add(values, value)
-          } else {
-            ctx.value[name] = value
+        setOptionState(_ctx, evt) {
+          if (!evt.option) return
+          const { checked, onCheckedChange, type } = evt.option
+
+          if (type === "radio") {
+            onCheckedChange?.(true)
+          } else if (type === "checkbox") {
+            onCheckedChange?.(!checked)
           }
         },
         clickHighlightedItem(ctx, _evt, { send }) {
@@ -654,10 +627,10 @@ export function machine(userContext: UserDefinedContext) {
           ctx.parent.state.context.suspendPointer = false
         },
         setHighlightedItem(ctx, evt) {
-          ctx.highlightedId = evt.id
+          ctx.highlightedValue = evt.id
         },
         clearHighlightedItem(ctx) {
-          ctx.highlightedId = null
+          ctx.highlightedValue = null
         },
         focusMenu(ctx) {
           raf(() => {
@@ -670,27 +643,27 @@ export function machine(userContext: UserDefinedContext) {
         highlightFirstItem(ctx) {
           const first = dom.getFirstEl(ctx)
           if (!first) return
-          ctx.highlightedId = first.id
+          ctx.highlightedValue = first.id
         },
         highlightLastItem(ctx) {
           const last = dom.getLastEl(ctx)
           if (!last) return
-          ctx.highlightedId = last.id
+          ctx.highlightedValue = last.id
         },
         highlightNextItem(ctx, evt) {
           const next = dom.getNextEl(ctx, evt.loop)
-          ctx.highlightedId = next?.id ?? null
+          ctx.highlightedValue = next?.id ?? null
         },
         highlightPrevItem(ctx, evt) {
           const prev = dom.getPrevEl(ctx, evt.loop)
-          ctx.highlightedId = prev?.id ?? null
+          ctx.highlightedValue = prev?.id ?? null
         },
         invokeOnSelect(ctx) {
-          if (!ctx.highlightedId) return
-          ctx.onSelect?.({ value: ctx.highlightedId })
+          if (!ctx.highlightedValue) return
+          ctx.onSelect?.({ value: ctx.highlightedValue })
         },
         highlightItem(ctx, evt) {
-          ctx.highlightedId = evt.id
+          ctx.highlightedValue = evt.id
         },
         focusTrigger(ctx) {
           if (ctx.isSubmenu || ctx.anchorPoint || !ctx.restoreFocus) return
@@ -698,7 +671,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         highlightMatchedItem(ctx, evt) {
           const node = dom.getElemByKey(ctx, evt.key)
-          if (node) ctx.highlightedId = node.id
+          if (node) ctx.highlightedValue = node.id
         },
         setParentMenu(ctx, evt) {
           ctx.parent = ref(evt.value)
@@ -718,16 +691,16 @@ export function machine(userContext: UserDefinedContext) {
         focusParentMenu(ctx) {
           ctx.parent?.send("FOCUS_MENU")
         },
-        setHoveredItem(ctx, evt) {
-          ctx.hoverId = evt.id
+        setLastHighlightedItem(ctx, evt) {
+          ctx.lastHighlightedValue = evt.id
         },
-        restoreFocus(ctx) {
-          if (!ctx.hoverId) return
-          ctx.highlightedId = ctx.hoverId
-          ctx.hoverId = null
+        restoreHighlightedItem(ctx) {
+          if (!ctx.lastHighlightedValue) return
+          ctx.highlightedValue = ctx.lastHighlightedValue
+          ctx.lastHighlightedValue = null
         },
-        restoreParentFocus(ctx) {
-          ctx.parent?.send("RESTORE_FOCUS")
+        restoreParentHiglightedItem(ctx) {
+          ctx.parent?.send("HIGHLIGHTED.RESTORE")
         },
         invokeOnOpen(ctx) {
           ctx.onOpenChange?.({ open: true })

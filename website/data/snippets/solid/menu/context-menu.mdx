@@ -4,12 +4,7 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 
 export function ContextMenu() {
-  const [state, send] = useMachine(
-    menu.machine({
-      id: createUniqueId(),
-      "aria-label": "File",
-    }),
-  )
+  const [state, send] = useMachine(menu.machine({ id: createUniqueId() }))
 
   const api = createMemo(() => menu.connect(state, send, normalizeProps))
 
@@ -20,10 +15,10 @@ export function ContextMenu() {
       </div>
       <div {...api().positionerProps}>
         <ul {...api().contentProps}>
-          <li {...api().getItemProps({ id: "edit" })}>Edit</li>
-          <li {...api().getItemProps({ id: "duplicate" })}>Duplicate</li>
-          <li {...api().getItemProps({ id: "delete" })}>Delete</li>
-          <li {...api().getItemProps({ id: "export" })}>Export...</li>
+          <li {...api().getItemProps({ value: "edit" })}>Edit</li>
+          <li {...api().getItemProps({ value: "duplicate" })}>Duplicate</li>
+          <li {...api().getItemProps({ value: "delete" })}>Delete</li>
+          <li {...api().getItemProps({ value: "export" })}>Export...</li>
         </ul>
       </div>
     </div>
