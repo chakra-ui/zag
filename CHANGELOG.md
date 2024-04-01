@@ -6,6 +6,22 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.42.0](./#0.42.0) - 2024-04-01
+
+### Added
+
+- **File Upload**
+  - Add support selecting directories via `directory` prop
+  - Add support for `capture` property that specifies which camera to use for capture of image or video
+
+### Changed
+
+- **Menu [Breaking]**
+  - Removed `value` and `onValueChange` in favor of using explicit state to manage option items, and passing `checked`
+    and `onCheckedChange` to the `getOptionItemProps` callback.
+  - Prefer `value` over `id` in `getItemProps` and `getOptionItemProps` for consistency with other machine.
+  - `onSelect` now provides `value` not `id` in its details.
+
 ## [0.41.0](./#0.41.0) - 2024-04-01
 
 ### Fixed
