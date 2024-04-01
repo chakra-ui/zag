@@ -6,6 +6,28 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.41.0](./#0.41.0) - 2024-04-01
+
+### Fixed
+
+- **Select**
+  - Fix issue where select doesn't work in forms when `readOnly: true` is set
+  - Fix issue where initial value was not synced with hidden select element
+
+### Added
+
+- **Dialog**: Sync `zIndex` of content with positioner and backdrop via `--z-index` css variable. This helps with
+  stacking order when using multiple dialogs.
+
+- **Dismissable**: Improve interaction outside logic when layer rendering is deferred (via Portals or unmounted)
+
+- **Utilities**: Add support for `formatDate` and `formatList` functions that use the underlying `Intl.*`
+  implementations
+
+### Changed
+
+- **Tooltip**: Set tooltip `interactive` to `false` by default
+
 ## [0.40.0](./#0.40.0) - 2024-03-26
 
 ### Fixed
