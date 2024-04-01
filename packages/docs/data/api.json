@@ -1631,7 +1631,11 @@
       },
       "highlightedValue": {
         "type": "string",
-        "description": "The `id` of the active menu item."
+        "description": "The value of the highlighted menu item."
+      },
+      "onHighlightChange": {
+        "type": "(details: HighlightChangeDetails) => void",
+        "description": "Function called when the highlighted menu item changes."
       },
       "onSelect": {
         "type": "(details: SelectionDetails) => void",

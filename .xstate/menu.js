@@ -333,7 +333,7 @@ const fetchMachine = createMachine({
         }],
         ITEM_POINTERMOVE: [{
           cond: "!suspendPointer",
-          actions: ["highlightItem", "focusMenu"]
+          actions: ["setHighlightedItem", "focusMenu"]
         }, {
           actions: "setLastHighlightedItem"
         }],
@@ -356,14 +356,14 @@ const fetchMachine = createMachine({
           cond: "!isTriggerItemHighlighted && !isHighlightedItemEditable",
           actions: ["invokeOnSelect", "setOptionState"]
         }, {
-          actions: "highlightItem"
+          actions: "setHighlightedItem"
         }],
         TRIGGER_POINTERLEAVE: {
           target: "closing",
           actions: "setIntentPolygon"
         },
         ITEM_POINTERDOWN: {
-          actions: "highlightItem"
+          actions: "setHighlightedItem"
         },
         TYPEAHEAD: {
           actions: "highlightMatchedItem"

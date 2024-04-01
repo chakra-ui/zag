@@ -44,7 +44,7 @@
     "visualize": "tsx scripts/visualize.ts --all",
     "slack": "tsx scripts/slack.ts",
     "sandbox": "tsx scripts/sandbox.ts",
-    "typedocs": "tsx scripts/typedocs.ts && pnpm prettier-fix",
+    "typedocs": "tsx scripts/typedocs.ts",
     "website": "pnpm --filter=./website"
   },
   "lint-staged": {

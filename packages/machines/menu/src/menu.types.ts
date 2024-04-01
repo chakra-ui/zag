@@ -23,6 +23,13 @@ export interface SelectionDetails {
   value: string
 }
 
+export interface HighlightChangeDetails {
+  /**
+   * The value of the highlighted menu item
+   */
+  highlightedValue: string | null
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -43,9 +50,13 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
    */
   ids?: ElementIds
   /**
-   * The `id` of the active menu item.
+   * The value of the highlighted menu item.
    */
   highlightedValue: string | null
+  /**
+   * Function called when the highlighted menu item changes.
+   */
+  onHighlightChange?: (details: HighlightChangeDetails) => void
   /**
    * Function called when a menu item is selected.
    */

@@ -5,7 +5,7 @@ import { contains, getByTypeahead, isEditableElement, raf, scrollIntoView } from
 import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement, getPlacementSide } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
-import { cast, compact } from "@zag-js/utils"
+import { cast, compact, isEqual } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
 
@@ -401,7 +401,7 @@ export function machine(userContext: UserDefinedContext) {
             ITEM_POINTERMOVE: [
               {
                 guard: not("suspendPointer"),
-                actions: ["highlightItem", "focusMenu"],
+                actions: ["setHighlightedItem", "focusMenu"],
               },
               {
                 actions: "setLastHighlightedItem",
@@ -432,14 +432,14 @@ export function machine(userContext: UserDefinedContext) {
                 guard: and(not("isTriggerItemHighlighted"), not("isHighlightedItemEditable")),
                 actions: ["invokeOnSelect", "setOptionState"],
               },
-              { actions: "highlightItem" },
+              { actions: "setHighlightedItem" },
             ],
             TRIGGER_POINTERLEAVE: {
               target: "closing",
               actions: "setIntentPolygon",
             },
             ITEM_POINTERDOWN: {
-              actions: "highlightItem",
+              actions: "setHighlightedItem",
             },
             TYPEAHEAD: {
               actions: "highlightMatchedItem",
@@ -627,10 +627,10 @@ export function machine(userContext: UserDefinedContext) {
           ctx.parent.state.context.suspendPointer = false
         },
         setHighlightedItem(ctx, evt) {
-          ctx.highlightedValue = evt.id
+          set.highlighted(ctx, evt.id)
         },
         clearHighlightedItem(ctx) {
-          ctx.highlightedValue = null
+          set.highlighted(ctx, null)
         },
         focusMenu(ctx) {
           raf(() => {
@@ -643,27 +643,24 @@ export function machine(userContext: UserDefinedContext) {
         highlightFirstItem(ctx) {
           const first = dom.getFirstEl(ctx)
           if (!first) return
-          ctx.highlightedValue = first.id
+          set.highlighted(ctx, first.id)
         },
         highlightLastItem(ctx) {
           const last = dom.getLastEl(ctx)
           if (!last) return
-          ctx.highlightedValue = last.id
+          set.highlighted(ctx, last.id)
         },
         highlightNextItem(ctx, evt) {
           const next = dom.getNextEl(ctx, evt.loop)
-          ctx.highlightedValue = next?.id ?? null
+          set.highlighted(ctx, next?.id ?? null)
         },
         highlightPrevItem(ctx, evt) {
           const prev = dom.getPrevEl(ctx, evt.loop)
-          ctx.highlightedValue = prev?.id ?? null
+          set.highlighted(ctx, prev?.id ?? null)
         },
         invokeOnSelect(ctx) {
           if (!ctx.highlightedValue) return
           ctx.onSelect?.({ value: ctx.highlightedValue })
-        },
-        highlightItem(ctx, evt) {
-          ctx.highlightedValue = evt.id
         },
         focusTrigger(ctx) {
           if (ctx.isSubmenu || ctx.anchorPoint || !ctx.restoreFocus) return
@@ -671,7 +668,8 @@ export function machine(userContext: UserDefinedContext) {
         },
         highlightMatchedItem(ctx, evt) {
           const node = dom.getElemByKey(ctx, evt.key)
-          if (node) ctx.highlightedValue = node.id
+          if (!node) return
+          set.highlighted(ctx, node.id)
         },
         setParentMenu(ctx, evt) {
           ctx.parent = ref(evt.value)
@@ -696,7 +694,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         restoreHighlightedItem(ctx) {
           if (!ctx.lastHighlightedValue) return
-          ctx.highlightedValue = ctx.lastHighlightedValue
+          set.highlighted(ctx, ctx.lastHighlightedValue)
           ctx.lastHighlightedValue = null
         },
         restoreParentHiglightedItem(ctx) {
@@ -722,4 +720,12 @@ function closeRootMenu(ctx: MachineContext) {
     parent = parent.state.context.parent
   }
   parent?.send("CLOSE")
+}
+
+const set = {
+  highlighted(ctx: MachineContext, value: string | null) {
+    if (isEqual(ctx.highlightedValue, value)) return
+    ctx.highlightedValue = value
+    ctx.onHighlightChange?.({ highlightedValue: value })
+  },
 }
