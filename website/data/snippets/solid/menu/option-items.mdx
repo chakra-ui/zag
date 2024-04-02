@@ -45,8 +45,8 @@ export function Menu() {
           <For each={radios()}>
             {(item) => (
               <div {...api().getOptionItemProps(item)}>
-                <span {...api().getOptionItemIndicatorProps(item)}>✅</span>
-                <span {...api().getOptionItemTextProps(item)}>
+                <span {...api().getItemIndicatorProps(item)}>✅</span>
+                <span {...api().getItemTextProps(item)}>
                   {item.label}
                 </span>
               </div>
@@ -56,8 +56,8 @@ export function Menu() {
           <For each={checkboxes()}>
             {(item) => (
               <div {...api().getOptionItemProps(item)}>
-                <span {...api().getOptionItemIndicatorProps(item)}>✅</span>
-                <span {...api().getOptionItemTextProps(item)}>
+                <span {...api().getItemIndicatorProps(item)}>✅</span>
+                <span {...api().getItemTextProps(item)}>
                   {item.label}
                 </span>
               </div>

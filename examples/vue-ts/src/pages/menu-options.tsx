@@ -54,15 +54,15 @@ export default defineComponent({
                   <div {...api.contentProps}>
                     {radios.value.map((item) => (
                       <div key={item.value} {...api.getOptionItemProps(item)}>
-                        <span {...api.getOptionItemIndicatorProps(item)}>✅</span>
-                        <span {...api.getOptionItemTextProps(item)}>{item.label}</span>
+                        <span {...api.getItemIndicatorProps(item)}>✅</span>
+                        <span {...api.getItemTextProps(item)}>{item.label}</span>
                       </div>
                     ))}
                     <hr {...api.separatorProps} />
                     {checkboxes.value.map((item) => (
                       <div key={item.value} {...api.getOptionItemProps(item)}>
-                        <span {...api.getOptionItemIndicatorProps(item)}>✅</span>
-                        <span {...api.getOptionItemTextProps(item)}>{item.label}</span>
+                        <span {...api.getItemIndicatorProps(item)}>✅</span>
+                        <span {...api.getItemTextProps(item)}>{item.label}</span>
                       </div>
                     ))}
                   </div>

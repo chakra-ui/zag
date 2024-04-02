@@ -84,7 +84,7 @@ When an item is focused, via keyboard navigation or pointer, it is given a
   /* styles for focused state */
 }
 
-[data-part="option-item"][data-focus] {
+[data-part="item"][data-type="radio|checkbox"][data-focus] {
   /* styles for focused state */
 }
 ```
@@ -99,7 +99,7 @@ attribute.
   /* styles for disabled state */
 }
 
-[data-part="option-item"][data-disabled] {
+[data-part="item"][data-type="radio|checkbox"][data-disabled] {
   /* styles for disabled state */
 }
 ```
@@ -120,7 +120,7 @@ When using arrows within the menu, you can style it using css variables.
 When an option item is checked, it is given a `data-checked` attribute.
 
 ```css
-[data-part="option-item"][data-checked] {
+[data-part="item"][data-type="radio|checkbox"][data-checked] {
   /* styles for checked state */
 }
 ```

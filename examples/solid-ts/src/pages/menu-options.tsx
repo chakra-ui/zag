@@ -54,8 +54,8 @@ export default function Page() {
                 <For each={radios()}>
                   {(item) => (
                     <div {...api().getOptionItemProps(item)}>
-                      <span {...api().getOptionItemIndicatorProps(item)}>✅</span>
-                      <span {...api().getOptionItemTextProps(item)}>{item.label}</span>
+                      <span {...api().getItemIndicatorProps(item)}>✅</span>
+                      <span {...api().getItemTextProps(item)}>{item.label}</span>
                     </div>
                   )}
                 </For>
@@ -63,8 +63,8 @@ export default function Page() {
                 <For each={checkboxes()}>
                   {(item) => (
                     <div {...api().getOptionItemProps(item)}>
-                      <span {...api().getOptionItemIndicatorProps(item)}>✅</span>
-                      <span {...api().getOptionItemTextProps(item)}>{item.label}</span>
+                      <span {...api().getItemIndicatorProps(item)}>✅</span>
+                      <span {...api().getItemTextProps(item)}>{item.label}</span>
                     </div>
                   )}
                 </For>

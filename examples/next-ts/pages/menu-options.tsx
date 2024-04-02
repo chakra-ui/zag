@@ -51,8 +51,8 @@ export default function Page() {
                 {radios.map((item) => {
                   return (
                     <div key={item.value} {...api.getOptionItemProps(item)}>
-                      <span {...api.getOptionItemIndicatorProps(item)}>✅</span>
-                      <span {...api.getOptionItemTextProps(item)}>{item.label}</span>
+                      <span {...api.getItemIndicatorProps(item)}>✅</span>
+                      <span {...api.getItemTextProps(item)}>{item.label}</span>
                     </div>
                   )
                 })}
@@ -60,8 +60,8 @@ export default function Page() {
                 {checkboxes.map((item) => {
                   return (
                     <div key={item.value} {...api.getOptionItemProps(item)}>
-                      <span {...api.getOptionItemIndicatorProps(item)}>✅</span>
-                      <span {...api.getOptionItemTextProps(item)}>{item.label}</span>
+                      <span {...api.getItemIndicatorProps(item)}>✅</span>
+                      <span {...api.getItemTextProps(item)}>{item.label}</span>
                     </div>
                   )
                 })}

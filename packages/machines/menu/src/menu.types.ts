@@ -295,8 +295,8 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   separatorProps: T["element"]
   getItemProps(options: ItemProps): T["element"]
   getOptionItemProps(option: OptionItemProps): T["element"]
-  getOptionItemIndicatorProps(option: OptionItemProps): T["element"]
-  getOptionItemTextProps(option: OptionItemProps): T["element"]
+  getItemIndicatorProps(option: OptionItemProps): T["element"]
+  getItemTextProps(option: OptionItemProps): T["element"]
   getItemGroupLabelProps(options: ItemGroupLabelProps): T["element"]
   getItemGroupProps(options: ItemGroupProps): T["element"]
 }

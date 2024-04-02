@@ -359,7 +359,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...getItemProps(option),
         ...normalize.element({
           "data-type": type,
-          ...parts.optionItem.attrs,
+          ...parts.item.attrs,
           dir: state.context.dir,
           "data-value": option.value,
           role: `menuitem${type}`,
@@ -376,10 +376,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       }
     },
 
-    getOptionItemIndicatorProps(props) {
+    getItemIndicatorProps(props) {
       const itemState = getOptionItemState(props)
       return normalize.element({
-        ...parts.optionItemIndicator.attrs,
+        ...parts.itemIndicator.attrs,
         dir: state.context.dir,
         "data-disabled": dataAttr(itemState.isDisabled),
         "data-highlighted": dataAttr(itemState.isHighlighted),
@@ -388,10 +388,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getOptionItemTextProps(props) {
+    getItemTextProps(props) {
       const itemState = getOptionItemState(props)
       return normalize.element({
-        ...parts.optionItemText.attrs,
+        ...parts.itemText.attrs,
         dir: state.context.dir,
         "data-disabled": dataAttr(itemState.isDisabled),
         "data-highlighted": dataAttr(itemState.isHighlighted),

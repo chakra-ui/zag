@@ -46,13 +46,13 @@ const checkboxes = computed(() =>
         <div v-bind="api.positionerProps">
           <div v-bind="api.contentProps">
             <div v-for="item in radios" :key="item.value" v-bind="api.getOptionItemProps(item)">
-              <span v-bind="api.getOptionItemIndicatorProps(item)">✅</span>
-              <span v-bind="api.getOptionItemTextProps(item)">{{ item.label }}</span>
+              <span v-bind="api.getItemIndicatorProps(item)">✅</span>
+              <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>
             </div>
             <hr v-bind="api.separatorProps" />
             <div v-for="item in checkboxes" :key="item.value" v-bind="api.getOptionItemProps(item)">
-              <span v-bind="api.getOptionItemIndicatorProps(item)">✅</span>
-              <span v-bind="api.getOptionItemTextProps(item)">{{ item.label }}</span>
+              <span v-bind="api.getItemIndicatorProps(item)">✅</span>
+              <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>
             </div>
           </div>
         </div>

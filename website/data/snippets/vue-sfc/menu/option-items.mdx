@@ -47,8 +47,8 @@
         :key="item.value"
         v-bind="api.getOptionItemProps(item)"
       >
-        <span v-bind="api.getOptionItemIndicatorProps(item)">✅</span>
-        <span v-bind="api.getOptionItemTextProps(item)">{{ item.label }}</span>
+        <span v-bind="api.getItemIndicatorProps(item)">✅</span>
+        <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>
       </div>
       <hr v-bind="api.separatorProps" />
       <div
@@ -56,8 +56,8 @@
         :key="item.value"
         v-bind="api.getOptionItemProps(item)"
       >
-        <span v-bind="api.getOptionItemIndicatorProps(item)">✅</span>
-        <span v-bind="api.getOptionItemTextProps(item)">{{ item.label }}</span>
+        <span v-bind="api.getItemIndicatorProps(item)">✅</span>
+        <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>
       </div>
     </div>
   </div>
