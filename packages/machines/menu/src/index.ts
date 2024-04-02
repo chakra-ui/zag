@@ -5,14 +5,15 @@ export * from "./menu.props"
 export type {
   MachineApi as Api,
   UserDefinedContext as Context,
+  HighlightChangeDetails,
   ItemGroupLabelProps,
   ItemGroupProps,
   ItemProps,
   ItemState,
+  MachineContext,
+  MachineState,
   OpenChangeDetails,
   OptionItemProps,
   OptionItemState,
   SelectionDetails,
-  MachineContext,
-  MachineState,
 } from "./menu.types"
