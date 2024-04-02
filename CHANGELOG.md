@@ -6,6 +6,29 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.43.0](./#0.43.0) - 2023-04-02
+
+### Changed
+
+- **Menu [Breaking]**
+
+  - Rename `getOptionItemIndicatorProps` to `getItemIndicatorProps`
+  - Rename `getOptionItemTextProps` to `getItemTextProps`
+  - Changed `data-part` to match new anatomy
+    - `option-item` -> `item`
+    - `option-item-indicator` -> `item-indicator`
+    - `option-item-text` -> `item-text`
+
+- **File Upload [Breaking]**
+
+  - Remove `files` form user defined context. File upload, just like `<input type=file>`, is largely a readonly
+    operation that can't be set by the user.
+
+    > Consider using the `onFileChange` event to handle file changes.
+
+  - Rename `api.files` to `api.acceptedFiles`
+  - Rename `onFilesChange` to `onFileChange`
+
 ## [0.42.0](./#0.42.0) - 2024-04-01
 
 ### Added
