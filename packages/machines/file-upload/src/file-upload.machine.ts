@@ -20,7 +20,7 @@ export function machine(userContext: UserDefinedContext) {
         maxFiles: 1,
         allowDrop: true,
         ...ctx,
-        files: ref(ctx.files ?? []),
+        acceptedFiles: ref([]),
         rejectedFiles: ref([]),
         invalid: false,
         translations: {
@@ -118,7 +118,7 @@ export function machine(userContext: UserDefinedContext) {
           const { acceptedFiles, rejectedFiles } = result
 
           if (ctx.multiple) {
-            const files = ref([...ctx.files, ...acceptedFiles])
+            const files = ref([...ctx.acceptedFiles, ...acceptedFiles])
             set.files(ctx, files, rejectedFiles)
             return
           }
@@ -131,7 +131,7 @@ export function machine(userContext: UserDefinedContext) {
           }
         },
         removeFile(ctx, evt) {
-          const nextFiles = ctx.files.filter((file) => file !== evt.file)
+          const nextFiles = ctx.acceptedFiles.filter((file) => file !== evt.file)
           set.files(ctx, nextFiles)
         },
         clearFiles(ctx) {
@@ -139,7 +139,7 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       compareFns: {
-        files: (a, b) => a.length === b.length && a.every((file, i) => isFileEqual(file, b[i])),
+        acceptedFiles: (a, b) => a.length === b.length && a.every((file, i) => isFileEqual(file, b[i])),
       },
     },
   )
@@ -147,13 +147,13 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change: (ctx: MachineContext) => {
-    ctx.onFilesChange?.({
-      acceptedFiles: ctx.files,
+    ctx.onFileChange?.({
+      acceptedFiles: ctx.acceptedFiles,
       rejectedFiles: ctx.rejectedFiles,
     })
   },
   accept: (ctx: MachineContext) => {
-    ctx.onFileAccept?.({ files: ctx.files })
+    ctx.onFileAccept?.({ files: ctx.acceptedFiles })
   },
   reject: (ctx: MachineContext) => {
     ctx.onFileReject?.({ files: ctx.rejectedFiles })
@@ -162,7 +162,7 @@ const invoke = {
 
 const set = {
   files: (ctx: MachineContext, acceptedFiles: File[], rejectedFiles?: FileRejection[]) => {
-    ctx.files = ref(acceptedFiles)
+    ctx.acceptedFiles = ref(acceptedFiles)
     invoke.accept(ctx)
 
     if (rejectedFiles) {

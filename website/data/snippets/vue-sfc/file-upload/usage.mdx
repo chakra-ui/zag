@@ -22,7 +22,7 @@
 
     <ul v-bind="api.itemGroupProps">
       <li
-        v-for="file in api.files"
+        v-for="file in api.acceptedFiles"
         :key="file.name"
         v-bind="api.getItemProps({ file })"
       >

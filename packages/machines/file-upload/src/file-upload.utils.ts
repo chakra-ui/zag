@@ -10,8 +10,8 @@ export function isEventWithFiles(event: Pick<DragEvent, "dataTransfer" | "target
 
 export function isFilesWithinRange(ctx: MachineContext, incomingCount: number) {
   if (!ctx.multiple && incomingCount > 1) return false
-  if (!ctx.multiple && incomingCount + ctx.files.length === 2) return true
-  if (incomingCount + ctx.files.length > ctx.maxFiles) return false
+  if (!ctx.multiple && incomingCount + ctx.acceptedFiles.length === 2) return true
+  if (incomingCount + ctx.acceptedFiles.length > ctx.maxFiles) return false
   return true
 }
 

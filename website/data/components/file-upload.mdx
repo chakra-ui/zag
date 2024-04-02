@@ -76,6 +76,20 @@ const [state, send] = useMachine(
 )
 ```
 
+Alternatively, you can provide an object with a MIME type and an array of file
+extensions.
+
+```jsx
+const [state, send] = useMachine(
+  fileUpload.machine({
+    accept: {
+      "image/png": [".png"],
+      "text/html": [".html", ".htm"],
+    },
+  }),
+)
+```
+
 ## Setting the maximum number of files
 
 Use the `maxFiles` attribute to set the maximum number of files that can be
@@ -105,13 +119,13 @@ const [state, send] = useMachine(
 
 ## Listening to file changes
 
-When files are uploaded, the `onFilesChange` callback is invoked with the
-details of the accepted and rejected files.
+When files are uploaded, the `onFileChange` callback is invoked with the details
+of the accepted and rejected files.
 
 ```jsx
 const [state, send] = useMachine(
   fileUpload.machine({
-    onFilesChange: (details) => {
+    onFileChange(details) {
       // details => { acceptedFiles: File[], rejectedFiles: { file: File, errors: [] }[] }
       console.log(details.acceptedFiles)
       console.log(details.rejectedFiles)
@@ -141,13 +155,34 @@ read the file and set the `src` attribute of an image element.
 ```jsx
 const [state, send] = useMachine(
   fileUpload.machine({
-    onFilesChange: (details) => {
+    onFileChange(details) {
       const reader = new FileReader()
       reader.onload = (event) => {
         const image = event.target.result
         // set the image as the src of an image element
       }
       reader.readAsDataURL(details.acceptedFiles[0])
+    },
+  }),
+)
+```
+
+## Applying custom validation
+
+To apply custom validation, set the `validate` attribute to a function that
+returns an array of errors.
+
+The returned error must be one of `TOO_MANY_FILES`, `FILE_INVALID_TYPE`
+,`FILE_TOO_LARGE`, or `FILE_TOO_SMALL`
+
+```jsx
+const [state, send] = useMachine(
+  fileUpload.machine({
+    validate(file) {
+      if (file.size > 1024 * 1024 * 10) {
+        return ["FILE_TOO_LARGE"]
+      }
+      return null
     },
   }),
 )

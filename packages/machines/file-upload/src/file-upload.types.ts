@@ -89,13 +89,9 @@ interface PublicContext extends LocaleProperties, CommonProperties {
    */
   validate?: (file: File) => FileError[] | null
   /**
-   * The current value of the file input
-   */
-  files: File[]
-  /**
    * Function called when the value changes, whether accepted or rejected
    */
-  onFilesChange?: (details: FileChangeDetails) => void
+  onFileChange?: (details: FileChangeDetails) => void
   /**
    * Function called when the file is accepted
    */
@@ -125,6 +121,11 @@ interface PrivateContext {
    * The rejected files
    */
   rejectedFiles: FileRejection[]
+  /**
+   * @internal
+   * The current value of the file input
+   */
+  acceptedFiles: File[]
 }
 
 type ComputedContext = Readonly<{
@@ -182,9 +183,13 @@ export interface MachineApi<T extends PropTypes> {
    */
   deleteFile(file: File): void
   /**
-   * The files that have been dropped or selected
+   * The accepted files that have been dropped or selected
    */
-  files: File[]
+  acceptedFiles: File[]
+  /**
+   * The files that have been rejected
+   */
+  rejectedFiles: FileRejection[]
   /**
    * Function to set the value
    */

@@ -32,7 +32,7 @@ export default defineComponent({
               <button {...api.triggerProps}>Choose Files...</button>
 
               <ul {...api.itemGroupProps}>
-                {api.files.map((file) => (
+                {api.acceptedFiles.map((file) => (
                   <li class="file" key={file.name} {...api.getItemProps({ file })}>
                     <div {...api.getItemNameProps({ file })}>
                       <b>{file.name}</b>

@@ -23,7 +23,7 @@ const api = computed(() => fileUpload.connect(state.value, send, normalizeProps)
       <button v-bind="api.triggerProps">Choose Files...</button>
 
       <ul v-bind="api.itemGroupProps">
-        <li v-for="file in api.files" :key="file.name" class="file" v-bind="api.getItemProps({ file })">
+        <li v-for="file in api.acceptedFiles" :key="file.name" class="file" v-bind="api.getItemProps({ file })">
           <div v-bind="api.getItemNameProps({ file })">
             <b>{file.name}</b>
           </div>

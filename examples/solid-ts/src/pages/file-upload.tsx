@@ -27,7 +27,7 @@ export default function Page() {
           <button {...api().triggerProps}>Choose Files...</button>
 
           <ul>
-            <Index each={api().files}>
+            <Index each={api().acceptedFiles}>
               {(file) => {
                 return (
                   <li class="file" {...api().getItemProps({ file: file() })}>

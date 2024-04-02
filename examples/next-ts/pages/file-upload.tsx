@@ -8,7 +8,11 @@ import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
   const controls = useControls(fileUploadControls)
-  const [state, send] = useMachine(fileUpload.machine({ id: useId() }), { context: controls.context })
+
+  const [state, send] = useMachine(fileUpload.machine({ id: useId() }), {
+    context: controls.context,
+  })
+
   const api = fileUpload.connect(state, send, normalizeProps)
 
   return (
@@ -23,7 +27,7 @@ export default function Page() {
           <button {...api.triggerProps}>Choose Files...</button>
 
           <ul {...api.itemGroupProps}>
-            {api.files.map((file) => {
+            {api.acceptedFiles.map((file) => {
               return (
                 <li className="file" key={file.name} {...api.getItemProps({ file })}>
                   <div>

@@ -9,7 +9,6 @@ export const props = createProps<UserDefinedContext>()([
   "dir",
   "directory",
   "disabled",
-  "files",
   "getRootNode",
   "id",
   "ids",
@@ -20,7 +19,7 @@ export const props = createProps<UserDefinedContext>()([
   "name",
   "onFileAccept",
   "onFileReject",
-  "onFilesChange",
+  "onFileChange",
   "translations",
   "validate",
 ])

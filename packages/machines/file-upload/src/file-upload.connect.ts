@@ -24,7 +24,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     deleteFile(file) {
       send({ type: "FILE.DELETE", file })
     },
-    files: state.context.files,
+    acceptedFiles: state.context.acceptedFiles,
+    rejectedFiles: state.context.rejectedFiles,
     setFiles(files) {
       const count = files.length
       send({ type: "FILES.SET", files, count })

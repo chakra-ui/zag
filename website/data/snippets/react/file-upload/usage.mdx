@@ -22,7 +22,7 @@ export function FileUpload() {
       <button {...api.triggerProps}>Choose file(s)</button>
 
       <ul {...api.itemGroupProps}>
-        {api.files.map((file) => (
+        {api.acceptedFiles.map((file) => (
           <li key={file.name} {...api.getItemProps({ file })}>
             <div {...api.getItemNameProps({ file })}>{file.name}</div>
             <button {...api.getItemDeleteTriggerProps({ file })}>Delete</button>
