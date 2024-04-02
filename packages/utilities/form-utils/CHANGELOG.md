@@ -1,5 +1,12 @@
 # @zag-js/form-utils
 
+## 0.43.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/mutation-observer@0.43.0
+
 ## 0.42.0
 
 ### Patch Changes

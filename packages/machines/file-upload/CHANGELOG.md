@@ -1,5 +1,29 @@
 # @zag-js/file-upload
 
+## 0.43.0
+
+### Minor Changes
+
+- [`22c42c0`](https://github.com/chakra-ui/zag/commit/22c42c0e4287929ab964ca6fd772fc4d1ce3fbe3) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Remove `files` form user defined context. File upload, just like `<input type=file>`, is largely a readonly operation
+  that can't be set by the user.
+
+  > Consider using the `onFileChange` event to handle file changes.
+
+  - Rename `api.files` to `api.acceptedFiles`
+  - Rename `onFilesChange` to `onFileChange`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.43.0
+  - @zag-js/core@0.43.0
+  - @zag-js/types@0.43.0
+  - @zag-js/utils@0.43.0
+  - @zag-js/dom-query@0.43.0
+  - @zag-js/file-utils@0.43.0
+  - @zag-js/i18n-utils@0.43.0
+  - @zag-js/visually-hidden@0.43.0
+
 ## 0.42.0
 
 ### Minor Changes
