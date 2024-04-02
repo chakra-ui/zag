@@ -1,5 +1,48 @@
 # @zag-js/menu
 
+## 0.43.0
+
+### Minor Changes
+
+- [`b27380f`](https://github.com/chakra-ui/zag/commit/b27380f807910f9c21614976a99057ae1dae661b) Thanks [@cschroeter](https://github.com/cschroeter)! - Breaking: Refactor the anatomy
+
+  - Rename `getOptionItemIndicatorProps` to `getItemIndicatorProps`
+  - Rename `getOptionItemTextProps` to `getItemTextProps`
+
+  Changed `data-part` to match new anatomy:
+
+  - `data-part="option-item"` -> `data-part="item"`
+  - `data-part="option-item-indicator"` -> `data-part="item-indicator"`
+  - `data-part="option-item-text"` -> `data-part="item-text"`
+
+  To target the radio and checkbox items in your CSS, update your selectors accordingly.
+
+  ```css
+  /* before */
+  [data-part="option-item"] {
+  }
+
+  /* after */
+  [data-part="item"][data-type="radio|checkbox"] {
+  }
+  ```
+
+### Patch Changes
+
+- [`13f4ccc`](https://github.com/chakra-ui/zag/commit/13f4ccc1e92e551b66a03288c8925709cb28acd6) Thanks [@cschroeter](https://github.com/cschroeter)! - Expost HighlightChangeDetails
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.43.0
+  - @zag-js/core@0.43.0
+  - @zag-js/types@0.43.0
+  - @zag-js/utils@0.43.0
+  - @zag-js/dismissable@0.43.0
+  - @zag-js/dom-event@0.43.0
+  - @zag-js/dom-query@0.43.0
+  - @zag-js/mutation-observer@0.43.0
+  - @zag-js/popper@0.43.0
+  - @zag-js/rect-utils@0.43.0
+
 ## 0.42.0
 
 ### Minor Changes
