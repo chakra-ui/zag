@@ -1,0 +1,54 @@
+[data-scope="signature-pad"][data-part="root"] {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 160px;
+  max-width: 400px;
+}
+
+[data-scope="signature-pad"][data-part="label"] {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+[data-scope="signature-pad"][data-part="control"] {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(224, 224, 224);
+  border-radius: 8px;
+}
+
+[data-scope="signature-pad"][data-part="layer"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  fill: black;
+}
+
+[data-scope="signature-pad"][data-part="separator"] {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  border-bottom: 2px dashed rgb(52, 52, 52);
+}
+
+[data-scope="signature-pad"][data-part="clear-trigger"] {
+  position: absolute;
+  top: 32px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+
+  & svg {
+    width: 1em;
+    height: 1em;
+  }
+}

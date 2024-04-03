@@ -303,6 +303,9 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
+      '@zag-js/signature-pad':
+        specifier: workspace:*
+        version: link:../../packages/machines/signature-pad
       '@zag-js/slider':
         specifier: workspace:*
         version: link:../../packages/machines/slider
@@ -553,6 +556,9 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
+      '@zag-js/signature-pad':
+        specifier: workspace:*
+        version: link:../../packages/machines/signature-pad
       '@zag-js/slider':
         specifier: workspace:*
         version: link:../../packages/machines/slider
@@ -797,6 +803,9 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
+      '@zag-js/signature-pad':
+        specifier: workspace:*
+        version: link:../../packages/machines/signature-pad
       '@zag-js/slider':
         specifier: workspace:*
         version: link:../../packages/machines/slider
@@ -1038,6 +1047,9 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
+      '@zag-js/signature-pad':
+        specifier: workspace:*
+        version: link:../../packages/machines/signature-pad
       '@zag-js/slider':
         specifier: workspace:*
         version: link:../../packages/machines/slider
@@ -1270,6 +1282,9 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
+      '@zag-js/signature-pad':
+        specifier: workspace:*
+        version: link:../../packages/machines/signature-pad
       '@zag-js/slider':
         specifier: workspace:*
         version: link:../../packages/machines/slider
@@ -1520,6 +1535,9 @@ importers:
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
+      '@zag-js/signature-pad':
+        specifier: workspace:*
+        version: link:../../packages/machines/signature-pad
       '@zag-js/slider':
         specifier: workspace:*
         version: link:../../packages/machines/slider
@@ -2547,6 +2565,34 @@ importers:
       '@zag-js/visually-hidden':
         specifier: workspace:*
         version: link:../../utilities/visually-hidden
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/signature-pad:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-event':
+        specifier: workspace:*
+        version: link:../../utilities/dom-event
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+      perfect-freehand:
+        specifier: ^1.2.2
+        version: 1.2.2
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -15923,6 +15969,10 @@ packages:
   /perfect-debounce@1.0.0:
     resolution: {integrity: sha512-xCy9V055GLEqoFaHoC1SoLIaLmWctgCUaBaWxDZ7/Zx4CTyX7cJQLJOok/orfjZAh9kEYpjJa4d0KcJmCbctZA==}
     dev: true
+
+  /perfect-freehand@1.2.2:
+    resolution: {integrity: sha512-eh31l019WICQ03pkF3FSzHxB8n07ItqIQ++G5UV8JX0zVOXzgTGCqnRR0jJ2h9U8/2uW4W4mtGJELt9kEV0CFQ==}
+    dev: false
 
   /periscopic@3.1.0:
     resolution: {integrity: sha512-vKiQ8RRtkl9P+r/+oefh25C3fhybptkHKCZSPlcXiJux2tJF55GnEj3BVn4A5gKfq9NWWXXrxkHBwVPUfH0opw==}
