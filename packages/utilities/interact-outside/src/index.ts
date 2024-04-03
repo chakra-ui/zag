@@ -102,7 +102,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     //
     function handler() {
       const func = defer ? raf : (v: any) => v()
-      const composedPath = [...event.composedPath()] ?? [getEventTarget(event)]
+      const composedPath = event.composedPath?.() ?? [event.target]
       func(() => {
         if (!node || !isEventOutside(event)) return
 

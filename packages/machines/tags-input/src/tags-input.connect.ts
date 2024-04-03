@@ -116,7 +116,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (evt.inputType === "insertFromPaste") return
         let value = event.target.value
 
-        if (value.endsWith(state.context.delimiter!)) {
+        if (endsWith(value, state.context.delimiter)) {
           send("DELIMITER_KEY")
         } else {
           send({ type: "TYPE", value, key: evt.inputType })
@@ -313,4 +313,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
   }
+}
+
+function endsWith(str: string, del: string | RegExp | undefined) {
+  if (!del) return false
+  if (typeof del === "string") return str.endsWith(del)
+  return new RegExp(`${del.source}$`).test(str)
 }
