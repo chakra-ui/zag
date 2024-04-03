@@ -1313,9 +1313,13 @@
         "type": "(file: File) => void",
         "description": "Function to delete the file from the list"
       },
-      "files": {
+      "acceptedFiles": {
         "type": "File[]",
-        "description": "The files that have been dropped or selected"
+        "description": "The accepted files that have been dropped or selected"
+      },
+      "rejectedFiles": {
+        "type": "FileRejection[]",
+        "description": "The files that have been rejected"
       },
       "setFiles": {
         "type": "(files: File[]) => void",
@@ -1375,11 +1379,7 @@
         "type": "(file: File) => FileError[]",
         "description": "Function to validate a file"
       },
-      "files": {
-        "type": "File[]",
-        "description": "The current value of the file input"
-      },
-      "onFilesChange": {
+      "onFileChange": {
         "type": "(details: FileChangeDetails) => void",
         "description": "Function called when the value changes, whether accepted or rejected"
       },
@@ -3093,9 +3093,9 @@
         "description": "The max length of the input."
       },
       "delimiter": {
-        "type": "string",
+        "type": "string | RegExp",
         "description": "The character that serves has:\n- event key to trigger the addition of a new tag\n- character used to split tags when pasting into the input",
-        "defaultValue": "\",\" (aka COMMA)"
+        "defaultValue": "\",\""
       },
       "autoFocus": {
         "type": "boolean",

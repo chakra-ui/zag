@@ -78,9 +78,9 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * - event key to trigger the addition of a new tag
    * - character used to split tags when pasting into the input
    *
-   * @default "," (aka COMMA)
+   * @default ","
    */
-  delimiter: string | null
+  delimiter?: string | RegExp
   /**
    * Whether the input should be auto-focused
    */
