@@ -10,14 +10,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   return {
     isLoaded,
     showFallback,
-    setSrc(src: string) {
+    setSrc(src) {
       send({ type: "SRC.SET", src })
     },
-
     setLoaded() {
       send({ type: "IMG.LOADED", src: "api" })
     },
-
     setError() {
       send({ type: "IMG.ERROR", src: "api" })
     },
@@ -26,15 +24,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getRootId(state.context),
-      style: {
-        display: "grid",
-        gridTemplateRows: "1fr 1fr",
-        overflow: "hidden",
-      },
     }),
 
     imageProps: normalize.img({
       ...parts.image.attrs,
+      hidden: !isLoaded,
       dir: state.context.dir,
       id: dom.getImageId(state.context),
       "data-state": isLoaded ? "visible" : "hidden",
@@ -44,21 +38,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onError() {
         send({ type: "IMG.ERROR", src: "element" })
       },
-      style: {
-        gridArea: "1 / 1 / 2 / 2",
-        visibility: !isLoaded ? "hidden" : undefined,
-      },
     }),
 
     fallbackProps: normalize.element({
       ...parts.fallback.attrs,
       dir: state.context.dir,
       id: dom.getFallbackId(state.context),
-      hidden: !showFallback,
+      hidden: isLoaded,
       "data-state": isLoaded ? "hidden" : "visible",
-      style: {
-        gridArea: "1 / 1 / 2 / 2",
-      },
     }),
   }
 }

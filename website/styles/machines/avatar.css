@@ -14,6 +14,7 @@
   font-weight: 600;
   color: #ffffff;
   background: #718096;
+  border-radius: 9999px;
 }
 
 [data-scope="avatar"][data-part="fallback"] > div {
