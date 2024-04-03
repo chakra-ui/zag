@@ -138,6 +138,13 @@ test.describe("select / keyboard / close", () => {
     await page.keyboard.press("Escape")
     await expect(page.locator(menu)).not.toBeVisible()
   })
+
+  test("should close on shift + tab", async ({ page }) => {
+    await page.click(trigger)
+    await expect(page.locator(menu)).toBeFocused()
+    await page.keyboard.press("Shift+Tab")
+    await expect(page.locator(menu)).not.toBeVisible()
+  })
 })
 
 test.describe("select / keyboard / select", () => {
