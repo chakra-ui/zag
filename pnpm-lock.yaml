@@ -1756,9 +1756,6 @@ importers:
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
-      hyphenate-style-name:
-        specifier: 1.0.4
-        version: 1.0.4
     devDependencies:
       '@zag-js/utils':
         specifier: workspace:*
@@ -12522,10 +12519,6 @@ packages:
     resolution: {integrity: sha512-AB6lFlbwwyIqMdHYhwPe+kjOC3Oc5P3nThEoW/AaO2BX3vJDjWPFxYLxokUZOo6RNX20He3AaT8sESs9NJcmEw==}
     engines: {node: '>=18'}
     hasBin: true
-    dev: false
-
-  /hyphenate-style-name@1.0.4:
-    resolution: {integrity: sha512-ygGZLjmXfPHj+ZWh6LwbC37l43MhfztxetbFCoYTM2VjkIUpeHgSNn7QIyVFj7YQ1Wl9Cbw5sholVJPzWvC2MQ==}
     dev: false
 
   /iconv-lite@0.4.24:
