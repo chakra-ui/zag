@@ -1,6 +1,5 @@
 import { createNormalizer } from "@zag-js/types"
-import { isObject, isString } from "@zag-js/utils"
-import { cssify } from "./cssify"
+import { isNumber, isObject, isString } from "@zag-js/utils"
 import type { JSX } from "solid-js"
 
 export type PropTypes = JSX.IntrinsicElements & {
@@ -18,6 +17,10 @@ const eventMap = {
   htmlFor: "for",
   className: "class",
 }
+
+const format = (v: string) => (v.startsWith("--") ? v : hyphenateStyleName(v))
+
+type StyleObject = Record<string, any>
 
 function toSolidProp(prop: string) {
   return prop in eventMap ? eventMap[prop] : prop
@@ -47,3 +50,28 @@ export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
   }
   return normalized
 })
+
+function cssify(style: StyleObject): StyleObject {
+  let css = {}
+  for (const property in style) {
+    const value = style[property]
+    if (!isString(value) && !isNumber(value)) continue
+    css[format(property)] = value
+  }
+
+  return css
+}
+
+const uppercasePattern = /[A-Z]/g
+const msPattern = /^ms-/
+const cache = {}
+
+function toHyphenLower(match: string) {
+  return "-" + match.toLowerCase()
+}
+
+function hyphenateStyleName(name: string) {
+  if (cache.hasOwnProperty(name)) return cache[name]
+  var hName = name.replace(uppercasePattern, toHyphenLower)
+  return (cache[name] = msPattern.test(hName) ? "-" + hName : hName)
+}

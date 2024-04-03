@@ -28,8 +28,7 @@
   "dependencies": {
     "@zag-js/core": "workspace:*",
     "@zag-js/store": "workspace:*",
-    "@zag-js/types": "workspace:*",
-    "hyphenate-style-name": "1.0.4"
+    "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
     "@zag-js/utils": "workspace:*",
