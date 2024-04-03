@@ -1,5 +1,36 @@
 # @zag-js/solid
 
+## 0.44.0
+
+### Minor Changes
+
+- [`198f525`](https://github.com/chakra-ui/zag/commit/198f5253a09eac721c5bae9e468588f9d93ea7bb) Thanks [@segunadebayo](https://github.com/segunadebayo)! - [Breaking] Refactor `mergeProps` from solid-js to ensure consistent merging of props with other frameworks. The previous
+  implementation was returning a Proxy object which was causing issues.
+
+  Now it returns a signal that can be called to get the merged props. Under the hood, it uses the `createMemo` function
+  from `solid-js`.
+
+  **Before**
+
+  ```js
+  const props = mergeProps({ a: 1 }, { a: 2 });
+  props; // Proxy { a: 2 }
+  ```
+
+  **After**
+
+  ```js
+  const props = mergeProps({ a: 1 }, { a: 2 });
+  props(); // { a: 2 }
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.44.0
+  - @zag-js/store@0.44.0
+  - @zag-js/types@0.44.0
+
 ## 0.43.0
 
 ### Patch Changes

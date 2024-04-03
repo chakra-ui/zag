@@ -1,5 +1,21 @@
 # @zag-js/avatar
 
+## 0.44.0
+
+### Minor Changes
+
+- [`5634379`](https://github.com/chakra-ui/zag/commit/5634379d4666c0b358005b5ccdc914fbdf4decd5) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Remove hardcoded style from `rootProps` to allow more flexible styling
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.44.0
+  - @zag-js/core@0.44.0
+  - @zag-js/types@0.44.0
+  - @zag-js/utils@0.44.0
+  - @zag-js/dom-query@0.44.0
+  - @zag-js/mutation-observer@0.44.0
+
 ## 0.43.0
 
 ### Patch Changes
