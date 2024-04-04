@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.44.0](./#0.44.0) - 2023-04-03
+
+### Added
+
+- **Tags Input**: Support for `RegExp` in delimiter
+
+### Changed
+
+- **Avatar**: Remove hardcoded `style` to allow more flexible styling
+
 ## [0.43.0](./#0.43.0) - 2023-04-02
 
 ### Changed
