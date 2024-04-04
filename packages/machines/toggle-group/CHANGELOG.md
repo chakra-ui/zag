@@ -1,5 +1,17 @@
 # @zag-js/toggle-group
 
+## 0.44.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.44.0
+  - @zag-js/core@0.44.0
+  - @zag-js/types@0.44.0
+  - @zag-js/utils@0.44.0
+  - @zag-js/dom-event@0.44.0
+  - @zag-js/dom-query@0.44.0
+
 ## 0.43.0
 
 ### Patch Changes

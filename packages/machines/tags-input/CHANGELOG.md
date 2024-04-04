@@ -1,5 +1,25 @@
 # @zag-js/tags-input
 
+## 0.44.0
+
+### Minor Changes
+
+- [`22218fe`](https://github.com/chakra-ui/zag/commit/22218fe724bf55c4ac5b41127c86c27095da1ff7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Support RegExp in delimiter
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.44.0
+  - @zag-js/core@0.44.0
+  - @zag-js/types@0.44.0
+  - @zag-js/auto-resize@0.44.0
+  - @zag-js/utils@0.44.0
+  - @zag-js/dom-event@0.44.0
+  - @zag-js/dom-query@0.44.0
+  - @zag-js/form-utils@0.44.0
+  - @zag-js/interact-outside@0.44.0
+  - @zag-js/live-region@0.44.0
+
 ## 0.43.0
 
 ### Patch Changes
