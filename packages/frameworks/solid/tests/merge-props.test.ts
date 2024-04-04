@@ -10,9 +10,9 @@ describe("mergeProps", () => {
 
       const props = mergeProps({ onClick, className, id })
 
-      expect(props().onClick).toBe(onClick)
-      expect(props().className).toBe(className)
-      expect(props().id).toBe(id)
+      expect(props.onClick).toBe(onClick)
+      expect(props.className).toBe(className)
+      expect(props.id).toBe(id)
 
       dispose()
     }))
@@ -27,7 +27,7 @@ describe("mergeProps", () => {
 
       const props = mergeProps({ onClick: mockFn }, { onClick: mockFn }, { onClick: mockFn })
 
-      props().onClick()
+      props.onClick()
       expect(mockFn).toBeCalledTimes(3)
       expect(count).toBe(3)
 
@@ -42,10 +42,10 @@ describe("mergeProps", () => {
       const className3 = "focus"
 
       const props = mergeProps({ class: className1 }, { class: className2 }, { class: className3 })
-      expect(props().class).toBe("primary hover focus")
+      expect(props.class).toBe("primary hover focus")
 
       const props2 = mergeProps({ className: className1 }, { className: className2 }, { className: className3 })
-      expect(props2().className).toBe("primary hover focus")
+      expect(props2.className).toBe("primary hover focus")
 
       dispose()
     })
@@ -68,7 +68,7 @@ describe("mergeProps", () => {
 
       const props = mergeProps({ style: stringStyles }, { style: objStyles })
 
-      expect(props().style).toMatchInlineSnapshot(`
+      expect(props.style).toMatchInlineSnapshot(`
         {
           "--x": "123",
           "background-image": "url("http://example.com/image.png")",
@@ -103,13 +103,13 @@ describe("mergeProps", () => {
 
       createComputed(() => {
         if (i === 0) {
-          expect(props().class).toBe("primary secondary")
-          expect(props().style).toEqual({ margin: "10px", padding: "10px" })
+          expect(props.class).toBe("primary secondary")
+          expect(props.style).toEqual({ margin: "10px", padding: "10px" })
           i++
         } else {
-          expect(props().class).toBe("tertiary secondary")
-          expect(props().style).toEqual({ padding: "10px" })
-          expect(props().foo).toEqual("bar")
+          expect(props.class).toBe("tertiary secondary")
+          expect(props.style).toEqual({ padding: "10px" })
+          expect(props.foo).toEqual("bar")
         }
       })
 
@@ -129,7 +129,7 @@ describe("mergeProps", () => {
         { onEvent: "overwrites" },
       )
 
-      expect(props().onEvent).toBe("overwrites")
+      expect(props.onEvent).toBe("overwrites")
 
       dispose()
     })
