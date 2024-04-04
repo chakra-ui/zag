@@ -1,5 +1,18 @@
 # @zag-js/solid
 
+## 0.45.0
+
+### Minor Changes
+
+- [`ccb34b5`](https://github.com/chakra-ui/zag/commit/ccb34b5268e5e93083ad2ad7edbffa0c64ac2657) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rewrite `mergeProps` to prevent issues with children that read from context, and ensure props are always up-to-date.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.45.0
+  - @zag-js/store@0.45.0
+  - @zag-js/types@0.45.0
+
 ## 0.44.0
 
 ### Minor Changes
