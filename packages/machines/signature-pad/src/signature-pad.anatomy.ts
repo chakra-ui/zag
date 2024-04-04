@@ -5,7 +5,7 @@ export const anatomy = createAnatomy("signature-pad").parts(
   "control",
   "layer",
   "layerPath",
-  "separator",
+  "line",
   "clearTrigger",
   "label",
 )

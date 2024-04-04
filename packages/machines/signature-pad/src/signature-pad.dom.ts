@@ -1,33 +1,52 @@
 import { createScope, query } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./signature-pad.types"
+import type { MachineContext as Ctx, DataUrlOptions } from "./signature-pad.types"
 
 export const dom = createScope({
   getRootId: (ctx: Ctx) => `signature-${ctx.id}`,
   getControlId: (ctx: Ctx) => `signature-control-${ctx.id}`,
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getLayerEl: (ctx: Ctx) => query(dom.getControlEl(ctx), "[data-part=layer]"),
-  getCanvasEl: (ctx: Ctx) => {
-    const myPath = new Path2D(ctx.paths.join(" "))
+  getDataUrl: (ctx: Ctx, options: DataUrlOptions): Promise<string> => {
+    const { type, quality = 0.92 } = options
+
+    if (ctx.isEmpty) {
+      return Promise.resolve("")
+    }
+
+    const svg = dom.getLayerEl(ctx) as SVGElement | null
+    if (!svg) {
+      throw new Error("Could not find the svg element.")
+    }
 
     const win = dom.getWin(ctx)
     const doc = win.document
 
-    const dpr = win.devicePixelRatio || 1
-    const canvasEl = doc.createElement("canvas")
+    const serializer = new win.XMLSerializer()
+    const source = '<?xml version="1.0" standalone="no"?>\r\n' + serializer.serializeToString(svg)
+    const svgString = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source)
 
-    const svgEl = dom.getLayerEl(ctx)
-    if (!svgEl) {
-      throw new Error("Could not find the svg element.")
+    if (type === "image/svg+xml") {
+      return Promise.resolve(svgString)
     }
 
-    const rect = svgEl.getBoundingClientRect()
-    canvasEl.width = rect.width * dpr
-    canvasEl.height = rect.height * dpr
+    const svgBounds = svg.getBoundingClientRect()
+    const dpr = win.devicePixelRatio || 1
 
-    const render = canvasEl.getContext("2d")
-    render?.scale(dpr, dpr)
-    render?.fill(myPath)
+    const canvas = doc.createElement("canvas")
+    const image = new win.Image()
+    image.src = svgString
 
-    return canvasEl
+    canvas.width = svgBounds.width * dpr
+    canvas.height = svgBounds.height * dpr
+
+    const context = canvas.getContext("2d")
+    context!.scale(dpr, dpr)
+
+    return new Promise((resolve) => {
+      image.onload = () => {
+        context!.drawImage(image, 0, 0)
+        resolve(canvas.toDataURL(type, quality))
+      }
+    })
   },
 })

@@ -17,12 +17,13 @@ export function machine(userContext: UserDefinedContext) {
         paths: [],
         currentPoints: [],
         currentPath: null,
-        strokeOptions: {
-          size: 5,
+        drawing: {
+          size: 2,
+          simulatePressure: false,
           thinning: 0.7,
           smoothing: 0.4,
           streamline: 0.6,
-          ...ctx.strokeOptions,
+          ...ctx.drawing,
         },
       },
 
@@ -78,7 +79,7 @@ export function machine(userContext: UserDefinedContext) {
       actions: {
         addPoint(ctx, evt) {
           ctx.currentPoints.push(evt.point)
-          const stroke = getStroke(ctx.currentPoints, ctx.strokeOptions)
+          const stroke = getStroke(ctx.currentPoints, ctx.drawing)
           ctx.currentPath = getSvgPathFromStroke(stroke)
         },
         endStroke(ctx) {
@@ -96,15 +97,15 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         invokeOnDraw(ctx) {
-          ctx.onValueChange?.({
+          ctx.onDraw?.({
             paths: [...ctx.paths, ctx.currentPath!],
           })
         },
         invokeOnDrawEnd(ctx) {
-          ctx.onValueChangeEnd?.({
+          ctx.onDrawEnd?.({
             paths: [...ctx.paths],
-            dataUrl(type, quality = 0.92) {
-              return ctx.isEmpty ? "" : dom.getCanvasEl(ctx).toDataURL(type, quality)
+            getDataUrl(type, quality = 0.92) {
+              return dom.getDataUrl(ctx, { type, quality })
             },
           })
         },

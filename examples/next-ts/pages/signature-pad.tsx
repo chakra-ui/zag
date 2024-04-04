@@ -15,8 +15,13 @@ export default function Page() {
   const [state, send] = useMachine(
     signaturePad.machine({
       id: useId(),
-      onValueChangeEnd(e) {
-        setUrl(e.dataUrl("image/png"))
+      onDrawEnd(details) {
+        details.getDataUrl("image/png").then(setUrl)
+      },
+      drawing: {
+        fill: "red",
+        size: 4,
+        simulatePressure: true,
       },
     }),
     { context: controls.context },
@@ -38,7 +43,7 @@ export default function Page() {
               {api.currentPath && <path {...api.getLayerPathProps({ path: api.currentPath })} />}
             </svg>
 
-            <div {...api.separatorProps} />
+            <div {...api.lineProps} />
           </div>
 
           <button {...api.clearTriggerProps}>
@@ -46,8 +51,14 @@ export default function Page() {
           </button>
         </div>
 
-        <button onClick={() => setUrl(api.getDataUrl("image/png"))}>Show Image</button>
-        {url && <img style={{ height: "140px", objectFit: "cover", maxWidth: "100%" }} alt="signature" src={url} />}
+        <button
+          onClick={() => {
+            api.getDataUrl("image/png").then(setUrl)
+          }}
+        >
+          Show Image
+        </button>
+        {url && <img data-part="preview" alt="signature" src={url} />}
       </main>
 
       <Toolbar controls={controls.ui}>

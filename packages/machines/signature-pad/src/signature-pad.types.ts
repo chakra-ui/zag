@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { StrokeOptions } from "perfect-freehand"
 
 interface Point {
@@ -8,28 +8,44 @@ interface Point {
   pressure: number
 }
 
-export interface ValueChangeDetails {
+export interface DrawDetails {
   paths: string[]
 }
 
-export interface ValueChangeEndDetails {
+export interface DrawingOptions extends StrokeOptions {
+  /**
+   * The color of the stroke.
+   * Note: Must be a valid CSS color string, not a css variable.
+   */
+  fill?: string
+}
+
+export type DataUrlType = "image/png" | "image/jpeg" | "image/svg+xml"
+
+export interface DrawEndDetails {
   paths: string[]
-  dataUrl(type: string, quality?: number): string
+  getDataUrl(type: DataUrlType, quality?: number): Promise<string>
+}
+
+export interface DataUrlOptions {
+  type: DataUrlType
+  quality?: number
 }
 
 interface PublicContext extends DirectionProperty, CommonProperties {
+  strokeColor?: string
   /**
    * Callback when the signature pad is drawing.
    */
-  onValueChange?(details: ValueChangeDetails): void
+  onDraw?(details: DrawDetails): void
   /**
    * Callback when the signature pad is done drawing.
    */
-  onValueChangeEnd?(details: ValueChangeEndDetails): void
+  onDrawEnd?(details: DrawEndDetails): void
   /**
-   * The options object for the underlying `getStroke` or `getStrokePoints`.
+   * The drawing options.
    */
-  strokeOptions: StrokeOptions
+  drawing: DrawingOptions
   /**
    * Whether the signature pad is disabled.
    */
@@ -72,6 +88,45 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
 export interface LayerProps {
   path: string
+}
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
+  /**
+   * Whether the signature pad is empty.
+   */
+  isEmpty: boolean
+  /**
+   * Whether the user is currently drawing.
+   */
+  isDrawing: boolean
+  /**
+   * The current path being drawn.
+   */
+  currentPath: string | null
+  /**
+   * The paths of the signature pad.
+   */
+  paths: string[]
+  /**
+   * Returns the data URL of the signature pad.
+   */
+  getDataUrl(type: DataUrlType, quality?: number): Promise<string>
+  /**
+   * Clears the signature pad.
+   */
+  clear(): void
+
+  labelProps: T["element"]
+  rootProps: T["element"]
+  controlProps: T["element"]
+  layerProps: T["svg"]
+  getLayerPathProps(props: LayerProps): T["path"]
+  lineProps: T["element"]
+  clearTriggerProps: T["element"]
 }
