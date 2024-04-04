@@ -1,5 +1,16 @@
 # @zag-js/clipboard
 
+## 0.45.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.45.0
+  - @zag-js/core@0.45.0
+  - @zag-js/types@0.45.0
+  - @zag-js/utils@0.45.0
+  - @zag-js/dom-query@0.45.0
+
 ## 0.44.0
 
 ### Patch Changes
