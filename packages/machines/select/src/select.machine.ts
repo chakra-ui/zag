@@ -9,6 +9,7 @@ import { addOrRemove, compact, isEqual } from "@zag-js/utils"
 import { collection } from "./select.collection"
 import { dom } from "./select.dom"
 import type { CollectionItem, MachineContext, MachineState, UserDefinedContext } from "./select.types"
+import { addDomEvent } from "@zag-js/dom-event"
 
 const { and, not, or } = guards
 
@@ -234,7 +235,13 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           tags: ["open"],
           entry: ["focusContentEl"],
           exit: ["scrollContentToTop"],
-          activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
+          activities: [
+            "trackDismissableElement",
+            "trackTriggerFocus",
+            "computePlacement",
+            "scrollToHighlightedItem",
+            "proxyTabFocus",
+          ],
           on: {
             "CONTROLLED.CLOSE": [
               {
@@ -419,6 +426,27 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               send({ type: "CONTENT.INTERACT_OUTSIDE" })
             },
           })
+        },
+        trackTriggerFocus(ctx, _evt, { send, getState }) {
+          let cleanup: VoidFunction | undefined
+
+          const rafCleanup = raf(() => {
+            const triggerEl = dom.getTriggerEl(ctx)
+            if (!triggerEl) return
+
+            function onFocusin(_event: FocusEvent) {
+              const state = getState()
+              if (state.matches("open")) {
+                send({ type: "CLOSE" })
+              }
+            }
+            cleanup = addDomEvent(triggerEl, "focusin", onFocusin, false)
+          })
+
+          return () => {
+            rafCleanup()
+            cleanup?.()
+          }
         },
         computePlacement(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
