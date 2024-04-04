@@ -1,19 +1,32 @@
 import * as signaturePad from "@zag-js/signature-pad"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/vue"
-import { computed, defineComponent, h, Fragment } from "vue"
-import { signaturePadControls, signaturePadData } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, defineComponent, h, Fragment, ref } from "vue"
+import { signaturePadControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
+import { RotateCcw } from "lucide-vue-next"
 
 export default defineComponent({
   name: "signature-pad",
   setup() {
     const controls = useControls(signaturePadControls)
+    const urlRef = ref("")
+    const setUrl = (v: string) => {
+      urlRef.value = v
+    }
 
-    const [state, send] = useMachine(signaturePad.machine({ id: "1" }), {
-      context: controls.context,
-    })
+    const [state, send] = useMachine(
+      signaturePad.machine({
+        id: "1",
+        onDrawEnd(details) {
+          details.getDataUrl("image/png").then(setUrl)
+        },
+      }),
+      {
+        context: controls.context,
+      },
+    )
 
     const apiRef = computed(() => signaturePad.connect(state.value, send, normalizeProps))
 
@@ -24,12 +37,36 @@ export default defineComponent({
         <>
           <main class="signature-pad">
             <div {...api.rootProps}>
-            
+              <label {...api.labelProps}>Signature Pad</label>
+
+              <div {...api.controlProps}>
+                <svg {...api.layerProps}>
+                  {api.paths.map((path, i) => (
+                    <path key={i} {...api.getLayerPathProps({ path })} />
+                  ))}
+                  {api.currentPath && <path {...api.getLayerPathProps({ path: api.currentPath })} />}
+                </svg>
+
+                <div {...api.lineProps} />
+              </div>
+
+              <button {...api.clearTriggerProps}>
+                <RotateCcw />
+              </button>
             </div>
+
+            <button
+              onClick={() => {
+                api.getDataUrl("image/png").then(setUrl)
+              }}
+            >
+              Show Image
+            </button>
+            {urlRef.value && <img data-part="preview" alt="signature" src={urlRef.value} />}
           </main>
 
           <Toolbar controls={controls.ui}>
-            <StateVisualizer state={state} />
+            <StateVisualizer state={state} omit={["points"]} />
           </Toolbar>
         </>
       )
