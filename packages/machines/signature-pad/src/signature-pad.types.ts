@@ -33,7 +33,6 @@ export interface DataUrlOptions {
 }
 
 interface PublicContext extends DirectionProperty, CommonProperties {
-  strokeColor?: string
   /**
    * Callback when the signature pad is drawing.
    */

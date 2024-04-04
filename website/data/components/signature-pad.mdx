@@ -6,8 +6,8 @@ package: "@zag-js/signature-pad"
 
 # Signature Pad
 
-The signature pad component allows users to draw their signature on a canvas.
-The signature can be saved as an image or cleared.
+The signature pad component allows users to draw handwritten signatures using
+touch or pointer devices. The signature can be saved as an image or cleared.
 
 ## Listening to drawing events
 
@@ -49,7 +49,33 @@ it as an image.
 
 ## Changing the stroke color
 
+To change the stroke color, set the `drawing.fill` option to a valid CSS color.
+
+> Note: You can't use a css variable as the stroke color.
+
+```jsx
+const [state, send] = useMachine(
+  signature.machine({
+    drawing: {
+      fill: "red",
+    },
+  }),
+)
+```
+
 ## Changing the stroke width
+
+To change the stroke width, set the `drawing.size` option to a number.
+
+```jsx
+const [state, send] = useMachine(
+  signature.machine({
+    drawing: {
+      size: 5,
+    },
+  }),
+)
+```
 
 ## Simulating pressure sensitivity
 
@@ -71,6 +97,35 @@ const [state, send] = useMachine(
 To use the signature pad in a form, set the `name` context property and render
 the hidden input element using `api.hiddenInputProps`.
 
+```jsx
+const [state, send] = useMachine(
+  signature.machine({
+    name: "signature",
+  }),
+)
+```
+
 ## Disabling the signature pad
 
+Set the `disabled` context property to `true` to disable the signature pad.
+
+```jsx
+const [state, send] = useMachine(
+  signature.machine({
+    disabled: true,
+  }),
+)
+```
+
 ## Making the signature pad read-only
+
+Set the `readOnly` context property to `true` to make the signature pad
+read-only.
+
+```jsx
+const [state, send] = useMachine(
+  signature.machine({
+    readOnly: true,
+  }),
+)
+```
