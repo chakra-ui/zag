@@ -254,3 +254,7 @@ export const floatingPanelControls = defineControls({
   lockAspectRatio: { type: "boolean", defaultValue: false },
   closeOnEscape: { type: "boolean", defaultValue: true },
 })
+
+export const signaturePadControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+})

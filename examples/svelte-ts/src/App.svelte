@@ -17,6 +17,7 @@
   import PinInput from "./routes/pin-input.svelte"
   import Progress from "./routes/progress.svelte"
   import Select from "./routes/select.svelte"
+  import SignaturePad from "./routes/signature-pad.svelte"
   import Slider from "./routes/slider.svelte"
   import Tabs from "./routes/tabs.svelte"
   import TagsInput from "./routes/tags-input.svelte"
@@ -44,6 +45,7 @@
     { path: "/progress", component: Progress },
     { path: "/tabs", component: Tabs },
     { path: "/number-input", component: NumberInput },
+    { path: "/signature-pad", component: SignaturePad },
   ]
 </script>
 
