@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.45.0](./#0.45.0) - 2023-04-04
+
+### Changed
+
+- **Solid**: Rewrite `mergeProps` to prevent issues with children that read from context, and ensure props are always
+  up-to-date.
+
 ## [0.44.0](./#0.44.0) - 2023-04-03
 
 ### Added
