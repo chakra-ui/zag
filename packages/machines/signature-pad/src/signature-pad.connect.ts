@@ -62,8 +62,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    layerProps: normalize.svg({
-      ...parts.layer.attrs,
+    segmentProps: normalize.svg({
+      ...parts.segment.attrs,
       style: {
         position: "absolute",
         top: 0,
@@ -75,15 +75,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    getLayerPathProps(props) {
+    getSegmentPathProps(props) {
       return normalize.path({
-        ...parts.layerPath.attrs,
+        ...parts.segmentPath.attrs,
         d: props.path,
       })
     },
 
-    lineProps: normalize.element({
-      ...parts.line.attrs,
+    separatorProps: normalize.element({
+      ...parts.separator.attrs,
       "data-disabled": dataAttr(isDisabled),
     }),
 

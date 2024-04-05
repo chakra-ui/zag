@@ -40,14 +40,14 @@ export default defineComponent({
               <label {...api.labelProps}>Signature Pad</label>
 
               <div {...api.controlProps}>
-                <svg {...api.layerProps}>
+                <svg {...api.segmentProps}>
                   {api.paths.map((path, i) => (
-                    <path key={i} {...api.getLayerPathProps({ path })} />
+                    <path key={i} {...api.getSegmentPathProps({ path })} />
                   ))}
-                  {api.currentPath && <path {...api.getLayerPathProps({ path: api.currentPath })} />}
+                  {api.currentPath && <path {...api.getSegmentPathProps({ path: api.currentPath })} />}
                 </svg>
 
-                <div {...api.lineProps} />
+                <div {...api.separatorProps} />
               </div>
 
               <button {...api.clearTriggerProps}>

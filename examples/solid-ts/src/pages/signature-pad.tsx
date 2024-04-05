@@ -33,11 +33,13 @@ export default function Page() {
           <label {...api().labelProps}>Signature Pad</label>
 
           <div {...api().controlProps}>
-            <svg {...api().layerProps}>
-              <For each={api().paths}>{(path) => <path {...api().getLayerPathProps({ path })} />}</For>
-              <Show when={api().currentPath}>{(path) => <path {...api().getLayerPathProps({ path: path() })} />}</Show>
+            <svg {...api().segmentProps}>
+              <For each={api().paths}>{(path) => <path {...api().getSegmentPathProps({ path })} />}</For>
+              <Show when={api().currentPath}>
+                {(path) => <path {...api().getSegmentPathProps({ path: path() })} />}
+              </Show>
             </svg>
-            <div {...api().lineProps} />
+            <div {...api().separatorProps} />
           </div>
 
           <button {...api().clearTriggerProps}>

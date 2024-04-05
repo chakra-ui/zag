@@ -21,11 +21,11 @@ const api = computed(() => signaturePad.connect(state.value, send, normalizeProp
       <label v-bind="api.labelProps">Signature Pad</label>
 
       <div v-bind="api.controlProps">
-        <svg v-bind="api.layerProps">
-          <path v-for="path of api.paths" key="{i}" v-bind="api.getLayerPathProps({ path })" />
-          <path v-if="api.currentPath" v-bind="api.getLayerPathProps({ path: api.currentPath })" />
+        <svg v-bind="api.segmentProps">
+          <path v-for="path of api.paths" key="{i}" v-bind="api.getSegmentPathProps({ path })" />
+          <path v-if="api.currentPath" v-bind="api.getSegmentPathProps({ path: api.currentPath })" />
         </svg>
-        <div v-bind="api.lineProps" />
+        <div v-bind="api.separatorProps" />
       </div>
 
       <button v-bind="api.clearTriggerProps">

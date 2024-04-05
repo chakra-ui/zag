@@ -37,16 +37,16 @@
     <label {...api.labelProps}>Signature Pad</label>
 
     <div {...api.controlProps}>
-      <svg {...api.layerProps}>
+      <svg {...api.segmentProps}>
         {#each api.paths as path}
-          <path {...api.getLayerPathProps({ path })} />
+          <path {...api.getSegmentPathProps({ path })} />
         {/each}
         {#if api.currentPath}
-          <path {...api.getLayerPathProps({ path: api.currentPath })} />
+          <path {...api.getSegmentPathProps({ path: api.currentPath })} />
         {/if}
       </svg>
 
-      <div {...api.lineProps} />
+      <div {...api.separatorProps} />
     </div>
 
     <button {...api.clearTriggerProps}>

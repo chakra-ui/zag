@@ -19,7 +19,7 @@
   border-radius: 8px;
 }
 
-[data-scope="signature-pad"][data-part="line"] {
+[data-scope="signature-pad"][data-part="separator"] {
   position: absolute;
   bottom: 12%;
   left: 8px;

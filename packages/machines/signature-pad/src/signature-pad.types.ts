@@ -91,7 +91,7 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface LayerProps {
+export interface SegmentPathProps {
   path: string
 }
 
@@ -124,8 +124,8 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   labelProps: T["element"]
   rootProps: T["element"]
   controlProps: T["element"]
-  layerProps: T["svg"]
-  getLayerPathProps(props: LayerProps): T["path"]
-  lineProps: T["element"]
+  segmentProps: T["svg"]
+  getSegmentPathProps(props: SegmentPathProps): T["path"]
+  separatorProps: T["element"]
   clearTriggerProps: T["element"]
 }
