@@ -102,7 +102,6 @@ body {
 
 .nav a {
   padding: 6px 14px;
-  cursor: pointer;
   border-left: solid 4px transparent;
   text-decoration: none;
   color: black;
@@ -160,7 +159,6 @@ a[aria-current="page"] {
 
 .toolbar nav button {
   all: unset;
-  cursor: pointer;
   font-weight: 500;
 }
 
@@ -196,7 +194,6 @@ a[aria-current="page"] {
   margin-bottom: 24;
   font-family: var(--viz-font);
   font-weight: bold;
-  cursor: pointer;
 }
 
 .toolbar .viz summary + div > * {

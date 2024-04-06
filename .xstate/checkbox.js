@@ -16,7 +16,7 @@ const fetchMachine = createMachine({
     "!isTrusted": false,
     "!isTrusted": false
   },
-  activities: ["trackFormControlState"],
+  activities: ["trackFormControlState", "trackPressEvent", "trackFocusVisible"],
   on: {
     "CHECKED.TOGGLE": [{
       cond: "!isTrusted",

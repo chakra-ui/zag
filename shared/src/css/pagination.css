@@ -36,7 +36,6 @@
 
 [data-scope="pagination"][data-part*="item"]:hover {
   background-color: rgba(0, 0, 0, 0.04);
-  cursor: pointer;
 }
 
 [data-scope="pagination"][data-part*="item"][data-selected] {
@@ -47,8 +46,4 @@
 [data-scope="pagination"][data-part*="item"]:focus {
   outline: 2px solid var(--ring-color);
   outline-offset: 1px;
-}
-
-[data-scope="pagination"][data-part="ellipsis"] {
-  cursor: default;
 }

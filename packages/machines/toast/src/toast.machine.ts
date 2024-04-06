@@ -146,8 +146,12 @@ export function createToastMachine<T extends GenericOptions = DefaultGenericOpti
         },
         setContext(ctx, evt) {
           const { duration, type } = evt.toast
-          const time = getToastDuration(duration, type)
-          Object.assign(ctx, { ...evt.toast, duration: time, remaining: time })
+          if (duration == null && type == null) {
+            Object.assign(ctx, evt.toast)
+          } else {
+            const time = getToastDuration(duration, type)
+            Object.assign(ctx, { ...evt.toast, duration: time, remaining: time })
+          }
         },
       },
     },

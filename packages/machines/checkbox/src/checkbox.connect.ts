@@ -49,19 +49,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (isDisabled) return
         send({ type: "CONTEXT.SET", context: { hovered: false } })
       },
-      onPointerDown(event) {
-        if (isDisabled) return
-        // On pointerdown, the input blurs and returns focus to the `body`,
-        // we need to prevent this.
-        if (isFocused && event.pointerType === "mouse") {
-          event.preventDefault()
-        }
-        send({ type: "CONTEXT.SET", context: { active: true } })
-      },
-      onPointerUp() {
-        if (isDisabled) return
-        send({ type: "CONTEXT.SET", context: { active: false } })
-      },
       onClick(event) {
         if (event.target === dom.getHiddenInputEl(state.context)) {
           event.stopPropagation()
@@ -107,22 +94,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onChange(event) {
         const checked = event.currentTarget.checked
         send({ type: "CHECKED.SET", checked, isTrusted: true })
-      },
-      onBlur() {
-        send({ type: "CONTEXT.SET", context: { focused: false } })
-      },
-      onFocus() {
-        send({ type: "CONTEXT.SET", context: { focused: true } })
-      },
-      onKeyDown(event) {
-        if (event.key === " ") {
-          send({ type: "CONTEXT.SET", context: { active: true } })
-        }
-      },
-      onKeyUp(event) {
-        if (event.key === " ") {
-          send({ type: "CONTEXT.SET", context: { active: false } })
-        }
       },
     }),
   }

@@ -1,4 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
+import { trackFocusVisible, trackPress } from "@zag-js/dom-event"
 import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./switch.dom"
@@ -31,7 +32,7 @@ export function machine(userContext: UserDefinedContext) {
         checked: "syncInputElement",
       },
 
-      activities: ["trackFormControlState"],
+      activities: ["trackFormControlState", "trackPressEvent", "trackFocusVisible"],
 
       on: {
         "CHECKED.TOGGLE": [
@@ -66,6 +67,24 @@ export function machine(userContext: UserDefinedContext) {
         isTrusted: (_ctx, evt) => !!evt.isTrusted,
       },
       activities: {
+        trackPressEvent(ctx) {
+          if (ctx.isDisabled) return
+          return trackPress({
+            pointerNode: dom.getRootEl(ctx),
+            keyboardNode: dom.getHiddenInputEl(ctx),
+            isValidKey: (event) => event.key === " ",
+            onPress: () => (ctx.active = false),
+            onPressStart: () => (ctx.active = true),
+            onPressEnd: () => (ctx.active = false),
+          })
+        },
+        trackFocusVisible(ctx) {
+          if (ctx.isDisabled) return
+          return trackFocusVisible(dom.getHiddenInputEl(ctx), {
+            onFocus: () => (ctx.focused = true),
+            onBlur: () => (ctx.focused = false),
+          })
+        },
         trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getHiddenInputEl(ctx), {
             onFieldsetDisabledChange(disabled) {

@@ -1906,6 +1906,9 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
+      '@zag-js/dom-event':
+        specifier: workspace:*
+        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2668,6 +2671,9 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
+      '@zag-js/dom-event':
+        specifier: workspace:*
+        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2985,6 +2991,9 @@ importers:
 
   packages/utilities/dom-event:
     dependencies:
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../dom-query
       '@zag-js/text-selection':
         specifier: workspace:*
         version: link:../text-selection
