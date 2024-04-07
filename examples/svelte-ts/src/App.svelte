@@ -11,17 +11,32 @@
   import ColorPicker from "./routes/color-picker.svelte"
   import Combobox from "./routes/combobox.svelte"
   import ContextMenu from "./routes/context-menu.svelte"
+  import FileUpload from "./routes/file-upload.svelte"
   import FloatingPanel from "./routes/floating-panel.svelte"
+  import HoverCard from "./routes/hover-card.svelte"
   import Index from "./routes/index.svelte"
+  import MenuOptions from "./routes/menu-options.svelte"
+  import Menu from "./routes/menu.svelte"
   import NumberInput from "./routes/number-input.svelte"
+  import Pagination from "./routes/pagination.svelte"
   import PinInput from "./routes/pin-input.svelte"
+  import Popover from "./routes/popover.svelte"
   import Progress from "./routes/progress.svelte"
+  import RatingGroup from "./routes/rating-group.svelte"
+  import SegmentControl from "./routes/segment-control.svelte"
   import Select from "./routes/select.svelte"
   import SignaturePad from "./routes/signature-pad.svelte"
   import Slider from "./routes/slider.svelte"
+  import Switch from "./routes/switch.svelte"
   import Tabs from "./routes/tabs.svelte"
   import TagsInput from "./routes/tags-input.svelte"
+  import Toast from "./routes/toast.svelte"
   import ToggleGroup from "./routes/toggle-group.svelte"
+  import Tooltip from "./routes/tooltip.svelte"
+  import Tour from "./routes/tour.svelte"
+  import TreeView from "./routes/tree-view.svelte"
+  import RadioGroup from "./routes/radio-group.svelte"
+  import RangeSlider from "./routes/range-slider.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 
@@ -31,21 +46,36 @@
     { path: "/avatar", component: Avatar },
     { path: "/carousel", component: Carousel },
     { path: "/checkbox", component: Checkbox },
-    { path: "/color-picker", component: ColorPicker },
-    { path: "/combobox", component: Combobox },
     { path: "/clipboard", component: Clipboard },
     { path: "/collapsible", component: Collapsible },
+    { path: "/color-picker", component: ColorPicker },
+    { path: "/combobox", component: Combobox },
     { path: "/context-menu", component: ContextMenu },
-    { path: "/select", component: Select },
+    { path: "/file-upload", component: FileUpload },
     { path: "/floating-panel", component: FloatingPanel },
-    { path: "/toggle-group", component: ToggleGroup },
-    { path: "/tags-input", component: TagsInput },
-    { path: "/pin-input", component: PinInput },
-    { path: "/slider", component: Slider },
-    { path: "/progress", component: Progress },
-    { path: "/tabs", component: Tabs },
+    { path: "/hover-card", component: HoverCard },
+    { path: "/menu", component: Menu },
+    { path: "/menu-options", component: MenuOptions },
     { path: "/number-input", component: NumberInput },
+    { path: "/pagination", component: Pagination },
+    { path: "/pin-input", component: PinInput },
+    { path: "/popover", component: Popover },
+    { path: "/progress", component: Progress },
+    { path: "/range-slider", component: RangeSlider },
+    { path: "/radio-group", component: RadioGroup },
+    { path: "/rating-group", component: RatingGroup },
+    { path: "/segment-control", component: SegmentControl },
+    { path: "/select", component: Select },
     { path: "/signature-pad", component: SignaturePad },
+    { path: "/slider", component: Slider },
+    { path: "/switch", component: Switch },
+    { path: "/tabs", component: Tabs },
+    { path: "/tags-input", component: TagsInput },
+    { path: "/toast", component: Toast },
+    { path: "/toggle-group", component: ToggleGroup },
+    { path: "/tooltip", component: Tooltip },
+    { path: "/tour", component: Tour },
+    { path: "/tree-view", component: TreeView },
   ]
 </script>
 

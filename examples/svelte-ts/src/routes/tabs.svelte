@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { tabsControls, tabsData } from "@zag-js/shared"
-  import * as tabs from "@zag-js/tabs"
-  import { useControls } from "$lib/use-controls.svelte"
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
+  import { useControls } from "$lib/use-controls.svelte"
+  import { tabsControls, tabsData } from "@zag-js/shared"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import * as tabs from "@zag-js/tabs"
 
   const controls = useControls(tabsControls)
 
@@ -42,4 +43,6 @@
   </div>
 </main>
 
-<Toolbar {controls} state={_state} />
+<Toolbar {controls}>
+  <StateVisualizer state={_state} />
+</Toolbar>

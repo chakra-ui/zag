@@ -1,8 +1,35 @@
 .accordion [data-part="root"] {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   max-width: 40ch;
+}
+
+.accordion h3 {
+  margin: 0;
 }
 
 [data-scope="accordion"][data-part="item-indicator"][data-state="open"] {
   rotate: 90deg;
+}
+
+[data-scope="accordion"][data-part="item-trigger"] {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+  width: 100%;
+
+  svg {
+    width: 1rem;
+  }
+}
+
+[data-scope="accordion"][data-part="item-content"] {
+  padding-block: 12px;
+}
+
+[data-scope="accordion"][data-part="item-indicator"] {
+  display: inline-flex;
 }

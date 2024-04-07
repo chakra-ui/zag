@@ -5,6 +5,7 @@ import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
+import { ArrowRight } from "lucide-react"
 
 export default function Page() {
   const controls = useControls(accordionControls)
@@ -29,7 +30,9 @@ export default function Page() {
               <h3>
                 <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
                   {item.label}
-                  <div {...api.getItemIndicatorProps({ value: item.id })}>{">"}</div>
+                  <div {...api.getItemIndicatorProps({ value: item.id })}>
+                    <ArrowRight />
+                  </div>
                 </button>
               </h3>
               <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })}>

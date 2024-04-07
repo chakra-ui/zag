@@ -1,4 +1,5 @@
 <script lang="ts">
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as carousel from "@zag-js/carousel"
@@ -30,4 +31,6 @@
   </div>
 </main>
 
-<Toolbar {controls} state={_state} />
+<Toolbar {controls}>
+  <StateVisualizer state={_state} />
+</Toolbar>

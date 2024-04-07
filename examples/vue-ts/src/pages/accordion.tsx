@@ -1,6 +1,7 @@
 import * as accordion from "@zag-js/accordion"
 import { accordionControls, accordionData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { ChevronRight } from "lucide-vue-next"
 import { computed, defineComponent } from "vue"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -29,7 +30,9 @@ export default defineComponent({
                   <h3>
                     <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
                       {item.label}
-                      <div {...api.getItemIndicatorProps({ value: item.id })}>{">"}</div>
+                      <div {...api.getItemIndicatorProps({ value: item.id })}>
+                        <ChevronRight />
+                      </div>
                     </button>
                   </h3>
                   <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })}>

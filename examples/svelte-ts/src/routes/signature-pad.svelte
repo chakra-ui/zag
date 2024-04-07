@@ -1,9 +1,10 @@
 <script lang="ts">
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "$lib/components/toolbar.svelte"
+  import { useControls } from "$lib/use-controls.svelte"
+  import { signaturePadControls } from "@zag-js/shared"
   import * as signaturePad from "@zag-js/signature-pad"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { signaturePadControls } from "@zag-js/shared"
-  import { useControls } from "$lib/use-controls.svelte"
-  import Toolbar from "$lib/components/toolbar.svelte"
   import { RotateCcw } from "lucide-svelte"
 
   const controls = useControls(signaturePadControls)
@@ -67,4 +68,6 @@
   {/if}
 </main>
 
-<Toolbar {controls} state={_state} />
+<Toolbar {controls}>
+  <StateVisualizer state={_state} />
+</Toolbar>

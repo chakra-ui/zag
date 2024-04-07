@@ -1,4 +1,5 @@
 <script lang="ts">
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as checkbox from "@zag-js/checkbox"
@@ -17,7 +18,7 @@
 
 <main class="checkbox">
   <form
-    onChange={(e) => {
+    oninput={(e) => {
       const result = serialize(e.currentTarget, { hash: true })
       console.log(result)
     }}
@@ -37,4 +38,6 @@
   </form>
 </main>
 
-<Toolbar {controls} state={_state} />
+<Toolbar {controls}>
+  <StateVisualizer state={_state} />
+</Toolbar>

@@ -1,9 +1,11 @@
 <script lang="ts">
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as accordion from "@zag-js/accordion"
   import { accordionControls, accordionData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { ChevronRight } from "lucide-svelte"
 
   const controls = useControls(accordionControls)
 
@@ -21,7 +23,9 @@
         <h3>
           <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
             {item.label}
-            <div {...api.getItemIndicatorProps({ value: item.id })}>{">"}</div>
+            <div {...api.getItemIndicatorProps({ value: item.id })}>
+              <ChevronRight />
+            </div>
           </button>
         </h3>
         <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })}>
@@ -33,4 +37,6 @@
   </div>
 </main>
 
-<Toolbar {controls} state={_state} />
+<Toolbar {controls}>
+  <StateVisualizer state={_state} />
+</Toolbar>

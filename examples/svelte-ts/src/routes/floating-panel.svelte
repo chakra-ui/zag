@@ -1,10 +1,11 @@
 <script lang="ts">
-  import * as floatingPanel from "@zag-js/floating-panel"
-  import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { floatingPanelControls } from "@zag-js/shared"
-  import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-svelte"
-  import { useControls } from "$lib/use-controls.svelte"
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
+  import { useControls } from "$lib/use-controls.svelte"
+  import * as floatingPanel from "@zag-js/floating-panel"
+  import { floatingPanelControls } from "@zag-js/shared"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-svelte"
 
   const controls = useControls(floatingPanelControls)
 
@@ -56,4 +57,6 @@
   </div>
 </main>
 
-<Toolbar {controls} state={_state} />
+<Toolbar {controls}>
+  <StateVisualizer state={_state} />
+</Toolbar>

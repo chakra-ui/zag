@@ -9,18 +9,16 @@
 
   const controls = useControls(sliderControls)
 
-  const [_state, send] = useMachine(
+  const [state, send] = useMachine(
     slider.machine({
       id: "1",
       name: "quantity",
-      value: [0],
+      value: [10, 60],
     }),
-    {
-      context: controls.context,
-    },
+    { context: controls.context },
   )
 
-  const api = $derived(slider.connect(_state, send, normalizeProps))
+  const api = $derived(slider.connect(state, send, normalizeProps))
 </script>
 
 <main class="slider">
@@ -33,14 +31,12 @@
     <div {...api.rootProps}>
       <div>
         <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label data-testid="label" {...api.labelProps}> Slider Label </label>
-        <output data-testid="output" {...api.valueTextProps}>
-          {api.value}
-        </output>
+        <label {...api.labelProps}>Quantity:</label>
+        <output {...api.valueTextProps}>{api.value.join(" - ")}</output>
       </div>
       <div class="control-area">
         <div {...api.controlProps}>
-          <div data-testid="track" {...api.trackProps}>
+          <div {...api.trackProps}>
             <div {...api.rangeProps} />
           </div>
           {#each api.value as _, index}
@@ -52,6 +48,7 @@
         <div {...api.markerGroupProps}>
           <span {...api.getMarkerProps({ value: 10 })}>*</span>
           <span {...api.getMarkerProps({ value: 30 })}>*</span>
+          <span {...api.getMarkerProps({ value: 50 })}>*</span>
           <span {...api.getMarkerProps({ value: 90 })}>*</span>
         </div>
       </div>
@@ -60,5 +57,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer {state} />
 </Toolbar>

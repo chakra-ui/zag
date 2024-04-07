@@ -1,9 +1,10 @@
 <script lang="ts">
-  import * as progress from "@zag-js/progress"
-  import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { progressControls } from "@zag-js/shared"
-  import { useControls } from "$lib/use-controls.svelte"
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
+  import { useControls } from "$lib/use-controls.svelte"
+  import * as progress from "@zag-js/progress"
+  import { progressControls } from "@zag-js/shared"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
 
   const controls = useControls(progressControls)
 
@@ -37,4 +38,6 @@
   </div>
 </main>
 
-<Toolbar {controls} state={_state} />
+<Toolbar {controls}>
+  <StateVisualizer state={_state} />
+</Toolbar>

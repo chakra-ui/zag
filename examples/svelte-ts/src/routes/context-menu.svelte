@@ -1,4 +1,5 @@
 <script lang="ts">
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import * as menu from "@zag-js/menu"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
@@ -25,4 +26,6 @@
   </div>
 </main>
 
-<Toolbar state={_state} />
+<Toolbar>
+  <StateVisualizer state={_state} />
+</Toolbar>
