@@ -97,7 +97,7 @@
     "signale": "1.4.0",
     "ts-morph": "22.0.0",
     "tsup": "8.0.2",
-    "tsx": "4.7.1",
+    "tsx": "4.7.2",
     "typescript": "5.4.4",
     "vite": "5.2.8",
     "vite-plugin-dts": "3.8.1",
