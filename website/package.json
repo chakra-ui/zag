@@ -73,7 +73,7 @@
   "devDependencies": {
     "@types/react": "18.2.74",
     "all-contributors-cli": "6.26.1",
-    "eslint": "8.57.0",
+    "eslint": "9.0.0",
     "eslint-config-next": "14.1.4",
     "prettier": "3.2.5",
     "rehype": "13.0.1",
