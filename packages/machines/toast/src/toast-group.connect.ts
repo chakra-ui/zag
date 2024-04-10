@@ -1,43 +1,46 @@
-import { subscribe } from "@zag-js/core"
+import { isMachine, subscribe } from "@zag-js/core"
+import { contains } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { runIfFn, uuid } from "@zag-js/utils"
 import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
-import type {
-  DefaultGenericOptions,
-  GenericOptions,
-  GroupMachineApi,
-  GroupSend,
-  GroupState,
-  Options,
-} from "./toast.types"
+import type { GroupMachineApi, GroupSend, GroupService, GroupState, Options } from "./toast.types"
 import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
-export function groupConnect<T extends PropTypes, O extends GenericOptions = DefaultGenericOptions>(
-  state: GroupState<O>,
+export function groupConnect<T extends PropTypes, O = any>(
+  serviceOrState: GroupState<O> | GroupService<O>,
   send: GroupSend,
   normalize: NormalizeProps<T>,
 ): GroupMachineApi<T, O> {
   //
-  const toastsByPlacement = getToastsByPlacement(state.context.toasts)
+
+  function getState(): GroupState<O> {
+    const result = isMachine(serviceOrState) ? serviceOrState.getState() : serviceOrState
+    return result as GroupState<O>
+  }
+
+  function getToastsByPlacementImpl() {
+    return getToastsByPlacement(getState().context.toasts)
+  }
 
   function isVisible(id: string) {
-    if (!state.context.toasts.length) return false
-    return !!state.context.toasts.find((toast) => toast.id == id)
+    const toasts = getState().context.toasts
+    if (!toasts.length) return false
+    return !!toasts.find((toast) => toast.id == id)
   }
 
   function create(options: Options<O>) {
     const uid = `toast:${uuid()}`
     const id = options.id ? options.id : uid
 
-    if (isVisible(id)) return
+    if (isVisible(id)) return id
     send({ type: "ADD_TOAST", toast: { ...options, id } })
 
     return id
   }
 
   function update(id: string, options: Options<O>) {
-    if (!isVisible(id)) return
+    if (!isVisible(id)) return id
     send({ type: "UPDATE_TOAST", id, toast: options })
     return id
   }
@@ -61,11 +64,14 @@ export function groupConnect<T extends PropTypes, O extends GenericOptions = Def
   }
 
   return {
-    count: state.context.count,
-    toasts: state.context.toasts,
-    toastsByPlacement,
+    getCount() {
+      return getState().context.count
+    },
+    getToasts() {
+      return getState().context.toasts
+    },
+    getToastsByPlacement: getToastsByPlacementImpl,
     isVisible,
-
     create,
     update,
     upsert,
@@ -80,10 +86,10 @@ export function groupConnect<T extends PropTypes, O extends GenericOptions = Def
     },
 
     dismissByPlacement(placement) {
+      const toastsByPlacement = getToastsByPlacementImpl()
       const toasts = toastsByPlacement[placement]
-      if (toasts) {
-        toasts.forEach((toast) => dismiss(toast.id))
-      }
+      if (!toasts) return
+      toasts.forEach((toast) => dismiss(toast.id))
     },
     loading(options) {
       return upsert({ ...options, type: "loading" })
@@ -98,7 +104,7 @@ export function groupConnect<T extends PropTypes, O extends GenericOptions = Def
     promise(promise, options, shared = {}) {
       const id = upsert({ ...shared, ...options.loading, type: "loading" })
 
-      promise
+      runIfFn(promise)
         .then((response) => {
           const successOptions = runIfFn(options.success, response)
           upsert({ ...shared, ...successOptions, id, type: "success" })
@@ -107,8 +113,11 @@ export function groupConnect<T extends PropTypes, O extends GenericOptions = Def
           const errorOptions = runIfFn(options.error, error)
           upsert({ ...shared, ...errorOptions, id, type: "error" })
         })
+        .finally(() => {
+          options.finally?.()
+        })
 
-      return promise
+      return id
     },
 
     pause(id) {
@@ -129,21 +138,45 @@ export function groupConnect<T extends PropTypes, O extends GenericOptions = Def
 
     getGroupProps(options) {
       const { placement, label = "Notifications" } = options
+      const state = getState()
+      const hotkeyLabel = state.context.hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "")
       return normalize.element({
         ...parts.group.attrs,
         dir: state.context.dir,
         tabIndex: -1,
-        "aria-label": `${placement} ${label}`,
+        "aria-label": `${placement} ${label} ${hotkeyLabel}`,
         id: dom.getGroupId(placement),
         "data-placement": placement,
         "aria-live": "polite",
         role: "region",
         style: getGroupPlacementStyle(state.context, placement),
+        onMouseMove() {
+          if (!state.context.overlap) return
+          send({ type: "POINTER_ENTER", placement })
+        },
+        onMouseLeave() {
+          if (!state.context.overlap) return
+          send({ type: "POINTER_LEAVE", placement })
+        },
+        onFocus(event) {
+          const currentTarget = event.currentTarget as any
+          currentTarget._lastFocusedElement = event.relatedTarget
+        },
+        onBlur(event) {
+          const currentTarget = event.currentTarget as any
+          if (contains(currentTarget, event.relatedTarget)) {
+            currentTarget._lastFocusedElement.focus()
+          }
+        },
       })
     },
 
     subscribe(fn) {
-      return subscribe(state.context.toasts, () => fn(state.context.toasts))
+      const state = getState()
+      return subscribe(state.context.toasts, () => {
+        // todo: this should be relative to all toasts in that placement
+        fn(state.context.toasts)
+      })
     },
   }
 }

@@ -1,4 +1,4 @@
-import { normalizeProps, useActor, useMachine } from "@zag-js/react"
+import { Portal, normalizeProps, useActor, useMachine } from "@zag-js/react"
 import { toastControls } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
 import { useId, useRef } from "react"
@@ -24,10 +24,6 @@ function ToastItem({ actor }: { actor: toast.Service }) {
     },
   }
 
-  if (state.context.render) {
-    return state.context.render(api)
-  }
-
   return (
     <pre {...api.rootProps}>
       <div {...progressbarProps} />
@@ -45,7 +41,9 @@ export default function Page() {
   const [state, send] = useMachine(
     toast.group.machine({
       id: useId(),
-      placement: "top-start",
+      placement: "bottom-end",
+      overlap: true,
+      removeDelay: 200,
     }),
     {
       context: controls.context,
@@ -54,7 +52,8 @@ export default function Page() {
 
   const api = toast.group.connect(state, send, normalizeProps)
 
-  const placements = Object.keys(api.toastsByPlacement) as toast.Placement[]
+  const toastsByPlacement = api.getToastsByPlacement()
+  const placements = Object.keys(toastsByPlacement) as toast.Placement[]
   const id = useRef<string>()
 
   return (
@@ -63,19 +62,17 @@ export default function Page() {
         <div style={{ display: "flex", gap: "16px" }}>
           <button
             onClick={() => {
-              id.current = api.create({
-                title: "Welcome",
-                description: "This a notification",
-                type: "info",
+              api.create({
+                title: "Fetching data...",
+                type: "loading",
               })
             }}
           >
-            Notify (Info)
+            Notify (Loading)
           </button>
           <button
             onClick={() => {
-              api.create({
-                placement: "bottom-start",
+              id.current = api.create({
                 title: "Ooops! Something was wrong",
                 type: "error",
               })
@@ -98,15 +95,18 @@ export default function Page() {
           <button onClick={() => api.pause()}>Pause all</button>
           <button onClick={() => api.resume()}>Resume all</button>
         </div>
-        {placements.map((placement) => (
-          <div key={placement} {...api.getGroupProps({ placement })}>
-            {api.toastsByPlacement[placement].map((actor) => (
-              <ToastItem key={actor.id} actor={actor} />
-            ))}
-          </div>
-        ))}
+
+        <Portal>
+          {placements.map((placement) => (
+            <div key={placement} {...api.getGroupProps({ placement })}>
+              {toastsByPlacement[placement].map((toast) => (
+                <ToastItem key={toast.id} actor={toast} />
+              ))}
+            </div>
+          ))}
+        </Portal>
       </main>
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls.ui} viz>
         <StateVisualizer state={state} />
       </Toolbar>
     </>

@@ -8,6 +8,7 @@ export type {
   MachineApi as Api,
   GroupMachineApi as GroupApi,
   GroupMachineContext,
+  GroupService,
   GroupProps,
   GroupState,
   MachineContext,

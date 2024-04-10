@@ -814,3 +814,7 @@ export const createMachine = <
   config: S.MachineConfig<TContext, TState, TEvent>,
   options?: S.MachineOptions<TContext, TState, TEvent>,
 ) => new Machine(config, options)
+
+export const isMachine = (value: any): value is AnyMachine => {
+  return value instanceof Machine || value?.type === MachineType.Machine
+}

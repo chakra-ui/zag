@@ -1,23 +1,22 @@
 import { createMachine, guards } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-event"
+import { raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./toast.dom"
-import type { DefaultGenericOptions, MachineContext, MachineState, Options, GenericOptions } from "./toast.types"
+import type { MachineContext, MachineState, Options } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
 
 const { not, and, or } = guards
 
-export function createToastMachine<T extends GenericOptions = DefaultGenericOptions>(options: Options<T> = {}) {
-  const { type = "info", duration, id = "toast", placement = "bottom", removeDelay = 0, ...restProps } = options
+export function createToastMachine<T>(options: Options<T> = {}) {
+  const { type = "info", duration, id = "1", placement = "bottom", removeDelay = 0, ...restProps } = options
   const ctx = compact(restProps)
 
   const computedDuration = getToastDuration(duration, type)
 
-  return createMachine<MachineContext, MachineState>(
+  return createMachine<MachineContext<T>, MachineState>(
     {
       id,
-      entry: "invokeOnOpen",
-      initial: type === "loading" ? "persist" : "active",
       context: {
         id,
         type,
@@ -27,25 +26,40 @@ export function createToastMachine<T extends GenericOptions = DefaultGenericOpti
         createdAt: Date.now(),
         placement,
         ...ctx,
+        height: 0,
+        offset: 0,
+        frontmost: false,
+        mounted: false,
+        index: -1,
+        zIndex: 0,
       },
+
+      initial: type === "loading" ? "persist" : "active",
 
       on: {
         UPDATE: [
           {
             guard: and("hasTypeChanged", "isChangingToLoading"),
             target: "persist",
-            actions: ["setContext", "invokeOnUpdate"],
+            actions: ["setContext"],
           },
           {
             guard: or("hasDurationChanged", "hasTypeChanged"),
             target: "active:temp",
-            actions: ["setContext", "invokeOnUpdate"],
+            actions: ["setContext"],
           },
           {
-            actions: ["setContext", "invokeOnUpdate"],
+            actions: ["setContext"],
           },
         ],
+        REQUEST_HEIGHT: {
+          actions: ["measureHeight"],
+        },
       },
+
+      entry: ["invokeOnOpen"],
+
+      activities: ["trackHeight"],
 
       states: {
         "active:temp": {
@@ -101,6 +115,35 @@ export function createToastMachine<T extends GenericOptions = DefaultGenericOpti
     },
     {
       activities: {
+        trackHeight(ctx, _evt, { self }) {
+          let cleanup: VoidFunction
+          raf(() => {
+            const rootEl = dom.getRootEl(ctx)
+            if (!rootEl) return
+            ctx.mounted = true
+
+            const syncHeight = () => {
+              const originalHeight = rootEl.style.height
+              rootEl.style.height = "auto"
+              const { height: newHeight } = rootEl.getBoundingClientRect()
+              rootEl.style.height = originalHeight
+
+              ctx.height = newHeight
+              self.sendParent({ type: "UPDATE_HEIGHT", id: self.id, height: newHeight, placement: ctx.placement })
+            }
+
+            syncHeight()
+
+            const win = dom.getWin(ctx)
+
+            const observer = new win.MutationObserver(syncHeight)
+            observer.observe(rootEl, { childList: true, subtree: true, characterData: true })
+
+            cleanup = () => observer.disconnect()
+          })
+
+          return () => cleanup?.()
+        },
         trackDocumentVisibility(ctx, _evt, { send }) {
           if (!ctx.pauseOnPageIdle) return
           const doc = dom.getDoc(ctx)
@@ -123,6 +166,23 @@ export function createToastMachine<T extends GenericOptions = DefaultGenericOpti
       },
 
       actions: {
+        measureHeight(ctx, _evt, { self }) {
+          raf(() => {
+            const rootEl = dom.getRootEl(ctx)
+            if (!rootEl) return
+
+            ctx.mounted = true
+
+            const originalHeight = rootEl.style.height
+            rootEl.style.height = "auto"
+
+            const newHeight = rootEl.offsetHeight
+            rootEl.style.height = originalHeight
+            ctx.height = newHeight
+
+            self.sendParent({ type: "UPDATE_HEIGHT", id: self.id, height: newHeight, placement: ctx.placement })
+          })
+        },
         setRemainingDuration(ctx) {
           ctx.remaining -= Date.now() - ctx.createdAt
         },
@@ -136,13 +196,10 @@ export function createToastMachine<T extends GenericOptions = DefaultGenericOpti
           ctx.onClosing?.()
         },
         invokeOnClose(ctx) {
-          ctx.onClose?.()
+          ctx.onOpenChange?.({ open: true })
         },
         invokeOnOpen(ctx) {
-          ctx.onOpen?.()
-        },
-        invokeOnUpdate(ctx) {
-          ctx.onUpdate?.()
+          ctx.onOpenChange?.({ open: false })
         },
         setContext(ctx, evt) {
           const { duration, type } = evt.toast

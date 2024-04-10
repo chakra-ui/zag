@@ -1,7 +1,7 @@
-import { useActor, useMachine, normalizeProps, PropTypes } from "@zag-js/solid"
-import * as toast from "@zag-js/toast"
-import { Accessor, createMemo, createSignal, createUniqueId, For, JSX } from "solid-js"
 import { toastControls } from "@zag-js/shared"
+import { normalizeProps, useActor, useMachine } from "@zag-js/solid"
+import * as toast from "@zag-js/toast"
+import { For, JSX, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -22,13 +22,7 @@ function Loader() {
   )
 }
 
-interface Options {
-  render: (api: Accessor<toast.Api<PropTypes, Options>>) => JSX.Element
-  title: JSX.Element
-  description: JSX.Element
-}
-
-function ToastItem(props: { actor: toast.Service<Options> }) {
+function ToastItem(props: { actor: toast.Service<JSX.Element> }) {
   const [state, send] = useActor(props.actor)
   const api = createMemo(() => toast.connect(state, send, normalizeProps))
 
@@ -45,10 +39,6 @@ function ToastItem(props: { actor: toast.Service<Options> }) {
     },
   }))
 
-  if (state.context.render) {
-    return state.context.render(api)
-  }
-
   return (
     <div {...api().rootProps}>
       <div {...progressbarProps()} />
@@ -63,9 +53,11 @@ export default function Page() {
   const controls = useControls(toastControls)
 
   const [state, send] = useMachine(
-    toast.group.machine<Options>({
+    toast.group.machine<JSX.Element>({
       id: createUniqueId(),
-      placement: "top-start",
+      placement: "bottom-end",
+      overlap: true,
+      removeDelay: 200,
     }),
     {
       context: controls.context,
@@ -74,7 +66,8 @@ export default function Page() {
 
   const api = createMemo(() => toast.group.connect(state, send, normalizeProps))
 
-  const placements = createMemo(() => Object.keys(api().toastsByPlacement) as toast.Placement[])
+  const toastsByPlacement = createMemo(() => api().getToastsByPlacement())
+  const placements = createMemo(() => Object.keys(toastsByPlacement()) as toast.Placement[])
   const [id, setId] = createSignal<string>()
 
   return (
@@ -83,23 +76,21 @@ export default function Page() {
         <div style={{ display: "flex", gap: "16px" }}>
           <button
             onClick={() => {
-              const toastId = api().create({
-                title: "Welcome",
-                description: "Welcome",
-                type: "info",
+              api().create({
+                title: "Fetching data...",
+                type: "loading",
               })
-              setId(toastId)
             }}
           >
-            Notify (Info)
+            Notify (Loading)
           </button>
           <button
             onClick={() => {
-              api().create({
-                placement: "bottom-start",
+              const id = api().create({
                 title: "Ooops! Something was wrong",
                 type: "error",
               })
+              setId(id)
             }}
           >
             Notify (Error)
@@ -123,13 +114,13 @@ export default function Page() {
         <For each={placements()}>
           {(placement) => (
             <div {...api().getGroupProps({ placement })}>
-              <For each={api().toastsByPlacement[placement]}>{(actor) => <ToastItem actor={actor} />}</For>
+              <For each={toastsByPlacement()[placement]}>{(toast) => <ToastItem actor={toast} />}</For>
             </div>
           )}
         </For>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls.ui} viz>
         <StateVisualizer state={state} />
       </Toolbar>
     </>

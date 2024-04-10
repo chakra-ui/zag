@@ -1,9 +1,10 @@
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
-import type { MachineApi, Send, State, GenericOptions } from "./toast.types"
+import type { MachineApi, Send, State } from "./toast.types"
 
-export function connect<T extends PropTypes, O extends GenericOptions>(
+export function connect<T extends PropTypes, O>(
   state: State<O>,
   send: Send,
   normalize: NormalizeProps<T>,
@@ -13,9 +14,12 @@ export function connect<T extends PropTypes, O extends GenericOptions>(
 
   const pauseOnInteraction = state.context.pauseOnInteraction
   const placement = state.context.placement!
+  const type = state.context.type
+
+  const [side, align = "center"] = placement.split("-")
 
   return {
-    type: state.context.type,
+    type: type,
     title: state.context.title,
     description: state.context.description,
     placement,
@@ -40,17 +44,29 @@ export function connect<T extends PropTypes, O extends GenericOptions>(
       dir: state.context.dir,
       id: dom.getRootId(state.context),
       "data-state": isVisible ? "open" : "closed",
-      "data-type": state.context.type,
+      "data-type": type,
       "data-placement": placement,
+      "data-align": align,
+      "data-side": side,
+
+      "data-mounted": dataAttr(state.context.mounted),
+      "data-first": dataAttr(state.context.frontmost),
+      "data-sibling": dataAttr(!state.context.frontmost),
+      "data-stack": dataAttr(state.context.expanded),
+      "data-overlap": dataAttr(!state.context.expanded),
+
       role: "status",
       "aria-atomic": "true",
       tabIndex: 0,
       style: {
-        position: "relative",
+        position: "absolute",
         pointerEvents: "auto",
-        margin: "calc(var(--toast-gutter) / 2)",
         "--remove-delay": `${state.context.removeDelay}ms`,
-        "--duration": `${state.context.duration}ms`,
+        "--duration": `${type === "loading" ? Number.MAX_SAFE_INTEGER : state.context.duration}ms`,
+        "--initial-height": `${state.context.height}px`,
+        "--offset": `${state.context.offset}px`,
+        "--index": state.context.index,
+        "--z-index": state.context.zIndex,
       },
       onKeyDown(event) {
         if (event.key == "Escape") {

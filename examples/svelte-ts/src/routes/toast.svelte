@@ -9,13 +9,23 @@
 
   const controls = useControls(toastControls)
 
-  const [state, send] = useMachine(toast.group.machine({ id: "1", placement: "top-start" }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    toast.group.machine({
+      id: "1",
+      placement: "bottom-end",
+      overlap: true,
+      removeDelay: 200,
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = $derived(toast.group.connect(state, send, normalizeProps))
+  const toastsByPlacement = $derived(api.getToastsByPlacement())
 
-  const placements = $derived(Object.keys(api.toastsByPlacement)) as toast.Placement[]
+  const placements = $derived(Object.keys(toastsByPlacement)) as toast.Placement[]
+
   let id: string | undefined = ""
 </script>
 
@@ -23,19 +33,17 @@
   <div style="display:flex;gap:16px;">
     <button
       onclick={() => {
-        id = api.create({
-          title: "Welcome",
-          description: "This a notification",
-          type: "info",
+        api.create({
+          title: "Fetching data...",
+          type: "loading",
         })
       }}
     >
-      Notify (Info)
+      Notify (Loading)
     </button>
     <button
       onclick={() => {
-        api.create({
-          placement: "bottom-start",
+        id = api.create({
           title: "Ooops! Something was wrong",
           type: "error",
         })
@@ -61,13 +69,13 @@
 
   {#each placements as placement}
     <div {...api.getGroupProps({ placement })}>
-      {#each api.toastsByPlacement[placement]! as actor}
-        <ToastItem {actor} />
+      {#each api.getToastsByPlacement()[placement]! as toast}
+        <ToastItem actor={toast} />
       {/each}
     </div>
   {/each}
 </main>
 
-<Toolbar {controls}>
+<Toolbar {controls} viz>
   <StateVisualizer {state} />
 </Toolbar>

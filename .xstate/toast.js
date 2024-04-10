@@ -11,26 +11,30 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id,
-  entry: "invokeOnOpen",
-  initial: type === "loading" ? "persist" : "active",
   context: {
     "hasTypeChanged && isChangingToLoading": false,
     "hasDurationChanged || hasTypeChanged": false,
     "!isLoadingType": false
   },
+  initial: type === "loading" ? "persist" : "active",
   on: {
     UPDATE: [{
       cond: "hasTypeChanged && isChangingToLoading",
       target: "persist",
-      actions: ["setContext", "invokeOnUpdate"]
+      actions: ["setContext"]
     }, {
       cond: "hasDurationChanged || hasTypeChanged",
       target: "active:temp",
-      actions: ["setContext", "invokeOnUpdate"]
+      actions: ["setContext"]
     }, {
-      actions: ["setContext", "invokeOnUpdate"]
-    }]
+      actions: ["setContext"]
+    }],
+    REQUEST_HEIGHT: {
+      actions: ["measureHeight"]
+    }
   },
+  entry: ["invokeOnOpen"],
+  activities: ["trackHeight"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"

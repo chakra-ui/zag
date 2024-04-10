@@ -35,10 +35,6 @@ const ToastItem = defineComponent({
     return () => {
       const api = apiRef.value
 
-      if (state.value.context.render) {
-        return state.value.context.render(api)
-      }
-
       return (
         <pre {...api.rootProps}>
           <div {...progressbarProps.value} />
@@ -59,7 +55,9 @@ export default defineComponent({
     const [state, send] = useMachine(
       toast.group.machine({
         id: "1",
-        placement: "top-start",
+        placement: "bottom-end",
+        removeDelay: 250,
+        overlap: true,
       }),
       {
         context: controls.context,
@@ -68,7 +66,9 @@ export default defineComponent({
 
     const apiRef = computed(() => toast.group.connect(state.value, send, normalizeProps))
 
-    const placementsRef = computed(() => Object.keys(apiRef.value.toastsByPlacement) as toast.Placement[])
+    const toastsByPlacementRef = computed(() => apiRef.value.getToastsByPlacement())
+    const placementsRef = computed(() => Object.keys(toastsByPlacementRef.value) as toast.Placement[])
+
     const id = ref<string>()
 
     return () => {
@@ -116,8 +116,8 @@ export default defineComponent({
             </div>
             {placementsRef.value.map((placement) => (
               <div key={placement} {...api.getGroupProps({ placement })}>
-                {api.toastsByPlacement[placement]!.map((actor) => (
-                  <ToastItem key={actor.id} actor={actor} />
+                {toastsByPlacementRef.value[placement]!.map((toast) => (
+                  <ToastItem key={toast.id} actor={toast} />
                 ))}
               </div>
             ))}
