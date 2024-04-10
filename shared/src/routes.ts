@@ -4,6 +4,7 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
+  { label: "Time Picker", path: "/time-picker" },
   { label: "Signature Pad", path: "/signature-pad" },
   { label: "Floating Panel", path: "/floating-panel" },
   { label: "Tour", path: "/tour" },
