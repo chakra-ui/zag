@@ -5,11 +5,13 @@ import type { CommonProperties, Direction, DirectionProperty, PropTypes, Require
  * Base types
  * -----------------------------------------------------------------------------*/
 
-export type Type = "success" | "error" | "loading" | "info" | "custom"
+export type Type = "success" | "error" | "loading" | "info" | (string & {})
 
 export type Placement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
 
-export interface GenericOptions<T = any> {
+export type Status = "visible" | "dismissing" | "unmounted"
+
+export interface GenericOptions<T = string> {
   /**
    * The title of the toast.
    */
@@ -20,13 +22,20 @@ export interface GenericOptions<T = any> {
   description?: T
 }
 
-export interface OpenChangeDetails {
-  open: boolean
+export interface StatusChangeDetails {
+  status: Status
 }
 
-export interface DefaultGenericOptions extends GenericOptions<string> {}
+/**
+ * @internal
+ */
+export interface ToastHeightDetails {
+  id: string
+  height: number
+  placement: Placement
+}
 
-export interface GlobalToastOptions<T = any> extends GenericOptions<T> {
+export interface GlobalToastOptions<T> extends GenericOptions<T> {
   /**
    * Whether to pause toast when the user leaves the browser tab
    */
@@ -62,20 +71,14 @@ export interface ToastOptions<T> extends GenericOptions<T> {
   /**
    * Function called when the toast is visible
    */
-  onOpenChange?(details: OpenChangeDetails): void
+  onStatusChange?(details: StatusChangeDetails): void
   /**
-   * Function called when the toast is leaving
+   * The metadata of the toast
    */
-  onClosing?: VoidFunction
+  meta?: Record<string, unknown>
 }
 
 export interface Options<T> extends Partial<ToastOptions<T> & GlobalToastOptions<T>> {}
-
-export interface ToastHeightDetails {
-  id: string
-  height: number
-  placement: Placement
-}
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -140,11 +143,11 @@ interface MachinePrivateContext {
    * @internal
    * Whether the toast is stacked
    */
-  expanded?: boolean
+  stacked?: boolean
 }
 
 export interface MachineState {
-  value: "active" | "active:temp" | "dismissing" | "inactive" | "persist"
+  value: "visible" | "visible:updating" | "dismissing" | "unmounted" | "visible:persist"
   tags: "visible" | "paused" | "updating"
 }
 
@@ -202,6 +205,10 @@ interface GroupPrivateContext<T> extends GenericOptions<T> {
    * The height of each toast
    */
   heights: ToastHeightDetails[]
+  /**
+   * @internal
+   */
+  _cleanup?: VoidFunction
 }
 
 export interface GroupMachineContext<T = any>
@@ -210,7 +217,7 @@ export interface GroupMachineContext<T = any>
     GroupComputedContext {}
 
 export interface GroupMachineState {
-  value: "expanded" | "collapsed"
+  value: "stack" | "overlap"
 }
 
 export type GroupState<T = any> = S.State<GroupMachineContext<T>>
@@ -313,7 +320,7 @@ export interface GroupMachineApi<T extends PropTypes = PropTypes, O = any> {
   /**
    * Function to subscribe to the toast group.
    */
-  subscribe(callback: (toasts: Service<O>[]) => void): VoidFunction
+  subscribe(callback: (toasts: ToastOptions<O>[]) => void): VoidFunction
   getGroupProps(options: GroupProps): T["element"]
 }
 
@@ -353,6 +360,9 @@ export interface MachineApi<T extends PropTypes = PropTypes, O = any> extends Ge
 
   rootProps: T["element"]
   titleProps: T["element"]
+  ghostBeforeProps: T["element"]
+  ghostAfterProps: T["element"]
   descriptionProps: T["element"]
   closeTriggerProps: T["button"]
+  actionTriggerProps: T["button"]
 }

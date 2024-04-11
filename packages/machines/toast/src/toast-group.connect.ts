@@ -1,5 +1,5 @@
 import { isMachine, subscribe } from "@zag-js/core"
-import { contains } from "@zag-js/dom-query"
+// import { contains } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { runIfFn, uuid } from "@zag-js/utils"
 import { parts } from "./toast.anatomy"
@@ -145,28 +145,21 @@ export function groupConnect<T extends PropTypes, O = any>(
         dir: state.context.dir,
         tabIndex: -1,
         "aria-label": `${placement} ${label} ${hotkeyLabel}`,
-        id: dom.getGroupId(placement),
+        id: dom.getRegionId(placement),
         "data-placement": placement,
         "aria-live": "polite",
         role: "region",
         style: getGroupPlacementStyle(state.context, placement),
         onMouseMove() {
           if (!state.context.overlap) return
-          send({ type: "POINTER_ENTER", placement })
+          send({ type: "REGION.POINTER_ENTER", placement })
         },
         onMouseLeave() {
           if (!state.context.overlap) return
-          send({ type: "POINTER_LEAVE", placement })
+          send({ type: "REGION.POINTER_LEAVE", placement })
         },
-        onFocus(event) {
-          const currentTarget = event.currentTarget as any
-          currentTarget._lastFocusedElement = event.relatedTarget
-        },
-        onBlur(event) {
-          const currentTarget = event.currentTarget as any
-          if (contains(currentTarget, event.relatedTarget)) {
-            currentTarget._lastFocusedElement.focus()
-          }
+        onFocus() {
+          send({ type: "REGION.FOCUS" })
         },
       })
     },
@@ -174,8 +167,9 @@ export function groupConnect<T extends PropTypes, O = any>(
     subscribe(fn) {
       const state = getState()
       return subscribe(state.context.toasts, () => {
-        // todo: this should be relative to all toasts in that placement
-        fn(state.context.toasts)
+        const toasts = getToastsByPlacementImpl()[state.context.placement!] ?? []
+        const contexts = toasts.map((toast) => toast.getState().context)
+        fn(contexts)
       })
     },
   }

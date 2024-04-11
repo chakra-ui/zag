@@ -92,7 +92,7 @@
       }
     },
     "context": {
-      "onLoadingStatusChange": {
+      "onStatusChange": {
         "type": "(details: StatusChangeDetails) => void",
         "description": "Functional called when the image loading status changes."
       },
@@ -319,7 +319,7 @@
         "type": "string",
         "description": "The value to be copied to the clipboard"
       },
-      "onCopyStatusChange": {
+      "onStatusChange": {
         "type": "(details: CopyStatusDetails) => void",
         "description": "The function to be called when the value is copied to the clipboard"
       },

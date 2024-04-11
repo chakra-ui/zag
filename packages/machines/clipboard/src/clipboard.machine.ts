@@ -23,7 +23,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         COPY: {
           target: "copied",
-          actions: ["copyToClipboard", "invokeOnCopied"],
+          actions: ["copyToClipboard", "invokeOnCopy"],
         },
       },
       states: {
@@ -31,7 +31,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "INPUT.COPY": {
               target: "copied",
-              actions: ["invokeOnCopied"],
+              actions: ["invokeOnCopy"],
             },
           },
         },
@@ -42,10 +42,10 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             COPY: {
               target: "copied",
-              actions: ["copyToClipboard", "invokeOnCopied"],
+              actions: ["copyToClipboard", "invokeOnCopy"],
             },
             "INPUT.COPY": {
-              actions: ["invokeOnCopied"],
+              actions: ["invokeOnCopy"],
             },
           },
         },
@@ -59,8 +59,8 @@ export function machine(userContext: UserDefinedContext) {
         copyToClipboard(ctx) {
           dom.writeToClipboard(ctx)
         },
-        invokeOnCopied(ctx) {
-          ctx.onCopyStatusChange?.({ copied: true })
+        invokeOnCopy(ctx) {
+          ctx.onStatusChange?.({ copied: true })
         },
         syncInputElement(ctx) {
           dom.setValue(dom.getInputEl(ctx), ctx.value)

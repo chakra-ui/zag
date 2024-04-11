@@ -23,7 +23,7 @@ interface PublicContext extends CommonProperties {
   /**
    * The function to be called when the value is copied to the clipboard
    */
-  onCopyStatusChange?: (details: CopyStatusDetails) => void
+  onStatusChange?: (details: CopyStatusDetails) => void
   /**
    * The timeout for the copy operation
    */

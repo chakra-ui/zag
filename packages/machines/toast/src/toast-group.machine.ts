@@ -1,4 +1,5 @@
 import { createMachine } from "@zag-js/core"
+import { trackDismissableBranch } from "@zag-js/dismissable"
 import { addDomEvent } from "@zag-js/dom-event"
 import { compact } from "@zag-js/utils"
 import { dom } from "./toast.dom"
@@ -17,7 +18,7 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
   return createMachine<GroupMachineContext<T>, GroupMachineState>(
     {
       id: "toaster",
-      initial: ctx.overlap ? "collapsed" : "expanded",
+      initial: ctx.overlap ? "overlap" : "stack",
       context: {
         dir: "ltr",
         max: Number.MAX_SAFE_INTEGER,
@@ -38,10 +39,10 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
       activities: ["trackHotKeyPress"],
 
       watch: {
-        toasts: ["collapsedIfEmpty"],
+        toasts: ["collapsedIfEmpty", "setDismissableBranch"],
       },
 
-      exit: ["removeToasts"],
+      exit: ["removeToasts", "disposeCleanup"],
 
       on: {
         PAUSE_TOAST: {
@@ -78,30 +79,30 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
         UPDATE_HEIGHT: {
           actions: ["syncHeights", "syncToastOffset"],
         },
+        "DOC.HOTKEY": {
+          actions: ["focusRegionEl"],
+        },
       },
 
       states: {
-        expanded: {
+        stack: {
           on: {
-            HOTKEY: {
-              actions: ["focusGroupEl"],
-            },
-            POINTER_LEAVE: {
-              target: "collapsed",
+            "REGION.POINTER_LEAVE": {
+              target: "overlap",
               actions: ["collapseToasts"],
             },
-            COLLAPSE: "collapsed",
+            OVERLAY: "overlap",
           },
         },
-        collapsed: {
+        overlap: {
           on: {
-            POINTER_ENTER: {
-              target: "expanded",
+            "REGION.POINTER_ENTER": {
+              target: "stack",
               actions: ["expandToasts", "requestHeights"],
             },
-            HOTKEY: {
-              target: "expanded",
-              actions: ["focusGroupEl", "expandToasts"],
+            "REGION.FOCUS": {
+              target: "stack",
+              actions: ["expandToasts", "requestHeights"],
             },
           },
         },
@@ -116,30 +117,53 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
           const handleKeyDown = (event: KeyboardEvent) => {
             const isHotkeyPressed = ctx.hotkey.every((key) => (event as any)[key] || event.code === key)
             if (!isHotkeyPressed) return
-            send({ type: "HOTKEY" })
+            send({ type: "DOC.HOTKEY" })
           }
           return addDomEvent(document, "keydown", handleKeyDown, { capture: true })
         },
       },
       actions: {
-        focusGroupEl(ctx) {
+        setDismissableBranch(ctx) {
+          const toastsByPlacement = getToastsByPlacement(ctx.toasts)
+          const currentToasts = toastsByPlacement[ctx.placement!] ?? []
+
+          const hasToasts = currentToasts.length > 0
+
+          if (!hasToasts) {
+            ctx._cleanup?.()
+            return
+          }
+
+          if (hasToasts && ctx._cleanup) {
+            return
+          }
+
+          //  mark toast as a dismissable branch
+          //  so that interacting with them will not close dismissable layers
+          const groupEl = () => dom.getRegionEl(ctx, ctx.placement!)
+          ctx._cleanup = trackDismissableBranch(groupEl, { defer: true })
+        },
+        disposeCleanup(ctx) {
+          ctx._cleanup?.()
+        },
+        focusRegionEl(ctx) {
           queueMicrotask(() => {
-            dom.getGroupEl(ctx, ctx.placement!)?.focus()
+            dom.getRegionEl(ctx, ctx.placement!)?.focus()
           })
         },
         expandToasts(ctx) {
           each(ctx, (toast) => {
-            toast.state.context.expanded = true
+            toast.state.context.stacked = true
           })
         },
         collapseToasts(ctx) {
           each(ctx, (toast) => {
-            toast.state.context.expanded = false
+            toast.state.context.stacked = false
           })
         },
         collapsedIfEmpty(ctx, _evt, { send }) {
           if (!ctx.overlap || ctx.toasts.length > 1) return
-          send("COLLAPSE")
+          send("OVERLAY")
         },
         pauseToast(_ctx, evt, { self }) {
           self.sendChild("PAUSE", evt.id)
@@ -166,7 +190,7 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
             pauseOnInteraction: ctx.pauseOnInteraction,
             dir: ctx.dir,
             getRootNode: ctx.getRootNode,
-            expanded: getState().matches("expanded"),
+            stacked: getState().matches("stack"),
           }
 
           const toast = createToastMachine(options)
@@ -205,6 +229,8 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
         },
         syncToastIndex(ctx) {
           each(ctx, (toast, index, toasts) => {
+            // Note: This is an intentional side effect
+            // consider writing directly to the DOM (root element)
             toast.state.context.index = index
             toast.state.context.frontmost = index === 0
             toast.state.context.zIndex = toasts.length - index

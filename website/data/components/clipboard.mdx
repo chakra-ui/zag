@@ -68,13 +68,13 @@ const [state, send] = useMachine(
 
 ## Listening to copy events
 
-When the value is copied to the clipboard, the `onCopyStatusChange` event is
-fired. You can listen to this event and perform any action you want.
+When the value is copied to the clipboard, the `onStatusChange` event is fired.
+You can listen to this event and perform any action you want.
 
 ```jsx {3}
 const [state, send] = useMachine(
   clipboard.machine({
-    onCopyStatusChange: (details) => {
+    onStatusChange: (details) => {
       console.log("Copy status changed to", details.copied)
     },
   }),

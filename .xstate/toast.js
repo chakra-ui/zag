@@ -16,15 +16,15 @@ const fetchMachine = createMachine({
     "hasDurationChanged || hasTypeChanged": false,
     "!isLoadingType": false
   },
-  initial: type === "loading" ? "persist" : "active",
+  initial: type === "loading" ? "visible:persist" : "visible",
   on: {
     UPDATE: [{
       cond: "hasTypeChanged && isChangingToLoading",
-      target: "persist",
+      target: "visible:persist",
       actions: ["setContext"]
     }, {
       cond: "hasDurationChanged || hasTypeChanged",
-      target: "active:temp",
+      target: "visible:updating",
       actions: ["setContext"]
     }, {
       actions: ["setContext"]
@@ -33,7 +33,7 @@ const fetchMachine = createMachine({
       actions: ["measureHeight"]
     }
   },
-  entry: ["invokeOnOpen"],
+  entry: ["invokeOnVisible"],
   activities: ["trackHeight"],
   on: {
     UPDATE_CONTEXT: {
@@ -41,25 +41,25 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    "active:temp": {
+    "visible:updating": {
       tags: ["visible", "updating"],
       after: {
-        0: "active"
+        0: "visible"
       }
     },
-    persist: {
+    "visible:persist": {
       tags: ["visible", "paused"],
       activities: "trackDocumentVisibility",
       on: {
         RESUME: {
           cond: "!isLoadingType",
-          target: "active",
+          target: "visible",
           actions: ["setCreatedAt"]
         },
         DISMISS: "dismissing"
       }
     },
-    active: {
+    visible: {
       tags: ["visible"],
       activities: "trackDocumentVisibility",
       after: {
@@ -68,22 +68,22 @@ const fetchMachine = createMachine({
       on: {
         DISMISS: "dismissing",
         PAUSE: {
-          target: "persist",
+          target: "visible:persist",
           actions: "setRemainingDuration"
         }
       }
     },
     dismissing: {
-      entry: "invokeOnClosing",
+      entry: "invokeOnDismiss",
       after: {
         REMOVE_DELAY: {
-          target: "inactive",
+          target: "unmounted",
           actions: "notifyParentToRemove"
         }
       }
     },
-    inactive: {
-      entry: "invokeOnClose",
+    unmounted: {
+      entry: "invokeOnUnmount",
       type: "final"
     }
   }

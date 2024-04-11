@@ -8,7 +8,7 @@ export const props = createProps<UserDefinedContext>()([
   "ids",
   "value",
   "timeout",
-  "onCopyStatusChange",
+  "onStatusChange",
 ])
 export const contextProps = createSplitProps<UserDefinedContext>(props)
 

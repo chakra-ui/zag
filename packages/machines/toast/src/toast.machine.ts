@@ -34,18 +34,18 @@ export function createToastMachine<T>(options: Options<T> = {}) {
         zIndex: 0,
       },
 
-      initial: type === "loading" ? "persist" : "active",
+      initial: type === "loading" ? "visible:persist" : "visible",
 
       on: {
         UPDATE: [
           {
             guard: and("hasTypeChanged", "isChangingToLoading"),
-            target: "persist",
+            target: "visible:persist",
             actions: ["setContext"],
           },
           {
             guard: or("hasDurationChanged", "hasTypeChanged"),
-            target: "active:temp",
+            target: "visible:updating",
             actions: ["setContext"],
           },
           {
@@ -57,32 +57,32 @@ export function createToastMachine<T>(options: Options<T> = {}) {
         },
       },
 
-      entry: ["invokeOnOpen"],
+      entry: ["invokeOnVisible"],
 
       activities: ["trackHeight"],
 
       states: {
-        "active:temp": {
+        "visible:updating": {
           tags: ["visible", "updating"],
           after: {
-            0: "active",
+            0: "visible",
           },
         },
 
-        persist: {
+        "visible:persist": {
           tags: ["visible", "paused"],
           activities: "trackDocumentVisibility",
           on: {
             RESUME: {
               guard: not("isLoadingType"),
-              target: "active",
+              target: "visible",
               actions: ["setCreatedAt"],
             },
             DISMISS: "dismissing",
           },
         },
 
-        active: {
+        visible: {
           tags: ["visible"],
           activities: "trackDocumentVisibility",
           after: {
@@ -91,24 +91,24 @@ export function createToastMachine<T>(options: Options<T> = {}) {
           on: {
             DISMISS: "dismissing",
             PAUSE: {
-              target: "persist",
+              target: "visible:persist",
               actions: "setRemainingDuration",
             },
           },
         },
 
         dismissing: {
-          entry: "invokeOnClosing",
+          entry: "invokeOnDismiss",
           after: {
             REMOVE_DELAY: {
-              target: "inactive",
+              target: "unmounted",
               actions: "notifyParentToRemove",
             },
           },
         },
 
-        inactive: {
-          entry: "invokeOnClose",
+        unmounted: {
+          entry: "invokeOnUnmount",
           type: "final",
         },
       },
@@ -192,14 +192,14 @@ export function createToastMachine<T>(options: Options<T> = {}) {
         notifyParentToRemove(_ctx, _evt, { self }) {
           self.sendParent({ type: "REMOVE_TOAST", id: self.id })
         },
-        invokeOnClosing(ctx) {
-          ctx.onClosing?.()
+        invokeOnDismiss(ctx) {
+          ctx.onStatusChange?.({ status: "dismissing" })
         },
-        invokeOnClose(ctx) {
-          ctx.onOpenChange?.({ open: true })
+        invokeOnUnmount(ctx) {
+          ctx.onStatusChange?.({ status: "unmounted" })
         },
-        invokeOnOpen(ctx) {
-          ctx.onOpenChange?.({ open: false })
+        invokeOnVisible(ctx) {
+          ctx.onStatusChange?.({ status: "visible" })
         },
         setContext(ctx, evt) {
           const { duration, type } = evt.toast

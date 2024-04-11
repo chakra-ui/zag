@@ -3,6 +3,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
 import type { MachineApi, Send, State } from "./toast.types"
+import { getGhostAfterStyle, getGhostBeforeStyle } from "./toast.utils"
 
 export function connect<T extends PropTypes, O>(
   state: State<O>,
@@ -48,12 +49,12 @@ export function connect<T extends PropTypes, O>(
       "data-placement": placement,
       "data-align": align,
       "data-side": side,
-
       "data-mounted": dataAttr(state.context.mounted),
+
       "data-first": dataAttr(state.context.frontmost),
       "data-sibling": dataAttr(!state.context.frontmost),
-      "data-stack": dataAttr(state.context.expanded),
-      "data-overlap": dataAttr(!state.context.expanded),
+      "data-stack": dataAttr(state.context.stacked),
+      "data-overlap": dataAttr(!state.context.stacked),
 
       role: "status",
       "aria-atomic": "true",
@@ -96,6 +97,17 @@ export function connect<T extends PropTypes, O>(
       },
     }),
 
+    ghostBeforeProps: normalize.element({
+      ...parts.ghost.attrs,
+      style: getGhostBeforeStyle(state.context, isVisible),
+    }),
+
+    /* Needed to avoid setting hover to false when in between toasts */
+    ghostAfterProps: normalize.element({
+      ...parts.ghost.attrs,
+      style: getGhostAfterStyle(state.context, isVisible),
+    }),
+
     titleProps: normalize.element({
       ...parts.title.attrs,
       id: dom.getTitleId(state.context),
@@ -104,6 +116,14 @@ export function connect<T extends PropTypes, O>(
     descriptionProps: normalize.element({
       ...parts.description.attrs,
       id: dom.getDescriptionId(state.context),
+    }),
+
+    actionTriggerProps: normalize.button({
+      ...parts.actionTrigger.attrs,
+      type: "button",
+      onClick() {
+        send("DISMISS")
+      },
     }),
 
     closeTriggerProps: normalize.button({
