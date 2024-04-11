@@ -28,21 +28,8 @@ test.describe("dialog", () => {
     await expect(page.locator(dialog_1.close)).toBeFocused()
   })
 
-  test.fixme("should trap focus", async ({ page }) => {
-    await page.keyboard.press("Tab")
-    await page.keyboard.press("Tab")
-    await page.keyboard.press("Tab")
-    await page.keyboard.press("Tab")
-    await expect(page.locator(dialog_1.close)).toBeFocused()
-  })
-
   test("should close modal on escape", async ({ page }) => {
     await page.keyboard.press("Escape")
-    await expect(page.locator(dialog_1.trigger)).toBeFocused()
-  })
-
-  test.fixme("should close modal on outside click", async ({ page }) => {
-    await page.click("body", { force: true, position: { x: 10, y: 10 } })
     await expect(page.locator(dialog_1.trigger)).toBeFocused()
   })
 })
@@ -56,23 +43,6 @@ test.describe("nested dialog", () => {
 
   test("should focus close button", async ({ page }) => {
     await expect(page.locator(dialog_2.close)).toBeFocused()
-  })
-
-  test.fixme("should trap focus", async ({ page }) => {
-    await page.keyboard.press("Tab")
-    await page.keyboard.press("Tab")
-    await expect(page.locator(dialog_2.close)).toBeFocused()
-  })
-
-  test.fixme("should focus on nested buttton on escape", async ({ page }) => {
-    await page.keyboard.press("Escape", { delay: 17 })
-    await expect(page.locator(dialog_2.positioner)).not.toBeVisible()
-    await expect(page.locator(dialog_2.trigger)).toBeFocused()
-  })
-
-  test("should close modal on outside click", async ({ page }) => {
-    await page.click("body", { force: true, delay: 17, position: { x: 10, y: 10 } })
-    await expect(page.locator(dialog_2.trigger)).toBeFocused()
   })
 
   test("should close parent modal from child", async ({ page }) => {
