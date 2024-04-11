@@ -79,18 +79,18 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-react": "0.365.0",
-    "next": "14.1.4",
+    "lucide-react": "0.367.0",
+    "next": "14.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-spinners": "0.13.8"
   },
   "devDependencies": {
-    "@types/node": "20.12.2",
-    "@types/react": "18.2.74",
-    "@types/react-dom": "18.2.23",
+    "@types/node": "20.12.7",
+    "@types/react": "18.2.76",
+    "@types/react-dom": "18.2.25",
     "eslint": "8.57.0",
-    "eslint-config-next": "14.1.4",
-    "typescript": "5.4.4"
+    "eslint-config-next": "14.2.0",
+    "typescript": "5.4.5"
   }
 }
