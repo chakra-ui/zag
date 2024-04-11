@@ -15,11 +15,11 @@ export function getToastsByPlacement<T>(toasts: Service<T>[]) {
 }
 
 export const defaultTimeouts: Record<Type, number> = {
-  info: 4000,
-  error: 4000,
+  info: 5000,
+  error: 5000,
   success: 2000,
   loading: Infinity,
-  DEFAULT: 4000,
+  DEFAULT: 5000,
 }
 
 export function getToastDuration(duration: number | undefined, type: MachineContext["type"]) {
@@ -84,17 +84,25 @@ export function getPlacementStyle<T>(ctx: MachineContext<T>, visible: boolean): 
   const overlap = !ctx.stacked
 
   const styles: Style = {
+    position: "absolute",
+    pointerEvents: "auto",
+    "--opacity": "0",
+    "--remove-delay": `${ctx.removeDelay}ms`,
+    "--duration": `${ctx.type === "loading" ? Number.MAX_SAFE_INTEGER : ctx.duration}ms`,
+    "--initial-height": `${ctx.height}px`,
+    "--offset": `${ctx.offset}px`,
+    "--index": ctx.index,
+    "--z-index": ctx.zIndex,
     "--lift-amount": "calc(var(--lift) * var(--gap))",
     "--y": "100%",
-    translate: "var(--x, 0) var(--y)",
-    zIndex: "var(--z-index)",
+    "--x": "0",
   }
 
-  const set = (overrides: Style) => Object.assign(styles, overrides)
+  const assign = (overrides: Style) => Object.assign(styles, overrides)
 
   if (side === "top") {
     //
-    set({
+    assign({
       top: "0",
       "--sign": "-1",
       "--y": "-100%",
@@ -103,7 +111,7 @@ export function getPlacementStyle<T>(ctx: MachineContext<T>, visible: boolean): 
     //
   } else if (side === "bottom") {
     //
-    set({
+    assign({
       bottom: "0",
       "--sign": "1",
       "--y": "100%",
@@ -112,42 +120,49 @@ export function getPlacementStyle<T>(ctx: MachineContext<T>, visible: boolean): 
   }
 
   if (ctx.mounted) {
-    set({
+    assign({
       "--y": "0",
-      opacity: "1",
+      "--opacity": "1",
     })
 
     if (ctx.stacked) {
-      set({
+      assign({
         "--y": "calc(var(--lift) * var(--offset))",
-        height: "var(--initial-height)",
+        "--height": "var(--initial-height)",
       })
     }
   }
 
+  if (!visible) {
+    assign({
+      "--opacity": "0",
+      pointerEvents: "none",
+    })
+  }
+
   if (sibling && overlap) {
-    set({
-      "--scale": "calc(var(--index) * 0.05 + 1)",
+    assign({
+      "--base-scale": "var(--index) * 0.05 + 1",
       "--y": "calc(var(--lift-amount) * var(--index))",
-      scale: "calc(-1 * var(--scale))",
-      height: "var(--first-height)",
+      "--scale": "calc(-1 * var(--base-scale))",
+      "--height": "var(--first-height)",
     })
 
     if (!visible) {
-      set({
+      assign({
         "--y": "calc(var(--sign) * 40%)",
       })
     }
   }
 
   if (sibling && ctx.stacked && !visible) {
-    set({
+    assign({
       "--y": "calc(var(--lift) * var(--offset) + var(--lift) * -100%)",
     })
   }
 
   if (ctx.frontmost && !visible) {
-    set({
+    assign({
       "--y": "calc(var(--lift) * -100%)",
     })
   }
@@ -156,18 +171,18 @@ export function getPlacementStyle<T>(ctx: MachineContext<T>, visible: boolean): 
 }
 
 export function getGhostBeforeStyle<T>(ctx: MachineContext<T>, visible: boolean): Style {
-  const styles: Style = {}
-  if (!visible) {
-    Object.assign(styles, {
-      position: "absolute",
-      inset: "0",
-      scale: "1 2",
-    })
+  const styles: Style = {
+    position: "absolute",
+    inset: "0",
+    scale: "1 2",
+    pointerEvents: visible ? "none" : "auto",
   }
 
-  if (ctx.frontmost) {
-    Object.assign(styles, {
-      height: "calc(var(--initial-height) + 20%)",
+  const assign = (overrides: Style) => Object.assign(styles, overrides)
+
+  if (ctx.frontmost && !visible) {
+    assign({
+      height: "calc(var(--initial-height) + 80%)",
     })
   }
 

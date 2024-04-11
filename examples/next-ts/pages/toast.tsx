@@ -1,8 +1,10 @@
 import { Portal, normalizeProps, useActor, useMachine } from "@zag-js/react"
 import { toastControls } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
+import { XIcon } from "lucide-react"
 import { useId, useRef } from "react"
-import { BeatLoader } from "react-spinners"
+import { Dialog } from "../components/dialog"
+import { LoaderBar } from "../components/loader"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -26,11 +28,17 @@ function ToastItem({ actor }: { actor: toast.Service }) {
 
   return (
     <pre {...api.rootProps}>
+      <span {...api.ghostBeforeProps} />
       <div {...progressbarProps} />
-      <p {...api.titleProps}>{api.title}</p>
+      <p {...api.titleProps}>
+        {api.type === "loading" && <LoaderBar />}
+        {api.title}
+      </p>
       <p {...api.descriptionProps}>{api.description}</p>
-      <p>{api.type === "loading" ? <BeatLoader /> : null}</p>
-      <button {...api.closeTriggerProps}>Close</button>
+      <button {...api.closeTriggerProps}>
+        <XIcon />
+      </button>
+      <span {...api.ghostAfterProps} />
     </pre>
   )
 }
@@ -41,7 +49,7 @@ export default function Page() {
   const [state, send] = useMachine(
     toast.group.machine({
       id: useId(),
-      placement: "bottom-end",
+      placement: "bottom",
       overlap: true,
       removeDelay: 200,
     }),
@@ -59,6 +67,7 @@ export default function Page() {
   return (
     <>
       <main>
+        <Dialog />
         <div style={{ display: "flex", gap: "16px" }}>
           <button
             onClick={() => {

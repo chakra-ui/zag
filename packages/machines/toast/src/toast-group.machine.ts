@@ -91,7 +91,7 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
               target: "overlap",
               actions: ["collapseToasts"],
             },
-            OVERLAY: "overlap",
+            "REGION.OVERLAP": "overlap",
           },
         },
         overlap: {
@@ -163,7 +163,7 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
         },
         collapsedIfEmpty(ctx, _evt, { send }) {
           if (!ctx.overlap || ctx.toasts.length > 1) return
-          send("OVERLAY")
+          send("REGION.OVERLAP")
         },
         pauseToast(_ctx, evt, { self }) {
           self.sendChild("PAUSE", evt.id)

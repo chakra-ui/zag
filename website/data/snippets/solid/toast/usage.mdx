@@ -1,7 +1,14 @@
 ```jsx
 import { useActor, useMachine, normalizeProps } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
-import { createMemo, createUniqueId, createSignal, createContext, useContext, For } from "solid-js"
+import {
+  createMemo,
+  createUniqueId,
+  createSignal,
+  createContext,
+  useContext,
+  For,
+} from "solid-js"
 
 // 1. Create the single toast
 function Toast(props) {
@@ -23,19 +30,19 @@ const useToast = () => useContext(ToastContext)
 
 // 3. Create the toast group provider
 export function ToastProvider(props) {
-  const [state, send] = useMachine(toast.group.machine({  id: createUniqueId() }))
+  const [state, send] = useMachine(
+    toast.group.machine({ id: createUniqueId() }),
+  )
 
   const api = createMemo(() => toast.group.connect(state, send, normalizeProps))
 
   return (
     <ToastContext.Provider value={api}>
-      <For each={Object.entries(api().toastsByPlacement)}>
+      <For each={Object.entries(api().getToastsByPlacement())}>
         {([placement, toasts]) => (
           <div key={placement} {...api().getGroupProps({ placement })}>
             <For each={toasts}>
-              {(toast) => (
-                <Toast key={toast.id} actor={toast} />
-              )}
+              {(toast) => <Toast key={toast.id} actor={toast} />}
             </For>
           </div>
         )}

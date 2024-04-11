@@ -3,7 +3,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
 import type { MachineApi, Send, State } from "./toast.types"
-import { getGhostAfterStyle, getGhostBeforeStyle } from "./toast.utils"
+import { getGhostAfterStyle, getGhostBeforeStyle, getPlacementStyle } from "./toast.utils"
 
 export function connect<T extends PropTypes, O>(
   state: State<O>,
@@ -59,16 +59,7 @@ export function connect<T extends PropTypes, O>(
       role: "status",
       "aria-atomic": "true",
       tabIndex: 0,
-      style: {
-        position: "absolute",
-        pointerEvents: "auto",
-        "--remove-delay": `${state.context.removeDelay}ms`,
-        "--duration": `${type === "loading" ? Number.MAX_SAFE_INTEGER : state.context.duration}ms`,
-        "--initial-height": `${state.context.height}px`,
-        "--offset": `${state.context.offset}px`,
-        "--index": state.context.index,
-        "--z-index": state.context.zIndex,
-      },
+      style: getPlacementStyle(state.context, isVisible),
       onKeyDown(event) {
         if (event.key == "Escape") {
           send("DISMISS")
@@ -97,6 +88,7 @@ export function connect<T extends PropTypes, O>(
       },
     }),
 
+    /* Leave a ghost div to avoid setting hover to false when transitioning out */
     ghostBeforeProps: normalize.element({
       ...parts.ghost.attrs,
       style: getGhostBeforeStyle(state.context, isVisible),

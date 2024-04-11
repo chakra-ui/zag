@@ -9,7 +9,7 @@ import { getToastDuration } from "./toast.utils"
 const { not, and, or } = guards
 
 export function createToastMachine<T>(options: Options<T> = {}) {
-  const { type = "info", duration, id = "1", placement = "bottom", removeDelay = 0, ...restProps } = options
+  const { type = "info", duration, id = "1", placement = "bottom", removeDelay = 200, ...restProps } = options
   const ctx = compact(restProps)
 
   const computedDuration = getToastDuration(duration, type)

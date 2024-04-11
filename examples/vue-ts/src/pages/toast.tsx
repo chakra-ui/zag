@@ -1,10 +1,10 @@
 import { toastControls } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
 import { normalizeProps, useActor, useMachine } from "@zag-js/vue"
-//@ts-ignore
-import { HollowDotsSpinner } from "epic-spinners"
+import { XIcon } from "lucide-vue-next"
 import type { PropType } from "vue"
 import { computed, defineComponent, ref } from "vue"
+import { LoaderBar } from "../components/loader"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -37,10 +37,16 @@ const ToastItem = defineComponent({
 
       return (
         <pre {...api.rootProps}>
+          <span {...api.ghostBeforeProps} />
           <div {...progressbarProps.value} />
-          <p {...api.titleProps}>{api.title}</p>
-          <p>{api.type === "loading" ? <HollowDotsSpinner /> : null}</p>
-          <button {...api.closeTriggerProps}>Close</button>
+          <p {...api.titleProps}>
+            {api.type === "loading" && <LoaderBar />}
+            {api.title}
+          </p>
+          <span {...api.ghostAfterProps} />
+          <button {...api.closeTriggerProps}>
+            <XIcon />
+          </button>
         </pre>
       )
     }
@@ -79,25 +85,23 @@ export default defineComponent({
             <div style={{ display: "flex", gap: "16px" }}>
               <button
                 onClick={() => {
-                  id.value = api.create({
-                    title: "Welcome",
-                    description: "Welcome",
-                    type: "info",
+                  api.create({
+                    title: "Fetching data...",
+                    type: "loading",
                   })
                 }}
               >
-                Notify (Info)
+                Notify (Loading)
               </button>
               <button
                 onClick={() => {
-                  api.create({
-                    placement: "bottom-start",
+                  id.value = api.create({
                     title: "Ooops! Something was wrong",
                     type: "error",
                   })
                 }}
               >
-                Notify (Error)
+                Notify (Info)
               </button>
               <button
                 onClick={() => {

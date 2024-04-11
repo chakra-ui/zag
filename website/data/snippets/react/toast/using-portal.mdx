@@ -12,13 +12,15 @@ export function ToastProvider() {
   return (
     <ToastContext.Provider value={api}>
       <Portal>
-        {Object.entries(api.toastsByPlacement).map(([placement, toasts]) => (
-          <div key={placement} {...api.getGroupProps({ placement })}>
-            {toasts.map((toast) => (
-              <Toast key={toast.id} actor={toast} />
-            ))}
-          </div>
-        ))}
+        {Object.entries(api.getToastsByPlacement()).map(
+          ([placement, toasts]) => (
+            <div key={placement} {...api.getGroupProps({ placement })}>
+              {toasts.map((toast) => (
+                <Toast key={toast.id} actor={toast} />
+              ))}
+            </div>
+          ),
+        )}
       </Portal>
     </ToastContext.Provider>
   )

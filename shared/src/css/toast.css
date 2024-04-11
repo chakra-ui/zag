@@ -17,17 +17,19 @@
 }
 
 [data-scope="toast"][data-part="root"] {
-  background: rgb(116, 116, 116);
-  color: white;
+  background: white;
   padding: 8px 12px;
   box-shadow:
     0 3px 10px rgba(0, 0, 0, 0.1),
     0 3px 3px rgba(0, 0, 0, 0.05);
-  border: 2px solid lightblue;
-  border-radius: 8px;
   width: 360px;
   overflow-wrap: anywhere;
-  opacity: 0;
+  translate: var(--x) var(--y);
+  scale: var(--scale);
+  z-index: var(--z-index);
+  height: var(--height);
+  opacity: var(--opacity);
+
   will-change: translate, opacity, scale;
   transition:
     translate 400ms,
@@ -37,101 +39,47 @@
     box-shadow 200ms;
   transition-timing-function: cubic-bezier(0.21, 1.02, 0.73, 1);
 
-  /* Toast logic styles */
-  --lift-amount: calc(var(--lift) * var(--gap));
-  --y: 100%;
-  translate: var(--x, 0) var(--y);
-  z-index: var(--z-index);
-
-  /* Needed to avoid setting hover to false when in between toasts */
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    height: calc(var(--gap) + 2px);
-    bottom: 100%;
-    width: 100%;
-  }
-
-  &[data-side="top"] {
-    top: 0;
-    --sign: -1;
-    --y: -100%;
-    --lift: 1;
-    --lift-amount: calc(1 * var(--gap));
-  }
-
-  &[data-side="bottom"] {
-    bottom: 0;
-    --sign: 1;
-    --y: 100%;
-    --lift: -1;
-    --lift-amount: calc(var(--lift) * var(--gap));
-  }
-
-  &[data-mounted] {
-    --y: 0;
-    opacity: 1;
-
-    &[data-stack] {
-      --y: calc(var(--lift) * var(--offset));
-      height: var(--initial-height);
-    }
-  }
-
   &[data-state="closed"] {
-    opacity: 0;
-    pointer-events: none;
     transition:
       translate 400ms,
       scale 400ms,
       opacity 200ms;
     transition-timing-function: cubic-bezier(0.06, 0.71, 0.55, 1);
-
-    /* Leave a ghost div to avoid setting hover to false when transitioning out */
-    &::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      scale: 1 2;
-    }
   }
+}
 
-  &[data-sibling][data-overlap] {
-    --scale: var(--index) * 0.05 + 1;
-    --y: calc(var(--lift-amount) * var(--index));
-    scale: calc(-1 * var(--scale));
-    height: var(--first-height);
+[data-scope="toast"][data-part="close-trigger"] {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 18px;
+  padding: 0;
 
-    &[data-state="closed"] {
-      --y: calc(var(--sign) * 40%);
-    }
+  & svg {
+    width: 1em;
+    height: 1em;
   }
+}
 
-  &[data-sibling][data-stack] {
-    &[data-state="closed"] {
-      --y: calc(var(--lift) * var(--offset) + var(--lift) * -100%);
-    }
-  }
-
-  &[data-first] {
-    &[data-state="closed"] {
-      --y: calc(var(--lift) * -100%);
-
-      /* Bump up the height to make sure hover state doesn't get set to false */
-      &::before {
-        height: calc(var(--initial-height) + 20%);
-      }
-    }
-  }
+[data-scope="toast"][data-part="title"] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 [data-scope="toast"][data-part="root"][data-type="error"] {
   background: red;
+  color: white;
 }
 
 [data-scope="toast"][data-part="root"][data-type="info"] {
   background: blue;
+  color: white;
 }
 
 [data-scope="toast"][data-part="root"][data-type="warning"] {
@@ -140,11 +88,7 @@
 
 [data-scope="toast"][data-part="root"][data-type="success"] {
   background: green;
-}
-
-[data-scope="toast"][data-part="root"][data-type="loading"] {
-  background: white;
-  color: black !important;
+  color: white;
 }
 
 [data-scope="toast"] .spinner {
@@ -155,6 +99,9 @@
   height: 4px;
   background: rgb(116, 116, 116);
   width: 100%;
+  position: absolute;
+  bottom: 0;
+  inset-inline: 0;
   animation-name: shrink;
 }
 

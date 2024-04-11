@@ -1,32 +1,35 @@
-[data-scope="toast"][data-part="group"] {
-  max-width: 420px;
-}
-
 [data-scope="toast"][data-part="root"] {
   width: 400px;
-  position: relative;
   color: #ffffff;
   border-radius: 0.375rem;
   padding: 1.5rem;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 10px 0px;
-  animation-fill-mode: forwards;
   background: #38a169;
+  overflow-wrap: anywhere;
+  translate: var(--x) var(--y);
+  scale: var(--scale);
+  z-index: var(--z-index);
+  height: var(--height);
+  opacity: var(--opacity);
+  will-change: translate, opacity, scale;
+  transition:
+    translate 400ms,
+    scale 400ms,
+    opacity 400ms;
+  transition-timing-function: cubic-bezier(0.21, 1.02, 0.73, 1);
 }
 
 [data-scope="toast"][data-part="root"][data-type="info"] {
-  background: #4a5568;
-}
-
-[data-scope="toast"][data-part="root"][data-state="open"] {
-  animation-name: toast-in;
-  animation-duration: 0.35s;
-  animation-timing-function: cubic-bezier(0.21, 1.02, 0.73, 1);
+  background: #fcfdff;
+  color: black;
 }
 
 [data-scope="toast"][data-part="root"][data-state="closed"] {
-  animation-name: toast-out;
-  animation-duration: 0.4s;
-  animation-timing-function: cubic-bezier(0.06, 0.71, 0.55, 1);
+  transition:
+    translate 400ms,
+    scale 400ms,
+    opacity 200ms;
+  transition-timing-function: cubic-bezier(0.06, 0.71, 0.55, 1);
 }
 
 [data-scope="toast"][data-part="close-trigger"] {
@@ -58,26 +61,4 @@
 
 [data-scope="toast"][data-part="group"] + div > button:hover {
   background: var(--colors-bg-bold);
-}
-
-@keyframes toast-in {
-  from {
-    transform: translate3d(0, 200%, 0) scale(0.6);
-    opacity: 0.5;
-  }
-  to {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes toast-out {
-  from {
-    transform: translate3d(0, 0, -1px) scale(1);
-    opacity: 1;
-  }
-  to {
-    transform: translate3d(0, 150%, -1px) scale(0.6);
-    opacity: 0;
-  }
 }
