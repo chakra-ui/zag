@@ -27,25 +27,23 @@ export default function Page() {
           <Portal>
             <div {...api.positionerProps}>
               <div {...api.contentProps}>
-                <div style={{ display: "flex", maxHeight: "200px" }}>
-                  <div style={{ display: "flex", flexDirection: "column", overflow: "scroll" }}>
-                    {api.getAvailableHours().map((hour) => (
-                      <button key={hour} {...api.getHourCellProps(hour)}>
-                        {hour}
-                      </button>
-                    ))}
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", overflow: "scroll" }}>
-                    {api.getAvailableMinutes().map((minute) => (
-                      <button key={minute} {...api.getMinuteCellProps(minute)}>
-                        {minute}
-                      </button>
-                    ))}
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <button {...api.AMPeriodTriggerProps}>AM</button>
-                    <button {...api.PMPeriodTriggerProps}>PM</button>
-                  </div>
+                <div {...api.contentColumnProps}>
+                  {api.getAvailableHours().map((hour) => (
+                    <button key={hour} {...api.getHourCellProps(hour)}>
+                      {hour}
+                    </button>
+                  ))}
+                </div>
+                <div {...api.contentColumnProps}>
+                  {api.getAvailableMinutes().map((minute) => (
+                    <button key={minute} {...api.getMinuteCellProps(minute)}>
+                      {minute}
+                    </button>
+                  ))}
+                </div>
+                <div {...api.contentColumnProps}>
+                  <button {...api.AMPeriodTriggerProps}>AM</button>
+                  <button {...api.PMPeriodTriggerProps}>PM</button>
                 </div>
               </div>
             </div>

@@ -3,7 +3,7 @@ import type { State, Send } from "./time-picker.types"
 import { parts } from "./time-picker.anatomy"
 import { dom } from "./time-picker.dom"
 import { getPlacementStyles } from "@zag-js/popper"
-import { getFormatedValue } from "./time-picker.utils"
+import { getStringifiedValue } from "./time-picker.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isOpen = state.hasTag("open")
@@ -50,17 +50,26 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       hidden: !isOpen,
       tabIndex: 0,
     }),
+    contentColumnProps: normalize.element({
+      ...parts.contentColumn.attrs,
+    }),
     controlProps: normalize.element({
       ...parts.control.attrs,
       dir: state.context.dir,
       id: dom.getControlId(state.context),
     }),
-    inputProps: normalize.element({
+    inputProps: normalize.input({
       ...parts.input.attrs,
       dir: state.context.dir,
+      autoComplete: "off",
+      autoCorrect: "off",
+      spellCheck: "false",
       id: dom.getInputId(state.context),
-      value: getFormatedValue(state.context),
-      onChange() {},
+      defaultValue: getStringifiedValue(state.context),
+      onBlur(event) {
+        const { value } = event.target
+        send({ type: "INPUT.BLUR", value })
+      },
     }),
     rootProps: normalize.element({
       ...parts.root.attrs,
@@ -68,7 +77,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getHourCellProps(hour: number) {
       return normalize.element({
         ...parts.hourCell.attrs,
-        "data-active": state.context.value.hour === hour,
+        "data-selected": state.context.value.hour === hour ? true : undefined,
         onClick() {
           send({ type: "HOUR.CLICK", hour })
         },
@@ -77,22 +86,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getMinuteCellProps(minute: number) {
       return normalize.element({
         ...parts.minuteCell.attrs,
-        "data-active": state.context.value.minute === minute,
+        "data-selected": state.context.value.minute === minute ? true : undefined,
         onClick() {
           send({ type: "MINUTE.CLICK", minute })
         },
       })
     },
     AMPeriodTriggerProps: normalize.element({
-      ...parts.AMPeriodTrigger.attrs,
-      "data-active": state.context.period === "am",
+      ...parts.amPeriodTrigger.attrs,
+      "data-selected": state.context.period === "am" ? true : undefined,
       onClick() {
         send({ type: "PERIOD.CLICK", period: "am" })
       },
     }),
     PMPeriodTriggerProps: normalize.element({
-      ...parts.PMPeriodTrigger.attrs,
-      "data-active": state.context.period === "pm",
+      ...parts.pmPeriodTrigger.attrs,
+      "data-selected": state.context.period === "pm" ? true : undefined,
       onClick() {
         send({ type: "PERIOD.CLICK", period: "pm" })
       },

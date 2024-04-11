@@ -4,7 +4,7 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./time-pi
 import { dom } from "./time-picker.dom"
 import { getPlacement } from "@zag-js/popper"
 import { Time } from "@internationalized/date"
-import { getFormatedValue } from "./time-picker.utils"
+import { getTimeValue, getStringifiedValue } from "./time-picker.utils"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
 
@@ -25,6 +25,11 @@ export function machine(userContext: UserDefinedContext) {
           placement: "bottom-start",
           gutter: 8,
           ...ctx.positioning,
+        },
+      },
+      on: {
+        "INPUT.BLUR": {
+          actions: ["applyInputValue", "syncInputElement"],
         },
       },
       states: {
@@ -155,10 +160,16 @@ export function machine(userContext: UserDefinedContext) {
         invokeValueChange(ctx) {
           ctx.onValueChange?.({ value: ctx.value })
         },
+        applyInputValue(ctx, evt) {
+          const timeValue = getTimeValue(evt.value)
+          if (!timeValue) return
+          ctx.value = timeValue.time
+          ctx.period = timeValue.period
+        },
         syncInputElement(ctx) {
           const inputEl = dom.getInputEl(ctx)
           if (!inputEl) return
-          inputEl.value = getFormatedValue(ctx)
+          inputEl.value = getStringifiedValue(ctx)
         },
         focusContentEl(ctx) {
           raf(() => {
@@ -166,20 +177,12 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         setHour(ctx, { hour }) {
-          if (ctx.period === "pm") {
-            hour += 12
-          }
           ctx.value = ctx.value.set({ hour })
         },
         setMinute(ctx, { minute }) {
           ctx.value = ctx.value.set({ minute })
         },
         setPeriod(ctx, { period }) {
-          if (ctx.period === "am" && period === "pm") {
-            ctx.value = ctx.value.add({ hours: 12 })
-          } else if (ctx.period === "pm" && period === "am") {
-            ctx.value = ctx.value.add({ hours: -12 })
-          }
           ctx.period = period
         },
       },

@@ -14,6 +14,11 @@ const fetchMachine = createMachine({
   initial: ctx.open ? "open" : "idle",
   context: {},
   on: {
+    "INPUT.BLUR": {
+      actions: ["applyInputValue", "syncInputElement"]
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }

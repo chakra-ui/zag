@@ -2788,6 +2788,9 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../utilities/dismissable
+      '@zag-js/dom-event':
+        specifier: workspace:^
+        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
