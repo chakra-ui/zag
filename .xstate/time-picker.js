@@ -47,7 +47,8 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      activities: ["computePlacement"],
+      entry: ["focusContentEl"],
+      activities: ["computePlacement", "trackDismissableElement"],
       on: {
         "TRIGGER.CLICK": [{
           target: "idle",
@@ -57,6 +58,9 @@ const fetchMachine = createMachine({
           target: "idle",
           actions: ["invokeOnClose"]
         }],
+        "CONTENT.INTERACT_OUTSIDE": {
+          target: "idle"
+        },
         "POSITIONING.SET": {
           actions: ["reposition"]
         },

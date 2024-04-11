@@ -45,10 +45,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
     contentProps: normalize.element({
       ...parts.content.attrs,
+      dir: state.context.dir,
+      id: dom.getContentId(state.context),
       hidden: !isOpen,
+      tabIndex: 0,
     }),
     controlProps: normalize.element({
       ...parts.control.attrs,
+      dir: state.context.dir,
+      id: dom.getControlId(state.context),
     }),
     inputProps: normalize.element({
       ...parts.input.attrs,

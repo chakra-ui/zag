@@ -7,6 +7,9 @@ export type ElementIds = Partial<{
   trigger: string
   input: string
   positioner: string
+  content: string
+  clearTrigger: string
+  control: string
 }>
 
 export interface OpenChangeDetails {

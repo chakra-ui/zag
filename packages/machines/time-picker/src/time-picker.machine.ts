@@ -5,6 +5,8 @@ import { dom } from "./time-picker.dom"
 import { getPlacement } from "@zag-js/popper"
 import { Time } from "@internationalized/date"
 import { getFormatedValue } from "./time-picker.utils"
+import { trackDismissableElement } from "@zag-js/dismissable"
+import { raf } from "@zag-js/dom-query"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -62,7 +64,8 @@ export function machine(userContext: UserDefinedContext) {
         },
         open: {
           tags: ["open"],
-          activities: ["computePlacement"],
+          entry: ["focusContentEl"],
+          activities: ["computePlacement", "trackDismissableElement"],
           on: {
             "TRIGGER.CLICK": [
               {
@@ -76,6 +79,9 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["invokeOnClose"],
               },
             ],
+            "CONTENT.INTERACT_OUTSIDE": {
+              target: "idle",
+            },
             "POSITIONING.SET": {
               actions: ["reposition"],
             },
@@ -104,6 +110,22 @@ export function machine(userContext: UserDefinedContext) {
             ...ctx.positioning,
             onComplete(data) {
               ctx.currentPlacement = data.placement
+            },
+          })
+        },
+        trackDismissableElement(ctx, _evt, { send }) {
+          const contentEl = () => dom.getContentEl(ctx)
+          return trackDismissableElement(contentEl, {
+            defer: true,
+            exclude: [dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
+            // onFocusOutside: ctx.onFocusOutside,
+            // onPointerDownOutside: ctx.onPointerDownOutside,
+            // onInteractOutside(event) {
+            //   ctx.onInteractOutside?.(event)
+            //   ctx.restoreFocus = !event.detail.focusable
+            // },
+            onDismiss() {
+              send({ type: "CONTENT.INTERACT_OUTSIDE" })
             },
           })
         },
@@ -137,6 +159,11 @@ export function machine(userContext: UserDefinedContext) {
           const inputEl = dom.getInputEl(ctx)
           if (!inputEl) return
           inputEl.value = getFormatedValue(ctx)
+        },
+        focusContentEl(ctx) {
+          raf(() => {
+            dom.getContentEl(ctx)?.focus({ preventScroll: true })
+          })
         },
         setHour(ctx, { hour }) {
           if (ctx.period === "pm") {
