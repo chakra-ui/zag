@@ -342,7 +342,15 @@ const components = {
       }}
     />
   ),
-  Toast: () => <Playground component={ToastGroup} />,
+  Toast: () => (
+    <Playground
+      component={ToastGroup}
+      defaultProps={{
+        pauseOnPageIdle: false,
+        max: 20,
+      }}
+    />
+  ),
   ToggleGroup: () => (
     <Playground
       component={ToggleGroup}

@@ -37,6 +37,33 @@ export function ToastGroup(props: any) {
 
   return (
     <>
+      <div className="toast__trigger-group">
+        <button
+          className="toast__trigger"
+          onClick={() => {
+            id.current = api.create({
+              title: "The Evil Rabbit jumped over the fence.",
+              type: "info",
+            })
+          }}
+        >
+          Show toast
+        </button>
+
+        <button
+          className="toast__trigger"
+          onClick={() => {
+            if (!id.current) return
+            api.update(id.current, {
+              title: "The Evil Rabbit is eating...",
+              type: "success",
+            })
+          }}
+        >
+          Update
+        </button>
+      </div>
+
       <Portal>
         {Object.entries(api.getToastsByPlacement()).map(
           ([placement, toasts]) => (
@@ -51,31 +78,6 @@ export function ToastGroup(props: any) {
           ),
         )}
       </Portal>
-
-      <div>
-        <button
-          onClick={() => {
-            id.current = api.create({
-              title: "The Evil Rabbit jumped over the fence.",
-              type: "info",
-            })
-          }}
-        >
-          Show toast
-        </button>
-
-        <button
-          onClick={() => {
-            if (!id.current) return
-            api.update(id.current, {
-              title: "The Evil Rabbit is eating...",
-              type: "success",
-            })
-          }}
-        >
-          Update
-        </button>
-      </div>
     </>
   )
 }
