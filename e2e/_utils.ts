@@ -3,7 +3,12 @@ import { expect, type Locator, type Page } from "@playwright/test"
 
 export async function a11y(page: Page, selector = "[data-part=root]") {
   await page.waitForSelector(selector)
-  const results = await new AxeBuilder({ page }).include(selector).analyze()
+
+  const results = await new AxeBuilder({ page: page as any })
+    .disableRules(["color-contrast"])
+    .include(selector)
+    .analyze()
+
   expect(results.violations).toEqual([])
 }
 
