@@ -60,17 +60,18 @@ const fetchMachine = createMachine({
       on: {
         "TRIGGER.CLICK": [{
           target: "idle",
-          actions: ["invokeOnClose"]
+          actions: ["invokeOnClose", "scrollUpColumns"]
         }],
         "CONTROLLED.CLOSE": [{
           target: "idle",
-          actions: ["invokeOnClose"]
+          actions: ["invokeOnClose", "scrollUpColumns"]
         }],
         "CONTENT.INTERACT_OUTSIDE": {
-          target: "idle"
+          target: "idle",
+          actions: ["invokeOnClose", "scrollUpColumns"]
         },
         "POSITIONING.SET": {
-          actions: ["reposition"]
+          actions: ["reposition", "scrollUpColumns"]
         },
         "HOUR.CLICK": {
           actions: ["setHour", "invokeValueChange", "syncInputElement"]

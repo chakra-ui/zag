@@ -28,6 +28,11 @@ export function getTimeValue(value: string): { time: Time; period: "am" | "pm" }
   return { time: new Time(hour, minute), period }
 }
 
+export function createConditions<T extends (value: number) => boolean>(...filters: Array<T | unknown>) {
+  const a = filters.filter((f): f is T => typeof f === "function")
+  return (value: number) => a.every((f) => f(value))
+}
+
 export function isValidCharacter(char: string | null) {
   if (!char) return true
   return /\d/.test(char) || char === ":" || char.length !== 1

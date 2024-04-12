@@ -78,20 +78,21 @@ export function machine(userContext: UserDefinedContext) {
             "TRIGGER.CLICK": [
               {
                 target: "idle",
-                actions: ["invokeOnClose"],
+                actions: ["invokeOnClose", "scrollUpColumns"],
               },
             ],
             "CONTROLLED.CLOSE": [
               {
                 target: "idle",
-                actions: ["invokeOnClose"],
+                actions: ["invokeOnClose", "scrollUpColumns"],
               },
             ],
             "CONTENT.INTERACT_OUTSIDE": {
               target: "idle",
+              actions: ["invokeOnClose", "scrollUpColumns"],
             },
             "POSITIONING.SET": {
-              actions: ["reposition"],
+              actions: ["reposition", "scrollUpColumns"],
             },
             "HOUR.CLICK": {
               actions: ["setHour", "invokeValueChange", "syncInputElement"],
@@ -191,6 +192,12 @@ export function machine(userContext: UserDefinedContext) {
         clearValue(ctx) {
           ctx.value = undefined
           ctx.period = "am"
+        },
+        scrollUpColumns(ctx) {
+          const columnEls = dom.getContentColumnEls(ctx)
+          for (const columnEl of columnEls) {
+            columnEl.scrollTo({ top: 0 })
+          }
         },
       },
     },

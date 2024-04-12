@@ -10,6 +10,7 @@ export type ElementIds = Partial<{
   content: string
   clearTrigger: string
   control: string
+  contentColumn: string
 }>
 
 export interface OpenChangeDetails {
@@ -29,6 +30,12 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   positioning: PositioningOptions
   placeholder?: string
   disabled?: boolean
+  hourSteps?: number
+  minuteSteps?: number
+  hourMax?: number
+  hourMin?: number
+  minuteMax?: number
+  minuteMin?: number
 }
 
 interface PrivateContext {

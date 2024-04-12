@@ -3,12 +3,19 @@ import type { State, Send } from "./time-picker.types"
 import { parts } from "./time-picker.anatomy"
 import { dom } from "./time-picker.dom"
 import { getPlacementStyles } from "@zag-js/popper"
-import { getNumberAsString, getStringifiedValue } from "./time-picker.utils"
+import { createConditions, getNumberAsString, getStringifiedValue } from "./time-picker.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isOpen = state.hasTag("open")
 
   const disabled = state.context.disabled
+  const placeholder = state.context.placeholder
+  const hourSteps = state.context.hourSteps
+  const minuteSteps = state.context.minuteSteps
+  const hourMax = state.context.hourMax
+  const hourMin = state.context.hourMin
+  const minuteMax = state.context.minuteMax
+  const minuteMin = state.context.minuteMin
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
@@ -22,10 +29,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getAvailableHours() {
       const length = state.context.period === null ? 24 : 12
-      return Array.from({ length }, (_, i) => (i === 0 ? 12 : i))
+      const hours = Array.from({ length }, (_, i) => i + 1)
+      const conditions = createConditions(
+        hourSteps && ((hour: number) => hour % hourSteps === 0),
+        hourMax && ((hour: number) => hour <= hourMax),
+        hourMin && ((hour: number) => hour >= hourMin),
+      )
+      return hours.filter(conditions)
     },
     getAvailableMinutes() {
-      return Array.from({ length: 60 }, (_, i) => i)
+      const minutes = Array.from({ length: 60 }, (_, i) => i)
+      const conditions = createConditions(
+        minuteSteps && ((minute: number) => minute % minuteSteps === 0),
+        minuteMax && ((minute: number) => minute <= minuteMax),
+        minuteMin && ((minute: number) => minute >= minuteMin),
+      )
+      return minutes.filter(conditions)
     },
 
     triggerProps: normalize.button({
@@ -77,7 +96,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       spellCheck: "false",
       id: dom.getInputId(state.context),
       defaultValue: getStringifiedValue(state.context),
-      placeholder: "12:00 AM",
+      placeholder: placeholder ?? "12:00 AM",
       disabled,
       onBlur(event) {
         const { value } = event.target

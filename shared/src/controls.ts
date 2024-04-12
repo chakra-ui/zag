@@ -262,4 +262,6 @@ export const signaturePadControls = defineControls({
 
 export const timePickerControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
+  hourSteps: { type: "number", defaultValue: 1 },
+  minuteSteps: { type: "number", defaultValue: 10 },
 })
