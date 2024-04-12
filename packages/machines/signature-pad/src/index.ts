@@ -3,9 +3,12 @@ export { connect } from "./signature-pad.connect"
 export { machine } from "./signature-pad.machine"
 export * from "./signature-pad.props"
 export type {
-  UserDefinedContext as Context,
   MachineApi as Api,
+  UserDefinedContext as Context,
+  DataUrlType,
   DrawDetails,
   DrawEndDetails,
+  DrawingOptions,
+  HiddenInputProps,
   SegmentPathProps,
 } from "./signature-pad.types"

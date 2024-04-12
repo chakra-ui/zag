@@ -53,6 +53,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the signature pad is read-only.
    */
   readOnly?: boolean
+  /**
+   * The name of the signature pad. Useful for form submission.
+   */
+  name?: string
 }
 
 interface PrivateContext {
@@ -95,6 +99,10 @@ export interface SegmentPathProps {
   path: string
 }
 
+export interface HiddenInputProps {
+  value: string
+}
+
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the signature pad is empty.
@@ -126,6 +134,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   controlProps: T["element"]
   segmentProps: T["svg"]
   getSegmentPathProps(props: SegmentPathProps): T["path"]
+  getHiddenInputProps(props: HiddenInputProps): T["input"]
   guideProps: T["element"]
   clearTriggerProps: T["element"]
 }

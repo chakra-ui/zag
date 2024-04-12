@@ -4,9 +4,11 @@ import type { MachineContext as Ctx, DataUrlOptions } from "./signature-pad.type
 export const dom = createScope({
   getRootId: (ctx: Ctx) => `signature-${ctx.id}`,
   getControlId: (ctx: Ctx) => `signature-control-${ctx.id}`,
+  getHiddenInputId: (ctx: Ctx) => `signature-input-${ctx.id}`,
 
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getSegmentEl: (ctx: Ctx) => query(dom.getControlEl(ctx), "[data-part=segment]"),
+  getHiddenInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenInputId(ctx)),
 
   getDataUrl: (ctx: Ctx, options: DataUrlOptions): Promise<string> => {
     const { type, quality = 0.92 } = options

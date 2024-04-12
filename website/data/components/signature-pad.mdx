@@ -161,8 +161,7 @@ const [state, send] = useMachine(
 
 ## Usage in forms
 
-To use the signature pad in a form, set the `name` context property and render
-the hidden input element using `api.hiddenInputProps`.
+To use the signature pad in a form, set the `name` context property.
 
 ```jsx
 const [state, send] = useMachine(
@@ -170,6 +169,12 @@ const [state, send] = useMachine(
     name: "signature",
   }),
 )
+```
+
+Then, render the hidden input element using `api.getHiddenInputProps`.
+
+```jsx
+<input {...api.getHiddenInputProps({ value: imageURL })} />
 ```
 
 ## Disabling the signature pad

@@ -99,5 +99,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "CLEAR" })
       },
     }),
+
+    getHiddenInputProps(props) {
+      return normalize.input({
+        type: "text",
+        hidden: true,
+        disabled: isDisabled,
+        name: state.context.name,
+        value: props.value,
+      })
+    },
   }
 }

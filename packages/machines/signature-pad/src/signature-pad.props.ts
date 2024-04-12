@@ -11,6 +11,7 @@ export const props = createProps<UserDefinedContext>()([
   "onDrawEnd",
   "readOnly",
   "drawing",
+  "name",
 ])
 
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
