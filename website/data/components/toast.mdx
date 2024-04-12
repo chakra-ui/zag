@@ -94,27 +94,55 @@ The options you can pass in are:
   `loading`, or `custom`.
 - `duration` — The duration of the toast. The default duration is computed based
   on the specified `type`.
-- `onClose` — A function that is called when the toast is closed.
+- `onStatusChange` — A callback that listens for the status changes across the
+  toast lifecycle.
 - `placement` — The placement of the toast.
-- `render` — A function that returns the toast JSX (Useful for library authors).
-- `removeDelay` — The delay before removing the toast from the DOM. This is
-  useful for managing exit animations. It is set to `0` by default.
+- `removeDelay` — The delay before unmounting the toast from the DOM. Useful for
+  transition.
 
-## Setting custom duration
+## Changing the placement
+
+Use the `placement` property when you call the `toast.create(...)` to change the
+position of the toast.
+
+```jsx {3}
+toast.info({
+  title: "Hello World",
+  description: "This is a toast",
+  placement: "top-start",
+})
+```
+
+## Overlapping toasts
+
+When multiple toasts are created, they are rendered in a stack. To make the
+toasts overlap, set the `overlap` property to `true`.
+
+```jsx
+const [state, send] = useMachine(
+  toast.group.machine({
+    overlap: true,
+  }),
+)
+```
+
+> Be sure to set up the [required styles](#requirement) to make the toasts
+> overlap correctly.
+
+## Changing the duration
 
 Every toast has a default visible duration depending on the `type` set. Here's
 the following toast types and matching default durations:
 
-<DefaultValuesTable 
-  tableData={{
-    headings: ['type', 'duration'],
+<PropValueTable
+  items={{
+    headings: ["type", "duration"],
     data: [
-      ['info', '5000'],
-      ['error', '5000'],
-      ['success', '2000'],
-      ['custom', '5000'],
-      ['loading', 'Infinity'],
-    ]
+      ["info", "5000"],
+      ["error", "5000"],
+      ["success", "2000"],
+      ["loading", "Infinity"],
+    ],
   }}
 />
 
@@ -140,22 +168,6 @@ hierarchy of the parent component. To render the toast in a portal, wrap the
 rendered toasts in the `ToastProvider` within your framework-specific portal.
 
 <CodeSnippet id="toast/using-portal.mdx" />
-
-## Positioning toast
-
-To position a toast when created, you can pass the `placement` property when you
-call the `toast.create(...)` methods provided by the toast group's connect
-funtion.
-
-```jsx {6}
-toast.create({
-  title: "Hello World",
-  description: "This is a toast",
-  type: "info",
-  duration: 6000,
-  placement: "top-start",
-})
-```
 
 ## Programmatic control
 
@@ -264,121 +276,107 @@ const [state, send] = useMachine(
 )
 ```
 
-## Using toast outside component
+## Focus Hotkey for toasts
 
-The toast module exports an `api` function you can invoke to get access to
-specific methods from the `toast.group.connect`.
+When a toast is created, you can focus the toast region by pressing the
+`alt + T`. This is useful for screen readers and keyboard navigation.
 
-The methods available are `count`, `isVisible`, `upsert`, `dismiss`, `remove`,
-`promise`.
-
-> For toast to work outside component, ensure you've setup the toast group as
-> defined in the [usage guide](#usage)
+Set the `hotkey` context property to change the underlying hotkey.
 
 ```jsx
-import * as toast from "@zag-js/toast"
-
-function fetchData() {
-  const promise = fetch("/api/data").then((res) => res.json())
-  toast.api().promise(promise, {
-    loading: {
-      title: "Loading",
-      description: "Please wait...",
-    },
-    success: (data) => ({
-      title: "Success",
-      description: "Your request has been completed",
-    }),
-    error: (err) => ({
-      title: "Error",
-      description: "An error has occurred",
-    }),
-  })
-}
-```
-
-## Changing the space between toasts
-
-When multiple toasts are rendered, a gutter of `1rem` is applied between each
-toast. To change this value, pass the `gutter` context property.
-
-```jsx {3}
 const [state, send] = useMachine(
   toast.group.machine({
-    gutter: "50px",
+    hotkey: ["F6"],
   }),
 )
 ```
 
-## Changing the viewport offsets
+## Listening for toast lifecycle
 
-The toast group's container has `position: fixed` css property applied to it
-based on the placement set. To change the viewport offsets of the toast group's
-container, pass the `offsets` context property.
+When a toast is created, you can listen for the status changes across its
+lifecycle using the `onStatusChange` callback when you call `toast.create(...)`.
 
-```jsx {4-8}
-const [state, send] = useMachine(
-  toast.group.machine({
-    offsets: {
-      top: "10px",
-      right: "10px",
-      bottom: "10px",
-      left: "10px",
-    },
-  }),
-)
-```
+The status values are:
 
-## Custom render functions
+- `visible` - The toast is mounted and rendered
+- `dismissed` - The toast is visually invisible but still mounted
+- `unmounted` - The toast has been completely unmounted and no longer exists
 
-When using the toast within a design system, you might want consumers to provide
-custom render functions that return the toast's JSX element.
-
-Here's how to achieve that:
-
-```jsx
-// 1. Update toast to support custom render
-function ToastItem(props) {
-  const [state, send] = useActor(props.actor)
-  const api = toast.connect(state, send)
-
-  // Custom toast JSX defined when `toast.create({ render: () => {...} })` is called
-  const jsx = state.context.render?.(api)
-
-  // User controlled JSX
-  if (jsx) {
-    return jsx
-  }
-
-  // Default JSX
-  return (
-    <div {...api.rootProps}>
-      <p {...api.titleProps}>{api.title}</p>
-      <p {...api.descriptionProps}>{api.description}</p>
-      <p>{api.type === "loading" ? <BeatLoader /> : null}</p>
-      <button onClick={api.dismiss}>Close</button>
-    </div>
-  )
-}
-
-// 2. Later in the app, provide custom JSX
-toast.create({
-  title: "Welcome",
+```jsx {3-7}
+toast.info({
+  title: "Hello World",
   description: "This is a toast",
   type: "info",
-  render(api) {
-    return (
-      <div style={{ background: api.type === "loading" ? "pink" : "red" }}>
-        <p>{props.title}</p>
-        <p>{props.description}</p>
-        <button onClick={props.dismiss}>Close</button>
-      </div>
-    )
+  onStatusChange: (details) => {
+    // details => { status: "visible" | "dismissed" | "unmounted" }
+    console.log("Toast status:", details)
   },
 })
 ```
 
+## Changing the gap between toasts
+
+When multiple toasts are rendered, a gap of `16px` is applied between each
+toast. To change this value, set the `gap` context property.
+
+```jsx {3}
+const [state, send] = useMachine(
+  toast.group.machine({
+    gap: 24,
+  }),
+)
+```
+
+## Changing the offset
+
+The toast region has a default `16px` offset from the viewport. Use the `offset`
+context property to change the offset.
+
+```jsx {4-8}
+const [state, send] = useMachine(
+  toast.group.machine({
+    offsets: "24px",
+  }),
+)
+```
+
 ## Styling guide
+
+### Requirement
+
+The toast machine injects a bunch of css variables that are required for it to
+work. You need to connect these variables in your styles.
+
+```css
+[data-part="root"] {
+  translate: var(--x) var(--y);
+  scale: var(--scale);
+  z-index: var(--z-index);
+  height: var(--height);
+  opacity: var(--opacity);
+  will-change: translate, opacity, scale;
+}
+```
+
+To make it transition smoothly, you should includes `transition` properties.
+
+```css
+[data-part="root"] {
+  transition:
+    translate 400ms,
+    scale 400ms,
+    opacity 400ms;
+  transition-timing-function: cubic-bezier(0.21, 1.02, 0.73, 1);
+}
+
+[data-part="root"][data-state="closed"] {
+  transition:
+    translate 400ms,
+    scale 400ms,
+    opacity 200ms;
+  transition-timing-function: cubic-bezier(0.06, 0.71, 0.55, 1);
+}
+```
 
 ### Toast styling
 
@@ -401,34 +399,8 @@ You can use this property to style the toast.
   /* Styles for the success toast type */
 }
 
-[data-part="root"][data-type="custom"] {
-  /* Styles for the custom toast type */
-}
-
 [data-part="root"][data-type="loading"] {
   /* Styles for the loading toast type */
-}
-```
-
-### Open and close state
-
-When the toast is open or closed, we attach a `data-state` attribute to the
-toast's root. A common use-case for this is to specify the entry and exit
-animations for the toast.
-
-> Remember to set the `removeDelay` to a value that matches the exit animation
-> duration.
-
-```css
-[data-part="root"][data-state="open"] {
-  animation-name: fadein;
-  animation-fill-mode: forwards;
-  animation-duration: 0.2s;
-}
-
-[data-part="root"][data-state="closed"] {
-  animation-duration: 0.3s;
-  animation-name: fadeout;
 }
 ```
 

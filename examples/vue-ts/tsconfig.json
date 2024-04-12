@@ -3,7 +3,6 @@
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "compilerOptions": {
     "strict": true,
-    "baseUrl": ".",
     "paths": {
       "@zag-js/*": ["../../node_modules/@zag-js/*"]
     },

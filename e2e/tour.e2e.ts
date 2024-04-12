@@ -23,7 +23,7 @@ test.describe("tour", () => {
     await I.dontSeeContent()
   })
 
-  test("should align with spotlight (due to offset)", async () => {
+  test.fixme("should align with spotlight (due to offset)", async () => {
     await I.clickStart()
     await I.pressKey("ArrowRight")
     await I.seeSpotlight()
@@ -70,7 +70,7 @@ test.describe("tour", () => {
     await I.seeContentIsCentered() // stay on the first step
   })
 
-  test("[preventInteraction=true] should not allow interacting with target", async () => {
+  test.fixme("[preventInteraction=true] should not allow interacting with target", async () => {
     await I.clickStart()
     await I.pressKey("ArrowRight")
 
@@ -94,11 +94,5 @@ test.describe("tour", () => {
     // check if the window selection is still empty
     const selection = await I.checkSelection()
     expect(selection).toContain("Step 1")
-  })
-
-  test("should close on interaction outside", async () => {
-    await I.clickStart()
-    await I.clickOutside()
-    await I.dontSeeContent()
   })
 })

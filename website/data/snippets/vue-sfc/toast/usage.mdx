@@ -33,7 +33,6 @@ export const store = reactive({
 VueApp.provide("toast", toastApi)
 </script>
 
-
 <script setup>
 // 3. Register the toast placements in the root of your app
 
@@ -43,7 +42,7 @@ const api = computed(() => inject("toast"))
 </script>
 
 <template>
-    <div v-for="(toasts, placement, index) in api.toastsByPlacement">
+    <div v-for="(toasts, placement, index) in api.getToastsByPlacement()">
         <div :key="placement" v-bind="api.getGroupProps({ placement })" >
             <Toast v-for="toast in toasts" :key="toast.id" :actor="toast" />
         </div>

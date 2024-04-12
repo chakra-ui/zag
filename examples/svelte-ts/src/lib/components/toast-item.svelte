@@ -8,14 +8,14 @@
 
   const { actor }: Props = $props()
 
-  const [state, send] = useActor(actor)
-  const api = toast.connect(state, send, normalizeProps)
+  const [snapshot, send] = useActor(actor)
+  const api = $derived(toast.connect(snapshot, send, normalizeProps))
 
   const progressbarProps = $derived(
     normalizeProps.element({
       "data-scope": "toast",
       "data-part": "progressbar",
-      "data-type": state.context.type,
+      "data-type": snapshot.context.type,
       style: {
         opacity: api.isVisible ? 1 : 0,
         transformOrigin: api.isRtl ? "right" : "left",

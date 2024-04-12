@@ -347,7 +347,7 @@ const components = {
       component={ToastGroup}
       defaultProps={{
         pauseOnPageIdle: false,
-        pauseOnInteraction: true,
+        max: 20,
       }}
     />
   ),

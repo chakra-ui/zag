@@ -1,44 +1,41 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { Machine, Ref, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Direction, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Base types
  * -----------------------------------------------------------------------------*/
 
-export type Type = "success" | "error" | "loading" | "info" | "custom"
+export type Type = "success" | "error" | "loading" | "info" | (string & {})
 
 export type Placement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
 
-export interface GenericOptions {
-  render?: (api: any) => any
-  title?: any
-  description?: any
-}
+export type Status = "visible" | "dismissing" | "unmounted"
 
-export interface DefaultGenericOptions {
-  /**
-   * Custom function to render the toast element.
-   */
-  render?: (api: MachineApi<any, DefaultGenericOptions>) => any
+export interface GenericOptions<T = string> {
   /**
    * The title of the toast.
    */
-  title?: string
+  title?: T
   /**
    * The description of the toast.
    */
-  description?: string
+  description?: T
 }
 
-export type GlobalToastOptions<T extends GenericOptions> = Pick<T, "render"> & {
-  /**
-   * Whether to pause toast when the user leaves the browser tab
-   */
-  pauseOnPageIdle?: boolean
-  /**
-   * Whether to pause the toast when interacted with
-   */
-  pauseOnInteraction?: boolean
+export interface StatusChangeDetails {
+  status: Status
+}
+
+/**
+ * @internal
+ */
+export interface ToastHeightDetails {
+  id: string
+  height: number
+  placement: Placement
+}
+
+export interface Options<T> extends GenericOptions<T> {
   /**
    * The duration the toast will be visible
    */
@@ -52,96 +49,145 @@ export type GlobalToastOptions<T extends GenericOptions> = Pick<T, "render"> & {
    * The placement of the toast
    */
   placement?: Placement
-}
-
-export type ToastOptions<T extends GenericOptions = DefaultGenericOptions> = T & {
   /**
    * The unique id of the toast
    */
-  id: string
+  id?: string
   /**
    * The type of the toast
    */
   type: Type
   /**
-   * Function called when the toast has been closed and removed
+   * Function called when the toast is visible
    */
-  onClose?: VoidFunction
+  onStatusChange?(details: StatusChangeDetails): void
   /**
-   * Function called when the toast is leaving
+   * The metadata of the toast
    */
-  onClosing?: VoidFunction
-  /**
-   * Function called when the toast is shown
-   */
-  onOpen?: VoidFunction
-  /**
-   * Function called when the toast is updated
-   */
-  onUpdate?: VoidFunction
+  meta?: Record<string, unknown>
 }
-
-export type Options<T extends GenericOptions> = Partial<ToastOptions<T> & GlobalToastOptions<T>>
 
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type MachineContext<T extends GenericOptions = DefaultGenericOptions> = GlobalToastOptions<T> &
-  CommonProperties &
-  Omit<ToastOptions<T>, "removeDelay"> & {
-    /**
-     * The duration for the toast to kept alive before it is removed.
-     * Useful for exit transitions.
-     */
-    removeDelay: number
-    /**
-     * The document's text/writing direction.
-     */
-    dir?: Direction
-    /**
-     * The time the toast was created
-     */
-    createdAt: number
-    /**
-     * The time left before the toast is removed
-     */
-    remaining: number
-  }
+export interface MachineContext<T = any>
+  extends Omit<CommonProperties, "id">,
+    MachinePrivateContext,
+    Omit<Options<T>, "removeDelay"> {
+  /**
+   * The duration for the toast to kept alive before it is removed.
+   * Useful for exit transitions.
+   */
+  removeDelay: number
+  /**
+   * The document's text/writing direction.
+   */
+  dir?: Direction
+  /**
+   * The time the toast was created
+   */
+  createdAt: number
+  /**
+   * The time left before the toast is removed
+   */
+  remaining: number
+}
+
+interface MachinePrivateContext {
+  /**
+   * @internal
+   * The height of the toast
+   */
+  height: number
+  /**
+   * @internal
+   * The absolute height of the toast relative to other toasts
+   */
+  offset: number
+  /**
+   * @internal
+   * Whether the toast is in the front
+   */
+  frontmost: boolean
+  /**
+   * @internal
+   * The index of the toast in the group
+   */
+  index: number
+  /**
+   * @internal
+   * Whether the toast is mounted
+   */
+  mounted: boolean
+  /**
+   * @internal
+   * The z-index of the toast
+   */
+  zIndex: number
+  /**
+   * @internal
+   * Whether the toast is stacked
+   */
+  stacked?: boolean
+}
 
 export interface MachineState {
-  value: "active" | "active:temp" | "dismissing" | "inactive" | "persist"
+  value: "visible" | "visible:updating" | "dismissing" | "unmounted" | "visible:persist"
   tags: "visible" | "paused" | "updating"
 }
 
-export type State<T extends GenericOptions = DefaultGenericOptions> = S.State<MachineContext<T>, MachineState>
+export type State<T = any> = S.State<MachineContext<T>, MachineState>
 
 export type Send = S.Send
 
-export type Service<T extends GenericOptions = DefaultGenericOptions> = Machine<MachineContext<T>, MachineState>
+export type Service<T = any> = Machine<MachineContext<T>, MachineState>
 
-type GroupPublicContext<T extends GenericOptions> = GlobalToastOptions<T> &
-  DirectionProperty &
-  CommonProperties & {
-    /**
-     * The gutter or spacing between toasts
-     */
-    gutter: string
-    /**
-     * The z-index applied to each toast group
-     */
-    zIndex: number
-    /**
-     * The maximum number of toasts that can be shown at once
-     */
-    max: number
-    /**
-     * The offset from the safe environment edge of the viewport
-     */
-    offsets: string | Record<"left" | "right" | "bottom" | "top", string>
-  }
+/* -----------------------------------------------------------------------------
+ * Group machine context
+ * -----------------------------------------------------------------------------*/
 
-export type UserDefinedGroupContext<T extends GenericOptions> = RequiredBy<GroupPublicContext<T>, "id">
+interface GroupPublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * Whether to pause toast when the user leaves the browser tab
+   */
+  pauseOnPageIdle: boolean
+  /**
+   * The gap or spacing between toasts
+   */
+  gap: number
+  /**
+   * The maximum number of toasts that can be shown at once
+   */
+  max: number
+  /**
+   * The offset from the safe environment edge of the viewport
+   */
+  offsets: string | Record<"left" | "right" | "bottom" | "top", string>
+  /**
+   * The hotkey that will move focus to the toast group
+   */
+  hotkey: string[]
+  /**
+   * Whether the toasts should overlap each other
+   */
+  overlap?: boolean
+  /**
+   * The placement of the toast
+   */
+  placement: Placement
+  /**
+   * The duration for the toast to kept alive before it is removed.
+   * Useful for exit transitions.
+   */
+  removeDelay: number
+  /**
+   * The duration the toast will be visible
+   */
+  duration?: number
+}
+
+export interface UserDefinedGroupContext extends RequiredBy<GroupPublicContext, "id"> {}
 
 type GroupComputedContext = Readonly<{
   /**
@@ -151,22 +197,45 @@ type GroupComputedContext = Readonly<{
   count: number
 }>
 
-interface GroupPrivateContext<T extends GenericOptions> {
+interface GroupPrivateContext<T> extends GenericOptions<T> {
   /**
    * @internal
    * The child toast machines (spawned by the toast group)
    */
   toasts: Service<T>[]
+  /**
+   * @internal
+   * The height of each toast
+   */
+  heights: ToastHeightDetails[]
+  /**
+   * @internal
+   */
+  _cleanup?: VoidFunction
+  /**
+   * @internal
+   */
+  lastFocusedEl: Ref<HTMLElement> | null
+  /**
+   * @internal
+   */
+  isFocusWithin: boolean
 }
 
-export interface GroupMachineContext<T extends GenericOptions = DefaultGenericOptions>
-  extends GroupPublicContext<T>,
-    GroupComputedContext,
-    GroupPrivateContext<T> {}
+export interface GroupMachineContext<T = any>
+  extends GroupPublicContext,
+    GroupPrivateContext<T>,
+    GroupComputedContext {}
 
-export type GroupState<T extends GenericOptions = DefaultGenericOptions> = S.State<GroupMachineContext<T>>
+export interface GroupMachineState {
+  value: "stack" | "overlap"
+}
+
+export type GroupState<T = any> = S.State<GroupMachineContext<T>>
 
 export type GroupSend = S.Send
+
+export type GroupService<T = any> = Machine<GroupMachineContext<T>, GroupMachineState>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -174,30 +243,37 @@ export type GroupSend = S.Send
 
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
 
-export interface PromiseOptions<V, O extends GenericOptions = DefaultGenericOptions> {
-  loading: ToastOptions<O>
-  success: MaybeFunction<ToastOptions<O>, V>
-  error: MaybeFunction<ToastOptions<O>, Error>
+export interface PromiseOptions<V, O = any> {
+  loading: Options<O>
+  success: MaybeFunction<Options<O>, V>
+  error: MaybeFunction<Options<O>, Error>
+  finally?: () => void | Promise<void>
 }
 
 export interface GroupProps {
+  /**
+   * The placement of the toast region
+   */
   placement: Placement
+  /**
+   * The human-readable label for the toast region
+   */
   label?: string
 }
 
-export interface GroupMachineApi<T extends PropTypes = PropTypes, O extends GenericOptions = DefaultGenericOptions> {
+export interface GroupMachineApi<T extends PropTypes = PropTypes, O = any> {
   /**
    * The total number of toasts
    */
-  count: number
+  getCount(): number
   /**
    * The active toasts
    */
-  toasts: Service<O>[]
+  getToasts(): Service<O>[]
   /**
    * The active toasts by placement
    */
-  toastsByPlacement: Partial<Record<Placement, Service<O>[]>>
+  getToastsByPlacement(): Partial<Record<Placement, Service<O>[]>>
   /**
    * Returns whether the toast id is visible
    */
@@ -253,18 +329,19 @@ export interface GroupMachineApi<T extends PropTypes = PropTypes, O extends Gene
    * - When the promise resolves, the toast will be updated with the success options.
    * - When the promise rejects, the toast will be updated with the error options.
    */
-  promise<T>(promise: Promise<T>, options: PromiseOptions<T, O>, shared?: Partial<ToastOptions<O>>): Promise<T>
+  promise<T>(
+    promise: Promise<T> | (() => Promise<T>),
+    options: PromiseOptions<T, O>,
+    shared?: Partial<Options<O>>,
+  ): string
   /**
    * Function to subscribe to the toast group.
    */
-  subscribe(callback: (toasts: Service<O>[]) => void): VoidFunction
+  subscribe(callback: (toasts: Options<O>[]) => void): VoidFunction
   getGroupProps(options: GroupProps): T["element"]
 }
 
-export type MachineApi<T extends PropTypes = PropTypes, O extends GenericOptions = DefaultGenericOptions> = Pick<
-  O,
-  "title" | "description"
-> & {
+export interface MachineApi<T extends PropTypes = PropTypes, O = any> extends GenericOptions<O> {
   /**
    * The type of the toast.
    */
@@ -300,6 +377,9 @@ export type MachineApi<T extends PropTypes = PropTypes, O extends GenericOptions
 
   rootProps: T["element"]
   titleProps: T["element"]
+  ghostBeforeProps: T["element"]
+  ghostAfterProps: T["element"]
   descriptionProps: T["element"]
   closeTriggerProps: T["button"]
+  actionTriggerProps: T["button"]
 }

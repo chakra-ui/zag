@@ -17,7 +17,7 @@ interface PublicContext extends CommonProperties, DirectionProperty {
   /**
    * Functional called when the image loading status changes.
    */
-  onLoadingStatusChange?: (details: StatusChangeDetails) => void
+  onStatusChange?: (details: StatusChangeDetails) => void
 }
 
 interface PrivateContext {}

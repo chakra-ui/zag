@@ -11,75 +11,77 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id,
-  entry: "invokeOnOpen",
-  initial: type === "loading" ? "persist" : "active",
   context: {
     "hasTypeChanged && isChangingToLoading": false,
     "hasDurationChanged || hasTypeChanged": false,
     "!isLoadingType": false
   },
+  initial: type === "loading" ? "visible:persist" : "visible",
   on: {
     UPDATE: [{
       cond: "hasTypeChanged && isChangingToLoading",
-      target: "persist",
-      actions: ["setContext", "invokeOnUpdate"]
+      target: "visible:persist",
+      actions: ["setContext"]
     }, {
       cond: "hasDurationChanged || hasTypeChanged",
-      target: "active:temp",
-      actions: ["setContext", "invokeOnUpdate"]
+      target: "visible:updating",
+      actions: ["setContext"]
     }, {
-      actions: ["setContext", "invokeOnUpdate"]
-    }]
+      actions: ["setContext"]
+    }],
+    MEASURE: {
+      actions: ["measureHeight"]
+    }
   },
+  entry: ["invokeOnVisible"],
+  activities: ["trackHeight"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
-    "active:temp": {
+    "visible:updating": {
       tags: ["visible", "updating"],
       after: {
-        0: "active"
+        0: "visible"
       }
     },
-    persist: {
+    "visible:persist": {
       tags: ["visible", "paused"],
-      activities: "trackDocumentVisibility",
       on: {
         RESUME: {
           cond: "!isLoadingType",
-          target: "active",
+          target: "visible",
           actions: ["setCreatedAt"]
         },
         DISMISS: "dismissing"
       }
     },
-    active: {
+    visible: {
       tags: ["visible"],
-      activities: "trackDocumentVisibility",
       after: {
         VISIBLE_DURATION: "dismissing"
       },
       on: {
         DISMISS: "dismissing",
         PAUSE: {
-          target: "persist",
+          target: "visible:persist",
           actions: "setRemainingDuration"
         }
       }
     },
     dismissing: {
-      entry: "invokeOnClosing",
+      entry: "invokeOnDismiss",
       after: {
         REMOVE_DELAY: {
-          target: "inactive",
+          target: "unmounted",
           actions: "notifyParentToRemove"
         }
       }
     },
-    inactive: {
-      entry: "invokeOnClose",
+    unmounted: {
+      entry: "invokeOnUnmount",
       type: "final"
     }
   }

@@ -6,17 +6,19 @@ export { anatomy } from "./toast.anatomy"
 export { connect } from "./toast.connect"
 export type {
   MachineApi as Api,
+  GenericOptions,
   GroupMachineApi as GroupApi,
   GroupMachineContext,
   GroupProps,
+  GroupService,
   GroupState,
   MachineContext,
-  GenericOptions,
-  DefaultGenericOptions,
   Placement,
   PromiseOptions,
   Service,
-  ToastOptions,
+  StatusChangeDetails,
+  Options,
+  Status,
   Type,
 } from "./toast.types"
 export { createMachine }

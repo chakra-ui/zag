@@ -164,6 +164,7 @@ ensure that the component works the same way regardless of the framework.
 - [XState](https://xstate.js.org/) for inspiring the base implementation of the state machine
 - [Vue.js](https://vuejs.org/) and [Lit](https://lit-element.polymer-project.org/) for inspiring new patterns in the
   machine (`computed` and `watch`)
+- [Sonner](https://sonner.emilkowal.ski/toaster) for inspiring the toast machine
 
 ---
 

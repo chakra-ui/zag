@@ -1,8 +1,10 @@
-import { normalizeProps, useActor, useMachine } from "@zag-js/react"
+import { Portal, normalizeProps, useActor, useMachine } from "@zag-js/react"
 import { toastControls } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
+import { XIcon } from "lucide-react"
 import { useId, useRef } from "react"
-import { BeatLoader } from "react-spinners"
+import { Dialog } from "../components/dialog"
+import { LoaderBar } from "../components/loader"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -24,17 +26,19 @@ function ToastItem({ actor }: { actor: toast.Service }) {
     },
   }
 
-  if (state.context.render) {
-    return state.context.render(api)
-  }
-
   return (
     <pre {...api.rootProps}>
+      <span {...api.ghostBeforeProps} />
       <div {...progressbarProps} />
-      <p {...api.titleProps}>{api.title}</p>
+      <p {...api.titleProps}>
+        {api.type === "loading" && <LoaderBar />}
+        {api.title}
+      </p>
       <p {...api.descriptionProps}>{api.description}</p>
-      <p>{api.type === "loading" ? <BeatLoader /> : null}</p>
-      <button {...api.closeTriggerProps}>Close</button>
+      <button {...api.closeTriggerProps}>
+        <XIcon />
+      </button>
+      <span {...api.ghostAfterProps} />
     </pre>
   )
 }
@@ -45,7 +49,8 @@ export default function Page() {
   const [state, send] = useMachine(
     toast.group.machine({
       id: useId(),
-      placement: "top-start",
+      placement: "bottom",
+      removeDelay: 200,
     }),
     {
       context: controls.context,
@@ -54,28 +59,28 @@ export default function Page() {
 
   const api = toast.group.connect(state, send, normalizeProps)
 
-  const placements = Object.keys(api.toastsByPlacement) as toast.Placement[]
+  const toastsByPlacement = api.getToastsByPlacement()
+  const placements = Object.keys(toastsByPlacement) as toast.Placement[]
   const id = useRef<string>()
 
   return (
     <>
       <main>
+        <Dialog />
         <div style={{ display: "flex", gap: "16px" }}>
           <button
             onClick={() => {
-              id.current = api.create({
-                title: "Welcome",
-                description: "This a notification",
-                type: "info",
+              api.create({
+                title: "Fetching data...",
+                type: "loading",
               })
             }}
           >
-            Notify (Info)
+            Notify (Loading)
           </button>
           <button
             onClick={() => {
-              api.create({
-                placement: "bottom-start",
+              id.current = api.create({
                 title: "Ooops! Something was wrong",
                 type: "error",
               })
@@ -92,19 +97,22 @@ export default function Page() {
               })
             }}
           >
-            Update Child (info)
+            Update Latest
           </button>
           <button onClick={() => api.dismiss()}>Close all</button>
           <button onClick={() => api.pause()}>Pause all</button>
           <button onClick={() => api.resume()}>Resume all</button>
         </div>
-        {placements.map((placement) => (
-          <div key={placement} {...api.getGroupProps({ placement })}>
-            {api.toastsByPlacement[placement].map((actor) => (
-              <ToastItem key={actor.id} actor={actor} />
-            ))}
-          </div>
-        ))}
+
+        <Portal>
+          {placements.map((placement) => (
+            <div key={placement} {...api.getGroupProps({ placement })}>
+              {toastsByPlacement[placement].map((toast) => (
+                <ToastItem key={toast.id} actor={toast} />
+              ))}
+            </div>
+          ))}
+        </Portal>
       </main>
       <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />

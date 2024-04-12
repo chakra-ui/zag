@@ -126,15 +126,10 @@ const components: Record<string, FC<any>> = {
   ContextTable(props) {
     return <PropTable type="context" {...props} />
   },
-  DefaultValuesTable: ({
-    tableData,
-  }: {
-    tableData: {
-      headings: string[]
-      data: Array<[string, string]>
-    }
+  PropValueTable: (props: {
+    items: { headings: string[]; data: Array<[string, string]> }
   }) => {
-    const { data, headings } = tableData
+    const { data, headings } = props.items
 
     return (
       <table>

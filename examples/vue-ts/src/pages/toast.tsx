@@ -1,10 +1,10 @@
 import { toastControls } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
 import { normalizeProps, useActor, useMachine } from "@zag-js/vue"
-//@ts-ignore
-import { HollowDotsSpinner } from "epic-spinners"
+import { XIcon } from "lucide-vue-next"
 import type { PropType } from "vue"
 import { computed, defineComponent, ref } from "vue"
+import { LoaderBar } from "../components/loader"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -35,16 +35,18 @@ const ToastItem = defineComponent({
     return () => {
       const api = apiRef.value
 
-      if (state.value.context.render) {
-        return state.value.context.render(api)
-      }
-
       return (
         <pre {...api.rootProps}>
+          <span {...api.ghostBeforeProps} />
           <div {...progressbarProps.value} />
-          <p {...api.titleProps}>{api.title}</p>
-          <p>{api.type === "loading" ? <HollowDotsSpinner /> : null}</p>
-          <button {...api.closeTriggerProps}>Close</button>
+          <p {...api.titleProps}>
+            {api.type === "loading" && <LoaderBar />}
+            {api.title}
+          </p>
+          <span {...api.ghostAfterProps} />
+          <button {...api.closeTriggerProps}>
+            <XIcon />
+          </button>
         </pre>
       )
     }
@@ -59,7 +61,9 @@ export default defineComponent({
     const [state, send] = useMachine(
       toast.group.machine({
         id: "1",
-        placement: "top-start",
+        placement: "bottom-end",
+        removeDelay: 250,
+        overlap: true,
       }),
       {
         context: controls.context,
@@ -68,7 +72,9 @@ export default defineComponent({
 
     const apiRef = computed(() => toast.group.connect(state.value, send, normalizeProps))
 
-    const placementsRef = computed(() => Object.keys(apiRef.value.toastsByPlacement) as toast.Placement[])
+    const toastsByPlacementRef = computed(() => apiRef.value.getToastsByPlacement())
+    const placementsRef = computed(() => Object.keys(toastsByPlacementRef.value) as toast.Placement[])
+
     const id = ref<string>()
 
     return () => {
@@ -79,25 +85,23 @@ export default defineComponent({
             <div style={{ display: "flex", gap: "16px" }}>
               <button
                 onClick={() => {
-                  id.value = api.create({
-                    title: "Welcome",
-                    description: "Welcome",
-                    type: "info",
+                  api.create({
+                    title: "Fetching data...",
+                    type: "loading",
                   })
                 }}
               >
-                Notify (Info)
+                Notify (Loading)
               </button>
               <button
                 onClick={() => {
-                  api.create({
-                    placement: "bottom-start",
+                  id.value = api.create({
                     title: "Ooops! Something was wrong",
                     type: "error",
                   })
                 }}
               >
-                Notify (Error)
+                Notify (Info)
               </button>
               <button
                 onClick={() => {
@@ -108,7 +112,7 @@ export default defineComponent({
                   })
                 }}
               >
-                Update Child (info)
+                Update Latest
               </button>
               <button onClick={() => api.dismiss()}>Close all</button>
               <button onClick={() => api.pause()}>Pause all</button>
@@ -116,8 +120,8 @@ export default defineComponent({
             </div>
             {placementsRef.value.map((placement) => (
               <div key={placement} {...api.getGroupProps({ placement })}>
-                {api.toastsByPlacement[placement]!.map((actor) => (
-                  <ToastItem key={actor.id} actor={actor} />
+                {toastsByPlacementRef.value[placement]!.map((toast) => (
+                  <ToastItem key={toast.id} actor={toast} />
                 ))}
               </div>
             ))}

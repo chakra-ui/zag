@@ -127,3 +127,27 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
     cleanups.forEach((fn) => fn?.())
   }
 }
+
+export function trackDismissableBranch(nodeOrFn: NodeOrFn, options: { defer?: boolean } = {}) {
+  const { defer } = options
+  const func = defer ? raf : (v: any) => v()
+  const cleanups: (VoidFunction | undefined)[] = []
+
+  cleanups.push(
+    func(() => {
+      const node = isFunction(nodeOrFn) ? nodeOrFn() : nodeOrFn
+      if (!node) {
+        warn("[@zag-js/dismissable] branch node is `null` or `undefined`")
+        return
+      }
+      layerStack.addBranch(node)
+      cleanups.push(() => {
+        layerStack.removeBranch(node)
+      })
+    }),
+  )
+
+  return () => {
+    cleanups.forEach((fn) => fn?.())
+  }
+}
