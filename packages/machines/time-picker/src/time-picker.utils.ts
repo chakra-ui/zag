@@ -11,21 +11,26 @@ export function getStringifiedValue(ctx: MachineContext) {
   const hour = getNumberAsString(ctx.value.hour)
   const minute = getNumberAsString(ctx.value.minute)
   const period = ctx.period ? ctx.period.toUpperCase() : ""
+  if (ctx.withSeconds) {
+    const second = getNumberAsString(ctx.value.second)
+    return `${hour}:${minute}:${second} ${period}`
+  }
   return `${hour}:${minute} ${period}`
 }
 
 export function getTimeValue(value: string): { time: Time; period: "am" | "pm" } | undefined {
-  const match = value.match(/(\d{2}):(\d{2})\s?(AM|PM)?/)
+  const match = value.match(/(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?\s?(AM|PM)?/)
   if (!match) return
-  let [, hourString, minuteString, periodString] = match
+  let [, hourString, minuteString, secondString, periodString] = match
   let hour = parseInt(hourString)
   const minute = parseInt(minuteString)
+  const second = secondString ? parseInt(secondString) : undefined
   let period = (periodString ? periodString.toLowerCase() : "am") as "am" | "pm"
   if (hour > 12) {
     hour -= 12
     period = "pm"
   }
-  return { time: new Time(hour, minute), period }
+  return { time: new Time(hour, minute, second), period }
 }
 
 export function createConditions<T extends (value: number) => boolean>(...filters: Array<T | unknown>) {

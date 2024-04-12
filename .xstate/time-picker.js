@@ -79,6 +79,9 @@ const fetchMachine = createMachine({
         "MINUTE.CLICK": {
           actions: ["setMinute", "invokeValueChange", "syncInputElement"]
         },
+        "SECOND.CLICK": {
+          actions: ["setSecond", "invokeValueChange", "syncInputElement"]
+        },
         "PERIOD.CLICK": {
           actions: ["setPeriod", "invokeValueChange", "syncInputElement"]
         }

@@ -10,6 +10,7 @@ export const anatomy = createAnatomy("time-picker").parts(
   "input",
   "hourCell",
   "minuteCell",
+  "secondCell",
   "periodTrigger",
   "positioner",
   "trigger",

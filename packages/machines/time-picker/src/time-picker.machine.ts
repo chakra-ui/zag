@@ -100,6 +100,9 @@ export function machine(userContext: UserDefinedContext) {
             "MINUTE.CLICK": {
               actions: ["setMinute", "invokeValueChange", "syncInputElement"],
             },
+            "SECOND.CLICK": {
+              actions: ["setSecond", "invokeValueChange", "syncInputElement"],
+            },
             "PERIOD.CLICK": {
               actions: ["setPeriod", "invokeValueChange", "syncInputElement"],
             },
@@ -185,6 +188,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         setMinute(ctx, { minute }) {
           ctx.value = (ctx.value ?? new Time(0)).set({ minute })
+        },
+        setSecond(ctx, { second }) {
+          ctx.value = (ctx.value ?? new Time(0)).set({ second })
         },
         setPeriod(ctx, { period }) {
           ctx.period = period

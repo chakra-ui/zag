@@ -10,12 +10,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const disabled = state.context.disabled
   const placeholder = state.context.placeholder
-  const hourSteps = state.context.hourSteps
-  const minuteSteps = state.context.minuteSteps
-  const hourMax = state.context.hourMax
-  const hourMin = state.context.hourMin
-  const minuteMax = state.context.minuteMax
-  const minuteMin = state.context.minuteMin
+  const hourOptions = state.context.hourOptions
+  const minuteOptions = state.context.minuteOptions
+  const secondOptions = state.context.secondOptions
+  const withSeconds = state.context.withSeconds
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
@@ -30,21 +28,36 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getAvailableHours() {
       const length = state.context.period === null ? 24 : 12
       const hours = Array.from({ length }, (_, i) => i + 1)
+      if (!hourOptions) return hours
+      const { steps, max, min } = hourOptions
       const conditions = createConditions(
-        hourSteps && ((hour: number) => hour % hourSteps === 0),
-        hourMax && ((hour: number) => hour <= hourMax),
-        hourMin && ((hour: number) => hour >= hourMin),
+        steps && ((hour: number) => hour % steps === 0),
+        max && ((hour: number) => hour <= max),
+        min && ((hour: number) => hour >= min),
       )
       return hours.filter(conditions)
     },
     getAvailableMinutes() {
       const minutes = Array.from({ length: 60 }, (_, i) => i)
+      if (!minuteOptions) return minutes
+      const { steps, max, min } = minuteOptions
       const conditions = createConditions(
-        minuteSteps && ((minute: number) => minute % minuteSteps === 0),
-        minuteMax && ((minute: number) => minute <= minuteMax),
-        minuteMin && ((minute: number) => minute >= minuteMin),
+        steps && ((minute: number) => minute % steps === 0),
+        max && ((minute: number) => minute <= max),
+        min && ((minute: number) => minute >= min),
       )
       return minutes.filter(conditions)
+    },
+    getAvailableSeconds() {
+      const seconds = Array.from({ length: 60 }, (_, i) => i)
+      if (!secondOptions) return seconds
+      const { steps, max, min } = secondOptions
+      const conditions = createConditions(
+        steps && ((second: number) => second % steps === 0),
+        max && ((second: number) => second <= max),
+        min && ((second: number) => second >= min),
+      )
+      return seconds.filter(conditions)
     },
 
     triggerProps: normalize.button({
@@ -80,9 +93,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       hidden: !isOpen,
       tabIndex: 0,
     }),
-    contentColumnProps: normalize.element({
-      ...parts.contentColumn.attrs,
-    }),
+    getContentColumnProps({ type }: { type: "hour" | "minute" | "second" | "period" }) {
+      return normalize.element({
+        ...parts.contentColumn.attrs,
+        hidden: !state.context.withSeconds && type === "second",
+      })
+    },
     controlProps: normalize.element({
       ...parts.control.attrs,
       dir: state.context.dir,
@@ -96,7 +112,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       spellCheck: "false",
       id: dom.getInputId(state.context),
       defaultValue: getStringifiedValue(state.context),
-      placeholder: placeholder ?? "12:00 AM",
+      placeholder: placeholder ?? `12:00${withSeconds ? ":00" : ""} AM`,
       disabled,
       onBlur(event) {
         const { value } = event.target
@@ -127,6 +143,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         disabled,
         onClick() {
           send({ type: "MINUTE.CLICK", minute })
+        },
+      })
+    },
+    getSecondCellProps({ second }: { second: number }) {
+      return normalize.button({
+        ...parts.secondCell.attrs,
+        "data-selected": state.context.value?.second === second ? true : undefined,
+        type: "button",
+        children: getNumberAsString(second),
+        disabled,
+        onClick() {
+          send({ type: "SECOND.CLICK", second })
         },
       })
     },

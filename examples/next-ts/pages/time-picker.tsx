@@ -28,17 +28,22 @@ export default function Page() {
           <Portal>
             <div {...api.positionerProps}>
               <div {...api.contentProps}>
-                <div {...api.contentColumnProps}>
+                <div {...api.getContentColumnProps({ type: "hour" })}>
                   {api.getAvailableHours().map((hour) => (
                     <button key={hour} {...api.getHourCellProps({ hour })} />
                   ))}
                 </div>
-                <div {...api.contentColumnProps}>
+                <div {...api.getContentColumnProps({ type: "minute" })}>
                   {api.getAvailableMinutes().map((minute) => (
                     <button key={minute} {...api.getMinuteCellProps({ minute })} />
                   ))}
                 </div>
-                <div {...api.contentColumnProps}>
+                <div {...api.getContentColumnProps({ type: "second" })}>
+                  {api.getAvailableSeconds().map((second) => (
+                    <button key={second} {...api.getSecondCellProps({ second })} />
+                  ))}
+                </div>
+                <div {...api.getContentColumnProps({ type: "period" })}>
                   <button {...api.getPeriodTriggerProps({ period: "am" })}>AM</button>
                   <button {...api.getPeriodTriggerProps({ period: "pm" })}>PM</button>
                 </div>

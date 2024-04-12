@@ -18,6 +18,7 @@
 
 [data-scope="time-picker"][data-part="hour-cell"],
 [data-scope="time-picker"][data-part="minute-cell"],
+[data-scope="time-picker"][data-part="second-cell"],
 [data-scope="time-picker"][data-part="period-trigger"] {
   all: unset;
   padding: 8px;
@@ -26,6 +27,7 @@
 
 [data-scope="time-picker"][data-part="hour-cell"][data-selected],
 [data-scope="time-picker"][data-part="minute-cell"][data-selected],
+[data-scope="time-picker"][data-part="second-cell"][data-selected],
 [data-scope="time-picker"][data-part="period-trigger"][data-selected] {
   background: purple !important;
   color: white !important ;
