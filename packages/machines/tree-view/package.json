@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/tree-view",
-  "version": "0.45.0",
+  "version": "0.46.0",
   "description": "Core logic for the tree-view widget implemented as a state machine",
   "keywords": [
     "js",

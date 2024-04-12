@@ -1,5 +1,21 @@
 # @zag-js/switch
 
+## 0.46.0
+
+### Patch Changes
+
+- [`beabfff`](https://github.com/chakra-ui/zag/commit/beabfff75f8e34d57bcb910b5e565f9797e62b2d) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `data-active` doesn't get removed when pointer is released outside the element
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.46.0
+  - @zag-js/core@0.46.0
+  - @zag-js/types@0.46.0
+  - @zag-js/utils@0.46.0
+  - @zag-js/dom-event@0.46.0
+  - @zag-js/dom-query@0.46.0
+  - @zag-js/form-utils@0.46.0
+  - @zag-js/visually-hidden@0.46.0
+
 ## 0.45.0
 
 ### Patch Changes

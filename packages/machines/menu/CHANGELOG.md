@@ -1,5 +1,23 @@
 # @zag-js/menu
 
+## 0.46.0
+
+### Patch Changes
+
+- [`fd365be`](https://github.com/chakra-ui/zag/commit/fd365be1fb84903845fb09b962552c8cc90f7075) Thanks [@cschroeter](https://github.com/cschroeter)! - Export Service
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.46.0
+  - @zag-js/core@0.46.0
+  - @zag-js/types@0.46.0
+  - @zag-js/utils@0.46.0
+  - @zag-js/dismissable@0.46.0
+  - @zag-js/dom-event@0.46.0
+  - @zag-js/dom-query@0.46.0
+  - @zag-js/mutation-observer@0.46.0
+  - @zag-js/popper@0.46.0
+  - @zag-js/rect-utils@0.46.0
+
 ## 0.45.0
 
 ### Patch Changes
