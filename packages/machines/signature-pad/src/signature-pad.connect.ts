@@ -1,5 +1,5 @@
-import { getRelativePoint, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
-import { dataAttr } from "@zag-js/dom-query"
+import { getNativeEvent, getRelativePoint, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
+import { dataAttr, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./signature-pad.anatomy"
 import { dom } from "./signature-pad.dom"
@@ -45,6 +45,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-disabled": isDisabled,
       "data-disabled": dataAttr(isDisabled),
       onPointerDown(event) {
+        const target = getEventTarget<HTMLElement>(getNativeEvent(event))
+        if (target?.closest("[data-part=clear-trigger]")) return
         if (!isLeftClick(event) || isModifiedEvent(event) || !isInteractive) return
         event.currentTarget.setPointerCapture(event.pointerId)
         const point = { x: event.clientX, y: event.clientY }
@@ -82,8 +84,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    separatorProps: normalize.element({
-      ...parts.separator.attrs,
+    guideProps: normalize.element({
+      ...parts.guide.attrs,
       "data-disabled": dataAttr(isDisabled),
     }),
 

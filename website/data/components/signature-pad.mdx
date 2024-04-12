@@ -9,6 +9,54 @@ package: "@zag-js/signature-pad"
 The signature pad component allows users to draw handwritten signatures using
 touch or pointer devices. The signature can be saved as an image or cleared.
 
+<Resources pkg="@zag-js/signature-pad" />
+
+<Showcase id="SignaturePad" />
+
+**Features**
+
+- Draw signatures using touch or pointer devices.
+- Save the signature as an image.
+- Clear the signature.
+
+## Installation
+
+To use the signature pad machine in your project, run the following command in
+your command line:
+
+<CodeSnippet id="signature-pad/installation.mdx" />
+
+This command will install the framework agnostic signature pad logic and the
+reactive utilities for your framework of choice.
+
+## Anatomy
+
+To set up the signature pad correctly, you'll need to understand its anatomy and
+how we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="signature-pad" />
+
+## Usage
+
+First, import the signature pad package into your project
+
+```jsx
+import * as signaturePad from "@zag-js/signature-pad"
+```
+
+The signature pad package exports two key functions:
+
+- `machine` — The state machine logic for the signature pad widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+Next, import the required hooks and functions for your framework and use the
+signature pad machine in your project 🔥
+
+<CodeSnippet id="signature-pad/usage.mdx" />
+
 ## Listening to drawing events
 
 The signature pad component emits the following events:
@@ -46,6 +94,25 @@ Use the `api.getDataUrl()` method to get the signature as a data URL and render
 it as an image.
 
 > You can also leverage the `onDrawEnd` event to get the signature data URL.
+
+```jsx
+const [state, send] = useMachine(
+  signature.machine({
+    onDrawEnd(details) {
+      details.getDataUrl("image/png").then((url) => {
+        // set the image URL in local state
+        setImageURL(url)
+      })
+    },
+  }),
+)
+```
+
+Next, render the image preview using the URL.
+
+```jsx
+<img src={imageURL} alt="Signature" />
+```
 
 ## Changing the stroke color
 
@@ -129,3 +196,19 @@ const [state, send] = useMachine(
   }),
 )
 ```
+
+## Methods and Properties
+
+The signature pad `api` exposes the following methods and properties:
+
+### Machine Context
+
+The signature pad machine exposes the following context properties:
+
+<ContextTable name="signature-pad" />
+
+### Machine API
+
+The signature pad `api` exposes the following methods:
+
+<ApiTable name="signature-pad" />

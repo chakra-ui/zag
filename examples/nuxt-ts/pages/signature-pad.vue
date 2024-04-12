@@ -25,7 +25,7 @@ const api = computed(() => signaturePad.connect(state.value, send, normalizeProp
           <path v-for="path of api.paths" key="{i}" v-bind="api.getSegmentPathProps({ path })" />
           <path v-if="api.currentPath" v-bind="api.getSegmentPathProps({ path: api.currentPath })" />
         </svg>
-        <div v-bind="api.separatorProps" />
+        <div v-bind="api.guideProps" />
       </div>
 
       <button v-bind="api.clearTriggerProps">

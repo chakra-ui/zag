@@ -28,6 +28,7 @@
 @import url(./toast.css);
 @import url(./toggle-group.css);
 @import url(./tooltip.css);
+@import url(./signature-pad.css);
 
 * {
   border-color: var(--colors-border-bold);

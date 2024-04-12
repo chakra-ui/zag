@@ -39,7 +39,7 @@ export default function Page() {
                 {(path) => <path {...api().getSegmentPathProps({ path: path() })} />}
               </Show>
             </svg>
-            <div {...api().separatorProps} />
+            <div {...api().guideProps} />
           </div>
 
           <button {...api().clearTriggerProps}>

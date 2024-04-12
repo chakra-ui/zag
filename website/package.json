@@ -45,6 +45,7 @@
     "@zag-js/progress": "workspace:*",
     "@zag-js/popover": "workspace:*",
     "@zag-js/radio-group": "workspace:*",
+    "@zag-js/signature-pad": "workspace:*",
     "@zag-js/slider": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
     "@zag-js/react": "workspace:*",

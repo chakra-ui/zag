@@ -43,7 +43,7 @@ export default function Page() {
               {api.currentPath && <path {...api.getSegmentPathProps({ path: api.currentPath })} />}
             </svg>
 
-            <div {...api.separatorProps} />
+            <div {...api.guideProps} />
           </div>
 
           <button {...api.clearTriggerProps}>

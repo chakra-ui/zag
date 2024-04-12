@@ -47,7 +47,7 @@
         {/if}
       </svg>
 
-      <div {...api.separatorProps} />
+      <div {...api.guideProps} />
     </div>
 
     <button {...api.clearTriggerProps}>

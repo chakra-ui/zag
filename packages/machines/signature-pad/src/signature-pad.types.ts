@@ -126,6 +126,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   controlProps: T["element"]
   segmentProps: T["svg"]
   getSegmentPathProps(props: SegmentPathProps): T["path"]
-  separatorProps: T["element"]
+  guideProps: T["element"]
   clearTriggerProps: T["element"]
 }

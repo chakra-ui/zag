@@ -3,6 +3,7 @@ import { AvatarAnatomy } from "./avatar"
 import { CarouselAnatomy } from "./carousel"
 import { CheckboxAnatomy } from "./checkbox"
 import { CircularProgressAnatomy } from "./circular-progress"
+import { ClipboardAnatomy } from "./clipboard"
 import { ColorPickerAnatomy } from "./color-picker"
 import { ComboboxAnatomy } from "./combobox"
 import { DatePickerAnatomy } from "./date-picker"
@@ -20,6 +21,7 @@ import { RadioGroupAnatomy } from "./radio-group"
 import { RatingGroupAnatomy } from "./rating-group"
 import { SegmentedControlAnatomy } from "./segmented-control"
 import { SelectAnatomy } from "./select"
+import { SignaturePadAnatomy } from "./signature-pad"
 import { SliderAnatomy } from "./slider"
 import { SplitterAnatomy } from "./splitter"
 import { SwitchAnatomy } from "./switch"
@@ -29,9 +31,9 @@ import { ToastAnatomy } from "./toast"
 import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
 import { TreeViewAnatomy } from "./tree-view"
-import { ClipboardAnatomy } from "./clipboard"
 
 export const allComponents = {
+  "signature-pad": SignaturePadAnatomy,
   clipboard: ClipboardAnatomy,
   "tree-view": TreeViewAnatomy,
   "circular-progress": CircularProgressAnatomy,

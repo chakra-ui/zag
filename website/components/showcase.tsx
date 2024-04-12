@@ -2,7 +2,6 @@ import { Accordion } from "./machines/accordion"
 import { Avatar } from "./machines/avatar"
 import { Carousel } from "./machines/carousel"
 import { Checkbox } from "./machines/checkbox"
-import { CircularProgress } from "./machines/progress-circular"
 import { Clipboard } from "./machines/clipboard"
 import { Collapsible } from "./machines/collapsible"
 import { ColorPicker } from "./machines/color-picker"
@@ -12,18 +11,20 @@ import { Dialog } from "./machines/dialog"
 import { Editable } from "./machines/editable"
 import { FileUpload } from "./machines/file-upload"
 import { HoverCard } from "./machines/hover-card"
-import { LinearProgress } from "./machines/progress-linear"
 import { Menu } from "./machines/menu"
 import { NestedMenu } from "./machines/nested-menu"
 import { NumberInput } from "./machines/number-input"
 import { Pagination } from "./machines/pagination"
 import { PinInput } from "./machines/pin-input"
 import { Popover } from "./machines/popover"
+import { CircularProgress } from "./machines/progress-circular"
+import { LinearProgress } from "./machines/progress-linear"
 import { Radio } from "./machines/radio"
 import { RangeSlider } from "./machines/range-slider"
 import { Rating } from "./machines/rating"
 import { SegmentedControl } from "./machines/segmented-control"
 import { Select } from "./machines/select"
+import { SignaturePad } from "./machines/signature-pad"
 import { Slider } from "./machines/slider"
 import { Splitter } from "./machines/splitter"
 import { Switch } from "./machines/switch"
@@ -379,6 +380,7 @@ const components = {
       }}
     />
   ),
+  SignaturePad: () => <Playground component={SignaturePad} />,
 }
 
 export function Showcase(props: { id: keyof typeof components }) {

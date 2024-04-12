@@ -1,0 +1,36 @@
+```jsx
+import { normalizeProps, useMachine } from "@zag-js/react"
+import * as signaturePad from "@zag-js/signature-pad"
+import { useId, useState } from "react"
+
+export function SignaturePad() {
+  const [state, send] = useMachine(
+    signaturePad.machine({
+      id: useId(),
+    }),
+  )
+
+  const api = signaturePad.connect(state, send, normalizeProps)
+
+  return (
+    <div {...api.rootProps}>
+      <label {...api.labelProps}>Signature Pad</label>
+
+      <div {...api.controlProps}>
+        <svg {...api.segmentProps}>
+          {api.paths.map((path, i) => (
+            <path key={i} {...api.getSegmentPathProps({ path })} />
+          ))}
+          {api.currentPath && (
+            <path {...api.getSegmentPathProps({ path: api.currentPath })} />
+          )}
+        </svg>
+
+        <button {...api.clearTriggerProps}>X</button>
+
+        <div {...api.guideProps} />
+      </div>
+    </div>
+  )
+}
+```

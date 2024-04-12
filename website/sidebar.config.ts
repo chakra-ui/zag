@@ -96,6 +96,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Range Slider", id: "range-slider" },
         { type: "doc", label: "Rating Group", id: "rating-group" },
         { type: "doc", label: "Select", id: "select" },
+        { type: "doc", label: "Signature Pad", id: "signature-pad", new: true },
         { type: "doc", label: "Slider", id: "slider" },
         { type: "doc", label: "Splitter", id: "splitter" },
         { type: "doc", label: "Switch", id: "switch" },

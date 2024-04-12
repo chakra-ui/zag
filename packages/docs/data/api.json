@@ -2632,6 +2632,69 @@
       }
     }
   },
+  "signature-pad": {
+    "api": {
+      "isEmpty": {
+        "type": "boolean",
+        "description": "Whether the signature pad is empty."
+      },
+      "isDrawing": {
+        "type": "boolean",
+        "description": "Whether the user is currently drawing."
+      },
+      "currentPath": {
+        "type": "string",
+        "description": "The current path being drawn."
+      },
+      "paths": {
+        "type": "string[]",
+        "description": "The paths of the signature pad."
+      },
+      "getDataUrl": {
+        "type": "(type: DataUrlType, quality?: number) => Promise<string>",
+        "description": "Returns the data URL of the signature pad."
+      },
+      "clear": {
+        "type": "() => void",
+        "description": "Clears the signature pad."
+      }
+    },
+    "context": {
+      "onDraw": {
+        "type": "(details: DrawDetails) => void",
+        "description": "Callback when the signature pad is drawing."
+      },
+      "onDrawEnd": {
+        "type": "(details: DrawEndDetails) => void",
+        "description": "Callback when the signature pad is done drawing."
+      },
+      "drawing": {
+        "type": "DrawingOptions",
+        "description": "The drawing options."
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the signature pad is disabled."
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the signature pad is read-only."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "slider": {
     "api": {
       "value": {
@@ -3192,10 +3255,6 @@
         "description": "Function called when an interaction happens outside the component"
       }
     }
-  },
-  "toast": {
-    "api": {},
-    "context": {}
   },
   "toggle-group": {
     "api": {
