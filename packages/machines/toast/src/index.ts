@@ -17,7 +17,7 @@ export type {
   PromiseOptions,
   Service,
   StatusChangeDetails,
-  ToastOptions,
+  Options,
   Status,
   Type,
 } from "./toast.types"

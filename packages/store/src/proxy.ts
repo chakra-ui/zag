@@ -340,7 +340,9 @@ export function snapshot<T extends object>(proxyObject: T, handlePromise?: Handl
   return createSnapshot(target, ensureVersion(), handlePromise) as Snapshot<T>
 }
 
-export function ref<T extends object>(obj: T): T & AsRef {
+export function ref<T extends object>(obj: T): Ref<T> {
   refSet.add(obj)
   return obj as T & AsRef
 }
+
+export type Ref<T> = T & AsRef

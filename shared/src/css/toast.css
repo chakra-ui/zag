@@ -103,6 +103,7 @@
   bottom: 0;
   inset-inline: 0;
   animation-name: shrink;
+  animation-fill-mode: forwards;
 }
 
 [data-scope="toast"][data-part="progressbar"][data-type="loading"] {

@@ -1,5 +1,5 @@
 import { isMachine, subscribe } from "@zag-js/core"
-// import { contains } from "@zag-js/dom-query"
+import { contains } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { runIfFn, uuid } from "@zag-js/utils"
 import { parts } from "./toast.anatomy"
@@ -151,15 +151,18 @@ export function groupConnect<T extends PropTypes, O = any>(
         role: "region",
         style: getGroupPlacementStyle(state.context, placement),
         onMouseMove() {
-          if (!state.context.overlap) return
           send({ type: "REGION.POINTER_ENTER", placement })
         },
         onMouseLeave() {
-          if (!state.context.overlap) return
           send({ type: "REGION.POINTER_LEAVE", placement })
         },
-        onFocus() {
-          send({ type: "REGION.FOCUS" })
+        onFocus(event) {
+          send({ type: "REGION.FOCUS", target: event.relatedTarget })
+        },
+        onBlur(event) {
+          if (state.context.isFocusWithin && !contains(event.currentTarget, event.relatedTarget)) {
+            send({ type: "REGION.BLUR" })
+          }
         },
       })
     },

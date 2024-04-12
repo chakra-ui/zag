@@ -1,14 +1,13 @@
 import { createMachine, guards } from "@zag-js/core"
-import { addDomEvent } from "@zag-js/dom-event"
-import { raf } from "@zag-js/dom-query"
-import { compact } from "@zag-js/utils"
+import { queryAll, raf } from "@zag-js/dom-query"
+import { compact, warn } from "@zag-js/utils"
 import { dom } from "./toast.dom"
 import type { MachineContext, MachineState, Options } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
 
 const { not, and, or } = guards
 
-export function createToastMachine<T>(options: Options<T> = {}) {
+export function createToastMachine<T>(options: Options<T>) {
   const { type = "info", duration, id = "1", placement = "bottom", removeDelay = 200, ...restProps } = options
   const ctx = compact(restProps)
 
@@ -52,7 +51,7 @@ export function createToastMachine<T>(options: Options<T> = {}) {
             actions: ["setContext"],
           },
         ],
-        REQUEST_HEIGHT: {
+        MEASURE: {
           actions: ["measureHeight"],
         },
       },
@@ -71,7 +70,6 @@ export function createToastMachine<T>(options: Options<T> = {}) {
 
         "visible:persist": {
           tags: ["visible", "paused"],
-          activities: "trackDocumentVisibility",
           on: {
             RESUME: {
               guard: not("isLoadingType"),
@@ -84,7 +82,6 @@ export function createToastMachine<T>(options: Options<T> = {}) {
 
         visible: {
           tags: ["visible"],
-          activities: "trackDocumentVisibility",
           after: {
             VISIBLE_DURATION: "dismissing",
           },
@@ -122,10 +119,17 @@ export function createToastMachine<T>(options: Options<T> = {}) {
             if (!rootEl) return
             ctx.mounted = true
 
+            const ghosts = queryAll(rootEl, "[data-part=ghost]")
+
+            warn(
+              ghosts.length !== 2,
+              "[toast] No ghost element found in toast. Render the `ghostBefore` and `ghostAfter` elements",
+            )
+
             const syncHeight = () => {
               const originalHeight = rootEl.style.height
               rootEl.style.height = "auto"
-              const { height: newHeight } = rootEl.getBoundingClientRect()
+              const newHeight = rootEl.offsetHeight
               rootEl.style.height = originalHeight
 
               ctx.height = newHeight
@@ -143,13 +147,6 @@ export function createToastMachine<T>(options: Options<T> = {}) {
           })
 
           return () => cleanup?.()
-        },
-        trackDocumentVisibility(ctx, _evt, { send }) {
-          if (!ctx.pauseOnPageIdle) return
-          const doc = dom.getDoc(ctx)
-          return addDomEvent(doc, "visibilitychange", () => {
-            send(doc.visibilityState === "hidden" ? "PAUSE" : "RESUME")
-          })
         },
       },
 

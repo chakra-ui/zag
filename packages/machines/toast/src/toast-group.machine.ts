@@ -1,4 +1,4 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, ref } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
 import { addDomEvent } from "@zag-js/dom-event"
 import { compact } from "@zag-js/utils"
@@ -13,8 +13,8 @@ import type {
 } from "./toast.types"
 import { getToastsByPlacement } from "./toast.utils"
 
-export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
-  const ctx = compact(userContext as any) as UserDefinedGroupContext<T>
+export function groupMachine<T = any>(userContext: UserDefinedGroupContext) {
+  const ctx = compact(userContext)
   return createMachine<GroupMachineContext<T>, GroupMachineState>(
     {
       id: "toaster",
@@ -25,10 +25,13 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
         toasts: [],
         gap: 16,
         pauseOnPageIdle: false,
-        pauseOnInteraction: true,
         hotkey: ["altKey", "KeyT"],
         offsets: "1rem",
+        placement: "bottom",
+        removeDelay: 200,
         ...ctx,
+        lastFocusedEl: null,
+        isFocusWithin: false,
         heights: [],
       },
 
@@ -36,13 +39,13 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
         count: (ctx) => ctx.toasts.length,
       },
 
-      activities: ["trackHotKeyPress"],
+      activities: ["trackDocumentVisibility", "trackHotKeyPress"],
 
       watch: {
         toasts: ["collapsedIfEmpty", "setDismissableBranch"],
       },
 
-      exit: ["removeToasts", "disposeCleanup"],
+      exit: ["removeToasts", "clearDismissableBranch", "clearLastFocusedEl"],
 
       on: {
         PAUSE_TOAST: {
@@ -82,27 +85,48 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
         "DOC.HOTKEY": {
           actions: ["focusRegionEl"],
         },
+        "REGION.BLUR": {
+          actions: ["resumeToasts", "restoreLastFocusedEl"],
+        },
       },
 
       states: {
         stack: {
           on: {
-            "REGION.POINTER_LEAVE": {
+            "REGION.POINTER_LEAVE": [
+              {
+                guard: "isOverlapping",
+                target: "overlap",
+                actions: ["collapseToasts", "resumeToasts"],
+              },
+              {
+                actions: ["resumeToasts"],
+              },
+            ],
+            "REGION.OVERLAP": {
               target: "overlap",
-              actions: ["collapseToasts"],
             },
-            "REGION.OVERLAP": "overlap",
+            "REGION.FOCUS": {
+              actions: ["setLastFocusedEl", "pauseToasts"],
+            },
+            "REGION.POINTER_ENTER": {
+              actions: ["pauseToasts"],
+            },
           },
         },
         overlap: {
           on: {
+            "REGION.STACK": {
+              target: "stack",
+              actions: ["expandToasts"],
+            },
             "REGION.POINTER_ENTER": {
               target: "stack",
-              actions: ["expandToasts", "requestHeights"],
+              actions: ["pauseToasts", "expandToasts"],
             },
             "REGION.FOCUS": {
               target: "stack",
-              actions: ["expandToasts", "requestHeights"],
+              actions: ["setLastFocusedEl", "pauseToasts", "expandToasts"],
             },
           },
         },
@@ -111,6 +135,7 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
     {
       guards: {
         isWithinRange: (ctx) => ctx.toasts.length < ctx.max,
+        isOverlapping: (ctx) => !!ctx.overlap,
       },
       activities: {
         trackHotKeyPress(ctx, _evt, { send }) {
@@ -121,11 +146,18 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
           }
           return addDomEvent(document, "keydown", handleKeyDown, { capture: true })
         },
+        trackDocumentVisibility(ctx, _evt, { send }) {
+          if (!ctx.pauseOnPageIdle) return
+          const doc = dom.getDoc(ctx)
+          return addDomEvent(doc, "visibilitychange", () => {
+            send(doc.visibilityState === "hidden" ? "PAUSE_ALL" : "RESUME_ALL")
+          })
+        },
       },
       actions: {
         setDismissableBranch(ctx) {
           const toastsByPlacement = getToastsByPlacement(ctx.toasts)
-          const currentToasts = toastsByPlacement[ctx.placement!] ?? []
+          const currentToasts = toastsByPlacement[ctx.placement] ?? []
 
           const hasToasts = currentToasts.length > 0
 
@@ -140,15 +172,15 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
 
           //  mark toast as a dismissable branch
           //  so that interacting with them will not close dismissable layers
-          const groupEl = () => dom.getRegionEl(ctx, ctx.placement!)
+          const groupEl = () => dom.getRegionEl(ctx, ctx.placement)
           ctx._cleanup = trackDismissableBranch(groupEl, { defer: true })
         },
-        disposeCleanup(ctx) {
+        clearDismissableBranch(ctx) {
           ctx._cleanup?.()
         },
         focusRegionEl(ctx) {
           queueMicrotask(() => {
-            dom.getRegionEl(ctx, ctx.placement!)?.focus()
+            dom.getRegionEl(ctx, ctx.placement)?.focus()
           })
         },
         expandToasts(ctx) {
@@ -177,8 +209,8 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
         resumeToasts(ctx) {
           ctx.toasts.forEach((toast) => toast.send("RESUME"))
         },
-        requestHeights(ctx) {
-          ctx.toasts.forEach((toast) => toast.send("REQUEST_HEIGHT"))
+        measureToasts(ctx) {
+          ctx.toasts.forEach((toast) => toast.send("MEASURE"))
         },
         createToast(ctx, evt, { self, getState }) {
           const options: MachineContext<T> = {
@@ -186,8 +218,6 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
             duration: ctx.duration,
             removeDelay: ctx.removeDelay,
             ...evt.toast,
-            pauseOnPageIdle: ctx.pauseOnPageIdle,
-            pauseOnInteraction: ctx.pauseOnInteraction,
             dir: ctx.dir,
             getRootNode: ctx.getRootNode,
             stacked: getState().matches("stack"),
@@ -257,6 +287,23 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
             toast.state.context.offset = heightIndex * ctx.gap + toastsHeightBefore
           })
         },
+        setLastFocusedEl(ctx, evt) {
+          if (ctx.isFocusWithin) return
+          ctx.isFocusWithin = true
+          ctx.lastFocusedEl = ref(evt.target)
+        },
+        restoreLastFocusedEl(ctx) {
+          ctx.isFocusWithin = false
+          if (!ctx.lastFocusedEl) return
+          ctx.lastFocusedEl.focus({ preventScroll: true })
+          ctx.lastFocusedEl = null
+        },
+        clearLastFocusedEl(ctx) {
+          if (!ctx.lastFocusedEl) return
+          ctx.lastFocusedEl.focus({ preventScroll: true })
+          ctx.lastFocusedEl = null
+          ctx.isFocusWithin = false
+        },
       },
     },
   )
@@ -264,6 +311,6 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext<T>) {
 
 function each(ctx: GroupMachineContext, fn: (toast: Service<any>, index: number, arr: Service<any>[]) => void) {
   const toastsByPlacement = getToastsByPlacement(ctx.toasts)
-  const currentToasts = toastsByPlacement[ctx.placement!] ?? []
+  const currentToasts = toastsByPlacement[ctx.placement] ?? []
   currentToasts.forEach(fn)
 }

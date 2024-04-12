@@ -13,7 +13,6 @@ export function connect<T extends PropTypes, O>(
   const isVisible = state.hasTag("visible")
   const isPaused = state.hasTag("paused")
 
-  const pauseOnInteraction = state.context.pauseOnInteraction
   const placement = state.context.placement!
   const type = state.context.type
 
@@ -66,37 +65,19 @@ export function connect<T extends PropTypes, O>(
           event.preventDefault()
         }
       },
-      onFocus() {
-        if (pauseOnInteraction) {
-          send("PAUSE")
-        }
-      },
-      onBlur() {
-        if (pauseOnInteraction) {
-          send("RESUME")
-        }
-      },
-      onPointerEnter() {
-        if (pauseOnInteraction) {
-          send("PAUSE")
-        }
-      },
-      onPointerLeave() {
-        if (pauseOnInteraction) {
-          send("RESUME")
-        }
-      },
     }),
 
     /* Leave a ghost div to avoid setting hover to false when transitioning out */
     ghostBeforeProps: normalize.element({
       ...parts.ghost.attrs,
+      "data-type": "before",
       style: getGhostBeforeStyle(state.context, isVisible),
     }),
 
     /* Needed to avoid setting hover to false when in between toasts */
     ghostAfterProps: normalize.element({
       ...parts.ghost.attrs,
+      "data-type": "after",
       style: getGhostAfterStyle(state.context, isVisible),
     }),
 

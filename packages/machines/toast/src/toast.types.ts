@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { Machine, Ref, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, Direction, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -35,15 +35,7 @@ export interface ToastHeightDetails {
   placement: Placement
 }
 
-export interface GlobalToastOptions<T> extends GenericOptions<T> {
-  /**
-   * Whether to pause toast when the user leaves the browser tab
-   */
-  pauseOnPageIdle?: boolean
-  /**
-   * Whether to pause the toast when interacted with
-   */
-  pauseOnInteraction?: boolean
+export interface Options<T> extends GenericOptions<T> {
   /**
    * The duration the toast will be visible
    */
@@ -57,13 +49,10 @@ export interface GlobalToastOptions<T> extends GenericOptions<T> {
    * The placement of the toast
    */
   placement?: Placement
-}
-
-export interface ToastOptions<T> extends GenericOptions<T> {
   /**
    * The unique id of the toast
    */
-  id: string
+  id?: string
   /**
    * The type of the toast
    */
@@ -78,17 +67,14 @@ export interface ToastOptions<T> extends GenericOptions<T> {
   meta?: Record<string, unknown>
 }
 
-export interface Options<T> extends Partial<ToastOptions<T> & GlobalToastOptions<T>> {}
-
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
 export interface MachineContext<T = any>
-  extends CommonProperties,
+  extends Omit<CommonProperties, "id">,
     MachinePrivateContext,
-    Omit<ToastOptions<T>, "removeDelay">,
-    GlobalToastOptions<T> {
+    Omit<Options<T>, "removeDelay"> {
   /**
    * The duration for the toast to kept alive before it is removed.
    * Useful for exit transitions.
@@ -161,7 +147,11 @@ export type Service<T = any> = Machine<MachineContext<T>, MachineState>
  * Group machine context
  * -----------------------------------------------------------------------------*/
 
-interface GroupPublicContext<T> extends GlobalToastOptions<T>, DirectionProperty, CommonProperties {
+interface GroupPublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * Whether to pause toast when the user leaves the browser tab
+   */
+  pauseOnPageIdle: boolean
   /**
    * The gap or spacing between toasts
    */
@@ -182,9 +172,22 @@ interface GroupPublicContext<T> extends GlobalToastOptions<T>, DirectionProperty
    * Whether the toasts should overlap each other
    */
   overlap?: boolean
+  /**
+   * The placement of the toast
+   */
+  placement: Placement
+  /**
+   * The duration for the toast to kept alive before it is removed.
+   * Useful for exit transitions.
+   */
+  removeDelay: number
+  /**
+   * The duration the toast will be visible
+   */
+  duration?: number
 }
 
-export interface UserDefinedGroupContext<T> extends RequiredBy<GroupPublicContext<T>, "id"> {}
+export interface UserDefinedGroupContext extends RequiredBy<GroupPublicContext, "id"> {}
 
 type GroupComputedContext = Readonly<{
   /**
@@ -209,10 +212,18 @@ interface GroupPrivateContext<T> extends GenericOptions<T> {
    * @internal
    */
   _cleanup?: VoidFunction
+  /**
+   * @internal
+   */
+  lastFocusedEl: Ref<HTMLElement> | null
+  /**
+   * @internal
+   */
+  isFocusWithin: boolean
 }
 
 export interface GroupMachineContext<T = any>
-  extends GroupPublicContext<T>,
+  extends GroupPublicContext,
     GroupPrivateContext<T>,
     GroupComputedContext {}
 
@@ -233,14 +244,20 @@ export type GroupService<T = any> = Machine<GroupMachineContext<T>, GroupMachine
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
 
 export interface PromiseOptions<V, O = any> {
-  loading: ToastOptions<O>
-  success: MaybeFunction<ToastOptions<O>, V>
-  error: MaybeFunction<ToastOptions<O>, Error>
+  loading: Options<O>
+  success: MaybeFunction<Options<O>, V>
+  error: MaybeFunction<Options<O>, Error>
   finally?: () => void | Promise<void>
 }
 
 export interface GroupProps {
+  /**
+   * The placement of the toast region
+   */
   placement: Placement
+  /**
+   * The human-readable label for the toast region
+   */
   label?: string
 }
 
@@ -315,12 +332,12 @@ export interface GroupMachineApi<T extends PropTypes = PropTypes, O = any> {
   promise<T>(
     promise: Promise<T> | (() => Promise<T>),
     options: PromiseOptions<T, O>,
-    shared?: Partial<ToastOptions<O>>,
+    shared?: Partial<Options<O>>,
   ): string
   /**
    * Function to subscribe to the toast group.
    */
-  subscribe(callback: (toasts: ToastOptions<O>[]) => void): VoidFunction
+  subscribe(callback: (toasts: Options<O>[]) => void): VoidFunction
   getGroupProps(options: GroupProps): T["element"]
 }
 

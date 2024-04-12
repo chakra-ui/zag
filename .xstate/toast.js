@@ -29,7 +29,7 @@ const fetchMachine = createMachine({
     }, {
       actions: ["setContext"]
     }],
-    REQUEST_HEIGHT: {
+    MEASURE: {
       actions: ["measureHeight"]
     }
   },
@@ -49,7 +49,6 @@ const fetchMachine = createMachine({
     },
     "visible:persist": {
       tags: ["visible", "paused"],
-      activities: "trackDocumentVisibility",
       on: {
         RESUME: {
           cond: "!isLoadingType",
@@ -61,7 +60,6 @@ const fetchMachine = createMachine({
     },
     visible: {
       tags: ["visible"],
-      activities: "trackDocumentVisibility",
       after: {
         VISIBLE_DURATION: "dismissing"
       },
