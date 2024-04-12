@@ -288,7 +288,7 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext) {
           })
         },
         setLastFocusedEl(ctx, evt) {
-          if (ctx.isFocusWithin) return
+          if (ctx.isFocusWithin || !evt.target) return
           ctx.isFocusWithin = true
           ctx.lastFocusedEl = ref(evt.target)
         },

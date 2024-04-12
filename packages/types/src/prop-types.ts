@@ -17,6 +17,8 @@ type DataAttr = {
   "data-checked"?: any
   "data-pressed"?: any
   "data-complete"?: any
+  "data-side"?: any
+  "data-align"?: any
   "data-empty"?: any
   "data-placeholder-shown"?: any
   "data-half"?: any

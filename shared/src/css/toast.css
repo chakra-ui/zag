@@ -109,3 +109,14 @@
 [data-scope="toast"][data-part="progressbar"][data-type="loading"] {
   animation-name: none;
 }
+
+@media (max-width: 640px) {
+  [data-scope="toast"][data-part="group"] {
+    width: 100%;
+  }
+
+  [data-scope="toast"][data-part="root"] {
+    inset-inline: 0;
+    width: calc(100% - var(--gap) * 2);
+  }
+}

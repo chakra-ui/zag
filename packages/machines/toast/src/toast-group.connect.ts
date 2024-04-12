@@ -140,6 +140,8 @@ export function groupConnect<T extends PropTypes, O = any>(
       const { placement, label = "Notifications" } = options
       const state = getState()
       const hotkeyLabel = state.context.hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "")
+      const [side, align = "center"] = placement.split("-")
+
       return normalize.element({
         ...parts.group.attrs,
         dir: state.context.dir,
@@ -147,6 +149,8 @@ export function groupConnect<T extends PropTypes, O = any>(
         "aria-label": `${placement} ${label} ${hotkeyLabel}`,
         id: dom.getRegionId(placement),
         "data-placement": placement,
+        "data-side": side,
+        "data-align": align,
         "aria-live": "polite",
         role: "region",
         style: getGroupPlacementStyle(state.context, placement),
