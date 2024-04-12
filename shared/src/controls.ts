@@ -260,4 +260,6 @@ export const signaturePadControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
 })
 
-export const timePickerControls = defineControls({})
+export const timePickerControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+})

@@ -18,11 +18,11 @@ export function machine(userContext: UserDefinedContext) {
         open: ["toggleVisibility"],
       },
       context: {
-        value: new Time(0),
+        value: undefined,
         period: "am",
         ...ctx,
         positioning: {
-          placement: "bottom-start",
+          placement: "bottom-end",
           gutter: 8,
           ...ctx.positioning,
         },
@@ -30,6 +30,9 @@ export function machine(userContext: UserDefinedContext) {
       on: {
         "INPUT.BLUR": {
           actions: ["applyInputValue", "syncInputElement"],
+        },
+        "VALUE.CLEAR": {
+          actions: ["clearValue", "syncInputElement"],
         },
       },
       states: {
@@ -177,13 +180,17 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         setHour(ctx, { hour }) {
-          ctx.value = ctx.value.set({ hour })
+          ctx.value = (ctx.value ?? new Time(0)).set({ hour })
         },
         setMinute(ctx, { minute }) {
-          ctx.value = ctx.value.set({ minute })
+          ctx.value = (ctx.value ?? new Time(0)).set({ minute })
         },
         setPeriod(ctx, { period }) {
           ctx.period = period
+        },
+        clearValue(ctx) {
+          ctx.value = undefined
+          ctx.period = "am"
         },
       },
     },

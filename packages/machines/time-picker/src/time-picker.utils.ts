@@ -1,12 +1,17 @@
 import { Time } from "@internationalized/date"
 import type { MachineContext } from "./time-picker.types"
 
+export function getNumberAsString(value: number) {
+  if (value < 10) return `0${value}`
+  return `${value}`
+}
+
 export function getStringifiedValue(ctx: MachineContext) {
-  const { hour, minute } = ctx.value
-  const hourString = hour < 10 ? `0${hour}` : hour
-  const minuteString = minute < 10 ? `0${minute}` : minute
+  if (!ctx.value) return ""
+  const hour = getNumberAsString(ctx.value.hour)
+  const minute = getNumberAsString(ctx.value.minute)
   const period = ctx.period ? ctx.period.toUpperCase() : ""
-  return `${hourString}:${minuteString} ${period}`
+  return `${hour}:${minute} ${period}`
 }
 
 export function getTimeValue(value: string): { time: Time; period: "am" | "pm" } | undefined {

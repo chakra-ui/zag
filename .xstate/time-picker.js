@@ -16,6 +16,9 @@ const fetchMachine = createMachine({
   on: {
     "INPUT.BLUR": {
       actions: ["applyInputValue", "syncInputElement"]
+    },
+    "VALUE.CLEAR": {
+      actions: ["clearValue", "syncInputElement"]
     }
   },
   on: {

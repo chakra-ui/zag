@@ -13,13 +13,12 @@
   display: flex;
   gap: 4px;
   flex-direction: column;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 [data-scope="time-picker"][data-part="hour-cell"],
 [data-scope="time-picker"][data-part="minute-cell"],
-[data-scope="time-picker"][data-part="am-period-trigger"],
-[data-scope="time-picker"][data-part="pm-period-trigger"] {
+[data-scope="time-picker"][data-part="period-trigger"] {
   all: unset;
   padding: 8px;
   border-radius: 4px;
@@ -27,8 +26,7 @@
 
 [data-scope="time-picker"][data-part="hour-cell"][data-selected],
 [data-scope="time-picker"][data-part="minute-cell"][data-selected],
-[data-scope="time-picker"][data-part="am-period-trigger"][data-selected],
-[data-scope="time-picker"][data-part="pm-period-trigger"][data-selected] {
+[data-scope="time-picker"][data-part="period-trigger"][data-selected] {
   background: purple !important;
   color: white !important ;
 }

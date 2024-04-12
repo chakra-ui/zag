@@ -17,16 +17,18 @@ export interface OpenChangeDetails {
 }
 
 export interface ValueChangeDetails {
-  value: Time
+  value?: Time
 }
 
 interface PublicContext extends DirectionProperty, CommonProperties {
-  value: Time
+  value?: Time
   open?: boolean
   ids?: ElementIds
   onOpenChange?: (details: OpenChangeDetails) => void
   onValueChange?: (value: ValueChangeDetails) => void
   positioning: PositioningOptions
+  placeholder?: string
+  disabled?: boolean
 }
 
 interface PrivateContext {
