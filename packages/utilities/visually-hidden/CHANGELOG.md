@@ -1,5 +1,7 @@
 # @zag-js/visually-hidden
 
+## 0.46.0
+
 ## 0.45.0
 
 ## 0.44.0

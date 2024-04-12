@@ -1,5 +1,17 @@
 # @zag-js/svelte
 
+## 0.46.0
+
+### Minor Changes
+
+- [`6523a23`](https://github.com/chakra-ui/zag/commit/6523a23e6991e7a629d905694092a7bf210d33e5) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add support for `useActor` hook to be consistent with other frameworks
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.46.0
+  - @zag-js/types@0.46.0
+
 ## 0.45.0
 
 ### Patch Changes

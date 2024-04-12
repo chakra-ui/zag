@@ -1,5 +1,30 @@
 # @zag-js/toast
 
+## 0.46.0
+
+### Minor Changes
+
+- [#1418](https://github.com/chakra-ui/zag/pull/1418) [`c536187`](https://github.com/chakra-ui/zag/commit/c5361872c03324386b298981789766735f530d48) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Add support for overlapping toasts by setting `overlap: true` in the `toast.group` machine context
+  - Remove `pauseOnInteraction` in favor of always pausing on hover. This is required for accessibility reasons (there
+    should always be a way to pause the widgets with time-based interactions)
+  - Remove `onOpen`, `onClose` and `onClosing` in favor of `onStatusChange` which reports the lifecycle status of the
+    toast
+  - Impose new required styling for toast to work as designed. Refer to the docs for more information
+  - Require new `ghostBeforeProps` and `ghostAfterProps` props to ensure the hover interaction works as expected
+
+### Patch Changes
+
+- [`beabfff`](https://github.com/chakra-ui/zag/commit/beabfff75f8e34d57bcb910b5e565f9797e62b2d) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where toast closes when updated without `type` or `duration`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.46.0
+  - @zag-js/core@0.46.0
+  - @zag-js/types@0.46.0
+  - @zag-js/utils@0.46.0
+  - @zag-js/dismissable@0.46.0
+  - @zag-js/dom-event@0.46.0
+  - @zag-js/dom-query@0.46.0
+
 ## 0.45.0
 
 ### Patch Changes
