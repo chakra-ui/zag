@@ -6,6 +6,69 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.46.0](./#0.46.0) - 2023-04-12
+
+### Fixed
+
+- **Checkbox, Switch**
+
+  - Fix issue where `data-active` doesn't get removed when pointer is release outside the element
+
+- **Toast**
+  - Fix issue where toast closes when updated without `type` or `duration`
+
+### Added
+
+- **Signature Pad [NEW]**
+
+  - Add new signature pad machine to allow capturing user signature
+
+- **Svelte**
+  - Add support for `useActor` hook to be consistent with other frameworks
+
+### Changed
+
+- **Avatar [Breaking]**
+
+  - Change `onLoadingStatusChange` to `onStatusChange` to match naming convention across machines
+
+- **Clipboard [Breaking]**
+
+  - Change `onCopyStatusChange` to `onStatusChange` to match naming convention across machines
+
+- **Toasts [Breaking]**
+
+  - Add support for overlapping toasts by setting `overlap: true` in the `toast.group` machine context
+  - Remove `pauseOnInteraction` in favor of always pausing on hover. This is required for accessibility reasons (there
+    should always be a way to pause the widgets with time-based interactions)
+  - Remove `onOpen`, `onClose` and `onClosing` in favor of `onStatusChange` which reports the lifecycle status of the
+    toast
+  - Impose new required styling for toast to work as designed. Here's a quick example of the required styling:
+
+  ```css
+  [data-scope="toast"][data-part="root"] {
+    translate: var(--x) var(--y);
+    scale: var(--scale);
+    z-index: var(--z-index);
+    height: var(--height);
+    opacity: var(--opacity);
+    will-change: translate, opacity, scale;
+    transition:
+      translate 400ms,
+      scale 400ms,
+      opacity 400ms;
+  }
+
+  [data-scope="toast"][data-state="closed"] {
+    transition:
+      translate 400ms,
+      scale 400ms,
+      opacity 200ms;
+  }
+  ```
+
+  - Require new `ghostBeforeProps` and `ghostAfterProps` props to ensure the hover interaction works as expected
+
 ## [0.45.0](./#0.45.0) - 2023-04-04
 
 ### Changed
