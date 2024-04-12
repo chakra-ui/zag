@@ -60,7 +60,7 @@
         })
       }}
     >
-      Update Child (info)
+      Update Latest
     </button>
     <button onclick={() => api.dismiss()}>Close all</button>
     <button onclick={() => api.pause()}>Pause all</button>

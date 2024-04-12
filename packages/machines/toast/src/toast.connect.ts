@@ -49,6 +49,7 @@ export function connect<T extends PropTypes, O>(
       "data-align": align,
       "data-side": side,
       "data-mounted": dataAttr(state.context.mounted),
+      "data-paused": dataAttr(isPaused),
 
       "data-first": dataAttr(state.context.frontmost),
       "data-sibling": dataAttr(!state.context.frontmost),

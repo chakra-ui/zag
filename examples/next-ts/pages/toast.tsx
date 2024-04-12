@@ -50,7 +50,6 @@ export default function Page() {
     toast.group.machine({
       id: useId(),
       placement: "bottom",
-      overlap: true,
       removeDelay: 200,
     }),
     {
@@ -98,7 +97,7 @@ export default function Page() {
               })
             }}
           >
-            Update Child (info)
+            Update Latest
           </button>
           <button onClick={() => api.dismiss()}>Close all</button>
           <button onClick={() => api.pause()}>Pause all</button>
@@ -115,7 +114,7 @@ export default function Page() {
           ))}
         </Portal>
       </main>
-      <Toolbar controls={controls.ui} viz>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>
     </>

@@ -112,7 +112,7 @@ export default defineComponent({
                   })
                 }}
               >
-                Update Child (info)
+                Update Latest
               </button>
               <button onClick={() => api.dismiss()}>Close all</button>
               <button onClick={() => api.pause()}>Pause all</button>

@@ -85,19 +85,27 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext) {
         "DOC.HOTKEY": {
           actions: ["focusRegionEl"],
         },
-        "REGION.BLUR": {
-          actions: ["resumeToasts", "restoreLastFocusedEl"],
-        },
+        "REGION.BLUR": [
+          {
+            guard: "isOverlapping",
+            target: "overlap",
+            actions: ["resumeToasts", "restoreLastFocusedEl"],
+          },
+          {
+            actions: ["resumeToasts", "restoreLastFocusedEl"],
+          },
+        ],
       },
 
       states: {
         stack: {
+          entry: ["expandToasts"],
           on: {
             "REGION.POINTER_LEAVE": [
               {
                 guard: "isOverlapping",
                 target: "overlap",
-                actions: ["collapseToasts", "resumeToasts"],
+                actions: ["resumeToasts"],
               },
               {
                 actions: ["resumeToasts"],
@@ -115,18 +123,18 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext) {
           },
         },
         overlap: {
+          entry: ["collapseToasts"],
           on: {
             "REGION.STACK": {
               target: "stack",
-              actions: ["expandToasts"],
             },
             "REGION.POINTER_ENTER": {
               target: "stack",
-              actions: ["pauseToasts", "expandToasts"],
+              actions: ["pauseToasts"],
             },
             "REGION.FOCUS": {
               target: "stack",
-              actions: ["setLastFocusedEl", "pauseToasts", "expandToasts"],
+              actions: ["setLastFocusedEl", "pauseToasts"],
             },
           },
         },
