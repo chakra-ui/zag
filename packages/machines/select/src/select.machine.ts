@@ -4,7 +4,6 @@ import { getByTypeahead, raf, scrollIntoView } from "@zag-js/dom-query"
 import { trackFormControl } from "@zag-js/form-utils"
 import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
-import { proxyTabFocus } from "@zag-js/tabbable"
 import { addOrRemove, compact, isEqual } from "@zag-js/utils"
 import { collection } from "./select.collection"
 import { dom } from "./select.dom"
@@ -234,7 +233,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           tags: ["open"],
           entry: ["focusContentEl"],
           exit: ["scrollContentToTop"],
-          activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
+          activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem"],
           on: {
             "CONTROLLED.CLOSE": [
               {
@@ -384,16 +383,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         isTriggerArrowDownEvent: (_ctx, evt) => evt.previousEvent?.type === "TRIGGER.ARROW_DOWN",
       },
       activities: {
-        proxyTabFocus(ctx) {
-          const contentEl = () => dom.getContentEl(ctx)
-          return proxyTabFocus(contentEl, {
-            defer: true,
-            triggerElement: dom.getTriggerEl(ctx),
-            onFocus(el) {
-              raf(() => el.focus({ preventScroll: true }))
-            },
-          })
-        },
         trackFormControlState(ctx, _evt, { initialContext }) {
           return trackFormControl(dom.getHiddenSelectEl(ctx), {
             onFieldsetDisabledChange(disabled) {

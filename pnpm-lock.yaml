@@ -2556,9 +2556,6 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../utilities/tabbable
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

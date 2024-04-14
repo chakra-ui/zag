@@ -343,6 +343,12 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         const evt = getNativeEvent(event)
         if (!isInteractive || !isSelfEvent(evt)) return
 
+        // select should not be navigated using tab key so we prevent it
+        if (event.key === "Tab") {
+          event.preventDefault()
+          return
+        }
+
         const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "CONTENT.ARROW_UP" })

@@ -192,7 +192,7 @@ const fetchMachine = createMachine({
       tags: ["open"],
       entry: ["focusContentEl"],
       exit: ["scrollContentToTop"],
-      activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem", "proxyTabFocus"],
+      activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem"],
       on: {
         "CONTROLLED.CLOSE": [{
           cond: "shouldRestoreFocus",
