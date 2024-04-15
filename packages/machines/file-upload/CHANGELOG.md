@@ -46,8 +46,9 @@
 
 ### Minor Changes
 
-- [`22c42c0`](https://github.com/chakra-ui/zag/commit/22c42c0e4287929ab964ca6fd772fc4d1ce3fbe3) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Remove `files` form user defined context. File upload, just like `<input type=file>`, is largely a readonly operation
-  that can't be set by the user.
+- [`22c42c0`](https://github.com/chakra-ui/zag/commit/22c42c0e4287929ab964ca6fd772fc4d1ce3fbe3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Remove `files` form user defined context. File upload, just like
+  `<input type=file>`, is largely a readonly operation that can't be set by the user.
 
   > Consider using the `onFileChange` event to handle file changes.
 
@@ -70,7 +71,8 @@
 
 ### Minor Changes
 
-- [`9a6d65a`](https://github.com/chakra-ui/zag/commit/9a6d65acc45b545cd09b79397589c859d692d86b) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Add support selecting directories via `directory` prop
+- [`9a6d65a`](https://github.com/chakra-ui/zag/commit/9a6d65acc45b545cd09b79397589c859d692d86b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support selecting directories via `directory` prop
   - Add support for `capture` property that specifies which camera to use for capture of image or video
 
 ### Patch Changes

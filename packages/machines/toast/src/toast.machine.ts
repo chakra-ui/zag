@@ -119,7 +119,7 @@ export function createToastMachine<T>(options: Options<T>) {
             if (!rootEl) return
             ctx.mounted = true
 
-            const ghosts = queryAll(rootEl, "[data-part=ghost]")
+            const ghosts = queryAll(rootEl, "[data-ghost]")
 
             warn(
               ghosts.length !== 2,
@@ -153,8 +153,8 @@ export function createToastMachine<T>(options: Options<T>) {
       guards: {
         isChangingToLoading: (_, evt) => evt.toast?.type === "loading",
         isLoadingType: (ctx) => ctx.type === "loading",
-        hasTypeChanged: (ctx, evt) => evt.toast?.type !== ctx.type,
-        hasDurationChanged: (ctx, evt) => evt.toast?.duration !== ctx.duration,
+        hasTypeChanged: (ctx, evt) => evt.toast?.type != null && evt.toast.type !== ctx.type,
+        hasDurationChanged: (ctx, evt) => evt.toast?.duration != null && evt.toast.duration !== ctx.duration,
       },
 
       delays: {
@@ -199,13 +199,16 @@ export function createToastMachine<T>(options: Options<T>) {
           ctx.onStatusChange?.({ status: "visible" })
         },
         setContext(ctx, evt) {
-          const { duration, type } = evt.toast
-          if (duration == null && type == null) {
-            Object.assign(ctx, evt.toast)
-          } else {
-            const time = getToastDuration(duration, type)
-            Object.assign(ctx, { ...evt.toast, duration: time, remaining: time })
-          }
+          const duration = evt.toast?.duration ?? ctx.duration
+          const type = evt.toast?.type ?? ctx.type
+
+          const computedDuration = getToastDuration(duration, type)
+
+          Object.assign(ctx, {
+            ...evt.toast,
+            duration: computedDuration,
+            remaining: computedDuration,
+          })
         },
       },
     },

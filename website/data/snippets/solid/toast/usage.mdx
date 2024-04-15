@@ -38,16 +38,15 @@ export function ToastProvider(props) {
 
   return (
     <ToastContext.Provider value={api}>
-      <For each={Object.entries(api().getToastsByPlacement())}>
-        {([placement, toasts]) => (
-          <div key={placement} {...api().getGroupProps({ placement })}>
-            <For each={toasts}>
-              {(toast) => <Toast key={toast.id} actor={toast} />}
+      <For each={api().getPlacements()}>
+        {(placement) => (
+          <div {...api().getGroupProps({ placement })}>
+            <For each={api().getToastsByPlacement(placement)}>
+              {(toast) => <ToastItem actor={toast} />}
             </For>
           </div>
         )}
       </For>
-
       {props.children}
     </ToastContext.Provider>
   )

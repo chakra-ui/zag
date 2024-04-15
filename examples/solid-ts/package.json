@@ -90,8 +90,8 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-solid": "0.367.0",
     "match-sorter": "6.3.4",
+    "lucide-solid": "0.368.0",
     "solid-js": "1.8.16"
   }
 }

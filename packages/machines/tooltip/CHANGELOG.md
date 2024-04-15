@@ -69,7 +69,8 @@
 
 ### Minor Changes
 
-- [`d161ebf`](https://github.com/chakra-ui/zag/commit/d161ebfe4960ed0cf4697380edf8ee3ad7d4be31) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Set tooltip `interactive` to `false` by default
+- [`d161ebf`](https://github.com/chakra-ui/zag/commit/d161ebfe4960ed0cf4697380edf8ee3ad7d4be31) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Set tooltip `interactive` to `false` by default
 
 ### Patch Changes
 
@@ -946,7 +947,7 @@
 
   ```jsx
   // this is will open the dialog initially
-  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }));
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
 
   // this will open the dialog when the `open` value changes
   const [state, send] = useMachine(dialog.machine({ id: "1" }), {
@@ -954,7 +955,7 @@
       // when this value changes, the dialog will open/close
       open: true,
     },
-  });
+  })
   ```
 
 ### Patch Changes
@@ -974,7 +975,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" });
+  api.setPositioning({ placement: "top" })
   ```
 
 ### Patch Changes

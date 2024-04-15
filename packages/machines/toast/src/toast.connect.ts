@@ -14,7 +14,7 @@ export function connect<T extends PropTypes, O>(
   const isPaused = state.hasTag("paused")
 
   const placement = state.context.placement!
-  const type = state.context.type
+  const type = state.context.type!
 
   const [side, align = "center"] = placement.split("-")
 
@@ -70,15 +70,13 @@ export function connect<T extends PropTypes, O>(
 
     /* Leave a ghost div to avoid setting hover to false when transitioning out */
     ghostBeforeProps: normalize.element({
-      ...parts.ghost.attrs,
-      "data-type": "before",
+      "data-ghost": "before",
       style: getGhostBeforeStyle(state.context, isVisible),
     }),
 
     /* Needed to avoid setting hover to false when in between toasts */
     ghostAfterProps: normalize.element({
-      ...parts.ghost.attrs,
-      "data-type": "after",
+      "data-ghost": "after",
       style: getGhostAfterStyle(state.context, isVisible),
     }),
 

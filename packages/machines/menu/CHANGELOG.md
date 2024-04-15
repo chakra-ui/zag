@@ -4,7 +4,8 @@
 
 ### Patch Changes
 
-- [`fd365be`](https://github.com/chakra-ui/zag/commit/fd365be1fb84903845fb09b962552c8cc90f7075) Thanks [@cschroeter](https://github.com/cschroeter)! - Export Service
+- [`fd365be`](https://github.com/chakra-ui/zag/commit/fd365be1fb84903845fb09b962552c8cc90f7075) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export Service
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.46.0
@@ -54,7 +55,8 @@
 
 ### Minor Changes
 
-- [`b27380f`](https://github.com/chakra-ui/zag/commit/b27380f807910f9c21614976a99057ae1dae661b) Thanks [@cschroeter](https://github.com/cschroeter)! - Breaking: Refactor the anatomy
+- [`b27380f`](https://github.com/chakra-ui/zag/commit/b27380f807910f9c21614976a99057ae1dae661b) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Breaking: Refactor the anatomy
 
   - Rename `getOptionItemIndicatorProps` to `getItemIndicatorProps`
   - Rename `getOptionItemTextProps` to `getItemTextProps`
@@ -79,7 +81,8 @@
 
 ### Patch Changes
 
-- [`13f4ccc`](https://github.com/chakra-ui/zag/commit/13f4ccc1e92e551b66a03288c8925709cb28acd6) Thanks [@cschroeter](https://github.com/cschroeter)! - Expost HighlightChangeDetails
+- [`13f4ccc`](https://github.com/chakra-ui/zag/commit/13f4ccc1e92e551b66a03288c8925709cb28acd6) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Expost HighlightChangeDetails
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.43.0
@@ -97,7 +100,9 @@
 
 ### Minor Changes
 
-- [#1387](https://github.com/chakra-ui/zag/pull/1387) [`b119136`](https://github.com/chakra-ui/zag/commit/b119136d6e993f973dab71799f2fa26e157fe8d7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - > Breaking changes to the menu component
+- [#1387](https://github.com/chakra-ui/zag/pull/1387)
+  [`b119136`](https://github.com/chakra-ui/zag/commit/b119136d6e993f973dab71799f2fa26e157fe8d7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - > Breaking changes to the menu component
 
   - Removed `value` and `onValueChange` in favor of using explicit state to manage option items.
   - Prefer `value` over `id` in `getItemProps` and `getOptionItemProps` for consistency with other machine.
@@ -121,7 +126,8 @@
 
 ### Patch Changes
 
-- [`4f97e65`](https://github.com/chakra-ui/zag/commit/4f97e659859617748b471905dffbcef170fbba3f) Thanks [@cschroeter](https://github.com/cschroeter)! - Export machine types
+- [`4f97e65`](https://github.com/chakra-ui/zag/commit/4f97e659859617748b471905dffbcef170fbba3f) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export machine types
 
 - Updated dependencies [[`e47d60d`](https://github.com/chakra-ui/zag/commit/e47d60d2d9357eb24331d12f330d46e2f545f45d)]:
   - @zag-js/dismissable@0.41.0
@@ -1237,7 +1243,7 @@
   of the popover. This API supports all the positioning options.
 
   ```js
-  api.setPositioning({ placement: "top" });
+  api.setPositioning({ placement: "top" })
   ```
 
 ### Patch Changes

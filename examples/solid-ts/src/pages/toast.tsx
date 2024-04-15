@@ -57,9 +57,6 @@ export default function Page() {
   )
 
   const api = createMemo(() => toast.group.connect(state, send, normalizeProps))
-
-  const toastsByPlacement = createMemo(() => api().getToastsByPlacement())
-  const placements = createMemo(() => Object.keys(toastsByPlacement()) as toast.Placement[])
   const [id, setId] = createSignal<string>()
 
   return (
@@ -103,10 +100,10 @@ export default function Page() {
           <button onClick={() => api().pause()}>Pause all</button>
           <button onClick={() => api().resume()}>Resume all</button>
         </div>
-        <For each={placements()}>
+        <For each={api().getPlacements()}>
           {(placement) => (
             <div {...api().getGroupProps({ placement })}>
-              <For each={toastsByPlacement()[placement]}>{(toast) => <ToastItem actor={toast} />}</For>
+              <For each={api().getToastsByPlacement(placement)}>{(toast) => <ToastItem actor={toast} />}</For>
             </div>
           )}
         </For>

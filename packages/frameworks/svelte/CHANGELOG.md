@@ -4,7 +4,9 @@
 
 ### Minor Changes
 
-- [`6523a23`](https://github.com/chakra-ui/zag/commit/6523a23e6991e7a629d905694092a7bf210d33e5) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add support for `useActor` hook to be consistent with other frameworks
+- [`6523a23`](https://github.com/chakra-ui/zag/commit/6523a23e6991e7a629d905694092a7bf210d33e5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `useActor` hook to be consistent with other
+  frameworks
 
 ### Patch Changes
 
@@ -56,7 +58,8 @@
 
 ### Minor Changes
 
-- [`c68fb4c`](https://github.com/chakra-ui/zag/commit/c68fb4c72c0758c76106b6b8db3718a6bd04256b) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Unify API for `useService` and `useMachine` with other frameworks
+- [`c68fb4c`](https://github.com/chakra-ui/zag/commit/c68fb4c72c0758c76106b6b8db3718a6bd04256b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Unify API for `useService` and `useMachine` with other frameworks
 
 ### Patch Changes
 

@@ -13,7 +13,9 @@
 
 ### Minor Changes
 
-- [`ccb34b5`](https://github.com/chakra-ui/zag/commit/ccb34b5268e5e93083ad2ad7edbffa0c64ac2657) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rewrite `mergeProps` to prevent issues with children that read from context, and ensure props are always up-to-date.
+- [`ccb34b5`](https://github.com/chakra-ui/zag/commit/ccb34b5268e5e93083ad2ad7edbffa0c64ac2657) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rewrite `mergeProps` to prevent issues with children that read
+  from context, and ensure props are always up-to-date.
 
 ### Patch Changes
 
@@ -26,8 +28,10 @@
 
 ### Minor Changes
 
-- [`198f525`](https://github.com/chakra-ui/zag/commit/198f5253a09eac721c5bae9e468588f9d93ea7bb) Thanks [@segunadebayo](https://github.com/segunadebayo)! - [Breaking] Refactor `mergeProps` from solid-js to ensure consistent merging of props with other frameworks. The previous
-  implementation was returning a Proxy object which was causing issues.
+- [`198f525`](https://github.com/chakra-ui/zag/commit/198f5253a09eac721c5bae9e468588f9d93ea7bb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - [Breaking] Refactor `mergeProps` from solid-js to ensure
+  consistent merging of props with other frameworks. The previous implementation was returning a Proxy object which was
+  causing issues.
 
   Now it returns a signal that can be called to get the merged props. Under the hood, it uses the `createMemo` function
   from `solid-js`.
@@ -35,15 +39,15 @@
   **Before**
 
   ```js
-  const props = mergeProps({ a: 1 }, { a: 2 });
-  props; // Proxy { a: 2 }
+  const props = mergeProps({ a: 1 }, { a: 2 })
+  props // Proxy { a: 2 }
   ```
 
   **After**
 
   ```js
-  const props = mergeProps({ a: 1 }, { a: 2 });
-  props(); // { a: 2 }
+  const props = mergeProps({ a: 1 }, { a: 2 })
+  props() // { a: 2 }
   ```
 
 ### Patch Changes
@@ -655,7 +659,7 @@
         max: props.max,
         min: props.min,
       })),
-    });
+    })
   }
   ```
 

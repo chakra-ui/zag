@@ -4,7 +4,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { runIfFn, uuid } from "@zag-js/utils"
 import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
-import type { GroupMachineApi, GroupSend, GroupService, GroupState, Options } from "./toast.types"
+import type { GroupMachineApi, GroupSend, GroupService, GroupState, Options, Placement } from "./toast.types"
 import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
 export function groupConnect<T extends PropTypes, O = any>(
@@ -19,8 +19,8 @@ export function groupConnect<T extends PropTypes, O = any>(
     return result as GroupState<O>
   }
 
-  function getToastsByPlacementImpl() {
-    return getToastsByPlacement(getState().context.toasts)
+  function getToastsByPlacementImpl(placement: Placement) {
+    return getToastsByPlacement(getState().context.toasts, placement)
   }
 
   function isVisible(id: string) {
@@ -67,8 +67,10 @@ export function groupConnect<T extends PropTypes, O = any>(
     getCount() {
       return getState().context.count
     },
-    getToasts() {
-      return getState().context.toasts
+    getPlacements() {
+      const toasts = getState().context.toasts
+      const placements = toasts.map((toast) => toast.state.context.placement!)
+      return Array.from(new Set(placements))
     },
     getToastsByPlacement: getToastsByPlacementImpl,
     isVisible,
@@ -86,9 +88,7 @@ export function groupConnect<T extends PropTypes, O = any>(
     },
 
     dismissByPlacement(placement) {
-      const toastsByPlacement = getToastsByPlacementImpl()
-      const toasts = toastsByPlacement[placement]
-      if (!toasts) return
+      const toasts = getToastsByPlacementImpl(placement)
       toasts.forEach((toast) => dismiss(toast.id))
     },
     loading(options) {
@@ -174,7 +174,7 @@ export function groupConnect<T extends PropTypes, O = any>(
     subscribe(fn) {
       const state = getState()
       return subscribe(state.context.toasts, () => {
-        const toasts = getToastsByPlacementImpl()[state.context.placement!] ?? []
+        const toasts = getToastsByPlacementImpl(state.context.placement)
         const contexts = toasts.map((toast) => toast.getState().context)
         fn(contexts)
       })

@@ -4,7 +4,9 @@
 
 ### Minor Changes
 
-- [#1418](https://github.com/chakra-ui/zag/pull/1418) [`c536187`](https://github.com/chakra-ui/zag/commit/c5361872c03324386b298981789766735f530d48) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Change `onLoadingStatusChange` to `onStatusChange`
+- [#1418](https://github.com/chakra-ui/zag/pull/1418)
+  [`c536187`](https://github.com/chakra-ui/zag/commit/c5361872c03324386b298981789766735f530d48) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Change `onLoadingStatusChange` to `onStatusChange`
 
 ### Patch Changes
 
@@ -32,7 +34,9 @@
 
 ### Minor Changes
 
-- [`5634379`](https://github.com/chakra-ui/zag/commit/5634379d4666c0b358005b5ccdc914fbdf4decd5) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Remove hardcoded style from `rootProps` to allow more flexible styling
+- [`5634379`](https://github.com/chakra-ui/zag/commit/5634379d4666c0b358005b5ccdc914fbdf4decd5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove hardcoded style from `rootProps` to allow more flexible
+  styling
 
 ### Patch Changes
 

@@ -4,7 +4,10 @@
 
 ### Minor Changes
 
-- [#1418](https://github.com/chakra-ui/zag/pull/1418) [`c536187`](https://github.com/chakra-ui/zag/commit/c5361872c03324386b298981789766735f530d48) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Add support for overlapping toasts by setting `overlap: true` in the `toast.group` machine context
+- [#1418](https://github.com/chakra-ui/zag/pull/1418)
+  [`c536187`](https://github.com/chakra-ui/zag/commit/c5361872c03324386b298981789766735f530d48) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for overlapping toasts by setting `overlap: true` in
+  the `toast.group` machine context
   - Remove `pauseOnInteraction` in favor of always pausing on hover. This is required for accessibility reasons (there
     should always be a way to pause the widgets with time-based interactions)
   - Remove `onOpen`, `onClose` and `onClosing` in favor of `onStatusChange` which reports the lifecycle status of the
@@ -14,7 +17,9 @@
 
 ### Patch Changes
 
-- [`beabfff`](https://github.com/chakra-ui/zag/commit/beabfff75f8e34d57bcb910b5e565f9797e62b2d) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where toast closes when updated without `type` or `duration`
+- [`beabfff`](https://github.com/chakra-ui/zag/commit/beabfff75f8e34d57bcb910b5e565f9797e62b2d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where toast closes when updated without `type` or
+  `duration`
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.46.0

@@ -56,7 +56,7 @@ export interface Options<T> extends GenericOptions<T> {
   /**
    * The type of the toast
    */
-  type: Type
+  type?: Type
   /**
    * Function called when the toast is visible
    */
@@ -267,13 +267,13 @@ export interface GroupMachineApi<T extends PropTypes = PropTypes, O = any> {
    */
   getCount(): number
   /**
-   * The active toasts
+   * The placements of the active toasts
    */
-  getToasts(): Service<O>[]
+  getPlacements(): Placement[]
   /**
    * The active toasts by placement
    */
-  getToastsByPlacement(): Partial<Record<Placement, Service<O>[]>>
+  getToastsByPlacement(placement: Placement): Service<O>[]
   /**
    * Returns whether the toast id is visible
    */

@@ -42,9 +42,9 @@ const api = computed(() => inject("toast"))
 </script>
 
 <template>
-    <div v-for="(toasts, placement, index) in api.getToastsByPlacement()">
+    <div v-for="placement in api.getPlacements()">
         <div :key="placement" v-bind="api.getGroupProps({ placement })" >
-            <Toast v-for="toast in toasts" :key="toast.id" :actor="toast" />
+            <Toast v-for="toast in api.getToastsByPlacement(placement)" :key="toast.id" :actor="toast" />
         </div>
     </div>
     <RestOfYourApp />

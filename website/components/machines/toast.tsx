@@ -65,18 +65,16 @@ export function ToastGroup(props: any) {
       </div>
 
       <Portal>
-        {Object.entries(api.getToastsByPlacement()).map(
-          ([placement, toasts]) => (
-            <div
-              key={placement}
-              {...api.getGroupProps({ placement: placement as any })}
-            >
-              {toasts.map((toast) => (
-                <Toast key={toast.id} actor={toast} />
-              ))}
-            </div>
-          ),
-        )}
+        {api.getPlacements().map((placement) => (
+          <div
+            key={placement}
+            {...api.getGroupProps({ placement: placement as any })}
+          >
+            {api.getToastsByPlacement(placement).map((toast) => (
+              <Toast key={toast.id} actor={toast} />
+            ))}
+          </div>
+        ))}
       </Portal>
     </>
   )

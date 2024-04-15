@@ -36,7 +36,8 @@
 
 ### Minor Changes
 
-- [`22218fe`](https://github.com/chakra-ui/zag/commit/22218fe724bf55c4ac5b41127c86c27095da1ff7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Support RegExp in delimiter
+- [`22218fe`](https://github.com/chakra-ui/zag/commit/22218fe724bf55c4ac5b41127c86c27095da1ff7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Support RegExp in delimiter
 
 ### Patch Changes
 
