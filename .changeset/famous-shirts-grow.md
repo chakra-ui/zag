@@ -2,8 +2,7 @@
 "@zag-js/toast": minor
 ---
 
-BREAKING: Simplify toast api
-
+**[BREAKING]** Simplify toast api methods
 
 ```diff
 <ToastContext.Provider value={api}>

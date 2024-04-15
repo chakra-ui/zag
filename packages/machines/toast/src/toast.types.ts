@@ -56,7 +56,7 @@ export interface Options<T> extends GenericOptions<T> {
   /**
    * The type of the toast
    */
-  type: Type
+  type?: Type
   /**
    * Function called when the toast is visible
    */
