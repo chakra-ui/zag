@@ -44,8 +44,8 @@ export default function Page() {
                   ))}
                 </div>
                 <div {...api.getContentColumnProps({ type: "period" })}>
-                  <button {...api.getPeriodTriggerProps({ period: "am" })}>AM</button>
-                  <button {...api.getPeriodTriggerProps({ period: "pm" })}>PM</button>
+                  <button {...api.getPeriodCellProps({ period: "am" })}>AM</button>
+                  <button {...api.getPeriodCellProps({ period: "pm" })}>PM</button>
                 </div>
               </div>
             </div>

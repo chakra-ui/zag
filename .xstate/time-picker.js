@@ -17,6 +17,9 @@ const fetchMachine = createMachine({
     "INPUT.BLUR": {
       actions: ["applyInputValue", "guardWrongValue", "syncInputElement"]
     },
+    "INPUT.ENTER": {
+      actions: ["applyInputValue", "guardWrongValue", "syncInputElement"]
+    },
     "VALUE.CLEAR": {
       actions: ["clearValue", "syncInputElement"]
     }
@@ -32,7 +35,7 @@ const fetchMachine = createMachine({
       on: {
         "TRIGGER.CLICK": [{
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["invokeOnOpen", "focusFirstHour"]
         }],
         "CONTROLLED.OPEN": [{
           target: "open",
@@ -55,7 +58,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      entry: ["focusContentEl"],
+      entry: ["focusFirstHour"],
       activities: ["computePlacement", "trackDismissableElement"],
       on: {
         "TRIGGER.CLICK": [{
@@ -84,6 +87,21 @@ const fetchMachine = createMachine({
         },
         "PERIOD.CLICK": {
           actions: ["setPeriod", "guardWrongValue", "invokeValueChange", "syncInputElement"]
+        },
+        "CONTENT.COLUMN.ARROW_UP": {
+          actions: ["focusPreviousCell"]
+        },
+        "CONTENT.COLUMN.ARROW_DOWN": {
+          actions: ["focusNextCell"]
+        },
+        "CONTENT.COLUMN.ARROW_LEFT": {
+          actions: ["focusPreviousColumnFirstCell"]
+        },
+        "CONTENT.COLUMN.ARROW_RIGHT": {
+          actions: ["focusNextColumnFirstCell"]
+        },
+        "CONTENT.COLUMN.ENTER": {
+          actions: ["setCurrentCell", "focusNextColumnFirstCell", "syncInputElement"]
         }
       }
     }

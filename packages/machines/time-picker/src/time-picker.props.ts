@@ -14,9 +14,12 @@ export const props = createProps<UserDefinedContext>()([
   "open",
   "value",
   "id",
-  "hourOptions",
-  "minuteOptions",
-  "secondOptions",
+  "min",
+  "max",
+  "steps",
   "withSeconds",
+  "onFocusChange",
+  "name",
+  "readOnly",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)

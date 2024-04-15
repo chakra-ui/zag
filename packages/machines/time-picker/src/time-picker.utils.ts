@@ -8,7 +8,7 @@ export function getNumberAsString(value: number) {
 
 export function getStringifiedValue(ctx: MachineContext) {
   if (!ctx.value) return ""
-  const hour = getNumberAsString(getPeriodHour(ctx.value.hour, ctx.period))
+  const hour = getNumberAsString(ctx.period === "pm" ? ctx.value.hour - 12 : ctx.value.hour)
   const minute = getNumberAsString(ctx.value.minute)
   const period = ctx.period ? ctx.period.toUpperCase() : ""
   if (ctx.withSeconds) {

@@ -31,6 +31,9 @@ export function machine(userContext: UserDefinedContext) {
         "INPUT.BLUR": {
           actions: ["applyInputValue", "guardWrongValue", "syncInputElement"],
         },
+        "INPUT.ENTER": {
+          actions: ["applyInputValue", "guardWrongValue", "syncInputElement"],
+        },
         "VALUE.CLEAR": {
           actions: ["clearValue", "syncInputElement"],
         },
@@ -42,7 +45,7 @@ export function machine(userContext: UserDefinedContext) {
             "TRIGGER.CLICK": [
               {
                 target: "open",
-                actions: ["invokeOnOpen"],
+                actions: ["invokeOnOpen", "focusFirstHour"],
               },
             ],
             "CONTROLLED.OPEN": [
@@ -72,7 +75,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         open: {
           tags: ["open"],
-          entry: ["focusContentEl"],
+          entry: ["focusFirstHour"],
           activities: ["computePlacement", "trackDismissableElement"],
           on: {
             "TRIGGER.CLICK": [
@@ -105,6 +108,21 @@ export function machine(userContext: UserDefinedContext) {
             },
             "PERIOD.CLICK": {
               actions: ["setPeriod", "guardWrongValue", "invokeValueChange", "syncInputElement"],
+            },
+            "CONTENT.COLUMN.ARROW_UP": {
+              actions: ["focusPreviousCell"],
+            },
+            "CONTENT.COLUMN.ARROW_DOWN": {
+              actions: ["focusNextCell"],
+            },
+            "CONTENT.COLUMN.ARROW_LEFT": {
+              actions: ["focusPreviousColumnFirstCell"],
+            },
+            "CONTENT.COLUMN.ARROW_RIGHT": {
+              actions: ["focusNextColumnFirstCell"],
+            },
+            "CONTENT.COLUMN.ENTER": {
+              actions: ["setCurrentCell", "focusNextColumnFirstCell", "syncInputElement"],
             },
           },
         },
@@ -178,11 +196,6 @@ export function machine(userContext: UserDefinedContext) {
           if (!inputEl) return
           inputEl.value = getStringifiedValue(ctx)
         },
-        focusContentEl(ctx) {
-          raf(() => {
-            dom.getContentEl(ctx)?.focus({ preventScroll: true })
-          })
-        },
         setHour(ctx, { hour }) {
           const newValue = (ctx.value ?? new Time(0)).set({ hour: getPeriodHour(hour, ctx.period) })
           if (ctx.min && ctx.min.compare(newValue) > 0) {
@@ -226,6 +239,86 @@ export function machine(userContext: UserDefinedContext) {
           for (const columnEl of columnEls) {
             columnEl.scrollTo({ top: 0 })
           }
+        },
+        focusFirstHour(ctx) {
+          raf(() => {
+            dom.getHourCellEls(ctx)?.[0]?.focus()
+          })
+        },
+        focusPreviousCell(_, evt) {
+          raf(() => {
+            const next = evt.target.previousSibling
+            if (next && !next.disabled) {
+              next.focus()
+            }
+          })
+        },
+        focusNextCell(_, evt) {
+          raf(() => {
+            const previous = evt.target.nextSibling
+            if (previous && !previous.disabled) {
+              previous.focus()
+            }
+          })
+        },
+        setCurrentCell(_, evt, { send }) {
+          const { value, unit } = evt.target.dataset
+          switch (unit) {
+            case "hour":
+              send({ type: "HOUR.CLICK", hour: value })
+              return
+            case "minute":
+              send({ type: "MINUTE.CLICK", minute: value })
+              return
+            case "second":
+              send({ type: "SECOND.CLICK", second: value })
+              return
+            case "period":
+              send({ type: "PERIOD.CLICK", period: value })
+              return
+          }
+        },
+        focusPreviousColumnFirstCell(ctx, evt) {
+          raf(() => {
+            switch (evt.target.dataset.unit) {
+              case "minute":
+                dom.getHourCellEls(ctx)?.[0]?.focus()
+                return
+              case "second":
+                dom.getMinuteCellEls(ctx)?.[0]?.focus()
+                return
+              case "period":
+                if (ctx.withSeconds) {
+                  dom.getSecondCellEls(ctx)?.[0]?.focus()
+                  return
+                }
+                dom.getMinuteCellEls(ctx)?.[0]?.focus()
+                return
+              default:
+                return
+            }
+          })
+        },
+        focusNextColumnFirstCell(ctx, evt) {
+          raf(() => {
+            switch (evt.target.dataset.unit) {
+              case "hour":
+                dom.getMinuteCellEls(ctx)?.[0]?.focus()
+                return
+              case "minute":
+                if (ctx.withSeconds) {
+                  dom.getSecondCellEls(ctx)?.[0]?.focus()
+                  return
+                }
+                dom.getPeriodCellEls(ctx)?.[0]?.focus()
+                return
+              case "second":
+                dom.getPeriodCellEls(ctx)?.[0]?.focus()
+                return
+              default:
+                return
+            }
+          })
         },
       },
     },
