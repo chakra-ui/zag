@@ -4,7 +4,9 @@
 
 ### Minor Changes
 
-- [#1418](https://github.com/chakra-ui/zag/pull/1418) [`c536187`](https://github.com/chakra-ui/zag/commit/c5361872c03324386b298981789766735f530d48) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Change `onCopyStatusChange` to `onStatusChange`
+- [#1418](https://github.com/chakra-ui/zag/pull/1418)
+  [`c536187`](https://github.com/chakra-ui/zag/commit/c5361872c03324386b298981789766735f530d48) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Change `onCopyStatusChange` to `onStatusChange`
 
 ### Patch Changes
 

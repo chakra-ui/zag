@@ -58,9 +58,6 @@ export default function Page() {
   )
 
   const api = toast.group.connect(state, send, normalizeProps)
-
-  const toastsByPlacement = api.getToastsByPlacement()
-  const placements = Object.keys(toastsByPlacement) as toast.Placement[]
   const id = useRef<string>()
 
   return (
@@ -105,9 +102,9 @@ export default function Page() {
         </div>
 
         <Portal>
-          {placements.map((placement) => (
+          {api.getPlacements().map((placement) => (
             <div key={placement} {...api.getGroupProps({ placement })}>
-              {toastsByPlacement[placement].map((toast) => (
+              {api.getToastsByPlacement(placement).map((toast) => (
                 <ToastItem key={toast.id} actor={toast} />
               ))}
             </div>

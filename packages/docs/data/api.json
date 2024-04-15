@@ -2680,6 +2680,10 @@
         "type": "boolean",
         "description": "Whether the signature pad is read-only."
       },
+      "name": {
+        "type": "string",
+        "description": "The name of the signature pad. Useful for form submission."
+      },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",

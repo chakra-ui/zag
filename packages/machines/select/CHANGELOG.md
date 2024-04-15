@@ -80,7 +80,8 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`6122eee`](https://github.com/chakra-ui/zag/commit/6122eee55632899cbaa3cb5505625a25df57f7ce), [`c55ff29`](https://github.com/chakra-ui/zag/commit/c55ff297a408779232146953daa0b5aba6e14d9e)]:
+- Updated dependencies [[`6122eee`](https://github.com/chakra-ui/zag/commit/6122eee55632899cbaa3cb5505625a25df57f7ce),
+  [`c55ff29`](https://github.com/chakra-ui/zag/commit/c55ff297a408779232146953daa0b5aba6e14d9e)]:
   - @zag-js/dom-event@0.42.0
   - @zag-js/tabbable@0.42.0
   - @zag-js/dismissable@0.42.0
@@ -99,7 +100,9 @@
 
 ### Patch Changes
 
-- [`b55cf5a`](https://github.com/chakra-ui/zag/commit/b55cf5ac663dc3f37610150a7399f02dccf4d518) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where select doesn't work in forms when `readOnly: true` is set
+- [`b55cf5a`](https://github.com/chakra-ui/zag/commit/b55cf5ac663dc3f37610150a7399f02dccf4d518) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where select doesn't work in forms when
+  `readOnly: true` is set
   - Fix issue where initial value was not synced with hidden select element
 - Updated dependencies [[`e47d60d`](https://github.com/chakra-ui/zag/commit/e47d60d2d9357eb24331d12f330d46e2f545f45d)]:
   - @zag-js/dismissable@0.41.0
@@ -120,9 +123,13 @@
 
 ### Minor Changes
 
-- [`04a3b36`](https://github.com/chakra-ui/zag/commit/04a3b369bcfe644b3e408d490fd9b82ead66bee2) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add `data-placement` to the select content to make it easier to style
+- [`04a3b36`](https://github.com/chakra-ui/zag/commit/04a3b369bcfe644b3e408d490fd9b82ead66bee2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-placement` to the select content to make it easier to
+  style
 
-- [`5c185d4`](https://github.com/chakra-ui/zag/commit/5c185d4fb85202db40fe21f4c8e297a5fbb17874) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `scrollToIndexFn` to be used with virtualization libraries
+- [`5c185d4`](https://github.com/chakra-ui/zag/commit/5c185d4fb85202db40fe21f4c8e297a5fbb17874) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `scrollToIndexFn` to be used with virtualization
+  libraries
   - Add support for `highlightedIndex` in the `onHighlightChange` callback
 
 ### Patch Changes
@@ -970,12 +977,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label;
+      return item.label
     },
     itemToValue(item) {
-      return item.value;
+      return item.value
     },
-  });
+  })
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -983,7 +990,7 @@
       collection,
       id: useId(),
     }),
-  );
+  )
   ```
 
 ### Patch Changes

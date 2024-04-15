@@ -4,7 +4,9 @@
 
 ### Patch Changes
 
-- [`beabfff`](https://github.com/chakra-ui/zag/commit/beabfff75f8e34d57bcb910b5e565f9797e62b2d) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `data-active` doesn't get removed when pointer is released outside the element
+- [`beabfff`](https://github.com/chakra-ui/zag/commit/beabfff75f8e34d57bcb910b5e565f9797e62b2d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `data-active` doesn't get removed when pointer is
+  released outside the element
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.46.0
@@ -964,7 +966,7 @@
       id: "1",
       checked: true,
     }),
-  );
+  )
 
   // this will update the checkbox when the `checked` value changes
   const [state, send] = useMachine(checkbox.machine({ id: "1" }), {
@@ -972,7 +974,7 @@
       // when this value changes, the checkbox will be checked/unchecked
       checked: true,
     },
-  });
+  })
   ```
 
 ### Patch Changes

@@ -70,7 +70,10 @@
 
 ### Patch Changes
 
-- [#1362](https://github.com/chakra-ui/zag/pull/1362) [`f71a5b0`](https://github.com/chakra-ui/zag/commit/f71a5b03cc06853b66952aa7e6e2b5e2cda1a36f) Thanks [@iNetJoJo](https://github.com/iNetJoJo)! - Fix issue where circular progress circle diameter doesn't get calculated correctly
+- [#1362](https://github.com/chakra-ui/zag/pull/1362)
+  [`f71a5b0`](https://github.com/chakra-ui/zag/commit/f71a5b03cc06853b66952aa7e6e2b5e2cda1a36f) Thanks
+  [@iNetJoJo](https://github.com/iNetJoJo)! - Fix issue where circular progress circle diameter doesn't get calculated
+  correctly
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.40.0

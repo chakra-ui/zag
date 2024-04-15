@@ -71,10 +71,6 @@ export default defineComponent({
     )
 
     const apiRef = computed(() => toast.group.connect(state.value, send, normalizeProps))
-
-    const toastsByPlacementRef = computed(() => apiRef.value.getToastsByPlacement())
-    const placementsRef = computed(() => Object.keys(toastsByPlacementRef.value) as toast.Placement[])
-
     const id = ref<string>()
 
     return () => {
@@ -118,9 +114,9 @@ export default defineComponent({
               <button onClick={() => api.pause()}>Pause all</button>
               <button onClick={() => api.resume()}>Resume all</button>
             </div>
-            {placementsRef.value.map((placement) => (
+            {api.getPlacements().map((placement) => (
               <div key={placement} {...api.getGroupProps({ placement })}>
-                {toastsByPlacementRef.value[placement]!.map((toast) => (
+                {api.getToastsByPlacement(placement).map((toast) => (
                   <ToastItem key={toast.id} actor={toast} />
                 ))}
               </div>

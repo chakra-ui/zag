@@ -14,7 +14,9 @@
 
 ### Minor Changes
 
-- [`d19851a`](https://github.com/chakra-ui/zag/commit/d19851adf36ee291b8e3284def27700864304a50) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add support for `formatDate` and `formatList` functions that use the underlying `Intl.*` implementations
+- [`d19851a`](https://github.com/chakra-ui/zag/commit/d19851adf36ee291b8e3284def27700864304a50) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `formatDate` and `formatList` functions that use
+  the underlying `Intl.*` implementations
 
 ## 0.40.0
 

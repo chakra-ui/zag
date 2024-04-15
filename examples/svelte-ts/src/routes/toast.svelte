@@ -22,10 +22,6 @@
   )
 
   const api = $derived(toast.group.connect(state, send, normalizeProps))
-  const toastsByPlacement = $derived(api.getToastsByPlacement())
-
-  const placements = $derived(Object.keys(toastsByPlacement)) as toast.Placement[]
-
   let id: string | undefined = ""
 </script>
 
@@ -67,9 +63,9 @@
     <button onclick={() => api.resume()}>Resume all</button>
   </div>
 
-  {#each placements as placement}
+  {#each api.getPlacements() as placement}
     <div {...api.getGroupProps({ placement })}>
-      {#each api.getToastsByPlacement()[placement]! as toast}
+      {#each api.getToastsByPlacement(placement) as toast}
         <ToastItem actor={toast} />
       {/each}
     </div>

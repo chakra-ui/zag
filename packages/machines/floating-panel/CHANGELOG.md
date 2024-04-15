@@ -100,7 +100,10 @@
 
 ### Minor Changes
 
-- [#1363](https://github.com/chakra-ui/zag/pull/1363) [`f54a61b`](https://github.com/chakra-ui/zag/commit/f54a61b4c55da427d5a139d8d4383fc2c5c467d5) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Introduce new floating panel machine for draggable and resizable panels
+- [#1363](https://github.com/chakra-ui/zag/pull/1363)
+  [`f54a61b`](https://github.com/chakra-ui/zag/commit/f54a61b4c55da427d5a139d8d4383fc2c5c467d5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Introduce new floating panel machine for draggable and resizable
+  panels
 
 ### Patch Changes
 

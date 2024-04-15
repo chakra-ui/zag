@@ -2,16 +2,8 @@ import { MAX_Z_INDEX } from "@zag-js/dom-query"
 import type { Style } from "@zag-js/types"
 import type { GroupMachineContext, MachineContext, Placement, Service, Type } from "./toast.types"
 
-export function getToastsByPlacement<T>(toasts: Service<T>[]) {
-  const result: Partial<Record<Placement, Service<T>[]>> = {}
-
-  for (const toast of toasts) {
-    const placement = toast.state.context.placement!
-    result[placement] ||= []
-    result[placement]!.push(toast)
-  }
-
-  return result
+export function getToastsByPlacement<T>(toasts: Service<T>[], placement: Placement) {
+  return toasts.filter((toast) => toast.state.context.placement === placement)
 }
 
 export const defaultTimeouts: Record<Type, number> = {

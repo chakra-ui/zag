@@ -164,9 +164,7 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext) {
       },
       actions: {
         setDismissableBranch(ctx) {
-          const toastsByPlacement = getToastsByPlacement(ctx.toasts)
-          const currentToasts = toastsByPlacement[ctx.placement] ?? []
-
+          const currentToasts = getToastsByPlacement(ctx.toasts, ctx.placement)
           const hasToasts = currentToasts.length > 0
 
           if (!hasToasts) {
@@ -318,7 +316,6 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext) {
 }
 
 function each(ctx: GroupMachineContext, fn: (toast: Service<any>, index: number, arr: Service<any>[]) => void) {
-  const toastsByPlacement = getToastsByPlacement(ctx.toasts)
-  const currentToasts = toastsByPlacement[ctx.placement] ?? []
+  const currentToasts = getToastsByPlacement(ctx.toasts, ctx.placement)
   currentToasts.forEach(fn)
 }

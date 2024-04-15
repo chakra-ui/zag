@@ -48,15 +48,13 @@ const App = defineComponent({
 
       return (
         <>
-          {Object.entries(api.getToastsByPlacement()).map(
-            ([placement, toasts]) => (
-              <div key={placement} {...api.getGroupProps({ placement })}>
-                {toasts.map((toast) => (
-                  <Toast key={toast.id} actor={toast} />
-                ))}
-              </div>
-            ),
-          )}
+          {api.getPlacements().map((placement) => (
+            <div key={placement} {...api.getGroupProps({ placement })}>
+              {api.getToastsByPlacement(placement).map((toast) => (
+                <Toast key={toast.id} actor={toast} />
+              ))}
+            </div>
+          ))}
           <RestOfYourApp />
         </>
       )

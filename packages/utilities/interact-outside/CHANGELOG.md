@@ -44,7 +44,8 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`6122eee`](https://github.com/chakra-ui/zag/commit/6122eee55632899cbaa3cb5505625a25df57f7ce), [`c55ff29`](https://github.com/chakra-ui/zag/commit/c55ff297a408779232146953daa0b5aba6e14d9e)]:
+- Updated dependencies [[`6122eee`](https://github.com/chakra-ui/zag/commit/6122eee55632899cbaa3cb5505625a25df57f7ce),
+  [`c55ff29`](https://github.com/chakra-ui/zag/commit/c55ff297a408779232146953daa0b5aba6e14d9e)]:
   - @zag-js/dom-event@0.42.0
   - @zag-js/tabbable@0.42.0
   - @zag-js/utils@0.42.0
@@ -54,7 +55,9 @@
 
 ### Patch Changes
 
-- [`e47d60d`](https://github.com/chakra-ui/zag/commit/e47d60d2d9357eb24331d12f330d46e2f545f45d) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where deferred nested + portalled layers don't work as expected
+- [`e47d60d`](https://github.com/chakra-ui/zag/commit/e47d60d2d9357eb24331d12f330d46e2f545f45d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where deferred nested + portalled layers don't work as
+  expected
 
 - Updated dependencies []:
   - @zag-js/utils@0.41.0

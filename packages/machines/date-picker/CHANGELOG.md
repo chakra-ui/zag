@@ -94,7 +94,8 @@
 
 ### Patch Changes
 
-- Updated dependencies [[`e47d60d`](https://github.com/chakra-ui/zag/commit/e47d60d2d9357eb24331d12f330d46e2f545f45d), [`d19851a`](https://github.com/chakra-ui/zag/commit/d19851adf36ee291b8e3284def27700864304a50)]:
+- Updated dependencies [[`e47d60d`](https://github.com/chakra-ui/zag/commit/e47d60d2d9357eb24331d12f330d46e2f545f45d),
+  [`d19851a`](https://github.com/chakra-ui/zag/commit/d19851adf36ee291b8e3284def27700864304a50)]:
   - @zag-js/dismissable@0.41.0
   - @zag-js/date-utils@0.41.0
   - @zag-js/anatomy@0.41.0

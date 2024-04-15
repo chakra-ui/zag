@@ -37,7 +37,8 @@
 
 ### Minor Changes
 
-- [`6122eee`](https://github.com/chakra-ui/zag/commit/6122eee55632899cbaa3cb5505625a25df57f7ce) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add velocity data to track pointer move helper
+- [`6122eee`](https://github.com/chakra-ui/zag/commit/6122eee55632899cbaa3cb5505625a25df57f7ce) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add velocity data to track pointer move helper
 
 ### Patch Changes
 

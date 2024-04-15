@@ -54,7 +54,9 @@
 
 ### Patch Changes
 
-- [`e47d60d`](https://github.com/chakra-ui/zag/commit/e47d60d2d9357eb24331d12f330d46e2f545f45d) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where deferred nested + portalled layers don't work as expected
+- [`e47d60d`](https://github.com/chakra-ui/zag/commit/e47d60d2d9357eb24331d12f330d46e2f545f45d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where deferred nested + portalled layers don't work as
+  expected
 
 - Updated dependencies [[`e47d60d`](https://github.com/chakra-ui/zag/commit/e47d60d2d9357eb24331d12f330d46e2f545f45d)]:
   - @zag-js/interact-outside@0.41.0
