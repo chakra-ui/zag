@@ -14,7 +14,7 @@ export const defaultTimeouts: Record<Type, number> = {
   DEFAULT: 5000,
 }
 
-export function getToastDuration(duration: number | undefined, type: MachineContext["type"]) {
+export function getToastDuration(duration: number | undefined, type: NonNullable<MachineContext["type"]>) {
   return duration ?? defaultTimeouts[type] ?? defaultTimeouts.DEFAULT
 }
 
