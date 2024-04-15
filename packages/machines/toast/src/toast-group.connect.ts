@@ -4,7 +4,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { runIfFn, uuid } from "@zag-js/utils"
 import { parts } from "./toast.anatomy"
 import { dom } from "./toast.dom"
-import type { GroupMachineApi, GroupSend, GroupService, GroupState, Options, Placement, Service } from "./toast.types"
+import type { GroupMachineApi, GroupSend, GroupService, GroupState, Options, Placement } from "./toast.types"
 import { getGroupPlacementStyle, getToastsByPlacement } from "./toast.utils"
 
 export function groupConnect<T extends PropTypes, O = any>(
