@@ -160,22 +160,6 @@ To use select within a form, you'll need to:
 
 <CodeSnippet id="select/usage-with-form.mdx" />
 
-## Selecting option on blur
-
-Use the `selectOnBlur` property to allow selecting the highlighted option when
-immediately interacting or focusing outside the select (e.g. using the `Tab`
-key).
-
-```jsx {5}
-const [state, send] = useMachine(
-  select.machine({
-    id: useId(),
-    collection,
-    selectOnBlur: true,
-  }),
-)
-```
-
 ## Disabling the select
 
 To disable the select, set the `disabled` property in the machine's context to

@@ -360,6 +360,9 @@ importers:
       lucide-react:
         specifier: 0.367.0
         version: 0.367.0(react@18.2.0)
+      match-sorter:
+        specifier: 6.3.4
+        version: 6.3.4
       next:
         specifier: 14.2.0
         version: 14.2.0(@opentelemetry/api@1.8.0)(@playwright/test@1.43.0)(react-dom@18.2.0)(react@18.2.0)
@@ -619,6 +622,9 @@ importers:
       lucide-vue-next:
         specifier: 0.367.0
         version: 0.367.0(vue@3.4.21)
+      match-sorter:
+        specifier: 6.3.4
+        version: 6.3.4
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.4.5)
@@ -857,6 +863,9 @@ importers:
       lucide-preact:
         specifier: 0.367.0
         version: 0.367.0(preact@10.20.2)
+      match-sorter:
+        specifier: 6.3.4
+        version: 6.3.4
       preact:
         specifier: 10.20.2
         version: 10.20.2
@@ -1107,6 +1116,9 @@ importers:
       lucide-solid:
         specifier: 0.367.0
         version: 0.367.0(solid-js@1.8.16)
+      match-sorter:
+        specifier: 6.3.4
+        version: 6.3.4
       solid-js:
         specifier: 1.8.16
         version: 1.8.16
@@ -1342,6 +1354,9 @@ importers:
       lucide-svelte:
         specifier: 0.367.0
         version: 0.367.0(svelte@5.0.0-next.83)
+      match-sorter:
+        specifier: 6.3.4
+        version: 6.3.4
       svelte-routing:
         specifier: 2.12.0
         version: 2.12.0
@@ -1598,6 +1613,9 @@ importers:
       lucide-vue-next:
         specifier: 0.367.0
         version: 0.367.0(vue@3.4.21)
+      match-sorter:
+        specifier: 6.3.4
+        version: 6.3.4
       vite:
         specifier: 5.2.8
         version: 5.2.8(@types/node@20.12.7)
@@ -3413,6 +3431,9 @@ importers:
       lucide-react:
         specifier: 0.367.0
         version: 0.367.0(react@18.2.0)
+      match-sorter:
+        specifier: 6.3.4
+        version: 6.3.4
       next:
         specifier: 14.2.0
         version: 14.2.0(@opentelemetry/api@1.8.0)(@playwright/test@1.43.0)(react-dom@18.2.0)(react@18.2.0)

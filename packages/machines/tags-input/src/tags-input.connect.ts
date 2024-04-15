@@ -165,6 +165,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send("DELETE")
           },
           Enter(event) {
+            if (evt.isComposing) return
+            if (isCombobox && !state.context.highlightedTagId) return
             event.preventDefault()
             send("ENTER")
           },

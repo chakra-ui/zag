@@ -26,12 +26,14 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         value: [],
         highlightedValue: null,
         inputValue: "",
-        selectOnBlur: true,
         allowCustomValue: false,
         closeOnSelect: true,
         inputBehavior: "none",
         selectionBehavior: "replace",
         ...ctx,
+        highlightedItem: null,
+        selectedItems: [],
+        valueAsString: "",
         collection: ctx.collection ?? collection.empty(),
         positioning: {
           placement: "bottom",
@@ -53,13 +55,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         isInteractive: (ctx) => !(ctx.readOnly || ctx.disabled),
         autoComplete: (ctx) => ctx.inputBehavior === "autocomplete",
         autoHighlight: (ctx) => ctx.inputBehavior === "autohighlight",
-        selectedItems: (ctx) => ctx.collection.items(ctx.value),
-        highlightedItem: (ctx) => ctx.collection.item(ctx.highlightedValue),
-        valueAsString: (ctx) => ctx.collection.itemsToString(ctx.selectedItems),
         hasSelectedItems: (ctx) => ctx.value.length > 0,
       },
 
       watch: {
+        value: ["syncSelectedItems"],
         inputValue: ["syncInputValue"],
         highlightedValue: ["autofillInputValue"],
       },
@@ -277,11 +277,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             },
             "LAYER.INTERACT_OUTSIDE": [
               {
-                guard: and("selectOnBlur", "hasHighlightedItem"),
-                target: "idle",
-                actions: ["selectHighlightedItem", "invokeOnClose"],
-              },
-              {
                 guard: and("isCustomValue", not("allowCustomValue")),
                 target: "idle",
                 actions: ["revertInputValue", "invokeOnClose"],
@@ -408,9 +403,9 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
         hasSelectedItems: (ctx) => ctx.hasSelectedItems,
-        selectOnBlur: (ctx) => !!ctx.selectOnBlur,
         closeOnSelect: (ctx) => (ctx.multiple ? false : !!ctx.closeOnSelect),
         isHighlightedItemVisible: (ctx) => ctx.collection.has(ctx.highlightedValue),
+        isOpenControlled: (ctx) => !!ctx["open.controlled"],
       },
 
       activities: {
@@ -418,12 +413,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           const contentEl = () => dom.getContentEl(ctx)
           return trackDismissableElement(contentEl, {
             defer: true,
-            exclude: () => [
-              dom.getInputEl(ctx),
-              dom.getContentEl(ctx),
-              dom.getTriggerEl(ctx),
-              dom.getClearTriggerEl(ctx),
-            ],
+            exclude: () => [dom.getInputEl(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
             onFocusOutside: ctx.onFocusOutside,
             onPointerDownOutside: ctx.onPointerDownOutside,
             onInteractOutside: ctx.onInteractOutside,
@@ -544,20 +534,24 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           set.inputValue(ctx, "")
         },
         revertInputValue(ctx) {
-          set.inputValue(
-            ctx,
-            match(ctx.selectionBehavior, {
-              replace: ctx.hasSelectedItems ? ctx.valueAsString : "",
-              clear: "",
-              preserve: ctx.inputValue,
-            }),
-          )
+          const inputValue = match(ctx.selectionBehavior, {
+            replace: ctx.hasSelectedItems ? ctx.valueAsString : "",
+            preserve: ctx.inputValue,
+            clear: "",
+          })
+
+          set.inputValue(ctx, inputValue)
         },
         initialize(ctx) {
-          const items = ctx.collection.items(ctx.value)
-          const valueAsString = ctx.collection.itemsToString(items)
+          const selectedItems = ctx.collection.items(ctx.value)
+          const valueAsString = ctx.collection.itemsToString(selectedItems)
+
+          ctx.highlightedItem = ctx.collection.item(ctx.highlightedValue)
+          ctx.selectedItems = selectedItems
+          ctx.valueAsString = valueAsString
+
           ctx.inputValue = match(ctx.selectionBehavior, {
-            preserve: valueAsString,
+            preserve: ctx.inputValue || valueAsString,
             replace: valueAsString,
             clear: "",
           })
@@ -610,33 +604,56 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         setCollection(ctx, evt) {
           ctx.collection = evt.value
         },
+        syncSelectedItems(ctx) {
+          const prevSelectedItems = ctx.selectedItems
+          ctx.selectedItems = ctx.value.map((v) => {
+            const foundItem = prevSelectedItems.find((item) => ctx.collection.itemToValue(item) === v)
+            if (foundItem) return foundItem
+            return ctx.collection.item(v)
+          })
+        },
       },
     },
   )
 }
 
 const invoke = {
-  selectionChange: (ctx: MachineContext) => {
+  valueChange: (ctx: MachineContext) => {
     ctx.onValueChange?.({
       value: Array.from(ctx.value),
       items: ctx.selectedItems,
     })
 
-    // side effect: sync inputValue
+    const prevSelectedItems = ctx.selectedItems
+
+    // side effect
+    ctx.selectedItems = ctx.value.map((v) => {
+      const foundItem = prevSelectedItems.find((item) => ctx.collection.itemToValue(item) === v)
+      if (foundItem) return foundItem
+      return ctx.collection.item(v)
+    })
+
+    ctx.valueAsString = ctx.collection.itemsToString(ctx.selectedItems)
+
     ctx.inputValue = match(ctx.selectionBehavior, {
       replace: ctx.valueAsString,
-      clear: "",
       preserve: ctx.inputValue,
+      clear: "",
     })
+
+    invoke.inputChange(ctx)
   },
   highlightChange: (ctx: MachineContext) => {
     ctx.onHighlightChange?.({
       highlightedValue: ctx.highlightedValue,
       highligtedItem: ctx.highlightedItem,
     })
+
+    // side effect
+    ctx.highlightedItem = ctx.collection.item(ctx.highlightedValue)
   },
   inputChange: (ctx: MachineContext) => {
-    ctx.onInputValueChange?.({ value: ctx.inputValue })
+    ctx.onInputValueChange?.({ inputValue: ctx.inputValue })
   },
 }
 
@@ -648,16 +665,16 @@ const set = {
 
     if (value == null && force) {
       ctx.value = []
-      invoke.selectionChange(ctx)
+      invoke.valueChange(ctx)
       return
     }
     ctx.value = ctx.multiple ? addOrRemove(ctx.value, value!) : [value!]
-    invoke.selectionChange(ctx)
+    invoke.valueChange(ctx)
   },
   selectedItems: (ctx: MachineContext, value: string[]) => {
     if (isEqual(ctx.value, value)) return
     ctx.value = value
-    invoke.selectionChange(ctx)
+    invoke.valueChange(ctx)
   },
   highlightedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
     if (isEqual(ctx.highlightedValue, value)) return

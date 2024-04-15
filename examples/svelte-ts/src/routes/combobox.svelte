@@ -5,6 +5,7 @@
   import * as combobox from "@zag-js/combobox"
   import { comboboxControls, comboboxData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { matchSorter } from "match-sorter"
 
   const controls = useControls(comboboxControls)
 
@@ -25,8 +26,8 @@
       onOpenChange() {
         options = comboboxData
       },
-      onInputValueChange({ value }) {
-        const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
+      onInputValueChange({ inputValue }) {
+        const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
         const newOptions = filtered.length > 0 ? filtered : comboboxData
 
         collection.setItems(newOptions)

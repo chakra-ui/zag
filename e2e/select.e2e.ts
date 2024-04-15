@@ -182,23 +182,12 @@ test.describe("select / open / blur", () => {
     await expect(page.locator(menu)).not.toBeVisible()
   })
 
-  test("should close on blur - no select", async ({ page }) => {
+  test("should close on blur - no selection", async ({ page }) => {
     await page.click(trigger)
     await repeat(3, () => page.keyboard.press("ArrowDown"))
     await page.click("body")
     await expect(page.locator(menu)).not.toBeVisible()
     await expect(page.locator(trigger)).toContainText("Select option")
-  })
-
-  test("should close on blur - with select", async ({ page }) => {
-    await controls(page).bool("selectOnBlur", true)
-    await page.click(trigger)
-    await repeat(3, () => page.keyboard.press("ArrowDown"))
-
-    const afganistan = page.locator(getOption("AF"))
-    await page.click("body")
-    await expect(page.locator(menu)).not.toBeVisible()
-    await expectToBeChecked(afganistan)
   })
 })
 

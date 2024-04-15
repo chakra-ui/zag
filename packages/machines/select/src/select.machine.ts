@@ -19,7 +19,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
       context: {
         value: [],
         highlightedValue: null,
-        selectOnBlur: false,
         loop: false,
         closeOnSelect: true,
         disabled: false,
@@ -283,17 +282,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             "CONTENT.INTERACT_OUTSIDE": [
               // == group 1 ==
               {
-                guard: and("selectOnBlur", "hasHighlightedItem", "isOpenControlled"),
-                actions: ["selectHighlightedItem", "invokeOnClose"],
-              },
-              {
-                guard: and("selectOnBlur", "hasHighlightedItem"),
-                target: "idle",
-                actions: ["selectHighlightedItem", "invokeOnClose", "clearHighlightedItem"],
-              },
-
-              // == group 2 ==
-              {
                 guard: and("shouldRestoreFocus", "isOpenControlled"),
                 actions: ["invokeOnClose"],
               },
@@ -303,7 +291,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
                 actions: ["invokeOnClose", "clearHighlightedItem"],
               },
 
-              // == group 3 ==
+              // == group 2 ==
               {
                 guard: "isOpenControlled",
                 actions: ["invokeOnClose"],
@@ -369,7 +357,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
         isFirstItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.first(),
         isLastItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.last(),
-        selectOnBlur: (ctx) => !!ctx.selectOnBlur,
         closeOnSelect: (ctx, evt) => {
           if (ctx.multiple) return false
           return !!(evt.closeOnSelect ?? ctx.closeOnSelect)

@@ -37,7 +37,6 @@ export const comboboxControls = defineControls({
   multiple: { type: "boolean", defaultValue: false },
   loop: { type: "boolean", defaultValue: true },
   openOnClick: { type: "boolean", defaultValue: false },
-  selectOnBlur: { type: "boolean", defaultValue: true },
 })
 
 export const editableControls = defineControls({
@@ -173,7 +172,6 @@ export const selectControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   loop: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
-  selectOnBlur: { type: "boolean", defaultValue: false },
   closeOnSelect: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })

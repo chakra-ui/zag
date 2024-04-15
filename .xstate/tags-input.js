@@ -13,7 +13,7 @@ const fetchMachine = createMachine({
   id: "tags-input",
   initial: ctx.autoFocus ? "focused:input" : "idle",
   context: {
-    "allowEditTag": false,
+    "isTagEditable": false,
     "!isTagHighlighted": false,
     "(!isAtMax || allowOverflow) && !isInputValueEmpty": false,
     "addOnBlur": false,
@@ -25,7 +25,7 @@ const fetchMachine = createMachine({
     "hasTags && isInputCaretAtStart": false,
     "addOnPaste": false,
     "hasTags && isInputCaretAtStart && !isLastTagHighlighted": false,
-    "allowEditTag && hasHighlightedTag": false,
+    "isTagEditable && hasHighlightedTag": false,
     "isFirstTagHighlighted": false,
     "isInputRelatedTarget": false
   },
@@ -34,7 +34,7 @@ const fetchMachine = createMachine({
   on: {
     DOUBLE_CLICK_TAG: {
       internal: true,
-      cond: "allowEditTag",
+      cond: "isTagEditable",
       target: "editing:tag",
       actions: ["setEditedId", "initializeEditedTagValue"]
     },
@@ -148,7 +148,7 @@ const fetchMachine = createMachine({
           actions: "clearHighlightedId"
         },
         ENTER: {
-          cond: "allowEditTag && hasHighlightedTag",
+          cond: "isTagEditable && hasHighlightedTag",
           target: "editing:tag",
           actions: ["setEditedId", "initializeEditedTagValue", "focusEditedTagInput"]
         },
@@ -205,7 +205,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "allowEditTag": ctx => ctx["allowEditTag"],
+    "isTagEditable": ctx => ctx["isTagEditable"],
     "!isTagHighlighted": ctx => ctx["!isTagHighlighted"],
     "(!isAtMax || allowOverflow) && !isInputValueEmpty": ctx => ctx["(!isAtMax || allowOverflow) && !isInputValueEmpty"],
     "addOnBlur": ctx => ctx["addOnBlur"],
@@ -214,7 +214,7 @@ const fetchMachine = createMachine({
     "hasTags && isInputCaretAtStart": ctx => ctx["hasTags && isInputCaretAtStart"],
     "addOnPaste": ctx => ctx["addOnPaste"],
     "hasTags && isInputCaretAtStart && !isLastTagHighlighted": ctx => ctx["hasTags && isInputCaretAtStart && !isLastTagHighlighted"],
-    "allowEditTag && hasHighlightedTag": ctx => ctx["allowEditTag && hasHighlightedTag"],
+    "isTagEditable && hasHighlightedTag": ctx => ctx["isTagEditable && hasHighlightedTag"],
     "isFirstTagHighlighted": ctx => ctx["isFirstTagHighlighted"],
     "isInputRelatedTarget": ctx => ctx["isInputRelatedTarget"]
   }

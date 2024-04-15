@@ -26,7 +26,6 @@ export const props = createProps<UserDefinedContext>()([
   "open.controlled",
   "positioning",
   "readOnly",
-  "selectOnBlur",
   "value",
   "scrollToIndexFn",
 ])

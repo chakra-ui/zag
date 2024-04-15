@@ -84,11 +84,6 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    */
   closeOnSelect?: boolean
   /**
-   * Whether to select the highlighted item when the user presses Tab,
-   * and the menu is open.
-   */
-  selectOnBlur?: boolean
-  /**
    * The callback fired when the highlighted item changes.
    */
   onHighlightChange?: (details: HighlightChangeDetails<T>) => void

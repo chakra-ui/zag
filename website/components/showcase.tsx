@@ -283,7 +283,6 @@ const components = {
       component={Select}
       defaultProps={{
         loop: false,
-        selectOnBlur: false,
         disabled: false,
         readOnly: false,
       }}

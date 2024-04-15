@@ -84,6 +84,7 @@
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
     "lucide-vue-next": "0.367.0",
+    "match-sorter": "6.3.4",
     "vite": "5.2.8",
     "vue": "3.4.21",
     "vue-router": "4.3.0"

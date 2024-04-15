@@ -28,7 +28,7 @@ export function machine(userContext: UserDefinedContext) {
         liveRegion: null,
         blurBehavior: undefined,
         addOnPaste: false,
-        allowEditTag: true,
+        editable: true,
         validate: () => true,
         delimiter: ",",
         disabled: false,
@@ -70,7 +70,7 @@ export function machine(userContext: UserDefinedContext) {
       on: {
         DOUBLE_CLICK_TAG: {
           internal: true,
-          guard: "allowEditTag",
+          guard: "isTagEditable",
           target: "editing:tag",
           actions: ["setEditedId", "initializeEditedTagValue"],
         },
@@ -185,7 +185,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: "clearHighlightedId",
             },
             ENTER: {
-              guard: and("allowEditTag", "hasHighlightedTag"),
+              guard: and("isTagEditable", "hasHighlightedTag"),
               target: "editing:tag",
               actions: ["setEditedId", "initializeEditedTagValue", "focusEditedTagInput"],
             },
@@ -263,7 +263,7 @@ export function machine(userContext: UserDefinedContext) {
         addOnBlur: (ctx) => ctx.blurBehavior === "add",
         clearOnBlur: (ctx) => ctx.blurBehavior === "clear",
         addOnPaste: (ctx) => !!ctx.addOnPaste,
-        allowEditTag: (ctx) => !!ctx.allowEditTag,
+        isTagEditable: (ctx) => !!ctx.editable,
         isInputCaretAtStart(ctx) {
           const input = dom.getInputEl(ctx)
           if (!input) return false
@@ -301,7 +301,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         autoResize(ctx) {
-          if (!ctx.editedTagValue || ctx.idx == null || !ctx.allowEditTag) return
+          if (!ctx.editedTagValue || ctx.idx == null || !ctx.editable) return
           const input = dom.getTagInputEl(ctx, { value: ctx.editedTagValue, index: ctx.idx })
           return autoResizeInput(input)
         },

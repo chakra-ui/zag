@@ -26,7 +26,6 @@ const fetchMachine = createMachine({
     "autoComplete": false,
     "!closeOnSelect": false,
     "autoComplete": false,
-    "selectOnBlur && hasHighlightedItem": false,
     "isCustomValue && !allowCustomValue": false,
     "!isHighlightedItemVisible": false,
     "!closeOnSelect": false,
@@ -222,10 +221,6 @@ const fetchMachine = createMachine({
           actions: "invokeOnClose"
         },
         "LAYER.INTERACT_OUTSIDE": [{
-          cond: "selectOnBlur && hasHighlightedItem",
-          target: "idle",
-          actions: ["selectHighlightedItem", "invokeOnClose"]
-        }, {
           cond: "isCustomValue && !allowCustomValue",
           target: "idle",
           actions: ["revertInputValue", "invokeOnClose"]
@@ -333,7 +328,6 @@ const fetchMachine = createMachine({
     "autoComplete && isLastItemHighlighted": ctx => ctx["autoComplete && isLastItemHighlighted"],
     "autoComplete && isFirstItemHighlighted": ctx => ctx["autoComplete && isFirstItemHighlighted"],
     "!closeOnSelect": ctx => ctx["!closeOnSelect"],
-    "selectOnBlur && hasHighlightedItem": ctx => ctx["selectOnBlur && hasHighlightedItem"],
     "!isHighlightedItemVisible": ctx => ctx["!isHighlightedItemVisible"],
     "autoHighlight": ctx => ctx["autoHighlight"]
   }

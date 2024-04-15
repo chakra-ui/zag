@@ -19,7 +19,7 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
 }
 
 export interface InputValueChangeDetails {
-  value: string
+  inputValue: string
 }
 
 export interface OpenChangeDetails {
@@ -53,6 +53,14 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   extends DirectionProperty,
     CommonProperties,
     InteractOutsideHandlers {
+  /**
+   * Whether the combobox is open
+   */
+  open?: boolean
+  /**
+   * Whether the combobox open state is controlled by the user
+   */
+  "open.controlled"?: boolean
   /**
    * The ids of the elements in the combobox. Useful for composition.
    */
@@ -109,10 +117,6 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * - `preserve`: The input value is preserved
    */
   selectionBehavior: "clear" | "replace" | "preserve"
-  /**
-   * Whether to select the higlighted item on interaction outside the combobox
-   */
-  selectOnBlur: boolean
   /**
    * Whether to autofocus the input on mount
    */
@@ -173,7 +177,7 @@ export type UserDefinedContext<T extends CollectionItem = CollectionItem> = Requ
   "id" | "collection"
 >
 
-type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
+type ComputedContext = Readonly<{
   /**
    * @computed
    * Whether the input's value is empty
@@ -193,27 +197,13 @@ type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
    */
   autoHighlight: boolean
   /**
-   * The highlighted item
-   */
-  highlightedItem: T | null
-  /**
-   * @computed
-   * The selected items
-   */
-  selectedItems: T[]
-  /**
    * @computed
    * Whether there's a selected option
    */
   hasSelectedItems: boolean
-  /**
-   * @computed
-   * The display value of the combobox (based on the selected items)
-   */
-  valueAsString: string
 }>
 
-interface PrivateContext {
+interface PrivateContext<T extends CollectionItem = CollectionItem> {
   /**
    * @internal
    * The placement of the combobox popover.
@@ -224,6 +214,20 @@ interface PrivateContext {
    * Whether the user is composing text in the input
    */
   composing: boolean
+  /**
+   * The highlighted item
+   */
+  highlightedItem: T | null
+  /**
+   * @interal
+   * The selected items
+   */
+  selectedItems: T[]
+  /**
+   * @interal
+   * The display value of the combobox (based on the selected items)
+   */
+  valueAsString: string
 }
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
