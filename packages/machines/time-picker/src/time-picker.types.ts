@@ -13,11 +13,7 @@ export type ElementIds = Partial<{
   contentColumn: string
 }>
 
-export interface TimeOptions {
-  steps?: number
-  min?: number
-  max?: number
-}
+export type TimePeriod = "am" | "pm" | null
 
 export interface OpenChangeDetails {
   open: boolean
@@ -36,14 +32,14 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   positioning: PositioningOptions
   placeholder?: string
   disabled?: boolean
-  hourOptions?: TimeOptions
-  minuteOptions?: TimeOptions
-  secondOptions?: TimeOptions
+  min?: Time
+  max?: Time
+  steps?: { hour?: number; minute?: number; second?: number }
   withSeconds?: boolean
 }
 
 interface PrivateContext {
-  period: "am" | "pm" | null
+  period: TimePeriod
   currentPlacement?: Placement
 }
 

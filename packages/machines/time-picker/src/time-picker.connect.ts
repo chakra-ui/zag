@@ -1,18 +1,19 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import type { State, Send } from "./time-picker.types"
+import type { State, Send, TimePeriod } from "./time-picker.types"
 import { parts } from "./time-picker.anatomy"
 import { dom } from "./time-picker.dom"
 import { getPlacementStyles } from "@zag-js/popper"
-import { createConditions, getNumberAsString, getStringifiedValue } from "./time-picker.utils"
+import { getNumberAsString, getPeriodHour, getStringifiedValue } from "./time-picker.utils"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   const isOpen = state.hasTag("open")
 
   const disabled = state.context.disabled
   const placeholder = state.context.placeholder
-  const hourOptions = state.context.hourOptions
-  const minuteOptions = state.context.minuteOptions
-  const secondOptions = state.context.secondOptions
+  const min = state.context.min
+  const max = state.context.max
+  const steps = state.context.steps
   const withSeconds = state.context.withSeconds
 
   const popperStyles = getPlacementStyles({
@@ -28,36 +29,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getAvailableHours() {
       const length = state.context.period === null ? 24 : 12
       const hours = Array.from({ length }, (_, i) => i + 1)
-      if (!hourOptions) return hours
-      const { steps, max, min } = hourOptions
-      const conditions = createConditions(
-        steps && ((hour: number) => hour % steps === 0),
-        max && ((hour: number) => hour <= max),
-        min && ((hour: number) => hour >= min),
-      )
-      return hours.filter(conditions)
+      const step = steps?.hour
+      if (!step) return hours
+      return hours.filter((hour: number) => hour % step === 0)
     },
     getAvailableMinutes() {
       const minutes = Array.from({ length: 60 }, (_, i) => i)
-      if (!minuteOptions) return minutes
-      const { steps, max, min } = minuteOptions
-      const conditions = createConditions(
-        steps && ((minute: number) => minute % steps === 0),
-        max && ((minute: number) => minute <= max),
-        min && ((minute: number) => minute >= min),
-      )
-      return minutes.filter(conditions)
+      const step = steps?.minute
+      if (!step) return minutes
+      return minutes.filter((minute: number) => minute % step === 0)
     },
     getAvailableSeconds() {
       const seconds = Array.from({ length: 60 }, (_, i) => i)
-      if (!secondOptions) return seconds
-      const { steps, max, min } = secondOptions
-      const conditions = createConditions(
-        steps && ((second: number) => second % steps === 0),
-        max && ((second: number) => second <= max),
-        min && ((second: number) => second >= min),
-      )
-      return seconds.filter(conditions)
+      const step = steps?.second
+      if (!step) return seconds
+      return seconds.filter((second: number) => second % step === 0)
     },
 
     triggerProps: normalize.button({
@@ -123,42 +109,64 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.root.attrs,
     }),
     getHourCellProps({ hour }: { hour: number }) {
+      const isSelectable = !(
+        (min && getPeriodHour(hour, state.context.period) < min.hour) ||
+        (max && getPeriodHour(hour, state.context.period) > max.hour)
+      )
       return normalize.button({
         ...parts.hourCell.attrs,
-        "data-selected": state.context.value?.hour === hour ? true : undefined,
         type: "button",
         children: getNumberAsString(hour),
-        disabled,
+        "aria-disabled": ariaAttr(!isSelectable),
+        "data-disabled": dataAttr(!isSelectable),
+        "data-selected": dataAttr(state.context.value?.hour === getPeriodHour(hour, state.context.period)),
         onClick() {
+          if (!isSelectable) return
           send({ type: "HOUR.CLICK", hour })
         },
       })
     },
     getMinuteCellProps({ minute }: { minute: number }) {
+      const { value } = state.context
+      const minMinute = min?.set({ second: 0 })
+      const maxMinute = max?.set({ second: 0 })
+      const isSelectable = !(
+        (minMinute && value && minMinute.compare(value.set({ minute })) > 0) ||
+        (maxMinute && value && maxMinute.compare(value.set({ minute })) < 0)
+      )
       return normalize.button({
         ...parts.minuteCell.attrs,
-        "data-selected": state.context.value?.minute === minute ? true : undefined,
         type: "button",
         children: getNumberAsString(minute),
-        disabled,
+        "aria-disabled": ariaAttr(!isSelectable),
+        "data-disabled": dataAttr(!isSelectable),
+        "data-selected": dataAttr(state.context.value?.minute === minute),
         onClick() {
+          if (!isSelectable) return
           send({ type: "MINUTE.CLICK", minute })
         },
       })
     },
     getSecondCellProps({ second }: { second: number }) {
+      const { value } = state.context
+      const isSelectable = !(
+        (min && value?.minute && min.compare(value.set({ second })) > 0) ||
+        (max && value?.minute && max.compare(value.set({ second })) < 0)
+      )
       return normalize.button({
         ...parts.secondCell.attrs,
-        "data-selected": state.context.value?.second === second ? true : undefined,
         type: "button",
         children: getNumberAsString(second),
-        disabled,
+        "aria-disabled": ariaAttr(!isSelectable),
+        "data-disabled": dataAttr(!isSelectable),
+        "data-selected": dataAttr(state.context.value?.second === second),
         onClick() {
+          if (!isSelectable) return
           send({ type: "SECOND.CLICK", second })
         },
       })
     },
-    getPeriodTriggerProps({ period }: { period: "am" | "pm" }) {
+    getPeriodTriggerProps({ period }: { period: TimePeriod }) {
       return normalize.button({
         ...parts.periodTrigger.attrs,
         "data-selected": state.context.period === period ? true : undefined,

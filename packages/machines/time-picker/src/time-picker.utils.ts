@@ -1,5 +1,5 @@
 import { Time } from "@internationalized/date"
-import type { MachineContext } from "./time-picker.types"
+import type { MachineContext, TimePeriod } from "./time-picker.types"
 
 export function getNumberAsString(value: number) {
   if (value < 10) return `0${value}`
@@ -8,7 +8,7 @@ export function getNumberAsString(value: number) {
 
 export function getStringifiedValue(ctx: MachineContext) {
   if (!ctx.value) return ""
-  const hour = getNumberAsString(ctx.value.hour)
+  const hour = getNumberAsString(getPeriodHour(ctx.value.hour, ctx.period))
   const minute = getNumberAsString(ctx.value.minute)
   const period = ctx.period ? ctx.period.toUpperCase() : ""
   if (ctx.withSeconds) {
@@ -18,14 +18,14 @@ export function getStringifiedValue(ctx: MachineContext) {
   return `${hour}:${minute} ${period}`
 }
 
-export function getTimeValue(value: string): { time: Time; period: "am" | "pm" } | undefined {
+export function getTimeValue(value: string): { time: Time; period: TimePeriod } | undefined {
   const match = value.match(/(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?\s?(AM|PM)?/)
   if (!match) return
   let [, hourString, minuteString, secondString, periodString] = match
   let hour = parseInt(hourString)
   const minute = parseInt(minuteString)
   const second = secondString ? parseInt(secondString) : undefined
-  let period = (periodString ? periodString.toLowerCase() : "am") as "am" | "pm"
+  let period = (periodString ? periodString.toLowerCase() : "am") as TimePeriod
   if (hour > 12) {
     hour -= 12
     period = "pm"
@@ -33,9 +33,8 @@ export function getTimeValue(value: string): { time: Time; period: "am" | "pm" }
   return { time: new Time(hour, minute, second), period }
 }
 
-export function createConditions<T extends (value: number) => boolean>(...filters: Array<T | unknown>) {
-  const a = filters.filter((f): f is T => typeof f === "function")
-  return (value: number) => a.every((f) => f(value))
+export function getPeriodHour(hour: number, period: TimePeriod) {
+  return period === "pm" ? hour + 12 : hour
 }
 
 export function isValidCharacter(char: string | null) {

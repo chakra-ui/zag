@@ -15,7 +15,7 @@ const fetchMachine = createMachine({
   context: {},
   on: {
     "INPUT.BLUR": {
-      actions: ["applyInputValue", "syncInputElement"]
+      actions: ["applyInputValue", "guardWrongValue", "syncInputElement"]
     },
     "VALUE.CLEAR": {
       actions: ["clearValue", "syncInputElement"]
@@ -83,7 +83,7 @@ const fetchMachine = createMachine({
           actions: ["setSecond", "invokeValueChange", "syncInputElement"]
         },
         "PERIOD.CLICK": {
-          actions: ["setPeriod", "invokeValueChange", "syncInputElement"]
+          actions: ["setPeriod", "guardWrongValue", "invokeValueChange", "syncInputElement"]
         }
       }
     }

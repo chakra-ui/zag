@@ -32,3 +32,10 @@
   background: purple !important;
   color: white !important ;
 }
+
+[data-scope="time-picker"][data-part="hour-cell"][data-disabled],
+[data-scope="time-picker"][data-part="minute-cell"][data-disabled],
+[data-scope="time-picker"][data-part="second-cell"][data-disabled] {
+  opacity: 0.25;
+  cursor: not-allowed;
+}

@@ -4,7 +4,7 @@ import type { MachineContext, MachineState, UserDefinedContext } from "./time-pi
 import { dom } from "./time-picker.dom"
 import { getPlacement } from "@zag-js/popper"
 import { Time } from "@internationalized/date"
-import { getTimeValue, getStringifiedValue } from "./time-picker.utils"
+import { getTimeValue, getStringifiedValue, getPeriodHour } from "./time-picker.utils"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
 
@@ -29,7 +29,7 @@ export function machine(userContext: UserDefinedContext) {
       },
       on: {
         "INPUT.BLUR": {
-          actions: ["applyInputValue", "syncInputElement"],
+          actions: ["applyInputValue", "guardWrongValue", "syncInputElement"],
         },
         "VALUE.CLEAR": {
           actions: ["clearValue", "syncInputElement"],
@@ -104,7 +104,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["setSecond", "invokeValueChange", "syncInputElement"],
             },
             "PERIOD.CLICK": {
-              actions: ["setPeriod", "invokeValueChange", "syncInputElement"],
+              actions: ["setPeriod", "guardWrongValue", "invokeValueChange", "syncInputElement"],
             },
           },
         },
@@ -184,20 +184,42 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         setHour(ctx, { hour }) {
-          ctx.value = (ctx.value ?? new Time(0)).set({ hour })
+          const newValue = (ctx.value ?? new Time(0)).set({ hour: getPeriodHour(hour, ctx.period) })
+          if (ctx.min && ctx.min.compare(newValue) > 0) {
+            ctx.value = newValue.set({ minute: ctx.min.minute, second: ctx.min.second })
+            return
+          }
+          ctx.value = newValue
         },
         setMinute(ctx, { minute }) {
-          ctx.value = (ctx.value ?? new Time(0)).set({ minute })
+          const newValue = (ctx.value ?? new Time(0)).set({ minute })
+          if (ctx.min && ctx.min.compare(newValue) > 0) {
+            ctx.value = newValue.set({ second: ctx.min.second })
+            return
+          }
+          ctx.value = newValue
         },
         setSecond(ctx, { second }) {
           ctx.value = (ctx.value ?? new Time(0)).set({ second })
         },
         setPeriod(ctx, { period }) {
+          if (period === ctx.period) return
           ctx.period = period
+          if (ctx.value) {
+            const diff = period === "pm" ? 12 : 0
+            ctx.value = ctx.value.set({ hour: (ctx.value.hour % 12) + diff })
+          }
         },
         clearValue(ctx) {
           ctx.value = undefined
           ctx.period = "am"
+        },
+        guardWrongValue(ctx, _, { send }) {
+          const { value, min, max } = ctx
+          if (!value) return
+          if ((min && min.compare(value) > 0) || (max && max.compare(value) < 0)) {
+            send({ type: "VALUE.CLEAR" })
+          }
         },
         scrollUpColumns(ctx) {
           const columnEls = dom.getContentColumnEls(ctx)
