@@ -1,5 +1,25 @@
 # @zag-js/select
 
+## 0.47.0
+
+### Patch Changes
+
+- [`30528d0`](https://github.com/chakra-ui/zag/commit/30528d04563aa428d044867ce40c3ccab7cf8b7b) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Prevent tab key interaction when the select is open. This keeps focus within the select and ensures keyboard interactions work consistently
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.47.0
+  - @zag-js/core@0.47.0
+  - @zag-js/types@0.47.0
+  - @zag-js/collection@0.47.0
+  - @zag-js/utils@0.47.0
+  - @zag-js/dismissable@0.47.0
+  - @zag-js/dom-event@0.47.0
+  - @zag-js/dom-query@0.47.0
+  - @zag-js/form-utils@0.47.0
+  - @zag-js/mutation-observer@0.47.0
+  - @zag-js/popper@0.47.0
+  - @zag-js/visually-hidden@0.47.0
+
 ## 0.46.0
 
 ### Patch Changes
@@ -977,12 +997,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -990,7 +1010,7 @@
       collection,
       id: useId(),
     }),
-  )
+  );
   ```
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @zag-js/combobox
 
+## 0.47.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.47.0
+  - @zag-js/core@0.47.0
+  - @zag-js/types@0.47.0
+  - @zag-js/aria-hidden@0.47.0
+  - @zag-js/collection@0.47.0
+  - @zag-js/utils@0.47.0
+  - @zag-js/dismissable@0.47.0
+  - @zag-js/dom-event@0.47.0
+  - @zag-js/dom-query@0.47.0
+  - @zag-js/mutation-observer@0.47.0
+  - @zag-js/popper@0.47.0
+
 ## 0.46.0
 
 ### Patch Changes
@@ -853,12 +870,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label
+      return item.label;
     },
     itemToValue(item) {
-      return item.value
+      return item.value;
     },
-  })
+  });
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -866,7 +883,7 @@
       collection,
       id: useId(),
     }),
-  )
+  );
   ```
 
 ### Patch Changes

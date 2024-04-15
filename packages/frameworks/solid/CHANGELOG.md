@@ -1,5 +1,14 @@
 # @zag-js/solid
 
+## 0.47.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.47.0
+  - @zag-js/store@0.47.0
+  - @zag-js/types@0.47.0
+
 ## 0.46.0
 
 ### Patch Changes
@@ -39,15 +48,15 @@
   **Before**
 
   ```js
-  const props = mergeProps({ a: 1 }, { a: 2 })
-  props // Proxy { a: 2 }
+  const props = mergeProps({ a: 1 }, { a: 2 });
+  props; // Proxy { a: 2 }
   ```
 
   **After**
 
   ```js
-  const props = mergeProps({ a: 1 }, { a: 2 })
-  props() // { a: 2 }
+  const props = mergeProps({ a: 1 }, { a: 2 });
+  props(); // { a: 2 }
   ```
 
 ### Patch Changes
@@ -659,7 +668,7 @@
         max: props.max,
         min: props.min,
       })),
-    })
+    });
   }
   ```
 
