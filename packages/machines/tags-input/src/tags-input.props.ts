@@ -4,13 +4,13 @@ import type { ItemProps, UserDefinedContext } from "./tags-input.types"
 
 export const props = createProps<UserDefinedContext>()([
   "addOnPaste",
-  "allowEditTag",
   "allowOverflow",
   "autoFocus",
   "blurBehavior",
   "delimiter",
   "dir",
   "disabled",
+  "editable",
   "form",
   "getRootNode",
   "id",
