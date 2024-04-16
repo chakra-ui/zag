@@ -188,15 +188,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Get the available hours that will be displayed in the time picker
    */
-  getAvailableHours(): number[]
+  getAvailableHours(): string[]
   /**
    * Get the available minutes that will be displayed in the time picker
    */
-  getAvailableMinutes(): number[]
+  getAvailableMinutes(): string[]
   /**
    * Get the available seconds that will be displayed in the time picker
    */
-  getAvailableSeconds(): number[]
+  getAvailableSeconds(): string[]
 
   rootProps: T["element"]
   labelProps: T["element"]
@@ -208,9 +208,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   contentProps: T["element"]
   getContentColumnProps(options: { type: TimeUnit }): T["element"]
 
-  getHourCellProps(options: { hour: number }): T["element"]
-  getMinuteCellProps(options: { minute: number }): T["element"]
-  getSecondCellProps(options: { second: number }): T["element"]
+  getHourCellProps(options: { hour: string }): T["element"]
+  getMinuteCellProps(options: { minute: string }): T["element"]
+  getSecondCellProps(options: { second: string }): T["element"]
   getPeriodCellProps(options: { period: TimePeriod }): T["element"]
 }
 

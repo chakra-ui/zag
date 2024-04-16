@@ -30,17 +30,23 @@ export default function Page() {
               <div {...api.contentProps}>
                 <div {...api.getContentColumnProps({ type: "hour" })}>
                   {api.getAvailableHours().map((hour) => (
-                    <button key={hour} {...api.getHourCellProps({ hour })} />
+                    <button key={hour} {...api.getHourCellProps({ hour })}>
+                      {hour}
+                    </button>
                   ))}
                 </div>
                 <div {...api.getContentColumnProps({ type: "minute" })}>
                   {api.getAvailableMinutes().map((minute) => (
-                    <button key={minute} {...api.getMinuteCellProps({ minute })} />
+                    <button key={minute} {...api.getMinuteCellProps({ minute })}>
+                      {minute}
+                    </button>
                   ))}
                 </div>
                 <div {...api.getContentColumnProps({ type: "second" })}>
                   {api.getAvailableSeconds().map((second) => (
-                    <button key={second} {...api.getSecondCellProps({ second })} />
+                    <button key={second} {...api.getSecondCellProps({ second })}>
+                      {second}
+                    </button>
                   ))}
                 </div>
                 <div {...api.getContentColumnProps({ type: "period" })}>
@@ -53,7 +59,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar viz controls={controls.ui}>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} />
       </Toolbar>
     </>

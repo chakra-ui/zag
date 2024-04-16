@@ -64,20 +64,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const length = is12HourFormat ? 12 : 24
       const hours = Array.from({ length }, (_, i) => i)
       const step = steps?.hour
-      if (!step) return hours
-      return hours.filter((hour: number) => hour % step === 0)
+      if (!step) return hours.map(getNumberAsString)
+      return hours.filter((hour) => hour % step === 0).map(getNumberAsString)
     },
     getAvailableMinutes() {
       const minutes = Array.from({ length: 60 }, (_, i) => i)
       const step = steps?.minute
-      if (!step) return minutes
-      return minutes.filter((minute: number) => minute % step === 0)
+      if (!step) return minutes.map(getNumberAsString)
+      return minutes.filter((minute) => minute % step === 0).map(getNumberAsString)
     },
     getAvailableSeconds() {
       const seconds = Array.from({ length: 60 }, (_, i) => i)
       const step = steps?.second
-      if (!step) return seconds
-      return seconds.filter((second: number) => second % step === 0)
+      if (!step) return seconds.map(getNumberAsString)
+      return seconds.filter((second) => second % step === 0).map(getNumberAsString)
     },
 
     rootProps: normalize.element({
@@ -206,7 +206,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getHourCellProps({ hour }) {
+    getHourCellProps({ hour: hourAsString }) {
+      const hour = parseInt(hourAsString)
       const isSelectable = !(
         (min && get12HourFormatPeriodHour(hour, state.context.period) < min.hour) ||
         (max && get12HourFormatPeriodHour(hour, state.context.period) > max.hour)
@@ -215,7 +216,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.hourCell.attrs,
         type: "button",
-        children: getNumberAsString(hour),
         "aria-disabled": ariaAttr(!isSelectable),
         "data-disabled": dataAttr(!isSelectable),
         "aria-current": ariaAttr(isSelected),
@@ -230,7 +230,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getMinuteCellProps({ minute }) {
+    getMinuteCellProps({ minute: minuteAsString }) {
+      const minute = parseInt(minuteAsString)
       const { value } = state.context
       const minMinute = min?.set({ second: 0 })
       const maxMinute = max?.set({ second: 0 })
@@ -242,7 +243,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.minuteCell.attrs,
         type: "button",
-        children: getNumberAsString(minute),
         "aria-disabled": ariaAttr(!isSelectable),
         "data-disabled": dataAttr(!isSelectable),
         "aria-current": ariaAttr(isSelected),
@@ -257,7 +257,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getSecondCellProps({ second }) {
+    getSecondCellProps({ second: secondAsString }) {
+      const second = parseInt(secondAsString)
       const { value } = state.context
       const isSelectable = !(
         (min && value?.minute && min.compare(value.set({ second })) > 0) ||
@@ -267,7 +268,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.secondCell.attrs,
         type: "button",
-        children: getNumberAsString(second),
         "aria-disabled": ariaAttr(!isSelectable),
         "data-disabled": dataAttr(!isSelectable),
         "aria-current": ariaAttr(isSelected),

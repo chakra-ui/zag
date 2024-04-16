@@ -30,6 +30,7 @@
   import Switch from "./routes/switch.svelte"
   import Tabs from "./routes/tabs.svelte"
   import TagsInput from "./routes/tags-input.svelte"
+  import TimePicker from "./routes/time-picker.svelte"
   import Toast from "./routes/toast.svelte"
   import ToggleGroup from "./routes/toggle-group.svelte"
   import Tooltip from "./routes/tooltip.svelte"
@@ -71,6 +72,7 @@
     { path: "/switch", component: Switch },
     { path: "/tabs", component: Tabs },
     { path: "/tags-input", component: TagsInput },
+    { path: "/time-picker", component: TimePicker },
     { path: "/toast", component: Toast },
     { path: "/toggle-group", component: ToggleGroup },
     { path: "/tooltip", component: Tooltip },
