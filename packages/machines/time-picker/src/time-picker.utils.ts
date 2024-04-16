@@ -27,8 +27,9 @@ export function getTimeValue(value: string): { time: Time; period: TimePeriod } 
   const second = secondString ? parseInt(secondString) : undefined
   let period = (periodString ? periodString.toLowerCase() : "am") as TimePeriod
   if (hour > 12) {
-    hour -= 12
     period = "pm"
+  } else if (period === "pm") {
+    hour += 12
   }
   return { time: new Time(hour, minute, second), period }
 }

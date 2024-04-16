@@ -12,6 +12,7 @@ export const props = createProps<UserDefinedContext>()([
   "onOpenChange",
   "ids",
   "open",
+  "open.controlled",
   "value",
   "id",
   "min",

@@ -1,12 +1,12 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import type { State, Send, TimePeriod } from "./time-picker.types"
+import type { State, Send, MachineApi } from "./time-picker.types"
 import { parts } from "./time-picker.anatomy"
 import { dom } from "./time-picker.dom"
 import { getPlacementStyles } from "@zag-js/popper"
 import { getNumberAsString, getPeriodHour, getStringifiedValue } from "./time-picker.utils"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const value = state.context.value
 
   const disabled = state.context.disabled
@@ -87,6 +87,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(disabled),
     }),
 
+    inputProps: normalize.input({
+      ...parts.input.attrs,
+      dir: state.context.dir,
+      autoComplete: "off",
+      autoCorrect: "off",
+      spellCheck: "false",
+      id: dom.getInputId(state.context),
+      name: state.context.name,
+      defaultValue: getStringifiedValue(state.context),
+      placeholder: placeholder ?? `12:00${withSeconds ? ":00" : ""} AM`,
+      disabled,
+      readOnly,
+      onBlur(event) {
+        const { value } = event.target
+        send({ type: "INPUT.BLUR", value })
+      },
+      onKeyDown(event) {
+        if (event.key !== "Enter") return
+        send({ type: "INPUT.ENTER", value: event.currentTarget.value })
+        event.preventDefault()
+      },
+    }),
+
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
@@ -135,7 +158,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "timepicker",
     }),
 
-    getContentColumnProps({ type }: { type: "hour" | "minute" | "second" | "period" }) {
+    getContentColumnProps({ type }) {
       return normalize.element({
         ...parts.contentColumn.attrs,
         hidden: !state.context.withSeconds && type === "second",
@@ -167,30 +190,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    inputProps: normalize.input({
-      ...parts.input.attrs,
-      dir: state.context.dir,
-      autoComplete: "off",
-      autoCorrect: "off",
-      spellCheck: "false",
-      id: dom.getInputId(state.context),
-      name: state.context.name,
-      defaultValue: getStringifiedValue(state.context),
-      placeholder: placeholder ?? `12:00${withSeconds ? ":00" : ""} AM`,
-      disabled,
-      readOnly,
-      onBlur(event) {
-        const { value } = event.target
-        send({ type: "INPUT.BLUR", value })
-      },
-      onKeyDown(event) {
-        if (event.key !== "Enter") return
-        send({ type: "INPUT.ENTER", value: event.currentTarget.value })
-        event.preventDefault()
-      },
-    }),
-
-    getHourCellProps({ hour }: { hour: number }) {
+    getHourCellProps({ hour }) {
       const isSelectable = !(
         (min && getPeriodHour(hour, state.context.period) < min.hour) ||
         (max && getPeriodHour(hour, state.context.period) > max.hour)
@@ -214,7 +214,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getMinuteCellProps({ minute }: { minute: number }) {
+    getMinuteCellProps({ minute }) {
       const { value } = state.context
       const minMinute = min?.set({ second: 0 })
       const maxMinute = max?.set({ second: 0 })
@@ -241,7 +241,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getSecondCellProps({ second }: { second: number }) {
+    getSecondCellProps({ second }) {
       const { value } = state.context
       const isSelectable = !(
         (min && value?.minute && min.compare(value.set({ second })) > 0) ||
@@ -266,7 +266,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getPeriodCellProps({ period }: { period: TimePeriod }) {
+    getPeriodCellProps({ period }) {
       const isSelected = state.context.period === period
       return normalize.button({
         ...parts.periodCell.attrs,

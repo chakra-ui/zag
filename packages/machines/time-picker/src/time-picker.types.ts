@@ -9,15 +9,23 @@ import type { Placement, PositioningOptions } from "@zag-js/popper"
 
 export type TimePeriod = "am" | "pm" | null
 
+export type TimeUnit = "hour" | "minute" | "second" | "period"
+
 export interface OpenChangeDetails {
   open: boolean
 }
 
 export interface ValueChangeDetails {
   value?: Time
+  valueAsString?: string
 }
 
-export interface FocusChangeDetails extends ValueChangeDetails {}
+export interface FocusChangeDetails extends ValueChangeDetails {
+  focusedCell: {
+    value: number
+    unit: TimeUnit
+  }
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -42,6 +50,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the timepicker is open
    */
   open?: boolean
+  /**
+   * Whether the datepicker open state is controlled by the user
+   */
+  "open.controlled"?: boolean
   /**
    * The ids of the elements in the date picker. Useful for composition.
    */
@@ -97,8 +109,21 @@ interface PublicContext extends DirectionProperty, CommonProperties {
 }
 
 interface PrivateContext {
+  /**
+   * @internal
+   * The period of the time (AM/PM)
+   */
   period: TimePeriod
+  /**
+   * @internal
+   * The computed placement (maybe different from initial placement)
+   */
   currentPlacement?: Placement
+  /**
+   * @internal
+   * Whether the calendar should restore focus to the input when it closes.
+   */
+  restoreFocus?: boolean
 }
 
 type ComputedContext = Readonly<{}>
@@ -115,15 +140,71 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
-  isOpen: boolean
-  triggerProps: T["element"]
-  positionerProps: T["element"]
-}
-
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
+  /**
+   * Whether the input is focused
+   */
+  isFocused: boolean
+  /**
+   * Whether the time picker is open
+   */
+  isOpen: boolean
+  /**
+   * The selected time
+   */
+  value: Time | undefined
+  /**
+   * The selected time as a string
+   */
+  valueAsString: string | undefined
+  /**
+   * Function to reposition the time picker content
+   */
+  reposition(options?: PositioningOptions): void
+  /**
+   * Function to open the time picker
+   */
+  open(): void
+  /**
+   * Function to close the time picker
+   */
+  close(): void
+  /**
+   * Function to clear the selected time
+   */
+  clearValue(): void
+  /**
+   * Get the available hours that will be displayed in the time picker
+   */
+  getAvailableHours(): number[]
+  /**
+   * Get the available minutes that will be displayed in the time picker
+   */
+  getAvailableMinutes(): number[]
+  /**
+   * Get the available seconds that will be displayed in the time picker
+   */
+  getAvailableSeconds(): number[]
+
+  rootProps: T["element"]
+  labelProps: T["element"]
+  controlProps: T["element"]
+  inputProps: T["element"]
+  triggerProps: T["element"]
+  clearTriggerProps: T["element"]
+  positionerProps: T["element"]
+  contentProps: T["element"]
+  getContentColumnProps(options: { type: TimeUnit }): T["element"]
+
+  getHourCellProps(options: { hour: number }): T["element"]
+  getMinuteCellProps(options: { minute: number }): T["element"]
+  getSecondCellProps(options: { second: number }): T["element"]
+  getPeriodCellProps(options: { period: TimePeriod }): T["element"]
+}
 
 /* -----------------------------------------------------------------------------
  * Re-exported types

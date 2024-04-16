@@ -1,6 +1,6 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, guards } from "@zag-js/core"
 import { compact } from "@zag-js/utils"
-import type { MachineContext, MachineState, UserDefinedContext } from "./time-picker.types"
+import type { MachineContext, MachineState, TimeUnit, UserDefinedContext } from "./time-picker.types"
 import { dom } from "./time-picker.dom"
 import { getPlacement } from "@zag-js/popper"
 import { Time } from "@internationalized/date"
@@ -8,15 +8,14 @@ import { getTimeValue, getStringifiedValue, getPeriodHour } from "./time-picker.
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
 
+const { and } = guards
+
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "time-picker",
       initial: ctx.open ? "open" : "idle",
-      watch: {
-        open: ["toggleVisibility"],
-      },
       context: {
         value: undefined,
         period: "am",
@@ -27,33 +26,51 @@ export function machine(userContext: UserDefinedContext) {
           ...ctx.positioning,
         },
       },
+
+      watch: {
+        open: ["toggleVisibility"],
+      },
+
       on: {
         "INPUT.BLUR": {
-          actions: ["applyInputValue", "guardWrongValue", "syncInputElement"],
+          actions: ["applyInputValue", "checkValidInputValue", "syncInputElement"],
         },
         "INPUT.ENTER": {
-          actions: ["applyInputValue", "guardWrongValue", "syncInputElement"],
+          actions: ["applyInputValue", "checkValidInputValue", "syncInputElement"],
         },
         "VALUE.CLEAR": {
           actions: ["clearValue", "syncInputElement"],
         },
       },
+
       states: {
         idle: {
           tags: ["closed"],
           on: {
             "TRIGGER.CLICK": [
               {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
                 target: "open",
                 actions: ["invokeOnOpen", "focusFirstHour"],
               },
             ],
-            "CONTROLLED.OPEN": [
+            OPEN: [
               {
-                target: "open",
+                guard: "isOpenControlled",
                 actions: ["invokeOnOpen"],
               },
+              {
+                target: "open",
+                actions: ["invokeOnOpen", "focusFirstHour"],
+              },
             ],
+            "CONTROLLED.OPEN": {
+              target: "open",
+              actions: ["invokeOnOpen", "focusFirstHour"],
+            },
           },
         },
         focused: {
@@ -61,16 +78,28 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "TRIGGER.CLICK": [
               {
-                target: "idle",
+                guard: "isOpenControlled",
                 actions: ["invokeOnOpen"],
               },
-            ],
-            "CONTROLLED.OPEN": [
               {
                 target: "open",
-                actions: ["invokeOnOpen"],
+                actions: ["invokeOnOpen", "focusFirstHour"],
               },
             ],
+            OPEN: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["invokeOnOpen", "focusFirstHour"],
+              },
+            ],
+            "CONTROLLED.OPEN": {
+              target: "open",
+              actions: ["invokeOnOpen", "focusFirstHour"],
+            },
           },
         },
         open: {
@@ -80,34 +109,69 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "TRIGGER.CLICK": [
               {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "focused",
+                actions: ["invokeOnClose", "scrollUpColumns"],
+              },
+            ],
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
                 target: "idle",
                 actions: ["invokeOnClose", "scrollUpColumns"],
               },
             ],
             "CONTROLLED.CLOSE": [
               {
+                guard: and("shouldRestoreFocus", "isInteractOutsideEvent"),
+                target: "focused",
+                actions: ["focusTriggerElement", "scrollUpColumns"],
+              },
+              {
+                guard: "shouldRestoreFocus",
+                target: "focused",
+                actions: ["focusInputElement", "scrollUpColumns"],
+              },
+              {
+                target: "idle",
+                actions: ["scrollUpColumns", "scrollUpColumns"],
+              },
+            ],
+            INTERACT_OUTSIDE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose", "scrollUpColumns"],
+              },
+              {
+                guard: "shouldRestoreFocus",
+                target: "focused",
+                actions: ["invokeOnClose", "focusTriggerElement", "scrollUpColumns"],
+              },
+              {
                 target: "idle",
                 actions: ["invokeOnClose", "scrollUpColumns"],
               },
             ],
-            "CONTENT.INTERACT_OUTSIDE": {
-              target: "idle",
-              actions: ["invokeOnClose", "scrollUpColumns"],
-            },
             "POSITIONING.SET": {
               actions: ["reposition", "scrollUpColumns"],
             },
             "HOUR.CLICK": {
-              actions: ["setHour", "invokeValueChange", "syncInputElement"],
+              actions: ["setHour", "syncInputElement"],
             },
             "MINUTE.CLICK": {
-              actions: ["setMinute", "invokeValueChange", "syncInputElement"],
+              actions: ["setMinute", "syncInputElement"],
             },
             "SECOND.CLICK": {
-              actions: ["setSecond", "invokeValueChange", "syncInputElement"],
+              actions: ["setSecond", "syncInputElement"],
             },
             "PERIOD.CLICK": {
-              actions: ["setPeriod", "guardWrongValue", "invokeValueChange", "syncInputElement"],
+              actions: ["setPeriod", "checkValidInputValue", "syncInputElement"],
             },
             "CONTENT.COLUMN.ARROW_UP": {
               actions: ["focusPreviousCell"],
@@ -122,14 +186,18 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["focusNextColumnFirstCell"],
             },
             "CONTENT.COLUMN.ENTER": {
-              actions: ["setCurrentCell", "focusNextColumnFirstCell", "syncInputElement"],
+              actions: ["setCurrentCell", "focusNextColumnFirstCell"],
             },
           },
         },
       },
     },
     {
-      guards: {},
+      guards: {
+        shouldRestoreFocus: (ctx) => !!ctx.restoreFocus,
+        isOpenControlled: (ctx) => !!ctx["open.controlled"],
+        isInteractOutsideEvent: (_ctx, evt) => evt.previousEvent?.type === "INTERACT_OUTSIDE",
+      },
       activities: {
         computePlacement(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
@@ -144,18 +212,14 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         trackDismissableElement(ctx, _evt, { send }) {
-          const contentEl = () => dom.getContentEl(ctx)
-          return trackDismissableElement(contentEl, {
+          return trackDismissableElement(dom.getContentEl(ctx), {
             defer: true,
-            exclude: [dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
-            // onFocusOutside: ctx.onFocusOutside,
-            // onPointerDownOutside: ctx.onPointerDownOutside,
-            // onInteractOutside(event) {
-            //   ctx.onInteractOutside?.(event)
-            //   ctx.restoreFocus = !event.detail.focusable
-            // },
+            exclude: [dom.getTriggerEl(ctx), dom.getInputEl(ctx), dom.getClearTriggerEl(ctx)],
+            onInteractOutside(event) {
+              ctx.restoreFocus = !event.detail.focusable
+            },
             onDismiss() {
-              send({ type: "CONTENT.INTERACT_OUTSIDE" })
+              send({ type: "INTERACT_OUTSIDE" })
             },
           })
         },
@@ -182,9 +246,6 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnClose(ctx) {
           ctx.onOpenChange?.({ open: false })
         },
-        invokeValueChange(ctx) {
-          ctx.onValueChange?.({ value: ctx.value })
-        },
         applyInputValue(ctx, evt) {
           const timeValue = getTimeValue(evt.value)
           if (!timeValue) return
@@ -203,6 +264,7 @@ export function machine(userContext: UserDefinedContext) {
             return
           }
           ctx.value = newValue
+          invoke.change(ctx)
         },
         setMinute(ctx, { minute }) {
           const newValue = (ctx.value ?? new Time(0)).set({ minute })
@@ -211,9 +273,11 @@ export function machine(userContext: UserDefinedContext) {
             return
           }
           ctx.value = newValue
+          invoke.change(ctx)
         },
         setSecond(ctx, { second }) {
           ctx.value = (ctx.value ?? new Time(0)).set({ second })
+          invoke.change(ctx)
         },
         setPeriod(ctx, { period }) {
           if (period === ctx.period) return
@@ -222,12 +286,13 @@ export function machine(userContext: UserDefinedContext) {
             const diff = period === "pm" ? 12 : 0
             ctx.value = ctx.value.set({ hour: (ctx.value.hour % 12) + diff })
           }
+          invoke.change(ctx)
         },
         clearValue(ctx) {
           ctx.value = undefined
           ctx.period = "am"
         },
-        guardWrongValue(ctx, _, { send }) {
+        checkValidInputValue(ctx, _, { send }) {
           const { value, min, max } = ctx
           if (!value) return
           if ((min && min.compare(value) > 0) || (max && max.compare(value) < 0)) {
@@ -240,24 +305,38 @@ export function machine(userContext: UserDefinedContext) {
             columnEl.scrollTo({ top: 0 })
           }
         },
+        focusTriggerElement(ctx) {
+          dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
+        },
+        focusInputElement(ctx) {
+          dom.getInputEl(ctx)?.focus({ preventScroll: true })
+        },
         focusFirstHour(ctx) {
           raf(() => {
-            dom.getHourCellEls(ctx)?.[0]?.focus()
+            const el = dom.getHourCellEls(ctx)?.[0]
+            if (!el) return
+            el?.focus()
+            const { value, unit } = el.dataset
+            invoke.focusChange(ctx, value, unit)
           })
         },
-        focusPreviousCell(_, evt) {
+        focusPreviousCell(ctx, evt) {
           raf(() => {
             const next = evt.target.previousSibling
             if (next && !next.disabled) {
               next.focus()
+              const { value, unit } = next.dataset
+              invoke.focusChange(ctx, value, unit)
             }
           })
         },
-        focusNextCell(_, evt) {
+        focusNextCell(ctx, evt) {
           raf(() => {
             const previous = evt.target.nextSibling
             if (previous && !previous.disabled) {
               previous.focus()
+              const { value, unit } = previous.dataset
+              invoke.focusChange(ctx, value, unit)
             }
           })
         },
@@ -266,61 +345,82 @@ export function machine(userContext: UserDefinedContext) {
           switch (unit) {
             case "hour":
               send({ type: "HOUR.CLICK", hour: value })
-              return
+              break
             case "minute":
               send({ type: "MINUTE.CLICK", minute: value })
-              return
+              break
             case "second":
               send({ type: "SECOND.CLICK", second: value })
-              return
+              break
             case "period":
               send({ type: "PERIOD.CLICK", period: value })
-              return
+              break
           }
         },
         focusPreviousColumnFirstCell(ctx, evt) {
           raf(() => {
-            switch (evt.target.dataset.unit) {
+            const { value, unit } = evt.target.dataset
+            switch (unit) {
               case "minute":
                 dom.getHourCellEls(ctx)?.[0]?.focus()
-                return
+                break
               case "second":
                 dom.getMinuteCellEls(ctx)?.[0]?.focus()
-                return
+                break
               case "period":
                 if (ctx.withSeconds) {
                   dom.getSecondCellEls(ctx)?.[0]?.focus()
-                  return
+                } else {
+                  dom.getMinuteCellEls(ctx)?.[0]?.focus()
                 }
-                dom.getMinuteCellEls(ctx)?.[0]?.focus()
-                return
+                break
               default:
-                return
+                break
             }
+            invoke.focusChange(ctx, value, unit)
           })
         },
         focusNextColumnFirstCell(ctx, evt) {
           raf(() => {
-            switch (evt.target.dataset.unit) {
+            const { value, unit } = evt.target.dataset
+            switch (unit) {
               case "hour":
                 dom.getMinuteCellEls(ctx)?.[0]?.focus()
-                return
+                break
               case "minute":
                 if (ctx.withSeconds) {
                   dom.getSecondCellEls(ctx)?.[0]?.focus()
-                  return
+                } else {
+                  dom.getPeriodCellEls(ctx)?.[0]?.focus()
                 }
-                dom.getPeriodCellEls(ctx)?.[0]?.focus()
-                return
+                break
               case "second":
                 dom.getPeriodCellEls(ctx)?.[0]?.focus()
-                return
+                break
               default:
-                return
+                break
             }
+            invoke.focusChange(ctx, value, unit)
           })
         },
       },
     },
   )
+}
+
+const invoke = {
+  change(ctx: MachineContext) {
+    ctx.onValueChange?.({ value: ctx.value, valueAsString: getStringifiedValue(ctx) })
+  },
+  focusChange(ctx: MachineContext, focusValue?: string, focusUnit?: string) {
+    if (!ctx.onFocusChange || !focusValue || !focusUnit) return
+    ctx.onFocusChange({
+      value: ctx.value,
+      valueAsString: getStringifiedValue(ctx),
+      focusedCell: {
+        value: parseInt(focusValue),
+        unit: focusUnit as TimeUnit,
+      },
+    })
+  },
 }
