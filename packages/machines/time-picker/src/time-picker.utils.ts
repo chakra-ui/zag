@@ -41,7 +41,7 @@ export function getTimeValue(value: string, ctx: MachineContext): { time: Time; 
   }
 
   let period = (periodString ? periodString.toLowerCase() : "am") as TimePeriod
-  if (hour > 12) {
+  if (hour > 11) {
     period = "pm"
   } else if (period === "pm") {
     hour += 12
