@@ -4,7 +4,7 @@ import type { MachineContext, MachineState, TimeUnit, UserDefinedContext } from 
 import { dom } from "./time-picker.dom"
 import { getPlacement } from "@zag-js/popper"
 import { Time } from "@internationalized/date"
-import { getTimeValue, getStringifiedValue, getPeriodHour } from "./time-picker.utils"
+import { getTimeValue, getStringifiedValue, get12HourFormatPeriodHour, is12HourFormat } from "./time-picker.utils"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
 
@@ -18,6 +18,7 @@ export function machine(userContext: UserDefinedContext) {
       initial: ctx.open ? "open" : "idle",
       context: {
         value: undefined,
+        locale: "en-US",
         period: "am",
         ...ctx,
         positioning: {
@@ -247,7 +248,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.onOpenChange?.({ open: false })
         },
         applyInputValue(ctx, evt) {
-          const timeValue = getTimeValue(evt.value)
+          const timeValue = getTimeValue(evt.value, ctx)
           if (!timeValue) return
           ctx.value = timeValue.time
           ctx.period = timeValue.period
@@ -258,7 +259,7 @@ export function machine(userContext: UserDefinedContext) {
           inputEl.value = getStringifiedValue(ctx)
         },
         setHour(ctx, { hour }) {
-          const newValue = (ctx.value ?? new Time(0)).set({ hour: getPeriodHour(hour, ctx.period) })
+          const newValue = (ctx.value ?? new Time(0)).set({ hour: get12HourFormatPeriodHour(hour, ctx.period) })
           if (ctx.min && ctx.min.compare(newValue) > 0) {
             ctx.value = newValue.set({ minute: ctx.min.minute, second: ctx.min.second })
             return
@@ -322,20 +323,21 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusPreviousCell(ctx, evt) {
           raf(() => {
-            const next = evt.target.previousSibling
-            if (next && !next.disabled) {
-              next.focus()
-              const { value, unit } = next.dataset
+            const previous = evt.target.previousSibling
+            if (previous && !previous.disabled) {
+              previous.focus()
+              const { value, unit } = previous.dataset
               invoke.focusChange(ctx, value, unit)
             }
           })
         },
         focusNextCell(ctx, evt) {
           raf(() => {
-            const previous = evt.target.nextSibling
-            if (previous && !previous.disabled) {
-              previous.focus()
-              const { value, unit } = previous.dataset
+            const next = evt.target.nextSibling
+            if (next && !next.disabled) {
+              const { value, unit } = next.dataset
+              if (unit === "period" && !is12HourFormat(ctx.locale)) return
+              next.focus()
               invoke.focusChange(ctx, value, unit)
             }
           })
@@ -395,6 +397,7 @@ export function machine(userContext: UserDefinedContext) {
                 }
                 break
               case "second":
+                if (!is12HourFormat(ctx.locale)) return
                 dom.getPeriodCellEls(ctx)?.[0]?.focus()
                 break
               default:

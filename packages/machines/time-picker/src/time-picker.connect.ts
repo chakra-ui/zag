@@ -3,7 +3,12 @@ import type { State, Send, MachineApi } from "./time-picker.types"
 import { parts } from "./time-picker.anatomy"
 import { dom } from "./time-picker.dom"
 import { getPlacementStyles } from "@zag-js/popper"
-import { getNumberAsString, getPeriodHour, getStringifiedValue } from "./time-picker.utils"
+import {
+  getNumberAsString,
+  get12HourFormatPeriodHour,
+  getStringifiedValue,
+  is12HourFormat as is12HourFormatFn,
+} from "./time-picker.utils"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
@@ -12,6 +17,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const disabled = state.context.disabled
   const readOnly = state.context.readOnly
 
+  const locale = state.context.locale
   const min = state.context.min
   const max = state.context.max
   const steps = state.context.steps
@@ -27,11 +33,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     placement: state.context.currentPlacement,
   })
 
+  const is12HourFormat = is12HourFormatFn(locale)
+
+  function getInputPlaceholder() {
+    if (placeholder) return placeholder
+    const secondsPart = withSeconds ? ":ss" : ""
+    const periodPart = is12HourFormatFn(locale) ? " aa" : ""
+    return `hh:mm${secondsPart}${periodPart}`
+  }
+
   return {
     isFocused,
     isOpen,
     value,
     valueAsString: value?.toString(),
+    is12HourFormat,
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
@@ -45,8 +61,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("VALUE.CLEAR")
     },
     getAvailableHours() {
-      const length = state.context.period === null ? 24 : 12
-      const hours = Array.from({ length }, (_, i) => i + 1)
+      const length = is12HourFormat ? 12 : 24
+      const hours = Array.from({ length }, (_, i) => i)
       const step = steps?.hour
       if (!step) return hours
       return hours.filter((hour: number) => hour % step === 0)
@@ -96,7 +112,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getInputId(state.context),
       name: state.context.name,
       defaultValue: getStringifiedValue(state.context),
-      placeholder: placeholder ?? `12:00${withSeconds ? ":00" : ""} AM`,
+      placeholder: getInputPlaceholder(),
       disabled,
       readOnly,
       onBlur(event) {
@@ -161,7 +177,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getContentColumnProps({ type }) {
       return normalize.element({
         ...parts.contentColumn.attrs,
-        hidden: !state.context.withSeconds && type === "second",
+        hidden: (type === "second" && !state.context.withSeconds) || (type === "period" && !is12HourFormat),
         tabIndex: -1,
         onKeyDown(event) {
           const { key, target } = event
@@ -192,10 +208,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getHourCellProps({ hour }) {
       const isSelectable = !(
-        (min && getPeriodHour(hour, state.context.period) < min.hour) ||
-        (max && getPeriodHour(hour, state.context.period) > max.hour)
+        (min && get12HourFormatPeriodHour(hour, state.context.period) < min.hour) ||
+        (max && get12HourFormatPeriodHour(hour, state.context.period) > max.hour)
       )
-      const isSelected = state.context.value?.hour === getPeriodHour(hour, state.context.period)
+      const isSelected = state.context.value?.hour === get12HourFormatPeriodHour(hour, state.context.period)
       return normalize.button({
         ...parts.hourCell.attrs,
         type: "button",

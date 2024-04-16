@@ -261,6 +261,12 @@ export const signaturePadControls = defineControls({
 })
 
 export const timePickerControls = defineControls({
-  disabled: { type: "boolean", defaultValue: false },
+  locale: {
+    type: "select",
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    defaultValue: "en-US",
+  },
   withSeconds: { type: "boolean", defaultValue: false },
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
 })

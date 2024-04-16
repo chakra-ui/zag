@@ -7,7 +7,7 @@ import type { Placement, PositioningOptions } from "@zag-js/popper"
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export type TimePeriod = "am" | "pm" | null
+export type TimePeriod = "am" | "pm"
 
 export type TimeUnit = "hour" | "minute" | "second" | "period"
 
@@ -42,6 +42,10 @@ export type ElementIds = Partial<{
 }>
 
 interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The locale (BCP 47 language tag) to use when formatting the time.
+   */
+  locale: string
   /**
    * The selected time.
    */
@@ -161,6 +165,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * The selected time as a string
    */
   valueAsString: string | undefined
+  /**
+   * Whether the time picker is in 12-hour format (based on the locale prop)
+   */
+  is12HourFormat: boolean
   /**
    * Function to reposition the time picker content
    */
