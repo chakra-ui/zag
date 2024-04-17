@@ -1,5 +1,39 @@
 # @zag-js/toast
 
+## 0.47.0
+
+### Minor Changes
+
+- [`d4b091d`](https://github.com/chakra-ui/zag/commit/d4b091d8710fc08efc24f2ecec49d26c80e58b0d) Thanks [@cschroeter](https://github.com/cschroeter)! - **[BREAKING]** Simplify toast api methods
+
+  ```diff
+  <ToastContext.Provider value={api}>
+  -    {Object.entries(api.getToastsByPlacement()).map(([placement, toasts]) => (
+  +    {api.getPlacements().map((placement) => (
+          <div key={placement} {...api.getGroupProps({ placement })}>
+  -           {toasts.map((toast) => (
+  +           {api.getToastsByPlacement(placement).map((toast) => (
+                  <Toast key={toast.id} actor={toast} />
+              ))}
+          </div>
+      ))}
+      {children}
+  </ToastContext.Provider>
+  ```
+
+### Patch Changes
+
+- [`6386d79`](https://github.com/chakra-ui/zag/commit/6386d7945ec2550e06b3e134d7c690cd1268b56f) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where toast closes when you update the same toast type
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.47.0
+  - @zag-js/core@0.47.0
+  - @zag-js/types@0.47.0
+  - @zag-js/utils@0.47.0
+  - @zag-js/dismissable@0.47.0
+  - @zag-js/dom-event@0.47.0
+  - @zag-js/dom-query@0.47.0
+
 ## 0.46.0
 
 ### Minor Changes
