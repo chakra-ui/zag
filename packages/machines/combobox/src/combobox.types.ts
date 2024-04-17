@@ -29,6 +29,7 @@ export interface OpenChangeDetails {
 export interface SelectionValueDetails<T extends CollectionItem = CollectionItem> {
   inputValue: string
   selectedItems: T[]
+  valueAsString: string
 }
 
 export interface ScrollToIndexDetails {

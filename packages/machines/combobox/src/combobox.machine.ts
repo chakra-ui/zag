@@ -846,7 +846,9 @@ const invoke = {
       return ctx.collection.item(v)
     })
 
-    ctx.valueAsString = ctx.collection.itemsToString(ctx.selectedItems)
+    const valueAsString = ctx.collection.itemsToString(ctx.selectedItems)
+
+    ctx.valueAsString = valueAsString
 
     let nextInputValue: string | undefined
 
@@ -855,6 +857,7 @@ const invoke = {
       nextInputValue = ctx.getSelectionValue({
         inputValue: ctx.inputValue,
         selectedItems: Array.from(ctx.selectedItems),
+        valueAsString,
       })
       //
     } else {
