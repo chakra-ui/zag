@@ -2316,6 +2316,9 @@ importers:
       '@zag-js/rect-utils':
         specifier: workspace:*
         version: link:../../utilities/rect
+      '@zag-js/tabbable':
+        specifier: workspace:*
+        version: link:../../utilities/tabbable
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

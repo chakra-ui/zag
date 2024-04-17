@@ -36,6 +36,7 @@
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/mutation-observer": "workspace:*",
     "@zag-js/popper": "workspace:*",
+    "@zag-js/tabbable": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
