@@ -264,11 +264,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         })
       },
       onKeyDown(event) {
+        if (!isTriggerOnly) return
         const keyMap: EventKeyMap = {
           ArrowDown() {
             send("INPUT.FOCUS")
             send("INPUT.ARROW_DOWN")
-            if (!isTriggerOnly) return
             raf(() => {
               dom.getInputEl(state.context)?.focus({ preventScroll: true })
             })
@@ -276,7 +276,6 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           ArrowUp() {
             send("INPUT.FOCUS")
             send("INPUT.ARROW_UP")
-            if (!isTriggerOnly) return
             raf(() => {
               dom.getInputEl(state.context)?.focus({ preventScroll: true })
             })
