@@ -34,6 +34,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   const is12HourFormat = is12HourFormatFn(locale)
+  const valueAsString = getStringifiedValue(state.context)
 
   function getInputPlaceholder() {
     if (placeholder) return placeholder
@@ -46,7 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isFocused,
     isOpen,
     value,
-    valueAsString: value?.toString(),
+    valueAsString,
     is12HourFormat,
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
@@ -111,7 +112,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       spellCheck: "false",
       id: dom.getInputId(state.context),
       name: state.context.name,
-      defaultValue: getStringifiedValue(state.context),
+      defaultValue: valueAsString,
       placeholder: getInputPlaceholder(),
       disabled,
       readOnly,

@@ -24,19 +24,14 @@
   border: none;
   padding: 8px;
   border-radius: 4px;
-}
 
-[data-scope="time-picker"][data-part="hour-cell"][data-selected],
-[data-scope="time-picker"][data-part="minute-cell"][data-selected],
-[data-scope="time-picker"][data-part="second-cell"][data-selected],
-[data-scope="time-picker"][data-part="period-cell"][data-selected] {
-  background: purple !important;
-  color: white !important ;
-}
+  &[data-selected]{
+    background: purple;
+    color: white;
+  }
 
-[data-scope="time-picker"][data-part="hour-cell"][data-disabled],
-[data-scope="time-picker"][data-part="minute-cell"][data-disabled],
-[data-scope="time-picker"][data-part="second-cell"][data-disabled] {
-  opacity: 0.25;
-  cursor: not-allowed;
+  &[data-disabled]{
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
 }

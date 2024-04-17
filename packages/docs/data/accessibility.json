@@ -714,5 +714,33 @@
         "description": "Closes the dialog and moves focus to trigger or the defined final focus element"
       }
     ]
+  },
+  "time-picker": {
+    "keyboard": [
+      {
+        "keys": ["ArrowLeft"],
+        "description": "Moves focus to the previous column."
+      },
+      {
+        "keys": ["ArrowRight"],
+        "description": "Moves focus to the next column."
+      },
+      {
+        "keys": ["ArrowUp"],
+        "description": "Moves focus to the previous cell within the current column."
+      },
+      {
+        "keys": ["ArrowDown"],
+        "description": "Moves focus to the next cell within the current column."
+      },
+      {
+        "keys": ["Enter"],
+        "description": "Selects the focused hour/minute/second/period and moves focus to the next column."
+      },
+      {
+        "keys": ["Esc"],
+        "description": "Closes the time picker without selecting any time."
+      }
+    ]
   }
 }

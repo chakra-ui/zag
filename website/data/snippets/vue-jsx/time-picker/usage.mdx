@@ -1,0 +1,74 @@
+```jsx
+import * as timePicker from "@zag-js/time-picker"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+import { computed, defineComponent, Teleport } from "vue"
+
+export default defineComponent({
+  name: "TimePicker",
+  setup() {
+    const [state, send] = useMachine(timePicker.machine({ id: "1" }), {
+      context: controls.context,
+    })
+
+    const apiRef = computed(() =>
+      timePicker.connect(state.value, send, normalizeProps),
+    )
+
+    return () => {
+      const api = apiRef.value
+
+      return (
+        <div {...api.rootProps}>
+          <div {...api.controlProps} style={{ display: "flex", gap: "10px" }}>
+            <input {...api.inputProps} />
+            <button {...api.triggerProps}>🗓</button>
+            <button {...api.clearTriggerProps}>❌</button>
+          </div>
+
+          <Teleport to="body">
+            <div {...api.positionerProps}>
+              <div {...api.contentProps}>
+                <div {...api.getContentColumnProps({ type: "hour" })}>
+                  {api.getAvailableHours().map((hour) => (
+                    <button key={hour} {...api.getHourCellProps({ hour })}>
+                      {hour}
+                    </button>
+                  ))}
+                </div>
+                <div {...api.getContentColumnProps({ type: "minute" })}>
+                  {api.getAvailableMinutes().map((minute) => (
+                    <button
+                      key={minute}
+                      {...api.getMinuteCellProps({ minute })}
+                    >
+                      {minute}
+                    </button>
+                  ))}
+                </div>
+                <div {...api.getContentColumnProps({ type: "second" })}>
+                  {api.getAvailableSeconds().map((second) => (
+                    <button
+                      key={second}
+                      {...api.getSecondCellProps({ second })}
+                    >
+                      {second}
+                    </button>
+                  ))}
+                </div>
+                <div {...api.getContentColumnProps({ type: "period" })}>
+                  <button {...api.getPeriodCellProps({ period: "am" })}>
+                    AM
+                  </button>
+                  <button {...api.getPeriodCellProps({ period: "pm" })}>
+                    PM
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Teleport>
+        </div>
+      )
+    }
+  },
+})
+```

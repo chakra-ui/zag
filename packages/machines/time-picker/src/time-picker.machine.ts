@@ -323,7 +323,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusPreviousCell(ctx, evt) {
           raf(() => {
-            const previous = evt.target.previousSibling
+            const previous = evt.target.previousElementSibling
             if (previous && !previous.disabled) {
               previous.focus()
               const { value, unit } = previous.dataset
@@ -333,7 +333,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusNextCell(ctx, evt) {
           raf(() => {
-            const next = evt.target.nextSibling
+            const next = evt.target.nextElementSibling
             if (next && !next.disabled) {
               const { value, unit } = next.dataset
               if (unit === "period" && !is12HourFormat(ctx.locale)) return
