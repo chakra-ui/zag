@@ -9,7 +9,14 @@ import {
   isModifierKey,
   type EventKeyMap,
 } from "@zag-js/dom-event"
-import { dataAttr, isDownloadingEvent, isEditableElement, isOpeningInNewTab, isSelfTarget } from "@zag-js/dom-query"
+import {
+  dataAttr,
+  getEventTarget,
+  isDownloadingEvent,
+  isEditableElement,
+  isOpeningInNewTab,
+  isSelfTarget,
+} from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./menu.anatomy"
@@ -275,6 +282,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onKeyDown(event) {
         const evt = getNativeEvent(event)
+        const target = getEventTarget<Element>(evt)
+
+        const isKeyDownInside = target?.closest("[role=menu]") === event.currentTarget
+
+        if (!isKeyDownInside) return
         if (!isSelfTarget(evt)) return
 
         const item = dom.getHighlightedItemEl(state.context)
