@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@axe-core/playwright':
         specifier: 4.9.0
-        version: 4.9.0(playwright-core@1.43.0)
+        version: 4.9.0(playwright-core@1.43.1)
       '@babel/generator':
         specifier: 7.24.4
         version: 7.24.4
@@ -144,6 +144,9 @@ importers:
       '@internationalized/date':
         specifier: 3.5.2
         version: 3.5.2
+      '@types/textarea-caret':
+        specifier: ^3.0.3
+        version: 3.0.3
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
@@ -375,6 +378,9 @@ importers:
       react-spinners:
         specifier: 0.13.8
         version: 0.13.8(react-dom@18.2.0)(react@18.2.0)
+      textarea-caret:
+        specifier: ^3.1.0
+        version: 3.1.0
     devDependencies:
       '@types/form-serialize':
         specifier: 0.7.4
@@ -3700,13 +3706,13 @@ packages:
     resolution: {integrity: sha512-gFPqTG7otEJ8uP6wrhDv6mqwGWYZKNvAcCq6u9hOj0c+IKCEsY4L1oC9trPq2SaWIzAfHvqfBDxF591JkMf+kg==}
     dev: true
 
-  /@axe-core/playwright@4.9.0(playwright-core@1.43.0):
+  /@axe-core/playwright@4.9.0(playwright-core@1.43.1):
     resolution: {integrity: sha512-Q1Lz75dNsX38jof+aev7RficDMdH/HLOLySkDdXR0fUoeFcLdw4UNgDO2CNNP4CTpoesEdfYRdd6VmDXjhBgbA==}
     peerDependencies:
       playwright-core: '>= 1.0.0'
     dependencies:
       axe-core: 4.9.0
-      playwright-core: 1.43.0
+      playwright-core: 1.43.1
     dev: false
 
   /@babel/code-frame@7.23.5:
@@ -8434,6 +8440,10 @@ packages:
     resolution: {integrity: sha512-nc0j37QupTT7OcYeH3gRE1ZfzUalEUsDKJsJ3IsJr0pjjFZTjtrX1Bsn6Kv56YXI/H9rNSwAkIPRxNlZI8GyQw==}
     dependencies:
       '@types/node': 20.12.7
+    dev: false
+
+  /@types/textarea-caret@3.0.3:
+    resolution: {integrity: sha512-bsA9GdXV1wQsXyDjS5+A+czz8IAR3haH5DU+KctIoXbzobRL2NOiwF/+EbB7pofAyudMytLj4ihPtbmbJT8FWw==}
     dev: false
 
   /@types/through@0.0.33:
@@ -16870,12 +16880,6 @@ packages:
       mlly: 1.6.1
       pathe: 1.1.2
 
-  /playwright-core@1.43.0:
-    resolution: {integrity: sha512-iWFjyBUH97+pUFiyTqSLd8cDMMOS0r2ZYz2qEsPjH8/bX++sbIJT35MSwKnp1r/OQBAqC5XO99xFbJ9XClhf4w==}
-    engines: {node: '>=16'}
-    hasBin: true
-    dev: false
-
   /playwright-core@1.43.1:
     resolution: {integrity: sha512-EI36Mto2Vrx6VF7rm708qSnesVQKbxEWvPrfA1IPY6HgczBplDx7ENtx+K2n4kJ41sLLkuGfmb0ZLSSXlDhqPg==}
     engines: {node: '>=16'}
@@ -19010,6 +19014,10 @@ packages:
 
   /text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
+
+  /textarea-caret@3.1.0:
+    resolution: {integrity: sha512-cXAvzO9pP5CGa6NKx0WYHl+8CHKZs8byMkt3PCJBCmq2a34YA9pO1NrQET5pzeqnBjBdToF5No4rrmkDUgQC2Q==}
+    dev: false
 
   /thenify-all@1.6.0:
     resolution: {integrity: sha512-RNxQH/qI8/t3thXJDwcstUO4zeqo64+Uy/+sNVRBx4Xn2OX+OZ9oP+iJnNFqplFra2ZUVeKCSa2oVWi3T4uVmA==}

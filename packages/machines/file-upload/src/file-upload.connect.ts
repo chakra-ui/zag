@@ -1,4 +1,4 @@
-import { contains, dataAttr, isSelfEvent } from "@zag-js/dom-query"
+import { contains, dataAttr, isSelfTarget } from "@zag-js/dom-query"
 import { formatBytes } from "@zag-js/i18n-utils"
 import { type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
@@ -63,7 +63,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-dragging": dataAttr(isDragging),
       onKeyDown(event) {
         const evt = event.nativeEvent || event
-        if (!isSelfEvent(evt)) return
+        if (!isSelfTarget(evt)) return
         if (event.key !== "Enter" && event.key !== " ") return
         send({ type: "DROPZONE.CLICK", src: "keydown" })
       },

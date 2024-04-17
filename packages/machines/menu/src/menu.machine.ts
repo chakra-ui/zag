@@ -22,6 +22,7 @@ export function machine(userContext: UserDefinedContext) {
         loop: false,
         anchorPoint: null,
         closeOnSelect: true,
+        typeahead: true,
         ...ctx,
         positioning: {
           placement: "bottom-start",
@@ -34,13 +35,13 @@ export function machine(userContext: UserDefinedContext) {
         children: cast(ref({})),
         suspendPointer: false,
         restoreFocus: true,
-        typeahead: getByTypeahead.defaultOptions,
+        typeaheadState: getByTypeahead.defaultOptions,
       },
 
       computed: {
         isSubmenu: (ctx) => ctx.parent !== null,
         isRtl: (ctx) => ctx.dir === "rtl",
-        isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
+        isTypingAhead: (ctx) => ctx.typeaheadState.keysSoFar !== "",
       },
 
       watch: {

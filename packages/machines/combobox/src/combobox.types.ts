@@ -26,6 +26,16 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export interface SelectionValueDetails<T extends CollectionItem = CollectionItem> {
+  inputValue: string
+  selectedItems: T[]
+}
+
+export interface ScrollToIndexDetails {
+  index: number
+  immediate?: boolean
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -126,7 +136,11 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    */
   openOnClick?: boolean
   /**
-   * Whether to allow custom values or free values in the input
+   * Whether to show the combobox when the input value changes
+   */
+  openOnChange?: boolean | ((details: InputValueChangeDetails) => boolean)
+  /**
+   * Whether to allow typing custom values in the input
    */
   allowCustomValue?: boolean
   /**
@@ -170,6 +184,24 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether to close the combobox when an item is selected.
    */
   closeOnSelect?: boolean
+  /**
+   * Function to get the display value of the selected item
+   */
+  getSelectionValue?: (details: SelectionValueDetails<T>) => string
+  /**
+   * Whether to open the combobox on arrow key press
+   */
+  openOnKeyPress: boolean
+  /**
+   * Function to scroll to a specific index
+   */
+  scrollToIndexFn?: (details: ScrollToIndexDetails) => void
+  /**
+   * Whether the combobox only renders the trigger by default.
+   * - Use this when the input is rendered inside the content
+   * - Also render the listbox element via `api.listboxProps`
+   */
+  triggerOnly?: boolean
 }
 
 export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
@@ -209,11 +241,6 @@ interface PrivateContext<T extends CollectionItem = CollectionItem> {
    * The placement of the combobox popover.
    */
   currentPlacement?: Placement
-  /**
-   * @internal
-   * Whether the user is composing text in the input
-   */
-  composing: boolean
   /**
    * The highlighted item
    */
@@ -352,7 +379,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Function to set the positioning options
    */
-  reposition(options: Partial<PositioningOptions>): void
+  reposition(options?: Partial<PositioningOptions>): void
 
   rootProps: T["element"]
   labelProps: T["label"]
@@ -362,6 +389,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   contentProps: T["element"]
   triggerProps: T["button"]
   clearTriggerProps: T["button"]
+  listboxProps: T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemTextProps(props: ItemProps): T["element"]
   getItemIndicatorProps(props: ItemProps): T["element"]

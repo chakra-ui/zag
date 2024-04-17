@@ -4,6 +4,7 @@
 }
 
 [data-scope="combobox"][data-part="content"] {
+  background-color: white;
   list-style-type: none;
   margin: 0;
   border: 1px solid lightgray;
@@ -13,6 +14,7 @@
 }
 
 [data-scope="combobox"][data-part="item"] {
+  display: block;
   padding: 4px 8px;
   user-select: none;
 }

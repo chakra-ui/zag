@@ -38,7 +38,7 @@ export class TagsInputModel extends Model {
   }
 
   async editTag(value: string) {
-    await this.typeInHexInput(value)
+    await this.type(value)
     await this.page.keyboard.press("Enter")
   }
 

@@ -46,7 +46,7 @@ export function mergeProps<T extends Props>(...args: T[]): UnionToIntersection<T
   for (let props of args) {
     for (let key in result) {
       if (eventRegex.test(key) && typeof result[key] === "function" && typeof props[key] === "function") {
-        result[key] = callAll(result[key], props[key])
+        result[key] = callAll(props[key], result[key])
         continue
       }
 

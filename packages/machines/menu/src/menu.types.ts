@@ -93,6 +93,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
    *  Whether the menu's open state is controlled by the user
    */
   "open.controlled"?: boolean
+  /**
+   * Whether the pressing printable characters should trigger typeahead navigation
+   */
+  typeahead: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -151,7 +155,7 @@ interface PrivateContext {
    * @internal
    * The typeahead state for faster keyboard navigation
    */
-  typeahead: TypeaheadState
+  typeaheadState: TypeaheadState
   /**
    * @internal
    * Whether to return focus to the trigger when the menu is closed

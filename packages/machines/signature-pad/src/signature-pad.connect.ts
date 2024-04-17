@@ -1,4 +1,4 @@
-import { getNativeEvent, getRelativePoint, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
+import { getNativeEvent, getRelativePoint, isLeftClick, isModifierKey } from "@zag-js/dom-event"
 import { dataAttr, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./signature-pad.anatomy"
@@ -47,7 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerDown(event) {
         const target = getEventTarget<HTMLElement>(getNativeEvent(event))
         if (target?.closest("[data-part=clear-trigger]")) return
-        if (!isLeftClick(event) || isModifiedEvent(event) || !isInteractive) return
+        if (!isLeftClick(event) || isModifierKey(event) || !isInteractive) return
         event.currentTarget.setPointerCapture(event.pointerId)
         const point = { x: event.clientX, y: event.clientY }
         const { offset } = getRelativePoint(point, dom.getControlEl(state.context)!)

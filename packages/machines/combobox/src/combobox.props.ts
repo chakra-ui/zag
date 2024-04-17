@@ -11,6 +11,7 @@ export const props = createProps<UserDefinedContext>()([
   "disabled",
   "form",
   "getRootNode",
+  "getSelectionValue",
   "highlightedValue",
   "id",
   "ids",
@@ -31,11 +32,15 @@ export const props = createProps<UserDefinedContext>()([
   "open.controlled",
   "open",
   "openOnClick",
+  "openOnChange",
+  "openOnKeyPress",
   "placeholder",
   "positioning",
   "readOnly",
+  "scrollToIndexFn",
   "selectionBehavior",
   "translations",
+  "triggerOnly",
   "value",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)

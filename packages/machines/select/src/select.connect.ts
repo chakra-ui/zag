@@ -1,5 +1,5 @@
 import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, getByTypeahead, isEditableElement, isSelfEvent } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, getByTypeahead, isEditableElement, isSelfTarget } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
@@ -123,15 +123,16 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       disabled: isDisabled,
       dir: state.context.dir,
       type: "button",
+      role: "combobox",
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": isOpen,
-      "data-state": isOpen ? "open" : "closed",
       "aria-haspopup": "listbox",
+      "data-state": isOpen ? "open" : "closed",
+      "aria-invalid": isInvalid,
       "aria-labelledby": dom.getLabelId(state.context),
       ...parts.trigger.attrs,
       "data-disabled": dataAttr(isDisabled),
       "data-invalid": dataAttr(isInvalid),
-      "aria-invalid": isInvalid,
       "data-readonly": dataAttr(isReadOnly),
       "data-placement": state.context.currentPlacement,
       "data-placeholder-shown": dataAttr(!state.context.hasSelectedItems),
@@ -341,7 +342,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       tabIndex: 0,
       onKeyDown(event) {
         const evt = getNativeEvent(event)
-        if (!isInteractive || !isSelfEvent(evt)) return
+        if (!isInteractive || !isSelfTarget(evt)) return
 
         // select should not be navigated using tab key so we prevent it
         if (event.key === "Tab") {

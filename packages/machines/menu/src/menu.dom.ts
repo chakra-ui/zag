@@ -28,7 +28,7 @@ export const dom = createScope({
   getPrevEl: (ctx: Ctx, loop?: boolean) => prevById(dom.getElements(ctx), ctx.highlightedValue!, loop ?? ctx.loop),
 
   getElemByKey: (ctx: Ctx, key: string) =>
-    getByTypeahead(dom.getElements(ctx), { state: ctx.typeahead, key, activeId: ctx.highlightedValue }),
+    getByTypeahead(dom.getElements(ctx), { state: ctx.typeaheadState, key, activeId: ctx.highlightedValue }),
 
   isTargetDisabled: (v: EventTarget | null) => {
     return isHTMLElement(v) && (v.dataset.disabled === "" || v.hasAttribute("disabled"))

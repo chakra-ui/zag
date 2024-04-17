@@ -7,6 +7,7 @@ export const dom = createScope({
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.id}:control`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `combobox:${ctx.id}:input`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `combobox:${ctx.id}:content`,
+  getListboxId: (ctx: Ctx) => `combobox:${ctx.id}:listbox`,
   getPositionerId: (ctx: Ctx) => ctx.ids?.positioner ?? `combobox:${ctx.id}:popper`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `combobox:${ctx.id}:toggle-btn`,
   getClearTriggerId: (ctx: Ctx) => ctx.ids?.clearTrigger ?? `combobox:${ctx.id}:clear-btn`,

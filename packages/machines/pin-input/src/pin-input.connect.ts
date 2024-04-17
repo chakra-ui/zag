@@ -1,4 +1,4 @@
-import { getEventKey, getNativeEvent, isModifiedEvent, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventKey, getNativeEvent, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr, getBeforeInputValue } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant } from "@zag-js/utils"
@@ -138,7 +138,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onKeyDown(event) {
           const evt = getNativeEvent(event)
-          if (isModifiedEvent(evt)) return
+          if (isModifierKey(evt)) return
 
           const keyMap: EventKeyMap = {
             Backspace() {

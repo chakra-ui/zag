@@ -13,25 +13,52 @@ const fetchMachine = createMachine({
   id: "combobox",
   initial: ctx.autoFocus ? "focused" : "idle",
   context: {
-    "openOnClick": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isChangeEvent": false,
+    "isOpenControlled && openOnChange": false,
+    "openOnChange": false,
     "isCustomValue && !allowCustomValue": false,
-    "openOnClick": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled && autoComplete": false,
     "autoComplete": false,
-    "hasSelectedItems": false,
+    "isOpenControlled": false,
     "autoComplete": false,
-    "hasSelectedItems": false,
+    "autoComplete": false,
+    "isOpenControlled": false,
+    "restoreFocus": false,
     "autoComplete && isLastItemHighlighted": false,
     "autoComplete && isFirstItemHighlighted": false,
-    "!closeOnSelect": false,
+    "isOpenControlled && closeOnSelect": false,
+    "closeOnSelect": false,
     "autoComplete": false,
-    "!closeOnSelect": false,
+    "isOpenControlled && closeOnSelect": false,
+    "closeOnSelect": false,
+    "isOpenControlled && autoComplete": false,
     "autoComplete": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled && isCustomValue && !allowCustomValue": false,
     "isCustomValue && !allowCustomValue": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "restoreFocus": false,
     "!isHighlightedItemVisible": false,
-    "!closeOnSelect": false,
+    "isOpenControlled && closeOnSelect": false,
+    "closeOnSelect": false,
     "autoHighlight": false,
+    "isOpenControlled": false,
+    "isOpenControlled && isCustomValue && !allowCustomValue": false,
     "isCustomValue && !allowCustomValue": false,
-    "!closeOnSelect": false
+    "isOpenControlled": false,
+    "isOpenControlled": false,
+    "isOpenControlled && closeOnSelect": false,
+    "closeOnSelect": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false
   },
   on: {
     "HIGHLIGHTED_VALUE.SET": {
@@ -48,16 +75,6 @@ const fetchMachine = createMachine({
     },
     "INPUT_VALUE.SET": {
       actions: "setInputValue"
-    },
-    "VALUE.CLEAR": {
-      target: "focused",
-      actions: ["clearInputValue", "clearSelectedItems"]
-    },
-    "INPUT.COMPOSITION_START": {
-      actions: ["setIsComposing"]
-    },
-    "INPUT.COMPOSITION_END": {
-      actions: ["clearIsComposing"]
     },
     "COLLECTION.SET": {
       actions: ["setCollection"]
@@ -76,32 +93,59 @@ const fetchMachine = createMachine({
       tags: ["idle", "closed"],
       entry: ["scrollContentToTop", "clearHighlightedItem"],
       on: {
-        "TRIGGER.CLICK": {
+        "CONTROLLED.OPEN": {
+          target: "interacting"
+        },
+        "TRIGGER.CLICK": [{
+          cond: "isOpenControlled",
+          actions: ["focusInput", "highlightFirstSelectedItem", "invokeOnOpen"]
+        }, {
           target: "interacting",
           actions: ["focusInput", "highlightFirstSelectedItem", "invokeOnOpen"]
-        },
-        "INPUT.CLICK": {
-          cond: "openOnClick",
+        }],
+        "INPUT.CLICK": [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
           target: "interacting",
           actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
-        },
+        }],
         "INPUT.FOCUS": {
           target: "focused"
         },
-        OPEN: {
+        OPEN: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
           target: "interacting",
           actions: ["invokeOnOpen"]
+        }],
+        "VALUE.CLEAR": {
+          target: "focused",
+          actions: ["clearInputValue", "clearSelectedItems"]
         }
       }
     },
     focused: {
       tags: ["focused", "closed"],
-      entry: ["focusInput", "scrollContentToTop", "clearHighlightedItem"],
+      entry: ["focusInputOrTrigger", "scrollContentToTop", "clearHighlightedItem"],
       on: {
-        "INPUT.CHANGE": {
+        "CONTROLLED.OPEN": [{
+          cond: "isChangeEvent",
+          target: "suggesting"
+        }, {
+          target: "interacting"
+        }],
+        "INPUT.CHANGE": [{
+          cond: "isOpenControlled && openOnChange",
+          actions: ["setInputValue", "invokeOnOpen"]
+        }, {
+          cond: "openOnChange",
           target: "suggesting",
+          actions: ["setInputValue", "invokeOnOpen"]
+        }, {
           actions: "setInputValue"
-        },
+        }],
         "LAYER.INTERACT_OUTSIDE": {
           target: "idle"
         },
@@ -112,46 +156,66 @@ const fetchMachine = createMachine({
         "INPUT.BLUR": {
           target: "idle"
         },
-        "INPUT.CLICK": {
-          cond: "openOnClick",
+        "INPUT.CLICK": [{
+          cond: "isOpenControlled",
+          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
+        }, {
           target: "interacting",
           actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
-        },
-        "TRIGGER.CLICK": {
+        }],
+        "TRIGGER.CLICK": [{
+          cond: "isOpenControlled",
+          actions: ["focusInput", "highlightFirstSelectedItem", "invokeOnOpen"]
+        }, {
           target: "interacting",
           actions: ["focusInput", "highlightFirstSelectedItem", "invokeOnOpen"]
-        },
-        "INPUT.ARROW_DOWN": [{
+        }],
+        "INPUT.ARROW_DOWN": [
+        // == group 1 ==
+        {
+          cond: "isOpenControlled && autoComplete",
+          actions: ["invokeOnOpen"]
+        }, {
           cond: "autoComplete",
           target: "interacting",
           actions: ["invokeOnOpen"]
-        }, {
-          cond: "hasSelectedItems",
-          target: "interacting",
-          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
-        }, {
-          target: "interacting",
-          actions: ["highlightFirstItem", "invokeOnOpen"]
-        }],
-        "INPUT.ARROW_DOWN+ALT": {
-          target: "interacting",
-          actions: "invokeOnOpen"
         },
-        "INPUT.ARROW_UP": [{
+        // == group 2 ==
+        {
+          cond: "isOpenControlled",
+          actions: ["highlightFirstOrSelectedItem", "invokeOnOpen"]
+        }, {
+          target: "interacting",
+          actions: ["highlightFirstOrSelectedItem", "invokeOnOpen"]
+        }],
+        "INPUT.ARROW_UP": [
+        // == group 1 ==
+        {
           cond: "autoComplete",
           target: "interacting",
           actions: "invokeOnOpen"
         }, {
-          cond: "hasSelectedItems",
+          cond: "autoComplete",
           target: "interacting",
-          actions: ["highlightFirstSelectedItem", "invokeOnOpen"]
+          actions: "invokeOnOpen"
+        },
+        // == group 2 ==
+        {
+          target: "interacting",
+          actions: ["highlightLastOrSelectedItem", "invokeOnOpen"]
         }, {
           target: "interacting",
-          actions: ["highlightLastItem", "invokeOnOpen"]
+          actions: ["highlightLastOrSelectedItem", "invokeOnOpen"]
         }],
-        OPEN: {
+        OPEN: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
           target: "interacting",
           actions: ["invokeOnOpen"]
+        }],
+        "VALUE.CLEAR": {
+          actions: ["clearInputValue", "clearSelectedItems"]
         }
       }
     },
@@ -159,6 +223,12 @@ const fetchMachine = createMachine({
       tags: ["open", "focused"],
       activities: ["scrollIntoView", "trackDismissableLayer", "computePlacement", "hideOtherElements"],
       on: {
+        "CONTROLLED.CLOSE": [{
+          cond: "restoreFocus",
+          target: "focused"
+        }, {
+          target: "idle"
+        }],
         "INPUT.HOME": {
           actions: ["highlightFirstItem"]
         },
@@ -177,23 +247,23 @@ const fetchMachine = createMachine({
         }, {
           actions: "highlightPrevItem"
         }],
-        "INPUT.ARROW_UP+ALT": {
-          target: "focused"
-        },
         "INPUT.ENTER": [{
-          cond: "!closeOnSelect",
-          actions: ["selectHighlightedItem"]
+          cond: "isOpenControlled && closeOnSelect",
+          actions: ["selectHighlightedItem", "invokeOnClose"]
         }, {
+          cond: "closeOnSelect",
           target: "focused",
           actions: ["selectHighlightedItem", "invokeOnClose"]
+        }, {
+          actions: ["selectHighlightedItem"]
         }],
         "INPUT.CHANGE": [{
           cond: "autoComplete",
           target: "suggesting",
-          actions: ["setInputValue"]
+          actions: ["setInputValue", "invokeOnOpen"]
         }, {
           target: "suggesting",
-          actions: ["clearHighlightedItem", "setInputValue"]
+          actions: ["clearHighlightedItem", "setInputValue", "invokeOnOpen"]
         }],
         "ITEM.POINTER_OVER": {
           actions: ["setHighlightedItem"]
@@ -202,43 +272,81 @@ const fetchMachine = createMachine({
           actions: ["clearHighlightedItem"]
         },
         "ITEM.CLICK": [{
-          cond: "!closeOnSelect",
-          actions: ["selectItem"]
+          cond: "isOpenControlled && closeOnSelect",
+          actions: ["selectItem", "invokeOnClose"]
         }, {
+          cond: "closeOnSelect",
           target: "focused",
           actions: ["selectItem", "invokeOnClose"]
+        }, {
+          actions: ["selectItem"]
         }],
         "LAYER.ESCAPE": [{
+          cond: "isOpenControlled && autoComplete",
+          actions: ["syncInputValue", "invokeOnClose"]
+        }, {
           cond: "autoComplete",
           target: "focused",
           actions: ["syncInputValue", "invokeOnClose"]
         }, {
+          cond: "isOpenControlled",
+          actions: "invokeOnClose"
+        }, {
           target: "focused",
           actions: ["invokeOnClose"]
         }],
-        "TRIGGER.CLICK": {
+        "TRIGGER.CLICK": [{
+          cond: "isOpenControlled",
+          actions: "invokeOnClose"
+        }, {
           target: "focused",
           actions: "invokeOnClose"
-        },
-        "LAYER.INTERACT_OUTSIDE": [{
+        }],
+        "LAYER.INTERACT_OUTSIDE": [
+        // == group 1 ==
+        {
+          cond: "isOpenControlled && isCustomValue && !allowCustomValue",
+          actions: ["revertInputValue", "invokeOnClose"]
+        }, {
           cond: "isCustomValue && !allowCustomValue",
           target: "idle",
           actions: ["revertInputValue", "invokeOnClose"]
+        },
+        // == group 2 ==
+        {
+          cond: "isOpenControlled",
+          actions: "invokeOnClose"
         }, {
           target: "idle",
           actions: "invokeOnClose"
         }],
-        CLOSE: {
+        CLOSE: [{
+          cond: "isOpenControlled",
+          actions: "invokeOnClose"
+        }, {
           target: "focused",
           actions: "invokeOnClose"
-        }
+        }],
+        "VALUE.CLEAR": [{
+          cond: "isOpenControlled",
+          actions: ["clearInputValue", "clearSelectedItems", "invokeOnClose"]
+        }, {
+          target: "focused",
+          actions: ["clearInputValue", "clearSelectedItems", "invokeOnClose"]
+        }]
       }
     },
     suggesting: {
       tags: ["open", "focused"],
       activities: ["trackDismissableLayer", "scrollIntoView", "computePlacement", "trackChildNodes", "hideOtherElements"],
-      entry: ["focusInput", "invokeOnOpen"],
+      entry: ["focusInput"],
       on: {
+        "CONTROLLED.CLOSE": [{
+          cond: "restoreFocus",
+          target: "focused"
+        }, {
+          target: "idle"
+        }],
         CHILDREN_CHANGE: {
           cond: "!isHighlightedItemVisible",
           actions: ["highlightFirstItem"]
@@ -251,9 +359,6 @@ const fetchMachine = createMachine({
           target: "interacting",
           actions: "highlightPrevItem"
         },
-        "INPUT.ARROW_UP+ALT": {
-          target: "focused"
-        },
         "INPUT.HOME": {
           target: "interacting",
           actions: ["highlightFirstItem"]
@@ -263,22 +368,28 @@ const fetchMachine = createMachine({
           actions: ["highlightLastItem"]
         },
         "INPUT.ENTER": [{
-          cond: "!closeOnSelect",
-          actions: ["selectHighlightedItem"]
+          cond: "isOpenControlled && closeOnSelect",
+          actions: ["selectHighlightedItem", "invokeOnClose"]
         }, {
+          cond: "closeOnSelect",
           target: "focused",
           actions: ["selectHighlightedItem", "invokeOnClose"]
+        }, {
+          actions: ["selectHighlightedItem"]
         }],
         "INPUT.CHANGE": [{
           cond: "autoHighlight",
-          actions: ["setInputValue", "highlightFirstItem"]
+          actions: ["highlightFirstItem", "setInputValue"]
         }, {
           actions: ["clearHighlightedItem", "setInputValue"]
         }],
-        "LAYER.ESCAPE": {
+        "LAYER.ESCAPE": [{
+          cond: "isOpenControlled",
+          actions: "invokeOnClose"
+        }, {
           target: "focused",
           actions: "invokeOnClose"
-        },
+        }],
         "ITEM.POINTER_OVER": {
           target: "interacting",
           actions: "setHighlightedItem"
@@ -286,29 +397,55 @@ const fetchMachine = createMachine({
         "ITEM.POINTER_LEAVE": {
           actions: "clearHighlightedItem"
         },
-        "LAYER.INTERACT_OUTSIDE": [{
+        "LAYER.INTERACT_OUTSIDE": [
+        // == group 1 ==
+        {
+          cond: "isOpenControlled && isCustomValue && !allowCustomValue",
+          actions: ["revertInputValue", "invokeOnClose"]
+        }, {
           cond: "isCustomValue && !allowCustomValue",
           target: "idle",
           actions: ["revertInputValue", "invokeOnClose"]
+        },
+        // == group 2 ==
+        {
+          cond: "isOpenControlled",
+          actions: "invokeOnClose"
         }, {
           target: "idle",
           actions: "invokeOnClose"
         }],
-        "TRIGGER.CLICK": {
-          target: "focused",
+        "TRIGGER.CLICK": [{
+          cond: "isOpenControlled",
           actions: "invokeOnClose"
-        },
-        "ITEM.CLICK": [{
-          cond: "!closeOnSelect",
-          actions: ["selectItem"]
         }, {
           target: "focused",
-          actions: ["selectItem", "invokeOnClose"]
+          actions: "invokeOnClose"
         }],
-        CLOSE: {
+        "ITEM.CLICK": [{
+          cond: "isOpenControlled && closeOnSelect",
+          actions: ["selectItem", "invokeOnClose"]
+        }, {
+          cond: "closeOnSelect",
+          target: "focused",
+          actions: ["selectItem", "invokeOnClose"]
+        }, {
+          actions: ["selectItem"]
+        }],
+        CLOSE: [{
+          cond: "isOpenControlled",
+          actions: "invokeOnClose"
+        }, {
           target: "focused",
           actions: "invokeOnClose"
-        }
+        }],
+        "VALUE.CLEAR": [{
+          cond: "isOpenControlled",
+          actions: ["clearInputValue", "clearSelectedItems", "invokeOnClose"]
+        }, {
+          target: "focused",
+          actions: ["clearInputValue", "clearSelectedItems", "invokeOnClose"]
+        }]
       }
     }
   }
@@ -321,13 +458,19 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "openOnClick": ctx => ctx["openOnClick"],
+    "isOpenControlled": ctx => ctx["isOpenControlled"],
+    "isChangeEvent": ctx => ctx["isChangeEvent"],
+    "isOpenControlled && openOnChange": ctx => ctx["isOpenControlled && openOnChange"],
+    "openOnChange": ctx => ctx["openOnChange"],
     "isCustomValue && !allowCustomValue": ctx => ctx["isCustomValue && !allowCustomValue"],
+    "isOpenControlled && autoComplete": ctx => ctx["isOpenControlled && autoComplete"],
     "autoComplete": ctx => ctx["autoComplete"],
-    "hasSelectedItems": ctx => ctx["hasSelectedItems"],
+    "restoreFocus": ctx => ctx["restoreFocus"],
     "autoComplete && isLastItemHighlighted": ctx => ctx["autoComplete && isLastItemHighlighted"],
     "autoComplete && isFirstItemHighlighted": ctx => ctx["autoComplete && isFirstItemHighlighted"],
-    "!closeOnSelect": ctx => ctx["!closeOnSelect"],
+    "isOpenControlled && closeOnSelect": ctx => ctx["isOpenControlled && closeOnSelect"],
+    "closeOnSelect": ctx => ctx["closeOnSelect"],
+    "isOpenControlled && isCustomValue && !allowCustomValue": ctx => ctx["isOpenControlled && isCustomValue && !allowCustomValue"],
     "!isHighlightedItemVisible": ctx => ctx["!isHighlightedItemVisible"],
     "autoHighlight": ctx => ctx["autoHighlight"]
   }

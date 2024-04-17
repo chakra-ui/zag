@@ -57,7 +57,7 @@ export class ColorPickerModel extends Model {
     return this.page.getByTestId("value-text").first()
   }
 
-  typeInHexInput(value: string) {
+  type(value: string) {
     return this.hexInput.fill(value)
   }
 

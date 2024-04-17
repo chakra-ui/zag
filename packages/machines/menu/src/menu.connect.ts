@@ -1,14 +1,15 @@
 import { mergeProps } from "@zag-js/core"
 import {
+  clickIfLink,
   getEventKey,
   getEventPoint,
   getNativeEvent,
   isContextMenuEvent,
   isLeftClick,
-  isModifiedEvent,
+  isModifierKey,
   type EventKeyMap,
 } from "@zag-js/dom-event"
-import { dataAttr, getEventTarget, isEditableElement, isSelfEvent } from "@zag-js/dom-query"
+import { dataAttr, isDownloadingEvent, isEditableElement, isOpeningInNewTab, isSelfTarget } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./menu.anatomy"
@@ -79,14 +80,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "ITEM_POINTERDOWN", target, id, closeOnSelect })
       },
       onPointerUp(event) {
-        const evt = getNativeEvent(event)
-        if (!isLeftClick(evt) || itemState.isDisabled) return
+        if (isDownloadingEvent(event)) return
+        if (isOpeningInNewTab(event)) return
+        if (!isLeftClick(event) || itemState.isDisabled) return
+
         const target = event.currentTarget
         send({ type: "ITEM_CLICK", src: "pointerup", target, id, closeOnSelect })
+
         // Fix issue where links don't get clicked in pointerup on touch devices
-        if (target.matches("a[href]") && event.pointerType === "touch") {
-          target.click()
-        }
+        if (event.pointerType === "touch") clickIfLink(target)
       },
       onTouchEnd(event) {
         // prevent clicking elements behind content
@@ -273,13 +275,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onKeyDown(event) {
         const evt = getNativeEvent(event)
-        const target = getEventTarget<HTMLElement>(evt)
 
-        const isKeyDownInside = target?.closest("[role=menu]") === event.currentTarget
-        if (!isSelfEvent(evt) || !isKeyDownInside) return
+        if (!isSelfTarget(evt, (t) => t.closest("[role=menu]"))) return
 
         const item = dom.getHighlightedItemEl(state.context)
-        const isLink = !!item?.matches("a[href]")
 
         const keyMap: EventKeyMap = {
           ArrowDown() {
@@ -295,8 +294,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send("ARROW_RIGHT")
           },
           Enter() {
-            if (isLink) item?.click()
             send("ENTER")
+            clickIfLink(item)
           },
           Space(event) {
             if (isTypingAhead) {
@@ -320,22 +319,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const exec = keyMap[key]
 
         if (exec) {
-          const allow = isLink && key === "Enter"
           exec(event)
-          if (!allow) {
-            event.preventDefault()
-          }
-          //
-        } else {
-          //
-          const isSingleKey = event.key.length === 1
-          const isValidTypeahead = isSingleKey && !isModifiedEvent(event) && !isEditableElement(item)
-
-          if (!isValidTypeahead) return
-
-          send({ type: "TYPEAHEAD", key: event.key })
+          event.stopPropagation()
           event.preventDefault()
+          return
         }
+
+        // typeahead
+        if (!state.context.typeahead) return
+
+        const printable = event.key.length === 1
+        const isValidTypeahead = printable && !isModifierKey(event) && !isEditableElement(item)
+
+        if (!isValidTypeahead) return
+
+        send({ type: "TYPEAHEAD", key: event.key })
+        event.preventDefault()
       },
     }),
 
@@ -366,8 +365,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           "aria-checked": !!itemState.isChecked,
           "data-state": itemState.isChecked ? "checked" : "unchecked",
           onPointerUp(event) {
-            const evt = getNativeEvent(event)
-            if (!isLeftClick(evt) || disabled) return
+            if (!isLeftClick(event) || disabled) return
+            if (isDownloadingEvent(event)) return
+            if (isOpeningInNewTab(event)) return
             const target = event.currentTarget
             send({ type: "ITEM_CLICK", src: "pointerup", target, option, closeOnSelect })
             onCheckedChange?.(!itemState.isChecked)

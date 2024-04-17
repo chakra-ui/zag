@@ -63,9 +63,9 @@ export function useSearch(): UseSearchReturn {
         }
         dialog_api.close()
       },
-      onInputValueChange({ value }) {
-        if (value.length < 3) return
-        const results = matchSorter(searchData, value, {
+      onInputValueChange({ inputValue }) {
+        if (inputValue.length < 3) return
+        const results = matchSorter(searchData, inputValue, {
           keys: [
             "hierarchy.lvl1",
             "hierarchy.lvl2",
