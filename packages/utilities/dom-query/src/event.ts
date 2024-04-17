@@ -1,3 +1,4 @@
+import { contains } from "./contains"
 import { isApple } from "./platform"
 
 export function getBeforeInputValue(event: Pick<InputEvent, "currentTarget">) {
@@ -9,15 +10,8 @@ export function getEventTarget<T extends EventTarget>(event: Pick<UIEvent, "targ
   return (event.composedPath?.()[0] ?? event.target) as T | null
 }
 
-export const isSelfTarget = (
-  event: Pick<UIEvent, "currentTarget" | "target" | "composedPath">,
-  getTarget?: (node: Element) => Element | null,
-) => {
-  let target = getEventTarget<Element>(event)
-  if (getTarget && target) {
-    target = getTarget(target) ?? target
-  }
-  return event.currentTarget === target
+export const isSelfTarget = (event: Pick<UIEvent, "currentTarget" | "target" | "composedPath">) => {
+  return contains(event.currentTarget as Node, getEventTarget(event))
 }
 
 export function isOpeningInNewTab(event: Pick<MouseEvent, "currentTarget" | "metaKey" | "ctrlKey">) {

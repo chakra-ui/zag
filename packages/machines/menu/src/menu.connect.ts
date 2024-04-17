@@ -275,8 +275,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onKeyDown(event) {
         const evt = getNativeEvent(event)
-
-        if (!isSelfTarget(evt, (t) => t.closest("[role=menu]"))) return
+        if (!isSelfTarget(evt)) return
 
         const item = dom.getHighlightedItemEl(state.context)
 
