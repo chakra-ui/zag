@@ -629,11 +629,19 @@
         "description": "Function to set the collection of items"
       },
       "reposition": {
-        "type": "(options: Partial<PositioningOptions>) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to set the positioning options"
       }
     },
     "context": {
+      "open": {
+        "type": "boolean",
+        "description": "Whether the combobox is open"
+      },
+      "open.controlled": {
+        "type": "boolean",
+        "description": "Whether the combobox open state is controlled by the user"
+      },
       "ids": {
         "type": "Partial<{ root: string; label: string; control: string; input: string; content: string; trigger: string; clearTrigger: string; item(id: string, index?: number): string; positioner: string; itemGroup(id: string | number): string; itemGroupLabel(id: string | number): string; }>",
         "description": "The ids of the elements in the combobox. Useful for composition."
@@ -690,9 +698,13 @@
         "type": "boolean",
         "description": "Whether to open the combobox popup on initial click on the input"
       },
+      "openOnChange": {
+        "type": "boolean | ((details: InputValueChangeDetails) => boolean)",
+        "description": "Whether to show the combobox when the input value changes"
+      },
       "allowCustomValue": {
         "type": "boolean",
-        "description": "Whether to allow custom values or free values in the input"
+        "description": "Whether to allow typing custom values in the input"
       },
       "loop": {
         "type": "boolean",
@@ -733,6 +745,22 @@
       "closeOnSelect": {
         "type": "boolean",
         "description": "Whether to close the combobox when an item is selected."
+      },
+      "getSelectionValue": {
+        "type": "(details: SelectionValueDetails<T>) => string",
+        "description": "Function to get the display value of the selected item"
+      },
+      "openOnKeyPress": {
+        "type": "boolean",
+        "description": "Whether to open the combobox on arrow key press"
+      },
+      "scrollToIndexFn": {
+        "type": "(details: ScrollToIndexDetails) => void",
+        "description": "Function to scroll to a specific index"
+      },
+      "triggerOnly": {
+        "type": "boolean",
+        "description": "Whether the combobox only renders the trigger by default.\n- Use this when the input is rendered inside the content\n- Also render the listbox element via `api.listboxProps`"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -1677,6 +1705,10 @@
         "type": "boolean",
         "description": "Whether the menu's open state is controlled by the user"
       },
+      "typeahead": {
+        "type": "boolean",
+        "description": "Whether the pressing printable characters should trigger typeahead navigation"
+      },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",
@@ -2516,7 +2548,7 @@
         "description": "Function to set the collection of items"
       },
       "reposition": {
-        "type": "(options: Partial<PositioningOptions>) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to set the positioning options of the select"
       }
     },
@@ -3172,7 +3204,7 @@
         "type": "boolean",
         "description": "Whether the tags input is invalid"
       },
-      "allowEditTag": {
+      "editable": {
         "type": "boolean",
         "description": "Whether a tag can be edited after creation.\nIf `true` and focus is on a tag, pressing `Enter`or double clicking will edit the tag."
       },
@@ -3187,6 +3219,10 @@
       "onValueChange": {
         "type": "(details: ValueChangeDetails) => void",
         "description": "Callback fired when the tag values is updated"
+      },
+      "onInputValueChange": {
+        "type": "(details: InputValueChangeDetails) => void",
+        "description": "Callback fired when the input value is updated"
       },
       "onHighlightChange": {
         "type": "(details: HighlightChangeDetails) => void",
