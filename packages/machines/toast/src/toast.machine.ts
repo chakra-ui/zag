@@ -199,7 +199,7 @@ export function createToastMachine<T>(options: Options<T>) {
           ctx.onStatusChange?.({ status: "visible" })
         },
         setContext(ctx, evt) {
-          const duration = evt.toast?.duration ?? ctx.duration
+          const duration = evt.toast?.duration
           const type = evt.toast?.type ?? ctx.type
 
           const computedDuration = getToastDuration(duration, type)
