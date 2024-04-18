@@ -41,7 +41,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "open",
-                actions: ["allowAnimation", "invokeOnOpen"],
+                actions: ["allowAnimation", "invokeOnOpen", "computeSize"],
               },
             ],
           },
