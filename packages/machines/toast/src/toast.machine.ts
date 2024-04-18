@@ -129,7 +129,7 @@ export function createToastMachine<T>(options: Options<T>) {
             const syncHeight = () => {
               const originalHeight = rootEl.style.height
               rootEl.style.height = "auto"
-              const newHeight = rootEl.offsetHeight
+              const newHeight = rootEl.getBoundingClientRect().height
               rootEl.style.height = originalHeight
 
               ctx.height = newHeight
@@ -173,7 +173,7 @@ export function createToastMachine<T>(options: Options<T>) {
             const originalHeight = rootEl.style.height
             rootEl.style.height = "auto"
 
-            const newHeight = rootEl.offsetHeight
+            const newHeight = rootEl.getBoundingClientRect().height
             rootEl.style.height = originalHeight
             ctx.height = newHeight
 
