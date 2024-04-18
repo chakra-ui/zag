@@ -64,7 +64,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * Whether to close the dialog when the escape key is pressed
    */
-  closeOnEscapeKeyDown: boolean
+  closeOnEscape: boolean
   /**
    * Callback to be invoked when the escape key is pressed
    */

@@ -125,7 +125,7 @@ const components = {
       defaultProps={{
         preventScroll: true,
         closeOnInteractOutside: true,
-        closeOnEscapeKeyDown: true,
+        closeOnEscape: true,
         role: { options: ["dialog", "alertdialog"], default: "dialog" },
       }}
     />

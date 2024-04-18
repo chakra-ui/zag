@@ -1094,7 +1094,7 @@
         "type": "boolean",
         "description": "Whether to close the dialog when the outside is clicked"
       },
-      "closeOnEscapeKeyDown": {
+      "closeOnEscape": {
         "type": "boolean",
         "description": "Whether to close the dialog when the escape key is pressed"
       },

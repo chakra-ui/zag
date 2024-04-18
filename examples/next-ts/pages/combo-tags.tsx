@@ -1,9 +1,10 @@
 import * as combobox from "@zag-js/combobox"
+import { contains } from "@zag-js/dom-query"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxData } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
 import { matchSorter } from "match-sorter"
-import { useId, useState } from "react"
+import { useId, useRef, useState } from "react"
 
 export default function Page() {
   // id composition for tags input and combobox
@@ -13,11 +14,14 @@ export default function Page() {
     control: useId(),
   }
 
+  const contentRef = useRef<HTMLDivElement>(null)
+
   /* -----------------------------------------------------------------------------
    * Combobox
    * -----------------------------------------------------------------------------*/
 
   const [options, setOptions] = useState(comboboxData)
+  const [value, setValue] = useState([])
 
   const collection = combobox.collection({
     items: options,
@@ -30,21 +34,32 @@ export default function Page() {
       id: useId(),
       collection,
       ids: ids,
-      onOpenChange() {
-        setOptions(comboboxData)
-      },
-      onInputValueChange({ inputValue }) {
-        const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
-        setOptions(filtered.length > 0 ? filtered : comboboxData)
-      },
+      allowCustomValue: true,
+      multiple: true,
+      selectionBehavior: "clear",
     }),
     {
       context: {
-        multiple: true,
-        selectionBehavior: "clear",
-        inputBehavior: "autohighlight",
         collection,
-        openOnClick: true,
+        value,
+        onOpenChange() {
+          setOptions(comboboxData.filter((item) => !value.includes(item.code)))
+        },
+        onInputValueChange({ inputValue }) {
+          const result = matchSorter(comboboxData, inputValue, {
+            keys: ["label"],
+            baseSort: (a, b) => (a.index < b.index ? -1 : 1),
+          })
+          setOptions(result)
+        },
+        onValueChange(details) {
+          // sync tags input value and options
+          queueMicrotask(() => {
+            setValue(details.value)
+            setOptions((curr) => curr.filter((item) => !details.value.includes(item.code)))
+            contentRef.current?.scrollTo(0, 0)
+          })
+        },
       },
     },
   )
@@ -60,13 +75,23 @@ export default function Page() {
       id: useId(),
       ids: ids,
       editable: false,
+      addOnPaste: false,
+      onInteractOutside(event) {
+        const { target } = event.detail.originalEvent
+        if (contains(contentRef.current, target)) {
+          event.preventDefault()
+        }
+      },
     }),
     {
       context: {
         inputValue: state.context.inputValue,
-        value: api.value,
+        value: value,
         onValueChange(details) {
-          api.setValue(details.value)
+          setValue(details.value)
+        },
+        onInputValueChange({ inputValue }) {
+          api.setInputValue(inputValue)
         },
       },
     },
@@ -81,8 +106,7 @@ export default function Page() {
   return (
     <main className="combobox">
       <div {...mergeProps(api.rootProps, tagApi.rootProps)}>
-        <div>{api.value}</div>
-        <label {...api.labelProps}>Select country</label>
+        <label {...api.labelProps}>Select country {tagState.event.type}</label>
 
         <div {...mergeProps(api.controlProps, tagApi.controlProps)}>
           {tagApi.value.map((value, index) => (
@@ -95,20 +119,30 @@ export default function Page() {
             </span>
           ))}
 
-          <input data-testid="input" placeholder="add tag" {...mergeProps(api.inputProps, tagApi.inputProps)} />
+          <input
+            data-testid="input"
+            placeholder="add tag"
+            {...mergeProps(api.inputProps, tagApi.inputProps, {
+              onKeyDown(event) {
+                // extra logic to add tag on Enter key
+                if (event.key === "Enter" && options.length === 0) {
+                  tagApi.addValue(api.inputValue)
+                }
+              },
+            })}
+          />
         </div>
       </div>
 
       <div {...api.positionerProps}>
         {options.length > 0 && (
-          <ul data-testid="combobox-content" {...api.contentProps}>
+          <div data-testid="combobox-content" {...api.contentProps} ref={contentRef}>
             {options.map((item) => (
-              <li data-testid={item.code} key={item.code} {...api.getItemProps({ item })}>
-                <span {...api.getItemIndicatorProps({ item })}>✅</span>
-                <span>{item.label}</span>
-              </li>
+              <div data-testid={item.code} key={item.code} {...api.getItemProps({ item })}>
+                {item.label}
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </main>

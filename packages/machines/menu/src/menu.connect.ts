@@ -70,16 +70,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const isLink = event.currentTarget.matches("a[href]")
         if (isLink) event.preventDefault()
       },
-      onPointerLeave(event) {
-        if (itemState.isDisabled || event.pointerType !== "mouse") return
-        const target = event.currentTarget
-        send({ type: "ITEM_POINTERLEAVE", id, target, closeOnSelect })
-      },
       onPointerMove(event) {
-        if (itemState.isDisabled || event.pointerType !== "mouse") return
+        if (itemState.isDisabled) return
+        if (event.pointerType !== "mouse") return
         const target = event.currentTarget
         if (itemState.isHighlighted) return
         send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect })
+      },
+      onPointerLeave(event) {
+        const mouseMoved = state.previousEvent.type === "ITEM.POINTER_MOVE"
+        if (!mouseMoved) return
+        if (itemState.isDisabled) return
+        if (event.pointerType !== "mouse") return
+        const target = event.currentTarget
+        send({ type: "ITEM_POINTERLEAVE", id, target, closeOnSelect })
       },
       onPointerDown(event) {
         if (itemState.isDisabled) return
@@ -89,7 +93,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerUp(event) {
         if (isDownloadingEvent(event)) return
         if (isOpeningInNewTab(event)) return
-        if (!isLeftClick(event) || itemState.isDisabled) return
+        if (itemState.isDisabled) return
+        if (!isLeftClick(event)) return
 
         const target = event.currentTarget
         send({ type: "ITEM_CLICK", src: "pointerup", target, id, closeOnSelect })

@@ -1,3 +1,8 @@
+/**
+ * Credits to Ariakit for the inspiration
+ * https://ariakit.org/examples/combobox-textarea
+ */
+
 import * as combobox from "@zag-js/combobox"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxData } from "@zag-js/shared"
@@ -21,8 +26,11 @@ export default function Page() {
   const ref = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
-    const result = matchSorter(comboboxData, searchValue, { keys: ["label"] })
-    setOptions(result.slice(0, 10))
+    const result = matchSorter(comboboxData, searchValue, {
+      keys: ["label"],
+      baseSort: (a, b) => (a.index < b.index ? -1 : 1),
+    })
+    setOptions(result)
   }, [searchValue])
 
   const [state, send] = useMachine(
@@ -59,12 +67,9 @@ export default function Page() {
         onValueChange({ value }) {
           setValue(value)
         },
-        getSelectionValue({ inputValue, selectedItems }) {
-          const offset = getTriggerOffset(ref.current)
-
-          const valueAsString = collection.itemsToString(selectedItems)
+        getSelectionValue({ inputValue, valueAsString }) {
           if (!valueAsString) return inputValue
-
+          const offset = getTriggerOffset(ref.current)
           return replaceValue(offset, searchValue, valueAsString)(inputValue)
         },
       },
@@ -178,8 +183,7 @@ function getAnchorRect(element: HTMLTextAreaElement | null, triggers = defaultTr
 }
 
 function replaceValue(offset: number, searchValue: string, displayValue: string) {
-  return (prevValue: string) => {
-    const nextValue = `${prevValue.slice(0, offset) + displayValue} ${prevValue.slice(offset + searchValue.length + 1)}`
-    return nextValue
+  return (inputValue: string) => {
+    return `${inputValue.slice(0, offset) + displayValue} ${inputValue.slice(offset + searchValue.length + 1)}`
   }
 }

@@ -147,7 +147,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             if (isCombobox && isExpanded) return
             send("ARROW_LEFT")
           },
-          ArrowRight() {
+          ArrowRight(event) {
             if (state.context.highlightedTagId) {
               event.preventDefault()
             }
@@ -166,9 +166,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           },
           Enter(event) {
             if (evt.isComposing) return
-            if (isCombobox && !state.context.highlightedTagId) return
-            event.preventDefault()
+            if (isCombobox && isExpanded) return
             send("ENTER")
+            event.preventDefault()
           },
         }
 

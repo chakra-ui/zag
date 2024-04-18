@@ -46,7 +46,6 @@ const fetchMachine = createMachine({
     "isOpenControlled": false,
     "isOpenControlled": false,
     "restoreFocus": false,
-    "!isHighlightedItemVisible": false,
     "isOpenControlled && closeOnSelect": false,
     "closeOnSelect": false,
     "autoHighlight": false,
@@ -265,7 +264,7 @@ const fetchMachine = createMachine({
           target: "suggesting",
           actions: ["clearHighlightedItem", "setInputValue", "invokeOnOpen"]
         }],
-        "ITEM.POINTER_OVER": {
+        "ITEM.POINTER_MOVE": {
           actions: ["setHighlightedItem"]
         },
         "ITEM.POINTER_LEAVE": {
@@ -348,7 +347,6 @@ const fetchMachine = createMachine({
           target: "idle"
         }],
         CHILDREN_CHANGE: {
-          cond: "!isHighlightedItemVisible",
           actions: ["highlightFirstItem"]
         },
         "INPUT.ARROW_DOWN": {
@@ -379,9 +377,9 @@ const fetchMachine = createMachine({
         }],
         "INPUT.CHANGE": [{
           cond: "autoHighlight",
-          actions: ["highlightFirstItem", "setInputValue"]
+          actions: ["setInputValue"]
         }, {
-          actions: ["clearHighlightedItem", "setInputValue"]
+          actions: ["setInputValue"]
         }],
         "LAYER.ESCAPE": [{
           cond: "isOpenControlled",
@@ -390,7 +388,7 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: "invokeOnClose"
         }],
-        "ITEM.POINTER_OVER": {
+        "ITEM.POINTER_MOVE": {
           target: "interacting",
           actions: "setHighlightedItem"
         },
@@ -471,7 +469,6 @@ const fetchMachine = createMachine({
     "isOpenControlled && closeOnSelect": ctx => ctx["isOpenControlled && closeOnSelect"],
     "closeOnSelect": ctx => ctx["closeOnSelect"],
     "isOpenControlled && isCustomValue && !allowCustomValue": ctx => ctx["isOpenControlled && isCustomValue && !allowCustomValue"],
-    "!isHighlightedItemVisible": ctx => ctx["!isHighlightedItemVisible"],
     "autoHighlight": ctx => ctx["autoHighlight"]
   }
 });

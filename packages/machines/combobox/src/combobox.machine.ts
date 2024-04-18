@@ -315,7 +315,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
                 actions: ["clearHighlightedItem", "setInputValue", "invokeOnOpen"],
               },
             ],
-            "ITEM.POINTER_OVER": {
+            "ITEM.POINTER_MOVE": {
               actions: ["setHighlightedItem"],
             },
             "ITEM.POINTER_LEAVE": {
@@ -429,7 +429,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
             ],
             CHILDREN_CHANGE: {
-              guard: not("isHighlightedItemVisible"),
               actions: ["highlightFirstItem"],
             },
             "INPUT.ARROW_DOWN": {
@@ -465,10 +464,10 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             "INPUT.CHANGE": [
               {
                 guard: "autoHighlight",
-                actions: ["highlightFirstItem", "setInputValue"],
+                actions: ["setInputValue"],
               },
               {
-                actions: ["clearHighlightedItem", "setInputValue"],
+                actions: ["setInputValue"],
               },
             ],
             "LAYER.ESCAPE": [
@@ -481,7 +480,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
                 actions: "invokeOnClose",
               },
             ],
-            "ITEM.POINTER_OVER": {
+            "ITEM.POINTER_MOVE": {
               target: "interacting",
               actions: "setHighlightedItem",
             },
@@ -569,7 +568,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
         closeOnSelect: (ctx) => (ctx.multiple ? false : !!ctx.closeOnSelect),
-        isHighlightedItemVisible: (ctx) => ctx.collection.has(ctx.highlightedValue),
         isOpenControlled: (ctx) => !!ctx["open.controlled"],
         openOnChange: (ctx, evt) => {
           if (isBoolean(ctx.openOnChange)) return ctx.openOnChange
@@ -766,12 +764,16 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           ctx.onOpenChange?.({ open: false })
         },
         highlightFirstItem(ctx) {
-          const value = ctx.collection.first()
-          set.highlightedItem(ctx, value)
+          raf(() => {
+            const value = ctx.collection.first()
+            set.highlightedItem(ctx, value)
+          })
         },
         highlightLastItem(ctx) {
-          const value = ctx.collection.last()
-          set.highlightedItem(ctx, value)
+          raf(() => {
+            const value = ctx.collection.last()
+            set.highlightedItem(ctx, value)
+          })
         },
         highlightNextItem(ctx) {
           const value = ctx.collection.next(ctx.highlightedValue) ?? (ctx.loop ? ctx.collection.first() : null)
@@ -782,26 +784,32 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           set.highlightedItem(ctx, value)
         },
         highlightFirstSelectedItem(ctx) {
-          const [value] = ctx.collection.sort(ctx.value)
-          set.highlightedItem(ctx, value)
+          raf(() => {
+            const [value] = ctx.collection.sort(ctx.value)
+            set.highlightedItem(ctx, value)
+          })
         },
         highlightFirstOrSelectedItem(ctx) {
-          let value: string | null = null
-          if (ctx.hasSelectedItems) {
-            value = ctx.collection.sort(ctx.value)[0]
-          } else {
-            value = ctx.collection.first()
-          }
-          set.highlightedItem(ctx, value)
+          raf(() => {
+            let value: string | null = null
+            if (ctx.hasSelectedItems) {
+              value = ctx.collection.sort(ctx.value)[0]
+            } else {
+              value = ctx.collection.first()
+            }
+            set.highlightedItem(ctx, value)
+          })
         },
         highlightLastOrSelectedItem(ctx) {
-          let value: string | null = null
-          if (ctx.hasSelectedItems) {
-            value = ctx.collection.sort(ctx.value)[0]
-          } else {
-            value = ctx.collection.last()
-          }
-          set.highlightedItem(ctx, value)
+          raf(() => {
+            let value: string | null = null
+            if (ctx.hasSelectedItems) {
+              value = ctx.collection.sort(ctx.value)[0]
+            } else {
+              value = ctx.collection.last()
+            }
+            set.highlightedItem(ctx, value)
+          })
         },
         autofillInputValue(ctx, evt) {
           const inputEl = dom.getInputEl(ctx)

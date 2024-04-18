@@ -424,7 +424,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         setInputValue(ctx, evt) {
-          ctx.inputValue = evt.value
+          set.inputValue(ctx, evt.value)
         },
         clearHighlightedId(ctx) {
           ctx.highlightedTagId = null
@@ -435,7 +435,9 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         clearInputValue(ctx) {
-          ctx.inputValue = ""
+          raf(() => {
+            set.inputValue(ctx, "")
+          })
         },
         syncInputValue(ctx) {
           const inputEl = dom.getInputEl(ctx)
@@ -472,7 +474,7 @@ export function machine(userContext: UserDefinedContext) {
             } else {
               ctx.onValueInvalid?.({ reason: "invalidTag" })
             }
-            ctx.inputValue = ""
+            set.inputValue(ctx, "")
           })
         },
         clearTags(ctx) {
@@ -549,6 +551,9 @@ const invoke = {
     const highlightedValue = dom.getHighlightedTagValue(ctx)
     ctx.onHighlightChange?.({ highlightedValue })
   },
+  valueChange: (ctx: MachineContext) => {
+    ctx.onInputValueChange?.({ inputValue: ctx.inputValue })
+  },
 }
 
 const set = {
@@ -566,5 +571,10 @@ const set = {
     if (isEqual(ctx.highlightedTagId, id)) return
     ctx.highlightedTagId = id
     invoke.highlightChange(ctx)
+  },
+  inputValue: (ctx: MachineContext, value: string) => {
+    if (isEqual(ctx.inputValue, value)) return
+    ctx.inputValue = value
+    invoke.valueChange(ctx)
   },
 }

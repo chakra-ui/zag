@@ -22,6 +22,7 @@ export const props = createProps<UserDefinedContext>()([
   "name",
   "onFocusOutside",
   "onHighlightChange",
+  "onInputValueChange",
   "onInteractOutside",
   "onPointerDownOutside",
   "onValueChange",

@@ -351,16 +351,19 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-value": itemState.value,
         onPointerMove() {
           if (itemState.isDisabled) return
-          send({ type: "ITEM.POINTER_OVER", value })
+          send({ type: "ITEM.POINTER_MOVE", value })
         },
         onPointerLeave() {
           if (itemState.isDisabled) return
+          const mouseMoved = state.previousEvent.type === "ITEM.POINTER_MOVE"
+          if (!mouseMoved) return
           send({ type: "ITEM.POINTER_LEAVE", value })
         },
         onPointerUp(event) {
           if (isDownloadingEvent(event)) return
           if (isOpeningInNewTab(event)) return
-          if (itemState.isDisabled || isContextMenuEvent(event)) return
+          if (isContextMenuEvent(event)) return
+          if (itemState.isDisabled) return
           send({ type: "ITEM.CLICK", src: "pointerup", value })
         },
         onTouchEnd(event) {

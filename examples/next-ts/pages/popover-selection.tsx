@@ -1,3 +1,8 @@
+/**
+ * Credits to Ariakit for inspiration
+ * https://ariakit.org/examples/popover-selection
+ */
+
 import * as popover from "@zag-js/popover"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useEffect, useId, useRef } from "react"
@@ -9,6 +14,7 @@ export default function Page() {
   const [state, send] = useMachine(
     popover.machine({
       id: useId(),
+      autoFocus: false,
       positioning: {
         placement: "top",
         getAnchorRect() {
@@ -23,12 +29,16 @@ export default function Page() {
 
   const api = popover.connect(state, send, normalizeProps)
 
-  function hasSelectionWithin(element?: Element | null) {
-    const selection = element?.ownerDocument.getSelection()
+  function hasSelectionWithin(el?: Element | null) {
+    if (!el) return false
+
+    const selection = el.ownerDocument.getSelection()
     if (!selection?.rangeCount) return false
+
     const range = selection.getRangeAt(0)
     if (range.collapsed) return false
-    return !!element?.contains(range.commonAncestorContainer)
+
+    return !!el.contains(range.commonAncestorContainer)
   }
 
   useEffect(() => {
@@ -39,22 +49,26 @@ export default function Page() {
     if (!node) return
 
     const doc = node.ownerDocument || document
+
     const onMouseUp = () => {
       if (!hasSelectionWithin(node)) return
+      api.reposition()
       api.open()
     }
 
-    const onSelection = () => {
-      if (content.contains(doc.activeElement)) return
+    const onSelect = () => {
+      if (hasSelectionWithin(node)) {
+        return api.reposition()
+      }
       api.close()
     }
 
     doc.addEventListener("mouseup", onMouseUp)
-    doc.addEventListener("selectionchange", onSelection)
+    doc.addEventListener("selectionchange", onSelect)
 
     return () => {
       doc.removeEventListener("mouseup", onMouseUp)
-      doc.removeEventListener("selectionchange", onSelection)
+      doc.removeEventListener("selectionchange", onSelect)
     }
   }, [api])
 
