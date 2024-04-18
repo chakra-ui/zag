@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@axe-core/playwright':
         specifier: 4.9.0
-        version: 4.9.0(playwright-core@1.43.0)
+        version: 4.9.0(playwright-core@1.43.1)
       '@babel/generator':
         specifier: 7.24.4
         version: 7.24.4
@@ -3411,8 +3411,8 @@ importers:
         specifier: 0.7.2
         version: 0.7.2
       lucide-react:
-        specifier: 0.368.0
-        version: 0.368.0(react@18.2.0)
+        specifier: 0.371.0
+        version: 0.371.0(react@18.2.0)
       next:
         specifier: 14.2.1
         version: 14.2.1(@opentelemetry/api@1.8.0)(@playwright/test@1.43.1)(react-dom@18.2.0)(react@18.2.0)
@@ -3679,13 +3679,13 @@ packages:
     resolution: {integrity: sha512-gFPqTG7otEJ8uP6wrhDv6mqwGWYZKNvAcCq6u9hOj0c+IKCEsY4L1oC9trPq2SaWIzAfHvqfBDxF591JkMf+kg==}
     dev: true
 
-  /@axe-core/playwright@4.9.0(playwright-core@1.43.0):
+  /@axe-core/playwright@4.9.0(playwright-core@1.43.1):
     resolution: {integrity: sha512-Q1Lz75dNsX38jof+aev7RficDMdH/HLOLySkDdXR0fUoeFcLdw4UNgDO2CNNP4CTpoesEdfYRdd6VmDXjhBgbA==}
     peerDependencies:
       playwright-core: '>= 1.0.0'
     dependencies:
       axe-core: 4.9.0
-      playwright-core: 1.43.0
+      playwright-core: 1.43.1
     dev: false
 
   /@babel/code-frame@7.23.5:
@@ -14549,6 +14549,14 @@ packages:
       react: 18.2.0
     dev: false
 
+  /lucide-react@0.371.0(react@18.2.0):
+    resolution: {integrity: sha512-FpUup3kaya7JpGHaoNYn1o0Z8IFvR9w4LeXr2ad20DTr3RFLBXD69bVXagV/I8yWyCJu3it1d1B3bNSa5ui4AA==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /lucide-solid@0.368.0(solid-js@1.8.16):
     resolution: {integrity: sha512-+71dhU/1DkeT9cc1lBWYjwe1taYbpC/pceNbSZ5spGpDfIKBVLuMVZcqHM1tRirqD+NN1KgRHvlbHF+/YrhIBg==}
     peerDependencies:
@@ -16848,12 +16856,6 @@ packages:
       jsonc-parser: 3.2.1
       mlly: 1.6.1
       pathe: 1.1.2
-
-  /playwright-core@1.43.0:
-    resolution: {integrity: sha512-iWFjyBUH97+pUFiyTqSLd8cDMMOS0r2ZYz2qEsPjH8/bX++sbIJT35MSwKnp1r/OQBAqC5XO99xFbJ9XClhf4w==}
-    engines: {node: '>=16'}
-    hasBin: true
-    dev: false
 
   /playwright-core@1.43.1:
     resolution: {integrity: sha512-EI36Mto2Vrx6VF7rm708qSnesVQKbxEWvPrfA1IPY6HgczBplDx7ENtx+K2n4kJ41sLLkuGfmb0ZLSSXlDhqPg==}

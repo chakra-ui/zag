@@ -80,7 +80,7 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-react": "0.368.0",
+    "lucide-react": "0.371.0",
     "next": "14.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
