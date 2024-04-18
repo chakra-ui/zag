@@ -3,7 +3,6 @@ import * as combobox from "@zag-js/combobox"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { matchSorter } from "match-sorter"
-import { useRouter } from "next/router"
 import { useEffect, useId, useMemo, useState } from "react"
 import {
   searchData,
@@ -12,7 +11,7 @@ import {
 } from "./search-meta"
 import { useUpdateEffect } from "./use-update-effect"
 
-type UseSearchReturn = {
+interface UseSearchReturn {
   results: SearchMetaItem[]
   dialog_api: dialog.Api
   combobox_api: combobox.Api
@@ -28,8 +27,6 @@ export function useSearch(): UseSearchReturn {
   const dialog_api = dialog.connect(dialog_state, dialog_send, normalizeProps)
 
   const [results, setResults] = useState<SearchMetaResult>(searchData)
-
-  const router = useRouter()
 
   const collection = useMemo(
     () =>
@@ -52,15 +49,10 @@ export function useSearch(): UseSearchReturn {
       inputBehavior: "autohighlight",
       selectionBehavior: "clear",
       collection,
-      onValueChange({ items }) {
-        const [item] = items as SearchMetaItem[]
-        if (!item) return
-        try {
-          const { pathname, slug, url } = item
-          router.push({ pathname, query: { slug } }, url)
-        } catch (err) {
-          console.log(err)
-        }
+      openOnChange({ inputValue }) {
+        return inputValue.length > 2
+      },
+      onValueChange() {
         dialog_api.close()
       },
       onInputValueChange({ inputValue }) {

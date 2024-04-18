@@ -571,7 +571,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         isOpenControlled: (ctx) => !!ctx["open.controlled"],
         openOnChange: (ctx, evt) => {
           if (isBoolean(ctx.openOnChange)) return ctx.openOnChange
-          return !!ctx.openOnChange?.({ inputValue: evt.target.value })
+          return !!ctx.openOnChange?.({ inputValue: evt.value })
         },
         restoreFocus: (_ctx, evt) => (evt.restoreFocus == null ? true : !!evt.restoreFocus),
         isChangeEvent: (_ctx, evt) => evt.previousEvent?.type === "INPUT.CHANGE",

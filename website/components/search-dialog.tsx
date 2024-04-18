@@ -75,7 +75,6 @@ export function Search() {
                   />
                 </Flex>
                 <Box
-                  as="ul"
                   flex="1"
                   listStyleType="none"
                   maxHeight="340px"
@@ -86,13 +85,16 @@ export function Search() {
                   {results.map((item) => {
                     const isLvl1 = item.type === "lvl1"
                     return (
-                      <Link key={item.id} href={item.url}>
-                        <chakra.li
+                      <Link
+                        legacyBehavior
+                        passHref
+                        key={item.id}
+                        href={item.url}
+                      >
+                        <chakra.a
                           px="3"
                           py="1"
-                          _selected={{
-                            bg: "bg-primary-subtle",
-                          }}
+                          _selected={{ bg: "bg-primary-subtle" }}
                           display="flex"
                           alignItems="center"
                           minHeight="14"
@@ -120,7 +122,7 @@ export function Search() {
                           <Icon opacity={0.4}>
                             <GrReturn className="icon-gr-return" />
                           </Icon>
-                        </chakra.li>
+                        </chakra.a>
                       </Link>
                     )
                   })}
