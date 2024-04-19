@@ -11,7 +11,7 @@ export const props = createProps<UserDefinedContext>()([
   "highlightedValue",
   "id",
   "ids",
-  "loop",
+  "loopFocus",
   "onFocusOutside",
   "onInteractOutside",
   "onOpenChange",
