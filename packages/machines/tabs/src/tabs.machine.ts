@@ -29,7 +29,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         canIndicatorTransition: false,
         isIndicatorRendered: false,
-        loop: true,
+        loopFocus: true,
         translations: {},
         ...ctx,
       },

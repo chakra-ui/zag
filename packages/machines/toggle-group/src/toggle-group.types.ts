@@ -38,7 +38,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether to loop focus inside the toggle group.
    */
-  loop: boolean
+  loopFocus: boolean
   /**
    *  Whether to use roving tab index to manage focus.
    */
@@ -56,7 +56,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
-  currentLoop: boolean
+  currentLoopFocus: boolean
 }>
 
 interface PrivateContext {

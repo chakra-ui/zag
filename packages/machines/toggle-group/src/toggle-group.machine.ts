@@ -18,7 +18,7 @@ export function machine(userContext: UserDefinedContext) {
         disabled: false,
         orientation: "horizontal",
         rovingFocus: true,
-        loop: true,
+        loopFocus: true,
         ...ctx,
         focusedId: null,
         isTabbingBackward: false,
@@ -28,7 +28,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       computed: {
-        currentLoop: (ctx) => ctx.loop && !ctx.isWithinToolbar,
+        currentLoopFocus: (ctx) => ctx.loopFocus && !ctx.isWithinToolbar,
       },
 
       entry: ["checkFocusableToggles", "checkIfWithinToolbar"],

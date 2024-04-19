@@ -706,7 +706,7 @@
         "type": "boolean",
         "description": "Whether to allow typing custom values in the input"
       },
-      "loop": {
+      "loopFocus": {
         "type": "boolean",
         "description": "Whether to loop the keyboard navigation through the items"
       },
@@ -758,9 +758,13 @@
         "type": "(details: ScrollToIndexDetails) => void",
         "description": "Function to scroll to a specific index"
       },
-      "triggerOnly": {
+      "popup": {
+        "type": "\"listbox\" | \"dialog\"",
+        "description": "The underling `aria-haspopup` attribute to use for the combobox\n- `listbox`: The combobox has a listbox popup (default)\n- `dialog`: The combobox has a dialog popup. Useful when in select only mode"
+      },
+      "dismissable": {
         "type": "boolean",
-        "description": "Whether the combobox only renders the trigger by default.\n- Use this when the input is rendered inside the content\n- Also render the listbox element via `api.listboxProps`"
+        "description": "Whether to register this combobox as a dismissable layer"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -1677,7 +1681,7 @@
         "type": "Point",
         "description": "The positioning point for the menu. Can be set by the context menu trigger or the button trigger."
       },
-      "loop": {
+      "loopFocus": {
         "type": "boolean",
         "description": "Whether to loop the keyboard navigation."
       },
@@ -2609,7 +2613,7 @@
         "type": "string",
         "description": "The key of the highlighted item"
       },
-      "loop": {
+      "loopFocus": {
         "type": "boolean",
         "description": "Whether to loop the keyboard navigation through the options"
       },
@@ -3069,7 +3073,7 @@
         "type": "IntlTranslations",
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
-      "loop": {
+      "loopFocus": {
         "type": "boolean",
         "description": "Whether the keyboard navigation will loop from last tab to first, and vice versa.",
         "defaultValue": "true"
@@ -3320,7 +3324,7 @@
         "type": "(details: ValueChangeDetails) => void",
         "description": "Function to call when the toggle is clicked."
       },
-      "loop": {
+      "loopFocus": {
         "type": "boolean",
         "description": "Whether to loop focus inside the toggle group."
       },

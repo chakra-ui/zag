@@ -68,7 +68,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
   /**
    * Whether to loop the keyboard navigation.
    */
-  loop: boolean
+  loopFocus: boolean
   /**
    * The options used to dynamically position the menu
    */

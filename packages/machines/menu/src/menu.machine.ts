@@ -19,7 +19,7 @@ export function machine(userContext: UserDefinedContext) {
       initial: ctx.open ? "open" : "idle",
       context: {
         highlightedValue: null,
-        loop: false,
+        loopFocus: false,
         anchorPoint: null,
         closeOnSelect: true,
         typeahead: true,

@@ -14,6 +14,6 @@ export const dom = createScope({
   },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
-  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), id, ctx.currentLoop),
-  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), id, ctx.currentLoop),
+  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), id, ctx.currentLoopFocus),
+  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), id, ctx.currentLoopFocus),
 })
