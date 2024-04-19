@@ -4,7 +4,7 @@ import {
   getEventStep,
   getNativeEvent,
   isLeftClick,
-  isModifiedEvent,
+  isModifierKey,
   type EventKeyMap,
 } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
@@ -254,7 +254,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (!isInteractive) return
 
         const evt = getNativeEvent(event)
-        if (!isLeftClick(evt) || isModifiedEvent(evt)) return
+        if (!isLeftClick(evt) || isModifierKey(evt)) return
 
         const point = getEventPoint(evt)
         send({ type: "POINTER_DOWN", point })

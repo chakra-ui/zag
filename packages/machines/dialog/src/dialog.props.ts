@@ -4,7 +4,7 @@ import type { UserDefinedContext } from "./dialog.types"
 
 export const props = createProps<UserDefinedContext>()([
   "aria-label",
-  "closeOnEscapeKeyDown",
+  "closeOnEscape",
   "closeOnInteractOutside",
   "dir",
   "finalFocusEl",

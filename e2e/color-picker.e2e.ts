@@ -18,14 +18,14 @@ test.describe("color-picker", () => {
   })
 
   test("[closed] typing the same native css colors switch show hex", async () => {
-    await I.typeInHexInput("red")
+    await I.type("red")
     await I.pressKey("Enter")
     await I.clickOutside()
     await I.seeHexInputHasValue(INITIAL_VALUE)
   })
 
   test("[closed] typing different native css colors should update color", async () => {
-    await I.typeInHexInput("pink")
+    await I.type("pink")
     await I.pressKey("Enter")
     await I.clickOutside()
     await I.seeHexInputHasValue(PINK_VALUE)

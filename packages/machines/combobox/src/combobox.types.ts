@@ -19,11 +19,22 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
 }
 
 export interface InputValueChangeDetails {
-  value: string
+  inputValue: string
 }
 
 export interface OpenChangeDetails {
   open: boolean
+}
+
+export interface SelectionValueDetails<T extends CollectionItem = CollectionItem> {
+  inputValue: string
+  selectedItems: T[]
+  valueAsString: string
+}
+
+export interface ScrollToIndexDetails {
+  index: number
+  immediate?: boolean
 }
 
 /* -----------------------------------------------------------------------------
@@ -53,6 +64,14 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   extends DirectionProperty,
     CommonProperties,
     InteractOutsideHandlers {
+  /**
+   * Whether the combobox is open
+   */
+  open?: boolean
+  /**
+   * Whether the combobox open state is controlled by the user
+   */
+  "open.controlled"?: boolean
   /**
    * The ids of the elements in the combobox. Useful for composition.
    */
@@ -110,10 +129,6 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    */
   selectionBehavior: "clear" | "replace" | "preserve"
   /**
-   * Whether to select the higlighted item on interaction outside the combobox
-   */
-  selectOnBlur: boolean
-  /**
    * Whether to autofocus the input on mount
    */
   autoFocus?: boolean
@@ -122,13 +137,17 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    */
   openOnClick?: boolean
   /**
-   * Whether to allow custom values or free values in the input
+   * Whether to show the combobox when the input value changes
+   */
+  openOnChange?: boolean | ((details: InputValueChangeDetails) => boolean)
+  /**
+   * Whether to allow typing custom values in the input
    */
   allowCustomValue?: boolean
   /**
    * Whether to loop the keyboard navigation through the items
    */
-  loop?: boolean
+  loopFocus?: boolean
   /**
    * The positioning options to dynamically position the menu
    */
@@ -166,6 +185,28 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether to close the combobox when an item is selected.
    */
   closeOnSelect?: boolean
+  /**
+   * Function to get the display value of the selected item
+   */
+  getSelectionValue?: (details: SelectionValueDetails<T>) => string
+  /**
+   * Whether to open the combobox on arrow key press
+   */
+  openOnKeyPress: boolean
+  /**
+   * Function to scroll to a specific index
+   */
+  scrollToIndexFn?: (details: ScrollToIndexDetails) => void
+  /**
+   * The underling `aria-haspopup` attribute to use for the combobox
+   * - `listbox`: The combobox has a listbox popup (default)
+   * - `dialog`: The combobox has a dialog popup. Useful when in select only mode
+   */
+  popup: "listbox" | "dialog"
+  /**
+   * Whether to register this combobox as a dismissable layer
+   */
+  dismissable: boolean
 }
 
 export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
@@ -173,7 +214,7 @@ export type UserDefinedContext<T extends CollectionItem = CollectionItem> = Requ
   "id" | "collection"
 >
 
-type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
+type ComputedContext = Readonly<{
   /**
    * @computed
    * Whether the input's value is empty
@@ -193,37 +234,32 @@ type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
    */
   autoHighlight: boolean
   /**
-   * The highlighted item
-   */
-  highlightedItem: T | null
-  /**
-   * @computed
-   * The selected items
-   */
-  selectedItems: T[]
-  /**
    * @computed
    * Whether there's a selected option
    */
   hasSelectedItems: boolean
-  /**
-   * @computed
-   * The display value of the combobox (based on the selected items)
-   */
-  valueAsString: string
 }>
 
-interface PrivateContext {
+interface PrivateContext<T extends CollectionItem = CollectionItem> {
   /**
    * @internal
    * The placement of the combobox popover.
    */
   currentPlacement?: Placement
   /**
-   * @internal
-   * Whether the user is composing text in the input
+   * The highlighted item
    */
-  composing: boolean
+  highlightedItem: T | null
+  /**
+   * @interal
+   * The selected items
+   */
+  selectedItems: T[]
+  /**
+   * @interal
+   * The display value of the combobox (based on the selected items)
+   */
+  valueAsString: string
 }
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
@@ -242,6 +278,7 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface ItemProps {
+  persistFocus?: boolean
   item: CollectionItem
 }
 
@@ -348,7 +385,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Function to set the positioning options
    */
-  reposition(options: Partial<PositioningOptions>): void
+  reposition(options?: Partial<PositioningOptions>): void
 
   rootProps: T["element"]
   labelProps: T["label"]
@@ -358,6 +395,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   contentProps: T["element"]
   triggerProps: T["button"]
   clearTriggerProps: T["button"]
+  listProps: T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemTextProps(props: ItemProps): T["element"]
   getItemIndicatorProps(props: ItemProps): T["element"]

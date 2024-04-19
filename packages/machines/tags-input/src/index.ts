@@ -7,6 +7,7 @@ export type {
   UserDefinedContext as Context,
   ElementIds,
   HighlightChangeDetails,
+  InputValueChangeDetails,
   IntlTranslations,
   ItemProps,
   ItemState,

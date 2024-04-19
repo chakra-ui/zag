@@ -5,7 +5,7 @@ import {
   getEventStep,
   getNativeEvent,
   isLeftClick,
-  isModifiedEvent,
+  isModifierKey,
   type EventKeyMap,
 } from "@zag-js/dom-event"
 import { dataAttr, query } from "@zag-js/dom-query"
@@ -191,7 +191,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!isInteractive) return
 
           const evt = getNativeEvent(event)
-          if (!isLeftClick(evt) || isModifiedEvent(evt)) return
+          if (!isLeftClick(evt) || isModifierKey(evt)) return
 
           const point = getEventPoint(evt)
           const channel = { xChannel, yChannel }
@@ -333,7 +333,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!isInteractive) return
 
           const evt = getNativeEvent(event)
-          if (!isLeftClick(evt) || isModifiedEvent(evt)) return
+          if (!isLeftClick(evt) || isModifierKey(evt)) return
 
           const point = getEventPoint(evt)
           send({ type: "CHANNEL_SLIDER.POINTER_DOWN", channel, point, id: channel, orientation })

@@ -1,8 +1,7 @@
 import { choose, createMachine, guards } from "@zag-js/core"
 import { addDomEvent, requestPointerLock } from "@zag-js/dom-event"
-import { isSafari, raf } from "@zag-js/dom-query"
+import { isSafari, observeAttributes, raf } from "@zag-js/dom-query"
 import { trackFormControl } from "@zag-js/form-utils"
-import { observeAttributes } from "@zag-js/mutation-observer"
 import { clamp, decrement, increment, isAtMax, isAtMin, isWithinRange } from "@zag-js/number-utils"
 import { callAll, compact, isEqual } from "@zag-js/utils"
 import { recordCursor, restoreCursor } from "./cursor"
@@ -256,8 +255,11 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackButtonDisabled(ctx, _evt, { send }) {
           const btn = dom.getPressedTriggerEl(ctx, ctx.hint)
-          return observeAttributes(btn, ["disabled"], () => {
-            send({ type: "TRIGGER.PRESS_UP", src: "attr" })
+          return observeAttributes(btn, {
+            attributes: ["disabled"],
+            callback() {
+              send({ type: "TRIGGER.PRESS_UP", src: "attr" })
+            },
           })
         },
         attachWheelListener(ctx, _evt, { send }) {

@@ -42,7 +42,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the keyboard navigation will loop from last tab to first, and vice versa.
    * @default true
    */
-  loop: boolean
+  loopFocus: boolean
   /**
    * The selected tab id
    */

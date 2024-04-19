@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@internationalized/date": "3.5.2",
+    "@types/textarea-caret": "^3.0.3",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -47,7 +48,6 @@
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
-    "@zag-js/mutation-observer": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/number-utils": "workspace:*",
     "@zag-js/numeric-range": "workspace:*",
@@ -83,10 +83,12 @@
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
     "lucide-react": "0.368.0",
+    "match-sorter": "6.3.4",
     "next": "14.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-spinners": "0.13.8"
+    "react-spinners": "0.13.8",
+    "textarea-caret": "^3.1.0"
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",

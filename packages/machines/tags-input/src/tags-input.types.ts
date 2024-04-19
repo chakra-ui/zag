@@ -11,6 +11,10 @@ export interface ValueChangeDetails {
   value: string[]
 }
 
+export interface InputValueChangeDetails {
+  inputValue: string
+}
+
 export interface HighlightChangeDetails {
   highlightedValue: string | null
 }
@@ -101,7 +105,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * Whether a tag can be edited after creation.
    * If `true` and focus is on a tag, pressing `Enter`or double clicking will edit the tag.
    */
-  allowEditTag?: boolean
+  editable?: boolean
   /**
    * The tag input's value
    */
@@ -114,6 +118,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * Callback fired when the tag values is updated
    */
   onValueChange?(details: ValueChangeDetails): void
+  /**
+   * Callback fired when the input value is updated
+   */
+  onInputValueChange?(details: InputValueChangeDetails): void
   /**
    * Callback fired when a tag is highlighted by pointer or keyboard navigation
    */

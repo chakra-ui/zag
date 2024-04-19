@@ -1,4 +1,4 @@
-import { getEventKey, getNativeEvent, isModifiedEvent, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventKey, getNativeEvent, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
 import { contains, dataAttr, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tree-view.anatomy"
@@ -109,17 +109,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         const keyMap: EventKeyMap = {
           ArrowDown(event) {
-            if (isModifiedEvent(event)) return
+            if (isModifierKey(event)) return
             event.preventDefault()
             send({ type: "ITEM.ARROW_DOWN", id: nodeId, shiftKey: event.shiftKey })
           },
           ArrowUp(event) {
-            if (isModifiedEvent(event)) return
+            if (isModifierKey(event)) return
             event.preventDefault()
             send({ type: "ITEM.ARROW_UP", id: nodeId, shiftKey: event.shiftKey })
           },
           ArrowLeft(event) {
-            if (isModifiedEvent(event) || node.dataset.disabled) return
+            if (isModifierKey(event) || node.dataset.disabled) return
             event.preventDefault()
             send({ type: isBranchNode ? "BRANCH.ARROW_LEFT" : "ITEM.ARROW_LEFT", id: nodeId })
           },
@@ -129,12 +129,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send({ type: "BRANCH.ARROW_RIGHT", id: nodeId })
           },
           Home(event) {
-            if (isModifiedEvent(event)) return
+            if (isModifierKey(event)) return
             event.preventDefault()
             send({ type: "ITEM.HOME", id: nodeId, shiftKey: event.shiftKey })
           },
           End(event) {
-            if (isModifiedEvent(event)) return
+            if (isModifierKey(event)) return
             event.preventDefault()
             send({ type: "ITEM.END", id: nodeId, shiftKey: event.shiftKey })
           },
@@ -173,7 +173,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (exec) {
           exec(event)
         } else {
-          const isValidTypeahead = event.key.length === 1 && !isModifiedEvent(event)
+          const isValidTypeahead = event.key.length === 1 && !isModifierKey(event)
           if (!isValidTypeahead) return
 
           send({ type: "TREE.TYPEAHEAD", key: event.key, id: nodeId })

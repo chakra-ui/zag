@@ -8,7 +8,7 @@ export const props = createProps<UserDefinedContext>()([
   "getRootNode",
   "id",
   "ids",
-  "loop",
+  "loopFocus",
   "multiple",
   "onValueChange",
   "orientation",

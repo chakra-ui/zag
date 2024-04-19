@@ -47,7 +47,6 @@
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
-    "@zag-js/mutation-observer": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/number-utils": "workspace:*",
     "@zag-js/numeric-range": "workspace:*",
@@ -82,6 +81,7 @@
     "@zag-js/utils": "workspace:*",
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
+    "match-sorter": "6.3.4",
     "lucide-svelte": "0.368.0",
     "svelte-routing": "2.12.0"
   },

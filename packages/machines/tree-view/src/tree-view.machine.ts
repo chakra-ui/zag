@@ -1,6 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { getByTypeahead, isHTMLElement } from "@zag-js/dom-query"
-import { observeChildren } from "@zag-js/mutation-observer"
+import { getByTypeahead, isHTMLElement, observeChildren } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./tree-view.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tree-view.types"
@@ -176,40 +175,42 @@ export function machine(userContext: UserDefinedContext) {
       activities: {
         trackChildrenMutation(ctx, _evt, { send }) {
           const treeEl = dom.getTreeEl(ctx)
-          return observeChildren(treeEl, (records) => {
-            const removedNodes = records
-              .flatMap((r) => Array.from(r.removedNodes))
-              .filter((node) => {
-                if (!isHTMLElement(node)) return false
-                return node.matches("[role=treeitem]") || node.matches("[role=group]")
+          return observeChildren(treeEl, {
+            callback(records) {
+              const removedNodes = records
+                .flatMap((r) => Array.from(r.removedNodes))
+                .filter((node) => {
+                  if (!isHTMLElement(node)) return false
+                  return node.matches("[role=treeitem]") || node.matches("[role=group]")
+                })
+
+              if (!removedNodes.length) return
+
+              let elementToFocus: HTMLElement | null = null
+              records.forEach((record) => {
+                if (isHTMLElement(record.nextSibling)) {
+                  elementToFocus = record.nextSibling
+                } else if (isHTMLElement(record.previousSibling)) {
+                  elementToFocus = record.previousSibling
+                }
               })
 
-            if (!removedNodes.length) return
-
-            let elementToFocus: HTMLElement | null = null
-            records.forEach((record) => {
-              if (isHTMLElement(record.nextSibling)) {
-                elementToFocus = record.nextSibling
-              } else if (isHTMLElement(record.previousSibling)) {
-                elementToFocus = record.previousSibling
+              if (elementToFocus) {
+                dom.focusNode(elementToFocus)
               }
-            })
 
-            if (elementToFocus) {
-              dom.focusNode(elementToFocus)
-            }
+              const removedIds: Set<string> = new Set()
+              removedNodes.forEach((node) => {
+                const nodeId = dom.getNodeId(node)
+                if (isHTMLElement(node) && nodeId != null) {
+                  removedIds.add(nodeId)
+                }
+              })
 
-            const removedIds: Set<string> = new Set()
-            removedNodes.forEach((node) => {
-              const nodeId = dom.getNodeId(node)
-              if (isHTMLElement(node) && nodeId != null) {
-                removedIds.add(nodeId)
-              }
-            })
-
-            const nextSet = new Set(ctx.selectedIds)
-            removedIds.forEach((id) => nextSet.delete(id))
-            send({ type: "SELECTED.SET", value: removedIds })
+              const nextSet = new Set(ctx.selectedIds)
+              removedIds.forEach((id) => nextSet.delete(id))
+              send({ type: "SELECTED.SET", value: removedIds })
+            },
           })
         },
       },

@@ -84,11 +84,6 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    */
   closeOnSelect?: boolean
   /**
-   * Whether to select the highlighted item when the user presses Tab,
-   * and the menu is open.
-   */
-  selectOnBlur?: boolean
-  /**
    * The callback fired when the highlighted item changes.
    */
   onHighlightChange?: (details: HighlightChangeDetails<T>) => void
@@ -115,7 +110,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * Whether to loop the keyboard navigation through the options
    */
-  loop?: boolean
+  loopFocus?: boolean
   /**
    * Whether to allow multiple selection
    */
@@ -312,7 +307,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Function to set the positioning options of the select
    */
-  reposition(options: Partial<PositioningOptions>): void
+  reposition(options?: Partial<PositioningOptions>): void
 
   rootProps: T["element"]
   labelProps: T["label"]

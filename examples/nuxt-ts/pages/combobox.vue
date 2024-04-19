@@ -2,6 +2,7 @@
 import * as combobox from "@zag-js/combobox"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { matchSorter } from "match-sorter"
 
 const controls = useControls(comboboxControls)
 
@@ -21,8 +22,8 @@ const [state, send] = useMachine(
     onOpenChange() {
       options.value = comboboxData
     },
-    onInputValueChange({ value }) {
-      const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
+    onInputValueChange({ inputValue }) {
+      const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
       options.value = filtered.length > 0 ? filtered : comboboxData
     },
   }),

@@ -36,7 +36,7 @@ export class Model {
     return this.page.locator(selector).click({ button: "right" })
   }
 
-  typeInHexInput(value: string) {
+  type(value: string) {
     return this.page.keyboard.type(value)
   }
 

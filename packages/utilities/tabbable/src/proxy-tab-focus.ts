@@ -49,7 +49,11 @@ function proxyTabFocusImpl(container: MaybeElement, options: ProxyTabFocusOption
 
     event.preventDefault()
 
-    onFocus?.(elementToFocus) ?? elementToFocus.focus()
+    if (typeof onFocus === "function") {
+      onFocus(elementToFocus)
+    } else {
+      elementToFocus.focus()
+    }
   }
 
   // listen for the tab key in the capture phase

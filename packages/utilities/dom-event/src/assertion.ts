@@ -1,3 +1,5 @@
+import { isMac } from "@zag-js/dom-query"
+
 export function isKeyboardClick(e: Pick<MouseEvent, "detail" | "clientX" | "clientY">) {
   return e.detail === 0 || (e.clientX === 0 && e.clientY === 0)
 }
@@ -24,7 +26,5 @@ export const isContextMenuEvent = (e: Pick<MouseEvent, "button" | "ctrlKey" | "m
   return e.button === 2 || (isMac() && e.ctrlKey && e.button === 0)
 }
 
-export const isModifiedEvent = (e: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | "altKey">) =>
+export const isModifierKey = (e: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | "altKey">) =>
   e.ctrlKey || e.altKey || e.metaKey
-
-const isMac = () => /Mac|iPod|iPhone|iPad/.test(window.navigator.platform)

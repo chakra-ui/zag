@@ -13,7 +13,7 @@ export const props = createProps<UserDefinedContext>()([
   "ids",
   "invalid",
   "collection",
-  "loop",
+  "loopFocus",
   "multiple",
   "name",
   "onFocusOutside",
@@ -26,7 +26,6 @@ export const props = createProps<UserDefinedContext>()([
   "open.controlled",
   "positioning",
   "readOnly",
-  "selectOnBlur",
   "value",
   "scrollToIndexFn",
 ])

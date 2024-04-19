@@ -1,9 +1,9 @@
-import { type EventKeyMap, getEventKey, getNativeEvent } from "@zag-js/dom-event"
+import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tags-input.anatomy"
 import { dom } from "./tags-input.dom"
-import type { MachineApi, Send, State, ItemProps } from "./tags-input.types"
+import type { ItemProps, MachineApi, Send, State } from "./tags-input.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isInteractive = state.context.isInteractive
@@ -147,7 +147,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             if (isCombobox && isExpanded) return
             send("ARROW_LEFT")
           },
-          ArrowRight() {
+          ArrowRight(event) {
             if (state.context.highlightedTagId) {
               event.preventDefault()
             }
@@ -165,8 +165,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send("DELETE")
           },
           Enter(event) {
-            event.preventDefault()
+            if (evt.isComposing) return
+            if (isCombobox && isExpanded) return
             send("ENTER")
+            event.preventDefault()
           },
         }
 

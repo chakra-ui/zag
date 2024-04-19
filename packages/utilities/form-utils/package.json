@@ -16,9 +16,6 @@
     "dist",
     "src"
   ],
-  "dependencies": {
-    "@zag-js/mutation-observer": "workspace:*"
-  },
   "devDependencies": {
     "clean-package": "2.2.0"
   },

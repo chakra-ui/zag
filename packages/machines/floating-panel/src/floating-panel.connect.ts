@@ -1,5 +1,5 @@
 import { getEventKey, getEventStep, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
-import { dataAttr, getEventTarget, isSelfEvent } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget, isSelfTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./floating-panel.anatomy"
 import { dom } from "./floating-panel.dom"
@@ -56,7 +56,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         overflow: state.context.isMinimized ? "hidden" : undefined,
       },
       onKeyDown(event) {
-        if (!isSelfEvent(getNativeEvent(event))) return
+        if (!isSelfTarget(getNativeEvent(event))) return
         const step = getEventStep(event) * state.context.gridSize
         const keyMap: EventKeyMap = {
           Escape() {

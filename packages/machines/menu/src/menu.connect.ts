@@ -1,14 +1,22 @@
 import { mergeProps } from "@zag-js/core"
 import {
+  clickIfLink,
   getEventKey,
   getEventPoint,
   getNativeEvent,
   isContextMenuEvent,
   isLeftClick,
-  isModifiedEvent,
+  isModifierKey,
   type EventKeyMap,
 } from "@zag-js/dom-event"
-import { dataAttr, getEventTarget, isEditableElement, isSelfEvent } from "@zag-js/dom-query"
+import {
+  dataAttr,
+  getEventTarget,
+  isDownloadingEvent,
+  isEditableElement,
+  isOpeningInNewTab,
+  isSelfTarget,
+} from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./menu.anatomy"
@@ -62,16 +70,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const isLink = event.currentTarget.matches("a[href]")
         if (isLink) event.preventDefault()
       },
-      onPointerLeave(event) {
-        if (itemState.isDisabled || event.pointerType !== "mouse") return
-        const target = event.currentTarget
-        send({ type: "ITEM_POINTERLEAVE", id, target, closeOnSelect })
-      },
       onPointerMove(event) {
-        if (itemState.isDisabled || event.pointerType !== "mouse") return
+        if (itemState.isDisabled) return
+        if (event.pointerType !== "mouse") return
         const target = event.currentTarget
         if (itemState.isHighlighted) return
         send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect })
+      },
+      onPointerLeave(event) {
+        const mouseMoved = state.previousEvent.type === "ITEM.POINTER_MOVE"
+        if (!mouseMoved) return
+        if (itemState.isDisabled) return
+        if (event.pointerType !== "mouse") return
+        const target = event.currentTarget
+        send({ type: "ITEM_POINTERLEAVE", id, target, closeOnSelect })
       },
       onPointerDown(event) {
         if (itemState.isDisabled) return
@@ -79,14 +91,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "ITEM_POINTERDOWN", target, id, closeOnSelect })
       },
       onPointerUp(event) {
-        const evt = getNativeEvent(event)
-        if (!isLeftClick(evt) || itemState.isDisabled) return
+        if (isDownloadingEvent(event)) return
+        if (isOpeningInNewTab(event)) return
+        if (itemState.isDisabled) return
+        if (!isLeftClick(event)) return
+
         const target = event.currentTarget
         send({ type: "ITEM_CLICK", src: "pointerup", target, id, closeOnSelect })
+
         // Fix issue where links don't get clicked in pointerup on touch devices
-        if (target.matches("a[href]") && event.pointerType === "touch") {
-          target.click()
-        }
+        if (event.pointerType === "touch") clickIfLink(target)
       },
       onTouchEnd(event) {
         // prevent clicking elements behind content
@@ -273,13 +287,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onKeyDown(event) {
         const evt = getNativeEvent(event)
-        const target = getEventTarget<HTMLElement>(evt)
+        const target = getEventTarget<Element>(evt)
 
         const isKeyDownInside = target?.closest("[role=menu]") === event.currentTarget
-        if (!isSelfEvent(evt) || !isKeyDownInside) return
+
+        if (!isKeyDownInside) return
+        if (!isSelfTarget(evt)) return
 
         const item = dom.getHighlightedItemEl(state.context)
-        const isLink = !!item?.matches("a[href]")
 
         const keyMap: EventKeyMap = {
           ArrowDown() {
@@ -295,8 +310,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send("ARROW_RIGHT")
           },
           Enter() {
-            if (isLink) item?.click()
             send("ENTER")
+            clickIfLink(item)
           },
           Space(event) {
             if (isTypingAhead) {
@@ -320,22 +335,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const exec = keyMap[key]
 
         if (exec) {
-          const allow = isLink && key === "Enter"
           exec(event)
-          if (!allow) {
-            event.preventDefault()
-          }
-          //
-        } else {
-          //
-          const isSingleKey = event.key.length === 1
-          const isValidTypeahead = isSingleKey && !isModifiedEvent(event) && !isEditableElement(item)
-
-          if (!isValidTypeahead) return
-
-          send({ type: "TYPEAHEAD", key: event.key })
+          event.stopPropagation()
           event.preventDefault()
+          return
         }
+
+        // typeahead
+        if (!state.context.typeahead) return
+
+        const printable = event.key.length === 1
+        const isValidTypeahead = printable && !isModifierKey(event) && !isEditableElement(item)
+
+        if (!isValidTypeahead) return
+
+        send({ type: "TYPEAHEAD", key: event.key })
+        event.preventDefault()
       },
     }),
 
@@ -366,8 +381,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           "aria-checked": !!itemState.isChecked,
           "data-state": itemState.isChecked ? "checked" : "unchecked",
           onPointerUp(event) {
-            const evt = getNativeEvent(event)
-            if (!isLeftClick(evt) || disabled) return
+            if (!isLeftClick(event) || disabled) return
+            if (isDownloadingEvent(event)) return
+            if (isOpeningInNewTab(event)) return
             const target = event.currentTarget
             send({ type: "ITEM_CLICK", src: "pointerup", target, option, closeOnSelect })
             onCheckedChange?.(!itemState.isChecked)

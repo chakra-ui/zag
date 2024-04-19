@@ -1,10 +1,10 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent } from "@zag-js/dom-event"
-import { contains, getByTypeahead, isEditableElement, raf, scrollIntoView } from "@zag-js/dom-query"
-import { observeAttributes } from "@zag-js/mutation-observer"
+import { getByTypeahead, isEditableElement, raf, scrollIntoView, observeAttributes } from "@zag-js/dom-query"
 import { getPlacement, getPlacementSide } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
+import { getFirstTabbable } from "@zag-js/tabbable"
 import { cast, compact, isEqual } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
@@ -19,9 +19,10 @@ export function machine(userContext: UserDefinedContext) {
       initial: ctx.open ? "open" : "idle",
       context: {
         highlightedValue: null,
-        loop: false,
+        loopFocus: false,
         anchorPoint: null,
         closeOnSelect: true,
+        typeahead: true,
         ...ctx,
         positioning: {
           placement: "bottom-start",
@@ -34,13 +35,13 @@ export function machine(userContext: UserDefinedContext) {
         children: cast(ref({})),
         suspendPointer: false,
         restoreFocus: true,
-        typeahead: getByTypeahead.defaultOptions,
+        typeaheadState: getByTypeahead.defaultOptions,
       },
 
       computed: {
         isSubmenu: (ctx) => ctx.parent !== null,
         isRtl: (ctx) => ctx.dir === "rtl",
-        isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
+        isTypingAhead: (ctx) => ctx.typeaheadState.keysSoFar !== "",
       },
 
       watch: {
@@ -552,7 +553,13 @@ export function machine(userContext: UserDefinedContext) {
             scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
           }
           raf(() => exec())
-          return observeAttributes(dom.getContentEl(ctx), ["aria-activedescendant"], exec)
+
+          const contentEl = () => dom.getContentEl(ctx)
+          return observeAttributes(contentEl, {
+            defer: true,
+            attributes: ["aria-activedescendant"],
+            callback: exec,
+          })
         },
       },
 
@@ -634,10 +641,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusMenu(ctx) {
           raf(() => {
-            const activeEl = dom.getActiveElement(ctx)
             const contentEl = dom.getContentEl(ctx)
-            if (contains(contentEl, activeEl)) return
-            contentEl?.focus({ preventScroll: true })
+            const firstFocusableEl = getFirstTabbable(contentEl, false) || contentEl
+            firstFocusableEl?.focus({ preventScroll: true })
           })
         },
         highlightFirstItem(ctx) {

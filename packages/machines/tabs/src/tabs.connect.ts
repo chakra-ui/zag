@@ -1,5 +1,5 @@
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
-import { dataAttr, isSafari, isSelfEvent } from "@zag-js/dom-query"
+import { dataAttr, isSafari, isSelfTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
 import { dom } from "./tabs.dom"
@@ -51,7 +51,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": translations.listLabel,
       onKeyDown(event) {
         const evt = event.nativeEvent || event
-        if (!isSelfEvent(evt)) return
+        if (!isSelfTarget(evt)) return
 
         const keyMap: EventKeyMap = {
           ArrowDown() {
