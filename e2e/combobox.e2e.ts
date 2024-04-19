@@ -59,7 +59,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / no-loop] on arrow down, open and highlight first enabled option", async () => {
-    await I.controls.bool("loop", false)
+    await I.controls.bool("loopFocus", false)
 
     await I.focusInput()
     await I.pressKey("ArrowDown")
@@ -80,7 +80,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / no-loop] on arrow up, open and highlight last enabled option", async () => {
-    await I.controls.bool("loop", false)
+    await I.controls.bool("loopFocus", false)
 
     await I.focusInput()
     await I.pressKey("ArrowUp")
@@ -125,7 +125,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / arrowdown / no-loop]", async () => {
-    await I.controls.bool("loop", false)
+    await I.controls.bool("loopFocus", false)
 
     await I.type("mal")
     await I.pressKey("ArrowDown", 4)
@@ -142,7 +142,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / arrowup / no-loop]", async () => {
-    await I.controls.bool("loop", false)
+    await I.controls.bool("loopFocus", false)
     await I.type("mal")
     await I.pressKey("ArrowUp")
     await I.seeItemIsHighlighted("Malawi")
