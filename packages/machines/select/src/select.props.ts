@@ -13,7 +13,7 @@ export const props = createProps<UserDefinedContext>()([
   "ids",
   "invalid",
   "collection",
-  "loop",
+  "loopFocus",
   "multiple",
   "name",
   "onFocusOutside",
