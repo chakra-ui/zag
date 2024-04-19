@@ -1,8 +1,7 @@
 import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getByTypeahead, raf, scrollIntoView } from "@zag-js/dom-query"
+import { getByTypeahead, observeAttributes, raf, scrollIntoView } from "@zag-js/dom-query"
 import { trackFormControl } from "@zag-js/form-utils"
-import { observeAttributes } from "@zag-js/mutation-observer"
 import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, compact, isEqual } from "@zag-js/utils"
 import { collection } from "./select.collection"
@@ -19,7 +18,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
       context: {
         value: [],
         highlightedValue: null,
-        loop: false,
+        loopFocus: false,
         closeOnSelect: true,
         disabled: false,
         ...ctx,
@@ -351,7 +350,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
     },
     {
       guards: {
-        loop: (ctx) => !!ctx.loop,
+        loop: (ctx) => !!ctx.loopFocus,
         multiple: (ctx) => !!ctx.multiple,
         hasSelectedItems: (ctx) => !!ctx.hasSelectedItems,
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
@@ -426,8 +425,17 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
             scrollIntoView(optionEl, { rootEl: contentEl, block: "nearest" })
           }
+
           raf(() => exec(true))
-          return observeAttributes(dom.getContentEl(ctx), ["aria-activedescendant"], () => exec(false))
+
+          const contentEl = () => dom.getContentEl(ctx)
+          return observeAttributes(contentEl, {
+            defer: true,
+            attributes: ["aria-activedescendant"],
+            callback() {
+              exec(false)
+            },
+          })
         },
       },
       actions: {

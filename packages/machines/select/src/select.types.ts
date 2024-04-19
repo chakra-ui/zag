@@ -110,7 +110,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * Whether to loop the keyboard navigation through the options
    */
-  loop?: boolean
+  loopFocus?: boolean
   /**
    * Whether to allow multiple selection
    */

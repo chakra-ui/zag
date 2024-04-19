@@ -255,9 +255,6 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../packages/utilities/mutation-observer
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -517,9 +514,6 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../packages/utilities/mutation-observer
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -764,9 +758,6 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../packages/utilities/mutation-observer
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -1014,9 +1005,6 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../packages/utilities/mutation-observer
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -1252,9 +1240,6 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../packages/utilities/mutation-observer
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -1508,9 +1493,6 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../packages/utilities/mutation-observer
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -1886,9 +1868,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../utilities/mutation-observer
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2066,9 +2045,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../utilities/mutation-observer
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
@@ -2307,9 +2283,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../utilities/mutation-observer
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
@@ -2350,9 +2323,6 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../utilities/form-utils
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../utilities/mutation-observer
       '@zag-js/number-utils':
         specifier: workspace:*
         version: link:../../utilities/number
@@ -2577,9 +2547,6 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../utilities/form-utils
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../utilities/mutation-observer
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
@@ -2912,9 +2879,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../utilities/mutation-observer
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3093,10 +3057,6 @@ importers:
         version: 2.2.0
 
   packages/utilities/form-utils:
-    dependencies:
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../mutation-observer
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -3139,12 +3099,6 @@ importers:
       '@zag-js/visually-hidden':
         specifier: workspace:*
         version: link:../visually-hidden
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/mutation-observer:
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -3335,9 +3289,6 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
-      '@zag-js/mutation-observer':
-        specifier: workspace:*
-        version: link:../../packages/utilities/mutation-observer
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input

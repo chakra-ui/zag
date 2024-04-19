@@ -1,5 +1,3 @@
-import { observeAttributes } from "@zag-js/mutation-observer"
-
 export function getClosestForm(el: HTMLElement) {
   if (isFormElement(el)) return el.form
   else return el.closest("form")
@@ -22,7 +20,13 @@ function trackFieldsetDisabled(el: HTMLElement | null | undefined, callback: (di
   const fieldset = el?.closest("fieldset")
   if (!fieldset) return
   callback(fieldset.disabled)
-  return observeAttributes(fieldset, ["disabled"], () => callback(fieldset.disabled))
+  const win = fieldset.ownerDocument.defaultView || window
+  const obs = new win.MutationObserver(() => callback(fieldset.disabled))
+  obs.observe(fieldset, {
+    attributes: true,
+    attributeFilter: ["disabled"],
+  })
+  return () => obs.disconnect()
 }
 
 export function isNativeDisabled(el: HTMLElement) {

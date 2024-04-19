@@ -11,7 +11,7 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "combobox",
-  initial: ctx.autoFocus ? "focused" : "idle",
+  initial: ctx.open ? "suggesting" : "idle",
   context: {
     "isOpenControlled": false,
     "isOpenControlled": false,
@@ -220,7 +220,7 @@ const fetchMachine = createMachine({
     },
     interacting: {
       tags: ["open", "focused"],
-      activities: ["scrollIntoView", "trackDismissableLayer", "computePlacement", "hideOtherElements"],
+      activities: ["scrollIntoView", "trackDismissableLayer", "computePlacement", "hideOtherElements", "trackContentHeight"],
       on: {
         "CONTROLLED.CLOSE": [{
           cond: "restoreFocus",
@@ -337,7 +337,7 @@ const fetchMachine = createMachine({
     },
     suggesting: {
       tags: ["open", "focused"],
-      activities: ["trackDismissableLayer", "scrollIntoView", "computePlacement", "trackChildNodes", "hideOtherElements"],
+      activities: ["trackDismissableLayer", "scrollIntoView", "computePlacement", "trackChildNodes", "hideOtherElements", "trackContentHeight"],
       entry: ["focusInput"],
       on: {
         "CONTROLLED.CLOSE": [{

@@ -20,7 +20,7 @@ export default function Page() {
       collection: liveCollection,
       selectionBehavior: "clear",
       inputBehavior: "autohighlight",
-      triggerOnly: true,
+      popup: "dialog",
       onOpenChange() {
         setOptions(selectData)
       },
@@ -52,7 +52,7 @@ export default function Page() {
           <div {...api.positionerProps}>
             <div {...api.contentProps}>
               <input ref={inputRef} style={{ position: "sticky", top: "0", width: "100%" }} {...api.inputProps} />
-              <div {...api.listboxProps}>
+              <div {...api.listProps}>
                 {options.map((item) => (
                   <div key={item.value} {...api.getItemProps({ item })}>
                     {item.label}

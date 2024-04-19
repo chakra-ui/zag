@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { observeAttributes, observeChildren } from "@zag-js/mutation-observer"
+import { observeAttributes, observeChildren } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./avatar.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./avatar.types"
@@ -61,19 +61,24 @@ export function machine(userContext: UserDefinedContext) {
     {
       activities: {
         trackSrcChange(ctx, _evt, { send }) {
-          const img = dom.getImageEl(ctx)
-          return observeAttributes(img, ["src", "srcset"], () => {
-            send({ type: "SRC.CHANGE" })
+          const imageEl = dom.getImageEl(ctx)
+          return observeAttributes(imageEl, {
+            attributes: ["src", "srcset"],
+            callback() {
+              send({ type: "SRC.CHANGE" })
+            },
           })
         },
         trackImageRemoval(ctx, _evt, { send }) {
           const rootEl = dom.getRootEl(ctx)
-          return observeChildren(rootEl, (records) => {
-            const removedNodes = Array.from(records[0].removedNodes) as HTMLElement[]
-            const removed = removedNodes.find((node) => node.matches("[data-scope=avatar][data-part=image]"))
-            if (removed) {
-              send({ type: "IMG.UNMOUNT" })
-            }
+          return observeChildren(rootEl, {
+            callback(records) {
+              const removedNodes = Array.from(records[0].removedNodes) as HTMLElement[]
+              const removed = removedNodes.find((node) => node.matches("[data-scope=avatar][data-part=image]"))
+              if (removed) {
+                send({ type: "IMG.UNMOUNT" })
+              }
+            },
           })
         },
       },

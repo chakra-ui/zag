@@ -147,7 +147,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * Whether to loop the keyboard navigation through the items
    */
-  loop?: boolean
+  loopFocus?: boolean
   /**
    * The positioning options to dynamically position the menu
    */
@@ -198,11 +198,15 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    */
   scrollToIndexFn?: (details: ScrollToIndexDetails) => void
   /**
-   * Whether the combobox only renders the trigger by default.
-   * - Use this when the input is rendered inside the content
-   * - Also render the listbox element via `api.listboxProps`
+   * The underling `aria-haspopup` attribute to use for the combobox
+   * - `listbox`: The combobox has a listbox popup (default)
+   * - `dialog`: The combobox has a dialog popup. Useful when in select only mode
    */
-  triggerOnly?: boolean
+  popup: "listbox" | "dialog"
+  /**
+   * Whether to register this combobox as a dismissable layer
+   */
+  dismissable: boolean
 }
 
 export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
@@ -274,6 +278,7 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface ItemProps {
+  persistFocus?: boolean
   item: CollectionItem
 }
 
@@ -390,7 +395,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   contentProps: T["element"]
   triggerProps: T["button"]
   clearTriggerProps: T["button"]
-  listboxProps: T["element"]
+  listProps: T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemTextProps(props: ItemProps): T["element"]
   getItemIndicatorProps(props: ItemProps): T["element"]

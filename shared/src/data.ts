@@ -230,3 +230,5 @@ export const tourData = [
     description: "Thanks for trying out the tour. Enjoy the app!",
   },
 ]
+
+export * as commandData from "./command"

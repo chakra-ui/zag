@@ -1,8 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { contains, raf, scrollIntoView } from "@zag-js/dom-query"
-import { observeAttributes, observeChildren } from "@zag-js/mutation-observer"
+import { observeAttributes, observeChildren, raf, scrollIntoView } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, compact, isBoolean, isEqual, match } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
@@ -16,19 +15,21 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
   return createMachine<MachineContext, MachineState>(
     {
       id: "combobox",
-      initial: ctx.autoFocus ? "focused" : "idle",
+      initial: ctx.open ? "suggesting" : "idle",
       context: {
-        loop: true,
+        loopFocus: true,
         openOnClick: false,
         value: [],
         highlightedValue: null,
         inputValue: "",
         allowCustomValue: false,
-        closeOnSelect: true,
+        closeOnSelect: !ctx.multiple,
         inputBehavior: "none",
         selectionBehavior: "replace",
         openOnKeyPress: true,
         openOnChange: true,
+        dismissable: true,
+        popup: "listbox",
         ...ctx,
         highlightedItem: null,
         selectedItems: [],
@@ -255,7 +256,13 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
         interacting: {
           tags: ["open", "focused"],
-          activities: ["scrollIntoView", "trackDismissableLayer", "computePlacement", "hideOtherElements"],
+          activities: [
+            "scrollIntoView",
+            "trackDismissableLayer",
+            "computePlacement",
+            "hideOtherElements",
+            "trackContentHeight",
+          ],
           on: {
             "CONTROLLED.CLOSE": [
               {
@@ -416,6 +423,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             "computePlacement",
             "trackChildNodes",
             "hideOtherElements",
+            "trackContentHeight",
           ],
           entry: ["focusInput"],
           on: {
@@ -567,7 +575,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         isCustomValue: (ctx) => ctx.inputValue !== ctx.valueAsString,
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
-        closeOnSelect: (ctx) => (ctx.multiple ? false : !!ctx.closeOnSelect),
+        closeOnSelect: (ctx) => !!ctx.closeOnSelect,
         isOpenControlled: (ctx) => !!ctx["open.controlled"],
         openOnChange: (ctx, evt) => {
           if (isBoolean(ctx.openOnChange)) return ctx.openOnChange
@@ -579,6 +587,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
       activities: {
         trackDismissableLayer(ctx, _evt, { send }) {
+          if (!ctx.dismissable) return
           const contentEl = () => dom.getContentEl(ctx)
           return trackDismissableElement(contentEl, {
             defer: true,
@@ -615,8 +624,12 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         trackChildNodes(ctx, _evt, { send }) {
           if (!ctx.autoHighlight) return
           const exec = () => send("CHILDREN_CHANGE")
-          exec()
-          return observeChildren(dom.getContentEl(ctx), exec)
+          raf(() => exec())
+          const contentEl = () => dom.getContentEl(ctx)
+          return observeChildren(contentEl, {
+            callback: exec,
+            defer: true,
+          })
         },
         scrollIntoView(ctx, _evt, { getState }) {
           const inputEl = dom.getInputEl(ctx)
@@ -640,7 +653,35 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           }
 
           raf(() => exec(true))
-          return observeAttributes(inputEl, ["aria-activedescendant"], () => exec(false))
+          return observeAttributes(inputEl, {
+            attributes: ["aria-activedescendant"],
+            callback: () => exec(false),
+          })
+        },
+        trackContentHeight(ctx) {
+          let cleanup: VoidFunction
+
+          raf(() => {
+            const contentEl = dom.getContentEl(ctx)
+            const listboxEl = dom.getListEl(ctx)
+
+            if (!contentEl || !listboxEl) return
+            const win = dom.getWin(ctx)
+
+            let rafId: number
+            const observer = new win.ResizeObserver(() => {
+              rafId = requestAnimationFrame(() => {
+                contentEl.style.setProperty(`--height`, `${listboxEl.offsetHeight}px`)
+              })
+            })
+            observer.observe(contentEl)
+            cleanup = () => {
+              cancelAnimationFrame(rafId)
+              observer.unobserve(contentEl)
+            }
+          })
+
+          return () => cleanup?.()
         },
       },
 
@@ -683,10 +724,8 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
         focusInputOrTrigger(ctx) {
           queueMicrotask(() => {
-            // if control does not have input, focus trigger
-            if (!contains(dom.getControlEl(ctx), dom.getInputEl(ctx))) {
+            if (ctx.popup === "dialog") {
               dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
-              return
             } else {
               dom.getInputEl(ctx)?.focus({ preventScroll: true })
             }
@@ -776,11 +815,23 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           })
         },
         highlightNextItem(ctx) {
-          const value = ctx.collection.next(ctx.highlightedValue) ?? (ctx.loop ? ctx.collection.first() : null)
+          let value: string | null = null
+          if (ctx.highlightedValue) {
+            value = ctx.collection.next(ctx.highlightedValue)
+            if (!value && ctx.loopFocus) value = ctx.collection.first()
+          } else {
+            value = ctx.collection.first()
+          }
           set.highlightedItem(ctx, value)
         },
         highlightPrevItem(ctx) {
-          const value = ctx.collection.prev(ctx.highlightedValue) ?? (ctx.loop ? ctx.collection.last() : null)
+          let value: string | null = null
+          if (ctx.highlightedValue) {
+            value = ctx.collection.prev(ctx.highlightedValue)
+            if (!value && ctx.loopFocus) value = ctx.collection.last()
+          } else {
+            value = ctx.collection.last()
+          }
           set.highlightedItem(ctx, value)
         },
         highlightFirstSelectedItem(ctx) {

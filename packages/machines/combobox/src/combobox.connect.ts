@@ -28,7 +28,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
   const isOpen = state.hasTag("open")
   const isFocused = state.hasTag("focused")
-  const isTriggerOnly = state.context.triggerOnly
+  const isDialogPopup = state.context.popup === "dialog"
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
@@ -114,7 +114,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       "data-invalid": dataAttr(isInvalid),
       "data-focus": dataAttr(isFocused),
       onClick(event) {
-        if (!isTriggerOnly) return
+        if (!isDialogPopup) return
         event.preventDefault()
         dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
       },
@@ -157,7 +157,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       role: "combobox",
       defaultValue: state.context.inputValue,
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
-      "aria-controls": isTriggerOnly ? dom.getListboxId(state.context) : dom.getContentId(state.context),
+      "aria-controls": isDialogPopup ? dom.getListId(state.context) : dom.getContentId(state.context),
       "aria-expanded": isOpen,
       "data-state": isOpen ? "open" : "closed",
       "aria-activedescendant": state.context.highlightedValue
@@ -239,9 +239,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       ...parts.trigger.attrs,
       dir: state.context.dir,
       id: dom.getTriggerId(state.context),
-      "aria-haspopup": isTriggerOnly ? "dialog" : "listbox",
+      "aria-haspopup": isDialogPopup ? "dialog" : "listbox",
       type: "button",
-      tabIndex: isTriggerOnly ? 0 : -1,
+      tabIndex: isDialogPopup ? 0 : -1,
       "aria-label": translations.triggerLabel,
       "aria-expanded": isOpen,
       "data-state": isOpen ? "open" : "closed",
@@ -264,7 +264,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         })
       },
       onKeyDown(event) {
-        if (!isTriggerOnly) return
+        if (!isDialogPopup) return
         const keyMap: EventKeyMap = {
           ArrowDown() {
             send("INPUT.FOCUS")
@@ -296,12 +296,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       ...parts.content.attrs,
       dir: state.context.dir,
       id: dom.getContentId(state.context),
-      role: isTriggerOnly ? "dialog" : "listbox",
+      role: isDialogPopup ? "dialog" : "listbox",
       tabIndex: -1,
       hidden: !isOpen,
       "data-state": isOpen ? "open" : "closed",
       "aria-labelledby": dom.getLabelId(state.context),
-      "aria-multiselectable": state.context.multiple && !isTriggerOnly ? true : undefined,
+      "aria-multiselectable": state.context.multiple && !isDialogPopup ? true : undefined,
       onPointerDown(event) {
         // prevent options or elements within listbox from taking focus
         event.preventDefault()
@@ -309,10 +309,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     }),
 
     // only used when triggerOnly: true
-    listboxProps: normalize.element({
-      id: dom.getListboxId(state.context),
-      role: "listbox",
-      "aria-multiselectable": state.context.multiple ? true : undefined,
+    listProps: normalize.element({
+      id: dom.getListId(state.context),
+      role: isDialogPopup ? "listbox" : undefined,
+      "aria-multiselectable": isDialogPopup && state.context.multiple ? true : undefined,
     }),
 
     clearTriggerProps: normalize.button({
@@ -354,6 +354,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           send({ type: "ITEM.POINTER_MOVE", value })
         },
         onPointerLeave() {
+          if (props.persistFocus) return
           if (itemState.isDisabled) return
           const mouseMoved = state.previousEvent.type === "ITEM.POINTER_MOVE"
           if (!mouseMoved) return

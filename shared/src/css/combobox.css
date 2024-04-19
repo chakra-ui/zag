@@ -8,24 +8,32 @@
   list-style-type: none;
   margin: 0;
   border: 1px solid lightgray;
+  overscroll-behavior: contain;
   max-height: 240px;
   overflow: auto;
   padding: 2px;
+  height: var(--height);
+  transition: 100ms ease;
 }
 
 [data-scope="combobox"][data-part="item"] {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 4px 8px;
   user-select: none;
-}
+  user-select: none;
+  content-visibility: auto;
 
-[data-scope="combobox"][data-part="item"][data-highlighted] {
-  background-color: blue;
-  color: white;
-}
+  &[data-highlighted] {
+    background-color: blue;
+    color: white;
+  }
 
-[data-scope="combobox"][data-part="item"][data-disabled] {
-  opacity: 0.5;
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 [data-scope="combobox"][data-part="label"] {
@@ -50,4 +58,14 @@
     width: 1em;
     height: 1em;
   }
+}
+
+[data-scope="combobox"][data-part="item-group-label"] {
+  user-select: none;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px 8px;
+  font-size: 12px;
+  font-weight: 600;
 }

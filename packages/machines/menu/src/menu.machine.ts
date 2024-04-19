@@ -1,8 +1,7 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent } from "@zag-js/dom-event"
-import { getByTypeahead, isEditableElement, raf, scrollIntoView } from "@zag-js/dom-query"
-import { observeAttributes } from "@zag-js/mutation-observer"
+import { getByTypeahead, isEditableElement, raf, scrollIntoView, observeAttributes } from "@zag-js/dom-query"
 import { getPlacement, getPlacementSide } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
 import { getFirstTabbable } from "@zag-js/tabbable"
@@ -554,7 +553,13 @@ export function machine(userContext: UserDefinedContext) {
             scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
           }
           raf(() => exec())
-          return observeAttributes(dom.getContentEl(ctx), ["aria-activedescendant"], exec)
+
+          const contentEl = () => dom.getContentEl(ctx)
+          return observeAttributes(contentEl, {
+            defer: true,
+            attributes: ["aria-activedescendant"],
+            callback: exec,
+          })
         },
       },
 
