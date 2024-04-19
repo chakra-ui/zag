@@ -120,7 +120,7 @@ test.describe("select/ open / keyboard", () => {
   })
 
   test("should loop through the options when loop is enabled", async ({ page }) => {
-    await controls(page).bool("loop")
+    await controls(page).bool("loopFocus")
     await page.focus(trigger)
     await page.keyboard.press("Enter")
 
