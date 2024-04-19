@@ -80,8 +80,8 @@
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-react": "0.368.0",
-    "next": "14.2.1",
+    "lucide-react": "0.371.0",
+    "next": "14.2.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-spinners": "0.13.8"
@@ -91,7 +91,7 @@
     "@types/react": "18.2.78",
     "@types/react-dom": "18.2.25",
     "eslint": "8.57.0",
-    "eslint-config-next": "14.2.1",
+    "eslint-config-next": "14.2.2",
     "typescript": "5.4.5"
   }
 }

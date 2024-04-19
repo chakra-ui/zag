@@ -38,7 +38,7 @@ const fetchMachine = createMachine({
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["allowAnimation", "invokeOnOpen"]
+          actions: ["allowAnimation", "invokeOnOpen", "computeSize"]
         }]
       }
     },

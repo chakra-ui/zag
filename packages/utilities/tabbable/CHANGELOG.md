@@ -1,5 +1,12 @@
 # @zag-js/tabbable
 
+## 0.47.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.47.0
+
 ## 0.46.0
 
 ### Patch Changes
@@ -464,16 +471,20 @@
   element in DOM sequence.
 
   ```js
-  import { proxyTabFocus } from "@zag-js/tabbable"
+  import { proxyTabFocus } from "@zag-js/tabbable";
 
   export function App() {
-    const referenceRef = useRef()
-    const containerRef = useRef()
+    const referenceRef = useRef();
+    const containerRef = useRef();
 
     useEffect(() => {
-      const focusElement = (el) => el.focus({ preventScroll: true })
-      return proxyTabFocus(containerRef.current, referenceRef.current, focusElement)
-    }, [])
+      const focusElement = (el) => el.focus({ preventScroll: true });
+      return proxyTabFocus(
+        containerRef.current,
+        referenceRef.current,
+        focusElement,
+      );
+    }, []);
 
     return (
       <div>
@@ -486,7 +497,7 @@
         </Portal>
         <button>Outside</button>
       </div>
-    )
+    );
   }
   ```
 
