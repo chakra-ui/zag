@@ -107,7 +107,7 @@ const components = {
       defaultProps={{
         disabled: false,
         readOnly: false,
-        loop: false,
+        loopFocus: false,
         inputBehavior: {
           default: "autohighlight",
           options: ["autohighlight", "autocomplete", "none"],
@@ -282,7 +282,7 @@ const components = {
     <Playground
       component={Select}
       defaultProps={{
-        loop: false,
+        loopFocus: false,
         disabled: false,
         readOnly: false,
       }}
@@ -323,7 +323,7 @@ const components = {
     <Playground
       component={Tabs}
       defaultProps={{
-        loop: false,
+        loopFocus: false,
         activationMode: {
           default: "automatic",
           options: ["manual", "automatic"],
