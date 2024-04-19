@@ -17,5 +17,7 @@ export type {
   OpenChangeDetails,
   Placement,
   PositioningOptions,
+  ScrollToIndexDetails,
+  SelectionValueDetails,
   ValueChangeDetails,
 } from "./combobox.types"

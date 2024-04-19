@@ -29,3 +29,9 @@ const [state, send] = useMachine(
   }),
 )
 ```
+
+- Add new `dismissable` property to determine whether to add the combobox content to the dismissable stack.
+
+- Add `popup` attribute to allow rendering the combobox has a select with input within the content.
+
+- Add `persistFocus` to the item props to determine whether to clear the highlighted item on pointer leave.
