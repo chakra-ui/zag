@@ -17,51 +17,51 @@ const api = computed(() => tree.connect(state.value, send, normalizeProps))
     <div v-bind="api.rootProps">
       <h3 v-bind="api.labelProps">My Documents</h3>
       <div>
-        <button @click="api.collapseAll()">Collapse All</button>
-        <button @click="api.expandAll()">Expand All</button>
+        <button @click="api.collapse()">Collapse All</button>
+        <button @click="api.expand()">Expand All</button>
         <span> - </span>
-        <button @click="api.selectAll()">Select All</button>
-        <button @click="api.deselectAll()">Deselect All</button>
+        <button @click="api.select()">Select All</button>
+        <button @click="api.deselect()">Deselect All</button>
       </div>
 
       <ul v-bind="api.treeProps">
-        <li v-bind="api.getBranchProps({ id: 'node_modules', depth: 1 })">
-          <div v-bind="api.getBranchControlProps({ id: 'node_modules', depth: 1 })">
-            <span v-bind="api.getBranchTextProps({ id: 'node_modules', depth: 1 })"> 📂 node_modules</span>
+        <li v-bind="api.getBranchProps({ value: 'node_modules', depth: 1 })">
+          <div v-bind="api.getBranchControlProps({ value: 'node_modules', depth: 1 })">
+            <span v-bind="api.getBranchTextProps({ value: 'node_modules', depth: 1 })"> 📂 node_modules</span>
           </div>
 
-          <ul v-bind="api.getBranchContentProps({ id: 'node_modules', depth: 1 })">
-            <li v-bind="api.getItemProps({ id: 'node_modules/zag-js', depth: 2 })">📄 zag-js</li>
-            <li v-bind="api.getItemProps({ id: 'node_modules/pandacss', depth: 2 })">📄 panda</li>
+          <ul v-bind="api.getBranchContentProps({ value: 'node_modules', depth: 1 })">
+            <li v-bind="api.getItemProps({ value: 'node_modules/zag-js', depth: 2 })">📄 zag-js</li>
+            <li v-bind="api.getItemProps({ value: 'node_modules/pandacss', depth: 2 })">📄 panda</li>
 
-            <li v-bind="api.getBranchProps({ id: 'node_modules/@types', depth: 2 })">
-              <div v-bind="api.getBranchControlProps({ id: 'node_modules/@types', depth: 2 })">
-                <span v-bind="api.getBranchTextProps({ id: 'node_modules/@types', depth: 2 })"> 📂 @types</span>
+            <li v-bind="api.getBranchProps({ value: 'node_modules/@types', depth: 2 })">
+              <div v-bind="api.getBranchControlProps({ value: 'node_modules/@types', depth: 2 })">
+                <span v-bind="api.getBranchTextProps({ value: 'node_modules/@types', depth: 2 })"> 📂 @types</span>
               </div>
 
-              <ul v-bind="api.getBranchContentProps({ id: 'node_modules/@types', depth: 2 })">
-                <li v-bind="api.getItemProps({ id: 'node_modules/@types/react', depth: 3 })">📄 react</li>
-                <li v-bind="api.getItemProps({ id: 'node_modules/@types/react-dom', depth: 3 })">📄 react-dom</li>
+              <ul v-bind="api.getBranchContentProps({ value: 'node_modules/@types', depth: 2 })">
+                <li v-bind="api.getItemProps({ value: 'node_modules/@types/react', depth: 3 })">📄 react</li>
+                <li v-bind="api.getItemProps({ value: 'node_modules/@types/react-dom', depth: 3 })">📄 react-dom</li>
               </ul>
             </li>
           </ul>
         </li>
 
-        <li v-bind="api.getBranchProps({ id: 'src', depth: 1 })">
-          <div v-bind="api.getBranchControlProps({ id: 'src', depth: 1 })">
-            <span v-bind="api.getBranchTextProps({ id: 'src', depth: 1 })"> 📂 src</span>
+        <li v-bind="api.getBranchProps({ value: 'src', depth: 1 })">
+          <div v-bind="api.getBranchControlProps({ value: 'src', depth: 1 })">
+            <span v-bind="api.getBranchTextProps({ value: 'src', depth: 1 })"> 📂 src</span>
           </div>
 
-          <ul v-bind="api.getBranchContentProps({ id: 'src', depth: 1 })">
-            <li v-bind="api.getItemProps({ id: 'src/app.tsx', depth: 2 })">📄 app.tsx</li>
-            <li v-bind="api.getItemProps({ id: 'src/index.ts', depth: 2 })">📄 index.ts</li>
+          <ul v-bind="api.getBranchContentProps({ value: 'src', depth: 1 })">
+            <li v-bind="api.getItemProps({ value: 'src/app.tsx', depth: 2 })">📄 app.tsx</li>
+            <li v-bind="api.getItemProps({ value: 'src/index.ts', depth: 2 })">📄 index.ts</li>
           </ul>
         </li>
 
-        <li v-bind="api.getItemProps({ id: 'panda.config', depth: 1 })">📄 panda.config.ts</li>
-        <li v-bind="api.getItemProps({ id: 'package.json', depth: 1 })">📄 package.json</li>
-        <li v-bind="api.getItemProps({ id: 'renovate.json', depth: 1 })">📄 renovate.json</li>
-        <li v-bind="api.getItemProps({ id: 'readme.md', depth: 1 })">📄 README.md</li>
+        <li v-bind="api.getItemProps({ value: 'panda.config', depth: 1 })">📄 panda.config.ts</li>
+        <li v-bind="api.getItemProps({ value: 'package.json', depth: 1 })">📄 package.json</li>
+        <li v-bind="api.getItemProps({ value: 'renovate.json', depth: 1 })">📄 renovate.json</li>
+        <li v-bind="api.getItemProps({ value: 'readme.md', depth: 1 })">📄 README.md</li>
       </ul>
     </div>
   </main>

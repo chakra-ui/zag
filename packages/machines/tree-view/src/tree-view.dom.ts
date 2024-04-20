@@ -42,8 +42,8 @@ export const dom = createScope({
   },
 
   getFocusedEl(ctx: Ctx) {
-    if (!ctx.focusedId) return null
-    return dom.getById(ctx, ctx.focusedId)
+    if (!ctx.focusedValue) return null
+    return dom.getById(ctx, ctx.focusedValue)
   },
 
   focusNode(node: Node | Element | null | undefined, options?: FocusOptions) {
@@ -93,9 +93,9 @@ export const dom = createScope({
     }
 
     return getByTypeahead(elements, {
-      state: ctx.typeahead,
+      state: ctx.typeaheadState,
       key,
-      activeId: ctx.focusedId,
+      activeId: ctx.focusedValue,
       itemToId: (v) => dom.getNodeId(v) ?? v.id,
     })
   },

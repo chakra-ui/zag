@@ -3591,65 +3591,49 @@
   },
   "tree-view": {
     "api": {
-      "expandedIds": {
+      "expandedValue": {
         "type": "string[]",
         "description": "The id of the expanded nodes"
       },
-      "selectedIds": {
+      "selectedValue": {
         "type": "string[]",
         "description": "The id of the selected nodes"
       },
       "expand": {
-        "type": "(ids: string[]) => void",
-        "description": "Function to expand nodes"
-      },
-      "expandAll": {
-        "type": "() => void",
-        "description": "Function to expand all nodes"
+        "type": "(value?: string[]) => void",
+        "description": "Function to expand nodes.\nIf no value is provided, all nodes will be expanded"
       },
       "collapse": {
-        "type": "(ids: string[]) => void",
-        "description": "Function to collapse nodes"
-      },
-      "collapseAll": {
-        "type": "() => void",
-        "description": "Function to collapse all nodes"
+        "type": "(value?: string[]) => void",
+        "description": "Function to collapse nodes\nIf no value is provided, all nodes will be collapsed"
       },
       "select": {
-        "type": "(ids: string[]) => void",
-        "description": "Function to select nodes"
-      },
-      "selectAll": {
-        "type": "() => void",
-        "description": "Function to select all nodes"
+        "type": "(value?: string[]) => void",
+        "description": "Function to select nodes\nIf no value is provided, all nodes will be selected"
       },
       "deselect": {
-        "type": "(ids: string[]) => void",
-        "description": "Function to deselect nodes"
-      },
-      "deselectAll": {
-        "type": "() => void",
-        "description": "Function to deselect all nodes"
+        "type": "(value?: string[]) => void",
+        "description": "Function to deselect nodes\nIf no value is provided, all nodes will be deselected"
       },
       "focusBranch": {
-        "type": "(id: string) => void",
+        "type": "(value: string) => void",
         "description": "Function to focus a branch node"
       },
       "focusItem": {
-        "type": "(id: string) => void",
+        "type": "(value: string) => void",
         "description": "Function to focus an item node"
       }
     },
     "context": {
-      "expandedIds": {
+      "expandedValue": {
         "type": "string[]",
         "description": "The id of the expanded nodes"
       },
-      "selectedIds": {
+      "selectedValue": {
         "type": "string[]",
         "description": "The id of the selected nodes"
       },
-      "focusedId": {
+      "focusedValue": {
         "type": "string",
         "description": "The id of the focused node"
       },
@@ -3674,6 +3658,10 @@
         "type": "boolean",
         "description": "Whether clicking on a branch should open it or not",
         "defaultValue": "true"
+      },
+      "typeahead": {
+        "type": "boolean",
+        "description": "Whether the tree supports typeahead search"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
