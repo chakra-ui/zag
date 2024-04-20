@@ -1,6 +1,5 @@
 <script lang="ts">
   import { stringifyState } from "@zag-js/shared"
-  import { unstate } from "svelte"
 
   interface StateVisualizerProps {
     state: Record<string, any>
@@ -15,7 +14,7 @@
   <pre>
     <details open>
         <summary>{label || "Visualizer"}</summary>
-        <div>{@html stringifyState(unstate(currentState), omit)}</div>
+        <div>{@html stringifyState($state.snapshot(currentState), omit)}</div>
     </details>
   </pre>
 </div>

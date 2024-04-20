@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@internationalized/date": "3.5.2",
-    "@tanstack/react-virtual": "^3.3.0",
+    "@tanstack/react-virtual": "^3.4.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -80,7 +80,7 @@
     "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-react": "0.371.0",
+    "lucide-react": "0.372.0",
     "next": "14.2.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -88,7 +88,7 @@
   },
   "devDependencies": {
     "@types/node": "20.12.7",
-    "@types/react": "18.2.78",
+    "@types/react": "18.2.79",
     "@types/react-dom": "18.2.25",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.2",

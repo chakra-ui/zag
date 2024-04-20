@@ -83,10 +83,10 @@
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-vue-next": "0.368.0",
-    "vite": "5.2.8",
-    "vue": "3.4.21",
-    "vue-router": "4.3.0"
+    "lucide-vue-next": "0.372.0",
+    "vite": "5.2.10",
+    "vue": "3.4.23",
+    "vue-router": "4.3.2"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "1.10.2",

@@ -72,7 +72,7 @@
     "@internationalized/date": "3.5.2",
     "@octokit/rest": "20.1.0",
     "@playwright/test": "1.43.1",
-    "@swc/core": "1.4.14",
+    "@swc/core": "1.4.16",
     "@types/babel__generator": "7.6.8",
     "@types/babel__traverse": "7.20.5",
     "@types/node": "20.12.7",
@@ -99,7 +99,7 @@
     "tsup": "8.0.2",
     "tsx": "4.7.2",
     "typescript": "5.4.5",
-    "vite": "5.2.8",
+    "vite": "5.2.10",
     "vite-plugin-dts": "3.8.3",
     "vitest": "1.5.0"
   },

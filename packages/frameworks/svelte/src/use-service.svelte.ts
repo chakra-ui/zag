@@ -1,5 +1,4 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
-import { unstate } from "svelte"
 
 export function useService<
   TContext extends Record<string, any>,
@@ -9,14 +8,15 @@ export function useService<
   const { actions, context, state: hydratedState } = options ?? {}
 
   const service = typeof machine === "function" ? machine() : machine
+  service.setContext($state.snapshot(context))
+  service._created()
 
   $effect(() => {
-    service.setOptions({ actions: unstate(actions) })
+    service.setOptions({ actions: $state.snapshot(actions) })
   })
 
   $effect(() => {
-    service.setContext(unstate(context))
-    service._created()
+    service.setContext($state.snapshot(context))
   })
 
   $effect(() => {

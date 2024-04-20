@@ -28,7 +28,7 @@
 </script>
 
 <pre {...api.rootProps}>
-    <div {...progressbarProps} />
+    <div {...progressbarProps}></div>
     <p {...api.titleProps}>{api.title}</p>
     <p {...api.descriptionProps}>{api.description}</p>
     <button {...api.closeTriggerProps}>Close</button>
