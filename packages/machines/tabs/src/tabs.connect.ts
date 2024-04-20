@@ -1,4 +1,4 @@
-import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
 import { dataAttr, isSafari, isSelfTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
@@ -50,7 +50,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-orientation": state.context.orientation,
       "aria-label": translations.listLabel,
       onKeyDown(event) {
-        const evt = event.nativeEvent || event
+        if (event.defaultPrevented) return
+        const evt = getNativeEvent(event)
         if (!isSelfTarget(evt)) return
 
         const keyMap: EventKeyMap = {

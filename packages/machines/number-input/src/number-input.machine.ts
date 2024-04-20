@@ -34,7 +34,6 @@ export function machine(userContext: UserDefinedContext) {
         ...ctx,
         hint: null,
         scrubberCursorPoint: null,
-        composing: false,
         fieldsetDisabled: false,
         formatter: createFormatter(ctx.locale || "en-US", ctx.formatOptions),
         parser: createParser(ctx.locale || "en-US", ctx.formatOptions),
@@ -143,12 +142,6 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setFormattedValue", "clearHint", "invokeOnBlur"],
               },
             ],
-            "INPUT.COMPOSITION_START": {
-              actions: "setComposing",
-            },
-            "INPUT.COMPOSITION_END": {
-              actions: "clearComposing",
-            },
           },
         },
 
@@ -398,12 +391,6 @@ export function machine(userContext: UserDefinedContext) {
           if (!cursorEl || !ctx.scrubberCursorPoint) return
           const { x, y } = ctx.scrubberCursorPoint
           cursorEl.style.transform = `translate3d(${x}px, ${y}px, 0px)`
-        },
-        setComposing(ctx) {
-          ctx.composing = true
-        },
-        clearComposing(ctx) {
-          ctx.composing = false
         },
         setFormatterAndParser(ctx) {
           if (!ctx.locale) return

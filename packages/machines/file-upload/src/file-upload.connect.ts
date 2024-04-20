@@ -62,6 +62,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(disabled),
       "data-dragging": dataAttr(isDragging),
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         const evt = event.nativeEvent || event
         if (!isSelfTarget(evt)) return
         if (event.key !== "Enter" && event.key !== " ") return

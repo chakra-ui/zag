@@ -156,11 +156,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "SET_FOCUSED", value: props.value, focused: true })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
           if (event.key === " ") {
             send({ type: "SET_ACTIVE", value: props.value, active: true })
           }
         },
         onKeyUp(event) {
+          if (event.defaultPrevented) return
           if (event.key === " ") {
             send({ type: "SET_ACTIVE", value: null })
           }

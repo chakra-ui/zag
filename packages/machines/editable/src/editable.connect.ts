@@ -1,4 +1,4 @@
-import type { EventKeyMap } from "@zag-js/dom-event"
+import { getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./editable.anatomy"
@@ -97,6 +97,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "TYPE", value: event.currentTarget.value })
       },
       onKeyDown(event) {
+        if (event.defaultPrevented) return
+        const evt = getNativeEvent(event)
+        if (evt.isComposing) return
+
         const keyMap: EventKeyMap = {
           Escape() {
             send("CANCEL")

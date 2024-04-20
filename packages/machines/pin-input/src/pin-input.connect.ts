@@ -137,7 +137,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "INPUT.CHANGE", value, index })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
           const evt = getNativeEvent(event)
+
+          if (evt.isComposing) return
           if (isModifierKey(evt)) return
 
           const keyMap: EventKeyMap = {

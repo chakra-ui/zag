@@ -265,6 +265,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "AREA.FOCUS", id: "area", channel })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
           if (!isInteractive) return
 
           const step = getEventStep(event)
@@ -407,7 +408,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "CHANNEL_SLIDER.FOCUS", channel })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
           if (!isInteractive) return
+
           const step = getEventStep(event) * stepValue
 
           const keyMap: EventKeyMap = {
@@ -488,6 +491,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "CHANNEL_INPUT.BLUR", channel, value, isTextField })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
           if (!isInteractive) return
           if (event.key === "Enter") {
             const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber

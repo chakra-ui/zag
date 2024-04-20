@@ -180,6 +180,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         send({ type: "INPUT.CHANGE", value: event.currentTarget.value })
       },
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         if (!isInteractive) return
 
         const evt = getNativeEvent(event)
@@ -264,7 +265,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         })
       },
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         if (!isDialogPopup) return
+
         const keyMap: EventKeyMap = {
           ArrowDown() {
             send("INPUT.FOCUS")

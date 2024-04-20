@@ -113,6 +113,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "TRIGGER.CLICK", value })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
           if (itemState.isDisabled) return
 
           const keyMap: EventKeyMap = {

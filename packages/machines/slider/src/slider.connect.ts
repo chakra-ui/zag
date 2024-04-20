@@ -169,9 +169,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "FOCUS", index })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
           if (!isInteractive) return
+
           const step = getEventStep(event) * state.context.step
           let prevent = true
+
           const keyMap: EventKeyMap = {
             ArrowUp() {
               send({ type: "ARROW_UP", step })

@@ -93,7 +93,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-labelledby": dom.getLabelId(state.context),
       "aria-multiselectable": state.context.selectionMode === "multiple" || undefined,
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         const evt = getNativeEvent(event)
+        if (evt.isComposing) return
+
         const target = getEventTarget<HTMLElement>(evt)
 
         const node = target?.closest<HTMLElement>("[role=treeitem]")

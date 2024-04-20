@@ -153,6 +153,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-describedby": dom.getDescriptionId(state.context),
       tabIndex: -1,
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         if (!state.context.keyboardNavigation) return
         const isRtl = state.context.dir === "rtl"
         switch (event.key) {

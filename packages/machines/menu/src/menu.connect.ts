@@ -218,6 +218,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("TRIGGER_FOCUS")
       },
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         const keyMap: EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
@@ -286,6 +287,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("MENU_POINTERENTER")
       },
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         const evt = getNativeEvent(event)
         const target = getEventTarget<Element>(evt)
 

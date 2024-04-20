@@ -126,8 +126,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "DOUBLE_CLICK", id })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
           if (disabled) return
+
           const moveStep = getEventStep(event) * step
+
           const keyMap: EventKeyMap = {
             Enter() {
               send("ENTER")

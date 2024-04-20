@@ -56,7 +56,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         overflow: state.context.isMinimized ? "hidden" : undefined,
       },
       onKeyDown(event) {
-        if (!isSelfTarget(getNativeEvent(event))) return
+        if (event.defaultPrevented) return
+        const evt = getNativeEvent(event)
+        if (!isSelfTarget(evt)) return
+
         const step = getEventStep(event) * state.context.gridSize
         const keyMap: EventKeyMap = {
           Escape() {

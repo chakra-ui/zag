@@ -131,7 +131,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "POINTER_OVER", index, isMidway })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
           if (!isInteractive) return
+
           const keyMap: EventKeyMap = {
             ArrowLeft() {
               send("ARROW_LEFT")

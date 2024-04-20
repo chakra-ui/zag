@@ -131,6 +131,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "PASTE", value })
       },
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         const evt = getNativeEvent(event)
         if (evt.isComposing) return
 
@@ -251,6 +252,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "TAG_INPUT_BLUR", target: event.relatedTarget, id: itemState.id })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
+          const evt = getNativeEvent(event)
+          if (evt.isComposing) return
+
           const keyMap: EventKeyMap = {
             Enter() {
               send("TAG_INPUT_ENTER")

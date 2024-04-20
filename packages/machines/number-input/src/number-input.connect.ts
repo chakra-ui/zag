@@ -132,7 +132,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         }
       },
       onKeyDown(event) {
-        if (state.context.readOnly) return
+        if (event.defaultPrevented) return
+        if (isReadOnly) return
+        const evt = getNativeEvent(event)
+        if (evt.isComposing) return
 
         const step = getEventStep(event) * state.context.step
 
@@ -154,7 +157,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             event.preventDefault()
           },
           Enter() {
-            if (state.context.composing) return
             send({ type: "INPUT.COMMIT", src: "enter" })
           },
         }

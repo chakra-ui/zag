@@ -324,6 +324,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         tabIndex: -1,
         onKeyDown(event) {
+          if (event.defaultPrevented) return
+
           const keyMap: EventKeyMap = {
             Enter() {
               // if focused date is unavailable, do nothing
@@ -657,7 +659,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "INPUT.BLUR", value: event.currentTarget.value, index })
         },
         onKeyDown(event) {
-          if (event.key !== "Enter" || !isInteractive) return
+          if (event.defaultPrevented) return
+          if (!isInteractive) return
+          const evt = getNativeEvent(event)
+          if (evt.isComposing) return
+          if (event.key !== "Enter") return
           if (isUnavailable(state.context.focusedValue)) return
           send({ type: "INPUT.ENTER", value: event.currentTarget.value, index })
           event.preventDefault()

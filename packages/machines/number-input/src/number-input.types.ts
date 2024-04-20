@@ -234,11 +234,6 @@ interface PrivateContext {
   parser: NumberParser
   /**
    * @internal
-   * Whether the input is composing
-   */
-  composing: boolean
-  /**
-   * @internal
    * Whether the checkbox's fieldset is disabled
    */
   fieldsetDisabled: boolean

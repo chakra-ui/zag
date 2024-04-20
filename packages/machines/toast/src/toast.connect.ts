@@ -61,6 +61,7 @@ export function connect<T extends PropTypes, O>(
       tabIndex: 0,
       style: getPlacementStyle(state.context, isVisible),
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         if (event.key == "Escape") {
           send("DISMISS")
           event.preventDefault()

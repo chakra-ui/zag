@@ -155,7 +155,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         send("TRIGGER.BLUR")
       },
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         if (!isInteractive) return
+
         const keyMap: EventKeyMap = {
           ArrowUp() {
             send({ type: "TRIGGER.ARROW_UP" })
@@ -341,8 +343,10 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: 0,
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         const evt = getNativeEvent(event)
-        if (!isInteractive || !isSelfTarget(evt)) return
+        if (!isInteractive) return
+        if (!isSelfTarget(evt)) return
 
         // select should not be navigated using tab key so we prevent it
         if (event.key === "Tab") {
