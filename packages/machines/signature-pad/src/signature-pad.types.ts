@@ -107,11 +107,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the signature pad is empty.
    */
-  isEmpty: boolean
+  empty: boolean
   /**
    * Whether the user is currently drawing.
    */
-  isDrawing: boolean
+  drawing: boolean
   /**
    * The current path being drawn.
    */
