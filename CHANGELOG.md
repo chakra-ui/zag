@@ -6,7 +6,38 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
-## [0.46.0](./#0.46.0) - 2023-04-12
+## [0.47.0](./#0.47.0) - 2024-04-19
+
+### Fixed
+
+- **Select**
+  - Prevent tab key interaction when the select is open. This keeps focus within the select and ensures keyboard
+    interactions work consistently
+
+### Changed
+
+- **Toast [BREAKING]**:
+
+  - Simplify toast api methods
+
+  ```diff
+  <ToastContext.Provider value={api}>
+  -    {Object.entries(api.getToastsByPlacement()).map(([placement, toasts]) => (
+  +    {api.getPlacements().map((placement) => (
+          <div key={placement} {...api.getGroupProps({ placement })}>
+  -           {toasts.map((toast) => (
+  +           {api.getToastsByPlacement(placement).map((toast) => (
+                  <Toast key={toast.id} actor={toast} />
+              ))}
+          </div>
+      ))}
+      {children}
+  </ToastContext.Provider>
+  ```
+
+  - Fix issue where toast closes when you update the same toast type
+
+## [0.46.0](./#0.46.0) - 2024-04-12
 
 ### Fixed
 
@@ -69,14 +100,14 @@ See the [Changesets](./.changeset) for the latest changes.
 
   - Require new `ghostBeforeProps` and `ghostAfterProps` props to ensure the hover interaction works as expected
 
-## [0.45.0](./#0.45.0) - 2023-04-04
+## [0.45.0](./#0.45.0) - 2024-04-04
 
 ### Changed
 
 - **Solid**: Rewrite `mergeProps` to prevent issues with children that read from context, and ensure props are always
   up-to-date.
 
-## [0.44.0](./#0.44.0) - 2023-04-03
+## [0.44.0](./#0.44.0) - 2024-04-03
 
 ### Added
 
@@ -86,7 +117,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 - **Avatar**: Remove hardcoded `style` to allow more flexible styling
 
-## [0.43.0](./#0.43.0) - 2023-04-02
+## [0.43.0](./#0.43.0) - 2024-04-02
 
 ### Changed
 
