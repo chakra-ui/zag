@@ -284,9 +284,9 @@ export interface ItemProps {
 
 export interface ItemState {
   value: string
-  isDisabled: boolean
-  isSelected: boolean
-  isHighlighted: boolean
+  disabled: boolean
+  selected: boolean
+  highlighted: boolean
 }
 
 export interface ItemGroupProps {
@@ -301,15 +301,15 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Whether the combobox is focused
    */
-  isFocused: boolean
+  focused: boolean
   /**
    * Whether the combobox is open
    */
-  isOpen: boolean
+  open: boolean
   /**
    * Whether the combobox input value is empty
    */
-  isInputValueEmpty: boolean
+  inputEmpty: boolean
   /**
    * The value of the combobox input
    */
@@ -367,13 +367,9 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   getItemState(props: ItemProps): ItemState
   /**
-   * Function to open the combobox
+   * Function to open or close the combobox
    */
-  open(): void
-  /**
-   * Function to close the combobox
-   */
-  close(): void
+  setOpen(open: boolean): void
   /**
    * Function to toggle the combobox
    */
