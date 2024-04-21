@@ -130,16 +130,35 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface TriggerProps {
+  /**
+   * The value of the tab
+   */
   value: string
+  /**
+   * Whether the tab is disabled
+   */
   disabled?: boolean
 }
 
 export interface TriggerState {
-  isSelected: boolean
-  isFocused: boolean
+  /**
+   * Whether the tab is selected
+   */
+  selected: boolean
+  /**
+   * Whether the tab is focused
+   */
+  focused: boolean
+  /**
+   * Whether the tab is disabled
+   */
+  disabled: boolean
 }
 
 export interface ContentProps {
+  /**
+   * The value of the tab
+   */
   value: string
 }
 

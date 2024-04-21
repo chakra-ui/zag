@@ -1,10 +1,12 @@
-export function queueBeforeEvent(element: Element, type: string, cb: () => void) {
-  const raf = requestAnimationFrame(() => {
+export function queueBeforeEvent(element: Element | null, type: string, cb: () => void) {
+  if (!element) return -1
+
+  const rafId = requestAnimationFrame(() => {
     element.removeEventListener(type, exec, true)
     cb()
   })
   const exec = () => {
-    cancelAnimationFrame(raf)
+    cancelAnimationFrame(rafId)
     cb()
   }
 
@@ -13,5 +15,5 @@ export function queueBeforeEvent(element: Element, type: string, cb: () => void)
     capture: true,
   })
 
-  return raf
+  return rafId
 }
