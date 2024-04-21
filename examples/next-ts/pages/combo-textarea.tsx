@@ -96,11 +96,11 @@ export default function Page() {
                 api.reposition()
               },
               onPointerDown() {
-                api.close()
+                api.setOpen(true)
               },
               onKeyDown(event) {
                 if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-                  api.close()
+                  api.setOpen(false)
                 }
               },
               onChange(event) {
@@ -108,9 +108,9 @@ export default function Page() {
                 const searchValue = getSearchValue(event.currentTarget)
 
                 if (trigger) {
-                  api.open()
+                  api.setOpen(true)
                 } else if (!searchValue) {
-                  api.close()
+                  api.setOpen(false)
                 }
 
                 setSearchValue(searchValue)

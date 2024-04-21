@@ -26,7 +26,7 @@ export default defineComponent({
       return (
         <main class="presence">
           <button onClick={() => (present.value = !present.value)}>Toggle</button>
-          {api.isPresent && (
+          {api.present && (
             <div ref={nodeRef} data-scope="presence" data-state={present.value ? "open" : "closed"}>
               Content
             </div>

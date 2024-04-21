@@ -17,8 +17,8 @@ export function Editable(props: any) {
       </div>
 
       <div>
-        {!api.isEditing && <button {...api.editTriggerProps}>Edit</button>}
-        {api.isEditing && (
+        {!api.editing && <button {...api.editTriggerProps}>Edit</button>}
+        {api.editing && (
           <div>
             <button {...api.submitTriggerProps}>Save</button>
             <button {...api.cancelTriggerProps}>Cancel</button>

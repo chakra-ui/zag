@@ -62,7 +62,7 @@ export default function Page() {
                 {(index) => {
                   const state = createMemo(() => api().getItemState({ index: index() }))
                   return (
-                    <span {...api().getItemProps({ index: index() })}>{state().isHalf ? <HalfStar /> : <Star />}</span>
+                    <span {...api().getItemProps({ index: index() })}>{state().half ? <HalfStar /> : <Star />}</span>
                   )
                 }}
               </Index>

@@ -53,14 +53,14 @@ export default function Page() {
     const onMouseUp = () => {
       if (!hasSelectionWithin(node)) return
       api.reposition()
-      api.open()
+      api.setOpen(true)
     }
 
     const onSelect = () => {
       if (hasSelectionWithin(node)) {
         return api.reposition()
       }
-      api.close()
+      api.setOpen(false)
     }
 
     doc.addEventListener("mouseup", onMouseUp)

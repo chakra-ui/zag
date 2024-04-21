@@ -36,8 +36,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   function getItemState(props: ItemProps): ItemState {
     return {
-      isDisabled: !!props.disabled,
-      isHighlighted: state.context.highlightedValue === props.value,
+      disabled: !!props.disabled,
+      highlighted: state.context.highlightedValue === props.value,
     }
   }
 
@@ -50,7 +50,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     const itemState = getItemState(getOptionItemProps(props))
     return {
       ...itemState,
-      isChecked: !!props.checked,
+      checked: !!props.checked,
     }
   }
 
@@ -61,39 +61,39 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.item.attrs,
       id,
       role: "menuitem",
-      "aria-disabled": itemState.isDisabled,
-      "data-disabled": dataAttr(itemState.isDisabled),
+      "aria-disabled": itemState.disabled,
+      "data-disabled": dataAttr(itemState.disabled),
       "data-ownedby": dom.getContentId(state.context),
-      "data-highlighted": dataAttr(itemState.isHighlighted),
+      "data-highlighted": dataAttr(itemState.highlighted),
       "data-valuetext": valueText,
       onDragStart(event) {
         const isLink = event.currentTarget.matches("a[href]")
         if (isLink) event.preventDefault()
       },
       onPointerMove(event) {
-        if (itemState.isDisabled) return
+        if (itemState.disabled) return
         if (event.pointerType !== "mouse") return
         const target = event.currentTarget
-        if (itemState.isHighlighted) return
+        if (itemState.highlighted) return
         send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect })
       },
       onPointerLeave(event) {
         const mouseMoved = state.previousEvent.type === "ITEM.POINTER_MOVE"
         if (!mouseMoved) return
-        if (itemState.isDisabled) return
+        if (itemState.disabled) return
         if (event.pointerType !== "mouse") return
         const target = event.currentTarget
         send({ type: "ITEM_POINTERLEAVE", id, target, closeOnSelect })
       },
       onPointerDown(event) {
-        if (itemState.isDisabled) return
+        if (itemState.disabled) return
         const target = event.currentTarget
         send({ type: "ITEM_POINTERDOWN", target, id, closeOnSelect })
       },
       onPointerUp(event) {
         if (isDownloadingEvent(event)) return
         if (isOpeningInNewTab(event)) return
-        if (itemState.isDisabled) return
+        if (itemState.disabled) return
         if (!isLeftClick(event)) return
 
         const target = event.currentTarget
@@ -377,15 +377,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           dir: state.context.dir,
           "data-value": option.value,
           role: `menuitem${type}`,
-          "aria-checked": !!itemState.isChecked,
-          "data-state": itemState.isChecked ? "checked" : "unchecked",
+          "aria-checked": !!itemState.checked,
+          "data-state": itemState.checked ? "checked" : "unchecked",
           onPointerUp(event) {
             if (!isLeftClick(event) || disabled) return
             if (isDownloadingEvent(event)) return
             if (isOpeningInNewTab(event)) return
             const target = event.currentTarget
             send({ type: "ITEM_CLICK", src: "pointerup", target, option, closeOnSelect })
-            onCheckedChange?.(!itemState.isChecked)
+            onCheckedChange?.(!itemState.checked)
           },
         }),
       }
@@ -396,10 +396,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.itemIndicator.attrs,
         dir: state.context.dir,
-        "data-disabled": dataAttr(itemState.isDisabled),
-        "data-highlighted": dataAttr(itemState.isHighlighted),
-        "data-state": itemState.isChecked ? "checked" : "unchecked",
-        hidden: !itemState.isChecked,
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-highlighted": dataAttr(itemState.highlighted),
+        "data-state": itemState.checked ? "checked" : "unchecked",
+        hidden: !itemState.checked,
       })
     },
 
@@ -408,9 +408,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.itemText.attrs,
         dir: state.context.dir,
-        "data-disabled": dataAttr(itemState.isDisabled),
-        "data-highlighted": dataAttr(itemState.isHighlighted),
-        "data-state": itemState.isChecked ? "checked" : "unchecked",
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-highlighted": dataAttr(itemState.highlighted),
+        "data-state": itemState.checked ? "checked" : "unchecked",
       })
     },
 

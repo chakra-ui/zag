@@ -21,7 +21,7 @@ export default defineComponent({
           <main class="tooltip" style={{ gap: "12px", flexDirection: "row" }}>
             <div class="root">
               <button {...api.triggerProps}>Hover me</button>
-              {api.isOpen && (
+              {api.open && (
                 <Teleport to="body">
                   <div {...api.positionerProps}>
                     <div class="tooltip-content" data-testid="tip-1-tooltip" {...api.contentProps}>
@@ -32,7 +32,7 @@ export default defineComponent({
               )}
 
               <button {...api2.triggerProps}>Over me</button>
-              {api2.isOpen && (
+              {api2.open && (
                 <Teleport to="body">
                   <div {...api2.positionerProps}>
                     <div class="tooltip-content" data-testid="tip-2-tooltip" {...api2.contentProps}>

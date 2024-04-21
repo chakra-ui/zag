@@ -20,9 +20,9 @@
     <div class="steps__container">
       <h3 id="step-1">Step 1</h3>
       <div class="overflow__container">
-        <div class="h-200px" />
+        <div class="h-200px"></div>
         <h3 id="step-2">Step 2</h3>
-        <div class="h-100px" />
+        <div class="h-100px"></div>
       </div>
       <Iframe>
         <h1 id="step-2a">Iframe Content</h1>
@@ -37,13 +37,13 @@
   </div>
 
   <div use:portal>
-    <div {...api.overlayProps} />
-    <div {...api.spotlightProps} />
+    <div {...api.overlayProps}></div>
+    <div {...api.spotlightProps}></div>
     <div {...api.positionerProps}>
       {#if api.currentStep}
         <div {...api.contentProps}>
           <div {...api.arrowProps}>
-            <div {...api.arrowTipProps} />
+            <div {...api.arrowTipProps}></div>
           </div>
           <p {...api.titleProps}>{api.currentStep.title}</p>
           <div {...api.descriptionProps}>{api.currentStep.description}</div>

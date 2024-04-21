@@ -37,7 +37,7 @@
       <div class="control-area">
         <div {...api.controlProps}>
           <div {...api.trackProps}>
-            <div {...api.rangeProps} />
+            <div {...api.rangeProps}></div>
           </div>
           {#each api.value as _, index}
             <div {...api.getThumbProps({ index })}>

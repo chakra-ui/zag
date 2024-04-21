@@ -29,7 +29,7 @@ export default function Page() {
           <label {...api.labelProps}>Copy this link</label>
           <div {...api.controlProps}>
             <input {...api.inputProps} />
-            <button {...api.triggerProps}>{api.isCopied ? <ClipboardCheck /> : <ClipboardCopyIcon />}</button>
+            <button {...api.triggerProps}>{api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}</button>
           </div>
           <div {...api.getIndicatorProps({ copied: true })}>Copied!</div>
           <div {...api.getIndicatorProps({ copied: false })}>Copy</div>

@@ -47,7 +47,7 @@ export default function Page() {
       <button {...api.triggerProps} data-testid="trigger-1">
         Open Dialog
       </button>
-      {api.isOpen && (
+      {api.open && (
         <Portal>
           <div {...api.backdropProps} />
           <div data-testid="positioner-1" {...api.positionerProps}>

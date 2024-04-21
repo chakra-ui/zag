@@ -23,7 +23,7 @@ export function Clipboard(props: Props) {
       <div {...api.controlProps}>
         <input {...api.inputProps} />
         <button {...api.triggerProps}>
-          {api.isCopied ? <HiCheck /> : <HiOutlineClipboard />}
+          {api.copied ? <HiCheck /> : <HiOutlineClipboard />}
         </button>
       </div>
     </div>

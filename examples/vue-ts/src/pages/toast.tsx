@@ -24,10 +24,10 @@ const ToastItem = defineComponent({
       "data-part": "progressbar",
       "data-type": state.value.context.type,
       style: {
-        opacity: apiRef.value.isVisible ? 1 : 0,
-        transformOrigin: apiRef.value.isRtl ? "right" : "left",
+        opacity: apiRef.value.visible ? 1 : 0,
+        transformOrigin: apiRef.value.rtl ? "right" : "left",
         animationName: apiRef.value.type === "loading" ? "none" : undefined,
-        animationPlayState: apiRef.value.isPaused ? "paused" : "running",
+        animationPlayState: apiRef.value.paused ? "paused" : "running",
         animationDuration: "var(--duration)",
       },
     }))

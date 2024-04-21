@@ -225,12 +225,12 @@ export interface OptionItemProps extends Partial<ItemProps> {
 }
 
 export interface ItemState {
-  isDisabled: boolean
-  isHighlighted: boolean
+  disabled: boolean
+  highlighted: boolean
 }
 
 export interface OptionItemState extends ItemState {
-  isChecked: boolean
+  checked: boolean
 }
 
 export interface ItemGroupProps {

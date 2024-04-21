@@ -28,7 +28,7 @@ export default defineComponent({
                 Twitter
               </a>
 
-              {api.isOpen && (
+              {api.open && (
                 <Teleport to="body">
                   <div {...api.positionerProps}>
                     <div {...api.contentProps}>

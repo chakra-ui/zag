@@ -50,7 +50,7 @@
         {#each api.items as index}
           {@const itemState = api.getItemState({ index })}
           <span {...api.getItemProps({ index })}>
-            {#if itemState.isHalf}
+            {#if itemState.half}
               {@render HalfStar()}
             {:else}
               {@render Star()}

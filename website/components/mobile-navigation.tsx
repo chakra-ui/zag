@@ -26,12 +26,12 @@ export function MobileNavigation() {
   const [desktop] = useMatchMedia([`(min-width: ${lgBreakpoint})`])
 
   useEffect(() => {
-    if (desktop) api.close()
+    if (desktop) api.setOpen(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [desktop])
 
   useRouteChange(() => {
-    api.close()
+    api.setOpen(false)
   })
 
   return (
@@ -51,7 +51,7 @@ export function MobileNavigation() {
         </HStack>
       </Button>
 
-      {api.isOpen && (
+      {api.open && (
         <Portal>
           <div {...api.positionerProps}>
             <Box

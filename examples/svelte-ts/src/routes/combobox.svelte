@@ -19,7 +19,7 @@
 
   controls.setContext("collection", collection)
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     combobox.machine({
       id: "1",
       collection,
@@ -39,7 +39,7 @@
     },
   )
 
-  const api = $derived(combobox.connect(_state, send, normalizeProps))
+  const api = $derived(combobox.connect(snapshot, send, normalizeProps))
   $inspect(api.inputValue)
 </script>
 
@@ -71,5 +71,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

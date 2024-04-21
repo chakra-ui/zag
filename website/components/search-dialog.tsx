@@ -15,7 +15,7 @@ export function Search() {
   return (
     <>
       <SearchTrigger {...dialog_api.triggerProps} />
-      {dialog_api.isOpen && (
+      {dialog_api.open && (
         <Portal>
           <Box
             position="fixed"
@@ -137,7 +137,7 @@ export function Search() {
                   lineHeight="1"
                   color="gray.500"
                   spacing="5"
-                  borderTopWidth={combobox_api.isOpen ? "1px" : undefined}
+                  borderTopWidth={combobox_api.open ? "1px" : undefined}
                 >
                   <HStack>
                     <Box as="span">↑↓</Box>

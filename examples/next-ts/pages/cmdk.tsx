@@ -102,14 +102,14 @@ export default function Page() {
 
   useEffect(() => {
     const fn = (event: KeyboardEvent) => {
-      if (dialogApi.isOpen) return
+      if (dialogApi.open) return
 
       const isMac = /(Mac|iPhone|iPod|iPad)/i.test(navigator?.platform)
       const hotkey = isMac ? "metaKey" : "ctrlKey"
 
       if (event.key?.toLowerCase() === "k" && event[hotkey]) {
         event.preventDefault()
-        dialogApi.open()
+        dialogApi.setOpen(true)
       }
     }
     document.addEventListener("keydown", fn, true)
@@ -129,7 +129,7 @@ export default function Page() {
         or press <kbd> Cmd+K</kbd>
       </div>
 
-      {dialogApi.isOpen && (
+      {dialogApi.open && (
         <Portal>
           <div {...dialogApi.backdropProps} />
           <div {...dialogApi.positionerProps}>
@@ -139,7 +139,7 @@ export default function Page() {
                 collection={collection}
                 onValueChange={({ value }) => {
                   console.log("Selected value:", value)
-                  queueMicrotask(() => dialogApi.close())
+                  queueMicrotask(() => dialogApi.setOpen(false))
                 }}
                 onInputValueChange={({ inputValue }) => {
                   setInputValue(inputValue)

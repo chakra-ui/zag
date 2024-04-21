@@ -26,10 +26,10 @@
     <fieldset disabled={false}>
       <div {...api.rootProps}>
         <h3 {...api.labelProps}>Fruits</h3>
-        <div {...api.indicatorProps} />
+        <div {...api.indicatorProps}></div>
         {#each radioData as opt}
           <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
-            <div data-testid={`control-${opt.id}`} {...api.getItemControlProps({ value: opt.id })} />
+            <div data-testid={`control-${opt.id}`} {...api.getItemControlProps({ value: opt.id })}></div>
             <span data-testid={`label-${opt.id}`} {...api.getItemTextProps({ value: opt.id })}>
               {opt.label}
             </span>

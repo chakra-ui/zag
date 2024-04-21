@@ -20,7 +20,7 @@ export default function Page() {
             Hover me
           </button>
 
-          <Show when={api().isOpen}>
+          <Show when={api().open}>
             <Portal>
               <div {...api().positionerProps}>
                 <div class="tooltip-content" data-testid="tip-1-tooltip" {...api().contentProps}>
@@ -34,7 +34,7 @@ export default function Page() {
             Over me
           </button>
 
-          <Show when={api2().isOpen}>
+          <Show when={api2().open}>
             <Portal>
               <div {...api2().positionerProps}>
                 <div class="tooltip-content" data-testid="tip-2-tooltip" {...api2().contentProps}>

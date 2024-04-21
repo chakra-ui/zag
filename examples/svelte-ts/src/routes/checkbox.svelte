@@ -9,11 +9,11 @@
 
   const controls = useControls(checkboxControls)
 
-  const [_state, send] = useMachine(checkbox.machine({ id: "1" }), {
+  const [snapshot, send] = useMachine(checkbox.machine({ id: "1" }), {
     context: controls.context,
   })
 
-  const api = $derived(checkbox.connect(_state, send, normalizeProps))
+  const api = $derived(checkbox.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="checkbox">
@@ -25,19 +25,19 @@
   >
     <fieldset>
       <label {...api.rootProps}>
-        <div {...api.controlProps} />
-        <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
+        <div {...api.controlProps}></div>
+        <span {...api.labelProps}>Input {api.checked ? "Checked" : "Unchecked"}</span>
         <input {...api.hiddenInputProps} data-testid="hidden-input" />
         <div {...api.indicatorProps}>Indicator</div>
       </label>
 
-      <button type="button" disabled={api.isChecked} onclick={() => api.setChecked(true)}>Check</button>
-      <button type="button" disabled={!api.isChecked} onclick={() => api.setChecked(false)}>Uncheck</button>
+      <button type="button" disabled={api.checked} onclick={() => api.setChecked(true)}>Check</button>
+      <button type="button" disabled={!api.checked} onclick={() => api.setChecked(false)}>Uncheck</button>
       <button type="reset">Reset Form</button>
     </fieldset>
   </form>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

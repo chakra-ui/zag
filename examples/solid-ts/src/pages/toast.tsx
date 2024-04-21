@@ -17,10 +17,10 @@ function ToastItem(props: { actor: toast.Service }) {
     "data-part": "progressbar",
     "data-type": state.context.type,
     style: {
-      opacity: api().isVisible ? 1 : 0,
-      "transform-origin": api().isRtl ? "right" : "left",
+      opacity: api().visible ? 1 : 0,
+      "transform-origin": api().rtl ? "right" : "left",
       "animation-name": api().type === "loading" ? "none" : undefined,
-      "animation-play-state": api().isPaused ? "paused" : "running",
+      "animation-play-state": api().paused ? "paused" : "running",
       "animation-duration": `${state.context.duration}ms`,
     },
   }))

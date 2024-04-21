@@ -347,6 +347,10 @@ export interface MachineApi<T extends PropTypes = PropTypes, O = any> extends Ge
    */
   type: Type
   /**
+   * Whether the toast is in right-to-left direction.
+   */
+  rtl: boolean
+  /**
    * The current placement of the toast.
    */
   placement: Placement

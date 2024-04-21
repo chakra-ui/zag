@@ -33,7 +33,7 @@ export default function Page() {
 
           <div style={{ minHeight: "1200px" }} />
 
-          {parentDialog.isOpen && (
+          {parentDialog.open && (
             <Portal>
               <div {...parentDialog.backdropProps} />
               <div data-testid="positioner-1" {...parentDialog.positionerProps}>
@@ -52,7 +52,7 @@ export default function Page() {
                     Open Nested
                   </button>
 
-                  {childDialog.isOpen && (
+                  {childDialog.open && (
                     <Portal>
                       <div {...childDialog.backdropProps} />
                       <div data-testid="positioner-2" {...childDialog.positionerProps}>
@@ -61,7 +61,7 @@ export default function Page() {
                           <button {...childDialog.closeTriggerProps} data-testid="close-2">
                             X
                           </button>
-                          <button onClick={() => parentDialog.close()} data-testid="special-close">
+                          <button onClick={() => parentDialog.setOpen(false)} data-testid="special-close">
                             Close Dialog 1
                           </button>
                         </div>

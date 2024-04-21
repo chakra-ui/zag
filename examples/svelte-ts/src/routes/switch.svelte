@@ -20,9 +20,9 @@
   <label {...api.rootProps}>
     <input {...api.hiddenInputProps} data-testid="hidden-input" />
     <span {...api.controlProps}>
-      <span {...api.thumbProps} />
+      <span {...api.thumbProps}></span>
     </span>
-    <span {...api.labelProps}>Feature is {api.isChecked ? "enabled" : "disabled"}</span>
+    <span {...api.labelProps}>Feature is {api.checked ? "enabled" : "disabled"}</span>
   </label>
 </main>
 

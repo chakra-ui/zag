@@ -23,8 +23,8 @@ export default function Dialog() {
     <div>
       <button onClick={() => setOpen(!isOpen)}>Open Dialog</button>
       <p>state - isOpen: {String(isOpen)}</p>
-      <p>machine - isOpen: {String(api.isOpen)}</p>
-      {api.isOpen && (
+      <p>machine - isOpen: {String(api.open)}</p>
+      {api.open && (
         <Portal>
           <div {...api.backdropProps} />
           <div {...api.positionerProps}>

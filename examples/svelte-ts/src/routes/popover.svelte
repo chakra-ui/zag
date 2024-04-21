@@ -29,7 +29,7 @@
     <div use:portal={{ disabled: !api.portalled }} {...api.positionerProps}>
       <div data-testid="popover-content" class="popover-content" {...api.contentProps}>
         <div {...api.arrowProps}>
-          <div {...api.arrowTipProps} />
+          <div {...api.arrowTipProps}></div>
         </div>
         <div data-testid="popover-title" {...api.titleProps}>Popover Title</div>
         <div data-part="body" data-testid="popover-body">

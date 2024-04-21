@@ -19,7 +19,7 @@
   <div style="display:flex; gap:50px">
     <a href="https://twitter.com/zag_js" target="_blank" {...api.triggerProps}> Twitter </a>
 
-    {#if api.isOpen}
+    {#if api.open}
       <div use:portal {...api.positionerProps}>
         <div {...api.contentProps}>
           <div {...api.arrowProps}>

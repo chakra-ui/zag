@@ -30,7 +30,7 @@ export const Accordion = (props: Props) => {
               {...itemContentProps}
               dir={context.dir}
               ids={{ content: itemContentProps.id }}
-              open={itemState.isOpen}
+              open={itemState.open}
             >
               {item.description}
             </Collapsible>

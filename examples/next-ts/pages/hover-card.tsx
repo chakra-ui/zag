@@ -29,7 +29,7 @@ export default function Page() {
             Twitter
           </a>
 
-          {api.isOpen && (
+          {api.open && (
             <Portal>
               <div {...api.positionerProps}>
                 <div {...api.contentProps}>

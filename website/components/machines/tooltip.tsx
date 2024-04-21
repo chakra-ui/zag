@@ -16,7 +16,7 @@ export function Tooltip(props: TooltipProps) {
     <>
       <button {...api.triggerProps}>Hover me</button>
       <Portal>
-        {api.isOpen && (
+        {api.open && (
           <div {...api.positionerProps}>
             <div {...api.contentProps}>
               <div {...api.arrowProps}>

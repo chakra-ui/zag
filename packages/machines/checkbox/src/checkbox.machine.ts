@@ -105,7 +105,7 @@ export function machine(userContext: UserDefinedContext) {
         syncInputElement(ctx) {
           const inputEl = dom.getHiddenInputEl(ctx)
           if (!inputEl) return
-          inputEl.checked = ctx.isChecked
+          inputEl.checked = ctx.checked
           inputEl.indeterminate = ctx.isIndeterminate
         },
         removeFocusIfNeeded(ctx) {

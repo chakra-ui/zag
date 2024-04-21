@@ -407,7 +407,7 @@ export function machine(userContext: UserDefinedContext) {
           const win = dom.getWin(ctx) as any
           const picker = new win.EyeDropper()
           picker
-            .open()
+            .setOpen(true)
             .then(({ sRGBHex }: { sRGBHex: string }) => {
               const format = ctx.value.getFormat()
               const color = parseColor(sRGBHex).toFormat(format) as Color

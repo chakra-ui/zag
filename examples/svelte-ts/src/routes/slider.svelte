@@ -9,7 +9,7 @@
 
   const controls = useControls(sliderControls)
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     slider.machine({
       id: "1",
       name: "quantity",
@@ -20,7 +20,7 @@
     },
   )
 
-  const api = $derived(slider.connect(_state, send, normalizeProps))
+  const api = $derived(slider.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="slider">
@@ -60,5 +60,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>
