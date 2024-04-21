@@ -7,24 +7,28 @@ import type { MachineApi, ResizeTriggerProps, Send, State } from "./floating-pan
 import { getResizeAxisStyle } from "./get-resize-axis-style"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isOpen = state.hasTag("open")
-  const isDragging = state.matches("open.dragging")
-  const isResizing = state.matches("open.resizing")
+  const open = state.hasTag("open")
+  const dragging = state.matches("open.dragging")
+  const resizing = state.matches("open.resizing")
 
   return {
-    isOpen,
-    isDragging,
-    isResizing,
+    open: open,
+    setOpen(open) {
+      send(open ? "OPEN" : "CLOSE")
+    },
+    dragging: dragging,
+    resizing: resizing,
 
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
       type: "button",
       disabled: state.context.isDisabled,
       id: dom.getTriggerId(state.context),
-      "data-state": isOpen ? "open" : "closed",
-      "data-dragging": dataAttr(isDragging),
+      "data-state": open ? "open" : "closed",
+      "data-dragging": dataAttr(dragging),
       "aria-controls": dom.getContentId(state.context),
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         if (state.context.isDisabled) return
         send({ type: "OPEN" })
       },
@@ -44,11 +48,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.content.attrs,
       role: "dialog",
       tabIndex: 0,
-      hidden: !isOpen,
+      hidden: !open,
       id: dom.getContentId(state.context),
       "aria-labelledby": dom.getTitleId(state.context),
-      "data-state": isOpen ? "open" : "closed",
-      "data-dragging": dataAttr(isDragging),
+      "data-state": open ? "open" : "closed",
+      "data-dragging": dataAttr(dragging),
       style: {
         position: "relative",
         width: "var(--width)",
@@ -93,7 +97,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       disabled: state.context.isDisabled,
       "aria-label": "Close Window",
       type: "button",
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         send("CLOSE")
       },
     }),
@@ -104,7 +109,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "Minimize Window",
       hidden: state.context.isStaged,
       type: "button",
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         send("MINIMIZE")
       },
     }),
@@ -115,7 +121,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "Maximize Window",
       hidden: state.context.isStaged,
       type: "button",
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         send("MAXIMIZE")
       },
     }),
@@ -126,7 +133,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "Restore Window",
       hidden: !state.context.isStaged,
       type: "button",
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         send("RESTORE")
       },
     }),
@@ -209,12 +217,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     headerProps: normalize.element({
       ...parts.header.attrs,
       id: dom.getHeaderId(state.context),
-      "data-dragging": dataAttr(isDragging),
+      "data-dragging": dataAttr(dragging),
     }),
 
     bodyProps: normalize.element({
       ...parts.body.attrs,
-      "data-dragging": dataAttr(isDragging),
+      "data-dragging": dataAttr(dragging),
       hidden: state.context.isMinimized,
     }),
   }
