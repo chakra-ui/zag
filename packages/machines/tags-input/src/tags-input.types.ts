@@ -268,16 +268,16 @@ export interface ItemProps {
 
 export interface ItemState {
   id: string
-  isEditing: boolean
-  isHighlighted: boolean
-  isDisabled: boolean
+  editing: boolean
+  highlighted: boolean
+  disabled: boolean
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tags are empty
    */
-  isEmpty: boolean
+  empty: boolean
   /**
    * The value of the tags entry input.
    */
@@ -297,7 +297,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tags have reached the max limit.
    */
-  isAtMax: boolean
+  atMax: boolean
   /**
    * Function to set the value of the tags.
    */

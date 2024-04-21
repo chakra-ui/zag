@@ -16,9 +16,9 @@ export function machine(userContext: UserDefinedContext) {
       initial: "idle",
       context: {
         value: null,
-        activeId: null,
-        focusedId: null,
-        hoveredId: null,
+        activeValue: null,
+        focusedValue: null,
+        hoveredValue: null,
         disabled: false,
         orientation: "vertical",
         ...ctx,
@@ -89,13 +89,13 @@ export function machine(userContext: UserDefinedContext) {
           set.value(ctx, evt.value)
         },
         setHovered(ctx, evt) {
-          ctx.hoveredId = evt.value
+          ctx.hoveredValue = evt.value
         },
         setActive(ctx, evt) {
-          ctx.activeId = evt.value
+          ctx.activeValue = evt.value
         },
         setFocused(ctx, evt) {
-          ctx.focusedId = evt.value
+          ctx.focusedValue = evt.value
         },
         syncInputElements(ctx) {
           const inputs = dom.getInputEls(ctx)

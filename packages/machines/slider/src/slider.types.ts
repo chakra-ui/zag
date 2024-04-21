@@ -14,6 +14,11 @@ export interface FocusChangeDetails {
   value: number[]
 }
 
+export interface ValueTextDetails {
+  value: number
+  index: number
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -81,7 +86,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Function that returns a human readable value for the slider thumb
    */
-  getAriaValueText?(value: number, index: number): string
+  getAriaValueText?(details: ValueTextDetails): string
   /**
    * The minimum value of the slider
    */
@@ -214,11 +219,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the slider is being dragged.
    */
-  isDragging: boolean
+  dragging: boolean
   /**
    * Whether the slider is focused.
    */
-  isFocused: boolean
+  focused: boolean
   /**
    * Function to set the value of the slider.
    */

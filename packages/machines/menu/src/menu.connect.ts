@@ -27,7 +27,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isSubmenu = state.context.isSubmenu
   const isTypingAhead = state.context.isTypingAhead
 
-  const isOpen = state.hasTag("open")
+  const open = state.hasTag("open")
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
@@ -112,12 +112,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     highlightedValue: state.context.highlightedValue,
-    isOpen,
-    open() {
-      send("OPEN")
-    },
-    close() {
-      send("CLOSE")
+    open: open,
+    setOpen(open) {
+      send(open ? "OPEN" : "CLOSE")
     },
     setHighlightedValue(value) {
       send({ type: "HIGHLIGHTED.SET", id: value })
@@ -179,8 +176,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-uid": state.context.id,
       "aria-haspopup": "menu",
       "aria-controls": dom.getContentId(state.context),
-      "aria-expanded": isOpen || undefined,
-      "data-state": isOpen ? "open" : "closed",
+      "aria-expanded": open || undefined,
+      "data-state": open ? "open" : "closed",
       onPointerMove(event) {
         if (event.pointerType !== "mouse") return
         const disabled = dom.isTargetDisabled(event.currentTarget)
@@ -247,7 +244,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     indicatorProps: normalize.element({
       ...parts.indicator.attrs,
       dir: state.context.dir,
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
     }),
 
     positionerProps: normalize.element({
@@ -274,8 +271,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.content.attrs,
       id: dom.getContentId(state.context),
       "aria-label": state.context["aria-label"],
-      hidden: !isOpen,
-      "data-state": isOpen ? "open" : "closed",
+      hidden: !open,
+      "data-state": open ? "open" : "closed",
       role: "menu",
       tabIndex: 0,
       dir: state.context.dir,

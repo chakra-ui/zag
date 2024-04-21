@@ -20,9 +20,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
-    isChecked,
-    isDisabled,
-    isFocused,
+    checked: isChecked,
+    disabled: isDisabled,
+    focused: isFocused,
     setChecked(checked) {
       send({ type: "CHECKED.SET", checked, isTrusted: false })
     },

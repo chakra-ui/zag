@@ -119,15 +119,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tooltip is open.
    */
-  isOpen: boolean
+  open: boolean
   /**
    * Function to open the tooltip.
    */
-  open(): void
-  /**
-   * Function to close the tooltip.
-   */
-  close(): void
+  setOpen(open: boolean): void
   /**
    * Function to reposition the popover
    */

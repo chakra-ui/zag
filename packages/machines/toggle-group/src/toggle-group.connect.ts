@@ -20,9 +20,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     return {
       id,
-      isDisabled,
-      isPressed,
-      isFocused,
+      disabled: isDisabled,
+      pressed: isPressed,
+      focused: isFocused,
     }
   }
 
@@ -61,31 +61,31 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getItemProps(props) {
       const itemState = getItemState(props)
-      const rovingTabIndex = itemState.isFocused ? 0 : -1
+      const rovingTabIndex = itemState.focused ? 0 : -1
 
       return normalize.button({
         ...parts.item.attrs,
         id: itemState.id,
         type: "button",
         "data-ownedby": dom.getRootId(state.context),
-        "data-focus": dataAttr(itemState.isFocused),
-        disabled: itemState.isDisabled,
+        "data-focus": dataAttr(itemState.focused),
+        disabled: itemState.disabled,
         tabIndex: rovingFocus ? rovingTabIndex : undefined,
         // radio
         role: isSingle ? "radio" : undefined,
-        "aria-checked": isSingle ? itemState.isPressed : undefined,
-        "aria-pressed": isSingle ? undefined : itemState.isPressed,
+        "aria-checked": isSingle ? itemState.pressed : undefined,
+        "aria-pressed": isSingle ? undefined : itemState.pressed,
         //
-        "data-disabled": dataAttr(itemState.isDisabled),
+        "data-disabled": dataAttr(itemState.disabled),
         "data-orientation": state.context.orientation,
         dir: state.context.dir,
-        "data-state": itemState.isPressed ? "on" : "off",
+        "data-state": itemState.pressed ? "on" : "off",
         onFocus() {
-          if (itemState.isDisabled) return
+          if (itemState.disabled) return
           send({ type: "TOGGLE.FOCUS", id: itemState.id })
         },
         onClick(event) {
-          if (itemState.isDisabled) return
+          if (itemState.disabled) return
           send({ type: "TOGGLE.CLICK", id: itemState.id, value: props.value })
           if (isSafari()) {
             event.currentTarget.focus({ preventScroll: true })
@@ -95,7 +95,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           const evt = getNativeEvent(event)
           if (!isSelfTarget(evt)) return
-          if (itemState.isDisabled) return
+          if (itemState.disabled) return
 
           const keyMap: EventKeyMap = {
             Tab(event) {

@@ -28,7 +28,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The value of the checked radio
    */
   value: string | null
-
   /**
    * The name of the input fields in the radio
    * (Useful for form submission).
@@ -58,17 +57,17 @@ interface PrivateContext {
    * @internal
    * The id of the active radio
    */
-  activeId: string | null
+  activeValue: string | null
   /**
    * @internal
    * The id of the focused radio
    */
-  focusedId: string | null
+  focusedValue: string | null
   /**
    * @internal
    * The id of the hovered radio
    */
-  hoveredId: string | null
+  hoveredValue: string | null
   /**
    * @internal
    * The active tab indicator's dom rect
@@ -122,12 +121,12 @@ export interface ItemProps {
 }
 
 export interface ItemState {
-  isInvalid: boolean
-  isDisabled: boolean
-  isChecked: boolean
-  isFocused: boolean
-  isHovered: boolean
-  isActive: boolean
+  invalid: boolean
+  disabled: boolean
+  checked: boolean
+  focused: boolean
+  hovered: boolean
+  active: boolean
 }
 
 /* -----------------------------------------------------------------------------
@@ -150,11 +149,12 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Function to focus the radio group
    */
-  focus: () => void
+  focus(): void
   /**
    * Returns the state details of a radio input
    */
   getItemState(props: ItemProps): ItemState
+
   rootProps: T["element"]
   labelProps: T["element"]
   getItemProps(props: ItemProps): T["label"]

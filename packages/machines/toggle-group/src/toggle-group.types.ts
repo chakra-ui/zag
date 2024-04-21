@@ -109,9 +109,9 @@ export interface ItemProps {
 
 export interface ItemState {
   id: string
-  isDisabled: boolean
-  isPressed: boolean
-  isFocused: boolean
+  disabled: boolean
+  pressed: boolean
+  focused: boolean
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {

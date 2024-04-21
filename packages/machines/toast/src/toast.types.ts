@@ -353,15 +353,11 @@ export interface MachineApi<T extends PropTypes = PropTypes, O = any> extends Ge
   /**
    * Whether the toast is visible.
    */
-  isVisible: boolean
+  visible: boolean
   /**
    * Whether the toast is paused.
    */
-  isPaused: boolean
-  /**
-   * Whether the toast is in RTL mode.
-   */
-  isRtl: boolean
+  paused: boolean
   /**
    * Function to pause the toast (keeping it visible).
    */

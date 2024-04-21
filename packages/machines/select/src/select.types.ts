@@ -214,9 +214,9 @@ export interface ItemProps<T extends CollectionItem = CollectionItem> {
 
 export interface ItemState {
   value: string
-  isDisabled: boolean
-  isSelected: boolean
-  isHighlighted: boolean
+  disabled: boolean
+  selected: boolean
+  highlighted: boolean
 }
 
 export interface ItemGroupProps {
@@ -231,15 +231,15 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Whether the select is focused
    */
-  isFocused: boolean
+  focused: boolean
   /**
    * Whether the select is open
    */
-  isOpen: boolean
+  open: boolean
   /**
    * Whether the select value is empty
    */
-  isValueEmpty: boolean
+  empty: boolean
   /**
    * The value of the highlighted item
    */
@@ -289,13 +289,9 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   getItemState(props: ItemProps): ItemState
   /**
-   * Function to open the select
+   * Function to open or close the select
    */
-  open(): void
-  /**
-   * Function to close the select
-   */
-  close(): void
+  setOpen(open: boolean): void
   /**
    * Function to toggle the select
    */

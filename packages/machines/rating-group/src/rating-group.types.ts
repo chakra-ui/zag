@@ -130,11 +130,9 @@ export interface ItemProps {
 }
 
 export interface ItemState {
-  isEqual: boolean
-  isValueEmpty: boolean
-  isHighlighted: boolean
-  isHalf: boolean
-  isChecked: boolean
+  highlighted: boolean
+  half: boolean
+  checked: boolean
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -149,7 +147,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the rating group is being hovered
    */
-  isHovering: boolean
+  hovering: boolean
   /**
    * The current value of the rating group
    */

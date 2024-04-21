@@ -5,7 +5,7 @@ import { dom } from "./hover-card.dom"
 import type { MachineApi, Send, State } from "./hover-card.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isOpen = state.hasTag("open")
+  const open = state.hasTag("open")
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
@@ -13,12 +13,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
-    isOpen,
-    open() {
-      send("OPEN")
-    },
-    close() {
-      send("CLOSE")
+    open: open,
+    setOpen(open) {
+      send(open ? "OPEN" : "CLOSE")
     },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
@@ -42,7 +39,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       "data-placement": state.context.currentPlacement,
       id: dom.getTriggerId(state.context),
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
       onPointerEnter(event) {
         if (event.pointerType === "touch") return
         send({ type: "POINTER_ENTER", src: "trigger" })
@@ -73,8 +70,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.content.attrs,
       dir: state.context.dir,
       id: dom.getContentId(state.context),
-      hidden: !isOpen,
-      "data-state": isOpen ? "open" : "closed",
+      hidden: !open,
+      "data-state": open ? "open" : "closed",
       "data-placement": state.context.currentPlacement,
       onPointerEnter(event) {
         if (event.pointerType === "touch") return

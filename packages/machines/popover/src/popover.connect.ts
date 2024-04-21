@@ -6,7 +6,7 @@ import { dom } from "./popover.dom"
 import type { MachineApi, Send, State } from "./popover.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isOpen = state.matches("open")
+  const open = state.matches("open")
 
   const currentPlacement = state.context.currentPlacement
   const portalled = state.context.currentPortalled
@@ -19,12 +19,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     portalled,
-    isOpen,
-    open() {
-      send("OPEN")
-    },
-    close() {
-      send("CLOSE")
+    open: open,
+    setOpen(open) {
+      send(open ? "OPEN" : "CLOSE")
     },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
@@ -56,10 +53,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-placement": currentPlacement,
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
-      "aria-expanded": isOpen,
-      "data-state": isOpen ? "open" : "closed",
+      "aria-expanded": open,
+      "data-state": open ? "open" : "closed",
       "aria-controls": dom.getContentId(state.context),
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         send("TOGGLE")
       },
       onBlur(event) {
@@ -70,7 +68,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     indicatorProps: normalize.element({
       ...parts.indicator.attrs,
       dir: state.context.dir,
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
     }),
 
     positionerProps: normalize.element({
@@ -86,9 +84,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getContentId(state.context),
       tabIndex: -1,
       role: "dialog",
-      hidden: !isOpen,
-      "data-state": isOpen ? "open" : "closed",
-      "data-expanded": dataAttr(isOpen),
+      hidden: !open,
+      "data-state": open ? "open" : "closed",
+      "data-expanded": dataAttr(open),
       "aria-labelledby": rendered.title ? dom.getTitleId(state.context) : undefined,
       "aria-describedby": rendered.description ? dom.getDescriptionId(state.context) : undefined,
       "data-placement": currentPlacement,
@@ -112,7 +110,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getCloseTriggerId(state.context),
       type: "button",
       "aria-label": "close",
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         send("CLOSE")
       },
     }),

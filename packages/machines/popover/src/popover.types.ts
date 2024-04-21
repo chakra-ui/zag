@@ -130,19 +130,16 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the popover is open
    */
-  isOpen: boolean
+  open: boolean
   /**
-   * Function to open the popover
+   * Function to open or close the popover
    */
-  open(): void
-  /**
-   * Function to close the popover
-   */
-  close(): void
+  setOpen(open: boolean): void
   /**
    * Function to reposition the popover
    */
   reposition(options?: Partial<PositioningOptions>): void
+
   arrowProps: T["element"]
   arrowTipProps: T["element"]
   anchorProps: T["element"]
