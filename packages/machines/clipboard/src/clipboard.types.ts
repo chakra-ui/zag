@@ -58,7 +58,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the value has been copied to the clipboard
    */
-  isCopied: boolean
+  copied: boolean
   /**
    * The value to be copied to the clipboard
    */

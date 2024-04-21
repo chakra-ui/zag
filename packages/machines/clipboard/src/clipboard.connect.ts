@@ -5,10 +5,10 @@ import type { MachineApi, Send, State } from "./clipboard.types"
 import { dom } from "./clipboard.dom"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isCopied = state.matches("copied")
+  const copied = state.matches("copied")
 
   return {
-    isCopied,
+    copied,
     value: state.context.value,
     setValue(value) {
       send({ type: "VALUE.SET", value })
@@ -18,23 +18,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     rootProps: normalize.element({
       ...parts.root.attrs,
-      "data-copied": dataAttr(isCopied),
+      "data-copied": dataAttr(copied),
       id: dom.getRootId(state.context),
     }),
     labelProps: normalize.label({
       ...parts.label.attrs,
       htmlFor: dom.getInputId(state.context),
-      "data-copied": dataAttr(isCopied),
+      "data-copied": dataAttr(copied),
       id: dom.getLabelId(state.context),
     }),
     controlProps: normalize.element({
       ...parts.control.attrs,
-      "data-copied": dataAttr(isCopied),
+      "data-copied": dataAttr(copied),
     }),
     inputProps: normalize.input({
       ...parts.input.attrs,
       defaultValue: state.context.value,
-      "data-copied": dataAttr(isCopied),
+      "data-copied": dataAttr(copied),
       readOnly: true,
       "data-readonly": "true",
       id: dom.getInputId(state.context),
@@ -47,8 +47,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
-      "aria-label": isCopied ? "Copied to clipboard" : "Copy to clipboard",
-      "data-copied": dataAttr(isCopied),
+      "aria-label": copied ? "Copied to clipboard" : "Copy to clipboard",
+      "data-copied": dataAttr(copied),
       onClick() {
         send({ type: "COPY" })
       },
@@ -56,7 +56,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getIndicatorProps(props) {
       return normalize.element({
         ...parts.indicator.attrs,
-        hidden: props.copied !== isCopied,
+        hidden: props.copied !== copied,
       })
     },
   }
