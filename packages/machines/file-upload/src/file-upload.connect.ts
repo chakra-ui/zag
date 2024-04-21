@@ -16,9 +16,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isFocused = state.matches("focused") && !disabled
 
   return {
-    isDragging,
-    isFocused,
-    open() {
+    dragging: isDragging,
+    focused: isFocused,
+    openFilePicker() {
       send("OPEN")
     },
     deleteFile(file) {
