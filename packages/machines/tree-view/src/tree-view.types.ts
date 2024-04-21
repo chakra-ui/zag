@@ -121,14 +121,29 @@ export interface ItemProps {
 export interface BranchProps extends ItemProps {}
 
 export interface ItemState {
+  /**
+   * The value of the tree item
+   */
   value: string
-  isDisabled: boolean
-  isSelected: boolean
-  isFocused: boolean
+  /**
+   * Whether the tree item is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the tree item is selected
+   */
+  selected: boolean
+  /**
+   * Whether the tree item is focused
+   */
+  focused: boolean
 }
 
 export interface BranchState extends ItemState {
-  isExpanded: boolean
+  /**
+   * Whether the tree branch is expanded
+   */
+  expanded: boolean
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {

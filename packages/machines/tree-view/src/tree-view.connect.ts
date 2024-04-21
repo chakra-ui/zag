@@ -14,19 +14,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   function getItemState(props: ItemProps): ItemState {
     return {
       value: props.value,
-      isDisabled: Boolean(props.disabled),
-      isFocused: focusedValue === props.value,
-      isSelected: selectedValue.includes(props.value),
+      disabled: Boolean(props.disabled),
+      focused: focusedValue === props.value,
+      selected: selectedValue.includes(props.value),
     }
   }
 
   function getBranchState(props: BranchProps): BranchState {
     return {
       value: props.value,
-      isDisabled: Boolean(props.disabled),
-      isFocused: focusedValue === props.value,
-      isExpanded: expandedValue.includes(props.value),
-      isSelected: selectedValue.includes(props.value),
+      disabled: Boolean(props.disabled),
+      focused: focusedValue === props.value,
+      expanded: expandedValue.includes(props.value),
+      selected: selectedValue.includes(props.value),
     }
   }
 
@@ -204,14 +204,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         "data-ownedby": dom.getTreeId(state.context),
         "data-item": itemState.value,
-        tabIndex: itemState.isFocused ? 0 : -1,
-        "data-focused": dataAttr(itemState.isFocused),
+        tabIndex: itemState.focused ? 0 : -1,
+        "data-focused": dataAttr(itemState.focused),
         role: "treeitem",
-        "aria-current": itemState.isSelected ? "true" : undefined,
-        "aria-selected": itemState.isDisabled ? undefined : itemState.isSelected,
-        "data-selected": dataAttr(itemState.isSelected),
-        "aria-disabled": itemState.isDisabled,
-        "data-disabled": dataAttr(itemState.isDisabled),
+        "aria-current": itemState.selected ? "true" : undefined,
+        "aria-selected": itemState.disabled ? undefined : itemState.selected,
+        "data-selected": dataAttr(itemState.selected),
+        "aria-disabled": itemState.disabled,
+        "data-disabled": dataAttr(itemState.disabled),
         "aria-level": props.depth,
         "data-depth": props.depth,
         style: {
@@ -222,7 +222,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "ITEM.FOCUS", id: itemState.value })
         },
         onClick(event) {
-          if (itemState.isDisabled) return
+          if (itemState.disabled) return
           const isMetaKey = event.metaKey || event.ctrlKey
           send({ type: "ITEM.CLICK", id: itemState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
@@ -237,9 +237,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemText.attrs,
-        "data-disabled": dataAttr(itemState.isDisabled),
-        "data-selected": dataAttr(itemState.isSelected),
-        "data-focused": dataAttr(itemState.isFocused),
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-selected": dataAttr(itemState.selected),
+        "data-focused": dataAttr(itemState.focused),
       })
     },
 
@@ -248,10 +248,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.itemIndicator.attrs,
         "aria-hidden": true,
-        "data-disabled": dataAttr(itemState.isDisabled),
-        "data-selected": dataAttr(itemState.isSelected),
-        "data-focused": dataAttr(itemState.isFocused),
-        hidden: !itemState.isSelected,
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-selected": dataAttr(itemState.selected),
+        "data-focused": dataAttr(itemState.focused),
+        hidden: !itemState.selected,
       })
     },
 
@@ -266,12 +266,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "treeitem",
         "data-ownedby": dom.getTreeId(state.context),
         "aria-level": props.depth,
-        "aria-selected": branchState.isDisabled ? undefined : branchState.isSelected,
-        "data-selected": dataAttr(branchState.isSelected),
-        "aria-expanded": branchState.isExpanded,
-        "data-state": branchState.isExpanded ? "open" : "closed",
-        "aria-disabled": branchState.isDisabled,
-        "data-disabled": dataAttr(branchState.isDisabled),
+        "aria-selected": branchState.disabled ? undefined : branchState.selected,
+        "data-selected": dataAttr(branchState.selected),
+        "aria-expanded": branchState.expanded,
+        "data-state": branchState.expanded ? "open" : "closed",
+        "aria-disabled": branchState.disabled,
+        "data-disabled": dataAttr(branchState.disabled),
         style: {
           "--depth": props.depth,
         },
@@ -283,10 +283,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.branchIndicator.attrs,
         "aria-hidden": true,
-        "data-state": branchState.isExpanded ? "open" : "closed",
-        "data-disabled": dataAttr(branchState.isDisabled),
-        "data-selected": dataAttr(branchState.isSelected),
-        "data-focused": dataAttr(branchState.isFocused),
+        "data-state": branchState.expanded ? "open" : "closed",
+        "data-disabled": dataAttr(branchState.disabled),
+        "data-selected": dataAttr(branchState.selected),
+        "data-focused": dataAttr(branchState.focused),
       })
     },
 
@@ -296,10 +296,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.branchTrigger.attrs,
         role: "button",
         dir: state.context.dir,
-        "data-disabled": dataAttr(branchState.isDisabled),
-        "data-state": branchState.isExpanded ? "open" : "closed",
+        "data-disabled": dataAttr(branchState.disabled),
+        "data-state": branchState.expanded ? "open" : "closed",
         onClick(event) {
-          if (branchState.isDisabled) return
+          if (branchState.disabled) return
           send({ type: "BRANCH_TOGGLE.CLICK", id: branchState.value })
           event.stopPropagation()
         },
@@ -312,10 +312,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.branchControl.attrs,
         role: "button",
         dir: state.context.dir,
-        tabIndex: branchState.isFocused ? 0 : -1,
-        "data-state": branchState.isExpanded ? "open" : "closed",
-        "data-disabled": dataAttr(branchState.isDisabled),
-        "data-selected": dataAttr(branchState.isSelected),
+        tabIndex: branchState.focused ? 0 : -1,
+        "data-state": branchState.expanded ? "open" : "closed",
+        "data-disabled": dataAttr(branchState.disabled),
+        "data-selected": dataAttr(branchState.selected),
         "data-branch": branchState.value,
         "data-depth": props.depth,
         onFocus(event) {
@@ -323,7 +323,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           event.stopPropagation()
         },
         onClick(event) {
-          if (branchState.isDisabled) return
+          if (branchState.disabled) return
 
           const isMetaKey = event.metaKey || event.ctrlKey
           send({ type: "BRANCH.CLICK", id: branchState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
@@ -339,8 +339,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.branchText.attrs,
         dir: state.context.dir,
         "data-branch": branchState.value,
-        "data-disabled": dataAttr(branchState.isDisabled),
-        "data-state": branchState.isExpanded ? "open" : "closed",
+        "data-disabled": dataAttr(branchState.disabled),
+        "data-state": branchState.expanded ? "open" : "closed",
       })
     },
 
@@ -351,8 +351,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "group",
         dir: state.context.dir,
         "data-branch": branchState.value,
-        "data-state": branchState.isExpanded ? "open" : "closed",
-        hidden: !branchState.isExpanded,
+        "data-state": branchState.expanded ? "open" : "closed",
+        hidden: !branchState.expanded,
       })
     },
   }
