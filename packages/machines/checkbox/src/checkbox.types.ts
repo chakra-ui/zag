@@ -120,19 +120,19 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the checkbox is checked
    */
-  isChecked: boolean
+  checked: boolean
   /**
    * Whether the checkbox is disabled
    */
-  isDisabled: boolean | undefined
+  disabled: boolean | undefined
   /**
    * Whether the checkbox is indeterminate
    */
-  isIndeterminate: boolean
+  indeterminate: boolean
   /**
    * Whether the checkbox is focused
    */
-  isFocused: boolean | undefined
+  focused: boolean | undefined
   /**
    *  The checked state of the checkbox
    */

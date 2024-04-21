@@ -21,10 +21,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
-    isChecked,
-    isDisabled,
-    isIndeterminate,
-    isFocused,
+    checked: isChecked,
+    disabled: isDisabled,
+    indeterminate: isIndeterminate,
+    focused: isFocused,
     checkedState: state.context.checked,
 
     setChecked(checked: CheckedState) {
