@@ -2,14 +2,14 @@ import { dataAttr, isDom } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
-import type { MachineApi, Send, IndicatorProps, ItemProps, State, ItemState } from "./carousel.types"
+import type { IndicatorProps, ItemProps, ItemState, MachineApi, Send, State } from "./carousel.types"
 import { getSlidesInView } from "./utils/get-slide-in-view"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const canScrollNext = state.context.canScrollNext
   const canScrollPrev = state.context.canScrollPrev
-  const isHorizontal = state.context.isHorizontal
-  const isAutoplay = state.matches("autoplay")
+  const horizontal = state.context.isHorizontal
+  const autoPlaying = state.matches("autoplay")
 
   const activeSnap = state.context.scrollSnaps[state.context.index]
   const slidesInView = isDom() ? getSlidesInView(state.context)(activeSnap) : []
@@ -18,38 +18,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     const { index } = props
     return {
       valueText: `Slide ${index + 1}`,
-      isCurrent: index === state.context.index,
-      isNext: index === state.context.index + 1,
-      isPrevious: index === state.context.index - 1,
-      isInView: slidesInView.includes(index),
+      current: index === state.context.index,
+      next: index === state.context.index + 1,
+      previous: index === state.context.index - 1,
+      inView: slidesInView.includes(index),
     }
   }
 
   return {
     index: state.context.index,
     scrollProgress: state.context.scrollProgress,
-    isAutoplay,
+    autoPlaying,
     canScrollNext,
     canScrollPrev,
-
     scrollTo(index, jump) {
       send({ type: "GOTO", index, jump })
     },
-
     scrollToNext() {
       send("NEXT")
     },
-
     scrollToPrevious() {
       send("PREV")
     },
-
     getItemState: getItemState,
-
     play() {
       send("PLAY")
     },
-
     pause() {
       send("PAUSE")
     },
@@ -82,8 +76,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       style: {
         display: "flex",
-        flexDirection: isHorizontal ? "row" : "column",
-        [isHorizontal ? "height" : "width"]: "auto",
+        flexDirection: horizontal ? "row" : "column",
+        [horizontal ? "height" : "width"]: "auto",
         gap: "var(--slide-spacing)",
         transform: state.context.translateValue,
         transitionProperty: "transform",
@@ -101,8 +95,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.item.attrs,
         id: dom.getItemId(state.context, index),
         dir: state.context.dir,
-        "data-current": dataAttr(sliderState.isCurrent),
-        "data-inview": dataAttr(sliderState.isInView),
+        "data-current": dataAttr(sliderState.current),
+        "data-inview": dataAttr(sliderState.inView),
         role: "group",
         "aria-roledescription": "slide",
         "data-orientation": state.context.orientation,
@@ -110,7 +104,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           position: "relative",
           flex: "0 0 var(--slide-size)",
-          [isHorizontal ? "minWidth" : "minHeight"]: "0px",
+          [horizontal ? "minWidth" : "minHeight"]: "0px",
         },
       })
     },

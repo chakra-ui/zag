@@ -103,10 +103,10 @@ export interface ItemProps {
 
 export interface ItemState {
   valueText: string
-  isCurrent: boolean
-  isNext: boolean
-  isPrevious: boolean
-  isInView: boolean
+  current: boolean
+  next: boolean
+  previous: boolean
+  inView: boolean
 }
 
 export interface IndicatorProps {
@@ -124,9 +124,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   scrollProgress: number
   /**
-   * Whether the carousel is currently auto-playing
+   * Whether the carousel is auto playing
    */
-  isAutoplay: boolean
+  autoPlaying: boolean
   /**
    * Whether the carousel is can scroll to the next slide
    */
