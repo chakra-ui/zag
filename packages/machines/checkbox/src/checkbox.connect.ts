@@ -6,25 +6,25 @@ import { dom } from "./checkbox.dom"
 import type { CheckedState, MachineApi, Send, State } from "./checkbox.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isDisabled = state.context.isDisabled
-  const isFocused = !isDisabled && state.context.focused
-  const isChecked = state.context.isChecked
-  const isIndeterminate = state.context.isIndeterminate
+  const disabled = state.context.isDisabled
+  const focused = !disabled && state.context.focused
+  const checked = state.context.isChecked
+  const indeterminate = state.context.isIndeterminate
 
   const dataAttrs = {
     "data-active": dataAttr(state.context.active),
-    "data-focus": dataAttr(isFocused),
+    "data-focus": dataAttr(focused),
     "data-hover": dataAttr(state.context.hovered),
-    "data-disabled": dataAttr(isDisabled),
-    "data-state": isIndeterminate ? "indeterminate" : state.context.checked ? "checked" : "unchecked",
+    "data-disabled": dataAttr(disabled),
+    "data-state": indeterminate ? "indeterminate" : state.context.checked ? "checked" : "unchecked",
     "data-invalid": dataAttr(state.context.invalid),
   }
 
   return {
-    checked: isChecked,
-    disabled: isDisabled,
-    indeterminate: isIndeterminate,
-    focused: isFocused,
+    checked,
+    disabled,
+    indeterminate,
+    focused,
     checkedState: state.context.checked,
 
     setChecked(checked: CheckedState) {
@@ -32,7 +32,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     toggleChecked() {
-      send({ type: "CHECKED.TOGGLE", checked: isChecked, isTrusted: false })
+      send({ type: "CHECKED.TOGGLE", checked: checked, isTrusted: false })
     },
 
     rootProps: normalize.label({
@@ -42,11 +42,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
       htmlFor: dom.getHiddenInputId(state.context),
       onPointerMove() {
-        if (isDisabled) return
+        if (disabled) return
         send({ type: "CONTEXT.SET", context: { hovered: true } })
       },
       onPointerLeave() {
-        if (isDisabled) return
+        if (disabled) return
         send({ type: "CONTEXT.SET", context: { hovered: false } })
       },
       onClick(event) {
@@ -75,16 +75,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.indicator.attrs,
       ...dataAttrs,
       dir: state.context.dir,
-      hidden: !isIndeterminate && !state.context.checked,
+      hidden: !indeterminate && !state.context.checked,
     }),
 
     hiddenInputProps: normalize.input({
       id: dom.getHiddenInputId(state.context),
       type: "checkbox",
       required: state.context.required,
-      defaultChecked: isChecked,
-      disabled: isDisabled,
-      "data-disabled": dataAttr(isDisabled),
+      defaultChecked: checked,
+      disabled: disabled,
+      "data-disabled": dataAttr(disabled),
       "aria-labelledby": dom.getLabelId(state.context),
       "aria-invalid": state.context.invalid,
       name: state.context.name,
