@@ -190,11 +190,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the editable is in edit mode
    */
-  isEditing: boolean
+  editing: boolean
   /**
    * Whether the editable value is empty
    */
-  isValueEmpty: boolean
+  empty: boolean
   /**
    * The current value of the editable
    */

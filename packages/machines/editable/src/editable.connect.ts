@@ -6,24 +6,24 @@ import { dom } from "./editable.dom"
 import type { MachineApi, Send, State } from "./editable.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isDisabled = state.context.disabled
-  const isInteractive = state.context.isInteractive
-  const isReadOnly = state.context.readOnly
-  const isValueEmpty = state.context.isValueEmpty
-  const isInvalid = state.context.invalid
+  const disabled = state.context.disabled
+  const interactive = state.context.isInteractive
+  const readOnly = state.context.readOnly
+  const empty = state.context.isValueEmpty
+  const invalid = state.context.invalid
 
   const autoResize = state.context.autoResize
   const translations = state.context.translations
 
-  const isEditing = state.matches("edit")
+  const editing = state.matches("edit")
 
   const placeholderProp = state.context.placeholder
   const placeholder =
     typeof placeholderProp === "string" ? { edit: placeholderProp, preview: placeholderProp } : placeholderProp
 
   return {
-    isEditing,
-    isValueEmpty: isValueEmpty,
+    editing,
+    empty,
     value: state.context.value,
     setValue(value) {
       send({ type: "SET_VALUE", value })
@@ -32,15 +32,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SET_VALUE", value: "" })
     },
     edit() {
-      if (!isInteractive) return
+      if (!interactive) return
       send("EDIT")
     },
     cancel() {
-      if (!isInteractive) return
+      if (!interactive) return
       send("CANCEL")
     },
     submit() {
-      if (!isInteractive) return
+      if (!interactive) return
       send("SUBMIT")
     },
 
@@ -55,9 +55,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getAreaId(state.context),
       dir: state.context.dir,
       style: autoResize ? { display: "inline-grid" } : undefined,
-      "data-focus": dataAttr(isEditing),
-      "data-disabled": dataAttr(isDisabled),
-      "data-placeholder-shown": dataAttr(isValueEmpty),
+      "data-focus": dataAttr(editing),
+      "data-disabled": dataAttr(disabled),
+      "data-placeholder-shown": dataAttr(empty),
     }),
 
     labelProps: normalize.label({
@@ -65,13 +65,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getLabelId(state.context),
       dir: state.context.dir,
       htmlFor: dom.getInputId(state.context),
-      "data-focus": dataAttr(isEditing),
-      "data-invalid": dataAttr(isInvalid),
-      onPointerDown(event) {
-        if (!isEditing) {
-          event.preventDefault()
-          dom.getPreviewEl(state.context)?.focus()
-        }
+      "data-focus": dataAttr(editing),
+      "data-invalid": dataAttr(invalid),
+      onClick() {
+        if (editing) return
+        const previewEl = dom.getPreviewEl(state.context)
+        previewEl?.focus({ preventScroll: true })
       },
     }),
 
@@ -82,15 +81,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       name: state.context.name,
       form: state.context.form,
       id: dom.getInputId(state.context),
-      hidden: autoResize ? undefined : !isEditing,
+      hidden: autoResize ? undefined : !editing,
       placeholder: placeholder?.edit,
       maxLength: state.context.maxLength,
-      disabled: isDisabled,
-      "data-disabled": dataAttr(isDisabled),
-      readOnly: isReadOnly,
-      "data-readonly": dataAttr(isReadOnly),
-      "aria-invalid": ariaAttr(isInvalid),
-      "data-invalid": dataAttr(isInvalid),
+      disabled: disabled,
+      "data-disabled": dataAttr(disabled),
+      readOnly: readOnly,
+      "data-readonly": dataAttr(readOnly),
+      "aria-invalid": ariaAttr(invalid),
+      "data-invalid": dataAttr(invalid),
       defaultValue: state.context.value,
       size: autoResize ? 1 : undefined,
       onChange(event) {
@@ -123,7 +122,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ? {
             all: "unset",
             gridArea: "1 / 1 / auto / auto",
-            visibility: !isEditing ? "hidden" : undefined,
+            visibility: !editing ? "hidden" : undefined,
           }
         : undefined,
     }),
@@ -132,22 +131,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getPreviewId(state.context),
       ...parts.preview.attrs,
       dir: state.context.dir,
-      "data-placeholder-shown": dataAttr(isValueEmpty),
-      "aria-readonly": ariaAttr(isReadOnly),
-      "data-readonly": dataAttr(isDisabled),
-      "data-disabled": dataAttr(isDisabled),
-      "aria-disabled": ariaAttr(isDisabled),
-      "aria-invalid": ariaAttr(isInvalid),
-      "data-invalid": dataAttr(isInvalid),
-      children: isValueEmpty ? placeholder?.preview : state.context.value,
-      hidden: autoResize ? undefined : isEditing,
-      tabIndex: isInteractive && state.context.isPreviewFocusable ? 0 : undefined,
+      "data-placeholder-shown": dataAttr(empty),
+      "aria-readonly": ariaAttr(readOnly),
+      "data-readonly": dataAttr(disabled),
+      "data-disabled": dataAttr(disabled),
+      "aria-disabled": ariaAttr(disabled),
+      "aria-invalid": ariaAttr(invalid),
+      "data-invalid": dataAttr(invalid),
+      children: empty ? placeholder?.preview : state.context.value,
+      hidden: autoResize ? undefined : editing,
+      tabIndex: interactive && state.context.isPreviewFocusable ? 0 : undefined,
       onFocus() {
-        if (!isInteractive) return
+        if (!interactive) return
         send("FOCUS")
       },
       onDoubleClick() {
-        if (!isInteractive) return
+        if (!interactive) return
         send("DBLCLICK")
       },
       style: autoResize
@@ -155,7 +154,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             whiteSpace: "pre",
             userSelect: "none",
             gridArea: "1 / 1 / auto / auto",
-            visibility: isEditing ? "hidden" : undefined,
+            visibility: editing ? "hidden" : undefined,
             // in event the preview overflow's the parent element
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -168,11 +167,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getEditTriggerId(state.context),
       dir: state.context.dir,
       "aria-label": translations.edit,
-      hidden: isEditing,
+      hidden: editing,
       type: "button",
-      disabled: isDisabled,
-      onClick() {
-        if (!isInteractive) return
+      disabled: disabled,
+      onClick(event) {
+        if (event.defaultPrevented) return
+        if (!interactive) return
         send("EDIT")
       },
     }),
@@ -188,11 +188,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getSubmitTriggerId(state.context),
       "aria-label": translations.submit,
-      hidden: !isEditing,
-      disabled: isDisabled,
+      hidden: !editing,
+      disabled: disabled,
       type: "button",
-      onClick() {
-        if (!isInteractive) return
+      onClick(event) {
+        if (event.defaultPrevented) return
+        if (!interactive) return
         send("SUBMIT")
       },
     }),
@@ -202,11 +203,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       "aria-label": translations.cancel,
       id: dom.getCancelTriggerId(state.context),
-      hidden: !isEditing,
+      hidden: !editing,
       type: "button",
-      disabled: isDisabled,
-      onClick() {
-        if (!isInteractive) return
+      disabled: disabled,
+      onClick(event) {
+        if (event.defaultPrevented) return
+        if (!interactive) return
         send("CANCEL")
       },
     }),
