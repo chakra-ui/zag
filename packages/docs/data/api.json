@@ -70,13 +70,9 @@
   },
   "avatar": {
     "api": {
-      "isLoaded": {
+      "loaded": {
         "type": "boolean",
         "description": "Whether the image is loaded."
-      },
-      "showFallback": {
-        "type": "boolean",
-        "description": "Whether the fallback is shown."
       },
       "setSrc": {
         "type": "(src: string) => void",
@@ -121,9 +117,9 @@
         "type": "number",
         "description": "The current scroll progress of the carousel"
       },
-      "isAutoplay": {
+      "autoPlaying": {
         "type": "boolean",
-        "description": "Whether the carousel is currently auto-playing"
+        "description": "Whether the carousel is auto playing"
       },
       "canScrollNext": {
         "type": "boolean",
@@ -209,19 +205,19 @@
   },
   "checkbox": {
     "api": {
-      "isChecked": {
+      "checked": {
         "type": "boolean",
         "description": "Whether the checkbox is checked"
       },
-      "isDisabled": {
+      "disabled": {
         "type": "boolean",
         "description": "Whether the checkbox is disabled"
       },
-      "isIndeterminate": {
+      "indeterminate": {
         "type": "boolean",
         "description": "Whether the checkbox is indeterminate"
       },
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the checkbox is focused"
       },
@@ -245,27 +241,31 @@
       },
       "disabled": {
         "type": "boolean",
-        "description": "If `true`, the checkbox will be disabled"
+        "description": "Whether the checkbox is disabled"
       },
       "invalid": {
         "type": "boolean",
-        "description": "If `true`, the checkbox is marked as invalid."
+        "description": "Whether the checkbox is invalid"
       },
       "required": {
         "type": "boolean",
-        "description": "If `true`, the checkbox input is marked as required,"
+        "description": "Whether the checkbox is required"
       },
       "checked": {
         "type": "CheckedState",
-        "description": "If `true`, the checkbox will be checked."
+        "description": "The checked state of the checkbox"
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the checkbox is read-only"
       },
       "onCheckedChange": {
         "type": "(details: CheckedChangeDetails) => void",
-        "description": "The callback invoked when the checked state of the `Checkbox` changes."
+        "description": "The callback invoked when the checked state changes."
       },
       "name": {
         "type": "string",
-        "description": "The name of the input field in a checkbox. Useful for form submission."
+        "description": "The name of the input field in a checkbox.\nUseful for form submission."
       },
       "form": {
         "type": "string",
@@ -293,7 +293,7 @@
   },
   "clipboard": {
     "api": {
-      "isCopied": {
+      "copied": {
         "type": "boolean",
         "description": "Whether the value has been copied to the clipboard"
       },
@@ -339,25 +339,21 @@
   },
   "collapsible": {
     "api": {
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the collapsible is open."
       },
-      "isVisible": {
+      "visible": {
         "type": "boolean",
         "description": "Whether the collapsible is visible (open or closing)"
       },
-      "isDisabled": {
+      "disabled": {
         "type": "boolean",
         "description": "Whether the collapsible is disabled"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the collapsible."
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the collapsible."
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the collapsible."
       }
     },
     "context": {
@@ -402,11 +398,11 @@
   },
   "color-picker": {
     "api": {
-      "isDragging": {
+      "dragging": {
         "type": "boolean",
         "description": "Whether the color picker is being dragged"
       },
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the color picker is open"
       },
@@ -446,13 +442,9 @@
         "type": "(value: number) => void",
         "description": "Function to set the color alpha"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the color picker"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the color picker"
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the color picker"
       }
     },
     "context": {
@@ -544,15 +536,15 @@
   },
   "combobox": {
     "api": {
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the combobox is focused"
       },
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the combobox is open"
       },
-      "isInputValueEmpty": {
+      "inputEmpty": {
         "type": "boolean",
         "description": "Whether the combobox input value is empty"
       },
@@ -612,13 +604,9 @@
         "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a combobox item"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the combobox"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the combobox"
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the combobox"
       },
       "collection": {
         "type": "Collection<V>",
@@ -795,11 +783,11 @@
   },
   "date-picker": {
     "api": {
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the input is focused"
       },
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the date picker is open"
       },
@@ -883,13 +871,9 @@
         "type": "() => void",
         "description": "Clears the selected date(s)."
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the calendar."
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the calendar."
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the calendar."
       },
       "focusMonth": {
         "type": "(month: number) => void",
@@ -1076,17 +1060,13 @@
   },
   "dialog": {
     "api": {
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the dialog is open"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the dialog"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the dialog"
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the dialog"
       }
     },
     "context": {
@@ -1180,11 +1160,11 @@
   },
   "editable": {
     "api": {
-      "isEditing": {
+      "editing": {
         "type": "boolean",
         "description": "Whether the editable is in edit mode"
       },
-      "isValueEmpty": {
+      "empty": {
         "type": "boolean",
         "description": "Whether the editable value is empty"
       },
@@ -1325,15 +1305,15 @@
   },
   "file-upload": {
     "api": {
-      "isDragging": {
+      "dragging": {
         "type": "boolean",
         "description": "Whether the user is dragging something over the root element"
       },
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the user is focused on the dropzone element"
       },
-      "open": {
+      "openFilePicker": {
         "type": "() => void",
         "description": "Function to open the file dialog"
       },
@@ -1449,15 +1429,19 @@
   },
   "floating-panel": {
     "api": {
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the panel is open"
       },
-      "isDragging": {
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the panel"
+      },
+      "dragging": {
         "type": "boolean",
         "description": "Whether the panel is being dragged"
       },
-      "isResizing": {
+      "resizing": {
         "type": "boolean",
         "description": "Whether the panel is being resized"
       }
@@ -1556,17 +1540,13 @@
   },
   "hover-card": {
     "api": {
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the hover card is open"
       },
-      "open": {
-        "type": "() => void",
+      "setOpen": {
+        "type": "(open: boolean) => void",
         "description": "Function to open the hover card"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the hover card"
       },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
@@ -1619,17 +1599,13 @@
   },
   "menu": {
     "api": {
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the menu is open"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the menu"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the menu"
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the menu"
       },
       "highlightedValue": {
         "type": "string",
@@ -1746,15 +1722,15 @@
   },
   "number-input": {
     "api": {
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the input is focused."
       },
-      "isInvalid": {
+      "invalid": {
         "type": "boolean",
         "description": "Whether the input is invalid."
       },
-      "isValueEmpty": {
+      "empty": {
         "type": "boolean",
         "description": "Whether the input value is empty."
       },
@@ -1939,14 +1915,6 @@
         "type": "<V>(data: V[]) => V[]",
         "description": "Function to slice an array of data based on the current page."
       },
-      "isFirstPage": {
-        "type": "boolean",
-        "description": "Whether the current page is the first page."
-      },
-      "isLastPage": {
-        "type": "boolean",
-        "description": "Whether the current page is the last page."
-      },
       "setCount": {
         "type": "(count: number) => void",
         "description": "Function to set the total number of pages."
@@ -2019,7 +1987,7 @@
         "type": "string",
         "description": "The value of the input as a string."
       },
-      "isValueComplete": {
+      "complete": {
         "type": "boolean",
         "description": "Whether all inputs are filled."
       },
@@ -2134,17 +2102,13 @@
         "type": "boolean",
         "description": "Whether the popover is portalled"
       },
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the popover is open"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the popover"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the popover"
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the popover"
       },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
@@ -2231,7 +2195,7 @@
   },
   "presence": {
     "api": {
-      "isPresent": {
+      "present": {
         "type": "boolean",
         "description": "Whether the node is present in the DOM."
       },
@@ -2351,6 +2315,10 @@
         "type": "boolean",
         "description": "If `true`, the radio group will be disabled"
       },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the checkbox is read-only"
+      },
       "onValueChange": {
         "type": "(details: ValueChangeDetails) => void",
         "description": "Function called once a radio is checked"
@@ -2384,7 +2352,7 @@
         "type": "() => void",
         "description": "Clears the value of the rating group"
       },
-      "isHovering": {
+      "hovering": {
         "type": "boolean",
         "description": "Whether the rating group is being hovered"
       },
@@ -2475,15 +2443,15 @@
   },
   "select": {
     "api": {
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the select is focused"
       },
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the select is open"
       },
-      "isValueEmpty": {
+      "empty": {
         "type": "boolean",
         "description": "Whether the select value is empty"
       },
@@ -2535,13 +2503,9 @@
         "type": "(props: ItemProps<any>) => ItemState",
         "description": "Returns the state of a select item"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the select"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the select"
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the select"
       },
       "collection": {
         "type": "Collection<V>",
@@ -2662,11 +2626,11 @@
   },
   "signature-pad": {
     "api": {
-      "isEmpty": {
+      "empty": {
         "type": "boolean",
         "description": "Whether the signature pad is empty."
       },
-      "isDrawing": {
+      "drawing": {
         "type": "boolean",
         "description": "Whether the user is currently drawing."
       },
@@ -2733,11 +2697,11 @@
         "type": "number[]",
         "description": "The value of the slider."
       },
-      "isDragging": {
+      "dragging": {
         "type": "boolean",
         "description": "Whether the slider is being dragged."
       },
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the slider is focused."
       },
@@ -2840,7 +2804,7 @@
         "description": "Function invoked when the slider's focused index changes"
       },
       "getAriaValueText": {
-        "type": "(value: number, index: number) => string",
+        "type": "(details: ValueTextDetails) => string",
         "description": "Function that returns a human readable value for the slider thumb"
       },
       "min": {
@@ -2892,11 +2856,11 @@
   },
   "splitter": {
     "api": {
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the splitter is focused."
       },
-      "isDragging": {
+      "dragging": {
         "type": "boolean",
         "description": "Whether the splitter is being dragged."
       },
@@ -2959,15 +2923,15 @@
   },
   "switch": {
     "api": {
-      "isChecked": {
+      "checked": {
         "type": "boolean",
         "description": "Whether the checkbox is checked"
       },
-      "isDisabled": {
+      "disabled": {
         "type": "boolean",
         "description": "Whether the checkbox is disabled"
       },
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the checkbox is focused"
       },
@@ -3000,6 +2964,10 @@
       "required": {
         "type": "boolean",
         "description": "If `true`, the switch input is marked as required,"
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the switch is read-only"
       },
       "onCheckedChange": {
         "type": "(details: CheckedChangeDetails) => void",
@@ -3117,7 +3085,7 @@
   },
   "tags-input": {
     "api": {
-      "isEmpty": {
+      "empty": {
         "type": "boolean",
         "description": "Whether the tags are empty"
       },
@@ -3137,7 +3105,7 @@
         "type": "number",
         "description": "The number of the tags."
       },
-      "isAtMax": {
+      "atMax": {
         "type": "boolean",
         "description": "Whether the tags have reached the max limit."
       },
@@ -3357,17 +3325,13 @@
   },
   "tooltip": {
     "api": {
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the tooltip is open."
       },
-      "open": {
-        "type": "() => void",
+      "setOpen": {
+        "type": "(open: boolean) => void",
         "description": "Function to open the tooltip."
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the tooltip."
       },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",

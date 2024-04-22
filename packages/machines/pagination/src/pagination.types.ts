@@ -167,14 +167,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   slice<V>(data: V[]): V[]
   /**
-   * Whether the current page is the first page.
-   */
-  isFirstPage: boolean
-  /**
-   * Whether the current page is the last page.
-   */
-  isLastPage: boolean
-  /**
    * Function to set the total number of pages.
    */
   setCount(count: number): void

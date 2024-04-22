@@ -89,7 +89,7 @@ const [state, send] = useMachine(
     onValueChange(details) {
       console.log("Value changed", details.value)
     },
-    onValueCommit: (details) => {
+    onValueCommit(details) {
       console.log("Value submitted", details.value)
     },
   }),
