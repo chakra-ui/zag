@@ -1,6 +1,7 @@
 <script lang="ts">
   import { normalizeProps, useActor } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
+  import { XIcon } from "lucide-svelte"
 
   interface Props {
     actor: toast.Service
@@ -10,26 +11,13 @@
 
   const [snapshot, send] = useActor(actor)
   const api = $derived(toast.connect(snapshot, send, normalizeProps))
-
-  const progressbarProps = $derived(
-    normalizeProps.element({
-      "data-scope": "toast",
-      "data-part": "progressbar",
-      "data-type": snapshot.context.type,
-      style: {
-        opacity: api.visible ? 1 : 0,
-        transformOrigin: api.rtl ? "right" : "left",
-        animationName: api.type === "loading" ? "none" : undefined,
-        animationPlayState: api.paused ? "paused" : "running",
-        animationDuration: "var(--duration)",
-      },
-    }),
-  )
 </script>
 
 <pre {...api.rootProps}>
-    <div {...progressbarProps}></div>
-    <p {...api.titleProps}>{api.title}</p>
-    <p {...api.descriptionProps}>{api.description}</p>
-    <button {...api.closeTriggerProps}>Close</button>
+  <div data-scope="toast" data-part="progressbar"></div>
+  <p {...api.titleProps}>{api.title}</p>
+  <p {...api.descriptionProps}>{api.description}</p>
+  <button {...api.closeTriggerProps}>
+    <XIcon />
+  </button>
 </pre>

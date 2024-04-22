@@ -13,23 +13,10 @@ function ToastItem({ actor }: { actor: toast.Service }) {
   const [state, send] = useActor(actor)
   const api = toast.connect(state, send, normalizeProps)
 
-  const progressbarProps = {
-    "data-scope": "toast",
-    "data-part": "progressbar",
-    "data-type": state.context.type,
-    style: {
-      opacity: api.visible ? 1 : 0,
-      transformOrigin: api.rtl ? "right" : "left",
-      animationName: api.type === "loading" ? "none" : undefined,
-      animationPlayState: api.paused ? "paused" : "running",
-      animationDuration: "var(--duration)",
-    },
-  }
-
   return (
-    <pre {...api.rootProps}>
+    <div {...api.rootProps}>
       <span {...api.ghostBeforeProps} />
-      <div {...progressbarProps} />
+      <div data-scope="toast" data-part="progressbar" />
       <p {...api.titleProps}>
         {api.type === "loading" && <LoaderBar />}
         {api.title}
@@ -39,7 +26,7 @@ function ToastItem({ actor }: { actor: toast.Service }) {
         <XIcon />
       </button>
       <span {...api.ghostAfterProps} />
-    </pre>
+    </div>
   )
 }
 

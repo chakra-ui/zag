@@ -7,11 +7,11 @@
 
   const controls = useControls(tourControls)
 
-  const [state, send] = useMachine(tour.machine({ id: "1", steps: tourData }), {
+  const [snapshot, send] = useMachine(tour.machine({ id: "1", steps: tourData }), {
     context: controls.context,
   })
 
-  const api = $derived(tour.connect(state, send, normalizeProps))
+  const api = $derived(tour.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="tour">

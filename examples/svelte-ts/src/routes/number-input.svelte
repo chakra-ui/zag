@@ -17,7 +17,7 @@
 
 <main>
   <div {...api.rootProps}>
-    <div data-testid="scrubber" {...api.scrubberProps} />
+    <div data-testid="scrubber" {...api.scrubberProps}></div>
     <!-- svelte-ignore a11y-label-has-associated-control -->
     <label data-testid="label" {...api.labelProps}> Enter number: </label>
     <div {...api.controlProps}>

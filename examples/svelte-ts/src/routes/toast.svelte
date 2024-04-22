@@ -9,7 +9,7 @@
 
   const controls = useControls(toastControls)
 
-  const [state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     toast.group.machine({
       id: "1",
       placement: "bottom-end",
@@ -21,7 +21,7 @@
     },
   )
 
-  const api = $derived(toast.group.connect(state, send, normalizeProps))
+  const api = $derived(toast.group.connect(snapshot, send, normalizeProps))
   let id: string | undefined = ""
 </script>
 
@@ -73,5 +73,5 @@
 </main>
 
 <Toolbar {controls} viz>
-  <StateVisualizer {state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>
