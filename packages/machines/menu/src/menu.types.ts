@@ -221,16 +221,25 @@ export interface OptionItemProps extends Partial<ItemProps> {
   /**
    * Function called when the option state is changed
    */
-  onCheckedChange?: (checked: boolean) => void
+  onCheckedChange?(checked: boolean): void
 }
 
 export interface ItemState {
-  isDisabled: boolean
-  isHighlighted: boolean
+  /**
+   * Whether the item is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the item is highlighted
+   */
+  highlighted: boolean
 }
 
 export interface OptionItemState extends ItemState {
-  isChecked: boolean
+  /**
+   * Whether the option item is checked
+   */
+  checked: boolean
 }
 
 export interface ItemGroupProps {
@@ -251,15 +260,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the menu is open
    */
-  isOpen: boolean
+  open: boolean
   /**
-   * Function to open the menu
+   * Function to open or close the menu
    */
-  open(): void
-  /**
-   * Function to close the menu
-   */
-  close(): void
+  setOpen(open: boolean): void
   /**
    * The id of the currently highlighted menuitem
    */

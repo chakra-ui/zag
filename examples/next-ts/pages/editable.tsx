@@ -29,12 +29,12 @@ export default function Page() {
             <span data-testid="preview" {...api.previewProps} />
           </div>
           <div {...api.controlProps}>
-            {!api.isEditing && (
+            {!api.editing && (
               <button data-testid="edit-button" {...api.editTriggerProps}>
                 Edit
               </button>
             )}
-            {api.isEditing && (
+            {api.editing && (
               <>
                 <button data-testid="save-button" {...api.submitTriggerProps}>
                   Save

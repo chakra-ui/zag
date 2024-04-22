@@ -1,5 +1,5 @@
 import { addDomEvent } from "@zag-js/dom-event"
-import { setVisuallyHidden } from "@zag-js/visually-hidden"
+import { setVisuallyHidden } from "@zag-js/dom-query"
 import type { FocusContext } from "./focus-context"
 
 export interface FocusContainmentOptions {

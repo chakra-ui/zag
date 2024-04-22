@@ -10,12 +10,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const id = state.context.id
   const hasAriaLabel = state.context.hasAriaLabel
 
-  const isOpen = state.hasTag("open")
+  const open = state.hasTag("open")
 
   const triggerId = dom.getTriggerId(state.context)
   const contentId = dom.getContentId(state.context)
 
-  const isDisabled = state.context.disabled
+  const disabled = state.context.disabled
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
@@ -23,12 +23,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   return {
-    isOpen,
-    open() {
-      send("OPEN")
-    },
-    close() {
-      send("CLOSE")
+    open: open,
+    setOpen(_open) {
+      if (_open === open) return
+      send(_open ? "OPEN" : "CLOSE")
     },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
@@ -38,39 +36,39 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.trigger.attrs,
       id: triggerId,
       dir: state.context.dir,
-      "data-expanded": dataAttr(isOpen),
-      "data-state": isOpen ? "open" : "closed",
-      "aria-describedby": isOpen ? contentId : undefined,
+      "data-expanded": dataAttr(open),
+      "data-state": open ? "open" : "closed",
+      "aria-describedby": open ? contentId : undefined,
       onClick() {
-        if (isDisabled) return
+        if (disabled) return
         send("CLOSE")
       },
       onFocus() {
-        if (isDisabled || state.event.type === "POINTER_DOWN") return
+        if (disabled || state.event.type === "POINTER_DOWN") return
         send("OPEN")
       },
       onBlur() {
-        if (isDisabled) return
+        if (disabled) return
         if (id === store.id) {
           send("CLOSE")
         }
       },
       onPointerDown() {
-        if (isDisabled || !state.context.closeOnPointerDown) return
+        if (disabled || !state.context.closeOnPointerDown) return
         if (id === store.id) {
           send("CLOSE")
         }
       },
       onPointerMove(event) {
-        if (isDisabled || event.pointerType === "touch") return
+        if (disabled || event.pointerType === "touch") return
         send("POINTER_MOVE")
       },
       onPointerLeave() {
-        if (isDisabled) return
+        if (disabled) return
         send("POINTER_LEAVE")
       },
       onPointerCancel() {
-        if (isDisabled) return
+        if (disabled) return
         send("POINTER_LEAVE")
       },
     }),
@@ -98,8 +96,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     contentProps: normalize.element({
       ...parts.content.attrs,
       dir: state.context.dir,
-      hidden: !isOpen,
-      "data-state": isOpen ? "open" : "closed",
+      hidden: !open,
+      "data-state": open ? "open" : "closed",
       role: hasAriaLabel ? undefined : "tooltip",
       id: hasAriaLabel ? undefined : contentId,
       "data-placement": state.context.currentPlacement,

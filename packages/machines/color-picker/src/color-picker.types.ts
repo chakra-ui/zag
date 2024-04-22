@@ -7,6 +7,20 @@ import type { MaybeFunction } from "@zag-js/utils"
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
+// patch the global window object to include the EyeDropper API
+
+interface EyeDropper {
+  new (): EyeDropper
+  open: (options?: { signal?: AbortSignal }) => Promise<{ sRGBHex: string }>
+  [Symbol.toStringTag]: "EyeDropper"
+}
+
+declare global {
+  interface Window {
+    EyeDropper: EyeDropper
+  }
+}
+
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
@@ -218,8 +232,8 @@ export interface SwatchTriggerProps {
 export interface SwatchTriggerState {
   value: Color
   valueAsString: string
-  isChecked: boolean
-  isDisabled: boolean
+  checked: boolean
+  disabled: boolean
 }
 
 export interface SwatchProps {
@@ -241,11 +255,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the color picker is being dragged
    */
-  isDragging: boolean
+  dragging: boolean
   /**
    * Whether the color picker is open
    */
-  isOpen: boolean
+  open: boolean
   /**
    * The current color value (as a string)
    */
@@ -283,13 +297,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   setAlpha(value: number): void
   /**
-   * Function to open the color picker
+   * Function to open or close the color picker
    */
-  open(): void
-  /**
-   * Function to close the color picker
-   */
-  close(): void
+  setOpen(open: boolean): void
 
   rootProps: T["element"]
   labelProps: T["element"]

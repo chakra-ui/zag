@@ -28,7 +28,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The value of the checked radio
    */
   value: string | null
-
   /**
    * The name of the input fields in the radio
    * (Useful for form submission).
@@ -42,6 +41,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * If `true`, the radio group will be disabled
    */
   disabled?: boolean
+  /**
+   * Whether the checkbox is read-only
+   */
+  readOnly?: boolean
   /**
    * Function called once a radio is checked
    * @param value the value of the checked radio
@@ -58,17 +61,17 @@ interface PrivateContext {
    * @internal
    * The id of the active radio
    */
-  activeId: string | null
+  activeValue: string | null
   /**
    * @internal
    * The id of the focused radio
    */
-  focusedId: string | null
+  focusedValue: string | null
   /**
    * @internal
    * The id of the hovered radio
    */
-  hoveredId: string | null
+  hoveredValue: string | null
   /**
    * @internal
    * The active tab indicator's dom rect
@@ -122,12 +125,30 @@ export interface ItemProps {
 }
 
 export interface ItemState {
-  isInvalid: boolean
-  isDisabled: boolean
-  isChecked: boolean
-  isFocused: boolean
-  isHovered: boolean
-  isActive: boolean
+  /**
+   * Whether the radio is invalid
+   */
+  invalid: boolean
+  /**
+   * Whether the radio is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the radio is checked
+   */
+  checked: boolean
+  /**
+   *  Whether the radio is focused
+   */
+  focused: boolean
+  /**
+   * Whether the radio is hovered
+   */
+  hovered: boolean
+  /**
+   * Whether the radio is active or pressed
+   */
+  active: boolean
 }
 
 /* -----------------------------------------------------------------------------
@@ -150,11 +171,12 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Function to focus the radio group
    */
-  focus: () => void
+  focus(): void
   /**
    * Returns the state details of a radio input
    */
   getItemState(props: ItemProps): ItemState
+
   rootProps: T["element"]
   labelProps: T["element"]
   getItemProps(props: ItemProps): T["label"]

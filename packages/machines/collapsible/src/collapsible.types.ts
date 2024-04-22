@@ -91,23 +91,20 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the collapsible is open.
    */
-  isOpen: boolean
+  open: boolean
   /**
    * Whether the collapsible is visible (open or closing)
    */
-  isVisible: boolean
+  visible: boolean
   /**
    * Whether the collapsible is disabled
    */
-  isDisabled: boolean
+  disabled: boolean
   /**
-   * Function to open the collapsible.
+   * Function to open or close the collapsible.
    */
-  open(): void
-  /**
-   * Function to close the collapsible.
-   */
-  close(): void
+  setOpen(open: boolean): void
+
   rootProps: T["element"]
   triggerProps: T["button"]
   contentProps: T["element"]

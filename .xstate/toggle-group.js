@@ -15,7 +15,7 @@ const fetchMachine = createMachine({
   context: {
     "!(isClickFocus && isTabbingBackward)": false
   },
-  entry: ["checkFocusableToggles", "checkIfWithinToolbar"],
+  entry: ["checkIfWithinToolbar"],
   on: {
     "VALUE.SET": {
       actions: ["setValue"]

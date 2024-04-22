@@ -33,7 +33,7 @@ export function HoverCard(props: Props) {
           Twitter
         </a>
 
-        {api.isOpen && (
+        {api.open && (
           <Portal>
             <div {...api.positionerProps}>
               <div {...api.contentProps}>

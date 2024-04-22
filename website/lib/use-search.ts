@@ -53,7 +53,7 @@ export function useSearch(): UseSearchReturn {
         return inputValue.length > 2
       },
       onValueChange() {
-        dialog_api.close()
+        dialog_api.setOpen(false)
       },
       onInputValueChange({ inputValue }) {
         if (inputValue.length < 3) return
@@ -77,14 +77,14 @@ export function useSearch(): UseSearchReturn {
       const hotkey = isMac ? "metaKey" : "ctrlKey"
       if (event.key?.toLowerCase() === "k" && event[hotkey]) {
         event.preventDefault()
-        dialog_api.isOpen ? dialog_api.close() : dialog_api.open()
+        dialog_api.setOpen(dialog_api.open ? false : true)
       }
     }
     document.addEventListener("keydown", fn)
     return () => {
       document.removeEventListener("keydown", fn)
     }
-  }, [dialog_api.isOpen, dialog_api.close, dialog_api.open])
+  }, [dialog_api.setOpen, dialog_api.open])
 
   const combobox_api = combobox.connect(
     combobox_state,
@@ -93,20 +93,16 @@ export function useSearch(): UseSearchReturn {
   )
 
   useUpdateEffect(() => {
-    if (dialog_api.isOpen && combobox_api.isInputValueEmpty) {
+    if (dialog_api.open && combobox_api.inputEmpty) {
       setResults([])
     }
-  }, [dialog_api.isOpen, combobox_api.isInputValueEmpty])
+  }, [dialog_api.open, combobox_api.inputEmpty])
 
   useUpdateEffect(() => {
-    if (!dialog_api.isOpen && !combobox_api.isInputValueEmpty) {
+    if (!dialog_api.open && !combobox_api.inputEmpty) {
       combobox_api.clearValue()
     }
-  }, [
-    dialog_api.isOpen,
-    combobox_api.isInputValueEmpty,
-    combobox_api.clearValue,
-  ])
+  }, [dialog_api.open, combobox_api.inputEmpty, combobox_api.clearValue])
 
   return {
     results,

@@ -20,9 +20,9 @@ const api = computed(() => editable.connect(state.value, send, normalizeProps))
         <span data-testid="preview" v-bind="api.previewProps" />
       </div>
       <div v-bind="api.controlProps">
-        <button v-if="!api.isEditing" data-testid="edit-button" v-bind="api.editTriggerProps">Edit</button>
+        <button v-if="!api.editing" data-testid="edit-button" v-bind="api.editTriggerProps">Edit</button>
 
-        <Fragment v-if="api.isEditing">
+        <Fragment v-if="api.editing">
           <button data-testid="save-button" v-bind="api.submitTriggerProps">Save</button>
           <button data-testid="cancel-button" v-bind="api.cancelTriggerProps">Cancel</button>
         </Fragment>

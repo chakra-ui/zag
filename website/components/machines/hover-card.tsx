@@ -27,7 +27,7 @@ export function HoverCard(props: HoverCardProps) {
         <img alt="Twitter" src="/favicon/apple-touch-icon.png" />
       </a>
 
-      {api.isOpen && (
+      {api.open && (
         <Portal>
           <div {...api.positionerProps}>
             <div {...api.contentProps}>

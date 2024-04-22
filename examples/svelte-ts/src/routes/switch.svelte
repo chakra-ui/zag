@@ -8,11 +8,11 @@
 
   const controls = useControls(switchControls)
 
-  const [state, send] = useMachine(zagSwitch.machine({ id: "1", name: "switch" }), {
+  const [snapshot, send] = useMachine(zagSwitch.machine({ id: "1", name: "switch" }), {
     context: controls.context,
   })
 
-  const api = $derived(zagSwitch.connect(state, send, normalizeProps))
+  const api = $derived(zagSwitch.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="switch">
@@ -20,12 +20,12 @@
   <label {...api.rootProps}>
     <input {...api.hiddenInputProps} data-testid="hidden-input" />
     <span {...api.controlProps}>
-      <span {...api.thumbProps} />
+      <span {...api.thumbProps}></span>
     </span>
-    <span {...api.labelProps}>Feature is {api.isChecked ? "enabled" : "disabled"}</span>
+    <span {...api.labelProps}>Feature is {api.checked ? "enabled" : "disabled"}</span>
   </label>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer {state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

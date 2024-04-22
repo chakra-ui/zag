@@ -169,15 +169,15 @@ export interface MachineApi<T extends PropTypes> {
   /**
    * Whether the user is dragging something over the root element
    */
-  isDragging: boolean
+  dragging: boolean
   /**
    * Whether the user is focused on the dropzone element
    */
-  isFocused: boolean
+  focused: boolean
   /**
    * Function to open the file dialog
    */
-  open(): void
+  openFilePicker(): void
   /**
    * Function to delete the file from the list
    */

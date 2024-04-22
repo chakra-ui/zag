@@ -9,7 +9,7 @@
   const controls = useControls(paginationControls)
   let details = $state<any>({})
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     pagination.machine({
       id: "1",
       count: paginationData.length,
@@ -22,7 +22,7 @@
     },
   )
 
-  const api = $derived(pagination.connect(_state, send, normalizeProps))
+  const api = $derived(pagination.connect(snapshot, send, normalizeProps))
 
   const data = $derived(api.slice(paginationData))
 </script>
@@ -82,5 +82,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

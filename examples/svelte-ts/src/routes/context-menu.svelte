@@ -4,14 +4,14 @@
   import * as menu from "@zag-js/menu"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     menu.machine({
       id: "1",
       onSelect: console.log,
     }),
   )
 
-  const api = $derived(menu.connect(_state, send, normalizeProps))
+  const api = $derived(menu.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="context-menu">
@@ -27,5 +27,5 @@
 </main>
 
 <Toolbar>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

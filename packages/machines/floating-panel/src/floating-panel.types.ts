@@ -158,15 +158,19 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the panel is open
    */
-  isOpen: boolean
+  open: boolean
+  /**
+   * Function to open or close the panel
+   */
+  setOpen(open: boolean): void
   /**
    * Whether the panel is being dragged
    */
-  isDragging: boolean
+  dragging: boolean
   /**
    * Whether the panel is being resized
    */
-  isResizing: boolean
+  resizing: boolean
 
   dragTriggerProps: T["element"]
   getResizeTriggerProps(props: ResizeTriggerProps): T["element"]

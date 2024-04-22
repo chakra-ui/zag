@@ -8,10 +8,9 @@ import {
   isModifierKey,
   type EventKeyMap,
 } from "@zag-js/dom-event"
-import { dataAttr, query } from "@zag-js/dom-query"
+import { dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./color-picker.anatomy"
 import { dom } from "./color-picker.dom"
 import type {
@@ -32,12 +31,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const areaValue = state.context.areaValue
   const valueAsString = state.context.valueAsString
 
-  const isDisabled = state.context.isDisabled
-  const isInteractive = state.context.isInteractive
+  const disabled = state.context.isDisabled
+  const interactive = state.context.isInteractive
 
-  const isDragging = state.hasTag("dragging")
-  const isOpen = state.hasTag("open")
-  const isFocused = state.hasTag("focused")
+  const dragging = state.hasTag("dragging")
+  const open = state.hasTag("open")
+  const focused = state.hasTag("focused")
 
   const getAreaChannels = (props: AreaProps) => {
     const channels = areaValue.getChannels()
@@ -58,21 +57,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return {
       value: color,
       valueAsString: color.toString("hex"),
-      isChecked: color.isEqual(value),
-      isDisabled: props.disabled || !isInteractive,
+      checked: color.isEqual(value),
+      disabled: props.disabled || !interactive,
     }
   }
 
   return {
-    isDragging,
-    isOpen,
+    dragging,
+    open,
     valueAsString,
     value,
-    open() {
-      send({ type: "OPEN" })
-    },
-    close() {
-      send({ type: "CLOSE" })
+    setOpen(_open) {
+      if (_open === open) return
+      send({ type: _open ? "OPEN" : "CLOSE" })
     },
     setValue(value) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })
@@ -99,7 +96,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getRootId(state.context),
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       "data-readonly": dataAttr(state.context.readOnly),
       style: {
         "--value": value.toString("css"),
@@ -111,9 +108,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getLabelId(state.context),
       htmlFor: dom.getHiddenInputId(state.context),
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       "data-readonly": dataAttr(state.context.readOnly),
-      "data-focus": dataAttr(isFocused),
+      "data-focus": dataAttr(focused),
       onClick(event) {
         event.preventDefault()
         const inputEl = query(dom.getControlEl(state.context), "[data-channel=hex]")
@@ -125,33 +122,33 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
       dir: state.context.dir,
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       "data-readonly": dataAttr(state.context.readOnly),
-      "data-state": isOpen ? "open" : "closed",
-      "data-focus": dataAttr(isFocused),
+      "data-state": open ? "open" : "closed",
+      "data-focus": dataAttr(focused),
     }),
 
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
       dir: state.context.dir,
-      disabled: isDisabled,
+      disabled: disabled,
       "aria-label": `select color. current color is ${valueAsString}`,
       "aria-controls": dom.getContentId(state.context),
       "aria-labelledby": dom.getLabelId(state.context),
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       "data-readonly": dataAttr(state.context.readOnly),
       "data-placement": currentPlacement,
-      "aria-expanded": dataAttr(isOpen),
-      "data-state": isOpen ? "open" : "closed",
-      "data-focus": dataAttr(isFocused),
+      "aria-expanded": dataAttr(open),
+      "data-state": open ? "open" : "closed",
+      "data-focus": dataAttr(focused),
       type: "button",
       onClick() {
-        if (!isInteractive) return
+        if (!interactive) return
         send({ type: "TRIGGER.CLICK" })
       },
       onBlur() {
-        if (!isInteractive) return
+        if (!interactive) return
         send({ type: "TRIGGER.BLUR" })
       },
       style: {
@@ -171,8 +168,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getContentId(state.context),
       dir: state.context.dir,
       "data-placement": currentPlacement,
-      "data-state": isOpen ? "open" : "closed",
-      hidden: !isOpen,
+      "data-state": open ? "open" : "closed",
+      hidden: !open,
     }),
 
     getAreaProps(props = {}) {
@@ -188,7 +185,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getAreaId(state.context),
         role: "group",
         onPointerDown(event) {
-          if (!isInteractive) return
+          if (!interactive) return
 
           const evt = getNativeEvent(event)
           if (!isLeftClick(evt) || isModifierKey(evt)) return
@@ -242,8 +239,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.areaThumb.attrs,
         id: dom.getAreaThumbId(state.context),
         dir: state.context.dir,
-        tabIndex: isDisabled ? undefined : 0,
-        "data-disabled": dataAttr(isDisabled),
+        tabIndex: disabled ? undefined : 0,
+        "data-disabled": dataAttr(disabled),
         role: "slider",
         "aria-valuemin": 0,
         "aria-valuemax": 100,
@@ -261,12 +258,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           background: areaValue.withChannelValue("alpha", 1).toString("css"),
         },
         onFocus() {
-          if (!isInteractive) return
+          if (!interactive) return
           send({ type: "AREA.FOCUS", id: "area", channel })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!isInteractive) return
+          if (!interactive) return
 
           const step = getEventStep(event)
 
@@ -331,7 +328,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": orientation,
         role: "presentation",
         onPointerDown(event) {
-          if (!isInteractive) return
+          if (!interactive) return
 
           const evt = getNativeEvent(event)
           if (!isLeftClick(evt) || isModifierKey(evt)) return
@@ -387,11 +384,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getChannelSliderThumbId(state.context, channel),
         role: "slider",
         "aria-label": channel,
-        tabIndex: isDisabled ? undefined : 0,
+        tabIndex: disabled ? undefined : 0,
         "data-channel": channel,
-        "data-disabled": dataAttr(isDisabled),
+        "data-disabled": dataAttr(disabled),
         "data-orientation": orientation,
-        "aria-disabled": dataAttr(isDisabled),
+        "aria-disabled": dataAttr(disabled),
         "aria-orientation": orientation,
         "aria-valuemax": maxValue,
         "aria-valuemin": minValue,
@@ -404,12 +401,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           ...placementStyles,
         },
         onFocus() {
-          if (!isInteractive) return
+          if (!interactive) return
           send({ type: "CHANNEL_SLIDER.FOCUS", channel })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!isInteractive) return
+          if (!interactive) return
 
           const step = getEventStep(event) * stepValue
 
@@ -466,33 +463,33 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": channel,
         spellCheck: false,
         autoComplete: "off",
-        disabled: isDisabled,
-        "data-disabled": dataAttr(isDisabled),
+        disabled: disabled,
+        "data-disabled": dataAttr(disabled),
         readOnly: state.context.readOnly,
         defaultValue: getChannelValue(value, channel),
         min: range?.minValue,
         max: range?.maxValue,
         step: range?.step,
         onBeforeInput(event) {
-          if (isTextField || !isInteractive) return
+          if (isTextField || !interactive) return
           const value = event.currentTarget.value
           if (value.match(/[^0-9.]/g)) {
             event.preventDefault()
           }
         },
         onFocus(event) {
-          if (!isInteractive) return
+          if (!interactive) return
           send({ type: "CHANNEL_INPUT.FOCUS", channel })
           event.target.select()
         },
         onBlur(event) {
-          if (!isInteractive) return
+          if (!interactive) return
           const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber
           send({ type: "CHANNEL_INPUT.BLUR", channel, value, isTextField })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!isInteractive) return
+          if (!interactive) return
           if (event.key === "Enter") {
             const value = isTextField ? event.currentTarget.value : event.currentTarget.valueAsNumber
             send({ type: "CHANNEL_INPUT.CHANGE", channel, value, isTextField })
@@ -509,7 +506,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     hiddenInputProps: normalize.input({
       type: "text",
-      disabled: isDisabled,
+      disabled: disabled,
       name: state.context.name,
       id: dom.getHiddenInputId(state.context),
       style: visuallyHiddenStyle,
@@ -520,11 +517,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.eyeDropperTrigger.attrs,
       type: "button",
       dir: state.context.dir,
-      disabled: isDisabled,
-      "data-disabled": dataAttr(isDisabled),
+      disabled: disabled,
+      "data-disabled": dataAttr(disabled),
       "aria-label": "Pick a color from the screen",
       onClick() {
-        if (!isInteractive) return
+        if (!interactive) return
         send("EYEDROPPER.CLICK")
       },
     }),
@@ -540,15 +537,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const triggerState = getSwatchTriggerState(props)
       return normalize.button({
         ...parts.swatchTrigger.attrs,
-        disabled: triggerState.isDisabled,
+        disabled: triggerState.disabled,
         dir: state.context.dir,
         type: "button",
         "aria-label": `select ${triggerState.valueAsString} as the color`,
-        "data-state": triggerState.isChecked ? "checked" : "unchecked",
+        "data-state": triggerState.checked ? "checked" : "unchecked",
         "data-value": triggerState.valueAsString,
-        "data-disabled": dataAttr(triggerState.isDisabled),
+        "data-disabled": dataAttr(triggerState.disabled),
         onClick() {
-          if (triggerState.isDisabled) return
+          if (triggerState.disabled) return
           send({ type: "SWATCH_TRIGGER.CLICK", value: triggerState.value })
         },
         style: {
@@ -562,7 +559,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.swatchIndicator.attrs,
         dir: state.context.dir,
-        hidden: !triggerState.isChecked,
+        hidden: !triggerState.checked,
       })
     },
 
@@ -572,7 +569,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.swatch.attrs,
         dir: state.context.dir,
-        "data-state": triggerState.isChecked ? "checked" : "unchecked",
+        "data-state": triggerState.checked ? "checked" : "unchecked",
         "data-value": triggerState.valueAsString,
         style: {
           position: "relative",
@@ -598,7 +595,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": "change color format",
       dir: state.context.dir,
       defaultValue: state.context.format,
-      disabled: isDisabled,
+      disabled: disabled,
       onChange(event) {
         const format = assertFormat(event.currentTarget.value)
         send({ type: "FORMAT.SET", format, src: "format-select" })

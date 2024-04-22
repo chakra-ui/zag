@@ -14,6 +14,7 @@ export const props = createProps<UserDefinedContext>()([
   "label",
   "name",
   "onCheckedChange",
+  "readOnly",
   "required",
   "value",
 ])

@@ -1,38 +1,43 @@
-import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, getByTypeahead, isEditableElement, isSelfTarget } from "@zag-js/dom-query"
+import { getEventKey, getNativeEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
+import {
+  ariaAttr,
+  dataAttr,
+  getByTypeahead,
+  isEditableElement,
+  isSelfTarget,
+  visuallyHiddenStyle,
+} from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./select.anatomy"
 import { dom } from "./select.dom"
-import type { CollectionItem, ItemProps, MachineApi, Send, State } from "./select.types"
+import type { CollectionItem, ItemProps, ItemState, MachineApi, Send, State } from "./select.types"
 
 export function connect<T extends PropTypes, V extends CollectionItem = CollectionItem>(
   state: State,
   send: Send,
   normalize: NormalizeProps<T>,
 ): MachineApi<T, V> {
-  const isDisabled = state.context.isDisabled
-  const isInvalid = state.context.invalid
-  const isReadOnly = state.context.readOnly
-  const isInteractive = state.context.isInteractive
+  const disabled = state.context.isDisabled
+  const invalid = state.context.invalid
+  const readOnly = state.context.readOnly
+  const interactive = state.context.isInteractive
 
-  const isOpen = state.hasTag("open")
-  const isFocused = state.matches("focused")
+  const open = state.hasTag("open")
+  const focused = state.matches("focused")
 
   const highlightedItem = state.context.highlightedItem
   const selectedItems = state.context.selectedItems
   const isTypingAhead = state.context.isTypingAhead
 
-  function getItemState(props: ItemProps) {
-    const { item } = props
-    const disabled = state.context.collection.isItemDisabled(item)
-    const value = state.context.collection.itemToValue(item)
+  function getItemState(props: ItemProps): ItemState {
+    const _disabled = state.context.collection.isItemDisabled(props.item)
+    const value = state.context.collection.itemToValue(props.item)
     return {
       value,
-      isDisabled: Boolean(disabled || isDisabled),
-      isHighlighted: state.context.highlightedValue === value,
-      isSelected: state.context.value.includes(value),
+      disabled: Boolean(disabled || _disabled),
+      highlighted: state.context.highlightedValue === value,
+      selected: state.context.value.includes(value),
     }
   }
 
@@ -42,9 +47,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   })
 
   return {
-    isOpen,
-    isFocused,
-    isValueEmpty: state.context.value.length === 0,
+    open: open,
+    focused: focused,
+    empty: state.context.value.length === 0,
     highlightedItem,
     highlightedValue: state.context.highlightedValue,
     selectedItems,
@@ -61,11 +66,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     focus() {
       dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
     },
-    open() {
-      send("OPEN")
-    },
-    close() {
-      send("CLOSE")
+    setOpen(_open) {
+      if (_open === open) return
+      send(_open ? "OPEN" : "CLOSE")
     },
     selectValue(value) {
       send({ type: "ITEM.SELECT", value })
@@ -90,20 +93,20 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getRootId(state.context),
-      "data-invalid": dataAttr(isInvalid),
-      "data-readonly": dataAttr(isReadOnly),
+      "data-invalid": dataAttr(invalid),
+      "data-readonly": dataAttr(readOnly),
     }),
 
     labelProps: normalize.label({
       dir: state.context.dir,
       id: dom.getLabelId(state.context),
       ...parts.label.attrs,
-      "data-disabled": dataAttr(isDisabled),
-      "data-invalid": dataAttr(isInvalid),
-      "data-readonly": dataAttr(isReadOnly),
+      "data-disabled": dataAttr(disabled),
+      "data-invalid": dataAttr(invalid),
+      "data-readonly": dataAttr(readOnly),
       htmlFor: dom.getHiddenSelectId(state.context),
       onClick() {
-        if (isDisabled) return
+        if (disabled) return
         dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
       },
     }),
@@ -112,38 +115,39 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       ...parts.control.attrs,
       dir: state.context.dir,
       id: dom.getControlId(state.context),
-      "data-state": isOpen ? "open" : "closed",
-      "data-focus": dataAttr(isFocused),
-      "data-disabled": dataAttr(isDisabled),
-      "data-invalid": dataAttr(isInvalid),
+      "data-state": open ? "open" : "closed",
+      "data-focus": dataAttr(focused),
+      "data-disabled": dataAttr(disabled),
+      "data-invalid": dataAttr(invalid),
     }),
 
     triggerProps: normalize.button({
       id: dom.getTriggerId(state.context),
-      disabled: isDisabled,
+      disabled: disabled,
       dir: state.context.dir,
       type: "button",
       role: "combobox",
       "aria-controls": dom.getContentId(state.context),
-      "aria-expanded": isOpen,
+      "aria-expanded": open,
       "aria-haspopup": "listbox",
-      "data-state": isOpen ? "open" : "closed",
-      "aria-invalid": isInvalid,
+      "data-state": open ? "open" : "closed",
+      "aria-invalid": invalid,
       "aria-labelledby": dom.getLabelId(state.context),
       ...parts.trigger.attrs,
-      "data-disabled": dataAttr(isDisabled),
-      "data-invalid": dataAttr(isInvalid),
-      "data-readonly": dataAttr(isReadOnly),
+      "data-disabled": dataAttr(disabled),
+      "data-invalid": dataAttr(invalid),
+      "data-readonly": dataAttr(readOnly),
       "data-placement": state.context.currentPlacement,
       "data-placeholder-shown": dataAttr(!state.context.hasSelectedItems),
       onPointerDown(event) {
-        if (event.button || event.ctrlKey || !isInteractive) return
+        if (!isLeftClick(event)) return
+        if (!interactive) return
         event.currentTarget.dataset.pointerType = event.pointerType
-        if (isDisabled || event.pointerType === "touch") return
+        if (disabled || event.pointerType === "touch") return
         send({ type: "TRIGGER.CLICK" })
       },
       onClick(event) {
-        if (!isInteractive || event.button) return
+        if (!interactive || event.button) return
         if (event.currentTarget.dataset.pointerType === "touch") {
           send({ type: "TRIGGER.CLICK" })
         }
@@ -156,7 +160,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       },
       onKeyDown(event) {
         if (event.defaultPrevented) return
-        if (!isInteractive) return
+        if (!interactive) return
 
         const keyMap: EventKeyMap = {
           ArrowUp() {
@@ -208,10 +212,10 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       ...parts.indicator.attrs,
       dir: state.context.dir,
       "aria-hidden": true,
-      "data-state": isOpen ? "open" : "closed",
-      "data-disabled": dataAttr(isDisabled),
-      "data-invalid": dataAttr(isInvalid),
-      "data-readonly": dataAttr(isReadOnly),
+      "data-state": open ? "open" : "closed",
+      "data-disabled": dataAttr(disabled),
+      "data-invalid": dataAttr(invalid),
+      "data-readonly": dataAttr(readOnly),
     }),
 
     getItemProps(props) {
@@ -223,23 +227,23 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         ...parts.item.attrs,
         dir: state.context.dir,
         "data-value": itemState.value,
-        "aria-selected": itemState.isSelected,
-        "data-state": itemState.isSelected ? "checked" : "unchecked",
-        "data-highlighted": dataAttr(itemState.isHighlighted),
-        "data-disabled": dataAttr(itemState.isDisabled),
-        "aria-disabled": ariaAttr(itemState.isDisabled),
+        "aria-selected": itemState.selected,
+        "data-state": itemState.selected ? "checked" : "unchecked",
+        "data-highlighted": dataAttr(itemState.highlighted),
+        "data-disabled": dataAttr(itemState.disabled),
+        "aria-disabled": ariaAttr(itemState.disabled),
         onPointerMove(event) {
-          if (itemState.isDisabled || event.pointerType !== "mouse") return
+          if (itemState.disabled || event.pointerType !== "mouse") return
           if (itemState.value === state.context.highlightedValue) return
           send({ type: "ITEM.POINTER_MOVE", value: itemState.value })
         },
         onPointerUp() {
-          if (itemState.isDisabled) return
+          if (itemState.disabled) return
           send({ type: "ITEM.CLICK", src: "pointerup", value: itemState.value })
         },
         onPointerLeave(event) {
           const isKeyboardNavigationEvent = ["CONTENT.ARROW_UP", "CONTENT.ARROW_DOWN"].includes(state.event.type)
-          if (itemState.isDisabled || event.pointerType !== "mouse" || isKeyboardNavigationEvent) return
+          if (itemState.disabled || event.pointerType !== "mouse" || isKeyboardNavigationEvent) return
           send({ type: "ITEM.POINTER_LEAVE" })
         },
         onTouchEnd(event) {
@@ -254,8 +258,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemText.attrs,
-        "data-disabled": dataAttr(itemState.isDisabled),
-        "data-highlighted": dataAttr(itemState.isHighlighted),
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-highlighted": dataAttr(itemState.highlighted),
       })
     },
 
@@ -264,8 +268,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         "aria-hidden": true,
         ...parts.itemIndicator.attrs,
-        "data-state": itemState.isSelected ? "checked" : "unchecked",
-        hidden: !itemState.isSelected,
+        "data-state": itemState.selected ? "checked" : "unchecked",
+        hidden: !itemState.selected,
       })
     },
 
@@ -283,7 +287,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const { id } = props
       return normalize.element({
         ...parts.itemGroup.attrs,
-        "data-disabled": dataAttr(isDisabled),
+        "data-disabled": dataAttr(disabled),
         id: dom.getItemGroupId(state.context, id),
         "aria-labelledby": dom.getItemGroupLabelId(state.context, id),
         dir: state.context.dir,
@@ -295,7 +299,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       id: dom.getClearTriggerId(state.context),
       type: "button",
       "aria-label": "Clear value",
-      disabled: isDisabled,
+      disabled: disabled,
       hidden: !state.context.hasSelectedItems,
       dir: state.context.dir,
       onClick() {
@@ -306,7 +310,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     hiddenSelectProps: normalize.select({
       name: state.context.name,
       form: state.context.form,
-      disabled: isDisabled,
+      disabled: disabled,
       multiple: state.context.multiple,
       "aria-hidden": true,
       id: dom.getHiddenSelectId(state.context),
@@ -329,12 +333,12 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     }),
 
     contentProps: normalize.element({
-      hidden: !isOpen,
+      hidden: !open,
       dir: state.context.dir,
       id: dom.getContentId(state.context),
       role: "listbox",
       ...parts.content.attrs,
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
       "data-placement": state.context.currentPlacement,
       "aria-activedescendant": state.context.highlightedValue
         ? dom.getItemId(state.context, state.context.highlightedValue)
@@ -345,7 +349,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       onKeyDown(event) {
         if (event.defaultPrevented) return
         const evt = getNativeEvent(event)
-        if (!isInteractive) return
+        if (!interactive) return
         if (!isSelfTarget(evt)) return
 
         // select should not be navigated using tab key so we prevent it

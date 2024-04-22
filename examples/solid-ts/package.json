@@ -87,7 +87,6 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "@zag-js/visually-hidden": "workspace:*",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
     "lucide-solid": "0.372.0",

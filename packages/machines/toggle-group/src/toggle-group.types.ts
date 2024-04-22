@@ -67,11 +67,6 @@ interface PrivateContext {
   isTabbingBackward: boolean
   /**
    * @internal
-   * Whether the toggle group has focusable toggles.
-   */
-  hasFocusableToggle: boolean
-  /**
-   * @internal
    * Whether the toggle was focused by a click.
    */
   isClickFocus: boolean
@@ -108,10 +103,22 @@ export interface ItemProps {
 }
 
 export interface ItemState {
+  /**
+   * The underlying id of the item.
+   */
   id: string
-  isDisabled: boolean
-  isPressed: boolean
-  isFocused: boolean
+  /**
+   * Whether the toggle item is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the toggle item is pressed.
+   */
+  pressed: boolean
+  /**
+   * Whether the toggle item is focused.
+   */
+  focused: boolean
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {

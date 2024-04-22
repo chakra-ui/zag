@@ -43,6 +43,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   required?: boolean
   /**
+   * Whether the switch is read-only
+   */
+  readOnly?: boolean
+  /**
    * Function to call when the switch is clicked.
    */
   onCheckedChange?: (details: CheckedChangeDetails) => void
@@ -116,15 +120,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the checkbox is checked
    */
-  isChecked: boolean
+  checked: boolean
   /**
    * Whether the checkbox is disabled
    */
-  isDisabled: boolean | undefined
+  disabled: boolean | undefined
   /**
    * Whether the checkbox is focused
    */
-  isFocused: boolean | undefined
+  focused: boolean | undefined
   /**
    * Function to set the checked state of the switch.
    */
@@ -133,6 +137,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to toggle the checked state of the checkbox
    */
   toggleChecked(): void
+
   rootProps: T["label"]
   labelProps: T["element"]
   thumbProps: T["element"]

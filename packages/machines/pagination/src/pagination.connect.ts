@@ -27,8 +27,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     previousPage,
     nextPage,
     pageRange,
-    isFirstPage,
-    isLastPage,
     slice(data) {
       return data.slice(pageRange.start, pageRange.end)
     },

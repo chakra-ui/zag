@@ -10,6 +10,7 @@ export const checkboxControls = defineControls({
   name: { type: "string", defaultValue: "checkbox" },
   disabled: { type: "boolean", defaultValue: false },
   value: { type: "string", defaultValue: "on" },
+  readOnly: { type: "boolean", defaultValue: false },
 })
 
 export const collapsibleControls = defineControls({

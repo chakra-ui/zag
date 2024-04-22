@@ -4,12 +4,9 @@ import { dom } from "./avatar.dom"
 import type { MachineApi, Send, State } from "./avatar.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isLoaded = state.matches("loaded")
-  const showFallback = !isLoaded
-
+  const loaded = state.matches("loaded")
   return {
-    isLoaded,
-    showFallback,
+    loaded,
     setSrc(src) {
       send({ type: "SRC.SET", src })
     },
@@ -28,10 +25,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     imageProps: normalize.img({
       ...parts.image.attrs,
-      hidden: !isLoaded,
+      hidden: !loaded,
       dir: state.context.dir,
       id: dom.getImageId(state.context),
-      "data-state": isLoaded ? "visible" : "hidden",
+      "data-state": loaded ? "visible" : "hidden",
       onLoad() {
         send({ type: "IMG.LOADED", src: "element" })
       },
@@ -44,8 +41,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.fallback.attrs,
       dir: state.context.dir,
       id: dom.getFallbackId(state.context),
-      hidden: isLoaded,
-      "data-state": isLoaded ? "hidden" : "visible",
+      hidden: loaded,
+      "data-state": loaded ? "hidden" : "visible",
     }),
   }
 }

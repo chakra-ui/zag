@@ -12,7 +12,7 @@
   let url = $state("")
   const setUrl = (value: string) => (url = value)
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     signaturePad.machine({
       id: "1",
       onDrawEnd(details) {
@@ -29,7 +29,7 @@
     },
   )
 
-  const api = $derived(signaturePad.connect(_state, send, normalizeProps))
+  const api = $derived(signaturePad.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="signature-pad">
@@ -69,5 +69,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

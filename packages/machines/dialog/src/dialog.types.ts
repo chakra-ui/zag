@@ -121,15 +121,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the dialog is open
    */
-  isOpen: boolean
+  open: boolean
   /**
-   * Function to open the dialog
+   * Function to open or close the dialog
    */
-  open(): void
-  /**
-   * Function to close the dialog
-   */
-  close(): void
+  setOpen(open: boolean): void
 
   triggerProps: T["button"]
   backdropProps: T["element"]

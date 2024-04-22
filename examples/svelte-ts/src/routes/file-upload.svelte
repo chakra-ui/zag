@@ -8,11 +8,11 @@
 
   const controls = useControls(fileUploadControls)
 
-  const [state, send] = useMachine(fileUpload.machine({ id: "1" }), {
+  const [snapshot, send] = useMachine(fileUpload.machine({ id: "1" }), {
     context: controls.context,
   })
 
-  const api = $derived(fileUpload.connect(state, send, normalizeProps))
+  const api = $derived(fileUpload.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="file-upload">
@@ -40,5 +40,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer {state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

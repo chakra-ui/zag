@@ -22,7 +22,7 @@ export function Switch(props: SwitchProps) {
         <span {...api.controlProps}>
           <span {...api.thumbProps} />
         </span>
-        <span {...api.labelProps}>{api.isChecked ? "On" : "Off"}</span>
+        <span {...api.labelProps}>{api.checked ? "On" : "Off"}</span>
       </label>
     </div>
   )

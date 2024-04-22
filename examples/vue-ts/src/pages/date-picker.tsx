@@ -45,7 +45,7 @@ export default defineComponent({
             </output>
 
             <div {...api.controlProps}>
-              <input {...api.inputProps} />
+              <input {...api.getInputProps({ index: 0 })} />
               <button {...api.clearTriggerProps}>❌</button>
               <button {...api.triggerProps}>🗓</button>
             </div>

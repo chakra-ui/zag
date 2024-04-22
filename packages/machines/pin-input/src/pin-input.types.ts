@@ -175,7 +175,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether all inputs are filled.
    */
-  isValueComplete: boolean
+  complete: boolean
   /**
    * Function to set the value of the inputs.
    */

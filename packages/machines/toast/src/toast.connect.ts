@@ -10,8 +10,8 @@ export function connect<T extends PropTypes, O>(
   send: Send,
   normalize: NormalizeProps<T>,
 ): MachineApi<T, O> {
-  const isVisible = state.hasTag("visible")
-  const isPaused = state.hasTag("paused")
+  const visible = state.hasTag("visible")
+  const paused = state.hasTag("paused")
 
   const placement = state.context.placement!
   const type = state.context.type!
@@ -23,9 +23,8 @@ export function connect<T extends PropTypes, O>(
     title: state.context.title,
     description: state.context.description,
     placement,
-    isVisible,
-    isPaused,
-    isRtl: state.context.dir === "rtl",
+    visible: visible,
+    paused: paused,
 
     pause() {
       send("PAUSE")
@@ -43,13 +42,13 @@ export function connect<T extends PropTypes, O>(
       ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getRootId(state.context),
-      "data-state": isVisible ? "open" : "closed",
+      "data-state": visible ? "open" : "closed",
       "data-type": type,
       "data-placement": placement,
       "data-align": align,
       "data-side": side,
       "data-mounted": dataAttr(state.context.mounted),
-      "data-paused": dataAttr(isPaused),
+      "data-paused": dataAttr(paused),
 
       "data-first": dataAttr(state.context.frontmost),
       "data-sibling": dataAttr(!state.context.frontmost),
@@ -59,7 +58,7 @@ export function connect<T extends PropTypes, O>(
       role: "status",
       "aria-atomic": "true",
       tabIndex: 0,
-      style: getPlacementStyle(state.context, isVisible),
+      style: getPlacementStyle(state.context, visible),
       onKeyDown(event) {
         if (event.defaultPrevented) return
         if (event.key == "Escape") {
@@ -72,13 +71,13 @@ export function connect<T extends PropTypes, O>(
     /* Leave a ghost div to avoid setting hover to false when transitioning out */
     ghostBeforeProps: normalize.element({
       "data-ghost": "before",
-      style: getGhostBeforeStyle(state.context, isVisible),
+      style: getGhostBeforeStyle(state.context, visible),
     }),
 
     /* Needed to avoid setting hover to false when in between toasts */
     ghostAfterProps: normalize.element({
       "data-ghost": "after",
-      style: getGhostAfterStyle(state.context, isVisible),
+      style: getGhostAfterStyle(state.context, visible),
     }),
 
     titleProps: normalize.element({
@@ -94,7 +93,8 @@ export function connect<T extends PropTypes, O>(
     actionTriggerProps: normalize.button({
       ...parts.actionTrigger.attrs,
       type: "button",
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         send("DISMISS")
       },
     }),
@@ -104,7 +104,8 @@ export function connect<T extends PropTypes, O>(
       ...parts.closeTrigger.attrs,
       type: "button",
       "aria-label": "Dismiss notification",
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         send("DISMISS")
       },
     }),

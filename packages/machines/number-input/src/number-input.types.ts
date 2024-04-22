@@ -258,15 +258,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the input is focused.
    */
-  isFocused: boolean
+  focused: boolean
   /**
    * Whether the input is invalid.
    */
-  isInvalid: boolean
+  invalid: boolean
   /**
    * Whether the input value is empty.
    */
-  isValueEmpty: boolean
+  empty: boolean
   /**
    * The formatted value of the input.
    */
@@ -303,6 +303,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to focus the input.
    */
   focus(): void
+
   rootProps: T["element"]
   labelProps: T["label"]
   controlProps: T["element"]

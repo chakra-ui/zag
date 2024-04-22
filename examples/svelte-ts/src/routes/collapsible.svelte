@@ -8,11 +8,11 @@
 
   const controls = useControls(collapsibleControls)
 
-  const [_state, send] = useMachine(collapsible.machine({ id: "1" }), {
+  const [snapshot, send] = useMachine(collapsible.machine({ id: "1" }), {
     context: controls.context,
   })
 
-  const api = $derived(collapsible.connect(_state, send, normalizeProps))
+  const api = $derived(collapsible.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="collapsible">
@@ -31,11 +31,11 @@
 
   <div>
     <div>Toggle Controls</div>
-    <button onclick={api.open}>Open</button>
-    <button onclick={api.close}>Close</button>
+    <button onclick={() => api.setOpen(true)}>Open</button>
+    <button onclick={() => api.setOpen(false)}>Close</button>
   </div>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

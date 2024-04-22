@@ -20,12 +20,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const ariaLabelledBy = state.context["aria-labelledby"]
   const sliderValue = state.context.value
 
-  const isFocused = state.matches("focus")
-  const isDragging = state.matches("dragging")
+  const focused = state.matches("focus")
+  const dragging = state.matches("dragging")
 
-  const isDisabled = state.context.isDisabled
-  const isInvalid = state.context.invalid
-  const isInteractive = state.context.isInteractive
+  const disabled = state.context.isDisabled
+  const invalid = state.context.invalid
+  const interactive = state.context.isInteractive
 
   function getValuePercentFn(value: number) {
     return getValuePercent(value, state.context.min, state.context.max)
@@ -37,8 +37,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     value: state.context.value,
-    isDragging,
-    isFocused,
+    dragging,
+    focused,
     setValue(value) {
       send({ type: "SET_VALUE", value: value })
     },
@@ -70,21 +70,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "DECREMENT", index })
     },
     focus() {
-      if (!isInteractive) return
+      if (!interactive) return
       send({ type: "FOCUS", index: 0 })
     },
 
     labelProps: normalize.label({
       ...parts.label.attrs,
       dir: state.context.dir,
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       "data-orientation": state.context.orientation,
-      "data-invalid": dataAttr(isInvalid),
-      "data-focus": dataAttr(isFocused),
+      "data-invalid": dataAttr(invalid),
+      "data-focus": dataAttr(focused),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getHiddenInputId(state.context, 0),
       onClick(event) {
-        if (!isInteractive) return
+        if (!interactive) return
         event.preventDefault()
         dom.getFirstEl(state.context)?.focus()
       },
@@ -95,10 +95,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       "data-orientation": state.context.orientation,
-      "data-invalid": dataAttr(isInvalid),
-      "data-focus": dataAttr(isFocused),
+      "data-invalid": dataAttr(invalid),
+      "data-focus": dataAttr(focused),
       id: dom.getRootId(state.context),
       dir: state.context.dir,
       style: dom.getRootStyle(state.context),
@@ -107,10 +107,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     valueTextProps: normalize.element({
       ...parts.valueText.attrs,
       dir: state.context.dir,
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       "data-orientation": state.context.orientation,
-      "data-invalid": dataAttr(isInvalid),
-      "data-focus": dataAttr(isFocused),
+      "data-invalid": dataAttr(invalid),
+      "data-focus": dataAttr(focused),
       id: dom.getValueTextId(state.context),
     }),
 
@@ -118,10 +118,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.track.attrs,
       dir: state.context.dir,
       id: dom.getTrackId(state.context),
-      "data-disabled": dataAttr(isDisabled),
-      "data-invalid": dataAttr(isInvalid),
+      "data-disabled": dataAttr(disabled),
+      "data-invalid": dataAttr(invalid),
       "data-orientation": state.context.orientation,
-      "data-focus": dataAttr(isFocused),
+      "data-focus": dataAttr(focused),
       style: { position: "relative" },
     }),
 
@@ -130,7 +130,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       const value = sliderValue[index]
       const range = getRangeAtIndex(state.context, index)
-      const ariaValueText = state.context.getAriaValueText?.(value, index)
+      const valueText = state.context.getAriaValueText?.({ value, index })
       const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
 
@@ -140,37 +140,37 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-index": index,
         "data-name": name,
         id: dom.getThumbId(state.context, index),
-        "data-disabled": dataAttr(isDisabled),
+        "data-disabled": dataAttr(disabled),
         "data-orientation": state.context.orientation,
-        "data-focus": dataAttr(isFocused && state.context.focusedIndex === index),
+        "data-focus": dataAttr(focused && state.context.focusedIndex === index),
         draggable: false,
-        "aria-disabled": ariaAttr(isDisabled),
+        "aria-disabled": ariaAttr(disabled),
         "aria-label": _ariaLabel,
         "aria-labelledby": _ariaLabelledBy ?? dom.getLabelId(state.context),
         "aria-orientation": state.context.orientation,
         "aria-valuemax": range.max,
         "aria-valuemin": range.min,
         "aria-valuenow": sliderValue[index],
-        "aria-valuetext": ariaValueText,
+        "aria-valuetext": valueText,
         role: "slider",
-        tabIndex: isDisabled ? undefined : 0,
+        tabIndex: disabled ? undefined : 0,
         style: dom.getThumbStyle(state.context, index),
         onPointerDown(event) {
-          if (!isInteractive) return
+          if (!interactive) return
           send({ type: "THUMB_POINTER_DOWN", index })
           event.stopPropagation()
         },
         onBlur() {
-          if (!isInteractive) return
+          if (!interactive) return
           send("BLUR")
         },
         onFocus() {
-          if (!isInteractive) return
+          if (!interactive) return
           send({ type: "FOCUS", index })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!isInteractive) return
+          if (!interactive) return
 
           const step = getEventStep(event) * state.context.step
           let prevent = true
@@ -237,9 +237,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRangeId(state.context),
       ...parts.range.attrs,
       dir: state.context.dir,
-      "data-focus": dataAttr(isFocused),
-      "data-invalid": dataAttr(isInvalid),
-      "data-disabled": dataAttr(isDisabled),
+      "data-focus": dataAttr(focused),
+      "data-invalid": dataAttr(invalid),
+      "data-disabled": dataAttr(disabled),
       "data-orientation": state.context.orientation,
       style: dom.getRangeStyle(state.context),
     }),
@@ -248,13 +248,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.control.attrs,
       dir: state.context.dir,
       id: dom.getControlId(state.context),
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       "data-orientation": state.context.orientation,
-      "data-invalid": dataAttr(isInvalid),
-      "data-focus": dataAttr(isFocused),
+      "data-invalid": dataAttr(invalid),
+      "data-focus": dataAttr(focused),
       style: dom.getControlStyle(),
       onPointerDown(event) {
-        if (!isInteractive) return
+        if (!interactive) return
 
         const evt = getNativeEvent(event)
         if (!isLeftClick(evt) || isModifierKey(evt)) return
@@ -298,7 +298,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         "data-orientation": state.context.orientation,
         "data-value": props.value,
-        "data-disabled": dataAttr(isDisabled),
+        "data-disabled": dataAttr(disabled),
         "data-state": markerState,
         style,
       })

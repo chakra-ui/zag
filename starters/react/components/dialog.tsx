@@ -28,7 +28,7 @@ export function Dialog(props: Props) {
   return (
     <>
       <button {...api.triggerProps}>Open Dialog</button>
-      {api.isOpen && (
+      {api.open && (
         <Portal>
           <div {...api.backdropProps} />
           <div {...api.positionerProps}>

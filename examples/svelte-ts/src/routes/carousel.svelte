@@ -8,11 +8,11 @@
 
   const controls = useControls(carouselControls)
 
-  const [_state, send] = useMachine(carousel.machine({ id: "1", index: 0, spacing: "20px", slidesPerView: 2 }), {
+  const [snapshot, send] = useMachine(carousel.machine({ id: "1", index: 0, spacing: "20px", slidesPerView: 2 }), {
     // context: controls.context,
   })
 
-  const api = $derived(carousel.connect(_state, send, normalizeProps))
+  const api = $derived(carousel.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="carousel">
@@ -32,5 +32,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

@@ -9,7 +9,7 @@
 
   const controls = useControls(pinInputControls)
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     pinInput.machine({
       name: "test",
       id: "1",
@@ -19,7 +19,7 @@
     },
   )
 
-  const api = $derived(pinInput.connect(_state, send, normalizeProps))
+  const api = $derived(pinInput.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="pin-input">
@@ -46,5 +46,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

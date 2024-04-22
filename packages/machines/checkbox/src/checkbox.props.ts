@@ -13,6 +13,7 @@ export const props = createProps<UserDefinedContext>()([
   "invalid",
   "name",
   "onCheckedChange",
+  "readOnly",
   "required",
   "value",
 ])

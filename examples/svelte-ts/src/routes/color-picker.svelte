@@ -11,7 +11,7 @@
 
   const controls = useControls(colorPickerControls)
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     colorPicker.machine({
       id: "1",
       name: "color",
@@ -23,7 +23,7 @@
     },
   )
 
-  const api = $derived(colorPicker.connect(_state, send, normalizeProps))
+  const api = $derived(colorPicker.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="color-picker">
@@ -128,7 +128,7 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>
 
 {#snippet EyeDropIcon()}

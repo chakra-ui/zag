@@ -88,19 +88,16 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the hover card is open
    */
-  isOpen: boolean
+  open: boolean
   /**
    * Function to open the hover card
    */
-  open(): void
-  /**
-   * Function to close the hover card
-   */
-  close(): void
+  setOpen(open: boolean): void
   /**
    * Function to reposition the popover
    */
   reposition(options?: Partial<PositioningOptions>): void
+
   arrowProps: T["element"]
   arrowTipProps: T["element"]
   triggerProps: T["element"]

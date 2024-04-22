@@ -3,17 +3,17 @@ import { dataAttr, isSafari, isSelfTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
 import { dom } from "./tabs.dom"
-import type { MachineApi, Send, State, TriggerProps } from "./tabs.types"
+import type { MachineApi, Send, State, TriggerProps, TriggerState } from "./tabs.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const translations = state.context.translations
-  const isFocused = state.matches("focused")
+  const focused = state.matches("focused")
 
-  function getTriggerState(props: TriggerProps) {
+  function getTriggerState(props: TriggerProps): TriggerState {
     return {
-      isSelected: state.context.value === props.value,
-      isFocused: state.context.focusedValue === props.value,
-      isDisabled: !!props.disabled,
+      selected: state.context.value === props.value,
+      focused: state.context.focusedValue === props.value,
+      disabled: !!props.disabled,
     }
   }
 
@@ -36,7 +36,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
       "data-orientation": state.context.orientation,
-      "data-focus": dataAttr(isFocused),
+      "data-focus": dataAttr(focused),
       dir: state.context.dir,
     }),
 
@@ -45,7 +45,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getListId(state.context),
       role: "tablist",
       dir: state.context.dir,
-      "data-focus": dataAttr(isFocused),
+      "data-focus": dataAttr(focused),
       "aria-orientation": state.context.orientation,
       "data-orientation": state.context.orientation,
       "aria-label": translations.listLabel,
@@ -102,13 +102,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(disabled),
         "aria-disabled": disabled,
         "data-value": value,
-        "aria-selected": triggerState.isSelected,
-        "data-selected": dataAttr(triggerState.isSelected),
-        "data-focus": dataAttr(triggerState.isFocused),
+        "aria-selected": triggerState.selected,
+        "data-selected": dataAttr(triggerState.selected),
+        "data-focus": dataAttr(triggerState.focused),
         "aria-controls": dom.getContentId(state.context, value),
         "data-ownedby": dom.getListId(state.context),
         id: dom.getTriggerId(state.context, value),
-        tabIndex: triggerState.isSelected ? 0 : -1,
+        tabIndex: triggerState.selected ? 0 : -1,
         onFocus() {
           send({ type: "TAB_FOCUS", value })
         },
@@ -119,6 +119,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
         },
         onClick(event) {
+          if (event.defaultPrevented) return
           if (disabled) return
           if (isSafari()) {
             event.currentTarget.focus()

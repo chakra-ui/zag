@@ -8,11 +8,11 @@
 
   const controls = useControls(treeviewControls)
 
-  const [state, send] = useMachine(tree.machine({ id: "1" }), {
+  const [snapshot, send] = useMachine(tree.machine({ id: "1" }), {
     context: controls.context,
   })
 
-  const api = $derived(tree.connect(state, send, normalizeProps))
+  const api = $derived(tree.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="tree-view">
@@ -69,5 +69,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer {state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

@@ -8,16 +8,16 @@
 
   const controls = useControls(radioControls)
 
-  const [state, send] = useMachine(radio.machine({ id: "2", name: "fruit", orientation: "horizontal" }), {
+  const [snapshot, send] = useMachine(radio.machine({ id: "2", name: "fruit", orientation: "horizontal" }), {
     context: controls.context,
   })
 
-  const api = $derived(radio.connect(state, send, normalizeProps))
+  const api = $derived(radio.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="segmented-control">
   <div {...api.rootProps}>
-    <div {...api.indicatorProps} />
+    <div {...api.indicatorProps}></div>
     {#each radioData as opt}
       <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
         <span data-testid={`label-${opt.id}`} {...api.getItemTextProps({ value: opt.id })}>
@@ -31,5 +31,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer {state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

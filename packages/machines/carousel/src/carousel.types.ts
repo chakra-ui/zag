@@ -98,15 +98,33 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface ItemProps {
+  /**
+   * The index of the item.
+   */
   index: number
 }
 
 export interface ItemState {
+  /**
+   * The text value of the item. Used for accessibility.
+   */
   valueText: string
-  isCurrent: boolean
-  isNext: boolean
-  isPrevious: boolean
-  isInView: boolean
+  /**
+   * Whether the item is the current item in the carousel
+   */
+  current: boolean
+  /**
+   * Whether the item is the next item in the carousel
+   */
+  next: boolean
+  /**
+   * Whether the item is the previous item in the carousel
+   */
+  previous: boolean
+  /**
+   * Whether the item is in view
+   */
+  inView: boolean
 }
 
 export interface IndicatorProps {
@@ -124,9 +142,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   scrollProgress: number
   /**
-   * Whether the carousel is currently auto-playing
+   * Whether the carousel is auto playing
    */
-  isAutoplay: boolean
+  autoPlaying: boolean
   /**
    * Whether the carousel is can scroll to the next slide
    */

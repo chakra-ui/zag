@@ -12,23 +12,10 @@ function ToastItem(props: { actor: toast.Service }) {
   const [state, send] = useActor(props.actor)
   const api = createMemo(() => toast.connect(state, send, normalizeProps))
 
-  const progressbarProps = createMemo(() => ({
-    "data-scope": "toast",
-    "data-part": "progressbar",
-    "data-type": state.context.type,
-    style: {
-      opacity: api().isVisible ? 1 : 0,
-      "transform-origin": api().isRtl ? "right" : "left",
-      "animation-name": api().type === "loading" ? "none" : undefined,
-      "animation-play-state": api().isPaused ? "paused" : "running",
-      "animation-duration": `${state.context.duration}ms`,
-    },
-  }))
-
   return (
     <div {...api().rootProps}>
       <span {...api().ghostBeforeProps} />
-      <div {...progressbarProps()} />
+      <div data-scope="toast" data-part="progressbar" />
       <p {...api().titleProps}>
         {api().type === "loading" && <LoaderBar />}
         {api().title}

@@ -12,7 +12,7 @@ interface PublicContext {
   /**
    * Function called when the animation ends in the closed state.
    */
-  onExitComplete?: () => void
+  onExitComplete?(): void
 }
 
 interface PrivateContext {
@@ -42,7 +42,7 @@ export interface MachineApi {
   /**
    * Whether the node is present in the DOM.
    */
-  isPresent: boolean
+  present: boolean
   /**
    * Function to set the node (as early as possible)
    */
