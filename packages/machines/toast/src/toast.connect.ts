@@ -21,7 +21,6 @@ export function connect<T extends PropTypes, O>(
   return {
     type: type,
     title: state.context.title,
-    rtl: state.context.dir == "rtl",
     description: state.context.description,
     placement,
     visible: visible,
