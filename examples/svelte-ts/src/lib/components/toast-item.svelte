@@ -13,11 +13,11 @@
   const api = $derived(toast.connect(snapshot, send, normalizeProps))
 </script>
 
-<pre {...api.rootProps}>
+<div {...api.rootProps}>
   <div data-scope="toast" data-part="progressbar"></div>
   <p {...api.titleProps}>{api.title}</p>
   <p {...api.descriptionProps}>{api.description}</p>
   <button {...api.closeTriggerProps}>
     <XIcon />
   </button>
-</pre>
+</div>

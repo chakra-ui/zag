@@ -23,7 +23,7 @@ const ToastItem = defineComponent({
       const api = apiRef.value
 
       return (
-        <pre {...api.rootProps}>
+        <div {...api.rootProps}>
           <span {...api.ghostBeforeProps} />
           <div data-scope="toast" data-part="progressbar" />
           <p {...api.titleProps}>
@@ -34,7 +34,7 @@ const ToastItem = defineComponent({
           <button {...api.closeTriggerProps}>
             <XIcon />
           </button>
-        </pre>
+        </div>
       )
     }
   },
