@@ -87,9 +87,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     focus() {
       dom.getInputEl(state.context)?.focus()
     },
-    setOpen(openValue) {
-      if (openValue && !open) send("OPEN")
-      if (!openValue && open) send("CLOSE")
+    setOpen(_open) {
+      if (_open === open) return
+      send(_open ? "OPEN" : "CLOSE")
     },
     rootProps: normalize.element({
       ...parts.root.attrs,

@@ -18,8 +18,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     disabled,
     visible,
     open,
-    setOpen(open) {
-      send(open ? "OPEN" : "CLOSE")
+    setOpen(_open) {
+      if (_open === open) return
+      send(_open ? "OPEN" : "CLOSE")
     },
 
     rootProps: normalize.element({

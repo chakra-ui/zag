@@ -60,8 +60,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     focus() {
       dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
     },
-    setOpen(open) {
-      send(open ? "OPEN" : "CLOSE")
+    setOpen(_open) {
+      if (_open === open) return
+      send(_open ? "OPEN" : "CLOSE")
     },
     selectValue(value) {
       send({ type: "ITEM.SELECT", value })

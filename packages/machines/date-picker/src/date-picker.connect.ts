@@ -231,8 +231,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setFocusedValue(value) {
       send({ type: "FOCUS.SET", value })
     },
-    setOpen(open) {
-      send(open ? "OPEN" : "CLOSE")
+    setOpen(_open) {
+      if (_open === open) return
+      send(_open ? "OPEN" : "CLOSE")
     },
     focusMonth,
     focusYear,

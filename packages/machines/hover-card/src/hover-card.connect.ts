@@ -14,8 +14,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     open: open,
-    setOpen(open) {
-      send(open ? "OPEN" : "CLOSE")
+    setOpen(_open) {
+      if (_open === open) return
+      send(_open ? "OPEN" : "CLOSE")
     },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
