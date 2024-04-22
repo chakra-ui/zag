@@ -11,12 +11,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const allowDrop = state.context.allowDrop
   const translations = state.context.translations
 
-  const isDragging = state.matches("dragging")
-  const isFocused = state.matches("focused") && !disabled
+  const dragging = state.matches("dragging")
+  const focused = state.matches("focused") && !disabled
 
   return {
-    dragging: isDragging,
-    focused: isFocused,
+    dragging: dragging,
+    focused: focused,
     openFilePicker() {
       send("OPEN")
     },
@@ -47,7 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getRootId(state.context),
       "data-disabled": dataAttr(disabled),
-      "data-dragging": dataAttr(isDragging),
+      "data-dragging": dataAttr(dragging),
     }),
 
     dropzoneProps: normalize.element({
@@ -59,7 +59,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-invalid": state.context.invalid,
       "data-invalid": dataAttr(state.context.invalid),
       "data-disabled": dataAttr(disabled),
-      "data-dragging": dataAttr(isDragging),
+      "data-dragging": dataAttr(dragging),
       onKeyDown(event) {
         if (event.defaultPrevented) return
         const evt = event.nativeEvent || event
