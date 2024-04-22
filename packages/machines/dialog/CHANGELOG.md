@@ -1,5 +1,23 @@
 # @zag-js/dialog
 
+## 0.48.0
+
+### Minor Changes
+
+- [#1431](https://github.com/chakra-ui/zag/pull/1431) [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `closeOnEscapeKeyDown` to `closeOnEscape`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.48.0
+  - @zag-js/core@0.48.0
+  - @zag-js/types@0.48.0
+  - @zag-js/aria-hidden@0.48.0
+  - @zag-js/utils@0.48.0
+  - @zag-js/dismissable@0.48.0
+  - @zag-js/dom-query@0.48.0
+  - @zag-js/remove-scroll@0.48.0
+
 ## 0.47.0
 
 ### Patch Changes

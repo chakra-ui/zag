@@ -1,5 +1,11 @@
 # @zag-js/collection
 
+## 0.48.0
+
+### Patch Changes
+
+- [#1434](https://github.com/chakra-ui/zag/pull/1434) [`ed0ee38`](https://github.com/chakra-ui/zag/commit/ed0ee38da9bea2ec7d7aa46ba5c1bc11d8dadb1d) Thanks [@erm1116](https://github.com/erm1116)! - Fix issue where value is unintentionally sorted when highlighting item in the combobox and the select machine
+
 ## 0.47.0
 
 ## 0.46.0

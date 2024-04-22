@@ -1,5 +1,22 @@
 # @zag-js/toast
 
+## 0.48.0
+
+### Patch Changes
+
+- [`2ac0f00`](https://github.com/chakra-ui/zag/commit/2ac0f000dd9e5f7487e829ea6ed4c7edac2f255e) Thanks [@cschroeter](https://github.com/cschroeter)! - Fix an issue where toast hide immediately after updating
+
+- [`ccb1fa5`](https://github.com/chakra-ui/zag/commit/ccb1fa5951bd85cea933c5ea3f881a7a32ef953f) Thanks [@cschroeter](https://github.com/cschroeter)! - Fix an issue that the height was not exactly measured
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.48.0
+  - @zag-js/core@0.48.0
+  - @zag-js/types@0.48.0
+  - @zag-js/utils@0.48.0
+  - @zag-js/dismissable@0.48.0
+  - @zag-js/dom-event@0.48.0
+  - @zag-js/dom-query@0.48.0
+
 ## 0.47.0
 
 ### Minor Changes
