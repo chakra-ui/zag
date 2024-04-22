@@ -13,16 +13,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const isHorizontal = state.context.orientation === "horizontal"
 
   function getItemState(props: ItemProps): ItemState {
-    const isDisabled = !!props.disabled || !!disabled
-    const isPressed = value?.includes(props.value)
     const id = dom.getItemId(state.context, props.value)
-    const isFocused = state.context.focusedId === id
-
     return {
       id,
-      disabled: isDisabled,
-      pressed: isPressed,
-      focused: isFocused,
+      disabled: Boolean(props.disabled || disabled),
+      pressed: !!value.includes(props.value),
+      focused: state.context.focusedId === id,
     }
   }
 

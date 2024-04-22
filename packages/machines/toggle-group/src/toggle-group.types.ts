@@ -67,11 +67,6 @@ interface PrivateContext {
   isTabbingBackward: boolean
   /**
    * @internal
-   * Whether the toggle group has focusable toggles.
-   */
-  hasFocusableToggle: boolean
-  /**
-   * @internal
    * Whether the toggle was focused by a click.
    */
   isClickFocus: boolean
