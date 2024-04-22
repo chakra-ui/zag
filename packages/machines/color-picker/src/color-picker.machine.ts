@@ -404,11 +404,11 @@ export function machine(userContext: UserDefinedContext) {
         openEyeDropper(ctx) {
           const isSupported = "EyeDropper" in dom.getWin(ctx)
           if (!isSupported) return
-          const win = dom.getWin(ctx) as any
+          const win = dom.getWin(ctx)
           const picker = new win.EyeDropper()
           picker
-            .setOpen(true)
-            .then(({ sRGBHex }: { sRGBHex: string }) => {
+            .open()
+            .then(({ sRGBHex }) => {
               const format = ctx.value.getFormat()
               const color = parseColor(sRGBHex).toFormat(format) as Color
               set.value(ctx, color)

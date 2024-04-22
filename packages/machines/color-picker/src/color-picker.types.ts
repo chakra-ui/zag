@@ -7,6 +7,20 @@ import type { MaybeFunction } from "@zag-js/utils"
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
+// patch the global window object to include the EyeDropper API
+
+interface EyeDropper {
+  new (): EyeDropper
+  open: (options?: { signal?: AbortSignal }) => Promise<{ sRGBHex: string }>
+  [Symbol.toStringTag]: "EyeDropper"
+}
+
+declare global {
+  interface Window {
+    EyeDropper: EyeDropper
+  }
+}
+
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
