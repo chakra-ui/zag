@@ -1,6 +1,5 @@
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./checkbox.anatomy"
 import { dom } from "./checkbox.dom"
 import type { CheckedState, MachineApi, Send, State } from "./checkbox.types"

@@ -1,7 +1,6 @@
-import { contains, dataAttr, isSelfTarget } from "@zag-js/dom-query"
+import { contains, dataAttr, isSelfTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { formatBytes } from "@zag-js/i18n-utils"
 import { type NormalizeProps, type PropTypes } from "@zag-js/types"
-import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./file-upload.anatomy"
 import { dom } from "./file-upload.dom"
 import { type MachineApi, type Send, type State } from "./file-upload.types"

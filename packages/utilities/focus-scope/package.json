@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/visually-hidden": "workspace:*",
     "@zag-js/tabbable": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
     "@zag-js/utils": "workspace:*"

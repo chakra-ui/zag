@@ -8,10 +8,9 @@ import {
   isModifierKey,
   type EventKeyMap,
 } from "@zag-js/dom-event"
-import { dataAttr, query } from "@zag-js/dom-query"
+import { dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./color-picker.anatomy"
 import { dom } from "./color-picker.dom"
 import type {

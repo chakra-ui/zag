@@ -1,6 +1,5 @@
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./radio-group.anatomy"
 import { dom } from "./radio-group.dom"
 import type { ItemProps, ItemState, MachineApi, Send, State } from "./radio-group.types"

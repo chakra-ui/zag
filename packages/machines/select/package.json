@@ -40,7 +40,6 @@
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
     "@zag-js/collection": "workspace:*",
-    "@zag-js/visually-hidden": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/dismissable": "workspace:*",

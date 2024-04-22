@@ -1,6 +1,5 @@
 import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { computed, defineComponent, h, Fragment } from "vue"
 import { paginationControls, paginationData } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -60,9 +59,7 @@ export default defineComponent({
               <nav {...api.rootProps}>
                 <ul>
                   <li>
-                    <button {...api.prevTriggerProps}>
-                      Previous <span style={visuallyHiddenStyle}>Page</span>
-                    </button>
+                    <button {...api.prevTriggerProps}>Previous</button>
                   </li>
                   {api.pages.map((page, i) => {
                     if (page.type === "page")
@@ -81,9 +78,7 @@ export default defineComponent({
                       )
                   })}
                   <li>
-                    <button {...api.nextTriggerProps}>
-                      Next <span style={visuallyHiddenStyle}>Page</span>
-                    </button>
+                    <button {...api.nextTriggerProps}>Next</button>
                   </li>
                 </ul>
               </nav>

@@ -1,8 +1,14 @@
 import { getEventKey, getNativeEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, getByTypeahead, isEditableElement, isSelfTarget } from "@zag-js/dom-query"
+import {
+  ariaAttr,
+  dataAttr,
+  getByTypeahead,
+  isEditableElement,
+  isSelfTarget,
+  visuallyHiddenStyle,
+} from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./select.anatomy"
 import { dom } from "./select.dom"
 import type { CollectionItem, ItemProps, ItemState, MachineApi, Send, State } from "./select.types"
