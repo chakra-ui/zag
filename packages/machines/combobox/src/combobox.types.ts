@@ -278,14 +278,32 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface ItemProps {
+  /**
+   * Whether hovering outside should clear the highlighted state
+   */
   persistFocus?: boolean
+  /**
+   * The item to render
+   */
   item: CollectionItem
 }
 
 export interface ItemState {
+  /**
+   * The value of the item
+   */
   value: string
+  /**
+   * Whether the item is disabled
+   */
   disabled: boolean
+  /**
+   * Whether the item is selected
+   */
   selected: boolean
+  /**
+   * Whether the item is highlighted via pointer or keyboard navigation
+   */
   highlighted: boolean
 }
 

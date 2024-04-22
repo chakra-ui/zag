@@ -267,9 +267,21 @@ export interface ItemProps {
 }
 
 export interface ItemState {
+  /**
+   * The underlying id of the item
+   */
   id: string
+  /**
+   * Whether the item is being edited
+   */
   editing: boolean
+  /**
+   * Whether the item is highlighted
+   */
   highlighted: boolean
+  /**
+   * Whether the item is disabled
+   */
   disabled: boolean
 }
 

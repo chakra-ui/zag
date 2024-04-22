@@ -213,9 +213,21 @@ export interface ItemProps<T extends CollectionItem = CollectionItem> {
 }
 
 export interface ItemState {
+  /**
+   * The underlying value of the item
+   */
   value: string
+  /**
+   * Whether the item is disabled
+   */
   disabled: boolean
+  /**
+   * Whether the item is selected
+   */
   selected: boolean
+  /**
+   * Whether the item is highlighted
+   */
   highlighted: boolean
 }
 

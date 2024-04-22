@@ -130,8 +130,17 @@ export interface ItemProps {
 }
 
 export interface ItemState {
+  /**
+   * Whether the rating item is highlighted.
+   */
   highlighted: boolean
+  /**
+   * Whether the rating item is partially highlighted.
+   */
   half: boolean
+  /**
+   * Whether the rating item is checked.
+   */
   checked: boolean
 }
 

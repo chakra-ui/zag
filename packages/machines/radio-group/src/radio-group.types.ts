@@ -121,11 +121,29 @@ export interface ItemProps {
 }
 
 export interface ItemState {
+  /**
+   * Whether the radio is invalid
+   */
   invalid: boolean
+  /**
+   * Whether the radio is disabled
+   */
   disabled: boolean
+  /**
+   * Whether the radio is checked
+   */
   checked: boolean
+  /**
+   *  Whether the radio is focused
+   */
   focused: boolean
+  /**
+   * Whether the radio is hovered
+   */
   hovered: boolean
+  /**
+   * Whether the radio is active or pressed
+   */
   active: boolean
 }
 

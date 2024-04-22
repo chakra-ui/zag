@@ -98,14 +98,32 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface ItemProps {
+  /**
+   * The index of the item.
+   */
   index: number
 }
 
 export interface ItemState {
+  /**
+   * The text value of the item. Used for accessibility.
+   */
   valueText: string
+  /**
+   * Whether the item is the current item in the carousel
+   */
   current: boolean
+  /**
+   * Whether the item is the next item in the carousel
+   */
   next: boolean
+  /**
+   * Whether the item is the previous item in the carousel
+   */
   previous: boolean
+  /**
+   * Whether the item is in view
+   */
   inView: boolean
 }
 

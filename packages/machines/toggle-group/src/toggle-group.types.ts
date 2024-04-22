@@ -108,9 +108,21 @@ export interface ItemProps {
 }
 
 export interface ItemState {
+  /**
+   * The underlying id of the item.
+   */
   id: string
+  /**
+   * Whether the toggle item is disabled.
+   */
   disabled: boolean
+  /**
+   * Whether the toggle item is pressed.
+   */
   pressed: boolean
+  /**
+   * Whether the toggle item is focused.
+   */
   focused: boolean
 }
 
