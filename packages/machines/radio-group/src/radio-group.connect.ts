@@ -5,12 +5,13 @@ import { dom } from "./radio-group.dom"
 import type { ItemProps, ItemState, MachineApi, Send, State } from "./radio-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isGroupDisabled = state.context.isDisabled
+  const groupDisabled = state.context.isDisabled
+  const readOnly = state.context.readOnly
 
   function getItemState(props: ItemProps): ItemState {
     return {
       invalid: !!props.invalid,
-      disabled: !!props.disabled || isGroupDisabled,
+      disabled: !!props.disabled || groupDisabled,
       checked: state.context.value === props.value,
       focused: state.context.focusedValue === props.value,
       hovered: state.context.hoveredValue === props.value,
@@ -23,6 +24,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return {
       "data-focus": dataAttr(radioState.focused),
       "data-disabled": dataAttr(radioState.disabled),
+      "dats-readonly": dataAttr(readOnly),
       "data-state": radioState.checked ? "checked" : "unchecked",
       "data-hover": dataAttr(radioState.hovered),
       "data-invalid": dataAttr(radioState.invalid),
@@ -59,7 +61,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
       "aria-labelledby": dom.getLabelId(state.context),
       "data-orientation": state.context.orientation,
-      "data-disabled": dataAttr(isGroupDisabled),
+      "data-disabled": dataAttr(groupDisabled),
       "aria-orientation": state.context.orientation,
       dir: state.context.dir,
       style: {
@@ -71,7 +73,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.label.attrs,
       dir: state.context.dir,
       "data-orientation": state.context.orientation,
-      "data-disabled": dataAttr(isGroupDisabled),
+      "data-disabled": dataAttr(groupDisabled),
       id: dom.getLabelId(state.context),
       onClick: focus,
     }),
@@ -142,7 +144,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         form: state.context.form,
         value: props.value,
         onChange(event) {
-          if (inputState.disabled) return
+          if (readOnly) {
+            event.preventDefault()
+            return
+          }
 
           if (event.target.checked) {
             send({ type: "SET_VALUE", value: props.value, isTrusted: true })
@@ -177,7 +182,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.indicator.attrs,
       dir: state.context.dir,
       hidden: state.context.value == null,
-      "data-disabled": dataAttr(isGroupDisabled),
+      "data-disabled": dataAttr(groupDisabled),
       "data-orientation": state.context.orientation,
       style: {
         "--transition-property": "left, top, width, height",

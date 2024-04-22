@@ -43,6 +43,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   required?: boolean
   /**
+   * Whether the switch is read-only
+   */
+  readOnly?: boolean
+  /**
    * Function to call when the switch is clicked.
    */
   onCheckedChange?: (details: CheckedChangeDetails) => void

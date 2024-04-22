@@ -2,17 +2,19 @@ import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./checkbox.anatomy"
 import { dom } from "./checkbox.dom"
-import type { CheckedState, MachineApi, Send, State } from "./checkbox.types"
+import type { MachineApi, Send, State } from "./checkbox.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const disabled = state.context.isDisabled
   const focused = !disabled && state.context.focused
   const checked = state.context.isChecked
   const indeterminate = state.context.isIndeterminate
+  const readOnly = state.context.readOnly
 
   const dataAttrs = {
     "data-active": dataAttr(state.context.active),
     "data-focus": dataAttr(focused),
+    "data-readonly": dataAttr(readOnly),
     "data-hover": dataAttr(state.context.hovered),
     "data-disabled": dataAttr(disabled),
     "data-state": indeterminate ? "indeterminate" : state.context.checked ? "checked" : "unchecked",
@@ -26,7 +28,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     focused,
     checkedState: state.context.checked,
 
-    setChecked(checked: CheckedState) {
+    setChecked(checked) {
       send({ type: "CHECKED.SET", checked, isTrusted: false })
     },
 
@@ -91,6 +93,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       value: state.context.value,
       style: visuallyHiddenStyle,
       onChange(event) {
+        if (readOnly) {
+          event.preventDefault()
+          return
+        }
+
         const checked = event.currentTarget.checked
         send({ type: "CHECKED.SET", checked, isTrusted: true })
       },

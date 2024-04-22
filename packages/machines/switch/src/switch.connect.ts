@@ -8,10 +8,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const disabled = state.context.isDisabled
   const focused = !disabled && state.context.focused
   const checked = state.context.checked
+  const readOnly = state.context.readOnly
 
   const dataAttrs = {
     "data-active": dataAttr(state.context.active),
     "data-focus": dataAttr(focused),
+    "data-readonly": dataAttr(readOnly),
     "data-hover": dataAttr(state.context.hovered),
     "data-disabled": dataAttr(disabled),
     "data-state": state.context.checked ? "checked" : "unchecked",
@@ -86,6 +88,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       value: state.context.value,
       style: visuallyHiddenStyle,
       onChange(event) {
+        if (readOnly) {
+          event.preventDefault()
+          return
+        }
+
         const checked = event.currentTarget.checked
         send({ type: "CHECKED.SET", checked, isTrusted: true })
       },

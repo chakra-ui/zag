@@ -42,6 +42,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   disabled?: boolean
   /**
+   * Whether the checkbox is read-only
+   */
+  readOnly?: boolean
+  /**
    * Function called once a radio is checked
    * @param value the value of the checked radio
    */

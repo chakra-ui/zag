@@ -28,27 +28,32 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   ids?: ElementIds
   /**
-   * If `true`, the checkbox will be disabled
+   * Whether the checkbox is disabled
    */
   disabled?: boolean
   /**
-   * If `true`, the checkbox is marked as invalid.
+   * Whether the checkbox is invalid
    */
   invalid?: boolean
   /**
-   * If `true`, the checkbox input is marked as required,
+   * Whether the checkbox is required
    */
   required?: boolean
   /**
-   * If `true`, the checkbox will be checked.
+   * The checked state of the checkbox
    */
   checked: CheckedState
   /**
-   * The callback invoked when the checked state of the `Checkbox` changes.
+   * Whether the checkbox is read-only
+   */
+  readOnly?: boolean
+  /**
+   * The callback invoked when the checked state changes.
    */
   onCheckedChange?(details: CheckedChangeDetails): void
   /**
-   * The name of the input field in a checkbox. Useful for form submission.
+   * The name of the input field in a checkbox.
+   * Useful for form submission.
    */
   name?: string
   /**
