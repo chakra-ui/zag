@@ -17,6 +17,7 @@ import { NumberInput } from "./machines/number-input"
 import { Pagination } from "./machines/pagination"
 import { PinInput } from "./machines/pin-input"
 import { Popover } from "./machines/popover"
+import { Presence } from "./machines/presence"
 import { CircularProgress } from "./machines/progress-circular"
 import { LinearProgress } from "./machines/progress-linear"
 import { Radio } from "./machines/radio"
@@ -380,6 +381,7 @@ const components = {
     />
   ),
   SignaturePad: () => <Playground component={SignaturePad} />,
+  Presence: () => <Playground component={Presence} />,
 }
 
 export function Showcase(props: { id: keyof typeof components }) {

@@ -1,0 +1,48 @@
+```tsx
+import * as presence from "@zag-js/presence"
+import { useMachine, normalizeProps } from "@zag-js/vue"
+import { computed, defineComponent } from "vue"
+
+interface PresenceProps {
+  present: boolean
+  keepMounted?: boolean
+}
+
+export const Presence = defineComponent<PresenceProps>({
+  name: "Presence",
+  props: ["present", "keepMounted"],
+  emits: ["exit-complete"],
+  setup(props, { emit }) {
+    const nodeRef = ref<HTMLElement | null>(null)
+
+    const [state, send] = useMachine(presence.machine({ present }), {
+      context: { present, onExitComplete: () => emit("exit-complete") },
+    })
+
+    const apiRef = computed(() =>
+      presence.connect(state.value, send, normalizeProps),
+    )
+
+    watch(nodeRef, () => {
+      apiRef.value.setNode(nodeRef.value)
+    })
+
+    return () => {
+      const api = apiRef.value
+
+      const unmount = !api.present && !props.keepMounted
+      if (unmount) return null
+
+      return (
+        <div
+          hidden={!api.present}
+          data-presence
+          data-state={api.skip ? undefined : props.present ? "open" : "closed"}
+          ref={nodeRef}
+          {...props}
+        />
+      )
+    }
+  },
+})
+```
