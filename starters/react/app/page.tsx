@@ -15,6 +15,7 @@ const routes = [
   { path: "/collapsible/controlled", name: "Collapsible - Controlled" },
   { path: "/collapsible/uncontrolled", name: "Collapsible - Uncontrolled" },
   { path: "/accordion/collapsible", name: "Accordion + Collapsible" },
+  { path: "/presence", name: "Presence" },
 ]
 
 export default function Page() {

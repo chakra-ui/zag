@@ -29,6 +29,7 @@
 @import url(./toggle-group.css);
 @import url(./tooltip.css);
 @import url(./signature-pad.css);
+@import url(./presence.css);
 
 * {
   border-color: var(--colors-border-bold);

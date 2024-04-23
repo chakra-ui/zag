@@ -1,0 +1,98 @@
+---
+title: Presence
+description: Supporting exit animations using the presence machine.
+package: "@zag-js/presence"
+---
+
+# Presence
+
+The presence machine is a state machine that helps you manage exit animations in
+your project.
+
+In the DOM, when a component is removed from the tree or hidden, it's removed
+instantly. The presence machine suspends the component to allow its exit
+animation before removing or hiding it.
+
+> The presence machine requires using **CSS animations** to animate the
+> component's exit.
+
+<Resources pkg="@zag-js/presence" />
+
+<Showcase id="Presence" />
+
+## Installation
+
+To use the presence machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="presence/installation.mdx" />
+
+This command will install the framework agnostic presence logic and the reactive
+utilities for your framework of choice.
+
+## Usage
+
+First, import the presence package into your project
+
+```jsx
+import * as presence from "@zag-js/presence"
+```
+
+The presence package exports two key functions:
+
+- `machine` — The state machine logic for the presence.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+Next, import the required hooks and functions for your framework and use the
+presence machine in your project 🔥
+
+<CodeSnippet id="presence/usage.mdx" />
+
+## Styling guide
+
+To style any entry and exit animations, set up the `@keyframes` and apply the
+animations.
+
+```css
+@keyframes enter {
+  from {
+    scale: 0.9;
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes exit {
+  to {
+    opacity: 0;
+    scale: 0.9;
+  }
+}
+
+[data-state="open"] {
+  animation: enter 0.15s ease-out;
+}
+
+[data-state="closed"] {
+  animation: exit 0.1s ease-in;
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The presence machine exposes the following context properties:
+
+<ContextTable name="presence" />
+
+### Machine API
+
+The presence `api` exposes the following methods:
+
+<ApiTable name="presence" />
