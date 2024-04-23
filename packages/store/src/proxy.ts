@@ -1,6 +1,7 @@
 // Credits: https://github.com/pmndrs/valtio
 
 import { getUntracked, markToTrack } from "proxy-compare"
+import { makeGlobal } from "./global"
 
 const isDev = process.env.NODE_ENV !== "production"
 const isObject = (x: unknown): x is object => typeof x === "object" && x !== null
@@ -46,8 +47,8 @@ type ProxyState = readonly [
 ]
 
 // shared state
-const proxyStateMap = new WeakMap<ProxyObject, ProxyState>()
-const refSet = new WeakSet()
+const proxyStateMap = makeGlobal("__zag__proxyStateMap", () => new WeakMap<ProxyObject, ProxyState>())
+const refSet = makeGlobal("__zag__refSet", () => new WeakSet())
 
 const buildProxyFunction = (
   objectIs = Object.is,

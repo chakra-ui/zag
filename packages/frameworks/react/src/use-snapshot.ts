@@ -1,7 +1,7 @@
 /// <reference types="react/experimental" />
 
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import { snapshot, subscribe, type Snapshot } from "@zag-js/store"
+import { snapshot, subscribe, type Snapshot, makeGlobal } from "@zag-js/store"
 import { compact, isEqual } from "@zag-js/utils"
 import { createProxy as createProxyToCompare, isChanged } from "proxy-compare"
 import ReactExport, { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
@@ -11,7 +11,7 @@ import { useUpdateEffect } from "./use-update-effect"
 //@ts-ignore
 const { use } = ReactExport
 
-const targetCache = new WeakMap()
+const targetCache = makeGlobal("__zag__targetCache", () => new WeakMap())
 
 export function useSnapshot<
   TContext extends Record<string, any>,
