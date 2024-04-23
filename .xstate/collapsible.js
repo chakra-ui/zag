@@ -27,9 +27,7 @@ const fetchMachine = createMachine({
     closed: {
       tags: ["closed"],
       on: {
-        "CONTROLLED.OPEN": {
-          target: "open"
-        },
+        "CONTROLLED.OPEN": "open",
         OPEN: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
@@ -68,9 +66,7 @@ const fetchMachine = createMachine({
     open: {
       tags: ["open"],
       on: {
-        "CONTROLLED.CLOSE": {
-          target: "closing"
-        },
+        "CONTROLLED.CLOSE": "closing",
         CLOSE: [{
           cond: "isOpenControlled",
           actions: ["computeSize", "invokeOnClose"]

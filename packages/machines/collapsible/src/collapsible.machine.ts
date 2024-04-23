@@ -27,9 +27,7 @@ export function machine(userContext: UserDefinedContext) {
         closed: {
           tags: ["closed"],
           on: {
-            "CONTROLLED.OPEN": {
-              target: "open",
-            },
+            "CONTROLLED.OPEN": "open",
             OPEN: [
               {
                 guard: "isOpenControlled",
@@ -79,9 +77,7 @@ export function machine(userContext: UserDefinedContext) {
         open: {
           tags: ["open"],
           on: {
-            "CONTROLLED.CLOSE": {
-              target: "closing",
-            },
+            "CONTROLLED.CLOSE": "closing",
             CLOSE: [
               {
                 guard: "isOpenControlled",
