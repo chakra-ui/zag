@@ -5,6 +5,7 @@ interface PresenceProps {
   present: boolean
   keepMounted?: boolean
   onExitComplete?: () => void
+  children: React.ReactNode
 }
 
 export function Presence(props: PresenceProps) {
