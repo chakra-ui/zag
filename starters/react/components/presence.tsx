@@ -1,15 +1,15 @@
 import * as presence from "@zag-js/presence"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import * as React from "react"
 
-interface PresenceProps {
+interface UsePresenceProps {
   present: boolean
   keepMounted?: boolean
   onExitComplete?: () => void
-  children: React.ReactNode
 }
 
-export function Presence(props: PresenceProps) {
-  const { keepMounted, present, onExitComplete, ...restProps } = props
+export function usePresence(props: UsePresenceProps) {
+  const { keepMounted, present, onExitComplete } = props
 
   const [state, send] = useMachine(presence.machine({ present }), {
     context: { present, onExitComplete },
@@ -17,15 +17,52 @@ export function Presence(props: PresenceProps) {
 
   const api = presence.connect(state, send, normalizeProps)
 
-  if (!api.present && !keepMounted) return null
+  return {
+    unmount: !api.present && !keepMounted,
+    attrs: {
+      hidden: !api.present,
+      "data-state": api.skip ? undefined : present ? "open" : "closed",
+      ref: api.setNode,
+    },
+  }
+}
 
-  return (
-    <div
-      hidden={!api.present}
-      data-presence
-      data-state={api.skip ? undefined : present ? "open" : "closed"}
-      ref={api.setNode}
-      {...restProps}
-    />
-  )
+function getChild(children: React.ReactNode) {
+  const child: React.ReactNode = Array.isArray(children) ? React.Children.only(children) : children
+  return React.isValidElement(child) ? child : undefined
+}
+
+interface AnimatedPresenceProps {
+  onExitComplete?: () => void
+  children: React.ReactNode
+}
+
+export function AnimatePresence(props: AnimatedPresenceProps) {
+  const { children, onExitComplete } = props
+
+  const presence = usePresence({
+    present: !!children,
+    keepMounted: false,
+    onExitComplete,
+  })
+
+  const lastPresentChild = React.useRef<React.ReactNode>(null)
+
+  const child = getChild(children)
+
+  React.useLayoutEffect(() => {
+    if (child) {
+      lastPresentChild.current = child
+    }
+  }, [child])
+
+  if (presence.unmount) return null
+
+  const renderChild = child || lastPresentChild.current
+
+  if (React.isValidElement(renderChild)) {
+    return React.cloneElement(renderChild, presence.attrs)
+  }
+
+  return null
 }

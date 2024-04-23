@@ -1,6 +1,6 @@
 "use client"
 
-import { Presence } from "@/components/presence"
+import { AnimatePresence } from "@/components/presence"
 import { useState } from "react"
 import "./page.css"
 
@@ -13,6 +13,7 @@ export default function Page() {
       <div>
         Open {String(open)}, Unmounted: {String(unmounted)}
       </div>
+
       <button
         onClick={() =>
           setOpen((prevOpen) => {
@@ -23,9 +24,17 @@ export default function Page() {
       >
         Toggle
       </button>
-      <Presence present={open} keepMounted onExitComplete={() => setUnmounted(true)}>
-        <div>Content</div>
-      </Presence>
+      <AnimatePresence
+        onExitComplete={() => {
+          setUnmounted(false)
+        }}
+      >
+        {open && (
+          <div data-presence>
+            <div>Content</div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
