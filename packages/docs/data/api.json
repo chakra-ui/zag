@@ -2195,6 +2195,10 @@
   },
   "presence": {
     "api": {
+      "skip": {
+        "type": "boolean",
+        "description": "Whether the animation should be skipped."
+      },
       "present": {
         "type": "boolean",
         "description": "Whether the node is present in the DOM."
@@ -2202,6 +2206,10 @@
       "setNode": {
         "type": "(node: HTMLElement) => void",
         "description": "Function to set the node (as early as possible)"
+      },
+      "unmount": {
+        "type": "() => void",
+        "description": "Function to programmatically unmount the node"
       }
     },
     "context": {
