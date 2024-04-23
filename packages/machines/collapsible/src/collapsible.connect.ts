@@ -12,7 +12,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const width = state.context.width
   const disabled = !!state.context.disabled
 
-  const skipMountAnimation = state.context.isMountAnimationPrevented && open
+  const skip = !state.context.initial && open
 
   return {
     disabled,
@@ -32,7 +32,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     contentProps: normalize.element({
       ...parts.content.attrs,
-      "data-state": skipMountAnimation ? undefined : open ? "open" : "closed",
+      "data-state": skip ? undefined : open ? "open" : "closed",
       id: dom.getContentId(state.context),
       "data-disabled": dataAttr(disabled),
       hidden: !visible,
@@ -51,7 +51,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-disabled": dataAttr(disabled),
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": visible || false,
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         if (disabled) return
         send({ type: open ? "CLOSE" : "OPEN", src: "trigger.click" })
       },
