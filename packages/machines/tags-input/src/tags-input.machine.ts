@@ -76,9 +76,12 @@ export function machine(userContext: UserDefinedContext) {
         },
         POINTER_DOWN_TAG: {
           internal: true,
-          guard: not("isTagHighlighted"),
           target: "navigating:tag",
           actions: ["highlightTag", "focusInput"],
+        },
+        CLICK_DELETE_TAG: {
+          target: "focused:input",
+          actions: ["deleteTag"],
         },
         SET_INPUT_VALUE: {
           actions: ["setInputValue"],
@@ -233,10 +236,17 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["clearEditedTagValue", "clearHighlightedId", "clearEditedId", "raiseExternalBlurEvent"],
               },
             ],
-            TAG_INPUT_ENTER: {
-              target: "navigating:tag",
-              actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "highlightTagAtIndex"],
-            },
+            TAG_INPUT_ENTER: [
+              {
+                guard: "isEditedTagEmpty",
+                target: "navigating:tag",
+                actions: ["deleteHighlightedTag", "focusInput", "clearEditedId", "highlightTagAtIndex"],
+              },
+              {
+                target: "navigating:tag",
+                actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "highlightTagAtIndex"],
+              },
+            ],
           },
         },
       },
@@ -246,11 +256,11 @@ export function machine(userContext: UserDefinedContext) {
         isInputRelatedTarget: (ctx, evt) => evt.relatedTarget === dom.getInputEl(ctx),
         isAtMax: (ctx) => ctx.isAtMax,
         hasHighlightedTag: (ctx) => ctx.highlightedTagId !== null,
-        isTagHighlighted: (ctx, evt) => ctx.highlightedTagId === evt.id,
         isFirstTagHighlighted: (ctx) => {
           const firstItemId = dom.getItemId(ctx, { value: ctx.value[0], index: 0 })
           return firstItemId === ctx.highlightedTagId
         },
+        isEditedTagEmpty: (ctx) => ctx.editedTagValue.trim() === "",
         isLastTagHighlighted: (ctx) => {
           const lastIndex = ctx.value.length - 1
           const lastItemId = dom.getItemId(ctx, { value: ctx.value[lastIndex], index: lastIndex })

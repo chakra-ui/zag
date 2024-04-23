@@ -300,7 +300,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onClick() {
           if (!interactive) return
-          send({ type: "CLEAR_TAG", id })
+          send({ type: "CLICK_DELETE_TAG", id })
         },
       })
     },

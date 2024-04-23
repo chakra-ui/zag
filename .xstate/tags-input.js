@@ -14,7 +14,6 @@ const fetchMachine = createMachine({
   initial: ctx.autoFocus ? "focused:input" : "idle",
   context: {
     "isTagEditable": false,
-    "!isTagHighlighted": false,
     "(!isAtMax || allowOverflow) && !isInputValueEmpty": false,
     "addOnBlur": false,
     "clearOnBlur": false,
@@ -27,7 +26,8 @@ const fetchMachine = createMachine({
     "hasTags && isInputCaretAtStart && !isLastTagHighlighted": false,
     "isTagEditable && hasHighlightedTag": false,
     "isFirstTagHighlighted": false,
-    "isInputRelatedTarget": false
+    "isInputRelatedTarget": false,
+    "isEditedTagEmpty": false
   },
   activities: ["trackLiveRegion", "trackFormControlState"],
   exit: ["clearLog"],
@@ -40,9 +40,12 @@ const fetchMachine = createMachine({
     },
     POINTER_DOWN_TAG: {
       internal: true,
-      cond: "!isTagHighlighted",
       target: "navigating:tag",
       actions: ["highlightTag", "focusInput"]
+    },
+    CLICK_DELETE_TAG: {
+      target: "focused:input",
+      actions: ["deleteTag"]
     },
     SET_INPUT_VALUE: {
       actions: ["setInputValue"]
@@ -189,10 +192,14 @@ const fetchMachine = createMachine({
           target: "idle",
           actions: ["clearEditedTagValue", "clearHighlightedId", "clearEditedId", "raiseExternalBlurEvent"]
         }],
-        TAG_INPUT_ENTER: {
+        TAG_INPUT_ENTER: [{
+          cond: "isEditedTagEmpty",
+          target: "navigating:tag",
+          actions: ["deleteHighlightedTag", "focusInput", "clearEditedId", "highlightTagAtIndex"]
+        }, {
           target: "navigating:tag",
           actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "highlightTagAtIndex"]
-        }
+        }]
       }
     }
   }
@@ -206,7 +213,6 @@ const fetchMachine = createMachine({
   },
   guards: {
     "isTagEditable": ctx => ctx["isTagEditable"],
-    "!isTagHighlighted": ctx => ctx["!isTagHighlighted"],
     "(!isAtMax || allowOverflow) && !isInputValueEmpty": ctx => ctx["(!isAtMax || allowOverflow) && !isInputValueEmpty"],
     "addOnBlur": ctx => ctx["addOnBlur"],
     "clearOnBlur": ctx => ctx["clearOnBlur"],
@@ -216,6 +222,7 @@ const fetchMachine = createMachine({
     "hasTags && isInputCaretAtStart && !isLastTagHighlighted": ctx => ctx["hasTags && isInputCaretAtStart && !isLastTagHighlighted"],
     "isTagEditable && hasHighlightedTag": ctx => ctx["isTagEditable && hasHighlightedTag"],
     "isFirstTagHighlighted": ctx => ctx["isFirstTagHighlighted"],
-    "isInputRelatedTarget": ctx => ctx["isInputRelatedTarget"]
+    "isInputRelatedTarget": ctx => ctx["isInputRelatedTarget"],
+    "isEditedTagEmpty": ctx => ctx["isEditedTagEmpty"]
   }
 });
