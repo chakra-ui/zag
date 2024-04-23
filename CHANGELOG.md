@@ -6,6 +6,93 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.48.0](./#0.48.0) - 2024-04-22
+
+This release marks the journey to a more stable and consistent API across all components. We've made significant
+changes.
+
+### Fixed
+
+- **Collapsible**
+
+  - Resolve an issue that sometimes the collapsible height was not measured correctly
+
+- **Toast**
+
+  - Fix an issue where toast hide immediately after updating
+  - Fix an issue that the height was not exactly measured
+
+- **Select, Combobox**
+  - Fix issue where `value` is unintentionally sorted when highlighting item
+
+### Added
+
+- **Checkbox, RadioGroup, Switch**
+
+  - Add support for `readOnly` prop to prevent user interaction from changing the checkbox state
+
+- **Combobox**
+
+  - Add support for controlling the open state of the combobox via `open` and `onOpenChange`
+  - Add new `openOnChange` property to automatically open the combobox when the value changes. Value can be a boolean or
+    a function that returns a boolean.
+
+  ```jsx
+  const [state, send] = useMachine(
+    combobox.machine({
+      openOnChange: ({ inputValue }) => inputValue.length > 2,
+    }),
+  )
+  ```
+
+  - Add new `openOnKeypress` property to automatically open the combobox when the arrow keys (up and down) are pressed.
+  - Add `persistFocus` to the item props to determine whether to clear the highlighted item on pointer leave.
+
+### Changed
+
+- **All machines**
+
+  - Rename all api to return consistent boolean properties. This means going from `is<X>` to `<x>`. For example,
+    `isDisabled` -> `disabled`, `isFocused` -> `focused`, `isOpen` -> `open`, etc.
+  - Rename `open()`, `close()` methods to `setOpen(true|false)`
+  - Remove `selectOnBlur` to prevent accidental selection of options. Prefer explicit selection by user via click or
+    enter key.
+
+- **Accordion**
+
+  - Rename `getItemState` properties
+    - `isOpen` -> `expanded`
+    - `isDisabled` -> `disabled`
+    - `isFocused` -> `focused`
+
+- **Avatar**
+
+  - Rename `api.isLoaded` to `api.loaded`
+  - Remove `api.showFallback` since it's equivalent to `!api.loaded`
+
+- **Carousel**
+
+  - Rename `isCurrent` to `current`
+  - Rename `isNext` and `isPrevious` to `next` and `previous` respectively
+  - Rename `isPrevious` to `previous`
+
+- **Clipboard**
+
+  - Rename `api.isCopied` to `api.copied`
+
+- **File Upload**
+
+  - Rename `api.open()` -> `api.openFilePicker()`
+
+- **Menu**
+
+  - Menu now focuses the first tabbable element when it opens. This allows for composition with combobox
+  - Rename `loop` to `loopFocus` to better reflect its purpose
+
+- **TagsInput**
+  - Rename `allowTagEdit` to `editable`
+  - Add `onInputValueChange` to machine context
+
 ## [0.47.0](./#0.47.0) - 2024-04-19
 
 ### Fixed
