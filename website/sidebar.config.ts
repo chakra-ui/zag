@@ -79,9 +79,9 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Nested Menu", id: "nested-menu" },
         { type: "doc", label: "Number Input", id: "number-input" },
         { type: "doc", label: "Pagination", id: "pagination" },
-        { type: "doc", label: "Presence", id: "presence", new: true },
         { type: "doc", label: "Pin Input", id: "pin-input" },
         { type: "doc", label: "Popover", id: "popover" },
+        { type: "doc", label: "Presence", id: "presence", new: true },
         {
           type: "doc",
           label: "Progress - Linear",

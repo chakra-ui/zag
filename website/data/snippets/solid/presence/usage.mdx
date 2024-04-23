@@ -5,7 +5,7 @@ import { createMemo, createUniqueId, JSX } from "solid-js"
 
 interface PresenceProps {
   present: boolean
-  keepMounted?: boolean
+  unmountOnExit?: boolean
   onExitComplete?: () => void
   children: JSX.Element
 }
@@ -13,7 +13,7 @@ interface PresenceProps {
 function Presence(props: PresenceProps) {
   const [localProps, restProps] = splitProps(props, [
     "present",
-    "keepMounted",
+    "unmountOnExit",
     "onExitComplete",
   ])
 
@@ -22,13 +22,12 @@ function Presence(props: PresenceProps) {
   })
 
   const api = createMemo(() => presence.connect(state, send, normalizeProps))
-  const unmount = createMemo(() => !api().present && !localProps.keepMounted)
+  const unmount = createMemo(() => !api().present && localProps.unmountOnExit)
 
   return (
     <Show when={!unmount()}>
       <div
         hidden={!api().present}
-        data-presence
         data-state={api().skip ? undefined : present ? "open" : "closed"}
         ref={api().setNode}
         {...restProps}

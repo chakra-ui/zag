@@ -6,7 +6,7 @@
 
   const props = defineProps<{
     present: boolean
-    keepMounted?: boolean
+    unmountOnExit?: boolean
   }>()
 
   const emit = defineEmits<{
@@ -27,14 +27,13 @@
     apiRef.value.setNode(nodeRef.value)
   })
 
-  const unmount = computed(() => !api.value.present && !props.keepMounted)
+  const unmount = computed(() => !api.value.present && props.unmountOnExit)
 </script>
 
 <template>
   <div
     v-show="!unmount"
     :hidden="!api.present"
-    data-presence
     :data-state="api.skip ? undefined : present ? 'open' : 'closed'"
     ref="nodeRef"
     v-bind="$attrs"
