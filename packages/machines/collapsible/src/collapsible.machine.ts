@@ -17,6 +17,7 @@ export function machine(userContext: UserDefinedContext) {
         width: 0,
         initial: false,
         stylesRef: null,
+        unmountAnimationName: null,
       },
 
       watch: {
@@ -98,37 +99,29 @@ export function machine(userContext: UserDefinedContext) {
       },
       activities: {
         trackAnimationEvents(ctx, _evt, { send }) {
-          let cleanup: VoidFunction | undefined
+          const contentEl = dom.getContentEl(ctx)
+          if (!contentEl) return
 
-          const rafCleanup = raf(() => {
-            const contentEl = dom.getContentEl(ctx)
-            if (!contentEl) return
+          // if there's no animation, send ANIMATION.END immediately
+          const animationName = getComputedStyle(contentEl).animationName
+          const hasNoAnimation = !animationName || animationName === "none"
 
-            // if there's no animation, send ANIMATION.END immediately
-            const animationName = getComputedStyle(contentEl).animationName
-            const hasNoAnimation = !animationName || animationName === "none"
-            if (hasNoAnimation) {
+          if (hasNoAnimation) {
+            send({ type: "ANIMATION.END" })
+            return
+          }
+
+          const onEnd = (event: AnimationEvent) => {
+            const win = contentEl.ownerDocument.defaultView || window
+            const animationName = win.getComputedStyle(contentEl).animationName
+            if (event.target === contentEl && animationName === ctx.unmountAnimationName) {
               send({ type: "ANIMATION.END" })
-              return
             }
+          }
 
-            const onEnd = (event: AnimationEvent) => {
-              if (event.target !== contentEl) return
-              send({ type: "ANIMATION.END" })
-            }
-
-            contentEl.addEventListener("animationend", onEnd)
-            contentEl.addEventListener("animationcancel", onEnd)
-
-            cleanup = () => {
-              contentEl.removeEventListener("animationend", onEnd)
-              contentEl.removeEventListener("animationcancel", onEnd)
-            }
-          })
-
+          contentEl.addEventListener("animationend", onEnd)
           return () => {
-            rafCleanup()
-            cleanup?.()
+            contentEl.removeEventListener("animationend", onEnd)
           }
         },
       },
@@ -136,7 +129,7 @@ export function machine(userContext: UserDefinedContext) {
         setInitial(ctx) {
           ctx.initial = true
         },
-        computeSize: (ctx) => {
+        computeSize(ctx, evt) {
           ctx._rafCleanup?.()
 
           ctx._rafCleanup = raf(() => {
@@ -147,6 +140,11 @@ export function machine(userContext: UserDefinedContext) {
               animationName: contentEl.style.animationName,
               animationDuration: contentEl.style.animationDuration,
             })
+
+            if (evt.type === "CLOSE" || !ctx.open) {
+              const win = contentEl.ownerDocument.defaultView || window
+              ctx.unmountAnimationName = win.getComputedStyle(contentEl).animationName
+            }
 
             const hidden = contentEl.hidden
 

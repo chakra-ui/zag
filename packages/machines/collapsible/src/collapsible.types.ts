@@ -74,6 +74,11 @@ interface PrivateContext {
    * The requestAnimationFrame id
    */
   _rafCleanup?: VoidFunction
+  /**
+   * @internal
+   * The unmount animation name
+   */
+  unmountAnimationName: string | null
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
