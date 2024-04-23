@@ -8,6 +8,6 @@ function getGlobal(): any {
 export function makeGlobal<T>(key: string, value: () => T): T {
   const g = getGlobal()
   if (!g) return value()
-  if (!g[key]) g[key] = value()
+  g[key] ||= value()
   return g[key]
 }
