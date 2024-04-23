@@ -69,7 +69,7 @@ const fetchMachine = createMachine({
         "CONTROLLED.CLOSE": "closing",
         CLOSE: [{
           cond: "isOpenControlled",
-          actions: ["computeSize", "invokeOnClose"]
+          actions: ["invokeOnClose"]
         }, {
           target: "closing",
           actions: ["setInitial", "computeSize", "invokeOnClose"]

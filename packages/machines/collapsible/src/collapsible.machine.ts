@@ -81,7 +81,7 @@ export function machine(userContext: UserDefinedContext) {
             CLOSE: [
               {
                 guard: "isOpenControlled",
-                actions: ["computeSize", "invokeOnClose"],
+                actions: ["invokeOnClose"],
               },
               {
                 target: "closing",
