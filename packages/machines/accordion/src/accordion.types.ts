@@ -30,17 +30,17 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   ids?: ElementIds
   /**
-   * Whether multple accordion items can be open at the same time.
+   * Whether multple accordion items can be expanded at the same time.
    * @default false
    */
   multiple?: boolean
   /**
-   * Whether an accordion item can be collapsed after it has been opened.
+   * Whether an accordion item can be after it has been expanded.
    * @default false
    */
   collapsible?: boolean
   /**
-   * The `id` of the accordion item that is currently being opened.
+   * The `value` of the accordion items that are currently being expanded.
    */
   value: string[]
   /**
@@ -48,7 +48,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   disabled?: boolean
   /**
-   * The callback fired when the state of opened/closed accordion items changes.
+   * The callback fired when the state of expanded/collapsed accordion items changes.
    */
   onValueChange?(details: ValueChangeDetails): void
   /**
@@ -57,6 +57,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   onFocusChange?(details: FocusChangeDetails): void
   /**
    *  The orientation of the accordion items.
+   *  @default "vertical"
    */
   orientation?: "horizontal" | "vertical"
 }
