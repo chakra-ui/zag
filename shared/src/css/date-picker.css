@@ -4,6 +4,8 @@
   min-height: 30px;
   border-radius: 4px;
   text-align: center;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 [data-scope="date-picker"][data-part="table-cell-trigger"]:hover {

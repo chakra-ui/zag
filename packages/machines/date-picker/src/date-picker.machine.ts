@@ -99,9 +99,12 @@ export function machine(userContext: UserDefinedContext) {
 
       activities: ["setupLiveRegion"],
 
+      created: ["setStartValue"],
+
       watch: {
         locale: ["setStartValue"],
         focusedValue: [
+          "setStartValue",
           "syncMonthSelectElement",
           "syncYearSelectElement",
           "focusActiveCellIfNeeded",
@@ -875,6 +878,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setStartValue(ctx) {
           const startValue = alignDate(ctx.focusedValue, "start", { months: ctx.numOfMonths }, ctx.locale)
+          if (isDateEqual(ctx.startValue, startValue)) return
           ctx.startValue = startValue
         },
         invokeOnOpen(ctx) {
