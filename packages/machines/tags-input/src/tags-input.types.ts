@@ -25,7 +25,7 @@ export interface ValidityChangeDetails {
   reason: ValidityState
 }
 
-interface ValidateArgs {
+export interface ValidateArgs {
   inputValue: string
   value: string[]
 }

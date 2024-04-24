@@ -11,6 +11,7 @@ export type {
   IntlTranslations,
   ItemProps,
   ItemState,
+  ValidateArgs,
   ValidityChangeDetails,
   ValueChangeDetails,
 } from "./tags-input.types"
