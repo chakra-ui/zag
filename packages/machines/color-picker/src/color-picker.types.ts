@@ -3,7 +3,6 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, MaybeElement, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
-import type { MaybeFunction } from "@zag-js/utils"
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
@@ -98,11 +97,10 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
    * The positioning options for the color picker
    */
   positioning: PositioningOptions
-
   /**
    * The initial focus element when the color picker is opened.
    */
-  initialFocusEl?: MaybeFunction<MaybeElement>
+  initialFocusEl?: MaybeElement | (() => MaybeElement)
   /**
    * Whether the color picker is open
    */
@@ -336,4 +334,4 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
  * Re-exported types
  * -----------------------------------------------------------------------------*/
 
-export type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType }
+export type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType, PositioningOptions }

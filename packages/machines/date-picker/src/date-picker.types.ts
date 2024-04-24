@@ -597,5 +597,6 @@ export type {
   DateFormatter,
   DateRangePreset,
   DateValue,
+  PositioningOptions,
   ZonedDateTime,
 }

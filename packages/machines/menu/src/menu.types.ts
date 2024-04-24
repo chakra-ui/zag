@@ -309,3 +309,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getItemGroupLabelProps(options: ItemGroupLabelProps): T["element"]
   getItemGroupProps(options: ItemGroupProps): T["element"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { PositioningOptions, Point }

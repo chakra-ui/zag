@@ -337,4 +337,4 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
  * Re-exported types
  * -----------------------------------------------------------------------------*/
 
-export type { CollectionOptions, CollectionItem }
+export type { CollectionItem, CollectionOptions, PositioningOptions }

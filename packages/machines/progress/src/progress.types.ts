@@ -1,5 +1,12 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type {
+  CommonProperties,
+  DirectionProperty,
+  Orientation,
+  OrientationProperty,
+  PropTypes,
+  RequiredBy,
+} from "@zag-js/types"
 
 export type ProgressState = "indeterminate" | "loading" | "complete"
 
@@ -106,3 +113,9 @@ export interface MachineApi<T extends PropTypes> {
   circleTrackProps: T["circle"]
   circleRangeProps: T["circle"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { Orientation }

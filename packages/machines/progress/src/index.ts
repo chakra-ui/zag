@@ -6,6 +6,7 @@ export type {
   MachineApi as Api,
   UserDefinedContext as Context,
   IntlTranslations,
+  Orientation,
   ProgressState,
   ValueTranslationDetails,
   ViewProps,

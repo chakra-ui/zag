@@ -137,3 +137,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   rootProps: T["element"]
   getItemProps(props: ItemProps): T["button"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { Orientation }

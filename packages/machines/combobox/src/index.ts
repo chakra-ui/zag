@@ -1,3 +1,4 @@
+export type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent } from "@zag-js/dismissable"
 export { anatomy } from "./combobox.anatomy"
 export { collection } from "./combobox.collection"
 export { connect } from "./combobox.connect"

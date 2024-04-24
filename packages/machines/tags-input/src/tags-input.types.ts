@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
+import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
-import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 
 /* -----------------------------------------------------------------------------
  * Callback details
