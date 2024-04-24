@@ -66,9 +66,19 @@ interface PrivateContext {
   stylesRef: Record<string, any> | null
   /**
    * @internal
-   * Whether the mount animation is prevented
+   * Whether the initial animation is allowed
    */
-  isMountAnimationPrevented: boolean
+  initial: boolean
+  /**
+   * @internal
+   * The requestAnimationFrame id
+   */
+  _rafCleanup?: VoidFunction
+  /**
+   * @internal
+   * The unmount animation name
+   */
+  unmountAnimationName: string | null
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

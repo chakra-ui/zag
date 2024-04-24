@@ -18,7 +18,7 @@ const fetchMachine = createMachine({
     "isOpenControlled": false,
     "isOpenControlled": false
   },
-  entry: ["computeSize"],
+  exit: ["clearInitial"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -27,18 +27,14 @@ const fetchMachine = createMachine({
   states: {
     closed: {
       tags: ["closed"],
-      entry: ["computeSize"],
       on: {
-        "CONTROLLED.OPEN": {
-          target: "open",
-          actions: ["computeSize"]
-        },
+        "CONTROLLED.OPEN": "open",
         OPEN: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["allowAnimation", "invokeOnOpen", "computeSize"]
+          actions: ["setInitial", "computeSize", "invokeOnOpen"]
         }]
       }
     },
@@ -46,24 +42,21 @@ const fetchMachine = createMachine({
       tags: ["open"],
       activities: ["trackAnimationEvents"],
       on: {
-        "CONTROLLED.CLOSE": {
-          target: "closed",
-          actions: ["invokeOnExitComplete"]
-        },
+        "CONTROLLED.CLOSE": "closed",
         "CONTROLLED.OPEN": "open",
         OPEN: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["allowAnimation", "invokeOnOpen"]
+          actions: ["setInitial", "invokeOnOpen"]
         }],
         CLOSE: [{
           cond: "isOpenControlled",
-          actions: ["invokeOnClose"]
+          actions: ["invokeOnExitComplete"]
         }, {
           target: "closed",
-          actions: ["allowAnimation", "computeSize", "invokeOnExitComplete"]
+          actions: ["setInitial", "computeSize", "invokeOnExitComplete"]
         }],
         "ANIMATION.END": {
           target: "closed",
@@ -74,16 +67,13 @@ const fetchMachine = createMachine({
     open: {
       tags: ["open"],
       on: {
-        "CONTROLLED.CLOSE": {
-          target: "closing",
-          actions: ["computeSize"]
-        },
+        "CONTROLLED.CLOSE": "closing",
         CLOSE: [{
           cond: "isOpenControlled",
           actions: ["invokeOnClose"]
         }, {
           target: "closing",
-          actions: ["allowAnimation", "computeSize"]
+          actions: ["setInitial", "computeSize", "invokeOnClose"]
         }]
       }
     }

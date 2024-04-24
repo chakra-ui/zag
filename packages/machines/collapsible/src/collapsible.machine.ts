@@ -15,25 +15,22 @@ export function machine(userContext: UserDefinedContext) {
         ...ctx,
         height: 0,
         width: 0,
-        isMountAnimationPrevented: !!ctx.open,
+        initial: false,
         stylesRef: null,
+        unmountAnimationName: null,
       },
 
       watch: {
-        open: ["allowAnimation", "toggleVisibility"],
+        open: ["setInitial", "computeSize", "toggleVisibility"],
       },
 
-      entry: ["computeSize"],
+      exit: ["clearInitial"],
 
       states: {
         closed: {
           tags: ["closed"],
-          entry: ["computeSize"],
           on: {
-            "CONTROLLED.OPEN": {
-              target: "open",
-              actions: ["computeSize"],
-            },
+            "CONTROLLED.OPEN": "open",
             OPEN: [
               {
                 guard: "isOpenControlled",
@@ -41,7 +38,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "open",
-                actions: ["allowAnimation", "invokeOnOpen", "computeSize"],
+                actions: ["setInitial", "computeSize", "invokeOnOpen"],
               },
             ],
           },
@@ -51,10 +48,7 @@ export function machine(userContext: UserDefinedContext) {
           tags: ["open"],
           activities: ["trackAnimationEvents"],
           on: {
-            "CONTROLLED.CLOSE": {
-              target: "closed",
-              actions: ["invokeOnExitComplete"],
-            },
+            "CONTROLLED.CLOSE": "closed",
             "CONTROLLED.OPEN": "open",
             OPEN: [
               {
@@ -63,17 +57,17 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "open",
-                actions: ["allowAnimation", "invokeOnOpen"],
+                actions: ["setInitial", "invokeOnOpen"],
               },
             ],
             CLOSE: [
               {
                 guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
+                actions: ["invokeOnExitComplete"],
               },
               {
                 target: "closed",
-                actions: ["allowAnimation", "computeSize", "invokeOnExitComplete"],
+                actions: ["setInitial", "computeSize", "invokeOnExitComplete"],
               },
             ],
             "ANIMATION.END": {
@@ -82,13 +76,11 @@ export function machine(userContext: UserDefinedContext) {
             },
           },
         },
+
         open: {
           tags: ["open"],
           on: {
-            "CONTROLLED.CLOSE": {
-              target: "closing",
-              actions: ["computeSize"],
-            },
+            "CONTROLLED.CLOSE": "closing",
             CLOSE: [
               {
                 guard: "isOpenControlled",
@@ -96,7 +88,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "closing",
-                actions: ["allowAnimation", "computeSize"],
+                actions: ["setInitial", "computeSize", "invokeOnClose"],
               },
             ],
           },
@@ -118,22 +110,23 @@ export function machine(userContext: UserDefinedContext) {
             // if there's no animation, send ANIMATION.END immediately
             const animationName = getComputedStyle(contentEl).animationName
             const hasNoAnimation = !animationName || animationName === "none"
+
             if (hasNoAnimation) {
               send({ type: "ANIMATION.END" })
               return
             }
 
             const onEnd = (event: AnimationEvent) => {
-              if (event.target !== contentEl) return
-              send({ type: "ANIMATION.END" })
+              const win = contentEl.ownerDocument.defaultView || window
+              const animationName = win.getComputedStyle(contentEl).animationName
+              if (event.target === contentEl && animationName === ctx.unmountAnimationName) {
+                send({ type: "ANIMATION.END" })
+              }
             }
 
             contentEl.addEventListener("animationend", onEnd)
-            contentEl.addEventListener("animationcancel", onEnd)
-
             cleanup = () => {
               contentEl.removeEventListener("animationend", onEnd)
-              contentEl.removeEventListener("animationcancel", onEnd)
             }
           })
 
@@ -144,11 +137,16 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
-        allowAnimation(ctx) {
-          ctx.isMountAnimationPrevented = false
+        setInitial(ctx) {
+          ctx.initial = true
         },
-        computeSize: (ctx) => {
-          raf(() => {
+        clearInitial(ctx) {
+          ctx.initial = false
+        },
+        computeSize(ctx, evt) {
+          ctx._rafCleanup?.()
+
+          ctx._rafCleanup = raf(() => {
             const contentEl = dom.getContentEl(ctx)
             if (!contentEl) return
 
@@ -156,6 +154,11 @@ export function machine(userContext: UserDefinedContext) {
               animationName: contentEl.style.animationName,
               animationDuration: contentEl.style.animationDuration,
             })
+
+            if (evt.type === "CLOSE" || !ctx.open) {
+              const win = contentEl.ownerDocument.defaultView || window
+              ctx.unmountAnimationName = win.getComputedStyle(contentEl).animationName
+            }
 
             const hidden = contentEl.hidden
 
@@ -169,7 +172,7 @@ export function machine(userContext: UserDefinedContext) {
             ctx.width = rect.width
 
             // kick off any animations/transitions that were originally set up if it isn't the initial mount
-            if (!ctx.isMountAnimationPrevented) {
+            if (ctx.initial) {
               contentEl.style.animationName = ctx.stylesRef.animationName
               contentEl.style.animationDuration = ctx.stylesRef.animationDuration
             }
