@@ -18,6 +18,7 @@ const fetchMachine = createMachine({
     "isOpenControlled": false,
     "isOpenControlled": false
   },
+  exit: ["clearInitial"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"

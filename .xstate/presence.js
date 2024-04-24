@@ -12,6 +12,7 @@ const {
 const fetchMachine = createMachine({
   initial: initialState,
   context: {},
+  exit: ["clearInitial"],
   on: {
     "NODE.SET": {
       actions: ["setNode", "setStyles"]

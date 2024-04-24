@@ -21,6 +21,8 @@ export function machine(ctx: Partial<UserDefinedContext>) {
         ...ctx,
       },
 
+      exit: ["clearInitial"],
+
       watch: {
         present: ["setInitial", "syncPresence"],
       },
@@ -73,6 +75,9 @@ export function machine(ctx: Partial<UserDefinedContext>) {
       actions: {
         setInitial(ctx) {
           ctx.initial = true
+        },
+        clearInitial(ctx) {
+          ctx.initial = false
         },
         invokeOnExitComplete(ctx) {
           ctx.onExitComplete?.()
