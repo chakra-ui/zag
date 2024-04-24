@@ -10,7 +10,7 @@ const {
   choose
 } = actions;
 const fetchMachine = createMachine({
-  initial: initialState,
+  initial: ctx.present ? "mounted" : "unmounted",
   context: {},
   exit: ["clearInitial"],
   on: {

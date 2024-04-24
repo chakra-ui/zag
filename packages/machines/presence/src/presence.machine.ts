@@ -6,10 +6,9 @@ function getAnimationName(styles?: CSSStyleDeclaration | null) {
 }
 
 export function machine(ctx: Partial<UserDefinedContext>) {
-  const initialState = ctx.present ? "mounted" : "unmounted"
   return createMachine<MachineContext, MachineState>(
     {
-      initial: initialState,
+      initial: ctx.present ? "mounted" : "unmounted",
 
       context: {
         node: null,
