@@ -83,6 +83,22 @@ animations.
 }
 ```
 
+You can then use the `Presence` component in your project.
+
+```jsx
+function Example() {
+  const [open, setOpen] = React.useState(true)
+  return (
+    <>
+      <button onClick={() => setOpen((c) => !c)}>Toggle</button>
+      <Presence present={open} unmountOnExit>
+        <div>Content</div>
+      </Presence>
+    </>
+  )
+}
+```
+
 ## Methods and Properties
 
 ### Machine Context
