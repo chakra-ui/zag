@@ -146,7 +146,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
    * Sort the values based on their index
    */
   sort = (values: string[]): string[] => {
-    return values.toSorted(this.sortFn)
+    return [...values].sort(this.sortFn)
   }
 
   /**
