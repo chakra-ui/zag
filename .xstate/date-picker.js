@@ -204,7 +204,7 @@ const fetchMachine = createMachine({
         // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
         {
           cond: "isRangePicker && isSelectingEndDate && closeOnSelect && isOpenControlled",
-          actions: ["setFocusedDate", "setSelectedDate", "setActiveIndexToStart", "invokeOnClose"]
+          actions: ["setFocusedDate", "setSelectedDate", "setActiveIndexToStart", "invokeOnClose", "setRestoreFocus"]
         }, {
           cond: "isRangePicker && isSelectingEndDate && closeOnSelect",
           target: "focused",

@@ -15,6 +15,7 @@ import {
   getPreviousSection,
   getTodayDate,
   isDateEqual,
+  isDateOutsideVisibleRange,
   isNextVisibleRangeInvalid,
   isPreviousVisibleRangeInvalid,
   parseDateString,
@@ -289,7 +290,13 @@ export function machine(userContext: UserDefinedContext) {
               // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
               {
                 guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect", "isOpenControlled"),
-                actions: ["setFocusedDate", "setSelectedDate", "setActiveIndexToStart", "invokeOnClose"],
+                actions: [
+                  "setFocusedDate",
+                  "setSelectedDate",
+                  "setActiveIndexToStart",
+                  "invokeOnClose",
+                  "setRestoreFocus",
+                ],
               },
               {
                 guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
@@ -601,6 +608,9 @@ export function machine(userContext: UserDefinedContext) {
         setView(ctx, evt) {
           set.view(ctx, evt.cell)
         },
+        setRestoreFocus(ctx) {
+          ctx.restoreFocus = true
+        },
         announceValueText(ctx) {
           ctx.announcer?.announce(ctx.valueAsString.join(","), 3000)
         },
@@ -878,8 +888,9 @@ export function machine(userContext: UserDefinedContext) {
           set.view(ctx, initialContext.view)
         },
         setStartValue(ctx) {
+          const outside = isDateOutsideVisibleRange(ctx.focusedValue, ctx.startValue, ctx.endValue)
+          if (!outside) return
           const startValue = alignDate(ctx.focusedValue, "start", { months: ctx.numOfMonths }, ctx.locale)
-          if (isDateEqual(ctx.startValue, startValue)) return
           ctx.startValue = startValue
         },
         invokeOnOpen(ctx) {
