@@ -571,7 +571,8 @@ export function machine(userContext: UserDefinedContext) {
           return () => ctx.announcer?.destroy?.()
         },
         trackDismissableElement(ctx, _evt, { send }) {
-          return trackDismissableElement(dom.getContentEl(ctx), {
+          const getContentEl = () => dom.getContentEl(ctx)
+          return trackDismissableElement(getContentEl, {
             defer: true,
             exclude: [...dom.getInputEls(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
             onInteractOutside(event) {
