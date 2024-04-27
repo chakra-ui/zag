@@ -6,6 +6,39 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.49.0](./#0.49.0) - 2024-04-26
+
+### Fixed
+
+- **Store, React**
+
+  - Fix issue where multiple versions of `@zag-js/store` could lead to "proxy state is not iterable" errors
+
+- **Collapsible**
+
+  - Fix issue where initial height animation can sometimes run
+
+- **DatePicker**
+
+  - Fix issue where date picker content doesn't register as a dismissable when lazy mounted
+  - Fix issue where changing focused value doesn't update the date picker's visible range
+
+- **Splitter**
+
+  - Fix issue where `onResize` was not called
+
+- **TagsInput**
+
+  - Fix issue where editing a tag and clearing it's value leaves an empty tag. Now, empty tags will be deleted
+  - Fix issue where deleting a tag with pointer and navigating with keyboard doesn't work
+
+### Added
+
+- **Presence**
+
+  - Add `api.unmount` to programmatically unmount the component
+  - Add `api.skip` to skip initial animation
+
 ## [0.48.0](./#0.48.0) - 2024-04-22
 
 This release marks the journey to a more stable and consistent API across all components. We've made significant
