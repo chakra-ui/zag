@@ -18,11 +18,21 @@ export interface SelectionChangeDetails extends FocusChangeDetails {
   selectedValue: string[]
 }
 
+export type ElementIds = Partial<{
+  root: string
+  tree: string
+  label: string
+}>
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
 interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the tree elements. Useful for composition.
+   */
+  ids?: ElementIds
   /**
    * The id of the expanded nodes
    */

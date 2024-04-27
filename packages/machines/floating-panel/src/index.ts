@@ -3,12 +3,13 @@ export { connect } from "./floating-panel.connect"
 export { machine } from "./floating-panel.machine"
 export * from "./floating-panel.props"
 export type {
+  MachineApi as Api,
   UserDefinedContext as Context,
-  PositionChangeDetails,
+  ElementIds,
   OpenChangeDetails,
-  SizeChangeDetails,
+  PositionChangeDetails,
   ResizeTriggerAxis,
   ResizeTriggerProps,
+  SizeChangeDetails,
   StageChangeDetails,
-  MachineApi as Api,
 } from "./floating-panel.types"

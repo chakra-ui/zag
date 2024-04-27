@@ -2,6 +2,10 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { StrokeOptions } from "perfect-freehand"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
 interface Point {
   x: number
   y: number
@@ -32,7 +36,21 @@ export interface DataUrlOptions {
   quality?: number
 }
 
+export type ElementIds = Partial<{
+  root: string
+  control: string
+  hiddenInput: string
+}>
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the signature pad elements. Useful for composition.
+   */
+  ids?: ElementIds
   /**
    * Callback when the signature pad is drawing.
    */

@@ -11,6 +11,12 @@ export interface StatusChangeDetails {
   status: LoadStatus
 }
 
+export type ElementIds = Partial<{
+  root: string
+  image: string
+  fallback: string
+}>
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -20,6 +26,10 @@ interface PublicContext extends CommonProperties, DirectionProperty {
    * Functional called when the image loading status changes.
    */
   onStatusChange?: (details: StatusChangeDetails) => void
+  /**
+   * The ids of the elements in the avatar. Useful for composition.
+   */
+  ids?: ElementIds
 }
 
 interface PrivateContext {}

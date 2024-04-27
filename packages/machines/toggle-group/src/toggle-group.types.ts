@@ -15,7 +15,7 @@ export interface ValueChangeDetails {
 
 export type ElementIds = Partial<{
   root: string
-  toggle(value: string): string
+  item(value: string): string
 }>
 
 interface PublicContext extends DirectionProperty, CommonProperties {

@@ -2,9 +2,9 @@ import { createScope, query } from "@zag-js/dom-query"
 import type { MachineContext as Ctx, DataUrlOptions } from "./signature-pad.types"
 
 export const dom = createScope({
-  getRootId: (ctx: Ctx) => `signature-${ctx.id}`,
-  getControlId: (ctx: Ctx) => `signature-control-${ctx.id}`,
-  getHiddenInputId: (ctx: Ctx) => `signature-input-${ctx.id}`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `signature-${ctx.id}`,
+  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `signature-control-${ctx.id}`,
+  getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `signature-input-${ctx.id}`,
 
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getSegmentEl: (ctx: Ctx) => query(dom.getControlEl(ctx), "[data-part=segment]"),

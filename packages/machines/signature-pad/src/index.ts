@@ -9,6 +9,7 @@ export type {
   DrawDetails,
   DrawEndDetails,
   DrawingOptions,
+  ElementIds,
   HiddenInputProps,
   SegmentPathProps,
 } from "./signature-pad.types"

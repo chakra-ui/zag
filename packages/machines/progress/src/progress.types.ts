@@ -8,6 +8,10 @@ import type {
   RequiredBy,
 } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
 export type ProgressState = "indeterminate" | "loading" | "complete"
 
 export interface ValueTranslationDetails {
@@ -21,7 +25,22 @@ export interface IntlTranslations {
   value(details: ValueTranslationDetails): string
 }
 
+export type ElementIds = Partial<{
+  root: string
+  track: string
+  label: string
+  circle: string
+}>
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 interface PublicContext extends DirectionProperty, CommonProperties, OrientationProperty {
+  /**
+   * The ids of the elements in the progress bar. Useful for composition.
+   */
+  ids?: ElementIds
   /**
    *  The current value of the progress bar.
    */
@@ -81,6 +100,10 @@ export type MachineState = {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface ViewProps {
   state: ProgressState

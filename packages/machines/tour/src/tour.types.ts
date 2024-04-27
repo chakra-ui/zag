@@ -82,11 +82,24 @@ export interface Offset {
   y: number
 }
 
+export type ElementIds = Partial<{
+  content: string
+  title: string
+  description: string
+  positioner: string
+  overlay: string
+  arrow: string
+}>
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
 interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+  /**
+   * The ids of the elements in the tour. Useful for composition.
+   */
+  ids?: ElementIds
   /**
    * The steps of the tour
    */

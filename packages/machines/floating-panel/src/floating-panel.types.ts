@@ -2,6 +2,10 @@ import type { StateMachine as S } from "@zag-js/core"
 import type { Point, RectInit, Size } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
 export interface PositionChangeDetails {
   position: Point
 }
@@ -20,7 +24,23 @@ export interface StageChangeDetails {
   stage: Stage | undefined
 }
 
+export type ElementIds = Partial<{
+  trigger: string
+  positioner: string
+  content: string
+  title: string
+  header: string
+}>
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the elements in the floating panel. Useful for composition.
+   */
+  ids?: ElementIds
   /**
    * Whether the panel is open
    */
@@ -153,6 +173,10 @@ export type ResizeTriggerAxis = "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne
 export interface ResizeTriggerProps {
   axis: ResizeTriggerAxis
 }
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**

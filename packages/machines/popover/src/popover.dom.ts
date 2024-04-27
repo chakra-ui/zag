@@ -4,8 +4,6 @@ import { runIfFn } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./popover.types"
 
 export const dom = createScope({
-  getActiveEl: (ctx: Ctx) => dom.getDoc(ctx).activeElement,
-
   getAnchorId: (ctx: Ctx) => ctx.ids?.anchor ?? `popover:${ctx.id}:anchor`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `popover:${ctx.id}:trigger`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `popover:${ctx.id}:content`,
