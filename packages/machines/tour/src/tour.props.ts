@@ -8,6 +8,7 @@ export const props = createProps<UserDefinedContext>()([
   "dir",
   "getRootNode",
   "id",
+  "ids",
   "keyboardNavigation",
   "offset",
   "onFocusOutside",

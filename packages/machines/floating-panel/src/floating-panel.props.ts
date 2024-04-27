@@ -11,6 +11,7 @@ export const props = createProps<UserDefinedContext>()([
   "getRootNode",
   "gridSize",
   "id",
+  "ids",
   "lockAspectRatio",
   "maxSize",
   "minSize",

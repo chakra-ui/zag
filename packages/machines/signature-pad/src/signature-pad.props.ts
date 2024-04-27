@@ -7,6 +7,7 @@ export const props = createProps<UserDefinedContext>()([
   "disabled",
   "getRootNode",
   "id",
+  "ids",
   "onDraw",
   "onDrawEnd",
   "readOnly",

@@ -3,6 +3,7 @@ import { createSplitProps } from "@zag-js/utils"
 import type { ItemProps, UserDefinedContext } from "./tree-view.types"
 
 export const props = createProps<UserDefinedContext>()([
+  "ids",
   "dir",
   "expandedValue",
   "focusedValue",
