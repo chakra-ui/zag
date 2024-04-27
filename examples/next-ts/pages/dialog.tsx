@@ -7,7 +7,6 @@ export default function Dialog() {
 
   return (
     <div>
-      <div style={{ width: "200vw", height: "30vh" }} />
       <button {...api.triggerProps}> Click me</button>
       {api.open && (
         <Portal>

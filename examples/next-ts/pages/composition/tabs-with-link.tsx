@@ -2,9 +2,9 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { tabsControls, tabsData } from "@zag-js/shared"
 import * as tabs from "@zag-js/tabs"
 import { useId } from "react"
-import { StateVisualizer } from "../components/state-visualizer"
-import { Toolbar } from "../components/toolbar"
-import { useControls } from "../hooks/use-controls"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
+import { useControls } from "../../hooks/use-controls"
 
 export default function Page() {
   const controls = useControls(tabsControls)

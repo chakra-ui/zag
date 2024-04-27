@@ -9,8 +9,8 @@ import { comboboxData } from "@zag-js/shared"
 import { matchSorter } from "match-sorter"
 import { useEffect, useId, useRef, useState } from "react"
 import getCaretCoordinates from "textarea-caret"
-import { StateVisualizer } from "../components/state-visualizer"
-import { Toolbar } from "../components/toolbar"
+import { StateVisualizer } from "../../components/state-visualizer"
+import { Toolbar } from "../../components/toolbar"
 
 export default function Page() {
   const [options, setOptions] = useState(comboboxData)
