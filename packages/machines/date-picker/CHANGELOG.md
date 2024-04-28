@@ -1,5 +1,31 @@
 # @zag-js/date-picker
 
+## 0.49.0
+
+### Minor Changes
+
+- [`9b379db`](https://github.com/chakra-ui/zag/commit/9b379db27efa01207772551d95995a28d9ad206f) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `data-docused` to `data-focus` for consistency
+
+### Patch Changes
+
+- [`9a2159a`](https://github.com/chakra-ui/zag/commit/9a2159ac17d6c01320558e22b8e9ecbecfffff6b) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where date picker content doesn't register as a dismissable when lazy mounted.
+
+- [`21eab4d`](https://github.com/chakra-ui/zag/commit/21eab4d8af702153d5b00c3ab80bb2532de2e71f) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where changing focused value doesn't update the date picker's visible range
+
+- Updated dependencies []:
+  - @zag-js/core@0.49.0
+  - @zag-js/anatomy@0.49.0
+  - @zag-js/types@0.49.0
+  - @zag-js/utils@0.49.0
+  - @zag-js/date-utils@0.49.0
+  - @zag-js/dismissable@0.49.0
+  - @zag-js/dom-event@0.49.0
+  - @zag-js/dom-query@0.49.0
+  - @zag-js/form-utils@0.49.0
+  - @zag-js/live-region@0.49.0
+  - @zag-js/popper@0.49.0
+  - @zag-js/text-selection@0.49.0
+
 ## 0.48.0
 
 ### Patch Changes

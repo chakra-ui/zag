@@ -1,5 +1,19 @@
 # @zag-js/accordion
 
+## 0.49.0
+
+### Patch Changes
+
+- [`635cce7`](https://github.com/chakra-ui/zag/commit/635cce75b9e4bf53d986c0bdf4f5fcfbacfde6ef) Thanks [@cschroeter](https://github.com/cschroeter)! - Update type descriptions
+
+- Updated dependencies []:
+  - @zag-js/core@0.49.0
+  - @zag-js/anatomy@0.49.0
+  - @zag-js/types@0.49.0
+  - @zag-js/utils@0.49.0
+  - @zag-js/dom-event@0.49.0
+  - @zag-js/dom-query@0.49.0
+
 ## 0.48.0
 
 ### Minor Changes

@@ -1,5 +1,18 @@
 # @zag-js/presence
 
+## 0.49.0
+
+### Minor Changes
+
+- [#1439](https://github.com/chakra-ui/zag/pull/1439) [`159b9f5`](https://github.com/chakra-ui/zag/commit/159b9f5987ae2ac62fe87ada061d62a04b37af20) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Add `api.unmount` to programmatically unmount the component
+  - Add `api.skip` to skip initial animation
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.49.0
+  - @zag-js/types@0.49.0
+
 ## 0.48.0
 
 ### Patch Changes

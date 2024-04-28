@@ -1,5 +1,21 @@
 # @zag-js/tree-view
 
+## 0.49.0
+
+### Minor Changes
+
+- [`9b379db`](https://github.com/chakra-ui/zag/commit/9b379db27efa01207772551d95995a28d9ad206f) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `data-docused` to `data-focus` for consistency
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.49.0
+  - @zag-js/anatomy@0.49.0
+  - @zag-js/types@0.49.0
+  - @zag-js/utils@0.49.0
+  - @zag-js/dom-event@0.49.0
+  - @zag-js/dom-query@0.49.0
+
 ## 0.48.0
 
 ### Minor Changes

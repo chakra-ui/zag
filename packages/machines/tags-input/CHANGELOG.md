@@ -1,5 +1,27 @@
 # @zag-js/tags-input
 
+## 0.49.0
+
+### Patch Changes
+
+- [`a110001`](https://github.com/chakra-ui/zag/commit/a110001fa422a71d879f3390308fff3f338d94cf) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where editing a tag and clearing it's value leaves an empty tag. Now, empty tags will be deleted.
+
+  - Fix issue where deleting a tag with pointer and navigating with keyboard doesn't work
+
+- [`dfc85a4`](https://github.com/chakra-ui/zag/commit/dfc85a43337ca854ae37ecf9bdd6c6be99db8922) Thanks [@cschroeter](https://github.com/cschroeter)! - Export ValidateArgs from TagsInput
+
+- Updated dependencies []:
+  - @zag-js/core@0.49.0
+  - @zag-js/anatomy@0.49.0
+  - @zag-js/types@0.49.0
+  - @zag-js/auto-resize@0.49.0
+  - @zag-js/utils@0.49.0
+  - @zag-js/dom-event@0.49.0
+  - @zag-js/dom-query@0.49.0
+  - @zag-js/form-utils@0.49.0
+  - @zag-js/interact-outside@0.49.0
+  - @zag-js/live-region@0.49.0
+
 ## 0.48.0
 
 ### Minor Changes

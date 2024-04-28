@@ -1,5 +1,18 @@
 # @zag-js/collapsible
 
+## 0.49.0
+
+### Patch Changes
+
+- [#1442](https://github.com/chakra-ui/zag/pull/1442) [`14658ee`](https://github.com/chakra-ui/zag/commit/14658eebb74ebbb5201fed8d47f37d5bf0acf5dc) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where initial height animation can sometimes run.
+
+- Updated dependencies []:
+  - @zag-js/core@0.49.0
+  - @zag-js/anatomy@0.49.0
+  - @zag-js/types@0.49.0
+  - @zag-js/utils@0.49.0
+  - @zag-js/dom-query@0.49.0
+
 ## 0.48.0
 
 ### Minor Changes
