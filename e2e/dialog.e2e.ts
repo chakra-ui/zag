@@ -37,7 +37,7 @@ test.describe("dialog", () => {
 
 test.describe("nested dialog", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/dialog")
+    await page.goto("/dialog-nested")
     await page.click(dialog_1.trigger)
     await page.click(dialog_2.trigger, { delay: 17 })
   })
