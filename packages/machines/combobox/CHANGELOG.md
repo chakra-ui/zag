@@ -1,5 +1,23 @@
 # @zag-js/combobox
 
+## 0.49.0
+
+### Patch Changes
+
+- [`d28ea96`](https://github.com/chakra-ui/zag/commit/d28ea96b0d71f34c8a1a19a14cc16c6cd1f4d350) Thanks [@cschroeter](https://github.com/cschroeter)! - Export IntlTranslations from Combobox
+
+- Updated dependencies []:
+  - @zag-js/core@0.49.0
+  - @zag-js/anatomy@0.49.0
+  - @zag-js/types@0.49.0
+  - @zag-js/aria-hidden@0.49.0
+  - @zag-js/collection@0.49.0
+  - @zag-js/utils@0.49.0
+  - @zag-js/dismissable@0.49.0
+  - @zag-js/dom-event@0.49.0
+  - @zag-js/dom-query@0.49.0
+  - @zag-js/popper@0.49.0
+
 ## 0.48.0
 
 ### Minor Changes
