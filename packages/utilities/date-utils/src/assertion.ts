@@ -20,7 +20,7 @@ export function isDateDisabled(
   minValue?: DateValue | null,
   maxValue?: DateValue | null,
 ) {
-  return date.compare(startDate) < 0 || date.compare(endDate) > 0 || isDateInvalid(date, minValue, maxValue)
+  return isDateOutsideVisibleRange(date, startDate, endDate) || isDateInvalid(date, minValue, maxValue)
 }
 
 export function isDateUnavailable(
