@@ -173,7 +173,7 @@ test.describe("nested menu / pointer movement", async () => {
     await expect(page.locator(menu_2.menu)).toBeFocused()
     await expectToBeFocused(page, menu_2.trigger)
 
-    const focusedItemCount = await page.locator(menu_2.menu).locator("[data-focused]").count()
+    const focusedItemCount = await page.locator(menu_2.menu).locator("[data-focus]").count()
     expect(focusedItemCount).toBe(0)
   })
 

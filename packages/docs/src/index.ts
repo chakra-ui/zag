@@ -1,5 +1,28 @@
 import apiJson from "../data/api.json"
 import accessibilityJson from "../data/accessibility.json"
+import dataAttrJson from "../data/data-attr.json"
+
+/* -----------------------------------------------------------------------------
+ * The data attribute documentation
+ * -----------------------------------------------------------------------------*/
+
+interface DataAttrEntry {
+  [part: string]: Record<string, string>
+}
+
+export interface DataAttrDoc {
+  [widget: string]: DataAttrEntry
+}
+
+export type DataAttrKey = keyof typeof dataAttrJson
+
+export function getDataAttrDoc(key: DataAttrKey): DataAttrDoc {
+  const data = dataAttrJson[key]
+  if (!data) {
+    throw new Error(`No data attribute data found for ${key}`)
+  }
+  return data as DataAttrDoc
+}
 
 /* -----------------------------------------------------------------------------
  * The keyboard accessibility doc

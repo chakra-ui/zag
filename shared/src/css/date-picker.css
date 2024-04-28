@@ -12,7 +12,7 @@
   background: rgba(126, 126, 126, 0.171);
 }
 
-[data-scope="date-picker"][data-part="table-cell-trigger"][data-focused] {
+[data-scope="date-picker"][data-part="table-cell-trigger"][data-focus] {
   background: rgba(165, 151, 165, 0.085);
   color: rgba(128, 0, 128, 0.959);
 }

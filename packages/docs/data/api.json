@@ -25,17 +25,17 @@
       },
       "multiple": {
         "type": "boolean",
-        "description": "Whether multple accordion items can be open at the same time.",
+        "description": "Whether multple accordion items can be expanded at the same time.",
         "defaultValue": "false"
       },
       "collapsible": {
         "type": "boolean",
-        "description": "Whether an accordion item can be collapsed after it has been opened.",
+        "description": "Whether an accordion item can be after it has been expanded.",
         "defaultValue": "false"
       },
       "value": {
         "type": "string[]",
-        "description": "The `id` of the accordion item that is currently being opened."
+        "description": "The `value` of the accordion items that are currently being expanded."
       },
       "disabled": {
         "type": "boolean",
@@ -43,7 +43,7 @@
       },
       "onValueChange": {
         "type": "(details: ValueChangeDetails) => void",
-        "description": "The callback fired when the state of opened/closed accordion items changes."
+        "description": "The callback fired when the state of expanded/collapsed accordion items changes."
       },
       "onFocusChange": {
         "type": "(details: FocusChangeDetails) => void",
@@ -51,7 +51,8 @@
       },
       "orientation": {
         "type": "\"horizontal\" | \"vertical\"",
-        "description": "The orientation of the accordion items."
+        "description": "The orientation of the accordion items.",
+        "defaultValue": "\"vertical\""
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -91,6 +92,10 @@
       "onStatusChange": {
         "type": "(details: StatusChangeDetails) => void",
         "description": "Functional called when the image loading status changes."
+      },
+      "ids": {
+        "type": "Partial<{ root: string; image: string; fallback: string; }>",
+        "description": "The ids of the elements in the avatar. Useful for composition."
       },
       "id": {
         "type": "string",
@@ -489,7 +494,7 @@
         "description": "The positioning options for the color picker"
       },
       "initialFocusEl": {
-        "type": "MaybeFunction<HTMLElement>",
+        "type": "HTMLElement | (() => HTMLElement)",
         "description": "The initial focus element when the color picker is opened."
       },
       "open": {
@@ -1447,6 +1452,10 @@
       }
     },
     "context": {
+      "ids": {
+        "type": "Partial<{ trigger: string; positioner: string; content: string; title: string; header: string; }>",
+        "description": "The ids of the elements in the floating panel. Useful for composition."
+      },
       "open": {
         "type": "boolean",
         "description": "Whether the panel is open"
@@ -2243,6 +2252,10 @@
       }
     },
     "context": {
+      "ids": {
+        "type": "Partial<{ root: string; track: string; label: string; circle: string; }>",
+        "description": "The ids of the elements in the progress bar. Useful for composition."
+      },
       "value": {
         "type": "number",
         "description": "The current value of the progress bar."
@@ -2660,6 +2673,10 @@
       }
     },
     "context": {
+      "ids": {
+        "type": "Partial<{ root: string; control: string; hiddenInput: string; }>",
+        "description": "The ids of the signature pad elements. Useful for composition."
+      },
       "onDraw": {
         "type": "(details: DrawDetails) => void",
         "description": "Callback when the signature pad is drawing."
@@ -3285,7 +3302,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; toggle(value: string): string; }>",
+        "type": "Partial<{ root: string; item(value: string): string; }>",
         "description": "The ids of the elements in the toggle. Useful for composition."
       },
       "disabled": {
@@ -3486,6 +3503,10 @@
       }
     },
     "context": {
+      "ids": {
+        "type": "Partial<{ content: string; title: string; description: string; positioner: string; overlay: string; arrow: string; }>",
+        "description": "The ids of the elements in the tour. Useful for composition."
+      },
       "steps": {
         "type": "StepDetails[]",
         "description": "The steps of the tour"
@@ -3597,6 +3618,10 @@
       }
     },
     "context": {
+      "ids": {
+        "type": "Partial<{ root: string; tree: string; label: string; }>",
+        "description": "The ids of the tree elements. Useful for composition."
+      },
       "expandedValue": {
         "type": "string[]",
         "description": "The id of the expanded nodes"

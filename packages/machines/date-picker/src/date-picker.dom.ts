@@ -23,7 +23,7 @@ export const dom = createScope({
   getFocusedCell: (ctx: Ctx, view = ctx.view) =>
     query(
       dom.getContentEl(ctx),
-      `[data-part=table-cell-trigger][data-view=${view}][data-focused]:not([data-outside-range])`,
+      `[data-part=table-cell-trigger][data-view=${view}][data-focus]:not([data-outside-range])`,
     ),
   getTriggerEl: (ctx: Ctx) => dom.getById<HTMLButtonElement>(ctx, dom.getTriggerId(ctx)),
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),

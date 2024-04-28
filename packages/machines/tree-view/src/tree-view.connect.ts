@@ -205,7 +205,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-ownedby": dom.getTreeId(state.context),
         "data-item": itemState.value,
         tabIndex: itemState.focused ? 0 : -1,
-        "data-focused": dataAttr(itemState.focused),
+        "data-focus": dataAttr(itemState.focused),
         role: "treeitem",
         "aria-current": itemState.selected ? "true" : undefined,
         "aria-selected": itemState.disabled ? undefined : itemState.selected,
@@ -239,7 +239,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.itemText.attrs,
         "data-disabled": dataAttr(itemState.disabled),
         "data-selected": dataAttr(itemState.selected),
-        "data-focused": dataAttr(itemState.focused),
+        "data-focus": dataAttr(itemState.focused),
       })
     },
 
@@ -250,7 +250,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-hidden": true,
         "data-disabled": dataAttr(itemState.disabled),
         "data-selected": dataAttr(itemState.selected),
-        "data-focused": dataAttr(itemState.focused),
+        "data-focus": dataAttr(itemState.focused),
         hidden: !itemState.selected,
       })
     },
@@ -286,7 +286,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-state": branchState.expanded ? "open" : "closed",
         "data-disabled": dataAttr(branchState.disabled),
         "data-selected": dataAttr(branchState.selected),
-        "data-focused": dataAttr(branchState.focused),
+        "data-focus": dataAttr(branchState.focused),
       })
     },
 

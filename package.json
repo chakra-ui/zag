@@ -10,7 +10,7 @@
   "scripts": {
     "packages": "pnpm --filter=./packages/** -r",
     "build": "pnpm packages -- build",
-    "postbuild": "pnpm typedocs",
+    "postbuild": "pnpm document:types && pnpm document:data-attr",
     "prepare": "husky install",
     "sync-pkgs": "tsx scripts/sync-packages.ts",
     "clean-pkgs": "pnpm -r exec rm -rf dist .swc *.log",
@@ -43,8 +43,9 @@
     "test": "vitest",
     "visualize": "tsx scripts/visualize.ts --all",
     "slack": "tsx scripts/slack.ts",
-    "sandbox": "tsx scripts/sandbox.ts",
-    "typedocs": "tsx scripts/typedocs.ts",
+    "play": "tsx scripts/play.ts",
+    "document:types": "tsx scripts/typedocs.ts",
+    "document:data-attr": "tsx scripts/data-attr.ts",
     "website": "pnpm --filter=./website"
   },
   "lint-staged": {
@@ -86,6 +87,7 @@
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-prettier": "5.1.3",
+    "fast-glob": "3.3.2",
     "find-packages": "10.0.4",
     "husky": "9.0.11",
     "json-format-highlight": "1.0.4",

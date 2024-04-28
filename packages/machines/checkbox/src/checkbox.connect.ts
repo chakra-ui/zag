@@ -85,7 +85,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       required: state.context.required,
       defaultChecked: checked,
       disabled: disabled,
-      "data-disabled": dataAttr(disabled),
       "aria-labelledby": dom.getLabelId(state.context),
       "aria-invalid": state.context.invalid,
       name: state.context.name,
