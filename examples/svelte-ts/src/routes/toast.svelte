@@ -65,7 +65,7 @@
 
   {#each api.getPlacements() as placement}
     <div {...api.getGroupProps({ placement })}>
-      {#each api.getToastsByPlacement(placement) as toast}
+      {#each api.getToastsByPlacement(placement) as toast (toast.id)}
         <ToastItem actor={toast} />
       {/each}
     </div>

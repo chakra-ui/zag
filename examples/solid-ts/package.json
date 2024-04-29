@@ -89,7 +89,7 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-solid": "0.372.0",
-    "solid-js": "1.8.16"
+    "lucide-solid": "0.376.0",
+    "solid-js": "1.8.17"
   }
 }

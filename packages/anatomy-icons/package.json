@@ -37,9 +37,9 @@
   "clean-package": "../../clean-package.config.json",
   "main": "src/index.ts",
   "devDependencies": {
-    "@types/react": "18.2.79",
+    "@types/react": "18.3.1",
     "clean-package": "2.2.0",
-    "react": "18.2.0"
+    "react": "18.3.1"
   },
   "dependencies": {
     "color2k": "2.0.3",

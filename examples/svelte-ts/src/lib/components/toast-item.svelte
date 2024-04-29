@@ -14,10 +14,12 @@
 </script>
 
 <div {...api.rootProps}>
+  <div {...api.ghostBeforeProps}></div>
   <div data-scope="toast" data-part="progressbar"></div>
   <p {...api.titleProps}>{api.title}</p>
   <p {...api.descriptionProps}>{api.description}</p>
   <button {...api.closeTriggerProps}>
     <XIcon />
   </button>
+  <div {...api.ghostAfterProps}></div>
 </div>

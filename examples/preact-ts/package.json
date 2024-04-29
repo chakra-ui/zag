@@ -78,7 +78,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "match-sorter": "6.3.4",
-    "lucide-preact": "0.372.0",
+    "lucide-preact": "0.376.0",
     "preact": "10.20.2",
     "preact-iso": "2.6.2",
     "preact-render-to-string": "6.4.2"
