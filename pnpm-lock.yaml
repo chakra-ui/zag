@@ -123,8 +123,8 @@ importers:
         specifier: 8.0.2
         version: 8.0.2(@microsoft/api-extractor@7.43.0(@types/node@20.12.7))(@swc/core@1.4.17(@swc/helpers@0.5.6))(postcss@8.4.38)(typescript@5.4.5)
       tsx:
-        specifier: 4.7.3
-        version: 4.7.3
+        specifier: 4.8.2
+        version: 4.8.2
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -8131,6 +8131,9 @@ packages:
   get-tsconfig@4.7.2:
     resolution: {integrity: sha512-wuMsz4leaj5hbGgg4IvDU0bqJagpftG5l5cXIAvo8uZrqn0NJqwtfupTN00VnkQJPcIRrxYrm1Ue24btpCha2A==}
 
+  get-tsconfig@4.7.3:
+    resolution: {integrity: sha512-ZvkrzoUA0PQZM6fy6+/Hce561s+faD1rsNwhnO5FelNjyy7EMGJ3Rz1AQ8GYDWjhRs/7dBLOEJvhK8MiEJOAFg==}
+
   giget@1.2.1:
     resolution: {integrity: sha512-4VG22mopWtIeHwogGSy1FViXVo0YT+m6BrqZfz0JJFwbSsePsCdOzdLIIli5BtMp7Xe8f/o2OmBpQX2NBOC24g==}
     hasBin: true
@@ -11534,8 +11537,8 @@ packages:
     peerDependencies:
       typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
 
-  tsx@4.7.3:
-    resolution: {integrity: sha512-+fQnMqIp/jxZEXLcj6WzYy9FhcS5/Dfk8y4AtzJ6ejKcKqmfTF8Gso/jtrzDggCF2zTU20gJa6n8XqPYwDAUYQ==}
+  tsx@4.8.2:
+    resolution: {integrity: sha512-hmmzS4U4mdy1Cnzpl/NQiPUC2k34EcNSTZYVJThYKhdqTwuBeF+4cG9KUK/PFQ7KHaAaYwqlb7QfmsE2nuj+WA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -17980,6 +17983,10 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
+  get-tsconfig@4.7.3:
+    dependencies:
+      resolve-pkg-maps: 1.0.0
+
   giget@1.2.1:
     dependencies:
       citty: 0.1.6
@@ -22203,10 +22210,10 @@ snapshots:
       tslib: 1.14.1
       typescript: 5.4.5
 
-  tsx@4.7.3:
+  tsx@4.8.2:
     dependencies:
-      esbuild: 0.19.12
-      get-tsconfig: 4.7.2
+      esbuild: 0.20.2
+      get-tsconfig: 4.7.3
     optionalDependencies:
       fsevents: 2.3.3
 
