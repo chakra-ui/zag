@@ -71,6 +71,7 @@ export type ElementIds = Partial<{
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The locale (BCP 47 language tag) to use when formatting the date.
+   * @default "en-US"
    */
   locale: string
   /**
@@ -87,6 +88,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   name?: string
   /**
    * The time zone to use
+   * @default "UTC"
    */
   timeZone: string
   /**
@@ -164,6 +166,8 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * - `single` - only one date can be selected
    * - `multiple` - multiple dates can be selected
    * - `range` - a range of dates can be selected
+   *
+   * @default "single"
    */
   selectionMode: SelectionMode
   /**

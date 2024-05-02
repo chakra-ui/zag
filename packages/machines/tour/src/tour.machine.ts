@@ -20,7 +20,7 @@ export function machine(userContext: UserDefinedContext) {
         steps: [],
         preventInteraction: false,
         closeOnInteractOutside: true,
-        closeOnEsc: true,
+        closeOnEscape: true,
         keyboardNavigation: true,
         offset: { x: 10, y: 10 },
         radius: 4,
@@ -240,7 +240,7 @@ export function machine(userContext: UserDefinedContext) {
             defer: true,
             onEscapeKeyDown(event) {
               event.preventDefault()
-              if (!ctx.closeOnEsc) return
+              if (!ctx.closeOnEscape) return
               send({ type: "STOP", src: "esc" })
             },
             onFocusOutside: ctx.onFocusOutside,

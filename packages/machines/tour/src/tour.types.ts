@@ -118,26 +118,32 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   onStatusChange?(details: StatusChangeDetails): void
   /**
    * Whether to close the tour when the user clicks outside the tour
+   * @default true
    */
   closeOnInteractOutside: boolean
   /**
    * Whether to close the tour when the user presses the escape key
+   * @default true
    */
-  closeOnEsc: boolean
+  closeOnEscape: boolean
   /**
    * Whether to allow keyboard navigation (right/left arrow keys to navigate between steps)
+   * @default true
    */
   keyboardNavigation: boolean
   /**
    * Prevents interaction with the rest of the page while the tour is open
+   * @default false
    */
   preventInteraction: boolean
   /**
    * The offsets to apply to the overlay
+   * @default "{ x: 10, y: 10 }"
    */
   offset: Offset
   /**
    * The radius of the overlay clip path
+   * @default 4
    */
   radius: number
   /**
@@ -146,6 +152,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   translations: IntlTranslations
   /**
    * The behavior when the tour is skipped
+   * @default "complete"
    */
   skipBehavior: "skip-step" | "complete"
 }

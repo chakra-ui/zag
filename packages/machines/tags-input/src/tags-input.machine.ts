@@ -17,7 +17,6 @@ export function machine(userContext: UserDefinedContext) {
       id: "tags-input",
       initial: ctx.autoFocus ? "focused:input" : "idle",
       context: {
-        log: { current: null, prev: null },
         inputValue: "",
         editedTagValue: "",
         editedTagId: null,
@@ -25,7 +24,6 @@ export function machine(userContext: UserDefinedContext) {
         value: [],
         dir: "ltr",
         max: Infinity,
-        liveRegion: null,
         blurBehavior: undefined,
         addOnPaste: false,
         editable: true,
@@ -33,6 +31,8 @@ export function machine(userContext: UserDefinedContext) {
         delimiter: ",",
         disabled: false,
         ...ctx,
+        liveRegion: null,
+        log: { current: null, prev: null },
         fieldsetDisabled: false,
         translations: {
           clearTriggerLabel: "Clear all tags",

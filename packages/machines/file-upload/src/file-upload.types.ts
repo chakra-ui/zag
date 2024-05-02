@@ -70,18 +70,24 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   disabled?: boolean
   /**
    * Whether to allow drag and drop in the dropzone element
+   * @default true
    */
   allowDrop?: boolean
   /**
    * The maximum file size in bytes
+   *
+   * @default Infinity
    */
   maxFileSize: number
   /**
    * The minimum file size in bytes
+   *
+   * @default 0
    */
   minFileSize: number
   /**
    * The maximum number of files
+   * @default 1
    */
   maxFiles: number
   /**

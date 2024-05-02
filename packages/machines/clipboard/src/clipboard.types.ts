@@ -26,6 +26,7 @@ interface PublicContext extends CommonProperties {
   onStatusChange?: (details: CopyStatusDetails) => void
   /**
    * The timeout for the copy operation
+   * @default 3000
    */
   timeout: number
 }

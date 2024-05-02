@@ -37,14 +37,17 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   onValueChange?: (details: ValueChangeDetails) => void
   /**
    * Whether to loop focus inside the toggle group.
+   * @default true
    */
   loopFocus: boolean
   /**
    *  Whether to use roving tab index to manage focus.
+   * @default true
    */
   rovingFocus?: boolean
   /**
    * The orientation of the toggle group.
+   * @default "horizontal"
    */
   orientation: Orientation
   /**

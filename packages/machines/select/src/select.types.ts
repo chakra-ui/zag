@@ -81,6 +81,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   readOnly?: boolean
   /**
    * Whether the select should close after an item is selected
+   * @default true
    */
   closeOnSelect?: boolean
   /**
@@ -109,6 +110,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   highlightedValue: string | null
   /**
    * Whether to loop the keyboard navigation through the options
+   * @default false
    */
   loopFocus?: boolean
   /**

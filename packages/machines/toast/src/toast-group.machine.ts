@@ -22,7 +22,6 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext) {
       context: {
         dir: "ltr",
         max: Number.MAX_SAFE_INTEGER,
-        toasts: [],
         gap: 16,
         pauseOnPageIdle: false,
         hotkey: ["altKey", "KeyT"],
@@ -30,6 +29,7 @@ export function groupMachine<T = any>(userContext: UserDefinedGroupContext) {
         placement: "bottom",
         removeDelay: 200,
         ...ctx,
+        toasts: [],
         lastFocusedEl: null,
         isFocusWithin: false,
         heights: [],

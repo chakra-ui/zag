@@ -54,6 +54,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   disabled?: boolean
   /**
    * The placeholder text for the input
+   * @default "○"
    */
   placeholder?: string
   /**
@@ -75,6 +76,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   value: string[]
   /**
    * The type of value the pin-input should allow
+   * @default "numeric"
    */
   type?: "alphanumeric" | "numeric" | "alphabetic"
   /**

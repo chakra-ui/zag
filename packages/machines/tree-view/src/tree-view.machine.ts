@@ -16,7 +16,7 @@ export function machine(userContext: UserDefinedContext) {
         expandedValue: [],
         selectedValue: [],
         focusedValue: null,
-        openOnClick: true,
+        expandOnClick: true,
         selectionMode: "single",
         typeahead: true,
         ...ctx,
@@ -171,7 +171,7 @@ export function machine(userContext: UserDefinedContext) {
         hasSelectedItems: (ctx) => ctx.selectedValue.length > 0,
         isMultipleSelection: (ctx) => ctx.isMultipleSelection,
         moveFocus: (_ctx, evt) => !!evt.moveFocus,
-        openOnClick: (ctx) => !!ctx.openOnClick,
+        openOnClick: (ctx) => !!ctx.expandOnClick,
       },
       activities: {
         trackChildrenMutation(ctx, _evt, { send }) {

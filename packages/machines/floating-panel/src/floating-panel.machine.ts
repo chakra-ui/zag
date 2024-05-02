@@ -31,7 +31,7 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         allowOverflow: true,
         strategy: "absolute",
-        size: { width: 320, height: 400 },
+        size: { width: 320, height: 240 },
         position: { x: 300, y: 100 },
         gridSize: 1,
         disabled: false,

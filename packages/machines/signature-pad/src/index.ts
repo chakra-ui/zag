@@ -12,4 +12,5 @@ export type {
   ElementIds,
   HiddenInputProps,
   SegmentPathProps,
+  StrokeOptions,
 } from "./signature-pad.types"

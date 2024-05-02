@@ -2,7 +2,14 @@ import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@za
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, MaybeElement, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
+import type {
+  CommonProperties,
+  DirectionProperty,
+  MaybeElement,
+  Orientation,
+  PropTypes,
+  RequiredBy,
+} from "@zag-js/types"
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
@@ -56,17 +63,14 @@ export type ElementIds = Partial<{
   channelSliderThumb(id: ColorChannel): string
 }>
 
-interface PublicContext extends CommonProperties, InteractOutsideHandlers {
+interface PublicContext extends CommonProperties, DirectionProperty, InteractOutsideHandlers {
   /**
    * The ids of the elements in the color picker. Useful for composition.
    */
   ids?: ElementIds
   /**
-   * The direction of the color picker
-   */
-  dir: "ltr" | "rtl"
-  /**
    * The current color value
+   * @default #000000
    */
   value: Color
   /**
@@ -111,6 +115,7 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
   "open.controlled"?: boolean
   /**
    * The color format to use
+   * @default "rgba"
    */
   format: ColorFormat
   /**
@@ -119,6 +124,7 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
   onFormatChange?: (details: FormatChangeDetails) => void
   /**
    * Whether to close the color picker when a swatch is selected
+   * @default false
    */
   closeOnSelect?: boolean
 }

@@ -31,7 +31,6 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         thumbSize: null,
         thumbAlignment: "contain",
-        focusedIndex: -1,
         min: 0,
         max: 100,
         step: 1,
@@ -42,6 +41,7 @@ export function machine(userContext: UserDefinedContext) {
         minStepsBetweenThumbs: 0,
         disabled: false,
         ...ctx,
+        focusedIndex: -1,
         fieldsetDisabled: false,
       },
 

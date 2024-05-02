@@ -40,6 +40,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   translations: IntlTranslations
   /**
    * The total number of ratings.
+   * @default 5
    */
   count: number
   /**

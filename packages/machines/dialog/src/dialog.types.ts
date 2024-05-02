@@ -31,14 +31,17 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   ids?: ElementIds
   /**
    * Whether to trap focus inside the dialog when it's opened
+   * @default true
    */
   trapFocus: boolean
   /**
    * Whether to prevent scrolling behind the dialog when it's opened
+   * @default true
    */
   preventScroll: boolean
   /**
    * Whether to prevent pointer interaction outside the element and hide all content below it
+   * @default true
    */
   modal?: boolean
   /**
@@ -59,10 +62,12 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   onOpenChange?: (details: OpenChangeDetails) => void
   /**
    * Whether to close the dialog when the outside is clicked
+   * @default true
    */
   closeOnInteractOutside: boolean
   /**
    * Whether to close the dialog when the escape key is pressed
+   * @default true
    */
   closeOnEscape: boolean
   /**

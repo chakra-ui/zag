@@ -5,7 +5,7 @@ import type { UserDefinedContext } from "./tooltip.types"
 export const props = createProps<UserDefinedContext>()([
   "aria-label",
   "closeDelay",
-  "closeOnEsc",
+  "closeOnEscape",
   "closeOnPointerDown",
   "dir",
   "disabled",

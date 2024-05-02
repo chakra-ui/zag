@@ -21,17 +21,12 @@ export function machine(userContext: UserDefinedContext) {
         activationMode: "automatic",
         value: null,
         focusedValue: null,
-        indicatorRect: {
-          left: "0px",
-          top: "0px",
-          width: "0px",
-          height: "0px",
-        },
-        canIndicatorTransition: false,
-        isIndicatorRendered: false,
+        indicatorRect: { left: "0px", top: "0px", width: "0px", height: "0px" },
         loopFocus: true,
         translations: {},
         ...ctx,
+        canIndicatorTransition: false,
+        isIndicatorRendered: false,
       },
 
       computed: {

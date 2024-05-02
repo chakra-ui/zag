@@ -42,6 +42,8 @@ export type ElementIds = Partial<{
   hiddenInput: string
 }>
 
+export type { StrokeOptions }
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -61,6 +63,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   onDrawEnd?(details: DrawEndDetails): void
   /**
    * The drawing options.
+   * @default '{ size: 2, simulatePressure: true }'
    */
   drawing: DrawingOptions
   /**

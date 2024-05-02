@@ -16,10 +16,10 @@ export function machine(userContext: UserDefinedContext) {
         count: 5,
         dir: "ltr",
         value: -1,
-        hoveredValue: -1,
         readOnly: false,
         disabled: false,
         ...ctx,
+        hoveredValue: -1,
         fieldsetDisabled: false,
         translations: {
           ratingValueText: (index) => `${index} stars`,

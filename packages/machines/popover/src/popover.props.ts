@@ -4,7 +4,7 @@ import type { UserDefinedContext } from "./popover.types"
 
 export const props = createProps<UserDefinedContext>()([
   "autoFocus",
-  "closeOnEsc",
+  "closeOnEscape",
   "closeOnInteractOutside",
   "dir",
   "getRootNode",

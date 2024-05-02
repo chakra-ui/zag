@@ -15,7 +15,7 @@ import type { ColorChannel } from "./types"
 interface GradientOptions {
   xChannel: ColorChannel
   yChannel: ColorChannel
-  dir: "rtl" | "ltr"
+  dir?: "rtl" | "ltr"
 }
 
 interface GradientStyles {
@@ -24,7 +24,7 @@ interface GradientStyles {
 }
 
 export function getColorAreaGradient(color: Color, options: GradientOptions): GradientStyles {
-  const { xChannel, yChannel, dir: dirProp } = options
+  const { xChannel, yChannel, dir: dirProp = "ltr" } = options
 
   const { zChannel } = color.getColorAxes({ xChannel, yChannel })
   const zValue = color.getChannelValue(zChannel)

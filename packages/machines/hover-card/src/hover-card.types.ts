@@ -32,10 +32,12 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   onOpenChange?: (details: OpenChangeDetails) => void
   /**
    * The duration from when the mouse enters the trigger until the hover card opens.
+   * @default 700
    */
   openDelay: number
   /**
    * The duration from when the mouse leaves the trigger or content until the hover card closes.
+   * @default 300
    */
   closeDelay: number
   /**

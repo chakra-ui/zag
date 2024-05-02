@@ -18,7 +18,7 @@ export function machine(userContext: UserDefinedContext) {
       initial: ctx.open ? "open" : "closed",
       context: {
         closeOnInteractOutside: true,
-        closeOnEsc: true,
+        closeOnEscape: true,
         autoFocus: true,
         modal: false,
         portalled: true,
@@ -141,7 +141,7 @@ export function machine(userContext: UserDefinedContext) {
             defer: true,
             onEscapeKeyDown(event) {
               ctx.onEscapeKeyDown?.(event)
-              if (ctx.closeOnEsc) return
+              if (ctx.closeOnEscape) return
               event.preventDefault()
             },
             onInteractOutside(event) {

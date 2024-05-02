@@ -89,33 +89,43 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   getAriaValueText?(details: ValueTextDetails): string
   /**
    * The minimum value of the slider
+   * @default 0
    */
   min: number
   /**
    * The maximum value of the slider
+   * @default 100
    */
   max: number
   /**
    * The step value of the slider
+   * @default 1
    */
   step: number
   /**
    * The minimum permitted steps between multiple thumbs.
+   * @default 0
    */
   minStepsBetweenThumbs: number
   /**
    * The orientation of the slider
+   * @default "horizontal"
    */
   orientation: "vertical" | "horizontal"
   /**
+   * The origin of the slider range
    * - "start": Useful when the value represents an absolute value
    * - "center": Useful when the value represents an offset (relative)
+   *
+   * @default "start"
    */
   origin?: "start" | "center"
   /**
    * The alignment of the slider thumb relative to the track
    * - `center`: the thumb will extend beyond the bounds of the slider track.
    * - `contain`: the thumb will be contained within the bounds of the track.
+   *
+   * @default "contain"
    */
   thumbAlignment?: "contain" | "center"
   /**

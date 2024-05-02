@@ -67,6 +67,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
   anchorPoint: Point | null
   /**
    * Whether to loop the keyboard navigation.
+   * @default false
    */
   loopFocus: boolean
   /**
@@ -75,6 +76,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
   positioning: PositioningOptions
   /**
    * Whether to close the menu when an option is selected
+   * @default true
    */
   closeOnSelect: boolean
   /**
@@ -95,6 +97,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
   "open.controlled"?: boolean
   /**
    * Whether the pressing printable characters should trigger typeahead navigation
+   * @default true
    */
   typeahead: boolean
 }

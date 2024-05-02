@@ -42,7 +42,8 @@ interface PublicContext extends DismissableElementHandlers, CommonProperties, Di
    */
   modal?: boolean
   /**
-   * Whether the popover is rendered in a portal
+   * Whether the popover is portalled. This will proxy the tabbing behavior regardless of the DOM position
+   * of the popover content.
    *
    * @default true
    */
@@ -50,6 +51,8 @@ interface PublicContext extends DismissableElementHandlers, CommonProperties, Di
   /**
    * Whether to automatically set focus on the first focusable
    * content within the popover when opened.
+   *
+   * @default true
    */
   autoFocus?: boolean
   /**
@@ -58,12 +61,14 @@ interface PublicContext extends DismissableElementHandlers, CommonProperties, Di
   initialFocusEl?: MaybeElement | (() => MaybeElement)
   /**
    * Whether to close the popover when the user clicks outside of the popover.
+   * @default true
    */
   closeOnInteractOutside?: boolean
   /**
    * Whether to close the popover when the escape key is pressed.
+   * @default true
    */
-  closeOnEsc?: boolean
+  closeOnEscape?: boolean
   /**
    * Function invoked when the popover opens or closes
    */
@@ -124,7 +129,7 @@ export type Send = S.Send<S.AnyEventObject>
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
-   * Whether the popover is portalled
+   * Whether the popover is portalled.
    */
   portalled: boolean
   /**

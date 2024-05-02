@@ -34,14 +34,17 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   orientation: "horizontal" | "vertical"
   /**
    * The alignment of the slides in the carousel.
+   * @default "start"
    */
   align: "start" | "center" | "end"
   /**
    * The number of slides to show at a time.
+   * @default 1
    */
   slidesPerView: number | "auto"
   /**
    * Whether the carousel should loop around.
+   * @default false
    */
   loop: boolean
   /**
@@ -50,6 +53,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   index: number
   /**
    * The amount of space between slides.
+   * @default "0px"
    */
   spacing: string
   /**

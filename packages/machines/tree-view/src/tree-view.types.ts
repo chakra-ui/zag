@@ -69,9 +69,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether clicking on a branch should open it or not
    * @default true
    */
-  openOnClick?: boolean
+  expandOnClick?: boolean
   /**
    * Whether the tree supports typeahead search
+   * @default true
    */
   typeahead?: boolean
 }

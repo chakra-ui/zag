@@ -76,7 +76,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * - "none" - No action will trigger submit. You need to use the submit button
    * - "both" - Pressing `Enter` and blurring the input will trigger submit
    *
-   * @default "enter"
+   * @default "both"
    */
   submitMode: SubmitMode
   /**
@@ -85,6 +85,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   startWithEditView?: boolean
   /**
    * Whether to select the text in the input when it is focused.
+   * @default true
    */
   selectOnFocus?: boolean
   /**

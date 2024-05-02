@@ -53,6 +53,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   strategy: "absolute" | "fixed"
   /**
    * Whether the panel should be strictly contained within the boundary when dragging
+   * @default true
    */
   allowOverflow: boolean
   /**
@@ -61,10 +62,12 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   open?: boolean
   /**
    * Whether the panel is draggable
+   * @default true
    */
   draggable?: boolean
   /**
    * Whether the panel is resizable
+   * @default true
    */
   resizable?: boolean
   /**
@@ -131,6 +134,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   persistRect?: boolean
   /**
    * The snap grid for the panel
+   * @default 1
    */
   gridSize: number
   /**

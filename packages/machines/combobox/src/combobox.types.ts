@@ -118,6 +118,8 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    *
    * - `autohighlight`: The first focused item is highlighted as the user types
    * - `autocomplete`: Navigating the listbox with the arrow keys selects the item and the input is updated
+   *
+   * @default "none"
    */
   inputBehavior: "autohighlight" | "autocomplete" | "none"
   /**
@@ -126,6 +128,8 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * - `replace`: The selected item string is set as the input value
    * - `clear`: The input value is cleared
    * - `preserve`: The input value is preserved
+   *
+   * @default "replace"
    */
   selectionBehavior: "clear" | "replace" | "preserve"
   /**
@@ -134,10 +138,12 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   autoFocus?: boolean
   /**
    * Whether to open the combobox popup on initial click on the input
+   * @default false
    */
   openOnClick?: boolean
   /**
    * Whether to show the combobox when the input value changes
+   * @default true
    */
   openOnChange?: boolean | ((details: InputValueChangeDetails) => boolean)
   /**
@@ -146,6 +152,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   allowCustomValue?: boolean
   /**
    * Whether to loop the keyboard navigation through the items
+   * @default true
    */
   loopFocus?: boolean
   /**
@@ -191,6 +198,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   getSelectionValue?: (details: SelectionValueDetails<T>) => string
   /**
    * Whether to open the combobox on arrow key press
+   * @default true
    */
   openOnKeyPress: boolean
   /**
@@ -201,10 +209,13 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * The underling `aria-haspopup` attribute to use for the combobox
    * - `listbox`: The combobox has a listbox popup (default)
    * - `dialog`: The combobox has a dialog popup. Useful when in select only mode
+   *
+   * @default "listbox"
    */
   popup: "listbox" | "dialog"
   /**
    * Whether to register this combobox as a dismissable layer
+   * @default true
    */
   dismissable: boolean
 }
