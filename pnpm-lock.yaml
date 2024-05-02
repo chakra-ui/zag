@@ -3340,8 +3340,8 @@ importers:
         specifier: 0.7.2
         version: 0.7.2
       lucide-react:
-        specifier: 0.376.0
-        version: 0.376.0(react@18.3.1)
+        specifier: 0.377.0
+        version: 0.377.0(react@18.3.1)
       match-sorter:
         specifier: 6.3.4
         version: 6.3.4
@@ -9030,6 +9030,11 @@ packages:
 
   lucide-react@0.376.0:
     resolution: {integrity: sha512-g91IX3ERD6yUR1TL2dsL4BkcGygpZz/EsqjAeL/kcRQV0EApIOr/9eBfKhYOVyQIcGGuotFGjF3xKLHMEz+b7g==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+
+  lucide-react@0.377.0:
+    resolution: {integrity: sha512-o0weTZC4j8YiSi5VIE6RTwPt5uOA+YtuXejvkOxbLghLwIloNkI20INgWigrhBthvgdDcuULp0XRTr0wokqKMw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
 
@@ -18663,6 +18668,10 @@ snapshots:
       preact: 10.20.2
 
   lucide-react@0.376.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+
+  lucide-react@0.377.0(react@18.3.1):
     dependencies:
       react: 18.3.1
 
