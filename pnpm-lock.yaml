@@ -2203,6 +2203,9 @@ importers:
       '@zag-js/rect-utils':
         specifier: workspace:*
         version: link:../../utilities/rect
+      '@zag-js/store':
+        specifier: workspace:*
+        version: link:../../store
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

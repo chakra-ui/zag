@@ -253,6 +253,7 @@ export const floatingPanelControls = defineControls({
   draggable: { type: "boolean", defaultValue: true },
   lockAspectRatio: { type: "boolean", defaultValue: false },
   closeOnEscape: { type: "boolean", defaultValue: true },
+  persistRect: { type: "boolean", defaultValue: false },
 })
 
 export const signaturePadControls = defineControls({

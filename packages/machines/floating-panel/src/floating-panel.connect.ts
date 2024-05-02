@@ -23,14 +23,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     triggerProps: normalize.button({
       ...parts.trigger.attrs,
       type: "button",
-      disabled: state.context.isDisabled,
+      disabled: state.context.disabled,
       id: dom.getTriggerId(state.context),
       "data-state": open ? "open" : "closed",
       "data-dragging": dataAttr(dragging),
       "aria-controls": dom.getContentId(state.context),
       onClick(event) {
         if (event.defaultPrevented) return
-        if (state.context.isDisabled) return
+        if (state.context.disabled) return
         send({ type: "OPEN" })
       },
     }),
@@ -54,11 +54,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-labelledby": dom.getTitleId(state.context),
       "data-state": open ? "open" : "closed",
       "data-dragging": dataAttr(dragging),
+      "data-topmost": dataAttr(state.context.isTopmost),
+      "data-behind": dataAttr(!state.context.isTopmost),
       style: {
-        position: "relative",
+        position: state.context.strategy,
         width: "var(--width)",
         height: "var(--height)",
         overflow: state.context.isMinimized ? "hidden" : undefined,
+      },
+      onFocus() {
+        send({ type: "WINDOW_FOCUS" })
       },
       onKeyDown(event) {
         if (event.defaultPrevented) return
@@ -68,6 +73,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const step = getEventStep(event) * state.context.gridSize
         const keyMap: EventKeyMap = {
           Escape() {
+            if (!state.context.isTopmost) return
             send("ESCAPE")
           },
           ArrowLeft() {
@@ -95,7 +101,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     closeTriggerProps: normalize.button({
       ...parts.closeTrigger.attrs,
-      disabled: state.context.isDisabled,
+      disabled: state.context.disabled,
       "aria-label": "Close Window",
       type: "button",
       onClick(event) {
@@ -106,7 +112,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     minimizeTriggerProps: normalize.button({
       ...parts.minimizeTrigger.attrs,
-      disabled: state.context.isDisabled,
+      disabled: state.context.disabled,
       "aria-label": "Minimize Window",
       hidden: state.context.isStaged,
       type: "button",
@@ -118,7 +124,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     maximizeTriggerProps: normalize.button({
       ...parts.maximizeTrigger.attrs,
-      disabled: state.context.isDisabled,
+      disabled: state.context.disabled,
       "aria-label": "Maximize Window",
       hidden: state.context.isStaged,
       type: "button",
@@ -130,7 +136,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     restoreTriggerProps: normalize.button({
       ...parts.restoreTrigger.attrs,
-      disabled: state.context.isDisabled,
+      disabled: state.context.disabled,
       "aria-label": "Restore Window",
       hidden: !state.context.isStaged,
       type: "button",
@@ -219,6 +225,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.header.attrs,
       id: dom.getHeaderId(state.context),
       "data-dragging": dataAttr(dragging),
+      "data-topmost": dataAttr(state.context.isTopmost),
+      "data-behind": dataAttr(!state.context.isTopmost),
     }),
 
     bodyProps: normalize.element({

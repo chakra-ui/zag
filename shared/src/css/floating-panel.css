@@ -7,6 +7,14 @@
   background-color: white;
   display: flex;
   flex-direction: column;
+
+  &[data-topmost] {
+    z-index: 999999;
+  }
+
+  &[data-behind] {
+    opacity: 0.4;
+  }
 }
 
 [data-scope="floating-panel"][data-part="body"] {

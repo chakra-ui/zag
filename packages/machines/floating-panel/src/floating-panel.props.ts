@@ -3,10 +3,12 @@ import { createSplitProps } from "@zag-js/utils"
 import type { UserDefinedContext } from "./floating-panel.types"
 
 export const props = createProps<UserDefinedContext>()([
+  "allowOverflow",
   "closeOnEscape",
   "dir",
   "disabled",
   "draggable",
+  "getAnchorPosition",
   "getBoundaryEl",
   "getRootNode",
   "gridSize",
@@ -15,16 +17,17 @@ export const props = createProps<UserDefinedContext>()([
   "lockAspectRatio",
   "maxSize",
   "minSize",
+  "onOpenChange",
   "onPositionChange",
   "onPositionChangeEnd",
-  "onOpenChange",
-  "onStageChange",
   "onSizeChange",
   "onSizeChangeEnd",
+  "onStageChange",
   "open",
+  "persistRect",
   "position",
-  "preserveOnClose",
   "resizable",
+  "strategy",
   "size",
 ])
 

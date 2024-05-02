@@ -1,4 +1,6 @@
-import { createScope } from "@zag-js/dom-query"
+import { createScope, isHTMLElement } from "@zag-js/dom-query"
+import { createRect, getElementRect, getWindowRect, type Rect } from "@zag-js/rect-utils"
+import { pick } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./floating-panel.types"
 
 export const dom = createScope({
@@ -12,4 +14,25 @@ export const dom = createScope({
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getHeaderEl: (ctx: Ctx) => dom.getById(ctx, dom.getHeaderId(ctx)),
+  getBoundaryRect: (ctx: Ctx, allowOverflow: boolean) => {
+    const boundaryEl = ctx.getBoundaryEl?.()
+    let boundaryRect: Rect
+
+    if (isHTMLElement(boundaryEl)) {
+      boundaryRect = getElementRect(boundaryEl)
+    } else {
+      boundaryRect = getWindowRect(dom.getWin(ctx))
+    }
+
+    if (allowOverflow) {
+      boundaryRect = createRect({
+        x: -boundaryRect.width, // empty(left)
+        y: boundaryRect.minY,
+        width: boundaryRect.width * 3, // empty(left) + win + empty(right)
+        height: boundaryRect.height * 2, // win + empty(bottom)
+      })
+    }
+
+    return pick(boundaryRect, ["x", "y", "width", "height"])
+  },
 })

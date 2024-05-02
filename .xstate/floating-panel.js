@@ -17,6 +17,12 @@ const fetchMachine = createMachine({
     "!isMinimized": false,
     "closeOnEsc": false
   },
+  activities: ["trackPanelStack"],
+  on: {
+    WINDOW_FOCUS: {
+      actions: ["bringToFrontOfPanelStack"]
+    }
+  },
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -28,12 +34,13 @@ const fetchMachine = createMachine({
       on: {
         OPEN: {
           target: "open",
-          actions: ["invokeOnOpen", "setPositionStyle", "setSizeStyle"]
+          actions: ["invokeOnOpen", "setAnchorPosition", "setPositionStyle", "setSizeStyle"]
         }
       }
     },
     open: {
       tags: ["open"],
+      entry: ["bringToFrontOfPanelStack"],
       activities: ["trackBoundaryRect"],
       on: {
         DRAG_START: {
@@ -71,7 +78,7 @@ const fetchMachine = createMachine({
     },
     "open.dragging": {
       tags: ["open"],
-      activities: ["trackPointerMove", "trackBoundaryRect"],
+      activities: ["trackPointerMove"],
       exit: ["clearPrevPosition"],
       on: {
         DRAG: {
@@ -92,7 +99,7 @@ const fetchMachine = createMachine({
     },
     "open.resizing": {
       tags: ["open"],
-      activities: ["trackPointerMove", "trackBoundaryRect"],
+      activities: ["trackPointerMove"],
       exit: ["clearPrevSize"],
       on: {
         DRAG: {
