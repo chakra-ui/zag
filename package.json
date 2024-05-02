@@ -78,8 +78,8 @@
     "@types/babel__traverse": "7.20.5",
     "@types/node": "20.12.7",
     "@types/signale": "1.4.7",
-    "@typescript-eslint/eslint-plugin": "7.7.1",
-    "@typescript-eslint/parser": "7.7.1",
+    "@typescript-eslint/eslint-plugin": "7.8.0",
+    "@typescript-eslint/parser": "7.8.0",
     "axe-core": "4.9.0",
     "commitlint": "19.3.0",
     "dotenv": "16.4.5",
@@ -99,11 +99,11 @@
     "signale": "1.4.0",
     "ts-morph": "22.0.0",
     "tsup": "8.0.2",
-    "tsx": "4.7.3",
+    "tsx": "4.8.2",
     "typescript": "5.4.5",
     "vite": "5.2.10",
     "vite-plugin-dts": "3.9.0",
-    "vitest": "1.5.2"
+    "vitest": "1.5.3"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -35,7 +35,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   multiple?: boolean
   /**
-   * Whether an accordion item can be after it has been expanded.
+   * Whether an accordion item can be closed after it has been expanded.
    * @default false
    */
   collapsible?: boolean
