@@ -16,7 +16,7 @@ const api = computed(() => editable.connect(state.value, send, normalizeProps));
       <span v-bind="api.previewProps" />
     </div>
     <div>
-      <div v-if="api.isEditing">
+      <div v-if="api.editing">
         <button v-bind="api.submitTriggerProps">Save</button>
         <button v-bind="api.cancelTriggerProps">Cancel</button>
       </div>

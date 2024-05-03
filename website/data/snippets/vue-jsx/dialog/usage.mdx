@@ -17,7 +17,7 @@ export default defineComponent({
       return (
         <>
           <button {...api.triggerProps}>Open Dialog</button>
-          {api.isOpen && (
+          {api.open && (
             <Teleport to="body">
               <div {...api.backdropProps} />
               <div {...api.positionerProps}>

@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <>
       <button {...api().triggerProps}>Open Dialog</button>
-      <Show when={api().isOpen}>
+      <Show when={api().open}>
         <Portal>
           <div {...api().backdropProps} />
           <div {...api().positionerProps}>
