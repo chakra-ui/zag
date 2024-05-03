@@ -4,7 +4,7 @@
   import { useMachine, normalizeProps } from "@zag-js/vue"
   import { computed, watch, ref } from "vue"
 
-  const props = defineProps<{
+  const {present, unmountOnExit } = defineProps<{
     present: boolean
     unmountOnExit?: boolean
   }>()
@@ -24,10 +24,10 @@
   const nodeRef = ref<HTMLElement | null>(null)
 
   watch(nodeRef, () => {
-    apiRef.value.setNode(nodeRef.value)
+    api.value.setNode(nodeRef.value)
   })
 
-  const unmount = computed(() => !api.value.present && props.unmountOnExit)
+  const unmount = computed(() => !api.value.present && unmountOnExit)
 </script>
 
 <template>

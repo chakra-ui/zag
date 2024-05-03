@@ -18,8 +18,8 @@
     <div v-bind="api.controlProps">
       <svg v-bind="api.segmentProps">
         <path
-          v-for="path of api.paths"
-          key="{i}"
+          v-for="(path, i) of api.paths"
+          :key="i"
           v-bind="api.getSegmentPathProps({ path })"
         />
         <path
