@@ -186,7 +186,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         const target = getEventTarget<HTMLElement>(getNativeEvent(event))
 
-        if (target?.closest("button")) {
+        if (target?.closest("button") || target?.closest("[data-no-drag]")) {
           return
         }
 
