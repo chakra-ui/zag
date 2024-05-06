@@ -29,34 +29,73 @@ export interface PointerMoveDetails {
   velocity: Point
 }
 
-export interface PointerMoveHandlers {
+export interface PointerUpDetails {
+  /**
+   * The position of the pointer before it was released.
+   */
+  point: Point
+  /**
+   * The velocity of the pointer on the x and y axis.
+   */
+  velocity: Point
+}
+
+export interface ValidMoveDetails {
+  event: PointerEvent
+  point: Point
+}
+
+export interface TrackPointerMoveOptions {
+  /**
+   * The starting point of the pointer.
+   */
+  startPoint?: TimestampedPoint | null
   /**
    * Called when the pointer is released.
    */
-  onPointerUp: VoidFunction
+  onPointerUp: (details: PointerUpDetails) => void
   /**
    * Called when the pointer moves.
    */
   onPointerMove: (details: PointerMoveDetails) => void
+  /**
+   * A function that determines if the move is valid.
+   */
+  isValidMove?: (details: ValidMoveDetails) => boolean
 }
 
-export function trackPointerMove(doc: Document, handlers: PointerMoveHandlers) {
-  const { onPointerMove, onPointerUp } = handlers
+const defaultIsValidMove = (details: ValidMoveDetails) => {
+  const { event, point } = details
+  const distance = Math.sqrt(point.x ** 2 + point.y ** 2)
+  const moveBuffer = event.pointerType === "touch" ? 10 : 5
+  if (distance < moveBuffer) return false
+  return true
+}
+
+export function trackPointerMove(doc: Document, handlers: TrackPointerMoveOptions) {
+  const { onPointerMove, onPointerUp, isValidMove = defaultIsValidMove, startPoint: anchorPoint } = handlers
 
   const history: TimestampedPoint[] = []
 
+  if (anchorPoint) {
+    history.push(anchorPoint)
+  }
+
+  const handlePointerUp = (event: PointerEvent | MouseEvent) => {
+    const lastPoint = { x: event.clientX, y: event.clientY }
+    const lastVelocity = getVelocity(history, 0.1)
+    onPointerUp({ point: lastPoint, velocity: lastVelocity })
+  }
+
   const handleMove = (event: PointerEvent) => {
     const point = getEventPoint(event)
-    history.push({ ...point, timestamp: performance.now() })
+    history.push({ ...point, timestamp: event.timeStamp })
 
-    const distance = Math.sqrt(point.x ** 2 + point.y ** 2)
-    const moveBuffer = event.pointerType === "touch" ? 10 : 5
-
-    if (distance < moveBuffer) return
+    if (!isValidMove?.({ event, point })) return
 
     // Because Safari doesn't trigger mouseup events when it's above a `<select>`
     if (event.pointerType === "mouse" && event.button === 0) {
-      onPointerUp()
+      handlePointerUp(event)
       return
     }
 
@@ -65,20 +104,15 @@ export function trackPointerMove(doc: Document, handlers: PointerMoveHandlers) {
 
   const cleanups = [
     addDomEvent(doc, "pointermove", handleMove, false),
-    addDomEvent(doc, "pointerup", onPointerUp, false),
-    addDomEvent(doc, "pointercancel", onPointerUp, false),
-    addDomEvent(doc, "contextmenu", onPointerUp, false),
+    addDomEvent(doc, "pointerup", handlePointerUp, false),
+    addDomEvent(doc, "pointercancel", handlePointerUp, false),
+    addDomEvent(doc, "contextmenu", handlePointerUp, false),
     disableTextSelection({ doc }),
   ]
 
   return () => {
     cleanups.forEach((cleanup) => cleanup())
-    history.length = 0
   }
-}
-
-function lastDevicePoint(history: TimestampedPoint[]): TimestampedPoint {
-  return history[history.length - 1]
 }
 
 function ms(seconds: number): number {
@@ -93,25 +127,25 @@ function getVelocity(history: TimestampedPoint[], timeDelta: number): Point {
   if (history.length < 2) return { x: 0, y: 0 }
 
   let i = history.length - 1
-  let timestampedPoint: TimestampedPoint | null = null
-  const lastPoint = lastDevicePoint(history)
+  let point: TimestampedPoint | null = null
+  const lastPoint = history[history.length - 1]
 
   while (i >= 0) {
-    timestampedPoint = history[i]
-    if (lastPoint.timestamp - timestampedPoint.timestamp > ms(timeDelta)) {
+    point = history[i]
+    if (lastPoint.timestamp - point.timestamp > ms(timeDelta)) {
       break
     }
     i--
   }
 
-  if (!timestampedPoint) return { x: 0, y: 0 }
+  if (!point) return { x: 0, y: 0 }
 
-  const time = sec(lastPoint.timestamp - timestampedPoint.timestamp)
+  const time = sec(lastPoint.timestamp - point.timestamp)
   if (time === 0) return { x: 0, y: 0 }
 
   const currentVelocity = {
-    x: (lastPoint.x - timestampedPoint.x) / time,
-    y: (lastPoint.y - timestampedPoint.y) / time,
+    x: (lastPoint.x - point.x) / time,
+    y: (lastPoint.y - point.y) / time,
   }
 
   if (currentVelocity.x === Infinity) currentVelocity.x = 0

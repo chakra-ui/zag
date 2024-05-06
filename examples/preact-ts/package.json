@@ -15,6 +15,7 @@
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/avatar": "workspace:*",
+    "@zag-js/bottom-sheet": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/clipboard": "workspace:*",
@@ -77,8 +78,8 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "match-sorter": "6.3.4",
     "lucide-preact": "0.376.0",
+    "match-sorter": "6.3.4",
     "preact": "10.20.2",
     "preact-iso": "2.6.2",
     "preact-render-to-string": "6.4.2"

@@ -25,6 +25,7 @@
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/avatar": "workspace:*",
+    "@zag-js/bottom-sheet": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/clipboard": "workspace:*",
@@ -88,8 +89,8 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "match-sorter": "6.3.4",
     "lucide-solid": "0.376.0",
+    "match-sorter": "6.3.4",
     "solid-js": "1.8.17"
   }
 }

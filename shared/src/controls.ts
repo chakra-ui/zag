@@ -259,3 +259,5 @@ export const floatingPanelControls = defineControls({
 export const signaturePadControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
 })
+
+export const bottomSheetControls = defineControls({})

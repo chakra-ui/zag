@@ -4,6 +4,7 @@ import Home from "./pages/index"
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: "/bottom-sheet", component: () => import("./pages/bottom-sheet") },
     { path: "/signature-pad", component: () => import("./pages/signature-pad") },
     { path: "/floating-panel", component: () => import("./pages/floating-panel") },
     { path: "/tour", component: () => import("./pages/tour") },
