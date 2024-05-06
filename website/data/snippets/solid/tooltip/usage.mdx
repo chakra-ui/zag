@@ -11,7 +11,7 @@ export function Tooltip() {
   return (
     <div>
       <button {...api().triggerProps}>Hover me</button>
-      <Show when={api().isOpen}>
+      <Show when={api().open}>
         <div {...api().positionerProps}>
           <div {...api().contentProps}>Tooltip</div>
         </div>

@@ -17,7 +17,7 @@ export default defineComponent({
         <>
           <div>
             <button {...api.triggerProps}>Hover me</button>
-            {api.isOpen && (
+            {api.open && (
               <div {...api.positionerProps}>
                 <div {...api.contentProps}>Tooltip</div>
               </div>
