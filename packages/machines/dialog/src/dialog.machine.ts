@@ -105,25 +105,21 @@ export function machine(userContext: UserDefinedContext) {
             defer: true,
             pointerBlocking: ctx.modal,
             exclude: [dom.getTriggerEl(ctx)],
+            onInteractOutside(event) {
+              ctx.onInteractOutside?.(event)
+              if (!ctx.closeOnInteractOutside) {
+                event.preventDefault()
+              }
+            },
+            onFocusOutside: ctx.onFocusOutside,
+            onPointerDownOutside: ctx.onPointerDownOutside,
             onEscapeKeyDown(event) {
+              ctx.onEscapeKeyDown?.(event)
               if (!ctx.closeOnEscape) {
                 event.preventDefault()
               } else {
                 send({ type: "CLOSE", src: "escape-key" })
               }
-              ctx.onEscapeKeyDown?.(event)
-            },
-            onPointerDownOutside(event) {
-              if (!ctx.closeOnInteractOutside) {
-                event.preventDefault()
-              }
-              ctx.onPointerDownOutside?.(event)
-            },
-            onFocusOutside(event) {
-              if (!ctx.closeOnInteractOutside) {
-                event.preventDefault()
-              }
-              ctx.onFocusOutside?.(event)
             },
             onDismiss() {
               send({ type: "CLOSE", src: "interact-outside" })
