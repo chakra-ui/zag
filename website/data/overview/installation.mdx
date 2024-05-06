@@ -45,7 +45,7 @@ export function Tooltip() {
   return (
     <>
       <button {...api.triggerProps}>Hover me</button>
-      {api.isOpen && (
+      {api.open && (
         <div {...api.positionerProps}>
           <div {...api.contentProps}>Tooltip</div>
         </div>
@@ -84,7 +84,7 @@ export default defineComponent({
         <>
           <div>
             <button {...api.triggerProps}>Hover me</button>
-            {api.isOpen && (
+            {api.open && (
               <div {...api.positionerProps}>
                 <div {...api.contentProps}>Tooltip</div>
               </div>
@@ -122,7 +122,7 @@ export function Tooltip() {
   return (
     <div>
       <button {...api().triggerProps}>Hover me</button>
-      <Show when={api().isOpen}>
+      <Show when={api().open}>
         <div {...api().positionerProps}>
           <div {...api().contentProps}>Tooltip</div>
         </div>
