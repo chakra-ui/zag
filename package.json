@@ -70,7 +70,7 @@
     "@changesets/cli": "2.27.1",
     "@commitlint/cli": "19.3.0",
     "@commitlint/config-conventional": "19.2.2",
-    "@internationalized/date": "3.5.2",
+    "@internationalized/date": "3.5.3",
     "@octokit/rest": "20.1.0",
     "@playwright/test": "1.43.1",
     "@swc/core": "1.4.17",

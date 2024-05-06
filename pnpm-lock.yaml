@@ -36,8 +36,8 @@ importers:
         specifier: 19.2.2
         version: 19.2.2
       '@internationalized/date':
-        specifier: 3.5.2
-        version: 3.5.2
+        specifier: 3.5.3
+        version: 3.5.3
       '@octokit/rest':
         specifier: 20.1.0
         version: 20.1.0
@@ -2041,8 +2041,8 @@ importers:
   packages/machines/date-picker:
     dependencies:
       '@internationalized/date':
-        specifier: 3.5.2
-        version: 3.5.2
+        specifier: 3.5.3
+        version: 3.5.3
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../anatomy
@@ -2922,8 +2922,8 @@ importers:
   packages/utilities/date-utils:
     devDependencies:
       '@internationalized/date':
-        specifier: 3.5.2
-        version: 3.5.2
+        specifier: 3.5.3
+        version: 3.5.3
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -3133,8 +3133,8 @@ importers:
   starters/react:
     dependencies:
       '@internationalized/date':
-        specifier: 3.5.2
-        version: 3.5.2
+        specifier: 3.5.3
+        version: 3.5.3
       '@tanstack/react-virtual':
         specifier: ^3.5.0
         version: 3.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4666,6 +4666,9 @@ packages:
 
   '@internationalized/date@3.5.2':
     resolution: {integrity: sha512-vo1yOMUt2hzp63IutEaTUxROdvQg1qlMRsbCvbay2AK2Gai7wIgCyK5weEX3nHkiLgo4qCXHijFNC/ILhlRpOQ==}
+
+  '@internationalized/date@3.5.3':
+    resolution: {integrity: sha512-X9bi8NAEHAjD8yzmPYT2pdJsbe+tYSEBAfowtlxJVJdZR3aK8Vg7ZUT1Fm5M47KLzp/M1p1VwAaeSma3RT7biw==}
 
   '@internationalized/number@3.5.1':
     resolution: {integrity: sha512-N0fPU/nz15SwR9IbfJ5xaS9Ss/O5h1sVXMZf43vc9mxEG48ovglvvzBjF53aHlq20uoR6c+88CrIXipU/LSzwg==}
@@ -13362,6 +13365,10 @@ snapshots:
   '@inquirer/figures@1.0.1': {}
 
   '@internationalized/date@3.5.2':
+    dependencies:
+      '@swc/helpers': 0.5.11
+
+  '@internationalized/date@3.5.3':
     dependencies:
       '@swc/helpers': 0.5.11
 
