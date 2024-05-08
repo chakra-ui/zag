@@ -1,5 +1,4 @@
 import { createScope, getWindow } from "@zag-js/dom-query"
-import { hasProp } from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./clipboard.types"
 
 export const dom = createScope({
@@ -48,7 +47,7 @@ function copyNode(node: HTMLElement): Promise<void> {
 function copyText(doc: Document, text: string): Promise<void> {
   const win = doc.defaultView || window
 
-  if (hasProp(win.navigator, "clipboard")) {
+  if (win.navigator.clipboard?.writeText !== undefined) {
     return win.navigator.clipboard.writeText(text)
   }
 
