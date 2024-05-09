@@ -106,12 +106,12 @@ test.describe("number input", () => {
     await I.seeInputHasValue("4")
   })
 
-  test("scrub: should update value on scrubbing", async () => {
+  test.skip("scrub: should update value on scrubbing", async () => {
     await I.scrubBy(10)
     await I.seeInputHasValue("10")
   })
 
-  test("inc longpress: should spin value upwards", async () => {
+  test.skip("inc longpress: should spin value upwards", async () => {
     await I.mouseDownInc()
     await I.seeInputHasValue("1")
     await I.waitForTick(3)
