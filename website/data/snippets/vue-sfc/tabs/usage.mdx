@@ -28,7 +28,7 @@ const api = computed(() => tabs.connect(state.value, send, normalizeProps));
     <div
       v-for="item in data"
       v-bind="api.getContentProps({ value: item.value })"
-      key="{item.value}"
+      :key="item.value"
     >
       <p>{{ item.content }}</p>
     </div>
