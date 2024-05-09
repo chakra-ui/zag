@@ -6,8 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
   </head>
-  <body>
-    <div id="app"></div>
+  <body x-data="$checkbox({ id: '1' })" style="padding: 40px">
+    <h1>Welcome to home</h1>
+    <label x-bind="api.rootProps">
+      <div x-bind="api.controlProps"></div>
+      <span x-bind="api.labelProps">Checkbox</span>
+      <input x-bind="api.hiddenInputProps" />
+    </label>
+
+    <button type="button" x-bind:disabled="api.checked" x-on:click="api.setChecked(true)">Check</button>
+    <button type="button" x-bind:disabled="!api.checked" x-on:click="api.setChecked(false)">Uncheck</button>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
