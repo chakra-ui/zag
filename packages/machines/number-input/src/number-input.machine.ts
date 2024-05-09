@@ -309,20 +309,21 @@ export function machine(userContext: UserDefinedContext) {
         },
         increment(ctx, evt) {
           const nextValue = increment(ctx.valueAsNumber, evt.step ?? ctx.step)
-          const value = ctx.formatter.format(clamp(nextValue, ctx))
+          const value = formatValue(ctx, clamp(nextValue, ctx))
           set.value(ctx, value)
         },
         decrement(ctx, evt) {
           const nextValue = decrement(ctx.valueAsNumber, evt.step ?? ctx.step)
-          const value = ctx.formatter.format(clamp(nextValue, ctx))
+          const value = formatValue(ctx, clamp(nextValue, ctx))
           set.value(ctx, value)
         },
         setClampedValue(ctx) {
           const nextValue = clamp(ctx.valueAsNumber, ctx)
-          set.value(ctx, ctx.formatter.format(nextValue))
+          set.value(ctx, formatValue(ctx, nextValue))
         },
         setRawValue(ctx, evt) {
-          const value = ctx.formatter.format(clamp(evt.value, ctx))
+          const parsedValue = parseValue(ctx, evt.value)
+          const value = formatValue(ctx, clamp(parsedValue, ctx))
           set.value(ctx, value)
         },
         setValue(ctx, evt) {
@@ -333,11 +334,11 @@ export function machine(userContext: UserDefinedContext) {
           set.value(ctx, "")
         },
         incrementToMax(ctx) {
-          const value = ctx.formatter.format(ctx.max)
+          const value = formatValue(ctx, ctx.max)
           set.value(ctx, value)
         },
         decrementToMin(ctx) {
-          const value = ctx.formatter.format(ctx.min)
+          const value = formatValue(ctx, ctx.min)
           set.value(ctx, value)
         },
         setHint(ctx, evt) {
@@ -377,8 +378,7 @@ export function machine(userContext: UserDefinedContext) {
           sync.input(ctx, value)
         },
         setFormattedValue(ctx) {
-          const value = ctx.formatter.format(ctx.valueAsNumber)
-          set.value(ctx, value)
+          set.value(ctx, ctx.formattedValue)
         },
         setCursorPoint(ctx, evt) {
           ctx.scrubberCursorPoint = evt.point
