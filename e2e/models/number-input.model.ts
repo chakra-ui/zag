@@ -32,7 +32,12 @@ export class NumberInputModel extends Model {
   }
 
   async type(value: string, options?: { delay: number }) {
-    return this.input.pressSequentially(value, options)
+    await this.input.focus()
+    if (options) {
+      return this.input.pressSequentially(value, options)
+    } else {
+      return this.input.fill(value)
+    }
   }
 
   async seeInputHasValue(value: string) {
