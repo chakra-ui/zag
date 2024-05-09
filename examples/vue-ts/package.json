@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.2",
+    "@internationalized/date": "3.5.3",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -82,24 +82,24 @@
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-vue-next": "0.376.0",
-    "vite": "5.2.10",
-    "vue": "3.4.26",
+    "lucide-vue-next": "0.378.0",
+    "vite": "5.2.11",
+    "vue": "3.4.27",
     "vue-router": "4.3.2"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "1.10.2",
     "@types/form-serialize": "0.7.4",
-    "@types/node": "20.12.7",
+    "@types/node": "20.12.11",
     "@vitejs/plugin-vue": "5.0.4",
     "@vitejs/plugin-vue-jsx": "3.1.0",
     "@vue/eslint-config-prettier": "9.0.0",
     "@vue/eslint-config-typescript": "13.0.0",
     "@vue/tsconfig": "0.5.1",
     "eslint": "8.57.0",
-    "eslint-plugin-vue": "9.25.0",
+    "eslint-plugin-vue": "9.26.0",
     "typescript": "5.4.5",
-    "vue-tsc": "2.0.14"
+    "vue-tsc": "2.0.16"
   },
   "license": "MIT"
 }

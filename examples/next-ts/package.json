@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.2",
+    "@internationalized/date": "3.5.3",
     "@types/textarea-caret": "^3.0.3",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
@@ -81,7 +81,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-react": "0.376.0",
+    "lucide-react": "0.378.0",
     "match-sorter": "6.3.4",
     "next": "14.2.3",
     "next-cloudinary": "6.5.2",
@@ -92,7 +92,7 @@
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "@types/node": "20.12.7",
+    "@types/node": "20.12.11",
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.0",
     "eslint-plugin-react": "7.34.1",

@@ -9,7 +9,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.2",
+    "@internationalized/date": "3.5.3",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -81,14 +81,14 @@
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-vue-next": "0.376.0",
-    "vue": "3.4.26",
+    "lucide-vue-next": "0.378.0",
+    "vue": "3.4.27",
     "vue-router": "4.3.2"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@types/form-serialize": "0.7.4",
-    "@types/node": "20.12.7",
+    "@types/node": "20.12.11",
     "nuxt": "3.11.2"
   }
 }
