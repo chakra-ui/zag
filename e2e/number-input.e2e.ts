@@ -39,9 +39,9 @@ test.describe("number input", () => {
     await I.seeInputHasValue("6")
   })
 
-  test("clicking increment", () => {
-    I.clickInc()
-    I.seeInputHasValue("1")
+  test("clicking increment", async () => {
+    await I.clickInc()
+    await I.seeInputHasValue("1")
   })
 
   test("should decrement the value", async () => {
