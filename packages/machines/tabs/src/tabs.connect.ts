@@ -9,6 +9,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const translations = state.context.translations
   const focused = state.matches("focused")
 
+  const isVertical = state.context.orientation === "vertical"
+  const isHorizontal = state.context.orientation === "horizontal"
+
   function getTriggerState(props: TriggerProps): TriggerState {
     return {
       selected: state.context.value === props.value,
@@ -48,24 +51,30 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-focus": dataAttr(focused),
       "aria-orientation": state.context.orientation,
       "data-orientation": state.context.orientation,
-      "aria-label": translations.listLabel,
+      "aria-label": translations?.listLabel,
       onKeyDown(event) {
         if (event.defaultPrevented) return
         const evt = getNativeEvent(event)
+
         if (!isSelfTarget(evt)) return
+        if (evt.isComposing) return
 
         const keyMap: EventKeyMap = {
           ArrowDown() {
-            send("ARROW_DOWN")
+            if (isHorizontal) return
+            send({ type: "ARROW_NEXT", key: "ArrowDown" })
           },
           ArrowUp() {
-            send("ARROW_UP")
+            if (isHorizontal) return
+            send({ type: "ARROW_PREV", key: "ArrowUp" })
           },
           ArrowLeft() {
-            send("ARROW_LEFT")
+            if (isVertical) return
+            send({ type: "ARROW_PREV", key: "ArrowLeft" })
           },
           ArrowRight() {
-            send("ARROW_RIGHT")
+            if (isVertical) return
+            send({ type: "ARROW_NEXT", key: "ArrowRight" })
           },
           Home() {
             send("HOME")
@@ -74,7 +83,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send("END")
           },
           Enter() {
-            send({ type: "ENTER", value: state.context.focusedValue })
+            send({ type: "ENTER" })
           },
         }
 
@@ -105,7 +114,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-selected": triggerState.selected,
         "data-selected": dataAttr(triggerState.selected),
         "data-focus": dataAttr(triggerState.focused),
-        "aria-controls": dom.getContentId(state.context, value),
+        "aria-controls": triggerState.selected ? dom.getContentId(state.context, value) : undefined,
         "data-ownedby": dom.getListId(state.context),
         id: dom.getTriggerId(state.context, value),
         tabIndex: triggerState.selected ? 0 : -1,
@@ -162,8 +171,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         transitionProperty: "var(--transition-property)",
         transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration, 150ms)" : "0ms",
         transitionTimingFunction: "var(--transition-timing-function)",
-        [state.context.orientation === "horizontal" ? "left" : "top"]:
-          state.context.orientation === "horizontal" ? "var(--left)" : "var(--top)",
+        [isHorizontal ? "left" : "top"]: isHorizontal ? "var(--left)" : "var(--top)",
       },
     }),
   }

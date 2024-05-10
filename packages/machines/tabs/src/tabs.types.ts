@@ -37,7 +37,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations
   /**
    * Whether the keyboard navigation will loop from last tab to first, and vice versa.
    * @default true
@@ -75,18 +75,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the tab is in the horizontal orientation
-   */
-  isHorizontal: boolean
-  /**
-   * @computed
-   * Whether the tab is in the vertical orientation
-   */
-  isVertical: boolean
-}>
+type ComputedContext = Readonly<{}>
 
 interface PrivateContext {
   /**

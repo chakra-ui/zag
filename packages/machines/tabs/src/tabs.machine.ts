@@ -20,18 +20,12 @@ export function machine(userContext: UserDefinedContext) {
         orientation: "horizontal",
         activationMode: "automatic",
         value: null,
-        focusedValue: null,
         indicatorRect: { left: "0px", top: "0px", width: "0px", height: "0px" },
         loopFocus: true,
-        translations: {},
         ...ctx,
+        focusedValue: null,
         canIndicatorTransition: false,
         isIndicatorRendered: false,
-      },
-
-      computed: {
-        isHorizontal: (ctx) => ctx.orientation === "horizontal",
-        isVertical: (ctx) => ctx.orientation === "vertical",
       },
 
       entry: ["checkRenderedElements", "syncIndicatorRect", "setContentTabIndex"],
@@ -59,17 +53,10 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         idle: {
           on: {
-            TAB_FOCUS: [
-              {
-                guard: "selectOnFocus",
-                target: "focused",
-                actions: ["setFocusedValue", "setValue"],
-              },
-              {
-                target: "focused",
-                actions: "setFocusedValue",
-              },
-            ],
+            TAB_FOCUS: {
+              target: "focused",
+              actions: "setFocusedValue",
+            },
             TAB_CLICK: {
               target: "focused",
               actions: ["setFocusedValue", "setValue"],
@@ -82,39 +69,49 @@ export function machine(userContext: UserDefinedContext) {
               target: "focused",
               actions: ["setFocusedValue", "setValue"],
             },
-            ARROW_LEFT: {
-              guard: "isHorizontal",
-              actions: "focusPrevTab",
-            },
-            ARROW_RIGHT: {
-              guard: "isHorizontal",
-              actions: "focusNextTab",
-            },
-            ARROW_UP: {
-              guard: "isVertical",
-              actions: "focusPrevTab",
-            },
-            ARROW_DOWN: {
-              guard: "isVertical",
-              actions: "focusNextTab",
-            },
-            HOME: {
-              actions: "focusFirstTab",
-            },
-            END: {
-              actions: "focusLastTab",
-            },
-            ENTER: {
-              guard: not("selectOnFocus"),
-              actions: "setValue",
-            },
-            TAB_FOCUS: [
+            ARROW_PREV: [
               {
                 guard: "selectOnFocus",
-                actions: ["setFocusedValue", "setValue"],
+                actions: ["focusPrevTab", "selectFocusedTab"],
               },
-              { actions: "setFocusedValue" },
+              {
+                actions: "focusPrevTab",
+              },
             ],
+            ARROW_NEXT: [
+              {
+                guard: "selectOnFocus",
+                actions: ["focusNextTab", "selectFocusedTab"],
+              },
+              {
+                actions: "focusNextTab",
+              },
+            ],
+            HOME: [
+              {
+                guard: "selectOnFocus",
+                actions: ["focusFirstTab", "selectFocusedTab"],
+              },
+              {
+                actions: "focusFirstTab",
+              },
+            ],
+            END: [
+              {
+                guard: "selectOnFocus",
+                actions: ["focusLastTab", "selectFocusedTab"],
+              },
+              {
+                actions: "focusLastTab",
+              },
+            ],
+            ENTER: {
+              guard: not("selectOnFocus"),
+              actions: "selectFocusedTab",
+            },
+            TAB_FOCUS: {
+              actions: ["setFocusedValue"],
+            },
             TAB_BLUR: {
               target: "idle",
               actions: "clearFocusedValue",
@@ -125,12 +122,15 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
-        isVertical: (ctx) => ctx.isVertical,
-        isHorizontal: (ctx) => ctx.isHorizontal,
         selectOnFocus: (ctx) => ctx.activationMode === "automatic",
       },
 
       actions: {
+        selectFocusedTab(ctx) {
+          raf(() => {
+            ctx.value = ctx.focusedValue
+          })
+        },
         setFocusedValue(ctx, evt) {
           set.focusedValue(ctx, evt.value)
         },

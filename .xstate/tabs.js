@@ -13,12 +13,10 @@ const fetchMachine = createMachine({
   initial: "idle",
   context: {
     "selectOnFocus": false,
-    "isHorizontal": false,
-    "isHorizontal": false,
-    "isVertical": false,
-    "isVertical": false,
-    "!selectOnFocus": false,
-    "selectOnFocus": false
+    "selectOnFocus": false,
+    "selectOnFocus": false,
+    "selectOnFocus": false,
+    "!selectOnFocus": false
   },
   entry: ["checkRenderedElements", "syncIndicatorRect", "setContentTabIndex"],
   exit: ["cleanupObserver"],
@@ -41,14 +39,10 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        TAB_FOCUS: [{
-          cond: "selectOnFocus",
-          target: "focused",
-          actions: ["setFocusedValue", "setValue"]
-        }, {
+        TAB_FOCUS: {
           target: "focused",
           actions: "setFocusedValue"
-        }],
+        },
         TAB_CLICK: {
           target: "focused",
           actions: ["setFocusedValue", "setValue"]
@@ -61,38 +55,37 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: ["setFocusedValue", "setValue"]
         },
-        ARROW_LEFT: {
-          cond: "isHorizontal",
+        ARROW_PREV: [{
+          cond: "selectOnFocus",
+          actions: ["focusPrevTab", "selectFocusedTab"]
+        }, {
           actions: "focusPrevTab"
-        },
-        ARROW_RIGHT: {
-          cond: "isHorizontal",
+        }],
+        ARROW_NEXT: [{
+          cond: "selectOnFocus",
+          actions: ["focusNextTab", "selectFocusedTab"]
+        }, {
           actions: "focusNextTab"
-        },
-        ARROW_UP: {
-          cond: "isVertical",
-          actions: "focusPrevTab"
-        },
-        ARROW_DOWN: {
-          cond: "isVertical",
-          actions: "focusNextTab"
-        },
-        HOME: {
+        }],
+        HOME: [{
+          cond: "selectOnFocus",
+          actions: ["focusFirstTab", "selectFocusedTab"]
+        }, {
           actions: "focusFirstTab"
-        },
-        END: {
+        }],
+        END: [{
+          cond: "selectOnFocus",
+          actions: ["focusLastTab", "selectFocusedTab"]
+        }, {
           actions: "focusLastTab"
-        },
+        }],
         ENTER: {
           cond: "!selectOnFocus",
-          actions: "setValue"
+          actions: "selectFocusedTab"
         },
-        TAB_FOCUS: [{
-          cond: "selectOnFocus",
-          actions: ["setFocusedValue", "setValue"]
-        }, {
-          actions: "setFocusedValue"
-        }],
+        TAB_FOCUS: {
+          actions: ["setFocusedValue"]
+        },
         TAB_BLUR: {
           target: "idle",
           actions: "clearFocusedValue"
@@ -110,8 +103,6 @@ const fetchMachine = createMachine({
   },
   guards: {
     "selectOnFocus": ctx => ctx["selectOnFocus"],
-    "isHorizontal": ctx => ctx["isHorizontal"],
-    "isVertical": ctx => ctx["isVertical"],
     "!selectOnFocus": ctx => ctx["!selectOnFocus"]
   }
 });

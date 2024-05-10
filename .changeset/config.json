@@ -23,6 +23,7 @@
     "nuxt-ts",
     "preact-ts",
     "svelte-ts",
+    "vanilla-ts",
     "website"
   ]
 }
