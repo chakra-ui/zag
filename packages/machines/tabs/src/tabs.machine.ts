@@ -128,7 +128,7 @@ export function machine(userContext: UserDefinedContext) {
       actions: {
         selectFocusedTab(ctx) {
           raf(() => {
-            ctx.value = ctx.focusedValue
+            set.value(ctx, ctx.focusedValue)
           })
         },
         setFocusedValue(ctx, evt) {
