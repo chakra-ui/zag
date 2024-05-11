@@ -18,7 +18,7 @@
 <main>
   <div {...api.rootProps}>
     <div data-testid="scrubber" {...api.scrubberProps}></div>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
+    <!-- svelte-ignore a11y_label_has_associated_control -->
     <label data-testid="label" {...api.labelProps}> Enter number: </label>
     <div {...api.controlProps}>
       <button data-testid="dec-button" {...api.decrementTriggerProps}> DEC </button>

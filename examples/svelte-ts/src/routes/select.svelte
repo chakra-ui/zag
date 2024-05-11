@@ -25,7 +25,7 @@
 
 <main class="select">
   <div {...api.rootProps}>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
+    <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.labelProps}>Label</label>
 
     <div {...api.controlProps}>

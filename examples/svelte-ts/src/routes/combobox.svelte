@@ -49,11 +49,11 @@
     <button data-testid="clear-value-button" onclick={() => api.clearValue()}> Clear Value </button>
     <br />
     <div {...api.rootProps}>
-      <!-- svelte-ignore a11y-label-has-associated-control -->
+      <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.labelProps}>Select country</label>
       <div {...api.controlProps}>
         <input data-testid="input" {...api.inputProps} />
-        <button data-testid="trigger" {...api.triggerProps}> ▼ </button>
+        <button data-testid="trigger" {...api.getTriggerProps()}> ▼ </button>
       </div>
     </div>
     <div {...api.positionerProps}>

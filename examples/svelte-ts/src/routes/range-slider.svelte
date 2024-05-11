@@ -30,7 +30,7 @@
   >
     <div {...api.rootProps}>
       <div>
-        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <!-- svelte-ignore a11y_label_has_associated_control -->
         <label {...api.labelProps}>Quantity:</label>
         <output {...api.valueTextProps}>{api.value.join(" - ")}</output>
       </div>

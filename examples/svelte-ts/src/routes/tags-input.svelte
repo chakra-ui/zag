@@ -27,7 +27,7 @@
 
 <main class="tags-input">
   <div {...api.rootProps}>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
+    <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.labelProps}>Enter frameworks:</label>
     <div {...api.controlProps}>
       {#each api.value as value, index}

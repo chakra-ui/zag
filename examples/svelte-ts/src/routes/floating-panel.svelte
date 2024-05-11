@@ -44,14 +44,14 @@
           <p>Some content</p>
         </div>
 
-        <div {...api.getResizeTriggerProps({ axis: "n" })} />
-        <div {...api.getResizeTriggerProps({ axis: "e" })} />
-        <div {...api.getResizeTriggerProps({ axis: "w" })} />
-        <div {...api.getResizeTriggerProps({ axis: "s" })} />
-        <div {...api.getResizeTriggerProps({ axis: "ne" })} />
-        <div {...api.getResizeTriggerProps({ axis: "se" })} />
-        <div {...api.getResizeTriggerProps({ axis: "sw" })} />
-        <div {...api.getResizeTriggerProps({ axis: "nw" })} />
+        <div {...api.getResizeTriggerProps({ axis: "n" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "e" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "w" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "s" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "ne" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "se" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "sw" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "nw" })}></div>
       </div>
     </div>
   </div>
