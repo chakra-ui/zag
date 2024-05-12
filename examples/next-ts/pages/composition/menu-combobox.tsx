@@ -67,7 +67,7 @@ export default function Page() {
   const [menuState, menuSend] = useMachine(
     menu.machine({
       id: useId(),
-      typeahead: false,
+      composite: false,
     }),
   )
 

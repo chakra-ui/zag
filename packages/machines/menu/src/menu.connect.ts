@@ -7,6 +7,7 @@ import {
   isContextMenuEvent,
   isLeftClick,
   isModifierKey,
+  isPrintableKey,
   type EventKeyMap,
 } from "@zag-js/dom-event"
 import {
@@ -179,7 +180,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getTriggerId(state.context),
       "data-uid": state.context.id,
-      "aria-haspopup": composite ? "dialog" : "menu",
+      "aria-haspopup": composite ? "menu" : "dialog",
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": open || undefined,
       "data-state": open ? "open" : "closed",
@@ -278,7 +279,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": state.context["aria-label"],
       hidden: !open,
       "data-state": open ? "open" : "closed",
-      role: composite ? "dialog" : "menu",
+      role: composite ? "menu" : "dialog",
       tabIndex: 0,
       dir: state.context.dir,
       "aria-activedescendant": state.context.highlightedValue ?? undefined,
@@ -351,10 +352,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         // typeahead
         if (!state.context.typeahead) return
-        const printable = event.key.length === 1
+        if (!isPrintableKey(event)) return
+        if (isModifierKey(event)) return
+        if (isEditableElement(target)) return
 
-        const isValidTypeahead = printable && !isModifierKey(event) && !isEditableElement(item)
-        if (!isValidTypeahead) return
         send({ type: "TYPEAHEAD", key: event.key })
         event.preventDefault()
       },
