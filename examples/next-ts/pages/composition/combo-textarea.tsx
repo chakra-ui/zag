@@ -90,13 +90,13 @@ export default function Page() {
             ref={ref}
             {...mergeProps(textareaProps, {
               rows: 5,
-              placeholder: "Type @, # or :",
+              placeholder: "Type @ to see completion",
               style: { width: 400, padding: 4 },
               onScroll() {
                 api.reposition()
               },
               onPointerDown() {
-                api.setOpen(true)
+                api.setOpen(false)
               },
               onKeyDown(event) {
                 if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
@@ -122,7 +122,7 @@ export default function Page() {
         <div {...api.positionerProps}>
           <ul {...api.contentProps}>
             {options.map((item) => (
-              <li data-testid={item.code} key={item.code} {...api.getItemProps({ item })}>
+              <li key={item.code} {...api.getItemProps({ item })}>
                 {item.label}
               </li>
             ))}

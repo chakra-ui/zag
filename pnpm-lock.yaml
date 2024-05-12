@@ -2336,6 +2336,9 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../utilities/remove-scroll
+      '@zag-js/tabbable':
+        specifier: workspace:*
+        version: link:../../utilities/tabbable
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2755,6 +2758,9 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
+      '@zag-js/tabbable':
+        specifier: workspace:*
+        version: link:../../utilities/tabbable
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

@@ -12,8 +12,6 @@
   max-height: 240px;
   overflow: auto;
   padding: 2px;
-  height: var(--height);
-  transition: 100ms ease;
 }
 
 [data-scope="combobox"][data-part="item"] {

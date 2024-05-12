@@ -20,14 +20,18 @@ export function disablePointerEventsOutside(node: HTMLElement) {
 
   if (layerStack.hasPointerBlockingLayer() && !doc.body.hasAttribute(DATA_ATTR)) {
     originalBodyPointerEvents = document.body.style.pointerEvents
-    doc.body.style.pointerEvents = "none"
-    doc.body.setAttribute(DATA_ATTR, "")
+    queueMicrotask(() => {
+      doc.body.style.pointerEvents = "none"
+      doc.body.setAttribute(DATA_ATTR, "")
+    })
   }
 
   return () => {
     if (layerStack.hasPointerBlockingLayer()) return
-    doc.body.style.pointerEvents = originalBodyPointerEvents
-    doc.body.removeAttribute(DATA_ATTR)
-    if (doc.body.style.length === 0) doc.body.removeAttribute("style")
+    queueMicrotask(() => {
+      doc.body.style.pointerEvents = originalBodyPointerEvents
+      doc.body.removeAttribute(DATA_ATTR)
+      if (doc.body.style.length === 0) doc.body.removeAttribute("style")
+    })
   }
 }

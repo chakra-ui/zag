@@ -18,6 +18,7 @@ import {
   isSelfTarget,
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
+import { isValidTabEvent } from "@zag-js/tabbable"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./menu.anatomy"
 import { dom } from "./menu.dom"
@@ -26,6 +27,7 @@ import type { ItemProps, ItemState, MachineApi, OptionItemProps, OptionItemState
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isSubmenu = state.context.isSubmenu
   const isTypingAhead = state.context.isTypingAhead
+  const composite = state.context.composite
 
   const open = state.hasTag("open")
 
@@ -78,10 +80,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect })
       },
       onPointerLeave(event) {
-        const mouseMoved = state.previousEvent.type === "ITEM.POINTER_MOVE"
-        if (!mouseMoved) return
         if (itemState.disabled) return
         if (event.pointerType !== "mouse") return
+
+        const mouseMoved = state.previousEvent.type.includes("POINTER")
+        if (!mouseMoved) return
+
         const target = event.currentTarget
         send({ type: "ITEM_POINTERLEAVE", id, target, closeOnSelect })
       },
@@ -175,7 +179,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getTriggerId(state.context),
       "data-uid": state.context.id,
-      "aria-haspopup": "menu",
+      "aria-haspopup": composite ? "dialog" : "menu",
       "aria-controls": dom.getContentId(state.context),
       "aria-expanded": open || undefined,
       "data-state": open ? "open" : "closed",
@@ -274,7 +278,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-label": state.context["aria-label"],
       hidden: !open,
       "data-state": open ? "open" : "closed",
-      role: "menu",
+      role: composite ? "dialog" : "menu",
       tabIndex: 0,
       dir: state.context.dir,
       "aria-activedescendant": state.context.highlightedValue ?? undefined,
@@ -286,16 +290,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onKeyDown(event) {
         if (event.defaultPrevented) return
+
         const evt = getNativeEvent(event)
-        const target = getEventTarget<Element>(evt)
-
-        const isKeyDownInside = target?.closest("[role=menu]") === event.currentTarget
-
-        if (!isKeyDownInside) return
         if (!isSelfTarget(evt)) return
 
-        const item = dom.getHighlightedItemEl(state.context)
+        const target = getEventTarget<Element>(evt)
+        const sameMenu = target?.closest("[role=menu]") === event.currentTarget || target === event.currentTarget
+        if (!sameMenu) return
 
+        if (event.key === "Tab") {
+          const valid = isValidTabEvent(event)
+          if (!valid) {
+            event.preventDefault()
+            return
+          }
+        }
+
+        const item = dom.getHighlightedItemEl(state.context)
         const keyMap: EventKeyMap = {
           ArrowDown() {
             send("ARROW_DOWN")
@@ -326,9 +337,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           End() {
             send("END")
           },
-          Tab(event) {
-            send({ type: "TAB", shiftKey: event.shiftKey, loop: false })
-          },
         }
 
         const key = getEventKey(event, { dir: state.context.dir })
@@ -343,12 +351,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         // typeahead
         if (!state.context.typeahead) return
-
         const printable = event.key.length === 1
+
         const isValidTypeahead = printable && !isModifierKey(event) && !isEditableElement(item)
-
         if (!isValidTypeahead) return
-
         send({ type: "TYPEAHEAD", key: event.key })
         event.preventDefault()
       },

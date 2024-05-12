@@ -4,7 +4,7 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import { nextTick, raf } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import { proxyTabFocus } from "@zag-js/tabbable"
+import { getInitialFocus, proxyTabFocus } from "@zag-js/tabbable"
 import { compact, runIfFn } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
@@ -86,7 +86,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "CONTROLLED.CLOSE": {
               target: "closed",
-              actions: ["restoreFocus"],
+              actions: ["setFinalFocus"],
             },
             CLOSE: [
               {
@@ -95,7 +95,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "closed",
-                actions: ["invokeOnClose", "restoreFocus"],
+                actions: ["invokeOnClose", "setFinalFocus"],
               },
             ],
             TOGGLE: [
@@ -225,13 +225,17 @@ export function machine(userContext: UserDefinedContext) {
         },
         setInitialFocus(ctx) {
           raf(() => {
-            dom.getInitialFocusEl(ctx)?.focus({ preventScroll: true })
+            const element = getInitialFocus(dom.getContentEl(ctx), {
+              getInitialEl: ctx.initialFocusEl,
+            })
+            element?.focus()
           })
         },
-        restoreFocus(ctx, evt) {
+        setFinalFocus(ctx, evt) {
           if (!evt.restoreFocus) return
           raf(() => {
-            dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
+            const element = dom.getTriggerEl(ctx)
+            element?.focus({ preventScroll: true })
           })
         },
         invokeOnOpen(ctx) {

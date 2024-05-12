@@ -10,7 +10,3 @@ export const visuallyHiddenStyle = {
   whiteSpace: "nowrap",
   wordWrap: "normal",
 } as const
-
-export function setVisuallyHidden(el: HTMLElement) {
-  Object.assign(el.style, visuallyHiddenStyle)
-}

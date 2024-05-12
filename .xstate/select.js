@@ -103,7 +103,7 @@ const fetchMachine = createMachine({
     },
     focused: {
       tags: ["closed"],
-      entry: ["focusTriggerEl"],
+      entry: ["setFinalFocus"],
       on: {
         "CONTROLLED.OPEN": [{
           cond: "isTriggerClickEvent",
@@ -188,7 +188,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      entry: ["focusContentEl"],
+      entry: ["setInitialFocus"],
       exit: ["scrollContentToTop"],
       activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem"],
       on: {

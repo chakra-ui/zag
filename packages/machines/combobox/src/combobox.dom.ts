@@ -1,4 +1,4 @@
-import { createScope } from "@zag-js/dom-query"
+import { createScope, query } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./combobox.types"
 
 export const dom = createScope({
@@ -7,7 +7,6 @@ export const dom = createScope({
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.id}:control`,
   getInputId: (ctx: Ctx) => ctx.ids?.input ?? `combobox:${ctx.id}:input`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `combobox:${ctx.id}:content`,
-  getListId: (ctx: Ctx) => `combobox:${ctx.id}:listbox`,
   getPositionerId: (ctx: Ctx) => ctx.ids?.positioner ?? `combobox:${ctx.id}:popper`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `combobox:${ctx.id}:toggle-btn`,
   getClearTriggerId: (ctx: Ctx) => ctx.ids?.clearTrigger ?? `combobox:${ctx.id}:clear-btn`,
@@ -17,17 +16,16 @@ export const dom = createScope({
   getItemId: (ctx: Ctx, id: string) => `combobox:${ctx.id}:option:${id}`,
 
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
-  getListEl: (ctx: Ctx) => dom.getById(ctx, dom.getListId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
   getClearTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getClearTriggerId(ctx)),
 
-  isInputFocused: (ctx: Ctx) => dom.getDoc(ctx).activeElement === dom.getInputEl(ctx),
+  isInputFocused: (ctx: Ctx) => dom.getActiveElement(ctx) === dom.getInputEl(ctx),
   getHighlightedItemEl: (ctx: Ctx) => {
     const value = ctx.highlightedValue
     if (value == null) return
-    return dom.getContentEl(ctx)?.querySelector<HTMLElement>(`[role=option][data-value="${CSS.escape(value)}"`)
+    return query(dom.getContentEl(ctx), `[role=option][data-value="${CSS.escape(value)}"`)
   },
 })

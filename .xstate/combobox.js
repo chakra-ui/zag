@@ -137,11 +137,11 @@ const fetchMachine = createMachine({
         }],
         "INPUT.CHANGE": [{
           cond: "isOpenControlled && openOnChange",
-          actions: ["setInputValue", "invokeOnOpen"]
+          actions: ["setInputValue", "invokeOnOpen", "highlightFirstItemIfNeeded"]
         }, {
           cond: "openOnChange",
           target: "suggesting",
-          actions: ["setInputValue", "invokeOnOpen"]
+          actions: ["setInputValue", "invokeOnOpen", "highlightFirstItemIfNeeded"]
         }, {
           actions: "setInputValue"
         }],
@@ -220,7 +220,7 @@ const fetchMachine = createMachine({
     },
     interacting: {
       tags: ["open", "focused"],
-      activities: ["scrollIntoView", "trackDismissableLayer", "computePlacement", "hideOtherElements", "trackContentHeight"],
+      activities: ["scrollToHighlightedItem", "trackDismissableLayer", "computePlacement", "hideOtherElements"],
       on: {
         "CONTROLLED.CLOSE": [{
           cond: "restoreFocus",
@@ -337,7 +337,7 @@ const fetchMachine = createMachine({
     },
     suggesting: {
       tags: ["open", "focused"],
-      activities: ["trackDismissableLayer", "scrollIntoView", "computePlacement", "trackChildNodes", "hideOtherElements", "trackContentHeight"],
+      activities: ["trackDismissableLayer", "scrollToHighlightedItem", "computePlacement", "trackChildNodes", "hideOtherElements"],
       entry: ["focusInput"],
       on: {
         "CONTROLLED.CLOSE": [{

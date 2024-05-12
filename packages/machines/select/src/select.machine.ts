@@ -3,6 +3,7 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import { getByTypeahead, observeAttributes, raf, scrollIntoView } from "@zag-js/dom-query"
 import { trackFormControl } from "@zag-js/form-utils"
 import { getPlacement } from "@zag-js/popper"
+import { getInitialFocus } from "@zag-js/tabbable"
 import { addOrRemove, compact, isEqual } from "@zag-js/utils"
 import { collection } from "./select.collection"
 import { dom } from "./select.dom"
@@ -21,7 +22,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         loopFocus: false,
         closeOnSelect: true,
         disabled: false,
+        composite: true,
         ...ctx,
+        highlightedItem: null,
+        selectedItems: [],
+        valueAsString: "",
         collection: ctx.collection ?? collection.empty(),
         typeahead: getByTypeahead.defaultOptions,
         fieldsetDisabled: false,
@@ -38,18 +43,18 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
-        selectedItems: (ctx) => ctx.collection.items(ctx.value),
-        highlightedItem: (ctx) => ctx.collection.item(ctx.highlightedValue),
-        valueAsString: (ctx) => ctx.collection.itemsToString(ctx.selectedItems),
       },
 
       initial: ctx.open ? "open" : "idle",
+
+      created: ["syncInitialValues"],
 
       entry: ["syncSelectElement"],
 
       watch: {
         open: ["toggleVisibility"],
-        value: ["syncSelectElement"],
+        value: ["syncSelectedItems", "syncSelectElement"],
+        highlightedValue: ["syncHighlightedItem"],
       },
 
       on: {
@@ -117,7 +122,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
         focused: {
           tags: ["closed"],
-          entry: ["focusTriggerEl"],
+          entry: ["setFinalFocus"],
           on: {
             "CONTROLLED.OPEN": [
               {
@@ -229,7 +234,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
         open: {
           tags: ["open"],
-          entry: ["focusContentEl"],
+          entry: ["setInitialFocus"],
           exit: ["scrollContentToTop"],
           activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem"],
           on: {
@@ -412,7 +417,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             const state = getState()
 
             // don't scroll into view if we're using the pointer
-            if (state.event.type.startsWith("ITEM.POINTER")) return
+            if (state.event.type.includes("POINTER")) return
 
             const optionEl = dom.getHighlightedOptionEl(ctx)
             const contentEl = dom.getContentEl(ctx)
@@ -431,7 +436,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           const contentEl = () => dom.getContentEl(ctx)
           return observeAttributes(contentEl, {
             defer: true,
-            attributes: ["aria-activedescendant"],
+            attributes: ["data-activedescendant"],
             callback() {
               exec(false)
             },
@@ -472,12 +477,13 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           const value = ctx.collection.last()
           set.highlightedItem(ctx, value)
         },
-        focusContentEl(ctx) {
+        setInitialFocus(ctx) {
           raf(() => {
-            dom.getContentEl(ctx)?.focus({ preventScroll: true })
+            const element = getInitialFocus(dom.getContentEl(ctx))
+            element?.focus()
           })
         },
-        focusTriggerEl(ctx) {
+        setFinalFocus(ctx) {
           raf(() => {
             dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
           })
@@ -584,6 +590,20 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         setCollection(ctx, evt) {
           ctx.collection = evt.value
         },
+        syncInitialValues(ctx) {
+          const selectedItems = ctx.collection.items(ctx.value)
+          const valueAsString = ctx.collection.itemsToString(selectedItems)
+
+          ctx.highlightedItem = ctx.collection.item(ctx.highlightedValue)
+          ctx.selectedItems = selectedItems
+          ctx.valueAsString = valueAsString
+        },
+        syncSelectedItems(ctx) {
+          sync.valueChange(ctx)
+        },
+        syncHighlightedItem(ctx) {
+          sync.highlightChange(ctx)
+        },
       },
     },
   )
@@ -599,15 +619,32 @@ function dispatchChangeEvent(ctx: MachineContext) {
   })
 }
 
+const sync = {
+  valueChange: (ctx: MachineContext) => {
+    const prevSelectedItems = ctx.selectedItems
+    ctx.selectedItems = ctx.value.map((v) => {
+      const foundItem = prevSelectedItems.find((item) => ctx.collection.itemToValue(item) === v)
+      if (foundItem) return foundItem
+      return ctx.collection.item(v)
+    })
+    ctx.valueAsString = ctx.collection.itemsToString(ctx.selectedItems)
+  },
+  highlightChange: (ctx: MachineContext) => {
+    ctx.highlightedItem = ctx.collection.item(ctx.highlightedValue)
+  },
+}
+
 const invoke = {
-  change: (ctx: MachineContext) => {
+  valueChange: (ctx: MachineContext) => {
+    sync.valueChange(ctx)
     ctx.onValueChange?.({
       value: Array.from(ctx.value),
-      items: ctx.selectedItems,
+      items: Array.from(ctx.selectedItems),
     })
     dispatchChangeEvent(ctx)
   },
   highlightChange: (ctx: MachineContext) => {
+    sync.highlightChange(ctx)
     ctx.onHighlightChange?.({
       highlightedValue: ctx.highlightedValue,
       highlightedItem: ctx.highlightedItem,
@@ -624,19 +661,18 @@ const set = {
 
     if (value == null && force) {
       ctx.value = []
-      invoke.change(ctx)
+      invoke.valueChange(ctx)
       return
     }
 
-    const nextValue = ctx.multiple ? addOrRemove(ctx.value, value!) : [value!]
-    ctx.value = nextValue
-    invoke.change(ctx)
+    ctx.value = ctx.multiple ? addOrRemove(ctx.value, value!) : [value!]
+    invoke.valueChange(ctx)
   },
   selectedItems: (ctx: MachineContext, value: string[]) => {
     if (isEqual(ctx.value, value)) return
 
     ctx.value = value
-    invoke.change(ctx)
+    invoke.valueChange(ctx)
   },
   highlightedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
     if (isEqual(ctx.highlightedValue, value)) return

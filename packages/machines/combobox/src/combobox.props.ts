@@ -9,7 +9,7 @@ export const props = createProps<UserDefinedContext>()([
   "collection",
   "dir",
   "disabled",
-  "dismissable",
+  "disableLayer",
   "form",
   "getRootNode",
   "getSelectionValue",
@@ -41,7 +41,7 @@ export const props = createProps<UserDefinedContext>()([
   "scrollToIndexFn",
   "selectionBehavior",
   "translations",
-  "popup",
+  "composite",
   "value",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)

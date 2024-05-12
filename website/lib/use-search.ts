@@ -92,17 +92,19 @@ export function useSearch(): UseSearchReturn {
     normalizeProps,
   )
 
-  useUpdateEffect(() => {
-    if (dialog_api.open && combobox_api.inputEmpty) {
-      setResults([])
-    }
-  }, [dialog_api.open, combobox_api.inputEmpty])
+  const isInputEmpty = combobox_api.inputValue.trim() === ""
 
   useUpdateEffect(() => {
-    if (!dialog_api.open && !combobox_api.inputEmpty) {
+    if (dialog_api.open && isInputEmpty) {
+      setResults([])
+    }
+  }, [dialog_api.open, isInputEmpty])
+
+  useUpdateEffect(() => {
+    if (!dialog_api.open && !isInputEmpty) {
       combobox_api.clearValue()
     }
-  }, [dialog_api.open, combobox_api.inputEmpty, combobox_api.clearValue])
+  }, [dialog_api.open, isInputEmpty, combobox_api.clearValue])
 
   return {
     results,

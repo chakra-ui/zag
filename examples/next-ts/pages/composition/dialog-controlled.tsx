@@ -3,26 +3,26 @@ import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 import React, { useState } from "react"
 
 export default function Dialog() {
-  const [isOpen, setOpen] = useState(false)
+  const [open, setOpen] = useState(false)
 
   const [state, send] = useMachine(
     dialog.machine({
       id: "1",
-      open: false,
+      open,
       onOpenChange(details) {
         setOpen(details.open)
       },
     }),
     {
-      context: { open: isOpen },
+      context: { open },
     },
   )
   const api = dialog.connect(state, send, normalizeProps)
 
   return (
     <div>
-      <button onClick={() => setOpen(!isOpen)}>Open Dialog</button>
-      <p>state - isOpen: {String(isOpen)}</p>
+      <button onClick={() => setOpen(!open)}>Open Dialog</button>
+      <p>state - isOpen: {String(open)}</p>
       <p>machine - isOpen: {String(api.open)}</p>
       {api.open && (
         <Portal>

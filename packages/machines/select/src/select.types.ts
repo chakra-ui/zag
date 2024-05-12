@@ -129,9 +129,14 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Function to scroll to a specific index
    */
   scrollToIndexFn?: (details: ScrollToIndexDetails) => void
+  /**
+   * Whether the select is a composed with other composite widgets like tabs or combobox
+   * @default true
+   */
+  composite: boolean
 }
 
-interface PrivateContext {
+interface PrivateContext<T extends CollectionItem = CollectionItem> {
   /**
    * @internal
    * Internal state of the typeahead
@@ -152,9 +157,23 @@ interface PrivateContext {
    * Whether to restore focus to the trigger after the menu closes
    */
   restoreFocus?: boolean
+  /**
+   * The highlighted item
+   */
+  highlightedItem: T | null
+  /**
+   * @computed
+   * The selected items
+   */
+  selectedItems: T[]
+  /**
+   * @computed
+   * The display value of the select (based on the selected items)
+   */
+  valueAsString: string
 }
 
-type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
+type ComputedContext = Readonly<{
   /**
    * @computed
    * Whether there's a selected option
@@ -175,20 +194,6 @@ type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
    * Whether the select is disabled
    */
   isDisabled: boolean
-  /**
-   * The highlighted item
-   */
-  highlightedItem: T | null
-  /**
-   * @computed
-   * The selected items
-   */
-  selectedItems: T[]
-  /**
-   * @computed
-   * The display value of the select (based on the selected items)
-   */
-  valueAsString: string
 }>
 
 export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
@@ -211,7 +216,14 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface ItemProps<T extends CollectionItem = CollectionItem> {
+  /**
+   * The item to render
+   */
   item: T
+  /**
+   * Whether hovering outside should clear the highlighted state
+   */
+  persistFocus?: boolean
 }
 
 export interface ItemState {
@@ -327,6 +339,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   clearTriggerProps: T["button"]
   positionerProps: T["element"]
   contentProps: T["element"]
+  listProps: T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemTextProps(props: ItemProps): T["element"]
   getItemIndicatorProps(props: ItemProps): T["element"]

@@ -51,7 +51,7 @@ const api = computed(() => combobox.connect(state.value, send, normalizeProps))
 
         <div v-bind="api.controlProps">
           <input data-testid="input" v-bind="api.inputProps" />
-          <button data-testid="trigger" v-bind="api.triggerProps">▼</button>
+          <button data-testid="trigger" v-bind="api.getTriggerProps()">▼</button>
         </div>
       </div>
 

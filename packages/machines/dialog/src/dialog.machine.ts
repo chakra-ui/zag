@@ -3,6 +3,7 @@ import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { nextTick, raf } from "@zag-js/dom-query"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
+import { getInitialFocus } from "@zag-js/tabbable"
 import { compact, runIfFn } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./dialog.dom"
@@ -133,9 +134,15 @@ export function machine(userContext: UserDefinedContext) {
         trapFocus(ctx) {
           if (!ctx.trapFocus || !ctx.modal) return
           let trap: FocusTrap
-          let rafCleanup = nextTick(() => {
+
+          const cleanup = nextTick(() => {
             const contentEl = dom.getContentEl(ctx)
             if (!contentEl) return
+
+            const initialFocusEl = getInitialFocus(contentEl, {
+              getInitialEl: ctx.initialFocusEl,
+            })
+
             trap = createFocusTrap(contentEl, {
               document: dom.getDoc(ctx),
               escapeDeactivates: false,
@@ -143,15 +150,16 @@ export function machine(userContext: UserDefinedContext) {
               returnFocusOnDeactivate: false,
               fallbackFocus: contentEl,
               allowOutsideClick: true,
-              initialFocus: runIfFn(ctx.initialFocusEl),
+              initialFocus: initialFocusEl,
             })
+
             try {
               trap.activate()
             } catch {}
           })
           return () => {
             trap?.deactivate()
-            rafCleanup()
+            cleanup()
           }
         },
         hideContentBelow(ctx) {

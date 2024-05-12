@@ -28,12 +28,12 @@ export function machine(userContext: UserDefinedContext) {
         isIndicatorRendered: false,
       },
 
-      entry: ["checkRenderedElements", "syncIndicatorRect", "setContentTabIndex"],
+      entry: ["checkRenderedElements", "syncIndicatorRect", "syncTabIndex"],
 
       exit: ["cleanupObserver"],
 
       watch: {
-        value: ["enableIndicatorTransition", "syncIndicatorRect", "setContentTabIndex", "clickIfLink"],
+        value: ["enableIndicatorTransition", "syncIndicatorRect", "syncTabIndex", "clickIfLink"],
         dir: ["syncIndicatorRect"],
         orientation: ["syncIndicatorRect"],
       },
@@ -47,6 +47,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         SET_INDICATOR_RECT: {
           actions: "setIndicatorRect",
+        },
+        SYNC_TAB_INDEX: {
+          actions: "syncTabIndex",
         },
       },
 
@@ -163,7 +166,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.isIndicatorRendered = !!dom.getIndicatorEl(ctx)
         },
         // if tab panel contains focusable elements, remove the tabindex attribute
-        setContentTabIndex(ctx) {
+        syncTabIndex(ctx) {
           raf(() => {
             const panel = dom.getActiveContentEl(ctx)
             if (!panel) return

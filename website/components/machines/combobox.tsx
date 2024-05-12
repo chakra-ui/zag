@@ -96,7 +96,7 @@ export function Combobox(props: ComboboxProps) {
         <label {...api.labelProps}>Nationality</label>
         <div {...api.controlProps}>
           <input {...api.inputProps} />
-          <button {...api.triggerProps}>
+          <button {...api.getTriggerProps()}>
             <CaretIcon />
           </button>
         </div>

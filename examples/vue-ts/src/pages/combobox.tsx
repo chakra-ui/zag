@@ -62,7 +62,7 @@ export default defineComponent({
 
                 <div {...api.controlProps}>
                   <input data-testid="input" {...api.inputProps} />
-                  <button data-testid="trigger" {...api.triggerProps}>
+                  <button data-testid="trigger" {...api.getTriggerProps()}>
                     ▼
                   </button>
                 </div>

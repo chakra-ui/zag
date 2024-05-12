@@ -20,7 +20,7 @@ export default function Page() {
       collection: liveCollection,
       selectionBehavior: "clear",
       inputBehavior: "autohighlight",
-      popup: "dialog",
+      composite: false,
       onOpenChange() {
         setOptions(selectData)
       },
@@ -43,7 +43,7 @@ export default function Page() {
       <div {...api.rootProps}>
         <div {...api.controlProps} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
           <label {...api.labelProps}>Select an option</label>
-          <button ref={buttonRef} {...api.triggerProps}>
+          <button ref={buttonRef} {...api.getTriggerProps({ focusable: true })}>
             <span>{api.valueAsString || "Choose..."} </span>
           </button>
         </div>

@@ -177,6 +177,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Returns the state of the trigger with the given props
    */
   getTriggerState(props: TriggerProps): TriggerState
+  /**
+   * Synchronizes the tab index of the content element.
+   * Useful when rendering tabs within a select or combobox
+   */
+  syncTabIndex(): void
+  /**
+   * Set focus on the selected tab trigger
+   */
+  focus(): void
 
   rootProps: T["element"]
   listProps: T["element"]

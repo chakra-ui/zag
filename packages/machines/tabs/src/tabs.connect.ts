@@ -33,6 +33,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const id = dom.getTriggerId(state.context, value)
       send({ type: "SET_INDICATOR_RECT", id })
     },
+    syncTabIndex() {
+      send("SYNC_TAB_INDEX")
+    },
+    focus() {
+      dom.getActiveTabEl(state.context)?.focus()
+    },
     getTriggerState,
 
     rootProps: normalize.element({
