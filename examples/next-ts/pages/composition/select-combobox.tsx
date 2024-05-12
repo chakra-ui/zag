@@ -2,22 +2,17 @@ import * as combobox from "@zag-js/combobox"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { selectData } from "@zag-js/shared"
 import { matchSorter } from "match-sorter"
-import { useId, useRef, useState } from "react"
+import { useId, useMemo, useState } from "react"
 
 export default function Page() {
-  const inputRef = useRef<HTMLInputElement>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
-
   const [options, setOptions] = useState(selectData)
 
-  const liveCollection = combobox.collection({
-    items: options,
-  })
+  const collection = useMemo(() => combobox.collection({ items: options }), [options])
 
   const [state, send] = useMachine(
     combobox.machine({
       id: useId(),
-      collection: liveCollection,
+      collection,
       selectionBehavior: "clear",
       inputBehavior: "autohighlight",
       composite: false,
@@ -31,7 +26,7 @@ export default function Page() {
     }),
     {
       context: {
-        collection: liveCollection,
+        collection,
       },
     },
   )
@@ -43,7 +38,7 @@ export default function Page() {
       <div {...api.rootProps}>
         <div {...api.controlProps} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
           <label {...api.labelProps}>Select an option</label>
-          <button ref={buttonRef} {...api.getTriggerProps({ focusable: true })}>
+          <button {...api.getTriggerProps({ focusable: true })}>
             <span>{api.valueAsString || "Choose..."} </span>
           </button>
         </div>
@@ -51,7 +46,7 @@ export default function Page() {
         <Portal>
           <div {...api.positionerProps}>
             <div {...api.contentProps}>
-              <input ref={inputRef} style={{ position: "sticky", top: "0", width: "100%" }} {...api.inputProps} />
+              <input style={{ position: "sticky", top: "0", width: "100%" }} {...api.inputProps} />
               <div {...api.listProps}>
                 {options.map((item) => (
                   <div key={item.value} {...api.getItemProps({ item })}>
