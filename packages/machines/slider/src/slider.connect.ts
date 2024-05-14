@@ -27,6 +27,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const invalid = state.context.invalid
   const interactive = state.context.isInteractive
 
+  const isHorizontal = state.context.orientation === "horizontal"
+  const isVertical = state.context.orientation === "vertical"
+
   function getValuePercentFn(value: number) {
     return getValuePercent(value, state.context.min, state.context.max)
   }
@@ -173,30 +176,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!interactive) return
 
           const step = getEventStep(event) * state.context.step
-          let prevent = true
 
           const keyMap: EventKeyMap = {
             ArrowUp() {
-              send({ type: "ARROW_UP", step })
-              prevent = state.context.isVertical
+              if (isHorizontal) return
+              send({ type: "ARROW_INC", step, src: "ArrowUp" })
             },
             ArrowDown() {
-              send({ type: "ARROW_DOWN", step })
-              prevent = state.context.isVertical
+              if (isHorizontal) return
+              send({ type: "ARROW_DEC", step, src: "ArrowDown" })
             },
             ArrowLeft() {
-              send({ type: "ARROW_LEFT", step })
-              prevent = state.context.isHorizontal
+              if (isVertical) return
+              send({ type: "ARROW_DEC", step, src: "ArrowLeft" })
             },
             ArrowRight() {
-              send({ type: "ARROW_RIGHT", step })
-              prevent = state.context.isHorizontal
+              if (isVertical) return
+              send({ type: "ARROW_INC", step, src: "ArrowRight" })
             },
             PageUp() {
-              send({ type: "PAGE_UP", step })
+              send({ type: "ARROW_INC", step, src: "PageUp" })
             },
             PageDown() {
-              send({ type: "PAGE_DOWN", step })
+              send({ type: "ARROW_DEC", step, src: "PageDown" })
             },
             Home() {
               send("HOME")
@@ -209,10 +211,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const key = getEventKey(event, state.context)
           const exec = keyMap[key]
 
-          if (!exec) return
-          exec(event)
-
-          if (prevent) {
+          if (exec) {
+            exec(event)
             event.preventDefault()
             event.stopPropagation()
           }
