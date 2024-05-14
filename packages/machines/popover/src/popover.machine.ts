@@ -5,7 +5,7 @@ import { nextTick, raf } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { getInitialFocus, proxyTabFocus } from "@zag-js/tabbable"
-import { compact, runIfFn } from "@zag-js/utils"
+import { compact } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
@@ -185,6 +185,7 @@ export function machine(userContext: UserDefinedContext) {
           nextTick(() => {
             const el = dom.getContentEl(ctx)
             if (!el) return
+            const initialFocusEl = getInitialFocus(dom.getContentEl(ctx), ctx.initialFocusEl)
             trap = createFocusTrap(el, {
               escapeDeactivates: false,
               allowOutsideClick: true,
@@ -192,8 +193,9 @@ export function machine(userContext: UserDefinedContext) {
               returnFocusOnDeactivate: true,
               document: dom.getDoc(ctx),
               fallbackFocus: el,
-              initialFocus: runIfFn(ctx.initialFocusEl),
+              initialFocus: initialFocusEl,
             })
+
             try {
               trap.activate()
             } catch {}
@@ -225,9 +227,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setInitialFocus(ctx) {
           raf(() => {
-            const element = getInitialFocus(dom.getContentEl(ctx), {
-              getInitialEl: ctx.initialFocusEl,
-            })
+            const element = getInitialFocus(dom.getContentEl(ctx), ctx.initialFocusEl)
             element?.focus()
           })
         },

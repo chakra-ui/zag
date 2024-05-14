@@ -4,7 +4,7 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import { nextTick, raf } from "@zag-js/dom-query"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { getInitialFocus } from "@zag-js/tabbable"
-import { compact, runIfFn } from "@zag-js/utils"
+import { compact } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./dialog.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./dialog.types"
@@ -31,6 +31,8 @@ export function machine(userContext: UserDefinedContext) {
         ...ctx,
       },
 
+      created: ["checkInitialFocusEl"],
+
       watch: {
         open: ["toggleVisibility"],
       },
@@ -42,7 +44,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "CONTROLLED.CLOSE": {
               target: "closed",
-              actions: ["restoreFocus"],
+              actions: ["setFinalFocus"],
             },
             CLOSE: [
               {
@@ -51,7 +53,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "closed",
-                actions: ["invokeOnClose", "restoreFocus"],
+                actions: ["invokeOnClose", "setFinalFocus"],
               },
             ],
             TOGGLE: [
@@ -61,7 +63,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "closed",
-                actions: ["invokeOnClose", "restoreFocus"],
+                actions: ["invokeOnClose", "setFinalFocus"],
               },
             ],
           },
@@ -101,6 +103,7 @@ export function machine(userContext: UserDefinedContext) {
       },
       activities: {
         trackDismissableElement(ctx, _evt, { send }) {
+          const isAlertDialog = ctx.role === "alertdialog"
           const getContentEl = () => dom.getContentEl(ctx)
           return trackDismissableElement(getContentEl, {
             defer: true,
@@ -108,7 +111,7 @@ export function machine(userContext: UserDefinedContext) {
             exclude: [dom.getTriggerEl(ctx)],
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
-              if (!ctx.closeOnInteractOutside) {
+              if (!ctx.closeOnInteractOutside || isAlertDialog) {
                 event.preventDefault()
               }
             },
@@ -138,11 +141,6 @@ export function machine(userContext: UserDefinedContext) {
           const cleanup = nextTick(() => {
             const contentEl = dom.getContentEl(ctx)
             if (!contentEl) return
-
-            const initialFocusEl = getInitialFocus(contentEl, {
-              getInitialEl: ctx.initialFocusEl,
-            })
-
             trap = createFocusTrap(contentEl, {
               document: dom.getDoc(ctx),
               escapeDeactivates: false,
@@ -150,7 +148,7 @@ export function machine(userContext: UserDefinedContext) {
               returnFocusOnDeactivate: false,
               fallbackFocus: contentEl,
               allowOutsideClick: true,
-              initialFocus: initialFocusEl,
+              initialFocus: getInitialFocus(contentEl, ctx.initialFocusEl),
             })
 
             try {
@@ -169,6 +167,11 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
+        checkInitialFocusEl(ctx) {
+          if (!ctx.initialFocusEl && ctx.role === "alertdialog") {
+            ctx.initialFocusEl = () => dom.getCloseTriggerEl(ctx)
+          }
+        },
         checkRenderedElements(ctx) {
           raf(() => {
             ctx.renderedElements.title = !!dom.getTitleEl(ctx)
@@ -199,10 +202,10 @@ export function machine(userContext: UserDefinedContext) {
         toggleVisibility(ctx, evt, { send }) {
           send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
         },
-        restoreFocus(ctx) {
+        setFinalFocus(ctx) {
           if (!ctx.restoreFocus) return
           queueMicrotask(() => {
-            const el = runIfFn(ctx.finalFocusEl) ?? dom.getTriggerEl(ctx)
+            const el = ctx.finalFocusEl?.() ?? dom.getTriggerEl(ctx)
             el?.focus({ preventScroll: true })
           })
         },

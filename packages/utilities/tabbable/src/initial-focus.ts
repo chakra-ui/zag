@@ -1,14 +1,9 @@
 import { getFirstTabbable, getTabbableEdges } from "./tabbable"
 
-interface InitialFocusOptions {
-  getInitialEl?: HTMLElement | null | (() => HTMLElement | null)
-}
-
 export function getInitialFocus(
   container: HTMLElement | null,
-  options: InitialFocusOptions = {},
+  getInitialEl?: () => HTMLElement | null,
 ): HTMLElement | undefined {
-  const { getInitialEl } = options
   let node: HTMLElement | null | undefined = null
   node ||= typeof getInitialEl === "function" ? getInitialEl() : getInitialEl
   node ||= container?.querySelector<HTMLElement>("[data-autofocus],[autofocus]")

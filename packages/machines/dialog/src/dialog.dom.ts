@@ -16,4 +16,5 @@ export const dom = createScope({
   getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
   getTitleEl: (ctx: Ctx) => dom.getById(ctx, dom.getTitleId(ctx)),
   getDescriptionEl: (ctx: Ctx) => dom.getById(ctx, dom.getDescriptionId(ctx)),
+  getCloseTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getCloseTriggerId(ctx)),
 })

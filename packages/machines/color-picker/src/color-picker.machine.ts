@@ -5,6 +5,7 @@ import { trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
 import { dispatchInputValueEvent, trackFormControl } from "@zag-js/form-utils"
 import { getPlacement } from "@zag-js/popper"
+import { getInitialFocus } from "@zag-js/tabbable"
 import { disableTextSelection } from "@zag-js/text-selection"
 import { compact, tryCatch } from "@zag-js/utils"
 import { dom } from "./color-picker.dom"
@@ -548,7 +549,8 @@ export function machine(userContext: UserDefinedContext) {
         },
         setInitialFocus(ctx) {
           raf(() => {
-            dom.getInitialFocusEl(ctx)?.focus({ preventScroll: true })
+            const element = getInitialFocus(dom.getContentEl(ctx), ctx.initialFocusEl)
+            element?.focus({ preventScroll: true })
           })
         },
         setReturnFocus(ctx) {
