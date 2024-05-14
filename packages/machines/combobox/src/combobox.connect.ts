@@ -6,7 +6,7 @@ import {
   isLeftClick,
   type EventKeyMap,
 } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, isDownloadingEvent, isOpeningInNewTab, raf } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, isDownloadingEvent, isOpeningInNewTab } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
@@ -235,7 +235,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         ...parts.trigger.attrs,
         dir: state.context.dir,
         id: dom.getTriggerId(state.context),
-        "aria-haspopup": !composite ? "dialog" : "listbox",
+        "aria-haspopup": composite ? "listbox" : "dialog",
         type: "button",
         tabIndex: props.focusable ? undefined : -1,
         "aria-label": translations.triggerLabel,
@@ -243,8 +243,13 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-state": open ? "open" : "closed",
         "aria-controls": open ? dom.getContentId(state.context) : undefined,
         disabled,
+        "data-focusable": dataAttr(props.focusable),
         "data-readonly": dataAttr(readOnly),
         "data-disabled": dataAttr(disabled),
+        onFocus() {
+          if (!props.focusable) return
+          send({ type: "INPUT.FOCUS", src: "trigger" })
+        },
         onClick(event) {
           if (event.defaultPrevented) return
           const evt = getNativeEvent(event)
@@ -266,18 +271,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
           const keyMap: EventKeyMap = {
             ArrowDown() {
-              send("INPUT.FOCUS")
-              send("INPUT.ARROW_DOWN")
-              raf(() => {
-                dom.getInputEl(state.context)?.focus({ preventScroll: true })
-              })
+              send({ type: "INPUT.ARROW_DOWN", src: "trigger" })
             },
             ArrowUp() {
-              send("INPUT.FOCUS")
-              send("INPUT.ARROW_UP")
-              raf(() => {
-                dom.getInputEl(state.context)?.focus({ preventScroll: true })
-              })
+              send({ type: "INPUT.ARROW_UP", src: "trigger" })
             },
           }
 
@@ -324,6 +321,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       "aria-label": translations.clearTriggerLabel,
       "aria-controls": dom.getInputId(state.context),
       hidden: !state.context.value.length,
+      onPointerDown(event) {
+        event.preventDefault()
+      },
       onClick(event) {
         if (event.defaultPrevented) return
         if (!interactive) return
@@ -351,6 +351,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-value": itemState.value,
         onPointerMove() {
           if (itemState.disabled) return
+          if (itemState.highlighted) return
           send({ type: "ITEM.POINTER_MOVE", value })
         },
         onPointerLeave() {

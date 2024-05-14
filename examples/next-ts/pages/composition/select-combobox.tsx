@@ -37,9 +37,10 @@ export default function Page() {
     <main className="select">
       <div {...api.rootProps}>
         <div {...api.controlProps} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-          <label {...api.labelProps}>Select an option</label>
+          <label {...api.labelProps}>Country</label>
           <button {...api.getTriggerProps({ focusable: true })}>
-            <span>{api.valueAsString || "Choose..."} </span>
+            <span>{api.valueAsString || "Select Country"} </span>
+            <span>▼</span>
           </button>
         </div>
 

@@ -71,11 +71,21 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Callback to be called when the focused tab changes
    */
   onFocusChange?: (details: FocusChangeDetails) => void
+  /**
+   * Whether the tab is composite
+   */
+  composite: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{}>
+
+interface IndicatorState {
+  rendered: boolean
+  rect: Partial<{ left: string; top: string; width: string; height: string }>
+  transition: boolean
+}
 
 interface PrivateContext {
   /**
@@ -85,19 +95,9 @@ interface PrivateContext {
   focusedValue: string | null
   /**
    * @internal
-   * Whether the indicator is rendered.
+   * The active tab indicator details
    */
-  isIndicatorRendered: boolean
-  /**
-   * @internal
-   * The active tab indicator's dom rect
-   */
-  indicatorRect?: Partial<{ left: string; top: string; width: string; height: string }>
-  /**
-   * @internal
-   * Whether the active tab indicator's rect can transition
-   */
-  canIndicatorTransition?: boolean
+  indicatorState: IndicatorState
   /**
    * @internal
    * Function to clean up the observer for the active tab's rect
@@ -174,10 +174,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   setIndicatorRect(value: string): void
   /**
-   * Returns the state of the trigger with the given props
-   */
-  getTriggerState(props: TriggerProps): TriggerState
-  /**
    * Synchronizes the tab index of the content element.
    * Useful when rendering tabs within a select or combobox
    */
@@ -186,6 +182,18 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Set focus on the selected tab trigger
    */
   focus(): void
+  /**
+   * Selects the next tab
+   */
+  selectNext(fromValue?: string): void
+  /**
+   * Selects the previous tab
+   */
+  selectPrev(fromValue?: string): void
+  /**
+   * Returns the state of the trigger with the given props
+   */
+  getTriggerState(props: TriggerProps): TriggerState
 
   rootProps: T["element"]
   listProps: T["element"]

@@ -11,6 +11,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const isVertical = state.context.orientation === "vertical"
   const isHorizontal = state.context.orientation === "horizontal"
+  const composite = state.context.composite
+  const indicator = state.context.indicatorState
 
   function getTriggerState(props: TriggerProps): TriggerState {
     return {
@@ -36,8 +38,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     syncTabIndex() {
       send("SYNC_TAB_INDEX")
     },
+    selectNext(fromValue) {
+      send({ type: "TAB_FOCUS", value: fromValue, src: "selectNext" })
+      send({ type: "ARROW_NEXT", src: "selectNext" })
+    },
+    selectPrev(fromValue) {
+      send({ type: "TAB_FOCUS", value: fromValue, src: "selectPrev" })
+      send({ type: "ARROW_PREV", src: "selectPrev" })
+    },
     focus() {
-      dom.getActiveTabEl(state.context)?.focus()
+      dom.getSelectedTriggerEl(state.context)?.focus()
     },
     getTriggerState,
 
@@ -123,7 +133,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-controls": triggerState.selected ? dom.getContentId(state.context, value) : undefined,
         "data-ownedby": dom.getListId(state.context),
         id: dom.getTriggerId(state.context, value),
-        tabIndex: triggerState.selected ? 0 : -1,
+        tabIndex: triggerState.selected && composite ? 0 : -1,
         onFocus() {
           send({ type: "TAB_FOCUS", value })
         },
@@ -151,7 +161,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.content.attrs,
         dir: state.context.dir,
         id: dom.getContentId(state.context, value),
-        tabIndex: 0,
+        tabIndex: composite ? 0 : -1,
         "aria-labelledby": dom.getTriggerId(state.context, value),
         role: "tabpanel",
         "data-ownedby": dom.getListId(state.context),
@@ -168,14 +178,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-orientation": state.context.orientation,
       style: {
         "--transition-property": "left, right, top, bottom, width, height",
-        "--left": state.context.indicatorRect?.left,
-        "--top": state.context.indicatorRect?.top,
-        "--width": state.context.indicatorRect?.width,
-        "--height": state.context.indicatorRect?.height,
+        "--left": indicator.rect?.left,
+        "--top": indicator.rect?.top,
+        "--width": indicator.rect?.width,
+        "--height": indicator.rect?.height,
         position: "absolute",
         willChange: "var(--transition-property)",
         transitionProperty: "var(--transition-property)",
-        transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration, 150ms)" : "0ms",
+        transitionDuration: indicator.transition ? "var(--transition-duration, 150ms)" : "0ms",
         transitionTimingFunction: "var(--transition-timing-function)",
         [isHorizontal ? "left" : "top"]: isHorizontal ? "var(--left)" : "var(--top)",
       },
