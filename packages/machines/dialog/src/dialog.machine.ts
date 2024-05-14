@@ -102,7 +102,6 @@ export function machine(userContext: UserDefinedContext) {
       },
       activities: {
         trackDismissableElement(ctx, _evt, { send }) {
-          const isAlertDialog = ctx.role === "alertdialog"
           const getContentEl = () => dom.getContentEl(ctx)
           return trackDismissableElement(getContentEl, {
             defer: true,
@@ -110,7 +109,7 @@ export function machine(userContext: UserDefinedContext) {
             exclude: [dom.getTriggerEl(ctx)],
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
-              if (!ctx.closeOnInteractOutside || isAlertDialog) {
+              if (!ctx.closeOnInteractOutside || ctx.role === "alertdialog") {
                 event.preventDefault()
               }
             },
