@@ -1,10 +1,17 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent } from "@zag-js/dom-event"
-import { getByTypeahead, isEditableElement, raf, scrollIntoView, observeAttributes, contains } from "@zag-js/dom-query"
+import {
+  contains,
+  getByTypeahead,
+  getFirstTabbable,
+  isEditableElement,
+  observeAttributes,
+  raf,
+  scrollIntoView,
+} from "@zag-js/dom-query"
 import { getPlacement, getPlacementSide } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
-import { getFirstTabbable } from "@zag-js/tabbable"
 import { cast, compact, isEqual } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./menu.types"

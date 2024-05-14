@@ -17,9 +17,9 @@ import {
   isEditableElement,
   isOpeningInNewTab,
   isSelfTarget,
+  isValidTabEvent,
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import { isValidTabEvent } from "@zag-js/tabbable"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./menu.anatomy"
 import { dom } from "./menu.dom"

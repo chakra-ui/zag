@@ -5,10 +5,10 @@ import {
   getByTypeahead,
   isEditableElement,
   isSelfTarget,
+  isValidTabEvent,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import { isValidTabEvent } from "@zag-js/tabbable"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./select.anatomy"
 import { dom } from "./select.dom"

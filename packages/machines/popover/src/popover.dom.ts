@@ -1,5 +1,4 @@
-import { createScope } from "@zag-js/dom-query"
-import { getFocusables } from "@zag-js/tabbable"
+import { createScope, getFocusables } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./popover.types"
 
 export const dom = createScope({

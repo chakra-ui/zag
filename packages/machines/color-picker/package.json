@@ -38,7 +38,6 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/tabbable": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
     "@zag-js/utils": "workspace:*",
