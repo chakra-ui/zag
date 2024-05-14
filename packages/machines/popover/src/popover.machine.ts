@@ -182,17 +182,16 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.modal) return
           let trap: FocusTrap | undefined
           nextTick(() => {
-            const el = dom.getContentEl(ctx)
-            if (!el) return
-            const initialFocusEl = getInitialFocus(dom.getContentEl(ctx), ctx.initialFocusEl)
-            trap = createFocusTrap(el, {
+            const contentEl = dom.getContentEl(ctx)
+            if (!contentEl) return
+            trap = createFocusTrap(contentEl, {
               escapeDeactivates: false,
               allowOutsideClick: true,
               preventScroll: true,
               returnFocusOnDeactivate: true,
               document: dom.getDoc(ctx),
-              fallbackFocus: el,
-              initialFocus: initialFocusEl,
+              fallbackFocus: contentEl,
+              initialFocus: getInitialFocus(dom.getContentEl(ctx), ctx.initialFocusEl),
             })
 
             try {
