@@ -2,11 +2,11 @@ import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 
 export default function Dialog() {
-  const [state, send] = useMachine(dialog.machine({ id: "1", preventScroll: false }))
+  const [state, send] = useMachine(dialog.machine({ id: "1" }))
   const api = dialog.connect(state, send, normalizeProps)
 
   return (
-    <div>
+    <main>
       <button {...api.triggerProps}> Click me</button>
       {api.open && (
         <Portal>
@@ -24,6 +24,6 @@ export default function Dialog() {
           </div>
         </Portal>
       )}
-    </div>
+    </main>
   )
 }

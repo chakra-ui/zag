@@ -6,7 +6,7 @@ import {
   isLeftClick,
   type EventKeyMap,
 } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, isDownloadingEvent, isOpeningInNewTab, raf } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, isDownloadingEvent, isOpeningInNewTab } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
@@ -28,7 +28,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
   const open = state.hasTag("open")
   const focused = state.hasTag("focused")
-  const isDialogPopup = state.context.popup === "dialog"
+  const composite = state.context.composite
+  const highlightedValue = state.context.highlightedValue
 
   const popperStyles = getPlacementStyles({
     ...state.context.positioning,
@@ -42,7 +43,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     return {
       value,
       disabled: Boolean(disabled || disabled),
-      highlighted: state.context.highlightedValue === value,
+      highlighted: highlightedValue === value,
       selected: state.context.value.includes(value),
     }
   }
@@ -51,8 +52,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     focused,
     open,
     inputValue: state.context.inputValue,
-    inputEmpty: state.context.isInputValueEmpty,
-    highlightedValue: state.context.highlightedValue,
+    highlightedValue,
     highlightedItem: state.context.highlightedItem,
     value: state.context.value,
     valueAsString: state.context.valueAsString,
@@ -65,7 +65,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     setCollection(collection) {
       send({ type: "COLLECTION.SET", value: collection })
     },
-    highlightValue(value) {
+    setHighlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
     selectValue(value) {
@@ -87,9 +87,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     focus() {
       dom.getInputEl(state.context)?.focus()
     },
-    setOpen(_open) {
-      if (_open === open) return
-      send(_open ? "OPEN" : "CLOSE")
+    setOpen(nextOpen) {
+      if (nextOpen === open) return
+      send(nextOpen ? "OPEN" : "CLOSE")
     },
     rootProps: normalize.element({
       ...parts.root.attrs,
@@ -109,7 +109,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       "data-invalid": dataAttr(invalid),
       "data-focus": dataAttr(focused),
       onClick(event) {
-        if (!isDialogPopup) return
+        if (composite) return
         event.preventDefault()
         dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
       },
@@ -152,13 +152,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       role: "combobox",
       defaultValue: state.context.inputValue,
       "aria-autocomplete": state.context.autoComplete ? "both" : "list",
-      "aria-controls": isDialogPopup ? dom.getListId(state.context) : dom.getContentId(state.context),
+      "aria-controls": dom.getContentId(state.context),
       "aria-expanded": open,
       "data-state": open ? "open" : "closed",
-      "aria-activedescendant": state.context.highlightedValue
-        ? dom.getItemId(state.context, state.context.highlightedValue)
-        : undefined,
-      onClick() {
+      "aria-activedescendant": highlightedValue ? dom.getItemId(state.context, highlightedValue) : undefined,
+      onClick(event) {
+        if (event.defaultPrevented) return
         if (!state.context.openOnClick) return
         if (!interactive) return
         send("INPUT.CLICK")
@@ -231,86 +230,85 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       },
     }),
 
-    triggerProps: normalize.button({
-      ...parts.trigger.attrs,
-      dir: state.context.dir,
-      id: dom.getTriggerId(state.context),
-      "aria-haspopup": isDialogPopup ? "dialog" : "listbox",
-      type: "button",
-      tabIndex: isDialogPopup ? 0 : -1,
-      "aria-label": translations.triggerLabel,
-      "aria-expanded": open,
-      "data-state": open ? "open" : "closed",
-      "aria-controls": open ? dom.getContentId(state.context) : undefined,
-      disabled: disabled,
-      "data-readonly": dataAttr(readOnly),
-      "data-disabled": dataAttr(disabled),
-      onClick(event) {
-        const evt = getNativeEvent(event)
-        if (!interactive) return
-        if (!isLeftClick(evt)) return
-        send("TRIGGER.CLICK")
-      },
-      onPointerDown(event) {
-        if (!interactive) return
-        if (event.pointerType === "touch") return
-        event.preventDefault()
-        queueMicrotask(() => {
-          dom.getInputEl(state.context)?.focus({ preventScroll: true })
-        })
-      },
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        if (!isDialogPopup) return
-
-        const keyMap: EventKeyMap = {
-          ArrowDown() {
-            send("INPUT.FOCUS")
-            send("INPUT.ARROW_DOWN")
-            raf(() => {
-              dom.getInputEl(state.context)?.focus({ preventScroll: true })
-            })
-          },
-          ArrowUp() {
-            send("INPUT.FOCUS")
-            send("INPUT.ARROW_UP")
-            raf(() => {
-              dom.getInputEl(state.context)?.focus({ preventScroll: true })
-            })
-          },
-        }
-
-        const key = getEventKey(event, state.context)
-        const exec = keyMap[key]
-
-        if (exec) {
-          exec(event)
+    getTriggerProps(props = {}) {
+      return normalize.button({
+        ...parts.trigger.attrs,
+        dir: state.context.dir,
+        id: dom.getTriggerId(state.context),
+        "aria-haspopup": composite ? "listbox" : "dialog",
+        type: "button",
+        tabIndex: props.focusable ? undefined : -1,
+        "aria-label": translations.triggerLabel,
+        "aria-expanded": open,
+        "data-state": open ? "open" : "closed",
+        "aria-controls": open ? dom.getContentId(state.context) : undefined,
+        disabled,
+        "data-focusable": dataAttr(props.focusable),
+        "data-readonly": dataAttr(readOnly),
+        "data-disabled": dataAttr(disabled),
+        onFocus() {
+          if (!props.focusable) return
+          send({ type: "INPUT.FOCUS", src: "trigger" })
+        },
+        onClick(event) {
+          if (event.defaultPrevented) return
+          const evt = getNativeEvent(event)
+          if (!interactive) return
+          if (!isLeftClick(evt)) return
+          send("TRIGGER.CLICK")
+        },
+        onPointerDown(event) {
+          if (!interactive) return
+          if (event.pointerType === "touch") return
           event.preventDefault()
-        }
-      },
-    }),
+          queueMicrotask(() => {
+            dom.getInputEl(state.context)?.focus({ preventScroll: true })
+          })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (composite) return
+
+          const keyMap: EventKeyMap = {
+            ArrowDown() {
+              send({ type: "INPUT.ARROW_DOWN", src: "trigger" })
+            },
+            ArrowUp() {
+              send({ type: "INPUT.ARROW_UP", src: "trigger" })
+            },
+          }
+
+          const key = getEventKey(event, state.context)
+          const exec = keyMap[key]
+
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+          }
+        },
+      })
+    },
 
     contentProps: normalize.element({
       ...parts.content.attrs,
       dir: state.context.dir,
       id: dom.getContentId(state.context),
-      role: isDialogPopup ? "dialog" : "listbox",
+      role: !composite ? "dialog" : "listbox",
       tabIndex: -1,
       hidden: !open,
       "data-state": open ? "open" : "closed",
       "aria-labelledby": dom.getLabelId(state.context),
-      "aria-multiselectable": state.context.multiple && !isDialogPopup ? true : undefined,
+      "aria-multiselectable": state.context.multiple && composite ? true : undefined,
       onPointerDown(event) {
         // prevent options or elements within listbox from taking focus
         event.preventDefault()
       },
     }),
 
-    // only used when triggerOnly: true
     listProps: normalize.element({
-      id: dom.getListId(state.context),
-      role: isDialogPopup ? "listbox" : undefined,
-      "aria-multiselectable": isDialogPopup && state.context.multiple ? true : undefined,
+      role: !composite ? "listbox" : undefined,
+      "aria-labelledby": dom.getLabelId(state.context),
+      "aria-multiselectable": state.context.multiple && !composite ? true : undefined,
     }),
 
     clearTriggerProps: normalize.button({
@@ -323,7 +321,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       "aria-label": translations.clearTriggerLabel,
       "aria-controls": dom.getInputId(state.context),
       hidden: !state.context.value.length,
-      onClick() {
+      onPointerDown(event) {
+        event.preventDefault()
+      },
+      onClick(event) {
+        if (event.defaultPrevented) return
         if (!interactive) return
         send({ type: "VALUE.CLEAR", src: "clear-trigger" })
       },
@@ -349,12 +351,13 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-value": itemState.value,
         onPointerMove() {
           if (itemState.disabled) return
+          if (itemState.highlighted) return
           send({ type: "ITEM.POINTER_MOVE", value })
         },
         onPointerLeave() {
           if (props.persistFocus) return
           if (itemState.disabled) return
-          const mouseMoved = state.previousEvent.type === "ITEM.POINTER_MOVE"
+          const mouseMoved = state.previousEvent.type.includes("POINTER")
           if (!mouseMoved) return
           send({ type: "ITEM.POINTER_LEAVE", value })
         },

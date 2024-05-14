@@ -63,6 +63,7 @@ export const editableControls = defineControls({
 
 export const menuControls = defineControls({
   closeOnSelect: { type: "boolean", defaultValue: true },
+  loopFocus: { type: "boolean", defaultValue: false },
 })
 
 export const hoverCardControls = defineControls({
@@ -171,7 +172,7 @@ export const toastControls = defineControls({
 export const selectControls = defineControls({
   multiple: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
-  loopFocus: { type: "boolean", defaultValue: false },
+  loopFocus: { type: "boolean", defaultValue: true },
   readOnly: { type: "boolean", defaultValue: false },
   closeOnSelect: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },

@@ -38,7 +38,7 @@ function Combobox(props: Omit<combobox.Context, "id"> & { matches: Record<string
     combobox.machine({
       id: useId(),
       open: true,
-      dismissable: false,
+      disableLayer: true,
       placeholder: "Type a command or search term...",
       inputBehavior: "autohighlight",
       selectionBehavior: "clear",
@@ -74,6 +74,7 @@ function Combobox(props: Omit<combobox.Context, "id"> & { matches: Record<string
 
 export default function Page() {
   const [inputValue, setInputValue] = useState("")
+  const [selectedAction, setSelectedAction] = useState<string | null>(null)
 
   const matches = useMemo(() => filter(inputValue), [inputValue])
   const flatMatches = Object.values(matches).flat()
@@ -129,6 +130,12 @@ export default function Page() {
         or press <kbd> Cmd+K</kbd>
       </div>
 
+      {selectedAction && (
+        <div>
+          <b>Selected Action:</b> {selectedAction}
+        </div>
+      )}
+
       {dialogApi.open && (
         <Portal>
           <div {...dialogApi.backdropProps} />
@@ -137,8 +144,8 @@ export default function Page() {
               <Combobox
                 matches={matches}
                 collection={collection}
-                onValueChange={({ value }) => {
-                  console.log("Selected value:", value)
+                onValueChange={({ items }) => {
+                  setSelectedAction(JSON.stringify(items[0].title))
                   queueMicrotask(() => dialogApi.setOpen(false))
                 }}
                 onInputValueChange={({ inputValue }) => {

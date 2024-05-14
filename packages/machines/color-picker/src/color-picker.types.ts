@@ -2,18 +2,9 @@ import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@za
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { PositioningOptions } from "@zag-js/popper"
-import type {
-  CommonProperties,
-  DirectionProperty,
-  MaybeElement,
-  Orientation,
-  PropTypes,
-  RequiredBy,
-} from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
-
-// patch the global window object to include the EyeDropper API
 
 interface EyeDropper {
   new (): EyeDropper
@@ -104,7 +95,7 @@ interface PublicContext extends CommonProperties, DirectionProperty, InteractOut
   /**
    * The initial focus element when the color picker is opened.
    */
-  initialFocusEl?: MaybeElement | (() => MaybeElement)
+  initialFocusEl?: () => HTMLElement | null
   /**
    * Whether the color picker is open
    */

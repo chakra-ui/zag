@@ -67,9 +67,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     open,
     valueAsString,
     value,
-    setOpen(_open) {
-      if (_open === open) return
-      send({ type: _open ? "OPEN" : "CLOSE" })
+    setOpen(nextOpen) {
+      if (nextOpen === open) return
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     setValue(value) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })

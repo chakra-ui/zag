@@ -24,14 +24,14 @@
 
 <main class="pin-input">
   <form
-    onSubmit={(e) => {
+    onsubmit={(e) => {
       e.preventDefault()
       const formData = serialize(e.currentTarget, { hash: true })
       console.log(formData)
     }}
   >
     <div {...api.rootProps}>
-      <!-- svelte-ignore a11y-label-has-associated-control -->
+      <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.labelProps}>Enter code:</label>
       <div {...api.controlProps}>
         <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />

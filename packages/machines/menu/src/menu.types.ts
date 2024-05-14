@@ -100,6 +100,11 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
    * @default true
    */
   typeahead: boolean
+  /**
+   * Whether the menu is a composed with other composite widgets like a combobox or tabs
+   * @default true
+   */
+  composite: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

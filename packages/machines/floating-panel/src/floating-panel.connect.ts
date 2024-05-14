@@ -13,9 +13,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     open: open,
-    setOpen(_open) {
-      if (_open === open) return
-      send(_open ? "OPEN" : "CLOSE")
+    setOpen(nextOpen) {
+      if (nextOpen === open) return
+      send(nextOpen ? "OPEN" : "CLOSE")
     },
     dragging: dragging,
     resizing: resizing,

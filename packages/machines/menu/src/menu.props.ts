@@ -23,6 +23,7 @@ export const props = createProps<UserDefinedContext>()([
   "open.controlled",
   "positioning",
   "typeahead",
+  "composite",
 ])
 
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)

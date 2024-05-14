@@ -1,8 +1,7 @@
 import { createMachine, guards } from "@zag-js/core"
 import { clickIfLink } from "@zag-js/dom-event"
-import { nextTick, raf } from "@zag-js/dom-query"
+import { nextTick, raf, getFocusables } from "@zag-js/dom-query"
 import { trackElementRect } from "@zag-js/element-rect"
-import { getFocusables } from "@zag-js/tabbable"
 import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./tabs.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tabs.types"
@@ -20,20 +19,19 @@ export function machine(userContext: UserDefinedContext) {
         orientation: "horizontal",
         activationMode: "automatic",
         value: null,
-        indicatorRect: { left: "0px", top: "0px", width: "0px", height: "0px" },
         loopFocus: true,
+        composite: true,
         ...ctx,
-        focusedValue: null,
-        canIndicatorTransition: false,
-        isIndicatorRendered: false,
+        focusedValue: ctx.value ?? null,
+        indicatorState: {
+          rendered: false,
+          transition: false,
+          rect: { left: "0px", top: "0px", width: "0px", height: "0px" },
+        },
       },
 
-      entry: ["checkRenderedElements", "syncIndicatorRect", "setContentTabIndex"],
-
-      exit: ["cleanupObserver"],
-
       watch: {
-        value: ["enableIndicatorTransition", "syncIndicatorRect", "setContentTabIndex", "clickIfLink"],
+        value: ["allowIndicatorTransition", "syncIndicatorRect", "syncTabIndex", "clickIfLink"],
         dir: ["syncIndicatorRect"],
         orientation: ["syncIndicatorRect"],
       },
@@ -48,7 +46,14 @@ export function machine(userContext: UserDefinedContext) {
         SET_INDICATOR_RECT: {
           actions: "setIndicatorRect",
         },
+        SYNC_TAB_INDEX: {
+          actions: "syncTabIndex",
+        },
       },
+
+      created: ["syncFocusedValue"],
+      entry: ["checkRenderedElements", "syncIndicatorRect", "syncTabIndex"],
+      exit: ["cleanupObserver"],
 
       states: {
         idle: {
@@ -126,12 +131,18 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       actions: {
+        syncFocusedValue(ctx) {
+          if (ctx.value != null && ctx.focusedValue == null) {
+            ctx.focusedValue = ctx.value
+          }
+        },
         selectFocusedTab(ctx) {
           raf(() => {
             set.value(ctx, ctx.focusedValue)
           })
         },
         setFocusedValue(ctx, evt) {
+          if (evt.value == null) return
           set.focusedValue(ctx, evt.value)
         },
         clearFocusedValue(ctx) {
@@ -144,78 +155,93 @@ export function machine(userContext: UserDefinedContext) {
           set.value(ctx, null)
         },
         focusFirstTab(ctx) {
-          raf(() => dom.getFirstEl(ctx)?.focus())
+          raf(() => {
+            dom.getFirstTriggerEl(ctx)?.focus()
+          })
         },
         focusLastTab(ctx) {
-          raf(() => dom.getLastEl(ctx)?.focus())
+          raf(() => {
+            dom.getLastTriggerEl(ctx)?.focus()
+          })
         },
         focusNextTab(ctx) {
           if (!ctx.focusedValue) return
-          const next = dom.getNextEl(ctx, ctx.focusedValue)
-          raf(() => next?.focus())
+          const triggerEl = dom.getNextTriggerEl(ctx, ctx.focusedValue)
+          raf(() => {
+            if (ctx.composite) {
+              triggerEl?.focus()
+            } else if (triggerEl?.dataset.value != null) {
+              set.focusedValue(ctx, triggerEl.dataset.value)
+            }
+          })
         },
         focusPrevTab(ctx) {
           if (!ctx.focusedValue) return
-          const prev = dom.getPrevEl(ctx, ctx.focusedValue)
-          raf(() => prev?.focus())
+          const triggerEl = dom.getPrevTriggerEl(ctx, ctx.focusedValue)
+          raf(() => {
+            if (ctx.composite) {
+              triggerEl?.focus()
+            } else if (triggerEl?.dataset.value != null) {
+              set.focusedValue(ctx, triggerEl.dataset.value)
+            }
+          })
         },
         checkRenderedElements(ctx) {
-          ctx.isIndicatorRendered = !!dom.getIndicatorEl(ctx)
+          ctx.indicatorState.rendered = !!dom.getIndicatorEl(ctx)
         },
-        // if tab panel contains focusable elements, remove the tabindex attribute
-        setContentTabIndex(ctx) {
+        syncTabIndex(ctx) {
           raf(() => {
-            const panel = dom.getActiveContentEl(ctx)
-            if (!panel) return
-            const focusables = getFocusables(panel)
+            const contentEl = dom.getSelectedContentEl(ctx)
+            if (!contentEl) return
+            const focusables = getFocusables(contentEl)
             if (focusables.length > 0) {
-              panel.removeAttribute("tabindex")
+              contentEl.removeAttribute("tabindex")
             } else {
-              panel.setAttribute("tabindex", "0")
+              contentEl.setAttribute("tabindex", "0")
             }
           })
         },
         cleanupObserver(ctx) {
           ctx.indicatorCleanup?.()
         },
-        enableIndicatorTransition(ctx) {
-          ctx.canIndicatorTransition = true
+        allowIndicatorTransition(ctx) {
+          ctx.indicatorState.transition = true
         },
         setIndicatorRect(ctx, evt) {
           const value = evt.id ?? ctx.value
-          if (!ctx.isIndicatorRendered || !value) return
+          if (!ctx.indicatorState.rendered || !value) return
 
-          const tabEl = dom.getTriggerEl(ctx, value)
-          if (!tabEl) return
+          const triggerEl = dom.getTriggerEl(ctx, value)
+          if (!triggerEl) return
 
-          ctx.indicatorRect = dom.getRectById(ctx, value)
+          ctx.indicatorState.rect = dom.getRectById(ctx, value)
           nextTick(() => {
-            ctx.canIndicatorTransition = false
+            ctx.indicatorState.transition = false
           })
         },
         syncIndicatorRect(ctx) {
           ctx.indicatorCleanup?.()
 
           const value = ctx.value
-          if (!ctx.isIndicatorRendered || !value) return
+          if (!ctx.indicatorState.rendered || !value) return
 
-          const tabEl = dom.getActiveTabEl(ctx)
-          if (!tabEl) return
+          const triggerEl = dom.getSelectedTriggerEl(ctx)
+          if (!triggerEl) return
 
-          ctx.indicatorCleanup = trackElementRect(tabEl, {
+          ctx.indicatorCleanup = trackElementRect(triggerEl, {
             getRect(el) {
               return dom.getOffsetRect(el)
             },
             onChange(rect) {
-              ctx.indicatorRect = dom.resolveRect(rect)
+              ctx.indicatorState.rect = dom.resolveRect(rect)
               nextTick(() => {
-                ctx.canIndicatorTransition = false
+                ctx.indicatorState.transition = false
               })
             },
           })
         },
         clickIfLink(ctx) {
-          clickIfLink(dom.getActiveTabEl(ctx))
+          clickIfLink(dom.getSelectedTriggerEl(ctx))
         },
       },
     },

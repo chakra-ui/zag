@@ -18,8 +18,6 @@ const fetchMachine = createMachine({
     "selectOnFocus": false,
     "!selectOnFocus": false
   },
-  entry: ["checkRenderedElements", "syncIndicatorRect", "setContentTabIndex"],
-  exit: ["cleanupObserver"],
   on: {
     SET_VALUE: {
       actions: "setValue"
@@ -29,8 +27,13 @@ const fetchMachine = createMachine({
     },
     SET_INDICATOR_RECT: {
       actions: "setIndicatorRect"
+    },
+    SYNC_TAB_INDEX: {
+      actions: "syncTabIndex"
     }
   },
+  entry: ["checkRenderedElements", "syncIndicatorRect", "syncTabIndex"],
+  exit: ["cleanupObserver"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"

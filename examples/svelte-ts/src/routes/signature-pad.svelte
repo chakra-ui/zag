@@ -34,7 +34,7 @@
 
 <main class="signature-pad">
   <div {...api.rootProps}>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
+    <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.labelProps}>Signature Pad</label>
 
     <div {...api.controlProps}>
@@ -47,7 +47,7 @@
         {/if}
       </svg>
 
-      <div {...api.guideProps} />
+      <div {...api.guideProps}></div>
     </div>
 
     <button {...api.clearTriggerProps}>
@@ -56,7 +56,7 @@
   </div>
 
   <button
-    onClick={() => {
+    onclick={() => {
       api.getDataUrl("image/png").then(setUrl)
     }}
   >

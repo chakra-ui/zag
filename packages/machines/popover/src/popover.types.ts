@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -58,7 +58,7 @@ interface PublicContext extends DismissableElementHandlers, CommonProperties, Di
   /**
    * The element to focus on when the popover is opened.
    */
-  initialFocusEl?: MaybeElement | (() => MaybeElement)
+  initialFocusEl?: () => HTMLElement | null
   /**
    * Whether to close the popover when the user clicks outside of the popover.
    * @default true

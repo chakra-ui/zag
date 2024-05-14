@@ -2,7 +2,7 @@ import { parseColor, type Color } from "@zag-js/color-utils"
 import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { trackPointerMove } from "@zag-js/dom-event"
-import { raf } from "@zag-js/dom-query"
+import { getInitialFocus, raf } from "@zag-js/dom-query"
 import { dispatchInputValueEvent, trackFormControl } from "@zag-js/form-utils"
 import { getPlacement } from "@zag-js/popper"
 import { disableTextSelection } from "@zag-js/text-selection"
@@ -548,7 +548,8 @@ export function machine(userContext: UserDefinedContext) {
         },
         setInitialFocus(ctx) {
           raf(() => {
-            dom.getInitialFocusEl(ctx)?.focus({ preventScroll: true })
+            const element = getInitialFocus(dom.getContentEl(ctx), ctx.initialFocusEl)
+            element?.focus({ preventScroll: true })
           })
         },
         setReturnFocus(ctx) {

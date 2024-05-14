@@ -4,6 +4,7 @@ import type { ContentProps, TriggerProps, UserDefinedContext } from "./tabs.type
 
 export const props = createProps<UserDefinedContext>()([
   "activationMode",
+  "composite",
   "dir",
   "getRootNode",
   "id",

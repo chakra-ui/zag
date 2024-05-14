@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -47,11 +47,11 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * Element to receive focus when the dialog is opened
    */
-  initialFocusEl?: MaybeElement | (() => MaybeElement)
+  initialFocusEl?: () => HTMLElement | null
   /**
    * Element to receive focus when the dialog is closed
    */
-  finalFocusEl?: MaybeElement | (() => MaybeElement)
+  finalFocusEl?: () => HTMLElement | null
   /**
    * Whether to restore focus to the element that had focus before the dialog was opened
    */

@@ -20,15 +20,15 @@ export const dom = createScope({
     return queryAll(dom.getListEl(ctx), selector)
   },
 
-  getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
-  getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
-  getNextEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), dom.getTriggerId(ctx, id), ctx.loopFocus),
-  getPrevEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), dom.getTriggerId(ctx, id), ctx.loopFocus),
-  getActiveContentEl: (ctx: Ctx) => {
+  getFirstTriggerEl: (ctx: Ctx) => first(dom.getElements(ctx)),
+  getLastTriggerEl: (ctx: Ctx) => last(dom.getElements(ctx)),
+  getNextTriggerEl: (ctx: Ctx, id: string) => nextById(dom.getElements(ctx), dom.getTriggerId(ctx, id), ctx.loopFocus),
+  getPrevTriggerEl: (ctx: Ctx, id: string) => prevById(dom.getElements(ctx), dom.getTriggerId(ctx, id), ctx.loopFocus),
+  getSelectedContentEl: (ctx: Ctx) => {
     if (!ctx.value) return
     return dom.getContentEl(ctx, ctx.value)
   },
-  getActiveTabEl: (ctx: Ctx) => {
+  getSelectedTriggerEl: (ctx: Ctx) => {
     if (!ctx.value) return
     return dom.getTriggerEl(ctx, ctx.value)
   },

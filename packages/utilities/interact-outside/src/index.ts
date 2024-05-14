@@ -1,6 +1,5 @@
 import { addDomEvent, fireCustomEvent, isContextMenuEvent } from "@zag-js/dom-event"
-import { contains, getDocument, getEventTarget, getWindow, isHTMLElement, raf } from "@zag-js/dom-query"
-import { isFocusable } from "@zag-js/tabbable"
+import { contains, getDocument, getEventTarget, getWindow, isFocusable, isHTMLElement, raf } from "@zag-js/dom-query"
 import { callAll } from "@zag-js/utils"
 import { getWindowFrames } from "./get-window-frames"
 

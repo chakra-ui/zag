@@ -149,11 +149,6 @@ type ComputedContext = Readonly<{
   isInteractive: boolean
   /**
    * @computed
-   * The raw value of the space between each thumb
-   */
-  spacing: number
-  /**
-   * @computed
    * Whether the slider is vertical
    */
   isVertical: boolean

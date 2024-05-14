@@ -79,7 +79,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }),
 
     getItemProps(props: ItemProps) {
-      const rootState = getItemState(props)
+      const itemState = getItemState(props)
 
       return normalize.label({
         ...parts.item.attrs,
@@ -88,24 +88,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         htmlFor: dom.getItemHiddenInputId(state.context, props.value),
         ...getItemDataAttrs(props),
         onPointerMove() {
-          if (rootState.disabled) return
+          if (itemState.disabled) return
+          if (itemState.hovered) return
           send({ type: "SET_HOVERED", value: props.value, hovered: true })
         },
         onPointerLeave() {
-          if (rootState.disabled) return
+          if (itemState.disabled) return
           send({ type: "SET_HOVERED", value: null })
         },
         onPointerDown(event) {
-          if (rootState.disabled) return
+          if (itemState.disabled) return
           // On pointerdown, the input blurs and returns focus to the `body`,
           // we need to prevent this.
-          if (rootState.focused && event.pointerType === "mouse") {
+          if (itemState.focused && event.pointerType === "mouse") {
             event.preventDefault()
           }
           send({ type: "SET_ACTIVE", value: props.value, active: true })
         },
         onPointerUp() {
-          if (rootState.disabled) return
+          if (itemState.disabled) return
           send({ type: "SET_ACTIVE", value: null })
         },
       })

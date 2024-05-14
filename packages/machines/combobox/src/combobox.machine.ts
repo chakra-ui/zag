@@ -3,7 +3,7 @@ import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { observeAttributes, observeChildren, raf, scrollIntoView } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
-import { addOrRemove, compact, isBoolean, isEqual, match } from "@zag-js/utils"
+import { addOrRemove, compact, isArray, isBoolean, isEqual, match } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
 import { dom } from "./combobox.dom"
 import type { CollectionItem, MachineContext, MachineState, UserDefinedContext } from "./combobox.types"
@@ -28,8 +28,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         selectionBehavior: "replace",
         openOnKeyPress: true,
         openOnChange: true,
-        dismissable: true,
-        popup: "listbox",
+        composite: true,
         ...ctx,
         highlightedItem: null,
         selectedItems: [],
@@ -61,7 +60,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
       watch: {
         value: ["syncSelectedItems"],
         inputValue: ["syncInputValue"],
-        highlightedValue: ["autofillInputValue"],
+        highlightedValue: ["syncHighlightedItem", "autofillInputValue"],
         multiple: ["syncSelectionBehavior"],
         open: ["toggleVisibility"],
       },
@@ -101,17 +100,17 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             "TRIGGER.CLICK": [
               {
                 guard: "isOpenControlled",
-                actions: ["focusInput", "highlightFirstSelectedItem", "invokeOnOpen"],
+                actions: ["setInitialFocus", "highlightFirstSelectedItem", "invokeOnOpen"],
               },
               {
                 target: "interacting",
-                actions: ["focusInput", "highlightFirstSelectedItem", "invokeOnOpen"],
+                actions: ["setInitialFocus", "highlightFirstSelectedItem", "invokeOnOpen"],
               },
             ],
             "INPUT.CLICK": [
               {
                 guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
+                actions: ["highlightFirstSelectedItem", "invokeOnOpen"],
               },
               {
                 target: "interacting",
@@ -140,7 +139,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
         focused: {
           tags: ["focused", "closed"],
-          entry: ["focusInputOrTrigger", "scrollContentToTop", "clearHighlightedItem"],
+          entry: ["scrollContentToTop", "clearHighlightedItem"],
           on: {
             "CONTROLLED.OPEN": [
               {
@@ -154,12 +153,12 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             "INPUT.CHANGE": [
               {
                 guard: and("isOpenControlled", "openOnChange"),
-                actions: ["setInputValue", "invokeOnOpen"],
+                actions: ["setInputValue", "invokeOnOpen", "highlightFirstItemIfNeeded"],
               },
               {
                 guard: "openOnChange",
                 target: "suggesting",
-                actions: ["setInputValue", "invokeOnOpen"],
+                actions: ["setInputValue", "invokeOnOpen", "highlightFirstItemIfNeeded"],
               },
               {
                 actions: "setInputValue",
@@ -188,11 +187,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             "TRIGGER.CLICK": [
               {
                 guard: "isOpenControlled",
-                actions: ["focusInput", "highlightFirstSelectedItem", "invokeOnOpen"],
+                actions: ["setInitialFocus", "highlightFirstSelectedItem", "invokeOnOpen"],
               },
               {
                 target: "interacting",
-                actions: ["focusInput", "highlightFirstSelectedItem", "invokeOnOpen"],
+                actions: ["setInitialFocus", "highlightFirstSelectedItem", "invokeOnOpen"],
               },
             ],
             "INPUT.ARROW_DOWN": [
@@ -256,18 +255,14 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
         interacting: {
           tags: ["open", "focused"],
-          activities: [
-            "scrollIntoView",
-            "trackDismissableLayer",
-            "computePlacement",
-            "hideOtherElements",
-            "trackContentHeight",
-          ],
+          entry: ["setInitialFocus"],
+          activities: ["scrollToHighlightedItem", "trackDismissableLayer", "computePlacement", "hideOtherElements"],
           on: {
             "CONTROLLED.CLOSE": [
               {
                 guard: "restoreFocus",
                 target: "focused",
+                actions: ["setFinalFocus"],
               },
               {
                 target: "idle",
@@ -305,7 +300,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               {
                 guard: "closeOnSelect",
                 target: "focused",
-                actions: ["selectHighlightedItem", "invokeOnClose"],
+                actions: ["selectHighlightedItem", "invokeOnClose", "setFinalFocus"],
               },
               {
                 actions: ["selectHighlightedItem"],
@@ -336,7 +331,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               {
                 guard: "closeOnSelect",
                 target: "focused",
-                actions: ["selectItem", "invokeOnClose"],
+                actions: ["selectItem", "invokeOnClose", "setFinalFocus"],
               },
               {
                 actions: ["selectItem"],
@@ -358,7 +353,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 target: "focused",
-                actions: ["invokeOnClose"],
+                actions: ["invokeOnClose", "setFinalFocus"],
               },
             ],
             "TRIGGER.CLICK": [
@@ -395,11 +390,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             CLOSE: [
               {
                 guard: "isOpenControlled",
-                actions: "invokeOnClose",
+                actions: ["invokeOnClose"],
               },
               {
                 target: "focused",
-                actions: "invokeOnClose",
+                actions: ["invokeOnClose", "setFinalFocus"],
               },
             ],
             "VALUE.CLEAR": [
@@ -409,7 +404,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 target: "focused",
-                actions: ["clearInputValue", "clearSelectedItems", "invokeOnClose"],
+                actions: ["clearInputValue", "clearSelectedItems", "invokeOnClose", "setFinalFocus"],
               },
             ],
           },
@@ -419,18 +414,18 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           tags: ["open", "focused"],
           activities: [
             "trackDismissableLayer",
-            "scrollIntoView",
+            "scrollToHighlightedItem",
             "computePlacement",
             "trackChildNodes",
             "hideOtherElements",
-            "trackContentHeight",
           ],
-          entry: ["focusInput"],
+          entry: ["setInitialFocus"],
           on: {
             "CONTROLLED.CLOSE": [
               {
                 guard: "restoreFocus",
                 target: "focused",
+                actions: ["setFinalFocus"],
               },
               {
                 target: "idle",
@@ -441,11 +436,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             },
             "INPUT.ARROW_DOWN": {
               target: "interacting",
-              actions: "highlightNextItem",
+              actions: ["highlightNextItem"],
             },
             "INPUT.ARROW_UP": {
               target: "interacting",
-              actions: "highlightPrevItem",
+              actions: ["highlightPrevItem"],
             },
             "INPUT.HOME": {
               target: "interacting",
@@ -463,7 +458,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               {
                 guard: "closeOnSelect",
                 target: "focused",
-                actions: ["selectHighlightedItem", "invokeOnClose"],
+                actions: ["selectHighlightedItem", "invokeOnClose", "setFinalFocus"],
               },
               {
                 actions: ["selectHighlightedItem"],
@@ -481,19 +476,19 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             "LAYER.ESCAPE": [
               {
                 guard: "isOpenControlled",
-                actions: "invokeOnClose",
+                actions: ["invokeOnClose"],
               },
               {
                 target: "focused",
-                actions: "invokeOnClose",
+                actions: ["invokeOnClose"],
               },
             ],
             "ITEM.POINTER_MOVE": {
               target: "interacting",
-              actions: "setHighlightedItem",
+              actions: ["setHighlightedItem"],
             },
             "ITEM.POINTER_LEAVE": {
-              actions: "clearHighlightedItem",
+              actions: ["clearHighlightedItem"],
             },
             "LAYER.INTERACT_OUTSIDE": [
               // == group 1 ==
@@ -509,21 +504,21 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               // == group 2 ==
               {
                 guard: "isOpenControlled",
-                actions: "invokeOnClose",
+                actions: ["invokeOnClose"],
               },
               {
                 target: "idle",
-                actions: "invokeOnClose",
+                actions: ["invokeOnClose"],
               },
             ],
             "TRIGGER.CLICK": [
               {
                 guard: "isOpenControlled",
-                actions: "invokeOnClose",
+                actions: ["invokeOnClose"],
               },
               {
                 target: "focused",
-                actions: "invokeOnClose",
+                actions: ["invokeOnClose"],
               },
             ],
             "ITEM.CLICK": [
@@ -534,7 +529,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               {
                 guard: "closeOnSelect",
                 target: "focused",
-                actions: ["selectItem", "invokeOnClose"],
+                actions: ["selectItem", "invokeOnClose", "setFinalFocus"],
               },
               {
                 actions: ["selectItem"],
@@ -543,11 +538,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             CLOSE: [
               {
                 guard: "isOpenControlled",
-                actions: "invokeOnClose",
+                actions: ["invokeOnClose"],
               },
               {
                 target: "focused",
-                actions: "invokeOnClose",
+                actions: ["invokeOnClose", "setFinalFocus"],
               },
             ],
             "VALUE.CLEAR": [
@@ -557,7 +552,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 target: "focused",
-                actions: ["clearInputValue", "clearSelectedItems", "invokeOnClose"],
+                actions: ["clearInputValue", "clearSelectedItems", "invokeOnClose", "setFinalFocus"],
               },
             ],
           },
@@ -587,7 +582,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
       activities: {
         trackDismissableLayer(ctx, _evt, { send }) {
-          if (!ctx.dismissable) return
+          if (ctx.disableLayer) return
           const contentEl = () => dom.getContentEl(ctx)
           return trackDismissableElement(contentEl, {
             defer: true,
@@ -624,23 +619,24 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         trackChildNodes(ctx, _evt, { send }) {
           if (!ctx.autoHighlight) return
           const exec = () => send("CHILDREN_CHANGE")
-          raf(() => exec())
           const contentEl = () => dom.getContentEl(ctx)
           return observeChildren(contentEl, {
             callback: exec,
             defer: true,
           })
         },
-        scrollIntoView(ctx, _evt, { getState }) {
+        scrollToHighlightedItem(ctx, _evt, { getState }) {
           const inputEl = dom.getInputEl(ctx)
+
+          let cleanups: VoidFunction[] = []
 
           const exec = (immediate: boolean) => {
             const state = getState()
 
-            const pointer = state.event.type.startsWith("ITEM.POINTER")
+            const pointer = state.event.type.includes("POINTER")
             if (pointer || !ctx.highlightedValue) return
 
-            const optionEl = dom.getHighlightedItemEl(ctx)
+            const itemEl = dom.getHighlightedItemEl(ctx)
             const contentEl = dom.getContentEl(ctx)
 
             if (ctx.scrollToIndexFn) {
@@ -649,39 +645,24 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               return
             }
 
-            scrollIntoView(optionEl, { rootEl: contentEl, block: "nearest" })
+            const rafCleanup = raf(() => {
+              scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+            })
+            cleanups.push(rafCleanup)
           }
 
-          raf(() => exec(true))
-          return observeAttributes(inputEl, {
+          const rafCleanup = raf(() => exec(true))
+          cleanups.push(rafCleanup)
+
+          const observerCleanup = observeAttributes(inputEl, {
             attributes: ["aria-activedescendant"],
             callback: () => exec(false),
           })
-        },
-        trackContentHeight(ctx) {
-          let cleanup: VoidFunction
+          cleanups.push(observerCleanup)
 
-          raf(() => {
-            const contentEl = dom.getContentEl(ctx)
-            const listboxEl = dom.getListEl(ctx)
-
-            if (!contentEl || !listboxEl) return
-            const win = dom.getWin(ctx)
-
-            let rafId: number
-            const observer = new win.ResizeObserver(() => {
-              rafId = requestAnimationFrame(() => {
-                contentEl.style.setProperty(`--height`, `${listboxEl.offsetHeight}px`)
-              })
-            })
-            observer.observe(contentEl)
-            cleanup = () => {
-              cancelAnimationFrame(rafId)
-              observer.unobserve(contentEl)
-            }
-          })
-
-          return () => cleanup?.()
+          return () => {
+            cleanups.forEach((cleanup) => cleanup())
+          }
         },
       },
 
@@ -700,45 +681,46 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           })
         },
         setHighlightedItem(ctx, evt) {
-          set.highlightedItem(ctx, evt.value)
+          if (evt.value == null) return
+          set.highlightedValue(ctx, evt.value)
         },
         clearHighlightedItem(ctx) {
-          set.highlightedItem(ctx, null, true)
+          set.highlightedValue(ctx, null, true)
         },
         selectHighlightedItem(ctx) {
-          set.selectedItem(ctx, ctx.highlightedValue)
+          set.value(ctx, ctx.highlightedValue)
         },
         selectItem(ctx, evt) {
-          set.selectedItem(ctx, evt.value)
+          if (evt.value == null) return
+          set.value(ctx, evt.value)
         },
         clearItem(ctx, evt) {
+          if (evt.value == null) return
           const value = ctx.value.filter((v) => v !== evt.value)
-          set.selectedItems(ctx, value)
+          set.value(ctx, value)
         },
-        focusInput(ctx) {
-          // use raf since the input might be rendered in the content
+        setInitialFocus(ctx) {
           raf(() => {
-            if (dom.isInputFocused(ctx)) return
-            dom.getInputEl(ctx)?.focus({ preventScroll: true })
+            dom.focusInputEl(ctx)
           })
         },
-        focusInputOrTrigger(ctx) {
-          queueMicrotask(() => {
-            if (ctx.popup === "dialog") {
-              dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
+        setFinalFocus(ctx) {
+          raf(() => {
+            const triggerEl = dom.getTriggerEl(ctx)
+            if (triggerEl?.dataset.focusable == null) {
+              dom.focusInputEl(ctx)
             } else {
-              dom.getInputEl(ctx)?.focus({ preventScroll: true })
+              dom.focusTriggerEl(ctx)
             }
           })
         },
-        syncInputValue(ctx, evt) {
+        syncInputValue(ctx) {
           const inputEl = dom.getInputEl(ctx)
           if (!inputEl) return
 
           inputEl.value = ctx.inputValue
 
-          raf(() => {
-            if (!evt.keypress) return
+          queueMicrotask(() => {
             const { selectionStart, selectionEnd } = inputEl
 
             if (Math.abs((selectionEnd ?? 0) - (selectionStart ?? 0)) !== 0) return
@@ -782,10 +764,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           }
         },
         setSelectedItems(ctx, evt) {
-          set.selectedItems(ctx, evt.value)
+          if (!isArray(evt.value)) return
+          set.value(ctx, evt.value)
         },
         clearSelectedItems(ctx) {
-          set.selectedItems(ctx, [])
+          set.value(ctx, [])
         },
         scrollContentToTop(ctx) {
           if (ctx.scrollToIndexFn) {
@@ -805,13 +788,20 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         highlightFirstItem(ctx) {
           raf(() => {
             const value = ctx.collection.first()
-            set.highlightedItem(ctx, value)
+            set.highlightedValue(ctx, value)
+          })
+        },
+        highlightFirstItemIfNeeded(ctx) {
+          if (!ctx.autoHighlight) return
+          raf(() => {
+            const value = ctx.collection.first()
+            set.highlightedValue(ctx, value)
           })
         },
         highlightLastItem(ctx) {
           raf(() => {
             const value = ctx.collection.last()
-            set.highlightedItem(ctx, value)
+            set.highlightedValue(ctx, value)
           })
         },
         highlightNextItem(ctx) {
@@ -822,7 +812,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           } else {
             value = ctx.collection.first()
           }
-          set.highlightedItem(ctx, value)
+          set.highlightedValue(ctx, value)
         },
         highlightPrevItem(ctx) {
           let value: string | null = null
@@ -832,12 +822,12 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           } else {
             value = ctx.collection.last()
           }
-          set.highlightedItem(ctx, value)
+          set.highlightedValue(ctx, value)
         },
         highlightFirstSelectedItem(ctx) {
           raf(() => {
             const [value] = ctx.collection.sort(ctx.value)
-            set.highlightedItem(ctx, value)
+            set.highlightedValue(ctx, value)
           })
         },
         highlightFirstOrSelectedItem(ctx) {
@@ -848,7 +838,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             } else {
               value = ctx.collection.first()
             }
-            set.highlightedItem(ctx, value)
+            set.highlightedValue(ctx, value)
           })
         },
         highlightLastOrSelectedItem(ctx) {
@@ -859,7 +849,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             } else {
               value = ctx.collection.last()
             }
-            set.highlightedItem(ctx, value)
+            set.highlightedValue(ctx, value)
           })
         },
         autofillInputValue(ctx, evt) {
@@ -874,12 +864,10 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           ctx.collection = evt.value
         },
         syncSelectedItems(ctx) {
-          const prevSelectedItems = ctx.selectedItems
-          ctx.selectedItems = ctx.value.map((v) => {
-            const foundItem = prevSelectedItems.find((item) => ctx.collection.itemToValue(item) === v)
-            if (foundItem) return foundItem
-            return ctx.collection.item(v)
-          })
+          sync.valueChange(ctx)
+        },
+        syncHighlightedItem(ctx) {
+          sync.highlightChange(ctx)
         },
         toggleVisibility(ctx, evt, { send }) {
           send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
@@ -889,31 +877,25 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
   )
 }
 
-const invoke = {
+const sync = {
   valueChange: (ctx: MachineContext) => {
-    ctx.onValueChange?.({
-      value: Array.from(ctx.value),
-      items: ctx.selectedItems,
-    })
-
-    const prevSelectedItems = ctx.selectedItems
-
     // side effect
+    const prevSelectedItems = ctx.selectedItems
     ctx.selectedItems = ctx.value.map((v) => {
       const foundItem = prevSelectedItems.find((item) => ctx.collection.itemToValue(item) === v)
       if (foundItem) return foundItem
       return ctx.collection.item(v)
     })
 
+    // set valueAsString
     const valueAsString = ctx.collection.itemsToString(ctx.selectedItems)
-
     ctx.valueAsString = valueAsString
 
-    let nextInputValue: string | undefined
-
+    // set inputValue
+    let inputValue: string | undefined
     if (ctx.getSelectionValue) {
       //
-      nextInputValue = ctx.getSelectionValue({
+      inputValue = ctx.getSelectionValue({
         inputValue: ctx.inputValue,
         selectedItems: Array.from(ctx.selectedItems),
         valueAsString,
@@ -921,25 +903,34 @@ const invoke = {
       //
     } else {
       //
-      nextInputValue = match(ctx.selectionBehavior, {
+      inputValue = match(ctx.selectionBehavior, {
         replace: ctx.valueAsString,
         preserve: ctx.inputValue,
         clear: "",
       })
     }
 
-    ctx.inputValue = nextInputValue
-
-    invoke.inputChange(ctx)
+    set.inputValue(ctx, inputValue)
   },
   highlightChange: (ctx: MachineContext) => {
+    ctx.highlightedItem = ctx.collection.item(ctx.highlightedValue)
+  },
+}
+
+const invoke = {
+  valueChange: (ctx: MachineContext) => {
+    sync.valueChange(ctx)
+    ctx.onValueChange?.({
+      value: Array.from(ctx.value),
+      items: Array.from(ctx.selectedItems),
+    })
+  },
+  highlightChange: (ctx: MachineContext) => {
+    sync.highlightChange(ctx)
     ctx.onHighlightChange?.({
       highlightedValue: ctx.highlightedValue,
-      highligtedItem: ctx.highlightedItem,
+      highlightedItem: ctx.highlightedItem,
     })
-
-    // side effect
-    ctx.highlightedItem = ctx.collection.item(ctx.highlightedValue)
   },
   inputChange: (ctx: MachineContext) => {
     ctx.onInputValueChange?.({ inputValue: ctx.inputValue })
@@ -947,25 +938,22 @@ const invoke = {
 }
 
 const set = {
-  selectedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
+  value: (ctx: MachineContext, value: string | string[] | null | undefined, force = false) => {
     if (isEqual(ctx.value, value)) return
-
     if (value == null && !force) return
-
     if (value == null && force) {
       ctx.value = []
       invoke.valueChange(ctx)
       return
     }
-    ctx.value = ctx.multiple ? addOrRemove(ctx.value, value!) : [value!]
+    if (isArray(value)) {
+      ctx.value = value
+    } else if (value != null) {
+      ctx.value = ctx.multiple ? addOrRemove(ctx.value, value) : [value]
+    }
     invoke.valueChange(ctx)
   },
-  selectedItems: (ctx: MachineContext, value: string[]) => {
-    if (isEqual(ctx.value, value)) return
-    ctx.value = value
-    invoke.valueChange(ctx)
-  },
-  highlightedItem: (ctx: MachineContext, value: string | null | undefined, force = false) => {
+  highlightedValue: (ctx: MachineContext, value: string | null | undefined, force = false) => {
     if (isEqual(ctx.highlightedValue, value)) return
     if (!value && !force) return
     ctx.highlightedValue = value || null

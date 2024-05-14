@@ -33,7 +33,7 @@
         </div>
         <div data-testid="popover-title" {...api.titleProps}>Popover Title</div>
         <div data-part="body" data-testid="popover-body">
-          <!-- svelte-ignore a11y-missing-attribute -->
+          <!-- svelte-ignore a11y_missing_attribute -->
           <a>Non-focusable Link</a>
           <a href="# " data-testid="focusable-link"> Focusable Link </a>
           <input data-testid="input" placeholder="input" />

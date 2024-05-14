@@ -5,6 +5,7 @@ import {
   getByTypeahead,
   isEditableElement,
   isSelfTarget,
+  isValidTabEvent,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
@@ -22,13 +23,17 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const invalid = state.context.invalid
   const readOnly = state.context.readOnly
   const interactive = state.context.isInteractive
+  const composite = state.context.composite
 
   const open = state.hasTag("open")
   const focused = state.matches("focused")
 
+  const highlightedValue = state.context.highlightedValue
   const highlightedItem = state.context.highlightedItem
   const selectedItems = state.context.selectedItems
   const isTypingAhead = state.context.isTypingAhead
+
+  const ariaActiveDescendant = highlightedValue ? dom.getItemId(state.context, highlightedValue) : undefined
 
   function getItemState(props: ItemProps): ItemState {
     const _disabled = state.context.collection.isItemDisabled(props.item)
@@ -36,7 +41,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     return {
       value,
       disabled: Boolean(disabled || _disabled),
-      highlighted: state.context.highlightedValue === value,
+      highlighted: highlightedValue === value,
       selected: state.context.value.includes(value),
     }
   }
@@ -51,7 +56,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     focused: focused,
     empty: state.context.value.length === 0,
     highlightedItem,
-    highlightedValue: state.context.highlightedValue,
+    highlightedValue,
     selectedItems,
     hasSelectedItems: state.context.hasSelectedItems,
     value: state.context.value,
@@ -66,9 +71,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     focus() {
       dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
     },
-    setOpen(_open) {
-      if (_open === open) return
-      send(_open ? "OPEN" : "CLOSE")
+    setOpen(nextOpen) {
+      if (nextOpen === open) return
+      send(nextOpen ? "OPEN" : "CLOSE")
     },
     selectValue(value) {
       send({ type: "ITEM.SELECT", value })
@@ -105,7 +110,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       "data-invalid": dataAttr(invalid),
       "data-readonly": dataAttr(readOnly),
       htmlFor: dom.getHiddenSelectId(state.context),
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         if (disabled) return
         dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
       },
@@ -242,8 +248,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           send({ type: "ITEM.CLICK", src: "pointerup", value: itemState.value })
         },
         onPointerLeave(event) {
-          const isKeyboardNavigationEvent = ["CONTENT.ARROW_UP", "CONTENT.ARROW_DOWN"].includes(state.event.type)
-          if (itemState.disabled || event.pointerType !== "mouse" || isKeyboardNavigationEvent) return
+          if (itemState.disabled) return
+          if (props.persistFocus) return
+          if (event.pointerType !== "mouse") return
+          const isArrowKey = ["CONTENT.ARROW_UP", "CONTENT.ARROW_DOWN"].includes(state.event.type)
+          if (isArrowKey) return
           send({ type: "ITEM.POINTER_LEAVE" })
         },
         onTouchEnd(event) {
@@ -302,7 +311,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       disabled: disabled,
       hidden: !state.context.hasSelectedItems,
       dir: state.context.dir,
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         send("VALUE.CLEAR")
       },
     }),
@@ -336,26 +346,29 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       hidden: !open,
       dir: state.context.dir,
       id: dom.getContentId(state.context),
-      role: "listbox",
+      role: composite ? "listbox" : "dialog",
       ...parts.content.attrs,
       "data-state": open ? "open" : "closed",
       "data-placement": state.context.currentPlacement,
-      "aria-activedescendant": state.context.highlightedValue
-        ? dom.getItemId(state.context, state.context.highlightedValue)
-        : undefined,
-      "aria-multiselectable": state.context.multiple ? "true" : undefined,
+      "data-activedescendant": ariaActiveDescendant,
+      "aria-activedescendant": composite ? ariaActiveDescendant : undefined,
+      "aria-multiselectable": state.context.multiple && composite ? true : undefined,
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: 0,
       onKeyDown(event) {
-        if (event.defaultPrevented) return
         const evt = getNativeEvent(event)
         if (!interactive) return
         if (!isSelfTarget(evt)) return
 
         // select should not be navigated using tab key so we prevent it
+        // but, we want to allow tabbing within the content when composing
+        // with widgets like tabs or trees
         if (event.key === "Tab") {
-          event.preventDefault()
-          return
+          const valid = isValidTabEvent(event)
+          if (!valid) {
+            event.preventDefault()
+            return
+          }
         }
 
         const keyMap: EventKeyMap = {
@@ -400,6 +413,14 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           event.preventDefault()
         }
       },
+    }),
+
+    listProps: normalize.element({
+      tabIndex: 0,
+      role: !composite ? "listbox" : undefined,
+      "aria-labelledby": dom.getTriggerId(state.context),
+      "aria-activedescendant": !composite ? ariaActiveDescendant : undefined,
+      "aria-multiselectable": !composite && state.context.multiple ? true : undefined,
     }),
   }
 }

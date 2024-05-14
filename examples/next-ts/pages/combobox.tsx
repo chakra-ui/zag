@@ -54,7 +54,7 @@ export default function Page() {
             <label {...api.labelProps}>Select country</label>
             <div {...api.controlProps}>
               <input data-testid="input" {...api.inputProps} />
-              <button data-testid="trigger" {...api.triggerProps}>
+              <button data-testid="trigger" {...api.getTriggerProps()}>
                 ▼
               </button>
               <button {...api.clearTriggerProps}>

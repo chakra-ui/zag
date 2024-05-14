@@ -16,7 +16,7 @@
 </script>
 
 <main class="switch">
-  <!-- svelte-ignore a11y-label-has-associated-control -->
+  <!-- svelte-ignore a11y_label_has_associated_control -->
   <label {...api.rootProps}>
     <input {...api.hiddenInputProps} data-testid="hidden-input" />
     <span {...api.controlProps}>

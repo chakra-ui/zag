@@ -37,7 +37,6 @@ const fetchMachine = createMachine({
     "isArrowLeftEvent": false,
     "!isTriggerItem && isOpenControlled": false,
     "!isTriggerItem": false,
-    "isForwardTabNavigation": false,
     "isSubmenu && isOpenControlled": false,
     "isSubmenu": false,
     "isTriggerItemHighlighted": false,
@@ -284,12 +283,6 @@ const fetchMachine = createMachine({
           target: "closed",
           actions: "invokeOnClose"
         }],
-        TAB: [{
-          cond: "isForwardTabNavigation",
-          actions: ["highlightNextItem"]
-        }, {
-          actions: ["highlightPrevItem"]
-        }],
         ARROW_UP: {
           actions: ["highlightPrevItem", "focusMenu"]
         },
@@ -400,7 +393,6 @@ const fetchMachine = createMachine({
     "isArrowLeftEvent": ctx => ctx["isArrowLeftEvent"],
     "!isTriggerItem && isOpenControlled": ctx => ctx["!isTriggerItem && isOpenControlled"],
     "!isTriggerItem": ctx => ctx["!isTriggerItem"],
-    "isForwardTabNavigation": ctx => ctx["isForwardTabNavigation"],
     "isSubmenu && isOpenControlled": ctx => ctx["isSubmenu && isOpenControlled"],
     "isTriggerItemHighlighted": ctx => ctx["isTriggerItemHighlighted"],
     "closeOnSelect && isOpenControlled": ctx => ctx["closeOnSelect && isOpenControlled"],

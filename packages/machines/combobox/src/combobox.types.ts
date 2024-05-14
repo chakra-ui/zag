@@ -15,7 +15,7 @@ export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
 
 export interface HighlightChangeDetails<T extends CollectionItem = CollectionItem> {
   highlightedValue: string | null
-  highligtedItem: T | null
+  highlightedItem: T | null
 }
 
 export interface InputValueChangeDetails {
@@ -206,18 +206,14 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    */
   scrollToIndexFn?: (details: ScrollToIndexDetails) => void
   /**
-   * The underling `aria-haspopup` attribute to use for the combobox
-   * - `listbox`: The combobox has a listbox popup (default)
-   * - `dialog`: The combobox has a dialog popup. Useful when in select only mode
-   *
-   * @default "listbox"
-   */
-  popup: "listbox" | "dialog"
-  /**
-   * Whether to register this combobox as a dismissable layer
+   * Whether the combobox is a composed with other composite widgets like tabs
    * @default true
    */
-  dismissable: boolean
+  composite: boolean
+  /**
+   * Whether to disable registering this a dismissable layer
+   */
+  disableLayer?: boolean
 }
 
 export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
@@ -288,6 +284,13 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface TriggerProps {
+  /**
+   * Whether the trigger is focusable
+   */
+  focusable?: boolean
+}
+
 export interface ItemProps {
   /**
    * Whether hovering outside should clear the highlighted state
@@ -336,10 +339,6 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   open: boolean
   /**
-   * Whether the combobox input value is empty
-   */
-  inputEmpty: boolean
-  /**
    * The value of the combobox input
    */
   inputValue: string
@@ -354,7 +353,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * The value of the combobox input
    */
-  highlightValue(value: string): void
+  setHighlightValue(value: string): void
   /**
    * The selected items
    */
@@ -418,7 +417,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   positionerProps: T["element"]
   inputProps: T["input"]
   contentProps: T["element"]
-  triggerProps: T["button"]
+  getTriggerProps(props?: TriggerProps): T["button"]
   clearTriggerProps: T["button"]
   listProps: T["element"]
   getItemProps(props: ItemProps): T["element"]

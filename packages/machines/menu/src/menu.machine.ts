@@ -1,10 +1,17 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent } from "@zag-js/dom-event"
-import { getByTypeahead, isEditableElement, raf, scrollIntoView, observeAttributes } from "@zag-js/dom-query"
+import {
+  contains,
+  getByTypeahead,
+  getFirstTabbable,
+  isEditableElement,
+  observeAttributes,
+  raf,
+  scrollIntoView,
+} from "@zag-js/dom-query"
 import { getPlacement, getPlacementSide } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
-import { getFirstTabbable } from "@zag-js/tabbable"
 import { cast, compact, isEqual } from "@zag-js/utils"
 import { dom } from "./menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
@@ -23,6 +30,7 @@ export function machine(userContext: UserDefinedContext) {
         anchorPoint: null,
         closeOnSelect: true,
         typeahead: true,
+        composite: true,
         ...ctx,
         positioning: {
           placement: "bottom-start",
@@ -343,15 +351,6 @@ export function machine(userContext: UserDefinedContext) {
                 actions: "invokeOnClose",
               },
             ],
-            TAB: [
-              {
-                guard: "isForwardTabNavigation",
-                actions: ["highlightNextItem"],
-              },
-              {
-                actions: ["highlightPrevItem"],
-              },
-            ],
             ARROW_UP: {
               actions: ["highlightPrevItem", "focusMenu"],
             },
@@ -471,7 +470,6 @@ export function machine(userContext: UserDefinedContext) {
           const target = (evt.target ?? dom.getHighlightedItemEl(ctx)) as HTMLElement | null
           return !!target?.hasAttribute("aria-controls")
         },
-        isForwardTabNavigation: (_ctx, evt) => !evt.shiftKey,
         isSubmenu: (ctx) => ctx.isSubmenu,
         suspendPointer: (ctx) => ctx.suspendPointer,
         isHighlightedItemEditable: (ctx) => isEditableElement(dom.getHighlightedItemEl(ctx)),
@@ -642,6 +640,7 @@ export function machine(userContext: UserDefinedContext) {
         focusMenu(ctx) {
           raf(() => {
             const contentEl = dom.getContentEl(ctx)
+            if (contains(contentEl, dom.getActiveElement(ctx))) return
             const firstFocusableEl = getFirstTabbable(contentEl, false) || contentEl
             firstFocusableEl?.focus({ preventScroll: true })
           })

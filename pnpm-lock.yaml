@@ -234,9 +234,6 @@ importers:
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
-      '@zag-js/focus-scope':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
@@ -321,9 +318,6 @@ importers:
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/tabbable
       '@zag-js/tabs':
         specifier: workspace:*
         version: link:../../packages/machines/tabs
@@ -493,9 +487,6 @@ importers:
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
-      '@zag-js/focus-scope':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
@@ -577,9 +568,6 @@ importers:
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/tabbable
       '@zag-js/tabs':
         specifier: workspace:*
         version: link:../../packages/machines/tabs
@@ -734,9 +722,6 @@ importers:
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
-      '@zag-js/focus-scope':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
@@ -821,9 +806,6 @@ importers:
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/tabbable
       '@zag-js/tabs':
         specifier: workspace:*
         version: link:../../packages/machines/tabs
@@ -978,9 +960,6 @@ importers:
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
-      '@zag-js/focus-scope':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
@@ -1065,9 +1044,6 @@ importers:
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/tabbable
       '@zag-js/tabs':
         specifier: workspace:*
         version: link:../../packages/machines/tabs
@@ -1210,9 +1186,6 @@ importers:
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
-      '@zag-js/focus-scope':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
@@ -1297,9 +1270,6 @@ importers:
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/tabbable
       '@zag-js/tabs':
         specifier: workspace:*
         version: link:../../packages/machines/tabs
@@ -1464,9 +1434,6 @@ importers:
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
-      '@zag-js/focus-scope':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
@@ -1551,9 +1518,6 @@ importers:
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/tabbable
       '@zag-js/tabs':
         specifier: workspace:*
         version: link:../../packages/machines/tabs
@@ -1689,9 +1653,6 @@ importers:
       '@zag-js/floating-panel':
         specifier: workspace:*
         version: link:../../packages/machines/floating-panel
-      '@zag-js/focus-scope':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
@@ -1773,9 +1734,6 @@ importers:
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/tabbable
       '@zag-js/tabs':
         specifier: workspace:*
         version: link:../../packages/machines/tabs
@@ -2216,9 +2174,6 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../utilities/tabbable
       '@zag-js/text-selection':
         specifier: workspace:*
         version: link:../../utilities/text-selection
@@ -2500,9 +2455,6 @@ importers:
       '@zag-js/rect-utils':
         specifier: workspace:*
         version: link:../../utilities/rect
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../utilities/tabbable
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2621,9 +2573,6 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../utilities/remove-scroll
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../utilities/tabbable
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2901,9 +2850,6 @@ importers:
       '@zag-js/element-rect':
         specifier: workspace:*
         version: link:../../utilities/element-rect
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../utilities/tabbable
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3223,25 +3169,6 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  packages/utilities/focus-scope:
-    dependencies:
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../dom-event
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../dom-query
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../tabbable
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../core
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
   packages/utilities/focus-visible:
     dependencies:
       '@zag-js/dom-query':
@@ -3279,9 +3206,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../dom-query
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../tabbable
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../core
@@ -3331,16 +3255,6 @@ importers:
         version: 2.2.0
 
   packages/utilities/remove-scroll:
-    dependencies:
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../dom-query
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/tabbable:
     dependencies:
       '@zag-js/dom-query':
         specifier: workspace:*
@@ -3451,9 +3365,6 @@ importers:
       '@zag-js/file-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/file-utils
-      '@zag-js/focus-scope':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-scope
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
@@ -3538,9 +3449,6 @@ importers:
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
-      '@zag-js/tabbable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/tabbable
       '@zag-js/tabs':
         specifier: workspace:*
         version: link:../../packages/machines/tabs

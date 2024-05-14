@@ -44,7 +44,7 @@
 <main class="rating">
   <form action="">
     <div {...api.rootProps}>
-      <!-- svelte-ignore a11y-label-has-associated-control -->
+      <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.labelProps}>Rate:</label>
       <div {...api.controlProps}>
         {#each api.items as index}

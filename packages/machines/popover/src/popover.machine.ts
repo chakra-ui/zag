@@ -1,11 +1,10 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { nextTick, raf } from "@zag-js/dom-query"
+import { getInitialFocus, nextTick, proxyTabFocus, raf } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import { proxyTabFocus } from "@zag-js/tabbable"
-import { compact, runIfFn } from "@zag-js/utils"
+import { compact } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
@@ -86,7 +85,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "CONTROLLED.CLOSE": {
               target: "closed",
-              actions: ["restoreFocus"],
+              actions: ["setFinalFocus"],
             },
             CLOSE: [
               {
@@ -95,7 +94,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "closed",
-                actions: ["invokeOnClose", "restoreFocus"],
+                actions: ["invokeOnClose", "setFinalFocus"],
               },
             ],
             TOGGLE: [
@@ -183,17 +182,18 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.modal) return
           let trap: FocusTrap | undefined
           nextTick(() => {
-            const el = dom.getContentEl(ctx)
-            if (!el) return
-            trap = createFocusTrap(el, {
+            const contentEl = dom.getContentEl(ctx)
+            if (!contentEl) return
+            trap = createFocusTrap(contentEl, {
               escapeDeactivates: false,
               allowOutsideClick: true,
               preventScroll: true,
               returnFocusOnDeactivate: true,
               document: dom.getDoc(ctx),
-              fallbackFocus: el,
-              initialFocus: runIfFn(ctx.initialFocusEl),
+              fallbackFocus: contentEl,
+              initialFocus: getInitialFocus(dom.getContentEl(ctx), ctx.initialFocusEl),
             })
+
             try {
               trap.activate()
             } catch {}
@@ -225,13 +225,15 @@ export function machine(userContext: UserDefinedContext) {
         },
         setInitialFocus(ctx) {
           raf(() => {
-            dom.getInitialFocusEl(ctx)?.focus({ preventScroll: true })
+            const element = getInitialFocus(dom.getContentEl(ctx), ctx.initialFocusEl)
+            element?.focus()
           })
         },
-        restoreFocus(ctx, evt) {
+        setFinalFocus(ctx, evt) {
           if (!evt.restoreFocus) return
           raf(() => {
-            dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
+            const element = dom.getTriggerEl(ctx)
+            element?.focus({ preventScroll: true })
           })
         },
         invokeOnOpen(ctx) {

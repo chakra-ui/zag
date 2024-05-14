@@ -51,7 +51,6 @@ export function machine(userContext: UserDefinedContext) {
         isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         isInteractive: (ctx) => !(ctx.readOnly || ctx.isDisabled),
-        spacing: (ctx) => ctx.minStepsBetweenThumbs * ctx.step,
         hasMeasuredThumbSize: (ctx) => ctx.thumbSize != null,
         valuePercent(ctx) {
           return ctx.value.map((value) => 100 * getValuePercent(value, ctx.min, ctx.max))
@@ -75,10 +74,10 @@ export function machine(userContext: UserDefinedContext) {
           { actions: "setValue" },
         ],
         INCREMENT: {
-          actions: "incrementAtIndex",
+          actions: "incrementThumbAtIndex",
         },
         DECREMENT: {
-          actions: "decrementAtIndex",
+          actions: "decrementThumbAtIndex",
         },
       },
 
@@ -110,33 +109,17 @@ export function machine(userContext: UserDefinedContext) {
               target: "dragging",
               actions: ["setFocusedIndex", "focusActiveThumb"],
             },
-            ARROW_LEFT: {
-              guard: "isHorizontal",
-              actions: "decrementAtIndex",
+            ARROW_DEC: {
+              actions: ["decrementThumbAtIndex", "invokeOnChangeEnd"],
             },
-            ARROW_RIGHT: {
-              guard: "isHorizontal",
-              actions: "incrementAtIndex",
-            },
-            ARROW_UP: {
-              guard: "isVertical",
-              actions: "incrementAtIndex",
-            },
-            ARROW_DOWN: {
-              guard: "isVertical",
-              actions: "decrementAtIndex",
-            },
-            PAGE_UP: {
-              actions: "incrementAtIndex",
-            },
-            PAGE_DOWN: {
-              actions: "decrementAtIndex",
+            ARROW_INC: {
+              actions: ["incrementThumbAtIndex", "invokeOnChangeEnd"],
             },
             HOME: {
-              actions: "setActiveThumbToMin",
+              actions: ["setFocusedThumbToMin", "invokeOnChangeEnd"],
             },
             END: {
-              actions: "setActiveThumbToMax",
+              actions: ["setFocusedThumbToMax", "invokeOnChangeEnd"],
             },
             BLUR: {
               target: "idle",
@@ -161,8 +144,6 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
-        isHorizontal: (ctx) => ctx.isHorizontal,
-        isVertical: (ctx) => ctx.isVertical,
         hasIndex: (_ctx, evt) => evt.index != null,
       },
       activities: {
@@ -236,19 +217,19 @@ export function machine(userContext: UserDefinedContext) {
             thumbEl?.focus({ preventScroll: true })
           })
         },
-        decrementAtIndex(ctx, evt) {
+        decrementThumbAtIndex(ctx, evt) {
           const value = decrement(ctx, evt.index, evt.step)
           set.value(ctx, value)
         },
-        incrementAtIndex(ctx, evt) {
+        incrementThumbAtIndex(ctx, evt) {
           const value = increment(ctx, evt.index, evt.step)
           set.value(ctx, value)
         },
-        setActiveThumbToMin(ctx) {
+        setFocusedThumbToMin(ctx) {
           const { min } = getRangeAtIndex(ctx, ctx.focusedIndex)
           set.valueAtIndex(ctx, ctx.focusedIndex, min)
         },
-        setActiveThumbToMax(ctx) {
+        setFocusedThumbToMax(ctx) {
           const { max } = getRangeAtIndex(ctx, ctx.focusedIndex)
           set.valueAtIndex(ctx, ctx.focusedIndex, max)
         },

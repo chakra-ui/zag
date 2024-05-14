@@ -33,7 +33,6 @@
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
-    "@zag-js/tabbable": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/types": "workspace:*",

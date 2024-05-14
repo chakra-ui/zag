@@ -1,4 +1,4 @@
-import { raf } from "@zag-js/dom-query"
+import { raf } from "./raf"
 import { getNextTabbable, getTabbableEdges } from "./tabbable"
 
 type MaybeElement = HTMLElement | null

@@ -2,8 +2,6 @@ import type { ColorChannel } from "@zag-js/color-utils"
 import { getRelativePoint, type Point } from "@zag-js/dom-event"
 import { createScope, queryAll } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./color-picker.types"
-import { getFirstFocusable } from "@zag-js/tabbable"
-import { runIfFn } from "@zag-js/utils"
 
 export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `color-picker:${ctx.id}`,
@@ -62,11 +60,5 @@ export const dom = createScope({
       ...queryAll<HTMLInputElement>(dom.getContentEl(ctx), "input[data-channel]"),
       ...queryAll<HTMLInputElement>(dom.getControlEl(ctx), "input[data-channel]"),
     ]
-  },
-  getFirstFocusableEl: (ctx: Ctx) => getFirstFocusable(dom.getContentEl(ctx), "if-empty"),
-  getInitialFocusEl: (ctx: Ctx): HTMLElement | undefined => {
-    let el: any = runIfFn(ctx.initialFocusEl)
-    el = dom.getFirstFocusableEl(ctx) ?? dom.getContentEl(ctx)
-    return el
   },
 })

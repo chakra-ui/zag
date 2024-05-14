@@ -32,7 +32,7 @@
   >
     <div {...api.rootProps}>
       <div>
-        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <!-- svelte-ignore a11y_label_has_associated_control -->
         <label data-testid="label" {...api.labelProps}> Slider Label </label>
         <output data-testid="output" {...api.valueTextProps}>
           {api.value}
@@ -41,7 +41,7 @@
       <div class="control-area">
         <div {...api.controlProps}>
           <div data-testid="track" {...api.trackProps}>
-            <div {...api.rangeProps} />
+            <div {...api.rangeProps}></div>
           </div>
           {#each api.value as _, index}
             <div {...api.getThumbProps({ index })}>

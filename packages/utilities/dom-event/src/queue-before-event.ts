@@ -1,19 +1,18 @@
-export function queueBeforeEvent(element: Element | null, type: string, cb: () => void) {
-  if (!element) return -1
+export function queueBeforeEvent(element: Element, type: string, cb: () => void) {
+  const createTimer = (callback: () => void) => {
+    const timerId = requestAnimationFrame(callback)
+    return () => cancelAnimationFrame(timerId)
+  }
 
-  const rafId = requestAnimationFrame(() => {
-    element.removeEventListener(type, exec, true)
+  const cancelTimer = createTimer(() => {
+    element.removeEventListener(type, callSync, true)
     cb()
   })
-  const exec = () => {
-    cancelAnimationFrame(rafId)
+  const callSync = () => {
+    cancelTimer()
     cb()
   }
 
-  element.addEventListener(type, exec, {
-    once: true,
-    capture: true,
-  })
-
-  return rafId
+  element.addEventListener(type, callSync, { once: true, capture: true })
+  return cancelTimer
 }

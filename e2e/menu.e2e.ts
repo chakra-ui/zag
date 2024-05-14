@@ -1,33 +1,60 @@
-import { expect, type Page, test } from "@playwright/test"
-import { controls, part } from "./_utils"
+import { test } from "@playwright/test"
+import { MenuModel } from "./models/menu.model"
 
-const trigger = part("trigger")
-const menu = part("content")
-
-const expectToBeFocused = async (page: Page, id: string) => {
-  return expect(page.locator(`[id=${id}]`).first()).toHaveAttribute("data-highlighted", "")
-}
+let I: MenuModel
 
 test.describe("menu", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/menu")
+    I = new MenuModel(page)
+    await I.goto()
   })
 
-  test("should stay open when `closeOnSelect` is false", async ({ page }) => {
-    await controls(page).bool("closeOnSelect", false)
-    await page.click(trigger)
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("Enter", { delay: 10 })
-    await expect(page.locator(menu)).toBeVisible()
+  test("should have no accessibility violation", async () => {
+    await I.checkAccessibility()
   })
 
-  test("should navigate menu items with tab", async ({ page }) => {
-    await page.click(trigger)
-    await page.keyboard.press("Tab")
-    await page.keyboard.press("Tab")
-    await expectToBeFocused(page, "duplicate")
-    await page.keyboard.press("Tab")
-    await page.keyboard.press("Shift+Tab")
-    await expectToBeFocused(page, "duplicate")
+  test("on arrow up and down, change highlighted item", async () => {
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown", 2)
+    await I.seeItemIsHighlighted("Duplicate")
+    await I.pressKey("ArrowUp")
+    await I.seeItemIsHighlighted("Edit")
+  })
+
+  test("on typeahead, highlight matching item", async () => {
+    await I.clickTrigger()
+    await I.type("E")
+    await I.seeItemIsHighlighted("Edit")
+    await I.type("E")
+    await I.seeItemIsHighlighted("Export")
+  })
+
+  test("when closeOnSelect=false, stay open on selection", async () => {
+    await I.controls.bool("closeOnSelect", false)
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+    await I.seeDropdown()
+  })
+
+  test("hover out, clear highlighted item", async () => {
+    await I.clickViz()
+    await I.clickTrigger()
+    await I.hoverItem("Delete")
+    await I.hoverOut()
+    await I.dontSeeHighlightedItem()
+  })
+
+  test("with keyboard, can select item", async () => {
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+    await I.dontSeeDropdown()
+  })
+
+  test("on click outside, close menu", async () => {
+    await I.clickTrigger()
+    await I.clickOutside()
+    await I.dontSeeDropdown()
   })
 })
