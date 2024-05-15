@@ -121,7 +121,7 @@ const fetchMachine = createMachine({
         }],
         "VALUE.CLEAR": {
           target: "focused",
-          actions: ["clearInputValue", "clearSelectedItems"]
+          actions: ["clearInputValue", "clearSelectedItems", "setInitialFocus"]
         }
       }
     },

@@ -132,7 +132,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             ],
             "VALUE.CLEAR": {
               target: "focused",
-              actions: ["clearInputValue", "clearSelectedItems"],
+              actions: ["clearInputValue", "clearSelectedItems", "setInitialFocus"],
             },
           },
         },
