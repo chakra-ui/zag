@@ -1,5 +1,24 @@
 # @zag-js/slider
 
+## 0.50.0
+
+### Minor Changes
+
+- [#1489](https://github.com/chakra-ui/zag/pull/1489) [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Invoke `onValueChangeEnd` when using keyboard to interact with slider thumb
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.50.0
+  - @zag-js/core@0.50.0
+  - @zag-js/types@0.50.0
+  - @zag-js/utils@0.50.0
+  - @zag-js/dom-event@0.50.0
+  - @zag-js/dom-query@0.50.0
+  - @zag-js/element-size@0.50.0
+  - @zag-js/form-utils@0.50.0
+  - @zag-js/numeric-range@0.50.0
+
 ## 0.49.0
 
 ### Patch Changes
