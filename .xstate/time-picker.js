@@ -26,10 +26,10 @@ const fetchMachine = createMachine({
   },
   on: {
     "INPUT.BLUR": {
-      actions: ["applyInputValue", "checkValidInputValue", "syncInputElement"]
+      actions: ["setInputValue", "checkValidInputValue", "syncInputElement"]
     },
     "INPUT.ENTER": {
-      actions: ["applyInputValue", "checkValidInputValue", "syncInputElement"]
+      actions: ["setInputValue", "checkValidInputValue", "syncInputElement"]
     },
     "VALUE.CLEAR": {
       actions: ["clearValue", "syncInputElement"]
@@ -49,18 +49,18 @@ const fetchMachine = createMachine({
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "focusFirstHour"]
+          actions: ["invokeOnOpen", "focusInitialHour"]
         }],
         OPEN: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "focusFirstHour"]
+          actions: ["invokeOnOpen", "focusInitialHour"]
         }],
         "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["invokeOnOpen", "focusFirstHour"]
+          actions: ["invokeOnOpen", "focusInitialHour"]
         }
       }
     },
@@ -72,24 +72,24 @@ const fetchMachine = createMachine({
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "focusFirstHour"]
+          actions: ["invokeOnOpen", "focusInitialHour"]
         }],
         OPEN: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "focusFirstHour"]
+          actions: ["invokeOnOpen", "focusInitialHour"]
         }],
         "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["invokeOnOpen", "focusFirstHour"]
+          actions: ["invokeOnOpen", "focusInitialHour"]
         }
       }
     },
     open: {
       tags: ["open"],
-      entry: ["focusFirstHour"],
+      entry: ["focusInitialHour"],
       activities: ["computePlacement", "trackDismissableElement"],
       on: {
         "TRIGGER.CLICK": [{
@@ -151,13 +151,13 @@ const fetchMachine = createMachine({
           actions: ["focusNextCell"]
         },
         "CONTENT.COLUMN.ARROW_LEFT": {
-          actions: ["focusPreviousColumnFirstCell"]
+          actions: ["focusPreviousColumnCell"]
         },
         "CONTENT.COLUMN.ARROW_RIGHT": {
-          actions: ["focusNextColumnFirstCell"]
+          actions: ["focusNextColumnCell"]
         },
         "CONTENT.COLUMN.ENTER": {
-          actions: ["setCurrentCell", "focusNextColumnFirstCell"]
+          actions: ["setCurrentCell", "focusNextColumnCell"]
         }
       }
     }

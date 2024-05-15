@@ -55,7 +55,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   open?: boolean
   /**
-   * Whether the datepicker open state is controlled by the user
+   * Whether the timepicker open state is controlled by the user
    */
   "open.controlled"?: boolean
   /**
@@ -152,11 +152,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the input is focused
    */
-  isFocused: boolean
+  focused: boolean
   /**
    * Whether the time picker is open
    */
-  isOpen: boolean
+  open: boolean
   /**
    * The selected time
    */
@@ -168,7 +168,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the time picker is in 12-hour format (based on the locale prop)
    */
-  is12HourFormat: boolean
+  hour12: boolean
   /**
    * Function to reposition the time picker content
    */
@@ -176,11 +176,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open the time picker
    */
-  open(): void
-  /**
-   * Function to close the time picker
-   */
-  close(): void
+  setOpen(nextOpen: boolean): void
   /**
    * Function to clear the selected time
    */
@@ -207,7 +203,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   positionerProps: T["element"]
   contentProps: T["element"]
   getContentColumnProps(options: { type: TimeUnit }): T["element"]
-
   getHourCellProps(options: { hour: string }): T["element"]
   getMinuteCellProps(options: { minute: string }): T["element"]
   getSecondCellProps(options: { second: string }): T["element"]

@@ -1,12 +1,12 @@
-import { createMachine, guards } from "@zag-js/core"
-import { compact } from "@zag-js/utils"
-import type { MachineContext, MachineState, TimeUnit, UserDefinedContext } from "./time-picker.types"
-import { dom } from "./time-picker.dom"
-import { getPlacement } from "@zag-js/popper"
 import { Time } from "@internationalized/date"
-import { getTimeValue, getStringifiedValue, get12HourFormatPeriodHour, is12HourFormat } from "./time-picker.utils"
+import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
+import { getPlacement } from "@zag-js/popper"
+import { compact } from "@zag-js/utils"
+import { dom } from "./time-picker.dom"
+import type { MachineContext, MachineState, TimeUnit, UserDefinedContext } from "./time-picker.types"
+import { get12HourFormatPeriodHour, getStringifiedValue, getTimeValue, is12HourFormat } from "./time-picker.utils"
 
 const { and } = guards
 
@@ -34,10 +34,10 @@ export function machine(userContext: UserDefinedContext) {
 
       on: {
         "INPUT.BLUR": {
-          actions: ["applyInputValue", "checkValidInputValue", "syncInputElement"],
+          actions: ["setInputValue", "checkValidInputValue", "syncInputElement"],
         },
         "INPUT.ENTER": {
-          actions: ["applyInputValue", "checkValidInputValue", "syncInputElement"],
+          actions: ["setInputValue", "checkValidInputValue", "syncInputElement"],
         },
         "VALUE.CLEAR": {
           actions: ["clearValue", "syncInputElement"],
@@ -55,7 +55,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "open",
-                actions: ["invokeOnOpen", "focusFirstHour"],
+                actions: ["invokeOnOpen", "focusInitialHour"],
               },
             ],
             OPEN: [
@@ -65,12 +65,12 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "open",
-                actions: ["invokeOnOpen", "focusFirstHour"],
+                actions: ["invokeOnOpen", "focusInitialHour"],
               },
             ],
             "CONTROLLED.OPEN": {
               target: "open",
-              actions: ["invokeOnOpen", "focusFirstHour"],
+              actions: ["invokeOnOpen", "focusInitialHour"],
             },
           },
         },
@@ -84,7 +84,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "open",
-                actions: ["invokeOnOpen", "focusFirstHour"],
+                actions: ["invokeOnOpen", "focusInitialHour"],
               },
             ],
             OPEN: [
@@ -94,18 +94,18 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "open",
-                actions: ["invokeOnOpen", "focusFirstHour"],
+                actions: ["invokeOnOpen", "focusInitialHour"],
               },
             ],
             "CONTROLLED.OPEN": {
               target: "open",
-              actions: ["invokeOnOpen", "focusFirstHour"],
+              actions: ["invokeOnOpen", "focusInitialHour"],
             },
           },
         },
         open: {
           tags: ["open"],
-          entry: ["focusFirstHour"],
+          entry: ["focusInitialHour"],
           activities: ["computePlacement", "trackDismissableElement"],
           on: {
             "TRIGGER.CLICK": [
@@ -181,13 +181,13 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["focusNextCell"],
             },
             "CONTENT.COLUMN.ARROW_LEFT": {
-              actions: ["focusPreviousColumnFirstCell"],
+              actions: ["focusPreviousColumnCell"],
             },
             "CONTENT.COLUMN.ARROW_RIGHT": {
-              actions: ["focusNextColumnFirstCell"],
+              actions: ["focusNextColumnCell"],
             },
             "CONTENT.COLUMN.ENTER": {
-              actions: ["setCurrentCell", "focusNextColumnFirstCell"],
+              actions: ["setCurrentCell", "focusNextColumnCell"],
             },
           },
         },
@@ -247,7 +247,7 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnClose(ctx) {
           ctx.onOpenChange?.({ open: false })
         },
-        applyInputValue(ctx, evt) {
+        setInputValue(ctx, evt) {
           const timeValue = getTimeValue(evt.value, ctx)
           if (!timeValue) return
           ctx.value = timeValue.time
@@ -258,8 +258,8 @@ export function machine(userContext: UserDefinedContext) {
           if (!inputEl) return
           inputEl.value = getStringifiedValue(ctx)
         },
-        setHour(ctx, { hour }) {
-          const newValue = (ctx.value ?? new Time(0)).set({ hour: get12HourFormatPeriodHour(hour, ctx.period) })
+        setHour(ctx, evt) {
+          const newValue = (ctx.value ?? new Time(0)).set({ hour: get12HourFormatPeriodHour(evt.hour, ctx.period) })
           if (ctx.min && ctx.min.compare(newValue) > 0) {
             ctx.value = newValue.set({ minute: ctx.min.minute, second: ctx.min.second })
             return
@@ -267,8 +267,8 @@ export function machine(userContext: UserDefinedContext) {
           ctx.value = newValue
           invoke.change(ctx)
         },
-        setMinute(ctx, { minute }) {
-          const newValue = (ctx.value ?? new Time(0)).set({ minute })
+        setMinute(ctx, evt) {
+          const newValue = (ctx.value ?? new Time(0)).set({ minute: evt.minute })
           if (ctx.min && ctx.min.compare(newValue) > 0) {
             ctx.value = newValue.set({ second: ctx.min.second })
             return
@@ -276,15 +276,15 @@ export function machine(userContext: UserDefinedContext) {
           ctx.value = newValue
           invoke.change(ctx)
         },
-        setSecond(ctx, { second }) {
-          ctx.value = (ctx.value ?? new Time(0)).set({ second })
+        setSecond(ctx, evt) {
+          ctx.value = (ctx.value ?? new Time(0)).set({ second: evt.second })
           invoke.change(ctx)
         },
-        setPeriod(ctx, { period }) {
-          if (period === ctx.period) return
-          ctx.period = period
+        setPeriod(ctx, evt) {
+          if (evt.period === ctx.period) return
+          ctx.period = evt.period
           if (ctx.value) {
-            const diff = period === "pm" ? 12 : 0
+            const diff = evt.period === "pm" ? 12 : 0
             ctx.value = ctx.value.set({ hour: (ctx.value.hour % 12) + diff })
           }
           invoke.change(ctx)
@@ -312,7 +312,7 @@ export function machine(userContext: UserDefinedContext) {
         focusInputElement(ctx) {
           dom.getInputEl(ctx)?.focus({ preventScroll: true })
         },
-        focusFirstHour(ctx) {
+        focusInitialHour(ctx) {
           raf(() => {
             const el = dom.getHourCellEls(ctx)?.[0]
             if (!el) return
@@ -359,7 +359,7 @@ export function machine(userContext: UserDefinedContext) {
               break
           }
         },
-        focusPreviousColumnFirstCell(ctx, evt) {
+        focusPreviousColumnCell(ctx, evt) {
           raf(() => {
             const { value, unit } = evt.target.dataset
             switch (unit) {
@@ -382,7 +382,7 @@ export function machine(userContext: UserDefinedContext) {
             invoke.focusChange(ctx, value, unit)
           })
         },
-        focusNextColumnFirstCell(ctx, evt) {
+        focusNextColumnCell(ctx, evt) {
           raf(() => {
             const { value, unit } = evt.target.dataset
             switch (unit) {

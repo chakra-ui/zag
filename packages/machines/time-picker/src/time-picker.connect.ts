@@ -1,15 +1,15 @@
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import type { State, Send, MachineApi } from "./time-picker.types"
 import { parts } from "./time-picker.anatomy"
 import { dom } from "./time-picker.dom"
-import { getPlacementStyles } from "@zag-js/popper"
+import type { MachineApi, Send, State } from "./time-picker.types"
 import {
-  getNumberAsString,
   get12HourFormatPeriodHour,
+  getNumberAsString,
   getStringifiedValue,
   is12HourFormat as is12HourFormatFn,
 } from "./time-picker.utils"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const value = state.context.value
@@ -24,8 +24,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const withSeconds = state.context.withSeconds
   const placeholder = state.context.placeholder
 
-  const isFocused = state.matches("focused")
-  const isOpen = state.hasTag("open")
+  const focused = state.matches("focused")
+  const open = state.hasTag("open")
 
   const currentPlacement = state.context.currentPlacement
   const popperStyles = getPlacementStyles({
@@ -33,7 +33,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     placement: state.context.currentPlacement,
   })
 
-  const is12HourFormat = is12HourFormatFn(locale)
+  const hour12 = is12HourFormatFn(locale)
   const valueAsString = getStringifiedValue(state.context)
 
   function getInputPlaceholder() {
@@ -44,25 +44,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
-    isFocused,
-    isOpen,
+    focused: focused,
+    open,
     value,
     valueAsString,
-    is12HourFormat,
+    hour12,
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
-    open() {
-      send("OPEN")
-    },
-    close() {
-      send("CLOSE")
+    setOpen(nextOpen) {
+      if (nextOpen === open) return
+      send(nextOpen ? "OPEN" : "CLOSE")
     },
     clearValue() {
       send("VALUE.CLEAR")
     },
     getAvailableHours() {
-      const length = is12HourFormat ? 12 : 24
+      const length = hour12 ? 12 : 24
       const hours = Array.from({ length }, (_, i) => i)
       const step = steps?.hour
       if (!step) return hours.map(getNumberAsString)
@@ -83,7 +81,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     rootProps: normalize.element({
       ...parts.root.attrs,
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
       "data-disabled": dataAttr(disabled),
       "data-readonly": dataAttr(readOnly),
     }),
@@ -92,7 +90,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.label.attrs,
       dir: state.context.dir,
       htmlFor: dom.getInputId(state.context),
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
       "data-disabled": dataAttr(disabled),
       "data-readonly": dataAttr(readOnly),
     }),
@@ -134,9 +132,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-placement": state.context.currentPlacement,
       disabled,
       "data-readonly": dataAttr(readOnly),
-      "aria-label": isOpen ? "Close calendar" : "Open calendar",
+      "aria-label": open ? "Close calendar" : "Open calendar",
       "aria-controls": dom.getContentId(state.context),
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
       onClick() {
         send("TRIGGER.CLICK")
       },
@@ -166,10 +164,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.content.attrs,
       dir: state.context.dir,
       id: dom.getContentId(state.context),
-      hidden: !isOpen,
+      hidden: !open,
       tabIndex: 0,
       role: "application",
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
       "data-placement": currentPlacement,
       "aria-roledescription": "timepicker",
       "aria-label": "timepicker",
@@ -178,7 +176,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getContentColumnProps({ type }) {
       return normalize.element({
         ...parts.contentColumn.attrs,
-        hidden: (type === "second" && !state.context.withSeconds) || (type === "period" && !is12HourFormat),
+        hidden: (type === "second" && !state.context.withSeconds) || (type === "period" && !hour12),
         tabIndex: -1,
         onKeyDown(event) {
           const { key, target } = event
