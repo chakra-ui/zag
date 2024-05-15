@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { InteractOutsideHandlers } from "@zag-js/dismissable"
+import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -24,7 +24,11 @@ export type ElementIds = Partial<{
   description: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+interface PublicContext
+  extends DirectionProperty,
+    CommonProperties,
+    DismissableElementHandlers,
+    PersistentElementOptions {
   /**
    * The ids of the elements in the dialog. Useful for composition.
    */
@@ -70,10 +74,6 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * @default true
    */
   closeOnEscape: boolean
-  /**
-   * Callback to be invoked when the escape key is pressed
-   */
-  onEscapeKeyDown?: (event: KeyboardEvent) => void
   /**
    * Human readable label for the dialog, in event the dialog title is not rendered
    */

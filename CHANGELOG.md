@@ -23,6 +23,11 @@ See the [Changesets](./.changeset) for the latest changes.
 
 ### Added
 
+- **Dialog, Popover**:
+
+  - Add support for `persistElements` to prevent third-party elements from having `pointer-events: none` applied to them
+    and closing when you interact with them.
+
 - **Dialog**
 
   - Prevent closing dialog on outside click when `role=alertdialog` is set.

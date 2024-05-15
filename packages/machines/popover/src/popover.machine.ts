@@ -153,6 +153,7 @@ export function machine(userContext: UserDefinedContext) {
             },
             onPointerDownOutside: ctx.onPointerDownOutside,
             onFocusOutside: ctx.onFocusOutside,
+            persistentElements: ctx.persistentElements,
             onDismiss() {
               send({ type: "CLOSE", src: "interact-outside", restoreFocus })
             },

@@ -113,6 +113,7 @@ export function machine(userContext: UserDefinedContext) {
                 event.preventDefault()
               }
             },
+            persistentElements: ctx.persistentElements,
             onFocusOutside: ctx.onFocusOutside,
             onPointerDownOutside: ctx.onPointerDownOutside,
             onEscapeKeyDown(event) {

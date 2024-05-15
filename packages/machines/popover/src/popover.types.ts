@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { DismissableElementHandlers } from "@zag-js/dismissable"
+import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -26,7 +26,11 @@ export type ElementIds = Partial<{
   arrow: string
 }>
 
-interface PublicContext extends DismissableElementHandlers, CommonProperties, DirectionProperty {
+interface PublicContext
+  extends CommonProperties,
+    DirectionProperty,
+    DismissableElementHandlers,
+    PersistentElementOptions {
   /**
    * The ids of the elements in the popover. Useful for composition.
    */

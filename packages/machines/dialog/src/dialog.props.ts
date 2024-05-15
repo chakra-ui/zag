@@ -22,6 +22,7 @@ export const props = createProps<UserDefinedContext>()([
   "onPointerDownOutside",
   "open.controlled",
   "open",
+  "persistentElements",
   "preventScroll",
   "restoreFocus",
   "role",
