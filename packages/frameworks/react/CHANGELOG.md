@@ -1,5 +1,16 @@
 # @zag-js/react
 
+## 0.50.0
+
+### Patch Changes
+
+- [`ab422c1`](https://github.com/chakra-ui/zag/commit/ab422c1f8aa855a315e2197274f4e6ada15716e2) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where controlled context can sometimes not be synced correctly
+
+- Updated dependencies []:
+  - @zag-js/core@0.50.0
+  - @zag-js/store@0.50.0
+  - @zag-js/types@0.50.0
+
 ## 0.49.0
 
 ### Patch Changes

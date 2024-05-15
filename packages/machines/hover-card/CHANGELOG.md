@@ -1,5 +1,18 @@
 # @zag-js/hover-card
 
+## 0.50.0
+
+### Patch Changes
+
+- Updated dependencies [[`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238)]:
+  - @zag-js/popper@0.50.0
+  - @zag-js/anatomy@0.50.0
+  - @zag-js/core@0.50.0
+  - @zag-js/types@0.50.0
+  - @zag-js/utils@0.50.0
+  - @zag-js/dismissable@0.50.0
+  - @zag-js/dom-query@0.50.0
+
 ## 0.49.0
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @zag-js/tooltip
 
+## 0.50.0
+
+### Minor Changes
+
+- [`bbe0c77`](https://github.com/chakra-ui/zag/commit/bbe0c7795c4e045530f14ef7266f704529ef11c3) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `closeOnEsc` to `closeOnEscape` to be consistent with dialog machine
+
+### Patch Changes
+
+- Updated dependencies [[`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238)]:
+  - @zag-js/popper@0.50.0
+  - @zag-js/anatomy@0.50.0
+  - @zag-js/core@0.50.0
+  - @zag-js/types@0.50.0
+  - @zag-js/utils@0.50.0
+  - @zag-js/dom-event@0.50.0
+  - @zag-js/dom-query@0.50.0
+
 ## 0.49.0
 
 ### Patch Changes
