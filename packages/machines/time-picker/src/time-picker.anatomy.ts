@@ -1,18 +1,15 @@
 import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("time-picker").parts(
-  "root",
-  "label",
+  "cell",
   "clearTrigger",
   "content",
   "contentColumn",
   "control",
   "input",
-  "hourCell",
-  "minuteCell",
-  "secondCell",
-  "periodCell",
+  "label",
   "positioner",
+  "root",
   "trigger",
 )
 

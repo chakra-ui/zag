@@ -213,7 +213,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       )
       const isSelected = state.context.value?.hour === get12HourFormatPeriodHour(hour, state.context.period)
       return normalize.button({
-        ...parts.hourCell.attrs,
+        ...parts.cell.attrs,
         type: "button",
         "aria-disabled": ariaAttr(!isSelectable),
         "data-disabled": dataAttr(!isSelectable),
@@ -240,7 +240,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       )
       const isSelected = state.context.value?.minute === minute
       return normalize.button({
-        ...parts.minuteCell.attrs,
+        ...parts.cell.attrs,
         type: "button",
         "aria-disabled": ariaAttr(!isSelectable),
         "data-disabled": dataAttr(!isSelectable),
@@ -265,7 +265,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       )
       const isSelected = state.context.value?.second === second
       return normalize.button({
-        ...parts.secondCell.attrs,
+        ...parts.cell.attrs,
         type: "button",
         "aria-disabled": ariaAttr(!isSelectable),
         "data-disabled": dataAttr(!isSelectable),
@@ -284,7 +284,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getPeriodCellProps({ period }) {
       const isSelected = state.context.period === period
       return normalize.button({
-        ...parts.periodCell.attrs,
+        ...parts.cell.attrs,
         type: "button",
         "aria-current": ariaAttr(isSelected),
         "data-selected": dataAttr(isSelected),
