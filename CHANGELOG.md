@@ -6,6 +6,50 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.50.0](./#0.50.0) - 2024-05-15
+
+### Fixed
+
+- **React**
+
+  - Fix issue where controlled context can sometimes not be synced correctly
+
+- **Collection**
+
+  - Ensure collection are considered different when item's disabled property changes
+
+- **Popover, Menu, Select**
+  - Fix issue where positioner does not respect the `offset.crossAxis`
+
+### Added
+
+- **Dialog**
+
+  - Prevent closing dialog on outside click when `role=alertdialog` is set.
+  - Set the initial focus to the close trigger, when `role=alertdialog` is set to prevent accidental selection of
+    destructive action.
+
+- **Slider**
+
+  - Invoke `onValueChangeEnd` when using keyboard to interact with slider thumb
+
+- **Tabs, Combobox, Select, Menu**:
+  - Add new `composite` prop to allow for composing these components within themselves.
+
+### Changed
+
+- **Combobox**
+
+  - Rename `triggerProps` to `getTriggerProps()` to allow for more flexible compositions
+
+- **Popover, Tooltip**
+
+  - Rename `closeOnEsc` to `closeOnEscape` to be consistent with dialog machine
+
+- **Tabs**
+  - When using the pointer, prefer click based selection when using `activationMode=automatic` over focus triggering
+    selection. For keyboard, selection follows focus as usual
+
 ## [0.49.0](./#0.49.0) - 2024-04-26
 
 ### Fixed
