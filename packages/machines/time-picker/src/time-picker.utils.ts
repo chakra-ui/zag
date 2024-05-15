@@ -27,8 +27,10 @@ export function getStringifiedValue(ctx: MachineContext) {
   return result
 }
 
+const TIME_REX = /(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?\s?(AM|PM|am|pm)?/
+
 export function getTimeValue(value: string, ctx: MachineContext): { time: Time; period: TimePeriod } | undefined {
-  const match = value.match(/(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?\s?(AM|PM|am|pm)?/)
+  const match = value.match(TIME_REX)
   if (!match) return
   let [, hourString, minuteString, secondString, periodString] = match
 
