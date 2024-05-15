@@ -101,7 +101,7 @@ export class Machine<
   }
 
   // immutable context value
-  private get contextSnapshot(): TContext {
+  public get contextSnapshot(): TContext {
     return this.stateSnapshot.context
   }
 

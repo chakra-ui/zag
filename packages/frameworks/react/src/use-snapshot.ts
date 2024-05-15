@@ -67,7 +67,7 @@ export function useSnapshot<
   useUpdateEffect(() => {
     const entries = Object.entries(ctx)
 
-    const previousCtx = service.state.context ?? {}
+    const previousCtx = service.contextSnapshot ?? {}
 
     const equality = entries.map(([key, value]) => ({
       key,
