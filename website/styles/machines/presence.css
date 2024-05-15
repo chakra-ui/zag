@@ -1,0 +1,62 @@
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    scale: 0.8;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    scale: 0.8;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.presence {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 50%;
+  transform-origin: top center;
+}
+
+.presence button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: start;
+  cursor: pointer;
+  font-weight: 500;
+  padding-inline: 1rem;
+  padding-block: 0.25rem;
+  background: var(--colors-bg-primary-subtle);
+  color: #ffffff;
+}
+
+.presence output {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-inline: 0.75rem;
+  border: 2px dotted var(--colors-border-bold);
+}
+
+[data-presence] {
+  min-width: 200px;
+  background: white;
+  padding: 24px;
+  min-height: 100px;
+  border-width: 1px;
+}
+
+[data-presence][data-state="open"] {
+  animation: fadeIn 0.3s forwards;
+}
+
+[data-presence][data-state="closed"] {
+  animation: fadeOut 0.2s forwards;
+}

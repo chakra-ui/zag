@@ -10,6 +10,7 @@ export const checkboxControls = defineControls({
   name: { type: "string", defaultValue: "checkbox" },
   disabled: { type: "boolean", defaultValue: false },
   value: { type: "string", defaultValue: "on" },
+  readOnly: { type: "boolean", defaultValue: false },
 })
 
 export const collapsibleControls = defineControls({
@@ -35,9 +36,8 @@ export const comboboxControls = defineControls({
   },
   disabled: { type: "boolean", defaultValue: false },
   multiple: { type: "boolean", defaultValue: false },
-  loop: { type: "boolean", defaultValue: true },
+  loopFocus: { type: "boolean", defaultValue: true },
   openOnClick: { type: "boolean", defaultValue: false },
-  selectOnBlur: { type: "boolean", defaultValue: true },
 })
 
 export const editableControls = defineControls({
@@ -63,6 +63,7 @@ export const editableControls = defineControls({
 
 export const menuControls = defineControls({
   closeOnSelect: { type: "boolean", defaultValue: true },
+  loopFocus: { type: "boolean", defaultValue: false },
 })
 
 export const hoverCardControls = defineControls({
@@ -128,7 +129,7 @@ export const sliderControls = defineControls({
 
 export const tabsControls = defineControls({
   activationMode: { type: "select", options: ["manual", "automatic"] as const, defaultValue: "automatic" },
-  loop: { type: "boolean", defaultValue: true },
+  loopFocus: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
 })
@@ -171,9 +172,8 @@ export const toastControls = defineControls({
 export const selectControls = defineControls({
   multiple: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
-  loop: { type: "boolean", defaultValue: false },
+  loopFocus: { type: "boolean", defaultValue: true },
   readOnly: { type: "boolean", defaultValue: false },
-  selectOnBlur: { type: "boolean", defaultValue: false },
   closeOnSelect: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
@@ -222,7 +222,7 @@ export const fileUploadControls = defineControls({
 
 export const toggleGroupControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
-  loop: { type: "boolean", defaultValue: true },
+  loopFocus: { type: "boolean", defaultValue: true },
   multiple: { type: "boolean", defaultValue: false },
   rovingFocus: { type: "boolean", defaultValue: true },
 })
@@ -254,6 +254,7 @@ export const floatingPanelControls = defineControls({
   draggable: { type: "boolean", defaultValue: true },
   lockAspectRatio: { type: "boolean", defaultValue: false },
   closeOnEscape: { type: "boolean", defaultValue: true },
+  persistRect: { type: "boolean", defaultValue: false },
 })
 
 export const signaturePadControls = defineControls({

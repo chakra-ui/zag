@@ -1,11 +1,7 @@
-import { createScope } from "@zag-js/dom-query"
-import { getFocusables } from "@zag-js/tabbable"
-import { runIfFn } from "@zag-js/utils"
+import { createScope, getFocusables } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./popover.types"
 
 export const dom = createScope({
-  getActiveEl: (ctx: Ctx) => dom.getDoc(ctx).activeElement,
-
   getAnchorId: (ctx: Ctx) => ctx.ids?.anchor ?? `popover:${ctx.id}:anchor`,
   getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `popover:${ctx.id}:trigger`,
   getContentId: (ctx: Ctx) => ctx.ids?.content ?? `popover:${ctx.id}:content`,
@@ -24,11 +20,4 @@ export const dom = createScope({
 
   getFocusableEls: (ctx: Ctx) => getFocusables(dom.getContentEl(ctx)),
   getFirstFocusableEl: (ctx: Ctx) => dom.getFocusableEls(ctx)[0],
-
-  getInitialFocusEl: (ctx: Ctx) => {
-    let el: HTMLElement | null = runIfFn(ctx.initialFocusEl)
-    if (!el && ctx.autoFocus) el = dom.getFirstFocusableEl(ctx)
-    if (!el) el = dom.getContentEl(ctx)
-    return el
-  },
 })

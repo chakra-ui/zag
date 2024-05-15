@@ -10,4 +10,5 @@ export type {
   MarkerProps,
   ThumbProps,
   ValueChangeDetails,
+  ValueTextDetails,
 } from "./slider.types"

@@ -7,16 +7,22 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
  * -----------------------------------------------------------------------------*/
 
 export interface FocusChangeDetails {
-  focusedId: string | null
+  focusedValue: string | null
 }
 
 export interface ExpandedChangeDetails extends FocusChangeDetails {
-  expandedIds: string[]
+  expandedValue: string[]
 }
 
 export interface SelectionChangeDetails extends FocusChangeDetails {
-  selectedIds: string[]
+  selectedValue: string[]
 }
+
+export type ElementIds = Partial<{
+  root: string
+  tree: string
+  label: string
+}>
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -24,17 +30,21 @@ export interface SelectionChangeDetails extends FocusChangeDetails {
 
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
+   * The ids of the tree elements. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
    * The id of the expanded nodes
    */
-  expandedIds: string[]
+  expandedValue: string[]
   /**
    * The id of the selected nodes
    */
-  selectedIds: string[]
+  selectedValue: string[]
   /**
    * The id of the focused node
    */
-  focusedId: string | null
+  focusedValue: string | null
   /**
    * Whether the tree supports multiple selection
    * - "single": only one node can be selected
@@ -59,7 +69,12 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether clicking on a branch should open it or not
    * @default true
    */
-  openOnClick?: boolean
+  expandOnClick?: boolean
+  /**
+   * Whether the tree supports typeahead search
+   * @default true
+   */
+  typeahead?: boolean
 }
 
 interface PrivateContext {
@@ -67,7 +82,7 @@ interface PrivateContext {
    * @internal
    * The typeahead state for faster keyboard navigation
    */
-  typeahead: TypeaheadState
+  typeaheadState: TypeaheadState
 }
 
 type ComputedContext = Readonly<{
@@ -107,7 +122,7 @@ export interface ItemProps {
   /**
    * The id of the item or branch
    */
-  id: string
+  value: string
   /**
    * Whether the item or branch is disabled
    */
@@ -117,65 +132,68 @@ export interface ItemProps {
 export interface BranchProps extends ItemProps {}
 
 export interface ItemState {
-  id: string
-  isDisabled: boolean
-  isSelected: boolean
-  isFocused: boolean
+  /**
+   * The value of the tree item
+   */
+  value: string
+  /**
+   * Whether the tree item is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the tree item is selected
+   */
+  selected: boolean
+  /**
+   * Whether the tree item is focused
+   */
+  focused: boolean
 }
 
 export interface BranchState extends ItemState {
-  isExpanded: boolean
+  /**
+   * Whether the tree branch is expanded
+   */
+  expanded: boolean
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The id of the expanded nodes
    */
-  expandedIds: string[]
+  expandedValue: string[]
   /**
    * The id of the selected nodes
    */
-  selectedIds: string[]
+  selectedValue: string[]
   /**
-   * Function to expand nodes
+   * Function to expand nodes.
+   * If no value is provided, all nodes will be expanded
    */
-  expand(ids: string[]): void
-  /**
-   * Function to expand all nodes
-   */
-  expandAll(): void
+  expand(value?: string[]): void
   /**
    * Function to collapse nodes
+   * If no value is provided, all nodes will be collapsed
    */
-  collapse(ids: string[]): void
-  /**
-   * Function to collapse all nodes
-   */
-  collapseAll(): void
+  collapse(value?: string[]): void
   /**
    * Function to select nodes
+   * If no value is provided, all nodes will be selected
    */
-  select(ids: string[]): void
-  /**
-   * Function to select all nodes
-   */
-  selectAll(): void
+  select(value?: string[]): void
   /**
    * Function to deselect nodes
+   * If no value is provided, all nodes will be deselected
    */
-  deselect(ids: string[]): void
-  /**
-   * Function to deselect all nodes
-   */
-  deselectAll(): void
+  deselect(value?: string[]): void
   /**
    * Function to focus a branch node
    */
-  focusBranch(id: string): void
+  focusBranch(value: string): void
   /**
    * Function to focus an item node
    */
-  focusItem(id: string): void
+  focusItem(value: string): void
 
   rootProps: T["element"]
   labelProps: T["element"]

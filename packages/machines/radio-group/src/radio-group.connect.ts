@@ -1,32 +1,33 @@
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./radio-group.anatomy"
 import { dom } from "./radio-group.dom"
 import type { ItemProps, ItemState, MachineApi, Send, State } from "./radio-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isGroupDisabled = state.context.isDisabled
+  const groupDisabled = state.context.isDisabled
+  const readOnly = state.context.readOnly
 
   function getItemState(props: ItemProps): ItemState {
     return {
-      isInvalid: !!props.invalid,
-      isDisabled: !!props.disabled || isGroupDisabled,
-      isChecked: state.context.value === props.value,
-      isFocused: state.context.focusedId === props.value,
-      isHovered: state.context.hoveredId === props.value,
-      isActive: state.context.activeId === props.value,
+      invalid: !!props.invalid,
+      disabled: !!props.disabled || groupDisabled,
+      checked: state.context.value === props.value,
+      focused: state.context.focusedValue === props.value,
+      hovered: state.context.hoveredValue === props.value,
+      active: state.context.activeValue === props.value,
     }
   }
 
   function getItemDataAttrs<T extends ItemProps>(props: T) {
     const radioState = getItemState(props)
     return {
-      "data-focus": dataAttr(radioState.isFocused),
-      "data-disabled": dataAttr(radioState.isDisabled),
-      "data-state": radioState.isChecked ? "checked" : "unchecked",
-      "data-hover": dataAttr(radioState.isHovered),
-      "data-invalid": dataAttr(radioState.isInvalid),
+      "data-focus": dataAttr(radioState.focused),
+      "data-disabled": dataAttr(radioState.disabled),
+      "dats-readonly": dataAttr(readOnly),
+      "data-state": radioState.checked ? "checked" : "unchecked",
+      "data-hover": dataAttr(radioState.hovered),
+      "data-invalid": dataAttr(radioState.invalid),
       "data-orientation": state.context.orientation,
     }
   }
@@ -60,7 +61,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
       "aria-labelledby": dom.getLabelId(state.context),
       "data-orientation": state.context.orientation,
-      "data-disabled": dataAttr(isGroupDisabled),
+      "data-disabled": dataAttr(groupDisabled),
       "aria-orientation": state.context.orientation,
       dir: state.context.dir,
       style: {
@@ -72,13 +73,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.label.attrs,
       dir: state.context.dir,
       "data-orientation": state.context.orientation,
-      "data-disabled": dataAttr(isGroupDisabled),
+      "data-disabled": dataAttr(groupDisabled),
       id: dom.getLabelId(state.context),
       onClick: focus,
     }),
 
     getItemProps(props: ItemProps) {
-      const rootState = getItemState(props)
+      const itemState = getItemState(props)
 
       return normalize.label({
         ...parts.item.attrs,
@@ -87,24 +88,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         htmlFor: dom.getItemHiddenInputId(state.context, props.value),
         ...getItemDataAttrs(props),
         onPointerMove() {
-          if (rootState.isDisabled) return
+          if (itemState.disabled) return
+          if (itemState.hovered) return
           send({ type: "SET_HOVERED", value: props.value, hovered: true })
         },
         onPointerLeave() {
-          if (rootState.isDisabled) return
+          if (itemState.disabled) return
           send({ type: "SET_HOVERED", value: null })
         },
         onPointerDown(event) {
-          if (rootState.isDisabled) return
+          if (itemState.disabled) return
           // On pointerdown, the input blurs and returns focus to the `body`,
           // we need to prevent this.
-          if (rootState.isFocused && event.pointerType === "mouse") {
+          if (itemState.focused && event.pointerType === "mouse") {
             event.preventDefault()
           }
           send({ type: "SET_ACTIVE", value: props.value, active: true })
         },
         onPointerUp() {
-          if (rootState.isDisabled) return
+          if (itemState.disabled) return
           send({ type: "SET_ACTIVE", value: null })
         },
       })
@@ -126,7 +128,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.itemControl.attrs,
         dir: state.context.dir,
         id: dom.getItemControlId(state.context, props.value),
-        "data-active": dataAttr(controlState.isActive),
+        "data-active": dataAttr(controlState.active),
         "aria-hidden": true,
         ...getItemDataAttrs(props),
       })
@@ -143,7 +145,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         form: state.context.form,
         value: props.value,
         onChange(event) {
-          if (inputState.isDisabled) return
+          if (readOnly) {
+            event.preventDefault()
+            return
+          }
 
           if (event.target.checked) {
             send({ type: "SET_VALUE", value: props.value, isTrusted: true })
@@ -156,17 +161,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "SET_FOCUSED", value: props.value, focused: true })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
           if (event.key === " ") {
             send({ type: "SET_ACTIVE", value: props.value, active: true })
           }
         },
         onKeyUp(event) {
+          if (event.defaultPrevented) return
           if (event.key === " ") {
             send({ type: "SET_ACTIVE", value: null })
           }
         },
-        disabled: inputState.isDisabled,
-        defaultChecked: inputState.isChecked,
+        disabled: inputState.disabled,
+        defaultChecked: inputState.checked,
         style: visuallyHiddenStyle,
       })
     },
@@ -176,7 +183,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.indicator.attrs,
       dir: state.context.dir,
       hidden: state.context.value == null,
-      "data-disabled": dataAttr(isGroupDisabled),
+      "data-disabled": dataAttr(groupDisabled),
       "data-orientation": state.context.orientation,
       style: {
         "--transition-property": "left, top, width, height",

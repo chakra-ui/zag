@@ -1,5 +1,31 @@
 # @zag-js/popper
 
+## 0.50.0
+
+### Patch Changes
+
+- [#1489](https://github.com/chakra-ui/zag/pull/1489) [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where positioner does not respect the `offset.crossAxis`
+
+- Updated dependencies []:
+  - @zag-js/utils@0.50.0
+  - @zag-js/dom-query@0.50.0
+
+## 0.49.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.49.0
+  - @zag-js/dom-query@0.49.0
+
+## 0.48.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.48.0
+  - @zag-js/dom-query@0.48.0
+
 ## 0.47.0
 
 ### Patch Changes

@@ -65,11 +65,14 @@ async function main() {
 
     project.addSourceFilesAtPaths(glob)
 
-    const contextSrc = project.getSourceFile(typesFilePath)
+    const sourceFile = project.getSourceFile(typesFilePath)
 
     try {
-      const publicContext = getContextReturnType(contextSrc, "PublicContext", typeChecker)
-      const publicApi = getContextReturnType(contextSrc, "MachineApi", typeChecker)
+      const ctxName = baseDir === "toast" ? "GroupPublicContext" : "PublicContext"
+      const publicContext = getContextReturnType(sourceFile, ctxName, typeChecker)
+
+      const apiName = baseDir === "toast" ? "GroupMachineApi" : "MachineApi"
+      const publicApi = getContextReturnType(sourceFile, apiName, typeChecker)
 
       result[baseDir] = { api: publicApi, context: publicContext }
     } catch (error) {

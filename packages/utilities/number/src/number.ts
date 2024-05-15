@@ -4,11 +4,10 @@ export function wrap(num: number, max: number): number {
   return ((num % max) + max) % max
 }
 
-export function round(v: number | string, t?: number) {
-  let num = valueOf(v)
+export function round(num: number, t?: number) {
   const p = 10 ** (t ?? 10)
   num = Math.round(num * p) / p
-  return t ? num.toFixed(t) : v.toString()
+  return t ? num.toFixed(t) : num.toString()
 }
 
 export function roundToDevicePixel(num: number) {
@@ -17,13 +16,12 @@ export function roundToDevicePixel(num: number) {
   return Math.floor(num * dp + 0.5) / dp
 }
 
-export const valueToPercent = (v: number | string, r: Num<"step" | "min" | "max">) =>
-  ((valueOf(v) - r.min) * 100) / (r.max - r.min)
+export const valueToPercent = (v: number, r: Num<"step" | "min" | "max">) => ((nan(v) - r.min) * 100) / (r.max - r.min)
 
-export const percentToValue = (v: number | string, r: Num<"min" | "max">) => r.min + (r.max - r.min) * valueOf(v)
+export const percentToValue = (v: number, r: Num<"min" | "max">) => r.min + (r.max - r.min) * nan(v)
 
-export function clamp(v: number | string, o: Num<"min" | "max">) {
-  return Math.min(Math.max(valueOf(v), o.min), o.max)
+export function clamp(v: number, o: Num<"min" | "max">) {
+  return Math.min(Math.max(nan(v), o.min), o.max)
 }
 
 export function countDecimals(value: number) {
@@ -37,20 +35,18 @@ export function countDecimals(value: number) {
   return p
 }
 
-export const increment = (v: number | string, s: number) => decimalOperation(valueOf(v), "+", s)
+export const increment = (v: number, s: number) => decimalOperation(nan(v), "+", s)
 
-export const decrement = (v: number | string, s: number) => decimalOperation(valueOf(v), "-", s)
+export const decrement = (v: number, s: number) => decimalOperation(nan(v), "-", s)
 
-export function snapToStep(value: number | string, step: number) {
-  const num = valueOf(value)
+export function snapToStep(num: number, step: number) {
   const p = countDecimals(step)
-  const v = Math.round(num / step) * step
+  const v = Math.round(nan(num) / step) * step
   return round(v, p)
 }
 
-export function valueOf(v: string | number) {
-  const res = typeof v === "number" ? v : parseFloat(v.toString().replace(/[^\w.-]+/g, ""))
-  return Number.isNaN(res) ? 0 : res
+export function nan(v: number) {
+  return Number.isNaN(v) ? 0 : v
 }
 
 export type FormatDecimalOptions = {
@@ -64,28 +60,25 @@ export type FormatDecimalOptions = {
   maxFractionDigits?: number
 }
 
-export function formatDecimal(v: number | string, o: Omit<FormatDecimalOptions, "value">) {
+export function formatDecimal(v: number, o: Omit<FormatDecimalOptions, "value">) {
   return new Intl.NumberFormat("en-US", {
     useGrouping: false,
     style: "decimal",
     minimumFractionDigits: o.minFractionDigits,
     maximumFractionDigits: o.maxFractionDigits,
-  }).format(valueOf(v))
+  }).format(nan(v))
 }
 
-export function isAtMax(v: number | string, o: Num<"max">) {
-  const val = valueOf(v)
-  return val >= o.max
+export function isAtMax(val: number, o: Num<"max">) {
+  return nan(val) >= o.max
 }
 
-export function isAtMin(v: number | string, o: Num<"min">) {
-  const val = valueOf(v)
-  return val <= o.min
+export function isAtMin(val: number, o: Num<"min">) {
+  return nan(val) <= o.min
 }
 
-export function isWithinRange(v: number | string, o: Num<"min" | "max">) {
-  const val = valueOf(v)
-  return val >= o.min && val <= o.max
+export function isWithinRange(val: number, o: Num<"min" | "max">) {
+  return nan(val) >= o.min && nan(val) <= o.max
 }
 
 function decimalOperation(a: number, op: "-" | "+", b: number): number {

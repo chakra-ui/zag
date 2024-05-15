@@ -8,22 +8,22 @@
 
   const controls = useControls(hoverCardControls)
 
-  const [state, send] = useMachine(hoverCard.machine({ id: "1" }), {
+  const [snapshot, send] = useMachine(hoverCard.machine({ id: "1" }), {
     context: controls.context,
   })
 
-  const api = $derived(hoverCard.connect(state, send, normalizeProps))
+  const api = $derived(hoverCard.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="hover-card">
   <div style="display:flex; gap:50px">
     <a href="https://twitter.com/zag_js" target="_blank" {...api.triggerProps}> Twitter </a>
 
-    {#if api.isOpen}
+    {#if api.open}
       <div use:portal {...api.positionerProps}>
         <div {...api.contentProps}>
           <div {...api.arrowProps}>
-            <div {...api.arrowTipProps} />
+            <div {...api.arrowTipProps}></div>
           </div>
           Twitter Preview
           <a href="https://twitter.com/zag_js" target="_blank"> Twitter </a>
@@ -36,5 +36,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer {state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

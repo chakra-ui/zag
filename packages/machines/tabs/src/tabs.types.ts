@@ -37,12 +37,12 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations
   /**
    * Whether the keyboard navigation will loop from last tab to first, and vice versa.
    * @default true
    */
-  loop: boolean
+  loopFocus: boolean
   /**
    * The selected tab id
    */
@@ -59,6 +59,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The activation mode of the tabs. Can be `manual` or `automatic`
    * - `manual`: Tabs are activated when clicked or press `enter` key.
    * - `automatic`: Tabs are activated when receiving focus
+   *
    * @default "automatic"
    */
   activationMode?: "manual" | "automatic"
@@ -70,22 +71,21 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Callback to be called when the focused tab changes
    */
   onFocusChange?: (details: FocusChangeDetails) => void
+  /**
+   * Whether the tab is composite
+   */
+  composite: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the tab is in the horizontal orientation
-   */
-  isHorizontal: boolean
-  /**
-   * @computed
-   * Whether the tab is in the vertical orientation
-   */
-  isVertical: boolean
-}>
+type ComputedContext = Readonly<{}>
+
+interface IndicatorState {
+  rendered: boolean
+  rect: Partial<{ left: string; top: string; width: string; height: string }>
+  transition: boolean
+}
 
 interface PrivateContext {
   /**
@@ -95,19 +95,9 @@ interface PrivateContext {
   focusedValue: string | null
   /**
    * @internal
-   * Whether the indicator is rendered.
+   * The active tab indicator details
    */
-  isIndicatorRendered: boolean
-  /**
-   * @internal
-   * The active tab indicator's dom rect
-   */
-  indicatorRect?: Partial<{ left: string; top: string; width: string; height: string }>
-  /**
-   * @internal
-   * Whether the active tab indicator's rect can transition
-   */
-  canIndicatorTransition?: boolean
+  indicatorState: IndicatorState
   /**
    * @internal
    * Function to clean up the observer for the active tab's rect
@@ -130,16 +120,35 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface TriggerProps {
+  /**
+   * The value of the tab
+   */
   value: string
+  /**
+   * Whether the tab is disabled
+   */
   disabled?: boolean
 }
 
 export interface TriggerState {
-  isSelected: boolean
-  isFocused: boolean
+  /**
+   * Whether the tab is selected
+   */
+  selected: boolean
+  /**
+   * Whether the tab is focused
+   */
+  focused: boolean
+  /**
+   * Whether the tab is disabled
+   */
+  disabled: boolean
 }
 
 export interface ContentProps {
+  /**
+   * The value of the tab
+   */
   value: string
 }
 
@@ -164,6 +173,23 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Sets the indicator rect to the tab with the given value
    */
   setIndicatorRect(value: string): void
+  /**
+   * Synchronizes the tab index of the content element.
+   * Useful when rendering tabs within a select or combobox
+   */
+  syncTabIndex(): void
+  /**
+   * Set focus on the selected tab trigger
+   */
+  focus(): void
+  /**
+   * Selects the next tab
+   */
+  selectNext(fromValue?: string): void
+  /**
+   * Selects the previous tab
+   */
+  selectPrev(fromValue?: string): void
   /**
    * Returns the state of the trigger with the given props
    */

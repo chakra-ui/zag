@@ -1,4 +1,4 @@
-import { getDocument } from "@zag-js/dom-query"
+import { getDocument, setStyle, waitForElements } from "@zag-js/dom-query"
 import { layerStack } from "./layer-stack"
 
 let originalBodyPointerEvents: string
@@ -13,21 +13,33 @@ export function clearPointerEvent(node: HTMLElement) {
   node.style.pointerEvents = ""
 }
 
-const DATA_ATTR = "data-inert"
-
-export function disablePointerEventsOutside(node: HTMLElement) {
+export function disablePointerEventsOutside(node: HTMLElement, peristentElements?: Array<() => Element | null>) {
   const doc = getDocument(node)
 
-  if (layerStack.hasPointerBlockingLayer() && !doc.body.hasAttribute(DATA_ATTR)) {
+  const cleanups: VoidFunction[] = []
+
+  if (layerStack.hasPointerBlockingLayer() && !doc.body.hasAttribute("data-inert")) {
     originalBodyPointerEvents = document.body.style.pointerEvents
-    doc.body.style.pointerEvents = "none"
-    doc.body.setAttribute(DATA_ATTR, "")
+    queueMicrotask(() => {
+      doc.body.style.pointerEvents = "none"
+      doc.body.setAttribute("data-inert", "")
+    })
+  }
+
+  if (peristentElements) {
+    const persistedCleanup = waitForElements(peristentElements, (el) => {
+      cleanups.push(setStyle(el, { pointerEvents: "auto" }))
+    })
+    cleanups.push(persistedCleanup)
   }
 
   return () => {
     if (layerStack.hasPointerBlockingLayer()) return
-    doc.body.style.pointerEvents = originalBodyPointerEvents
-    doc.body.removeAttribute(DATA_ATTR)
-    if (doc.body.style.length === 0) doc.body.removeAttribute("style")
+    queueMicrotask(() => {
+      doc.body.style.pointerEvents = originalBodyPointerEvents
+      doc.body.removeAttribute("data-inert")
+      if (doc.body.style.length === 0) doc.body.removeAttribute("style")
+    })
+    cleanups.forEach((fn) => fn())
   }
 }

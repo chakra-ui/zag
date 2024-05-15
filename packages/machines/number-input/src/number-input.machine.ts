@@ -1,8 +1,7 @@
 import { choose, createMachine, guards } from "@zag-js/core"
 import { addDomEvent, requestPointerLock } from "@zag-js/dom-event"
-import { isSafari, raf } from "@zag-js/dom-query"
+import { isSafari, observeAttributes, raf } from "@zag-js/dom-query"
 import { trackFormControl } from "@zag-js/form-utils"
-import { observeAttributes } from "@zag-js/mutation-observer"
 import { clamp, decrement, increment, isAtMax, isAtMin, isWithinRange } from "@zag-js/number-utils"
 import { callAll, compact, isEqual } from "@zag-js/utils"
 import { recordCursor, restoreCursor } from "./cursor"
@@ -35,7 +34,6 @@ export function machine(userContext: UserDefinedContext) {
         ...ctx,
         hint: null,
         scrubberCursorPoint: null,
-        composing: false,
         fieldsetDisabled: false,
         formatter: createFormatter(ctx.locale || "en-US", ctx.formatOptions),
         parser: createParser(ctx.locale || "en-US", ctx.formatOptions),
@@ -144,12 +142,6 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setFormattedValue", "clearHint", "invokeOnBlur"],
               },
             ],
-            "INPUT.COMPOSITION_START": {
-              actions: "setComposing",
-            },
-            "INPUT.COMPOSITION_END": {
-              actions: "clearComposing",
-            },
           },
         },
 
@@ -256,8 +248,11 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackButtonDisabled(ctx, _evt, { send }) {
           const btn = dom.getPressedTriggerEl(ctx, ctx.hint)
-          return observeAttributes(btn, ["disabled"], () => {
-            send({ type: "TRIGGER.PRESS_UP", src: "attr" })
+          return observeAttributes(btn, {
+            attributes: ["disabled"],
+            callback() {
+              send({ type: "TRIGGER.PRESS_UP", src: "attr" })
+            },
           })
         },
         attachWheelListener(ctx, _evt, { send }) {
@@ -314,20 +309,21 @@ export function machine(userContext: UserDefinedContext) {
         },
         increment(ctx, evt) {
           const nextValue = increment(ctx.valueAsNumber, evt.step ?? ctx.step)
-          const value = ctx.formatter.format(clamp(nextValue, ctx))
+          const value = formatValue(ctx, clamp(nextValue, ctx))
           set.value(ctx, value)
         },
         decrement(ctx, evt) {
           const nextValue = decrement(ctx.valueAsNumber, evt.step ?? ctx.step)
-          const value = ctx.formatter.format(clamp(nextValue, ctx))
+          const value = formatValue(ctx, clamp(nextValue, ctx))
           set.value(ctx, value)
         },
         setClampedValue(ctx) {
           const nextValue = clamp(ctx.valueAsNumber, ctx)
-          set.value(ctx, ctx.formatter.format(nextValue))
+          set.value(ctx, formatValue(ctx, nextValue))
         },
         setRawValue(ctx, evt) {
-          const value = ctx.formatter.format(clamp(evt.value, ctx))
+          const parsedValue = parseValue(ctx, evt.value)
+          const value = formatValue(ctx, clamp(parsedValue, ctx))
           set.value(ctx, value)
         },
         setValue(ctx, evt) {
@@ -338,11 +334,11 @@ export function machine(userContext: UserDefinedContext) {
           set.value(ctx, "")
         },
         incrementToMax(ctx) {
-          const value = ctx.formatter.format(ctx.max)
+          const value = formatValue(ctx, ctx.max)
           set.value(ctx, value)
         },
         decrementToMin(ctx) {
-          const value = ctx.formatter.format(ctx.min)
+          const value = formatValue(ctx, ctx.min)
           set.value(ctx, value)
         },
         setHint(ctx, evt) {
@@ -382,8 +378,7 @@ export function machine(userContext: UserDefinedContext) {
           sync.input(ctx, value)
         },
         setFormattedValue(ctx) {
-          const value = ctx.formatter.format(ctx.valueAsNumber)
-          set.value(ctx, value)
+          set.value(ctx, ctx.formattedValue)
         },
         setCursorPoint(ctx, evt) {
           ctx.scrubberCursorPoint = evt.point
@@ -396,12 +391,6 @@ export function machine(userContext: UserDefinedContext) {
           if (!cursorEl || !ctx.scrubberCursorPoint) return
           const { x, y } = ctx.scrubberCursorPoint
           cursorEl.style.transform = `translate3d(${x}px, ${y}px, 0px)`
-        },
-        setComposing(ctx) {
-          ctx.composing = true
-        },
-        clearComposing(ctx) {
-          ctx.composing = false
         },
         setFormatterAndParser(ctx) {
           if (!ctx.locale) return

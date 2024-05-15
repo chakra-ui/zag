@@ -69,7 +69,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
       const label = this.itemToString(item)
       const disabled = this.itemToDisabled(item)
 
-      hashSet.add(value)
+      hashSet.add(JSON.stringify({ value, disabled }))
 
       const node: CollectionNode<T> = {
         // freeze item to prevent mutation by frameworks like Solid.js
@@ -146,7 +146,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
    * Sort the values based on their index
    */
   sort = (values: string[]): string[] => {
-    return values.sort(this.sortFn)
+    return [...values].sort(this.sortFn)
   }
 
   /**

@@ -3,11 +3,12 @@ import { createSplitProps } from "@zag-js/utils"
 import type { UserDefinedContext } from "./tour.types"
 
 export const props = createProps<UserDefinedContext>()([
-  "closeOnEsc",
+  "closeOnEscape",
   "closeOnInteractOutside",
   "dir",
   "getRootNode",
   "id",
+  "ids",
   "keyboardNavigation",
   "offset",
   "onFocusOutside",

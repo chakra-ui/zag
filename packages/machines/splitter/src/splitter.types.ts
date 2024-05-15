@@ -106,8 +106,8 @@ export interface ResizeTriggerProps {
 }
 
 export interface ResizeTriggerState {
-  isDisabled: boolean
-  isFocused: boolean
+  disabled: boolean
+  focused: boolean
   panelIds: string[]
   min: number | undefined
   max: number | undefined
@@ -123,11 +123,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the splitter is focused.
    */
-  isFocused: boolean
+  focused: boolean
   /**
    * Whether the splitter is being dragged.
    */
-  isDragging: boolean
+  dragging: boolean
   /**
    *  The bounds of the currently dragged splitter handle.
    */

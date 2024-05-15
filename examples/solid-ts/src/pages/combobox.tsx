@@ -1,6 +1,7 @@
 import * as combobox from "@zag-js/combobox"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
+import { matchSorter } from "match-sorter"
 import { Index, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -31,8 +32,8 @@ export default function Page() {
       onOpenChange() {
         setOptions(comboboxData)
       },
-      onInputValueChange({ value }) {
-        const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
+      onInputValueChange({ inputValue }) {
+        const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
         setOptions(filtered.length > 0 ? filtered : comboboxData)
       },
     }),
@@ -56,7 +57,7 @@ export default function Page() {
             <label {...api().labelProps}>Select country</label>
             <div {...api().controlProps}>
               <input data-testid="input" {...api().inputProps} />
-              <button data-testid="trigger" {...api().triggerProps}>
+              <button data-testid="trigger" {...api().getTriggerProps()}>
                 ▼
               </button>
             </div>

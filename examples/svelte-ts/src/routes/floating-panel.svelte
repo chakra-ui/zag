@@ -9,11 +9,11 @@
 
   const controls = useControls(floatingPanelControls)
 
-  const [_state, send] = useMachine(floatingPanel.machine({ id: "1" }), {
+  const [snapshot, send] = useMachine(floatingPanel.machine({ id: "1" }), {
     context: controls.context,
   })
 
-  const api = $derived(floatingPanel.connect(_state, send, normalizeProps))
+  const api = $derived(floatingPanel.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="floating-panel">
@@ -44,19 +44,19 @@
           <p>Some content</p>
         </div>
 
-        <div {...api.getResizeTriggerProps({ axis: "n" })} />
-        <div {...api.getResizeTriggerProps({ axis: "e" })} />
-        <div {...api.getResizeTriggerProps({ axis: "w" })} />
-        <div {...api.getResizeTriggerProps({ axis: "s" })} />
-        <div {...api.getResizeTriggerProps({ axis: "ne" })} />
-        <div {...api.getResizeTriggerProps({ axis: "se" })} />
-        <div {...api.getResizeTriggerProps({ axis: "sw" })} />
-        <div {...api.getResizeTriggerProps({ axis: "nw" })} />
+        <div {...api.getResizeTriggerProps({ axis: "n" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "e" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "w" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "s" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "ne" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "se" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "sw" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "nw" })}></div>
       </div>
     </div>
   </div>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

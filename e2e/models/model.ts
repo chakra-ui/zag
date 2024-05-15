@@ -36,7 +36,7 @@ export class Model {
     return this.page.locator(selector).click({ button: "right" })
   }
 
-  typeInHexInput(value: string) {
+  type(value: string) {
     return this.page.keyboard.type(value)
   }
 
@@ -62,5 +62,13 @@ export class Model {
 
   resizeWindow(size: { width: number; height: number }) {
     return this.page.setViewportSize(size)
+  }
+
+  async wait(time: number) {
+    return new Promise<void>((resolve) => setTimeout(resolve, time))
+  }
+
+  async mouseUp() {
+    await this.page.mouse.up()
   }
 }

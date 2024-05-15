@@ -5,7 +5,9 @@ export * from "./progress.props"
 export type {
   MachineApi as Api,
   UserDefinedContext as Context,
+  ElementIds,
   IntlTranslations,
+  Orientation,
   ProgressState,
   ValueTranslationDetails,
   ViewProps,

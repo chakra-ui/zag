@@ -14,6 +14,11 @@ export interface FocusChangeDetails {
   value: number[]
 }
 
+export interface ValueTextDetails {
+  value: number
+  index: number
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -81,36 +86,46 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Function that returns a human readable value for the slider thumb
    */
-  getAriaValueText?(value: number, index: number): string
+  getAriaValueText?(details: ValueTextDetails): string
   /**
    * The minimum value of the slider
+   * @default 0
    */
   min: number
   /**
    * The maximum value of the slider
+   * @default 100
    */
   max: number
   /**
    * The step value of the slider
+   * @default 1
    */
   step: number
   /**
    * The minimum permitted steps between multiple thumbs.
+   * @default 0
    */
   minStepsBetweenThumbs: number
   /**
    * The orientation of the slider
+   * @default "horizontal"
    */
   orientation: "vertical" | "horizontal"
   /**
+   * The origin of the slider range
    * - "start": Useful when the value represents an absolute value
    * - "center": Useful when the value represents an offset (relative)
+   *
+   * @default "start"
    */
   origin?: "start" | "center"
   /**
    * The alignment of the slider thumb relative to the track
    * - `center`: the thumb will extend beyond the bounds of the slider track.
    * - `contain`: the thumb will be contained within the bounds of the track.
+   *
+   * @default "contain"
    */
   thumbAlignment?: "contain" | "center"
   /**
@@ -132,11 +147,6 @@ type ComputedContext = Readonly<{
    * Whether the slider is interactive
    */
   isInteractive: boolean
-  /**
-   * @computed
-   * The raw value of the space between each thumb
-   */
-  spacing: number
   /**
    * @computed
    * Whether the slider is vertical
@@ -214,11 +224,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the slider is being dragged.
    */
-  isDragging: boolean
+  dragging: boolean
   /**
    * Whether the slider is focused.
    */
-  isFocused: boolean
+  focused: boolean
   /**
    * Function to set the value of the slider.
    */

@@ -30,17 +30,17 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   ids?: ElementIds
   /**
-   * Whether multple accordion items can be open at the same time.
+   * Whether multple accordion items can be expanded at the same time.
    * @default false
    */
   multiple?: boolean
   /**
-   * Whether an accordion item can be collapsed after it has been opened.
+   * Whether an accordion item can be closed after it has been expanded.
    * @default false
    */
   collapsible?: boolean
   /**
-   * The `id` of the accordion item that is currently being opened.
+   * The `value` of the accordion items that are currently being expanded.
    */
   value: string[]
   /**
@@ -48,15 +48,16 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   disabled?: boolean
   /**
-   * The callback fired when the state of opened/closed accordion items changes.
+   * The callback fired when the state of expanded/collapsed accordion items changes.
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?(details: ValueChangeDetails): void
   /**
    * The callback fired when the focused accordion item changes.
    */
-  onFocusChange?: (details: FocusChangeDetails) => void
+  onFocusChange?(details: FocusChangeDetails): void
   /**
    *  The orientation of the accordion items.
+   *  @default "vertical"
    */
   orientation?: "horizontal" | "vertical"
 }
@@ -94,14 +95,29 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface ItemProps {
+  /**
+   * The value of the accordion item.
+   */
   value: string
+  /**
+   * Whether the accordion item is disabled.
+   */
   disabled?: boolean
 }
 
 export interface ItemState {
-  isOpen: boolean
-  isFocused: boolean
-  isDisabled: boolean
+  /**
+   * Whether the accordion item is expanded.
+   */
+  expanded: boolean
+  /**
+   * Whether the accordion item is focused.
+   */
+  focused: boolean
+  /**
+   * Whether the accordion item is disabled.
+   */
+  disabled: boolean
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -120,7 +136,8 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Gets the state of an accordion item.
    */
-  getItemState: (props: ItemProps) => ItemState
+  getItemState(props: ItemProps): ItemState
+
   rootProps: T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemContentProps(props: ItemProps): T["element"]

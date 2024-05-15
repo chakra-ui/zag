@@ -83,13 +83,12 @@ const [state, send] = useMachine(
 
 ## Checking if the value is copied
 
-Use the `api.isCopied` property to check if the value is copied to the
-clipboard.
+Use the `api.copied` property to check if the value is copied to the clipboard.
 
 ```jsx {3}
 const api = clipboard.connect(state, send)
 
-if (api.isCopied) {
+if (api.copied) {
   console.log("Value is copied to the clipboard")
 }
 ```

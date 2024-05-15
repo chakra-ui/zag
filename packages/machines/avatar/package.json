@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/avatar",
-  "version": "0.47.0",
+  "version": "0.50.0",
   "description": "Core logic for the avatar widget implemented as a state machine",
   "keywords": [
     "js",
@@ -36,7 +36,6 @@
   },
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
-    "@zag-js/mutation-observer": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/utils": "workspace:*",

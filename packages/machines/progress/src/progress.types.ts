@@ -1,5 +1,16 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type {
+  CommonProperties,
+  DirectionProperty,
+  Orientation,
+  OrientationProperty,
+  PropTypes,
+  RequiredBy,
+} from "@zag-js/types"
+
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
 
 export type ProgressState = "indeterminate" | "loading" | "complete"
 
@@ -14,17 +25,35 @@ export interface IntlTranslations {
   value(details: ValueTranslationDetails): string
 }
 
+export type ElementIds = Partial<{
+  root: string
+  track: string
+  label: string
+  circle: string
+}>
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 interface PublicContext extends DirectionProperty, CommonProperties, OrientationProperty {
   /**
+   * The ids of the elements in the progress bar. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
    *  The current value of the progress bar.
+   * @default 50
    */
   value: number | null
   /**
    * The minimum allowed value of the progress bar.
+   * @default 0
    */
   min: number
   /**
    * The maximum allowed value of the progress bar.
+   * @default 100
    */
   max: number
   /**
@@ -75,6 +104,10 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
 export interface ViewProps {
   state: ProgressState
 }
@@ -106,3 +139,9 @@ export interface MachineApi<T extends PropTypes> {
   circleTrackProps: T["circle"]
   circleRangeProps: T["circle"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { Orientation }

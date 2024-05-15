@@ -2,13 +2,15 @@
   import type { UseControlsReturn } from "$lib/use-controls.svelte"
   import { dataAttr } from "@zag-js/dom-query"
   import Controls from "./controls.svelte"
+  import type { Snippet } from "svelte"
 
   interface Props {
     controls?: UseControlsReturn | null
     viz?: boolean
+    children: Snippet
   }
 
-  const { controls, viz }: Props = $props()
+  const { controls, viz, children }: Props = $props()
 
   let active = $state(viz ? 1 : !controls ? 1 : 0)
 </script>
@@ -26,6 +28,6 @@
     </div>
   {/if}
   <div data-content data-active={dataAttr(active === 1)}>
-    <slot />
+    {@render children()}
   </div>
 </div>

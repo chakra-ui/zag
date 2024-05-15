@@ -1,4 +1,4 @@
-import { createScope } from "@zag-js/dom-query"
+import { createScope, query } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./combobox.types"
 
 export const dom = createScope({
@@ -21,11 +21,20 @@ export const dom = createScope({
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
   getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
   getClearTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getClearTriggerId(ctx)),
-
-  isInputFocused: (ctx: Ctx) => dom.getDoc(ctx).activeElement === dom.getInputEl(ctx),
   getHighlightedItemEl: (ctx: Ctx) => {
     const value = ctx.highlightedValue
     if (value == null) return
-    return dom.getContentEl(ctx)?.querySelector<HTMLElement>(`[role=option][data-value="${CSS.escape(value)}"`)
+    return query(dom.getContentEl(ctx), `[role=option][data-value="${CSS.escape(value)}"`)
+  },
+
+  focusInputEl: (ctx: Ctx) => {
+    const inputEl = dom.getInputEl(ctx)
+    if (dom.getActiveElement(ctx) === inputEl) return
+    inputEl?.focus({ preventScroll: true })
+  },
+  focusTriggerEl: (ctx: Ctx) => {
+    const triggerEl = dom.getTriggerEl(ctx)
+    if (dom.getActiveElement(ctx) === triggerEl) return
+    triggerEl?.focus({ preventScroll: true })
   },
 })

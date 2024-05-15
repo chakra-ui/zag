@@ -5,16 +5,14 @@ import type { MachineApi, Send, State } from "./dialog.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const ariaLabel = state.context["aria-label"]
-  const isOpen = state.matches("open")
+  const open = state.matches("open")
   const rendered = state.context.renderedElements
 
   return {
-    isOpen,
-    open() {
-      send("OPEN")
-    },
-    close() {
-      send("CLOSE")
+    open,
+    setOpen(nextOpen) {
+      if (nextOpen === open) return
+      send(nextOpen ? "OPEN" : "CLOSE")
     },
 
     triggerProps: normalize.button({
@@ -23,10 +21,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getTriggerId(state.context),
       "aria-haspopup": "dialog",
       type: "button",
-      "aria-expanded": isOpen,
-      "data-state": isOpen ? "open" : "closed",
+      "aria-expanded": open,
+      "data-state": open ? "open" : "closed",
       "aria-controls": dom.getContentId(state.context),
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         send("TOGGLE")
       },
     }),
@@ -34,9 +33,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     backdropProps: normalize.element({
       ...parts.backdrop.attrs,
       dir: state.context.dir,
-      hidden: !isOpen,
+      hidden: !open,
       id: dom.getBackdropId(state.context),
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
     }),
 
     positionerProps: normalize.element({
@@ -44,7 +43,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getPositionerId(state.context),
       style: {
-        pointerEvents: isOpen ? undefined : "none",
+        pointerEvents: open ? undefined : "none",
       },
     }),
 
@@ -52,10 +51,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.content.attrs,
       dir: state.context.dir,
       role: state.context.role,
-      hidden: !isOpen,
+      hidden: !open,
       id: dom.getContentId(state.context),
       tabIndex: -1,
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
       "aria-modal": true,
       "aria-label": ariaLabel || undefined,
       "aria-labelledby": ariaLabel || !rendered.title ? undefined : dom.getTitleId(state.context),
@@ -80,6 +79,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getCloseTriggerId(state.context),
       type: "button",
       onClick(event) {
+        if (event.defaultPrevented) return
         event.stopPropagation()
         send("CLOSE")
       },

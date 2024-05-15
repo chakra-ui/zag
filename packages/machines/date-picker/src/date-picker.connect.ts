@@ -63,7 +63,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const disabled = state.context.disabled
   const readOnly = state.context.readOnly
-  const isInteractive = state.context.isInteractive
+  const interactive = state.context.isInteractive
 
   const min = state.context.min
   const max = state.context.max
@@ -71,8 +71,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const timeZone = state.context.timeZone
   const startOfWeek = state.context.startOfWeek
 
-  const isFocused = state.matches("focused")
-  const isOpen = state.matches("open")
+  const focused = state.matches("focused")
+  const open = state.matches("open")
 
   const isRangePicker = state.context.selectionMode === "range"
   const isDateUnavailableFn = state.context.isDateUnavailable
@@ -120,12 +120,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     const { value, disabled } = props
     const normalized = focusedValue.set({ year: value })
     const cellState = {
-      isFocused: focusedValue.year === props.value,
-      isSelectable: !isDateInvalid(normalized, min, max),
-      isSelected: !!selectedValue.find((date) => date.year === value),
+      focused: focusedValue.year === props.value,
+      selectable: !isDateInvalid(normalized, min, max),
+      selected: !!selectedValue.find((date) => date.year === value),
       valueText: value.toString(),
-      get isDisabled() {
-        return disabled || !cellState.isSelectable
+      get disabled() {
+        return disabled || !cellState.selectable
       },
     }
     return cellState
@@ -136,12 +136,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     const normalized = focusedValue.set({ month: value })
     const formatter = getMonthFormatter(locale, timeZone)
     const cellState = {
-      isFocused: focusedValue.month === props.value,
-      isSelectable: !isDateInvalid(normalized, min, max),
-      isSelected: !!selectedValue.find((date) => date.month === value && date.year === focusedValue.year),
+      focused: focusedValue.month === props.value,
+      selectable: !isDateInvalid(normalized, min, max),
+      selected: !!selectedValue.find((date) => date.month === value && date.year === focusedValue.year),
       valueText: formatter.format(normalized.toDate(timeZone)),
-      get isDisabled() {
-        return disabled || !cellState.isSelectable
+      get disabled() {
+        return disabled || !cellState.selectable
       },
     }
     return cellState
@@ -156,28 +156,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     const end = visibleRange.start.add(unitDuration).subtract({ days: 1 })
 
     const cellState = {
-      isInvalid: isDateInvalid(value, min, max),
-      isDisabled: disabled || isDateDisabled(value, visibleRange.start, end, min, max),
-      isSelected: selectedValue.some((date) => isDateEqual(value, date)),
-      isUnavailable: isDateUnavailable(value, isDateUnavailableFn, locale, min, max) && !disabled,
-      isOutsideRange: isDateOutsideVisibleRange(value, visibleRange.start, end),
-      isInRange:
+      invalid: isDateInvalid(value, min, max),
+      disabled: disabled || isDateDisabled(value, visibleRange.start, end, min, max),
+      selected: selectedValue.some((date) => isDateEqual(value, date)),
+      unavailable: isDateUnavailable(value, isDateUnavailableFn, locale, min, max) && !disabled,
+      outsideRange: isDateOutsideVisibleRange(value, visibleRange.start, end),
+      inRange:
         isRangePicker && (isDateWithinRange(value, selectedValue) || isDateWithinRange(value, hoveredRangeValue)),
-      isFirstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
-      isLastInRange: isRangePicker && isDateEqual(value, selectedValue[1]),
-      isToday: isTodayDate(value, timeZone),
-      isWeekend: isWeekend(value, locale),
+      firstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
+      lastInRange: isRangePicker && isDateEqual(value, selectedValue[1]),
+      today: isTodayDate(value, timeZone),
+      weekend: isWeekend(value, locale),
       formattedDate: formatter.format(value.toDate(timeZone)),
-      get isFocused() {
-        return isDateEqual(value, focusedValue) && !cellState.isOutsideRange
+      get focused() {
+        return isDateEqual(value, focusedValue) && !cellState.outsideRange
       },
       get ariaLabel() {
-        if (cellState.isUnavailable) return `Not available. ${cellState.formattedDate}`
-        if (cellState.isSelected) return `Selected date. ${cellState.formattedDate}`
+        if (cellState.unavailable) return `Not available. ${cellState.formattedDate}`
+        if (cellState.selected) return `Selected date. ${cellState.formattedDate}`
         return `Choose ${cellState.formattedDate}`
       },
-      get isSelectable() {
-        return !cellState.isDisabled && !cellState.isUnavailable
+      get selectable() {
+        return !cellState.disabled && !cellState.unavailable
       },
     }
     return cellState
@@ -189,8 +189,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
-    isFocused,
-    isOpen,
+    focused,
+    open,
     view: state.context.view,
     getRangePresetValue(preset) {
       return getDateRangePreset(preset, locale, timeZone)
@@ -231,11 +231,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setFocusedValue(value) {
       send({ type: "FOCUS.SET", value })
     },
-    open() {
-      send("OPEN")
-    },
-    close() {
-      send("CLOSE")
+    setOpen(nextOpen) {
+      if (nextOpen === open) return
+      send(nextOpen ? "OPEN" : "CLOSE")
     },
     focusMonth,
     focusYear,
@@ -270,7 +268,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getRootId(state.context),
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
       "data-disabled": dataAttr(disabled),
       "data-readonly": dataAttr(readOnly),
     }),
@@ -279,7 +277,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.label.attrs,
       dir: state.context.dir,
       htmlFor: dom.getInputId(state.context, 0),
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
       "data-disabled": dataAttr(disabled),
       "data-readonly": dataAttr(readOnly),
     }),
@@ -298,9 +296,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     contentProps: normalize.element({
       ...parts.content.attrs,
-      hidden: !isOpen,
+      hidden: !open,
       dir: state.context.dir,
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
       "data-placement": currentPlacement,
       id: dom.getContentId(state.context),
       role: "application",
@@ -324,6 +322,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         tabIndex: -1,
         onKeyDown(event) {
+          if (event.defaultPrevented) return
+
           const keyMap: EventKeyMap = {
             Enter() {
               // if focused date is unavailable, do nothing
@@ -423,10 +423,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.tableCell.attrs,
         role: "gridcell",
-        "aria-disabled": ariaAttr(!cellState.isSelectable),
-        "aria-selected": cellState.isSelected || cellState.isInRange,
-        "aria-invalid": ariaAttr(cellState.isInvalid),
-        "aria-current": cellState.isToday ? "date" : undefined,
+        "aria-disabled": ariaAttr(!cellState.selectable),
+        "aria-selected": cellState.selected || cellState.inRange,
+        "aria-invalid": ariaAttr(cellState.invalid),
+        "aria-current": cellState.today ? "date" : undefined,
         "data-value": value.toString(),
       })
     },
@@ -438,28 +438,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getCellTriggerId(state.context, value.toString()),
         role: "button",
         dir: state.context.dir,
-        tabIndex: cellState.isFocused ? 0 : -1,
+        tabIndex: cellState.focused ? 0 : -1,
         "aria-label": cellState.ariaLabel,
-        "aria-disabled": ariaAttr(!cellState.isSelectable),
-        "aria-invalid": ariaAttr(cellState.isInvalid),
-        "data-disabled": dataAttr(!cellState.isSelectable),
-        "data-selected": dataAttr(cellState.isSelected),
+        "aria-disabled": ariaAttr(!cellState.selectable),
+        "aria-invalid": ariaAttr(cellState.invalid),
+        "data-disabled": dataAttr(!cellState.selectable),
+        "data-selected": dataAttr(cellState.selected),
         "data-value": value.toString(),
         "data-view": "day",
-        "data-today": dataAttr(cellState.isToday),
-        "data-focused": dataAttr(cellState.isFocused),
-        "data-unavailable": dataAttr(cellState.isUnavailable),
-        "data-range-start": dataAttr(cellState.isFirstInRange),
-        "data-range-end": dataAttr(cellState.isLastInRange),
-        "data-in-range": dataAttr(cellState.isInRange),
-        "data-outside-range": dataAttr(cellState.isOutsideRange),
-        "data-weekend": dataAttr(cellState.isWeekend),
-        onClick() {
-          if (!cellState.isSelectable) return
+        "data-today": dataAttr(cellState.today),
+        "data-focus": dataAttr(cellState.focused),
+        "data-unavailable": dataAttr(cellState.unavailable),
+        "data-range-start": dataAttr(cellState.firstInRange),
+        "data-range-end": dataAttr(cellState.lastInRange),
+        "data-in-range": dataAttr(cellState.inRange),
+        "data-outside-range": dataAttr(cellState.outsideRange),
+        "data-weekend": dataAttr(cellState.weekend),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "day", value })
         },
         onPointerMove(event) {
-          if (event.pointerType === "touch" || !cellState.isSelectable) return
+          if (event.pointerType === "touch" || !cellState.selectable) return
           const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
           if (hoveredValue && isEqualDay(value, hoveredValue)) return
           send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
@@ -476,9 +477,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         colSpan: columns,
         role: "gridcell",
-        "aria-selected": ariaAttr(cellState.isSelected),
-        "data-selected": dataAttr(cellState.isSelected),
-        "aria-disabled": ariaAttr(!cellState.isSelectable),
+        "aria-selected": ariaAttr(cellState.selected),
+        "data-selected": dataAttr(cellState.selected),
+        "aria-disabled": ariaAttr(!cellState.selectable),
         "data-value": value,
       })
     },
@@ -490,16 +491,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         role: "button",
         id: dom.getCellTriggerId(state.context, value.toString()),
-        "data-selected": dataAttr(cellState.isSelected),
-        "aria-disabled": ariaAttr(!cellState.isSelectable),
-        "data-disabled": dataAttr(!cellState.isSelectable),
-        "data-focused": dataAttr(cellState.isFocused),
+        "data-selected": dataAttr(cellState.selected),
+        "aria-disabled": ariaAttr(!cellState.selectable),
+        "data-disabled": dataAttr(!cellState.selectable),
+        "data-focus": dataAttr(cellState.focused),
         "aria-label": cellState.valueText,
         "data-view": "month",
         "data-value": value,
-        tabIndex: cellState.isFocused ? 0 : -1,
-        onClick() {
-          if (!cellState.isSelectable) return
+        tabIndex: cellState.focused ? 0 : -1,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "month", value })
         },
       })
@@ -514,9 +516,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         colSpan: columns,
         role: "gridcell",
-        "aria-selected": ariaAttr(cellState.isSelected),
-        "data-selected": dataAttr(cellState.isSelected),
-        "aria-disabled": ariaAttr(!cellState.isSelectable),
+        "aria-selected": ariaAttr(cellState.selected),
+        "data-selected": dataAttr(cellState.selected),
+        "aria-disabled": ariaAttr(!cellState.selectable),
         "data-value": value,
       })
     },
@@ -528,16 +530,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         role: "button",
         id: dom.getCellTriggerId(state.context, value.toString()),
-        "data-selected": dataAttr(cellState.isSelected),
-        "data-focused": dataAttr(cellState.isFocused),
-        "aria-disabled": ariaAttr(!cellState.isSelectable),
-        "data-disabled": dataAttr(!cellState.isSelectable),
+        "data-selected": dataAttr(cellState.selected),
+        "data-focus": dataAttr(cellState.focused),
+        "aria-disabled": ariaAttr(!cellState.selectable),
+        "data-disabled": dataAttr(!cellState.selectable),
         "aria-label": cellState.valueText,
         "data-value": value,
         "data-view": "year",
-        tabIndex: cellState.isFocused ? 0 : -1,
-        onClick() {
-          if (!cellState.isSelectable) return
+        tabIndex: cellState.focused ? 0 : -1,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "year", value })
         },
       })
@@ -552,7 +555,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: "button",
         "aria-label": getNextTriggerLabel(view),
         disabled: disabled || !state.context.isNextVisibleRangeValid,
-        onClick() {
+        onClick(event) {
+          if (event.defaultPrevented) return
           send({ type: "GOTO.NEXT", view })
         },
       })
@@ -567,7 +571,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: "button",
         "aria-label": getPrevTriggerLabel(view),
         disabled: disabled || !state.context.isPrevVisibleRangeValid,
-        onClick() {
+        onClick(event) {
+          if (event.defaultPrevented) return
           send({ type: "GOTO.PREV", view })
         },
       })
@@ -580,7 +585,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       type: "button",
       "aria-label": "Clear dates",
       hidden: !state.context.value.length,
-      onClick() {
+      onClick(event) {
+        if (event.defaultPrevented) return
         send("VALUE.CLEAR")
       },
     }),
@@ -591,13 +597,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       type: "button",
       "data-placement": currentPlacement,
-      "aria-label": isOpen ? "Close calendar" : "Open calendar",
+      "aria-label": open ? "Close calendar" : "Open calendar",
       "aria-controls": dom.getContentId(state.context),
-      "data-state": isOpen ? "open" : "closed",
+      "data-state": open ? "open" : "closed",
       "aria-haspopup": "grid",
       disabled,
-      onClick() {
-        if (!isInteractive) return
+      onClick(event) {
+        if (event.defaultPrevented) return
+        if (!interactive) return
         send("TRIGGER.CLICK")
       },
     }),
@@ -612,8 +619,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: "button",
         disabled,
         "aria-label": getViewTriggerLabel(state.context.view),
-        onClick() {
-          if (!isInteractive) return
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!interactive) return
           send("VIEW.CHANGE")
         },
       })
@@ -639,7 +647,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         spellCheck: "false",
         dir: state.context.dir,
         name: state.context.name,
-        "data-state": isOpen ? "open" : "closed",
+        "data-state": open ? "open" : "closed",
         readOnly,
         disabled,
         placeholder: getInputPlaceholder(locale),
@@ -657,7 +665,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "INPUT.BLUR", value: event.currentTarget.value, index })
         },
         onKeyDown(event) {
-          if (event.key !== "Enter" || !isInteractive) return
+          if (event.defaultPrevented) return
+          if (!interactive) return
+          const evt = getNativeEvent(event)
+          if (evt.isComposing) return
+          if (event.key !== "Enter") return
           if (isUnavailable(state.context.focusedValue)) return
           send({ type: "INPUT.ENTER", value: event.currentTarget.value, index })
           event.preventDefault()
@@ -708,7 +720,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           ? `select ${value[0].toString()} to ${value[1].toString()}`
           : `select ${value}`,
         type: "button",
-        onClick() {
+        onClick(event) {
+          if (event.defaultPrevented) return
           send({ type: "PRESET.CLICK", value })
         },
       })

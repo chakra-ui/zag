@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/switch",
-  "version": "0.47.0",
+  "version": "0.50.0",
   "description": "Core logic for the switch widget implemented as a state machine",
   "keywords": [
     "js",
@@ -41,8 +41,7 @@
     "@zag-js/dom-event": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "@zag-js/types": "workspace:*",
-    "@zag-js/visually-hidden": "workspace:*"
+    "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "2.2.0"

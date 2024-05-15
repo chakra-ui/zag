@@ -30,21 +30,21 @@ const fetchMachine = createMachine({
       on: {
         "CONTROLLED.CLOSE": {
           target: "closed",
-          actions: ["restoreFocus"]
+          actions: ["setFinalFocus"]
         },
         CLOSE: [{
           cond: "isOpenControlled",
           actions: ["invokeOnClose"]
         }, {
           target: "closed",
-          actions: ["invokeOnClose", "restoreFocus"]
+          actions: ["invokeOnClose", "setFinalFocus"]
         }],
         TOGGLE: [{
           cond: "isOpenControlled",
           actions: ["invokeOnClose"]
         }, {
           target: "closed",
-          actions: ["invokeOnClose", "restoreFocus"]
+          actions: ["invokeOnClose", "setFinalFocus"]
         }]
       }
     },

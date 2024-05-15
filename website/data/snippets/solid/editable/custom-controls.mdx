@@ -15,10 +15,10 @@ export default function Editable() {
         <span {...api().previewProps} />
       </div>
       <div>
-        <Show when={!api().isEditing}>
+        <Show when={!api().editing}>
           <button {...api().editTriggerProps}>Edit</button>{" "}
         </Show>
-        <Show when={api().isEditing}>
+        <Show when={api().editing}>
           <div>
             <button {...api().submitTriggerProps}>Save</button>
             <button {...api().cancelTriggerProps}>Cancel</button>

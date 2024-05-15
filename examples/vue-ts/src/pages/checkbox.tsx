@@ -39,15 +39,15 @@ export default defineComponent({
               <fieldset>
                 <label {...api.rootProps}>
                   <div {...api.controlProps} />
-                  <span {...api.labelProps}>Input {api.isChecked ? "Checked" : "Unchecked"}</span>
+                  <span {...api.labelProps}>Input {api.checked ? "Checked" : "Unchecked"}</span>
                   <input {...api.hiddenInputProps} data-testid="hidden-input" />
                   <div {...api.indicatorProps}>Indicator</div>
                 </label>
 
-                <button type="button" disabled={api.isChecked} onClick={() => api.setChecked(true)}>
+                <button type="button" disabled={api.checked} onClick={() => api.setChecked(true)}>
                   Check
                 </button>
-                <button type="button" disabled={!api.isChecked} onClick={() => api.setChecked(false)}>
+                <button type="button" disabled={!api.checked} onClick={() => api.setChecked(false)}>
                   Uncheck
                 </button>
                 <button type="reset">Reset Form</button>

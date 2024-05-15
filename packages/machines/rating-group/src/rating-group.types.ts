@@ -40,6 +40,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   translations: IntlTranslations
   /**
    * The total number of ratings.
+   * @default 5
    */
   count: number
   /**
@@ -130,11 +131,18 @@ export interface ItemProps {
 }
 
 export interface ItemState {
-  isEqual: boolean
-  isValueEmpty: boolean
-  isHighlighted: boolean
-  isHalf: boolean
-  isChecked: boolean
+  /**
+   * Whether the rating item is highlighted.
+   */
+  highlighted: boolean
+  /**
+   * Whether the rating item is partially highlighted.
+   */
+  half: boolean
+  /**
+   * Whether the rating item is checked.
+   */
+  checked: boolean
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -149,7 +157,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the rating group is being hovered
    */
-  isHovering: boolean
+  hovering: boolean
   /**
    * The current value of the rating group
    */

@@ -24,11 +24,11 @@ export const dom = createScope({
   },
   getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
   getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
-  getNextEl: (ctx: Ctx, loop?: boolean) => nextById(dom.getElements(ctx), ctx.highlightedValue!, loop ?? ctx.loop),
-  getPrevEl: (ctx: Ctx, loop?: boolean) => prevById(dom.getElements(ctx), ctx.highlightedValue!, loop ?? ctx.loop),
+  getNextEl: (ctx: Ctx, loop?: boolean) => nextById(dom.getElements(ctx), ctx.highlightedValue!, loop ?? ctx.loopFocus),
+  getPrevEl: (ctx: Ctx, loop?: boolean) => prevById(dom.getElements(ctx), ctx.highlightedValue!, loop ?? ctx.loopFocus),
 
   getElemByKey: (ctx: Ctx, key: string) =>
-    getByTypeahead(dom.getElements(ctx), { state: ctx.typeahead, key, activeId: ctx.highlightedValue }),
+    getByTypeahead(dom.getElements(ctx), { state: ctx.typeaheadState, key, activeId: ctx.highlightedValue }),
 
   isTargetDisabled: (v: EventTarget | null) => {
     return isHTMLElement(v) && (v.dataset.disabled === "" || v.hasAttribute("disabled"))

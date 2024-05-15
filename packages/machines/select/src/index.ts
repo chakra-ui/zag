@@ -1,3 +1,4 @@
+export type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent } from "@zag-js/dismissable"
 export { anatomy } from "./select.anatomy"
 export { collection } from "./select.collection"
 export { connect } from "./select.connect"
@@ -10,11 +11,12 @@ export type {
   UserDefinedContext as Context,
   ElementIds,
   HighlightChangeDetails,
-  ScrollToIndexDetails,
   ItemGroupLabelProps,
   ItemGroupProps,
   ItemProps,
   ItemState,
   OpenChangeDetails,
+  PositioningOptions,
+  ScrollToIndexDetails,
   ValueChangeDetails,
 } from "./select.types"

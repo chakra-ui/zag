@@ -9,7 +9,7 @@
 
   const controls = useControls(selectControls)
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     select.machine({
       id: "1",
       name: "select",
@@ -20,12 +20,12 @@
     },
   )
 
-  const api = $derived(select.connect(_state, send, normalizeProps))
+  const api = $derived(select.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="select">
   <div {...api.rootProps}>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
+    <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.labelProps}>Label</label>
 
     <div {...api.controlProps}>
@@ -71,5 +71,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} omit={["collection"]} />
+  <StateVisualizer state={snapshot} omit={["collection"]} />
 </Toolbar>

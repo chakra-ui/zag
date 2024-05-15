@@ -6,18 +6,20 @@ export const props = createProps<UserDefinedContext>()([
   "allowCustomValue",
   "autoFocus",
   "closeOnSelect",
+  "collection",
   "dir",
   "disabled",
+  "disableLayer",
   "form",
   "getRootNode",
+  "getSelectionValue",
   "highlightedValue",
   "id",
   "ids",
   "inputBehavior",
-  "collection",
   "inputValue",
   "invalid",
-  "loop",
+  "loopFocus",
   "multiple",
   "name",
   "onFocusOutside",
@@ -28,13 +30,18 @@ export const props = createProps<UserDefinedContext>()([
   "onOpenChange",
   "onPointerDownOutside",
   "onValueChange",
+  "open.controlled",
+  "open",
   "openOnClick",
+  "openOnChange",
+  "openOnKeyPress",
   "placeholder",
   "positioning",
   "readOnly",
+  "scrollToIndexFn",
   "selectionBehavior",
-  "selectOnBlur",
   "translations",
+  "composite",
   "value",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
@@ -45,5 +52,5 @@ export const splitItemGroupLabelProps = createSplitProps<ItemGroupLabelProps>(it
 export const itemGroupProps = createProps<ItemGroupProps>()(["id"])
 export const splitItemGroupProps = createSplitProps<ItemGroupProps>(itemGroupProps)
 
-export const itemProps = createProps<ItemProps>()(["item"])
+export const itemProps = createProps<ItemProps>()(["item", "persistFocus"])
 export const splitItemProps = createSplitProps<ItemProps>(itemProps)

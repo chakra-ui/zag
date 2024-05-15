@@ -30,7 +30,7 @@ export default defineComponent({
                   Open Dialog
                 </button>
                 <div style={{ minHeight: "1200px", pointerEvents: "none" }} />
-                {parentDialog.isOpen && (
+                {parentDialog.open && (
                   <Teleport to="body">
                     <div {...parentDialog.backdropProps} />
                     <div {...parentDialog.positionerProps} data-testid="positioner-1">
@@ -47,7 +47,7 @@ export default defineComponent({
                         <button {...childDialog.triggerProps} data-testid="trigger-2">
                           Open Nested
                         </button>
-                        {childDialog.isOpen && (
+                        {childDialog.open && (
                           <Teleport to="body">
                             <div {...childDialog.positionerProps} data-testid="positioner-2">
                               <div {...childDialog.contentProps}>
@@ -55,7 +55,7 @@ export default defineComponent({
                                 <button {...childDialog.closeTriggerProps} data-testid="close-2">
                                   X
                                 </button>
-                                <button onClick={() => parentDialog.close()} data-testid="special-close">
+                                <button onClick={() => parentDialog.setOpen(false)} data-testid="special-close">
                                   Close Dialog 1
                                 </button>
                               </div>

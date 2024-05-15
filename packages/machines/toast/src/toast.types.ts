@@ -150,22 +150,27 @@ export type Service<T = any> = Machine<MachineContext<T>, MachineState>
 interface GroupPublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether to pause toast when the user leaves the browser tab
+   * @default false
    */
   pauseOnPageIdle: boolean
   /**
    * The gap or spacing between toasts
+   * @default 16
    */
   gap: number
   /**
    * The maximum number of toasts that can be shown at once
+   * @default Number.MAX_SAFE_INTEGER
    */
   max: number
   /**
    * The offset from the safe environment edge of the viewport
+   * @default "1rem"
    */
   offsets: string | Record<"left" | "right" | "bottom" | "top", string>
   /**
    * The hotkey that will move focus to the toast group
+   * @default '["altKey", "KeyT"]'
    */
   hotkey: string[]
   /**
@@ -179,6 +184,8 @@ interface GroupPublicContext extends DirectionProperty, CommonProperties {
   /**
    * The duration for the toast to kept alive before it is removed.
    * Useful for exit transitions.
+   *
+   * @default 200
    */
   removeDelay: number
   /**
@@ -353,15 +360,11 @@ export interface MachineApi<T extends PropTypes = PropTypes, O = any> extends Ge
   /**
    * Whether the toast is visible.
    */
-  isVisible: boolean
+  visible: boolean
   /**
    * Whether the toast is paused.
    */
-  isPaused: boolean
-  /**
-   * Whether the toast is in RTL mode.
-   */
-  isRtl: boolean
+  paused: boolean
   /**
    * Function to pause the toast (keeping it visible).
    */

@@ -27,7 +27,7 @@ export default function Page() {
             <button data-testid={`${id}-trigger`} {...api.triggerProps}>
               Hover me
             </button>
-            {api.isOpen && (
+            {api.open && (
               <div {...api.positionerProps}>
                 <div className="tooltip-content" data-testid={`${id}-tooltip`} {...api.contentProps}>
                   Tooltip
@@ -38,7 +38,7 @@ export default function Page() {
           <button data-testid={`${id2}-trigger`} {...api2.triggerProps}>
             Over me
           </button>
-          {api2.isOpen && (
+          {api2.open && (
             <Portal>
               <div {...api2.positionerProps}>
                 <div className="tooltip-content" data-testid={`${id2}-tooltip`} {...api2.contentProps}>

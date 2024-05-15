@@ -15,7 +15,7 @@ export interface ValueChangeDetails {
 
 export type ElementIds = Partial<{
   root: string
-  toggle(value: string): string
+  item(value: string): string
 }>
 
 interface PublicContext extends DirectionProperty, CommonProperties {
@@ -37,14 +37,17 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   onValueChange?: (details: ValueChangeDetails) => void
   /**
    * Whether to loop focus inside the toggle group.
+   * @default true
    */
-  loop: boolean
+  loopFocus: boolean
   /**
    *  Whether to use roving tab index to manage focus.
+   * @default true
    */
   rovingFocus?: boolean
   /**
    * The orientation of the toggle group.
+   * @default "horizontal"
    */
   orientation: Orientation
   /**
@@ -56,7 +59,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
 type ComputedContext = Readonly<{
-  currentLoop: boolean
+  currentLoopFocus: boolean
 }>
 
 interface PrivateContext {
@@ -65,11 +68,6 @@ interface PrivateContext {
    * Whether the user is tabbing backward.
    */
   isTabbingBackward: boolean
-  /**
-   * @internal
-   * Whether the toggle group has focusable toggles.
-   */
-  hasFocusableToggle: boolean
   /**
    * @internal
    * Whether the toggle was focused by a click.
@@ -108,10 +106,22 @@ export interface ItemProps {
 }
 
 export interface ItemState {
+  /**
+   * The underlying id of the item.
+   */
   id: string
-  isDisabled: boolean
-  isPressed: boolean
-  isFocused: boolean
+  /**
+   * Whether the toggle item is disabled.
+   */
+  disabled: boolean
+  /**
+   * Whether the toggle item is pressed.
+   */
+  pressed: boolean
+  /**
+   * Whether the toggle item is focused.
+   */
+  focused: boolean
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -130,3 +140,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   rootProps: T["element"]
   getItemProps(props: ItemProps): T["button"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { Orientation }

@@ -3,24 +3,24 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./splitter.anatomy"
 import { dom } from "./splitter.dom"
-import type { MachineApi, ResizeTriggerProps, Send, State } from "./splitter.types"
+import type { MachineApi, ResizeTriggerProps, ResizeTriggerState, Send, State } from "./splitter.types"
 import { getHandleBounds } from "./splitter.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isHorizontal = state.context.isHorizontal
-  const isFocused = state.hasTag("focus")
-  const isDragging = state.matches("dragging")
+  const horizontal = state.context.isHorizontal
+  const focused = state.hasTag("focus")
+  const dragging = state.matches("dragging")
   const panels = state.context.panels
 
-  function getResizeTriggerState(props: ResizeTriggerProps) {
+  function getResizeTriggerState(props: ResizeTriggerProps): ResizeTriggerState {
     const { id, disabled } = props
     const ids = id.split(":")
     const panelIds = ids.map((id) => dom.getPanelId(state.context, id))
     const panels = getHandleBounds(state.context, id)
 
     return {
-      isDisabled: !!disabled,
-      isFocused: state.context.activeResizeId === id && isFocused,
+      disabled: !!disabled,
+      focused: state.context.activeResizeId === id && focused,
       panelIds,
       min: panels?.min,
       max: panels?.max,
@@ -29,8 +29,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
-    isFocused,
-    isDragging,
+    focused: focused,
+    dragging: dragging,
     getResizeTriggerState,
     bounds: getHandleBounds(state.context),
     setToMinSize(id) {
@@ -52,7 +52,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       style: {
         display: "flex",
-        flexDirection: isHorizontal ? "row" : "column",
+        flexDirection: horizontal ? "row" : "column",
         height: "100%",
         width: "100%",
         overflow: "hidden",
@@ -88,15 +88,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "aria-orientation": state.context.orientation,
         "aria-controls": triggerState.panelIds.join(" "),
-        "data-focus": dataAttr(triggerState.isFocused),
+        "data-focus": dataAttr(triggerState.focused),
         "data-disabled": dataAttr(disabled),
         style: {
           touchAction: "none",
           userSelect: "none",
           flex: "0 0 auto",
-          pointerEvents: isDragging && !triggerState.isFocused ? "none" : undefined,
-          cursor: isHorizontal ? "col-resize" : "row-resize",
-          [isHorizontal ? "minHeight" : "minWidth"]: "0",
+          pointerEvents: dragging && !triggerState.focused ? "none" : undefined,
+          cursor: horizontal ? "col-resize" : "row-resize",
+          [horizontal ? "minHeight" : "minWidth"]: "0",
         },
         onPointerDown(event) {
           if (disabled) {
@@ -104,8 +104,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             return
           }
           send({ type: "POINTER_DOWN", id })
+          event.currentTarget.setPointerCapture(event.pointerId)
           event.preventDefault()
           event.stopPropagation()
+        },
+        onPointerUp(event) {
+          if (disabled) return
+          if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+            event.currentTarget.releasePointerCapture(event.pointerId)
+          }
         },
         onPointerOver() {
           if (disabled) return
@@ -126,8 +133,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "DOUBLE_CLICK", id })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
           if (disabled) return
+
           const moveStep = getEventStep(event) * step
+
           const keyMap: EventKeyMap = {
             Enter() {
               send("ENTER")

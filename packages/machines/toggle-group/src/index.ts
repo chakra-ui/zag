@@ -8,5 +8,6 @@ export type {
   ElementIds,
   ItemProps,
   ItemState,
+  Orientation,
   ValueChangeDetails,
 } from "./toggle-group.types"

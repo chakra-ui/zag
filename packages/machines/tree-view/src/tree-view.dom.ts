@@ -7,9 +7,9 @@ interface TreeWalkerOpts {
 }
 
 export const dom = createScope({
-  getLabelId: (ctx: Ctx) => `tree-label:${ctx.id}`,
-  getRootId: (ctx: Ctx) => `tree-root:${ctx.id}`,
-  getTreeId: (ctx: Ctx) => `tree-tree:${ctx.id}`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `tree-root:${ctx.id}`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `tree-label:${ctx.id}`,
+  getTreeId: (ctx: Ctx) => ctx.ids?.tree ?? `tree-tree:${ctx.id}`,
 
   getNodeId(node: Node | null | undefined) {
     if (!isHTMLElement(node)) return null
@@ -19,7 +19,7 @@ export const dom = createScope({
   getNodeEl(ctx: Ctx, id: string) {
     const node = dom.getItemEl(ctx, id) ?? dom.getBranchEl(ctx, id)
     if (node?.dataset.part === "branch") {
-      return node.querySelector<HTMLElement>("[data-part=branch-control]")
+      return query(node, "[data-part=branch-control]")
     }
     return node
   },
@@ -42,8 +42,8 @@ export const dom = createScope({
   },
 
   getFocusedEl(ctx: Ctx) {
-    if (!ctx.focusedId) return null
-    return dom.getById(ctx, ctx.focusedId)
+    if (!ctx.focusedValue) return null
+    return dom.getById(ctx, ctx.focusedValue)
   },
 
   focusNode(node: Node | Element | null | undefined, options?: FocusOptions) {
@@ -93,9 +93,9 @@ export const dom = createScope({
     }
 
     return getByTypeahead(elements, {
-      state: ctx.typeahead,
+      state: ctx.typeaheadState,
       key,
-      activeId: ctx.focusedId,
+      activeId: ctx.focusedValue,
       itemToId: (v) => dom.getNodeId(v) ?? v.id,
     })
   },

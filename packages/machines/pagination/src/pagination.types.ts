@@ -49,14 +49,17 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   count: number
   /**
    * Number of data items per page
+   * @default 10
    */
   pageSize: number
   /**
    * Number of pages to show beside active page
+   * @default 1
    */
   siblingCount: number
   /**
    * The active page
+   * @default 1
    */
   page: number
   /**
@@ -166,14 +169,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to slice an array of data based on the current page.
    */
   slice<V>(data: V[]): V[]
-  /**
-   * Whether the current page is the first page.
-   */
-  isFirstPage: boolean
-  /**
-   * Whether the current page is the last page.
-   */
-  isLastPage: boolean
   /**
    * Function to set the total number of pages.
    */

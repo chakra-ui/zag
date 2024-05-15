@@ -27,7 +27,7 @@ const items = computed(() =>
     <div v-bind="api.rootProps">
       <div v-bind="api.controlProps">
         <span v-for="[index, state] in items" :key="index" v-bind="api.getItemProps({ index })">
-          <HalfStar v-if="state.isHalf" />
+          <HalfStar v-if="state.half" />
           <Star v-else="" />
         </span>
       </div>

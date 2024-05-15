@@ -18,20 +18,19 @@ export function machine(userContext: UserDefinedContext) {
         disabled: false,
         orientation: "horizontal",
         rovingFocus: true,
-        loop: true,
+        loopFocus: true,
         ...ctx,
         focusedId: null,
         isTabbingBackward: false,
-        hasFocusableToggle: false,
         isClickFocus: false,
         isWithinToolbar: false,
       },
 
       computed: {
-        currentLoop: (ctx) => ctx.loop && !ctx.isWithinToolbar,
+        currentLoopFocus: (ctx) => ctx.loopFocus && !ctx.isWithinToolbar,
       },
 
-      entry: ["checkFocusableToggles", "checkIfWithinToolbar"],
+      entry: ["checkIfWithinToolbar"],
 
       on: {
         "VALUE.SET": {
@@ -106,9 +105,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearClickFocus(ctx) {
           ctx.isClickFocus = false
-        },
-        checkFocusableToggles(ctx) {
-          ctx.hasFocusableToggle = ctx.value.length > 0
         },
         checkIfWithinToolbar(ctx) {
           const closestToolbar = dom.getRootEl(ctx)?.closest("[role=toolbar]")

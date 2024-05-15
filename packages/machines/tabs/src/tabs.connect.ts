@@ -1,19 +1,24 @@
-import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
-import { dataAttr, isSafari, isSelfEvent } from "@zag-js/dom-query"
+import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
+import { dataAttr, isSafari, isSelfTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
 import { dom } from "./tabs.dom"
-import type { MachineApi, Send, State, TriggerProps } from "./tabs.types"
+import type { MachineApi, Send, State, TriggerProps, TriggerState } from "./tabs.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const translations = state.context.translations
-  const isFocused = state.matches("focused")
+  const focused = state.matches("focused")
 
-  function getTriggerState(props: TriggerProps) {
+  const isVertical = state.context.orientation === "vertical"
+  const isHorizontal = state.context.orientation === "horizontal"
+  const composite = state.context.composite
+  const indicator = state.context.indicatorState
+
+  function getTriggerState(props: TriggerProps): TriggerState {
     return {
-      isSelected: state.context.value === props.value,
-      isFocused: state.context.focusedValue === props.value,
-      isDisabled: !!props.disabled,
+      selected: state.context.value === props.value,
+      focused: state.context.focusedValue === props.value,
+      disabled: !!props.disabled,
     }
   }
 
@@ -30,13 +35,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const id = dom.getTriggerId(state.context, value)
       send({ type: "SET_INDICATOR_RECT", id })
     },
+    syncTabIndex() {
+      send("SYNC_TAB_INDEX")
+    },
+    selectNext(fromValue) {
+      send({ type: "TAB_FOCUS", value: fromValue, src: "selectNext" })
+      send({ type: "ARROW_NEXT", src: "selectNext" })
+    },
+    selectPrev(fromValue) {
+      send({ type: "TAB_FOCUS", value: fromValue, src: "selectPrev" })
+      send({ type: "ARROW_PREV", src: "selectPrev" })
+    },
+    focus() {
+      dom.getSelectedTriggerEl(state.context)?.focus()
+    },
     getTriggerState,
 
     rootProps: normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
       "data-orientation": state.context.orientation,
-      "data-focus": dataAttr(isFocused),
+      "data-focus": dataAttr(focused),
       dir: state.context.dir,
     }),
 
@@ -45,26 +64,33 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getListId(state.context),
       role: "tablist",
       dir: state.context.dir,
-      "data-focus": dataAttr(isFocused),
+      "data-focus": dataAttr(focused),
       "aria-orientation": state.context.orientation,
       "data-orientation": state.context.orientation,
-      "aria-label": translations.listLabel,
+      "aria-label": translations?.listLabel,
       onKeyDown(event) {
-        const evt = event.nativeEvent || event
-        if (!isSelfEvent(evt)) return
+        if (event.defaultPrevented) return
+        const evt = getNativeEvent(event)
+
+        if (!isSelfTarget(evt)) return
+        if (evt.isComposing) return
 
         const keyMap: EventKeyMap = {
           ArrowDown() {
-            send("ARROW_DOWN")
+            if (isHorizontal) return
+            send({ type: "ARROW_NEXT", key: "ArrowDown" })
           },
           ArrowUp() {
-            send("ARROW_UP")
+            if (isHorizontal) return
+            send({ type: "ARROW_PREV", key: "ArrowUp" })
           },
           ArrowLeft() {
-            send("ARROW_LEFT")
+            if (isVertical) return
+            send({ type: "ARROW_PREV", key: "ArrowLeft" })
           },
           ArrowRight() {
-            send("ARROW_RIGHT")
+            if (isVertical) return
+            send({ type: "ARROW_NEXT", key: "ArrowRight" })
           },
           Home() {
             send("HOME")
@@ -73,7 +99,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send("END")
           },
           Enter() {
-            send({ type: "ENTER", value: state.context.focusedValue })
+            send({ type: "ENTER" })
           },
         }
 
@@ -101,13 +127,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(disabled),
         "aria-disabled": disabled,
         "data-value": value,
-        "aria-selected": triggerState.isSelected,
-        "data-selected": dataAttr(triggerState.isSelected),
-        "data-focus": dataAttr(triggerState.isFocused),
-        "aria-controls": dom.getContentId(state.context, value),
+        "aria-selected": triggerState.selected,
+        "data-selected": dataAttr(triggerState.selected),
+        "data-focus": dataAttr(triggerState.focused),
+        "aria-controls": triggerState.selected ? dom.getContentId(state.context, value) : undefined,
         "data-ownedby": dom.getListId(state.context),
         id: dom.getTriggerId(state.context, value),
-        tabIndex: triggerState.isSelected ? 0 : -1,
+        tabIndex: triggerState.selected && composite ? 0 : -1,
         onFocus() {
           send({ type: "TAB_FOCUS", value })
         },
@@ -118,6 +144,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
         },
         onClick(event) {
+          if (event.defaultPrevented) return
           if (disabled) return
           if (isSafari()) {
             event.currentTarget.focus()
@@ -134,7 +161,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.content.attrs,
         dir: state.context.dir,
         id: dom.getContentId(state.context, value),
-        tabIndex: 0,
+        tabIndex: composite ? 0 : -1,
         "aria-labelledby": dom.getTriggerId(state.context, value),
         role: "tabpanel",
         "data-ownedby": dom.getListId(state.context),
@@ -151,17 +178,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-orientation": state.context.orientation,
       style: {
         "--transition-property": "left, right, top, bottom, width, height",
-        "--left": state.context.indicatorRect?.left,
-        "--top": state.context.indicatorRect?.top,
-        "--width": state.context.indicatorRect?.width,
-        "--height": state.context.indicatorRect?.height,
+        "--left": indicator.rect?.left,
+        "--top": indicator.rect?.top,
+        "--width": indicator.rect?.width,
+        "--height": indicator.rect?.height,
         position: "absolute",
         willChange: "var(--transition-property)",
         transitionProperty: "var(--transition-property)",
-        transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration, 150ms)" : "0ms",
+        transitionDuration: indicator.transition ? "var(--transition-duration, 150ms)" : "0ms",
         transitionTimingFunction: "var(--transition-timing-function)",
-        [state.context.orientation === "horizontal" ? "left" : "top"]:
-          state.context.orientation === "horizontal" ? "var(--left)" : "var(--top)",
+        [isHorizontal ? "left" : "top"]: isHorizontal ? "var(--left)" : "var(--top)",
       },
     }),
   }

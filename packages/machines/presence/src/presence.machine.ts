@@ -1,53 +1,45 @@
-import { createMachine, ref, guards } from "@zag-js/core"
+import { createMachine, ref } from "@zag-js/core"
 import type { MachineContext, MachineState, UserDefinedContext } from "./presence.types"
-
-const { and, or } = guards
 
 function getAnimationName(styles?: CSSStyleDeclaration | null) {
   return styles?.animationName || "none"
 }
 
 export function machine(ctx: Partial<UserDefinedContext>) {
-  const initialState = ctx.present ? "mounted" : "unmounted"
   return createMachine<MachineContext, MachineState>(
     {
-      initial: initialState,
-      watch: {
-        present: ["raisePresenceChange", "setPrevPresent"],
-      },
+      initial: ctx.present ? "mounted" : "unmounted",
+
       context: {
         node: null,
         styles: null,
-        prevAnimationName: "",
+        unmountAnimationName: null,
+        prevAnimationName: null,
         present: false,
+        initial: false,
         ...ctx,
       },
+
+      exit: ["clearInitial"],
+
+      watch: {
+        present: ["setInitial", "syncPresence"],
+      },
+
       on: {
         "NODE.SET": {
           actions: ["setNode", "setStyles"],
         },
-        "PRESENCE.CHANGED": [
-          {
-            guard: "isPresent",
-            target: "mounted",
-            actions: ["setPrevAnimationName"],
-          },
-          {
-            guard: or("isAnimationNone", "isDisplayNone"),
-            target: "unmounted",
-            actions: ["invokeOnExitComplete"],
-          },
-          {
-            guard: and("wasPresent", "isAnimating"),
-            target: "unmountSuspended",
-          },
-          { target: "unmounted", actions: ["invokeOnExitComplete"] },
-        ],
       },
+
       states: {
         mounted: {
           on: {
-            UNMOUNT: "unmounted",
+            UNMOUNT: {
+              target: "unmounted",
+              actions: ["invokeOnExitComplete"],
+            },
+            "UNMOUNT.SUSPEND": "unmountSuspended",
           },
         },
         unmountSuspended: {
@@ -61,25 +53,31 @@ export function machine(ctx: Partial<UserDefinedContext>) {
               target: "unmounted",
               actions: ["invokeOnExitComplete"],
             },
+            UNMOUNT: {
+              target: "unmounted",
+              actions: ["invokeOnExitComplete"],
+            },
           },
         },
         unmounted: {
           entry: ["clearPrevAnimationName"],
           on: {
-            MOUNT: "mounted",
+            MOUNT: {
+              target: "mounted",
+              actions: ["setPrevAnimationName"],
+            },
           },
         },
       },
     },
     {
-      guards: {
-        isPresent: (ctx) => !!ctx.present,
-        isAnimationNone: (ctx) => getAnimationName(ctx.styles) === "none",
-        isDisplayNone: (ctx) => ctx.styles?.display === "none",
-        wasPresent: (ctx) => !!ctx.prevPresent,
-        isAnimating: (ctx) => ctx.prevAnimationName !== getAnimationName(ctx.styles),
-      },
       actions: {
+        setInitial(ctx) {
+          ctx.initial = true
+        },
+        clearInitial(ctx) {
+          ctx.initial = false
+        },
         invokeOnExitComplete(ctx) {
           ctx.onExitComplete?.()
         },
@@ -90,11 +88,25 @@ export function machine(ctx: Partial<UserDefinedContext>) {
           const win = evt.node.ownerDocument.defaultView || window
           ctx.styles = ref(win.getComputedStyle(evt.node))
         },
-        raisePresenceChange(_ctx, _evt, { send }) {
-          send("PRESENCE.CHANGED")
-        },
-        setPrevPresent(ctx) {
-          ctx.prevPresent = ctx.present
+        syncPresence(ctx, _evt, { send }) {
+          if (ctx.rafId) {
+            cancelAnimationFrame(ctx.rafId)
+          }
+
+          if (ctx.present) {
+            send({ type: "MOUNT", src: "presence.changed" })
+            return
+          }
+
+          ctx.rafId = requestAnimationFrame(() => {
+            const animationName = getAnimationName(ctx.styles)
+            ctx.unmountAnimationName = animationName
+            if (animationName === "none" || animationName === ctx.prevAnimationName || ctx.styles?.display === "none") {
+              send({ type: "UNMOUNT", src: "presence.changed" })
+            } else {
+              send({ type: "UNMOUNT.SUSPEND" })
+            }
+          })
         },
         setPrevAnimationName(ctx) {
           requestAnimationFrame(() => {
@@ -102,7 +114,7 @@ export function machine(ctx: Partial<UserDefinedContext>) {
           })
         },
         clearPrevAnimationName(ctx) {
-          ctx.prevAnimationName = ""
+          ctx.prevAnimationName = null
         },
       },
       activities: {
@@ -117,16 +129,16 @@ export function machine(ctx: Partial<UserDefinedContext>) {
           }
 
           const onEnd = (event: AnimationEvent) => {
-            const currentAnimationName = getAnimationName(ctx.styles)
-            const isCurrentAnimation = currentAnimationName.includes(event.animationName)
-            if (event.target === node && isCurrentAnimation) {
-              send("ANIMATION.END")
+            const animationName = getAnimationName(ctx.styles)
+            if (event.target === node && animationName === ctx.unmountAnimationName) {
+              send({ type: "UNMOUNT", src: "animationend" })
             }
           }
 
           node.addEventListener("animationstart", onStart)
           node.addEventListener("animationcancel", onEnd)
           node.addEventListener("animationend", onEnd)
+
           return () => {
             node.removeEventListener("animationstart", onStart)
             node.removeEventListener("animationcancel", onEnd)

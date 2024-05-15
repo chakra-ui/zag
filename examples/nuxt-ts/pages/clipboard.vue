@@ -26,7 +26,7 @@ const api = computed(() => clipboard.connect(state.value, send, normalizeProps))
       <div v-bind="api.controlProps">
         <input v-bind="api.inputProps" style="width: 100%" />
         <button v-bind="api.triggerProps">
-          <ClipboardCheck v-if="api.isCopied" />
+          <ClipboardCheck v-if="api.copied" />
           <ClipboardCopyIcon v-else />
         </button>
       </div>

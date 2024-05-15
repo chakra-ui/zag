@@ -1,6 +1,6 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { InteractOutsideHandlers } from "@zag-js/dismissable"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -24,31 +24,38 @@ export type ElementIds = Partial<{
   description: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+interface PublicContext
+  extends DirectionProperty,
+    CommonProperties,
+    DismissableElementHandlers,
+    PersistentElementOptions {
   /**
    * The ids of the elements in the dialog. Useful for composition.
    */
   ids?: ElementIds
   /**
    * Whether to trap focus inside the dialog when it's opened
+   * @default true
    */
   trapFocus: boolean
   /**
    * Whether to prevent scrolling behind the dialog when it's opened
+   * @default true
    */
   preventScroll: boolean
   /**
    * Whether to prevent pointer interaction outside the element and hide all content below it
+   * @default true
    */
   modal?: boolean
   /**
    * Element to receive focus when the dialog is opened
    */
-  initialFocusEl?: MaybeElement | (() => MaybeElement)
+  initialFocusEl?: () => HTMLElement | null
   /**
    * Element to receive focus when the dialog is closed
    */
-  finalFocusEl?: MaybeElement | (() => MaybeElement)
+  finalFocusEl?: () => HTMLElement | null
   /**
    * Whether to restore focus to the element that had focus before the dialog was opened
    */
@@ -59,16 +66,14 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   onOpenChange?: (details: OpenChangeDetails) => void
   /**
    * Whether to close the dialog when the outside is clicked
+   * @default true
    */
   closeOnInteractOutside: boolean
   /**
    * Whether to close the dialog when the escape key is pressed
+   * @default true
    */
-  closeOnEscapeKeyDown: boolean
-  /**
-   * Callback to be invoked when the escape key is pressed
-   */
-  onEscapeKeyDown?: (event: KeyboardEvent) => void
+  closeOnEscape: boolean
   /**
    * Human readable label for the dialog, in event the dialog title is not rendered
    */
@@ -121,15 +126,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the dialog is open
    */
-  isOpen: boolean
+  open: boolean
   /**
-   * Function to open the dialog
+   * Function to open or close the dialog
    */
-  open(): void
-  /**
-   * Function to close the dialog
-   */
-  close(): void
+  setOpen(open: boolean): void
 
   triggerProps: T["button"]
   backdropProps: T["element"]

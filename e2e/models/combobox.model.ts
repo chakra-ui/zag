@@ -37,14 +37,14 @@ export class ComboboxModel extends Model {
   }
 
   getItem = (text: string) => {
-    return this.page.locator(`[data-part=item] >> text=${text}`)
+    return this.page.locator(`[data-part=item]`, { hasText: text })
   }
 
   get highlightedItem() {
     return this.page.locator("[data-part=item][data-highlighted]")
   }
 
-  typeInHexInput(input: string) {
+  type(input: string) {
     return this.input.pressSequentially(input)
   }
 

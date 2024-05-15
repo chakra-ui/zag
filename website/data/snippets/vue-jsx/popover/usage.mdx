@@ -14,11 +14,10 @@ export default defineComponent({
 
     return () => {
       const api = apiRef.value
-      const Wrapper = api.portalled ? Teleport : Fragment
       return (
         <div>
           <button {...api.triggerProps}>Click me</button>
-          <Wrapper>
+          <Teleport to="body" disabled={!api.portalled}>
             <div {...api.positionerProps}>
               <div {...api.contentProps}>
                 <div {...api.titleProps}>Presenters</div>
@@ -27,7 +26,7 @@ export default defineComponent({
                 <button {...api.closeTriggerProps}>X</button>
               </div>
             </div>
-          </Wrapper>
+          </Teleport>
         </div>
       )
     }

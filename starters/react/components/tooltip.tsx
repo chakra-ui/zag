@@ -34,7 +34,7 @@ export function Tooltip(props: Props) {
       ) : (
         <span {...api.triggerProps}>{children}</span>
       )}
-      {api.isOpen && (
+      {api.open && (
         <Portal>
           <div {...api.positionerProps}>
             <div {...api.contentProps}>{label}</div>

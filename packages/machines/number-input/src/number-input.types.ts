@@ -80,8 +80,7 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * The pattern used to check the <input> element's value against
    *
-   * @default
-   * "[0-9]*(.[0-9]+)?"
+   * @default "[0-9]*(.[0-9]+)?"
    */
   pattern: string
   /**
@@ -90,14 +89,17 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   value: string
   /**
    * The minimum value of the number input
+   * @default Number.MIN_SAFE_INTEGER
    */
   min: number
   /**
    * The maximum value of the number input
+   * @default Number.MAX_SAFE_INTEGER
    */
   max: number
   /**
    * The amount to increment or decrement the value by
+   * @default 1
    */
   step: number
   /**
@@ -147,6 +149,7 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   onFocusChange?: (details: FocusChangeDetails) => void
   /**
    * Whether to spin the value when the increment/decrement button is pressed
+   * @default true
    */
   spinOnPress?: boolean
 }
@@ -234,11 +237,6 @@ interface PrivateContext {
   parser: NumberParser
   /**
    * @internal
-   * Whether the input is composing
-   */
-  composing: boolean
-  /**
-   * @internal
    * Whether the checkbox's fieldset is disabled
    */
   fieldsetDisabled: boolean
@@ -263,15 +261,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the input is focused.
    */
-  isFocused: boolean
+  focused: boolean
   /**
    * Whether the input is invalid.
    */
-  isInvalid: boolean
+  invalid: boolean
   /**
    * Whether the input value is empty.
    */
-  isValueEmpty: boolean
+  empty: boolean
   /**
    * The formatted value of the input.
    */
@@ -308,6 +306,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to focus the input.
    */
   focus(): void
+
   rootProps: T["element"]
   labelProps: T["label"]
   controlProps: T["element"]

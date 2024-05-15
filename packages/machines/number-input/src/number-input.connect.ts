@@ -7,23 +7,22 @@ import { dom } from "./number-input.dom"
 import type { MachineApi, Send, State } from "./number-input.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isFocused = state.hasTag("focus")
-  const isInvalid = state.context.isOutOfRange || !!state.context.invalid
+  const focused = state.hasTag("focus")
+  const disabled = state.context.isDisabled
+  const readOnly = state.context.readOnly
 
-  const isValueEmpty = state.context.isValueEmpty
+  const empty = state.context.isValueEmpty
+  const invalid = state.context.isOutOfRange || !!state.context.invalid
 
-  const isDisabled = state.context.isDisabled
-  const isReadOnly = state.context.readOnly
-
-  const isIncrementDisabled = isDisabled || !state.context.canIncrement || isReadOnly
-  const isDecrementDisabled = isDisabled || !state.context.canDecrement || isReadOnly
+  const isIncrementDisabled = disabled || !state.context.canIncrement || readOnly
+  const isDecrementDisabled = disabled || !state.context.canDecrement || readOnly
 
   const translations = state.context.translations
 
   return {
-    isFocused,
-    isInvalid,
-    isValueEmpty,
+    focused: focused,
+    invalid: invalid,
+    empty: empty,
     value: state.context.formattedValue,
     valueAsNumber: state.context.valueAsNumber,
     setValue(value) {
@@ -52,17 +51,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getRootId(state.context),
       ...parts.root.attrs,
       dir: state.context.dir,
-      "data-disabled": dataAttr(isDisabled),
-      "data-focus": dataAttr(isFocused),
-      "data-invalid": dataAttr(isInvalid),
+      "data-disabled": dataAttr(disabled),
+      "data-focus": dataAttr(focused),
+      "data-invalid": dataAttr(invalid),
     }),
 
     labelProps: normalize.label({
       ...parts.label.attrs,
       dir: state.context.dir,
-      "data-disabled": dataAttr(isDisabled),
-      "data-focus": dataAttr(isFocused),
-      "data-invalid": dataAttr(isInvalid),
+      "data-disabled": dataAttr(disabled),
+      "data-focus": dataAttr(focused),
+      "data-invalid": dataAttr(invalid),
       id: dom.getLabelId(state.context),
       htmlFor: dom.getInputId(state.context),
     }),
@@ -71,10 +70,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.control.attrs,
       dir: state.context.dir,
       role: "group",
-      "aria-disabled": isDisabled,
-      "data-focus": dataAttr(isFocused),
-      "data-disabled": dataAttr(isDisabled),
-      "data-invalid": dataAttr(isInvalid),
+      "aria-disabled": disabled,
+      "data-focus": dataAttr(focused),
+      "data-disabled": dataAttr(disabled),
+      "data-invalid": dataAttr(invalid),
       "aria-invalid": ariaAttr(state.context.invalid),
     }),
 
@@ -88,10 +87,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultValue: state.context.formattedValue,
       pattern: state.context.pattern,
       inputMode: state.context.inputMode,
-      "aria-invalid": ariaAttr(isInvalid),
-      "data-invalid": dataAttr(isInvalid),
-      disabled: isDisabled,
-      "data-disabled": dataAttr(isDisabled),
+      "aria-invalid": ariaAttr(invalid),
+      "data-invalid": dataAttr(invalid),
+      disabled: disabled,
+      "data-disabled": dataAttr(disabled),
       readOnly: !!state.context.readOnly,
       autoComplete: "off",
       autoCorrect: "off",
@@ -102,12 +101,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-valuemax": state.context.max,
       "aria-valuenow": Number.isNaN(state.context.valueAsNumber) ? undefined : state.context.valueAsNumber,
       "aria-valuetext": state.context.valueText,
-      onCompositionStart() {
-        send("INPUT.COMPOSITION_START")
-      },
-      onCompositionEnd() {
-        send("INPUT.COMPOSITION_END")
-      },
       onFocus() {
         send("INPUT.FOCUS")
       },
@@ -132,7 +125,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         }
       },
       onKeyDown(event) {
-        if (state.context.readOnly) return
+        if (event.defaultPrevented) return
+        if (readOnly) return
+        const evt = getNativeEvent(event)
+        if (evt.isComposing) return
 
         const step = getEventStep(event) * state.context.step
 
@@ -154,7 +150,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             event.preventDefault()
           },
           Enter() {
-            if (state.context.composing) return
             send({ type: "INPUT.COMMIT", src: "enter" })
           },
         }
@@ -224,11 +219,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     scrubberProps: normalize.element({
       ...parts.scrubber.attrs,
       dir: state.context.dir,
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       id: dom.getScrubberId(state.context),
       role: "presentation",
       onMouseDown(event) {
-        if (isDisabled) return
+        if (disabled) return
 
         const evt = getNativeEvent(event)
         const point = getEventPoint(evt)
@@ -240,7 +235,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         event.preventDefault()
       },
       style: {
-        cursor: isDisabled ? undefined : "ew-resize",
+        cursor: disabled ? undefined : "ew-resize",
       },
     }),
   }

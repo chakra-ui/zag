@@ -20,10 +20,10 @@ export function machine(userContext: UserDefinedContext) {
         openDelay: 1000,
         closeDelay: 500,
         closeOnPointerDown: true,
-        closeOnEsc: true,
+        closeOnEscape: true,
         interactive: false,
-        currentPlacement: undefined,
         ...ctx,
+        currentPlacement: undefined,
         hasPointerMoveOpened: false,
         positioning: {
           placement: "bottom",
@@ -253,7 +253,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         trackEscapeKey(ctx, _evt, { send }) {
-          if (!ctx.closeOnEsc) return
+          if (!ctx.closeOnEscape) return
           const doc = dom.getDoc(ctx)
           return addDomEvent(doc, "keydown", (event) => {
             if (event.key === "Escape") {

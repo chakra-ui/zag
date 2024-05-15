@@ -1,4 +1,4 @@
-import { contains, getEventTarget, raf } from "@zag-js/dom-query"
+import { contains, getEventTarget, isHTMLElement, raf } from "@zag-js/dom-query"
 import {
   trackInteractOutside,
   type FocusOutsideEvent,
@@ -21,7 +21,16 @@ export interface DismissableElementHandlers extends InteractOutsideHandlers {
   onEscapeKeyDown?: (event: KeyboardEvent) => void
 }
 
-export interface DismissableElementOptions extends DismissableElementHandlers {
+export interface PersistentElementOptions {
+  /**
+   * Returns the persistent elements that:
+   * - should not have pointer-events disabled
+   * - should not trigger the dismiss event
+   */
+  persistentElements?: Array<() => Element | null>
+}
+
+export interface DismissableElementOptions extends DismissableElementHandlers, PersistentElementOptions {
   /**
    * Whether to log debug information
    */
@@ -94,11 +103,13 @@ function trackDismissableElementImpl(node: MaybeElement, options: DismissableEle
     if (!node) return false
     const containers = typeof excludeContainers === "function" ? excludeContainers() : excludeContainers
     const _containers = Array.isArray(containers) ? containers : [containers]
+    const persistentElements = options.persistentElements?.map((fn) => fn()).filter(isHTMLElement)
+    if (persistentElements) _containers.push(...persistentElements)
     return _containers.some((node) => contains(node, target)) || layerStack.isInNestedLayer(node, target)
   }
 
   const cleanups = [
-    pointerBlocking ? disablePointerEventsOutside(node) : undefined,
+    pointerBlocking ? disablePointerEventsOutside(node, options.persistentElements) : undefined,
     trackEscapeKeydown(node, onEscapeKeyDown),
     trackInteractOutside(node, { exclude, onFocusOutside, onPointerDownOutside, defer: options.defer }),
   ]

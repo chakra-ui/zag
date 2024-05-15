@@ -8,7 +8,7 @@
 
   const controls = useControls(tabsControls)
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     tabs.machine({
       id: "1",
       value: "nils",
@@ -18,12 +18,12 @@
     },
   )
 
-  const api = $derived(tabs.connect(_state, send, normalizeProps))
+  const api = $derived(tabs.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="tabs">
   <div {...api.rootProps}>
-    <div {...api.indicatorProps} />
+    <div {...api.indicatorProps}></div>
     <div {...api.listProps}>
       {#each tabsData as data}
         <button {...api.getTriggerProps({ value: data.id })} data-testid={`${data.id}-tab`}>
@@ -44,5 +44,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

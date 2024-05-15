@@ -5,6 +5,7 @@
   import * as combobox from "@zag-js/combobox"
   import { comboboxControls, comboboxData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { matchSorter } from "match-sorter"
 
   const controls = useControls(comboboxControls)
 
@@ -18,15 +19,15 @@
 
   controls.setContext("collection", collection)
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     combobox.machine({
       id: "1",
       collection,
       onOpenChange() {
         options = comboboxData
       },
-      onInputValueChange({ value }) {
-        const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(value.toLowerCase()))
+      onInputValueChange({ inputValue }) {
+        const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
         const newOptions = filtered.length > 0 ? filtered : comboboxData
 
         collection.setItems(newOptions)
@@ -38,7 +39,7 @@
     },
   )
 
-  const api = $derived(combobox.connect(_state, send, normalizeProps))
+  const api = $derived(combobox.connect(snapshot, send, normalizeProps))
   $inspect(api.inputValue)
 </script>
 
@@ -48,11 +49,11 @@
     <button data-testid="clear-value-button" onclick={() => api.clearValue()}> Clear Value </button>
     <br />
     <div {...api.rootProps}>
-      <!-- svelte-ignore a11y-label-has-associated-control -->
+      <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.labelProps}>Select country</label>
       <div {...api.controlProps}>
         <input data-testid="input" {...api.inputProps} />
-        <button data-testid="trigger" {...api.triggerProps}> ▼ </button>
+        <button data-testid="trigger" {...api.getTriggerProps()}> ▼ </button>
       </div>
     </div>
     <div {...api.positionerProps}>
@@ -70,5 +71,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

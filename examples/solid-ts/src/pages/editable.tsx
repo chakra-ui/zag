@@ -28,12 +28,12 @@ export default function Page() {
             <span data-testid="preview" {...api().previewProps} />
           </div>
           <div {...api().controlProps}>
-            <Show when={!api().isEditing}>
+            <Show when={!api().editing}>
               <button data-testid="edit-button" {...api().editTriggerProps}>
                 Edit
               </button>
             </Show>
-            <Show when={api().isEditing}>
+            <Show when={api().editing}>
               <>
                 <button data-testid="save-button" {...api().submitTriggerProps}>
                   Save

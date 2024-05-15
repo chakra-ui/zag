@@ -71,6 +71,7 @@ export type ElementIds = Partial<{
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The locale (BCP 47 language tag) to use when formatting the date.
+   * @default "en-US"
    */
   locale: string
   /**
@@ -87,6 +88,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   name?: string
   /**
    * The time zone to use
+   * @default "UTC"
    */
   timeZone: string
   /**
@@ -164,6 +166,8 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * - `single` - only one date can be selected
    * - `multiple` - multiple dates can be selected
    * - `range` - a range of dates can be selected
+   *
+   * @default "single"
    */
   selectionMode: SelectionMode
   /**
@@ -317,11 +321,11 @@ export interface TableCellProps {
 }
 
 export interface TableCellState {
-  isFocused: boolean
-  isSelectable: boolean
-  isSelected: boolean
+  focused: boolean
+  selectable: boolean
+  selected: boolean
   valueText: string
-  readonly isDisabled: boolean
+  readonly disabled: boolean
 }
 
 export interface DayTableCellProps {
@@ -331,20 +335,20 @@ export interface DayTableCellProps {
 }
 
 export interface DayTableCellState {
-  isInvalid: boolean
-  isDisabled: boolean
-  isSelected: boolean
-  isUnavailable: boolean
-  isOutsideRange: boolean
-  isInRange: boolean
-  isFirstInRange: boolean
-  isLastInRange: boolean
-  isToday: boolean
-  isWeekend: boolean
+  invalid: boolean
+  disabled: boolean
+  selected: boolean
+  unavailable: boolean
+  outsideRange: boolean
+  inRange: boolean
+  firstInRange: boolean
+  lastInRange: boolean
+  today: boolean
+  weekend: boolean
   formattedDate: string
-  readonly isFocused: boolean
+  readonly focused: boolean
   readonly ariaLabel: string
-  readonly isSelectable: boolean
+  readonly selectable: boolean
 }
 
 export interface TableProps {
@@ -402,11 +406,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the input is focused
    */
-  isFocused: boolean
+  focused: boolean
   /**
    * Whether the date picker is open
    */
-  isOpen: boolean
+  open: boolean
   /**
    * The current view of the date picker
    */
@@ -488,13 +492,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   clearValue(): void
   /**
-   * Function to open the calendar.
+   * Function to open or close the calendar.
    */
-  open(): void
-  /**
-   * Function to close the calendar.
-   */
-  close(): void
+  setOpen(open: boolean): void
   /**
    * Function to set the selected month.
    */
@@ -601,5 +601,6 @@ export type {
   DateFormatter,
   DateRangePreset,
   DateValue,
+  PositioningOptions,
   ZonedDateTime,
 }

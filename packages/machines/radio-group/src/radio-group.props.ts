@@ -12,6 +12,7 @@ export const props = createProps<UserDefinedContext>()([
   "name",
   "onValueChange",
   "orientation",
+  "readOnly",
   "value",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)

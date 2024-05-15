@@ -6,6 +6,7 @@ export const props = createProps<UserDefinedContext>()([
   "dir",
   "getRootNode",
   "id",
+  "ids",
   "max",
   "min",
   "orientation",

@@ -23,7 +23,7 @@ const api = computed(() => zagSwitch.connect(state.value, send, normalizeProps))
       <span v-bind="api.controlProps">
         <span v-bind="api.thumbProps" />
       </span>
-      <span v-bind="api.labelProps">Feature is {{ api.isChecked ? "enabled" : "disabled" }}</span>
+      <span v-bind="api.labelProps">Feature is {{ api.checked ? "enabled" : "disabled" }}</span>
     </label>
   </main>
 

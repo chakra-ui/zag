@@ -30,7 +30,7 @@ export function Collapsible(props: Props) {
   const api = collapsible.connect(state, send, normalizeProps)
 
   const { unmount } = useRenderStrategy({
-    visible: api.isVisible,
+    visible: api.visible,
     lazyMount,
     unmountOnExit,
   })

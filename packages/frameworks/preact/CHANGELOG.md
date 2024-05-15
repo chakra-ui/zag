@@ -1,5 +1,34 @@
 # @zag-js/preact
 
+## 0.50.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.50.0
+  - @zag-js/store@0.50.0
+  - @zag-js/types@0.50.0
+
+## 0.49.0
+
+### Patch Changes
+
+- [#1441](https://github.com/chakra-ui/zag/pull/1441) [`c8aeca4`](https://github.com/chakra-ui/zag/commit/c8aeca475b078806c2765659668d843037746ba6) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where multiple versions of @zag-js/store could lead to "proxy state is not iterable" errors.
+
+- Updated dependencies [[`c8aeca4`](https://github.com/chakra-ui/zag/commit/c8aeca475b078806c2765659668d843037746ba6)]:
+  - @zag-js/store@0.49.0
+  - @zag-js/core@0.49.0
+  - @zag-js/types@0.49.0
+
+## 0.48.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.48.0
+  - @zag-js/store@0.48.0
+  - @zag-js/types@0.48.0
+
 ## 0.47.0
 
 ### Patch Changes

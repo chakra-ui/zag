@@ -1,3 +1,4 @@
+export type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent } from "@zag-js/dismissable"
 export { anatomy } from "./combobox.anatomy"
 export { collection } from "./combobox.collection"
 export { connect } from "./combobox.connect"
@@ -10,6 +11,7 @@ export type {
   ElementIds,
   HighlightChangeDetails,
   InputValueChangeDetails,
+  IntlTranslations,
   ItemGroupLabelProps,
   ItemGroupProps,
   ItemProps,
@@ -17,5 +19,8 @@ export type {
   OpenChangeDetails,
   Placement,
   PositioningOptions,
+  ScrollToIndexDetails,
+  SelectionValueDetails,
+  TriggerProps,
   ValueChangeDetails,
 } from "./combobox.types"

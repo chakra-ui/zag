@@ -1,6 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { getByTypeahead, isHTMLElement } from "@zag-js/dom-query"
-import { observeChildren } from "@zag-js/mutation-observer"
+import { getByTypeahead, isHTMLElement, observeChildren } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./tree-view.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tree-view.types"
@@ -14,13 +13,14 @@ export function machine(userContext: UserDefinedContext) {
       id: "tree-view",
       initial: "idle",
       context: {
-        expandedIds: [],
-        selectedIds: [],
-        focusedId: null,
-        openOnClick: true,
+        expandedValue: [],
+        selectedValue: [],
+        focusedValue: null,
+        expandOnClick: true,
         selectionMode: "single",
+        typeahead: true,
         ...ctx,
-        typeahead: getByTypeahead.defaultOptions,
+        typeaheadState: getByTypeahead.defaultOptions,
       },
 
       computed: {
@@ -164,62 +164,64 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
-        isBranchFocused: (ctx, evt) => ctx.focusedId === evt.id,
-        isBranchExpanded: (ctx, evt) => ctx.expandedIds.includes(evt.id),
+        isBranchFocused: (ctx, evt) => ctx.focusedValue === evt.id,
+        isBranchExpanded: (ctx, evt) => ctx.expandedValue.includes(evt.id),
         isShiftKey: (_ctx, evt) => evt.shiftKey,
         isCtrlKey: (_ctx, evt) => evt.ctrlKey,
-        hasSelectedItems: (ctx) => ctx.selectedIds.length > 0,
+        hasSelectedItems: (ctx) => ctx.selectedValue.length > 0,
         isMultipleSelection: (ctx) => ctx.isMultipleSelection,
         moveFocus: (_ctx, evt) => !!evt.moveFocus,
-        openOnClick: (ctx) => !!ctx.openOnClick,
+        openOnClick: (ctx) => !!ctx.expandOnClick,
       },
       activities: {
         trackChildrenMutation(ctx, _evt, { send }) {
           const treeEl = dom.getTreeEl(ctx)
-          return observeChildren(treeEl, (records) => {
-            const removedNodes = records
-              .flatMap((r) => Array.from(r.removedNodes))
-              .filter((node) => {
-                if (!isHTMLElement(node)) return false
-                return node.matches("[role=treeitem]") || node.matches("[role=group]")
+          return observeChildren(treeEl, {
+            callback(records) {
+              const removedNodes = records
+                .flatMap((r) => Array.from(r.removedNodes))
+                .filter((node) => {
+                  if (!isHTMLElement(node)) return false
+                  return node.matches("[role=treeitem]") || node.matches("[role=group]")
+                })
+
+              if (!removedNodes.length) return
+
+              let elementToFocus: HTMLElement | null = null
+              records.forEach((record) => {
+                if (isHTMLElement(record.nextSibling)) {
+                  elementToFocus = record.nextSibling
+                } else if (isHTMLElement(record.previousSibling)) {
+                  elementToFocus = record.previousSibling
+                }
               })
 
-            if (!removedNodes.length) return
-
-            let elementToFocus: HTMLElement | null = null
-            records.forEach((record) => {
-              if (isHTMLElement(record.nextSibling)) {
-                elementToFocus = record.nextSibling
-              } else if (isHTMLElement(record.previousSibling)) {
-                elementToFocus = record.previousSibling
+              if (elementToFocus) {
+                dom.focusNode(elementToFocus)
               }
-            })
 
-            if (elementToFocus) {
-              dom.focusNode(elementToFocus)
-            }
+              const removedIds: Set<string> = new Set()
+              removedNodes.forEach((node) => {
+                const nodeId = dom.getNodeId(node)
+                if (isHTMLElement(node) && nodeId != null) {
+                  removedIds.add(nodeId)
+                }
+              })
 
-            const removedIds: Set<string> = new Set()
-            removedNodes.forEach((node) => {
-              const nodeId = dom.getNodeId(node)
-              if (isHTMLElement(node) && nodeId != null) {
-                removedIds.add(nodeId)
-              }
-            })
-
-            const nextSet = new Set(ctx.selectedIds)
-            removedIds.forEach((id) => nextSet.delete(id))
-            send({ type: "SELECTED.SET", value: removedIds })
+              const nextSet = new Set(ctx.selectedValue)
+              removedIds.forEach((id) => nextSet.delete(id))
+              send({ type: "SELECTED.SET", value: removedIds })
+            },
           })
         },
       },
       actions: {
         setFocusableNode(ctx) {
-          if (ctx.focusedId) return
+          if (ctx.focusedValue) return
 
-          if (ctx.selectedIds.length > 0) {
-            const firstSelectedId = Array.from(ctx.selectedIds)[0]
-            ctx.focusedId = firstSelectedId
+          if (ctx.selectedValue.length > 0) {
+            const firstSelectedId = Array.from(ctx.selectedValue)[0]
+            ctx.focusedValue = firstSelectedId
             return
           }
 
@@ -228,7 +230,7 @@ export function machine(userContext: UserDefinedContext) {
 
           if (!isHTMLElement(firstItem)) return
           // don't use set.focused here because it will trigger focusChange event
-          ctx.focusedId = dom.getNodeId(firstItem)
+          ctx.focusedValue = dom.getNodeId(firstItem)
         },
         selectItem(ctx, evt) {
           set.selected(ctx, [evt.id])
@@ -243,7 +245,7 @@ export function machine(userContext: UserDefinedContext) {
           set.selected(ctx, [])
         },
         toggleBranch(ctx, evt) {
-          const nextSet = new Set(ctx.expandedIds)
+          const nextSet = new Set(ctx.expandedValue)
 
           if (nextSet.has(evt.id)) {
             nextSet.delete(evt.id)
@@ -255,12 +257,12 @@ export function machine(userContext: UserDefinedContext) {
           set.expanded(ctx, Array.from(nextSet))
         },
         expandBranch(ctx, evt) {
-          const nextSet = new Set(ctx.expandedIds)
+          const nextSet = new Set(ctx.expandedValue)
           nextSet.add(evt.id)
           set.expanded(ctx, Array.from(nextSet))
         },
         collapseBranch(ctx, evt) {
-          const nextSet = new Set(ctx.expandedIds)
+          const nextSet = new Set(ctx.expandedValue)
           nextSet.delete(evt.id)
           set.expanded(ctx, Array.from(nextSet))
         },
@@ -293,7 +295,7 @@ export function machine(userContext: UserDefinedContext) {
 
           const walker = dom.getTreeWalker(ctx)
 
-          if (ctx.focusedId) {
+          if (ctx.focusedValue) {
             walker.currentNode = focusedEl
             const nextNode = walker.nextNode()
             dom.focusNode(nextNode)
@@ -307,7 +309,7 @@ export function machine(userContext: UserDefinedContext) {
 
           const walker = dom.getTreeWalker(ctx)
 
-          if (ctx.focusedId) {
+          if (ctx.focusedValue) {
             walker.currentNode = focusedEl
             const prevNode = walker.previousNode()
             dom.focusNode(prevNode)
@@ -348,7 +350,7 @@ export function machine(userContext: UserDefinedContext) {
           const focusedEl = dom.getNodeEl(ctx, evt.id)
           if (!focusedEl) return
 
-          const nextSet = new Set(ctx.selectedIds)
+          const nextSet = new Set(ctx.selectedValue)
 
           const nodeId = dom.getNodeId(focusedEl)
           if (nodeId == null) return
@@ -391,7 +393,7 @@ export function machine(userContext: UserDefinedContext) {
           if (!focusedEl) return
 
           const nodes = dom.getTreeNodes(ctx)
-          const selectedIds = Array.from(ctx.selectedIds)
+          const selectedIds = Array.from(ctx.selectedValue)
           const anchorEl = dom.getNodeEl(ctx, selectedIds[0]) || nodes[0]
 
           const nextSet = dom.getNodesInRange(nodes, anchorEl, focusedEl)
@@ -411,7 +413,7 @@ export function machine(userContext: UserDefinedContext) {
           dom.focusNode(nextNode)
 
           // extend selection to nextNode (preserve the anchor node)
-          const selectedIds = new Set(ctx.selectedIds)
+          const selectedIds = new Set(ctx.selectedValue)
           const nextNodeId = dom.getNodeId(nextNode)
 
           if (nextNodeId == null) return
@@ -437,7 +439,7 @@ export function machine(userContext: UserDefinedContext) {
           dom.focusNode(prevNode)
 
           // extend selection to prevNode (preserve the anchor node)
-          const selectedIds = new Set(ctx.selectedIds)
+          const selectedIds = new Set(ctx.selectedValue)
           const prevNodeId = dom.getNodeId(prevNode)
 
           if (prevNodeId == null) return
@@ -453,7 +455,7 @@ export function machine(userContext: UserDefinedContext) {
         extendSelectionToFirstItem(ctx) {
           const nodes = dom.getTreeNodes(ctx)
 
-          const anchorEl = dom.getNodeEl(ctx, [...ctx.selectedIds][0]) || nodes[0]
+          const anchorEl = dom.getNodeEl(ctx, [...ctx.selectedValue][0]) || nodes[0]
           const focusedEl = nodes[0]
 
           const selectedIds = dom.getNodesInRange(nodes, anchorEl, focusedEl)
@@ -462,7 +464,7 @@ export function machine(userContext: UserDefinedContext) {
         extendSelectionToLastItem(ctx) {
           const nodes = dom.getTreeNodes(ctx)
 
-          const anchorEl = dom.getNodeEl(ctx, [...ctx.selectedIds][0]) || nodes[0]
+          const anchorEl = dom.getNodeEl(ctx, [...ctx.selectedValue][0]) || nodes[0]
           const focusedEl = nodes[nodes.length - 1]
 
           const selectedIds = dom.getNodesInRange(nodes, anchorEl, focusedEl)
@@ -475,33 +477,33 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   focusChange(ctx: MachineContext) {
-    ctx.onFocusChange?.({ focusedId: ctx.focusedId! })
+    ctx.onFocusChange?.({ focusedValue: ctx.focusedValue! })
   },
   expandedChange(ctx: MachineContext) {
     ctx.onExpandedChange?.({
-      expandedIds: ctx.expandedIds,
-      focusedId: ctx.focusedId!,
+      expandedValue: ctx.expandedValue,
+      focusedValue: ctx.focusedValue!,
     })
   },
   selectionChange(ctx: MachineContext) {
     ctx.onSelectionChange?.({
-      selectedIds: ctx.selectedIds,
-      focusedId: ctx.focusedId,
+      selectedValue: ctx.selectedValue,
+      focusedValue: ctx.focusedValue,
     })
   },
 }
 
 const set = {
   selected(ctx: MachineContext, ids: string[]) {
-    ctx.selectedIds = ids
+    ctx.selectedValue = ids
     invoke.selectionChange(ctx)
   },
   focused(ctx: MachineContext, id: string | null) {
-    ctx.focusedId = id
+    ctx.focusedValue = id
     invoke.focusChange(ctx)
   },
   expanded(ctx: MachineContext, ids: string[]) {
-    ctx.expandedIds = ids
+    ctx.expandedValue = ids
     invoke.expandedChange(ctx)
   },
 }

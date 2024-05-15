@@ -35,8 +35,6 @@ const fetchMachine = createMachine({
     "isOpenControlled": false,
     "closeOnSelect && isOpenControlled": false,
     "closeOnSelect": false,
-    "selectOnBlur && hasHighlightedItem && isOpenControlled": false,
-    "selectOnBlur && hasHighlightedItem": false,
     "shouldRestoreFocus && isOpenControlled": false,
     "shouldRestoreFocus": false,
     "isOpenControlled": false,
@@ -105,7 +103,7 @@ const fetchMachine = createMachine({
     },
     focused: {
       tags: ["closed"],
-      entry: ["focusTriggerEl"],
+      entry: ["setFinalFocus"],
       on: {
         "CONTROLLED.OPEN": [{
           cond: "isTriggerClickEvent",
@@ -190,7 +188,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      entry: ["focusContentEl"],
+      entry: ["setInitialFocus"],
       exit: ["scrollContentToTop"],
       activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem"],
       on: {
@@ -229,15 +227,6 @@ const fetchMachine = createMachine({
         "CONTENT.INTERACT_OUTSIDE": [
         // == group 1 ==
         {
-          cond: "selectOnBlur && hasHighlightedItem && isOpenControlled",
-          actions: ["selectHighlightedItem", "invokeOnClose"]
-        }, {
-          cond: "selectOnBlur && hasHighlightedItem",
-          target: "idle",
-          actions: ["selectHighlightedItem", "invokeOnClose", "clearHighlightedItem"]
-        },
-        // == group 2 ==
-        {
           cond: "shouldRestoreFocus && isOpenControlled",
           actions: ["invokeOnClose"]
         }, {
@@ -245,7 +234,7 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: ["invokeOnClose", "clearHighlightedItem"]
         },
-        // == group 3 ==
+        // == group 2 ==
         {
           cond: "isOpenControlled",
           actions: ["invokeOnClose"]
@@ -310,8 +299,6 @@ const fetchMachine = createMachine({
     "shouldRestoreFocus": ctx => ctx["shouldRestoreFocus"],
     "closeOnSelect && isOpenControlled": ctx => ctx["closeOnSelect && isOpenControlled"],
     "closeOnSelect": ctx => ctx["closeOnSelect"],
-    "selectOnBlur && hasHighlightedItem && isOpenControlled": ctx => ctx["selectOnBlur && hasHighlightedItem && isOpenControlled"],
-    "selectOnBlur && hasHighlightedItem": ctx => ctx["selectOnBlur && hasHighlightedItem"],
     "shouldRestoreFocus && isOpenControlled": ctx => ctx["shouldRestoreFocus && isOpenControlled"],
     "hasHighlightedItem && loop && isLastItemHighlighted": ctx => ctx["hasHighlightedItem && loop && isLastItemHighlighted"],
     "hasHighlightedItem": ctx => ctx["hasHighlightedItem"],

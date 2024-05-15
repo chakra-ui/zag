@@ -1,4 +1,4 @@
-import { getNativeEvent, getRelativePoint, isLeftClick, isModifiedEvent } from "@zag-js/dom-event"
+import { getNativeEvent, getRelativePoint, isLeftClick, isModifierKey } from "@zag-js/dom-event"
 import { dataAttr, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./signature-pad.anatomy"
@@ -6,14 +6,14 @@ import { dom } from "./signature-pad.dom"
 import type { MachineApi, Send, State } from "./signature-pad.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isDrawing = state.matches("drawing")
-  const isEmpty = state.context.isEmpty
-  const isInteractive = state.context.isInteractive
-  const isDisabled = !!state.context.disabled
+  const drawing = state.matches("drawing")
+  const empty = state.context.isEmpty
+  const interactive = state.context.isInteractive
+  const disabled = !!state.context.disabled
 
   return {
-    isEmpty,
-    isDrawing,
+    empty: empty,
+    drawing: drawing,
     currentPath: state.context.currentPath,
     paths: state.context.paths,
     clear() {
@@ -26,36 +26,43 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     labelProps: normalize.element({
       ...parts.label.attrs,
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       htmlFor: dom.getControlId(state.context),
     }),
 
     rootProps: normalize.element({
       ...parts.root.attrs,
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       id: dom.getRootId(state.context),
     }),
 
     controlProps: normalize.element({
       ...parts.control.attrs,
-      tabIndex: isDisabled ? undefined : 0,
+      tabIndex: disabled ? undefined : 0,
       id: dom.getControlId(state.context),
       "aria-label": "Signature Pad",
       "aria-roledescription": "signature pad",
-      "aria-disabled": isDisabled,
-      "data-disabled": dataAttr(isDisabled),
+      "aria-disabled": disabled,
+      "data-disabled": dataAttr(disabled),
       onPointerDown(event) {
+        if (!isLeftClick(event)) return
+        if (isModifierKey(event)) return
+        if (!interactive) return
+
         const target = getEventTarget<HTMLElement>(getNativeEvent(event))
         if (target?.closest("[data-part=clear-trigger]")) return
-        if (!isLeftClick(event) || isModifiedEvent(event) || !isInteractive) return
+
         event.currentTarget.setPointerCapture(event.pointerId)
+
         const point = { x: event.clientX, y: event.clientY }
         const { offset } = getRelativePoint(point, dom.getControlEl(state.context)!)
         send({ type: "POINTER_DOWN", point: offset, pressure: event.pressure })
       },
       onPointerUp(event) {
-        if (!isInteractive) return
-        event.currentTarget.releasePointerCapture(event.pointerId)
+        if (!interactive) return
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+          event.currentTarget.releasePointerCapture(event.pointerId)
+        }
       },
       style: {
         position: "relative",
@@ -86,15 +93,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     guideProps: normalize.element({
       ...parts.guide.attrs,
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
     }),
 
     clearTriggerProps: normalize.button({
       ...parts.clearTrigger.attrs,
       type: "button",
       "aria-label": "Clear Signature",
-      hidden: !state.context.paths.length || isDrawing,
-      disabled: isDisabled,
+      hidden: !state.context.paths.length || drawing,
+      disabled: disabled,
       onClick() {
         send({ type: "CLEAR" })
       },
@@ -104,7 +111,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.input({
         type: "text",
         hidden: true,
-        disabled: isDisabled,
+        disabled: disabled,
         name: state.context.name,
         value: props.value,
       })

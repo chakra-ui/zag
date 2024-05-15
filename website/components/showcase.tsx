@@ -17,6 +17,7 @@ import { NumberInput } from "./machines/number-input"
 import { Pagination } from "./machines/pagination"
 import { PinInput } from "./machines/pin-input"
 import { Popover } from "./machines/popover"
+import { Presence } from "./machines/presence"
 import { CircularProgress } from "./machines/progress-circular"
 import { LinearProgress } from "./machines/progress-linear"
 import { Radio } from "./machines/radio"
@@ -108,7 +109,7 @@ const components = {
       defaultProps={{
         disabled: false,
         readOnly: false,
-        loop: false,
+        loopFocus: false,
         inputBehavior: {
           default: "autohighlight",
           options: ["autohighlight", "autocomplete", "none"],
@@ -126,7 +127,7 @@ const components = {
       defaultProps={{
         preventScroll: true,
         closeOnInteractOutside: true,
-        closeOnEscapeKeyDown: true,
+        closeOnEscape: true,
         role: { options: ["dialog", "alertdialog"], default: "dialog" },
       }}
     />
@@ -283,8 +284,7 @@ const components = {
     <Playground
       component={Select}
       defaultProps={{
-        loop: false,
-        selectOnBlur: false,
+        loopFocus: false,
         disabled: false,
         readOnly: false,
       }}
@@ -325,7 +325,7 @@ const components = {
     <Playground
       component={Tabs}
       defaultProps={{
-        loop: false,
+        loopFocus: false,
         activationMode: {
           default: "automatic",
           options: ["manual", "automatic"],
@@ -405,6 +405,7 @@ const components = {
     />
   ),
   SignaturePad: () => <Playground component={SignaturePad} />,
+  Presence: () => <Playground component={Presence} />,
 }
 
 export function Showcase(props: { id: keyof typeof components }) {

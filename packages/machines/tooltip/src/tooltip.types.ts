@@ -32,24 +32,30 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   id: string
   /**
    * The open delay of the tooltip.
+   * @default 1000
    */
   openDelay: number
   /**
    * The close delay of the tooltip.
+   * @default 500
    */
   closeDelay: number
   /**
    * Whether to close the tooltip on pointerdown.
+   * @default true
    */
   closeOnPointerDown: boolean
   /**
    * Whether to close the tooltip when the Escape key is pressed.
+   * @default true
    */
-  closeOnEsc?: boolean
+  closeOnEscape?: boolean
   /**
    * Whether the tooltip's content is interactive.
    * In this mode, the tooltip will remain open when user hovers over the content.
    * @see https://www.w3.org/TR/WCAG21/#content-on-hover-or-focus
+   *
+   * @default false
    */
   interactive: boolean
   /**
@@ -119,15 +125,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tooltip is open.
    */
-  isOpen: boolean
+  open: boolean
   /**
    * Function to open the tooltip.
    */
-  open(): void
-  /**
-   * Function to close the tooltip.
-   */
-  close(): void
+  setOpen(open: boolean): void
   /**
    * Function to reposition the popover
    */

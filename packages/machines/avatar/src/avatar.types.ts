@@ -5,9 +5,17 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+export type LoadStatus = "error" | "loaded"
+
 export interface StatusChangeDetails {
-  status: "loaded" | "error"
+  status: LoadStatus
 }
+
+export type ElementIds = Partial<{
+  root: string
+  image: string
+  fallback: string
+}>
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -18,6 +26,10 @@ interface PublicContext extends CommonProperties, DirectionProperty {
    * Functional called when the image loading status changes.
    */
   onStatusChange?: (details: StatusChangeDetails) => void
+  /**
+   * The ids of the elements in the avatar. Useful for composition.
+   */
+  ids?: ElementIds
 }
 
 interface PrivateContext {}
@@ -44,11 +56,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the image is loaded.
    */
-  isLoaded: boolean
-  /**
-   * Whether the fallback is shown.
-   */
-  showFallback: boolean
+  loaded: boolean
   /**
    * Function to set new src.
    */

@@ -23,7 +23,7 @@ export default function Page() {
           <a href="https://twitter.com/zag_js" target="_blank" {...api().triggerProps}>
             Twitter
           </a>
-          <Show when={api().isOpen}>
+          <Show when={api().open}>
             <Portal>
               <div {...api().positionerProps}>
                 <div {...api().contentProps}>

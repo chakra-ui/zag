@@ -19,26 +19,13 @@ const ToastItem = defineComponent({
   setup(props) {
     const [state, send] = useActor(props.actor)
     const apiRef = computed(() => toast.connect(state.value, send, normalizeProps))
-    const progressbarProps = computed(() => ({
-      "data-scope": "toast",
-      "data-part": "progressbar",
-      "data-type": state.value.context.type,
-      style: {
-        opacity: apiRef.value.isVisible ? 1 : 0,
-        transformOrigin: apiRef.value.isRtl ? "right" : "left",
-        animationName: apiRef.value.type === "loading" ? "none" : undefined,
-        animationPlayState: apiRef.value.isPaused ? "paused" : "running",
-        animationDuration: "var(--duration)",
-      },
-    }))
-
     return () => {
       const api = apiRef.value
 
       return (
-        <pre {...api.rootProps}>
+        <div {...api.rootProps}>
           <span {...api.ghostBeforeProps} />
-          <div {...progressbarProps.value} />
+          <div data-scope="toast" data-part="progressbar" />
           <p {...api.titleProps}>
             {api.type === "loading" && <LoaderBar />}
             {api.title}
@@ -47,7 +34,7 @@ const ToastItem = defineComponent({
           <button {...api.closeTriggerProps}>
             <XIcon />
           </button>
-        </pre>
+        </div>
       )
     }
   },

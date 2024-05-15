@@ -9,7 +9,7 @@
 
   const controls = useControls(sliderControls)
 
-  const [state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     slider.machine({
       id: "1",
       name: "quantity",
@@ -18,7 +18,7 @@
     { context: controls.context },
   )
 
-  const api = $derived(slider.connect(state, send, normalizeProps))
+  const api = $derived(slider.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="slider">
@@ -30,14 +30,14 @@
   >
     <div {...api.rootProps}>
       <div>
-        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <!-- svelte-ignore a11y_label_has_associated_control -->
         <label {...api.labelProps}>Quantity:</label>
         <output {...api.valueTextProps}>{api.value.join(" - ")}</output>
       </div>
       <div class="control-area">
         <div {...api.controlProps}>
           <div {...api.trackProps}>
-            <div {...api.rangeProps} />
+            <div {...api.rangeProps}></div>
           </div>
           {#each api.value as _, index}
             <div {...api.getThumbProps({ index })}>
@@ -57,5 +57,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer {state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

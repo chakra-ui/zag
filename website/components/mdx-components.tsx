@@ -19,6 +19,7 @@ import { useFramework } from "./framework"
 import { KeyboardTable } from "./keyboard-table"
 import { PropTable } from "./prop-table"
 import { Showcase } from "./showcase"
+import Image from "next/image"
 
 function SnippetItem({ body, id }: { body: MDX; id: string }) {
   const content = useMDX(body.code)
@@ -59,6 +60,13 @@ const components: Record<string, FC<any>> = {
   Showcase,
   Admonition(props) {
     return <div {...props} />
+  },
+  Image(props) {
+    return (
+      <Box rounded="md" overflow="hidden" mt="6" display="inline-block">
+        <Image alt="" {...props} />
+      </Box>
+    )
   },
   Resources(props) {
     const comp = allComponents.find((c) => c.package === props.pkg)

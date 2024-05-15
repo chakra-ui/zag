@@ -15,6 +15,7 @@ import {
   getPreviousSection,
   getTodayDate,
   isDateEqual,
+  isDateOutsideVisibleRange,
   isNextVisibleRangeInvalid,
   isPreviousVisibleRangeInvalid,
   parseDateString,
@@ -99,9 +100,12 @@ export function machine(userContext: UserDefinedContext) {
 
       activities: ["setupLiveRegion"],
 
+      created: ["setStartValue"],
+
       watch: {
         locale: ["setStartValue"],
         focusedValue: [
+          "setStartValue",
           "syncMonthSelectElement",
           "syncYearSelectElement",
           "focusActiveCellIfNeeded",
@@ -286,7 +290,13 @@ export function machine(userContext: UserDefinedContext) {
               // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
               {
                 guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect", "isOpenControlled"),
-                actions: ["setFocusedDate", "setSelectedDate", "setActiveIndexToStart", "invokeOnClose"],
+                actions: [
+                  "setFocusedDate",
+                  "setSelectedDate",
+                  "setActiveIndexToStart",
+                  "invokeOnClose",
+                  "setRestoreFocus",
+                ],
               },
               {
                 guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
@@ -568,7 +578,8 @@ export function machine(userContext: UserDefinedContext) {
           return () => ctx.announcer?.destroy?.()
         },
         trackDismissableElement(ctx, _evt, { send }) {
-          return trackDismissableElement(dom.getContentEl(ctx), {
+          const getContentEl = () => dom.getContentEl(ctx)
+          return trackDismissableElement(getContentEl, {
             defer: true,
             exclude: [...dom.getInputEls(ctx), dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
             onInteractOutside(event) {
@@ -596,6 +607,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         setView(ctx, evt) {
           set.view(ctx, evt.cell)
+        },
+        setRestoreFocus(ctx) {
+          ctx.restoreFocus = true
         },
         announceValueText(ctx) {
           ctx.announcer?.announce(ctx.valueAsString.join(","), 3000)
@@ -874,6 +888,8 @@ export function machine(userContext: UserDefinedContext) {
           set.view(ctx, initialContext.view)
         },
         setStartValue(ctx) {
+          const outside = isDateOutsideVisibleRange(ctx.focusedValue, ctx.startValue, ctx.endValue)
+          if (!outside) return
           const startValue = alignDate(ctx.focusedValue, "start", { months: ctx.numOfMonths }, ctx.locale)
           ctx.startValue = startValue
         },

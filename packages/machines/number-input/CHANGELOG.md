@@ -1,5 +1,47 @@
 # @zag-js/number-input
 
+## 0.50.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.50.0
+  - @zag-js/core@0.50.0
+  - @zag-js/types@0.50.0
+  - @zag-js/utils@0.50.0
+  - @zag-js/dom-event@0.50.0
+  - @zag-js/dom-query@0.50.0
+  - @zag-js/form-utils@0.50.0
+  - @zag-js/number-utils@0.50.0
+
+## 0.49.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.49.0
+  - @zag-js/anatomy@0.49.0
+  - @zag-js/types@0.49.0
+  - @zag-js/utils@0.49.0
+  - @zag-js/dom-event@0.49.0
+  - @zag-js/dom-query@0.49.0
+  - @zag-js/form-utils@0.49.0
+  - @zag-js/number-utils@0.49.0
+
+## 0.48.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.48.0
+  - @zag-js/core@0.48.0
+  - @zag-js/types@0.48.0
+  - @zag-js/utils@0.48.0
+  - @zag-js/dom-event@0.48.0
+  - @zag-js/dom-query@0.48.0
+  - @zag-js/form-utils@0.48.0
+  - @zag-js/number-utils@0.48.0
+
 ## 0.47.0
 
 ### Patch Changes

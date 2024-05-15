@@ -1,6 +1,10 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { Point, RectInit, Size } from "@zag-js/rect-utils"
+import type { Point, Size } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
 
 export interface PositionChangeDetails {
   position: Point
@@ -20,17 +24,50 @@ export interface StageChangeDetails {
   stage: Stage | undefined
 }
 
+export interface AnchorPositionDetails {
+  triggerRect: DOMRect | null
+  boundaryRect: DOMRect | null
+}
+
+export type ElementIds = Partial<{
+  trigger: string
+  positioner: string
+  content: string
+  title: string
+  header: string
+}>
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 interface PublicContext extends DirectionProperty, CommonProperties {
+  /**
+   * The ids of the elements in the floating panel. Useful for composition.
+   */
+  ids?: ElementIds
+  /**
+   * The strategy to use for positioning
+   * @default "absolute"
+   */
+  strategy: "absolute" | "fixed"
+  /**
+   * Whether the panel should be strictly contained within the boundary when dragging
+   * @default true
+   */
+  allowOverflow: boolean
   /**
    * Whether the panel is open
    */
   open?: boolean
   /**
    * Whether the panel is draggable
+   * @default true
    */
   draggable?: boolean
   /**
    * Whether the panel is resizable
+   * @default true
    */
   resizable?: boolean
   /**
@@ -50,6 +87,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   position: Point
   /**
+   * Function that returns the initial position of the panel when it is opened.
+   * If provided, will be used instead of the default position.
+   */
+  getAnchorPosition?(details: AnchorPositionDetails): Point
+  /**
    * Whether the panel is locked to its aspect ratio
    */
   lockAspectRatio?: boolean
@@ -58,9 +100,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   closeOnEscape?: boolean
   /**
-   * The boundary of the panel. Defaults to the window
+   * The boundary of the panel. Useful for recalculating the boundary rect when
+   * the it is resized.
    */
-  getBoundaryEl?(): HTMLElement
+  getBoundaryEl?(): HTMLElement | null
   /**
    *  Whether the panel is disabled
    */
@@ -88,9 +131,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the panel size and position should be preserved when it is closed
    */
-  preserveOnClose?: boolean
+  persistRect?: boolean
   /**
    * The snap grid for the panel
+   * @default 1
    */
   gridSize: number
   /**
@@ -100,10 +144,6 @@ interface PublicContext extends DirectionProperty, CommonProperties {
 }
 
 interface PrivateContext {
-  /**
-   * The rect of the boundary
-   */
-  boundaryRect: RectInit | null
   /**
    * The last position of the mouse event
    */
@@ -120,13 +160,16 @@ interface PrivateContext {
    * The stage of the panel
    */
   stage?: Stage
+  /**
+   * Whether the panel is topmost in the panel stack
+   */
+  isTopmost?: boolean
 }
 
 type ComputedContext = Readonly<{
   isMaximized: boolean
   isMinimized: boolean
   isStaged: boolean
-  isDisabled: boolean
   canResize: boolean
   canDrag: boolean
 }>
@@ -154,19 +197,27 @@ export interface ResizeTriggerProps {
   axis: ResizeTriggerAxis
 }
 
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the panel is open
    */
-  isOpen: boolean
+  open: boolean
+  /**
+   * Function to open or close the panel
+   */
+  setOpen(open: boolean): void
   /**
    * Whether the panel is being dragged
    */
-  isDragging: boolean
+  dragging: boolean
   /**
    * Whether the panel is being resized
    */
-  isResizing: boolean
+  resizing: boolean
 
   dragTriggerProps: T["element"]
   getResizeTriggerProps(props: ResizeTriggerProps): T["element"]

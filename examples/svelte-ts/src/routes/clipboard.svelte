@@ -9,7 +9,7 @@
 
   const controls = useControls(clipboardControls)
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     clipboard.machine({
       id: "1",
       value: "https://github/com/chakra-ui/zag",
@@ -19,17 +19,17 @@
     },
   )
 
-  const api = $derived(clipboard.connect(_state, send, normalizeProps))
+  const api = $derived(clipboard.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="clipboard">
   <div {...api.rootProps}>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
+    <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.labelProps}>Copy this link</label>
     <div {...api.controlProps}>
       <input {...api.inputProps} />
       <button {...api.triggerProps}>
-        {#if api.isCopied}
+        {#if api.copied}
           <ClipboardCheckIcon />
         {:else}
           <ClipboardCopyIcon />
@@ -42,5 +42,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

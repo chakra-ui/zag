@@ -102,13 +102,7 @@ const fetchMachine = createMachine({
         }, {
           target: "idle",
           actions: ["setFormattedValue", "clearHint", "invokeOnBlur"]
-        }],
-        "INPUT.COMPOSITION_START": {
-          actions: "setComposing"
-        },
-        "INPUT.COMPOSITION_END": {
-          actions: "clearComposing"
-        }
+        }]
       }
     },
     "before:spin": {

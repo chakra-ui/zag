@@ -6,7 +6,207 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
-## [0.46.0](./#0.46.0) - 2023-04-12
+## [0.50.0](./#0.50.0) - 2024-05-15
+
+### Fixed
+
+- **React**
+
+  - Fix issue where controlled context can sometimes not be synced correctly
+
+- **Collection**
+
+  - Ensure collection are considered different when item's disabled property changes
+
+- **Popover, Menu, Select**
+  - Fix issue where positioner does not respect the `offset.crossAxis`
+
+### Added
+
+- **Dialog, Popover**:
+
+  - Add support for `persistElements` to prevent third-party elements from having `pointer-events: none` applied to them
+    and closing when you interact with them.
+
+- **Dialog**
+
+  - Prevent closing dialog on outside click when `role=alertdialog` is set.
+  - Set the initial focus to the close trigger, when `role=alertdialog` is set to prevent accidental selection of
+    destructive action.
+
+- **Slider**
+
+  - Invoke `onValueChangeEnd` when using keyboard to interact with slider thumb
+
+- **Tabs, Combobox, Select, Menu**:
+  - Add new `composite` prop to allow for composing these components within themselves.
+
+### Changed
+
+- **Combobox**
+
+  - Rename `triggerProps` to `getTriggerProps()` to allow for more flexible compositions
+
+- **Popover, Tooltip**
+
+  - Rename `closeOnEsc` to `closeOnEscape` to be consistent with dialog machine
+
+- **Tabs**
+  - When using the pointer, prefer click based selection when using `activationMode=automatic` over focus triggering
+    selection. For keyboard, selection follows focus as usual
+
+## [0.49.0](./#0.49.0) - 2024-04-26
+
+### Fixed
+
+- **Store, React**
+
+  - Fix issue where multiple versions of `@zag-js/store` could lead to "proxy state is not iterable" errors
+
+- **Collapsible**
+
+  - Fix issue where initial height animation can sometimes run
+
+- **DatePicker**
+
+  - Fix issue where date picker content doesn't register as a dismissable when lazy mounted
+  - Fix issue where changing focused value doesn't update the date picker's visible range
+
+- **Splitter**
+
+  - Fix issue where `onResize` was not called
+
+- **TagsInput**
+
+  - Fix issue where editing a tag and clearing it's value leaves an empty tag. Now, empty tags will be deleted
+  - Fix issue where deleting a tag with pointer and navigating with keyboard doesn't work
+
+### Added
+
+- **Presence**
+
+  - Add `api.unmount` to programmatically unmount the component
+  - Add `api.skip` to skip initial animation
+
+## [0.48.0](./#0.48.0) - 2024-04-22
+
+This release marks the journey to a more stable and consistent API across all components. We've made significant
+changes.
+
+### Fixed
+
+- **Collapsible**
+
+  - Resolve an issue that sometimes the collapsible height was not measured correctly
+
+- **Toast**
+
+  - Fix an issue where toast hide immediately after updating
+  - Fix an issue that the height was not exactly measured
+
+- **Select, Combobox**
+  - Fix issue where `value` is unintentionally sorted when highlighting item
+
+### Added
+
+- **Checkbox, RadioGroup, Switch**
+
+  - Add support for `readOnly` prop to prevent user interaction from changing the checkbox state
+
+- **Combobox**
+
+  - Add support for controlling the open state of the combobox via `open` and `onOpenChange`
+  - Add new `openOnChange` property to automatically open the combobox when the value changes. Value can be a boolean or
+    a function that returns a boolean.
+
+  ```jsx
+  const [state, send] = useMachine(
+    combobox.machine({
+      openOnChange: ({ inputValue }) => inputValue.length > 2,
+    }),
+  )
+  ```
+
+  - Add new `openOnKeypress` property to automatically open the combobox when the arrow keys (up and down) are pressed.
+  - Add `persistFocus` to the item props to determine whether to clear the highlighted item on pointer leave.
+
+### Changed
+
+- **All machines**
+
+  - Rename all api to return consistent boolean properties. This means going from `is<X>` to `<x>`. For example,
+    `isDisabled` -> `disabled`, `isFocused` -> `focused`, `isOpen` -> `open`, etc.
+  - Rename `open()`, `close()` methods to `setOpen(true|false)`
+  - Remove `selectOnBlur` to prevent accidental selection of options. Prefer explicit selection by user via click or
+    enter key.
+
+- **Accordion**
+
+  - Rename `getItemState` properties
+    - `isOpen` -> `expanded`
+    - `isDisabled` -> `disabled`
+    - `isFocused` -> `focused`
+
+- **Avatar**
+
+  - Rename `api.isLoaded` to `api.loaded`
+  - Remove `api.showFallback` since it's equivalent to `!api.loaded`
+
+- **Carousel**
+
+  - Rename `isCurrent` to `current`
+  - Rename `isNext` and `isPrevious` to `next` and `previous` respectively
+  - Rename `isPrevious` to `previous`
+
+- **Clipboard**
+
+  - Rename `api.isCopied` to `api.copied`
+
+- **File Upload**
+
+  - Rename `api.open()` -> `api.openFilePicker()`
+
+- **Menu**
+
+  - Menu now focuses the first tabbable element when it opens. This allows for composition with combobox
+  - Rename `loop` to `loopFocus` to better reflect its purpose
+
+- **TagsInput**
+  - Rename `allowTagEdit` to `editable`
+  - Add `onInputValueChange` to machine context
+
+## [0.47.0](./#0.47.0) - 2024-04-19
+
+### Fixed
+
+- **Select**
+  - Prevent tab key interaction when the select is open. This keeps focus within the select and ensures keyboard
+    interactions work consistently
+
+### Changed
+
+- **Toast [BREAKING]**:
+
+  - Simplify toast api methods
+
+  ```diff
+  <ToastContext.Provider value={api}>
+  -    {Object.entries(api.getToastsByPlacement()).map(([placement, toasts]) => (
+  +    {api.getPlacements().map((placement) => (
+          <div key={placement} {...api.getGroupProps({ placement })}>
+  -           {toasts.map((toast) => (
+  +           {api.getToastsByPlacement(placement).map((toast) => (
+                  <Toast key={toast.id} actor={toast} />
+              ))}
+          </div>
+      ))}
+      {children}
+  </ToastContext.Provider>
+  ```
+
+  - Fix issue where toast closes when you update the same toast type
+
+## [0.46.0](./#0.46.0) - 2024-04-12
 
 ### Fixed
 
@@ -69,14 +269,14 @@ See the [Changesets](./.changeset) for the latest changes.
 
   - Require new `ghostBeforeProps` and `ghostAfterProps` props to ensure the hover interaction works as expected
 
-## [0.45.0](./#0.45.0) - 2023-04-04
+## [0.45.0](./#0.45.0) - 2024-04-04
 
 ### Changed
 
 - **Solid**: Rewrite `mergeProps` to prevent issues with children that read from context, and ensure props are always
   up-to-date.
 
-## [0.44.0](./#0.44.0) - 2023-04-03
+## [0.44.0](./#0.44.0) - 2024-04-03
 
 ### Added
 
@@ -86,7 +286,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 - **Avatar**: Remove hardcoded `style` to allow more flexible styling
 
-## [0.43.0](./#0.43.0) - 2023-04-02
+## [0.43.0](./#0.43.0) - 2024-04-02
 
 ### Changed
 

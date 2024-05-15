@@ -1,7 +1,6 @@
-import { contains, dataAttr, isSelfEvent } from "@zag-js/dom-query"
+import { contains, dataAttr, isSelfTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { formatBytes } from "@zag-js/i18n-utils"
 import { type NormalizeProps, type PropTypes } from "@zag-js/types"
-import { visuallyHiddenStyle } from "@zag-js/visually-hidden"
 import { parts } from "./file-upload.anatomy"
 import { dom } from "./file-upload.dom"
 import { type MachineApi, type Send, type State } from "./file-upload.types"
@@ -12,13 +11,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const allowDrop = state.context.allowDrop
   const translations = state.context.translations
 
-  const isDragging = state.matches("dragging")
-  const isFocused = state.matches("focused") && !disabled
+  const dragging = state.matches("dragging")
+  const focused = state.matches("focused") && !disabled
 
   return {
-    isDragging,
-    isFocused,
-    open() {
+    dragging: dragging,
+    focused: focused,
+    openFilePicker() {
       send("OPEN")
     },
     deleteFile(file) {
@@ -48,7 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
       id: dom.getRootId(state.context),
       "data-disabled": dataAttr(disabled),
-      "data-dragging": dataAttr(isDragging),
+      "data-dragging": dataAttr(dragging),
     }),
 
     dropzoneProps: normalize.element({
@@ -60,10 +59,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-invalid": state.context.invalid,
       "data-invalid": dataAttr(state.context.invalid),
       "data-disabled": dataAttr(disabled),
-      "data-dragging": dataAttr(isDragging),
+      "data-dragging": dataAttr(dragging),
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         const evt = event.nativeEvent || event
-        if (!isSelfEvent(evt)) return
+        if (!isSelfTarget(evt)) return
         if (event.key !== "Enter" && event.key !== " ") return
         send({ type: "DROPZONE.CLICK", src: "keydown" })
       },

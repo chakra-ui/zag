@@ -8,17 +8,17 @@
 
   const controls = useControls(numberInputControls)
 
-  const [_state, send] = useMachine(numberInput.machine({ id: "1" }), {
+  const [snapshot, send] = useMachine(numberInput.machine({ id: "1" }), {
     context: controls.context,
   })
 
-  const api = $derived(numberInput.connect(_state, send, normalizeProps))
+  const api = $derived(numberInput.connect(snapshot, send, normalizeProps))
 </script>
 
 <main>
   <div {...api.rootProps}>
-    <div data-testid="scrubber" {...api.scrubberProps} />
-    <!-- svelte-ignore a11y-label-has-associated-control -->
+    <div data-testid="scrubber" {...api.scrubberProps}></div>
+    <!-- svelte-ignore a11y_label_has_associated_control -->
     <label data-testid="label" {...api.labelProps}> Enter number: </label>
     <div {...api.controlProps}>
       <button data-testid="dec-button" {...api.decrementTriggerProps}> DEC </button>
@@ -29,5 +29,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} omit={["formatter", "parser"]} />
+  <StateVisualizer state={snapshot} omit={["formatter", "parser"]} />
 </Toolbar>

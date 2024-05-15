@@ -81,13 +81,9 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   readOnly?: boolean
   /**
    * Whether the select should close after an item is selected
+   * @default true
    */
   closeOnSelect?: boolean
-  /**
-   * Whether to select the highlighted item when the user presses Tab,
-   * and the menu is open.
-   */
-  selectOnBlur?: boolean
   /**
    * The callback fired when the highlighted item changes.
    */
@@ -114,8 +110,9 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   highlightedValue: string | null
   /**
    * Whether to loop the keyboard navigation through the options
+   * @default false
    */
-  loop?: boolean
+  loopFocus?: boolean
   /**
    * Whether to allow multiple selection
    */
@@ -132,9 +129,14 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Function to scroll to a specific index
    */
   scrollToIndexFn?: (details: ScrollToIndexDetails) => void
+  /**
+   * Whether the select is a composed with other composite widgets like tabs or combobox
+   * @default true
+   */
+  composite: boolean
 }
 
-interface PrivateContext {
+interface PrivateContext<T extends CollectionItem = CollectionItem> {
   /**
    * @internal
    * Internal state of the typeahead
@@ -155,9 +157,23 @@ interface PrivateContext {
    * Whether to restore focus to the trigger after the menu closes
    */
   restoreFocus?: boolean
+  /**
+   * The highlighted item
+   */
+  highlightedItem: T | null
+  /**
+   * @computed
+   * The selected items
+   */
+  selectedItems: T[]
+  /**
+   * @computed
+   * The display value of the select (based on the selected items)
+   */
+  valueAsString: string
 }
 
-type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
+type ComputedContext = Readonly<{
   /**
    * @computed
    * Whether there's a selected option
@@ -178,20 +194,6 @@ type ComputedContext<T extends CollectionItem = CollectionItem> = Readonly<{
    * Whether the select is disabled
    */
   isDisabled: boolean
-  /**
-   * The highlighted item
-   */
-  highlightedItem: T | null
-  /**
-   * @computed
-   * The selected items
-   */
-  selectedItems: T[]
-  /**
-   * @computed
-   * The display value of the select (based on the selected items)
-   */
-  valueAsString: string
 }>
 
 export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
@@ -214,14 +216,33 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface ItemProps<T extends CollectionItem = CollectionItem> {
+  /**
+   * The item to render
+   */
   item: T
+  /**
+   * Whether hovering outside should clear the highlighted state
+   */
+  persistFocus?: boolean
 }
 
 export interface ItemState {
+  /**
+   * The underlying value of the item
+   */
   value: string
-  isDisabled: boolean
-  isSelected: boolean
-  isHighlighted: boolean
+  /**
+   * Whether the item is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the item is selected
+   */
+  selected: boolean
+  /**
+   * Whether the item is highlighted
+   */
+  highlighted: boolean
 }
 
 export interface ItemGroupProps {
@@ -236,15 +257,15 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Whether the select is focused
    */
-  isFocused: boolean
+  focused: boolean
   /**
    * Whether the select is open
    */
-  isOpen: boolean
+  open: boolean
   /**
    * Whether the select value is empty
    */
-  isValueEmpty: boolean
+  empty: boolean
   /**
    * The value of the highlighted item
    */
@@ -294,13 +315,9 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   getItemState(props: ItemProps): ItemState
   /**
-   * Function to open the select
+   * Function to open or close the select
    */
-  open(): void
-  /**
-   * Function to close the select
-   */
-  close(): void
+  setOpen(open: boolean): void
   /**
    * Function to toggle the select
    */
@@ -312,7 +329,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Function to set the positioning options of the select
    */
-  reposition(options: Partial<PositioningOptions>): void
+  reposition(options?: Partial<PositioningOptions>): void
 
   rootProps: T["element"]
   labelProps: T["label"]
@@ -322,6 +339,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   clearTriggerProps: T["button"]
   positionerProps: T["element"]
   contentProps: T["element"]
+  listProps: T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemTextProps(props: ItemProps): T["element"]
   getItemIndicatorProps(props: ItemProps): T["element"]
@@ -334,4 +352,4 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
  * Re-exported types
  * -----------------------------------------------------------------------------*/
 
-export type { CollectionOptions, CollectionItem }
+export type { CollectionItem, CollectionOptions, PositioningOptions }

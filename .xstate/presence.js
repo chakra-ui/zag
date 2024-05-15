@@ -10,31 +10,13 @@ const {
   choose
 } = actions;
 const fetchMachine = createMachine({
-  initial: initialState,
-  context: {
-    "isPresent": false,
-    "isAnimationNone || isDisplayNone": false,
-    "wasPresent && isAnimating": false
-  },
+  initial: ctx.present ? "mounted" : "unmounted",
+  context: {},
+  exit: ["clearInitial"],
   on: {
     "NODE.SET": {
       actions: ["setNode", "setStyles"]
-    },
-    "PRESENCE.CHANGED": [{
-      cond: "isPresent",
-      target: "mounted",
-      actions: ["setPrevAnimationName"]
-    }, {
-      cond: "isAnimationNone || isDisplayNone",
-      target: "unmounted",
-      actions: ["invokeOnExitComplete"]
-    }, {
-      cond: "wasPresent && isAnimating",
-      target: "unmountSuspended"
-    }, {
-      target: "unmounted",
-      actions: ["invokeOnExitComplete"]
-    }]
+    }
   },
   on: {
     UPDATE_CONTEXT: {
@@ -44,7 +26,11 @@ const fetchMachine = createMachine({
   states: {
     mounted: {
       on: {
-        UNMOUNT: "unmounted"
+        UNMOUNT: {
+          target: "unmounted",
+          actions: ["invokeOnExitComplete"]
+        },
+        "UNMOUNT.SUSPEND": "unmountSuspended"
       }
     },
     unmountSuspended: {
@@ -57,13 +43,20 @@ const fetchMachine = createMachine({
         "ANIMATION.END": {
           target: "unmounted",
           actions: ["invokeOnExitComplete"]
+        },
+        UNMOUNT: {
+          target: "unmounted",
+          actions: ["invokeOnExitComplete"]
         }
       }
     },
     unmounted: {
       entry: ["clearPrevAnimationName"],
       on: {
-        MOUNT: "mounted"
+        MOUNT: {
+          target: "mounted",
+          actions: ["setPrevAnimationName"]
+        }
       }
     }
   }
@@ -75,9 +68,5 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {
-    "isPresent": ctx => ctx["isPresent"],
-    "isAnimationNone || isDisplayNone": ctx => ctx["isAnimationNone || isDisplayNone"],
-    "wasPresent && isAnimating": ctx => ctx["wasPresent && isAnimating"]
-  }
+  guards: {}
 });

@@ -26,8 +26,8 @@ test.describe("combobox", () => {
     await I.dontSeeDropdown()
   })
 
-  test("[typeahead / autohighlight / selection] should open combobox menu when typing", async () => {
-    await I.typeInHexInput("an")
+  test("[keyboard] should open combobox menu when typing", async () => {
+    await I.type("can")
     await I.seeDropdown()
     await I.seeItemIsHighlighted("Canada")
 
@@ -59,7 +59,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / no-loop] on arrow down, open and highlight first enabled option", async () => {
-    await I.controls.bool("loop", false)
+    await I.controls.bool("loopFocus", false)
 
     await I.focusInput()
     await I.pressKey("ArrowDown")
@@ -80,7 +80,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / no-loop] on arrow up, open and highlight last enabled option", async () => {
-    await I.controls.bool("loop", false)
+    await I.controls.bool("loopFocus", false)
 
     await I.focusInput()
     await I.pressKey("ArrowUp")
@@ -89,7 +89,7 @@ test.describe("combobox", () => {
     await I.seeItemIsHighlighted("Tunisia")
   })
 
-  test("[keyboard / opened] on home and end, when open, focus first and last option", async () => {
+  test("[keyboard / open] on home and end, when open, focus first and last option", async () => {
     await I.clickTrigger()
 
     await I.pressKey("ArrowDown", 3)
@@ -104,7 +104,7 @@ test.describe("combobox", () => {
 
   test("[keyboard / closed] on home and end, caret moves to start and end", async () => {
     await I.clickTrigger()
-    await I.typeInHexInput("an")
+    await I.type("an")
     await I.pressKey("Escape")
 
     await I.pressKey("Home")
@@ -115,7 +115,7 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / arrowdown / loop]", async () => {
-    await I.typeInHexInput("mal")
+    await I.type("mal")
 
     await I.pressKey("ArrowDown", 4)
     await I.seeItemIsHighlighted("Malta")
@@ -125,9 +125,9 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / arrowdown / no-loop]", async () => {
-    await I.controls.bool("loop", false)
+    await I.controls.bool("loopFocus", false)
 
-    await I.typeInHexInput("mal")
+    await I.type("mal")
     await I.pressKey("ArrowDown", 4)
     await I.seeItemIsHighlighted("Malta")
 
@@ -136,14 +136,14 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard / arrowup / loop]", async () => {
-    await I.typeInHexInput("mal")
+    await I.type("mal")
     await I.pressKey("ArrowUp")
     await I.seeItemIsHighlighted("Malta")
   })
 
   test("[keyboard / arrowup / no-loop]", async () => {
-    await I.controls.bool("loop", false)
-    await I.typeInHexInput("mal")
+    await I.controls.bool("loopFocus", false)
+    await I.type("mal")
     await I.pressKey("ArrowUp")
     await I.seeItemIsHighlighted("Malawi")
   })
@@ -179,7 +179,7 @@ test.describe("combobox", () => {
 
   test("[selection=clear] should clear input value", async () => {
     await I.controls.select("selectionBehavior", "clear")
-    await I.typeInHexInput("mal")
+    await I.type("mal")
     await I.pressKey("Enter")
     await I.seeInputHasValue("")
   })
@@ -193,7 +193,7 @@ test.describe("combobox / autocomplete", () => {
   })
 
   test("[keyboard] should autocomplete", async () => {
-    await I.typeInHexInput("mal")
+    await I.type("mal")
     await I.dontSeeHighlightedItem()
     await I.pressKey("ArrowDown")
     await I.seeItemIsHighlighted("Malawi")
@@ -203,7 +203,7 @@ test.describe("combobox / autocomplete", () => {
   })
 
   test("[keyboard / loop] should loop through the options and previous input value", async () => {
-    await I.typeInHexInput("mal")
+    await I.type("mal")
     await I.pressKey("ArrowDown", 5)
     await I.seeItemIsHighlighted("Malta")
 
@@ -217,7 +217,7 @@ test.describe("combobox / autocomplete", () => {
 
   test("[pointer] hovering an option should not update input value", async () => {
     await I.clickTrigger()
-    await I.typeInHexInput("mal")
+    await I.type("mal")
 
     await I.hoverItem("Malawi")
     await I.seeInputHasValue("mal")

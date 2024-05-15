@@ -67,14 +67,16 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
   anchorPoint: Point | null
   /**
    * Whether to loop the keyboard navigation.
+   * @default false
    */
-  loop: boolean
+  loopFocus: boolean
   /**
    * The options used to dynamically position the menu
    */
   positioning: PositioningOptions
   /**
    * Whether to close the menu when an option is selected
+   * @default true
    */
   closeOnSelect: boolean
   /**
@@ -93,6 +95,16 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
    *  Whether the menu's open state is controlled by the user
    */
   "open.controlled"?: boolean
+  /**
+   * Whether the pressing printable characters should trigger typeahead navigation
+   * @default true
+   */
+  typeahead: boolean
+  /**
+   * Whether the menu is a composed with other composite widgets like a combobox or tabs
+   * @default true
+   */
+  composite: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -151,7 +163,7 @@ interface PrivateContext {
    * @internal
    * The typeahead state for faster keyboard navigation
    */
-  typeahead: TypeaheadState
+  typeaheadState: TypeaheadState
   /**
    * @internal
    * Whether to return focus to the trigger when the menu is closed
@@ -217,16 +229,25 @@ export interface OptionItemProps extends Partial<ItemProps> {
   /**
    * Function called when the option state is changed
    */
-  onCheckedChange?: (checked: boolean) => void
+  onCheckedChange?(checked: boolean): void
 }
 
 export interface ItemState {
-  isDisabled: boolean
-  isHighlighted: boolean
+  /**
+   * Whether the item is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the item is highlighted
+   */
+  highlighted: boolean
 }
 
 export interface OptionItemState extends ItemState {
-  isChecked: boolean
+  /**
+   * Whether the option item is checked
+   */
+  checked: boolean
 }
 
 export interface ItemGroupProps {
@@ -247,15 +268,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the menu is open
    */
-  isOpen: boolean
+  open: boolean
   /**
-   * Function to open the menu
+   * Function to open or close the menu
    */
-  open(): void
-  /**
-   * Function to close the menu
-   */
-  close(): void
+  setOpen(open: boolean): void
   /**
    * The id of the currently highlighted menuitem
    */
@@ -300,3 +317,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getItemGroupLabelProps(options: ItemGroupLabelProps): T["element"]
   getItemGroupProps(options: ItemGroupProps): T["element"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { PositioningOptions, Point }

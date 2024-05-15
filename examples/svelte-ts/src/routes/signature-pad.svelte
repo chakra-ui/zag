@@ -12,7 +12,7 @@
   let url = $state("")
   const setUrl = (value: string) => (url = value)
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     signaturePad.machine({
       id: "1",
       onDrawEnd(details) {
@@ -29,12 +29,12 @@
     },
   )
 
-  const api = $derived(signaturePad.connect(_state, send, normalizeProps))
+  const api = $derived(signaturePad.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="signature-pad">
   <div {...api.rootProps}>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
+    <!-- svelte-ignore a11y_label_has_associated_control -->
     <label {...api.labelProps}>Signature Pad</label>
 
     <div {...api.controlProps}>
@@ -47,7 +47,7 @@
         {/if}
       </svg>
 
-      <div {...api.guideProps} />
+      <div {...api.guideProps}></div>
     </div>
 
     <button {...api.clearTriggerProps}>
@@ -56,7 +56,7 @@
   </div>
 
   <button
-    onClick={() => {
+    onclick={() => {
       api.getDataUrl("image/png").then(setUrl)
     }}
   >
@@ -69,5 +69,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

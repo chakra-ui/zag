@@ -10,9 +10,15 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(radioControls)
 
-  const [state, send] = useMachine(radio.machine({ id: useId(), name: "fruit" }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    radio.machine({
+      id: useId(),
+      name: "fruit",
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = radio.connect(state, send, normalizeProps)
 

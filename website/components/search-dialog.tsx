@@ -15,7 +15,7 @@ export function Search() {
   return (
     <>
       <SearchTrigger {...dialog_api.triggerProps} />
-      {dialog_api.isOpen && (
+      {dialog_api.open && (
         <Portal>
           <Box
             position="fixed"
@@ -75,7 +75,6 @@ export function Search() {
                   />
                 </Flex>
                 <Box
-                  as="ul"
                   flex="1"
                   listStyleType="none"
                   maxHeight="340px"
@@ -86,13 +85,16 @@ export function Search() {
                   {results.map((item) => {
                     const isLvl1 = item.type === "lvl1"
                     return (
-                      <Link key={item.id} href={item.url}>
-                        <chakra.li
+                      <Link
+                        legacyBehavior
+                        passHref
+                        key={item.id}
+                        href={item.url}
+                      >
+                        <chakra.a
                           px="3"
                           py="1"
-                          _selected={{
-                            bg: "bg-primary-subtle",
-                          }}
+                          _selected={{ bg: "bg-primary-subtle" }}
                           display="flex"
                           alignItems="center"
                           minHeight="14"
@@ -120,7 +122,7 @@ export function Search() {
                           <Icon opacity={0.4}>
                             <GrReturn className="icon-gr-return" />
                           </Icon>
-                        </chakra.li>
+                        </chakra.a>
                       </Link>
                     )
                   })}
@@ -135,7 +137,7 @@ export function Search() {
                   lineHeight="1"
                   color="gray.500"
                   spacing="5"
-                  borderTopWidth={combobox_api.isOpen ? "1px" : undefined}
+                  borderTopWidth={combobox_api.open ? "1px" : undefined}
                 >
                   <HStack>
                     <Box as="span">↑↓</Box>

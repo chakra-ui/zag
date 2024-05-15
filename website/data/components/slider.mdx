@@ -165,6 +165,34 @@ const [state, send] = useMachine(
 )
 ```
 
+## Changing the thumb alignment
+
+By default, the thumb is aligned to the start of the track. Set the
+`thumbAlignment` context property to `contain` or `center`.
+
+- `center`: the thumb will extend beyond the bounds of the slider track.
+- `contain`: the thumb will be contained within the bounds of the track.
+
+```jsx {3}
+const [state, send] = useMachine(
+  slider.machine({
+    thumbAlignment: "center",
+  }),
+)
+```
+
+If you use `contain` alignment, you might need to set the thumb size to prevent
+any flickering.
+
+```jsx {4}
+const [state, send] = useMachine(
+  slider.machine({
+    thumbAlignment: "contain",
+    thumbSize: { width: 20, height: 20 },
+  }),
+)
+```
+
 ## Usage within forms
 
 To use slider within forms, use the exposed `inputProps` from the `connect`

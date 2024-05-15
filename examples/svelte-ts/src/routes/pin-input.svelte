@@ -9,7 +9,7 @@
 
   const controls = useControls(pinInputControls)
 
-  const [_state, send] = useMachine(
+  const [snapshot, send] = useMachine(
     pinInput.machine({
       name: "test",
       id: "1",
@@ -19,19 +19,19 @@
     },
   )
 
-  const api = $derived(pinInput.connect(_state, send, normalizeProps))
+  const api = $derived(pinInput.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="pin-input">
   <form
-    onSubmit={(e) => {
+    onsubmit={(e) => {
       e.preventDefault()
       const formData = serialize(e.currentTarget, { hash: true })
       console.log(formData)
     }}
   >
     <div {...api.rootProps}>
-      <!-- svelte-ignore a11y-label-has-associated-control -->
+      <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.labelProps}>Enter code:</label>
       <div {...api.controlProps}>
         <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
@@ -46,5 +46,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

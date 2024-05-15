@@ -4,7 +4,7 @@ import { Collapsible } from "@/components/collapsible"
 import { useState } from "react"
 
 export default function Page() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
 
   return (
     <div style={{ padding: "40px", height: "200vh" }}>

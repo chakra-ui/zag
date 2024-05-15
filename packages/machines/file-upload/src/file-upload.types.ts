@@ -70,18 +70,24 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   disabled?: boolean
   /**
    * Whether to allow drag and drop in the dropzone element
+   * @default true
    */
   allowDrop?: boolean
   /**
    * The maximum file size in bytes
+   *
+   * @default Infinity
    */
   maxFileSize: number
   /**
    * The minimum file size in bytes
+   *
+   * @default 0
    */
   minFileSize: number
   /**
    * The maximum number of files
+   * @default 1
    */
   maxFiles: number
   /**
@@ -169,15 +175,15 @@ export interface MachineApi<T extends PropTypes> {
   /**
    * Whether the user is dragging something over the root element
    */
-  isDragging: boolean
+  dragging: boolean
   /**
    * Whether the user is focused on the dropzone element
    */
-  isFocused: boolean
+  focused: boolean
   /**
    * Function to open the file dialog
    */
-  open(): void
+  openFilePicker(): void
   /**
    * Function to delete the file from the list
    */

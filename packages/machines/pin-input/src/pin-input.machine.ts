@@ -13,11 +13,11 @@ export function machine(userContext: UserDefinedContext) {
       initial: "idle",
       context: {
         value: [],
-        focusedIndex: -1,
         placeholder: "○",
         otp: false,
         type: "numeric",
         ...ctx,
+        focusedIndex: -1,
         translations: {
           inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
           ...ctx.translations,

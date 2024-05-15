@@ -5,6 +5,7 @@ export * from "./tour.props"
 export type {
   MachineApi as Api,
   UserDefinedContext as Context,
+  ElementIds,
   IntlTranslations,
   ProgressTextDetails,
   StatusChangeDetails,

@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
+import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
-import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -9,6 +9,10 @@ import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 
 export interface ValueChangeDetails {
   value: string[]
+}
+
+export interface InputValueChangeDetails {
+  inputValue: string
 }
 
 export interface HighlightChangeDetails {
@@ -21,7 +25,7 @@ export interface ValidityChangeDetails {
   reason: ValidityState
 }
 
-interface ValidateArgs {
+export interface ValidateArgs {
   inputValue: string
   value: string[]
 }
@@ -98,10 +102,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    */
   invalid?: boolean
   /**
-   * Whether a tag can be edited after creation.
-   * If `true` and focus is on a tag, pressing `Enter`or double clicking will edit the tag.
+   * Whether a tag can be edited after creation, by presing `Enter` or double clicking.
+   * @default true
    */
-  allowEditTag?: boolean
+  editable?: boolean
   /**
    * The tag input's value
    */
@@ -114,6 +118,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * Callback fired when the tag values is updated
    */
   onValueChange?(details: ValueChangeDetails): void
+  /**
+   * Callback fired when the input value is updated
+   */
+  onInputValueChange?(details: InputValueChangeDetails): void
   /**
    * Callback fired when a tag is highlighted by pointer or keyboard navigation
    */
@@ -130,18 +138,17 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * The behavior of the tags input when the input is blurred
    * - `"add"`: add the input value as a new tag
-   * - `"none"`: do nothing
    * - `"clear"`: clear the input value
-   *
-   * @default "none"
    */
   blurBehavior?: "clear" | "add"
   /**
    * Whether to add a tag when you paste values into the tag input
+   * @default false
    */
   addOnPaste?: boolean
   /**
    * The max number of tags
+   * @default Infinity
    */
   max: number
   /**
@@ -259,17 +266,29 @@ export interface ItemProps {
 }
 
 export interface ItemState {
+  /**
+   * The underlying id of the item
+   */
   id: string
-  isEditing: boolean
-  isHighlighted: boolean
-  isDisabled: boolean
+  /**
+   * Whether the item is being edited
+   */
+  editing: boolean
+  /**
+   * Whether the item is highlighted
+   */
+  highlighted: boolean
+  /**
+   * Whether the item is disabled
+   */
+  disabled: boolean
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tags are empty
    */
-  isEmpty: boolean
+  empty: boolean
   /**
    * The value of the tags entry input.
    */
@@ -289,7 +308,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tags have reached the max limit.
    */
-  isAtMax: boolean
+  atMax: boolean
   /**
    * Function to set the value of the tags.
    */

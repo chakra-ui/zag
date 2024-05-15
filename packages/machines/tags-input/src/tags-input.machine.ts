@@ -17,7 +17,6 @@ export function machine(userContext: UserDefinedContext) {
       id: "tags-input",
       initial: ctx.autoFocus ? "focused:input" : "idle",
       context: {
-        log: { current: null, prev: null },
         inputValue: "",
         editedTagValue: "",
         editedTagId: null,
@@ -25,14 +24,15 @@ export function machine(userContext: UserDefinedContext) {
         value: [],
         dir: "ltr",
         max: Infinity,
-        liveRegion: null,
         blurBehavior: undefined,
         addOnPaste: false,
-        allowEditTag: true,
+        editable: true,
         validate: () => true,
         delimiter: ",",
         disabled: false,
         ...ctx,
+        liveRegion: null,
+        log: { current: null, prev: null },
         fieldsetDisabled: false,
         translations: {
           clearTriggerLabel: "Clear all tags",
@@ -70,15 +70,18 @@ export function machine(userContext: UserDefinedContext) {
       on: {
         DOUBLE_CLICK_TAG: {
           internal: true,
-          guard: "allowEditTag",
+          guard: "isTagEditable",
           target: "editing:tag",
           actions: ["setEditedId", "initializeEditedTagValue"],
         },
         POINTER_DOWN_TAG: {
           internal: true,
-          guard: not("isTagHighlighted"),
           target: "navigating:tag",
           actions: ["highlightTag", "focusInput"],
+        },
+        CLICK_DELETE_TAG: {
+          target: "focused:input",
+          actions: ["deleteTag"],
         },
         SET_INPUT_VALUE: {
           actions: ["setInputValue"],
@@ -185,7 +188,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: "clearHighlightedId",
             },
             ENTER: {
-              guard: and("allowEditTag", "hasHighlightedTag"),
+              guard: and("isTagEditable", "hasHighlightedTag"),
               target: "editing:tag",
               actions: ["setEditedId", "initializeEditedTagValue", "focusEditedTagInput"],
             },
@@ -233,10 +236,17 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["clearEditedTagValue", "clearHighlightedId", "clearEditedId", "raiseExternalBlurEvent"],
               },
             ],
-            TAG_INPUT_ENTER: {
-              target: "navigating:tag",
-              actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "highlightTagAtIndex"],
-            },
+            TAG_INPUT_ENTER: [
+              {
+                guard: "isEditedTagEmpty",
+                target: "navigating:tag",
+                actions: ["deleteHighlightedTag", "focusInput", "clearEditedId", "highlightTagAtIndex"],
+              },
+              {
+                target: "navigating:tag",
+                actions: ["submitEditedTagValue", "focusInput", "clearEditedId", "highlightTagAtIndex"],
+              },
+            ],
           },
         },
       },
@@ -246,11 +256,11 @@ export function machine(userContext: UserDefinedContext) {
         isInputRelatedTarget: (ctx, evt) => evt.relatedTarget === dom.getInputEl(ctx),
         isAtMax: (ctx) => ctx.isAtMax,
         hasHighlightedTag: (ctx) => ctx.highlightedTagId !== null,
-        isTagHighlighted: (ctx, evt) => ctx.highlightedTagId === evt.id,
         isFirstTagHighlighted: (ctx) => {
           const firstItemId = dom.getItemId(ctx, { value: ctx.value[0], index: 0 })
           return firstItemId === ctx.highlightedTagId
         },
+        isEditedTagEmpty: (ctx) => ctx.editedTagValue.trim() === "",
         isLastTagHighlighted: (ctx) => {
           const lastIndex = ctx.value.length - 1
           const lastItemId = dom.getItemId(ctx, { value: ctx.value[lastIndex], index: lastIndex })
@@ -263,7 +273,7 @@ export function machine(userContext: UserDefinedContext) {
         addOnBlur: (ctx) => ctx.blurBehavior === "add",
         clearOnBlur: (ctx) => ctx.blurBehavior === "clear",
         addOnPaste: (ctx) => !!ctx.addOnPaste,
-        allowEditTag: (ctx) => !!ctx.allowEditTag,
+        isTagEditable: (ctx) => !!ctx.editable,
         isInputCaretAtStart(ctx) {
           const input = dom.getInputEl(ctx)
           if (!input) return false
@@ -301,7 +311,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         autoResize(ctx) {
-          if (!ctx.editedTagValue || ctx.idx == null || !ctx.allowEditTag) return
+          if (!ctx.editedTagValue || ctx.idx == null || !ctx.editable) return
           const input = dom.getTagInputEl(ctx, { value: ctx.editedTagValue, index: ctx.idx })
           return autoResizeInput(input)
         },
@@ -424,7 +434,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         setInputValue(ctx, evt) {
-          ctx.inputValue = evt.value
+          set.inputValue(ctx, evt.value)
         },
         clearHighlightedId(ctx) {
           ctx.highlightedTagId = null
@@ -435,7 +445,9 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         clearInputValue(ctx) {
-          ctx.inputValue = ""
+          raf(() => {
+            set.inputValue(ctx, "")
+          })
         },
         syncInputValue(ctx) {
           const inputEl = dom.getInputEl(ctx)
@@ -472,7 +484,7 @@ export function machine(userContext: UserDefinedContext) {
             } else {
               ctx.onValueInvalid?.({ reason: "invalidTag" })
             }
-            ctx.inputValue = ""
+            set.inputValue(ctx, "")
           })
         },
         clearTags(ctx) {
@@ -549,6 +561,9 @@ const invoke = {
     const highlightedValue = dom.getHighlightedTagValue(ctx)
     ctx.onHighlightChange?.({ highlightedValue })
   },
+  valueChange: (ctx: MachineContext) => {
+    ctx.onInputValueChange?.({ inputValue: ctx.inputValue })
+  },
 }
 
 const set = {
@@ -566,5 +581,10 @@ const set = {
     if (isEqual(ctx.highlightedTagId, id)) return
     ctx.highlightedTagId = id
     invoke.highlightChange(ctx)
+  },
+  inputValue: (ctx: MachineContext, value: string) => {
+    if (isEqual(ctx.inputValue, value)) return
+    ctx.inputValue = value
+    invoke.valueChange(ctx)
   },
 }

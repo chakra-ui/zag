@@ -20,9 +20,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   function getItemState(props: ItemProps): ItemState {
     return {
-      isOpen: value.includes(props.value),
-      isFocused: focusedValue === props.value,
-      isDisabled: Boolean(props.disabled ?? state.context.disabled),
+      expanded: value.includes(props.value),
+      focused: focusedValue === props.value,
+      disabled: Boolean(props.disabled ?? state.context.disabled),
     }
   }
 
@@ -45,9 +45,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.item.attrs,
         dir: state.context.dir,
         id: dom.getItemId(state.context, props.value),
-        "data-state": itemState.isOpen ? "open" : "closed",
-        "data-focus": dataAttr(itemState.isFocused),
-        "data-disabled": dataAttr(itemState.isDisabled),
+        "data-state": itemState.expanded ? "open" : "closed",
+        "data-focus": dataAttr(itemState.focused),
+        "data-disabled": dataAttr(itemState.disabled),
         "data-orientation": state.context.orientation,
       })
     },
@@ -60,10 +60,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "region",
         id: dom.getItemContentId(state.context, props.value),
         "aria-labelledby": dom.getItemTriggerId(state.context, props.value),
-        hidden: !itemState.isOpen,
-        "data-state": itemState.isOpen ? "open" : "closed",
-        "data-disabled": dataAttr(itemState.isDisabled),
-        "data-focus": dataAttr(itemState.isFocused),
+        hidden: !itemState.expanded,
+        "data-state": itemState.expanded ? "open" : "closed",
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-focus": dataAttr(itemState.focused),
         "data-orientation": state.context.orientation,
       })
     },
@@ -74,9 +74,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.itemIndicator.attrs,
         dir: state.context.dir,
         "aria-hidden": true,
-        "data-state": itemState.isOpen ? "open" : "closed",
-        "data-disabled": dataAttr(itemState.isDisabled),
-        "data-focus": dataAttr(itemState.isFocused),
+        "data-state": itemState.expanded ? "open" : "closed",
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-focus": dataAttr(itemState.focused),
         "data-orientation": state.context.orientation,
       })
     },
@@ -91,29 +91,30 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         id: dom.getItemTriggerId(state.context, value),
         "aria-controls": dom.getItemContentId(state.context, value),
-        "aria-expanded": itemState.isOpen,
-        disabled: itemState.isDisabled,
+        "aria-expanded": itemState.expanded,
+        disabled: itemState.disabled,
         "data-orientation": state.context.orientation,
-        "aria-disabled": itemState.isDisabled,
-        "data-state": itemState.isOpen ? "open" : "closed",
+        "aria-disabled": itemState.disabled,
+        "data-state": itemState.expanded ? "open" : "closed",
         "data-ownedby": dom.getRootId(state.context),
         onFocus() {
-          if (itemState.isDisabled) return
+          if (itemState.disabled) return
           send({ type: "TRIGGER.FOCUS", value })
         },
         onBlur() {
-          if (itemState.isDisabled) return
+          if (itemState.disabled) return
           send("TRIGGER.BLUR")
         },
         onClick(event) {
-          if (itemState.isDisabled) return
+          if (itemState.disabled) return
           if (isSafari()) {
             event.currentTarget.focus()
           }
           send({ type: "TRIGGER.CLICK", value })
         },
         onKeyDown(event) {
-          if (itemState.isDisabled) return
+          if (event.defaultPrevented) return
+          if (itemState.disabled) return
 
           const keyMap: EventKeyMap = {
             ArrowDown() {

@@ -13,28 +13,27 @@ import { dom } from "./rating-group.dom"
 import type { ItemProps, ItemState, MachineApi, Send, State } from "./rating-group.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isInteractive = state.context.isInteractive
-  const isDisabled = state.context.isDisabled
+  const interactive = state.context.isInteractive
+  const disabled = state.context.isDisabled
   const value = state.context.value
   const hoveredValue = state.context.hoveredValue
   const translations = state.context.translations
 
   function getItemState(props: ItemProps): ItemState {
     const value = state.context.isHovering ? state.context.hoveredValue : state.context.value
-    const isEqual = Math.ceil(value) === props.index
-    const isHighlighted = props.index <= value || isEqual
-    const isHalf = isEqual && Math.abs(value - props.index) === 0.5
+    const equal = Math.ceil(value) === props.index
+    const highlighted = props.index <= value || equal
+    const half = equal && Math.abs(value - props.index) === 0.5
+
     return {
-      isEqual,
-      isValueEmpty: state.context.value === -1,
-      isHighlighted,
-      isHalf,
-      isChecked: isEqual || (state.context.value === -1 && props.index === 1),
+      highlighted,
+      half,
+      checked: equal || (state.context.value === -1 && props.index === 1),
     }
   }
 
   return {
-    isHovering: state.context.isHovering,
+    hovering: state.context.isHovering,
     value,
     hoveredValue,
     count: state.context.count,
@@ -66,7 +65,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...parts.label.attrs,
       dir: state.context.dir,
       id: dom.getLabelId(state.context),
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
     }),
 
     controlProps: normalize.element({
@@ -79,13 +78,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-readonly": ariaAttr(state.context.readOnly),
       "data-readonly": dataAttr(state.context.readOnly),
       tabIndex: state.context.readOnly ? 0 : -1,
-      "data-disabled": dataAttr(isDisabled),
+      "data-disabled": dataAttr(disabled),
       onPointerMove(event) {
-        if (!isInteractive || event.pointerType === "touch") return
+        if (!interactive || event.pointerType === "touch") return
         send("GROUP_POINTER_OVER")
       },
       onPointerLeave(event) {
-        if (!isInteractive || event.pointerType === "touch") return
+        if (!interactive || event.pointerType === "touch") return
         send("GROUP_POINTER_LEAVE")
       },
     }),
@@ -100,27 +99,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         id: dom.getItemId(state.context, index.toString()),
         role: "radio",
-        tabIndex: isDisabled ? undefined : itemState.isChecked ? 0 : -1,
+        tabIndex: disabled ? undefined : itemState.checked ? 0 : -1,
         "aria-roledescription": "rating",
         "aria-label": valueText,
-        "aria-disabled": isDisabled,
-        "data-disabled": dataAttr(isDisabled),
+        "aria-disabled": disabled,
+        "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(state.context.readOnly),
         "aria-setsize": state.context.count,
-        "aria-checked": itemState.isChecked,
-        "data-checked": dataAttr(itemState.isChecked),
+        "aria-checked": itemState.checked,
+        "data-checked": dataAttr(itemState.checked),
         "aria-posinset": index,
-        "data-highlighted": dataAttr(itemState.isHighlighted),
-        "data-half": dataAttr(itemState.isHalf),
+        "data-highlighted": dataAttr(itemState.highlighted),
+        "data-half": dataAttr(itemState.half),
         onPointerDown(event) {
-          if (!isInteractive) return
+          if (!interactive) return
           const evt = getNativeEvent(event)
           if (isLeftClick(evt)) {
             event.preventDefault()
           }
         },
         onPointerMove(event) {
-          if (!isInteractive) return
+          if (!interactive) return
           const point = getEventPoint(getNativeEvent(event))
           const relativePoint = getRelativePoint(point, event.currentTarget)
           const percentX = relativePoint.getPercentValue({
@@ -131,7 +130,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "POINTER_OVER", index, isMidway })
         },
         onKeyDown(event) {
-          if (!isInteractive) return
+          if (event.defaultPrevented) return
+          if (!interactive) return
+
           const keyMap: EventKeyMap = {
             ArrowLeft() {
               send("ARROW_LEFT")
@@ -165,15 +166,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
         },
         onClick() {
-          if (!isInteractive) return
+          if (!interactive) return
           send({ type: "CLICK", value: index })
         },
         onFocus() {
-          if (!isInteractive) return
+          if (!interactive) return
           send("FOCUS")
         },
         onBlur() {
-          if (!isInteractive) return
+          if (!interactive) return
           send("BLUR")
         },
       })

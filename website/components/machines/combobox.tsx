@@ -77,9 +77,9 @@ export function Combobox(props: ComboboxProps) {
       onOpenChange() {
         setOptions(comboboxData)
       },
-      onInputValueChange({ value }) {
+      onInputValueChange({ inputValue }) {
         const filtered = comboboxData.filter((item) =>
-          item.label.toLowerCase().includes(value.toLowerCase()),
+          item.label.toLowerCase().includes(inputValue.toLowerCase()),
         )
         setOptions(filtered.length > 0 ? filtered : comboboxData)
       },
@@ -96,7 +96,7 @@ export function Combobox(props: ComboboxProps) {
         <label {...api.labelProps}>Nationality</label>
         <div {...api.controlProps}>
           <input {...api.inputProps} />
-          <button {...api.triggerProps}>
+          <button {...api.getTriggerProps()}>
             <CaretIcon />
           </button>
         </div>

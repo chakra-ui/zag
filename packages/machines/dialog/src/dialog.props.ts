@@ -4,7 +4,7 @@ import type { UserDefinedContext } from "./dialog.types"
 
 export const props = createProps<UserDefinedContext>()([
   "aria-label",
-  "closeOnEscapeKeyDown",
+  "closeOnEscape",
   "closeOnInteractOutside",
   "dir",
   "finalFocusEl",
@@ -22,6 +22,7 @@ export const props = createProps<UserDefinedContext>()([
   "onPointerDownOutside",
   "open.controlled",
   "open",
+  "persistentElements",
   "preventScroll",
   "restoreFocus",
   "role",

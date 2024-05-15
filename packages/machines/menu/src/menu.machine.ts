@@ -1,8 +1,15 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent } from "@zag-js/dom-event"
-import { contains, getByTypeahead, isEditableElement, raf, scrollIntoView } from "@zag-js/dom-query"
-import { observeAttributes } from "@zag-js/mutation-observer"
+import {
+  contains,
+  getByTypeahead,
+  getFirstTabbable,
+  isEditableElement,
+  observeAttributes,
+  raf,
+  scrollIntoView,
+} from "@zag-js/dom-query"
 import { getPlacement, getPlacementSide } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
 import { cast, compact, isEqual } from "@zag-js/utils"
@@ -19,9 +26,11 @@ export function machine(userContext: UserDefinedContext) {
       initial: ctx.open ? "open" : "idle",
       context: {
         highlightedValue: null,
-        loop: false,
+        loopFocus: false,
         anchorPoint: null,
         closeOnSelect: true,
+        typeahead: true,
+        composite: true,
         ...ctx,
         positioning: {
           placement: "bottom-start",
@@ -34,13 +43,13 @@ export function machine(userContext: UserDefinedContext) {
         children: cast(ref({})),
         suspendPointer: false,
         restoreFocus: true,
-        typeahead: getByTypeahead.defaultOptions,
+        typeaheadState: getByTypeahead.defaultOptions,
       },
 
       computed: {
         isSubmenu: (ctx) => ctx.parent !== null,
         isRtl: (ctx) => ctx.dir === "rtl",
-        isTypingAhead: (ctx) => ctx.typeahead.keysSoFar !== "",
+        isTypingAhead: (ctx) => ctx.typeaheadState.keysSoFar !== "",
       },
 
       watch: {
@@ -342,15 +351,6 @@ export function machine(userContext: UserDefinedContext) {
                 actions: "invokeOnClose",
               },
             ],
-            TAB: [
-              {
-                guard: "isForwardTabNavigation",
-                actions: ["highlightNextItem"],
-              },
-              {
-                actions: ["highlightPrevItem"],
-              },
-            ],
             ARROW_UP: {
               actions: ["highlightPrevItem", "focusMenu"],
             },
@@ -470,7 +470,6 @@ export function machine(userContext: UserDefinedContext) {
           const target = (evt.target ?? dom.getHighlightedItemEl(ctx)) as HTMLElement | null
           return !!target?.hasAttribute("aria-controls")
         },
-        isForwardTabNavigation: (_ctx, evt) => !evt.shiftKey,
         isSubmenu: (ctx) => ctx.isSubmenu,
         suspendPointer: (ctx) => ctx.suspendPointer,
         isHighlightedItemEditable: (ctx) => isEditableElement(dom.getHighlightedItemEl(ctx)),
@@ -552,7 +551,13 @@ export function machine(userContext: UserDefinedContext) {
             scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
           }
           raf(() => exec())
-          return observeAttributes(dom.getContentEl(ctx), ["aria-activedescendant"], exec)
+
+          const contentEl = () => dom.getContentEl(ctx)
+          return observeAttributes(contentEl, {
+            defer: true,
+            attributes: ["aria-activedescendant"],
+            callback: exec,
+          })
         },
       },
 
@@ -634,10 +639,10 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusMenu(ctx) {
           raf(() => {
-            const activeEl = dom.getActiveElement(ctx)
             const contentEl = dom.getContentEl(ctx)
-            if (contains(contentEl, activeEl)) return
-            contentEl?.focus({ preventScroll: true })
+            if (contains(contentEl, dom.getActiveElement(ctx))) return
+            const firstFocusableEl = getFirstTabbable(contentEl, false) || contentEl
+            firstFocusableEl?.focus({ preventScroll: true })
           })
         },
         highlightFirstItem(ctx) {

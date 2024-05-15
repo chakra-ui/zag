@@ -64,7 +64,7 @@ export function Rating(props: RadioProps) {
             const state = api.getItemState({ index })
             return (
               <span key={index} {...api.getItemProps({ index })}>
-                {state.isHalf ? <HalfStar /> : <Star />}
+                {state.half ? <HalfStar /> : <Star />}
               </span>
             )
           })}

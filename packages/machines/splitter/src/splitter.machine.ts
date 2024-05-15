@@ -126,11 +126,11 @@ export function machine(userContext: UserDefinedContext) {
           activities: ["trackPointerMove"],
           on: {
             POINTER_MOVE: {
-              actions: ["setPointerValue", "setGlobalCursor"],
+              actions: ["setPointerValue", "setGlobalCursor", "invokeOnResize"],
             },
             POINTER_UP: {
               target: "focused",
-              actions: ["invokeOnResizeEnd", "setPreviousPanels", "clearGlobalCursor", "blurResizeHandle"],
+              actions: ["setPreviousPanels", "clearGlobalCursor", "blurResizeHandle", "invokeOnResizeEnd"],
             },
           },
         },

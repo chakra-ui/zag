@@ -1,5 +1,51 @@
 # @zag-js/collapsible
 
+## 0.50.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.50.0
+  - @zag-js/core@0.50.0
+  - @zag-js/types@0.50.0
+  - @zag-js/utils@0.50.0
+  - @zag-js/dom-query@0.50.0
+
+## 0.49.0
+
+### Patch Changes
+
+- [#1442](https://github.com/chakra-ui/zag/pull/1442) [`14658ee`](https://github.com/chakra-ui/zag/commit/14658eebb74ebbb5201fed8d47f37d5bf0acf5dc) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where initial height animation can sometimes run.
+
+- Updated dependencies []:
+  - @zag-js/core@0.49.0
+  - @zag-js/anatomy@0.49.0
+  - @zag-js/types@0.49.0
+  - @zag-js/utils@0.49.0
+  - @zag-js/dom-query@0.49.0
+
+## 0.48.0
+
+### Minor Changes
+
+- [#1435](https://github.com/chakra-ui/zag/pull/1435) [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `api` properties
+
+  - `isVisible` -> `visible`
+  - `isDisabled` -> `disabled`
+  - `isOpen` -> `open`
+  - `open`, `close` -> `setOpen(true|false)`
+
+### Patch Changes
+
+- [`40f3703`](https://github.com/chakra-ui/zag/commit/40f37039fcd2e954c429d696e0ddb1f9a8726191) Thanks [@cschroeter](https://github.com/cschroeter)! - Resolve an issue that sometimes the collapsible height was not measured correctly
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.48.0
+  - @zag-js/core@0.48.0
+  - @zag-js/types@0.48.0
+  - @zag-js/utils@0.48.0
+  - @zag-js/dom-query@0.48.0
+
 ## 0.47.0
 
 ### Patch Changes

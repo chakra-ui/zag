@@ -1,6 +1,6 @@
-import { createMachine, guards } from "@zag-js/core"
+import { createMachine, guards, subscribe } from "@zag-js/core"
 import { addDomEvent, trackPointerMove } from "@zag-js/dom-event"
-import { isHTMLElement } from "@zag-js/dom-query"
+import { isHTMLElement, raf } from "@zag-js/dom-query"
 import {
   addPoints,
   clampPoint,
@@ -8,17 +8,16 @@ import {
   constrainRect,
   createRect,
   getElementRect,
-  getWindowRect,
   isPointEqual,
   isSizeEqual,
   resizeRect,
   subtractPoints,
   type Point,
-  type Rect,
   type Size,
 } from "@zag-js/rect-utils"
 import { compact, invariant, isEqual, match, pick } from "@zag-js/utils"
 import { dom } from "./floating-panel.dom"
+import { panelStack } from "./floating-panel.store"
 import type { MachineContext, MachineState, Stage, UserDefinedContext } from "./floating-panel.types"
 
 const { not } = guards
@@ -30,7 +29,9 @@ export function machine(userContext: UserDefinedContext) {
       id: "floating-panel",
       initial: ctx.open ? "open" : "closed",
       context: {
-        size: { width: 320, height: 400 },
+        allowOverflow: true,
+        strategy: "absolute",
+        size: { width: 320, height: 240 },
         position: { x: 300, y: 100 },
         gridSize: 1,
         disabled: false,
@@ -41,21 +42,28 @@ export function machine(userContext: UserDefinedContext) {
         lastEventPosition: null,
         prevPosition: null,
         prevSize: null,
-        boundaryRect: null,
+        isTopmost: false,
       },
 
       computed: {
         isMaximized: (ctx) => ctx.stage === "maximized",
         isMinimized: (ctx) => ctx.stage === "minimized",
         isStaged: (ctx) => !!ctx.stage,
-        isDisabled: (ctx) => !!ctx.disabled,
-        canResize: (ctx) => (ctx.resizable || !ctx.isDisabled) && !ctx.stage,
-        canDrag: (ctx) => (ctx.draggable || !ctx.isDisabled) && !ctx.isMaximized,
+        canResize: (ctx) => (ctx.resizable || !ctx.disabled) && !ctx.stage,
+        canDrag: (ctx) => (ctx.draggable || !ctx.disabled) && !ctx.isMaximized,
       },
 
       watch: {
         position: ["setPositionStyle"],
         size: ["setSizeStyle"],
+      },
+
+      activities: ["trackPanelStack"],
+
+      on: {
+        WINDOW_FOCUS: {
+          actions: ["bringToFrontOfPanelStack"],
+        },
       },
 
       states: {
@@ -64,13 +72,14 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             OPEN: {
               target: "open",
-              actions: ["invokeOnOpen", "setPositionStyle", "setSizeStyle"],
+              actions: ["invokeOnOpen", "setAnchorPosition", "setPositionStyle", "setSizeStyle"],
             },
           },
         },
 
         open: {
           tags: ["open"],
+          entry: ["bringToFrontOfPanelStack"],
           activities: ["trackBoundaryRect"],
           on: {
             DRAG_START: {
@@ -109,7 +118,7 @@ export function machine(userContext: UserDefinedContext) {
 
         "open.dragging": {
           tags: ["open"],
-          activities: ["trackPointerMove", "trackBoundaryRect"],
+          activities: ["trackPointerMove"],
           exit: ["clearPrevPosition"],
           on: {
             DRAG: {
@@ -131,7 +140,7 @@ export function machine(userContext: UserDefinedContext) {
 
         "open.resizing": {
           tags: ["open"],
-          activities: ["trackPointerMove", "trackBoundaryRect"],
+          activities: ["trackPointerMove"],
           exit: ["clearPrevSize"],
           on: {
             DRAG: {
@@ -173,46 +182,69 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackBoundaryRect(ctx) {
           const win = dom.getWin(ctx)
-          const el = ctx.getBoundaryEl?.()
 
-          const adjust = (boundary: Rect) => {
-            const boundaryRect = pick(boundary, ["width", "height", "x", "y"])
-            ctx.boundaryRect = boundaryRect
+          // ResizeObserver fires immediately on init, so we need to skip the first call
+          let skip = true
 
-            const res = ctx.isMaximized
-              ? boundaryRect
-              : constrainRect(
-                  {
-                    ...ctx.position,
-                    ...ctx.size,
-                  },
-                  boundaryRect,
-                )
+          const exec = () => {
+            if (skip) {
+              skip = false
+              return
+            }
 
-            set.size(ctx, pick(res, ["width", "height"]))
-            set.position(ctx, pick(res, ["x", "y"]))
+            let boundaryRect = dom.getBoundaryRect(ctx, false)
+
+            if (!ctx.isMaximized) {
+              const rect = { ...ctx.position, ...ctx.size }
+              boundaryRect = constrainRect(rect, boundaryRect)
+            }
+
+            set.size(ctx, pick(boundaryRect, ["width", "height"]))
+            set.position(ctx, pick(boundaryRect, ["x", "y"]))
           }
 
-          if (isHTMLElement(el)) {
-            const exec = () => adjust(getElementRect(el))
-            exec()
+          const boundaryEl = ctx.getBoundaryEl?.()
+
+          if (isHTMLElement(boundaryEl)) {
             const obs = new win.ResizeObserver(exec)
-            obs.observe(el)
+            obs.observe(boundaryEl)
             return () => obs.disconnect()
           }
 
-          const exec = () => adjust(getWindowRect(win))
-          exec()
           return addDomEvent(win, "resize", exec)
+        },
+        trackPanelStack(ctx, _evt) {
+          const unsub = subscribe(panelStack, () => {
+            ctx.isTopmost = panelStack.isTopmost(ctx.id)
+          })
+
+          return () => {
+            panelStack.remove(ctx.id)
+            unsub()
+          }
         },
       },
       actions: {
+        setAnchorPosition(ctx) {
+          // if we persisted the rect, we don't need to set the anchor position
+          if (ctx.persistRect && (ctx.prevPosition || ctx.prevSize)) return
+          raf(() => {
+            const triggerRect = dom.getTriggerEl(ctx)
+            const boundaryRect = dom.getBoundaryRect(ctx, false)
+            const anchorPosition = ctx.getAnchorPosition?.({
+              triggerRect: triggerRect ? DOMRect.fromRect(getElementRect(triggerRect)) : null,
+              boundaryRect: DOMRect.fromRect(boundaryRect),
+            })
+            if (!anchorPosition) return
+            ctx.position = anchorPosition
+          })
+        },
         setPrevPosition(ctx, evt) {
           ctx.prevPosition = { ...ctx.position }
           ctx.lastEventPosition = evt.position
         },
         clearPrevPosition(ctx) {
-          if (!ctx.preserveOnClose) ctx.prevPosition = null
+          if (!ctx.persistRect) ctx.prevPosition = null
           ctx.lastEventPosition = null
         },
         setPosition(ctx, evt) {
@@ -222,7 +254,9 @@ export function machine(userContext: UserDefinedContext) {
           diff.y = Math.round(diff.y / ctx.gridSize) * ctx.gridSize
 
           let position = addPoints(ctx.prevPosition!, diff)
-          position = clampPoint(position, ctx.size, ctx.boundaryRect!)
+
+          const boundaryRect = dom.getBoundaryRect(ctx, ctx.allowOverflow)
+          position = clampPoint(position, ctx.size, boundaryRect)
 
           set.position(ctx, position)
         },
@@ -233,7 +267,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         resetRect(ctx, _evt, { initialContext }) {
           ctx.stage = undefined
-          if (!ctx.preserveOnClose) {
+          if (!ctx.persistRect) {
             set.position(ctx, initialContext.position)
             set.size(ctx, initialContext.size)
           }
@@ -262,11 +296,14 @@ export function machine(userContext: UserDefinedContext) {
           let nextSize = pick(nextRect, ["width", "height"])
           let nextPosition = pick(nextRect, ["x", "y"])
 
+          const boundaryRect = dom.getBoundaryRect(ctx, false)
+
           nextSize = clampSize(nextSize, ctx.minSize, ctx.maxSize)
+          nextSize = clampSize(nextSize, ctx.minSize, boundaryRect)
           set.size(ctx, nextSize)
 
           if (nextPosition) {
-            const point = clampPoint(nextPosition, nextSize, ctx.boundaryRect!)
+            const point = clampPoint(nextPosition, nextSize, boundaryRect)
             set.position(ctx, point)
           }
         },
@@ -283,9 +320,10 @@ export function machine(userContext: UserDefinedContext) {
           ctx.prevSize = ctx.size
           ctx.prevPosition = ctx.position
 
-          // update size
-          set.position(ctx, { x: 0, y: 0 })
-          set.size(ctx, pick(ctx.boundaryRect!, ["height", "width"]))
+          // update size and position
+          const boundaryRect = dom.getBoundaryRect(ctx, false)
+          set.position(ctx, pick(boundaryRect, ["x", "y"]))
+          set.size(ctx, pick(boundaryRect, ["height", "width"]))
         },
         setMinimized(ctx) {
           // set min stage
@@ -305,18 +343,27 @@ export function machine(userContext: UserDefinedContext) {
           set.size(ctx, size)
         },
         setRestored(ctx) {
+          const boundaryRect = dom.getBoundaryRect(ctx, false)
+
           // remove stage
           set.stage(ctx, undefined)
 
           // restore size
           if (ctx.prevSize) {
-            set.size(ctx, ctx.prevSize)
+            let nextSize = ctx.prevSize
+            nextSize = clampSize(nextSize, ctx.minSize, ctx.maxSize)
+            nextSize = clampSize(nextSize, ctx.minSize, boundaryRect)
+
+            set.size(ctx, nextSize)
             ctx.prevSize = null
           }
 
           // restore position
           if (ctx.prevPosition) {
-            set.position(ctx, ctx.prevPosition)
+            let nextPosition = ctx.prevPosition
+            nextPosition = clampPoint(nextPosition, ctx.size, boundaryRect)
+
+            set.position(ctx, nextPosition)
             ctx.prevPosition = null
           }
         },
@@ -330,8 +377,15 @@ export function machine(userContext: UserDefinedContext) {
             down: { x: ctx.position.x, y: ctx.position.y + evt.step },
           })
 
-          nextPosition = clampPoint(nextPosition, ctx.size, ctx.boundaryRect!)
+          const boundaryRect = dom.getBoundaryRect(ctx, false)
+          nextPosition = clampPoint(nextPosition, ctx.size, boundaryRect)
           set.position(ctx, nextPosition)
+        },
+        addToPanelStack(ctx) {
+          panelStack.add(ctx.id)
+        },
+        bringToFrontOfPanelStack(ctx) {
+          panelStack.bringToFront(ctx.id)
         },
         invokeOnOpen(ctx) {
           ctx.onOpenChange?.({ open: true })

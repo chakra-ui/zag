@@ -34,6 +34,28 @@ test.describe("tags-input", () => {
     await I.seeInputIsFocused()
   })
 
+  test("delete tag by clearing its content and hit enter", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.pressKey("Enter")
+
+    await I.pressKey("Backspace")
+    await I.pressKey("Enter")
+
+    await I.seeInputIsFocused()
+    await I.dontSeeTag("Vue")
+  })
+
+  test("delete tag with pointer, show allow keyboard navigation", async () => {
+    await I.clickTagClose("Vue")
+
+    await I.seeInputIsFocused()
+    await I.dontSeeTag("Vue")
+
+    await I.pressKey("ArrowLeft")
+    await I.seeTagIsHighlighted("React")
+  })
+
   test("when tag is empty + no visible tags + enter pressed, should not enter editing state", async () => {
     await I.focusInput()
 

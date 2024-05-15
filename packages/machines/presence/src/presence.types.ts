@@ -12,14 +12,16 @@ interface PublicContext {
   /**
    * Function called when the animation ends in the closed state.
    */
-  onExitComplete?: () => void
+  onExitComplete?(): void
 }
 
 interface PrivateContext {
+  initial: boolean
   node: HTMLElement | null
   styles: CSSStyleDeclaration | null
-  prevPresent?: boolean
-  prevAnimationName: string
+  unmountAnimationName: string | null
+  prevAnimationName: string | null
+  rafId?: number
 }
 
 export interface UserDefinedContext extends PublicContext {}
@@ -40,11 +42,19 @@ export type Send = S.Send<S.AnyEventObject>
 
 export interface MachineApi {
   /**
+   * Whether the animation should be skipped.
+   */
+  skip: boolean
+  /**
    * Whether the node is present in the DOM.
    */
-  isPresent: boolean
+  present: boolean
   /**
    * Function to set the node (as early as possible)
    */
   setNode(node: HTMLElement | null): void
+  /**
+   * Function to programmatically unmount the node
+   */
+  unmount(): void
 }

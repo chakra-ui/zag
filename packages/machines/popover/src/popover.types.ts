@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { DismissableElementHandlers } from "@zag-js/dismissable"
+import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -26,7 +26,11 @@ export type ElementIds = Partial<{
   arrow: string
 }>
 
-interface PublicContext extends DismissableElementHandlers, CommonProperties, DirectionProperty {
+interface PublicContext
+  extends CommonProperties,
+    DirectionProperty,
+    DismissableElementHandlers,
+    PersistentElementOptions {
   /**
    * The ids of the elements in the popover. Useful for composition.
    */
@@ -42,7 +46,8 @@ interface PublicContext extends DismissableElementHandlers, CommonProperties, Di
    */
   modal?: boolean
   /**
-   * Whether the popover is rendered in a portal
+   * Whether the popover is portalled. This will proxy the tabbing behavior regardless of the DOM position
+   * of the popover content.
    *
    * @default true
    */
@@ -50,20 +55,24 @@ interface PublicContext extends DismissableElementHandlers, CommonProperties, Di
   /**
    * Whether to automatically set focus on the first focusable
    * content within the popover when opened.
+   *
+   * @default true
    */
   autoFocus?: boolean
   /**
    * The element to focus on when the popover is opened.
    */
-  initialFocusEl?: MaybeElement | (() => MaybeElement)
+  initialFocusEl?: () => HTMLElement | null
   /**
    * Whether to close the popover when the user clicks outside of the popover.
+   * @default true
    */
   closeOnInteractOutside?: boolean
   /**
    * Whether to close the popover when the escape key is pressed.
+   * @default true
    */
-  closeOnEsc?: boolean
+  closeOnEscape?: boolean
   /**
    * Function invoked when the popover opens or closes
    */
@@ -124,25 +133,22 @@ export type Send = S.Send<S.AnyEventObject>
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
-   * Whether the popover is portalled
+   * Whether the popover is portalled.
    */
   portalled: boolean
   /**
    * Whether the popover is open
    */
-  isOpen: boolean
+  open: boolean
   /**
-   * Function to open the popover
+   * Function to open or close the popover
    */
-  open(): void
-  /**
-   * Function to close the popover
-   */
-  close(): void
+  setOpen(open: boolean): void
   /**
    * Function to reposition the popover
    */
   reposition(options?: Partial<PositioningOptions>): void
+
   arrowProps: T["element"]
   arrowTipProps: T["element"]
   anchorProps: T["element"]

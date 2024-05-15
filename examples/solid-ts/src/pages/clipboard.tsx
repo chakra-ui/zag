@@ -30,7 +30,7 @@ export default function Page() {
           <div {...api().controlProps}>
             <input {...api().inputProps} style={{ width: "100%" }} />
             <button {...api().triggerProps}>
-              <Show when={api().isCopied} fallback={<ClipboardCopyIcon />}>
+              <Show when={api().copied} fallback={<ClipboardCopyIcon />}>
                 <ClipboardCheck />
               </Show>
             </button>

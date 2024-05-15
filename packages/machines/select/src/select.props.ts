@@ -4,6 +4,7 @@ import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, UserDefinedContext
 
 export const props = createProps<UserDefinedContext>()([
   "closeOnSelect",
+  "collection",
   "dir",
   "disabled",
   "form",
@@ -12,8 +13,7 @@ export const props = createProps<UserDefinedContext>()([
   "id",
   "ids",
   "invalid",
-  "collection",
-  "loop",
+  "loopFocus",
   "multiple",
   "name",
   "onFocusOutside",
@@ -22,17 +22,17 @@ export const props = createProps<UserDefinedContext>()([
   "onOpenChange",
   "onPointerDownOutside",
   "onValueChange",
-  "open",
   "open.controlled",
+  "open",
+  "composite",
   "positioning",
   "readOnly",
-  "selectOnBlur",
-  "value",
   "scrollToIndexFn",
+  "value",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 
-export const itemProps = createProps<ItemProps>()(["item"])
+export const itemProps = createProps<ItemProps>()(["item", "persistFocus"])
 export const splitItemProps = createSplitProps<ItemProps>(itemProps)
 
 export const itemGroupProps = createProps<ItemGroupProps>()(["id"])

@@ -2,10 +2,21 @@ import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@za
 import type { StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, MaybeElement, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
-import type { MaybeFunction } from "@zag-js/utils"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
+
+interface EyeDropper {
+  new (): EyeDropper
+  open: (options?: { signal?: AbortSignal }) => Promise<{ sRGBHex: string }>
+  [Symbol.toStringTag]: "EyeDropper"
+}
+
+declare global {
+  interface Window {
+    EyeDropper: EyeDropper
+  }
+}
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -43,17 +54,14 @@ export type ElementIds = Partial<{
   channelSliderThumb(id: ColorChannel): string
 }>
 
-interface PublicContext extends CommonProperties, InteractOutsideHandlers {
+interface PublicContext extends CommonProperties, DirectionProperty, InteractOutsideHandlers {
   /**
    * The ids of the elements in the color picker. Useful for composition.
    */
   ids?: ElementIds
   /**
-   * The direction of the color picker
-   */
-  dir: "ltr" | "rtl"
-  /**
    * The current color value
+   * @default #000000
    */
   value: Color
   /**
@@ -84,11 +92,10 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
    * The positioning options for the color picker
    */
   positioning: PositioningOptions
-
   /**
    * The initial focus element when the color picker is opened.
    */
-  initialFocusEl?: MaybeFunction<MaybeElement>
+  initialFocusEl?: () => HTMLElement | null
   /**
    * Whether the color picker is open
    */
@@ -99,6 +106,7 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
   "open.controlled"?: boolean
   /**
    * The color format to use
+   * @default "rgba"
    */
   format: ColorFormat
   /**
@@ -107,6 +115,7 @@ interface PublicContext extends CommonProperties, InteractOutsideHandlers {
   onFormatChange?: (details: FormatChangeDetails) => void
   /**
    * Whether to close the color picker when a swatch is selected
+   * @default false
    */
   closeOnSelect?: boolean
 }
@@ -218,8 +227,8 @@ export interface SwatchTriggerProps {
 export interface SwatchTriggerState {
   value: Color
   valueAsString: string
-  isChecked: boolean
-  isDisabled: boolean
+  checked: boolean
+  disabled: boolean
 }
 
 export interface SwatchProps {
@@ -241,11 +250,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the color picker is being dragged
    */
-  isDragging: boolean
+  dragging: boolean
   /**
    * Whether the color picker is open
    */
-  isOpen: boolean
+  open: boolean
   /**
    * The current color value (as a string)
    */
@@ -283,13 +292,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   setAlpha(value: number): void
   /**
-   * Function to open the color picker
+   * Function to open or close the color picker
    */
-  open(): void
-  /**
-   * Function to close the color picker
-   */
-  close(): void
+  setOpen(open: boolean): void
 
   rootProps: T["element"]
   labelProps: T["element"]
@@ -326,4 +331,4 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
  * Re-exported types
  * -----------------------------------------------------------------------------*/
 
-export type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType }
+export type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType, PositioningOptions }

@@ -11,7 +11,7 @@ export const props = createProps<UserDefinedContext>()([
   "highlightedValue",
   "id",
   "ids",
-  "loop",
+  "loopFocus",
   "onFocusOutside",
   "onInteractOutside",
   "onOpenChange",
@@ -22,6 +22,8 @@ export const props = createProps<UserDefinedContext>()([
   "open",
   "open.controlled",
   "positioning",
+  "typeahead",
+  "composite",
 ])
 
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)

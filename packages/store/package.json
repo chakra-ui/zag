@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/store",
-  "version": "0.47.0",
+  "version": "0.50.0",
   "description": "The reactive store package for zag machines",
   "keywords": [
     "js",
@@ -33,7 +33,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "proxy-compare": "2.6.0"
+    "proxy-compare": "3.0.0"
   },
   "clean-package": "../../clean-package.config.json",
   "main": "src/index.ts",

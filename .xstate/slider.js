@@ -13,11 +13,7 @@ const fetchMachine = createMachine({
   id: "slider",
   initial: "idle",
   context: {
-    "hasIndex": false,
-    "isHorizontal": false,
-    "isHorizontal": false,
-    "isVertical": false,
-    "isVertical": false
+    "hasIndex": false
   },
   entry: ["coarseValue"],
   activities: ["trackFormControlState", "trackThumbsSize"],
@@ -29,10 +25,10 @@ const fetchMachine = createMachine({
       actions: "setValue"
     }],
     INCREMENT: {
-      actions: "incrementAtIndex"
+      actions: "incrementThumbAtIndex"
     },
     DECREMENT: {
-      actions: "decrementAtIndex"
+      actions: "decrementThumbAtIndex"
     }
   },
   on: {
@@ -68,33 +64,17 @@ const fetchMachine = createMachine({
           target: "dragging",
           actions: ["setFocusedIndex", "focusActiveThumb"]
         },
-        ARROW_LEFT: {
-          cond: "isHorizontal",
-          actions: "decrementAtIndex"
+        ARROW_DEC: {
+          actions: ["decrementThumbAtIndex", "invokeOnChangeEnd"]
         },
-        ARROW_RIGHT: {
-          cond: "isHorizontal",
-          actions: "incrementAtIndex"
-        },
-        ARROW_UP: {
-          cond: "isVertical",
-          actions: "incrementAtIndex"
-        },
-        ARROW_DOWN: {
-          cond: "isVertical",
-          actions: "decrementAtIndex"
-        },
-        PAGE_UP: {
-          actions: "incrementAtIndex"
-        },
-        PAGE_DOWN: {
-          actions: "decrementAtIndex"
+        ARROW_INC: {
+          actions: ["incrementThumbAtIndex", "invokeOnChangeEnd"]
         },
         HOME: {
-          actions: "setActiveThumbToMin"
+          actions: ["setFocusedThumbToMin", "invokeOnChangeEnd"]
         },
         END: {
-          actions: "setActiveThumbToMax"
+          actions: ["setFocusedThumbToMax", "invokeOnChangeEnd"]
         },
         BLUR: {
           target: "idle",
@@ -125,8 +105,6 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "hasIndex": ctx => ctx["hasIndex"],
-    "isHorizontal": ctx => ctx["isHorizontal"],
-    "isVertical": ctx => ctx["isVertical"]
+    "hasIndex": ctx => ctx["hasIndex"]
   }
 });

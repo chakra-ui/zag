@@ -1,0 +1,31 @@
+```tsx
+import * as presence from "@zag-js/presence"
+import { useMachine, normalizeProps } from "@zag-js/react"
+
+interface PresenceProps {
+  present: boolean
+  unmountOnExit?: boolean
+  onExitComplete?: () => void
+}
+
+function Presence(props: PresenceProps) {
+  const { unmountOnExit, present, onExitComplete, ...rest } = props
+
+  const [state, send] = useMachine(presence.machine({ present }), {
+    context: { present, onExitComplete },
+  })
+
+  const api = presence.connect(state, send, normalizeProps)
+
+  if (!api.present && unmountOnExit) return null
+
+  return (
+    <div
+      hidden={!api.present}
+      data-state={api.skip ? undefined : present ? "open" : "closed"}
+      ref={api.setNode}
+      {...rest}
+    />
+  )
+}
+```

@@ -29,9 +29,9 @@ export default defineComponent({
         onOpenChange() {
           options.value = comboboxData
         },
-        onInputValueChange({ value }) {
+        onInputValueChange({ inputValue }) {
           const filtered = comboboxData.filter((item) =>
-            item.label.toLowerCase().includes(value.toLowerCase()),
+            item.label.toLowerCase().includes(inputValue.toLowerCase()),
           )
           options.value = filtered.length > 0 ? filtered : comboboxData
         },
@@ -57,7 +57,7 @@ export default defineComponent({
 
             <div {...api.controlProps}>
               <input {...api.inputProps} />
-              <button {...api.triggerProps}>▼</button>
+              <button {...api.getTriggerProps()}>▼</button>
             </div>
           </div>
 

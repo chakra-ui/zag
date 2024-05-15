@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import * as signaturePad from "@zag-js/signature-pad"
 import { signaturePadControls } from "@zag-js/shared"
+import * as signaturePad from "@zag-js/signature-pad"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const url = ref("")
@@ -22,7 +22,7 @@ const api = computed(() => signaturePad.connect(state.value, send, normalizeProp
 
       <div v-bind="api.controlProps">
         <svg v-bind="api.segmentProps">
-          <path v-for="path of api.paths" key="{i}" v-bind="api.getSegmentPathProps({ path })" />
+          <path v-for="(path, i) of api.paths" :key="i" v-bind="api.getSegmentPathProps({ path })" />
           <path v-if="api.currentPath" v-bind="api.getSegmentPathProps({ path: api.currentPath })" />
         </svg>
         <div v-bind="api.guideProps" />

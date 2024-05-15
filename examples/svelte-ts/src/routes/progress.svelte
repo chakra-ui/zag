@@ -8,11 +8,11 @@
 
   const controls = useControls(progressControls)
 
-  const [_state, send] = useMachine(progress.machine({ id: "1" }), {
+  const [snapshot, send] = useMachine(progress.machine({ id: "1" }), {
     context: controls.context,
   })
 
-  const api = $derived(progress.connect(_state, send, normalizeProps))
+  const api = $derived(progress.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="progress">
@@ -25,7 +25,7 @@
     </svg>
 
     <div {...api.trackProps}>
-      <div {...api.rangeProps} />
+      <div {...api.rangeProps}></div>
     </div>
 
     <div {...api.valueTextProps}>{api.valueAsString}</div>
@@ -39,5 +39,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={_state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

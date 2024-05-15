@@ -16,7 +16,7 @@ export default function Page() {
   return (
     <main class="presence">
       <button onClick={() => setPresent((c) => !c)}>Toggle</button>
-      <Show when={api().isPresent}>
+      <Show when={api().present}>
         <div
           ref={(node) => {
             api().setNode(node)

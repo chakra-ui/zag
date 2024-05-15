@@ -1,5 +1,58 @@
 # @zag-js/menu
 
+## 0.50.0
+
+### Patch Changes
+
+- Updated dependencies [[`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238)]:
+  - @zag-js/popper@0.50.0
+  - @zag-js/anatomy@0.50.0
+  - @zag-js/core@0.50.0
+  - @zag-js/types@0.50.0
+  - @zag-js/utils@0.50.0
+  - @zag-js/dismissable@0.50.0
+  - @zag-js/dom-event@0.50.0
+  - @zag-js/dom-query@0.50.0
+  - @zag-js/rect-utils@0.50.0
+
+## 0.49.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.49.0
+  - @zag-js/anatomy@0.49.0
+  - @zag-js/types@0.49.0
+  - @zag-js/utils@0.49.0
+  - @zag-js/dismissable@0.49.0
+  - @zag-js/dom-event@0.49.0
+  - @zag-js/dom-query@0.49.0
+  - @zag-js/popper@0.49.0
+  - @zag-js/rect-utils@0.49.0
+  - @zag-js/tabbable@0.49.0
+
+## 0.48.0
+
+### Minor Changes
+
+- [#1431](https://github.com/chakra-ui/zag/pull/1431) [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Focus first tabbable element when menu opens. To allow composition with combobox
+
+- [#1431](https://github.com/chakra-ui/zag/pull/1431) [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `loop` to `loopFocus` to better reflect its purpose
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.48.0
+  - @zag-js/core@0.48.0
+  - @zag-js/types@0.48.0
+  - @zag-js/utils@0.48.0
+  - @zag-js/dismissable@0.48.0
+  - @zag-js/dom-event@0.48.0
+  - @zag-js/dom-query@0.48.0
+  - @zag-js/popper@0.48.0
+  - @zag-js/rect-utils@0.48.0
+  - @zag-js/tabbable@0.48.0
+
 ## 0.47.0
 
 ### Patch Changes

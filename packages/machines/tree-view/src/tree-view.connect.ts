@@ -1,4 +1,4 @@
-import { getEventKey, getNativeEvent, isModifiedEvent, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventKey, getNativeEvent, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
 import { contains, dataAttr, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tree-view.anatomy"
@@ -6,64 +6,68 @@ import { dom } from "./tree-view.dom"
 import type { BranchProps, BranchState, ItemProps, ItemState, MachineApi, Send, State } from "./tree-view.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const expandedIds = state.context.expandedIds
-  const selectedIds = state.context.selectedIds
+  const expandedValue = state.context.expandedValue
+  const selectedValue = state.context.selectedValue
   const isTypingAhead = state.context.isTypingAhead
-  const focusedId = state.context.focusedId
+  const focusedValue = state.context.focusedValue
 
   function getItemState(props: ItemProps): ItemState {
     return {
-      id: props.id,
-      isDisabled: Boolean(props.disabled),
-      isFocused: focusedId === props.id,
-      isSelected: selectedIds.includes(props.id),
+      value: props.value,
+      disabled: Boolean(props.disabled),
+      focused: focusedValue === props.value,
+      selected: selectedValue.includes(props.value),
     }
   }
 
   function getBranchState(props: BranchProps): BranchState {
     return {
-      id: props.id,
-      isDisabled: Boolean(props.disabled),
-      isFocused: focusedId === props.id,
-      isExpanded: expandedIds.includes(props.id),
-      isSelected: selectedIds.includes(props.id),
+      value: props.value,
+      disabled: Boolean(props.disabled),
+      focused: focusedValue === props.value,
+      expanded: expandedValue.includes(props.value),
+      selected: selectedValue.includes(props.value),
     }
   }
 
   return {
-    expandedIds,
-    selectedIds,
-    expand(ids) {
-      const nextSet = new Set(expandedIds)
-      ids.forEach((id) => nextSet.add(id))
-      send({ type: "EXPANDED.SET", value: nextSet, src: "expand" })
+    expandedValue: expandedValue,
+    selectedValue: selectedValue,
+    expand(value) {
+      if (!value) {
+        send({ type: "EXPANDED.ALL" })
+        return
+      }
+      const nextValue = new Set(expandedValue)
+      value.forEach((id) => nextValue.add(id))
+      send({ type: "EXPANDED.SET", value: nextValue, src: "expand" })
     },
-    expandAll() {
-      send({ type: "EXPANDED.ALL" })
+    collapse(value) {
+      if (!value) {
+        send({ type: "EXPANDED.SET", value: new Set([]), src: "collapseAll" })
+        return
+      }
+      const nextValue = new Set(expandedValue)
+      value.forEach((id) => nextValue.delete(id))
+      send({ type: "EXPANDED.SET", value: nextValue, src: "collapse" })
     },
-    collapse(ids) {
-      const nextSet = new Set(expandedIds)
-      ids.forEach((id) => nextSet.delete(id))
-      send({ type: "EXPANDED.SET", value: nextSet, src: "collapse" })
+    deselect(value) {
+      if (!value) {
+        send({ type: "SELECTED.SET", value: new Set([]), src: "deselectAll" })
+        return
+      }
+      const nextValue = new Set(selectedValue)
+      value.forEach((id) => nextValue.delete(id))
+      send({ type: "SELECTED.SET", value: nextValue, src: "deselect" })
     },
-    collapseAll() {
-      send({ type: "EXPANDED.SET", value: new Set([]), src: "collapseAll" })
-    },
-    selectAll() {
-      send({ type: "SELECTED.ALL" })
-    },
-    deselect(ids) {
-      const nextSet = new Set(selectedIds)
-      ids.forEach((id) => nextSet.delete(id))
-      send({ type: "SELECTED.SET", value: nextSet, src: "deselect" })
-    },
-    deselectAll() {
-      send({ type: "SELECTED.SET", value: new Set([]), src: "deselectAll" })
-    },
-    select(ids) {
-      const nextSet = new Set(selectedIds)
-      ids.forEach((id) => nextSet.add(id))
-      send({ type: "SELECTED.SET", value: nextSet, src: "select" })
+    select(value) {
+      if (!value) {
+        send({ type: "SELECTED.ALL" })
+        return
+      }
+      const nextValue = new Set(selectedValue)
+      value.forEach((id) => nextValue.add(id))
+      send({ type: "SELECTED.SET", value: nextValue, src: "select" })
     },
     focusBranch(id) {
       dom.getBranchControlEl(state.context, id)?.focus()
@@ -93,7 +97,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-labelledby": dom.getLabelId(state.context),
       "aria-multiselectable": state.context.selectionMode === "multiple" || undefined,
       onKeyDown(event) {
+        if (event.defaultPrevented) return
         const evt = getNativeEvent(event)
+        if (evt.isComposing) return
+
         const target = getEventTarget<HTMLElement>(evt)
 
         const node = target?.closest<HTMLElement>("[role=treeitem]")
@@ -109,17 +116,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         const keyMap: EventKeyMap = {
           ArrowDown(event) {
-            if (isModifiedEvent(event)) return
+            if (isModifierKey(event)) return
             event.preventDefault()
             send({ type: "ITEM.ARROW_DOWN", id: nodeId, shiftKey: event.shiftKey })
           },
           ArrowUp(event) {
-            if (isModifiedEvent(event)) return
+            if (isModifierKey(event)) return
             event.preventDefault()
             send({ type: "ITEM.ARROW_UP", id: nodeId, shiftKey: event.shiftKey })
           },
           ArrowLeft(event) {
-            if (isModifiedEvent(event) || node.dataset.disabled) return
+            if (isModifierKey(event) || node.dataset.disabled) return
             event.preventDefault()
             send({ type: isBranchNode ? "BRANCH.ARROW_LEFT" : "ITEM.ARROW_LEFT", id: nodeId })
           },
@@ -129,12 +136,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send({ type: "BRANCH.ARROW_RIGHT", id: nodeId })
           },
           Home(event) {
-            if (isModifiedEvent(event)) return
+            if (isModifierKey(event)) return
             event.preventDefault()
             send({ type: "ITEM.HOME", id: nodeId, shiftKey: event.shiftKey })
           },
           End(event) {
-            if (isModifiedEvent(event)) return
+            if (isModifierKey(event)) return
             event.preventDefault()
             send({ type: "ITEM.END", id: nodeId, shiftKey: event.shiftKey })
           },
@@ -172,13 +179,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
         if (exec) {
           exec(event)
-        } else {
-          const isValidTypeahead = event.key.length === 1 && !isModifiedEvent(event)
-          if (!isValidTypeahead) return
-
-          send({ type: "TREE.TYPEAHEAD", key: event.key, id: nodeId })
-          event.preventDefault()
+          return
         }
+
+        if (!state.context.typeahead) return
+
+        const isValidTypeahead = event.key.length === 1 && !isModifierKey(event)
+        if (!isValidTypeahead) return
+
+        send({ type: "TREE.TYPEAHEAD", key: event.key, id: nodeId })
+        event.preventDefault()
       },
       onBlur(event) {
         if (contains(event.currentTarget, event.relatedTarget)) return
@@ -193,15 +203,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.item.attrs,
         dir: state.context.dir,
         "data-ownedby": dom.getTreeId(state.context),
-        "data-item": itemState.id,
-        tabIndex: itemState.isFocused ? 0 : -1,
-        "data-focused": dataAttr(itemState.isFocused),
+        "data-item": itemState.value,
+        tabIndex: itemState.focused ? 0 : -1,
+        "data-focus": dataAttr(itemState.focused),
         role: "treeitem",
-        "aria-current": itemState.isSelected ? "true" : undefined,
-        "aria-selected": itemState.isDisabled ? undefined : itemState.isSelected,
-        "data-selected": dataAttr(itemState.isSelected),
-        "aria-disabled": itemState.isDisabled,
-        "data-disabled": dataAttr(itemState.isDisabled),
+        "aria-current": itemState.selected ? "true" : undefined,
+        "aria-selected": itemState.disabled ? undefined : itemState.selected,
+        "data-selected": dataAttr(itemState.selected),
+        "aria-disabled": itemState.disabled,
+        "data-disabled": dataAttr(itemState.disabled),
         "aria-level": props.depth,
         "data-depth": props.depth,
         style: {
@@ -209,12 +219,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onFocus(event) {
           event.stopPropagation()
-          send({ type: "ITEM.FOCUS", id: itemState.id })
+          send({ type: "ITEM.FOCUS", id: itemState.value })
         },
         onClick(event) {
-          if (itemState.isDisabled) return
+          if (itemState.disabled) return
           const isMetaKey = event.metaKey || event.ctrlKey
-          send({ type: "ITEM.CLICK", id: itemState.id, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
+          send({ type: "ITEM.CLICK", id: itemState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
 
           const isLink = event.currentTarget.matches("a[href]")
@@ -227,9 +237,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemText.attrs,
-        "data-disabled": dataAttr(itemState.isDisabled),
-        "data-selected": dataAttr(itemState.isSelected),
-        "data-focused": dataAttr(itemState.isFocused),
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-selected": dataAttr(itemState.selected),
+        "data-focus": dataAttr(itemState.focused),
       })
     },
 
@@ -238,10 +248,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.itemIndicator.attrs,
         "aria-hidden": true,
-        "data-disabled": dataAttr(itemState.isDisabled),
-        "data-selected": dataAttr(itemState.isSelected),
-        "data-focused": dataAttr(itemState.isFocused),
-        hidden: !itemState.isSelected,
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-selected": dataAttr(itemState.selected),
+        "data-focus": dataAttr(itemState.focused),
+        hidden: !itemState.selected,
       })
     },
 
@@ -252,16 +262,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.branch.attrs,
         "data-depth": props.depth,
         dir: state.context.dir,
-        "data-branch": branchState.id,
+        "data-branch": branchState.value,
         role: "treeitem",
         "data-ownedby": dom.getTreeId(state.context),
         "aria-level": props.depth,
-        "aria-selected": branchState.isDisabled ? undefined : branchState.isSelected,
-        "data-selected": dataAttr(branchState.isSelected),
-        "aria-expanded": branchState.isExpanded,
-        "data-state": branchState.isExpanded ? "open" : "closed",
-        "aria-disabled": branchState.isDisabled,
-        "data-disabled": dataAttr(branchState.isDisabled),
+        "aria-selected": branchState.disabled ? undefined : branchState.selected,
+        "data-selected": dataAttr(branchState.selected),
+        "aria-expanded": branchState.expanded,
+        "data-state": branchState.expanded ? "open" : "closed",
+        "aria-disabled": branchState.disabled,
+        "data-disabled": dataAttr(branchState.disabled),
         style: {
           "--depth": props.depth,
         },
@@ -273,10 +283,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.branchIndicator.attrs,
         "aria-hidden": true,
-        "data-state": branchState.isExpanded ? "open" : "closed",
-        "data-disabled": dataAttr(branchState.isDisabled),
-        "data-selected": dataAttr(branchState.isSelected),
-        "data-focused": dataAttr(branchState.isFocused),
+        "data-state": branchState.expanded ? "open" : "closed",
+        "data-disabled": dataAttr(branchState.disabled),
+        "data-selected": dataAttr(branchState.selected),
+        "data-focus": dataAttr(branchState.focused),
       })
     },
 
@@ -286,11 +296,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.branchTrigger.attrs,
         role: "button",
         dir: state.context.dir,
-        "data-disabled": dataAttr(branchState.isDisabled),
-        "data-state": branchState.isExpanded ? "open" : "closed",
+        "data-disabled": dataAttr(branchState.disabled),
+        "data-state": branchState.expanded ? "open" : "closed",
         onClick(event) {
-          if (branchState.isDisabled) return
-          send({ type: "BRANCH_TOGGLE.CLICK", id: branchState.id })
+          if (branchState.disabled) return
+          send({ type: "BRANCH_TOGGLE.CLICK", id: branchState.value })
           event.stopPropagation()
         },
       })
@@ -302,21 +312,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.branchControl.attrs,
         role: "button",
         dir: state.context.dir,
-        tabIndex: branchState.isFocused ? 0 : -1,
-        "data-state": branchState.isExpanded ? "open" : "closed",
-        "data-disabled": dataAttr(branchState.isDisabled),
-        "data-selected": dataAttr(branchState.isSelected),
-        "data-branch": branchState.id,
+        tabIndex: branchState.focused ? 0 : -1,
+        "data-state": branchState.expanded ? "open" : "closed",
+        "data-disabled": dataAttr(branchState.disabled),
+        "data-selected": dataAttr(branchState.selected),
+        "data-branch": branchState.value,
         "data-depth": props.depth,
         onFocus(event) {
-          send({ type: "ITEM.FOCUS", id: branchState.id })
+          send({ type: "ITEM.FOCUS", id: branchState.value })
           event.stopPropagation()
         },
         onClick(event) {
-          if (branchState.isDisabled) return
+          if (branchState.disabled) return
 
           const isMetaKey = event.metaKey || event.ctrlKey
-          send({ type: "BRANCH.CLICK", id: branchState.id, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
+          send({ type: "BRANCH.CLICK", id: branchState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
 
           event.stopPropagation()
         },
@@ -328,9 +338,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.branchText.attrs,
         dir: state.context.dir,
-        "data-branch": branchState.id,
-        "data-disabled": dataAttr(branchState.isDisabled),
-        "data-state": branchState.isExpanded ? "open" : "closed",
+        "data-branch": branchState.value,
+        "data-disabled": dataAttr(branchState.disabled),
+        "data-state": branchState.expanded ? "open" : "closed",
       })
     },
 
@@ -340,9 +350,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.branchContent.attrs,
         role: "group",
         dir: state.context.dir,
-        "data-branch": branchState.id,
-        "data-state": branchState.isExpanded ? "open" : "closed",
-        hidden: !branchState.isExpanded,
+        "data-branch": branchState.value,
+        "data-state": branchState.expanded ? "open" : "closed",
+        hidden: !branchState.expanded,
       })
     },
   }

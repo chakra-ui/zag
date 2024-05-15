@@ -8,11 +8,11 @@
 
   const controls = useControls(popoverControls)
 
-  const [state, send] = useMachine(popover.machine({ id: "1" }), {
+  const [snapshot, send] = useMachine(popover.machine({ id: "1" }), {
     context: controls.context,
   })
 
-  const api = $derived(popover.connect(state, send, normalizeProps))
+  const api = $derived(popover.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="popover">
@@ -29,11 +29,11 @@
     <div use:portal={{ disabled: !api.portalled }} {...api.positionerProps}>
       <div data-testid="popover-content" class="popover-content" {...api.contentProps}>
         <div {...api.arrowProps}>
-          <div {...api.arrowTipProps} />
+          <div {...api.arrowTipProps}></div>
         </div>
         <div data-testid="popover-title" {...api.titleProps}>Popover Title</div>
         <div data-part="body" data-testid="popover-body">
-          <!-- svelte-ignore a11y-missing-attribute -->
+          <!-- svelte-ignore a11y_missing_attribute -->
           <a>Non-focusable Link</a>
           <a href="# " data-testid="focusable-link"> Focusable Link </a>
           <input data-testid="input" placeholder="input" />
@@ -48,5 +48,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer {state} />
+  <StateVisualizer state={snapshot} />
 </Toolbar>

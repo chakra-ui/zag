@@ -3,7 +3,6 @@ import * as combobox from "@zag-js/combobox"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { matchSorter } from "match-sorter"
-import { useRouter } from "next/router"
 import { useEffect, useId, useMemo, useState } from "react"
 import {
   searchData,
@@ -12,7 +11,7 @@ import {
 } from "./search-meta"
 import { useUpdateEffect } from "./use-update-effect"
 
-type UseSearchReturn = {
+interface UseSearchReturn {
   results: SearchMetaItem[]
   dialog_api: dialog.Api
   combobox_api: combobox.Api
@@ -28,8 +27,6 @@ export function useSearch(): UseSearchReturn {
   const dialog_api = dialog.connect(dialog_state, dialog_send, normalizeProps)
 
   const [results, setResults] = useState<SearchMetaResult>(searchData)
-
-  const router = useRouter()
 
   const collection = useMemo(
     () =>
@@ -52,20 +49,15 @@ export function useSearch(): UseSearchReturn {
       inputBehavior: "autohighlight",
       selectionBehavior: "clear",
       collection,
-      onValueChange({ items }) {
-        const [item] = items as SearchMetaItem[]
-        if (!item) return
-        try {
-          const { pathname, slug, url } = item
-          router.push({ pathname, query: { slug } }, url)
-        } catch (err) {
-          console.log(err)
-        }
-        dialog_api.close()
+      openOnChange({ inputValue }) {
+        return inputValue.length > 2
       },
-      onInputValueChange({ value }) {
-        if (value.length < 3) return
-        const results = matchSorter(searchData, value, {
+      onValueChange() {
+        dialog_api.setOpen(false)
+      },
+      onInputValueChange({ inputValue }) {
+        if (inputValue.length < 3) return
+        const results = matchSorter(searchData, inputValue, {
           keys: [
             "hierarchy.lvl1",
             "hierarchy.lvl2",
@@ -85,14 +77,14 @@ export function useSearch(): UseSearchReturn {
       const hotkey = isMac ? "metaKey" : "ctrlKey"
       if (event.key?.toLowerCase() === "k" && event[hotkey]) {
         event.preventDefault()
-        dialog_api.isOpen ? dialog_api.close() : dialog_api.open()
+        dialog_api.setOpen(dialog_api.open ? false : true)
       }
     }
     document.addEventListener("keydown", fn)
     return () => {
       document.removeEventListener("keydown", fn)
     }
-  }, [dialog_api.isOpen, dialog_api.close, dialog_api.open])
+  }, [dialog_api.setOpen, dialog_api.open])
 
   const combobox_api = combobox.connect(
     combobox_state,
@@ -100,21 +92,19 @@ export function useSearch(): UseSearchReturn {
     normalizeProps,
   )
 
-  useUpdateEffect(() => {
-    if (dialog_api.isOpen && combobox_api.isInputValueEmpty) {
-      setResults([])
-    }
-  }, [dialog_api.isOpen, combobox_api.isInputValueEmpty])
+  const isInputEmpty = combobox_api.inputValue.trim() === ""
 
   useUpdateEffect(() => {
-    if (!dialog_api.isOpen && !combobox_api.isInputValueEmpty) {
+    if (dialog_api.open && isInputEmpty) {
+      setResults([])
+    }
+  }, [dialog_api.open, isInputEmpty])
+
+  useUpdateEffect(() => {
+    if (!dialog_api.open && !isInputEmpty) {
       combobox_api.clearValue()
     }
-  }, [
-    dialog_api.isOpen,
-    combobox_api.isInputValueEmpty,
-    combobox_api.clearValue,
-  ])
+  }, [dialog_api.open, isInputEmpty, combobox_api.clearValue])
 
   return {
     results,

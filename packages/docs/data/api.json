@@ -25,17 +25,17 @@
       },
       "multiple": {
         "type": "boolean",
-        "description": "Whether multple accordion items can be open at the same time.",
+        "description": "Whether multple accordion items can be expanded at the same time.",
         "defaultValue": "false"
       },
       "collapsible": {
         "type": "boolean",
-        "description": "Whether an accordion item can be collapsed after it has been opened.",
+        "description": "Whether an accordion item can be closed after it has been expanded.",
         "defaultValue": "false"
       },
       "value": {
         "type": "string[]",
-        "description": "The `id` of the accordion item that is currently being opened."
+        "description": "The `value` of the accordion items that are currently being expanded."
       },
       "disabled": {
         "type": "boolean",
@@ -43,7 +43,7 @@
       },
       "onValueChange": {
         "type": "(details: ValueChangeDetails) => void",
-        "description": "The callback fired when the state of opened/closed accordion items changes."
+        "description": "The callback fired when the state of expanded/collapsed accordion items changes."
       },
       "onFocusChange": {
         "type": "(details: FocusChangeDetails) => void",
@@ -51,7 +51,8 @@
       },
       "orientation": {
         "type": "\"horizontal\" | \"vertical\"",
-        "description": "The orientation of the accordion items."
+        "description": "The orientation of the accordion items.",
+        "defaultValue": "\"vertical\""
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -70,13 +71,9 @@
   },
   "avatar": {
     "api": {
-      "isLoaded": {
+      "loaded": {
         "type": "boolean",
         "description": "Whether the image is loaded."
-      },
-      "showFallback": {
-        "type": "boolean",
-        "description": "Whether the fallback is shown."
       },
       "setSrc": {
         "type": "(src: string) => void",
@@ -95,6 +92,10 @@
       "onStatusChange": {
         "type": "(details: StatusChangeDetails) => void",
         "description": "Functional called when the image loading status changes."
+      },
+      "ids": {
+        "type": "Partial<{ root: string; image: string; fallback: string; }>",
+        "description": "The ids of the elements in the avatar. Useful for composition."
       },
       "id": {
         "type": "string",
@@ -121,9 +122,9 @@
         "type": "number",
         "description": "The current scroll progress of the carousel"
       },
-      "isAutoplay": {
+      "autoPlaying": {
         "type": "boolean",
-        "description": "Whether the carousel is currently auto-playing"
+        "description": "Whether the carousel is auto playing"
       },
       "canScrollNext": {
         "type": "boolean",
@@ -166,15 +167,18 @@
       },
       "align": {
         "type": "\"start\" | \"center\" | \"end\"",
-        "description": "The alignment of the slides in the carousel."
+        "description": "The alignment of the slides in the carousel.",
+        "defaultValue": "\"start\""
       },
       "slidesPerView": {
         "type": "number | \"auto\"",
-        "description": "The number of slides to show at a time."
+        "description": "The number of slides to show at a time.",
+        "defaultValue": "1"
       },
       "loop": {
         "type": "boolean",
-        "description": "Whether the carousel should loop around."
+        "description": "Whether the carousel should loop around.",
+        "defaultValue": "false"
       },
       "index": {
         "type": "number",
@@ -182,7 +186,8 @@
       },
       "spacing": {
         "type": "string",
-        "description": "The amount of space between slides."
+        "description": "The amount of space between slides.",
+        "defaultValue": "\"0px\""
       },
       "onIndexChange": {
         "type": "(details: SlideChangeDetails) => void",
@@ -209,19 +214,19 @@
   },
   "checkbox": {
     "api": {
-      "isChecked": {
+      "checked": {
         "type": "boolean",
         "description": "Whether the checkbox is checked"
       },
-      "isDisabled": {
+      "disabled": {
         "type": "boolean",
         "description": "Whether the checkbox is disabled"
       },
-      "isIndeterminate": {
+      "indeterminate": {
         "type": "boolean",
         "description": "Whether the checkbox is indeterminate"
       },
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the checkbox is focused"
       },
@@ -245,27 +250,31 @@
       },
       "disabled": {
         "type": "boolean",
-        "description": "If `true`, the checkbox will be disabled"
+        "description": "Whether the checkbox is disabled"
       },
       "invalid": {
         "type": "boolean",
-        "description": "If `true`, the checkbox is marked as invalid."
+        "description": "Whether the checkbox is invalid"
       },
       "required": {
         "type": "boolean",
-        "description": "If `true`, the checkbox input is marked as required,"
+        "description": "Whether the checkbox is required"
       },
       "checked": {
         "type": "CheckedState",
-        "description": "If `true`, the checkbox will be checked."
+        "description": "The checked state of the checkbox"
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the checkbox is read-only"
       },
       "onCheckedChange": {
         "type": "(details: CheckedChangeDetails) => void",
-        "description": "The callback invoked when the checked state of the `Checkbox` changes."
+        "description": "The callback invoked when the checked state changes."
       },
       "name": {
         "type": "string",
-        "description": "The name of the input field in a checkbox. Useful for form submission."
+        "description": "The name of the input field in a checkbox.\nUseful for form submission."
       },
       "form": {
         "type": "string",
@@ -293,7 +302,7 @@
   },
   "clipboard": {
     "api": {
-      "isCopied": {
+      "copied": {
         "type": "boolean",
         "description": "Whether the value has been copied to the clipboard"
       },
@@ -325,7 +334,8 @@
       },
       "timeout": {
         "type": "number",
-        "description": "The timeout for the copy operation"
+        "description": "The timeout for the copy operation",
+        "defaultValue": "3000"
       },
       "id": {
         "type": "string",
@@ -339,25 +349,21 @@
   },
   "collapsible": {
     "api": {
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the collapsible is open."
       },
-      "isVisible": {
+      "visible": {
         "type": "boolean",
         "description": "Whether the collapsible is visible (open or closing)"
       },
-      "isDisabled": {
+      "disabled": {
         "type": "boolean",
         "description": "Whether the collapsible is disabled"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the collapsible."
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the collapsible."
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the collapsible."
       }
     },
     "context": {
@@ -402,11 +408,11 @@
   },
   "color-picker": {
     "api": {
-      "isDragging": {
+      "dragging": {
         "type": "boolean",
         "description": "Whether the color picker is being dragged"
       },
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the color picker is open"
       },
@@ -446,13 +452,9 @@
         "type": "(value: number) => void",
         "description": "Function to set the color alpha"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the color picker"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the color picker"
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the color picker"
       }
     },
     "context": {
@@ -460,13 +462,10 @@
         "type": "Partial<{ root: string; control: string; trigger: string; label: string; input: string; content: string; area: string; areaGradient: string; areaThumb: string; channelInput(id: string): string; channelSliderTrack(id: ColorChannel): string; }>",
         "description": "The ids of the elements in the color picker. Useful for composition."
       },
-      "dir": {
-        "type": "\"ltr\" | \"rtl\"",
-        "description": "The direction of the color picker"
-      },
       "value": {
         "type": "Color",
-        "description": "The current color value"
+        "description": "The current color value",
+        "defaultValue": "#000000"
       },
       "disabled": {
         "type": "boolean",
@@ -497,7 +496,7 @@
         "description": "The positioning options for the color picker"
       },
       "initialFocusEl": {
-        "type": "MaybeFunction<HTMLElement>",
+        "type": "HTMLElement | (() => HTMLElement)",
         "description": "The initial focus element when the color picker is opened."
       },
       "open": {
@@ -510,7 +509,8 @@
       },
       "format": {
         "type": "ColorFormat",
-        "description": "The color format to use"
+        "description": "The color format to use",
+        "defaultValue": "\"rgba\""
       },
       "onFormatChange": {
         "type": "(details: FormatChangeDetails) => void",
@@ -518,7 +518,8 @@
       },
       "closeOnSelect": {
         "type": "boolean",
-        "description": "Whether to close the color picker when a swatch is selected"
+        "description": "Whether to close the color picker when a swatch is selected",
+        "defaultValue": "false"
       },
       "id": {
         "type": "string",
@@ -527,6 +528,11 @@
       "getRootNode": {
         "type": "() => Node | ShadowRoot | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
       },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
@@ -544,15 +550,15 @@
   },
   "combobox": {
     "api": {
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the combobox is focused"
       },
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the combobox is open"
       },
-      "isInputValueEmpty": {
+      "inputEmpty": {
         "type": "boolean",
         "description": "Whether the combobox input value is empty"
       },
@@ -612,13 +618,9 @@
         "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of a combobox item"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the combobox"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the combobox"
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the combobox"
       },
       "collection": {
         "type": "Collection<V>",
@@ -629,11 +631,19 @@
         "description": "Function to set the collection of items"
       },
       "reposition": {
-        "type": "(options: Partial<PositioningOptions>) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to set the positioning options"
       }
     },
     "context": {
+      "open": {
+        "type": "boolean",
+        "description": "Whether the combobox is open"
+      },
+      "open.controlled": {
+        "type": "boolean",
+        "description": "Whether the combobox open state is controlled by the user"
+      },
       "ids": {
         "type": "Partial<{ root: string; label: string; control: string; input: string; content: string; trigger: string; clearTrigger: string; item(id: string, index?: number): string; positioner: string; itemGroup(id: string | number): string; itemGroupLabel(id: string | number): string; }>",
         "description": "The ids of the elements in the combobox. Useful for composition."
@@ -676,15 +686,13 @@
       },
       "inputBehavior": {
         "type": "\"autohighlight\" | \"autocomplete\" | \"none\"",
-        "description": "Defines the auto-completion behavior of the combobox.\n\n- `autohighlight`: The first focused item is highlighted as the user types\n- `autocomplete`: Navigating the listbox with the arrow keys selects the item and the input is updated"
+        "description": "Defines the auto-completion behavior of the combobox.\n\n- `autohighlight`: The first focused item is highlighted as the user types\n- `autocomplete`: Navigating the listbox with the arrow keys selects the item and the input is updated",
+        "defaultValue": "\"none\""
       },
       "selectionBehavior": {
         "type": "\"clear\" | \"replace\" | \"preserve\"",
-        "description": "The behavior of the combobox input when an item is selected\n\n- `replace`: The selected item string is set as the input value\n- `clear`: The input value is cleared\n- `preserve`: The input value is preserved"
-      },
-      "selectOnBlur": {
-        "type": "boolean",
-        "description": "Whether to select the higlighted item on interaction outside the combobox"
+        "description": "The behavior of the combobox input when an item is selected\n\n- `replace`: The selected item string is set as the input value\n- `clear`: The input value is cleared\n- `preserve`: The input value is preserved",
+        "defaultValue": "\"replace\""
       },
       "autoFocus": {
         "type": "boolean",
@@ -692,15 +700,22 @@
       },
       "openOnClick": {
         "type": "boolean",
-        "description": "Whether to open the combobox popup on initial click on the input"
+        "description": "Whether to open the combobox popup on initial click on the input",
+        "defaultValue": "false"
+      },
+      "openOnChange": {
+        "type": "boolean | ((details: InputValueChangeDetails) => boolean)",
+        "description": "Whether to show the combobox when the input value changes",
+        "defaultValue": "true"
       },
       "allowCustomValue": {
         "type": "boolean",
-        "description": "Whether to allow custom values or free values in the input"
+        "description": "Whether to allow typing custom values in the input"
       },
-      "loop": {
+      "loopFocus": {
         "type": "boolean",
-        "description": "Whether to loop the keyboard navigation through the items"
+        "description": "Whether to loop the keyboard navigation through the items",
+        "defaultValue": "true"
       },
       "positioning": {
         "type": "PositioningOptions",
@@ -738,6 +753,29 @@
         "type": "boolean",
         "description": "Whether to close the combobox when an item is selected."
       },
+      "getSelectionValue": {
+        "type": "(details: SelectionValueDetails<T>) => string",
+        "description": "Function to get the display value of the selected item"
+      },
+      "openOnKeyPress": {
+        "type": "boolean",
+        "description": "Whether to open the combobox on arrow key press",
+        "defaultValue": "true"
+      },
+      "scrollToIndexFn": {
+        "type": "(details: ScrollToIndexDetails) => void",
+        "description": "Function to scroll to a specific index"
+      },
+      "popup": {
+        "type": "\"listbox\" | \"dialog\"",
+        "description": "The underling `aria-haspopup` attribute to use for the combobox\n- `listbox`: The combobox has a listbox popup (default)\n- `dialog`: The combobox has a dialog popup. Useful when in select only mode",
+        "defaultValue": "\"listbox\""
+      },
+      "dismissable": {
+        "type": "boolean",
+        "description": "Whether to register this combobox as a dismissable layer",
+        "defaultValue": "true"
+      },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",
@@ -767,11 +805,11 @@
   },
   "date-picker": {
     "api": {
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the input is focused"
       },
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the date picker is open"
       },
@@ -855,13 +893,9 @@
         "type": "() => void",
         "description": "Clears the selected date(s)."
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the calendar."
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the calendar."
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the calendar."
       },
       "focusMonth": {
         "type": "(month: number) => void",
@@ -923,7 +957,8 @@
     "context": {
       "locale": {
         "type": "string",
-        "description": "The locale (BCP 47 language tag) to use when formatting the date."
+        "description": "The locale (BCP 47 language tag) to use when formatting the date.",
+        "defaultValue": "\"en-US\""
       },
       "translations": {
         "type": "IntlTranslations",
@@ -939,7 +974,8 @@
       },
       "timeZone": {
         "type": "string",
-        "description": "The time zone to use"
+        "description": "The time zone to use",
+        "defaultValue": "\"UTC\""
       },
       "disabled": {
         "type": "boolean",
@@ -1004,7 +1040,8 @@
       },
       "selectionMode": {
         "type": "SelectionMode",
-        "description": "The selection mode of the calendar.\n- `single` - only one date can be selected\n- `multiple` - multiple dates can be selected\n- `range` - a range of dates can be selected"
+        "description": "The selection mode of the calendar.\n- `single` - only one date can be selected\n- `multiple` - multiple dates can be selected\n- `range` - a range of dates can be selected",
+        "defaultValue": "\"single\""
       },
       "format": {
         "type": "(date: DateValue) => string",
@@ -1048,17 +1085,13 @@
   },
   "dialog": {
     "api": {
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the dialog is open"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the dialog"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the dialog"
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the dialog"
       }
     },
     "context": {
@@ -1068,15 +1101,18 @@
       },
       "trapFocus": {
         "type": "boolean",
-        "description": "Whether to trap focus inside the dialog when it's opened"
+        "description": "Whether to trap focus inside the dialog when it's opened",
+        "defaultValue": "true"
       },
       "preventScroll": {
         "type": "boolean",
-        "description": "Whether to prevent scrolling behind the dialog when it's opened"
+        "description": "Whether to prevent scrolling behind the dialog when it's opened",
+        "defaultValue": "true"
       },
       "modal": {
         "type": "boolean",
-        "description": "Whether to prevent pointer interaction outside the element and hide all content below it"
+        "description": "Whether to prevent pointer interaction outside the element and hide all content below it",
+        "defaultValue": "true"
       },
       "initialFocusEl": {
         "type": "HTMLElement | (() => HTMLElement)",
@@ -1096,11 +1132,13 @@
       },
       "closeOnInteractOutside": {
         "type": "boolean",
-        "description": "Whether to close the dialog when the outside is clicked"
+        "description": "Whether to close the dialog when the outside is clicked",
+        "defaultValue": "true"
       },
-      "closeOnEscapeKeyDown": {
+      "closeOnEscape": {
         "type": "boolean",
-        "description": "Whether to close the dialog when the escape key is pressed"
+        "description": "Whether to close the dialog when the escape key is pressed",
+        "defaultValue": "true"
       },
       "onEscapeKeyDown": {
         "type": "(event: KeyboardEvent) => void",
@@ -1152,11 +1190,11 @@
   },
   "editable": {
     "api": {
-      "isEditing": {
+      "editing": {
         "type": "boolean",
         "description": "Whether the editable is in edit mode"
       },
-      "isValueEmpty": {
+      "empty": {
         "type": "boolean",
         "description": "Whether the editable value is empty"
       },
@@ -1214,7 +1252,7 @@
       "submitMode": {
         "type": "SubmitMode",
         "description": "The action that triggers submit in the edit mode:\n\n- \"enter\" - Trigger submit when the enter key is pressed\n- \"blur\" - Trigger submit when the editable is blurred\n- \"none\" - No action will trigger submit. You need to use the submit button\n- \"both\" - Pressing `Enter` and blurring the input will trigger submit",
-        "defaultValue": "\"enter\""
+        "defaultValue": "\"both\""
       },
       "startWithEditView": {
         "type": "boolean",
@@ -1222,7 +1260,8 @@
       },
       "selectOnFocus": {
         "type": "boolean",
-        "description": "Whether to select the text in the input when it is focused."
+        "description": "Whether to select the text in the input when it is focused.",
+        "defaultValue": "true"
       },
       "value": {
         "type": "string",
@@ -1297,15 +1336,15 @@
   },
   "file-upload": {
     "api": {
-      "isDragging": {
+      "dragging": {
         "type": "boolean",
         "description": "Whether the user is dragging something over the root element"
       },
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the user is focused on the dropzone element"
       },
-      "open": {
+      "openFilePicker": {
         "type": "() => void",
         "description": "Function to open the file dialog"
       },
@@ -1361,19 +1400,23 @@
       },
       "allowDrop": {
         "type": "boolean",
-        "description": "Whether to allow drag and drop in the dropzone element"
+        "description": "Whether to allow drag and drop in the dropzone element",
+        "defaultValue": "true"
       },
       "maxFileSize": {
         "type": "number",
-        "description": "The maximum file size in bytes"
+        "description": "The maximum file size in bytes",
+        "defaultValue": "Infinity"
       },
       "minFileSize": {
         "type": "number",
-        "description": "The minimum file size in bytes"
+        "description": "The minimum file size in bytes",
+        "defaultValue": "0"
       },
       "maxFiles": {
         "type": "number",
-        "description": "The maximum number of files"
+        "description": "The maximum number of files",
+        "defaultValue": "1"
       },
       "validate": {
         "type": "(file: File) => FileError[]",
@@ -1421,31 +1464,51 @@
   },
   "floating-panel": {
     "api": {
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the panel is open"
       },
-      "isDragging": {
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the panel"
+      },
+      "dragging": {
         "type": "boolean",
         "description": "Whether the panel is being dragged"
       },
-      "isResizing": {
+      "resizing": {
         "type": "boolean",
         "description": "Whether the panel is being resized"
       }
     },
     "context": {
+      "ids": {
+        "type": "Partial<{ trigger: string; positioner: string; content: string; title: string; header: string; }>",
+        "description": "The ids of the elements in the floating panel. Useful for composition."
+      },
+      "strategy": {
+        "type": "\"absolute\" | \"fixed\"",
+        "description": "The strategy to use for positioning",
+        "defaultValue": "\"absolute\""
+      },
+      "allowOverflow": {
+        "type": "boolean",
+        "description": "Whether the panel should be strictly contained within the boundary when dragging",
+        "defaultValue": "true"
+      },
       "open": {
         "type": "boolean",
         "description": "Whether the panel is open"
       },
       "draggable": {
         "type": "boolean",
-        "description": "Whether the panel is draggable"
+        "description": "Whether the panel is draggable",
+        "defaultValue": "true"
       },
       "resizable": {
         "type": "boolean",
-        "description": "Whether the panel is resizable"
+        "description": "Whether the panel is resizable",
+        "defaultValue": "true"
       },
       "size": {
         "type": "Size",
@@ -1463,6 +1526,10 @@
         "type": "Point",
         "description": "The position of the panel"
       },
+      "getAnchorPosition": {
+        "type": "(details: AnchorPositionDetails) => Point",
+        "description": "Function that returns the initial position of the panel when it is opened.\nIf provided, will be used instead of the default position."
+      },
       "lockAspectRatio": {
         "type": "boolean",
         "description": "Whether the panel is locked to its aspect ratio"
@@ -1473,7 +1540,7 @@
       },
       "getBoundaryEl": {
         "type": "() => HTMLElement",
-        "description": "The boundary of the panel. Defaults to the window"
+        "description": "The boundary of the panel. Useful for recalculating the boundary rect when\nthe it is resized."
       },
       "disabled": {
         "type": "boolean",
@@ -1499,13 +1566,14 @@
         "type": "(details: SizeChangeDetails) => void",
         "description": "Function called when the size of the panel changes via resizing ends"
       },
-      "preserveOnClose": {
+      "persistRect": {
         "type": "boolean",
         "description": "Whether the panel size and position should be preserved when it is closed"
       },
       "gridSize": {
         "type": "number",
-        "description": "The snap grid for the panel"
+        "description": "The snap grid for the panel",
+        "defaultValue": "1"
       },
       "onStageChange": {
         "type": "(details: StageChangeDetails) => void",
@@ -1528,17 +1596,13 @@
   },
   "hover-card": {
     "api": {
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the hover card is open"
       },
-      "open": {
-        "type": "() => void",
+      "setOpen": {
+        "type": "(open: boolean) => void",
         "description": "Function to open the hover card"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the hover card"
       },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
@@ -1556,11 +1620,13 @@
       },
       "openDelay": {
         "type": "number",
-        "description": "The duration from when the mouse enters the trigger until the hover card opens."
+        "description": "The duration from when the mouse enters the trigger until the hover card opens.",
+        "defaultValue": "700"
       },
       "closeDelay": {
         "type": "number",
-        "description": "The duration from when the mouse leaves the trigger or content until the hover card closes."
+        "description": "The duration from when the mouse leaves the trigger or content until the hover card closes.",
+        "defaultValue": "300"
       },
       "open": {
         "type": "boolean",
@@ -1591,17 +1657,13 @@
   },
   "menu": {
     "api": {
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the menu is open"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the menu"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the menu"
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the menu"
       },
       "highlightedValue": {
         "type": "string",
@@ -1653,9 +1715,10 @@
         "type": "Point",
         "description": "The positioning point for the menu. Can be set by the context menu trigger or the button trigger."
       },
-      "loop": {
+      "loopFocus": {
         "type": "boolean",
-        "description": "Whether to loop the keyboard navigation."
+        "description": "Whether to loop the keyboard navigation.",
+        "defaultValue": "false"
       },
       "positioning": {
         "type": "PositioningOptions",
@@ -1663,7 +1726,8 @@
       },
       "closeOnSelect": {
         "type": "boolean",
-        "description": "Whether to close the menu when an option is selected"
+        "description": "Whether to close the menu when an option is selected",
+        "defaultValue": "true"
       },
       "aria-label": {
         "type": "string",
@@ -1680,6 +1744,11 @@
       "open.controlled": {
         "type": "boolean",
         "description": "Whether the menu's open state is controlled by the user"
+      },
+      "typeahead": {
+        "type": "boolean",
+        "description": "Whether the pressing printable characters should trigger typeahead navigation",
+        "defaultValue": "true"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -1714,15 +1783,15 @@
   },
   "number-input": {
     "api": {
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the input is focused."
       },
-      "isInvalid": {
+      "invalid": {
         "type": "boolean",
         "description": "Whether the input is invalid."
       },
-      "isValueEmpty": {
+      "empty": {
         "type": "boolean",
         "description": "Whether the input value is empty."
       },
@@ -1799,15 +1868,18 @@
       },
       "min": {
         "type": "number",
-        "description": "The minimum value of the number input"
+        "description": "The minimum value of the number input",
+        "defaultValue": "Number.MIN_SAFE_INTEGER"
       },
       "max": {
         "type": "number",
-        "description": "The maximum value of the number input"
+        "description": "The maximum value of the number input",
+        "defaultValue": "Number.MAX_SAFE_INTEGER"
       },
       "step": {
         "type": "number",
-        "description": "The amount to increment or decrement the value by"
+        "description": "The amount to increment or decrement the value by",
+        "defaultValue": "1"
       },
       "allowMouseWheel": {
         "type": "boolean",
@@ -1855,7 +1927,8 @@
       },
       "spinOnPress": {
         "type": "boolean",
-        "description": "Whether to spin the value when the increment/decrement button is pressed"
+        "description": "Whether to spin the value when the increment/decrement button is pressed",
+        "defaultValue": "true"
       },
       "locale": {
         "type": "string",
@@ -1907,14 +1980,6 @@
         "type": "<V>(data: V[]) => V[]",
         "description": "Function to slice an array of data based on the current page."
       },
-      "isFirstPage": {
-        "type": "boolean",
-        "description": "Whether the current page is the first page."
-      },
-      "isLastPage": {
-        "type": "boolean",
-        "description": "Whether the current page is the last page."
-      },
       "setCount": {
         "type": "(count: number) => void",
         "description": "Function to set the total number of pages."
@@ -1943,15 +2008,18 @@
       },
       "pageSize": {
         "type": "number",
-        "description": "Number of data items per page"
+        "description": "Number of data items per page",
+        "defaultValue": "10"
       },
       "siblingCount": {
         "type": "number",
-        "description": "Number of pages to show beside active page"
+        "description": "Number of pages to show beside active page",
+        "defaultValue": "1"
       },
       "page": {
         "type": "number",
-        "description": "The active page"
+        "description": "The active page",
+        "defaultValue": "1"
       },
       "onPageChange": {
         "type": "(details: PageChangeDetails) => void",
@@ -1987,7 +2055,7 @@
         "type": "string",
         "description": "The value of the input as a string."
       },
-      "isValueComplete": {
+      "complete": {
         "type": "boolean",
         "description": "Whether all inputs are filled."
       },
@@ -2031,7 +2099,8 @@
       },
       "placeholder": {
         "type": "string",
-        "description": "The placeholder text for the input"
+        "description": "The placeholder text for the input",
+        "defaultValue": "\"○\""
       },
       "autoFocus": {
         "type": "boolean",
@@ -2051,7 +2120,8 @@
       },
       "type": {
         "type": "\"alphanumeric\" | \"numeric\" | \"alphabetic\"",
-        "description": "The type of value the pin-input should allow"
+        "description": "The type of value the pin-input should allow",
+        "defaultValue": "\"numeric\""
       },
       "onValueComplete": {
         "type": "(details: ValueChangeDetails) => void",
@@ -2100,19 +2170,15 @@
     "api": {
       "portalled": {
         "type": "boolean",
-        "description": "Whether the popover is portalled"
+        "description": "Whether the popover is portalled."
       },
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the popover is open"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the popover"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the popover"
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the popover"
       },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
@@ -2131,12 +2197,13 @@
       },
       "portalled": {
         "type": "boolean",
-        "description": "Whether the popover is rendered in a portal",
+        "description": "Whether the popover is portalled. This will proxy the tabbing behavior regardless of the DOM position\nof the popover content.",
         "defaultValue": "true"
       },
       "autoFocus": {
         "type": "boolean",
-        "description": "Whether to automatically set focus on the first focusable\ncontent within the popover when opened."
+        "description": "Whether to automatically set focus on the first focusable\ncontent within the popover when opened.",
+        "defaultValue": "true"
       },
       "initialFocusEl": {
         "type": "HTMLElement | (() => HTMLElement)",
@@ -2144,11 +2211,13 @@
       },
       "closeOnInteractOutside": {
         "type": "boolean",
-        "description": "Whether to close the popover when the user clicks outside of the popover."
+        "description": "Whether to close the popover when the user clicks outside of the popover.",
+        "defaultValue": "true"
       },
-      "closeOnEsc": {
+      "closeOnEscape": {
         "type": "boolean",
-        "description": "Whether to close the popover when the escape key is pressed."
+        "description": "Whether to close the popover when the escape key is pressed.",
+        "defaultValue": "true"
       },
       "onOpenChange": {
         "type": "(details: OpenChangeDetails) => void",
@@ -2199,13 +2268,21 @@
   },
   "presence": {
     "api": {
-      "isPresent": {
+      "skip": {
+        "type": "boolean",
+        "description": "Whether the animation should be skipped."
+      },
+      "present": {
         "type": "boolean",
         "description": "Whether the node is present in the DOM."
       },
       "setNode": {
         "type": "(node: HTMLElement) => void",
         "description": "Function to set the node (as early as possible)"
+      },
+      "unmount": {
+        "type": "() => void",
+        "description": "Function to programmatically unmount the node"
       }
     },
     "context": {
@@ -2239,17 +2316,24 @@
       }
     },
     "context": {
+      "ids": {
+        "type": "Partial<{ root: string; track: string; label: string; circle: string; }>",
+        "description": "The ids of the elements in the progress bar. Useful for composition."
+      },
       "value": {
         "type": "number",
-        "description": "The current value of the progress bar."
+        "description": "The current value of the progress bar.",
+        "defaultValue": "50"
       },
       "min": {
         "type": "number",
-        "description": "The minimum allowed value of the progress bar."
+        "description": "The minimum allowed value of the progress bar.",
+        "defaultValue": "0"
       },
       "max": {
         "type": "number",
-        "description": "The maximum allowed value of the progress bar."
+        "description": "The maximum allowed value of the progress bar.",
+        "defaultValue": "100"
       },
       "translations": {
         "type": "IntlTranslations",
@@ -2319,6 +2403,10 @@
         "type": "boolean",
         "description": "If `true`, the radio group will be disabled"
       },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the checkbox is read-only"
+      },
       "onValueChange": {
         "type": "(details: ValueChangeDetails) => void",
         "description": "Function called once a radio is checked"
@@ -2352,7 +2440,7 @@
         "type": "() => void",
         "description": "Clears the value of the rating group"
       },
-      "isHovering": {
+      "hovering": {
         "type": "boolean",
         "description": "Whether the rating group is being hovered"
       },
@@ -2388,7 +2476,8 @@
       },
       "count": {
         "type": "number",
-        "description": "The total number of ratings."
+        "description": "The total number of ratings.",
+        "defaultValue": "5"
       },
       "name": {
         "type": "string",
@@ -2443,15 +2532,15 @@
   },
   "select": {
     "api": {
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the select is focused"
       },
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the select is open"
       },
-      "isValueEmpty": {
+      "empty": {
         "type": "boolean",
         "description": "Whether the select value is empty"
       },
@@ -2503,13 +2592,9 @@
         "type": "(props: ItemProps<any>) => ItemState",
         "description": "Returns the state of a select item"
       },
-      "open": {
-        "type": "() => void",
-        "description": "Function to open the select"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the select"
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the select"
       },
       "collection": {
         "type": "Collection<V>",
@@ -2520,7 +2605,7 @@
         "description": "Function to set the collection of items"
       },
       "reposition": {
-        "type": "(options: Partial<PositioningOptions>) => void",
+        "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to set the positioning options of the select"
       }
     },
@@ -2555,11 +2640,8 @@
       },
       "closeOnSelect": {
         "type": "boolean",
-        "description": "Whether the select should close after an item is selected"
-      },
-      "selectOnBlur": {
-        "type": "boolean",
-        "description": "Whether to select the highlighted item when the user presses Tab,\nand the menu is open."
+        "description": "Whether the select should close after an item is selected",
+        "defaultValue": "true"
       },
       "onHighlightChange": {
         "type": "(details: HighlightChangeDetails<T>) => void",
@@ -2585,9 +2667,10 @@
         "type": "string",
         "description": "The key of the highlighted item"
       },
-      "loop": {
+      "loopFocus": {
         "type": "boolean",
-        "description": "Whether to loop the keyboard navigation through the options"
+        "description": "Whether to loop the keyboard navigation through the options",
+        "defaultValue": "false"
       },
       "multiple": {
         "type": "boolean",
@@ -2634,11 +2717,11 @@
   },
   "signature-pad": {
     "api": {
-      "isEmpty": {
+      "empty": {
         "type": "boolean",
         "description": "Whether the signature pad is empty."
       },
-      "isDrawing": {
+      "drawing": {
         "type": "boolean",
         "description": "Whether the user is currently drawing."
       },
@@ -2660,6 +2743,10 @@
       }
     },
     "context": {
+      "ids": {
+        "type": "Partial<{ root: string; control: string; hiddenInput: string; }>",
+        "description": "The ids of the signature pad elements. Useful for composition."
+      },
       "onDraw": {
         "type": "(details: DrawDetails) => void",
         "description": "Callback when the signature pad is drawing."
@@ -2670,7 +2757,8 @@
       },
       "drawing": {
         "type": "DrawingOptions",
-        "description": "The drawing options."
+        "description": "The drawing options.",
+        "defaultValue": "'{ size: 2, simulatePressure: true }'"
       },
       "disabled": {
         "type": "boolean",
@@ -2705,11 +2793,11 @@
         "type": "number[]",
         "description": "The value of the slider."
       },
-      "isDragging": {
+      "dragging": {
         "type": "boolean",
         "description": "Whether the slider is being dragged."
       },
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the slider is focused."
       },
@@ -2812,36 +2900,43 @@
         "description": "Function invoked when the slider's focused index changes"
       },
       "getAriaValueText": {
-        "type": "(value: number, index: number) => string",
+        "type": "(details: ValueTextDetails) => string",
         "description": "Function that returns a human readable value for the slider thumb"
       },
       "min": {
         "type": "number",
-        "description": "The minimum value of the slider"
+        "description": "The minimum value of the slider",
+        "defaultValue": "0"
       },
       "max": {
         "type": "number",
-        "description": "The maximum value of the slider"
+        "description": "The maximum value of the slider",
+        "defaultValue": "100"
       },
       "step": {
         "type": "number",
-        "description": "The step value of the slider"
+        "description": "The step value of the slider",
+        "defaultValue": "1"
       },
       "minStepsBetweenThumbs": {
         "type": "number",
-        "description": "The minimum permitted steps between multiple thumbs."
+        "description": "The minimum permitted steps between multiple thumbs.",
+        "defaultValue": "0"
       },
       "orientation": {
         "type": "\"vertical\" | \"horizontal\"",
-        "description": "The orientation of the slider"
+        "description": "The orientation of the slider",
+        "defaultValue": "\"horizontal\""
       },
       "origin": {
         "type": "\"start\" | \"center\"",
-        "description": "- \"start\": Useful when the value represents an absolute value\n- \"center\": Useful when the value represents an offset (relative)"
+        "description": "The origin of the slider range\n- \"start\": Useful when the value represents an absolute value\n- \"center\": Useful when the value represents an offset (relative)",
+        "defaultValue": "\"start\""
       },
       "thumbAlignment": {
         "type": "\"center\" | \"contain\"",
-        "description": "The alignment of the slider thumb relative to the track\n- `center`: the thumb will extend beyond the bounds of the slider track.\n- `contain`: the thumb will be contained within the bounds of the track."
+        "description": "The alignment of the slider thumb relative to the track\n- `center`: the thumb will extend beyond the bounds of the slider track.\n- `contain`: the thumb will be contained within the bounds of the track.",
+        "defaultValue": "\"contain\""
       },
       "thumbSize": {
         "type": "{ width: number; height: number; }",
@@ -2864,11 +2959,11 @@
   },
   "splitter": {
     "api": {
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the splitter is focused."
       },
-      "isDragging": {
+      "dragging": {
         "type": "boolean",
         "description": "Whether the splitter is being dragged."
       },
@@ -2931,15 +3026,15 @@
   },
   "switch": {
     "api": {
-      "isChecked": {
+      "checked": {
         "type": "boolean",
         "description": "Whether the checkbox is checked"
       },
-      "isDisabled": {
+      "disabled": {
         "type": "boolean",
         "description": "Whether the checkbox is disabled"
       },
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the checkbox is focused"
       },
@@ -2972,6 +3067,10 @@
       "required": {
         "type": "boolean",
         "description": "If `true`, the switch input is marked as required,"
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the switch is read-only"
       },
       "onCheckedChange": {
         "type": "(details: CheckedChangeDetails) => void",
@@ -3045,7 +3144,7 @@
         "type": "IntlTranslations",
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
-      "loop": {
+      "loopFocus": {
         "type": "boolean",
         "description": "Whether the keyboard navigation will loop from last tab to first, and vice versa.",
         "defaultValue": "true"
@@ -3089,7 +3188,7 @@
   },
   "tags-input": {
     "api": {
-      "isEmpty": {
+      "empty": {
         "type": "boolean",
         "description": "Whether the tags are empty"
       },
@@ -3109,7 +3208,7 @@
         "type": "number",
         "description": "The number of the tags."
       },
-      "isAtMax": {
+      "atMax": {
         "type": "boolean",
         "description": "Whether the tags have reached the max limit."
       },
@@ -3180,9 +3279,10 @@
         "type": "boolean",
         "description": "Whether the tags input is invalid"
       },
-      "allowEditTag": {
+      "editable": {
         "type": "boolean",
-        "description": "Whether a tag can be edited after creation.\nIf `true` and focus is on a tag, pressing `Enter`or double clicking will edit the tag."
+        "description": "Whether a tag can be edited after creation, by presing `Enter` or double clicking.",
+        "defaultValue": "true"
       },
       "inputValue": {
         "type": "string",
@@ -3195,6 +3295,10 @@
       "onValueChange": {
         "type": "(details: ValueChangeDetails) => void",
         "description": "Callback fired when the tag values is updated"
+      },
+      "onInputValueChange": {
+        "type": "(details: InputValueChangeDetails) => void",
+        "description": "Callback fired when the input value is updated"
       },
       "onHighlightChange": {
         "type": "(details: HighlightChangeDetails) => void",
@@ -3210,16 +3314,17 @@
       },
       "blurBehavior": {
         "type": "\"clear\" | \"add\"",
-        "description": "The behavior of the tags input when the input is blurred\n- `\"add\"`: add the input value as a new tag\n- `\"none\"`: do nothing\n- `\"clear\"`: clear the input value",
-        "defaultValue": "\"none\""
+        "description": "The behavior of the tags input when the input is blurred\n- `\"add\"`: add the input value as a new tag\n- `\"clear\"`: clear the input value"
       },
       "addOnPaste": {
         "type": "boolean",
-        "description": "Whether to add a tag when you paste values into the tag input"
+        "description": "Whether to add a tag when you paste values into the tag input",
+        "defaultValue": "false"
       },
       "max": {
         "type": "number",
-        "description": "The max number of tags"
+        "description": "The max number of tags",
+        "defaultValue": "Infinity"
       },
       "allowOverflow": {
         "type": "boolean",
@@ -3399,7 +3504,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; toggle(value: string): string; }>",
+        "type": "Partial<{ root: string; item(value: string): string; }>",
         "description": "The ids of the elements in the toggle. Useful for composition."
       },
       "disabled": {
@@ -3414,17 +3519,20 @@
         "type": "(details: ValueChangeDetails) => void",
         "description": "Function to call when the toggle is clicked."
       },
-      "loop": {
+      "loopFocus": {
         "type": "boolean",
-        "description": "Whether to loop focus inside the toggle group."
+        "description": "Whether to loop focus inside the toggle group.",
+        "defaultValue": "true"
       },
       "rovingFocus": {
         "type": "boolean",
-        "description": "Whether to use roving tab index to manage focus."
+        "description": "Whether to use roving tab index to manage focus.",
+        "defaultValue": "true"
       },
       "orientation": {
         "type": "Orientation",
-        "description": "The orientation of the toggle group."
+        "description": "The orientation of the toggle group.",
+        "defaultValue": "\"horizontal\""
       },
       "multiple": {
         "type": "boolean",
@@ -3447,17 +3555,13 @@
   },
   "tooltip": {
     "api": {
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the tooltip is open."
       },
-      "open": {
-        "type": "() => void",
+      "setOpen": {
+        "type": "(open: boolean) => void",
         "description": "Function to open the tooltip."
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the tooltip."
       },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
@@ -3475,23 +3579,28 @@
       },
       "openDelay": {
         "type": "number",
-        "description": "The open delay of the tooltip."
+        "description": "The open delay of the tooltip.",
+        "defaultValue": "1000"
       },
       "closeDelay": {
         "type": "number",
-        "description": "The close delay of the tooltip."
+        "description": "The close delay of the tooltip.",
+        "defaultValue": "500"
       },
       "closeOnPointerDown": {
         "type": "boolean",
-        "description": "Whether to close the tooltip on pointerdown."
+        "description": "Whether to close the tooltip on pointerdown.",
+        "defaultValue": "true"
       },
-      "closeOnEsc": {
+      "closeOnEscape": {
         "type": "boolean",
-        "description": "Whether to close the tooltip when the Escape key is pressed."
+        "description": "Whether to close the tooltip when the Escape key is pressed.",
+        "defaultValue": "true"
       },
       "interactive": {
         "type": "boolean",
-        "description": "Whether the tooltip's content is interactive.\nIn this mode, the tooltip will remain open when user hovers over the content."
+        "description": "Whether the tooltip's content is interactive.\nIn this mode, the tooltip will remain open when user hovers over the content.",
+        "defaultValue": "false"
       },
       "onOpenChange": {
         "type": "(details: OpenChangeDetails) => void",
@@ -3604,6 +3713,10 @@
       }
     },
     "context": {
+      "ids": {
+        "type": "Partial<{ content: string; title: string; description: string; positioner: string; overlay: string; arrow: string; }>",
+        "description": "The ids of the elements in the tour. Useful for composition."
+      },
       "steps": {
         "type": "StepDetails[]",
         "description": "The steps of the tour"
@@ -3622,27 +3735,33 @@
       },
       "closeOnInteractOutside": {
         "type": "boolean",
-        "description": "Whether to close the tour when the user clicks outside the tour"
+        "description": "Whether to close the tour when the user clicks outside the tour",
+        "defaultValue": "true"
       },
-      "closeOnEsc": {
+      "closeOnEscape": {
         "type": "boolean",
-        "description": "Whether to close the tour when the user presses the escape key"
+        "description": "Whether to close the tour when the user presses the escape key",
+        "defaultValue": "true"
       },
       "keyboardNavigation": {
         "type": "boolean",
-        "description": "Whether to allow keyboard navigation (right/left arrow keys to navigate between steps)"
+        "description": "Whether to allow keyboard navigation (right/left arrow keys to navigate between steps)",
+        "defaultValue": "true"
       },
       "preventInteraction": {
         "type": "boolean",
-        "description": "Prevents interaction with the rest of the page while the tour is open"
+        "description": "Prevents interaction with the rest of the page while the tour is open",
+        "defaultValue": "false"
       },
       "offset": {
         "type": "Offset",
-        "description": "The offsets to apply to the overlay"
+        "description": "The offsets to apply to the overlay",
+        "defaultValue": "\"{ x: 10, y: 10 }\""
       },
       "radius": {
         "type": "number",
-        "description": "The radius of the overlay clip path"
+        "description": "The radius of the overlay clip path",
+        "defaultValue": "4"
       },
       "translations": {
         "type": "IntlTranslations",
@@ -3650,7 +3769,8 @@
       },
       "skipBehavior": {
         "type": "\"skip-step\" | \"complete\"",
-        "description": "The behavior when the tour is skipped"
+        "description": "The behavior when the tour is skipped",
+        "defaultValue": "\"complete\""
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -3681,65 +3801,53 @@
   },
   "tree-view": {
     "api": {
-      "expandedIds": {
+      "expandedValue": {
         "type": "string[]",
         "description": "The id of the expanded nodes"
       },
-      "selectedIds": {
+      "selectedValue": {
         "type": "string[]",
         "description": "The id of the selected nodes"
       },
       "expand": {
-        "type": "(ids: string[]) => void",
-        "description": "Function to expand nodes"
-      },
-      "expandAll": {
-        "type": "() => void",
-        "description": "Function to expand all nodes"
+        "type": "(value?: string[]) => void",
+        "description": "Function to expand nodes.\nIf no value is provided, all nodes will be expanded"
       },
       "collapse": {
-        "type": "(ids: string[]) => void",
-        "description": "Function to collapse nodes"
-      },
-      "collapseAll": {
-        "type": "() => void",
-        "description": "Function to collapse all nodes"
+        "type": "(value?: string[]) => void",
+        "description": "Function to collapse nodes\nIf no value is provided, all nodes will be collapsed"
       },
       "select": {
-        "type": "(ids: string[]) => void",
-        "description": "Function to select nodes"
-      },
-      "selectAll": {
-        "type": "() => void",
-        "description": "Function to select all nodes"
+        "type": "(value?: string[]) => void",
+        "description": "Function to select nodes\nIf no value is provided, all nodes will be selected"
       },
       "deselect": {
-        "type": "(ids: string[]) => void",
-        "description": "Function to deselect nodes"
-      },
-      "deselectAll": {
-        "type": "() => void",
-        "description": "Function to deselect all nodes"
+        "type": "(value?: string[]) => void",
+        "description": "Function to deselect nodes\nIf no value is provided, all nodes will be deselected"
       },
       "focusBranch": {
-        "type": "(id: string) => void",
+        "type": "(value: string) => void",
         "description": "Function to focus a branch node"
       },
       "focusItem": {
-        "type": "(id: string) => void",
+        "type": "(value: string) => void",
         "description": "Function to focus an item node"
       }
     },
     "context": {
-      "expandedIds": {
+      "ids": {
+        "type": "Partial<{ root: string; tree: string; label: string; }>",
+        "description": "The ids of the tree elements. Useful for composition."
+      },
+      "expandedValue": {
         "type": "string[]",
         "description": "The id of the expanded nodes"
       },
-      "selectedIds": {
+      "selectedValue": {
         "type": "string[]",
         "description": "The id of the selected nodes"
       },
-      "focusedId": {
+      "focusedValue": {
         "type": "string",
         "description": "The id of the focused node"
       },
@@ -3760,9 +3868,14 @@
         "type": "(details: FocusChangeDetails) => void",
         "description": "Called when the focused node changes"
       },
-      "openOnClick": {
+      "expandOnClick": {
         "type": "boolean",
         "description": "Whether clicking on a branch should open it or not",
+        "defaultValue": "true"
+      },
+      "typeahead": {
+        "type": "boolean",
+        "description": "Whether the tree supports typeahead search",
         "defaultValue": "true"
       },
       "dir": {
