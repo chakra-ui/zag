@@ -12,7 +12,7 @@
 <template>
   <div v-bind="api.rootProps">
     <span v-bind="api.fallbackProps">PA</span>
-    <img alt="PA" src="{src}" v-bind="api.imageProps" />
+    <img alt="PA" :src="src" v-bind="api.imageProps" />
   </div>
 </template>
 ```
