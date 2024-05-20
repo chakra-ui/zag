@@ -3323,11 +3323,7 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  shared:
-    dependencies:
-      '@internationalized/date':
-        specifier: 3.5.3
-        version: 3.5.3
+  shared: {}
 
   starters/react:
     dependencies:
