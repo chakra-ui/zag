@@ -12,6 +12,8 @@
   import Combobox from "./routes/combobox.svelte"
   import ContextMenu from "./routes/context-menu.svelte"
   import DatePicker from "./routes/date-picker.svelte"
+  import DatePickerMulti from "./routes/date-picker-multi.svelte"
+  import DatePickerRange from "./routes/date-picker-range.svelte"
   import Dialog from "./routes/dialog.svelte"
   import Editable from "./routes/editable.svelte"
   import FileUpload from "./routes/file-upload.svelte"
@@ -57,6 +59,8 @@
     { path: "/combobox", component: Combobox },
     { path: "/context-menu", component: ContextMenu },
     { path: "/date-picker", component: DatePicker },
+    { path: "/date-picker-multi", component: DatePickerMulti },
+    { path: "/date-picker-range", component: DatePickerRange },
     { path: "/dialog", component: Dialog },
     { path: "/editable", component: Editable },
     { path: "/file-upload", component: FileUpload },
