@@ -13,6 +13,11 @@
   flex-direction: column;
   overflow-y: scroll;
   padding: 4px;
+
+  &[data-focus] {
+    background: rgb(247, 247, 247);
+  }
+
   /* hide scroll bar */
   scrollbar-width: none;
   -ms-overflow-style: none;
