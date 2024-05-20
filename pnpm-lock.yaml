@@ -35,9 +35,6 @@ importers:
       '@commitlint/config-conventional':
         specifier: 19.2.2
         version: 19.2.2
-      '@internationalized/date':
-        specifier: 3.5.3
-        version: 3.5.3
       '@octokit/rest':
         specifier: 20.1.1
         version: 20.1.1
@@ -327,6 +324,9 @@ importers:
       '@zag-js/text-selection':
         specifier: workspace:*
         version: link:../../packages/utilities/text-selection
+      '@zag-js/time-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/time-picker
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast
@@ -577,6 +577,9 @@ importers:
       '@zag-js/text-selection':
         specifier: workspace:*
         version: link:../../packages/utilities/text-selection
+      '@zag-js/time-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/time-picker
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast
@@ -815,6 +818,9 @@ importers:
       '@zag-js/text-selection':
         specifier: workspace:*
         version: link:../../packages/utilities/text-selection
+      '@zag-js/time-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/time-picker
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast
@@ -1053,6 +1059,9 @@ importers:
       '@zag-js/text-selection':
         specifier: workspace:*
         version: link:../../packages/utilities/text-selection
+      '@zag-js/time-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/time-picker
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast
@@ -1279,6 +1288,9 @@ importers:
       '@zag-js/text-selection':
         specifier: workspace:*
         version: link:../../packages/utilities/text-selection
+      '@zag-js/time-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/time-picker
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast
@@ -1743,6 +1755,9 @@ importers:
       '@zag-js/text-selection':
         specifier: workspace:*
         version: link:../../packages/utilities/text-selection
+      '@zag-js/time-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/time-picker
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast
@@ -2898,6 +2913,40 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
+  packages/machines/time-picker:
+    dependencies:
+      '@internationalized/date':
+        specifier: 3.5.3
+        version: 3.5.3
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dismissable':
+        specifier: workspace:*
+        version: link:../../utilities/dismissable
+      '@zag-js/dom-event':
+        specifier: workspace:^
+        version: link:../../utilities/dom-event
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/popper':
+        specifier: workspace:*
+        version: link:../../utilities/popper
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
   packages/machines/toast:
     dependencies:
       '@zag-js/anatomy':
@@ -3636,6 +3685,9 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../packages/machines/tags-input
+      '@zag-js/time-picker':
+        specifier: workspace:*
+        version: link:../packages/machines/time-picker
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../packages/machines/toast

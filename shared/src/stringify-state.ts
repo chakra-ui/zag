@@ -3,6 +3,8 @@ import formatHighlight from "json-format-highlight"
 const pick = (obj: Record<string, any>, keys: string[]) =>
   Object.fromEntries(keys.filter((key) => key in obj).map((key) => [key, obj[key]]))
 
+const isTimeObject = (v: any) => v.hasOwnProperty("hour") && v.hasOwnProperty("minute") && v.hasOwnProperty("second")
+
 export function stringifyState(state: Record<string, any>, omit?: string[]) {
   const code = JSON.stringify(
     state,
@@ -15,7 +17,7 @@ export function stringifyState(state: Record<string, any>, omit?: string[]) {
           return undefined
         }
 
-        if (v.hasOwnProperty("calendar")) {
+        if (v.hasOwnProperty("calendar") || isTimeObject(v)) {
           return v.toString()
         }
 
@@ -46,7 +48,7 @@ export function stringifyState(state: Record<string, any>, omit?: string[]) {
           case "[object Window]":
             return "#window"
           case "[object AbortController]":
-            return "#abort-cntroller"
+            return "#abort-controller"
           default:
             return v !== null && typeof v === "object" && v.nodeType === 1 ? v.tagName : v
         }

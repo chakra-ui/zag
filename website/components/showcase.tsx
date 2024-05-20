@@ -31,6 +31,7 @@ import { Splitter } from "./machines/splitter"
 import { Switch } from "./machines/switch"
 import { Tabs } from "./machines/tabs"
 import { TagsInput } from "./machines/tags-input"
+import { TimePicker } from "./machines/time-picker"
 import { ToastGroup } from "./machines/toast"
 import { ToggleGroup } from "./machines/toggle-group"
 import { Tooltip } from "./machines/tooltip"
@@ -340,6 +341,29 @@ const components = {
         dir: { default: "ltr", options: ["ltr", "rtl"] },
         blurBehavior: { default: "--", options: ["add", "clear"] },
         addOnPaste: false,
+      }}
+    />
+  ),
+  TimePicker: () => (
+    <Playground
+      component={TimePicker}
+      defaultProps={{
+        locale: {
+          default: "en-US",
+          options: [
+            "en-US",
+            "en-GB",
+            "fr-FR",
+            "de-DE",
+            "ja-JP",
+            "mk-MK",
+            "zh-CN",
+          ],
+          required: true,
+        },
+        disabled: false,
+        readOnly: false,
+        withSeconds: false,
       }}
     />
   ),
