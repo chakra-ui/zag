@@ -32,6 +32,7 @@
   import Select from "./routes/select.svelte"
   import SignaturePad from "./routes/signature-pad.svelte"
   import Slider from "./routes/slider.svelte"
+  import Splitter from "./routes/splitter.svelte"
   import Switch from "./routes/switch.svelte"
   import Tabs from "./routes/tabs.svelte"
   import TagsInput from "./routes/tags-input.svelte"
@@ -73,6 +74,7 @@
     { path: "/rating-group", component: RatingGroup },
     { path: "/segment-control", component: SegmentControl },
     { path: "/select", component: Select },
+    { path: "/splitter", component: Splitter },
     { path: "/signature-pad", component: SignaturePad },
     { path: "/slider", component: Slider },
     { path: "/switch", component: Switch },
