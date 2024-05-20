@@ -11,6 +11,7 @@
   import ColorPicker from "./routes/color-picker.svelte"
   import Combobox from "./routes/combobox.svelte"
   import ContextMenu from "./routes/context-menu.svelte"
+  import Dialog from "./routes/dialog.svelte"
   import FileUpload from "./routes/file-upload.svelte"
   import FloatingPanel from "./routes/floating-panel.svelte"
   import HoverCard from "./routes/hover-card.svelte"
@@ -22,6 +23,8 @@
   import PinInput from "./routes/pin-input.svelte"
   import Popover from "./routes/popover.svelte"
   import Progress from "./routes/progress.svelte"
+  import RadioGroup from "./routes/radio-group.svelte"
+  import RangeSlider from "./routes/range-slider.svelte"
   import RatingGroup from "./routes/rating-group.svelte"
   import SegmentControl from "./routes/segment-control.svelte"
   import Select from "./routes/select.svelte"
@@ -36,8 +39,6 @@
   import Tooltip from "./routes/tooltip.svelte"
   import Tour from "./routes/tour.svelte"
   import TreeView from "./routes/tree-view.svelte"
-  import RadioGroup from "./routes/radio-group.svelte"
-  import RangeSlider from "./routes/range-slider.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 
@@ -52,6 +53,7 @@
     { path: "/color-picker", component: ColorPicker },
     { path: "/combobox", component: Combobox },
     { path: "/context-menu", component: ContextMenu },
+    { path: "/dialog", component: Dialog },
     { path: "/file-upload", component: FileUpload },
     { path: "/floating-panel", component: FloatingPanel },
     { path: "/hover-card", component: HoverCard },
