@@ -1,4 +1,4 @@
-```md
+```html
 <script setup>
 import * as timePicker from "@zag-js/time-picker"
 import { normalizeProps, useMachine } from "@zag-js/vue"
@@ -20,24 +20,24 @@ const api = computed(() => timePicker.connect(state.value, send, normalizeProps)
     <Teleport to="body">
       <div v-bind="api.positionerProps">
         <div v-bind="api.contentProps">
-          <div v-bind="api.getContentColumnProps({ type: 'hour' })">
-            <button v-for="hour in api.getAvailableHours()" v-bind="api.getHourCellProps({ hour })">
-              {{ hour }}
+          <div v-bind="api.getColumnProps({ unit: 'hour' })">
+            <button v-for="item in api.getHours()" v-bind="api.getHourCellProps({ value: item.value })">
+              {{ item.label }}
             </button>
           </div>
-          <div v-bind="api.getContentColumnProps({ type: 'minute' })">
-            <button v-for="minute in api.getAvailableMinutes()" v-bind="api.getMinuteCellProps({ minute })">
-              {{ minute }}
+          <div v-bind="api.getColumnProps({ unit: 'minute' })">
+            <button v-for="item in api.getMinutes()" v-bind="api.getMinuteCellProps({ value: item.value })">
+              {{ item.label }}
             </button>
           </div>
-          <div v-bind="api.getContentColumnProps({ type: 'second' })">
-            <button v-for="second in api.getAvailableSeconds()" v-bind="api.getSecondCellProps({ second })">
-              {{ second }}
+          <div v-bind="api.getColumnProps({ unit: 'second' })">
+            <button v-for="item in api.getSeconds()" v-bind="api.getSecondCellProps({ value: item.value })">
+              {{ item.label }}
             </button>
           </div>
-          <div v-bind="api.getContentColumnProps({ type: 'period' })">
-            <button v-bind="api.getPeriodCellProps({ period: 'am' })">AM</button>
-            <button v-bind="api.getPeriodCellProps({ period: 'pm' })">PM</button>
+          <div v-bind="api.getColumnProps({ unit: 'period' })">
+            <button v-bind="api.getPeriodCellProps({ value: 'am' })">AM</button>
+            <button v-bind="api.getPeriodCellProps({ value: 'pm' })">PM</button>
           </div>
         </div>
       </div>

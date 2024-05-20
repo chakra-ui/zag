@@ -3365,7 +3365,7 @@
       }
     }
   },
-  "time-picker":{
+  "time-picker": {
     "api": {
       "isFocused": {
         "type": "boolean",
@@ -3403,20 +3403,20 @@
         "type": "() => void",
         "description": "Function to clear the selected time"
       },
-      "getAvailableHours": {
+      "getHours": {
         "type": "() => string[]",
         "description": "Get the available hours that will be displayed in the time picker"
       },
-      "getAvailableMinutes": {
+      "getMinutes": {
         "type": "() => string[]",
         "description": "Get the available minutes that will be displayed in the time picker"
       },
-      "getAvailableSeconds": {
+      "getSeconds": {
         "type": "() => string[]",
         "description": "Get the available seconds that will be displayed in the time picker"
       }
     },
-    "context":{
+    "context": {
       "locale": {
         "type": "string",
         "description": "The locale (BCP 47 language tag) to use when formatting the time."
@@ -3466,7 +3466,7 @@
         "description": "The maximum time that can be selected."
       },
       "steps": {
-        "type":"{ hour?: number; minute?: number; second?: number; }",
+        "type": "{ hour?: number; minute?: number; second?: number; }",
         "description": "The steps of each time unit."
       },
       "withSeconds": {

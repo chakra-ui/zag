@@ -26,24 +26,24 @@
 
     <span use:portal {...api.positionerProps}>
       <div {...api.contentProps}>
-        <div {...api.getContentColumnProps({ type: "hour" })}>
-          {#each api.getAvailableHours() as hour (hour)}
-            <button {...api.getHourCellProps({ hour })}>{hour}</button>
+        <div {...api.getColumnProps({ unit: "hour" })}>
+          {#each api.getHours() as item (item.value)}
+            <button {...api.getHourCellProps({ value: item.value })}>{item.label}</button>
           {/each}
         </div>
-        <div {...api.getContentColumnProps({ type: "minute" })}>
-          {#each api.getAvailableMinutes() as minute (minute)}
-            <button {...api.getMinuteCellProps({ minute })}>{minute}</button>
+        <div {...api.getColumnProps({ unit: "minute" })}>
+          {#each api.getMinutes() as item (item.value)}
+            <button {...api.getMinuteCellProps({ value: item.value })}>{item.value}</button>
           {/each}
         </div>
-        <div {...api.getContentColumnProps({ type: "second" })}>
-          {#each api.getAvailableSeconds() as second (second)}
-            <button {...api.getSecondCellProps({ second })}>{second}</button>
+        <div {...api.getColumnProps({ unit: "second" })}>
+          {#each api.getSeconds() as item (item.value)}
+            <button {...api.getSecondCellProps({ value: item.value })}>{item.label}</button>
           {/each}
         </div>
-        <div {...api.getContentColumnProps({ type: "period" })}>
-          <button {...api.getPeriodCellProps({ period: "am" })}>AM</button>
-          <button {...api.getPeriodCellProps({ period: "pm" })}>PM</button>
+        <div {...api.getColumnProps({ unit: "period" })}>
+          <button {...api.getPeriodCellProps({ value: "am" })}>AM</button>
+          <button {...api.getPeriodCellProps({ value: "pm" })}>PM</button>
         </div>
       </div>
     </span>

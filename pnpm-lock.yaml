@@ -35,9 +35,6 @@ importers:
       '@commitlint/config-conventional':
         specifier: 19.2.2
         version: 19.2.2
-      '@internationalized/date':
-        specifier: 3.5.3
-        version: 3.5.3
       '@octokit/rest':
         specifier: 20.1.1
         version: 20.1.1
@@ -2918,6 +2915,9 @@ importers:
 
   packages/machines/time-picker:
     dependencies:
+      '@internationalized/date':
+        specifier: 3.5.3
+        version: 3.5.3
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../anatomy
@@ -3323,7 +3323,11 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  shared: {}
+  shared:
+    dependencies:
+      '@internationalized/date':
+        specifier: 3.5.3
+        version: 3.5.3
 
   starters/react:
     dependencies:

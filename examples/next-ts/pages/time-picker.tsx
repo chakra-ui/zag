@@ -28,30 +28,37 @@ export default function Page() {
           <Portal>
             <div {...api.positionerProps}>
               <div {...api.contentProps}>
-                <div {...api.getContentColumnProps({ type: "hour" })}>
-                  {api.getAvailableHours().map((hour) => (
-                    <button key={hour} {...api.getHourCellProps({ hour })}>
-                      {hour}
+                <div {...api.getColumnProps({ unit: "hour" })}>
+                  <div {...api.spacerProps} />
+                  {api.getHours().map((item) => (
+                    <button key={item.value} {...api.getHourCellProps({ value: item.value })}>
+                      {item.label}
                     </button>
                   ))}
+                  <div {...api.spacerProps} />
                 </div>
-                <div {...api.getContentColumnProps({ type: "minute" })}>
-                  {api.getAvailableMinutes().map((minute) => (
-                    <button key={minute} {...api.getMinuteCellProps({ minute })}>
-                      {minute}
+                <div {...api.getColumnProps({ unit: "minute" })}>
+                  <div {...api.spacerProps} />
+                  {api.getMinutes().map((item) => (
+                    <button key={item.value} {...api.getMinuteCellProps({ value: item.value })}>
+                      {item.label}
                     </button>
                   ))}
+                  <div {...api.spacerProps} />
                 </div>
-                <div {...api.getContentColumnProps({ type: "second" })}>
-                  {api.getAvailableSeconds().map((second) => (
-                    <button key={second} {...api.getSecondCellProps({ second })}>
-                      {second}
+                <div {...api.getColumnProps({ unit: "second" })}>
+                  <div {...api.spacerProps} />
+
+                  {api.getSeconds().map((item) => (
+                    <button key={item.value} {...api.getSecondCellProps({ value: item.value })}>
+                      {item.label}
                     </button>
                   ))}
+                  <div {...api.spacerProps} />
                 </div>
-                <div {...api.getContentColumnProps({ type: "period" })}>
-                  <button {...api.getPeriodCellProps({ period: "am" })}>AM</button>
-                  <button {...api.getPeriodCellProps({ period: "pm" })}>PM</button>
+                <div {...api.getColumnProps({ unit: "period" })}>
+                  <button {...api.getPeriodCellProps({ value: "am" })}>AM</button>
+                  <button {...api.getPeriodCellProps({ value: "pm" })}>PM</button>
                 </div>
               </div>
             </div>
@@ -59,7 +66,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls.ui} viz>
         <StateVisualizer state={state} />
       </Toolbar>
     </>

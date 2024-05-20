@@ -33,24 +33,24 @@ export default function Page() {
           <Wrapper>
             <div {...api().positionerProps}>
               <div {...api().contentProps}>
-                <div {...api().getContentColumnProps({ type: "hour" })}>
-                  <For each={api().getAvailableHours()}>
-                    {(hour) => <button {...api().getHourCellProps({ hour })}>{hour}</button>}
+                <div {...api().getColumnProps({ unit: "hour" })}>
+                  <For each={api().getHours()}>
+                    {(item) => <button {...api().getHourCellProps({ value: item.value })}>{item.label}</button>}
                   </For>
                 </div>
-                <div {...api().getContentColumnProps({ type: "minute" })}>
-                  <For each={api().getAvailableMinutes()}>
-                    {(minute) => <button {...api().getMinuteCellProps({ minute })}>{minute}</button>}
+                <div {...api().getColumnProps({ unit: "minute" })}>
+                  <For each={api().getMinutes()}>
+                    {(item) => <button {...api().getMinuteCellProps({ value: item.value })}>{item.label}</button>}
                   </For>
                 </div>
-                <div {...api().getContentColumnProps({ type: "second" })}>
-                  <For each={api().getAvailableSeconds()}>
-                    {(second) => <button {...api().getSecondCellProps({ second })}>{second}</button>}
+                <div {...api().getColumnProps({ unit: "second" })}>
+                  <For each={api().getSeconds()}>
+                    {(item) => <button {...api().getSecondCellProps({ value: item.value })}>{item.label}</button>}
                   </For>
                 </div>
-                <div {...api().getContentColumnProps({ type: "period" })}>
-                  <button {...api().getPeriodCellProps({ period: "am" })}>AM</button>
-                  <button {...api().getPeriodCellProps({ period: "pm" })}>PM</button>
+                <div {...api().getColumnProps({ unit: "period" })}>
+                  <button {...api().getPeriodCellProps({ value: "am" })}>AM</button>
+                  <button {...api().getPeriodCellProps({ value: "pm" })}>PM</button>
                 </div>
               </div>
             </div>

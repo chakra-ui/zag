@@ -103,7 +103,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Switch", id: "switch" },
         { type: "doc", label: "Tabs", id: "tabs" },
         { type: "doc", label: "Tags Input", id: "tags-input" },
-        { type: "doc", label: "Time picker", id: "time-picker" },
+        // { type: "doc", label: "Time picker", id: "time-picker", new: true },
         { type: "doc", label: "Toast", id: "toast" },
         { type: "doc", label: "Toggle Group", id: "toggle-group" },
         { type: "doc", label: "Tooltip", id: "tooltip" },

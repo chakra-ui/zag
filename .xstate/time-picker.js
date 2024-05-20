@@ -22,17 +22,18 @@ const fetchMachine = createMachine({
     "shouldRestoreFocus && isInteractOutsideEvent": false,
     "shouldRestoreFocus": false,
     "isOpenControlled": false,
+    "isOpenControlled": false,
     "shouldRestoreFocus": false
   },
   on: {
-    "INPUT.BLUR": {
-      actions: ["setInputValue", "checkValidInputValue", "syncInputElement"]
-    },
-    "INPUT.ENTER": {
-      actions: ["setInputValue", "checkValidInputValue", "syncInputElement"]
-    },
     "VALUE.CLEAR": {
-      actions: ["clearValue", "syncInputElement"]
+      actions: ["clearValue"]
+    },
+    "VALUE.SET": {
+      actions: ["setValue"]
+    },
+    "UNIT.SET": {
+      actions: ["setUnitValue"]
     }
   },
   on: {
@@ -44,23 +45,26 @@ const fetchMachine = createMachine({
     idle: {
       tags: ["closed"],
       on: {
+        "INPUT.FOCUS": {
+          target: "focused"
+        },
         "TRIGGER.CLICK": [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "focusInitialHour"]
+          actions: ["invokeOnOpen"]
         }],
         OPEN: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "focusInitialHour"]
+          actions: ["invokeOnOpen"]
         }],
         "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["invokeOnOpen", "focusInitialHour"]
+          actions: ["invokeOnOpen"]
         }
       }
     },
@@ -72,24 +76,32 @@ const fetchMachine = createMachine({
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "focusInitialHour"]
+          actions: ["invokeOnOpen"]
         }],
         OPEN: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "focusInitialHour"]
+          actions: ["invokeOnOpen"]
         }],
+        "INPUT.ENTER": {
+          actions: ["setInputValue", "clampTimeValue"]
+        },
+        "INPUT.BLUR": {
+          target: "idle",
+          actions: ["setInputValue", "clampTimeValue"]
+        },
         "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["invokeOnOpen", "focusInitialHour"]
+          actions: ["invokeOnOpen"]
         }
       }
     },
     open: {
       tags: ["open"],
-      entry: ["focusInitialHour"],
+      entry: ["setCurrentTime", "scrollColumnsToTop", "focusHourColumn"],
+      exit: ["resetFocusedCell"],
       activities: ["computePlacement", "trackDismissableElement"],
       on: {
         "TRIGGER.CLICK": [{
@@ -97,67 +109,67 @@ const fetchMachine = createMachine({
           actions: ["invokeOnClose"]
         }, {
           target: "focused",
-          actions: ["invokeOnClose", "scrollUpColumns"]
+          actions: ["invokeOnClose"]
         }],
+        "INPUT.ENTER": {
+          actions: ["setInputValue", "clampTimeValue"]
+        },
         CLOSE: [{
           cond: "isOpenControlled",
           actions: ["invokeOnClose"]
         }, {
           target: "idle",
-          actions: ["invokeOnClose", "scrollUpColumns"]
+          actions: ["invokeOnClose"]
         }],
         "CONTROLLED.CLOSE": [{
           cond: "shouldRestoreFocus && isInteractOutsideEvent",
           target: "focused",
-          actions: ["focusTriggerElement", "scrollUpColumns"]
+          actions: ["focusTriggerElement"]
         }, {
           cond: "shouldRestoreFocus",
           target: "focused",
-          actions: ["focusInputElement", "scrollUpColumns"]
+          actions: ["focusInputElement"]
         }, {
-          target: "idle",
-          actions: ["scrollUpColumns", "scrollUpColumns"]
+          target: "idle"
+        }],
+        "CONTENT.ESCAPE": [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
+          target: "focused",
+          actions: ["invokeOnClose", "focusInputElement"]
         }],
         INTERACT_OUTSIDE: [{
           cond: "isOpenControlled",
-          actions: ["invokeOnClose", "scrollUpColumns"]
+          actions: ["invokeOnClose"]
         }, {
           cond: "shouldRestoreFocus",
           target: "focused",
-          actions: ["invokeOnClose", "focusTriggerElement", "scrollUpColumns"]
+          actions: ["invokeOnClose", "focusTriggerElement"]
         }, {
           target: "idle",
-          actions: ["invokeOnClose", "scrollUpColumns"]
+          actions: ["invokeOnClose"]
         }],
         "POSITIONING.SET": {
-          actions: ["reposition", "scrollUpColumns"]
+          actions: ["reposition"]
         },
-        "HOUR.CLICK": {
-          actions: ["setHour", "syncInputElement"]
+        "UNIT.CLICK": {
+          actions: ["setFocusedValue", "setFocusedColumn", "setUnitValue"]
         },
-        "MINUTE.CLICK": {
-          actions: ["setMinute", "syncInputElement"]
-        },
-        "SECOND.CLICK": {
-          actions: ["setSecond", "syncInputElement"]
-        },
-        "PERIOD.CLICK": {
-          actions: ["setPeriod", "checkValidInputValue", "syncInputElement"]
-        },
-        "CONTENT.COLUMN.ARROW_UP": {
+        "CONTENT.ARROW_UP": {
           actions: ["focusPreviousCell"]
         },
-        "CONTENT.COLUMN.ARROW_DOWN": {
+        "CONTENT.ARROW_DOWN": {
           actions: ["focusNextCell"]
         },
-        "CONTENT.COLUMN.ARROW_LEFT": {
+        "CONTENT.ARROW_LEFT": {
           actions: ["focusPreviousColumnCell"]
         },
-        "CONTENT.COLUMN.ARROW_RIGHT": {
+        "CONTENT.ARROW_RIGHT": {
           actions: ["focusNextColumnCell"]
         },
-        "CONTENT.COLUMN.ENTER": {
-          actions: ["setCurrentCell", "focusNextColumnCell"]
+        "CONTENT.ENTER": {
+          actions: ["selectFocusedCell", "focusNextColumnCell"]
         }
       }
     }

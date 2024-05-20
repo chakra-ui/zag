@@ -4,16 +4,30 @@
   border-radius: 8px;
   overflow: hidden;
   display: flex;
-  gap: 4px;
   max-height: 200px;
 }
 
-[data-scope="time-picker"][data-part="content-column"] {
+[data-scope="time-picker"][data-part="column"] {
   display: flex;
   gap: 4px;
   flex-direction: column;
   overflow-y: scroll;
   padding: 4px;
+  /* hide scroll bar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  & + & {
+    border-inline-start: 1px solid rgb(209, 209, 209);
+  }
+}
+
+[data-scope="time-picker"][data-part="spacer"] {
+  display: block;
+  flex-shrink: 0;
+  height: calc(100% - 36px);
 }
 
 [data-scope="time-picker"][data-part="cell"] {
@@ -21,6 +35,10 @@
   border: none;
   padding: 8px;
   border-radius: 4px;
+
+  &[data-now] {
+    background: lightblue;
+  }
 
   &[data-selected] {
     background: purple;

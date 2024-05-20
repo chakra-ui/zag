@@ -1,7 +1,7 @@
-import type { StateMachine as S } from "@zag-js/core"
 import { Time } from "@internationalized/date"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { StateMachine as S } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -16,15 +16,13 @@ export interface OpenChangeDetails {
 }
 
 export interface ValueChangeDetails {
-  value?: Time
-  valueAsString?: string
+  value: Time | null
+  valueAsString: string
 }
 
 export interface FocusChangeDetails extends ValueChangeDetails {
-  focusedCell: {
-    value: number
-    unit: TimeUnit
-  }
+  focusedUnit: TimeUnit
+  focusedValue: any
 }
 
 /* -----------------------------------------------------------------------------
@@ -38,7 +36,7 @@ export type ElementIds = Partial<{
   content: string
   clearTrigger: string
   control: string
-  contentColumn: string
+  column(unit: TimeUnit): string
 }>
 
 interface PublicContext extends DirectionProperty, CommonProperties {
@@ -49,7 +47,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The selected time.
    */
-  value?: Time
+  value: Time | null
   /**
    * Whether the timepicker is open
    */
@@ -97,7 +95,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether to show the seconds.
    */
-  withSeconds?: boolean
+  allowSeconds?: boolean
   /**
    * Function called when the value changes.
    */
@@ -110,14 +108,13 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Function called when the focused date changes.
    */
   onFocusChange?: (details: FocusChangeDetails) => void
+  /**
+   * Whether to disable the interaction outside logic
+   */
+  disableLayer?: boolean
 }
 
 interface PrivateContext {
-  /**
-   * @internal
-   * The period of the time (AM/PM)
-   */
-  period: TimePeriod
   /**
    * @internal
    * The computed placement (maybe different from initial placement)
@@ -128,9 +125,37 @@ interface PrivateContext {
    * Whether the calendar should restore focus to the input when it closes.
    */
   restoreFocus?: boolean
+  /**
+   * The focused unit column
+   */
+  focusedColumn: TimeUnit
+  /**
+   * The focused cell value
+   */
+  focusedValue: any
+  /**
+   * The current time
+   */
+  currentTime: Time | null
 }
 
-type ComputedContext = Readonly<{}>
+type ComputedContext = Readonly<{
+  /**
+   * @computed
+   * The selected time as a string
+   */
+  valueAsString: string
+  /**
+   * @computed
+   * Whether the time picker is in 12-hour format (based on the locale)
+   */
+  hour12: boolean
+  /**
+   * @computed
+   * The period of the time (AM/PM)
+   */
+  period: TimePeriod | null
+}>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
@@ -148,6 +173,23 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface ColumnProps {
+  unit: TimeUnit
+}
+
+export interface CellProps {
+  value: number
+}
+
+export interface PeriodCellProps {
+  value: TimePeriod
+}
+
+export interface Cell {
+  label: string
+  value: number
+}
+
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the input is focused
@@ -160,7 +202,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The selected time
    */
-  value: Time | undefined
+  value: Time | null
   /**
    * The selected time as a string
    */
@@ -182,31 +224,44 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   clearValue(): void
   /**
+   * Function to set the selected time
+   */
+  setValue(value: string | Time): void
+  /**
+   * Function to set the focused time unit
+   */
+  setUnitValue(unit: "period", value: TimePeriod): void
+  /**
+   * Function to set the focused time unit
+   */
+  setUnitValue(unit: TimeUnit, value: number): void
+  /**
    * Get the available hours that will be displayed in the time picker
    */
-  getAvailableHours(): string[]
+  getHours(): Cell[]
   /**
    * Get the available minutes that will be displayed in the time picker
    */
-  getAvailableMinutes(): string[]
+  getMinutes(): Cell[]
   /**
    * Get the available seconds that will be displayed in the time picker
    */
-  getAvailableSeconds(): string[]
+  getSeconds(): Cell[]
 
   rootProps: T["element"]
   labelProps: T["element"]
   controlProps: T["element"]
   inputProps: T["element"]
   triggerProps: T["element"]
+  spacerProps: T["element"]
   clearTriggerProps: T["element"]
   positionerProps: T["element"]
   contentProps: T["element"]
-  getContentColumnProps(options: { type: TimeUnit }): T["element"]
-  getHourCellProps(options: { hour: string }): T["element"]
-  getMinuteCellProps(options: { minute: string }): T["element"]
-  getSecondCellProps(options: { second: string }): T["element"]
-  getPeriodCellProps(options: { period: TimePeriod }): T["element"]
+  getColumnProps(options: ColumnProps): T["element"]
+  getHourCellProps(options: CellProps): T["element"]
+  getMinuteCellProps(options: CellProps): T["element"]
+  getSecondCellProps(options: CellProps): T["element"]
+  getPeriodCellProps(options: PeriodCellProps): T["element"]
 }
 
 /* -----------------------------------------------------------------------------
