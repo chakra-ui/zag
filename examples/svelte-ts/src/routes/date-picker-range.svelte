@@ -49,7 +49,7 @@
       <div style="margin-bottom: 20px">
         <select {...api.monthSelectProps}>
           {#each api.getMonths() as month, i (i)}
-            <option value={month.value}>{month.label}</option>
+            <option value={i + 1}>{month.label}</option>
           {/each}
         </select>
 
