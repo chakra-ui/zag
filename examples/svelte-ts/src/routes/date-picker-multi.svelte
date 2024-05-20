@@ -1,0 +1,141 @@
+<script lang="ts">
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "$lib/components/toolbar.svelte"
+  import { useControls } from "$lib/use-controls.svelte"
+  import * as datePicker from "@zag-js/date-picker"
+  import { getYearsRange } from "@zag-js/date-utils"
+  import { datePickerControls } from "@zag-js/shared"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const controls = useControls(datePickerControls)
+
+  const [snapshot, send] = useMachine(
+    datePicker.machine({
+      id: "1",
+      locale: "en",
+      selectionMode: "multiple",
+    }),
+    {
+      context: controls.context,
+    },
+  )
+
+  const api = $derived(datePicker.connect(snapshot, send, normalizeProps))
+</script>
+
+<main class="date-picker">
+  <div>
+    <button>Outside Element</button>
+  </div>
+  <p>{`Visible range: ${api.visibleRangeText.formatted}`}</p>
+
+  <output class="date-output">
+    <div>Selected: {api.valueAsString ?? "-"}</div>
+    <div>Focused: {api.focusedValueAsString}</div>
+  </output>
+
+  <div {...api.controlProps}>
+    <input {...api.getInputProps()} />
+    <button {...api.clearTriggerProps}>❌</button>
+    <button {...api.triggerProps}>🗓</button>
+  </div>
+
+  <div {...api.positionerProps}>
+    <div {...api.contentProps}>
+      <div style="margin-bottom: 20px">
+        <select {...api.monthSelectProps}>
+          {#each api.getMonths() as month, i (i)}
+            <option value={month.value}>{month.label}</option>
+          {/each}
+        </select>
+
+        <select {...api.yearSelectProps}>
+          {#each getYearsRange({ from: 1_000, to: 4_000 }) as year, i (i)}
+            <option value={year}>{year}</option>
+          {/each}
+        </select>
+      </div>
+
+      <div hidden={api.view !== "day"}>
+        <div {...api.getViewControlProps({ view: "year" })}>
+          <button {...api.getPrevTriggerProps()}>Prev</button>
+          <button {...api.getViewTriggerProps()}>{api.visibleRangeText.start}</button>
+          <button {...api.getNextTriggerProps()}>Next</button>
+        </div>
+
+        <table {...api.getTableProps({ view: "day" })}>
+          <thead {...api.getTableHeaderProps({ view: "day" })}>
+            <tr {...api.getTableRowProps({ view: "day" })}>
+              {#each api.weekDays as day, i (i)}
+                <th scope="col" aria-label={day.long}>{day.narrow}</th>
+              {/each}
+            </tr>
+          </thead>
+          <tbody {...api.getTableBodyProps({ view: "day" })}>
+            {#each api.weeks as week, i (i)}
+              <tr {...api.getTableRowProps({ view: "day" })}>
+                {#each week as value, i (i)}
+                  <td {...api.getDayTableCellProps({ value })}>
+                    <div {...api.getDayTableCellTriggerProps({ value })}>{value.day}</div>
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display:flex; gap:40px;">
+        <div hidden={api.view !== "month"} style="width:100%;">
+          <div {...api.getViewControlProps({ view: "month" })}>
+            <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
+            <span {...api.getViewTriggerProps({ view: "month" })}>{api.visibleRange.start.year}</span>
+            <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
+          </div>
+
+          <table {...api.getTableProps({ view: "month", columns: 4 })}>
+            <tbody {...api.getTableBodyProps({ view: "month" })}>
+              {#each api.getMonthsGrid({ columns: 4, format: "short" }) as months, row (row)}
+                <tr {...api.getTableRowProps({ view: "month" })}>
+                  {#each months as month, index (index)}
+                    <td {...api.getMonthTableCellProps({ ...month, columns: 4 })}>
+                      <div {...api.getMonthTableCellTriggerProps({ ...month, columns: 4 })}>{month.label}</div>
+                    </td>
+                  {/each}
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+
+        <div hidden={api.view !== "year"} style="width:100%;">
+          <div {...api.getViewControlProps({ view: "year" })}>
+            <button {...api.getPrevTriggerProps({ view: "year" })}>Prev</button>
+            <span>
+              {api.getDecade().start} - {api.getDecade().end}
+            </span>
+            <button {...api.getNextTriggerProps({ view: "year" })}>Next</button>
+          </div>
+
+          <table {...api.getTableProps({ view: "year", columns: 4 })}>
+            <tbody {...api.getTableBodyProps()}>
+              {#each api.getYearsGrid({ columns: 4 }) as years, row (row)}
+                <tr {...api.getTableRowProps({ view: "year" })}>
+                  {#each years as year, index (index)}
+                    <td {...api.getYearTableCellProps({ ...year, columns: 4 })}>
+                      <div {...api.getYearTableCellTriggerProps({ ...year, columns: 4 })}>{year.label}</div>
+                    </td>
+                  {/each}
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<Toolbar viz {controls}>
+  <StateVisualizer state={snapshot} omit={["weeks"]} />
+</Toolbar>

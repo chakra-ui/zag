@@ -50,7 +50,7 @@ export default function Page() {
             <div style={{ marginBottom: "20px" }}>
               <select {...api.monthSelectProps}>
                 {api.getMonths().map((month, i) => (
-                  <option key={i} value={i + 1}>
+                  <option key={i} value={month.value}>
                     {month.label}
                   </option>
                 ))}
