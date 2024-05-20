@@ -39,6 +39,7 @@
   import Tooltip from "./routes/tooltip.svelte"
   import Tour from "./routes/tour.svelte"
   import TreeView from "./routes/tree-view.svelte"
+  import Editable from "./routes/editable.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 
@@ -54,6 +55,7 @@
     { path: "/combobox", component: Combobox },
     { path: "/context-menu", component: ContextMenu },
     { path: "/dialog", component: Dialog },
+    { path: "/editable", component: Editable },
     { path: "/file-upload", component: FileUpload },
     { path: "/floating-panel", component: FloatingPanel },
     { path: "/hover-card", component: HoverCard },

@@ -21,10 +21,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const placeholder =
     typeof placeholderProp === "string" ? { edit: placeholderProp, preview: placeholderProp } : placeholderProp
 
+  const value = state.context.value
+  const valueText = empty ? placeholder?.preview ?? "" : value
+
   return {
     editing,
     empty,
-    value: state.context.value,
+    value,
+    valueText,
     setValue(value) {
       send({ type: "SET_VALUE", value })
     },
@@ -90,7 +94,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-readonly": dataAttr(readOnly),
       "aria-invalid": ariaAttr(invalid),
       "data-invalid": dataAttr(invalid),
-      defaultValue: state.context.value,
+      defaultValue: value,
       size: autoResize ? 1 : undefined,
       onChange(event) {
         send({ type: "TYPE", value: event.currentTarget.value })
@@ -138,7 +142,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-disabled": ariaAttr(disabled),
       "aria-invalid": ariaAttr(invalid),
       "data-invalid": dataAttr(invalid),
-      children: empty ? placeholder?.preview : state.context.value,
+      children: valueText,
       hidden: autoResize ? undefined : editing,
       tabIndex: interactive && state.context.isPreviewFocusable ? 0 : undefined,
       onFocus() {

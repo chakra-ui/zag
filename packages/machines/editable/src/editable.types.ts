@@ -201,6 +201,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   value: string
   /**
+   * The current value of the editable, or the placeholder if the value is empty
+   */
+  valueText: string
+  /**
    * Function to set the value of the editable
    */
   setValue(value: string): void
