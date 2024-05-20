@@ -11,7 +11,9 @@
   import ColorPicker from "./routes/color-picker.svelte"
   import Combobox from "./routes/combobox.svelte"
   import ContextMenu from "./routes/context-menu.svelte"
+  import DatePicker from "./routes/date-picker.svelte"
   import Dialog from "./routes/dialog.svelte"
+  import Editable from "./routes/editable.svelte"
   import FileUpload from "./routes/file-upload.svelte"
   import FloatingPanel from "./routes/floating-panel.svelte"
   import HoverCard from "./routes/hover-card.svelte"
@@ -39,7 +41,6 @@
   import Tooltip from "./routes/tooltip.svelte"
   import Tour from "./routes/tour.svelte"
   import TreeView from "./routes/tree-view.svelte"
-  import Editable from "./routes/editable.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 
@@ -54,6 +55,7 @@
     { path: "/color-picker", component: ColorPicker },
     { path: "/combobox", component: Combobox },
     { path: "/context-menu", component: ContextMenu },
+    { path: "/date-picker", component: DatePicker },
     { path: "/dialog", component: Dialog },
     { path: "/editable", component: Editable },
     { path: "/file-upload", component: FileUpload },
