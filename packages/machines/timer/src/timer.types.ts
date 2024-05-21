@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
-type TimeUnits = {
+export type TimeUnits = {
   day: number
   hour: number
   minute: number
