@@ -190,19 +190,15 @@ const [state, send] = useMachine(
 
 ## Making the tooltip interactive
 
-Tooltips are interactive by default. That means it'll remain open even the
-pointer leaves the trigger and move into the tooltip's content.
+Set the `interactive` context property to `true` to make them interactive.
 
-To disabled this behavior, pass the `interactive` context property and set it to
-`false`.
-
-> Disabling this will violate the
-> [WCAG 2.1 success criterion 1.4.13](https://www.w3.org/TR/WCAG21/#content-on-hover-or-focus)
+When a tooltip is interactive, it'll remain open even the pointer leaves the
+trigger and move into the tooltip's content.
 
 ```jsx {3}
 const [state, send] = useMachine(
   tooltip.machine({
-    interactive: false,
+    interactive: true,
   }),
 )
 ```
@@ -216,7 +212,7 @@ const [state, send] = useMachine(
   tooltip.machine({
     onOpenChange(details) {
       // details => { open: boolean }
-      console.log("Tooltip", details.open)
+      console.log(details.open)
     },
   }),
 )
