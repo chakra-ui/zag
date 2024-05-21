@@ -19,17 +19,7 @@ export type TickDetails = TimeUnits
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ElementIds = Partial<{
-  root: string
-  segment(id: string | number): string
-  separator: string
-}>
-
 interface PublicContext extends CommonProperties {
-  /**
-   * The ids of the elements in the checkbox. Useful for composition.
-   */
-  ids?: ElementIds
   /**
    * The mode of the timer.
    * @default "stopwatch"

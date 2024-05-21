@@ -5,7 +5,6 @@ import type { UserDefinedContext } from "./timer.types"
 export const props = createProps<UserDefinedContext>()([
   "getRootNode",
   "id",
-  "ids",
   "mode",
   "duration",
   "min",
