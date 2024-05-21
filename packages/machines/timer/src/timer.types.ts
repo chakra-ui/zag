@@ -19,7 +19,17 @@ export type TickDetails = TimeUnits
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+export type ElementIds = Partial<{
+  root: string
+  segment(id: string | number): string
+  separator: string
+}>
+
 interface PublicContext extends CommonProperties {
+  /**
+   * The ids of the elements in the checkbox. Useful for composition.
+   */
+  ids?: ElementIds
   /**
    * The mode of the timer.
    * @default "stopwatch"
@@ -79,6 +89,10 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface SegmentProps {
+  type: "day" | "hour" | "minute" | "second" | "millisecond"
+}
+
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the timer is running.
@@ -124,4 +138,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to restart the timer.
    */
   restart(): void
+  rootProps: T["element"]
+  getSegmentProps(props: SegmentProps): T["element"]
+  separatorProps: T["element"]
 }

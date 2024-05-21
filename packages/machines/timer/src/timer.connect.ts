@@ -1,5 +1,7 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { MachineApi, State, Send } from "./timer.types"
+import { parts } from "./timer.anatomy"
+import { dom } from "./timer.dom"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const running = state.matches("running")
@@ -33,5 +35,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     restart() {
       send("RESTART")
     },
+    rootProps: normalize.element({
+      id: dom.getRootId(state.context),
+      ...parts.root.attrs,
+    }),
+    getSegmentProps(props) {
+      return normalize.element({
+        id: dom.getSegmentId(state.context, props.type),
+        ...parts.segment.attrs,
+      })
+    },
+    separatorProps: normalize.element({
+      id: dom.getSeparatorId(state.context),
+      role: "separator",
+      ...parts.separator.attrs,
+    }),
   }
 }
