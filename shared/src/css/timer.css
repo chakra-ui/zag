@@ -1,0 +1,103 @@
+:root {
+  --background: #222;
+  --digit-color: #ccc;
+}
+
+.container .wrapper:not(:last-child) {
+  margin-right: 5px;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  align-items: center;
+
+  span {
+    font-weight: 500;
+    font-size: small;
+    text-transform: uppercase;
+  }
+}
+
+.block {
+  perspective: 400px;
+  position: relative;
+  font-size: 4vw;
+  color: var(--digit-color);
+  font-weight: 500;
+  line-height: 0;
+  width: 1.8em;
+  height: 7vw;
+  border-radius: 0.15em;
+  background: var(--background);
+  user-select: none;
+}
+
+.face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  backface-visibility: hidden;
+  background: var(--background);
+}
+
+.current,
+.next {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  background: var(--background);
+  color: var(--digit-color);
+}
+
+.next {
+  top: 0;
+}
+
+.next,
+.face_front {
+  align-items: flex-end;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+  border-bottom: 1px solid #000;
+}
+
+.current {
+  bottom: 0;
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
+.face_back {
+  transform: rotateX(-180deg);
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
+.flip {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 50%;
+  transform-style: preserve-3d;
+  transform-origin: bottom;
+  transform: rotateX(0);
+  border-radius: inherit;
+}
+
+.flip[data-flipped] {
+  transition: transform 0.7s ease-in-out;
+  transform: rotateX(-180deg);
+}
