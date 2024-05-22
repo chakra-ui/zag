@@ -106,7 +106,9 @@ export function machine(userContext: UserDefinedContext) {
           const inputEl = dom.getHiddenInputEl(ctx)
           if (!inputEl) return
 
-          const dataTransfer = new DataTransfer()
+          const win = dom.getWin(ctx)
+          const dataTransfer = new win.DataTransfer()
+
           ctx.acceptedFiles.forEach((v) => {
             dataTransfer.items.add(v)
           })
