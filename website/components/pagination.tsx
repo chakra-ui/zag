@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi"
 import { useFramework } from "./framework"
+import { useEffect, useState } from "react"
 
 export function usePagination() {
   const { framework } = useFramework()
@@ -18,8 +19,20 @@ export function usePagination() {
   }
 }
 
+function useIsClient() {
+  const [isClient, setIsClient] = useState(false)
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+  return isClient
+}
+
 export function Pagination(props: StackProps) {
   const { prev, next } = usePagination()
+  const isClient = useIsClient()
+
+  if (!isClient) return null
+
   return (
     <HStack
       justify="space-between"

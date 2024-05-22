@@ -10,18 +10,14 @@ interface DataAttrEntry {
   [part: string]: Record<string, string>
 }
 
-export interface DataAttrDoc {
-  [widget: string]: DataAttrEntry
-}
+export type DataAttrDocKey = keyof typeof dataAttrJson
 
-export type DataAttrKey = keyof typeof dataAttrJson
-
-export function getDataAttrDoc(key: DataAttrKey): DataAttrDoc {
+export function getDataAttrDoc(key: DataAttrDocKey): DataAttrEntry {
   const data = dataAttrJson[key]
   if (!data) {
     throw new Error(`No data attribute data found for ${key}`)
   }
-  return data as DataAttrDoc
+  return data
 }
 
 /* -----------------------------------------------------------------------------

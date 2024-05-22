@@ -8,6 +8,7 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
 import { type MDX } from "contentlayer/core"
 import { useMDXComponent } from "next-contentlayer/hooks"
+import Image from "next/image"
 import Link from "next/link"
 import { type FC } from "react"
 import { HiOutlineCode } from "react-icons/hi"
@@ -15,11 +16,11 @@ import { ImMagicWand } from "react-icons/im"
 import { RiNpmjsFill } from "react-icons/ri"
 import { FRAMEWORKS, frameworks } from "../lib/framework-utils"
 import { CopyButton } from "./copy-button"
+import { DataAttrTable } from "./data-attr-table"
 import { useFramework } from "./framework"
 import { KeyboardTable } from "./keyboard-table"
 import { PropTable } from "./prop-table"
 import { Showcase } from "./showcase"
-import Image from "next/image"
 
 function SnippetItem({ body, id }: { body: MDX; id: string }) {
   const content = useMDX(body.code)
@@ -131,6 +132,7 @@ const components: Record<string, FC<any>> = {
     return <PropTable type="api" {...props} />
   },
   KeyboardTable,
+  DataAttrTable,
   ContextTable(props) {
     return <PropTable type="context" {...props} />
   },
