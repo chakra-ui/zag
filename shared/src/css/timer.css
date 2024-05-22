@@ -1,0 +1,15 @@
+[data-scope="timer"][data-part="root"] {
+  display: flex;
+  align-items: center;
+}
+
+[data-scope="timer"][data-part="segment"] {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+[data-scope="timer"][data-part="separator"] {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-inline: 0.5rem;
+}

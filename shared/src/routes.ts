@@ -44,6 +44,8 @@ export const routesData: RouteData[] = [
   { label: "Slider", path: "/slider" },
   { label: "Tabs", path: "/tabs" },
   { label: "Tags Input", path: "/tags-input" },
+  { label: "Timer (CountDown)", path: "/timer-countdown" },
+  { label: "Timer (StopWatch)", path: "/timer-stopwatch" },
   { label: "Toast", path: "/toast" },
   { label: "Toggle Group", path: "/toggle-group" },
   { label: "Tooltip", path: "/tooltip" },
