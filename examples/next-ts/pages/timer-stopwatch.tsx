@@ -8,8 +8,9 @@ export default function Page() {
   const [state, send] = useMachine(
     timer.machine({
       id: useId(),
-      mode: "stopwatch",
-      autostart: true,
+      autoStart: true,
+      // startMs: timer.parse({ day: 2, second: 10 }),
+      // targetMs: timer.parse({ day: 2, second: 20 }),
     }),
   )
 
@@ -18,18 +19,22 @@ export default function Page() {
   return (
     <>
       <main className="timer">
-        {Object.entries(api.countTimeUnits).map(([key, value]) => (
-          <div key={key}>
-            <b>{key}</b>: {value}
-          </div>
-        ))}
+        <div {...api.rootProps}>
+          <div {...api.getSegmentProps({ type: "day" })}>{api.segments.day}</div>
+          <div {...api.separatorProps}>:</div>
+          <div {...api.getSegmentProps({ type: "hour" })}>{api.segments.hour}</div>
+          <div {...api.separatorProps}>:</div>
+          <div {...api.getSegmentProps({ type: "minute" })}>{api.segments.minute}</div>
+          <div {...api.separatorProps}>:</div>
+          <div {...api.getSegmentProps({ type: "second" })}>{api.segments.second}</div>
+        </div>
 
-        <h2>paused: {api.paused.toString()}</h2>
-        <button onClick={api.start}>START</button>
-        <button onClick={api.pause}>PAUSE</button>
-        <button onClick={api.resume}>RESUME</button>
-        <button onClick={api.reset}>RESET</button>
-        <button onClick={api.restart}>RESTART</button>
+        <div style={{ display: "flex", gap: "4px" }}>
+          <button onClick={api.start}>START</button>
+          <button onClick={api.pause}>PAUSE</button>
+          <button onClick={api.resume}>RESUME</button>
+          <button onClick={api.reset}>RESET</button>
+        </div>
       </main>
 
       <Toolbar controls={null} viz>

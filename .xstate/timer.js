@@ -11,9 +11,9 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "timer",
-  initial: ctx.autostart ? "running" : "idle",
+  initial: ctx.autoStart ? "running" : "idle",
   context: {
-    "isCountdownComplete": false
+    "hasReachedTarget": false
   },
   on: {
     RESTART: {
@@ -43,8 +43,8 @@ const fetchMachine = createMachine({
       on: {
         PAUSE: "paused",
         TICK: [{
-          target: "completed",
-          cond: "isCountdownComplete",
+          target: "idle",
+          cond: "hasReachedTarget",
           actions: ["invokeOnComplete"]
         }, {
           actions: ["updateTime", "invokeOnTick"]
@@ -62,14 +62,6 @@ const fetchMachine = createMachine({
           actions: "resetTime"
         }
       }
-    },
-    completed: {
-      on: {
-        RESET: {
-          target: "idle",
-          actions: "resetTime"
-        }
-      }
     }
   }
 }, {
@@ -81,6 +73,6 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isCountdownComplete": ctx => ctx["isCountdownComplete"]
+    "hasReachedTarget": ctx => ctx["hasReachedTarget"]
   }
 });

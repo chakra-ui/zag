@@ -5,20 +5,12 @@ import { parts } from "./timer.anatomy"
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const running = state.matches("running")
   const paused = state.matches("paused")
-  const completed = state.matches("completed")
-
-  const duration = state.context.duration
-
-  const count = state.context.count
-  const countTimeUnits = state.context.countTimeUnits
 
   return {
     running,
     paused,
-    completed,
-    duration,
-    count,
-    countTimeUnits,
+    segments: state.context.segments,
+    progressPercent: state.context.progressPercent,
     start() {
       send("START")
     },

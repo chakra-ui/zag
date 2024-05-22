@@ -2,27 +2,37 @@ import { createMachine } from "@zag-js/core"
 import { compact } from "@zag-js/utils"
 import type { MachineContext, MachineState, UserDefinedContext } from "./timer.types"
 
-const TIMER_INTERVAL = 250
+function getValuePercent(value: number, minValue: number, maxValue: number) {
+  return (value - minValue) / (maxValue - minValue)
+}
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "timer",
-      initial: ctx.autostart ? "running" : "idle",
+      initial: ctx.autoStart ? "running" : "idle",
       context: {
-        mode: "stopwatch",
-        duration: 0,
-        min: 0,
-        count: ctx.duration ?? 0,
+        interval: 250,
         ...ctx,
+        currentMs: ctx.startMs ?? 0,
       },
 
       on: {
-        RESTART: { target: "running", actions: "resetTime" },
+        RESTART: {
+          target: "running",
+          actions: "resetTime",
+        },
       },
 
-      computed: { countTimeUnits: (ctx) => getTimeUnits(ctx.count) },
+      computed: {
+        segments: (ctx) => getTimeSegments(ctx.currentMs),
+        progressPercent: (ctx) => {
+          const targetMs = ctx.targetMs
+          if (targetMs == null) return 0
+          return getValuePercent(ctx.currentMs, ctx.startMs ?? 0, targetMs)
+        },
+      },
 
       states: {
         idle: {
@@ -32,16 +42,20 @@ export function machine(userContext: UserDefinedContext) {
           },
         },
         running: {
-          every: { [TIMER_INTERVAL]: ["sendTickEvent"] },
+          every: {
+            TICK_INTERVAL: ["sendTickEvent"],
+          },
           on: {
             PAUSE: "paused",
             TICK: [
               {
-                target: "completed",
-                guard: "isCountdownComplete",
+                target: "idle",
+                guard: "hasReachedTarget",
                 actions: ["invokeOnComplete"],
               },
-              { actions: ["updateTime", "invokeOnTick"] },
+              {
+                actions: ["updateTime", "invokeOnTick"],
+              },
             ],
             RESET: { actions: "resetTime" },
           },
@@ -49,60 +63,68 @@ export function machine(userContext: UserDefinedContext) {
         paused: {
           on: {
             RESUME: "running",
-            RESET: { target: "idle", actions: "resetTime" },
-          },
-        },
-        completed: {
-          on: {
-            RESET: { target: "idle", actions: "resetTime" },
+            RESET: {
+              target: "idle",
+              actions: "resetTime",
+            },
           },
         },
       },
     },
     {
+      delays: {
+        TICK_INTERVAL: (ctx) => ctx.interval,
+      },
       actions: {
-        updateTime: (ctx) => {
-          if (ctx.mode === "stopwatch") {
-            ctx.count += TIMER_INTERVAL
-          } else if (ctx.mode === "countdown") {
-            ctx.count -= TIMER_INTERVAL
-          }
+        updateTime(ctx) {
+          const sign = ctx.countdown ? -1 : 1
+          ctx.currentMs = ctx.currentMs + sign * ctx.interval
         },
-        sendTickEvent: (ctx, __, { send }) => {
+        sendTickEvent(_ctx, _evt, { send }) {
           send({ type: "TICK" })
         },
-        resetTime: (ctx) => {
-          ctx.count = ctx.mode === "countdown" ? ctx.duration : 0
+        resetTime(ctx) {
+          let targetMs = ctx.targetMs
+          if (targetMs == null && ctx.countdown) targetMs = 0
+          ctx.currentMs = ctx.startMs ?? 0
         },
         invokeOnTick(ctx) {
-          ctx.onTick?.(ctx.countTimeUnits)
+          ctx.onTick?.({
+            value: ctx.currentMs,
+            segments: ctx.segments,
+          })
         },
         invokeOnComplete(ctx) {
           ctx.onComplete?.()
         },
       },
       guards: {
-        isCountdownComplete: (ctx) => ctx.mode === "countdown" && ctx.count <= ctx.min,
+        hasReachedTarget: (ctx) => {
+          let targetMs = ctx.targetMs
+          if (targetMs == null && ctx.countdown) targetMs = 0
+          if (targetMs == null) return false
+          return ctx.currentMs === targetMs
+        },
       },
     },
   )
 }
 
-function getTimeUnits(ms: number) {
-  const isNegative = ms < 0
-  const absMs = Math.abs(ms)
-
-  const milliseconds = absMs % 1000
-  const seconds = Math.floor(absMs / 1000) % 60
-  const minutes = Math.floor(absMs / (1000 * 60)) % 60
-  const hours = Math.floor(absMs / (1000 * 60 * 60)) % 24
-  const days = Math.floor(absMs / (1000 * 60 * 60 * 24))
+function getTimeSegments(ms: number) {
+  const milliseconds = ms % 1000
+  const seconds = Math.floor(ms / 1000) % 60
+  const minutes = Math.floor(ms / (1000 * 60)) % 60
+  const hours = Math.floor(ms / (1000 * 60 * 60)) % 24
+  const days = Math.floor(ms / (1000 * 60 * 60 * 24))
 
   return {
-    day: isNegative ? -days : days,
-    hour: isNegative ? -hours : hours,
-    minute: isNegative ? -minutes : minutes,
-    second: isNegative ? -seconds : seconds,
-    millisecond: isNegative ? -milliseconds : milliseconds,
+    day: days,
+    hour: hours,
+    minute: minutes,
+    second: seconds,
+    millisecond: milliseconds,
+    toJSON() {
+      return { d: days, h: hours, m: minutes, s: seconds, ms: milliseconds }
+    },
   }
 }

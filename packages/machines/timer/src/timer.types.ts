@@ -1,7 +1,7 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
-export type TimeUnits = {
+export interface TimeSegments {
   day: number
   hour: number
   minute: number
@@ -9,11 +9,16 @@ export type TimeUnits = {
   millisecond: number
 }
 
+export type SegmentType = keyof TimeSegments
+
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export type TickDetails = TimeUnits
+export interface TickDetails {
+  value: number
+  segments: TimeSegments
+}
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -21,26 +26,26 @@ export type TickDetails = TimeUnits
 
 interface PublicContext extends CommonProperties {
   /**
-   * The mode of the timer.
-   * @default "stopwatch"
+   * Whether the timer should countdown, decrementing the timer on each tick.
    */
-  mode: "countdown" | "stopwatch"
+  countdown?: boolean
   /**
    * The total duration of the timer in milliseconds.
    */
-  duration: number
+  startMs?: number
   /**
    * The minimum count of the timer in milliseconds.
    */
-  min: number
+  targetMs?: number
   /**
    * Whether the timer should start automatically
    */
-  autostart?: boolean
+  autoStart?: boolean
   /**
-   * Whether the timer should pause when webpage is idle, or user switches to another tab
+   * The interval in milliseconds to update the timer count.
+   * @default 250
    */
-  // pauseOnPageIdle?: boolean;
+  interval: number
   /**
    * Function invoked when the timer ticks
    */
@@ -56,11 +61,20 @@ interface PrivateContext {
    * @internal
    * The timer count in milliseconds.
    */
-  count: number
+  currentMs: number
 }
 
 type ComputedContext = Readonly<{
-  countTimeUnits: TimeUnits
+  /**
+   * @computed
+   * The time parts of the timer count.
+   */
+  segments: TimeSegments
+  /**
+   * @computed
+   * The progress percentage of the timer.
+   */
+  progressPercent: number
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -68,7 +82,7 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
 export interface MachineState {
-  value: "idle" | "running" | "paused" | "completed"
+  value: "idle" | "running" | "paused"
 }
 
 export type State = S.State<MachineContext, MachineState>
@@ -80,7 +94,7 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface SegmentProps {
-  type: "day" | "hour" | "minute" | "second" | "millisecond"
+  type: SegmentType
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -93,21 +107,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   paused: boolean
   /**
-   * Whether the timer is completed.
-   */
-  completed: boolean
-  /**
-   * The total duration of the timer in milliseconds.
-   */
-  duration: number
-  /**
-   * The timer count in milliseconds.
-   */
-  count: number
-  /**
    * The formatted timer count value.
    */
-  countTimeUnits: TimeUnits
+  segments: TimeSegments
   /**
    * Function to start the timer.
    */
@@ -128,6 +130,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to restart the timer.
    */
   restart(): void
+  /**
+   * The progress percentage of the timer.
+   */
+  progressPercent: number
+
   rootProps: T["element"]
   getSegmentProps(props: SegmentProps): T["element"]
   separatorProps: T["element"]

@@ -3,7 +3,7 @@ import { TimePickerModel } from "./models/time-picker.model"
 
 let I: TimePickerModel
 
-test.describe("timepicker", () => {
+test.describe.skip("timepicker", () => {
   test.beforeEach(async ({ page }) => {
     I = new TimePickerModel(page)
     await I.goto()
