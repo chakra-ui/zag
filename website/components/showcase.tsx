@@ -32,6 +32,7 @@ import { Switch } from "./machines/switch"
 import { Tabs } from "./machines/tabs"
 import { TagsInput } from "./machines/tags-input"
 import { TimePicker } from "./machines/time-picker"
+import { TimerCountdown } from "./machines/timer-countdown"
 import { ToastGroup } from "./machines/toast"
 import { ToggleGroup } from "./machines/toggle-group"
 import { Tooltip } from "./machines/tooltip"
@@ -406,6 +407,7 @@ const components = {
   ),
   SignaturePad: () => <Playground component={SignaturePad} />,
   Presence: () => <Playground component={Presence} />,
+  TimerCountdown: () => <Playground component={TimerCountdown} />,
 }
 
 export function Showcase(props: { id: keyof typeof components }) {

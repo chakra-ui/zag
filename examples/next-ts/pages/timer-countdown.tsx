@@ -10,7 +10,7 @@ export default function Page() {
       id: useId(),
       countdown: true,
       autoStart: true,
-      startMs: timer.parse({ day: 2, second: 10 }),
+      startMs: timer.parse({ days: 2, seconds: 10 }),
       onComplete() {
         console.log("Timer completed")
       },
@@ -23,13 +23,13 @@ export default function Page() {
     <>
       <main className="timer">
         <div {...api.rootProps}>
-          <div {...api.getSegmentProps({ type: "day" })}>{api.segments.day}</div>
+          <div {...api.getSegmentProps({ type: "days" })}>{api.formattedTime.days}</div>
           <div {...api.separatorProps}>:</div>
-          <div {...api.getSegmentProps({ type: "hour" })}>{api.segments.hour}</div>
+          <div {...api.getSegmentProps({ type: "hours" })}>{api.formattedTime.hours}</div>
           <div {...api.separatorProps}>:</div>
-          <div {...api.getSegmentProps({ type: "minute" })}>{api.segments.minute}</div>
+          <div {...api.getSegmentProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
           <div {...api.separatorProps}>:</div>
-          <div {...api.getSegmentProps({ type: "second" })}>{api.segments.second}</div>
+          <div {...api.getSegmentProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
         </div>
 
         <div style={{ display: "flex", gap: "4px" }}>

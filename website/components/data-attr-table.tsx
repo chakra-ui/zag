@@ -1,5 +1,5 @@
 import { Box, HStack, Stack, StackDivider } from "@chakra-ui/layout"
-import { DataAttrDocKey, getDataAttrDoc } from "@zag-js/docs"
+import { DataAttrDocKey, DataAttrEntry, getDataAttrDoc } from "@zag-js/docs"
 import { Kbd } from "./kbd"
 
 interface Props {
@@ -7,7 +7,13 @@ interface Props {
 }
 
 export const DataAttrTable = (props: Props) => {
-  const data = getDataAttrDoc(props.name)
+  let data: DataAttrEntry
+
+  try {
+    data = getDataAttrDoc(props.name)
+  } catch (error) {
+    return null
+  }
 
   return (
     <Stack

@@ -1,10 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { compact } from "@zag-js/utils"
-import type { MachineContext, MachineState, UserDefinedContext } from "./timer.types"
-
-function getValuePercent(value: number, minValue: number, maxValue: number) {
-  return (value - minValue) / (maxValue - minValue)
-}
+import type { MachineContext, MachineState, Time, UserDefinedContext } from "./timer.types"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -26,11 +22,12 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       computed: {
-        segments: (ctx) => getTimeSegments(ctx.currentMs),
+        time: (ctx) => msToTime(ctx.currentMs),
+        formattedTime: (ctx) => formatTime(ctx.time),
         progressPercent: (ctx) => {
           const targetMs = ctx.targetMs
           if (targetMs == null) return 0
-          return getValuePercent(ctx.currentMs, ctx.startMs ?? 0, targetMs)
+          return toPercent(ctx.currentMs, ctx.startMs ?? 0, targetMs)
         },
       },
 
@@ -91,7 +88,8 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnTick(ctx) {
           ctx.onTick?.({
             value: ctx.currentMs,
-            segments: ctx.segments,
+            time: ctx.time,
+            formattedTime: ctx.formattedTime,
           })
         },
         invokeOnComplete(ctx) {
@@ -110,21 +108,36 @@ export function machine(userContext: UserDefinedContext) {
   )
 }
 
-function getTimeSegments(ms: number) {
+function msToTime(ms: number): Time {
   const milliseconds = ms % 1000
   const seconds = Math.floor(ms / 1000) % 60
   const minutes = Math.floor(ms / (1000 * 60)) % 60
   const hours = Math.floor(ms / (1000 * 60 * 60)) % 24
   const days = Math.floor(ms / (1000 * 60 * 60 * 24))
-
   return {
-    day: days,
-    hour: hours,
-    minute: minutes,
-    second: seconds,
-    millisecond: milliseconds,
-    toJSON() {
-      return { d: days, h: hours, m: minutes, s: seconds, ms: milliseconds }
-    },
+    days,
+    hours,
+    minutes,
+    seconds,
+    milliseconds,
+  }
+}
+
+function toPercent(value: number, minValue: number, maxValue: number) {
+  return (value - minValue) / (maxValue - minValue)
+}
+
+function padStart(num: number, size = 2) {
+  return num.toString().padStart(size, "0")
+}
+
+function formatTime(time: Time): Time<string> {
+  const { days, hours, minutes, seconds } = time
+  return {
+    days: padStart(days),
+    hours: padStart(hours),
+    minutes: padStart(minutes),
+    seconds: padStart(seconds),
+    milliseconds: time.milliseconds.toString(),
   }
 }

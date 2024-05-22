@@ -1,15 +1,15 @@
 import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
-export interface TimeSegments {
-  day: number
-  hour: number
-  minute: number
-  second: number
-  millisecond: number
+export interface Time<T = number> {
+  days: T
+  hours: T
+  minutes: T
+  seconds: T
+  milliseconds: T
 }
 
-export type SegmentType = keyof TimeSegments
+export type TimePart = keyof Time
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -17,7 +17,8 @@ export type SegmentType = keyof TimeSegments
 
 export interface TickDetails {
   value: number
-  segments: TimeSegments
+  time: Time
+  formattedTime: Time<string>
 }
 
 /* -----------------------------------------------------------------------------
@@ -69,7 +70,12 @@ type ComputedContext = Readonly<{
    * @computed
    * The time parts of the timer count.
    */
-  segments: TimeSegments
+  time: Time
+  /**
+   * @computed
+   * The formatted time parts of the timer count.
+   */
+  formattedTime: Time<string>
   /**
    * @computed
    * The progress percentage of the timer.
@@ -94,7 +100,7 @@ export type Send = S.Send<S.AnyEventObject>
  * -----------------------------------------------------------------------------*/
 
 export interface SegmentProps {
-  type: SegmentType
+  type: TimePart
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -109,7 +115,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The formatted timer count value.
    */
-  segments: TimeSegments
+  time: Time
+  /**
+   * The formatted time parts of the timer count.
+   */
+  formattedTime: Time<string>
   /**
    * Function to start the timer.
    */
@@ -136,6 +146,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   progressPercent: number
 
   rootProps: T["element"]
+  controlProps: T["element"]
   getSegmentProps(props: SegmentProps): T["element"]
   separatorProps: T["element"]
 }

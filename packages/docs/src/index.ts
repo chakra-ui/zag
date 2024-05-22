@@ -6,7 +6,7 @@ import dataAttrJson from "../data/data-attr.json"
  * The data attribute documentation
  * -----------------------------------------------------------------------------*/
 
-interface DataAttrEntry {
+export interface DataAttrEntry {
   [part: string]: Record<string, string>
 }
 

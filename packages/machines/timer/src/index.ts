@@ -8,7 +8,7 @@ export type {
   UserDefinedContext as Context,
   MachineState,
   SegmentProps,
-  SegmentType,
   TickDetails,
-  TimeSegments,
+  Time,
+  TimePart,
 } from "./timer.types"
