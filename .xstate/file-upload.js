@@ -73,7 +73,7 @@ const fetchMachine = createMachine({
       on: {
         "DROPZONE.DROP": {
           target: "idle",
-          actions: ["clearInvalid", "setFilesFromEvent"]
+          actions: ["clearInvalid", "setFilesFromEvent", "syncInputElement"]
         },
         "DROPZONE.DRAG_LEAVE": {
           target: "idle",

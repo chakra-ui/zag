@@ -87,7 +87,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "DROPZONE.DROP": {
               target: "idle",
-              actions: ["clearInvalid", "setFilesFromEvent"],
+              actions: ["clearInvalid", "setFilesFromEvent", "syncInputElement"],
             },
             "DROPZONE.DRAG_LEAVE": {
               target: "idle",
@@ -102,6 +102,17 @@ export function machine(userContext: UserDefinedContext) {
         isWithinRange: (ctx, evt) => isFilesWithinRange(ctx, evt.count),
       },
       actions: {
+        syncInputElement(ctx) {
+          const inputEl = dom.getHiddenInputEl(ctx)
+          if (!inputEl) return
+
+          const dataTransfer = new DataTransfer()
+          ctx.acceptedFiles.forEach((v) => {
+            dataTransfer.items.add(v)
+          })
+
+          inputEl.files = dataTransfer.files
+        },
         openFilePicker(ctx) {
           raf(() => {
             dom.getHiddenInputEl(ctx)?.click()
