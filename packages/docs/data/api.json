@@ -496,7 +496,7 @@
         "description": "The positioning options for the color picker"
       },
       "initialFocusEl": {
-        "type": "HTMLElement | (() => HTMLElement)",
+        "type": "() => HTMLElement",
         "description": "The initial focus element when the color picker is opened."
       },
       "open": {
@@ -558,10 +558,6 @@
         "type": "boolean",
         "description": "Whether the combobox is open"
       },
-      "inputEmpty": {
-        "type": "boolean",
-        "description": "Whether the combobox input value is empty"
-      },
       "inputValue": {
         "type": "string",
         "description": "The value of the combobox input"
@@ -574,7 +570,7 @@
         "type": "V",
         "description": "The highlighted item"
       },
-      "highlightValue": {
+      "setHighlightValue": {
         "type": "(value: string) => void",
         "description": "The value of the combobox input"
       },
@@ -766,15 +762,14 @@
         "type": "(details: ScrollToIndexDetails) => void",
         "description": "Function to scroll to a specific index"
       },
-      "popup": {
-        "type": "\"listbox\" | \"dialog\"",
-        "description": "The underling `aria-haspopup` attribute to use for the combobox\n- `listbox`: The combobox has a listbox popup (default)\n- `dialog`: The combobox has a dialog popup. Useful when in select only mode",
-        "defaultValue": "\"listbox\""
-      },
-      "dismissable": {
+      "composite": {
         "type": "boolean",
-        "description": "Whether to register this combobox as a dismissable layer",
+        "description": "Whether the combobox is a composed with other composite widgets like tabs",
         "defaultValue": "true"
+      },
+      "disableLayer": {
+        "type": "boolean",
+        "description": "Whether to disable registering this a dismissable layer"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -1115,11 +1110,11 @@
         "defaultValue": "true"
       },
       "initialFocusEl": {
-        "type": "HTMLElement | (() => HTMLElement)",
+        "type": "() => HTMLElement",
         "description": "Element to receive focus when the dialog is opened"
       },
       "finalFocusEl": {
-        "type": "HTMLElement | (() => HTMLElement)",
+        "type": "() => HTMLElement",
         "description": "Element to receive focus when the dialog is closed"
       },
       "restoreFocus": {
@@ -1139,10 +1134,6 @@
         "type": "boolean",
         "description": "Whether to close the dialog when the escape key is pressed",
         "defaultValue": "true"
-      },
-      "onEscapeKeyDown": {
-        "type": "(event: KeyboardEvent) => void",
-        "description": "Callback to be invoked when the escape key is pressed"
       },
       "aria-label": {
         "type": "string",
@@ -1174,6 +1165,10 @@
         "type": "() => Node | ShadowRoot | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       },
+      "onEscapeKeyDown": {
+        "type": "(event: KeyboardEvent) => void",
+        "description": "Function called when the escape key is pressed"
+      },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
         "description": "Function called when the pointer is pressed down outside the component"
@@ -1185,6 +1180,10 @@
       "onInteractOutside": {
         "type": "(event: InteractOutsideEvent) => void",
         "description": "Function called when an interaction happens outside the component"
+      },
+      "persistentElements": {
+        "type": "(() => Element)[]",
+        "description": "Returns the persistent elements that:\n- should not have pointer-events disabled\n- should not trigger the dismiss event"
       }
     }
   },
@@ -1201,6 +1200,10 @@
       "value": {
         "type": "string",
         "description": "The current value of the editable"
+      },
+      "valueText": {
+        "type": "string",
+        "description": "The current value of the editable, or the placeholder if the value is empty"
       },
       "setValue": {
         "type": "(value: string) => void",
@@ -1750,6 +1753,11 @@
         "description": "Whether the pressing printable characters should trigger typeahead navigation",
         "defaultValue": "true"
       },
+      "composite": {
+        "type": "boolean",
+        "description": "Whether the menu is a composed with other composite widgets like a combobox or tabs",
+        "defaultValue": "true"
+      },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",
@@ -2206,7 +2214,7 @@
         "defaultValue": "true"
       },
       "initialFocusEl": {
-        "type": "HTMLElement | (() => HTMLElement)",
+        "type": "() => HTMLElement",
         "description": "The element to focus on when the popover is opened."
       },
       "closeOnInteractOutside": {
@@ -2235,6 +2243,19 @@
         "type": "boolean",
         "description": "Whether the popover is controlled by the user"
       },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => Node | ShadowRoot | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
       "onEscapeKeyDown": {
         "type": "(event: KeyboardEvent) => void",
         "description": "Function called when the escape key is pressed"
@@ -2251,18 +2272,9 @@
         "type": "(event: InteractOutsideEvent) => void",
         "description": "Function called when an interaction happens outside the component"
       },
-      "id": {
-        "type": "string",
-        "description": "The unique identifier of the machine."
-      },
-      "getRootNode": {
-        "type": "() => Node | ShadowRoot | Document",
-        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
-      },
-      "dir": {
-        "type": "\"ltr\" | \"rtl\"",
-        "description": "The document's text/writing direction.",
-        "defaultValue": "\"ltr\""
+      "persistentElements": {
+        "type": "(() => Element)[]",
+        "description": "Returns the persistent elements that:\n- should not have pointer-events disabled\n- should not trigger the dismiss event"
       }
     }
   },
@@ -2687,6 +2699,11 @@
       "scrollToIndexFn": {
         "type": "(details: ScrollToIndexDetails) => void",
         "description": "Function to scroll to a specific index"
+      },
+      "composite": {
+        "type": "boolean",
+        "description": "Whether the select is a composed with other composite widgets like tabs or combobox",
+        "defaultValue": "true"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -3130,6 +3147,22 @@
         "type": "(value: string) => void",
         "description": "Sets the indicator rect to the tab with the given value"
       },
+      "syncTabIndex": {
+        "type": "() => void",
+        "description": "Synchronizes the tab index of the content element.\nUseful when rendering tabs within a select or combobox"
+      },
+      "focus": {
+        "type": "() => void",
+        "description": "Set focus on the selected tab trigger"
+      },
+      "selectNext": {
+        "type": "(fromValue?: string) => void",
+        "description": "Selects the next tab"
+      },
+      "selectPrev": {
+        "type": "(fromValue?: string) => void",
+        "description": "Selects the previous tab"
+      },
       "getTriggerState": {
         "type": "(props: TriggerProps) => TriggerState",
         "description": "Returns the state of the trigger with the given props"
@@ -3170,6 +3203,10 @@
       "onFocusChange": {
         "type": "(details: FocusChangeDetails) => void",
         "description": "Callback to be called when the focused tab changes"
+      },
+      "composite": {
+        "type": "boolean",
+        "description": "Whether the tab is composite"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -3367,23 +3404,23 @@
   },
   "time-picker": {
     "api": {
-      "isFocused": {
+      "focused": {
         "type": "boolean",
         "description": "Whether the input is focused"
       },
-      "isOpen": {
+      "open": {
         "type": "boolean",
         "description": "Whether the time picker is open"
       },
       "value": {
-        "type": "Time | undefined",
+        "type": "Time",
         "description": "The selected time"
       },
       "valueAsString": {
-        "type": "string | undefined",
+        "type": "string",
         "description": "The selected time as a string"
       },
-      "is12HourFormat": {
+      "hour12": {
         "type": "boolean",
         "description": "Whether the time picker is in 12-hour format (based on the locale prop)"
       },
@@ -3391,28 +3428,32 @@
         "type": "(options?: PositioningOptions) => void",
         "description": "Function to reposition the time picker content"
       },
-      "open": {
-        "type": "() => void",
+      "setOpen": {
+        "type": "(nextOpen: boolean) => void",
         "description": "Function to open the time picker"
-      },
-      "close": {
-        "type": "() => void",
-        "description": "Function to close the time picker"
       },
       "clearValue": {
         "type": "() => void",
         "description": "Function to clear the selected time"
       },
+      "setValue": {
+        "type": "(value: string | Time) => void",
+        "description": "Function to set the selected time"
+      },
+      "setUnitValue": {
+        "type": "{ (unit: \"period\", value: TimeUnit, value: number): void; }",
+        "description": "Function to set the focused time unit"
+      },
       "getHours": {
-        "type": "() => string[]",
+        "type": "() => Cell[]",
         "description": "Get the available hours that will be displayed in the time picker"
       },
       "getMinutes": {
-        "type": "() => string[]",
+        "type": "() => Cell[]",
         "description": "Get the available minutes that will be displayed in the time picker"
       },
       "getSeconds": {
-        "type": "() => string[]",
+        "type": "() => Cell[]",
         "description": "Get the available seconds that will be displayed in the time picker"
       }
     },
@@ -3422,7 +3463,7 @@
         "description": "The locale (BCP 47 language tag) to use when formatting the time."
       },
       "value": {
-        "type": "Time | undefined",
+        "type": "Time",
         "description": "The selected time."
       },
       "open": {
@@ -3431,10 +3472,10 @@
       },
       "open.controlled": {
         "type": "boolean",
-        "description": "Whether the datepicker open state is controlled by the user"
+        "description": "Whether the timepicker open state is controlled by the user"
       },
       "ids": {
-        "type": "ElementIds",
+        "type": "Partial<{ trigger: string; input: string; positioner: string; content: string; clearTrigger: string; control: string; column(unit: TimeUnit): string; }>",
         "description": "The ids of the elements in the date picker. Useful for composition."
       },
       "name": {
@@ -3469,7 +3510,7 @@
         "type": "{ hour?: number; minute?: number; second?: number; }",
         "description": "The steps of each time unit."
       },
-      "withSeconds": {
+      "allowSeconds": {
         "type": "boolean",
         "description": "Whether to show the seconds."
       },
@@ -3484,6 +3525,231 @@
       "onFocusChange": {
         "type": "(details: FocusChangeDetails) => void",
         "description": "Function called when the focused date changes."
+      },
+      "disableLayer": {
+        "type": "boolean",
+        "description": "Whether to disable the interaction outside logic"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
+  "timer": {
+    "api": {
+      "running": {
+        "type": "boolean",
+        "description": "Whether the timer is running."
+      },
+      "paused": {
+        "type": "boolean",
+        "description": "Whether the timer is paused."
+      },
+      "segments": {
+        "type": "TimeSegments",
+        "description": "The formatted timer count value."
+      },
+      "start": {
+        "type": "() => void",
+        "description": "Function to start the timer."
+      },
+      "pause": {
+        "type": "() => void",
+        "description": "Function to pause the timer."
+      },
+      "resume": {
+        "type": "() => void",
+        "description": "Function to resume the timer."
+      },
+      "reset": {
+        "type": "() => void",
+        "description": "Function to reset the timer."
+      },
+      "restart": {
+        "type": "() => void",
+        "description": "Function to restart the timer."
+      },
+      "progressPercent": {
+        "type": "number",
+        "description": "The progress percentage of the timer."
+      }
+    },
+    "context": {
+      "countdown": {
+        "type": "boolean",
+        "description": "Whether the timer should countdown, decrementing the timer on each tick."
+      },
+      "startMs": {
+        "type": "number",
+        "description": "The total duration of the timer in milliseconds."
+      },
+      "targetMs": {
+        "type": "number",
+        "description": "The minimum count of the timer in milliseconds."
+      },
+      "autoStart": {
+        "type": "boolean",
+        "description": "Whether the timer should start automatically"
+      },
+      "interval": {
+        "type": "number",
+        "description": "The interval in milliseconds to update the timer count.",
+        "defaultValue": "250"
+      },
+      "onTick": {
+        "type": "(details: TickDetails) => void",
+        "description": "Function invoked when the timer ticks"
+      },
+      "onComplete": {
+        "type": "() => void",
+        "description": "Function invoked when the timer is completed"
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
+  "toast": {
+    "api": {
+      "getCount": {
+        "type": "() => number",
+        "description": "The total number of toasts"
+      },
+      "getPlacements": {
+        "type": "() => Placement[]",
+        "description": "The placements of the active toasts"
+      },
+      "getToastsByPlacement": {
+        "type": "(placement: Placement) => Service<O>[]",
+        "description": "The active toasts by placement"
+      },
+      "isVisible": {
+        "type": "(id: string) => boolean",
+        "description": "Returns whether the toast id is visible"
+      },
+      "create": {
+        "type": "(options: Options<O>) => string",
+        "description": "Function to create a toast."
+      },
+      "upsert": {
+        "type": "(options: Options<O>) => string",
+        "description": "Function to create or update a toast."
+      },
+      "update": {
+        "type": "(id: string, options: Options<O>) => void",
+        "description": "Function to update a toast's options by id."
+      },
+      "success": {
+        "type": "(options: Options<O>) => string",
+        "description": "Function to create a success toast."
+      },
+      "error": {
+        "type": "(options: Options<O>) => string",
+        "description": "Function to create an error toast."
+      },
+      "loading": {
+        "type": "(options: Options<O>) => string",
+        "description": "Function to create a loading toast."
+      },
+      "resume": {
+        "type": "(id?: string) => void",
+        "description": "Function to resume a toast by id."
+      },
+      "pause": {
+        "type": "(id?: string) => void",
+        "description": "Function to pause a toast by id."
+      },
+      "dismiss": {
+        "type": "(id?: string) => void",
+        "description": "Function to dismiss a toast by id.\nIf no id is provided, all toasts will be dismissed."
+      },
+      "dismissByPlacement": {
+        "type": "(placement: Placement) => void",
+        "description": "Function to dismiss all toasts by placement."
+      },
+      "remove": {
+        "type": "(id?: string) => void",
+        "description": "Function to remove a toast by id.\nIf no id is provided, all toasts will be removed."
+      },
+      "promise": {
+        "type": "<T>(promise: Promise<T> | (() => Promise<T>), options: Options<O>>) => string",
+        "description": "Function to create a toast from a promise.\n- When the promise resolves, the toast will be updated with the success options.\n- When the promise rejects, the toast will be updated with the error options."
+      },
+      "subscribe": {
+        "type": "(callback: (toasts: Options<O>[]) => void) => VoidFunction",
+        "description": "Function to subscribe to the toast group."
+      }
+    },
+    "context": {
+      "pauseOnPageIdle": {
+        "type": "boolean",
+        "description": "Whether to pause toast when the user leaves the browser tab",
+        "defaultValue": "false"
+      },
+      "gap": {
+        "type": "number",
+        "description": "The gap or spacing between toasts",
+        "defaultValue": "16"
+      },
+      "max": {
+        "type": "number",
+        "description": "The maximum number of toasts that can be shown at once",
+        "defaultValue": "Number.MAX_SAFE_INTEGER"
+      },
+      "offsets": {
+        "type": "string | Record<\"left\" | \"right\" | \"bottom\" | \"top\", string>",
+        "description": "The offset from the safe environment edge of the viewport",
+        "defaultValue": "\"1rem\""
+      },
+      "hotkey": {
+        "type": "string[]",
+        "description": "The hotkey that will move focus to the toast group",
+        "defaultValue": "'[\"altKey\", \"KeyT\"]'"
+      },
+      "overlap": {
+        "type": "boolean",
+        "description": "Whether the toasts should overlap each other"
+      },
+      "placement": {
+        "type": "Placement",
+        "description": "The placement of the toast"
+      },
+      "removeDelay": {
+        "type": "number",
+        "description": "The duration for the toast to kept alive before it is removed.\nUseful for exit transitions.",
+        "defaultValue": "200"
+      },
+      "duration": {
+        "type": "number",
+        "description": "The duration the toast will be visible"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
   },
