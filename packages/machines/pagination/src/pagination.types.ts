@@ -10,6 +10,10 @@ export interface PageChangeDetails {
   pageSize: number
 }
 
+export interface PageSizeChangeDetails {
+  pageSize: number
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -63,9 +67,13 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   page: number
   /**
-   * Called when the page number is changed, and it takes the resulting page number argument
+   * Called when the page number is changed
    */
   onPageChange?: (details: PageChangeDetails) => void
+  /**
+   * Called when the page size is changed
+   */
+  onPageSizeChange?: (details: PageSizeChangeDetails) => void
   /**
    * The type of the trigger element
    * @default "button"
@@ -145,6 +153,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * The current page.
    */
   page: number
+  /**
+   * The number of data items per page.
+   */
+  pageSize: number
   /**
    * The total number of pages.
    */

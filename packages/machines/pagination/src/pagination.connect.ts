@@ -22,6 +22,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     page,
+    pageSize: state.context.pageSize,
     totalPages,
     pages: utils.getTransformedRange(state.context),
     previousPage,

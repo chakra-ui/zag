@@ -88,7 +88,7 @@ export function machine(userContext: UserDefinedContext) {
           set.page(ctx, evt.page)
         },
         setPageSize(ctx, evt) {
-          ctx.pageSize = evt.size
+          set.pageSize(ctx, evt.size)
         },
         goToFirstPage(ctx) {
           set.page(ctx, 1)
@@ -109,6 +109,11 @@ export function machine(userContext: UserDefinedContext) {
 }
 
 const set = {
+  pageSize: (ctx: MachineContext, value: number) => {
+    if (isEqual(ctx.pageSize, value)) return
+    ctx.pageSize = value
+    ctx.onPageSizeChange?.({ pageSize: ctx.pageSize })
+  },
   page: (ctx: MachineContext, value: number) => {
     if (isEqual(ctx.page, value)) return
     ctx.page = value

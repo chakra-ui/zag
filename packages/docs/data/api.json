@@ -1964,6 +1964,10 @@
         "type": "number",
         "description": "The current page."
       },
+      "pageSize": {
+        "type": "number",
+        "description": "The number of data items per page."
+      },
       "totalPages": {
         "type": "number",
         "description": "The total number of pages."
@@ -2031,7 +2035,11 @@
       },
       "onPageChange": {
         "type": "(details: PageChangeDetails) => void",
-        "description": "Called when the page number is changed, and it takes the resulting page number argument"
+        "description": "Called when the page number is changed"
+      },
+      "onPageSizeChange": {
+        "type": "(details: PageSizeChangeDetails) => void",
+        "description": "Called when the page size is changed"
       },
       "type": {
         "type": "\"button\" | \"link\"",
@@ -3555,9 +3563,13 @@
         "type": "boolean",
         "description": "Whether the timer is paused."
       },
-      "segments": {
-        "type": "TimeSegments",
+      "time": {
+        "type": "Time<number>",
         "description": "The formatted timer count value."
+      },
+      "formattedTime": {
+        "type": "Time<string>",
+        "description": "The formatted time parts of the timer count."
       },
       "start": {
         "type": "() => void",

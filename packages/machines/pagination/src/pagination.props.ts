@@ -9,6 +9,7 @@ export const props = createProps<UserDefinedContext>()([
   "id",
   "ids",
   "onPageChange",
+  "onPageSizeChange",
   "page",
   "pageSize",
   "siblingCount",
