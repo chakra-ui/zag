@@ -11,4 +11,5 @@ export type {
   ItemLabelDetails,
   ItemProps,
   PageChangeDetails,
+  PageSizeChangeDetails,
 } from "./pagination.types"
