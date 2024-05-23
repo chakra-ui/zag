@@ -1,5 +1,18 @@
 # @zag-js/checkbox
 
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dom-event@0.51.0
+  - @zag-js/dom-query@0.51.0
+  - @zag-js/form-utils@0.51.0
+
 ## 0.50.0
 
 ### Patch Changes
@@ -30,14 +43,18 @@
 
 ### Minor Changes
 
-- [#1435](https://github.com/chakra-ui/zag/pull/1435) [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `api` properties
+- [#1435](https://github.com/chakra-ui/zag/pull/1435)
+  [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `api` properties
 
   - `isChecked` to `checked`
   - `isDisabled` to `disabled`
   - `isIndeterminate` to `indeterminate`
   - `isFocused` to `focused`
 
-- [#1435](https://github.com/chakra-ui/zag/pull/1435) [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Add support for `readOnly` prop
+- [#1435](https://github.com/chakra-ui/zag/pull/1435)
+  [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `readOnly` prop
 
 ### Patch Changes
 
@@ -1030,7 +1047,7 @@
       id: "1",
       checked: true,
     }),
-  );
+  )
 
   // this will update the checkbox when the `checked` value changes
   const [state, send] = useMachine(checkbox.machine({ id: "1" }), {
@@ -1038,7 +1055,7 @@
       // when this value changes, the checkbox will be checked/unchecked
       checked: true,
     },
-  });
+  })
   ```
 
 ### Patch Changes

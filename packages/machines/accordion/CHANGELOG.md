@@ -1,5 +1,17 @@
 # @zag-js/accordion
 
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dom-event@0.51.0
+  - @zag-js/dom-query@0.51.0
+
 ## 0.50.0
 
 ### Patch Changes
@@ -16,7 +28,8 @@
 
 ### Patch Changes
 
-- [`635cce7`](https://github.com/chakra-ui/zag/commit/635cce75b9e4bf53d986c0bdf4f5fcfbacfde6ef) Thanks [@cschroeter](https://github.com/cschroeter)! - Update type descriptions
+- [`635cce7`](https://github.com/chakra-ui/zag/commit/635cce75b9e4bf53d986c0bdf4f5fcfbacfde6ef) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Update type descriptions
 
 - Updated dependencies []:
   - @zag-js/core@0.49.0
@@ -30,7 +43,9 @@
 
 ### Minor Changes
 
-- [#1435](https://github.com/chakra-ui/zag/pull/1435) [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Rename `getItemState` properties
+- [#1435](https://github.com/chakra-ui/zag/pull/1435)
+  [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Rename `getItemState` properties
   - `isOpen` -> `expanded`
   - `isDisabled` -> `disabled`
   - `isFocused` -> `focused`

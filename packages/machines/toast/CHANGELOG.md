@@ -1,5 +1,18 @@
 # @zag-js/toast
 
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dismissable@0.51.0
+  - @zag-js/dom-event@0.51.0
+  - @zag-js/dom-query@0.51.0
+
 ## 0.50.0
 
 ### Patch Changes
@@ -30,9 +43,11 @@
 
 ### Patch Changes
 
-- [`2ac0f00`](https://github.com/chakra-ui/zag/commit/2ac0f000dd9e5f7487e829ea6ed4c7edac2f255e) Thanks [@cschroeter](https://github.com/cschroeter)! - Fix an issue where toast hide immediately after updating
+- [`2ac0f00`](https://github.com/chakra-ui/zag/commit/2ac0f000dd9e5f7487e829ea6ed4c7edac2f255e) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Fix an issue where toast hide immediately after updating
 
-- [`ccb1fa5`](https://github.com/chakra-ui/zag/commit/ccb1fa5951bd85cea933c5ea3f881a7a32ef953f) Thanks [@cschroeter](https://github.com/cschroeter)! - Fix an issue that the height was not exactly measured
+- [`ccb1fa5`](https://github.com/chakra-ui/zag/commit/ccb1fa5951bd85cea933c5ea3f881a7a32ef953f) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Fix an issue that the height was not exactly measured
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.48.0
@@ -47,7 +62,8 @@
 
 ### Minor Changes
 
-- [`d4b091d`](https://github.com/chakra-ui/zag/commit/d4b091d8710fc08efc24f2ecec49d26c80e58b0d) Thanks [@cschroeter](https://github.com/cschroeter)! - **[BREAKING]** Simplify toast api methods
+- [`d4b091d`](https://github.com/chakra-ui/zag/commit/d4b091d8710fc08efc24f2ecec49d26c80e58b0d) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - **[BREAKING]** Simplify toast api methods
 
   ```diff
   <ToastContext.Provider value={api}>
@@ -66,7 +82,8 @@
 
 ### Patch Changes
 
-- [`6386d79`](https://github.com/chakra-ui/zag/commit/6386d7945ec2550e06b3e134d7c690cd1268b56f) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where toast closes when you update the same toast type
+- [`6386d79`](https://github.com/chakra-ui/zag/commit/6386d7945ec2550e06b3e134d7c690cd1268b56f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where toast closes when you update the same toast type
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.47.0

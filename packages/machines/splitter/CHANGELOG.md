@@ -1,5 +1,18 @@
 # @zag-js/splitter
 
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dom-event@0.51.0
+  - @zag-js/dom-query@0.51.0
+  - @zag-js/number-utils@0.51.0
+
 ## 0.50.0
 
 ### Patch Changes
@@ -17,7 +30,8 @@
 
 ### Patch Changes
 
-- [`9786ad0`](https://github.com/chakra-ui/zag/commit/9786ad000ba7b9358097e0e46beaaf3ea0c5d77a) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onResize` was not called
+- [`9786ad0`](https://github.com/chakra-ui/zag/commit/9786ad000ba7b9358097e0e46beaaf3ea0c5d77a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onResize` was not called
 
 - Updated dependencies []:
   - @zag-js/core@0.49.0

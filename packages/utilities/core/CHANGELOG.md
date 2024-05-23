@@ -1,5 +1,7 @@
 # @zag-js/utils
 
+## 0.51.0
+
 ## 0.50.0
 
 ## 0.49.0
@@ -127,12 +129,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label;
+      return item.label
     },
     itemToValue(item) {
-      return item.value;
+      return item.value
     },
-  });
+  })
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -140,7 +142,7 @@
       collection,
       id: useId(),
     }),
-  );
+  )
   ```
 
 ## 0.17.0

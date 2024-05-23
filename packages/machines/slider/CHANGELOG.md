@@ -1,10 +1,28 @@
 # @zag-js/slider
 
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dom-event@0.51.0
+  - @zag-js/dom-query@0.51.0
+  - @zag-js/element-size@0.51.0
+  - @zag-js/form-utils@0.51.0
+  - @zag-js/numeric-range@0.51.0
+
 ## 0.50.0
 
 ### Minor Changes
 
-- [#1489](https://github.com/chakra-ui/zag/pull/1489) [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Invoke `onValueChangeEnd` when using keyboard to interact with slider thumb
+- [#1489](https://github.com/chakra-ui/zag/pull/1489)
+  [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Invoke `onValueChangeEnd` when using keyboard to interact with
+  slider thumb
 
 ### Patch Changes
 
@@ -23,7 +41,8 @@
 
 ### Patch Changes
 
-- [`c271c5c`](https://github.com/chakra-ui/zag/commit/c271c5cf4febea959922cabafb112ac3e3a33443) Thanks [@cschroeter](https://github.com/cschroeter)! - Export ValueTextDetails from slider
+- [`c271c5c`](https://github.com/chakra-ui/zag/commit/c271c5cf4febea959922cabafb112ac3e3a33443) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export ValueTextDetails from slider
 
 - Updated dependencies []:
   - @zag-js/core@0.49.0

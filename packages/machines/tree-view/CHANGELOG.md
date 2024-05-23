@@ -1,5 +1,17 @@
 # @zag-js/tree-view
 
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dom-event@0.51.0
+  - @zag-js/dom-query@0.51.0
+
 ## 0.50.0
 
 ### Patch Changes
@@ -16,7 +28,8 @@
 
 ### Minor Changes
 
-- [`9b379db`](https://github.com/chakra-ui/zag/commit/9b379db27efa01207772551d95995a28d9ad206f) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `data-docused` to `data-focus` for consistency
+- [`9b379db`](https://github.com/chakra-ui/zag/commit/9b379db27efa01207772551d95995a28d9ad206f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `data-docused` to `data-focus` for consistency
 
 ### Patch Changes
 
@@ -32,13 +45,16 @@
 
 ### Minor Changes
 
-- [`c7b781c`](https://github.com/chakra-ui/zag/commit/c7b781c937378dcf45f07e8333360d913fc9f8f1) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Rename some properties for better consistency:
+- [`c7b781c`](https://github.com/chakra-ui/zag/commit/c7b781c937378dcf45f07e8333360d913fc9f8f1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Rename some properties for better consistency:
 
   - `id` -> `value`
   - `expandedIds` -> `expandedValue`
   - `selectedIds` -> `selectedValue`
 
-- [#1435](https://github.com/chakra-ui/zag/pull/1435) [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Rename `api.getItemState` properties
+- [#1435](https://github.com/chakra-ui/zag/pull/1435)
+  [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Rename `api.getItemState` properties
 
   - `isDisabled` -> `disabled`
   - `isFocused` -> `focused`

@@ -1,5 +1,14 @@
 # @zag-js/vue
 
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.51.0
+  - @zag-js/store@0.51.0
+  - @zag-js/types@0.51.0
+
 ## 0.50.0
 
 ### Patch Changes
@@ -815,13 +824,10 @@
 
   ```ts
   // Before
-  type Ref =
-    | string
-    | Vue.Ref
-    | ((ref: Element | Vue.ComponentPublicInstance | null) => void);
+  type Ref = string | Vue.Ref | ((ref: Element | Vue.ComponentPublicInstance | null) => void)
 
   // After
-  type Ref = VNodeRef;
+  type Ref = VNodeRef
   ```
 
 - Updated dependencies [[`61c11646`](https://github.com/chakra-ui/zag/commit/61c116467c1758bdda7efe1f27d4ed26e7d44624),
