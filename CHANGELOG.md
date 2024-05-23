@@ -6,6 +6,36 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.51.0](./#0.51.0) - 2024-05-23
+
+### Fixed
+
+- **FileUpload**
+
+  - Fix issue where hidden input doesn't include the file list when dropping files on the dropzone
+
+- **Progress**
+
+  - Fix issue where using a smaller `max` than `50` throws due to the fact the default `value` is set to `50`. Now we
+    set the default `value` to mid value between the `min` and `max`
+
+### Added
+
+- **[NEW]**: Added new Timer machine to create a timer (countdown or stopwatch) that can be paused, resumed, and reset.
+
+- **[NEW]**: Added new TimePicker machine to that allows selecting a time and day period.
+
+- **Pagination**
+
+  - Add `api.pageSize` to allow retrieving the current page size
+  - Add `onPageSizeChange` to listen for page size change
+
+- **Editable**
+
+  - Add `api.valueText` that returns the current value or placeholder if empty
+
+### Changed
+
 ## [0.50.0](./#0.50.0) - 2024-05-15
 
 ### Fixed
