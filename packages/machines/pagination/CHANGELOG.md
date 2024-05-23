@@ -1,5 +1,19 @@
 # @zag-js/pagination
 
+## 0.51.1
+
+### Patch Changes
+
+- [`fb26e39`](https://github.com/chakra-ui/zag/commit/fb26e3960845bab8f3c3f987de8c3e28b1b5e361) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export missing PageSizeChangeDetails
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.1
+  - @zag-js/core@0.51.1
+  - @zag-js/types@0.51.1
+  - @zag-js/utils@0.51.1
+  - @zag-js/dom-query@0.51.1
+
 ## 0.51.0
 
 ### Minor Changes
