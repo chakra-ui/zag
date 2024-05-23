@@ -17,6 +17,7 @@ interface DocItem {
   id: string
   label: string
   new?: boolean
+  beta?: boolean
   href?: string
 }
 
@@ -64,7 +65,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
       items: [
         { type: "doc", label: "Accordion", id: "accordion" },
         { type: "doc", label: "Avatar", id: "avatar" },
-        { type: "doc", label: "Carousel", id: "carousel" },
+        { type: "doc", label: "Carousel", id: "carousel", beta: true },
         { type: "doc", label: "Checkbox", id: "checkbox" },
         { type: "doc", label: "Clipboard", id: "clipboard" },
         { type: "doc", label: "Collapsible", id: "collapsible" },
@@ -81,7 +82,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Pagination", id: "pagination" },
         { type: "doc", label: "Pin Input", id: "pin-input" },
         { type: "doc", label: "Popover", id: "popover" },
-        { type: "doc", label: "Presence", id: "presence", new: true },
+        { type: "doc", label: "Presence", id: "presence" },
         {
           type: "doc",
           label: "Progress - Linear",
