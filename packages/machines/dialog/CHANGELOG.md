@@ -1,10 +1,27 @@
 # @zag-js/dialog
 
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/aria-hidden@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dismissable@0.51.0
+  - @zag-js/dom-query@0.51.0
+  - @zag-js/remove-scroll@0.51.0
+
 ## 0.50.0
 
 ### Minor Changes
 
-- [#1489](https://github.com/chakra-ui/zag/pull/1489) [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Prevent closing dialog on outside click when `role=alertdialog` is set.
+- [#1489](https://github.com/chakra-ui/zag/pull/1489)
+  [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Prevent closing dialog on outside click when `role=alertdialog`
+  is set.
   - Set the initial focus to the close trigger, when `role=alertdialog` is set to prevent accidental selection of
     destructive action.
 
@@ -38,7 +55,9 @@
 
 ### Minor Changes
 
-- [#1431](https://github.com/chakra-ui/zag/pull/1431) [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `closeOnEscapeKeyDown` to `closeOnEscape`
+- [#1431](https://github.com/chakra-ui/zag/pull/1431)
+  [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `closeOnEscapeKeyDown` to `closeOnEscape`
 
 ### Patch Changes
 
@@ -1058,7 +1077,7 @@
 
   ```jsx
   // this is will open the dialog initially
-  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }));
+  const [state, send] = useMachine(dialog.machine({ id: "1", open: true }))
 
   // this will open the dialog when the `open` value changes
   const [state, send] = useMachine(dialog.machine({ id: "1" }), {
@@ -1066,7 +1085,7 @@
       // when this value changes, the dialog will open/close
       open: true,
     },
-  });
+  })
   ```
 
 ### Patch Changes

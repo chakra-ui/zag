@@ -1,11 +1,25 @@
 # @zag-js/tabs
 
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dom-event@0.51.0
+  - @zag-js/dom-query@0.51.0
+  - @zag-js/element-rect@0.51.0
+
 ## 0.50.0
 
 ### Minor Changes
 
-- [`bd7a2e4`](https://github.com/chakra-ui/zag/commit/bd7a2e436ab315d8afa16bc7081ea2ad28bfc817) Thanks [@segunadebayo](https://github.com/segunadebayo)! - When using the pointer, prefer click based selection when using `activationMode=automatic` over focus triggering
-  selection. For keyboard, selection follows focus as usual.
+- [`bd7a2e4`](https://github.com/chakra-ui/zag/commit/bd7a2e436ab315d8afa16bc7081ea2ad28bfc817) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - When using the pointer, prefer click based selection when using
+  `activationMode=automatic` over focus triggering selection. For keyboard, selection follows focus as usual.
 
 ### Patch Changes
 
@@ -36,9 +50,13 @@
 
 ### Minor Changes
 
-- [#1431](https://github.com/chakra-ui/zag/pull/1431) [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `loop` to `loopFocus` to better reflect its purpose
+- [#1431](https://github.com/chakra-ui/zag/pull/1431)
+  [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `loop` to `loopFocus` to better reflect its purpose
 
-- [#1435](https://github.com/chakra-ui/zag/pull/1435) [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `api.getTriggerState` properties
+- [#1435](https://github.com/chakra-ui/zag/pull/1435)
+  [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `api.getTriggerState` properties
 
   - `isSelected` -> `selected`
   - `isDisabled` -> `disabled`

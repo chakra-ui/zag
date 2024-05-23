@@ -1,10 +1,15 @@
 # @zag-js/collection
 
+## 0.51.0
+
 ## 0.50.0
 
 ### Patch Changes
 
-- [#1483](https://github.com/chakra-ui/zag/pull/1483) [`8f325a8`](https://github.com/chakra-ui/zag/commit/8f325a8a966256c45410ed3e953d7f041d40b658) Thanks [@maastrich](https://github.com/maastrich)! - Ensure collection are considered different when item's disabled property changes
+- [#1483](https://github.com/chakra-ui/zag/pull/1483)
+  [`8f325a8`](https://github.com/chakra-ui/zag/commit/8f325a8a966256c45410ed3e953d7f041d40b658) Thanks
+  [@maastrich](https://github.com/maastrich)! - Ensure collection are considered different when item's disabled property
+  changes
 
 ## 0.49.0
 
@@ -12,7 +17,10 @@
 
 ### Patch Changes
 
-- [#1434](https://github.com/chakra-ui/zag/pull/1434) [`ed0ee38`](https://github.com/chakra-ui/zag/commit/ed0ee38da9bea2ec7d7aa46ba5c1bc11d8dadb1d) Thanks [@erm1116](https://github.com/erm1116)! - Fix issue where value is unintentionally sorted when highlighting item in the combobox and the select machine
+- [#1434](https://github.com/chakra-ui/zag/pull/1434)
+  [`ed0ee38`](https://github.com/chakra-ui/zag/commit/ed0ee38da9bea2ec7d7aa46ba5c1bc11d8dadb1d) Thanks
+  [@erm1116](https://github.com/erm1116)! - Fix issue where value is unintentionally sorted when highlighting item in
+  the combobox and the select machine
 
 ## 0.47.0
 

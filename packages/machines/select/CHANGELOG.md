@@ -1,10 +1,27 @@
 # @zag-js/select
 
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/collection@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dismissable@0.51.0
+  - @zag-js/dom-event@0.51.0
+  - @zag-js/dom-query@0.51.0
+  - @zag-js/form-utils@0.51.0
+  - @zag-js/popper@0.51.0
+
 ## 0.50.0
 
 ### Patch Changes
 
-- Updated dependencies [[`8f325a8`](https://github.com/chakra-ui/zag/commit/8f325a8a966256c45410ed3e953d7f041d40b658), [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238)]:
+- Updated dependencies [[`8f325a8`](https://github.com/chakra-ui/zag/commit/8f325a8a966256c45410ed3e953d7f041d40b658),
+  [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238)]:
   - @zag-js/collection@0.50.0
   - @zag-js/popper@0.50.0
   - @zag-js/anatomy@0.50.0
@@ -36,9 +53,14 @@
 
 ### Minor Changes
 
-- [#1431](https://github.com/chakra-ui/zag/pull/1431) [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `loop` to `loopFocus` to better reflect its purpose
+- [#1431](https://github.com/chakra-ui/zag/pull/1431)
+  [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `loop` to `loopFocus` to better reflect its purpose
 
-- [#1431](https://github.com/chakra-ui/zag/pull/1431) [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Remove `selectOnBlur` to prevent accidental selection of options. Prefer explicit selection by user via click or enter key.
+- [#1431](https://github.com/chakra-ui/zag/pull/1431)
+  [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove `selectOnBlur` to prevent accidental selection of options.
+  Prefer explicit selection by user via click or enter key.
 
 ### Patch Changes
 
@@ -58,7 +80,9 @@
 
 ### Patch Changes
 
-- [`30528d0`](https://github.com/chakra-ui/zag/commit/30528d04563aa428d044867ce40c3ccab7cf8b7b) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Prevent tab key interaction when the select is open. This keeps focus within the select and ensures keyboard interactions work consistently
+- [`30528d0`](https://github.com/chakra-ui/zag/commit/30528d04563aa428d044867ce40c3ccab7cf8b7b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Prevent tab key interaction when the select is open. This keeps
+  focus within the select and ensures keyboard interactions work consistently
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.47.0
@@ -1051,12 +1075,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label;
+      return item.label
     },
     itemToValue(item) {
-      return item.value;
+      return item.value
     },
-  });
+  })
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -1064,7 +1088,7 @@
       collection,
       id: useId(),
     }),
-  );
+  )
   ```
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @zag-js/pagination
 
+## 0.51.0
+
+### Minor Changes
+
+- [`2b35349`](https://github.com/chakra-ui/zag/commit/2b35349b1c71bd26fb96afe4a8854a578a1eff7d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `api.pageSize` to allow retrieving the current page size
+  - Add `onPageSizeChange` to listen for page size change
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dom-query@0.51.0
+
 ## 0.50.0
 
 ### Patch Changes

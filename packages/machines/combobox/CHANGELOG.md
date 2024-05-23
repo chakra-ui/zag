@@ -1,14 +1,34 @@
 # @zag-js/combobox
 
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/aria-hidden@0.51.0
+  - @zag-js/collection@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dismissable@0.51.0
+  - @zag-js/dom-event@0.51.0
+  - @zag-js/dom-query@0.51.0
+  - @zag-js/popper@0.51.0
+
 ## 0.50.0
 
 ### Minor Changes
 
-- [#1489](https://github.com/chakra-ui/zag/pull/1489) [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `triggerProps` to `getTriggerProps()` to allow for more flexible compositions.
+- [#1489](https://github.com/chakra-ui/zag/pull/1489)
+  [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `triggerProps` to `getTriggerProps()` to allow for more
+  flexible compositions.
 
 ### Patch Changes
 
-- Updated dependencies [[`8f325a8`](https://github.com/chakra-ui/zag/commit/8f325a8a966256c45410ed3e953d7f041d40b658), [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238)]:
+- Updated dependencies [[`8f325a8`](https://github.com/chakra-ui/zag/commit/8f325a8a966256c45410ed3e953d7f041d40b658),
+  [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238)]:
   - @zag-js/collection@0.50.0
   - @zag-js/popper@0.50.0
   - @zag-js/anatomy@0.50.0
@@ -24,7 +44,8 @@
 
 ### Patch Changes
 
-- [`d28ea96`](https://github.com/chakra-ui/zag/commit/d28ea96b0d71f34c8a1a19a14cc16c6cd1f4d350) Thanks [@cschroeter](https://github.com/cschroeter)! - Export IntlTranslations from Combobox
+- [`d28ea96`](https://github.com/chakra-ui/zag/commit/d28ea96b0d71f34c8a1a19a14cc16c6cd1f4d350) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export IntlTranslations from Combobox
 
 - Updated dependencies []:
   - @zag-js/core@0.49.0
@@ -42,10 +63,13 @@
 
 ### Minor Changes
 
-- [#1431](https://github.com/chakra-ui/zag/pull/1431) [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Add `open` and `open.controlled` property to programmatically control the combobox's open state
+- [#1431](https://github.com/chakra-ui/zag/pull/1431)
+  [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `open` and `open.controlled` property to programmatically
+  control the combobox's open state
 
-  - Add new `openOnChange` property to automatically open the combobox when the value changes. Value can be a boolean or a
-    function that returns a boolean.
+  - Add new `openOnChange` property to automatically open the combobox when the value changes. Value can be a boolean or
+    a function that returns a boolean.
 
   ```jsx
   const [state, send] = useMachine(
@@ -53,7 +77,7 @@
       // openOnChange: true,
       openOnChange: ({ inputValue }) => inputValue.length > 2,
     }),
-  );
+  )
   ```
 
   - Add new `openOnKeypress` property to automatically open the combobox when the arrow keys (up and down) are pressed.
@@ -63,29 +87,35 @@
   const [state, send] = useMachine(
     combobox.machine({
       getSelectionValue({ inputValue, valueAsString }) {
-        return `${inputValue} ${valueAsString}`;
+        return `${inputValue} ${valueAsString}`
       },
     }),
-  );
+  )
   ```
 
   - Add new `dismissable` property to determine whether to add the combobox content to the dismissable stack.
   - Add `popup` attribute to allow rendering the combobox has a select with input within the content.
   - Add `persistFocus` to the item props to determine whether to clear the highlighted item on pointer leave.
 
-- [#1435](https://github.com/chakra-ui/zag/pull/1435) [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `api` properties
+- [#1435](https://github.com/chakra-ui/zag/pull/1435)
+  [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `api` properties
 
   - `isFocused` -> `focused`
   - `isOpen` -> `open`
   - `isInputValueEmpty` -> `inputEmpty`
   - `open()`, `close()` -> `setOpen(true|false)`
 
-- [#1431](https://github.com/chakra-ui/zag/pull/1431) [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `loop` to `loopFocus` to better reflect its purpose
+- [#1431](https://github.com/chakra-ui/zag/pull/1431)
+  [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `loop` to `loopFocus` to better reflect its purpose
 
-- [#1431](https://github.com/chakra-ui/zag/pull/1431) [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where combobox could be composed with tags-input due to the way `selectedItems` and `valueAsString` was
-  computed
-  - Remove `selectOnBlur` to prevent accidental selection of options. Prefer explicit selection by user via click or enter
-    key.
+- [#1431](https://github.com/chakra-ui/zag/pull/1431)
+  [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where combobox could be composed with tags-input due
+  to the way `selectedItems` and `valueAsString` was computed
+  - Remove `selectOnBlur` to prevent accidental selection of options. Prefer explicit selection by user via click or
+    enter key.
   - Update the details provided by `onInputValueChange` to from `details.value` to `details.inputValue`
 
 ### Patch Changes
@@ -972,12 +1002,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label;
+      return item.label
     },
     itemToValue(item) {
-      return item.value;
+      return item.value
     },
-  });
+  })
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -985,7 +1015,7 @@
       collection,
       id: useId(),
     }),
-  );
+  )
   ```
 
 ### Patch Changes

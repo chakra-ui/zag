@@ -1,5 +1,22 @@
 # @zag-js/progress
 
+## 0.51.0
+
+### Patch Changes
+
+- [`66b31f8`](https://github.com/chakra-ui/zag/commit/66b31f8340f10c59540be25845e4d00166ea5ac1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where using a smaller `max` than `50` throws due to the
+  fact the default `value` is set to `50`.
+
+  Now we set the default `value` to mid value between the `min` and `max`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dom-query@0.51.0
+
 ## 0.50.0
 
 ### Patch Changes
