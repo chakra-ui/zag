@@ -11,9 +11,9 @@
   import ColorPicker from "./routes/color-picker.svelte"
   import Combobox from "./routes/combobox.svelte"
   import ContextMenu from "./routes/context-menu.svelte"
-  import DatePicker from "./routes/date-picker.svelte"
   import DatePickerMulti from "./routes/date-picker-multi.svelte"
   import DatePickerRange from "./routes/date-picker-range.svelte"
+  import DatePicker from "./routes/date-picker.svelte"
   import Dialog from "./routes/dialog.svelte"
   import Editable from "./routes/editable.svelte"
   import FileUpload from "./routes/file-upload.svelte"
@@ -39,6 +39,8 @@
   import Tabs from "./routes/tabs.svelte"
   import TagsInput from "./routes/tags-input.svelte"
   import TimePicker from "./routes/time-picker.svelte"
+  import TimerCountdown from "./routes/timer-countdown.svelte"
+  import TimerStopwatch from "./routes/timer-stopwatch.svelte"
   import Toast from "./routes/toast.svelte"
   import ToggleGroup from "./routes/toggle-group.svelte"
   import Tooltip from "./routes/tooltip.svelte"
@@ -90,6 +92,8 @@
     { path: "/tooltip", component: Tooltip },
     { path: "/tour", component: Tour },
     { path: "/tree-view", component: TreeView },
+    { path: "/timer-countdown", component: TimerCountdown },
+    { path: "/timer-stopwatch", component: TimerStopwatch },
   ]
 </script>
 

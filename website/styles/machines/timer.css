@@ -1,7 +1,7 @@
 [data-scope="timer"][data-part="root"] {
   margin-top: 40px;
   display: inline-flex;
-  gap: 1rem;
+  gap: 0.25rem;
   align-items: center;
 }
 
@@ -10,7 +10,7 @@
 }
 
 [data-scope="timer"][data-part="control"] {
-  margin-top: 10px;
+  margin-top: 1rem;
   display: flex;
   justify-content: center;
   gap: 8px;
@@ -34,6 +34,8 @@
   overflow-y: hidden;
   font-size: 3rem;
   line-height: 1em;
+  font-variation-settings: "tnum";
+  text-align: center;
 
   &::before {
     position: relative;
@@ -41,6 +43,6 @@
     white-space: pre;
     top: calc(var(--value) * -1em);
     text-align: center;
-    transition: all 1s cubic-bezier(1, 0, 0, 1);
+    transition: top 1s cubic-bezier(1, 0, 0, 1);
   }
 }

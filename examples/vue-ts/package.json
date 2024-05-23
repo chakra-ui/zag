@@ -74,6 +74,7 @@
     "@zag-js/toggle-group": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
     "@zag-js/tour": "workspace:*",
+    "@zag-js/timer": "workspace:*",
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",

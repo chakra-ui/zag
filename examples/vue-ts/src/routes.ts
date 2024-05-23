@@ -4,6 +4,8 @@ import Home from "./pages/index"
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: "/timer-countdown", component: () => import("./pages/timer-countdown") },
+    { path: "/timer-stopwatch", component: () => import("./pages/timer-stopwatch") },
     { path: "/time-picker", component: () => import("./pages/time-picker") },
     { path: "/signature-pad", component: () => import("./pages/signature-pad") },
     { path: "/floating-panel", component: () => import("./pages/floating-panel") },
@@ -37,9 +39,7 @@ export const router = createRouter({
     { path: "/number-input", component: () => import("./pages/number-input") },
     { path: "/pagination", component: () => import("./pages/pagination") },
     { path: "/pin-input", component: () => import("./pages/pin-input") },
-    // { path: "/popper", component: () => import("./pages/popper") },
     { path: "/popover", component: () => import("./pages/popover") },
-    // { path: "/nested-popover", component: () => import("./pages/nested-popover") },
     { path: "/range-slider", component: () => import("./pages/range-slider") },
     { path: "/radio-group", component: () => import("./pages/radio-group") },
     { path: "/rating-group", component: () => import("./pages/rating-group") },

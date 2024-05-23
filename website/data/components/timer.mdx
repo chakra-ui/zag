@@ -170,6 +170,22 @@ const [state, send] = useMachine(
 )
 ```
 
+## Listening for completion events
+
+When the timer reaches the target time, the `onComplete` callback is invoked.
+
+```jsx
+const [state, send] = useMachine(
+  timer.machine({
+    countdown: true,
+    targetMs: 1000 * 60 * 60, // 1 hour
+    onComplete() {
+      console.log("Timer completed")
+    },
+  }),
+)
+```
+
 ## Starting and Stopping the timer
 
 To start the timer, send the `api.start()` callback
