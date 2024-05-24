@@ -6,16 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
   </head>
-  <body x-data="$checkbox({ id: '1' })" style="padding: 40px">
-    <h1>Welcome to home</h1>
-    <label x-bind="api.rootProps">
-      <div x-bind="api.controlProps"></div>
-      <span x-bind="api.labelProps">Checkbox</span>
-      <input x-bind="api.hiddenInputProps" />
-    </label>
+  <body style="padding: 40px">
+    <h1>Accordion</h1>
 
-    <button type="button" x-bind:disabled="api.checked" x-on:click="api.setChecked(true)">Check</button>
-    <button type="button" x-bind:disabled="!api.checked" x-on:click="api.setChecked(false)">Uncheck</button>
+    <div class="accordion">
+      <div class="accordion-item" data-value="a">
+        <button class="accordion-trigger">First Button</button>
+        <div class="accordion-content">First Content</div>
+      </div>
+
+      <div class="accordion-item" data-value="b">
+        <button class="accordion-trigger">Second Button</button>
+        <div class="accordion-content">Second Content</div>
+      </div>
+
+      <div class="accordion-item" data-value="c">
+        <button class="accordion-trigger">Third Button</button>
+        <div class="accordion-content">Third Content</div>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

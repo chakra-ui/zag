@@ -77,13 +77,9 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "alpinejs": "3.13.10",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
-  },
-  "dependencies": {
-    "@types/alpinejs": "^3.13.10"
   }
 }
