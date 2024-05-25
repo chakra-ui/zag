@@ -33,6 +33,8 @@ export class Avatar {
   }
 
   render = () => {
+    this.disposable.forEach((dispose) => dispose())
+
     const rootEl = this.rootEl
     this.disposable.set(rootEl, spreadProps(this.rootEl, this.api.rootProps))
 
