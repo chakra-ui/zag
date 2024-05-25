@@ -30,7 +30,7 @@ const fetchMachine = createMachine({
   states: {
     loading: {
       activities: ["trackSrcChange"],
-      entry: ["checkImgStatus"],
+      entry: ["checkImageStatus"],
       on: {
         "IMG.LOADED": {
           target: "loaded",

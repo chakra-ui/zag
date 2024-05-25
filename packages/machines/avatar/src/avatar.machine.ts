@@ -26,7 +26,7 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         loading: {
           activities: ["trackSrcChange"],
-          entry: ["checkImgStatus"],
+          entry: ["checkImageStatus"],
           on: {
             "IMG.LOADED": {
               target: "loaded",
@@ -89,14 +89,18 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnError(ctx) {
           ctx.onStatusChange?.({ status: "error" })
         },
-        checkImgStatus(ctx, _evt, { send }) {
-          const img = dom.getImageEl(ctx)
-          if (img?.complete) {
-            const type = img.currentSrc ? "IMG.LOADED" : "IMG.ERROR"
+        checkImageStatus(ctx, _evt, { send }) {
+          const imageEl = dom.getImageEl(ctx)
+          if (imageEl?.complete) {
+            const type = hasLoaded(imageEl) ? "IMG.LOADED" : "IMG.ERROR"
             send({ type, src: "ssr" })
           }
         },
       },
     },
   )
+}
+
+function hasLoaded(image: HTMLImageElement) {
+  return image.complete && image.naturalWidth !== 0 && image.naturalHeight !== 0
 }

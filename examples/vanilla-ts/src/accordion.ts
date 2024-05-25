@@ -7,9 +7,7 @@ export class Accordion {
   service: ReturnType<typeof accordion.machine>
   api: accordion.Api<any>
 
-  constructor(root: string, context: accordion.Context) {
-    const rootEl = document.querySelector<HTMLElement>(root)
-
+  constructor(rootEl: HTMLElement | null, context: accordion.Context) {
     if (!rootEl) throw new Error("Root element not found")
     this.rootEl = rootEl
 
@@ -21,6 +19,9 @@ export class Accordion {
 
   init = () => {
     const { service } = this
+
+    this.render()
+
     this.service.subscribe(() => {
       this.api = accordion.connect(service.state, service.send, normalizeProps)
       this.render()
