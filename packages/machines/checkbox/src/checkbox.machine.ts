@@ -1,6 +1,6 @@
 import { createMachine, guards } from "@zag-js/core"
 import { trackFocusVisible, trackPress } from "@zag-js/dom-event"
-import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
+import { dispatchInputCheckedEvent, setElementChecked, trackFormControl } from "@zag-js/form-utils"
 import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./checkbox.dom"
 import type { CheckedState, MachineContext, MachineState, UserDefinedContext } from "./checkbox.types"
@@ -105,7 +105,7 @@ export function machine(userContext: UserDefinedContext) {
         syncInputElement(ctx) {
           const inputEl = dom.getHiddenInputEl(ctx)
           if (!inputEl) return
-          inputEl.checked = ctx.isChecked
+          setElementChecked(inputEl, ctx.isChecked)
           inputEl.indeterminate = ctx.isIndeterminate
         },
         removeFocusIfNeeded(ctx) {

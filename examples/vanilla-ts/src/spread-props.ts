@@ -2,7 +2,11 @@ export interface Attrs {
   [key: string]: any // Change 'any' to the specific type you want to allow for attributes
 }
 
+const prevAttrsMap = new WeakMap<HTMLElement, Attrs>()
+
 export function spreadProps(node: HTMLElement, attrs: Attrs): () => void {
+  const oldAttrs = prevAttrsMap.get(node) || {}
+
   const attrKeys = Object.keys(attrs)
 
   const addEvt = (e: string, f: EventListener) => {
@@ -22,6 +26,9 @@ export function spreadProps(node: HTMLElement, attrs: Attrs): () => void {
   const apply = (attrName: string) => {
     let value = attrs[attrName]
 
+    const oldValue = oldAttrs[attrName]
+    if (value === oldValue) return
+
     if (typeof value === "boolean") {
       value = value || undefined
     }
@@ -38,8 +45,23 @@ export function spreadProps(node: HTMLElement, attrs: Attrs): () => void {
     node.removeAttribute(attrName.toLowerCase())
   }
 
+  // reconcile old attributes
+
+  for (const key in oldAttrs) {
+    if (attrs[key] == null) {
+      node.removeAttribute(key.toLowerCase())
+    }
+  }
+
+  const oldEvents = Object.keys(oldAttrs).filter(onEvents)
+  oldEvents.forEach((evt) => {
+    remEvt(evt.substring(2), oldAttrs[evt])
+  })
+
   attrKeys.filter(onEvents).forEach(setup)
   attrKeys.filter(others).forEach(apply)
+
+  prevAttrsMap.set(node, attrs)
 
   return function cleanup() {
     attrKeys.filter(onEvents).forEach(teardown)

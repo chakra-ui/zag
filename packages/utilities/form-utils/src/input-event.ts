@@ -14,11 +14,16 @@ function getDescriptor(el: HTMLElement, options: DescriptorOptions) {
 export function setElementValue(el: HTMLElement, value: string, option: DescriptorOptions = {}) {
   const descriptor = getDescriptor(el, option)
   descriptor.set?.call(el, value)
+  el.setAttribute("value", value)
 }
 
 export function setElementChecked(el: HTMLElement, checked: boolean) {
   const descriptor = getDescriptor(el, { type: "HTMLInputElement", property: "checked" })
   descriptor.set?.call(el, checked)
+  // react applies the `checked` automatically when we call the descriptor
+  // but for consistency with vanilla JS, we need to do it manually as well
+  if (checked) el.setAttribute("checked", "")
+  else el.removeAttribute("checked")
 }
 
 export type InputEventOptions = {

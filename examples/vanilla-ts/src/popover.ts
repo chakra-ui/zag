@@ -15,8 +15,6 @@ export class Popover {
     this.api = popover.connect(this.service.state, this.service.send, normalizeProps)
   }
 
-  private disposable = new Map<HTMLElement, VoidFunction>()
-
   init = () => {
     const { service } = this
     this.render()
@@ -33,19 +31,15 @@ export class Popover {
   }
 
   render = () => {
-    this.disposable.forEach((dispose) => dispose())
-
     const rootEl = this.rootEl
 
     const triggerEl = rootEl.querySelector<HTMLElement>(".popover-trigger")
-    if (triggerEl) {
-      this.disposable.set(triggerEl, spreadProps(triggerEl, this.api.triggerProps))
-    }
+    if (triggerEl) spreadProps(triggerEl, this.api.triggerProps)
 
     const contentEl = rootEl.querySelector<HTMLElement>(".popover-content")
-    if (contentEl) this.disposable.set(contentEl, spreadProps(contentEl, this.api.contentProps))
+    if (contentEl) spreadProps(contentEl, this.api.contentProps)
 
     const positionerEl = rootEl.querySelector<HTMLElement>(".popover-positioner")
-    if (positionerEl) this.disposable.set(positionerEl, spreadProps(positionerEl, this.api.positionerProps))
+    if (positionerEl) spreadProps(positionerEl, this.api.positionerProps)
   }
 }

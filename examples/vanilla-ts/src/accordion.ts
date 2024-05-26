@@ -15,18 +15,13 @@ export class Accordion {
     this.api = accordion.connect(this.service.state, this.service.send, normalizeProps)
   }
 
-  private disposable = new Map<HTMLElement, VoidFunction>()
-
   init = () => {
     const { service } = this
-
     this.render()
-
     this.service.subscribe(() => {
       this.api = accordion.connect(service.state, service.send, normalizeProps)
       this.render()
     })
-
     this.service.start()
   }
 
@@ -36,11 +31,6 @@ export class Accordion {
 
   private get items() {
     return Array.from(this.rootEl!.querySelectorAll<HTMLElement>(".accordion-item"))
-  }
-
-  private renderRoot = () => {
-    const rootEl = this.rootEl
-    this.disposable.set(rootEl, spreadProps(this.rootEl, this.api.rootProps))
   }
 
   private renderItem = (itemEl: HTMLElement) => {
@@ -53,22 +43,14 @@ export class Accordion {
     if (!itemTriggerEl) throw new Error("Expected triggerEl to be defined")
     if (!itemContentEl) throw new Error("Expected contentEl to be defined")
 
-    const cleanup = this.disposable.get(itemEl)
-    cleanup?.()
-
-    const cleanups = [
-      spreadProps(itemEl, this.api.getItemProps({ value })),
-      spreadProps(itemTriggerEl, this.api.getItemTriggerProps({ value })),
-      spreadProps(itemContentEl, this.api.getItemContentProps({ value })),
-    ]
-
-    this.disposable.set(itemEl, () => {
-      cleanups.forEach((fn) => fn())
-    })
+    spreadProps(itemEl, this.api.getItemProps({ value }))
+    spreadProps(itemTriggerEl, this.api.getItemTriggerProps({ value }))
+    spreadProps(itemContentEl, this.api.getItemContentProps({ value }))
   }
 
   render = () => {
-    this.renderRoot()
+    spreadProps(this.rootEl, this.api.rootProps)
+
     this.items.forEach((itemEl) => {
       this.renderItem(itemEl)
     })

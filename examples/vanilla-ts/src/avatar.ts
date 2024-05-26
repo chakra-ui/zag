@@ -15,8 +15,6 @@ export class Avatar {
     this.api = avatar.connect(this.service.state, this.service.send, normalizeProps)
   }
 
-  private disposable = new Map<HTMLElement, VoidFunction>()
-
   init = () => {
     const { service } = this
     this.render()
@@ -33,15 +31,13 @@ export class Avatar {
   }
 
   render = () => {
-    this.disposable.forEach((dispose) => dispose())
-
     const rootEl = this.rootEl
-    this.disposable.set(rootEl, spreadProps(this.rootEl, this.api.rootProps))
+    spreadProps(this.rootEl, this.api.rootProps)
 
     const imageEl = rootEl.querySelector<HTMLElement>(".avatar-image")
-    if (imageEl) this.disposable.set(imageEl, spreadProps(imageEl, this.api.imageProps))
+    if (imageEl) spreadProps(imageEl, this.api.imageProps)
 
     const fallbackEl = rootEl.querySelector<HTMLElement>(".avatar-fallback")
-    if (fallbackEl) this.disposable.set(fallbackEl, spreadProps(fallbackEl, this.api.fallbackProps))
+    if (fallbackEl) spreadProps(fallbackEl, this.api.fallbackProps)
   }
 }
