@@ -3,12 +3,12 @@ import { normalizeProps } from "./normalize-props"
 import { spreadProps } from "./spread-props"
 import { Component } from "./component"
 
-export class Checkbox extends Component<checkbox.Context, checkbox.Api<any>> {
+export class Checkbox extends Component<checkbox.Context, checkbox.Api> {
   initService(context: checkbox.Context) {
-    this.service = checkbox.machine(context)
+    return checkbox.machine(context)
   }
 
-  initApi(): checkbox.Api<any> {
+  initApi() {
     return checkbox.connect(this.service.state, this.service.send, normalizeProps)
   }
 

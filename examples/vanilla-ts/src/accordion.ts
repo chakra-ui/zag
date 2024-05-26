@@ -3,12 +3,12 @@ import { normalizeProps } from "./normalize-props"
 import { spreadProps } from "./spread-props"
 import { Component } from "./component"
 
-export class Accordion extends Component<accordion.Context, accordion.Api<any>> {
+export class Accordion extends Component<accordion.Context, accordion.Api> {
   initService(context: accordion.Context) {
-    this.service = accordion.machine(context)
+    return accordion.machine(context)
   }
 
-  initApi(): accordion.Api<any> {
+  initApi() {
     return accordion.connect(this.service.state, this.service.send, normalizeProps)
   }
 

@@ -1,3 +1,5 @@
+import { Machine } from "@zag-js/core"
+
 interface ComponentInterface<Api> {
   rootEl: HTMLElement
   service: ReturnType<any>
@@ -16,11 +18,11 @@ export abstract class Component<Context, Api> implements ComponentInterface<Api>
   constructor(rootEl: HTMLElement | null, context: Context) {
     if (!rootEl) throw new Error("Root element not found")
     this.rootEl = rootEl
-    this.initService(context)
+    this.service = this.initService(context)
     this.api = this.initApi()
   }
 
-  abstract initService(context: Context): void
+  abstract initService(context: Context): Machine<any, any, any>
   abstract initApi(): Api
 
   init = () => {

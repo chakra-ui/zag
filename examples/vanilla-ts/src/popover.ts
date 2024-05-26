@@ -3,12 +3,12 @@ import { normalizeProps } from "./normalize-props"
 import { spreadProps } from "./spread-props"
 import { Component } from "./component"
 
-export class Popover extends Component<popover.Context, popover.Api<any>> {
+export class Popover extends Component<popover.Context, popover.Api> {
   initService(context: popover.Context) {
-    this.service = popover.machine(context)
+    return popover.machine(context)
   }
 
-  initApi(): popover.Api<any> {
+  initApi() {
     return popover.connect(this.service.state, this.service.send, normalizeProps)
   }
 

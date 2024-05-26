@@ -3,12 +3,12 @@ import { normalizeProps } from "./normalize-props"
 import { spreadProps } from "./spread-props"
 import { Component } from "./component"
 
-export class Avatar extends Component<avatar.Context, avatar.Api<any>> {
+export class Avatar extends Component<avatar.Context, avatar.Api> {
   initService(context: avatar.Context) {
-    this.service = avatar.machine(context)
+    return avatar.machine(context)
   }
 
-  initApi(): avatar.Api<any> {
+  initApi() {
     return avatar.connect(this.service.state, this.service.send, normalizeProps)
   }
 
