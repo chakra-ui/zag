@@ -57,7 +57,7 @@ export default function Page() {
                 <div class="tour button__group">
                   <button {...api().prevTriggerProps}>Prev</button>
                   <button {...api().nextTriggerProps}>Next</button>
-                  {api().isLastStep && (
+                  {api().lastStep && (
                     <button {...api().closeTriggerProps} style={{ "margin-left": "auto" }}>
                       Close
                     </button>

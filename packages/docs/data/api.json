@@ -3933,11 +3933,11 @@
         "type": "boolean",
         "description": "Whether there is a previous step"
       },
-      "isFirstStep": {
+      "firstStep": {
         "type": "boolean",
         "description": "Whether the current step is the first step"
       },
-      "isLastStep": {
+      "lastStep": {
         "type": "boolean",
         "description": "Whether the current step is the last step"
       },
