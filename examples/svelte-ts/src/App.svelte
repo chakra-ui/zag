@@ -22,6 +22,7 @@
   import Index from "./routes/index.svelte"
   import MenuOptions from "./routes/menu-options.svelte"
   import Menu from "./routes/menu.svelte"
+  import NestedMenu from "./routes/nested-menu.svelte"
   import NumberInput from "./routes/number-input.svelte"
   import Pagination from "./routes/pagination.svelte"
   import PinInput from "./routes/pin-input.svelte"
@@ -68,6 +69,7 @@
     { path: "/file-upload", component: FileUpload },
     { path: "/floating-panel", component: FloatingPanel },
     { path: "/hover-card", component: HoverCard },
+    { path: "/nested-menu", component: NestedMenu },
     { path: "/menu", component: Menu },
     { path: "/menu-options", component: MenuOptions },
     { path: "/number-input", component: NumberInput },
