@@ -2257,8 +2257,8 @@ importers:
   packages/machines/date-picker:
     dependencies:
       '@internationalized/date':
-        specifier: 3.5.3
-        version: 3.5.3
+        specifier: 3.5.4
+        version: 3.5.4
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../anatomy
@@ -2930,8 +2930,8 @@ importers:
   packages/machines/time-picker:
     dependencies:
       '@internationalized/date':
-        specifier: 3.5.3
-        version: 3.5.3
+        specifier: 3.5.4
+        version: 3.5.4
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../anatomy
@@ -3182,8 +3182,8 @@ importers:
   packages/utilities/date-utils:
     devDependencies:
       '@internationalized/date':
-        specifier: 3.5.3
-        version: 3.5.3
+        specifier: 3.5.4
+        version: 3.5.4
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -3361,8 +3361,8 @@ importers:
   starters/react:
     dependencies:
       '@internationalized/date':
-        specifier: 3.5.3
-        version: 3.5.3
+        specifier: 3.5.4
+        version: 3.5.4
       '@tanstack/react-virtual':
         specifier: ^3.5.0
         version: 3.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5108,6 +5108,9 @@ packages:
 
   '@internationalized/date@3.5.3':
     resolution: {integrity: sha512-X9bi8NAEHAjD8yzmPYT2pdJsbe+tYSEBAfowtlxJVJdZR3aK8Vg7ZUT1Fm5M47KLzp/M1p1VwAaeSma3RT7biw==}
+
+  '@internationalized/date@3.5.4':
+    resolution: {integrity: sha512-qoVJVro+O0rBaw+8HPjUB1iH8Ihf8oziEnqMnvhJUSuVIrHOuZ6eNLHNvzXJKUvAtaDiqMnRlg8Z2mgh09BlUw==}
 
   '@internationalized/number@3.5.2':
     resolution: {integrity: sha512-4FGHTi0rOEX1giSkt5MH4/te0eHBq3cvAYsfLlpguV6pzJAReXymiYpE5wPCqKqjkUO3PIsyvk+tBiIV1pZtbA==}
@@ -14164,6 +14167,10 @@ snapshots:
       - supports-color
 
   '@internationalized/date@3.5.3':
+    dependencies:
+      '@swc/helpers': 0.5.6
+
+  '@internationalized/date@3.5.4':
     dependencies:
       '@swc/helpers': 0.5.6
 
