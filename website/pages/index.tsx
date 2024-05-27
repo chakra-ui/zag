@@ -75,8 +75,8 @@ export default function Home() {
             >
               A collection of framework-agnostic UI component patterns like{" "}
               <mark>accordion</mark>, <mark>menu</mark>, and <mark>dialog</mark>{" "}
-              that can be used to build design systems for React, Vue and
-              Solid.js
+              that can be used to build design systems for React, Vue, Solid.js
+              and Svelte
             </chakra.p>
           </Box>
 
