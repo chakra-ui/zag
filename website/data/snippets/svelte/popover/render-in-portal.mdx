@@ -1,0 +1,21 @@
+```svelte
+<script lang="ts">
+  import * as popover from "@zag-js/popover"
+  import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(popover.machine({ id: "1" }))
+
+  const api = $derived(popover.connect(snapshot, send, normalizeProps))
+</script>
+
+<button {...api.triggerProps}>Click me</button>
+
+<div use:portal {...api.positionerProps}>
+  <div {...api.contentProps}>
+    <div {...api.titleProps}>Presenters</div>
+    <div {...api.descriptionProps}>Description</div>
+    <button>Action Button</button>
+    <button {...api.closeTriggerProps}>X</button>
+  </div>
+</div>
+```

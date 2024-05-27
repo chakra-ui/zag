@@ -1,0 +1,19 @@
+svelte {13}
+
+<script lang="ts">
+  import * as numberInput from "@zag-js/number-input"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(numberInput.machine({ id: "1" }))
+
+  const api = $derived(numberInput.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.rootProps}>
+  <label {...api.labelProps}>Enter number:</label>
+  <div>
+    <div {...api.scrubberProps} />
+    <input {...api.inputProps} />
+  </div>
+</div>
+```

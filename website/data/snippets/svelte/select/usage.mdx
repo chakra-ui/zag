@@ -1,0 +1,51 @@
+```svelte
+<script lang="ts">
+  import * as select from "@zag-js/select"
+  import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const selectData = [
+    { label: "Nigeria", value: "NG" },
+    { label: "Japan", value: "JP" },
+    { label: "Korea", value: "KO" },
+    { label: "Kenya", value: "KE" },
+    { label: "United Kingdom", value: "UK" },
+    { label: "Ghana", value: "GH" },
+    { label: "Uganda", value: "UG" },
+  ]
+
+  const collection = select.collection({
+    items: selectData,
+    itemToString: (item) => item.label,
+    itemToValue: (item) => item.value,
+  })
+
+  const [snapshot, send] = useMachine(
+    select.machine({
+      id: "1",
+      collection,
+    }),
+  )
+
+  const api = $derived(select.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.rootProps}>
+  <div {...api.controlProps}>
+    <label {...api.labelProps}>Label</label>
+    <button {...api.triggerProps}>
+      {api.valueAsString || "Select option"}
+    </button>
+  </div>
+
+  <div use:portal {...api.positionerProps}>
+    <ul {...api.contentProps}>
+      {#each selectData as item}
+        <li {...api.getItemProps({ item })}>
+          <span {...api.getItemTextProps({ item })}>{item.label}</span>
+          <span {...api.getItemIndicatorProps({ item })}>✓</span>
+        </li>
+      {/each}
+    </ul>
+  </div>
+</div>
+```
