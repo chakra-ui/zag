@@ -109,7 +109,7 @@ importers:
         version: 3.2.5
       prettier-plugin-svelte:
         specifier: 3.2.3
-        version: 3.2.3(prettier@3.2.5)(svelte@5.0.0-next.136)
+        version: 3.2.3(prettier@3.2.5)(svelte@5.0.0-next.142)
       signale:
         specifier: 1.4.0
         version: 1.4.0
@@ -2006,13 +2006,13 @@ importers:
     devDependencies:
       '@sveltejs/package':
         specifier: 2.3.1
-        version: 2.3.1(svelte@5.0.0-next.136)(typescript@5.4.5)
+        version: 2.3.1(svelte@5.0.0-next.142)(typescript@5.4.5)
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
       svelte:
-        specifier: 5.0.0-next.136
-        version: 5.0.0-next.136
+        specifier: 5.0.0-next.142
+        version: 5.0.0-next.142
 
   packages/frameworks/vue:
     dependencies:
@@ -9712,7 +9712,7 @@ packages:
   lucide-react@0.379.0:
     resolution: {integrity: sha512-KcdeVPqmhRldldAAgptb8FjIunM2x2Zy26ZBh1RsEUcdLIvsEmbcw7KpzFYUy5BbpGeWhPu9Z9J5YXfStiXwhg==}
     peerDependencies:
-      react: 18.2.0
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
 
   lucide-solid@0.379.0:
     resolution: {integrity: sha512-m2tgErl5Gb4XX22XwSf0Gb++NWPA/8FjL2CvsmVgrlFRU2cX9t/cmZl6HBIlt+5hPjrWagUs35xBV4F+LHKlKw==}
@@ -11906,8 +11906,8 @@ packages:
     resolution: {integrity: sha512-FP79ZBvX7LTPrvEyYxaPBvPfnC76KCTWOC89qjIHt+Y+a/OuSSrRCWKiqvNP3SIRRKFpLqcXxkukyX1nAEMDtA==}
     engines: {node: '>=18'}
 
-  svelte@5.0.0-next.136:
-    resolution: {integrity: sha512-M3jHAIfWZ7K+hjZdvu2p53ZtWE843yubxJfjxeQw9XiwMYG5z6quCA5u8r23GrxAp20JBl36B6ucbZvLUf0Z/g==}
+  svelte@5.0.0-next.142:
+    resolution: {integrity: sha512-166tWw4DEKQaqt23r3eXLxQzzZd3z1bz8RzjK8TqT8YHlbUppGC2UHLsbtmAKtwkvF0qvp8miKtq0rDbQJi5UQ==}
     engines: {node: '>=18'}
 
   svg-parser@2.0.4:
@@ -13074,13 +13074,13 @@ snapshots:
     dependencies:
       '@babel/core': 7.24.5
       '@babel/helper-annotate-as-pure': 7.22.5
-      '@babel/helper-environment-visitor': 7.22.20
-      '@babel/helper-function-name': 7.23.0
+      '@babel/helper-environment-visitor': 7.24.6
+      '@babel/helper-function-name': 7.24.6
       '@babel/helper-member-expression-to-functions': 7.24.5
       '@babel/helper-optimise-call-expression': 7.22.5
       '@babel/helper-replace-supers': 7.24.1(@babel/core@7.24.5)
       '@babel/helper-skip-transparent-expression-wrappers': 7.22.5
-      '@babel/helper-split-export-declaration': 7.24.5
+      '@babel/helper-split-export-declaration': 7.24.6
       semver: 6.3.1
 
   '@babel/helper-environment-visitor@7.22.20': {}
@@ -13164,7 +13164,7 @@ snapshots:
   '@babel/helper-replace-supers@7.24.1(@babel/core@7.24.5)':
     dependencies:
       '@babel/core': 7.24.5
-      '@babel/helper-environment-visitor': 7.22.20
+      '@babel/helper-environment-visitor': 7.24.6
       '@babel/helper-member-expression-to-functions': 7.24.5
       '@babel/helper-optimise-call-expression': 7.22.5
 
@@ -13332,7 +13332,7 @@ snapshots:
       '@babel/core': 7.24.5
       '@babel/helper-annotate-as-pure': 7.22.5
       '@babel/helper-create-class-features-plugin': 7.24.0(@babel/core@7.24.5)
-      '@babel/helper-plugin-utils': 7.24.5
+      '@babel/helper-plugin-utils': 7.24.0
       '@babel/plugin-syntax-typescript': 7.23.3(@babel/core@7.24.5)
 
   '@babel/plugin-transform-typescript@7.24.5(@babel/core@7.24.5)':
@@ -15671,14 +15671,14 @@ snapshots:
     dependencies:
       solid-js: 1.8.17
 
-  '@sveltejs/package@2.3.1(svelte@5.0.0-next.136)(typescript@5.4.5)':
+  '@sveltejs/package@2.3.1(svelte@5.0.0-next.142)(typescript@5.4.5)':
     dependencies:
       chokidar: 3.6.0
       kleur: 4.1.5
       sade: 1.8.1
       semver: 7.6.0
-      svelte: 5.0.0-next.136
-      svelte2tsx: 0.7.3(svelte@5.0.0-next.136)(typescript@5.4.5)
+      svelte: 5.0.0-next.142
+      svelte2tsx: 0.7.3(svelte@5.0.0-next.142)(typescript@5.4.5)
     transitivePeerDependencies:
       - typescript
 
@@ -22178,10 +22178,10 @@ snapshots:
     dependencies:
       fast-diff: 1.3.0
 
-  prettier-plugin-svelte@3.2.3(prettier@3.2.5)(svelte@5.0.0-next.136):
+  prettier-plugin-svelte@3.2.3(prettier@3.2.5)(svelte@5.0.0-next.142):
     dependencies:
       prettier: 3.2.5
-      svelte: 5.0.0-next.136
+      svelte: 5.0.0-next.142
 
   prettier@2.8.8: {}
 
@@ -23200,11 +23200,11 @@ snapshots:
 
   svelte-routing@2.13.0: {}
 
-  svelte2tsx@0.7.3(svelte@5.0.0-next.136)(typescript@5.4.5):
+  svelte2tsx@0.7.3(svelte@5.0.0-next.142)(typescript@5.4.5):
     dependencies:
       dedent-js: 1.0.1
       pascal-case: 3.1.2
-      svelte: 5.0.0-next.136
+      svelte: 5.0.0-next.142
       typescript: 5.4.5
 
   svelte@5.0.0-next.115:
@@ -23223,7 +23223,7 @@ snapshots:
       magic-string: 0.30.7
       zimmerframe: 1.1.2
 
-  svelte@5.0.0-next.136:
+  svelte@5.0.0-next.142:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@jridgewell/sourcemap-codec': 1.4.15
