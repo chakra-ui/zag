@@ -74,7 +74,7 @@
     "@playwright/test": "1.44.0",
     "@swc/core": "1.5.7",
     "@types/babel__generator": "7.6.8",
-    "@types/babel__traverse": "7.20.5",
+    "@types/babel__traverse": "7.20.6",
     "@types/node": "20.12.11",
     "@types/signale": "1.4.7",
     "@typescript-eslint/eslint-plugin": "7.9.0",
