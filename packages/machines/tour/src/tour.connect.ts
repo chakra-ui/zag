@@ -18,8 +18,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const hasNextStep = state.context.hasNextStep
   const hasPrevStep = state.context.hasPrevStep
 
-  const isFirstStep = state.context.isFirstStep
-  const isLastStep = state.context.isLastStep
+  const firstStep = state.context.firstStep
+  const lastStep = state.context.lastStep
 
   const popperStyles = getPlacementStyles({
     strategy: "absolute",
@@ -39,8 +39,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     currentStep: step,
     hasNextStep,
     hasPrevStep,
-    isFirstStep,
-    isLastStep,
+    firstStep,
+    lastStep,
     addStep(step) {
       const next = steps.concat(step)
       send({ type: "STEPS.SET", value: next, src: "addStep" })

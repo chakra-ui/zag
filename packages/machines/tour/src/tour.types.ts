@@ -205,11 +205,11 @@ type ComputedContext = Readonly<{
   /**
    * Whether the current step is the first step
    */
-  isFirstStep: boolean
+  firstStep: boolean
   /**
    * Whether the current step is the last step
    */
-  isLastStep: boolean
+  lastStep: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -249,11 +249,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the current step is the first step
    */
-  isFirstStep: boolean
+  firstStep: boolean
   /**
    * Whether the current step is the last step
    */
-  isLastStep: boolean
+  lastStep: boolean
   /**
    * Add a new step to the tour
    */
