@@ -1,7 +1,7 @@
 ```svelte
 <script lang="ts">
   import * as dialog from "@zag-js/dialog"
-  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { portal, normalizeProps, useMachine } from "@zag-js/svelte"
 
   const [snapshot, send] = useMachine(dialog.machine({ id: "1" }))
   const api = $derived(dialog.connect(snapshot, send, normalizeProps))
