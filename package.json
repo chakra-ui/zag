@@ -90,7 +90,7 @@
     "find-packages": "10.0.4",
     "husky": "9.0.11",
     "json-format-highlight": "1.0.4",
-    "lint-staged": "15.2.2",
+    "lint-staged": "15.2.5",
     "node-fetch": "3.3.2",
     "plop": "4.0.1",
     "prettier": "3.2.5",
