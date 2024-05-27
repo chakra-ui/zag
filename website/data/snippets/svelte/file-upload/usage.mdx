@@ -1,0 +1,28 @@
+```svelte
+<script lang="ts">
+  import * as fileUpload from "@zag-js/file-upload"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(fileUpload.machine({ id: "1" }))
+
+  const api = $derived(fileUpload.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.rootProps}>
+  <div {...api.dropzoneProps}>
+    <input {...api.hiddenInputProps} />
+    <span>Drag your file(s) here</span>
+  </div>
+
+  <button {...api.triggerProps}>Choose file(s)</button>
+
+  <ul {...api.itemGroupProps}>
+    {#each api.acceptedFiles as file}
+      <li {...api.getItemProps({ file })}>
+        <div {...api.getItemNameProps({ file })}>{file.name}</div>
+        <button {...api.getItemDeleteTriggerProps({ file })}>Delete</button>
+      </li>
+    {/each}
+  </ul>
+</div>
+```
