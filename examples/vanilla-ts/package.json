@@ -79,6 +79,7 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
+    "nanoid": "^5.0.7",
     "typescript": "^5.4.5",
     "vite": "^5.2.11"
   }
