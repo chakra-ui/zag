@@ -25,7 +25,7 @@ export const Clipboard = defineComponent({
           <div {...api.controlProps}>
             <input {...api.inputProps} style={{ width: "100%" }} />
             <button {...api.triggerProps}>
-              {api.isCopied ? <ClipboardCheck /> : <ClipboardCopyIcon />}
+              {api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}
             </button>
           </div>
         </div>

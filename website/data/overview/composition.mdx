@@ -16,29 +16,31 @@ that, import the `mergeProps` utility provided by zag for your framework.
 ```jsx
 // 1. import mergeProps utility
 import { useMachine, mergeProps } from "@zag-js/react"
-import * as toggle from "@zag-js/toggle"
+import * as hoverCard from "@zag-js/hover-card"
 
 export function Toggle() {
   const [state, send] = useMachine(
-    toggle.machine({
+    hoverCard.machine({
       id: "1",
     }),
   )
-  const api = toggle.connect(state, send)
+  const api = hoverCard.connect(state, send)
 
   // 2. write your custom event handlers
-  const handleClick = () => {
+  const handleHover = () => {
     // do something
   }
 
   // 3. merge the props
-  const buttonProps = mergeProps(api.buttonProps, {
-    onClick: handleClick,
+  const triggerProps = mergeProps(api.triggerProps, {
+    onPointerEnter: handleHover,
   })
 
   return (
     // 4. spread the new props
-    <button {...buttonProps}>{api.isPressed ? "On" : "Off"}</button>
+    <a href="https://twitter.com/zag_js" target="_blank" {...api.triggerProps}>
+      {api.open ? "Open" : "Close"}
+    </a>
   )
 }
 ```

@@ -51,7 +51,7 @@
           <div class="tour button__group">
             <button {...api.prevTriggerProps}>Prev</button>
             <button {...api.nextTriggerProps}>Next</button>
-            {#if api.isLastStep}
+            {#if api.lastStep}
               <button {...api.closeTriggerProps} style="margin-left:auto;"> Close </button>
             {/if}
           </div>
