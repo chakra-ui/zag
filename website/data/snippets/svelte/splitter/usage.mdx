@@ -1,0 +1,28 @@
+```svelte
+<script lang="ts">
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import * as splitter from "@zag-js/splitter"
+
+  const [snapshot, send] = useMachine(
+    splitter.machine({
+      id: "1",
+      size: [
+        { id: "a", size: 50 },
+        { id: "b", size: 50 },
+      ],
+    }),
+  )
+
+  const api = $derived(splitter.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.rootProps}>
+  <div {...api.getPanelProps({ id: "a" })}>
+    <p>A</p>
+  </div>
+  <div {...api.getResizeTriggerProps({ id: "a:b" })} />
+  <div {...api.getPanelProps({ id: "b" })}>
+    <p>B</p>
+  </div>
+</div>
+```

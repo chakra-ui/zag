@@ -1,0 +1,33 @@
+```svelte
+<script lang="ts">
+  import * as signaturePad from "@zag-js/signature-pad"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(
+    signaturePad.machine({
+      id: "1",
+    }),
+  )
+
+  const api = $derived(signaturePad.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.rootProps}>
+  <label {...api.labelProps}>Signature Pad</label>
+
+  <div {...api.controlProps}>
+    <svg {...api.segmentProps}>
+      {#each api.paths as path}
+        <path {...api.getSegmentPathProps({ path })} />
+      {/each}
+      {#if api.currentPath}
+        <path {...api.getSegmentPathProps({ path: api.currentPath })} />
+      {/if}
+    </svg>
+
+    <button {...api.clearTriggerProps}>X</button>
+
+    <div {...api.guideProps} />
+  </div>
+</div>
+```

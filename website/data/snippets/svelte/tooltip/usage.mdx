@@ -1,0 +1,17 @@
+```svelte
+<script lang="ts">
+  import * as tooltip from "@zag-js/tooltip"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(tooltip.machine({ id: "1" }))
+
+  const api = $derived(tooltip.connect(snapshot, send, normalizeProps))
+</script>
+
+<button {...api.triggerProps}>Hover me</button>
+{#if api.open}
+  <div {...api.positionerProps}>
+    <div {...api.contentProps}>Tooltip</div>
+  </div>
+{/if}
+```

@@ -1,0 +1,27 @@
+```svelte
+<script lang="ts">
+  import * as rating from "@zag-js/rating-group"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(rating.machine({ id: "1", value: 2.5 }))
+
+  const api = $derived(rating.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.rootProps}>
+  <label {...api.labelProps}>Rate:</label>
+  <div {...api.controlProps}>
+    {#each api.items as index}
+      {@const snapshot = api.getItemState({ index })}
+      <span {...api.getItemProps({ index })}>
+        {#if snapshot.half}
+          {@render HalfStar()}
+        {:else}
+          {@render Star()}
+        {/if}
+      </span>
+    {/each}
+  </div>
+  <input {...api.hiddenInputProps} data-testid="hidden-input" />
+</div>
+```
