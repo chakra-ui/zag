@@ -9,7 +9,7 @@
 
 <button {...api.triggerProps}>Open Dialog</button>
 {#if api.open}
-  <div use:portal {...api.backdropProps}></div>
+  <div use:portal {...api.backdropProps} />
   <div use:portal {...api.positionerProps}>
     <div {...api.contentProps}>
       <h2 {...api.titleProps}>Edit profile</h2>

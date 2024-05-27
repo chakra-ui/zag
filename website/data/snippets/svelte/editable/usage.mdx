@@ -1,0 +1,16 @@
+```svelte
+<script lang="ts">
+  import * as editable from "@zag-js/editable"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+  const [snapshot, send] = useMachine(editable.machine({ id: "1" }))
+
+  const api = $derived(editable.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.rootProps}>
+  <div {...api.areaProps}>
+    <input {...api.inputProps} />
+    <span {...api.previewProps} />
+  </div>
+</div>
+```
