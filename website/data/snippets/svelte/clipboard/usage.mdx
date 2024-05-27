@@ -1,0 +1,27 @@
+```svelte
+<script lang="ts">
+  import * as clipboard from "@zag-js/clipboard"
+  import { useMachine, normalizeProps } from "@zag-js/react"
+  import { ClipboardCheck, ClipboardCopyIcon } from "lucide-svelte"
+  import { useId } from "react"
+
+  const [snapshot, send] = useMachine(
+    clipboard.machine({
+      id: "1",
+      value: "https://github/com/chakra-ui/zag",
+    }),
+  )
+
+  const api = $derived(clipboard.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.rootProps}>
+  <label {...api.labelProps}>Copy this link</label>
+  <div {...api.controlProps}>
+    <input {...api.inputProps} />
+    <button {...api.triggerProps}>
+      {api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}
+    </button>
+  </div>
+</div>
+```

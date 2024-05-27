@@ -1,0 +1,15 @@
+```svelte
+<script lang="ts">
+  import * as collapsible from "@zag-js/collapsible"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(collapsible.machine({ id: "1" }))
+
+  const api = $derived(collapsible.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.rootProps}>
+  <button {...api.triggerProps}>Collapse Trigger</button>
+  <div {...api.contentProps}>Collape Content</div>
+</div>
+```

@@ -1,0 +1,58 @@
+```svelte
+<script lang="ts">
+  import * as combobox from "@zag-js/combobox"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const comboboxData = [
+    { label: "Zambia", code: "ZA" },
+    { label: "Benin", code: "BN" },
+    //...
+  ]
+
+  let options = $state.frozen(comboboxData)
+
+  const collection = combobox.collection({
+    items: comboboxData,
+    itemToValue: (item) => item.code,
+    itemToString: (item) => item.label,
+  })
+
+  const [snapshot, send] = useMachine(
+    combobox.machine({
+      id: "1",
+      collection,
+      onOpenChange() {
+        options = comboboxData
+      },
+      onInputValueChange({ inputValue }) {
+        const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(inputValue.toLowerCase()))
+        const newOptions = filtered.length > 0 ? filtered : comboboxData
+
+        collection.setItems(newOptions)
+        options = newOptions
+      },
+    }),
+  )
+
+  const api = $derived(combobox.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.rootProps}>
+  <label {...api.labelProps}>Select country</label>
+  <div {...api.controlProps}>
+    <input {...api.inputProps} />
+    <button {...api.getTriggerProps()}>▼</button>
+  </div>
+</div>
+<div {...api.positionerProps}>
+  {#if options.length > 0}
+    <ul {...api.contentProps}>
+      {#each options as item}
+        <li {...api.getItemProps({ item })}>
+          {item.label}
+        </li>
+      {/each}
+    </ul>
+  {/if}
+</div>
+```

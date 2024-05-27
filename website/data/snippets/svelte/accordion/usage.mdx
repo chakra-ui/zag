@@ -1,0 +1,31 @@
+```svelte
+<script lang="ts">
+<script lang="ts">
+  import * as accordion from "@zag-js/accordion"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const data = [
+    { title: "Watercraft", content: "Sample accordion content" },
+    { title: "Automobiles", content: "Sample accordion content" },
+    { title: "Aircrafts", content: "Sample accordion content" },
+  ]
+
+  const [snapshot, send] = useMachine(accordion.machine({ id: "1" }))
+  const api = $derived(accordion.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.rootProps}>
+  {#each data as item}
+    <div {...api.getItemProps({ value: item.item.title })}>
+      <h3>
+        <button {...api.getItemTriggerProps({ value: item.item.title })}>
+          {item.title}
+        </button>
+      </h3>
+      <div {...api.getItemContentProps({ value: item.item.title })}>
+        {item.content}
+      </div>
+    </div>
+  {/each}
+</div>
+```
