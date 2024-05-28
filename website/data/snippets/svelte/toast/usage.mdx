@@ -28,14 +28,7 @@
   // Single toast created above
   import Toast from "./toast.svelte"
 
-  const [snapshot, send] = useMachine(
-    toast.group.machine({
-      id: "1",
-      placement: "bottom-end",
-      overlap: true,
-      removeDelay: 200,
-    }),
-  )
+  const [snapshot, send] = useMachine(toast.group.machine({ id: "1" }))
 
   const api = $derived(toast.group.connect(snapshot, send, normalizeProps))
 
