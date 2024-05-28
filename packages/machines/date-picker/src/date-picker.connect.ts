@@ -21,7 +21,7 @@ import {
   setYear,
 } from "@zag-js/date-utils"
 import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, isComposingEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk } from "@zag-js/utils"
@@ -667,8 +667,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          const evt = getNativeEvent(event)
-          if (evt.isComposing) return
+          if (isComposingEvent(event)) return
           if (event.key !== "Enter") return
           if (isUnavailable(state.context.focusedValue)) return
           send({ type: "INPUT.ENTER", value: event.currentTarget.value, index })

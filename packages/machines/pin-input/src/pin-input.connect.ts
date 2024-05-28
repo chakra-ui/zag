@@ -1,5 +1,5 @@
 import { getEventKey, getNativeEvent, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, getBeforeInputValue, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, getBeforeInputValue, isComposingEvent, visuallyHiddenStyle } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant } from "@zag-js/utils"
 import { parts } from "./pin-input.anatomy"
@@ -137,10 +137,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          const evt = getNativeEvent(event)
 
-          if (evt.isComposing) return
-          if (isModifierKey(evt)) return
+          if (isComposingEvent(event)) return
+          if (isModifierKey(event)) return
 
           const keyMap: EventKeyMap = {
             Backspace() {

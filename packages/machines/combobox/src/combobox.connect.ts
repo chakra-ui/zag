@@ -1,12 +1,5 @@
-import {
-  clickIfLink,
-  getEventKey,
-  getNativeEvent,
-  isContextMenuEvent,
-  isLeftClick,
-  type EventKeyMap,
-} from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, isDownloadingEvent, isOpeningInNewTab } from "@zag-js/dom-query"
+import { clickIfLink, getEventKey, isContextMenuEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr, isComposingEvent, isDownloadingEvent, isOpeningInNewTab } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
@@ -177,8 +170,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         if (event.defaultPrevented) return
         if (!interactive) return
 
-        const evt = getNativeEvent(event)
-        if (evt.ctrlKey || evt.shiftKey || evt.isComposing) return
+        if (event.ctrlKey || event.shiftKey || isComposingEvent(event)) return
 
         const openOnKeyPress = state.context.openOnKeyPress
         const isModifierKey = event.ctrlKey || event.metaKey || event.shiftKey
@@ -210,7 +202,6 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
             }
           },
           Enter(event) {
-            if (evt.isComposing) return
             send({ type: "INPUT.ENTER", keypress })
             if (open) {
               event.preventDefault()
@@ -252,9 +243,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         },
         onClick(event) {
           if (event.defaultPrevented) return
-          const evt = getNativeEvent(event)
           if (!interactive) return
-          if (!isLeftClick(evt)) return
+          if (!isLeftClick(event)) return
           send("TRIGGER.CLICK")
         },
         onPointerDown(event) {

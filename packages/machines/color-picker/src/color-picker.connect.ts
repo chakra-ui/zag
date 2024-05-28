@@ -3,7 +3,6 @@ import {
   getEventKey,
   getEventPoint,
   getEventStep,
-  getNativeEvent,
   isLeftClick,
   isModifierKey,
   type EventKeyMap,
@@ -186,11 +185,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "group",
         onPointerDown(event) {
           if (!interactive) return
+          if (!isLeftClick(event)) return
+          if (isModifierKey(event)) return
 
-          const evt = getNativeEvent(event)
-          if (!isLeftClick(evt) || isModifierKey(evt)) return
-
-          const point = getEventPoint(evt)
+          const point = getEventPoint(event)
           const channel = { xChannel, yChannel }
 
           send({ type: "AREA.POINTER_DOWN", point, channel, id: "area" })
@@ -329,11 +327,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "presentation",
         onPointerDown(event) {
           if (!interactive) return
+          if (!isLeftClick(event)) return
+          if (isModifierKey(event)) return
 
-          const evt = getNativeEvent(event)
-          if (!isLeftClick(evt) || isModifierKey(evt)) return
-
-          const point = getEventPoint(evt)
+          const point = getEventPoint(event)
           send({ type: "CHANNEL_SLIDER.POINTER_DOWN", channel, point, id: channel, orientation })
 
           event.preventDefault()

@@ -3,7 +3,6 @@ import {
   clickIfLink,
   getEventKey,
   getEventPoint,
-  getNativeEvent,
   isContextMenuEvent,
   isLeftClick,
   isModifierKey,
@@ -141,8 +140,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getContextTriggerId(state.context),
       onPointerDown(event) {
         if (event.pointerType === "mouse") return
-        const evt = getNativeEvent(event)
-        const point = getEventPoint(evt)
+        const point = getEventPoint(event)
         send({ type: "CONTEXT_MENU_START", point })
       },
       onPointerCancel(event) {
@@ -158,8 +156,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send("CONTEXT_MENU_CANCEL")
       },
       onContextMenu(event) {
-        const evt = getNativeEvent(event)
-        const point = getEventPoint(evt)
+        const point = getEventPoint(event)
         send({ type: "CONTEXT_MENU", point })
         event.preventDefault()
       },
@@ -192,12 +189,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onPointerLeave(event) {
         if (event.pointerType !== "mouse") return
-        const evt = getNativeEvent(event)
 
         const disabled = dom.isTargetDisabled(event.currentTarget)
         if (disabled || !isSubmenu) return
 
-        const point = getEventPoint(evt)
+        const point = getEventPoint(event)
         send({ type: "TRIGGER_POINTERLEAVE", target: event.currentTarget, point })
       },
       onClick(event) {
@@ -207,8 +203,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onPointerDown(event) {
         const disabled = dom.isTargetDisabled(event.currentTarget)
-        const evt = getNativeEvent(event)
-        if (!isLeftClick(evt) || disabled || isContextMenuEvent(event)) return
+        if (!isLeftClick(event) || disabled || isContextMenuEvent(event)) return
         event.preventDefault()
         if (!dom.isTriggerItem(event.currentTarget)) {
           send({ type: "TRIGGER_CLICK", target: event.currentTarget })
@@ -291,11 +286,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onKeyDown(event) {
         if (event.defaultPrevented) return
+        if (!isSelfTarget(event)) return
 
-        const evt = getNativeEvent(event)
-        if (!isSelfTarget(evt)) return
+        const target = getEventTarget<Element>(event)
 
-        const target = getEventTarget<Element>(evt)
         const sameMenu = target?.closest("[role=menu]") === event.currentTarget || target === event.currentTarget
         if (!sameMenu) return
 

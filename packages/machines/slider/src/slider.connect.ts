@@ -2,7 +2,6 @@ import {
   getEventKey,
   getEventPoint,
   getEventStep,
-  getNativeEvent,
   isLeftClick,
   isModifierKey,
   type EventKeyMap,
@@ -255,11 +254,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: dom.getControlStyle(),
       onPointerDown(event) {
         if (!interactive) return
+        if (!isLeftClick(event)) return
+        if (isModifierKey(event)) return
 
-        const evt = getNativeEvent(event)
-        if (!isLeftClick(evt) || isModifierKey(evt)) return
-
-        const point = getEventPoint(evt)
+        const point = getEventPoint(event)
         send({ type: "POINTER_DOWN", point })
 
         event.preventDefault()
