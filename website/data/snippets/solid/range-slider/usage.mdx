@@ -7,7 +7,7 @@ export function RangeSlider() {
   const [state, send] = useMachine(
     slider.machine({
       id: createUniqueId(),
-      name: ["min", "max"],
+      name: "quantity",
       value: [10, 60],
     }),
   )
