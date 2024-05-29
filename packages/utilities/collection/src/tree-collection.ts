@@ -1,29 +1,28 @@
 export interface TreeNodeOptions {
   value: string
-  label?: string
   data?: any
-  expanded?: boolean
-  selected?: boolean
   children?: TreeNodeOptions[]
+}
+
+export interface FlatTreeNode {
+  value: string
+  parentValue?: string
+  data?: any
 }
 
 export class TreeNode {
   data: any
   children: TreeNode[] = []
-  label: string
   value: string
   expanded = false
   selected = false
   parentNode: TreeNode | null = null
 
   constructor(options: TreeNodeOptions) {
-    const { data, value, label, expanded, selected, children } = options
+    const { data, value, children } = options
 
     this.data = data
     this.value = value
-    this.label = label || value
-    this.expanded = !!expanded
-    this.selected = !!selected
 
     children?.forEach((child) => {
       this.appendChild(new TreeNode(child))
@@ -34,17 +33,12 @@ export class TreeNode {
     return this.parentNode ? this.parentNode.depth + 1 : 0
   }
 
-  getChildValues() {
-    return this.children.map((child) => child.value)
-  }
-
-  removeChild(value: string) {
+  removeChild(value: string): void {
     let index = this.children.findIndex((item) => item.value === value)
     if (index !== -1) this.children.splice(index, 1)
-    return index !== -1 ? index : undefined
   }
 
-  insertBefore(referenceValue: string, newNode: TreeNode) {
+  insertBefore(referenceValue: string, newNode: TreeNode): void {
     let index = this.children.findIndex((item) => item.value === referenceValue)
     if (index === -1) {
       this.children.forEach((child) => child.insertBefore(referenceValue, newNode))
@@ -55,7 +49,7 @@ export class TreeNode {
     this.children.splice(index, 0, newNode)
   }
 
-  insertAfter(referenceValue: string, newNode: TreeNode) {
+  insertAfter(referenceValue: string, newNode: TreeNode): void {
     let index = this.children.findIndex((item) => item.value === referenceValue)
     if (index === -1) {
       this.children.forEach((child) => child.insertAfter(referenceValue, newNode))
@@ -65,12 +59,12 @@ export class TreeNode {
     this.children.splice(index + 1, 0, newNode)
   }
 
-  appendChild(node: TreeNode) {
+  appendChild(node: TreeNode): void {
     this.children.push(node)
     node.parentNode = this
   }
 
-  insertChild(node: TreeNode, targetValue: string) {
+  insertChild(node: TreeNode, targetValue: string): void {
     let index = this.children.findIndex((item) => item.value === targetValue)
 
     if (index === -1) {
@@ -91,36 +85,40 @@ export class TreeNode {
     return null
   }
 
-  isRootNode() {
+  isRootNode(): boolean {
     return this.parentNode === null
   }
 
-  isChildNode() {
+  isChildNode(): boolean {
     return this.parentNode !== null
   }
 
   getRootNode(): TreeNode {
-    let curr = this.parentNode
-    while (curr && curr.parentNode !== null) {
-      curr = curr.parentNode
+    let result = this.parentNode
+    while (result && result.parentNode !== null) {
+      result = result.parentNode
     }
-    return curr || this
+    return result || this
   }
 
   sortChildren(compareFn: (a: TreeNode, b: TreeNode) => number) {
     this.children.sort(compareFn)
   }
 
-  hasChildNodes() {
+  hasChildNodes(): boolean {
     return this.children.length > 0
   }
 
-  get firstChild() {
-    return this.children[0]
+  get firstChild(): TreeNode | null {
+    return this.children[0] || null
   }
 
-  get lastChild() {
-    return this.children[this.children.length - 1]
+  get lastChild(): TreeNode | null {
+    return this.children[this.children.length - 1] || null
+  }
+
+  get siblings(): TreeNode[] {
+    return this.parentNode?.children ?? []
   }
 
   get nextSibling(): TreeNode | null {
@@ -135,49 +133,33 @@ export class TreeNode {
     return this.parentNode.children[index - 1]
   }
 
-  replaceChild(value: string, newNode: TreeNode) {
+  replaceChild(value: string, newNode: TreeNode): void {
     let index = this.children.findIndex((item) => item.value === value)
     if (index === -1) return
     newNode.parentNode = this
     this.children.splice(index, 1, newNode)
   }
 
-  clone() {
-    const clone = new TreeNode({ value: this.value, label: this.label, data: this.data })
+  clone(): TreeNode {
+    const clone = new TreeNode({ value: this.value, data: this.data })
     this.children.forEach((child) => clone.appendChild(child.clone()))
     return clone
   }
 
-  isSameNode(node: TreeNode) {
+  isSameNode(node: TreeNode): boolean {
     return this.value === node.value
   }
 
-  contains(value: string) {
+  contains(value: string): boolean {
     return this.children.some((item) => item.value === value)
   }
 
-  expand(propagate = false) {
-    if (!this.hasChildNodes()) return
-    this.expanded = true
-    if (propagate) {
-      this.children.forEach((child) => child.expand())
-    }
-  }
-
-  collapse(propagate = false) {
-    if (!this.hasChildNodes()) return
-    this.expanded = false
-    if (propagate) {
-      this.children.forEach((child) => child.collapse())
-    }
-  }
-
-  getNextSibling(node: TreeNode) {
+  getNextSibling(node: TreeNode): TreeNode {
     let index = this.children.findIndex((item) => item.value === node.value)
     return this.children[index + 1]
   }
 
-  getPreviousSibling(node: TreeNode) {
+  getPreviousSibling(node: TreeNode): TreeNode {
     let index = this.children.findIndex((item) => item.value === node.value)
     return this.children[index - 1]
   }
@@ -194,7 +176,7 @@ export class TreeNode {
     this.parentNode?.removeChild(this.value)
   }
 
-  reparentNode(value: string, target: { value: string; depth: number }) {
+  reparentNode(value: string, target: { value: string; depth: number }): void {
     const node = this.findNode(value)
     if (!node) throw new Error(`Node not found for value: ${JSON.stringify(value)}`)
 
@@ -223,5 +205,117 @@ export class TreeNode {
     }
 
     return json
+  }
+
+  walk(options: TreeWalkerOptions = {}): TreeWalker {
+    return new TreeWalker(this, options)
+  }
+
+  comparePosition(nodeA: TreeNode, nodeB: TreeNode): number {
+    const pathA = this.getNodePath(nodeA.value)
+    const pathB = this.getNodePath(nodeB.value)
+    const depth = Math.min(pathA.length, pathB.length)
+    for (let i = 0; i < depth; i++) {
+      if (pathA[i] !== pathB[i]) {
+        return pathA[i] < pathB[i] ? -1 : 1
+      }
+    }
+    return pathA.length === pathB.length ? 0 : pathA.length < pathB.length ? -1 : 1
+  }
+
+  flatten(): FlatTreeNode[] {
+    const flatNodes: FlatTreeNode[] = []
+    const walker = this.walk()
+    let node = walker.firstChild()
+    while (node) {
+      flatNodes.push({
+        value: node.value,
+        parentValue: node.parentNode?.value,
+        data: node.data,
+      })
+      node = walker.nextNode()
+    }
+    return flatNodes
+  }
+}
+
+interface TreeWalkerOptions {
+  acceptNode?: (node: TreeNode) => boolean
+}
+
+class TreeWalker {
+  currentNode: TreeNode | null = null
+  private acceptNode: (node: TreeNode) => boolean
+
+  constructor(
+    root: TreeNode,
+    public options: TreeWalkerOptions = {},
+  ) {
+    this.acceptNode = options.acceptNode || (() => true)
+    this.currentNode = root
+  }
+
+  firstChild(): TreeNode | null {
+    if (!this.currentNode?.hasChildNodes()) return null
+    let result: TreeNode | null | undefined = this.currentNode.firstChild
+    while (result && !this.acceptNode(result) && result.nextSibling) {
+      result = result.nextSibling
+    }
+    if (!result) return null
+    this.currentNode = result
+    return this.currentNode
+  }
+
+  lastChild(): TreeNode | null {
+    if (!this.currentNode?.hasChildNodes()) return null
+    let result: TreeNode | null | undefined = this.currentNode.lastChild
+    while (result && !this.acceptNode(result) && result.previousSibling) {
+      result = result.previousSibling
+    }
+    if (!result) return null
+    this.currentNode = result
+    return this.currentNode
+  }
+
+  previousSibling(): TreeNode | null {
+    let result: TreeNode | null | undefined = this.currentNode?.previousSibling
+    while (result && !this.acceptNode(result) && result.previousSibling) {
+      result = result.previousSibling
+    }
+    if (!result) return null
+    this.currentNode = result
+    return this.currentNode
+  }
+
+  nextSibling(): TreeNode | null {
+    let result: TreeNode | null | undefined = this.currentNode?.nextSibling
+    while (result && !this.acceptNode(result) && result.nextSibling) {
+      result = result.nextSibling
+    }
+    if (!result) return null
+    this.currentNode = result
+    return this.currentNode
+  }
+
+  parentNode(): TreeNode | null {
+    if (!this.currentNode) return null
+    if (!this.currentNode.parentNode) return null
+    this.currentNode = this.currentNode.parentNode
+    return this.currentNode
+  }
+
+  nextNode(): TreeNode | null {
+    if (!this.currentNode) return null
+    if (this.currentNode.hasChildNodes()) return this.firstChild()
+    if (this.currentNode.nextSibling) return this.nextSibling()
+    this.currentNode = this.currentNode.parentNode
+    return this.nextSibling()
+  }
+
+  previousNode(): TreeNode | null {
+    if (!this.currentNode) return null
+    if (this.currentNode.previousSibling) return this.previousSibling()
+    this.currentNode = this.currentNode.parentNode
+    return this.previousSibling()
   }
 }

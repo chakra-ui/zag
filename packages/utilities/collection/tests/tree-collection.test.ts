@@ -18,8 +18,8 @@ beforeEach(() => {
 
 describe("tree collection", () => {
   test("insert child", () => {
-    expect(rootNode.firstChild.value).toBe("branch1")
-    expect(rootNode.lastChild.value).toBe("child2")
+    expect(rootNode.firstChild?.value).toBe("branch1")
+    expect(rootNode.lastChild?.value).toBe("child2")
 
     rootNode.insertChild(new TreeNode({ value: "child3" }), "branch1")
 
@@ -69,7 +69,7 @@ describe("tree collection", () => {
     `)
   })
 
-  test("reparent: root -> level 1", () => {
+  test("reparent: lvl 0 -> lvl 1", () => {
     rootNode.reparentNode("child1", { value: "child1-1", depth: 1 })
 
     expect(rootNode.children).toMatchInlineSnapshot(`
@@ -100,7 +100,7 @@ describe("tree collection", () => {
     `)
   })
 
-  test("reparent: level 1 -> root", () => {
+  test("reparent: lvl 1 -> lvl 0", () => {
     rootNode.reparentNode("child1-1", { value: "child1", depth: 0 })
 
     expect(rootNode.children).toMatchInlineSnapshot(`
@@ -169,5 +169,49 @@ describe("tree collection", () => {
   test("get root node", () => {
     const node = rootNode.findNode("child1-1")?.getRootNode()
     expect(node?.value).toBe("root")
+  })
+})
+
+describe("tree walker", () => {
+  test("walk", () => {
+    const walker = rootNode.walk()
+    const seen = new Set<string>()
+    let node: TreeNode | null
+    while ((node = walker.nextNode())) {
+      seen.add(node.value)
+    }
+    expect(seen).toMatchInlineSnapshot(`
+      Set {
+        "branch1",
+        "child1-1",
+        "child1-2",
+        "child1",
+        "child2",
+      }
+    `)
+  })
+
+  test("walk + acceptNode", () => {
+    const walker = rootNode.walk({
+      acceptNode(node) {
+        if (node.value === "child1-1") return false
+        return true
+      },
+    })
+
+    const seen = new Set<string>()
+    let node: TreeNode | null
+    while ((node = walker.nextNode())) {
+      seen.add(node.value)
+    }
+
+    expect(seen).toMatchInlineSnapshot(`
+      Set {
+        "branch1",
+        "child1-2",
+        "child1",
+        "child2",
+      }
+    `)
   })
 })
