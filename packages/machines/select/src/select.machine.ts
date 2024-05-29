@@ -46,7 +46,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
       initial: ctx.open ? "open" : "idle",
 
-      created: ["syncInitialValues"],
+      created: ["syncCollection"],
 
       entry: ["syncSelectElement"],
 
@@ -54,6 +54,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         open: ["toggleVisibility"],
         value: ["syncSelectedItems", "syncSelectElement"],
         highlightedValue: ["syncHighlightedItem"],
+        collection: ["syncCollection"],
       },
 
       on: {
@@ -589,7 +590,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         setCollection(ctx, evt) {
           ctx.collection = evt.value
         },
-        syncInitialValues(ctx) {
+        syncCollection(ctx) {
           const selectedItems = ctx.collection.items(ctx.value)
           const valueAsString = ctx.collection.itemsToString(selectedItems)
 
