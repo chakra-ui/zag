@@ -69,7 +69,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
       const label = this.itemToString(item)
       const disabled = this.itemToDisabled(item)
 
-      hashSet.add(JSON.stringify({ value, disabled }))
+      hashSet.add(JSON.stringify({ value, label, disabled }))
 
       const node: CollectionNode<T> = {
         // freeze item to prevent mutation by frameworks like Solid.js
