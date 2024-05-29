@@ -10,6 +10,12 @@ export interface FlatTreeNode {
   data?: any
 }
 
+export const enum TreeNodePosition {
+  SAME = 0,
+  PRECEDING = -1,
+  FOLLOWING = 1,
+}
+
 export class TreeNode {
   data: any
   children: TreeNode[] = []
@@ -211,16 +217,31 @@ export class TreeNode {
     return new TreeWalker(this, options)
   }
 
-  comparePosition(nodeA: TreeNode, nodeB: TreeNode): number {
-    const pathA = this.getNodePath(nodeA.value)
-    const pathB = this.getNodePath(nodeB.value)
-    const depth = Math.min(pathA.length, pathB.length)
-    for (let i = 0; i < depth; i++) {
-      if (pathA[i] !== pathB[i]) {
-        return pathA[i] < pathB[i] ? -1 : 1
-      }
+  /**
+   * The returns an relative position of `otherNode` position relative to this node.
+   */
+  compareNodePosition(otherNode: TreeNode | null): TreeNodePosition {
+    if (!otherNode || this.isSameNode(otherNode)) return TreeNodePosition.SAME
+
+    if (this.contains(otherNode.value)) return TreeNodePosition.PRECEDING
+    if (otherNode.contains(this.value)) return TreeNodePosition.FOLLOWING
+
+    const nodeAPath = this.getNodePath(otherNode.value)
+    const nodeBPath = otherNode.getNodePath(this.value)
+
+    if (nodeAPath.length < nodeBPath.length) return TreeNodePosition.PRECEDING
+    if (nodeAPath.length > nodeBPath.length) return TreeNodePosition.FOLLOWING
+
+    let i = 0
+    while (i < nodeAPath.length) {
+      if (nodeAPath[i] !== nodeBPath[i]) break
+      i++
     }
-    return pathA.length === pathB.length ? 0 : pathA.length < pathB.length ? -1 : 1
+
+    if (nodeAPath[i] < nodeBPath[i]) return TreeNodePosition.PRECEDING
+    if (nodeAPath[i] > nodeBPath[i]) return TreeNodePosition.FOLLOWING
+
+    return TreeNodePosition.SAME
   }
 
   flatten(): FlatTreeNode[] {

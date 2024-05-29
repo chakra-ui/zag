@@ -1,4 +1,4 @@
-import { TreeNode } from "../src/tree-collection"
+import { TreeNode, TreeNodePosition } from "../src/tree-collection"
 
 let rootNode: TreeNode
 
@@ -17,6 +17,12 @@ beforeEach(() => {
 })
 
 describe("tree collection", () => {
+  test("compare position", () => {
+    const branchNode = rootNode.findNode("branch1")
+    const childNode = rootNode.findNode("child1")
+    expect(branchNode?.compareNodePosition(childNode)).toBe(TreeNodePosition.FOLLOWING)
+  })
+
   test("insert child", () => {
     expect(rootNode.firstChild?.value).toBe("branch1")
     expect(rootNode.lastChild?.value).toBe("child2")
