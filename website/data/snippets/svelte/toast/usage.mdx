@@ -20,84 +20,48 @@
   <button onclick={api.dismiss}>Close</button>
 </div>
 
-<!-- 2. Create the toast provider -->
+<!-- 2. Create the toast group provider -->
 <script lang="ts">
-  import { onMount } from "svelte"
+  import { setContext } from "svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
   // Single toast created above
-  import Toast from "./toast.svelte"
+  import ToastItem from "$lib/components/toast-item.svelte"
 
   const [snapshot, send] = useMachine(toast.group.machine({ id: "1" }))
 
   const api = $derived(toast.group.connect(snapshot, send, normalizeProps))
 
-  function handleEvent(event: any) {
-    const method = event.type.replace("toast-", "")
-    const args = event.detail
-    const result = (api as any)[method](args[0], args[1])
-    const resultEvent = new CustomEvent(`toast-${method}-result`, { detail: result })
-    window.dispatchEvent(resultEvent)
-  }
+  // Set the context
+  setContext("toast", api)
 
-  onMount(() => {
-    Object.keys(api).forEach((method) => {
-      window.addEventListener(`toast-${method}`, handleEvent)
-    })
-
-    return () => {
-      Object.keys(api).forEach((method) => {
-        window.removeEventListener(`toast-${method}`, handleEvent)
-      })
-    }
-  })
+  const { children }: any = $props()
 </script>
+
+{@render children()}
 
 {#each api.getPlacements() as placement}
   <div {...api.getGroupProps({ placement })}>
     {#each api.getToastsByPlacement(placement) as toast (toast.id)}
-      <Toast actor={toast} />
+      <ToastItem actor={toast} />
     {/each}
   </div>
 {/each}
 
-<!-- 3. Place the toast provider in root of your app -->
+<!-- 3. Wrap your app with the toast group provider -->
 <script lang="ts">
   import { ToastProvier } from "./toast-provider.svelte"
 </script>
 
-<div>
-  <h1>App Root</h1>
-</div>
-<ToastProvider />
+<ToastProvider>
+  <div>
+    <h1>App Root</h1>
+  </div>
+</ToastProvider>
 
-<!-- 4. Create js/ts util file to consume toast api -->
-import type { GroupApi } from "@zag-js/toast"
-
-export const toast = new Proxy(
-  {},
-  {
-    get(_, method: string) {
-      return (...args: any[]) => {
-        let eventResult = null
-        const event = new CustomEvent(`toast-${method}`, {
-          detail: args,
-        })
-        const handleEventResult = (event: any) => {
-          eventResult = event.detail
-        }
-        window.addEventListener(`toast-${method}-result`, handleEventResult, { once: true })
-        window.dispatchEvent(event)
-        window.removeEventListener(`toast-${method}-result`, handleEventResult)
-        return eventResult
-      }
-    },
-  },
-) as GroupApi
-
-<!-- 5. Consume toast api in your app through toast-util.ts -->
+<!-- 4. Within your app -->
 <script lang="ts">
-  import { toast } from "./toast-util"
+  const toast = getContext("toast")
 </script>
 
 <div>
