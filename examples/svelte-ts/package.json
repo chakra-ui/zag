@@ -10,7 +10,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.3",
+    "@internationalized/date": "3.5.4",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -81,7 +81,7 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-svelte": "0.378.0",
+    "lucide-svelte": "0.379.0",
     "svelte-routing": "2.13.0"
   },
   "devDependencies": {

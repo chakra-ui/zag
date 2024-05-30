@@ -13,6 +13,6 @@ type AnyPointerEvent = MouseEvent | TouchEvent | PointerEvent
 
 const isTouchEvent = (event: AnyPointerEvent): event is TouchEvent => "touches" in event && event.touches.length > 0
 
-export function getEventPoint(event: AnyPointerEvent, type: PointType = "client") {
+export function getEventPoint(event: any, type: PointType = "client") {
   return isTouchEvent(event) ? pointFromTouch(event, type) : pointFromMouse(event, type)
 }

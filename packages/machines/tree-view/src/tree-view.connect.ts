@@ -1,5 +1,5 @@
-import { getEventKey, getNativeEvent, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
-import { contains, dataAttr, getEventTarget } from "@zag-js/dom-query"
+import { getEventKey, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
+import { contains, dataAttr, getEventTarget, isComposingEvent } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tree-view.anatomy"
 import { dom } from "./tree-view.dom"
@@ -98,10 +98,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-multiselectable": state.context.selectionMode === "multiple" || undefined,
       onKeyDown(event) {
         if (event.defaultPrevented) return
-        const evt = getNativeEvent(event)
-        if (evt.isComposing) return
+        if (isComposingEvent(event)) return
 
-        const target = getEventTarget<HTMLElement>(evt)
+        const target = getEventTarget<HTMLElement>(event)
 
         const node = target?.closest<HTMLElement>("[role=treeitem]")
         if (!node) return

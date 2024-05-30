@@ -6,6 +6,19 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.51.2](./#0.51.2) - 2024-05-28
+
+### Fixed
+
+- **General**
+
+  - Fix events merging in `mergeProps` utility
+  - Fix issue where keydown event might not fire in React due to `nativeEvent` currentTarget not been set sometimes.
+
+- **Avatar**
+
+  - Improve image load check to use `naturalWidth|Height` instead of `currentSrc`
+
 ## [0.51.0](./#0.51.0) - 2024-05-23
 
 ### Fixed

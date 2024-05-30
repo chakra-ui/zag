@@ -1,4 +1,4 @@
-import { getEventKey, getEventStep, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventKey, getEventStep, type EventKeyMap } from "@zag-js/dom-event"
 import { dataAttr, getEventTarget, isSelfTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./floating-panel.anatomy"
@@ -67,8 +67,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onKeyDown(event) {
         if (event.defaultPrevented) return
-        const evt = getNativeEvent(event)
-        if (!isSelfTarget(evt)) return
+        if (!isSelfTarget(event)) return
 
         const step = getEventStep(event) * state.context.gridSize
         const keyMap: EventKeyMap = {
@@ -184,8 +183,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       onPointerDown(event) {
         if (!state.context.canDrag || event.button == 2) return
 
-        const target = getEventTarget<HTMLElement>(getNativeEvent(event))
-
+        const target = getEventTarget<HTMLElement>(event)
         if (target?.closest("button") || target?.closest("[data-no-drag]")) {
           return
         }

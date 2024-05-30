@@ -9,7 +9,7 @@ export default defineComponent({
     const [state, send] = useMachine(
       slider.machine({
         id: "1",
-        name: ["min", "max"],
+        name: "quantity",
         value: [10, 60],
       }),
     )

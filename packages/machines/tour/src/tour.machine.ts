@@ -49,8 +49,8 @@ export function machine(userContext: UserDefinedContext) {
         },
         hasNextStep: (ctx) => ctx.currentStepIndex < ctx.steps.length - 1,
         hasPrevStep: (ctx) => ctx.currentStepIndex > 0,
-        isFirstStep: (ctx) => ctx.currentStepIndex === 0,
-        isLastStep: (ctx) => ctx.currentStepIndex === ctx.steps.length - 1,
+        firstStep: (ctx) => ctx.currentStepIndex === 0,
+        lastStep: (ctx) => ctx.currentStepIndex === ctx.steps.length - 1,
       },
 
       watch: {
@@ -122,7 +122,7 @@ export function machine(userContext: UserDefinedContext) {
             ],
             STOP: [
               {
-                guard: "isLastStep",
+                guard: "lastStep",
                 target: "closed",
                 actions: ["invokeOnStop", "invokeOnComplete", "clearStep"],
               },
@@ -137,7 +137,7 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
-        isLastStep: (ctx) => ctx.isLastStep,
+        lastStep: (ctx) => ctx.lastStep,
         isValidStep: (ctx) => ctx.step != null,
         completeOnSkip: (ctx) => ctx.skipBehavior === "complete",
       },
@@ -340,7 +340,7 @@ export function machine(userContext: UserDefinedContext) {
 const invoke = {
   stepChange(ctx: MachineContext) {
     ctx.onStepChange?.({
-      complete: ctx.isLastStep,
+      complete: ctx.lastStep,
       step: ctx.step,
       count: ctx.steps.length,
       index: ctx.currentStepIndex,

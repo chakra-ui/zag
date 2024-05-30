@@ -1,4 +1,4 @@
-import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
 import { dataAttr, isSafari, isSelfTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toggle-group.anatomy"
@@ -89,8 +89,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          const evt = getNativeEvent(event)
-          if (!isSelfTarget(evt)) return
+          if (!isSelfTarget(event)) return
           if (itemState.disabled) return
 
           const keyMap: EventKeyMap = {

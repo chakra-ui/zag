@@ -1,5 +1,5 @@
-import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr, isComposingEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./time-picker.anatomy"
@@ -122,9 +122,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "INPUT.BLUR", value })
       },
       onKeyDown(event) {
+        if (isComposingEvent(event)) return
         if (event.key !== "Enter") return
-        const evt = getNativeEvent(event)
-        if (evt.isComposing) return
         send({ type: "INPUT.ENTER", value: event.currentTarget.value })
         event.preventDefault()
       },
@@ -183,8 +182,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-roledescription": "timepicker",
       "aria-label": "timepicker",
       onKeyDown(event) {
-        const evt = getNativeEvent(event)
-        if (evt.isComposing) return
+        if (event.defaultPrevented) return
+        if (isComposingEvent(event)) return
 
         const keyMap: EventKeyMap = {
           ArrowUp() {

@@ -1,11 +1,4 @@
-import {
-  getEventKey,
-  getEventPoint,
-  getNativeEvent,
-  getRelativePoint,
-  isLeftClick,
-  type EventKeyMap,
-} from "@zag-js/dom-event"
+import { getEventKey, getEventPoint, getRelativePoint, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./rating-group.anatomy"
@@ -113,14 +106,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-half": dataAttr(itemState.half),
         onPointerDown(event) {
           if (!interactive) return
-          const evt = getNativeEvent(event)
-          if (isLeftClick(evt)) {
+          if (isLeftClick(event)) {
             event.preventDefault()
           }
         },
         onPointerMove(event) {
           if (!interactive) return
-          const point = getEventPoint(getNativeEvent(event))
+          const point = getEventPoint(event)
           const relativePoint = getRelativePoint(point, event.currentTarget)
           const percentX = relativePoint.getPercentValue({
             orientation: "horizontal",

@@ -1,5 +1,16 @@
 # @zag-js/core
 
+## 0.51.2
+
+### Patch Changes
+
+- [#1514](https://github.com/chakra-ui/zag/pull/1514)
+  [`62eb21b`](https://github.com/chakra-ui/zag/commit/62eb21b60355dd0645936baf4692315134e7488c) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix events merging in `mergeProps` utility
+
+- Updated dependencies []:
+  - @zag-js/store@0.51.2
+
 ## 0.51.1
 
 ### Patch Changes

@@ -53,7 +53,8 @@ test.describe("tabs", () => {
     await I.seeTabContent("agnes")
   })
 
-  test("automatic: on arrow right, loop focus + selection", async () => {
+  // @flaky
+  test.skip("automatic: on arrow right, loop focus + selection", async () => {
     await I.clickTab("nils")
     await I.pressKey("ArrowRight", 3)
 

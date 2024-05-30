@@ -1,5 +1,14 @@
 # @zag-js/interact-outside
 
+## 0.51.2
+
+### Patch Changes
+
+- Updated dependencies [[`70c2108`](https://github.com/chakra-ui/zag/commit/70c2108928746583687ac50ec51bc701c217ffdc)]:
+  - @zag-js/dom-event@0.51.2
+  - @zag-js/dom-query@0.51.2
+  - @zag-js/utils@0.51.2
+
 ## 0.51.1
 
 ### Patch Changes

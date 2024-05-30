@@ -1,4 +1,4 @@
-import { getEventKey, getNativeEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventKey, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
 import {
   ariaAttr,
   dataAttr,
@@ -356,9 +356,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       "aria-labelledby": dom.getLabelId(state.context),
       tabIndex: 0,
       onKeyDown(event) {
-        const evt = getNativeEvent(event)
         if (!interactive) return
-        if (!isSelfTarget(evt)) return
+        if (!isSelfTarget(event)) return
 
         // select should not be navigated using tab key so we prevent it
         // but, we want to allow tabbing within the content when composing

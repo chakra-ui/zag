@@ -1,5 +1,5 @@
 import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, isComposingEvent } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tags-input.anatomy"
 import { dom } from "./tags-input.dom"
@@ -132,8 +132,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
       onKeyDown(event) {
         if (event.defaultPrevented) return
-        const evt = getNativeEvent(event)
-        if (evt.isComposing) return
+        if (isComposingEvent(event)) return
 
         // handle composition when used as combobox
         const target = event.currentTarget as HTMLElement
@@ -166,7 +165,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send("DELETE")
           },
           Enter(event) {
-            if (evt.isComposing) return
             if (isCombobox && isExpanded) return
             send("ENTER")
             event.preventDefault()
@@ -253,8 +251,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          const evt = getNativeEvent(event)
-          if (evt.isComposing) return
+          if (isComposingEvent(event)) return
 
           const keyMap: EventKeyMap = {
             Enter() {

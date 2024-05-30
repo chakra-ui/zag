@@ -15,7 +15,7 @@ const fetchMachine = createMachine({
   context: {
     "isValidStep": false,
     "completeOnSkip": false,
-    "isLastStep": false
+    "lastStep": false
   },
   activities: ["trackBoundarySize"],
   exit: ["clearStep", "cleanupFns"],
@@ -80,7 +80,7 @@ const fetchMachine = createMachine({
           actions: ["invokeOnSkip", "setNextStep"]
         }],
         STOP: [{
-          cond: "isLastStep",
+          cond: "lastStep",
           target: "closed",
           actions: ["invokeOnStop", "invokeOnComplete", "clearStep"]
         }, {
@@ -101,6 +101,6 @@ const fetchMachine = createMachine({
   guards: {
     "isValidStep": ctx => ctx["isValidStep"],
     "completeOnSkip": ctx => ctx["completeOnSkip"],
-    "isLastStep": ctx => ctx["isLastStep"]
+    "lastStep": ctx => ctx["lastStep"]
   }
 });

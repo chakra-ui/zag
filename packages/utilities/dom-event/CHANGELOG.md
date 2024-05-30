@@ -1,5 +1,18 @@
 # @zag-js/dom-event
 
+## 0.51.2
+
+### Patch Changes
+
+- [`70c2108`](https://github.com/chakra-ui/zag/commit/70c2108928746583687ac50ec51bc701c217ffdc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where keydown event might not fire in React due to
+  `nativeEvent` currentTarget not been set sometimes.
+
+- Updated dependencies [[`70c2108`](https://github.com/chakra-ui/zag/commit/70c2108928746583687ac50ec51bc701c217ffdc)]:
+  - @zag-js/dom-query@0.51.2
+  - @zag-js/text-selection@0.51.2
+  - @zag-js/types@0.51.2
+
 ## 0.51.1
 
 ### Patch Changes
