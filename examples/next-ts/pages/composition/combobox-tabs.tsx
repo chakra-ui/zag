@@ -106,12 +106,12 @@ export default function Page() {
 
   return (
     <main>
-      <div {...comboboxApi.rootProps}>
+      <div {...comboboxApi.getRootProps()}>
         <pre>{comboboxApi.value}</pre>
-        <label {...comboboxApi.labelProps}>Select country </label>
-        <div {...comboboxApi.controlProps}>
+        <label {...comboboxApi.getLabelProps()}>Select country </label>
+        <div {...comboboxApi.getControlProps()}>
           <input
-            {...mergeProps(comboboxApi.inputProps, {
+            {...mergeProps(comboboxApi.getInputProps(), {
               onKeyDown(event) {
                 if (!comboboxApi.open) return
 
@@ -130,10 +130,10 @@ export default function Page() {
           <button {...comboboxApi.getTriggerProps()}>▼</button>
         </div>
       </div>
-      <div {...comboboxApi.positionerProps}>
-        <ul {...comboboxApi.contentProps}>
-          <div {...tabApi.rootProps} style={{ position: "relative" }}>
-            <div {...tabApi.listProps} style={{ position: "sticky", top: "0", insetInline: "0" }}>
+      <div {...comboboxApi.getPositionerProps()}>
+        <ul {...comboboxApi.getContentProps()}>
+          <div {...tabApi.getRootProps()} style={{ position: "relative" }}>
+            <div {...tabApi.getListProps()} style={{ position: "sticky", top: "0", insetInline: "0" }}>
               {categories.map((category) => {
                 const currentItems = matches[category]
                 return (
@@ -157,7 +157,7 @@ export default function Page() {
             {categories.map((category) => (
               <div key={category} {...tabApi.getContentProps({ value: category })}>
                 {selectedTab === category && (
-                  <div {...comboboxApi.listProps}>
+                  <div {...comboboxApi.getListProps()}>
                     {items.map((item) => (
                       <li key={item.value} {...comboboxApi.getItemProps({ item, persistFocus: true })}>
                         {item.label}

@@ -13,15 +13,15 @@ export function FileUpload() {
   const api = createMemo(() => fileUpload.connect(state, send, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
-      <div {...api().dropzoneProps}>
-        <input {...api().hiddenInputProps} />
+    <div {...api().getRootProps()}>
+      <div {...api().getDropzoneProps()}>
+        <input {...api().getHiddenInputProps()} />
         <span>Drag your file(s) here</span>
       </div>
 
-      <button {...api().triggerProps}>Choose file(s)</button>
+      <button {...api().getTriggerProps()}>Choose file(s)</button>
 
-      <ul {...api().itemGroupProps}>
+      <ul {...api().getItemGroupProps()}>
         <Index each={api().acceptedFiles}>
           {(file) => (
             <li {...api().getItemProps({ file: file() })}>

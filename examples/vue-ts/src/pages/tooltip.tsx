@@ -31,11 +31,11 @@ export default defineComponent({
                 </Teleport>
               )}
 
-              <button {...api2.triggerProps}>Over me</button>
+              <button {...api2.getTriggerProps()}>Over me</button>
               {api2.open && (
                 <Teleport to="body">
-                  <div {...api2.positionerProps}>
-                    <div class="tooltip-content" data-testid="tip-2-tooltip" {...api2.contentProps}>
+                  <div {...api2.getPositionerProps()}>
+                    <div class="tooltip-content" data-testid="tip-2-tooltip" {...api2.getContentProps()}>
                       Tooltip 2
                     </div>
                   </div>

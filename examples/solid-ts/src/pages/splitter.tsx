@@ -27,7 +27,7 @@ export default function Page() {
   return (
     <>
       <main class="splitter">
-        <div {...api().rootProps}>
+        <div {...api().getRootProps()}>
           <div {...api().getPanelProps({ id: "a" })}>
             <p>A</p>
           </div>

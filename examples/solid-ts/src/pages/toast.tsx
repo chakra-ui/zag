@@ -13,17 +13,17 @@ function ToastItem(props: { actor: toast.Service }) {
   const api = createMemo(() => toast.connect(state, send, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
-      <span {...api().ghostBeforeProps} />
+    <div {...api().getRootProps()}>
+      <span {...api().getGhostBeforeProps()} />
       <div data-scope="toast" data-part="progressbar" />
-      <p {...api().titleProps}>
+      <p {...api().getTitleProps()}>
         {api().type === "loading" && <LoaderBar />}
         {api().title}
       </p>
-      <button {...api().closeTriggerProps}>
+      <button {...api().getCloseTriggerProps()}>
         <XIcon />
       </button>
-      <span {...api().ghostAfterProps} />
+      <span {...api().getGhostAfterProps()} />
     </div>
   )
 }

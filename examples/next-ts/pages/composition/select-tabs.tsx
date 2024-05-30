@@ -83,27 +83,27 @@ export default function Page() {
 
   return (
     <main className="select">
-      <div {...selectApi.rootProps}>
-        <div {...selectApi.controlProps}>
-          <button {...selectApi.triggerProps}>
+      <div {...selectApi.getRootProps()}>
+        <div {...selectApi.getControlProps()}>
+          <button {...selectApi.getTriggerProps()}>
             {selectedTab === "branch" ? <GitBranchIcon /> : <TagIcon />}
             <span>{selectApi.valueAsString || "Select option"}</span>
-            <span {...selectApi.indicatorProps}>▼</span>
+            <span {...selectApi.getIndicatorProps()}>▼</span>
           </button>
         </div>
 
         <Portal>
-          <div {...selectApi.positionerProps}>
-            <ul {...selectApi.contentProps}>
-              <div {...tabApi.rootProps}>
-                <div {...tabApi.listProps}>
+          <div {...selectApi.getPositionerProps()}>
+            <ul {...selectApi.getContentProps()}>
+              <div {...tabApi.getRootProps()}>
+                <div {...tabApi.getListProps()}>
                   <button {...tabApi.getTriggerProps({ value: "branch" })}>Branch</button>
                   <button {...tabApi.getTriggerProps({ value: "tag" })}>Tags</button>
                 </div>
 
                 <div {...tabApi.getContentProps({ value: "branch" })}>
                   {selectedTab === "branch" && (
-                    <div {...selectApi.listProps}>
+                    <div {...selectApi.getListProps()}>
                       {items.map((item) => (
                         <li key={item.value} {...selectApi.getItemProps({ item, persistFocus: true })}>
                           {item.label}
@@ -115,7 +115,7 @@ export default function Page() {
 
                 <div {...tabApi.getContentProps({ value: "tag" })}>
                   {selectedTab === "tag" && (
-                    <div {...selectApi.listProps}>
+                    <div {...selectApi.getListProps()}>
                       {items.map((item) => (
                         <li key={item.value} {...selectApi.getItemProps({ item, persistFocus: true })}>
                           {item.label}

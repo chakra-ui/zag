@@ -33,10 +33,10 @@
 
 <main>
   <div>
-    <button data-testid="trigger" {...root.triggerProps}> Click me </button>
+    <button data-testid="trigger" {...root.getTriggerProps()}> Click me </button>
 
-    <div use:portal {...root.positionerProps}>
-      <ul data-testid="menu" {...root.contentProps}>
+    <div use:portal {...root.getPositionerProps()}>
+      <ul data-testid="menu" {...root.getContentProps()}>
         {#each level1 as item, i (i)}
           {@const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })}
           <li data-testid={item.value} {...props}>
@@ -46,8 +46,8 @@
       </ul>
     </div>
 
-    <div use:portal {...sub.positionerProps}>
-      <ul data-testid="more-tools-submenu" {...sub.contentProps}>
+    <div use:portal {...sub.getPositionerProps()}>
+      <ul data-testid="more-tools-submenu" {...sub.getContentProps()}>
         {#each level2 as item, i (i)}
           {@const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })}
           <li data-testid={item.value} {...props}>
@@ -57,8 +57,8 @@
       </ul>
     </div>
 
-    <div use:portal {...sub2.positionerProps}>
-      <ul data-testid="open-nested-submenu" {...sub2.contentProps}>
+    <div use:portal {...sub2.getPositionerProps()}>
+      <ul data-testid="open-nested-submenu" {...sub2.getContentProps()}>
         {#each level3 as item, i (i)}
           <li data-testid={item.value} {...sub2.getItemProps({ value: item.value })}>
             {item.label}

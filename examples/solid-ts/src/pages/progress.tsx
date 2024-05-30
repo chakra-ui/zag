@@ -18,12 +18,12 @@ export default function Page() {
   return (
     <>
       <main class="progress">
-        <div {...api().rootProps}>
-          <div {...api().labelProps}>Upload progress</div>
-          <div {...api().trackProps}>
-            <div {...api().rangeProps} />
+        <div {...api().getRootProps()}>
+          <div {...api().getLabelProps()}>Upload progress</div>
+          <div {...api().getTrackProps()}>
+            <div {...api().getRangeProps()} />
           </div>
-          <div {...api().valueTextProps}>{api().valueAsString}</div>
+          <div {...api().getValueTextProps()}>{api().valueAsString}</div>
           <div>
             <button onClick={() => api().setValue((api().value ?? 0) - 20)}>Decrease</button>
             <button onClick={() => api().setValue((api().value ?? 0) + 20)}>Increase</button>

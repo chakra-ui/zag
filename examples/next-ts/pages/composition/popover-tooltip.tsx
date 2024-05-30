@@ -27,27 +27,27 @@ export default function Page() {
   return (
     <main className="popover">
       <div data-part="root">
-        <button {...mergeProps(popoverApi.triggerProps, tooltipApi.triggerProps)}>Click me</button>
+        <button {...mergeProps(popoverApi.getTriggerProps(), tooltipApi.getTriggerProps())}>Click me</button>
 
         {tooltipApi.open && (
-          <div {...tooltipApi.positionerProps}>
-            <div className="tooltip-content" {...tooltipApi.contentProps}>
+          <div {...tooltipApi.getPositionerProps()}>
+            <div className="tooltip-content" {...tooltipApi.getContentProps()}>
               Tooltip
             </div>
           </div>
         )}
 
         <Portal>
-          <div {...popoverApi.positionerProps}>
-            <div {...popoverApi.contentProps}>
-              <div {...popoverApi.titleProps}>Popover Title</div>
+          <div {...popoverApi.getPositionerProps()}>
+            <div {...popoverApi.getContentProps()}>
+              <div {...popoverApi.getTitleProps()}>Popover Title</div>
               <div data-part="body" data-testid="popover-body">
                 <a>Non-focusable Link</a>
                 <a href="#" data-testid="focusable-link">
                   Focusable Link
                 </a>
                 <input placeholder="input" />
-                <button {...popoverApi.closeTriggerProps}>X</button>
+                <button {...popoverApi.getCloseTriggerProps()}>X</button>
               </div>
             </div>
           </div>

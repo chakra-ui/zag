@@ -16,28 +16,28 @@ export default function Page() {
     <>
       <main class="tooltip" style={{ gap: "12px", "flex-direction": "row" }}>
         <div class="root">
-          <button data-testid="tip-1-trigger" {...api().triggerProps}>
+          <button data-testid="tip-1-trigger" {...api().getTriggerProps()}>
             Hover me
           </button>
 
           <Show when={api().open}>
             <Portal>
-              <div {...api().positionerProps}>
-                <div class="tooltip-content" data-testid="tip-1-tooltip" {...api().contentProps}>
+              <div {...api().getPositionerProps()}>
+                <div class="tooltip-content" data-testid="tip-1-tooltip" {...api().getContentProps()}>
                   Tooltip
                 </div>
               </div>
             </Portal>
           </Show>
 
-          <button data-testid="tip-2-trigger" {...api2().triggerProps}>
+          <button data-testid="tip-2-trigger" {...api2().getTriggerProps()}>
             Over me
           </button>
 
           <Show when={api2().open}>
             <Portal>
-              <div {...api2().positionerProps}>
-                <div class="tooltip-content" data-testid="tip-2-tooltip" {...api2().contentProps}>
+              <div {...api2().getPositionerProps()}>
+                <div class="tooltip-content" data-testid="tip-2-tooltip" {...api2().getContentProps()}>
                   Tooltip 2
                 </div>
               </div>

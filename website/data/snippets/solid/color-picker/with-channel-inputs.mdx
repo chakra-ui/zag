@@ -12,10 +12,10 @@ const ColorPicker = () => {
   const api = createMemo(() => colorPicker.connect(state, send, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
+    <div {...api().getRootProps()}>
       {/* ... */}
-      <div {...api().positionerProps}>
-        <div {...api().contentProps}>
+      <div {...api().getPositionerProps()}>
+        <div {...api().getContentProps()}>
           <Show when={api().format === "rgba"}>
             <div>
               <div>

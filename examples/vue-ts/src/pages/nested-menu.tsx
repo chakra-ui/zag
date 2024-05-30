@@ -37,13 +37,13 @@ export default defineComponent({
         <>
           <main>
             <div>
-              <button data-testid="trigger" {...root.value.triggerProps}>
+              <button data-testid="trigger" {...root.value.getTriggerProps()}>
                 Click me
               </button>
 
               <Teleport to="body">
-                <div {...root.value.positionerProps}>
-                  <ul data-testid="menu" {...root.value.contentProps}>
+                <div {...root.value.getPositionerProps()}>
+                  <ul data-testid="menu" {...root.value.getContentProps()}>
                     {level1.map((item) => {
                       const props = item.trigger
                         ? triggerItemProps.value
@@ -59,8 +59,8 @@ export default defineComponent({
               </Teleport>
 
               <Teleport to="body">
-                <div {...sub.value.positionerProps}>
-                  <ul data-testid="more-tools-submenu" {...sub.value.contentProps}>
+                <div {...sub.value.getPositionerProps()}>
+                  <ul data-testid="more-tools-submenu" {...sub.value.getContentProps()}>
                     {level2.map((item) => {
                       const props = item.trigger
                         ? triggerItem2Props.value
@@ -76,8 +76,8 @@ export default defineComponent({
               </Teleport>
 
               <Teleport to="body">
-                <div {...sub2.value.positionerProps}>
-                  <ul data-testid="open-nested-submenu" {...sub2.value.contentProps}>
+                <div {...sub2.value.getPositionerProps()}>
+                  <ul data-testid="open-nested-submenu" {...sub2.value.getContentProps()}>
                     {level3.map((item) => (
                       <li key={item.value} data-testid={item.value} {...sub2.value.getItemProps({ value: item.value })}>
                         {item.label}

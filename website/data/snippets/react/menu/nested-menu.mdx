@@ -30,11 +30,11 @@ export function NestedMenu() {
 
   return (
     <>
-      <button {...fileMenu.triggerProps}>Click me</button>
+      <button {...fileMenu.getTriggerProps()}>Click me</button>
 
       <Portal>
-        <div {...fileMenu.positionerProps}>
-          <ul {...fileMenu.contentProps}>
+        <div {...fileMenu.getPositionerProps()}>
+          <ul {...fileMenu.getContentProps()}>
             <li {...fileMenu.getItemProps({ value: "new-tab" })}>New tab</li>
             <li {...fileMenu.getItemProps({ value: "new-win" })}>New window</li>
             <li {...shareMenuTriggerProps}>Share</li>
@@ -45,8 +45,8 @@ export function NestedMenu() {
       </Portal>
 
       <Portal>
-        <div {...shareMenu.positionerProps}>
-          <ul {...shareMenu.contentProps}>
+        <div {...shareMenu.getPositionerProps()}>
+          <ul {...shareMenu.getContentProps()}>
             <li {...shareMenu.getItemProps({ value: "messages" })}>Messages</li>
             <li {...shareMenu.getItemProps({ value: "airdrop" })}>Airdrop</li>
             <li {...shareMenu.getItemProps({ value: "whatsapp" })}>WhatsApp</li>

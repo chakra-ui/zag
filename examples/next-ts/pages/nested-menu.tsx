@@ -39,13 +39,13 @@ export default function Page() {
     <>
       <main>
         <div>
-          <button data-testid="trigger" {...root.triggerProps}>
+          <button data-testid="trigger" {...root.getTriggerProps()}>
             Click me
           </button>
 
           <Portal>
-            <div {...root.positionerProps}>
-              <ul data-testid="menu" {...root.contentProps}>
+            <div {...root.getPositionerProps()}>
+              <ul data-testid="menu" {...root.getContentProps()}>
                 {level1.map((item) => {
                   const props = item.trigger ? triggerItemProps : root.getItemProps({ value: item.value })
                   return (
@@ -59,8 +59,8 @@ export default function Page() {
           </Portal>
 
           <Portal>
-            <div {...sub.positionerProps}>
-              <ul data-testid="more-tools-submenu" {...sub.contentProps}>
+            <div {...sub.getPositionerProps()}>
+              <ul data-testid="more-tools-submenu" {...sub.getContentProps()}>
                 {level2.map((item) => {
                   const props = item.trigger ? triggerItem2Props : sub.getItemProps({ value: item.value })
                   return (
@@ -74,8 +74,8 @@ export default function Page() {
           </Portal>
 
           <Portal>
-            <div {...sub2.positionerProps}>
-              <ul data-testid="open-nested-submenu" {...sub2.contentProps}>
+            <div {...sub2.getPositionerProps()}>
+              <ul data-testid="open-nested-submenu" {...sub2.getContentProps()}>
                 {level3.map((item) => (
                   <li key={item.value} data-testid={item.value} {...sub2.getItemProps({ value: item.value })}>
                     {item.label}

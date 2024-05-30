@@ -26,13 +26,13 @@ export default function Page() {
   return (
     <>
       <main class="select">
-        <div {...api().rootProps}>
+        <div {...api().getRootProps()}>
           {/* control */}
-          <div {...api().controlProps}>
-            <label {...api().labelProps}>Label</label>
-            <button {...api().triggerProps}>
+          <div {...api().getControlProps()}>
+            <label {...api().getLabelProps()}>Label</label>
+            <button {...api().getTriggerProps()}>
               {api().valueAsString || "Select option"}
-              <span {...api().indicatorProps}>▼</span>
+              <span {...api().getIndicatorProps()}>▼</span>
             </button>
           </div>
 
@@ -44,15 +44,15 @@ export default function Page() {
             }}
           >
             {/* Hidden select */}
-            <select {...api().hiddenSelectProps}>
+            <select {...api().getHiddenSelectProps()}>
               <Index each={selectData}>{(option) => <option value={option().value}>{option().label}</option>}</Index>
             </select>
           </form>
 
           {/* UI select */}
           <Portal>
-            <div {...api().positionerProps}>
-              <ul {...api().contentProps}>
+            <div {...api().getPositionerProps()}>
+              <ul {...api().getContentProps()}>
                 <Index each={selectData}>
                   {(item) => (
                     <li {...api().getItemProps({ item: item() })}>

@@ -14,7 +14,7 @@ export function TagsInput() {
   const api = createMemo(() => tagsInput.connect(state, send, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
+    <div {...api().getRootProps()}>
       <For each={api().value}>
         {(value, index) => (
           <span {...api().getItemProps({ index: index(), value })}>
@@ -30,7 +30,7 @@ export function TagsInput() {
           </span>
         )}
       </For>
-      <input placeholder="Add tag..." {...api().inputProps} />
+      <input placeholder="Add tag..." {...api().getInputProps()} />
     </div>
   )
 }

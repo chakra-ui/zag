@@ -105,10 +105,10 @@ export default function Page() {
 
   return (
     <main className="combobox">
-      <div {...mergeProps(api.getRootProps(), tagApi.rootProps)}>
+      <div {...mergeProps(api.getRootProps(), tagApi.getRootProps())}>
         <label {...api.getLabelProps()}>Select country {tagState.event.type}</label>
 
-        <div {...mergeProps(api.getControlProps(), tagApi.controlProps)}>
+        <div {...mergeProps(api.getControlProps(), tagApi.getControlProps())}>
           {tagApi.value.map((value, index) => (
             <span key={value} {...tagApi.getItemProps({ index, value })}>
               <div {...tagApi.getItemPreviewProps({ index, value })}>
@@ -122,7 +122,7 @@ export default function Page() {
           <input
             data-testid="input"
             placeholder="add tag"
-            {...mergeProps(api.getInputProps(), tagApi.inputProps, {
+            {...mergeProps(api.getInputProps(), tagApi.getInputProps(), {
               onKeyDown(event) {
                 // extra logic to add tag on Enter key
                 if (event.key === "Enter" && options.length === 0) {

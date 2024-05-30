@@ -22,23 +22,23 @@ export default function Page() {
   return (
     <>
       <main class="editable">
-        <div {...api().rootProps}>
-          <div {...api().areaProps}>
-            <input data-testid="input" {...api().inputProps} />
-            <span data-testid="preview" {...api().previewProps} />
+        <div {...api().getRootProps()}>
+          <div {...api().getAreaProps()}>
+            <input data-testid="input" {...api().getInputProps()} />
+            <span data-testid="preview" {...api().getPreviewProps()} />
           </div>
-          <div {...api().controlProps}>
+          <div {...api().getControlProps()}>
             <Show when={!api().editing}>
-              <button data-testid="edit-button" {...api().editTriggerProps}>
+              <button data-testid="edit-button" {...api().getEditTriggerProps()}>
                 Edit
               </button>
             </Show>
             <Show when={api().editing}>
               <>
-                <button data-testid="save-button" {...api().submitTriggerProps}>
+                <button data-testid="save-button" {...api().getSubmitTriggerProps()}>
                   Save
                 </button>
-                <button data-testid="cancel-button" {...api().cancelTriggerProps}>
+                <button data-testid="cancel-button" {...api().getCancelTriggerProps()}>
                   Cancel
                 </button>
               </>

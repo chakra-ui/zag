@@ -44,13 +44,13 @@ export default function Page() {
     <>
       <main>
         <div>
-          <button data-testid="trigger" {...api().triggerProps}>
-            Actions <span {...api().indicatorProps}>▾</span>
+          <button data-testid="trigger" {...api().getTriggerProps()}>
+            Actions <span {...api().getIndicatorProps()}>▾</span>
           </button>
 
           <Portal>
-            <div {...api().positionerProps}>
-              <div {...api().contentProps}>
+            <div {...api().getPositionerProps()}>
+              <div {...api().getContentProps()}>
                 <For each={radios()}>
                   {(item) => (
                     <div {...api().getOptionItemProps(item)}>
@@ -59,7 +59,7 @@ export default function Page() {
                     </div>
                   )}
                 </For>
-                <hr {...api().separatorProps} />
+                <hr {...api().getSeparatorProps()} />
                 <For each={checkboxes()}>
                   {(item) => (
                     <div {...api().getOptionItemProps(item)}>

@@ -49,9 +49,9 @@ function Combobox(props: Omit<combobox.Context, "id" | "collection">) {
   const comboApi = combobox.connect(comboState, comboSend, normalizeProps)
 
   return (
-    <div {...comboApi.rootProps} style={{ width: "100%" }}>
-      <input {...comboApi.inputProps} style={{ marginBottom: "12px" }} />
-      <div {...comboApi.contentProps} style={{ minHeight: "120px" }}>
+    <div {...comboApi.getRootProps()} style={{ width: "100%" }}>
+      <input {...comboApi.getInputProps()} style={{ marginBottom: "12px" }} />
+      <div {...comboApi.getContentProps()} style={{ minHeight: "120px" }}>
         {items.length === 0 && <div>No results found</div>}
         {items.map((item) => (
           <div key={item.label} {...comboApi.getItemProps({ item, persistFocus: true })}>
@@ -81,11 +81,11 @@ export default function Page() {
   return (
     <main>
       <div>
-        <button {...menuApi.triggerProps}>Actions ▾</button>
+        <button {...menuApi.getTriggerProps()}>Actions ▾</button>
         {menuApi.open && (
           <Portal>
-            <div {...menuApi.positionerProps}>
-              <ul {...menuApi.contentProps}>
+            <div {...menuApi.getPositionerProps()}>
+              <ul {...menuApi.getContentProps()}>
                 <Combobox onValueChange={onValueChange} />
               </ul>
             </div>

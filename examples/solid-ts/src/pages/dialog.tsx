@@ -20,36 +20,36 @@ export default function Page() {
     <>
       <main>
         <div>
-          <button {...parentDialog().triggerProps} data-testid="trigger-1">
+          <button {...parentDialog().getTriggerProps()} data-testid="trigger-1">
             Open Dialog
           </button>
           <div style={{ "min-height": "1200px" }} />
 
           <Show when={parentDialog().open}>
             <Portal>
-              <div {...parentDialog().backdropProps} />
-              <div {...parentDialog().positionerProps} data-testid="positioner-1">
-                <div {...parentDialog().contentProps}>
-                  <h2 {...parentDialog().titleProps}>Edit profile</h2>
-                  <p {...parentDialog().descriptionProps}>
+              <div {...parentDialog().getBackdropProps()} />
+              <div {...parentDialog().getPositionerProps()} data-testid="positioner-1">
+                <div {...parentDialog().getContentProps()}>
+                  <h2 {...parentDialog().getTitleProps()}>Edit profile</h2>
+                  <p {...parentDialog().getDescriptionProps()}>
                     Make changes to your profile here. Click save when you are done.
                   </p>
-                  <button {...parentDialog().closeTriggerProps} data-testid="close-1">
+                  <button {...parentDialog().getCloseTriggerProps()} data-testid="close-1">
                     X
                   </button>
                   <input type="text" placeholder="Enter name..." data-testid="input-1" />
                   <button data-testid="save-button-1">Save Changes</button>
 
-                  <button {...childDialog().triggerProps} data-testid="trigger-2">
+                  <button {...childDialog().getTriggerProps()} data-testid="trigger-2">
                     Open Nested
                   </button>
                   <Show when={childDialog().open}>
                     <Portal>
-                      <div {...childDialog().backdropProps} />
-                      <div {...childDialog().positionerProps} data-testid="positioner-2">
-                        <div {...childDialog().contentProps}>
-                          <h2 {...childDialog().titleProps}>Nested</h2>
-                          <button {...childDialog().closeTriggerProps} data-testid="close-2">
+                      <div {...childDialog().getBackdropProps()} />
+                      <div {...childDialog().getPositionerProps()} data-testid="positioner-2">
+                        <div {...childDialog().getContentProps()}>
+                          <h2 {...childDialog().getTitleProps()}>Nested</h2>
+                          <button {...childDialog().getCloseTriggerProps()} data-testid="close-2">
                             X
                           </button>
                           <button onClick={() => parentDialog().setOpen(false)} data-testid="special-close">

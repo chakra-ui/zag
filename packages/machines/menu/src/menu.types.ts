@@ -189,7 +189,7 @@ export type Service = Machine<MachineContext, MachineState>
  * -----------------------------------------------------------------------------*/
 
 export interface Api {
-  getGetItemProps(): (opts: ItemProps) => Record<string, any>
+  getItemProps: (opts: ItemProps) => Record<string, any>
   getTriggerProps(): Record<string, any>
 }
 

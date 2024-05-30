@@ -50,22 +50,22 @@ export default function Page() {
           <button data-testid="clear-value-button" onClick={() => api().clearValue()}>
             Clear Value
           </button>
-          <button {...api().clearTriggerProps}>Clear Trigger</button>
+          <button {...api().getClearTriggerProps()}>Clear Trigger</button>
           <br />
 
-          <div {...api().rootProps}>
-            <label {...api().labelProps}>Select country</label>
-            <div {...api().controlProps}>
-              <input data-testid="input" {...api().inputProps} />
+          <div {...api().getRootProps()}>
+            <label {...api().getLabelProps()}>Select country</label>
+            <div {...api().getControlProps()}>
+              <input data-testid="input" {...api().getInputProps()} />
               <button data-testid="trigger" {...api().getTriggerProps()}>
                 ▼
               </button>
             </div>
           </div>
 
-          <div {...api().positionerProps}>
+          <div {...api().getPositionerProps()}>
             <Show when={options().length > 0}>
-              <ul data-testid="combobox-content" {...api().contentProps}>
+              <ul data-testid="combobox-content" {...api().getContentProps()}>
                 <Index each={options()}>
                   {(item) => (
                     <li class="combobox__option" {...api().getItemProps({ item: item() })}>

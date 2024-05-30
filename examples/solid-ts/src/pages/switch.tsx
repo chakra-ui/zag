@@ -24,12 +24,12 @@ export default function Page() {
   return (
     <>
       <main class="switch">
-        <label {...api().rootProps}>
-          <input {...api().hiddenInputProps} />
-          <span {...api().controlProps}>
-            <span {...api().thumbProps} />
+        <label {...api().getRootProps()}>
+          <input {...api().getHiddenInputProps()} />
+          <span {...api().getControlProps()}>
+            <span {...api().getThumbProps()} />
           </span>
-          <span {...api().labelProps}>Feature is {api().checked ? "enabled" : "disabled"}</span>
+          <span {...api().getLabelProps()}>Feature is {api().checked ? "enabled" : "disabled"}</span>
         </label>
       </main>
 

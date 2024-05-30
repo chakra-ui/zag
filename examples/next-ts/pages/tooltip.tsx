@@ -35,13 +35,13 @@ export default function Page() {
               </div>
             )}
           </>
-          <button data-testid={`${id2}-trigger`} {...api2.triggerProps}>
+          <button data-testid={`${id2}-trigger`} {...api2.getTriggerProps()}>
             Over me
           </button>
           {api2.open && (
             <Portal>
-              <div {...api2.positionerProps}>
-                <div className="tooltip-content" data-testid={`${id2}-tooltip`} {...api2.contentProps}>
+              <div {...api2.getPositionerProps()}>
+                <div className="tooltip-content" data-testid={`${id2}-tooltip`} {...api2.getContentProps()}>
                   Tooltip 2
                 </div>
               </div>

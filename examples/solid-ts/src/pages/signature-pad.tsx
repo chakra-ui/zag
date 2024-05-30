@@ -29,20 +29,20 @@ export default function Page() {
   return (
     <>
       <main class="signature-pad">
-        <div {...api().rootProps}>
-          <label {...api().labelProps}>Signature Pad</label>
+        <div {...api().getRootProps()}>
+          <label {...api().getLabelProps()}>Signature Pad</label>
 
-          <div {...api().controlProps}>
-            <svg {...api().segmentProps}>
+          <div {...api().getControlProps()}>
+            <svg {...api().getSegmentProps()}>
               <For each={api().paths}>{(path) => <path {...api().getSegmentPathProps({ path })} />}</For>
               <Show when={api().currentPath}>
                 {(path) => <path {...api().getSegmentPathProps({ path: path() })} />}
               </Show>
             </svg>
-            <div {...api().guideProps} />
+            <div {...api().getGuideProps()} />
           </div>
 
-          <button {...api().clearTriggerProps}>
+          <button {...api().getClearTriggerProps()}>
             <RotateCcw />
           </button>
         </div>

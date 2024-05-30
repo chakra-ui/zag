@@ -43,14 +43,14 @@ export function NestedMenu() {
 
   return (
     <div>
-      <button {...fileMenu.triggerProps}>
+      <button {...fileMenu.getTriggerProps()}>
         Click me
-        <span {...fileMenu.indicatorProps}>▾</span>
+        <span {...fileMenu.getIndicatorProps()}>▾</span>
       </button>
 
       <Portal>
-        <div {...fileMenu.positionerProps}>
-          <ul {...fileMenu.contentProps}>
+        <div {...fileMenu.getPositionerProps()}>
+          <ul {...fileMenu.getContentProps()}>
             {data.map((item) => (
               <li
                 key={item.value}
@@ -61,15 +61,15 @@ export function NestedMenu() {
             ))}
             <li {...shareMenuTriggerProps}>
               Share
-              <span {...shareMenu.indicatorProps}>»</span>
+              <span {...shareMenu.getIndicatorProps()}>»</span>
             </li>
           </ul>
         </div>
       </Portal>
 
       <Portal>
-        <div {...shareMenu.positionerProps}>
-          <ul {...shareMenu.contentProps}>
+        <div {...shareMenu.getPositionerProps()}>
+          <ul {...shareMenu.getContentProps()}>
             {shareMenuData.map((item) => (
               <li
                 key={item.value}

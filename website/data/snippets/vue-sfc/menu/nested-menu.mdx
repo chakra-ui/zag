@@ -37,11 +37,11 @@ const shareMenuTriggerProps = computed(() =>
 </script>
 
 <template>
-  <button v-bind="fileMenu.triggerProps">Click me</button>
+  <button v-bind="fileMenu.getTriggerProps()">Click me</button>
 
   <Teleport to="body">
-    <div v-bind="fileMenu.positionerProps">
-      <ul ref="fileMenuRef" v-bind="fileMenu.contentProps">
+    <div v-bind="fileMenu.getPositionerProps()">
+      <ul ref="fileMenuRef" v-bind="fileMenu.getContentProps()">
         <li v-bind="fileMenu.getItemProps({ value: 'new-tab' })">New tab</li>
         <li v-bind="fileMenu.getItemProps({ value: 'new-win' })">New window</li>
         <li v-bind="shareMenuTriggerProps">Share</li>
@@ -52,8 +52,8 @@ const shareMenuTriggerProps = computed(() =>
   </Teleport>
 
   <Teleport to="body">
-    <div v-bind="shareMenu.positionerProps">
-      <ul ref="shareMenuRef" v-bind="shareMenu.contentProps">
+    <div v-bind="shareMenu.getPositionerProps()">
+      <ul ref="shareMenuRef" v-bind="shareMenu.getContentProps()">
         <li v-bind="shareMenu.getItemProps({ value: 'messages' })">Messages</li>
         <li v-bind="shareMenu.getItemProps({ value: 'airdrop' })">Airdrop</li>
         <li v-bind="shareMenu.getItemProps({ value: 'whatsapp' })">WhatsApp</li>

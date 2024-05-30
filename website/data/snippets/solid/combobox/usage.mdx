@@ -45,16 +45,16 @@ export function Combobox() {
 
   return (
     <div>
-      <div {...api().rootProps}>
-        <label {...api().labelProps}>Select country</label>
-        <div {...api().controlProps}>
-          <input {...api().inputProps} />
+      <div {...api().getRootProps()}>
+        <label {...api().getLabelProps()}>Select country</label>
+        <div {...api().getControlProps()}>
+          <input {...api().getInputProps()} />
           <button {...api().getTriggerProps()}>▼</button>
         </div>
       </div>
-      <div {...api().positionerProps}>
+      <div {...api().getPositionerProps()}>
         <Show when={options().length > 0}>
-          <ul {...api().contentProps}>
+          <ul {...api().getContentProps()}>
             <For each={options()}>
               {(item) => (
                 <li {...api().getItemProps({ item })}>{item.label}</li>

@@ -23,10 +23,10 @@
   const shareMenuTriggerProps = $derived(fileMenu.getTriggerItemProps(shareMenu))
 </script>
 
-<button {...fileMenu.triggerProps}>Click me</button>
+<button {...fileMenu.getTriggerProps()}>Click me</button>
 
-<div use:portal {...fileMenu.positionerProps}>
-  <ul {...fileMenu.contentProps}>
+<div use:portal {...fileMenu.getPositionerProps()}>
+  <ul {...fileMenu.getContentProps()}>
     <li {...fileMenu.getItemProps({ value: "new-tab" })}>New tab</li>
     <li {...fileMenu.getItemProps({ value: "new-win" })}>New window</li>
     <li {...shareMenuTriggerProps}>Share</li>
@@ -35,8 +35,8 @@
   </ul>
 </div>
 
-<div use:portal {...shareMenu.positionerProps}>
-  <ul {...shareMenu.contentProps}>
+<div use:portal {...shareMenu.getPositionerProps()}>
+  <ul {...shareMenu.getContentProps()}>
     <li {...shareMenu.getItemProps({ value: "messages" })}>Messages</li>
     <li {...shareMenu.getItemProps({ value: "airdrop" })}>Airdrop</li>
     <li {...shareMenu.getItemProps({ value: "whatsapp" })}>WhatsApp</li>

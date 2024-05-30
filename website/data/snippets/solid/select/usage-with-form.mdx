@@ -26,7 +26,7 @@ export function SelectWithForm() {
     <form>
       <div {...api.getRootProps()}>
         {/* Hidden select */}
-        <select {...api().hiddenSelectProps}>
+        <select {...api().getHiddenSelectProps()}>
           {selectData.map((item) => (
             <option key={item.value} value={item.value}>
               {item.label}
@@ -36,16 +36,16 @@ export function SelectWithForm() {
 
         {/* Custom Select */}
         <div {...api.getControlProps()}>
-          <label {...api().labelProps}>Label</label>
-          <button type="button" {...api().triggerProps}>
+          <label {...api().getLabelProps()}>Label</label>
+          <button type="button" {...api().getTriggerProps()}>
             <span>{api().valueAsString || "Select option"}</span>
             <CaretIcon />
           </button>
         </div>
 
         <Portal>
-          <div {...api().positionerProps}>
-            <ul {...api().contentProps}>
+          <div {...api().getPositionerProps()}>
+            <ul {...api().getContentProps()}>
               {selectData.map((item) => (
                 <li key={item.value} {...api().getItemProps({ item })}>
                   <span>{item.label}</span>

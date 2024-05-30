@@ -10,7 +10,7 @@ export function PinInput() {
 
   return (
     <div>
-      <div {...api().rootProps}>
+      <div {...api().getRootProps()}>
         <input {...api().getInputProps({ index: 0 })} />
         <input {...api().getInputProps({ index: 1 })} />
         <input {...api().getInputProps({ index: 2 })} />
