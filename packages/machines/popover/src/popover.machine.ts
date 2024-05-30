@@ -227,7 +227,7 @@ export function machine(userContext: UserDefinedContext) {
         setInitialFocus(ctx) {
           raf(() => {
             const element = getInitialFocus(dom.getContentEl(ctx), ctx.initialFocusEl)
-            element?.focus()
+            element?.focus({ preventScroll: true })
           })
         },
         setFinalFocus(ctx, evt) {
