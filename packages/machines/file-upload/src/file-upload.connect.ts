@@ -42,7 +42,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return () => win.URL.revokeObjectURL(url)
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getRootId(state.context),
@@ -50,7 +50,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-dragging": dataAttr(dragging),
     }),
 
-    dropzoneProps: normalize.element({
+    getDropzoneProps: () => normalize.element({
       ...parts.dropzone.attrs,
       dir: state.context.dir,
       id: dom.getDropzoneId(state.context),
@@ -110,7 +110,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    triggerProps: normalize.button({
+    getTriggerProps: () => normalize.button({
       ...parts.trigger.attrs,
       dir: state.context.dir,
       id: dom.getTriggerId(state.context),
@@ -127,7 +127,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    hiddenInputProps: normalize.input({
+    getHiddenInputProps: () => normalize.input({
       id: dom.getHiddenInputId(state.context),
       tabIndex: -1,
       disabled,
@@ -150,7 +150,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: visuallyHiddenStyle,
     }),
 
-    itemGroupProps: normalize.element({
+    getItemGroupProps: () => normalize.element({
       ...parts.itemGroup.attrs,
       dir: state.context.dir,
       "data-disabled": dataAttr(disabled),
@@ -226,7 +226,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    labelProps: normalize.label({
+    getLabelProps: () => normalize.label({
       ...parts.label.attrs,
       dir: state.context.dir,
       id: dom.getLabelId(state.context),

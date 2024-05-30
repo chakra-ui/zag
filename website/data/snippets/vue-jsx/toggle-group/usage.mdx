@@ -15,7 +15,7 @@ export default defineComponent({
     return () => {
       const api = apiRef.value
       return (
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           <button {...api.getItemProps({ value: "bold" })}>B</button>
           <button {...api.getItemProps({ value: "italic" })}>I</button>
           <button {...api.getItemProps({ value: "underline" })}>U</button>

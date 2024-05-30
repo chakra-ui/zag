@@ -11,13 +11,13 @@ export function CircularProgress(props: any) {
 
   return (
     <div>
-      <div className="centre" {...api.rootProps}>
-        <div {...api.labelProps}>Upload progress</div>
-        <svg {...(api.circleProps as any)}>
-          <circle {...(api.circleTrackProps as any)} />
-          <circle {...(api.circleRangeProps as any)} />
+      <div className="centre" {...api.getRootProps()}>
+        <div {...api.getLabelProps()}>Upload progress</div>
+        <svg {...(api.getCircleProps() as any)}>
+          <circle {...(api.getCircleTrackProps() as any)} />
+          <circle {...(api.getCircleRangeProps() as any)} />
         </svg>
-        <div {...api.valueTextProps}>{api.valueAsString}</div>
+        <div {...api.getValueTextProps()}>{api.valueAsString}</div>
       </div>
 
       <div>

@@ -12,12 +12,12 @@
 </script>
 
 <template>
-  <label v-bind="api.rootProps">
-    <input v-bind="api.inputProps" />
-    <span v-bind="api.controlProps">
-      <span v-bind="api.thumbProps" />
+  <label v-bind="api.getRootProps()">
+    <input v-bind="api.getInputProps()" />
+    <span v-bind="api.getControlProps()">
+      <span v-bind="api.getThumbProps()" />
     </span>
-    <span v-bind="api.labelProps">
+    <span v-bind="api.getLabelProps()">
       <span v-if="api.checked">On</span>
       <span v-else>Off</span>
     </span>

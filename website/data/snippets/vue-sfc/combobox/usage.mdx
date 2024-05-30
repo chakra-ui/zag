@@ -47,16 +47,16 @@
 </script>
 
 <template>
-  <div v-bind="api.rootProps">
-    <label v-bind="api.labelProps">Select country</label>
+  <div v-bind="api.getRootProps()">
+    <label v-bind="api.getLabelProps()">Select country</label>
 
-    <div v-bind="api.controlProps">
-      <input v-bind="api.inputProps" />
+    <div v-bind="api.getControlProps()">
+      <input v-bind="api.getInputProps()" />
       <button v-bind="api.getTriggerProps()">▼</button>
     </div>
   </div>
-  <div v-bind="api.positionerProps">
-    <ul v-if="options.length > 0" v-bind="api.contentProps">
+  <div v-bind="api.getPositionerProps()">
+    <ul v-if="options.length > 0" v-bind="api.getContentProps()">
       <li
         v-for="item in options"
         :key="item.code"

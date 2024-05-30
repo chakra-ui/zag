@@ -24,12 +24,12 @@ export default function Page() {
       <main className="tooltip">
         <div className="root">
           <>
-            <button data-testid={`${id}-trigger`} {...api.triggerProps}>
+            <button data-testid={`${id}-trigger`} {...api.getTriggerProps()}>
               Hover me
             </button>
             {api.open && (
-              <div {...api.positionerProps}>
-                <div className="tooltip-content" data-testid={`${id}-tooltip`} {...api.contentProps}>
+              <div {...api.getPositionerProps()}>
+                <div className="tooltip-content" data-testid={`${id}-tooltip`} {...api.getContentProps()}>
                   Tooltip
                 </div>
               </div>

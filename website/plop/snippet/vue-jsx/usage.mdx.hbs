@@ -14,8 +14,8 @@ export const {{titleCase component}} = defineComponent({
     return () => {
       const api = apiRef.value
       return (
-        <div {...api.rootProps}>
-          <div {...api.controlProps}>...</div>
+        <div {...api.getRootProps()}>
+          <div {...api.getControlProps()}>...</div>
         </div>
       )
     }

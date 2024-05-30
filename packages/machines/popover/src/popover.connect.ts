@@ -28,26 +28,26 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "POSITIONING.SET", options })
     },
 
-    arrowProps: normalize.element({
+    getArrowProps: () => normalize.element({
       id: dom.getArrowId(state.context),
       ...parts.arrow.attrs,
       dir: state.context.dir,
       style: popperStyles.arrow,
     }),
 
-    arrowTipProps: normalize.element({
+    getArrowTipProps: () => normalize.element({
       ...parts.arrowTip.attrs,
       dir: state.context.dir,
       style: popperStyles.arrowTip,
     }),
 
-    anchorProps: normalize.element({
+    getAnchorProps: () => normalize.element({
       ...parts.anchor.attrs,
       dir: state.context.dir,
       id: dom.getAnchorId(state.context),
     }),
 
-    triggerProps: normalize.button({
+    getTriggerProps: () => normalize.button({
       ...parts.trigger.attrs,
       dir: state.context.dir,
       type: "button",
@@ -66,20 +66,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    indicatorProps: normalize.element({
+    getIndicatorProps: () => normalize.element({
       ...parts.indicator.attrs,
       dir: state.context.dir,
       "data-state": open ? "open" : "closed",
     }),
 
-    positionerProps: normalize.element({
+    getPositionerProps: () => normalize.element({
       id: dom.getPositionerId(state.context),
       ...parts.positioner.attrs,
       dir: state.context.dir,
       style: popperStyles.floating,
     }),
 
-    contentProps: normalize.element({
+    getContentProps: () => normalize.element({
       ...parts.content.attrs,
       dir: state.context.dir,
       id: dom.getContentId(state.context),
@@ -93,19 +93,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-placement": currentPlacement,
     }),
 
-    titleProps: normalize.element({
+    getTitleProps: () => normalize.element({
       ...parts.title.attrs,
       id: dom.getTitleId(state.context),
       dir: state.context.dir,
     }),
 
-    descriptionProps: normalize.element({
+    getDescriptionProps: () => normalize.element({
       ...parts.description.attrs,
       id: dom.getDescriptionId(state.context),
       dir: state.context.dir,
     }),
 
-    closeTriggerProps: normalize.button({
+    getCloseTriggerProps: () => normalize.button({
       ...parts.closeTrigger.attrs,
       dir: state.context.dir,
       id: dom.getCloseTriggerId(state.context),

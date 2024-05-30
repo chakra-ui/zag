@@ -65,8 +65,8 @@ export default defineComponent({
       return (
         <>
           <main class="rating">
-            <div {...api.rootProps}>
-              <div {...api.controlProps}>
+            <div {...api.getRootProps()}>
+              <div {...api.getControlProps()}>
                 {api.items.map((index) => {
                   const state = api.getItemState({ index })
                   return (
@@ -76,7 +76,7 @@ export default defineComponent({
                   )
                 })}
               </div>
-              <input {...api.hiddenInputProps} data-testid="hidden-input" />
+              <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
             </div>
           </main>
 

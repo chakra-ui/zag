@@ -10,18 +10,18 @@ export function Editable(props: any) {
   const api = editable.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <div {...api.areaProps}>
-        <input {...api.inputProps} />
-        <span {...api.previewProps} />
+    <div {...api.getRootProps()}>
+      <div {...api.getAreaProps()}>
+        <input {...api.getInputProps()} />
+        <span {...api.getPreviewProps()} />
       </div>
 
       <div>
-        {!api.editing && <button {...api.editTriggerProps}>Edit</button>}
+        {!api.editing && <button {...api.getEditTriggerProps()}>Edit</button>}
         {api.editing && (
           <div>
-            <button {...api.submitTriggerProps}>Save</button>
-            <button {...api.cancelTriggerProps}>Cancel</button>
+            <button {...api.getSubmitTriggerProps()}>Save</button>
+            <button {...api.getCancelTriggerProps()}>Cancel</button>
           </div>
         )}
       </div>

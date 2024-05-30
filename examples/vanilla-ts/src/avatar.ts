@@ -14,10 +14,10 @@ export class Avatar extends Component<avatar.Context, avatar.Api> {
 
   render = () => {
     const rootEl = this.rootEl
-    spreadProps(this.rootEl, this.api.rootProps)
+    spreadProps(this.rootEl, this.api.getRootProps())
     const imageEl = rootEl.querySelector<HTMLElement>(".avatar-image")
-    if (imageEl) spreadProps(imageEl, this.api.imageProps)
+    if (imageEl) spreadProps(imageEl, this.api.getImageProps())
     const fallbackEl = rootEl.querySelector<HTMLElement>(".avatar-fallback")
-    if (fallbackEl) spreadProps(fallbackEl, this.api.fallbackProps)
+    if (fallbackEl) spreadProps(fallbackEl, this.api.getFallbackProps())
   }
 }

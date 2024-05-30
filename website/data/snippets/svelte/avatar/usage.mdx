@@ -7,8 +7,8 @@
   const api = $derived(avatar.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
-  <span {...api.fallbackProps}>PA</span>
-  <img alt="PA" src={src} {...api.imageProps} />
+<div {...api.getRootProps()}>
+  <span {...api.getFallbackProps()}>PA</span>
+  <img alt="PA" src={src} {...api.getImageProps()} />
 </div>
 ```

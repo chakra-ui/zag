@@ -17,11 +17,11 @@ export function Clipboard(props: Props) {
   const api = clipboard.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Copy this link</label>
-      <div {...api.controlProps}>
-        <input {...api.inputProps} />
-        <button {...api.triggerProps}>{api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}</button>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Copy this link</label>
+      <div {...api.getControlProps()}>
+        <input {...api.getInputProps()} />
+        <button {...api.getTriggerProps()}>{api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}</button>
       </div>
       <div {...api.getIndicatorProps({ copied: true })}>Copied!</div>
       <div {...api.getIndicatorProps({ copied: false })}>Copy</div>

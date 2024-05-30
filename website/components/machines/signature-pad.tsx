@@ -11,11 +11,11 @@ export function SignaturePad(props: any) {
   const api = signaturePad.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Sign here</label>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Sign here</label>
 
-      <div {...api.controlProps}>
-        <svg {...api.segmentProps}>
+      <div {...api.getControlProps()}>
+        <svg {...api.getSegmentProps()}>
           {api.paths.map((path, i) => (
             <path key={i} {...api.getSegmentPathProps({ path })} />
           ))}
@@ -24,11 +24,11 @@ export function SignaturePad(props: any) {
           )}
         </svg>
 
-        <button {...api.clearTriggerProps}>
+        <button {...api.getClearTriggerProps()}>
           <BiRotateRight />
         </button>
 
-        <div {...api.guideProps} />
+        <div {...api.getGuideProps()} />
       </div>
     </div>
   )

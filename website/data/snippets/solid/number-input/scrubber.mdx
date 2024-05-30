@@ -12,7 +12,7 @@ export function NumberInput() {
     <div {...api().rootProps}>
       <label {...api().labelProps}>Enter number:</label>
       <div>
-        <div {...api.scrubberProps} />
+        <div {...api.getScrubberProps()} />
         <input {...api().inputProps} />
       </div>
     </div>

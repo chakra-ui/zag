@@ -35,7 +35,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "VALUE.SET", value, index })
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       dir: state.context.dir,
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
@@ -44,7 +44,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-complete": dataAttr(complete),
     }),
 
-    labelProps: normalize.label({
+    getLabelProps: () => normalize.label({
       ...parts.label.attrs,
       dir: state.context.dir,
       htmlFor: dom.getHiddenInputId(state.context),
@@ -58,7 +58,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    hiddenInputProps: normalize.input({
+    getHiddenInputProps: () => normalize.input({
       "aria-hidden": true,
       type: "text",
       tabIndex: -1,
@@ -70,7 +70,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultValue: state.context.valueAsString,
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       ...parts.control.attrs,
       dir: state.context.dir,
       id: dom.getControlId(state.context),

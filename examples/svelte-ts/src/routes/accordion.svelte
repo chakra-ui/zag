@@ -17,7 +17,7 @@
 </script>
 
 <main class="accordion">
-  <div {...api.rootProps}>
+  <div {...api.getRootProps()}>
     {#each accordionData as item}
       <div {...api.getItemProps({ value: item.id })}>
         <h3>

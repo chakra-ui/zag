@@ -43,10 +43,10 @@
 
 <main class="rating">
   <form action="">
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       <!-- svelte-ignore a11y_label_has_associated_control -->
-      <label {...api.labelProps}>Rate:</label>
-      <div {...api.controlProps}>
+      <label {...api.getLabelProps()}>Rate:</label>
+      <div {...api.getControlProps()}>
         {#each api.items as index}
           {@const itemState = api.getItemState({ index })}
           <span {...api.getItemProps({ index })}>
@@ -58,7 +58,7 @@
           </span>
         {/each}
       </div>
-      <input {...api.hiddenInputProps} data-testid="hidden-input" />
+      <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
     </div>
     <button type="reset">Reset</button>
   </form>

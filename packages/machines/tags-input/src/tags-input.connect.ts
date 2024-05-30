@@ -61,7 +61,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getItemState,
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       dir: state.context.dir,
       ...parts.root.attrs,
       "data-invalid": dataAttr(invalid),
@@ -76,7 +76,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    labelProps: normalize.label({
+    getLabelProps: () => normalize.label({
       ...parts.label.attrs,
       "data-disabled": dataAttr(disabled),
       "data-invalid": dataAttr(invalid),
@@ -86,7 +86,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       htmlFor: dom.getInputId(state.context),
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       id: dom.getControlId(state.context),
       ...parts.control.attrs,
       dir: state.context.dir,
@@ -97,7 +97,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-focus": dataAttr(focused),
     }),
 
-    inputProps: normalize.input({
+    getInputProps: () => normalize.input({
       ...parts.input.attrs,
       dir: state.context.dir,
       "data-invalid": dataAttr(invalid),
@@ -181,7 +181,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    hiddenInputProps: normalize.input({
+    getHiddenInputProps: () => normalize.input({
       type: "text",
       hidden: true,
       name: state.context.name,
@@ -302,7 +302,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    clearTriggerProps: normalize.button({
+    getClearTriggerProps: () => normalize.button({
       ...parts.clearTrigger.attrs,
       dir: state.context.dir,
       id: dom.getClearTriggerId(state.context),

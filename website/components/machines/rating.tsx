@@ -57,9 +57,9 @@ export function Rating(props: RadioProps) {
 
   return (
     <div>
-      <div {...api.rootProps}>
-        <label {...api.labelProps}>Rate Us:</label>
-        <div {...api.controlProps}>
+      <div {...api.getRootProps()}>
+        <label {...api.getLabelProps()}>Rate Us:</label>
+        <div {...api.getControlProps()}>
           {api.items.map((index) => {
             const state = api.getItemState({ index })
             return (
@@ -69,7 +69,7 @@ export function Rating(props: RadioProps) {
             )
           })}
         </div>
-        <input {...api.hiddenInputProps} />
+        <input {...api.getHiddenInputProps()} />
       </div>
     </div>
   )

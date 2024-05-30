@@ -51,7 +51,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getTriggerState,
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
       "data-orientation": state.context.orientation,
@@ -59,7 +59,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dir: state.context.dir,
     }),
 
-    listProps: normalize.element({
+    getListProps: () => normalize.element({
       ...parts.list.attrs,
       id: dom.getListId(state.context),
       role: "tablist",
@@ -170,7 +170,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    indicatorProps: normalize.element({
+    getIndicatorProps: () => normalize.element({
       id: dom.getIndicatorId(state.context),
       ...parts.indicator.attrs,
       dir: state.context.dir,

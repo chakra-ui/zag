@@ -8,8 +8,8 @@ function {{titleCase component}}() {
   const api = {{component}}.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <div {...api.controlProps}>...</div>
+    <div {...api.getRootProps()}>
+      <div {...api.getControlProps()}>...</div>
     </div>
   )
 }

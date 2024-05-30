@@ -46,19 +46,19 @@ export default defineComponent({
         <>
           <main>
             <div>
-              <button data-testid="trigger" {...api.triggerProps}>
-                Actions <span {...api.indicatorProps}>▾</span>
+              <button data-testid="trigger" {...api.getTriggerProps()}>
+                Actions <span {...api.getIndicatorProps()}>▾</span>
               </button>
               <Teleport to="body">
-                <div {...api.positionerProps}>
-                  <div {...api.contentProps}>
+                <div {...api.getPositionerProps()}>
+                  <div {...api.getContentProps()}>
                     {radios.value.map((item) => (
                       <div key={item.value} {...api.getOptionItemProps(item)}>
                         <span {...api.getItemIndicatorProps(item)}>✅</span>
                         <span {...api.getItemTextProps(item)}>{item.label}</span>
                       </div>
                     ))}
-                    <hr {...api.separatorProps} />
+                    <hr {...api.getSeparatorProps()} />
                     {checkboxes.value.map((item) => (
                       <div key={item.value} {...api.getOptionItemProps(item)}>
                         <span {...api.getItemIndicatorProps(item)}>✅</span>

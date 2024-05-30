@@ -39,13 +39,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("CLEAR_VALUE")
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       dir: state.context.dir,
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
     }),
 
-    hiddenInputProps: normalize.input({
+    getHiddenInputProps: () => normalize.input({
       name: state.context.name,
       form: state.context.form,
       type: "text",
@@ -54,14 +54,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultValue: state.context.value,
     }),
 
-    labelProps: normalize.element({
+    getLabelProps: () => normalize.element({
       ...parts.label.attrs,
       dir: state.context.dir,
       id: dom.getLabelId(state.context),
       "data-disabled": dataAttr(disabled),
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       id: dom.getControlId(state.context),
       ...parts.control.attrs,
       dir: state.context.dir,

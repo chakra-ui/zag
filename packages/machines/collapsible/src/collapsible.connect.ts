@@ -23,14 +23,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send(nextOpen ? "OPEN" : "CLOSE")
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       "data-state": open ? "open" : "closed",
       dir: state.context.dir,
       id: dom.getRootId(state.context),
     }),
 
-    contentProps: normalize.element({
+    getContentProps: () => normalize.element({
       ...parts.content.attrs,
       "data-state": skip ? undefined : open ? "open" : "closed",
       id: dom.getContentId(state.context),
@@ -42,7 +42,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    triggerProps: normalize.element({
+    getTriggerProps: () => normalize.element({
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
       dir: state.context.dir,

@@ -11,12 +11,12 @@ export function LinearProgress(props: any) {
 
   return (
     <div>
-      <div {...api.rootProps}>
-        <div {...api.labelProps}>Upload progress</div>
-        <div {...api.trackProps}>
-          <div {...api.rangeProps} />
+      <div {...api.getRootProps()}>
+        <div {...api.getLabelProps()}>Upload progress</div>
+        <div {...api.getTrackProps()}>
+          <div {...api.getRangeProps()} />
         </div>
-        <div {...api.valueTextProps}>{api.valueAsString}</div>
+        <div {...api.getValueTextProps()}>{api.valueAsString}</div>
       </div>
 
       <div>

@@ -17,11 +17,11 @@ const api = computed(() =>
 </script>
 
 <template>
-  <div ref="ref" v-bind="api.rootProps">
-    <button v-bind="api.prevTriggerProps">Prev</button>
-    <button v-bind="api.nextTriggerProps">Next</button>
-    <div v-bind="api.viewportProps">
-      <div v-bind="api.itemGroupProps">
+  <div ref="ref" v-bind="api.getRootProps()">
+    <button v-bind="api.getPrevTriggerProps()">Prev</button>
+    <button v-bind="api.getNextTriggerProps()">Next</button>
+    <div v-bind="api.getViewportProps()">
+      <div v-bind="api.getItemGroupProps()">
           <div 
             v-for="(image, index) in items"
             :key="index"

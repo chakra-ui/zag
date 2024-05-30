@@ -23,9 +23,9 @@ export default defineComponent({
       return (
         <>
           <main class="avatar">
-            <div {...api.rootProps}>
-              <span {...api.fallbackProps}>PA</span>
-              {showImageRef.value && <img alt="" referrerpolicy="no-referrer" src={srcRef.value} {...api.imageProps} />}
+            <div {...api.getRootProps()}>
+              <span {...api.getFallbackProps()}>PA</span>
+              {showImageRef.value && <img alt="" referrerpolicy="no-referrer" src={srcRef.value} {...api.getImageProps()} />}
             </div>
 
             <div class="controls">

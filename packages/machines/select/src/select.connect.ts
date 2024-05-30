@@ -94,7 +94,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getItemState,
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getRootId(state.context),
@@ -102,7 +102,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       "data-readonly": dataAttr(readOnly),
     }),
 
-    labelProps: normalize.label({
+    getLabelProps: () => normalize.label({
       dir: state.context.dir,
       id: dom.getLabelId(state.context),
       ...parts.label.attrs,
@@ -117,7 +117,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       },
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       ...parts.control.attrs,
       dir: state.context.dir,
       id: dom.getControlId(state.context),
@@ -127,7 +127,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       "data-invalid": dataAttr(invalid),
     }),
 
-    triggerProps: normalize.button({
+    getTriggerProps: () => normalize.button({
       id: dom.getTriggerId(state.context),
       disabled: disabled,
       dir: state.context.dir,
@@ -214,7 +214,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       },
     }),
 
-    indicatorProps: normalize.element({
+    getIndicatorProps: () => normalize.element({
       ...parts.indicator.attrs,
       dir: state.context.dir,
       "aria-hidden": true,
@@ -303,7 +303,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
 
-    clearTriggerProps: normalize.button({
+    getClearTriggerProps: () => normalize.button({
       ...parts.clearTrigger.attrs,
       id: dom.getClearTriggerId(state.context),
       type: "button",
@@ -317,7 +317,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       },
     }),
 
-    hiddenSelectProps: normalize.select({
+    getHiddenSelectProps: () => normalize.select({
       name: state.context.name,
       form: state.context.form,
       disabled: disabled,
@@ -335,14 +335,14 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       "aria-labelledby": dom.getLabelId(state.context),
     }),
 
-    positionerProps: normalize.element({
+    getPositionerProps: () => normalize.element({
       ...parts.positioner.attrs,
       dir: state.context.dir,
       id: dom.getPositionerId(state.context),
       style: popperStyles.floating,
     }),
 
-    contentProps: normalize.element({
+    getContentProps: () => normalize.element({
       hidden: !open,
       dir: state.context.dir,
       id: dom.getContentId(state.context),
@@ -414,7 +414,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       },
     }),
 
-    listProps: normalize.element({
+    getListProps: () => normalize.element({
       tabIndex: 0,
       role: !composite ? "listbox" : undefined,
       "aria-labelledby": dom.getTriggerId(state.context),

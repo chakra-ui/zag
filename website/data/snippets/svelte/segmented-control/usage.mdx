@@ -14,8 +14,8 @@
   const api = $derived(radio.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
-  <div {...api.indicatorProps}></div>
+<div {...api.getRootProps()}>
+  <div {...api.getIndicatorProps()}></div>
   {#each items as opt}
     <label {...api.getItemProps({ value: opt.value })}>
       <span {...api.getItemTextProps({ value: opt.value })}>

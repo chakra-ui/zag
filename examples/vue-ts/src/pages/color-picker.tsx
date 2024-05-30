@@ -54,14 +54,14 @@ export default defineComponent({
                 console.log("change:", serialize(e.target as HTMLFormElement, { hash: true }))
               }}
             >
-              <input {...api.hiddenInputProps} />
-              <div {...api.rootProps}>
-                <label {...api.labelProps}>
+              <input {...api.getHiddenInputProps()} />
+              <div {...api.getRootProps()}>
+                <label {...api.getLabelProps()}>
                   Select Color: <span data-testid="value-text">{api.valueAsString}</span>
                 </label>
 
-                <div {...api.controlProps}>
-                  <button {...api.triggerProps}>
+                <div {...api.getControlProps()}>
+                  <button {...api.getTriggerProps()}>
                     <div {...api.getTransparencyGridProps({ size: "10px" })} />
                     <div {...api.getSwatchProps({ value: api.value })} />
                   </button>
@@ -69,8 +69,8 @@ export default defineComponent({
                   <input {...api.getChannelInputProps({ channel: "alpha" })} />
                 </div>
 
-                <div {...api.positionerProps}>
-                  <div {...api.contentProps}>
+                <div {...api.getPositionerProps()}>
+                  <div {...api.getContentProps()}>
                     <div class="content__inner">
                       <div {...api.getAreaProps()}>
                         <div {...api.getAreaBackgroundProps()} />
@@ -125,7 +125,7 @@ export default defineComponent({
 
                       <input {...api.getChannelInputProps({ channel: "hex" })} />
 
-                      <div {...api.swatchGroupProps} style={{ display: "flex", gap: "10px" }}>
+                      <div {...api.getSwatchGroupProps()} style={{ display: "flex", gap: "10px" }}>
                         {presets.map((preset) => (
                           <button key={preset} {...api.getSwatchTriggerProps({ value: preset })}>
                             <div style={{ position: "relative" }}>
@@ -136,7 +136,7 @@ export default defineComponent({
                         ))}
                       </div>
 
-                      <button {...api.eyeDropperTriggerProps}>
+                      <button {...api.getEyeDropperTriggerProps()}>
                         <EyeDropIcon />
                       </button>
                     </div>

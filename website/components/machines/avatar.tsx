@@ -16,15 +16,15 @@ export function Avatar(props: { controls: { src: string; name: string } }) {
   return (
     <>
       <main className="avatar">
-        <div {...api.rootProps}>
-          <div {...api.fallbackProps}>
+        <div {...api.getRootProps()}>
+          <div {...api.getFallbackProps()}>
             <div>{initial}</div>
           </div>
           <img
             alt={name}
             referrerPolicy="no-referrer"
             src={src}
-            {...api.imageProps}
+            {...api.getImageProps()}
           />
         </div>
       </main>

@@ -37,16 +37,16 @@
   const api = $derived(combobox.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
-  <label {...api.labelProps}>Select country</label>
-  <div {...api.controlProps}>
-    <input {...api.inputProps} />
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Select country</label>
+  <div {...api.getControlProps()}>
+    <input {...api.getInputProps()} />
     <button {...api.getTriggerProps()}>▼</button>
   </div>
 </div>
-<div {...api.positionerProps}>
+<div {...api.getPositionerProps()}>
   {#if options.length > 0}
-    <ul {...api.contentProps}>
+    <ul {...api.getContentProps()}>
       {#each options as item}
         <li {...api.getItemProps({ item })}>
           {item.label}

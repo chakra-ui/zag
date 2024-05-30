@@ -15,7 +15,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send(nextOpen ? "OPEN" : "CLOSE")
     },
 
-    triggerProps: normalize.button({
+    getTriggerProps: () => normalize.button({
       ...parts.trigger.attrs,
       dir: state.context.dir,
       id: dom.getTriggerId(state.context),
@@ -30,7 +30,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    backdropProps: normalize.element({
+    getBackdropProps: () => normalize.element({
       ...parts.backdrop.attrs,
       dir: state.context.dir,
       hidden: !open,
@@ -38,7 +38,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-state": open ? "open" : "closed",
     }),
 
-    positionerProps: normalize.element({
+    getPositionerProps: () => normalize.element({
       ...parts.positioner.attrs,
       dir: state.context.dir,
       id: dom.getPositionerId(state.context),
@@ -47,7 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    contentProps: normalize.element({
+    getContentProps: () => normalize.element({
       ...parts.content.attrs,
       dir: state.context.dir,
       role: state.context.role,
@@ -61,19 +61,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-describedby": rendered.description ? dom.getDescriptionId(state.context) : undefined,
     }),
 
-    titleProps: normalize.element({
+    getTitleProps: () => normalize.element({
       ...parts.title.attrs,
       dir: state.context.dir,
       id: dom.getTitleId(state.context),
     }),
 
-    descriptionProps: normalize.element({
+    getDescriptionProps: () => normalize.element({
       ...parts.description.attrs,
       dir: state.context.dir,
       id: dom.getDescriptionId(state.context),
     }),
 
-    closeTriggerProps: normalize.button({
+    getCloseTriggerProps: () => normalize.button({
       ...parts.closeTrigger.attrs,
       dir: state.context.dir,
       id: dom.getCloseTriggerId(state.context),

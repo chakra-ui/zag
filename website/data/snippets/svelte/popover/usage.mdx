@@ -8,14 +8,14 @@
   const api = $derived(popover.connect(snapshot, send, normalizeProps))
 </script>
 
-<button {...api.triggerProps}>Click me</button>
+<button {...api.getTriggerProps()}>Click me</button>
 
-<div use:portal={{ disabled: !api.portalled }} {...api.positionerProps}>
-  <div {...api.contentProps}>
-    <div {...api.titleProps}>Presenters</div>
-    <div {...api.descriptionProps}>Description</div>
+<div use:portal={{ disabled: !api.portalled }} {...api.getPositionerProps()}>
+  <div {...api.getContentProps()}>
+    <div {...api.getTitleProps()}>Presenters</div>
+    <div {...api.getDescriptionProps()}>Description</div>
     <button>Action Button</button>
-    <button {...api.closeTriggerProps}>X</button>
+    <button {...api.getCloseTriggerProps()}>X</button>
   </div>
 </div>
 ```

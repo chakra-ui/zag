@@ -22,12 +22,12 @@ export function Menu(props: MenuProps) {
 
   return (
     <div>
-      <button {...api.triggerProps}>
-        Actions <span {...api.indicatorProps}>▾</span>
+      <button {...api.getTriggerProps()}>
+        Actions <span {...api.getIndicatorProps()}>▾</span>
       </button>
       <Portal>
-        <div {...api.positionerProps}>
-          <ul {...api.contentProps}>
+        <div {...api.getPositionerProps()}>
+          <ul {...api.getContentProps()}>
             {data.map((item) => (
               <li key={item.value} {...api.getItemProps({ value: item.value })}>
                 {item.label}

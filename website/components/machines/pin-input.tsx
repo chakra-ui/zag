@@ -11,7 +11,7 @@ export function PinInput(props: any) {
 
   return (
     <div>
-      <div {...api.rootProps}>
+      <div {...api.getRootProps()}>
         {[1, 2, 3].map((_, index) => (
           <input key={index} {...api.getInputProps({ index })} />
         ))}

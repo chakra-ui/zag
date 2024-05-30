@@ -12,11 +12,11 @@
 </script>
 
 <template>
-  <div v-bind="api.rootProps">
-    <label v-bind="api.labelProps">Signature Pad</label>
+  <div v-bind="api.getRootProps()">
+    <label v-bind="api.getLabelProps()">Signature Pad</label>
 
-    <div v-bind="api.controlProps">
-      <svg v-bind="api.segmentProps">
+    <div v-bind="api.getControlProps()">
+      <svg v-bind="api.getSegmentProps()">
         <path
           v-for="(path, i) of api.paths"
           :key="i"
@@ -28,9 +28,9 @@
         />
       </svg>
 
-      <button v-bind="api.clearTriggerProps">X</button>
+      <button v-bind="api.getClearTriggerProps()">X</button>
 
-      <div v-bind="api.guideProps" />
+      <div v-bind="api.getGuideProps()" />
     </div>
   </div>
 </template>

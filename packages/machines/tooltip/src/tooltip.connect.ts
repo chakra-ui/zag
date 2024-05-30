@@ -32,7 +32,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "POSITIONING.SET", options })
     },
 
-    triggerProps: normalize.button({
+    getTriggerProps: () => normalize.button({
       ...parts.trigger.attrs,
       id: triggerId,
       dir: state.context.dir,
@@ -73,27 +73,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    arrowProps: normalize.element({
+    getArrowProps: () => normalize.element({
       id: dom.getArrowId(state.context),
       ...parts.arrow.attrs,
       dir: state.context.dir,
       style: popperStyles.arrow,
     }),
 
-    arrowTipProps: normalize.element({
+    getArrowTipProps: () => normalize.element({
       ...parts.arrowTip.attrs,
       dir: state.context.dir,
       style: popperStyles.arrowTip,
     }),
 
-    positionerProps: normalize.element({
+    getPositionerProps: () => normalize.element({
       id: dom.getPositionerId(state.context),
       ...parts.positioner.attrs,
       dir: state.context.dir,
       style: popperStyles.floating,
     }),
 
-    contentProps: normalize.element({
+    getContentProps: () => normalize.element({
       ...parts.content.attrs,
       dir: state.context.dir,
       hidden: !open,

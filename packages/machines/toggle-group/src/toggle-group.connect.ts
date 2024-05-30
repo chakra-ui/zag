@@ -29,7 +29,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getItemState,
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
       dir: state.context.dir,

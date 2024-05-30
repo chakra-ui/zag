@@ -123,7 +123,7 @@ disable a toggle.
 
 ```jsx
 //...
-<div {...api.rootProps}>
+<div {...api.getRootProps()}>
   <button {...api.getToggleProps({ value: "bold", disabled: true })}>B</button>
 </div>
 //...

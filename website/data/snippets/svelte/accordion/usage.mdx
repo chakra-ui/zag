@@ -13,7 +13,7 @@
   const api = $derived(accordion.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
+<div {...api.getRootProps()}>
   {#each data as item}
     <div {...api.getItemProps({ value: item.item.title })}>
       <h3>

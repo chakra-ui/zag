@@ -20,29 +20,29 @@ export default function Page() {
     <>
       <main className="floating-panel">
         <div>
-          <button {...api.triggerProps}>Toggle Panel</button>
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>
-              <div {...api.dragTriggerProps}>
-                <div {...api.headerProps}>
-                  <p {...api.titleProps}>Floating Panel</p>
+          <button {...api.getTriggerProps()}>Toggle Panel</button>
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
+              <div {...api.getDragTriggerProps()}>
+                <div {...api.getHeaderProps()}>
+                  <p {...api.getTitleProps()}>Floating Panel</p>
                   <div data-scope="floating-panel" data-part="trigger-group">
-                    <button {...api.minimizeTriggerProps}>
+                    <button {...api.getMinimizeTriggerProps()}>
                       <Minus />
                     </button>
-                    <button {...api.maximizeTriggerProps}>
+                    <button {...api.getMaximizeTriggerProps()}>
                       <Maximize2 />
                     </button>
-                    <button {...api.restoreTriggerProps}>
+                    <button {...api.getRestoreTriggerProps()}>
                       <ArrowDownLeft />
                     </button>
-                    <button {...api.closeTriggerProps}>
+                    <button {...api.getCloseTriggerProps()}>
                       <XIcon />
                     </button>
                   </div>
                 </div>
               </div>
-              <div {...api.bodyProps}>
+              <div {...api.getBodyProps()}>
                 <p>Some content</p>
               </div>
 

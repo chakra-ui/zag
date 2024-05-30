@@ -22,20 +22,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "POSITIONING.SET", options })
     },
 
-    arrowProps: normalize.element({
+    getArrowProps: () => normalize.element({
       id: dom.getArrowId(state.context),
       ...parts.arrow.attrs,
       dir: state.context.dir,
       style: popperStyles.arrow,
     }),
 
-    arrowTipProps: normalize.element({
+    getArrowTipProps: () => normalize.element({
       ...parts.arrowTip.attrs,
       dir: state.context.dir,
       style: popperStyles.arrowTip,
     }),
 
-    triggerProps: normalize.element({
+    getTriggerProps: () => normalize.element({
       ...parts.trigger.attrs,
       dir: state.context.dir,
       "data-placement": state.context.currentPlacement,
@@ -60,14 +60,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    positionerProps: normalize.element({
+    getPositionerProps: () => normalize.element({
       id: dom.getPositionerId(state.context),
       ...parts.positioner.attrs,
       dir: state.context.dir,
       style: popperStyles.floating,
     }),
 
-    contentProps: normalize.element({
+    getContentProps: () => normalize.element({
       ...parts.content.attrs,
       dir: state.context.dir,
       id: dom.getContentId(state.context),

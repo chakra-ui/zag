@@ -82,7 +82,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return state.context.translations.progressText?.(details) ?? ""
     },
 
-    overlayProps: normalize.element({
+    getOverlayProps: () => normalize.element({
       ...parts.overlay.attrs,
       id: dom.getOverlayId(state.context),
       dir: state.context.dir,
@@ -96,7 +96,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    spotlightProps: normalize.element({
+    getSpotlightProps: () => normalize.element({
       ...parts.spotlight.attrs,
       hidden: !isOpen,
       style: {
@@ -110,18 +110,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    progressTextProps: normalize.element({
+    getProgressTextProps: () => normalize.element({
       ...parts.progressText.attrs,
     }),
 
-    positionerProps: normalize.element({
+    getPositionerProps: () => normalize.element({
       ...parts.positioner.attrs,
       dir: state.context.dir,
       id: dom.getPositionerId(state.context),
       style: popperStyles.floating,
     }),
 
-    arrowProps: normalize.element({
+    getArrowProps: () => normalize.element({
       id: dom.getArrowId(state.context),
       ...parts.arrow.attrs,
       dir: state.context.dir,
@@ -131,13 +131,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    arrowTipProps: normalize.element({
+    getArrowTipProps: () => normalize.element({
       ...parts.arrowTip.attrs,
       dir: state.context.dir,
       style: popperStyles.arrowTip,
     }),
 
-    contentProps: normalize.element({
+    getContentProps: () => normalize.element({
       ...parts.content.attrs,
       id: dom.getContentId(state.context),
       dir: state.context.dir,
@@ -171,19 +171,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    titleProps: normalize.element({
+    getTitleProps: () => normalize.element({
       ...parts.title.attrs,
       id: dom.getTitleId(state.context),
       "data-placement": hasTarget ? state.context.currentPlacement : "center",
     }),
 
-    descriptionProps: normalize.element({
+    getDescriptionProps: () => normalize.element({
       ...parts.description.attrs,
       id: dom.getDescriptionId(state.context),
       "data-placement": hasTarget ? state.context.currentPlacement : "center",
     }),
 
-    nextTriggerProps: normalize.button({
+    getNextTriggerProps: () => normalize.button({
       ...parts.nextTrigger.attrs,
       disabled: !hasNextStep,
       "data-disabled": dataAttr(!hasNextStep),
@@ -193,7 +193,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    prevTriggerProps: normalize.button({
+    getPrevTriggerProps: () => normalize.button({
       ...parts.prevTrigger.attrs,
       disabled: !hasPrevStep,
       "data-disabled": dataAttr(!hasPrevStep),
@@ -204,7 +204,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    closeTriggerProps: normalize.button({
+    getCloseTriggerProps: () => normalize.button({
       ...parts.closeTrigger.attrs,
       type: "button",
       "aria-label": state.context.translations.close,
@@ -213,7 +213,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    skipTriggerProps: normalize.button({
+    getSkipTriggerProps: () => normalize.button({
       ...parts.skipTrigger.attrs,
       type: "button",
       "aria-label": state.context.translations.skip,

@@ -12,12 +12,12 @@ export function NumberInput() {
 
   // 3. Render the component
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Enter number:</label>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Enter number:</label>
       <div>
-        <button {...api.decrementTriggerProps}>DEC</button>
-        <input {...api.inputProps} />
-        <button {...api.incrementTriggerProps}>INC</button>
+        <button {...api.getDecrementTriggerProps()}>DEC</button>
+        <input {...api.getInputProps()} />
+        <button {...api.getIncrementTriggerProps()}>INC</button>
       </div>
     </div>
   )

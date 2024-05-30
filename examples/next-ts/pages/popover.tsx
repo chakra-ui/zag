@@ -28,20 +28,20 @@ export default function Page() {
         <div data-part="root">
           <button data-testid="button-before">Button :before</button>
 
-          <button data-testid="popover-trigger" {...api.triggerProps}>
+          <button data-testid="popover-trigger" {...api.getTriggerProps()}>
             Click me
-            <div {...api.indicatorProps}>{">"}</div>
+            <div {...api.getIndicatorProps()}>{">"}</div>
           </button>
 
-          <div {...api.anchorProps}>anchor</div>
+          <div {...api.getAnchorProps()}>anchor</div>
 
           <Wrapper>
-            <div {...api.positionerProps}>
-              <div data-testid="popover-content" className="popover-content" {...api.contentProps}>
-                <div {...api.arrowProps}>
-                  <div {...api.arrowTipProps} />
+            <div {...api.getPositionerProps()}>
+              <div data-testid="popover-content" className="popover-content" {...api.getContentProps()}>
+                <div {...api.getArrowProps()}>
+                  <div {...api.getArrowTipProps()} />
                 </div>
-                <div data-testid="popover-title" {...api.titleProps}>
+                <div data-testid="popover-title" {...api.getTitleProps()}>
                   Popover Title
                 </div>
                 <div data-part="body" data-testid="popover-body">
@@ -50,7 +50,7 @@ export default function Page() {
                     Focusable Link
                   </a>
                   <input data-testid="input" placeholder="input" />
-                  <button data-testid="popover-close-button" {...api.closeTriggerProps}>
+                  <button data-testid="popover-close-button" {...api.getCloseTriggerProps()}>
                     X
                   </button>
                 </div>

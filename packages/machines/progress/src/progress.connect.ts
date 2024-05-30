@@ -39,7 +39,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "VALUE.SET", value: max })
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       dir: state.context.dir,
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
@@ -52,27 +52,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    labelProps: normalize.element({
+    getLabelProps: () => normalize.element({
       dir: state.context.dir,
       id: dom.getLabelId(state.context),
       ...parts.label.attrs,
       "data-orientation": orientation,
     }),
 
-    valueTextProps: normalize.element({
+    getValueTextProps: () => normalize.element({
       dir: state.context.dir,
       "aria-live": "polite",
       ...parts.valueText.attrs,
     }),
 
-    trackProps: normalize.element({
+    getTrackProps: () => normalize.element({
       dir: state.context.dir,
       id: dom.getTrackId(state.context),
       ...parts.track.attrs,
       ...progressbarProps,
     }),
 
-    rangeProps: normalize.element({
+    getRangeProps: () => normalize.element({
       dir: state.context.dir,
       ...parts.range.attrs,
       "data-orientation": orientation,
@@ -82,7 +82,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    circleProps: normalize.element({
+    getCircleProps: () => normalize.element({
       dir: state.context.dir,
       id: dom.getCircleId(state.context),
       ...parts.circle.attrs,
@@ -90,14 +90,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...circleProps.root,
     }),
 
-    circleTrackProps: normalize.element({
+    getCircleTrackProps: () => normalize.element({
       dir: state.context.dir,
       "data-orientation": orientation,
       ...parts.circleTrack.attrs,
       ...circleProps.track,
     }),
 
-    circleRangeProps: normalize.element({
+    getCircleRangeProps: () => normalize.element({
       dir: state.context.dir,
       ...parts.circleRange.attrs,
       ...circleProps.range,

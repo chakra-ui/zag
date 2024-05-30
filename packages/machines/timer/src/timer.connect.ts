@@ -31,11 +31,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     restart() {
       send("RESTART")
     },
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       role: "timer",
       ...parts.root.attrs,
     }),
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       ...parts.control.attrs,
     }),
     getSegmentProps(props) {
@@ -48,7 +48,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
       })
     },
-    separatorProps: normalize.element({
+    getSeparatorProps: () => normalize.element({
       ...parts.separator.attrs,
     }),
   }

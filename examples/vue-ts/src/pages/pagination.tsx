@@ -56,10 +56,10 @@ export default defineComponent({
               </tbody>
             </table>
             {api.totalPages > 1 && (
-              <nav {...api.rootProps}>
+              <nav {...api.getRootProps()}>
                 <ul>
                   <li>
-                    <button {...api.prevTriggerProps}>Previous</button>
+                    <button {...api.getPrevTriggerProps()}>Previous</button>
                   </li>
                   {api.pages.map((page, i) => {
                     if (page.type === "page")
@@ -78,7 +78,7 @@ export default defineComponent({
                       )
                   })}
                   <li>
-                    <button {...api.nextTriggerProps}>Next</button>
+                    <button {...api.getNextTriggerProps()}>Next</button>
                   </li>
                 </ul>
               </nav>

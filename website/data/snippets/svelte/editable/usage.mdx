@@ -7,10 +7,10 @@
   const api = $derived(editable.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
-  <div {...api.areaProps}>
-    <input {...api.inputProps} />
-    <span {...api.previewProps} />
+<div {...api.getRootProps()}>
+  <div {...api.getAreaProps()}>
+    <input {...api.getInputProps()} />
+    <span {...api.getPreviewProps()} />
   </div>
 </div>
 ```

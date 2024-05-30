@@ -46,9 +46,9 @@ export function Menu() {
 
   return (
     <>
-      <button {...api.triggerProps}>Trigger</button>
-      <div {...api.positionerProps}>
-        <div {...api.contentProps}>
+      <button {...api.getTriggerProps()}>Trigger</button>
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
           {radios.map((item) => {
             return (
               <div key={item.value} {...api.getOptionItemProps(item)}>
@@ -57,7 +57,7 @@ export function Menu() {
               </div>
             )
           })}
-          <hr {...api.separatorProps} />
+          <hr {...api.getSeparatorProps()} />
           {checkboxes.map((item) => {
             return (
               <div key={item.value} {...api.getOptionItemProps(item)}>

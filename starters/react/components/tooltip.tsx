@@ -30,14 +30,14 @@ export function Tooltip(props: Props) {
   return (
     <main className="tooltip">
       {isValidElement(children) ? (
-        cloneElement(children, api.triggerProps)
+        cloneElement(children, api.getTriggerProps())
       ) : (
-        <span {...api.triggerProps}>{children}</span>
+        <span {...api.getTriggerProps()}>{children}</span>
       )}
       {api.open && (
         <Portal>
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>{label}</div>
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>{label}</div>
           </div>
         </Portal>
       )}

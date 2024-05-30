@@ -195,9 +195,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   getTriggerState(props: TriggerProps): TriggerState
 
-  rootProps: T["element"]
-  listProps: T["element"]
+  getRootProps(): T["element"]
+  getListProps(): T["element"]
   getTriggerProps(props: TriggerProps): T["button"]
   getContentProps(props: ContentProps): T["element"]
-  indicatorProps: T["element"]
+  getIndicatorProps(): T["element"]
 }

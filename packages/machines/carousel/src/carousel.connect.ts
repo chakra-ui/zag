@@ -48,7 +48,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("PAUSE")
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
       role: "region",
@@ -62,14 +62,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    viewportProps: normalize.element({
+    getViewportProps: () => normalize.element({
       ...parts.viewport.attrs,
       dir: state.context.dir,
       id: dom.getViewportId(state.context),
       "data-orientation": state.context.orientation,
     }),
 
-    itemGroupProps: normalize.element({
+    getItemGroupProps: () => normalize.element({
       ...parts.itemGroup.attrs,
       id: dom.getItemGroupId(state.context),
       "data-orientation": state.context.orientation,
@@ -109,7 +109,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    prevTriggerProps: normalize.button({
+    getPrevTriggerProps: () => normalize.button({
       ...parts.prevTrigger.attrs,
       id: dom.getPrevTriggerId(state.context),
       type: "button",
@@ -124,7 +124,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    nextTriggerProps: normalize.button({
+    getNextTriggerProps: () => normalize.button({
       ...parts.nextTrigger.attrs,
       dir: state.context.dir,
       id: dom.getNextTriggerId(state.context),
@@ -139,7 +139,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    indicatorGroupProps: normalize.element({
+    getIndicatorGroupProps: () => normalize.element({
       ...parts.indicatorGroup.attrs,
       dir: state.context.dir,
       id: dom.getIndicatorGroupId(state.context),

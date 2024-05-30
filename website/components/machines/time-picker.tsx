@@ -16,18 +16,18 @@ export function TimePicker(props: TimePickerProps) {
   const api = timePicker.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Time picker</label>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Time picker</label>
 
-      <div {...api.controlProps}>
-        <input {...api.inputProps} />
-        <button {...api.triggerProps}>🗓</button>
-        <button {...api.clearTriggerProps}>❌</button>
+      <div {...api.getControlProps()}>
+        <input {...api.getInputProps()} />
+        <button {...api.getTriggerProps()}>🗓</button>
+        <button {...api.getClearTriggerProps()}>❌</button>
       </div>
 
       <Portal>
-        <div {...api.positionerProps}>
-          <div {...api.contentProps}>
+        <div {...api.getPositionerProps()}>
+          <div {...api.getContentProps()}>
             <div {...api.getColumnProps({ unit: "hour" })}>
               {api.getHours().map((item) => (
                 <button

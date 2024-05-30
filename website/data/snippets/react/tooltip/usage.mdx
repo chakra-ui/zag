@@ -9,10 +9,10 @@ export function Tooltip() {
 
   return (
     <>
-      <button {...api.triggerProps}>Hover me</button>
+      <button {...api.getTriggerProps()}>Hover me</button>
       {api.open && (
-        <div {...api.positionerProps}>
-          <div {...api.contentProps}>Tooltip</div>
+        <div {...api.getPositionerProps()}>
+          <div {...api.getContentProps()}>Tooltip</div>
         </div>
       )}
     </>

@@ -45,7 +45,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SET_PANEL_SIZE", id, size })
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       "data-orientation": state.context.orientation,
       id: dom.getRootId(state.context),

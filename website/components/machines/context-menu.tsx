@@ -22,11 +22,11 @@ export function ContextMenu(props: ContextMenuProps) {
 
   return (
     <div>
-      <div {...api.contextTriggerProps}>
+      <div {...api.getContextTriggerProps()}>
         <div>Open context menu</div>
       </div>
-      <div {...api.positionerProps}>
-        <ul {...api.contentProps}>
+      <div {...api.getPositionerProps()}>
+        <ul {...api.getContentProps()}>
           {data.map((item) => (
             <li key={item.value} {...api.getItemProps({ value: item.value })}>
               {item.label}

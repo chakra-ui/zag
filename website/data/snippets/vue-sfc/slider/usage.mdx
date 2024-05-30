@@ -9,14 +9,14 @@ const api = computed(() => slider.connect(state.value, send, normalizeProps));
 </script>
 
 <template>
-  <div ref="ref" v-bind="api.rootProps">
+  <div ref="ref" v-bind="api.getRootProps()">
     <div>
-      <label v-bind="api.labelProps">Slider Label</label>
-      <output v-bind="api.valueTextProps">{{ api.value.at(0) }}</output>
+      <label v-bind="api.getLabelProps()">Slider Label</label>
+      <output v-bind="api.getValueTextProps()">{{ api.value.at(0) }}</output>
     </div>
-    <div v-bind="api.controlProps">
-      <div v-bind="api.trackProps">
-        <div v-bind="api.rangeProps" />
+    <div v-bind="api.getControlProps()">
+      <div v-bind="api.getTrackProps()">
+        <div v-bind="api.getRangeProps()" />
       </div>
       <div
         v-for="(_, index) in api.value"

@@ -15,29 +15,29 @@ const api = computed(() => floatingPanel.connect(state.value, send, normalizePro
 <template>
   <main class="floating-panel">
     <div>
-      <button v-bind="api.triggerProps">Toggle Panel</button>
-      <div v-bind="api.positionerProps">
-        <div v-bind="api.contentProps">
-          <div v-bind="api.dragTriggerProps">
-            <div v-bind="api.headerProps">
-              <p v-bind="api.titleProps">Floating Panel</p>
+      <button v-bind="api.getTriggerProps()">Toggle Panel</button>
+      <div v-bind="api.getPositionerProps()">
+        <div v-bind="api.getContentProps()">
+          <div v-bind="api.getDragTriggerProps()">
+            <div v-bind="api.getHeaderProps()">
+              <p v-bind="api.getTitleProps()">Floating Panel</p>
               <div data-scope="floating-panel" data-part="trigger-group">
-                <button v-bind="api.minimizeTriggerProps">
+                <button v-bind="api.getMinimizeTriggerProps()">
                   <Minus />
                 </button>
-                <button v-bind="api.maximizeTriggerProps">
+                <button v-bind="api.getMaximizeTriggerProps()">
                   <Maximize2 />
                 </button>
-                <button v-bind="api.restoreTriggerProps">
+                <button v-bind="api.getRestoreTriggerProps()">
                   <ArrowDownLeft />
                 </button>
-                <button v-bind="api.closeTriggerProps">
+                <button v-bind="api.getCloseTriggerProps()">
                   <XIcon />
                 </button>
               </div>
             </div>
           </div>
-          <div v-bind="api.bodyProps">
+          <div v-bind="api.getBodyProps()">
             <p>Some content</p>
           </div>
 

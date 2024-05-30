@@ -38,7 +38,7 @@ export function connect<T extends PropTypes, O>(
       send("DISMISS")
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getRootId(state.context),
@@ -69,28 +69,28 @@ export function connect<T extends PropTypes, O>(
     }),
 
     /* Leave a ghost div to avoid setting hover to false when transitioning out */
-    ghostBeforeProps: normalize.element({
+    getGhostBeforeProps: () => normalize.element({
       "data-ghost": "before",
       style: getGhostBeforeStyle(state.context, visible),
     }),
 
     /* Needed to avoid setting hover to false when in between toasts */
-    ghostAfterProps: normalize.element({
+    getGhostAfterProps: () => normalize.element({
       "data-ghost": "after",
       style: getGhostAfterStyle(state.context, visible),
     }),
 
-    titleProps: normalize.element({
+    getTitleProps: () => normalize.element({
       ...parts.title.attrs,
       id: dom.getTitleId(state.context),
     }),
 
-    descriptionProps: normalize.element({
+    getDescriptionProps: () => normalize.element({
       ...parts.description.attrs,
       id: dom.getDescriptionId(state.context),
     }),
 
-    actionTriggerProps: normalize.button({
+    getActionTriggerProps: () => normalize.button({
       ...parts.actionTrigger.attrs,
       type: "button",
       onClick(event) {
@@ -99,7 +99,7 @@ export function connect<T extends PropTypes, O>(
       },
     }),
 
-    closeTriggerProps: normalize.button({
+    getCloseTriggerProps: () => normalize.button({
       id: dom.getCloseTriggerId(state.context),
       ...parts.closeTrigger.attrs,
       type: "button",

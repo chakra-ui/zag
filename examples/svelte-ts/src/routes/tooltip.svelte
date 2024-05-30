@@ -16,10 +16,10 @@
 
 <main class="tooltip">
   <div class="root">
-    <button data-testid={`${id}-trigger`} {...api.triggerProps}> Hover me </button>
+    <button data-testid={`${id}-trigger`} {...api.getTriggerProps()}> Hover me </button>
     {#if api.open}
-      <div {...api.positionerProps}>
-        <div class="tooltip-content" data-testid={`${id}-tooltip`} {...api.contentProps}>Tooltip</div>
+      <div {...api.getPositionerProps()}>
+        <div class="tooltip-content" data-testid={`${id}-tooltip`} {...api.getContentProps()}>Tooltip</div>
       </div>
     {/if}
     <button data-testid={`${id2}-trigger`} {...api2.triggerProps}> Over me </button>

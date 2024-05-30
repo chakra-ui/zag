@@ -7,15 +7,15 @@ function Toast({ actor }: { actor: toast.Service }) {
   const [state, send] = useActor(actor)
   const api = toast.connect(state, send, normalizeProps)
   return (
-    <div {...api.rootProps}>
-      <span {...api.ghostBeforeProps} />
-      <p {...api.titleProps}>
+    <div {...api.getRootProps()}>
+      <span {...api.getGhostBeforeProps()} />
+      <p {...api.getTitleProps()}>
         [{api.type}] {api.title}
       </p>
-      <button {...api.closeTriggerProps}>
+      <button {...api.getCloseTriggerProps()}>
         <HiX />
       </button>
-      <span {...api.ghostAfterProps} />
+      <span {...api.getGhostAfterProps()} />
     </div>
   )
 }

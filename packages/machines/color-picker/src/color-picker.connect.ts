@@ -91,7 +91,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "VALUE.SET", value: color, src: "set-alpha" })
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getRootId(state.context),
@@ -102,7 +102,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    labelProps: normalize.element({
+    getLabelProps: () => normalize.element({
       ...parts.label.attrs,
       dir: state.context.dir,
       id: dom.getLabelId(state.context),
@@ -117,7 +117,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       ...parts.control.attrs,
       id: dom.getControlId(state.context),
       dir: state.context.dir,
@@ -127,7 +127,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-focus": dataAttr(focused),
     }),
 
-    triggerProps: normalize.button({
+    getTriggerProps: () => normalize.button({
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
       dir: state.context.dir,
@@ -155,14 +155,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    positionerProps: normalize.element({
+    getPositionerProps: () => normalize.element({
       ...parts.positioner.attrs,
       id: dom.getPositionerId(state.context),
       dir: state.context.dir,
       style: popperStyles.floating,
     }),
 
-    contentProps: normalize.element({
+    getContentProps: () => normalize.element({
       ...parts.content.attrs,
       id: dom.getContentId(state.context),
       dir: state.context.dir,
@@ -501,7 +501,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    hiddenInputProps: normalize.input({
+    getHiddenInputProps: () => normalize.input({
       type: "text",
       disabled: disabled,
       name: state.context.name,
@@ -510,7 +510,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       defaultValue: valueAsString,
     }),
 
-    eyeDropperTriggerProps: normalize.button({
+    getEyeDropperTriggerProps: () => normalize.button({
       ...parts.eyeDropperTrigger.attrs,
       type: "button",
       dir: state.context.dir,
@@ -523,7 +523,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    swatchGroupProps: normalize.element({
+    getSwatchGroupProps: () => normalize.element({
       ...parts.swatchGroup.attrs,
       role: "group",
     }),
@@ -575,7 +575,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    formatTriggerProps: normalize.button({
+    getFormatTriggerProps: () => normalize.button({
       ...parts.formatTrigger.attrs,
       dir: state.context.dir,
       type: "button",
@@ -587,7 +587,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    formatSelectProps: normalize.select({
+    getFormatSelectProps: () => normalize.select({
       ...parts.formatSelect.attrs,
       "aria-label": "change color format",
       dir: state.context.dir,

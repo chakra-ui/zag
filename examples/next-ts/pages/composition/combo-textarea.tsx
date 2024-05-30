@@ -78,14 +78,14 @@ export default function Page() {
 
   const api = combobox.connect(state, send, normalizeProps)
 
-  const textareaProps = api.inputProps as unknown as React.ComponentProps<"textarea">
+  const textareaProps = api.getInputProps() as unknown as React.ComponentProps<"textarea">
 
   return (
     <>
       <main className="combobox">
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           <span>Search value: {searchValue || "-"}</span>
-          <label {...api.labelProps}>Select country</label>
+          <label {...api.getLabelProps()}>Select country</label>
           <textarea
             ref={ref}
             {...mergeProps(textareaProps, {
@@ -119,8 +119,8 @@ export default function Page() {
           />
         </div>
 
-        <div {...api.positionerProps}>
-          <ul {...api.contentProps}>
+        <div {...api.getPositionerProps()}>
+          <ul {...api.getContentProps()}>
             {options.map((item) => (
               <li key={item.code} {...api.getItemProps({ item })}>
                 {item.label}

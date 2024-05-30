@@ -10,9 +10,9 @@ const api = computed(() => tooltip.connect(state.value, send, normalizeProps));
 
 <template>
   <div>
-    <button ref="ref" v-bind="api.triggerProps">Hover me</button>
-    <div v-if="api.open" v-bind="api.positionerProps">
-      <div v-bind="api.contentProps">Tooltip</div>
+    <button ref="ref" v-bind="api.getTriggerProps()">Hover me</button>
+    <div v-if="api.open" v-bind="api.getPositionerProps()">
+      <div v-bind="api.getContentProps()">Tooltip</div>
     </div>
   </div>
 </template>

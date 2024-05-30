@@ -41,7 +41,7 @@ export function MobileNavigation() {
         size="sm"
         px="2"
         bg="bg-subtle"
-        {...api.triggerProps}
+        {...api.getTriggerProps()}
       >
         <HStack>
           <HiMenu />{" "}
@@ -53,9 +53,9 @@ export function MobileNavigation() {
 
       {api.open && (
         <Portal>
-          <div {...api.positionerProps}>
+          <div {...api.getPositionerProps()}>
             <Box
-              {...api.contentProps}
+              {...api.getContentProps()}
               position="fixed"
               inset="0"
               zIndex="modal"
@@ -74,7 +74,7 @@ export function MobileNavigation() {
                   size="sm"
                   px="2"
                   bg="bg-subtle"
-                  {...api.closeTriggerProps}
+                  {...api.getCloseTriggerProps()}
                 >
                   <HStack>
                     <HiX /> <span>Close</span>

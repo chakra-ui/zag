@@ -79,14 +79,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return seconds.map((value) => ({ label: padStart(value), value }))
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       "data-state": open ? "open" : "closed",
       "data-disabled": dataAttr(disabled),
       "data-readonly": dataAttr(readOnly),
     }),
 
-    labelProps: normalize.label({
+    getLabelProps: () => normalize.label({
       ...parts.label.attrs,
       dir: state.context.dir,
       htmlFor: dom.getInputId(state.context),
@@ -95,14 +95,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-readonly": dataAttr(readOnly),
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       ...parts.control.attrs,
       dir: state.context.dir,
       id: dom.getControlId(state.context),
       "data-disabled": dataAttr(disabled),
     }),
 
-    inputProps: normalize.input({
+    getInputProps: () => normalize.input({
       ...parts.input.attrs,
       dir: state.context.dir,
       autoComplete: "off",
@@ -129,7 +129,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    triggerProps: normalize.button({
+    getTriggerProps: () => normalize.button({
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
       type: "button",
@@ -145,7 +145,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    clearTriggerProps: normalize.button({
+    getClearTriggerProps: () => normalize.button({
       ...parts.clearTrigger.attrs,
       id: dom.getClearTriggerId(state.context),
       type: "button",
@@ -159,18 +159,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    positionerProps: normalize.element({
+    getPositionerProps: () => normalize.element({
       ...parts.positioner.attrs,
       dir: state.context.dir,
       id: dom.getPositionerId(state.context),
       style: popperStyles.floating,
     }),
 
-    spacerProps: normalize.element({
+    getSpacerProps: () => normalize.element({
       ...parts.spacer.attrs,
     }),
 
-    contentProps: normalize.element({
+    getContentProps: () => normalize.element({
       ...parts.content.attrs,
       dir: state.context.dir,
       id: dom.getContentId(state.context),

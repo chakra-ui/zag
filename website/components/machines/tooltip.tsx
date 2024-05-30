@@ -14,13 +14,13 @@ export function Tooltip(props: TooltipProps) {
 
   return (
     <>
-      <button {...api.triggerProps}>Hover me</button>
+      <button {...api.getTriggerProps()}>Hover me</button>
       <Portal>
         {api.open && (
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>
-              <div {...api.arrowProps}>
-                <div {...api.arrowTipProps} />
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
+              <div {...api.getArrowProps()}>
+                <div {...api.getArrowTipProps()} />
               </div>
               Tooltip
             </div>

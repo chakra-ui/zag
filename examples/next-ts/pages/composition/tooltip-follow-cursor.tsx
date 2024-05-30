@@ -27,7 +27,7 @@ export default function Page() {
       <div className="root">
         <button
           data-testid={`${id}-trigger`}
-          {...mergeProps(api.triggerProps, {
+          {...mergeProps(api.getTriggerProps(), {
             style: { width: "200px", height: "40px" },
             onPointerMove(event) {
               anchorRect.current = DOMRect.fromRect({
@@ -43,8 +43,8 @@ export default function Page() {
         >
           Hover me
         </button>
-        <div {...api.positionerProps}>
-          <div className="tooltip-content" data-testid={`${id}-tooltip`} {...api.contentProps}>
+        <div {...api.getPositionerProps()}>
+          <div className="tooltip-content" data-testid={`${id}-tooltip`} {...api.getContentProps()}>
             Tooltip
           </div>
         </div>

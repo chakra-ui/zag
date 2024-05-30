@@ -21,11 +21,11 @@ const api = computed(() => clipboard.connect(state.value, send, normalizeProps))
 
 <template>
   <main className="clipboard">
-    <div v-bind="api.rootProps">
-      <label v-bind="api.labelProps">Copy this link</label>
-      <div v-bind="api.controlProps">
-        <input v-bind="api.inputProps" style="width: 100%" />
-        <button v-bind="api.triggerProps">
+    <div v-bind="api.getRootProps()">
+      <label v-bind="api.getLabelProps()">Copy this link</label>
+      <div v-bind="api.getControlProps()">
+        <input v-bind="api.getInputProps()" style="width: 100%" />
+        <button v-bind="api.getTriggerProps()">
           <ClipboardCheck v-if="api.copied" />
           <ClipboardCopyIcon v-else />
         </button>

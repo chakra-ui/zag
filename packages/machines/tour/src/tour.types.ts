@@ -303,20 +303,20 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   getProgressText(): string
 
-  overlayProps: T["element"]
-  spotlightProps: T["element"]
-  progressTextProps: T["element"]
+  getOverlayProps(): T["element"]
+  getSpotlightProps(): T["element"]
+  getProgressTextProps(): T["element"]
 
-  positionerProps: T["element"]
-  arrowProps: T["element"]
-  arrowTipProps: T["element"]
-  contentProps: T["element"]
+  getPositionerProps(): T["element"]
+  getArrowProps(): T["element"]
+  getArrowTipProps(): T["element"]
+  getContentProps(): T["element"]
 
-  titleProps: T["element"]
-  descriptionProps: T["element"]
+  getTitleProps(): T["element"]
+  getDescriptionProps(): T["element"]
 
-  nextTriggerProps: T["button"]
-  prevTriggerProps: T["button"]
-  closeTriggerProps: T["button"]
-  skipTriggerProps: T["button"]
+  getNextTriggerProps(): T["button"]
+  getPrevTriggerProps(): T["button"]
+  getCloseTriggerProps(): T["button"]
+  getSkipTriggerProps(): T["button"]
 }

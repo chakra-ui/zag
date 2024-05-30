@@ -55,9 +55,9 @@ export default function Page() {
     <>
       <main className="rating">
         <form action="">
-          <div {...api.rootProps}>
-            <label {...api.labelProps}>Rate:</label>
-            <div {...api.controlProps}>
+          <div {...api.getRootProps()}>
+            <label {...api.getLabelProps()}>Rate:</label>
+            <div {...api.getControlProps()}>
               {api.items.map((index) => {
                 const state = api.getItemState({ index })
                 return (
@@ -67,7 +67,7 @@ export default function Page() {
                 )
               })}
             </div>
-            <input {...api.hiddenInputProps} data-testid="hidden-input" />
+            <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
           </div>
           <button type="reset">Reset</button>
         </form>

@@ -150,12 +150,12 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   clear(): void
 
-  labelProps: T["element"]
-  rootProps: T["element"]
-  controlProps: T["element"]
-  segmentProps: T["svg"]
+  getLabelProps(): T["element"]
+  getRootProps(): T["element"]
+  getControlProps(): T["element"]
+  getSegmentProps(): T["svg"]
   getSegmentPathProps(props: SegmentPathProps): T["path"]
   getHiddenInputProps(props: HiddenInputProps): T["input"]
-  guideProps: T["element"]
-  clearTriggerProps: T["element"]
+  getGuideProps(): T["element"]
+  getClearTriggerProps(): T["element"]
 }

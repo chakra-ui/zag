@@ -28,14 +28,14 @@ const api = computed(() => pinInput.connect(state.value, send, normalizeProps))
         }
       "
     >
-      <div v-bind="api.rootProps">
-        <label v-bind="api.labelProps">Enter code:</label>
-        <div v-bind="api.controlProps">
+      <div v-bind="api.getRootProps()">
+        <label v-bind="api.getLabelProps()">Enter code:</label>
+        <div v-bind="api.getControlProps()">
           <input data-testid="input-1" v-bind="api.getInputProps({ index: 0 })" />
           <input data-testid="input-2" v-bind="api.getInputProps({ index: 1 })" />
           <input data-testid="input-3" v-bind="api.getInputProps({ index: 2 })" />
         </div>
-        <input v-bind="api.hiddenInputProps" />
+        <input v-bind="api.getHiddenInputProps()" />
       </div>
       <button data-testid="clear-button" @click="api.clearValue">Clear</button>
     </form>

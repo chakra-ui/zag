@@ -8,9 +8,9 @@
   const api = $derived(rating.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
-  <label {...api.labelProps}>Rate:</label>
-  <div {...api.controlProps}>
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Rate:</label>
+  <div {...api.getControlProps()}>
     {#each api.items as index}
       {@const snapshot = api.getItemState({ index })}
       <span {...api.getItemProps({ index })}>
@@ -22,6 +22,6 @@
       </span>
     {/each}
   </div>
-  <input {...api.hiddenInputProps} data-testid="hidden-input" />
+  <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
 </div>
 ```

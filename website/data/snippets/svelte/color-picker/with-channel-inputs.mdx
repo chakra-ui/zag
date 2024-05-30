@@ -8,10 +8,10 @@
   const api = $derived(colorPicker.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
+<div {...api.getRootProps()}>
   <!-- ... -->
-  <div {...api.positionerProps}>
-    <div {...api.contentProps}>
+  <div {...api.getPositionerProps()}>
+    <div {...api.getContentProps()}>
       {#if api.format === "rgba"}
         <div>
           <div>

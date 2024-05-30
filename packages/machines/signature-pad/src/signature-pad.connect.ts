@@ -24,19 +24,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return dom.getDataUrl(state.context, { type, quality })
     },
 
-    labelProps: normalize.element({
+    getLabelProps: () => normalize.element({
       ...parts.label.attrs,
       "data-disabled": dataAttr(disabled),
       htmlFor: dom.getControlId(state.context),
     }),
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       "data-disabled": dataAttr(disabled),
       id: dom.getRootId(state.context),
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       ...parts.control.attrs,
       tabIndex: disabled ? undefined : 0,
       id: dom.getControlId(state.context),
@@ -71,7 +71,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    segmentProps: normalize.svg({
+    getSegmentProps: () => normalize.svg({
       ...parts.segment.attrs,
       style: {
         position: "absolute",
@@ -91,12 +91,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    guideProps: normalize.element({
+    getGuideProps: () => normalize.element({
       ...parts.guide.attrs,
       "data-disabled": dataAttr(disabled),
     }),
 
-    clearTriggerProps: normalize.button({
+    getClearTriggerProps: () => normalize.button({
       ...parts.clearTrigger.attrs,
       type: "button",
       "aria-label": "Clear Signature",

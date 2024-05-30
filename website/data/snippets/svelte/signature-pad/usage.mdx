@@ -12,11 +12,11 @@
   const api = $derived(signaturePad.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
-  <label {...api.labelProps}>Signature Pad</label>
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Signature Pad</label>
 
-  <div {...api.controlProps}>
-    <svg {...api.segmentProps}>
+  <div {...api.getControlProps()}>
+    <svg {...api.getSegmentProps()}>
       {#each api.paths as path}
         <path {...api.getSegmentPathProps({ path })} />
       {/each}
@@ -25,9 +25,9 @@
       {/if}
     </svg>
 
-    <button {...api.clearTriggerProps}>X</button>
+    <button {...api.getClearTriggerProps()}>X</button>
 
-    <div {...api.guideProps} />
+    <div {...api.getGuideProps()} />
   </div>
 </div>
 ```

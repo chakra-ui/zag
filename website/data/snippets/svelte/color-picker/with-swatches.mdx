@@ -10,11 +10,11 @@
   const presets = ["#ff0000", "#00ff00", "#0000ff"]
 </script>
 
-<div {...api.rootProps}>
+<div {...api.getRootProps()}>
   <!-- ... -->
-  <div {...api.positionerProps}>
-    <div {...api.contentProps}>
-      <div {...api.swatchGroupProps}>
+  <div {...api.getPositionerProps()}>
+    <div {...api.getContentProps()}>
+      <div {...api.getSwatchGroupProps()}>
         {#each presets as preset}
           <button {...api.getSwatchTriggerProps({ value: preset })}>
             <div style="position:relative;">

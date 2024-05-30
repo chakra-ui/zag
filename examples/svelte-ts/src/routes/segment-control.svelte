@@ -16,8 +16,8 @@
 </script>
 
 <main class="segmented-control">
-  <div {...api.rootProps}>
-    <div {...api.indicatorProps}></div>
+  <div {...api.getRootProps()}>
+    <div {...api.getIndicatorProps()}></div>
     {#each radioData as opt}
       <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
         <span data-testid={`label-${opt.id}`} {...api.getItemTextProps({ value: opt.id })}>

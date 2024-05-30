@@ -31,7 +31,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "CHECKED.TOGGLE", checked: checked, isTrusted: false })
     },
 
-    rootProps: normalize.label({
+    getRootProps: () => normalize.label({
       ...parts.root.attrs,
       ...dataAttrs,
       dir: state.context.dir,
@@ -52,14 +52,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    labelProps: normalize.element({
+    getLabelProps: () => normalize.element({
       ...parts.label.attrs,
       ...dataAttrs,
       dir: state.context.dir,
       id: dom.getLabelId(state.context),
     }),
 
-    thumbProps: normalize.element({
+    getThumbProps: () => normalize.element({
       ...parts.thumb.attrs,
       ...dataAttrs,
       dir: state.context.dir,
@@ -67,7 +67,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-hidden": true,
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       ...parts.control.attrs,
       ...dataAttrs,
       dir: state.context.dir,
@@ -75,7 +75,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-hidden": true,
     }),
 
-    hiddenInputProps: normalize.input({
+    getHiddenInputProps: () => normalize.input({
       id: dom.getHiddenInputId(state.context),
       type: "checkbox",
       required: state.context.required,

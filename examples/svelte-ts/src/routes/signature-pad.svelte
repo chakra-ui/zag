@@ -33,12 +33,12 @@
 </script>
 
 <main class="signature-pad">
-  <div {...api.rootProps}>
+  <div {...api.getRootProps()}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
-    <label {...api.labelProps}>Signature Pad</label>
+    <label {...api.getLabelProps()}>Signature Pad</label>
 
-    <div {...api.controlProps}>
-      <svg {...api.segmentProps}>
+    <div {...api.getControlProps()}>
+      <svg {...api.getSegmentProps()}>
         {#each api.paths as path}
           <path {...api.getSegmentPathProps({ path })} />
         {/each}
@@ -47,10 +47,10 @@
         {/if}
       </svg>
 
-      <div {...api.guideProps}></div>
+      <div {...api.getGuideProps()}></div>
     </div>
 
-    <button {...api.clearTriggerProps}>
+    <button {...api.getClearTriggerProps()}>
       <RotateCcw />
     </button>
   </div>

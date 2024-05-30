@@ -28,9 +28,9 @@ export default function Page() {
   return (
     <>
       <main className="tags-input">
-        <div {...api.rootProps}>
-          <label {...api.labelProps}>Enter frameworks:</label>
-          <div {...api.controlProps}>
+        <div {...api.getRootProps()}>
+          <label {...api.getLabelProps()}>Enter frameworks:</label>
+          <div {...api.getControlProps()}>
             {api.value.map((value, index) => (
               <span key={`${toDashCase(value)}-tag-${index}`} {...api.getItemProps({ index, value })}>
                 <div data-testid={`${toDashCase(value)}-tag`} {...api.getItemPreviewProps({ index, value })}>
@@ -47,9 +47,9 @@ export default function Page() {
                 <input data-testid={`${toDashCase(value)}-input`} {...api.getItemInputProps({ index, value })} />
               </span>
             ))}
-            <input data-testid="input" placeholder="add tag" {...api.inputProps} />
+            <input data-testid="input" placeholder="add tag" {...api.getInputProps()} />
           </div>
-          <input {...api.hiddenInputProps} />
+          <input {...api.getHiddenInputProps()} />
         </div>
       </main>
       <Toolbar controls={controls.ui}>

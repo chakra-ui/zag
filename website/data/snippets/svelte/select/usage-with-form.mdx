@@ -26,7 +26,7 @@
 
 <form>
   <!-- Hidden select -->
-  <select {...api.hiddenSelectProps}>
+  <select {...api.getHiddenSelectProps()}>
     {#each selectData as option}
       <option value={option.value}>
         {option.label}
@@ -37,16 +37,16 @@
   <!-- Custom Select -->
 
 {" "}
-<div {...api.controlProps}>
-  <label {...api.labelProps}>Label</label>
-  <button type="button" {...api.triggerProps}>
+<div {...api.getControlProps()}>
+  <label {...api.getLabelProps()}>Label</label>
+  <button type="button" {...api.getTriggerProps()}>
     <span>{api.valueAsString || "Select option"}</span>
     <CaretIcon />
   </button>
 </div>
 
-  <div use:portal {...api.positionerProps}>
-    <ul {...api.contentProps}>
+  <div use:portal {...api.getPositionerProps()}>
+    <ul {...api.getContentProps()}>
       {#each selectData as item}
         <li {...api.getItemProps({ item })}>
           <span>{item.label}</span>

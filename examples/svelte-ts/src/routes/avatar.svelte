@@ -16,10 +16,10 @@
 </script>
 
 <main class="avatar">
-  <div {...api.rootProps}>
-    <span {...api.fallbackProps}>PA</span>
+  <div {...api.getRootProps()}>
+    <span {...api.getFallbackProps()}>PA</span>
     {#if showImage}
-      <img alt="" referrerpolicy="no-referrer" {src} {...api.imageProps} />
+      <img alt="" referrerpolicy="no-referrer" {src} {...api.getImageProps()} />
     {/if}
   </div>
 

@@ -16,22 +16,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     copy() {
       send({ type: "COPY" })
     },
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       "data-copied": dataAttr(copied),
       id: dom.getRootId(state.context),
     }),
-    labelProps: normalize.label({
+    getLabelProps: () => normalize.label({
       ...parts.label.attrs,
       htmlFor: dom.getInputId(state.context),
       "data-copied": dataAttr(copied),
       id: dom.getLabelId(state.context),
     }),
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       ...parts.control.attrs,
       "data-copied": dataAttr(copied),
     }),
-    inputProps: normalize.input({
+    getInputProps: () => normalize.input({
       ...parts.input.attrs,
       defaultValue: state.context.value,
       "data-copied": dataAttr(copied),
@@ -45,7 +45,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "INPUT.COPY" })
       },
     }),
-    triggerProps: normalize.button({
+    getTriggerProps: () => normalize.button({
       ...parts.trigger.attrs,
       "aria-label": copied ? "Copied to clipboard" : "Copy to clipboard",
       "data-copied": dataAttr(copied),

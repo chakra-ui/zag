@@ -16,8 +16,8 @@
 </script>
 
 <main class="tree-view">
-  <div {...api.rootProps}>
-    <h3 {...api.labelProps}>My Documents</h3>
+  <div {...api.getRootProps()}>
+    <h3 {...api.getLabelProps()}>My Documents</h3>
     <div>
       <button onclick={() => api.collapse()}>Collapse All</button>
       <button onclick={() => api.expand()}>Expand All</button>
@@ -26,7 +26,7 @@
       <button onclick={() => api.deselect()}>Deselect All</button>
     </div>
 
-    <ul {...api.treeProps}>
+    <ul {...api.getTreeProps()}>
       <li {...api.getBranchProps({ value: "node_modules", depth: 1 })}>
         <div {...api.getBranchControlProps({ value: "node_modules", depth: 1 })}>
           <span {...api.getBranchTextProps({ value: "node_modules", depth: 1 })}> 📂 node_modules</span>

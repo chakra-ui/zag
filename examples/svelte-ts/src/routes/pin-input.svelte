@@ -30,15 +30,15 @@
       console.log(formData)
     }}
   >
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       <!-- svelte-ignore a11y_label_has_associated_control -->
-      <label {...api.labelProps}>Enter code:</label>
-      <div {...api.controlProps}>
+      <label {...api.getLabelProps()}>Enter code:</label>
+      <div {...api.getControlProps()}>
         <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
         <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
         <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />
       </div>
-      <input {...api.hiddenInputProps} />
+      <input {...api.getHiddenInputProps()} />
     </div>
     <button data-testid="clear-button" onclick={api.clearValue}> Clear </button>
     <button onclick={api.focus}>Focus</button>

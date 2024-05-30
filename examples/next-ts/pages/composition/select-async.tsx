@@ -59,19 +59,19 @@ export default function Page() {
   return (
     <>
       <main className="select">
-        <div {...api.rootProps}>
-          <label {...api.labelProps}>Label</label>
-          <div {...api.controlProps}>
-            <button {...api.triggerProps}>
+        <div {...api.getRootProps()}>
+          <label {...api.getLabelProps()}>Label</label>
+          <div {...api.getControlProps()}>
+            <button {...api.getTriggerProps()}>
               <span>{api.hasSelectedItems ? api.valueAsString : "Select option"}</span>
               <span>▼</span>
             </button>
-            <button {...api.clearTriggerProps}>X</button>
+            <button {...api.getClearTriggerProps()}>X</button>
           </div>
 
           <Portal>
-            <div {...api.positionerProps}>
-              <ul {...api.contentProps}>
+            <div {...api.getPositionerProps()}>
+              <ul {...api.getContentProps()}>
                 {items.map((item) => (
                   <li key={item.name} {...api.getItemProps({ item })}>
                     <span {...api.getItemTextProps({ item })}>{item.name}</span>

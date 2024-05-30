@@ -10,11 +10,11 @@ const ColorPicker = () => {
   const api = colorPicker.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       {/* ... */}
-      <div {...api.positionerProps}>
-        <div {...api.contentProps}>
-          <button {...api.eyeDropperTriggerProps}>
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
+          <button {...api.getEyeDropperTriggerProps()}>
             <EyeDropIcon />
           </button>
         </div>

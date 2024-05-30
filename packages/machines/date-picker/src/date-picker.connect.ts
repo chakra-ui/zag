@@ -264,7 +264,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "GOTO.PREV", view: state.context.view })
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getRootId(state.context),
@@ -273,7 +273,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-readonly": dataAttr(readOnly),
     }),
 
-    labelProps: normalize.label({
+    getLabelProps: () => normalize.label({
       ...parts.label.attrs,
       dir: state.context.dir,
       htmlFor: dom.getInputId(state.context, 0),
@@ -282,19 +282,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-readonly": dataAttr(readOnly),
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       ...parts.control.attrs,
       dir: state.context.dir,
       id: dom.getControlId(state.context),
       "data-disabled": dataAttr(disabled),
     }),
 
-    rangeTextProps: normalize.element({
+    getRangeTextProps: () => normalize.element({
       ...parts.rangeText.attrs,
       dir: state.context.dir,
     }),
 
-    contentProps: normalize.element({
+    getContentProps: () => normalize.element({
       ...parts.content.attrs,
       hidden: !open,
       dir: state.context.dir,
@@ -578,7 +578,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    clearTriggerProps: normalize.button({
+    getClearTriggerProps: () => normalize.button({
       ...parts.clearTrigger.attrs,
       id: dom.getClearTriggerId(state.context),
       dir: state.context.dir,
@@ -591,7 +591,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    triggerProps: normalize.button({
+    getTriggerProps: () => normalize.button({
       ...parts.trigger.attrs,
       id: dom.getTriggerId(state.context),
       dir: state.context.dir,
@@ -680,7 +680,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    monthSelectProps: normalize.select({
+    getMonthSelectProps: () => normalize.select({
       ...parts.monthSelect.attrs,
       id: dom.getMonthSelectId(state.context),
       "aria-label": "Select month",
@@ -692,7 +692,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    yearSelectProps: normalize.select({
+    getYearSelectProps: () => normalize.select({
       ...parts.yearSelect.attrs,
       id: dom.getYearSelectId(state.context),
       disabled,
@@ -704,7 +704,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    positionerProps: normalize.element({
+    getPositionerProps: () => normalize.element({
       id: dom.getPositionerId(state.context),
       ...parts.positioner.attrs,
       dir: state.context.dir,

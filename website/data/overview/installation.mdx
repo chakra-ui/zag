@@ -44,10 +44,10 @@ export function Tooltip() {
 
   return (
     <>
-      <button {...api.triggerProps}>Hover me</button>
+      <button {...api.getTriggerProps()}>Hover me</button>
       {api.open && (
-        <div {...api.positionerProps}>
-          <div {...api.contentProps}>Tooltip</div>
+        <div {...api.getPositionerProps()}>
+          <div {...api.getContentProps()}>Tooltip</div>
         </div>
       )}
     </>
@@ -83,10 +83,10 @@ export default defineComponent({
       return (
         <>
           <div>
-            <button {...api.triggerProps}>Hover me</button>
+            <button {...api.getTriggerProps()}>Hover me</button>
             {api.open && (
-              <div {...api.positionerProps}>
-                <div {...api.contentProps}>Tooltip</div>
+              <div {...api.getPositionerProps()}>
+                <div {...api.getContentProps()}>Tooltip</div>
               </div>
             )}
           </div>
@@ -154,10 +154,10 @@ Here's how to use the same tooltip logic in Svelte:
 </script>
 
 <div>
-  <button {...api.triggerProps}>Hover me</button>
+  <button {...api.getTriggerProps()}>Hover me</button>
   {#if api.open}
-    <div {...api.positionerProps}>
-      <div {...api.contentProps}>Tooltip</div>
+    <div {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>Tooltip</div>
     </div>
   {/if}
 </div>

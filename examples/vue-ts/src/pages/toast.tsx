@@ -23,15 +23,15 @@ const ToastItem = defineComponent({
       const api = apiRef.value
 
       return (
-        <div {...api.rootProps}>
-          <span {...api.ghostBeforeProps} />
+        <div {...api.getRootProps()}>
+          <span {...api.getGhostBeforeProps()} />
           <div data-scope="toast" data-part="progressbar" />
-          <p {...api.titleProps}>
+          <p {...api.getTitleProps()}>
             {api.type === "loading" && <LoaderBar />}
             {api.title}
           </p>
-          <span {...api.ghostAfterProps} />
-          <button {...api.closeTriggerProps}>
+          <span {...api.getGhostAfterProps()} />
+          <button {...api.getCloseTriggerProps()}>
             <XIcon />
           </button>
         </div>

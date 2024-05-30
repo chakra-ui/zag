@@ -19,7 +19,7 @@ export function ToggleGroup(props: Props) {
 
   return (
     <div>
-      <div {...api.rootProps}>
+      <div {...api.getRootProps()}>
         <button {...api.getItemProps({ value: "bold" })}>
           <RxFontBold />
         </button>

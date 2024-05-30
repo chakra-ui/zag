@@ -76,19 +76,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dom.getItemEl(state.context, id)?.focus()
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
       dir: state.context.dir,
     }),
 
-    labelProps: normalize.element({
+    getLabelProps: () => normalize.element({
       ...parts.label.attrs,
       id: dom.getLabelId(state.context),
       dir: state.context.dir,
     }),
 
-    treeProps: normalize.element({
+    getTreeProps: () => normalize.element({
       ...parts.tree.attrs,
       id: dom.getTreeId(state.context),
       dir: state.context.dir,

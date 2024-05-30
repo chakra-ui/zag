@@ -43,9 +43,9 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <>
-          <button {...api.triggerProps}>Trigger</button>
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>
+          <button {...api.getTriggerProps()}>Trigger</button>
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
               {radios.value.map((item) => (
                 <div key={item.value} {...api.getOptionItemProps(item)}>
                   <span {...api.getItemIndicatorProps(item)}>✅</span>
@@ -54,7 +54,7 @@ export default defineComponent({
                   </span>
                 </div>
               ))}
-              <hr {...api.separatorProps} />
+              <hr {...api.getSeparatorProps()} />
               {checkboxes.value.map((item) => (
                 <div key={item.value} {...api.getOptionItemProps(item)}>
                   <span {...api.getItemIndicatorProps(item)}>✅</span>

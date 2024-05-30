@@ -16,15 +16,15 @@
 </script>
 
 <main class="file-upload">
-  <div {...api.rootProps}>
-    <div {...api.dropzoneProps}>
-      <input {...api.hiddenInputProps} />
+  <div {...api.getRootProps()}>
+    <div {...api.getDropzoneProps()}>
+      <input {...api.getHiddenInputProps()} />
       Drag your files here
     </div>
 
-    <button {...api.triggerProps}>Choose Files...</button>
+    <button {...api.getTriggerProps()}>Choose Files...</button>
 
-    <ul {...api.itemGroupProps}>
+    <ul {...api.getItemGroupProps()}>
       {#each api.acceptedFiles as file}
         <li class="file" {...api.getItemProps({ file })}>
           <div>

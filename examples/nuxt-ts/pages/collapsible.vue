@@ -14,9 +14,9 @@ const api = computed(() => collapsible.connect(state.value, send, normalizeProps
 
 <template>
   <main class="collapsible">
-    <div v-bind="api.rootProps">
-      <button v-bind="api.triggerProps">Collapsible Trigger</button>
-      <div v-bind="api.contentProps">
+    <div v-bind="api.getRootProps()">
+      <button v-bind="api.getTriggerProps()">Collapsible Trigger</button>
+      <div v-bind="api.getContentProps()">
         <p>
           Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
           magna sfsd. Ut enim ad minimdfd v eniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea

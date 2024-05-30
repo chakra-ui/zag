@@ -8,11 +8,11 @@
   const api = $derived(progress.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
-  <div {...api.labelProps}>Upload progress</div>
-  <svg {...api.circleProps}>
-    <circle {...api.circleTrackProps} />
-    <circle {...api.circleRangeProps} />
+<div {...api.getRootProps()}>
+  <div {...api.getLabelProps()}>Upload progress</div>
+  <svg {...api.getCircleProps()}>
+    <circle {...api.getCircleTrackProps()} />
+    <circle {...api.getCircleRangeProps()} />
   </svg>
 </div>
 ```

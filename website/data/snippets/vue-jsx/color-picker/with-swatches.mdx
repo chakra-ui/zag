@@ -19,11 +19,11 @@ export default defineComponent({
       const api = apiRef.value
 
       return (
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           {/* ... */}
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>
-              <div {...api.swatchGroupProps}>
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
+              <div {...api.getSwatchGroupProps()}>
                 {presets.value.map((preset) => (
                   <button {...api.getSwatchTriggerProps({ value: preset })}>
                     <div {...api.getTransparencyGridProps({ size: '4px' })} />

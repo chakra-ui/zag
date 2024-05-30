@@ -35,9 +35,9 @@ export default function Page() {
 
   return (
     <main className="select">
-      <div {...api.rootProps}>
-        <div {...api.controlProps} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-          <label {...api.labelProps}>Country</label>
+      <div {...api.getRootProps()}>
+        <div {...api.getControlProps()} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+          <label {...api.getLabelProps()}>Country</label>
           <button {...api.getTriggerProps({ focusable: true })}>
             <span>{api.valueAsString || "Select Country"} </span>
             <span>▼</span>
@@ -45,10 +45,10 @@ export default function Page() {
         </div>
 
         <Portal>
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>
-              <input style={{ position: "sticky", top: "0", width: "100%" }} {...api.inputProps} />
-              <div {...api.listProps}>
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
+              <input style={{ position: "sticky", top: "0", width: "100%" }} {...api.getInputProps()} />
+              <div {...api.getListProps()}>
                 {options.map((item) => (
                   <div key={item.value} {...api.getItemProps({ item })}>
                     {item.label}

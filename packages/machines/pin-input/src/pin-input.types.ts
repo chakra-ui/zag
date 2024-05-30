@@ -194,9 +194,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to focus the pin-input. This will focus the first input.
    */
   focus: () => void
-  rootProps: T["element"]
-  labelProps: T["label"]
-  hiddenInputProps: T["input"]
-  controlProps: T["element"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["label"]
+  getHiddenInputProps(): T["input"]
+  getControlProps(): T["element"]
   getInputProps(props: InputProps): T["input"]
 }

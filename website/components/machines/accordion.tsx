@@ -38,7 +38,7 @@ export function Accordion(props: AccordionProps) {
   const api = accordion.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       {items.map((item) => (
         <div key={item.title} {...api.getItemProps({ value: item.title })}>
           <h3>

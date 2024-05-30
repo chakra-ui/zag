@@ -22,14 +22,14 @@ export default function Page() {
 
   return (
     <div>
-      <button {...api.triggerProps}>Open Dialog</button>
+      <button {...api.getTriggerProps()}>Open Dialog</button>
       {api.open && (
         <Portal>
-          <div {...api.backdropProps} />
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>
-              <h2 {...api.titleProps}>Edit profile</h2>
-              <p {...api.descriptionProps}>Make changes to your profile here. Click save when you are done.</p>
+          <div {...api.getBackdropProps()} />
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
+              <h2 {...api.getTitleProps()}>Edit profile</h2>
+              <p {...api.getDescriptionProps()}>Make changes to your profile here. Click save when you are done.</p>
 
               <CldUploadWidget
                 onClose={() => {
@@ -45,7 +45,7 @@ export default function Page() {
                 }}
               </CldUploadWidget>
 
-              <button {...api.closeTriggerProps}>
+              <button {...api.getCloseTriggerProps()}>
                 <XIcon />
               </button>
             </div>

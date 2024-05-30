@@ -1,14 +1,14 @@
 ```svelte {9}
 
 <!-- ... -->
-<div {...api.rootProps}>
-  <div {...api.listProps}>
+<div {...api.getRootProps()}>
+  <div {...api.getListProps()}>
     {#each data as item}
       <button {...api.getTriggerProps({ value: item.value })}>
         {item.label}
       </button>
     {/each}
-    <div {...api.indicatorProps} />
+    <div {...api.getIndicatorProps()} />
   </div>
   {#each data as item}
     <div {...api.getContentProps({ value: item.value })}>

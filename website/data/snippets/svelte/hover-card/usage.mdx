@@ -8,14 +8,14 @@
   const api = $derived(hoverCard.connect(snapshot, send, normalizeProps))
 </script>
 
-<a href="https://twitter.com/zag_js" target="_blank" {...api.triggerProps}> Twitter </a>
+<a href="https://twitter.com/zag_js" target="_blank" {...api.getTriggerProps()}> Twitter </a>
 
 {#if api.open}
-  <div use:portal {...api.positionerProps}>
-    <div {...api.positionerProps}>
-      <div {...api.contentProps}>
-        <div {...api.arrowProps}>
-          <div {...api.arrowTipProps} />
+  <div use:portal {...api.getPositionerProps()}>
+    <div {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>
+        <div {...api.getArrowProps()}>
+          <div {...api.getArrowTipProps()} />
         </div>
         Twitter Preview
       </div>

@@ -8,8 +8,8 @@
   const api = $derived(collapsible.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
-  <button {...api.triggerProps}>Collapse Trigger</button>
-  <div {...api.contentProps}>Collape Content</div>
+<div {...api.getRootProps()}>
+  <button {...api.getTriggerProps()}>Collapse Trigger</button>
+  <div {...api.getContentProps()}>Collape Content</div>
 </div>
 ```

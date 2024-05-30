@@ -14,10 +14,10 @@
   const api = $derived(slider.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
-  <div {...api.controlProps}>
-    <div {...api.trackProps}>
-      <div {...api.rangeProps} />
+<div {...api.getRootProps()}>
+  <div {...api.getControlProps()}>
+    <div {...api.getTrackProps()}>
+      <div {...api.getRangeProps()} />
     </div>
     {#each api.value as _, index}
       <div {...api.getThumbProps({ index })}>

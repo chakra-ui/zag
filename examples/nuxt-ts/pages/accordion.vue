@@ -15,7 +15,7 @@ const api = computed(() => accordion.connect(state.value, send, normalizeProps))
 
 <template>
   <main class="accordion">
-    <div v-bind="api.rootProps">
+    <div v-bind="api.getRootProps()">
       <div v-for="item in accordionData" v-bind="api.getItemProps({ value: item.id })">
         <h3>
           <button :data-testid="`${item.id}:trigger`" v-bind="api.getItemTriggerProps({ value: item.id })">

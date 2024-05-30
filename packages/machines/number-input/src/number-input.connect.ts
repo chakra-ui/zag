@@ -47,7 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dom.getInputEl(state.context)?.focus()
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       id: dom.getRootId(state.context),
       ...parts.root.attrs,
       dir: state.context.dir,
@@ -56,7 +56,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-invalid": dataAttr(invalid),
     }),
 
-    labelProps: normalize.label({
+    getLabelProps: () => normalize.label({
       ...parts.label.attrs,
       dir: state.context.dir,
       "data-disabled": dataAttr(disabled),
@@ -66,7 +66,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       htmlFor: dom.getInputId(state.context),
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       ...parts.control.attrs,
       dir: state.context.dir,
       role: "group",
@@ -77,7 +77,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "aria-invalid": ariaAttr(state.context.invalid),
     }),
 
-    inputProps: normalize.input({
+    getInputProps: () => normalize.input({
       ...parts.input.attrs,
       dir: state.context.dir,
       name: state.context.name,
@@ -158,7 +158,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    decrementTriggerProps: normalize.button({
+    getDecrementTriggerProps: () => normalize.button({
       ...parts.decrementTrigger.attrs,
       dir: state.context.dir,
       id: dom.getDecrementTriggerId(state.context),
@@ -187,7 +187,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    incrementTriggerProps: normalize.button({
+    getIncrementTriggerProps: () => normalize.button({
       ...parts.incrementTrigger.attrs,
       dir: state.context.dir,
       id: dom.getIncrementTriggerId(state.context),
@@ -215,7 +215,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    scrubberProps: normalize.element({
+    getScrubberProps: () => normalize.element({
       ...parts.scrubber.attrs,
       dir: state.context.dir,
       "data-disabled": dataAttr(disabled),

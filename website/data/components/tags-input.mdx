@@ -94,9 +94,9 @@ all tags, use the provided `clearButtonProps` function from the `api`.
 
 ```jsx {4}
 //...
-<div {...api.controlProps}>
-  <input {...api.inputProps} />
-  <button {...api.clearButtonProps} />
+<div {...api.getControlProps()}>
+  <input {...api.getInputProps()} />
+  <button {...api.getClearButtonProps()} />
 </div>
 //...
 ```

@@ -48,13 +48,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("SUBMIT")
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       id: dom.getRootId(state.context),
       dir: state.context.dir,
     }),
 
-    areaProps: normalize.element({
+    getAreaProps: () => normalize.element({
       ...parts.area.attrs,
       id: dom.getAreaId(state.context),
       dir: state.context.dir,
@@ -64,7 +64,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-placeholder-shown": dataAttr(empty),
     }),
 
-    labelProps: normalize.label({
+    getLabelProps: () => normalize.label({
       ...parts.label.attrs,
       id: dom.getLabelId(state.context),
       dir: state.context.dir,
@@ -78,7 +78,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    inputProps: normalize.input({
+    getInputProps: () => normalize.input({
       ...parts.input.attrs,
       dir: state.context.dir,
       "aria-label": translations.input,
@@ -130,7 +130,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         : undefined,
     }),
 
-    previewProps: normalize.element({
+    getPreviewProps: () => normalize.element({
       id: dom.getPreviewId(state.context),
       ...parts.preview.attrs,
       dir: state.context.dir,
@@ -165,7 +165,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         : undefined,
     }),
 
-    editTriggerProps: normalize.button({
+    getEditTriggerProps: () => normalize.button({
       ...parts.editTrigger.attrs,
       id: dom.getEditTriggerId(state.context),
       dir: state.context.dir,
@@ -180,13 +180,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       id: dom.getControlId(state.context),
       ...parts.control.attrs,
       dir: state.context.dir,
     }),
 
-    submitTriggerProps: normalize.button({
+    getSubmitTriggerProps: () => normalize.button({
       ...parts.submitTrigger.attrs,
       dir: state.context.dir,
       id: dom.getSubmitTriggerId(state.context),
@@ -201,7 +201,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    cancelTriggerProps: normalize.button({
+    getCancelTriggerProps: () => normalize.button({
       ...parts.cancelTrigger.attrs,
       dir: state.context.dir,
       "aria-label": translations.cancel,

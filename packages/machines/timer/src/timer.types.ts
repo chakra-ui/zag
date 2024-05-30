@@ -145,8 +145,8 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   progressPercent: number
 
-  rootProps: T["element"]
-  controlProps: T["element"]
+  getRootProps(): T["element"]
+  getControlProps(): T["element"]
   getSegmentProps(props: SegmentProps): T["element"]
-  separatorProps: T["element"]
+  getSeparatorProps(): T["element"]
 }

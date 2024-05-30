@@ -182,12 +182,12 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   pause(): void
 
-  rootProps: T["element"]
-  viewportProps: T["element"]
-  itemGroupProps: T["element"]
+  getRootProps(): T["element"]
+  getViewportProps(): T["element"]
+  getItemGroupProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
-  prevTriggerProps: T["button"]
-  nextTriggerProps: T["button"]
-  indicatorGroupProps: T["element"]
+  getPrevTriggerProps(): T["button"]
+  getNextTriggerProps(): T["button"]
+  getIndicatorGroupProps(): T["element"]
   getIndicatorProps(props: IndicatorProps): T["button"]
 }

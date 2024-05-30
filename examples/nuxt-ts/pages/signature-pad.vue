@@ -17,18 +17,18 @@ const api = computed(() => signaturePad.connect(state.value, send, normalizeProp
 
 <template>
   <main className="signature-pad">
-    <div v-bind="api.rootProps">
-      <label v-bind="api.labelProps">Signature Pad</label>
+    <div v-bind="api.getRootProps()">
+      <label v-bind="api.getLabelProps()">Signature Pad</label>
 
-      <div v-bind="api.controlProps">
-        <svg v-bind="api.segmentProps">
+      <div v-bind="api.getControlProps()">
+        <svg v-bind="api.getSegmentProps()">
           <path v-for="(path, i) of api.paths" :key="i" v-bind="api.getSegmentPathProps({ path })" />
           <path v-if="api.currentPath" v-bind="api.getSegmentPathProps({ path: api.currentPath })" />
         </svg>
-        <div v-bind="api.guideProps" />
+        <div v-bind="api.getGuideProps()" />
       </div>
 
-      <button v-bind="api.clearTriggerProps">
+      <button v-bind="api.getClearTriggerProps()">
         <RotateCcw />
       </button>
     </div>

@@ -18,8 +18,8 @@ export default function Page() {
   return (
     <>
       <main className="segmented-control">
-        <div {...api.rootProps}>
-          <div {...api.indicatorProps} />
+        <div {...api.getRootProps()}>
+          <div {...api.getIndicatorProps()} />
           {radioData.map((opt) => (
             <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
               <span data-testid={`label-${opt.id}`} {...api.getItemTextProps({ value: opt.id })}>

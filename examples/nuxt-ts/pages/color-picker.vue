@@ -31,14 +31,14 @@ const presets = ["#f47373", "#697689"]
         }
       "
     >
-      <input v-bind="api.hiddenInputProps" />
-      <div v-bind="api.rootProps">
-        <label v-bind="api.labelProps">
+      <input v-bind="api.getHiddenInputProps()" />
+      <div v-bind="api.getRootProps()">
+        <label v-bind="api.getLabelProps()">
           Select Color: <span data-testid="value-text">{{ api.valueAsString }}</span>
         </label>
       </div>
-      <div v-bind="api.controlProps">
-        <button v-bind="api.triggerProps">
+      <div v-bind="api.getControlProps()">
+        <button v-bind="api.getTriggerProps()">
           <div v-bind="api.getTransparencyGridProps({ size: '10px' })" />
           <div v-bind="api.getSwatchProps({ value: api.value })" />
         </button>
@@ -46,8 +46,8 @@ const presets = ["#f47373", "#697689"]
         <input v-bind="api.getChannelInputProps({ channel: 'alpha' })" />
       </div>
 
-      <div v-bind="api.positionerProps">
-        <div v-bind="api.contentProps">
+      <div v-bind="api.getPositionerProps()">
+        <div v-bind="api.getContentProps()">
           <div class="content__inner">
             <div v-bind="api.getAreaProps()">
               <div v-bind="api.getAreaBackgroundProps()" />
@@ -96,7 +96,7 @@ const presets = ["#f47373", "#697689"]
 
             <input v-bind="api.getChannelInputProps({ channel: 'hex' })" />
 
-            <div v-bind="api.swatchGroupProps" style="display: flex; gap: 10px">
+            <div v-bind="api.getSwatchGroupProps()" style="display: flex; gap: 10px">
               <button v-for="preset in presets" :key="preset" v-bind="api.getSwatchTriggerProps({ value: preset })">
                 <div style="position: relative">
                   <div v-bind="api.getTransparencyGridProps({ size: '4px' })" />
@@ -105,7 +105,7 @@ const presets = ["#f47373", "#697689"]
               </button>
             </div>
 
-            <button v-bind="api.eyeDropperTriggerProps">
+            <button v-bind="api.getEyeDropperTriggerProps()">
               <EyeDropIcon />
             </button>
           </div>

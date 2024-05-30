@@ -15,11 +15,11 @@ const presets = ref(["#ff0000", "#00ff00", "#0000ff"]);
 </script>
 
 <template>
-  <div v-bind="api.rootProps">
+  <div v-bind="api.getRootProps()">
     // ...
-    <div v-bind="api.positionerProps">
-      <div v-bind="api.contentProps">
-        <div v-bind="api.swatchGroupProps">
+    <div v-bind="api.getPositionerProps()">
+      <div v-bind="api.getContentProps()">
+        <div v-bind="api.getSwatchGroupProps()">
             <template v-for="preset in presets">
                 <button v-bind="api.getSwatchTriggerProps({ value: preset })">
                     <div v-bind="api.getTransparencyGridProps({ size: '4px' })" />

@@ -55,7 +55,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getItemState,
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       role: "radiogroup",
       id: dom.getRootId(state.context),
@@ -69,7 +69,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    labelProps: normalize.element({
+    getLabelProps: () => normalize.element({
       ...parts.label.attrs,
       dir: state.context.dir,
       "data-orientation": state.context.orientation,
@@ -178,7 +178,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    indicatorProps: normalize.element({
+    getIndicatorProps: () => normalize.element({
       id: dom.getIndicatorId(state.context),
       ...parts.indicator.attrs,
       dir: state.context.dir,

@@ -15,11 +15,11 @@ export default defineComponent({
     return () => {
       const api = apiRef.value
       return (
-        <div {...api.rootProps}>
-          <div {...api.labelProps}>Upload progress</div>
-          <svg {...api.circleProps}>
-            <circle {...api.circleTrackProps} />
-            <circle {...api.circleRangeProps} />
+        <div {...api.getRootProps()}>
+          <div {...api.getLabelProps()}>Upload progress</div>
+          <svg {...api.getCircleProps()}>
+            <circle {...api.getCircleTrackProps()} />
+            <circle {...api.getCircleRangeProps()} />
           </svg>
         </div>
       )

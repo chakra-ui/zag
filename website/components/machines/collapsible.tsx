@@ -17,9 +17,9 @@ export function Collapsible(props: CollapsibleProps) {
   const api = collapsible.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <button {...api.triggerProps}>Click to Toggle</button>
-      <div {...api.contentProps}>
+    <div {...api.getRootProps()}>
+      <button {...api.getTriggerProps()}>Click to Toggle</button>
+      <div {...api.getContentProps()}>
         <p>
           Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod
           tempor incididunt ut labore et dolore magna sfsd. Ut enim ad minimdfd

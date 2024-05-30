@@ -11,11 +11,11 @@ const api = computed(() => menu.connect(state.value, send, normalizeProps));
 
 <template>
   <div ref="ref">
-    <button v-bind="api.contextTriggerProps">
+    <button v-bind="api.getContextTriggerProps()">
       <div :style="{ border: 'solid 1px red' }">Open context menu</div>
     </button>
-    <div v-bind="api.positionerProps">
-      <ul v-bind="api.contentProps">
+    <div v-bind="api.getPositionerProps()">
+      <ul v-bind="api.getContentProps()">
         <li v-bind="api.getItemProps({ value: 'edit' })">Edit</li>
         <li v-bind="api.getItemProps({ value: 'duplicate' })">Duplicate</li>
         <li v-bind="api.getItemProps({ value: 'delete' })">Delete</li>

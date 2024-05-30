@@ -26,10 +26,10 @@ export function Pagination(props: PaginationProps) {
   return (
     <>
       {api.totalPages > 1 && (
-        <nav {...api.rootProps}>
+        <nav {...api.getRootProps()}>
           <ul role="pagination">
             <li>
-              <a href="#previous" {...api.prevTriggerProps}>
+              <a href="#previous" {...api.getPrevTriggerProps()}>
                 &lt; <span>Previous Page</span>
               </a>
             </li>
@@ -50,7 +50,7 @@ export function Pagination(props: PaginationProps) {
                 )
             })}
             <li>
-              <a href="#next" {...api.nextTriggerProps}>
+              <a href="#next" {...api.getNextTriggerProps()}>
                 &gt; <span>Next Page</span>
               </a>
             </li>

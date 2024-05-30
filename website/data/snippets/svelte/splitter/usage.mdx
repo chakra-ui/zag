@@ -16,7 +16,7 @@
   const api = $derived(splitter.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
+<div {...api.getRootProps()}>
   <div {...api.getPanelProps({ id: "a" })}>
     <p>A</p>
   </div>

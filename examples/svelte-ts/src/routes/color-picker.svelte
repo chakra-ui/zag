@@ -32,15 +32,15 @@
       console.log("change:", serialize(e.currentTarget, { hash: true }))
     }}
   >
-    <input {...api.hiddenInputProps} />
-    <div {...api.rootProps}>
+    <input {...api.getHiddenInputProps()} />
+    <div {...api.getRootProps()}>
       <!-- svelte-ignore a11y_label_has_associated_control -->
-      <label {...api.labelProps}>
+      <label {...api.getLabelProps()}>
         Select Color: <span data-testid="value-text">{api.valueAsString}</span>
       </label>
 
-      <div {...api.controlProps}>
-        <button {...api.triggerProps}>
+      <div {...api.getControlProps()}>
+        <button {...api.getTriggerProps()}>
           <div {...api.getTransparencyGridProps({ size: "10px" })}></div>
           <div {...api.getSwatchProps({ value: api.value })}></div>
         </button>
@@ -48,8 +48,8 @@
         <input {...api.getChannelInputProps({ channel: "alpha" })} />
       </div>
 
-      <div {...api.positionerProps}>
-        <div {...api.contentProps}>
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
           <div class="content__inner">
             <div {...api.getAreaProps()}>
               <div {...api.getAreaBackgroundProps()}></div>
@@ -104,7 +104,7 @@
 
             <input {...api.getChannelInputProps({ channel: "hex" })} />
 
-            <div {...api.swatchGroupProps} style="display:flex;gap:10px;">
+            <div {...api.getSwatchGroupProps()} style="display:flex;gap:10px;">
               {#each presets as preset}
                 <button {...api.getSwatchTriggerProps({ value: preset })}>
                   <div style="position:relative;">
@@ -115,7 +115,7 @@
               {/each}
             </div>
 
-            <button {...api.eyeDropperTriggerProps}>
+            <button {...api.getEyeDropperTriggerProps()}>
               {@render EyeDropIcon()}
             </button>
           </div>

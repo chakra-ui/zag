@@ -307,11 +307,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   focus(): void
 
-  rootProps: T["element"]
-  labelProps: T["label"]
-  controlProps: T["element"]
-  inputProps: T["input"]
-  decrementTriggerProps: T["button"]
-  incrementTriggerProps: T["button"]
-  scrubberProps: T["element"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["label"]
+  getControlProps(): T["element"]
+  getInputProps(): T["input"]
+  getDecrementTriggerProps(): T["button"]
+  getIncrementTriggerProps(): T["button"]
+  getScrubberProps(): T["element"]
 }

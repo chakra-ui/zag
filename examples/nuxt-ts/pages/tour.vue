@@ -10,7 +10,7 @@ const api = computed(() => tour.connect(state.value, send, normalizeProps))
 
 <template>
   <main className="tour">
-    <div v-bind="api.rootProps">
+    <div v-bind="api.getRootProps()">
     </div>
   </main>
 

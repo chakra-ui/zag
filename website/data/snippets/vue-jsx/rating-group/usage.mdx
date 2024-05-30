@@ -16,9 +16,9 @@ export default function defineComponent({
     return () => {
       const api = apiRef.value
       return (
-        <div {...api.rootProps}>
-          <label {...api.labelProps}>Rate:</label>
-          <div {...api.controlProps}>
+        <div {...api.getRootProps()}>
+          <label {...api.getLabelProps()}>Rate:</label>
+          <div {...api.getControlProps()}>
             {api.items.map((index) => {
               const state = api.getItemState({ index })
               return (
@@ -28,7 +28,7 @@ export default function defineComponent({
               )
             })}
           </div>
-          <input {...api.hiddenInputProps} />
+          <input {...api.getHiddenInputProps()} />
         </div>
       )
     }

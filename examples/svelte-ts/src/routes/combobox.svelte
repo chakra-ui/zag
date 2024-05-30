@@ -48,17 +48,17 @@
     <button onclick={() => api.setValue(["TG"])}>Set to Togo</button>
     <button data-testid="clear-value-button" onclick={() => api.clearValue()}> Clear Value </button>
     <br />
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       <!-- svelte-ignore a11y_label_has_associated_control -->
-      <label {...api.labelProps}>Select country</label>
-      <div {...api.controlProps}>
-        <input data-testid="input" {...api.inputProps} />
+      <label {...api.getLabelProps()}>Select country</label>
+      <div {...api.getControlProps()}>
+        <input data-testid="input" {...api.getInputProps()} />
         <button data-testid="trigger" {...api.getTriggerProps()}> ▼ </button>
       </div>
     </div>
-    <div {...api.positionerProps}>
+    <div {...api.getPositionerProps()}>
       {#if options.length > 0}
-        <ul data-testid="combobox-content" {...api.contentProps}>
+        <ul data-testid="combobox-content" {...api.getContentProps()}>
           {#each options as item}
             <li data-testid={item.code} {...api.getItemProps({ item })}>
               {item.label}

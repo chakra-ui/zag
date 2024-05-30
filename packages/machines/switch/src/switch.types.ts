@@ -138,9 +138,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   toggleChecked(): void
 
-  rootProps: T["label"]
-  labelProps: T["element"]
-  thumbProps: T["element"]
-  controlProps: T["element"]
-  hiddenInputProps: T["input"]
+  getRootProps(): T["label"]
+  getLabelProps(): T["element"]
+  getThumbProps(): T["element"]
+  getControlProps(): T["element"]
+  getHiddenInputProps(): T["input"]
 }

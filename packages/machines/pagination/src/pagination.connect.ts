@@ -41,7 +41,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SET_PAGE", page })
     },
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       id: dom.getRootId(state.context),
       ...parts.root.attrs,
       dir: state.context.dir,
@@ -75,7 +75,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    prevTriggerProps: normalize.element({
+    getPrevTriggerProps: () => normalize.element({
       id: dom.getPrevTriggerId(state.context),
       ...parts.prevTrigger.attrs,
       dir: state.context.dir,
@@ -87,7 +87,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ...(isButton && { disabled: isFirstPage, type: "button" }),
     }),
 
-    nextTriggerProps: normalize.element({
+    getNextTriggerProps: () => normalize.element({
       id: dom.getNextTriggerId(state.context),
       ...parts.nextTrigger.attrs,
       dir: state.context.dir,

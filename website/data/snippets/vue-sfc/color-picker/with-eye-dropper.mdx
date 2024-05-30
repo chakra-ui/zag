@@ -13,11 +13,11 @@ const api = computed(() => colorPicker.connect(state.value, send, normalizeProps
 </script>
 
 <template>
-  <div v-bind="api.rootProps">
+  <div v-bind="api.getRootProps()">
     // ...
-    <div v-bind="api.positionerProps">
-      <div v-bind="api.contentProps">
-        <button v-bind="api.eyeDropperTriggerProps">
+    <div v-bind="api.getPositionerProps()">
+      <div v-bind="api.getContentProps()">
+        <button v-bind="api.getEyeDropperTriggerProps()">
           <EyeDropIcon />
         </button>
       </div>

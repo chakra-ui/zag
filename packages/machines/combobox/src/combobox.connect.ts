@@ -84,7 +84,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       if (nextOpen === open) return
       send(nextOpen ? "OPEN" : "CLOSE")
     },
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       dir: state.context.dir,
       id: dom.getRootId(state.context),
@@ -92,7 +92,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       "data-readonly": dataAttr(readOnly),
     }),
 
-    labelProps: normalize.label({
+    getLabelProps: () => normalize.label({
       ...parts.label.attrs,
       dir: state.context.dir,
       htmlFor: dom.getInputId(state.context),
@@ -108,7 +108,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       },
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       ...parts.control.attrs,
       dir: state.context.dir,
       id: dom.getControlId(state.context),
@@ -118,14 +118,14 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       "data-invalid": dataAttr(invalid),
     }),
 
-    positionerProps: normalize.element({
+    getPositionerProps: () => normalize.element({
       ...parts.positioner.attrs,
       dir: state.context.dir,
       id: dom.getPositionerId(state.context),
       style: popperStyles.floating,
     }),
 
-    inputProps: normalize.input({
+    getInputProps: () => normalize.input({
       ...parts.input.attrs,
       dir: state.context.dir,
       "aria-invalid": ariaAttr(invalid),
@@ -279,7 +279,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       })
     },
 
-    contentProps: normalize.element({
+    getContentProps: () => normalize.element({
       ...parts.content.attrs,
       dir: state.context.dir,
       id: dom.getContentId(state.context),
@@ -295,13 +295,13 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       },
     }),
 
-    listProps: normalize.element({
+    getListProps: () => normalize.element({
       role: !composite ? "listbox" : undefined,
       "aria-labelledby": dom.getLabelId(state.context),
       "aria-multiselectable": state.context.multiple && !composite ? true : undefined,
     }),
 
-    clearTriggerProps: normalize.button({
+    getClearTriggerProps: () => normalize.button({
       ...parts.clearTrigger.attrs,
       dir: state.context.dir,
       id: dom.getClearTriggerId(state.context),

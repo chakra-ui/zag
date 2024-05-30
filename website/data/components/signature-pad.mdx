@@ -171,7 +171,7 @@ const [state, send] = useMachine(
 )
 ```
 
-Then, render the hidden input element using `api.getHiddenInputProps`.
+Then, render the hidden input element using `api.getHiddenInputProps()`.
 
 ```jsx
 <input {...api.getHiddenInputProps({ value: imageURL })} />

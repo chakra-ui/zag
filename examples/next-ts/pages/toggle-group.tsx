@@ -19,7 +19,7 @@ export default function Page() {
     <>
       <main className="toggle-group">
         <button>Outside</button>
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           {toggleGroupData.map((item) => (
             <button key={item.value} {...api.getItemProps({ value: item.value })}>
               {item.label}

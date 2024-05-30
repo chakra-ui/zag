@@ -16,19 +16,19 @@
 </script>
 
 <main class="progress">
-  <div {...api.rootProps}>
-    <div {...api.labelProps}>Upload progress</div>
+  <div {...api.getRootProps()}>
+    <div {...api.getLabelProps()}>Upload progress</div>
 
-    <svg {...api.circleProps}>
-      <circle {...api.circleTrackProps} />
-      <circle {...api.circleRangeProps} />
+    <svg {...api.getCircleProps()}>
+      <circle {...api.getCircleTrackProps()} />
+      <circle {...api.getCircleRangeProps()} />
     </svg>
 
-    <div {...api.trackProps}>
-      <div {...api.rangeProps}></div>
+    <div {...api.getTrackProps()}>
+      <div {...api.getRangeProps()}></div>
     </div>
 
-    <div {...api.valueTextProps}>{api.valueAsString}</div>
+    <div {...api.getValueTextProps()}>{api.valueAsString}</div>
 
     <div>
       <button onclick={() => api.setValue((api.value ?? 0) - 20)}>Decrease</button>

@@ -179,9 +179,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   getItemState(props: ItemProps): ItemState
 
-  rootProps: T["element"]
-  hiddenInputProps: T["input"]
-  labelProps: T["element"]
-  controlProps: T["element"]
+  getRootProps(): T["element"]
+  getHiddenInputProps(): T["input"]
+  getLabelProps(): T["element"]
+  getControlProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
 }

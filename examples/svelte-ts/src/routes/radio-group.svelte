@@ -24,9 +24,9 @@
     }}
   >
     <fieldset disabled={false}>
-      <div {...api.rootProps}>
-        <h3 {...api.labelProps}>Fruits</h3>
-        <div {...api.indicatorProps}></div>
+      <div {...api.getRootProps()}>
+        <h3 {...api.getLabelProps()}>Fruits</h3>
+        <div {...api.getIndicatorProps()}></div>
         {#each radioData as opt}
           <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
             <div data-testid={`control-${opt.id}`} {...api.getItemControlProps({ value: opt.id })}></div>

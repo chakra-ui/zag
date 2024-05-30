@@ -46,14 +46,14 @@ export function ColorPicker(props: Props) {
   const api = colorPicker.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>
         <span>Color</span>: {api.valueAsString}
       </label>
 
-      <div {...api.controlProps}>
+      <div {...api.getControlProps()}>
         <div>
-          <button {...api.triggerProps}>
+          <button {...api.getTriggerProps()}>
             <div {...api.getTransparencyGridProps({ size: "10px" })} />
             <div {...api.getSwatchProps({ value: api.value })} />
           </button>
@@ -63,8 +63,8 @@ export function ColorPicker(props: Props) {
       </div>
 
       <Portal>
-        <div {...api.positionerProps}>
-          <div {...api.contentProps}>
+        <div {...api.getPositionerProps()}>
+          <div {...api.getContentProps()}>
             <div>
               <div {...api.getAreaProps()}>
                 <div {...api.getAreaBackgroundProps()} />
@@ -92,7 +92,7 @@ export function ColorPicker(props: Props) {
                     />
                   </div>
                 </div>
-                <button {...api.eyeDropperTriggerProps}>
+                <button {...api.getEyeDropperTriggerProps()}>
                   <EyeDropIcon />
                 </button>
               </div>
@@ -178,7 +178,7 @@ export function ColorPicker(props: Props) {
 
               <hr />
 
-              <div {...api.swatchGroupProps}>
+              <div {...api.getSwatchGroupProps()}>
                 <p>Swatches</p>
                 {presets.map((preset) => (
                   <button

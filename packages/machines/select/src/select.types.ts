@@ -331,21 +331,21 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   reposition(options?: Partial<PositioningOptions>): void
 
-  rootProps: T["element"]
-  labelProps: T["label"]
-  controlProps: T["element"]
-  triggerProps: T["button"]
-  indicatorProps: T["element"]
-  clearTriggerProps: T["button"]
-  positionerProps: T["element"]
-  contentProps: T["element"]
-  listProps: T["element"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["label"]
+  getControlProps(): T["element"]
+  getTriggerProps(): T["button"]
+  getIndicatorProps(): T["element"]
+  getClearTriggerProps(): T["button"]
+  getPositionerProps(): T["element"]
+  getContentProps(): T["element"]
+  getListProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemTextProps(props: ItemProps): T["element"]
   getItemIndicatorProps(props: ItemProps): T["element"]
   getItemGroupProps(props: ItemGroupProps): T["element"]
   getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]
-  hiddenSelectProps: T["select"]
+  getHiddenSelectProps(): T["select"]
 }
 
 /* -----------------------------------------------------------------------------

@@ -13,7 +13,7 @@
   const api = $derived(tagsInput.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
+<div {...api.getRootProps()}>
   {#each api.value as value, index}
     <span {...api.getItemProps({ index, value })}>
       <div {...api.getItemPreviewProps({ index, value })}>
@@ -23,6 +23,6 @@
       <input {...api.getItemInputProps({ index, value })} />
     </span>
   {/each}
-  <input placeholder="Add tag..." {...api.inputProps} />
+  <input placeholder="Add tag..." {...api.getInputProps()} />
 </div>
 ```

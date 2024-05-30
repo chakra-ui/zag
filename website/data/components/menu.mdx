@@ -97,15 +97,15 @@ When the number of menu items gets much, it might be useful to group related
 menu items. To achieve this:
 
 - Wrap the menu items within an element.
-- Spread the `api.groupProps(...)` JSX properties unto the element, providing an
+- Spread the `api.getGroupProps(...)` JSX properties unto the element, providing an
   `id`.
 - Render a label for the menu group, providing the `id` of the group element.
 
 ```jsx
 //...
-<div {...api.contentProps}>
+<div {...api.getContentProps()}>
   {/* ... */}
-  <hr {...api.separatorProps} />
+  <hr {...api.getSeparatorProps()} />
   <p {...api.getLabelProps({ htmlFor: "account" })}>Accounts</p>
   <div {...api.getGroupProps({ id: "account" })}>
     <button {...api.getItemProps({ id: "account-1" })}>Account 1</button>

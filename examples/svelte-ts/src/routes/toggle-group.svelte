@@ -17,7 +17,7 @@
 
 <main class="toggle-group">
   <button>Outside</button>
-  <div {...api.rootProps}>
+  <div {...api.getRootProps()}>
     {#each toggleGroupData as item}
       <button {...api.getItemProps({ value: item.value })}>
         {item.label}

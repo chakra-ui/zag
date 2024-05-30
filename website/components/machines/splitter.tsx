@@ -18,7 +18,7 @@ export function Splitter(props: any) {
   const api = splitter.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       <div {...api.getPanelProps({ id: "a" })}>
         <p>A</p>
       </div>

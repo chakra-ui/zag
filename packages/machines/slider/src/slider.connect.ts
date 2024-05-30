@@ -76,7 +76,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "FOCUS", index: 0 })
     },
 
-    labelProps: normalize.label({
+    getLabelProps: () => normalize.label({
       ...parts.label.attrs,
       dir: state.context.dir,
       "data-disabled": dataAttr(disabled),
@@ -95,7 +95,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    rootProps: normalize.element({
+    getRootProps: () => normalize.element({
       ...parts.root.attrs,
       "data-disabled": dataAttr(disabled),
       "data-orientation": state.context.orientation,
@@ -106,7 +106,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: dom.getRootStyle(state.context),
     }),
 
-    valueTextProps: normalize.element({
+    getValueTextProps: () => normalize.element({
       ...parts.valueText.attrs,
       dir: state.context.dir,
       "data-disabled": dataAttr(disabled),
@@ -116,7 +116,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       id: dom.getValueTextId(state.context),
     }),
 
-    trackProps: normalize.element({
+    getTrackProps: () => normalize.element({
       ...parts.track.attrs,
       dir: state.context.dir,
       id: dom.getTrackId(state.context),
@@ -232,7 +232,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    rangeProps: normalize.element({
+    getRangeProps: () => normalize.element({
       id: dom.getRangeId(state.context),
       ...parts.range.attrs,
       dir: state.context.dir,
@@ -243,7 +243,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       style: dom.getRangeStyle(state.context),
     }),
 
-    controlProps: normalize.element({
+    getControlProps: () => normalize.element({
       ...parts.control.attrs,
       dir: state.context.dir,
       id: dom.getControlId(state.context),
@@ -265,7 +265,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    markerGroupProps: normalize.element({
+    getMarkerGroupProps: () => normalize.element({
       ...parts.markerGroup.attrs,
       role: "presentation",
       dir: state.context.dir,

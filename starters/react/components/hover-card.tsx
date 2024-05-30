@@ -29,16 +29,16 @@ export function HoverCard(props: Props) {
   return (
     <main className="hover-card">
       <div style={{ display: "flex", gap: "50px" }}>
-        <a href="https://twitter.com/zag_js" target="_blank" {...api.triggerProps}>
+        <a href="https://twitter.com/zag_js" target="_blank" {...api.getTriggerProps()}>
           Twitter
         </a>
 
         {api.open && (
           <Portal>
-            <div {...api.positionerProps}>
-              <div {...api.contentProps}>
-                <div {...api.arrowProps}>
-                  <div {...api.arrowTipProps} />
+            <div {...api.getPositionerProps()}>
+              <div {...api.getContentProps()}>
+                <div {...api.getArrowProps()}>
+                  <div {...api.getArrowTipProps()} />
                 </div>
                 Twitter Preview
                 <a href="https://twitter.com/zag_js" target="_blank">

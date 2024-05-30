@@ -8,10 +8,10 @@
   const api = $derived(tooltip.connect(snapshot, send, normalizeProps))
 </script>
 
-<button {...api.triggerProps}>Hover me</button>
+<button {...api.getTriggerProps()}>Hover me</button>
 {#if api.open}
-  <div {...api.positionerProps}>
-    <div {...api.contentProps}>Tooltip</div>
+  <div {...api.getPositionerProps()}>
+    <div {...api.getContentProps()}>Tooltip</div>
   </div>
 {/if}
 ```

@@ -44,16 +44,16 @@ export default defineComponent({
               <div>Focused: {api.focusedValueAsString}</div>
             </output>
 
-            <div {...api.controlProps}>
+            <div {...api.getControlProps()}>
               <input {...api.getInputProps({ index: 0 })} />
-              <button {...api.clearTriggerProps}>❌</button>
-              <button {...api.triggerProps}>🗓</button>
+              <button {...api.getClearTriggerProps()}>❌</button>
+              <button {...api.getTriggerProps()}>🗓</button>
             </div>
 
-            <div {...api.positionerProps}>
-              <div {...api.contentProps}>
+            <div {...api.getPositionerProps()}>
+              <div {...api.getContentProps()}>
                 <div style={{ marginBottom: "20px" }}>
-                  <select {...api.monthSelectProps}>
+                  <select {...api.getMonthSelectProps()}>
                     {api.getMonths().map((month, i) => (
                       <option key={i} value={i + 1} selected={api.focusedValue.month === i + 1}>
                         {month}
@@ -61,7 +61,7 @@ export default defineComponent({
                     ))}
                   </select>
 
-                  <select {...api.yearSelectProps}>
+                  <select {...api.getYearSelectProps()}>
                     {getYearsRange({ from: 1_000, to: 4_000 }).map((year, i) => (
                       <option key={i} value={year} selected={api.focusedValue.year === year}>
                         {year}

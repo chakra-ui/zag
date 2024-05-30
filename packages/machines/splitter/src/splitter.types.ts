@@ -148,7 +148,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Returns the state details for a resize trigger.
    */
   getResizeTriggerState(props: ResizeTriggerProps): ResizeTriggerState
-  rootProps: T["element"]
+  getRootProps(): T["element"]
   getPanelProps(props: PanelProps): T["element"]
   getResizeTriggerProps(props: ResizeTriggerProps): T["element"]
 }

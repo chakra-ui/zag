@@ -24,7 +24,7 @@ export default defineComponent({
       return (
         <>
           <main class="accordion">
-            <div {...api.rootProps}>
+            <div {...api.getRootProps()}>
               {accordionData.map((item) => (
                 <div {...api.getItemProps({ value: item.id })}>
                   <h3>

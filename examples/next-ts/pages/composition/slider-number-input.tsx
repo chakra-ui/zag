@@ -37,8 +37,8 @@ function NumberInput(props: Props) {
   const api = numberInput.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <div {...api.controlProps} style={{ display: "flex" }}>
+    <div {...api.getRootProps()}>
+      <div {...api.getControlProps()} style={{ display: "flex" }}>
         <span
           style={{
             fontSize: "12px",
@@ -49,7 +49,7 @@ function NumberInput(props: Props) {
         >
           USD
         </span>
-        <input {...api.inputProps} />
+        <input {...api.getInputProps()} />
       </div>
     </div>
   )
@@ -102,13 +102,13 @@ export default function Page() {
 
   return (
     <main className="slider">
-      <div {...api.rootProps}>
+      <div {...api.getRootProps()}>
         <div>
-          <output {...api.valueTextProps}>{api.value.join(" - ")}</output>
+          <output {...api.getValueTextProps()}>{api.value.join(" - ")}</output>
         </div>
-        <div {...api.controlProps}>
-          <div {...api.trackProps}>
-            <div {...api.rangeProps} />
+        <div {...api.getControlProps()}>
+          <div {...api.getTrackProps()}>
+            <div {...api.getRangeProps()} />
           </div>
           {api.value.map((_, index) => (
             <div key={index} {...api.getThumbProps({ index })} />

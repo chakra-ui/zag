@@ -156,7 +156,7 @@ const [state, send] = useMachine(
 To use select within a form, you'll need to:
 
 - Pass the `name` property to the select machine's context
-- Render a hidden `select` element using `api.selectProps`
+- Render a hidden `select` element using `api.getSelectProps()`
 
 <CodeSnippet id="select/usage-with-form.mdx" />
 
@@ -317,11 +317,11 @@ function Demo() {
   const api = select.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       {/* ... */}
       <Portal>
-        <div {...api.positionerProps}>
-          <div ref={contentRef} {...api.contentProps}>
+        <div {...api.getPositionerProps()}>
+          <div ref={contentRef} {...api.getContentProps()}>
             <div
               style={{
                 height: `${rowVirtualizer.getTotalSize()}px`,

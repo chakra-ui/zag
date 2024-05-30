@@ -28,11 +28,11 @@ const api = computed(() => checkbox.connect(state.value, send, normalizeProps))
       "
     >
       <fieldset>
-        <label v-bind="api.rootProps">
-          <div v-bind="api.controlProps" />
-          <span v-bind="api.labelProps">Input {{ api.checked ? "Checked" : "Unchecked" }}</span>
-          <input v-bind="api.hiddenInputProps" data-testid="hidden-input" />
-          <div v-bind="api.indicatorProps">Indicator</div>
+        <label v-bind="api.getRootProps()">
+          <div v-bind="api.getControlProps()" />
+          <span v-bind="api.getLabelProps()">Input {{ api.checked ? "Checked" : "Unchecked" }}</span>
+          <input v-bind="api.getHiddenInputProps()" data-testid="hidden-input" />
+          <div v-bind="api.getIndicatorProps()">Indicator</div>
         </label>
 
         <button type="button" :disabled="api.checked" @click="() => api.setChecked(true)">Check</button>

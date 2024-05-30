@@ -134,7 +134,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "POSITIONING.SET", options })
     },
 
-    contextTriggerProps: normalize.element({
+    getContextTriggerProps: () => normalize.element({
       ...parts.contextTrigger.attrs,
       dir: state.context.dir,
       id: dom.getContextTriggerId(state.context),
@@ -170,7 +170,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return mergeProps(getItemProps({ value: childApi.triggerProps.id }), childApi.triggerProps) as T["element"]
     },
 
-    triggerProps: normalize.button({
+    getTriggerProps: () => normalize.button({
       ...(isSubmenu ? parts.triggerItem.attrs : parts.trigger.attrs),
       "data-placement": state.context.currentPlacement,
       type: "button",
@@ -242,33 +242,33 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    indicatorProps: normalize.element({
+    getIndicatorProps: () => normalize.element({
       ...parts.indicator.attrs,
       dir: state.context.dir,
       "data-state": open ? "open" : "closed",
     }),
 
-    positionerProps: normalize.element({
+    getPositionerProps: () => normalize.element({
       ...parts.positioner.attrs,
       dir: state.context.dir,
       id: dom.getPositionerId(state.context),
       style: popperStyles.floating,
     }),
 
-    arrowProps: normalize.element({
+    getArrowProps: () => normalize.element({
       id: dom.getArrowId(state.context),
       ...parts.arrow.attrs,
       dir: state.context.dir,
       style: popperStyles.arrow,
     }),
 
-    arrowTipProps: normalize.element({
+    getArrowTipProps: () => normalize.element({
       ...parts.arrowTip.attrs,
       dir: state.context.dir,
       style: popperStyles.arrowTip,
     }),
 
-    contentProps: normalize.element({
+    getContentProps: () => normalize.element({
       ...parts.content.attrs,
       id: dom.getContentId(state.context),
       "aria-label": state.context["aria-label"],
@@ -355,7 +355,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       },
     }),
 
-    separatorProps: normalize.element({
+    getSeparatorProps: () => normalize.element({
       ...parts.separator.attrs,
       role: "separator",
       dir: state.context.dir,

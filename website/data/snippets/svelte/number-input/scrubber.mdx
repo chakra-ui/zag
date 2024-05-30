@@ -9,11 +9,11 @@
   const api = $derived(numberInput.connect(snapshot, send, normalizeProps))
 </script>
 
-<div {...api.rootProps}>
-  <label {...api.labelProps}>Enter number:</label>
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Enter number:</label>
   <div>
-    <div {...api.scrubberProps} />
-    <input {...api.inputProps} />
+    <div {...api.getScrubberProps()} />
+    <input {...api.getInputProps()} />
   </div>
 </div>
 ```
