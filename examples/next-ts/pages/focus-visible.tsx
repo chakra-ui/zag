@@ -12,10 +12,10 @@ function useFocusVisible() {
 
   return {
     focusVisible: showFocus,
-    focusProps: {
+    getFocusProps: () => ({
       onFocus: () => setFocus(true),
       onBlur: () => setFocus(false),
-    },
+    }),
   }
 }
 
