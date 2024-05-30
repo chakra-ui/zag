@@ -61,134 +61,139 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getItemState,
 
-    getRootProps: () => normalize.element({
-      dir: state.context.dir,
-      ...parts.root.attrs,
-      "data-invalid": dataAttr(invalid),
-      "data-readonly": dataAttr(readOnly),
-      "data-disabled": dataAttr(disabled),
-      "data-focus": dataAttr(focused),
-      "data-empty": dataAttr(empty),
-      id: dom.getRootId(state.context),
-      onPointerDown() {
-        if (!interactive) return
-        send("POINTER_DOWN")
-      },
-    }),
+    getRootProps: () =>
+      normalize.element({
+        dir: state.context.dir,
+        ...parts.root.attrs,
+        "data-invalid": dataAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
+        "data-disabled": dataAttr(disabled),
+        "data-focus": dataAttr(focused),
+        "data-empty": dataAttr(empty),
+        id: dom.getRootId(state.context),
+        onPointerDown() {
+          if (!interactive) return
+          send("POINTER_DOWN")
+        },
+      }),
 
-    getLabelProps: () => normalize.label({
-      ...parts.label.attrs,
-      "data-disabled": dataAttr(disabled),
-      "data-invalid": dataAttr(invalid),
-      "data-readonly": dataAttr(readOnly),
-      id: dom.getLabelId(state.context),
-      dir: state.context.dir,
-      htmlFor: dom.getInputId(state.context),
-    }),
+    getLabelProps: () =>
+      normalize.label({
+        ...parts.label.attrs,
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
+        id: dom.getLabelId(state.context),
+        dir: state.context.dir,
+        htmlFor: dom.getInputId(state.context),
+      }),
 
-    getControlProps: () => normalize.element({
-      id: dom.getControlId(state.context),
-      ...parts.control.attrs,
-      dir: state.context.dir,
-      tabIndex: readOnly ? 0 : undefined,
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(readOnly),
-      "data-invalid": dataAttr(invalid),
-      "data-focus": dataAttr(focused),
-    }),
+    getControlProps: () =>
+      normalize.element({
+        id: dom.getControlId(state.context),
+        ...parts.control.attrs,
+        dir: state.context.dir,
+        tabIndex: readOnly ? 0 : undefined,
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(invalid),
+        "data-focus": dataAttr(focused),
+      }),
 
-    getInputProps: () => normalize.input({
-      ...parts.input.attrs,
-      dir: state.context.dir,
-      "data-invalid": dataAttr(invalid),
-      "aria-invalid": ariaAttr(invalid),
-      "data-readonly": dataAttr(readOnly),
-      maxLength: state.context.maxLength,
-      id: dom.getInputId(state.context),
-      defaultValue: state.context.inputValue,
-      autoComplete: "off",
-      autoCorrect: "off",
-      autoCapitalize: "none",
-      disabled: disabled || readOnly,
-      onChange(event) {
-        const evt = getNativeEvent(event)
+    getInputProps: () =>
+      normalize.input({
+        ...parts.input.attrs,
+        dir: state.context.dir,
+        "data-invalid": dataAttr(invalid),
+        "aria-invalid": ariaAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
+        maxLength: state.context.maxLength,
+        id: dom.getInputId(state.context),
+        defaultValue: state.context.inputValue,
+        autoComplete: "off",
+        autoCorrect: "off",
+        autoCapitalize: "none",
+        disabled: disabled || readOnly,
+        onChange(event) {
+          const evt = getNativeEvent(event)
 
-        if (evt.inputType === "insertFromPaste") return
-        let value = event.target.value
+          if (evt.inputType === "insertFromPaste") return
+          let value = event.target.value
 
-        if (endsWith(value, state.context.delimiter)) {
-          send("DELIMITER_KEY")
-        } else {
-          send({ type: "TYPE", value, key: evt.inputType })
-        }
-      },
-      onFocus() {
-        send("FOCUS")
-      },
-      onPaste(event) {
-        event.preventDefault()
-        const value = event.clipboardData.getData("text/plain")
-        send({ type: "PASTE", value })
-      },
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        if (isComposingEvent(event)) return
+          if (endsWith(value, state.context.delimiter)) {
+            send("DELIMITER_KEY")
+          } else {
+            send({ type: "TYPE", value, key: evt.inputType })
+          }
+        },
+        onFocus() {
+          send("FOCUS")
+        },
+        onPaste(event) {
+          event.preventDefault()
+          const value = event.clipboardData.getData("text/plain")
+          send({ type: "PASTE", value })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (isComposingEvent(event)) return
 
-        // handle composition when used as combobox
-        const target = event.currentTarget as HTMLElement
-        const isCombobox = target.getAttribute("role") === "combobox"
-        const isExpanded = target.ariaExpanded === "true"
+          // handle composition when used as combobox
+          const target = event.currentTarget as HTMLElement
+          const isCombobox = target.getAttribute("role") === "combobox"
+          const isExpanded = target.ariaExpanded === "true"
 
-        const keyMap: EventKeyMap = {
-          ArrowDown() {
-            send("ARROW_DOWN")
-          },
-          ArrowLeft() {
-            if (isCombobox && isExpanded) return
-            send("ARROW_LEFT")
-          },
-          ArrowRight(event) {
-            if (state.context.highlightedTagId) {
+          const keyMap: EventKeyMap = {
+            ArrowDown() {
+              send("ARROW_DOWN")
+            },
+            ArrowLeft() {
+              if (isCombobox && isExpanded) return
+              send("ARROW_LEFT")
+            },
+            ArrowRight(event) {
+              if (state.context.highlightedTagId) {
+                event.preventDefault()
+              }
+              if (isCombobox && isExpanded) return
+              send("ARROW_RIGHT")
+            },
+            Escape(event) {
               event.preventDefault()
-            }
-            if (isCombobox && isExpanded) return
-            send("ARROW_RIGHT")
-          },
-          Escape(event) {
-            event.preventDefault()
-            send("ESCAPE")
-          },
-          Backspace() {
-            send("BACKSPACE")
-          },
-          Delete() {
-            send("DELETE")
-          },
-          Enter(event) {
-            if (isCombobox && isExpanded) return
-            send("ENTER")
-            event.preventDefault()
-          },
-        }
+              send("ESCAPE")
+            },
+            Backspace() {
+              send("BACKSPACE")
+            },
+            Delete() {
+              send("DELETE")
+            },
+            Enter(event) {
+              if (isCombobox && isExpanded) return
+              send("ENTER")
+              event.preventDefault()
+            },
+          }
 
-        const key = getEventKey(event, state.context)
-        const exec = keyMap[key]
+          const key = getEventKey(event, state.context)
+          const exec = keyMap[key]
 
-        if (exec) {
-          exec(event)
-          return
-        }
-      },
-    }),
+          if (exec) {
+            exec(event)
+            return
+          }
+        },
+      }),
 
-    getHiddenInputProps: () => normalize.input({
-      type: "text",
-      hidden: true,
-      name: state.context.name,
-      form: state.context.form,
-      id: dom.getHiddenInputId(state.context),
-      defaultValue: state.context.valueAsString,
-    }),
+    getHiddenInputProps: () =>
+      normalize.input({
+        type: "text",
+        hidden: true,
+        name: state.context.name,
+        form: state.context.form,
+        id: dom.getHiddenInputId(state.context),
+        defaultValue: state.context.valueAsString,
+      }),
 
     getItemProps(props) {
       return normalize.element({
@@ -302,20 +307,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getClearTriggerProps: () => normalize.button({
-      ...parts.clearTrigger.attrs,
-      dir: state.context.dir,
-      id: dom.getClearTriggerId(state.context),
-      type: "button",
-      "data-readonly": dataAttr(readOnly),
-      disabled: disabled,
-      "aria-label": translations.clearTriggerLabel,
-      hidden: empty,
-      onClick() {
-        if (!interactive) return
-        send("CLEAR_VALUE")
-      },
-    }),
+    getClearTriggerProps: () =>
+      normalize.button({
+        ...parts.clearTrigger.attrs,
+        dir: state.context.dir,
+        id: dom.getClearTriggerId(state.context),
+        type: "button",
+        "data-readonly": dataAttr(readOnly),
+        disabled: disabled,
+        "aria-label": translations.clearTriggerLabel,
+        hidden: empty,
+        onClick() {
+          if (!interactive) return
+          send("CLEAR_VALUE")
+        },
+      }),
   }
 }
 

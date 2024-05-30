@@ -31,71 +31,76 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "CHECKED.TOGGLE", checked: checked, isTrusted: false })
     },
 
-    getRootProps: () => normalize.label({
-      ...parts.root.attrs,
-      ...dataAttrs,
-      dir: state.context.dir,
-      id: dom.getRootId(state.context),
-      htmlFor: dom.getHiddenInputId(state.context),
-      onPointerMove() {
-        if (disabled) return
-        send({ type: "CONTEXT.SET", context: { hovered: true } })
-      },
-      onPointerLeave() {
-        if (disabled) return
-        send({ type: "CONTEXT.SET", context: { hovered: false } })
-      },
-      onClick(event) {
-        if (event.target === dom.getHiddenInputEl(state.context)) {
-          event.stopPropagation()
-        }
-      },
-    }),
+    getRootProps: () =>
+      normalize.label({
+        ...parts.root.attrs,
+        ...dataAttrs,
+        dir: state.context.dir,
+        id: dom.getRootId(state.context),
+        htmlFor: dom.getHiddenInputId(state.context),
+        onPointerMove() {
+          if (disabled) return
+          send({ type: "CONTEXT.SET", context: { hovered: true } })
+        },
+        onPointerLeave() {
+          if (disabled) return
+          send({ type: "CONTEXT.SET", context: { hovered: false } })
+        },
+        onClick(event) {
+          if (event.target === dom.getHiddenInputEl(state.context)) {
+            event.stopPropagation()
+          }
+        },
+      }),
 
-    getLabelProps: () => normalize.element({
-      ...parts.label.attrs,
-      ...dataAttrs,
-      dir: state.context.dir,
-      id: dom.getLabelId(state.context),
-    }),
+    getLabelProps: () =>
+      normalize.element({
+        ...parts.label.attrs,
+        ...dataAttrs,
+        dir: state.context.dir,
+        id: dom.getLabelId(state.context),
+      }),
 
-    getThumbProps: () => normalize.element({
-      ...parts.thumb.attrs,
-      ...dataAttrs,
-      dir: state.context.dir,
-      id: dom.getThumbId(state.context),
-      "aria-hidden": true,
-    }),
+    getThumbProps: () =>
+      normalize.element({
+        ...parts.thumb.attrs,
+        ...dataAttrs,
+        dir: state.context.dir,
+        id: dom.getThumbId(state.context),
+        "aria-hidden": true,
+      }),
 
-    getControlProps: () => normalize.element({
-      ...parts.control.attrs,
-      ...dataAttrs,
-      dir: state.context.dir,
-      id: dom.getControlId(state.context),
-      "aria-hidden": true,
-    }),
+    getControlProps: () =>
+      normalize.element({
+        ...parts.control.attrs,
+        ...dataAttrs,
+        dir: state.context.dir,
+        id: dom.getControlId(state.context),
+        "aria-hidden": true,
+      }),
 
-    getHiddenInputProps: () => normalize.input({
-      id: dom.getHiddenInputId(state.context),
-      type: "checkbox",
-      required: state.context.required,
-      defaultChecked: checked,
-      disabled: disabled,
-      "aria-labelledby": dom.getLabelId(state.context),
-      "aria-invalid": state.context.invalid,
-      name: state.context.name,
-      form: state.context.form,
-      value: state.context.value,
-      style: visuallyHiddenStyle,
-      onChange(event) {
-        if (readOnly) {
-          event.preventDefault()
-          return
-        }
+    getHiddenInputProps: () =>
+      normalize.input({
+        id: dom.getHiddenInputId(state.context),
+        type: "checkbox",
+        required: state.context.required,
+        defaultChecked: checked,
+        disabled: disabled,
+        "aria-labelledby": dom.getLabelId(state.context),
+        "aria-invalid": state.context.invalid,
+        name: state.context.name,
+        form: state.context.form,
+        value: state.context.value,
+        style: visuallyHiddenStyle,
+        onChange(event) {
+          if (readOnly) {
+            event.preventDefault()
+            return
+          }
 
-        const checked = event.currentTarget.checked
-        send({ type: "CHECKED.SET", checked, isTrusted: true })
-      },
-    }),
+          const checked = event.currentTarget.checked
+          send({ type: "CHECKED.SET", checked, isTrusted: true })
+        },
+      }),
   }
 }

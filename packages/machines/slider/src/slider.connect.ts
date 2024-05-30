@@ -76,56 +76,60 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "FOCUS", index: 0 })
     },
 
-    getLabelProps: () => normalize.label({
-      ...parts.label.attrs,
-      dir: state.context.dir,
-      "data-disabled": dataAttr(disabled),
-      "data-orientation": state.context.orientation,
-      "data-invalid": dataAttr(invalid),
-      "data-focus": dataAttr(focused),
-      id: dom.getLabelId(state.context),
-      htmlFor: dom.getHiddenInputId(state.context, 0),
-      onClick(event) {
-        if (!interactive) return
-        event.preventDefault()
-        dom.getFirstEl(state.context)?.focus()
-      },
-      style: {
-        userSelect: "none",
-      },
-    }),
+    getLabelProps: () =>
+      normalize.label({
+        ...parts.label.attrs,
+        dir: state.context.dir,
+        "data-disabled": dataAttr(disabled),
+        "data-orientation": state.context.orientation,
+        "data-invalid": dataAttr(invalid),
+        "data-focus": dataAttr(focused),
+        id: dom.getLabelId(state.context),
+        htmlFor: dom.getHiddenInputId(state.context, 0),
+        onClick(event) {
+          if (!interactive) return
+          event.preventDefault()
+          dom.getFirstEl(state.context)?.focus()
+        },
+        style: {
+          userSelect: "none",
+        },
+      }),
 
-    getRootProps: () => normalize.element({
-      ...parts.root.attrs,
-      "data-disabled": dataAttr(disabled),
-      "data-orientation": state.context.orientation,
-      "data-invalid": dataAttr(invalid),
-      "data-focus": dataAttr(focused),
-      id: dom.getRootId(state.context),
-      dir: state.context.dir,
-      style: dom.getRootStyle(state.context),
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        "data-disabled": dataAttr(disabled),
+        "data-orientation": state.context.orientation,
+        "data-invalid": dataAttr(invalid),
+        "data-focus": dataAttr(focused),
+        id: dom.getRootId(state.context),
+        dir: state.context.dir,
+        style: dom.getRootStyle(state.context),
+      }),
 
-    getValueTextProps: () => normalize.element({
-      ...parts.valueText.attrs,
-      dir: state.context.dir,
-      "data-disabled": dataAttr(disabled),
-      "data-orientation": state.context.orientation,
-      "data-invalid": dataAttr(invalid),
-      "data-focus": dataAttr(focused),
-      id: dom.getValueTextId(state.context),
-    }),
+    getValueTextProps: () =>
+      normalize.element({
+        ...parts.valueText.attrs,
+        dir: state.context.dir,
+        "data-disabled": dataAttr(disabled),
+        "data-orientation": state.context.orientation,
+        "data-invalid": dataAttr(invalid),
+        "data-focus": dataAttr(focused),
+        id: dom.getValueTextId(state.context),
+      }),
 
-    getTrackProps: () => normalize.element({
-      ...parts.track.attrs,
-      dir: state.context.dir,
-      id: dom.getTrackId(state.context),
-      "data-disabled": dataAttr(disabled),
-      "data-invalid": dataAttr(invalid),
-      "data-orientation": state.context.orientation,
-      "data-focus": dataAttr(focused),
-      style: { position: "relative" },
-    }),
+    getTrackProps: () =>
+      normalize.element({
+        ...parts.track.attrs,
+        dir: state.context.dir,
+        id: dom.getTrackId(state.context),
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+        "data-orientation": state.context.orientation,
+        "data-focus": dataAttr(focused),
+        style: { position: "relative" },
+      }),
 
     getThumbProps(props) {
       const { index = 0, name } = props
@@ -232,47 +236,50 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getRangeProps: () => normalize.element({
-      id: dom.getRangeId(state.context),
-      ...parts.range.attrs,
-      dir: state.context.dir,
-      "data-focus": dataAttr(focused),
-      "data-invalid": dataAttr(invalid),
-      "data-disabled": dataAttr(disabled),
-      "data-orientation": state.context.orientation,
-      style: dom.getRangeStyle(state.context),
-    }),
+    getRangeProps: () =>
+      normalize.element({
+        id: dom.getRangeId(state.context),
+        ...parts.range.attrs,
+        dir: state.context.dir,
+        "data-focus": dataAttr(focused),
+        "data-invalid": dataAttr(invalid),
+        "data-disabled": dataAttr(disabled),
+        "data-orientation": state.context.orientation,
+        style: dom.getRangeStyle(state.context),
+      }),
 
-    getControlProps: () => normalize.element({
-      ...parts.control.attrs,
-      dir: state.context.dir,
-      id: dom.getControlId(state.context),
-      "data-disabled": dataAttr(disabled),
-      "data-orientation": state.context.orientation,
-      "data-invalid": dataAttr(invalid),
-      "data-focus": dataAttr(focused),
-      style: dom.getControlStyle(),
-      onPointerDown(event) {
-        if (!interactive) return
-        if (!isLeftClick(event)) return
-        if (isModifierKey(event)) return
+    getControlProps: () =>
+      normalize.element({
+        ...parts.control.attrs,
+        dir: state.context.dir,
+        id: dom.getControlId(state.context),
+        "data-disabled": dataAttr(disabled),
+        "data-orientation": state.context.orientation,
+        "data-invalid": dataAttr(invalid),
+        "data-focus": dataAttr(focused),
+        style: dom.getControlStyle(),
+        onPointerDown(event) {
+          if (!interactive) return
+          if (!isLeftClick(event)) return
+          if (isModifierKey(event)) return
 
-        const point = getEventPoint(event)
-        send({ type: "POINTER_DOWN", point })
+          const point = getEventPoint(event)
+          send({ type: "POINTER_DOWN", point })
 
-        event.preventDefault()
-        event.stopPropagation()
-      },
-    }),
+          event.preventDefault()
+          event.stopPropagation()
+        },
+      }),
 
-    getMarkerGroupProps: () => normalize.element({
-      ...parts.markerGroup.attrs,
-      role: "presentation",
-      dir: state.context.dir,
-      "aria-hidden": true,
-      "data-orientation": state.context.orientation,
-      style: dom.getMarkerGroupStyle(),
-    }),
+    getMarkerGroupProps: () =>
+      normalize.element({
+        ...parts.markerGroup.attrs,
+        role: "presentation",
+        dir: state.context.dir,
+        "aria-hidden": true,
+        "data-orientation": state.context.orientation,
+        style: dom.getMarkerGroupStyle(),
+      }),
 
     getMarkerProps(props) {
       const style = dom.getMarkerStyle(state.context, props.value)

@@ -41,12 +41,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SET_PAGE", page })
     },
 
-    getRootProps: () => normalize.element({
-      id: dom.getRootId(state.context),
-      ...parts.root.attrs,
-      dir: state.context.dir,
-      "aria-label": translations.rootLabel,
-    }),
+    getRootProps: () =>
+      normalize.element({
+        id: dom.getRootId(state.context),
+        ...parts.root.attrs,
+        dir: state.context.dir,
+        "aria-label": translations.rootLabel,
+      }),
 
     getEllipsisProps(props) {
       return normalize.element({
@@ -75,28 +76,30 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getPrevTriggerProps: () => normalize.element({
-      id: dom.getPrevTriggerId(state.context),
-      ...parts.prevTrigger.attrs,
-      dir: state.context.dir,
-      "data-disabled": dataAttr(isFirstPage),
-      "aria-label": translations.prevTriggerLabel,
-      onClick() {
-        send({ type: "PREVIOUS_PAGE" })
-      },
-      ...(isButton && { disabled: isFirstPage, type: "button" }),
-    }),
+    getPrevTriggerProps: () =>
+      normalize.element({
+        id: dom.getPrevTriggerId(state.context),
+        ...parts.prevTrigger.attrs,
+        dir: state.context.dir,
+        "data-disabled": dataAttr(isFirstPage),
+        "aria-label": translations.prevTriggerLabel,
+        onClick() {
+          send({ type: "PREVIOUS_PAGE" })
+        },
+        ...(isButton && { disabled: isFirstPage, type: "button" }),
+      }),
 
-    getNextTriggerProps: () => normalize.element({
-      id: dom.getNextTriggerId(state.context),
-      ...parts.nextTrigger.attrs,
-      dir: state.context.dir,
-      "data-disabled": dataAttr(isLastPage),
-      "aria-label": translations.nextTriggerLabel,
-      onClick() {
-        send({ type: "NEXT_PAGE" })
-      },
-      ...(isButton && { disabled: isLastPage, type: "button" }),
-    }),
+    getNextTriggerProps: () =>
+      normalize.element({
+        id: dom.getNextTriggerId(state.context),
+        ...parts.nextTrigger.attrs,
+        dir: state.context.dir,
+        "data-disabled": dataAttr(isLastPage),
+        "aria-label": translations.nextTriggerLabel,
+        onClick() {
+          send({ type: "NEXT_PAGE" })
+        },
+        ...(isButton && { disabled: isLastPage, type: "button" }),
+      }),
   }
 }

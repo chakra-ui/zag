@@ -51,66 +51,68 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getTriggerState,
 
-    getRootProps: () => normalize.element({
-      ...parts.root.attrs,
-      id: dom.getRootId(state.context),
-      "data-orientation": state.context.orientation,
-      "data-focus": dataAttr(focused),
-      dir: state.context.dir,
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        id: dom.getRootId(state.context),
+        "data-orientation": state.context.orientation,
+        "data-focus": dataAttr(focused),
+        dir: state.context.dir,
+      }),
 
-    getListProps: () => normalize.element({
-      ...parts.list.attrs,
-      id: dom.getListId(state.context),
-      role: "tablist",
-      dir: state.context.dir,
-      "data-focus": dataAttr(focused),
-      "aria-orientation": state.context.orientation,
-      "data-orientation": state.context.orientation,
-      "aria-label": translations?.listLabel,
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
+    getListProps: () =>
+      normalize.element({
+        ...parts.list.attrs,
+        id: dom.getListId(state.context),
+        role: "tablist",
+        dir: state.context.dir,
+        "data-focus": dataAttr(focused),
+        "aria-orientation": state.context.orientation,
+        "data-orientation": state.context.orientation,
+        "aria-label": translations?.listLabel,
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
 
-        if (!isSelfTarget(event)) return
-        if (isComposingEvent(event)) return
+          if (!isSelfTarget(event)) return
+          if (isComposingEvent(event)) return
 
-        const keyMap: EventKeyMap = {
-          ArrowDown() {
-            if (isHorizontal) return
-            send({ type: "ARROW_NEXT", key: "ArrowDown" })
-          },
-          ArrowUp() {
-            if (isHorizontal) return
-            send({ type: "ARROW_PREV", key: "ArrowUp" })
-          },
-          ArrowLeft() {
-            if (isVertical) return
-            send({ type: "ARROW_PREV", key: "ArrowLeft" })
-          },
-          ArrowRight() {
-            if (isVertical) return
-            send({ type: "ARROW_NEXT", key: "ArrowRight" })
-          },
-          Home() {
-            send("HOME")
-          },
-          End() {
-            send("END")
-          },
-          Enter() {
-            send({ type: "ENTER" })
-          },
-        }
+          const keyMap: EventKeyMap = {
+            ArrowDown() {
+              if (isHorizontal) return
+              send({ type: "ARROW_NEXT", key: "ArrowDown" })
+            },
+            ArrowUp() {
+              if (isHorizontal) return
+              send({ type: "ARROW_PREV", key: "ArrowUp" })
+            },
+            ArrowLeft() {
+              if (isVertical) return
+              send({ type: "ARROW_PREV", key: "ArrowLeft" })
+            },
+            ArrowRight() {
+              if (isVertical) return
+              send({ type: "ARROW_NEXT", key: "ArrowRight" })
+            },
+            Home() {
+              send("HOME")
+            },
+            End() {
+              send("END")
+            },
+            Enter() {
+              send({ type: "ENTER" })
+            },
+          }
 
-        let key = getEventKey(event, state.context)
-        const exec = keyMap[key]
+          let key = getEventKey(event, state.context)
+          const exec = keyMap[key]
 
-        if (exec) {
-          event.preventDefault()
-          exec(event)
-        }
-      },
-    }),
+          if (exec) {
+            event.preventDefault()
+            exec(event)
+          }
+        },
+      }),
 
     getTriggerProps(props) {
       const { value, disabled } = props
@@ -170,24 +172,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getIndicatorProps: () => normalize.element({
-      id: dom.getIndicatorId(state.context),
-      ...parts.indicator.attrs,
-      dir: state.context.dir,
-      "data-orientation": state.context.orientation,
-      style: {
-        "--transition-property": "left, right, top, bottom, width, height",
-        "--left": indicator.rect?.left,
-        "--top": indicator.rect?.top,
-        "--width": indicator.rect?.width,
-        "--height": indicator.rect?.height,
-        position: "absolute",
-        willChange: "var(--transition-property)",
-        transitionProperty: "var(--transition-property)",
-        transitionDuration: indicator.transition ? "var(--transition-duration, 150ms)" : "0ms",
-        transitionTimingFunction: "var(--transition-timing-function)",
-        [isHorizontal ? "left" : "top"]: isHorizontal ? "var(--left)" : "var(--top)",
-      },
-    }),
+    getIndicatorProps: () =>
+      normalize.element({
+        id: dom.getIndicatorId(state.context),
+        ...parts.indicator.attrs,
+        dir: state.context.dir,
+        "data-orientation": state.context.orientation,
+        style: {
+          "--transition-property": "left, right, top, bottom, width, height",
+          "--left": indicator.rect?.left,
+          "--top": indicator.rect?.top,
+          "--width": indicator.rect?.width,
+          "--height": indicator.rect?.height,
+          position: "absolute",
+          willChange: "var(--transition-property)",
+          transitionProperty: "var(--transition-property)",
+          transitionDuration: indicator.transition ? "var(--transition-duration, 150ms)" : "0ms",
+          transitionTimingFunction: "var(--transition-timing-function)",
+          [isHorizontal ? "left" : "top"]: isHorizontal ? "var(--left)" : "var(--top)",
+        },
+      }),
   }
 }

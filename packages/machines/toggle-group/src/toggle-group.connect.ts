@@ -29,31 +29,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getItemState,
 
-    getRootProps: () => normalize.element({
-      ...parts.root.attrs,
-      id: dom.getRootId(state.context),
-      dir: state.context.dir,
-      role: isSingle ? "radiogroup" : "group",
-      tabIndex: state.context.isTabbingBackward ? -1 : 0,
-      "data-disabled": dataAttr(disabled),
-      "data-orientation": state.context.orientation,
-      "data-focus": dataAttr(state.context.focusedId != null),
-      style: { outline: "none" },
-      onMouseDown() {
-        if (disabled) return
-        send("ROOT.MOUSE_DOWN")
-      },
-      onFocus(event) {
-        if (disabled) return
-        const evt = event.nativeEvent || event
-        if (!isSelfTarget(evt) || !!state.context.isClickFocus || state.context.isTabbingBackward) return
-        send("ROOT.FOCUS")
-      },
-      onBlur() {
-        if (disabled) return
-        send("ROOT.BLUR")
-      },
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        id: dom.getRootId(state.context),
+        dir: state.context.dir,
+        role: isSingle ? "radiogroup" : "group",
+        tabIndex: state.context.isTabbingBackward ? -1 : 0,
+        "data-disabled": dataAttr(disabled),
+        "data-orientation": state.context.orientation,
+        "data-focus": dataAttr(state.context.focusedId != null),
+        style: { outline: "none" },
+        onMouseDown() {
+          if (disabled) return
+          send("ROOT.MOUSE_DOWN")
+        },
+        onFocus(event) {
+          if (disabled) return
+          const evt = event.nativeEvent || event
+          if (!isSelfTarget(evt) || !!state.context.isClickFocus || state.context.isTabbingBackward) return
+          send("ROOT.FOCUS")
+        },
+        onBlur() {
+          if (disabled) return
+          send("ROOT.BLUR")
+        },
+      }),
 
     getItemProps(props) {
       const itemState = getItemState(props)

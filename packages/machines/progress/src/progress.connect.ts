@@ -39,70 +39,78 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "VALUE.SET", value: max })
     },
 
-    getRootProps: () => normalize.element({
-      dir: state.context.dir,
-      ...parts.root.attrs,
-      id: dom.getRootId(state.context),
-      "data-max": max,
-      "data-value": value ?? undefined,
-      "data-state": progressState,
-      "data-orientation": orientation,
-      style: {
-        "--percent": indeterminate ? undefined : percent,
-      },
-    }),
+    getRootProps: () =>
+      normalize.element({
+        dir: state.context.dir,
+        ...parts.root.attrs,
+        id: dom.getRootId(state.context),
+        "data-max": max,
+        "data-value": value ?? undefined,
+        "data-state": progressState,
+        "data-orientation": orientation,
+        style: {
+          "--percent": indeterminate ? undefined : percent,
+        },
+      }),
 
-    getLabelProps: () => normalize.element({
-      dir: state.context.dir,
-      id: dom.getLabelId(state.context),
-      ...parts.label.attrs,
-      "data-orientation": orientation,
-    }),
+    getLabelProps: () =>
+      normalize.element({
+        dir: state.context.dir,
+        id: dom.getLabelId(state.context),
+        ...parts.label.attrs,
+        "data-orientation": orientation,
+      }),
 
-    getValueTextProps: () => normalize.element({
-      dir: state.context.dir,
-      "aria-live": "polite",
-      ...parts.valueText.attrs,
-    }),
+    getValueTextProps: () =>
+      normalize.element({
+        dir: state.context.dir,
+        "aria-live": "polite",
+        ...parts.valueText.attrs,
+      }),
 
-    getTrackProps: () => normalize.element({
-      dir: state.context.dir,
-      id: dom.getTrackId(state.context),
-      ...parts.track.attrs,
-      ...progressbarProps,
-    }),
+    getTrackProps: () =>
+      normalize.element({
+        dir: state.context.dir,
+        id: dom.getTrackId(state.context),
+        ...parts.track.attrs,
+        ...progressbarProps,
+      }),
 
-    getRangeProps: () => normalize.element({
-      dir: state.context.dir,
-      ...parts.range.attrs,
-      "data-orientation": orientation,
-      "data-state": progressState,
-      style: {
-        [state.context.isHorizontal ? "width" : "height"]: indeterminate ? undefined : `${percent}%`,
-      },
-    }),
+    getRangeProps: () =>
+      normalize.element({
+        dir: state.context.dir,
+        ...parts.range.attrs,
+        "data-orientation": orientation,
+        "data-state": progressState,
+        style: {
+          [state.context.isHorizontal ? "width" : "height"]: indeterminate ? undefined : `${percent}%`,
+        },
+      }),
 
-    getCircleProps: () => normalize.element({
-      dir: state.context.dir,
-      id: dom.getCircleId(state.context),
-      ...parts.circle.attrs,
-      ...progressbarProps,
-      ...circleProps.root,
-    }),
+    getCircleProps: () =>
+      normalize.element({
+        dir: state.context.dir,
+        id: dom.getCircleId(state.context),
+        ...parts.circle.attrs,
+        ...progressbarProps,
+        ...circleProps.root,
+      }),
 
-    getCircleTrackProps: () => normalize.element({
-      dir: state.context.dir,
-      "data-orientation": orientation,
-      ...parts.circleTrack.attrs,
-      ...circleProps.track,
-    }),
+    getCircleTrackProps: () =>
+      normalize.element({
+        dir: state.context.dir,
+        "data-orientation": orientation,
+        ...parts.circleTrack.attrs,
+        ...circleProps.track,
+      }),
 
-    getCircleRangeProps: () => normalize.element({
-      dir: state.context.dir,
-      ...parts.circleRange.attrs,
-      ...circleProps.range,
-      "data-state": progressState,
-    }),
+    getCircleRangeProps: () =>
+      normalize.element({
+        dir: state.context.dir,
+        ...parts.circleRange.attrs,
+        ...circleProps.range,
+        "data-state": progressState,
+      }),
 
     getViewProps(props) {
       return normalize.element({

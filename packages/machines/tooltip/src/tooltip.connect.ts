@@ -32,84 +32,89 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "POSITIONING.SET", options })
     },
 
-    getTriggerProps: () => normalize.button({
-      ...parts.trigger.attrs,
-      id: triggerId,
-      dir: state.context.dir,
-      "data-expanded": dataAttr(open),
-      "data-state": open ? "open" : "closed",
-      "aria-describedby": open ? contentId : undefined,
-      onClick() {
-        if (disabled) return
-        send("CLOSE")
-      },
-      onFocus() {
-        if (disabled || state.event.type === "POINTER_DOWN") return
-        send("OPEN")
-      },
-      onBlur() {
-        if (disabled) return
-        if (id === store.id) {
+    getTriggerProps: () =>
+      normalize.button({
+        ...parts.trigger.attrs,
+        id: triggerId,
+        dir: state.context.dir,
+        "data-expanded": dataAttr(open),
+        "data-state": open ? "open" : "closed",
+        "aria-describedby": open ? contentId : undefined,
+        onClick() {
+          if (disabled) return
           send("CLOSE")
-        }
-      },
-      onPointerDown() {
-        if (disabled || !state.context.closeOnPointerDown) return
-        if (id === store.id) {
-          send("CLOSE")
-        }
-      },
-      onPointerMove(event) {
-        if (disabled || event.pointerType === "touch") return
-        send("POINTER_MOVE")
-      },
-      onPointerLeave() {
-        if (disabled) return
-        send("POINTER_LEAVE")
-      },
-      onPointerCancel() {
-        if (disabled) return
-        send("POINTER_LEAVE")
-      },
-    }),
+        },
+        onFocus() {
+          if (disabled || state.event.type === "POINTER_DOWN") return
+          send("OPEN")
+        },
+        onBlur() {
+          if (disabled) return
+          if (id === store.id) {
+            send("CLOSE")
+          }
+        },
+        onPointerDown() {
+          if (disabled || !state.context.closeOnPointerDown) return
+          if (id === store.id) {
+            send("CLOSE")
+          }
+        },
+        onPointerMove(event) {
+          if (disabled || event.pointerType === "touch") return
+          send("POINTER_MOVE")
+        },
+        onPointerLeave() {
+          if (disabled) return
+          send("POINTER_LEAVE")
+        },
+        onPointerCancel() {
+          if (disabled) return
+          send("POINTER_LEAVE")
+        },
+      }),
 
-    getArrowProps: () => normalize.element({
-      id: dom.getArrowId(state.context),
-      ...parts.arrow.attrs,
-      dir: state.context.dir,
-      style: popperStyles.arrow,
-    }),
+    getArrowProps: () =>
+      normalize.element({
+        id: dom.getArrowId(state.context),
+        ...parts.arrow.attrs,
+        dir: state.context.dir,
+        style: popperStyles.arrow,
+      }),
 
-    getArrowTipProps: () => normalize.element({
-      ...parts.arrowTip.attrs,
-      dir: state.context.dir,
-      style: popperStyles.arrowTip,
-    }),
+    getArrowTipProps: () =>
+      normalize.element({
+        ...parts.arrowTip.attrs,
+        dir: state.context.dir,
+        style: popperStyles.arrowTip,
+      }),
 
-    getPositionerProps: () => normalize.element({
-      id: dom.getPositionerId(state.context),
-      ...parts.positioner.attrs,
-      dir: state.context.dir,
-      style: popperStyles.floating,
-    }),
+    getPositionerProps: () =>
+      normalize.element({
+        id: dom.getPositionerId(state.context),
+        ...parts.positioner.attrs,
+        dir: state.context.dir,
+        style: popperStyles.floating,
+      }),
 
-    getContentProps: () => normalize.element({
-      ...parts.content.attrs,
-      dir: state.context.dir,
-      hidden: !open,
-      "data-state": open ? "open" : "closed",
-      role: hasAriaLabel ? undefined : "tooltip",
-      id: hasAriaLabel ? undefined : contentId,
-      "data-placement": state.context.currentPlacement,
-      onPointerEnter() {
-        send("CONTENT.POINTER_MOVE")
-      },
-      onPointerLeave() {
-        send("CONTENT.POINTER_LEAVE")
-      },
-      style: {
-        pointerEvents: state.context.interactive ? "auto" : "none",
-      },
-    }),
+    getContentProps: () =>
+      normalize.element({
+        ...parts.content.attrs,
+        dir: state.context.dir,
+        hidden: !open,
+        "data-state": open ? "open" : "closed",
+        role: hasAriaLabel ? undefined : "tooltip",
+        id: hasAriaLabel ? undefined : contentId,
+        "data-placement": state.context.currentPlacement,
+        onPointerEnter() {
+          send("CONTENT.POINTER_MOVE")
+        },
+        onPointerLeave() {
+          send("CONTENT.POINTER_LEAVE")
+        },
+        style: {
+          pointerEvents: state.context.interactive ? "auto" : "none",
+        },
+      }),
   }
 }

@@ -42,119 +42,124 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return () => win.URL.revokeObjectURL(url)
     },
 
-    getRootProps: () => normalize.element({
-      ...parts.root.attrs,
-      dir: state.context.dir,
-      id: dom.getRootId(state.context),
-      "data-disabled": dataAttr(disabled),
-      "data-dragging": dataAttr(dragging),
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        dir: state.context.dir,
+        id: dom.getRootId(state.context),
+        "data-disabled": dataAttr(disabled),
+        "data-dragging": dataAttr(dragging),
+      }),
 
-    getDropzoneProps: () => normalize.element({
-      ...parts.dropzone.attrs,
-      dir: state.context.dir,
-      id: dom.getDropzoneId(state.context),
-      tabIndex: disabled ? undefined : 0,
-      "aria-disabled": disabled,
-      "aria-invalid": state.context.invalid,
-      "data-invalid": dataAttr(state.context.invalid),
-      "data-disabled": dataAttr(disabled),
-      "data-dragging": dataAttr(dragging),
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        if (!isSelfTarget(event)) return
-        if (event.key !== "Enter" && event.key !== " ") return
-        send({ type: "DROPZONE.CLICK", src: "keydown" })
-      },
-      onClick(event) {
-        const isLabel = event.currentTarget.localName === "label"
-        // prevent opening the file dialog when clicking on the label (to avoid double opening)
-        if (isLabel) event.preventDefault()
-        send("DROPZONE.CLICK")
-      },
-      onDragOver(event) {
-        if (!allowDrop) return
-        event.preventDefault()
-        event.stopPropagation()
-        try {
-          event.dataTransfer.dropEffect = "copy"
-        } catch {}
-
-        const hasFiles = isEventWithFiles(event)
-        if (!hasFiles) return
-
-        const count = event.dataTransfer.items.length
-        send({ type: "DROPZONE.DRAG_OVER", count })
-      },
-      onDragLeave(event) {
-        if (!allowDrop || disabled) return
-        if (contains(event.currentTarget, event.relatedTarget)) return
-        send({ type: "DROPZONE.DRAG_LEAVE" })
-      },
-      onDrop(event) {
-        if (allowDrop) {
+    getDropzoneProps: () =>
+      normalize.element({
+        ...parts.dropzone.attrs,
+        dir: state.context.dir,
+        id: dom.getDropzoneId(state.context),
+        tabIndex: disabled ? undefined : 0,
+        "aria-disabled": disabled,
+        "aria-invalid": state.context.invalid,
+        "data-invalid": dataAttr(state.context.invalid),
+        "data-disabled": dataAttr(disabled),
+        "data-dragging": dataAttr(dragging),
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (!isSelfTarget(event)) return
+          if (event.key !== "Enter" && event.key !== " ") return
+          send({ type: "DROPZONE.CLICK", src: "keydown" })
+        },
+        onClick(event) {
+          const isLabel = event.currentTarget.localName === "label"
+          // prevent opening the file dialog when clicking on the label (to avoid double opening)
+          if (isLabel) event.preventDefault()
+          send("DROPZONE.CLICK")
+        },
+        onDragOver(event) {
+          if (!allowDrop) return
           event.preventDefault()
           event.stopPropagation()
-        }
+          try {
+            event.dataTransfer.dropEffect = "copy"
+          } catch {}
 
-        const hasFiles = isEventWithFiles(event)
-        if (disabled || !hasFiles) return
+          const hasFiles = isEventWithFiles(event)
+          if (!hasFiles) return
 
-        send({ type: "DROPZONE.DROP", files: Array.from(event.dataTransfer.files) })
-      },
-      onFocus() {
-        send("DROPZONE.FOCUS")
-      },
-      onBlur() {
-        send("DROPZONE.BLUR")
-      },
-    }),
+          const count = event.dataTransfer.items.length
+          send({ type: "DROPZONE.DRAG_OVER", count })
+        },
+        onDragLeave(event) {
+          if (!allowDrop || disabled) return
+          if (contains(event.currentTarget, event.relatedTarget)) return
+          send({ type: "DROPZONE.DRAG_LEAVE" })
+        },
+        onDrop(event) {
+          if (allowDrop) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
 
-    getTriggerProps: () => normalize.button({
-      ...parts.trigger.attrs,
-      dir: state.context.dir,
-      id: dom.getTriggerId(state.context),
-      disabled,
-      "data-disabled": dataAttr(disabled),
-      type: "button",
-      onClick(event) {
-        if (disabled) return
-        // if trigger is wrapped within the dropzone, stop propagation to avoid double opening
-        if (contains(dom.getDropzoneEl(state.context), event.currentTarget)) {
+          const hasFiles = isEventWithFiles(event)
+          if (disabled || !hasFiles) return
+
+          send({ type: "DROPZONE.DROP", files: Array.from(event.dataTransfer.files) })
+        },
+        onFocus() {
+          send("DROPZONE.FOCUS")
+        },
+        onBlur() {
+          send("DROPZONE.BLUR")
+        },
+      }),
+
+    getTriggerProps: () =>
+      normalize.button({
+        ...parts.trigger.attrs,
+        dir: state.context.dir,
+        id: dom.getTriggerId(state.context),
+        disabled,
+        "data-disabled": dataAttr(disabled),
+        type: "button",
+        onClick(event) {
+          if (disabled) return
+          // if trigger is wrapped within the dropzone, stop propagation to avoid double opening
+          if (contains(dom.getDropzoneEl(state.context), event.currentTarget)) {
+            event.stopPropagation()
+          }
+          send("OPEN")
+        },
+      }),
+
+    getHiddenInputProps: () =>
+      normalize.input({
+        id: dom.getHiddenInputId(state.context),
+        tabIndex: -1,
+        disabled,
+        type: "file",
+        capture: state.context.capture,
+        name: state.context.name,
+        accept: state.context.acceptAttr,
+        webkitdirectory: state.context.capture ? "" : undefined,
+        multiple: state.context.multiple || state.context.maxFiles > 1,
+        onClick(event) {
           event.stopPropagation()
-        }
-        send("OPEN")
-      },
-    }),
+          // allow for re-selection of the same file
+          event.currentTarget.value = ""
+        },
+        onChange(event) {
+          if (disabled) return
+          const { files } = event.currentTarget
+          send({ type: "FILES.SET", files: files ? Array.from(files) : [] })
+        },
+        style: visuallyHiddenStyle,
+      }),
 
-    getHiddenInputProps: () => normalize.input({
-      id: dom.getHiddenInputId(state.context),
-      tabIndex: -1,
-      disabled,
-      type: "file",
-      capture: state.context.capture,
-      name: state.context.name,
-      accept: state.context.acceptAttr,
-      webkitdirectory: state.context.capture ? "" : undefined,
-      multiple: state.context.multiple || state.context.maxFiles > 1,
-      onClick(event) {
-        event.stopPropagation()
-        // allow for re-selection of the same file
-        event.currentTarget.value = ""
-      },
-      onChange(event) {
-        if (disabled) return
-        const { files } = event.currentTarget
-        send({ type: "FILES.SET", files: files ? Array.from(files) : [] })
-      },
-      style: visuallyHiddenStyle,
-    }),
-
-    getItemGroupProps: () => normalize.element({
-      ...parts.itemGroup.attrs,
-      dir: state.context.dir,
-      "data-disabled": dataAttr(disabled),
-    }),
+    getItemGroupProps: () =>
+      normalize.element({
+        ...parts.itemGroup.attrs,
+        dir: state.context.dir,
+        "data-disabled": dataAttr(disabled),
+      }),
 
     getItemProps(props) {
       const { file } = props
@@ -226,12 +231,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getLabelProps: () => normalize.label({
-      ...parts.label.attrs,
-      dir: state.context.dir,
-      id: dom.getLabelId(state.context),
-      htmlFor: dom.getHiddenInputId(state.context),
-      "data-disabled": dataAttr(disabled),
-    }),
+    getLabelProps: () =>
+      normalize.label({
+        ...parts.label.attrs,
+        dir: state.context.dir,
+        id: dom.getLabelId(state.context),
+        htmlFor: dom.getHiddenInputId(state.context),
+        "data-disabled": dataAttr(disabled),
+      }),
   }
 }

@@ -76,124 +76,127 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dom.getItemEl(state.context, id)?.focus()
     },
 
-    getRootProps: () => normalize.element({
-      ...parts.root.attrs,
-      id: dom.getRootId(state.context),
-      dir: state.context.dir,
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        id: dom.getRootId(state.context),
+        dir: state.context.dir,
+      }),
 
-    getLabelProps: () => normalize.element({
-      ...parts.label.attrs,
-      id: dom.getLabelId(state.context),
-      dir: state.context.dir,
-    }),
+    getLabelProps: () =>
+      normalize.element({
+        ...parts.label.attrs,
+        id: dom.getLabelId(state.context),
+        dir: state.context.dir,
+      }),
 
-    getTreeProps: () => normalize.element({
-      ...parts.tree.attrs,
-      id: dom.getTreeId(state.context),
-      dir: state.context.dir,
-      role: "tree",
-      "aria-label": "Tree View",
-      "aria-labelledby": dom.getLabelId(state.context),
-      "aria-multiselectable": state.context.selectionMode === "multiple" || undefined,
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        if (isComposingEvent(event)) return
+    getTreeProps: () =>
+      normalize.element({
+        ...parts.tree.attrs,
+        id: dom.getTreeId(state.context),
+        dir: state.context.dir,
+        role: "tree",
+        "aria-label": "Tree View",
+        "aria-labelledby": dom.getLabelId(state.context),
+        "aria-multiselectable": state.context.selectionMode === "multiple" || undefined,
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (isComposingEvent(event)) return
 
-        const target = getEventTarget<HTMLElement>(event)
+          const target = getEventTarget<HTMLElement>(event)
 
-        const node = target?.closest<HTMLElement>("[role=treeitem]")
-        if (!node) return
+          const node = target?.closest<HTMLElement>("[role=treeitem]")
+          if (!node) return
 
-        const nodeId = dom.getNodeId(node)
-        if (nodeId == null) {
-          console.warn(`Node id not found for node`, node)
-          return
-        }
+          const nodeId = dom.getNodeId(node)
+          if (nodeId == null) {
+            console.warn(`Node id not found for node`, node)
+            return
+          }
 
-        const isBranchNode = !!target?.dataset.branch
+          const isBranchNode = !!target?.dataset.branch
 
-        const keyMap: EventKeyMap = {
-          ArrowDown(event) {
-            if (isModifierKey(event)) return
-            event.preventDefault()
-            send({ type: "ITEM.ARROW_DOWN", id: nodeId, shiftKey: event.shiftKey })
-          },
-          ArrowUp(event) {
-            if (isModifierKey(event)) return
-            event.preventDefault()
-            send({ type: "ITEM.ARROW_UP", id: nodeId, shiftKey: event.shiftKey })
-          },
-          ArrowLeft(event) {
-            if (isModifierKey(event) || node.dataset.disabled) return
-            event.preventDefault()
-            send({ type: isBranchNode ? "BRANCH.ARROW_LEFT" : "ITEM.ARROW_LEFT", id: nodeId })
-          },
-          ArrowRight(event) {
-            if (!isBranchNode || node.dataset.disabled) return
-            event.preventDefault()
-            send({ type: "BRANCH.ARROW_RIGHT", id: nodeId })
-          },
-          Home(event) {
-            if (isModifierKey(event)) return
-            event.preventDefault()
-            send({ type: "ITEM.HOME", id: nodeId, shiftKey: event.shiftKey })
-          },
-          End(event) {
-            if (isModifierKey(event)) return
-            event.preventDefault()
-            send({ type: "ITEM.END", id: nodeId, shiftKey: event.shiftKey })
-          },
-          Space(event) {
-            if (node.dataset.disabled) return
+          const keyMap: EventKeyMap = {
+            ArrowDown(event) {
+              if (isModifierKey(event)) return
+              event.preventDefault()
+              send({ type: "ITEM.ARROW_DOWN", id: nodeId, shiftKey: event.shiftKey })
+            },
+            ArrowUp(event) {
+              if (isModifierKey(event)) return
+              event.preventDefault()
+              send({ type: "ITEM.ARROW_UP", id: nodeId, shiftKey: event.shiftKey })
+            },
+            ArrowLeft(event) {
+              if (isModifierKey(event) || node.dataset.disabled) return
+              event.preventDefault()
+              send({ type: isBranchNode ? "BRANCH.ARROW_LEFT" : "ITEM.ARROW_LEFT", id: nodeId })
+            },
+            ArrowRight(event) {
+              if (!isBranchNode || node.dataset.disabled) return
+              event.preventDefault()
+              send({ type: "BRANCH.ARROW_RIGHT", id: nodeId })
+            },
+            Home(event) {
+              if (isModifierKey(event)) return
+              event.preventDefault()
+              send({ type: "ITEM.HOME", id: nodeId, shiftKey: event.shiftKey })
+            },
+            End(event) {
+              if (isModifierKey(event)) return
+              event.preventDefault()
+              send({ type: "ITEM.END", id: nodeId, shiftKey: event.shiftKey })
+            },
+            Space(event) {
+              if (node.dataset.disabled) return
 
-            if (isTypingAhead) {
-              send({ type: "TREE.TYPEAHEAD", key: event.key })
-            } else {
-              keyMap.Enter?.(event)
-            }
-          },
-          Enter(event) {
-            if (node.dataset.disabled) return
+              if (isTypingAhead) {
+                send({ type: "TREE.TYPEAHEAD", key: event.key })
+              } else {
+                keyMap.Enter?.(event)
+              }
+            },
+            Enter(event) {
+              if (node.dataset.disabled) return
 
-            const isLink = target?.closest("a[href]")
-            if (!isLink) event.preventDefault()
+              const isLink = target?.closest("a[href]")
+              if (!isLink) event.preventDefault()
 
-            send({ type: isBranchNode ? "BRANCH.CLICK" : "ITEM.CLICK", id: nodeId, src: "keyboard" })
-          },
-          "*"(event) {
-            if (node.dataset.disabled) return
-            event.preventDefault()
-            send({ type: "EXPAND.SIBLINGS", id: nodeId })
-          },
-          a(event) {
-            if (!event.metaKey || node.dataset.disabled) return
-            event.preventDefault()
-            send({ type: "SELECTED.ALL", preventScroll: true, moveFocus: true })
-          },
-        }
+              send({ type: isBranchNode ? "BRANCH.CLICK" : "ITEM.CLICK", id: nodeId, src: "keyboard" })
+            },
+            "*"(event) {
+              if (node.dataset.disabled) return
+              event.preventDefault()
+              send({ type: "EXPAND.SIBLINGS", id: nodeId })
+            },
+            a(event) {
+              if (!event.metaKey || node.dataset.disabled) return
+              event.preventDefault()
+              send({ type: "SELECTED.ALL", preventScroll: true, moveFocus: true })
+            },
+          }
 
-        const key = getEventKey(event, state.context)
-        const exec = keyMap[key]
+          const key = getEventKey(event, state.context)
+          const exec = keyMap[key]
 
-        if (exec) {
-          exec(event)
-          return
-        }
+          if (exec) {
+            exec(event)
+            return
+          }
 
-        if (!state.context.typeahead) return
+          if (!state.context.typeahead) return
 
-        const isValidTypeahead = event.key.length === 1 && !isModifierKey(event)
-        if (!isValidTypeahead) return
+          const isValidTypeahead = event.key.length === 1 && !isModifierKey(event)
+          if (!isValidTypeahead) return
 
-        send({ type: "TREE.TYPEAHEAD", key: event.key, id: nodeId })
-        event.preventDefault()
-      },
-      onBlur(event) {
-        if (contains(event.currentTarget, event.relatedTarget)) return
-        send({ type: "TREE.BLUR" })
-      },
-    }),
+          send({ type: "TREE.TYPEAHEAD", key: event.key, id: nodeId })
+          event.preventDefault()
+        },
+        onBlur(event) {
+          if (contains(event.currentTarget, event.relatedTarget)) return
+          send({ type: "TREE.BLUR" })
+        },
+      }),
 
     getItemState,
     getItemProps(props) {

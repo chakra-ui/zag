@@ -35,46 +35,50 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "VALUE.SET", value, index })
     },
 
-    getRootProps: () => normalize.element({
-      dir: state.context.dir,
-      ...parts.root.attrs,
-      id: dom.getRootId(state.context),
-      "data-invalid": dataAttr(invalid),
-      "data-disabled": dataAttr(state.context.disabled),
-      "data-complete": dataAttr(complete),
-    }),
+    getRootProps: () =>
+      normalize.element({
+        dir: state.context.dir,
+        ...parts.root.attrs,
+        id: dom.getRootId(state.context),
+        "data-invalid": dataAttr(invalid),
+        "data-disabled": dataAttr(state.context.disabled),
+        "data-complete": dataAttr(complete),
+      }),
 
-    getLabelProps: () => normalize.label({
-      ...parts.label.attrs,
-      dir: state.context.dir,
-      htmlFor: dom.getHiddenInputId(state.context),
-      id: dom.getLabelId(state.context),
-      "data-invalid": dataAttr(invalid),
-      "data-disabled": dataAttr(state.context.disabled),
-      "data-complete": dataAttr(complete),
-      onClick(event) {
-        event.preventDefault()
-        focus()
-      },
-    }),
+    getLabelProps: () =>
+      normalize.label({
+        ...parts.label.attrs,
+        dir: state.context.dir,
+        htmlFor: dom.getHiddenInputId(state.context),
+        id: dom.getLabelId(state.context),
+        "data-invalid": dataAttr(invalid),
+        "data-disabled": dataAttr(state.context.disabled),
+        "data-complete": dataAttr(complete),
+        onClick(event) {
+          event.preventDefault()
+          focus()
+        },
+      }),
 
-    getHiddenInputProps: () => normalize.input({
-      "aria-hidden": true,
-      type: "text",
-      tabIndex: -1,
-      id: dom.getHiddenInputId(state.context),
-      name: state.context.name,
-      form: state.context.form,
-      style: visuallyHiddenStyle,
-      maxLength: state.context.valueLength,
-      defaultValue: state.context.valueAsString,
-    }),
+    getHiddenInputProps: () =>
+      normalize.input({
+        "aria-hidden": true,
+        type: "text",
+        tabIndex: -1,
+        id: dom.getHiddenInputId(state.context),
+        name: state.context.name,
+        form: state.context.form,
+        style: visuallyHiddenStyle,
+        maxLength: state.context.valueLength,
+        defaultValue: state.context.valueAsString,
+      }),
 
-    getControlProps: () => normalize.element({
-      ...parts.control.attrs,
-      dir: state.context.dir,
-      id: dom.getControlId(state.context),
-    }),
+    getControlProps: () =>
+      normalize.element({
+        ...parts.control.attrs,
+        dir: state.context.dir,
+        id: dom.getControlId(state.context),
+      }),
 
     getInputProps(props) {
       const { index } = props

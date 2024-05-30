@@ -16,43 +16,48 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     copy() {
       send({ type: "COPY" })
     },
-    getRootProps: () => normalize.element({
-      ...parts.root.attrs,
-      "data-copied": dataAttr(copied),
-      id: dom.getRootId(state.context),
-    }),
-    getLabelProps: () => normalize.label({
-      ...parts.label.attrs,
-      htmlFor: dom.getInputId(state.context),
-      "data-copied": dataAttr(copied),
-      id: dom.getLabelId(state.context),
-    }),
-    getControlProps: () => normalize.element({
-      ...parts.control.attrs,
-      "data-copied": dataAttr(copied),
-    }),
-    getInputProps: () => normalize.input({
-      ...parts.input.attrs,
-      defaultValue: state.context.value,
-      "data-copied": dataAttr(copied),
-      readOnly: true,
-      "data-readonly": "true",
-      id: dom.getInputId(state.context),
-      onFocus(event) {
-        event.currentTarget.select()
-      },
-      onCopy() {
-        send({ type: "INPUT.COPY" })
-      },
-    }),
-    getTriggerProps: () => normalize.button({
-      ...parts.trigger.attrs,
-      "aria-label": copied ? "Copied to clipboard" : "Copy to clipboard",
-      "data-copied": dataAttr(copied),
-      onClick() {
-        send({ type: "COPY" })
-      },
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        "data-copied": dataAttr(copied),
+        id: dom.getRootId(state.context),
+      }),
+    getLabelProps: () =>
+      normalize.label({
+        ...parts.label.attrs,
+        htmlFor: dom.getInputId(state.context),
+        "data-copied": dataAttr(copied),
+        id: dom.getLabelId(state.context),
+      }),
+    getControlProps: () =>
+      normalize.element({
+        ...parts.control.attrs,
+        "data-copied": dataAttr(copied),
+      }),
+    getInputProps: () =>
+      normalize.input({
+        ...parts.input.attrs,
+        defaultValue: state.context.value,
+        "data-copied": dataAttr(copied),
+        readOnly: true,
+        "data-readonly": "true",
+        id: dom.getInputId(state.context),
+        onFocus(event) {
+          event.currentTarget.select()
+        },
+        onCopy() {
+          send({ type: "INPUT.COPY" })
+        },
+      }),
+    getTriggerProps: () =>
+      normalize.button({
+        ...parts.trigger.attrs,
+        "aria-label": copied ? "Copied to clipboard" : "Copy to clipboard",
+        "data-copied": dataAttr(copied),
+        onClick() {
+          send({ type: "COPY" })
+        },
+      }),
     getIndicatorProps(props) {
       return normalize.element({
         ...parts.indicator.attrs,
