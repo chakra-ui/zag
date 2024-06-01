@@ -18,7 +18,6 @@ export default function Page() {
   return (
     <>
       <main>
-        <input {...{ readOnly: false }} />
         <div {...api().rootProps}>
           <div data-testid="scrubber" {...api().scrubberProps} />
           <label data-testid="label" {...api().labelProps}>
