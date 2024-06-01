@@ -1,5 +1,24 @@
 # @zag-js/editable
 
+## 0.52.0
+
+### Minor Changes
+
+- [`daccd6a`](https://github.com/chakra-ui/zag/commit/daccd6ab0aa564d795dc025646d21982c44583b0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Allow using `textarea` as the input element in edit mode.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.52.0
+  - @zag-js/core@0.52.0
+  - @zag-js/types@0.52.0
+  - @zag-js/utils@0.52.0
+  - @zag-js/dom-event@0.52.0
+  - @zag-js/dom-query@0.52.0
+  - @zag-js/form-utils@0.52.0
+  - @zag-js/interact-outside@0.52.0
+
 ## 0.51.2
 
 ### Patch Changes
