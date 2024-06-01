@@ -1,24 +1,19 @@
 {
   "name": "solid-ts",
-  "version": "0.0.3",
-  "description": "",
-  "private": true,
+  "type": "module",
   "scripts": {
-    "clean": "echo 'clean'",
-    "dev": "vite --port 3000",
-    "build": "vite build",
-    "serve": "vite preview",
-    "typecheck": "tsc --noEmit"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@types/form-serialize": "0.7.4",
-    "vite": "5.2.11",
-    "vite-plugin-solid": "2.10.2"
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start",
+    "version": "vinxi version"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.4",
+    "@solidjs/meta": "0.29.4",
     "@solidjs/router": "0.13.3",
+    "@solidjs/start": "1.0.1",
+    "solid-js": "1.8.17",
+    "vinxi": "0.3.11",
+    "@internationalized/date": "3.5.4",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -89,7 +84,9 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-solid": "0.379.0",
-    "solid-js": "1.8.17"
+    "lucide-solid": "0.379.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
