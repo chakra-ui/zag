@@ -1,5 +1,17 @@
 # @zag-js/solid
 
+## 0.52.0
+
+### Patch Changes
+
+- [`cec00aa`](https://github.com/chakra-ui/zag/commit/cec00aa477b827daeb5fed773364ffa73d107f26) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix SSR issue in Solid.js where spreading `readOnly: false` adds
+  the `readonly` attribute on editable elements, making them uneditable.
+- Updated dependencies []:
+  - @zag-js/core@0.52.0
+  - @zag-js/store@0.52.0
+  - @zag-js/types@0.52.0
+
 ## 0.51.2
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @zag-js/text-selection
 
+## 0.52.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.52.0
+
 ## 0.51.2
 
 ### Patch Changes
