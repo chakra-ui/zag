@@ -1,5 +1,13 @@
 # @zag-js/collection
 
+## 0.52.0
+
+### Patch Changes
+
+- [`390f2c0`](https://github.com/chakra-ui/zag/commit/390f2c0ae813c93ae8513c515295f8ca3be4c10b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where changing the label of a collection item doesn't
+  trigger a change in select and combobox components.
+
 ## 0.51.2
 
 ## 0.51.1

@@ -1,5 +1,12 @@
 # @zag-js/color-utils
 
+## 0.52.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/numeric-range@0.52.0
+
 ## 0.51.2
 
 ### Patch Changes

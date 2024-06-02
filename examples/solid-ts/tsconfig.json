@@ -1,16 +1,20 @@
 {
   "compilerOptions": {
-    "strict": true,
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "types": ["vite/client"],
+    "allowJs": true,
+    "strict": true,
+    "noEmit": true,
+    "types": ["vinxi/types/client"],
+    "isolatedModules": true,
     "paths": {
-      "@zag-js/*": ["../../node_modules/@zag-js/*"],
-    },
-  },
+      "~/*": ["./src/*"],
+      "@zag-js/*": ["../../node_modules/@zag-js/*"]
+    }
+  }
 }

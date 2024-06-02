@@ -148,6 +148,7 @@ function getCircleProps(ctx: MachineContext) {
     },
     track: circleProps,
     range: {
+      opacity: ctx.value === 0 ? 0 : undefined,
       style: {
         ...circleProps.style,
         "--percent": ctx.percent,

@@ -19,10 +19,18 @@ test.describe("popover", () => {
     await a11y(page)
   })
 
-  test("[focus] should move focus inside the popover content to the first focusable element", async ({ page }) => {
+  test("[autoFocus=true] should move focus inside the popover content to the first focusable element", async ({
+    page,
+  }) => {
     await page.click(trigger)
     await expect(page.locator(content)).toBeVisible()
     await expect(page.locator(link)).toBeFocused()
+  })
+
+  test("[autoFocus=false] should focus the content", async ({ page }) => {
+    await controls(page).bool("autoFocus", false)
+    await page.click(trigger)
+    await expect(page.locator(content)).toBeFocused()
   })
 
   test("[keyboard] should open the Popover on press `Enter`", async ({ page }) => {

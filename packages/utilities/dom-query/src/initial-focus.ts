@@ -1,14 +1,23 @@
 import { getFirstTabbable, getTabbableEdges } from "./tabbable"
 
-export function getInitialFocus(
-  container: HTMLElement | null,
-  getInitialEl?: () => HTMLElement | null,
-): HTMLElement | undefined {
+export interface InitialFocusOptions {
+  root: HTMLElement | null
+  getInitialEl?: () => HTMLElement | null
+  enabled?: boolean
+}
+
+export function getInitialFocus(options: InitialFocusOptions): HTMLElement | undefined {
+  const { root, getInitialEl, enabled = true } = options
+
+  if (!enabled) return root || undefined
+
   let node: HTMLElement | null | undefined = null
+
   node ||= typeof getInitialEl === "function" ? getInitialEl() : getInitialEl
-  node ||= container?.querySelector<HTMLElement>("[data-autofocus],[autofocus]")
-  node ||= getFirstTabbable(container)
-  return node || container || undefined
+  node ||= root?.querySelector<HTMLElement>("[data-autofocus],[autofocus]")
+  node ||= getFirstTabbable(root)
+
+  return node || root || undefined
 }
 
 export function isValidTabEvent(event: Pick<KeyboardEvent, "shiftKey" | "currentTarget">): boolean {

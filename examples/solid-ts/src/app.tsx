@@ -1,28 +1,38 @@
-import { A, useMatch } from "@solidjs/router"
+import { MetaProvider, Title } from "@solidjs/meta"
+import { A, Router, useMatch } from "@solidjs/router"
+import { FileRoutes } from "@solidjs/start/router"
 import { dataAttr } from "@zag-js/dom-query"
 import { routesData } from "@zag-js/shared"
-import { Component, For } from "solid-js"
-import "../../../shared/src/style.css"
+import "@zag-js/shared/src/style.css"
+import { For, Suspense } from "solid-js"
 
-const App: Component = (props: any) => {
+export default function App() {
   return (
     <div class="page">
-      <aside class="nav">
-        <header>Zagjs</header>
-        <For each={routesData.sort((a, b) => a.label.localeCompare(b.label))} fallback={<div>Loading...</div>}>
-          {(route) => {
-            const match = useMatch(() => route.path)
-            return (
-              <A data-active={dataAttr(!!match())} href={route.path}>
-                {route.label}
-              </A>
-            )
-          }}
-        </For>
-      </aside>
-      {props.children}
+      <Router
+        preload
+        root={(props) => (
+          <MetaProvider>
+            <Title>Zag.js + Solid</Title>
+            <aside class="nav">
+              <header>Zagjs</header>
+              <For each={routesData.sort((a, b) => a.label.localeCompare(b.label))} fallback={<div>Loading...</div>}>
+                {(route) => {
+                  const match = useMatch(() => route.path)
+                  return (
+                    <A data-active={dataAttr(!!match())} href={route.path}>
+                      {route.label}
+                    </A>
+                  )
+                }}
+              </For>
+            </aside>
+            <Suspense>{props.children}</Suspense>
+          </MetaProvider>
+        )}
+      >
+        <FileRoutes />
+      </Router>
     </div>
   )
 }
-
-export default App
