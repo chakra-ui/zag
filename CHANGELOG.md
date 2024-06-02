@@ -6,6 +6,33 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.52.0](./#0.52.0) - 2024-06-02
+
+### Fixed
+
+- **Solid.js**
+
+  - Fix SSR issue in Solid.js where spreading `readOnly: false` adds the `readonly` attribute on editable elements,
+    making them uneditable.
+
+- **Popover**
+
+  - Fix issue where `autoFocus` was not implemented. Now, it determines whether the popover should autofocus on open
+
+    - when `true`, the first focusable element or the content is focused
+    - when `false`, the content is focused
+
+  - Fix the issue where page scroll resets on opening popover
+
+- **Select**
+
+  - Fix issue where changing the label of a collection item doesn't trigger a change in select and combobox components.
+
+### Added
+
+- **Editable**
+  - Allow using `textarea` as the input element in edit mode.
+
 ## [0.51.2](./#0.51.2) - 2024-05-28
 
 ### Fixed

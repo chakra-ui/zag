@@ -192,7 +192,11 @@ export function machine(userContext: UserDefinedContext) {
               returnFocusOnDeactivate: true,
               document: dom.getDoc(ctx),
               fallbackFocus: contentEl,
-              initialFocus: getInitialFocus(dom.getContentEl(ctx), ctx.initialFocusEl),
+              initialFocus: getInitialFocus({
+                root: dom.getContentEl(ctx),
+                getInitialEl: ctx.initialFocusEl,
+                enabled: ctx.autoFocus,
+              }),
             })
 
             try {
@@ -225,9 +229,15 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         setInitialFocus(ctx) {
+          // handoff to `trapFocus` activity for initial focus
+          if (ctx.modal) return
           raf(() => {
-            const element = getInitialFocus(dom.getContentEl(ctx), ctx.initialFocusEl)
-            element?.focus()
+            const element = getInitialFocus({
+              root: dom.getContentEl(ctx),
+              getInitialEl: ctx.initialFocusEl,
+              enabled: ctx.autoFocus,
+            })
+            element?.focus({ preventScroll: true })
           })
         },
         setFinalFocus(ctx, evt) {

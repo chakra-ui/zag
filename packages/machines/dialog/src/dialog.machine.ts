@@ -147,7 +147,10 @@ export function machine(userContext: UserDefinedContext) {
               returnFocusOnDeactivate: false,
               fallbackFocus: contentEl,
               allowOutsideClick: true,
-              initialFocus: getInitialFocus(contentEl, ctx.initialFocusEl),
+              initialFocus: getInitialFocus({
+                root: contentEl,
+                getInitialEl: ctx.initialFocusEl,
+              }),
             })
 
             try {

@@ -156,6 +156,19 @@ const [state, send] = useMachine(
 )
 ```
 
+## Usage with Textarea
+
+The editable machine supports using a `textarea` instead of an `input` field.
+When a textarea is used, the editable will commit the value on `Cmd + Enter` or
+`Ctrl + Enter`.
+
+> Use the `api.inputProps` to spread the input props to the textarea element.
+> You might need to cast the input props to the correct type.
+
+```tsx {3}
+<textarea {...(api.inputProps as HTMLTextareaProps<HTMLTextareaElement>)} />
+```
+
 ## Styling guide
 
 Earlier, we mentioned that each editable part has a `data-part` attribute added

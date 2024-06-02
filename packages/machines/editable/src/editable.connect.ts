@@ -1,5 +1,5 @@
 import { type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, isComposingEvent } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, isComposingEvent, isModKey } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./editable.anatomy"
 import { dom } from "./editable.dom"
@@ -106,10 +106,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const keyMap: EventKeyMap = {
           Escape() {
             send("CANCEL")
+            event.preventDefault()
           },
           Enter(event) {
-            if (!event.shiftKey && !event.metaKey) {
-              send("ENTER")
+            // when used as a textarea, we want to allow the user to enter a newline
+            if (event.currentTarget.localName === "textarea") {
+              isModKey(event) && send("ENTER")
+              return
+            }
+
+            // when used as an input, we want to submit the form
+            if (event.currentTarget.localName === "input") {
+              if (!event.shiftKey && !event.metaKey) {
+                send("ENTER")
+                event.preventDefault()
+              }
             }
           },
         }
@@ -117,7 +128,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const exec = keyMap[event.key]
 
         if (exec) {
-          event.preventDefault()
           exec(event)
         }
       },

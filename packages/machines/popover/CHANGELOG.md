@@ -1,5 +1,31 @@
 # @zag-js/popover
 
+## 0.52.0
+
+### Patch Changes
+
+- [`e4a50e6`](https://github.com/chakra-ui/zag/commit/e4a50e62f5770affc5a169a5916abe6428e7053c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `autoFocus` was not implemented. Now, it
+  determines whether the popover should autofocus on open
+
+  - when `true`, the first focusable element or the content is focused
+  - when `false`, the content is focused
+
+- [#1543](https://github.com/chakra-ui/zag/pull/1543)
+  [`fcb085b`](https://github.com/chakra-ui/zag/commit/fcb085b9d671d0c5721330af81f23a03acd79e4a) Thanks
+  [@tsukkee](https://github.com/tsukkee)! - Fix the issue where page scroll resets on opening popover
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.52.0
+  - @zag-js/core@0.52.0
+  - @zag-js/types@0.52.0
+  - @zag-js/aria-hidden@0.52.0
+  - @zag-js/utils@0.52.0
+  - @zag-js/dismissable@0.52.0
+  - @zag-js/dom-query@0.52.0
+  - @zag-js/popper@0.52.0
+  - @zag-js/remove-scroll@0.52.0
+
 ## 0.51.2
 
 ### Patch Changes
