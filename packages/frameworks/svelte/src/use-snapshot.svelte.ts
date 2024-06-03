@@ -1,5 +1,6 @@
 import { subscribe, type Machine, type StateMachine as S, snapshot } from "@zag-js/core"
 import { onDestroy } from "svelte"
+import { reflect } from "./reflect"
 
 export function useSnapshot<
   TContext extends Record<string, any>,
@@ -14,9 +15,5 @@ export function useSnapshot<
 
   onDestroy(unsubscribe)
 
-  return new Proxy(state, {
-    get(_, key) {
-      return state[key]
-    },
-  })
+  return reflect(() => state)
 }
