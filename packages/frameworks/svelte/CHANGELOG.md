@@ -1,5 +1,20 @@
 # @zag-js/svelte
 
+## 0.53.0
+
+### Minor Changes
+
+- [`0ab812c`](https://github.com/chakra-ui/zag/commit/0ab812ce0bd4c648ecf838dda38ccf0a9b15a1a5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix svelte runes warning for `$state` usage in `useMachine` hook
+  - Add `reflect` utility to help design system maintainers manage `api` reactivity
+  - Add and expose `PropTypes` type to improve type safety in spread props
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.53.0
+  - @zag-js/types@0.53.0
+
 ## 0.52.0
 
 ### Patch Changes
