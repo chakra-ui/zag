@@ -8,15 +8,20 @@ export function useService<
   const { actions, context, state: hydratedState } = options ?? {}
 
   const service = typeof machine === "function" ? machine() : machine
-  service.setContext($state.snapshot(context))
+
+  const contextSnapshot = $state.snapshot(context)
+  service.setContext(contextSnapshot)
+
   service._created()
 
   $effect(() => {
-    service.setOptions({ actions: $state.snapshot(actions) })
+    const actionSnapshot = $state.snapshot(actions)
+    service.setOptions({ actions: actionSnapshot })
   })
 
   $effect(() => {
-    service.setContext($state.snapshot(context))
+    const contextSnapshot = $state.snapshot(context)
+    service.setContext(contextSnapshot)
   })
 
   $effect(() => {

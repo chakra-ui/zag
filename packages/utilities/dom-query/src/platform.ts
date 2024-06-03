@@ -5,8 +5,6 @@ export function getPlatform() {
   return agent?.platform ?? navigator.platform
 }
 
-if (isDom()) console.log(getPlatform())
-
 const pt = (v: RegExp) => isDom() && v.test(getPlatform())
 const ua = (v: RegExp) => isDom() && v.test(navigator.userAgent)
 const vn = (v: RegExp) => isDom() && v.test(navigator.vendor)

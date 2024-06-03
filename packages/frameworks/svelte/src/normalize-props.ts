@@ -1,4 +1,5 @@
 import { createNormalizer } from "@zag-js/types"
+import type { SvelteHTMLElements, HTMLAttributes } from "svelte/elements"
 
 type Dict = Record<string, boolean | number | string | undefined>
 
@@ -11,6 +12,11 @@ const propMap: Record<string, string> = {
   onChange: "oninput",
   onFocus: "onfocusin",
   onDoubleClick: "ondblclick",
+}
+
+export type PropTypes = SvelteHTMLElements & {
+  element: HTMLAttributes<HTMLElement>
+  style?: HTMLAttributes<HTMLElement>["style"]
 }
 
 function toStyleString(style: Record<string, number | string>) {
@@ -46,7 +52,7 @@ function toSveltePropValue(key: string, value: Dict[string]) {
   return value
 }
 
-export const normalizeProps = createNormalizer((props) => {
+export const normalizeProps = createNormalizer<PropTypes>((props) => {
   const normalized: Dict = {}
 
   for (const key in props) {
