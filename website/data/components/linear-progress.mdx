@@ -123,7 +123,7 @@ const [state, send] = useMachine(
 Then you need to render the `valueText` part in your component.
 
 ```jsx
-<div {...api.valueText}>{api.valueText}</div>
+<div {...api.getValueTextProps()}>{api.valueAsString}</div>
 ```
 
 ## Styling guide
