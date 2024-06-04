@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.53.0](./#0.53.0) - 2024-06-03
+
+### Fixed
+
+- Removed stray `console.log`
+
+### Added
+
+- **Svelte**
+
+  - Fix svelte runes warning for `$state` usage in `useMachine` hook
+  - Add `reflect` utility to help design system maintainers manage `api` reactivity
+  - Add and expose `PropTypes` type to improve type safety in spread props
+
 ## [0.52.0](./#0.52.0) - 2024-06-02
 
 ### Fixed
