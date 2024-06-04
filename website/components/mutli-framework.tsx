@@ -57,12 +57,6 @@ export function MultiframeworkTabs() {
             <Text>Solid</Text>
           </VStack>
         </FrameworkButton>
-        <FrameworkButton {...api.getTriggerProps({ value: "svelte" })}>
-          <VStack>
-            <SolidIcon />
-            <Text>Svelte</Text>
-          </VStack>
-        </FrameworkButton>
       </HStack>
 
       <Stack direction={{ base: "column", lg: "row" }} spacing="56px" mt="8">
@@ -85,9 +79,6 @@ export function MultiframeworkTabs() {
           </Box>
           <Box {...api.getContentProps({ value: "solid" })}>
             <CodeArea slug="solid/number-input/usage" />
-          </Box>
-          <Box {...api.getContentProps({ value: "svelte" })}>
-            <CodeArea slug="svelte/number-input/usage" />
           </Box>
         </Box>
         <Box

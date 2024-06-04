@@ -139,41 +139,10 @@ There are some extra functions that need to be used in order to make it work:
 - `createMemo` - Ensures that the tooltip's `api` is always up to date with the
   current state of the machine.
 
-### Usage with Svelte
-
-Here's how to use the same tooltip logic in Svelte:
-
-```md
-<script lang="ts">
-  import * as tooltip from "@zag-js/tooltip"
-  import { useMachine, normalizeProps } from "@zag-js/svelte"
-
-  const [snapshot, send] = useMachine(tooltip.machine({ id: "1" }))
-
-  const api = $derived(tooltip.connect(snapshot, send, normalizeProps))
-</script>
-
-<div>
-  <button {...api.getTriggerProps()}>Hover me</button>
-  {#if api.open}
-    <div {...api.getPositionerProps()}>
-      <div {...api.getContentProps()}>Tooltip</div>
-    </div>
-  {/if}
-</div>
-```
-
-There are some extra functions that need to be used in order to make it work:
-
-- `normalizeProps` - Converts the props of the component into the format that is
-  compatible with Svelte.
-- `$derived` - Ensures that the tooltip's `api` is always up to date with the
-  current state of the machine.
-
 ### About prop normalization
 
 There are subtle difference between how JSX attributes are named across
-frameworks like React, Solid, Vue and Svelte. Here are some examples:
+frameworks like React, Solid and Vue. Here are some examples:
 
 **Keydown listener**
 
