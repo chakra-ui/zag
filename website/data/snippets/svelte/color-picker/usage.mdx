@@ -1,0 +1,45 @@
+```svelte
+<script lang="ts">
+  import * as colorPicker from "@zag-js/color-picker"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(colorPicker.machine({ id: "1" }))
+
+  const api = $derived(colorPicker.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Select Color: {api.valueAsString}</label>
+
+  <input {...api.getHiddenInputProps()} />
+
+  <div {...api.getControlProps()}>
+    <button {...api.getTriggerProps()}>
+      <div {...api.getTransparencyGridProps({ size: "10px" })} />
+      <div {...api.getSwatchProps({ value: api.value })} />
+    </button>
+    <input {...api.getChannelInputProps({ channel: "hex" })} />
+    <input {...api.getChannelInputProps({ channel: "alpha" })} />
+  </div>
+
+  <div {...api.getPositionerProps()}>
+    <div {...api.getContentProps()}>
+      <div {...api.getAreaProps()}>
+        <div {...api.getAreaBackgroundProps()} />
+        <div {...api.getAreaThumbProps()} />
+      </div>
+
+      <div {...api.getChannelSliderProps({ channel: "hue" })}>
+        <div {...api.getChannelSliderTrackProps({ channel: "hue" })} />
+        <div {...api.getChannelSliderThumbProps({ channel: "hue" })} />
+      </div>
+
+      <div {...api.getChannelSliderProps({ channel: "alpha" })}>
+        <div {...api.getTransparencyGridProps({ size: "12px" })} />
+        <div {...api.getChannelSliderTrackProps({ channel: "alpha" })} />
+        <div {...api.getChannelSliderThumbProps({ channel: "alpha" })} />
+      </div>
+    </div>
+  </div>
+</div>
+```

@@ -1,0 +1,18 @@
+```svelte
+<script lang="ts">
+  import * as progress from "@zag-js/progress"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(progress.machine({ id: "1" }))
+
+  const api = $derived(progress.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <div {...api.getLabelProps()}>Upload progress</div>
+  <svg {...api.getCircleProps()}>
+    <circle {...api.getCircleTrackProps()} />
+    <circle {...api.getCircleRangeProps()} />
+  </svg>
+</div>
+```

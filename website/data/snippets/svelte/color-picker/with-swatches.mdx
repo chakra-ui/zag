@@ -1,0 +1,30 @@
+```svelte {18-25}
+<script lang="ts">
+  import * as colorPicker from "@zag-js/color-picker"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(colorPicker.machine({ id: "1", value: colorPicker.parse("hsl(0, 100%, 50%)") }))
+
+  const api = $derived(colorPicker.connect(snapshot, send, normalizeProps))
+
+  const presets = ["#ff0000", "#00ff00", "#0000ff"]
+</script>
+
+<div {...api.getRootProps()}>
+  <!-- ... -->
+  <div {...api.getPositionerProps()}>
+    <div {...api.getContentProps()}>
+      <div {...api.getSwatchGroupProps()}>
+        {#each presets as preset}
+          <button {...api.getSwatchTriggerProps({ value: preset })}>
+            <div style="position:relative;">
+              <div {...api.getTransparencyGridProps({ size: "4px" })} />
+              <div {...api.getSwatchProps({ value: preset })} />
+            </div>
+          </button>
+        {/each}
+      </div>
+    </div>
+  </div>
+</div>
+```

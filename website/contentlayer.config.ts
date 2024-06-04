@@ -14,6 +14,7 @@ import rehypeSlug from "rehype-slug"
 import remarkDirective from "remark-directive"
 import { remarkAdmonition } from "./lib/remark-utils"
 import siteConfig from "./site.config"
+import svelte from "./lib/svelte-highlight"
 
 const fields: FieldDefs = {
   title: { type: "string" },
@@ -144,7 +145,7 @@ export default makeSource({
     rehypePlugins: [
       rehypeSlug,
       rehypeCodeTitles,
-      //@ts-expect-error
+      svelte,
       rehypePrism,
       [
         rehypeAutolinkHeadings,
