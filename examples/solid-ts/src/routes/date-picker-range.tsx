@@ -38,21 +38,21 @@ export default function Page() {
           <div>Focused: {api().focusedValueAsString}</div>
         </output>
 
-        <div {...api().controlProps}>
+        <div {...api().getControlProps()}>
           <input {...api().getInputProps({ index: 0 })} />
           <input {...api().getInputProps({ index: 1 })} />
-          <button {...api().clearTriggerProps}>❌</button>
-          <button {...api().triggerProps}>🗓</button>
+          <button {...api().getClearTriggerProps()}>❌</button>
+          <button {...api().getTriggerProps()}>🗓</button>
         </div>
 
-        <div {...api().positionerProps}>
-          <div {...api().contentProps}>
+        <div {...api().getPositionerProps()}>
+          <div {...api().getContentProps()}>
             <div style={{ "margin-bottom": "20px" }}>
-              <select {...api().monthSelectProps}>
+              <select {...api().getMonthSelectProps()}>
                 <For each={api().getMonths()}>{(month) => <option value={month.value}>{month.label}</option>}</For>
               </select>
 
-              <select {...api().yearSelectProps}>
+              <select {...api().getYearSelectProps()}>
                 <For each={getYearsRange({ from: 1_000, to: 2_200 })}>
                   {(year) => <option value={year}>{year}</option>}
                 </For>
