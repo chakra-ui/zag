@@ -42,17 +42,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return () => win.URL.revokeObjectURL(url)
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         dir: state.context.dir,
         id: dom.getRootId(state.context),
         "data-disabled": dataAttr(disabled),
         "data-dragging": dataAttr(dragging),
-      }),
+      })
+    },
 
-    getDropzoneProps: () =>
-      normalize.element({
+    getDropzoneProps() {
+      return normalize.element({
         ...parts.dropzone.attrs,
         dir: state.context.dir,
         id: dom.getDropzoneId(state.context),
@@ -110,10 +111,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onBlur() {
           send("DROPZONE.BLUR")
         },
-      }),
+      })
+    },
 
-    getTriggerProps: () =>
-      normalize.button({
+    getTriggerProps() {
+      return normalize.button({
         ...parts.trigger.attrs,
         dir: state.context.dir,
         id: dom.getTriggerId(state.context),
@@ -128,10 +130,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
           send("OPEN")
         },
-      }),
+      })
+    },
 
-    getHiddenInputProps: () =>
-      normalize.input({
+    getHiddenInputProps() {
+      return normalize.input({
         id: dom.getHiddenInputId(state.context),
         tabIndex: -1,
         disabled,
@@ -152,14 +155,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "FILES.SET", files: files ? Array.from(files) : [] })
         },
         style: visuallyHiddenStyle,
-      }),
+      })
+    },
 
-    getItemGroupProps: () =>
-      normalize.element({
+    getItemGroupProps() {
+      return normalize.element({
         ...parts.itemGroup.attrs,
         dir: state.context.dir,
         "data-disabled": dataAttr(disabled),
-      }),
+      })
+    },
 
     getItemProps(props) {
       const { file } = props
@@ -231,13 +236,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getLabelProps: () =>
-      normalize.label({
+    getLabelProps() {
+      return normalize.label({
         ...parts.label.attrs,
         dir: state.context.dir,
         id: dom.getLabelId(state.context),
         htmlFor: dom.getHiddenInputId(state.context),
         "data-disabled": dataAttr(disabled),
-      }),
+      })
+    },
   }
 }

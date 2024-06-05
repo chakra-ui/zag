@@ -23,16 +23,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send(nextOpen ? "OPEN" : "CLOSE")
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         "data-state": open ? "open" : "closed",
         dir: state.context.dir,
         id: dom.getRootId(state.context),
-      }),
+      })
+    },
 
-    getContentProps: () =>
-      normalize.element({
+    getContentProps() {
+      return normalize.element({
         ...parts.content.attrs,
         "data-state": skip ? undefined : open ? "open" : "closed",
         id: dom.getContentId(state.context),
@@ -42,10 +43,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           "--height": height != null ? `${height}px` : undefined,
           "--width": width != null ? `${width}px` : undefined,
         },
-      }),
+      })
+    },
 
-    getTriggerProps: () =>
-      normalize.element({
+    getTriggerProps() {
+      return normalize.element({
         ...parts.trigger.attrs,
         id: dom.getTriggerId(state.context),
         dir: state.context.dir,
@@ -59,6 +61,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (disabled) return
           send({ type: open ? "CLOSE" : "OPEN", src: "trigger.click" })
         },
-      }),
+      })
+    },
   }
 }

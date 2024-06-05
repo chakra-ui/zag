@@ -84,17 +84,19 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       if (nextOpen === open) return
       send(nextOpen ? "OPEN" : "CLOSE")
     },
-    getRootProps: () =>
-      normalize.element({
+
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         dir: state.context.dir,
         id: dom.getRootId(state.context),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.label({
+    getLabelProps() {
+      return normalize.label({
         ...parts.label.attrs,
         dir: state.context.dir,
         htmlFor: dom.getInputId(state.context),
@@ -108,10 +110,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           event.preventDefault()
           dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
         },
-      }),
+      })
+    },
 
-    getControlProps: () =>
-      normalize.element({
+    getControlProps() {
+      return normalize.element({
         ...parts.control.attrs,
         dir: state.context.dir,
         id: dom.getControlId(state.context),
@@ -119,18 +122,20 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-focus": dataAttr(focused),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
-      }),
+      })
+    },
 
-    getPositionerProps: () =>
-      normalize.element({
+    getPositionerProps() {
+      return normalize.element({
         ...parts.positioner.attrs,
         dir: state.context.dir,
         id: dom.getPositionerId(state.context),
         style: popperStyles.floating,
-      }),
+      })
+    },
 
-    getInputProps: () =>
-      normalize.input({
+    getInputProps() {
+      return normalize.input({
         ...parts.input.attrs,
         dir: state.context.dir,
         "aria-invalid": ariaAttr(invalid),
@@ -224,7 +229,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           const exec = keymap[key]
           exec?.(event)
         },
-      }),
+      })
+    },
 
     getTriggerProps(props = {}) {
       return normalize.button({
@@ -284,8 +290,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       })
     },
 
-    getContentProps: () =>
-      normalize.element({
+    getContentProps() {
+      return normalize.element({
         ...parts.content.attrs,
         dir: state.context.dir,
         id: dom.getContentId(state.context),
@@ -299,17 +305,19 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           // prevent options or elements within listbox from taking focus
           event.preventDefault()
         },
-      }),
+      })
+    },
 
-    getListProps: () =>
-      normalize.element({
+    getListProps() {
+      return normalize.element({
         role: !composite ? "listbox" : undefined,
         "aria-labelledby": dom.getLabelId(state.context),
         "aria-multiselectable": state.context.multiple && !composite ? true : undefined,
-      }),
+      })
+    },
 
-    getClearTriggerProps: () =>
-      normalize.button({
+    getClearTriggerProps() {
+      return normalize.button({
         ...parts.clearTrigger.attrs,
         dir: state.context.dir,
         id: dom.getClearTriggerId(state.context),
@@ -327,7 +335,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (!interactive) return
           send({ type: "VALUE.CLEAR", src: "clear-trigger" })
         },
-      }),
+      })
+    },
 
     getItemState,
 

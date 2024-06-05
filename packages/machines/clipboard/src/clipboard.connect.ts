@@ -16,26 +16,33 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     copy() {
       send({ type: "COPY" })
     },
-    getRootProps: () =>
-      normalize.element({
+
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         "data-copied": dataAttr(copied),
         id: dom.getRootId(state.context),
-      }),
-    getLabelProps: () =>
-      normalize.label({
+      })
+    },
+
+    getLabelProps() {
+      return normalize.label({
         ...parts.label.attrs,
         htmlFor: dom.getInputId(state.context),
         "data-copied": dataAttr(copied),
         id: dom.getLabelId(state.context),
-      }),
-    getControlProps: () =>
-      normalize.element({
+      })
+    },
+
+    getControlProps() {
+      return normalize.element({
         ...parts.control.attrs,
         "data-copied": dataAttr(copied),
-      }),
-    getInputProps: () =>
-      normalize.input({
+      })
+    },
+
+    getInputProps() {
+      return normalize.input({
         ...parts.input.attrs,
         defaultValue: state.context.value,
         "data-copied": dataAttr(copied),
@@ -48,16 +55,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onCopy() {
           send({ type: "INPUT.COPY" })
         },
-      }),
-    getTriggerProps: () =>
-      normalize.button({
+      })
+    },
+
+    getTriggerProps() {
+      return normalize.button({
         ...parts.trigger.attrs,
         "aria-label": copied ? "Copied to clipboard" : "Copy to clipboard",
         "data-copied": dataAttr(copied),
         onClick() {
           send({ type: "COPY" })
         },
-      }),
+      })
+    },
+
     getIndicatorProps(props) {
       return normalize.element({
         ...parts.indicator.attrs,

@@ -2,7 +2,7 @@ import { dataAttr, isDom } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
-import type { IndicatorProps, ItemProps, ItemState, MachineApi, Send, State } from "./carousel.types"
+import type { ItemProps, ItemState, MachineApi, Send, State } from "./carousel.types"
 import { getSlidesInView } from "./utils/get-slide-in-view"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
@@ -15,13 +15,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const slidesInView = isDom() ? getSlidesInView(state.context)(activeSnap) : []
 
   function getItemState(props: ItemProps): ItemState {
-    const { index } = props
     return {
-      valueText: `Slide ${index + 1}`,
-      current: index === state.context.index,
-      next: index === state.context.index + 1,
-      previous: index === state.context.index - 1,
-      inView: slidesInView.includes(index),
+      valueText: `Slide ${props.index + 1}`,
+      current: props.index === state.context.index,
+      next: props.index === state.context.index + 1,
+      previous: props.index === state.context.index - 1,
+      inView: slidesInView.includes(props.index),
     }
   }
 
@@ -48,8 +47,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("PAUSE")
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         id: dom.getRootId(state.context),
         role: "region",
@@ -61,18 +60,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           "--slide-spacing": state.context.spacing,
           "--slide-size": `calc(100% / ${state.context.slidesPerView} - var(--slide-spacing))`,
         },
-      }),
+      })
+    },
 
-    getViewportProps: () =>
-      normalize.element({
+    getViewportProps() {
+      return normalize.element({
         ...parts.viewport.attrs,
         dir: state.context.dir,
         id: dom.getViewportId(state.context),
         "data-orientation": state.context.orientation,
-      }),
+      })
+    },
 
-    getItemGroupProps: () =>
-      normalize.element({
+    getItemGroupProps() {
+      return normalize.element({
         ...parts.itemGroup.attrs,
         id: dom.getItemGroupId(state.context),
         "data-orientation": state.context.orientation,
@@ -88,22 +89,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           transitionDuration: "0.3s",
         },
-      }),
+      })
+    },
 
     getItemProps(props) {
-      const { index } = props
-      const sliderState = getItemState(props)
+      const itemState = getItemState(props)
 
       return normalize.element({
         ...parts.item.attrs,
-        id: dom.getItemId(state.context, index),
+        id: dom.getItemId(state.context, props.index),
         dir: state.context.dir,
-        "data-current": dataAttr(sliderState.current),
-        "data-inview": dataAttr(sliderState.inView),
+        "data-current": dataAttr(itemState.current),
+        "data-inview": dataAttr(itemState.inView),
         role: "group",
         "aria-roledescription": "slide",
         "data-orientation": state.context.orientation,
-        "aria-label": sliderState.valueText,
+        "aria-label": itemState.valueText,
         style: {
           position: "relative",
           flex: "0 0 var(--slide-size)",
@@ -112,8 +113,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getPrevTriggerProps: () =>
-      normalize.button({
+    getPrevTriggerProps() {
+      return normalize.button({
         ...parts.prevTrigger.attrs,
         id: dom.getPrevTriggerId(state.context),
         type: "button",
@@ -126,10 +127,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick() {
           send("PREV")
         },
-      }),
+      })
+    },
 
-    getNextTriggerProps: () =>
-      normalize.button({
+    getNextTriggerProps() {
+      return normalize.button({
         ...parts.nextTrigger.attrs,
         dir: state.context.dir,
         id: dom.getNextTriggerId(state.context),
@@ -142,30 +144,31 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick() {
           send("NEXT")
         },
-      }),
+      })
+    },
 
-    getIndicatorGroupProps: () =>
-      normalize.element({
+    getIndicatorGroupProps() {
+      return normalize.element({
         ...parts.indicatorGroup.attrs,
         dir: state.context.dir,
         id: dom.getIndicatorGroupId(state.context),
         "data-orientation": state.context.orientation,
-      }),
+      })
+    },
 
-    getIndicatorProps(props: IndicatorProps) {
-      const { index, readOnly } = props
+    getIndicatorProps(props) {
       return normalize.button({
         ...parts.indicator.attrs,
         dir: state.context.dir,
-        id: dom.getIndicatorId(state.context, index),
+        id: dom.getIndicatorId(state.context, props.index),
         type: "button",
         "data-orientation": state.context.orientation,
-        "data-index": index,
-        "data-readonly": dataAttr(readOnly),
-        "data-current": dataAttr(index === state.context.index),
+        "data-index": props.index,
+        "data-readonly": dataAttr(props.readOnly),
+        "data-current": dataAttr(props.index === state.context.index),
         onClick() {
-          if (readOnly) return
-          send({ type: "GOTO", index })
+          if (props.readOnly) return
+          send({ type: "GOTO", index: props.index })
         },
       })
     },

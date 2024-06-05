@@ -134,8 +134,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "POSITIONING.SET", options })
     },
 
-    getContextTriggerProps: () =>
-      normalize.element({
+    getContextTriggerProps() {
+      return normalize.element({
         ...parts.contextTrigger.attrs,
         dir: state.context.dir,
         id: dom.getContextTriggerId(state.context),
@@ -165,7 +165,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           WebkitTouchCallout: "none",
           userSelect: "none",
         },
-      }),
+      })
+    },
 
     getTriggerItemProps(childApi) {
       return mergeProps(
@@ -174,8 +175,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       ) as T["element"]
     },
 
-    getTriggerProps: () =>
-      normalize.button({
+    getTriggerProps() {
+      return normalize.button({
         ...(isSubmenu ? parts.triggerItem.attrs : parts.trigger.attrs),
         "data-placement": state.context.currentPlacement,
         type: "button",
@@ -245,40 +246,45 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             exec(event)
           }
         },
-      }),
+      })
+    },
 
-    getIndicatorProps: () =>
-      normalize.element({
+    getIndicatorProps() {
+      return normalize.element({
         ...parts.indicator.attrs,
         dir: state.context.dir,
         "data-state": open ? "open" : "closed",
-      }),
+      })
+    },
 
-    getPositionerProps: () =>
-      normalize.element({
+    getPositionerProps() {
+      return normalize.element({
         ...parts.positioner.attrs,
         dir: state.context.dir,
         id: dom.getPositionerId(state.context),
         style: popperStyles.floating,
-      }),
+      })
+    },
 
-    getArrowProps: () =>
-      normalize.element({
+    getArrowProps() {
+      return normalize.element({
         id: dom.getArrowId(state.context),
         ...parts.arrow.attrs,
         dir: state.context.dir,
         style: popperStyles.arrow,
-      }),
+      })
+    },
 
-    getArrowTipProps: () =>
-      normalize.element({
+    getArrowTipProps() {
+      return normalize.element({
         ...parts.arrowTip.attrs,
         dir: state.context.dir,
         style: popperStyles.arrowTip,
-      }),
+      })
+    },
 
-    getContentProps: () =>
-      normalize.element({
+    getContentProps() {
+      return normalize.element({
         ...parts.content.attrs,
         id: dom.getContentId(state.context),
         "aria-label": state.context["aria-label"],
@@ -363,19 +369,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "TYPEAHEAD", key: event.key })
           event.preventDefault()
         },
-      }),
+      })
+    },
 
-    getSeparatorProps: () =>
-      normalize.element({
+    getSeparatorProps() {
+      return normalize.element({
         ...parts.separator.attrs,
         role: "separator",
         dir: state.context.dir,
         "aria-orientation": "horizontal",
-      }),
+      })
+    },
+
     getItemState,
+
     getItemProps,
 
     getOptionItemState,
+
     getOptionItemProps(props) {
       const { type, disabled, onCheckedChange, closeOnSelect } = props
 

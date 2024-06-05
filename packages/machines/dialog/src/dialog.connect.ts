@@ -15,8 +15,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send(nextOpen ? "OPEN" : "CLOSE")
     },
 
-    getTriggerProps: () =>
-      normalize.button({
+    getTriggerProps() {
+      return normalize.button({
         ...parts.trigger.attrs,
         dir: state.context.dir,
         id: dom.getTriggerId(state.context),
@@ -29,29 +29,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           send("TOGGLE")
         },
-      }),
+      })
+    },
 
-    getBackdropProps: () =>
-      normalize.element({
+    getBackdropProps() {
+      return normalize.element({
         ...parts.backdrop.attrs,
         dir: state.context.dir,
         hidden: !open,
         id: dom.getBackdropId(state.context),
         "data-state": open ? "open" : "closed",
-      }),
+      })
+    },
 
-    getPositionerProps: () =>
-      normalize.element({
+    getPositionerProps() {
+      return normalize.element({
         ...parts.positioner.attrs,
         dir: state.context.dir,
         id: dom.getPositionerId(state.context),
         style: {
           pointerEvents: open ? undefined : "none",
         },
-      }),
+      })
+    },
 
-    getContentProps: () =>
-      normalize.element({
+    getContentProps() {
+      return normalize.element({
         ...parts.content.attrs,
         dir: state.context.dir,
         role: state.context.role,
@@ -63,24 +66,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": ariaLabel || undefined,
         "aria-labelledby": ariaLabel || !rendered.title ? undefined : dom.getTitleId(state.context),
         "aria-describedby": rendered.description ? dom.getDescriptionId(state.context) : undefined,
-      }),
+      })
+    },
 
-    getTitleProps: () =>
-      normalize.element({
+    getTitleProps() {
+      return normalize.element({
         ...parts.title.attrs,
         dir: state.context.dir,
         id: dom.getTitleId(state.context),
-      }),
+      })
+    },
 
-    getDescriptionProps: () =>
-      normalize.element({
+    getDescriptionProps() {
+      return normalize.element({
         ...parts.description.attrs,
         dir: state.context.dir,
         id: dom.getDescriptionId(state.context),
-      }),
+      })
+    },
 
-    getCloseTriggerProps: () =>
-      normalize.button({
+    getCloseTriggerProps() {
+      return normalize.button({
         ...parts.closeTrigger.attrs,
         dir: state.context.dir,
         id: dom.getCloseTriggerId(state.context),
@@ -90,6 +96,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           event.stopPropagation()
           send("CLOSE")
         },
-      }),
+      })
+    },
   }
 }

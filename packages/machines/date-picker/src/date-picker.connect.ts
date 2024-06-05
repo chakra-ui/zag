@@ -264,42 +264,46 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "GOTO.PREV", view: state.context.view })
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         dir: state.context.dir,
         id: dom.getRootId(state.context),
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.label({
+    getLabelProps() {
+      return normalize.label({
         ...parts.label.attrs,
         dir: state.context.dir,
         htmlFor: dom.getInputId(state.context, 0),
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
-      }),
+      })
+    },
 
-    getControlProps: () =>
-      normalize.element({
+    getControlProps() {
+      return normalize.element({
         ...parts.control.attrs,
         dir: state.context.dir,
         id: dom.getControlId(state.context),
         "data-disabled": dataAttr(disabled),
-      }),
+      })
+    },
 
-    getRangeTextProps: () =>
-      normalize.element({
+    getRangeTextProps() {
+      return normalize.element({
         ...parts.rangeText.attrs,
         dir: state.context.dir,
-      }),
+      })
+    },
 
-    getContentProps: () =>
-      normalize.element({
+    getContentProps() {
+      return normalize.element({
         ...parts.content.attrs,
         hidden: !open,
         dir: state.context.dir,
@@ -309,7 +313,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "application",
         "aria-roledescription": "datepicker",
         "aria-label": "calendar",
-      }),
+      })
+    },
 
     getTableProps(props = {}) {
       const { view = "day", columns = view === "day" ? 7 : 4 } = props
@@ -422,6 +427,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getDayTableCellState,
+
     getDayTableCellProps(props) {
       const { value } = props
       const cellState = getDayTableCellState(props)
@@ -435,6 +441,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": value.toString(),
       })
     },
+
     getDayTableCellTriggerProps(props) {
       const { value } = props
       const cellState = getDayTableCellState(props)
@@ -474,6 +481,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getMonthTableCellState,
+
     getMonthTableCellProps(props) {
       const { value, columns } = props
       const cellState = getMonthTableCellState(props)
@@ -488,6 +496,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": value,
       })
     },
+
     getMonthTableCellTriggerProps(props) {
       const { value } = props
       const cellState = getMonthTableCellState(props)
@@ -513,6 +522,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getYearTableCellState,
+
     getYearTableCellProps(props) {
       const { value, columns } = props
       const cellState = getYearTableCellState(props)
@@ -527,6 +537,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": value,
       })
     },
+
     getYearTableCellTriggerProps(props) {
       const { value } = props
       const cellState = getYearTableCellState(props)
@@ -583,8 +594,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getClearTriggerProps: () =>
-      normalize.button({
+    getClearTriggerProps() {
+      return normalize.button({
         ...parts.clearTrigger.attrs,
         id: dom.getClearTriggerId(state.context),
         dir: state.context.dir,
@@ -595,10 +606,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           send("VALUE.CLEAR")
         },
-      }),
+      })
+    },
 
-    getTriggerProps: () =>
-      normalize.button({
+    getTriggerProps() {
+      return normalize.button({
         ...parts.trigger.attrs,
         id: dom.getTriggerId(state.context),
         dir: state.context.dir,
@@ -614,7 +626,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!interactive) return
           send("TRIGGER.CLICK")
         },
-      }),
+      })
+    },
 
     getViewTriggerProps(props = {}) {
       const { view = "day" } = props
@@ -687,8 +700,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getMonthSelectProps: () =>
-      normalize.select({
+    getMonthSelectProps() {
+      return normalize.select({
         ...parts.monthSelect.attrs,
         id: dom.getMonthSelectId(state.context),
         "aria-label": "Select month",
@@ -698,10 +711,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onChange(event) {
           focusMonth(Number(event.currentTarget.value))
         },
-      }),
+      })
+    },
 
-    getYearSelectProps: () =>
-      normalize.select({
+    getYearSelectProps() {
+      return normalize.select({
         ...parts.yearSelect.attrs,
         id: dom.getYearSelectId(state.context),
         disabled,
@@ -711,15 +725,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onChange(event) {
           focusYear(Number(event.currentTarget.value))
         },
-      }),
+      })
+    },
 
-    getPositionerProps: () =>
-      normalize.element({
+    getPositionerProps() {
+      return normalize.element({
         id: dom.getPositionerId(state.context),
         ...parts.positioner.attrs,
         dir: state.context.dir,
         style: popperStyles.floating,
-      }),
+      })
+    },
 
     getPresetTriggerProps(props) {
       const value = Array.isArray(props.value) ? props.value : getDateRangePreset(props.value, locale, timeZone)
