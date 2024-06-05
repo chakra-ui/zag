@@ -1,5 +1,5 @@
 ---
-"@zag-js/core": patch
+"@zag-js/core": minor
 ---
 
 Update all machines to use prop getters.
