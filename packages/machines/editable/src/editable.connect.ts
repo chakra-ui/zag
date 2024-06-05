@@ -48,15 +48,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("SUBMIT")
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         id: dom.getRootId(state.context),
         dir: state.context.dir,
-      }),
+      })
+    },
 
-    getAreaProps: () =>
-      normalize.element({
+    getAreaProps() {
+      return normalize.element({
         ...parts.area.attrs,
         id: dom.getAreaId(state.context),
         dir: state.context.dir,
@@ -64,10 +65,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-focus": dataAttr(editing),
         "data-disabled": dataAttr(disabled),
         "data-placeholder-shown": dataAttr(empty),
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.label({
+    getLabelProps() {
+      return normalize.label({
         ...parts.label.attrs,
         id: dom.getLabelId(state.context),
         dir: state.context.dir,
@@ -79,10 +81,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const previewEl = dom.getPreviewEl(state.context)
           previewEl?.focus({ preventScroll: true })
         },
-      }),
+      })
+    },
 
-    getInputProps: () =>
-      normalize.input({
+    getInputProps() {
+      return normalize.input({
         ...parts.input.attrs,
         dir: state.context.dir,
         "aria-label": translations.input,
@@ -142,10 +145,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               visibility: !editing ? "hidden" : undefined,
             }
           : undefined,
-      }),
+      })
+    },
 
-    getPreviewProps: () =>
-      normalize.element({
+    getPreviewProps() {
+      return normalize.element({
         id: dom.getPreviewId(state.context),
         ...parts.preview.attrs,
         dir: state.context.dir,
@@ -178,10 +182,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               textOverflow: "ellipsis",
             }
           : undefined,
-      }),
+      })
+    },
 
-    getEditTriggerProps: () =>
-      normalize.button({
+    getEditTriggerProps() {
+      return normalize.button({
         ...parts.editTrigger.attrs,
         id: dom.getEditTriggerId(state.context),
         dir: state.context.dir,
@@ -194,17 +199,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!interactive) return
           send("EDIT")
         },
-      }),
+      })
+    },
 
-    getControlProps: () =>
-      normalize.element({
+    getControlProps() {
+      return normalize.element({
         id: dom.getControlId(state.context),
         ...parts.control.attrs,
         dir: state.context.dir,
-      }),
+      })
+    },
 
-    getSubmitTriggerProps: () =>
-      normalize.button({
+    getSubmitTriggerProps() {
+      return normalize.button({
         ...parts.submitTrigger.attrs,
         dir: state.context.dir,
         id: dom.getSubmitTriggerId(state.context),
@@ -217,10 +224,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!interactive) return
           send("SUBMIT")
         },
-      }),
+      })
+    },
 
-    getCancelTriggerProps: () =>
-      normalize.button({
+    getCancelTriggerProps() {
+      return normalize.button({
         ...parts.cancelTrigger.attrs,
         dir: state.context.dir,
         "aria-label": translations.cancel,
@@ -233,6 +241,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!interactive) return
           send("CANCEL")
         },
-      }),
+      })
+    },
   }
 }

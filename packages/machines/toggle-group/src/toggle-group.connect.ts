@@ -27,10 +27,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
-    getItemState,
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         id: dom.getRootId(state.context),
         dir: state.context.dir,
@@ -54,7 +53,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (disabled) return
           send("ROOT.BLUR")
         },
-      }),
+      })
+    },
+
+    getItemState,
 
     getItemProps(props) {
       const itemState = getItemState(props)

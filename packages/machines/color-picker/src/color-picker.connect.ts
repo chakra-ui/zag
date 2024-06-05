@@ -91,8 +91,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "VALUE.SET", value: color, src: "set-alpha" })
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         dir: state.context.dir,
         id: dom.getRootId(state.context),
@@ -101,10 +101,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           "--value": value.toString("css"),
         },
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.element({
+    getLabelProps() {
+      return normalize.element({
         ...parts.label.attrs,
         dir: state.context.dir,
         id: dom.getLabelId(state.context),
@@ -117,10 +118,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const inputEl = query(dom.getControlEl(state.context), "[data-channel=hex]")
           inputEl?.focus({ preventScroll: true })
         },
-      }),
+      })
+    },
 
-    getControlProps: () =>
-      normalize.element({
+    getControlProps() {
+      return normalize.element({
         ...parts.control.attrs,
         id: dom.getControlId(state.context),
         dir: state.context.dir,
@@ -128,10 +130,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-readonly": dataAttr(state.context.readOnly),
         "data-state": open ? "open" : "closed",
         "data-focus": dataAttr(focused),
-      }),
+      })
+    },
 
-    getTriggerProps: () =>
-      normalize.button({
+    getTriggerProps() {
+      return normalize.button({
         ...parts.trigger.attrs,
         id: dom.getTriggerId(state.context),
         dir: state.context.dir,
@@ -157,25 +160,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           position: "relative",
         },
-      }),
+      })
+    },
 
-    getPositionerProps: () =>
-      normalize.element({
+    getPositionerProps() {
+      return normalize.element({
         ...parts.positioner.attrs,
         id: dom.getPositionerId(state.context),
         dir: state.context.dir,
         style: popperStyles.floating,
-      }),
+      })
+    },
 
-    getContentProps: () =>
-      normalize.element({
+    getContentProps() {
+      return normalize.element({
         ...parts.content.attrs,
         id: dom.getContentId(state.context),
         dir: state.context.dir,
         "data-placement": currentPlacement,
         "data-state": open ? "open" : "closed",
         hidden: !open,
-      }),
+      })
+    },
 
     getAreaProps(props = {}) {
       const { xChannel, yChannel } = getAreaChannels(props)
@@ -507,18 +513,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getHiddenInputProps: () =>
-      normalize.input({
+    getHiddenInputProps() {
+      return normalize.input({
         type: "text",
         disabled: disabled,
         name: state.context.name,
         id: dom.getHiddenInputId(state.context),
         style: visuallyHiddenStyle,
         defaultValue: valueAsString,
-      }),
+      })
+    },
 
-    getEyeDropperTriggerProps: () =>
-      normalize.button({
+    getEyeDropperTriggerProps() {
+      return normalize.button({
         ...parts.eyeDropperTrigger.attrs,
         type: "button",
         dir: state.context.dir,
@@ -529,30 +536,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!interactive) return
           send("EYEDROPPER.CLICK")
         },
-      }),
+      })
+    },
 
-    getSwatchGroupProps: () =>
-      normalize.element({
+    getSwatchGroupProps() {
+      return normalize.element({
         ...parts.swatchGroup.attrs,
         role: "group",
-      }),
+      })
+    },
 
     getSwatchTriggerState,
 
     getSwatchTriggerProps(props) {
-      const triggerState = getSwatchTriggerState(props)
+      const swatchState = getSwatchTriggerState(props)
       return normalize.button({
         ...parts.swatchTrigger.attrs,
-        disabled: triggerState.disabled,
+        disabled: swatchState.disabled,
         dir: state.context.dir,
         type: "button",
-        "aria-label": `select ${triggerState.valueAsString} as the color`,
-        "data-state": triggerState.checked ? "checked" : "unchecked",
-        "data-value": triggerState.valueAsString,
-        "data-disabled": dataAttr(triggerState.disabled),
+        "aria-label": `select ${swatchState.valueAsString} as the color`,
+        "data-state": swatchState.checked ? "checked" : "unchecked",
+        "data-value": swatchState.valueAsString,
+        "data-disabled": dataAttr(swatchState.disabled),
         onClick() {
-          if (triggerState.disabled) return
-          send({ type: "SWATCH_TRIGGER.CLICK", value: triggerState.value })
+          if (swatchState.disabled) return
+          send({ type: "SWATCH_TRIGGER.CLICK", value: swatchState.value })
         },
         style: {
           position: "relative",
@@ -561,31 +570,31 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getSwatchIndicatorProps(props) {
-      const triggerState = getSwatchTriggerState(props)
+      const swatchState = getSwatchTriggerState(props)
       return normalize.element({
         ...parts.swatchIndicator.attrs,
         dir: state.context.dir,
-        hidden: !triggerState.checked,
+        hidden: !swatchState.checked,
       })
     },
 
     getSwatchProps(props) {
       const { respectAlpha = true } = props
-      const triggerState = getSwatchTriggerState(props)
+      const swatchState = getSwatchTriggerState(props)
       return normalize.element({
         ...parts.swatch.attrs,
         dir: state.context.dir,
-        "data-state": triggerState.checked ? "checked" : "unchecked",
-        "data-value": triggerState.valueAsString,
+        "data-state": swatchState.checked ? "checked" : "unchecked",
+        "data-value": swatchState.valueAsString,
         style: {
           position: "relative",
-          background: triggerState.value.toString(respectAlpha ? "css" : "hex"),
+          background: swatchState.value.toString(respectAlpha ? "css" : "hex"),
         },
       })
     },
 
-    getFormatTriggerProps: () =>
-      normalize.button({
+    getFormatTriggerProps() {
+      return normalize.button({
         ...parts.formatTrigger.attrs,
         dir: state.context.dir,
         type: "button",
@@ -595,10 +604,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const nextFormat = getNextFormat(state.context.format)
           send({ type: "FORMAT.SET", format: nextFormat, src: "format-trigger" })
         },
-      }),
+      })
+    },
 
-    getFormatSelectProps: () =>
-      normalize.select({
+    getFormatSelectProps() {
+      return normalize.select({
         ...parts.formatSelect.attrs,
         "aria-label": "change color format",
         dir: state.context.dir,
@@ -608,7 +618,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const format = assertFormat(event.currentTarget.value)
           send({ type: "FORMAT.SET", format, src: "format-select" })
         },
-      }),
+      })
+    },
   }
 }
 

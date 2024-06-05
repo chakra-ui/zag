@@ -20,8 +20,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     dragging: dragging,
     resizing: resizing,
 
-    getTriggerProps: () =>
-      normalize.button({
+    getTriggerProps() {
+      return normalize.button({
         ...parts.trigger.attrs,
         type: "button",
         disabled: state.context.disabled,
@@ -34,10 +34,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (state.context.disabled) return
           send({ type: "OPEN" })
         },
-      }),
+      })
+    },
 
-    getPositionerProps: () =>
-      normalize.element({
+    getPositionerProps() {
+      return normalize.element({
         ...parts.positioner.attrs,
         id: dom.getPositionerId(state.context),
         style: {
@@ -45,10 +46,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           top: "var(--y)",
           left: "var(--x)",
         },
-      }),
+      })
+    },
 
-    getContentProps: () =>
-      normalize.element({
+    getContentProps() {
+      return normalize.element({
         ...parts.content.attrs,
         role: "dialog",
         tabIndex: 0,
@@ -99,10 +101,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             handler(event)
           }
         },
-      }),
+      })
+    },
 
-    getCloseTriggerProps: () =>
-      normalize.button({
+    getCloseTriggerProps() {
+      return normalize.button({
         ...parts.closeTrigger.attrs,
         disabled: state.context.disabled,
         "aria-label": "Close Window",
@@ -111,10 +114,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           send("CLOSE")
         },
-      }),
+      })
+    },
 
-    getMinimizeTriggerProps: () =>
-      normalize.button({
+    getMinimizeTriggerProps() {
+      return normalize.button({
         ...parts.minimizeTrigger.attrs,
         disabled: state.context.disabled,
         "aria-label": "Minimize Window",
@@ -124,10 +128,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           send("MINIMIZE")
         },
-      }),
+      })
+    },
 
-    getMaximizeTriggerProps: () =>
-      normalize.button({
+    getMaximizeTriggerProps() {
+      return normalize.button({
         ...parts.maximizeTrigger.attrs,
         disabled: state.context.disabled,
         "aria-label": "Maximize Window",
@@ -137,10 +142,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           send("MAXIMIZE")
         },
-      }),
+      })
+    },
 
-    getRestoreTriggerProps: () =>
-      normalize.button({
+    getRestoreTriggerProps() {
+      return normalize.button({
         ...parts.restoreTrigger.attrs,
         disabled: state.context.disabled,
         "aria-label": "Restore Window",
@@ -150,7 +156,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           send("RESTORE")
         },
-      }),
+      })
+    },
 
     getResizeTriggerProps(props: ResizeTriggerProps) {
       return normalize.element({
@@ -184,8 +191,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getDragTriggerProps: () =>
-      normalize.element({
+    getDragTriggerProps() {
+      return normalize.element({
         ...parts.dragTrigger.attrs,
         "data-disabled": dataAttr(!state.context.canDrag),
         onPointerDown(event) {
@@ -220,28 +227,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           touchAction: "none",
           cursor: "move",
         },
-      }),
+      })
+    },
 
-    getTitleProps: () =>
-      normalize.element({
+    getTitleProps() {
+      return normalize.element({
         ...parts.title.attrs,
         id: dom.getTitleId(state.context),
-      }),
+      })
+    },
 
-    getHeaderProps: () =>
-      normalize.element({
+    getHeaderProps() {
+      return normalize.element({
         ...parts.header.attrs,
         id: dom.getHeaderId(state.context),
         "data-dragging": dataAttr(dragging),
         "data-topmost": dataAttr(state.context.isTopmost),
         "data-behind": dataAttr(!state.context.isTopmost),
-      }),
+      })
+    },
 
-    getBodyProps: () =>
-      normalize.element({
+    getBodyProps() {
+      return normalize.element({
         ...parts.body.attrs,
         "data-dragging": dataAttr(dragging),
         hidden: state.context.isMinimized,
-      }),
+      })
+    },
   }
 }

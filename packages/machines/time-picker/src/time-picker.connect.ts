@@ -79,34 +79,37 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return seconds.map((value) => ({ label: padStart(value), value }))
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.label({
+    getLabelProps() {
+      return normalize.label({
         ...parts.label.attrs,
         dir: state.context.dir,
         htmlFor: dom.getInputId(state.context),
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
-      }),
+      })
+    },
 
-    getControlProps: () =>
-      normalize.element({
+    getControlProps() {
+      return normalize.element({
         ...parts.control.attrs,
         dir: state.context.dir,
         id: dom.getControlId(state.context),
         "data-disabled": dataAttr(disabled),
-      }),
+      })
+    },
 
-    getInputProps: () =>
-      normalize.input({
+    getInputProps() {
+      return normalize.input({
         ...parts.input.attrs,
         dir: state.context.dir,
         autoComplete: "off",
@@ -131,10 +134,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "INPUT.ENTER", value: event.currentTarget.value })
           event.preventDefault()
         },
-      }),
+      })
+    },
 
-    getTriggerProps: () =>
-      normalize.button({
+    getTriggerProps() {
+      return normalize.button({
         ...parts.trigger.attrs,
         id: dom.getTriggerId(state.context),
         type: "button",
@@ -148,10 +152,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           send("TRIGGER.CLICK")
         },
-      }),
+      })
+    },
 
-    getClearTriggerProps: () =>
-      normalize.button({
+    getClearTriggerProps() {
+      return normalize.button({
         ...parts.clearTrigger.attrs,
         id: dom.getClearTriggerId(state.context),
         type: "button",
@@ -163,23 +168,26 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           send("VALUE.CLEAR")
         },
-      }),
+      })
+    },
 
-    getPositionerProps: () =>
-      normalize.element({
+    getPositionerProps() {
+      return normalize.element({
         ...parts.positioner.attrs,
         dir: state.context.dir,
         id: dom.getPositionerId(state.context),
         style: popperStyles.floating,
-      }),
+      })
+    },
 
-    getSpacerProps: () =>
-      normalize.element({
+    getSpacerProps() {
+      return normalize.element({
         ...parts.spacer.attrs,
-      }),
+      })
+    },
 
-    getContentProps: () =>
-      normalize.element({
+    getContentProps() {
+      return normalize.element({
         ...parts.content.attrs,
         dir: state.context.dir,
         id: dom.getContentId(state.context),
@@ -225,7 +233,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             event.preventDefault()
           }
         },
-      }),
+      })
+    },
 
     getColumnProps(props) {
       const hidden = (props.unit === "second" && !state.context.allowSeconds) || (props.unit === "period" && !hour12)

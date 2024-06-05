@@ -38,8 +38,8 @@ export function connect<T extends PropTypes, O>(
       send("DISMISS")
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         dir: state.context.dir,
         id: dom.getRootId(state.context),
@@ -67,46 +67,52 @@ export function connect<T extends PropTypes, O>(
             event.preventDefault()
           }
         },
-      }),
+      })
+    },
 
     /* Leave a ghost div to avoid setting hover to false when transitioning out */
-    getGhostBeforeProps: () =>
-      normalize.element({
+    getGhostBeforeProps() {
+      return normalize.element({
         "data-ghost": "before",
         style: getGhostBeforeStyle(state.context, visible),
-      }),
+      })
+    },
 
     /* Needed to avoid setting hover to false when in between toasts */
-    getGhostAfterProps: () =>
-      normalize.element({
+    getGhostAfterProps() {
+      return normalize.element({
         "data-ghost": "after",
         style: getGhostAfterStyle(state.context, visible),
-      }),
+      })
+    },
 
-    getTitleProps: () =>
-      normalize.element({
+    getTitleProps() {
+      return normalize.element({
         ...parts.title.attrs,
         id: dom.getTitleId(state.context),
-      }),
+      })
+    },
 
-    getDescriptionProps: () =>
-      normalize.element({
+    getDescriptionProps() {
+      return normalize.element({
         ...parts.description.attrs,
         id: dom.getDescriptionId(state.context),
-      }),
+      })
+    },
 
-    getActionTriggerProps: () =>
-      normalize.button({
+    getActionTriggerProps() {
+      return normalize.button({
         ...parts.actionTrigger.attrs,
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
           send("DISMISS")
         },
-      }),
+      })
+    },
 
-    getCloseTriggerProps: () =>
-      normalize.button({
+    getCloseTriggerProps() {
+      return normalize.button({
         id: dom.getCloseTriggerId(state.context),
         ...parts.closeTrigger.attrs,
         type: "button",
@@ -115,6 +121,7 @@ export function connect<T extends PropTypes, O>(
           if (event.defaultPrevented) return
           send("DISMISS")
         },
-      }),
+      })
+    },
   }
 }

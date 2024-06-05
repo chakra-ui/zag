@@ -31,7 +31,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     hoveredValue,
     count: state.context.count,
     items: Array.from({ length: state.context.count }).map((_, index) => index + 1),
-    getItemState,
+
     setValue(value) {
       send({ type: "SET_VALUE", value })
     },
@@ -39,33 +39,36 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("CLEAR_VALUE")
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         dir: state.context.dir,
         ...parts.root.attrs,
         id: dom.getRootId(state.context),
-      }),
+      })
+    },
 
-    getHiddenInputProps: () =>
-      normalize.input({
+    getHiddenInputProps() {
+      return normalize.input({
         name: state.context.name,
         form: state.context.form,
         type: "text",
         hidden: true,
         id: dom.getHiddenInputId(state.context),
         defaultValue: state.context.value,
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.element({
+    getLabelProps() {
+      return normalize.element({
         ...parts.label.attrs,
         dir: state.context.dir,
         id: dom.getLabelId(state.context),
         "data-disabled": dataAttr(disabled),
-      }),
+      })
+    },
 
-    getControlProps: () =>
-      normalize.element({
+    getControlProps() {
+      return normalize.element({
         id: dom.getControlId(state.context),
         ...parts.control.attrs,
         dir: state.context.dir,
@@ -84,7 +87,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!interactive || event.pointerType === "touch") return
           send("GROUP_POINTER_LEAVE")
         },
-      }),
+      })
+    },
+
+    getItemState,
 
     getItemProps(props) {
       const { index } = props

@@ -82,8 +82,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return state.context.translations.progressText?.(details) ?? ""
     },
 
-    getOverlayProps: () =>
-      normalize.element({
+    getOverlayProps() {
+      return normalize.element({
         ...parts.overlay.attrs,
         id: dom.getOverlayId(state.context),
         dir: state.context.dir,
@@ -95,10 +95,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           inset: "0",
           willChange: "clip-path",
         },
-      }),
+      })
+    },
 
-    getSpotlightProps: () =>
-      normalize.element({
+    getSpotlightProps() {
+      return normalize.element({
         ...parts.spotlight.attrs,
         hidden: !isOpen,
         style: {
@@ -110,23 +111,26 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           borderRadius: `${state.context.radius}px`,
           pointerEvents: "none",
         },
-      }),
+      })
+    },
 
-    getProgressTextProps: () =>
-      normalize.element({
+    getProgressTextProps() {
+      return normalize.element({
         ...parts.progressText.attrs,
-      }),
+      })
+    },
 
-    getPositionerProps: () =>
-      normalize.element({
+    getPositionerProps() {
+      return normalize.element({
         ...parts.positioner.attrs,
         dir: state.context.dir,
         id: dom.getPositionerId(state.context),
         style: popperStyles.floating,
-      }),
+      })
+    },
 
-    getArrowProps: () =>
-      normalize.element({
+    getArrowProps() {
+      return normalize.element({
         id: dom.getArrowId(state.context),
         ...parts.arrow.attrs,
         dir: state.context.dir,
@@ -134,17 +138,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           ...popperStyles.arrow,
           opacity: hasTarget ? undefined : 0,
         },
-      }),
+      })
+    },
 
-    getArrowTipProps: () =>
-      normalize.element({
+    getArrowTipProps() {
+      return normalize.element({
         ...parts.arrowTip.attrs,
         dir: state.context.dir,
         style: popperStyles.arrowTip,
-      }),
+      })
+    },
 
-    getContentProps: () =>
-      normalize.element({
+    getContentProps() {
+      return normalize.element({
         ...parts.content.attrs,
         id: dom.getContentId(state.context),
         dir: state.context.dir,
@@ -176,24 +182,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               break
           }
         },
-      }),
+      })
+    },
 
-    getTitleProps: () =>
-      normalize.element({
+    getTitleProps() {
+      return normalize.element({
         ...parts.title.attrs,
         id: dom.getTitleId(state.context),
         "data-placement": hasTarget ? state.context.currentPlacement : "center",
-      }),
+      })
+    },
 
-    getDescriptionProps: () =>
-      normalize.element({
+    getDescriptionProps() {
+      return normalize.element({
         ...parts.description.attrs,
         id: dom.getDescriptionId(state.context),
         "data-placement": hasTarget ? state.context.currentPlacement : "center",
-      }),
+      })
+    },
 
-    getNextTriggerProps: () =>
-      normalize.button({
+    getNextTriggerProps() {
+      return normalize.button({
         ...parts.nextTrigger.attrs,
         disabled: !hasNextStep,
         "data-disabled": dataAttr(!hasNextStep),
@@ -201,10 +210,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick() {
           send({ type: "NEXT", src: "nextTrigger" })
         },
-      }),
+      })
+    },
 
-    getPrevTriggerProps: () =>
-      normalize.button({
+    getPrevTriggerProps() {
+      return normalize.button({
         ...parts.prevTrigger.attrs,
         disabled: !hasPrevStep,
         "data-disabled": dataAttr(!hasPrevStep),
@@ -213,26 +223,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick() {
           send({ type: "PREV", src: "prevTrigger" })
         },
-      }),
+      })
+    },
 
-    getCloseTriggerProps: () =>
-      normalize.button({
+    getCloseTriggerProps() {
+      return normalize.button({
         ...parts.closeTrigger.attrs,
         type: "button",
         "aria-label": state.context.translations.close,
         onClick() {
           send({ type: "STOP", src: "closeTrigger" })
         },
-      }),
+      })
+    },
 
-    getSkipTriggerProps: () =>
-      normalize.button({
+    getSkipTriggerProps() {
+      return normalize.button({
         ...parts.skipTrigger.attrs,
         type: "button",
         "aria-label": state.context.translations.skip,
         onClick() {
           send({ type: "SKIP" })
         },
-      }),
+      })
+    },
   }
 }

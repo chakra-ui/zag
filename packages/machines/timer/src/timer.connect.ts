@@ -31,15 +31,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     restart() {
       send("RESTART")
     },
-    getRootProps: () =>
-      normalize.element({
+
+    getRootProps() {
+      return normalize.element({
         role: "timer",
         ...parts.root.attrs,
-      }),
-    getControlProps: () =>
-      normalize.element({
+      })
+    },
+
+    getControlProps() {
+      return normalize.element({
         ...parts.control.attrs,
-      }),
+      })
+    },
+
     getSegmentProps(props) {
       const value = time[props.type]
       return normalize.element({
@@ -50,9 +55,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
       })
     },
-    getSeparatorProps: () =>
-      normalize.element({
+
+    getSeparatorProps() {
+      return normalize.element({
         ...parts.separator.attrs,
-      }),
+      })
+    },
   }
 }

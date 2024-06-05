@@ -17,15 +17,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "IMG.ERROR", src: "api" })
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         dir: state.context.dir,
         id: dom.getRootId(state.context),
-      }),
+      })
+    },
 
-    getImageProps: () =>
-      normalize.img({
+    getImageProps() {
+      return normalize.img({
         ...parts.image.attrs,
         hidden: !loaded,
         dir: state.context.dir,
@@ -37,15 +38,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onError() {
           send({ type: "IMG.ERROR", src: "element" })
         },
-      }),
+      })
+    },
 
-    getFallbackProps: () =>
-      normalize.element({
+    getFallbackProps() {
+      return normalize.element({
         ...parts.fallback.attrs,
         dir: state.context.dir,
         id: dom.getFallbackId(state.context),
         hidden: loaded,
         "data-state": loaded ? "hidden" : "visible",
-      }),
+      })
+    },
   }
 }

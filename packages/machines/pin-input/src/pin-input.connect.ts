@@ -35,18 +35,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "VALUE.SET", value, index })
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         dir: state.context.dir,
         ...parts.root.attrs,
         id: dom.getRootId(state.context),
         "data-invalid": dataAttr(invalid),
         "data-disabled": dataAttr(state.context.disabled),
         "data-complete": dataAttr(complete),
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.label({
+    getLabelProps() {
+      return normalize.label({
         ...parts.label.attrs,
         dir: state.context.dir,
         htmlFor: dom.getHiddenInputId(state.context),
@@ -58,10 +59,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           event.preventDefault()
           focus()
         },
-      }),
+      })
+    },
 
-    getHiddenInputProps: () =>
-      normalize.input({
+    getHiddenInputProps() {
+      return normalize.input({
         "aria-hidden": true,
         type: "text",
         tabIndex: -1,
@@ -71,14 +73,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: visuallyHiddenStyle,
         maxLength: state.context.valueLength,
         defaultValue: state.context.valueAsString,
-      }),
+      })
+    },
 
-    getControlProps: () =>
-      normalize.element({
+    getControlProps() {
+      return normalize.element({
         ...parts.control.attrs,
         dir: state.context.dir,
         id: dom.getControlId(state.context),
-      }),
+      })
+    },
 
     getInputProps(props) {
       const { index } = props

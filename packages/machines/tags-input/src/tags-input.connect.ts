@@ -61,8 +61,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getItemState,
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         dir: state.context.dir,
         ...parts.root.attrs,
         "data-invalid": dataAttr(invalid),
@@ -75,10 +75,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!interactive) return
           send("POINTER_DOWN")
         },
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.label({
+    getLabelProps() {
+      return normalize.label({
         ...parts.label.attrs,
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
@@ -86,10 +87,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getLabelId(state.context),
         dir: state.context.dir,
         htmlFor: dom.getInputId(state.context),
-      }),
+      })
+    },
 
-    getControlProps: () =>
-      normalize.element({
+    getControlProps() {
+      return normalize.element({
         id: dom.getControlId(state.context),
         ...parts.control.attrs,
         dir: state.context.dir,
@@ -98,10 +100,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-readonly": dataAttr(readOnly),
         "data-invalid": dataAttr(invalid),
         "data-focus": dataAttr(focused),
-      }),
+      })
+    },
 
-    getInputProps: () =>
-      normalize.input({
+    getInputProps() {
+      return normalize.input({
         ...parts.input.attrs,
         dir: state.context.dir,
         "data-invalid": dataAttr(invalid),
@@ -183,17 +186,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             return
           }
         },
-      }),
+      })
+    },
 
-    getHiddenInputProps: () =>
-      normalize.input({
+    getHiddenInputProps() {
+      return normalize.input({
         type: "text",
         hidden: true,
         name: state.context.name,
         form: state.context.form,
         id: dom.getHiddenInputId(state.context),
         defaultValue: state.context.valueAsString,
-      }),
+      })
+    },
 
     getItemProps(props) {
       return normalize.element({
@@ -307,8 +312,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getClearTriggerProps: () =>
-      normalize.button({
+    getClearTriggerProps() {
+      return normalize.button({
         ...parts.clearTrigger.attrs,
         dir: state.context.dir,
         id: dom.getClearTriggerId(state.context),
@@ -321,7 +326,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!interactive) return
           send("CLEAR_VALUE")
         },
-      }),
+      })
+    },
   }
 }
 

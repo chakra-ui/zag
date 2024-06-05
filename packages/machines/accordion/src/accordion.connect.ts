@@ -32,13 +32,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setValue,
     getItemState,
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         dir: state.context.dir,
         id: dom.getRootId(state.context),
         "data-orientation": state.context.orientation,
-      }),
+      })
+    },
 
     getItemProps(props: ItemProps) {
       const itemState = getItemState(props)

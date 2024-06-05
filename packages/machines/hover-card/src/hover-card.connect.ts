@@ -22,23 +22,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "POSITIONING.SET", options })
     },
 
-    getArrowProps: () =>
-      normalize.element({
+    getArrowProps() {
+      return normalize.element({
         id: dom.getArrowId(state.context),
         ...parts.arrow.attrs,
         dir: state.context.dir,
         style: popperStyles.arrow,
-      }),
+      })
+    },
 
-    getArrowTipProps: () =>
-      normalize.element({
+    getArrowTipProps() {
+      return normalize.element({
         ...parts.arrowTip.attrs,
         dir: state.context.dir,
         style: popperStyles.arrowTip,
-      }),
+      })
+    },
 
-    getTriggerProps: () =>
-      normalize.element({
+    getTriggerProps() {
+      return normalize.element({
         ...parts.trigger.attrs,
         dir: state.context.dir,
         "data-placement": state.context.currentPlacement,
@@ -61,18 +63,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onTouchStart(event) {
           event.preventDefault()
         },
-      }),
+      })
+    },
 
-    getPositionerProps: () =>
-      normalize.element({
+    getPositionerProps() {
+      return normalize.element({
         id: dom.getPositionerId(state.context),
         ...parts.positioner.attrs,
         dir: state.context.dir,
         style: popperStyles.floating,
-      }),
+      })
+    },
 
-    getContentProps: () =>
-      normalize.element({
+    getContentProps() {
+      return normalize.element({
         ...parts.content.attrs,
         dir: state.context.dir,
         id: dom.getContentId(state.context),
@@ -87,6 +91,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.pointerType === "touch") return
           send({ type: "POINTER_LEAVE", src: "content" })
         },
-      }),
+      })
+    },
   }
 }

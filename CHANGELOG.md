@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.54.0](./#0.54.0) - 2024-06-05
+
+### Changed
+
+- **All Machines**
+
+  Update all machines to use prop getters everywhere. This helps to improve render performance and reduce breaking
+  changes in the future.
+
+  ```jsx
+  rootProps -> getRootProps()
+  labelProps -> getLabelProps()
+  ```
+
 ## [0.53.0](./#0.53.0) - 2024-06-03
 
 ### Fixed
