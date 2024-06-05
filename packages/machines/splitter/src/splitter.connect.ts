@@ -45,8 +45,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SET_PANEL_SIZE", id, size })
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         "data-orientation": state.context.orientation,
         id: dom.getRootId(state.context),
@@ -58,7 +58,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           width: "100%",
           overflow: "hidden",
         },
-      }),
+      })
+    },
 
     getPanelProps(props) {
       const { id } = props

@@ -41,13 +41,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SET_PAGE", page })
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         id: dom.getRootId(state.context),
         ...parts.root.attrs,
         dir: state.context.dir,
         "aria-label": translations.rootLabel,
-      }),
+      })
+    },
 
     getEllipsisProps(props) {
       return normalize.element({
@@ -76,8 +77,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getPrevTriggerProps: () =>
-      normalize.element({
+    getPrevTriggerProps() {
+      return normalize.element({
         id: dom.getPrevTriggerId(state.context),
         ...parts.prevTrigger.attrs,
         dir: state.context.dir,
@@ -87,10 +88,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "PREVIOUS_PAGE" })
         },
         ...(isButton && { disabled: isFirstPage, type: "button" }),
-      }),
+      })
+    },
 
-    getNextTriggerProps: () =>
-      normalize.element({
+    getNextTriggerProps() {
+      return normalize.element({
         id: dom.getNextTriggerId(state.context),
         ...parts.nextTrigger.attrs,
         dir: state.context.dir,
@@ -100,6 +102,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "NEXT_PAGE" })
         },
         ...(isButton && { disabled: isLastPage, type: "button" }),
-      }),
+      })
+    },
   }
 }

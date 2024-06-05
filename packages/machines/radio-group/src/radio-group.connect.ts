@@ -53,10 +53,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     clearValue() {
       send({ type: "SET_VALUE", value: null, isTrusted: false })
     },
-    getItemState,
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         role: "radiogroup",
         id: dom.getRootId(state.context),
@@ -68,19 +67,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           position: "relative",
         },
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.element({
+    getLabelProps() {
+      return normalize.element({
         ...parts.label.attrs,
         dir: state.context.dir,
         "data-orientation": state.context.orientation,
         "data-disabled": dataAttr(groupDisabled),
         id: dom.getLabelId(state.context),
         onClick: focus,
-      }),
+      })
+    },
 
-    getItemProps(props: ItemProps) {
+    getItemState,
+
+    getItemProps(props) {
       const itemState = getItemState(props)
 
       return normalize.label({
@@ -114,7 +117,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemTextProps(props: ItemProps) {
+    getItemTextProps(props) {
       return normalize.element({
         ...parts.itemText.attrs,
         dir: state.context.dir,
@@ -123,7 +126,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemControlProps(props: ItemProps) {
+    getItemControlProps(props) {
       const controlState = getItemState(props)
 
       return normalize.element({
@@ -136,7 +139,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemHiddenInputProps(props: ItemProps) {
+    getItemHiddenInputProps(props) {
       const inputState = getItemState(props)
 
       return normalize.input({
@@ -180,8 +183,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getIndicatorProps: () =>
-      normalize.element({
+    getIndicatorProps() {
+      return normalize.element({
         id: dom.getIndicatorId(state.context),
         ...parts.indicator.attrs,
         dir: state.context.dir,
@@ -202,6 +205,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           [state.context.orientation === "horizontal" ? "left" : "top"]:
             state.context.orientation === "horizontal" ? "var(--left)" : "var(--top)",
         },
-      }),
+      })
+    },
   }
 }

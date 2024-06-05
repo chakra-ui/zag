@@ -49,19 +49,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     focus() {
       dom.getSelectedTriggerEl(state.context)?.focus()
     },
-    getTriggerState,
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         id: dom.getRootId(state.context),
         "data-orientation": state.context.orientation,
         "data-focus": dataAttr(focused),
         dir: state.context.dir,
-      }),
+      })
+    },
 
-    getListProps: () =>
-      normalize.element({
+    getListProps() {
+      return normalize.element({
         ...parts.list.attrs,
         id: dom.getListId(state.context),
         role: "tablist",
@@ -112,7 +112,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             exec(event)
           }
         },
-      }),
+      })
+    },
+
+    getTriggerState,
 
     getTriggerProps(props) {
       const { value, disabled } = props
@@ -172,8 +175,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getIndicatorProps: () =>
-      normalize.element({
+    getIndicatorProps() {
+      return normalize.element({
         id: dom.getIndicatorId(state.context),
         ...parts.indicator.attrs,
         dir: state.context.dir,
@@ -191,6 +194,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           transitionTimingFunction: "var(--transition-timing-function)",
           [isHorizontal ? "left" : "top"]: isHorizontal ? "var(--left)" : "var(--top)",
         },
-      }),
+      })
+    },
   }
 }

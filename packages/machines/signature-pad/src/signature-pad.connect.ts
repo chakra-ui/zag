@@ -24,22 +24,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return dom.getDataUrl(state.context, { type, quality })
     },
 
-    getLabelProps: () =>
-      normalize.element({
+    getLabelProps() {
+      return normalize.element({
         ...parts.label.attrs,
         "data-disabled": dataAttr(disabled),
         htmlFor: dom.getControlId(state.context),
-      }),
+      })
+    },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         "data-disabled": dataAttr(disabled),
         id: dom.getRootId(state.context),
-      }),
+      })
+    },
 
-    getControlProps: () =>
-      normalize.element({
+    getControlProps() {
+      return normalize.element({
         ...parts.control.attrs,
         tabIndex: disabled ? undefined : 0,
         id: dom.getControlId(state.context),
@@ -72,10 +74,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           touchAction: "none",
           userSelect: "none",
         },
-      }),
+      })
+    },
 
-    getSegmentProps: () =>
-      normalize.svg({
+    getSegmentProps() {
+      return normalize.svg({
         ...parts.segment.attrs,
         style: {
           position: "absolute",
@@ -86,7 +89,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           pointerEvents: "none",
           fill: state.context.drawing.fill,
         },
-      }),
+      })
+    },
 
     getSegmentPathProps(props) {
       return normalize.path({
@@ -95,14 +99,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getGuideProps: () =>
-      normalize.element({
+    getGuideProps() {
+      return normalize.element({
         ...parts.guide.attrs,
         "data-disabled": dataAttr(disabled),
-      }),
+      })
+    },
 
-    getClearTriggerProps: () =>
-      normalize.button({
+    getClearTriggerProps() {
+      return normalize.button({
         ...parts.clearTrigger.attrs,
         type: "button",
         "aria-label": "Clear Signature",
@@ -111,7 +116,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick() {
           send({ type: "CLEAR" })
         },
-      }),
+      })
+    },
 
     getHiddenInputProps(props) {
       return normalize.input({

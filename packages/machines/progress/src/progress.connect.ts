@@ -39,8 +39,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "VALUE.SET", value: max })
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         dir: state.context.dir,
         ...parts.root.attrs,
         id: dom.getRootId(state.context),
@@ -51,33 +51,37 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           "--percent": indeterminate ? undefined : percent,
         },
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.element({
+    getLabelProps() {
+      return normalize.element({
         dir: state.context.dir,
         id: dom.getLabelId(state.context),
         ...parts.label.attrs,
         "data-orientation": orientation,
-      }),
+      })
+    },
 
-    getValueTextProps: () =>
-      normalize.element({
+    getValueTextProps() {
+      return normalize.element({
         dir: state.context.dir,
         "aria-live": "polite",
         ...parts.valueText.attrs,
-      }),
+      })
+    },
 
-    getTrackProps: () =>
-      normalize.element({
+    getTrackProps() {
+      return normalize.element({
         dir: state.context.dir,
         id: dom.getTrackId(state.context),
         ...parts.track.attrs,
         ...progressbarProps,
-      }),
+      })
+    },
 
-    getRangeProps: () =>
-      normalize.element({
+    getRangeProps() {
+      return normalize.element({
         dir: state.context.dir,
         ...parts.range.attrs,
         "data-orientation": orientation,
@@ -85,32 +89,36 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           [state.context.isHorizontal ? "width" : "height"]: indeterminate ? undefined : `${percent}%`,
         },
-      }),
+      })
+    },
 
-    getCircleProps: () =>
-      normalize.element({
+    getCircleProps() {
+      return normalize.element({
         dir: state.context.dir,
         id: dom.getCircleId(state.context),
         ...parts.circle.attrs,
         ...progressbarProps,
         ...circleProps.root,
-      }),
+      })
+    },
 
-    getCircleTrackProps: () =>
-      normalize.element({
+    getCircleTrackProps() {
+      return normalize.element({
         dir: state.context.dir,
         "data-orientation": orientation,
         ...parts.circleTrack.attrs,
         ...circleProps.track,
-      }),
+      })
+    },
 
-    getCircleRangeProps: () =>
-      normalize.element({
+    getCircleRangeProps() {
+      return normalize.element({
         dir: state.context.dir,
         ...parts.circleRange.attrs,
         ...circleProps.range,
         "data-state": progressState,
-      }),
+      })
+    },
 
     getViewProps(props) {
       return normalize.element({

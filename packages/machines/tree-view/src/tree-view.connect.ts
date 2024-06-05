@@ -76,22 +76,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dom.getItemEl(state.context, id)?.focus()
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         id: dom.getRootId(state.context),
         dir: state.context.dir,
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.element({
+    getLabelProps() {
+      return normalize.element({
         ...parts.label.attrs,
         id: dom.getLabelId(state.context),
         dir: state.context.dir,
-      }),
+      })
+    },
 
-    getTreeProps: () =>
-      normalize.element({
+    getTreeProps() {
+      return normalize.element({
         ...parts.tree.attrs,
         id: dom.getTreeId(state.context),
         dir: state.context.dir,
@@ -196,7 +198,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (contains(event.currentTarget, event.relatedTarget)) return
           send({ type: "TREE.BLUR" })
         },
-      }),
+      })
+    },
 
     getItemState,
     getItemProps(props) {

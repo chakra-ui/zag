@@ -47,18 +47,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       dom.getInputEl(state.context)?.focus()
     },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         id: dom.getRootId(state.context),
         ...parts.root.attrs,
         dir: state.context.dir,
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
         "data-invalid": dataAttr(invalid),
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.label({
+    getLabelProps() {
+      return normalize.label({
         ...parts.label.attrs,
         dir: state.context.dir,
         "data-disabled": dataAttr(disabled),
@@ -66,10 +67,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-invalid": dataAttr(invalid),
         id: dom.getLabelId(state.context),
         htmlFor: dom.getInputId(state.context),
-      }),
+      })
+    },
 
-    getControlProps: () =>
-      normalize.element({
+    getControlProps() {
+      return normalize.element({
         ...parts.control.attrs,
         dir: state.context.dir,
         role: "group",
@@ -78,10 +80,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "aria-invalid": ariaAttr(state.context.invalid),
-      }),
+      })
+    },
 
-    getInputProps: () =>
-      normalize.input({
+    getInputProps() {
+      return normalize.input({
         ...parts.input.attrs,
         dir: state.context.dir,
         name: state.context.name,
@@ -160,10 +163,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const exec = keyMap[event.key]
           exec?.(event)
         },
-      }),
+      })
+    },
 
-    getDecrementTriggerProps: () =>
-      normalize.button({
+    getDecrementTriggerProps() {
+      return normalize.button({
         ...parts.decrementTrigger.attrs,
         dir: state.context.dir,
         id: dom.getDecrementTriggerId(state.context),
@@ -190,10 +194,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (isDecrementDisabled) return
           send({ type: "TRIGGER.PRESS_UP", hint: "decrement" })
         },
-      }),
+      })
+    },
 
-    getIncrementTriggerProps: () =>
-      normalize.button({
+    getIncrementTriggerProps() {
+      return normalize.button({
         ...parts.incrementTrigger.attrs,
         dir: state.context.dir,
         id: dom.getIncrementTriggerId(state.context),
@@ -219,10 +224,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onPointerLeave(event) {
           send({ type: "TRIGGER.PRESS_UP", hint: "increment", pointerType: event.pointerType })
         },
-      }),
+      })
+    },
 
-    getScrubberProps: () =>
-      normalize.element({
+    getScrubberProps() {
+      return normalize.element({
         ...parts.scrubber.attrs,
         dir: state.context.dir,
         "data-disabled": dataAttr(disabled),
@@ -242,6 +248,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           cursor: disabled ? undefined : "ew-resize",
         },
-      }),
+      })
+    },
   }
 }

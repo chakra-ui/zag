@@ -76,8 +76,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "FOCUS", index: 0 })
     },
 
-    getLabelProps: () =>
-      normalize.label({
+    getLabelProps() {
+      return normalize.label({
         ...parts.label.attrs,
         dir: state.context.dir,
         "data-disabled": dataAttr(disabled),
@@ -94,10 +94,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           userSelect: "none",
         },
-      }),
+      })
+    },
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         "data-disabled": dataAttr(disabled),
         "data-orientation": state.context.orientation,
@@ -106,10 +107,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getRootId(state.context),
         dir: state.context.dir,
         style: dom.getRootStyle(state.context),
-      }),
+      })
+    },
 
-    getValueTextProps: () =>
-      normalize.element({
+    getValueTextProps() {
+      return normalize.element({
         ...parts.valueText.attrs,
         dir: state.context.dir,
         "data-disabled": dataAttr(disabled),
@@ -117,10 +119,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-invalid": dataAttr(invalid),
         "data-focus": dataAttr(focused),
         id: dom.getValueTextId(state.context),
-      }),
+      })
+    },
 
-    getTrackProps: () =>
-      normalize.element({
+    getTrackProps() {
+      return normalize.element({
         ...parts.track.attrs,
         dir: state.context.dir,
         id: dom.getTrackId(state.context),
@@ -129,7 +132,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "data-focus": dataAttr(focused),
         style: { position: "relative" },
-      }),
+      })
+    },
 
     getThumbProps(props) {
       const { index = 0, name } = props
@@ -236,8 +240,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getRangeProps: () =>
-      normalize.element({
+    getRangeProps() {
+      return normalize.element({
         id: dom.getRangeId(state.context),
         ...parts.range.attrs,
         dir: state.context.dir,
@@ -246,10 +250,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(disabled),
         "data-orientation": state.context.orientation,
         style: dom.getRangeStyle(state.context),
-      }),
+      })
+    },
 
-    getControlProps: () =>
-      normalize.element({
+    getControlProps() {
+      return normalize.element({
         ...parts.control.attrs,
         dir: state.context.dir,
         id: dom.getControlId(state.context),
@@ -269,17 +274,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           event.preventDefault()
           event.stopPropagation()
         },
-      }),
+      })
+    },
 
-    getMarkerGroupProps: () =>
-      normalize.element({
+    getMarkerGroupProps() {
+      return normalize.element({
         ...parts.markerGroup.attrs,
         role: "presentation",
         dir: state.context.dir,
         "aria-hidden": true,
         "data-orientation": state.context.orientation,
         style: dom.getMarkerGroupStyle(),
-      }),
+      })
+    },
 
     getMarkerProps(props) {
       const style = dom.getMarkerStyle(state.context, props.value)

@@ -94,17 +94,18 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getItemState,
 
-    getRootProps: () =>
-      normalize.element({
+    getRootProps() {
+      return normalize.element({
         ...parts.root.attrs,
         dir: state.context.dir,
         id: dom.getRootId(state.context),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
-      }),
+      })
+    },
 
-    getLabelProps: () =>
-      normalize.label({
+    getLabelProps() {
+      return normalize.label({
         dir: state.context.dir,
         id: dom.getLabelId(state.context),
         ...parts.label.attrs,
@@ -117,10 +118,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (disabled) return
           dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
         },
-      }),
+      })
+    },
 
-    getControlProps: () =>
-      normalize.element({
+    getControlProps() {
+      return normalize.element({
         ...parts.control.attrs,
         dir: state.context.dir,
         id: dom.getControlId(state.context),
@@ -128,10 +130,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-focus": dataAttr(focused),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
-      }),
+      })
+    },
 
-    getTriggerProps: () =>
-      normalize.button({
+    getTriggerProps() {
+      return normalize.button({
         id: dom.getTriggerId(state.context),
         disabled: disabled,
         dir: state.context.dir,
@@ -216,10 +219,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             event.preventDefault()
           }
         },
-      }),
+      })
+    },
 
-    getIndicatorProps: () =>
-      normalize.element({
+    getIndicatorProps() {
+      return normalize.element({
         ...parts.indicator.attrs,
         dir: state.context.dir,
         "aria-hidden": true,
@@ -227,7 +231,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
-      }),
+      })
+    },
 
     getItemProps(props) {
       const itemState = getItemState(props)
@@ -308,8 +313,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
 
-    getClearTriggerProps: () =>
-      normalize.button({
+    getClearTriggerProps() {
+      return normalize.button({
         ...parts.clearTrigger.attrs,
         id: dom.getClearTriggerId(state.context),
         type: "button",
@@ -321,10 +326,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (event.defaultPrevented) return
           send("VALUE.CLEAR")
         },
-      }),
+      })
+    },
 
-    getHiddenSelectProps: () =>
-      normalize.select({
+    getHiddenSelectProps() {
+      return normalize.select({
         name: state.context.name,
         form: state.context.form,
         disabled: disabled,
@@ -340,18 +346,20 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
         },
         "aria-labelledby": dom.getLabelId(state.context),
-      }),
+      })
+    },
 
-    getPositionerProps: () =>
-      normalize.element({
+    getPositionerProps() {
+      return normalize.element({
         ...parts.positioner.attrs,
         dir: state.context.dir,
         id: dom.getPositionerId(state.context),
         style: popperStyles.floating,
-      }),
+      })
+    },
 
-    getContentProps: () =>
-      normalize.element({
+    getContentProps() {
+      return normalize.element({
         hidden: !open,
         dir: state.context.dir,
         id: dom.getContentId(state.context),
@@ -421,15 +429,17 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             event.preventDefault()
           }
         },
-      }),
+      })
+    },
 
-    getListProps: () =>
-      normalize.element({
+    getListProps() {
+      return normalize.element({
         tabIndex: 0,
         role: !composite ? "listbox" : undefined,
         "aria-labelledby": dom.getTriggerId(state.context),
         "aria-activedescendant": !composite ? ariaActiveDescendant : undefined,
         "aria-multiselectable": !composite && state.context.multiple ? true : undefined,
-      }),
+      })
+    },
   }
 }

@@ -32,8 +32,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "POSITIONING.SET", options })
     },
 
-    getTriggerProps: () =>
-      normalize.button({
+    getTriggerProps() {
+      return normalize.button({
         ...parts.trigger.attrs,
         id: triggerId,
         dir: state.context.dir,
@@ -72,33 +72,37 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (disabled) return
           send("POINTER_LEAVE")
         },
-      }),
+      })
+    },
 
-    getArrowProps: () =>
-      normalize.element({
+    getArrowProps() {
+      return normalize.element({
         id: dom.getArrowId(state.context),
         ...parts.arrow.attrs,
         dir: state.context.dir,
         style: popperStyles.arrow,
-      }),
+      })
+    },
 
-    getArrowTipProps: () =>
-      normalize.element({
+    getArrowTipProps() {
+      return normalize.element({
         ...parts.arrowTip.attrs,
         dir: state.context.dir,
         style: popperStyles.arrowTip,
-      }),
+      })
+    },
 
-    getPositionerProps: () =>
-      normalize.element({
+    getPositionerProps() {
+      return normalize.element({
         id: dom.getPositionerId(state.context),
         ...parts.positioner.attrs,
         dir: state.context.dir,
         style: popperStyles.floating,
-      }),
+      })
+    },
 
-    getContentProps: () =>
-      normalize.element({
+    getContentProps() {
+      return normalize.element({
         ...parts.content.attrs,
         dir: state.context.dir,
         hidden: !open,
@@ -115,6 +119,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           pointerEvents: state.context.interactive ? "auto" : "none",
         },
-      }),
+      })
+    },
   }
 }
