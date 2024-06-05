@@ -6,6 +6,5 @@ export default defineConfig({
   entry: ["src/index.ts"],
   target: "es2020",
   sourcemap: true,
-  minifyWhitespace: true,
   format: ["esm", "cjs"],
 })
