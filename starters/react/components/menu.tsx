@@ -29,10 +29,10 @@ export function Menu(props: Props) {
 
   return (
     <div>
-      {isValidElement(children) ? cloneElement(children, api.triggerProps) : children}
+      {isValidElement(children) ? cloneElement(children, api.getTriggerProps()) : children}
       <Portal>
-        <div {...api.positionerProps}>
-          <ul {...api.contentProps}>
+        <div {...api.getPositionerProps()}>
+          <ul {...api.getContentProps()}>
             {items.map((item) => (
               <li key={item.value} {...api.getItemProps({ value: item.value })}>
                 {item.label}

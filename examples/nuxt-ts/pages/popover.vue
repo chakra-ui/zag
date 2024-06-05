@@ -16,22 +16,22 @@ const api = computed(() => popover.connect(state.value, send, normalizeProps))
   <main>
     <div data-part="root">
       <button data-testid="button-before">Button :before</button>
-      <button data-testid="popover-trigger" v-bind="api.triggerProps">
+      <button data-testid="popover-trigger" v-bind="api.getTriggerProps()">
         Click me
-        <div v-bind="api.indicatorProps">{{ ">" }}</div>
+        <div v-bind="api.getIndicatorProps()">{{ ">" }}</div>
       </button>
       <Teleport to="body" :disabled="!api.portalled">
-        <div v-bind="api.positionerProps">
-          <div data-testid="popover-content" class="popover-content" v-bind="api.contentProps">
-            <div v-bind="api.arrowProps">
-              <div v-bind="api.arrowTipProps" />
+        <div v-bind="api.getPositionerProps()">
+          <div data-testid="popover-content" class="popover-content" v-bind="api.getContentProps()">
+            <div v-bind="api.getArrowProps()">
+              <div v-bind="api.getArrowTipProps()" />
             </div>
-            <div data-testid="popover-title" v-bind="api.titleProps">Popover Title</div>
+            <div data-testid="popover-title" v-bind="api.getTitleProps()">Popover Title</div>
             <div data-part="body" data-testid="popover-body">
               <a>Non-focusable Link</a>
               <a href="#" data-testid="focusable-link"> Focusable Link </a>
               <input data-testid="input" placeholder="input" />
-              <button data-testid="popover-close-button" v-bind="api.closeTriggerProps">X</button>
+              <button data-testid="popover-close-button" v-bind="api.getCloseTriggerProps()">X</button>
             </div>
           </div>
         </div>

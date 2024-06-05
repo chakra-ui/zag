@@ -9,11 +9,11 @@ export function Carousel() {
   const api = createMemo(() => carousel.connect(state, send, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
-      <button {...api().prevTriggerProps}>Prev</button>
-      <button {...api().nextTriggerProps}>Next</button>
-      <div {...api().viewportProps}>
-        <div {...api().itemGroupProps}>
+    <div {...api().getRootProps()}>
+      <button {...api().getPrevTriggerProps()}>Prev</button>
+      <button {...api().getNextTriggerProps()}>Next</button>
+      <div {...api().getViewportProps()}>
+        <div {...api().getItemGroupProps()}>
           <For each={items}>
             {(image, index) => (
               <div {...api().getItemProps({ index() })}>

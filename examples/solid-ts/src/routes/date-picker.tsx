@@ -35,15 +35,15 @@ export default function Page() {
           <div>Focused: {api().focusedValueAsString}</div>
         </output>
 
-        <div {...api().controlProps}>
+        <div {...api().getControlProps()}>
           <input {...api().getInputProps({ index: 0 })} />
-          <button {...api().clearTriggerProps}>❌</button>
-          <button {...api().triggerProps}>🗓</button>
+          <button {...api().getClearTriggerProps()}>❌</button>
+          <button {...api().getTriggerProps()}>🗓</button>
         </div>
 
-        <div {...api().contentProps}>
+        <div {...api().getContentProps()}>
           <div style={{ "margin-bottom": "20px" }}>
-            <select {...api().monthSelectProps}>
+            <select {...api().getMonthSelectProps()}>
               <Index each={api().getMonths()}>
                 {(month, i) => (
                   <option value={i + 1} selected={api().focusedValue.month === i + 1}>
@@ -53,7 +53,7 @@ export default function Page() {
               </Index>
             </select>
 
-            <select {...api().yearSelectProps}>
+            <select {...api().getYearSelectProps()}>
               <Index each={getYearsRange({ from: 1_000, to: 4_000 })}>
                 {(year) => (
                   <option value={year()} selected={api().focusedValue.year === year()}>

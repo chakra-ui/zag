@@ -24,9 +24,9 @@ const api = computed(() => radio.connect(state.value, send, normalizeProps))
       "
     >
       <fieldset>
-        <div v-bind="api.rootProps">
-          <h3 v-bind="api.labelProps">Fruits</h3>
-          <div v-bind="api.indicatorProps" />
+        <div v-bind="api.getRootProps()">
+          <h3 v-bind="api.getLabelProps()">Fruits</h3>
+          <div v-bind="api.getIndicatorProps()" />
 
           <label
             v-for="opt in radioData"

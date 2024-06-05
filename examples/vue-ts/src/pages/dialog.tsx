@@ -26,33 +26,33 @@ export default defineComponent({
           <main>
             <div>
               <div>
-                <button {...parentDialog.triggerProps} data-testid="trigger-1">
+                <button {...parentDialog.getTriggerProps()} data-testid="trigger-1">
                   Open Dialog
                 </button>
                 <div style={{ minHeight: "1200px", pointerEvents: "none" }} />
                 {parentDialog.open && (
                   <Teleport to="body">
-                    <div {...parentDialog.backdropProps} />
-                    <div {...parentDialog.positionerProps} data-testid="positioner-1">
-                      <div {...parentDialog.contentProps}>
-                        <h2 {...parentDialog.titleProps}>Edit profile</h2>
-                        <p {...parentDialog.descriptionProps}>
+                    <div {...parentDialog.getBackdropProps()} />
+                    <div {...parentDialog.getPositionerProps()} data-testid="positioner-1">
+                      <div {...parentDialog.getContentProps()}>
+                        <h2 {...parentDialog.getTitleProps()}>Edit profile</h2>
+                        <p {...parentDialog.getDescriptionProps()}>
                           Make changes to your profile here. Click save when you are done.
                         </p>
-                        <button {...parentDialog.closeTriggerProps} data-testid="close-1">
+                        <button {...parentDialog.getCloseTriggerProps()} data-testid="close-1">
                           X
                         </button>
                         <input type="text" placeholder="Enter name..." data-testid="input-1" />
                         <button data-testid="save-button-1">Save Changes</button>
-                        <button {...childDialog.triggerProps} data-testid="trigger-2">
+                        <button {...childDialog.getTriggerProps()} data-testid="trigger-2">
                           Open Nested
                         </button>
                         {childDialog.open && (
                           <Teleport to="body">
-                            <div {...childDialog.positionerProps} data-testid="positioner-2">
-                              <div {...childDialog.contentProps}>
-                                <h2 {...childDialog.titleProps}>Nested</h2>
-                                <button {...childDialog.closeTriggerProps} data-testid="close-2">
+                            <div {...childDialog.getPositionerProps()} data-testid="positioner-2">
+                              <div {...childDialog.getContentProps()}>
+                                <h2 {...childDialog.getTitleProps()}>Nested</h2>
+                                <button {...childDialog.getCloseTriggerProps()} data-testid="close-2">
                                   X
                                 </button>
                                 <button onClick={() => parentDialog.setOpen(false)} data-testid="special-close">

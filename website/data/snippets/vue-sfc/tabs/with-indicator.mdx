@@ -1,8 +1,8 @@
 ```md {11}
 // ...
 
-<div ref="ref" v-bind="api.rootProps">
-  <div v-bind="api.listProps">
+<div ref="ref" v-bind="api.getRootProps()">
+  <div v-bind="api.getListProps()">
     <button
       v-for="item in data"
       v-bind="api.getTriggerProps({ value: item.value })"
@@ -10,7 +10,7 @@
     >
       {{ item.label }}
     </button>
-    <div v-bind="api.indicatorProps" />
+    <div v-bind="api.getIndicatorProps()" />
   </div>
   <div
     v-for="item in data"

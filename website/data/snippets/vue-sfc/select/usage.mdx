@@ -24,16 +24,16 @@
 
 <template>
   <div>
-    <label v-bind="api.labelProps">Label</label>
-    <button v-bind="api.triggerProps">
+    <label v-bind="api.getLabelProps()">Label</label>
+    <button v-bind="api.getTriggerProps()">
       <span>{{ api.valueAsString || "Select option" }}</span>
       <span>▼</span>
     </button>
   </div>
 
   <Teleport to="body">
-    <div v-bind="api.positionerProps">
-      <ul v-bind="api.contentProps">
+    <div v-bind="api.getPositionerProps()">
+      <ul v-bind="api.getContentProps()">
         <li
           v-for="item in selectData"
           :key="item.value"

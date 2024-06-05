@@ -20,7 +20,7 @@ export default defineComponent({
     return () => {
       const api = apiRef.value
       return (
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           {data.map((item) => (
             <div {...api.getItemProps({ value: item.title })}>
               <h3>

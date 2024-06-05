@@ -24,16 +24,16 @@
 </script>
 
 <main class="select">
-  <div {...api.rootProps}>
+  <div {...api.getRootProps()}>
     <!-- svelte-ignore a11y_label_has_associated_control -->
-    <label {...api.labelProps}>Label</label>
+    <label {...api.getLabelProps()}>Label</label>
 
-    <div {...api.controlProps}>
-      <button {...api.triggerProps}>
+    <div {...api.getControlProps()}>
+      <button {...api.getTriggerProps()}>
         <span>{api.valueAsString || "Select option"}</span>
-        <span {...api.indicatorProps}>▼</span>
+        <span {...api.getIndicatorProps()}>▼</span>
       </button>
-      <button {...api.clearTriggerProps}>X</button>
+      <button {...api.getClearTriggerProps()}>X</button>
     </div>
 
     <form
@@ -48,7 +48,7 @@
       }}
     >
       <button>Submit</button>
-      <select {...api.hiddenSelectProps}>
+      <select {...api.getHiddenSelectProps()}>
         {#each selectData as option}
           <option value={option.value}>
             {option.label}
@@ -57,8 +57,8 @@
       </select>
     </form>
 
-    <div use:portal {...api.positionerProps}>
-      <ul {...api.contentProps}>
+    <div use:portal {...api.getPositionerProps()}>
+      <ul {...api.getContentProps()}>
         {#each selectData as item}
           <li {...api.getItemProps({ item })}>
             <span {...api.getItemTextProps({ item })}>{item.label}</span>

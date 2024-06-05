@@ -43,20 +43,20 @@ const api = computed(() => combobox.connect(state.value, send, normalizeProps))
     <div>
       <button @click="() => api.setValue(['TG'])">Set to Togo</button>
       <button data-testid="clear-value-button" @click="api.clearValue">Clear Value</button>
-      <button v-bind="api.clearTriggerProps">Clear Trigger</button>
+      <button v-bind="api.getClearTriggerProps()">Clear Trigger</button>
       <br />
 
-      <div v-bind="api.rootProps">
-        <label v-bind="api.labelProps">Select country</label>
+      <div v-bind="api.getRootProps()">
+        <label v-bind="api.getLabelProps()">Select country</label>
 
-        <div v-bind="api.controlProps">
-          <input data-testid="input" v-bind="api.inputProps" />
+        <div v-bind="api.getControlProps()">
+          <input data-testid="input" v-bind="api.getInputProps()" />
           <button data-testid="trigger" v-bind="api.getTriggerProps()">▼</button>
         </div>
       </div>
 
-      <div v-bind="api.positionerProps">
-        <ul v-if="options.length > 0" data-testid="combobox-content" v-bind="api.contentProps">
+      <div v-bind="api.getPositionerProps()">
+        <ul v-if="options.length > 0" data-testid="combobox-content" v-bind="api.getContentProps()">
           <li v-for="item in options" :key="item.code" v-bind="api.getItemProps({ item })">
             {{ item.label }}
           </li>

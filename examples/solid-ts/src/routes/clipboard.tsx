@@ -25,11 +25,11 @@ export default function Page() {
   return (
     <>
       <main class="clipboard">
-        <div {...api().rootProps}>
-          <label {...api().labelProps}>Copy this link</label>
-          <div {...api().controlProps}>
-            <input {...api().inputProps} style={{ width: "100%" }} />
-            <button {...api().triggerProps}>
+        <div {...api().getRootProps()}>
+          <label {...api().getLabelProps()}>Copy this link</label>
+          <div {...api().getControlProps()}>
+            <input {...api().getInputProps()} style={{ width: "100%" }} />
+            <button {...api().getTriggerProps()}>
               <Show when={api().copied} fallback={<ClipboardCopyIcon />}>
                 <ClipboardCheck />
               </Show>

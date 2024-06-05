@@ -32,13 +32,13 @@ export function Toggle() {
   }
 
   // 3. merge the props
-  const triggerProps = mergeProps(api.triggerProps, {
+  const triggerProps = mergeProps(api.getTriggerProps(), {
     onPointerEnter: handleHover,
   })
 
   return (
     // 4. spread the new props
-    <a href="https://twitter.com/zag_js" target="_blank" {...api.triggerProps}>
+    <a href="https://twitter.com/zag_js" target="_blank" {...api.getTriggerProps()}>
       {api.open ? "Open" : "Close"}
     </a>
   )
@@ -133,7 +133,7 @@ function Accordion({ id }) {
   const api = accordion.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       {data.map((item, index) => (
         <div key={index} {...api.getItemProps({ value: item.title })}>
           <h3>

@@ -14,8 +14,8 @@ const api = computed(() => radio.connect(state.value, send, normalizeProps))
 
 <template>
   <main class="segmented-control">
-    <div v-bind="api.rootProps">
-      <div v-bind="api.indicatorProps" />
+    <div v-bind="api.getRootProps()">
+      <div v-bind="api.getIndicatorProps()" />
 
       <label
         v-for="opt in radioData"

@@ -18,9 +18,9 @@ export default function Page() {
   return (
     <>
       <main className="avatar">
-        <div {...api.rootProps}>
-          <span {...api.fallbackProps}>PA</span>
-          {showImage && <img alt="" referrerPolicy="no-referrer" src={src} {...api.imageProps} />}
+        <div {...api.getRootProps()}>
+          <span {...api.getFallbackProps()}>PA</span>
+          {showImage && <img alt="" referrerPolicy="no-referrer" src={src} {...api.getImageProps()} />}
         </div>
 
         <div className="controls">

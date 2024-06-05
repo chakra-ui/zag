@@ -21,9 +21,9 @@ export function Carousel(props: any) {
   return (
     <>
       <main className="carousel">
-        <div {...api.rootProps}>
-          <div {...api.viewportProps}>
-            <div {...api.itemGroupProps}>
+        <div {...api.getRootProps()}>
+          <div {...api.getViewportProps()}>
+            <div {...api.getItemGroupProps()}>
               {items.map((image, index) => (
                 <div {...api.getItemProps({ index })} key={index}>
                   <img src={image} alt={`Slide Image ${index}`} />
@@ -32,10 +32,10 @@ export function Carousel(props: any) {
             </div>
 
             <div data-scope="carousel" data-part="control">
-              <button aria-label="Previous Slide" {...api.prevTriggerProps}>
+              <button aria-label="Previous Slide" {...api.getPrevTriggerProps()}>
                 <HiChevronLeft />
               </button>
-              <div {...api.indicatorGroupProps}>
+              <div {...api.getIndicatorGroupProps()}>
                 {items.map((_, index) => (
                   <button
                     key={index}
@@ -44,7 +44,7 @@ export function Carousel(props: any) {
                   />
                 ))}
               </div>
-              <button aria-label="Previous Slide" {...api.nextTriggerProps}>
+              <button aria-label="Previous Slide" {...api.getNextTriggerProps()}>
                 <HiChevronRight />
               </button>
             </div>

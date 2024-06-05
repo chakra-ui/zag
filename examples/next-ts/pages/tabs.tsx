@@ -24,9 +24,9 @@ export default function Page() {
   return (
     <>
       <main className="tabs">
-        <div {...api.rootProps}>
-          <div {...api.indicatorProps} />
-          <div {...api.listProps}>
+        <div {...api.getRootProps()}>
+          <div {...api.getIndicatorProps()} />
+          <div {...api.getListProps()}>
             {tabsData.map((data) => (
               <button {...api.getTriggerProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
                 {data.label}

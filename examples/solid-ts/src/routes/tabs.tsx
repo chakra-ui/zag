@@ -18,10 +18,10 @@ export default function Page() {
   return (
     <>
       <main class="tabs">
-        <div {...api().rootProps}>
-          <div {...api().indicatorProps} />
+        <div {...api().getRootProps()}>
+          <div {...api().getIndicatorProps()} />
 
-          <div {...api().listProps}>
+          <div {...api().getListProps()}>
             <For each={tabsData}>
               {(item) => (
                 <button data-testid={`${item.id}-tab`} {...api().getTriggerProps({ value: item.id })}>

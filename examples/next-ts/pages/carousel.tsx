@@ -26,11 +26,11 @@ export default function Page() {
   return (
     <>
       <main className="carousel">
-        <div {...api.rootProps}>
-          <button {...api.prevTriggerProps}>Prev</button>
-          <button {...api.nextTriggerProps}>Next</button>
-          <div {...api.viewportProps}>
-            <div {...api.itemGroupProps}>
+        <div {...api.getRootProps()}>
+          <button {...api.getPrevTriggerProps()}>Prev</button>
+          <button {...api.getNextTriggerProps()}>Next</button>
+          <div {...api.getViewportProps()}>
+            <div {...api.getItemGroupProps()}>
               {carouselData.map((image, index) => (
                 <div {...api.getItemProps({ index })} key={index}>
                   <img src={image} alt="" style={{ height: "300px", width: "100%", objectFit: "cover" }} />

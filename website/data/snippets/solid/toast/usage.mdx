@@ -16,9 +16,9 @@ function Toast(props) {
   const api = createMemo(() => toast.connect(state, send, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
-      <h3 {...api().titleProps}>{api().title}</h3>
-      <p {...api().descriptionProps}>{api().description}</p>
+    <div {...api().getRootProps()}>
+      <h3 {...api().getTitleProps()}>{api().title}</h3>
+      <p {...api().getDescriptionProps()}>{api().description}</p>
       <button onClick={api().dismiss}>Close</button>
     </div>
   )
@@ -61,7 +61,7 @@ export function App() {
   )
 }
 
-// 4. Within your app
+// 5. Within your app
 function ExampleComponent() {
   const toast = useToast()
 

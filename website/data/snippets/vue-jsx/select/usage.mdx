@@ -29,15 +29,15 @@ export default defineComponent({
       return (
         <>
           <div>
-            <label {...api.labelProps}>Label</label>
-            <button {...api.triggerProps}>
+            <label {...api.getLabelProps()}>Label</label>
+            <button {...api.getTriggerProps()}>
               <span>{api.valueAsString || "Select option"}</span>
             </button>
           </div>
 
           <Teleport to="body">
-            <div {...api.positionerProps}>
-              <ul {...api.contentProps}>
+            <div {...api.getPositionerProps()}>
+              <ul {...api.getContentProps()}>
                 {selectData.map((item) => (
                   <li key={item.value} {...api.getItemProps({ item })}>
                     <span>{item.label}</span>

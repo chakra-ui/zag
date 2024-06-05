@@ -20,13 +20,13 @@ const api = computed(() => timer.connect(state.value, send, normalizeProps))
 
 <template>
   <main class="timer">
-    <div v-bind="api.rootProps">
+    <div v-bind="api.getRootProps()">
       <div v-bind="api.getSegmentProps({ type: 'days' })">{{ api.formattedTime.days }}</div>
-      <div v-bind="api.separatorProps">:</div>
+      <div v-bind="api.getSeparatorProps()">:</div>
       <div v-bind="api.getSegmentProps({ type: 'hours' })">{{ api.formattedTime.hours }}</div>
-      <div v-bind="api.separatorProps">:</div>
+      <div v-bind="api.getSeparatorProps()">:</div>
       <div v-bind="api.getSegmentProps({ type: 'minutes' })">{{ api.formattedTime.minutes }}</div>
-      <div v-bind="api.separatorProps">:</div>
+      <div v-bind="api.getSeparatorProps()">:</div>
       <div v-bind="api.getSegmentProps({ type: 'seconds' })">{{ api.formattedTime.seconds }}</div>
     </div>
     <div style="display: flex; gap: 4px">

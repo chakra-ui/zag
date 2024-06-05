@@ -39,9 +39,9 @@ export function Menu() {
 
   return (
     <>
-      <button {...api().triggerProps}>Trigger</button>
-      <div {...api().positionerProps}>
-        <div {...api().contentProps}>
+      <button {...api().getTriggerProps()}>Trigger</button>
+      <div {...api().getPositionerProps()}>
+        <div {...api().getContentProps()}>
           <For each={radios()}>
             {(item) => (
               <div {...api().getOptionItemProps(item)}>
@@ -52,7 +52,7 @@ export function Menu() {
               </div>
             )}
           </For>
-          <hr {...api().separatorProps} />
+          <hr {...api().getSeparatorProps()} />
           <For each={checkboxes()}>
             {(item) => (
               <div {...api().getOptionItemProps(item)}>

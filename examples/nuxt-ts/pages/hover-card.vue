@@ -15,13 +15,13 @@ const api = computed(() => hoverCard.connect(state.value, send, normalizeProps))
 <template>
   <main class="hover-card">
     <div style="display: flex; gap: 50px">
-      <a href="https://twitter.com/zag_js" target="_blank" v-bind="api.triggerProps"> Twitter </a>
+      <a href="https://twitter.com/zag_js" target="_blank" v-bind="api.getTriggerProps()"> Twitter </a>
 
       <Teleport to="body" v-if="api.open">
-        <div v-bind="api.positionerProps">
-          <div v-bind="api.contentProps">
-            <div v-bind="api.arrowProps">
-              <div v-bind="api.arrowTipProps" />
+        <div v-bind="api.getPositionerProps()">
+          <div v-bind="api.getContentProps()">
+            <div v-bind="api.getArrowProps()">
+              <div v-bind="api.getArrowTipProps()" />
             </div>
             Twitter Preview
             <a href="https://twitter.com/zag_js" target="_blank"> Twitter </a>

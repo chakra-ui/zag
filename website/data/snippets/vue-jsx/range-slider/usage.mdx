@@ -21,10 +21,10 @@ export default defineComponent({
     return () => {
       const api = apiRef.value
       return (
-        <div {...api.rootProps}>
-          <div {...api.controlProps}>
-            <div {...api.trackProps}>
-              <div {...api.rangeProps} />
+        <div {...api.getRootProps()}>
+          <div {...api.getControlProps()}>
+            <div {...api.getTrackProps()}>
+              <div {...api.getRangeProps()} />
             </div>
             {api.value.map((_, index) => (
               <div key={index} {...api.getThumbProps({ index })}>

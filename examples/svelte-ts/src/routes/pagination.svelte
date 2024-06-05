@@ -51,10 +51,10 @@
     </tbody>
   </table>
   {#if api.totalPages > 1}
-    <nav {...api.rootProps}>
+    <nav {...api.getRootProps()}>
       <ul>
         <li>
-          <button {...api.prevTriggerProps}>
+          <button {...api.getPrevTriggerProps()}>
             Previous <span class="sr-only">Page</span>
           </button>
         </li>
@@ -72,7 +72,7 @@
           {/if}
         {/each}
         <li>
-          <button {...api.nextTriggerProps}>
+          <button {...api.getNextTriggerProps()}>
             Next <span class="sr-only">Page</span>
           </button>
         </li>

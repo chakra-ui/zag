@@ -201,9 +201,9 @@ const components: Record<string, FC<any>> = {
         my="8"
         bg="bg-code-block"
         rounded="6px"
-        {...api.rootProps}
+        {...api.getRootProps()}
       >
-        <Box {...api.listProps}>
+        <Box {...api.getListProps()}>
           {FRAMEWORKS.map((framework) => (
             <chakra.button
               py="2"

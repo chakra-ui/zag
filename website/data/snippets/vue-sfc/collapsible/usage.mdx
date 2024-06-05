@@ -12,9 +12,9 @@
 </script>
 
 <template>
-  <div v-bind="api.rootProps">
-    <button v-bind="api.triggerProps">Collapse Trigger</button>
-    <div v-bind="api.contentProps">Collape Content</div>
+  <div v-bind="api.getRootProps()">
+    <button v-bind="api.getTriggerProps()">Collapse Trigger</button>
+    <div v-bind="api.getContentProps()">Collape Content</div>
   </div>
 </template>
 ```

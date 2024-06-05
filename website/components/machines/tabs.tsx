@@ -20,7 +20,7 @@ export function Tabs(props: any) {
 
   return (
     <div className="tabs">
-      <div {...api.listProps}>
+      <div {...api.getListProps()}>
         {data.map((item) => (
           <button
             {...api.getTriggerProps({ value: item.value })}

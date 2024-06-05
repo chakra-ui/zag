@@ -55,28 +55,30 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getItemState,
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      role: "radiogroup",
-      id: dom.getRootId(state.context),
-      "aria-labelledby": dom.getLabelId(state.context),
-      "data-orientation": state.context.orientation,
-      "data-disabled": dataAttr(groupDisabled),
-      "aria-orientation": state.context.orientation,
-      dir: state.context.dir,
-      style: {
-        position: "relative",
-      },
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        role: "radiogroup",
+        id: dom.getRootId(state.context),
+        "aria-labelledby": dom.getLabelId(state.context),
+        "data-orientation": state.context.orientation,
+        "data-disabled": dataAttr(groupDisabled),
+        "aria-orientation": state.context.orientation,
+        dir: state.context.dir,
+        style: {
+          position: "relative",
+        },
+      }),
 
-    labelProps: normalize.element({
-      ...parts.label.attrs,
-      dir: state.context.dir,
-      "data-orientation": state.context.orientation,
-      "data-disabled": dataAttr(groupDisabled),
-      id: dom.getLabelId(state.context),
-      onClick: focus,
-    }),
+    getLabelProps: () =>
+      normalize.element({
+        ...parts.label.attrs,
+        dir: state.context.dir,
+        "data-orientation": state.context.orientation,
+        "data-disabled": dataAttr(groupDisabled),
+        id: dom.getLabelId(state.context),
+        onClick: focus,
+      }),
 
     getItemProps(props: ItemProps) {
       const itemState = getItemState(props)
@@ -178,27 +180,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    indicatorProps: normalize.element({
-      id: dom.getIndicatorId(state.context),
-      ...parts.indicator.attrs,
-      dir: state.context.dir,
-      hidden: state.context.value == null,
-      "data-disabled": dataAttr(groupDisabled),
-      "data-orientation": state.context.orientation,
-      style: {
-        "--transition-property": "left, top, width, height",
-        "--left": state.context.indicatorRect?.left,
-        "--top": state.context.indicatorRect?.top,
-        "--width": state.context.indicatorRect?.width,
-        "--height": state.context.indicatorRect?.height,
-        position: "absolute",
-        willChange: "var(--transition-property)",
-        transitionProperty: "var(--transition-property)",
-        transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration, 150ms)" : "0ms",
-        transitionTimingFunction: "var(--transition-timing-function)",
-        [state.context.orientation === "horizontal" ? "left" : "top"]:
-          state.context.orientation === "horizontal" ? "var(--left)" : "var(--top)",
-      },
-    }),
+    getIndicatorProps: () =>
+      normalize.element({
+        id: dom.getIndicatorId(state.context),
+        ...parts.indicator.attrs,
+        dir: state.context.dir,
+        hidden: state.context.value == null,
+        "data-disabled": dataAttr(groupDisabled),
+        "data-orientation": state.context.orientation,
+        style: {
+          "--transition-property": "left, top, width, height",
+          "--left": state.context.indicatorRect?.left,
+          "--top": state.context.indicatorRect?.top,
+          "--width": state.context.indicatorRect?.width,
+          "--height": state.context.indicatorRect?.height,
+          position: "absolute",
+          willChange: "var(--transition-property)",
+          transitionProperty: "var(--transition-property)",
+          transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration, 150ms)" : "0ms",
+          transitionTimingFunction: "var(--transition-timing-function)",
+          [state.context.orientation === "horizontal" ? "left" : "top"]:
+            state.context.orientation === "horizontal" ? "var(--left)" : "var(--top)",
+        },
+      }),
   }
 }

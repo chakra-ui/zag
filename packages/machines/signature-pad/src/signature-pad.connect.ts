@@ -24,65 +24,69 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return dom.getDataUrl(state.context, { type, quality })
     },
 
-    labelProps: normalize.element({
-      ...parts.label.attrs,
-      "data-disabled": dataAttr(disabled),
-      htmlFor: dom.getControlId(state.context),
-    }),
+    getLabelProps: () =>
+      normalize.element({
+        ...parts.label.attrs,
+        "data-disabled": dataAttr(disabled),
+        htmlFor: dom.getControlId(state.context),
+      }),
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      "data-disabled": dataAttr(disabled),
-      id: dom.getRootId(state.context),
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        "data-disabled": dataAttr(disabled),
+        id: dom.getRootId(state.context),
+      }),
 
-    controlProps: normalize.element({
-      ...parts.control.attrs,
-      tabIndex: disabled ? undefined : 0,
-      id: dom.getControlId(state.context),
-      "aria-label": "Signature Pad",
-      "aria-roledescription": "signature pad",
-      "aria-disabled": disabled,
-      "data-disabled": dataAttr(disabled),
-      onPointerDown(event) {
-        if (!isLeftClick(event)) return
-        if (isModifierKey(event)) return
-        if (!interactive) return
+    getControlProps: () =>
+      normalize.element({
+        ...parts.control.attrs,
+        tabIndex: disabled ? undefined : 0,
+        id: dom.getControlId(state.context),
+        "aria-label": "Signature Pad",
+        "aria-roledescription": "signature pad",
+        "aria-disabled": disabled,
+        "data-disabled": dataAttr(disabled),
+        onPointerDown(event) {
+          if (!isLeftClick(event)) return
+          if (isModifierKey(event)) return
+          if (!interactive) return
 
-        const target = getEventTarget<HTMLElement>(event)
-        if (target?.closest("[data-part=clear-trigger]")) return
+          const target = getEventTarget<HTMLElement>(event)
+          if (target?.closest("[data-part=clear-trigger]")) return
 
-        event.currentTarget.setPointerCapture(event.pointerId)
+          event.currentTarget.setPointerCapture(event.pointerId)
 
-        const point = { x: event.clientX, y: event.clientY }
-        const { offset } = getRelativePoint(point, dom.getControlEl(state.context)!)
-        send({ type: "POINTER_DOWN", point: offset, pressure: event.pressure })
-      },
-      onPointerUp(event) {
-        if (!interactive) return
-        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-          event.currentTarget.releasePointerCapture(event.pointerId)
-        }
-      },
-      style: {
-        position: "relative",
-        touchAction: "none",
-        userSelect: "none",
-      },
-    }),
+          const point = { x: event.clientX, y: event.clientY }
+          const { offset } = getRelativePoint(point, dom.getControlEl(state.context)!)
+          send({ type: "POINTER_DOWN", point: offset, pressure: event.pressure })
+        },
+        onPointerUp(event) {
+          if (!interactive) return
+          if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+            event.currentTarget.releasePointerCapture(event.pointerId)
+          }
+        },
+        style: {
+          position: "relative",
+          touchAction: "none",
+          userSelect: "none",
+        },
+      }),
 
-    segmentProps: normalize.svg({
-      ...parts.segment.attrs,
-      style: {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        pointerEvents: "none",
-        fill: state.context.drawing.fill,
-      },
-    }),
+    getSegmentProps: () =>
+      normalize.svg({
+        ...parts.segment.attrs,
+        style: {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          fill: state.context.drawing.fill,
+        },
+      }),
 
     getSegmentPathProps(props) {
       return normalize.path({
@@ -91,21 +95,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    guideProps: normalize.element({
-      ...parts.guide.attrs,
-      "data-disabled": dataAttr(disabled),
-    }),
+    getGuideProps: () =>
+      normalize.element({
+        ...parts.guide.attrs,
+        "data-disabled": dataAttr(disabled),
+      }),
 
-    clearTriggerProps: normalize.button({
-      ...parts.clearTrigger.attrs,
-      type: "button",
-      "aria-label": "Clear Signature",
-      hidden: !state.context.paths.length || drawing,
-      disabled: disabled,
-      onClick() {
-        send({ type: "CLEAR" })
-      },
-    }),
+    getClearTriggerProps: () =>
+      normalize.button({
+        ...parts.clearTrigger.attrs,
+        type: "button",
+        "aria-label": "Clear Signature",
+        hidden: !state.context.paths.length || drawing,
+        disabled: disabled,
+        onClick() {
+          send({ type: "CLEAR" })
+        },
+      }),
 
     getHiddenInputProps(props) {
       return normalize.input({

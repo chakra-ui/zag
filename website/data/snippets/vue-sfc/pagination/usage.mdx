@@ -11,10 +11,10 @@ const api = computed(() => pagination.connect(state.value, send, normalizeProps)
 </script>
 
 <template>
-  <nav v-if="api.totalPages > 1" v-bind="api.rootProps">
+  <nav v-if="api.totalPages > 1" v-bind="api.getRootProps()">
     <ul>
       <li>
-        <a href="#previous" v-bind="api.prevTriggerProps">
+        <a href="#previous" v-bind="api.getPrevTriggerProps()">
           Previous <span class="visually-hidden">Page</span>
         </a>
       </li>
@@ -32,7 +32,7 @@ const api = computed(() => pagination.connect(state.value, send, normalizeProps)
         </span>
       </li>
       <li>
-        <a href="#next" v-bind="api.nextTriggerProps">
+        <a href="#next" v-bind="api.getNextTriggerProps()">
           Next <span class="visually-hidden">Page</span>
         </a>
       </li>

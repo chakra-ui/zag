@@ -100,11 +100,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   reposition(options?: Partial<PositioningOptions>): void
 
-  arrowProps: T["element"]
-  arrowTipProps: T["element"]
-  triggerProps: T["element"]
-  positionerProps: T["element"]
-  contentProps: T["element"]
+  getArrowProps(): T["element"]
+  getArrowTipProps(): T["element"]
+  getTriggerProps(): T["element"]
+  getPositionerProps(): T["element"]
+  getContentProps(): T["element"]
 }
 
 /* -----------------------------------------------------------------------------

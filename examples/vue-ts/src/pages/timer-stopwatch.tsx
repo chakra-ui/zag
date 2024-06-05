@@ -21,13 +21,13 @@ export default defineComponent({
       return (
         <>
           <main class="timer">
-            <div {...api.rootProps}>
+            <div {...api.getRootProps()}>
               <div {...api.getSegmentProps({ type: "days" })}>{api.formattedTime.days}</div>
-              <div {...api.separatorProps}>:</div>
+              <div {...api.getSeparatorProps()}>:</div>
               <div {...api.getSegmentProps({ type: "hours" })}>{api.formattedTime.hours}</div>
-              <div {...api.separatorProps}>:</div>
+              <div {...api.getSeparatorProps()}>:</div>
               <div {...api.getSegmentProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
-              <div {...api.separatorProps}>:</div>
+              <div {...api.getSeparatorProps()}>:</div>
               <div {...api.getSegmentProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
             </div>
 

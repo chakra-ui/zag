@@ -21,7 +21,7 @@ export default defineComponent({
       const api = apiRef.value
 
       return (
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           {api.value.map((value, index) => (
             <span key={index} {...api.getItemProps({ index, value })}>
               <div {...api.getItemPreviewProps({ index, value })}>
@@ -33,7 +33,7 @@ export default defineComponent({
               <input {...api.getItemInputProps({ index, value })} />
             </span>
           ))}
-          <input placeholder="Add tag..." {...api.inputProps} />
+          <input placeholder="Add tag..." {...api.getInputProps()} />
         </div>
       )
     }

@@ -46,19 +46,19 @@
 
 <main>
   <div>
-    <button data-testid="trigger" {...api.triggerProps}>
-      Actions <span {...api.indicatorProps}>▾</span>
+    <button data-testid="trigger" {...api.getTriggerProps()}>
+      Actions <span {...api.getIndicatorProps()}>▾</span>
     </button>
 
-    <div use:portal {...api.positionerProps}>
-      <div {...api.contentProps}>
+    <div use:portal {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>
         {#each radios as item}
           <div {...api.getOptionItemProps(item)}>
             <span {...api.getItemIndicatorProps(item)}>✅</span>
             <span {...api.getItemTextProps(item)}>{item.label}</span>
           </div>
         {/each}
-        <hr {...api.separatorProps} />
+        <hr {...api.getSeparatorProps()} />
         {#each checkboxes as item}
           <div {...api.getOptionItemProps(item)}>
             <span {...api.getItemIndicatorProps(item)}>✅</span>

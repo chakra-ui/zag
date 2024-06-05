@@ -30,13 +30,13 @@ export default defineComponent({
       return (
         <>
           <main class="select">
-            <div {...api.rootProps}>
+            <div {...api.getRootProps()}>
               {/* control */}
-              <div {...api.controlProps}>
-                <label {...api.labelProps}>Label</label>
-                <button {...api.triggerProps}>
+              <div {...api.getControlProps()}>
+                <label {...api.getLabelProps()}>Label</label>
+                <button {...api.getTriggerProps()}>
                   {api.valueAsString || "Select option"}
-                  <span {...api.indicatorProps}>▼</span>
+                  <span {...api.getIndicatorProps()}>▼</span>
                 </button>
               </div>
 
@@ -48,7 +48,7 @@ export default defineComponent({
                 }}
               >
                 {/* Hidden select */}
-                <select {...api.hiddenSelectProps}>
+                <select {...api.getHiddenSelectProps()}>
                   {selectData.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
@@ -59,8 +59,8 @@ export default defineComponent({
 
               {/* UI select */}
               <Teleport to="body">
-                <div {...api.positionerProps}>
-                  <ul {...api.contentProps}>
+                <div {...api.getPositionerProps()}>
+                  <ul {...api.getContentProps()}>
                     {selectData.map((item) => (
                       <li key={item.value} {...api.getItemProps({ item })}>
                         <span {...api.getItemTextProps({ item })}>{item.label}</span>

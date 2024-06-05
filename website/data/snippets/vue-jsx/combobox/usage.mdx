@@ -52,18 +52,18 @@ export default defineComponent({
 
       return (
         <div>
-          <div {...api.rootProps}>
-            <label {...api.labelProps}>Select country</label>
+          <div {...api.getRootProps()}>
+            <label {...api.getLabelProps()}>Select country</label>
 
-            <div {...api.controlProps}>
-              <input {...api.inputProps} />
+            <div {...api.getControlProps()}>
+              <input {...api.getInputProps()} />
               <button {...api.getTriggerProps()}>▼</button>
             </div>
           </div>
 
-          <div {...api.positionerProps}>
+          <div {...api.getPositionerProps()}>
             {options.value.length > 0 && (
-              <ul {...api.contentProps}>
+              <ul {...api.getContentProps()}>
                 {options.value.map((item) => (
                   <li key={item.code} {...api.getItemProps({ item })}>
                     {item.label}

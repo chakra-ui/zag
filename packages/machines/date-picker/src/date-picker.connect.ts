@@ -264,47 +264,52 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "GOTO.PREV", view: state.context.view })
     },
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      dir: state.context.dir,
-      id: dom.getRootId(state.context),
-      "data-state": open ? "open" : "closed",
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(readOnly),
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        dir: state.context.dir,
+        id: dom.getRootId(state.context),
+        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
+      }),
 
-    labelProps: normalize.label({
-      ...parts.label.attrs,
-      dir: state.context.dir,
-      htmlFor: dom.getInputId(state.context, 0),
-      "data-state": open ? "open" : "closed",
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(readOnly),
-    }),
+    getLabelProps: () =>
+      normalize.label({
+        ...parts.label.attrs,
+        dir: state.context.dir,
+        htmlFor: dom.getInputId(state.context, 0),
+        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
+      }),
 
-    controlProps: normalize.element({
-      ...parts.control.attrs,
-      dir: state.context.dir,
-      id: dom.getControlId(state.context),
-      "data-disabled": dataAttr(disabled),
-    }),
+    getControlProps: () =>
+      normalize.element({
+        ...parts.control.attrs,
+        dir: state.context.dir,
+        id: dom.getControlId(state.context),
+        "data-disabled": dataAttr(disabled),
+      }),
 
-    rangeTextProps: normalize.element({
-      ...parts.rangeText.attrs,
-      dir: state.context.dir,
-    }),
+    getRangeTextProps: () =>
+      normalize.element({
+        ...parts.rangeText.attrs,
+        dir: state.context.dir,
+      }),
 
-    contentProps: normalize.element({
-      ...parts.content.attrs,
-      hidden: !open,
-      dir: state.context.dir,
-      "data-state": open ? "open" : "closed",
-      "data-placement": currentPlacement,
-      id: dom.getContentId(state.context),
-      role: "application",
-      "aria-roledescription": "datepicker",
-      "aria-label": "calendar",
-    }),
+    getContentProps: () =>
+      normalize.element({
+        ...parts.content.attrs,
+        hidden: !open,
+        dir: state.context.dir,
+        "data-state": open ? "open" : "closed",
+        "data-placement": currentPlacement,
+        id: dom.getContentId(state.context),
+        role: "application",
+        "aria-roledescription": "datepicker",
+        "aria-label": "calendar",
+      }),
 
     getTableProps(props = {}) {
       const { view = "day", columns = view === "day" ? 7 : 4 } = props
@@ -578,36 +583,38 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    clearTriggerProps: normalize.button({
-      ...parts.clearTrigger.attrs,
-      id: dom.getClearTriggerId(state.context),
-      dir: state.context.dir,
-      type: "button",
-      "aria-label": "Clear dates",
-      hidden: !state.context.value.length,
-      onClick(event) {
-        if (event.defaultPrevented) return
-        send("VALUE.CLEAR")
-      },
-    }),
+    getClearTriggerProps: () =>
+      normalize.button({
+        ...parts.clearTrigger.attrs,
+        id: dom.getClearTriggerId(state.context),
+        dir: state.context.dir,
+        type: "button",
+        "aria-label": "Clear dates",
+        hidden: !state.context.value.length,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send("VALUE.CLEAR")
+        },
+      }),
 
-    triggerProps: normalize.button({
-      ...parts.trigger.attrs,
-      id: dom.getTriggerId(state.context),
-      dir: state.context.dir,
-      type: "button",
-      "data-placement": currentPlacement,
-      "aria-label": open ? "Close calendar" : "Open calendar",
-      "aria-controls": dom.getContentId(state.context),
-      "data-state": open ? "open" : "closed",
-      "aria-haspopup": "grid",
-      disabled,
-      onClick(event) {
-        if (event.defaultPrevented) return
-        if (!interactive) return
-        send("TRIGGER.CLICK")
-      },
-    }),
+    getTriggerProps: () =>
+      normalize.button({
+        ...parts.trigger.attrs,
+        id: dom.getTriggerId(state.context),
+        dir: state.context.dir,
+        type: "button",
+        "data-placement": currentPlacement,
+        "aria-label": open ? "Close calendar" : "Open calendar",
+        "aria-controls": dom.getContentId(state.context),
+        "data-state": open ? "open" : "closed",
+        "aria-haspopup": "grid",
+        disabled,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!interactive) return
+          send("TRIGGER.CLICK")
+        },
+      }),
 
     getViewTriggerProps(props = {}) {
       const { view = "day" } = props
@@ -680,36 +687,39 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    monthSelectProps: normalize.select({
-      ...parts.monthSelect.attrs,
-      id: dom.getMonthSelectId(state.context),
-      "aria-label": "Select month",
-      disabled,
-      dir: state.context.dir,
-      defaultValue: startValue.month,
-      onChange(event) {
-        focusMonth(Number(event.currentTarget.value))
-      },
-    }),
+    getMonthSelectProps: () =>
+      normalize.select({
+        ...parts.monthSelect.attrs,
+        id: dom.getMonthSelectId(state.context),
+        "aria-label": "Select month",
+        disabled,
+        dir: state.context.dir,
+        defaultValue: startValue.month,
+        onChange(event) {
+          focusMonth(Number(event.currentTarget.value))
+        },
+      }),
 
-    yearSelectProps: normalize.select({
-      ...parts.yearSelect.attrs,
-      id: dom.getYearSelectId(state.context),
-      disabled,
-      "aria-label": "Select year",
-      dir: state.context.dir,
-      defaultValue: startValue.year,
-      onChange(event) {
-        focusYear(Number(event.currentTarget.value))
-      },
-    }),
+    getYearSelectProps: () =>
+      normalize.select({
+        ...parts.yearSelect.attrs,
+        id: dom.getYearSelectId(state.context),
+        disabled,
+        "aria-label": "Select year",
+        dir: state.context.dir,
+        defaultValue: startValue.year,
+        onChange(event) {
+          focusYear(Number(event.currentTarget.value))
+        },
+      }),
 
-    positionerProps: normalize.element({
-      id: dom.getPositionerId(state.context),
-      ...parts.positioner.attrs,
-      dir: state.context.dir,
-      style: popperStyles.floating,
-    }),
+    getPositionerProps: () =>
+      normalize.element({
+        id: dom.getPositionerId(state.context),
+        ...parts.positioner.attrs,
+        dir: state.context.dir,
+        style: popperStyles.floating,
+      }),
 
     getPresetTriggerProps(props) {
       const value = Array.isArray(props.value) ? props.value : getDateRangePreset(props.value, locale, timeZone)

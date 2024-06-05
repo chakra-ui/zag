@@ -70,7 +70,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   setError(): void
 
-  rootProps: T["element"]
-  imageProps: T["img"]
-  fallbackProps: T["element"]
+  getRootProps(): T["element"]
+  getImageProps(): T["img"]
+  getFallbackProps(): T["element"]
 }

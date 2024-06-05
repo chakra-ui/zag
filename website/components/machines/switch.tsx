@@ -17,12 +17,12 @@ export function Switch(props: SwitchProps) {
 
   return (
     <div>
-      <label {...api.rootProps}>
-        <input {...api.hiddenInputProps} />
-        <span {...api.controlProps}>
-          <span {...api.thumbProps} />
+      <label {...api.getRootProps()}>
+        <input {...api.getHiddenInputProps()} />
+        <span {...api.getControlProps()}>
+          <span {...api.getThumbProps()} />
         </span>
-        <span {...api.labelProps}>{api.checked ? "On" : "Off"}</span>
+        <span {...api.getLabelProps()}>{api.checked ? "On" : "Off"}</span>
       </label>
     </div>
   )

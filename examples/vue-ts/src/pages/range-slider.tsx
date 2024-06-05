@@ -37,15 +37,15 @@ export default defineComponent({
                 console.log(formData)
               }}
             >
-              <div {...api.rootProps}>
+              <div {...api.getRootProps()}>
                 <div>
-                  <label {...api.labelProps}>Quantity:</label>
-                  <output {...api.valueTextProps}>{api.value.join(" - ")}</output>
+                  <label {...api.getLabelProps()}>Quantity:</label>
+                  <output {...api.getValueTextProps()}>{api.value.join(" - ")}</output>
                 </div>
                 <div class="control-area">
-                  <div {...api.controlProps}>
-                    <div {...api.trackProps}>
-                      <div {...api.rangeProps} />
+                  <div {...api.getControlProps()}>
+                    <div {...api.getTrackProps()}>
+                      <div {...api.getRangeProps()} />
                     </div>
                     {api.value.map((_, index) => (
                       <div key={index} {...api.getThumbProps({ index })}>

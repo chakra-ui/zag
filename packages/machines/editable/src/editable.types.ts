@@ -225,13 +225,13 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   submit(): void
 
-  rootProps: T["element"]
-  areaProps: T["element"]
-  labelProps: T["label"]
-  inputProps: T["input"]
-  previewProps: T["element"]
-  editTriggerProps: T["button"]
-  controlProps: T["element"]
-  submitTriggerProps: T["button"]
-  cancelTriggerProps: T["button"]
+  getRootProps(): T["element"]
+  getAreaProps(): T["element"]
+  getLabelProps(): T["label"]
+  getInputProps(): T["input"]
+  getPreviewProps(): T["element"]
+  getEditTriggerProps(): T["button"]
+  getControlProps(): T["element"]
+  getSubmitTriggerProps(): T["button"]
+  getCancelTriggerProps(): T["button"]
 }

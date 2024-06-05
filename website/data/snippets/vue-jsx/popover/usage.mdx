@@ -16,14 +16,14 @@ export default defineComponent({
       const api = apiRef.value
       return (
         <div>
-          <button {...api.triggerProps}>Click me</button>
+          <button {...api.getTriggerProps()}>Click me</button>
           <Teleport to="body" disabled={!api.portalled}>
-            <div {...api.positionerProps}>
-              <div {...api.contentProps}>
-                <div {...api.titleProps}>Presenters</div>
-                <div {...api.descriptionProps}>Description</div>
+            <div {...api.getPositionerProps()}>
+              <div {...api.getContentProps()}>
+                <div {...api.getTitleProps()}>Presenters</div>
+                <div {...api.getDescriptionProps()}>Description</div>
                 <button>Action Button</button>
-                <button {...api.closeTriggerProps}>X</button>
+                <button {...api.getCloseTriggerProps()}>X</button>
               </div>
             </div>
           </Teleport>

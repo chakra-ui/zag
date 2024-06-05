@@ -21,7 +21,7 @@ export default defineComponent({
     return () => {
       const api = apiRef.value
       return (
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           <div {...api.getPanelProps({ id: "a" })}>
             <p>A</p>
           </div>

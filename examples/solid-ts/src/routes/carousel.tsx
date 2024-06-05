@@ -18,11 +18,11 @@ export default function Page() {
   return (
     <>
       <main class="carousel">
-        <div {...api().rootProps}>
-          <button {...api().prevTriggerProps}>Prev</button>
-          <button {...api().nextTriggerProps}>Next</button>
-          <div {...api().viewportProps}>
-            <div {...api().itemGroupProps}>
+        <div {...api().getRootProps()}>
+          <button {...api().getPrevTriggerProps()}>Prev</button>
+          <button {...api().getNextTriggerProps()}>Next</button>
+          <div {...api().getViewportProps()}>
+            <div {...api().getItemGroupProps()}>
               <For each={carouselData}>
                 {(image, index) => (
                   <div {...api().getItemProps({ index: index() })}>

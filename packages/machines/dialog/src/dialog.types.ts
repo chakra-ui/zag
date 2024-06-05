@@ -132,11 +132,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   setOpen(open: boolean): void
 
-  triggerProps: T["button"]
-  backdropProps: T["element"]
-  positionerProps: T["element"]
-  contentProps: T["element"]
-  titleProps: T["element"]
-  descriptionProps: T["element"]
-  closeTriggerProps: T["button"]
+  getTriggerProps(): T["button"]
+  getBackdropProps(): T["element"]
+  getPositionerProps(): T["element"]
+  getContentProps(): T["element"]
+  getTitleProps(): T["element"]
+  getDescriptionProps(): T["element"]
+  getCloseTriggerProps(): T["button"]
 }

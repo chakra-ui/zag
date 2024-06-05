@@ -15,10 +15,10 @@
 </script>
 
 <template>
-  <div ref="ref" v-bind="api.rootProps">
-    <div v-bind="api.controlProps">
-      <div v-bind="api.trackProps">
-        <div v-bind="api.rangeProps" />
+  <div ref="ref" v-bind="api.getRootProps()">
+    <div v-bind="api.getControlProps()">
+      <div v-bind="api.getTrackProps()">
+        <div v-bind="api.getRangeProps()" />
       </div>
       <div
         v-for="(_, index) in api.value"

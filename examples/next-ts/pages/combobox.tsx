@@ -50,21 +50,21 @@ export default function Page() {
             Clear Value
           </button>
           <br />
-          <div {...api.rootProps}>
-            <label {...api.labelProps}>Select country</label>
-            <div {...api.controlProps}>
-              <input data-testid="input" {...api.inputProps} />
+          <div {...api.getRootProps()}>
+            <label {...api.getLabelProps()}>Select country</label>
+            <div {...api.getControlProps()}>
+              <input data-testid="input" {...api.getInputProps()} />
               <button data-testid="trigger" {...api.getTriggerProps()}>
                 ▼
               </button>
-              <button {...api.clearTriggerProps}>
+              <button {...api.getClearTriggerProps()}>
                 <XIcon />
               </button>
             </div>
           </div>
-          <div {...api.positionerProps}>
+          <div {...api.getPositionerProps()}>
             {options.length > 0 && (
-              <ul data-testid="combobox-content" {...api.contentProps}>
+              <ul data-testid="combobox-content" {...api.getContentProps()}>
                 {options.map((item) => (
                   <li data-testid={item.code} key={item.code} {...api.getItemProps({ item })}>
                     <span {...api.getItemIndicatorProps({ item })}>✅</span>

@@ -194,9 +194,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   setPage(page: number): void
 
-  rootProps: T["element"]
+  getRootProps(): T["element"]
   getEllipsisProps(props: EllipsisProps): T["element"]
   getItemProps(page: ItemProps): T["element"]
-  prevTriggerProps: T["element"]
-  nextTriggerProps: T["element"]
+  getPrevTriggerProps(): T["element"]
+  getNextTriggerProps(): T["element"]
 }

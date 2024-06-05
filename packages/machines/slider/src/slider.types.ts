@@ -277,15 +277,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to focus the slider. This focuses the first thumb.
    */
   focus(): void
-  labelProps: T["label"]
-  rootProps: T["element"]
-  valueTextProps: T["element"]
-  trackProps: T["element"]
+  getLabelProps(): T["label"]
+  getRootProps(): T["element"]
+  getValueTextProps(): T["element"]
+  getTrackProps(): T["element"]
   getThumbProps(props: ThumbProps): T["element"]
   getHiddenInputProps(props: ThumbProps): T["input"]
-  rangeProps: T["element"]
-  controlProps: T["element"]
-  markerGroupProps: T["element"]
+  getRangeProps(): T["element"]
+  getControlProps(): T["element"]
+  getMarkerGroupProps(): T["element"]
   getMarkerProps(props: MarkerProps): T["element"]
 }
 

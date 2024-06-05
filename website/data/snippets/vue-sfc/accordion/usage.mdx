@@ -16,7 +16,7 @@ const api = computed(() => accordion.connect(state.value, send, normalizeProps))
 </script>
 
 <template>
-  <div ref="ref" v-bind="api.rootProps">
+  <div ref="ref" v-bind="api.getRootProps()">
     <div
       v-for="item in data"
       :key="item.id"

@@ -10,16 +10,16 @@ const api = computed(() => timePicker.connect(state.value, send, normalizeProps)
 </script>
 
 <template>
-  <div v-bind="api.rootProps">
-    <div v-bind="api.controlProps" :style="{ display: 'flex', gap: '10px' }">
-      <input v-bind="api.inputProps" />
-      <button v-bind="api.triggerProps">🗓</button>
-      <button v-bind="api.clearTriggerProps">❌</button>
+  <div v-bind="api.getRootProps()">
+    <div v-bind="api.getControlProps()" :style="{ display: 'flex', gap: '10px' }">
+      <input v-bind="api.getInputProps()" />
+      <button v-bind="api.getTriggerProps()">🗓</button>
+      <button v-bind="api.getClearTriggerProps()">❌</button>
     </div>
 
     <Teleport to="body">
-      <div v-bind="api.positionerProps">
-        <div v-bind="api.contentProps">
+      <div v-bind="api.getPositionerProps()">
+        <div v-bind="api.getContentProps()">
           <div v-bind="api.getColumnProps({ unit: 'hour' })">
             <button v-for="item in api.getHours()" v-bind="api.getHourCellProps({ value: item.value })">
               {{ item.label }}

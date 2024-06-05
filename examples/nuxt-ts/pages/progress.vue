@@ -14,16 +14,16 @@ const api = computed(() => progress.connect(state.value, send, normalizeProps))
 
 <template>
   <main className="progress">
-    <div v-bind="api.rootProps">
-      <div v-bind="api.labelProps">Upload progress</div>
-      <svg v-bind="api.circleProps">
-        <circle v-bind="api.circleTrackProps" />
-        <circle v-bind="api.circleRangeProps" />
+    <div v-bind="api.getRootProps()">
+      <div v-bind="api.getLabelProps()">Upload progress</div>
+      <svg v-bind="api.getCircleProps()">
+        <circle v-bind="api.getCircleTrackProps()" />
+        <circle v-bind="api.getCircleRangeProps()" />
       </svg>
-      <div v-bind="api.trackProps">
-        <div v-bind="api.rangeProps" />
+      <div v-bind="api.getTrackProps()">
+        <div v-bind="api.getRangeProps()" />
       </div>
-      <div v-bind="api.valueTextProps">{{ api.valueAsString }}</div>
+      <div v-bind="api.getValueTextProps()">{{ api.valueAsString }}</div>
       <div>
         <button @click="() => api.setValue((api.value ?? 0) - 20)">Decrease</button>
         <button @click="() => api.setValue((api.value ?? 0) + 20)">Increase</button>

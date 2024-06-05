@@ -214,12 +214,12 @@ export interface MachineApi<T extends PropTypes> {
    */
   createFileUrl(file: File, cb: (url: string) => void): VoidFunction
 
-  labelProps: T["label"]
-  rootProps: T["element"]
-  dropzoneProps: T["element"]
-  triggerProps: T["button"]
-  hiddenInputProps: T["input"]
-  itemGroupProps: T["element"]
+  getLabelProps(): T["label"]
+  getRootProps(): T["element"]
+  getDropzoneProps(): T["element"]
+  getTriggerProps(): T["button"]
+  getHiddenInputProps(): T["input"]
+  getItemGroupProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemNameProps(props: ItemProps): T["element"]
   getItemPreviewProps(props: ItemProps): T["element"]

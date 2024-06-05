@@ -17,10 +17,10 @@ export default function Page() {
   return (
     <>
       <main className="context-menu">
-        <div {...api.contextTriggerProps}>Right Click here</div>
+        <div {...api.getContextTriggerProps()}>Right Click here</div>
         <Portal>
-          <div {...api.positionerProps}>
-            <ul {...api.contentProps}>
+          <div {...api.getPositionerProps()}>
+            <ul {...api.getContentProps()}>
               <li {...api.getItemProps({ value: "edit" })}>Edit</li>
               <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
               <li {...api.getItemProps({ value: "delete" })}>Delete</li>

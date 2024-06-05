@@ -11,9 +11,9 @@
 </script>
 
 <template>
-  <div v-bind="api.rootProps">
-    <label v-bind="api.labelProps">Rate:</label>
-    <div v-bind="api.controlProps">
+  <div v-bind="api.getRootProps()">
+    <label v-bind="api.getLabelProps()">Rate:</label>
+    <div v-bind="api.getControlProps()">
       <span
         v-for="index in api.items"
         :key="index"
@@ -23,7 +23,7 @@
         <Star v-else />
       </span>
     </div>
-    <input v-bind="api.hiddenInputProps" />
+    <input v-bind="api.getHiddenInputProps()" />
   </div>
 </template>
 ```

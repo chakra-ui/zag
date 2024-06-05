@@ -79,10 +79,10 @@ export default function Page() {
         Doloremque ea sequi totam laudantium laboriosam repellat quasi commodi omnis aut nulla. Numquam, beatae maxime.
       </div>
       <div data-part="root">
-        <div {...api.positionerProps}>
-          <div ref={contentRef} data-testid="popover-content" className="popover-content" {...api.contentProps}>
-            <div {...api.arrowProps}>
-              <div {...api.arrowTipProps} />
+        <div {...api.getPositionerProps()}>
+          <div ref={contentRef} data-testid="popover-content" className="popover-content" {...api.getContentProps()}>
+            <div {...api.getArrowProps()}>
+              <div {...api.getArrowTipProps()} />
             </div>
             <button>Save</button>
             <button>Cancel</button>

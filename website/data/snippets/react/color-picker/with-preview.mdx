@@ -10,7 +10,7 @@ const ColorPicker = () => {
   const api = colorPicker.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       <div>
         <div {...api.getTransparencyGridProps({ size: "4px" })} />
         <div {...api.getSwatchProps({ value: api.value })} />

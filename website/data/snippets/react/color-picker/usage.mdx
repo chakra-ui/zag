@@ -14,13 +14,13 @@ function ColorPicker() {
   const api = colorPicker.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Select Color: {api.valueAsString}</label>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Select Color: {api.valueAsString}</label>
 
-      <input {...api.hiddenInputProps} />
+      <input {...api.getHiddenInputProps()} />
 
-      <div {...api.controlProps}>
-        <button {...api.triggerProps}>
+      <div {...api.getControlProps()}>
+        <button {...api.getTriggerProps()}>
           <div {...api.getTransparencyGridProps({ size: "10px" })} />
           <div {...api.getSwatchProps({ value: api.value })} />
         </button>
@@ -28,8 +28,8 @@ function ColorPicker() {
         <input {...api.getChannelInputProps({ channel: "alpha" })} />
       </div>
 
-      <div {...api.positionerProps}>
-        <div {...api.contentProps}>
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
           <div {...api.getAreaProps()}>
             <div {...api.getAreaBackgroundProps()} />
             <div {...api.getAreaThumbProps()} />

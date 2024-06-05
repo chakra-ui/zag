@@ -48,11 +48,11 @@ export default defineComponent({
       const shareMenu = shareMenuApi.value
       return (
         <>
-          <button {...fileMenu.triggerProps}>Click me</button>
+          <button {...fileMenu.getTriggerProps()}>Click me</button>
 
           <Teleport to="body">
-            <div {...fileMenu.positionerProps}>
-              <ul {...fileMenu.contentProps}>
+            <div {...fileMenu.getPositionerProps()}>
+              <ul {...fileMenu.getContentProps()}>
                 <li {...fileMenu.getItemProps({ value: "new-tab" })}>
                   New tab
                 </li>
@@ -67,8 +67,8 @@ export default defineComponent({
           </Teleport>
 
           <Teleport to="body">
-            <div {...shareMenu.positionerProps}>
-              <ul {...shareMenu.contentProps}>
+            <div {...shareMenu.getPositionerProps()}>
+              <ul {...shareMenu.getContentProps()}>
                 <li {...shareMenu.getItemProps({ value: "messages" })}>
                   Messages
                 </li>

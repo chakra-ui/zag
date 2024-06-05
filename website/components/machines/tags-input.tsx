@@ -14,9 +14,9 @@ export function TagsInput(props: any) {
   const api = tagsInput.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Enter frameworks:</label>
-      <div {...api.controlProps}>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Enter frameworks:</label>
+      <div {...api.getControlProps()}>
         {api.value.map((value, index) => {
           const opt = { index, value }
           return (
@@ -31,7 +31,7 @@ export function TagsInput(props: any) {
             </span>
           )
         })}
-        <input placeholder="Add tag..." {...api.inputProps} />
+        <input placeholder="Add tag..." {...api.getInputProps()} />
       </div>
     </div>
   )

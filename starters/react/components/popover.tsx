@@ -27,23 +27,23 @@ export function Popover(props: Props) {
 
   return (
     <>
-      <button {...api.triggerProps}>
+      <button {...api.getTriggerProps()}>
         Click me
-        <div {...api.indicatorProps}>{">"}</div>
+        <div {...api.getIndicatorProps()}>{">"}</div>
       </button>
 
       <Portal>
-        <div {...api.positionerProps}>
-          <div {...api.contentProps}>
-            <div {...api.arrowProps}>
-              <div {...api.arrowTipProps} />
+        <div {...api.getPositionerProps()}>
+          <div {...api.getContentProps()}>
+            <div {...api.getArrowProps()}>
+              <div {...api.getArrowTipProps()} />
             </div>
-            <div {...api.titleProps}>Popover Title</div>
+            <div {...api.getTitleProps()}>Popover Title</div>
             <div data-part="body">
               <a>Non-focusable Link</a>
               <a href="#">Focusable Link</a>
               <input placeholder="input" />
-              <button {...api.closeTriggerProps}>X</button>
+              <button {...api.getCloseTriggerProps()}>X</button>
             </div>
           </div>
         </div>

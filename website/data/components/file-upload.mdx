@@ -137,7 +137,7 @@ const [state, send] = useMachine(
 ## Usage within a form
 
 To use the file upload within a form, set the `name` attribute in the machine's
-context, and ensure you render the input element `api.hiddenInputProps`
+context, and ensure you render the input element `api.getHiddenInputProps()`
 
 ```jsx
 const [state, send] = useMachine(

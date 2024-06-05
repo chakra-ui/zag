@@ -20,130 +20,137 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     dragging: dragging,
     resizing: resizing,
 
-    triggerProps: normalize.button({
-      ...parts.trigger.attrs,
-      type: "button",
-      disabled: state.context.disabled,
-      id: dom.getTriggerId(state.context),
-      "data-state": open ? "open" : "closed",
-      "data-dragging": dataAttr(dragging),
-      "aria-controls": dom.getContentId(state.context),
-      onClick(event) {
-        if (event.defaultPrevented) return
-        if (state.context.disabled) return
-        send({ type: "OPEN" })
-      },
-    }),
+    getTriggerProps: () =>
+      normalize.button({
+        ...parts.trigger.attrs,
+        type: "button",
+        disabled: state.context.disabled,
+        id: dom.getTriggerId(state.context),
+        "data-state": open ? "open" : "closed",
+        "data-dragging": dataAttr(dragging),
+        "aria-controls": dom.getContentId(state.context),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (state.context.disabled) return
+          send({ type: "OPEN" })
+        },
+      }),
 
-    positionerProps: normalize.element({
-      ...parts.positioner.attrs,
-      id: dom.getPositionerId(state.context),
-      style: {
-        position: "absolute",
-        top: "var(--y)",
-        left: "var(--x)",
-      },
-    }),
+    getPositionerProps: () =>
+      normalize.element({
+        ...parts.positioner.attrs,
+        id: dom.getPositionerId(state.context),
+        style: {
+          position: "absolute",
+          top: "var(--y)",
+          left: "var(--x)",
+        },
+      }),
 
-    contentProps: normalize.element({
-      ...parts.content.attrs,
-      role: "dialog",
-      tabIndex: 0,
-      hidden: !open,
-      id: dom.getContentId(state.context),
-      "aria-labelledby": dom.getTitleId(state.context),
-      "data-state": open ? "open" : "closed",
-      "data-dragging": dataAttr(dragging),
-      "data-topmost": dataAttr(state.context.isTopmost),
-      "data-behind": dataAttr(!state.context.isTopmost),
-      style: {
-        position: state.context.strategy,
-        width: "var(--width)",
-        height: "var(--height)",
-        overflow: state.context.isMinimized ? "hidden" : undefined,
-      },
-      onFocus() {
-        send({ type: "WINDOW_FOCUS" })
-      },
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        if (!isSelfTarget(event)) return
+    getContentProps: () =>
+      normalize.element({
+        ...parts.content.attrs,
+        role: "dialog",
+        tabIndex: 0,
+        hidden: !open,
+        id: dom.getContentId(state.context),
+        "aria-labelledby": dom.getTitleId(state.context),
+        "data-state": open ? "open" : "closed",
+        "data-dragging": dataAttr(dragging),
+        "data-topmost": dataAttr(state.context.isTopmost),
+        "data-behind": dataAttr(!state.context.isTopmost),
+        style: {
+          position: state.context.strategy,
+          width: "var(--width)",
+          height: "var(--height)",
+          overflow: state.context.isMinimized ? "hidden" : undefined,
+        },
+        onFocus() {
+          send({ type: "WINDOW_FOCUS" })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (!isSelfTarget(event)) return
 
-        const step = getEventStep(event) * state.context.gridSize
-        const keyMap: EventKeyMap = {
-          Escape() {
-            if (!state.context.isTopmost) return
-            send("ESCAPE")
-          },
-          ArrowLeft() {
-            send({ type: "MOVE", direction: "left", step })
-          },
-          ArrowRight() {
-            send({ type: "MOVE", direction: "right", step })
-          },
-          ArrowUp() {
-            send({ type: "MOVE", direction: "up", step })
-          },
-          ArrowDown() {
-            send({ type: "MOVE", direction: "down", step })
-          },
-        }
+          const step = getEventStep(event) * state.context.gridSize
+          const keyMap: EventKeyMap = {
+            Escape() {
+              if (!state.context.isTopmost) return
+              send("ESCAPE")
+            },
+            ArrowLeft() {
+              send({ type: "MOVE", direction: "left", step })
+            },
+            ArrowRight() {
+              send({ type: "MOVE", direction: "right", step })
+            },
+            ArrowUp() {
+              send({ type: "MOVE", direction: "up", step })
+            },
+            ArrowDown() {
+              send({ type: "MOVE", direction: "down", step })
+            },
+          }
 
-        const handler = keyMap[getEventKey(event, state.context)]
+          const handler = keyMap[getEventKey(event, state.context)]
 
-        if (handler) {
-          event.preventDefault()
-          handler(event)
-        }
-      },
-    }),
+          if (handler) {
+            event.preventDefault()
+            handler(event)
+          }
+        },
+      }),
 
-    closeTriggerProps: normalize.button({
-      ...parts.closeTrigger.attrs,
-      disabled: state.context.disabled,
-      "aria-label": "Close Window",
-      type: "button",
-      onClick(event) {
-        if (event.defaultPrevented) return
-        send("CLOSE")
-      },
-    }),
+    getCloseTriggerProps: () =>
+      normalize.button({
+        ...parts.closeTrigger.attrs,
+        disabled: state.context.disabled,
+        "aria-label": "Close Window",
+        type: "button",
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send("CLOSE")
+        },
+      }),
 
-    minimizeTriggerProps: normalize.button({
-      ...parts.minimizeTrigger.attrs,
-      disabled: state.context.disabled,
-      "aria-label": "Minimize Window",
-      hidden: state.context.isStaged,
-      type: "button",
-      onClick(event) {
-        if (event.defaultPrevented) return
-        send("MINIMIZE")
-      },
-    }),
+    getMinimizeTriggerProps: () =>
+      normalize.button({
+        ...parts.minimizeTrigger.attrs,
+        disabled: state.context.disabled,
+        "aria-label": "Minimize Window",
+        hidden: state.context.isStaged,
+        type: "button",
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send("MINIMIZE")
+        },
+      }),
 
-    maximizeTriggerProps: normalize.button({
-      ...parts.maximizeTrigger.attrs,
-      disabled: state.context.disabled,
-      "aria-label": "Maximize Window",
-      hidden: state.context.isStaged,
-      type: "button",
-      onClick(event) {
-        if (event.defaultPrevented) return
-        send("MAXIMIZE")
-      },
-    }),
+    getMaximizeTriggerProps: () =>
+      normalize.button({
+        ...parts.maximizeTrigger.attrs,
+        disabled: state.context.disabled,
+        "aria-label": "Maximize Window",
+        hidden: state.context.isStaged,
+        type: "button",
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send("MAXIMIZE")
+        },
+      }),
 
-    restoreTriggerProps: normalize.button({
-      ...parts.restoreTrigger.attrs,
-      disabled: state.context.disabled,
-      "aria-label": "Restore Window",
-      hidden: !state.context.isStaged,
-      type: "button",
-      onClick(event) {
-        if (event.defaultPrevented) return
-        send("RESTORE")
-      },
-    }),
+    getRestoreTriggerProps: () =>
+      normalize.button({
+        ...parts.restoreTrigger.attrs,
+        disabled: state.context.disabled,
+        "aria-label": "Restore Window",
+        hidden: !state.context.isStaged,
+        type: "button",
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send("RESTORE")
+        },
+      }),
 
     getResizeTriggerProps(props: ResizeTriggerProps) {
       return normalize.element({
@@ -177,60 +184,64 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    dragTriggerProps: normalize.element({
-      ...parts.dragTrigger.attrs,
-      "data-disabled": dataAttr(!state.context.canDrag),
-      onPointerDown(event) {
-        if (!state.context.canDrag || event.button == 2) return
+    getDragTriggerProps: () =>
+      normalize.element({
+        ...parts.dragTrigger.attrs,
+        "data-disabled": dataAttr(!state.context.canDrag),
+        onPointerDown(event) {
+          if (!state.context.canDrag || event.button == 2) return
 
-        const target = getEventTarget<HTMLElement>(event)
-        if (target?.closest("button") || target?.closest("[data-no-drag]")) {
-          return
-        }
+          const target = getEventTarget<HTMLElement>(event)
+          if (target?.closest("button") || target?.closest("[data-no-drag]")) {
+            return
+          }
 
-        event.currentTarget.setPointerCapture(event.pointerId)
-        event.stopPropagation()
+          event.currentTarget.setPointerCapture(event.pointerId)
+          event.stopPropagation()
 
-        send({
-          type: "DRAG_START",
-          pointerId: event.pointerId,
-          position: { x: event.clientX, y: event.clientY },
-        })
-      },
-      onPointerUp(event) {
-        if (!state.context.canDrag) return
-        const node = event.currentTarget
-        if (node.hasPointerCapture(event.pointerId)) {
-          node.releasePointerCapture(event.pointerId)
-        }
-      },
-      onDoubleClick() {
-        send(state.context.isMaximized ? "RESTORE" : "MAXIMIZE")
-      },
-      style: {
-        userSelect: "none",
-        touchAction: "none",
-        cursor: "move",
-      },
-    }),
+          send({
+            type: "DRAG_START",
+            pointerId: event.pointerId,
+            position: { x: event.clientX, y: event.clientY },
+          })
+        },
+        onPointerUp(event) {
+          if (!state.context.canDrag) return
+          const node = event.currentTarget
+          if (node.hasPointerCapture(event.pointerId)) {
+            node.releasePointerCapture(event.pointerId)
+          }
+        },
+        onDoubleClick() {
+          send(state.context.isMaximized ? "RESTORE" : "MAXIMIZE")
+        },
+        style: {
+          userSelect: "none",
+          touchAction: "none",
+          cursor: "move",
+        },
+      }),
 
-    titleProps: normalize.element({
-      ...parts.title.attrs,
-      id: dom.getTitleId(state.context),
-    }),
+    getTitleProps: () =>
+      normalize.element({
+        ...parts.title.attrs,
+        id: dom.getTitleId(state.context),
+      }),
 
-    headerProps: normalize.element({
-      ...parts.header.attrs,
-      id: dom.getHeaderId(state.context),
-      "data-dragging": dataAttr(dragging),
-      "data-topmost": dataAttr(state.context.isTopmost),
-      "data-behind": dataAttr(!state.context.isTopmost),
-    }),
+    getHeaderProps: () =>
+      normalize.element({
+        ...parts.header.attrs,
+        id: dom.getHeaderId(state.context),
+        "data-dragging": dataAttr(dragging),
+        "data-topmost": dataAttr(state.context.isTopmost),
+        "data-behind": dataAttr(!state.context.isTopmost),
+      }),
 
-    bodyProps: normalize.element({
-      ...parts.body.attrs,
-      "data-dragging": dataAttr(dragging),
-      hidden: state.context.isMinimized,
-    }),
+    getBodyProps: () =>
+      normalize.element({
+        ...parts.body.attrs,
+        "data-dragging": dataAttr(dragging),
+        hidden: state.context.isMinimized,
+      }),
   }
 }

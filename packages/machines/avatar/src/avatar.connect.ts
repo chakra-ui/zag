@@ -17,32 +17,35 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "IMG.ERROR", src: "api" })
     },
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      dir: state.context.dir,
-      id: dom.getRootId(state.context),
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        dir: state.context.dir,
+        id: dom.getRootId(state.context),
+      }),
 
-    imageProps: normalize.img({
-      ...parts.image.attrs,
-      hidden: !loaded,
-      dir: state.context.dir,
-      id: dom.getImageId(state.context),
-      "data-state": loaded ? "visible" : "hidden",
-      onLoad() {
-        send({ type: "IMG.LOADED", src: "element" })
-      },
-      onError() {
-        send({ type: "IMG.ERROR", src: "element" })
-      },
-    }),
+    getImageProps: () =>
+      normalize.img({
+        ...parts.image.attrs,
+        hidden: !loaded,
+        dir: state.context.dir,
+        id: dom.getImageId(state.context),
+        "data-state": loaded ? "visible" : "hidden",
+        onLoad() {
+          send({ type: "IMG.LOADED", src: "element" })
+        },
+        onError() {
+          send({ type: "IMG.ERROR", src: "element" })
+        },
+      }),
 
-    fallbackProps: normalize.element({
-      ...parts.fallback.attrs,
-      dir: state.context.dir,
-      id: dom.getFallbackId(state.context),
-      hidden: loaded,
-      "data-state": loaded ? "hidden" : "visible",
-    }),
+    getFallbackProps: () =>
+      normalize.element({
+        ...parts.fallback.attrs,
+        dir: state.context.dir,
+        id: dom.getFallbackId(state.context),
+        hidden: loaded,
+        "data-state": loaded ? "hidden" : "visible",
+      }),
   }
 }

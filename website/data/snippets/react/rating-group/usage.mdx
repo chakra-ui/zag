@@ -9,9 +9,9 @@ function Rating() {
   const api = rating.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Rate:</label>
-      <div {...api.controlProps}>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Rate:</label>
+      <div {...api.getControlProps()}>
         {api.items.map((index) => {
           const state = api.getItemState({ index })
           return (
@@ -21,7 +21,7 @@ function Rating() {
           )
         })}
       </div>
-      <input {...api.hiddenInputProps} />
+      <input {...api.getHiddenInputProps()} />
     </div>
   )
 }

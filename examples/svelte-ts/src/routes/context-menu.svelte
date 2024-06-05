@@ -15,9 +15,9 @@
 </script>
 
 <main class="context-menu">
-  <div {...api.contextTriggerProps}>Right Click here</div>
-  <div use:portal {...api.positionerProps}>
-    <ul {...api.contentProps}>
+  <div {...api.getContextTriggerProps()}>Right Click here</div>
+  <div use:portal {...api.getPositionerProps()}>
+    <ul {...api.getContentProps()}>
       <li {...api.getItemProps({ value: "edit" })}>Edit</li>
       <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
       <li {...api.getItemProps({ value: "delete" })}>Delete</li>

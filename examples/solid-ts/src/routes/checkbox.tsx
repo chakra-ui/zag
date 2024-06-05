@@ -33,11 +33,11 @@ export default function Page() {
         >
           <fieldset>
             <fieldset>
-              <label {...api().rootProps}>
-                <div {...api().controlProps} />
-                <span {...api().labelProps}>Input {api().checked ? "Checked" : "Unchecked"}</span>
-                <input {...api().hiddenInputProps} data-testid="hidden-input" />
-                <div {...api().indicatorProps}>Indicator</div>
+              <label {...api().getRootProps()}>
+                <div {...api().getControlProps()} />
+                <span {...api().getLabelProps()}>Input {api().checked ? "Checked" : "Unchecked"}</span>
+                <input {...api().getHiddenInputProps()} data-testid="hidden-input" />
+                <div {...api().getIndicatorProps()}>Indicator</div>
               </label>
             </fieldset>
 

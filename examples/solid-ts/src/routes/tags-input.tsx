@@ -26,9 +26,9 @@ export default function Page() {
   return (
     <>
       <main class="tags-input">
-        <div {...api().rootProps}>
-          <label {...api().labelProps}>Enter frameworks:</label>
-          <div {...api().controlProps}>
+        <div {...api().getRootProps()}>
+          <label {...api().getLabelProps()}>Enter frameworks:</label>
+          <div {...api().getControlProps()}>
             <For each={api().value}>
               {(value, index) => (
                 <span {...api().getItemProps({ index: index(), value })}>
@@ -56,9 +56,9 @@ export default function Page() {
                 </span>
               )}
             </For>
-            <input data-testid="input" placeholder="add tag" {...api().inputProps} />
+            <input data-testid="input" placeholder="add tag" {...api().getInputProps()} />
           </div>
-          <input {...api().hiddenInputProps} />
+          <input {...api().getHiddenInputProps()} />
         </div>
       </main>
 

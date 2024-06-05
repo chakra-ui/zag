@@ -68,15 +68,15 @@ export function VirtualizedSelect(props: SelectProps) {
   const api = select.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <div {...api.controlProps}>
-        <label {...api.labelProps}>Label</label>
-        <button {...api.triggerProps}>{api.valueAsString || "Select a country"}</button>
+    <div {...api.getRootProps()}>
+      <div {...api.getControlProps()}>
+        <label {...api.getLabelProps()}>Label</label>
+        <button {...api.getTriggerProps()}>{api.valueAsString || "Select a country"}</button>
       </div>
 
       <Portal>
-        <div {...api.positionerProps}>
-          <div ref={contentRef} {...api.contentProps}>
+        <div {...api.getPositionerProps()}>
+          <div ref={contentRef} {...api.getContentProps()}>
             <div
               style={{
                 height: `${rowVirtualizer.getTotalSize()}px`,

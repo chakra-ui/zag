@@ -84,142 +84,147 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       if (nextOpen === open) return
       send(nextOpen ? "OPEN" : "CLOSE")
     },
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      dir: state.context.dir,
-      id: dom.getRootId(state.context),
-      "data-invalid": dataAttr(invalid),
-      "data-readonly": dataAttr(readOnly),
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        dir: state.context.dir,
+        id: dom.getRootId(state.context),
+        "data-invalid": dataAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
+      }),
 
-    labelProps: normalize.label({
-      ...parts.label.attrs,
-      dir: state.context.dir,
-      htmlFor: dom.getInputId(state.context),
-      id: dom.getLabelId(state.context),
-      "data-readonly": dataAttr(readOnly),
-      "data-disabled": dataAttr(disabled),
-      "data-invalid": dataAttr(invalid),
-      "data-focus": dataAttr(focused),
-      onClick(event) {
-        if (composite) return
-        event.preventDefault()
-        dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
-      },
-    }),
+    getLabelProps: () =>
+      normalize.label({
+        ...parts.label.attrs,
+        dir: state.context.dir,
+        htmlFor: dom.getInputId(state.context),
+        id: dom.getLabelId(state.context),
+        "data-readonly": dataAttr(readOnly),
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+        "data-focus": dataAttr(focused),
+        onClick(event) {
+          if (composite) return
+          event.preventDefault()
+          dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
+        },
+      }),
 
-    controlProps: normalize.element({
-      ...parts.control.attrs,
-      dir: state.context.dir,
-      id: dom.getControlId(state.context),
-      "data-state": open ? "open" : "closed",
-      "data-focus": dataAttr(focused),
-      "data-disabled": dataAttr(disabled),
-      "data-invalid": dataAttr(invalid),
-    }),
+    getControlProps: () =>
+      normalize.element({
+        ...parts.control.attrs,
+        dir: state.context.dir,
+        id: dom.getControlId(state.context),
+        "data-state": open ? "open" : "closed",
+        "data-focus": dataAttr(focused),
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+      }),
 
-    positionerProps: normalize.element({
-      ...parts.positioner.attrs,
-      dir: state.context.dir,
-      id: dom.getPositionerId(state.context),
-      style: popperStyles.floating,
-    }),
+    getPositionerProps: () =>
+      normalize.element({
+        ...parts.positioner.attrs,
+        dir: state.context.dir,
+        id: dom.getPositionerId(state.context),
+        style: popperStyles.floating,
+      }),
 
-    inputProps: normalize.input({
-      ...parts.input.attrs,
-      dir: state.context.dir,
-      "aria-invalid": ariaAttr(invalid),
-      "data-invalid": dataAttr(invalid),
-      name: state.context.name,
-      form: state.context.form,
-      disabled: disabled,
-      autoFocus: state.context.autoFocus,
-      autoComplete: "off",
-      autoCorrect: "off",
-      autoCapitalize: "none",
-      spellCheck: "false",
-      readOnly: readOnly,
-      placeholder: state.context.placeholder,
-      id: dom.getInputId(state.context),
-      type: "text",
-      role: "combobox",
-      defaultValue: state.context.inputValue,
-      "aria-autocomplete": state.context.autoComplete ? "both" : "list",
-      "aria-controls": dom.getContentId(state.context),
-      "aria-expanded": open,
-      "data-state": open ? "open" : "closed",
-      "aria-activedescendant": highlightedValue ? dom.getItemId(state.context, highlightedValue) : undefined,
-      onClick(event) {
-        if (event.defaultPrevented) return
-        if (!state.context.openOnClick) return
-        if (!interactive) return
-        send("INPUT.CLICK")
-      },
-      onFocus() {
-        if (disabled) return
-        send("INPUT.FOCUS")
-      },
-      onBlur() {
-        if (disabled) return
-        send("INPUT.BLUR")
-      },
-      onChange(event) {
-        send({ type: "INPUT.CHANGE", value: event.currentTarget.value })
-      },
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        if (!interactive) return
+    getInputProps: () =>
+      normalize.input({
+        ...parts.input.attrs,
+        dir: state.context.dir,
+        "aria-invalid": ariaAttr(invalid),
+        "data-invalid": dataAttr(invalid),
+        name: state.context.name,
+        form: state.context.form,
+        disabled: disabled,
+        autoFocus: state.context.autoFocus,
+        autoComplete: "off",
+        autoCorrect: "off",
+        autoCapitalize: "none",
+        spellCheck: "false",
+        readOnly: readOnly,
+        placeholder: state.context.placeholder,
+        id: dom.getInputId(state.context),
+        type: "text",
+        role: "combobox",
+        defaultValue: state.context.inputValue,
+        "aria-autocomplete": state.context.autoComplete ? "both" : "list",
+        "aria-controls": dom.getContentId(state.context),
+        "aria-expanded": open,
+        "data-state": open ? "open" : "closed",
+        "aria-activedescendant": highlightedValue ? dom.getItemId(state.context, highlightedValue) : undefined,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!state.context.openOnClick) return
+          if (!interactive) return
+          send("INPUT.CLICK")
+        },
+        onFocus() {
+          if (disabled) return
+          send("INPUT.FOCUS")
+        },
+        onBlur() {
+          if (disabled) return
+          send("INPUT.BLUR")
+        },
+        onChange(event) {
+          send({ type: "INPUT.CHANGE", value: event.currentTarget.value })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (!interactive) return
 
-        if (event.ctrlKey || event.shiftKey || isComposingEvent(event)) return
+          if (event.ctrlKey || event.shiftKey || isComposingEvent(event)) return
 
-        const openOnKeyPress = state.context.openOnKeyPress
-        const isModifierKey = event.ctrlKey || event.metaKey || event.shiftKey
-        const keypress = true
+          const openOnKeyPress = state.context.openOnKeyPress
+          const isModifierKey = event.ctrlKey || event.metaKey || event.shiftKey
+          const keypress = true
 
-        const keymap: EventKeyMap = {
-          ArrowDown(event) {
-            if (!openOnKeyPress && !open) return
-            send({ type: event.altKey ? "OPEN" : "INPUT.ARROW_DOWN", keypress })
-            event.preventDefault()
-          },
-          ArrowUp() {
-            if (!openOnKeyPress && !open) return
-            send({ type: event.altKey ? "CLOSE" : "INPUT.ARROW_UP", keypress })
-            event.preventDefault()
-          },
-          Home(event) {
-            if (isModifierKey) return
-            send({ type: "INPUT.HOME", keypress })
-            if (open) {
+          const keymap: EventKeyMap = {
+            ArrowDown(event) {
+              if (!openOnKeyPress && !open) return
+              send({ type: event.altKey ? "OPEN" : "INPUT.ARROW_DOWN", keypress })
               event.preventDefault()
-            }
-          },
-          End(event) {
-            if (isModifierKey) return
-            send({ type: "INPUT.END", keypress })
-            if (open) {
+            },
+            ArrowUp() {
+              if (!openOnKeyPress && !open) return
+              send({ type: event.altKey ? "CLOSE" : "INPUT.ARROW_UP", keypress })
               event.preventDefault()
-            }
-          },
-          Enter(event) {
-            send({ type: "INPUT.ENTER", keypress })
-            if (open) {
+            },
+            Home(event) {
+              if (isModifierKey) return
+              send({ type: "INPUT.HOME", keypress })
+              if (open) {
+                event.preventDefault()
+              }
+            },
+            End(event) {
+              if (isModifierKey) return
+              send({ type: "INPUT.END", keypress })
+              if (open) {
+                event.preventDefault()
+              }
+            },
+            Enter(event) {
+              send({ type: "INPUT.ENTER", keypress })
+              if (open) {
+                event.preventDefault()
+              }
+              const itemEl = dom.getHighlightedItemEl(state.context)
+              clickIfLink(itemEl)
+            },
+            Escape() {
+              send({ type: "INPUT.ESCAPE", keypress })
               event.preventDefault()
-            }
-            const itemEl = dom.getHighlightedItemEl(state.context)
-            clickIfLink(itemEl)
-          },
-          Escape() {
-            send({ type: "INPUT.ESCAPE", keypress })
-            event.preventDefault()
-          },
-        }
+            },
+          }
 
-        const key = getEventKey(event, state.context)
-        const exec = keymap[key]
-        exec?.(event)
-      },
-    }),
+          const key = getEventKey(event, state.context)
+          const exec = keymap[key]
+          exec?.(event)
+        },
+      }),
 
     getTriggerProps(props = {}) {
       return normalize.button({
@@ -279,47 +284,50 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       })
     },
 
-    contentProps: normalize.element({
-      ...parts.content.attrs,
-      dir: state.context.dir,
-      id: dom.getContentId(state.context),
-      role: !composite ? "dialog" : "listbox",
-      tabIndex: -1,
-      hidden: !open,
-      "data-state": open ? "open" : "closed",
-      "aria-labelledby": dom.getLabelId(state.context),
-      "aria-multiselectable": state.context.multiple && composite ? true : undefined,
-      onPointerDown(event) {
-        // prevent options or elements within listbox from taking focus
-        event.preventDefault()
-      },
-    }),
+    getContentProps: () =>
+      normalize.element({
+        ...parts.content.attrs,
+        dir: state.context.dir,
+        id: dom.getContentId(state.context),
+        role: !composite ? "dialog" : "listbox",
+        tabIndex: -1,
+        hidden: !open,
+        "data-state": open ? "open" : "closed",
+        "aria-labelledby": dom.getLabelId(state.context),
+        "aria-multiselectable": state.context.multiple && composite ? true : undefined,
+        onPointerDown(event) {
+          // prevent options or elements within listbox from taking focus
+          event.preventDefault()
+        },
+      }),
 
-    listProps: normalize.element({
-      role: !composite ? "listbox" : undefined,
-      "aria-labelledby": dom.getLabelId(state.context),
-      "aria-multiselectable": state.context.multiple && !composite ? true : undefined,
-    }),
+    getListProps: () =>
+      normalize.element({
+        role: !composite ? "listbox" : undefined,
+        "aria-labelledby": dom.getLabelId(state.context),
+        "aria-multiselectable": state.context.multiple && !composite ? true : undefined,
+      }),
 
-    clearTriggerProps: normalize.button({
-      ...parts.clearTrigger.attrs,
-      dir: state.context.dir,
-      id: dom.getClearTriggerId(state.context),
-      type: "button",
-      tabIndex: -1,
-      disabled: disabled,
-      "aria-label": translations.clearTriggerLabel,
-      "aria-controls": dom.getInputId(state.context),
-      hidden: !state.context.value.length,
-      onPointerDown(event) {
-        event.preventDefault()
-      },
-      onClick(event) {
-        if (event.defaultPrevented) return
-        if (!interactive) return
-        send({ type: "VALUE.CLEAR", src: "clear-trigger" })
-      },
-    }),
+    getClearTriggerProps: () =>
+      normalize.button({
+        ...parts.clearTrigger.attrs,
+        dir: state.context.dir,
+        id: dom.getClearTriggerId(state.context),
+        type: "button",
+        tabIndex: -1,
+        disabled: disabled,
+        "aria-label": translations.clearTriggerLabel,
+        "aria-controls": dom.getInputId(state.context),
+        hidden: !state.context.value.length,
+        onPointerDown(event) {
+          event.preventDefault()
+        },
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!interactive) return
+          send({ type: "VALUE.CLEAR", src: "clear-trigger" })
+        },
+      }),
 
     getItemState,
 

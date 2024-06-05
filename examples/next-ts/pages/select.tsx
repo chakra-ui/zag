@@ -35,15 +35,15 @@ export default function Page() {
   return (
     <>
       <main className="select">
-        <div {...api.rootProps}>
-          <label {...api.labelProps}>Label</label>
+        <div {...api.getRootProps()}>
+          <label {...api.getLabelProps()}>Label</label>
           {/* control */}
-          <div {...api.controlProps}>
-            <button {...api.triggerProps}>
+          <div {...api.getControlProps()}>
+            <button {...api.getTriggerProps()}>
               <span>{api.valueAsString || "Select option"}</span>
-              <span {...api.indicatorProps}>▼</span>
+              <span {...api.getIndicatorProps()}>▼</span>
             </button>
-            <button {...api.clearTriggerProps}>X</button>
+            <button {...api.getClearTriggerProps()}>X</button>
           </div>
 
           <form
@@ -53,7 +53,7 @@ export default function Page() {
             }}
           >
             {/* Hidden select */}
-            <select {...api.hiddenSelectProps}>
+            <select {...api.getHiddenSelectProps()}>
               {api.empty && <option value="" />}
               {selectData.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -65,8 +65,8 @@ export default function Page() {
 
           {/* UI select */}
           <Portal>
-            <div {...api.positionerProps}>
-              <ul {...api.contentProps}>
+            <div {...api.getPositionerProps()}>
+              <ul {...api.getContentProps()}>
                 {selectData.map((item) => (
                   <li key={item.value} {...api.getItemProps({ item })}>
                     <span {...api.getItemTextProps({ item })}>{item.label}</span>

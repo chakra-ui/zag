@@ -10,9 +10,9 @@
 </script>
 
 <template>
-  <div v-bind="api.rootProps">
-    <span v-bind="api.fallbackProps">PA</span>
-    <img alt="PA" :src="src" v-bind="api.imageProps" />
+  <div v-bind="api.getRootProps()">
+    <span v-bind="api.getFallbackProps()">PA</span>
+    <img alt="PA" :src="src" v-bind="api.getImageProps()" />
   </div>
 </template>
 ```

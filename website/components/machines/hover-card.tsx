@@ -22,17 +22,17 @@ export function HoverCard(props: HoverCardProps) {
         href="https://twitter.com/zag_js"
         target="_blank"
         rel="noreferrer noopener"
-        {...api.triggerProps}
+        {...api.getTriggerProps()}
       >
         <img alt="Twitter" src="/favicon/apple-touch-icon.png" />
       </a>
 
       {api.open && (
         <Portal>
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>
-              <div {...api.arrowProps}>
-                <div {...api.arrowTipProps} />
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
+              <div {...api.getArrowProps()}>
+                <div {...api.getArrowTipProps()} />
               </div>
               <div className="card-wrapper">
                 <img

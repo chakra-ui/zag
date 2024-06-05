@@ -2,15 +2,15 @@
 //...
 
 <div>
-  <div v-bind="api.controlProps">
-    <div v-bind="api.trackProps">
-      <div v-bind="api.rangeProps" />
+  <div v-bind="api.getControlProps()">
+    <div v-bind="api.getTrackProps()">
+      <div v-bind="api.getRangeProps()" />
     </div>
     <div v-bind="api.getThumbProps({ index: 0 })">
       <input v-bind="api.getHiddenInputProps({ index: 0 })" />
     </div>
   </div>
-  <div v-bind="api.markerGroupProps">
+  <div v-bind="api.getMarkerGroupProps()">
     <span v-bind="api.getMarkerProps({ value: 10 })">|</span>
     <span v-bind="api.getMarkerProps({ value: 30 })">|</span>
     <span v-bind="api.getMarkerProps({ value: 90 })">|</span>

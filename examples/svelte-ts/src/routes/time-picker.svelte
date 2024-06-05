@@ -17,15 +17,15 @@
 </script>
 
 <main class="time-picker">
-  <div {...api.rootProps}>
-    <div {...api.controlProps} style:display="flex" style:gap="10px">
-      <input {...api.inputProps} />
-      <button {...api.triggerProps}>🗓</button>
-      <button {...api.clearTriggerProps}>❌</button>
+  <div {...api.getRootProps()}>
+    <div {...api.getControlProps()} style:display="flex" style:gap="10px">
+      <input {...api.getInputProps()} />
+      <button {...api.getTriggerProps()}>🗓</button>
+      <button {...api.getClearTriggerProps()}>❌</button>
     </div>
 
-    <span use:portal {...api.positionerProps}>
-      <div {...api.contentProps}>
+    <span use:portal {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>
         <div {...api.getColumnProps({ unit: "hour" })}>
           {#each api.getHours() as item (item.value)}
             <button {...api.getHourCellProps({ value: item.value })}>{item.label}</button>

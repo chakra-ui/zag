@@ -28,15 +28,15 @@ const api = computed(() => slider.connect(state.value, send, normalizeProps))
         }
       "
     >
-      <div v-bind="api.rootProps">
+      <div v-bind="api.getRootProps()">
         <div>
-          <label v-bind="api.labelProps">Quantity:</label>
-          <output v-bind="api.valueTextProps">{{ api.value.join(" - ") }}</output>
+          <label v-bind="api.getLabelProps()">Quantity:</label>
+          <output v-bind="api.getValueTextProps()">{{ api.value.join(" - ") }}</output>
         </div>
         <div class="control-area">
-          <div v-bind="api.controlProps">
-            <div v-bind="api.trackProps">
-              <div v-bind="api.rangeProps" />
+          <div v-bind="api.getControlProps()">
+            <div v-bind="api.getTrackProps()">
+              <div v-bind="api.getRangeProps()" />
             </div>
             <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })">
               <input v-bind="api.getHiddenInputProps({ index })" />

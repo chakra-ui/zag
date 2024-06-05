@@ -48,44 +48,47 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("PAUSE")
     },
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      id: dom.getRootId(state.context),
-      role: "region",
-      "aria-roledescription": "carousel",
-      "data-orientation": state.context.orientation,
-      dir: state.context.dir,
-      "aria-label": "Carousel",
-      style: {
-        "--slide-spacing": state.context.spacing,
-        "--slide-size": `calc(100% / ${state.context.slidesPerView} - var(--slide-spacing))`,
-      },
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        id: dom.getRootId(state.context),
+        role: "region",
+        "aria-roledescription": "carousel",
+        "data-orientation": state.context.orientation,
+        dir: state.context.dir,
+        "aria-label": "Carousel",
+        style: {
+          "--slide-spacing": state.context.spacing,
+          "--slide-size": `calc(100% / ${state.context.slidesPerView} - var(--slide-spacing))`,
+        },
+      }),
 
-    viewportProps: normalize.element({
-      ...parts.viewport.attrs,
-      dir: state.context.dir,
-      id: dom.getViewportId(state.context),
-      "data-orientation": state.context.orientation,
-    }),
+    getViewportProps: () =>
+      normalize.element({
+        ...parts.viewport.attrs,
+        dir: state.context.dir,
+        id: dom.getViewportId(state.context),
+        "data-orientation": state.context.orientation,
+      }),
 
-    itemGroupProps: normalize.element({
-      ...parts.itemGroup.attrs,
-      id: dom.getItemGroupId(state.context),
-      "data-orientation": state.context.orientation,
-      dir: state.context.dir,
-      style: {
-        display: "flex",
-        flexDirection: horizontal ? "row" : "column",
-        [horizontal ? "height" : "width"]: "auto",
-        gap: "var(--slide-spacing)",
-        transform: state.context.translateValue,
-        transitionProperty: "transform",
-        willChange: "transform",
-        transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-        transitionDuration: "0.3s",
-      },
-    }),
+    getItemGroupProps: () =>
+      normalize.element({
+        ...parts.itemGroup.attrs,
+        id: dom.getItemGroupId(state.context),
+        "data-orientation": state.context.orientation,
+        dir: state.context.dir,
+        style: {
+          display: "flex",
+          flexDirection: horizontal ? "row" : "column",
+          [horizontal ? "height" : "width"]: "auto",
+          gap: "var(--slide-spacing)",
+          transform: state.context.translateValue,
+          transitionProperty: "transform",
+          willChange: "transform",
+          transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+          transitionDuration: "0.3s",
+        },
+      }),
 
     getItemProps(props) {
       const { index } = props
@@ -109,42 +112,45 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    prevTriggerProps: normalize.button({
-      ...parts.prevTrigger.attrs,
-      id: dom.getPrevTriggerId(state.context),
-      type: "button",
-      tabIndex: -1,
-      disabled: !canScrollPrev,
-      dir: state.context.dir,
-      "aria-label": "Previous Slide",
-      "data-orientation": state.context.orientation,
-      "aria-controls": dom.getItemGroupId(state.context),
-      onClick() {
-        send("PREV")
-      },
-    }),
+    getPrevTriggerProps: () =>
+      normalize.button({
+        ...parts.prevTrigger.attrs,
+        id: dom.getPrevTriggerId(state.context),
+        type: "button",
+        tabIndex: -1,
+        disabled: !canScrollPrev,
+        dir: state.context.dir,
+        "aria-label": "Previous Slide",
+        "data-orientation": state.context.orientation,
+        "aria-controls": dom.getItemGroupId(state.context),
+        onClick() {
+          send("PREV")
+        },
+      }),
 
-    nextTriggerProps: normalize.button({
-      ...parts.nextTrigger.attrs,
-      dir: state.context.dir,
-      id: dom.getNextTriggerId(state.context),
-      type: "button",
-      tabIndex: -1,
-      "aria-label": "Next Slide",
-      "data-orientation": state.context.orientation,
-      "aria-controls": dom.getItemGroupId(state.context),
-      disabled: !canScrollNext,
-      onClick() {
-        send("NEXT")
-      },
-    }),
+    getNextTriggerProps: () =>
+      normalize.button({
+        ...parts.nextTrigger.attrs,
+        dir: state.context.dir,
+        id: dom.getNextTriggerId(state.context),
+        type: "button",
+        tabIndex: -1,
+        "aria-label": "Next Slide",
+        "data-orientation": state.context.orientation,
+        "aria-controls": dom.getItemGroupId(state.context),
+        disabled: !canScrollNext,
+        onClick() {
+          send("NEXT")
+        },
+      }),
 
-    indicatorGroupProps: normalize.element({
-      ...parts.indicatorGroup.attrs,
-      dir: state.context.dir,
-      id: dom.getIndicatorGroupId(state.context),
-      "data-orientation": state.context.orientation,
-    }),
+    getIndicatorGroupProps: () =>
+      normalize.element({
+        ...parts.indicatorGroup.attrs,
+        dir: state.context.dir,
+        id: dom.getIndicatorGroupId(state.context),
+        "data-orientation": state.context.orientation,
+      }),
 
     getIndicatorProps(props: IndicatorProps) {
       const { index, readOnly } = props

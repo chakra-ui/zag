@@ -378,11 +378,11 @@ export interface MachineApi<T extends PropTypes = PropTypes, O = any> extends Ge
    */
   dismiss(): void
 
-  rootProps: T["element"]
-  titleProps: T["element"]
-  ghostBeforeProps: T["element"]
-  ghostAfterProps: T["element"]
-  descriptionProps: T["element"]
-  closeTriggerProps: T["button"]
-  actionTriggerProps: T["button"]
+  getRootProps(): T["element"]
+  getTitleProps(): T["element"]
+  getGhostBeforeProps(): T["element"]
+  getGhostAfterProps(): T["element"]
+  getDescriptionProps(): T["element"]
+  getCloseTriggerProps(): T["button"]
+  getActionTriggerProps(): T["button"]
 }

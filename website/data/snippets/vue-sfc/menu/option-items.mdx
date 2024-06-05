@@ -39,9 +39,9 @@
 </script>
 
 <template>
-  <button ref="ref" v-bind="api.triggerProps">Trigger</button>
-  <div v-bind="api.positionerProps">
-    <div v-bind="api.contentProps">
+  <button ref="ref" v-bind="api.getTriggerProps()">Trigger</button>
+  <div v-bind="api.getPositionerProps()">
+    <div v-bind="api.getContentProps()">
       <div
         v-for="item in radios"
         :key="item.value"
@@ -50,7 +50,7 @@
         <span v-bind="api.getItemIndicatorProps(item)">✅</span>
         <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>
       </div>
-      <hr v-bind="api.separatorProps" />
+      <hr v-bind="api.getSeparatorProps()" />
       <div
         v-for="item in checkboxes"
         :key="item.value"

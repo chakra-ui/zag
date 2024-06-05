@@ -10,14 +10,14 @@
 
 <template>
   <div ref="ref">
-    <button v-bind="api.triggerProps">Click me</button>
+    <button v-bind="api.getTriggerProps()">Click me</button>
     <Teleport to="body" :disabled="!api.portalled">
-      <div v-bind="api.positionerProps">
-        <div v-bind="api.contentProps">
-          <div v-bind="api.titleProps">Presenters</div>
-          <div v-bind="api.descriptionProps">Description</div>
+      <div v-bind="api.getPositionerProps()">
+        <div v-bind="api.getContentProps()">
+          <div v-bind="api.getTitleProps()">Presenters</div>
+          <div v-bind="api.getDescriptionProps()">Description</div>
           <button>Action Button</button>
-          <button v-bind="api.closeTriggerProps">X</button>
+          <button v-bind="api.getCloseTriggerProps()">X</button>
         </div>
       </div>
     </Teleport>

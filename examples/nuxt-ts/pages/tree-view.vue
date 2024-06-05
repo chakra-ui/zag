@@ -14,8 +14,8 @@ const api = computed(() => tree.connect(state.value, send, normalizeProps))
 
 <template>
   <main class="tree-view">
-    <div v-bind="api.rootProps">
-      <h3 v-bind="api.labelProps">My Documents</h3>
+    <div v-bind="api.getRootProps()">
+      <h3 v-bind="api.getLabelProps()">My Documents</h3>
       <div>
         <button @click="api.collapse()">Collapse All</button>
         <button @click="api.expand()">Expand All</button>
@@ -24,7 +24,7 @@ const api = computed(() => tree.connect(state.value, send, normalizeProps))
         <button @click="api.deselect()">Deselect All</button>
       </div>
 
-      <ul v-bind="api.treeProps">
+      <ul v-bind="api.getTreeProps()">
         <li v-bind="api.getBranchProps({ value: 'node_modules', depth: 1 })">
           <div v-bind="api.getBranchControlProps({ value: 'node_modules', depth: 1 })">
             <span v-bind="api.getBranchTextProps({ value: 'node_modules', depth: 1 })"> 📂 node_modules</span>

@@ -143,7 +143,7 @@ Use the `--thickness` CSS variable to set the size of the progress bar.
 Then you need to render the `valueText` part in your component.
 
 ```jsx
-<div {...api.valueText}>{api.valueText}</div>
+<div {...api.getValueTextProps()}>{api.valueAsString}</div>
 ```
 
 ## Styling guide

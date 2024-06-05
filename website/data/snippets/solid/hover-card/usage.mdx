@@ -14,17 +14,17 @@ function Checkbox() {
       <a
         href="https://twitter.com/zag_js"
         target="_blank"
-        {...api().triggerProps}
+        {...api().getTriggerProps()}
       >
         Twitter
       </a>
 
       <Show when={api().open}>
         <Portal>
-          <div {...api().positionerProps}>
-            <div {...api().contentProps}>
-              <div {...api().arrowProps}>
-                <div {...api().arrowTipProps} />
+          <div {...api().getPositionerProps()}>
+            <div {...api().getContentProps()}>
+              <div {...api().getArrowProps()}>
+                <div {...api().getArrowTipProps()} />
               </div>
               Twitter Preview
             </div>

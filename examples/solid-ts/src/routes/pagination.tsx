@@ -52,10 +52,10 @@ export default function Page() {
           </tbody>
         </table>
         {api().totalPages > 1 && (
-          <nav {...api().rootProps}>
+          <nav {...api().getRootProps()}>
             <ul>
               <li>
-                <button {...api().prevTriggerProps}>Previous</button>
+                <button {...api().getPrevTriggerProps()}>Previous</button>
               </li>
               <For each={api().pages}>
                 {(page, i) => {
@@ -75,7 +75,7 @@ export default function Page() {
                 }}
               </For>
               <li>
-                <button {...api().nextTriggerProps}>Next</button>
+                <button {...api().getNextTriggerProps()}>Next</button>
               </li>
             </ul>
           </nav>

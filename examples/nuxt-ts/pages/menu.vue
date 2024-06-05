@@ -13,10 +13,10 @@ const api = computed(() => menu.connect(state.value, send, normalizeProps))
 <template>
   <main>
     <div>
-      <button v-bind="api.triggerProps">Actions <span v-bind="api.indicatorProps">▾</span></button>
+      <button v-bind="api.getTriggerProps()">Actions <span v-bind="api.getIndicatorProps()">▾</span></button>
       <Teleport to="body">
-        <div v-bind="api.positionerProps">
-          <ul v-bind="api.contentProps">
+        <div v-bind="api.getPositionerProps()">
+          <ul v-bind="api.getContentProps()">
             <li v-bind="api.getItemProps({ value: 'edit' })">Edit</li>
             <li v-bind="api.getItemProps({ value: 'duplicate' })">Duplicate</li>
             <li v-bind="api.getItemProps({ value: 'delete' })">Delete</li>

@@ -23,39 +23,42 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send(nextOpen ? "OPEN" : "CLOSE")
     },
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      "data-state": open ? "open" : "closed",
-      dir: state.context.dir,
-      id: dom.getRootId(state.context),
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        "data-state": open ? "open" : "closed",
+        dir: state.context.dir,
+        id: dom.getRootId(state.context),
+      }),
 
-    contentProps: normalize.element({
-      ...parts.content.attrs,
-      "data-state": skip ? undefined : open ? "open" : "closed",
-      id: dom.getContentId(state.context),
-      "data-disabled": dataAttr(disabled),
-      hidden: !visible,
-      style: {
-        "--height": height != null ? `${height}px` : undefined,
-        "--width": width != null ? `${width}px` : undefined,
-      },
-    }),
+    getContentProps: () =>
+      normalize.element({
+        ...parts.content.attrs,
+        "data-state": skip ? undefined : open ? "open" : "closed",
+        id: dom.getContentId(state.context),
+        "data-disabled": dataAttr(disabled),
+        hidden: !visible,
+        style: {
+          "--height": height != null ? `${height}px` : undefined,
+          "--width": width != null ? `${width}px` : undefined,
+        },
+      }),
 
-    triggerProps: normalize.element({
-      ...parts.trigger.attrs,
-      id: dom.getTriggerId(state.context),
-      dir: state.context.dir,
-      type: "button",
-      "data-state": open ? "open" : "closed",
-      "data-disabled": dataAttr(disabled),
-      "aria-controls": dom.getContentId(state.context),
-      "aria-expanded": visible || false,
-      onClick(event) {
-        if (event.defaultPrevented) return
-        if (disabled) return
-        send({ type: open ? "CLOSE" : "OPEN", src: "trigger.click" })
-      },
-    }),
+    getTriggerProps: () =>
+      normalize.element({
+        ...parts.trigger.attrs,
+        id: dom.getTriggerId(state.context),
+        dir: state.context.dir,
+        type: "button",
+        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(disabled),
+        "aria-controls": dom.getContentId(state.context),
+        "aria-expanded": visible || false,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (disabled) return
+          send({ type: open ? "CLOSE" : "OPEN", src: "trigger.click" })
+        },
+      }),
   }
 }

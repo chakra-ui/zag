@@ -14,15 +14,15 @@ export function NumberInput(props: any) {
   const api = numberInput.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Enter number:</label>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Enter number:</label>
       <div>
-        <input {...api.inputProps} />
+        <input {...api.getInputProps()} />
         <div>
-          <button {...api.incrementTriggerProps}>
+          <button {...api.getIncrementTriggerProps()}>
             <BiChevronUp />
           </button>
-          <button {...api.decrementTriggerProps}>
+          <button {...api.getDecrementTriggerProps()}>
             <BiChevronDown />
           </button>
         </div>

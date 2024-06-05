@@ -10,7 +10,7 @@ const api = computed(() => pinInput.connect(state.value, send, normalizeProps));
 
 <template>
   <div>
-    <div ref="ref" v-bind="api.rootProps">
+    <div ref="ref" v-bind="api.getRootProps()">
       <input v-bind="api.getInputProps({ index: 0 })" />
       <input v-bind="api.getInputProps({ index: 1 })" />
       <input v-bind="api.getInputProps({ index: 2 })" />

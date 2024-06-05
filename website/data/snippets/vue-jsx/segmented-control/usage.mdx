@@ -21,7 +21,7 @@ export default defineComponent({
     return () => {
       const api = apiRef.value
       return (
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           {items.map((opt) => (
             <label {...api.getItemProps({ value: opt.value })}>
               <span {...api.getItemTextProps({ value: opt.value })}>

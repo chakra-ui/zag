@@ -10,10 +10,10 @@ const ColorPicker = () => {
   const api = colorPicker.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       {/* ... */}
-      <div {...api.positionerProps}>
-        <div {...api.contentProps}>
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
           {api.format === "rgba" && (
             <div>
               <div>

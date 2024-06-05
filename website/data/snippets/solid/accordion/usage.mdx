@@ -15,7 +15,7 @@ function Accordion() {
   const api = createMemo(() => accordion.connect(state, send, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
+    <div {...api().getRootProps()}>
       <For each={data}>
         {(item) => (
           <div {...api().getItemProps({ value: item.title })}>

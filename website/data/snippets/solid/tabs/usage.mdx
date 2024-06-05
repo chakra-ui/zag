@@ -17,8 +17,8 @@ export function Tabs() {
   const api = createMemo(() => tabs.connect(state, send, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
-      <div {...api().listProps}>
+    <div {...api().getRootProps()}>
+      <div {...api().getListProps()}>
         <For each={data}>
           {(item) => (
             <button {...api().getTriggerProps({ value: item.value })}>

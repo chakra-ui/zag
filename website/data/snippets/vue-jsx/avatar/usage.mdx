@@ -14,9 +14,9 @@ export default defineComponent({
     return () => {
       const api = apiRef.value
       return (
-        <div {...api.rootProps}>
-          <span {...api.fallbackProps}>PA</span>
-          <img alt="PA" src={src} {...api.imageProps} />
+        <div {...api.getRootProps()}>
+          <span {...api.getFallbackProps()}>PA</span>
+          <img alt="PA" src={src} {...api.getImageProps()} />
         </div>
       )
     }

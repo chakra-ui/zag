@@ -554,12 +554,12 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   getYearTableCellState(props: TableCellProps): TableCellState
 
-  rootProps: T["element"]
-  labelProps: T["label"]
-  controlProps: T["element"]
-  contentProps: T["element"]
-  positionerProps: T["element"]
-  rangeTextProps: T["element"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["label"]
+  getControlProps(): T["element"]
+  getContentProps(): T["element"]
+  getPositionerProps(): T["element"]
+  getRangeTextProps(): T["element"]
 
   getTableProps(props?: TableProps): T["element"]
   getTableHeadProps(props?: TableProps): T["element"]
@@ -579,14 +579,14 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getNextTriggerProps(props?: ViewProps): T["button"]
   getPrevTriggerProps(props?: ViewProps): T["button"]
 
-  clearTriggerProps: T["button"]
-  triggerProps: T["button"]
+  getClearTriggerProps(): T["button"]
+  getTriggerProps(): T["button"]
   getPresetTriggerProps(props: PresetTriggerProps): T["button"]
   getViewTriggerProps(props?: ViewProps): T["button"]
   getViewControlProps(props?: ViewProps): T["element"]
   getInputProps(props?: InputProps): T["input"]
-  monthSelectProps: T["select"]
-  yearSelectProps: T["select"]
+  getMonthSelectProps(): T["select"]
+  getYearSelectProps(): T["select"]
 }
 
 /* -----------------------------------------------------------------------------

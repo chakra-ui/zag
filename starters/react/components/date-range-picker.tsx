@@ -43,17 +43,17 @@ export function DateRangePicker(props: Props) {
         <div>Focused: {api.focusedValueAsString}</div>
       </output>
 
-      <div {...api.controlProps}>
+      <div {...api.getControlProps()}>
         <input {...api.getInputProps({ index: 0 })} />
         <input {...api.getInputProps({ index: 1 })} />
-        <button {...api.clearTriggerProps}>❌</button>
-        <button {...api.triggerProps}>🗓</button>
+        <button {...api.getClearTriggerProps()}>❌</button>
+        <button {...api.getTriggerProps()}>🗓</button>
       </div>
 
       <div>
-        <div {...api.contentProps}>
+        <div {...api.getContentProps()}>
           <div style={{ marginBottom: "20px" }}>
-            <select {...api.monthSelectProps}>
+            <select {...api.getMonthSelectProps()}>
               {api.getMonths().map((month, i) => (
                 <option key={i} value={i + 1}>
                   {month.label}
@@ -61,7 +61,7 @@ export function DateRangePicker(props: Props) {
               ))}
             </select>
 
-            <select {...api.yearSelectProps}>
+            <select {...api.getYearSelectProps()}>
               {getYearsRange({ from: 1_800, to: 2_300 }).map((year, i) => (
                 <option key={i} value={year}>
                   {year}

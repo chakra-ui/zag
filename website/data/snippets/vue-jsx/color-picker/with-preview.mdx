@@ -17,7 +17,7 @@ export default defineComponent({
       const api = apiRef.value
 
       return (
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           <div>
             <div {...api.getTransparencyGridProps({ size: '4px' })} />
             <div {...api.getSwatchProps({ value: api.value })} />

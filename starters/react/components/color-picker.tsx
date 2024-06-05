@@ -50,14 +50,14 @@ export function ColorPicker(props: Props) {
   return (
     <>
       <main className="color-picker">
-        <input {...api.hiddenInputProps} />
-        <div {...api.rootProps}>
-          <label {...api.labelProps}>
+        <input {...api.getHiddenInputProps()} />
+        <div {...api.getRootProps()}>
+          <label {...api.getLabelProps()}>
             Select Color: <span data-testid="value-text">{api.valueAsString}</span>
           </label>
 
-          <div {...api.controlProps}>
-            <button {...api.triggerProps}>
+          <div {...api.getControlProps()}>
+            <button {...api.getTriggerProps()}>
               <div {...api.getTransparencyGridProps({ size: "10px" })} />
               <div {...api.getSwatchProps({ value: api.value })} />
             </button>
@@ -65,8 +65,8 @@ export function ColorPicker(props: Props) {
             <input {...api.getChannelInputProps({ channel: "alpha" })} />
           </div>
 
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
               <div className="content__inner">
                 <div {...api.getAreaProps()}>
                   <div {...api.getAreaBackgroundProps()} />
@@ -121,7 +121,7 @@ export function ColorPicker(props: Props) {
 
                 <input {...api.getChannelInputProps({ channel: "hex" })} />
 
-                <div {...api.swatchGroupProps} style={{ display: "flex", gap: "10px" }}>
+                <div {...api.getSwatchGroupProps()} style={{ display: "flex", gap: "10px" }}>
                   {presets.map((preset) => (
                     <button key={preset} {...api.getSwatchTriggerProps({ value: preset })}>
                       <div style={{ position: "relative" }}>
@@ -132,7 +132,7 @@ export function ColorPicker(props: Props) {
                   ))}
                 </div>
 
-                <button {...api.eyeDropperTriggerProps}>
+                <button {...api.getEyeDropperTriggerProps()}>
                   <EyeDropIcon />
                 </button>
               </div>

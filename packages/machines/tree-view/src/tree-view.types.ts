@@ -195,9 +195,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   focusItem(value: string): void
 
-  rootProps: T["element"]
-  labelProps: T["element"]
-  treeProps: T["element"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["element"]
+  getTreeProps(): T["element"]
   getItemState(props: ItemProps): ItemState
   getItemProps(props: ItemProps): T["element"]
   getItemIndicatorProps(props: ItemProps): T["element"]

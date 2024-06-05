@@ -16,7 +16,7 @@ const api = computed(() =>
 </script>
 
 <template>
-  <div ref="ref" v-bind="api.rootProps">
+  <div ref="ref" v-bind="api.getRootProps()">
     <span v-for="(value, index) in api.value" :key="index" v-bind="api.getItemProps({ index, value })">
       <div v-bind="api.getItemPreviewProps({ index, value })">
         <span>{{ value }} </span>
@@ -26,7 +26,7 @@ const api = computed(() =>
       </div>
       <input v-bind="api.getItemInputProps({ index, value })" />
     </span>
-    <input placeholder="Add tag..." v-bind="api.inputProps" />
+    <input placeholder="Add tag..." v-bind="api.getInputProps()" />
   </div>
 </template>
 ```

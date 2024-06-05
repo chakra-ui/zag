@@ -55,9 +55,9 @@ export default function Page() {
     <>
       <main class="rating">
         <div>
-          <div {...api().rootProps}>
-            <label {...api().labelProps}>Rate:</label>
-            <div {...api().controlProps}>
+          <div {...api().getRootProps()}>
+            <label {...api().getLabelProps()}>Rate:</label>
+            <div {...api().getControlProps()}>
               <Index each={api().items}>
                 {(index) => {
                   const state = createMemo(() => api().getItemState({ index: index() }))
@@ -68,7 +68,7 @@ export default function Page() {
               </Index>
             </div>
           </div>
-          <input {...api().hiddenInputProps} data-testid="hidden-input" />
+          <input {...api().getHiddenInputProps()} data-testid="hidden-input" />
         </div>
       </main>
 

@@ -20,22 +20,22 @@ export default defineComponent({
         <>
           <main class="tooltip" style={{ gap: "12px", flexDirection: "row" }}>
             <div class="root">
-              <button {...api.triggerProps}>Hover me</button>
+              <button {...api.getTriggerProps()}>Hover me</button>
               {api.open && (
                 <Teleport to="body">
-                  <div {...api.positionerProps}>
-                    <div class="tooltip-content" data-testid="tip-1-tooltip" {...api.contentProps}>
+                  <div {...api.getPositionerProps()}>
+                    <div class="tooltip-content" data-testid="tip-1-tooltip" {...api.getContentProps()}>
                       Tooltip
                     </div>
                   </div>
                 </Teleport>
               )}
 
-              <button {...api2.triggerProps}>Over me</button>
+              <button {...api2.getTriggerProps()}>Over me</button>
               {api2.open && (
                 <Teleport to="body">
-                  <div {...api2.positionerProps}>
-                    <div class="tooltip-content" data-testid="tip-2-tooltip" {...api2.contentProps}>
+                  <div {...api2.getPositionerProps()}>
+                    <div class="tooltip-content" data-testid="tip-2-tooltip" {...api2.getContentProps()}>
                       Tooltip 2
                     </div>
                   </div>

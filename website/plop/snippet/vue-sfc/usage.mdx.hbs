@@ -10,8 +10,8 @@ const api = computed(() => {{component}}.connect(state.value, send, normalizePro
 </script>
 
 <template>
-  <div ref="ref" v-bind="api.rootProps">
-    <div v-bind="api.controlProps">...</div>
+  <div ref="ref" v-bind="api.getRootProps()">
+    <div v-bind="api.getControlProps()">...</div>
   </div>
 </template>
 ```

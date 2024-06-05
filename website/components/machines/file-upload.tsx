@@ -11,11 +11,11 @@ export function FileUpload(props: { controls: any }) {
   const api = fileUpload.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <div {...api.dropzoneProps}>
-        <input {...api.hiddenInputProps} />
+    <div {...api.getRootProps()}>
+      <div {...api.getDropzoneProps()}>
+        <input {...api.getHiddenInputProps()} />
         <span>Drag your files here</span>
-        <button {...api.triggerProps}>Open Dialog</button>
+        <button {...api.getTriggerProps()}>Open Dialog</button>
       </div>
 
       <div>

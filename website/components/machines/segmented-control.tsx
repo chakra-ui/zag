@@ -26,8 +26,8 @@ export function SegmentedControl(props: SegmentedControlProps) {
 
   return (
     <div className="segmented-control">
-      <div {...api.rootProps}>
-        <div {...api.indicatorProps} />
+      <div {...api.getRootProps()}>
+        <div {...api.getIndicatorProps()} />
         {items.map((opt) => (
           <label key={opt.value} {...api.getItemProps({ value: opt.value })}>
             <span {...api.getItemTextProps({ value: opt.value })}>

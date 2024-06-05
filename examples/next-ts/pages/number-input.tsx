@@ -23,17 +23,17 @@ export default function Page() {
   return (
     <>
       <main>
-        <div {...api.rootProps}>
-          <div data-testid="scrubber" {...api.scrubberProps} />
-          <label data-testid="label" {...api.labelProps}>
+        <div {...api.getRootProps()}>
+          <div data-testid="scrubber" {...api.getScrubberProps()} />
+          <label data-testid="label" {...api.getLabelProps()}>
             Enter number:
           </label>
-          <div {...api.controlProps}>
-            <button data-testid="dec-button" {...api.decrementTriggerProps}>
+          <div {...api.getControlProps()}>
+            <button data-testid="dec-button" {...api.getDecrementTriggerProps()}>
               DEC
             </button>
-            <input data-testid="input" {...api.inputProps} />
-            <button data-testid="inc-button" {...api.incrementTriggerProps}>
+            <input data-testid="input" {...api.getInputProps()} />
+            <button data-testid="inc-button" {...api.getIncrementTriggerProps()}>
               INC
             </button>
           </div>

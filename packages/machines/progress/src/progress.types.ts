@@ -129,15 +129,15 @@ export interface MachineApi<T extends PropTypes> {
    * Sets the current value of the progress bar to the max value.
    */
   setToMax(): void
-  rootProps: T["element"]
-  labelProps: T["element"]
-  trackProps: T["element"]
-  valueTextProps: T["element"]
-  rangeProps: T["element"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["element"]
+  getTrackProps(): T["element"]
+  getValueTextProps(): T["element"]
+  getRangeProps(): T["element"]
   getViewProps(props: ViewProps): T["element"]
-  circleProps: T["svg"]
-  circleTrackProps: T["circle"]
-  circleRangeProps: T["circle"]
+  getCircleProps(): T["svg"]
+  getCircleTrackProps(): T["circle"]
+  getCircleRangeProps(): T["circle"]
 }
 
 /* -----------------------------------------------------------------------------

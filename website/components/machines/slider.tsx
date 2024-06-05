@@ -11,17 +11,17 @@ export function Slider(props: any) {
   const api = slider.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       <div>
-        <label {...api.labelProps}>Quantity</label>
-        <output {...api.valueTextProps}>
+        <label {...api.getLabelProps()}>Quantity</label>
+        <output {...api.getValueTextProps()}>
           <b>{api.value.at(0)}</b>
         </output>
       </div>
 
-      <div {...api.controlProps}>
-        <div {...api.trackProps}>
-          <div {...api.rangeProps} />
+      <div {...api.getControlProps()}>
+        <div {...api.getTrackProps()}>
+          <div {...api.getRangeProps()} />
         </div>
         {api.value.map((_, index) => (
           <div key={index} {...api.getThumbProps({ index })}>

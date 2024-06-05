@@ -1,8 +1,8 @@
 ```jsx {13}
 // ...
 return (
-  <div {...api.rootProps}>
-    <div {...api.listProps}>
+  <div {...api.getRootProps()}>
+    <div {...api.getListProps()}>
       {data.map((item) => (
         <button
           {...api.getTriggerProps({ value: item.value })}
@@ -11,7 +11,7 @@ return (
           {item.label}
         </button>
       ))}
-      <div {...api.indicatorProps} />
+      <div {...api.getIndicatorProps()} />
     </div>
     {data.map((item) => (
       <div {...api.getContentProps({ value: item.value })} key={item.value}>

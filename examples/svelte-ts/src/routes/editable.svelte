@@ -14,18 +14,18 @@
 </script>
 
 <main class="editable">
-  <div {...api.rootProps}>
-    <div {...api.areaProps}>
-      <input data-testid="input" {...api.inputProps} />
-      <span data-testid="preview" {...api.previewProps}>{api.valueText}</span>
+  <div {...api.getRootProps()}>
+    <div {...api.getAreaProps()}>
+      <input data-testid="input" {...api.getInputProps()} />
+      <span data-testid="preview" {...api.getPreviewProps()}>{api.valueText}</span>
     </div>
-    <div {...api.controlProps}>
+    <div {...api.getControlProps()}>
       {#if !api.editing}
-        <button data-testid="edit-button" {...api.editTriggerProps}> Edit </button>
+        <button data-testid="edit-button" {...api.getEditTriggerProps()}> Edit </button>
       {/if}
       {#if api.editing}
-        <button data-testid="save-button" {...api.submitTriggerProps}> Save </button>
-        <button data-testid="cancel-button" {...api.cancelTriggerProps}> Cancel </button>
+        <button data-testid="save-button" {...api.getSubmitTriggerProps()}> Save </button>
+        <button data-testid="cancel-button" {...api.getCancelTriggerProps()}> Cancel </button>
       {/if}
     </div>
   </div>

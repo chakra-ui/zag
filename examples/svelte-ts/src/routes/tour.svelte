@@ -37,22 +37,22 @@
   </div>
 
   <div use:portal>
-    <div {...api.overlayProps}></div>
-    <div {...api.spotlightProps}></div>
-    <div {...api.positionerProps}>
+    <div {...api.getOverlayProps()}></div>
+    <div {...api.getSpotlightProps()}></div>
+    <div {...api.getPositionerProps()}>
       {#if api.currentStep}
-        <div {...api.contentProps}>
-          <div {...api.arrowProps}>
-            <div {...api.arrowTipProps}></div>
+        <div {...api.getContentProps()}>
+          <div {...api.getArrowProps()}>
+            <div {...api.getArrowTipProps()}></div>
           </div>
-          <p {...api.titleProps}>{api.currentStep.title}</p>
-          <div {...api.descriptionProps}>{api.currentStep.description}</div>
+          <p {...api.getTitleProps()}>{api.currentStep.title}</p>
+          <div {...api.getDescriptionProps()}>{api.currentStep.description}</div>
 
           <div class="tour button__group">
-            <button {...api.prevTriggerProps}>Prev</button>
-            <button {...api.nextTriggerProps}>Next</button>
+            <button {...api.getPrevTriggerProps()}>Prev</button>
+            <button {...api.getNextTriggerProps()}>Next</button>
             {#if api.lastStep}
-              <button {...api.closeTriggerProps} style="margin-left:auto;"> Close </button>
+              <button {...api.getCloseTriggerProps()} style="margin-left:auto;"> Close </button>
             {/if}
           </div>
         </div>

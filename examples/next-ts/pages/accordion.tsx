@@ -24,7 +24,7 @@ export default function Page() {
   return (
     <>
       <main className="accordion">
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           {accordionData.map((item) => (
             <div key={item.id} {...api.getItemProps({ value: item.id })}>
               <h3>

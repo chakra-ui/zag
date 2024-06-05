@@ -190,7 +190,7 @@ export type Service = Machine<MachineContext, MachineState>
 
 export interface Api {
   getItemProps: (opts: ItemProps) => Record<string, any>
-  triggerProps: Record<string, any>
+  getTriggerProps(): Record<string, any>
 }
 
 export interface ItemProps {
@@ -301,15 +301,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Returns the state of the menu item
    */
   getItemState(props: ItemProps): ItemState
-  contextTriggerProps: T["element"]
+  getContextTriggerProps(): T["element"]
   getTriggerItemProps<A extends Api>(childApi: A): T["element"]
-  triggerProps: T["button"]
-  indicatorProps: T["element"]
-  positionerProps: T["element"]
-  arrowProps: T["element"]
-  arrowTipProps: T["element"]
-  contentProps: T["element"]
-  separatorProps: T["element"]
+  getTriggerProps(): T["button"]
+  getIndicatorProps(): T["element"]
+  getPositionerProps(): T["element"]
+  getArrowProps(): T["element"]
+  getArrowTipProps(): T["element"]
+  getContentProps(): T["element"]
+  getSeparatorProps(): T["element"]
   getItemProps(options: ItemProps): T["element"]
   getOptionItemProps(option: OptionItemProps): T["element"]
   getItemIndicatorProps(option: OptionItemProps): T["element"]

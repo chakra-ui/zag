@@ -137,7 +137,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Returns the state of the toggle item.
    */
   getItemState(props: ItemProps): ItemState
-  rootProps: T["element"]
+  getRootProps(): T["element"]
   getItemProps(props: ItemProps): T["button"]
 }
 

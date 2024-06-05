@@ -12,11 +12,11 @@ const api = computed(() =>
 </script>
 
 <template>
-  <div ref="ref" v-bind="api.rootProps">
-    <label v-bind="api.labelProps">Enter number</label>
+  <div ref="ref" v-bind="api.getRootProps()">
+    <label v-bind="api.getLabelProps()">Enter number</label>
     <div>
-      <div v-bind="api.scrubberProps" />
-      <input v-bind="api.inputProps" />
+      <div v-bind="api.getScrubberProps()" />
+      <input v-bind="api.getInputProps()" />
     </div>
   </div>
 </template>

@@ -12,10 +12,10 @@
 </script>
 
 <template>
-  <div v-bind="api.rootProps">
-    <div v-bind="api.labelProps">Upload progress</div>
-    <div v-bind="api.trackProps">
-      <div v-bind="api.rangeProps" />
+  <div v-bind="api.getRootProps()">
+    <div v-bind="api.getLabelProps()">Upload progress</div>
+    <div v-bind="api.getTrackProps()">
+      <div v-bind="api.getRangeProps()" />
     </div>
   </div>
 </template>

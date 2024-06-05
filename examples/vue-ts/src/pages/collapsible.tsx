@@ -23,9 +23,9 @@ export default defineComponent({
       return (
         <>
           <main class="collapsible">
-            <div {...api.rootProps}>
-              <button {...api.triggerProps}>Collapsible Trigger</button>
-              <div {...api.contentProps}>
+            <div {...api.getRootProps()}>
+              <button {...api.getTriggerProps()}>Collapsible Trigger</button>
+              <div {...api.getContentProps()}>
                 <p>
                   Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                   dolore magna sfsd. Ut enim ad minimdfd v eniam, quis nostrud exercitation ullamco laboris nisi ut

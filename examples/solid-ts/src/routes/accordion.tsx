@@ -19,7 +19,7 @@ export default function Page() {
   return (
     <>
       <main class="accordion">
-        <div {...api().rootProps}>
+        <div {...api().getRootProps()}>
           <For each={accordionData}>
             {(item) => (
               <div {...api().getItemProps({ value: item.id })}>

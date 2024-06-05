@@ -12,17 +12,17 @@ export function Dialog(props: { controls: any }) {
 
   return (
     <>
-      <button className="dialog" {...api.triggerProps}>
+      <button className="dialog" {...api.getTriggerProps()}>
         Open Dialog
       </button>
       <Portal>
-        <div className="dialog" {...api.backdropProps} />
-        <div className="dialog" {...api.positionerProps}>
-          <div className="dialog" {...api.contentProps}>
-            <h2 className="dialog" {...api.titleProps}>
+        <div className="dialog" {...api.getBackdropProps()} />
+        <div className="dialog" {...api.getPositionerProps()}>
+          <div className="dialog" {...api.getContentProps()}>
+            <h2 className="dialog" {...api.getTitleProps()}>
               Edit profile
             </h2>
-            <p className="dialog" {...api.descriptionProps}>
+            <p className="dialog" {...api.getDescriptionProps()}>
               Make changes to your profile here. Click save when you are done.
             </p>
 
@@ -30,7 +30,7 @@ export function Dialog(props: { controls: any }) {
               <input placeholder="Enter name..." />
               <button>Save</button>
             </div>
-            <button className="dialog" {...api.closeTriggerProps}>
+            <button className="dialog" {...api.getCloseTriggerProps()}>
               <HiX />
             </button>
           </div>

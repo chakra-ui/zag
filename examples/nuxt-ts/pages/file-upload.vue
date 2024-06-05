@@ -14,15 +14,15 @@ const api = computed(() => fileUpload.connect(state.value, send, normalizeProps)
 
 <template>
   <main class="file-upload">
-    <div v-bind="api.rootProps">
-      <div v-bind="api.dropzoneProps">
-        <input v-bind="api.hiddenInputProps" />
+    <div v-bind="api.getRootProps()">
+      <div v-bind="api.getDropzoneProps()">
+        <input v-bind="api.getHiddenInputProps()" />
         Drag your files here
       </div>
 
-      <button v-bind="api.triggerProps">Choose Files...</button>
+      <button v-bind="api.getTriggerProps()">Choose Files...</button>
 
-      <ul v-bind="api.itemGroupProps">
+      <ul v-bind="api.getItemGroupProps()">
         <li v-for="file in api.acceptedFiles" :key="file.name" class="file" v-bind="api.getItemProps({ file })">
           <div v-bind="api.getItemNameProps({ file })">
             <b>{file.name}</b>

@@ -24,14 +24,14 @@ const items = computed(() =>
 
 <template>
   <main class="rating">
-    <div v-bind="api.rootProps">
-      <div v-bind="api.controlProps">
+    <div v-bind="api.getRootProps()">
+      <div v-bind="api.getControlProps()">
         <span v-for="[index, state] in items" :key="index" v-bind="api.getItemProps({ index })">
           <HalfStar v-if="state.half" />
           <Star v-else="" />
         </span>
       </div>
-      <input v-bind="api.hiddenInputProps" data-testid="hidden-input" />
+      <input v-bind="api.getHiddenInputProps()" data-testid="hidden-input" />
     </div>
   </main>
 

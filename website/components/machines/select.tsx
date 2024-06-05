@@ -45,17 +45,17 @@ export function Select(props: SelectProps) {
   const api = select.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Label</label>
-      <div {...api.controlProps}>
-        <button {...api.triggerProps}>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Label</label>
+      <div {...api.getControlProps()}>
+        <button {...api.getTriggerProps()}>
           <span>{api.valueAsString || "Select option"}</span>
           <CaretIcon />
         </button>
       </div>
       <Portal>
-        <div {...api.positionerProps}>
-          <ul {...api.contentProps}>
+        <div {...api.getPositionerProps()}>
+          <ul {...api.getContentProps()}>
             {data.map((item) => (
               <li key={item.value} {...api.getItemProps({ item })}>
                 <span {...api.getItemTextProps({ item })}>{item.label}</span>

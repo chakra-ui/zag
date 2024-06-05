@@ -23,16 +23,16 @@ export default defineComponent({
       return (
         <>
           <main class="time-picker">
-            <div {...api.rootProps}>
-              <div {...api.controlProps} style={{ display: "flex", gap: "10px" }}>
-                <input {...api.inputProps} />
-                <button {...api.triggerProps}>🗓</button>
-                <button {...api.clearTriggerProps}>❌</button>
+            <div {...api.getRootProps()}>
+              <div {...api.getControlProps()} style={{ display: "flex", gap: "10px" }}>
+                <input {...api.getInputProps()} />
+                <button {...api.getTriggerProps()}>🗓</button>
+                <button {...api.getClearTriggerProps()}>❌</button>
               </div>
 
               <Teleport to="body">
-                <div {...api.positionerProps}>
-                  <div {...api.contentProps}>
+                <div {...api.getPositionerProps()}>
+                  <div {...api.getContentProps()}>
                     <div {...api.getColumnProps({ unit: "hour" })}>
                       {api.getHours().map((item) => (
                         <button key={item.value} {...api.getHourCellProps({ value: item.value })}>

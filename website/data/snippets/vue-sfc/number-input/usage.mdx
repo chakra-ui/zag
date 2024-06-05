@@ -11,12 +11,12 @@ const api = computed(() =>
 </script>
 
 <template>
-  <div ref="ref" v-bind="api.rootProps">
-    <label v-bind="api.labelProps">Enter number</label>
+  <div ref="ref" v-bind="api.getRootProps()">
+    <label v-bind="api.getLabelProps()">Enter number</label>
     <div>
-      <button v-bind="api.decrementTriggerProps">DEC</button>
-      <input v-bind="api.inputProps" />
-      <button v-bind="api.incrementTriggerProps">INC</button>
+      <button v-bind="api.getDecrementTriggerProps()">DEC</button>
+      <input v-bind="api.getInputProps()" />
+      <button v-bind="api.getIncrementTriggerProps()">INC</button>
     </div>
   </div>
 </template>

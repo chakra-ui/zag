@@ -18,13 +18,13 @@ export default function Page() {
   return (
     <>
       <main class="file-upload">
-        <div {...api().rootProps}>
-          <div {...api().dropzoneProps}>
-            <input {...api().hiddenInputProps} />
+        <div {...api().getRootProps()}>
+          <div {...api().getDropzoneProps()}>
+            <input {...api().getHiddenInputProps()} />
             Drag your files here
           </div>
 
-          <button {...api().triggerProps}>Choose Files...</button>
+          <button {...api().getTriggerProps()}>Choose Files...</button>
 
           <ul>
             <Index each={api().acceptedFiles}>

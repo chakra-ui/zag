@@ -132,19 +132,19 @@ const [state, send] = useMachine(
 
 ## Adding an arrow
 
-To render an arrow within the popover, use the `api.arrowProps` and
-`api.arrowTipProps`.
+To render an arrow within the popover, use the `api.getArrowProps()` and
+`api.getArrowTipProps()`.
 
 ```jsx {6-8}
 //...
 const api = popover.connect(state, send)
 //...
 return (
-  <div {...api.positionerProps}>
-    <div {...api.arrowProps}>
-      <div {...api.arrowTipProps} />
+  <div {...api.getPositionerProps()}>
+    <div {...api.getArrowProps()}>
+      <div {...api.getArrowTipProps()} />
     </div>
-    <div {...api.contentProps}>{/* ... */}</div>
+    <div {...api.getContentProps()}>{/* ... */}</div>
   </div>
 )
 //...

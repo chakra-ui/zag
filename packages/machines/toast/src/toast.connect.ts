@@ -38,76 +38,83 @@ export function connect<T extends PropTypes, O>(
       send("DISMISS")
     },
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      dir: state.context.dir,
-      id: dom.getRootId(state.context),
-      "data-state": visible ? "open" : "closed",
-      "data-type": type,
-      "data-placement": placement,
-      "data-align": align,
-      "data-side": side,
-      "data-mounted": dataAttr(state.context.mounted),
-      "data-paused": dataAttr(paused),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        dir: state.context.dir,
+        id: dom.getRootId(state.context),
+        "data-state": visible ? "open" : "closed",
+        "data-type": type,
+        "data-placement": placement,
+        "data-align": align,
+        "data-side": side,
+        "data-mounted": dataAttr(state.context.mounted),
+        "data-paused": dataAttr(paused),
 
-      "data-first": dataAttr(state.context.frontmost),
-      "data-sibling": dataAttr(!state.context.frontmost),
-      "data-stack": dataAttr(state.context.stacked),
-      "data-overlap": dataAttr(!state.context.stacked),
+        "data-first": dataAttr(state.context.frontmost),
+        "data-sibling": dataAttr(!state.context.frontmost),
+        "data-stack": dataAttr(state.context.stacked),
+        "data-overlap": dataAttr(!state.context.stacked),
 
-      role: "status",
-      "aria-atomic": "true",
-      tabIndex: 0,
-      style: getPlacementStyle(state.context, visible),
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        if (event.key == "Escape") {
-          send("DISMISS")
-          event.preventDefault()
-        }
-      },
-    }),
+        role: "status",
+        "aria-atomic": "true",
+        tabIndex: 0,
+        style: getPlacementStyle(state.context, visible),
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (event.key == "Escape") {
+            send("DISMISS")
+            event.preventDefault()
+          }
+        },
+      }),
 
     /* Leave a ghost div to avoid setting hover to false when transitioning out */
-    ghostBeforeProps: normalize.element({
-      "data-ghost": "before",
-      style: getGhostBeforeStyle(state.context, visible),
-    }),
+    getGhostBeforeProps: () =>
+      normalize.element({
+        "data-ghost": "before",
+        style: getGhostBeforeStyle(state.context, visible),
+      }),
 
     /* Needed to avoid setting hover to false when in between toasts */
-    ghostAfterProps: normalize.element({
-      "data-ghost": "after",
-      style: getGhostAfterStyle(state.context, visible),
-    }),
+    getGhostAfterProps: () =>
+      normalize.element({
+        "data-ghost": "after",
+        style: getGhostAfterStyle(state.context, visible),
+      }),
 
-    titleProps: normalize.element({
-      ...parts.title.attrs,
-      id: dom.getTitleId(state.context),
-    }),
+    getTitleProps: () =>
+      normalize.element({
+        ...parts.title.attrs,
+        id: dom.getTitleId(state.context),
+      }),
 
-    descriptionProps: normalize.element({
-      ...parts.description.attrs,
-      id: dom.getDescriptionId(state.context),
-    }),
+    getDescriptionProps: () =>
+      normalize.element({
+        ...parts.description.attrs,
+        id: dom.getDescriptionId(state.context),
+      }),
 
-    actionTriggerProps: normalize.button({
-      ...parts.actionTrigger.attrs,
-      type: "button",
-      onClick(event) {
-        if (event.defaultPrevented) return
-        send("DISMISS")
-      },
-    }),
+    getActionTriggerProps: () =>
+      normalize.button({
+        ...parts.actionTrigger.attrs,
+        type: "button",
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send("DISMISS")
+        },
+      }),
 
-    closeTriggerProps: normalize.button({
-      id: dom.getCloseTriggerId(state.context),
-      ...parts.closeTrigger.attrs,
-      type: "button",
-      "aria-label": "Dismiss notification",
-      onClick(event) {
-        if (event.defaultPrevented) return
-        send("DISMISS")
-      },
-    }),
+    getCloseTriggerProps: () =>
+      normalize.button({
+        id: dom.getCloseTriggerId(state.context),
+        ...parts.closeTrigger.attrs,
+        type: "button",
+        "aria-label": "Dismiss notification",
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send("DISMISS")
+        },
+      }),
   }
 }

@@ -73,10 +73,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   copy(): void
 
-  rootProps: T["element"]
-  labelProps: T["label"]
-  controlProps: T["element"]
-  triggerProps: T["button"]
-  inputProps: T["input"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["label"]
+  getControlProps(): T["element"]
+  getTriggerProps(): T["button"]
+  getInputProps(): T["input"]
   getIndicatorProps(props: IndicatorProps): T["element"]
 }

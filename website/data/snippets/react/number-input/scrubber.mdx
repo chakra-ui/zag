@@ -8,11 +8,11 @@ export function NumberInput() {
   const api = numberInput.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Enter number:</label>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Enter number:</label>
       <div>
-        <div {...api.scrubberProps} />
-        <input {...api.inputProps} />
+        <div {...api.getScrubberProps()} />
+        <input {...api.getInputProps()} />
       </div>
     </div>
   )

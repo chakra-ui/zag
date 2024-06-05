@@ -53,24 +53,24 @@ export default defineComponent({
               <button data-testid="clear-value-button" onClick={() => api.clearValue()}>
                 Clear Value
               </button>
-              <button {...api.clearTriggerProps}>Clear Trigger</button>
+              <button {...api.getClearTriggerProps()}>Clear Trigger</button>
 
               <br />
 
-              <div {...api.rootProps}>
-                <label {...api.labelProps}>Select country</label>
+              <div {...api.getRootProps()}>
+                <label {...api.getLabelProps()}>Select country</label>
 
-                <div {...api.controlProps}>
-                  <input data-testid="input" {...api.inputProps} />
+                <div {...api.getControlProps()}>
+                  <input data-testid="input" {...api.getInputProps()} />
                   <button data-testid="trigger" {...api.getTriggerProps()}>
                     ▼
                   </button>
                 </div>
               </div>
 
-              <div {...api.positionerProps}>
+              <div {...api.getPositionerProps()}>
                 {options.value.length > 0 && (
-                  <ul data-testid="combobox-content" {...api.contentProps}>
+                  <ul data-testid="combobox-content" {...api.getContentProps()}>
                     {options.value.map((item) => (
                       <li key={item.code} {...api.getItemProps({ item })}>
                         {item.label}

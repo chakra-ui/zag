@@ -18,8 +18,8 @@ export default function Page() {
   return (
     <>
       <main className="tree-view">
-        <div {...api.rootProps}>
-          <h3 {...api.labelProps}>My Documents</h3>
+        <div {...api.getRootProps()}>
+          <h3 {...api.getLabelProps()}>My Documents</h3>
           <div>
             <button onClick={() => api.collapse()}>Collapse All</button>
             <button onClick={() => api.expand()}>Expand All</button>
@@ -28,7 +28,7 @@ export default function Page() {
             <button onClick={() => api.deselect()}>Deselect All</button>
           </div>
 
-          <ul {...api.treeProps}>
+          <ul {...api.getTreeProps()}>
             <li {...api.getBranchProps({ value: "node_modules", depth: 1 })}>
               <div {...api.getBranchControlProps({ value: "node_modules", depth: 1 })}>
                 <span {...api.getBranchTextProps({ value: "node_modules", depth: 1 })}> 📂 node_modules</span>

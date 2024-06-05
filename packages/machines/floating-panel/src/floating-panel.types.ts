@@ -219,16 +219,16 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   resizing: boolean
 
-  dragTriggerProps: T["element"]
+  getDragTriggerProps(): T["element"]
   getResizeTriggerProps(props: ResizeTriggerProps): T["element"]
-  triggerProps: T["button"]
-  positionerProps: T["element"]
-  contentProps: T["element"]
-  titleProps: T["element"]
-  headerProps: T["element"]
-  bodyProps: T["element"]
-  closeTriggerProps: T["button"]
-  minimizeTriggerProps: T["button"]
-  maximizeTriggerProps: T["button"]
-  restoreTriggerProps: T["button"]
+  getTriggerProps(): T["button"]
+  getPositionerProps(): T["element"]
+  getContentProps(): T["element"]
+  getTitleProps(): T["element"]
+  getHeaderProps(): T["element"]
+  getBodyProps(): T["element"]
+  getCloseTriggerProps(): T["button"]
+  getMinimizeTriggerProps(): T["button"]
+  getMaximizeTriggerProps(): T["button"]
+  getRestoreTriggerProps(): T["button"]
 }

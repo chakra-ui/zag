@@ -17,10 +17,10 @@ export default defineComponent({
       const api = apiRef.value
 
       return (
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           {/* ... */}
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
               {api.format === 'rgba' && (
                 <div>
                   <div>

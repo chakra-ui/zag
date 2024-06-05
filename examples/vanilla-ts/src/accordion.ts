@@ -13,7 +13,7 @@ export class Accordion extends Component<accordion.Context, accordion.Api> {
   }
 
   render = () => {
-    spreadProps(this.rootEl, this.api.rootProps)
+    spreadProps(this.rootEl, this.api.getRootProps())
     this.items.forEach((itemEl) => {
       this.renderItem(itemEl)
     })

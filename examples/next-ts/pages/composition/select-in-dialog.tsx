@@ -15,18 +15,18 @@ function Select() {
   const api = select.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Label</label>
-      <div {...api.controlProps}>
-        <button {...api.triggerProps}>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Label</label>
+      <div {...api.getControlProps()}>
+        <button {...api.getTriggerProps()}>
           <span>{api.valueAsString || "Select option"}</span>
           <span>▼</span>
         </button>
-        <button {...api.clearTriggerProps}>X</button>
+        <button {...api.getClearTriggerProps()}>X</button>
       </div>
 
-      <div {...api.positionerProps}>
-        <ul {...api.contentProps}>
+      <div {...api.getPositionerProps()}>
+        <ul {...api.getContentProps()}>
           {selectData.map((item) => (
             <li key={item.value} {...api.getItemProps({ item })}>
               <span {...api.getItemTextProps({ item })}>{item.label}</span>
@@ -44,16 +44,16 @@ export default function Page() {
   const api = dialog.connect(state, send, normalizeProps)
   return (
     <div style={{ padding: "20px" }}>
-      <button {...api.triggerProps} data-testid="trigger-1">
+      <button {...api.getTriggerProps()} data-testid="trigger-1">
         Open Dialog
       </button>
       {api.open && (
         <Portal>
-          <div {...api.backdropProps} />
-          <div data-testid="positioner-1" {...api.positionerProps}>
-            <div {...api.contentProps}>
-              <h2 {...api.titleProps}>Edit profile</h2>
-              <p {...api.descriptionProps}>Make changes to your profile here. Click save when you are done.</p>
+          <div {...api.getBackdropProps()} />
+          <div data-testid="positioner-1" {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
+              <h2 {...api.getTitleProps()}>Edit profile</h2>
+              <p {...api.getDescriptionProps()}>Make changes to your profile here. Click save when you are done.</p>
               <Select />
             </div>
           </div>

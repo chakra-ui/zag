@@ -16,14 +16,14 @@
 </script>
 
 <main>
-  <div {...api.rootProps}>
-    <div data-testid="scrubber" {...api.scrubberProps}></div>
+  <div {...api.getRootProps()}>
+    <div data-testid="scrubber" {...api.getScrubberProps()}></div>
     <!-- svelte-ignore a11y_label_has_associated_control -->
-    <label data-testid="label" {...api.labelProps}> Enter number: </label>
-    <div {...api.controlProps}>
-      <button data-testid="dec-button" {...api.decrementTriggerProps}> DEC </button>
-      <input data-testid="input" {...api.inputProps} />
-      <button data-testid="inc-button" {...api.incrementTriggerProps}> INC </button>
+    <label data-testid="label" {...api.getLabelProps()}> Enter number: </label>
+    <div {...api.getControlProps()}>
+      <button data-testid="dec-button" {...api.getDecrementTriggerProps()}> DEC </button>
+      <input data-testid="input" {...api.getInputProps()} />
+      <button data-testid="inc-button" {...api.getIncrementTriggerProps()}> INC </button>
     </div>
   </div>
 </main>

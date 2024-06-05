@@ -51,10 +51,10 @@ function Combobox(props: Omit<combobox.Context, "id"> & { matches: Record<string
   const comboApi = combobox.connect(comboState, comboSend, normalizeProps)
 
   return (
-    <div {...comboApi.rootProps} style={{ width: "100%" }}>
-      <input {...comboApi.inputProps} style={{ marginBottom: "12px" }} />
-      <div {...comboApi.contentProps} style={{ minHeight: "120px" }}>
-        <div {...comboApi.listProps}>
+    <div {...comboApi.getRootProps()} style={{ width: "100%" }}>
+      <input {...comboApi.getInputProps()} style={{ marginBottom: "12px" }} />
+      <div {...comboApi.getContentProps()} style={{ minHeight: "120px" }}>
+        <div {...comboApi.getListProps()}>
           {matchEntries.length === 0 && <div>No results found</div>}
           {matchEntries.map(([group, items]) => (
             <div key={group} {...comboApi.getItemGroupProps({ id: group })}>
@@ -125,7 +125,7 @@ export default function Page() {
 
   return (
     <main>
-      <button {...dialogApi.triggerProps}>Open Command Menu</button>
+      <button {...dialogApi.getTriggerProps()}>Open Command Menu</button>
       <div style={{ background: "lightgray", padding: "12px" }}>
         or press <kbd> Cmd+K</kbd>
       </div>
@@ -138,9 +138,9 @@ export default function Page() {
 
       {dialogApi.open && (
         <Portal>
-          <div {...dialogApi.backdropProps} />
-          <div {...dialogApi.positionerProps}>
-            <div {...dialogApi.contentProps}>
+          <div {...dialogApi.getBackdropProps()} />
+          <div {...dialogApi.getPositionerProps()}>
+            <div {...dialogApi.getContentProps()}>
               <Combobox
                 matches={matches}
                 collection={collection}

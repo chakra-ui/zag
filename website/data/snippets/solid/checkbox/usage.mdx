@@ -9,12 +9,12 @@ function Checkbox() {
   const api = createMemo(() => checkbox.connect(state, send, normalizeProps))
 
   return (
-    <label {...api().rootProps}>
-      <span {...api().labelProps}>
+    <label {...api().getRootProps()}>
+      <span {...api().getLabelProps()}>
         Input is {api().checked ? "checked" : "unchecked"}
       </span>
-      <div {...api().controlProps} />
-      <input {...api().hiddenInputProps} />
+      <div {...api().getControlProps()} />
+      <input {...api().getHiddenInputProps()} />
     </label>
   )
 }

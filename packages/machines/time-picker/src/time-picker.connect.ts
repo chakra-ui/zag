@@ -79,144 +79,153 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return seconds.map((value) => ({ label: padStart(value), value }))
     },
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      "data-state": open ? "open" : "closed",
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(readOnly),
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
+      }),
 
-    labelProps: normalize.label({
-      ...parts.label.attrs,
-      dir: state.context.dir,
-      htmlFor: dom.getInputId(state.context),
-      "data-state": open ? "open" : "closed",
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(readOnly),
-    }),
+    getLabelProps: () =>
+      normalize.label({
+        ...parts.label.attrs,
+        dir: state.context.dir,
+        htmlFor: dom.getInputId(state.context),
+        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
+      }),
 
-    controlProps: normalize.element({
-      ...parts.control.attrs,
-      dir: state.context.dir,
-      id: dom.getControlId(state.context),
-      "data-disabled": dataAttr(disabled),
-    }),
+    getControlProps: () =>
+      normalize.element({
+        ...parts.control.attrs,
+        dir: state.context.dir,
+        id: dom.getControlId(state.context),
+        "data-disabled": dataAttr(disabled),
+      }),
 
-    inputProps: normalize.input({
-      ...parts.input.attrs,
-      dir: state.context.dir,
-      autoComplete: "off",
-      autoCorrect: "off",
-      spellCheck: "false",
-      id: dom.getInputId(state.context),
-      name: state.context.name,
-      defaultValue: valueAsString,
-      placeholder: getInputPlaceholder(state.context),
-      disabled,
-      readOnly,
-      onFocus() {
-        send("INPUT.FOCUS")
-      },
-      onBlur(event) {
-        const { value } = event.target
-        send({ type: "INPUT.BLUR", value })
-      },
-      onKeyDown(event) {
-        if (isComposingEvent(event)) return
-        if (event.key !== "Enter") return
-        send({ type: "INPUT.ENTER", value: event.currentTarget.value })
-        event.preventDefault()
-      },
-    }),
-
-    triggerProps: normalize.button({
-      ...parts.trigger.attrs,
-      id: dom.getTriggerId(state.context),
-      type: "button",
-      "data-placement": state.context.currentPlacement,
-      disabled,
-      "data-readonly": dataAttr(readOnly),
-      "aria-label": open ? "Close calendar" : "Open calendar",
-      "aria-controls": dom.getContentId(state.context),
-      "data-state": open ? "open" : "closed",
-      onClick(event) {
-        if (event.defaultPrevented) return
-        send("TRIGGER.CLICK")
-      },
-    }),
-
-    clearTriggerProps: normalize.button({
-      ...parts.clearTrigger.attrs,
-      id: dom.getClearTriggerId(state.context),
-      type: "button",
-      hidden: !state.context.value,
-      disabled,
-      "data-readonly": dataAttr(readOnly),
-      "aria-label": "Clear time",
-      onClick(event) {
-        if (event.defaultPrevented) return
-        send("VALUE.CLEAR")
-      },
-    }),
-
-    positionerProps: normalize.element({
-      ...parts.positioner.attrs,
-      dir: state.context.dir,
-      id: dom.getPositionerId(state.context),
-      style: popperStyles.floating,
-    }),
-
-    spacerProps: normalize.element({
-      ...parts.spacer.attrs,
-    }),
-
-    contentProps: normalize.element({
-      ...parts.content.attrs,
-      dir: state.context.dir,
-      id: dom.getContentId(state.context),
-      hidden: !open,
-      tabIndex: 0,
-      role: "application",
-      "data-state": open ? "open" : "closed",
-      "data-placement": currentPlacement,
-      "aria-roledescription": "timepicker",
-      "aria-label": "timepicker",
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        if (isComposingEvent(event)) return
-
-        const keyMap: EventKeyMap = {
-          ArrowUp() {
-            send({ type: "CONTENT.ARROW_UP" })
-          },
-          ArrowDown() {
-            send({ type: "CONTENT.ARROW_DOWN" })
-          },
-          ArrowLeft() {
-            send({ type: "CONTENT.ARROW_LEFT" })
-          },
-          ArrowRight() {
-            send({ type: "CONTENT.ARROW_RIGHT" })
-          },
-          Enter() {
-            send({ type: "CONTENT.ENTER" })
-          },
-          // prevent tabbing out of the time picker
-          Tab() {},
-          Escape() {
-            if (!state.context.disableLayer) return
-            send({ type: "CONTENT.ESCAPE" })
-          },
-        }
-
-        const exec = keyMap[getEventKey(event, state.context)]
-
-        if (exec) {
-          exec(event)
+    getInputProps: () =>
+      normalize.input({
+        ...parts.input.attrs,
+        dir: state.context.dir,
+        autoComplete: "off",
+        autoCorrect: "off",
+        spellCheck: "false",
+        id: dom.getInputId(state.context),
+        name: state.context.name,
+        defaultValue: valueAsString,
+        placeholder: getInputPlaceholder(state.context),
+        disabled,
+        readOnly,
+        onFocus() {
+          send("INPUT.FOCUS")
+        },
+        onBlur(event) {
+          const { value } = event.target
+          send({ type: "INPUT.BLUR", value })
+        },
+        onKeyDown(event) {
+          if (isComposingEvent(event)) return
+          if (event.key !== "Enter") return
+          send({ type: "INPUT.ENTER", value: event.currentTarget.value })
           event.preventDefault()
-        }
-      },
-    }),
+        },
+      }),
+
+    getTriggerProps: () =>
+      normalize.button({
+        ...parts.trigger.attrs,
+        id: dom.getTriggerId(state.context),
+        type: "button",
+        "data-placement": state.context.currentPlacement,
+        disabled,
+        "data-readonly": dataAttr(readOnly),
+        "aria-label": open ? "Close calendar" : "Open calendar",
+        "aria-controls": dom.getContentId(state.context),
+        "data-state": open ? "open" : "closed",
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send("TRIGGER.CLICK")
+        },
+      }),
+
+    getClearTriggerProps: () =>
+      normalize.button({
+        ...parts.clearTrigger.attrs,
+        id: dom.getClearTriggerId(state.context),
+        type: "button",
+        hidden: !state.context.value,
+        disabled,
+        "data-readonly": dataAttr(readOnly),
+        "aria-label": "Clear time",
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send("VALUE.CLEAR")
+        },
+      }),
+
+    getPositionerProps: () =>
+      normalize.element({
+        ...parts.positioner.attrs,
+        dir: state.context.dir,
+        id: dom.getPositionerId(state.context),
+        style: popperStyles.floating,
+      }),
+
+    getSpacerProps: () =>
+      normalize.element({
+        ...parts.spacer.attrs,
+      }),
+
+    getContentProps: () =>
+      normalize.element({
+        ...parts.content.attrs,
+        dir: state.context.dir,
+        id: dom.getContentId(state.context),
+        hidden: !open,
+        tabIndex: 0,
+        role: "application",
+        "data-state": open ? "open" : "closed",
+        "data-placement": currentPlacement,
+        "aria-roledescription": "timepicker",
+        "aria-label": "timepicker",
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (isComposingEvent(event)) return
+
+          const keyMap: EventKeyMap = {
+            ArrowUp() {
+              send({ type: "CONTENT.ARROW_UP" })
+            },
+            ArrowDown() {
+              send({ type: "CONTENT.ARROW_DOWN" })
+            },
+            ArrowLeft() {
+              send({ type: "CONTENT.ARROW_LEFT" })
+            },
+            ArrowRight() {
+              send({ type: "CONTENT.ARROW_RIGHT" })
+            },
+            Enter() {
+              send({ type: "CONTENT.ENTER" })
+            },
+            // prevent tabbing out of the time picker
+            Tab() {},
+            Escape() {
+              if (!state.context.disableLayer) return
+              send({ type: "CONTENT.ESCAPE" })
+            },
+          }
+
+          const exec = keyMap[getEventKey(event, state.context)]
+
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+          }
+        },
+      }),
 
     getColumnProps(props) {
       const hidden = (props.unit === "second" && !state.context.allowSeconds) || (props.unit === "period" && !hour12)

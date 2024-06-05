@@ -15,25 +15,25 @@ export function Popover(props: any) {
 
   return (
     <div>
-      <button {...api.triggerProps}>Click me</button>
+      <button {...api.getTriggerProps()}>Click me</button>
       <Wrapper>
-        <div {...api.positionerProps}>
-          <div {...api.contentProps}>
-            <div {...api.arrowProps}>
-              <div {...api.arrowTipProps} />
+        <div {...api.getPositionerProps()}>
+          <div {...api.getContentProps()}>
+            <div {...api.getArrowProps()}>
+              <div {...api.getArrowTipProps()} />
             </div>
 
             <div>
-              <div {...api.titleProps}>
+              <div {...api.getTitleProps()}>
                 <b>About Tabs</b>
               </div>
-              <div {...api.descriptionProps}>
+              <div {...api.getDescriptionProps()}>
                 Tabs are used to organize and group content into sections that
                 the user can navigate between.
               </div>
               <button>Action Button</button>
             </div>
-            <button {...api.closeTriggerProps}>
+            <button {...api.getCloseTriggerProps()}>
               <HiX />
             </button>
           </div>

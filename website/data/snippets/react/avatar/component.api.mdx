@@ -27,13 +27,13 @@ function Avatar(props: AvatarProps) {
   const api = avatar.connect(state, send, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <span {...api.fallbackProps}>{getInitials(localProps.name)}</span>
+    <div {...api.getRootProps()}>
+      <span {...api.getFallbackProps()}>{getInitials(localProps.name)}</span>
       <img
         alt="PA"
         src={localProps.src}
         srcSet={localProps.srcSet}
-        {...api.imageProps}
+        {...api.getImageProps()}
       />
     </div>
   )

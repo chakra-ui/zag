@@ -43,22 +43,22 @@ export default function Page() {
         </div>
 
         <Portal>
-          <div {...api().overlayProps} />
-          <div {...api().spotlightProps} />
-          <div {...api().positionerProps}>
+          <div {...api().getOverlayProps()} />
+          <div {...api().getSpotlightProps()} />
+          <div {...api().getPositionerProps()}>
             <Show when={api().currentStep}>
-              <div {...api().contentProps}>
-                <div {...api().arrowProps}>
-                  <div {...api().arrowTipProps} />
+              <div {...api().getContentProps()}>
+                <div {...api().getArrowProps()}>
+                  <div {...api().getArrowTipProps()} />
                 </div>
-                <p {...api().titleProps}>{api().currentStep!.title}</p>
-                <div {...api().descriptionProps}>{api().currentStep!.description}</div>
+                <p {...api().getTitleProps()}>{api().currentStep!.title}</p>
+                <div {...api().getDescriptionProps()}>{api().currentStep!.description}</div>
 
                 <div class="tour button__group">
-                  <button {...api().prevTriggerProps}>Prev</button>
-                  <button {...api().nextTriggerProps}>Next</button>
+                  <button {...api().getPrevTriggerProps()}>Prev</button>
+                  <button {...api().getNextTriggerProps()}>Next</button>
                   {api().lastStep && (
-                    <button {...api().closeTriggerProps} style={{ "margin-left": "auto" }}>
+                    <button {...api().getCloseTriggerProps()} style={{ "margin-left": "auto" }}>
                       Close
                     </button>
                   )}

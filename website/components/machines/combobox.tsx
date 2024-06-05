@@ -92,19 +92,19 @@ export function Combobox(props: ComboboxProps) {
 
   return (
     <div>
-      <div {...api.rootProps}>
-        <label {...api.labelProps}>Nationality</label>
-        <div {...api.controlProps}>
-          <input {...api.inputProps} />
+      <div {...api.getRootProps()}>
+        <label {...api.getLabelProps()}>Nationality</label>
+        <div {...api.getControlProps()}>
+          <input {...api.getInputProps()} />
           <button {...api.getTriggerProps()}>
             <CaretIcon />
           </button>
         </div>
       </div>
       <Portal>
-        <div {...api.positionerProps}>
+        <div {...api.getPositionerProps()}>
           {options.length > 0 && (
-            <ul {...api.contentProps}>
+            <ul {...api.getContentProps()}>
               {options.map((item, index) => (
                 <li
                   key={`${item.code}:${index}`}

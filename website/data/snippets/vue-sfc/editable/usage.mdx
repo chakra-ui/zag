@@ -9,10 +9,10 @@ const api = computed(() => editable.connect(state.value, send, normalizeProps));
 </script>
 
 <template>
-  <div ref="ref" v-bind="api.rootProps">
-    <div v-bind="api.areaProps">
-      <input v-bind="api.inputProps" />
-      <span v-bind="api.previewProps" />
+  <div ref="ref" v-bind="api.getRootProps()">
+    <div v-bind="api.getAreaProps()">
+      <input v-bind="api.getInputProps()" />
+      <span v-bind="api.getPreviewProps()" />
     </div>
   </div>
 </template>

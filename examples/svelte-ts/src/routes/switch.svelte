@@ -17,12 +17,12 @@
 
 <main class="switch">
   <!-- svelte-ignore a11y_label_has_associated_control -->
-  <label {...api.rootProps}>
-    <input {...api.hiddenInputProps} data-testid="hidden-input" />
-    <span {...api.controlProps}>
-      <span {...api.thumbProps}></span>
+  <label {...api.getRootProps()}>
+    <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
+    <span {...api.getControlProps()}>
+      <span {...api.getThumbProps()}></span>
     </span>
-    <span {...api.labelProps}>Feature is {api.checked ? "enabled" : "disabled"}</span>
+    <span {...api.getLabelProps()}>Feature is {api.checked ? "enabled" : "disabled"}</span>
   </label>
 </main>
 

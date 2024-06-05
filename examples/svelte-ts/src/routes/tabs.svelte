@@ -22,9 +22,9 @@
 </script>
 
 <main class="tabs">
-  <div {...api.rootProps}>
-    <div {...api.indicatorProps}></div>
-    <div {...api.listProps}>
+  <div {...api.getRootProps()}>
+    <div {...api.getIndicatorProps()}></div>
+    <div {...api.getListProps()}>
       {#each tabsData as data}
         <button {...api.getTriggerProps({ value: data.id })} data-testid={`${data.id}-tab`}>
           {data.label}

@@ -39,48 +39,52 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send("CLEAR_VALUE")
     },
 
-    rootProps: normalize.element({
-      dir: state.context.dir,
-      ...parts.root.attrs,
-      id: dom.getRootId(state.context),
-    }),
+    getRootProps: () =>
+      normalize.element({
+        dir: state.context.dir,
+        ...parts.root.attrs,
+        id: dom.getRootId(state.context),
+      }),
 
-    hiddenInputProps: normalize.input({
-      name: state.context.name,
-      form: state.context.form,
-      type: "text",
-      hidden: true,
-      id: dom.getHiddenInputId(state.context),
-      defaultValue: state.context.value,
-    }),
+    getHiddenInputProps: () =>
+      normalize.input({
+        name: state.context.name,
+        form: state.context.form,
+        type: "text",
+        hidden: true,
+        id: dom.getHiddenInputId(state.context),
+        defaultValue: state.context.value,
+      }),
 
-    labelProps: normalize.element({
-      ...parts.label.attrs,
-      dir: state.context.dir,
-      id: dom.getLabelId(state.context),
-      "data-disabled": dataAttr(disabled),
-    }),
+    getLabelProps: () =>
+      normalize.element({
+        ...parts.label.attrs,
+        dir: state.context.dir,
+        id: dom.getLabelId(state.context),
+        "data-disabled": dataAttr(disabled),
+      }),
 
-    controlProps: normalize.element({
-      id: dom.getControlId(state.context),
-      ...parts.control.attrs,
-      dir: state.context.dir,
-      role: "radiogroup",
-      "aria-orientation": "horizontal",
-      "aria-labelledby": dom.getLabelId(state.context),
-      "aria-readonly": ariaAttr(state.context.readOnly),
-      "data-readonly": dataAttr(state.context.readOnly),
-      tabIndex: state.context.readOnly ? 0 : -1,
-      "data-disabled": dataAttr(disabled),
-      onPointerMove(event) {
-        if (!interactive || event.pointerType === "touch") return
-        send("GROUP_POINTER_OVER")
-      },
-      onPointerLeave(event) {
-        if (!interactive || event.pointerType === "touch") return
-        send("GROUP_POINTER_LEAVE")
-      },
-    }),
+    getControlProps: () =>
+      normalize.element({
+        id: dom.getControlId(state.context),
+        ...parts.control.attrs,
+        dir: state.context.dir,
+        role: "radiogroup",
+        "aria-orientation": "horizontal",
+        "aria-labelledby": dom.getLabelId(state.context),
+        "aria-readonly": ariaAttr(state.context.readOnly),
+        "data-readonly": dataAttr(state.context.readOnly),
+        tabIndex: state.context.readOnly ? 0 : -1,
+        "data-disabled": dataAttr(disabled),
+        onPointerMove(event) {
+          if (!interactive || event.pointerType === "touch") return
+          send("GROUP_POINTER_OVER")
+        },
+        onPointerLeave(event) {
+          if (!interactive || event.pointerType === "touch") return
+          send("GROUP_POINTER_LEAVE")
+        },
+      }),
 
     getItemProps(props) {
       const { index } = props

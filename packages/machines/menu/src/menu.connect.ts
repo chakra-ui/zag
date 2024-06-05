@@ -134,233 +134,244 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "POSITIONING.SET", options })
     },
 
-    contextTriggerProps: normalize.element({
-      ...parts.contextTrigger.attrs,
-      dir: state.context.dir,
-      id: dom.getContextTriggerId(state.context),
-      onPointerDown(event) {
-        if (event.pointerType === "mouse") return
-        const point = getEventPoint(event)
-        send({ type: "CONTEXT_MENU_START", point })
-      },
-      onPointerCancel(event) {
-        if (event.pointerType === "mouse") return
-        send("CONTEXT_MENU_CANCEL")
-      },
-      onPointerMove(event) {
-        if (event.pointerType === "mouse") return
-        send("CONTEXT_MENU_CANCEL")
-      },
-      onPointerUp(event) {
-        if (event.pointerType === "mouse") return
-        send("CONTEXT_MENU_CANCEL")
-      },
-      onContextMenu(event) {
-        const point = getEventPoint(event)
-        send({ type: "CONTEXT_MENU", point })
-        event.preventDefault()
-      },
-      style: {
-        WebkitTouchCallout: "none",
-        userSelect: "none",
-      },
-    }),
+    getContextTriggerProps: () =>
+      normalize.element({
+        ...parts.contextTrigger.attrs,
+        dir: state.context.dir,
+        id: dom.getContextTriggerId(state.context),
+        onPointerDown(event) {
+          if (event.pointerType === "mouse") return
+          const point = getEventPoint(event)
+          send({ type: "CONTEXT_MENU_START", point })
+        },
+        onPointerCancel(event) {
+          if (event.pointerType === "mouse") return
+          send("CONTEXT_MENU_CANCEL")
+        },
+        onPointerMove(event) {
+          if (event.pointerType === "mouse") return
+          send("CONTEXT_MENU_CANCEL")
+        },
+        onPointerUp(event) {
+          if (event.pointerType === "mouse") return
+          send("CONTEXT_MENU_CANCEL")
+        },
+        onContextMenu(event) {
+          const point = getEventPoint(event)
+          send({ type: "CONTEXT_MENU", point })
+          event.preventDefault()
+        },
+        style: {
+          WebkitTouchCallout: "none",
+          userSelect: "none",
+        },
+      }),
 
     getTriggerItemProps(childApi) {
-      return mergeProps(getItemProps({ value: childApi.triggerProps.id }), childApi.triggerProps) as T["element"]
+      return mergeProps(
+        getItemProps({ value: childApi.getTriggerProps().id }),
+        childApi.getTriggerProps(),
+      ) as T["element"]
     },
 
-    triggerProps: normalize.button({
-      ...(isSubmenu ? parts.triggerItem.attrs : parts.trigger.attrs),
-      "data-placement": state.context.currentPlacement,
-      type: "button",
-      dir: state.context.dir,
-      id: dom.getTriggerId(state.context),
-      "data-uid": state.context.id,
-      "aria-haspopup": composite ? "menu" : "dialog",
-      "aria-controls": dom.getContentId(state.context),
-      "aria-expanded": open || undefined,
-      "data-state": open ? "open" : "closed",
-      onPointerMove(event) {
-        if (event.pointerType !== "mouse") return
-        const disabled = dom.isTargetDisabled(event.currentTarget)
-        if (disabled || !isSubmenu) return
-        send({ type: "TRIGGER_POINTERMOVE", target: event.currentTarget })
-      },
-      onPointerLeave(event) {
-        if (event.pointerType !== "mouse") return
+    getTriggerProps: () =>
+      normalize.button({
+        ...(isSubmenu ? parts.triggerItem.attrs : parts.trigger.attrs),
+        "data-placement": state.context.currentPlacement,
+        type: "button",
+        dir: state.context.dir,
+        id: dom.getTriggerId(state.context),
+        "data-uid": state.context.id,
+        "aria-haspopup": composite ? "menu" : "dialog",
+        "aria-controls": dom.getContentId(state.context),
+        "aria-expanded": open || undefined,
+        "data-state": open ? "open" : "closed",
+        onPointerMove(event) {
+          if (event.pointerType !== "mouse") return
+          const disabled = dom.isTargetDisabled(event.currentTarget)
+          if (disabled || !isSubmenu) return
+          send({ type: "TRIGGER_POINTERMOVE", target: event.currentTarget })
+        },
+        onPointerLeave(event) {
+          if (event.pointerType !== "mouse") return
 
-        const disabled = dom.isTargetDisabled(event.currentTarget)
-        if (disabled || !isSubmenu) return
+          const disabled = dom.isTargetDisabled(event.currentTarget)
+          if (disabled || !isSubmenu) return
 
-        const point = getEventPoint(event)
-        send({ type: "TRIGGER_POINTERLEAVE", target: event.currentTarget, point })
-      },
-      onClick(event) {
-        if (dom.isTriggerItem(event.currentTarget)) {
-          send({ type: "TRIGGER_CLICK", target: event.currentTarget })
-        }
-      },
-      onPointerDown(event) {
-        const disabled = dom.isTargetDisabled(event.currentTarget)
-        if (!isLeftClick(event) || disabled || isContextMenuEvent(event)) return
-        event.preventDefault()
-        if (!dom.isTriggerItem(event.currentTarget)) {
-          send({ type: "TRIGGER_CLICK", target: event.currentTarget })
-        }
-      },
-      onBlur() {
-        send("TRIGGER_BLUR")
-      },
-      onFocus() {
-        send("TRIGGER_FOCUS")
-      },
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        const keyMap: EventKeyMap = {
-          ArrowDown() {
-            send("ARROW_DOWN")
-          },
-          ArrowUp() {
-            send("ARROW_UP")
-          },
-          Enter() {
-            send({ type: "ARROW_DOWN", src: "enter" })
-          },
-          Space() {
-            send({ type: "ARROW_DOWN", src: "space" })
-          },
-        }
-
-        const key = getEventKey(event, state.context)
-        const exec = keyMap[key]
-
-        if (exec) {
+          const point = getEventPoint(event)
+          send({ type: "TRIGGER_POINTERLEAVE", target: event.currentTarget, point })
+        },
+        onClick(event) {
+          if (dom.isTriggerItem(event.currentTarget)) {
+            send({ type: "TRIGGER_CLICK", target: event.currentTarget })
+          }
+        },
+        onPointerDown(event) {
+          const disabled = dom.isTargetDisabled(event.currentTarget)
+          if (!isLeftClick(event) || disabled || isContextMenuEvent(event)) return
           event.preventDefault()
-          exec(event)
-        }
-      },
-    }),
+          if (!dom.isTriggerItem(event.currentTarget)) {
+            send({ type: "TRIGGER_CLICK", target: event.currentTarget })
+          }
+        },
+        onBlur() {
+          send("TRIGGER_BLUR")
+        },
+        onFocus() {
+          send("TRIGGER_FOCUS")
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          const keyMap: EventKeyMap = {
+            ArrowDown() {
+              send("ARROW_DOWN")
+            },
+            ArrowUp() {
+              send("ARROW_UP")
+            },
+            Enter() {
+              send({ type: "ARROW_DOWN", src: "enter" })
+            },
+            Space() {
+              send({ type: "ARROW_DOWN", src: "space" })
+            },
+          }
 
-    indicatorProps: normalize.element({
-      ...parts.indicator.attrs,
-      dir: state.context.dir,
-      "data-state": open ? "open" : "closed",
-    }),
+          const key = getEventKey(event, state.context)
+          const exec = keyMap[key]
 
-    positionerProps: normalize.element({
-      ...parts.positioner.attrs,
-      dir: state.context.dir,
-      id: dom.getPositionerId(state.context),
-      style: popperStyles.floating,
-    }),
+          if (exec) {
+            event.preventDefault()
+            exec(event)
+          }
+        },
+      }),
 
-    arrowProps: normalize.element({
-      id: dom.getArrowId(state.context),
-      ...parts.arrow.attrs,
-      dir: state.context.dir,
-      style: popperStyles.arrow,
-    }),
+    getIndicatorProps: () =>
+      normalize.element({
+        ...parts.indicator.attrs,
+        dir: state.context.dir,
+        "data-state": open ? "open" : "closed",
+      }),
 
-    arrowTipProps: normalize.element({
-      ...parts.arrowTip.attrs,
-      dir: state.context.dir,
-      style: popperStyles.arrowTip,
-    }),
+    getPositionerProps: () =>
+      normalize.element({
+        ...parts.positioner.attrs,
+        dir: state.context.dir,
+        id: dom.getPositionerId(state.context),
+        style: popperStyles.floating,
+      }),
 
-    contentProps: normalize.element({
-      ...parts.content.attrs,
-      id: dom.getContentId(state.context),
-      "aria-label": state.context["aria-label"],
-      hidden: !open,
-      "data-state": open ? "open" : "closed",
-      role: composite ? "menu" : "dialog",
-      tabIndex: 0,
-      dir: state.context.dir,
-      "aria-activedescendant": state.context.highlightedValue ?? undefined,
-      "aria-labelledby": dom.getTriggerId(state.context),
-      "data-placement": state.context.currentPlacement,
-      onPointerEnter(event) {
-        if (event.pointerType !== "mouse") return
-        send("MENU_POINTERENTER")
-      },
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        if (!isSelfTarget(event)) return
+    getArrowProps: () =>
+      normalize.element({
+        id: dom.getArrowId(state.context),
+        ...parts.arrow.attrs,
+        dir: state.context.dir,
+        style: popperStyles.arrow,
+      }),
 
-        const target = getEventTarget<Element>(event)
+    getArrowTipProps: () =>
+      normalize.element({
+        ...parts.arrowTip.attrs,
+        dir: state.context.dir,
+        style: popperStyles.arrowTip,
+      }),
 
-        const sameMenu = target?.closest("[role=menu]") === event.currentTarget || target === event.currentTarget
-        if (!sameMenu) return
+    getContentProps: () =>
+      normalize.element({
+        ...parts.content.attrs,
+        id: dom.getContentId(state.context),
+        "aria-label": state.context["aria-label"],
+        hidden: !open,
+        "data-state": open ? "open" : "closed",
+        role: composite ? "menu" : "dialog",
+        tabIndex: 0,
+        dir: state.context.dir,
+        "aria-activedescendant": state.context.highlightedValue ?? undefined,
+        "aria-labelledby": dom.getTriggerId(state.context),
+        "data-placement": state.context.currentPlacement,
+        onPointerEnter(event) {
+          if (event.pointerType !== "mouse") return
+          send("MENU_POINTERENTER")
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (!isSelfTarget(event)) return
 
-        if (event.key === "Tab") {
-          const valid = isValidTabEvent(event)
-          if (!valid) {
+          const target = getEventTarget<Element>(event)
+
+          const sameMenu = target?.closest("[role=menu]") === event.currentTarget || target === event.currentTarget
+          if (!sameMenu) return
+
+          if (event.key === "Tab") {
+            const valid = isValidTabEvent(event)
+            if (!valid) {
+              event.preventDefault()
+              return
+            }
+          }
+
+          const item = dom.getHighlightedItemEl(state.context)
+          const keyMap: EventKeyMap = {
+            ArrowDown() {
+              send("ARROW_DOWN")
+            },
+            ArrowUp() {
+              send("ARROW_UP")
+            },
+            ArrowLeft() {
+              send("ARROW_LEFT")
+            },
+            ArrowRight() {
+              send("ARROW_RIGHT")
+            },
+            Enter() {
+              send("ENTER")
+              clickIfLink(item)
+            },
+            Space(event) {
+              if (isTypingAhead) {
+                send({ type: "TYPEAHEAD", key: event.key })
+              } else {
+                keyMap.Enter?.(event)
+              }
+            },
+            Home() {
+              send("HOME")
+            },
+            End() {
+              send("END")
+            },
+          }
+
+          const key = getEventKey(event, { dir: state.context.dir })
+          const exec = keyMap[key]
+
+          if (exec) {
+            exec(event)
+            event.stopPropagation()
             event.preventDefault()
             return
           }
-        }
 
-        const item = dom.getHighlightedItemEl(state.context)
-        const keyMap: EventKeyMap = {
-          ArrowDown() {
-            send("ARROW_DOWN")
-          },
-          ArrowUp() {
-            send("ARROW_UP")
-          },
-          ArrowLeft() {
-            send("ARROW_LEFT")
-          },
-          ArrowRight() {
-            send("ARROW_RIGHT")
-          },
-          Enter() {
-            send("ENTER")
-            clickIfLink(item)
-          },
-          Space(event) {
-            if (isTypingAhead) {
-              send({ type: "TYPEAHEAD", key: event.key })
-            } else {
-              keyMap.Enter?.(event)
-            }
-          },
-          Home() {
-            send("HOME")
-          },
-          End() {
-            send("END")
-          },
-        }
+          // typeahead
+          if (!state.context.typeahead) return
+          if (!isPrintableKey(event)) return
+          if (isModifierKey(event)) return
+          if (isEditableElement(target)) return
 
-        const key = getEventKey(event, { dir: state.context.dir })
-        const exec = keyMap[key]
-
-        if (exec) {
-          exec(event)
-          event.stopPropagation()
+          send({ type: "TYPEAHEAD", key: event.key })
           event.preventDefault()
-          return
-        }
+        },
+      }),
 
-        // typeahead
-        if (!state.context.typeahead) return
-        if (!isPrintableKey(event)) return
-        if (isModifierKey(event)) return
-        if (isEditableElement(target)) return
-
-        send({ type: "TYPEAHEAD", key: event.key })
-        event.preventDefault()
-      },
-    }),
-
-    separatorProps: normalize.element({
-      ...parts.separator.attrs,
-      role: "separator",
-      dir: state.context.dir,
-      "aria-orientation": "horizontal",
-    }),
+    getSeparatorProps: () =>
+      normalize.element({
+        ...parts.separator.attrs,
+        role: "separator",
+        dir: state.context.dir,
+        "aria-orientation": "horizontal",
+      }),
     getItemState,
     getItemProps,
 

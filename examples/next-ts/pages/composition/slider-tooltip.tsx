@@ -36,16 +36,16 @@ export default function Page() {
 
   return (
     <main className="slider">
-      <div {...sliderApi.rootProps}>
-        <div {...sliderApi.controlProps}>
-          <div {...sliderApi.trackProps}>
-            <div {...sliderApi.rangeProps} />
+      <div {...sliderApi.getRootProps()}>
+        <div {...sliderApi.getControlProps()}>
+          <div {...sliderApi.getTrackProps()}>
+            <div {...sliderApi.getRangeProps()} />
           </div>
-          <div {...mergeProps(tooltipApi.triggerProps, sliderApi.getThumbProps({ index: 0 }))} />
+          <div {...mergeProps(tooltipApi.getTriggerProps(), sliderApi.getThumbProps({ index: 0 }))} />
           {tooltipApi.open && (
             <Portal>
-              <div {...tooltipApi.positionerProps}>
-                <div {...tooltipApi.contentProps}>{sliderApi.value[0]}</div>
+              <div {...tooltipApi.getPositionerProps()}>
+                <div {...tooltipApi.getContentProps()}>{sliderApi.value[0]}</div>
               </div>
             </Portal>
           )}

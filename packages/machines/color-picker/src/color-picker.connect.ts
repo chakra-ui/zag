@@ -91,85 +91,91 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "VALUE.SET", value: color, src: "set-alpha" })
     },
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      dir: state.context.dir,
-      id: dom.getRootId(state.context),
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(state.context.readOnly),
-      style: {
-        "--value": value.toString("css"),
-      },
-    }),
+    getRootProps: () =>
+      normalize.element({
+        ...parts.root.attrs,
+        dir: state.context.dir,
+        id: dom.getRootId(state.context),
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(state.context.readOnly),
+        style: {
+          "--value": value.toString("css"),
+        },
+      }),
 
-    labelProps: normalize.element({
-      ...parts.label.attrs,
-      dir: state.context.dir,
-      id: dom.getLabelId(state.context),
-      htmlFor: dom.getHiddenInputId(state.context),
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(state.context.readOnly),
-      "data-focus": dataAttr(focused),
-      onClick(event) {
-        event.preventDefault()
-        const inputEl = query(dom.getControlEl(state.context), "[data-channel=hex]")
-        inputEl?.focus({ preventScroll: true })
-      },
-    }),
+    getLabelProps: () =>
+      normalize.element({
+        ...parts.label.attrs,
+        dir: state.context.dir,
+        id: dom.getLabelId(state.context),
+        htmlFor: dom.getHiddenInputId(state.context),
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(state.context.readOnly),
+        "data-focus": dataAttr(focused),
+        onClick(event) {
+          event.preventDefault()
+          const inputEl = query(dom.getControlEl(state.context), "[data-channel=hex]")
+          inputEl?.focus({ preventScroll: true })
+        },
+      }),
 
-    controlProps: normalize.element({
-      ...parts.control.attrs,
-      id: dom.getControlId(state.context),
-      dir: state.context.dir,
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(state.context.readOnly),
-      "data-state": open ? "open" : "closed",
-      "data-focus": dataAttr(focused),
-    }),
+    getControlProps: () =>
+      normalize.element({
+        ...parts.control.attrs,
+        id: dom.getControlId(state.context),
+        dir: state.context.dir,
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(state.context.readOnly),
+        "data-state": open ? "open" : "closed",
+        "data-focus": dataAttr(focused),
+      }),
 
-    triggerProps: normalize.button({
-      ...parts.trigger.attrs,
-      id: dom.getTriggerId(state.context),
-      dir: state.context.dir,
-      disabled: disabled,
-      "aria-label": `select color. current color is ${valueAsString}`,
-      "aria-controls": dom.getContentId(state.context),
-      "aria-labelledby": dom.getLabelId(state.context),
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(state.context.readOnly),
-      "data-placement": currentPlacement,
-      "aria-expanded": dataAttr(open),
-      "data-state": open ? "open" : "closed",
-      "data-focus": dataAttr(focused),
-      type: "button",
-      onClick() {
-        if (!interactive) return
-        send({ type: "TRIGGER.CLICK" })
-      },
-      onBlur() {
-        if (!interactive) return
-        send({ type: "TRIGGER.BLUR" })
-      },
-      style: {
-        position: "relative",
-      },
-    }),
+    getTriggerProps: () =>
+      normalize.button({
+        ...parts.trigger.attrs,
+        id: dom.getTriggerId(state.context),
+        dir: state.context.dir,
+        disabled: disabled,
+        "aria-label": `select color. current color is ${valueAsString}`,
+        "aria-controls": dom.getContentId(state.context),
+        "aria-labelledby": dom.getLabelId(state.context),
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(state.context.readOnly),
+        "data-placement": currentPlacement,
+        "aria-expanded": dataAttr(open),
+        "data-state": open ? "open" : "closed",
+        "data-focus": dataAttr(focused),
+        type: "button",
+        onClick() {
+          if (!interactive) return
+          send({ type: "TRIGGER.CLICK" })
+        },
+        onBlur() {
+          if (!interactive) return
+          send({ type: "TRIGGER.BLUR" })
+        },
+        style: {
+          position: "relative",
+        },
+      }),
 
-    positionerProps: normalize.element({
-      ...parts.positioner.attrs,
-      id: dom.getPositionerId(state.context),
-      dir: state.context.dir,
-      style: popperStyles.floating,
-    }),
+    getPositionerProps: () =>
+      normalize.element({
+        ...parts.positioner.attrs,
+        id: dom.getPositionerId(state.context),
+        dir: state.context.dir,
+        style: popperStyles.floating,
+      }),
 
-    contentProps: normalize.element({
-      ...parts.content.attrs,
-      id: dom.getContentId(state.context),
-      dir: state.context.dir,
-      "data-placement": currentPlacement,
-      "data-state": open ? "open" : "closed",
-      hidden: !open,
-    }),
+    getContentProps: () =>
+      normalize.element({
+        ...parts.content.attrs,
+        id: dom.getContentId(state.context),
+        dir: state.context.dir,
+        "data-placement": currentPlacement,
+        "data-state": open ? "open" : "closed",
+        hidden: !open,
+      }),
 
     getAreaProps(props = {}) {
       const { xChannel, yChannel } = getAreaChannels(props)
@@ -501,32 +507,35 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    hiddenInputProps: normalize.input({
-      type: "text",
-      disabled: disabled,
-      name: state.context.name,
-      id: dom.getHiddenInputId(state.context),
-      style: visuallyHiddenStyle,
-      defaultValue: valueAsString,
-    }),
+    getHiddenInputProps: () =>
+      normalize.input({
+        type: "text",
+        disabled: disabled,
+        name: state.context.name,
+        id: dom.getHiddenInputId(state.context),
+        style: visuallyHiddenStyle,
+        defaultValue: valueAsString,
+      }),
 
-    eyeDropperTriggerProps: normalize.button({
-      ...parts.eyeDropperTrigger.attrs,
-      type: "button",
-      dir: state.context.dir,
-      disabled: disabled,
-      "data-disabled": dataAttr(disabled),
-      "aria-label": "Pick a color from the screen",
-      onClick() {
-        if (!interactive) return
-        send("EYEDROPPER.CLICK")
-      },
-    }),
+    getEyeDropperTriggerProps: () =>
+      normalize.button({
+        ...parts.eyeDropperTrigger.attrs,
+        type: "button",
+        dir: state.context.dir,
+        disabled: disabled,
+        "data-disabled": dataAttr(disabled),
+        "aria-label": "Pick a color from the screen",
+        onClick() {
+          if (!interactive) return
+          send("EYEDROPPER.CLICK")
+        },
+      }),
 
-    swatchGroupProps: normalize.element({
-      ...parts.swatchGroup.attrs,
-      role: "group",
-    }),
+    getSwatchGroupProps: () =>
+      normalize.element({
+        ...parts.swatchGroup.attrs,
+        role: "group",
+      }),
 
     getSwatchTriggerState,
 
@@ -575,29 +584,31 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    formatTriggerProps: normalize.button({
-      ...parts.formatTrigger.attrs,
-      dir: state.context.dir,
-      type: "button",
-      "aria-label": `change color format to ${getNextFormat(state.context.format)}`,
-      onClick(event) {
-        if (event.currentTarget.disabled) return
-        const nextFormat = getNextFormat(state.context.format)
-        send({ type: "FORMAT.SET", format: nextFormat, src: "format-trigger" })
-      },
-    }),
+    getFormatTriggerProps: () =>
+      normalize.button({
+        ...parts.formatTrigger.attrs,
+        dir: state.context.dir,
+        type: "button",
+        "aria-label": `change color format to ${getNextFormat(state.context.format)}`,
+        onClick(event) {
+          if (event.currentTarget.disabled) return
+          const nextFormat = getNextFormat(state.context.format)
+          send({ type: "FORMAT.SET", format: nextFormat, src: "format-trigger" })
+        },
+      }),
 
-    formatSelectProps: normalize.select({
-      ...parts.formatSelect.attrs,
-      "aria-label": "change color format",
-      dir: state.context.dir,
-      defaultValue: state.context.format,
-      disabled: disabled,
-      onChange(event) {
-        const format = assertFormat(event.currentTarget.value)
-        send({ type: "FORMAT.SET", format, src: "format-select" })
-      },
-    }),
+    getFormatSelectProps: () =>
+      normalize.select({
+        ...parts.formatSelect.attrs,
+        "aria-label": "change color format",
+        dir: state.context.dir,
+        defaultValue: state.context.format,
+        disabled: disabled,
+        onChange(event) {
+          const format = assertFormat(event.currentTarget.value)
+          send({ type: "FORMAT.SET", format, src: "format-select" })
+        },
+      }),
   }
 }
 

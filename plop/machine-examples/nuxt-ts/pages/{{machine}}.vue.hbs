@@ -10,7 +10,7 @@ const api = computed(() => {{camelCase machine}}.connect(state.value, send, norm
 
 <template>
   <main className="{{machine}}">
-    <div v-bind="api.rootProps">
+    <div v-bind="api.getRootProps()">
     </div>
   </main>
 

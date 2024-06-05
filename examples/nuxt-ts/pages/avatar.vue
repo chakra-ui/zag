@@ -15,9 +15,9 @@ const api = computed(() => avatar.connect(state.value, send, normalizeProps))
 
 <template>
   <main className="avatar">
-    <div v-bind="api.rootProps">
-      <span v-bind="api.fallbackProps">PA</span>
-      <img v-if="showImage" alt="" referrerPolicy="no-referrer" :src="src" v-bind="api.imageProps" />
+    <div v-bind="api.getRootProps()">
+      <span v-bind="api.getFallbackProps()">PA</span>
+      <img v-if="showImage" alt="" referrerPolicy="no-referrer" :src="src" v-bind="api.getImageProps()" />
     </div>
 
     <div className="controls">

@@ -36,9 +36,9 @@ export function Collapsible(props: Props) {
   })
 
   return (
-    <div {...api.rootProps}>
-      {isValidElement(trigger) ? cloneElement(trigger, api.triggerProps) : null}
-      {unmount ? null : <div {...api.contentProps}>{children}</div>}
+    <div {...api.getRootProps()}>
+      {isValidElement(trigger) ? cloneElement(trigger, api.getTriggerProps()) : null}
+      {unmount ? null : <div {...api.getContentProps()}>{children}</div>}
     </div>
   )
 }

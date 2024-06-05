@@ -14,13 +14,13 @@ const api = computed(() => numberInput.connect(state.value, send, normalizeProps
 
 <template>
   <main>
-    <div v-bind="api.rootProps">
-      <div data-testid="scrubber" v-bind="api.scrubberProps" />
-      <label data-testid="label" v-bind="api.labelProps"> Enter number </label>
-      <div v-bind="api.controlProps">
-        <button data-testid="dec-button" v-bind="api.decrementTriggerProps">DEC</button>
-        <input data-testid="input" v-bind="api.inputProps" />
-        <button data-testid="inc-button" v-bind="api.incrementTriggerProps">INC</button>
+    <div v-bind="api.getRootProps()">
+      <div data-testid="scrubber" v-bind="api.getScrubberProps()" />
+      <label data-testid="label" v-bind="api.getLabelProps()"> Enter number </label>
+      <div v-bind="api.getControlProps()">
+        <button data-testid="dec-button" v-bind="api.getDecrementTriggerProps()">DEC</button>
+        <input data-testid="input" v-bind="api.getInputProps()" />
+        <button data-testid="inc-button" v-bind="api.getIncrementTriggerProps()">INC</button>
       </div>
     </div>
   </main>

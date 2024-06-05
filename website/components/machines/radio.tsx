@@ -27,8 +27,8 @@ export function Radio(props: RadioProps) {
 
   return (
     <div className="radio">
-      <div {...api.rootProps}>
-        <h2 {...api.labelProps}>Fruits</h2>
+      <div {...api.getRootProps()}>
+        <h2 {...api.getLabelProps()}>Fruits</h2>
         <div>
           {items.map((opt) => (
             <label key={opt.id} {...api.getItemProps({ value: opt.id })}>

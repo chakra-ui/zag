@@ -296,13 +296,13 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   setOpen(open: boolean): void
 
-  rootProps: T["element"]
-  labelProps: T["element"]
-  controlProps: T["element"]
-  triggerProps: T["button"]
-  positionerProps: T["element"]
-  contentProps: T["element"]
-  hiddenInputProps: T["input"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["element"]
+  getControlProps(): T["element"]
+  getTriggerProps(): T["button"]
+  getPositionerProps(): T["element"]
+  getContentProps(): T["element"]
+  getHiddenInputProps(): T["input"]
 
   getAreaProps(props?: AreaProps): T["element"]
   getAreaBackgroundProps(props?: AreaProps): T["element"]
@@ -315,16 +315,16 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
 
   getTransparencyGridProps(props?: TransparencyGridProps): T["element"]
 
-  eyeDropperTriggerProps: T["button"]
+  getEyeDropperTriggerProps(): T["button"]
 
-  swatchGroupProps: T["element"]
+  getSwatchGroupProps(): T["element"]
   getSwatchTriggerProps(props: SwatchTriggerProps): T["button"]
   getSwatchTriggerState(props: SwatchTriggerProps): SwatchTriggerState
   getSwatchProps(props: SwatchProps): T["element"]
   getSwatchIndicatorProps(props: SwatchProps): T["element"]
 
-  formatSelectProps: T["select"]
-  formatTriggerProps: T["button"]
+  getFormatSelectProps(): T["select"]
+  getFormatTriggerProps(): T["button"]
 }
 
 /* -----------------------------------------------------------------------------
