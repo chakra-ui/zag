@@ -8,7 +8,6 @@ svelte.aliases = []
 
 const blocks = "(if|else if|await|then|catch|each|html|debug)"
 
-/** @type {import('../core.js').Syntax} */
 function svelte(Prism) {
   Prism.register(markdown)
   ;(function (Prism) {
