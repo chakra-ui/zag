@@ -96,7 +96,7 @@ export default function Page() {
               <div hidden={api.view !== "month"} style={{ width: "100%" }}>
                 <div {...api.getViewControlProps({ view: "year" })}>
                   <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
-                  <span {...api.getViewTriggerProps({ view: "month" })}>{api.visibleRange.start.year}</span>
+                  <button {...api.getViewTriggerProps({ view: "month" })}>{api.visibleRange.start.year}</button>
                   <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
                 </div>
 

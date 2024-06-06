@@ -71,9 +71,9 @@ export function DatePicker() {
                   <button {...api.getPrevTriggerProps({ view: "month" })}>
                     Prev
                   </button>
-                  <span {...api.getViewTriggerProps({ view: "month" })}>
+                  <button {...api.getViewTriggerProps({ view: "month" })}>
                     {api.visibleRange.start.year}
-                  </span>
+                  </button>
                   <button {...api.getNextTriggerProps({ view: "month" })}>
                     Next
                   </button>
