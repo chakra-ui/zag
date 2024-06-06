@@ -71,6 +71,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Collapsible", id: "collapsible" },
         { type: "doc", label: "ColorPicker", id: "color-picker" },
         { type: "doc", label: "Combobox", id: "combobox" },
+        { type: "doc", label: "Date Picker", id: "date-picker" },
         { type: "doc", label: "Dialog", id: "dialog" },
         { type: "doc", label: "Editable", id: "editable" },
         { type: "doc", label: "File Upload", id: "file-upload" },

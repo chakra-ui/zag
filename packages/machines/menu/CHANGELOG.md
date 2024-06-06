@@ -1,5 +1,20 @@
 # @zag-js/menu
 
+## 0.54.0
+
+### Patch Changes
+
+- Updated dependencies [[`590c177`](https://github.com/chakra-ui/zag/commit/590c1779f5208fb99114c872175e779508f2f96d)]:
+  - @zag-js/core@0.54.0
+  - @zag-js/anatomy@0.54.0
+  - @zag-js/types@0.54.0
+  - @zag-js/utils@0.54.0
+  - @zag-js/dismissable@0.54.0
+  - @zag-js/dom-event@0.54.0
+  - @zag-js/dom-query@0.54.0
+  - @zag-js/popper@0.54.0
+  - @zag-js/rect-utils@0.54.0
+
 ## 0.53.0
 
 ### Patch Changes

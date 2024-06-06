@@ -1,5 +1,21 @@
 # @zag-js/core
 
+## 0.54.0
+
+### Minor Changes
+
+- [#1545](https://github.com/chakra-ui/zag/pull/1545)
+  [`590c177`](https://github.com/chakra-ui/zag/commit/590c1779f5208fb99114c872175e779508f2f96d) Thanks
+  [@anubra266](https://github.com/anubra266)! - Update all machines to use prop getters.
+
+  - Improves render performance due to the lazy evaluation of prop getters
+  - Helps reduce breaking changes in the future
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/store@0.54.0
+
 ## 0.53.0
 
 ### Patch Changes

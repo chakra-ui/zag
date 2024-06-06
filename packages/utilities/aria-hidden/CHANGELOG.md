@@ -1,5 +1,12 @@
 # @zag-js/aria-hidden
 
+## 0.54.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.54.0
+
 ## 0.53.0
 
 ### Patch Changes

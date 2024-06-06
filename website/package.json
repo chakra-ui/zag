@@ -34,6 +34,8 @@
     "@zag-js/color-picker": "workspace:*",
     "@zag-js/combobox": "workspace:*",
     "@zag-js/dialog": "workspace:*",
+    "@zag-js/date-picker": "workspace:*",
+    "@zag-js/date-utils": "workspace:*",
     "@zag-js/docs": "workspace:*",
     "@zag-js/editable": "workspace:*",
     "@zag-js/file-upload": "workspace:*",

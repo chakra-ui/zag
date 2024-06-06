@@ -3654,6 +3654,12 @@ importers:
       '@zag-js/combobox':
         specifier: workspace:*
         version: link:../packages/machines/combobox
+      '@zag-js/date-picker':
+        specifier: workspace:*
+        version: link:../packages/machines/date-picker
+      '@zag-js/date-utils':
+        specifier: workspace:*
+        version: link:../packages/utilities/date-utils
       '@zag-js/dialog':
         specifier: workspace:*
         version: link:../packages/machines/dialog
