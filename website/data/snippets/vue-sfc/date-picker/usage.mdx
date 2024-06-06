@@ -1,0 +1,140 @@
+```html
+<script setup lang="ts">
+  import * as datepicker from "@zag-js/date-picker"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed, Fragment, Teleport } from "vue"
+
+  const [state, send] = useMachine(
+    datepicker.machine({
+      id: "1",
+    })
+  )
+  const api = computed(() =>
+    datepicker.connect(state.value, send, normalizeProps),
+  )
+</script>
+
+<template>
+  <>
+    <div v-bind="api.getControlProps()">
+      <input v-bind="api.getInputProps()" />
+      <button v-bind="api.getTriggerProps()">🗓</button>
+    </div>
+    <Teleport to="body">
+      <div v-bind="api.getPositionerProps()">
+        <div v-bind="api.getContentProps()">
+          <!-- Day View -->
+          <div v-show="api.view !== 'day'">
+            <div v-bind="api.getViewControlProps({ view: 'year' })">
+              <button v-bind="api.getPrevTriggerProps()">Prev</button>
+              <button v-bind="api.getViewTriggerProps()">
+                {{api.visibleRangeText.start}}
+              </button>
+              <button v-bind="api.getNextTriggerProps()">Next</button>
+            </div>
+
+            <table v-bind="api.getTableProps({ view: 'day' })">
+              <thead v-bind="api.getTableHeaderProps({ view: 'day' })">
+                <tr v-bind="api.getTableRowProps({ view: 'day' })">
+                  <template v-for="(day) in api.weekDays">
+                    <th scope="col">
+                      {{day.narrow}}
+                    </th>
+                  </template>
+                </tr>
+              </thead>
+              <tbody  v-bind="api.getTableBodyProps({ view: 'day' })">
+                <template v-for="(week) in api.weeks">
+                  <tr v-bind="api.getTableRowProps({ view: 'day' })">
+                    <template v-for="(value) in week">
+                      <td v-bind="api.getDayTableCellProps({ value })">
+                        <div  v-bind="api.getDayTableCellTriggerProps({ value })">
+                          {{value.day}}
+                        </div>
+                      </td>
+                    </template>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Month View -->
+          <div v-show="api.view !== 'month'">
+            <div v-bind="api.getViewControlProps({ view: 'month' })">
+              <button v-bind="api.getPrevTriggerProps({ view: 'month' })">
+                Prev
+              </button>
+              <span v-bind="api.getViewTriggerProps({ view: 'month' })">
+                {{ api.visibleRange.start.year }}
+              </span>
+              <button v-bind="api.getNextTriggerProps({ view: 'month' })">
+                Next
+              </button>
+            </div>
+
+            <table v-bind="api.getTableProps({ view: 'month', columns: 4 })">
+              <tbody v-bind="api.getTableBodyProps({ view: 'month' })">
+                <template v-for="(months) in api.getMonthsGrid({ columns: 4, format: 'short' })">
+                  <tr v-bind="api.getTableRowProps()">
+                    <template v-for="(month) in months">
+                      <td v-bind="api.getMonthTableCellProps({
+                        ...month,
+                        columns: 4,
+                      })">
+                        <div v-bind="api.getMonthTableCellTriggerProps({
+                          ...month,
+                          columns: 4,
+                        })">
+                          {{ month.label }}
+                        </div>
+                      </td>
+                    </template>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Year View -->
+          <div v-show="api.view !== 'year'">
+            <div v-bind="api.getViewControlProps({ view: 'year' })">
+              <button v-bind="api.getPrevTriggerProps({ view: 'year' })">
+                Prev
+              </button>
+              <span>
+                {{ api.getDecade().start }} - {{ api.getDecade().end }}
+              </span>
+              <button v-bind="api.getNextTriggerProps({ view: 'year' })">
+                Next
+              </button>
+            </div>
+
+            <table v-bind="api.getTableProps({ view: 'year', columns: 4 })">
+              <tbody v-bind="api.getTableBodyProps()">
+                <template v-for="(years) in api.getYearsGrid({ columns: 4 })">
+                  <tr v-bind="api.getTableRowProps({ view: 'year' })">
+                    <template v-for="(year) in years">
+                      <td v-bind="api.getYearTableCellProps({
+                        ...year,
+                        columns: 4,
+                      })">
+                        <div v-bind="api.getYearTableCellTriggerProps({
+                          ...year,
+                          columns: 4,
+                        })">
+                          {{ year.label }}
+                        </div>
+                      </td>
+                    </template>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+  </>
+</template>
+```
