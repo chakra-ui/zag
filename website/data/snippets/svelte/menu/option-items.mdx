@@ -1,0 +1,72 @@
+```svelte
+<script lang="ts">
+  import * as menu from "@zag-js/menu"
+  import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const data = {
+    order: [
+      { label: "Ascending", value: "asc" },
+      { label: "Descending", value: "desc" },
+      { label: "None", value: "none" },
+    ],
+    type: [
+      { label: "Email", value: "email" },
+      { label: "Phone", value: "phone" },
+      { label: "Address", value: "address" },
+    ],
+  }
+
+  let order = $state("")
+  let type = $state<string[]>([])
+
+  const [snapshot, send] = useMachine(menu.machine({ id: "1" }))
+
+  const api = $derived(menu.connect(snapshot, send, normalizeProps))
+
+  const radios = $derived(
+    data.order.map((item) => ({
+      type: "radio" as const,
+      name: "order",
+      value: item.value,
+      label: item.label,
+      checked: order === item.value,
+      onCheckedChange: (checked: boolean) => {
+        order = checked ? item.value : ""
+      },
+    })),
+  )
+
+  const checkboxes = $derived(
+    data.type.map((item) => ({
+      type: "checkbox" as const,
+      name: "type",
+      value: item.value,
+      label: item.label,
+      checked: type.includes(item.value),
+      onCheckedChange: (checked: boolean) => {
+        type = checked ? [...type, item.value] : type.filter((x) => x !== item.value)
+      },
+    })),
+  )
+</script>
+
+<button {...api.getTriggerProps()}> Trigger </button>
+
+<div use:portal {...api.getPositionerProps()}>
+  <div {...api.getContentProps()}>
+    {#each radios as item}
+      <div {...api.getOptionItemProps(item)}>
+        <span {...api.getItemIndicatorProps(item)}>✅</span>
+        <span {...api.getItemTextProps(item)}>{item.label}</span>
+      </div>
+    {/each}
+    <hr {...api.getSeparatorProps()} />
+    {#each checkboxes as item}
+      <div {...api.getOptionItemProps(item)}>
+        <span {...api.getItemIndicatorProps(item)}>✅</span>
+        <span {...api.getItemTextProps(item)}>{item.label}</span>
+      </div>
+    {/each}
+  </div>
+</div>
+```

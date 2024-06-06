@@ -1,0 +1,100 @@
+```svelte
+<script lang="ts">
+  import * as datepicker from "@zag-js/date-picker"
+  import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(datepicker.machine({ id: "1" }))
+  const api = $derived(datepicker.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.getControlProps()}>
+  <input {...api.getInputProps()} />
+  <button {...api.getTriggerProps()}>🗓</button>
+</div>
+
+<div use:portal {...api.getPositionerProps()}>
+  <div {...api.getContentProps()}>
+    <!-- Day View -->
+    <div hidden={api.view !== "day"}>
+      <div {...api.getViewControlProps({ view: "year" })}>
+        <button {...api.getPrevTriggerProps()}>Prev</button>
+        <button {...api.getViewTriggerProps()}>
+          {api.visibleRangeText.start}
+        </button>
+        <button {...api.getNextTriggerProps()}>Next</button>
+      </div>
+
+      <table {...api.getTableProps({ view: "day" })}>
+        <thead {...api.getTableHeaderProps({ view: "day" })}>
+          <tr {...api.getTableRowProps({ view: "day" })}>
+            {#each api.weekDays as day, i (i)}
+              <th scope="col" aria-label={day.long}>{day.narrow}</th>
+            {/each}
+          </tr>
+        </thead>
+        <tbody {...api.getTableBodyProps({ view: "day" })}>
+          {#each api.weeks as week, i (i)}
+            <tr {...api.getTableRowProps({ view: "day" })}>
+              {#each week as value, i (i)}
+                <td {...api.getDayTableCellProps({ value })}>
+                  <div {...api.getDayTableCellTriggerProps({ value })}>{value.day}</div>
+                </td>
+              {/each}
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Month View -->
+    <div hidden={api.view !== "month"}>
+      <div {...api.getViewControlProps({ view: "month" })}>
+        <button {...api.getPrevTriggerProps({ view: "month" })}> Prev </button>
+        <span {...api.getViewTriggerProps({ view: "month" })}>
+          {api.visibleRange.start.year}
+        </span>
+        <button {...api.getNextTriggerProps({ view: "month" })}> Next </button>
+      </div>
+
+      <table {...api.getTableProps({ view: "month", columns: 4 })}>
+        <tbody {...api.getTableBodyProps({ view: "month" })}>
+          {#each api.getMonthsGrid({ columns: 4, format: "short" }) as months, row (row)}
+            <tr {...api.getTableRowProps()}>
+              {#each months as month, index (index)}
+                <td {...api.getMonthTableCellProps({ ...month, columns: 4 })}>
+                  <div {...api.getMonthTableCellTriggerProps({ ...month, columns: 4 })}>{month.label}</div>
+                </td>
+              {/each}
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Year View -->
+    <div hidden={api.view !== "year"}>
+      <div {...api.getViewControlProps({ view: "year" })}>
+        <button {...api.getPrevTriggerProps({ view: "year" })}> Prev </button>
+        <span>
+          {api.getDecade().start} - {api.getDecade().end}
+        </span>
+        <button {...api.getNextTriggerProps({ view: "year" })}> Next </button>
+      </div>
+
+      <table {...api.getTableProps({ view: "year", columns: 4 })}>
+        <tbody {...api.getTableBodyProps()}>
+          {#each api.getYearsGrid({ columns: 4 }) as years, row (row)}
+            <tr {...api.getTableRowProps({ view: "year" })}>
+              {#each years as year, index (index)}
+                <td {...api.getYearTableCellProps({ ...year, columns: 4 })}>
+                  <div {...api.getYearTableCellTriggerProps({ ...year, columns: 4 })}>{year.label}</div>
+                </td>
+              {/each}
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+```

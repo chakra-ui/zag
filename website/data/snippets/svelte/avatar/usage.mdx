@@ -1,0 +1,14 @@
+```svelte
+<script lang="ts">
+  import * as avatar from "@zag-js/avatar"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(avatar.machine({ id: "1" }))
+  const api = $derived(avatar.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <span {...api.getFallbackProps()}>PA</span>
+  <img alt="PA" src={src} {...api.getImageProps()} />
+</div>
+```

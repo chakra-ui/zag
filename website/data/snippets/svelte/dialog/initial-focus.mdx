@@ -1,0 +1,17 @@
+```svelte {3,7,14}
+<script lang="ts">
+  // initial focused element ref
+  let inputRef: HTMLInputElement | null = null
+
+  const [snapshot, send] = useMachine(
+    dialog.machine({
+      initialFocusEl: () => inputRef,
+    }),
+  )
+  // ...
+</script>
+
+<!-- ... -->
+<input bind:this={inputRef} />
+<!-- ... -->
+```

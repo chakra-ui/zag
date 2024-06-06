@@ -1,0 +1,18 @@
+```svelte {3,7,14}
+
+<script lang="ts">
+  // initial focused element ref
+  let inputRef: HTMLInputElement | null = null
+
+  const [snapshot, send] = useMachine(
+    popover.machine({
+      initialFocusEl: () => inputRef,
+    }),
+  )
+  // ...
+</script>
+
+<!-- ... -->
+<input bind:this={inputRef} />
+<!-- ... -->
+```
