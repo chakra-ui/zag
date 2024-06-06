@@ -33,7 +33,7 @@ export const globalStyles: SystemStyleObject = {
     },
   },
 
-  table: {
+  "table:not([role])": {
     width: "100%",
     marginY: "8",
     th: {

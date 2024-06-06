@@ -7,6 +7,7 @@ import { Collapsible } from "./machines/collapsible"
 import { ColorPicker } from "./machines/color-picker"
 import { Combobox } from "./machines/combobox"
 import { ContextMenu } from "./machines/context-menu"
+import { DatePicker } from "./machines/date-picker"
 import { Dialog } from "./machines/dialog"
 import { Editable } from "./machines/editable"
 import { FileUpload } from "./machines/file-upload"
@@ -408,6 +409,7 @@ const components = {
   SignaturePad: () => <Playground component={SignaturePad} />,
   Presence: () => <Playground component={Presence} />,
   TimerCountdown: () => <Playground component={TimerCountdown} />,
+  DatePicker: () => <Playground component={DatePicker} />,
 }
 
 export function Showcase(props: { id: keyof typeof components }) {

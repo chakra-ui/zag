@@ -564,13 +564,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getNextTriggerProps(props = {}) {
       const { view = "day" } = props
+      const isDisabled = disabled || !state.context.isNextVisibleRangeValid
       return normalize.button({
         ...parts.nextTrigger.attrs,
         dir: state.context.dir,
         id: dom.getNextTriggerId(state.context, view),
         type: "button",
         "aria-label": getNextTriggerLabel(view),
-        disabled: disabled || !state.context.isNextVisibleRangeValid,
+        disabled: isDisabled,
+        "data-disabled": dataAttr(isDisabled),
         onClick(event) {
           if (event.defaultPrevented) return
           send({ type: "GOTO.NEXT", view })
@@ -580,13 +582,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getPrevTriggerProps(props = {}) {
       const { view = "day" } = props
+      const isDisabled = disabled || !state.context.isPrevVisibleRangeValid
       return normalize.button({
         ...parts.prevTrigger.attrs,
         dir: state.context.dir,
         id: dom.getPrevTriggerId(state.context, view),
         type: "button",
         "aria-label": getPrevTriggerLabel(view),
-        disabled: disabled || !state.context.isPrevVisibleRangeValid,
+        disabled: isDisabled,
+        "data-disabled": dataAttr(isDisabled),
         onClick(event) {
           if (event.defaultPrevented) return
           send({ type: "GOTO.PREV", view })
