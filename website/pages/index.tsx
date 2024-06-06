@@ -24,6 +24,7 @@ import {
   ReactIcon,
   SolidIcon,
   StatechartIcon,
+  SvelteIcon,
   VueIcon,
 } from "components/icons"
 import { Illustration } from "components/illustration"
@@ -114,6 +115,7 @@ export default function Home() {
             <ReactIcon />
             <VueIcon />
             <SolidIcon />
+            <SvelteIcon />
           </HStack>
         </Box>
       </Box>
