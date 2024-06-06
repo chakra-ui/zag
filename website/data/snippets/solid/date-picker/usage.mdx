@@ -16,7 +16,7 @@ function DatePicker() {
       </div>
 
       <Portal>
-        <div {...api.getPositionerProps()}>
+        <div {...api().getPositionerProps()}>
           <div {...api().getContentProps()}>
             {/*  Day View  */}
             <div hidden={api().view !== "day"}>
