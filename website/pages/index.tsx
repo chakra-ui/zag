@@ -115,7 +115,7 @@ export default function Home() {
             <ReactIcon />
             <VueIcon />
             <SolidIcon />
-            <SvelteIcon />
+            {/* <SvelteIcon /> */}
           </HStack>
         </Box>
       </Box>

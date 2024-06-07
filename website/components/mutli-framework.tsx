@@ -57,12 +57,12 @@ export function MultiframeworkTabs() {
             <Text>Solid</Text>
           </VStack>
         </FrameworkButton>
-        <FrameworkButton {...api.getTriggerProps({ value: "svelte" })}>
+        {/* <FrameworkButton {...api.getTriggerProps({ value: "svelte" })}>
           <VStack>
             <SvelteIcon />
             <Text>Svelte</Text>
           </VStack>
-        </FrameworkButton>
+        </FrameworkButton> */}
       </HStack>
 
       <Stack direction={{ base: "column", lg: "row" }} spacing="56px" mt="8">
