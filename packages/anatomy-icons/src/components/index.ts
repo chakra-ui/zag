@@ -32,8 +32,10 @@ import { ToastAnatomy } from "./toast"
 import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
 import { TreeViewAnatomy } from "./tree-view"
+import { QRCodeAnatomy } from "./qr-code"
 
 export const allComponents = {
+  "qr-code": QRCodeAnatomy,
   "signature-pad": SignaturePadAnatomy,
   clipboard: ClipboardAnatomy,
   "tree-view": TreeViewAnatomy,
