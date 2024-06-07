@@ -24,7 +24,7 @@ import {
   ReactIcon,
   SolidIcon,
   StatechartIcon,
-  SvelteIcon,
+  // SvelteIcon,
   VueIcon,
 } from "components/icons"
 import { Illustration } from "components/illustration"
