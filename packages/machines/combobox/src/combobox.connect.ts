@@ -310,6 +310,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
     getListProps() {
       return normalize.element({
+        ...parts.list.attrs,
         role: !composite ? "listbox" : undefined,
         "aria-labelledby": dom.getLabelId(state.context),
         "aria-multiselectable": state.context.multiple && !composite ? true : undefined,
