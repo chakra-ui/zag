@@ -145,10 +145,13 @@ export function machine(userContext: UserDefinedContext) {
         },
         removeFile(ctx, evt) {
           const nextFiles = ctx.acceptedFiles.filter((file) => file !== evt.file)
-          set.files(ctx, nextFiles)
+          ctx.acceptedFiles = ref(nextFiles)
+          invoke.change(ctx)
         },
         clearFiles(ctx) {
-          set.files(ctx, [])
+          ctx.acceptedFiles = ref([])
+          ctx.rejectedFiles = ref([])
+          invoke.change(ctx)
         },
       },
       compareFns: {
@@ -174,7 +177,7 @@ const invoke = {
 }
 
 const set = {
-  files: (ctx: MachineContext, acceptedFiles: File[], rejectedFiles?: FileRejection[]) => {
+  files: (ctx: MachineContext, acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
     ctx.acceptedFiles = ref(acceptedFiles)
     invoke.accept(ctx)
 
