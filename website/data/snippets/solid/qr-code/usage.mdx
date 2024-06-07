@@ -1,0 +1,25 @@
+```jsx
+import * as qrCode from "@zag-js/qr-code"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+export function QRCode() {
+  const [state, send] = useMachine(qrCode.machine({ id: createUniqueId() }))
+
+  const api = createMemo(() => qrCode.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().getRootProps()}>
+      <svg {...api().getFrameProps()}>
+        <path {...api().getPatternProps()} />
+      </svg>
+      <div {...api().getOverlayProps()}>
+        <img
+          src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4"
+          alt=""
+        />
+      </div>
+    </div>
+  )
+}
+```

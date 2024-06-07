@@ -47,6 +47,7 @@
     "@zag-js/popover": "workspace:*",
     "@zag-js/presence": "workspace:*",
     "@zag-js/progress": "workspace:*",
+    "@zag-js/qr-code": "workspace:*",
     "@zag-js/radio-group": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
     "@zag-js/react": "workspace:*",

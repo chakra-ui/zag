@@ -12,8 +12,8 @@ export function machine(userContext: UserDefinedContext) {
       initial: "idle",
       context: {
         value: "",
-        pixelSize: 10,
         ...ctx,
+        pixelSize: 10,
       },
 
       computed: {

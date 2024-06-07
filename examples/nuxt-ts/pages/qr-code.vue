@@ -21,10 +21,12 @@ const api = computed(() => qrCode.connect(state.value, send, normalizeProps))
 <template>
   <main className="qr-code">
     <div v-bind="api.getRootProps()">
-      <svg v-bind="api.getSvgProps()">
-        <path v-bind="api.getPathProps()" />
+      <svg v-bind="api.getFrameProps()">
+        <path v-bind="api.getPatternProps()" />
       </svg>
-      <img v-bind="api.getImageProps()" src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4" />
+      <div v-bind="api.getOverlayProps()">
+        <img src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4" alt="" />
+      </div>
     </div>
   </main>
 

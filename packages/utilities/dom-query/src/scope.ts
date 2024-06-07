@@ -11,7 +11,7 @@ export function createScope<T>(methods: T) {
     getWin: (ctx: ScopeContext) => screen.getDoc(ctx).defaultView ?? window,
     getActiveElement: (ctx: ScopeContext) => screen.getDoc(ctx).activeElement as HTMLElement | null,
     isActiveElement: (ctx: ScopeContext, elem: HTMLElement | null) => elem === screen.getActiveElement(ctx),
-    getById: <T extends HTMLElement = HTMLElement>(ctx: ScopeContext, id: string) =>
+    getById: <T extends Element = HTMLElement>(ctx: ScopeContext, id: string) =>
       screen.getRootNode(ctx).getElementById(id) as T | null,
     setValue: <T extends { value: string }>(elem: T | null, value: string | number | null | undefined) => {
       if (elem == null || value == null) return

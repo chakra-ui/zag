@@ -2379,6 +2379,49 @@
       }
     }
   },
+  "qr-code": {
+    "api": {
+      "value": {
+        "type": "string",
+        "description": "The value to encode."
+      },
+      "setValue": {
+        "type": "(value: string) => void",
+        "description": "Set the value to encode."
+      },
+      "getDataUrl": {
+        "type": "(type: DataUrlType, quality?: number) => Promise<string>",
+        "description": "Returns the data URL of the qr code."
+      }
+    },
+    "context": {
+      "value": {
+        "type": "string",
+        "description": "The value to encode."
+      },
+      "ids": {
+        "type": "ElementIds",
+        "description": "The element ids."
+      },
+      "encoding": {
+        "type": "QrCodeGenerateOptions",
+        "description": "The qr code encoding options."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "radio-group": {
     "api": {
       "value": {

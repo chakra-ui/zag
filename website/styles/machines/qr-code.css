@@ -1,7 +1,7 @@
 [data-scope="qr-code"][data-part="frame"] {
   width: 120px;
   height: 120px;
-  background-color: white;
+  background-color: var(--colors-bg-subtle);
 }
 
 [data-scope="qr-code"][data-part="pattern"] {
@@ -11,7 +11,7 @@
 [data-scope="qr-code"][data-part="overlay"] {
   width: 24px;
   height: 24px;
-  outline: 4px solid white;
+  outline: 4px solid var(--colors-bg-subtle);
 
   & img {
     width: 100%;

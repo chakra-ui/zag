@@ -1,9 +1,11 @@
 import type { StateMachine as S } from "@zag-js/core"
+import type { DataUrlType } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { QrCodeGenerateOptions, QrCodeGenerateResult } from "uqr"
 
 export interface ElementIds {
   root?: string
+  svg?: string
 }
 
 interface PublicContext extends DirectionProperty, CommonProperties {
@@ -19,14 +21,14 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The qr code encoding options.
    */
   encoding?: QrCodeGenerateOptions
+}
+
+interface PrivateContext {
   /**
    * The pixel size of the qr code.
-   * @default 10
    */
   pixelSize: number
 }
-
-interface PrivateContext {}
 
 type ComputedContext = Readonly<{
   encoded: QrCodeGenerateResult
@@ -57,9 +59,13 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Set the value to encode.
    */
   setValue(value: string): void
+  /**
+   * Returns the data URL of the qr code.
+   */
+  getDataUrl(type: DataUrlType, quality?: number): Promise<string>
 
   getRootProps(): T["element"]
-  getSvgProps(): T["svg"]
-  getPathProps(): T["path"]
-  getImageProps(): T["img"]
+  getFrameProps(): T["svg"]
+  getPatternProps(): T["path"]
+  getOverlayProps(): T["element"]
 }

@@ -24,10 +24,12 @@ export default defineComponent({
         <>
           <main class="qr-code">
             <div {...api.getRootProps()}>
-              <svg {...api.getSvgProps()}>
-                <path {...api.getPathProps()} />
+              <svg {...api.getFrameProps()}>
+                <path {...api.getPatternProps()} />
               </svg>
-              <img {...api.getImageProps()} src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4" />
+              <div {...api.getOverlayProps()}>
+                <img src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4" alt="" />
+              </div>
             </div>
           </main>
 

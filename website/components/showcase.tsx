@@ -21,6 +21,7 @@ import { Popover } from "./machines/popover"
 import { Presence } from "./machines/presence"
 import { CircularProgress } from "./machines/progress-circular"
 import { LinearProgress } from "./machines/progress-linear"
+import { QRCode } from "./machines/qr-code"
 import { Radio } from "./machines/radio"
 import { RangeSlider } from "./machines/range-slider"
 import { Rating } from "./machines/rating"
@@ -410,6 +411,14 @@ const components = {
   Presence: () => <Playground component={Presence} />,
   TimerCountdown: () => <Playground component={TimerCountdown} />,
   DatePicker: () => <Playground component={DatePicker} />,
+  QRCode: () => (
+    <Playground
+      component={QRCode}
+      defaultProps={{
+        value: "https://github.com/chakra-ui",
+      }}
+    />
+  ),
 }
 
 export function Showcase(props: { id: keyof typeof components }) {

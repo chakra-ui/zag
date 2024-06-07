@@ -1,6 +1,7 @@
 export * from "./attrs"
 export * from "./constants"
 export * from "./contains"
+export * from "./data-url"
 export * from "./env"
 export * from "./event"
 export * from "./get-by-id"

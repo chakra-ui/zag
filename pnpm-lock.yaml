@@ -3742,6 +3742,9 @@ importers:
       '@zag-js/progress':
         specifier: workspace:*
         version: link:../packages/machines/progress
+      '@zag-js/qr-code':
+        specifier: workspace:*
+        version: link:../packages/machines/qr-code
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../packages/machines/radio-group

@@ -1,9 +1,10 @@
+import { getDataUrl } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./qr-code.anatomy"
 import { dom } from "./qr-code.dom"
-import type { Send, State } from "./qr-code.types"
+import type { MachineApi, Send, State } from "./qr-code.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const encoded = state.context.encoded
   const pixelSize = state.context.pixelSize
 
@@ -24,8 +25,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     value: state.context.value,
-    setValue(value: string) {
+    setValue(value) {
       send({ type: "VALUE.SET", value })
+    },
+    getDataUrl(type, quality) {
+      const svgEl = dom.getFrameEl(state.context)
+      return getDataUrl(svgEl, { type, quality })
     },
 
     getRootProps() {
@@ -41,25 +46,25 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getSvgProps() {
+    getFrameProps() {
       return normalize.svg({
-        ...parts.svg.attrs,
+        id: dom.getFrameId(state.context),
+        ...parts.frame.attrs,
         xmlns: "http://www.w3.org/2000/svg",
         viewBox: `0 0 ${width} ${height}`,
       })
     },
 
-    getPathProps() {
+    getPatternProps() {
       return normalize.path({
         d: paths.join(""),
-        ...parts.path.attrs,
+        ...parts.pattern.attrs,
       })
     },
 
-    getImageProps() {
-      return normalize.img({
-        ...parts.image.attrs,
-        alt: "qr code",
+    getOverlayProps() {
+      return normalize.element({
+        ...parts.overlay.attrs,
         style: {
           position: "absolute",
           top: "50%",
