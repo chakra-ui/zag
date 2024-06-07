@@ -1,0 +1,15 @@
+[data-scope="qr-code"][data-part="svg"] {
+  width: 120px;
+  height: 120px;
+  background-color: white;
+}
+
+[data-scope="qr-code"][data-part="path"] {
+  fill: green;
+}
+
+[data-scope="qr-code"][data-part="image"] {
+  width: 24px;
+  height: 24px;
+  outline: 4px solid white;
+}

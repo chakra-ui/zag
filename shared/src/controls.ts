@@ -271,3 +271,7 @@ export const timePickerControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
 })
+
+export const qrCodeControls = defineControls({
+  value: { type: "string", defaultValue: "https://chakra-ui.com/" },
+})

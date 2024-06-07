@@ -50,6 +50,7 @@ export type PropTypes<T = Dict> = Record<
   | "output"
   | "element"
   | "select"
+  | "rect"
   | "style"
   | "circle"
   | "svg"

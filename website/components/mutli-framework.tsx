@@ -3,7 +3,7 @@ import { chakra } from "@chakra-ui/system"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
 import { CodeArea } from "./code-area"
-import { ReactIcon, SolidIcon, SvelteIcon, VueIcon } from "./icons"
+import { ReactIcon, SolidIcon, VueIcon } from "./icons"
 import { NumberInput } from "./machines/number-input"
 import { Playground } from "./playground"
 

@@ -4,6 +4,7 @@ import Home from "./pages/index"
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: "/qr-code", component: () => import("./pages/qr-code") },
     { path: "/timer-countdown", component: () => import("./pages/timer-countdown") },
     { path: "/timer-stopwatch", component: () => import("./pages/timer-stopwatch") },
     { path: "/time-picker", component: () => import("./pages/time-picker") },

@@ -1638,8 +1638,12 @@ export namespace JSX {
     var: HTMLAttributes<HTMLElement>
     video: VideoHTMLAttributes<HTMLVideoElement>
 
+    g: SVGAttributes<SVGGElement>
     svg: SVGAttributes<SVGSVGElement>
     circle: SVGAttributes<SVGCircleElement>
     path: SVGAttributes<SVGPathElement>
+    rect: SVGAttributes<SVGRectElement>
+    polyline: SVGAttributes<SVGPolylineElement>
+    polygon: SVGAttributes<SVGPolygonElement>
   }
 }
