@@ -1,5 +1,21 @@
 # @zag-js/file-upload
 
+## 0.55.0
+
+### Patch Changes
+
+- [`c962169`](https://github.com/chakra-ui/zag/commit/c962169f64d0c99aeef38308c49df7abe116502e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onFileAccept` gets called when deleting an item
+  via the delete trigger. Now, only `onFileChange` is called when deleting or calling `api.clearFiles`
+- Updated dependencies []:
+  - @zag-js/anatomy@0.55.0
+  - @zag-js/core@0.55.0
+  - @zag-js/types@0.55.0
+  - @zag-js/utils@0.55.0
+  - @zag-js/dom-query@0.55.0
+  - @zag-js/file-utils@0.55.0
+  - @zag-js/i18n-utils@0.55.0
+
 ## 0.54.0
 
 ### Patch Changes
