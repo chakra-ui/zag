@@ -11,6 +11,7 @@ export const anatomy = createAnatomy("select").parts(
   "itemIndicator",
   "itemGroup",
   "itemGroupLabel",
+  "list",
   "content",
   "root",
   "control",

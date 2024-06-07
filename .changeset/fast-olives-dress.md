@@ -1,5 +1,5 @@
 ---
-"@zag-js/qr-code": patch
+"@zag-js/qr-code": minor
 ---
 
 Initial release of QR Code generator

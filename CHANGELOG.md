@@ -6,6 +6,25 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.55.0](./#0.55.0) - 2024-06-07
+
+### Fixed
+
+- **FileUpload**
+
+  - Fix issue where `onFileAccept` gets called when deleting an item via the delete trigger. Now, only `onFileChange` is
+    called when deleting or calling `api.clearFiles`
+
+- **Combobox, Select**
+
+  - Add missing list part
+
+### Added
+
+- **[NEW]**: Added new QR Code machine to generate QR codes from text or URLs.
+
+### Changed
+
 ## [0.54.0](./#0.54.0) - 2024-06-05
 
 ### Changed
