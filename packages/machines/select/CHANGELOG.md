@@ -1,5 +1,24 @@
 # @zag-js/select
 
+## 0.55.0
+
+### Patch Changes
+
+- [`5dca143`](https://github.com/chakra-ui/zag/commit/5dca1437d68878379210511304a2b29ff7b50165) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Add missing list part
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.55.0
+  - @zag-js/core@0.55.0
+  - @zag-js/types@0.55.0
+  - @zag-js/collection@0.55.0
+  - @zag-js/utils@0.55.0
+  - @zag-js/dismissable@0.55.0
+  - @zag-js/dom-event@0.55.0
+  - @zag-js/dom-query@0.55.0
+  - @zag-js/form-utils@0.55.0
+  - @zag-js/popper@0.55.0
+
 ## 0.54.0
 
 ### Patch Changes
