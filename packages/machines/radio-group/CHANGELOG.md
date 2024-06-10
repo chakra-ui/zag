@@ -1,5 +1,24 @@
 # @zag-js/radio-group
 
+## 0.56.0
+
+### Minor Changes
+
+- [`feadb9f`](https://github.com/chakra-ui/zag/commit/feadb9f8d910f7f7d88af7d45daa2d91d519a74c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-ssr` to item as a style hook to mimick the indicator
+  styles while in ssr. This improves the visual experience and prevents the indicator flashing on hydration
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.56.0
+  - @zag-js/core@0.56.0
+  - @zag-js/types@0.56.0
+  - @zag-js/utils@0.56.0
+  - @zag-js/dom-query@0.56.0
+  - @zag-js/element-rect@0.56.0
+  - @zag-js/form-utils@0.56.0
+
 ## 0.55.0
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @zag-js/menu
 
+## 0.56.0
+
+### Patch Changes
+
+- [`ae2f75d`](https://github.com/chakra-ui/zag/commit/ae2f75d07ab2d10723703af4b159a2f041c884fd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where using anchor as menuitem hijacks focus prematurely
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.56.0
+  - @zag-js/core@0.56.0
+  - @zag-js/types@0.56.0
+  - @zag-js/utils@0.56.0
+  - @zag-js/dismissable@0.56.0
+  - @zag-js/dom-event@0.56.0
+  - @zag-js/dom-query@0.56.0
+  - @zag-js/popper@0.56.0
+  - @zag-js/rect-utils@0.56.0
+
 ## 0.55.0
 
 ### Patch Changes
