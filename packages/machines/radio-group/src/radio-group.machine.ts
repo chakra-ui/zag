@@ -32,7 +32,7 @@ export function machine(userContext: UserDefinedContext) {
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
       },
 
-      entry: ["syncIndicatorRect", "syncSSR"],
+      entry: ["syncIndicatorRect", "syncSsr"],
 
       exit: ["cleanupObserver"],
 
@@ -110,7 +110,7 @@ export function machine(userContext: UserDefinedContext) {
         cleanupObserver(ctx) {
           ctx.indicatorCleanup?.()
         },
-        syncSSR(ctx) {
+        syncSsr(ctx) {
           ctx.ssr = false
         },
         syncIndicatorRect(ctx) {
