@@ -6,6 +6,33 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.56.0](./#0.56.0) - 2024-06-10
+
+### Fixed
+
+- **Menu**
+
+  - Fix issue where using anchor as menuitem hijacks focus prematurely
+
+### Added
+
+- **Presence**
+
+  - Add support for `immediate` to synchronize the present change immediately instead of deferring to next tick. This
+    should be used when composing components like `Tabs`.
+
+- **RadioGroup, Tabs**
+  - Add `data-ssr` to item as a style hook to mimick the indicator styles while in ssr. This improves the visual
+    experience and prevents the indicator flashing on hydration
+
+### Changed
+
+- **Timer [Breaking]**
+
+  - Refactor anatomy for timer machine.
+    - Before: `root`, `segment`, `control`, `separator`
+    - After: `root`, `item`, `itemValue`, `itemLabel`, `actionTrigger`, `separator`,
+
 ## [0.55.0](./#0.55.0) - 2024-06-07
 
 ### Fixed
