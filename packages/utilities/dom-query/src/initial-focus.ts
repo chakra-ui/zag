@@ -9,7 +9,7 @@ export interface InitialFocusOptions {
 export function getInitialFocus(options: InitialFocusOptions): HTMLElement | undefined {
   const { root, getInitialEl, enabled = true } = options
 
-  if (!enabled) return root || undefined
+  if (!enabled) return
 
   let node: HTMLElement | null | undefined = null
 
