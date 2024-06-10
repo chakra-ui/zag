@@ -4,7 +4,7 @@ import { addDomEvent } from "@zag-js/dom-event"
 import {
   contains,
   getByTypeahead,
-  getFirstTabbable,
+  getInitialFocus,
   isEditableElement,
   observeAttributes,
   raf,
@@ -640,9 +640,14 @@ export function machine(userContext: UserDefinedContext) {
         focusMenu(ctx) {
           raf(() => {
             const contentEl = dom.getContentEl(ctx)
-            if (contains(contentEl, dom.getActiveElement(ctx))) return
-            const firstFocusableEl = getFirstTabbable(contentEl, false) || contentEl
-            firstFocusableEl?.focus({ preventScroll: true })
+            const initialFocusEl = getInitialFocus({
+              root: contentEl,
+              enabled: !contains(contentEl, dom.getActiveElement(ctx)),
+              filter(node) {
+                return !node.role?.startsWith("menuitem")
+              },
+            })
+            initialFocusEl?.focus({ preventScroll: true })
           })
         },
         highlightFirstItem(ctx) {
