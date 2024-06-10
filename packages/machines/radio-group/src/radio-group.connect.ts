@@ -29,6 +29,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       "data-hover": dataAttr(radioState.hovered),
       "data-invalid": dataAttr(radioState.invalid),
       "data-orientation": state.context.orientation,
+      "data-ssr": dataAttr(state.context.ssr),
     }
   }
 

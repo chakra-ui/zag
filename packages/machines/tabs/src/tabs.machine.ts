@@ -23,6 +23,7 @@ export function machine(userContext: UserDefinedContext) {
         composite: true,
         ...ctx,
         focusedValue: ctx.value ?? null,
+        ssr: true,
         indicatorState: {
           rendered: false,
           transition: false,
@@ -52,7 +53,9 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       created: ["syncFocusedValue"],
-      entry: ["checkRenderedElements", "syncIndicatorRect", "syncTabIndex"],
+
+      entry: ["checkRenderedElements", "syncIndicatorRect", "syncTabIndex", "syncSsr"],
+
       exit: ["cleanupObserver"],
 
       states: {
@@ -218,6 +221,9 @@ export function machine(userContext: UserDefinedContext) {
           nextTick(() => {
             ctx.indicatorState.transition = false
           })
+        },
+        syncSsr(ctx) {
+          ctx.ssr = false
         },
         syncIndicatorRect(ctx) {
           ctx.indicatorCleanup?.()

@@ -32,7 +32,7 @@ const fetchMachine = createMachine({
       actions: "syncTabIndex"
     }
   },
-  entry: ["checkRenderedElements", "syncIndicatorRect", "syncTabIndex"],
+  entry: ["checkRenderedElements", "syncIndicatorRect", "syncTabIndex", "syncSsr"],
   exit: ["cleanupObserver"],
   on: {
     UPDATE_CONTEXT: {

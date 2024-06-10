@@ -136,6 +136,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-focus": dataAttr(triggerState.focused),
         "aria-controls": triggerState.selected ? dom.getContentId(state.context, value) : undefined,
         "data-ownedby": dom.getListId(state.context),
+        "data-ssr": dataAttr(state.context.ssr),
         id: dom.getTriggerId(state.context, value),
         tabIndex: triggerState.selected && composite ? 0 : -1,
         onFocus() {

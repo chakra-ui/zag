@@ -76,7 +76,7 @@ interface PrivateContext {
    * @internal
    * The active tab indicator's dom rect
    */
-  indicatorRect?: Partial<{ left: string; top: string; width: string; height: string }>
+  indicatorRect: Partial<{ left: string; top: string; width: string; height: string }>
   /**
    * @internal
    * Whether the active tab indicator's rect can transition
@@ -92,6 +92,11 @@ interface PrivateContext {
    * Whether the radio group's fieldset is disabled
    */
   fieldsetDisabled: boolean
+  /**
+   * @internal
+   * Whether the radio group is in server-side rendering
+   */
+  ssr: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

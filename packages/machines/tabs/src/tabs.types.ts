@@ -103,6 +103,11 @@ interface PrivateContext {
    * Function to clean up the observer for the active tab's rect
    */
   indicatorCleanup?: VoidFunction | null
+  /**
+   * @internal
+   * Whether the radio group is in server-side rendering
+   */
+  ssr: boolean
 }
 
 export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
