@@ -1,5 +1,18 @@
 # @zag-js/hover-card
 
+## 0.56.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.56.0
+  - @zag-js/core@0.56.0
+  - @zag-js/types@0.56.0
+  - @zag-js/utils@0.56.0
+  - @zag-js/dismissable@0.56.0
+  - @zag-js/dom-query@0.56.0
+  - @zag-js/popper@0.56.0
+
 ## 0.55.0
 
 ### Patch Changes

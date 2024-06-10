@@ -1,5 +1,19 @@
 # @zag-js/presence
 
+## 0.56.0
+
+### Minor Changes
+
+- [`eb24fcf`](https://github.com/chakra-ui/zag/commit/eb24fcf9cb1c47c8fce1cef79b2d92faf6787a8e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `immediate` to synchronize the present change
+  immediately instead of deferring to next tick
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.56.0
+  - @zag-js/types@0.56.0
+
 ## 0.55.0
 
 ### Patch Changes

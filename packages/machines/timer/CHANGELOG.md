@@ -1,5 +1,23 @@
 # @zag-js/checkbox
 
+## 0.56.0
+
+### Minor Changes
+
+- [`621b0a8`](https://github.com/chakra-ui/zag/commit/621b0a8688afa6b602af0a8b36106d8ce18a7ab0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor anatomy for timer machine.
+
+  - Before: `root`, `segment`, `control`, `separator`
+  - After: `root`, `item`, `itemValue`, `itemLabel`, `actionTrigger`, `separator`,
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.56.0
+  - @zag-js/core@0.56.0
+  - @zag-js/types@0.56.0
+  - @zag-js/utils@0.56.0
+
 ## 0.55.0
 
 ### Patch Changes
