@@ -4,7 +4,12 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 
 export function QRCode() {
-  const [state, send] = useMachine(qrCode.machine({ id: createUniqueId() }))
+  const [state, send] = useMachine(
+    qrCode.machine({
+      id: createUniqueId(),
+      value: "https://github.com/chakra-ui",
+    }),
+  )
 
   const api = createMemo(() => qrCode.connect(state, send, normalizeProps))
 

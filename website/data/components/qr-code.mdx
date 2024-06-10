@@ -61,6 +61,19 @@ code machine in your project 🔥
 
 <CodeSnippet id="qr-code/usage.mdx" />
 
+## Setting the QR Code value
+
+To set the value of the QR code, pass the `value` property to the machine.
+
+```jsx {4}
+const [state, send] = useMachine(
+  qrCode.machine({
+    // ...
+    value: "https://example.com",
+  }),
+)
+```
+
 ## Setting the correction level
 
 Error correction allows for the QR code to be blocked or resized while still

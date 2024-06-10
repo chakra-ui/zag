@@ -6,7 +6,12 @@ import { computed, defineComponent } from "vue"
 export const QRCode = defineComponent({
   name: "qr-code",
   setup() {
-    const [state, send] = useMachine(qrCode.machine({ id: "1" }))
+    const [state, send] = useMachine(
+      qrCode.machine({
+        id: "1",
+        value: "https://github.com/chakra-ui",
+      }),
+    )
 
     const apiRef = computed(() =>
       qrCode.connect(state.value, send, normalizeProps),
