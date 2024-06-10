@@ -89,17 +89,15 @@ export function machine(ctx: Partial<UserDefinedContext>) {
           ctx.styles = ref(win.getComputedStyle(evt.node))
         },
         syncPresence(ctx, _evt, { send }) {
-          if (ctx.rafId) {
-            cancelAnimationFrame(ctx.rafId)
-          }
-
           if (ctx.present) {
             send({ type: "MOUNT", src: "presence.changed" })
             return
           }
 
-          ctx.rafId = requestAnimationFrame(() => {
-            const animationName = getAnimationName(ctx.styles)
+          const animationName = getAnimationName(ctx.styles)
+          const exec = ctx.immediate ? queueMicrotask : requestAnimationFrame
+
+          exec(() => {
             ctx.unmountAnimationName = animationName
             if (animationName === "none" || animationName === ctx.prevAnimationName || ctx.styles?.display === "none") {
               send({ type: "UNMOUNT", src: "presence.changed" })
@@ -109,7 +107,8 @@ export function machine(ctx: Partial<UserDefinedContext>) {
           })
         },
         setPrevAnimationName(ctx) {
-          requestAnimationFrame(() => {
+          const exec = ctx.immediate ? queueMicrotask : requestAnimationFrame
+          exec(() => {
             ctx.prevAnimationName = getAnimationName(ctx.styles)
           })
         },

@@ -10,9 +10,13 @@ interface PublicContext {
    */
   present: boolean
   /**
-   * Function called when the animation ends in the closed state.
+   * Function called when the animation ends in the closed state
    */
   onExitComplete?(): void
+  /**
+   * Whether to synchronize the present change immediately or defer it to the next frame
+   */
+  immediate?: boolean
 }
 
 interface PrivateContext {
