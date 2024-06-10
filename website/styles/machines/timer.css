@@ -9,7 +9,7 @@
   font-size: 2rem;
 }
 
-[data-scope="timer"][data-part="control"] {
+.timer-controls {
   margin-top: 1rem;
   display: flex;
   justify-content: center;
@@ -28,7 +28,7 @@
   }
 }
 
-[data-scope="timer"][data-part="segment"] {
+[data-scope="timer"][data-part="item"] {
   height: 1em;
   display: inline-block;
   overflow-y: hidden;

@@ -17,24 +17,24 @@ export function TimerCountdown() {
   return (
     <div>
       <div {...api.getRootProps()}>
-        <div {...api.getSegmentProps({ type: "days" })}>
+        <div {...api.getItemProps({ type: "days" })}>
           {api.formattedTime.days}
         </div>
         <div {...api.getSeparatorProps()}>:</div>
-        <div {...api.getSegmentProps({ type: "hours" })}>
+        <div {...api.getItemProps({ type: "hours" })}>
           {api.formattedTime.hours}
         </div>
         <div {...api.getSeparatorProps()}>:</div>
-        <div {...api.getSegmentProps({ type: "minutes" })}>
+        <div {...api.getItemProps({ type: "minutes" })}>
           {api.formattedTime.minutes}
         </div>
         <div {...api.getSeparatorProps()}>:</div>
-        <div {...api.getSegmentProps({ type: "seconds" })}>
+        <div {...api.getItemProps({ type: "seconds" })}>
           {api.formattedTime.seconds}
         </div>
       </div>
 
-      <div {...api.getControlProps()}>
+      <div className="timer-controls">
         {api.running && <button onClick={api.pause}>Pause</button>}
         {api.paused && <button onClick={api.resume}>Resume</button>}
       </div>

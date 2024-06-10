@@ -11,6 +11,8 @@ export interface Time<T = number> {
 
 export type TimePart = keyof Time
 
+export type TimerAction = "start" | "pause" | "resume" | "reset"
+
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
@@ -99,8 +101,12 @@ export type Send = S.Send<S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface SegmentProps {
+export interface ItemProps {
   type: TimePart
+}
+
+export interface ActionTriggerProps {
+  action: TimerAction
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -146,7 +152,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   progressPercent: number
 
   getRootProps(): T["element"]
-  getControlProps(): T["element"]
-  getSegmentProps(props: SegmentProps): T["element"]
+  getItemProps(props: ItemProps): T["element"]
+  getItemValueProps(props: ItemProps): T["element"]
+  getItemLabelProps(props: ItemProps): T["element"]
   getSeparatorProps(): T["element"]
+  getActionTriggerProps(props: ActionTriggerProps): T["button"]
 }

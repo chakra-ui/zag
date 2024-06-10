@@ -3,7 +3,7 @@
   align-items: center;
 }
 
-[data-scope="timer"][data-part="segment"] {
+[data-scope="timer"][data-part="item"] {
   font-size: 2rem;
   font-weight: 500;
 }

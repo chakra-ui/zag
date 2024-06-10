@@ -27,13 +27,13 @@ export default defineComponent({
         <>
           <main class="timer">
             <div {...api.getRootProps()}>
-              <div {...api.getSegmentProps({ type: "days" })}>{api.formattedTime.days}</div>
+              <div {...api.getItemProps({ type: "days" })}>{api.formattedTime.days}</div>
               <div {...api.getSeparatorProps()}>:</div>
-              <div {...api.getSegmentProps({ type: "hours" })}>{api.formattedTime.hours}</div>
+              <div {...api.getItemProps({ type: "hours" })}>{api.formattedTime.hours}</div>
               <div {...api.getSeparatorProps()}>:</div>
-              <div {...api.getSegmentProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
+              <div {...api.getItemProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
               <div {...api.getSeparatorProps()}>:</div>
-              <div {...api.getSegmentProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
+              <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
             </div>
 
             <div style={{ display: "flex", gap: "4px" }}>
