@@ -21,6 +21,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         loopFocus: false,
         closeOnSelect: true,
         disabled: false,
+        readOnly: false,
         composite: true,
         ...ctx,
         highlightedItem: null,

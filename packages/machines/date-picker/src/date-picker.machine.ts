@@ -61,6 +61,8 @@ const transformContext = (ctx: Partial<MachineContext>): MachineContext => {
     activeIndex: 0,
     hoveredValue: null,
     closeOnSelect: true,
+    disabled: false,
+    readOnly: false,
     ...ctx,
     positioning: {
       placement: "bottom",

@@ -40,6 +40,7 @@ export function machine(userContext: UserDefinedContext) {
         dir: "ltr",
         minStepsBetweenThumbs: 0,
         disabled: false,
+        readOnly: false,
         ...ctx,
         focusedIndex: -1,
         fieldsetDisabled: false,

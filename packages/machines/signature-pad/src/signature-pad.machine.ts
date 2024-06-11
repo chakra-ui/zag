@@ -13,6 +13,8 @@ export function machine(userContext: UserDefinedContext) {
       id: "signature-pad",
       initial: "idle",
       context: {
+        readOnly: false,
+        disabled: false,
         ...ctx,
         paths: [],
         currentPoints: [],

@@ -30,6 +30,7 @@ export function machine(userContext: UserDefinedContext) {
         validate: () => true,
         delimiter: ",",
         disabled: false,
+        readOnly: false,
         ...ctx,
         liveRegion: null,
         log: { current: null, prev: null },

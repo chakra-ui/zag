@@ -29,6 +29,8 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         openOnKeyPress: true,
         openOnChange: true,
         composite: true,
+        readOnly: false,
+        disabled: false,
         ...ctx,
         highlightedItem: null,
         selectedItems: [],

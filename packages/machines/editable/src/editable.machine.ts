@@ -20,6 +20,8 @@ export function machine(userContext: UserDefinedContext) {
         value: "",
         previousValue: "",
         selectOnFocus: true,
+        disabled: false,
+        readOnly: false,
         ...ctx,
         translations: {
           input: "editable input",
