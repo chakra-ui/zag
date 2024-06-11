@@ -93,7 +93,7 @@
     "lint-staged": "15.2.5",
     "node-fetch": "3.3.2",
     "plop": "4.0.1",
-    "prettier": "3.3.0",
+    "prettier": "3.3.2",
     "prettier-plugin-svelte": "3.2.3",
     "signale": "1.4.0",
     "ts-morph": "22.0.0",
