@@ -259,6 +259,9 @@ export const floatingPanelControls = defineControls({
 
 export const signaturePadControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+  "drawing.size": { type: "number", defaultValue: 2 },
+  "drawing.simulatePressure": { type: "boolean", defaultValue: true },
 })
 
 export const timePickerControls = defineControls({
@@ -274,4 +277,6 @@ export const timePickerControls = defineControls({
 
 export const qrCodeControls = defineControls({
   value: { type: "string", defaultValue: "https://chakra-ui.com/" },
+  "encoding.ecc": { type: "select", options: ["L", "M", "Q", "H"] as const, defaultValue: "H" },
+  "encoding.boostEcc": { type: "boolean", defaultValue: false },
 })
