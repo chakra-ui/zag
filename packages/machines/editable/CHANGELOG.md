@@ -1,5 +1,23 @@
 # @zag-js/editable
 
+## 0.56.1
+
+### Patch Changes
+
+- [`09189fb`](https://github.com/chakra-ui/zag/commit/09189fbdc9a885ec4dfab46be1ce7263c74c5e29) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Ensure consistent handling of `readOnly` and `disabled` context
+  properties
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.56.1
+  - @zag-js/core@0.56.1
+  - @zag-js/types@0.56.1
+  - @zag-js/utils@0.56.1
+  - @zag-js/dom-event@0.56.1
+  - @zag-js/dom-query@0.56.1
+  - @zag-js/form-utils@0.56.1
+  - @zag-js/interact-outside@0.56.1
+
 ## 0.56.0
 
 ### Patch Changes
