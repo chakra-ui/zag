@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@solidjs/meta": "0.29.4",
-    "@solidjs/router": "0.13.3",
+    "@solidjs/router": "0.13.5",
     "@solidjs/start": "1.0.1",
     "solid-js": "1.8.17",
     "vinxi": "0.3.11",
@@ -86,7 +86,7 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-solid": "0.379.0"
+    "lucide-solid": "0.394.0"
   },
   "engines": {
     "node": ">=18"
