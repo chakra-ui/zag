@@ -6,6 +6,11 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+### Fixed
+
+- **All Machines**: Ensure consistent handling of `readOnly` and `disabled` context properties
+- **QrCode**: Fix issue where QrCode types are not exported
+
 ## [0.56.0](./#0.56.0) - 2024-06-10
 
 ### Fixed
