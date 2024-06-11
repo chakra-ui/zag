@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.56.1](./#0.56.1) - 2024-06-11
+
 ### Fixed
 
 - **All Machines**: Ensure consistent handling of `readOnly` and `disabled` context properties
