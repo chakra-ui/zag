@@ -3,10 +3,10 @@ import type { DataUrlType } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { QrCodeGenerateOptions, QrCodeGenerateResult } from "uqr"
 
-export interface ElementIds {
-  root?: string
-  svg?: string
-}
+export type ElementIds = Partial<{
+  root: string
+  frame: string
+}>
 
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
@@ -69,3 +69,5 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getPatternProps(): T["path"]
   getOverlayProps(): T["element"]
 }
+
+export type { QrCodeGenerateOptions, QrCodeGenerateResult } from "uqr"
