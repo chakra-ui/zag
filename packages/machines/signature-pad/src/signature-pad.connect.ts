@@ -45,8 +45,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.control.attrs,
         tabIndex: disabled ? undefined : 0,
         id: dom.getControlId(state.context),
-        "aria-label": "Signature Pad",
+        role: "application",
         "aria-roledescription": "signature pad",
+        "aria-label": "signature pad",
         "aria-disabled": disabled,
         "data-disabled": dataAttr(disabled),
         onPointerDown(event) {
