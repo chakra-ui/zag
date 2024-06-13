@@ -223,6 +223,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send(state.context.isMaximized ? "RESTORE" : "MAXIMIZE")
         },
         style: {
+          WebkitUserSelect: "none",
           userSelect: "none",
           touchAction: "none",
           cursor: "move",

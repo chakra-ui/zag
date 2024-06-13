@@ -105,6 +105,7 @@ function getControlStyle(): Style {
   return {
     touchAction: "none",
     userSelect: "none",
+    WebkitUserSelect: "none",
     position: "relative",
   }
 }
@@ -157,6 +158,7 @@ function getMarkerStyle(
 function getMarkerGroupStyle(): Style {
   return {
     userSelect: "none",
+    WebkitUserSelect: "none",
     pointerEvents: "none",
     position: "relative",
   }

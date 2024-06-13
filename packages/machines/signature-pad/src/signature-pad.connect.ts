@@ -74,6 +74,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           position: "relative",
           touchAction: "none",
           userSelect: "none",
+          WebkitUserSelect: "none",
         },
       })
     },

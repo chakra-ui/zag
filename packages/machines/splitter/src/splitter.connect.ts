@@ -95,6 +95,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           touchAction: "none",
           userSelect: "none",
+          WebkitUserSelect: "none",
           flex: "0 0 auto",
           pointerEvents: dragging && !triggerState.focused ? "none" : undefined,
           cursor: horizontal ? "col-resize" : "row-resize",
