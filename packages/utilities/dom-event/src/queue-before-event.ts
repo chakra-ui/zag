@@ -1,4 +1,4 @@
-export function queueBeforeEvent(element: Element, type: string, cb: () => void) {
+export function queueBeforeEvent(element: EventTarget, type: string, cb: () => void) {
   const createTimer = (callback: () => void) => {
     const timerId = requestAnimationFrame(callback)
     return () => cancelAnimationFrame(timerId)
