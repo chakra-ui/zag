@@ -22,6 +22,7 @@ export function machine(userContext: UserDefinedContext) {
         closeOnPointerDown: true,
         closeOnEscape: true,
         interactive: false,
+        closeOnScroll: true,
         ...ctx,
         currentPlacement: undefined,
         hasPointerMoveOpened: false,
@@ -221,16 +222,19 @@ export function machine(userContext: UserDefinedContext) {
           return addDomEvent(dom.getDoc(ctx), "pointerlockchange", onChange, false)
         },
         trackScroll(ctx, _evt, { send }) {
+          if (!ctx.closeOnScroll) return
+
           const triggerEl = dom.getTriggerEl(ctx)
           if (!triggerEl) return
 
           const overflowParents = getOverflowAncestors(triggerEl)
-          const cleanups = overflowParents.map((overflowParent) =>
-            addDomEvent(overflowParent, "scroll", () => send({ type: "CLOSE", src: "scroll" }), {
+
+          const cleanups = overflowParents.map((overflowParent) => {
+            return addDomEvent(overflowParent, "scroll", () => send({ type: "CLOSE", src: "scroll" }), {
               passive: true,
               capture: true,
-            }),
-          )
+            })
+          })
 
           return () => {
             cleanups.forEach((fn) => fn?.())

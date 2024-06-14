@@ -143,22 +143,22 @@ const fetchMachine = createMachine({
           actions: ["setActiveChannel"]
         },
         "AREA.ARROW_LEFT": {
-          actions: ["decrementXChannel"]
+          actions: ["decrementAreaXChannel"]
         },
         "AREA.ARROW_RIGHT": {
-          actions: ["incrementXChannel"]
+          actions: ["incrementAreaXChannel"]
         },
         "AREA.ARROW_UP": {
-          actions: ["incrementYChannel"]
+          actions: ["incrementAreaYChannel"]
         },
         "AREA.ARROW_DOWN": {
-          actions: ["decrementYChannel"]
+          actions: ["decrementAreaYChannel"]
         },
         "AREA.PAGE_UP": {
-          actions: ["incrementXChannel"]
+          actions: ["incrementAreaXChannel"]
         },
         "AREA.PAGE_DOWN": {
-          actions: ["decrementXChannel"]
+          actions: ["decrementAreaXChannel"]
         },
         "CHANNEL_SLIDER.ARROW_LEFT": {
           actions: ["decrementChannel"]
