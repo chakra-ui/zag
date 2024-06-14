@@ -299,11 +299,16 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   selectValue(value: string): void
   /**
+   * Function to select all values
+   */
+  selectAll(): void
+  /**
    * Function to set the value of the select
    */
   setValue(value: string[]): void
   /**
-   * Function to clear the value of the select
+   * Function to clear the value of the select.
+   * If a value is provided, it will only clear that value, otherwise, it will clear all values.
    */
   clearValue(value?: string): void
   /**

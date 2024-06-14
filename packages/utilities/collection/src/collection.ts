@@ -110,6 +110,13 @@ export class Collection<T extends CollectionItem = CollectionItem> {
   }
 
   /**
+   * Returns all the values in the collection
+   */
+  values = () => {
+    return Array.from(this.nodes.keys())
+  }
+
+  /**
    * Get the item based on its value
    */
   item = (value: string | null): T | null => {

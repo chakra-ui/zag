@@ -32,12 +32,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const highlightedItem = state.context.highlightedItem
   const selectedItems = state.context.selectedItems
   const isTypingAhead = state.context.isTypingAhead
+  const collection = state.context.collection
 
   const ariaActiveDescendant = highlightedValue ? dom.getItemId(state.context, highlightedValue) : undefined
 
   function getItemState(props: ItemProps): ItemState {
-    const _disabled = state.context.collection.isItemDisabled(props.item)
-    const value = state.context.collection.itemToValue(props.item)
+    const _disabled = collection.isItemDisabled(props.item)
+    const value = collection.itemToValue(props.item)
     return {
       value,
       disabled: Boolean(disabled || _disabled),
@@ -61,7 +62,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     hasSelectedItems: state.context.hasSelectedItems,
     value: state.context.value,
     valueAsString: state.context.valueAsString,
-    collection: state.context.collection,
+    collection,
     setCollection(collection) {
       send({ type: "COLLECTION.SET", value: collection })
     },
@@ -80,6 +81,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     },
     setValue(value) {
       send({ type: "VALUE.SET", value })
+    },
+    selectAll() {
+      send({ type: "VALUE.SET", value: collection.values() })
     },
     highlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
