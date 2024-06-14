@@ -109,7 +109,7 @@ importers:
         version: 3.3.2
       prettier-plugin-svelte:
         specifier: 3.2.4
-        version: 3.2.4(prettier@3.3.2)(svelte@5.0.0-next.153)
+        version: 3.2.4(prettier@3.3.2)(svelte@5.0.0-next.155)
       signale:
         specifier: 1.4.0
         version: 1.4.0
@@ -2026,13 +2026,13 @@ importers:
     devDependencies:
       '@sveltejs/package':
         specifier: 2.3.1
-        version: 2.3.1(svelte@5.0.0-next.153)(typescript@5.4.5)
+        version: 2.3.1(svelte@5.0.0-next.155)(typescript@5.4.5)
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
       svelte:
-        specifier: 5.0.0-next.153
-        version: 5.0.0-next.153
+        specifier: 5.0.0-next.155
+        version: 5.0.0-next.155
 
   packages/frameworks/vue:
     dependencies:
@@ -3875,10 +3875,6 @@ packages:
   '@aashutoshrathi/word-wrap@1.2.6':
     resolution: {integrity: sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==}
     engines: {node: '>=0.10.0'}
-
-  '@ampproject/remapping@2.2.1':
-    resolution: {integrity: sha512-lFMjJTrFL3j7L9yBxwYfCq2k6qqwHyzuUl/XBnif78PWTJYyL/dfowQHWE3sp6U6ZzqWiiIZnpTMO96zhkjwtg==}
-    engines: {node: '>=6.0.0'}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -11995,6 +11991,10 @@ packages:
     resolution: {integrity: sha512-ZbRnvO0UWXhE71Va5Rjg+nY4tbCUnqJFQC0VXHdqkHT/i5nqW8DPtw0rBlsFg4mq2uDQ8iOO/P7tR3OVXaSI7g==}
     engines: {node: '>=18'}
 
+  svelte@5.0.0-next.155:
+    resolution: {integrity: sha512-4a4EZuiTmg4eQJuQ6LTyK+DxRAZCYm4mXgqSWcZ7TellzLfaC1Je5nxBl1aZP3xdNhvPFIstQ8c7I6d+99FdZQ==}
+    engines: {node: '>=18'}
+
   svg-parser@2.0.4:
     resolution: {integrity: sha512-e4hG1hRwoOdRb37cIMSgzNsxyzKfayW6VOflrwvR+/bzrkyxY/31WkbgnQpgtrNp1SdpJvpUAGTa/ZoiPNDuRQ==}
 
@@ -13041,11 +13041,6 @@ snapshots:
 
   '@aashutoshrathi/word-wrap@1.2.6': {}
 
-  '@ampproject/remapping@2.2.1':
-    dependencies:
-      '@jridgewell/gen-mapping': 0.3.5
-      '@jridgewell/trace-mapping': 0.3.25
-
   '@ampproject/remapping@2.3.0':
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
@@ -13086,7 +13081,7 @@ snapshots:
 
   '@babel/core@7.24.0':
     dependencies:
-      '@ampproject/remapping': 2.2.1
+      '@ampproject/remapping': 2.3.0
       '@babel/code-frame': 7.23.5
       '@babel/generator': 7.24.7
       '@babel/helper-compilation-targets': 7.23.6
@@ -15642,14 +15637,14 @@ snapshots:
       - vinxi
       - vite
 
-  '@sveltejs/package@2.3.1(svelte@5.0.0-next.153)(typescript@5.4.5)':
+  '@sveltejs/package@2.3.1(svelte@5.0.0-next.155)(typescript@5.4.5)':
     dependencies:
       chokidar: 3.6.0
       kleur: 4.1.5
       sade: 1.8.1
       semver: 7.6.0
-      svelte: 5.0.0-next.153
-      svelte2tsx: 0.7.3(svelte@5.0.0-next.153)(typescript@5.4.5)
+      svelte: 5.0.0-next.155
+      svelte2tsx: 0.7.3(svelte@5.0.0-next.155)(typescript@5.4.5)
     transitivePeerDependencies:
       - typescript
 
@@ -22302,10 +22297,10 @@ snapshots:
     dependencies:
       fast-diff: 1.3.0
 
-  prettier-plugin-svelte@3.2.4(prettier@3.3.2)(svelte@5.0.0-next.153):
+  prettier-plugin-svelte@3.2.4(prettier@3.3.2)(svelte@5.0.0-next.155):
     dependencies:
       prettier: 3.3.2
-      svelte: 5.0.0-next.153
+      svelte: 5.0.0-next.155
 
   prettier@2.8.8: {}
 
@@ -23327,14 +23322,30 @@ snapshots:
 
   svelte-routing@2.13.0: {}
 
-  svelte2tsx@0.7.3(svelte@5.0.0-next.153)(typescript@5.4.5):
+  svelte2tsx@0.7.3(svelte@5.0.0-next.155)(typescript@5.4.5):
     dependencies:
       dedent-js: 1.0.1
       pascal-case: 3.1.2
-      svelte: 5.0.0-next.153
+      svelte: 5.0.0-next.155
       typescript: 5.4.5
 
   svelte@5.0.0-next.153:
+    dependencies:
+      '@ampproject/remapping': 2.3.0
+      '@jridgewell/sourcemap-codec': 1.4.15
+      '@types/estree': 1.0.5
+      acorn: 8.11.3
+      acorn-typescript: 1.4.13(acorn@8.11.3)
+      aria-query: 5.3.0
+      axobject-query: 4.0.0
+      esm-env: 1.0.0
+      esrap: 1.2.2
+      is-reference: 3.0.2
+      locate-character: 3.0.0
+      magic-string: 0.30.10
+      zimmerframe: 1.1.2
+
+  svelte@5.0.0-next.155:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@jridgewell/sourcemap-codec': 1.4.15
