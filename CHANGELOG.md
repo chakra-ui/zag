@@ -6,6 +6,45 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.57.0](./#0.57.0) - 2024-06-14
+
+### Fixed
+
+- **Editable**
+
+  - Fix issue where setting `activationMode=dblclick` clears the input value unexpectedly.
+
+- **SignaturePad**
+
+  - Add `role=application` to signature pad control. This fixes the accessibility violation with `aria-roledescription`
+
+- **Menu**
+
+  - Fix issue where sibling menus or popovers don't work well on iOS mobile devices.
+  - Fix issue where context menu trigger shows the magnifier and iOS context menu on long press.
+
+### Added
+
+- **Select**
+
+  - Add support for selecting all values using `api.selectAll()`
+
+- **Tooltip**
+
+  - Add support for `closeOnScroll` to control whether the tooltip should close when the trigger's overflow parent
+    scrolls.
+
+- **ColorPicker**
+
+  - Add support for channel slider label and value text parts
+  - Allow passing `format` to channel slider parts. Useful for building slider only color pickers
+  - Add `api.getChannelValueText` to get the formatted value text for specific channel slider
+
+- **Slider**
+
+  - Expose `data-dragging` to the component parts when dragging the slider thumb. This allows you to style the slider
+    parts differently when the thumb is being dragged.
+
 ## [0.56.1](./#0.56.1) - 2024-06-11
 
 ### Fixed

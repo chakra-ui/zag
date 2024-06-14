@@ -3,4 +3,4 @@
 "@zag-js/select": minor
 ---
 
-Add suppport for selecting all values using `api.selectAll()`
+Add support for selecting all values using `api.selectAll()`
