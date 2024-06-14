@@ -7,6 +7,7 @@ export const props = createProps<UserDefinedContext>()([
   "closeDelay",
   "closeOnEscape",
   "closeOnPointerDown",
+  "closeOnScroll",
   "dir",
   "disabled",
   "getRootNode",
