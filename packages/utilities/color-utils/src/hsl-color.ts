@@ -101,6 +101,28 @@ export class HSLColor extends Color {
     return new HSLColor(this.hue, this.saturation, this.lightness, this.alpha)
   }
 
+  getChannelFormatOptions(channel: ColorChannel): Intl.NumberFormatOptions {
+    switch (channel) {
+      case "hue":
+        return { style: "unit", unit: "degree", unitDisplay: "narrow" }
+      case "saturation":
+      case "lightness":
+      case "alpha":
+        return { style: "percent" }
+      default:
+        throw new Error("Unknown color channel: " + channel)
+    }
+  }
+
+  formatChannelValue(channel: ColorChannel, locale: string) {
+    let options = this.getChannelFormatOptions(channel)
+    let value = this.getChannelValue(channel)
+    if (channel === "saturation" || channel === "lightness") {
+      value /= 100
+    }
+    return new Intl.NumberFormat(locale, options).format(value)
+  }
+
   getChannelRange(channel: ColorChannel): ColorChannelRange {
     switch (channel) {
       case "hue":

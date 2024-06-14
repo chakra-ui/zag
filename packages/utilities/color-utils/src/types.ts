@@ -47,6 +47,11 @@ export interface ColorType {
    */
   withChannelValue(channel: ColorChannel, value: number): ColorType
   /**
+   * Returns the formatted value for a given channel.
+   */
+  formatChannelValue(channel: ColorChannel, locale: string): string
+
+  /**
    * Returns the minimum, maximum, and step values for a given channel.
    */
   getChannelRange(channel: ColorChannel): ColorChannelRange

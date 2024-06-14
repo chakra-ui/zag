@@ -6,6 +6,7 @@ export { parse } from "./color-picker.parse"
 export type {
   MachineApi as Api,
   AreaProps,
+  ChannelSliderProps,
   ChannelInputProps,
   ChannelProps,
   Color,

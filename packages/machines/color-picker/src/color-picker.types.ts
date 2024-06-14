@@ -203,6 +203,10 @@ export interface ChannelProps {
   orientation?: Orientation
 }
 
+export interface ChannelSliderProps extends ChannelProps {
+  format?: ColorFormat
+}
+
 export interface ChannelInputProps {
   channel: ExtendedColorChannel
   orientation?: Orientation
@@ -272,6 +276,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   getChannelValue(channel: ColorChannel): string
   /**
+   * Function to get the formatted and localized value of a specific channel
+   */
+  getChannelValueText(channel: ColorChannel, locale: string): string
+  /**
    * Function to set the color value of a specific channel
    */
   setChannelValue(channel: ColorChannel, value: number): void
@@ -308,10 +316,13 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getAreaBackgroundProps(props?: AreaProps): T["element"]
   getAreaThumbProps(props?: AreaProps): T["element"]
 
-  getChannelSliderProps(props: ChannelProps): T["element"]
-  getChannelSliderTrackProps(props: ChannelProps): T["element"]
-  getChannelSliderThumbProps(props: ChannelProps): T["element"]
   getChannelInputProps(props: ChannelInputProps): T["input"]
+
+  getChannelSliderProps(props: ChannelSliderProps): T["element"]
+  getChannelSliderTrackProps(props: ChannelSliderProps): T["element"]
+  getChannelSliderThumbProps(props: ChannelSliderProps): T["element"]
+  getChannelSliderLabelProps(props: ChannelProps): T["element"]
+  getChannelSliderValueTextProps(props: ChannelProps): T["element"]
 
   getTransparencyGridProps(props?: TransparencyGridProps): T["element"]
 

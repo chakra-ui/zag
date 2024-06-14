@@ -76,6 +76,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getChannelValue(channel) {
       return getChannelValue(value, channel)
     },
+    getChannelValueText(channel, locale) {
+      return value.formatChannelValue(channel, locale)
+    },
     setChannelValue(channel, channelValue) {
       const color = value.withChannelValue(channel, channelValue)
       send({ type: "VALUE.SET", value: color, src: "set-channel" })
@@ -331,7 +334,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getChannelSliderProps(props) {
-      const { orientation = "horizontal", channel } = props
+      const { orientation = "horizontal", channel, format } = props
       return normalize.element({
         ...parts.channelSlider.attrs,
         "data-channel": channel,
@@ -343,7 +346,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (isModifierKey(event)) return
 
           const point = getEventPoint(event)
-          send({ type: "CHANNEL_SLIDER.POINTER_DOWN", channel, point, id: channel, orientation })
+          send({ type: "CHANNEL_SLIDER.POINTER_DOWN", channel, format, point, id: channel, orientation })
 
           event.preventDefault()
         },
@@ -355,7 +358,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getChannelSliderTrackProps(props) {
-      const { orientation = "horizontal", channel } = props
+      const { orientation = "horizontal", channel, format } = props
+      const normalizedValue = format ? value.toFormat(format) : areaValue
 
       return normalize.element({
         ...parts.channelSliderTrack.attrs,
@@ -370,18 +374,45 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             orientation,
             channel,
             dir: state.context.dir,
-            value: areaValue,
+            value: normalizedValue,
           }),
         },
       })
     },
 
-    getChannelSliderThumbProps(props) {
-      const { orientation = "horizontal", channel } = props
-      const { minValue, maxValue, step: stepValue } = areaValue.getChannelRange(channel)
-      const channelValue = areaValue.getChannelValue(channel)
+    getChannelSliderLabelProps(props) {
+      const { channel } = props
+      return normalize.element({
+        ...parts.channelSliderLabel.attrs,
+        "data-channel": channel,
+        onClick(event) {
+          if (!interactive) return
+          event.preventDefault()
+          const thumbId = dom.getChannelSliderThumbId(state.context, channel)
+          dom.getById(state.context, thumbId)?.focus({ preventScroll: true })
+        },
+        style: {
+          userSelect: "none",
+          WebkitUserSelect: "none",
+        },
+      })
+    },
 
-      const offset = (channelValue - minValue) / (maxValue - minValue)
+    getChannelSliderValueTextProps(props) {
+      return normalize.element({
+        ...parts.channelSliderValueText.attrs,
+        "data-channel": props.channel,
+      })
+    },
+
+    getChannelSliderThumbProps(props) {
+      const { orientation = "horizontal", channel, format } = props
+
+      const normalizedValue = format ? value.toFormat(format) : areaValue
+      const channelRange = normalizedValue.getChannelRange(channel)
+      const channelValue = normalizedValue.getChannelValue(channel)
+
+      const offset = (channelValue - channelRange.minValue) / (channelRange.maxValue - channelRange.minValue)
 
       const placementStyles =
         orientation === "horizontal"
@@ -399,8 +430,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": orientation,
         "aria-disabled": dataAttr(disabled),
         "aria-orientation": orientation,
-        "aria-valuemax": maxValue,
-        "aria-valuemin": minValue,
+        "aria-valuemax": channelRange.maxValue,
+        "aria-valuemin": channelRange.minValue,
         "aria-valuenow": channelValue,
         "aria-valuetext": `${channel} ${channelValue}`,
         style: {
@@ -417,7 +448,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           if (!interactive) return
 
-          const step = getEventStep(event) * stepValue
+          const step = getEventStep(event) * channelRange.step
 
           const keyMap: EventKeyMap = {
             ArrowUp() {
@@ -461,8 +492,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getChannelInputProps(props) {
       const { channel } = props
+
       const isTextField = channel === "hex" || channel === "css"
-      const range = getChannelRange(value, channel)
+      const channelRange = getChannelRange(value, channel)
 
       return normalize.input({
         ...parts.channelInput.attrs,
@@ -476,9 +508,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(disabled),
         readOnly: state.context.readOnly,
         defaultValue: getChannelValue(value, channel),
-        min: range?.minValue,
-        max: range?.maxValue,
-        step: range?.step,
+        min: channelRange?.minValue,
+        max: channelRange?.maxValue,
+        step: channelRange?.step,
         onBeforeInput(event) {
           if (isTextField || !interactive) return
           const value = event.currentTarget.value

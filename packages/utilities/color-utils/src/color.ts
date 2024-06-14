@@ -23,6 +23,7 @@ export abstract class Color implements ColorType {
   abstract getChannelRange(channel: ColorChannel): ColorChannelRange
   abstract getFormat(): ColorFormat
   abstract getChannels(): [ColorChannel, ColorChannel, ColorChannel]
+  abstract formatChannelValue(channel: ColorChannel, locale: string): string
 
   toHexInt(): number {
     return this.toFormat("rgba").toHexInt()

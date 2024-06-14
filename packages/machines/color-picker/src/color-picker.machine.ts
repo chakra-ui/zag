@@ -193,22 +193,22 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["setActiveChannel"],
             },
             "AREA.ARROW_LEFT": {
-              actions: ["decrementXChannel"],
+              actions: ["decrementAreaXChannel"],
             },
             "AREA.ARROW_RIGHT": {
-              actions: ["incrementXChannel"],
+              actions: ["incrementAreaXChannel"],
             },
             "AREA.ARROW_UP": {
-              actions: ["incrementYChannel"],
+              actions: ["incrementAreaYChannel"],
             },
             "AREA.ARROW_DOWN": {
-              actions: ["decrementYChannel"],
+              actions: ["decrementAreaYChannel"],
             },
             "AREA.PAGE_UP": {
-              actions: ["incrementXChannel"],
+              actions: ["incrementAreaXChannel"],
             },
             "AREA.PAGE_DOWN": {
-              actions: ["decrementXChannel"],
+              actions: ["decrementAreaXChannel"],
             },
             "CHANNEL_SLIDER.ARROW_LEFT": {
               actions: ["decrementChannel"],
@@ -384,11 +384,11 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
-        trackPointerMove(ctx, _evt, { send }) {
+        trackPointerMove(ctx, evt, { send }) {
           return trackPointerMove(dom.getDoc(ctx), {
             onPointerMove({ point }) {
               const type = ctx.activeId === "area" ? "AREA.POINTER_MOVE" : "CHANNEL_SLIDER.POINTER_MOVE"
-              send({ type, point })
+              send({ type, point, format: evt.format })
             },
             onPointerUp() {
               const type = ctx.activeId === "area" ? "AREA.POINTER_UP" : "CHANNEL_SLIDER.POINTER_UP"
@@ -427,19 +427,21 @@ export function machine(userContext: UserDefinedContext) {
           ctx.activeOrientation = null
         },
         setAreaColorFromPoint(ctx, evt) {
+          const normalizedValue = evt.format ? ctx.value.toFormat(evt.format) : ctx.areaValue
           const { xChannel, yChannel } = evt.channel || ctx.activeChannel
 
           const percent = dom.getAreaValueFromPoint(ctx, evt.point)
           if (!percent) return
 
-          const xValue = ctx.areaValue.getChannelPercentValue(xChannel, percent.x)
-          const yValue = ctx.areaValue.getChannelPercentValue(yChannel, 1 - percent.y)
+          const xValue = normalizedValue.getChannelPercentValue(xChannel, percent.x)
+          const yValue = normalizedValue.getChannelPercentValue(yChannel, 1 - percent.y)
 
-          const color = ctx.areaValue.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
+          const color = normalizedValue.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
           set.value(ctx, color)
         },
         setChannelColorFromPoint(ctx, evt) {
           const channel = evt.channel || ctx.activeId
+          const normalizedValue = evt.format ? ctx.value.toFormat(evt.format) : ctx.areaValue
 
           const percent = dom.getChannelSliderValueFromPoint(ctx, evt.point, channel)
           if (!percent) return
@@ -447,8 +449,8 @@ export function machine(userContext: UserDefinedContext) {
           const orientation = ctx.activeOrientation || "horizontal"
           const channelPercent = orientation === "horizontal" ? percent.x : percent.y
 
-          const value = ctx.areaValue.getChannelPercentValue(channel, channelPercent)
-          const color = ctx.areaValue.withChannelValue(channel, value)
+          const value = normalizedValue.getChannelPercentValue(channel, channelPercent)
+          const color = normalizedValue.withChannelValue(channel, value)
           set.value(ctx, color)
         },
         setValue(ctx, evt) {
@@ -506,22 +508,22 @@ export function machine(userContext: UserDefinedContext) {
           const color = ctx.value.decrementChannel(evt.channel, evt.step)
           set.value(ctx, color)
         },
-        incrementXChannel(ctx, evt) {
+        incrementAreaXChannel(ctx, evt) {
           const { xChannel } = evt.channel
           const color = ctx.areaValue.incrementChannel(xChannel, evt.step)
           set.value(ctx, color)
         },
-        decrementXChannel(ctx, evt) {
+        decrementAreaXChannel(ctx, evt) {
           const { xChannel } = evt.channel
           const color = ctx.areaValue.decrementChannel(xChannel, evt.step)
           set.value(ctx, color)
         },
-        incrementYChannel(ctx, evt) {
+        incrementAreaYChannel(ctx, evt) {
           const { yChannel } = evt.channel
           const color = ctx.areaValue.incrementChannel(yChannel, evt.step)
           set.value(ctx, color)
         },
-        decrementYChannel(ctx, evt) {
+        decrementAreaYChannel(ctx, evt) {
           const { yChannel } = evt.channel
           const color = ctx.areaValue.decrementChannel(yChannel, evt.step)
           set.value(ctx, color)

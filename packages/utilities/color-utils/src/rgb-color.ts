@@ -182,6 +182,25 @@ export class RGBColor extends Color {
     return new RGBColor(this.red, this.green, this.blue, this.alpha)
   }
 
+  getChannelFormatOptions(channel: ColorChannel): Intl.NumberFormatOptions {
+    switch (channel) {
+      case "red":
+      case "green":
+      case "blue":
+        return { style: "decimal" }
+      case "alpha":
+        return { style: "percent" }
+      default:
+        throw new Error("Unknown color channel: " + channel)
+    }
+  }
+
+  formatChannelValue(channel: ColorChannel, locale: string) {
+    let options = this.getChannelFormatOptions(channel)
+    let value = this.getChannelValue(channel)
+    return new Intl.NumberFormat(locale, options).format(value)
+  }
+
   getChannelRange(channel: ColorChannel): ColorChannelRange {
     switch (channel) {
       case "red":
