@@ -1,5 +1,24 @@
 # @zag-js/tooltip
 
+## 0.57.0
+
+### Minor Changes
+
+- [`09d7f0d`](https://github.com/chakra-ui/zag/commit/09d7f0d2649c9395019646bed5df6dbfba5dafce) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `closeOnScroll` to control whether the tooltip
+  should close when the trigger's overflow parent scrolls.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.57.0
+  - @zag-js/core@0.57.0
+  - @zag-js/types@0.57.0
+  - @zag-js/utils@0.57.0
+  - @zag-js/dom-event@0.57.0
+  - @zag-js/dom-query@0.57.0
+  - @zag-js/popper@0.57.0
+
 ## 0.56.1
 
 ### Patch Changes

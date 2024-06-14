@@ -1,5 +1,18 @@
 # @zag-js/interact-outside
 
+## 0.57.0
+
+### Patch Changes
+
+- [`5c1ff93`](https://github.com/chakra-ui/zag/commit/5c1ff93c2039d81f9ae7b321701bd52163c26867) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where sibling menus or popovers don't work well on iOS
+  mobile devices.
+  - Fix issue where context menu trigger shows the magnifier and iOS context menu on long press.
+- Updated dependencies []:
+  - @zag-js/utils@0.57.0
+  - @zag-js/dom-event@0.57.0
+  - @zag-js/dom-query@0.57.0
+
 ## 0.56.1
 
 ### Patch Changes

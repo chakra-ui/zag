@@ -1,5 +1,21 @@
 # @zag-js/signature-pad
 
+## 0.57.0
+
+### Patch Changes
+
+- [`9072eb4`](https://github.com/chakra-ui/zag/commit/9072eb4ed2b67680df61023141f639b59ac46ee3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `role=application` to signature pad control. This fixes the
+  accessibility violation with `aria-roledescription`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.57.0
+  - @zag-js/core@0.57.0
+  - @zag-js/types@0.57.0
+  - @zag-js/utils@0.57.0
+  - @zag-js/dom-event@0.57.0
+  - @zag-js/dom-query@0.57.0
+
 ## 0.56.1
 
 ### Patch Changes
