@@ -1,5 +1,26 @@
 # @zag-js/slider
 
+## 0.57.0
+
+### Minor Changes
+
+- [`2e6eab6`](https://github.com/chakra-ui/zag/commit/2e6eab6cfbdfd8390f3d071b39441518c3855733) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `data-dragging` to the component parts when dragging the
+  slider thumb. This allows you to style the slider parts differently when the thumb is being dragged.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.57.0
+  - @zag-js/core@0.57.0
+  - @zag-js/types@0.57.0
+  - @zag-js/utils@0.57.0
+  - @zag-js/dom-event@0.57.0
+  - @zag-js/dom-query@0.57.0
+  - @zag-js/element-size@0.57.0
+  - @zag-js/form-utils@0.57.0
+  - @zag-js/numeric-range@0.57.0
+
 ## 0.56.1
 
 ### Patch Changes

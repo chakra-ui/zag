@@ -1,5 +1,12 @@
 # @zag-js/collection
 
+## 0.57.0
+
+### Minor Changes
+
+- [`761f185`](https://github.com/chakra-ui/zag/commit/761f185bc0e3fa337fcde6d3eeaae8e4a00ac00b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for selecting all values using `api.selectAll()`
+
 ## 0.56.1
 
 ## 0.56.0

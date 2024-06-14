@@ -1,5 +1,29 @@
 # @zag-js/color-picker
 
+## 0.57.0
+
+### Minor Changes
+
+- [`e28b7dd`](https://github.com/chakra-ui/zag/commit/e28b7dd21b8deb963ac85af66529f390171826c4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for channel slider label and value text parts
+  - Allow passing `format` to channel slider parts. Useful for building slider only color pickers
+  - Add `api.getChannelValueText` to get the formatted value text for specific channel slider
+
+### Patch Changes
+
+- Updated dependencies [[`e28b7dd`](https://github.com/chakra-ui/zag/commit/e28b7dd21b8deb963ac85af66529f390171826c4)]:
+  - @zag-js/color-utils@0.57.0
+  - @zag-js/dismissable@0.57.0
+  - @zag-js/anatomy@0.57.0
+  - @zag-js/core@0.57.0
+  - @zag-js/types@0.57.0
+  - @zag-js/utils@0.57.0
+  - @zag-js/dom-event@0.57.0
+  - @zag-js/dom-query@0.57.0
+  - @zag-js/form-utils@0.57.0
+  - @zag-js/popper@0.57.0
+  - @zag-js/text-selection@0.57.0
+
 ## 0.56.1
 
 ### Patch Changes

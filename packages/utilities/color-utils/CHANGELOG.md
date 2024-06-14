@@ -1,5 +1,19 @@
 # @zag-js/color-utils
 
+## 0.57.0
+
+### Minor Changes
+
+- [`e28b7dd`](https://github.com/chakra-ui/zag/commit/e28b7dd21b8deb963ac85af66529f390171826c4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for channel slider label and value text parts
+  - Allow passing `format` to channel slider parts. Useful for building slider only color pickers
+  - Add `api.getChannelValueText` to get the formatted value text for specific channel slider
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/numeric-range@0.57.0
+
 ## 0.56.1
 
 ### Patch Changes
