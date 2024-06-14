@@ -14,10 +14,7 @@ const fetchMachine = createMachine({
   initial: ctx.startWithEditView ? "edit" : "preview",
   entry: ctx.startWithEditView ? ["focusInput"] : undefined,
   context: {
-    "activateOnDblClick": false,
-    "activateOnFocus": false,
-    "submitOnBlur": false,
-    "submitOnEnter": false
+    "submitOnBlur": false
   },
   on: {
     SET_VALUE: {
@@ -31,20 +28,10 @@ const fetchMachine = createMachine({
   },
   states: {
     preview: {
-      // // https://bugzilla.mozilla.org/show_bug.cgi?id=559561
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=559561
       entry: ["blurInputIfNeeded"],
       on: {
         EDIT: {
-          target: "edit",
-          actions: ["focusInput", "invokeOnEdit"]
-        },
-        DBLCLICK: {
-          cond: "activateOnDblClick",
-          target: "edit",
-          actions: ["focusInput", "invokeOnEdit"]
-        },
-        FOCUS: {
-          cond: "activateOnFocus",
           target: "edit",
           actions: ["setPreviousValue", "focusInput", "invokeOnEdit"]
         }
@@ -68,14 +55,9 @@ const fetchMachine = createMachine({
           target: "preview",
           actions: ["revertValue", "restoreFocus", "invokeOnCancel"]
         },
-        ENTER: {
-          cond: "submitOnEnter",
-          target: "preview",
-          actions: ["setPreviousValue", "invokeOnSubmit", "restoreFocus"]
-        },
         SUBMIT: {
           target: "preview",
-          actions: ["setPreviousValue", "invokeOnSubmit", "restoreFocus"]
+          actions: ["setPreviousValue", "restoreFocus", "invokeOnSubmit"]
         }
       }
     }
@@ -89,9 +71,6 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "activateOnDblClick": ctx => ctx["activateOnDblClick"],
-    "activateOnFocus": ctx => ctx["activateOnFocus"],
-    "submitOnBlur": ctx => ctx["submitOnBlur"],
-    "submitOnEnter": ctx => ctx["submitOnEnter"]
+    "submitOnBlur": ctx => ctx["submitOnBlur"]
   }
 });

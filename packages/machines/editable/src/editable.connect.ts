@@ -116,18 +116,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               event.preventDefault()
             },
             Enter(event) {
+              if (!state.context.submitOnEnter) return
+              const { localName } = event.currentTarget
+
               // when used as a textarea, we want to allow the user to enter a newline
-              if (event.currentTarget.localName === "textarea") {
-                isModKey(event) && send("ENTER")
+              if (localName === "textarea") {
+                if (!isModKey(event)) return
+                send({ type: "SUBMIT", src: "keydown.enter" })
                 return
               }
 
               // when used as an input, we want to submit the form
-              if (event.currentTarget.localName === "input") {
-                if (!event.shiftKey && !event.metaKey) {
-                  send("ENTER")
-                  event.preventDefault()
-                }
+              if (localName === "input" && !event.shiftKey && !event.metaKey) {
+                send({ type: "SUBMIT", src: "keydown.enter" })
+                event.preventDefault()
               }
             },
           }
@@ -165,11 +167,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: interactive && state.context.isPreviewFocusable ? 0 : undefined,
         onFocus() {
           if (!interactive) return
-          send("FOCUS")
+          if (state.context.activationMode !== "focus") return
+          send({ type: "EDIT", src: "focus" })
         },
-        onDoubleClick() {
+        onDoubleClick(event) {
+          if (event.defaultPrevented) return
           if (!interactive) return
-          send("DBLCLICK")
+          if (state.context.activationMode !== "dblclick") return
+          send({ type: "EDIT", src: "dblclick" })
         },
         style: autoResize
           ? {
@@ -197,7 +202,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send("EDIT")
+          send({ type: "EDIT", src: "edit.click" })
         },
       })
     },
@@ -222,7 +227,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send("SUBMIT")
+          send({ type: "SUBMIT", src: "submit.click" })
         },
       })
     },
@@ -239,7 +244,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send("CANCEL")
+          send({ type: "CANCEL", src: "cancel.click" })
         },
       })
     },

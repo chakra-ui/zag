@@ -52,20 +52,10 @@ export function machine(userContext: UserDefinedContext) {
 
       states: {
         preview: {
-          // // https://bugzilla.mozilla.org/show_bug.cgi?id=559561
+          // https://bugzilla.mozilla.org/show_bug.cgi?id=559561
           entry: ["blurInputIfNeeded"],
           on: {
             EDIT: {
-              target: "edit",
-              actions: ["focusInput", "invokeOnEdit"],
-            },
-            DBLCLICK: {
-              guard: "activateOnDblClick",
-              target: "edit",
-              actions: ["focusInput", "invokeOnEdit"],
-            },
-            FOCUS: {
-              guard: "activateOnFocus",
               target: "edit",
               actions: ["setPreviousValue", "focusInput", "invokeOnEdit"],
             },
@@ -93,14 +83,9 @@ export function machine(userContext: UserDefinedContext) {
               target: "preview",
               actions: ["revertValue", "restoreFocus", "invokeOnCancel"],
             },
-            ENTER: {
-              guard: "submitOnEnter",
-              target: "preview",
-              actions: ["setPreviousValue", "invokeOnSubmit", "restoreFocus"],
-            },
             SUBMIT: {
               target: "preview",
-              actions: ["setPreviousValue", "invokeOnSubmit", "restoreFocus"],
+              actions: ["setPreviousValue", "restoreFocus", "invokeOnSubmit"],
             },
           },
         },
@@ -109,9 +94,6 @@ export function machine(userContext: UserDefinedContext) {
     {
       guards: {
         submitOnBlur: (ctx) => ctx.submitOnBlur,
-        submitOnEnter: (ctx) => ctx.submitOnEnter,
-        activateOnDblClick: (ctx) => ctx.activationMode === "dblclick",
-        activateOnFocus: (ctx) => ctx.activationMode === "focus",
       },
 
       activities: {

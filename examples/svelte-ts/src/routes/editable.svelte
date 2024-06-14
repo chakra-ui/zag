@@ -6,7 +6,7 @@
 
   const controls = useControls(editableControls)
 
-  const [snapshot, send] = useMachine(editable.machine({ id: "1" }), {
+  const [snapshot, send] = useMachine(editable.machine({ id: "1", value: "Hello World" }), {
     context: controls.context,
   })
 

@@ -12,6 +12,7 @@ export default function Page() {
   const [state, send] = useMachine(
     editable.machine({
       id: useId(),
+      value: "Hello World",
     }),
     {
       context: controls.context,

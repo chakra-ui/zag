@@ -45,10 +45,6 @@ export const editableControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   autoResize: { type: "boolean", defaultValue: false },
   maxLength: { type: "number", defaultValue: 1000 },
-  placeholder: {
-    type: "string",
-    defaultValue: "Type something...",
-  },
   submitMode: {
     type: "select",
     options: ["enter", "blur", "both", "none"] as const,

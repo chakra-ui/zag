@@ -5,7 +5,7 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(editableControls)
 
-const [state, send] = useMachine(editable.machine({ id: "editable" }), {
+const [state, send] = useMachine(editable.machine({ id: "editable", value: "Hello World" }), {
   context: controls.context,
 })
 
