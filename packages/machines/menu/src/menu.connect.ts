@@ -4,7 +4,6 @@ import {
   getEventKey,
   getEventPoint,
   isContextMenuEvent,
-  isLeftClick,
   isModifierKey,
   isPrintableKey,
   type EventKeyMap,
@@ -83,8 +82,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         if (itemState.disabled) return
         if (event.pointerType !== "mouse") return
 
-        const mouseMoved = state.previousEvent.type.includes("POINTER")
-        if (!mouseMoved) return
+        const pointerMoved = state.previousEvent.type.includes("POINTER")
+        if (!pointerMoved) return
 
         const target = event.currentTarget
         send({ type: "ITEM_POINTERLEAVE", id, target, closeOnSelect })
@@ -94,22 +93,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         const target = event.currentTarget
         send({ type: "ITEM_POINTERDOWN", target, id, closeOnSelect })
       },
-      onPointerUp(event) {
+      onClick(event) {
         if (isDownloadingEvent(event)) return
         if (isOpeningInNewTab(event)) return
         if (itemState.disabled) return
-        if (!isLeftClick(event)) return
 
         const target = event.currentTarget
-        send({ type: "ITEM_CLICK", src: "pointerup", target, id, closeOnSelect })
-
-        // Fix issue where links don't get clicked in pointerup on touch devices
-        if (event.pointerType === "touch") clickIfLink(target)
-      },
-      onTouchEnd(event) {
-        // prevent clicking elements behind content
-        event.preventDefault()
-        event.stopPropagation()
+        send({ type: "ITEM_CLICK", target, id, closeOnSelect })
       },
     })
   }
@@ -163,6 +153,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         style: {
           WebkitTouchCallout: "none",
+          WebkitUserSelect: "none",
           userSelect: "none",
         },
       })
@@ -194,26 +185,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "TRIGGER_POINTERMOVE", target: event.currentTarget })
         },
         onPointerLeave(event) {
+          if (dom.isTargetDisabled(event.currentTarget)) return
           if (event.pointerType !== "mouse") return
-
-          const disabled = dom.isTargetDisabled(event.currentTarget)
-          if (disabled || !isSubmenu) return
-
+          if (!isSubmenu) return
           const point = getEventPoint(event)
           send({ type: "TRIGGER_POINTERLEAVE", target: event.currentTarget, point })
         },
-        onClick(event) {
-          if (dom.isTriggerItem(event.currentTarget)) {
-            send({ type: "TRIGGER_CLICK", target: event.currentTarget })
-          }
-        },
         onPointerDown(event) {
-          const disabled = dom.isTargetDisabled(event.currentTarget)
-          if (!isLeftClick(event) || disabled || isContextMenuEvent(event)) return
+          if (dom.isTargetDisabled(event.currentTarget)) return
+          if (isContextMenuEvent(event)) return
           event.preventDefault()
-          if (!dom.isTriggerItem(event.currentTarget)) {
-            send({ type: "TRIGGER_CLICK", target: event.currentTarget })
-          }
+        },
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (dom.isTargetDisabled(event.currentTarget)) return
+          send({ type: "TRIGGER_CLICK", target: event.currentTarget })
         },
         onBlur() {
           send("TRIGGER_BLUR")
@@ -403,12 +389,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           role: `menuitem${type}`,
           "aria-checked": !!itemState.checked,
           "data-state": itemState.checked ? "checked" : "unchecked",
-          onPointerUp(event) {
-            if (!isLeftClick(event) || disabled) return
+          onClick(event) {
+            if (disabled) return
             if (isDownloadingEvent(event)) return
             if (isOpeningInNewTab(event)) return
             const target = event.currentTarget
-            send({ type: "ITEM_CLICK", src: "pointerup", target, option, closeOnSelect })
+            send({ type: "ITEM_CLICK", target, option, closeOnSelect })
             onCheckedChange?.(!itemState.checked)
           },
         }),

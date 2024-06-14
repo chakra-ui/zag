@@ -383,17 +383,6 @@ export function machine(userContext: UserDefinedContext) {
                 guard: "isTriggerItemHighlighted",
                 actions: "openSubmenu",
               },
-              // == grouped ==
-              {
-                guard: and("closeOnSelect", "isOpenControlled"),
-                actions: ["clickHighlightedItem", "invokeOnClose"],
-              },
-              {
-                guard: "closeOnSelect",
-                target: "closed",
-                actions: "clickHighlightedItem",
-              },
-              //
               {
                 actions: "clickHighlightedItem",
               },
@@ -596,18 +585,10 @@ export function machine(userContext: UserDefinedContext) {
             onCheckedChange?.(!checked)
           }
         },
-        clickHighlightedItem(ctx, _evt, { send }) {
+        clickHighlightedItem(ctx, _evt) {
           const itemEl = dom.getHighlightedItemEl(ctx)
           if (!itemEl || itemEl.dataset.disabled) return
-          const option = dom.getOptionFromItemEl(itemEl)
-          send({
-            type: "ITEM_CLICK",
-            src: "enter",
-            target: itemEl,
-            id: option.id,
-            option,
-            closeOnSelect: ctx.closeOnSelect,
-          })
+          queueMicrotask(() => itemEl.click())
         },
         setIntentPolygon(ctx, evt) {
           const menu = dom.getContentEl(ctx)
@@ -674,7 +655,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusTrigger(ctx) {
           if (ctx.isSubmenu || ctx.anchorPoint || !ctx.restoreFocus) return
-          raf(() => dom.getTriggerEl(ctx)?.focus({ preventScroll: true }))
+          queueMicrotask(() => dom.getTriggerEl(ctx)?.focus({ preventScroll: true }))
         },
         highlightMatchedItem(ctx, evt) {
           const node = dom.getElemByKey(ctx, evt.key)

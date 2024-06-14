@@ -1,4 +1,4 @@
-import { addDomEvent, fireCustomEvent, isContextMenuEvent } from "@zag-js/dom-event"
+import { addDomEvent, fireCustomEvent, isContextMenuEvent, queueBeforeEvent } from "@zag-js/dom-event"
 import { contains, getDocument, getEventTarget, getWindow, isFocusable, isHTMLElement, raf } from "@zag-js/dom-query"
 import { callAll } from "@zag-js/utils"
 import { getWindowFrames } from "./get-window-frames"
@@ -95,7 +95,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     return !exclude?.(target)
   }
 
-  let clickHandler: VoidFunction
+  const pointerdownCleanups: Set<VoidFunction> = new Set()
 
   function onPointerDown(event: PointerEvent) {
     //
@@ -123,13 +123,12 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     }
 
     if (event.pointerType === "touch") {
-      frames.removeEventListener("click", handler)
-      doc.removeEventListener("click", handler)
+      // flush any pending pointerup events
+      pointerdownCleanups.forEach((fn) => fn())
 
-      clickHandler = handler
-
-      doc.addEventListener("click", handler, { once: true })
-      frames.addEventListener("click", handler, { once: true })
+      // add a pointerup event listener to the document and all frame documents
+      pointerdownCleanups.add(queueBeforeEvent(doc, "pointerup", handler))
+      pointerdownCleanups.add(frames.queueBeforeEvent("pointerup", handler))
     } else {
       handler()
     }
@@ -169,10 +168,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
 
   return () => {
     clearTimeout(timer)
-    if (clickHandler) {
-      frames.removeEventListener("click", clickHandler)
-      doc.removeEventListener("click", clickHandler)
-    }
+    pointerdownCleanups.forEach((fn) => fn())
     cleanups.forEach((fn) => fn())
   }
 }

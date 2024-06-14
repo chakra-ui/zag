@@ -35,8 +35,16 @@ export class MenuModel extends Model {
     return this.content.pressSequentially(input)
   }
 
+  focusTrigger = async () => {
+    await this.trigger.focus()
+  }
+
   clickTrigger = async () => {
     await this.trigger.click()
+  }
+
+  clickItem = async (text: string) => {
+    await this.getItem(text).click()
   }
 
   hoverItem = async (text: string) => {

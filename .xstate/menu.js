@@ -41,8 +41,6 @@ const fetchMachine = createMachine({
     "isSubmenu": false,
     "isTriggerItemHighlighted": false,
     "isTriggerItemHighlighted": false,
-    "closeOnSelect && isOpenControlled": false,
-    "closeOnSelect": false,
     "!suspendPointer": false,
     "!suspendPointer && !isTriggerItem": false,
     "!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect && isOpenControlled": false,
@@ -310,18 +308,7 @@ const fetchMachine = createMachine({
         ENTER: [{
           cond: "isTriggerItemHighlighted",
           actions: "openSubmenu"
-        },
-        // == grouped ==
-        {
-          cond: "closeOnSelect && isOpenControlled",
-          actions: ["clickHighlightedItem", "invokeOnClose"]
         }, {
-          cond: "closeOnSelect",
-          target: "closed",
-          actions: "clickHighlightedItem"
-        },
-        //
-        {
           actions: "clickHighlightedItem"
         }],
         ITEM_POINTERMOVE: [{
@@ -395,8 +382,6 @@ const fetchMachine = createMachine({
     "!isTriggerItem": ctx => ctx["!isTriggerItem"],
     "isSubmenu && isOpenControlled": ctx => ctx["isSubmenu && isOpenControlled"],
     "isTriggerItemHighlighted": ctx => ctx["isTriggerItemHighlighted"],
-    "closeOnSelect && isOpenControlled": ctx => ctx["closeOnSelect && isOpenControlled"],
-    "closeOnSelect": ctx => ctx["closeOnSelect"],
     "!suspendPointer": ctx => ctx["!suspendPointer"],
     "!suspendPointer && !isTriggerItem": ctx => ctx["!suspendPointer && !isTriggerItem"],
     "!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect && isOpenControlled": ctx => ctx["!isTriggerItemHighlighted && !isHighlightedItemEditable && closeOnSelect && isOpenControlled"],
