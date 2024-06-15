@@ -1,8 +1,5 @@
 import sdk from "@stackblitz/sdk"
 
-const html = String.raw
-const js = String.raw
-
 export async function openInStackblitz(component: string) {
   const componentCode = await getComponentCode(component)
   const style = await getStyle(component)
@@ -88,7 +85,7 @@ const getPackageJson = (component: string) => {
   }
 }
 
-const viteConfig = js`import { defineConfig } from 'vite'
+const viteConfig = `import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
@@ -96,7 +93,7 @@ export default defineConfig({
   plugins: [react()],
 })`
 
-const indexHtml = html` <!doctype html>
+const indexHtml = `<!doctype html>
   <html lang="en">
     <head>
       <meta charset="UTF-8" />
@@ -110,7 +107,7 @@ const indexHtml = html` <!doctype html>
     </body>
   </html>`
 
-const main = js`import React from 'react'
+const main = `import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
