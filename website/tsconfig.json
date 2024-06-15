@@ -7,14 +7,30 @@
     "baseUrl": ".",
     "jsx": "preserve",
     "paths": {
-      "@/panda/*": ["./panda/*"],
-      "@/contentlayer": [".contentlayer/generated"],
-      "@/*": ["src/*"]
+      "@/panda/*": [
+        "./panda/*"
+      ],
+      "@/contentlayer": [
+        ".contentlayer/generated"
+      ],
+      "@/*": [
+        "src/*"
+      ]
     },
     "verbatimModuleSyntax": false,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
   },
-  "plugins": [{ "name": "next" }],
+  "plugins": [
+    {
+      "name": "next"
+    }
+  ],
   "include": [
     "next-env.d.ts",
     ".contentlayer",
@@ -22,5 +38,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
