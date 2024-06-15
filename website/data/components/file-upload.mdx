@@ -238,6 +238,36 @@ const [state, send] = useMachine(
 )
 ```
 
+## Pasting files from clipboard
+
+After a user copies an image, to allow pasting the files from the clipboard, you
+can listen for the paste event and use the `api.setFiles` method to set the
+files.
+
+Here's an example of how to do this in React.
+
+```jsx
+function Demo() {
+  const [state, send] = useMachine(
+    fileUpload.machine({
+      accept: "image/*",
+    }),
+  )
+
+  const api = fileUpload.connect(state, send, normalizeProps)
+
+  return (
+    <textarea
+      onPaste={(event) => {
+        if (event.clipboardData?.files) {
+          api.setFiles(Array.from(event.clipboardData.files))
+        }
+      }}
+    />
+  )
+}
+```
+
 ## Styling guide
 
 Earlier, we mentioned that each file upload part has a `data-part` attribute

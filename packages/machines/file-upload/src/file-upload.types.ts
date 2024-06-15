@@ -1,5 +1,5 @@
 import type { StateMachine as S } from "@zag-js/core"
-import type { FileError } from "@zag-js/file-utils"
+import type { FileError, FileMimeType } from "@zag-js/file-utils"
 import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -63,7 +63,7 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * The accept file types
    */
-  accept?: Record<string, string[]> | string
+  accept?: Record<string, string[]> | FileMimeType | FileMimeType[]
   /**
    * Whether the file input is disabled
    */
@@ -204,6 +204,10 @@ export interface MachineApi<T extends PropTypes> {
    * Function to clear the value
    */
   clearFiles(): void
+  /**
+   * Function to clear the rejected files
+   */
+  clearRejectedFiles(): void
   /**
    * Function to format the file size (e.g. 1.2MB)
    */

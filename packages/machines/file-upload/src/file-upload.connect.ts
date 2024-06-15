@@ -29,6 +29,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const count = files.length
       send({ type: "FILES.SET", files, count })
     },
+    clearRejectedFiles() {
+      send({ type: "REJECTED_FILES.CLEAR" })
+    },
     clearFiles() {
       send({ type: "FILES.CLEAR" })
     },

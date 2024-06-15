@@ -6,11 +6,21 @@ function isExt(v: string) {
   return /^.*\.[\w]+$/.test(v)
 }
 
-export function getAcceptAttrString(accept: Record<string, string[]> | string | undefined) {
+const isValidMIME = (v: string) => isMIMEType(v) || isExt(v)
+
+export function getAcceptAttrString(accept: Record<string, string[]> | string | string[] | undefined) {
   if (!accept) return
-  if (typeof accept === "string") return accept
+
+  if (typeof accept === "string") {
+    return accept
+  }
+
+  if (Array.isArray(accept)) {
+    return accept.filter(isValidMIME).join(",")
+  }
+
   return Object.entries(accept)
     .reduce((a, [mimeType, ext]) => [...a, mimeType, ...ext], [] as string[])
-    .filter((v) => isMIMEType(v) || isExt(v))
+    .filter(isValidMIME)
     .join(",")
 }

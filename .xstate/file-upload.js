@@ -25,6 +25,9 @@ const fetchMachine = createMachine({
     },
     "FILES.CLEAR": {
       actions: ["clearFiles"]
+    },
+    "REJECTED_FILES.CLEAR": {
+      actions: ["clearRejectedFiles"]
     }
   },
   on: {

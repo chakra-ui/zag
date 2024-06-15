@@ -43,6 +43,9 @@ export function machine(userContext: UserDefinedContext) {
         "FILES.CLEAR": {
           actions: ["clearFiles"],
         },
+        "REJECTED_FILES.CLEAR": {
+          actions: ["clearRejectedFiles"],
+        },
       },
       states: {
         idle: {
@@ -146,6 +149,10 @@ export function machine(userContext: UserDefinedContext) {
         removeFile(ctx, evt) {
           const nextFiles = ctx.acceptedFiles.filter((file) => file !== evt.file)
           ctx.acceptedFiles = ref(nextFiles)
+          invoke.change(ctx)
+        },
+        clearRejectedFiles(ctx) {
+          ctx.rejectedFiles = ref([])
           invoke.change(ctx)
         },
         clearFiles(ctx) {
