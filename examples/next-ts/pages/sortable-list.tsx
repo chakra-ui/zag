@@ -2,14 +2,11 @@ import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-sc
 import { attachClosestEdge, extractClosestEdge, type Edge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge"
 import { getReorderDestinationIndex } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index"
 import { draggable, dropTargetForElements, monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter"
-import { reorder } from "@atlaskit/pragmatic-drag-and-drop/reorder"
-import { Collection } from "@zag-js/collection"
 import { createMachine, ref } from "@zag-js/core"
-import { dataAttr, isHTMLElement } from "@zag-js/dom-query"
+import { dataAttr, isHTMLElement, isOverflowElement } from "@zag-js/dom-query"
 import { useMachine } from "@zag-js/react"
 import { hasProp, isNumber, isObject } from "@zag-js/utils"
 import { GripVertical } from "lucide-react"
-import { useMemo, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
@@ -25,11 +22,12 @@ interface Item {
 interface PublicContext<T = Item> {
   id: string
   onReorder?(details: ReorderDetails<T>): void
-  collection: Collection<T>
+  items: T[]
+  itemToValue(item: T): string
 }
 
 interface PrivateContext {
-  registry: Map<string, { el: Element; cleanup: VoidFunction }>
+  _cleanup: Map<Element, VoidFunction>
   draggedValue: string | null
   dragClosestEdge: Edge | null
   dragOverValue: string | null
@@ -47,11 +45,14 @@ const sortableListMachine = (ctx: Partial<PublicContext>) => {
       initial: "idle",
       context: {
         id: "x1",
-        registry: ref(new Map()),
+        items: [],
+        itemToValue(item) {
+          return item.id.toString()
+        },
+        _cleanup: ref(new Map()),
         draggedValue: null,
         dragOverValue: null,
         dragClosestEdge: null,
-        collection: ref(new Collection<Item>({ items: [] })),
         ...ctx,
       },
 
@@ -119,18 +120,15 @@ const sortableListMachine = (ctx: Partial<PublicContext>) => {
 
           if (finishIndex === startIndex) return
 
-          const nextItems = reorder({
-            list: Array.from(ctx.collection),
-            startIndex,
-            finishIndex,
-          })
+          reorder(ctx.items, startIndex, finishIndex)
 
-          ctx.onReorder?.({ items: nextItems })
+          ctx.onReorder?.({ items: ctx.items })
         },
       },
       activities: {
         trackAutoScroll: (ctx) => {
           const list = document.querySelector<HTMLElement>("[data-part=list]")
+          if (!isOverflowElement(list)) return
           return autoScrollForElements({
             element: list,
             canScroll: ({ source }) => {
@@ -157,14 +155,20 @@ const sortableListMachine = (ctx: Partial<PublicContext>) => {
                 return send({ type: "drop.invalid" })
               }
 
-              const indexOfTarget = ctx.collection.indexOf(targetData.value)
+              const indexOfTarget = ctx.items.findIndex((t) => ctx.itemToValue(t) === targetData.value)
               if (indexOfTarget < 0) {
                 return send({ type: "drop.invalid" })
               }
 
               const closestEdgeOfTarget = extractClosestEdge(targetData)
 
-              send({ type: "drop.valid", startIndex: sourceData.index, indexOfTarget, closestEdgeOfTarget })
+              send({
+                type: "drop.valid",
+                draggedValue: sourceData.value,
+                startIndex: sourceData.index,
+                indexOfTarget,
+                closestEdgeOfTarget,
+              })
             },
           })
         },
@@ -174,11 +178,11 @@ const sortableListMachine = (ctx: Partial<PublicContext>) => {
           const items = list.querySelectorAll<HTMLElement>("[data-part=item]")
           items.forEach((item) => {
             const cleanup = registerItem(item, ctx, send)
-            ctx.registry.set(item.dataset.value, { el: item, cleanup })
+            ctx._cleanup.set(item, cleanup)
           })
           return () => {
-            ctx.registry.forEach((value) => value.cleanup())
-            ctx.registry.clear()
+            ctx._cleanup.forEach((cleanup) => cleanup())
+            ctx._cleanup.clear()
           }
         },
 
@@ -189,15 +193,14 @@ const sortableListMachine = (ctx: Partial<PublicContext>) => {
               mutation.addedNodes.forEach((node) => {
                 if (!isDraggableItem(node)) return
                 const cleanup = registerItem(node, ctx, send)
-                ctx.registry.set(node.dataset.value, { el: node, cleanup })
+                ctx._cleanup.set(node, cleanup)
               })
 
               // if node is an item, unregister it
               mutation.removedNodes.forEach((node) => {
                 if (!isDraggableItem(node)) return
-                const item = ctx.registry.get(node.dataset.value)!
-                item.cleanup()
-                ctx.registry.delete(node.dataset.value)
+                ctx._cleanup.get(node)?.()
+                ctx._cleanup.delete(node)
               })
             })
           })
@@ -224,12 +227,14 @@ function isItemData(v: any): v is { instanceId: string; index: number; value: st
 
 function registerItem(item: HTMLElement, ctx: Context, send: (evt: any) => void) {
   const itemValue = item.dataset.value
-  const data = { instanceId: "x1", index: ctx.collection.indexOf(itemValue), value: itemValue }
+  const index = ctx.items.findIndex((item) => ctx.itemToValue(item) === itemValue)
+  const data = { instanceId: "x1", index, value: itemValue }
 
   const dragCleanup = draggable({
     element: item.querySelector("[data-part=drag-trigger]")!,
     getInitialData() {
-      return data
+      const index = ctx.items.findIndex((item) => ctx.itemToValue(item) === itemValue)
+      return { instanceId: "x1", index, value: itemValue }
     },
     onDragStart() {
       send({ type: "drag.start", value: itemValue })
@@ -280,6 +285,17 @@ function registerItem(item: HTMLElement, ctx: Context, send: (evt: any) => void)
     dragCleanup()
     dropCleanup()
   }
+}
+
+function reorder<T>(list: T[], startIndex: number, finishIndex: number): T[] {
+  if (startIndex === -1 || finishIndex === -1 || startIndex === finishIndex) {
+    return list
+  }
+
+  const [removed] = list.splice(startIndex, 1)
+  list.splice(finishIndex, 0, removed)
+
+  return list
 }
 
 const orientationStyles = {
@@ -395,7 +411,7 @@ function DropIndicator(props: any) {
   )
 }
 
-const initialItems: Item[] = [
+const items: Item[] = [
   { id: 1, text: "item 1" },
   { id: 2, text: "item 2" },
   { id: 3, text: "item 3" },
@@ -404,96 +420,71 @@ const initialItems: Item[] = [
 ]
 
 export default function Page() {
-  const [items, setItems] = useState<Item[]>(initialItems)
-
-  const collection = useMemo(
-    () =>
-      new Collection({
-        items,
-        itemToString: (item) => item.text,
-        itemToValue: (item) => item.id.toString(),
-      }),
-    [items],
-  )
-
-  const [state, send] = useMachine(
-    sortableListMachine({
-      collection,
-      onReorder(details) {
-        setItems(details.items)
-      },
-    }),
-    {
-      context: {
-        collection,
-      },
-    },
-  )
-  const { draggedValue, dragClosestEdge, dragOverValue } = state.context
-
-  const moveToTop = (index: number) => {
-    send({
-      type: "item.reorder",
-      startIndex: index,
-      indexOfTarget: 0,
-      closestEdgeOfTarget: null,
-    })
-  }
-
-  const moveUp = (index: number) => {
-    send({
-      type: "item.reorder",
-      startIndex: index,
-      indexOfTarget: index - 1,
-      closestEdgeOfTarget: null,
-    })
-  }
-
-  const moveDown = (index: number) => {
-    send({
-      type: "item.reorder",
-      startIndex: index,
-      indexOfTarget: index + 1,
-      closestEdgeOfTarget: null,
-    })
-  }
-
-  const moveToBottom = (index: number) => {
-    send({
-      type: "item.reorder",
-      startIndex: index,
-      indexOfTarget: items.length - 1,
-      closestEdgeOfTarget: null,
-    })
-  }
-
-  const getItemPosition = (index: number) => {
-    if (items.length === 1) return "only"
-    if (index === 0) return "first"
-    if (index === items.length - 1) return "last"
-    return "middle"
-  }
-
-  const canMoveUp = (index: number) => {
-    const position = getItemPosition(index)
-    return position !== "first" && position !== "only"
-  }
-
-  const canMoveDown = (index: number) => {
-    const position = getItemPosition(index)
-    return position !== "last" && position !== "only"
-  }
+  const [state, send] = useMachine(sortableListMachine({ items }))
 
   const api = {
-    moveToTop,
-    moveUp,
-    moveDown,
-    moveToBottom,
-    canMoveUp,
-    canMoveDown,
+    draggedValue: state.context.draggedValue,
+    dragClosestEdge: state.context.dragClosestEdge,
+    dragOverValue: state.context.dragOverValue,
+    getItemState(item: Item) {
+      const value = state.context.itemToValue(item)
+      const dragging = api.draggedValue === value
+      const dragOver = api.dragOverValue === value
+      const indicator = api.draggedValue !== value && api.dragOverValue === value && api.dragClosestEdge
+      return {
+        value,
+        dragging,
+        dragOver,
+        indicator,
+      }
+    },
+    moveToTop(index: number) {
+      send({
+        type: "item.reorder",
+        startIndex: index,
+        indexOfTarget: 0,
+        closestEdgeOfTarget: null,
+      })
+    },
+    moveUp(index: number) {
+      send({
+        type: "item.reorder",
+        startIndex: index,
+        indexOfTarget: index - 1,
+        closestEdgeOfTarget: null,
+      })
+    },
+    moveDown(index: number) {
+      send({
+        type: "item.reorder",
+        startIndex: index,
+        indexOfTarget: index + 1,
+        closestEdgeOfTarget: null,
+      })
+    },
+    moveToBottom(index: number) {
+      send({
+        type: "item.reorder",
+        startIndex: index,
+        indexOfTarget: items.length - 1,
+        closestEdgeOfTarget: null,
+      })
+    },
+    getItemPosition(index: number) {
+      if (items.length === 1) return "only"
+      if (index === 0) return "first"
+      if (index === items.length - 1) return "last"
+      return "middle"
+    },
+    canMoveUp(index: number) {
+      const position = api.getItemPosition(index)
+      return position !== "first" && position !== "only"
+    },
+    canMoveDown(index: number) {
+      const position = api.getItemPosition(index)
+      return position !== "last" && position !== "only"
+    },
   }
-
-  void api
 
   return (
     <>
@@ -507,24 +498,20 @@ export default function Page() {
               gap: "1px",
             }}
           >
-            {items.map((item) => {
-              const itemValue = collection.itemToValue(item)
-              const isDragging = draggedValue === itemValue
-              const isDragOver = dragOverValue === itemValue
-              const showIndicator = draggedValue !== itemValue && dragOverValue === itemValue && dragClosestEdge
-
+            {state.context.items.map((item) => {
+              const itemState = api.getItemState(item)
               return (
                 <div
                   role="button"
                   aria-roledescription="sortable"
-                  data-dragging={dataAttr(isDragging)}
-                  data-dragover={dataAttr(isDragOver)}
-                  data-value={itemValue}
-                  key={item.id}
+                  data-dragging={dataAttr(itemState.dragging)}
+                  data-dragover={dataAttr(itemState.dragOver)}
+                  data-value={itemState.value}
+                  key={itemState.value}
                   data-part="item"
                   style={{
                     position: "relative",
-                    backgroundColor: isDragging ? "lightblue" : "white",
+                    backgroundColor: itemState.dragging ? "lightblue" : "white",
                     padding: "4px",
                     display: "flex",
                     alignItems: "center",
@@ -550,9 +537,7 @@ export default function Page() {
 
                   <span data-part="drag-item-text">{item.text}</span>
 
-                  {showIndicator && <DropIndicator gap="1px" edge={dragClosestEdge} />}
-                  {/* <DropIndicator gap="1px" edge="top" />
-                  <DropIndicator gap="1px" edge="bottom" /> */}
+                  {itemState.indicator && <DropIndicator gap="1px" edge={api.dragClosestEdge} />}
                 </div>
               )
             })}
@@ -561,7 +546,7 @@ export default function Page() {
       </main>
 
       <Toolbar>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={state} omit={["items"]} />
       </Toolbar>
     </>
   )

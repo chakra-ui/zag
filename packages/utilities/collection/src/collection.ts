@@ -1,24 +1,19 @@
-import { hash } from "./hash"
+import { isEqual, isObject, hasProp } from "@zag-js/utils"
 import type { CollectionItem, CollectionNode, CollectionOptions, CollectionSearchOptions } from "./types"
-
-const isObject = (v: any): v is Record<string, any> => typeof v === "object" && v !== null && !Array.isArray(v)
-
-const hasKey = <T>(obj: T, key: string): obj is T & Record<string, any> =>
-  Object.prototype.hasOwnProperty.call(obj, key)
 
 const fallback = {
   itemToValue(item: any) {
     if (typeof item === "string") return item
-    if (isObject(item) && hasKey(item, "value")) return item.value
+    if (isObject(item) && hasProp(item, "value")) return item.value
     return ""
   },
   itemToString(item: any) {
     if (typeof item === "string") return item
-    if (isObject(item) && hasKey(item, "label")) return item.label
+    if (isObject(item) && hasProp(item, "label")) return item.label
     return fallback.itemToValue(item)
   },
   itemToDisabled(item: any) {
-    if (isObject(item) && hasKey(item, "disabled")) return !!item.disabled
+    if (isObject(item) && hasProp(item, "disabled")) return !!item.disabled
     return false
   },
 }
@@ -40,27 +35,29 @@ export class Collection<T extends CollectionItem = CollectionItem> {
   private _firstValue: string | null = null
 
   /**
+   * The items in the collection
+   */
+  _items: T[] | readonly T[]
+
+  /**
    * The last value in the collection (without accounting for disabled items)
    */
   private _lastValue: string | null = null
 
-  private hash: string = ""
-
   constructor(private options: CollectionOptions<T>) {
+    this._items = options.items
     this.iterate()
   }
 
   isEqual = (other: Collection<T>) => {
-    return this.hash === other.hash
+    return isEqual(this._items, other._items)
   }
 
   /**
    * Iterate over the collection items and create a map of nodes
    */
-  private iterate = (): Collection<T> => {
-    const { items } = this.options
-
-    const hashSet = new Set<string>()
+  public iterate = (): Collection<T> => {
+    const items = this._items
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i]
@@ -68,8 +65,6 @@ export class Collection<T extends CollectionItem = CollectionItem> {
       const value = this.itemToValue(item)
       const label = this.itemToString(item)
       const disabled = this.itemToDisabled(item)
-
-      hashSet.add(JSON.stringify({ value, label, disabled }))
 
       const node: CollectionNode<T> = {
         // freeze item to prevent mutation by frameworks like Solid.js
@@ -96,8 +91,6 @@ export class Collection<T extends CollectionItem = CollectionItem> {
       }
     }
 
-    this.hash = hash(Array.from(hashSet).join(""))
-
     return this
   }
 
@@ -105,7 +98,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
    * Function to update the collection items
    */
   setItems = (items: T[] | readonly T[]) => {
-    this.options.items = items
+    this._items = items
     return this.iterate()
   }
 
@@ -352,7 +345,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
   };
 
   *[Symbol.iterator]() {
-    yield* this.options.items
+    yield* this._items
   }
 
   toJSON = () => {

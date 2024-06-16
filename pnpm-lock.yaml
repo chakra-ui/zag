@@ -3218,6 +3218,10 @@ importers:
         version: 2.2.0
 
   packages/utilities/collection:
+    dependencies:
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       clean-package:
         specifier: 2.2.0
