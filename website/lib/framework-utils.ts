@@ -5,9 +5,8 @@ import { SiReact } from "react-icons/si"
 
 export const frameworks = {
   react: { icon: SiReact, label: "React" },
-  "vue-jsx": { icon: FaVuejs, label: "Vue (JSX)" },
-  "vue-sfc": { icon: FaVuejs, label: "Vue (SFC)" },
   solid: { icon: AiFillCode, label: "Solid" },
+  vue: { icon: FaVuejs, label: "Vue" },
   // svelte: { icon: RiSvelteLine, label: "Svelte" },
 }
 
