@@ -49,26 +49,30 @@ export function useSearch(): UseSearchReturn {
       inputBehavior: "autohighlight",
       selectionBehavior: "clear",
       collection,
-      openOnChange({ inputValue }) {
-        return inputValue.length > 2
-      },
-      onValueChange() {
-        dialog_api.setOpen(false)
-      },
-      onInputValueChange({ inputValue }) {
-        if (inputValue.length < 3) return
-        const results = matchSorter(searchData, inputValue, {
-          keys: [
-            "hierarchy.lvl1",
-            "hierarchy.lvl2",
-            "hierarchy.lvl3",
-            "content",
-          ],
-        })
-        setResults(results.slice(0, 10))
-      },
     }),
-    { context: { collection } },
+    {
+      context: {
+        collection,
+        openOnChange({ inputValue }) {
+          return inputValue.length > 2
+        },
+        onValueChange() {
+          dialog_api.setOpen(false)
+        },
+        onInputValueChange({ inputValue }) {
+          if (inputValue.length < 3) return
+          const results = matchSorter(searchData, inputValue, {
+            keys: [
+              "hierarchy.lvl1",
+              "hierarchy.lvl2",
+              "hierarchy.lvl3",
+              "content",
+            ],
+          })
+          setResults(results.slice(0, 10))
+        },
+      },
+    },
   )
 
   useEffect(() => {
