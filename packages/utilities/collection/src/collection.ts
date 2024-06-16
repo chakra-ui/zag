@@ -349,6 +349,10 @@ export class Collection<T extends CollectionItem = CollectionItem> {
     update(search)
 
     return value
+  };
+
+  *[Symbol.iterator]() {
+    yield* this.options.items
   }
 
   toJSON = () => {
