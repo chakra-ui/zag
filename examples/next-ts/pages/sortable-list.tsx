@@ -529,8 +529,21 @@ export default function Page() {
                     display: "flex",
                     alignItems: "center",
                     gap: "10px",
+                    outline: "1px solid lightgray",
                   }}
                 >
+                  <span
+                    data-part="drag-item-gap-ghost"
+                    style={{
+                      display: "block",
+                      height: "1px",
+                      position: "absolute",
+                      bottom: "-1px",
+                      zIndex: 1,
+                      insetInline: "0",
+                    }}
+                  />
+
                   <button data-part="drag-trigger">
                     <GripVertical />
                   </button>
