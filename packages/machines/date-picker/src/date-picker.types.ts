@@ -45,6 +45,16 @@ export interface OpenChangeDetails {
 export type SelectionMode = "single" | "multiple" | "range"
 
 export interface IntlTranslations {
+  dayCell(state: DayTableCellState): string
+  nextTrigger(view: DateView): string
+  monthSelect: string
+  yearSelect: string
+  viewTrigger(view: DateView): string
+  prevTrigger(view: DateView): string
+  presetTrigger(value: string[]): string
+  clearTrigger: string
+  trigger(open: boolean): string
+  content: string
   placeholder: (locale: string) => { year: string; month: string; day: string }
 }
 
@@ -357,8 +367,10 @@ export interface TableProps {
   id?: string
 }
 
+export type PresetTriggerValue = DateValue[] | DateRangePreset
+
 export interface PresetTriggerProps {
-  value: DateValue[] | DateRangePreset
+  value: PresetTriggerValue
 }
 
 export interface ViewProps {

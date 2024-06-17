@@ -1,6 +1,6 @@
 import { DateFormatter, type DateValue } from "@internationalized/date"
 import { match } from "@zag-js/utils"
-import type { DateView } from "./date-picker.types"
+import type { DateView, IntlTranslations } from "./date-picker.types"
 
 export function adjustStartAndEndDate(value: DateValue[]) {
   const [startDate, endDate] = value
@@ -18,35 +18,11 @@ export function sortDates(values: DateValue[]) {
   return values.sort((a, b) => a.compare(b))
 }
 
-export function getNextTriggerLabel(view: DateView) {
-  return match(view, {
-    year: "Switch to next decade",
-    month: "Switch to next year",
-    day: "Switch to next month",
-  })
-}
-
-export function getPrevTriggerLabel(view: DateView) {
-  return match(view, {
-    year: "Switch to previous decade",
-    month: "Switch to previous year",
-    day: "Switch to previous month",
-  })
-}
-
 export function getRoleDescription(view: DateView) {
   return match(view, {
     year: "calendar decade",
     month: "calendar year",
     day: "calendar month",
-  })
-}
-
-export function getViewTriggerLabel(view: DateView) {
-  return match(view, {
-    year: "Switch to month view",
-    month: "Switch to day view",
-    day: "Switch to year view",
   })
 }
 
@@ -76,4 +52,47 @@ export function getLocaleSeparator(locale: string) {
   const parts = dateFormatter.formatToParts(new Date())
   const literalPart = parts.find((part) => part.type === "literal")
   return literalPart ? literalPart.value : "/"
+}
+
+export const defaultTranslations: IntlTranslations = {
+  dayCell(state) {
+    if (state.unavailable) return `Not available. ${state.formattedDate}`
+    if (state.selected) return `Selected date. ${state.formattedDate}`
+    return `Choose ${state.formattedDate}`
+  },
+  trigger(open) {
+    return open ? "Close calendar" : "Open calendar"
+  },
+  viewTrigger(view) {
+    return match(view, {
+      year: "Switch to month view",
+      month: "Switch to day view",
+      day: "Switch to year view",
+    })
+  },
+  presetTrigger(value) {
+    return Array.isArray(value) ? `select ${value[0].toString()} to ${value[1].toString()}` : `select ${value}`
+  },
+  prevTrigger(view) {
+    return match(view, {
+      year: "Switch to previous decade",
+      month: "Switch to previous year",
+      day: "Switch to previous month",
+    })
+  },
+  nextTrigger(view) {
+    return match(view, {
+      year: "Switch to next decade",
+      month: "Switch to next year",
+      day: "Switch to next month",
+    })
+  },
+  // TODO: Revisit this
+  placeholder() {
+    return { day: "dd", month: "mm", year: "yyyy" }
+  },
+  content: "calendar",
+  monthSelect: "Select month",
+  yearSelect: "Select year",
+  clearTrigger: "Clear selected dates",
 }
