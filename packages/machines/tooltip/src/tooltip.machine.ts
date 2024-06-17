@@ -1,6 +1,6 @@
 import { createMachine, guards, subscribe } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-event"
-import { getOverflowAncestors, isHTMLElement, isSafari } from "@zag-js/dom-query"
+import { getOverflowAncestors } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { compact } from "@zag-js/utils"
 import { dom } from "./tooltip.dom"
@@ -115,13 +115,7 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["open"],
-          activities: [
-            "trackEscapeKey",
-            "trackDisabledTriggerOnSafari",
-            "trackScroll",
-            "trackPointerlockChange",
-            "trackPositioning",
-          ],
+          activities: ["trackEscapeKey", "trackScroll", "trackPointerlockChange", "trackPositioning"],
           entry: ["setGlobalId"],
           on: {
             "CONTROLLED.CLOSE": "closed",
@@ -230,10 +224,10 @@ export function machine(userContext: UserDefinedContext) {
           const overflowParents = getOverflowAncestors(triggerEl)
 
           const cleanups = overflowParents.map((overflowParent) => {
-            return addDomEvent(overflowParent, "scroll", () => send({ type: "CLOSE", src: "scroll" }), {
-              passive: true,
-              capture: true,
-            })
+            const onScroll = () => {
+              send({ type: "CLOSE", src: "scroll" })
+            }
+            return addDomEvent(overflowParent, "scroll", onScroll, { passive: true, capture: true })
           })
 
           return () => {
@@ -243,17 +237,8 @@ export function machine(userContext: UserDefinedContext) {
         trackStore(ctx, _evt, { send }) {
           return subscribe(store, () => {
             if (store.id !== ctx.id) {
-              send({ type: "CLOSE", src: "id:change" })
+              send({ type: "CLOSE", src: "id.change" })
             }
-          })
-        },
-        trackDisabledTriggerOnSafari(ctx, _evt, { send }) {
-          if (!isSafari()) return
-          const doc = dom.getDoc(ctx)
-          return addDomEvent(doc, "pointermove", (event) => {
-            const selector = "[data-part=trigger][data-expanded]"
-            if (isHTMLElement(event.target) && event.target.closest(selector)) return
-            send("POINTER_LEAVE")
           })
         },
         trackEscapeKey(ctx, _evt, { send }) {
@@ -261,7 +246,7 @@ export function machine(userContext: UserDefinedContext) {
           const doc = dom.getDoc(ctx)
           return addDomEvent(doc, "keydown", (event) => {
             if (event.key === "Escape") {
-              send("CLOSE")
+              send({ type: "CLOSE", src: "keydown.escape" })
             }
           })
         },
