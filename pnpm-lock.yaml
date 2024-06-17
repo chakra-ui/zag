@@ -1766,8 +1766,8 @@ importers:
         version: link:../../types
     devDependencies:
       '@sveltejs/package':
-        specifier: 2.3.1
-        version: 2.3.1(svelte@5.0.0-next.155)(typescript@5.4.5)
+        specifier: 2.3.2
+        version: 2.3.2(svelte@5.0.0-next.155)(typescript@5.4.5)
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -5820,8 +5820,8 @@ packages:
   '@solidjs/start@1.0.1':
     resolution: {integrity: sha512-W29OlcJewXUehvDu5Lf+w8hQRiRMdMGaNUwMhnR3neqPxwdZf0LPPPVGyHxZHk4375HdcdBXHuvrOI+xv8Xrcg==}
 
-  '@sveltejs/package@2.3.1':
-    resolution: {integrity: sha512-JvR2J4ost1oCn1CSdqenYRwGX/1RX+7LN+VZ71aPnz3JAlIFaEKQd1pBxlb+OSQTfeugJO0W39gB9voAbBO5ow==}
+  '@sveltejs/package@2.3.2':
+    resolution: {integrity: sha512-6M8/Te7iXRG7SiH92wugqfyoJpuepjn78L433LnXicUeMso9M/N4vdL9DPK3MfTkVVY4klhNRptVqme3p4oZWA==}
     engines: {node: ^16.14 || >=18}
     hasBin: true
     peerDependencies:
@@ -13450,7 +13450,7 @@ snapshots:
       outdent: 0.5.0
       prettier: 2.8.8
       resolve-from: 5.0.0
-      semver: 7.6.0
+      semver: 7.6.2
 
   '@changesets/assemble-release-plan@6.0.2':
     dependencies:
@@ -13460,7 +13460,7 @@ snapshots:
       '@changesets/should-skip-package': 0.1.0
       '@changesets/types': 6.0.0
       '@manypkg/get-packages': 1.1.3
-      semver: 7.6.0
+      semver: 7.6.2
 
   '@changesets/changelog-git@0.2.0':
     dependencies:
@@ -13530,7 +13530,7 @@ snapshots:
       '@manypkg/get-packages': 1.1.3
       chalk: 2.4.2
       fs-extra: 7.0.1
-      semver: 7.6.0
+      semver: 7.6.2
 
   '@changesets/get-github-info@0.6.0(encoding@0.1.13)':
     dependencies:
@@ -15448,12 +15448,12 @@ snapshots:
       - vinxi
       - vite
 
-  '@sveltejs/package@2.3.1(svelte@5.0.0-next.155)(typescript@5.4.5)':
+  '@sveltejs/package@2.3.2(svelte@5.0.0-next.155)(typescript@5.4.5)':
     dependencies:
       chokidar: 3.6.0
       kleur: 4.1.5
       sade: 1.8.1
-      semver: 7.6.0
+      semver: 7.6.2
       svelte: 5.0.0-next.155
       svelte2tsx: 0.7.3(svelte@5.0.0-next.155)(typescript@5.4.5)
     transitivePeerDependencies:
@@ -21100,7 +21100,7 @@ snapshots:
       rollup: 4.14.1
       rollup-plugin-visualizer: 5.12.0(rollup@4.14.1)
       scule: 1.3.0
-      semver: 7.6.0
+      semver: 7.6.2
       serve-placeholder: 2.0.1
       serve-static: 1.15.0
       std-env: 3.7.0
@@ -24091,7 +24091,7 @@ snapshots:
     dependencies:
       '@volar/typescript': 1.11.1
       '@vue/language-core': 1.8.27(typescript@5.4.5)
-      semver: 7.6.0
+      semver: 7.6.2
       typescript: 5.4.5
 
   vue-tsc@2.0.21(typescript@5.4.5):
