@@ -86,7 +86,7 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-solid": "0.394.0"
+    "lucide-solid": "0.395.0"
   },
   "engines": {
     "node": ">=18"
