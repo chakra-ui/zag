@@ -12,4 +12,5 @@ export type {
   ItemProps,
   ItemState,
   SelectionChangeDetails,
+  Service,
 } from "./tree-view.types"

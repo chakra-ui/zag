@@ -9,6 +9,7 @@ export type {
   UserDefinedContext as Context,
   ItemProps,
   MachineState,
+  Service,
   TickDetails,
   Time,
   TimePart,

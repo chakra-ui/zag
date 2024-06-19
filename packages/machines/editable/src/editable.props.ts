@@ -24,6 +24,7 @@ export const props = createProps<UserDefinedContext>()([
   "onValueRevert",
   "placeholder",
   "readOnly",
+  "required",
   "selectOnFocus",
   "startWithEditView",
   "submitMode",

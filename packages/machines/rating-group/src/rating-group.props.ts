@@ -15,6 +15,7 @@ export const props = createProps<UserDefinedContext>()([
   "name",
   "onHoverChange",
   "onValueChange",
+  "required",
   "readOnly",
   "translations",
   "value",

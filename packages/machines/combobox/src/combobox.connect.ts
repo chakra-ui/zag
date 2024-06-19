@@ -144,6 +144,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         form: state.context.form,
         disabled: disabled,
         autoFocus: state.context.autoFocus,
+        required: state.context.required,
         autoComplete: "off",
         autoCorrect: "off",
         autoCapitalize: "none",

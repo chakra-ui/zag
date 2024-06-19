@@ -9,6 +9,7 @@ export type {
   UserDefinedContext as Context,
   ElementIds,
   IntlTranslations,
+  Service,
   SubmitMode,
   ValueChangeDetails,
 } from "./editable.types"

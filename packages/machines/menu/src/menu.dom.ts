@@ -9,7 +9,7 @@ export const dom = createScope({
   getArrowId: (ctx: Ctx) => ctx.ids?.arrow ?? `menu:${ctx.id}:arrow`,
   getPositionerId: (ctx: Ctx) => ctx.ids?.positioner ?? `menu:${ctx.id}:popper`,
   getGroupId: (ctx: Ctx, id: string) => ctx.ids?.group?.(id) ?? `menu:${ctx.id}:group:${id}`,
-  getGroupLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu:${ctx.id}:label:${id}`,
+  getGroupLabelId: (ctx: Ctx, id: string) => ctx.ids?.groupLabel?.(id) ?? `menu:${ctx.id}:group-label:${id}`,
 
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),

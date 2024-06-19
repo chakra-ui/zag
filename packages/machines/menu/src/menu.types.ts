@@ -38,7 +38,7 @@ type ElementIds = Partial<{
   trigger: string
   contextTrigger: string
   content: string
-  label(id: string): string
+  groupLabel(id: string): string
   group(id: string): string
   positioner: string
   arrow: string
@@ -182,7 +182,7 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type Service = Machine<MachineContext, MachineState>
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API

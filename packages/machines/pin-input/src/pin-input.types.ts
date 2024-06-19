@@ -66,6 +66,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   invalid?: boolean
   /**
+   * Whether the pin input is in the valid state
+   */
+  readOnly?: boolean
+  /**
    * If `true`, the pin input component signals to its fields that they should
    * use `autocomplete="one-time-code"`.
    */

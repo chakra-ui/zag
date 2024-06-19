@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { StrokeOptions } from "perfect-freehand"
 
@@ -42,6 +42,11 @@ export type ElementIds = Partial<{
   hiddenInput: string
 }>
 
+export interface IntlTranslations {
+  clearTrigger: string
+  control: string
+}
+
 export type { StrokeOptions }
 
 /* -----------------------------------------------------------------------------
@@ -53,6 +58,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The ids of the signature pad elements. Useful for composition.
    */
   ids?: ElementIds
+  /**
+   * The translations of the signature pad. Useful for internationalization.
+   */
+  translations?: IntlTranslations
   /**
    * Callback when the signature pad is drawing.
    */
@@ -70,6 +79,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the signature pad is disabled.
    */
   disabled?: boolean
+  /**
+   * Whether the signature pad is required.
+   */
+  required?: boolean
   /**
    * Whether the signature pad is read-only.
    */
@@ -111,6 +124,8 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API

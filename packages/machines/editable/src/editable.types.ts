@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -31,7 +31,7 @@ export type ElementIds = Partial<{
   label: string
   preview: string
   input: string
-  controls: string
+  control: string
   submitTrigger: string
   cancelTrigger: string
   editTrigger: string
@@ -104,6 +104,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * Whether the editable is readonly
    */
   readOnly?: boolean
+  /**
+   * Whether the editable is required
+   */
+  required?: boolean
   /**
    * The callback that is called when the editable's value is changed
    */
@@ -182,6 +186,8 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API

@@ -3,7 +3,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./pagination.anatomy"
 import { dom } from "./pagination.dom"
 import type { MachineApi, Send, State } from "./pagination.types"
-import * as utils from "./pagination.utils"
+import { getTransformedRange } from "./pagination.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const totalPages = state.context.totalPages
@@ -19,12 +19,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const isFirstPage = page === 1
   const isLastPage = page === totalPages
+  const pages = getTransformedRange(state.context)
 
   return {
     page,
     pageSize: state.context.pageSize,
     totalPages,
-    pages: utils.getTransformedRange(state.context),
+    pages,
     previousPage,
     nextPage,
     pageRange,

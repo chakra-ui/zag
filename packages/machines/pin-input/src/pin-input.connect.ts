@@ -43,6 +43,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-invalid": dataAttr(invalid),
         "data-disabled": dataAttr(state.context.disabled),
         "data-complete": dataAttr(complete),
+        "data-readonly": dataAttr(state.context.readOnly),
       })
     },
 
@@ -55,6 +56,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-invalid": dataAttr(invalid),
         "data-disabled": dataAttr(state.context.disabled),
         "data-complete": dataAttr(complete),
+        "data-readonly": dataAttr(state.context.readOnly),
         onClick(event) {
           event.preventDefault()
           focus()
@@ -68,6 +70,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: "text",
         tabIndex: -1,
         id: dom.getHiddenInputId(state.context),
+        readOnly: state.context.readOnly,
+        disabled: state.context.disabled,
         name: state.context.name,
         form: state.context.form,
         style: visuallyHiddenStyle,
@@ -101,6 +105,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-invalid": dataAttr(invalid),
         type: state.context.mask ? "password" : inputType,
         defaultValue: state.context.value[index] || "",
+        readOnly: state.context.readOnly,
         autoCapitalize: "none",
         autoComplete: state.context.otp ? "one-time-code" : "off",
         placeholder: focusedIndex === index ? "" : state.context.placeholder,

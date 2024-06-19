@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -18,10 +18,10 @@ type RectEdge = "top" | "right" | "bottom" | "left"
 export type ElementIds = Partial<{
   root: string
   viewport: string
-  slide(index: number): string
-  slideGroup: string
-  nextSlideTrigger: string
-  prevSlideTrigger: string
+  item(index: number): string
+  itemGroup: string
+  nextTrigger: string
+  prevTrigger: string
   indicatorGroup: string
   indicator(index: number): string
 }>
@@ -96,6 +96,8 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API

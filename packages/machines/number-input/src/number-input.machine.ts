@@ -31,6 +31,8 @@ export function machine(userContext: UserDefinedContext) {
         max: Number.MAX_SAFE_INTEGER,
         invalid: false,
         spinOnPress: true,
+        disabled: false,
+        readOnly: false,
         ...ctx,
         hint: null,
         scrubberCursorPoint: null,

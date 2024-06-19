@@ -12,4 +12,5 @@ export type {
   ResizeTriggerProps,
   SizeChangeDetails,
   StageChangeDetails,
+  Service,
 } from "./floating-panel.types"

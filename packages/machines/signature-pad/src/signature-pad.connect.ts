@@ -3,13 +3,20 @@ import { dataAttr, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./signature-pad.anatomy"
 import { dom } from "./signature-pad.dom"
-import type { MachineApi, Send, State } from "./signature-pad.types"
+import type { IntlTranslations, MachineApi, Send, State } from "./signature-pad.types"
+
+const defaultTranslations: IntlTranslations = {
+  control: "signature pad",
+  clearTrigger: "clear signature",
+}
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const drawing = state.matches("drawing")
   const empty = state.context.isEmpty
   const interactive = state.context.isInteractive
   const disabled = !!state.context.disabled
+
+  const translations = state.context.translations || defaultTranslations
 
   return {
     empty: empty,
@@ -25,10 +32,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getLabelProps() {
-      return normalize.element({
+      return normalize.label({
         ...parts.label.attrs,
         "data-disabled": dataAttr(disabled),
-        htmlFor: dom.getControlId(state.context),
+        htmlFor: dom.getHiddenInputId(state.context),
+        onClick(event) {
+          if (!interactive) return
+          if (event.defaultPrevented) return
+          const controlEl = dom.getControlEl(state.context)
+          controlEl?.focus({ preventScroll: true })
+        },
       })
     },
 
@@ -47,7 +60,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getControlId(state.context),
         role: "application",
         "aria-roledescription": "signature pad",
-        "aria-label": "signature pad",
+        "aria-label": translations.control,
         "aria-disabled": disabled,
         "data-disabled": dataAttr(disabled),
         onPointerDown(event) {
@@ -112,9 +125,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.clearTrigger.attrs,
         type: "button",
-        "aria-label": "Clear Signature",
+        "aria-label": translations.clearTrigger,
         hidden: !state.context.paths.length || drawing,
-        disabled: disabled,
+        disabled,
         onClick() {
           send({ type: "CLEAR" })
         },
@@ -123,9 +136,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getHiddenInputProps(props) {
       return normalize.input({
+        id: dom.getHiddenInputId(state.context),
         type: "text",
         hidden: true,
-        disabled: disabled,
+        disabled,
+        required: state.context.required,
+        readOnly: state.context.readOnly,
         name: state.context.name,
         value: props.value,
       })

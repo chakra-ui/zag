@@ -14,4 +14,5 @@ export type {
   IntlTranslations,
   ItemPreviewImageProps,
   ItemProps,
+  Service,
 } from "./file-upload.types"

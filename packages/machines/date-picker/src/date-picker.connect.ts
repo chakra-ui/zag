@@ -276,6 +276,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
+        id: dom.getLabelId(state.context),
         dir: state.context.dir,
         htmlFor: dom.getInputId(state.context, 0),
         "data-state": open ? "open" : "closed",

@@ -1,5 +1,5 @@
 import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@zag-js/color-utils"
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
@@ -45,9 +45,12 @@ export type ElementIds = Partial<{
   trigger: string
   label: string
   input: string
+  hiddenInput: string
   content: string
   area: string
   areaGradient: string
+  positioner: string
+  formatSelect: string
   areaThumb: string
   channelInput(id: string): string
   channelSliderTrack(id: ColorChannel): string
@@ -72,6 +75,10 @@ interface PublicContext extends CommonProperties, DirectionProperty, InteractOut
    * Whether the color picker is read-only
    */
   readOnly?: boolean
+  /**
+   * Whether the color picker is required
+   */
+  required?: boolean
   /**
    * Handler that is called when the value changes, as the user drags.
    */
@@ -193,6 +200,8 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API
