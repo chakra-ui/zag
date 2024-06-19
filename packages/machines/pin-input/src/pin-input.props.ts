@@ -18,6 +18,7 @@ export const props = createProps<UserDefinedContext>()([
   "onValueComplete",
   "onValueInvalid",
   "otp",
+  "readOnly",
   "pattern",
   "placeholder",
   "selectOnFocus",
