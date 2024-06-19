@@ -10,4 +10,5 @@ export type {
   ItemProps,
   ItemState,
   SlideChangeDetails,
+  Service,
 } from "./carousel.types"
