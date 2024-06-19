@@ -1,5 +1,5 @@
 import { createNormalizer } from "@zag-js/types"
-import { isNumber, isObject, isString } from "@zag-js/utils"
+import { isObject, isString } from "@zag-js/utils"
 
 const eventMap: any = {
   onFocus: "onFocusIn",
@@ -11,10 +11,6 @@ const eventMap: any = {
   htmlFor: "for",
   className: "class",
 }
-
-const format = (v: string) => (v.startsWith("--") ? v : hyphenateStyleName(v))
-
-type StyleObject = Record<string, any>
 
 function toProp(prop: string) {
   return prop in eventMap ? eventMap[prop] : prop
@@ -56,27 +52,14 @@ export const normalizeProps = createNormalizer<any>((props: Dict) => {
   return normalized
 })
 
-function cssify(style: StyleObject): StyleObject {
-  const css: any = {}
-  for (const property in style) {
-    const value = style[property]
-    if (!isString(value) && !isNumber(value)) continue
-    css[format(property)] = value
+function cssify(style: Record<string, number | string>) {
+  let string = ""
+
+  for (let key in style) {
+    const value = style[key]
+    if (value === null || value === undefined) continue
+    if (!key.startsWith("--")) key = key.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`)
+    string += `${key}:${value};`
   }
-
-  return css
-}
-
-const uppercasePattern = /[A-Z]/g
-const msPattern = /^ms-/
-const cache: any = {}
-
-function toHyphenLower(match: string) {
-  return "-" + match.toLowerCase()
-}
-
-function hyphenateStyleName(name: string) {
-  if (cache.hasOwnProperty(name)) return cache[name]
-  var hName = name.replace(uppercasePattern, toHyphenLower)
-  return (cache[name] = msPattern.test(hName) ? "-" + hName : hName)
+  return string
 }
