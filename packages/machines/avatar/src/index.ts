@@ -8,4 +8,5 @@ export type {
   ElementIds,
   LoadStatus,
   StatusChangeDetails,
+  Service,
 } from "./avatar.types"

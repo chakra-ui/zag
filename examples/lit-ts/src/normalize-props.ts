@@ -42,6 +42,11 @@ export const normalizeProps = createNormalizer<any>((props: Dict) => {
       continue
     }
 
+    if (key === "disabled") {
+      normalized["disabled"] = value ? "" : undefined
+      continue
+    }
+
     let nextKey = toProp(key)
     if (nextKey.startsWith("on")) {
       nextKey = "@" + nextKey.slice(2).toLowerCase()
