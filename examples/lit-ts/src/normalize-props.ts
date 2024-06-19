@@ -1,6 +1,9 @@
 import { createNormalizer } from "@zag-js/types"
 import { isObject, isString } from "@zag-js/utils"
 
+const booleanAttr = /* @__PURE__ */ `allowFullscreen,allowTransparency,allowpopups,autosize,async,autoFocus,autoPlay,contentEditable,controls,checked,controls,defer,default,disabled,formNovalidate,frame,hidden,indeterminate,inert,isMap,loop,multiple,muted,noModule,noValidate,open,popover,playsInline,readOnly,required,reversed,scoped,seamless,selected`
+const booleanAttrs = new Set(booleanAttr.split(","))
+
 const eventMap: any = {
   onFocus: "onFocusIn",
   onBlur: "onFocusOut",
@@ -18,8 +21,6 @@ function toProp(prop: string) {
 
 type Dict = Record<string, any>
 
-const falsySkipList = ["hidden", "readOnly"]
-
 export const normalizeProps = createNormalizer<any>((props: Dict) => {
   const normalized: Dict = {}
 
@@ -31,7 +32,7 @@ export const normalizeProps = createNormalizer<any>((props: Dict) => {
       continue
     }
 
-    if (falsySkipList.includes(key)) {
+    if (booleanAttrs.has(key)) {
       value = value === false ? undefined : ""
     }
 
@@ -54,7 +55,6 @@ export const normalizeProps = createNormalizer<any>((props: Dict) => {
 
 function cssify(style: Record<string, number | string>) {
   let string = ""
-
   for (let key in style) {
     const value = style[key]
     if (value === null || value === undefined) continue
