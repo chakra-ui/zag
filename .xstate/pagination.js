@@ -32,6 +32,12 @@ const fetchMachine = createMachine({
     SET_PAGE_SIZE: {
       actions: "setPageSize"
     },
+    FIRST_PAGE: {
+      actions: "goToFirstPage"
+    },
+    LAST_PAGE: {
+      actions: "goToLastPage"
+    },
     PREVIOUS_PAGE: {
       cond: "canGoToPrevPage",
       actions: "goToPrevPage"

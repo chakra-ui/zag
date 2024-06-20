@@ -41,6 +41,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     setPage(page) {
       send({ type: "SET_PAGE", page })
     },
+    goToNextPage() {
+      send({ type: "NEXT_PAGE" })
+    },
+    goToPrevPage() {
+      send({ type: "PREVIOUS_PAGE" })
+    },
+    goToFirstPage() {
+      send({ type: "FIRST_PAGE" })
+    },
+    goToLastPage() {
+      send({ type: "LAST_PAGE" })
+    },
 
     getRootProps() {
       return normalize.element({

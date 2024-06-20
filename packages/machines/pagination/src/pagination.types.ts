@@ -195,6 +195,22 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to set the current page.
    */
   setPage(page: number): void
+  /**
+   * Function to go to the next page.
+   */
+  goToNextPage(): void
+  /**
+   * Function to go to the previous page.
+   */
+  goToPrevPage(): void
+  /**
+   * Function to go to the first page.
+   */
+  goToFirstPage(): void
+  /**
+   * Function to go to the last page.
+   */
+  goToLastPage(): void
 
   getRootProps(): T["element"]
   getEllipsisProps(props: EllipsisProps): T["element"]
