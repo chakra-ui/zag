@@ -237,3 +237,5 @@ export interface MachineApi<T extends PropTypes> {
   getItemSizeTextProps(props: ItemProps): T["element"]
   getItemDeleteTriggerProps(props: ItemProps): T["button"]
 }
+
+export type { FileMimeType }

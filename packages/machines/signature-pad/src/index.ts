@@ -11,6 +11,7 @@ export type {
   DrawingOptions,
   ElementIds,
   HiddenInputProps,
+  IntlTranslations,
   SegmentPathProps,
   Service,
   StrokeOptions,

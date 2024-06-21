@@ -9,6 +9,7 @@ export type {
   FileAcceptDetails,
   FileChangeDetails,
   FileError,
+  FileMimeType,
   FileRejectDetails,
   FileRejection,
   IntlTranslations,
