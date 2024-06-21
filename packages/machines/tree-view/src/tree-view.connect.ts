@@ -6,8 +6,8 @@ import { dom } from "./tree-view.dom"
 import type { BranchProps, BranchState, ItemProps, ItemState, MachineApi, Send, State } from "./tree-view.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const expandedValue = state.context.expandedValue
-  const selectedValue = state.context.selectedValue
+  const expandedValue = Array.from(state.context.expandedValue)
+  const selectedValue = Array.from(state.context.selectedValue)
   const isTypingAhead = state.context.isTypingAhead
   const focusedValue = state.context.focusedValue
 

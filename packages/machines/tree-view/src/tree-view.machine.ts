@@ -481,29 +481,29 @@ const invoke = {
   },
   expandedChange(ctx: MachineContext) {
     ctx.onExpandedChange?.({
-      expandedValue: ctx.expandedValue,
+      expandedValue: Array.from(ctx.expandedValue),
       focusedValue: ctx.focusedValue!,
     })
   },
   selectionChange(ctx: MachineContext) {
     ctx.onSelectionChange?.({
-      selectedValue: ctx.selectedValue,
+      selectedValue: Array.from(ctx.selectedValue),
       focusedValue: ctx.focusedValue,
     })
   },
 }
 
 const set = {
-  selected(ctx: MachineContext, ids: string[]) {
-    ctx.selectedValue = ids
+  selected(ctx: MachineContext, value: string[]) {
+    ctx.selectedValue = value
     invoke.selectionChange(ctx)
   },
-  focused(ctx: MachineContext, id: string | null) {
-    ctx.focusedValue = id
+  focused(ctx: MachineContext, value: string | null) {
+    ctx.focusedValue = value
     invoke.focusChange(ctx)
   },
-  expanded(ctx: MachineContext, ids: string[]) {
-    ctx.expandedValue = ids
+  expanded(ctx: MachineContext, value: string[]) {
+    ctx.expandedValue = value
     invoke.expandedChange(ctx)
   },
 }
