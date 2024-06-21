@@ -1,5 +1,32 @@
 # @zag-js/file-upload
 
+## 0.58.0
+
+### Minor Changes
+
+- [`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Ensure consistent application of form related properties like
+  `invalid`, `required`, and `readOnly`
+
+  - Export `Service` from all machines for use in Lit based components.
+
+- [`0033e46`](https://github.com/chakra-ui/zag/commit/0033e46d0600bdee08619f514afb6afe85a0cca9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `api.clearRejectedFiles` to allow clearing the
+  rejected files programmatically.
+
+  - Improve DX of the `accept` context property by providing autocompletions for common file types.
+
+### Patch Changes
+
+- Updated dependencies [[`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93)]:
+  - @zag-js/dom-query@0.58.0
+  - @zag-js/i18n-utils@0.58.0
+  - @zag-js/file-utils@0.58.0
+  - @zag-js/anatomy@0.58.0
+  - @zag-js/core@0.58.0
+  - @zag-js/types@0.58.0
+  - @zag-js/utils@0.58.0
+
 ## 0.57.0
 
 ### Patch Changes
