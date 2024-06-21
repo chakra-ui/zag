@@ -80,6 +80,10 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    */
   readOnly?: boolean
   /**
+   * Whether the select is required
+   */
+  required?: boolean
+  /**
    * Whether the select should close after an item is selected
    * @default true
    */

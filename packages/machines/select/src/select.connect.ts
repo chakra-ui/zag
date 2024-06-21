@@ -339,6 +339,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         form: state.context.form,
         disabled: disabled,
         multiple: state.context.multiple,
+        required: state.context.required,
         "aria-hidden": true,
         id: dom.getHiddenSelectId(state.context),
         defaultValue: state.context.multiple ? state.context.value : state.context.value[0],

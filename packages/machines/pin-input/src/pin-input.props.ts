@@ -21,6 +21,7 @@ export const props = createProps<UserDefinedContext>()([
   "readOnly",
   "pattern",
   "placeholder",
+  "required",
   "selectOnFocus",
   "translations",
   "type",

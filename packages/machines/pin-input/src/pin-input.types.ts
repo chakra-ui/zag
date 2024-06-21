@@ -66,6 +66,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   invalid?: boolean
   /**
+   * Whether the pin input is required
+   */
+  required?: boolean
+  /**
    * Whether the pin input is in the valid state
    */
   readOnly?: boolean
