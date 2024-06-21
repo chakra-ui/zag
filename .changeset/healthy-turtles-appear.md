@@ -39,5 +39,5 @@
 "@zag-js/tour": minor
 ---
 
-- Ensure consistent application of form related properties like invalid, required, and readOnly
+- Ensure consistent application of form related properties like `invalid`, `required`, and `readOnly`
 - Export `Service` from all machines for use in Lit based components.

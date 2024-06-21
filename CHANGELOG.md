@@ -6,6 +6,37 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.58.0](./#0.58.0) - 2024-06-21
+
+### Fixed
+
+- **All Machines**
+
+  - Ensure consistent application of form related properties like `invalid`, `required`, and `readOnly`.
+
+  - Export `Service` from all machines for use in Lit based components.
+
+- **Tooltip**
+
+  - Fix issue where `closeOnScroll=false` doesn't work consistently in Safari
+
+### Added
+
+- **Alert**
+
+  - Expose more functions to programmatically change the page like `api.goToNextPage()`, `api.goToPrevPage()`,
+    `api.goToFirstPage()`, `api.goToLastPage()`
+
+- **DatePicker**
+
+  - Add support for customizing date picker accessibility labels
+
+- **FileUpload**
+
+  - Add support for `api.clearRejectedFiles` to allow clearing the rejected files programmatically.
+
+  - Improve DX of the `accept` context property by providing autocompletions for common file type
+
 ## [0.57.0](./#0.57.0) - 2024-06-14
 
 ### Fixed
