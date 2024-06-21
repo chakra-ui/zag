@@ -1,5 +1,21 @@
 # @zag-js/file-upload
 
+## 0.58.1
+
+### Patch Changes
+
+- [`bfcce0a`](https://github.com/chakra-ui/zag/commit/bfcce0a7fbba85d8c5d3d451c2e1ebba1c62a09e) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.1
+  - @zag-js/core@0.58.1
+  - @zag-js/types@0.58.1
+  - @zag-js/utils@0.58.1
+  - @zag-js/dom-query@0.58.1
+  - @zag-js/file-utils@0.58.1
+  - @zag-js/i18n-utils@0.58.1
+
 ## 0.58.0
 
 ### Minor Changes

@@ -1,5 +1,21 @@
 # @zag-js/tree-view
 
+## 0.58.1
+
+### Patch Changes
+
+- [`fe9671e`](https://github.com/chakra-ui/zag/commit/fe9671e093733f43798212cc69847266f27e1d3f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where some api methods throw due to `Array <> Proxy`
+  inconsistencies
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.1
+  - @zag-js/core@0.58.1
+  - @zag-js/types@0.58.1
+  - @zag-js/utils@0.58.1
+  - @zag-js/dom-event@0.58.1
+  - @zag-js/dom-query@0.58.1
+
 ## 0.58.0
 
 ### Minor Changes
