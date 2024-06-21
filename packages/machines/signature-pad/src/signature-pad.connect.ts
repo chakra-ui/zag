@@ -34,6 +34,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
+        id: dom.getLabelId(state.context),
         "data-disabled": dataAttr(disabled),
         htmlFor: dom.getHiddenInputId(state.context),
         onClick(event) {

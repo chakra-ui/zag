@@ -4,6 +4,7 @@ import type { MachineContext as Ctx, DataUrlOptions } from "./signature-pad.type
 export const dom = createScope({
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `signature-${ctx.id}`,
   getControlId: (ctx: Ctx) => ctx.ids?.control ?? `signature-control-${ctx.id}`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `signature-label-${ctx.id}`,
   getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `signature-input-${ctx.id}`,
 
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),

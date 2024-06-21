@@ -40,6 +40,7 @@ export type ElementIds = Partial<{
   root: string
   control: string
   hiddenInput: string
+  label: string
 }>
 
 export interface IntlTranslations {
