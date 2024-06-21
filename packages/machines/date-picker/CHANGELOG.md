@@ -1,5 +1,34 @@
 # @zag-js/date-picker
 
+## 0.58.0
+
+### Minor Changes
+
+- [`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Ensure consistent application of form related properties like
+  `invalid`, `required`, and `readOnly`
+
+  - Export `Service` from all machines for use in Lit based components.
+
+- [`82c0aef`](https://github.com/chakra-ui/zag/commit/82c0aef542d20c55a3ca7e63a753060c88005a59) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for customizing date picker accessibility labels
+
+### Patch Changes
+
+- Updated dependencies [[`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93)]:
+  - @zag-js/dom-query@0.58.0
+  - @zag-js/dismissable@0.58.0
+  - @zag-js/dom-event@0.58.0
+  - @zag-js/popper@0.58.0
+  - @zag-js/text-selection@0.58.0
+  - @zag-js/anatomy@0.58.0
+  - @zag-js/core@0.58.0
+  - @zag-js/types@0.58.0
+  - @zag-js/utils@0.58.0
+  - @zag-js/date-utils@0.58.0
+  - @zag-js/form-utils@0.58.0
+  - @zag-js/live-region@0.58.0
+
 ## 0.57.0
 
 ### Patch Changes
