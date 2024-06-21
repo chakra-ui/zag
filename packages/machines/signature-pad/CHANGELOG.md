@@ -1,5 +1,20 @@
 # @zag-js/signature-pad
 
+## 0.58.2
+
+### Patch Changes
+
+- [`83de2ce`](https://github.com/chakra-ui/zag/commit/83de2ce656062cd78568320b8ec948c975d7c44b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `id` to signature label for composition with Ark UI field.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.2
+  - @zag-js/core@0.58.2
+  - @zag-js/types@0.58.2
+  - @zag-js/utils@0.58.2
+  - @zag-js/dom-event@0.58.2
+  - @zag-js/dom-query@0.58.2
+
 ## 0.58.1
 
 ### Patch Changes
