@@ -1,5 +1,16 @@
 # @zag-js/qr-code
 
+## 0.58.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.2
+  - @zag-js/core@0.58.2
+  - @zag-js/types@0.58.2
+  - @zag-js/utils@0.58.2
+  - @zag-js/dom-query@0.58.2
+
 ## 0.58.1
 
 ### Patch Changes
