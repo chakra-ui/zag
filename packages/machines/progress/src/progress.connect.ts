@@ -148,7 +148,6 @@ function getCircleProps(ctx: MachineContext) {
   }
   return {
     root: {
-      viewBox: "0 0 var(--size) var(--size)",
       style: {
         width: "var(--size)",
         height: "var(--size)",
