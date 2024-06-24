@@ -92,7 +92,7 @@
     "node-fetch": "3.3.2",
     "plop": "4.0.1",
     "prettier": "3.3.2",
-    "prettier-plugin-svelte": "3.2.4",
+    "prettier-plugin-svelte": "3.2.5",
     "signale": "1.4.0",
     "ts-morph": "22.0.0",
     "tsup": "8.1.0",
