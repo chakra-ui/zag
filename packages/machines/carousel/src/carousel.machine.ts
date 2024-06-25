@@ -135,16 +135,16 @@ export function machine(userContext: UserDefinedContext) {
       },
       guards: {
         loop: (ctx) => ctx.loop,
-        isLastSlide: (ctx) => ctx.index === ctx.slideRects.length - 1,
+        isLastSlide: (ctx) => ctx.index === ctx.scrollSnaps.length - 1,
         isFirstSlide: (ctx) => ctx.index === 0,
       },
       actions: {
         scrollToNext(ctx) {
-          const index = nextIndex(ctx.slideRects, ctx.index)
+          const index = nextIndex(ctx.scrollSnaps, ctx.index)
           set.index(ctx, index)
         },
         scrollToPrev(ctx) {
-          const index = prevIndex(ctx.slideRects, ctx.index)
+          const index = prevIndex(ctx.scrollSnaps, ctx.index)
           set.index(ctx, index)
         },
         setScrollSnaps(ctx) {
@@ -153,7 +153,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.scrollProgress = scrollProgress
         },
         scrollTo(ctx, evt) {
-          const index = Math.max(0, Math.min(evt.index, ctx.slideRects.length - 1))
+          const index = Math.max(0, Math.min(evt.index, ctx.scrollSnaps.length - 1))
           set.index(ctx, index)
         },
         measureElements,
