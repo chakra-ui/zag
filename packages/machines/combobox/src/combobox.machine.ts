@@ -754,6 +754,8 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           ctx.selectedItems = selectedItems
           ctx.valueAsString = valueAsString
 
+          if (ctx.inputValue.trim() || ctx.multiple) return
+
           ctx.inputValue = match(ctx.selectionBehavior, {
             preserve: ctx.inputValue || valueAsString,
             replace: valueAsString,
