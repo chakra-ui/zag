@@ -99,7 +99,12 @@ export function machine(ctx: Partial<UserDefinedContext>) {
 
           exec(() => {
             ctx.unmountAnimationName = animationName
-            if (animationName === "none" || animationName === ctx.prevAnimationName || ctx.styles?.display === "none") {
+            if (
+              animationName === "none" ||
+              animationName === ctx.prevAnimationName ||
+              ctx.styles?.display === "none" ||
+              ctx.styles?.animationDuration === "0s"
+            ) {
               send({ type: "UNMOUNT", src: "presence.changed" })
             } else {
               send({ type: "UNMOUNT.SUSPEND" })
