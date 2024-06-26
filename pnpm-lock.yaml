@@ -3596,8 +3596,8 @@ importers:
         specifier: 0.7.2
         version: 0.7.2
       lucide-react:
-        specifier: 0.395.0
-        version: 0.395.0(react@18.3.1)
+        specifier: 0.397.0
+        version: 0.397.0(react@18.3.1)
       match-sorter:
         specifier: 6.3.4
         version: 6.3.4
@@ -9629,6 +9629,11 @@ packages:
     resolution: {integrity: sha512-6hzdNH5723A4FLaYZWpK50iyZH8iS2Jq5zuPRRotOFkhu6kxxJiebVdJ72tCR5XkiIeYFOU5NUawFZOac+VeYw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
+
+  lucide-react@0.397.0:
+    resolution: {integrity: sha512-rUcbRY5jFP/4za/OJvaRUUmdPsPb940Tw9zE1ehrRZmr9JnkDcW8OV3POR3XfEAAMDkssiTc5IWBFv8Y//pkDQ==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   lucide-solid@0.395.0:
     resolution: {integrity: sha512-nLJfgLiAxzTaw1eZG+ayrFz4wqcqwpo1ZokYxigawj7uTWnraOCti8SOVDLE+JYmKObmvGOqTztVTV6LeGy8mw==}
@@ -16288,8 +16293,8 @@ snapshots:
   '@vue/language-core@2.0.21(typescript@5.4.5)':
     dependencies:
       '@volar/language-core': 2.3.0
-      '@vue/compiler-dom': 3.4.29
-      '@vue/shared': 3.4.29
+      '@vue/compiler-dom': 3.4.30
+      '@vue/shared': 3.4.30
       computeds: 0.0.1
       minimatch: 9.0.4
       path-browserify: 1.0.1
@@ -19980,6 +19985,10 @@ snapshots:
       preact: 10.22.0
 
   lucide-react@0.395.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+
+  lucide-react@0.397.0(react@18.3.1):
     dependencies:
       react: 18.3.1
 
