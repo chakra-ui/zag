@@ -1,4 +1,4 @@
-import { type Page, expect } from "@playwright/test"
+import { expect, type Page } from "@playwright/test"
 import { a11y, clickOutside, clickViz, controls, repeat } from "../_utils"
 
 export class Model {
