@@ -390,6 +390,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       return normalize.element({
         ...parts.itemText.attrs,
         dir: state.context.dir,
+        "data-state": itemState.selected ? "checked" : "unchecked",
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
       })

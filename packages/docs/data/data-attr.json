@@ -319,6 +319,7 @@
     "ItemText": {
       "data-scope": "combobox",
       "data-part": "item-text",
+      "data-state": "\"checked\" | \"unchecked\"",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted"
     },
@@ -907,6 +908,7 @@
     "ItemText": {
       "data-scope": "select",
       "data-part": "item-text",
+      "data-state": "\"checked\" | \"unchecked\"",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted"
     },
