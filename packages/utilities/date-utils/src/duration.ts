@@ -1,19 +1,23 @@
 import type { DateDuration, DateValue } from "@internationalized/date"
 
 export function getUnitDuration(duration: DateDuration) {
-  let d = { ...duration }
-  for (let key in d) {
-    d[key] = 1
+  let clone = { ...duration }
+
+  for (let key in clone) {
+    clone[key as keyof typeof clone] = 1
   }
-  return d
+
+  return clone
 }
 
 export function getEndDate(startDate: DateValue, duration: DateDuration) {
-  let d = { ...duration }
-  if (d.days) {
-    d.days--
+  let clone = { ...duration }
+
+  if (clone.days) {
+    clone.days--
   } else {
-    d.days = -1
+    clone.days = -1
   }
-  return startDate.add(d)
+
+  return startDate.add(clone)
 }

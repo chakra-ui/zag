@@ -82,14 +82,14 @@
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-vue-next": "0.395.0",
-    "vue": "3.4.29",
-    "vue-router": "4.3.3"
+    "lucide-vue-next": "0.397.0",
+    "vue": "3.4.30",
+    "vue-router": "4.4.0"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@types/form-serialize": "0.7.4",
-    "@types/node": "20.14.2",
+    "@types/node": "20.14.9",
     "nuxt": "3.12.2"
   }
 }

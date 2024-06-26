@@ -234,6 +234,16 @@
       "data-channel": "The color channel of the channelslidertrack",
       "data-orientation": "The orientation of the channelslidertrack"
     },
+    "ChannelSliderLabel": {
+      "data-scope": "color-picker",
+      "data-part": "channel-slider-label",
+      "data-channel": "The color channel of the channelsliderlabel"
+    },
+    "ChannelSliderValueText": {
+      "data-scope": "color-picker",
+      "data-part": "channel-slider-value-text",
+      "data-channel": "The color channel of the channelslidervaluetext"
+    },
     "ChannelSliderThumb": {
       "data-scope": "color-picker",
       "data-part": "channel-slider-thumb",
@@ -435,6 +445,16 @@
       "data-disabled": "Present when disabled",
       "data-value": "",
       "data-view": "The view of the yeartablecelltrigger"
+    },
+    "NextTrigger": {
+      "data-scope": "date-picker",
+      "data-part": "next-trigger",
+      "data-disabled": "Present when disabled"
+    },
+    "PrevTrigger": {
+      "data-scope": "date-picker",
+      "data-part": "prev-trigger",
+      "data-disabled": "Present when disabled"
     },
     "Trigger": {
       "data-scope": "date-picker",
@@ -736,14 +756,16 @@
       "data-part": "root",
       "data-invalid": "Present when invalid",
       "data-disabled": "Present when disabled",
-      "data-complete": "Present when the pin-input value is complete"
+      "data-complete": "Present when the pin-input value is complete",
+      "data-readonly": "Present when read-only"
     },
     "Label": {
       "data-scope": "pin-input",
       "data-part": "label",
       "data-invalid": "Present when invalid",
       "data-disabled": "Present when disabled",
-      "data-complete": "Present when the label value is complete"
+      "data-complete": "Present when the label value is complete",
+      "data-readonly": "Present when read-only"
     },
     "Input": {
       "data-scope": "pin-input",
@@ -810,6 +832,7 @@
       "data-state": ""
     }
   },
+  "qr-code": {},
   "radio-group": {
     "Root": {
       "data-scope": "radio-group",
@@ -959,6 +982,7 @@
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the label",
       "data-invalid": "Present when invalid",
+      "data-dragging": "Present when in the dragging state",
       "data-focus": "Present when focused"
     },
     "Root": {
@@ -966,6 +990,7 @@
       "data-part": "root",
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the slider",
+      "data-dragging": "Present when in the dragging state",
       "data-invalid": "Present when invalid",
       "data-focus": "Present when focused"
     },
@@ -982,6 +1007,7 @@
       "data-part": "track",
       "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid",
+      "data-dragging": "Present when in the dragging state",
       "data-orientation": "The orientation of the track",
       "data-focus": "Present when focused"
     },
@@ -992,11 +1018,13 @@
       "data-name": "",
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the thumb",
-      "data-focus": "Present when focused"
+      "data-focus": "Present when focused",
+      "data-dragging": "Present when in the dragging state"
     },
     "Range": {
       "data-scope": "slider",
       "data-part": "range",
+      "data-dragging": "Present when in the dragging state",
       "data-focus": "Present when focused",
       "data-invalid": "Present when invalid",
       "data-disabled": "Present when disabled",
@@ -1005,6 +1033,7 @@
     "Control": {
       "data-scope": "slider",
       "data-part": "control",
+      "data-dragging": "Present when in the dragging state",
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the control",
       "data-invalid": "Present when invalid",
@@ -1101,7 +1130,8 @@
       "data-disabled": "Present when disabled",
       "data-value": "",
       "data-selected": "Present when selected",
-      "data-focus": "Present when focused"
+      "data-focus": "Present when focused",
+      "data-ssr": ""
     },
     "Content": {
       "data-scope": "tabs",
@@ -1256,9 +1286,19 @@
     }
   },
   "timer": {
-    "Segment": {
+    "Item": {
       "data-scope": "timer",
-      "data-part": "segment",
+      "data-part": "item",
+      "data-type": ""
+    },
+    "ItemLabel": {
+      "data-scope": "timer",
+      "data-part": "item-label",
+      "data-type": ""
+    },
+    "ItemValue": {
+      "data-scope": "timer",
+      "data-part": "item-value",
       "data-type": ""
     }
   },

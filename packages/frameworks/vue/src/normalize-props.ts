@@ -19,7 +19,7 @@ function toCase(txt: string) {
   return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
 }
 
-const propMap = {
+const propMap: Record<string, string> = {
   htmlFor: "for",
   className: "class",
   onDoubleClick: "onDblclick",

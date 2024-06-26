@@ -20,15 +20,23 @@ export function alignCenter(
   min?: DateValue,
   max?: DateValue,
 ): DateValue {
-  let halfDuration: DateDuration = {}
-  for (let key in duration) {
-    halfDuration[key] = Math.floor(duration[key] / 2)
-    if (halfDuration[key] > 0 && duration[key] % 2 === 0) {
+  const halfDuration: DateDuration = {}
+
+  for (let prop in duration) {
+    const key = prop as keyof DateDuration
+
+    const value = duration[key]
+    if (value == null) continue
+
+    halfDuration[key] = Math.floor(value / 2)
+
+    if (halfDuration[key] > 0 && value % 2 === 0) {
       halfDuration[key]--
     }
   }
 
-  let aligned = alignStart(date, duration, locale).subtract(halfDuration)
+  const aligned = alignStart(date, duration, locale).subtract(halfDuration)
+
   return constrainStart(date, aligned, duration, locale, min, max)
 }
 

@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@open-wc/lit-helpers": "^0.7.0",
-    "lit": "^3.1.2",
+    "lit": "^3.1.4",
     "@lit/context": "1.1.2",
     "@internationalized/date": "3.5.4",
     "@types/textarea-caret": "^3.0.3",
@@ -83,12 +83,12 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-react": "0.395.0",
+    "lucide-react": "0.397.0",
     "match-sorter": "6.3.4",
     "textarea-caret": "^3.1.0"
   },
   "devDependencies": {
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0"
+    "typescript": "^5.5.2",
+    "vite": "^5.3.1"
   }
 }

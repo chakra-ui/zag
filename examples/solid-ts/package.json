@@ -10,10 +10,10 @@
   },
   "dependencies": {
     "@solidjs/meta": "0.29.4",
-    "@solidjs/router": "0.13.5",
-    "@solidjs/start": "1.0.1",
+    "@solidjs/router": "0.13.6",
+    "@solidjs/start": "1.0.2",
     "solid-js": "1.8.17",
-    "vinxi": "0.3.11",
+    "vinxi": "0.3.12",
     "@internationalized/date": "3.5.4",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
@@ -86,7 +86,7 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-solid": "0.395.0"
+    "lucide-solid": "0.397.0"
   },
   "engines": {
     "node": ">=18"

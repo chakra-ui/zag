@@ -760,6 +760,7 @@ export class Machine<
     }
 
     const transitions: S.Transitions<TContext, TState, TEvent> =
+      // @ts-expect-error - Fix this
       stateNode?.on?.[event.type] ?? this.config.on?.[event.type]
 
     const next = this.getNextStateInfo(transitions, event)
