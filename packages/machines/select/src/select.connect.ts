@@ -281,6 +281,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemText.attrs,
+        "data-state": itemState.selected ? "checked" : "unchecked",
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
       })
