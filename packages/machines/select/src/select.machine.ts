@@ -74,6 +74,9 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         "VALUE.CLEAR": {
           actions: ["clearSelectedItems"],
         },
+        "CLEAR.CLICK": {
+          actions: ["clearSelectedItems", "focusTriggerEl"],
+        },
         "COLLECTION.SET": {
           actions: ["setCollection"],
         },
@@ -123,7 +126,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
         focused: {
           tags: ["closed"],
-          entry: ["setFinalFocus"],
+          entry: ["focusTriggerEl"],
           on: {
             "CONTROLLED.OPEN": [
               {
@@ -486,7 +489,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             element?.focus({ preventScroll: true })
           })
         },
-        setFinalFocus(ctx) {
+        focusTriggerEl(ctx) {
           raf(() => {
             dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
           })

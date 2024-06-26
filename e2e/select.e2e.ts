@@ -59,6 +59,20 @@ test.describe("select / pointer", () => {
     await expect(page.locator(menu)).toBeVisible()
   })
 
+  test("clicking clear trigger should return focus", async ({ page }) => {
+    await pointer.down(page.locator(trigger))
+    const albania = page.locator(getOption("AL"))
+
+    await albania.click()
+    await expect(page.locator(trigger)).toBeFocused()
+    await expect(page.locator(trigger)).toContainText("Albania")
+
+    const clearTrigger = page.locator(part("clear-trigger"))
+    await clearTrigger.click()
+    await expect(page.locator(trigger)).toBeFocused()
+    await expect(page.locator(trigger)).toContainText("Select option")
+  })
+
   test("should open and select with pointer cycle", async ({ page }) => {
     await pointer.down(page.locator(trigger))
     const albania = page.locator(getOption("AL"))

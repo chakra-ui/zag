@@ -328,7 +328,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         dir: state.context.dir,
         onClick(event) {
           if (event.defaultPrevented) return
-          send("VALUE.CLEAR")
+          send("CLEAR.CLICK")
         },
       })
     },

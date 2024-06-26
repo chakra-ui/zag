@@ -61,6 +61,9 @@ const fetchMachine = createMachine({
     "VALUE.CLEAR": {
       actions: ["clearSelectedItems"]
     },
+    "CLEAR.CLICK": {
+      actions: ["clearSelectedItems", "focusTriggerEl"]
+    },
     "COLLECTION.SET": {
       actions: ["setCollection"]
     }
@@ -103,7 +106,7 @@ const fetchMachine = createMachine({
     },
     focused: {
       tags: ["closed"],
-      entry: ["setFinalFocus"],
+      entry: ["focusTriggerEl"],
       on: {
         "CONTROLLED.OPEN": [{
           cond: "isTriggerClickEvent",
