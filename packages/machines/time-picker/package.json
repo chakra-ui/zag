@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/time-picker",
-  "version": "0.58.2",
+  "version": "0.58.3",
   "description": "Core logic for the time-picker widget implemented as a state machine",
   "keywords": [
     "js",

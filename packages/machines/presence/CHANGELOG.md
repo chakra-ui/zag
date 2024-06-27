@@ -1,5 +1,17 @@
 # @zag-js/presence
 
+## 0.58.3
+
+### Patch Changes
+
+- [`84f2f97`](https://github.com/chakra-ui/zag/commit/84f2f97253801221b99e40af55d320a65a6afd9c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where presence doesn't close if close animation has
+  duration of '0s'
+
+- Updated dependencies []:
+  - @zag-js/core@0.58.3
+  - @zag-js/types@0.58.3
+
 ## 0.58.2
 
 ### Patch Changes

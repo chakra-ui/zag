@@ -1,5 +1,37 @@
 # @zag-js/combobox
 
+## 0.58.3
+
+### Patch Changes
+
+- [`6fb9091`](https://github.com/chakra-ui/zag/commit/6fb9091e50759a72818c27006a432c71576a4561) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where input shows values when `multiple` is set to
+  `true`. The design intent is that when combobox is set to `multiple`, values should be rendered outside the input.
+
+- [#1623](https://github.com/chakra-ui/zag/pull/1623)
+  [`9d3474b`](https://github.com/chakra-ui/zag/commit/9d3474bf9148ef22d8bfde56e6785c663318bdc5) Thanks
+  [@firzanarmani](https://github.com/firzanarmani)! - Expose `data-placement` on Content for Combobox
+
+- [#1622](https://github.com/chakra-ui/zag/pull/1622)
+  [`f57eb81`](https://github.com/chakra-ui/zag/commit/f57eb81a06248449bf303bbdb7af83a0383d4f84) Thanks
+  [@Jonas-C](https://github.com/Jonas-C)! - Expose `data-invalid` on Combobox and Select triggers
+
+- [#1621](https://github.com/chakra-ui/zag/pull/1621)
+  [`1f7ea87`](https://github.com/chakra-ui/zag/commit/1f7ea87a34e19f9bd2119a13a7d8b7a7498609e4) Thanks
+  [@Jonas-C](https://github.com/Jonas-C)! - Expose `data-state` on `ItemText` for Combobox and Select
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.3
+  - @zag-js/core@0.58.3
+  - @zag-js/types@0.58.3
+  - @zag-js/aria-hidden@0.58.3
+  - @zag-js/collection@0.58.3
+  - @zag-js/utils@0.58.3
+  - @zag-js/dismissable@0.58.3
+  - @zag-js/dom-event@0.58.3
+  - @zag-js/dom-query@0.58.3
+  - @zag-js/popper@0.58.3
+
 ## 0.58.2
 
 ### Patch Changes

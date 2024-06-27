@@ -1,5 +1,14 @@
 # @zag-js/solid
 
+## 0.58.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.58.3
+  - @zag-js/store@0.58.3
+  - @zag-js/types@0.58.3
+
 ## 0.58.2
 
 ### Patch Changes
