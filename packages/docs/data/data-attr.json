@@ -309,6 +309,7 @@
       "data-scope": "combobox",
       "data-part": "trigger",
       "data-state": "\"open\" | \"closed\"",
+      "data-invalid": "Present when invalid",
       "data-focusable": "",
       "data-readonly": "Present when read-only",
       "data-disabled": "Present when disabled"
@@ -317,6 +318,11 @@
       "data-scope": "combobox",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\""
+    },
+    "ClearTrigger": {
+      "data-scope": "combobox",
+      "data-part": "clear-trigger",
+      "data-invalid": "Present when invalid"
     },
     "Item": {
       "data-scope": "combobox",
@@ -944,6 +950,11 @@
       "data-scope": "select",
       "data-part": "item-group",
       "data-disabled": "Present when disabled"
+    },
+    "ClearTrigger": {
+      "data-scope": "select",
+      "data-part": "clear-trigger",
+      "data-invalid": "Present when invalid"
     },
     "Content": {
       "data-scope": "select",
