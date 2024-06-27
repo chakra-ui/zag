@@ -6,6 +6,37 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.58.3](./#0.58.3) - 2024-06-27
+
+### Fixed
+
+- **Combobox**
+
+  - Fix issue where input shows values when `multiple` is set to `true`. The design intent is that when combobox is set
+    to `multiple`, values should be rendered outside the
+  - Expose `data-placement` on Content
+
+- **Progress**
+
+  - Fix issue where progress circle throws warning due to incorrect `viewBox` attribute on `<svg>`
+
+- **Carousel**
+
+  - Fix issue where next and previous buttons don't loop currently when using setting both `slidesPerView` and `loop`
+
+- **Presence**
+
+  - Fix issue where presence doesn't close if close animation has duration of `0s`
+
+- **Select, Combobox**
+
+  - Expose `data-invalid` on Combobox and Select triggers
+
+- **Menu**
+
+  - Fix context menu losing position data on close
+  - Fix issue where context menu doesn
+
 ## [0.58.0](./#0.58.0) - 2024-06-21
 
 ### Fixed

@@ -4,4 +4,4 @@
 "@zag-js/docs": patch
 ---
 
-Expose data-state on ItemText for Combobox and Select
+Expose `data-state` on `ItemText` for Combobox and Select
