@@ -1,5 +1,20 @@
 # @zag-js/progress
 
+## 0.58.3
+
+### Patch Changes
+
+- [`557e2ff`](https://github.com/chakra-ui/zag/commit/557e2ff7ae562f13e0690529d0a80abb9710db10) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where progress circle throws warning due to incorrect
+  `viewBox` attribute on `<svg>`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.3
+  - @zag-js/core@0.58.3
+  - @zag-js/types@0.58.3
+  - @zag-js/utils@0.58.3
+  - @zag-js/dom-query@0.58.3
+
 ## 0.58.2
 
 ### Patch Changes

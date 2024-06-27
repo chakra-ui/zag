@@ -1,5 +1,23 @@
 # @zag-js/menu
 
+## 0.58.3
+
+### Patch Changes
+
+- [`da20a5c`](https://github.com/chakra-ui/zag/commit/da20a5cf433647a1b2f695c879d991f8e2547ce5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix context menu losing position data on close
+  - Fix issue where context menu doesn't position correctly when lazy mounted
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.3
+  - @zag-js/core@0.58.3
+  - @zag-js/types@0.58.3
+  - @zag-js/utils@0.58.3
+  - @zag-js/dismissable@0.58.3
+  - @zag-js/dom-event@0.58.3
+  - @zag-js/dom-query@0.58.3
+  - @zag-js/popper@0.58.3
+  - @zag-js/rect-utils@0.58.3
+
 ## 0.58.2
 
 ### Patch Changes

@@ -1,5 +1,29 @@
 # @zag-js/select
 
+## 0.58.3
+
+### Patch Changes
+
+- [#1622](https://github.com/chakra-ui/zag/pull/1622)
+  [`f57eb81`](https://github.com/chakra-ui/zag/commit/f57eb81a06248449bf303bbdb7af83a0383d4f84) Thanks
+  [@Jonas-C](https://github.com/Jonas-C)! - Expose `data-invalid` on Combobox and Select triggers
+
+- [#1621](https://github.com/chakra-ui/zag/pull/1621)
+  [`1f7ea87`](https://github.com/chakra-ui/zag/commit/1f7ea87a34e19f9bd2119a13a7d8b7a7498609e4) Thanks
+  [@Jonas-C](https://github.com/Jonas-C)! - Expose `data-state` on `ItemText` for Combobox and Select
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.3
+  - @zag-js/core@0.58.3
+  - @zag-js/types@0.58.3
+  - @zag-js/collection@0.58.3
+  - @zag-js/utils@0.58.3
+  - @zag-js/dismissable@0.58.3
+  - @zag-js/dom-event@0.58.3
+  - @zag-js/dom-query@0.58.3
+  - @zag-js/form-utils@0.58.3
+  - @zag-js/popper@0.58.3
+
 ## 0.58.2
 
 ### Patch Changes

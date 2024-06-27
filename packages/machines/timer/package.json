@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/timer",
-  "version": "0.58.2",
+  "version": "0.58.3",
   "description": "Core logic for the timer widget implemented as a state machine",
   "keywords": [
     "js",
