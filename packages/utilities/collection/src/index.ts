@@ -1,2 +1,8 @@
 export { Collection } from "./collection"
-export type { CollectionItem, CollectionOptions, CollectionSearchOptions, CollectionSearchState } from "./types"
+export type {
+  CollectionItem,
+  CollectionMethods,
+  CollectionOptions,
+  CollectionSearchOptions,
+  CollectionSearchState,
+} from "./types"
