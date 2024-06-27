@@ -1,18 +1,18 @@
-import { isEqual, isObject, hasProp } from "@zag-js/utils"
-import type { CollectionItem, CollectionNode, CollectionOptions, CollectionSearchOptions } from "./types"
+import { hasProp, isEqual, isObject } from "@zag-js/utils"
+import type { CollectionItem, CollectionMethods, CollectionOptions, CollectionSearchOptions } from "./types"
 
-const fallback = {
-  itemToValue(item: any) {
+const fallback: CollectionMethods<any> = {
+  itemToValue(item) {
     if (typeof item === "string") return item
     if (isObject(item) && hasProp(item, "value")) return item.value
     return ""
   },
-  itemToString(item: any) {
+  itemToString(item) {
     if (typeof item === "string") return item
     if (isObject(item) && hasProp(item, "label")) return item.label
     return fallback.itemToValue(item)
   },
-  itemToDisabled(item: any) {
+  isItemDisabled(item) {
     if (isObject(item) && hasProp(item, "disabled")) return !!item.disabled
     return false
   },
@@ -20,299 +20,204 @@ const fallback = {
 
 export class Collection<T extends CollectionItem = CollectionItem> {
   /**
-   * The collection nodes
-   */
-  private nodes = new Map<string, CollectionNode<T>>()
-
-  /**
-   * The set of disabled values
-   */
-  private disabledValues = new Set<string>()
-
-  /**
-   * The first value in the collection (without accounting for disabled items)
-   */
-  private _firstValue: string | null = null
-
-  /**
    * The items in the collection
    */
-  _items: T[] | readonly T[]
-
-  /**
-   * The last value in the collection (without accounting for disabled items)
-   */
-  private _lastValue: string | null = null
+  items: T[]
 
   constructor(private options: CollectionOptions<T>) {
-    this._items = options.items
-    this.iterate()
+    this.items = [...options.items] as T[]
   }
 
-  isEqual = (other: Collection<T>) => {
-    return isEqual(this._items, other._items)
-  }
-
-  /**
-   * Iterate over the collection items and create a map of nodes
-   */
-  public iterate = (): Collection<T> => {
-    const items = this._items
-
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i]
-
-      const value = this.itemToValue(item)
-      const label = this.itemToString(item)
-      const disabled = this.itemToDisabled(item)
-
-      const node: CollectionNode<T> = {
-        // freeze item to prevent mutation by frameworks like Solid.js
-        item: Object.freeze(item),
-        index: i,
-        label,
-        value: value,
-        previousValue: this.itemToValue(items[i - 1]) ?? null,
-        nextValue: this.itemToValue(items[i + 1]) ?? null,
-      }
-
-      this.nodes.set(value, node)
-
-      if (disabled) {
-        this.disabledValues.add(value)
-      }
-
-      if (i === 0) {
-        this._firstValue = value
-      }
-
-      if (i === items.length - 1) {
-        this._lastValue = value
-      }
-    }
-
-    return this
+  isEqual(other: Collection<T>) {
+    return isEqual(this.items, other.items)
   }
 
   /**
    * Function to update the collection items
    */
-  setItems = (items: T[] | readonly T[]) => {
-    this._items = items
-    return this.iterate()
+  setItems(items: T[] | readonly T[]) {
+    this.items = Array.from(items) as T[]
   }
 
   /**
    * Returns all the values in the collection
    */
-  values = () => {
-    return Array.from(this.nodes.keys())
+  getValues(items = this.items) {
+    return Array.from(items)
+      .map((item) => this.getItemValue(item))
+      .filter(Boolean) as string[]
   }
 
   /**
    * Get the item based on its value
    */
-  item = (value: string | null): T | null => {
-    if (value === null) return null
-    return this.nodes.get(value)?.item ?? null
+  find(value: string | null | undefined): T | null {
+    if (value == null) return null
+    const index = this.items.findIndex((item) => this.getItemValue(item) === value)
+    return index != null ? this.items[index] : null
   }
 
   /**
    * Get the items based on its values
    */
-  items = (values: string[]): T[] => {
-    return values.map((value) => this.item(value)!).filter(Boolean)
+  findMany(values: string[]): T[] {
+    return Array.from(values)
+      .map((value) => this.find(value)!)
+      .filter(Boolean)
   }
 
   /**
    * Get the item based on its index
    */
-  at = (index: number): T | null => {
-    for (const node of this.nodes.values()) {
-      if (node.index === index) {
-        return node.item
-      }
-    }
-    return null
+  at(index: number): T | null {
+    return this.items[index] ?? null
   }
 
-  private sortFn = (valueA: string, valueB: string): number => {
-    const nodeA = this.nodes.get(valueA)
-    const nodeB = this.nodes.get(valueB)
-    return (nodeA?.index ?? 0) - (nodeB?.index ?? 0)
+  private sortFn(valueA: string, valueB: string): number {
+    const indexA = this.indexOf(valueA)
+    const indexB = this.indexOf(valueB)
+    return (indexA ?? 0) - (indexB ?? 0)
   }
 
   /**
    * Sort the values based on their index
    */
-  sort = (values: string[]): string[] => {
-    return [...values].sort(this.sortFn)
+  sort(values: string[]): string[] {
+    return [...values].sort(this.sortFn.bind(this))
   }
 
   /**
    * Convert an item to a value
    */
-  itemToValue = (item: T): string => {
-    if (!item) return ""
+  getItemValue(item: T | null | undefined): string | null {
+    if (item == null) return null
     return this.options.itemToValue?.(item) ?? fallback.itemToValue(item)
+  }
+
+  /**
+   * Whether an item is disabled
+   */
+  getItemDisabled(item: T | null): boolean {
+    if (item == null) return false
+    return this.options.isItemDisabled?.(item) ?? fallback.isItemDisabled(item)
   }
 
   /**
    * Convert an item to a string
    */
-  itemToString = (item: T | null): string => {
-    if (!item) return ""
+  stringifyItem(item: T | null): string | null {
+    if (item == null) return null
     return this.options.itemToString?.(item) ?? fallback.itemToString(item)
-  }
-
-  /**
-   * Whether an item is disabled
-   */
-  itemToDisabled = (item: T | null): boolean => {
-    if (!item) return false
-    return this.options.isItemDisabled?.(item) ?? fallback.itemToDisabled(item)
   }
 
   /**
    * Convert a value to a string
    */
-  valueToString = (value: string | null): string => {
-    if (value == null) return ""
-    return this.nodes.get(value)?.label ?? ""
+  stringify(value: string | null): string | null {
+    if (value == null) return null
+    return this.stringifyItem(this.find(value))
   }
 
   /**
    * Convert an array of items to a string
    */
-  itemsToString = (item: T[], separator = ", "): string => {
-    return item
-      .map((item) => this.itemToString(item))
+  stringifyItems(items: T[], separator = ", "): string {
+    return Array.from(items)
+      .map((item) => this.stringifyItem(item))
       .filter(Boolean)
       .join(separator)
   }
 
   /**
+   * Convert an array of items to a string
+   */
+  stringifyMany(value: string[], separator?: string): string {
+    return this.stringifyItems(this.findMany(value), separator)
+  }
+
+  /**
    * Whether the collection has a value
    */
-  has = (value: string | null): boolean => {
-    if (value == null) return false
-    return this.nodes.has(value)
+  has(value: string | null): boolean {
+    return this.indexOf(value) !== -1
+  }
+
+  /**
+   * Whether the collection has an item
+   */
+  hasItem(item: T | null): boolean {
+    if (item == null) return false
+    return this.has(this.getItemValue(item))
   }
 
   /**
    * Returns the number of items in the collection
    */
-  count = (): number => {
-    return this.nodes.size
+  get size(): number {
+    return this.items.length
   }
 
   /**
    * Returns the first value in the collection
    */
-  first = (): string | null => {
-    let firstValue = this._firstValue
-    while (firstValue != null) {
-      let item = this.nodes.get(firstValue)
-      if (item != null && !this.disabledValues.has(item.value)) {
-        return firstValue
-      }
-      firstValue = item?.nextValue ?? null
-    }
-    return null
+  get firstValue(): string | null {
+    let index = 0
+    while (this.getItemDisabled(this.at(index))) index++
+    return this.getItemValue(this.at(index))
   }
 
   /**
    * Returns the last value in the collection
    */
-  last = (): string | null => {
-    let lastValue = this._lastValue
-    while (lastValue != null) {
-      let item = this.nodes.get(lastValue)
-      if (item != null && !this.disabledValues.has(item.value)) {
-        return lastValue
-      }
-      lastValue = item?.previousValue ?? null
-    }
-    return null
+  get lastValue(): string | null {
+    let index = this.size - 1
+    while (this.getItemDisabled(this.at(index))) index--
+    return this.getItemValue(this.at(index))
   }
 
   /**
    * Returns the next value in the collection
    */
-  next = (value: string | null): string | null => {
-    if (value == null) return null
-
-    const item = this.nodes.get(value)
-    let nextValue = item?.nextValue ?? null
-
-    while (nextValue != null) {
-      let item = this.nodes.get(nextValue)
-      if (item != null && !this.disabledValues.has(item.value)) {
-        return nextValue
-      }
-      nextValue = item?.nextValue ?? null
-    }
-    return null
+  getNextValue(value: string): string | null {
+    let index = this.indexOf(value)
+    if (index === -1) return null
+    index++
+    while (index <= this.size && this.getItemDisabled(this.at(index))) index++
+    return this.getItemValue(this.at(index))
   }
 
   /**
    * Returns the previous value in the collection
    */
-  prev = (value: string | null): string | null => {
-    if (value == null) return null
-
-    const item = this.nodes.get(value)
-    let previousValue = item?.previousValue ?? null
-
-    while (previousValue != null) {
-      let item = this.nodes.get(previousValue)
-      if (item != null && !this.disabledValues.has(item.value)) {
-        return previousValue
-      }
-      previousValue = item?.previousValue ?? null
-    }
-    return null
-  }
-
-  /**
-   * Whether an item is disabled
-   */
-  isItemDisabled = (item: T): boolean => {
-    return this.disabledValues.has(this.itemToValue(item))
-  }
-
-  /**
-   * Returns the array of collection nodes
-   */
-  toArray = (): CollectionNode<T>[] => {
-    return Array.from(this.nodes.values())
+  getPreviousValue(value: string): string | null {
+    let index = this.indexOf(value)
+    if (index === -1) return null
+    index--
+    while (index >= 0 && this.getItemDisabled(this.at(index))) index--
+    return this.getItemValue(this.at(index))
   }
 
   /**
    * Get the index of an item based on its key
    */
-  indexOf = (value: string | null): number => {
+  indexOf(value: string | null): number {
     if (value == null) return -1
-    return this.nodes.get(value)?.index ?? -1
+    return this.items.findIndex((item) => this.getItemValue(item) === value)
   }
 
-  private getByText = (text: string, currentValue: string | null): CollectionNode<T> | undefined => {
-    const index = this.indexOf(currentValue)
-    let nodes = currentValue != null ? wrap(this.toArray(), index) : this.toArray()
+  private getByText(text: string, current: string | null): T | undefined {
+    let items = current != null ? wrap(this.items, this.indexOf(current)) : this.items
 
     const isSingleKey = text.length === 1
+    if (isSingleKey) items = items.filter((item) => this.getItemValue(item) !== current)
 
-    if (isSingleKey) {
-      nodes = nodes.filter((node) => node.value !== currentValue)
-    }
-
-    return nodes.find((node) => match(node.label, text))
+    return items.find((item) => match(this.stringifyItem(item), text))
   }
 
   /**
    * Search for a value based on a query
    */
-  search = (queryString: string, options: CollectionSearchOptions): string | null => {
+  search(queryString: string, options: CollectionSearchOptions): string | null {
     const { state, currentValue, timeout = 350 } = options
 
     const search = state.keysSoFar + queryString
@@ -320,7 +225,8 @@ export class Collection<T extends CollectionItem = CollectionItem> {
 
     const query = isRepeated ? search[0] : search
 
-    const value = this.getByText(query, currentValue)?.value ?? null
+    const item = this.getByText(query, currentValue)
+    const value = this.getItemValue(item)
 
     function cleanup() {
       clearTimeout(state.timer)
@@ -342,25 +248,46 @@ export class Collection<T extends CollectionItem = CollectionItem> {
     update(search)
 
     return value
-  };
-
-  *[Symbol.iterator]() {
-    yield* this._items
   }
 
-  toJSON = () => {
+  *[Symbol.iterator]() {
+    yield* this.items
+  }
+
+  insertBefore(value: string, item: T) {
+    const index = this.indexOf(value)
+    if (index === -1) return
+    this.items.splice(index, 0, item)
+  }
+
+  insertAfter(value: string, item: T) {
+    const index = this.indexOf(value)
+    if (index === -1) return
+    this.items.splice(index + 1, 0, item)
+  }
+
+  reorder(fromIndex: number, toIndex: number) {
+    if (fromIndex === -1 || toIndex === -1) return
+    if (fromIndex === toIndex) return
+
+    const [removed] = this.items.splice(fromIndex, 1)
+
+    this.items.splice(toIndex, 0, removed)
+  }
+
+  toJSON() {
     return {
-      size: this.count(),
-      first: this.first(),
-      last: this.last(),
+      size: this.size,
+      first: this.firstValue,
+      last: this.lastValue,
     }
   }
 }
 
-const match = (label: string, query: string) => {
-  return label.toLowerCase().startsWith(query.toLowerCase())
+const match = (label: string | null, query: string) => {
+  return !!label?.toLowerCase().startsWith(query.toLowerCase())
 }
 
-const wrap = <T>(v: T[], idx: number) => {
+const wrap = <T>(v: T[] | readonly T[], idx: number) => {
   return v.map((_, index) => v[(Math.max(idx, 0) + index) % v.length])
 }

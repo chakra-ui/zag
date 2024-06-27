@@ -11,30 +11,24 @@ export interface CollectionSearchOptions {
 
 export type CollectionItem = any
 
-export interface CollectionNode<T extends CollectionItem = CollectionItem> {
-  item: T
-  index: number
-  label: string
-  value: string
-  previousValue: string | null
-  nextValue: string | null
+export interface CollectionMethods<T extends CollectionItem = CollectionItem> {
+  /**
+   * The value of the item
+   */
+  itemToValue: (item: T) => string
+  /**
+   * The label of the item
+   */
+  itemToString: (item: T) => string
+  /**
+   * Whether the item is disabled
+   */
+  isItemDisabled: (item: T) => boolean
 }
 
-export interface CollectionOptions<T extends CollectionItem = CollectionItem> {
+export interface CollectionOptions<T extends CollectionItem = CollectionItem> extends Partial<CollectionMethods<T>> {
   /**
    * The options of the select
    */
   items: T[] | readonly T[]
-  /**
-   * The value of the item
-   */
-  itemToValue?: (item: T) => string
-  /**
-   * The label of the item
-   */
-  itemToString?: (item: T) => string
-  /**
-   * Whether the item is disabled
-   */
-  isItemDisabled?: (item: T) => boolean
 }
