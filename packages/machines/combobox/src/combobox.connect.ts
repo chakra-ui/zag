@@ -301,6 +301,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         tabIndex: -1,
         hidden: !open,
         "data-state": open ? "open" : "closed",
+        "data-placement": state.context.currentPlacement,
         "aria-labelledby": dom.getLabelId(state.context),
         "aria-multiselectable": state.context.multiple && composite ? true : undefined,
         onPointerDown(event) {
