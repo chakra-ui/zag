@@ -1,5 +1,5 @@
 import { getEventKey, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
-import { contains, dataAttr, getEventTarget, isComposingEvent } from "@zag-js/dom-query"
+import { contains, dataAttr, getEventTarget, isComposingEvent, isEditableElement } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tree-view.anatomy"
 import { dom } from "./tree-view.dom"
@@ -106,6 +106,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (isComposingEvent(event)) return
 
           const target = getEventTarget<HTMLElement>(event)
+          // allow typing in input elements within the tree
+          if (isEditableElement(target)) return
 
           const node = target?.closest<HTMLElement>("[role=treeitem]")
           if (!node) return
