@@ -92,9 +92,6 @@ importers:
       husky:
         specifier: 9.0.11
         version: 9.0.11
-      json-format-highlight:
-        specifier: 1.0.4
-        version: 1.0.4
       lint-staged:
         specifier: 15.2.7
         version: 15.2.7
@@ -318,6 +315,9 @@ importers:
       '@zag-js/store':
         specifier: workspace:*
         version: link:../../packages/store
+      '@zag-js/stringify-state':
+        specifier: workspace:*
+        version: link:../../packages/utilities/stringify-state
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
@@ -556,6 +556,9 @@ importers:
       '@zag-js/store':
         specifier: workspace:*
         version: link:../../packages/store
+      '@zag-js/stringify-state':
+        specifier: workspace:*
+        version: link:../../packages/utilities/stringify-state
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
@@ -827,6 +830,9 @@ importers:
       '@zag-js/store':
         specifier: workspace:*
         version: link:../../packages/store
+      '@zag-js/stringify-state':
+        specifier: workspace:*
+        version: link:../../packages/utilities/stringify-state
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
@@ -1041,6 +1047,9 @@ importers:
       '@zag-js/progress':
         specifier: workspace:*
         version: link:../../packages/machines/progress
+      '@zag-js/qr-code':
+        specifier: workspace:*
+        version: link:../../packages/machines/qr-code
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../../packages/machines/radio-group
@@ -1071,6 +1080,9 @@ importers:
       '@zag-js/store':
         specifier: workspace:*
         version: link:../../packages/store
+      '@zag-js/stringify-state':
+        specifier: workspace:*
+        version: link:../../packages/utilities/stringify-state
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
@@ -1324,6 +1336,9 @@ importers:
       '@zag-js/store':
         specifier: workspace:*
         version: link:../../packages/store
+      '@zag-js/stringify-state':
+        specifier: workspace:*
+        version: link:../../packages/utilities/stringify-state
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
@@ -1549,6 +1564,9 @@ importers:
       '@zag-js/store':
         specifier: workspace:*
         version: link:../../packages/store
+      '@zag-js/stringify-state':
+        specifier: workspace:*
+        version: link:../../packages/utilities/stringify-state
       '@zag-js/svelte':
         specifier: workspace:*
         version: link:../../packages/frameworks/svelte
@@ -1633,7 +1651,7 @@ importers:
         version: 4.3.2(typescript@5.5.2)(vite@5.3.1(@types/node@20.14.9)(terser@5.28.1))
 
   examples/vanilla-ts:
-    devDependencies:
+    dependencies:
       '@internationalized/date':
         specifier: 3.5.4
         version: 3.5.4
@@ -1787,9 +1805,6 @@ importers:
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
-      '@zag-js/shared':
-        specifier: workspace:*
-        version: link:../../shared
       '@zag-js/signature-pad':
         specifier: workspace:*
         version: link:../../packages/machines/signature-pad
@@ -1802,9 +1817,9 @@ importers:
       '@zag-js/store':
         specifier: workspace:*
         version: link:../../packages/store
-      '@zag-js/svelte':
+      '@zag-js/stringify-state':
         specifier: workspace:*
-        version: link:../../packages/frameworks/svelte
+        version: link:../../packages/utilities/stringify-state
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../../packages/machines/switch
@@ -1817,6 +1832,9 @@ importers:
       '@zag-js/text-selection':
         specifier: workspace:*
         version: link:../../packages/utilities/text-selection
+      '@zag-js/time-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/time-picker
       '@zag-js/timer':
         specifier: workspace:*
         version: link:../../packages/machines/timer
@@ -1850,6 +1868,7 @@ importers:
       nanoid:
         specifier: ^5.0.7
         version: 5.0.7
+    devDependencies:
       typescript:
         specifier: ^5.5.2
         version: 5.5.2
@@ -3375,6 +3394,16 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../dom-query
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/utilities/stringify-state:
+    dependencies:
+      json-format-highlight:
+        specifier: 1.0.4
+        version: 1.0.4
     devDependencies:
       clean-package:
         specifier: 2.2.0
