@@ -363,8 +363,8 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         multiple: (ctx) => !!ctx.multiple,
         hasSelectedItems: (ctx) => !!ctx.hasSelectedItems,
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
-        isFirstItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.first(),
-        isLastItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.last(),
+        isFirstItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.firstValue,
+        isLastItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.lastValue,
         closeOnSelect: (ctx, evt) => {
           if (ctx.multiple) return false
           return !!(evt.closeOnSelect ?? ctx.closeOnSelect)
@@ -418,6 +418,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
         scrollToHighlightedItem(ctx, _evt, { getState }) {
           const exec = (immediate: boolean) => {
+            if (ctx.highlightedValue == null) return
             const state = getState()
 
             // don't scroll into view if we're using the pointer
@@ -465,20 +466,20 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
         highlightPreviousItem(ctx) {
           if (ctx.highlightedValue == null) return
-          const value = ctx.collection.prev(ctx.highlightedValue)
+          const value = ctx.collection.getPreviousValue(ctx.highlightedValue)
           set.highlightedItem(ctx, value)
         },
         highlightNextItem(ctx) {
           if (ctx.highlightedValue == null) return
-          const value = ctx.collection.next(ctx.highlightedValue)
+          const value = ctx.collection.getNextValue(ctx.highlightedValue)
           set.highlightedItem(ctx, value)
         },
         highlightFirstItem(ctx) {
-          const value = ctx.collection.first()
+          const value = ctx.collection.firstValue
           set.highlightedItem(ctx, value)
         },
         highlightLastItem(ctx) {
-          const value = ctx.collection.last()
+          const value = ctx.collection.lastValue
           set.highlightedItem(ctx, value)
         },
         setInitialFocus(ctx) {
@@ -500,11 +501,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           set.selectedItem(ctx, value)
         },
         highlightComputedFirstItem(ctx) {
-          const value = ctx.hasSelectedItems ? ctx.collection.sort(ctx.value)[0] : ctx.collection.first()
+          const value = ctx.hasSelectedItems ? ctx.collection.sort(ctx.value)[0] : ctx.collection.firstValue
           set.highlightedItem(ctx, value)
         },
         highlightComputedLastItem(ctx) {
-          const value = ctx.hasSelectedItems ? ctx.collection.sort(ctx.value)[0] : ctx.collection.last()
+          const value = ctx.hasSelectedItems ? ctx.collection.sort(ctx.value)[0] : ctx.collection.lastValue
           set.highlightedItem(ctx, value)
         },
         highlightFirstSelectedItem(ctx) {
@@ -544,19 +545,19 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           set.selectedItems(ctx, [])
         },
         selectPreviousItem(ctx) {
-          const value = ctx.collection.prev(ctx.value[0])
+          const value = ctx.collection.getPreviousValue(ctx.value[0])
           set.selectedItem(ctx, value)
         },
         selectNextItem(ctx) {
-          const value = ctx.collection.next(ctx.value[0])
+          const value = ctx.collection.getNextValue(ctx.value[0])
           set.selectedItem(ctx, value)
         },
         selectFirstItem(ctx) {
-          const value = ctx.collection.first()
+          const value = ctx.collection.firstValue
           set.selectedItem(ctx, value)
         },
         selectLastItem(ctx) {
-          const value = ctx.collection.last()
+          const value = ctx.collection.lastValue
           set.selectedItem(ctx, value)
         },
         selectMatchingItem(ctx, evt) {
@@ -597,10 +598,10 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           ctx.collection = evt.value
         },
         syncCollection(ctx) {
-          const selectedItems = ctx.collection.items(ctx.value)
-          const valueAsString = ctx.collection.itemsToString(selectedItems)
+          const selectedItems = ctx.collection.findMany(ctx.value)
+          const valueAsString = ctx.collection.stringifyItems(selectedItems)
 
-          ctx.highlightedItem = ctx.collection.item(ctx.highlightedValue)
+          ctx.highlightedItem = ctx.collection.find(ctx.highlightedValue)
           ctx.selectedItems = selectedItems
           ctx.valueAsString = valueAsString
         },
@@ -628,15 +629,16 @@ function dispatchChangeEvent(ctx: MachineContext) {
 const sync = {
   valueChange: (ctx: MachineContext) => {
     const prevSelectedItems = ctx.selectedItems
-    ctx.selectedItems = ctx.value.map((v) => {
-      const foundItem = prevSelectedItems.find((item) => ctx.collection.itemToValue(item) === v)
+    ctx.selectedItems = ctx.value.map((value) => {
+      const foundItem = prevSelectedItems.find((item) => ctx.collection.getItemValue(item) === value)
       if (foundItem) return foundItem
-      return ctx.collection.item(v)
+      return ctx.collection.find(value)
     })
-    ctx.valueAsString = ctx.collection.itemsToString(ctx.selectedItems)
+    ctx.valueAsString = ctx.collection.stringifyItems(ctx.selectedItems)
   },
+
   highlightChange: (ctx: MachineContext) => {
-    ctx.highlightedItem = ctx.collection.item(ctx.highlightedValue)
+    ctx.highlightedItem = ctx.collection.find(ctx.highlightedValue)
   },
 }
 

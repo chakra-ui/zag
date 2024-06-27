@@ -31,8 +31,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
   function getItemState(props: ItemProps): ItemState {
     const { item } = props
-    const disabled = collection.isItemDisabled(item)
-    const value = collection.itemToValue(item)
+    const disabled = collection.getItemDisabled(item)
+    const value = collection.getItemValue(item)!
     return {
       value,
       disabled: Boolean(disabled || disabled),

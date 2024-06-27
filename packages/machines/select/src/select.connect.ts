@@ -37,8 +37,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const ariaActiveDescendant = highlightedValue ? dom.getItemId(state.context, highlightedValue) : undefined
 
   function getItemState(props: ItemProps): ItemState {
-    const _disabled = collection.isItemDisabled(props.item)
-    const value = collection.itemToValue(props.item)
+    const _disabled = collection.getItemDisabled(props.item)
+    const value = collection.getItemValue(props.item)!
     return {
       value,
       disabled: Boolean(disabled || _disabled),
@@ -83,7 +83,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       send({ type: "VALUE.SET", value })
     },
     selectAll() {
-      send({ type: "VALUE.SET", value: collection.values() })
+      send({ type: "VALUE.SET", value: collection.getValues() })
     },
     highlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
