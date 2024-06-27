@@ -1,98 +1,88 @@
-import { test, expect } from "@playwright/test"
-import { testid, a11y } from "./_utils"
+import { test } from "@playwright/test"
+import { AccordionModel } from "./models/accordion.model"
 
-const item = (id: string) => ({
-  trigger: testid(`${id}:trigger`),
-  content: testid(`${id}:content`),
-})
-
-const home = item("home")
-const about = item("about")
-const contact = item("contact")
+let I: AccordionModel
 
 test.describe("accordion", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/accordion")
+    I = new AccordionModel(page)
+    await I.goto()
   })
 
-  test("should have no accessibility violations", async ({ page }) => {
-    await a11y(page)
+  test("should have no accessibility violations", async () => {
+    await I.checkAccessibility()
   })
 
   test.describe("single / keyboard", () => {
-    test("on `ArrowDown`: should move focus to the next trigger", async ({ page }) => {
-      await page.focus(home.trigger)
-      await page.keyboard.press("ArrowDown")
-      await expect(page.locator(about.trigger)).toBeFocused()
+    test("arrow down, focus next trigger", async () => {
+      await I.focusTrigger("home")
+      await I.pressKey("ArrowDown")
+      await I.seeTriggerIsFocused("about")
     })
 
-    test("on `ArrowUp`: should move focus to the previous trigger", async ({ page }) => {
-      await page.focus(home.trigger)
-      await page.keyboard.press("ArrowDown")
-      await page.keyboard.press("ArrowUp")
-      await expect(page.locator(home.trigger)).toBeFocused()
+    test("arrow up, focus pevious trigger", async () => {
+      await I.focusTrigger("home")
+      await I.pressKey("ArrowDown")
+      await I.pressKey("ArrowUp")
+      await I.seeTriggerIsFocused("home")
     })
 
-    test("on `Home`: should move focus to the first trigger", async ({ page }) => {
-      await page.focus(about.trigger)
-      await page.keyboard.press("Home")
-      await expect(page.locator(home.trigger)).toBeFocused()
+    test("home key, focus first trigger", async () => {
+      await I.focusTrigger("about")
+      await I.pressKey("Home")
+      await I.seeTriggerIsFocused("home")
     })
 
-    test("on `End`: should move focus to the last trigger", async ({ page }) => {
-      await page.focus(home.trigger)
-      await page.keyboard.press("End")
-      await expect(page.locator(contact.trigger)).toBeFocused()
+    test("end key, focus last trigger", async () => {
+      await I.focusTrigger("home")
+      await I.pressKey("End")
+      await I.seeTriggerIsFocused("contact")
     })
   })
 
   test.describe("single / pointer", () => {
-    test("should show content", async ({ page }) => {
-      await page.click(home.trigger)
-      await expect(page.locator(home.content)).toBeVisible()
+    test("should show content", async () => {
+      await I.clickTrigger("home")
+      await I.seeContent("home")
     })
 
-    test("then clicking the same trigger again: should not close the content", async ({ page }) => {
-      await page.click(home.trigger)
-      await page.click(home.trigger)
-      await expect(page.locator(home.content)).toBeVisible()
+    test("then clicking the same trigger again: should not close the content", async () => {
+      await I.clickTrigger("home")
+      await I.clickTrigger("home")
+      await I.seeContent("home")
     })
 
-    test("then clicking another trigger: should close the previous content", async ({ page }) => {
-      await page.click(home.trigger)
-      await page.click(about.trigger)
-      await expect(page.locator(about.content)).toBeVisible()
-      await expect(page.locator(home.content)).not.toBeVisible()
+    test("then clicking another trigger: should close the previous content", async () => {
+      await I.clickTrigger("home")
+      await I.clickTrigger("about")
+
+      await I.seeContent("about")
+      await I.dontSeeContent("home")
     })
   })
 
   test.describe("multiple / keyboard", () => {
-    test.beforeEach(async ({ page }) => {
-      await page.check(testid("multiple"))
+    test("[multiple=true] on arrow down, focus next trigger", async () => {
+      await I.controls.bool("multiple")
+
+      await I.focusTrigger("home")
+      await I.pressKey("Enter")
+
+      await I.pressKey("ArrowDown")
+      await I.pressKey("Enter")
+
+      await I.seeContent("about")
+      await I.seeContent("home")
     })
 
-    test("on `ArrowDown`: should move focus to the next trigger", async ({ page }) => {
-      await page.focus(home.trigger)
-      await page.keyboard.press("Enter")
+    test("clicking another trigger, should close the previous content", async () => {
+      await I.controls.bool("multiple")
 
-      await page.keyboard.press("ArrowDown")
-      await page.keyboard.press("Enter")
+      await I.clickTrigger("home")
+      await I.clickTrigger("about")
 
-      await expect(page.locator(about.content)).toBeVisible()
-      await expect(page.locator(home.content)).toBeVisible()
-    })
-  })
-
-  test.describe("multiple / pointer", () => {
-    test.beforeEach(async ({ page }) => {
-      await page.check(testid("multiple"))
-    })
-
-    test("then clicking another trigger: should close the previous content", async ({ page }) => {
-      await page.click(home.trigger)
-      await page.click(about.trigger)
-      await expect(page.locator(about.content)).toBeVisible()
-      await expect(page.locator(home.content)).toBeVisible()
+      await I.seeContent("about")
+      await I.seeContent("home")
     })
   })
 })
