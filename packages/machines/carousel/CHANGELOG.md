@@ -1,5 +1,20 @@
 # @zag-js/carousel
 
+## 0.58.3
+
+### Patch Changes
+
+- [`83fa8f6`](https://github.com/chakra-ui/zag/commit/83fa8f67f5bb3459c04087df7a665186c188c445) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where next and previous buttons don't loop currently
+  when using setting both `slidesPerView` and `loop`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.3
+  - @zag-js/core@0.58.3
+  - @zag-js/types@0.58.3
+  - @zag-js/utils@0.58.3
+  - @zag-js/dom-query@0.58.3
+
 ## 0.58.2
 
 ### Patch Changes
