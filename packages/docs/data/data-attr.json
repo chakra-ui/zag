@@ -317,7 +317,8 @@
     "Content": {
       "data-scope": "combobox",
       "data-part": "content",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-placement": "The placement of the content"
     },
     "ClearTrigger": {
       "data-scope": "combobox",
