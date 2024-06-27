@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { stringifyState } from "@zag-js/shared"
+import { highlightState } from "@zag-js/stringify-state"
 import { isRef } from "vue"
 
 const props = defineProps<{
@@ -16,7 +16,7 @@ const state = isRef(props.state) ? props.state.value : props.state
     <pre>
         <details open>
           <summary> {{props.label || "Visualizer"}} </summary>
-          <div v-html="stringifyState(state, props.omit)"></div>
+          <div v-html="highlightState(state, props.omit)"></div>
         </details>
       </pre>
   </div>
