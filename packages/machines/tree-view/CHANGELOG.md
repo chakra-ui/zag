@@ -1,5 +1,20 @@
 # @zag-js/tree-view
 
+## 0.59.0
+
+### Patch Changes
+
+- [`0188938`](https://github.com/chakra-ui/zag/commit/01889388bae27a432104554dba7ab35c2eef96c7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where inputs could not be used within tree
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.59.0
+  - @zag-js/core@0.59.0
+  - @zag-js/types@0.59.0
+  - @zag-js/utils@0.59.0
+  - @zag-js/dom-event@0.59.0
+  - @zag-js/dom-query@0.59.0
+
 ## 0.58.3
 
 ### Patch Changes

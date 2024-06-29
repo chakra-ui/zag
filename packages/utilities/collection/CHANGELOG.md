@@ -1,5 +1,17 @@
 # @zag-js/collection
 
+## 0.59.0
+
+### Patch Changes
+
+- [#1625](https://github.com/chakra-ui/zag/pull/1625)
+  [`1441d06`](https://github.com/chakra-ui/zag/commit/1441d06c03e0fc3958c8b25821b19db2398549dc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve reliability of select and combobox by redesigning the
+  collection interface
+
+- Updated dependencies []:
+  - @zag-js/utils@0.59.0
+
 ## 0.58.3
 
 ### Patch Changes
