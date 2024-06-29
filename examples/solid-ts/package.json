@@ -68,6 +68,7 @@
     "@zag-js/slider": "workspace:*",
     "@zag-js/solid": "workspace:*",
     "@zag-js/splitter": "workspace:*",
+    "@zag-js/steps": "workspace:*",
     "@zag-js/store": "workspace:*",
     "@zag-js/stringify-state": "workspace:*",
     "@zag-js/switch": "workspace:*",

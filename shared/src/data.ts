@@ -231,4 +231,10 @@ export const tourData = [
   },
 ]
 
+export const stepsData = [
+  { value: "first", title: "First", description: "Contact Info" },
+  { value: "second", title: "Second", description: "Date & Time" },
+  { value: "third", title: "Third", description: "Select Rooms" },
+]
+
 export * as commandData from "./command"

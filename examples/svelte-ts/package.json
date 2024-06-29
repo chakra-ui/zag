@@ -65,6 +65,7 @@
     "@zag-js/signature-pad": "workspace:*",
     "@zag-js/slider": "workspace:*",
     "@zag-js/splitter": "workspace:*",
+    "@zag-js/steps": "workspace:*",
     "@zag-js/store": "workspace:*",
     "@zag-js/stringify-state": "workspace:*",
     "@zag-js/svelte": "workspace:*",
