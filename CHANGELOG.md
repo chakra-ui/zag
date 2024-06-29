@@ -6,6 +6,24 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.59.0](./#0.59.0) - 2024-06-29
+
+### Fixed
+
+- **Select, Combobox**
+
+  - Improve reliability of select and combobox by redesigning the collection interface
+
+- **TreeView**
+
+  - Fix issue where inputs could not be used within tree
+
+### Added
+
+- **ColorPicker, Select, NumberInput**
+
+  - Add support for valueText part for rendering internal state value
+
 ## [0.58.3](./#0.58.3) - 2024-06-27
 
 ### Fixed
