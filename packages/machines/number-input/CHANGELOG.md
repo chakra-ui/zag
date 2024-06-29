@@ -1,5 +1,24 @@
 # @zag-js/number-input
 
+## 0.59.0
+
+### Minor Changes
+
+- [`8fa3e08`](https://github.com/chakra-ui/zag/commit/8fa3e0800721ba5f84ca839386b96c1958158290) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for valueText part for rendering internal state value
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.59.0
+  - @zag-js/core@0.59.0
+  - @zag-js/types@0.59.0
+  - @zag-js/utils@0.59.0
+  - @zag-js/dom-event@0.59.0
+  - @zag-js/dom-query@0.59.0
+  - @zag-js/form-utils@0.59.0
+  - @zag-js/number-utils@0.59.0
+
 ## 0.58.3
 
 ### Patch Changes

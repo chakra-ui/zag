@@ -1,5 +1,7 @@
 # @zag-js/docs
 
+## 0.59.0
+
 ## 0.58.3
 
 ### Patch Changes

@@ -1,5 +1,26 @@
 # @zag-js/combobox
 
+## 0.59.0
+
+### Patch Changes
+
+- [#1625](https://github.com/chakra-ui/zag/pull/1625)
+  [`1441d06`](https://github.com/chakra-ui/zag/commit/1441d06c03e0fc3958c8b25821b19db2398549dc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve reliability of select and combobox by redesigning the
+  collection interface
+
+- Updated dependencies [[`1441d06`](https://github.com/chakra-ui/zag/commit/1441d06c03e0fc3958c8b25821b19db2398549dc)]:
+  - @zag-js/collection@0.59.0
+  - @zag-js/anatomy@0.59.0
+  - @zag-js/core@0.59.0
+  - @zag-js/types@0.59.0
+  - @zag-js/aria-hidden@0.59.0
+  - @zag-js/utils@0.59.0
+  - @zag-js/dismissable@0.59.0
+  - @zag-js/dom-event@0.59.0
+  - @zag-js/dom-query@0.59.0
+  - @zag-js/popper@0.59.0
+
 ## 0.58.3
 
 ### Patch Changes
