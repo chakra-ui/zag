@@ -320,6 +320,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getPositionerProps(): T["element"]
   getContentProps(): T["element"]
   getHiddenInputProps(): T["input"]
+  getValueTextProps(): T["element"]
 
   getAreaProps(props?: AreaProps): T["element"]
   getAreaBackgroundProps(props?: AreaProps): T["element"]

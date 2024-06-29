@@ -316,6 +316,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getRootProps(): T["element"]
   getLabelProps(): T["label"]
   getControlProps(): T["element"]
+  getValueTextProps(): T["element"]
   getInputProps(): T["input"]
   getDecrementTriggerProps(): T["button"]
   getIncrementTriggerProps(): T["button"]

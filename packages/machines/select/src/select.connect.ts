@@ -137,6 +137,16 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
 
+    getValueTextProps() {
+      return normalize.element({
+        ...parts.valueText.attrs,
+        dir: state.context.dir,
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+        "data-focus": dataAttr(focused),
+      })
+    },
+
     getTriggerProps() {
       return normalize.button({
         id: dom.getTriggerId(state.context),

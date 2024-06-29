@@ -348,6 +348,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   getTriggerProps(): T["button"]
   getIndicatorProps(): T["element"]
   getClearTriggerProps(): T["button"]
+  getValueTextProps(): T["element"]
   getPositionerProps(): T["element"]
   getContentProps(): T["element"]
   getListProps(): T["element"]
