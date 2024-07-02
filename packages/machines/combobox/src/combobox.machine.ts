@@ -887,7 +887,7 @@ const sync = {
     const prevSelectedItems = ctx.selectedItems
 
     ctx.selectedItems = ctx.value.map((v) => {
-      const foundItem = prevSelectedItems.find((item) => ctx.collection.hasItem(item))
+      const foundItem = prevSelectedItems.find((item) => ctx.collection.getItemValue(item) === v)
       if (foundItem) return foundItem
       return ctx.collection.find(v)
     })
