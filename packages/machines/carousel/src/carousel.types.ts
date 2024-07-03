@@ -97,7 +97,7 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type Service = Machine<MachineContext, MachineState>
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API
