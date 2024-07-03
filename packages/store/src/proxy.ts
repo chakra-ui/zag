@@ -3,7 +3,7 @@
 import { getUntracked, markToTrack } from "proxy-compare"
 import { makeGlobal } from "./global"
 
-const isDev = process.env.NODE_ENV !== "production"
+const isDev = () => process.env.NODE_ENV !== "production"
 const isObject = (x: unknown): x is object => typeof x === "object" && x !== null
 
 type AsRef = { $$valtioRef: true }
@@ -161,7 +161,7 @@ const buildProxyFunction = (
       }
     const propProxyStates = new Map<string | symbol, readonly [ProxyState, RemoveListener?]>()
     const addPropListener = (prop: string | symbol, propProxyState: ProxyState) => {
-      if (isDev && propProxyStates.has(prop)) {
+      if (isDev() && propProxyStates.has(prop)) {
         throw new Error("prop listener already exists")
       }
       if (listeners.size) {
@@ -182,7 +182,7 @@ const buildProxyFunction = (
       listeners.add(listener)
       if (listeners.size === 1) {
         propProxyStates.forEach(([propProxyState, prevRemove], prop) => {
-          if (isDev && prevRemove) {
+          if (isDev() && prevRemove) {
             throw new Error("remove already exists")
           }
           const remove = propProxyState[3](createPropListener(prop))
@@ -302,7 +302,7 @@ export function subscribe<T extends object>(
   notifyInSync?: boolean,
 ): () => void {
   const proxyState = proxyStateMap.get(proxyObject as object)
-  if (isDev && !proxyState) {
+  if (isDev() && !proxyState) {
     console.warn("Please use proxy object")
   }
   let promise: Promise<void> | undefined
@@ -334,7 +334,7 @@ export function subscribe<T extends object>(
 
 export function snapshot<T extends object>(proxyObject: T, handlePromise?: HandlePromise): Snapshot<T> {
   const proxyState = proxyStateMap.get(proxyObject as object)
-  if (isDev && !proxyState) {
+  if (isDev() && !proxyState) {
     console.warn("Please use proxy object")
   }
   const [target, ensureVersion, createSnapshot] = proxyState as ProxyState
