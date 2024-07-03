@@ -20,8 +20,8 @@ export interface FocusChangeDetails {
 export type ElementIds = Partial<{
   root: string
   item(value: string): string
-  content(value: string): string
-  trigger(value: string): string
+  itemContent(value: string): string
+  itemTrigger(value: string): string
 }>
 
 interface PublicContext extends DirectionProperty, CommonProperties {

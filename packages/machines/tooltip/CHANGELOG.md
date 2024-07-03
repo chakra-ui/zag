@@ -1,5 +1,81 @@
 # @zag-js/tooltip
 
+## 0.59.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.59.0
+  - @zag-js/core@0.59.0
+  - @zag-js/types@0.59.0
+  - @zag-js/utils@0.59.0
+  - @zag-js/dom-event@0.59.0
+  - @zag-js/dom-query@0.59.0
+  - @zag-js/popper@0.59.0
+
+## 0.58.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.3
+  - @zag-js/core@0.58.3
+  - @zag-js/types@0.58.3
+  - @zag-js/utils@0.58.3
+  - @zag-js/dom-event@0.58.3
+  - @zag-js/dom-query@0.58.3
+  - @zag-js/popper@0.58.3
+
+## 0.58.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.2
+  - @zag-js/core@0.58.2
+  - @zag-js/types@0.58.2
+  - @zag-js/utils@0.58.2
+  - @zag-js/dom-event@0.58.2
+  - @zag-js/dom-query@0.58.2
+  - @zag-js/popper@0.58.2
+
+## 0.58.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.1
+  - @zag-js/core@0.58.1
+  - @zag-js/types@0.58.1
+  - @zag-js/utils@0.58.1
+  - @zag-js/dom-event@0.58.1
+  - @zag-js/dom-query@0.58.1
+  - @zag-js/popper@0.58.1
+
+## 0.58.0
+
+### Minor Changes
+
+- [`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Ensure consistent application of form related properties like
+  `invalid`, `required`, and `readOnly`
+  - Export `Service` from all machines for use in Lit based components.
+
+### Patch Changes
+
+- [`7a1e490`](https://github.com/chakra-ui/zag/commit/7a1e490a84a020a05f37ebff63c7b3fe9c3aed58) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `closeOnScroll=false` doesn't work consistently in
+  Safari
+
+- Updated dependencies [[`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93)]:
+  - @zag-js/dom-query@0.58.0
+  - @zag-js/dom-event@0.58.0
+  - @zag-js/popper@0.58.0
+  - @zag-js/anatomy@0.58.0
+  - @zag-js/core@0.58.0
+  - @zag-js/types@0.58.0
+  - @zag-js/utils@0.58.0
+
 ## 0.57.0
 
 ### Minor Changes

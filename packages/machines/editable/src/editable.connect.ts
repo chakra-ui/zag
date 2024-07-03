@@ -95,6 +95,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: autoResize ? undefined : !editing,
         placeholder: placeholder?.edit,
         maxLength: state.context.maxLength,
+        required: state.context.required,
         disabled: disabled,
         "data-disabled": dataAttr(disabled),
         readOnly: readOnly,

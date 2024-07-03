@@ -83,6 +83,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
+    getValueTextProps() {
+      return normalize.element({
+        ...parts.valueText.attrs,
+        dir: state.context.dir,
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+        "data-focus": dataAttr(focused),
+      })
+    },
+
     getInputProps() {
       return normalize.input({
         ...parts.input.attrs,
@@ -96,9 +106,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         inputMode: state.context.inputMode,
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
-        disabled: disabled,
+        disabled,
         "data-disabled": dataAttr(disabled),
-        readOnly: !!state.context.readOnly,
+        readOnly: state.context.readOnly,
+        required: state.context.required,
         autoComplete: "off",
         autoCorrect: "off",
         spellCheck: "false",

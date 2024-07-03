@@ -9,6 +9,7 @@ export type {
   ElementIds,
   FocusChangeDetails,
   IntlTranslations,
+  Service,
   TriggerProps,
   ValueChangeDetails,
 } from "./tabs.types"

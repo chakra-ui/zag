@@ -15,5 +15,6 @@ export const anatomy = createAnatomy("select").parts(
   "content",
   "root",
   "control",
+  "valueText",
 )
 export const parts = anatomy.build()

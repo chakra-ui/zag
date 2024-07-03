@@ -38,6 +38,7 @@ export const props = createProps<UserDefinedContext>()([
   "placeholder",
   "positioning",
   "readOnly",
+  "required",
   "scrollToIndexFn",
   "selectionBehavior",
   "translations",

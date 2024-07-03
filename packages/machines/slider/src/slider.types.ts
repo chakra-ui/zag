@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -26,6 +26,7 @@ export interface ValueTextDetails {
 export type ElementIds = Partial<{
   root: string
   thumb(index: number): string
+  hiddenInput(index: number): string
   control: string
   track: string
   range: string
@@ -197,6 +198,8 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API

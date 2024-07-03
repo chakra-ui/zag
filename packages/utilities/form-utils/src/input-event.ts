@@ -58,7 +58,4 @@ export function dispatchInputCheckedEvent(el: HTMLElement | null, options: Check
 
   setElementChecked(el, checked)
   el.dispatchEvent(new win.Event("click", { bubbles }))
-
-  // TODO: Do we really need this extra event?
-  el.dispatchEvent(new win.Event("change", { bubbles }))
 }

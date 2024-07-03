@@ -148,7 +148,6 @@ function getCircleProps(ctx: MachineContext) {
   }
   return {
     root: {
-      viewBox: "0 0 var(--size) var(--size)",
       style: {
         width: "var(--size)",
         height: "var(--size)",
@@ -161,7 +160,7 @@ function getCircleProps(ctx: MachineContext) {
         ...circleProps.style,
         "--percent": ctx.percent,
         "--circumference": `calc(2 * 3.14159 * var(--radius))`,
-        "--offset": `calc(var(--circumference) * (100 - var(--percent)) / 100}))`,
+        "--offset": `calc(var(--circumference) * (100 - var(--percent)) / 100)`,
         strokeDashoffset: `calc(var(--circumference) * ((100 - var(--percent)) / 100))`,
         strokeDasharray: ctx.isIndeterminate ? undefined : `var(--circumference)`,
         transformOrigin: "center",

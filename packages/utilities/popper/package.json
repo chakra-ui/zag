@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/popper",
-  "version": "0.57.0",
+  "version": "0.59.0",
   "description": "Dynamic positioning logic for ui machines",
   "keywords": [
     "js",
@@ -25,7 +25,7 @@
   "dependencies": {
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "@floating-ui/dom": "1.6.5"
+    "@floating-ui/dom": "1.6.7"
   },
   "devDependencies": {
     "clean-package": "2.2.0"

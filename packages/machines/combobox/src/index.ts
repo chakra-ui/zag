@@ -21,6 +21,7 @@ export type {
   PositioningOptions,
   ScrollToIndexDetails,
   SelectionValueDetails,
+  Service,
   TriggerProps,
   ValueChangeDetails,
 } from "./combobox.types"

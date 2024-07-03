@@ -1,7 +1,7 @@
 export { Collection } from "./collection"
 export type {
   CollectionItem,
-  CollectionNode,
+  CollectionMethods,
   CollectionOptions,
   CollectionSearchOptions,
   CollectionSearchState,

@@ -11,6 +11,7 @@ export type {
   FocusChangeDetails,
   OpenChangeDetails,
   PeriodCellProps,
+  Service,
   TimePeriod,
   TimeUnit,
   ValueChangeDetails,

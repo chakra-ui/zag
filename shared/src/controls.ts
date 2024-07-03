@@ -276,3 +276,8 @@ export const qrCodeControls = defineControls({
   "encoding.ecc": { type: "select", options: ["L", "M", "Q", "H"] as const, defaultValue: "H" },
   "encoding.boostEcc": { type: "boolean", defaultValue: false },
 })
+
+export const stepsControls = defineControls({
+  skippable: { type: "boolean", defaultValue: false },
+  orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
+})

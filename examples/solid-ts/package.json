@@ -9,12 +9,10 @@
     "version": "vinxi version"
   },
   "dependencies": {
-    "@solidjs/meta": "0.29.4",
-    "@solidjs/router": "0.13.5",
-    "@solidjs/start": "1.0.1",
-    "solid-js": "1.8.17",
-    "vinxi": "0.3.11",
     "@internationalized/date": "3.5.4",
+    "@solidjs/meta": "0.29.4",
+    "@solidjs/router": "0.13.6",
+    "@solidjs/start": "1.0.2",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -70,13 +68,15 @@
     "@zag-js/slider": "workspace:*",
     "@zag-js/solid": "workspace:*",
     "@zag-js/splitter": "workspace:*",
+    "@zag-js/steps": "workspace:*",
     "@zag-js/store": "workspace:*",
+    "@zag-js/stringify-state": "workspace:*",
     "@zag-js/switch": "workspace:*",
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
     "@zag-js/text-selection": "workspace:*",
-    "@zag-js/timer": "workspace:*",
     "@zag-js/time-picker": "workspace:*",
+    "@zag-js/timer": "workspace:*",
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
@@ -85,8 +85,10 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
+    "lucide-solid": "0.397.0",
     "match-sorter": "6.3.4",
-    "lucide-solid": "0.395.0"
+    "solid-js": "1.8.17",
+    "vinxi": "0.3.12"
   },
   "engines": {
     "node": ">=18"

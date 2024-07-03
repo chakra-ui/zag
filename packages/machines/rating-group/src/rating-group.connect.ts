@@ -41,8 +41,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getRootProps() {
       return normalize.element({
-        dir: state.context.dir,
         ...parts.root.attrs,
+        dir: state.context.dir,
         id: dom.getRootId(state.context),
       })
     },
@@ -53,17 +53,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         form: state.context.form,
         type: "text",
         hidden: true,
+        disabled,
+        readOnly: state.context.readOnly,
+        required: state.context.required,
         id: dom.getHiddenInputId(state.context),
         defaultValue: state.context.value,
       })
     },
 
     getLabelProps() {
-      return normalize.element({
+      return normalize.label({
         ...parts.label.attrs,
         dir: state.context.dir,
         id: dom.getLabelId(state.context),
         "data-disabled": dataAttr(disabled),
+        htmlFor: dom.getHiddenInputId(state.context),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!interactive) return
+          event.preventDefault()
+          const radioEl = dom.getRadioEl(state.context, 1)
+          radioEl?.focus({ preventScroll: true })
+        },
       })
     },
 
@@ -80,11 +91,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: state.context.readOnly ? 0 : -1,
         "data-disabled": dataAttr(disabled),
         onPointerMove(event) {
-          if (!interactive || event.pointerType === "touch") return
+          if (!interactive) return
+          if (event.pointerType === "touch") return
           send("GROUP_POINTER_OVER")
         },
         onPointerLeave(event) {
-          if (!interactive || event.pointerType === "touch") return
+          if (!interactive) return
+          if (event.pointerType === "touch") return
           send("GROUP_POINTER_LEAVE")
         },
       })
@@ -116,9 +129,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-half": dataAttr(itemState.half),
         onPointerDown(event) {
           if (!interactive) return
-          if (isLeftClick(event)) {
-            event.preventDefault()
-          }
+          if (!isLeftClick(event)) return
+          event.preventDefault()
         },
         onPointerMove(event) {
           if (!interactive) return

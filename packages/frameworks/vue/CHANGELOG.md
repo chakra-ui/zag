@@ -1,5 +1,50 @@
 # @zag-js/vue
 
+## 0.59.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.59.0
+  - @zag-js/store@0.59.0
+  - @zag-js/types@0.59.0
+
+## 0.58.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.58.3
+  - @zag-js/store@0.58.3
+  - @zag-js/types@0.58.3
+
+## 0.58.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.58.2
+  - @zag-js/store@0.58.2
+  - @zag-js/types@0.58.2
+
+## 0.58.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.58.1
+  - @zag-js/store@0.58.1
+  - @zag-js/types@0.58.1
+
+## 0.58.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.58.0
+  - @zag-js/store@0.58.0
+  - @zag-js/types@0.58.0
+
 ## 0.57.0
 
 ### Patch Changes

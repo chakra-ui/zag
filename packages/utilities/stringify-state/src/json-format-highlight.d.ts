@@ -1,5 +1,5 @@
 declare module "json-format-highlight" {
-  export type FormatOptions = {
+  export interface FormatOptions {
     keyColor?: string
     numberColor?: string
     stringColor?: string
@@ -7,5 +7,6 @@ declare module "json-format-highlight" {
     falseColor?: string
     nullColor?: string
   }
+
   export default function formatHighlight(code: string, options?: Options): string
 }

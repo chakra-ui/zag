@@ -28,6 +28,7 @@ export type {
   PresetTriggerProps,
   SelectionMode,
   Send,
+  Service,
   State,
   TableCellProps,
   TableCellState,

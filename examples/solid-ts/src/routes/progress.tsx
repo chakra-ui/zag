@@ -20,6 +20,12 @@ export default function Page() {
       <main class="progress">
         <div {...api().getRootProps()}>
           <div {...api().getLabelProps()}>Upload progress</div>
+
+          <svg {...api().getCircleProps()}>
+            <circle {...api().getCircleTrackProps()} />
+            <circle {...api().getCircleRangeProps()} />
+          </svg>
+
           <div {...api().getTrackProps()}>
             <div {...api().getRangeProps()} />
           </div>

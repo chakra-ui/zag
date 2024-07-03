@@ -24,4 +24,5 @@ export type {
   SwatchTriggerState,
   TransparencyGridProps,
   ValueChangeDetails,
+  Service,
 } from "./color-picker.types"

@@ -9,5 +9,6 @@ export type {
   ItemProps,
   ItemState,
   Orientation,
+  Service,
   ValueChangeDetails,
 } from "./toggle-group.types"

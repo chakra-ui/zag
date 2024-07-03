@@ -9,4 +9,5 @@ export type {
   OpenChangeDetails,
   Placement,
   PositioningOptions,
+  Service,
 } from "./tooltip.types"

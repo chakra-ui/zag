@@ -20,6 +20,7 @@ export const props = createProps<UserDefinedContext>()([
   "onFileAccept",
   "onFileReject",
   "onFileChange",
+  "required",
   "translations",
   "validate",
 ])

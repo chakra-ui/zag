@@ -1,5 +1,5 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { stringifyState } from "@zag-js/shared"
+import { highlightState } from "@zag-js/stringify-state"
 import { connect, machine } from "@zag-js/tooltip"
 import { useId } from "react"
 
@@ -14,7 +14,7 @@ const Button = ({ tooltip, children }) => {
   const api = connect(state, send, normalizeProps)
   return (
     <>
-      <pre dangerouslySetInnerHTML={{ __html: stringifyState(state.event) }} />
+      <pre dangerouslySetInnerHTML={{ __html: highlightState(state.event) }} />
       <button {...api.getTriggerProps()}>{children}</button>
       <div {...api.getPositionerProps()}>
         <div {...api.getContentProps()}>{tooltip}</div>

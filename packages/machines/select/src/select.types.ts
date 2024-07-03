@@ -1,5 +1,5 @@
 import type { Collection, CollectionItem, CollectionOptions } from "@zag-js/collection"
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
@@ -79,6 +79,10 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether the select is read-only
    */
   readOnly?: boolean
+  /**
+   * Whether the select is required
+   */
+  required?: boolean
   /**
    * Whether the select should close after an item is selected
    * @default true
@@ -211,6 +215,8 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
@@ -342,6 +348,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   getTriggerProps(): T["button"]
   getIndicatorProps(): T["element"]
   getClearTriggerProps(): T["button"]
+  getValueTextProps(): T["element"]
   getPositionerProps(): T["element"]
   getContentProps(): T["element"]
   getListProps(): T["element"]

@@ -26,7 +26,11 @@ export function getRoleDescription(view: DateView) {
   })
 }
 
-const PLACEHOLDERS = { day: "dd", month: "mm", year: "yyyy" }
+const PLACEHOLDERS: Record<string, string> = {
+  day: "dd",
+  month: "mm",
+  year: "yyyy",
+}
 
 export function getInputPlaceholder(locale: string) {
   return new DateFormatter(locale)

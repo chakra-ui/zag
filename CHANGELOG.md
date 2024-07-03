@@ -6,6 +6,86 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.59.0](./#0.59.0) - 2024-06-29
+
+### Fixed
+
+- **Select, Combobox**
+
+  - Improve reliability of select and combobox by redesigning the collection interface
+
+- **TreeView**
+
+  - Fix issue where inputs could not be used within tree
+
+### Added
+
+- **ColorPicker, Select, NumberInput**
+
+  - Add support for valueText part for rendering internal state value
+
+## [0.58.3](./#0.58.3) - 2024-06-27
+
+### Fixed
+
+- **Combobox**
+
+  - Fix issue where input shows values when `multiple` is set to `true`. The design intent is that when combobox is set
+    to `multiple`, values should be rendered outside the
+  - Expose `data-placement` on Content
+
+- **Progress**
+
+  - Fix issue where progress circle throws warning due to incorrect `viewBox` attribute on `<svg>`
+
+- **Carousel**
+
+  - Fix issue where next and previous buttons don't loop currently when using setting both `slidesPerView` and `loop`
+
+- **Presence**
+
+  - Fix issue where presence doesn't close if close animation has duration of `0s`
+
+- **Select, Combobox**
+
+  - Expose `data-invalid` on Combobox and Select triggers
+
+- **Menu**
+
+  - Fix context menu losing position data on close
+  - Fix issue where context menu doesn
+
+## [0.58.0](./#0.58.0) - 2024-06-21
+
+### Fixed
+
+- **All Machines**
+
+  - Ensure consistent application of form related properties like `invalid`, `required`, and `readOnly`.
+
+  - Export `Service` from all machines for use in Lit based components.
+
+- **Tooltip**
+
+  - Fix issue where `closeOnScroll=false` doesn't work consistently in Safari
+
+### Added
+
+- **Alert**
+
+  - Expose more functions to programmatically change the page like `api.goToNextPage()`, `api.goToPrevPage()`,
+    `api.goToFirstPage()`, `api.goToLastPage()`
+
+- **DatePicker**
+
+  - Add support for customizing date picker accessibility labels
+
+- **FileUpload**
+
+  - Add support for `api.clearRejectedFiles` to allow clearing the rejected files programmatically.
+
+  - Improve DX of the `accept` context property by providing autocompletions for common file type
+
 ## [0.57.0](./#0.57.0) - 2024-06-14
 
 ### Fixed
