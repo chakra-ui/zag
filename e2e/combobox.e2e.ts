@@ -47,6 +47,18 @@ test.describe("combobox", () => {
     await I.dontSeeDropdown()
   })
 
+  test("[pointer] select and select again", async () => {
+    await I.clickTrigger()
+
+    await I.clickItem("Zambia")
+    await I.seeInputHasValue("Zambia")
+
+    await I.clickTrigger()
+    await I.clickItem("Canada")
+
+    await I.seeInputHasValue("Canada")
+  })
+
   test("[keyboard / loop] on arrow down, open and highlight first enabled option", async () => {
     await I.focusInput()
     await I.pressKey("ArrowDown")
