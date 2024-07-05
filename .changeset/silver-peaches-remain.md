@@ -2,4 +2,4 @@
 "@zag-js/steps": minor
 ---
 
-Initial release
+Initial release for steps machine
