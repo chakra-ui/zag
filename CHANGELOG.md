@@ -6,6 +6,24 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.60.0](./#0.60.0) - 2024-07-05
+
+### Fixed
+
+- **All Machines**
+
+  - Improve reliability in web runtime by wrapping the `process.env` check in a function
+
+- **Combobox**
+
+  - Fix issue where Combobox doesn't update the input on selection with pointer
+
+### Added
+
+- **[NEW] Steps**
+
+  - Add new steps machine to create a step-by-step wizard or onboarding experience
+
 ## [0.59.0](./#0.59.0) - 2024-06-29
 
 ### Fixed
