@@ -1,5 +1,25 @@
 # @zag-js/combobox
 
+## 0.60.0
+
+### Patch Changes
+
+- [#1643](https://github.com/chakra-ui/zag/pull/1643)
+  [`fe5869c`](https://github.com/chakra-ui/zag/commit/fe5869c19988c3ec95db4843f68cf1d7d0cc29d3) Thanks
+  [@m-shaka](https://github.com/m-shaka)! - Fix issue where Combobox doesn't update the input on selection with pointer
+
+- Updated dependencies []:
+  - @zag-js/core@0.60.0
+  - @zag-js/anatomy@0.60.0
+  - @zag-js/types@0.60.0
+  - @zag-js/aria-hidden@0.60.0
+  - @zag-js/collection@0.60.0
+  - @zag-js/utils@0.60.0
+  - @zag-js/dismissable@0.60.0
+  - @zag-js/dom-event@0.60.0
+  - @zag-js/dom-query@0.60.0
+  - @zag-js/popper@0.60.0
+
 ## 0.59.0
 
 ### Patch Changes
