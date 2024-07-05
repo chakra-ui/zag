@@ -1,5 +1,23 @@
 # @zag-js/date-picker
 
+## 0.60.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.60.0
+  - @zag-js/anatomy@0.60.0
+  - @zag-js/types@0.60.0
+  - @zag-js/utils@0.60.0
+  - @zag-js/date-utils@0.60.0
+  - @zag-js/dismissable@0.60.0
+  - @zag-js/dom-event@0.60.0
+  - @zag-js/dom-query@0.60.0
+  - @zag-js/form-utils@0.60.0
+  - @zag-js/live-region@0.60.0
+  - @zag-js/popper@0.60.0
+  - @zag-js/text-selection@0.60.0
+
 ## 0.59.0
 
 ### Patch Changes
