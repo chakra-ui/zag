@@ -5,6 +5,8 @@ import type { MachineApi, MachineContext, ProgressState, Send, State } from "./p
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const percent = state.context.percent
+  const percentAsString = state.context.isIndeterminate ? "" : `${percent}%`
+
   const max = state.context.max
   const min = state.context.min
 
@@ -32,11 +34,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   return {
     value,
     valueAsString,
+    min,
+    max,
+    percent,
+    percentAsString,
+    indeterminate,
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
     setToMax() {
       send({ type: "VALUE.SET", value: max })
+    },
+    setToMin() {
+      send({ type: "VALUE.SET", value: min })
     },
 
     getRootProps() {

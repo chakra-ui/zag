@@ -131,6 +131,31 @@ export interface MachineApi<T extends PropTypes> {
    * Sets the current value of the progress bar to the max value.
    */
   setToMax(): void
+  /**
+   * Sets the current value of the progress bar to the min value.
+   */
+  setToMin(): void
+  /**
+   * The percentage of the progress bar's value.
+   */
+  percent: number
+  /**
+   * The percentage of the progress bar's value as a string.
+   */
+  percentAsString: string
+  /**
+   * The minimum allowed value of the progress bar.
+   */
+  min: number
+  /**
+   * The maximum allowed value of the progress bar.
+   */
+  max: number
+  /**
+   * Whether the progress bar is indeterminate.
+   */
+  indeterminate: boolean
+
   getRootProps(): T["element"]
   getLabelProps(): T["element"]
   getTrackProps(): T["element"]
