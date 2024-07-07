@@ -1,4 +1,5 @@
 import type { MachineSrc, StateMachine as S } from "@zag-js/core"
+import { useRef } from "react"
 import { useConstant } from "./use-constant"
 import { useSafeLayoutEffect } from "./use-layout-effect"
 
@@ -16,9 +17,13 @@ export function useService<
     return instance
   })
 
+  const snapshotRef = useRef<S.StateInit<TContext, TState>>()
+
   useSafeLayoutEffect(() => {
-    service.start(hydratedState)
+    const stateInit = hydratedState ?? snapshotRef.current
+    service.start(stateInit)
     return () => {
+      snapshotRef.current = service.getHydrationState()
       service.stop()
     }
   }, [])
