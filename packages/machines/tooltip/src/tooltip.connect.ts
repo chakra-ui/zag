@@ -40,28 +40,37 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-expanded": dataAttr(open),
         "data-state": open ? "open" : "closed",
         "aria-describedby": open ? contentId : undefined,
-        onClick() {
+        onClick(event) {
+          if (event.defaultPrevented) return
           if (disabled) return
-          send("CLOSE")
+          if (!state.context.closeOnClick) return
+          send({ type: "CLOSE", src: "trigger.click" })
         },
-        onFocus() {
-          if (disabled || state.event.type === "POINTER_DOWN") return
-          send("OPEN")
+        onFocus(event) {
+          if (event.defaultPrevented) return
+          if (disabled) return
+          if (state.event.src === "trigger.pointerdown") return
+          send({ type: "OPEN", src: "trigger.focus" })
         },
-        onBlur() {
+        onBlur(event) {
+          if (event.defaultPrevented) return
           if (disabled) return
           if (id === store.id) {
-            send("CLOSE")
+            send({ type: "CLOSE", src: "trigger.blur" })
           }
         },
-        onPointerDown() {
-          if (disabled || !state.context.closeOnPointerDown) return
+        onPointerDown(event) {
+          if (event.defaultPrevented) return
+          if (disabled) return
+          if (!state.context.closeOnPointerDown) return
           if (id === store.id) {
-            send("CLOSE")
+            send({ type: "CLOSE", src: "trigger.pointerdown" })
           }
         },
         onPointerMove(event) {
-          if (disabled || event.pointerType === "touch") return
+          if (event.defaultPrevented) return
+          if (disabled) return
+          if (event.pointerType === "touch") return
           send("POINTER_MOVE")
         },
         onPointerLeave() {

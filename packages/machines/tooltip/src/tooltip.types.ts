@@ -56,6 +56,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   closeOnScroll?: boolean
   /**
+   * Whether the tooltip should close on click
+   * @default true
+   */
+  closeOnClick?: boolean
+  /**
    * Whether the tooltip's content is interactive.
    * In this mode, the tooltip will remain open when user hovers over the content.
    * @see https://www.w3.org/TR/WCAG21/#content-on-hover-or-focus

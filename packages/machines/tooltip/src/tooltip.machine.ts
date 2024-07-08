@@ -23,6 +23,7 @@ export function machine(userContext: UserDefinedContext) {
         closeOnEscape: true,
         interactive: false,
         closeOnScroll: true,
+        closeOnClick: true,
         ...ctx,
         currentPlacement: undefined,
         hasPointerMoveOpened: false,

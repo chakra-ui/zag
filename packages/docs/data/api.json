@@ -4114,6 +4114,11 @@
         "description": "Whether the tooltip should close on scroll",
         "defaultValue": "true"
       },
+      "closeOnClick": {
+        "type": "boolean",
+        "description": "Whether the tooltip should close on click",
+        "defaultValue": "true"
+      },
       "interactive": {
         "type": "boolean",
         "description": "Whether the tooltip's content is interactive.\nIn this mode, the tooltip will remain open when user hovers over the content.",

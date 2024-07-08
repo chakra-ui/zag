@@ -353,7 +353,7 @@ export declare namespace StateMachine {
   export interface State<
     TContext extends Dict,
     TState extends StateSchema = StateSchema,
-    TEvent extends EventObject = EventObject,
+    TEvent extends EventObject = AnyEventObject,
   > {
     value: TState["value"] | null
     previousValue: TState["value"] | null
