@@ -367,8 +367,8 @@ importers:
         specifier: ^3.1.4
         version: 3.1.4
       lucide-react:
-        specifier: 0.397.0
-        version: 0.397.0(react@18.3.1)
+        specifier: 0.403.0
+        version: 0.403.0(react@18.3.1)
       match-sorter:
         specifier: 6.3.4
         version: 6.3.4
@@ -608,8 +608,8 @@ importers:
         specifier: 0.7.2
         version: 0.7.2
       lucide-react:
-        specifier: 0.397.0
-        version: 0.397.0(react@18.3.1)
+        specifier: 0.403.0
+        version: 0.403.0(react@18.3.1)
       match-sorter:
         specifier: 6.3.4
         version: 6.3.4
@@ -891,8 +891,8 @@ importers:
         specifier: 0.7.2
         version: 0.7.2
       lucide-vue-next:
-        specifier: 0.397.0
-        version: 0.397.0(vue@3.4.30(typescript@5.5.3))
+        specifier: 0.403.0
+        version: 0.403.0(vue@3.4.30(typescript@5.5.3))
       match-sorter:
         specifier: 6.3.4
         version: 6.3.4
@@ -1135,8 +1135,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/utilities/core
       lucide-preact:
-        specifier: 0.397.0
-        version: 0.397.0(preact@10.22.0)
+        specifier: 0.403.0
+        version: 0.403.0(preact@10.22.0)
       match-sorter:
         specifier: 6.3.4
         version: 6.3.4
@@ -1397,8 +1397,8 @@ importers:
         specifier: 0.7.2
         version: 0.7.2
       lucide-solid:
-        specifier: 0.397.0
-        version: 0.397.0(solid-js@1.8.17)
+        specifier: 0.403.0
+        version: 0.403.0(solid-js@1.8.17)
       match-sorter:
         specifier: 6.3.4
         version: 6.3.4
@@ -1631,8 +1631,8 @@ importers:
         specifier: 0.7.2
         version: 0.7.2
       lucide-svelte:
-        specifier: 0.397.0
-        version: 0.397.0(svelte@5.0.0-next.153)
+        specifier: 0.399.0
+        version: 0.399.0(svelte@5.0.0-next.153)
       match-sorter:
         specifier: 6.3.4
         version: 6.3.4
@@ -3668,8 +3668,8 @@ importers:
         specifier: 0.7.2
         version: 0.7.2
       lucide-react:
-        specifier: 0.400.0
-        version: 0.400.0(react@18.3.1)
+        specifier: 0.403.0
+        version: 0.403.0(react@18.3.1)
       match-sorter:
         specifier: 6.3.4
         version: 6.3.4
@@ -9290,33 +9290,28 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
-  lucide-preact@0.397.0:
-    resolution: {integrity: sha512-BBttKr5AmWbh0OuVdxMWclzOoMH8vSNsz6gomh38NrhhZABsmv+3CEW7nm5kQyl1vdWzZYD+AnhnsTqJkpC7+A==}
+  lucide-preact@0.403.0:
+    resolution: {integrity: sha512-f/rNVv7txPt91pKcgXsL2KcGztwtwkIomI+XQSB2h5tFmpMZZZfxuaasQzJk0drc0NZtR5vBpyBz2Oodwg5T7Q==}
     peerDependencies:
       preact: ^10.5.13
 
-  lucide-react@0.397.0:
-    resolution: {integrity: sha512-rUcbRY5jFP/4za/OJvaRUUmdPsPb940Tw9zE1ehrRZmr9JnkDcW8OV3POR3XfEAAMDkssiTc5IWBFv8Y//pkDQ==}
+  lucide-react@0.403.0:
+    resolution: {integrity: sha512-ldD3NT444k4Mi+n+43xC8XaHr88MNdhOIApIE15r7O+PcVYEBXNOOFo904cBC6Hsja+zHc1lqw0mqUgBECeisw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  lucide-react@0.400.0:
-    resolution: {integrity: sha512-rpp7pFHh3Xd93KHixNgB0SqThMHpYNzsGUu69UaQbSZ75Q/J3m5t6EhKyMT3m4w2WOxmJ2mY0tD3vebnXqQryQ==}
-    peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
-  lucide-solid@0.397.0:
-    resolution: {integrity: sha512-viG6znYWUw4QywJHOSCMsUwb2SmUbXIFG6YIJfSsQOON6Qh3HcDrw0IdbcarO1GjTD/pLVT94GEbPgpc3hv13A==}
+  lucide-solid@0.403.0:
+    resolution: {integrity: sha512-eoQ7cLWkCvZF2u12Bb1BOeHZTGkOBHIM0KpWfPvPGZplhmG1EtGG1K/w2NxO3OqdsqmSdjcL5GTp3OUOqAvVOA==}
     peerDependencies:
       solid-js: ^1.4.7
 
-  lucide-svelte@0.397.0:
-    resolution: {integrity: sha512-nudZ8081toOBntBOcafJzO+12Jl55jUkM3ypq/LFEG62NbwmNM7TyXIT5J3OoIYfj4iVCK32tp83e4KQcAd46g==}
+  lucide-svelte@0.399.0:
+    resolution: {integrity: sha512-NQ8AxNMKbIJsx7HV//gnAsIY1wJfb3rbXSK2S/ZDjIldvAEdzGngpUT8T8Q8zHYUuii0bavAmVARN8giR4vvpA==}
     peerDependencies:
       svelte: ^3 || ^4 || ^5.0.0-next.42
 
-  lucide-vue-next@0.397.0:
-    resolution: {integrity: sha512-EyyAyOow+/tWDQiNmUmCoO4ehpZBbYvCUyGnxCBTEatsNrfU2QiWYHdvz6CNQdxmfTvRCDKzlrPexdyvQupfZQ==}
+  lucide-vue-next@0.403.0:
+    resolution: {integrity: sha512-jmCABan/1sRnNEivFSyy+O47M5MSu7s2KSMsxxw9XlCtIyPiTNRAjj9gu7imUWTeNxkJ1LOKj+/xqjCkEMEL4g==}
     peerDependencies:
       vue: '>=3.0.1'
 
@@ -19048,27 +19043,23 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  lucide-preact@0.397.0(preact@10.22.0):
+  lucide-preact@0.403.0(preact@10.22.0):
     dependencies:
       preact: 10.22.0
 
-  lucide-react@0.397.0(react@18.3.1):
+  lucide-react@0.403.0(react@18.3.1):
     dependencies:
       react: 18.3.1
 
-  lucide-react@0.400.0(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-
-  lucide-solid@0.397.0(solid-js@1.8.17):
+  lucide-solid@0.403.0(solid-js@1.8.17):
     dependencies:
       solid-js: 1.8.17
 
-  lucide-svelte@0.397.0(svelte@5.0.0-next.153):
+  lucide-svelte@0.399.0(svelte@5.0.0-next.153):
     dependencies:
       svelte: 5.0.0-next.153
 
-  lucide-vue-next@0.397.0(vue@3.4.30(typescript@5.5.3)):
+  lucide-vue-next@0.403.0(vue@3.4.30(typescript@5.5.3)):
     dependencies:
       vue: 3.4.30(typescript@5.5.3)
 

@@ -83,7 +83,7 @@
     "@zag-js/vue": "workspace:*",
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
-    "lucide-vue-next": "0.397.0",
+    "lucide-vue-next": "0.403.0",
     "match-sorter": "6.3.4",
     "vue": "3.4.30",
     "vue-router": "4.4.0"

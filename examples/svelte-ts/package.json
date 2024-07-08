@@ -83,7 +83,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-svelte": "0.397.0",
+    "lucide-svelte": "0.399.0",
     "match-sorter": "6.3.4",
     "svelte-routing": "2.13.0"
   },
