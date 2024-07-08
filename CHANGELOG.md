@@ -6,6 +6,21 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.61.0](./#0.61.0) - 2024-07-08
+
+### Fixed
+
+- **RadioGroup**
+
+  - Ensure consistent click events for radio group item.
+  - Fix issue where `data-readonly` attribute was misspelt
+
+### Added
+
+- **Tooltip**
+
+  - Add support for `closeOnClick` to determine if the tooltip should close when trigger is clicked.
+
 ## [0.60.0](./#0.60.0) - 2024-07-05
 
 ### Fixed
