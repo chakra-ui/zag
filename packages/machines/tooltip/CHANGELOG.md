@@ -1,5 +1,24 @@
 # @zag-js/tooltip
 
+## 0.61.0
+
+### Minor Changes
+
+- [`75a6d6d`](https://github.com/chakra-ui/zag/commit/75a6d6dbe65d13c31a7d848fd25d68b3a9a668e5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `closeOnClick` to determine if the tooltip should
+  close when trigger is clicked.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.61.0
+  - @zag-js/core@0.61.0
+  - @zag-js/types@0.61.0
+  - @zag-js/utils@0.61.0
+  - @zag-js/dom-event@0.61.0
+  - @zag-js/dom-query@0.61.0
+  - @zag-js/popper@0.61.0
+
 ## 0.60.0
 
 ### Patch Changes
