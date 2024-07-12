@@ -135,6 +135,22 @@ test.describe("tags-input", () => {
     await I.expectNoTagToBeHighlighted()
   })
 
+  test("[addOnPaste: false] pasting should work everytime", async () => {
+    await I.paste("Svelte")
+    await I.seeInputHasValue("Svelte")
+
+    await I.pressKey("Enter")
+    await I.seeTag("Svelte")
+
+    await I.pressKey("Backspace", 2)
+
+    await I.paste("Svelte")
+    await I.seeInputHasValue("Svelte")
+
+    await I.pressKey("Enter")
+    await I.seeTag("Svelte")
+  })
+
   test("[addOnPaste: false] pasting + enter should work", async () => {
     await I.paste("Svelte")
     await I.pressKey("Enter")

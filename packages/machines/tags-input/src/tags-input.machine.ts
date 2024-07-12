@@ -211,6 +211,17 @@ export function machine(userContext: UserDefinedContext) {
             DELETE: {
               actions: ["deleteHighlightedTag", "highlightTagAtIndex"],
             },
+            PASTE: [
+              {
+                guard: "addOnPaste",
+                target: "focused:input",
+                actions: ["setInputValue", "addTagFromPaste"],
+              },
+              {
+                target: "focused:input",
+                actions: "setInputValue",
+              },
+            ],
           },
         },
 

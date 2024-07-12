@@ -63,8 +63,7 @@ export class TagsInputModel extends Model {
   }
 
   async seeTagIsHighlighted(value: string) {
-    const el = this.getTag(value)
-    await expect(el).toHaveAttribute("data-highlighted", "")
+    await expect(this.getTag(value)).toHaveAttribute("data-highlighted", "")
   }
 
   async seeTag(value: string) {
