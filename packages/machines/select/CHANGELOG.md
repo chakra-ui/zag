@@ -1,5 +1,25 @@
 # @zag-js/select
 
+## 0.61.1
+
+### Patch Changes
+
+- [`338859e`](https://github.com/chakra-ui/zag/commit/338859e34ed669d33a55fa818ec234a35dc8cb5e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `closeOnSelect` could not be customized when
+  `multiple` is set to `true`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.61.1
+  - @zag-js/core@0.61.1
+  - @zag-js/types@0.61.1
+  - @zag-js/collection@0.61.1
+  - @zag-js/utils@0.61.1
+  - @zag-js/dismissable@0.61.1
+  - @zag-js/dom-event@0.61.1
+  - @zag-js/dom-query@0.61.1
+  - @zag-js/form-utils@0.61.1
+  - @zag-js/popper@0.61.1
+
 ## 0.61.0
 
 ### Patch Changes
