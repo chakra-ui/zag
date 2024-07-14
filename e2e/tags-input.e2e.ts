@@ -4,7 +4,8 @@ import { TagsInputModel } from "./models/tags-input.model"
 let I: TagsInputModel
 
 test.describe("tags-input", () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
     I = new TagsInputModel(page)
     await I.goto()
   })

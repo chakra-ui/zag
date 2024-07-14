@@ -119,23 +119,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         disabled: disabled || readOnly,
         onChange(event) {
           const evt = getNativeEvent(event)
+          const value = event.target.value
 
-          if (evt.inputType === "insertFromPaste") return
-          let value = event.target.value
+          if (evt.inputType === "insertFromPaste") {
+            send({ type: "PASTE", value })
+            return
+          }
 
           if (endsWith(value, state.context.delimiter)) {
             send("DELIMITER_KEY")
-          } else {
-            send({ type: "TYPE", value, key: evt.inputType })
+            return
           }
+
+          send({ type: "TYPE", value, key: evt.inputType })
         },
         onFocus() {
           send("FOCUS")
-        },
-        onPaste(event) {
-          event.preventDefault()
-          const value = event.clipboardData.getData("text/plain")
-          send({ type: "PASTE", value })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return

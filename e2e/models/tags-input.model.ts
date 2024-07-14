@@ -1,5 +1,4 @@
 import { expect, type Page } from "@playwright/test"
-import { paste } from "../_utils"
 import { Model } from "./model"
 
 export class TagsInputModel extends Model {
@@ -29,7 +28,8 @@ export class TagsInputModel extends Model {
 
   async paste(value: string) {
     await this.input.focus()
-    return this.page.$eval("[data-testid=input]", paste, value)
+    await this.page.evaluate((value) => navigator.clipboard.writeText(value), value)
+    await this.page.keyboard.press("ControlOrMeta+V")
   }
 
   async addTag(value: string) {
