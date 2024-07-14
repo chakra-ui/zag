@@ -19,7 +19,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         value: [],
         highlightedValue: null,
         loopFocus: false,
-        closeOnSelect: true,
+        closeOnSelect: !ctx.multiple,
         disabled: false,
         readOnly: false,
         composite: true,
@@ -365,10 +365,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
         isFirstItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.firstValue,
         isLastItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.lastValue,
-        closeOnSelect: (ctx, evt) => {
-          if (ctx.multiple) return false
-          return !!(evt.closeOnSelect ?? ctx.closeOnSelect)
-        },
+        closeOnSelect: (ctx, evt) => !!(evt.closeOnSelect ?? ctx.closeOnSelect),
         shouldRestoreFocus: (ctx) => !!ctx.restoreFocus,
         // guard assertions (for controlled mode)
         isOpenControlled: (ctx) => !!ctx["open.controlled"],
