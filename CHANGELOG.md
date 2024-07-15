@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.61.1](./#0.62.0) - 2024-07-15
+
+### Fixed
+
+- **Tags Input**
+
+  - Fix issue where tag input does not allow for repeat pasting and undo
+  - Fix issue where deleting a pasted value completely disables pasting
+  - Ensure value set in the machine are always unique, discarding duplicates
+
+- **Select**
+
+  - Fix issue where `closeOnSelect` could not be customized when `multiple` is set to `true`
+
 ## [0.61.0](./#0.61.0) - 2024-07-08
 
 ### Fixed
