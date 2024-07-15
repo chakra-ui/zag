@@ -1,5 +1,29 @@
 # @zag-js/tags-input
 
+## 0.61.1
+
+### Patch Changes
+
+- [`960c5d0`](https://github.com/chakra-ui/zag/commit/960c5d08cbc24522bc7de3598698a92763efb112) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where tag input does not allow for repeat pasting and
+  undo
+
+- [`32741ab`](https://github.com/chakra-ui/zag/commit/32741abf6a55aae063899e6374e3190df67f70ca) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where deleting a pasted value completely disables
+  pasting
+  - Ensure values set in the machine are always unique, discarding duplicates
+- Updated dependencies []:
+  - @zag-js/anatomy@0.61.1
+  - @zag-js/core@0.61.1
+  - @zag-js/types@0.61.1
+  - @zag-js/auto-resize@0.61.1
+  - @zag-js/utils@0.61.1
+  - @zag-js/dom-event@0.61.1
+  - @zag-js/dom-query@0.61.1
+  - @zag-js/form-utils@0.61.1
+  - @zag-js/interact-outside@0.61.1
+  - @zag-js/live-region@0.61.1
+
 ## 0.61.0
 
 ### Patch Changes
