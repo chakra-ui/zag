@@ -2711,8 +2711,8 @@ importers:
         specifier: workspace:*
         version: link:../../utilities/core
       proxy-memoize:
-        specifier: 3.0.0
-        version: 3.0.0
+        specifier: 3.0.1
+        version: 3.0.1
       uqr:
         specifier: 0.1.2
         version: 0.1.2
@@ -10518,8 +10518,8 @@ packages:
   proxy-compare@3.0.0:
     resolution: {integrity: sha512-y44MCkgtZUCT9tZGuE278fB7PWVf7fRYy0vbRXAts2o5F0EfC4fIQrvQQGBJo1WJbFcVLXzApOscyJuZqHQc1w==}
 
-  proxy-memoize@3.0.0:
-    resolution: {integrity: sha512-2fs4eIg4w6SfOjKHGVdg5tJ9WgHifEXKo2gfS/+tHGajO2YtAu03lLs+ltNKnteGKvq3SvHromkZeKus4J39/g==}
+  proxy-memoize@3.0.1:
+    resolution: {integrity: sha512-VDdG/VYtOgdGkWJx7y0o7p+zArSf2383Isci8C+BP3YXgMYDoPd3cCBjw0JdWb6YBb9sFiOPbAADDVTPJnh+9g==}
 
   pseudomap@1.0.2:
     resolution: {integrity: sha512-b/YwNhb8lk1Zz2+bXXpS/LK9OisiZZ1SNsSLxN1x2OXVEhW2Ckr/7mWE5vrC1ZTiJlD9g19jWszTmJsB+oEpFQ==}
@@ -20771,7 +20771,7 @@ snapshots:
 
   proxy-compare@3.0.0: {}
 
-  proxy-memoize@3.0.0:
+  proxy-memoize@3.0.1:
     dependencies:
       proxy-compare: 3.0.0
 
