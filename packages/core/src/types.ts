@@ -278,7 +278,7 @@ export declare namespace StateMachine {
   export type StateInitObject<TContext, TState extends StateSchema> = {
     context: TContext
     value: TState["value"] | null
-    tags: TState["tags"][]
+    tags?: TState["tags"][]
   }
 
   export type StateInit<TContext, TState extends StateSchema> = StateInitObject<TContext, TState>
