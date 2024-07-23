@@ -8,8 +8,6 @@ export const anatomy = createAnatomy("steps").parts(
   "indicator",
   "separator",
   "content",
-  "title",
-  "description",
   "nextTrigger",
   "prevTrigger",
   "progress",

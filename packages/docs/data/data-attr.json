@@ -217,6 +217,12 @@
       "data-placement": "The placement of the content",
       "data-state": "\"open\" | \"closed\""
     },
+    "ValueText": {
+      "data-scope": "color-picker",
+      "data-part": "value-text",
+      "data-disabled": "Present when disabled",
+      "data-focus": "Present when focused"
+    },
     "AreaThumb": {
       "data-scope": "color-picker",
       "data-part": "area-thumb",
@@ -717,6 +723,13 @@
       "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid"
     },
+    "ValueText": {
+      "data-scope": "number-input",
+      "data-part": "value-text",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-focus": "Present when focused"
+    },
     "Input": {
       "data-scope": "number-input",
       "data-part": "input",
@@ -909,6 +922,13 @@
       "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid"
     },
+    "ValueText": {
+      "data-scope": "select",
+      "data-part": "value-text",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-focus": "Present when focused"
+    },
     "Trigger": {
       "data-scope": "select",
       "data-part": "trigger",
@@ -1082,6 +1102,58 @@
       "data-orientation": "The orientation of the resizetrigger",
       "data-focus": "Present when focused",
       "data-disabled": "Present when disabled"
+    }
+  },
+  "steps": {
+    "Root": {
+      "data-scope": "steps",
+      "data-part": "root",
+      "data-orientation": "The orientation of the steps"
+    },
+    "List": {
+      "data-scope": "steps",
+      "data-part": "list",
+      "data-orientation": "The orientation of the list"
+    },
+    "Item": {
+      "data-scope": "steps",
+      "data-part": "item",
+      "data-orientation": "The orientation of the item"
+    },
+    "Trigger": {
+      "data-scope": "steps",
+      "data-part": "trigger",
+      "data-state": "\"open\" | \"closed\"",
+      "data-orientation": "The orientation of the trigger",
+      "data-complete": "Present when the trigger value is complete",
+      "data-current": "Present when current",
+      "data-incomplete": ""
+    },
+    "Content": {
+      "data-scope": "steps",
+      "data-part": "content",
+      "data-state": "\"open\" | \"closed\"",
+      "data-orientation": "The orientation of the content"
+    },
+    "Indicator": {
+      "data-scope": "steps",
+      "data-part": "indicator",
+      "data-complete": "Present when the indicator value is complete",
+      "data-current": "Present when current",
+      "data-incomplete": ""
+    },
+    "Separator": {
+      "data-scope": "steps",
+      "data-part": "separator",
+      "data-orientation": "The orientation of the separator",
+      "data-complete": "Present when the separator value is complete",
+      "data-current": "Present when current",
+      "data-incomplete": ""
+    },
+    "Progress": {
+      "data-scope": "steps",
+      "data-part": "progress",
+      "data-complete": "Present when the progress value is complete"
     }
   },
   "switch": {

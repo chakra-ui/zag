@@ -13,6 +13,7 @@ export function machine(userContext: UserDefinedContext) {
         step: 0,
         count: 1,
         linear: false,
+        orientation: "horizontal",
         ...ctx,
       },
 
@@ -25,6 +26,9 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         idle: {
           on: {
+            "STEP.SET": {
+              actions: "setStep",
+            },
             "STEP.NEXT": {
               actions: "goToNextStep",
             },

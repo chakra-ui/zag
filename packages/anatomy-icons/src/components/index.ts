@@ -33,8 +33,10 @@ import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
 import { TreeViewAnatomy } from "./tree-view"
 import { QRCodeAnatomy } from "./qr-code"
+import { StepsAnatomy } from "./steps"
 
 export const allComponents = {
+ "steps": StepsAnatomy,
   "qr-code": QRCodeAnatomy,
   "signature-pad": SignaturePadAnatomy,
   clipboard: ClipboardAnatomy,

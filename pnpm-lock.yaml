@@ -3826,6 +3826,9 @@ importers:
       '@zag-js/splitter':
         specifier: workspace:*
         version: link:../packages/machines/splitter
+      '@zag-js/steps':
+        specifier: workspace:*
+        version: link:../packages/machines/steps
       '@zag-js/switch':
         specifier: workspace:*
         version: link:../packages/machines/switch

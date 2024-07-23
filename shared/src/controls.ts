@@ -278,6 +278,6 @@ export const qrCodeControls = defineControls({
 })
 
 export const stepsControls = defineControls({
-  skippable: { type: "boolean", defaultValue: false },
+  linear: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
 })

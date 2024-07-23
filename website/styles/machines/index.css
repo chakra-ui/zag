@@ -34,6 +34,7 @@
 @import url(./tooltip.css);
 @import url(./signature-pad.css);
 @import url(./presence.css);
+@import url(./steps.css);
 
 * {
   border-color: var(--colors-border-bold);
