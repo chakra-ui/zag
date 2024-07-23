@@ -9,6 +9,7 @@ import { ComboboxAnatomy } from "./combobox"
 import { DatePickerAnatomy } from "./date-picker"
 import { DialogAnatomy } from "./dialog"
 import { EditableAnatomy } from "./editable"
+import { FieldAnatomy } from "./field"
 import { FileUploadAnatomy } from "./file-upload"
 import { HoverCardAnatomy } from "./hover-card"
 import { LinearProgressAnatomy } from "./linear-progress"
@@ -17,6 +18,7 @@ import { NumberInputAnatomy } from "./number-input"
 import { PaginationAnatomy } from "./pagination"
 import { PinInputAnatomy } from "./pin-input"
 import { PopoverAnatomy } from "./popover"
+import { QRCodeAnatomy } from "./qr-code"
 import { RadioGroupAnatomy } from "./radio-group"
 import { RatingGroupAnatomy } from "./rating-group"
 import { SegmentedControlAnatomy } from "./segmented-control"
@@ -24,6 +26,7 @@ import { SelectAnatomy } from "./select"
 import { SignaturePadAnatomy } from "./signature-pad"
 import { SliderAnatomy } from "./slider"
 import { SplitterAnatomy } from "./splitter"
+import { StepsAnatomy } from "./steps"
 import { SwitchAnatomy } from "./switch"
 import { TabsAnatomy } from "./tabs"
 import { TagsInputAnatomy } from "./tags-input"
@@ -32,11 +35,10 @@ import { ToastAnatomy } from "./toast"
 import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
 import { TreeViewAnatomy } from "./tree-view"
-import { QRCodeAnatomy } from "./qr-code"
-import { StepsAnatomy } from "./steps"
 
 export const allComponents = {
- "steps": StepsAnatomy,
+  field: FieldAnatomy,
+  steps: StepsAnatomy,
   "qr-code": QRCodeAnatomy,
   "signature-pad": SignaturePadAnatomy,
   clipboard: ClipboardAnatomy,
