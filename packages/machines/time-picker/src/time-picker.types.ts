@@ -270,4 +270,4 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
  * Re-exported types
  * -----------------------------------------------------------------------------*/
 
-export type { Time }
+export type { Time, PositioningOptions }
