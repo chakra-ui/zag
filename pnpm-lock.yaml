@@ -387,6 +387,9 @@ importers:
       '@internationalized/date':
         specifier: 3.5.5
         version: 3.5.5
+      '@tanstack/react-virtual':
+        specifier: 3.8.3
+        version: 3.8.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/textarea-caret':
         specifier: 3.0.3
         version: 3.0.3
