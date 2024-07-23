@@ -11,7 +11,7 @@
     "packages": "pnpm --filter=./packages/** -r",
     "build": "pnpm packages -- build",
     "postbuild": "pnpm document:types && pnpm document:data-attr",
-    "prepare": "husky install",
+    "prepare": "husky",
     "sync-pkgs": "tsx scripts/sync-packages.ts",
     "clean-pkgs": "pnpm -r exec rm -rf dist .swc *.log",
     "clean": "pnpm clean-pkgs && rm -rf node_modules",

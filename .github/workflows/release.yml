@@ -15,6 +15,7 @@ env:
   FORCE_COLOR: 2
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  HUSKY: 0
 
 jobs:
   release:

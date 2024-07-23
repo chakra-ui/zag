@@ -6,6 +6,26 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.62.0](./#0.62.0) - 2024-07-23
+
+### Fixed
+
+- **Combobox**
+
+  - Improve accessibility by removing `aria-selected` and `aria-disabled` when `false`
+  - Prefer `click` over `pointerup` for consistent experience between screen readers and pointers.
+
+- **React**
+
+  - Improve HMR behavior in React with components like Dialog, Select, and Menu
+
+### Changed
+
+- **Steps**
+
+  - Rename `skippable` to `linear` prop to better communicate its intent
+  - Set default `orientation` to `horizontal`
+
 ## [0.61.1](./#0.62.0) - 2024-07-15
 
 ### Fixed
