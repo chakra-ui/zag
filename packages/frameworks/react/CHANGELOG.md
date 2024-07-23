@@ -1,5 +1,19 @@
 # @zag-js/react
 
+## 0.62.0
+
+### Patch Changes
+
+- [#1677](https://github.com/chakra-ui/zag/pull/1677)
+  [`95e7771`](https://github.com/chakra-ui/zag/commit/95e7771d71d723f32915149e0cfc7785fde90380) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve HMR behavior in React with components like Dialog, Select,
+  and Menu.
+
+- Updated dependencies []:
+  - @zag-js/core@0.62.0
+  - @zag-js/store@0.62.0
+  - @zag-js/types@0.62.0
+
 ## 0.61.1
 
 ### Patch Changes

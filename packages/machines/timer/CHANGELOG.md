@@ -1,5 +1,15 @@
 # @zag-js/checkbox
 
+## 0.62.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.62.0
+  - @zag-js/core@0.62.0
+  - @zag-js/types@0.62.0
+  - @zag-js/utils@0.62.0
+
 ## 0.61.1
 
 ### Patch Changes

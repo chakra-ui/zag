@@ -1,5 +1,22 @@
 # @zag-js/steps
 
+## 0.62.0
+
+### Minor Changes
+
+- [`87ca302`](https://github.com/chakra-ui/zag/commit/87ca3022f9f930a5d8a200c16516db38ec110ab8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `skippable` to `linear` prop to better communicate its
+  intent
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.62.0
+  - @zag-js/core@0.62.0
+  - @zag-js/types@0.62.0
+  - @zag-js/utils@0.62.0
+  - @zag-js/dom-query@0.62.0
+
 ## 0.61.1
 
 ### Patch Changes
