@@ -1,5 +1,29 @@
 # @zag-js/combobox
 
+## 0.62.0
+
+### Patch Changes
+
+- [`080993d`](https://github.com/chakra-ui/zag/commit/080993d2097257d8f0bc56c135c048168ea074e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve accessibility by removing `aria-selected` and
+  `aria-disabled` when value is `false`
+
+- [`1ae57eb`](https://github.com/chakra-ui/zag/commit/1ae57eb41cffbef5b7c039a89476e1e0a6170b17) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Prefer `click` over `pointerup` for consistent experience between
+  screen readers and pointers.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.62.0
+  - @zag-js/core@0.62.0
+  - @zag-js/types@0.62.0
+  - @zag-js/aria-hidden@0.62.0
+  - @zag-js/collection@0.62.0
+  - @zag-js/utils@0.62.0
+  - @zag-js/dismissable@0.62.0
+  - @zag-js/dom-event@0.62.0
+  - @zag-js/dom-query@0.62.0
+  - @zag-js/popper@0.62.0
+
 ## 0.61.1
 
 ### Patch Changes
