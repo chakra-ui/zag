@@ -373,17 +373,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (!mouseMoved) return
           send({ type: "ITEM.POINTER_LEAVE", value })
         },
-        onPointerUp(event) {
+        onClick(event) {
           if (isDownloadingEvent(event)) return
           if (isOpeningInNewTab(event)) return
           if (isContextMenuEvent(event)) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", src: "pointerup", value })
-        },
-        onTouchEnd(event) {
-          // prevent clicking elements behind content
-          event.preventDefault()
-          event.stopPropagation()
+          send({ type: "ITEM.CLICK", src: "click", value })
         },
       })
     },
