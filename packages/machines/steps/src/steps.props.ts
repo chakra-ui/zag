@@ -8,10 +8,10 @@ export const props = createProps<UserDefinedContext>()([
   "getRootNode",
   "id",
   "ids",
+  "linear",
   "onStepChange",
   "onStepComplete",
   "orientation",
-  "skippable",
   "step",
 ])
 

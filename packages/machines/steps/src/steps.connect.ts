@@ -89,7 +89,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: itemState.triggerId,
         role: "tab",
         dir: state.context.dir,
-        tabIndex: state.context.skippable || itemState.current ? 0 : -1,
+        tabIndex: !state.context.linear || itemState.current ? 0 : -1,
         "aria-selected": itemState.current,
         "aria-controls": itemState.contentId,
         "data-state": itemState.current ? "open" : "closed",
@@ -99,7 +99,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-incomplete": dataAttr(!itemState.current),
         onClick(event) {
           if (event.defaultPrevented) return
-          if (!state.context.skippable) return
+          if (state.context.linear) return
           send({ type: "STEP.SET", value: props.index, src: "trigger.click" })
         },
       })

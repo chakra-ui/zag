@@ -12,6 +12,7 @@ export function machine(userContext: UserDefinedContext) {
       context: {
         step: 0,
         count: 1,
+        linear: false,
         ...ctx,
       },
 

@@ -3252,9 +3252,9 @@
         "type": "VoidFunction",
         "description": "Callback to be called when a step is completed"
       },
-      "skippable": {
+      "linear": {
         "type": "boolean",
-        "description": "If `true`, the stepper will allow you to skip steps"
+        "description": "If `true`, the stepper requires the user to complete the steps in order"
       },
       "orientation": {
         "type": "\"horizontal\" | \"vertical\"",

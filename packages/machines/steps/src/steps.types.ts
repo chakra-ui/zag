@@ -38,9 +38,9 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   onStepComplete?: VoidFunction
   /**
-   * If `true`, the stepper will allow you to skip steps
+   * If `true`, the stepper requires the user to complete the steps in order
    */
-  skippable?: boolean
+  linear?: boolean
   /**
    * The orientation of the stepper
    */
