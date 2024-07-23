@@ -109,7 +109,7 @@ importers:
         version: 3.3.3
       prettier-plugin-svelte:
         specifier: 3.2.6
-        version: 3.2.6(prettier@3.3.3)(svelte@5.0.0-next.176)
+        version: 3.2.6(prettier@3.3.3)(svelte@5.0.0-next.195)
       signale:
         specifier: 1.4.0
         version: 1.4.0
@@ -2047,13 +2047,13 @@ importers:
     devDependencies:
       '@sveltejs/package':
         specifier: 2.3.2
-        version: 2.3.2(svelte@5.0.0-next.176)(typescript@5.5.4)
+        version: 2.3.2(svelte@5.0.0-next.195)(typescript@5.5.4)
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
       svelte:
-        specifier: 5.0.0-next.176
-        version: 5.0.0-next.176
+        specifier: 5.0.0-next.195
+        version: 5.0.0-next.195
 
   packages/frameworks/vue:
     dependencies:
@@ -11126,6 +11126,7 @@ packages:
 
   shikiji-core@0.9.19:
     resolution: {integrity: sha512-AFJu/vcNT21t0e6YrfadZ+9q86gvPum6iywRyt1OtIPjPFe25RQnYJyxHQPMLKCCWA992TPxmEmbNcOZCAJclw==}
+    deprecated: Shikiji is merged back to Shiki v1.0, please migrate over to get the latest updates
 
   shikiji@0.9.19:
     resolution: {integrity: sha512-Kw2NHWktdcdypCj1GkKpXH4o6Vxz8B8TykPlPuLHOGSV8VkhoCLcFOH4k19K4LXAQYRQmxg+0X/eM+m2sLhAkg==}
@@ -11487,8 +11488,8 @@ packages:
     resolution: {integrity: sha512-ZbRnvO0UWXhE71Va5Rjg+nY4tbCUnqJFQC0VXHdqkHT/i5nqW8DPtw0rBlsFg4mq2uDQ8iOO/P7tR3OVXaSI7g==}
     engines: {node: '>=18'}
 
-  svelte@5.0.0-next.176:
-    resolution: {integrity: sha512-XHLpY497OF1ajKdgXj1xgc0Bm+OwPnCDIjOY1uY/Yop8P4KQT5eZfLXKD2mwOx0JzAxQu3iqgUMwgY6l6Cm38w==}
+  svelte@5.0.0-next.195:
+    resolution: {integrity: sha512-aVWhY24T48SI3eAQCZ3RiLY12VP36KWxW0Jb9GqasZC4BVBZTsKJGAY+Uwg3Cv9Ce/QeV+FWoZrom5bJrjR6VA==}
     engines: {node: '>=18'}
 
   svg-parser@2.0.4:
@@ -15029,14 +15030,14 @@ snapshots:
       - vinxi
       - vite
 
-  '@sveltejs/package@2.3.2(svelte@5.0.0-next.176)(typescript@5.5.4)':
+  '@sveltejs/package@2.3.2(svelte@5.0.0-next.195)(typescript@5.5.4)':
     dependencies:
       chokidar: 3.6.0
       kleur: 4.1.5
       sade: 1.8.1
       semver: 7.6.2
-      svelte: 5.0.0-next.176
-      svelte2tsx: 0.7.13(svelte@5.0.0-next.176)(typescript@5.5.4)
+      svelte: 5.0.0-next.195
+      svelte2tsx: 0.7.13(svelte@5.0.0-next.195)(typescript@5.5.4)
     transitivePeerDependencies:
       - typescript
 
@@ -15575,8 +15576,8 @@ snapshots:
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.11
       '@rollup/pluginutils': 4.2.1
-      acorn: 8.12.0
-      acorn-import-attributes: 1.9.5(acorn@8.12.0)
+      acorn: 8.12.1
+      acorn-import-attributes: 1.9.5(acorn@8.12.1)
       async-sema: 3.1.1
       bindings: 1.5.0
       estree-walker: 2.0.2
@@ -15887,21 +15888,29 @@ snapshots:
     dependencies:
       event-target-shim: 5.0.1
 
-  acorn-import-attributes@1.9.5(acorn@8.12.0):
+  acorn-import-attributes@1.9.5(acorn@8.12.1):
     dependencies:
-      acorn: 8.12.0
+      acorn: 8.12.1
 
   acorn-jsx@5.3.2(acorn@8.12.0):
     dependencies:
       acorn: 8.12.0
 
+  acorn-jsx@5.3.2(acorn@8.12.1):
+    dependencies:
+      acorn: 8.12.1
+
   acorn-loose@8.4.0:
     dependencies:
-      acorn: 8.12.0
+      acorn: 8.12.1
 
   acorn-typescript@1.4.13(acorn@8.12.0):
     dependencies:
       acorn: 8.12.0
+
+  acorn-typescript@1.4.13(acorn@8.12.1):
+    dependencies:
+      acorn: 8.12.1
 
   acorn@8.12.0: {}
 
@@ -17722,8 +17731,8 @@ snapshots:
 
   espree@10.1.0:
     dependencies:
-      acorn: 8.12.0
-      acorn-jsx: 5.3.2(acorn@8.12.0)
+      acorn: 8.12.1
+      acorn-jsx: 5.3.2(acorn@8.12.1)
       eslint-visitor-keys: 4.0.0
 
   espree@9.6.1:
@@ -18611,8 +18620,8 @@ snapshots:
 
   import-in-the-middle@1.8.1:
     dependencies:
-      acorn: 8.12.0
-      acorn-import-attributes: 1.9.5(acorn@8.12.0)
+      acorn: 8.12.1
+      acorn-import-attributes: 1.9.5(acorn@8.12.1)
       cjs-module-lexer: 1.3.1
       module-details-from-path: 1.0.3
 
@@ -19682,8 +19691,8 @@ snapshots:
 
   micromark-extension-mdxjs@1.0.1:
     dependencies:
-      acorn: 8.12.0
-      acorn-jsx: 5.3.2(acorn@8.12.0)
+      acorn: 8.12.1
+      acorn-jsx: 5.3.2(acorn@8.12.1)
       micromark-extension-mdx-expression: 1.0.8
       micromark-extension-mdx-jsx: 1.0.5
       micromark-extension-mdx-md: 1.0.1
@@ -20010,7 +20019,7 @@ snapshots:
 
   mlly@1.7.1:
     dependencies:
-      acorn: 8.12.0
+      acorn: 8.12.1
       pathe: 1.1.2
       pkg-types: 1.1.3
       ufo: 1.5.3
@@ -20970,10 +20979,10 @@ snapshots:
     dependencies:
       fast-diff: 1.3.0
 
-  prettier-plugin-svelte@3.2.6(prettier@3.3.3)(svelte@5.0.0-next.176):
+  prettier-plugin-svelte@3.2.6(prettier@3.3.3)(svelte@5.0.0-next.195):
     dependencies:
       prettier: 3.3.3
-      svelte: 5.0.0-next.176
+      svelte: 5.0.0-next.195
 
   prettier@2.8.8: {}
 
@@ -21905,11 +21914,11 @@ snapshots:
 
   svelte-routing@2.13.0: {}
 
-  svelte2tsx@0.7.13(svelte@5.0.0-next.176)(typescript@5.5.4):
+  svelte2tsx@0.7.13(svelte@5.0.0-next.195)(typescript@5.5.4):
     dependencies:
       dedent-js: 1.0.1
       pascal-case: 3.1.2
-      svelte: 5.0.0-next.176
+      svelte: 5.0.0-next.195
       typescript: 5.5.4
 
   svelte@5.0.0-next.153:
@@ -21928,13 +21937,13 @@ snapshots:
       magic-string: 0.30.10
       zimmerframe: 1.1.2
 
-  svelte@5.0.0-next.176:
+  svelte@5.0.0-next.195:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@jridgewell/sourcemap-codec': 1.4.15
       '@types/estree': 1.0.5
-      acorn: 8.12.0
-      acorn-typescript: 1.4.13(acorn@8.12.0)
+      acorn: 8.12.1
+      acorn-typescript: 1.4.13(acorn@8.12.1)
       aria-query: 5.3.0
       axobject-query: 4.0.0
       esm-env: 1.0.0
@@ -21994,7 +22003,7 @@ snapshots:
   terser@5.31.1:
     dependencies:
       '@jridgewell/source-map': 0.3.6
-      acorn: 8.12.0
+      acorn: 8.12.1
       commander: 2.20.3
       source-map-support: 0.5.21
 
@@ -22283,7 +22292,7 @@ snapshots:
   unimport@3.7.2(rollup@4.18.0):
     dependencies:
       '@rollup/pluginutils': 5.1.0(rollup@4.18.0)
-      acorn: 8.12.0
+      acorn: 8.12.1
       escape-string-regexp: 5.0.0
       estree-walker: 3.0.3
       fast-glob: 3.3.2
@@ -22301,7 +22310,7 @@ snapshots:
   unimport@3.7.2(rollup@4.19.0):
     dependencies:
       '@rollup/pluginutils': 5.1.0(rollup@4.19.0)
-      acorn: 8.12.0
+      acorn: 8.12.1
       escape-string-regexp: 5.0.0
       estree-walker: 3.0.3
       fast-glob: 3.3.2
@@ -22426,7 +22435,7 @@ snapshots:
 
   unplugin@1.11.0:
     dependencies:
-      acorn: 8.12.0
+      acorn: 8.12.1
       chokidar: 3.6.0
       webpack-sources: 3.2.3
       webpack-virtual-modules: 0.6.2
