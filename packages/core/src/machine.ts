@@ -10,7 +10,6 @@ import {
   isObject,
   isString,
   noop,
-  omit,
   runIfFn,
   uuid,
   warn,
@@ -801,10 +800,8 @@ export class Machine<
 
   public getHydrationState(): S.StateInit<TContext, TState> {
     const state = this.getState()
-    const computedKeys = Object.keys(this.config.computed ?? {})
     return {
       value: state.value,
-      context: omit(state.context, computedKeys) as any,
       tags: state.tags,
     }
   }
