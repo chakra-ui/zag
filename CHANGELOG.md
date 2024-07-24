@@ -6,6 +6,27 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.62.1](./#0.62.1) - 2024-07-27
+
+### Fixed
+
+- **TimePicker**
+
+  - Export missing `TimePicker` types
+
+- **Toast**
+  
+  - Add missing `aria-labelledby` and `aria-describedby` attributes on the toast root element
+
+- **React**
+  
+  - Fix regression with `useMachine` where HMR could lead to `Maximum call stack exceeded` error
+
+
+### Added
+
+### Changed
+
 ## [0.62.0](./#0.62.0) - 2024-07-23
 
 ### Fixed
