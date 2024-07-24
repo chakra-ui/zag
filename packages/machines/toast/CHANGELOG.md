@@ -1,5 +1,23 @@
 # @zag-js/toast
 
+## 0.62.1
+
+### Patch Changes
+
+- [#1693](https://github.com/chakra-ui/zag/pull/1693)
+  [`ae08a33`](https://github.com/chakra-ui/zag/commit/ae08a33a73b23d9c81141ce6e68fc7d5394be4ec) Thanks
+  [@fseglard](https://github.com/fseglard)! - Add missing `aria-labelledby` and `aria-describedby` attributes on the
+  toast root element
+
+- Updated dependencies [[`5644790`](https://github.com/chakra-ui/zag/commit/564479081d37cd06bc38043fccf9c229379a1531)]:
+  - @zag-js/core@0.62.1
+  - @zag-js/anatomy@0.62.1
+  - @zag-js/types@0.62.1
+  - @zag-js/utils@0.62.1
+  - @zag-js/dismissable@0.62.1
+  - @zag-js/dom-event@0.62.1
+  - @zag-js/dom-query@0.62.1
+
 ## 0.62.0
 
 ### Patch Changes

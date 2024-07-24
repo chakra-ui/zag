@@ -1,5 +1,16 @@
 # @zag-js/core
 
+## 0.62.1
+
+### Patch Changes
+
+- [`5644790`](https://github.com/chakra-ui/zag/commit/564479081d37cd06bc38043fccf9c229379a1531) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - React: Fix regression with `useMachine` where HMR could lead to
+  `Maximum call stack exceeded`
+
+- Updated dependencies []:
+  - @zag-js/store@0.62.1
+
 ## 0.62.0
 
 ### Patch Changes
