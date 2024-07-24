@@ -112,21 +112,21 @@ test.describe("number input", () => {
   })
 
   test.skip("inc longpress: should spin value upwards", async () => {
-    await I.mouseDownInc()
+    await I.mousedownInc()
     await I.seeInputHasValue("1")
     await I.waitForTick(3)
-    await I.mouseUp()
+    await I.mouseup()
     await I.seeInputHasValue("4")
   })
 
   test("dec longpress: should spin value downwards", async () => {
     await I.type("20")
 
-    await I.mouseDownDec()
+    await I.mousedownDec()
     await I.seeInputHasValue("19")
     await I.waitForTick(9)
 
-    await I.mouseUp()
+    await I.mouseup()
     await I.seeInputHasValue("10")
   })
 })

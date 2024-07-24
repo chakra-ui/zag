@@ -68,7 +68,7 @@ export class Model {
     return new Promise<void>((resolve) => setTimeout(resolve, time))
   }
 
-  async mouseUp() {
+  async mouseup() {
     await this.page.mouse.up()
   }
 }
