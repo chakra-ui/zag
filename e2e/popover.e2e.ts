@@ -1,115 +1,93 @@
-import { test, expect } from "@playwright/test"
-import { testid, a11y, controls } from "./_utils"
+import { test } from "@playwright/test"
+import { PopoverModel } from "./models/popover.model"
 
-const trigger = testid("popover-trigger")
-const content = testid("popover-content")
-const close = testid("popover-close-button")
-
-const buttonBefore = testid("button-before")
-const buttonAfter = testid("button-after")
-const link = testid("focusable-link")
-const text = testid("plain-text")
+let I: PopoverModel
 
 test.describe("popover", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/popover")
+    I = new PopoverModel(page)
+    await I.goto()
   })
 
-  test("should have no accessibility violations", async ({ page }) => {
-    await a11y(page)
+  test("should have no accessibility violations", async () => {
+    await I.checkAccessibility()
   })
 
-  test("[autoFocus=true] should move focus inside the popover content to the first focusable element", async ({
-    page,
-  }) => {
-    await page.click(trigger)
-    await expect(page.locator(content)).toBeVisible()
-    await expect(page.locator(link)).toBeFocused()
+  test("[autoFocus=true] should move focus inside the popover content to the first focusable element", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.seeLinkIsFocused()
   })
 
-  test("[autoFocus=false] should not focus the content", async ({ page }) => {
-    await controls(page).bool("autoFocus", false)
-    await page.click(trigger)
-    await expect(page.locator(content)).not.toBeFocused()
+  test("[autoFocus=false] should not focus the content", async () => {
+    await I.controls.bool("autoFocus", false)
+    await I.clickTrigger()
+    await I.seeContentIsNotFocused()
   })
 
-  test("[keyboard] should open the Popover on press `Enter`", async ({ page }) => {
-    await page.focus(trigger)
-    await page.keyboard.press("Enter")
-    await expect(page.locator(content)).toBeVisible()
+  test("[keyboard] should open the Popover on press `Enter`", async () => {
+    await I.focusTrigger()
+    await I.pressKey("Enter")
+    await I.seeContent()
   })
 
-  test("[keyboard] should close the Popover on press `Escape`", async ({ page }) => {
-    await page.focus(trigger)
-    await page.keyboard.press("Enter")
-    await expect(page.locator(content)).toBeVisible()
-    await page.keyboard.press("Escape")
-    await expect(page.locator(content)).toBeHidden()
-    await expect(page.locator(trigger)).toBeFocused()
+  test("[keyboard] should close the Popover on press `Escape`", async () => {
+    await I.focusTrigger()
+    await I.pressKey("Enter")
+    await I.seeContent()
+    await I.pressKey("Escape")
+    await I.dontSeeContent()
+    await I.seeTriggerIsFocused()
   })
 
-  test("[keyboard / modal] on tab: should trap focus within popover content", async ({ page }) => {
-    await controls(page).bool("modal")
+  test("[keyboard / modal] on tab: should trap focus within popover content", async () => {
+    await I.controls.bool("modal", true)
 
-    await page.focus(trigger)
-    await page.keyboard.press("Enter")
-
-    await expect(page.locator(link)).toBeFocused()
-    await page.keyboard.press("Tab")
-    await page.keyboard.press("Tab")
-    await page.keyboard.press("Tab")
-    await expect(page.locator(link)).toBeFocused()
+    await I.focusTrigger()
+    await I.pressKey("Enter")
+    await I.seeLinkIsFocused()
+    await I.pressKey("Tab", 3)
+    await I.seeLinkIsFocused()
   })
 
-  test("[keyboard / non-modal] on tab outside: should move focus to next tabbable element after button", async ({
-    page,
-  }) => {
-    await page.focus(trigger)
-    await page.keyboard.press("Enter")
-
-    await page.keyboard.press("Tab")
-    await page.keyboard.press("Tab")
-    await page.keyboard.press("Tab")
-
-    await expect(page.locator(buttonAfter)).toBeFocused()
+  test("[keyboard / non-modal] on tab outside: should move focus to next tabbable element after button", async () => {
+    await I.focusTrigger()
+    await I.pressKey("Enter")
+    await I.pressKey("Tab", 3)
+    await I.seeButtonAfterIsFocused()
   })
 
-  test("[keyboard / non-modal] on shift-tab outside: should move focus to trigger", async ({ page }) => {
-    await page.focus(trigger)
-
-    await page.keyboard.press("Enter")
-    await page.keyboard.press("Shift+Tab")
-
-    await expect(page.locator(trigger)).toBeFocused()
-    await expect(page.locator(content)).toBeVisible()
+  test("[keyboard / non-modal] on shift-tab outside: should move focus to trigger", async () => {
+    await I.focusTrigger()
+    await I.pressKey("Enter")
+    await I.pressKey("Shift+Tab")
+    await I.seeTriggerIsFocused()
+    await I.seeContent()
   })
 
-  test("[pointer] close the popover on click close button", async ({ page }) => {
-    await page.click(trigger)
-    await page.locator(close).click()
-    await expect(page.locator(content)).toBeHidden()
+  test("[pointer] close the popover on click close button", async () => {
+    await I.clickTrigger()
+    await I.clickClose()
+    await I.dontSeeContent()
   })
 
-  test("[pointer] should to open/close a popover on trigger click", async ({ page }) => {
-    await page.click(trigger)
-    await expect(page.locator(content)).toBeVisible()
-    await page.click(trigger)
-    await expect(page.locator(content)).toBeHidden()
+  test("[pointer] should to open/close a popover on trigger click", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickTrigger()
+    await I.dontSeeContent()
   })
 
-  test("[pointer] when clicking outside, should re-focus the button on click non-focusable element", async ({
-    page,
-  }) => {
-    await page.click(trigger)
-    await page.locator(text).click({ force: true })
-    await expect(page.locator(trigger)).toBeFocused()
+  test("[pointer] when clicking outside, should re-focus the button on click non-focusable element", async () => {
+    await I.clickTrigger()
+    await I.clickPlainText()
+    await I.seeTriggerIsFocused()
   })
 
-  test("[pointer] when clicking outside on focusable element, should not re-focus the button", async ({ page }) => {
-    await page.click(trigger)
-    await page.click(buttonBefore)
-    await expect(page.locator(buttonBefore)).toBeFocused()
-    await expect(page.locator(content)).toBeHidden()
-    await expect(page.locator(trigger)).not.toBeFocused()
+  test("[pointer] when clicking outside on focusable element, should not re-focus the button", async () => {
+    await I.clickTrigger()
+    await I.clickButtonBefore()
+    await I.seeButtonBeforeIsFocused()
+    await I.dontSeeContent()
   })
 })
