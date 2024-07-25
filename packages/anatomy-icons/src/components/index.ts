@@ -10,6 +10,7 @@ import { DatePickerAnatomy } from "./date-picker"
 import { DialogAnatomy } from "./dialog"
 import { EditableAnatomy } from "./editable"
 import { FieldAnatomy } from "./field"
+import { FieldsetAnatomy } from "./fieldset"
 import { FileUploadAnatomy } from "./file-upload"
 import { HoverCardAnatomy } from "./hover-card"
 import { LinearProgressAnatomy } from "./linear-progress"
@@ -37,6 +38,7 @@ import { TooltipAnatomy } from "./tooltip"
 import { TreeViewAnatomy } from "./tree-view"
 
 export const allComponents = {
+  fieldset: FieldsetAnatomy,
   field: FieldAnatomy,
   steps: StepsAnatomy,
   "qr-code": QRCodeAnatomy,
