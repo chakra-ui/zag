@@ -80,7 +80,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.actionTrigger.attrs,
         onClick() {
-          send(props.action)
+          send(props.action.toUpperCase())
         },
       })
     },
