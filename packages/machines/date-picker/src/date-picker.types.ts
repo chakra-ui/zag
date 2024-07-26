@@ -60,7 +60,7 @@ export interface IntlTranslations {
 
 export type ElementIds = Partial<{
   root: string
-  label: string
+  label(index: number): string
   table(id: string): string
   tableHeader(id: string): string
   tableBody(id: string): string
@@ -384,6 +384,10 @@ export interface InputProps {
   index?: number
 }
 
+export interface LabelProps {
+  index?: number
+}
+
 export interface MonthGridProps {
   columns?: number
   format?: "short" | "long"
@@ -570,7 +574,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getYearTableCellState(props: TableCellProps): TableCellState
 
   getRootProps(): T["element"]
-  getLabelProps(): T["label"]
+  getLabelProps(props?: LabelProps): T["label"]
   getControlProps(): T["element"]
   getContentProps(): T["element"]
   getPositionerProps(): T["element"]

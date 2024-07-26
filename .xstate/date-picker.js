@@ -14,7 +14,6 @@ const fetchMachine = createMachine({
   initial: ctx.open ? "open" : "idle",
   context: {
     "isOpenControlled": false,
-    "isOpenControlled": false,
     "isYearView": false,
     "isMonthView": false,
     "isYearView": false,
@@ -90,13 +89,9 @@ const fetchMachine = createMachine({
     "INPUT.FOCUS": {
       actions: ["setActiveIndex"]
     },
-    "INPUT.BLUR": [{
-      cond: "isOpenControlled",
-      actions: ["setActiveIndexToStart", "selectParsedDate", "invokeOnClose"]
-    }, {
-      target: "idle",
+    "INPUT.BLUR": {
       actions: ["setActiveIndexToStart", "selectParsedDate"]
-    }],
+    },
     "PRESET.CLICK": [{
       cond: "isOpenControlled",
       actions: ["setDateValue", "setFocusedDate", "invokeOnClose"]

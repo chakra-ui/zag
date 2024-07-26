@@ -22,6 +22,7 @@ export type {
   FocusChangeDetails,
   InputProps,
   IntlTranslations,
+  LabelProps,
   MonthGridProps,
   OpenChangeDetails,
   PositioningOptions,

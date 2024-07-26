@@ -273,13 +273,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getLabelProps() {
+    getLabelProps(props = {}) {
+      const { index = 0 } = props
       return normalize.label({
         ...parts.label.attrs,
-        id: dom.getLabelId(state.context),
+        id: dom.getLabelId(state.context, index),
         dir: state.context.dir,
-        htmlFor: dom.getInputId(state.context, 0),
+        htmlFor: dom.getInputId(state.context, index),
         "data-state": open ? "open" : "closed",
+        "data-index": index,
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
       })
@@ -670,6 +672,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         spellCheck: "false",
         dir: state.context.dir,
         name: state.context.name,
+        "data-index": index,
         "data-state": open ? "open" : "closed",
         readOnly,
         disabled,
@@ -742,7 +745,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getPresetTriggerProps(props) {
       const value = Array.isArray(props.value) ? props.value : getDateRangePreset(props.value, locale, timeZone)
-      const valueAsString = value.map((item) => item.toString())
+      const valueAsString = value.map((item) => item.toDate(timeZone).toDateString())
       return normalize.button({
         ...parts.presetTrigger.attrs,
         "aria-label": translations.presetTrigger(valueAsString),

@@ -68,6 +68,7 @@
     "@changesets/cli": "2.27.7",
     "@commitlint/cli": "19.3.0",
     "@commitlint/config-conventional": "19.2.2",
+    "@internationalized/date": "3.5.5",
     "@octokit/rest": "21.0.1",
     "@playwright/test": "1.45.3",
     "@swc/core": "1.7.1",

@@ -21,6 +21,9 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
+        "STEP.SET": {
+          actions: "setStep"
+        },
         "STEP.NEXT": {
           actions: "goToNextStep"
         },

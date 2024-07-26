@@ -141,16 +141,9 @@ export function machine(userContext: UserDefinedContext) {
         "INPUT.FOCUS": {
           actions: ["setActiveIndex"],
         },
-        "INPUT.BLUR": [
-          {
-            guard: "isOpenControlled",
-            actions: ["setActiveIndexToStart", "selectParsedDate", "invokeOnClose"],
-          },
-          {
-            target: "idle",
-            actions: ["setActiveIndexToStart", "selectParsedDate"],
-          },
-        ],
+        "INPUT.BLUR": {
+          actions: ["setActiveIndexToStart", "selectParsedDate"],
+        },
         "PRESET.CLICK": [
           {
             guard: "isOpenControlled",

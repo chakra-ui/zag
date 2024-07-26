@@ -35,6 +35,9 @@ importers:
       '@commitlint/config-conventional':
         specifier: 19.2.2
         version: 19.2.2
+      '@internationalized/date':
+        specifier: 3.5.5
+        version: 3.5.5
       '@octokit/rest':
         specifier: 21.0.1
         version: 21.0.1
