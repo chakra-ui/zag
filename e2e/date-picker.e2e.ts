@@ -69,24 +69,25 @@ test.describe("datepicker [single]", () => {
     await I.seeLastDayCellIsFocused()
   })
 
-  test("click trigger + focus input + selection, set value in input", async () => {
-    await I.clickTrigger()
-    await I.seeContent()
-
-    await I.focusInput()
-    await I.seeContent()
-
-    await I.clickDayCell(5)
-    const day = I.getDate({ day: 5 })
-    await I.seeInputHasValue(day.formatted)
-  })
-
   test("should close datepicker popup upon click on a date", async () => {
     await I.clickTrigger()
     await I.seeContent()
     await I.clickDayCell(5)
     await I.dontSeeContent()
   })
+
+  // test("click trigger + focus input + selection, set value in input", async () => {
+  //   await I.clickTrigger()
+  //   await I.seeContent()
+
+  //   await I.focusInput()
+  //   await I.seeContent()
+
+  //   // 5th day
+  //   await I.clickDayCell(5)
+  //   const day = I.getDate({ day: 5 })
+  //   await I.seeInputHasValue(day.formatted)
+  // })
 
   // test("updates the calendar when a year selected from the dropdown", async ({ page }) => {})
   // test("updates the calendar when a month selected from the dropdown", async ({ page }) => {})

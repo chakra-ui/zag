@@ -118,9 +118,7 @@ export class DatePickerModel extends Model {
   }
 
   getDayCell(value: string | number) {
-    const date = this.today()
-      .set({ day: +value + 1 })
-      .toDate(getLocalTimeZone())
+    const date = this.today().set({ day: +value }).toDate(getLocalTimeZone())
     const v = date.toISOString().split("T")[0]
     return this.page.locator(`${part("table-cell-trigger")}[data-view=day][data-value="${v}"]`)
   }
