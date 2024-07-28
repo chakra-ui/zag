@@ -6,6 +6,29 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.63.0](./#0.63.0) - 2024-07-28
+
+### Fixed
+
+- **DatePicker**
+
+  - Fix issue where selected date doesn't reflect in input when you click trigger then focus input
+  - Fix SSR issue when using `getPresetTrigger`
+
+- **Slider**
+
+  - Fix issue where `onValueChangeEnd` gets called with incorrect value
+
+- **Timer**
+
+  - Fix an issue that action trigger did not emit an event
+
+### Added
+
+- **DatePicker**
+
+  - Add support for `index` in `getLabelProps`
+
 ## [0.62.1](./#0.62.1) - 2024-07-27
 
 ### Fixed
@@ -15,13 +38,12 @@ See the [Changesets](./.changeset) for the latest changes.
   - Export missing `TimePicker` types
 
 - **Toast**
-  
+
   - Add missing `aria-labelledby` and `aria-describedby` attributes on the toast root element
 
 - **React**
-  
-  - Fix regression with `useMachine` where HMR could lead to `Maximum call stack exceeded` error
 
+  - Fix regression with `useMachine` where HMR could lead to `Maximum call stack exceeded` error
 
 ### Added
 
