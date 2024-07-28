@@ -190,7 +190,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         invokeOnChangeEnd(ctx) {
-          ctx.onValueChangeEnd?.({ value: ctx.value })
+          invoke.valueChangeEnd(ctx)
         },
         setClosestThumbIndex(ctx, evt) {
           const pointValue = dom.getValueFromPoint(ctx, evt.point)
@@ -252,13 +252,18 @@ export function machine(userContext: UserDefinedContext) {
 }
 
 const invoke = {
-  change: (ctx: MachineContext) => {
+  valueChange(ctx: MachineContext) {
     ctx.onValueChange?.({
       value: Array.from(ctx.value),
     })
     dom.dispatchChangeEvent(ctx)
   },
-  focusChange: (ctx: MachineContext) => {
+  valueChangeEnd(ctx: MachineContext) {
+    ctx.onValueChangeEnd?.({
+      value: Array.from(ctx.value),
+    })
+  },
+  focusChange(ctx: MachineContext) {
     ctx.onFocusChange?.({
       value: Array.from(ctx.value),
       focusedIndex: ctx.focusedIndex,
@@ -270,12 +275,12 @@ const set = {
   valueAtIndex: (ctx: MachineContext, index: number, value: number) => {
     if (isEqual(ctx.value[index], value)) return
     ctx.value[index] = value
-    invoke.change(ctx)
+    invoke.valueChange(ctx)
   },
   value: (ctx: MachineContext, value: number[]) => {
     if (isEqual(ctx.value, value)) return
     assignArray(ctx.value, value)
-    invoke.change(ctx)
+    invoke.valueChange(ctx)
   },
   focusedIndex: (ctx: MachineContext, index: number) => {
     if (isEqual(ctx.focusedIndex, index)) return
