@@ -1,5 +1,14 @@
 # @zag-js/dom-query
 
+## 0.63.0
+
+### Patch Changes
+
+- [#1696](https://github.com/chakra-ui/zag/pull/1696)
+  [`ca437b9`](https://github.com/chakra-ui/zag/commit/ca437b94b49760742bad69aa57a3d6527219782a) Thanks
+  [@ocavue](https://github.com/ocavue)! - - Fix an issue where `isHTMLElement` throws an error in Node.js environments.
+  - Fix an issue where `isNode` throws an error for `null` or `undefined` values.
+
 ## 0.62.1
 
 ## 0.62.0

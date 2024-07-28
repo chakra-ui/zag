@@ -1,5 +1,31 @@
 # @zag-js/date-picker
 
+## 0.63.0
+
+### Minor Changes
+
+- [`be4490b`](https://github.com/chakra-ui/zag/commit/be4490b04bca7ee837d3d7f52f4b35e251945227) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where selected date doesn't reflect in input when you
+  click trigger then focus input
+  - Fix SSR issue when using `getPresetTrigger`
+  - Add support for `index` in `getLabelProps`
+
+### Patch Changes
+
+- Updated dependencies [[`ca437b9`](https://github.com/chakra-ui/zag/commit/ca437b94b49760742bad69aa57a3d6527219782a)]:
+  - @zag-js/dom-query@0.63.0
+  - @zag-js/dismissable@0.63.0
+  - @zag-js/dom-event@0.63.0
+  - @zag-js/popper@0.63.0
+  - @zag-js/text-selection@0.63.0
+  - @zag-js/anatomy@0.63.0
+  - @zag-js/core@0.63.0
+  - @zag-js/types@0.63.0
+  - @zag-js/utils@0.63.0
+  - @zag-js/date-utils@0.63.0
+  - @zag-js/form-utils@0.63.0
+  - @zag-js/live-region@0.63.0
+
 ## 0.62.1
 
 ### Patch Changes

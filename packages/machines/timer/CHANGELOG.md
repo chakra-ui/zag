@@ -1,5 +1,18 @@
 # @zag-js/checkbox
 
+## 0.63.0
+
+### Patch Changes
+
+- [`c6754ed`](https://github.com/chakra-ui/zag/commit/c6754ed33621a3573601672f98faa3c09de8316c) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Fix an issue that action trigger did not emit an event
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.63.0
+  - @zag-js/core@0.63.0
+  - @zag-js/types@0.63.0
+  - @zag-js/utils@0.63.0
+
 ## 0.62.1
 
 ### Patch Changes

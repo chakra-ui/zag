@@ -1,5 +1,24 @@
 # @zag-js/slider
 
+## 0.63.0
+
+### Patch Changes
+
+- [`b1db162`](https://github.com/chakra-ui/zag/commit/b1db162adc986dbb7efc1c73683c2887897b25b9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onValueChangeEnd` gets called with incorrect
+  value
+
+- Updated dependencies [[`ca437b9`](https://github.com/chakra-ui/zag/commit/ca437b94b49760742bad69aa57a3d6527219782a)]:
+  - @zag-js/dom-query@0.63.0
+  - @zag-js/dom-event@0.63.0
+  - @zag-js/anatomy@0.63.0
+  - @zag-js/core@0.63.0
+  - @zag-js/types@0.63.0
+  - @zag-js/utils@0.63.0
+  - @zag-js/element-size@0.63.0
+  - @zag-js/form-utils@0.63.0
+  - @zag-js/numeric-range@0.63.0
+
 ## 0.62.1
 
 ### Patch Changes
