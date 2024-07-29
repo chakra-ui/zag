@@ -99,6 +99,7 @@
     "tsup": "8.2.3",
     "tsx": "4.16.2",
     "typescript": "5.5.4",
+    "vercel-submodules": "1.0.10",
     "vite": "5.3.5",
     "vite-plugin-dts": "3.9.1",
     "vitest": "2.0.4"
