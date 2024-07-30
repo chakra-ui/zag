@@ -2042,8 +2042,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
       solid-js:
-        specifier: 1.8.18
-        version: 1.8.18
+        specifier: 1.8.19
+        version: 1.8.19
 
   packages/frameworks/svelte:
     dependencies:
@@ -11156,8 +11156,18 @@ packages:
     peerDependencies:
       seroval: ^1.0
 
+  seroval-plugins@1.1.0:
+    resolution: {integrity: sha512-KtcJg590L3X3dd7ixs6am4UGVcV69TyjYhHtanIdQJq4dy2OceWXmmvWrYx7oFDNe+LNdxdWd0I5BQXuV5fBhA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      seroval: ^1.0
+
   seroval@1.0.7:
     resolution: {integrity: sha512-n6ZMQX5q0Vn19Zq7CIKNIo7E75gPkGCFUEqDpa8jgwpYr/vScjqnQ6H09t1uIiZ0ZSK0ypEGvrYK2bhBGWsGdw==}
+    engines: {node: '>=10'}
+
+  seroval@1.1.0:
+    resolution: {integrity: sha512-74Wpe+hhPx4V8NFe00I2Fu9gTJopKoH5vE7nCqFzVgKOXV8AnN23T58K79QLYQotzGpH93UZ+UN2Y11j9huZJg==}
     engines: {node: '>=10'}
 
   serve-placeholder@2.0.2:
@@ -11271,6 +11281,9 @@ packages:
 
   solid-js@1.8.18:
     resolution: {integrity: sha512-cpkxDPvO/AuKBugVv6xKFd1C9VC0XZMu4VtF56IlHoux8HgyW44uqNSWbozMnVcpIzHIhS3vVXPAVZYM26jpWw==}
+
+  solid-js@1.8.19:
+    resolution: {integrity: sha512-h8z/TvTQYsf894LM9Iau/ZW2iAKrCzAWDwjPhMcXnonmW1OIIihc28wp82b1wwei1p81fH5+gnfNOe8RzLbDRQ==}
 
   solid-refresh@0.6.3:
     resolution: {integrity: sha512-F3aPsX6hVw9ttm5LYlth8Q15x6MlI/J3Dn+o3EQyRTtTxidepSTwAYdozt01/YA+7ObcciagGEyXIopGZzQtbA==}
@@ -21693,7 +21706,13 @@ snapshots:
     dependencies:
       seroval: 1.0.7
 
+  seroval-plugins@1.1.0(seroval@1.1.0):
+    dependencies:
+      seroval: 1.1.0
+
   seroval@1.0.7: {}
+
+  seroval@1.1.0: {}
 
   serve-placeholder@2.0.2:
     dependencies:
@@ -21817,6 +21836,12 @@ snapshots:
       csstype: 3.1.3
       seroval: 1.0.7
       seroval-plugins: 1.0.7(seroval@1.0.7)
+
+  solid-js@1.8.19:
+    dependencies:
+      csstype: 3.1.3
+      seroval: 1.1.0
+      seroval-plugins: 1.1.0(seroval@1.1.0)
 
   solid-refresh@0.6.3(solid-js@1.8.18):
     dependencies:
