@@ -133,7 +133,7 @@ export function machine(userContext: UserDefinedContext) {
             "INPUT.CHANGE": {
               actions: ["setValue", "setHint"],
             },
-            "INPUT.COMMIT": [
+            "INPUT.BLUR": [
               {
                 guard: and("clampValueOnBlur", not("isInRange")),
                 target: "idle",
@@ -144,6 +144,9 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setFormattedValue", "clearHint", "invokeOnBlur"],
               },
             ],
+            "INPUT.ENTER": {
+              actions: ["setFormattedValue", "clearHint", "invokeOnBlur"],
+            },
           },
         },
 

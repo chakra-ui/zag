@@ -56,6 +56,17 @@ test.describe("number input", () => {
     await I.seeInputHasValue("4")
   })
 
+  test("pressing enter should make up/down still work", async () => {
+    await I.type("5")
+    await I.pressKey("Enter")
+
+    await I.pressKey("ArrowDown")
+    await I.seeInputHasValue("4")
+
+    await I.pressKey("ArrowUp")
+    await I.seeInputHasValue("5")
+  })
+
   test("should set value to min/max on home/end keys", async () => {
     await I.type("5")
     await I.pressKey("Home")

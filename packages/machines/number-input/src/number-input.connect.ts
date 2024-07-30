@@ -123,7 +123,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send("INPUT.FOCUS")
         },
         onBlur() {
-          send({ type: "INPUT.COMMIT", src: "blur" })
+          send("INPUT.BLUR")
         },
         onChange(event) {
           send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set" })
@@ -167,7 +167,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               event.preventDefault()
             },
             Enter() {
-              send({ type: "INPUT.COMMIT", src: "enter" })
+              send("INPUT.ENTER")
             },
           }
 
