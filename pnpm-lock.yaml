@@ -112,7 +112,7 @@ importers:
         version: 3.3.3
       prettier-plugin-svelte:
         specifier: 3.2.6
-        version: 3.2.6(prettier@3.3.3)(svelte@5.0.0-next.195)
+        version: 3.2.6(prettier@3.3.3)(svelte@5.0.0-next.202)
       signale:
         specifier: 1.4.0
         version: 1.4.0
@@ -2056,13 +2056,13 @@ importers:
     devDependencies:
       '@sveltejs/package':
         specifier: 2.3.2
-        version: 2.3.2(svelte@5.0.0-next.195)(typescript@5.5.4)
+        version: 2.3.2(svelte@5.0.0-next.202)(typescript@5.5.4)
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
       svelte:
-        specifier: 5.0.0-next.195
-        version: 5.0.0-next.195
+        specifier: 5.0.0-next.202
+        version: 5.0.0-next.202
 
   packages/frameworks/vue:
     dependencies:
@@ -11571,8 +11571,8 @@ packages:
     resolution: {integrity: sha512-ZbRnvO0UWXhE71Va5Rjg+nY4tbCUnqJFQC0VXHdqkHT/i5nqW8DPtw0rBlsFg4mq2uDQ8iOO/P7tR3OVXaSI7g==}
     engines: {node: '>=18'}
 
-  svelte@5.0.0-next.195:
-    resolution: {integrity: sha512-aVWhY24T48SI3eAQCZ3RiLY12VP36KWxW0Jb9GqasZC4BVBZTsKJGAY+Uwg3Cv9Ce/QeV+FWoZrom5bJrjR6VA==}
+  svelte@5.0.0-next.202:
+    resolution: {integrity: sha512-mBx8jZG3ZgPHTWJGL9O5SKi0RB16gEvLtMGxINlC1HVYRfIaceN/DDT8I1cFHmUlpEq63XpmyCNWT+SsQfOqBw==}
     engines: {node: '>=18'}
 
   svg-parser@2.0.4:
@@ -15162,14 +15162,14 @@ snapshots:
       - vinxi
       - vite
 
-  '@sveltejs/package@2.3.2(svelte@5.0.0-next.195)(typescript@5.5.4)':
+  '@sveltejs/package@2.3.2(svelte@5.0.0-next.202)(typescript@5.5.4)':
     dependencies:
       chokidar: 3.6.0
       kleur: 4.1.5
       sade: 1.8.1
       semver: 7.6.2
-      svelte: 5.0.0-next.195
-      svelte2tsx: 0.7.13(svelte@5.0.0-next.195)(typescript@5.5.4)
+      svelte: 5.0.0-next.202
+      svelte2tsx: 0.7.13(svelte@5.0.0-next.202)(typescript@5.5.4)
     transitivePeerDependencies:
       - typescript
 
@@ -21186,10 +21186,10 @@ snapshots:
     dependencies:
       fast-diff: 1.3.0
 
-  prettier-plugin-svelte@3.2.6(prettier@3.3.3)(svelte@5.0.0-next.195):
+  prettier-plugin-svelte@3.2.6(prettier@3.3.3)(svelte@5.0.0-next.202):
     dependencies:
       prettier: 3.3.3
-      svelte: 5.0.0-next.195
+      svelte: 5.0.0-next.202
 
   prettier@2.8.8: {}
 
@@ -22133,11 +22133,11 @@ snapshots:
 
   svelte-routing@2.13.0: {}
 
-  svelte2tsx@0.7.13(svelte@5.0.0-next.195)(typescript@5.5.4):
+  svelte2tsx@0.7.13(svelte@5.0.0-next.202)(typescript@5.5.4):
     dependencies:
       dedent-js: 1.0.1
       pascal-case: 3.1.2
-      svelte: 5.0.0-next.195
+      svelte: 5.0.0-next.202
       typescript: 5.5.4
 
   svelte@5.0.0-next.153:
@@ -22156,7 +22156,7 @@ snapshots:
       magic-string: 0.30.10
       zimmerframe: 1.1.2
 
-  svelte@5.0.0-next.195:
+  svelte@5.0.0-next.202:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@jridgewell/sourcemap-codec': 1.4.15
@@ -22450,7 +22450,7 @@ snapshots:
 
   unctx@2.3.1:
     dependencies:
-      acorn: 8.12.0
+      acorn: 8.12.1
       estree-walker: 3.0.3
       magic-string: 0.30.10
       unplugin: 1.11.0
