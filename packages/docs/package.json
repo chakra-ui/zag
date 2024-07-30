@@ -19,7 +19,7 @@
   "scripts": {
     "build": "tsup",
     "test": "jest --config ../../jest.config.js --rootDir . --passWithNoTests",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"
