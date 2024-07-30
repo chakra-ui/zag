@@ -14,7 +14,7 @@ export default [
       "@typescript-eslint": tsPlugin,
     },
     files: ["**/*.ts", "**/*.tsx"],
-    ignores: ["dist", "node_modules", "coverage", ".next", "build", "examples/vue-ts", "plop-templates"],
+    ignores: ["dist", "node_modules", "coverage", ".next", "build", "examples/vue-ts", "plop-templates", "**/*.d.ts"],
 
     rules: {
       "@typescript-eslint/ban-ts-comment": "off",
