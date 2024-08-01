@@ -6,6 +6,26 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.64.0](./#0.64.0) - 2024-08-01
+
+### Fixed
+
+- **NumberInput**
+
+  - Fix issue where pressing enter key, doesn't make arrow up and down work as expected
+
+### Added
+
+- **Collection**
+
+  - Introduce new `GridCollection` to manage grid base navigation and selection
+
+### Changed
+
+- **Collection [BREAKING]**
+
+  - Rename `Collection` class to `ListCollection` to better reflect its intent
+
 ## [0.63.0](./#0.63.0) - 2024-07-28
 
 ### Fixed

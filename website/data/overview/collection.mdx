@@ -18,9 +18,9 @@ A list collection is a collection that is based on an array of items. It is
 created by passing an array of items to the constructor.
 
 ```ts
-import { Collection } from "@zag-js/collection"
+import { ListCollection } from "@zag-js/collection"
 
-const collection = new Collection({
+const collection = new ListCollection({
   items: [
     { label: "Apple", value: "apple" },
     { label: "Banana", value: "banana" },
@@ -84,9 +84,9 @@ If you are working with custom objects, you can pass a function to the
 string and a value, respectively.
 
 ```ts
-import { Collection } from "@zag-js/collection"
+import { ListCollection } from "@zag-js/collection"
 
-const collection = new Collection({
+const collection = new ListCollection({
   items: [
     { id: 1, name: "apple" },
     { id: 2, name: "banana" },
@@ -100,9 +100,9 @@ const collection = new Collection({
 To disable an item, you can pass a function to the `isItemDisabled` option.
 
 ```ts
-import { Collection } from "@zag-js/collection"
+import { ListCollection } from "@zag-js/collection"
 
-const collection = new Collection({
+const collection = new ListCollection({
   items: [
     { id: 1, name: "apple" },
     { id: 2, name: "banana" },

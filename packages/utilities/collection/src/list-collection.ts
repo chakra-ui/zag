@@ -18,7 +18,7 @@ const fallback: CollectionMethods<any> = {
   },
 }
 
-export class Collection<T extends CollectionItem = CollectionItem> {
+export class ListCollection<T extends CollectionItem = CollectionItem> {
   /**
    * The items in the collection
    */
@@ -28,7 +28,7 @@ export class Collection<T extends CollectionItem = CollectionItem> {
     this.items = [...options.items] as T[]
   }
 
-  isEqual(other: Collection<T>) {
+  isEqual(other: ListCollection<T>) {
     return isEqual(this.items, other.items)
   }
 
@@ -178,10 +178,10 @@ export class Collection<T extends CollectionItem = CollectionItem> {
   /**
    * Returns the next value in the collection
    */
-  getNextValue(value: string): string | null {
+  getNextValue(value: string, step = 1, clamp = false): string | null {
     let index = this.indexOf(value)
     if (index === -1) return null
-    index++
+    index = clamp ? Math.min(index + step, this.size - 1) : index + step
     while (index <= this.size && this.getItemDisabled(this.at(index))) index++
     return this.getItemValue(this.at(index))
   }
@@ -189,10 +189,10 @@ export class Collection<T extends CollectionItem = CollectionItem> {
   /**
    * Returns the previous value in the collection
    */
-  getPreviousValue(value: string): string | null {
+  getPreviousValue(value: string, step = 1, clamp = false): string | null {
     let index = this.indexOf(value)
     if (index === -1) return null
-    index--
+    index = clamp ? Math.max(index - step, 0) : index - step
     while (index >= 0 && this.getItemDisabled(this.at(index))) index--
     return this.getItemValue(this.at(index))
   }
