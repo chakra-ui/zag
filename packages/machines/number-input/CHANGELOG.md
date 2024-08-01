@@ -1,5 +1,23 @@
 # @zag-js/number-input
 
+## 0.64.0
+
+### Patch Changes
+
+- [`40167b7`](https://github.com/chakra-ui/zag/commit/40167b76e196129807e5ff9f6fe60730518963f1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where pressing enter key, doesn't make arrow up and down
+  work as expected.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.64.0
+  - @zag-js/core@0.64.0
+  - @zag-js/types@0.64.0
+  - @zag-js/utils@0.64.0
+  - @zag-js/dom-event@0.64.0
+  - @zag-js/dom-query@0.64.0
+  - @zag-js/form-utils@0.64.0
+  - @zag-js/number-utils@0.64.0
+
 ## 0.63.0
 
 ### Patch Changes

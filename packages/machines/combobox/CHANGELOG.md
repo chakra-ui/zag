@@ -1,5 +1,27 @@
 # @zag-js/combobox
 
+## 0.64.0
+
+### Minor Changes
+
+- [`c1a9ea7`](https://github.com/chakra-ui/zag/commit/c1a9ea763a7d74d31d63b57c2e2f66bd8deaf42b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - BREAKING: Rename `Collection` class to `ListCollection` to better
+  reflect its intent.
+
+### Patch Changes
+
+- Updated dependencies [[`c1a9ea7`](https://github.com/chakra-ui/zag/commit/c1a9ea763a7d74d31d63b57c2e2f66bd8deaf42b)]:
+  - @zag-js/collection@0.64.0
+  - @zag-js/anatomy@0.64.0
+  - @zag-js/core@0.64.0
+  - @zag-js/types@0.64.0
+  - @zag-js/aria-hidden@0.64.0
+  - @zag-js/utils@0.64.0
+  - @zag-js/dismissable@0.64.0
+  - @zag-js/dom-event@0.64.0
+  - @zag-js/dom-query@0.64.0
+  - @zag-js/popper@0.64.0
+
 ## 0.63.0
 
 ### Patch Changes
