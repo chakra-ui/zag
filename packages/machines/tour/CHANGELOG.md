@@ -1,5 +1,18 @@
 # @zag-js/tour
 
+## 0.64.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.64.0
+  - @zag-js/core@0.64.0
+  - @zag-js/types@0.64.0
+  - @zag-js/utils@0.64.0
+  - @zag-js/dismissable@0.64.0
+  - @zag-js/dom-query@0.64.0
+  - @zag-js/popper@0.64.0
+
 ## 0.63.0
 
 ### Patch Changes

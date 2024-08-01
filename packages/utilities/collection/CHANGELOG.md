@@ -1,5 +1,18 @@
 # @zag-js/collection
 
+## 0.64.0
+
+### Minor Changes
+
+- [`c1a9ea7`](https://github.com/chakra-ui/zag/commit/c1a9ea763a7d74d31d63b57c2e2f66bd8deaf42b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - BREAKING: Rename `Collection` class to `ListCollection` to better
+  reflect its intent.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.64.0
+
 ## 0.63.0
 
 ### Patch Changes
