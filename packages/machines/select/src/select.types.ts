@@ -1,4 +1,4 @@
-import type { Collection, CollectionItem, CollectionOptions } from "@zag-js/collection"
+import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
 import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
@@ -54,7 +54,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * The item collection
    */
-  collection: Collection<CollectionItem>
+  collection: ListCollection<CollectionItem>
   /**
    * The ids of the elements in the select. Useful for composition.
    */
@@ -332,11 +332,11 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Function to toggle the select
    */
-  collection: Collection<V>
+  collection: ListCollection<V>
   /**
    * Function to set the collection of items
    */
-  setCollection(collection: Collection<V>): void
+  setCollection(collection: ListCollection<V>): void
   /**
    * Function to set the positioning options of the select
    */
