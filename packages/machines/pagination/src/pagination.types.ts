@@ -156,6 +156,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   page: number
   /**
+   * The total number of data items.
+   */
+  count: number
+  /**
    * The number of data items per page.
    */
   pageSize: number

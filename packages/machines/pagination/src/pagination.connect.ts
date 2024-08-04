@@ -9,6 +9,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const totalPages = state.context.totalPages
   const page = state.context.page
   const translations = state.context.translations
+  const count = state.context.count
 
   const previousPage = state.context.previousPage
   const nextPage = state.context.nextPage
@@ -22,6 +23,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const pages = getTransformedRange(state.context)
 
   return {
+    count,
     page,
     pageSize: state.context.pageSize,
     totalPages,
