@@ -52,7 +52,7 @@ export const editableControls = defineControls({
   },
   activationMode: {
     type: "select",
-    options: ["focus", "dblclick", "none"] as const,
+    options: ["focus", "dblclick", "click"] as const,
     defaultValue: "focus",
   },
 })
