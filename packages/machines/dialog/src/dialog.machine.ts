@@ -143,7 +143,6 @@ export function machine(userContext: UserDefinedContext) {
               preventScroll: true,
               fallbackFocus: contentEl,
               returnFocusOnDeactivate: ctx.restoreFocus,
-              allowOutsideClick: true,
               initialFocus: ctx.initialFocusEl?.() ?? undefined,
               setReturnFocus(triggerEl) {
                 return ctx.finalFocusEl?.() ?? triggerEl
