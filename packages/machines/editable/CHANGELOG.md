@@ -1,5 +1,27 @@
 # @zag-js/editable
 
+## 0.65.0
+
+### Minor Changes
+
+- [`f558b8f`](https://github.com/chakra-ui/zag/commit/f558b8f402946b6c8222e1f7ea352fac1dc4f017) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for controlled the editable's state (edit/preview)
+  using `edit` and `onEditChange`
+  - Removed `onEdit` in favor of `onEditChange`
+  - Removed `startsWithEditView` in favor of `edit` prop
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.65.0
+  - @zag-js/core@0.65.0
+  - @zag-js/types@0.65.0
+  - @zag-js/utils@0.65.0
+  - @zag-js/dom-event@0.65.0
+  - @zag-js/dom-query@0.65.0
+  - @zag-js/form-utils@0.65.0
+  - @zag-js/interact-outside@0.65.0
+
 ## 0.64.0
 
 ### Patch Changes

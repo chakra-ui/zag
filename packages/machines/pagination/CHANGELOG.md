@@ -1,5 +1,21 @@
 # @zag-js/pagination
 
+## 0.65.0
+
+### Minor Changes
+
+- [`4ce5bed`](https://github.com/chakra-ui/zag/commit/4ce5bedf84bfb104a0cab1bdfb67f3a29a98e078) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `api.count` property
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.65.0
+  - @zag-js/core@0.65.0
+  - @zag-js/types@0.65.0
+  - @zag-js/utils@0.65.0
+  - @zag-js/dom-query@0.65.0
+
 ## 0.64.0
 
 ### Patch Changes

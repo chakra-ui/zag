@@ -1,5 +1,23 @@
 # @zag-js/time-picker
 
+## 0.65.0
+
+### Patch Changes
+
+- [#1742](https://github.com/chakra-ui/zag/pull/1742)
+  [`97ee780`](https://github.com/chakra-ui/zag/commit/97ee780304c59883fd24fec96d05dd5fc5e5e582) Thanks
+  [@colinlienard](https://github.com/colinlienard)! - fix(time-picker): wrong selected hour on 24 hours format
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.65.0
+  - @zag-js/core@0.65.0
+  - @zag-js/types@0.65.0
+  - @zag-js/utils@0.65.0
+  - @zag-js/dismissable@0.65.0
+  - @zag-js/dom-event@0.65.0
+  - @zag-js/dom-query@0.65.0
+  - @zag-js/popper@0.65.0
+
 ## 0.64.0
 
 ### Patch Changes

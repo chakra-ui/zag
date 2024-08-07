@@ -1,5 +1,22 @@
 # @zag-js/dialog
 
+## 0.65.0
+
+### Patch Changes
+
+- [`5e0f38e`](https://github.com/chakra-ui/zag/commit/5e0f38e7b762c9eb49452a9adb4d8f514e881a24) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where closing a nested dialog focuses the first
+  focusable element in the parent dialog instead of the previously focused element.
+- Updated dependencies []:
+  - @zag-js/anatomy@0.65.0
+  - @zag-js/core@0.65.0
+  - @zag-js/types@0.65.0
+  - @zag-js/aria-hidden@0.65.0
+  - @zag-js/utils@0.65.0
+  - @zag-js/dismissable@0.65.0
+  - @zag-js/dom-query@0.65.0
+  - @zag-js/remove-scroll@0.65.0
+
 ## 0.64.0
 
 ### Patch Changes
