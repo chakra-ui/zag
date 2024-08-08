@@ -144,7 +144,7 @@ const components = {
         selectOnFocus: true,
         placeholder: "Enter text...",
         activationMode: {
-          options: ["focus", "dblclick", "none"],
+          options: ["focus", "click", "dblclick", "none"],
           default: "focus",
         },
         submitMode: {
