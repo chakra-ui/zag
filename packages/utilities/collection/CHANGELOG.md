@@ -1,5 +1,107 @@
 # @zag-js/collection
 
+## 0.65.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.65.0
+
+## 0.64.0
+
+### Minor Changes
+
+- [`c1a9ea7`](https://github.com/chakra-ui/zag/commit/c1a9ea763a7d74d31d63b57c2e2f66bd8deaf42b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - BREAKING: Rename `Collection` class to `ListCollection` to better
+  reflect its intent.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.64.0
+
+## 0.63.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.63.0
+
+## 0.62.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.62.1
+
+## 0.62.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.62.0
+
+## 0.61.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.61.1
+
+## 0.61.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.61.0
+
+## 0.60.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.60.0
+
+## 0.59.0
+
+### Patch Changes
+
+- [#1625](https://github.com/chakra-ui/zag/pull/1625)
+  [`1441d06`](https://github.com/chakra-ui/zag/commit/1441d06c03e0fc3958c8b25821b19db2398549dc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve reliability of select and combobox by redesigning the
+  collection interface
+
+- Updated dependencies []:
+  - @zag-js/utils@0.59.0
+
+## 0.58.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.58.3
+
+## 0.58.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.58.2
+
+## 0.58.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.58.1
+
+## 0.58.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.58.0
+
 ## 0.57.0
 
 ### Minor Changes

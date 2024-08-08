@@ -30,6 +30,7 @@ export abstract class Color implements ColorType {
   }
 
   getChannelValue(channel: ColorChannel): number {
+    // @ts-ignore
     if (channel in this) return this[channel]
     throw new Error("Unsupported color channel: " + channel)
   }
@@ -50,6 +51,7 @@ export abstract class Color implements ColorType {
     const { minValue, maxValue } = this.getChannelRange(channel)
     if (channel in this) {
       let clone = this.clone()
+      // @ts-ignore
       clone[channel] = clampValue(value, minValue, maxValue)
       return clone
     }

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/tooltip",
-  "version": "0.57.0",
+  "version": "0.65.0",
   "description": "Core logic for the tooltip widget implemented as a state machine",
   "keywords": [
     "js",
@@ -40,7 +40,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"

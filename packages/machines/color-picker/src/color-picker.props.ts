@@ -30,9 +30,11 @@ export const props = createProps<UserDefinedContext>()([
   "open.controlled",
   "open",
   "positioning",
+  "required",
   "readOnly",
   "value",
 ])
+
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 
 export const areaProps = createProps<AreaProps>()(["xChannel", "yChannel"])

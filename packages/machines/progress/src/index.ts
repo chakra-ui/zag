@@ -9,6 +9,7 @@ export type {
   IntlTranslations,
   Orientation,
   ProgressState,
+  Service,
   ValueTranslationDetails,
   ViewProps,
 } from "./progress.types"

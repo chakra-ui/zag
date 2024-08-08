@@ -20,8 +20,8 @@ export interface FocusChangeDetails {
 export type ElementIds = Partial<{
   root: string
   item(value: string): string
-  content(value: string): string
-  trigger(value: string): string
+  itemContent(value: string): string
+  itemTrigger(value: string): string
 }>
 
 interface PublicContext extends DirectionProperty, CommonProperties {
@@ -90,7 +90,7 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type Service = Machine<MachineContext, MachineState>
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API

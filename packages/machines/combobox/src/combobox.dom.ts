@@ -13,7 +13,7 @@ export const dom = createScope({
   getItemGroupId: (ctx: Ctx, id: string | number) => ctx.ids?.itemGroup?.(id) ?? `combobox:${ctx.id}:optgroup:${id}`,
   getItemGroupLabelId: (ctx: Ctx, id: string | number) =>
     ctx.ids?.itemGroupLabel?.(id) ?? `combobox:${ctx.id}:optgroup-label:${id}`,
-  getItemId: (ctx: Ctx, id: string) => `combobox:${ctx.id}:option:${id}`,
+  getItemId: (ctx: Ctx, id: string) => ctx.ids?.item?.(id) ?? `combobox:${ctx.id}:option:${id}`,
 
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
@@ -24,17 +24,18 @@ export const dom = createScope({
   getHighlightedItemEl: (ctx: Ctx) => {
     const value = ctx.highlightedValue
     if (value == null) return
-    return query(dom.getContentEl(ctx), `[role=option][data-value="${CSS.escape(value)}"`)
+    const selector = `[role=option][data-value="${CSS.escape(value)}"`
+    return query(dom.getContentEl(ctx), selector)
   },
 
   focusInputEl: (ctx: Ctx) => {
     const inputEl = dom.getInputEl(ctx)
-    if (dom.getActiveElement(ctx) === inputEl) return
+    if (dom.isActiveElement(ctx, inputEl)) return
     inputEl?.focus({ preventScroll: true })
   },
   focusTriggerEl: (ctx: Ctx) => {
     const triggerEl = dom.getTriggerEl(ctx)
-    if (dom.getActiveElement(ctx) === triggerEl) return
+    if (dom.isActiveElement(ctx, triggerEl)) return
     triggerEl?.focus({ preventScroll: true })
   },
 })

@@ -1,5 +1,109 @@
 # @zag-js/svelte
 
+## 0.65.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.65.0
+  - @zag-js/types@0.65.0
+
+## 0.64.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.64.0
+  - @zag-js/types@0.64.0
+
+## 0.63.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.63.0
+  - @zag-js/types@0.63.0
+
+## 0.62.1
+
+### Patch Changes
+
+- Updated dependencies [[`5644790`](https://github.com/chakra-ui/zag/commit/564479081d37cd06bc38043fccf9c229379a1531)]:
+  - @zag-js/core@0.62.1
+  - @zag-js/types@0.62.1
+
+## 0.62.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.62.0
+  - @zag-js/types@0.62.0
+
+## 0.61.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.61.1
+  - @zag-js/types@0.61.1
+
+## 0.61.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.61.0
+  - @zag-js/types@0.61.0
+
+## 0.60.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.60.0
+  - @zag-js/types@0.60.0
+
+## 0.59.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.59.0
+  - @zag-js/types@0.59.0
+
+## 0.58.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.58.3
+  - @zag-js/types@0.58.3
+
+## 0.58.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.58.2
+  - @zag-js/types@0.58.2
+
+## 0.58.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.58.1
+  - @zag-js/types@0.58.1
+
+## 0.58.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.58.0
+  - @zag-js/types@0.58.0
+
 ## 0.57.0
 
 ### Patch Changes

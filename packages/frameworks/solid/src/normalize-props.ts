@@ -7,7 +7,7 @@ export type PropTypes = JSX.IntrinsicElements & {
   style: JSX.CSSProperties
 }
 
-const eventMap = {
+const eventMap: Record<string, string> = {
   onFocus: "onFocusIn",
   onBlur: "onFocusOut",
   onDoubleClick: "onDblClick",
@@ -56,7 +56,7 @@ export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
 })
 
 function cssify(style: StyleObject): StyleObject {
-  let css = {}
+  let css = {} as StyleObject
   for (const property in style) {
     const value = style[property]
     if (!isString(value) && !isNumber(value)) continue
@@ -68,11 +68,12 @@ function cssify(style: StyleObject): StyleObject {
 
 const uppercasePattern = /[A-Z]/g
 const msPattern = /^ms-/
-const cache = {}
 
 function toHyphenLower(match: string) {
   return "-" + match.toLowerCase()
 }
+
+const cache: Record<string, any> = {}
 
 function hyphenateStyleName(name: string) {
   if (cache.hasOwnProperty(name)) return cache[name]

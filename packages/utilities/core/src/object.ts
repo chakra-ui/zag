@@ -1,3 +1,5 @@
+import { createSplitProps } from "./split-props"
+
 export function compact<T extends Record<string, unknown> | undefined>(obj: T): T {
   if (!isPlainObject(obj) || obj === undefined) {
     return obj
@@ -33,4 +35,8 @@ export function pick<T extends Record<string, any>, K extends keyof T>(obj: T, k
   }
 
   return filtered as any
+}
+
+export function omit<T extends Record<string, any>>(obj: T, keys: string[]) {
+  return createSplitProps(keys)(obj)[1]
 }

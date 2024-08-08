@@ -1,5 +1,5 @@
 import { createNormalizer } from "@zag-js/types"
-import type { HTMLAttributes, CSSProperties } from "react"
+import type { HTMLAttributes, CSSProperties, JSX } from "react"
 
 type WithoutRef<T> = Omit<T, "ref">
 

@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { FileError, FileMimeType } from "@zag-js/file-utils"
 import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -68,6 +68,10 @@ interface PublicContext extends LocaleProperties, CommonProperties {
    * Whether the file input is disabled
    */
   disabled?: boolean
+  /**
+   * Whether the file input is required
+   */
+  required?: boolean
   /**
    * Whether to allow drag and drop in the dropzone element
    * @default true
@@ -159,6 +163,8 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
@@ -231,3 +237,5 @@ export interface MachineApi<T extends PropTypes> {
   getItemSizeTextProps(props: ItemProps): T["element"]
   getItemDeleteTriggerProps(props: ItemProps): T["button"]
 }
+
+export type { FileMimeType }

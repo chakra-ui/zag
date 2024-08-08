@@ -20,7 +20,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; item(value: string): string; content(value: string): string; trigger(value: string): string; }>",
+        "type": "Partial<{ root: string; item(value: string): string; itemContent(value: string): string; itemTrigger(value: string): string; }>",
         "description": "The ids of the elements in the accordion. Useful for composition."
       },
       "multiple": {
@@ -194,7 +194,7 @@
         "description": "Function called when the slide changes."
       },
       "ids": {
-        "type": "Partial<{ root: string; viewport: string; slide(index: number): string; slideGroup: string; nextSlideTrigger: string; prevSlideTrigger: string; indicatorGroup: string; indicator(index: number): string; }>",
+        "type": "Partial<{ root: string; viewport: string; item(index: number): string; itemGroup: string; nextTrigger: string; prevTrigger: string; indicatorGroup: string; indicator(index: number): string; }>",
         "description": "The ids of the elements in the carousel. Useful for composition."
       },
       "dir": {
@@ -432,6 +432,10 @@
         "type": "(channel: ColorChannel) => string",
         "description": "Function to set the color value"
       },
+      "getChannelValueText": {
+        "type": "(channel: ColorChannel, locale: string) => string",
+        "description": "Function to get the formatted and localized value of a specific channel"
+      },
       "setChannelValue": {
         "type": "(channel: ColorChannel, value: number) => void",
         "description": "Function to set the color value of a specific channel"
@@ -459,7 +463,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; control: string; trigger: string; label: string; input: string; content: string; area: string; areaGradient: string; areaThumb: string; channelInput(id: string): string; channelSliderTrack(id: ColorChannel): string; }>",
+        "type": "Partial<{ root: string; control: string; trigger: string; label: string; input: string; hiddenInput: string; content: string; area: string; areaGradient: string; positioner: string; formatSelect: string; areaThumb: string; channelInput(id: string): string; channelSliderTrack(id: ColorChannel): string; }>",
         "description": "The ids of the elements in the color picker. Useful for composition."
       },
       "value": {
@@ -474,6 +478,10 @@
       "readOnly": {
         "type": "boolean",
         "description": "Whether the color picker is read-only"
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the color picker is required"
       },
       "onValueChange": {
         "type": "(details: ValueChangeDetails) => void",
@@ -665,6 +673,10 @@
         "description": "Whether the combobox is readonly. This puts the combobox in a \"non-editable\" mode\nbut the user can still interact with it"
       },
       "invalid": {
+        "type": "boolean",
+        "description": "Whether the combobox is invalid"
+      },
+      "required": {
         "type": "boolean",
         "description": "Whether the combobox is required"
       },
@@ -960,7 +972,7 @@
         "description": "The localized messages to use."
       },
       "ids": {
-        "type": "Partial<{ root: string; table(id: string): string; tableHeader(id: string): string; tableBody(id: string): string; tableRow(id: string): string; content: string; cellTrigger(id: string): string; prevTrigger(view: DateView): string; clearTrigger: string; control: string; input(index: number): string; trigger: string; monthSelect: string; yearSelect: string; positioner: string; }>",
+        "type": "Partial<{ root: string; label: string; table(id: string): string; tableHeader(id: string): string; tableBody(id: string): string; tableRow(id: string): string; content: string; cellTrigger(id: string): string; prevTrigger(view: DateView): string; clearTrigger: string; control: string; input(index: number): string; trigger: string; monthSelect: string; yearSelect: string; positioner: string; }>",
         "description": "The ids of the elements in the date picker. Useful for composition."
       },
       "name": {
@@ -1228,7 +1240,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; area: string; label: string; preview: string; input: string; controls: string; submitTrigger: string; cancelTrigger: string; editTrigger: string; }>",
+        "type": "Partial<{ root: string; area: string; label: string; preview: string; input: string; control: string; submitTrigger: string; cancelTrigger: string; editTrigger: string; }>",
         "description": "The ids of the elements in the editable. Useful for composition."
       },
       "invalid": {
@@ -1281,6 +1293,10 @@
       "readOnly": {
         "type": "boolean",
         "description": "Whether the editable is readonly"
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the editable is required"
       },
       "onValueChange": {
         "type": "(details: ValueChangeDetails) => void",
@@ -1371,6 +1387,10 @@
         "type": "() => void",
         "description": "Function to clear the value"
       },
+      "clearRejectedFiles": {
+        "type": "() => void",
+        "description": "Function to clear the rejected files"
+      },
       "getFileSize": {
         "type": "(file: File) => string",
         "description": "Function to format the file size (e.g. 1.2MB)"
@@ -1394,12 +1414,16 @@
         "description": "The localized messages to use."
       },
       "accept": {
-        "type": "string | Record<string, string[]>",
+        "type": "Record<string, string[]> | FileMimeType[]",
         "description": "The accept file types"
       },
       "disabled": {
         "type": "boolean",
         "description": "Whether the file input is disabled"
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the file input is required"
       },
       "allowDrop": {
         "type": "boolean",
@@ -1699,7 +1723,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ trigger: string; contextTrigger: string; content: string; label(id: string): string; group(id: string): string; positioner: string; arrow: string; }>",
+        "type": "Partial<{ trigger: string; contextTrigger: string; content: string; groupLabel(id: string): string; group(id: string): string; positioner: string; arrow: string; }>",
         "description": "The ids of the elements in the menu. Useful for composition."
       },
       "highlightedValue": {
@@ -1865,6 +1889,10 @@
         "type": "boolean",
         "description": "Whether the number input value is invalid."
       },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the number input is required"
+      },
       "pattern": {
         "type": "string",
         "description": "The pattern used to check the <input> element's value against",
@@ -2003,6 +2031,22 @@
       "setPage": {
         "type": "(page: number) => void",
         "description": "Function to set the current page."
+      },
+      "goToNextPage": {
+        "type": "() => void",
+        "description": "Function to go to the next page."
+      },
+      "goToPrevPage": {
+        "type": "() => void",
+        "description": "Function to go to the previous page."
+      },
+      "goToFirstPage": {
+        "type": "() => void",
+        "description": "Function to go to the first page."
+      },
+      "goToLastPage": {
+        "type": "() => void",
+        "description": "Function to go to the last page."
       }
     },
     "context": {
@@ -2125,6 +2169,14 @@
       "invalid": {
         "type": "boolean",
         "description": "Whether the pin input is in the invalid state"
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the pin input is required"
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the pin input is in the valid state"
       },
       "otp": {
         "type": "boolean",
@@ -2337,6 +2389,30 @@
       "setToMax": {
         "type": "() => void",
         "description": "Sets the current value of the progress bar to the max value."
+      },
+      "setToMin": {
+        "type": "() => void",
+        "description": "Sets the current value of the progress bar to the min value."
+      },
+      "percent": {
+        "type": "number",
+        "description": "The percentage of the progress bar's value."
+      },
+      "percentAsString": {
+        "type": "string",
+        "description": "The percentage of the progress bar's value as a string."
+      },
+      "min": {
+        "type": "number",
+        "description": "The minimum allowed value of the progress bar."
+      },
+      "max": {
+        "type": "number",
+        "description": "The maximum allowed value of the progress bar."
+      },
+      "indeterminate": {
+        "type": "boolean",
+        "description": "Whether the progress bar is indeterminate."
       }
     },
     "context": {
@@ -2534,7 +2610,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; label: string; hiddenInput: string; control: string; rating(id: string): string; }>",
+        "type": "Partial<{ root: string; label: string; hiddenInput: string; control: string; item(id: string): string; }>",
         "description": "The ids of the elements in the rating. Useful for composition."
       },
       "translations": {
@@ -2565,6 +2641,10 @@
       "disabled": {
         "type": "boolean",
         "description": "Whether the rating is disabled."
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the rating is required."
       },
       "allowHalf": {
         "type": "boolean",
@@ -2709,6 +2789,10 @@
         "type": "boolean",
         "description": "Whether the select is read-only"
       },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the select is required"
+      },
       "closeOnSelect": {
         "type": "boolean",
         "description": "Whether the select should close after an item is selected",
@@ -2820,8 +2904,12 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; control: string; hiddenInput: string; }>",
+        "type": "Partial<{ root: string; control: string; hiddenInput: string; label: string; }>",
         "description": "The ids of the signature pad elements. Useful for composition."
+      },
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "The translations of the signature pad. Useful for internationalization."
       },
       "onDraw": {
         "type": "(details: DrawDetails) => void",
@@ -2839,6 +2927,10 @@
       "disabled": {
         "type": "boolean",
         "description": "Whether the signature pad is disabled."
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the signature pad is required."
       },
       "readOnly": {
         "type": "boolean",
@@ -2928,7 +3020,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; thumb(index: number): string; control: string; track: string; range: string; label: string; valueText: string; marker(index: number): string; }>",
+        "type": "Partial<{ root: string; thumb(index: number): string; hiddenInput(index: number): string; control: string; track: string; range: string; label: string; valueText: string; marker(index: number): string; }>",
         "description": "The ids of the elements in the range slider. Useful for composition."
       },
       "aria-label": {
@@ -3100,6 +3192,93 @@
       }
     }
   },
+  "steps": {
+    "api": {
+      "value": {
+        "type": "number",
+        "description": "The value of the stepper."
+      },
+      "percent": {
+        "type": "number",
+        "description": "The percentage of the stepper."
+      },
+      "count": {
+        "type": "number",
+        "description": "The total number of steps."
+      },
+      "hasNextStep": {
+        "type": "boolean",
+        "description": "Whether the stepper has a next step."
+      },
+      "hasPrevStep": {
+        "type": "boolean",
+        "description": "Whether the stepper has a previous step."
+      },
+      "setValue": {
+        "type": "(value: number) => void",
+        "description": "Function to set the value of the stepper."
+      },
+      "goToNextStep": {
+        "type": "() => void",
+        "description": "Function to go to the next step."
+      },
+      "goToPrevStep": {
+        "type": "() => void",
+        "description": "Function to go to the previous step."
+      },
+      "resetStep": {
+        "type": "() => void",
+        "description": "Function to go to reset the stepper."
+      },
+      "getItemState": {
+        "type": "(props: ItemProps) => ItemState",
+        "description": "Returns the state of the item at the given index."
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "ElementIds",
+        "description": "The custom ids for the stepper elements"
+      },
+      "step": {
+        "type": "number",
+        "description": "The current value of the stepper"
+      },
+      "onStepChange": {
+        "type": "(details: StepChangeDetails) => void",
+        "description": "Callback to be called when the value changes"
+      },
+      "onStepComplete": {
+        "type": "VoidFunction",
+        "description": "Callback to be called when a step is completed"
+      },
+      "linear": {
+        "type": "boolean",
+        "description": "If `true`, the stepper requires the user to complete the steps in order"
+      },
+      "orientation": {
+        "type": "\"horizontal\" | \"vertical\"",
+        "description": "The orientation of the stepper"
+      },
+      "count": {
+        "type": "number",
+        "description": "The total number of steps"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "switch": {
     "api": {
       "checked": {
@@ -3125,7 +3304,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; input: string; control: string; label: string; thumb: string; }>",
+        "type": "Partial<{ root: string; hiddenInput: string; control: string; label: string; thumb: string; }>",
         "description": "The ids of the elements in the switch. Useful for composition."
       },
       "label": {
@@ -3343,7 +3522,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; input: string; clearBtn: string; label: string; control: string; item(opts: ItemProps): string; }>",
+        "type": "Partial<{ root: string; input: string; hiddenInput: string; clearBtn: string; label: string; control: string; item(opts: ItemProps): string; }>",
         "description": "The ids of the elements in the tags input. Useful for composition."
       },
       "translations": {
@@ -3374,6 +3553,10 @@
       "invalid": {
         "type": "boolean",
         "description": "Whether the tags input is invalid"
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the tags input is required"
       },
       "editable": {
         "type": "boolean",
@@ -3929,6 +4112,11 @@
       "closeOnScroll": {
         "type": "boolean",
         "description": "Whether the tooltip should close on scroll",
+        "defaultValue": "true"
+      },
+      "closeOnClick": {
+        "type": "boolean",
+        "description": "Whether the tooltip should close on click",
         "defaultValue": "true"
       },
       "interactive": {

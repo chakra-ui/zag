@@ -1,6 +1,16 @@
 import { createMachine } from "@zag-js/core"
 import { compact, isEqual } from "@zag-js/utils"
-import type { MachineContext, MachineState, UserDefinedContext } from "./pagination.types"
+import type { IntlTranslations, MachineContext, MachineState, UserDefinedContext } from "./pagination.types"
+
+const defaultTranslations: IntlTranslations = {
+  rootLabel: "pagination",
+  prevTriggerLabel: "previous page",
+  nextTriggerLabel: "next page",
+  itemLabel({ page, totalPages }) {
+    const isLastPage = totalPages > 1 && page === totalPages
+    return `${isLastPage ? "last page, " : ""}page ${page}`
+  },
+}
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -14,13 +24,7 @@ export function machine(userContext: UserDefinedContext) {
         page: 1,
         type: "button",
         translations: {
-          rootLabel: "pagination",
-          prevTriggerLabel: "previous page",
-          nextTriggerLabel: "next page",
-          itemLabel({ page, totalPages }) {
-            const isLastPage = totalPages > 1 && page === totalPages
-            return `${isLastPage ? "last page, " : ""}page ${page}`
-          },
+          ...defaultTranslations,
           ...ctx.translations,
         },
         ...ctx,
@@ -59,6 +63,12 @@ export function machine(userContext: UserDefinedContext) {
         SET_PAGE_SIZE: {
           actions: "setPageSize",
         },
+        FIRST_PAGE: {
+          actions: "goToFirstPage",
+        },
+        LAST_PAGE: {
+          actions: "goToLastPage",
+        },
         PREVIOUS_PAGE: {
           guard: "canGoToPrevPage",
           actions: "goToPrevPage",
@@ -93,6 +103,9 @@ export function machine(userContext: UserDefinedContext) {
         goToFirstPage(ctx) {
           set.page(ctx, 1)
         },
+        goToLastPage(ctx) {
+          set.page(ctx, ctx.totalPages)
+        },
         goToPrevPage(ctx) {
           set.page(ctx, ctx.page - 1)
         },
@@ -108,6 +121,8 @@ export function machine(userContext: UserDefinedContext) {
   )
 }
 
+const clampPage = (page: number, totalPages: number) => Math.min(Math.max(page, 1), totalPages)
+
 const set = {
   pageSize: (ctx: MachineContext, value: number) => {
     if (isEqual(ctx.pageSize, value)) return
@@ -116,7 +131,7 @@ const set = {
   },
   page: (ctx: MachineContext, value: number) => {
     if (isEqual(ctx.page, value)) return
-    ctx.page = value
+    ctx.page = clampPage(value, ctx.totalPages)
     ctx.onPageChange?.({ page: ctx.page, pageSize: ctx.pageSize })
   },
 }

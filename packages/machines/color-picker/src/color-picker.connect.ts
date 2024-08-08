@@ -186,6 +186,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
+    getValueTextProps() {
+      return normalize.element({
+        ...parts.valueText.attrs,
+        dir: state.context.dir,
+        "data-disabled": dataAttr(disabled),
+        "data-focus": dataAttr(focused),
+      })
+    },
+
     getAreaProps(props = {}) {
       const { xChannel, yChannel } = getAreaChannels(props)
       const { areaStyles } = getColorAreaGradient(areaValue, {
@@ -363,7 +372,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.channelSliderTrack.attrs,
-        id: dom.getChannelSliderId(state.context, channel),
+        id: dom.getChannelSliderTrackId(state.context, channel),
         role: "group",
         "data-channel": channel,
         "data-orientation": orientation,
@@ -548,8 +557,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getHiddenInputProps() {
       return normalize.input({
         type: "text",
-        disabled: disabled,
+        disabled,
         name: state.context.name,
+        readOnly: state.context.readOnly,
+        required: state.context.required,
         id: dom.getHiddenInputId(state.context),
         style: visuallyHiddenStyle,
         defaultValue: valueAsString,

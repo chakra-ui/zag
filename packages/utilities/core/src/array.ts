@@ -19,6 +19,8 @@ export const remove = <T>(v: T[], item: T): T[] => v.filter((t) => t !== item)
 
 export const removeAt = <T>(v: T[], i: number): T[] => v.filter((_, idx) => idx !== i)
 
+export const uniq = <T>(v: T[]): T[] => Array.from(new Set(v))
+
 export const addOrRemove = <T>(v: T[], item: T): T[] => {
   if (has(v, item)) return remove(v, item)
   return add(v, item)

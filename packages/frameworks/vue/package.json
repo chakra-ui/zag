@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/vue",
-  "version": "0.57.0",
+  "version": "0.65.0",
   "description": "The vue wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@zag-js/utils": "workspace:*",
-    "vue": "3.4.29",
+    "vue": "3.4.35",
     "clean-package": "2.2.0"
   },
   "peerDependencies": {
@@ -40,7 +40,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"

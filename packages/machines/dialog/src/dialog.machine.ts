@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getInitialFocus, nextTick, raf } from "@zag-js/dom-query"
+import { nextTick, raf } from "@zag-js/dom-query"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { compact } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
@@ -30,7 +30,7 @@ export function machine(userContext: UserDefinedContext) {
         ...ctx,
       },
 
-      created: ["checkInitialFocusEl"],
+      created: ["setAlertDialogProps"],
 
       watch: {
         open: ["toggleVisibility"],
@@ -43,7 +43,6 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             "CONTROLLED.CLOSE": {
               target: "closed",
-              actions: ["setFinalFocus"],
             },
             CLOSE: [
               {
@@ -52,7 +51,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "closed",
-                actions: ["invokeOnClose", "setFinalFocus"],
+                actions: ["invokeOnClose"],
               },
             ],
             TOGGLE: [
@@ -62,7 +61,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "closed",
-                actions: ["invokeOnClose", "setFinalFocus"],
+                actions: ["invokeOnClose"],
               },
             ],
           },
@@ -109,7 +108,7 @@ export function machine(userContext: UserDefinedContext) {
             exclude: [dom.getTriggerEl(ctx)],
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
-              if (!ctx.closeOnInteractOutside || ctx.role === "alertdialog") {
+              if (!ctx.closeOnInteractOutside) {
                 event.preventDefault()
               }
             },
@@ -120,8 +119,6 @@ export function machine(userContext: UserDefinedContext) {
               ctx.onEscapeKeyDown?.(event)
               if (!ctx.closeOnEscape) {
                 event.preventDefault()
-              } else {
-                send({ type: "CLOSE", src: "escape-key" })
               }
             },
             onDismiss() {
@@ -144,13 +141,13 @@ export function machine(userContext: UserDefinedContext) {
               document: dom.getDoc(ctx),
               escapeDeactivates: false,
               preventScroll: true,
-              returnFocusOnDeactivate: false,
               fallbackFocus: contentEl,
+              returnFocusOnDeactivate: ctx.restoreFocus,
               allowOutsideClick: true,
-              initialFocus: getInitialFocus({
-                root: contentEl,
-                getInitialEl: ctx.initialFocusEl,
-              }),
+              initialFocus: ctx.initialFocusEl?.() ?? undefined,
+              setReturnFocus(triggerEl) {
+                return ctx.finalFocusEl?.() ?? triggerEl
+              },
             })
 
             try {
@@ -169,10 +166,10 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
       actions: {
-        checkInitialFocusEl(ctx) {
-          if (!ctx.initialFocusEl && ctx.role === "alertdialog") {
-            ctx.initialFocusEl = () => dom.getCloseTriggerEl(ctx)
-          }
+        setAlertDialogProps(ctx) {
+          if (ctx.role !== "alertdialog") return
+          ctx.initialFocusEl ||= () => dom.getCloseTriggerEl(ctx)
+          ctx.closeOnInteractOutside = false
         },
         checkRenderedElements(ctx) {
           raf(() => {
@@ -203,13 +200,6 @@ export function machine(userContext: UserDefinedContext) {
         },
         toggleVisibility(ctx, evt, { send }) {
           send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
-        },
-        setFinalFocus(ctx) {
-          if (!ctx.restoreFocus) return
-          queueMicrotask(() => {
-            const el = ctx.finalFocusEl?.() ?? dom.getTriggerEl(ctx)
-            el?.focus({ preventScroll: true })
-          })
         },
       },
     },

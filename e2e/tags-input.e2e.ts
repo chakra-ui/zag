@@ -4,7 +4,8 @@ import { TagsInputModel } from "./models/tags-input.model"
 let I: TagsInputModel
 
 test.describe("tags-input", () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
     I = new TagsInputModel(page)
     await I.goto()
   })
@@ -133,6 +134,22 @@ test.describe("tags-input", () => {
     await I.pressKey("ArrowLeft")
     await I.pressKey("Escape")
     await I.expectNoTagToBeHighlighted()
+  })
+
+  test("[addOnPaste: false] pasting should work everytime", async () => {
+    await I.paste("Svelte")
+    await I.seeInputHasValue("Svelte")
+
+    await I.pressKey("Enter")
+    await I.seeTag("Svelte")
+
+    await I.pressKey("Backspace", 2)
+
+    await I.paste("Svelte")
+    await I.seeInputHasValue("Svelte")
+
+    await I.pressKey("Enter")
+    await I.seeTag("Svelte")
   })
 
   test("[addOnPaste: false] pasting + enter should work", async () => {

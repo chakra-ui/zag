@@ -7,4 +7,5 @@ export type {
   UserDefinedContext as Context,
   ElementIds,
   OpenChangeDetails,
+  Service,
 } from "./collapsible.types"

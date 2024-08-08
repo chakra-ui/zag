@@ -37,8 +37,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const ariaActiveDescendant = highlightedValue ? dom.getItemId(state.context, highlightedValue) : undefined
 
   function getItemState(props: ItemProps): ItemState {
-    const _disabled = collection.isItemDisabled(props.item)
-    const value = collection.itemToValue(props.item)
+    const _disabled = collection.getItemDisabled(props.item)
+    const value = collection.getItemValue(props.item)!
     return {
       value,
       disabled: Boolean(disabled || _disabled),
@@ -83,7 +83,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       send({ type: "VALUE.SET", value })
     },
     selectAll() {
-      send({ type: "VALUE.SET", value: collection.values() })
+      send({ type: "VALUE.SET", value: collection.getValues() })
     },
     highlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
@@ -134,6 +134,16 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-focus": dataAttr(focused),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
+      })
+    },
+
+    getValueTextProps() {
+      return normalize.element({
+        ...parts.valueText.attrs,
+        dir: state.context.dir,
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+        "data-focus": dataAttr(focused),
       })
     },
 
@@ -281,6 +291,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemText.attrs,
+        "data-state": itemState.selected ? "checked" : "unchecked",
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
       })
@@ -323,12 +334,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         id: dom.getClearTriggerId(state.context),
         type: "button",
         "aria-label": "Clear value",
+        "data-invalid": dataAttr(invalid),
         disabled: disabled,
         hidden: !state.context.hasSelectedItems,
         dir: state.context.dir,
         onClick(event) {
           if (event.defaultPrevented) return
-          send("VALUE.CLEAR")
+          send("CLEAR.CLICK")
         },
       })
     },
@@ -339,6 +351,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         form: state.context.form,
         disabled: disabled,
         multiple: state.context.multiple,
+        required: state.context.required,
         "aria-hidden": true,
         id: dom.getHiddenSelectId(state.context),
         defaultValue: state.context.multiple ? state.context.value : state.context.value[0],

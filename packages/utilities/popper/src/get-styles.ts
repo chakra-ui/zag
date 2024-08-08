@@ -28,6 +28,7 @@ export function getPlacementStyles(
     } as const,
 
     arrowTip: {
+      // @ts-expect-error - Fix this
       transform: placement ? ARROW_FLOATING_STYLE[placement.split("-")[0]] : undefined,
       background: cssVars.arrowBg.reference,
       top: "0",

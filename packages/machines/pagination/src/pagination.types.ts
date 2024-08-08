@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -128,6 +128,8 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
@@ -153,6 +155,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * The current page.
    */
   page: number
+  /**
+   * The total number of data items.
+   */
+  count: number
   /**
    * The number of data items per page.
    */
@@ -193,6 +199,22 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to set the current page.
    */
   setPage(page: number): void
+  /**
+   * Function to go to the next page.
+   */
+  goToNextPage(): void
+  /**
+   * Function to go to the previous page.
+   */
+  goToPrevPage(): void
+  /**
+   * Function to go to the first page.
+   */
+  goToFirstPage(): void
+  /**
+   * Function to go to the last page.
+   */
+  goToLastPage(): void
 
   getRootProps(): T["element"]
   getEllipsisProps(props: EllipsisProps): T["element"]

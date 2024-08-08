@@ -9,7 +9,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const disabled = state.context.disabled
   const interactive = state.context.isInteractive
   const readOnly = state.context.readOnly
-  const empty = state.context.isValueEmpty
   const invalid = state.context.invalid
 
   const autoResize = state.context.autoResize
@@ -22,7 +21,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     typeof placeholderProp === "string" ? { edit: placeholderProp, preview: placeholderProp } : placeholderProp
 
   const value = state.context.value
-  const valueText = empty ? placeholder?.preview ?? "" : value
+  const empty = value.trim() === ""
+
+  const valueText = empty ? (placeholder?.preview ?? "") : value
 
   return {
     editing,
@@ -30,10 +31,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     value,
     valueText,
     setValue(value) {
-      send({ type: "SET_VALUE", value })
+      send({ type: "VALUE.SET", value, src: "setValue" })
     },
     clearValue() {
-      send({ type: "SET_VALUE", value: "" })
+      send({ type: "VALUE.SET", value: "", src: "clearValue" })
     },
     edit() {
       if (!interactive) return
@@ -95,6 +96,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: autoResize ? undefined : !editing,
         placeholder: placeholder?.edit,
         maxLength: state.context.maxLength,
+        required: state.context.required,
         disabled: disabled,
         "data-disabled": dataAttr(disabled),
         readOnly: readOnly,
@@ -104,7 +106,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         defaultValue: value,
         size: autoResize ? 1 : undefined,
         onChange(event) {
-          send({ type: "TYPE", value: event.currentTarget.value })
+          send({ type: "VALUE.SET", src: "input.change", value: event.currentTarget.value })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
@@ -162,9 +164,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-disabled": ariaAttr(disabled),
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
+        "aria-label": translations.edit,
         children: valueText,
         hidden: autoResize ? undefined : editing,
-        tabIndex: interactive && state.context.isPreviewFocusable ? 0 : undefined,
+        tabIndex: interactive ? 0 : undefined,
+        onClick() {
+          if (!interactive) return
+          if (state.context.activationMode !== "click") return
+          send({ type: "EDIT", src: "click" })
+        },
         onFocus() {
           if (!interactive) return
           if (state.context.activationMode !== "focus") return

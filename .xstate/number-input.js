@@ -95,14 +95,17 @@ const fetchMachine = createMachine({
         "INPUT.CHANGE": {
           actions: ["setValue", "setHint"]
         },
-        "INPUT.COMMIT": [{
+        "INPUT.BLUR": [{
           cond: "clampValueOnBlur && !isInRange",
           target: "idle",
           actions: ["setClampedValue", "clearHint", "invokeOnBlur"]
         }, {
           target: "idle",
           actions: ["setFormattedValue", "clearHint", "invokeOnBlur"]
-        }]
+        }],
+        "INPUT.ENTER": {
+          actions: ["setFormattedValue", "clearHint", "invokeOnBlur"]
+        }
       }
     },
     "before:spin": {

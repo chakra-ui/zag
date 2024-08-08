@@ -7,7 +7,7 @@ export const dom = createScope({
   getResizeTriggerId: (ctx: Ctx, id: string) => ctx.ids?.resizeTrigger?.(id) ?? `splitter:${ctx.id}:splitter:${id}`,
   getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `splitter:${ctx.id}:label`,
   getPanelId: (ctx: Ctx, id: string | number) => ctx.ids?.panel?.(id) ?? `splitter:${ctx.id}:panel:${id}`,
-  globalCursorId: (ctx: Ctx) => `splitter:${ctx.id}:global-cursor`,
+  getGlobalCursorId: (ctx: Ctx) => `splitter:${ctx.id}:global-cursor`,
 
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getResizeTriggerEl: (ctx: Ctx, id: string) => dom.getById(ctx, dom.getResizeTriggerId(ctx, id)),
@@ -43,19 +43,19 @@ export const dom = createScope({
   },
 
   setupGlobalCursor(ctx: Ctx) {
-    const styleEl = dom.getById(ctx, dom.globalCursorId(ctx))
+    const styleEl = dom.getById(ctx, dom.getGlobalCursorId(ctx))
     const textContent = `* { cursor: ${dom.getCursor(ctx)} !important; }`
     if (styleEl) {
       styleEl.textContent = textContent
     } else {
       const style = dom.getDoc(ctx).createElement("style")
-      style.id = dom.globalCursorId(ctx)
+      style.id = dom.getGlobalCursorId(ctx)
       style.textContent = textContent
       dom.getDoc(ctx).head.appendChild(style)
     }
   },
 
   removeGlobalCursor(ctx: Ctx) {
-    dom.getById(ctx, dom.globalCursorId(ctx))?.remove()
+    dom.getById(ctx, dom.getGlobalCursorId(ctx))?.remove()
   },
 })

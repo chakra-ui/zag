@@ -8,6 +8,7 @@ export type {
   ElementIds,
   FocusChangeDetails,
   MarkerProps,
+  Service,
   ThumbProps,
   ValueChangeDetails,
   ValueTextDetails,

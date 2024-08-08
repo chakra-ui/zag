@@ -24,7 +24,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return {
       "data-focus": dataAttr(radioState.focused),
       "data-disabled": dataAttr(radioState.disabled),
-      "dats-readonly": dataAttr(readOnly),
+      "data-readonly": dataAttr(readOnly),
       "data-state": radioState.checked ? "checked" : "unchecked",
       "data-hover": dataAttr(radioState.hovered),
       "data-invalid": dataAttr(radioState.invalid),
@@ -150,13 +150,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         name: state.context.name || state.context.id,
         form: state.context.form,
         value: props.value,
-        onChange(event) {
+        onClick(event) {
           if (readOnly) {
             event.preventDefault()
             return
           }
 
-          if (event.target.checked) {
+          if (event.currentTarget.checked) {
             send({ type: "SET_VALUE", value: props.value, isTrusted: true })
           }
         },

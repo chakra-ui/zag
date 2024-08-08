@@ -567,8 +567,8 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         isInputValueEmpty: (ctx) => ctx.isInputValueEmpty,
         autoComplete: (ctx) => ctx.autoComplete && !ctx.multiple,
         autoHighlight: (ctx) => ctx.autoHighlight,
-        isFirstItemHighlighted: (ctx) => ctx.collection.first() === ctx.highlightedValue,
-        isLastItemHighlighted: (ctx) => ctx.collection.last() === ctx.highlightedValue,
+        isFirstItemHighlighted: (ctx) => ctx.collection.firstValue === ctx.highlightedValue,
+        isLastItemHighlighted: (ctx) => ctx.collection.lastValue === ctx.highlightedValue,
         isCustomValue: (ctx) => ctx.inputValue !== ctx.valueAsString,
         allowCustomValue: (ctx) => !!ctx.allowCustomValue,
         hasHighlightedItem: (ctx) => ctx.highlightedValue != null,
@@ -747,12 +747,14 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           set.inputValue(ctx, inputValue)
         },
         syncInitialValues(ctx) {
-          const selectedItems = ctx.collection.items(ctx.value)
-          const valueAsString = ctx.collection.itemsToString(selectedItems)
+          const selectedItems = ctx.collection.findMany(ctx.value)
+          const valueAsString = ctx.collection.stringifyMany(ctx.value)
 
-          ctx.highlightedItem = ctx.collection.item(ctx.highlightedValue)
+          ctx.highlightedItem = ctx.collection.find(ctx.highlightedValue)
           ctx.selectedItems = selectedItems
           ctx.valueAsString = valueAsString
+
+          if (ctx.inputValue.trim() || ctx.multiple) return
 
           ctx.inputValue = match(ctx.selectionBehavior, {
             preserve: ctx.inputValue || valueAsString,
@@ -789,40 +791,40 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
         highlightFirstItem(ctx) {
           raf(() => {
-            const value = ctx.collection.first()
+            const value = ctx.collection.firstValue
             set.highlightedValue(ctx, value)
           })
         },
         highlightFirstItemIfNeeded(ctx) {
           if (!ctx.autoHighlight) return
           raf(() => {
-            const value = ctx.collection.first()
+            const value = ctx.collection.firstValue
             set.highlightedValue(ctx, value)
           })
         },
         highlightLastItem(ctx) {
           raf(() => {
-            const value = ctx.collection.last()
+            const value = ctx.collection.lastValue
             set.highlightedValue(ctx, value)
           })
         },
         highlightNextItem(ctx) {
           let value: string | null = null
           if (ctx.highlightedValue) {
-            value = ctx.collection.next(ctx.highlightedValue)
-            if (!value && ctx.loopFocus) value = ctx.collection.first()
+            value = ctx.collection.getNextValue(ctx.highlightedValue)
+            if (!value && ctx.loopFocus) value = ctx.collection.firstValue
           } else {
-            value = ctx.collection.first()
+            value = ctx.collection.firstValue
           }
           set.highlightedValue(ctx, value)
         },
         highlightPrevItem(ctx) {
           let value: string | null = null
           if (ctx.highlightedValue) {
-            value = ctx.collection.prev(ctx.highlightedValue)
-            if (!value && ctx.loopFocus) value = ctx.collection.last()
+            value = ctx.collection.getPreviousValue(ctx.highlightedValue)
+            if (!value && ctx.loopFocus) value = ctx.collection.lastValue
           } else {
-            value = ctx.collection.last()
+            value = ctx.collection.lastValue
           }
           set.highlightedValue(ctx, value)
         },
@@ -838,7 +840,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             if (ctx.hasSelectedItems) {
               value = ctx.collection.sort(ctx.value)[0]
             } else {
-              value = ctx.collection.first()
+              value = ctx.collection.firstValue
             }
             set.highlightedValue(ctx, value)
           })
@@ -849,7 +851,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             if (ctx.hasSelectedItems) {
               value = ctx.collection.sort(ctx.value)[0]
             } else {
-              value = ctx.collection.last()
+              value = ctx.collection.lastValue
             }
             set.highlightedValue(ctx, value)
           })
@@ -857,7 +859,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         autofillInputValue(ctx, evt) {
           const inputEl = dom.getInputEl(ctx)
           if (!ctx.autoComplete || !inputEl || !evt.keypress) return
-          const valueText = ctx.collection.valueToString(ctx.highlightedValue)
+          const valueText = ctx.collection.stringify(ctx.highlightedValue)
           raf(() => {
             inputEl.value = valueText || ctx.inputValue
           })
@@ -883,14 +885,14 @@ const sync = {
   valueChange: (ctx: MachineContext) => {
     // side effect
     const prevSelectedItems = ctx.selectedItems
+
     ctx.selectedItems = ctx.value.map((v) => {
-      const foundItem = prevSelectedItems.find((item) => ctx.collection.itemToValue(item) === v)
+      const foundItem = prevSelectedItems.find((item) => ctx.collection.getItemValue(item) === v)
       if (foundItem) return foundItem
-      return ctx.collection.item(v)
+      return ctx.collection.find(v)
     })
 
-    // set valueAsString
-    const valueAsString = ctx.collection.itemsToString(ctx.selectedItems)
+    const valueAsString = ctx.collection.stringifyItems(ctx.selectedItems)
     ctx.valueAsString = valueAsString
 
     // set inputValue
@@ -915,7 +917,7 @@ const sync = {
     set.inputValue(ctx, inputValue)
   },
   highlightChange: (ctx: MachineContext) => {
-    ctx.highlightedItem = ctx.collection.item(ctx.highlightedValue)
+    ctx.highlightedItem = ctx.collection.find(ctx.highlightedValue)
   },
 }
 

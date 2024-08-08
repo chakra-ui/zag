@@ -56,6 +56,7 @@ type Log =
 export type ElementIds = Partial<{
   root: string
   input: string
+  hiddenInput: string
   clearBtn: string
   label: string
   control: string
@@ -101,6 +102,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * Whether the tags input is invalid
    */
   invalid?: boolean
+  /**
+   * Whether the tags input is required
+   */
+  required?: boolean
   /**
    * Whether a tag can be edited after creation, by presing `Enter` or double clicking.
    * @default true

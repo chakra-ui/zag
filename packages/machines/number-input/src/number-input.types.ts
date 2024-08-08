@@ -1,5 +1,5 @@
 import type { NumberFormatter, NumberParser } from "@internationalized/number"
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -77,6 +77,10 @@ interface PublicContext extends LocaleProperties, CommonProperties {
    * Whether the number input value is invalid.
    */
   invalid?: boolean
+  /**
+   * Whether the number input is required
+   */
+  required?: boolean
   /**
    * The pattern used to check the <input> element's value against
    *
@@ -253,6 +257,8 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
@@ -310,6 +316,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getRootProps(): T["element"]
   getLabelProps(): T["label"]
   getControlProps(): T["element"]
+  getValueTextProps(): T["element"]
   getInputProps(): T["input"]
   getDecrementTriggerProps(): T["button"]
   getIncrementTriggerProps(): T["button"]

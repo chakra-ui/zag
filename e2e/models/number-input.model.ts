@@ -73,12 +73,12 @@ export class NumberInputModel extends Model {
     await this.wait(time)
   }
 
-  async mouseDownInc() {
+  async mousedownInc() {
     await this.incButton.hover()
     await this.page.mouse.down()
   }
 
-  async mouseDownDec() {
+  async mousedownDec() {
     await this.decButton.dispatchEvent("pointerdown")
   }
 }

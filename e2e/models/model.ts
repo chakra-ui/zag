@@ -1,4 +1,4 @@
-import { type Page, expect } from "@playwright/test"
+import { expect, type Page } from "@playwright/test"
 import { a11y, clickOutside, clickViz, controls, repeat } from "../_utils"
 
 export class Model {
@@ -68,7 +68,21 @@ export class Model {
     return new Promise<void>((resolve) => setTimeout(resolve, time))
   }
 
-  async mouseUp() {
+  async mouseup() {
     await this.page.mouse.up()
+  }
+
+  click(text: string) {
+    return this.page.getByText(text).click()
+  }
+
+  see(text: string, context?: string) {
+    const locator = context ? this.page.locator(context).getByText(text) : this.page.getByText(text)
+    return expect(locator).toBeVisible()
+  }
+
+  dontSee(text: string, context?: string) {
+    const locator = context ? this.page.locator(context).getByText(text) : this.page.getByText(text)
+    return expect(locator).not.toBeVisible()
   }
 }

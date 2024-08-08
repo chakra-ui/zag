@@ -8,4 +8,5 @@ export type {
   ElementIds,
   QrCodeGenerateOptions,
   QrCodeGenerateResult,
+  Service,
 } from "./qr-code.types"

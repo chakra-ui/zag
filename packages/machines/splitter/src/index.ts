@@ -9,5 +9,6 @@ export type {
   PanelProps,
   PanelSizeData,
   ResizeTriggerProps,
+  Service,
   SizeChangeDetails,
 } from "./splitter.types"

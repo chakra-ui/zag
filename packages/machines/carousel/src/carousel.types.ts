@@ -18,10 +18,10 @@ type RectEdge = "top" | "right" | "bottom" | "left"
 export type ElementIds = Partial<{
   root: string
   viewport: string
-  slide(index: number): string
-  slideGroup: string
-  nextSlideTrigger: string
-  prevSlideTrigger: string
+  item(index: number): string
+  itemGroup: string
+  nextTrigger: string
+  prevTrigger: string
   indicatorGroup: string
   indicator(index: number): string
 }>
@@ -97,7 +97,7 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
-export type Service = Machine<MachineContext, MachineState>
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API

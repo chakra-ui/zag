@@ -12,4 +12,5 @@ export type {
   ItemProps,
   PageChangeDetails,
   PageSizeChangeDetails,
+  Service,
 } from "./pagination.types"

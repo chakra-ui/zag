@@ -346,7 +346,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getPeriodCellProps(props) {
       const isSelected = state.context.period === props.value
-      const currentPeriod = getHourPeriod(currentTime?.hour)
+      const currentPeriod = getHourPeriod(currentTime?.hour, state.context.locale)
       const isCurrent = currentPeriod === props.value
       const isFocused = state.context.focusedColumn === "period" && state.context.focusedValue === props.value
 

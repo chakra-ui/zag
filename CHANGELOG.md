@@ -6,6 +6,242 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.65.0](./#0.65.0) - 2024-08-08
+
+### Fixed
+
+- **Dialog**
+
+  - Fix issue where closing a nested dialog focuses the first focusable element in the parent dialog instead of the
+    previously focused element.
+
+### Added
+
+- **Editable**
+
+  - Add support for controlled the editable's state (edit/preview) using `edit` and `onEditChange`
+
+- **Pagination**
+
+  - Expose `api.count` property
+
+### Changed
+
+- **Editable**
+
+  - Removed `onEdit` in favor of `onEditChange`
+  - Removed `startsWithEditView` in favor of `edit` prop
+
+## [0.64.0](./#0.64.0) - 2024-08-01
+
+### Fixed
+
+- **NumberInput**
+
+  - Fix issue where pressing enter key, doesn't make arrow up and down work as expected
+
+### Added
+
+- **Collection**
+
+  - Introduce new `GridCollection` to manage grid base navigation and selection
+
+### Changed
+
+- **Collection [BREAKING]**
+
+  - Rename `Collection` class to `ListCollection` to better reflect its intent
+
+## [0.63.0](./#0.63.0) - 2024-07-28
+
+### Fixed
+
+- **DatePicker**
+
+  - Fix issue where selected date doesn't reflect in input when you click trigger then focus input
+  - Fix SSR issue when using `getPresetTrigger`
+
+- **Slider**
+
+  - Fix issue where `onValueChangeEnd` gets called with incorrect value
+
+- **Timer**
+
+  - Fix an issue that action trigger did not emit an event
+
+### Added
+
+- **DatePicker**
+
+  - Add support for `index` in `getLabelProps`
+
+## [0.62.1](./#0.62.1) - 2024-07-27
+
+### Fixed
+
+- **TimePicker**
+
+  - Export missing `TimePicker` types
+
+- **Toast**
+
+  - Add missing `aria-labelledby` and `aria-describedby` attributes on the toast root element
+
+- **React**
+
+  - Fix regression with `useMachine` where HMR could lead to `Maximum call stack exceeded` error
+
+### Added
+
+### Changed
+
+## [0.62.0](./#0.62.0) - 2024-07-23
+
+### Fixed
+
+- **Combobox**
+
+  - Improve accessibility by removing `aria-selected` and `aria-disabled` when `false`
+  - Prefer `click` over `pointerup` for consistent experience between screen readers and pointers.
+
+- **React**
+
+  - Improve HMR behavior in React with components like Dialog, Select, and Menu
+
+### Changed
+
+- **Steps**
+
+  - Rename `skippable` to `linear` prop to better communicate its intent
+  - Set default `orientation` to `horizontal`
+
+## [0.61.1](./#0.62.0) - 2024-07-15
+
+### Fixed
+
+- **Tags Input**
+
+  - Fix issue where tag input does not allow for repeat pasting and undo
+  - Fix issue where deleting a pasted value completely disables pasting
+  - Ensure value set in the machine are always unique, discarding duplicates
+
+- **Select**
+
+  - Fix issue where `closeOnSelect` could not be customized when `multiple` is set to `true`
+
+## [0.61.0](./#0.61.0) - 2024-07-08
+
+### Fixed
+
+- **RadioGroup**
+
+  - Ensure consistent click events for radio group item.
+  - Fix issue where `data-readonly` attribute was misspelt
+
+### Added
+
+- **Tooltip**
+
+  - Add support for `closeOnClick` to determine if the tooltip should close when trigger is clicked.
+
+## [0.60.0](./#0.60.0) - 2024-07-05
+
+### Fixed
+
+- **All Machines**
+
+  - Improve reliability in web runtime by wrapping the `process.env` check in a function
+
+- **Combobox**
+
+  - Fix issue where Combobox doesn't update the input on selection with pointer
+
+### Added
+
+- **[NEW] Steps**
+
+  - Add new steps machine to create a step-by-step wizard or onboarding experience
+
+## [0.59.0](./#0.59.0) - 2024-06-29
+
+### Fixed
+
+- **Select, Combobox**
+
+  - Improve reliability of select and combobox by redesigning the collection interface
+
+- **TreeView**
+
+  - Fix issue where inputs could not be used within tree
+
+### Added
+
+- **ColorPicker, Select, NumberInput**
+
+  - Add support for valueText part for rendering internal state value
+
+## [0.58.3](./#0.58.3) - 2024-06-27
+
+### Fixed
+
+- **Combobox**
+
+  - Fix issue where input shows values when `multiple` is set to `true`. The design intent is that when combobox is set
+    to `multiple`, values should be rendered outside the
+  - Expose `data-placement` on Content
+
+- **Progress**
+
+  - Fix issue where progress circle throws warning due to incorrect `viewBox` attribute on `<svg>`
+
+- **Carousel**
+
+  - Fix issue where next and previous buttons don't loop currently when using setting both `slidesPerView` and `loop`
+
+- **Presence**
+
+  - Fix issue where presence doesn't close if close animation has duration of `0s`
+
+- **Select, Combobox**
+
+  - Expose `data-invalid` on Combobox and Select triggers
+
+- **Menu**
+
+  - Fix context menu losing position data on close
+  - Fix issue where context menu doesn
+
+## [0.58.0](./#0.58.0) - 2024-06-21
+
+### Fixed
+
+- **All Machines**
+
+  - Ensure consistent application of form related properties like `invalid`, `required`, and `readOnly`.
+
+  - Export `Service` from all machines for use in Lit based components.
+
+- **Tooltip**
+
+  - Fix issue where `closeOnScroll=false` doesn't work consistently in Safari
+
+### Added
+
+- **Alert**
+
+  - Expose more functions to programmatically change the page like `api.goToNextPage()`, `api.goToPrevPage()`,
+    `api.goToFirstPage()`, `api.goToLastPage()`
+
+- **DatePicker**
+
+  - Add support for customizing date picker accessibility labels
+
+- **FileUpload**
+
+  - Add support for `api.clearRejectedFiles` to allow clearing the rejected files programmatically.
+
+  - Improve DX of the `accept` context property by providing autocompletions for common file type
+
 ## [0.57.0](./#0.57.0) - 2024-06-14
 
 ### Fixed

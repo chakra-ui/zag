@@ -1,5 +1,38 @@
 # @zag-js/store
 
+## 0.65.0
+
+## 0.64.0
+
+## 0.63.0
+
+## 0.62.1
+
+## 0.62.0
+
+## 0.61.1
+
+## 0.61.0
+
+## 0.60.0
+
+### Minor Changes
+
+- [#1641](https://github.com/chakra-ui/zag/pull/1641)
+  [`49bf73b`](https://github.com/chakra-ui/zag/commit/49bf73b7119bdd5dfd40d33119c3543626e201f0) Thanks
+  [@baptisteArno](https://github.com/baptisteArno)! - Improve reliability in web runtime by wrapping the `process.env`
+  check in a function
+
+## 0.59.0
+
+## 0.58.3
+
+## 0.58.2
+
+## 0.58.1
+
+## 0.58.0
+
 ## 0.57.0
 
 ## 0.56.1

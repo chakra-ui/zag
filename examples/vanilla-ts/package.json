@@ -9,7 +9,14 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@internationalized/date": "3.5.4",
+    "typescript": "^5.5.4",
+    "vite": "^5.3.4"
+  },
+  "dependencies": {
+    "form-serialize": "0.7.2",
+    "match-sorter": "6.3.4",
+    "nanoid": "^5.0.7",
+    "@internationalized/date": "3.5.5",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -60,16 +67,17 @@
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/select": "workspace:*",
-    "@zag-js/shared": "workspace:*",
     "@zag-js/signature-pad": "workspace:*",
     "@zag-js/slider": "workspace:*",
     "@zag-js/splitter": "workspace:*",
     "@zag-js/store": "workspace:*",
-    "@zag-js/svelte": "workspace:*",
+    "@zag-js/steps": "workspace:*",
+    "@zag-js/stringify-state": "workspace:*",
     "@zag-js/switch": "workspace:*",
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
     "@zag-js/text-selection": "workspace:*",
+    "@zag-js/time-picker": "workspace:*",
     "@zag-js/timer": "workspace:*",
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
@@ -77,11 +85,6 @@
     "@zag-js/tour": "workspace:*",
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "@zag-js/utils": "workspace:*",
-    "form-serialize": "0.7.2",
-    "match-sorter": "6.3.4",
-    "nanoid": "^5.0.7",
-    "typescript": "^5.4.5",
-    "vite": "^5.3.1"
+    "@zag-js/utils": "workspace:*"
   }
 }

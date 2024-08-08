@@ -209,7 +209,7 @@ const fetchMachine = createMachine({
     },
     closed: {
       tags: ["closed"],
-      entry: ["clearHighlightedItem", "focusTrigger", "clearAnchorPoint", "resumePointer"],
+      entry: ["clearHighlightedItem", "focusTrigger", "resumePointer"],
       on: {
         "CONTROLLED.OPEN": [{
           cond: "isOpenAutoFocusEvent || isArrowDownEvent",

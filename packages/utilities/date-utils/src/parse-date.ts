@@ -1,8 +1,8 @@
 import { CalendarDate, DateFormatter, type DateValue } from "@internationalized/date"
 
-const isValidYear = (year: string | undefined): year is string => year != null && year.length === 4
-const isValidMonth = (month: string | undefined): month is string => month != null && parseFloat(month) <= 12
-const isValidDay = (day: string | undefined): day is string => day != null && parseFloat(day) <= 31
+const isValidYear = (year: string | null | undefined): year is string => year != null && year.length === 4
+const isValidMonth = (month: string | null | undefined): month is string => month != null && parseFloat(month) <= 12
+const isValidDay = (day: string | null | undefined): day is string => day != null && parseFloat(day) <= 31
 
 export function parseDateString(date: string, locale: string, timeZone: string): DateValue | undefined {
   const regex = createRegex(locale, timeZone)
@@ -37,10 +37,12 @@ function createRegex(locale: string, timeZone: string) {
 }
 
 interface DateParts {
-  year: string
-  month: string
-  day: string
+  year: string | null
+  month: string | null
+  day: string | null
 }
+
+type DatePart = keyof DateParts
 
 function extract(pattern: string | RegExp, str: string) {
   const matches = str.match(pattern)
@@ -57,9 +59,9 @@ function extract(pattern: string | RegExp, str: string) {
     .reduce((acc, curr, index) => {
       if (!curr) return acc
       if (matches && matches.length > index) {
-        acc[curr] = matches[index + 1]
+        acc[curr as DatePart] = matches[index + 1]
       } else {
-        acc[curr] = null
+        acc[curr as DatePart] = null
       }
       return acc
     }, {} as DateParts)

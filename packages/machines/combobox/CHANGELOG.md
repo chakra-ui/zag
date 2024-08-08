@@ -1,5 +1,259 @@
 # @zag-js/combobox
 
+## 0.65.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.65.0
+  - @zag-js/core@0.65.0
+  - @zag-js/types@0.65.0
+  - @zag-js/aria-hidden@0.65.0
+  - @zag-js/collection@0.65.0
+  - @zag-js/utils@0.65.0
+  - @zag-js/dismissable@0.65.0
+  - @zag-js/dom-event@0.65.0
+  - @zag-js/dom-query@0.65.0
+  - @zag-js/popper@0.65.0
+
+## 0.64.0
+
+### Minor Changes
+
+- [`c1a9ea7`](https://github.com/chakra-ui/zag/commit/c1a9ea763a7d74d31d63b57c2e2f66bd8deaf42b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - BREAKING: Rename `Collection` class to `ListCollection` to better
+  reflect its intent.
+
+### Patch Changes
+
+- Updated dependencies [[`c1a9ea7`](https://github.com/chakra-ui/zag/commit/c1a9ea763a7d74d31d63b57c2e2f66bd8deaf42b)]:
+  - @zag-js/collection@0.64.0
+  - @zag-js/anatomy@0.64.0
+  - @zag-js/core@0.64.0
+  - @zag-js/types@0.64.0
+  - @zag-js/aria-hidden@0.64.0
+  - @zag-js/utils@0.64.0
+  - @zag-js/dismissable@0.64.0
+  - @zag-js/dom-event@0.64.0
+  - @zag-js/dom-query@0.64.0
+  - @zag-js/popper@0.64.0
+
+## 0.63.0
+
+### Patch Changes
+
+- Updated dependencies [[`ca437b9`](https://github.com/chakra-ui/zag/commit/ca437b94b49760742bad69aa57a3d6527219782a)]:
+  - @zag-js/dom-query@0.63.0
+  - @zag-js/aria-hidden@0.63.0
+  - @zag-js/dismissable@0.63.0
+  - @zag-js/dom-event@0.63.0
+  - @zag-js/popper@0.63.0
+  - @zag-js/anatomy@0.63.0
+  - @zag-js/core@0.63.0
+  - @zag-js/types@0.63.0
+  - @zag-js/collection@0.63.0
+  - @zag-js/utils@0.63.0
+
+## 0.62.1
+
+### Patch Changes
+
+- Updated dependencies [[`5644790`](https://github.com/chakra-ui/zag/commit/564479081d37cd06bc38043fccf9c229379a1531)]:
+  - @zag-js/core@0.62.1
+  - @zag-js/anatomy@0.62.1
+  - @zag-js/types@0.62.1
+  - @zag-js/aria-hidden@0.62.1
+  - @zag-js/collection@0.62.1
+  - @zag-js/utils@0.62.1
+  - @zag-js/dismissable@0.62.1
+  - @zag-js/dom-event@0.62.1
+  - @zag-js/dom-query@0.62.1
+  - @zag-js/popper@0.62.1
+
+## 0.62.0
+
+### Patch Changes
+
+- [`080993d`](https://github.com/chakra-ui/zag/commit/080993d2097257d8f0bc56c135c048168ea074e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve accessibility by removing `aria-selected` and
+  `aria-disabled` when value is `false`
+
+- [`1ae57eb`](https://github.com/chakra-ui/zag/commit/1ae57eb41cffbef5b7c039a89476e1e0a6170b17) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Prefer `click` over `pointerup` for consistent experience between
+  screen readers and pointers.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.62.0
+  - @zag-js/core@0.62.0
+  - @zag-js/types@0.62.0
+  - @zag-js/aria-hidden@0.62.0
+  - @zag-js/collection@0.62.0
+  - @zag-js/utils@0.62.0
+  - @zag-js/dismissable@0.62.0
+  - @zag-js/dom-event@0.62.0
+  - @zag-js/dom-query@0.62.0
+  - @zag-js/popper@0.62.0
+
+## 0.61.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.61.1
+  - @zag-js/core@0.61.1
+  - @zag-js/types@0.61.1
+  - @zag-js/aria-hidden@0.61.1
+  - @zag-js/collection@0.61.1
+  - @zag-js/utils@0.61.1
+  - @zag-js/dismissable@0.61.1
+  - @zag-js/dom-event@0.61.1
+  - @zag-js/dom-query@0.61.1
+  - @zag-js/popper@0.61.1
+
+## 0.61.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.61.0
+  - @zag-js/core@0.61.0
+  - @zag-js/types@0.61.0
+  - @zag-js/aria-hidden@0.61.0
+  - @zag-js/collection@0.61.0
+  - @zag-js/utils@0.61.0
+  - @zag-js/dismissable@0.61.0
+  - @zag-js/dom-event@0.61.0
+  - @zag-js/dom-query@0.61.0
+  - @zag-js/popper@0.61.0
+
+## 0.60.0
+
+### Patch Changes
+
+- [#1643](https://github.com/chakra-ui/zag/pull/1643)
+  [`fe5869c`](https://github.com/chakra-ui/zag/commit/fe5869c19988c3ec95db4843f68cf1d7d0cc29d3) Thanks
+  [@m-shaka](https://github.com/m-shaka)! - Fix issue where Combobox doesn't update the input on selection with pointer
+
+- Updated dependencies []:
+  - @zag-js/core@0.60.0
+  - @zag-js/anatomy@0.60.0
+  - @zag-js/types@0.60.0
+  - @zag-js/aria-hidden@0.60.0
+  - @zag-js/collection@0.60.0
+  - @zag-js/utils@0.60.0
+  - @zag-js/dismissable@0.60.0
+  - @zag-js/dom-event@0.60.0
+  - @zag-js/dom-query@0.60.0
+  - @zag-js/popper@0.60.0
+
+## 0.59.0
+
+### Patch Changes
+
+- [#1625](https://github.com/chakra-ui/zag/pull/1625)
+  [`1441d06`](https://github.com/chakra-ui/zag/commit/1441d06c03e0fc3958c8b25821b19db2398549dc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve reliability of select and combobox by redesigning the
+  collection interface
+
+- Updated dependencies [[`1441d06`](https://github.com/chakra-ui/zag/commit/1441d06c03e0fc3958c8b25821b19db2398549dc)]:
+  - @zag-js/collection@0.59.0
+  - @zag-js/anatomy@0.59.0
+  - @zag-js/core@0.59.0
+  - @zag-js/types@0.59.0
+  - @zag-js/aria-hidden@0.59.0
+  - @zag-js/utils@0.59.0
+  - @zag-js/dismissable@0.59.0
+  - @zag-js/dom-event@0.59.0
+  - @zag-js/dom-query@0.59.0
+  - @zag-js/popper@0.59.0
+
+## 0.58.3
+
+### Patch Changes
+
+- [`6fb9091`](https://github.com/chakra-ui/zag/commit/6fb9091e50759a72818c27006a432c71576a4561) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where input shows values when `multiple` is set to
+  `true`. The design intent is that when combobox is set to `multiple`, values should be rendered outside the input.
+
+- [#1623](https://github.com/chakra-ui/zag/pull/1623)
+  [`9d3474b`](https://github.com/chakra-ui/zag/commit/9d3474bf9148ef22d8bfde56e6785c663318bdc5) Thanks
+  [@firzanarmani](https://github.com/firzanarmani)! - Expose `data-placement` on Content for Combobox
+
+- [#1622](https://github.com/chakra-ui/zag/pull/1622)
+  [`f57eb81`](https://github.com/chakra-ui/zag/commit/f57eb81a06248449bf303bbdb7af83a0383d4f84) Thanks
+  [@Jonas-C](https://github.com/Jonas-C)! - Expose `data-invalid` on Combobox and Select triggers
+
+- [#1621](https://github.com/chakra-ui/zag/pull/1621)
+  [`1f7ea87`](https://github.com/chakra-ui/zag/commit/1f7ea87a34e19f9bd2119a13a7d8b7a7498609e4) Thanks
+  [@Jonas-C](https://github.com/Jonas-C)! - Expose `data-state` on `ItemText` for Combobox and Select
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.3
+  - @zag-js/core@0.58.3
+  - @zag-js/types@0.58.3
+  - @zag-js/aria-hidden@0.58.3
+  - @zag-js/collection@0.58.3
+  - @zag-js/utils@0.58.3
+  - @zag-js/dismissable@0.58.3
+  - @zag-js/dom-event@0.58.3
+  - @zag-js/dom-query@0.58.3
+  - @zag-js/popper@0.58.3
+
+## 0.58.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.2
+  - @zag-js/core@0.58.2
+  - @zag-js/types@0.58.2
+  - @zag-js/aria-hidden@0.58.2
+  - @zag-js/collection@0.58.2
+  - @zag-js/utils@0.58.2
+  - @zag-js/dismissable@0.58.2
+  - @zag-js/dom-event@0.58.2
+  - @zag-js/dom-query@0.58.2
+  - @zag-js/popper@0.58.2
+
+## 0.58.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.1
+  - @zag-js/core@0.58.1
+  - @zag-js/types@0.58.1
+  - @zag-js/aria-hidden@0.58.1
+  - @zag-js/collection@0.58.1
+  - @zag-js/utils@0.58.1
+  - @zag-js/dismissable@0.58.1
+  - @zag-js/dom-event@0.58.1
+  - @zag-js/dom-query@0.58.1
+  - @zag-js/popper@0.58.1
+
+## 0.58.0
+
+### Minor Changes
+
+- [`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Ensure consistent application of form related properties like
+  `invalid`, `required`, and `readOnly`
+  - Export `Service` from all machines for use in Lit based components.
+
+### Patch Changes
+
+- Updated dependencies [[`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93)]:
+  - @zag-js/dom-query@0.58.0
+  - @zag-js/aria-hidden@0.58.0
+  - @zag-js/dismissable@0.58.0
+  - @zag-js/dom-event@0.58.0
+  - @zag-js/popper@0.58.0
+  - @zag-js/anatomy@0.58.0
+  - @zag-js/core@0.58.0
+  - @zag-js/types@0.58.0
+  - @zag-js/collection@0.58.0
+  - @zag-js/utils@0.58.0
+
 ## 0.57.0
 
 ### Patch Changes

@@ -142,6 +142,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: -1,
         disabled,
         type: "file",
+        required: state.context.required,
         capture: state.context.capture,
         name: state.context.name,
         accept: state.context.acceptAttr,

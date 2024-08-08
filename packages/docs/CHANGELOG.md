@@ -1,5 +1,37 @@
 # @zag-js/docs
 
+## 0.65.0
+
+## 0.64.0
+
+## 0.63.0
+
+## 0.62.1
+
+## 0.62.0
+
+## 0.61.1
+
+## 0.61.0
+
+## 0.60.0
+
+## 0.59.0
+
+## 0.58.3
+
+### Patch Changes
+
+- [#1621](https://github.com/chakra-ui/zag/pull/1621)
+  [`1f7ea87`](https://github.com/chakra-ui/zag/commit/1f7ea87a34e19f9bd2119a13a7d8b7a7498609e4) Thanks
+  [@Jonas-C](https://github.com/Jonas-C)! - Expose `data-state` on `ItemText` for Combobox and Select
+
+## 0.58.2
+
+## 0.58.1
+
+## 0.58.0
+
 ## 0.57.0
 
 ## 0.56.1

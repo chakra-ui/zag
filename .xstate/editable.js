@@ -11,13 +11,16 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "editable",
-  initial: ctx.startWithEditView ? "edit" : "preview",
-  entry: ctx.startWithEditView ? ["focusInput"] : undefined,
+  initial: ctx.edit ? "edit" : "preview",
+  entry: ctx.edit ? ["focusInput"] : undefined,
   context: {
-    "submitOnBlur": false
+    "isEditControlled": false,
+    "isSubmitEvent": false,
+    "isEditControlled": false,
+    "isEditControlled": false
   },
   on: {
-    SET_VALUE: {
+    "VALUE.SET": {
       actions: "setValue"
     }
   },
@@ -31,34 +34,44 @@ const fetchMachine = createMachine({
       // https://bugzilla.mozilla.org/show_bug.cgi?id=559561
       entry: ["blurInputIfNeeded"],
       on: {
-        EDIT: {
+        "CONTROLLED.EDIT": {
+          target: "edit",
+          actions: ["setPreviousValue", "focusInput"]
+        },
+        EDIT: [{
+          cond: "isEditControlled",
+          actions: ["invokeOnEdit"]
+        }, {
           target: "edit",
           actions: ["setPreviousValue", "focusInput", "invokeOnEdit"]
-        }
+        }]
       }
     },
     edit: {
       activities: ["trackInteractOutside"],
       on: {
-        TYPE: {
-          actions: "setValue"
-        },
-        BLUR: [{
-          cond: "submitOnBlur",
+        "CONTROLLED.PREVIEW": [{
+          cond: "isSubmitEvent",
           target: "preview",
-          actions: ["restoreFocus", "invokeOnSubmit"]
+          actions: ["setPreviousValue", "restoreFocus", "invokeOnSubmit"]
         }, {
           target: "preview",
           actions: ["revertValue", "restoreFocus", "invokeOnCancel"]
         }],
-        CANCEL: {
+        CANCEL: [{
+          cond: "isEditControlled",
+          actions: ["invokeOnPreview"]
+        }, {
           target: "preview",
-          actions: ["revertValue", "restoreFocus", "invokeOnCancel"]
-        },
-        SUBMIT: {
+          actions: ["revertValue", "restoreFocus", "invokeOnCancel", "invokeOnPreview"]
+        }],
+        SUBMIT: [{
+          cond: "isEditControlled",
+          actions: ["invokeOnPreview"]
+        }, {
           target: "preview",
-          actions: ["setPreviousValue", "restoreFocus", "invokeOnSubmit"]
-        }
+          actions: ["setPreviousValue", "restoreFocus", "invokeOnSubmit", "invokeOnPreview"]
+        }]
       }
     }
   }
@@ -71,6 +84,7 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "submitOnBlur": ctx => ctx["submitOnBlur"]
+    "isEditControlled": ctx => ctx["isEditControlled"],
+    "isSubmitEvent": ctx => ctx["isSubmitEvent"]
   }
 });

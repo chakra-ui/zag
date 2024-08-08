@@ -18,5 +18,6 @@ export type {
   OpenChangeDetails,
   PositioningOptions,
   ScrollToIndexDetails,
+  Service,
   ValueChangeDetails,
 } from "./select.types"

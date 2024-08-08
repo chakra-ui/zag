@@ -5,6 +5,7 @@ export const anatomy = createAnatomy("numberInput").parts(
   "label",
   "input",
   "control",
+  "valueText",
   "incrementTrigger",
   "decrementTrigger",
   "scrubber",

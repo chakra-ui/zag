@@ -26,6 +26,7 @@ const fetchMachine = createMachine({
     "hasTags && isInputCaretAtStart && !isLastTagHighlighted": false,
     "isTagEditable && hasHighlightedTag": false,
     "isFirstTagHighlighted": false,
+    "addOnPaste": false,
     "isInputRelatedTarget": false,
     "isEditedTagEmpty": false
   },
@@ -169,7 +170,15 @@ const fetchMachine = createMachine({
         }],
         DELETE: {
           actions: ["deleteHighlightedTag", "highlightTagAtIndex"]
-        }
+        },
+        PASTE: [{
+          cond: "addOnPaste",
+          target: "focused:input",
+          actions: ["setInputValue", "addTagFromPaste"]
+        }, {
+          target: "focused:input",
+          actions: "setInputValue"
+        }]
       }
     },
     "editing:tag": {

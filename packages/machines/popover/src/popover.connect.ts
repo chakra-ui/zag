@@ -132,7 +132,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": "close",
         onClick(event) {
           if (event.defaultPrevented) return
-          send("CLOSE")
+          send({ type: "CLOSE", restoreFocus: true })
         },
       })
     },

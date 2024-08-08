@@ -2,6 +2,7 @@ import { createScope, query, queryAll } from "@zag-js/dom-query"
 import type { DateView, MachineContext as Ctx } from "./date-picker.types"
 
 export const dom = createScope({
+  getLabelId: (ctx: Ctx, index: number) => ctx.ids?.label?.(index) ?? `datepicker:${ctx.id}:label:${index}`,
   getRootId: (ctx: Ctx) => ctx.ids?.root ?? `datepicker:${ctx.id}`,
   getTableId: (ctx: Ctx, id: string) => ctx.ids?.table?.(id) ?? `datepicker:${ctx.id}:table:${id}`,
   getTableHeaderId: (ctx: Ctx, id: string) => ctx.ids?.tableHeader?.(id) ?? `datepicker:${ctx.id}:thead`,

@@ -58,6 +58,8 @@ export function connect<T extends PropTypes, O>(
 
         role: "status",
         "aria-atomic": "true",
+        "aria-describedby": state.context.description ? dom.getDescriptionId(state.context) : undefined,
+        "aria-labelledby": state.context.title ? dom.getTitleId(state.context) : undefined,
         tabIndex: 0,
         style: getPlacementStyle(state.context, visible),
         onKeyDown(event) {

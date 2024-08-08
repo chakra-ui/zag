@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/svelte",
-  "version": "0.57.0",
+  "version": "0.65.0",
   "description": "The svelte wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -33,14 +33,14 @@
   "devDependencies": {
     "@sveltejs/package": "2.3.2",
     "clean-package": "2.2.0",
-    "svelte": "5.0.0-next.155"
+    "svelte": "5.0.0-next.210"
   },
   "peerDependencies": {
     "svelte": ">=5.0.0"
   },
   "scripts": {
     "build": "svelte-package -i src",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"

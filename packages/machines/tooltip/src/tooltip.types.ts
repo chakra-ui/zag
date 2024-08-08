@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -55,6 +55,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * @default true
    */
   closeOnScroll?: boolean
+  /**
+   * Whether the tooltip should close on click
+   * @default true
+   */
+  closeOnClick?: boolean
   /**
    * Whether the tooltip's content is interactive.
    * In this mode, the tooltip will remain open when user hovers over the content.
@@ -121,6 +126,8 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API
