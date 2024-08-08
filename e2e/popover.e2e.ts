@@ -69,6 +69,7 @@ test.describe("popover", () => {
     await I.clickTrigger()
     await I.clickClose()
     await I.dontSeeContent()
+    await I.seeTriggerIsFocused()
   })
 
   test("[pointer] should to open/close a popover on trigger click", async () => {
