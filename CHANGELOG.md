@@ -6,6 +6,32 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.65.0](./#0.65.0) - 2024-08-08
+
+### Fixed
+
+- **Dialog**
+
+  - Fix issue where closing a nested dialog focuses the first focusable element in the parent dialog instead of the
+    previously focused element.
+
+### Added
+
+- **Editable**
+
+  - Add support for controlled the editable's state (edit/preview) using `edit` and `onEditChange`
+
+- **Pagination**
+
+  - Expose `api.count` property
+
+### Changed
+
+- **Editable**
+
+  - Removed `onEdit` in favor of `onEditChange`
+  - Removed `startsWithEditView` in favor of `edit` prop
+
 ## [0.64.0](./#0.64.0) - 2024-08-01
 
 ### Fixed
