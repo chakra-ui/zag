@@ -11,5 +11,4 @@ export type {
   ItemState,
   Service,
   ValueChangeDetails,
-  Service,
 } from "./accordion.types"
