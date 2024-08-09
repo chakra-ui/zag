@@ -81,7 +81,7 @@ function connect(state, send) {
   const active = state.matches("active")
   return {
     active,
-    buttonProps: {
+    getButtonProps() {
       type: "button",
       role: "switch",
       "aria-checked": active,
