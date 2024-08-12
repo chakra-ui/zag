@@ -2055,8 +2055,8 @@ importers:
         version: link:../../types
     devDependencies:
       '@sveltejs/package':
-        specifier: 2.3.2
-        version: 2.3.2(svelte@5.0.0-next.218)(typescript@5.5.4)
+        specifier: 2.3.4
+        version: 2.3.4(svelte@5.0.0-next.218)(typescript@5.5.4)
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -5956,8 +5956,8 @@ packages:
   '@solidjs/start@1.0.6':
     resolution: {integrity: sha512-O5knaeqDBx+nKLJRm5ZJurnXZtIYBOwOreQ10APaVtVjKIKKRC5HxJ1Kwqg7atOQNNDgsF0pzhW218KseaZ1UA==}
 
-  '@sveltejs/package@2.3.2':
-    resolution: {integrity: sha512-6M8/Te7iXRG7SiH92wugqfyoJpuepjn78L433LnXicUeMso9M/N4vdL9DPK3MfTkVVY4klhNRptVqme3p4oZWA==}
+  '@sveltejs/package@2.3.4':
+    resolution: {integrity: sha512-A56rLEBVI7DhcfCmjy+D5oya4be/N+kBKX69H0aCkvhgOiAXroqVzeNhWiNiGHhhec3NvpGjtjKI5c4+JAlTZg==}
     engines: {node: ^16.14 || >=18}
     hasBin: true
     peerDependencies:
@@ -14752,7 +14752,7 @@ snapshots:
       - vinxi
       - vite
 
-  '@sveltejs/package@2.3.2(svelte@5.0.0-next.218)(typescript@5.5.4)':
+  '@sveltejs/package@2.3.4(svelte@5.0.0-next.218)(typescript@5.5.4)':
     dependencies:
       chokidar: 3.6.0
       kleur: 4.1.5
