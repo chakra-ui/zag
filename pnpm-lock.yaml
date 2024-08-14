@@ -45,8 +45,8 @@ importers:
         specifier: 1.46.0
         version: 1.46.0
       '@swc/core':
-        specifier: 1.7.6
-        version: 1.7.6(@swc/helpers@0.5.12)
+        specifier: 1.7.11
+        version: 1.7.11(@swc/helpers@0.5.12)
       '@types/babel__generator':
         specifier: 7.6.8
         version: 7.6.8
@@ -121,7 +121,7 @@ importers:
         version: 23.0.0
       tsup:
         specifier: 8.2.4
-        version: 8.2.4(@microsoft/api-extractor@7.43.0(@types/node@20.14.11))(@swc/core@1.7.6(@swc/helpers@0.5.12))(jiti@1.21.6)(postcss@8.4.40)(tsx@4.17.0)(typescript@5.5.4)(yaml@2.5.0)
+        version: 8.2.4(@microsoft/api-extractor@7.43.0(@types/node@20.14.11))(@swc/core@1.7.11(@swc/helpers@0.5.12))(jiti@1.21.6)(postcss@8.4.40)(tsx@4.17.0)(typescript@5.5.4)(yaml@2.5.0)
       tsx:
         specifier: 4.17.0
         version: 4.17.0
@@ -6046,68 +6046,68 @@ packages:
     peerDependencies:
       '@svgr/core': '*'
 
-  '@swc/core-darwin-arm64@1.7.6':
-    resolution: {integrity: sha512-6lYHey84ZzsdtC7UuPheM4Rm0Inzxm6Sb8U6dmKc4eCx8JL0LfWG4LC5RsdsrTxnjTsbriWlnhZBffh8ijUHIQ==}
+  '@swc/core-darwin-arm64@1.7.11':
+    resolution: {integrity: sha512-HRQv4qIeMBPThZ6Y/4yYW52rGsS6yrpusvuxLGyoFo45Y0y12/V2yXkOIA/0HIQyrqoUAxn1k4zQXpPaPNCmnw==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@swc/core-darwin-x64@1.7.6':
-    resolution: {integrity: sha512-Fyl+8aH9O5rpx4O7r2KnsPpoi32iWoKOYKiipeTbGjQ/E95tNPxbmsz4yqE8Ovldcga60IPJ5OKQA3HWRiuzdw==}
+  '@swc/core-darwin-x64@1.7.11':
+    resolution: {integrity: sha512-vtMQj0F3oYwDu5yhO7SKDRg1XekRSi6/TbzHAbBXv+dBhlGGvcZZynT1H90EVFTv+7w7Sh+lOFvRv5Z4ZTcxow==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [darwin]
 
-  '@swc/core-linux-arm-gnueabihf@1.7.6':
-    resolution: {integrity: sha512-2WxYTqFaOx48GKC2cbO1/IntA+w+kfCFy436Ij7qRqqtV/WAvTM9TC1OmiFbqq436rSot52qYmX8fkwdB5UcLQ==}
+  '@swc/core-linux-arm-gnueabihf@1.7.11':
+    resolution: {integrity: sha512-mHtzWKxhtyreI4CSxs+3+ENv8t/Qo35WFoYG66qHEgJz/Z2Lh6jv1E+MYgHdYwnpQHgHbdvAco7HsBu/Dt6xXw==}
     engines: {node: '>=10'}
     cpu: [arm]
     os: [linux]
 
-  '@swc/core-linux-arm64-gnu@1.7.6':
-    resolution: {integrity: sha512-TBEGMSe0LhvPe4S7E68c7VzgT3OMu4VTmBLS7B2aHv4v8uZO92Khpp7L0WqgYU1y5eMjk+XLDLi4kokiNHv/Hg==}
+  '@swc/core-linux-arm64-gnu@1.7.11':
+    resolution: {integrity: sha512-FRwe/x0GfXSQjGP2lIk+NO0pUFS/lI/RorCLBPiK808EVE9JTbh9DKCc/4Bbb4jgScAjNkrFCUVObQYl3YKmpA==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
 
-  '@swc/core-linux-arm64-musl@1.7.6':
-    resolution: {integrity: sha512-QI8QGL0HGT42tj7F1A+YAzhGkJjUcvvTfI1e2m704W0Enl2/UIK9v5D1zvQzYwusRyKuaQfbeBRYDh0NcLOGLg==}
+  '@swc/core-linux-arm64-musl@1.7.11':
+    resolution: {integrity: sha512-GY/rs0+GUq14Gbnza90KOrQd/9yHd5qQMii5jcSWcUCT5A8QTa8kiicsM2NxZeTJ69xlKmT7sLod5l99lki/2A==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
 
-  '@swc/core-linux-x64-gnu@1.7.6':
-    resolution: {integrity: sha512-61AYVzhjuNQAVIKKWOJu3H0/pFD28RYJGxnGg3YMhvRLRyuWNyY5Nyyj2WkKcz/ON+g38Arlz00NT1LDIViRLg==}
+  '@swc/core-linux-x64-gnu@1.7.11':
+    resolution: {integrity: sha512-QDkGRwSPmp2RBOlSs503IUXlWYlny8DyznTT0QuK0ML2RpDFlXWU94K/EZhS0RBEUkMY/W51OacM8P8aS/dkCg==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
 
-  '@swc/core-linux-x64-musl@1.7.6':
-    resolution: {integrity: sha512-hQFznpfLK8XajfAAN9Cjs0w/aVmO7iu9VZvInyrTCRcPqxV5O+rvrhRxKvC1LRMZXr5M6JRSRtepp5w+TK4kAw==}
+  '@swc/core-linux-x64-musl@1.7.11':
+    resolution: {integrity: sha512-SBEfKrXy6zQ6ksnyxw1FaCftrIH4fLfA81xNnKb7x/6iblv7Ko6H0aK3P5C86jyqF/82+ONl9C7ImGkUFQADig==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
 
-  '@swc/core-win32-arm64-msvc@1.7.6':
-    resolution: {integrity: sha512-Aqsd9afykVMuekzjm4X4TDqwxmG4CrzoOSFe0hZrn9SMio72l5eAPnMtYoe5LsIqtjV8MNprLfXaNbjHjTegmA==}
+  '@swc/core-win32-arm64-msvc@1.7.11':
+    resolution: {integrity: sha512-a2Y4xxEsLLYHJN7sMnw9+YQJDi3M1BxEr9hklfopPuGGnYLFNnx5CypH1l9ReijEfWjIAHNi7pq3m023lzW1Hg==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [win32]
 
-  '@swc/core-win32-ia32-msvc@1.7.6':
-    resolution: {integrity: sha512-9h0hYnOeRVNeQgHQTvD1Im67faNSSzBZ7Adtxyu9urNLfBTJilMllFd2QuGHlKW5+uaT6ZH7ZWDb+c/enx7Lcg==}
+  '@swc/core-win32-ia32-msvc@1.7.11':
+    resolution: {integrity: sha512-ZbZFMwZO+j8ulhegJ7EhJ/QVZPoQ5qc30ylJQSxizizTJaen71Q7/13lXWc6ksuCKvg6dUKrp/TPgoxOOtSrFA==}
     engines: {node: '>=10'}
     cpu: [ia32]
     os: [win32]
 
-  '@swc/core-win32-x64-msvc@1.7.6':
-    resolution: {integrity: sha512-izeoB8glCSe6IIDQmrVm6bvR9muk9TeKgmtY7b6l1BwL4BFnTUk4dMmpbntT90bEVQn3JPCaPtUG4HfL8VuyuA==}
+  '@swc/core-win32-x64-msvc@1.7.11':
+    resolution: {integrity: sha512-IUohZedSJyDu/ReEBG/mqX6uG29uA7zZ9z6dIAF+p6eFxjXmh9MuHryyM+H8ebUyoq/Ad3rL+rUCksnuYNnI0w==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [win32]
 
-  '@swc/core@1.7.6':
-    resolution: {integrity: sha512-FZxyao9eQks1MRmUshgsZTmlg/HB2oXK5fghkoWJm/1CU2q2kaJlVDll2as5j+rmWiwkp0Gidlq8wlXcEEAO+g==}
+  '@swc/core@1.7.11':
+    resolution: {integrity: sha512-AB+qc45UrJrDfbhPKcUXk+9z/NmFfYYwJT6G7/iur0fCse9kXjx45gi40+u/O2zgarG/30/zV6E3ps8fUvjh7g==}
     engines: {node: '>=10'}
     peerDependencies:
       '@swc/helpers': '*'
@@ -14855,51 +14855,51 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@swc/core-darwin-arm64@1.7.6':
+  '@swc/core-darwin-arm64@1.7.11':
     optional: true
 
-  '@swc/core-darwin-x64@1.7.6':
+  '@swc/core-darwin-x64@1.7.11':
     optional: true
 
-  '@swc/core-linux-arm-gnueabihf@1.7.6':
+  '@swc/core-linux-arm-gnueabihf@1.7.11':
     optional: true
 
-  '@swc/core-linux-arm64-gnu@1.7.6':
+  '@swc/core-linux-arm64-gnu@1.7.11':
     optional: true
 
-  '@swc/core-linux-arm64-musl@1.7.6':
+  '@swc/core-linux-arm64-musl@1.7.11':
     optional: true
 
-  '@swc/core-linux-x64-gnu@1.7.6':
+  '@swc/core-linux-x64-gnu@1.7.11':
     optional: true
 
-  '@swc/core-linux-x64-musl@1.7.6':
+  '@swc/core-linux-x64-musl@1.7.11':
     optional: true
 
-  '@swc/core-win32-arm64-msvc@1.7.6':
+  '@swc/core-win32-arm64-msvc@1.7.11':
     optional: true
 
-  '@swc/core-win32-ia32-msvc@1.7.6':
+  '@swc/core-win32-ia32-msvc@1.7.11':
     optional: true
 
-  '@swc/core-win32-x64-msvc@1.7.6':
+  '@swc/core-win32-x64-msvc@1.7.11':
     optional: true
 
-  '@swc/core@1.7.6(@swc/helpers@0.5.12)':
+  '@swc/core@1.7.11(@swc/helpers@0.5.12)':
     dependencies:
       '@swc/counter': 0.1.3
       '@swc/types': 0.1.12
     optionalDependencies:
-      '@swc/core-darwin-arm64': 1.7.6
-      '@swc/core-darwin-x64': 1.7.6
-      '@swc/core-linux-arm-gnueabihf': 1.7.6
-      '@swc/core-linux-arm64-gnu': 1.7.6
-      '@swc/core-linux-arm64-musl': 1.7.6
-      '@swc/core-linux-x64-gnu': 1.7.6
-      '@swc/core-linux-x64-musl': 1.7.6
-      '@swc/core-win32-arm64-msvc': 1.7.6
-      '@swc/core-win32-ia32-msvc': 1.7.6
-      '@swc/core-win32-x64-msvc': 1.7.6
+      '@swc/core-darwin-arm64': 1.7.11
+      '@swc/core-darwin-x64': 1.7.11
+      '@swc/core-linux-arm-gnueabihf': 1.7.11
+      '@swc/core-linux-arm64-gnu': 1.7.11
+      '@swc/core-linux-arm64-musl': 1.7.11
+      '@swc/core-linux-x64-gnu': 1.7.11
+      '@swc/core-linux-x64-musl': 1.7.11
+      '@swc/core-win32-arm64-msvc': 1.7.11
+      '@swc/core-win32-ia32-msvc': 1.7.11
+      '@swc/core-win32-x64-msvc': 1.7.11
       '@swc/helpers': 0.5.12
 
   '@swc/counter@0.1.3': {}
@@ -21850,7 +21850,7 @@ snapshots:
 
   tslib@2.6.3: {}
 
-  tsup@8.2.4(@microsoft/api-extractor@7.43.0(@types/node@20.14.11))(@swc/core@1.7.6(@swc/helpers@0.5.12))(jiti@1.21.6)(postcss@8.4.40)(tsx@4.17.0)(typescript@5.5.4)(yaml@2.5.0):
+  tsup@8.2.4(@microsoft/api-extractor@7.43.0(@types/node@20.14.11))(@swc/core@1.7.11(@swc/helpers@0.5.12))(jiti@1.21.6)(postcss@8.4.40)(tsx@4.17.0)(typescript@5.5.4)(yaml@2.5.0):
     dependencies:
       bundle-require: 5.0.0(esbuild@0.23.0)
       cac: 6.7.14
@@ -21870,7 +21870,7 @@ snapshots:
       tree-kill: 1.2.2
     optionalDependencies:
       '@microsoft/api-extractor': 7.43.0(@types/node@20.14.11)
-      '@swc/core': 1.7.6(@swc/helpers@0.5.12)
+      '@swc/core': 1.7.11(@swc/helpers@0.5.12)
       postcss: 8.4.40
       typescript: 5.5.4
     transitivePeerDependencies:
