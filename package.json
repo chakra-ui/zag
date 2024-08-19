@@ -89,7 +89,7 @@
     "fast-glob": "3.3.2",
     "find-packages": "10.0.4",
     "husky": "9.1.4",
-    "lint-staged": "15.2.8",
+    "lint-staged": "15.2.9",
     "node-fetch": "3.3.2",
     "plop": "4.0.1",
     "prettier": "3.3.3",
