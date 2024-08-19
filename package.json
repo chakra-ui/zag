@@ -70,7 +70,7 @@
     "@commitlint/config-conventional": "19.2.2",
     "@internationalized/date": "3.5.5",
     "@octokit/rest": "21.0.1",
-    "@playwright/test": "1.46.0",
+    "@playwright/test": "1.46.1",
     "@swc/core": "1.7.11",
     "@types/babel__generator": "7.6.8",
     "@types/babel__traverse": "7.20.6",
