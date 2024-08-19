@@ -5,7 +5,8 @@ import { dom } from "./{{dashCase machine}}.dom"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
   return {
-    rootProps: normalize.element({
-    }),
+    getRootProps() {
+      return normalize.element({})
+    },
   }
 }
