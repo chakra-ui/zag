@@ -36,7 +36,7 @@
     "svelte": "5.0.0-next.218"
   },
   "peerDependencies": {
-    "svelte": ">=5.0.0"
+    "svelte": "^5.0.0-next.1"
   },
   "scripts": {
     "build": "svelte-package -i src",
