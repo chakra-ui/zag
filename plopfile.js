@@ -59,20 +59,6 @@ module.exports = function main(plop) {
         template: '= [\n  { label: "{{multiCapitalize machine}}", path: "/{{machine}}" },',
       })
 
-      actions.push({
-        type: "modify",
-        path: "examples/vue-ts/src/routes.ts",
-        pattern: /\: \[/,
-        template: ': [\n    { path: "/{{machine}}", component: () => import("./pages/{{machine}}") },',
-      })
-
-      actions.push({
-        type: "modify",
-        path: "examples/solid-ts/src/routes.ts",
-        pattern: /\= \[/,
-        template: '= [\n  { path: "/{{machine}}", component: lazy(() => import("./pages/{{machine}}")) },',
-      })
-
       return actions
     },
   })
