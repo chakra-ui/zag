@@ -6,6 +6,19 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.65.1](./#0.65.1) - 2024-08-08
+
+### Fixed
+
+- **Popover**
+
+  - Fix issue where popover doesn't restore focus when controlled
+  - Fix issue where clicking the close button doesn't restore focus to the trigger
+
+- **Svelte**
+
+  - Fix issue where `peerDependencies` were configured incorrectly
+
 ## [0.65.0](./#0.65.0) - 2024-08-08
 
 ### Fixed
