@@ -11,5 +11,6 @@ export type {
   IntlTranslations,
   Service,
   SubmitMode,
+  EditChangeDetails,
   ValueChangeDetails,
 } from "./editable.types"
