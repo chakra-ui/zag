@@ -1,5 +1,17 @@
 # @zag-js/svelte
 
+## 0.65.1
+
+### Patch Changes
+
+- [#1785](https://github.com/chakra-ui/zag/pull/1785)
+  [`18371e9`](https://github.com/chakra-ui/zag/commit/18371e9e051a7f5709bc6f693b0530fe75cd2bd9) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - Fix issue where peerDependencies were configured correctly.
+
+- Updated dependencies []:
+  - @zag-js/core@0.65.1
+  - @zag-js/types@0.65.1
+
 ## 0.65.0
 
 ### Patch Changes
