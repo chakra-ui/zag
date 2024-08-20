@@ -1,5 +1,23 @@
 # @zag-js/popover
 
+## 0.65.1
+
+### Patch Changes
+
+- [`0d6d0ab`](https://github.com/chakra-ui/zag/commit/0d6d0ab41861961fd9422840e9b64e68ad907152) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where popover doesn't restore focus when controlled
+  - Fix issue where clicking the close button doesn't restore focus to the trigger
+- Updated dependencies []:
+  - @zag-js/anatomy@0.65.1
+  - @zag-js/core@0.65.1
+  - @zag-js/types@0.65.1
+  - @zag-js/aria-hidden@0.65.1
+  - @zag-js/utils@0.65.1
+  - @zag-js/dismissable@0.65.1
+  - @zag-js/dom-query@0.65.1
+  - @zag-js/popper@0.65.1
+  - @zag-js/remove-scroll@0.65.1
+
 ## 0.65.0
 
 ### Patch Changes
