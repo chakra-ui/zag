@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
-## [0.65.1](./#0.65.1) - 2024-08-08
+## [0.65.1](./#0.65.1) - 2024-08-20
 
 ### Fixed
 
