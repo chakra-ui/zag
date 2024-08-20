@@ -291,7 +291,7 @@ export function machine(userContext: UserDefinedContext) {
           if (!input) return false
           try {
             return input.selectionStart === 0 && input.selectionEnd === 0
-          } catch (e) {
+          } catch {
             return input.value === ""
           }
         },

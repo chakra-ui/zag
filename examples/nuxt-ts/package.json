@@ -83,15 +83,15 @@
     "@zag-js/vue": "workspace:*",
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
-    "lucide-vue-next": "0.414.0",
+    "lucide-vue-next": "0.428.0",
     "match-sorter": "6.3.4",
-    "vue": "3.4.33",
-    "vue-router": "4.4.0"
+    "vue": "3.4.38",
+    "vue-router": "4.4.3"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@types/form-serialize": "0.7.4",
-    "@types/node": "20.14.11",
+    "@types/node": "22.4.1",
     "nuxt": "3.12.4"
   }
 }

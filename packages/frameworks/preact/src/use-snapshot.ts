@@ -40,7 +40,7 @@ export function useSnapshot<
         ) {
           return lastSnapshot.current
         }
-      } catch (e) {
+      } catch {
         // ignore if a promise or something is thrown
       }
       return nextSnapshot
