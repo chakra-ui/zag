@@ -26,7 +26,7 @@ const fallback: TreeCollectionMethods<any> = {
   },
   itemToChildren(data) {
     if (isObject(data) && hasProp(data, "children")) return data.children
-    return []
+    return
   },
   isItemDisabled(data) {
     if (isObject(data) && hasProp(data, "disabled")) return !!data.disabled
