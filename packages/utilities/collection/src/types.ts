@@ -32,3 +32,25 @@ export interface CollectionOptions<T extends CollectionItem = CollectionItem> ex
    */
   items: T[] | readonly T[]
 }
+
+export type TreeCollectionItem = any
+
+export interface TreeCollectionMethods<T extends TreeCollectionItem = TreeCollectionItem> {
+  /**
+   * Whether the item is disabled
+   */
+  isItemDisabled: (item: T) => boolean
+  /**
+   * The value of the item
+   */
+  itemToValue: (item: T) => string
+  /**
+   * The children of the item
+   */
+  itemToChildren: (item: T) => T[]
+}
+
+export interface TreeCollectionOptions<T extends TreeCollectionItem = TreeCollectionItem>
+  extends Partial<TreeCollectionMethods<T>> {
+  data: T
+}

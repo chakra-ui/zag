@@ -4,15 +4,17 @@ let rootNode: TreeNode
 
 beforeEach(() => {
   rootNode = new TreeNode({
-    value: "root",
-    children: [
-      {
-        value: "branch1",
-        children: [{ value: "child1-1" }, { value: "child1-2" }],
-      },
-      { value: "child1" },
-      { value: "child2" },
-    ],
+    data: {
+      value: "root",
+      children: [
+        {
+          value: "branch1",
+          children: [{ value: "child1-1" }, { value: "child1-2" }],
+        },
+        { value: "child1", disabled: true },
+        { value: "child2" },
+      ],
+    },
   })
 })
 
@@ -23,11 +25,29 @@ describe("tree collection", () => {
     expect(branchNode?.compareNodePosition(childNode)).toBe(TreeNodePosition.FOLLOWING)
   })
 
+  test("collection methods", () => {
+    const branchNode = rootNode.findNode("branch1")
+    const childNode = rootNode.findNode("child1")
+
+    expect(rootNode.getItemValue()).toBe("root")
+    expect(branchNode?.getItemChildren()).toMatchInlineSnapshot(`
+      [
+        {
+          "value": "child1-1",
+        },
+        {
+          "value": "child1-2",
+        },
+      ]
+    `)
+    expect(childNode?.getItemDisabled()).toBe(true)
+  })
+
   test("insert child", () => {
     expect(rootNode.firstChild?.value).toBe("branch1")
     expect(rootNode.lastChild?.value).toBe("child2")
 
-    rootNode.insertChild(new TreeNode({ value: "child3" }), "branch1")
+    rootNode.insertChild(new TreeNode({ data: { value: "child3" } }), "branch1")
 
     expect(rootNode).toMatchInlineSnapshot(`
       {
@@ -138,7 +158,7 @@ describe("tree collection", () => {
   })
 
   test("append child", () => {
-    rootNode.findNode("branch1")?.appendChild(new TreeNode({ value: "child1-3" }))
+    rootNode.findNode("branch1")?.appendChild(new TreeNode({ data: { value: "child1-3" } }))
 
     expect(rootNode.children).toMatchInlineSnapshot(`
       [

@@ -1,3 +1,6 @@
+import { hasProp, isObject } from "@zag-js/utils"
+import type { TreeCollectionItem, TreeCollectionMethods, TreeCollectionOptions } from "./types"
+
 export interface TreeNodeOptions {
   value: string
   data?: any
@@ -16,23 +19,62 @@ export const enum TreeNodePosition {
   FOLLOWING = 1,
 }
 
-export class TreeNode {
+const fallback: TreeCollectionMethods<any> = {
+  itemToValue(data) {
+    if (isObject(data) && hasProp(data, "value")) return data.value
+    return ""
+  },
+  itemToChildren(data) {
+    if (isObject(data) && hasProp(data, "children")) return data.children
+    return []
+  },
+  isItemDisabled(data) {
+    if (isObject(data) && hasProp(data, "disabled")) return !!data.disabled
+    return false
+  },
+}
+
+export class TreeNode<T extends TreeCollectionItem = TreeCollectionItem> {
   data: any
   children: TreeNode[] = []
   value: string
+  disabled: boolean
   expanded = false
   selected = false
   parentNode: TreeNode | null = null
 
-  constructor(options: TreeNodeOptions) {
-    const { data, value, children } = options
+  constructor(private options: TreeCollectionOptions<T>) {
+    const { data } = options
 
     this.data = data
-    this.value = value
+    this.value = this.getItemValue()
+    this.disabled = this.getItemDisabled()
 
+    const children = this.getItemChildren()
     children?.forEach((child) => {
-      this.appendChild(new TreeNode(child))
+      this.appendChild(new TreeNode({ ...options, data: child }))
     })
+  }
+
+  /**
+   * Get node value from data
+   */
+  getItemValue(): string {
+    return this.options.itemToValue?.(this.options.data) ?? fallback.itemToValue(this.options.data)
+  }
+
+  /**
+   * Get node disabled from data
+   */
+  getItemDisabled(): boolean {
+    return this.options.isItemDisabled?.(this.options.data) ?? fallback.isItemDisabled(this.options.data)
+  }
+
+  /**
+   * Get children of a node from data
+   */
+  getItemChildren(): T[] {
+    return this.options.itemToChildren?.(this.options.data) ?? fallback.itemToChildren(this.options.data)
   }
 
   get depth(): number {
@@ -147,7 +189,7 @@ export class TreeNode {
   }
 
   clone(): TreeNode {
-    const clone = new TreeNode({ value: this.value, data: this.data })
+    const clone = new TreeNode({ ...this.options, data: this.data })
     this.children.forEach((child) => clone.appendChild(child.clone()))
     return clone
   }
