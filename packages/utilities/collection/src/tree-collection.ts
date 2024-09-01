@@ -47,10 +47,10 @@ export class TreeNode<T extends TreeCollectionItem = TreeCollectionItem> {
     const { data } = options
 
     this.data = data
-    this.value = this.getItemValue()
-    this.disabled = this.getItemDisabled()
+    this.value = this.getItemValue(options.data)
+    this.disabled = this.getItemDisabled(options.data)
 
-    const children = this.getItemChildren()
+    const children = this.getItemChildren(options.data)
     children?.forEach((child) => {
       this.appendChild(new TreeNode({ ...options, data: child }))
     })
@@ -59,22 +59,22 @@ export class TreeNode<T extends TreeCollectionItem = TreeCollectionItem> {
   /**
    * Get node value from data
    */
-  private getItemValue(): string {
-    return this.options.itemToValue?.(this.options.data) ?? fallback.itemToValue(this.options.data)
+  getItemValue(data: T): string {
+    return this.options.itemToValue?.(data) ?? fallback.itemToValue(data)
   }
 
   /**
    * Get node disabled from data
    */
-  private getItemDisabled(): boolean {
-    return this.options.isItemDisabled?.(this.options.data) ?? fallback.isItemDisabled(this.options.data)
+  getItemDisabled(data: T): boolean {
+    return this.options.isItemDisabled?.(data) ?? fallback.isItemDisabled(data)
   }
 
   /**
    * Get children of a node from data
    */
-  private getItemChildren(): T[] | undefined {
-    return this.options.itemToChildren?.(this.options.data) ?? fallback.itemToChildren(this.options.data)
+  getItemChildren(data: T): T[] | undefined {
+    return this.options.itemToChildren?.(data) ?? fallback.itemToChildren(data)
   }
 
   get depth(): number {
