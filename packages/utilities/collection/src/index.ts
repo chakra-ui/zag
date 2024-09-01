@@ -8,4 +8,5 @@ export type {
   CollectionOptions,
   CollectionSearchOptions,
   CollectionSearchState,
+  TreeCollectionItem,
 } from "./types"

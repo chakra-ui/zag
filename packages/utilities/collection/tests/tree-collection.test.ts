@@ -29,18 +29,20 @@ describe("tree collection", () => {
     const branchNode = rootNode.findNode("branch1")
     const childNode = rootNode.findNode("child1")
 
-    expect(rootNode.getItemValue()).toBe("root")
-    expect(branchNode?.getItemChildren()).toMatchInlineSnapshot(`
+    expect(rootNode.value).toBe("root")
+    expect(branchNode?.children).toMatchInlineSnapshot(`
       [
         {
+          "parent": "branch1",
           "value": "child1-1",
         },
         {
+          "parent": "branch1",
           "value": "child1-2",
         },
       ]
     `)
-    expect(childNode?.getItemDisabled()).toBe(true)
+    expect(childNode?.disabled).toBe(true)
 
     const newNode = new TreeNode<{ name: string; categories?: any[]; disabled?: boolean }>({
       data: {
@@ -60,20 +62,21 @@ describe("tree collection", () => {
 
     const blouseNode = newNode.findNode("blouse")
 
-    expect(newNode.getItemValue()).toBe("clothes")
-    expect(newNode.getItemChildren()).toMatchInlineSnapshot(`
+    expect(newNode.value).toBe("clothes")
+    expect(newNode.children).toMatchInlineSnapshot(`
       [
         {
-          "name": "jeans",
+          "parent": "clothes",
+          "value": "jeans",
         },
         {
-          "disabled": true,
+          "parent": "clothes",
           "value": "blouse",
         },
       ]
     `)
 
-    expect(blouseNode?.getItemDisabled()).toBe(true)
+    expect(blouseNode?.disabled).toBe(true)
   })
 
   test("insert child", () => {

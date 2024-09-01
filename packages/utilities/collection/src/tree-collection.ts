@@ -35,13 +35,13 @@ const fallback: TreeCollectionMethods<any> = {
 }
 
 export class TreeNode<T extends TreeCollectionItem = TreeCollectionItem> {
-  data: any
-  children: TreeNode[] = []
+  data: T
+  children: TreeNode<T>[] = []
   value: string
   disabled: boolean
   expanded = false
   selected = false
-  parentNode: TreeNode | null = null
+  parentNode: TreeNode<T> | null = null
 
   constructor(private options: TreeCollectionOptions<T>) {
     const { data } = options
@@ -59,21 +59,21 @@ export class TreeNode<T extends TreeCollectionItem = TreeCollectionItem> {
   /**
    * Get node value from data
    */
-  getItemValue(): string {
+  private getItemValue(): string {
     return this.options.itemToValue?.(this.options.data) ?? fallback.itemToValue(this.options.data)
   }
 
   /**
    * Get node disabled from data
    */
-  getItemDisabled(): boolean {
+  private getItemDisabled(): boolean {
     return this.options.isItemDisabled?.(this.options.data) ?? fallback.isItemDisabled(this.options.data)
   }
 
   /**
    * Get children of a node from data
    */
-  getItemChildren(): T[] | undefined {
+  private getItemChildren(): T[] | undefined {
     return this.options.itemToChildren?.(this.options.data) ?? fallback.itemToChildren(this.options.data)
   }
 
