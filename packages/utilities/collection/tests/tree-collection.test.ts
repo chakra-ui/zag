@@ -41,6 +41,39 @@ describe("tree collection", () => {
       ]
     `)
     expect(childNode?.getItemDisabled()).toBe(true)
+
+    const newNode = new TreeNode<{ name: string; categories?: any[]; disabled?: boolean }>({
+      data: {
+        name: "clothes",
+        categories: [{ name: "jeans" }, { value: "blouse", disabled: true }],
+      },
+      itemToValue(data) {
+        return data.name
+      },
+      itemToChildren(data) {
+        return data.categories
+      },
+      isItemDisabled(data) {
+        return !!data.disabled
+      },
+    })
+
+    const blouseNode = newNode.findNode("blouse")
+
+    expect(newNode.getItemValue()).toBe("clothes")
+    expect(newNode.getItemChildren()).toMatchInlineSnapshot(`
+      [
+        {
+          "name": "jeans",
+        },
+        {
+          "disabled": true,
+          "value": "blouse",
+        },
+      ]
+    `)
+
+    expect(blouseNode?.getItemDisabled()).toBe(true)
   })
 
   test("insert child", () => {

@@ -73,7 +73,7 @@ export class TreeNode<T extends TreeCollectionItem = TreeCollectionItem> {
   /**
    * Get children of a node from data
    */
-  getItemChildren(): T[] {
+  getItemChildren(): T[] | undefined {
     return this.options.itemToChildren?.(this.options.data) ?? fallback.itemToChildren(this.options.data)
   }
 

@@ -47,7 +47,7 @@ export interface TreeCollectionMethods<T extends TreeCollectionItem = TreeCollec
   /**
    * The children of the item
    */
-  itemToChildren: (item: T) => T[]
+  itemToChildren: (item: T) => T[] | undefined
 }
 
 export interface TreeCollectionOptions<T extends TreeCollectionItem = TreeCollectionItem>
