@@ -1,8 +1,9 @@
+import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import type { State, Send, ItemProps, ItemState, MachineApi } from "./steps.types"
+import { fromLength } from "@zag-js/utils"
 import { parts } from "./steps.anatomy"
 import { dom } from "./steps.dom"
-import { dataAttr } from "@zag-js/dom-query"
+import type { ItemProps, ItemState, MachineApi, Send, State } from "./steps.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const value = state.context.step
@@ -62,11 +63,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getListProps() {
+      const arr = fromLength(state.context.count)
+      const triggerIds = arr.map((_, index) => dom.getTriggerId(state.context, index))
       return normalize.element({
         ...parts.list.attrs,
         dir: state.context.dir,
         id: dom.getListId(state.context),
         role: "tablist",
+        "aria-owns": triggerIds.join(" "),
         "aria-orientation": state.context.orientation,
         "data-orientation": state.context.orientation,
       })
