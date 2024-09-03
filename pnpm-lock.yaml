@@ -30,11 +30,11 @@ importers:
         specifier: 2.27.7
         version: 2.27.7
       '@commitlint/cli':
-        specifier: 19.4.0
-        version: 19.4.0(@types/node@22.4.1)(typescript@5.5.4)
+        specifier: 19.4.1
+        version: 19.4.1(@types/node@22.4.1)(typescript@5.5.4)
       '@commitlint/config-conventional':
-        specifier: 19.2.2
-        version: 19.2.2
+        specifier: 19.4.1
+        version: 19.4.1
       '@internationalized/date':
         specifier: 3.5.5
         version: 3.5.5
@@ -69,8 +69,8 @@ importers:
         specifier: 4.10.0
         version: 4.10.0
       commitlint:
-        specifier: 19.4.0
-        version: 19.4.0(@types/node@22.4.1)(typescript@5.5.4)
+        specifier: 19.4.1
+        version: 19.4.1(@types/node@22.4.1)(typescript@5.5.4)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -4449,13 +4449,13 @@ packages:
   '@cloudinary/url-gen@1.15.0':
     resolution: {integrity: sha512-bjU67eZxLUgoRy/Plli4TQio7q6P31OYqnEgXxeN9TKXrzr6h0DeEdIUhKI9gy3HkEBWXWWJIPh7j7gkOJPnyA==}
 
-  '@commitlint/cli@19.4.0':
-    resolution: {integrity: sha512-sJX4J9UioVwZHq7JWM9tjT5bgWYaIN3rC4FP7YwfEwBYiIO+wMyRttRvQLNkow0vCdM0D67r9NEWU0Ui03I4Eg==}
+  '@commitlint/cli@19.4.1':
+    resolution: {integrity: sha512-EerFVII3ZcnhXsDT9VePyIdCJoh3jEzygN1L37MjQXgPfGS6fJTWL/KHClVMod1d8w94lFC3l4Vh/y5ysVAz2A==}
     engines: {node: '>=v18'}
     hasBin: true
 
-  '@commitlint/config-conventional@19.2.2':
-    resolution: {integrity: sha512-mLXjsxUVLYEGgzbxbxicGPggDuyWNkf25Ht23owXIH+zV2pv1eJuzLK3t1gDY5Gp6pxdE60jZnWUY5cvgL3ufw==}
+  '@commitlint/config-conventional@19.4.1':
+    resolution: {integrity: sha512-D5S5T7ilI5roybWGc8X35OBlRXLAwuTseH1ro0XgqkOWrhZU8yOwBOslrNmSDlTXhXLq8cnfhQyC42qaUCzlXA==}
     engines: {node: '>=v18'}
 
   '@commitlint/config-validator@19.0.3':
@@ -7389,8 +7389,8 @@ packages:
     resolution: {integrity: sha512-bKw/r35jR3HGt5PEPm1ljsQQGyCrR8sFGNiN5L+ykDHdpO8Smxkrkla9Yi6NkQyUrb8V54PGhfMs6NrIwtxtdw==}
     engines: {node: '>= 6'}
 
-  commitlint@19.4.0:
-    resolution: {integrity: sha512-aZU6Y5j918XufTVbm5fOu1xOeUgDcBiVfRpFxkOb83RMsPcYAW6maWRmm6Vs6YhSQbOEZ2+AE+IPoVFvoevQqg==}
+  commitlint@19.4.1:
+    resolution: {integrity: sha512-w9PRvPad1ywVXl4QuS/OA9kzyoyW68dIpaxTdezpr1ycZeYkBRUHRQMmtL5rSYw1JytktojaKEBuvf1neDmeCg==}
     engines: {node: '>=v18'}
     hasBin: true
 
@@ -13207,7 +13207,7 @@ snapshots:
     dependencies:
       '@cloudinary/transformation-builder-sdk': 1.15.1
 
-  '@commitlint/cli@19.4.0(@types/node@22.4.1)(typescript@5.5.4)':
+  '@commitlint/cli@19.4.1(@types/node@22.4.1)(typescript@5.5.4)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.4.1
@@ -13220,7 +13220,7 @@ snapshots:
       - '@types/node'
       - typescript
 
-  '@commitlint/config-conventional@19.2.2':
+  '@commitlint/config-conventional@19.4.1':
     dependencies:
       '@commitlint/types': 19.0.3
       conventional-changelog-conventionalcommits: 7.0.2
@@ -16528,9 +16528,9 @@ snapshots:
       has-own-prop: 2.0.0
       repeat-string: 1.6.1
 
-  commitlint@19.4.0(@types/node@22.4.1)(typescript@5.5.4):
+  commitlint@19.4.1(@types/node@22.4.1)(typescript@5.5.4):
     dependencies:
-      '@commitlint/cli': 19.4.0(@types/node@22.4.1)(typescript@5.5.4)
+      '@commitlint/cli': 19.4.1(@types/node@22.4.1)(typescript@5.5.4)
       '@commitlint/types': 19.0.3
     transitivePeerDependencies:
       - '@types/node'
