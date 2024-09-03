@@ -80,7 +80,7 @@
     "use-match-media-hook": "1.0.1"
   },
   "devDependencies": {
-    "@types/react": "18.3.3",
+    "@types/react": "18.3.5",
     "all-contributors-cli": "6.26.1",
     "eslint": "9.9.0",
     "eslint-config-next": "14.2.5",
