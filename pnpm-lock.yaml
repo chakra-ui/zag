@@ -2103,8 +2103,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
       solid-js:
-        specifier: 1.8.21
-        version: 1.8.21
+        specifier: 1.8.22
+        version: 1.8.22
 
   packages/frameworks/svelte:
     dependencies:
@@ -11251,6 +11251,9 @@ packages:
 
   solid-js@1.8.21:
     resolution: {integrity: sha512-FHUGdoo7GVa1BTpGh/4UtwIISde0vSXoqNB6KFpHiTgkIY959tmCJ7NYQAWDfScBfnpoMGZR8lFz0DiwW/gFlw==}
+
+  solid-js@1.8.22:
+    resolution: {integrity: sha512-VBzN5j+9Y4rqIKEnK301aBk+S7fvFSTs9ljg+YEdFxjNjH0hkjXPiQRcws9tE5fUzMznSS6KToL5hwMfHDgpLA==}
 
   solid-refresh@0.6.3:
     resolution: {integrity: sha512-F3aPsX6hVw9ttm5LYlth8Q15x6MlI/J3Dn+o3EQyRTtTxidepSTwAYdozt01/YA+7ObcciagGEyXIopGZzQtbA==}
@@ -21379,6 +21382,12 @@ snapshots:
       tslib: 2.6.3
 
   solid-js@1.8.21:
+    dependencies:
+      csstype: 3.1.3
+      seroval: 1.1.1
+      seroval-plugins: 1.1.1(seroval@1.1.1)
+
+  solid-js@1.8.22:
     dependencies:
       csstype: 3.1.3
       seroval: 1.1.1
