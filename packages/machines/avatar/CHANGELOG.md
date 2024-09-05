@@ -1,5 +1,21 @@
 # @zag-js/avatar
 
+## 0.66.0
+
+### Patch Changes
+
+- [#1822](https://github.com/chakra-ui/zag/pull/1822)
+  [`6d958b3`](https://github.com/chakra-ui/zag/commit/6d958b34f0d00035e8c2cfbb55a1f46e20e456f6) Thanks
+  [@healtheloper](https://github.com/healtheloper)! - Fix issues where avatar could throw when the fallback inner text
+  changes.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.66.0
+  - @zag-js/core@0.66.0
+  - @zag-js/types@0.66.0
+  - @zag-js/utils@0.66.0
+  - @zag-js/dom-query@0.66.0
+
 ## 0.65.1
 
 ### Patch Changes

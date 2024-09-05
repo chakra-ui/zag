@@ -1,5 +1,24 @@
 # @zag-js/file-upload
 
+## 0.66.0
+
+### Minor Changes
+
+- [`4c1923e`](https://github.com/chakra-ui/zag/commit/4c1923e2de9c4ace2de96b4c177478f53dde1f35) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `invalid` prop in file upload to explicitly mark
+  upload operation as invalid. This could be paired with the `rejectedFiles` to show an error message.
+
+### Patch Changes
+
+- Updated dependencies [[`e3a21a6`](https://github.com/chakra-ui/zag/commit/e3a21a6aad1b8c549bee41f410e2cf5c1e355a64)]:
+  - @zag-js/file-utils@0.66.0
+  - @zag-js/anatomy@0.66.0
+  - @zag-js/core@0.66.0
+  - @zag-js/types@0.66.0
+  - @zag-js/utils@0.66.0
+  - @zag-js/dom-query@0.66.0
+  - @zag-js/i18n-utils@0.66.0
+
 ## 0.65.1
 
 ### Patch Changes

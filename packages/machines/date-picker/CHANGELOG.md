@@ -1,5 +1,23 @@
 # @zag-js/date-picker
 
+## 0.66.0
+
+### Patch Changes
+
+- Updated dependencies [[`54094ab`](https://github.com/chakra-ui/zag/commit/54094ab5005301b1f00ce062a7298b2399fa2b31)]:
+  - @zag-js/popper@0.66.0
+  - @zag-js/dismissable@0.66.0
+  - @zag-js/anatomy@0.66.0
+  - @zag-js/core@0.66.0
+  - @zag-js/types@0.66.0
+  - @zag-js/utils@0.66.0
+  - @zag-js/date-utils@0.66.0
+  - @zag-js/dom-event@0.66.0
+  - @zag-js/dom-query@0.66.0
+  - @zag-js/form-utils@0.66.0
+  - @zag-js/live-region@0.66.0
+  - @zag-js/text-selection@0.66.0
+
 ## 0.65.1
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @zag-js/popper
 
+## 0.66.0
+
+### Minor Changes
+
+- [`54094ab`](https://github.com/chakra-ui/zag/commit/54094ab5005301b1f00ce062a7298b2399fa2b31) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor `boundary` to only support function that returns an
+  element.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.66.0
+  - @zag-js/dom-query@0.66.0
+
 ## 0.65.1
 
 ### Patch Changes

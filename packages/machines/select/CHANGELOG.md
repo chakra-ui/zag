@@ -1,5 +1,28 @@
 # @zag-js/select
 
+## 0.66.0
+
+### Patch Changes
+
+- [`44628a1`](https://github.com/chakra-ui/zag/commit/44628a119e957e07d0bdd96f3ad84a3b4d1bbac7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor opening and selection to be based on click events rather
+  than pointerdown/up cycles.
+
+  This improves the usability and accessibility of the select component. It also fixes an issue where controlled
+  multiple selects open state behaved unexpectedly.
+
+- Updated dependencies [[`54094ab`](https://github.com/chakra-ui/zag/commit/54094ab5005301b1f00ce062a7298b2399fa2b31)]:
+  - @zag-js/popper@0.66.0
+  - @zag-js/dismissable@0.66.0
+  - @zag-js/anatomy@0.66.0
+  - @zag-js/core@0.66.0
+  - @zag-js/types@0.66.0
+  - @zag-js/collection@0.66.0
+  - @zag-js/utils@0.66.0
+  - @zag-js/dom-event@0.66.0
+  - @zag-js/dom-query@0.66.0
+  - @zag-js/form-utils@0.66.0
+
 ## 0.65.1
 
 ### Patch Changes
