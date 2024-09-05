@@ -220,7 +220,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       }
       return normalize.img({
         ...parts.itemPreviewImage.attrs,
-        alt: translations.itemPreview(file),
+        alt: translations.itemPreview?.(file),
         src: url,
         "data-disabled": dataAttr(disabled),
       })
@@ -234,7 +234,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: "button",
         disabled,
         "data-disabled": dataAttr(disabled),
-        "aria-label": translations.deleteFile(file),
+        "aria-label": translations.deleteFile?.(file),
         onClick() {
           if (disabled) return
           send({ type: "FILE.DELETE", file })
