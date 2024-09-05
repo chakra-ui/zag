@@ -108,6 +108,7 @@ export function connect<T extends PropTypes, O>(
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
+          state.context.action?.onClick?.()
           send("DISMISS")
         },
       })

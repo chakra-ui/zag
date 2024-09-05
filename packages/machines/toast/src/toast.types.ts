@@ -35,6 +35,17 @@ export interface ToastHeightDetails {
   placement: Placement
 }
 
+export interface ActionOptions {
+  /**
+   * The label of the action
+   */
+  label: string
+  /**
+   * The function to call when the action is clicked
+   */
+  onClick: () => void
+}
+
 export interface Options<T> extends GenericOptions<T> {
   /**
    * The duration the toast will be visible
@@ -62,9 +73,13 @@ export interface Options<T> extends GenericOptions<T> {
    */
   onStatusChange?(details: StatusChangeDetails): void
   /**
+   * The action of the toast
+   */
+  action?: ActionOptions
+  /**
    * The metadata of the toast
    */
-  meta?: Record<string, unknown>
+  meta?: Record<string, any>
 }
 
 /* -----------------------------------------------------------------------------
