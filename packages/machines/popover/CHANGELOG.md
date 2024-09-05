@@ -1,5 +1,25 @@
 # @zag-js/popover
 
+## 0.66.0
+
+### Patch Changes
+
+- [`a931be7`](https://github.com/chakra-ui/zag/commit/a931be769d79e44c8e99c8b16e479eb77782e6ca) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where popover does not restore focus when open state is
+  changed programmatically
+
+- Updated dependencies [[`54094ab`](https://github.com/chakra-ui/zag/commit/54094ab5005301b1f00ce062a7298b2399fa2b31),
+  [`6e35eed`](https://github.com/chakra-ui/zag/commit/6e35eed3bea08165623539b68a8d1ce0a5e92fe1)]:
+  - @zag-js/popper@0.66.0
+  - @zag-js/aria-hidden@0.66.0
+  - @zag-js/dismissable@0.66.0
+  - @zag-js/anatomy@0.66.0
+  - @zag-js/core@0.66.0
+  - @zag-js/types@0.66.0
+  - @zag-js/utils@0.66.0
+  - @zag-js/dom-query@0.66.0
+  - @zag-js/remove-scroll@0.66.0
+
 ## 0.65.1
 
 ### Patch Changes

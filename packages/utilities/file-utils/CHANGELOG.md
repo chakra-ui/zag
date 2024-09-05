@@ -1,5 +1,18 @@
 # @zag-js/file-utils
 
+## 0.66.0
+
+### Minor Changes
+
+- [`e3a21a6`](https://github.com/chakra-ui/zag/commit/e3a21a6aad1b8c549bee41f410e2cf5c1e355a64) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for more file types in file upload `accept`
+  intellisense
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.66.0
+
 ## 0.65.1
 
 ### Patch Changes

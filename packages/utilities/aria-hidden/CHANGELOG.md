@@ -1,5 +1,13 @@
 # @zag-js/aria-hidden
 
+## 0.66.0
+
+### Patch Changes
+
+- [`6e35eed`](https://github.com/chakra-ui/zag/commit/6e35eed3bea08165623539b68a8d1ce0a5e92fe1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Replace internal `aria-hidden` implementation with `aria-hidden`
+  package for improved accessibility
+
 ## 0.65.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/progress",
-  "version": "0.65.1",
+  "version": "0.66.0",
   "description": "Core logic for the progress widget implemented as a state machine",
   "keywords": [
     "js",

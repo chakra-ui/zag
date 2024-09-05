@@ -1,5 +1,39 @@
 # @zag-js/toast
 
+## 0.66.0
+
+### Minor Changes
+
+- [`3761217`](https://github.com/chakra-ui/zag/commit/3761217cfe64ad29c39a435a34c0c037031d7ed1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `action` in toast options, giving you the ability
+  to add a `action.label` and `action.onClick`
+
+  ```ts
+  api.create({
+    title: "Uploaded successfully",
+    type: "success",
+    action: {
+      label: "Undo",
+      onClick: () => {
+        console.log("undo")
+      },
+    },
+  })
+  ```
+
+  The `onClick` function will be called when the user clicks the action trigger.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dismissable@0.66.0
+  - @zag-js/anatomy@0.66.0
+  - @zag-js/core@0.66.0
+  - @zag-js/types@0.66.0
+  - @zag-js/utils@0.66.0
+  - @zag-js/dom-event@0.66.0
+  - @zag-js/dom-query@0.66.0
+
 ## 0.65.1
 
 ### Patch Changes

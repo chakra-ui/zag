@@ -1,5 +1,19 @@
 # @zag-js/steps
 
+## 0.66.0
+
+### Patch Changes
+
+- [`4ecff96`](https://github.com/chakra-ui/zag/commit/4ecff96ed33d1b979c98b5ef99e4614459ee9905) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve accessibility of tablist semantics by using `aria-owns`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.66.0
+  - @zag-js/core@0.66.0
+  - @zag-js/types@0.66.0
+  - @zag-js/utils@0.66.0
+  - @zag-js/dom-query@0.66.0
+
 ## 0.65.1
 
 ### Patch Changes
