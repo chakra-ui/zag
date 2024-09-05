@@ -1,5 +1,25 @@
 # @zag-js/select
 
+## 0.66.1
+
+### Patch Changes
+
+- [`664fd91`](https://github.com/chakra-ui/zag/commit/664fd91ebd289ea7d698952b8d3176328e4d6e95) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix regression where select doesn't restore focus to trigger on
+  keyboard selection
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.66.1
+  - @zag-js/core@0.66.1
+  - @zag-js/types@0.66.1
+  - @zag-js/collection@0.66.1
+  - @zag-js/utils@0.66.1
+  - @zag-js/dismissable@0.66.1
+  - @zag-js/dom-event@0.66.1
+  - @zag-js/dom-query@0.66.1
+  - @zag-js/form-utils@0.66.1
+  - @zag-js/popper@0.66.1
+
 ## 0.66.0
 
 ### Patch Changes

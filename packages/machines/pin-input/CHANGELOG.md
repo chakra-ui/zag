@@ -1,5 +1,18 @@
 # @zag-js/pin-input
 
+## 0.66.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.66.1
+  - @zag-js/core@0.66.1
+  - @zag-js/types@0.66.1
+  - @zag-js/utils@0.66.1
+  - @zag-js/dom-event@0.66.1
+  - @zag-js/dom-query@0.66.1
+  - @zag-js/form-utils@0.66.1
+
 ## 0.66.0
 
 ### Patch Changes
