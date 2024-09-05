@@ -50,6 +50,12 @@ type ProxyState = readonly [
 const proxyStateMap = makeGlobal("__zag__proxyStateMap", () => new WeakMap<ProxyObject, ProxyState>())
 const refSet = makeGlobal("__zag__refSet", () => new WeakSet())
 
+const isReactElement = (x: any) => typeof x === "object" && x !== null && "$$typeof" in x
+const isVueElement = (x: any) => typeof x === "object" && x !== null && "__v_isVNode" in x
+const isDOMElement = (x: any) =>
+  typeof x === "object" && x !== null && "nodeType" in x && typeof x.nodeName === "string"
+const isElement = (x: any) => isReactElement(x) || isVueElement(x) || isDOMElement(x)
+
 const buildProxyFunction = (
   objectIs = Object.is,
 
@@ -59,6 +65,7 @@ const buildProxyFunction = (
     isObject(x) &&
     !refSet.has(x) &&
     (Array.isArray(x) || !(Symbol.iterator in x)) &&
+    !isElement(x) &&
     !(x instanceof WeakMap) &&
     !(x instanceof WeakSet) &&
     !(x instanceof Error) &&
