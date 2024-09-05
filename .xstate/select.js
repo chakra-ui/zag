@@ -215,7 +215,7 @@ const fetchMachine = createMachine({
         }, {
           cond: "closeOnSelect",
           target: "focused",
-          actions: ["selectHighlightedItem", "invokeOnClose", "clearHighlightedItem"]
+          actions: ["selectHighlightedItem", "invokeOnClose", "focusTriggerEl", "clearHighlightedItem"]
         }, {
           actions: ["selectHighlightedItem"]
         }],

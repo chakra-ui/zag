@@ -113,6 +113,7 @@ test.describe("keyboard / select", () => {
     await I.pressKey("Enter")
     await I.seeItemIsChecked("Andorra")
     await I.seeTriggerHasText("Andorra")
+    await I.seeTriggerIsFocused()
   })
 
   test("should select on space", async () => {
@@ -121,6 +122,7 @@ test.describe("keyboard / select", () => {
     await I.pressKey(" ")
     await I.seeItemIsChecked("Andorra")
     await I.seeTriggerHasText("Andorra")
+    await I.seeTriggerIsFocused()
   })
 
   test("should close on select", async () => {
@@ -128,6 +130,7 @@ test.describe("keyboard / select", () => {
     await I.pressKey("ArrowDown")
     await I.pressKey("Enter")
     await I.dontSeeDropdown()
+    await I.seeTriggerIsFocused()
   })
 
   test("should not close on closeOnSelect = false", async () => {

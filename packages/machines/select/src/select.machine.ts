@@ -273,7 +273,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               {
                 guard: "closeOnSelect",
                 target: "focused",
-                actions: ["selectHighlightedItem", "invokeOnClose", "clearHighlightedItem"],
+                actions: ["selectHighlightedItem", "invokeOnClose", "focusTriggerEl", "clearHighlightedItem"],
               },
               {
                 actions: ["selectHighlightedItem"],
