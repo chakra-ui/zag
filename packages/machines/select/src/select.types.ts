@@ -157,11 +157,6 @@ interface PrivateContext<T extends CollectionItem = CollectionItem> {
    */
   fieldsetDisabled: boolean
   /**
-   * @internal
-   * Whether to restore focus to the trigger after the menu closes
-   */
-  restoreFocus?: boolean
-  /**
    * The highlighted item
    */
   highlightedItem: T | null

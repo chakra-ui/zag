@@ -1,4 +1,4 @@
-import { getEventKey, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
 import {
   ariaAttr,
   dataAttr,
@@ -166,18 +166,10 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-readonly": dataAttr(readOnly),
         "data-placement": state.context.currentPlacement,
         "data-placeholder-shown": dataAttr(!state.context.hasSelectedItems),
-        onPointerDown(event) {
-          if (!isLeftClick(event)) return
-          if (!interactive) return
-          event.currentTarget.dataset.pointerType = event.pointerType
-          if (disabled || event.pointerType === "touch") return
-          send({ type: "TRIGGER.CLICK" })
-        },
         onClick(event) {
-          if (!interactive || event.button) return
-          if (event.currentTarget.dataset.pointerType === "touch") {
-            send({ type: "TRIGGER.CLICK" })
-          }
+          if (!interactive) return
+          if (event.defaultPrevented) return
+          send({ type: "TRIGGER.CLICK" })
         },
         onFocus() {
           send("TRIGGER.FOCUS")
@@ -267,7 +259,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (itemState.value === state.context.highlightedValue) return
           send({ type: "ITEM.POINTER_MOVE", value: itemState.value })
         },
-        onPointerUp() {
+        onClick(event) {
+          if (event.defaultPrevented) return
           if (itemState.disabled) return
           send({ type: "ITEM.CLICK", src: "pointerup", value: itemState.value })
         },
@@ -275,14 +268,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (itemState.disabled) return
           if (props.persistFocus) return
           if (event.pointerType !== "mouse") return
-          const isArrowKey = ["CONTENT.ARROW_UP", "CONTENT.ARROW_DOWN"].includes(state.event.type)
-          if (isArrowKey) return
+
+          const pointerMoved = state.previousEvent.type.includes("POINTER")
+          if (!pointerMoved) return
+
           send({ type: "ITEM.POINTER_LEAVE" })
-        },
-        onTouchEnd(event) {
-          // prevent clicking elements behind content
-          event.preventDefault()
-          event.stopPropagation()
         },
       })
     },

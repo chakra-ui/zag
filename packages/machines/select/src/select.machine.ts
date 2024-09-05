@@ -30,7 +30,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         collection: ctx.collection ?? collection.empty(),
         typeahead: getByTypeahead.defaultOptions,
         fieldsetDisabled: false,
-        restoreFocus: true,
         positioning: {
           placement: "bottom-start",
           gutter: 8,
@@ -92,10 +91,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               {
                 guard: "isTriggerClickEvent",
                 target: "open",
-                actions: ["highlightFirstSelectedItem"],
+                actions: ["setInitialFocus", "highlightFirstSelectedItem"],
               },
               {
                 target: "open",
+                actions: ["setInitialFocus"],
               },
             ],
             "TRIGGER.CLICK": [
@@ -105,7 +105,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 target: "open",
-                actions: ["invokeOnOpen", "highlightFirstSelectedItem"],
+                actions: ["invokeOnOpen", "setInitialFocus", "highlightFirstSelectedItem"],
               },
             ],
             "TRIGGER.FOCUS": {
@@ -118,7 +118,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 target: "open",
-                actions: ["invokeOnOpen"],
+                actions: ["setInitialFocus", "invokeOnOpen"],
               },
             ],
           },
@@ -126,26 +126,26 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
         focused: {
           tags: ["closed"],
-          entry: ["focusTriggerEl"],
           on: {
             "CONTROLLED.OPEN": [
               {
                 guard: "isTriggerClickEvent",
                 target: "open",
-                actions: ["highlightFirstSelectedItem"],
+                actions: ["setInitialFocus", "highlightFirstSelectedItem"],
               },
               {
                 guard: "isTriggerArrowUpEvent",
                 target: "open",
-                actions: ["highlightComputedLastItem"],
+                actions: ["setInitialFocus", "highlightComputedLastItem"],
               },
               {
                 guard: or("isTriggerArrowDownEvent", "isTriggerEnterEvent"),
                 target: "open",
-                actions: ["highlightComputedFirstItem"],
+                actions: ["setInitialFocus", "highlightComputedFirstItem"],
               },
               {
                 target: "open",
+                actions: ["setInitialFocus"],
               },
             ],
             OPEN: [
@@ -155,7 +155,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 target: "open",
-                actions: ["invokeOnOpen"],
+                actions: ["setInitialFocus", "invokeOnOpen"],
               },
             ],
             "TRIGGER.BLUR": {
@@ -168,7 +168,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 target: "open",
-                actions: ["invokeOnOpen", "highlightFirstSelectedItem"],
+                actions: ["setInitialFocus", "invokeOnOpen", "highlightFirstSelectedItem"],
               },
             ],
             "TRIGGER.ENTER": [
@@ -178,7 +178,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 target: "open",
-                actions: ["invokeOnOpen", "highlightComputedFirstItem"],
+                actions: ["setInitialFocus", "invokeOnOpen", "highlightComputedFirstItem"],
               },
             ],
             "TRIGGER.ARROW_UP": [
@@ -188,7 +188,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 target: "open",
-                actions: ["invokeOnOpen", "highlightComputedLastItem"],
+                actions: ["setInitialFocus", "invokeOnOpen", "highlightComputedLastItem"],
               },
             ],
             "TRIGGER.ARROW_DOWN": [
@@ -198,7 +198,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 target: "open",
-                actions: ["invokeOnOpen", "highlightComputedFirstItem"],
+                actions: ["setInitialFocus", "invokeOnOpen", "highlightComputedFirstItem"],
               },
             ],
             "TRIGGER.ARROW_LEFT": [
@@ -238,21 +238,13 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
 
         open: {
           tags: ["open"],
-          entry: ["setInitialFocus"],
           exit: ["scrollContentToTop"],
           activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem"],
           on: {
-            "CONTROLLED.CLOSE": [
-              {
-                guard: "shouldRestoreFocus",
-                target: "focused",
-                actions: ["clearHighlightedItem"],
-              },
-              {
-                target: "idle",
-                actions: ["clearHighlightedItem"],
-              },
-            ],
+            "CONTROLLED.CLOSE": {
+              target: "focused",
+              actions: ["focusTriggerEl", "clearHighlightedItem"],
+            },
             CLOSE: [
               {
                 guard: "isOpenControlled",
@@ -260,7 +252,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 target: "focused",
-                actions: ["invokeOnClose", "clearHighlightedItem"],
+                actions: ["invokeOnClose", "focusTriggerEl", "clearHighlightedItem"],
               },
             ],
             "TRIGGER.CLICK": [
@@ -285,28 +277,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
               {
                 actions: ["selectHighlightedItem"],
-              },
-            ],
-            "CONTENT.INTERACT_OUTSIDE": [
-              // == group 1 ==
-              {
-                guard: and("shouldRestoreFocus", "isOpenControlled"),
-                actions: ["invokeOnClose"],
-              },
-              {
-                guard: "shouldRestoreFocus",
-                target: "focused",
-                actions: ["invokeOnClose", "clearHighlightedItem"],
-              },
-
-              // == group 2 ==
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "idle",
-                actions: ["invokeOnClose", "clearHighlightedItem"],
               },
             ],
             "CONTENT.HOME": {
@@ -366,7 +336,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         isFirstItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.firstValue,
         isLastItemHighlighted: (ctx) => ctx.highlightedValue === ctx.collection.lastValue,
         closeOnSelect: (ctx, evt) => !!(evt.closeOnSelect ?? ctx.closeOnSelect),
-        shouldRestoreFocus: (ctx) => !!ctx.restoreFocus,
         // guard assertions (for controlled mode)
         isOpenControlled: (ctx) => !!ctx["open.controlled"],
         isTriggerClickEvent: (_ctx, evt) => evt.previousEvent?.type === "TRIGGER.CLICK",
@@ -387,6 +356,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
         trackDismissableElement(ctx, _evt, { send }) {
           const contentEl = () => dom.getContentEl(ctx)
+          let restoreFocus = true
           return trackDismissableElement(contentEl, {
             defer: true,
             exclude: [dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
@@ -394,10 +364,10 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             onPointerDownOutside: ctx.onPointerDownOutside,
             onInteractOutside(event) {
               ctx.onInteractOutside?.(event)
-              ctx.restoreFocus = !event.detail.focusable
+              restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
             },
             onDismiss() {
-              send({ type: "CONTENT.INTERACT_OUTSIDE" })
+              send({ type: "CLOSE", src: "interact-outside", restoreFocus })
             },
           })
         },
@@ -487,9 +457,12 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
             element?.focus({ preventScroll: true })
           })
         },
-        focusTriggerEl(ctx) {
+        focusTriggerEl(ctx, evt) {
+          const restoreFocus = evt.restoreFocus ?? evt.previousEvent?.restoreFocus
+          if (restoreFocus != null && !restoreFocus) return
           raf(() => {
-            dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
+            const element = dom.getTriggerEl(ctx)
+            element?.focus({ preventScroll: true })
           })
         },
         selectHighlightedItem(ctx, evt) {

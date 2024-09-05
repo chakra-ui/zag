@@ -40,17 +40,6 @@ test.describe("pointer", () => {
     await I.seeTriggerHasText("Select option")
   })
 
-  test("should open and select with pointer cycle", async () => {
-    const albania = "Albania"
-
-    await I.pointerDownTrigger()
-    await I.hoverItem(albania)
-    await I.pointerUpItem(albania)
-
-    await I.seeItemIsChecked(albania)
-    await I.seeTriggerHasText(albania)
-  })
-
   test("should highlight on hover", async () => {
     await I.clickTrigger()
     await I.hoverItem("Albania")

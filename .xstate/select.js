@@ -30,14 +30,10 @@ const fetchMachine = createMachine({
     "!multiple": false,
     "!multiple": false,
     "!multiple": false,
-    "shouldRestoreFocus": false,
     "isOpenControlled": false,
     "isOpenControlled": false,
     "closeOnSelect && isOpenControlled": false,
     "closeOnSelect": false,
-    "shouldRestoreFocus && isOpenControlled": false,
-    "shouldRestoreFocus": false,
-    "isOpenControlled": false,
     "hasHighlightedItem && loop && isLastItemHighlighted": false,
     "hasHighlightedItem": false,
     "hasHighlightedItem && loop && isFirstItemHighlighted": false,
@@ -81,16 +77,17 @@ const fetchMachine = createMachine({
         "CONTROLLED.OPEN": [{
           cond: "isTriggerClickEvent",
           target: "open",
-          actions: ["highlightFirstSelectedItem"]
+          actions: ["setInitialFocus", "highlightFirstSelectedItem"]
         }, {
-          target: "open"
+          target: "open",
+          actions: ["setInitialFocus"]
         }],
         "TRIGGER.CLICK": [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "highlightFirstSelectedItem"]
+          actions: ["invokeOnOpen", "setInitialFocus", "highlightFirstSelectedItem"]
         }],
         "TRIGGER.FOCUS": {
           target: "focused"
@@ -100,35 +97,35 @@ const fetchMachine = createMachine({
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["setInitialFocus", "invokeOnOpen"]
         }]
       }
     },
     focused: {
       tags: ["closed"],
-      entry: ["focusTriggerEl"],
       on: {
         "CONTROLLED.OPEN": [{
           cond: "isTriggerClickEvent",
           target: "open",
-          actions: ["highlightFirstSelectedItem"]
+          actions: ["setInitialFocus", "highlightFirstSelectedItem"]
         }, {
           cond: "isTriggerArrowUpEvent",
           target: "open",
-          actions: ["highlightComputedLastItem"]
+          actions: ["setInitialFocus", "highlightComputedLastItem"]
         }, {
           cond: "isTriggerArrowDownEvent || isTriggerEnterEvent",
           target: "open",
-          actions: ["highlightComputedFirstItem"]
+          actions: ["setInitialFocus", "highlightComputedFirstItem"]
         }, {
-          target: "open"
+          target: "open",
+          actions: ["setInitialFocus"]
         }],
         OPEN: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen"]
+          actions: ["setInitialFocus", "invokeOnOpen"]
         }],
         "TRIGGER.BLUR": {
           target: "idle"
@@ -138,28 +135,28 @@ const fetchMachine = createMachine({
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "highlightFirstSelectedItem"]
+          actions: ["setInitialFocus", "invokeOnOpen", "highlightFirstSelectedItem"]
         }],
         "TRIGGER.ENTER": [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "highlightComputedFirstItem"]
+          actions: ["setInitialFocus", "invokeOnOpen", "highlightComputedFirstItem"]
         }],
         "TRIGGER.ARROW_UP": [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "highlightComputedLastItem"]
+          actions: ["setInitialFocus", "invokeOnOpen", "highlightComputedLastItem"]
         }],
         "TRIGGER.ARROW_DOWN": [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "highlightComputedFirstItem"]
+          actions: ["setInitialFocus", "invokeOnOpen", "highlightComputedFirstItem"]
         }],
         "TRIGGER.ARROW_LEFT": [{
           cond: "!multiple && hasSelectedItems",
@@ -191,24 +188,19 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      entry: ["setInitialFocus"],
       exit: ["scrollContentToTop"],
       activities: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem"],
       on: {
-        "CONTROLLED.CLOSE": [{
-          cond: "shouldRestoreFocus",
+        "CONTROLLED.CLOSE": {
           target: "focused",
-          actions: ["clearHighlightedItem"]
-        }, {
-          target: "idle",
-          actions: ["clearHighlightedItem"]
-        }],
+          actions: ["focusTriggerEl", "clearHighlightedItem"]
+        },
         CLOSE: [{
           cond: "isOpenControlled",
           actions: ["invokeOnClose"]
         }, {
           target: "focused",
-          actions: ["invokeOnClose", "clearHighlightedItem"]
+          actions: ["invokeOnClose", "focusTriggerEl", "clearHighlightedItem"]
         }],
         "TRIGGER.CLICK": [{
           cond: "isOpenControlled",
@@ -226,24 +218,6 @@ const fetchMachine = createMachine({
           actions: ["selectHighlightedItem", "invokeOnClose", "clearHighlightedItem"]
         }, {
           actions: ["selectHighlightedItem"]
-        }],
-        "CONTENT.INTERACT_OUTSIDE": [
-        // == group 1 ==
-        {
-          cond: "shouldRestoreFocus && isOpenControlled",
-          actions: ["invokeOnClose"]
-        }, {
-          cond: "shouldRestoreFocus",
-          target: "focused",
-          actions: ["invokeOnClose", "clearHighlightedItem"]
-        },
-        // == group 2 ==
-        {
-          cond: "isOpenControlled",
-          actions: ["invokeOnClose"]
-        }, {
-          target: "idle",
-          actions: ["invokeOnClose", "clearHighlightedItem"]
         }],
         "CONTENT.HOME": {
           actions: ["highlightFirstItem"]
@@ -299,10 +273,8 @@ const fetchMachine = createMachine({
     "isTriggerArrowDownEvent || isTriggerEnterEvent": ctx => ctx["isTriggerArrowDownEvent || isTriggerEnterEvent"],
     "!multiple && hasSelectedItems": ctx => ctx["!multiple && hasSelectedItems"],
     "!multiple": ctx => ctx["!multiple"],
-    "shouldRestoreFocus": ctx => ctx["shouldRestoreFocus"],
     "closeOnSelect && isOpenControlled": ctx => ctx["closeOnSelect && isOpenControlled"],
     "closeOnSelect": ctx => ctx["closeOnSelect"],
-    "shouldRestoreFocus && isOpenControlled": ctx => ctx["shouldRestoreFocus && isOpenControlled"],
     "hasHighlightedItem && loop && isLastItemHighlighted": ctx => ctx["hasHighlightedItem && loop && isLastItemHighlighted"],
     "hasHighlightedItem": ctx => ctx["hasHighlightedItem"],
     "hasHighlightedItem && loop && isFirstItemHighlighted": ctx => ctx["hasHighlightedItem && loop && isFirstItemHighlighted"]
