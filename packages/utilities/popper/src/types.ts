@@ -70,7 +70,7 @@ export interface PositioningOptions {
   /**
    * The overflow boundary of the reference element
    */
-  boundary?: Boundary | (() => Boundary)
+  boundary?: () => Boundary
   /**
    * Options to activate auto-update listeners
    */
