@@ -43,8 +43,9 @@ export type ElementIds = Partial<{
 }>
 
 export interface IntlTranslations {
-  itemPreview(file: File): string
-  deleteFile(file: File): string
+  dropzone?: string
+  itemPreview?(file: File): string
+  deleteFile?(file: File): string
 }
 
 interface PublicContext extends LocaleProperties, CommonProperties {
@@ -118,14 +119,13 @@ interface PublicContext extends LocaleProperties, CommonProperties {
    * Whether to accept directories, only works in webkit browsers
    */
   directory?: boolean
+  /**
+   * Whether the file input is invalid
+   */
+  invalid?: boolean
 }
 
 interface PrivateContext {
-  /**
-   * @internal
-   * Whether the files includes any rejection
-   */
-  invalid: boolean
   /**
    * @internal
    * The rejected files

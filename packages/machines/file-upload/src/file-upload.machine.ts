@@ -1,12 +1,10 @@
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createMachine, ref } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
 import { getAcceptAttrString, isFileEqual } from "@zag-js/file-utils"
 import { compact } from "@zag-js/utils"
 import { dom } from "./file-upload.dom"
-import type { MachineContext, MachineState, FileRejection, UserDefinedContext } from "./file-upload.types"
-import { getFilesFromEvent, isFilesWithinRange } from "./file-upload.utils"
-
-const { not } = guards
+import type { FileRejection, MachineContext, MachineState, UserDefinedContext } from "./file-upload.types"
+import { getFilesFromEvent } from "./file-upload.utils"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -22,8 +20,8 @@ export function machine(userContext: UserDefinedContext) {
         ...ctx,
         acceptedFiles: ref([]),
         rejectedFiles: ref([]),
-        invalid: false,
         translations: {
+          dropzone: "dropzone",
           itemPreview: (file) => `preview of ${file.name}`,
           deleteFile: (file) => `delete file ${file.name}`,
           ...ctx.translations,
@@ -57,14 +55,9 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["openFilePicker"],
             },
             "DROPZONE.FOCUS": "focused",
-            "DROPZONE.DRAG_OVER": [
-              {
-                guard: not("isWithinRange"),
-                target: "dragging",
-                actions: ["setInvalid"],
-              },
-              { target: "dragging" },
-            ],
+            "DROPZONE.DRAG_OVER": {
+              target: "dragging",
+            },
           },
         },
         focused: {
@@ -76,34 +69,25 @@ export function machine(userContext: UserDefinedContext) {
             "DROPZONE.CLICK": {
               actions: ["openFilePicker"],
             },
-            "DROPZONE.DRAG_OVER": [
-              {
-                guard: not("isWithinRange"),
-                target: "dragging",
-                actions: ["setInvalid"],
-              },
-              { target: "dragging" },
-            ],
+            "DROPZONE.DRAG_OVER": {
+              target: "dragging",
+            },
           },
         },
         dragging: {
           on: {
             "DROPZONE.DROP": {
               target: "idle",
-              actions: ["clearInvalid", "setFilesFromEvent", "syncInputElement"],
+              actions: ["setFilesFromEvent", "syncInputElement"],
             },
             "DROPZONE.DRAG_LEAVE": {
               target: "idle",
-              actions: ["clearInvalid"],
             },
           },
         },
       },
     },
     {
-      guards: {
-        isWithinRange: (ctx, evt) => isFilesWithinRange(ctx, evt.count),
-      },
       actions: {
         syncInputElement(ctx) {
           const inputEl = dom.getHiddenInputEl(ctx)
@@ -122,12 +106,6 @@ export function machine(userContext: UserDefinedContext) {
           raf(() => {
             dom.getHiddenInputEl(ctx)?.click()
           })
-        },
-        setInvalid(ctx) {
-          ctx.invalid = true
-        },
-        clearInvalid(ctx) {
-          ctx.invalid = false
         },
         setFilesFromEvent(ctx, evt) {
           const result = getFilesFromEvent(ctx, evt.files)

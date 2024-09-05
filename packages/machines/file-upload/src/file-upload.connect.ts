@@ -61,8 +61,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         id: dom.getDropzoneId(state.context),
         tabIndex: disabled ? undefined : 0,
+        role: "button",
+        "aria-label": translations.dropzone,
         "aria-disabled": disabled,
-        "aria-invalid": state.context.invalid,
         "data-invalid": dataAttr(state.context.invalid),
         "data-disabled": dataAttr(disabled),
         "data-dragging": dataAttr(dragging),
@@ -124,6 +125,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getTriggerId(state.context),
         disabled,
         "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(state.context.invalid),
         type: "button",
         onClick(event) {
           if (disabled) return

@@ -17,6 +17,7 @@ export const props = createProps<UserDefinedContext>()([
   "maxFileSize",
   "minFileSize",
   "name",
+  "invalid",
   "onFileAccept",
   "onFileReject",
   "onFileChange",
