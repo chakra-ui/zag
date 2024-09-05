@@ -12,7 +12,6 @@ export default function Page() {
   const [state, send] = useMachine(avatar.machine({ id: useId() }))
   const [src, setSrc] = useState(images[0])
   const [showImage, setShowImage] = useState(true)
-  const [name, setName] = useState("PA")
 
   const api = avatar.connect(state, send, normalizeProps)
 
@@ -20,7 +19,7 @@ export default function Page() {
     <>
       <main className="avatar">
         <div {...api.getRootProps()}>
-          <span {...api.getFallbackProps()}>{name}</span>
+          <span {...api.getFallbackProps()}>PA</span>
           {showImage && <img alt="" referrerPolicy="no-referrer" src={src} {...api.getImageProps()} />}
         </div>
 
@@ -28,7 +27,6 @@ export default function Page() {
           <button onClick={() => setSrc(getRandomImage())}>Change Image</button>
           <button onClick={() => setSrc(avatarData.broken)}>Broken Image</button>
           <button onClick={() => setShowImage((c) => !c)}>Toggle Image</button>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
       </main>
 
