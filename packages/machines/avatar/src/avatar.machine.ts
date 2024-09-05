@@ -74,7 +74,9 @@ export function machine(userContext: UserDefinedContext) {
           return observeChildren(rootEl, {
             callback(records) {
               const removedNodes = Array.from(records[0].removedNodes) as HTMLElement[]
-              const removed = removedNodes.find((node) => node.matches("[data-scope=avatar][data-part=image]"))
+              const removed = removedNodes.find(
+                (node) => node.nodeType === Node.ELEMENT_NODE && node.matches("[data-scope=avatar][data-part=image]"),
+              )
               if (removed) {
                 send({ type: "IMG.UNMOUNT" })
               }
