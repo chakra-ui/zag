@@ -1,3 +1,4 @@
+// @ts-ignore
 import formatHighlight from "json-format-highlight"
 
 interface Dict {
