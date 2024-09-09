@@ -40,7 +40,7 @@ export function machine(userContext: UserDefinedContext) {
       computed: {
         valueAsString: (ctx) => getStringifiedValue(ctx),
         hour12: (ctx) => is12HourFormat(ctx.locale),
-        period: (ctx) => getHourPeriod(ctx.value?.hour),
+        period: (ctx) => getHourPeriod(ctx.value?.hour, ctx.locale),
       },
 
       watch: {

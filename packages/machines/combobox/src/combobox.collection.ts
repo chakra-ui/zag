@@ -1,10 +1,10 @@
-import { Collection, type CollectionItem, type CollectionOptions } from "@zag-js/collection"
+import { ListCollection, type CollectionItem, type CollectionOptions } from "@zag-js/collection"
 import { ref } from "@zag-js/core"
 
-export const collection = <T extends CollectionItem>(options: CollectionOptions<T>): Collection<T> => {
-  return ref(new Collection(options))
+export const collection = <T extends CollectionItem>(options: CollectionOptions<T>): ListCollection<T> => {
+  return ref(new ListCollection(options))
 }
 
-collection.empty = (): Collection<CollectionItem> => {
-  return ref(new Collection<CollectionItem>({ items: [] }))
+collection.empty = (): ListCollection<CollectionItem> => {
+  return ref(new ListCollection<CollectionItem>({ items: [] }))
 }

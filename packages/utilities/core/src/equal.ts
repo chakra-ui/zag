@@ -1,5 +1,13 @@
 const isArrayLike = (value: any) => value?.constructor.name === "Array"
 
+const isArrayEqual = (a: any[], b: any[]): boolean => {
+  if (a.length !== b.length) return false
+  for (let i = 0; i < a.length; i++) {
+    if (!isEqual(a[i], b[i])) return false
+  }
+  return true
+}
+
 export const isEqual = (a: any, b: any): boolean => {
   if (Object.is(a, b)) return true
 
@@ -14,7 +22,7 @@ export const isEqual = (a: any, b: any): boolean => {
   }
 
   if (isArrayLike(a) && isArrayLike(b)) {
-    return Array.from(a).toString() === Array.from(b).toString()
+    return isArrayEqual(Array.from(a), Array.from(b))
   }
 
   if (!(typeof a === "object") || !(typeof b === "object")) return false

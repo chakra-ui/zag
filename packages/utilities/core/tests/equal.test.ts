@@ -37,4 +37,10 @@ describe("isEqual", () => {
     const obj2 = new Proxy({ a: 1, b: 2, c: [1] }, {})
     expect(isEqual(obj1, obj2)).toBe(true)
   })
+
+  test("should respect positional equality", () => {
+    const arr1 = [{ id: 1 }, { id: 2 }, { id: 3 }]
+    const arr2 = [{ id: 2 }, { id: 1 }, { id: 3 }]
+    expect(isEqual(arr1, arr2)).toBe(false)
+  })
 })

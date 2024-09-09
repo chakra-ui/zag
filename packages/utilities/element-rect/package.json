@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/element-rect",
-  "version": "0.57.0",
+  "version": "0.66.1",
   "description": "observe element&#x27;s rect over time",
   "keywords": [
     "js",
@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"

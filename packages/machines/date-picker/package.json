@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/date-picker",
-  "version": "0.57.0",
+  "version": "0.66.1",
   "description": "Core logic for the date-picker widget implemented as a state machine",
   "keywords": [
     "js",
@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"
@@ -35,7 +35,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.4",
+    "@internationalized/date": "3.5.5",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/live-region": "workspace:*",

@@ -30,12 +30,14 @@ export type ApplicationFileMimeType =
   | "application/vnd.ms-powerpoint"
   | "application/vnd.openxmlformats-officedocument.presentationml.presentation"
   | "application/rtf"
+  | "application/x-rar"
+  | "application/x-7z-compressed"
   | "application/x-tar"
   | "application/vnd.microsoft.portable-executable"
 
 export type TextFileMimeType = "text/css" | "text/csv" | "text/html" | "text/markdown" | "text/plain"
 
-export type FontFileMimeType = "font/ttf" | "font/otf" | "font/woff" | "font/woff2" | "font/eot"
+export type FontFileMimeType = "font/ttf" | "font/otf" | "font/woff" | "font/woff2" | "font/eot" | "font/svg"
 
 export type VideoFileMimeType = "video/mp4" | "video/webm" | "video/ogg" | "video/quicktime" | "video/x-msvideo"
 
@@ -48,7 +50,7 @@ export type AudioFileMimeType =
   | "audio/flac"
   | "audio/x-m4a"
 
-export type FileMimeTypeGroup = "image/*" | "audio/*" | "video/*" | "text/*"
+export type FileMimeTypeGroup = "image/*" | "audio/*" | "video/*" | "text/*" | "application/*" | "font/*"
 
 export type FileMimeType =
   | ImageFileMimeType

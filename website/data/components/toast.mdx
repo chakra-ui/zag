@@ -243,8 +243,6 @@ There are three scenarios we provide to pause a toast from timing out:
 
 - When the document loses focus or the page is idle (e.g. switching to a new
   browser tab), controlled via the `pauseOnPageIdle` context property.
-- When the toast is hovered or focused, controlled by the `pauseOnInteraction`
-  context property.
 - When the `toast.pause(id)` provided by the `toast.group.connect(...)` is
   called.
 
@@ -253,7 +251,6 @@ There are three scenarios we provide to pause a toast from timing out:
 const [state, send] = useMachine(
   toast.group.machine({
     pauseOnPageIdle: true,
-    pauseOnInteraction: true,
   }),
 )
 

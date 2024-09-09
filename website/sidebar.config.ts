@@ -43,6 +43,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "State machine", id: "whats-a-machine" },
         { type: "doc", label: "Styling", id: "styling" },
         { type: "doc", label: "Composition", id: "composition" },
+        { type: "doc", label: "Collection", id: "collection" },
         {
           type: "doc",
           label: "Programmatic Control",
@@ -103,6 +104,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Signature Pad", id: "signature-pad" },
         { type: "doc", label: "Slider", id: "slider" },
         { type: "doc", label: "Splitter", id: "splitter" },
+        { type: "doc", label: "Steps", id: "steps", new: true },
         { type: "doc", label: "Switch", id: "switch" },
         { type: "doc", label: "Tabs", id: "tabs" },
         { type: "doc", label: "Tags Input", id: "tags-input" },

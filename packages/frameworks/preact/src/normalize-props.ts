@@ -12,7 +12,7 @@ export type PropTypes = ElementsWithoutRef & {
   style: JSX.CSSProperties
 }
 
-const eventMap = {
+const eventMap: Record<string, string> = {
   onFocus: "onfocusin",
   onBlur: "onfocusout",
   onDoubleClick: "onDblClick",

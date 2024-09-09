@@ -27,6 +27,7 @@ export const props = createProps<UserDefinedContext>()([
   "onPointerDownOutside",
   "onValueChange",
   "onValueInvalid",
+  "required",
   "readOnly",
   "translations",
   "validate",

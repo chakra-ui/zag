@@ -61,8 +61,8 @@ export function get12HourFormatPeriodHour(hour: number, period: TimePeriod | nul
   return period === "pm" ? hour + 12 : hour
 }
 
-export function getHourPeriod(hour: number | undefined) {
-  if (hour === undefined) return null
+export function getHourPeriod(hour: number | undefined, locale: string) {
+  if (hour === undefined || !is12HourFormat(locale)) return null
   return hour > 11 ? "pm" : "am"
 }
 

@@ -10,8 +10,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.4",
-    "@types/textarea-caret": "^3.0.3",
+    "@internationalized/date": "3.5.5",
+    "@tanstack/react-virtual": "3.10.7",
+    "@types/textarea-caret": "3.0.3",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -67,7 +68,9 @@
     "@zag-js/signature-pad": "workspace:*",
     "@zag-js/slider": "workspace:*",
     "@zag-js/splitter": "workspace:*",
+    "@zag-js/steps": "workspace:*",
     "@zag-js/store": "workspace:*",
+    "@zag-js/stringify-state": "workspace:*",
     "@zag-js/switch": "workspace:*",
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
@@ -82,23 +85,27 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-react": "0.394.0",
+    "lucide-react": "0.428.0",
     "match-sorter": "6.3.4",
-    "next": "14.2.3",
-    "next-cloudinary": "6.6.2",
+    "next": "14.2.8",
+    "next-cloudinary": "6.10.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-spinners": "0.13.8",
+    "react-spinners": "0.14.1",
     "textarea-caret": "^3.1.0"
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "@types/node": "20.14.2",
-    "@types/react": "18.3.3",
+    "@types/node": "22.5.4",
+    "@types/react": "18.3.5",
     "@types/react-dom": "18.3.0",
-    "eslint-plugin-react": "7.34.2",
+    "eslint-plugin-react": "7.35.0",
     "eslint-plugin-react-hooks": "4.6.2",
-    "typescript": "5.4.5"
+    "@atlaskit/pragmatic-drag-and-drop": "1.3.0",
+    "@atlaskit/pragmatic-drag-and-drop-flourish": "1.1.1",
+    "@atlaskit/pragmatic-drag-and-drop-hitbox": "1.0.3",
+    "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "1.4.0",
+    "typescript": "5.5.4"
   },
   "license": "MIT"
 }

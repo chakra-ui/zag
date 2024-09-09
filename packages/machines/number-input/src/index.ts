@@ -7,6 +7,7 @@ export type {
   ElementIds,
   FocusChangeDetails,
   IntlTranslations,
+  Service,
   ValueChangeDetails,
   ValueInvalidDetails,
 } from "./number-input.types"

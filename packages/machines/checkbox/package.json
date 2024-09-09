@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/checkbox",
-  "version": "0.57.0",
+  "version": "0.66.1",
   "description": "Core logic for the checkbox widget implemented as a state machine",
   "keywords": [
     "js",
@@ -23,7 +23,7 @@
   "scripts": {
     "build": "tsup",
     "test": "jest --config ../../jest.config.js --rootDir tests",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src",
     "test-ci": "pnpm test --ci --runInBand -u",
     "test-watch": "pnpm test --watch",
     "prepack": "clean-package",

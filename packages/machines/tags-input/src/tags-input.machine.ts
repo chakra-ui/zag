@@ -4,7 +4,7 @@ import { contains, raf } from "@zag-js/dom-query"
 import { trackFormControl } from "@zag-js/form-utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
-import { compact, isEqual, removeAt, warn } from "@zag-js/utils"
+import { compact, isEqual, removeAt, uniq, warn } from "@zag-js/utils"
 import { dom } from "./tags-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./tags-input.types"
 
@@ -211,6 +211,17 @@ export function machine(userContext: UserDefinedContext) {
             DELETE: {
               actions: ["deleteHighlightedTag", "highlightTagAtIndex"],
             },
+            PASTE: [
+              {
+                guard: "addOnPaste",
+                target: "focused:input",
+                actions: ["setInputValue", "addTagFromPaste"],
+              },
+              {
+                target: "focused:input",
+                actions: "setInputValue",
+              },
+            ],
           },
         },
 
@@ -280,7 +291,7 @@ export function machine(userContext: UserDefinedContext) {
           if (!input) return false
           try {
             return input.selectionStart === 0 && input.selectionEnd === 0
-          } catch (e) {
+          } catch {
             return input.value === ""
           }
         },
@@ -464,7 +475,8 @@ export function machine(userContext: UserDefinedContext) {
           const value = evt.value ?? ctx.trimmedInputValue
           const guard = ctx.validate?.({ inputValue: value, value: Array.from(ctx.value) })
           if (guard) {
-            set.value(ctx, ctx.value.concat(value))
+            const nextValue = uniq(ctx.value.concat(value))
+            set.value(ctx, nextValue)
             // log
             ctx.log.prev = ctx.log.current
             ctx.log.current = { type: "add", value }
@@ -478,7 +490,8 @@ export function machine(userContext: UserDefinedContext) {
             const guard = ctx.validate?.({ inputValue: value, value: Array.from(ctx.value) })
             if (guard) {
               const trimmedValue = ctx.delimiter ? value.split(ctx.delimiter).map((v) => v.trim()) : [value]
-              set.value(ctx, ctx.value.concat(...trimmedValue))
+              const nextValue = uniq(ctx.value.concat(...trimmedValue))
+              set.value(ctx, nextValue)
               // log
               ctx.log.prev = ctx.log.current
               ctx.log.current = { type: "paste", values: trimmedValue }

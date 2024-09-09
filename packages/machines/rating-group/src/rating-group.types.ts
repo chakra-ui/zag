@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -26,7 +26,7 @@ export type ElementIds = Partial<{
   label: string
   hiddenInput: string
   control: string
-  rating(id: string): string
+  item(id: string): string
 }>
 
 interface PublicContext extends DirectionProperty, CommonProperties {
@@ -63,6 +63,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the rating is disabled.
    */
   disabled?: boolean
+  /**
+   * Whether the rating is required.
+   */
+  required?: boolean
   /**
    * Whether to allow half stars.
    */
@@ -121,6 +125,8 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API

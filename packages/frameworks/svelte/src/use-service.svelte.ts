@@ -10,17 +10,21 @@ export function useService<
   const service = typeof machine === "function" ? machine() : machine
 
   const contextSnapshot = $state.snapshot(context)
+  //@ts-expect-error - svelte typing issue
   service.setContext(contextSnapshot)
 
   service._created()
 
   $effect(() => {
+    if (!actions) return
     const actionSnapshot = $state.snapshot(actions)
+    //@ts-expect-error - svelte typing issue
     service.setOptions({ actions: actionSnapshot })
   })
 
   $effect(() => {
     const contextSnapshot = $state.snapshot(context)
+    // @ts-expect-error - svelte typing issue
     service.setContext(contextSnapshot)
   })
 

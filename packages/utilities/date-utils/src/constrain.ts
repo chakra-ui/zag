@@ -20,15 +20,23 @@ export function alignCenter(
   min?: DateValue,
   max?: DateValue,
 ): DateValue {
-  let halfDuration: DateDuration = {}
-  for (let key in duration) {
-    halfDuration[key] = Math.floor(duration[key] / 2)
-    if (halfDuration[key] > 0 && duration[key] % 2 === 0) {
+  const halfDuration: DateDuration = {}
+
+  for (let prop in duration) {
+    const key = prop as keyof DateDuration
+
+    const value = duration[key]
+    if (value == null) continue
+
+    halfDuration[key] = Math.floor(value / 2)
+
+    if (halfDuration[key] > 0 && value % 2 === 0) {
       halfDuration[key]--
     }
   }
 
-  let aligned = alignStart(date, duration, locale).subtract(halfDuration)
+  const aligned = alignStart(date, duration, locale).subtract(halfDuration)
+
   return constrainStart(date, aligned, duration, locale, min, max)
 }
 
@@ -88,11 +96,11 @@ export function constrainStart(
   max?: DateValue,
 ): DateValue {
   if (min && date.compare(min) >= 0) {
-    aligned = maxDate(aligned, alignStart(toCalendarDate(min), duration, locale))
+    aligned = maxDate(aligned, alignStart(toCalendarDate(min), duration, locale))!
   }
 
   if (max && date.compare(max) <= 0) {
-    aligned = minDate(aligned, alignEnd(toCalendarDate(max), duration, locale))
+    aligned = minDate(aligned, alignEnd(toCalendarDate(max), duration, locale))!
   }
 
   return aligned
@@ -100,10 +108,10 @@ export function constrainStart(
 
 export function constrainValue(date: DateValue, minValue?: DateValue, maxValue?: DateValue): DateValue {
   if (minValue) {
-    date = maxDate(date, toCalendarDate(minValue))
+    date = maxDate(date, toCalendarDate(minValue))!
   }
   if (maxValue) {
-    date = minDate(date, toCalendarDate(maxValue))
+    date = minDate(date, toCalendarDate(maxValue))!
   }
   return date
 }

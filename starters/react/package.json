@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.4",
-    "@tanstack/react-virtual": "^3.5.1",
+    "@internationalized/date": "3.5.5",
+    "@tanstack/react-virtual": "3.10.7",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -77,18 +77,18 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "match-sorter": "6.3.4",
-    "lucide-react": "0.395.0",
-    "next": "14.2.3",
+    "lucide-react": "0.439.0",
+    "next": "14.2.8",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-spinners": "0.13.8"
+    "react-spinners": "0.14.1"
   },
   "devDependencies": {
-    "@types/node": "20.14.2",
-    "@types/react": "18.3.3",
+    "@types/node": "22.5.4",
+    "@types/react": "18.3.5",
     "@types/react-dom": "18.3.0",
-    "eslint": "9.4.0",
-    "eslint-config-next": "14.2.4",
-    "typescript": "5.4.5"
+    "eslint": "9.10.0",
+    "eslint-config-next": "14.2.8",
+    "typescript": "5.5.4"
   }
 }

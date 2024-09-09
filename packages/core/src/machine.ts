@@ -760,6 +760,7 @@ export class Machine<
     }
 
     const transitions: S.Transitions<TContext, TState, TEvent> =
+      // @ts-expect-error - Fix this
       stateNode?.on?.[event.type] ?? this.config.on?.[event.type]
 
     const next = this.getNextStateInfo(transitions, event)
@@ -795,6 +796,14 @@ export class Machine<
 
   get [Symbol.toStringTag]() {
     return "Machine"
+  }
+
+  public getHydrationState(): S.StateInit<TContext, TState> {
+    const state = this.getState()
+    return {
+      value: state.value,
+      tags: state.tags,
+    }
   }
 }
 

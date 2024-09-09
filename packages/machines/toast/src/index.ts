@@ -5,6 +5,7 @@ import { createToastMachine as createMachine } from "./toast.machine"
 export { anatomy } from "./toast.anatomy"
 export { connect } from "./toast.connect"
 export type {
+  ActionOptions,
   MachineApi as Api,
   GenericOptions,
   GroupMachineApi as GroupApi,
@@ -13,12 +14,12 @@ export type {
   GroupService,
   GroupState,
   MachineContext,
+  Options,
   Placement,
   PromiseOptions,
   Service,
-  StatusChangeDetails,
-  Options,
   Status,
+  StatusChangeDetails,
   Type,
 } from "./toast.types"
 export { createMachine }

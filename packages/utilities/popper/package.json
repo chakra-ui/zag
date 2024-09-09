@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/popper",
-  "version": "0.57.0",
+  "version": "0.66.1",
   "description": "Dynamic positioning logic for ui machines",
   "keywords": [
     "js",
@@ -25,14 +25,14 @@
   "dependencies": {
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "@floating-ui/dom": "1.6.5"
+    "@floating-ui/dom": "1.6.10"
   },
   "devDependencies": {
     "clean-package": "2.2.0"
   },
   "scripts": {
     "build": "tsup",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"

@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.4",
+    "@internationalized/date": "3.5.5",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -54,6 +54,7 @@
     "@zag-js/preact": "workspace:*",
     "@zag-js/presence": "workspace:*",
     "@zag-js/progress": "workspace:*",
+    "@zag-js/qr-code": "workspace:*",
     "@zag-js/radio-group": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
@@ -63,13 +64,15 @@
     "@zag-js/signature-pad": "workspace:*",
     "@zag-js/slider": "workspace:*",
     "@zag-js/splitter": "workspace:*",
+    "@zag-js/steps": "workspace:*",
     "@zag-js/store": "workspace:*",
+    "@zag-js/stringify-state": "workspace:*",
     "@zag-js/switch": "workspace:*",
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
     "@zag-js/text-selection": "workspace:*",
-    "@zag-js/timer": "workspace:*",
     "@zag-js/time-picker": "workspace:*",
+    "@zag-js/timer": "workspace:*",
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle-group": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
@@ -77,17 +80,17 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
+    "lucide-preact": "0.428.0",
     "match-sorter": "6.3.4",
-    "lucide-preact": "0.394.0",
-    "preact": "10.22.0",
+    "preact": "10.23.2",
     "preact-iso": "2.6.3",
-    "preact-render-to-string": "6.5.4"
+    "preact-render-to-string": "6.5.9"
   },
   "devDependencies": {
-    "@preact/preset-vite": "2.8.2",
-    "eslint": "8.57.0",
+    "@preact/preset-vite": "2.9.0",
+    "eslint": "9.9.0",
     "eslint-config-preact": "1.4.0",
-    "typescript": "5.4.5",
-    "vite": "5.2.13"
+    "typescript": "5.5.4",
+    "vite": "5.4.1"
   }
 }

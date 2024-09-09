@@ -256,7 +256,7 @@ export function machine(userContext: UserDefinedContext) {
 
         closed: {
           tags: ["closed"],
-          entry: ["clearHighlightedItem", "focusTrigger", "clearAnchorPoint", "resumePointer"],
+          entry: ["clearHighlightedItem", "focusTrigger", "resumePointer"],
           on: {
             "CONTROLLED.OPEN": [
               {
@@ -554,9 +554,6 @@ export function machine(userContext: UserDefinedContext) {
         setAnchorPoint(ctx, evt) {
           ctx.anchorPoint = evt.point
         },
-        clearAnchorPoint(ctx) {
-          ctx.anchorPoint = null
-        },
         setSubmenuPlacement(ctx) {
           if (!ctx.isSubmenu) return
           ctx.positioning.placement = ctx.isRtl ? "left-start" : "right-start"
@@ -567,6 +564,7 @@ export function machine(userContext: UserDefinedContext) {
           const getAnchorRect = ctx.anchorPoint ? () => ({ width: 0, height: 0, ...ctx.anchorPoint }) : undefined
           getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
             ...ctx.positioning,
+            defer: true,
             getAnchorRect,
             ...(evt.options ?? {}),
             listeners: false,

@@ -5,6 +5,8 @@ import type { MachineApi, MachineContext, ProgressState, Send, State } from "./p
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const percent = state.context.percent
+  const percentAsString = state.context.isIndeterminate ? "" : `${percent}%`
+
   const max = state.context.max
   const min = state.context.min
 
@@ -32,11 +34,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   return {
     value,
     valueAsString,
+    min,
+    max,
+    percent,
+    percentAsString,
+    indeterminate,
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
     setToMax() {
       send({ type: "VALUE.SET", value: max })
+    },
+    setToMin() {
+      send({ type: "VALUE.SET", value: min })
     },
 
     getRootProps() {
@@ -148,7 +158,6 @@ function getCircleProps(ctx: MachineContext) {
   }
   return {
     root: {
-      viewBox: "0 0 var(--size) var(--size)",
       style: {
         width: "var(--size)",
         height: "var(--size)",
@@ -161,7 +170,7 @@ function getCircleProps(ctx: MachineContext) {
         ...circleProps.style,
         "--percent": ctx.percent,
         "--circumference": `calc(2 * 3.14159 * var(--radius))`,
-        "--offset": `calc(var(--circumference) * (100 - var(--percent)) / 100}))`,
+        "--offset": `calc(var(--circumference) * (100 - var(--percent)) / 100)`,
         strokeDashoffset: `calc(var(--circumference) * ((100 - var(--percent)) / 100))`,
         strokeDasharray: ctx.isIndeterminate ? undefined : `var(--circumference)`,
         transformOrigin: "center",

@@ -9,7 +9,7 @@
 
   const controls = useControls(comboboxControls)
 
-  let options = $state.frozen(comboboxData)
+  let options = $state.raw(comboboxData)
 
   const collection = combobox.collection({
     items: comboboxData,

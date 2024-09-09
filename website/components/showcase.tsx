@@ -30,6 +30,7 @@ import { Select } from "./machines/select"
 import { SignaturePad } from "./machines/signature-pad"
 import { Slider } from "./machines/slider"
 import { Splitter } from "./machines/splitter"
+import { Steps } from "./machines/steps"
 import { Switch } from "./machines/switch"
 import { Tabs } from "./machines/tabs"
 import { TagsInput } from "./machines/tags-input"
@@ -143,7 +144,7 @@ const components = {
         selectOnFocus: true,
         placeholder: "Enter text...",
         activationMode: {
-          options: ["focus", "dblclick", "none"],
+          options: ["focus", "click", "dblclick", "none"],
           default: "focus",
         },
         submitMode: {
@@ -419,6 +420,7 @@ const components = {
       }}
     />
   ),
+  Steps: () => <Playground component={Steps} />,
 }
 
 export function Showcase(props: { id: keyof typeof components }) {

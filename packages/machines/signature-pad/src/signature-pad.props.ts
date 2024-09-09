@@ -5,14 +5,16 @@ import type { UserDefinedContext } from "./signature-pad.types"
 export const props = createProps<UserDefinedContext>()([
   "dir",
   "disabled",
+  "drawing",
   "getRootNode",
   "id",
   "ids",
+  "name",
   "onDraw",
   "onDrawEnd",
   "readOnly",
-  "drawing",
-  "name",
+  "required",
+  "translations",
 ])
 
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)

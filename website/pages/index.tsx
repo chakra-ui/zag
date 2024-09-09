@@ -93,6 +93,7 @@ export default function Home() {
 
           <Stack
             direction={{ base: "column", sm: "row" }}
+            align={{ sm: "center" }}
             mt="8"
             mb="12"
             spacing="5"
@@ -103,12 +104,13 @@ export default function Home() {
                 <Icon as={ArrowRightIcon} />
               </HStack>
             </Button>
-            <Button hidden>
-              <HStack spacing="2">
-                <Icon as={PlayIcon} />
-                <span>Watch Demo</span>
-              </HStack>
-            </Button>
+            <Image
+              draggable={false}
+              src="/oss-nominee.png"
+              alt="GitNation React Nominee (2024)"
+              width={200}
+              height={64}
+            />
           </Stack>
 
           <HStack spacing="12">

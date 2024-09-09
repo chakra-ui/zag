@@ -31,6 +31,8 @@ export function machine(userContext: UserDefinedContext) {
         max: Number.MAX_SAFE_INTEGER,
         invalid: false,
         spinOnPress: true,
+        disabled: false,
+        readOnly: false,
         ...ctx,
         hint: null,
         scrubberCursorPoint: null,
@@ -131,7 +133,7 @@ export function machine(userContext: UserDefinedContext) {
             "INPUT.CHANGE": {
               actions: ["setValue", "setHint"],
             },
-            "INPUT.COMMIT": [
+            "INPUT.BLUR": [
               {
                 guard: and("clampValueOnBlur", not("isInRange")),
                 target: "idle",
@@ -142,6 +144,9 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setFormattedValue", "clearHint", "invokeOnBlur"],
               },
             ],
+            "INPUT.ENTER": {
+              actions: ["setFormattedValue", "clearHint", "invokeOnBlur"],
+            },
           },
         },
 

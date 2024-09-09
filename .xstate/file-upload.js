@@ -12,10 +12,7 @@ const {
 const fetchMachine = createMachine({
   id: "fileupload",
   initial: "idle",
-  context: {
-    "!isWithinRange": false,
-    "!isWithinRange": false
-  },
+  context: {},
   on: {
     "FILES.SET": {
       actions: ["setFilesFromEvent"]
@@ -45,13 +42,9 @@ const fetchMachine = createMachine({
           actions: ["openFilePicker"]
         },
         "DROPZONE.FOCUS": "focused",
-        "DROPZONE.DRAG_OVER": [{
-          cond: "!isWithinRange",
-          target: "dragging",
-          actions: ["setInvalid"]
-        }, {
+        "DROPZONE.DRAG_OVER": {
           target: "dragging"
-        }]
+        }
       }
     },
     focused: {
@@ -63,24 +56,19 @@ const fetchMachine = createMachine({
         "DROPZONE.CLICK": {
           actions: ["openFilePicker"]
         },
-        "DROPZONE.DRAG_OVER": [{
-          cond: "!isWithinRange",
-          target: "dragging",
-          actions: ["setInvalid"]
-        }, {
+        "DROPZONE.DRAG_OVER": {
           target: "dragging"
-        }]
+        }
       }
     },
     dragging: {
       on: {
         "DROPZONE.DROP": {
           target: "idle",
-          actions: ["clearInvalid", "setFilesFromEvent", "syncInputElement"]
+          actions: ["setFilesFromEvent", "syncInputElement"]
         },
         "DROPZONE.DRAG_LEAVE": {
-          target: "idle",
-          actions: ["clearInvalid"]
+          target: "idle"
         }
       }
     }
@@ -93,7 +81,5 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {
-    "!isWithinRange": ctx => ctx["!isWithinRange"]
-  }
+  guards: {}
 });

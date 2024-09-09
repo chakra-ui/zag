@@ -10,4 +10,5 @@ export type {
   OpenChangeDetails,
   Placement,
   PositioningOptions,
+  Service,
 } from "./popover.types"

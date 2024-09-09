@@ -31,8 +31,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
   function getItemState(props: ItemProps): ItemState {
     const { item } = props
-    const disabled = collection.isItemDisabled(item)
-    const value = collection.itemToValue(item)
+    const disabled = collection.getItemDisabled(item)
+    const value = collection.getItemValue(item)!
     return {
       value,
       disabled: Boolean(disabled || disabled),
@@ -144,6 +144,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         form: state.context.form,
         disabled: disabled,
         autoFocus: state.context.autoFocus,
+        required: state.context.required,
         autoComplete: "off",
         autoCorrect: "off",
         autoCapitalize: "none",
@@ -245,6 +246,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-state": open ? "open" : "closed",
         "aria-controls": open ? dom.getContentId(state.context) : undefined,
         disabled,
+        "data-invalid": dataAttr(invalid),
         "data-focusable": dataAttr(props.focusable),
         "data-readonly": dataAttr(readOnly),
         "data-disabled": dataAttr(disabled),
@@ -299,6 +301,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         tabIndex: -1,
         hidden: !open,
         "data-state": open ? "open" : "closed",
+        "data-placement": state.context.currentPlacement,
         "aria-labelledby": dom.getLabelId(state.context),
         "aria-multiselectable": state.context.multiple && composite ? true : undefined,
         onPointerDown(event) {
@@ -325,6 +328,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         type: "button",
         tabIndex: -1,
         disabled: disabled,
+        "data-invalid": dataAttr(invalid),
         "aria-label": translations.clearTriggerLabel,
         "aria-controls": dom.getInputId(state.context),
         hidden: !state.context.value.length,
@@ -353,8 +357,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         tabIndex: -1,
         "data-highlighted": dataAttr(itemState.highlighted),
         "data-state": itemState.selected ? "checked" : "unchecked",
-        "aria-selected": itemState.highlighted,
-        "aria-disabled": itemState.disabled,
+        "aria-selected": ariaAttr(itemState.highlighted),
+        "aria-disabled": ariaAttr(itemState.disabled),
         "data-disabled": dataAttr(itemState.disabled),
         "data-value": itemState.value,
         onPointerMove() {
@@ -369,17 +373,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (!mouseMoved) return
           send({ type: "ITEM.POINTER_LEAVE", value })
         },
-        onPointerUp(event) {
+        onClick(event) {
           if (isDownloadingEvent(event)) return
           if (isOpeningInNewTab(event)) return
           if (isContextMenuEvent(event)) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", src: "pointerup", value })
-        },
-        onTouchEnd(event) {
-          // prevent clicking elements behind content
-          event.preventDefault()
-          event.stopPropagation()
+          send({ type: "ITEM.CLICK", src: "click", value })
         },
       })
     },
@@ -389,6 +388,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       return normalize.element({
         ...parts.itemText.attrs,
         dir: state.context.dir,
+        "data-state": itemState.selected ? "checked" : "unchecked",
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
       })

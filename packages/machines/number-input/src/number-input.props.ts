@@ -24,6 +24,7 @@ export const props = createProps<UserDefinedContext>()([
   "onValueChange",
   "onValueInvalid",
   "pattern",
+  "required",
   "readOnly",
   "spinOnPress",
   "step",

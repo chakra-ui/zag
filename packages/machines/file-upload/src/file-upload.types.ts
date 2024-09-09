@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { FileError, FileMimeType } from "@zag-js/file-utils"
 import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -43,8 +43,9 @@ export type ElementIds = Partial<{
 }>
 
 export interface IntlTranslations {
-  itemPreview(file: File): string
-  deleteFile(file: File): string
+  dropzone?: string
+  itemPreview?(file: File): string
+  deleteFile?(file: File): string
 }
 
 interface PublicContext extends LocaleProperties, CommonProperties {
@@ -68,6 +69,10 @@ interface PublicContext extends LocaleProperties, CommonProperties {
    * Whether the file input is disabled
    */
   disabled?: boolean
+  /**
+   * Whether the file input is required
+   */
+  required?: boolean
   /**
    * Whether to allow drag and drop in the dropzone element
    * @default true
@@ -114,14 +119,13 @@ interface PublicContext extends LocaleProperties, CommonProperties {
    * Whether to accept directories, only works in webkit browsers
    */
   directory?: boolean
+  /**
+   * Whether the file input is invalid
+   */
+  invalid?: boolean
 }
 
 interface PrivateContext {
-  /**
-   * @internal
-   * Whether the files includes any rejection
-   */
-  invalid: boolean
   /**
    * @internal
    * The rejected files
@@ -158,6 +162,8 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -231,3 +237,5 @@ export interface MachineApi<T extends PropTypes> {
   getItemSizeTextProps(props: ItemProps): T["element"]
   getItemDeleteTriggerProps(props: ItemProps): T["button"]
 }
+
+export type { FileMimeType }

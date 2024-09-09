@@ -100,7 +100,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         form: state.context.form,
         value: state.context.value,
         style: visuallyHiddenStyle,
-        onChange(event) {
+        onClick(event) {
           if (readOnly) {
             event.preventDefault()
             return

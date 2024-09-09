@@ -2,9 +2,9 @@ import { createScope, getWindow } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./clipboard.types"
 
 export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `clip-${ctx.id}`,
-  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `clip-input-${ctx.id}`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `clip-label-${ctx.id}`,
+  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `clip:${ctx.id}`,
+  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `clip:${ctx.id}:input`,
+  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `clip:${ctx.id}:label`,
   getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
   writeToClipboard: (ctx: Ctx) => copyText(dom.getDoc(ctx), ctx.value),
 })

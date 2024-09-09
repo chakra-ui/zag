@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/react",
-  "version": "0.57.0",
+  "version": "0.66.1",
   "description": "The react wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -32,7 +32,7 @@
     "proxy-compare": "3.0.0"
   },
   "devDependencies": {
-    "@types/react": "18.3.3",
+    "@types/react": "18.3.5",
     "@types/react-dom": "18.3.0",
     "@zag-js/utils": "workspace:*",
     "react": "18.3.1",
@@ -45,7 +45,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"

@@ -1,6 +1,6 @@
 import type { EventKeyOptions } from "./types"
 
-const keyMap = {
+const keyMap: Record<string, string> = {
   Up: "ArrowUp",
   Down: "ArrowDown",
   Esc: "Escape",
@@ -10,7 +10,7 @@ const keyMap = {
   Right: "ArrowRight",
 }
 
-const rtlKeyMap = {
+const rtlKeyMap: Record<string, string> = {
   ArrowLeft: "ArrowRight",
   ArrowRight: "ArrowLeft",
 }

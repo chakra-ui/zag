@@ -39,22 +39,16 @@ export function MultiframeworkTabs() {
             <Text>React</Text>
           </VStack>
         </FrameworkButton>
-        <FrameworkButton {...api.getTriggerProps({ value: "vue-jsx" })}>
-          <VStack>
-            <VueIcon />
-            <Text>Vue (JSX)</Text>
-          </VStack>
-        </FrameworkButton>
-        <FrameworkButton {...api.getTriggerProps({ value: "vue-sfc" })}>
-          <VStack>
-            <VueIcon />
-            <Text>Vue (SFC)</Text>
-          </VStack>
-        </FrameworkButton>
         <FrameworkButton {...api.getTriggerProps({ value: "solid" })}>
           <VStack>
             <SolidIcon />
             <Text>Solid</Text>
+          </VStack>
+        </FrameworkButton>
+        <FrameworkButton {...api.getTriggerProps({ value: "vue" })}>
+          <VStack>
+            <VueIcon />
+            <Text>Vue</Text>
           </VStack>
         </FrameworkButton>
         {/* <FrameworkButton {...api.getTriggerProps({ value: "svelte" })}>
@@ -77,11 +71,8 @@ export function MultiframeworkTabs() {
           <Box {...api.getContentProps({ value: "react" })}>
             <CodeArea slug="react/number-input/usage" />
           </Box>
-          <Box {...api.getContentProps({ value: "vue-jsx" })}>
-            <CodeArea slug="vue-jsx/number-input/usage" />
-          </Box>
-          <Box {...api.getContentProps({ value: "vue-sfc" })}>
-            <CodeArea slug="vue-sfc/number-input/usage" />
+          <Box {...api.getContentProps({ value: "vue" })}>
+            <CodeArea slug="vue/number-input/usage" />
           </Box>
           <Box {...api.getContentProps({ value: "solid" })}>
             <CodeArea slug="solid/number-input/usage" />

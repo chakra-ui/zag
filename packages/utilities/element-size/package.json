@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/element-size",
-  "version": "0.57.0",
+  "version": "0.66.1",
   "description": "Observer the size of an element over time",
   "keywords": [
     "js",
@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"

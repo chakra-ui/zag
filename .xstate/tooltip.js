@@ -91,7 +91,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      activities: ["trackEscapeKey", "trackDisabledTriggerOnSafari", "trackScroll", "trackPointerlockChange", "trackPositioning"],
+      activities: ["trackEscapeKey", "trackScroll", "trackPointerlockChange", "trackPositioning"],
       entry: ["setGlobalId"],
       on: {
         "CONTROLLED.CLOSE": "closed",

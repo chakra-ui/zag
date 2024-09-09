@@ -9,6 +9,7 @@ export const anatomy = createAnatomy("color-picker", [
   "content",
   "area",
   "areaThumb",
+  "valueText",
   "areaBackground",
   "channelSlider",
   "channelSliderLabel",

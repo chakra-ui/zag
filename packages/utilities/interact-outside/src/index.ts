@@ -1,4 +1,4 @@
-import { addDomEvent, fireCustomEvent, isContextMenuEvent, queueBeforeEvent } from "@zag-js/dom-event"
+import { addDomEvent, fireCustomEvent, isContextMenuEvent } from "@zag-js/dom-event"
 import { contains, getDocument, getEventTarget, getWindow, isFocusable, isHTMLElement, raf } from "@zag-js/dom-query"
 import { callAll } from "@zag-js/utils"
 import { getWindowFrames } from "./get-window-frames"
@@ -127,8 +127,8 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
       pointerdownCleanups.forEach((fn) => fn())
 
       // add a pointerup event listener to the document and all frame documents
-      pointerdownCleanups.add(queueBeforeEvent(doc, "pointerup", handler))
-      pointerdownCleanups.add(frames.queueBeforeEvent("pointerup", handler))
+      pointerdownCleanups.add(addDomEvent(doc, "click", handler, { once: true }))
+      pointerdownCleanups.add(frames.addEventListener("click", handler, { once: true }))
     } else {
       handler()
     }

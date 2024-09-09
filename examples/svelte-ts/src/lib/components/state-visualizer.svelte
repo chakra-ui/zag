@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { stringifyState } from "@zag-js/shared"
+  import { highlightState } from "@zag-js/stringify-state"
 
   interface StateVisualizerProps {
     state: Record<string, any>
@@ -14,7 +14,7 @@
   <pre>
     <details open>
         <summary>{label || "Visualizer"}</summary>
-        <div>{@html stringifyState($state.snapshot(currentState), omit)}</div>
+        <div>{@html highlightState($state.snapshot(currentState), omit)}</div>
     </details>
   </pre>
 </div>

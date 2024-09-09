@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -10,11 +10,15 @@ export interface ValueChangeDetails {
   value: string
 }
 
+export interface EditChangeDetails {
+  edit: boolean
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ActivationMode = "focus" | "dblclick" | "none"
+export type ActivationMode = "focus" | "dblclick" | "click"
 
 export type SubmitMode = "enter" | "blur" | "both" | "none"
 
@@ -31,7 +35,7 @@ export type ElementIds = Partial<{
   label: string
   preview: string
   input: string
-  controls: string
+  control: string
   submitTrigger: string
   cancelTrigger: string
   editTrigger: string
@@ -61,9 +65,9 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * The activation mode for the preview element.
    *
-   * - "focus" - Enter edit mode when the preview element is focused
-   * - "dblclick" - Enter edit mode when the preview element is double-clicked
-   * - "none" - No interaction with the preview element will trigger edit mode.
+   * - "focus" - Enter edit mode when the preview is focused
+   * - "dblclick" - Enter edit mode when the preview is double-clicked
+   * - "click" - Enter edit mode when the preview is clicked
    *
    * @default "focus"
    */
@@ -80,9 +84,13 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    */
   submitMode: SubmitMode
   /**
-   * Whether to start with the edit mode active.
+   * Whether the editable is in edit mode.
    */
-  startWithEditView?: boolean
+  edit?: boolean
+  /**
+   * Whether the editable is controlled
+   */
+  "edit.controlled"?: boolean
   /**
    * Whether to select the text in the input when it is focused.
    * @default true
@@ -105,6 +113,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    */
   readOnly?: boolean
   /**
+   * Whether the editable is required
+   */
+  required?: boolean
+  /**
    * The callback that is called when the editable's value is changed
    */
   onValueChange?: (details: ValueChangeDetails) => void
@@ -117,9 +129,9 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    */
   onValueCommit?: (details: ValueChangeDetails) => void
   /**
-   * The callback that is called when in the edit mode.
+   * The callback that is called when the edit mode is changed
    */
-  onEdit?: () => void
+  onEditChange?: (details: EditChangeDetails) => void
   /**
    * The placeholder value to show when the `value` is empty
    */
@@ -143,16 +155,6 @@ type ComputedContext = Readonly<{
    * Whether the editable can be interacted with
    */
   isInteractive: boolean
-  /**
-   * @computed
-   * Whether value is empty
-   */
-  isValueEmpty: boolean
-  /**
-   * @computed
-   * Whether the preview element is focusable
-   */
-  isPreviewFocusable: boolean
   /**
    * @computed
    * Whether to submit on enter press
@@ -182,6 +184,8 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API

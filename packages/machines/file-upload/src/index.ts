@@ -9,9 +9,11 @@ export type {
   FileAcceptDetails,
   FileChangeDetails,
   FileError,
+  FileMimeType,
   FileRejectDetails,
   FileRejection,
   IntlTranslations,
   ItemPreviewImageProps,
   ItemProps,
+  Service,
 } from "./file-upload.types"

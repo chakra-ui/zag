@@ -52,7 +52,7 @@ export const editableControls = defineControls({
   },
   activationMode: {
     type: "select",
-    options: ["focus", "dblclick", "none"] as const,
+    options: ["focus", "dblclick", "click"] as const,
     defaultValue: "focus",
   },
 })
@@ -275,4 +275,9 @@ export const qrCodeControls = defineControls({
   value: { type: "string", defaultValue: "https://chakra-ui.com/" },
   "encoding.ecc": { type: "select", options: ["L", "M", "Q", "H"] as const, defaultValue: "H" },
   "encoding.boostEcc": { type: "boolean", defaultValue: false },
+})
+
+export const stepsControls = defineControls({
+  linear: { type: "boolean", defaultValue: false },
+  orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
 })

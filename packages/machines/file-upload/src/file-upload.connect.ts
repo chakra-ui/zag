@@ -61,8 +61,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         id: dom.getDropzoneId(state.context),
         tabIndex: disabled ? undefined : 0,
+        role: "button",
+        "aria-label": translations.dropzone,
         "aria-disabled": disabled,
-        "aria-invalid": state.context.invalid,
         "data-invalid": dataAttr(state.context.invalid),
         "data-disabled": dataAttr(disabled),
         "data-dragging": dataAttr(dragging),
@@ -124,6 +125,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getTriggerId(state.context),
         disabled,
         "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(state.context.invalid),
         type: "button",
         onClick(event) {
           if (disabled) return
@@ -142,6 +144,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: -1,
         disabled,
         type: "file",
+        required: state.context.required,
         capture: state.context.capture,
         name: state.context.name,
         accept: state.context.acceptAttr,
@@ -217,7 +220,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       }
       return normalize.img({
         ...parts.itemPreviewImage.attrs,
-        alt: translations.itemPreview(file),
+        alt: translations.itemPreview?.(file),
         src: url,
         "data-disabled": dataAttr(disabled),
       })
@@ -231,7 +234,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: "button",
         disabled,
         "data-disabled": dataAttr(disabled),
-        "aria-label": translations.deleteFile(file),
+        "aria-label": translations.deleteFile?.(file),
         onClick() {
           if (disabled) return
           send({ type: "FILE.DELETE", file })

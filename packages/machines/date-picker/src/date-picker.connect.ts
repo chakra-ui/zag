@@ -39,13 +39,11 @@ import type {
 } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
+  defaultTranslations,
   ensureValidCharacters,
   getInputPlaceholder,
   getLocaleSeparator,
-  getNextTriggerLabel,
-  getPrevTriggerLabel,
   getRoleDescription,
-  getViewTriggerLabel,
   isDateWithinRange,
   isValidCharacter,
 } from "./date-picker.utils"
@@ -147,6 +145,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return cellState
   }
 
+  const translations = state.context.translations || defaultTranslations
+
   function getDayTableCellState(props: DayTableCellProps): DayTableCellState {
     const { value, disabled, visibleRange = state.context.visibleRange } = props
 
@@ -171,10 +171,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       get focused() {
         return isDateEqual(value, focusedValue) && !cellState.outsideRange
       },
-      get ariaLabel() {
-        if (cellState.unavailable) return `Not available. ${cellState.formattedDate}`
-        if (cellState.selected) return `Selected date. ${cellState.formattedDate}`
-        return `Choose ${cellState.formattedDate}`
+      get ariaLabel(): string {
+        return translations.dayCell(cellState)
       },
       get selectable() {
         return !cellState.disabled && !cellState.unavailable
@@ -275,12 +273,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getLabelProps() {
+    getLabelProps(props = {}) {
+      const { index = 0 } = props
       return normalize.label({
         ...parts.label.attrs,
+        id: dom.getLabelId(state.context, index),
         dir: state.context.dir,
-        htmlFor: dom.getInputId(state.context, 0),
+        htmlFor: dom.getInputId(state.context, index),
         "data-state": open ? "open" : "closed",
+        "data-index": index,
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
       })
@@ -312,7 +313,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getContentId(state.context),
         role: "application",
         "aria-roledescription": "datepicker",
-        "aria-label": "calendar",
+        "aria-label": translations.content,
       })
     },
 
@@ -570,7 +571,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         id: dom.getNextTriggerId(state.context, view),
         type: "button",
-        "aria-label": getNextTriggerLabel(view),
+        "aria-label": translations.nextTrigger(view),
         disabled: isDisabled,
         "data-disabled": dataAttr(isDisabled),
         onClick(event) {
@@ -588,7 +589,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         id: dom.getPrevTriggerId(state.context, view),
         type: "button",
-        "aria-label": getPrevTriggerLabel(view),
+        "aria-label": translations.prevTrigger(view),
         disabled: isDisabled,
         "data-disabled": dataAttr(isDisabled),
         onClick(event) {
@@ -604,7 +605,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getClearTriggerId(state.context),
         dir: state.context.dir,
         type: "button",
-        "aria-label": "Clear dates",
+        "aria-label": translations.clearTrigger,
         hidden: !state.context.value.length,
         onClick(event) {
           if (event.defaultPrevented) return
@@ -620,7 +621,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         type: "button",
         "data-placement": currentPlacement,
-        "aria-label": open ? "Close calendar" : "Open calendar",
+        "aria-label": translations.trigger(open),
         "aria-controls": dom.getContentId(state.context),
         "data-state": open ? "open" : "closed",
         "aria-haspopup": "grid",
@@ -642,7 +643,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getViewTriggerId(state.context, view),
         type: "button",
         disabled,
-        "aria-label": getViewTriggerLabel(state.context.view),
+        "aria-label": translations.viewTrigger(view),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
@@ -671,6 +672,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         spellCheck: "false",
         dir: state.context.dir,
         name: state.context.name,
+        "data-index": index,
         "data-state": open ? "open" : "closed",
         readOnly,
         disabled,
@@ -708,7 +710,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.select({
         ...parts.monthSelect.attrs,
         id: dom.getMonthSelectId(state.context),
-        "aria-label": "Select month",
+        "aria-label": translations.monthSelect,
         disabled,
         dir: state.context.dir,
         defaultValue: startValue.month,
@@ -723,7 +725,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.yearSelect.attrs,
         id: dom.getYearSelectId(state.context),
         disabled,
-        "aria-label": "Select year",
+        "aria-label": translations.yearSelect,
         dir: state.context.dir,
         defaultValue: startValue.year,
         onChange(event) {
@@ -743,11 +745,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getPresetTriggerProps(props) {
       const value = Array.isArray(props.value) ? props.value : getDateRangePreset(props.value, locale, timeZone)
+      const valueAsString = value.map((item) => item.toDate(timeZone).toDateString())
       return normalize.button({
         ...parts.presetTrigger.attrs,
-        "aria-label": Array.isArray(props.value)
-          ? `select ${value[0].toString()} to ${value[1].toString()}`
-          : `select ${value}`,
+        "aria-label": translations.presetTrigger(valueAsString),
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return

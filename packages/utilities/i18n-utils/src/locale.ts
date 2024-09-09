@@ -18,7 +18,7 @@ export function getDefaultLocale(): Locale {
 
   try {
     Intl.DateTimeFormat.supportedLocalesOf([locale])
-  } catch (_err) {
+  } catch {
     locale = "en-US"
   }
 

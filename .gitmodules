@@ -1,0 +1,3 @@
+[submodule "examples/next-ts/pages/compositions"]
+	path = examples/next-ts/pages/compositions
+	url = git@github.com:chakra-ui/zag-plus.git

@@ -7,7 +7,7 @@ import type {
   DateValue,
   ZonedDateTime,
 } from "@internationalized/date"
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { DateRangePreset } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
@@ -45,11 +45,22 @@ export interface OpenChangeDetails {
 export type SelectionMode = "single" | "multiple" | "range"
 
 export interface IntlTranslations {
+  dayCell(state: DayTableCellState): string
+  nextTrigger(view: DateView): string
+  monthSelect: string
+  yearSelect: string
+  viewTrigger(view: DateView): string
+  prevTrigger(view: DateView): string
+  presetTrigger(value: string[]): string
+  clearTrigger: string
+  trigger(open: boolean): string
+  content: string
   placeholder: (locale: string) => { year: string; month: string; day: string }
 }
 
 export type ElementIds = Partial<{
   root: string
+  label(index: number): string
   table(id: string): string
   tableHeader(id: string): string
   tableBody(id: string): string
@@ -298,6 +309,8 @@ export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
 
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
@@ -357,8 +370,10 @@ export interface TableProps {
   id?: string
 }
 
+export type PresetTriggerValue = DateValue[] | DateRangePreset
+
 export interface PresetTriggerProps {
-  value: DateValue[] | DateRangePreset
+  value: PresetTriggerValue
 }
 
 export interface ViewProps {
@@ -366,6 +381,10 @@ export interface ViewProps {
 }
 
 export interface InputProps {
+  index?: number
+}
+
+export interface LabelProps {
   index?: number
 }
 
@@ -555,7 +574,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getYearTableCellState(props: TableCellProps): TableCellState
 
   getRootProps(): T["element"]
-  getLabelProps(): T["label"]
+  getLabelProps(props?: LabelProps): T["label"]
   getControlProps(): T["element"]
   getContentProps(): T["element"]
   getPositionerProps(): T["element"]

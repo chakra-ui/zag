@@ -29,22 +29,21 @@ const fetchMachine = createMachine({
       activities: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
       on: {
         "CONTROLLED.CLOSE": {
-          target: "closed",
-          actions: ["setFinalFocus"]
+          target: "closed"
         },
         CLOSE: [{
           cond: "isOpenControlled",
           actions: ["invokeOnClose"]
         }, {
           target: "closed",
-          actions: ["invokeOnClose", "setFinalFocus"]
+          actions: ["invokeOnClose"]
         }],
         TOGGLE: [{
           cond: "isOpenControlled",
           actions: ["invokeOnClose"]
         }, {
           target: "closed",
-          actions: ["invokeOnClose", "setFinalFocus"]
+          actions: ["invokeOnClose"]
         }]
       }
     },

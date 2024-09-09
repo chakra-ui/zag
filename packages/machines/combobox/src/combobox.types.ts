@@ -1,5 +1,5 @@
-import type { Collection, CollectionItem, CollectionOptions } from "@zag-js/collection"
-import type { StateMachine as S } from "@zag-js/core"
+import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -98,9 +98,13 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    */
   readOnly?: boolean
   /**
-   * Whether the combobox is required
+   * Whether the combobox is invalid
    */
   invalid?: boolean
+  /**
+   * Whether the combobox is required
+   */
+  required?: boolean
   /**
    * The placeholder text of the combobox's input
    */
@@ -183,7 +187,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * The collection of items
    */
-  collection: Collection<any>
+  collection: ListCollection<any>
   /**
    * Whether to allow multiple selection.
    *
@@ -282,6 +286,8 @@ export interface MachineState {
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -404,11 +410,11 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Function to toggle the combobox
    */
-  collection: Collection<V>
+  collection: ListCollection<V>
   /**
    * Function to set the collection of items
    */
-  setCollection(collection: Collection<V>): void
+  setCollection(collection: ListCollection<V>): void
   /**
    * Function to set the positioning options
    */

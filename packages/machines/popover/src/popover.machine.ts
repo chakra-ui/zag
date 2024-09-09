@@ -241,7 +241,8 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         setFinalFocus(ctx, evt) {
-          if (!evt.restoreFocus) return
+          const restoreFocus = evt.restoreFocus ?? evt.previousEvent?.restoreFocus
+          if (restoreFocus != null && !restoreFocus) return
           raf(() => {
             const element = dom.getTriggerEl(ctx)
             element?.focus({ preventScroll: true })

@@ -8,6 +8,7 @@ export type {
   ElementIds,
   IntlTranslations,
   ProgressTextDetails,
+  Service,
   StatusChangeDetails,
   StepChangeDetails,
   StepDetails,
