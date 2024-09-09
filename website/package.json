@@ -68,7 +68,7 @@
     "hastscript": "9.0.0",
     "markdown-toc": "1.2.0",
     "match-sorter": "6.3.4",
-    "next": "14.2.7",
+    "next": "14.2.8",
     "next-contentlayer": "0.3.4",
     "next-seo": "6.6.0",
     "plop": "4.0.1",
@@ -80,7 +80,7 @@
     "use-match-media-hook": "1.0.1"
   },
   "devDependencies": {
-    "@types/react": "18.3.3",
+    "@types/react": "18.3.5",
     "all-contributors-cli": "6.26.1",
     "eslint": "9.10.0",
     "eslint-config-next": "14.2.8",
