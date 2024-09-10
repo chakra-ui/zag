@@ -1,6 +1,8 @@
-import { Box, Flex, Stack } from "@chakra-ui/layout"
+import { Box, Flex, HStack, Stack } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
+import { openInStackblitz } from "lib/open-in-stackblitz"
 import { useState } from "react"
+import { SiStackblitz } from "react-icons/si"
 
 const Header = (props: any) => (
   <Flex
@@ -16,6 +18,7 @@ const Header = (props: any) => (
 )
 
 type PlaygroundProps = {
+  name: string
   component: (props: any) => JSX.Element
   defaultContext?: Record<string, any>
   defaultProps?: Record<
@@ -29,8 +32,41 @@ type PlaygroundProps = {
   debug?: boolean
 }
 
+const isObject = (value: any): value is Record<string, any> =>
+  typeof value === "object" && value !== null && !Array.isArray(value)
+
+const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
+  const { name } = props
+  const defaultProps = Object.fromEntries(
+    Object.entries(props.defaultProps).map(([key, value]) => [
+      key,
+      isObject(value) ? value.default : value,
+    ]),
+  )
+
+  return (
+    <HStack
+      spacing="1"
+      as="button"
+      bg="#1574ef"
+      color="white"
+      fontSize="sm"
+      px="2"
+      py="1"
+      shadow="rgba(255, 255, 255, 0.14) 0px 0px 0px 1px inset"
+      onClick={() => {
+        openInStackblitz(name, defaultProps)
+      }}
+    >
+      <SiStackblitz />
+      <p>Stackblitz</p>
+    </HStack>
+  )
+}
+
 export function Playground(props: PlaygroundProps) {
   const {
+    name: componentName,
     component: Comp,
     defaultProps = {},
     debug,
@@ -54,11 +90,16 @@ export function Playground(props: PlaygroundProps) {
       id="playground"
       direction={{ base: "column", md: "row" }}
       borderWidth="1px"
+      pos="relative"
       minHeight="24em"
       my="16"
       bg="bg-code-block"
       borderColor="border-subtle"
     >
+      <Box pos="absolute" bottom="2" right="2">
+        <OpenInStackblitz name={componentName} defaultProps={defaultProps} />
+      </Box>
+
       <Flex
         align="flex-start"
         justify="center"
@@ -83,7 +124,7 @@ export function Playground(props: PlaygroundProps) {
         hidden={isEmpty}
       >
         <Header>Properties</Header>
-        <Stack direction="column" spacing="4" px="5" py="4">
+        <Stack pos="relative" direction="column" spacing="4" px="5" py="4">
           {Object.keys(state).map((key) => {
             const value = state[key]
             const type = defaultProps[key]

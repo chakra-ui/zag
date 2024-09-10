@@ -2,7 +2,7 @@ import * as progress from "@zag-js/progress"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-export function LinearProgress(props: any) {
+export function ProgressLinear(props: any) {
   const [state, send] = useMachine(progress.machine({ id: useId() }), {
     context: props.controls,
   })

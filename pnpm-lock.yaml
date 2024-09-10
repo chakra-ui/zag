@@ -3800,6 +3800,9 @@ importers:
       '@emotion/styled':
         specifier: 11.13.0
         version: 11.13.0(@emotion/react@11.13.3(@types/react@18.3.5)(react@18.3.1))(@types/react@18.3.5)(react@18.3.1)
+      '@stackblitz/sdk':
+        specifier: ^1.10.0
+        version: 1.11.0
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../packages/machines/accordion
@@ -6113,6 +6116,9 @@ packages:
 
   '@solidjs/start@1.0.6':
     resolution: {integrity: sha512-O5knaeqDBx+nKLJRm5ZJurnXZtIYBOwOreQ10APaVtVjKIKKRC5HxJ1Kwqg7atOQNNDgsF0pzhW218KseaZ1UA==}
+
+  '@stackblitz/sdk@1.11.0':
+    resolution: {integrity: sha512-DFQGANNkEZRzFk1/rDP6TcFdM82ycHE+zfl9C/M/jXlH68jiqHWHFMQURLELoD8koxvu/eW5uhg94NSAZlYrUQ==}
 
   '@sveltejs/package@2.3.4':
     resolution: {integrity: sha512-A56rLEBVI7DhcfCmjy+D5oya4be/N+kBKX69H0aCkvhgOiAXroqVzeNhWiNiGHhhec3NvpGjtjKI5c4+JAlTZg==}
@@ -15157,6 +15163,8 @@ snapshots:
       - supports-color
       - vinxi
       - vite
+
+  '@stackblitz/sdk@1.11.0': {}
 
   '@sveltejs/package@2.3.4(svelte@5.0.0-next.244)(typescript@5.5.4)':
     dependencies:

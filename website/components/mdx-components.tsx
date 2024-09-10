@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { allComponents, allSnippets } from "@/contentlayer"
 import { Icon } from "@chakra-ui/icon"
-import { Box, HStack, Wrap } from "@chakra-ui/layout"
+import { Box, HStack, StackProps, Wrap } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
 import { allComponents as Anatomies } from "@zag-js/anatomy-icons"
 import { normalizeProps, useMachine } from "@zag-js/react"
@@ -34,12 +33,17 @@ function SnippetItem({ body, id }: { body: MDX; id: string }) {
 }
 
 type ResourceLinkProps = {
-  href: string | undefined
+  href?: string | undefined
   icon: FC
   children: any
 }
 
-export function ResourceLink({ href, icon, children }: ResourceLinkProps) {
+export function ResourceLink({
+  href,
+  icon,
+  children,
+  ...rest
+}: ResourceLinkProps & StackProps) {
   return (
     <HStack
       as="a"
@@ -50,6 +54,8 @@ export function ResourceLink({ href, icon, children }: ResourceLinkProps) {
       py="1"
       fontSize="sm"
       spacing="1"
+      cursor="pointer"
+      {...rest}
     >
       <Icon as={icon} color="green.500" fontSize="lg" />
       <span>{children}</span>
@@ -71,6 +77,7 @@ const components: Record<string, FC<any>> = {
   },
   Resources(props) {
     const comp = allComponents.find((c) => c.package === props.pkg)
+
     if (!comp) return null
     return (
       <Wrap mt="6" spacingX="4">

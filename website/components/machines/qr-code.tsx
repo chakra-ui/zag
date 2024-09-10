@@ -3,7 +3,7 @@ import * as qrCode from "@zag-js/qr-code"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-export function QRCode(props: any) {
+export function QrCode(props: any) {
   const [state, send] = useMachine(
     qrCode.machine({
       id: useId(),

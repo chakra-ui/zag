@@ -24,6 +24,7 @@
     "@chakra-ui/theme": "3.3.1",
     "@emotion/react": "11.13.3",
     "@emotion/styled": "11.13.0",
+    "@stackblitz/sdk": "^1.10.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
     "@zag-js/avatar": "workspace:*",

@@ -19,9 +19,9 @@ import { Pagination } from "./machines/pagination"
 import { PinInput } from "./machines/pin-input"
 import { Popover } from "./machines/popover"
 import { Presence } from "./machines/presence"
-import { CircularProgress } from "./machines/progress-circular"
-import { LinearProgress } from "./machines/progress-linear"
-import { QRCode } from "./machines/qr-code"
+import { ProgressCircular } from "./machines/progress-circular"
+import { ProgressLinear } from "./machines/progress-linear"
+import { QrCode } from "./machines/qr-code"
 import { Radio } from "./machines/radio"
 import { RangeSlider } from "./machines/range-slider"
 import { Rating } from "./machines/rating"
@@ -44,6 +44,7 @@ import { Playground } from "./playground"
 const components = {
   Accordion: () => (
     <Playground
+      name="accordion"
       component={Accordion}
       defaultProps={{
         collapsible: true,
@@ -53,6 +54,7 @@ const components = {
   ),
   Avatar: () => (
     <Playground
+      name="avatar"
       component={Avatar}
       defaultProps={{
         name: "Segun Adebayo",
@@ -62,6 +64,7 @@ const components = {
   ),
   Carousel: () => (
     <Playground
+      name="carousel"
       component={Carousel}
       defaultProps={{
         align: {
@@ -76,6 +79,7 @@ const components = {
   ),
   Checkbox: () => (
     <Playground
+      name="checkbox"
       component={Checkbox}
       defaultProps={{
         disabled: false,
@@ -85,6 +89,7 @@ const components = {
   ),
   Collapsible: () => (
     <Playground
+      name="collapsible"
       component={Collapsible}
       defaultProps={{
         disabled: false,
@@ -94,6 +99,7 @@ const components = {
   ),
   ColorPicker: () => (
     <Playground
+      name="color-picker"
       component={ColorPicker}
       defaultProps={{
         disabled: false,
@@ -109,6 +115,7 @@ const components = {
   ),
   Combobox: () => (
     <Playground
+      name="combobox"
       component={Combobox}
       defaultProps={{
         disabled: false,
@@ -127,6 +134,7 @@ const components = {
   ),
   Dialog: () => (
     <Playground
+      name="dialog"
       component={Dialog}
       defaultProps={{
         preventScroll: true,
@@ -138,6 +146,7 @@ const components = {
   ),
   Editable: () => (
     <Playground
+      name="editable"
       component={Editable}
       defaultProps={{
         autoResize: false,
@@ -156,6 +165,7 @@ const components = {
   ),
   FileUpload: () => (
     <Playground
+      name="file-upload"
       component={FileUpload}
       defaultProps={{
         disabled: false,
@@ -166,6 +176,7 @@ const components = {
   ),
   HoverCard: () => (
     <Playground
+      name="hover-card"
       component={HoverCard}
       defaultProps={{
         openDelay: 700,
@@ -173,11 +184,12 @@ const components = {
       }}
     />
   ),
-  Menu: () => <Playground component={Menu} />,
-  ContextMenu: () => <Playground component={ContextMenu} />,
-  NestedMenu: () => <Playground component={NestedMenu} />,
+  Menu: () => <Playground name="menu" component={Menu} />,
+  ContextMenu: () => <Playground name="context-menu" component={ContextMenu} />,
+  NestedMenu: () => <Playground name="nested-menu" component={NestedMenu} />,
   NumberInput: () => (
     <Playground
+      name="number-input"
       component={NumberInput}
       defaultProps={{
         disabled: false,
@@ -190,6 +202,7 @@ const components = {
   ),
   Pagination: () => (
     <Playground
+      name="pagination"
       component={Pagination}
       defaultProps={{
         pageSize: 10,
@@ -199,6 +212,7 @@ const components = {
   ),
   PinInput: () => (
     <Playground
+      name="pin-input"
       component={PinInput}
       defaultProps={{
         disabled: false,
@@ -214,7 +228,8 @@ const components = {
   ),
   LinearProgress: () => (
     <Playground
-      component={LinearProgress}
+      name="progress-linear"
+      component={ProgressLinear}
       defaultProps={{
         min: 0,
         max: 100,
@@ -223,7 +238,8 @@ const components = {
   ),
   CircularProgress: () => (
     <Playground
-      component={CircularProgress}
+      name="progress-circular"
+      component={ProgressCircular}
       defaultProps={{
         min: 0,
         max: 100,
@@ -232,6 +248,7 @@ const components = {
   ),
   Popover: () => (
     <Playground
+      name="popover"
       component={Popover}
       defaultProps={{
         modal: false,
@@ -244,6 +261,7 @@ const components = {
   ),
   Radio: () => (
     <Playground
+      name="radio"
       component={Radio}
       defaultProps={{
         disabled: false,
@@ -252,6 +270,7 @@ const components = {
   ),
   SegmentedControl: () => (
     <Playground
+      name="segmented-control"
       component={SegmentedControl}
       defaultProps={{
         disabled: false,
@@ -261,6 +280,7 @@ const components = {
   ),
   RangeSlider: () => (
     <Playground
+      name="range-slider"
       component={RangeSlider}
       defaultProps={{
         disabled: false,
@@ -271,6 +291,7 @@ const components = {
   ),
   Rating: () => (
     <Playground
+      name="rating"
       component={Rating}
       defaultProps={{
         allowHalf: true,
@@ -286,6 +307,7 @@ const components = {
   ),
   Select: () => (
     <Playground
+      name="select"
       component={Select}
       defaultProps={{
         loopFocus: false,
@@ -296,6 +318,7 @@ const components = {
   ),
   Slider: () => (
     <Playground
+      name="slider"
       component={Slider}
       defaultProps={{
         disabled: false,
@@ -307,6 +330,7 @@ const components = {
   ),
   Splitter: () => (
     <Playground
+      name="splitter"
       component={Splitter}
       defaultProps={{
         dir: { default: "ltr", options: ["ltr", "rtl"] },
@@ -319,6 +343,7 @@ const components = {
   ),
   Switch: () => (
     <Playground
+      name="switch"
       component={Switch}
       defaultProps={{
         disabled: false,
@@ -327,6 +352,7 @@ const components = {
   ),
   Tabs: () => (
     <Playground
+      name="tabs"
       component={Tabs}
       defaultProps={{
         loopFocus: false,
@@ -339,6 +365,7 @@ const components = {
   ),
   TagsInput: () => (
     <Playground
+      name="tags-input"
       component={TagsInput}
       defaultProps={{
         disabled: false,
@@ -350,6 +377,7 @@ const components = {
   ),
   TimePicker: () => (
     <Playground
+      name="time-picker"
       component={TimePicker}
       defaultProps={{
         locale: {
@@ -373,6 +401,7 @@ const components = {
   ),
   Toast: () => (
     <Playground
+      name="toast"
       component={ToastGroup}
       defaultProps={{
         pauseOnPageIdle: false,
@@ -382,6 +411,7 @@ const components = {
   ),
   ToggleGroup: () => (
     <Playground
+      name="toggle-group"
       component={ToggleGroup}
       defaultProps={{
         disabled: false,
@@ -391,6 +421,7 @@ const components = {
   ),
   Tooltip: () => (
     <Playground
+      name="tooltip"
       component={Tooltip}
       defaultProps={{
         closeOnPointerDown: true,
@@ -401,6 +432,7 @@ const components = {
   ),
   Clipboard: () => (
     <Playground
+      name="clipboard"
       component={Clipboard}
       defaultProps={{
         value: "Hello, World!",
@@ -408,19 +440,24 @@ const components = {
       }}
     />
   ),
-  SignaturePad: () => <Playground component={SignaturePad} />,
-  Presence: () => <Playground component={Presence} />,
-  TimerCountdown: () => <Playground component={TimerCountdown} />,
-  DatePicker: () => <Playground component={DatePicker} />,
+  SignaturePad: () => (
+    <Playground name="signature-pad" component={SignaturePad} />
+  ),
+  Presence: () => <Playground name="presence" component={Presence} />,
+  TimerCountdown: () => (
+    <Playground name="timer-countdown" component={TimerCountdown} />
+  ),
+  DatePicker: () => <Playground name="date-picker" component={DatePicker} />,
   QRCode: () => (
     <Playground
-      component={QRCode}
+      name="qr-code"
+      component={QrCode}
       defaultProps={{
         value: "https://github.com/chakra-ui",
       }}
     />
   ),
-  Steps: () => <Playground component={Steps} />,
+  Steps: () => <Playground name="steps" component={Steps} />,
 }
 
 export function Showcase(props: { id: keyof typeof components }) {
