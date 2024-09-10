@@ -39,6 +39,7 @@
     "@zag-js/floating-panel": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
+    "@zag-js/highlight-word": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
