@@ -1,5 +1,13 @@
 # @zag-js/date-utils
 
+## 0.67.0
+
+### Patch Changes
+
+- [`b2e9a6e`](https://github.com/chakra-ui/zag/commit/b2e9a6e8255799b164a2ec26b813159167a714ca) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `getWeekDays` has incoherent behavior when both
+  locale and `startOfWeekProp` are set
+
 ## 0.66.1
 
 ## 0.66.0

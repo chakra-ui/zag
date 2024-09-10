@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/steps",
-  "version": "0.66.1",
+  "version": "0.67.0",
   "description": "Core logic for the steps widget implemented as a state machine",
   "keywords": [
     "js",
