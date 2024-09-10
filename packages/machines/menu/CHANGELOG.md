@@ -1,5 +1,24 @@
 # @zag-js/menu
 
+## 0.67.0
+
+### Patch Changes
+
+- [`700c75c`](https://github.com/chakra-ui/zag/commit/700c75cbbe56c40e45394379941146ed2071b4ba) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where lazy mounting the content causes first menu item
+  to not be focused when opened with keyboard
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.67.0
+  - @zag-js/core@0.67.0
+  - @zag-js/types@0.67.0
+  - @zag-js/utils@0.67.0
+  - @zag-js/dismissable@0.67.0
+  - @zag-js/dom-event@0.67.0
+  - @zag-js/dom-query@0.67.0
+  - @zag-js/popper@0.67.0
+  - @zag-js/rect-utils@0.67.0
+
 ## 0.66.1
 
 ### Patch Changes
