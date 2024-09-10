@@ -630,14 +630,22 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         highlightFirstItem(ctx) {
-          const first = dom.getFirstEl(ctx)
-          if (!first) return
-          set.highlighted(ctx, first.id)
+          // use raf in event content is lazy mounted
+          const fn = !!dom.getContentEl(ctx) ? queueMicrotask : raf
+          fn(() => {
+            const first = dom.getFirstEl(ctx)
+            if (!first) return
+            set.highlighted(ctx, first.id)
+          })
         },
         highlightLastItem(ctx) {
-          const last = dom.getLastEl(ctx)
-          if (!last) return
-          set.highlighted(ctx, last.id)
+          // use raf in event content is lazy mounted
+          const fn = !!dom.getContentEl(ctx) ? queueMicrotask : raf
+          fn(() => {
+            const last = dom.getLastEl(ctx)
+            if (!last) return
+            set.highlighted(ctx, last.id)
+          })
         },
         highlightNextItem(ctx, evt) {
           const next = dom.getNextEl(ctx, evt.loop)

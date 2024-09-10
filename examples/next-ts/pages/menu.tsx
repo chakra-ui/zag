@@ -21,16 +21,18 @@ export default function Page() {
           <button {...api.getTriggerProps()}>
             Actions <span {...api.getIndicatorProps()}>▾</span>
           </button>
-          <Portal>
-            <div {...api.getPositionerProps()}>
-              <ul {...api.getContentProps()}>
-                <li {...api.getItemProps({ value: "edit" })}>Edit</li>
-                <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
-                <li {...api.getItemProps({ value: "delete" })}>Delete</li>
-                <li {...api.getItemProps({ value: "export" })}>Export...</li>
-              </ul>
-            </div>
-          </Portal>
+          {api.open && (
+            <Portal>
+              <div {...api.getPositionerProps()}>
+                <ul {...api.getContentProps()}>
+                  <li {...api.getItemProps({ value: "edit" })}>Edit</li>
+                  <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
+                  <li {...api.getItemProps({ value: "delete" })}>Delete</li>
+                  <li {...api.getItemProps({ value: "export" })}>Export...</li>
+                </ul>
+              </div>
+            </Portal>
+          )}
         </div>
       </main>
       <Toolbar controls={controls.ui}>
