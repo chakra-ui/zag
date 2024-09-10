@@ -47,6 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "CONTEXT.SET", context: { hovered: false } })
         },
         onClick(event) {
+          if (disabled) return
           if (event.target === dom.getHiddenInputEl(state.context)) {
             event.stopPropagation()
           }
