@@ -1,5 +1,6 @@
 import { readFileSync } from "fs"
 import { normalizeComponentName } from "./normalize"
+import { join } from "path"
 
 const baseStyle = `
 * {
@@ -56,12 +57,19 @@ padding: 24px;
 
 export async function getComponentStyle(component: string) {
   const cssName = normalizeComponentName(component)
-  const code = readFileSync(`styles/machines/${cssName}.css`, "utf-8")
+  const filePath = join(process.cwd(), "styles", "machines", `${cssName}.css`)
+  const code = readFileSync(filePath, "utf-8")
   return [baseStyle, code].join("\n")
 }
 
 export async function getComponentCode(component: string) {
-  return readFileSync(`components/machines/${component}.tsx`, "utf-8").replace(
+  const filePath = join(
+    process.cwd(),
+    "components",
+    "machines",
+    `${component}.tsx`,
+  )
+  return readFileSync(filePath, "utf-8").replace(
     "export function",
     "export default function",
   )
