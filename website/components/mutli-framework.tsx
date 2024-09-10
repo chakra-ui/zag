@@ -93,6 +93,7 @@ export function MultiframeworkTabs() {
           }}
         >
           <Playground
+            name="number-input"
             component={NumberInput}
             hideControls
             defaultContext={{ value: 0 }}
