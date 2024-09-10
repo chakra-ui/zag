@@ -245,6 +245,9 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/form-utils
+      '@zag-js/highlight-word':
+        specifier: workspace:*
+        version: link:../../packages/utilities/highlight-word
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -489,6 +492,9 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/form-utils
+      '@zag-js/highlight-word':
+        specifier: workspace:*
+        version: link:../../packages/utilities/highlight-word
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -769,6 +775,9 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/form-utils
+      '@zag-js/highlight-word':
+        specifier: workspace:*
+        version: link:../../packages/utilities/highlight-word
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -1019,6 +1028,9 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/form-utils
+      '@zag-js/highlight-word':
+        specifier: workspace:*
+        version: link:../../packages/utilities/highlight-word
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -1179,18 +1191,219 @@ importers:
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../packages/anatomy
+      '@zag-js/anatomy-icons':
+        specifier: workspace:*
+        version: link:../../packages/anatomy-icons
+      '@zag-js/aria-hidden':
+        specifier: workspace:*
+        version: link:../../packages/utilities/aria-hidden
+      '@zag-js/auto-resize':
+        specifier: workspace:*
+        version: link:../../packages/utilities/auto-resize
+      '@zag-js/avatar':
+        specifier: workspace:*
+        version: link:../../packages/machines/avatar
+      '@zag-js/carousel':
+        specifier: workspace:*
+        version: link:../../packages/machines/carousel
+      '@zag-js/checkbox':
+        specifier: workspace:*
+        version: link:../../packages/machines/checkbox
+      '@zag-js/clipboard':
+        specifier: workspace:*
+        version: link:../../packages/machines/clipboard
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../../packages/machines/collapsible
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../packages/utilities/collection
+      '@zag-js/color-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/color-picker
+      '@zag-js/color-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/color-utils
+      '@zag-js/combobox':
+        specifier: workspace:*
+        version: link:../../packages/machines/combobox
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@zag-js/date-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/date-picker
+      '@zag-js/date-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/date-utils
+      '@zag-js/dialog':
+        specifier: workspace:*
+        version: link:../../packages/machines/dialog
+      '@zag-js/dismissable':
+        specifier: workspace:*
+        version: link:../../packages/utilities/dismissable
+      '@zag-js/docs':
+        specifier: workspace:*
+        version: link:../../packages/docs
+      '@zag-js/dom-event':
+        specifier: workspace:*
+        version: link:../../packages/utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../packages/utilities/dom-query
+      '@zag-js/editable':
+        specifier: workspace:*
+        version: link:../../packages/machines/editable
+      '@zag-js/element-rect':
+        specifier: workspace:*
+        version: link:../../packages/utilities/element-rect
+      '@zag-js/element-size':
+        specifier: workspace:*
+        version: link:../../packages/utilities/element-size
+      '@zag-js/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/machines/file-upload
+      '@zag-js/file-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/file-utils
+      '@zag-js/floating-panel':
+        specifier: workspace:*
+        version: link:../../packages/machines/floating-panel
+      '@zag-js/focus-visible':
+        specifier: workspace:*
+        version: link:../../packages/utilities/focus-visible
+      '@zag-js/form-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/form-utils
+      '@zag-js/highlight-word':
+        specifier: workspace:*
+        version: link:../../packages/utilities/highlight-word
+      '@zag-js/hover-card':
+        specifier: workspace:*
+        version: link:../../packages/machines/hover-card
+      '@zag-js/i18n-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/i18n-utils
+      '@zag-js/interact-outside':
+        specifier: workspace:*
+        version: link:../../packages/utilities/interact-outside
+      '@zag-js/live-region':
+        specifier: workspace:*
+        version: link:../../packages/utilities/live-region
+      '@zag-js/menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/menu
+      '@zag-js/number-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/number-input
+      '@zag-js/number-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/number
+      '@zag-js/numeric-range':
+        specifier: workspace:*
+        version: link:../../packages/utilities/numeric-range
+      '@zag-js/pagination':
+        specifier: workspace:*
+        version: link:../../packages/machines/pagination
+      '@zag-js/pin-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/pin-input
+      '@zag-js/popover':
+        specifier: workspace:*
+        version: link:../../packages/machines/popover
+      '@zag-js/popper':
+        specifier: workspace:*
+        version: link:../../packages/utilities/popper
+      '@zag-js/presence':
+        specifier: workspace:*
+        version: link:../../packages/machines/presence
+      '@zag-js/progress':
+        specifier: workspace:*
+        version: link:../../packages/machines/progress
+      '@zag-js/qr-code':
+        specifier: workspace:*
+        version: link:../../packages/machines/qr-code
+      '@zag-js/radio-group':
+        specifier: workspace:*
+        version: link:../../packages/machines/radio-group
+      '@zag-js/rating-group':
+        specifier: workspace:*
+        version: link:../../packages/machines/rating-group
       '@zag-js/react':
         specifier: workspace:*
         version: link:../../packages/frameworks/react
+      '@zag-js/rect-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/rect
+      '@zag-js/remove-scroll':
+        specifier: workspace:*
+        version: link:../../packages/utilities/remove-scroll
+      '@zag-js/select':
+        specifier: workspace:*
+        version: link:../../packages/machines/select
       '@zag-js/shared':
         specifier: workspace:*
         version: link:../../shared
+      '@zag-js/signature-pad':
+        specifier: workspace:*
+        version: link:../../packages/machines/signature-pad
+      '@zag-js/slider':
+        specifier: workspace:*
+        version: link:../../packages/machines/slider
+      '@zag-js/splitter':
+        specifier: workspace:*
+        version: link:../../packages/machines/splitter
+      '@zag-js/steps':
+        specifier: workspace:*
+        version: link:../../packages/machines/steps
+      '@zag-js/store':
+        specifier: workspace:*
+        version: link:../../packages/store
       '@zag-js/stringify-state':
         specifier: workspace:*
         version: link:../../packages/utilities/stringify-state
+      '@zag-js/switch':
+        specifier: workspace:*
+        version: link:../../packages/machines/switch
+      '@zag-js/tabs':
+        specifier: workspace:*
+        version: link:../../packages/machines/tabs
+      '@zag-js/tags-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/tags-input
+      '@zag-js/text-selection':
+        specifier: workspace:*
+        version: link:../../packages/utilities/text-selection
+      '@zag-js/time-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/time-picker
+      '@zag-js/timer':
+        specifier: workspace:*
+        version: link:../../packages/machines/timer
+      '@zag-js/toast':
+        specifier: workspace:*
+        version: link:../../packages/machines/toast
+      '@zag-js/toggle-group':
+        specifier: workspace:*
+        version: link:../../packages/machines/toggle-group
+      '@zag-js/tooltip':
+        specifier: workspace:*
+        version: link:../../packages/machines/tooltip
+      '@zag-js/tour':
+        specifier: workspace:*
+        version: link:../../packages/machines/tour
+      '@zag-js/tree-view':
+        specifier: workspace:*
+        version: link:../../packages/machines/tree-view
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/core
       lucide-react:
         specifier: 0.428.0
         version: 0.428.0(react@19.0.0-rc-b57d2823-20240822)
@@ -1339,6 +1552,9 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/form-utils
+      '@zag-js/highlight-word':
+        specifier: workspace:*
+        version: link:../../packages/utilities/highlight-word
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -1573,6 +1789,9 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/form-utils
+      '@zag-js/highlight-word':
+        specifier: workspace:*
+        version: link:../../packages/utilities/highlight-word
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -1832,6 +2051,9 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../packages/utilities/form-utils
+      '@zag-js/highlight-word':
+        specifier: workspace:*
+        version: link:../../packages/utilities/highlight-word
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -3427,6 +3649,12 @@ importers:
         version: 2.2.0
 
   packages/utilities/form-utils:
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/utilities/highlight-word:
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -16114,9 +16342,9 @@ snapshots:
   '@vue/language-core@2.0.29(typescript@5.5.4)':
     dependencies:
       '@volar/language-core': 2.4.4
-      '@vue/compiler-dom': 3.5.3
+      '@vue/compiler-dom': 3.5.4
       '@vue/compiler-vue2': 2.7.16
-      '@vue/shared': 3.5.3
+      '@vue/shared': 3.5.4
       computeds: 0.0.1
       minimatch: 9.0.5
       muggle-string: 0.4.1
@@ -17632,8 +17860,8 @@ snapshots:
       '@typescript-eslint/parser': 7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4)
       eslint: 9.10.0(jiti@1.21.6)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.10.0(jiti@1.21.6)))(eslint@9.10.0(jiti@1.21.6))
-      eslint-plugin-import: 2.30.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.3)(eslint@9.10.0(jiti@1.21.6))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@9.10.0(jiti@1.21.6))
+      eslint-plugin-import: 2.30.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.10.0(jiti@1.21.6))
       eslint-plugin-jsx-a11y: 6.9.0(eslint@9.10.0(jiti@1.21.6))
       eslint-plugin-react: 7.35.0(eslint@9.10.0(jiti@1.21.6))
       eslint-plugin-react-hooks: 4.6.2(eslint@9.10.0(jiti@1.21.6))
@@ -17673,33 +17901,33 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.10.0(jiti@1.21.6)))(eslint@9.10.0(jiti@1.21.6)):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@9.10.0(jiti@1.21.6)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.3.6
       enhanced-resolve: 5.17.1
       eslint: 9.10.0(jiti@1.21.6)
-      eslint-module-utils: 2.9.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.10.0(jiti@1.21.6)))(eslint@9.10.0(jiti@1.21.6)))(eslint@9.10.0(jiti@1.21.6))
+      eslint-module-utils: 2.9.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@9.10.0(jiti@1.21.6)))(eslint@9.10.0(jiti@1.21.6))
       fast-glob: 3.3.2
       get-tsconfig: 4.8.0
       is-bun-module: 1.1.0
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: 2.30.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.3)(eslint@9.10.0(jiti@1.21.6))
+      eslint-plugin-import: 2.30.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.10.0(jiti@1.21.6))
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.9.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.10.0(jiti@1.21.6)))(eslint@9.10.0(jiti@1.21.6)))(eslint@9.10.0(jiti@1.21.6)):
+  eslint-module-utils@2.9.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@9.10.0(jiti@1.21.6)))(eslint@9.10.0(jiti@1.21.6)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4)
       eslint: 9.10.0(jiti@1.21.6)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.10.0(jiti@1.21.6)))(eslint@9.10.0(jiti@1.21.6))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@9.10.0(jiti@1.21.6))
     transitivePeerDependencies:
       - supports-color
 
@@ -17724,7 +17952,7 @@ snapshots:
       lodash.memoize: 4.1.2
       semver: 7.6.3
 
-  eslint-plugin-import@2.30.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.3)(eslint@9.10.0(jiti@1.21.6)):
+  eslint-plugin-import@2.30.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.10.0(jiti@1.21.6)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -17735,7 +17963,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.10.0(jiti@1.21.6)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.9.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint@9.10.0(jiti@1.21.6)))(eslint@9.10.0(jiti@1.21.6)))(eslint@9.10.0(jiti@1.21.6))
+      eslint-module-utils: 2.9.0(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@7.2.0(eslint@9.10.0(jiti@1.21.6))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@9.10.0(jiti@1.21.6)))(eslint@9.10.0(jiti@1.21.6))
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
