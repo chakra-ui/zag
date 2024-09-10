@@ -13,9 +13,6 @@
     "vite": "^5.4.1"
   },
   "dependencies": {
-    "form-serialize": "0.7.2",
-    "match-sorter": "6.3.4",
-    "nanoid": "^5.0.7",
     "@internationalized/date": "3.5.5",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
@@ -47,6 +44,7 @@
     "@zag-js/floating-panel": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
+    "@zag-js/highlight-word": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
@@ -70,8 +68,8 @@
     "@zag-js/signature-pad": "workspace:*",
     "@zag-js/slider": "workspace:*",
     "@zag-js/splitter": "workspace:*",
-    "@zag-js/store": "workspace:*",
     "@zag-js/steps": "workspace:*",
+    "@zag-js/store": "workspace:*",
     "@zag-js/stringify-state": "workspace:*",
     "@zag-js/switch": "workspace:*",
     "@zag-js/tabs": "workspace:*",
@@ -85,6 +83,9 @@
     "@zag-js/tour": "workspace:*",
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "@zag-js/utils": "workspace:*"
+    "@zag-js/utils": "workspace:*",
+    "form-serialize": "0.7.2",
+    "match-sorter": "6.3.4",
+    "nanoid": "^5.0.7"
   }
 }
