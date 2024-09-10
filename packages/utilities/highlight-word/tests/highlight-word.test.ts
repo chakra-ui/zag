@@ -309,4 +309,33 @@ describe("highlightWord / Multiple Occurrences", () => {
       ]
     `)
   })
+
+  test("filter empty items in query", () => {
+    const result = highlightWord({
+      text: "The quick brown fox",
+      query: ["", "quick", "", "fox"],
+      matchAll: true,
+    })
+
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "match": false,
+          "text": "The ",
+        },
+        {
+          "match": true,
+          "text": "quick",
+        },
+        {
+          "match": false,
+          "text": " brown ",
+        },
+        {
+          "match": true,
+          "text": "fox",
+        },
+      ]
+    `)
+  })
 })
