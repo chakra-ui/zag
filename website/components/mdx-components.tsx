@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { allComponents, allSnippets } from "@/contentlayer"
 import { Icon } from "@chakra-ui/icon"
 import { Box, HStack, StackProps, Wrap } from "@chakra-ui/layout"
@@ -21,8 +20,6 @@ import { useFramework } from "./framework"
 import { KeyboardTable } from "./keyboard-table"
 import { PropTable } from "./prop-table"
 import { Showcase } from "./showcase"
-import { SiStackblitz } from "react-icons/si"
-import { openInStackblitz } from "lib/open-in-stackblitz"
 
 function SnippetItem({ body, id }: { body: MDX; id: string }) {
   const content = useMDX(body.code)
@@ -92,14 +89,6 @@ const components: Record<string, FC<any>> = {
         </ResourceLink>
         <ResourceLink icon={HiOutlineCode} href={comp.sourceUrl}>
           View Source
-        </ResourceLink>
-        <ResourceLink
-          icon={SiStackblitz}
-          as="button"
-          // TODO normalize slug e.g. context-menu -> menu
-          onClick={() => openInStackblitz(comp.slug)}
-        >
-          Open in Stackblitz
         </ResourceLink>
       </Wrap>
     )
