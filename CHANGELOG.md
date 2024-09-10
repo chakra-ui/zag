@@ -6,6 +6,24 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.67.0](./#0.67.0) - 2024-09-10
+
+### Added
+
+- **Highlight**
+
+  - Released `@zag-js/highlight-word` package to help with highlighting text in a string.
+
+### Fixed
+
+- **Date Utils**
+
+  - Fixed issue where `getWeekDays` had inconsistent behavior when both locale and `startOfWeekProp` were set
+
+- **Menu**
+
+  - Fixed issue where lazy mounting the content caused the first menu item to not be focused when opened with keyboard
+
 ## [0.66.0](./#0.66.0) - 2024-09-05
 
 ### Fixed
