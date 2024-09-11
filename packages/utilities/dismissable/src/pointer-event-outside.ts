@@ -1,4 +1,4 @@
-import { getDocument, setStyle, waitForElements } from "@zag-js/dom-query"
+import { getDocument, setStyle, observeChildren, isHTMLElement } from "@zag-js/dom-query"
 import { layerStack } from "./layer-stack"
 
 let originalBodyPointerEvents: string
@@ -13,7 +13,7 @@ export function clearPointerEvent(node: HTMLElement) {
   node.style.pointerEvents = ""
 }
 
-export function disablePointerEventsOutside(node: HTMLElement, peristentElements?: Array<() => Element | null>) {
+export function disablePointerEventsOutside(node: HTMLElement, persistentElements?: Array<() => Element | null>) {
   const doc = getDocument(node)
 
   const cleanups: VoidFunction[] = []
@@ -26,11 +26,41 @@ export function disablePointerEventsOutside(node: HTMLElement, peristentElements
     })
   }
 
-  if (peristentElements) {
-    const persistedCleanup = waitForElements(peristentElements, (el) => {
-      cleanups.push(setStyle(el, { pointerEvents: "auto" }))
+  if (persistentElements) {
+    const persistedElementsMap = new Map<HTMLElement, () => void>()
+    const persistedCleanup = observeChildren(doc.body, {
+      callback: (records) => {
+        for (const record of records) {
+          if (record.type !== "childList") continue
+
+          for (const node of record.addedNodes) {
+            for (const fn of persistentElements) {
+              const el = fn()
+              if (isHTMLElement(el) && node.contains(el)) {
+                const cleanup = setStyle(el, { pointerEvents: "auto" })
+                persistedElementsMap.set(el, cleanup)
+                cleanups.push(cleanup)
+              }
+            }
+          }
+
+          for (const node of record.removedNodes) {
+            for (const [el, cleanup] of persistedElementsMap.entries()) {
+              if (node.contains(el)) {
+                cleanup()
+                persistedElementsMap.delete(el)
+                const index = cleanups.indexOf(cleanup)
+                if (index > -1) {
+                  cleanups.splice(index, 1)
+                }
+              }
+            }
+          }
+        }
+      },
     })
     cleanups.push(persistedCleanup)
+    cleanups.push(() => persistedElementsMap.clear())
   }
 
   return () => {
