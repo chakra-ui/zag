@@ -1,5 +1,5 @@
 import type { AutoUpdateOptions, Middleware } from "@floating-ui/dom"
-import { arrow, autoUpdate, computePosition, flip, limitShift, offset, shift, size } from "@floating-ui/dom"
+import { arrow, autoUpdate, computePosition, flip, hide, limitShift, offset, shift, size } from "@floating-ui/dom"
 import { getWindow, raf } from "@zag-js/dom-query"
 import { compact, isNull, noop, runIfFn } from "@zag-js/utils"
 import { getAnchorElement } from "./get-anchor"
@@ -44,7 +44,7 @@ function getOffsetMiddleware(arrowElement: HTMLElement | null, opts: Positioning
     const arrowOffset = (arrowElement?.clientHeight || 0) / 2
 
     const gutter = opts.offset?.mainAxis ?? opts.gutter
-    const mainAxis = typeof gutter === "number" ? gutter + arrowOffset : gutter ?? arrowOffset
+    const mainAxis = typeof gutter === "number" ? gutter + arrowOffset : (gutter ?? arrowOffset)
 
     const { hasAlign } = getPlacementDetails(placement)
     const shift = !hasAlign ? opts.shift : undefined
@@ -95,6 +95,11 @@ function getSizeMiddleware(opts: PositioningOptions) {
   })
 }
 
+function hideWhenDetachedMiddleware(opts: PositioningOptions) {
+  if (!opts.hideWhenDetached) return
+  return hide({ strategy: "referenceHidden", boundary: opts.boundary?.() ?? "clippingAncestors" })
+}
+
 function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOptions {
   if (!opts) return {}
   if (opts === true) {
@@ -122,6 +127,7 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     shiftArrowMiddleware(arrowEl),
     transformOriginMiddleware,
     getSizeMiddleware(options),
+    hideWhenDetachedMiddleware(options),
     rectMiddleware,
   ]
 
@@ -149,6 +155,10 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
 
     floating.style.setProperty("--x", `${x}px`)
     floating.style.setProperty("--y", `${y}px`)
+
+    if (options.hideWhenDetached && pos.middlewareData.hide?.referenceHidden) {
+      floating.style.setProperty("visibility", "hidden")
+    }
 
     const contentEl = floating.firstElementChild
 

@@ -18,6 +18,10 @@ export interface AnchorRect {
 
 export interface PositioningOptions {
   /**
+   * Whether the popover should be hidden when the reference element is detached
+   */
+  hideWhenDetached?: boolean
+  /**
    * The strategy to use for positioning
    */
   strategy?: "absolute" | "fixed"
