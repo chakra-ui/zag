@@ -37,6 +37,7 @@
     "@zag-js/file-upload": "workspace:*",
     "@zag-js/file-utils": "workspace:*",
     "@zag-js/floating-panel": "workspace:*",
+    "@zag-js/focus-trap": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/highlight-word": "workspace:*",
