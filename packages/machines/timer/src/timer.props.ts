@@ -7,6 +7,7 @@ export const props = createProps<UserDefinedContext>()([
   "countdown",
   "getRootNode",
   "id",
+  "ids",
   "interval",
   "onComplete",
   "onTick",
