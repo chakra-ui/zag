@@ -30,37 +30,35 @@ export function disablePointerEventsOutside(node: HTMLElement, persistentElement
     const persistedElementsMap = new Map<HTMLElement, () => void>()
     const persistedCleanup = observeChildren(doc.body, {
       callback: (records) => {
-        for (const record of records) {
-          if (record.type !== "childList") continue
+        records.forEach((record) => {
+          if (record.type !== "childList") return
 
-          for (const node of record.addedNodes) {
-            for (const fn of persistentElements) {
+          record.addedNodes.forEach((node) => {
+            persistentElements.forEach((fn) => {
               const el = fn()
               if (isHTMLElement(el) && node.contains(el)) {
                 const cleanup = setStyle(el, { pointerEvents: "auto" })
                 persistedElementsMap.set(el, cleanup)
-                cleanups.push(cleanup)
               }
-            }
-          }
+            })
+          })
 
-          for (const node of record.removedNodes) {
-            for (const [el, cleanup] of persistedElementsMap.entries()) {
+          record.removedNodes.forEach((node) => {
+            persistedElementsMap.forEach((cleanup, el) => {
               if (node.contains(el)) {
                 cleanup()
                 persistedElementsMap.delete(el)
-                const index = cleanups.indexOf(cleanup)
-                if (index > -1) {
-                  cleanups.splice(index, 1)
-                }
               }
-            }
-          }
-        }
+            })
+          })
+        })
       },
     })
-    cleanups.push(persistedCleanup)
-    cleanups.push(() => persistedElementsMap.clear())
+    cleanups.push(() => {
+      persistedElementsMap.forEach((cleanup) => cleanup())
+      persistedElementsMap.clear()
+      persistedCleanup()
+    })
   }
 
   return () => {
