@@ -6,6 +6,65 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.68.0](./#0.68.0) - 2024-09-12
+
+### Changed
+
+- **Timer**
+
+  - Introduces new area and control parts for better anatomy and structure.
+  - [BREAKING] Move `role"timer` to new area part.
+  - Automatically hide the action triggers based on the action prop passed.
+
+**BEFORE:**
+
+```tsx
+<div>
+  <div {...api.getRootProps()}>
+    <div {...api.getItemProps({ type: "days" })}>{api.formattedTime.days}</div>
+    <div {...api.getSeparatorProps()}>:</div>
+    <div {...api.getItemProps({ type: "hours" })}>{api.formattedTime.hours}</div>
+    <div {...api.getSeparatorProps()}>:</div>
+    <div {...api.getItemProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
+    <div {...api.getSeparatorProps()}>:</div>
+    <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
+  </div>
+  <div>
+    <button {...api.getActionTriggerProps({ action: "start" })}>START</button>
+    <button {...api.getActionTriggerProps({ action: "pause" })}>PAUSE</button>
+    <button {...api.getActionTriggerProps({ action: "resume" })}>RESUME</button>
+    <button {...api.getActionTriggerProps({ action: "reset" })}>RESET</button>
+  </div>
+</div>
+```
+
+**AFTER:**
+
+```tsx
+<div {...api.getRootProps()}>
+  <div {...api.getAreaProps()}>
+    <div {...api.getItemProps({ type: "days" })}>{api.formattedTime.days}</div>
+    <div {...api.getSeparatorProps()}>:</div>
+    <div {...api.getItemProps({ type: "hours" })}>{api.formattedTime.hours}</div>
+    <div {...api.getSeparatorProps()}>:</div>
+    <div {...api.getItemProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
+    <div {...api.getSeparatorProps()}>:</div>
+    <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
+  </div>
+  <div {...api.getControlProps()}>
+    <button {...api.getActionTriggerProps({ action: "start" })}>START</button>
+    <button {...api.getActionTriggerProps({ action: "pause" })}>PAUSE</button>
+    <button {...api.getActionTriggerProps({ action: "resume" })}>RESUME</button>
+    <button {...api.getActionTriggerProps({ action: "reset" })}>RESET</button>
+  </div>
+</div>
+```
+
+- **Popper**
+
+  - Add support for `hideWhenDetached` positioning option. This can be used in the `positioning` options for floating
+    components (select, popover, dialog, etc.)
+
 ## [0.67.0](./#0.67.0) - 2024-09-10
 
 ### Added
