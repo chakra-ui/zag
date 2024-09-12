@@ -1,5 +1,19 @@
 # @zag-js/popper
 
+## 0.68.0
+
+### Minor Changes
+
+- [`74d1848`](https://github.com/chakra-ui/zag/commit/74d18489fb64d53539fc62e5cfce7c5906720254) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `hideWhenDetached` positioning option. This can be
+  used in the `positioning` options for floating components (select, popover, dialog, etc.)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.68.0
+  - @zag-js/dom-query@0.68.0
+
 ## 0.67.0
 
 ### Patch Changes
