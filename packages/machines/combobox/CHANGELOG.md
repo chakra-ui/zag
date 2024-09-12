@@ -1,5 +1,25 @@
 # @zag-js/combobox
 
+## 0.68.0
+
+### Patch Changes
+
+- [#1841](https://github.com/chakra-ui/zag/pull/1841)
+  [`e623a06`](https://github.com/chakra-ui/zag/commit/e623a06ef1a7e5aceb33ad8489f8de698384da11) Thanks
+  [@erm1116](https://github.com/erm1116)! - Fix issue where remaining incorrect highlight values when items changed
+
+- Updated dependencies [[`74d1848`](https://github.com/chakra-ui/zag/commit/74d18489fb64d53539fc62e5cfce7c5906720254)]:
+  - @zag-js/popper@0.68.0
+  - @zag-js/anatomy@0.68.0
+  - @zag-js/core@0.68.0
+  - @zag-js/types@0.68.0
+  - @zag-js/aria-hidden@0.68.0
+  - @zag-js/collection@0.68.0
+  - @zag-js/utils@0.68.0
+  - @zag-js/dismissable@0.68.0
+  - @zag-js/dom-event@0.68.0
+  - @zag-js/dom-query@0.68.0
+
 ## 0.67.0
 
 ### Patch Changes
