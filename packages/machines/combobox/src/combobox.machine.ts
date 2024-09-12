@@ -792,7 +792,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         highlightFirstItem(ctx) {
           raf(() => {
             const value = ctx.collection.firstValue
-            set.highlightedValue(ctx, value)
+            set.highlightedValue(ctx, value, true)
           })
         },
         highlightFirstItemIfNeeded(ctx) {
