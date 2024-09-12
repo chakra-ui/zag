@@ -23,16 +23,18 @@ export default function Page() {
     <>
       <main class="timer">
         <div {...api().getRootProps()}>
-          <div {...api().getItemProps({ type: "days" })}>{api().formattedTime.days}</div>
-          <div {...api().getSeparatorProps()}>:</div>
-          <div {...api().getItemProps({ type: "hours" })}>{api().formattedTime.hours}</div>
-          <div {...api().getSeparatorProps()}>:</div>
-          <div {...api().getItemProps({ type: "minutes" })}>{api().formattedTime.minutes}</div>
-          <div {...api().getSeparatorProps()}>:</div>
-          <div {...api().getItemProps({ type: "seconds" })}>{api().formattedTime.seconds}</div>
+          <div {...api().getAreaProps()}>
+            <div {...api().getItemProps({ type: "days" })}>{api().formattedTime.days}</div>
+            <div {...api().getSeparatorProps()}>:</div>
+            <div {...api().getItemProps({ type: "hours" })}>{api().formattedTime.hours}</div>
+            <div {...api().getSeparatorProps()}>:</div>
+            <div {...api().getItemProps({ type: "minutes" })}>{api().formattedTime.minutes}</div>
+            <div {...api().getSeparatorProps()}>:</div>
+            <div {...api().getItemProps({ type: "seconds" })}>{api().formattedTime.seconds}</div>
+          </div>
         </div>
 
-        <div style={{ display: "flex", gap: "4px" }}>
+        <div {...api().getControlProps()}>
           <button onClick={api().start}>START</button>
           <button onClick={api().pause}>PAUSE</button>
           <button onClick={api().resume}>RESUME</button>

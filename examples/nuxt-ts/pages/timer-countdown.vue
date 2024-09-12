@@ -21,19 +21,21 @@ const api = computed(() => timer.connect(state.value, send, normalizeProps))
 <template>
   <main class="timer">
     <div v-bind="api.getRootProps()">
-      <div v-bind="api.getItemProps({ type: 'days' })">{{ api.formattedTime.days }}</div>
-      <div v-bind="api.getSeparatorProps()">:</div>
-      <div v-bind="api.getItemProps({ type: 'hours' })">{{ api.formattedTime.hours }}</div>
-      <div v-bind="api.getSeparatorProps()">:</div>
-      <div v-bind="api.getItemProps({ type: 'minutes' })">{{ api.formattedTime.minutes }}</div>
-      <div v-bind="api.getSeparatorProps()">:</div>
-      <div v-bind="api.getItemProps({ type: 'seconds' })">{{ api.formattedTime.seconds }}</div>
-    </div>
-    <div style="display: flex; gap: 4px">
-      <button @click="api.start">START</button>
-      <button @click="api.pause">PAUSE</button>
-      <button @click="api.resume">RESUME</button>
-      <button @click="api.reset">RESET</button>
+      <div v-bind="api.getAreaProps()">
+        <div v-bind="api.getItemProps({ type: 'days' })">{{ api.formattedTime.days }}</div>
+        <div v-bind="api.getSeparatorProps()">:</div>
+        <div v-bind="api.getItemProps({ type: 'hours' })">{{ api.formattedTime.hours }}</div>
+        <div v-bind="api.getSeparatorProps()">:</div>
+        <div v-bind="api.getItemProps({ type: 'minutes' })">{{ api.formattedTime.minutes }}</div>
+        <div v-bind="api.getSeparatorProps()">:</div>
+        <div v-bind="api.getItemProps({ type: 'seconds' })">{{ api.formattedTime.seconds }}</div>
+      </div>
+      <div v-bind="api.getControlProps()">
+        <button v-bind="api.getActionTriggerProps({ action: 'start' })">START</button>
+        <button v-bind="api.getActionTriggerProps({ action: 'pause' })">PAUSE</button>
+        <button v-bind="api.getActionTriggerProps({ action: 'resume' })">RESUME</button>
+        <button v-bind="api.getActionTriggerProps({ action: 'reset' })">RESET</button>
+      </div>
     </div>
   </main>
 

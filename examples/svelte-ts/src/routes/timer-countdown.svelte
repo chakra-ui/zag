@@ -21,20 +21,22 @@
 
 <main class="timer">
   <div {...api.getRootProps()}>
-    <div {...api.getItemProps({ type: "days" })}>{api.formattedTime.days}</div>
-    <div {...api.getSeparatorProps()}>:</div>
-    <div {...api.getItemProps({ type: "hours" })}>{api.formattedTime.hours}</div>
-    <div {...api.getSeparatorProps()}>:</div>
-    <div {...api.getItemProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
-    <div {...api.getSeparatorProps()}>:</div>
-    <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
-  </div>
+    <div {...api.getAreaProps()}>
+      <div {...api.getItemProps({ type: "days" })}>{api.formattedTime.days}</div>
+      <div {...api.getSeparatorProps()}>:</div>
+      <div {...api.getItemProps({ type: "hours" })}>{api.formattedTime.hours}</div>
+      <div {...api.getSeparatorProps()}>:</div>
+      <div {...api.getItemProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
+      <div {...api.getSeparatorProps()}>:</div>
+      <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
+    </div>
 
-  <div style="display:flex; gap: 4px">
-    <button onclick={api.start}>START</button>
-    <button onclick={api.pause}>PAUSE</button>
-    <button onclick={api.resume}>RESUME</button>
-    <button onclick={api.reset}>RESET</button>
+    <div {...api.getControlProps()}>
+      <button {...api.getActionTriggerProps({ action: "start" })}>START</button>
+      <button {...api.getActionTriggerProps({ action: "pause" })}>PAUSE</button>
+      <button {...api.getActionTriggerProps({ action: "resume" })}>RESUME</button>
+      <button {...api.getActionTriggerProps({ action: "reset" })}>RESET</button>
+    </div>
   </div>
 </main>
 

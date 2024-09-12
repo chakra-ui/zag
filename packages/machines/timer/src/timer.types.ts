@@ -13,6 +13,11 @@ export type TimePart = keyof Time
 
 export type TimerAction = "start" | "pause" | "resume" | "reset"
 
+export type ElementIds = Partial<{
+  root: string
+  area: string
+}>
+
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
@@ -28,6 +33,10 @@ export interface TickDetails {
  * -----------------------------------------------------------------------------*/
 
 interface PublicContext extends CommonProperties {
+  /**
+   * The ids of the timer parts
+   */
+  ids?: ElementIds
   /**
    * Whether the timer should countdown, decrementing the timer on each tick.
    */
@@ -154,6 +163,8 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   progressPercent: number
 
   getRootProps(): T["element"]
+  getAreaProps(): T["element"]
+  getControlProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemValueProps(props: ItemProps): T["element"]
   getItemLabelProps(props: ItemProps): T["element"]

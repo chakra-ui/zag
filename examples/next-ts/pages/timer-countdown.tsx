@@ -23,20 +23,22 @@ export default function Page() {
     <>
       <main className="timer">
         <div {...api.getRootProps()}>
-          <div {...api.getItemProps({ type: "days" })}>{api.formattedTime.days}</div>
-          <div {...api.getSeparatorProps()}>:</div>
-          <div {...api.getItemProps({ type: "hours" })}>{api.formattedTime.hours}</div>
-          <div {...api.getSeparatorProps()}>:</div>
-          <div {...api.getItemProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
-          <div {...api.getSeparatorProps()}>:</div>
-          <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
+          <div {...api.getAreaProps()}>
+            <div {...api.getItemProps({ type: "days" })}>{api.formattedTime.days}</div>
+            <div {...api.getSeparatorProps()}>:</div>
+            <div {...api.getItemProps({ type: "hours" })}>{api.formattedTime.hours}</div>
+            <div {...api.getSeparatorProps()}>:</div>
+            <div {...api.getItemProps({ type: "minutes" })}>{api.formattedTime.minutes}</div>
+            <div {...api.getSeparatorProps()}>:</div>
+            <div {...api.getItemProps({ type: "seconds" })}>{api.formattedTime.seconds}</div>
+          </div>
         </div>
 
-        <div style={{ display: "flex", gap: "4px" }}>
-          <button onClick={api.start}>START</button>
-          <button onClick={api.pause}>PAUSE</button>
-          <button onClick={api.resume}>RESUME</button>
-          <button onClick={api.reset}>RESET</button>
+        <div {...api.getControlProps()}>
+          <button {...api.getActionTriggerProps({ action: "start" })}>START</button>
+          <button {...api.getActionTriggerProps({ action: "pause" })}>PAUSE</button>
+          <button {...api.getActionTriggerProps({ action: "resume" })}>RESUME</button>
+          <button {...api.getActionTriggerProps({ action: "reset" })}>RESET</button>
         </div>
       </main>
 

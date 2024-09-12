@@ -1,8 +1,9 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./timer.anatomy"
 import type { MachineApi, Send, State } from "./timer.types"
+import { dom } from "./timer.dom"
 
-const validActions = new Set(["start", "pause", "resume", "reset", "restart"])
+const validActions = new Set(["start", "pause", "resume", "reset"])
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const running = state.matches("running")
@@ -36,8 +37,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getRootProps() {
       return normalize.element({
-        role: "timer",
+        id: dom.getRootId(state.context),
         ...parts.root.attrs,
+      })
+    },
+
+    getAreaProps() {
+      return normalize.element({
+        role: "timer",
+        id: dom.getAreaId(state.context),
+        "aria-label": `${time.days} days ${formattedTime.hours}:${formattedTime.minutes}:${formattedTime.seconds}`,
+        "aria-atomic": true,
+        ...parts.area.attrs,
+      })
+    },
+
+    getControlProps() {
+      return normalize.element({
+        ...parts.control.attrs,
       })
     },
 
@@ -68,18 +85,37 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getSeparatorProps() {
       return normalize.element({
+        "aria-hidden": true,
         ...parts.separator.attrs,
       })
     },
 
     getActionTriggerProps(props) {
       if (!validActions.has(props.action)) {
-        throw new Error(`Invalid action: ${props.action}. Must be one of: ${Array.from(validActions).join(", ")}`)
+        throw new Error(
+          `[zag-js] Invalid action: ${props.action}. Must be one of: ${Array.from(validActions).join(", ")}`,
+        )
       }
 
       return normalize.button({
         ...parts.actionTrigger.attrs,
-        onClick() {
+        hidden: (() => {
+          switch (props.action) {
+            case "start":
+              return running || paused
+            case "pause":
+              return !running
+            case "reset":
+              return !running && !paused
+            case "resume":
+              return !paused
+            default:
+              return
+          }
+        })(),
+        type: "button",
+        onClick(event) {
+          if (event.defaultPrevented) return
           send(props.action.toUpperCase())
         },
       })

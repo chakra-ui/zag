@@ -88,7 +88,7 @@
     "form-serialize": "0.7.2",
     "lucide-solid": "0.428.0",
     "match-sorter": "6.3.4",
-    "solid-js": "1.8.21",
+    "solid-js": "1.8.22",
     "vinxi": "0.4.1"
   },
   "engines": {

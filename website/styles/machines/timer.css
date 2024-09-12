@@ -1,6 +1,13 @@
 [data-scope="timer"][data-part="root"] {
   margin-top: 40px;
   display: inline-flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+[data-scope="timer"][data-part="area"] {
+  display: inline-flex;
   gap: 0.25rem;
   align-items: center;
 }
@@ -9,8 +16,7 @@
   font-size: 2rem;
 }
 
-.timer-controls {
-  margin-top: 1rem;
+[data-scope="timer"][data-part="control"] {
   display: flex;
   justify-content: center;
   gap: 8px;

@@ -1,5 +1,11 @@
 [data-scope="timer"][data-part="root"] {
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+[data-scope="timer"][data-part="area"] {
+  display: flex;
   align-items: center;
 }
 
@@ -12,4 +18,9 @@
   font-size: 1rem;
   font-weight: 500;
   margin-inline: 0.5rem;
+}
+
+[data-scope="timer"][data-part="control"] {
+  display: flex;
+  gap: 4px;
 }

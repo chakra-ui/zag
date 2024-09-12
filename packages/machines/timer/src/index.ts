@@ -8,6 +8,7 @@ export type {
   MachineApi as Api,
   UserDefinedContext as Context,
   ItemProps,
+  ElementIds,
   MachineState,
   Service,
   TickDetails,

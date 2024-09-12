@@ -15,8 +15,8 @@ export function TimerCountdown() {
   const api = timer.connect(state, send, normalizeProps)
 
   return (
-    <div>
-      <div {...api.getRootProps()}>
+    <div {...api.getRootProps()}>
+      <div {...api.getAreaProps()}>
         <div {...api.getItemProps({ type: "days" })}>
           {api.formattedTime.days}
         </div>
@@ -34,9 +34,13 @@ export function TimerCountdown() {
         </div>
       </div>
 
-      <div className="timer-controls">
-        {api.running && <button onClick={api.pause}>Pause</button>}
-        {api.paused && <button onClick={api.resume}>Resume</button>}
+      <div {...api.getControlProps()}>
+        <button {...api.getActionTriggerProps({ action: "pause" })}>
+          Pause
+        </button>
+        <button {...api.getActionTriggerProps({ action: "resume" })}>
+          Resume
+        </button>
       </div>
     </div>
   )
