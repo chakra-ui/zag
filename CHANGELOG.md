@@ -8,6 +8,12 @@ See the [Changesets](./.changeset) for the latest changes.
 
 ## [0.68.0](./#0.68.0) - 2024-09-12
 
+### Fixed
+
+- **Combobox**
+
+  - Fix issue where highlighted item was persistent when the collection is empty
+
 ### Changed
 
 - **Timer**
