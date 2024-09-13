@@ -16,6 +16,8 @@ export function parseDateString(date: string, locale: string, timeZone: string):
     year ||= curr.getFullYear().toString()
     month ||= (curr.getMonth() + 1).toString()
     day ||= curr.getDate().toString()
+
+    if (parseInt(year) < 2000) year = (parseInt(year) + 2000).toString()
   }
 
   if (isValidYear(year) && isValidMonth(month) && isValidDay(day)) {
