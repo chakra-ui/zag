@@ -54,6 +54,7 @@ const transformContext = (ctx: Partial<MachineContext>): MachineContext => {
     numOfMonths,
     focusedValue,
     startValue,
+    inputValue: "",
     timeZone,
     value,
     selectionMode,
@@ -113,6 +114,7 @@ export function machine(userContext: UserDefinedContext) {
           "focusActiveCellIfNeeded",
           "setHoveredValueIfKeyboard",
         ],
+        inputValue: ["syncInputValue"],
         value: ["syncInputElement"],
         valueAsString: ["announceValueText"],
         view: ["focusActiveCell"],
@@ -133,7 +135,7 @@ export function machine(userContext: UserDefinedContext) {
           actions: ["clearDateValue", "clearFocusedDate", "focusFirstInputElement"],
         },
         "INPUT.CHANGE": {
-          actions: ["focusParsedDate"],
+          actions: ["setInputValue", "focusParsedDate"],
         },
         "INPUT.ENTER": {
           actions: ["focusParsedDate", "selectFocusedDate"],
@@ -626,7 +628,6 @@ export function machine(userContext: UserDefinedContext) {
         syncInputElement(ctx) {
           raf(() => {
             const inputEls = dom.getInputEls(ctx)
-
             inputEls.forEach((inputEl, index) => {
               dom.setValue(inputEl, ctx.formattedValue[index] || "")
             })
@@ -684,6 +685,10 @@ export function machine(userContext: UserDefinedContext) {
           const values = Array.from(ctx.value)
           values[ctx.activeIndex] = ctx.focusedValue.copy()
           set.value(ctx, adjustStartAndEndDate(values))
+
+          // always sync the input value, even if the selecteddate is not changed
+          // e.g. selected value is 02/28/2024, and the input value changed to 02/28
+          set.inputValue(ctx, ctx.activeIndex)
         },
         setPreviousDate(ctx) {
           set.focusedValue(ctx, getPreviousDay(ctx.focusedValue))
@@ -860,6 +865,17 @@ export function machine(userContext: UserDefinedContext) {
           if (!yearSelectEl) return
           yearSelectEl.value = ctx.startValue.year.toString()
         },
+        setInputValue(ctx, evt) {
+          if (ctx.activeIndex !== evt.index) return
+          ctx.inputValue = evt.value
+        },
+        syncInputValue(ctx) {
+          queueMicrotask(() => {
+            const inputEls = dom.getInputEls(ctx)
+            const inputEl = inputEls[ctx.activeIndex]
+            dom.setValue(inputEl, ctx.inputValue)
+          })
+        },
         focusParsedDate(ctx, evt) {
           if (evt.index == null) return
 
@@ -878,6 +894,9 @@ export function machine(userContext: UserDefinedContext) {
           values[evt.index] = date
 
           set.value(ctx, values)
+          // always sync the input value, even if the selecteddate is not changed
+          // e.g. selected value is 02/28/2024, and the input value changed to 02/28
+          set.inputValue(ctx, evt.index)
         },
         resetView(ctx, _evt, { initialContext }) {
           set.view(ctx, initialContext.view)
@@ -972,5 +991,11 @@ const set = {
     if (isEqual(ctx.view, value)) return
     ctx.view = value
     invoke.viewChange(ctx)
+  },
+
+  inputValue(ctx: MachineContext, index: number) {
+    const value = ctx.formattedValue[index]
+    if (ctx.inputValue === value) return
+    ctx.inputValue = value
   },
 }

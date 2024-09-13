@@ -81,7 +81,7 @@ const fetchMachine = createMachine({
       actions: ["clearDateValue", "clearFocusedDate", "focusFirstInputElement"]
     },
     "INPUT.CHANGE": {
-      actions: ["focusParsedDate"]
+      actions: ["setInputValue", "focusParsedDate"]
     },
     "INPUT.ENTER": {
       actions: ["focusParsedDate", "selectFocusedDate"]

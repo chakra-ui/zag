@@ -212,6 +212,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
 interface PrivateContext {
   /**
    * @internal
+   * The active input value (based on the active index)
+   */
+  inputValue: string
+  /**
+   * @internal
    * The start date of the current visible duration.
    */
   startValue: DateValue

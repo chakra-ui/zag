@@ -3,7 +3,6 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as datePicker from "@zag-js/date-picker"
-  import { getYearsRange } from "@zag-js/date-utils"
   import { datePickerControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
@@ -54,8 +53,8 @@
         </select>
 
         <select {...api.getYearSelectProps()}>
-          {#each getYearsRange({ from: 1_000, to: 4_000 }) as year, i (i)}
-            <option value={year}>{year}</option>
+          {#each api.getYears() as year, i (i)}
+            <option value={year.value}>{year.label}</option>
           {/each}
         </select>
       </div>

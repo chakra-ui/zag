@@ -1,11 +1,10 @@
 import * as datePicker from "@zag-js/date-picker"
-import { getYearsRange } from "@zag-js/date-utils"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { datePickerControls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-import { For, Index, createMemo, createUniqueId } from "solid-js"
+import { Index, createMemo, createUniqueId } from "solid-js"
 
 export default function Page() {
   const controls = useControls(datePickerControls)
@@ -49,13 +48,23 @@ export default function Page() {
           <div {...api().getContentProps()}>
             <div style={{ "margin-bottom": "20px" }}>
               <select {...api().getMonthSelectProps()}>
-                <For each={api().getMonths()}>{(month) => <option value={month.value}>{month.label}</option>}</For>
+                <Index each={api().getMonths()}>
+                  {(month, i) => (
+                    <option value={i + 1} selected={api().focusedValue.month === i + 1}>
+                      {month().label}
+                    </option>
+                  )}
+                </Index>
               </select>
 
               <select {...api().getYearSelectProps()}>
-                <For each={getYearsRange({ from: 1_000, to: 2_200 })}>
-                  {(year) => <option value={year}>{year}</option>}
-                </For>
+                <Index each={api().getYears()}>
+                  {(year) => (
+                    <option value={year().value} selected={api().focusedValue.year === year().value}>
+                      {year().label}
+                    </option>
+                  )}
+                </Index>
               </select>
             </div>
 

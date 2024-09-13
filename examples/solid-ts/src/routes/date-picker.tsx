@@ -1,5 +1,4 @@
 import * as datePicker from "@zag-js/date-picker"
-import { getYearsRange } from "@zag-js/date-utils"
 import { datePickerControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { Index, createMemo, createUniqueId } from "solid-js"
@@ -54,10 +53,10 @@ export default function Page() {
             </select>
 
             <select {...api().getYearSelectProps()}>
-              <Index each={getYearsRange({ from: 1_000, to: 4_000 })}>
+              <Index each={api().getYears()}>
                 {(year) => (
-                  <option value={year()} selected={api().focusedValue.year === year()}>
-                    {year()}
+                  <option value={year().value} selected={api().focusedValue.year === year().value}>
+                    {year().label}
                   </option>
                 )}
               </Index>

@@ -76,6 +76,22 @@ test.describe("datepicker [single]", () => {
     await I.dontSeeContent()
   })
 
+  test("keyboard selection", async () => {
+    await I.type("02/28/2024")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("02/28/2024")
+  })
+
+  test("keyboard selection + re-selection", async () => {
+    await I.type("02/28/2024")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("02/28/2024")
+
+    await I.pressKey("Backspace", 5) // becomes 02/28
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("02/28/2024")
+  })
+
   // test("click trigger + focus input + selection, set value in input", async () => {
   //   await I.clickTrigger()
   //   await I.seeContent()

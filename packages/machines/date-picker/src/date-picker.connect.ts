@@ -11,6 +11,7 @@ import {
   getTodayDate,
   getUnitDuration,
   getWeekDays,
+  getYearsRange,
   isDateDisabled,
   isDateEqual,
   isDateInvalid,
@@ -94,10 +95,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   function getYears() {
-    return getDecadeRange(focusedValue.year).map((year) => ({
-      label: year.toString(),
-      value: year,
-    }))
+    const range = getYearsRange({ from: min?.year ?? 1900, to: max?.year ?? 2100 })
+    return range.map((year) => ({ label: year.toString(), value: year }))
   }
 
   function isUnavailable(date: DateValue) {
@@ -700,7 +699,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           event.preventDefault()
         },
         onChange(event) {
-          const { value } = event.target
+          const value = event.currentTarget.value
           send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator), index })
         },
       })
