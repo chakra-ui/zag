@@ -41,7 +41,6 @@ describe("parse date", () => {
 
   test("with just month/day/year [shortform - different locale]", () => {
     const date = parseDateString("10.1.23", "de-DE", "UTC")
-
     expect(date).contain({
       month: 1,
       day: 10,

@@ -16,9 +16,9 @@ export function parseDateString(date: string, locale: string, timeZone: string):
     year ||= curr.getFullYear().toString()
     month ||= (curr.getMonth() + 1).toString()
     day ||= curr.getDate().toString()
-
-    if (parseInt(year) < 2000) year = (parseInt(year) + 2000).toString()
   }
+
+  if (!isValidYear(year)) year = normalizeYear(year)
 
   if (isValidYear(year) && isValidMonth(month) && isValidDay(day)) {
     return new CalendarDate(+year, +month, +day)
@@ -67,4 +67,10 @@ function extract(pattern: string | RegExp, str: string) {
       }
       return acc
     }, {} as DateParts)
+}
+
+function normalizeYear(_year: string | null | undefined) {
+  if (!_year) return
+  const year = parseInt(_year, 10)
+  return (year >= 50 ? 1900 + year : 2000 + year).toString()
 }
