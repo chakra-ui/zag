@@ -65,8 +65,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         send({ type: "SELECTED.ALL" })
         return
       }
-      const nextValue = new Set(selectedValue)
-      value.forEach((id) => nextValue.add(id))
+      const nextValue = new Set()
+      if (state.context.selectionMode === "single") {
+        // For single selection, only add the last item
+        if (value.length > 0) {
+          nextValue.add(value[value.length - 1])
+        }
+      } else {
+        // For multiple selection, add all items
+        value.forEach((id) => nextValue.add(id))
+        selectedValue.forEach((id) => nextValue.add(id))
+      }
       send({ type: "SELECTED.SET", value: nextValue, src: "select" })
     },
     focusBranch(id) {
