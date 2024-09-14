@@ -38,4 +38,22 @@ describe("parse date", () => {
       year: 2023,
     })
   })
+
+  test("with just month/day/year [shortform - different locale]", () => {
+    const date = parseDateString("10.1.23", "de-DE", "UTC")
+    expect(date).contain({
+      month: 1,
+      day: 10,
+      year: 2023,
+    })
+  })
+
+  test("with just month/day/year [malformed year - different locale]", () => {
+    const date = parseDateString("10.1.293", "de-DE", "UTC")
+    expect(date).contain({
+      month: 1,
+      day: 10,
+      year: 2930,
+    })
+  })
 })
