@@ -1,4 +1,5 @@
 import { CalendarDate, DateFormatter, type DateValue } from "@internationalized/date"
+import { normalizeYear } from "./normalize-year"
 
 const isValidYear = (year: string | null | undefined): year is string => year != null && year.length === 4
 const isValidMonth = (month: string | null | undefined): month is string => month != null && parseFloat(month) <= 12
@@ -18,7 +19,9 @@ export function parseDateString(date: string, locale: string, timeZone: string):
     day ||= curr.getDate().toString()
   }
 
-  if (!isValidYear(year)) year = normalizeYear(year)
+  if (!isValidYear(year)) {
+    year = normalizeYear(year)
+  }
 
   if (isValidYear(year) && isValidMonth(month) && isValidDay(day)) {
     return new CalendarDate(+year, +month, +day)
@@ -67,10 +70,4 @@ function extract(pattern: string | RegExp, str: string) {
       }
       return acc
     }, {} as DateParts)
-}
-
-function normalizeYear(_year: string | null | undefined) {
-  if (!_year) return
-  const year = parseInt(_year, 10)
-  return (year >= 50 ? 1900 + year : 2000 + year).toString()
 }
