@@ -1,5 +1,22 @@
 # @zag-js/color-picker
 
+## 0.68.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.68.1
+  - @zag-js/core@0.68.1
+  - @zag-js/types@0.68.1
+  - @zag-js/color-utils@0.68.1
+  - @zag-js/utils@0.68.1
+  - @zag-js/dismissable@0.68.1
+  - @zag-js/dom-event@0.68.1
+  - @zag-js/dom-query@0.68.1
+  - @zag-js/form-utils@0.68.1
+  - @zag-js/popper@0.68.1
+  - @zag-js/text-selection@0.68.1
+
 ## 0.68.0
 
 ### Patch Changes

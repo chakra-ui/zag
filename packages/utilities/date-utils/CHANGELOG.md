@@ -1,5 +1,14 @@
 # @zag-js/date-utils
 
+## 0.68.1
+
+### Patch Changes
+
+- [#1845](https://github.com/chakra-ui/zag/pull/1845)
+  [`16cde4d`](https://github.com/chakra-ui/zag/commit/16cde4dcf48a6e9bf300edc23c115ff09534ffd2) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix issue where partial YY format in date string was not parsed
+  correctly.
+
 ## 0.68.0
 
 ## 0.67.0

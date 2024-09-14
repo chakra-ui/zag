@@ -1,5 +1,21 @@
 # @zag-js/tree-view
 
+## 0.68.1
+
+### Patch Changes
+
+- [`cafa231`](https://github.com/chakra-ui/zag/commit/cafa2316112cd86f88306bfd1656ba250a782a45) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where programmatic selection does not account for
+  singular selection
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.68.1
+  - @zag-js/core@0.68.1
+  - @zag-js/types@0.68.1
+  - @zag-js/utils@0.68.1
+  - @zag-js/dom-event@0.68.1
+  - @zag-js/dom-query@0.68.1
+
 ## 0.68.0
 
 ### Patch Changes

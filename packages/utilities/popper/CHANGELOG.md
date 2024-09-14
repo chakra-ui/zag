@@ -1,5 +1,13 @@
 # @zag-js/popper
 
+## 0.68.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.68.1
+  - @zag-js/dom-query@0.68.1
+
 ## 0.68.0
 
 ### Minor Changes

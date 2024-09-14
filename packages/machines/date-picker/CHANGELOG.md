@@ -1,5 +1,27 @@
 # @zag-js/date-picker
 
+## 0.68.1
+
+### Patch Changes
+
+- [`a73bd8f`](https://github.com/chakra-ui/zag/commit/a73bd8fc2d69c97ae0d9fcbaaffbca9063231ead) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue in Vue.js where input value could not be changed by
+  typing.
+  - Fix issue where setting controlled `min` and `max` values throws an error.
+- Updated dependencies [[`16cde4d`](https://github.com/chakra-ui/zag/commit/16cde4dcf48a6e9bf300edc23c115ff09534ffd2)]:
+  - @zag-js/date-utils@0.68.1
+  - @zag-js/anatomy@0.68.1
+  - @zag-js/core@0.68.1
+  - @zag-js/types@0.68.1
+  - @zag-js/utils@0.68.1
+  - @zag-js/dismissable@0.68.1
+  - @zag-js/dom-event@0.68.1
+  - @zag-js/dom-query@0.68.1
+  - @zag-js/form-utils@0.68.1
+  - @zag-js/live-region@0.68.1
+  - @zag-js/popper@0.68.1
+  - @zag-js/text-selection@0.68.1
+
 ## 0.68.0
 
 ### Patch Changes
