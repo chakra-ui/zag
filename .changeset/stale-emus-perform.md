@@ -2,4 +2,4 @@
 "@zag-js/date-utils": patch
 ---
 
-Parse date year corectly
+Fix issue where partial YY format in date string was not parsed correctly.
