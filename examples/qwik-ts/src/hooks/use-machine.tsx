@@ -20,8 +20,11 @@ export function useMachine<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,
   TEvent extends S.EventObject,
->(props: UseMachineOptions<TContext, TState, TEvent>) {
+>(props: UseMachineOptions<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
   const { qrl, initialState } = props
+  const { context } = options ?? {}
+
+  // we need to react to context changes
 
   const store = useStore<any>({
     service: null,
