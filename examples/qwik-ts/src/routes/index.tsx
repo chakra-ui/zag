@@ -1,4 +1,4 @@
-import { $, component$, noSerialize, useComputed$ } from "@builder.io/qwik"
+import { $, component$, noSerialize, useComputed$, useSignal } from "@builder.io/qwik"
 import type { DocumentHead } from "@builder.io/qwik-city"
 import { createMachine } from "@zag-js/core"
 import { useMachine } from "~/hooks/use-machine"
@@ -35,10 +35,20 @@ function connect(state: any, send: any) {
 }
 
 export default component$(() => {
-  const [state, send] = useMachine({
-    qrl: $(() => noSerialize(machine(10))),
-    initialState: noSerialize(machine(10).getState()),
-  })
+  const count = useSignal(11)
+
+  const [state, send] = useMachine(
+    {
+      qrl: $(() => noSerialize(machine(10))),
+      initialState: noSerialize(machine(10).getState()),
+    },
+    {
+      // Not working yet
+      context: {
+        count: count,
+      },
+    },
+  )
 
   const api = useComputed$(() => connect(state.value, send))
 
@@ -47,8 +57,16 @@ export default component$(() => {
       <h1>Hi 👋</h1>
       <div>
         Count is: {api.value.count}
+        Count2 is: {count.value}
         <br />
-        <button {...api.value.buttonProps}>Increment</button>
+        {/*<button {...api.value.buttonProps}>Increment</button>*/}
+        <button
+          onClick$={() => {
+            count.value += 1
+          }}
+        >
+          Increment
+        </button>
       </div>
     </>
   )
