@@ -32,7 +32,7 @@
   "clean-package": "../../../clean-package.config.json",
   "dependencies": {
     "@zag-js/dom-query": "workspace:*",
-    "focus-trap": "7.5.4"
+    "focus-trap": "7.6.0"
   },
   "devDependencies": {
     "clean-package": "2.2.0"
