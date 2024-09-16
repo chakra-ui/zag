@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.68.0](./#0.68.0) - 2024-09-15
+
+### Fixed
+
+- **DatePicker**
+
+  - Fix issue where partial YY format in date string was not parsed correctly.
+  - Fix issue in Vue.js where input value could not be changed by typing.
+  - Fix issue where setting controlled `min` and `max` values throws an error.
+
+- **TreeView**
+
+  - Fix issue where programmatic selection does not account for singular selection
+
 ## [0.68.0](./#0.68.0) - 2024-09-12
 
 ### Fixed
