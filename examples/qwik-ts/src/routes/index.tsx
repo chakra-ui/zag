@@ -37,7 +37,7 @@ function connect(state: any, send: any) {
 
 export default component$(() => {
   const context = useStore({
-    count: 11,
+    count: 10,
   })
 
   const [state, send] = useMachine(
@@ -45,14 +45,13 @@ export default component$(() => {
       qrl: $(() =>
         noSerialize(
           machine({
-            count: 9,
             onCount(count) {
               context.count = count
             },
           }),
         ),
       ),
-      initialState: noSerialize(machine({ count: 9 }).getState()),
+      initialState: noSerialize(machine({ count: 10 }).getState()),
     },
     {
       context,
