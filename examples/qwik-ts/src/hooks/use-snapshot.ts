@@ -1,4 +1,4 @@
-import { NoSerialize, noSerialize, Signal, useComputed$, useSignal, useVisibleTask$ } from "@builder.io/qwik"
+import { NoSerialize, noSerialize, Signal, useSignal, useVisibleTask$ } from "@builder.io/qwik"
 import type { Machine, StateMachine as S } from "@zag-js/core"
 
 export function useSnapshot<
@@ -33,5 +33,5 @@ export function useSnapshot<
     })
   })
 
-  return useComputed$(() => stateSignal.value)
+  return stateSignal
 }
