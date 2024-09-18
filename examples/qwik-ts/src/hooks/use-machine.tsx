@@ -16,34 +16,48 @@ type UseMachineReturn<
   TEvent extends S.EventObject,
 > = [Signal<S.State<TContext, TState>>, QRL<(event: TEvent) => void>, Signal<Machine<TContext, TState, TEvent>>]
 
+type Store = {
+  service: NoSerialize<Machine<any, any, any>> | null
+  state: NoSerialize<S.State<any, any>>
+}
+
 export function useMachine<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,
   TEvent extends S.EventObject,
 >(props: UseMachineOptions<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
   const { qrl, initialState } = props
-  const { context } = options ?? {}
+  const { state: hydratedState, context, actions } = options ?? {}
 
-  // we need to react to context changes
-
-  const store = useStore<any>({
+  const store = useStore<Store>({
     service: null,
     state: initialState,
   })
 
-  useVisibleTask$(async ({ cleanup }) => {
+  useVisibleTask$(async ({ cleanup, track }) => {
+    // Service
     const service = await qrl()
+    if (context) {
+      service?.setContext(context)
+      track(context)
+    }
 
-    service!.start()
-
+    service!.start(hydratedState)
     store.service = service
+
+    // State
     store.state = noSerialize(service!.getState())
 
-    service!.subscribe((state: any) => {
+    const unsubscribe = service!.subscribe((state: any) => {
       store.state = noSerialize(state)
     })
 
-    cleanup(() => service!.stop())
+    store.service?.setOptions({ actions })
+
+    cleanup(() => {
+      service!.stop()
+      unsubscribe()
+    })
   })
 
   const send = $((event: TEvent | string) => store.service!.send(event))

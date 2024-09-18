@@ -1,11 +1,11 @@
-import { $, component$, noSerialize, useComputed$, useSignal } from "@builder.io/qwik"
+import { $, component$, noSerialize, useComputed$, useStore } from "@builder.io/qwik"
 import type { DocumentHead } from "@builder.io/qwik-city"
 import { createMachine } from "@zag-js/core"
 import { useMachine } from "~/hooks/use-machine"
 
-const machine = (count: number) => {
+const machine = (props: { count?: number; onCount?: (count: number) => void }) => {
   return createMachine({
-    context: { count },
+    context: { count: 0, ...props },
     initial: "idle",
     states: {
       idle: {
@@ -13,6 +13,7 @@ const machine = (count: number) => {
           INCREMENT: {
             actions(ctx) {
               ctx.count += 1
+              ctx.onCount?.(ctx.count)
             },
           },
         },
@@ -35,18 +36,26 @@ function connect(state: any, send: any) {
 }
 
 export default component$(() => {
-  const count = useSignal(11)
+  const context = useStore({
+    count: 11,
+  })
 
   const [state, send] = useMachine(
     {
-      qrl: $(() => noSerialize(machine(10))),
-      initialState: noSerialize(machine(10).getState()),
+      qrl: $(() =>
+        noSerialize(
+          machine({
+            count: 9,
+            onCount(count) {
+              context.count = count
+            },
+          }),
+        ),
+      ),
+      initialState: noSerialize(machine({ count: 9 }).getState()),
     },
     {
-      // Not working yet
-      context: {
-        count: count,
-      },
+      context,
     },
   )
 
@@ -57,16 +66,9 @@ export default component$(() => {
       <h1>Hi 👋</h1>
       <div>
         Count is: {api.value.count}
-        Count2 is: {count.value}
         <br />
-        {/*<button {...api.value.buttonProps}>Increment</button>*/}
-        <button
-          onClick$={() => {
-            count.value += 1
-          }}
-        >
-          Increment
-        </button>
+        <button onClick$={() => (context.count += 1)}>Controlled Increment</button>
+        <button {...api.value.buttonProps}>Increment</button>
       </div>
     </>
   )
