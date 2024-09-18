@@ -32,7 +32,6 @@ export function useService<
     service!.start(hydratedState ?? initialState)
 
     serviceSignal.value = noSerialize(service)
-    // store.service = noSerialize(service)
 
     cleanup(() => {
       service!.stop()
