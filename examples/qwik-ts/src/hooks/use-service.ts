@@ -1,4 +1,4 @@
-import { NoSerialize, noSerialize, useSignal, useVisibleTask$ } from "@builder.io/qwik"
+import { NoSerialize, noSerialize, useComputed$, useStore, useVisibleTask$ } from "@builder.io/qwik"
 import type { Machine, StateMachine as S } from "@zag-js/core"
 
 interface UseServiceOptions<
@@ -18,7 +18,11 @@ export function useService<
   const { qrl, initialState } = props
   const { state: hydratedState, context } = options ?? {}
 
-  const serviceSignal = useSignal<NoSerialize<Machine<TContext, TState, TEvent>> | null>(null)
+  const store = useStore<{
+    service: NoSerialize<Machine<TContext, TState, TEvent>> | null
+  }>({
+    service: null,
+  })
 
   useVisibleTask$(async ({ track, cleanup }) => {
     // Load the service
@@ -31,12 +35,12 @@ export function useService<
 
     service!.start(hydratedState ?? initialState)
 
-    serviceSignal.value = noSerialize(service)
+    store.service = noSerialize(service)
 
     cleanup(() => {
       service!.stop()
     })
   })
 
-  return serviceSignal
+  return useComputed$(() => store.service)
 }
