@@ -1,20 +1,12 @@
 import { NoSerialize, noSerialize, useComputed$, useStore, useVisibleTask$ } from "@builder.io/qwik"
 import type { Machine, StateMachine as S } from "@zag-js/core"
-
-interface UseServiceOptions<
-  TContext extends Record<string, any>,
-  TState extends S.StateSchema,
-  TEvent extends S.EventObject,
-> {
-  qrl: () => Promise<NoSerialize<Machine<TContext, TState, TEvent>>>
-  initialState: NoSerialize<S.State<TContext, TState>>
-}
+import { UseMachineOptions } from "~/hooks/types"
 
 export function useService<
   TContext extends Record<string, any>,
   TState extends S.StateSchema,
   TEvent extends S.EventObject,
->(props: UseServiceOptions<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
+>(props: UseMachineOptions<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
   const { qrl, initialState } = props
   const { state: hydratedState, context } = options ?? {}
 
