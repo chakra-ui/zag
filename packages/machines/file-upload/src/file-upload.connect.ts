@@ -148,7 +148,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         capture: state.context.capture,
         name: state.context.name,
         accept: state.context.acceptAttr,
-        webkitdirectory: state.context.capture ? "" : undefined,
+        webkitdirectory: state.context.directory ? "" : undefined,
         multiple: state.context.multiple || state.context.maxFiles > 1,
         onClick(event) {
           event.stopPropagation()
