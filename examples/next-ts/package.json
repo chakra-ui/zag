@@ -98,8 +98,8 @@
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "@types/node": "22.5.4",
-    "@types/react": "18.3.5",
+    "@types/node": "22.5.5",
+    "@types/react": "18.3.8",
     "@types/react-dom": "18.3.0",
     "eslint-plugin-react": "7.35.0",
     "eslint-plugin-react-hooks": "4.6.2",
@@ -107,7 +107,7 @@
     "@atlaskit/pragmatic-drag-and-drop-flourish": "1.1.1",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "1.0.3",
     "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "1.4.0",
-    "typescript": "5.5.4"
+    "typescript": "5.6.2"
   },
   "license": "MIT"
 }

@@ -46,7 +46,7 @@
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "focus-trap": "7.5.4"
+    "focus-trap": "7.6.0"
   },
   "devDependencies": {
     "clean-package": "2.2.0"
