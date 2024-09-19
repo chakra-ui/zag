@@ -7,7 +7,7 @@ export function useService<
   TState extends S.StateSchema,
   TEvent extends S.EventObject,
 >(props: UseMachineOptions<TContext, TState, TEvent>, options?: S.HookOptions<TContext, TState, TEvent>) {
-  const { qrl, initialState } = props
+  const { qrl } = props
   const { state: hydratedState, context } = options ?? {}
 
   const store = useStore<{
@@ -25,7 +25,7 @@ export function useService<
       track(context)
     }
 
-    service!.start(hydratedState ?? initialState)
+    service!.start(hydratedState)
 
     store.service = noSerialize(service)
 
