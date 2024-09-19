@@ -1,7 +1,9 @@
-import { $, component$, noSerialize, useComputed$, useStore } from "@builder.io/qwik"
+import { $, component$, noSerialize, useStore } from "@builder.io/qwik"
 import type { DocumentHead } from "@builder.io/qwik-city"
 import { createMachine } from "@zag-js/core"
 import { useMachine } from "~/hooks/use-machine"
+import type { NormalizeProps } from "@zag-js/types"
+import { normalizeProps } from "~/hooks/normalize-props"
 
 const machine = (props: { count?: number; onCount?: (count: number) => void }) => {
   return createMachine({
@@ -22,15 +24,18 @@ const machine = (props: { count?: number; onCount?: (count: number) => void }) =
   })
 }
 
-function connect(state: any, send: any) {
+function connect(state: any, send: any, normalize: NormalizeProps<any>) {
   return {
     count: state.context.count,
-    buttonProps: {
-      "data-count": state.context.count,
-      disabled: state.context.count >= 15,
-      onClick$: $(() => {
-        send("INCREMENT")
-      }),
+
+    getButtonProps() {
+      return normalize.element({
+        "data-count": state.context.count,
+        disabled: state.context.count >= 15,
+        onClick: $(() => {
+          send("INCREMENT")
+        }),
+      })
     },
   }
 }
@@ -58,16 +63,16 @@ export default component$(() => {
     },
   )
 
-  const api = useComputed$(() => connect(state.value, send))
+  const api = connect(state.value, send, normalizeProps)
 
   return (
     <>
       <h1>Hi 👋</h1>
       <div>
-        Count is: {api.value.count}
+        Count is: {api.count}
         <br />
         <button onClick$={() => (context.count += 1)}>Controlled Increment</button>
-        <button {...api.value.buttonProps}>Increment</button>
+        <button {...api.getButtonProps()}>Increment</button>
       </div>
     </>
   )
