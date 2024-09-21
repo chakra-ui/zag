@@ -38,7 +38,6 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         collection: ctx.collection ?? collection.empty(),
         positioning: {
           placement: "bottom",
-          flip: false,
           sameWidth: true,
           ...ctx.positioning,
         },
