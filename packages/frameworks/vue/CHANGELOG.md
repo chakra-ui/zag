@@ -1,5 +1,14 @@
 # @zag-js/vue
 
+## 0.69.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.69.0
+  - @zag-js/store@0.69.0
+  - @zag-js/types@0.69.0
+
 ## 0.68.1
 
 ### Patch Changes
