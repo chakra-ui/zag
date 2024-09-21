@@ -6,6 +6,24 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.69.0](./#0.69.0) - 2024-09-21
+
+### Fixed
+
+- **FileUpload**
+
+  - Fix issue where `directory: true` doesn't work
+
+### Added
+
+- **Switch, Checkbox, Radio Group**
+
+  - The `data-focus-visible` attribute to the selected radio button when it is interacted with the keyboard.
+
+- **Tooltip**
+
+  - Focus behavior only opens when the tooltip trigger is focused with keyboard.
+
 ## [0.68.0](./#0.68.0) - 2024-09-15
 
 ### Fixed
