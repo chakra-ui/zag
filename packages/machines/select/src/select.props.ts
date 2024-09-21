@@ -7,6 +7,7 @@ export const props = createProps<UserDefinedContext>()([
   "collection",
   "dir",
   "disabled",
+  "deselectable",
   "form",
   "getRootNode",
   "highlightedValue",

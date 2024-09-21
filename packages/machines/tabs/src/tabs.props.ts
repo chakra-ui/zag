@@ -14,6 +14,7 @@ export const props = createProps<UserDefinedContext>()([
   "onValueChange",
   "orientation",
   "translations",
+  "deselectable",
   "value",
 ])
 
