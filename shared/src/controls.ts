@@ -125,6 +125,7 @@ export const sliderControls = defineControls({
 
 export const tabsControls = defineControls({
   activationMode: { type: "select", options: ["manual", "automatic"] as const, defaultValue: "automatic" },
+  deselectable: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   orientation: { type: "select", options: ["vertical", "horizontal"] as const, defaultValue: "horizontal" },
@@ -170,6 +171,7 @@ export const selectControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   readOnly: { type: "boolean", defaultValue: false },
+  deselectable: { type: "boolean", defaultValue: false },
   closeOnSelect: { type: "boolean", defaultValue: true },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })

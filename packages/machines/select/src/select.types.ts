@@ -138,6 +138,12 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * @default true
    */
   composite: boolean
+  /**
+   * Whether the value can be cleared by clicking the selected item.
+   *
+   * **Note:** this is only applicable for single selection
+   */
+  deselectable?: boolean
 }
 
 interface PrivateContext<T extends CollectionItem = CollectionItem> {

@@ -34,6 +34,19 @@ test.describe("tabs", () => {
     await I.seeTabContent("agnes")
   })
 
+  test("should deselect", async () => {
+    await I.controls.bool("deselectable", true)
+
+    await I.clickTab("agnes")
+    await I.seeTabContent("agnes")
+
+    await I.clickTab("agnes")
+    await I.dontSeeTabContent("agnes")
+
+    await I.clickTab("agnes")
+    await I.seeTabContent("agnes")
+  })
+
   test("automatic: should select the correct tab on click", async () => {
     await I.clickTab("nils")
     await I.seeTabContent("nils")

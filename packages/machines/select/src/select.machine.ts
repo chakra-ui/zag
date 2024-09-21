@@ -466,9 +466,12 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           })
         },
         selectHighlightedItem(ctx, evt) {
-          const value = evt.value ?? ctx.highlightedValue
+          let value = evt.value ?? ctx.highlightedValue
           if (value == null) return
-          set.selectedItem(ctx, value)
+
+          const nullable = ctx.deselectable && !ctx.multiple && ctx.value.includes(value)
+          value = nullable ? null : value
+          set.selectedItem(ctx, value, nullable)
         },
         highlightComputedFirstItem(ctx) {
           const value = ctx.hasSelectedItems ? ctx.collection.sort(ctx.value)[0] : ctx.collection.firstValue
@@ -502,7 +505,9 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           set.highlightedItem(ctx, null, true)
         },
         selectItem(ctx, evt) {
-          set.selectedItem(ctx, evt.value)
+          const nullable = ctx.deselectable && !ctx.multiple && ctx.value.includes(evt.value)
+          const value = nullable ? null : evt.value
+          set.selectedItem(ctx, value, nullable)
         },
         clearItem(ctx, evt) {
           const value = ctx.value.filter((v) => v !== evt.value)

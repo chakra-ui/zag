@@ -141,7 +141,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         selectFocusedTab(ctx) {
           raf(() => {
-            set.value(ctx, ctx.focusedValue)
+            const nullable = ctx.deselectable && ctx.value === ctx.focusedValue
+            const value = nullable ? null : ctx.focusedValue
+            set.value(ctx, value)
           })
         },
         setFocusedValue(ctx, evt) {
@@ -152,7 +154,9 @@ export function machine(userContext: UserDefinedContext) {
           set.focusedValue(ctx, null)
         },
         setValue(ctx, evt) {
-          set.value(ctx, evt.value)
+          const nullable = ctx.deselectable && ctx.value === ctx.focusedValue
+          const value = nullable ? null : evt.value
+          set.value(ctx, value)
         },
         clearValue(ctx) {
           set.value(ctx, null)

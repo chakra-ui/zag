@@ -28,6 +28,18 @@ test.describe("pointer", () => {
     await I.dontSeeDropdown()
   })
 
+  test("should deselect", async () => {
+    await I.controls.bool("deselectable", true)
+
+    await I.clickTrigger()
+    await I.clickItem("Albania")
+
+    await I.clickTrigger()
+    await I.clickItem("Albania")
+
+    await I.seeTriggerHasText("Select option")
+  })
+
   test("clicking clear trigger should return focus", async () => {
     await I.clickTrigger()
 

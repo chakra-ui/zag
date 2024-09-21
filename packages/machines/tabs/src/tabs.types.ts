@@ -75,6 +75,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the tab is composite
    */
   composite: boolean
+  /**
+   * Whether the active tab can be deselected when clicking on it.
+   */
+  deselectable?: boolean
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
