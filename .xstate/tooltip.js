@@ -12,6 +12,7 @@ const {
 const fetchMachine = createMachine({
   id: "tooltip",
   initial: ctx.open ? "open" : "closed",
+  activities: ["trackFocusVisible"],
   context: {
     "noVisibleTooltip && !hasPointerMoveOpened": false,
     "!hasPointerMoveOpened": false,

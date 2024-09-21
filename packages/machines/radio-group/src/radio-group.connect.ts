@@ -1,4 +1,5 @@
 import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./radio-group.anatomy"
 import { dom } from "./radio-group.dom"
@@ -23,6 +24,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     const radioState = getItemState(props)
     return {
       "data-focus": dataAttr(radioState.focused),
+      "data-focus-visible": dataAttr(radioState.focused && state.context.focusVisible),
       "data-disabled": dataAttr(radioState.disabled),
       "data-readonly": dataAttr(readOnly),
       "data-state": radioState.checked ? "checked" : "unchecked",
@@ -161,10 +163,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
         },
         onBlur() {
-          send({ type: "SET_FOCUSED", value: null })
+          send({ type: "SET_FOCUSED", value: null, focused: false, focusVisible: false })
         },
         onFocus() {
-          send({ type: "SET_FOCUSED", value: props.value, focused: true })
+          const focusVisible = isFocusVisible()
+          send({ type: "SET_FOCUSED", value: props.value, focused: true, focusVisible })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return

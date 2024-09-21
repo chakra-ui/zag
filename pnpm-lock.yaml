@@ -2476,6 +2476,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/focus-visible':
+        specifier: workspace:*
+        version: link:../../utilities/focus-visible
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../utilities/form-utils
@@ -3050,6 +3053,9 @@ importers:
       '@zag-js/element-rect':
         specifier: workspace:*
         version: link:../../utilities/element-rect
+      '@zag-js/focus-visible':
+        specifier: workspace:*
+        version: link:../../utilities/focus-visible
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../utilities/form-utils
@@ -3255,6 +3261,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/focus-visible':
+        specifier: workspace:*
+        version: link:../../utilities/focus-visible
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../utilities/form-utils
@@ -3457,6 +3466,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/focus-visible':
+        specifier: workspace:*
+        version: link:../../utilities/focus-visible
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper

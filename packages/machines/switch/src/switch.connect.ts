@@ -1,4 +1,5 @@
 import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./switch.anatomy"
 import { dom } from "./switch.dom"
@@ -6,13 +7,16 @@ import type { MachineApi, Send, State } from "./switch.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const disabled = state.context.isDisabled
-  const focused = !disabled && state.context.focused
-  const checked = state.context.checked
   const readOnly = state.context.readOnly
+  const checked = state.context.checked
+
+  const focused = !disabled && state.context.focused
+  const focusVisible = !disabled && state.context.focusVisible
 
   const dataAttrs = {
     "data-active": dataAttr(state.context.active),
     "data-focus": dataAttr(focused),
+    "data-focus-visible": dataAttr(focusVisible),
     "data-readonly": dataAttr(readOnly),
     "data-hover": dataAttr(state.context.hovered),
     "data-disabled": dataAttr(disabled),
@@ -97,6 +101,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         form: state.context.form,
         value: state.context.value,
         style: visuallyHiddenStyle,
+        onFocus() {
+          const focusVisible = isFocusVisible()
+          send({ type: "CONTEXT.SET", context: { focused: true, focusVisible } })
+        },
+        onBlur() {
+          send({ type: "CONTEXT.SET", context: { focused: false, focusVisible: false } })
+        },
         onClick(event) {
           if (readOnly) {
             event.preventDefault()

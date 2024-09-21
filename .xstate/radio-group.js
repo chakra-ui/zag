@@ -17,7 +17,7 @@ const fetchMachine = createMachine({
   },
   entry: ["syncIndicatorRect", "syncSsr"],
   exit: ["cleanupObserver"],
-  activities: ["trackFormControlState"],
+  activities: ["trackFormControlState", "trackFocusVisible"],
   on: {
     SET_VALUE: [{
       cond: "!isTrusted",

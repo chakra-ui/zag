@@ -1,4 +1,5 @@
 import { dataAttr } from "@zag-js/dom-query"
+import { isFocusVisible } from "@zag-js/focus-visible"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tooltip.anatomy"
@@ -50,6 +51,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           if (disabled) return
           if (state.event.src === "trigger.pointerdown") return
+          if (!isFocusVisible()) return
           send({ type: "OPEN", src: "trigger.focus" })
         },
         onBlur(event) {

@@ -6,8 +6,13 @@ function useFocusVisible() {
   const [focus, setFocus] = useState(false)
 
   useEffect(() => {
-    return trackFocusVisible(setFocusVisible)
+    return trackFocusVisible({
+      onChange(details) {
+        setFocusVisible(details.isFocusVisible)
+      },
+    })
   }, [])
+
   const showFocus = focusVisible && focus
 
   return {

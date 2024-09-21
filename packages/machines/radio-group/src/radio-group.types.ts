@@ -94,6 +94,11 @@ interface PrivateContext {
   fieldsetDisabled: boolean
   /**
    * @internal
+   * Whether the radio group is in focus
+   */
+  focusVisible: boolean
+  /**
+   * @internal
    * Whether the radio group is in server-side rendering
    */
   ssr: boolean

@@ -1,6 +1,7 @@
 import { createMachine, guards } from "@zag-js/core"
 import { nextTick } from "@zag-js/dom-query"
 import { trackElementRect } from "@zag-js/element-rect"
+import { trackFocusVisible } from "@zag-js/focus-visible"
 import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact, isEqual, isString } from "@zag-js/utils"
 import { dom } from "./radio-group.dom"
@@ -25,6 +26,7 @@ export function machine(userContext: UserDefinedContext) {
         indicatorRect: {},
         canIndicatorTransition: false,
         fieldsetDisabled: false,
+        focusVisible: false,
         ssr: true,
       },
 
@@ -36,7 +38,7 @@ export function machine(userContext: UserDefinedContext) {
 
       exit: ["cleanupObserver"],
 
-      activities: ["trackFormControlState"],
+      activities: ["trackFormControlState", "trackFocusVisible"],
 
       watch: {
         value: ["setIndicatorTransition", "syncIndicatorRect", "syncInputElements"],
@@ -83,6 +85,9 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
+        trackFocusVisible(ctx) {
+          return trackFocusVisible({ root: dom.getRootNode(ctx) })
+        },
       },
 
       actions: {
@@ -97,6 +102,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         setFocused(ctx, evt) {
           ctx.focusedValue = evt.value
+          ctx.focusVisible = evt.focusVisible
         },
         syncInputElements(ctx) {
           const inputs = dom.getInputEls(ctx)

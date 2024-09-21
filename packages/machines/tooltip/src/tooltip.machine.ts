@@ -1,6 +1,7 @@
 import { createMachine, guards, subscribe } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-event"
-import { getOverflowAncestors } from "@zag-js/dom-query"
+import { getOverflowAncestors, isComposingEvent } from "@zag-js/dom-query"
+import { trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"
 import { compact } from "@zag-js/utils"
 import { dom } from "./tooltip.dom"
@@ -15,6 +16,8 @@ export function machine(userContext: UserDefinedContext) {
     {
       id: "tooltip",
       initial: ctx.open ? "open" : "closed",
+
+      activities: ["trackFocusVisible"],
 
       context: {
         openDelay: 1000,
@@ -201,6 +204,9 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       activities: {
+        trackFocusVisible(ctx) {
+          return trackFocusVisible({ root: dom.getRootNode(ctx) })
+        },
         trackPositioning(ctx) {
           ctx.currentPlacement = ctx.positioning.placement
           const getPositionerEl = () => dom.getPositionerEl(ctx)
@@ -244,12 +250,15 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackEscapeKey(ctx, _evt, { send }) {
           if (!ctx.closeOnEscape) return
-          const doc = dom.getDoc(ctx)
-          return addDomEvent(doc, "keydown", (event) => {
-            if (event.key === "Escape") {
-              send({ type: "CLOSE", src: "keydown.escape" })
-            }
-          })
+
+          const onKeyDown = (event: KeyboardEvent) => {
+            if (isComposingEvent(event)) return
+            if (event.key !== "Escape") return
+            event.stopPropagation()
+            send({ type: "CLOSE", src: "keydown.escape" })
+          }
+
+          return addDomEvent(dom.getDoc(ctx), "keydown", onKeyDown, true)
         },
       },
       actions: {
@@ -269,7 +278,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         closeIfDisabled(ctx, _evt, { send }) {
           if (!ctx.disabled) return
-          send({ type: "CLOSE", src: "disabled:change" })
+          send({ type: "CLOSE", src: "disabled.change" })
         },
         reposition(ctx, evt) {
           const getPositionerEl = () => dom.getPositionerEl(ctx)

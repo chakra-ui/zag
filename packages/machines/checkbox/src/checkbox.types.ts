@@ -97,6 +97,11 @@ interface PrivateContext {
   focused?: boolean
   /**
    * @internal
+   * Whether the checkbox is focus visible
+   */
+  focusVisible?: boolean
+  /**
+   * @internal
    * Whether the checkbox is hovered
    */
   hovered?: boolean

@@ -45,8 +45,8 @@ export class TooltipModel extends Model {
     await expect(this.getContent(id)).not.toBeVisible()
   }
 
-  focusTrigger = async (id: string) => {
-    await this.getTrigger(id).focus()
+  focusPage = async () => {
+    await this.page.locator("main").click()
   }
 
   pointerdownTrigger = async (id: string) => {

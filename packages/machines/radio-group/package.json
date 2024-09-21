@@ -38,6 +38,7 @@
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/element-rect": "workspace:*",
+    "@zag-js/focus-visible": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/core": "workspace:*",

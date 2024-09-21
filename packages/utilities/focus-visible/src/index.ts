@@ -1,27 +1,18 @@
-import { isDom } from "@zag-js/dom-query"
+/**
+ * Credit: Huge props to the team at Adobe for inspiring this implementation.
+ * https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/interactions/src/useFocusVisible.ts
+ */
+import { getDocument, getWindow, isMac } from "@zag-js/dom-query"
 
-type Modality = "keyboard" | "pointer" | "virtual"
-type HandlerEvent = PointerEvent | MouseEvent | KeyboardEvent | FocusEvent
-type Handler = (modality: Modality, e: HandlerEvent | null) => void
-type FocusVisibleCallback = (isFocusVisible: boolean) => void
-
-let hasSetup = false
-let modality: Modality | null = null
-let hasEventBeforeFocus = false
-let hasBlurredWindowRecently = false
-
-const handlers = new Set<Handler>()
-
-function trigger(modality: Modality, event: HandlerEvent | null) {
-  handlers.forEach((handler) => handler(modality, event))
+function isVirtualClick(event: MouseEvent | PointerEvent): boolean {
+  if ((event as any).mozInputSource === 0 && event.isTrusted) return true
+  return event.detail === 0 && !(event as PointerEvent).pointerType
 }
-
-const isMac = typeof window !== "undefined" && window.navigator != null ? /^Mac/.test(window.navigator.platform) : false
 
 function isValidKey(e: KeyboardEvent) {
   return !(
     e.metaKey ||
-    (!isMac && e.altKey) ||
+    (!isMac() && e.altKey) ||
     e.ctrlKey ||
     e.key === "Control" ||
     e.key === "Shift" ||
@@ -29,146 +20,278 @@ function isValidKey(e: KeyboardEvent) {
   )
 }
 
-function onKeyboardEvent(event: KeyboardEvent) {
+const nonTextInputTypes = new Set(["checkbox", "radio", "range", "color", "file", "image", "button", "submit", "reset"])
+
+function isKeyboardFocusEvent(isTextInput: boolean, modality: Modality, e: HandlerEvent) {
+  const IHTMLInputElement =
+    typeof window !== "undefined" ? getWindow(e?.target as Element).HTMLInputElement : HTMLInputElement
+  const IHTMLTextAreaElement =
+    typeof window !== "undefined" ? getWindow(e?.target as Element).HTMLTextAreaElement : HTMLTextAreaElement
+  const IHTMLElement = typeof window !== "undefined" ? getWindow(e?.target as Element).HTMLElement : HTMLElement
+  const IKeyboardEvent = typeof window !== "undefined" ? getWindow(e?.target as Element).KeyboardEvent : KeyboardEvent
+
+  isTextInput =
+    isTextInput ||
+    (e?.target instanceof IHTMLInputElement && !nonTextInputTypes.has(e?.target?.type)) ||
+    e?.target instanceof IHTMLTextAreaElement ||
+    (e?.target instanceof IHTMLElement && e?.target.isContentEditable)
+
+  return !(
+    isTextInput &&
+    modality === "keyboard" &&
+    e instanceof IKeyboardEvent &&
+    !Reflect.has(FOCUS_VISIBLE_INPUT_KEYS, e.key)
+  )
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+export type Modality = "keyboard" | "pointer" | "virtual"
+
+type RootNode = Document | ShadowRoot | Node
+
+type HandlerEvent = PointerEvent | MouseEvent | KeyboardEvent | FocusEvent | null
+
+type Handler = (modality: Modality, e: HandlerEvent) => void
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+let currentModality: Modality | null = null
+
+let changeHandlers = new Set<Handler>()
+
+interface GlobalListenerData {
+  focus: VoidFunction
+}
+
+export let listenerMap = new Map<Window, GlobalListenerData>()
+
+let hasEventBeforeFocus = false
+let hasBlurredWindowRecently = false
+
+// Only Tab or Esc keys will make focus visible on text input elements
+const FOCUS_VISIBLE_INPUT_KEYS = {
+  Tab: true,
+  Escape: true,
+}
+
+function triggerChangeHandlers(modality: Modality, e: HandlerEvent) {
+  for (let handler of changeHandlers) {
+    handler(modality, e)
+  }
+}
+
+function handleKeyboardEvent(e: KeyboardEvent) {
   hasEventBeforeFocus = true
-  if (isValidKey(event)) {
-    modality = "keyboard"
-    trigger("keyboard", event)
+  if (isValidKey(e)) {
+    currentModality = "keyboard"
+    triggerChangeHandlers("keyboard", e)
   }
 }
 
-function onPointerEvent(event: PointerEvent | MouseEvent) {
-  modality = "pointer"
-
-  if (event.type === "mousedown" || event.type === "pointerdown") {
+function handlePointerEvent(e: PointerEvent | MouseEvent) {
+  currentModality = "pointer"
+  if (e.type === "mousedown" || e.type === "pointerdown") {
     hasEventBeforeFocus = true
-    const target = event.composedPath ? event.composedPath()[0] : event.target
-
-    let matches = false
-    try {
-      matches = (target as any).matches(":focus-visible")
-    } catch {}
-
-    if (matches) return
-    trigger("pointer", event)
+    triggerChangeHandlers("pointer", e)
   }
 }
 
-function isVirtualClick(event: MouseEvent | PointerEvent): boolean {
-  // JAWS/NVDA with Firefox.
-  if ((event as any).mozInputSource === 0 && event.isTrusted) return true
-  return event.detail === 0 && !(event as PointerEvent).pointerType
-}
-
-function onClickEvent(e: MouseEvent) {
+function handleClickEvent(e: MouseEvent) {
   if (isVirtualClick(e)) {
     hasEventBeforeFocus = true
-    modality = "virtual"
+    currentModality = "virtual"
   }
 }
 
-function onWindowFocus(event: FocusEvent) {
+function handleFocusEvent(e: FocusEvent) {
   // Firefox fires two extra focus events when the user first clicks into an iframe:
   // first on the window, then on the document. We ignore these events so they don't
   // cause keyboard focus rings to appear.
-  if (event.target === window || event.target === document) {
+  if (e.target === getWindow(e.target as Element) || e.target === getDocument(e.target as Element)) {
     return
   }
 
-  // An extra event is fired when the user first clicks inside an element with tabindex attribute.
-  // We ignore these events so they don't cause keyboard focus ring to appear.
-  if (event.target instanceof Element && event.target.hasAttribute("tabindex")) {
-    return
-  }
-
-  // If a focus event occurs without a preceding keyboard or pointer event, switch to keyboard modality.
+  // If a focus event occurs without a preceding keyboard or pointer event, switch to virtual modality.
   // This occurs, for example, when navigating a form with the next/previous buttons on iOS.
   if (!hasEventBeforeFocus && !hasBlurredWindowRecently) {
-    modality = "virtual"
-    trigger("virtual", event)
+    currentModality = "virtual"
+    triggerChangeHandlers("virtual", e)
   }
 
   hasEventBeforeFocus = false
   hasBlurredWindowRecently = false
 }
 
-function onWindowBlur() {
+function handleWindowBlur() {
   // When the window is blurred, reset state. This is necessary when tabbing out of the window,
   // for example, since a subsequent focus event won't be fired.
   hasEventBeforeFocus = false
   hasBlurredWindowRecently = true
 }
 
-function isFocusVisible() {
-  return modality !== "pointer"
-}
-
-function setupGlobalFocusEvents() {
-  if (!isDom() || hasSetup) {
+/**
+ * Setup global event listeners to control when keyboard focus style should be visible.
+ */
+function setupGlobalFocusEvents(root?: RootNode) {
+  if (typeof window === "undefined" || listenerMap.get(getWindow(root))) {
     return
   }
 
-  // Programmatic focus() calls shouldn't affect the current input modality.
-  // However, we need to detect other cases when a focus event occurs without
-  // a preceding user event (e.g. screen reader focus). Overriding the focus
-  // method on HTMLElement.prototype is a bit hacky, but works.
-  const { focus } = HTMLElement.prototype
-  HTMLElement.prototype.focus = function focusElement(...args) {
+  const win = getWindow(root)
+  const doc = getDocument(root)
+
+  let focus = win.HTMLElement.prototype.focus
+  win.HTMLElement.prototype.focus = function () {
+    // For programmatic focus, we remove the focus visible state to prevent showing focus rings
+    // When `options.focusVisible` is supported in most browsers, we can remove this
+    // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
+    currentModality = "virtual"
+    triggerChangeHandlers("virtual", null)
+
     hasEventBeforeFocus = true
-    focus.apply(this, args)
+    focus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
   }
 
-  document.addEventListener("keydown", onKeyboardEvent, true)
-  document.addEventListener("keyup", onKeyboardEvent, true)
-  document.addEventListener("click", onClickEvent, true)
+  doc.addEventListener("keydown", handleKeyboardEvent, true)
+  doc.addEventListener("keyup", handleKeyboardEvent, true)
+  doc.addEventListener("click", handleClickEvent, true)
 
-  // Register focus events on the window so they are sure to happen
-  // before React's event listeners (registered on the document).
-  window.addEventListener("focus", onWindowFocus, true)
-  window.addEventListener("blur", onWindowBlur, false)
+  win.addEventListener("focus", handleFocusEvent, true)
+  win.addEventListener("blur", handleWindowBlur, false)
 
-  if (typeof PointerEvent !== "undefined") {
-    document.addEventListener("pointerdown", onPointerEvent, true)
-    document.addEventListener("pointermove", onPointerEvent, true)
-    document.addEventListener("pointerup", onPointerEvent, true)
+  if (typeof win.PointerEvent !== "undefined") {
+    doc.addEventListener("pointerdown", handlePointerEvent, true)
+    doc.addEventListener("pointermove", handlePointerEvent, true)
+    doc.addEventListener("pointerup", handlePointerEvent, true)
   } else {
-    document.addEventListener("mousedown", onPointerEvent, true)
-    document.addEventListener("mousemove", onPointerEvent, true)
-    document.addEventListener("mouseup", onPointerEvent, true)
+    doc.addEventListener("mousedown", handlePointerEvent, true)
+    doc.addEventListener("mousemove", handlePointerEvent, true)
+    doc.addEventListener("mouseup", handlePointerEvent, true)
   }
 
-  hasSetup = true
+  // Add unmount handler
+  win.addEventListener(
+    "beforeunload",
+    () => {
+      tearDownWindowFocusTracking(root)
+    },
+    { once: true },
+  )
+
+  listenerMap.set(win, { focus })
 }
 
-export function trackFocusVisible(fn: FocusVisibleCallback) {
-  setupGlobalFocusEvents()
+const tearDownWindowFocusTracking = (root?: RootNode, loadListener?: () => void) => {
+  const win = getWindow(root)
+  const doc = getDocument(root)
 
-  fn(isFocusVisible())
-  const handler = () => fn(isFocusVisible())
+  if (loadListener) {
+    doc.removeEventListener("DOMContentLoaded", loadListener)
+  }
 
-  handlers.add(handler)
+  if (!listenerMap.has(win)) {
+    return
+  }
+
+  win.HTMLElement.prototype.focus = listenerMap.get(win)!.focus
+
+  doc.removeEventListener("keydown", handleKeyboardEvent, true)
+  doc.removeEventListener("keyup", handleKeyboardEvent, true)
+  doc.removeEventListener("click", handleClickEvent, true)
+  win.removeEventListener("focus", handleFocusEvent, true)
+  win.removeEventListener("blur", handleWindowBlur, false)
+
+  if (typeof win.PointerEvent !== "undefined") {
+    doc.removeEventListener("pointerdown", handlePointerEvent, true)
+    doc.removeEventListener("pointermove", handlePointerEvent, true)
+    doc.removeEventListener("pointerup", handlePointerEvent, true)
+  } else {
+    doc.removeEventListener("mousedown", handlePointerEvent, true)
+    doc.removeEventListener("mousemove", handlePointerEvent, true)
+    doc.removeEventListener("mouseup", handlePointerEvent, true)
+  }
+
+  listenerMap.delete(win)
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+export function getInteractionModality(): Modality | null {
+  return currentModality
+}
+
+export function setInteractionModality(modality: Modality) {
+  currentModality = modality
+  triggerChangeHandlers(modality, null)
+}
+
+export interface InteractionModalityChangeDetails {
+  /** The modality of the interaction that caused the focus to be visible. */
+  modality: Modality | null
+}
+
+export interface InteractionModalityProps {
+  /** The root element to track focus visibility for. */
+  root?: RootNode
+  /** Callback to be called when the interaction modality changes. */
+  onChange: (details: InteractionModalityChangeDetails) => void
+}
+
+export function trackInteractionModality(props: InteractionModalityProps): VoidFunction {
+  const { onChange, root } = props
+
+  setupGlobalFocusEvents(root)
+
+  onChange({ modality: currentModality })
+
+  const handler = () => onChange({ modality: currentModality })
+
+  changeHandlers.add(handler)
   return () => {
-    handlers.delete(handler)
+    changeHandlers.delete(handler)
   }
 }
 
-export function trackInteractionModality(fn: (value: Modality | null) => void) {
-  setupGlobalFocusEvents()
+/////////////////////////////////////////////////////////////////////////////////////////////
 
-  fn(modality)
-  const handler = () => fn(modality)
+export function isFocusVisible(): boolean {
+  return currentModality === "keyboard"
+}
 
-  handlers.add(handler)
+export interface FocusVisibleChangeDetails {
+  /** Whether keyboard focus is visible globally. */
+  isFocusVisible: boolean
+  /** The modality of the interaction that caused the focus to be visible. */
+  modality: Modality | null
+}
+
+export interface FocusVisibleProps {
+  /** The root element to track focus visibility for. */
+  root?: RootNode
+  /** Whether the element is a text input. */
+  isTextInput?: boolean
+  /** Whether the element will be auto focused. */
+  autoFocus?: boolean
+  /** Callback to be called when the focus visibility changes. */
+  onChange?: (details: FocusVisibleChangeDetails) => void
+}
+
+export function trackFocusVisible(props: FocusVisibleProps = {}): VoidFunction {
+  const { isTextInput, autoFocus, onChange, root } = props
+
+  setupGlobalFocusEvents(root)
+
+  onChange?.({ isFocusVisible: autoFocus || isFocusVisible(), modality: currentModality })
+
+  const handler = (modality: Modality, e: HandlerEvent) => {
+    if (!isKeyboardFocusEvent(!!isTextInput, modality, e)) return
+    onChange?.({ isFocusVisible: isFocusVisible(), modality })
+  }
+
+  changeHandlers.add(handler)
+
   return () => {
-    handlers.delete(handler)
+    changeHandlers.delete(handler)
   }
-}
-
-export function setInteractionModality(value: Modality) {
-  modality = value
-  trigger(value, null)
-}
-
-export function getInteractionModality() {
-  return modality
 }

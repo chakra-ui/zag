@@ -24,14 +24,19 @@ test.describe("tooltip", () => {
   })
 
   test("should work with focus/blur", async () => {
-    await I.focusTrigger("tip-1")
+    await I.focusPage()
+    await I.pressKey("Tab")
+
     await I.seeContent("tip-1")
+
     await I.clickOutside()
     await I.dontSeeContent("tip-1")
   })
 
   test("should work with focus/blur for multiple tooltips", async () => {
-    await I.focusTrigger("tip-1")
+    await I.focusPage()
+    await I.pressKey("Tab")
+
     await I.seeContent("tip-1")
 
     await I.pressKey("Tab")
@@ -43,14 +48,19 @@ test.describe("tooltip", () => {
 
   test("closes on pointerdown", async () => {
     await I.hoverTrigger("tip-1")
+
     await I.seeContent("tip-1")
+
     await I.pointerdownTrigger("tip-1")
     await I.dontSeeContent("tip-1")
   })
 
   test("closes on esc press", async () => {
-    await I.focusTrigger("tip-1")
+    await I.focusPage()
+    await I.pressKey("Tab")
+
     await I.seeContent("tip-1")
+
     await I.pressKey("Escape")
     await I.dontSeeContent("tip-1")
   })

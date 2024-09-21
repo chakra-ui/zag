@@ -1,5 +1,6 @@
 import { createMachine, guards } from "@zag-js/core"
-import { trackFocusVisible, trackPress } from "@zag-js/dom-event"
+import { trackPress } from "@zag-js/dom-event"
+import { trackFocusVisible } from "@zag-js/focus-visible"
 import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./switch.dom"
@@ -21,6 +22,7 @@ export function machine(userContext: UserDefinedContext) {
         disabled: false,
         ...ctx,
         fieldsetDisabled: false,
+        focusVisible: false,
       },
 
       computed: {
@@ -80,10 +82,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackFocusVisible(ctx) {
           if (ctx.isDisabled) return
-          return trackFocusVisible(dom.getHiddenInputEl(ctx), {
-            onFocus: () => (ctx.focused = true),
-            onBlur: () => (ctx.focused = false),
-          })
+          return trackFocusVisible({ root: dom.getRootNode(ctx) })
         },
         trackFormControlState(ctx, _evt, { send, initialContext }) {
           return trackFormControl(dom.getHiddenInputEl(ctx), {

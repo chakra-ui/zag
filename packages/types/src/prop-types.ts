@@ -12,6 +12,7 @@ type DataAttr = {
   "data-hover"?: any
   "data-active"?: any
   "data-focus"?: any
+  "data-focus-visible"?: any
   "data-disabled"?: any
   "data-open"?: any
   "data-checked"?: any
