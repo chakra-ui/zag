@@ -1,5 +1,21 @@
 # @zag-js/file-upload
 
+## 0.69.0
+
+### Patch Changes
+
+- [`7a6b6e7`](https://github.com/chakra-ui/zag/commit/7a6b6e7fff9de69620d47431515bc0a4cdac3c75) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `directory: true` doesn't work
+
+- Updated dependencies [[`bf57d7b`](https://github.com/chakra-ui/zag/commit/bf57d7b3933daf9974eaefc443da6f3c37706bb4)]:
+  - @zag-js/dom-query@0.69.0
+  - @zag-js/i18n-utils@0.69.0
+  - @zag-js/file-utils@0.69.0
+  - @zag-js/anatomy@0.69.0
+  - @zag-js/core@0.69.0
+  - @zag-js/types@0.69.0
+  - @zag-js/utils@0.69.0
+
 ## 0.68.1
 
 ### Patch Changes

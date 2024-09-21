@@ -1,5 +1,28 @@
 # @zag-js/tooltip
 
+## 0.69.0
+
+### Minor Changes
+
+- [`bf57d7b`](https://github.com/chakra-ui/zag/commit/bf57d7b3933daf9974eaefc443da6f3c37706bb4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve support for focus visible across components.
+
+  - **Switch, Checkbox, Radio Group:** The `data-focus-visible` attribute to the selected radio button when it is
+    interacted with the keyboard.
+  - **Tooltip:** Focus behavior only opens when the tooltip trigger is focused with keyboard.
+
+### Patch Changes
+
+- Updated dependencies [[`bf57d7b`](https://github.com/chakra-ui/zag/commit/bf57d7b3933daf9974eaefc443da6f3c37706bb4)]:
+  - @zag-js/focus-visible@0.69.0
+  - @zag-js/dom-event@0.69.0
+  - @zag-js/dom-query@0.69.0
+  - @zag-js/popper@0.69.0
+  - @zag-js/anatomy@0.69.0
+  - @zag-js/core@0.69.0
+  - @zag-js/types@0.69.0
+  - @zag-js/utils@0.69.0
+
 ## 0.68.1
 
 ### Patch Changes
