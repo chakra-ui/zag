@@ -1,44 +1,9 @@
 import { $, component$, noSerialize, useStore } from "@builder.io/qwik"
 import type { DocumentHead } from "@builder.io/qwik-city"
-import { createMachine } from "@zag-js/core"
 import { useMachine } from "~/hooks/use-machine"
-import type { NormalizeProps } from "@zag-js/types"
 import { normalizeProps } from "~/hooks/normalize-props"
-
-const machine = (props: { count?: number; onCount?: (count: number) => void }) => {
-  return createMachine({
-    context: { count: 0, ...props },
-    initial: "idle",
-    states: {
-      idle: {
-        on: {
-          INCREMENT: {
-            actions(ctx) {
-              ctx.count += 1
-              ctx.onCount?.(ctx.count)
-            },
-          },
-        },
-      },
-    },
-  })
-}
-
-function connect(state: any, send: any, normalize: NormalizeProps<any>) {
-  return {
-    count: state.context.count,
-
-    getButtonProps() {
-      return normalize.element({
-        "data-count": state.context.count,
-        disabled: state.context.count >= 15,
-        onClick: $(() => {
-          send("INCREMENT")
-        }),
-      })
-    },
-  }
-}
+import { connect } from "../components/button/button.connect"
+import { machine } from "../components/button/button.machine"
 
 export default component$(() => {
   const context = useStore({
