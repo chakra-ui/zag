@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.69.0](./#0.69.0) - 2024-09-22
+
+### Changed
+
+- **Combobox**
+
+  - Remove `flip: false` default positioning option to ensure consistency with select.
+
+### Added
+
+- **Select, Tabs**
+
+  - Add support for `deselectable` prop to allow deselecting the current value by clicking on the item.
+
 ## [0.69.0](./#0.69.0) - 2024-09-21
 
 ### Fixed
