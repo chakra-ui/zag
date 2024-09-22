@@ -1,5 +1,25 @@
 # @zag-js/combobox
 
+## 0.70.0
+
+### Patch Changes
+
+- [`3e51873`](https://github.com/chakra-ui/zag/commit/3e51873e9c9112db8d68a269747477bb6a6531eb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove `flip: false` default positioning option to ensure
+  consistency with select.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.70.0
+  - @zag-js/core@0.70.0
+  - @zag-js/types@0.70.0
+  - @zag-js/aria-hidden@0.70.0
+  - @zag-js/collection@0.70.0
+  - @zag-js/utils@0.70.0
+  - @zag-js/dismissable@0.70.0
+  - @zag-js/dom-event@0.70.0
+  - @zag-js/dom-query@0.70.0
+  - @zag-js/popper@0.70.0
+
 ## 0.69.0
 
 ### Patch Changes

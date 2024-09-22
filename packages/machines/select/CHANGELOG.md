@@ -1,5 +1,27 @@
 # @zag-js/select
 
+## 0.70.0
+
+### Minor Changes
+
+- [`7a8b3ff`](https://github.com/chakra-ui/zag/commit/7a8b3ff2071eb1e92c4fedfd6e71269a3c56e22b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `deselectable` prop to allow deselecting the
+  current value by clicking on the item.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.70.0
+  - @zag-js/core@0.70.0
+  - @zag-js/types@0.70.0
+  - @zag-js/collection@0.70.0
+  - @zag-js/utils@0.70.0
+  - @zag-js/dismissable@0.70.0
+  - @zag-js/dom-event@0.70.0
+  - @zag-js/dom-query@0.70.0
+  - @zag-js/form-utils@0.70.0
+  - @zag-js/popper@0.70.0
+
 ## 0.69.0
 
 ### Patch Changes
