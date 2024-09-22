@@ -27,19 +27,13 @@ function toQwikProp(prop: string) {
   return prop
 }
 
-function toQwikPropValue(key: string, value: Dict[string]) {
-  if (value === false) return
-
-  return value
-}
-
 type Dict = Record<string, any>
 
 export const normalizeProps = createNormalizer<PropTypes>((props) => {
   const normalized: Dict = {}
 
   for (const key in props) {
-    normalized[toQwikProp(key)] = toQwikPropValue(key, props[key])
+    normalized[toQwikProp(key)] = props[key]
   }
 
   return normalized
