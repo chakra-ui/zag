@@ -1347,9 +1347,6 @@ importers:
       '@zag-js/qr-code':
         specifier: workspace:*
         version: link:../../packages/machines/qr-code
-      '@zag-js/qwik':
-        specifier: workspace:*
-        version: link:../../packages/frameworks/qwik
       '@zag-js/radio-group':
         specifier: workspace:*
         version: link:../../packages/machines/radio-group
@@ -1450,6 +1447,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: 7.16.1
         version: 7.16.1(eslint@8.57.0)(typescript@5.4.5)
+      '@zag-js/qwik':
+        specifier: workspace:*
+        version: link:../../packages/frameworks/qwik
       eslint:
         specifier: 8.57.0
         version: 8.57.0
