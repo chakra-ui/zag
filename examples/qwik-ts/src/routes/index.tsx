@@ -1,9 +1,9 @@
 import { $, component$, noSerialize, useStore } from "@builder.io/qwik"
 import type { DocumentHead } from "@builder.io/qwik-city"
-import { useMachine } from "~/hooks/use-machine"
-import { normalizeProps } from "~/hooks/normalize-props"
 import { connect } from "../components/button/button.connect"
 import { machine } from "../components/button/button.machine"
+
+import { useMachine, normalizeProps } from "@zag-js/qwik"
 
 export default component$(() => {
   const context = useStore({

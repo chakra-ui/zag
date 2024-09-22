@@ -111,6 +111,7 @@
     "@types/node": "20.14.11",
     "@typescript-eslint/eslint-plugin": "7.16.1",
     "@typescript-eslint/parser": "7.16.1",
+    "@zag-js/qwik": "workspace:*",
     "lucide-qwik": "1.0.0",
     "eslint": "8.57.0",
     "eslint-plugin-qwik": "^1.8.0",

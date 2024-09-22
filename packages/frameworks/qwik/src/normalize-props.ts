@@ -1,4 +1,4 @@
-import { CSSProperties, HTMLAttributes, IntrinsicElements } from "@builder.io/qwik"
+import type { CSSProperties, HTMLAttributes, IntrinsicElements } from "@builder.io/qwik"
 import { createNormalizer } from "@zag-js/types"
 
 export type PropTypes = IntrinsicElements & {
