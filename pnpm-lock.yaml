@@ -2245,10 +2245,10 @@ importers:
       '@zag-js/store':
         specifier: workspace:*
         version: link:../store
-    devDependencies:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../utilities/core
+    devDependencies:
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
