@@ -1,5 +1,32 @@
 # @zag-js/date-picker
 
+## 0.71.0
+
+### Minor Changes
+
+- [`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - We no longer ship `src` files in the packages.
+
+### Patch Changes
+
+- [`6265970`](https://github.com/chakra-ui/zag/commit/62659705d55391af4763159721fe8f908679210a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where date picker could close when composed in a dialog
+  or popover.
+
+- Updated dependencies [[`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9)]:
+  - @zag-js/core@0.71.0
+  - @zag-js/anatomy@0.71.0
+  - @zag-js/types@0.71.0
+  - @zag-js/utils@0.71.0
+  - @zag-js/date-utils@0.71.0
+  - @zag-js/dismissable@0.71.0
+  - @zag-js/dom-event@0.71.0
+  - @zag-js/dom-query@0.71.0
+  - @zag-js/form-utils@0.71.0
+  - @zag-js/live-region@0.71.0
+  - @zag-js/popper@0.71.0
+  - @zag-js/text-selection@0.71.0
+
 ## 0.70.0
 
 ### Patch Changes

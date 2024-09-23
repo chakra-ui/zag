@@ -1,5 +1,27 @@
 # @zag-js/steps
 
+## 0.71.0
+
+### Minor Changes
+
+- [`f685a58`](https://github.com/chakra-ui/zag/commit/f685a5857a3783a6035578233374faee7daf8b4c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where past step item had `data-incomplete` on it.
+
+  - Rename `api.value` to `api.step`
+  - Rename `api.setValue` to `api.setStep`
+
+- [`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - We no longer ship `src` files in the packages.
+
+### Patch Changes
+
+- Updated dependencies [[`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9)]:
+  - @zag-js/core@0.71.0
+  - @zag-js/anatomy@0.71.0
+  - @zag-js/types@0.71.0
+  - @zag-js/utils@0.71.0
+  - @zag-js/dom-query@0.71.0
+
 ## 0.70.0
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @zag-js/tree-view
 
+## 0.71.0
+
+### Minor Changes
+
+- [`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - We no longer ship `src` files in the packages.
+
+### Patch Changes
+
+- Updated dependencies [[`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9)]:
+  - @zag-js/core@0.71.0
+  - @zag-js/anatomy@0.71.0
+  - @zag-js/types@0.71.0
+  - @zag-js/utils@0.71.0
+  - @zag-js/dom-event@0.71.0
+  - @zag-js/dom-query@0.71.0
+
 ## 0.70.0
 
 ### Patch Changes
