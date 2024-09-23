@@ -6,7 +6,7 @@ import { dom } from "./steps.dom"
 import type { ItemProps, ItemState, MachineApi, Send, State } from "./steps.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const value = state.context.step
+  const step = state.context.step
   const count = state.context.count
   const percent = state.context.percent
   const hasNextStep = state.context.hasNextStep
@@ -15,8 +15,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const getItemState = (props: ItemProps): ItemState => ({
     triggerId: dom.getTriggerId(state.context, props.index),
     contentId: dom.getContentId(state.context, props.index),
-    current: props.index === value,
-    completed: props.index < value,
+    current: props.index === step,
+    completed: props.index < step,
+    incomplete: props.index > step,
     index: props.index,
     first: props.index === 0,
     last: props.index === count - 1,
@@ -34,12 +35,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     send({ type: "STEP.RESET", src: "reset.trigger.click" })
   }
 
-  const setValue = (value: number) => {
+  const setStep = (value: number) => {
     send({ type: "STEP.SET", value, src: "api.setValue" })
   }
 
   return {
-    value,
+    value: step,
     count,
     percent,
     hasNextStep,
@@ -48,7 +49,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     goToPrevStep,
     resetStep,
     getItemState,
-    setValue,
+    setStep,
 
     getRootProps() {
       return normalize.element({
@@ -100,7 +101,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "data-complete": dataAttr(itemState.completed),
         "data-current": dataAttr(itemState.current),
-        "data-incomplete": dataAttr(!itemState.current),
+        "data-incomplete": dataAttr(itemState.incomplete),
         onClick(event) {
           if (event.defaultPrevented) return
           if (state.context.linear) return
@@ -132,7 +133,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-hidden": true,
         "data-complete": dataAttr(itemState.completed),
         "data-current": dataAttr(itemState.current),
-        "data-incomplete": dataAttr(!itemState.current),
+        "data-incomplete": dataAttr(itemState.incomplete),
       })
     },
 
@@ -144,7 +145,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "data-complete": dataAttr(itemState.completed),
         "data-current": dataAttr(itemState.current),
-        "data-incomplete": dataAttr(!itemState.current),
+        "data-incomplete": dataAttr(itemState.incomplete),
       })
     },
 

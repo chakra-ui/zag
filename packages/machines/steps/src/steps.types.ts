@@ -87,6 +87,7 @@ export interface ItemState {
   contentId: string
   current: boolean
   completed: boolean
+  incomplete: boolean
   last: boolean
   first: boolean
 }
@@ -115,7 +116,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the stepper.
    */
-  setValue(value: number): void
+  setStep(step: number): void
   /**
    * Function to go to the next step.
    */
