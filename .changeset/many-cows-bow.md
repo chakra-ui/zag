@@ -77,5 +77,4 @@
 "@zag-js/text-selection": minor
 ---
 
-- We no longer ship `src` files in the packages.
-- Improve support for deno by removing the internal structured clone implementation in favor of using functions.
+We no longer ship `src` files in the packages.
