@@ -6,6 +6,32 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.70.0](./#0.70.0) - 2024-09-23
+
+### Changed
+
+- **All Packages**
+
+  - Update all packages to no longer ship `src` directory.
+
+### Fixed
+
+- **Steps**
+
+  - Fix issue where past step item had `data-incomplete` on it.
+  - Rename `api.value` to `api.step`
+  - Rename `api.setValue` to `api.setStep`
+
+- **DatePicker**
+
+  - Fix issue where date picker could close when composed in a dialog or popover.
+
+### Added
+
+- **FileUpload**
+
+  - Add support for `api.getClearTriggerProps()` to render a clear trigger that clears the accepted files.
+
 ## [0.69.0](./#0.69.0) - 2024-09-22
 
 ### Changed
