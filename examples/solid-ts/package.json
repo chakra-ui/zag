@@ -11,7 +11,7 @@
   "dependencies": {
     "@internationalized/date": "3.5.5",
     "@solidjs/meta": "0.29.4",
-    "@solidjs/router": "0.14.3",
+    "@solidjs/router": "0.14.5",
     "@solidjs/start": "1.0.6",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
@@ -87,10 +87,10 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-solid": "0.428.0",
+    "lucide-solid": "0.445.0",
     "match-sorter": "6.3.4",
     "solid-js": "1.8.22",
-    "vinxi": "0.4.1"
+    "vinxi": "0.4.3"
   },
   "engines": {
     "node": ">=18"

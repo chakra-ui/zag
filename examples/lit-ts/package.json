@@ -87,12 +87,12 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "lit": "^3.2.0",
-    "lucide-react": "0.428.0",
+    "lucide-react": "0.445.0",
     "match-sorter": "6.3.4",
     "textarea-caret": "^3.1.0"
   },
   "devDependencies": {
     "typescript": "^5.6.2",
-    "vite": "^5.4.6"
+    "vite": "^5.4.7"
   }
 }
