@@ -16,8 +16,7 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/frameworks/react",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "private": true,
   "publishConfig": {

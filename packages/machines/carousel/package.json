@@ -18,8 +18,7 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/carousel",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",

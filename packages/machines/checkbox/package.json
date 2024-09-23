@@ -17,12 +17,11 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/checkbox",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
-    "test": "jest --config ../../jest.config.js --rootDir tests",
+    "test": "vitest",
     "lint": "eslint src",
     "test-ci": "pnpm test --ci --runInBand -u",
     "test-watch": "pnpm test --watch",

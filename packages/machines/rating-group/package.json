@@ -18,8 +18,7 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/rating",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"

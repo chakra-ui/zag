@@ -22,8 +22,7 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/tour",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",

@@ -14,8 +14,7 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/text-selection",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
