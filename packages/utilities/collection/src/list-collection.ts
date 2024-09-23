@@ -274,6 +274,14 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
 
     this.items.splice(toIndex, 0, removed)
   }
+
+  json() {
+    return {
+      size: this.size,
+      first: this.firstValue,
+      last: this.lastValue,
+    }
+  }
 }
 
 const match = (label: string | null, query: string) => {

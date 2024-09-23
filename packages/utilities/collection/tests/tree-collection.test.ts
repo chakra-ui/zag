@@ -30,35 +30,62 @@ describe("tree collection", () => {
     rootNode.insertChild(new TreeNode({ value: "child3" }), "branch1")
 
     expect(rootNode).toMatchInlineSnapshot(`
-      {
+      TreeNode {
         "children": [
-          {
+          TreeNode {
             "children": [
-              {
-                "parent": "branch1",
+              TreeNode {
+                "children": [],
+                "data": undefined,
+                "expanded": false,
+                "parentNode": [Circular],
+                "selected": false,
                 "value": "child3",
               },
-              {
-                "parent": "branch1",
+              TreeNode {
+                "children": [],
+                "data": undefined,
+                "expanded": false,
+                "parentNode": [Circular],
+                "selected": false,
                 "value": "child1-1",
               },
-              {
-                "parent": "branch1",
+              TreeNode {
+                "children": [],
+                "data": undefined,
+                "expanded": false,
+                "parentNode": [Circular],
+                "selected": false,
                 "value": "child1-2",
               },
             ],
-            "parent": "root",
+            "data": undefined,
+            "expanded": true,
+            "parentNode": [Circular],
+            "selected": false,
             "value": "branch1",
           },
-          {
-            "parent": "root",
+          TreeNode {
+            "children": [],
+            "data": undefined,
+            "expanded": false,
+            "parentNode": [Circular],
+            "selected": false,
             "value": "child1",
           },
-          {
-            "parent": "root",
+          TreeNode {
+            "children": [],
+            "data": undefined,
+            "expanded": false,
+            "parentNode": [Circular],
+            "selected": false,
             "value": "child2",
           },
         ],
+        "data": undefined,
+        "expanded": false,
+        "parentNode": null,
+        "selected": false,
         "value": "root",
       }
     `)
@@ -80,26 +107,59 @@ describe("tree collection", () => {
 
     expect(rootNode.children).toMatchInlineSnapshot(`
       [
-        {
+        TreeNode {
           "children": [
-            {
-              "parent": "branch1",
+            TreeNode {
+              "children": [],
+              "data": undefined,
+              "expanded": false,
+              "parentNode": [Circular],
+              "selected": false,
               "value": "child1-1",
             },
-            {
-              "parent": "branch1",
+            TreeNode {
+              "children": [],
+              "data": undefined,
+              "expanded": false,
+              "parentNode": [Circular],
+              "selected": false,
               "value": "child1",
             },
-            {
-              "parent": "branch1",
+            TreeNode {
+              "children": [],
+              "data": undefined,
+              "expanded": false,
+              "parentNode": [Circular],
+              "selected": false,
               "value": "child1-2",
             },
           ],
-          "parent": "root",
+          "data": undefined,
+          "expanded": false,
+          "parentNode": TreeNode {
+            "children": [Circular],
+            "data": undefined,
+            "expanded": false,
+            "parentNode": null,
+            "selected": false,
+            "value": "root",
+          },
+          "selected": false,
           "value": "branch1",
         },
-        {
-          "parent": "root",
+        TreeNode {
+          "children": [],
+          "data": undefined,
+          "expanded": false,
+          "parentNode": TreeNode {
+            "children": [Circular],
+            "data": undefined,
+            "expanded": false,
+            "parentNode": null,
+            "selected": false,
+            "value": "root",
+          },
+          "selected": false,
           "value": "child2",
         },
       ]
@@ -111,26 +171,73 @@ describe("tree collection", () => {
 
     expect(rootNode.children).toMatchInlineSnapshot(`
       [
-        {
+        TreeNode {
           "children": [
-            {
-              "parent": "branch1",
+            TreeNode {
+              "children": [],
+              "data": undefined,
+              "expanded": false,
+              "parentNode": [Circular],
+              "selected": false,
               "value": "child1-2",
             },
           ],
-          "parent": "root",
+          "data": undefined,
+          "expanded": false,
+          "parentNode": TreeNode {
+            "children": [Circular],
+            "data": undefined,
+            "expanded": false,
+            "parentNode": null,
+            "selected": false,
+            "value": "root",
+          },
+          "selected": false,
           "value": "branch1",
         },
-        {
-          "parent": "root",
+        TreeNode {
+          "children": [],
+          "data": undefined,
+          "expanded": false,
+          "parentNode": TreeNode {
+            "children": [Circular],
+            "data": undefined,
+            "expanded": false,
+            "parentNode": null,
+            "selected": false,
+            "value": "root",
+          },
+          "selected": false,
           "value": "child1",
         },
-        {
-          "parent": "root",
+        TreeNode {
+          "children": [],
+          "data": undefined,
+          "expanded": false,
+          "parentNode": TreeNode {
+            "children": [Circular],
+            "data": undefined,
+            "expanded": false,
+            "parentNode": null,
+            "selected": false,
+            "value": "root",
+          },
+          "selected": false,
           "value": "child1-1",
         },
-        {
-          "parent": "root",
+        TreeNode {
+          "children": [],
+          "data": undefined,
+          "expanded": false,
+          "parentNode": TreeNode {
+            "children": [Circular],
+            "data": undefined,
+            "expanded": false,
+            "parentNode": null,
+            "selected": false,
+            "value": "root",
+          },
+          "selected": false,
           "value": "child2",
         },
       ]
@@ -142,30 +249,74 @@ describe("tree collection", () => {
 
     expect(rootNode.children).toMatchInlineSnapshot(`
       [
-        {
+        TreeNode {
           "children": [
-            {
-              "parent": "branch1",
+            TreeNode {
+              "children": [],
+              "data": undefined,
+              "expanded": false,
+              "parentNode": [Circular],
+              "selected": false,
               "value": "child1-1",
             },
-            {
-              "parent": "branch1",
+            TreeNode {
+              "children": [],
+              "data": undefined,
+              "expanded": false,
+              "parentNode": [Circular],
+              "selected": false,
               "value": "child1-2",
             },
-            {
-              "parent": "branch1",
+            TreeNode {
+              "children": [],
+              "data": undefined,
+              "expanded": false,
+              "parentNode": [Circular],
+              "selected": false,
               "value": "child1-3",
             },
           ],
-          "parent": "root",
+          "data": undefined,
+          "expanded": false,
+          "parentNode": TreeNode {
+            "children": [Circular],
+            "data": undefined,
+            "expanded": false,
+            "parentNode": null,
+            "selected": false,
+            "value": "root",
+          },
+          "selected": false,
           "value": "branch1",
         },
-        {
-          "parent": "root",
+        TreeNode {
+          "children": [],
+          "data": undefined,
+          "expanded": false,
+          "parentNode": TreeNode {
+            "children": [Circular],
+            "data": undefined,
+            "expanded": false,
+            "parentNode": null,
+            "selected": false,
+            "value": "root",
+          },
+          "selected": false,
           "value": "child1",
         },
-        {
-          "parent": "root",
+        TreeNode {
+          "children": [],
+          "data": undefined,
+          "expanded": false,
+          "parentNode": TreeNode {
+            "children": [Circular],
+            "data": undefined,
+            "expanded": false,
+            "parentNode": null,
+            "selected": false,
+            "value": "root",
+          },
+          "selected": false,
           "value": "child2",
         },
       ]

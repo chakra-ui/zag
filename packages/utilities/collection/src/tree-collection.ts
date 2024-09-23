@@ -197,6 +197,19 @@ export class TreeNode {
     parentNode?.insertAfter(target.value, node)
   }
 
+  json(): any {
+    const json: any = {
+      value: this.value,
+    }
+    if (this.hasChildNodes()) {
+      json.children = this.children.map((child) => child.json())
+    }
+    if (this.parentNode) {
+      json.parent = this.parentNode.value
+    }
+    return json
+  }
+
   walk(options: TreeWalkerOptions = {}): TreeWalker {
     return new TreeWalker(this, options)
   }
