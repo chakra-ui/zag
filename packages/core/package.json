@@ -16,12 +16,11 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/machine",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
-    "test": "jest --config ../../jest.config.js --rootDir . --passWithNoTests",
+    "test": "vitest --passWithNoTests",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
@@ -35,10 +34,9 @@
   },
   "dependencies": {
     "@zag-js/store": "workspace:*",
-    "klona": "2.0.6"
+    "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
-    "@zag-js/utils": "workspace:*",
     "clean-package": "2.2.0"
   },
   "clean-package": "../../clean-package.config.json",

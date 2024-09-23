@@ -2245,9 +2245,6 @@ importers:
       '@zag-js/store':
         specifier: workspace:*
         version: link:../store
-      klona:
-        specifier: 2.0.6
-        version: 2.0.6
     devDependencies:
       '@zag-js/utils':
         specifier: workspace:*

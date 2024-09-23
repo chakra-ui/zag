@@ -1,28 +1,20 @@
 import { describe, expect, it, vi } from "vitest"
 import { createMachine } from "../src"
 
-const initialMachine = {
-  context: { value: 0 },
-
-  initial: "idle",
-  states: {
-    idle: {
-      on: {
-        START: { target: "running" },
-      },
-    },
-  },
-}
-
 vi.useFakeTimers()
 
 describe("should trigger every actions", () => {
   it("with array notation", () => {
     const counter = createMachine(
       {
-        ...initialMachine,
+        context: { value: 0 },
+        initial: "idle",
         states: {
-          ...initialMachine.states,
+          idle: {
+            on: {
+              START: { target: "running" },
+            },
+          },
           running: {
             every: [{ delay: 100, actions: "increment" }],
           },
@@ -47,9 +39,14 @@ describe("should trigger every actions", () => {
   it("with object notation", () => {
     const counter = createMachine(
       {
-        ...initialMachine,
+        context: { value: 0 },
+        initial: "idle",
         states: {
-          ...initialMachine.states,
+          idle: {
+            on: {
+              START: { target: "running" },
+            },
+          },
           running: {
             every: {
               100: ["increment"],
@@ -78,9 +75,14 @@ describe("after transition", () => {
   it("with named delay", () => {
     const counter = createMachine(
       {
-        ...initialMachine,
+        context: { value: 0 },
+        initial: "idle",
         states: {
-          ...initialMachine.states,
+          idle: {
+            on: {
+              START: { target: "running" },
+            },
+          },
           running: {
             after: {
               TIMER_DELAY: { target: "initial" },
@@ -108,9 +110,14 @@ describe("after transition", () => {
 it("does not transition into state after options defined timer delay has passed and guard is false", () => {
   const counter = createMachine(
     {
-      ...initialMachine,
+      context: { value: 0 },
+      initial: "idle",
       states: {
-        ...initialMachine.states,
+        idle: {
+          on: {
+            START: { target: "running" },
+          },
+        },
         running: {
           every: [{ delay: 100, actions: "increment" }],
           after: {
@@ -151,9 +158,14 @@ it("does not transition into state after options defined timer delay has passed 
 it("does transition into state after options defined timer delay has passed and guard is true", () => {
   const counter = createMachine(
     {
-      ...initialMachine,
+      context: { value: 0 },
+      initial: "idle",
       states: {
-        ...initialMachine.states,
+        idle: {
+          on: {
+            START: { target: "running" },
+          },
+        },
         running: {
           every: [{ delay: 100, actions: "increment" }],
           after: {
@@ -190,9 +202,14 @@ it("does transition into state after options defined timer delay has passed and 
 it("does transition into state after static defined timer delay has passed and guard is true", () => {
   const counter = createMachine(
     {
-      ...initialMachine,
+      context: { value: 0 },
+      initial: "idle",
       states: {
-        ...initialMachine.states,
+        idle: {
+          on: {
+            START: { target: "running" },
+          },
+        },
         running: {
           every: [{ delay: 100, actions: "increment" }],
           after: {
@@ -226,9 +243,14 @@ it("does transition into state after static defined timer delay has passed and g
 it("does transition into state after options defined timer delay has passed and guard was true", () => {
   const counter = createMachine(
     {
-      ...initialMachine,
+      context: { value: 0 },
+      initial: "idle",
       states: {
-        ...initialMachine.states,
+        idle: {
+          on: {
+            START: { target: "running" },
+          },
+        },
         running: {
           every: [{ delay: 100, actions: "increment" }],
           after: {

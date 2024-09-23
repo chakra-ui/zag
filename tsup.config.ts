@@ -5,6 +5,6 @@ export default defineConfig({
   dts: true,
   entry: ["src/index.ts"],
   target: "es2020",
-  sourcemap: true,
+  treeshake: "smallest",
   format: ["esm", "cjs"],
 })
