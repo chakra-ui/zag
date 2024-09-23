@@ -12,6 +12,7 @@ export const anatomy = createAnatomy("file-upload").parts(
   "itemSizeText",
   "label",
   "trigger",
+  "clearTrigger",
 )
 
 export const parts = anatomy.build()

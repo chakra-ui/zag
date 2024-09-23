@@ -251,5 +251,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(disabled),
       })
     },
+
+    getClearTriggerProps() {
+      return normalize.button({
+        ...parts.clearTrigger.attrs,
+        dir: state.context.dir,
+        type: "button",
+        disabled,
+        hidden: state.context.acceptedFiles.length === 0,
+        "data-disabled": dataAttr(disabled),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (disabled) return
+          send({ type: "FILES.CLEAR" })
+        },
+      })
+    },
   }
 }
