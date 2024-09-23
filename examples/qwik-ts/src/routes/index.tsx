@@ -1,89 +1,18 @@
-import { $, component$, noSerialize, useStore } from "@builder.io/qwik"
-import type { DocumentHead } from "@builder.io/qwik-city"
-import { createMachine } from "@zag-js/core"
-import { useMachine } from "~/hooks/use-machine"
-import type { NormalizeProps } from "@zag-js/types"
-import { normalizeProps } from "~/hooks/normalize-props"
-
-const machine = (props: { count?: number; onCount?: (count: number) => void }) => {
-  return createMachine({
-    context: { count: 0, ...props },
-    initial: "idle",
-    states: {
-      idle: {
-        on: {
-          INCREMENT: {
-            actions(ctx) {
-              ctx.count += 1
-              ctx.onCount?.(ctx.count)
-            },
-          },
-        },
-      },
-    },
-  })
-}
-
-function connect(state: any, send: any, normalize: NormalizeProps<any>) {
-  return {
-    count: state.context.count,
-
-    getButtonProps() {
-      return normalize.element({
-        "data-count": state.context.count,
-        disabled: state.context.count >= 15,
-        onClick: $(() => {
-          send("INCREMENT")
-        }),
-      })
-    },
-  }
-}
+import { component$ } from "@builder.io/qwik"
+import { Link } from "@builder.io/qwik-city"
+import { routesData } from "@zag-js/shared"
 
 export default component$(() => {
-  const context = useStore({
-    count: 10,
-  })
-
-  const [state, send] = useMachine(
-    {
-      qrl: $(() =>
-        noSerialize(
-          machine({
-            onCount(count) {
-              context.count = count
-            },
-          }),
-        ),
-      ),
-      initialState: noSerialize(machine({ count: 10 }).getState()),
-    },
-    {
-      context,
-    },
-  )
-
-  const api = connect(state.value, send, normalizeProps)
-
   return (
-    <>
-      <h1>Hi 👋</h1>
-      <div>
-        Count is: {api.count}
-        <br />
-        <button onClick$={() => (context.count += 1)}>Controlled Increment</button>
-        <button {...api.getButtonProps()}>Increment</button>
-      </div>
-    </>
+    <div class="index-nav">
+      <h2>Zag.js + Qwik</h2>
+      <ul>
+        {routesData.map((route) => (
+          <li key={route.path}>
+            <Link href={route.path}>{route.label}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 })
-
-export const head: DocumentHead = {
-  title: "Welcome to Qwik",
-  meta: [
-    {
-      name: "description",
-      content: "Qwik site description",
-    },
-  ],
-}

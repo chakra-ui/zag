@@ -2,7 +2,7 @@ import { $ } from "@builder.io/qwik"
 import type { StateMachine as S } from "@zag-js/core"
 import { useService } from "./use-service"
 import { useSnapshot } from "./use-snapshot"
-import { UseMachineOptions, UseMachineReturn } from "~/hooks/types"
+import type { UseMachineOptions, UseMachineReturn } from "./types"
 
 export function useMachine<
   TContext extends Record<string, any>,

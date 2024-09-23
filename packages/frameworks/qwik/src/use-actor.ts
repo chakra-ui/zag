@@ -1,6 +1,6 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
 import { useSnapshot } from "./use-snapshot"
-import { $, NoSerialize, Signal } from "@builder.io/qwik"
+import { $, type NoSerialize, type Signal } from "@builder.io/qwik"
 
 export function useActor<
   TContext extends Record<string, any>,

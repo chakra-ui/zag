@@ -1,6 +1,6 @@
-import { NoSerialize, noSerialize, useComputed$, useStore, useVisibleTask$ } from "@builder.io/qwik"
+import { type NoSerialize, noSerialize, useComputed$, useStore, useVisibleTask$ } from "@builder.io/qwik"
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import { UseMachineOptions } from "~/hooks/types"
+import type { UseMachineOptions } from "./types"
 
 export function useService<
   TContext extends Record<string, any>,
