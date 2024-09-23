@@ -28,8 +28,7 @@ import {
   type VoidFunction,
   type Writable,
 } from "./types"
-import { toArray, toEvent } from "./utils"
-import { klona } from "./klona"
+import { toArray, toEvent, structuredClone } from "./utils"
 
 export class Machine<
   TContext extends Dict,
@@ -74,8 +73,8 @@ export class Machine<
   // Let's get started!
   constructor(config: S.MachineConfig<TContext, TState, TEvent>, options?: S.MachineOptions<TContext, TState, TEvent>) {
     // clone the config and options
-    this.config = klona(config)
-    this.options = klona(options ?? {})
+    this.config = structuredClone(config)
+    this.options = structuredClone(options ?? {})
 
     this.id = this.config.id ?? `machine-${uuid()}`
 

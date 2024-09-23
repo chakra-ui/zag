@@ -34,7 +34,8 @@
   },
   "dependencies": {
     "@zag-js/store": "workspace:*",
-    "@zag-js/utils": "workspace:*"
+    "@zag-js/utils": "workspace:*",
+    "klona": "2.0.6"
   },
   "devDependencies": {
     "clean-package": "2.2.0"
