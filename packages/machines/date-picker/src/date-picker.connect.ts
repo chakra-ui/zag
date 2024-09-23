@@ -310,6 +310,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-state": open ? "open" : "closed",
         "data-placement": currentPlacement,
         id: dom.getContentId(state.context),
+        tabIndex: -1,
         role: "application",
         "aria-roledescription": "datepicker",
         "aria-label": translations.content,
