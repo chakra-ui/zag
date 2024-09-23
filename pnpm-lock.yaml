@@ -2248,9 +2248,6 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../utilities/core
-      klona:
-        specifier: 2.0.6
-        version: 2.0.6
     devDependencies:
       clean-package:
         specifier: 2.2.0
