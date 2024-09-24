@@ -136,7 +136,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send({ type: "INPUT.PASTE", value })
             // prevent multiple characters being pasted
             // into a single input
-            event.target.value = value[0]
+            event.currentTarget.value = value[0]
 
             event.preventDefault()
             return

@@ -530,7 +530,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onFocus(event) {
           if (!interactive) return
           send({ type: "CHANNEL_INPUT.FOCUS", channel })
-          event.target.select()
+          event.currentTarget.select()
         },
         onBlur(event) {
           if (!interactive) return

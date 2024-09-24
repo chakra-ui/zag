@@ -1,8 +1,10 @@
 import { isValidFileSize, isValidFileType, type FileError } from "@zag-js/file-utils"
 import { type FileRejection, type MachineContext } from "./file-upload.types"
+import { getEventTarget } from "@zag-js/dom-query"
 
 export function isEventWithFiles(event: Pick<DragEvent, "dataTransfer" | "target">) {
-  if (!event.dataTransfer) return !!event.target && "files" in event.target
+  const target = getEventTarget<Element>(event)
+  if (!event.dataTransfer) return !!target && "files" in target
   return event.dataTransfer.types.some((type) => {
     return type === "Files" || type === "application/x-moz-file"
   })

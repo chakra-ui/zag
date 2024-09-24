@@ -127,14 +127,16 @@ export function machine(ctx: Partial<UserDefinedContext>) {
           if (!node) return
 
           const onStart = (event: AnimationEvent) => {
-            if (event.target === node) {
+            const target = event.composedPath?.()?.[0] ?? event.target
+            if (target === node) {
               ctx.prevAnimationName = getAnimationName(ctx.styles)
             }
           }
 
           const onEnd = (event: AnimationEvent) => {
             const animationName = getAnimationName(ctx.styles)
-            if (event.target === node && animationName === ctx.unmountAnimationName) {
+            const target = event.composedPath?.()?.[0] ?? event.target
+            if (target === node && animationName === ctx.unmountAnimationName) {
               send({ type: "UNMOUNT", src: "animationend" })
             }
           }

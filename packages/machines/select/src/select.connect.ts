@@ -3,6 +3,7 @@ import {
   ariaAttr,
   dataAttr,
   getByTypeahead,
+  getEventTarget,
   isEditableElement,
   isSelfTarget,
   isValidTabEvent,
@@ -427,7 +428,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             return
           }
 
-          if (isEditableElement(event.target)) {
+          const target = getEventTarget<Element>(event)
+
+          if (isEditableElement(target)) {
             return
           }
 

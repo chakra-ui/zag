@@ -1,4 +1,4 @@
-import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./switch.anatomy"
@@ -52,7 +52,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onClick(event) {
           if (disabled) return
-          if (event.target === dom.getHiddenInputEl(state.context)) {
+          const target = getEventTarget<Element>(event)
+          if (target === dom.getHiddenInputEl(state.context)) {
             event.stopPropagation()
           }
         },

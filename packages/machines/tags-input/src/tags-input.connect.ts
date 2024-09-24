@@ -119,7 +119,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         disabled: disabled || readOnly,
         onChange(event) {
           const evt = getNativeEvent(event)
-          const value = event.target.value
+          const value = event.currentTarget.value
 
           if (evt.inputType === "insertFromPaste") {
             send({ type: "PASTE", value })
@@ -256,7 +256,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: !itemState.editing,
         defaultValue: itemState.editing ? state.context.editedTagValue : "",
         onChange(event) {
-          send({ type: "TAG_INPUT_TYPE", value: event.target.value })
+          send({ type: "TAG_INPUT_TYPE", value: event.currentTarget.value })
         },
         onBlur(event) {
           send({ type: "TAG_INPUT_BLUR", target: event.relatedTarget, id: itemState.id })

@@ -125,8 +125,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send("INPUT.FOCUS")
         },
         onBlur(event) {
-          const { value } = event.target
-          send({ type: "INPUT.BLUR", value })
+          send({ type: "INPUT.BLUR", value: event.currentTarget.value })
         },
         onKeyDown(event) {
           if (isComposingEvent(event)) return

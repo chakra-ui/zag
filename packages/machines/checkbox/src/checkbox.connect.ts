@@ -1,4 +1,4 @@
-import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./checkbox.anatomy"
 import { dom } from "./checkbox.dom"
@@ -57,7 +57,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "CONTEXT.SET", context: { hovered: false } })
         },
         onClick(event) {
-          if (event.target === dom.getHiddenInputEl(state.context)) {
+          const target = getEventTarget<Element>(event)
+          if (target === dom.getHiddenInputEl(state.context)) {
             event.stopPropagation()
           }
         },

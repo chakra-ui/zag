@@ -1,5 +1,5 @@
 import { createMachine, ref } from "@zag-js/core"
-import { getComputedStyle, raf } from "@zag-js/dom-query"
+import { getComputedStyle, getEventTarget, raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./collapsible.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./collapsible.types"
@@ -119,7 +119,9 @@ export function machine(userContext: UserDefinedContext) {
             const onEnd = (event: AnimationEvent) => {
               const win = contentEl.ownerDocument.defaultView || window
               const animationName = win.getComputedStyle(contentEl).animationName
-              if (event.target === contentEl && animationName === ctx.unmountAnimationName) {
+
+              const target = getEventTarget<Element>(event)
+              if (target === contentEl && animationName === ctx.unmountAnimationName) {
                 send({ type: "ANIMATION.END" })
               }
             }
