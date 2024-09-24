@@ -1,4 +1,4 @@
-import { getDocument } from "./env"
+import { getActiveElement, getDocument } from "./env"
 
 export interface ScopeContext {
   getRootNode?(): Document | ShadowRoot | Node
@@ -9,7 +9,7 @@ export function createScope<T>(methods: T) {
     getRootNode: (ctx: ScopeContext) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
     getDoc: (ctx: ScopeContext) => getDocument(dom.getRootNode(ctx)),
     getWin: (ctx: ScopeContext) => dom.getDoc(ctx).defaultView ?? window,
-    getActiveElement: (ctx: ScopeContext) => dom.getRootNode(ctx).activeElement,
+    getActiveElement: (ctx: ScopeContext) => getActiveElement(dom.getRootNode(ctx)),
     isActiveElement: (ctx: ScopeContext, elem: HTMLElement | null) => elem === dom.getActiveElement(ctx),
     getById: <T extends Element = HTMLElement>(ctx: ScopeContext, id: string) =>
       dom.getRootNode(ctx).getElementById(id) as T | null,

@@ -2,7 +2,7 @@
  * Credit: Huge props to the team at Adobe for inspiring this implementation.
  * https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/interactions/src/useFocusVisible.ts
  */
-import { getDocument, getWindow, isMac } from "@zag-js/dom-query"
+import { getDocument, getEventTarget, getWindow, isMac } from "@zag-js/dom-query"
 
 function isVirtualClick(event: MouseEvent | PointerEvent): boolean {
   if ((event as any).mozInputSource === 0 && event.isTrusted) return true
@@ -23,23 +23,19 @@ function isValidKey(e: KeyboardEvent) {
 const nonTextInputTypes = new Set(["checkbox", "radio", "range", "color", "file", "image", "button", "submit", "reset"])
 
 function isKeyboardFocusEvent(isTextInput: boolean, modality: Modality, e: HandlerEvent) {
-  const IHTMLInputElement =
-    typeof window !== "undefined" ? getWindow(e?.target as Element).HTMLInputElement : HTMLInputElement
-  const IHTMLTextAreaElement =
-    typeof window !== "undefined" ? getWindow(e?.target as Element).HTMLTextAreaElement : HTMLTextAreaElement
-  const IHTMLElement = typeof window !== "undefined" ? getWindow(e?.target as Element).HTMLElement : HTMLElement
-  const IKeyboardEvent = typeof window !== "undefined" ? getWindow(e?.target as Element).KeyboardEvent : KeyboardEvent
+  const target = e ? getEventTarget<Element>(e) : null
+  const win = getWindow(target)
 
   isTextInput =
     isTextInput ||
-    (e?.target instanceof IHTMLInputElement && !nonTextInputTypes.has(e?.target?.type)) ||
-    e?.target instanceof IHTMLTextAreaElement ||
-    (e?.target instanceof IHTMLElement && e?.target.isContentEditable)
+    (target instanceof win.HTMLInputElement && !nonTextInputTypes.has(target?.type)) ||
+    target instanceof win.HTMLTextAreaElement ||
+    (target instanceof win.HTMLElement && target.isContentEditable)
 
   return !(
     isTextInput &&
     modality === "keyboard" &&
-    e instanceof IKeyboardEvent &&
+    e instanceof win.KeyboardEvent &&
     !Reflect.has(FOCUS_VISIBLE_INPUT_KEYS, e.key)
   )
 }
@@ -108,7 +104,9 @@ function handleFocusEvent(e: FocusEvent) {
   // Firefox fires two extra focus events when the user first clicks into an iframe:
   // first on the window, then on the document. We ignore these events so they don't
   // cause keyboard focus rings to appear.
-  if (e.target === getWindow(e.target as Element) || e.target === getDocument(e.target as Element)) {
+  const target = getEventTarget(e)
+
+  if (target === getWindow(target as Element) || target === getDocument(target as Element)) {
     return
   }
 

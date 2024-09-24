@@ -17,9 +17,8 @@ export function getWindow(el: Node | ShadowRoot | Document | null | undefined) {
   return window
 }
 
-export function getActiveElement(el: HTMLElement): HTMLElement | null {
-  const doc = getDocument(el)
-  let activeElement = doc.activeElement as HTMLElement | null
+export function getActiveElement(rootNode: Document | ShadowRoot): HTMLElement | null {
+  let activeElement = rootNode.activeElement as HTMLElement | null
 
   while (activeElement?.shadowRoot) {
     const el = activeElement.shadowRoot.activeElement as HTMLElement | null
