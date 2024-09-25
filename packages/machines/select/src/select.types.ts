@@ -342,6 +342,14 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    * Function to set the positioning options of the select
    */
   reposition(options?: Partial<PositioningOptions>): void
+  /**
+   * Whether the select allows multiple selections
+   */
+  multiple: boolean
+  /**
+   * Whether the select is disabled
+   */
+  disabled: boolean
 
   getRootProps(): T["element"]
   getLabelProps(): T["label"]

@@ -64,6 +64,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     value: state.context.value,
     valueAsString: state.context.valueAsString,
     collection,
+    multiple: !!state.context.multiple,
+    disabled: !!disabled,
     setCollection(collection) {
       send({ type: "COLLECTION.SET", value: collection })
     },

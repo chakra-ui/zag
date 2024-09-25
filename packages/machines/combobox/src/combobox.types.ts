@@ -419,6 +419,14 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    * Function to set the positioning options
    */
   reposition(options?: Partial<PositioningOptions>): void
+  /**
+   * Whether the combobox allows multiple selections
+   */
+  multiple: boolean
+  /**
+   * Whether the combobox is disabled
+   */
+  disabled: boolean
 
   getRootProps(): T["element"]
   getLabelProps(): T["label"]
