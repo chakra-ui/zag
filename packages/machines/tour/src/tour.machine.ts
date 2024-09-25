@@ -5,8 +5,9 @@ import { getPlacement } from "@zag-js/popper"
 import { compact, isEqual, isString, nextIndex, prevIndex } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./tour.dom"
-import type { MachineContext, MachineState, StepInit, UserDefinedContext } from "./tour.types"
+import type { MachineContext, MachineState, StepBaseDetails, UserDefinedContext } from "./tour.types"
 import { getCenterRect, isEventInRect, offset } from "./utils/rect"
+import { waitForFn } from "./utils/wait-for"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -198,12 +199,16 @@ export function machine(userContext: UserDefinedContext) {
           const targetEl = ctx.currentStep?.target?.()
           if (!targetEl) return
 
-          if (ctx.preventInteraction) targetEl.inert = true
+          if (ctx.preventInteraction) {
+            targetEl.inert = true
+          }
 
           targetEl.setAttribute("data-tour-highlighted", "")
 
           ctx._targetCleanup = () => {
-            if (ctx.preventInteraction) targetEl.inert = false
+            if (ctx.preventInteraction) {
+              targetEl.inert = false
+            }
             targetEl.removeAttribute("data-tour-highlighted")
           }
         },
@@ -265,7 +270,7 @@ export function machine(userContext: UserDefinedContext) {
         trapFocus(ctx) {
           let trap: FocusTrap | undefined
 
-          const rafCleanup = raf(() => {
+          const cleanup = raf(() => {
             const contentEl = dom.getContentEl(ctx)
             if (!contentEl) return
 
@@ -285,7 +290,7 @@ export function machine(userContext: UserDefinedContext) {
 
           return () => {
             trap?.deactivate()
-            rafCleanup?.()
+            cleanup?.()
           }
         },
         trackPlacement(ctx) {
@@ -356,25 +361,54 @@ const set = {
 
     if (!step) {
       ctx.step = null
+      invoke.stepChange(ctx)
       return
     }
 
     if (isEqual(ctx.step, step.id)) return
 
-    const update = (data: Partial<StepInit>) => {
+    const update = (data: Partial<StepBaseDetails>) => {
       ctx.steps[idx] = { ...step, ...data }
     }
 
     const next = () => {
+      const idx = nextIndex(ctx.steps, ctx.currentStepIndex)
+      ctx.step = ctx.steps[idx].id
+      invoke.stepChange(ctx)
+    }
+
+    const goto = (id: string) => {
+      const idx = ctx.steps.findIndex((s) => s.id === id)
+      ctx.step = ctx.steps[idx].id
+      invoke.stepChange(ctx)
+    }
+
+    const dismiss = () => {
+      ctx.step = null
+      invoke.stepChange(ctx)
+      ctx.onStatusChange?.({ status: "stopped", step: ctx.step })
+    }
+
+    const done = () => {
       ctx.step = step.id
       invoke.stepChange(ctx)
     }
 
     if (!step.effect) {
-      next()
+      done()
       return
     }
 
-    ctx._effectCleanup = step.effect({ next, update })
+    const waitFor = waitForFn(dom.getRootNode(ctx))
+
+    ctx._effectCleanup = step.effect({
+      done,
+      next,
+      update,
+      target: step.target,
+      dismiss,
+      goto,
+      waitFor,
+    })
   },
 }

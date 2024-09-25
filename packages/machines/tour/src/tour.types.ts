@@ -9,10 +9,15 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
 
 export interface StepEffectArgs {
   next(): void
-  update(args: Partial<StepInit>): void
+  goto(id: string): void
+  waitFor(fn: () => boolean | undefined): Promise<void>
+  dismiss(): void
+  done(): void
+  update(args: Partial<StepBaseDetails>): void
+  target?: () => HTMLElement | null
 }
 
-export interface StepInit {
+export interface StepBaseDetails {
   /**
    * Function to return the target element to highlight
    */
@@ -39,7 +44,7 @@ export interface StepInit {
   meta?: Record<string, any>
 }
 
-export interface StepDetails extends StepInit {
+export interface StepDetails extends StepBaseDetails {
   /**
    * The unique identifier of the step
    */
@@ -48,6 +53,10 @@ export interface StepDetails extends StepInit {
    * The effect to run before the step is shown
    */
   effect?(args: StepEffectArgs): VoidFunction
+  /**
+   * Whether to show a backdrop behind the step
+   */
+  backdrop?: boolean
 }
 
 export interface StepChangeDetails {

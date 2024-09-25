@@ -182,6 +182,24 @@ export const tourData = [
     title: "Step 1. Welcome",
     description: "To the new world",
     target: () => document.querySelector<HTMLElement>("#step-1"),
+    effect({ done, next, target }: any) {
+      const el = target()
+      done()
+      el?.addEventListener("click", next)
+      return () => el?.removeEventListener("click", next)
+    },
+    // actions: [
+    //   { label: "Prev", action: "prev" },
+    //   { label: "Next", action: "next" },
+    //   {
+    //     label: "Go to Project",
+    //     action({ next, goto, dismiss, waitFor }: any) {
+    //       waitFor(() => document.getElementById("dfdf")).then(() => {
+    //         next()
+    //       })
+    //     },
+    //   },
+    // ],
     // effect({ next, update }: any) {
     //   const abort = new AbortController()
 

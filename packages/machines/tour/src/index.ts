@@ -13,6 +13,6 @@ export type {
   StepChangeDetails,
   StepDetails,
   StepEffectArgs,
-  StepInit,
+  StepBaseDetails as StepInit,
   StepStatus,
 } from "./tour.types"

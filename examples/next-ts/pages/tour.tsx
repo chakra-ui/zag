@@ -16,7 +16,7 @@ export default function Page() {
       steps: tourData,
     }),
     {
-      context: controls.context,
+      // context: controls.context,
     },
   )
 
