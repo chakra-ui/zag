@@ -632,7 +632,6 @@ export class Machine<
     // call all exit actions for current state
     this.executeActions(exitActions, event)
 
-    // delete delayed events for current state
     this.delayedEvents.delete(currentState)
   }
 
@@ -647,6 +646,10 @@ export class Machine<
       activities.unshift(activity)
     })
 
+    if (activities.length > 0) {
+      this.executeActivities(event, activities)
+    }
+
     // get all entry actions
     const pickedActions = determineActionsFn(stateNode?.entry, this.guardMap)(
       this.contextSnapshot,
@@ -658,19 +661,12 @@ export class Machine<
     const afterActions = this.getDelayedEventActions(next)
 
     if (stateNode?.after && afterActions) {
+      this.delayedEvents.set(next, afterActions?.exits)
       entryActions.push(...afterActions.entries)
     }
 
     // execute entry actions for next state
     this.executeActions(entryActions, event)
-
-    if (stateNode?.after && afterActions) {
-      this.delayedEvents.set(next, afterActions?.exits)
-    }
-
-    if (activities.length > 0) {
-      this.executeActivities(event, activities)
-    }
 
     if (stateNode?.type === "final") {
       this.state.done = true
