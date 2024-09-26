@@ -28,6 +28,12 @@ const fetchMachine = createMachine({
     "STEP.SET": {
       actions: ["setStep"]
     },
+    "STEP.NEXT": {
+      actions: ["setNextStep"]
+    },
+    "STEP.PREV": {
+      actions: ["setPrevStep"]
+    },
     "STEP.CHANGED": [{
       cond: "isValidStep && hasResolvedTarget",
       target: "target.scrolling"
@@ -89,27 +95,11 @@ const fetchMachine = createMachine({
       }
     },
     "step.waiting": {
-      tags: ["closed"],
-      on: {
-        NEXT: {
-          actions: ["setNextStep"]
-        },
-        PREV: {
-          actions: ["setPrevStep"]
-        }
-      }
+      tags: ["closed"]
     },
     "tour.active": {
       tags: ["open"],
-      activities: ["trapFocus", "trackPlacement", "trackDismissableBranch", "trackInteractOutside", "trackEscapeKeydown"],
-      on: {
-        NEXT: {
-          actions: ["setNextStep"]
-        },
-        PREV: {
-          actions: ["setPrevStep"]
-        }
-      }
+      activities: ["trapFocus", "trackPlacement", "trackDismissableBranch", "trackInteractOutside", "trackEscapeKeydown"]
     }
   }
 }, {

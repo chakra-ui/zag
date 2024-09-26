@@ -68,6 +68,12 @@ export function machine(userContext: UserDefinedContext) {
         "STEP.SET": {
           actions: ["setStep"],
         },
+        "STEP.NEXT": {
+          actions: ["setNextStep"],
+        },
+        "STEP.PREV": {
+          actions: ["setPrevStep"],
+        },
         "STEP.CHANGED": [
           {
             guard: and("isValidStep", "hasResolvedTarget"),
@@ -143,14 +149,6 @@ export function machine(userContext: UserDefinedContext) {
 
         "step.waiting": {
           tags: ["closed"],
-          on: {
-            NEXT: {
-              actions: ["setNextStep"],
-            },
-            PREV: {
-              actions: ["setPrevStep"],
-            },
-          },
         },
 
         "tour.active": {
@@ -162,14 +160,6 @@ export function machine(userContext: UserDefinedContext) {
             "trackInteractOutside",
             "trackEscapeKeydown",
           ],
-          on: {
-            NEXT: {
-              actions: ["setNextStep"],
-            },
-            PREV: {
-              actions: ["setPrevStep"],
-            },
-          },
         },
       },
     },
@@ -284,6 +274,7 @@ export function machine(userContext: UserDefinedContext) {
           const targetEl = ctx.currentStep?.target
 
           const win = dom.getWin(ctx)
+          const rootNode = dom.getRootNode(ctx)
 
           const observer = new win.MutationObserver(() => {
             const node = targetEl?.()
@@ -293,7 +284,7 @@ export function machine(userContext: UserDefinedContext) {
             }
           })
 
-          observer.observe(dom.getRootNode(ctx), {
+          observer.observe(rootNode, {
             childList: true,
             subtree: true,
             characterData: true,
@@ -393,7 +384,7 @@ export function machine(userContext: UserDefinedContext) {
           const positionerEl = () => dom.getPositionerEl(ctx)
 
           return getPlacement(ctx.resolvedTarget.value, positionerEl, {
-            defer: true,
+            defer: !!positionerEl(),
             placement: ctx.currentStep.placement ?? "bottom",
             strategy: "absolute",
             gutter: 10,

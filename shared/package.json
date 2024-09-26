@@ -2,5 +2,8 @@
   "name": "@zag-js/shared",
   "version": "0.0.4",
   "main": "src/index.ts",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@zag-js/tour": "workspace:*"
+  }
 }

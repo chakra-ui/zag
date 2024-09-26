@@ -6,7 +6,7 @@ import { parts } from "./tour.anatomy"
 import { dom } from "./tour.dom"
 import type { MachineApi, Send, State, StepActionMap } from "./tour.types"
 import { getClipPath } from "./utils/clip-path"
-import { findStepIndex, isTooltipPlacement } from "./utils/step"
+import { findStepIndex, isTooltipPlacement, isTooltipStep } from "./utils/step"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const open = state.hasTag("open")
@@ -31,6 +31,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   })
 
   const clipPath = getClipPath({
+    enabled: isTooltipStep(step),
     rect: currentRect,
     rootSize: state.context.boundarySize,
     radius: state.context.radius,
@@ -38,10 +39,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const actionMap: StepActionMap = {
     next() {
-      send({ type: "NEXT", src: "actionTrigger" })
+      send({ type: "STEP.NEXT", src: "actionTrigger" })
     },
     prev() {
-      send({ type: "PREV", src: "actionTrigger" })
+      send({ type: "STEP.PREV", src: "actionTrigger" })
     },
     dismiss() {
       send({ type: "DISMISS", src: "actionTrigger" })
@@ -88,10 +89,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return Boolean(step?.id === id)
     },
     next() {
-      send({ type: "NEXT" })
+      send({ type: "STEP.NEXT" })
     },
     prev() {
-      send({ type: "PREV" })
+      send({ type: "STEP.PREV" })
     },
     getProgressPercent() {
       return (index / steps.length) * 100
@@ -111,7 +112,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: !open,
         "data-state": open ? "open" : "closed",
         style: {
-          clipPath: `path("${clipPath}")`,
+          clipPath: isTooltipStep(step) ? `path("${clipPath}")` : undefined,
           position: "absolute",
           inset: "0",
           willChange: "clip-path",
@@ -195,11 +196,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           switch (event.key) {
             case "ArrowRight":
               if (!hasNextStep) return
-              send({ type: isRtl ? "PREV" : "NEXT", src: "keydown" })
+              send({ type: isRtl ? "STEP.PREV" : "STEP.NEXT", src: "keydown" })
               break
             case "ArrowLeft":
               if (!hasPrevStep) return
-              send({ type: isRtl ? "NEXT" : "PREV", src: "keydown" })
+              send({ type: isRtl ? "STEP.NEXT" : "STEP.PREV", src: "keydown" })
               break
             default:
               break

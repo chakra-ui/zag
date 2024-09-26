@@ -1,5 +1,5 @@
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
-import { tourControls } from "@zag-js/shared"
+import { tourControls, tourData } from "@zag-js/shared"
 import * as tour from "@zag-js/tour"
 import { X } from "lucide-react"
 import { useId } from "react"
@@ -8,72 +8,16 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
-const steps: tour.StepDetails[] = [
-  {
-    type: "floating",
-    placement: "bottom-end",
-    id: "step-0",
-    title: "Step 1. Controls",
-    description: "Use them to change the context properties",
-    actions: [{ label: "Show me the tour", action: "next" }],
-  },
-  {
-    type: "tooltip",
-    // backdrop: false,
-    id: "step-1",
-    title: "Step 1. Controls",
-    description: "Use them to change the context properties",
-    // target: () => document.querySelector<HTMLElement>(".toolbar nav button:nth-child(1)"),
-    target: () => document.querySelector<HTMLElement>("#step-1"),
-    actions: [
-      { label: "Prev", action: "prev" },
-      { label: "Next", action: "next" },
-    ],
-  },
-  {
-    type: "wait",
-    id: "step-xx",
-    title: "Step xx",
-    description: "Wait for 2 seconds",
-    effect({ show, next }) {
-      show()
-      let timer = setTimeout(next, 5000)
-      return () => clearTimeout(timer)
-    },
-  },
-  {
-    type: "tooltip",
-    id: "step-2",
-    title: "Step 2. Visualizer",
-    description: "Use them to see the state of the tour. Click the Visualizer button to proceed.",
-    target: () => document.querySelector<HTMLElement>(".toolbar nav button:nth-child(2)"),
-    actions: [
-      { label: "Prev", action: "prev" },
-      { label: "Next", action: "next" },
-    ],
-  },
-  {
-    type: "tooltip",
-    id: "step-4",
-    title: "Step 4. Close",
-    description: "Here's the context information",
-    target: () => document.querySelector<HTMLElement>(".toolbar [data-content][data-active]"),
-    placement: "left-start",
-    actions: [{ label: "Finish", action: "dismiss" }],
-  },
-]
-
 export default function Page() {
   const controls = useControls(tourControls)
 
   const [state, send] = useMachine(
     tour.machine({
       id: useId(),
-      steps,
-      // steps: tourData,
+      steps: tourData,
     }),
     {
-      // context: controls.context,
+      context: controls.context,
     },
   )
 
@@ -138,7 +82,7 @@ export default function Page() {
         )}
       </main>
 
-      <Toolbar controls={controls.ui} viz>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} omit={["steps"]} />
       </Toolbar>
     </>

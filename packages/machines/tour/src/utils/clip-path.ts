@@ -11,6 +11,7 @@ interface Options {
   rect: Required<AnchorRect>
   rootSize: { width: number; height: number }
   radius: number | CompositeRadius
+  enabled: boolean
 }
 
 export function getClipPath(options: Options) {
@@ -18,7 +19,10 @@ export function getClipPath(options: Options) {
     radius = 0,
     rootSize: { width: w, height: h },
     rect: { width, height, x, y },
+    enabled = true,
   } = options
+
+  if (!enabled) return ""
 
   const {
     topLeft = 0,
