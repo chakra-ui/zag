@@ -176,6 +176,7 @@ export const tourData = [
     id: "step-0",
     title: "Centered tour (no target)",
     description: "This is the center of the world. Ready to start the tour?",
+    actions: [{ label: "Next", action: "next" }],
   },
   {
     id: "step-1",

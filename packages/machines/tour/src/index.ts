@@ -11,8 +11,9 @@ export type {
   Service,
   StatusChangeDetails,
   StepChangeDetails,
+  StepType,
+  StepPlacement,
   StepDetails,
   StepEffectArgs,
-  StepBaseDetails as StepInit,
   StepStatus,
 } from "./tour.types"

@@ -1,20 +1,23 @@
-import { createMachine, ref } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
-import { isHTMLElement, raf } from "@zag-js/dom-query"
+import { createMachine, guards, ref } from "@zag-js/core"
+import { trackDismissableBranch } from "@zag-js/dismissable"
+import { contains, isHTMLElement } from "@zag-js/dom-query"
+import { trapFocus } from "@zag-js/focus-trap"
+import { trackInteractOutside } from "@zag-js/interact-outside"
 import { getPlacement } from "@zag-js/popper"
 import { compact, isEqual, isString, nextIndex, prevIndex } from "@zag-js/utils"
-import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./tour.dom"
 import type { MachineContext, MachineState, StepBaseDetails, UserDefinedContext } from "./tour.types"
-import { getCenterRect, isEventInRect, offset } from "./utils/rect"
-import { waitForFn } from "./utils/wait-for"
+import { findStep, findStepIndex, isTooltipStep } from "./utils/step"
+import { isEventInRect, offset } from "./utils/rect"
+
+const { and } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
     {
       id: "tour",
-      initial: "closed",
+      initial: "tour.inactive",
 
       context: {
         step: null,
@@ -25,7 +28,6 @@ export function machine(userContext: UserDefinedContext) {
         keyboardNavigation: true,
         offset: { x: 10, y: 10 },
         radius: 4,
-        skipBehavior: "complete",
         translations: {
           nextStep: "next step",
           prevStep: "previous step",
@@ -35,27 +37,24 @@ export function machine(userContext: UserDefinedContext) {
           ...ctx.translations,
         },
         ...ctx,
+        resolvedTarget: ref({ value: null }),
         currentRect: ref({ width: 0, height: 0, x: 0, y: 0 }),
         boundarySize: ref({ width: 0, height: 0 }),
       },
 
       computed: {
-        currentStepIndex: (ctx) => {
-          if (ctx.step == null) return -1
-          return ctx.steps.findIndex((s) => s.id === ctx.step)
-        },
-        currentStep: (ctx) => {
-          if (ctx.step == null) return null
-          return ctx.steps.find((s) => s.id === ctx.step) ?? null
-        },
+        currentStepIndex: (ctx) => findStepIndex(ctx.steps, ctx.step),
+        currentStep: (ctx) => findStep(ctx.steps, ctx.step),
         hasNextStep: (ctx) => ctx.currentStepIndex < ctx.steps.length - 1,
         hasPrevStep: (ctx) => ctx.currentStepIndex > 0,
-        firstStep: (ctx) => ctx.currentStepIndex === 0,
-        lastStep: (ctx) => ctx.currentStepIndex === ctx.steps.length - 1,
+        isFirstStep: (ctx) => ctx.currentStepIndex === 0,
+        isLastStep: (ctx) => ctx.currentStepIndex === ctx.steps.length - 1,
       },
 
+      created: ["validateSteps"],
+
       watch: {
-        step: ["raiseStepChange", "syncTargetAttrs"],
+        step: ["setResolvedTarget", "raiseStepChange", "syncTargetAttrs"],
       },
 
       activities: ["trackBoundarySize"],
@@ -69,87 +68,128 @@ export function machine(userContext: UserDefinedContext) {
         "STEP.SET": {
           actions: ["setStep"],
         },
+        "STEP.CHANGED": [
+          {
+            guard: and("isValidStep", "hasResolvedTarget"),
+            target: "target.scrolling",
+          },
+          {
+            guard: and("isValidStep", "hasTarget"),
+            target: "target.resolving",
+          },
+          {
+            guard: and("isValidStep", "isWaitingStep"),
+            target: "step.waiting",
+          },
+          {
+            guard: "isValidStep",
+            target: "tour.active",
+          },
+        ],
+        DISMISS: [
+          {
+            guard: "isLastStep",
+            target: "tour.inactive",
+            actions: ["invokeOnDismiss", "invokeOnComplete", "clearStep"],
+          },
+          {
+            target: "tour.inactive",
+            actions: ["invokeOnDismiss", "clearStep"],
+          },
+        ],
       },
 
       states: {
-        closed: {
+        "tour.inactive": {
           tags: ["closed"],
           on: {
             START: {
-              target: "open",
               actions: ["setInitialStep", "invokeOnStart"],
             },
-            RESUME: {
-              target: "scrolling",
-              actions: ["invokeOnStart"],
-            },
           },
         },
-        scrolling: {
-          tags: ["open"],
-          entry: ["scrollStepTargetIntoView"],
-          activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
+
+        "target.resolving": {
+          tags: ["closed"],
+          activities: ["waitForTarget"],
           after: {
-            0: "open",
+            MISSING_TARGET_TIMEOUT: {
+              target: "tour.inactive",
+              actions: ["invokeOnNotFound", "clearStep"],
+            },
+          },
+          on: {
+            "TARGET.RESOLVED": {
+              target: "target.scrolling",
+              actions: ["setResolvedTarget"],
+            },
           },
         },
-        open: {
+
+        "target.scrolling": {
           tags: ["open"],
-          activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
+          entry: ["scrollToTarget"],
+          activities: [
+            "trapFocus",
+            "trackPlacement",
+            "trackDismissableBranch",
+            "trackInteractOutside",
+            "trackEscapeKeydown",
+          ],
+          after: {
+            100: "tour.active",
+          },
+        },
+
+        "step.waiting": {
+          tags: ["closed"],
           on: {
-            "STEP.CHANGED": {
-              guard: "isValidStep",
-              target: "scrolling",
-            },
             NEXT: {
               actions: ["setNextStep"],
             },
             PREV: {
               actions: ["setPrevStep"],
             },
-            PAUSE: {
-              target: "closed",
-              actions: ["invokeOnStop"],
+          },
+        },
+
+        "tour.active": {
+          tags: ["open"],
+          activities: [
+            "trapFocus",
+            "trackPlacement",
+            "trackDismissableBranch",
+            "trackInteractOutside",
+            "trackEscapeKeydown",
+          ],
+          on: {
+            NEXT: {
+              actions: ["setNextStep"],
             },
-            SKIP: [
-              {
-                guard: "completeOnSkip",
-                target: "closed",
-                actions: ["invokeOnComplete", "invokeOnSkip", "clearStep"],
-              },
-              {
-                actions: ["invokeOnSkip", "setNextStep"],
-              },
-            ],
-            STOP: [
-              {
-                guard: "lastStep",
-                target: "closed",
-                actions: ["invokeOnStop", "invokeOnComplete", "clearStep"],
-              },
-              {
-                target: "closed",
-                actions: ["invokeOnStop", "clearStep"],
-              },
-            ],
+            PREV: {
+              actions: ["setPrevStep"],
+            },
           },
         },
       },
     },
     {
-      guards: {
-        lastStep: (ctx) => ctx.lastStep,
-        isValidStep: (ctx) => ctx.step != null,
-        completeOnSkip: (ctx) => ctx.skipBehavior === "complete",
+      delays: {
+        MISSING_TARGET_TIMEOUT: 3000,
       },
+
+      guards: {
+        isLastStep: (ctx) => ctx.isLastStep,
+        isValidStep: (ctx) => ctx.step != null,
+        hasTarget: (ctx) => ctx.currentStep?.target != null,
+        hasResolvedTarget: (ctx) => ctx.resolvedTarget.value != null,
+        isWaitingStep: (ctx) => ctx.currentStep?.type === "wait",
+      },
+
       actions: {
-        scrollStepTargetIntoView(ctx, _evt) {
-          const targetEl = ctx.currentStep?.target?.()
-          targetEl?.scrollIntoView({
-            behavior: "instant",
-            block: "center",
-            inline: "center",
-          })
+        scrollToTarget(ctx, _evt) {
+          const node = ctx.resolvedTarget.value
+          node?.scrollIntoView({ behavior: "instant", block: "center", inline: "center" })
         },
         setStep(ctx, evt) {
           set.step(ctx, evt.value)
@@ -162,7 +202,7 @@ export function machine(userContext: UserDefinedContext) {
           if (ctx.steps.length === 0) return
 
           if (isString(evt.id)) {
-            const idx = ctx.steps.findIndex((s) => s.id === evt.id)
+            const idx = findStepIndex(ctx.steps, evt.id)
             set.step(ctx, idx)
             return
           }
@@ -180,8 +220,8 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnStart(ctx) {
           ctx.onStatusChange?.({ status: "started", step: ctx.step })
         },
-        invokeOnStop(ctx) {
-          ctx.onStatusChange?.({ status: "stopped", step: ctx.step })
+        invokeOnDismiss(ctx) {
+          ctx.onStatusChange?.({ status: "dismissed", step: ctx.step })
         },
         invokeOnComplete(ctx) {
           ctx.onStatusChange?.({ status: "completed", step: ctx.step })
@@ -189,26 +229,28 @@ export function machine(userContext: UserDefinedContext) {
         invokeOnSkip(ctx) {
           ctx.onStatusChange?.({ status: "skipped", step: ctx.step })
         },
+        invokeOnNotFound(ctx) {
+          ctx.onStatusChange?.({ status: "not-found", step: ctx.step })
+        },
         raiseStepChange(_ctx, _evt, { send }) {
           send({ type: "STEP.CHANGED" })
+        },
+        setResolvedTarget(ctx, evt) {
+          const node = evt.node ?? ctx.currentStep?.target?.()
+          ctx.resolvedTarget.value = node ?? null
         },
         syncTargetAttrs(ctx) {
           ctx._targetCleanup?.()
           ctx._targetCleanup = undefined
 
-          const targetEl = ctx.currentStep?.target?.()
+          const targetEl = ctx.resolvedTarget.value
           if (!targetEl) return
 
-          if (ctx.preventInteraction) {
-            targetEl.inert = true
-          }
-
+          if (ctx.preventInteraction) targetEl.inert = true
           targetEl.setAttribute("data-tour-highlighted", "")
 
           ctx._targetCleanup = () => {
-            if (ctx.preventInteraction) {
-              targetEl.inert = false
-            }
+            if (ctx.preventInteraction) targetEl.inert = false
             targetEl.removeAttribute("data-tour-highlighted")
           }
         },
@@ -219,8 +261,49 @@ export function machine(userContext: UserDefinedContext) {
           ctx._effectCleanup?.()
           ctx._effectCleanup = undefined
         },
+        validateSteps(ctx) {
+          // ensure all steps have unique ids
+          const ids = new Set()
+
+          ctx.steps.forEach((step) => {
+            if (ids.has(step.id)) {
+              throw new Error(`[zag-js/tour] Duplicate step id: ${step.id}`)
+            }
+
+            if (step.target == null && step.type == null) {
+              throw new Error(`[zag-js/tour] Step ${step.id} has no target or type. At least one of those is required.`)
+            }
+
+            ids.add(step.id)
+          })
+        },
       },
+
       activities: {
+        waitForTarget(ctx, _evt, { send }) {
+          const targetEl = ctx.currentStep?.target
+
+          const win = dom.getWin(ctx)
+
+          const observer = new win.MutationObserver(() => {
+            const node = targetEl?.()
+            if (node) {
+              send({ type: "TARGET.RESOLVED", node })
+              observer.disconnect()
+            }
+          })
+
+          observer.observe(dom.getRootNode(ctx), {
+            childList: true,
+            subtree: true,
+            characterData: true,
+          })
+
+          return () => {
+            observer.disconnect()
+          }
+        },
+
         trackBoundarySize(ctx) {
           // Use window size as boundary for now
           const win = dom.getWin(ctx)
@@ -235,72 +318,81 @@ export function machine(userContext: UserDefinedContext) {
           }
         },
 
-        trackDismissableElement(ctx, _evt, { send }) {
-          if (ctx.currentStep == null) return
+        trackEscapeKeydown(ctx, _evt, { send }) {
+          if (!ctx.closeOnEscape) return
+          const doc = dom.getDoc(ctx)
 
-          let dismiss = true
+          const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+              event.preventDefault()
+              event.stopPropagation()
+              send({ type: "DISMISS", src: "esc" })
+            }
+          }
+
+          doc.addEventListener("keydown", onKeyDown, true)
+          return () => {
+            doc.removeEventListener("keydown", onKeyDown, true)
+          }
+        },
+
+        trackInteractOutside(ctx, _evt, { send }) {
+          if (ctx.currentStep == null) return
           const getContentEl = () => dom.getContentEl(ctx)
 
-          return trackDismissableElement(getContentEl, {
+          return trackInteractOutside(getContentEl, {
             defer: true,
-            onEscapeKeyDown(event) {
-              event.preventDefault()
-              if (!ctx.closeOnEscape) return
-              send({ type: "STOP", src: "esc" })
+            exclude(target) {
+              return contains(ctx.currentStep?.target?.(), target)
             },
-            onFocusOutside: ctx.onFocusOutside,
-            onPointerDownOutside(event) {
-              ctx.onPointerDownOutside?.(event)
-              dismiss = !isEventInRect(ctx.currentRect, event.detail.originalEvent)
-            },
-            onInteractOutside(event) {
-              ctx.onInteractOutside?.(event)
+            onFocusOutside(event) {
+              ctx.onFocusOutside?.(event)
               if (!ctx.closeOnInteractOutside) {
                 event.preventDefault()
               }
             },
-            onDismiss() {
-              if (dismiss) {
-                send({ type: "STOP", src: "interact-outside" })
+            onPointerDownOutside(event) {
+              ctx.onPointerDownOutside?.(event)
+              const isWithin = isEventInRect(ctx.currentRect, event.detail.originalEvent)
+              const dismiss = ctx.closeOnInteractOutside || !isWithin
+              if (!dismiss) {
+                event.preventDefault()
               }
+            },
+            onInteractOutside(event) {
+              ctx.onInteractOutside?.(event)
+              if (event.defaultPrevented) return
+              send({ type: "DISMISS", src: "interact-outside" })
             },
           })
         },
 
-        trapFocus(ctx) {
-          let trap: FocusTrap | undefined
-
-          const cleanup = raf(() => {
-            const contentEl = dom.getContentEl(ctx)
-            if (!contentEl) return
-
-            trap = createFocusTrap(contentEl, {
-              escapeDeactivates: false,
-              allowOutsideClick: true,
-              preventScroll: true,
-              returnFocusOnDeactivate: false,
-              document: dom.getDoc(ctx),
-              fallbackFocus: contentEl,
-            })
-
-            try {
-              trap.activate()
-            } catch {}
-          })
-
-          return () => {
-            trap?.deactivate()
-            cleanup?.()
-          }
+        trackDismissableBranch(ctx) {
+          if (ctx.currentStep == null) return
+          const getContentEl = () => dom.getContentEl(ctx)
+          return trackDismissableBranch(getContentEl, { defer: true })
         },
+
+        trapFocus(ctx) {
+          const contentEl = () => dom.getContentEl(ctx)
+          return trapFocus(contentEl, {
+            escapeDeactivates: false,
+            allowOutsideClick: true,
+            preventScroll: true,
+            returnFocusOnDeactivate: false,
+          })
+        },
+
         trackPlacement(ctx) {
           if (ctx.currentStep == null) return
+
           ctx.currentPlacement = ctx.currentStep.placement ?? "bottom"
 
-          const targetEl = () => ctx.currentStep!.target?.() ?? null
+          if (!isTooltipStep(ctx.currentStep)) return
+
           const positionerEl = () => dom.getPositionerEl(ctx)
 
-          return getPlacement(targetEl, positionerEl, {
+          return getPlacement(ctx.resolvedTarget.value, positionerEl, {
             defer: true,
             placement: ctx.currentStep.placement ?? "bottom",
             strategy: "absolute",
@@ -309,26 +401,6 @@ export function machine(userContext: UserDefinedContext) {
               if (!isHTMLElement(el)) return null
               const { x, y, width, height } = el.getBoundingClientRect()
               return offset({ x, y, width, height }, ctx.offset)
-            },
-            updatePosition({ updatePosition }) {
-              if (targetEl()) {
-                updatePosition()
-                return
-              }
-
-              // Center the tour (if no target is defined)
-              // given the positioner's width and height, and the boundary size, we can center it
-
-              ctx.currentRect = getCenterRect(ctx.boundarySize)
-
-              const positioner = positionerEl()
-              if (!positioner) return
-
-              const midX = ctx.boundarySize.width / 2 - positioner.offsetWidth / 2
-              const midY = ctx.boundarySize.height / 2 - positioner.offsetHeight / 2
-
-              positioner.style.setProperty("--x", `${midX}px`)
-              positioner.style.setProperty("--y", `${midY}px`)
             },
             onComplete(data) {
               const { rects } = data.middlewareData
@@ -344,19 +416,25 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   stepChange(ctx: MachineContext) {
+    const effectiveLength = ctx.steps.filter((step) => step.type !== "wait").length
+    const progress = (ctx.currentStepIndex + 1) / effectiveLength
+
     ctx.onStepChange?.({
-      complete: ctx.lastStep,
-      step: ctx.step,
-      count: ctx.steps.length,
-      index: ctx.currentStepIndex,
+      complete: ctx.isLastStep,
+      currentStepId: ctx.step,
+      totalSteps: ctx.steps.length,
+      currentStepIndex: ctx.currentStepIndex,
+      progress,
     })
+
+    // cleanup previous effect
+    ctx._effectCleanup?.()
+    ctx._effectCleanup = undefined
   },
 }
 
 const set = {
   step(ctx: MachineContext, idx: number) {
-    ctx._effectCleanup?.()
-
     const step = ctx.steps[idx]
 
     if (!step) {
@@ -386,29 +464,26 @@ const set = {
     const dismiss = () => {
       ctx.step = null
       invoke.stepChange(ctx)
-      ctx.onStatusChange?.({ status: "stopped", step: ctx.step })
+      ctx.onStatusChange?.({ status: "dismissed", step: ctx.step })
     }
 
-    const done = () => {
+    const show = () => {
       ctx.step = step.id
       invoke.stepChange(ctx)
     }
 
     if (!step.effect) {
-      done()
+      show()
       return
     }
 
-    const waitFor = waitForFn(dom.getRootNode(ctx))
-
     ctx._effectCleanup = step.effect({
-      done,
+      show,
       next,
       update,
       target: step.target,
       dismiss,
       goto,
-      waitFor,
     })
   },
 }

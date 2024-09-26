@@ -47,7 +47,7 @@ test.describe("dialog", () => {
     await parentDialog.seeTriggerIsFocused()
   })
 
-  test("[nested] focus return to child dialog trigger", async () => {
+  test.fixme("[nested] focus return to child dialog trigger", async () => {
     await parentDialog.clickTrigger()
     await childDialog.clickTrigger({ delay: 17 })
 

@@ -1,11 +1,67 @@
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
-import { tourControls, tourData } from "@zag-js/shared"
+import { tourControls } from "@zag-js/shared"
 import * as tour from "@zag-js/tour"
+import { X } from "lucide-react"
 import { useId } from "react"
 import { IFrame } from "../components/iframe"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
+
+const steps: tour.StepDetails[] = [
+  {
+    type: "floating",
+    placement: "bottom-end",
+    id: "step-0",
+    title: "Step 1. Controls",
+    description: "Use them to change the context properties",
+    actions: [{ label: "Show me the tour", action: "next" }],
+  },
+  {
+    type: "tooltip",
+    // backdrop: false,
+    id: "step-1",
+    title: "Step 1. Controls",
+    description: "Use them to change the context properties",
+    // target: () => document.querySelector<HTMLElement>(".toolbar nav button:nth-child(1)"),
+    target: () => document.querySelector<HTMLElement>("#step-1"),
+    actions: [
+      { label: "Prev", action: "prev" },
+      { label: "Next", action: "next" },
+    ],
+  },
+  {
+    type: "wait",
+    id: "step-xx",
+    title: "Step xx",
+    description: "Wait for 2 seconds",
+    effect({ show, next }) {
+      show()
+      let timer = setTimeout(next, 5000)
+      return () => clearTimeout(timer)
+    },
+  },
+  {
+    type: "tooltip",
+    id: "step-2",
+    title: "Step 2. Visualizer",
+    description: "Use them to see the state of the tour. Click the Visualizer button to proceed.",
+    target: () => document.querySelector<HTMLElement>(".toolbar nav button:nth-child(2)"),
+    actions: [
+      { label: "Prev", action: "prev" },
+      { label: "Next", action: "next" },
+    ],
+  },
+  {
+    type: "tooltip",
+    id: "step-4",
+    title: "Step 4. Close",
+    description: "Here's the context information",
+    target: () => document.querySelector<HTMLElement>(".toolbar [data-content][data-active]"),
+    placement: "left-start",
+    actions: [{ label: "Finish", action: "dismiss" }],
+  },
+]
 
 export default function Page() {
   const controls = useControls(tourControls)
@@ -13,7 +69,8 @@ export default function Page() {
   const [state, send] = useMachine(
     tour.machine({
       id: useId(),
-      steps: tourData,
+      steps,
+      // steps: tourData,
     }),
     {
       // context: controls.context,
@@ -46,34 +103,42 @@ export default function Page() {
           </div>
         </div>
 
-        <Portal>
-          <div {...api.getOverlayProps()} />
-          <div {...api.getSpotlightProps()} />
-          <div {...api.getPositionerProps()}>
-            {api.currentStep && (
+        {api.currentStep && api.open && (
+          <Portal>
+            {api.currentStep.backdrop && <div {...api.getBackdropProps()} />}
+            <div {...api.getSpotlightProps()} />
+            <div {...api.getPositionerProps()}>
               <div {...api.getContentProps()}>
-                <div {...api.getArrowProps()}>
-                  <div {...api.getArrowTipProps()} />
-                </div>
+                {api.currentStep.arrow && (
+                  <div {...api.getArrowProps()}>
+                    <div {...api.getArrowTipProps()} />
+                  </div>
+                )}
+
                 <p {...api.getTitleProps()}>{api.currentStep.title}</p>
                 <div {...api.getDescriptionProps()}>{api.currentStep.description}</div>
+                <div {...api.getProgressTextProps()}>{api.getProgressText()}</div>
 
-                <div className="tour button__group">
-                  <button {...api.getPrevTriggerProps()}>Prev</button>
-                  <button {...api.getNextTriggerProps()}>Next</button>
-                  {api.lastStep && (
-                    <button {...api.getCloseTriggerProps()} style={{ marginLeft: "auto" }}>
-                      Close
-                    </button>
-                  )}
-                </div>
+                {api.currentStep.actions && (
+                  <div className="tour button__group">
+                    {api.currentStep.actions.map((action) => (
+                      <button key={action.label} {...api.getActionTriggerProps({ action })}>
+                        {action.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <button {...api.getCloseTriggerProps()}>
+                  <X />
+                </button>
               </div>
-            )}
-          </div>
-        </Portal>
+            </div>
+          </Portal>
+        )}
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls.ui} viz>
         <StateVisualizer state={state} omit={["steps"]} />
       </Toolbar>
     </>

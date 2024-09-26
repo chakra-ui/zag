@@ -10,14 +10,41 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
 export interface StepEffectArgs {
   next(): void
   goto(id: string): void
-  waitFor(fn: () => boolean | undefined): Promise<void>
   dismiss(): void
-  done(): void
-  update(args: Partial<StepBaseDetails>): void
+  show(): void
+  update(data: Partial<StepBaseDetails>): void
   target?: () => HTMLElement | null
 }
 
+export type StepType = "tooltip" | "dialog" | "wait" | "floating"
+
+export type StepActionType = "next" | "prev" | "skip" | "dismiss"
+
+export type StepActionFn = (actionMap: StepActionMap) => void
+
+export type StepPlacement = Placement | "center"
+
+export interface StepAction {
+  /**
+   * The label of the action
+   */
+  label: string
+  /**
+   * The action to perform
+   */
+  action?: StepActionType | StepActionFn
+  /**
+   * The attributes to apply to the action trigger
+   */
+  attrs?: Record<string, any>
+}
+
 export interface StepBaseDetails {
+  /**
+   * The type of the step. If no target is provided,
+   * the step will be treated as a modal step.
+   */
+  type?: StepType
   /**
    * Function to return the target element to highlight
    */
@@ -31,17 +58,25 @@ export interface StepBaseDetails {
    */
   description: any
   /**
-   * The image or video to display in the step
-   */
-  media?: any
-  /**
    * The placement of the step
    */
-  placement?: Placement
+  placement?: StepPlacement
   /**
    * Additional metadata of the step
    */
   meta?: Record<string, any>
+  /**
+   * Whether to show a backdrop behind the step
+   */
+  backdrop?: boolean
+  /**
+   * Whether to show an arrow tip on the step
+   */
+  arrow?: boolean
+  /**
+   * The actions to perform when the step is completed
+   */
+  actions?: StepAction[]
 }
 
 export interface StepDetails extends StepBaseDetails {
@@ -53,20 +88,24 @@ export interface StepDetails extends StepBaseDetails {
    * The effect to run before the step is shown
    */
   effect?(args: StepEffectArgs): VoidFunction
-  /**
-   * Whether to show a backdrop behind the step
-   */
-  backdrop?: boolean
 }
 
 export interface StepChangeDetails {
-  step: string | null
-  index: number
-  count: number
+  currentStepId: string | null
+  currentStepIndex: number
+  totalSteps: number
   complete: boolean
+  progress: number
 }
 
-export type StepStatus = "idle" | "started" | "skipped" | "completed" | "stopped"
+export type StepStatus = "idle" | "started" | "skipped" | "completed" | "dismissed" | "not-found"
+
+export interface StepActionMap {
+  next(): void
+  prev(): void
+  dismiss(): void
+  goto(id: string): void
+}
 
 export interface StatusChangeDetails {
   status: StepStatus
@@ -96,7 +135,7 @@ export type ElementIds = Partial<{
   title: string
   description: string
   positioner: string
-  overlay: string
+  backdrop: string
   arrow: string
 }>
 
@@ -159,11 +198,6 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * The translations for the tour
    */
   translations: IntlTranslations
-  /**
-   * The behavior when the tour is skipped
-   * @default "complete"
-   */
-  skipBehavior: "skip-step" | "complete"
 }
 
 interface PrivateContext {
@@ -176,7 +210,7 @@ interface PrivateContext {
    * @internal
    * The current placement of the menu
    */
-  currentPlacement?: Placement
+  currentPlacement?: StepPlacement
   /**
    * @internal
    * The size of the boundary element (default to the window size)
@@ -192,6 +226,11 @@ interface PrivateContext {
    * The function to cleanup the step effects
    */
   _effectCleanup?: VoidFunction
+  /**
+   * @internal
+   * The resolved target element
+   */
+  resolvedTarget: { value: HTMLElement | null }
 }
 
 type ComputedContext = Readonly<{
@@ -214,11 +253,11 @@ type ComputedContext = Readonly<{
   /**
    * Whether the current step is the first step
    */
-  firstStep: boolean
+  isFirstStep: boolean
   /**
    * Whether the current step is the last step
    */
-  lastStep: boolean
+  isLastStep: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -227,7 +266,7 @@ export interface MachineContext extends PublicContext, PrivateContext, ComputedC
 
 export interface MachineState {
   tags: "closed" | "open"
-  value: "closed" | "open" | "scrolling"
+  value: "tour.inactive" | "tour.active" | "step.waiting" | "target.resolving" | "target.scrolling"
 }
 
 export type State = S.State<MachineContext, MachineState>
@@ -240,7 +279,19 @@ export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface StepActionTriggerProps {
+  action: StepAction
+}
+
 export interface MachineApi<T extends PropTypes = PropTypes> {
+  /**
+   * Whether the tour is open
+   */
+  open: boolean
+  /**
+   * The total number of steps
+   */
+  totalSteps: number
   /**
    * The index of the current step
    */
@@ -306,15 +357,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   prev(): void
   /**
-   * Skip the tour. The behavior is defined by the `skipBehavior` option
-   */
-  skip(): void
-  /**
-   * Get the progress text
+   * Returns the progress text
    */
   getProgressText(): string
+  /**
+   * Returns the progress percent
+   */
+  getProgressPercent(): number
 
-  getOverlayProps(): T["element"]
+  getBackdropProps(): T["element"]
   getSpotlightProps(): T["element"]
   getProgressTextProps(): T["element"]
 
@@ -325,9 +376,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
 
   getTitleProps(): T["element"]
   getDescriptionProps(): T["element"]
-
-  getNextTriggerProps(): T["button"]
-  getPrevTriggerProps(): T["button"]
   getCloseTriggerProps(): T["button"]
-  getSkipTriggerProps(): T["button"]
+  getActionTriggerProps(props: StepActionTriggerProps): T["button"]
 }

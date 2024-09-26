@@ -1,14 +1,15 @@
 import { mergeProps } from "@zag-js/core"
+import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tour.anatomy"
 import { dom } from "./tour.dom"
-import type { MachineApi, Send, State } from "./tour.types"
-import { getClipPath } from "./utils/get-clip-path"
-import { dataAttr } from "@zag-js/dom-query"
+import type { MachineApi, Send, State, StepActionMap } from "./tour.types"
+import { getClipPath } from "./utils/clip-path"
+import { findStepIndex, isTooltipPlacement } from "./utils/step"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const isOpen = state.hasTag("open")
+  const open = state.hasTag("open")
 
   const steps = Array.from(state.context.steps)
   const index = state.context.currentStepIndex
@@ -18,15 +19,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const hasNextStep = state.context.hasNextStep
   const hasPrevStep = state.context.hasPrevStep
 
-  const firstStep = state.context.firstStep
-  const lastStep = state.context.lastStep
+  const firstStep = state.context.isFirstStep
+  const lastStep = state.context.isLastStep
+
+  const placement = state.context.currentPlacement
+  const currentRect = state.context.currentRect
 
   const popperStyles = getPlacementStyles({
     strategy: "absolute",
-    placement: state.context.currentPlacement,
+    placement: isTooltipPlacement(placement) ? placement : undefined,
   })
-
-  const currentRect = state.context.currentRect
 
   const clipPath = getClipPath({
     rect: currentRect,
@@ -34,7 +36,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     radius: state.context.radius,
   })
 
+  const actionMap: StepActionMap = {
+    next() {
+      send({ type: "NEXT", src: "actionTrigger" })
+    },
+    prev() {
+      send({ type: "PREV", src: "actionTrigger" })
+    },
+    dismiss() {
+      send({ type: "DISMISS", src: "actionTrigger" })
+    },
+    goto(id) {
+      send({ type: "STEP.SET", value: id, src: "actionTrigger" })
+    },
+  }
+
   return {
+    open: open,
+    totalSteps: steps.length,
     currentIndex: index,
     currentStep: step,
     hasNextStep,
@@ -74,21 +93,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     prev() {
       send({ type: "PREV" })
     },
-    skip() {
-      send({ type: "SKIP" })
+    getProgressPercent() {
+      return (index / steps.length) * 100
     },
     getProgressText() {
-      const details = { current: index + 1, total: steps.length }
+      const effectiveSteps = steps.filter((step) => step.type !== "wait")
+      const index = findStepIndex(effectiveSteps, step?.id)
+      const details = { current: index, total: effectiveSteps.length }
       return state.context.translations.progressText?.(details) ?? ""
     },
 
-    getOverlayProps() {
+    getBackdropProps() {
       return normalize.element({
-        ...parts.overlay.attrs,
-        id: dom.getOverlayId(state.context),
+        ...parts.backdrop.attrs,
+        id: dom.getBackdropId(state.context),
         dir: state.context.dir,
-        hidden: !isOpen,
-        "data-state": isOpen ? "open" : "closed",
+        hidden: !open,
+        "data-state": open ? "open" : "closed",
         style: {
           clipPath: `path("${clipPath}")`,
           position: "absolute",
@@ -101,7 +122,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getSpotlightProps() {
       return normalize.element({
         ...parts.spotlight.attrs,
-        hidden: !isOpen,
+        hidden: !open || !step?.target?.(),
         style: {
           position: "absolute",
           width: `${currentRect.width}px`,
@@ -125,7 +146,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.positioner.attrs,
         dir: state.context.dir,
         id: dom.getPositionerId(state.context),
-        style: popperStyles.floating,
+        "data-type": step?.type,
+        "data-placement": state.context.currentPlacement,
+        style: step?.type === "tooltip" ? popperStyles.floating : undefined,
       })
     },
 
@@ -134,10 +157,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getArrowId(state.context),
         ...parts.arrow.attrs,
         dir: state.context.dir,
-        style: {
-          ...popperStyles.arrow,
-          opacity: hasTarget ? undefined : 0,
-        },
+        hidden: step?.type !== "tooltip",
+        style: step?.type === "tooltip" ? popperStyles.arrow : undefined,
+        opacity: hasTarget ? undefined : 0,
       })
     },
 
@@ -158,9 +180,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-modal": "true",
         "aria-live": "polite",
         "aria-atomic": "true",
-        hidden: !isOpen,
-        "data-state": isOpen ? "open" : "closed",
-        "data-placement": hasTarget ? state.context.currentPlacement : "center",
+        hidden: !open,
+        "data-state": open ? "open" : "closed",
+        "data-type": step?.type,
+        "data-placement": state.context.currentPlacement,
         "data-step": step?.id,
         "aria-labelledby": dom.getTitleId(state.context),
         "aria-describedby": dom.getDescriptionId(state.context),
@@ -201,50 +224,65 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getNextTriggerProps() {
-      return normalize.button({
-        ...parts.nextTrigger.attrs,
-        disabled: !hasNextStep,
-        "data-disabled": dataAttr(!hasNextStep),
-        "aria-label": state.context.translations.nextStep,
-        onClick() {
-          send({ type: "NEXT", src: "nextTrigger" })
-        },
-      })
-    },
-
-    getPrevTriggerProps() {
-      return normalize.button({
-        ...parts.prevTrigger.attrs,
-        disabled: !hasPrevStep,
-        "data-disabled": dataAttr(!hasPrevStep),
-        type: "button",
-        "aria-label": state.context.translations.prevStep,
-        onClick() {
-          send({ type: "PREV", src: "prevTrigger" })
-        },
-      })
-    },
-
     getCloseTriggerProps() {
-      return normalize.button({
+      return normalize.element({
         ...parts.closeTrigger.attrs,
-        type: "button",
         "aria-label": state.context.translations.close,
-        onClick() {
-          send({ type: "STOP", src: "closeTrigger" })
-        },
+        onClick: actionMap.dismiss,
       })
     },
 
-    getSkipTriggerProps() {
+    getActionTriggerProps(props) {
+      const { action, attrs } = props.action
+
+      let actionProps: Record<string, any> = {}
+
+      switch (action) {
+        case "next":
+          actionProps = {
+            "data-type": "next",
+            disabled: !hasNextStep,
+            "data-disabled": dataAttr(!hasNextStep),
+            "aria-label": state.context.translations.nextStep,
+            onClick: actionMap.next,
+          }
+          break
+
+        case "prev":
+          actionProps = {
+            "data-type": "prev",
+            disabled: !hasPrevStep,
+            "data-disabled": dataAttr(!hasPrevStep),
+            "aria-label": state.context.translations.prevStep,
+            onClick: actionMap.prev,
+          }
+          break
+
+        case "dismiss":
+          actionProps = {
+            "data-type": "close",
+            "aria-label": state.context.translations.close,
+            onClick: actionMap.dismiss,
+          }
+          break
+
+        default:
+          actionProps = {
+            "data-type": "custom",
+            onClick() {
+              if (typeof action === "function") {
+                action(actionMap)
+              }
+            },
+          }
+          break
+      }
+
       return normalize.button({
-        ...parts.skipTrigger.attrs,
+        ...parts.actionTrigger.attrs,
         type: "button",
-        "aria-label": state.context.translations.skip,
-        onClick() {
-          send({ type: "SKIP" })
-        },
+        ...attrs,
+        ...actionProps,
       })
     },
   }

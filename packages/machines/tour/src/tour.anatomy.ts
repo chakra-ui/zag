@@ -2,17 +2,15 @@ import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("tour").parts(
   "content",
-  "nextTrigger",
-  "prevTrigger",
+  "actionTrigger",
   "closeTrigger",
-  "skipTrigger",
   "progressText",
   "title",
   "description",
   "positioner",
   "arrow",
   "arrowTip",
-  "overlay",
+  "backdrop",
   "spotlight",
 )
 
