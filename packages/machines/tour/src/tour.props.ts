@@ -18,7 +18,6 @@ export const props = createProps<UserDefinedContext>()([
   "onStepChange",
   "preventInteraction",
   "radius",
-  "skipBehavior",
   "step",
   "steps",
   "translations",
