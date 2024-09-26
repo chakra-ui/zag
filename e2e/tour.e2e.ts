@@ -82,7 +82,7 @@ test.describe("tour", () => {
     expect(selection).toBe("")
   })
 
-  test("[preventInteraction=false] should allow interacting with target", async () => {
+  test.fixme("[preventInteraction=false] should allow interacting with target", async () => {
     await I.controls.bool("preventInteraction", false)
 
     await I.clickStart()

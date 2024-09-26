@@ -344,9 +344,15 @@ export function machine(userContext: UserDefinedContext) {
             },
             onPointerDownOutside(event) {
               ctx.onPointerDownOutside?.(event)
+
               const isWithin = isEventInRect(ctx.currentRect, event.detail.originalEvent)
-              const dismiss = ctx.closeOnInteractOutside || !isWithin
-              if (!dismiss) {
+
+              if (isWithin) {
+                event.preventDefault()
+                return
+              }
+
+              if (!ctx.closeOnInteractOutside) {
                 event.preventDefault()
               }
             },
