@@ -1,7 +1,7 @@
 import { getWindow } from "@zag-js/dom-query"
 import type { MachineContext, Offset } from "../tour.types"
 
-type Rect = Required<MachineContext["currentRect"]>
+type Rect = Record<"x" | "y" | "width" | "height", number>
 
 export function getCenterRect(size: MachineContext["boundarySize"]) {
   return { x: size.width / 2, y: size.height / 2, width: 0, height: 0 }
