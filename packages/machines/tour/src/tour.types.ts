@@ -62,6 +62,10 @@ export interface StepBaseDetails {
    */
   placement?: StepPlacement
   /**
+   * The offset between the content and the target
+   */
+  offset?: { mainAxis?: number; crossAxis?: number }
+  /**
    * Additional metadata of the step
    */
   meta?: Record<string, any>
@@ -205,7 +209,7 @@ interface PrivateContext {
    * @internal
    * The rect of the current step's target element
    */
-  currentRect: Required<AnchorRect>
+  targetRect: Required<AnchorRect>
   /**
    * @internal
    * The current placement of the menu

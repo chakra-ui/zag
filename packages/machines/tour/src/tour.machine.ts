@@ -38,7 +38,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         ...ctx,
         resolvedTarget: ref({ value: null }),
-        currentRect: ref({ width: 0, height: 0, x: 0, y: 0 }),
+        targetRect: ref({ width: 0, height: 0, x: 0, y: 0 }),
         boundarySize: ref({ width: 0, height: 0 }),
       },
 
@@ -185,7 +185,7 @@ export function machine(userContext: UserDefinedContext) {
           set.step(ctx, evt.value)
         },
         clearStep(ctx) {
-          ctx.currentRect = ref({ width: 0, height: 0, x: 0, y: 0 })
+          ctx.targetRect = ref({ width: 0, height: 0, x: 0, y: 0 })
           set.step(ctx, -1)
         },
         setInitialStep(ctx, evt) {
@@ -329,9 +329,9 @@ export function machine(userContext: UserDefinedContext) {
 
         trackInteractOutside(ctx, _evt, { send }) {
           if (ctx.currentStep == null) return
-          const getContentEl = () => dom.getContentEl(ctx)
+          const contentEl = () => dom.getContentEl(ctx)
 
-          return trackInteractOutside(getContentEl, {
+          return trackInteractOutside(contentEl, {
             defer: true,
             exclude(target) {
               return contains(ctx.currentStep?.target?.(), target)
@@ -345,7 +345,7 @@ export function machine(userContext: UserDefinedContext) {
             onPointerDownOutside(event) {
               ctx.onPointerDownOutside?.(event)
 
-              const isWithin = isEventInRect(ctx.currentRect, event.detail.originalEvent)
+              const isWithin = isEventInRect(ctx.targetRect, event.detail.originalEvent)
 
               if (isWithin) {
                 event.preventDefault()
@@ -366,8 +366,8 @@ export function machine(userContext: UserDefinedContext) {
 
         trackDismissableBranch(ctx) {
           if (ctx.currentStep == null) return
-          const getContentEl = () => dom.getContentEl(ctx)
-          return trackDismissableBranch(getContentEl, { defer: true })
+          const contentEl = () => dom.getContentEl(ctx)
+          return trackDismissableBranch(contentEl, { defer: !!contentEl() })
         },
 
         trapFocus(ctx) {
@@ -394,6 +394,7 @@ export function machine(userContext: UserDefinedContext) {
             placement: ctx.currentStep.placement ?? "bottom",
             strategy: "absolute",
             gutter: 10,
+            offset: ctx.currentStep.offset,
             getAnchorRect(el) {
               if (!isHTMLElement(el)) return null
               const { x, y, width, height } = el.getBoundingClientRect()
@@ -402,7 +403,7 @@ export function machine(userContext: UserDefinedContext) {
             onComplete(data) {
               const { rects } = data.middlewareData
               ctx.currentPlacement = data.placement
-              ctx.currentRect = rects.reference
+              ctx.targetRect = rects.reference
             },
           })
         },

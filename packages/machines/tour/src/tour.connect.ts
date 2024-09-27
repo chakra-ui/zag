@@ -23,7 +23,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const lastStep = state.context.isLastStep
 
   const placement = state.context.currentPlacement
-  const currentRect = state.context.currentRect
+  const targetRect = state.context.targetRect
 
   const popperStyles = getPlacementStyles({
     strategy: "absolute",
@@ -32,7 +32,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const clipPath = getClipPath({
     enabled: isTooltipStep(step),
-    rect: currentRect,
+    rect: targetRect,
     rootSize: state.context.boundarySize,
     radius: state.context.radius,
   })
@@ -126,10 +126,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: !open || !step?.target?.(),
         style: {
           position: "absolute",
-          width: `${currentRect.width}px`,
-          height: `${currentRect.height}px`,
-          left: `${currentRect.x}px`,
-          top: `${currentRect.y}px`,
+          width: `${targetRect.width}px`,
+          height: `${targetRect.height}px`,
+          left: `${targetRect.x}px`,
+          top: `${targetRect.y}px`,
           borderRadius: `${state.context.radius}px`,
           pointerEvents: "none",
         },
