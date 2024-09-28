@@ -35,7 +35,7 @@ function Tour() {
                 {api().step.description}
               </div>
 
-              <div class="tour button__group">
+              <div>
                 <For each={api().step.actions}>
                   {(action) => (
                     <button {...api().getActionTriggerProps({ action })}>
@@ -44,6 +44,8 @@ function Tour() {
                   )}
                 </For>
               </div>
+
+              <button {...api().getCloseTriggerProps()}>X</button>
             </div>
           </div>
         </Portal>
