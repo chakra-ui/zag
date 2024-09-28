@@ -6,7 +6,7 @@ import { trackInteractOutside } from "@zag-js/interact-outside"
 import { getPlacement } from "@zag-js/popper"
 import { compact, isEqual, isString, nextIndex, prevIndex } from "@zag-js/utils"
 import { dom } from "./tour.dom"
-import type { MachineContext, MachineState, StepBaseDetails, UserDefinedContext } from "./tour.types"
+import type { MachineContext, MachineState, StepBaseDetails, StepStatus, UserDefinedContext } from "./tour.types"
 import { findStep, findStepIndex, isTooltipStep } from "./utils/step"
 import { isEventInRect, offset } from "./utils/rect"
 
@@ -20,14 +20,14 @@ export function machine(userContext: UserDefinedContext) {
       initial: "tour.inactive",
 
       context: {
-        step: null,
+        stepId: null,
         steps: [],
         preventInteraction: false,
         closeOnInteractOutside: true,
         closeOnEscape: true,
         keyboardNavigation: true,
-        offset: { x: 10, y: 10 },
-        radius: 4,
+        spotlightOffset: { x: 10, y: 10 },
+        spotlightRadius: 4,
         translations: {
           nextStep: "next step",
           prevStep: "previous step",
@@ -43,18 +43,18 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       computed: {
-        currentStepIndex: (ctx) => findStepIndex(ctx.steps, ctx.step),
-        currentStep: (ctx) => findStep(ctx.steps, ctx.step),
-        hasNextStep: (ctx) => ctx.currentStepIndex < ctx.steps.length - 1,
-        hasPrevStep: (ctx) => ctx.currentStepIndex > 0,
-        isFirstStep: (ctx) => ctx.currentStepIndex === 0,
-        isLastStep: (ctx) => ctx.currentStepIndex === ctx.steps.length - 1,
+        stepIndex: (ctx) => findStepIndex(ctx.steps, ctx.stepId),
+        step: (ctx) => findStep(ctx.steps, ctx.stepId),
+        hasNextStep: (ctx) => ctx.stepIndex < ctx.steps.length - 1,
+        hasPrevStep: (ctx) => ctx.stepIndex > 0,
+        isFirstStep: (ctx) => ctx.stepIndex === 0,
+        isLastStep: (ctx) => ctx.stepIndex === ctx.steps.length - 1,
       },
 
       created: ["validateSteps"],
 
       watch: {
-        step: ["setResolvedTarget", "raiseStepChange", "syncTargetAttrs"],
+        stepId: ["setResolvedTarget", "raiseStepChange", "syncTargetAttrs"],
       },
 
       activities: ["trackBoundarySize"],
@@ -170,10 +170,10 @@ export function machine(userContext: UserDefinedContext) {
 
       guards: {
         isLastStep: (ctx) => ctx.isLastStep,
-        isValidStep: (ctx) => ctx.step != null,
-        hasTarget: (ctx) => ctx.currentStep?.target != null,
+        isValidStep: (ctx) => ctx.stepId != null,
+        hasTarget: (ctx) => ctx.step?.target != null,
         hasResolvedTarget: (ctx) => ctx.resolvedTarget.value != null,
-        isWaitingStep: (ctx) => ctx.currentStep?.type === "wait",
+        isWaitingStep: (ctx) => ctx.step?.type === "wait",
       },
 
       actions: {
@@ -200,33 +200,33 @@ export function machine(userContext: UserDefinedContext) {
           set.step(ctx, 0)
         },
         setNextStep(ctx) {
-          const idx = nextIndex(ctx.steps, ctx.currentStepIndex)
+          const idx = nextIndex(ctx.steps, ctx.stepIndex)
           set.step(ctx, idx)
         },
         setPrevStep(ctx) {
-          const idx = prevIndex(ctx.steps, ctx.currentStepIndex)
+          const idx = prevIndex(ctx.steps, ctx.stepIndex)
           set.step(ctx, idx)
         },
         invokeOnStart(ctx) {
-          ctx.onStatusChange?.({ status: "started", step: ctx.step })
+          invoke.statusChange(ctx, "started")
         },
         invokeOnDismiss(ctx) {
-          ctx.onStatusChange?.({ status: "dismissed", step: ctx.step })
+          invoke.statusChange(ctx, "dismissed")
         },
         invokeOnComplete(ctx) {
-          ctx.onStatusChange?.({ status: "completed", step: ctx.step })
+          invoke.statusChange(ctx, "completed")
         },
         invokeOnSkip(ctx) {
-          ctx.onStatusChange?.({ status: "skipped", step: ctx.step })
+          invoke.statusChange(ctx, "skipped")
         },
         invokeOnNotFound(ctx) {
-          ctx.onStatusChange?.({ status: "not-found", step: ctx.step })
+          invoke.statusChange(ctx, "not-found")
         },
         raiseStepChange(_ctx, _evt, { send }) {
           send({ type: "STEP.CHANGED" })
         },
         setResolvedTarget(ctx, evt) {
-          const node = evt.node ?? ctx.currentStep?.target?.()
+          const node = evt.node ?? ctx.step?.target?.()
           ctx.resolvedTarget.value = node ?? null
         },
         syncTargetAttrs(ctx) {
@@ -271,7 +271,7 @@ export function machine(userContext: UserDefinedContext) {
 
       activities: {
         waitForTarget(ctx, _evt, { send }) {
-          const targetEl = ctx.currentStep?.target
+          const targetEl = ctx.step?.target
 
           const win = dom.getWin(ctx)
           const rootNode = dom.getRootNode(ctx)
@@ -296,17 +296,20 @@ export function machine(userContext: UserDefinedContext) {
         },
 
         trackBoundarySize(ctx) {
-          // Use window size as boundary for now
           const win = dom.getWin(ctx)
+          const doc = dom.getDoc(ctx)
+
           const onResize = () => {
-            ctx.boundarySize = { width: win.innerWidth, height: win.innerHeight }
+            const width = visualViewport?.width ?? win.innerWidth
+            const height = doc.documentElement.scrollHeight
+            ctx.boundarySize = { width, height }
           }
+
           onResize()
 
-          win.addEventListener("resize", onResize)
-          return () => {
-            win.removeEventListener("resize", onResize)
-          }
+          const viewport = win.visualViewport ?? win
+          viewport.addEventListener("resize", onResize)
+          return () => viewport.removeEventListener("resize", onResize)
         },
 
         trackEscapeKeydown(ctx, _evt, { send }) {
@@ -328,13 +331,13 @@ export function machine(userContext: UserDefinedContext) {
         },
 
         trackInteractOutside(ctx, _evt, { send }) {
-          if (ctx.currentStep == null) return
+          if (ctx.step == null) return
           const contentEl = () => dom.getContentEl(ctx)
 
           return trackInteractOutside(contentEl, {
             defer: true,
             exclude(target) {
-              return contains(ctx.currentStep?.target?.(), target)
+              return contains(ctx.step?.target?.(), target)
             },
             onFocusOutside(event) {
               ctx.onFocusOutside?.(event)
@@ -365,9 +368,9 @@ export function machine(userContext: UserDefinedContext) {
         },
 
         trackDismissableBranch(ctx) {
-          if (ctx.currentStep == null) return
+          if (ctx.step == null) return
           const contentEl = () => dom.getContentEl(ctx)
-          return trackDismissableBranch(contentEl, { defer: !!contentEl() })
+          return trackDismissableBranch(contentEl, { defer: !contentEl() })
         },
 
         trapFocus(ctx) {
@@ -381,24 +384,24 @@ export function machine(userContext: UserDefinedContext) {
         },
 
         trackPlacement(ctx) {
-          if (ctx.currentStep == null) return
+          if (ctx.step == null) return
 
-          ctx.currentPlacement = ctx.currentStep.placement ?? "bottom"
+          ctx.currentPlacement = ctx.step.placement ?? "bottom"
 
-          if (!isTooltipStep(ctx.currentStep)) return
+          if (!isTooltipStep(ctx.step)) return
 
           const positionerEl = () => dom.getPositionerEl(ctx)
 
           return getPlacement(ctx.resolvedTarget.value, positionerEl, {
-            defer: !!positionerEl(),
-            placement: ctx.currentStep.placement ?? "bottom",
+            defer: true,
+            placement: ctx.step.placement ?? "bottom",
             strategy: "absolute",
             gutter: 10,
-            offset: ctx.currentStep.offset,
+            offset: ctx.step.offset,
             getAnchorRect(el) {
               if (!isHTMLElement(el)) return null
-              const { x, y, width, height } = el.getBoundingClientRect()
-              return offset({ x, y, width, height }, ctx.offset)
+              const rect = el.getBoundingClientRect()
+              return offset(rect, ctx.spotlightOffset)
             },
             onComplete(data) {
               const { rects } = data.middlewareData
@@ -415,19 +418,27 @@ export function machine(userContext: UserDefinedContext) {
 const invoke = {
   stepChange(ctx: MachineContext) {
     const effectiveLength = ctx.steps.filter((step) => step.type !== "wait").length
-    const progress = (ctx.currentStepIndex + 1) / effectiveLength
+    const progress = (ctx.stepIndex + 1) / effectiveLength
 
     ctx.onStepChange?.({
       complete: ctx.isLastStep,
-      currentStepId: ctx.step,
+      stepId: ctx.stepId,
       totalSteps: ctx.steps.length,
-      currentStepIndex: ctx.currentStepIndex,
+      stepIndex: ctx.stepIndex,
       progress,
     })
 
     // cleanup previous effect
     ctx._effectCleanup?.()
     ctx._effectCleanup = undefined
+  },
+
+  statusChange(ctx: MachineContext, status: StepStatus) {
+    ctx.onStatusChange?.({
+      status,
+      stepId: ctx.stepId,
+      stepIndex: ctx.stepIndex,
+    })
   },
 }
 
@@ -436,37 +447,37 @@ const set = {
     const step = ctx.steps[idx]
 
     if (!step) {
-      ctx.step = null
+      ctx.stepId = null
       invoke.stepChange(ctx)
       return
     }
 
-    if (isEqual(ctx.step, step.id)) return
+    if (isEqual(ctx.stepId, step.id)) return
 
     const update = (data: Partial<StepBaseDetails>) => {
       ctx.steps[idx] = { ...step, ...data }
     }
 
     const next = () => {
-      const idx = nextIndex(ctx.steps, ctx.currentStepIndex)
-      ctx.step = ctx.steps[idx].id
+      const idx = nextIndex(ctx.steps, ctx.stepIndex)
+      ctx.stepId = ctx.steps[idx].id
       invoke.stepChange(ctx)
     }
 
     const goto = (id: string) => {
       const idx = ctx.steps.findIndex((s) => s.id === id)
-      ctx.step = ctx.steps[idx].id
+      ctx.stepId = ctx.steps[idx].id
       invoke.stepChange(ctx)
     }
 
     const dismiss = () => {
-      ctx.step = null
+      ctx.stepId = null
       invoke.stepChange(ctx)
-      ctx.onStatusChange?.({ status: "dismissed", step: ctx.step })
+      invoke.statusChange(ctx, "dismissed")
     }
 
     const show = () => {
-      ctx.step = step.id
+      ctx.stepId = step.id
       invoke.stepChange(ctx)
     }
 

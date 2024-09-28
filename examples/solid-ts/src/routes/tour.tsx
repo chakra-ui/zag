@@ -1,7 +1,7 @@
 import { tourControls, tourData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tour from "@zag-js/tour"
-import { Show, createMemo, createUniqueId } from "solid-js"
+import { For, Show, createMemo, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 import { IFrame } from "~/components/iframe"
 import { StateVisualizer } from "~/components/state-visualizer"
@@ -11,9 +11,13 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(tourControls)
 
-  const [state, send] = useMachine(tour.machine({ id: createUniqueId(), steps: tourData }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    tour.machine({
+      id: createUniqueId(),
+      steps: tourData,
+    }),
+    { context: controls.context },
+  )
 
   const api = createMemo(() => tour.connect(state, send, normalizeProps))
 
@@ -42,31 +46,31 @@ export default function Page() {
           </div>
         </div>
 
-        <Portal>
-          <div {...api().getOverlayProps()} />
-          <div {...api().getSpotlightProps()} />
-          <div {...api().getPositionerProps()}>
-            <Show when={api().currentStep}>
+        <Show when={api().open && api().step}>
+          <Portal>
+            <Show when={api().step?.backdrop}>
+              <div {...api().getBackdropProps()} />
+            </Show>
+            <div {...api().getSpotlightProps()} />
+            <div {...api().getPositionerProps()}>
               <div {...api().getContentProps()}>
-                <div {...api().getArrowProps()}>
-                  <div {...api().getArrowTipProps()} />
-                </div>
-                <p {...api().getTitleProps()}>{api().currentStep!.title}</p>
-                <div {...api().getDescriptionProps()}>{api().currentStep!.description}</div>
+                <Show when={api().step?.arrow}>
+                  <div {...api().getArrowProps()}>
+                    <div {...api().getArrowTipProps()} />
+                  </div>
+                </Show>
+                <p {...api().getTitleProps()}>{api().step!.title}</p>
+                <div {...api().getDescriptionProps()}>{api().step!.description}</div>
 
                 <div class="tour button__group">
-                  <button {...api().getPrevTriggerProps()}>Prev</button>
-                  <button {...api().getNextTriggerProps()}>Next</button>
-                  {api().lastStep && (
-                    <button {...api().getCloseTriggerProps()} style={{ "margin-left": "auto" }}>
-                      Close
-                    </button>
-                  )}
+                  <For each={api().step?.actions}>
+                    {(action) => <button {...api().getActionTriggerProps({ action })}>{action.label}</button>}
+                  </For>
                 </div>
               </div>
-            </Show>
-          </div>
-        </Portal>
+            </div>
+          </Portal>
+        </Show>
       </main>
 
       <Toolbar controls={controls.ui}>

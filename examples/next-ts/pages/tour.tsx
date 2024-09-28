@@ -47,25 +47,25 @@ export default function Page() {
           </div>
         </div>
 
-        {api.currentStep && api.open && (
+        {api.step && api.open && (
           <Portal>
-            {api.currentStep.backdrop && <div {...api.getBackdropProps()} />}
+            {api.step.backdrop && <div {...api.getBackdropProps()} />}
             <div {...api.getSpotlightProps()} />
             <div {...api.getPositionerProps()}>
               <div {...api.getContentProps()}>
-                {api.currentStep.arrow && (
+                {api.step.arrow && (
                   <div {...api.getArrowProps()}>
                     <div {...api.getArrowTipProps()} />
                   </div>
                 )}
 
-                <p {...api.getTitleProps()}>{api.currentStep.title}</p>
-                <div {...api.getDescriptionProps()}>{api.currentStep.description}</div>
+                <p {...api.getTitleProps()}>{api.step.title}</p>
+                <div {...api.getDescriptionProps()}>{api.step.description}</div>
                 <div {...api.getProgressTextProps()}>{api.getProgressText()}</div>
 
-                {api.currentStep.actions && (
+                {api.step.actions && (
                   <div className="tour button__group">
-                    {api.currentStep.actions.map((action) => (
+                    {api.step.actions.map((action) => (
                       <button key={action.label} {...api.getActionTriggerProps({ action })}>
                         {action.label}
                       </button>

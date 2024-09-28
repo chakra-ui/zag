@@ -2,6 +2,7 @@ import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { AnchorRect, Placement } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { Point } from "./utils/rect"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -18,7 +19,7 @@ export interface StepEffectArgs {
 
 export type StepType = "tooltip" | "dialog" | "wait" | "floating"
 
-export type StepActionType = "next" | "prev" | "skip" | "dismiss"
+export type StepActionType = "next" | "prev" | "dismiss"
 
 export type StepActionFn = (actionMap: StepActionMap) => void
 
@@ -95,8 +96,8 @@ export interface StepDetails extends StepBaseDetails {
 }
 
 export interface StepChangeDetails {
-  currentStepId: string | null
-  currentStepIndex: number
+  stepId: string | null
+  stepIndex: number
   totalSteps: number
   complete: boolean
   progress: number
@@ -113,7 +114,8 @@ export interface StepActionMap {
 
 export interface StatusChangeDetails {
   status: StepStatus
-  step: string | null
+  stepId: string | null
+  stepIndex: number
 }
 
 export interface ProgressTextDetails {
@@ -127,11 +129,6 @@ export interface IntlTranslations {
   prevStep?: string
   close?: string
   skip?: string
-}
-
-export interface Offset {
-  x: number
-  y: number
 }
 
 export type ElementIds = Partial<{
@@ -157,9 +154,9 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    */
   steps: StepDetails[]
   /**
-   * The index of the currently highlighted step
+   * The id of the currently highlighted step
    */
-  step: string | null
+  stepId: string | null
   /**
    * Callback when the highlighted step changes
    */
@@ -189,15 +186,15 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    */
   preventInteraction: boolean
   /**
-   * The offsets to apply to the overlay
+   * The offsets to apply to the spotlight
    * @default "{ x: 10, y: 10 }"
    */
-  offset: Offset
+  spotlightOffset: Point
   /**
-   * The radius of the overlay clip path
+   * The radius of the spotlight clip path
    * @default 4
    */
-  radius: number
+  spotlightRadius: number
   /**
    * The translations for the tour
    */
@@ -241,11 +238,11 @@ type ComputedContext = Readonly<{
   /**
    * The current step details
    */
-  currentStep: StepDetails | null
+  step: StepDetails | null
   /**
    * The index of the current step
    */
-  currentStepIndex: number
+  stepIndex: number
   /**
    * Whether there is a next step
    */
@@ -299,11 +296,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The index of the current step
    */
-  currentIndex: number
+  stepIndex: number
   /**
    * The current step details
    */
-  currentStep: StepDetails | null
+  step: StepDetails | null
   /**
    * Whether there is a next step
    */

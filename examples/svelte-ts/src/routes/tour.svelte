@@ -4,6 +4,7 @@
   import { tourControls, tourData } from "@zag-js/shared"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
   import * as tour from "@zag-js/tour"
+  import { X } from "lucide-svelte"
 
   const controls = useControls(tourControls)
 
@@ -36,27 +37,34 @@
     </div>
   </div>
 
-  <div use:portal>
-    <div {...api.getOverlayProps()}></div>
-    <div {...api.getSpotlightProps()}></div>
-    <div {...api.getPositionerProps()}>
-      {#if api.currentStep}
-        <div {...api.getContentProps()}>
-          <div {...api.getArrowProps()}>
-            <div {...api.getArrowTipProps()}></div>
-          </div>
-          <p {...api.getTitleProps()}>{api.currentStep.title}</p>
-          <div {...api.getDescriptionProps()}>{api.currentStep.description}</div>
-
-          <div class="tour button__group">
-            <button {...api.getPrevTriggerProps()}>Prev</button>
-            <button {...api.getNextTriggerProps()}>Next</button>
-            {#if api.lastStep}
-              <button {...api.getCloseTriggerProps()} style="margin-left:auto;"> Close </button>
-            {/if}
-          </div>
-        </div>
+  {#if api.open && api.step}
+    <div use:portal>
+      {#if api.step.backdrop}
+        <div {...api.getBackdropProps()}></div>
       {/if}
+      <div {...api.getSpotlightProps()}></div>
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
+          {#if api.step.arrow}
+            <div {...api.getArrowProps()}>
+              <div {...api.getArrowTipProps()}></div>
+            </div>
+          {/if}
+          <p {...api.getTitleProps()}>{api.step.title}</p>
+          <div {...api.getDescriptionProps()}>{api.step.description}</div>
+
+          {#if api.step.actions}
+            <div class="tour button__group">
+              {#each api.step.actions as action}
+                <button {...api.getActionTriggerProps({ action })}>{action.label}</button>
+              {/each}
+            </div>
+          {/if}
+          <button {...api.getCloseTriggerProps()}>
+            <X />
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
+  {/if}
 </main>

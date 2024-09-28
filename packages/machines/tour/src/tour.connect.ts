@@ -1,5 +1,5 @@
 import { mergeProps } from "@zag-js/core"
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, MAX_Z_INDEX } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tour.anatomy"
@@ -12,8 +12,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const open = state.hasTag("open")
 
   const steps = Array.from(state.context.steps)
-  const index = state.context.currentStepIndex
-  const step = state.context.currentStep
+  const stepIndex = state.context.stepIndex
+  const step = state.context.step
   const hasTarget = typeof step?.target?.() !== "undefined"
 
   const hasNextStep = state.context.hasNextStep
@@ -34,7 +34,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     enabled: isTooltipStep(step),
     rect: targetRect,
     rootSize: state.context.boundarySize,
-    radius: state.context.radius,
+    radius: state.context.spotlightRadius,
   })
 
   const actionMap: StepActionMap = {
@@ -55,8 +55,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   return {
     open: open,
     totalSteps: steps.length,
-    currentIndex: index,
-    currentStep: step,
+    stepIndex,
+    step,
     hasNextStep,
     hasPrevStep,
     firstStep,
@@ -95,7 +95,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "STEP.PREV" })
     },
     getProgressPercent() {
-      return (index / steps.length) * 100
+      return (stepIndex / steps.length) * 100
     },
     getProgressText() {
       const effectiveSteps = steps.filter((step) => step.type !== "wait")
@@ -116,6 +116,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           position: "absolute",
           inset: "0",
           willChange: "clip-path",
+          zIndex: MAX_Z_INDEX,
         },
       })
     },
@@ -130,7 +131,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           height: `${targetRect.height}px`,
           left: `${targetRect.x}px`,
           top: `${targetRect.y}px`,
-          borderRadius: `${state.context.radius}px`,
+          borderRadius: `${state.context.spotlightRadius}px`,
           pointerEvents: "none",
         },
       })
@@ -149,7 +150,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getPositionerId(state.context),
         "data-type": step?.type,
         "data-placement": state.context.currentPlacement,
-        style: step?.type === "tooltip" ? popperStyles.floating : undefined,
+        style: step?.type === "tooltip" ? popperStyles.floating : { zIndex: MAX_Z_INDEX },
       })
     },
 
@@ -189,6 +190,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-labelledby": dom.getTitleId(state.context),
         "aria-describedby": dom.getDescriptionId(state.context),
         tabIndex: -1,
+        style: { zIndex: MAX_Z_INDEX },
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!state.context.keyboardNavigation) return
@@ -228,6 +230,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getCloseTriggerProps() {
       return normalize.element({
         ...parts.closeTrigger.attrs,
+        "data-type": step?.type,
         "aria-label": state.context.translations.close,
         onClick: actionMap.dismiss,
       })
