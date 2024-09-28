@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.71.0](./#0.71.0) - 2024-09-28
+
+### Added
+
+- **Select, Combobox**
+
+  - Expose `multiple` and `disabled` in api to allow for designing custom UIs.
+
+### Changed
+
+- **Tour [BREAKING]**
+
+  - Refactor tour to be more robust and support programmatic control in wait steps.
+
 ## [0.70.0](./#0.70.0) - 2024-09-23
 
 ### Changed
