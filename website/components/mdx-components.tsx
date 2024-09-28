@@ -81,13 +81,21 @@ const components: Record<string, FC<any>> = {
     if (!comp) return null
     return (
       <Wrap mt="6" spacingX="4">
-        <ResourceLink icon={RiNpmjsFill} href={comp.npmUrl}>
+        <ResourceLink icon={RiNpmjsFill} href={comp.npmUrl} data-id="npm">
           {comp.version} (latest)
         </ResourceLink>
-        <ResourceLink icon={ImMagicWand} href={comp.visualizeUrl}>
+        <ResourceLink
+          icon={ImMagicWand}
+          href={comp.visualizeUrl}
+          data-id="logic"
+        >
           Visualize Logic
         </ResourceLink>
-        <ResourceLink icon={HiOutlineCode} href={comp.sourceUrl}>
+        <ResourceLink
+          icon={HiOutlineCode}
+          href={comp.sourceUrl}
+          data-id="source"
+        >
           View Source
         </ResourceLink>
       </Wrap>

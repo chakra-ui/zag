@@ -11,11 +11,13 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "tour",
-  initial: "closed",
+  initial: "tour.inactive",
   context: {
+    "isValidStep && hasResolvedTarget": false,
+    "isValidStep && hasTarget": false,
+    "isValidStep && isWaitingStep": false,
     "isValidStep": false,
-    "completeOnSkip": false,
-    "lastStep": false
+    "isLastStep": false
   },
   activities: ["trackBoundarySize"],
   exit: ["clearStep", "cleanupFns"],
@@ -25,7 +27,34 @@ const fetchMachine = createMachine({
     },
     "STEP.SET": {
       actions: ["setStep"]
-    }
+    },
+    "STEP.NEXT": {
+      actions: ["setNextStep"]
+    },
+    "STEP.PREV": {
+      actions: ["setPrevStep"]
+    },
+    "STEP.CHANGED": [{
+      cond: "isValidStep && hasResolvedTarget",
+      target: "target.scrolling"
+    }, {
+      cond: "isValidStep && hasTarget",
+      target: "target.resolving"
+    }, {
+      cond: "isValidStep && isWaitingStep",
+      target: "step.waiting"
+    }, {
+      cond: "isValidStep",
+      target: "tour.active"
+    }],
+    DISMISS: [{
+      cond: "isLastStep",
+      target: "tour.inactive",
+      actions: ["invokeOnDismiss", "invokeOnComplete", "clearStep"]
+    }, {
+      target: "tour.inactive",
+      actions: ["invokeOnDismiss", "clearStep"]
+    }]
   },
   on: {
     UPDATE_CONTEXT: {
@@ -33,61 +62,44 @@ const fetchMachine = createMachine({
     }
   },
   states: {
-    closed: {
+    "tour.inactive": {
       tags: ["closed"],
       on: {
         START: {
-          target: "open",
           actions: ["setInitialStep", "invokeOnStart"]
-        },
-        RESUME: {
-          target: "scrolling",
-          actions: ["invokeOnStart"]
         }
       }
     },
-    scrolling: {
-      tags: ["open"],
-      entry: ["scrollStepTargetIntoView"],
-      activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
+    "target.resolving": {
+      tags: ["closed"],
+      activities: ["waitForTarget"],
       after: {
-        0: "open"
+        MISSING_TARGET_TIMEOUT: {
+          target: "tour.inactive",
+          actions: ["invokeOnNotFound", "clearStep"]
+        }
+      },
+      on: {
+        "TARGET.RESOLVED": {
+          target: "target.scrolling",
+          actions: ["setResolvedTarget"]
+        }
       }
     },
-    open: {
+    "target.scrolling": {
       tags: ["open"],
-      activities: ["trapFocus", "trackPlacement", "trackDismissableElement"],
-      on: {
-        "STEP.CHANGED": {
-          cond: "isValidStep",
-          target: "scrolling"
-        },
-        NEXT: {
-          actions: ["setNextStep"]
-        },
-        PREV: {
-          actions: ["setPrevStep"]
-        },
-        PAUSE: {
-          target: "closed",
-          actions: ["invokeOnStop"]
-        },
-        SKIP: [{
-          cond: "completeOnSkip",
-          target: "closed",
-          actions: ["invokeOnComplete", "invokeOnSkip", "clearStep"]
-        }, {
-          actions: ["invokeOnSkip", "setNextStep"]
-        }],
-        STOP: [{
-          cond: "lastStep",
-          target: "closed",
-          actions: ["invokeOnStop", "invokeOnComplete", "clearStep"]
-        }, {
-          target: "closed",
-          actions: ["invokeOnStop", "clearStep"]
-        }]
+      entry: ["scrollToTarget"],
+      activities: ["trapFocus", "trackPlacement", "trackDismissableBranch", "trackInteractOutside", "trackEscapeKeydown"],
+      after: {
+        100: "tour.active"
       }
+    },
+    "step.waiting": {
+      tags: ["closed"]
+    },
+    "tour.active": {
+      tags: ["open"],
+      activities: ["trapFocus", "trackPlacement", "trackDismissableBranch", "trackInteractOutside", "trackEscapeKeydown"]
     }
   }
 }, {
@@ -99,8 +111,10 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "isValidStep && hasResolvedTarget": ctx => ctx["isValidStep && hasResolvedTarget"],
+    "isValidStep && hasTarget": ctx => ctx["isValidStep && hasTarget"],
+    "isValidStep && isWaitingStep": ctx => ctx["isValidStep && isWaitingStep"],
     "isValidStep": ctx => ctx["isValidStep"],
-    "completeOnSkip": ctx => ctx["completeOnSkip"],
-    "lastStep": ctx => ctx["lastStep"]
+    "isLastStep": ctx => ctx["isLastStep"]
   }
 });

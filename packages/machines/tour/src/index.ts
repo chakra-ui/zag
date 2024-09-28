@@ -10,9 +10,15 @@ export type {
   ProgressTextDetails,
   Service,
   StatusChangeDetails,
+  StepAction,
+  StepActionMap,
+  StepActionTriggerProps,
+  StepBaseDetails,
   StepChangeDetails,
   StepDetails,
   StepEffectArgs,
-  StepInit,
+  StepPlacement,
   StepStatus,
+  StepType,
 } from "./tour.types"
+export * from "./utils/wait"

@@ -2,6 +2,7 @@ import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { AnchorRect, Placement } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { Point } from "./utils/rect"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -9,10 +10,42 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
 
 export interface StepEffectArgs {
   next(): void
-  update(args: Partial<StepInit>): void
+  goto(id: string): void
+  dismiss(): void
+  show(): void
+  update(data: Partial<StepBaseDetails>): void
+  target?: () => HTMLElement | null
 }
 
-export interface StepInit {
+export type StepType = "tooltip" | "dialog" | "wait" | "floating"
+
+export type StepActionType = "next" | "prev" | "dismiss"
+
+export type StepActionFn = (actionMap: StepActionMap) => void
+
+export type StepPlacement = Placement | "center"
+
+export interface StepAction {
+  /**
+   * The label of the action
+   */
+  label: string
+  /**
+   * The action to perform
+   */
+  action?: StepActionType | StepActionFn
+  /**
+   * The attributes to apply to the action trigger
+   */
+  attrs?: Record<string, any>
+}
+
+export interface StepBaseDetails {
+  /**
+   * The type of the step. If no target is provided,
+   * the step will be treated as a modal step.
+   */
+  type?: StepType
   /**
    * Function to return the target element to highlight
    */
@@ -26,20 +59,32 @@ export interface StepInit {
    */
   description: any
   /**
-   * The image or video to display in the step
-   */
-  media?: any
-  /**
    * The placement of the step
    */
-  placement?: Placement
+  placement?: StepPlacement
+  /**
+   * The offset between the content and the target
+   */
+  offset?: { mainAxis?: number; crossAxis?: number }
   /**
    * Additional metadata of the step
    */
   meta?: Record<string, any>
+  /**
+   * Whether to show a backdrop behind the step
+   */
+  backdrop?: boolean
+  /**
+   * Whether to show an arrow tip on the step
+   */
+  arrow?: boolean
+  /**
+   * The actions to perform when the step is completed
+   */
+  actions?: StepAction[]
 }
 
-export interface StepDetails extends StepInit {
+export interface StepDetails extends StepBaseDetails {
   /**
    * The unique identifier of the step
    */
@@ -51,17 +96,26 @@ export interface StepDetails extends StepInit {
 }
 
 export interface StepChangeDetails {
-  step: string | null
-  index: number
-  count: number
+  stepId: string | null
+  stepIndex: number
+  totalSteps: number
   complete: boolean
+  progress: number
 }
 
-export type StepStatus = "idle" | "started" | "skipped" | "completed" | "stopped"
+export type StepStatus = "idle" | "started" | "skipped" | "completed" | "dismissed" | "not-found"
+
+export interface StepActionMap {
+  next(): void
+  prev(): void
+  dismiss(): void
+  goto(id: string): void
+}
 
 export interface StatusChangeDetails {
   status: StepStatus
-  step: string | null
+  stepId: string | null
+  stepIndex: number
 }
 
 export interface ProgressTextDetails {
@@ -77,17 +131,12 @@ export interface IntlTranslations {
   skip?: string
 }
 
-export interface Offset {
-  x: number
-  y: number
-}
-
 export type ElementIds = Partial<{
   content: string
   title: string
   description: string
   positioner: string
-  overlay: string
+  backdrop: string
   arrow: string
 }>
 
@@ -105,9 +154,9 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    */
   steps: StepDetails[]
   /**
-   * The index of the currently highlighted step
+   * The id of the currently highlighted step
    */
-  step: string | null
+  stepId: string | null
   /**
    * Callback when the highlighted step changes
    */
@@ -137,24 +186,19 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    */
   preventInteraction: boolean
   /**
-   * The offsets to apply to the overlay
+   * The offsets to apply to the spotlight
    * @default "{ x: 10, y: 10 }"
    */
-  offset: Offset
+  spotlightOffset: Point
   /**
-   * The radius of the overlay clip path
+   * The radius of the spotlight clip path
    * @default 4
    */
-  radius: number
+  spotlightRadius: number
   /**
    * The translations for the tour
    */
   translations: IntlTranslations
-  /**
-   * The behavior when the tour is skipped
-   * @default "complete"
-   */
-  skipBehavior: "skip-step" | "complete"
 }
 
 interface PrivateContext {
@@ -162,12 +206,12 @@ interface PrivateContext {
    * @internal
    * The rect of the current step's target element
    */
-  currentRect: Required<AnchorRect>
+  targetRect: Required<AnchorRect>
   /**
    * @internal
    * The current placement of the menu
    */
-  currentPlacement?: Placement
+  currentPlacement?: StepPlacement
   /**
    * @internal
    * The size of the boundary element (default to the window size)
@@ -183,17 +227,22 @@ interface PrivateContext {
    * The function to cleanup the step effects
    */
   _effectCleanup?: VoidFunction
+  /**
+   * @internal
+   * The resolved target element
+   */
+  resolvedTarget: { value: HTMLElement | null }
 }
 
 type ComputedContext = Readonly<{
   /**
    * The current step details
    */
-  currentStep: StepDetails | null
+  step: StepDetails | null
   /**
    * The index of the current step
    */
-  currentStepIndex: number
+  stepIndex: number
   /**
    * Whether there is a next step
    */
@@ -205,11 +254,11 @@ type ComputedContext = Readonly<{
   /**
    * Whether the current step is the first step
    */
-  firstStep: boolean
+  isFirstStep: boolean
   /**
    * Whether the current step is the last step
    */
-  lastStep: boolean
+  isLastStep: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -218,7 +267,7 @@ export interface MachineContext extends PublicContext, PrivateContext, ComputedC
 
 export interface MachineState {
   tags: "closed" | "open"
-  value: "closed" | "open" | "scrolling"
+  value: "tour.inactive" | "tour.active" | "step.waiting" | "target.resolving" | "target.scrolling"
 }
 
 export type State = S.State<MachineContext, MachineState>
@@ -231,15 +280,27 @@ export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface StepActionTriggerProps {
+  action: StepAction
+}
+
 export interface MachineApi<T extends PropTypes = PropTypes> {
+  /**
+   * Whether the tour is open
+   */
+  open: boolean
+  /**
+   * The total number of steps
+   */
+  totalSteps: number
   /**
    * The index of the current step
    */
-  currentIndex: number
+  stepIndex: number
   /**
    * The current step details
    */
-  currentStep: StepDetails | null
+  step: StepDetails | null
   /**
    * Whether there is a next step
    */
@@ -297,15 +358,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   prev(): void
   /**
-   * Skip the tour. The behavior is defined by the `skipBehavior` option
-   */
-  skip(): void
-  /**
-   * Get the progress text
+   * Returns the progress text
    */
   getProgressText(): string
+  /**
+   * Returns the progress percent
+   */
+  getProgressPercent(): number
 
-  getOverlayProps(): T["element"]
+  getBackdropProps(): T["element"]
   getSpotlightProps(): T["element"]
   getProgressTextProps(): T["element"]
 
@@ -316,9 +377,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
 
   getTitleProps(): T["element"]
   getDescriptionProps(): T["element"]
-
-  getNextTriggerProps(): T["button"]
-  getPrevTriggerProps(): T["button"]
   getCloseTriggerProps(): T["button"]
-  getSkipTriggerProps(): T["button"]
+  getActionTriggerProps(props: StepActionTriggerProps): T["button"]
 }

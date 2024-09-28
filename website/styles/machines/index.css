@@ -35,6 +35,7 @@
 @import url(./signature-pad.css);
 @import url(./presence.css);
 @import url(./steps.css);
+@import url(./tour.css);
 
 * {
   border-color: var(--colors-border-bold);

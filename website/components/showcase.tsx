@@ -39,6 +39,7 @@ import { TimerCountdown } from "./machines/timer-countdown"
 import { ToastGroup } from "./machines/toast"
 import { ToggleGroup } from "./machines/toggle-group"
 import { Tooltip } from "./machines/tooltip"
+import { Tour } from "./machines/tour"
 import { Playground } from "./playground"
 
 const components = {
@@ -458,6 +459,16 @@ const components = {
     />
   ),
   Steps: () => <Playground name="steps" component={Steps} />,
+  Tour: () => (
+    <Playground
+      name="tour"
+      component={Tour}
+      defaultProps={{
+        closeOnInteractOutside: false,
+        preventInteraction: false,
+      }}
+    />
+  ),
 }
 
 export function Showcase(props: { id: keyof typeof components }) {

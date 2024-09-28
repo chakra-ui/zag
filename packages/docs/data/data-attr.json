@@ -99,6 +99,7 @@
     "Root": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -108,6 +109,7 @@
     "Label": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -117,6 +119,7 @@
     "Control": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -126,6 +129,7 @@
     "Indicator": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -364,6 +368,7 @@
       "data-scope": "date-picker",
       "data-part": "label",
       "data-state": "\"open\" | \"closed\"",
+      "data-index": "The index of the item",
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only"
     },
@@ -488,6 +493,7 @@
     "Input": {
       "data-scope": "date-picker",
       "data-part": "input",
+      "data-index": "The index of the item",
       "data-state": "\"open\" | \"closed\""
     }
   },
@@ -555,7 +561,8 @@
     "Trigger": {
       "data-scope": "file-upload",
       "data-part": "trigger",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid"
     },
     "ItemGroup": {
       "data-scope": "file-upload",
@@ -595,6 +602,11 @@
     "Label": {
       "data-scope": "file-upload",
       "data-part": "label",
+      "data-disabled": "Present when disabled"
+    },
+    "ClearTrigger": {
+      "data-scope": "file-upload",
+      "data-part": "clear-trigger",
       "data-disabled": "Present when disabled"
     }
   },
@@ -679,7 +691,7 @@
     "OptionItem": {
       "data-scope": "menu",
       "data-part": "option-item",
-      "data-type": "",
+      "data-type": "The type of the item",
       "data-value": "",
       "data-state": "\"checked\" | \"unchecked\"",
       "data-disabled": "Present when disabled",
@@ -1160,6 +1172,7 @@
     "Root": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -1169,6 +1182,7 @@
     "Label": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -1178,6 +1192,7 @@
     "Thumb": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -1187,6 +1202,7 @@
     "Control": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -1373,17 +1389,17 @@
     "Item": {
       "data-scope": "timer",
       "data-part": "item",
-      "data-type": ""
+      "data-type": "The type of the item"
     },
     "ItemLabel": {
       "data-scope": "timer",
       "data-part": "item-label",
-      "data-type": ""
+      "data-type": "The type of the item"
     },
     "ItemValue": {
       "data-scope": "timer",
       "data-part": "item-value",
-      "data-type": ""
+      "data-type": "The type of the item"
     }
   },
   "toast": {
@@ -1391,7 +1407,7 @@
       "data-scope": "toast",
       "data-part": "root",
       "data-state": "\"open\" | \"closed\"",
-      "data-type": "",
+      "data-type": "The type of the item",
       "data-placement": "The placement of the toast",
       "data-align": "",
       "data-side": "",
@@ -1445,15 +1461,22 @@
     }
   },
   "tour": {
-    "Overlay": {
+    "Backdrop": {
       "data-scope": "tour",
-      "data-part": "overlay",
+      "data-part": "backdrop",
       "data-state": "\"open\" | \"closed\""
+    },
+    "Positioner": {
+      "data-scope": "tour",
+      "data-part": "positioner",
+      "data-type": "The type of the item",
+      "data-placement": "The placement of the positioner"
     },
     "Content": {
       "data-scope": "tour",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
+      "data-type": "The type of the item",
       "data-placement": "The placement of the content",
       "data-step": ""
     },
@@ -1467,14 +1490,15 @@
       "data-part": "description",
       "data-placement": "The placement of the description"
     },
-    "NextTrigger": {
+    "CloseTrigger": {
       "data-scope": "tour",
-      "data-part": "next-trigger",
-      "data-disabled": "Present when disabled"
+      "data-part": "close-trigger",
+      "data-type": "The type of the item"
     },
-    "PrevTrigger": {
+    "ActionTrigger": {
       "data-scope": "tour",
-      "data-part": "prev-trigger",
+      "data-part": "action-trigger",
+      "data-type": "The type of the item",
       "data-disabled": "Present when disabled"
     }
   },

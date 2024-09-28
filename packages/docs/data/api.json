@@ -627,16 +627,24 @@
         "description": "Function to open or close the combobox"
       },
       "collection": {
-        "type": "Collection<V>",
+        "type": "ListCollection<V>",
         "description": "Function to toggle the combobox"
       },
       "setCollection": {
-        "type": "(collection: Collection<V>) => void",
+        "type": "(collection: ListCollection<V>) => void",
         "description": "Function to set the collection of items"
       },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to set the positioning options"
+      },
+      "multiple": {
+        "type": "boolean",
+        "description": "Whether the combobox allows multiple selections"
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the combobox is disabled"
       }
     },
     "context": {
@@ -750,7 +758,7 @@
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
       "collection": {
-        "type": "Collection<any>",
+        "type": "ListCollection<any>",
         "description": "The collection of items"
       },
       "multiple": {
@@ -972,7 +980,7 @@
         "description": "The localized messages to use."
       },
       "ids": {
-        "type": "Partial<{ root: string; label: string; table(id: string): string; tableHeader(id: string): string; tableBody(id: string): string; tableRow(id: string): string; content: string; cellTrigger(id: string): string; prevTrigger(view: DateView): string; clearTrigger: string; control: string; input(index: number): string; trigger: string; monthSelect: string; yearSelect: string; positioner: string; }>",
+        "type": "Partial<{ root: string; label(index: number): string; table(id: string): string; tableHeader(id: string): string; tableBody(id: string): string; tableRow(id: string): string; content: string; cellTrigger(id: string): string; prevTrigger(view: DateView): string; clearTrigger: string; control: string; input(index: number): string; trigger: string; monthSelect: string; yearSelect: string; positioner: string; }>",
         "description": "The ids of the elements in the date picker. Useful for composition."
       },
       "name": {
@@ -1261,7 +1269,7 @@
       },
       "activationMode": {
         "type": "ActivationMode",
-        "description": "The activation mode for the preview element.\n\n- \"focus\" - Enter edit mode when the preview element is focused\n- \"dblclick\" - Enter edit mode when the preview element is double-clicked\n- \"none\" - No interaction with the preview element will trigger edit mode.",
+        "description": "The activation mode for the preview element.\n\n- \"focus\" - Enter edit mode when the preview is focused\n- \"dblclick\" - Enter edit mode when the preview is double-clicked\n- \"click\" - Enter edit mode when the preview is clicked",
         "defaultValue": "\"focus\""
       },
       "submitMode": {
@@ -1269,9 +1277,13 @@
         "description": "The action that triggers submit in the edit mode:\n\n- \"enter\" - Trigger submit when the enter key is pressed\n- \"blur\" - Trigger submit when the editable is blurred\n- \"none\" - No action will trigger submit. You need to use the submit button\n- \"both\" - Pressing `Enter` and blurring the input will trigger submit",
         "defaultValue": "\"both\""
       },
-      "startWithEditView": {
+      "edit": {
         "type": "boolean",
-        "description": "Whether to start with the edit mode active."
+        "description": "Whether the editable is in edit mode."
+      },
+      "edit.controlled": {
+        "type": "boolean",
+        "description": "Whether the editable is controlled"
       },
       "selectOnFocus": {
         "type": "boolean",
@@ -1310,9 +1322,9 @@
         "type": "(details: ValueChangeDetails) => void",
         "description": "The callback that is called when the editable's value is submitted."
       },
-      "onEdit": {
-        "type": "() => void",
-        "description": "The callback that is called when in the edit mode."
+      "onEditChange": {
+        "type": "(details: EditChangeDetails) => void",
+        "description": "The callback that is called when the edit mode is changed"
       },
       "placeholder": {
         "type": "string | { edit: string; preview: string; }",
@@ -1468,6 +1480,10 @@
       "directory": {
         "type": "boolean",
         "description": "Whether to accept directories, only works in webkit browsers"
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the file input is invalid"
       },
       "locale": {
         "type": "string",
@@ -1991,6 +2007,10 @@
       "page": {
         "type": "number",
         "description": "The current page."
+      },
+      "count": {
+        "type": "number",
+        "description": "The total number of data items."
       },
       "pageSize": {
         "type": "number",
@@ -2748,21 +2768,29 @@
         "description": "Function to open or close the select"
       },
       "collection": {
-        "type": "Collection<V>",
+        "type": "ListCollection<V>",
         "description": "Function to toggle the select"
       },
       "setCollection": {
-        "type": "(collection: Collection<V>) => void",
+        "type": "(collection: ListCollection<V>) => void",
         "description": "Function to set the collection of items"
       },
       "reposition": {
         "type": "(options?: Partial<PositioningOptions>) => void",
         "description": "Function to set the positioning options of the select"
+      },
+      "multiple": {
+        "type": "boolean",
+        "description": "Whether the select allows multiple selections"
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the select is disabled"
       }
     },
     "context": {
       "collection": {
-        "type": "Collection<any>",
+        "type": "ListCollection<any>",
         "description": "The item collection"
       },
       "ids": {
@@ -2847,6 +2875,10 @@
         "type": "boolean",
         "description": "Whether the select is a composed with other composite widgets like tabs or combobox",
         "defaultValue": "true"
+      },
+      "deselectable": {
+        "type": "boolean",
+        "description": "Whether the value can be cleared by clicking the selected item.\n\n**Note:** this is only applicable for single selection"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -3214,8 +3246,8 @@
         "type": "boolean",
         "description": "Whether the stepper has a previous step."
       },
-      "setValue": {
-        "type": "(value: number) => void",
+      "setStep": {
+        "type": "(step: number) => void",
         "description": "Function to set the value of the stepper."
       },
       "goToNextStep": {
@@ -3445,6 +3477,10 @@
       "composite": {
         "type": "boolean",
         "description": "Whether the tab is composite"
+      },
+      "deselectable": {
+        "type": "boolean",
+        "description": "Whether the active tab can be deselected when clicking on it."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -3831,6 +3867,10 @@
       }
     },
     "context": {
+      "ids": {
+        "type": "Partial<{ root: string; area: string; }>",
+        "description": "The ids of the timer parts"
+      },
       "countdown": {
         "type": "boolean",
         "description": "Whether the timer should countdown, decrementing the timer on each tick."
@@ -4161,11 +4201,19 @@
   },
   "tour": {
     "api": {
-      "currentIndex": {
+      "open": {
+        "type": "boolean",
+        "description": "Whether the tour is open"
+      },
+      "totalSteps": {
+        "type": "number",
+        "description": "The total number of steps"
+      },
+      "stepIndex": {
         "type": "number",
         "description": "The index of the current step"
       },
-      "currentStep": {
+      "step": {
         "type": "StepDetails",
         "description": "The current step details"
       },
@@ -4225,27 +4273,27 @@
         "type": "() => void",
         "description": "Move to the previous step"
       },
-      "skip": {
-        "type": "() => void",
-        "description": "Skip the tour. The behavior is defined by the `skipBehavior` option"
-      },
       "getProgressText": {
         "type": "() => string",
-        "description": "Get the progress text"
+        "description": "Returns the progress text"
+      },
+      "getProgressPercent": {
+        "type": "() => number",
+        "description": "Returns the progress percent"
       }
     },
     "context": {
       "ids": {
-        "type": "Partial<{ content: string; title: string; description: string; positioner: string; overlay: string; arrow: string; }>",
+        "type": "Partial<{ content: string; title: string; description: string; positioner: string; backdrop: string; arrow: string; }>",
         "description": "The ids of the elements in the tour. Useful for composition."
       },
       "steps": {
         "type": "StepDetails[]",
         "description": "The steps of the tour"
       },
-      "step": {
+      "stepId": {
         "type": "string",
-        "description": "The index of the currently highlighted step"
+        "description": "The id of the currently highlighted step"
       },
       "onStepChange": {
         "type": "(details: StepChangeDetails) => void",
@@ -4275,24 +4323,19 @@
         "description": "Prevents interaction with the rest of the page while the tour is open",
         "defaultValue": "false"
       },
-      "offset": {
-        "type": "Offset",
-        "description": "The offsets to apply to the overlay",
+      "spotlightOffset": {
+        "type": "Point",
+        "description": "The offsets to apply to the spotlight",
         "defaultValue": "\"{ x: 10, y: 10 }\""
       },
-      "radius": {
+      "spotlightRadius": {
         "type": "number",
-        "description": "The radius of the overlay clip path",
+        "description": "The radius of the spotlight clip path",
         "defaultValue": "4"
       },
       "translations": {
         "type": "IntlTranslations",
         "description": "The translations for the tour"
-      },
-      "skipBehavior": {
-        "type": "\"skip-step\" | \"complete\"",
-        "description": "The behavior when the tour is skipped",
-        "defaultValue": "\"complete\""
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

@@ -7,8 +7,8 @@ export const dom = createScope({
   getTitleId: (ctx: Ctx) => ctx.ids?.title ?? `tour-title-${ctx.id}`,
   getDescriptionId: (ctx: Ctx) => ctx.ids?.description ?? `tour-desc-${ctx.id}`,
   getArrowId: (ctx: Ctx) => ctx.ids?.arrow ?? `tour-arrow-${ctx.id}`,
-  getOverlayId: (ctx: Ctx) => ctx.ids?.overlay ?? `tour-overlay-${ctx.id}`,
+  getBackdropId: (ctx: Ctx) => ctx.ids?.backdrop ?? `tour-backdrop-${ctx.id}`,
   getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
   getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
-  getOverlayEl: (ctx: Ctx) => dom.getById(ctx, dom.getOverlayId(ctx)),
+  getBackdropEl: (ctx: Ctx) => dom.getById(ctx, dom.getBackdropId(ctx)),
 })

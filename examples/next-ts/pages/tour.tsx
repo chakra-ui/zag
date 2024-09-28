@@ -1,6 +1,7 @@
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { tourControls, tourData } from "@zag-js/shared"
 import * as tour from "@zag-js/tour"
+import { X } from "lucide-react"
 import { useId } from "react"
 import { IFrame } from "../components/iframe"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -46,31 +47,39 @@ export default function Page() {
           </div>
         </div>
 
-        <Portal>
-          <div {...api.getOverlayProps()} />
-          <div {...api.getSpotlightProps()} />
-          <div {...api.getPositionerProps()}>
-            {api.currentStep && (
+        {api.step && api.open && (
+          <Portal>
+            {api.step.backdrop && <div {...api.getBackdropProps()} />}
+            <div {...api.getSpotlightProps()} />
+            <div {...api.getPositionerProps()}>
               <div {...api.getContentProps()}>
-                <div {...api.getArrowProps()}>
-                  <div {...api.getArrowTipProps()} />
-                </div>
-                <p {...api.getTitleProps()}>{api.currentStep.title}</p>
-                <div {...api.getDescriptionProps()}>{api.currentStep.description}</div>
+                {api.step.arrow && (
+                  <div {...api.getArrowProps()}>
+                    <div {...api.getArrowTipProps()} />
+                  </div>
+                )}
 
-                <div className="tour button__group">
-                  <button {...api.getPrevTriggerProps()}>Prev</button>
-                  <button {...api.getNextTriggerProps()}>Next</button>
-                  {api.lastStep && (
-                    <button {...api.getCloseTriggerProps()} style={{ marginLeft: "auto" }}>
-                      Close
-                    </button>
-                  )}
-                </div>
+                <p {...api.getTitleProps()}>{api.step.title}</p>
+                <div {...api.getDescriptionProps()}>{api.step.description}</div>
+                <div {...api.getProgressTextProps()}>{api.getProgressText()}</div>
+
+                {api.step.actions && (
+                  <div className="tour button__group">
+                    {api.step.actions.map((action) => (
+                      <button key={action.label} {...api.getActionTriggerProps({ action })}>
+                        {action.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <button {...api.getCloseTriggerProps()}>
+                  <X />
+                </button>
               </div>
-            )}
-          </div>
-        </Portal>
+            </div>
+          </Portal>
+        )}
       </main>
 
       <Toolbar controls={controls.ui}>

@@ -381,12 +381,12 @@ export class Machine<
 
   private getAfterActions = (transition: S.Transitions<TContext, TState, TEvent>, delay?: number) => {
     let id: ReturnType<typeof globalThis.setTimeout>
-
+    const current = this.state.value!
     return {
       entry: () => {
         id = globalThis.setTimeout(() => {
           const next = this.getNextStateInfo(transition, this.state.event)
-          this.performStateChangeEffects(this.state.value!, next, this.state.event)
+          this.performStateChangeEffects(current, next, this.state.event)
         }, delay)
       },
       exit: () => {
@@ -631,6 +631,8 @@ export class Machine<
 
     // call all exit actions for current state
     this.executeActions(exitActions, event)
+
+    this.delayedEvents.delete(currentState)
   }
 
   private performEntryEffects = (next: TState["value"], event: TEvent) => {
@@ -655,6 +657,7 @@ export class Machine<
       this.guardMeta,
     )
     const entryActions = toArray(pickedActions)
+
     const afterActions = this.getDelayedEventActions(next)
 
     if (stateNode?.after && afterActions) {
