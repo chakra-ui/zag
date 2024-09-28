@@ -1,5 +1,27 @@
 # @zag-js/combobox
 
+## 0.72.0
+
+### Minor Changes
+
+- [`831e941`](https://github.com/chakra-ui/zag/commit/831e941241d48f9345c4da0172e72956beed8b25) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `multiple` and `disabled` in api to allow for designing
+  custom UIs.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.72.0
+  - @zag-js/core@0.72.0
+  - @zag-js/types@0.72.0
+  - @zag-js/aria-hidden@0.72.0
+  - @zag-js/collection@0.72.0
+  - @zag-js/utils@0.72.0
+  - @zag-js/dismissable@0.72.0
+  - @zag-js/dom-event@0.72.0
+  - @zag-js/dom-query@0.72.0
+  - @zag-js/popper@0.72.0
+
 ## 0.71.0
 
 ### Minor Changes

@@ -1,5 +1,27 @@
 # @zag-js/tour
 
+## 0.72.0
+
+### Minor Changes
+
+- [#1891](https://github.com/chakra-ui/zag/pull/1891)
+  [`dce3e3a`](https://github.com/chakra-ui/zag/commit/dce3e3ad3021b91abb504b1c3314739a044a36ed) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Redesign tour to be more robust and support programmatic control
+  in wait steps.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.72.0
+  - @zag-js/core@0.72.0
+  - @zag-js/types@0.72.0
+  - @zag-js/utils@0.72.0
+  - @zag-js/dismissable@0.72.0
+  - @zag-js/dom-query@0.72.0
+  - @zag-js/focus-trap@0.72.0
+  - @zag-js/interact-outside@0.72.0
+  - @zag-js/popper@0.72.0
+
 ## 0.71.0
 
 ### Minor Changes

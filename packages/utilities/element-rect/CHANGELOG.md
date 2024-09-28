@@ -1,5 +1,7 @@
 # @zag-js/element-rect
 
+## 0.72.0
+
 ## 0.71.0
 
 ### Minor Changes

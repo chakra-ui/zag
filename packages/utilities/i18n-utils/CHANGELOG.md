@@ -1,5 +1,18 @@
 # @zag-js/i18n-utils
 
+## 0.72.0
+
+### Minor Changes
+
+- [`cdeaed6`](https://github.com/chakra-ui/zag/commit/cdeaed620f918a1684934081815e94ed76a8c388) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for internationalized `filter` function based on
+  Intl.Collator
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.72.0
+
 ## 0.71.0
 
 ### Minor Changes
