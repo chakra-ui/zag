@@ -31,6 +31,8 @@ const fetchMachine = createMachine({
     "restoreFocus": false,
     "autoComplete && isLastItemHighlighted": false,
     "autoComplete && isFirstItemHighlighted": false,
+    "isOpenControlled && isCustomValue && !hasHighlightedItem && !allowCustomValue": false,
+    "isCustomValue && !hasHighlightedItem && !allowCustomValue": false,
     "isOpenControlled && closeOnSelect": false,
     "closeOnSelect": false,
     "autoComplete": false,
@@ -46,6 +48,8 @@ const fetchMachine = createMachine({
     "isOpenControlled": false,
     "isOpenControlled": false,
     "restoreFocus": false,
+    "isOpenControlled && isCustomValue && !hasHighlightedItem && !allowCustomValue": false,
+    "isCustomValue && !hasHighlightedItem && !allowCustomValue": false,
     "isOpenControlled && closeOnSelect": false,
     "closeOnSelect": false,
     "autoHighlight": false,
@@ -248,7 +252,18 @@ const fetchMachine = createMachine({
         }, {
           actions: "highlightPrevItem"
         }],
-        "INPUT.ENTER": [{
+        "INPUT.ENTER": [
+        // == group 1 ==
+        {
+          cond: "isOpenControlled && isCustomValue && !hasHighlightedItem && !allowCustomValue",
+          actions: ["revertInputValue", "invokeOnClose"]
+        }, {
+          cond: "isCustomValue && !hasHighlightedItem && !allowCustomValue",
+          target: "focused",
+          actions: ["revertInputValue", "invokeOnClose"]
+        },
+        // == group 2 ==
+        {
           cond: "isOpenControlled && closeOnSelect",
           actions: ["selectHighlightedItem", "invokeOnClose"]
         }, {
@@ -368,7 +383,18 @@ const fetchMachine = createMachine({
           target: "interacting",
           actions: ["highlightLastItem"]
         },
-        "INPUT.ENTER": [{
+        "INPUT.ENTER": [
+        // == group 1 ==
+        {
+          cond: "isOpenControlled && isCustomValue && !hasHighlightedItem && !allowCustomValue",
+          actions: ["revertInputValue", "invokeOnClose"]
+        }, {
+          cond: "isCustomValue && !hasHighlightedItem && !allowCustomValue",
+          target: "focused",
+          actions: ["revertInputValue", "invokeOnClose"]
+        },
+        // == group 2 ==
+        {
           cond: "isOpenControlled && closeOnSelect",
           actions: ["selectHighlightedItem", "invokeOnClose"]
         }, {
@@ -469,6 +495,8 @@ const fetchMachine = createMachine({
     "restoreFocus": ctx => ctx["restoreFocus"],
     "autoComplete && isLastItemHighlighted": ctx => ctx["autoComplete && isLastItemHighlighted"],
     "autoComplete && isFirstItemHighlighted": ctx => ctx["autoComplete && isFirstItemHighlighted"],
+    "isOpenControlled && isCustomValue && !hasHighlightedItem && !allowCustomValue": ctx => ctx["isOpenControlled && isCustomValue && !hasHighlightedItem && !allowCustomValue"],
+    "isCustomValue && !hasHighlightedItem && !allowCustomValue": ctx => ctx["isCustomValue && !hasHighlightedItem && !allowCustomValue"],
     "isOpenControlled && closeOnSelect": ctx => ctx["isOpenControlled && closeOnSelect"],
     "closeOnSelect": ctx => ctx["closeOnSelect"],
     "isOpenControlled && isCustomValue && !allowCustomValue": ctx => ctx["isOpenControlled && isCustomValue && !allowCustomValue"],

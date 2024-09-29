@@ -195,6 +195,25 @@ test.describe("combobox", () => {
     await I.pressKey("Enter")
     await I.seeInputHasValue("")
   })
+
+  test("[no value] enter behavior for custom values", async () => {
+    await I.controls.select("inputBehavior", "none")
+    await I.type("foo")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("")
+  })
+
+  test("[value] enter reverts the value", async () => {
+    await I.controls.select("inputBehavior", "none")
+    await I.type("mal")
+    await I.clickItem("Malawi")
+
+    await I.pressKey("ControlOrMeta+A")
+    await I.type("foo")
+    await I.pressKey("Enter")
+
+    await I.seeInputHasValue("Malawi")
+  })
 })
 
 test.describe("combobox / autocomplete", () => {

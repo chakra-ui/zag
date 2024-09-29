@@ -294,6 +294,17 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               },
             ],
             "INPUT.ENTER": [
+              // == group 1 ==
+              {
+                guard: and("isOpenControlled", "isCustomValue", not("hasHighlightedItem"), not("allowCustomValue")),
+                actions: ["revertInputValue", "invokeOnClose"],
+              },
+              {
+                guard: and("isCustomValue", not("hasHighlightedItem"), not("allowCustomValue")),
+                target: "focused",
+                actions: ["revertInputValue", "invokeOnClose"],
+              },
+              // == group 2 ==
               {
                 guard: and("isOpenControlled", "closeOnSelect"),
                 actions: ["selectHighlightedItem", "invokeOnClose"],
@@ -452,6 +463,17 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
               actions: ["highlightLastItem"],
             },
             "INPUT.ENTER": [
+              // == group 1 ==
+              {
+                guard: and("isOpenControlled", "isCustomValue", not("hasHighlightedItem"), not("allowCustomValue")),
+                actions: ["revertInputValue", "invokeOnClose"],
+              },
+              {
+                guard: and("isCustomValue", not("hasHighlightedItem"), not("allowCustomValue")),
+                target: "focused",
+                actions: ["revertInputValue", "invokeOnClose"],
+              },
+              // == group 2 ==
               {
                 guard: and("isOpenControlled", "closeOnSelect"),
                 actions: ["selectHighlightedItem", "invokeOnClose"],
