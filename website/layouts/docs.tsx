@@ -38,7 +38,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
             zIndex={20}
             bottom="0"
             top="4rem"
-            left="max(0px, calc(50% - 45rem))"
+            left="max(0px, calc(50% - 45rem - calc(var(--scrollbar-width, 0px) / 2)))"
             right="auto"
             width="19.5rem"
             pb="10"
@@ -88,7 +88,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
             position="fixed"
             top="3.8rem"
             bottom="0"
-            right="max(0px,calc(50% - 45rem))"
+            right="max(0px,calc(50% - 45rem + calc(var(--scrollbar-width, 0px) / 2)))"
             display={{ base: "none", xl: "block" }}
             width="19.5rem"
             visibility={hideToc ? "hidden" : undefined}
