@@ -6,7 +6,29 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
-## [0.71.0](./#0.71.0) - 2024-09-28
+## [0.73.0](./#0.73.0) - 2024-09-30
+
+### Added
+
+- **Dialog**
+
+  - Add support for detecting outside clicks from parent windows when rendered within an iframe
+
+### Fixed
+
+- **Combobox**
+
+  - Fix issue where pressing enter without selecting an option leaves text in the input
+
+- **File Upload**
+
+  - Fix issue where `acceptedFiles` is removed after an invalid file is uploaded
+
+- **Dialog**
+
+  - Fix issue where dialog closes when positioner is scrollable and the scrollbar is clicked
+
+## [0.72.0](./#0.72.0) - 2024-09-28
 
 ### Added
 
@@ -20,7 +42,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
   - Refactor tour to be more robust and support programmatic control in wait steps.
 
-## [0.70.0](./#0.70.0) - 2024-09-23
+## [0.71.0](./#0.71.0) - 2024-09-23
 
 ### Changed
 
@@ -46,7 +68,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
   - Add support for `api.getClearTriggerProps()` to render a clear trigger that clears the accepted files.
 
-## [0.69.0](./#0.69.0) - 2024-09-22
+## [0.70.0](./#0.70.0) - 2024-09-22
 
 ### Changed
 
