@@ -10,7 +10,7 @@ import {
   raf,
 } from "@zag-js/dom-query"
 import { callAll } from "@zag-js/utils"
-import { getWindowFrames } from "./get-window-frames"
+import { getParentWindow, getWindowFrames } from "./frame-utils"
 
 export interface InteractOutsideHandlers {
   /**
@@ -93,6 +93,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   const doc = getDocument(node)
   const win = getWindow(node)
   const frames = getWindowFrames(win)
+  const parentWin = getParentWindow(win)
 
   function isEventOutside(event: Event): boolean {
     const target = getEventTarget(event)
@@ -139,9 +140,9 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     if (event.pointerType === "touch") {
       // flush any pending pointerup events
       pointerdownCleanups.forEach((fn) => fn())
-
       // add a pointerup event listener to the document and all frame documents
       pointerdownCleanups.add(addDomEvent(doc, "click", handler, { once: true }))
+      pointerdownCleanups.add(parentWin.addEventListener("click", handler, { once: true }))
       pointerdownCleanups.add(frames.addEventListener("click", handler, { once: true }))
     } else {
       handler()
@@ -150,8 +151,9 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   const cleanups = new Set<VoidFunction>()
 
   const timer = setTimeout(() => {
-    cleanups.add(frames.addEventListener("pointerdown", onPointerDown, true))
     cleanups.add(addDomEvent(doc, "pointerdown", onPointerDown, true))
+    cleanups.add(parentWin.addEventListener("pointerdown", onPointerDown, true))
+    cleanups.add(frames.addEventListener("pointerdown", onPointerDown, true))
   }, 0)
 
   function onFocusin(event: FocusEvent) {
@@ -178,6 +180,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   }
 
   cleanups.add(addDomEvent(doc, "focusin", onFocusin, true))
+  cleanups.add(parentWin.addEventListener("focusin", onFocusin, true))
   cleanups.add(frames.addEventListener("focusin", onFocusin, true))
 
   return () => {
