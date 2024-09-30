@@ -135,8 +135,8 @@ importers:
         specifier: 5.4.8
         version: 5.4.8(@types/node@22.5.5)(terser@5.31.6)
       vite-plugin-dts:
-        specifier: 4.2.1
-        version: 4.2.1(@types/node@22.5.5)(rollup@4.21.2)(typescript@5.6.2)(vite@5.4.8(@types/node@22.5.5)(terser@5.31.6))
+        specifier: 4.2.3
+        version: 4.2.3(@types/node@22.5.5)(rollup@4.21.2)(typescript@5.6.2)(vite@5.4.8(@types/node@22.5.5)(terser@5.31.6))
       vitest:
         specifier: 2.1.1
         version: 2.1.1(@types/node@22.5.5)(terser@5.31.6)
@@ -6867,14 +6867,8 @@ packages:
   '@vitest/utils@2.1.1':
     resolution: {integrity: sha512-Y6Q9TsI+qJ2CC0ZKj6VBb+T8UPz593N113nnUykqwANqhgf3QkZeHFlusgKLTqrnVHbj/XDKZcDHol+dxVT+rQ==}
 
-  '@volar/language-core@2.4.1':
-    resolution: {integrity: sha512-9AKhC7Qn2mQYxj7Dz3bVxeOk7gGJladhWixUYKef/o0o7Bm4an+A3XvmcTHVqZ8stE6lBVH++g050tBtJ4TZPQ==}
-
   '@volar/language-core@2.4.4':
     resolution: {integrity: sha512-kO9k4kTLfxpg+6lq7/KAIv3m2d62IHuCL6GbVgYZTpfKvIGoAIlDxK7pFcB/eczN2+ydg/vnyaeZ6SGyZrJw2w==}
-
-  '@volar/source-map@2.4.1':
-    resolution: {integrity: sha512-Xq6ep3OZg9xUqN90jEgB9ztX5SsTz1yiV8wiQbcYNjWkek+Ie3dc8l7AVt3EhDm9mSIR58oWczHkzM2H6HIsmQ==}
 
   '@volar/source-map@2.4.4':
     resolution: {integrity: sha512-xG3PZqOP2haG8XG4Pg3PD1UGDAdqZg24Ru8c/qYjYAnmcj6GBR64mstx+bZux5QOyRaJK+/lNM/RnpvBD3489g==}
@@ -12352,8 +12346,8 @@ packages:
       vue-tsc:
         optional: true
 
-  vite-plugin-dts@4.2.1:
-    resolution: {integrity: sha512-/QlYvgUMiv8+ZTEerhNCYnYaZMM07cdlX6hQCR/w/g/nTh0tUXPoYwbT6SitizLJ9BybT1lnrcZgqheI6wromQ==}
+  vite-plugin-dts@4.2.3:
+    resolution: {integrity: sha512-O5NalzHANQRwVw1xj8KQun3Bv8OSDAlNJXrnqoAz10BOuW8FVvY5g4ygj+DlJZL5mtSPuMu9vd3OfrdW5d4k6w==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'
@@ -15812,15 +15806,9 @@ snapshots:
       loupe: 3.1.1
       tinyrainbow: 1.2.0
 
-  '@volar/language-core@2.4.1':
-    dependencies:
-      '@volar/source-map': 2.4.1
-
   '@volar/language-core@2.4.4':
     dependencies:
       '@volar/source-map': 2.4.4
-
-  '@volar/source-map@2.4.1': {}
 
   '@volar/source-map@2.4.4': {}
 
@@ -15979,10 +15967,10 @@ snapshots:
 
   '@vue/language-core@2.1.6(typescript@5.6.2)':
     dependencies:
-      '@volar/language-core': 2.4.1
-      '@vue/compiler-dom': 3.5.8
+      '@volar/language-core': 2.4.4
+      '@vue/compiler-dom': 3.5.9
       '@vue/compiler-vue2': 2.7.16
-      '@vue/shared': 3.5.8
+      '@vue/shared': 3.5.9
       computeds: 0.0.1
       minimatch: 9.0.5
       muggle-string: 0.4.1
@@ -22580,7 +22568,7 @@ snapshots:
       optionator: 0.9.4
       typescript: 5.6.2
 
-  vite-plugin-dts@4.2.1(@types/node@22.5.5)(rollup@4.21.2)(typescript@5.6.2)(vite@5.4.8(@types/node@22.5.5)(terser@5.31.6)):
+  vite-plugin-dts@4.2.3(@types/node@22.5.5)(rollup@4.21.2)(typescript@5.6.2)(vite@5.4.8(@types/node@22.5.5)(terser@5.31.6)):
     dependencies:
       '@microsoft/api-extractor': 7.47.7(@types/node@22.5.5)
       '@rollup/pluginutils': 5.1.0(rollup@4.21.2)
