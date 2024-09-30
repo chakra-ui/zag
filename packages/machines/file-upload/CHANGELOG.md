@@ -1,5 +1,22 @@
 # @zag-js/file-upload
 
+## 0.73.0
+
+### Patch Changes
+
+- [`8bbea0a`](https://github.com/chakra-ui/zag/commit/8bbea0a00d7e87b213aad84f730cc5fb6a0ce199) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `acceptedFiles` is removed after an invalid file
+  is uploaded
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.73.0
+  - @zag-js/core@0.73.0
+  - @zag-js/types@0.73.0
+  - @zag-js/utils@0.73.0
+  - @zag-js/dom-query@0.73.0
+  - @zag-js/file-utils@0.73.0
+  - @zag-js/i18n-utils@0.73.0
+
 ## 0.72.0
 
 ### Patch Changes
