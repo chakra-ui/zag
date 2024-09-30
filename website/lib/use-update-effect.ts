@@ -18,7 +18,6 @@ export const useUpdateEffect: typeof React.useEffect = (effect, deps) => {
       return effect()
     }
     effectCycleRef.current = true
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)
 
   useSafeLayoutEffect(() => {

@@ -82,12 +82,12 @@
     "use-match-media-hook": "1.0.1"
   },
   "devDependencies": {
-    "@types/react": "18.3.8",
+    "@types/react": "18.3.10",
     "all-contributors-cli": "6.26.1",
-    "eslint": "9.11.0",
+    "eslint": "9.11.1",
     "eslint-config-next": "14.2.13",
     "prettier": "3.3.3",
-    "rehype": "13.0.1",
+    "rehype": "13.0.2",
     "rehype-autolink-headings": "7.1.0",
     "rehype-code-titles": "1.2.0",
     "rehype-prism-plus": "2.0.0",
