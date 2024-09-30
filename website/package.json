@@ -87,7 +87,7 @@
     "eslint": "9.11.0",
     "eslint-config-next": "14.2.13",
     "prettier": "3.3.3",
-    "rehype": "13.0.1",
+    "rehype": "13.0.2",
     "rehype-autolink-headings": "7.1.0",
     "rehype-code-titles": "1.2.0",
     "rehype-prism-plus": "2.0.0",
