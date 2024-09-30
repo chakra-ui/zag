@@ -1,5 +1,19 @@
 # @zag-js/editable
 
+## 0.73.0
+
+### Patch Changes
+
+- Updated dependencies [[`5854894`](https://github.com/chakra-ui/zag/commit/5854894bfd970b773da25f4793f10d9ffef5b14b)]:
+  - @zag-js/interact-outside@0.73.0
+  - @zag-js/anatomy@0.73.0
+  - @zag-js/core@0.73.0
+  - @zag-js/types@0.73.0
+  - @zag-js/utils@0.73.0
+  - @zag-js/dom-event@0.73.0
+  - @zag-js/dom-query@0.73.0
+  - @zag-js/form-utils@0.73.0
+
 ## 0.72.0
 
 ### Patch Changes

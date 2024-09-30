@@ -1,5 +1,20 @@
 # @zag-js/interact-outside
 
+## 0.73.0
+
+### Minor Changes
+
+- [`5854894`](https://github.com/chakra-ui/zag/commit/5854894bfd970b773da25f4793f10d9ffef5b14b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for detecting parent windows when components are
+  rendered within an iframe
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.73.0
+  - @zag-js/dom-event@0.73.0
+  - @zag-js/dom-query@0.73.0
+
 ## 0.72.0
 
 ### Patch Changes

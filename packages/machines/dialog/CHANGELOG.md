@@ -1,5 +1,23 @@
 # @zag-js/dialog
 
+## 0.73.0
+
+### Patch Changes
+
+- [`571852d`](https://github.com/chakra-ui/zag/commit/571852d3d279fed8d5d3c454e858938dbbb97c7a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where dialog closes when positioner is scrollable and
+  the scrollbar is clicked
+
+- Updated dependencies []:
+  - @zag-js/dismissable@0.73.0
+  - @zag-js/anatomy@0.73.0
+  - @zag-js/core@0.73.0
+  - @zag-js/types@0.73.0
+  - @zag-js/aria-hidden@0.73.0
+  - @zag-js/utils@0.73.0
+  - @zag-js/dom-query@0.73.0
+  - @zag-js/remove-scroll@0.73.0
+
 ## 0.72.0
 
 ### Patch Changes

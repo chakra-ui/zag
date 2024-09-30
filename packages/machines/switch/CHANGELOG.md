@@ -1,5 +1,19 @@
 # @zag-js/switch
 
+## 0.73.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.73.0
+  - @zag-js/core@0.73.0
+  - @zag-js/types@0.73.0
+  - @zag-js/utils@0.73.0
+  - @zag-js/dom-event@0.73.0
+  - @zag-js/dom-query@0.73.0
+  - @zag-js/focus-visible@0.73.0
+  - @zag-js/form-utils@0.73.0
+
 ## 0.72.0
 
 ### Patch Changes

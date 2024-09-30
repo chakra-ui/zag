@@ -1,5 +1,25 @@
 # @zag-js/combobox
 
+## 0.73.0
+
+### Patch Changes
+
+- [`49bfdf1`](https://github.com/chakra-ui/zag/commit/49bfdf1348331f842fc9536eff6c8968dcf8f09b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where pressing enter without selecting an option leaves
+  text in the input
+
+- Updated dependencies []:
+  - @zag-js/dismissable@0.73.0
+  - @zag-js/anatomy@0.73.0
+  - @zag-js/core@0.73.0
+  - @zag-js/types@0.73.0
+  - @zag-js/aria-hidden@0.73.0
+  - @zag-js/collection@0.73.0
+  - @zag-js/utils@0.73.0
+  - @zag-js/dom-event@0.73.0
+  - @zag-js/dom-query@0.73.0
+  - @zag-js/popper@0.73.0
+
 ## 0.72.0
 
 ### Minor Changes
