@@ -1,5 +1,26 @@
 # @zag-js/date-picker
 
+## 0.73.1
+
+### Patch Changes
+
+- [`f0af8d1`](https://github.com/chakra-ui/zag/commit/f0af8d130742e9e824f7532097fbf2781320f7f9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `getYearsGrid` returned an incorrect year grid.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.73.1
+  - @zag-js/core@0.73.1
+  - @zag-js/types@0.73.1
+  - @zag-js/utils@0.73.1
+  - @zag-js/date-utils@0.73.1
+  - @zag-js/dismissable@0.73.1
+  - @zag-js/dom-event@0.73.1
+  - @zag-js/dom-query@0.73.1
+  - @zag-js/form-utils@0.73.1
+  - @zag-js/live-region@0.73.1
+  - @zag-js/popper@0.73.1
+  - @zag-js/text-selection@0.73.1
+
 ## 0.73.0
 
 ### Patch Changes
