@@ -99,6 +99,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return range.map((year) => ({ label: year.toString(), value: year }))
   }
 
+  function getDecadeYears(year?: number) {
+    const range = getDecadeRange(year ?? focusedValue.year)
+    return range.map((year) => ({ label: year.toString(), value: year }))
+  }
+
   function isUnavailable(date: DateValue) {
     return isDateUnavailable(date, isDateUnavailableFn, locale, min, max)
   }
@@ -238,7 +243,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getMonths,
     getYearsGrid(props = {}) {
       const { columns = 1 } = props
-      return chunk(getYears(), columns)
+      return chunk(getDecadeYears(), columns)
     },
     getDecade() {
       const years = getDecadeRange(focusedValue.year)
