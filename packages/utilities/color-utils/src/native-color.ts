@@ -11,3 +11,5 @@ const makeMap = (str: string) => {
   }
   return map
 }
+
+export const nativeColorMap /* @__PURE__ */ = makeMap(nativeColors)
