@@ -1,4 +1,4 @@
-import { getEventPoint, getEventStep, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventPoint, getEventStep, isLeftClick, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr, isComposingEvent } from "@zag-js/dom-query"
 import { roundToDevicePixel } from "@zag-js/number-utils"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -159,10 +159,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               event.preventDefault()
             },
             Home() {
+              if (isModifierKey(event)) return
               send("INPUT.HOME")
               event.preventDefault()
             },
             End() {
+              if (isModifierKey(event)) return
               send("INPUT.END")
               event.preventDefault()
             },
