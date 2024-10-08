@@ -34,7 +34,6 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.5",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/live-region": "workspace:*",
@@ -48,8 +47,12 @@
     "@zag-js/popper": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
+  "peerDependencies": {
+    "@internationalized/date": ">=3.0.0"
+  },
   "devDependencies": {
-    "clean-package": "2.2.0"
+    "clean-package": "2.2.0",
+    "@internationalized/date": "3.5.5"
   },
   "clean-package": "../../../clean-package.config.json"
 }

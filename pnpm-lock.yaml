@@ -2616,9 +2616,6 @@ importers:
 
   packages/machines/date-picker:
     dependencies:
-      '@internationalized/date':
-        specifier: 3.5.5
-        version: 3.5.5
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../anatomy
@@ -2656,6 +2653,9 @@ importers:
         specifier: workspace:*
         version: link:../../utilities/core
     devDependencies:
+      '@internationalized/date':
+        specifier: 3.5.5
+        version: 3.5.5
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -4087,6 +4087,9 @@ importers:
       '@emotion/styled':
         specifier: 11.13.0
         version: 11.13.0(@emotion/react@11.13.3(@types/react@18.3.11)(react@18.3.1))(@types/react@18.3.11)(react@18.3.1)
+      '@internationalized/date':
+        specifier: 3.5.5
+        version: 3.5.5
       '@stackblitz/sdk':
         specifier: ^1.11.0
         version: 1.11.0
