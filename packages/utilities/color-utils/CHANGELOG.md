@@ -1,5 +1,16 @@
 # @zag-js/color-utils
 
+## 0.74.0
+
+### Patch Changes
+
+- [#1909](https://github.com/chakra-ui/zag/pull/1909)
+  [`112ae8a`](https://github.com/chakra-ui/zag/commit/112ae8a5cef88b10a2f434a27dc74050d36f3eb0) Thanks
+  [@anubra266](https://github.com/anubra266)! - - Fix issue where named `*grey` colors were not supported.
+  - Add `rebeccapurple` to named colors.
+- Updated dependencies []:
+  - @zag-js/numeric-range@0.74.0
+
 ## 0.73.1
 
 ### Patch Changes

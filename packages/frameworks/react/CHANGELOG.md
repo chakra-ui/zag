@@ -1,5 +1,14 @@
 # @zag-js/react
 
+## 0.74.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.74.0
+  - @zag-js/store@0.74.0
+  - @zag-js/types@0.74.0
+
 ## 0.73.1
 
 ### Patch Changes

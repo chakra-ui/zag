@@ -1,5 +1,25 @@
 # @zag-js/tags-input
 
+## 0.74.0
+
+### Patch Changes
+
+- [`309ec9e`](https://github.com/chakra-ui/zag/commit/309ec9edd00ac1f5d5a6b92a0f607a975d708559) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where tags input doesn't navigate tags after removing
+  with the delete key
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.0
+  - @zag-js/core@0.74.0
+  - @zag-js/types@0.74.0
+  - @zag-js/auto-resize@0.74.0
+  - @zag-js/utils@0.74.0
+  - @zag-js/dom-event@0.74.0
+  - @zag-js/dom-query@0.74.0
+  - @zag-js/form-utils@0.74.0
+  - @zag-js/interact-outside@0.74.0
+  - @zag-js/live-region@0.74.0
+
 ## 0.73.1
 
 ### Patch Changes
