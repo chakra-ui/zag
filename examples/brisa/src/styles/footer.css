@@ -1,0 +1,8 @@
+footer {
+  display: grid;
+  font-family: "Poppins", sans-serif;
+  font-size: 27px;
+  line-height: 1.5;
+  height: 15vh;
+  place-items: center;
+}

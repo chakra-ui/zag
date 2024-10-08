@@ -141,6 +141,247 @@ importers:
         specifier: 2.1.1
         version: 2.1.1(@types/node@22.7.4)(jsdom@25.0.1)(terser@5.34.1)
 
+  examples/brisa:
+    dependencies:
+      '@internationalized/date':
+        specifier: 3.5.5
+        version: 3.5.5
+      '@zag-js/accordion':
+        specifier: workspace:*
+        version: link:../../packages/machines/accordion
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../packages/anatomy
+      '@zag-js/anatomy-icons':
+        specifier: workspace:*
+        version: link:../../packages/anatomy-icons
+      '@zag-js/aria-hidden':
+        specifier: workspace:*
+        version: link:../../packages/utilities/aria-hidden
+      '@zag-js/auto-resize':
+        specifier: workspace:*
+        version: link:../../packages/utilities/auto-resize
+      '@zag-js/avatar':
+        specifier: workspace:*
+        version: link:../../packages/machines/avatar
+      '@zag-js/brisa':
+        specifier: workspace:*
+        version: link:../../packages/frameworks/brisa
+      '@zag-js/carousel':
+        specifier: workspace:*
+        version: link:../../packages/machines/carousel
+      '@zag-js/checkbox':
+        specifier: workspace:*
+        version: link:../../packages/machines/checkbox
+      '@zag-js/clipboard':
+        specifier: workspace:*
+        version: link:../../packages/machines/clipboard
+      '@zag-js/collapsible':
+        specifier: workspace:*
+        version: link:../../packages/machines/collapsible
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../packages/utilities/collection
+      '@zag-js/color-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/color-picker
+      '@zag-js/color-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/color-utils
+      '@zag-js/combobox':
+        specifier: workspace:*
+        version: link:../../packages/machines/combobox
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@zag-js/date-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/date-picker
+      '@zag-js/date-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/date-utils
+      '@zag-js/dialog':
+        specifier: workspace:*
+        version: link:../../packages/machines/dialog
+      '@zag-js/dismissable':
+        specifier: workspace:*
+        version: link:../../packages/utilities/dismissable
+      '@zag-js/docs':
+        specifier: workspace:*
+        version: link:../../packages/docs
+      '@zag-js/dom-event':
+        specifier: workspace:*
+        version: link:../../packages/utilities/dom-event
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../packages/utilities/dom-query
+      '@zag-js/editable':
+        specifier: workspace:*
+        version: link:../../packages/machines/editable
+      '@zag-js/element-rect':
+        specifier: workspace:*
+        version: link:../../packages/utilities/element-rect
+      '@zag-js/element-size':
+        specifier: workspace:*
+        version: link:../../packages/utilities/element-size
+      '@zag-js/file-upload':
+        specifier: workspace:*
+        version: link:../../packages/machines/file-upload
+      '@zag-js/file-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/file-utils
+      '@zag-js/floating-panel':
+        specifier: workspace:*
+        version: link:../../packages/machines/floating-panel
+      '@zag-js/focus-trap':
+        specifier: workspace:*
+        version: link:../../packages/utilities/focus-trap
+      '@zag-js/focus-visible':
+        specifier: workspace:*
+        version: link:../../packages/utilities/focus-visible
+      '@zag-js/form-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/form-utils
+      '@zag-js/highlight-word':
+        specifier: workspace:*
+        version: link:../../packages/utilities/highlight-word
+      '@zag-js/hover-card':
+        specifier: workspace:*
+        version: link:../../packages/machines/hover-card
+      '@zag-js/i18n-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/i18n-utils
+      '@zag-js/interact-outside':
+        specifier: workspace:*
+        version: link:../../packages/utilities/interact-outside
+      '@zag-js/live-region':
+        specifier: workspace:*
+        version: link:../../packages/utilities/live-region
+      '@zag-js/menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/menu
+      '@zag-js/number-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/number-input
+      '@zag-js/number-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/number
+      '@zag-js/numeric-range':
+        specifier: workspace:*
+        version: link:../../packages/utilities/numeric-range
+      '@zag-js/pagination':
+        specifier: workspace:*
+        version: link:../../packages/machines/pagination
+      '@zag-js/pin-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/pin-input
+      '@zag-js/popover':
+        specifier: workspace:*
+        version: link:../../packages/machines/popover
+      '@zag-js/popper':
+        specifier: workspace:*
+        version: link:../../packages/utilities/popper
+      '@zag-js/presence':
+        specifier: workspace:*
+        version: link:../../packages/machines/presence
+      '@zag-js/progress':
+        specifier: workspace:*
+        version: link:../../packages/machines/progress
+      '@zag-js/qr-code':
+        specifier: workspace:*
+        version: link:../../packages/machines/qr-code
+      '@zag-js/radio-group':
+        specifier: workspace:*
+        version: link:../../packages/machines/radio-group
+      '@zag-js/rating-group':
+        specifier: workspace:*
+        version: link:../../packages/machines/rating-group
+      '@zag-js/rect-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/rect
+      '@zag-js/remove-scroll':
+        specifier: workspace:*
+        version: link:../../packages/utilities/remove-scroll
+      '@zag-js/select':
+        specifier: workspace:*
+        version: link:../../packages/machines/select
+      '@zag-js/shared':
+        specifier: workspace:*
+        version: link:../../shared
+      '@zag-js/signature-pad':
+        specifier: workspace:*
+        version: link:../../packages/machines/signature-pad
+      '@zag-js/slider':
+        specifier: workspace:*
+        version: link:../../packages/machines/slider
+      '@zag-js/splitter':
+        specifier: workspace:*
+        version: link:../../packages/machines/splitter
+      '@zag-js/steps':
+        specifier: workspace:*
+        version: link:../../packages/machines/steps
+      '@zag-js/store':
+        specifier: workspace:*
+        version: link:../../packages/store
+      '@zag-js/stringify-state':
+        specifier: workspace:*
+        version: link:../../packages/utilities/stringify-state
+      '@zag-js/switch':
+        specifier: workspace:*
+        version: link:../../packages/machines/switch
+      '@zag-js/tabs':
+        specifier: workspace:*
+        version: link:../../packages/machines/tabs
+      '@zag-js/tags-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/tags-input
+      '@zag-js/text-selection':
+        specifier: workspace:*
+        version: link:../../packages/utilities/text-selection
+      '@zag-js/time-picker':
+        specifier: workspace:*
+        version: link:../../packages/machines/time-picker
+      '@zag-js/timer':
+        specifier: workspace:*
+        version: link:../../packages/machines/timer
+      '@zag-js/toast':
+        specifier: workspace:*
+        version: link:../../packages/machines/toast
+      '@zag-js/toggle-group':
+        specifier: workspace:*
+        version: link:../../packages/machines/toggle-group
+      '@zag-js/tooltip':
+        specifier: workspace:*
+        version: link:../../packages/machines/tooltip
+      '@zag-js/tour':
+        specifier: workspace:*
+        version: link:../../packages/machines/tour
+      '@zag-js/tree-view':
+        specifier: workspace:*
+        version: link:../../packages/machines/tree-view
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/core
+      brisa:
+        specifier: 0.1.0
+        version: 0.1.0
+      form-serialize:
+        specifier: 0.7.2
+        version: 0.7.2
+      match-sorter:
+        specifier: 6.3.4
+        version: 6.3.4
+    devDependencies:
+      '@types/node':
+        specifier: 22.7.4
+        version: 22.7.4
+      typescript:
+        specifier: latest
+        version: 5.6.2
+
   examples/lit-ts:
     dependencies:
       '@internationalized/date':
@@ -2258,6 +2499,28 @@ importers:
 
   packages/docs:
     devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/frameworks/brisa:
+    dependencies:
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/store':
+        specifier: workspace:*
+        version: link:../../store
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+    devDependencies:
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+      brisa:
+        specifier: ^0.1.0
+        version: 0.1.0
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -7345,6 +7608,11 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
+  brisa@0.1.0:
+    resolution: {integrity: sha512-nwmIHSSZAPXhm8mV40xLootqikZYDm91GxXGzCD3SQIuOP6I4oQYDB4hHfdn4KhvLXGRk5lgwUcJYozgHBvXYQ==}
+    engines: {bun: '>= 1.1.29', npm: please-use-bun, pnpm: please-use-bun, yarn: please-use-bun}
+    hasBin: true
+
   browserslist@4.24.0:
     resolution: {integrity: sha512-Rmb62sR1Zpjql25eSanFGEhAxcFwfA1K0GuQcLoaJBAcENegrQut3hYdhXFF1obQfiDyqIW/cLM5HSJ/9k884A==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
@@ -8040,6 +8308,9 @@ packages:
 
   didyoumean@1.2.2:
     resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==}
+
+  diff-dom-streaming@0.6.1:
+    resolution: {integrity: sha512-zGhLBNF2MdNvndGc5HzEeC6/aMuIBBm7cv6GjFwBqwXFCGmgVOGBV139GsCBFpUHjc7lqaC1L9agiVbVMSLDdQ==}
 
   diff-sequences@29.6.3:
     resolution: {integrity: sha512-EjePK1srD3P08o2j4f0ExnylqRs5B9tJjcp9t1krH2qRi8CCdsYfwe9JgSLurFBWwq4uOlipzfk5fHNvwFKr8Q==}
@@ -9971,6 +10242,10 @@ packages:
   merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
+
+  meriyah@6.0.2:
+    resolution: {integrity: sha512-RHlo7GK3qrswKzVcMJ/2bMMkMChpn4L/JUOBfs81c3SKp/ZOS5u2aC/qY+sZCiE4qPkrC+a1yNPfGieh0uz19Q==}
+    engines: {node: '>=18.0.0'}
 
   micromark-core-commonmark@1.1.0:
     resolution: {integrity: sha512-BgHO1aRbolh2hcrzL2d1La37V0Aoz73ymF8rAcKnohLy93titmv62E0gP8Hrx9PKcKrqCZ1BbLGbP3bEhoXYlw==}
@@ -16476,6 +16751,13 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
+  brisa@0.1.0:
+    dependencies:
+      astring: 1.9.0
+      csstype: 3.1.3
+      diff-dom-streaming: 0.6.1
+      meriyah: 6.0.2
+
   browserslist@4.24.0:
     dependencies:
       caniuse-lite: 1.0.30001664
@@ -17179,6 +17461,8 @@ snapshots:
   diacritics-map@0.1.0: {}
 
   didyoumean@1.2.2: {}
+
+  diff-dom-streaming@0.6.1: {}
 
   diff-sequences@29.6.3: {}
 
@@ -19689,6 +19973,8 @@ snapshots:
 
   merge2@1.4.1: {}
 
+  meriyah@6.0.2: {}
+
   micromark-core-commonmark@1.1.0:
     dependencies:
       decode-named-character-reference: 1.0.2
@@ -20437,7 +20723,7 @@ snapshots:
       unhead: 1.11.7
       unimport: 3.13.1(rollup@4.22.5)
       unplugin: 1.14.1
-      unplugin-vue-router: 0.10.8(rollup@4.22.5)(vue-router@4.4.5(vue@3.5.10(typescript@5.6.2)))(vue@3.5.11(typescript@5.6.2))
+      unplugin-vue-router: 0.10.8(rollup@4.22.5)(vue-router@4.4.5(vue@3.5.11(typescript@5.6.2)))(vue@3.5.11(typescript@5.6.2))
       unstorage: 1.12.0(ioredis@5.4.1)
       untyped: 1.5.0
       vue: 3.5.11(typescript@5.6.2)
@@ -22426,7 +22712,7 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unplugin-vue-router@0.10.8(rollup@4.22.5)(vue-router@4.4.5(vue@3.5.10(typescript@5.6.2)))(vue@3.5.11(typescript@5.6.2)):
+  unplugin-vue-router@0.10.8(rollup@4.22.5)(vue-router@4.4.5(vue@3.5.11(typescript@5.6.2)))(vue@3.5.11(typescript@5.6.2)):
     dependencies:
       '@babel/types': 7.25.6
       '@rollup/pluginutils': 5.1.2(rollup@4.22.5)
@@ -22443,7 +22729,7 @@ snapshots:
       unplugin: 1.14.1
       yaml: 2.5.1
     optionalDependencies:
-      vue-router: 4.4.5(vue@3.5.10(typescript@5.6.2))
+      vue-router: 4.4.5(vue@3.5.11(typescript@5.6.2))
     transitivePeerDependencies:
       - rollup
       - vue
