@@ -869,10 +869,11 @@ export function machine(userContext: UserDefinedContext) {
           if (ctx.activeIndex !== evt.index) return
           ctx.inputValue = evt.value
         },
-        syncInputValue(ctx) {
+        syncInputValue(ctx, evt) {
           queueMicrotask(() => {
             const inputEls = dom.getInputEls(ctx)
-            const inputEl = inputEls[ctx.activeIndex]
+            const idx = evt.index ?? ctx.activeIndex
+            const inputEl = inputEls[idx]
             dom.setValue(inputEl, ctx.inputValue)
           })
         },
