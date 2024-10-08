@@ -47,6 +47,18 @@ test.describe("tags-input", () => {
     await I.dontSeeTag("Vue")
   })
 
+  test("delete tag with delete key, show allow keyboard navigation", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.pressKey("Delete")
+
+    await I.seeInputIsFocused()
+    await I.dontSeeTag("Vue")
+
+    await I.pressKey("ArrowLeft")
+    await I.seeTagIsHighlighted("React")
+  })
+
   test("delete tag with pointer, show allow keyboard navigation", async () => {
     await I.clickTagClose("Vue")
 
