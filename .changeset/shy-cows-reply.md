@@ -2,7 +2,5 @@
 "@zag-js/color-utils": patch
 ---
 
-Update named colors.
-
-- Add `rebeccapurple`
-- Add `grey` colors.
+- Fix issue where named `*grey` colors were not supported.
+- Add `rebeccapurple` to named colors.
