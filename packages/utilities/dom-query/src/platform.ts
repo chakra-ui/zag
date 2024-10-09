@@ -16,6 +16,3 @@ export const isFirefox = () => ua(/firefox\//i)
 export const isApple = () => pt(/mac|iphone|ipad|ipod/i)
 export const isIos = () => pt(/iP(hone|ad|od)|iOS/)
 export const isWebKit = () => ua(/AppleWebKit/)
-
-export const isModKey = (event: Pick<KeyboardEvent, "metaKey" | "ctrlKey">) =>
-  isApple() ? event.metaKey : event.ctrlKey

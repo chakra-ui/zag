@@ -1,5 +1,51 @@
 # @zag-js/number-input
 
+## 0.74.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.2
+  - @zag-js/core@0.74.2
+  - @zag-js/types@0.74.2
+  - @zag-js/utils@0.74.2
+  - @zag-js/dom-event@0.74.2
+  - @zag-js/dom-query@0.74.2
+  - @zag-js/form-utils@0.74.2
+  - @zag-js/number-utils@0.74.2
+
+## 0.74.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.1
+  - @zag-js/core@0.74.1
+  - @zag-js/types@0.74.1
+  - @zag-js/utils@0.74.1
+  - @zag-js/dom-event@0.74.1
+  - @zag-js/dom-query@0.74.1
+  - @zag-js/form-utils@0.74.1
+  - @zag-js/number-utils@0.74.1
+
+## 0.74.0
+
+### Patch Changes
+
+- [`a135189`](https://github.com/chakra-ui/zag/commit/a13518923e6019c41ffcdfc18e14ac2724ccf0cf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where number input increment/decrements when modifier
+  keys are pressed.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.0
+  - @zag-js/core@0.74.0
+  - @zag-js/types@0.74.0
+  - @zag-js/utils@0.74.0
+  - @zag-js/dom-event@0.74.0
+  - @zag-js/dom-query@0.74.0
+  - @zag-js/form-utils@0.74.0
+  - @zag-js/number-utils@0.74.0
+
 ## 0.73.1
 
 ### Patch Changes

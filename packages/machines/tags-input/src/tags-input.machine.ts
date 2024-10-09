@@ -209,6 +209,7 @@ export function machine(userContext: UserDefinedContext) {
               },
             ],
             DELETE: {
+              target: "focused:input",
               actions: ["deleteHighlightedTag", "highlightTagAtIndex"],
             },
             PASTE: [

@@ -44,6 +44,8 @@ export default function Page() {
           <button {...api.getTriggerProps()}>🗓</button>
         </div>
 
+        <button {...api.getPresetTriggerProps({ value: "last7Days" })}>Last 7 days</button>
+
         <div {...api.getPositionerProps()}>
           <div {...api.getContentProps()}>
             <div style={{ marginBottom: "20px" }}>

@@ -1,5 +1,73 @@
 # @zag-js/date-picker
 
+## 0.74.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.2
+  - @zag-js/core@0.74.2
+  - @zag-js/types@0.74.2
+  - @zag-js/utils@0.74.2
+  - @zag-js/date-utils@0.74.2
+  - @zag-js/dismissable@0.74.2
+  - @zag-js/dom-event@0.74.2
+  - @zag-js/dom-query@0.74.2
+  - @zag-js/form-utils@0.74.2
+  - @zag-js/live-region@0.74.2
+  - @zag-js/popper@0.74.2
+  - @zag-js/text-selection@0.74.2
+
+## 0.74.1
+
+### Patch Changes
+
+- [`a4b4cdb`](https://github.com/chakra-ui/zag/commit/a4b4cdbad37a1d935c248c15075ed0dd5ed56aed) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - fix(time-picker): move @internationalized/date to the list of peer
+  deps"
+
+- Updated dependencies [[`a4b4cdb`](https://github.com/chakra-ui/zag/commit/a4b4cdbad37a1d935c248c15075ed0dd5ed56aed)]:
+  - @zag-js/date-utils@0.74.1
+  - @zag-js/anatomy@0.74.1
+  - @zag-js/core@0.74.1
+  - @zag-js/types@0.74.1
+  - @zag-js/utils@0.74.1
+  - @zag-js/dismissable@0.74.1
+  - @zag-js/dom-event@0.74.1
+  - @zag-js/dom-query@0.74.1
+  - @zag-js/form-utils@0.74.1
+  - @zag-js/live-region@0.74.1
+  - @zag-js/popper@0.74.1
+  - @zag-js/text-selection@0.74.1
+
+## 0.74.0
+
+### Minor Changes
+
+- [`a95011e`](https://github.com/chakra-ui/zag/commit/a95011ed3ddeeb81846ada7f6a8b40a545bed1c8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Move `@internationalized/date` to peer dependency to prevent
+  mismatching type errors.
+
+### Patch Changes
+
+- [`89b83b8`](https://github.com/chakra-ui/zag/commit/89b83b8bbe9e0426ef760a2d4547d9b6f2a045d9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in date range picker where clicking a preset trigger and
+  blurring the input resets the value incorrectly.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.0
+  - @zag-js/core@0.74.0
+  - @zag-js/types@0.74.0
+  - @zag-js/utils@0.74.0
+  - @zag-js/date-utils@0.74.0
+  - @zag-js/dismissable@0.74.0
+  - @zag-js/dom-event@0.74.0
+  - @zag-js/dom-query@0.74.0
+  - @zag-js/form-utils@0.74.0
+  - @zag-js/live-region@0.74.0
+  - @zag-js/popper@0.74.0
+  - @zag-js/text-selection@0.74.0
+
 ## 0.73.1
 
 ### Patch Changes

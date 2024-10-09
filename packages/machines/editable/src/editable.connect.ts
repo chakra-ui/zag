@@ -1,5 +1,5 @@
 import { type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, isComposingEvent, isModKey } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, isApple, isComposingEvent } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./editable.anatomy"
 import { dom } from "./editable.dom"
@@ -123,7 +123,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
               // when used as a textarea, we want to allow the user to enter a newline
               if (localName === "textarea") {
-                if (!isModKey(event)) return
+                const submitMod = isApple() ? event.metaKey : event.ctrlKey
+                if (!submitMod) return
                 send({ type: "SUBMIT", src: "keydown.enter" })
                 return
               }

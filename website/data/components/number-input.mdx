@@ -184,6 +184,18 @@ const [state, send] = useMachine(
 )
 ```
 
+## Disabling long press spin
+
+To disable the long press spin, set the `spinOnPress` to `false`.
+
+```jsx {3}
+const [state, send] = useMachine(
+  numberInput.machine({
+    spinOnPress: false,
+  }),
+)
+```
+
 ## Format and parse value
 
 To apply custom formatting to the input's value, set the `formatOptions` and

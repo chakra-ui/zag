@@ -1,5 +1,50 @@
 # @zag-js/popover
 
+## 0.74.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.2
+  - @zag-js/core@0.74.2
+  - @zag-js/types@0.74.2
+  - @zag-js/aria-hidden@0.74.2
+  - @zag-js/utils@0.74.2
+  - @zag-js/dismissable@0.74.2
+  - @zag-js/dom-query@0.74.2
+  - @zag-js/popper@0.74.2
+  - @zag-js/remove-scroll@0.74.2
+
+## 0.74.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.1
+  - @zag-js/core@0.74.1
+  - @zag-js/types@0.74.1
+  - @zag-js/aria-hidden@0.74.1
+  - @zag-js/utils@0.74.1
+  - @zag-js/dismissable@0.74.1
+  - @zag-js/dom-query@0.74.1
+  - @zag-js/popper@0.74.1
+  - @zag-js/remove-scroll@0.74.1
+
+## 0.74.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.0
+  - @zag-js/core@0.74.0
+  - @zag-js/types@0.74.0
+  - @zag-js/aria-hidden@0.74.0
+  - @zag-js/utils@0.74.0
+  - @zag-js/dismissable@0.74.0
+  - @zag-js/dom-query@0.74.0
+  - @zag-js/popper@0.74.0
+  - @zag-js/remove-scroll@0.74.0
+
 ## 0.73.1
 
 ### Patch Changes

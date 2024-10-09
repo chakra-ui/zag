@@ -1,5 +1,56 @@
 # @zag-js/color-picker
 
+## 0.74.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.2
+  - @zag-js/core@0.74.2
+  - @zag-js/types@0.74.2
+  - @zag-js/color-utils@0.74.2
+  - @zag-js/utils@0.74.2
+  - @zag-js/dismissable@0.74.2
+  - @zag-js/dom-event@0.74.2
+  - @zag-js/dom-query@0.74.2
+  - @zag-js/form-utils@0.74.2
+  - @zag-js/popper@0.74.2
+  - @zag-js/text-selection@0.74.2
+
+## 0.74.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.1
+  - @zag-js/core@0.74.1
+  - @zag-js/types@0.74.1
+  - @zag-js/color-utils@0.74.1
+  - @zag-js/utils@0.74.1
+  - @zag-js/dismissable@0.74.1
+  - @zag-js/dom-event@0.74.1
+  - @zag-js/dom-query@0.74.1
+  - @zag-js/form-utils@0.74.1
+  - @zag-js/popper@0.74.1
+  - @zag-js/text-selection@0.74.1
+
+## 0.74.0
+
+### Patch Changes
+
+- Updated dependencies [[`112ae8a`](https://github.com/chakra-ui/zag/commit/112ae8a5cef88b10a2f434a27dc74050d36f3eb0)]:
+  - @zag-js/color-utils@0.74.0
+  - @zag-js/anatomy@0.74.0
+  - @zag-js/core@0.74.0
+  - @zag-js/types@0.74.0
+  - @zag-js/utils@0.74.0
+  - @zag-js/dismissable@0.74.0
+  - @zag-js/dom-event@0.74.0
+  - @zag-js/dom-query@0.74.0
+  - @zag-js/form-utils@0.74.0
+  - @zag-js/popper@0.74.0
+  - @zag-js/text-selection@0.74.0
+
 ## 0.73.1
 
 ### Patch Changes

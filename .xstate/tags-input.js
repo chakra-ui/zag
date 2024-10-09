@@ -169,6 +169,7 @@ const fetchMachine = createMachine({
           actions: ["deleteHighlightedTag", "highlightPrevTag"]
         }],
         DELETE: {
+          target: "focused:input",
           actions: ["deleteHighlightedTag", "highlightTagAtIndex"]
         },
         PASTE: [{

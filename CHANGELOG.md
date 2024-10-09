@@ -6,6 +6,35 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.74.2](./#0.74.0) - 2024-10-09
+
+### Fixed
+
+- **TimePicker**: Export missing `Time` type
+
+## [0.74.1](./#0.74.0) - 2024-10-09
+
+### Fixed
+
+- **TimePicker**: Resolve an issue that `@internationalized/date` was not declared as peer dependency.
+
+## [0.74.0](./#0.74.0) - 2024-10-09
+
+### Fixed
+
+- **TagsInput**: Fix issue where tags input doesn't navigate tags after removing with the delete key
+
+- **DatePicker**: Fix issue in date range picker where clicking a preset trigger and blurring the input resets the value
+  incorrectly.
+
+### Added
+
+- **ColorPicker**: Add support for `grey` named colors and `rebeccapurple` color resolution.
+
+### Changed
+
+- **DatePicker, TimePicker [BREAKING]**: Move `@internationalized/date` to peer dependency to prevent mismatching type errors.
+
 ## [0.73.0](./#0.73.0) - 2024-09-30
 
 ### Added

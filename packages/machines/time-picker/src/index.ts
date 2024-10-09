@@ -14,6 +14,7 @@ export type {
   PeriodCellProps,
   PositioningOptions,
   Service,
+  Time,
   TimePeriod,
   TimeUnit,
   ValueChangeDetails,
