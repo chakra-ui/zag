@@ -1,5 +1,27 @@
 # @zag-js/date-picker
 
+## 0.74.1
+
+### Patch Changes
+
+- [`a4b4cdb`](https://github.com/chakra-ui/zag/commit/a4b4cdbad37a1d935c248c15075ed0dd5ed56aed) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - fix(time-picker): move @internationalized/date to the list of peer
+  deps"
+
+- Updated dependencies [[`a4b4cdb`](https://github.com/chakra-ui/zag/commit/a4b4cdbad37a1d935c248c15075ed0dd5ed56aed)]:
+  - @zag-js/date-utils@0.74.1
+  - @zag-js/anatomy@0.74.1
+  - @zag-js/core@0.74.1
+  - @zag-js/types@0.74.1
+  - @zag-js/utils@0.74.1
+  - @zag-js/dismissable@0.74.1
+  - @zag-js/dom-event@0.74.1
+  - @zag-js/dom-query@0.74.1
+  - @zag-js/form-utils@0.74.1
+  - @zag-js/live-region@0.74.1
+  - @zag-js/popper@0.74.1
+  - @zag-js/text-selection@0.74.1
+
 ## 0.74.0
 
 ### Minor Changes
