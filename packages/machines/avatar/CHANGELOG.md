@@ -1,5 +1,16 @@
 # @zag-js/avatar
 
+## 0.74.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.1
+  - @zag-js/core@0.74.1
+  - @zag-js/types@0.74.1
+  - @zag-js/utils@0.74.1
+  - @zag-js/dom-query@0.74.1
+
 ## 0.74.0
 
 ### Patch Changes
