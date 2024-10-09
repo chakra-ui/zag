@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+### Fixed
+
+- **TimePicker**: Resolve an issue that `@internationalized/date` was not declared as peer dependency.
+
 ## [0.74.0](./#0.74.0) - 2024-10-09
 
 ### Fixed
@@ -21,7 +25,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 ### Changed
 
-- **DatePicker [BREAKING]**: Move `@internationalized/date` to peer dependency to prevent mismatching type errors.
+- **DatePicker, TimePicker [BREAKING]**: Move `@internationalized/date` to peer dependency to prevent mismatching type errors.
 
 ## [0.73.0](./#0.73.0) - 2024-09-30
 
