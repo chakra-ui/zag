@@ -1,5 +1,22 @@
 # @zag-js/time-picker
 
+## 0.74.2
+
+### Patch Changes
+
+- [`91790a7`](https://github.com/chakra-ui/zag/commit/91790a7e71e8fe99deda143de18ba3cd52992688) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export missting Time type
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.2
+  - @zag-js/core@0.74.2
+  - @zag-js/types@0.74.2
+  - @zag-js/utils@0.74.2
+  - @zag-js/dismissable@0.74.2
+  - @zag-js/dom-event@0.74.2
+  - @zag-js/dom-query@0.74.2
+  - @zag-js/popper@0.74.2
+
 ## 0.74.1
 
 ### Patch Changes
