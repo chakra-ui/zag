@@ -50,6 +50,7 @@
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
+    "@zag-js/navigation-menu": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/number-utils": "workspace:*",
     "@zag-js/numeric-range": "workspace:*",
