@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.74.2](./#0.74.0) - 2024-10-09
+
+### Fixed
+
+- **TimePicker**: Export missing `Time` type
+
 ## [0.74.1](./#0.74.0) - 2024-10-09
 
 ### Fixed
