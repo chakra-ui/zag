@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.74.1](./#0.74.0) - 2024-10-09
+
 ### Fixed
 
 - **TimePicker**: Resolve an issue that `@internationalized/date` was not declared as peer dependency.
