@@ -1,11 +1,11 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import type { State, Send, ItemProps, LinkProps } from "./navigation-menu.types"
+import type { State, Send, ItemProps, LinkProps, MachineApi } from "./navigation-menu.types"
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
 import { parts } from "./navigation-menu.anatomy"
 import { dom } from "./navigation-menu.dom"
 import { dataAttr, getWindow } from "@zag-js/dom-query"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const open = Boolean(state.context.value)
 
   const activeTriggerRect = state.context.activeTriggerRect
@@ -13,6 +13,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const value = state.context.value
   const previousValue = state.context.previousValue
+  const isViewportRendered = state.context.isViewportRendered
 
   function getItemState(props: ItemProps) {
     const selected = value === props.value
@@ -29,8 +30,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     value,
+    setValue(value: string) {
+      send({ type: "SET_VALUE", value })
+    },
     open,
-    activeContentNode: state.context.activeContentNode,
 
     getRootProps() {
       return normalize.element({
@@ -57,7 +60,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.item.attrs,
         dir: state.context.dir,
         "data-value": props.value,
-        "data-type": state.context.isViewportRendered ? "viewport" : "popover",
+        "data-type": isViewportRendered ? "viewport" : "popover",
         "data-state": itemState.open ? "open" : "closed",
         "data-orientation": state.context.orientation,
         "data-disabled": dataAttr(itemState.disabled),
@@ -225,7 +228,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
 
       const activeContentValue = state.context.value ?? state.context.previousValue
-      const selected = state.context.isViewportRendered ? activeContentValue === props.value : itemState.selected
+      const selected = isViewportRendered ? activeContentValue === props.value : itemState.selected
 
       return normalize.element({
         ...parts.content.attrs,

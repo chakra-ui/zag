@@ -1,7 +1,11 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, OrientationProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
-interface ValueChangeDetails {
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface ValueChangeDetails {
   value: string | null
 }
 
@@ -15,25 +19,79 @@ interface Rect extends Size {
   x: number
 }
 
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 interface PublicContext extends DirectionProperty, CommonProperties, OrientationProperty {
+  /**
+   * The value of the menu
+   */
   value: string | null
-  previousValue: string | null
+  /**
+   * Function called when the value of the menu changes
+   */
   onValueChange?: (details: ValueChangeDetails) => void
+  /**
+   * The delay before the menu opens
+   */
   openDelay: number
+  /**
+   * The delay before the menu closes
+   */
   closeDelay: number
 }
 
 interface PrivateContext {
+  /**
+   * @internal
+   * The previous value of the menu
+   */
+  previousValue: string | null
+  /**
+   * @internal
+   * The size of the viewport
+   */
   viewportSize: Size | null
+  /**
+   * @internal
+   * Whether the viewport is rendered
+   */
   isViewportRendered: boolean
+  /**
+   * @internal
+   * Whether the menu was closed by a click
+   */
   wasClickCloseRef: string | null
+  /**
+   * @internal
+   * Whether the menu was open by pointer move
+   */
   hasPointerMoveOpenedRef: string | null
-
+  /**
+   * @internal
+   * The active content node
+   */
   activeContentNode: HTMLElement | null
+  /**
+   * @internal
+   * The cleanup function for the active content node
+   */
   activeContentCleanup: VoidFunction | null
-
+  /**
+   * @internal
+   * The active trigger node
+   */
   activeTriggerRect: Rect | null
+  /**
+   * @internal
+   * The active trigger node
+   */
   activeTriggerNode: HTMLElement | null
+  /**
+   * @internal
+   * The cleanup function for the active trigger node
+   */
   activeTriggerCleanup: VoidFunction | null
 }
 
@@ -53,13 +111,57 @@ export type Send = S.Send<S.AnyEventObject>
 
 export type Service = Machine<MachineContext, MachineState>
 
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
 export interface ItemProps {
+  /**
+   * The value of the item
+   */
   value: string
+  /**
+   * Whether the item is disabled
+   */
   disabled?: boolean | undefined
 }
 
 export interface LinkProps {
+  /**
+   * The value of the item this link belongs to
+   */
   value: string
+  /**
+   * Whether the link is the current link
+   */
   current?: boolean | undefined
+  /**
+   * Function called when the link is selected
+   */
   onSelect?: (event: CustomEvent) => void
+}
+
+export interface MachineApi<T extends PropTypes = PropTypes> {
+  /**
+   * The current value of the menu
+   */
+  value: string | null
+  /**
+   * Sets the value of the menu
+   */
+  setValue: (value: string) => void
+  /**
+   * Whether the menu is open
+   */
+  open: boolean
+
+  getRootProps(): T["element"]
+  getListProps(): T["element"]
+  getItemProps(props: ItemProps): T["element"]
+  getArrowProps(): T["element"]
+  getArrowTipProps(): T["element"]
+  getTriggerProps(props: ItemProps): T["button"]
+  getLinkProps(props: LinkProps): T["element"]
+  getContentProps(props: LinkProps): T["element"]
+  getViewportProps(): T["element"]
 }
