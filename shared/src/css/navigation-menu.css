@@ -1,3 +1,5 @@
+/* List */
+
 [data-scope="navigation-menu"][data-part="list"] {
   list-style: none;
   display: flex;
@@ -10,6 +12,8 @@
 [data-scope="navigation-menu"][data-part="list"][data-orientation="horizontal"] {
   flex-direction: row;
 }
+
+/* Item */
 
 [data-scope="navigation-menu"][data-part="item"] {
   padding: 10px;
@@ -80,14 +84,27 @@
   animation: nav-menu-to-right 250ms ease;
 }
 
-[data-scope="navigation-menu"][data-part="viewport-container"] {
+/* Viewport Positioner */
+
+[data-scope="navigation-menu"][data-part="viewport-positioner"] {
   position: absolute;
   display: flex;
   justify-content: center;
+}
+
+[data-scope="navigation-menu"][data-part="viewport-positioner"][data-orientation="horizontal"] {
   width: 100%;
   top: 100%;
   left: 0;
 }
+
+[data-scope="navigation-menu"][data-part="viewport-positioner"][data-orientation="vertical"] {
+  height: 100%;
+  top: 0;
+  left: 100%;
+}
+
+/* Viewport */
 
 [data-scope="navigation-menu"][data-part="viewport"] {
   position: relative;
@@ -153,9 +170,9 @@
   text-decoration: none;
 }
 
-/* Arrow */
+/* Indicator + Arrow */
 
-[data-scope="navigation-menu"][data-part="arrow"] {
+[data-scope="navigation-menu"][data-part="indicator"] {
   display: flex;
   justify-content: center;
   height: 10px;
@@ -167,27 +184,27 @@
   overflow: hidden;
 }
 
-[data-scope="navigation-menu"][data-part="arrow"][data-orientation="horizontal"] {
+[data-scope="navigation-menu"][data-part="indicator"][data-orientation="horizontal"] {
   left: 0px;
   transform: translateX(var(--trigger-x));
   width: var(--trigger-width);
 }
 
-[data-scope="navigation-menu"][data-part="arrow"][data-orientation="vertical"] {
+[data-scope="navigation-menu"][data-part="indicator"][data-orientation="vertical"] {
   top: 0px;
   transform: translateY(var(--trigger-y));
   height: var(--trigger-height);
 }
 
-[data-scope="navigation-menu"][data-part="arrow"][data-state="open"] {
+[data-scope="navigation-menu"][data-part="indicator"][data-state="open"] {
   animation: nav-menu-fade-in 250ms ease;
 }
 
-[data-scope="navigation-menu"][data-part="arrow"][data-state="closed"] {
+[data-scope="navigation-menu"][data-part="indicator"][data-state="closed"] {
   animation: nav-menu-fade-out 250ms ease;
 }
 
-[data-scope="navigation-menu"][data-part="arrow-tip"] {
+[data-scope="navigation-menu"][data-part="arrow"] {
   position: relative;
   top: 4px;
   width: 20px;
