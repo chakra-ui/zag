@@ -9,6 +9,8 @@ export const anatomy = createAnatomy("navigation-menu").parts(
   "item",
   "link",
   "indicator",
+  "arrow",
+  "arrowTip",
 )
 
 export const parts = anatomy.build()

@@ -8,7 +8,7 @@ interface Dict {
 const pick = (obj: Dict, keys: string[]) =>
   Object.fromEntries(keys.filter((key) => key in obj).map((key) => [key, obj[key]]))
 
-const hasProp = (v: any, prop: string) => Object.prototype.hasOwnProperty.call(v, prop)
+const hasProp = (v: any, prop: string) => prop in v
 
 const isTimeObject = (v: any) => hasProp(v, "hour") && hasProp(v, "minute") && hasProp(v, "second")
 

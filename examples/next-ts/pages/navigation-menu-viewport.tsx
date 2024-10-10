@@ -31,6 +31,33 @@ export default function Page() {
                   Products
                   <ChevronDown />
                 </button>
+              </div>
+
+              <div {...api.getItemProps({ value: "company" })}>
+                <button {...api.getTriggerProps({ value: "company" })}>
+                  Company
+                  <ChevronDown />
+                </button>
+              </div>
+
+              <div {...api.getItemProps({ value: "developers", disabled: true })}>
+                <button {...api.getTriggerProps({ value: "developers", disabled: true })}>
+                  Developers
+                  <ChevronDown />
+                </button>
+              </div>
+
+              <div {...api.getItemProps({ value: "pricing" })}>
+                <a href="#" {...api.getLinkProps({ value: "pricing" })}>
+                  Pricing
+                </a>
+              </div>
+
+              <div {...api.getViewportProps()}>
+                <div {...api.getArrowProps()}>
+                  <div {...api.getArrowTipProps()} />
+                </div>
+
                 <Presence {...api.getContentProps({ value: "products" })}>
                   {renderLinks({
                     value: "products",
@@ -44,38 +71,20 @@ export default function Page() {
                     ],
                   })}
                 </Presence>
-              </div>
 
-              <div {...api.getItemProps({ value: "company" })}>
-                <button {...api.getTriggerProps({ value: "company" })}>
-                  Company
-                  <ChevronDown />
-                </button>
                 <Presence {...api.getContentProps({ value: "company" })}>
                   {renderLinks({
                     value: "company",
                     items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
                   })}
                 </Presence>
-              </div>
 
-              <div {...api.getItemProps({ value: "developers", disabled: true })}>
-                <button {...api.getTriggerProps({ value: "developers", disabled: true })}>
-                  Developers
-                  <ChevronDown />
-                </button>
                 <Presence {...api.getContentProps({ value: "developers" })}>
                   {renderLinks({
                     value: "developers",
                     items: ["Donec quis dui", "Vestibulum", "Fusce pellentesque", "Aliquam porttitor"],
                   })}
                 </Presence>
-              </div>
-
-              <div {...api.getItemProps({ value: "pricing" })}>
-                <a href="#" {...api.getLinkProps({ value: "pricing" })}>
-                  Pricing
-                </a>
               </div>
             </div>
           </div>

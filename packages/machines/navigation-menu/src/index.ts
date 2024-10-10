@@ -1,5 +1,5 @@
 export { anatomy } from "./navigation-menu.anatomy"
 export { connect } from "./navigation-menu.connect"
 export { machine } from "./navigation-menu.machine"
-export * from "./navigation-menu.props.ts"
+export * from "./navigation-menu.props"
 export type { UserDefinedContext as Context } from "./navigation-menu.types"

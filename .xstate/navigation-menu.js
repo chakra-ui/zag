@@ -11,18 +11,40 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "navigation-menu",
-  initial: "idle",
-  context: {},
+  context: {
+    "isItemOpen": false,
+    "isOpen": false
+  },
+  initial: "closed",
+  entry: ["checkViewportNode"],
+  exit: ["cleanupObservers"],
+  on: {
+    TRIGGER_CLICK: [{
+      cond: "isItemOpen",
+      actions: ["clearValue", "setClickCloseRef"]
+    }, {
+      target: "open",
+      actions: ["setValue", "setClickCloseRef"]
+    }],
+    TRIGGER_FOCUS: {
+      actions: ["focusTopLevelEl"]
+    }
+  },
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
-    idle: {
+    closed: {
+      entry: ["cleanupObservers"],
       on: {
-        "trigger.enter": {
-          target: "opening"
+        TRIGGER_ENTER: {
+          actions: ["clearRefs"]
+        },
+        TRIGGER_MOVE: {
+          target: "opening",
+          actions: ["clearPointerMoveRef"]
         }
       }
     },
@@ -32,24 +54,64 @@ const fetchMachine = createMachine({
           target: "open",
           actions: ["setValue"]
         }
-      }
-    },
-    closing: {
-      tags: ["open"],
-      activities: ["trackViewportRect", "trackActiveTriggerRect"],
+      },
       on: {
-        "content.enter": {
-          target: "open"
+        TRIGGER_LEAVE: {
+          target: "closed",
+          actions: ["clearValue"]
+        },
+        CONTENT_FOCUS: {
+          actions: ["focusContent"]
+        },
+        LINK_FOCUS: {
+          actions: ["focusLinkEl"]
         }
       }
     },
     open: {
       tags: ["open"],
-      activities: ["trackViewportRect", "trackActiveTriggerRect"],
       on: {
-        "content.leave": {
+        CONTENT_LEAVE: {
           target: "closing"
+        },
+        TRIGGER_LEAVE: {
+          target: "closing"
+        },
+        CONTENT_FOCUS: {
+          actions: ["focusContent"]
+        },
+        LINK_FOCUS: {
+          actions: ["focusLinkEl"]
+        },
+        CONTENT_DISMISS: {
+          target: "closed",
+          actions: ["focusTriggerIfNeeded", "clearValue"]
         }
+      }
+    },
+    closing: {
+      tags: ["open"],
+      after: {
+        CLOSE_DELAY: {
+          target: "closed",
+          actions: ["clearValue"]
+        }
+      },
+      on: {
+        CONTENT_ENTER: {
+          target: "open"
+        },
+        TRIGGER_ENTER: {
+          actions: ["clearRefs"]
+        },
+        TRIGGER_MOVE: [{
+          cond: "isOpen",
+          target: "open",
+          actions: ["setValue", "clearPointerMoveRef"]
+        }, {
+          target: "opening",
+          actions: ["clearPointerMoveRef"]
+        }]
       }
     }
   }
@@ -61,5 +123,8 @@ const fetchMachine = createMachine({
       };
     })
   },
-  guards: {}
+  guards: {
+    "isItemOpen": ctx => ctx["isItemOpen"],
+    "isOpen": ctx => ctx["isOpen"]
+  }
 });

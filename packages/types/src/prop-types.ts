@@ -43,6 +43,7 @@ type DataAttr = {
 }
 
 export type PropTypes<T = Dict> = Record<
+  | "a"
   | "button"
   | "label"
   | "input"

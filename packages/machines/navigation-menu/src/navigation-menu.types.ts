@@ -1,8 +1,15 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, OrientationProperty, RequiredBy } from "@zag-js/types"
 
 interface ValueChangeDetails {
-  value: string
+  value: string | null
+}
+
+interface Rect {
+  width: number
+  height: number
+  y: number
+  x: number
 }
 
 interface PublicContext extends DirectionProperty, CommonProperties, OrientationProperty {
@@ -14,9 +21,17 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
 }
 
 interface PrivateContext {
-  viewportRect: Record<"width" | "height" | "top" | "left", number> | null
-  activeTriggerRect: Record<"width" | "height" | "top" | "left", number> | null
+  viewportRect: Rect | null
   isViewportRendered: boolean
+  wasClickCloseRef: string | null
+  hasPointerMoveOpenedRef: string | null
+
+  activeContentNode: HTMLElement | null
+  activeContentCleanup: VoidFunction | null
+
+  activeTriggerRect: Rect | null
+  activeTriggerNode: HTMLElement | null
+  activeTriggerCleanup: VoidFunction | null
 }
 
 type ComputedContext = Readonly<{
@@ -28,9 +43,22 @@ export type UserDefinedContext = RequiredBy<PublicContext, "id">
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
 
 export interface MachineState {
-  value: "idle" | "opening" | "open" | "closing" | "closed"
+  value: "opening" | "open" | "closing" | "closed"
 }
 
 export type State = S.State<MachineContext, MachineState>
 
 export type Send = S.Send<S.AnyEventObject>
+
+export type Service = Machine<MachineContext, MachineState>
+
+export interface ItemProps {
+  value: string
+  disabled?: boolean | undefined
+}
+
+export interface LinkProps {
+  value: string
+  current?: boolean | undefined
+  onSelect?: (event: CustomEvent) => void
+}

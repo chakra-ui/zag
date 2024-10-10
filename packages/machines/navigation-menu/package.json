@@ -2,14 +2,25 @@
   "name": "@zag-js/navigation-menu",
   "version": "0.0.0",
   "description": "Core logic for the navigation-menu widget implemented as a state machine",
-  "keywords": ["js", "machine", "xstate", "statechart", "component", "chakra-ui", "navigation-menu"],
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "navigation-menu"
+  ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
-    "main": "src/index.ts",
+  "main": "src/index.ts",
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/navigation-menu",
   "sideEffects": false,
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "tsup",
     "lint": "eslint src",
@@ -27,6 +38,7 @@
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
+    "@zag-js/dom-event": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
