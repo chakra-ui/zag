@@ -2,6 +2,7 @@ import { createMachine } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-event"
 import { contains, raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
+import { trackInteractOutside } from "@zag-js/interact-outside"
 import { dom, trackResizeObserver } from "./navigation-menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./navigation-menu.types"
 
@@ -99,7 +100,7 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["open"],
-          activities: ["trackEscapeKey"],
+          activities: ["trackEscapeKey", "trackInteractionOutside"],
           on: {
             CONTENT_LEAVE: {
               target: "closing",
@@ -123,6 +124,7 @@ export function machine(userContext: UserDefinedContext) {
 
         closing: {
           tags: ["open"],
+          activities: ["trackInteractionOutside"],
           after: {
             CLOSE_DELAY: {
               target: "closed",
@@ -161,6 +163,33 @@ export function machine(userContext: UserDefinedContext) {
         CLOSE_DELAY: (ctx) => ctx.closeDelay,
       },
       activities: {
+        trackInteractionOutside(ctx, _evt, { send }) {
+          if (ctx.value == null) return
+          const contentEl = () => (ctx.isViewportRendered ? dom.getViewportEl(ctx) : dom.getContentEl(ctx, ctx.value!))
+          return trackInteractOutside(contentEl, {
+            defer: true,
+            onFocusOutside(event) {
+              const { target } = event.detail.originalEvent
+              const rootEl = dom.getRootEl(ctx)
+              if (contains(rootEl, target)) event.preventDefault()
+            },
+            onPointerDownOutside(event) {
+              const { target } = event.detail.originalEvent
+              const isRootMenu = ctx.parentMenu == null
+
+              const topLevelEls = dom.getTopLevelEls(ctx)
+              const isTrigger = topLevelEls.some((item) => contains(item, target))
+
+              const viewportEl = dom.getViewportEl(ctx)
+              const isRootViewport = isRootMenu && contains(viewportEl, target)
+              if (isTrigger || isRootViewport || !isRootMenu) event.preventDefault()
+            },
+            onInteractOutside(event) {
+              if (event.defaultPrevented) return
+              send({ type: "CONTENT_DISMISS", src: "interact-outside" })
+            },
+          })
+        },
         trackEscapeKey(ctx, _evt, { send }) {
           const onKeyDown = (evt: KeyboardEvent) => {
             if (evt.key === "Escape" && !evt.isComposing) {

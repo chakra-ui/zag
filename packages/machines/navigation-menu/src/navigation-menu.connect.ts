@@ -245,6 +245,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getContentId(state.context, props.value),
         dir: state.context.dir,
         hidden: !selected,
+        "aria-labelledby": itemState.triggerId,
         "data-uid": state.context.id,
         "data-state": selected ? "open" : "closed",
         "data-type": state.context.isViewportRendered ? "viewport" : "popover",

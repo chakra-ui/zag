@@ -12,6 +12,7 @@ export const dom = createScope({
 
   getTabbableEls: (ctx: Ctx, value: string) => getTabbables(dom.getContentEl(ctx, value)),
 
+  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getViewportEl: (ctx: Ctx) => dom.getById(ctx, dom.getViewportId(ctx)),
   getTriggerEl: (ctx: Ctx, value: string) => dom.getById(ctx, dom.getTriggerId(ctx, value)),
   getListEl: (ctx: Ctx) => dom.getById(ctx, dom.getListId(ctx)),

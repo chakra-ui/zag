@@ -70,7 +70,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      activities: ["trackEscapeKey"],
+      activities: ["trackEscapeKey", "trackInteractionOutside"],
       on: {
         CONTENT_LEAVE: {
           target: "closing"
@@ -93,6 +93,7 @@ const fetchMachine = createMachine({
     },
     closing: {
       tags: ["open"],
+      activities: ["trackInteractionOutside"],
       after: {
         CLOSE_DELAY: {
           target: "closed",

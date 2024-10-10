@@ -2893,6 +2893,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/interact-outside':
+        specifier: workspace:*
+        version: link:../../utilities/interact-outside
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
