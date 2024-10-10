@@ -65,6 +65,11 @@ interface PrivateContext {
   wasClickCloseRef: string | null
   /**
    * @internal
+   * Whether the menu was closed by escape key
+   */
+  wasEscapeCloseRef: boolean
+  /**
+   * @internal
    * Whether the menu was open by pointer move
    */
   hasPointerMoveOpenedRef: string | null
@@ -93,6 +98,11 @@ interface PrivateContext {
    * The cleanup function for the active trigger node
    */
   activeTriggerCleanup: VoidFunction | null
+  /**
+   * @internal
+   * The parent menu of this menu
+   */
+  parentMenu: Service | null
 }
 
 type ComputedContext = Readonly<{}>
@@ -124,6 +134,13 @@ export interface ItemProps {
    * Whether the item is disabled
    */
   disabled?: boolean | undefined
+}
+
+export interface ArrowProps {
+  /**
+   * The value of the item
+   */
+  value: string
 }
 
 export interface LinkProps {
@@ -158,10 +175,12 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getRootProps(): T["element"]
   getListProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
-  getArrowProps(): T["element"]
-  getArrowTipProps(): T["element"]
+  getIndicatorTrackProps(): T["element"]
+  getIndicatorProps(): T["element"]
+  getArrowProps(props?: ArrowProps): T["element"]
   getTriggerProps(props: ItemProps): T["button"]
   getLinkProps(props: LinkProps): T["element"]
   getContentProps(props: LinkProps): T["element"]
+  getViewportPositionerProps(): T["element"]
   getViewportProps(): T["element"]
 }

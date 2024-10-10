@@ -67,9 +67,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getArrowProps() {
+    getIndicatorTrackProps() {
       return normalize.element({
-        ...parts.arrow.attrs,
+        ...parts.indicatorTrack.attrs,
+        id: dom.getIndicatorTrackId(state.context),
+        dir: state.context.dir,
+        "data-orientation": state.context.orientation,
+        style: { position: "relative" },
+      })
+    },
+
+    getIndicatorProps() {
+      return normalize.element({
+        ...parts.indicator.attrs,
         "aria-hidden": true,
         dir: state.context.dir,
         hidden: !open,
@@ -85,12 +95,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getArrowTipProps() {
+    getArrowProps() {
       return normalize.element({
-        ...parts.arrowTip.attrs,
+        ...parts.arrow.attrs,
         "aria-hidden": true,
         dir: state.context.dir,
-        "data-state": open ? "open" : "closed",
         "data-orientation": state.context.orientation,
       })
     },
@@ -116,6 +125,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (itemState.disabled) return
           if (state.context.hasPointerMoveOpenedRef === props.value) return
           if (state.context.wasClickCloseRef === props.value) return
+          if (state.context.wasEscapeCloseRef) return
           send({ type: "TRIGGER_MOVE", value: props.value })
         },
         onPointerLeave(event) {
@@ -249,6 +259,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
+    getViewportPositionerProps() {
+      return normalize.element({
+        ...parts.viewportPositioner.attrs,
+        dir: state.context.dir,
+        "data-orientation": state.context.orientation,
+      })
+    },
+
     getViewportProps() {
       const open = Boolean(value)
       return normalize.element({
@@ -257,6 +275,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         hidden: !open,
         "data-state": open ? "open" : "closed",
+        "data-orientation": state.context.orientation,
         style: {
           transition: state.context.value && !state.context.previousValue ? "none" : undefined,
           pointerEvents: !open ? "none" : undefined,

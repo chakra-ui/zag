@@ -24,59 +24,57 @@ export default function Page() {
     <>
       <main className="navigation-menu">
         <div {...api.getRootProps()}>
-          <div style={{ position: "relative" }}>
-            <div {...api.getListProps()}>
-              <div {...api.getItemProps({ value: "products" })}>
-                <button {...api.getTriggerProps({ value: "products" })}>
-                  Products
-                  <ChevronDown />
-                </button>
-                <Presence {...api.getContentProps({ value: "products" })}>
-                  {renderLinks({
-                    value: "products",
-                    items: [
-                      "Fusce pellentesque",
-                      "Aliquam porttitor",
-                      "Pellentesque",
-                      "Fusce pellentesque",
-                      "Aliquam porttitor",
-                      "Pellentesque",
-                    ],
-                  })}
-                </Presence>
-              </div>
+          <div {...api.getListProps()}>
+            <div {...api.getItemProps({ value: "products" })}>
+              <button {...api.getTriggerProps({ value: "products" })}>
+                Products
+                <ChevronDown />
+              </button>
+              <Presence {...api.getContentProps({ value: "products" })}>
+                {renderLinks({
+                  value: "products",
+                  items: [
+                    "Fusce pellentesque",
+                    "Aliquam porttitor",
+                    "Pellentesque",
+                    "Fusce pellentesque",
+                    "Aliquam porttitor",
+                    "Pellentesque",
+                  ],
+                })}
+              </Presence>
+            </div>
 
-              <div {...api.getItemProps({ value: "company" })}>
-                <button {...api.getTriggerProps({ value: "company" })}>
-                  Company
-                  <ChevronDown />
-                </button>
-                <Presence {...api.getContentProps({ value: "company" })}>
-                  {renderLinks({
-                    value: "company",
-                    items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
-                  })}
-                </Presence>
-              </div>
+            <div {...api.getItemProps({ value: "company" })}>
+              <button {...api.getTriggerProps({ value: "company" })}>
+                Company
+                <ChevronDown />
+              </button>
+              <Presence {...api.getContentProps({ value: "company" })}>
+                {renderLinks({
+                  value: "company",
+                  items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                })}
+              </Presence>
+            </div>
 
-              <div {...api.getItemProps({ value: "developers", disabled: true })}>
-                <button {...api.getTriggerProps({ value: "developers", disabled: true })}>
-                  Developers
-                  <ChevronDown />
-                </button>
-                <Presence {...api.getContentProps({ value: "developers" })}>
-                  {renderLinks({
-                    value: "developers",
-                    items: ["Donec quis dui", "Vestibulum", "Fusce pellentesque", "Aliquam porttitor"],
-                  })}
-                </Presence>
-              </div>
+            <div {...api.getItemProps({ value: "developers", disabled: true })}>
+              <button {...api.getTriggerProps({ value: "developers", disabled: true })}>
+                Developers
+                <ChevronDown />
+              </button>
+              <Presence {...api.getContentProps({ value: "developers" })}>
+                {renderLinks({
+                  value: "developers",
+                  items: ["Donec quis dui", "Vestibulum", "Fusce pellentesque", "Aliquam porttitor"],
+                })}
+              </Presence>
+            </div>
 
-              <div {...api.getItemProps({ value: "pricing" })}>
-                <a href="#" {...api.getLinkProps({ value: "pricing" })}>
-                  Pricing
-                </a>
-              </div>
+            <div {...api.getItemProps({ value: "pricing" })}>
+              <a href="#" {...api.getLinkProps({ value: "pricing" })}>
+                Pricing
+              </a>
             </div>
           </div>
         </div>

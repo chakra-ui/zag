@@ -25,7 +25,7 @@ export default function Page() {
       <main className="navigation-menu">
         <Navbar>
           <div {...api.getRootProps()}>
-            <div style={{ position: "relative" }}>
+            <div {...api.getIndicatorTrackProps()}>
               <div {...api.getListProps()}>
                 <div {...api.getItemProps({ value: "products" })}>
                   <button {...api.getTriggerProps({ value: "products" })}>
@@ -54,13 +54,13 @@ export default function Page() {
                   </a>
                 </div>
 
-                <Presence {...api.getArrowProps()}>
-                  <div {...api.getArrowTipProps()} />
+                <Presence {...api.getIndicatorProps()}>
+                  <div {...api.getArrowProps()} />
                 </Presence>
               </div>
             </div>
 
-            <div data-scope="navigation-menu" data-part="viewport-container">
+            <div {...api.getViewportPositionerProps()}>
               <Presence {...api.getViewportProps()}>
                 <Presence
                   {...api.getContentProps({ value: "products" })}

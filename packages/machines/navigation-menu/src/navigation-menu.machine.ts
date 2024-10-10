@@ -1,4 +1,5 @@
 import { createMachine } from "@zag-js/core"
+import { addDomEvent } from "@zag-js/dom-event"
 import { contains, raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom, trackResizeObserver } from "./navigation-menu.dom"
@@ -11,6 +12,7 @@ export function machine(userContext: UserDefinedContext) {
       id: "navigation-menu",
 
       context: {
+        parentMenu: null,
         viewportSize: null,
         isViewportRendered: false,
         activeTriggerRect: null,
@@ -19,6 +21,7 @@ export function machine(userContext: UserDefinedContext) {
         openDelay: 200,
         closeDelay: 300,
         orientation: "horizontal",
+        wasEscapeCloseRef: false,
         wasClickCloseRef: null,
         hasPointerMoveOpenedRef: null,
         activeContentCleanup: null,
@@ -64,11 +67,11 @@ export function machine(userContext: UserDefinedContext) {
           entry: ["cleanupObservers"],
           on: {
             TRIGGER_ENTER: {
-              actions: ["clearRefs"],
+              actions: ["clearCloseRefs"],
             },
             TRIGGER_MOVE: {
               target: "opening",
-              actions: ["clearPointerMoveRef"],
+              actions: ["setPointerMoveRef"],
             },
           },
         },
@@ -83,35 +86,37 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             TRIGGER_LEAVE: {
               target: "closed",
-              actions: ["clearValue"],
+              actions: ["clearValue", "clearPointerMoveRef"],
             },
             CONTENT_FOCUS: {
               actions: ["focusContent"],
             },
             LINK_FOCUS: {
-              actions: ["focusLinkEl"],
+              actions: ["focusLink"],
             },
           },
         },
 
         open: {
           tags: ["open"],
+          activities: ["trackEscapeKey"],
           on: {
             CONTENT_LEAVE: {
               target: "closing",
             },
             TRIGGER_LEAVE: {
               target: "closing",
+              actions: ["clearPointerMoveRef"],
             },
             CONTENT_FOCUS: {
               actions: ["focusContent"],
             },
             LINK_FOCUS: {
-              actions: ["focusLinkEl"],
+              actions: ["focusLink"],
             },
             CONTENT_DISMISS: {
               target: "closed",
-              actions: ["focusTriggerIfNeeded", "clearValue"],
+              actions: ["focusTriggerIfNeeded", "clearValue", "clearPointerMoveRef"],
             },
           },
         },
@@ -129,17 +134,17 @@ export function machine(userContext: UserDefinedContext) {
               target: "open",
             },
             TRIGGER_ENTER: {
-              actions: ["clearRefs"],
+              actions: ["clearCloseRefs"],
             },
             TRIGGER_MOVE: [
               {
                 guard: "isOpen",
                 target: "open",
-                actions: ["setValue", "clearPointerMoveRef"],
+                actions: ["setValue", "setPointerMoveRef"],
               },
               {
                 target: "opening",
-                actions: ["clearPointerMoveRef"],
+                actions: ["setPointerMoveRef"],
               },
             ],
           },
@@ -155,10 +160,24 @@ export function machine(userContext: UserDefinedContext) {
         OPEN_DELAY: (ctx) => ctx.openDelay,
         CLOSE_DELAY: (ctx) => ctx.closeDelay,
       },
+      activities: {
+        trackEscapeKey(ctx, _evt, { send }) {
+          const onKeyDown = (evt: KeyboardEvent) => {
+            if (evt.key === "Escape" && !evt.isComposing) {
+              ctx.wasEscapeCloseRef = true
+              send({ type: "CONTENT_DISMISS", src: "key.esc" })
+            }
+          }
+          return addDomEvent(dom.getDoc(ctx), "keydown", onKeyDown)
+        },
+      },
       actions: {
-        clearRefs(ctx) {
+        clearCloseRefs(ctx) {
           ctx.wasClickCloseRef = null
-          ctx.hasPointerMoveOpenedRef = null
+          ctx.wasEscapeCloseRef = false
+        },
+        setPointerMoveRef(ctx, evt) {
+          ctx.hasPointerMoveOpenedRef = evt.value
         },
         clearPointerMoveRef(ctx) {
           ctx.hasPointerMoveOpenedRef = null
@@ -220,7 +239,7 @@ export function machine(userContext: UserDefinedContext) {
           else if (evt.target === "last") dom.getLastTopLevelEl(ctx)?.focus()
           else dom.getTriggerEl(ctx, value)?.focus()
         },
-        focusLinkEl(ctx, evt) {
+        focusLink(ctx, evt) {
           const value = evt.value
           if (evt.target === "next") dom.getNextLinkEl(ctx, value, evt.node)?.focus()
           else if (evt.target === "prev") dom.getPrevLinkEl(ctx, value, evt.node)?.focus()

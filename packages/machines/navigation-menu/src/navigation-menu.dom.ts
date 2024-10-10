@@ -8,6 +8,7 @@ export const dom = createScope({
   getContentId: (ctx: Ctx, value: string) => `nav-menu:${ctx.id}:content:${value}`,
   getViewportId: (ctx: Ctx) => `nav-menu:${ctx.id}:viewport`,
   getListId: (ctx: Ctx) => `nav-menu:${ctx.id}:list`,
+  getIndicatorTrackId: (ctx: Ctx) => `nav-menu:${ctx.id}:indicator-track`,
 
   getTabbableEls: (ctx: Ctx, value: string) => getTabbables(dom.getContentEl(ctx, value)),
 

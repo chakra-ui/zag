@@ -40,11 +40,11 @@ const fetchMachine = createMachine({
       entry: ["cleanupObservers"],
       on: {
         TRIGGER_ENTER: {
-          actions: ["clearRefs"]
+          actions: ["clearCloseRefs"]
         },
         TRIGGER_MOVE: {
           target: "opening",
-          actions: ["clearPointerMoveRef"]
+          actions: ["setPointerMoveRef"]
         }
       }
     },
@@ -58,34 +58,36 @@ const fetchMachine = createMachine({
       on: {
         TRIGGER_LEAVE: {
           target: "closed",
-          actions: ["clearValue"]
+          actions: ["clearValue", "clearPointerMoveRef"]
         },
         CONTENT_FOCUS: {
           actions: ["focusContent"]
         },
         LINK_FOCUS: {
-          actions: ["focusLinkEl"]
+          actions: ["focusLink"]
         }
       }
     },
     open: {
       tags: ["open"],
+      activities: ["trackEscapeKey"],
       on: {
         CONTENT_LEAVE: {
           target: "closing"
         },
         TRIGGER_LEAVE: {
-          target: "closing"
+          target: "closing",
+          actions: ["clearPointerMoveRef"]
         },
         CONTENT_FOCUS: {
           actions: ["focusContent"]
         },
         LINK_FOCUS: {
-          actions: ["focusLinkEl"]
+          actions: ["focusLink"]
         },
         CONTENT_DISMISS: {
           target: "closed",
-          actions: ["focusTriggerIfNeeded", "clearValue"]
+          actions: ["focusTriggerIfNeeded", "clearValue", "clearPointerMoveRef"]
         }
       }
     },
@@ -102,15 +104,15 @@ const fetchMachine = createMachine({
           target: "open"
         },
         TRIGGER_ENTER: {
-          actions: ["clearRefs"]
+          actions: ["clearCloseRefs"]
         },
         TRIGGER_MOVE: [{
           cond: "isOpen",
           target: "open",
-          actions: ["setValue", "clearPointerMoveRef"]
+          actions: ["setValue", "setPointerMoveRef"]
         }, {
           target: "opening",
-          actions: ["clearPointerMoveRef"]
+          actions: ["setPointerMoveRef"]
         }]
       }
     }
