@@ -1,13 +1,19 @@
 import * as navigationMenu from "@zag-js/navigation-menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
+import { navigationMenuControls } from "@zag-js/shared"
 import { ChevronDown } from "lucide-react"
 import { useId } from "react"
 import { Presence } from "../components/presence"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const [state, send] = useMachine(navigationMenu.machine({ id: useId() }))
+  const controls = useControls(navigationMenuControls)
+
+  const [state, send] = useMachine(navigationMenu.machine({ id: useId() }), {
+    context: controls.context,
+  })
 
   const api = navigationMenu.connect(state, send, normalizeProps)
 
@@ -80,7 +86,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar>
+      <Toolbar controls={controls.ui} viz>
         <StateVisualizer state={state} />
       </Toolbar>
     </>
