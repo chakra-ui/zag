@@ -1,0 +1,46 @@
+/* Navigation Styles */
+nav {
+  background-image: linear-gradient(to right, rgb(69 177 228), rgb(4 14 113));
+  position: fixed;
+  color: #fff;
+  padding: 1rem 2rem;
+  width: 100vw;
+  box-shadow: 2px 2px 10px 0 hsla(0, 0%, 40%, 0.5);
+}
+
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 800px;
+  margin: auto;
+}
+
+nav .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  gap: 10px;
+  text-decoration: none;
+  color: #fff;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+}
+
+nav ul li {
+  margin: 0 1rem;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s;
+}
+
+nav ul li a:hover {
+  color: #f39c12;
+}
