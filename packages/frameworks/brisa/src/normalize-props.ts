@@ -28,7 +28,7 @@ type Dict = Record<string, any>
 export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
   const normalized: Dict = {}
   for (const key in props) {
-    if (props[key] === undefined) continue
+    // if (props[key] === undefined) continue
     if (key === "disabled" && props[key] === false) continue
     normalized[toBrisaProp(key)] = props[key]
   }

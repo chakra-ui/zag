@@ -4,7 +4,7 @@ import { normalizeProps, useMachine } from "@zag-js/brisa"
 import { accordionControls, accordionData } from "@zag-js/shared"
 
 export default function Counter({}: {}, ctx: WebContext) {
-  const { state, useId, derived } = ctx
+  const { useId, derived } = ctx
 
   const [accState, send] = useMachine(
     ctx,
@@ -13,22 +13,21 @@ export default function Counter({}: {}, ctx: WebContext) {
     }),
   )
 
-  const api = accordion.connect(accState.value, send, normalizeProps)
-  // const api = derived(() => accordion.connect(accState.value, send, normalizeProps))
+  const api = derived(() => accordion.connect(accState.value, send, normalizeProps))
 
   return (
     <>
       <main class="accordion">
-        <div {...api.getRootProps()}>
+        <div {...api.value.getRootProps()}>
           {accordionData.map((item) => (
-            <div key={item.id} {...api.getItemProps({ value: item.id })}>
+            <div key={item.id} {...api.value.getItemProps({ value: item.id })}>
               <h3>
-                <button data-testid={`${item.id}:trigger`} {...api.getItemTriggerProps({ value: item.id })}>
+                <button data-testid={`${item.id}:trigger`} {...api.value.getItemTriggerProps({ value: item.id })}>
                   {item.label}
-                  <div {...api.getItemIndicatorProps({ value: item.id })}>{">"}</div>
+                  <div {...api.value.getItemIndicatorProps({ value: item.id })}>{">"}</div>
                 </button>
               </h3>
-              <div data-testid={`${item.id}:content`} {...api.getItemContentProps({ value: item.id })}>
+              <div data-testid={`${item.id}:content`} {...api.value.getItemContentProps({ value: item.id })}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>

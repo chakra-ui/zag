@@ -1,6 +1,6 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import { snapshot, subscribe } from "@zag-js/store"
 import type { WebContext } from "brisa"
+import { subscribe, snapshot } from "@zag-js/store"
 
 export function useSnapshot<
   TContext extends Record<string, any>,
@@ -11,10 +11,21 @@ export function useSnapshot<
 
   const state = ctx.state(service.state)
 
+  // const state = service.state
+
   const unsubscribe = subscribe(service.state, () => {
-    state.value = snapshot(service.state) as any
-    // console.log("service", state.value)
+    // console.log(service.state)
+    // console.log("bef", snapshot(service.state))
+    // state.value = snapshot(service.state) as any
+    console.log("aft", state.value.context)
   })
+
+  // const unsubscribe = service.subscribe((nextState) => {
+  //   console.log(nextState)
+  //   // // state.value = snapshot(nextState) as any
+  //   state.value = nextState as any
+  //   // console.log(state.value.context)
+  // })
 
   ctx.cleanup(() => {
     unsubscribe?.()
