@@ -5,9 +5,12 @@ interface ValueChangeDetails {
   value: string | null
 }
 
-interface Rect {
+interface Size {
   width: number
   height: number
+}
+
+interface Rect extends Size {
   y: number
   x: number
 }
@@ -21,7 +24,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
 }
 
 interface PrivateContext {
-  viewportRect: Rect | null
+  viewportSize: Size | null
   isViewportRendered: boolean
   wasClickCloseRef: string | null
   hasPointerMoveOpenedRef: string | null
@@ -34,9 +37,7 @@ interface PrivateContext {
   activeTriggerCleanup: VoidFunction | null
 }
 
-type ComputedContext = Readonly<{
-  activeContentValue: string | null
-}>
+type ComputedContext = Readonly<{}>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 

@@ -23,42 +23,52 @@ export default function Page() {
   return (
     <>
       <main className="navigation-menu">
-        <div {...api.getRootProps()}>
-          <div style={{ position: "relative" }}>
-            <div {...api.getListProps()}>
-              <div {...api.getItemProps({ value: "products" })}>
-                <button {...api.getTriggerProps({ value: "products" })}>
-                  Products
-                  <ChevronDown />
-                </button>
-              </div>
-
-              <div {...api.getItemProps({ value: "company" })}>
-                <button {...api.getTriggerProps({ value: "company" })}>
-                  Company
-                  <ChevronDown />
-                </button>
-              </div>
-
-              <div {...api.getItemProps({ value: "developers", disabled: true })}>
-                <button {...api.getTriggerProps({ value: "developers", disabled: true })}>
-                  Developers
-                  <ChevronDown />
-                </button>
-              </div>
-
-              <div {...api.getItemProps({ value: "pricing" })}>
-                <a href="#" {...api.getLinkProps({ value: "pricing" })}>
-                  Pricing
-                </a>
-              </div>
-
-              <div {...api.getViewportProps()}>
-                <div {...api.getArrowProps()}>
-                  <div {...api.getArrowTipProps()} />
+        <Navbar>
+          <div {...api.getRootProps()}>
+            <div style={{ position: "relative" }}>
+              <div {...api.getListProps()}>
+                <div {...api.getItemProps({ value: "products" })}>
+                  <button {...api.getTriggerProps({ value: "products" })}>
+                    Products
+                    <ChevronDown />
+                  </button>
                 </div>
 
-                <Presence {...api.getContentProps({ value: "products" })}>
+                <div {...api.getItemProps({ value: "company" })}>
+                  <button {...api.getTriggerProps({ value: "company" })}>
+                    Company
+                    <ChevronDown />
+                  </button>
+                </div>
+
+                <div {...api.getItemProps({ value: "developers", disabled: true })}>
+                  <button {...api.getTriggerProps({ value: "developers", disabled: true })}>
+                    Developers
+                    <ChevronDown />
+                  </button>
+                </div>
+
+                <div {...api.getItemProps({ value: "pricing" })}>
+                  <a href="#" {...api.getLinkProps({ value: "pricing" })}>
+                    Pricing
+                  </a>
+                </div>
+
+                <Presence {...api.getArrowProps()}>
+                  <div {...api.getArrowTipProps()} />
+                </Presence>
+              </div>
+            </div>
+
+            <div data-scope="navigation-menu" data-part="viewport-container">
+              <Presence {...api.getViewportProps()}>
+                <Presence
+                  {...api.getContentProps({ value: "products" })}
+                  style={{
+                    gridTemplateColumns: "1fr 2fr",
+                    width: 600,
+                  }}
+                >
                   {renderLinks({
                     value: "products",
                     items: [
@@ -70,30 +80,78 @@ export default function Page() {
                       "Pellentesque",
                     ],
                   })}
+
+                  {renderLinks({
+                    value: "products",
+                    items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                  })}
                 </Presence>
 
-                <Presence {...api.getContentProps({ value: "company" })}>
+                <Presence
+                  {...api.getContentProps({ value: "company" })}
+                  style={{
+                    gridTemplateColumns: "1fr 1fr",
+                    width: 450,
+                  }}
+                >
+                  {renderLinks({
+                    value: "company",
+                    items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque", "Aliquam porttitor"],
+                  })}
+
                   {renderLinks({
                     value: "company",
                     items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
                   })}
                 </Presence>
 
-                <Presence {...api.getContentProps({ value: "developers" })}>
+                <Presence
+                  {...api.getContentProps({ value: "developers" })}
+                  style={{
+                    gridTemplateColumns: "1.6fr 1fr",
+                    width: 650,
+                  }}
+                >
                   {renderLinks({
                     value: "developers",
                     items: ["Donec quis dui", "Vestibulum", "Fusce pellentesque", "Aliquam porttitor"],
                   })}
+                  {renderLinks({
+                    value: "developers",
+                    items: ["Fusce pellentesque", "Aliquam porttitor"],
+                  })}
                 </Presence>
-              </div>
+              </Presence>
             </div>
           </div>
-        </div>
+        </Navbar>
       </main>
 
       <Toolbar>
         <StateVisualizer state={state} />
       </Toolbar>
     </>
+  )
+}
+
+const Navbar = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        boxSizing: "border-box",
+        alignItems: "center",
+        padding: "15px 20px",
+        justifyContent: "space-between",
+        width: "100%",
+        backgroundColor: "white",
+        boxShadow: "0 50px 100px -20px rgba(50,50,93,0.1),0 30px 60px -30px rgba(0,0,0,0.2)",
+      }}
+    >
+      <button>Logo</button>
+      {children}
+      <button>Login</button>
+    </div>
   )
 }

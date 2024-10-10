@@ -11,7 +11,7 @@ export function machine(userContext: UserDefinedContext) {
       id: "navigation-menu",
 
       context: {
-        viewportRect: null,
+        viewportSize: null,
         isViewportRendered: false,
         activeTriggerRect: null,
         value: null,
@@ -29,7 +29,13 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        value: ["setActiveTriggerNode", "syncTriggerRectObserver", "setActiveContentNode", "syncMotionAttribute"],
+        value: [
+          "setActiveTriggerNode",
+          "syncTriggerRectObserver",
+          "setActiveContentNode",
+          "syncContentRectObserver",
+          "syncMotionAttribute",
+        ],
       },
 
       initial: "closed",
@@ -170,24 +176,26 @@ export function machine(userContext: UserDefinedContext) {
         syncTriggerRectObserver(ctx) {
           const node = ctx.activeTriggerNode
           if (!node) return
-
           ctx.activeTriggerCleanup?.()
-
           const exec = () => {
-            const rect = node.getBoundingClientRect()
-            const listEl = dom.getListEl(ctx)
-
-            const listRect = listEl?.getBoundingClientRect()
-            if (!listRect) return
-
-            const x = rect.x
-            const y = rect.y
-            ctx.activeTriggerRect = { x, y, width: node.offsetWidth, height: node.offsetHeight }
+            ctx.activeTriggerRect = {
+              x: node.offsetLeft,
+              y: node.offsetTop,
+              width: node.offsetWidth,
+              height: node.offsetHeight,
+            }
           }
-
-          exec()
-
           ctx.activeTriggerCleanup = trackResizeObserver(node, exec)
+        },
+        syncContentRectObserver(ctx) {
+          if (!ctx.isViewportRendered) return
+          const node = ctx.activeContentNode
+          if (!node) return
+          ctx.activeContentCleanup?.()
+          const exec = () => {
+            ctx.viewportSize = { width: node.offsetWidth, height: node.offsetHeight }
+          }
+          ctx.activeContentCleanup = trackResizeObserver(node, exec)
         },
         syncMotionAttribute(ctx) {
           set.motionAttr(ctx)

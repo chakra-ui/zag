@@ -9,7 +9,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const open = Boolean(state.context.value)
 
   const activeTriggerRect = state.context.activeTriggerRect
-  const viewportRect = state.context.viewportRect
+  const viewportSize = state.context.viewportSize
 
   const value = state.context.value
   const previousValue = state.context.previousValue
@@ -57,6 +57,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.item.attrs,
         dir: state.context.dir,
         "data-value": props.value,
+        "data-type": state.context.isViewportRendered ? "viewport" : "popover",
         "data-state": itemState.open ? "open" : "closed",
         "data-orientation": state.context.orientation,
         "data-disabled": dataAttr(itemState.disabled),
@@ -222,13 +223,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getContentProps(props: ItemProps) {
       const itemState = getItemState(props)
+
+      const activeContentValue = state.context.value ?? state.context.previousValue
+      const selected = state.context.isViewportRendered ? activeContentValue === props.value : itemState.selected
+
       return normalize.element({
         ...parts.content.attrs,
         id: dom.getContentId(state.context, props.value),
         dir: state.context.dir,
-        hidden: !itemState.selected,
+        hidden: !selected,
         "data-uid": state.context.id,
-        "data-state": itemState.selected ? "open" : "closed",
+        "data-state": selected ? "open" : "closed",
+        "data-type": state.context.isViewportRendered ? "viewport" : "popover",
         "data-value": props.value,
         onPointerEnter() {
           send({ type: "CONTENT_ENTER", value: props.value })
@@ -249,9 +255,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: !open,
         "data-state": open ? "open" : "closed",
         style: {
+          transition: state.context.value && !state.context.previousValue ? "none" : undefined,
           pointerEvents: !open ? "none" : undefined,
-          "--viewport-width": viewportRect != null ? viewportRect.width + "px" : undefined,
-          "--viewport-height": viewportRect != null ? viewportRect.height + "px" : undefined,
+          "--viewport-width": viewportSize != null ? viewportSize.width + "px" : undefined,
+          "--viewport-height": viewportSize != null ? viewportSize.height + "px" : undefined,
+        },
+        onPointerEnter() {
+          send({ type: "CONTENT_ENTER", src: "viewport" })
+        },
+        onPointerLeave(event) {
+          if (event.pointerType !== "mouse") return
+          send({ type: "CONTENT_LEAVE", src: "viewport" })
         },
       })
     },

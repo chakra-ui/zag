@@ -12,10 +12,17 @@
 }
 
 [data-scope="navigation-menu"][data-part="item"] {
+  padding: 10px;
+  font-weight: bold;
+}
+
+[data-scope="navigation-menu"][data-part="item"][data-type="popover"] {
   position: relative;
 }
 
-[data-scope="navigation-menu"][data-part="content"] {
+/* Content - Popover */
+
+[data-scope="navigation-menu"][data-part="content"][data-type="popover"] {
   position: absolute;
   top: 100%;
   width: max-content;
@@ -32,21 +39,23 @@
   z-index: 1;
 }
 
-[data-scope="navigation-menu"][data-part="content"][dir="rtl"] {
+[data-scope="navigation-menu"][data-part="content"][data-type="popover"][dir="rtl"] {
   left: unset;
   right: 0;
   transform-origin: top right;
 }
 
-[data-scope="navigation-menu"][data-part="content"][data-state="open"] {
+[data-scope="navigation-menu"][data-part="content"][data-type="popover"][data-state="open"] {
   animation: nav-menu-scale-in 250ms ease;
 }
 
-[data-scope="navigation-menu"][data-part="content"][data-state="closed"] {
+[data-scope="navigation-menu"][data-part="content"][data-type="popover"][data-state="closed"] {
   animation: nav-menu-scale-out 250ms ease;
 }
 
-[data-scope="navigation-menu"][data-part="viewport"] {
+/* Content - Viewport */
+
+[data-scope="navigation-menu"][data-part="content"][data-type="viewport"] {
   position: absolute;
   top: 0;
   left: 0;
@@ -55,26 +64,63 @@
   padding: 40px;
 }
 
-[data-scope="navigation-menu"][data-part="viewport"][data-motion="from-start"] {
+[data-scope="navigation-menu"][data-part="content"][data-type="viewport"][data-motion="from-start"] {
   animation: nav-menu-from-left 250ms ease;
 }
 
-[data-scope="navigation-menu"][data-part="viewport"][data-motion="from-end"] {
+[data-scope="navigation-menu"][data-part="content"][data-type="viewport"][data-motion="from-end"] {
   animation: nav-menu-from-right 250ms ease;
 }
 
-[data-scope="navigation-menu"][data-part="viewport"][data-motion="to-start"] {
+[data-scope="navigation-menu"][data-part="content"][data-type="viewport"][data-motion="to-start"] {
   animation: nav-menu-to-left 250ms ease;
 }
 
-[data-scope="navigation-menu"][data-part="viewport"][data-motion="to-end"] {
+[data-scope="navigation-menu"][data-part="content"][data-type="viewport"][data-motion="to-end"] {
   animation: nav-menu-to-right 250ms ease;
 }
 
-[data-scope="navigation-menu"][data-part="item"] {
-  padding: 10px;
-  font-weight: bold;
+[data-scope="navigation-menu"][data-part="viewport-container"] {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  top: 100%;
+  left: 0;
 }
+
+[data-scope="navigation-menu"][data-part="viewport"] {
+  position: relative;
+  top: 0;
+  left: 0;
+  display: grid;
+  gap: 20px;
+  padding: 40px;
+  background-color: white;
+  transition:
+    width,
+    height,
+    300ms ease;
+  width: var(--viewport-width);
+  height: var(--viewport-height);
+  transform-origin: top center;
+  overflow: hidden;
+  margin-top: 15px;
+  border-radius: 8px;
+  box-shadow:
+    0 50px 100px -20px rgba(50, 50, 93, 0.25),
+    0 30px 60px -30px rgba(0, 0, 0, 0.3);
+}
+
+[data-scope="navigation-menu"][data-part="viewport"][data-state="open"] {
+  animation: nav-menu-scale-in 300ms ease 0s 1 normal none running;
+}
+
+[data-scope="navigation-menu"][data-part="viewport"][data-state="closed"] {
+  animation: nav-menu-scale-out 300ms ease 0s 1 normal none running;
+}
+
+/* Trigger */
 
 [data-scope="navigation-menu"][data-part="trigger"] {
   padding: 10px;
@@ -97,6 +143,8 @@
   transform: rotate(-180deg);
 }
 
+/* Link */
+
 [data-scope="navigation-menu"][data-part="link"] {
   padding: 10px;
   font-weight: bold;
@@ -104,6 +152,8 @@
   display: block;
   text-decoration: none;
 }
+
+/* Arrow */
 
 [data-scope="navigation-menu"][data-part="arrow"] {
   display: flex;
@@ -118,16 +168,14 @@
 }
 
 [data-scope="navigation-menu"][data-part="arrow"][data-orientation="horizontal"] {
-  top: 1px;
-  transform: translateY(var(--trigger-y));
+  left: 0px;
+  transform: translateX(var(--trigger-x));
   width: var(--trigger-width);
-  left: var(--trigger-x);
 }
 
 [data-scope="navigation-menu"][data-part="arrow"][data-orientation="vertical"] {
-  top: var(--trigger-y);
-  left: 1px;
-  transform: translateX(var(--trigger-x));
+  top: 0px;
+  transform: translateY(var(--trigger-y));
   height: var(--trigger-height);
 }
 
@@ -144,7 +192,7 @@
   top: 4px;
   width: 20px;
   height: 20px;
-  background-color: red;
+  background-color: white;
   transform: rotate(45deg);
   border-radius: 3px;
 }
