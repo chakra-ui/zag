@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-event"
 import { contains, proxyTabFocus, raf } from "@zag-js/dom-query"
-import { compact } from "@zag-js/utils"
+import { callAll, compact } from "@zag-js/utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { dom, trackResizeObserver } from "./navigation-menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./navigation-menu.types"
@@ -29,11 +29,13 @@ export function machine(userContext: UserDefinedContext) {
         activeContentNode: null,
         activeTriggerNode: null,
         activeTriggerCleanup: null,
+        tabOrderCleanup: null,
         ...ctx,
       },
 
       watch: {
         value: [
+          "restoreTabOrder",
           "setActiveTriggerNode",
           "syncTriggerRectObserver",
           "setActiveContentNode",
@@ -90,7 +92,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["clearValue", "clearPointerMoveRef"],
             },
             CONTENT_FOCUS: {
-              actions: ["focusContent"],
+              actions: ["focusContent", "restoreTabOrder"],
             },
             LINK_FOCUS: {
               actions: ["focusLink"],
@@ -110,7 +112,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["clearPointerMoveRef"],
             },
             CONTENT_FOCUS: {
-              actions: ["focusContent"],
+              actions: ["focusContent", "restoreTabOrder"],
             },
             LINK_FOCUS: {
               actions: ["focusLink"],
@@ -118,6 +120,9 @@ export function machine(userContext: UserDefinedContext) {
             CONTENT_DISMISS: {
               target: "closed",
               actions: ["focusTriggerIfNeeded", "clearValue", "clearPointerMoveRef"],
+            },
+            CONTENT_ENTER: {
+              actions: ["restoreTabOrder"],
             },
           },
         },
@@ -134,6 +139,7 @@ export function machine(userContext: UserDefinedContext) {
           on: {
             CONTENT_ENTER: {
               target: "open",
+              actions: ["restoreTabOrder"],
             },
             TRIGGER_ENTER: {
               actions: ["clearCloseRefs"],
@@ -168,9 +174,8 @@ export function machine(userContext: UserDefinedContext) {
           const contentEl = () => dom.getContentEl(ctx, ctx.value!)
           return proxyTabFocus(contentEl, {
             triggerElement: dom.getTriggerEl(ctx, ctx.value),
-            defer: true,
-            onFocus(el) {
-              el.focus()
+            onFocusEnter() {
+              ctx.tabOrderCleanup?.()
             },
           })
         },
@@ -178,8 +183,11 @@ export function machine(userContext: UserDefinedContext) {
           if (ctx.value == null) return
           const contentEl = () => (ctx.isViewportRendered ? dom.getViewportEl(ctx) : dom.getContentEl(ctx, ctx.value!))
           return trackInteractOutside(contentEl, {
-            defer: true,
             onFocusOutside(event) {
+              // remove tabbable elements from tab order
+              ctx.tabOrderCleanup?.()
+              ctx.tabOrderCleanup = removeFromTabOrder(dom.getTabbableEls(ctx, ctx.value!))
+
               const { target } = event.detail.originalEvent
               const rootEl = dom.getRootEl(ctx)
               if (contains(rootEl, target)) event.preventDefault()
@@ -225,6 +233,7 @@ export function machine(userContext: UserDefinedContext) {
         cleanupObservers(ctx) {
           ctx.activeContentCleanup?.()
           ctx.activeTriggerCleanup?.()
+          ctx.tabOrderCleanup?.()
         },
         setActiveContentNode(ctx) {
           ctx.activeContentNode = ctx.value != null ? dom.getContentEl(ctx, ctx.value) : null
@@ -235,6 +244,7 @@ export function machine(userContext: UserDefinedContext) {
         syncTriggerRectObserver(ctx) {
           const node = ctx.activeTriggerNode
           if (!node) return
+
           ctx.activeTriggerCleanup?.()
           const exec = () => {
             ctx.activeTriggerRect = {
@@ -244,7 +254,11 @@ export function machine(userContext: UserDefinedContext) {
               height: node.offsetHeight,
             }
           }
-          ctx.activeTriggerCleanup = trackResizeObserver(node, exec)
+
+          ctx.activeTriggerCleanup = callAll(
+            trackResizeObserver(node, exec),
+            trackResizeObserver(dom.getIndicatorTrackEl(ctx), exec),
+          )
         },
         syncContentRectObserver(ctx) {
           if (!ctx.isViewportRendered) return
@@ -257,6 +271,7 @@ export function machine(userContext: UserDefinedContext) {
           ctx.activeContentCleanup = trackResizeObserver(node, exec)
         },
         syncMotionAttribute(ctx) {
+          if (!ctx.isViewportRendered) return
           set.motionAttr(ctx)
         },
         setClickCloseRef(ctx, evt) {
@@ -298,25 +313,26 @@ export function machine(userContext: UserDefinedContext) {
           if (!contains(contentEl, dom.getActiveElement(ctx))) return
           ctx.activeTriggerNode?.focus()
         },
-        removeFromTabOrder(ctx, evt) {
-          const nodes = dom.getTabbableEls(ctx, evt.value)
-          // TODO: add this cleanup
-          removeFromTabOrder(nodes)
+        restoreTabOrder(ctx) {
+          ctx.tabOrderCleanup?.()
         },
       },
     },
   )
 }
 
-function removeFromTabOrder(candidates: HTMLElement[]) {
-  candidates.forEach((candidate) => {
-    candidate.dataset.tabindex = candidate.getAttribute("tabindex") || ""
-    candidate.setAttribute("tabindex", "-1")
+function removeFromTabOrder(nodes: HTMLElement[]) {
+  nodes.forEach((node) => {
+    node.dataset.tabindex = node.getAttribute("tabindex") || ""
+    node.setAttribute("tabindex", "-1")
   })
   return () => {
-    candidates.forEach((candidate) => {
-      const prevTabIndex = candidate.dataset.tabindex as string
-      candidate.setAttribute("tabindex", prevTabIndex)
+    nodes.forEach((node) => {
+      if (node.dataset.tabindex == null) return
+      const prevTabIndex = node.dataset.tabindex
+      node.setAttribute("tabindex", prevTabIndex)
+      delete node.dataset.tabindex
+      if (node.getAttribute("tabindex") === "") node.removeAttribute("tabindex")
     })
   }
 }

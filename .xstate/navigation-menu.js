@@ -61,7 +61,7 @@ const fetchMachine = createMachine({
           actions: ["clearValue", "clearPointerMoveRef"]
         },
         CONTENT_FOCUS: {
-          actions: ["focusContent"]
+          actions: ["focusContent", "restoreTabOrder"]
         },
         LINK_FOCUS: {
           actions: ["focusLink"]
@@ -80,7 +80,7 @@ const fetchMachine = createMachine({
           actions: ["clearPointerMoveRef"]
         },
         CONTENT_FOCUS: {
-          actions: ["focusContent"]
+          actions: ["focusContent", "restoreTabOrder"]
         },
         LINK_FOCUS: {
           actions: ["focusLink"]
@@ -88,6 +88,9 @@ const fetchMachine = createMachine({
         CONTENT_DISMISS: {
           target: "closed",
           actions: ["focusTriggerIfNeeded", "clearValue", "clearPointerMoveRef"]
+        },
+        CONTENT_ENTER: {
+          actions: ["restoreTabOrder"]
         }
       }
     },
@@ -102,7 +105,8 @@ const fetchMachine = createMachine({
       },
       on: {
         CONTENT_ENTER: {
-          target: "open"
+          target: "open",
+          actions: ["restoreTabOrder"]
         },
         TRIGGER_ENTER: {
           actions: ["clearCloseRefs"]

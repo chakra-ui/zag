@@ -103,6 +103,11 @@ interface PrivateContext {
    * The parent menu of this menu
    */
   parentMenu: Service | null
+  /**
+   * @internal
+   * The cleanup function for the inert attribute
+   */
+  tabOrderCleanup: VoidFunction | null
 }
 
 type ComputedContext = Readonly<{}>

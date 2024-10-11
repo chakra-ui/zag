@@ -11,7 +11,7 @@ export const dom = createScope({
   getIndicatorTrackId: (ctx: Ctx) => `nav-menu:${ctx.id}:indicator-track`,
 
   getTabbableEls: (ctx: Ctx, value: string) => getTabbables(dom.getContentEl(ctx, value)),
-
+  getIndicatorTrackEl: (ctx: Ctx) => dom.getById(ctx, dom.getIndicatorTrackId(ctx)),
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getViewportEl: (ctx: Ctx) => dom.getById(ctx, dom.getViewportId(ctx)),
   getTriggerEl: (ctx: Ctx, value: string) => dom.getById(ctx, dom.getTriggerId(ctx, value)),
