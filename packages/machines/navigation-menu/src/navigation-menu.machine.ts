@@ -1,6 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-event"
-import { contains, raf } from "@zag-js/dom-query"
+import { contains, proxyTabFocus, raf } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { dom, trackResizeObserver } from "./navigation-menu.dom"
@@ -100,7 +100,7 @@ export function machine(userContext: UserDefinedContext) {
 
         open: {
           tags: ["open"],
-          activities: ["trackEscapeKey", "trackInteractionOutside"],
+          activities: ["trackEscapeKey", "trackInteractionOutside", "preserveTabOrder"],
           on: {
             CONTENT_LEAVE: {
               target: "closing",
@@ -163,6 +163,17 @@ export function machine(userContext: UserDefinedContext) {
         CLOSE_DELAY: (ctx) => ctx.closeDelay,
       },
       activities: {
+        preserveTabOrder(ctx) {
+          if (!ctx.isViewportRendered || ctx.value == null) return
+          const contentEl = () => dom.getContentEl(ctx, ctx.value!)
+          return proxyTabFocus(contentEl, {
+            triggerElement: dom.getTriggerEl(ctx, ctx.value),
+            defer: true,
+            onFocus(el) {
+              el.focus()
+            },
+          })
+        },
         trackInteractionOutside(ctx, _evt, { send }) {
           if (ctx.value == null) return
           const contentEl = () => (ctx.isViewportRendered ? dom.getViewportEl(ctx) : dom.getContentEl(ctx, ctx.value!))

@@ -70,7 +70,7 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      activities: ["trackEscapeKey", "trackInteractionOutside"],
+      activities: ["trackEscapeKey", "trackInteractionOutside", "preserveTabOrder"],
       on: {
         CONTENT_LEAVE: {
           target: "closing"

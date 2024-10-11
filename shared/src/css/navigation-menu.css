@@ -205,7 +205,7 @@
 }
 
 [data-scope="navigation-menu"][data-part="indicator"][data-type="viewport"] {
-  bottom: calc(var(--indicator-size) + var(--arrow-size) * -1);
+  bottom: calc(calc(var(--indicator-size) + var(--arrow-size)) * -1);
 }
 
 [data-scope="navigation-menu"][data-part="indicator"][data-orientation="horizontal"] {

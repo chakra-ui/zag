@@ -5,9 +5,15 @@ import { useId } from "react"
 import { Presence } from "../components/presence"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
+import { useControls } from "../hooks/use-controls"
+import { navigationMenuControls } from "@zag-js/shared"
 
 export default function Page() {
-  const [state, send] = useMachine(navigationMenu.machine({ id: useId() }))
+  const controls = useControls(navigationMenuControls)
+
+  const [state, send] = useMachine(navigationMenu.machine({ id: useId() }), {
+    context: controls.context,
+  })
 
   const api = navigationMenu.connect(state, send, normalizeProps)
 
@@ -127,7 +133,7 @@ export default function Page() {
         </Navbar>
       </main>
 
-      <Toolbar>
+      <Toolbar controls={controls.ui} viz>
         <StateVisualizer state={state} />
       </Toolbar>
     </>
