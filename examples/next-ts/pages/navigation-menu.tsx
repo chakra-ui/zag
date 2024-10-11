@@ -37,6 +37,9 @@ export default function Page() {
                 <ChevronDown />
               </button>
               <Presence {...api.getContentProps({ value: "products" })}>
+                <Presence {...api.getIndicatorProps()}>
+                  <div {...api.getArrowProps()} />
+                </Presence>
                 {renderLinks({
                   value: "products",
                   items: [
@@ -57,6 +60,9 @@ export default function Page() {
                 <ChevronDown />
               </button>
               <Presence {...api.getContentProps({ value: "company" })}>
+                <Presence {...api.getIndicatorProps()}>
+                  <div {...api.getArrowProps()} />
+                </Presence>
                 {renderLinks({
                   value: "company",
                   items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
@@ -70,6 +76,9 @@ export default function Page() {
                 <ChevronDown />
               </button>
               <Presence {...api.getContentProps({ value: "developers" })}>
+                <Presence {...api.getIndicatorProps()}>
+                  <div {...api.getArrowProps()} />
+                </Presence>
                 {renderLinks({
                   value: "developers",
                   items: ["Donec quis dui", "Vestibulum", "Fusce pellentesque", "Aliquam porttitor"],

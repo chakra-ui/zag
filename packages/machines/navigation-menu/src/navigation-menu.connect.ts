@@ -1,9 +1,9 @@
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import type { State, Send, ItemProps, LinkProps, MachineApi } from "./navigation-menu.types"
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
+import { dataAttr, getWindow } from "@zag-js/dom-query"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./navigation-menu.anatomy"
 import { dom } from "./navigation-menu.dom"
-import { dataAttr, getWindow } from "@zag-js/dom-query"
+import type { ItemProps, MachineApi, Send, State } from "./navigation-menu.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const open = Boolean(state.context.value)
@@ -30,7 +30,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     value,
-    setValue(value: string) {
+    setValue(value) {
       send({ type: "SET_VALUE", value })
     },
     open,
@@ -42,6 +42,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": "Main",
         "data-orientation": state.context.orientation,
         dir: state.context.dir,
+        style: {
+          "--trigger-width": activeTriggerRect != null ? activeTriggerRect.width + "px" : undefined,
+          "--trigger-height": activeTriggerRect != null ? activeTriggerRect.height + "px" : undefined,
+          "--trigger-x": activeTriggerRect != null ? activeTriggerRect.x + "px" : undefined,
+          "--trigger-y": activeTriggerRect != null ? activeTriggerRect.y + "px" : undefined,
+          "--viewport-width": viewportSize != null ? viewportSize.width + "px" : undefined,
+          "--viewport-height": viewportSize != null ? viewportSize.height + "px" : undefined,
+        },
       })
     },
 
@@ -54,7 +62,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemProps(props: ItemProps) {
+    getItemProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
@@ -85,12 +93,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-orientation": state.context.orientation,
+        "data-type": isViewportRendered ? "viewport" : "popover",
         style: {
           position: "absolute",
-          "--trigger-width": activeTriggerRect != null ? activeTriggerRect.width + "px" : undefined,
-          "--trigger-height": activeTriggerRect != null ? activeTriggerRect.height + "px" : undefined,
-          "--trigger-x": activeTriggerRect != null ? activeTriggerRect.x + "px" : undefined,
-          "--trigger-y": activeTriggerRect != null ? activeTriggerRect.y + "px" : undefined,
         },
       })
     },
@@ -104,7 +109,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getTriggerProps(props: ItemProps) {
+    getTriggerProps(props) {
       const itemState = getItemState(props)
       return normalize.button({
         ...parts.trigger.attrs,
@@ -169,7 +174,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getLinkProps(props: LinkProps) {
+    getLinkProps(props) {
       return normalize.element({
         ...parts.link.attrs,
         dir: state.context.dir,
@@ -234,7 +239,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getContentProps(props: ItemProps) {
+    getContentProps(props) {
       const itemState = getItemState(props)
 
       const activeContentValue = state.context.value ?? state.context.previousValue
@@ -280,8 +285,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           transition: state.context.value && !state.context.previousValue ? "none" : undefined,
           pointerEvents: !open ? "none" : undefined,
-          "--viewport-width": viewportSize != null ? viewportSize.width + "px" : undefined,
-          "--viewport-height": viewportSize != null ? viewportSize.height + "px" : undefined,
         },
         onPointerEnter() {
           send({ type: "CONTENT_ENTER", src: "viewport" })

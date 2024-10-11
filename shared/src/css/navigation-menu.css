@@ -1,5 +1,12 @@
 /* List */
 
+[data-scope="navigation-menu"][data-part="root"] {
+  --arrow-size: 20px;
+  --indicator-size: 10px;
+}
+
+/* List */
+
 [data-scope="navigation-menu"][data-part="list"] {
   list-style: none;
   display: flex;
@@ -151,13 +158,13 @@
 }
 
 [data-scope="navigation-menu"][data-part="trigger"] > svg {
-  transition: transform 200ms ease;
+  transition: rotate 200ms ease;
   width: 14px;
   height: 14px;
 }
 
 [data-scope="navigation-menu"][data-part="trigger"][data-state="open"] > svg {
-  transform: rotate(-180deg);
+  rotate: -180deg;
 }
 
 /* Link */
@@ -172,27 +179,44 @@
 
 /* Indicator + Arrow */
 
+[data-scope="navigation-menu"][data-part="arrow"] {
+  position: relative;
+  top: 4px;
+  width: var(--arrow-size);
+  height: var(--arrow-size);
+  background-color: white;
+  rotate: 45deg;
+  border-radius: 3px;
+}
+
 [data-scope="navigation-menu"][data-part="indicator"] {
   display: flex;
   justify-content: center;
-  height: 10px;
-  bottom: -30px;
+  height: var(--indicator-size);
   z-index: 1;
   transition:
-    transform 250ms ease,
+    translate 250ms ease,
     width 250ms ease;
   overflow: hidden;
 }
 
+[data-scope="navigation-menu"][data-part="indicator"][data-type="popover"] {
+  top: calc(var(--indicator-size) * -1);
+}
+
+[data-scope="navigation-menu"][data-part="indicator"][data-type="viewport"] {
+  bottom: calc(var(--indicator-size) + var(--arrow-size) * -1);
+}
+
 [data-scope="navigation-menu"][data-part="indicator"][data-orientation="horizontal"] {
   left: 0px;
-  transform: translateX(var(--trigger-x));
+  translate: var(--trigger-x) 0;
   width: var(--trigger-width);
 }
 
 [data-scope="navigation-menu"][data-part="indicator"][data-orientation="vertical"] {
   top: 0px;
-  transform: translateY(var(--trigger-y));
+  translate: 0 var(--trigger-y);
   height: var(--trigger-height);
 }
 
@@ -202,16 +226,6 @@
 
 [data-scope="navigation-menu"][data-part="indicator"][data-state="closed"] {
   animation: nav-menu-fade-out 250ms ease;
-}
-
-[data-scope="navigation-menu"][data-part="arrow"] {
-  position: relative;
-  top: 4px;
-  width: 20px;
-  height: 20px;
-  background-color: white;
-  transform: rotate(45deg);
-  border-radius: 3px;
 }
 
 /* Animations */
