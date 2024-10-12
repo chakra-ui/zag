@@ -1,5 +1,12 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type {
+  CommonProperties,
+  DirectionProperty,
+  Orientation,
+  OrientationProperty,
+  PropTypes,
+  RequiredBy,
+} from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -108,9 +115,17 @@ interface PrivateContext {
    * The cleanup function for the inert attribute
    */
   tabOrderCleanup: VoidFunction | null
+  /**
+   * @internal
+   * The child menu of this menu
+   */
+  childMenus: Record<string, Service | null>
 }
 
-type ComputedContext = Readonly<{}>
+type ComputedContext = Readonly<{
+  isRootMenu: boolean
+  isSubmenu: boolean
+}>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
 
@@ -176,6 +191,18 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Whether the menu is open
    */
   open: boolean
+  /**
+   * Sets the parent of the menu
+   */
+  setParent: (parent: Service) => void
+  /**
+   * Sets the child of the menu
+   */
+  setChild: (child: Service) => void
+  /**
+   * The orientation of the menu
+   */
+  orientation: Orientation
 
   getRootProps(): T["element"]
   getListProps(): T["element"]

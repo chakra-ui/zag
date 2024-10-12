@@ -1,12 +1,12 @@
 import * as navigationMenu from "@zag-js/navigation-menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
+import { navigationMenuControls } from "@zag-js/shared"
 import { ChevronDown } from "lucide-react"
 import { useId } from "react"
 import { Presence } from "../components/presence"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
-import { navigationMenuControls } from "@zag-js/shared"
 
 export default function Page() {
   const controls = useControls(navigationMenuControls)
@@ -28,7 +28,7 @@ export default function Page() {
 
   return (
     <>
-      <main className="navigation-menu">
+      <main className="navigation-menu viewport">
         <Navbar>
           <div {...api.getRootProps()}>
             <div {...api.getIndicatorTrackProps()}>

@@ -14,6 +14,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const value = state.context.value
   const previousValue = state.context.previousValue
   const isViewportRendered = state.context.isViewportRendered
+  const preventTransition = state.context.value && !state.context.previousValue
 
   function getItemState(props: ItemProps) {
     const selected = value === props.value
@@ -29,11 +30,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
+    open,
     value,
+    orientation: state.context.orientation!,
     setValue(value) {
       send({ type: "SET_VALUE", value })
     },
-    open,
+    setParent(parent) {
+      send({ type: "SET_PARENT", parent })
+    },
+    setChild(child) {
+      send({ type: "SET_CHILD", value: child, id: child.state.context.id })
+    },
 
     getRootProps() {
       return normalize.element({
@@ -41,6 +49,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getRootId(state.context),
         "aria-label": "Main",
         "data-orientation": state.context.orientation,
+        "data-type": state.context.isSubmenu ? "submenu" : "root",
         dir: state.context.dir,
         style: {
           "--trigger-width": activeTriggerRect != null ? activeTriggerRect.width + "px" : undefined,
@@ -59,6 +68,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getListId(state.context),
         dir: state.context.dir,
         "data-orientation": state.context.orientation,
+        "data-type": state.context.isSubmenu ? "submenu" : "root",
       })
     },
 
@@ -68,7 +78,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.item.attrs,
         dir: state.context.dir,
         "data-value": props.value,
-        "data-type": isViewportRendered ? "viewport" : "popover",
         "data-state": itemState.open ? "open" : "closed",
         "data-orientation": state.context.orientation,
         "data-disabled": dataAttr(itemState.disabled),
@@ -93,9 +102,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-orientation": state.context.orientation,
-        "data-type": isViewportRendered ? "viewport" : "popover",
+        "data-type": state.context.isSubmenu ? "submenu" : "root",
         style: {
           position: "absolute",
+          transition: preventTransition ? "none" : undefined,
         },
       })
     },
@@ -119,6 +129,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         disabled: props.disabled,
         "data-value": props.value,
         "data-state": itemState.selected ? "open" : "closed",
+        "data-type": state.context.isSubmenu ? "submenu" : "root",
         "data-disabled": dataAttr(props.disabled),
         "aria-controls": itemState.contentId,
         "aria-expanded": itemState.selected,
@@ -136,6 +147,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onPointerLeave(event) {
           if (event.pointerType !== "mouse") return
           if (props.disabled) return
+          if (state.context.isSubmenu) return
           send({ type: "TRIGGER_LEAVE", value: props.value })
         },
         onClick() {
@@ -181,7 +193,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": props.value,
         "data-current": dataAttr(props.current),
         "aria-current": props.current ? "page" : undefined,
-        "data-owned-by": dom.getContentId(state.context, props.value),
+        "data-ownedby": dom.getContentId(state.context, props.value),
         onClick(event) {
           const { currentTarget } = event
 
@@ -196,7 +208,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
         },
         onKeyDown(event) {
-          const isWithinContent = !!event.currentTarget.closest("[data-part=content]")
+          const contentMenu = event.currentTarget.closest("[data-scope=navigation-menu][data-part=content]")
+          const isWithinContent = !!contentMenu
+
           const keyMap: EventKeyMap = {
             ArrowLeft(event) {
               if (isWithinContent) return
@@ -230,7 +244,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             },
           }
 
-          const action = keyMap[getEventKey(event)]
+          const action = keyMap[getEventKey(event, state.context)]
 
           if (action) {
             action(event)
@@ -253,13 +267,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-labelledby": itemState.triggerId,
         "data-uid": state.context.id,
         "data-state": selected ? "open" : "closed",
-        "data-type": state.context.isViewportRendered ? "viewport" : "popover",
+        "data-type": state.context.isSubmenu ? "submenu" : "root",
         "data-value": props.value,
         onPointerEnter() {
+          if (state.context.isSubmenu) return
           send({ type: "CONTENT_ENTER", value: props.value })
         },
         onPointerLeave(event) {
           if (event.pointerType !== "mouse") return
+          if (state.context.isSubmenu) return
           send({ type: "CONTENT_LEAVE", value: props.value })
         },
       })
@@ -282,15 +298,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-orientation": state.context.orientation,
+        "data-type": state.context.isSubmenu ? "submenu" : "root",
         style: {
-          transition: state.context.value && !state.context.previousValue ? "none" : undefined,
+          transition: preventTransition ? "none" : undefined,
           pointerEvents: !open ? "none" : undefined,
         },
         onPointerEnter() {
+          if (state.context.isSubmenu) return
           send({ type: "CONTENT_ENTER", src: "viewport" })
         },
         onPointerLeave(event) {
           if (event.pointerType !== "mouse") return
+          if (state.context.isSubmenu) return
           send({ type: "CONTENT_LEAVE", src: "viewport" })
         },
       })

@@ -28,7 +28,7 @@ export default function Page() {
 
   return (
     <>
-      <main className="navigation-menu">
+      <main className="navigation-menu basic">
         <div {...api.getRootProps()}>
           <div {...api.getListProps()}>
             <div {...api.getItemProps({ value: "products" })}>

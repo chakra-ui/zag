@@ -10,6 +10,12 @@ export const dom = createScope({
   getListId: (ctx: Ctx) => `nav-menu:${ctx.id}:list`,
   getIndicatorTrackId: (ctx: Ctx) => `nav-menu:${ctx.id}:indicator-track`,
 
+  getRootMenuEl: (ctx: Ctx) => {
+    let id = ctx.id
+    while (ctx.parentMenu != null) id = ctx.parentMenu.id
+    return dom.getById(ctx, `nav-menu:${id}`)
+  },
+
   getTabbableEls: (ctx: Ctx, value: string) => getTabbables(dom.getContentEl(ctx, value)),
   getIndicatorTrackEl: (ctx: Ctx) => dom.getById(ctx, dom.getIndicatorTrackId(ctx)),
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
@@ -42,16 +48,19 @@ export const dom = createScope({
     return elements[idx]
   },
 
-  getLinkEls: (ctx: Ctx, value: string) => queryAll(dom.getContentEl(ctx, value), `[data-part=link]`),
+  getLinkEls: (ctx: Ctx, value: string) => {
+    const contentEl = dom.getContentEl(ctx, value)
+    return queryAll(contentEl, `[data-part=link][data-ownedby="${dom.getContentId(ctx, value)}"]`)
+  },
   getFirstLinkEl: (ctx: Ctx, value: string) => first(dom.getLinkEls(ctx, value)),
   getLastLinkEl: (ctx: Ctx, value: string) => last(dom.getLinkEls(ctx, value)),
   getNextLinkEl: (ctx: Ctx, value: string, node: HTMLElement) => {
     const elements = dom.getLinkEls(ctx, value)
-    return next(elements, elements.indexOf(node), { loop: true })
+    return next(elements, elements.indexOf(node), { loop: false })
   },
   getPrevLinkEl: (ctx: Ctx, value: string, node: HTMLElement) => {
     const elements = dom.getLinkEls(ctx, value)
-    return prev(elements, elements.indexOf(node), { loop: true })
+    return prev(elements, elements.indexOf(node), { loop: false })
   },
 })
 

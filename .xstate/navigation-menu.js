@@ -12,15 +12,24 @@ const {
 const fetchMachine = createMachine({
   id: "navigation-menu",
   context: {
-    "isItemOpen": false,
+    "isItemOpen && isRootMenu": false,
+    "isSubmenu": false,
+    "isSubmenu": false,
     "isOpen": false
   },
   initial: "closed",
   entry: ["checkViewportNode"],
   exit: ["cleanupObservers"],
   on: {
+    SET_PARENT: {
+      target: "open",
+      actions: ["setParentMenu", "setActiveTriggerNode", "syncTriggerRectObserver"]
+    },
+    SET_CHILD: {
+      actions: ["setChildMenu"]
+    },
     TRIGGER_CLICK: [{
-      cond: "isItemOpen",
+      cond: "isItemOpen && isRootMenu",
       actions: ["clearValue", "setClickCloseRef"]
     }, {
       target: "open",
@@ -37,15 +46,19 @@ const fetchMachine = createMachine({
   },
   states: {
     closed: {
-      entry: ["cleanupObservers"],
+      entry: ["cleanupObservers", "propagateClose"],
       on: {
         TRIGGER_ENTER: {
           actions: ["clearCloseRefs"]
         },
-        TRIGGER_MOVE: {
+        TRIGGER_MOVE: [{
+          cond: "isSubmenu",
+          target: "open",
+          actions: ["setValue"]
+        }, {
           target: "opening",
           actions: ["setPointerMoveRef"]
-        }
+        }]
       }
     },
     opening: {
@@ -91,6 +104,14 @@ const fetchMachine = createMachine({
         },
         CONTENT_ENTER: {
           actions: ["restoreTabOrder"]
+        },
+        TRIGGER_MOVE: {
+          cond: "isSubmenu",
+          actions: ["setValue"]
+        },
+        ROOT_CLOSE: {
+          // clear the previous value so indicator doesn't animate
+          actions: ["clearPreviousValue", "cleanupObservers"]
         }
       }
     },
@@ -104,6 +125,10 @@ const fetchMachine = createMachine({
         }
       },
       on: {
+        CONTENT_DISMISS: {
+          target: "closed",
+          actions: ["focusTriggerIfNeeded", "clearValue", "clearPointerMoveRef"]
+        },
         CONTENT_ENTER: {
           target: "open",
           actions: ["restoreTabOrder"]
@@ -131,7 +156,8 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "isItemOpen": ctx => ctx["isItemOpen"],
+    "isItemOpen && isRootMenu": ctx => ctx["isItemOpen && isRootMenu"],
+    "isSubmenu": ctx => ctx["isSubmenu"],
     "isOpen": ctx => ctx["isOpen"]
   }
 });

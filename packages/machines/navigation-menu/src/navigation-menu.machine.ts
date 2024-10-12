@@ -1,10 +1,12 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, guards, ref } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-event"
 import { contains, proxyTabFocus, raf } from "@zag-js/dom-query"
-import { callAll, compact } from "@zag-js/utils"
 import { trackInteractOutside } from "@zag-js/interact-outside"
+import { callAll, cast, compact } from "@zag-js/utils"
 import { dom, trackResizeObserver } from "./navigation-menu.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./navigation-menu.types"
+
+const { and } = guards
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -13,24 +15,38 @@ export function machine(userContext: UserDefinedContext) {
       id: "navigation-menu",
 
       context: {
-        parentMenu: null,
-        viewportSize: null,
-        isViewportRendered: false,
-        activeTriggerRect: null,
+        // value tracking
         value: null,
         previousValue: null,
+        // viewport
+        viewportSize: null,
+        isViewportRendered: false,
+        // timings
         openDelay: 200,
         closeDelay: 300,
+        // orientation
         orientation: "horizontal",
+        // nodes for measurement
+        activeTriggerRect: null,
+        activeContentNode: null,
+        activeTriggerNode: null,
+        // close refs
         wasEscapeCloseRef: false,
         wasClickCloseRef: null,
         hasPointerMoveOpenedRef: null,
+        // cleanup functions
         activeContentCleanup: null,
-        activeContentNode: null,
-        activeTriggerNode: null,
         activeTriggerCleanup: null,
         tabOrderCleanup: null,
+        // support nesting
+        parentMenu: null,
+        childMenus: cast(ref({})),
         ...ctx,
+      },
+
+      computed: {
+        isRootMenu: (ctx) => ctx.parentMenu == null,
+        isSubmenu: (ctx) => ctx.parentMenu != null,
       },
 
       watch: {
@@ -50,9 +66,16 @@ export function machine(userContext: UserDefinedContext) {
       exit: ["cleanupObservers"],
 
       on: {
+        SET_PARENT: {
+          target: "open",
+          actions: ["setParentMenu", "setActiveTriggerNode", "syncTriggerRectObserver"],
+        },
+        SET_CHILD: {
+          actions: ["setChildMenu"],
+        },
         TRIGGER_CLICK: [
           {
-            guard: "isItemOpen",
+            guard: and("isItemOpen", "isRootMenu"),
             actions: ["clearValue", "setClickCloseRef"],
           },
           {
@@ -67,15 +90,22 @@ export function machine(userContext: UserDefinedContext) {
 
       states: {
         closed: {
-          entry: ["cleanupObservers"],
+          entry: ["cleanupObservers", "propagateClose"],
           on: {
             TRIGGER_ENTER: {
               actions: ["clearCloseRefs"],
             },
-            TRIGGER_MOVE: {
-              target: "opening",
-              actions: ["setPointerMoveRef"],
-            },
+            TRIGGER_MOVE: [
+              {
+                guard: "isSubmenu",
+                target: "open",
+                actions: ["setValue"],
+              },
+              {
+                target: "opening",
+                actions: ["setPointerMoveRef"],
+              },
+            ],
           },
         },
 
@@ -124,6 +154,14 @@ export function machine(userContext: UserDefinedContext) {
             CONTENT_ENTER: {
               actions: ["restoreTabOrder"],
             },
+            TRIGGER_MOVE: {
+              guard: "isSubmenu",
+              actions: ["setValue"],
+            },
+            ROOT_CLOSE: {
+              // clear the previous value so indicator doesn't animate
+              actions: ["clearPreviousValue", "cleanupObservers"],
+            },
           },
         },
 
@@ -137,6 +175,10 @@ export function machine(userContext: UserDefinedContext) {
             },
           },
           on: {
+            CONTENT_DISMISS: {
+              target: "closed",
+              actions: ["focusTriggerIfNeeded", "clearValue", "clearPointerMoveRef"],
+            },
             CONTENT_ENTER: {
               target: "open",
               actions: ["restoreTabOrder"],
@@ -163,6 +205,8 @@ export function machine(userContext: UserDefinedContext) {
       guards: {
         isOpen: (ctx) => ctx.value !== null,
         isItemOpen: (ctx, evt) => ctx.value === evt.value,
+        isRootMenu: (ctx) => ctx.isRootMenu,
+        isSubmenu: (ctx) => ctx.isSubmenu,
       },
       delays: {
         OPEN_DELAY: (ctx) => ctx.openDelay,
@@ -170,7 +214,8 @@ export function machine(userContext: UserDefinedContext) {
       },
       activities: {
         preserveTabOrder(ctx) {
-          if (!ctx.isViewportRendered || ctx.value == null) return
+          if (!ctx.isViewportRendered) return
+          if (ctx.value == null) return
           const contentEl = () => dom.getContentEl(ctx, ctx.value!)
           return proxyTabFocus(contentEl, {
             triggerElement: dom.getTriggerEl(ctx, ctx.value),
@@ -181,27 +226,30 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackInteractionOutside(ctx, _evt, { send }) {
           if (ctx.value == null) return
-          const contentEl = () => (ctx.isViewportRendered ? dom.getViewportEl(ctx) : dom.getContentEl(ctx, ctx.value!))
-          return trackInteractOutside(contentEl, {
+          if (ctx.isSubmenu) return
+
+          const getContentEl = () =>
+            ctx.isViewportRendered ? dom.getViewportEl(ctx) : dom.getContentEl(ctx, ctx.value!)
+
+          return trackInteractOutside(getContentEl, {
             onFocusOutside(event) {
               // remove tabbable elements from tab order
               ctx.tabOrderCleanup?.()
               ctx.tabOrderCleanup = removeFromTabOrder(dom.getTabbableEls(ctx, ctx.value!))
 
               const { target } = event.detail.originalEvent
-              const rootEl = dom.getRootEl(ctx)
+              const rootEl = dom.getRootMenuEl(ctx)
               if (contains(rootEl, target)) event.preventDefault()
             },
             onPointerDownOutside(event) {
               const { target } = event.detail.originalEvent
-              const isRootMenu = ctx.parentMenu == null
 
               const topLevelEls = dom.getTopLevelEls(ctx)
               const isTrigger = topLevelEls.some((item) => contains(item, target))
 
               const viewportEl = dom.getViewportEl(ctx)
-              const isRootViewport = isRootMenu && contains(viewportEl, target)
-              if (isTrigger || isRootViewport || !isRootMenu) event.preventDefault()
+              const isRootViewport = ctx.isRootMenu && contains(viewportEl, target)
+              if (isTrigger || isRootViewport) event.preventDefault()
             },
             onInteractOutside(event) {
               if (event.defaultPrevented) return
@@ -210,6 +258,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         trackEscapeKey(ctx, _evt, { send }) {
+          if (ctx.isSubmenu) return
           const onKeyDown = (evt: KeyboardEvent) => {
             if (evt.key === "Escape" && !evt.isComposing) {
               ctx.wasEscapeCloseRef = true
@@ -272,6 +321,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         syncMotionAttribute(ctx) {
           if (!ctx.isViewportRendered) return
+          if (ctx.isSubmenu) return
           set.motionAttr(ctx)
         },
         setClickCloseRef(ctx, evt) {
@@ -279,6 +329,9 @@ export function machine(userContext: UserDefinedContext) {
         },
         checkViewportNode(ctx) {
           ctx.isViewportRendered = !!dom.getViewportEl(ctx)
+        },
+        clearPreviousValue(ctx) {
+          ctx.previousValue = null
         },
         clearValue(ctx) {
           set.value(ctx, null)
@@ -315,6 +368,18 @@ export function machine(userContext: UserDefinedContext) {
         },
         restoreTabOrder(ctx) {
           ctx.tabOrderCleanup?.()
+        },
+        setParentMenu(ctx, evt) {
+          ctx.parentMenu = ref(evt.parent)
+        },
+        setChildMenu(ctx, evt) {
+          ctx.childMenus[evt.id] = evt.value
+        },
+        propagateClose(ctx) {
+          const menus = Object.values(ctx.childMenus)
+          menus.forEach((child) => {
+            child?.send({ type: "ROOT_CLOSE", src: ctx.id })
+          })
         },
       },
     },
