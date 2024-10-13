@@ -6,7 +6,7 @@ export interface CollectionSearchState {
 export interface CollectionSearchOptions {
   state: CollectionSearchState
   currentValue: string | null
-  timeout?: number
+  timeout?: number | undefined
 }
 
 export type CollectionItem = any

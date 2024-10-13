@@ -25,7 +25,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the tooltip. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The `id` of the tooltip.
    */
@@ -49,17 +49,17 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether to close the tooltip when the Escape key is pressed.
    * @default true
    */
-  closeOnEscape?: boolean
+  closeOnEscape?: boolean | undefined
   /**
    * Whether the tooltip should close on scroll
    * @default true
    */
-  closeOnScroll?: boolean
+  closeOnScroll?: boolean | undefined
   /**
    * Whether the tooltip should close on click
    * @default true
    */
-  closeOnClick?: boolean
+  closeOnClick?: boolean | undefined
   /**
    * Whether the tooltip's content is interactive.
    * In this mode, the tooltip will remain open when user hovers over the content.
@@ -75,7 +75,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Custom label for the tooltip.
    */
-  "aria-label"?: string
+  "aria-label"?: string | undefined
   /**
    * The user provided options used to position the popover content
    */
@@ -83,15 +83,15 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the tooltip is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the tooltip is open
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
    * Whether the tooltip is controlled by the user
    */
-  "open.controlled"?: boolean
+  "open.controlled"?: boolean | undefined
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -108,12 +108,12 @@ interface PrivateContext {
    * @internal
    * The computed placement of the tooltip.
    */
-  currentPlacement?: Placement
+  currentPlacement?: Placement | undefined
   /**
    * @internal
    * Whether the pointermove already opened the tooltip.
    */
-  hasPointerMoveOpened?: boolean
+  hasPointerMoveOpened?: boolean | undefined
 }
 
 export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}

@@ -16,20 +16,20 @@ export interface InteractOutsideHandlers {
   /**
    * Function called when the pointer is pressed down outside the component
    */
-  onPointerDownOutside?: (event: PointerDownOutsideEvent) => void
+  onPointerDownOutside?: ((event: PointerDownOutsideEvent) => void) | undefined
   /**
    * Function called when the focus is moved outside the component
    */
-  onFocusOutside?: (event: FocusOutsideEvent) => void
+  onFocusOutside?: ((event: FocusOutsideEvent) => void) | undefined
   /**
    * Function called when an interaction happens outside the component
    */
-  onInteractOutside?: (event: InteractOutsideEvent) => void
+  onInteractOutside?: ((event: InteractOutsideEvent) => void) | undefined
 }
 
 export interface InteractOutsideOptions extends InteractOutsideHandlers {
-  exclude?: (target: HTMLElement) => boolean
-  defer?: boolean
+  exclude?: ((target: HTMLElement) => boolean) | undefined
+  defer?: boolean | undefined
 }
 
 export interface EventDetails<T> {

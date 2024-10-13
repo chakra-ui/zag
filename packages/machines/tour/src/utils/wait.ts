@@ -2,7 +2,7 @@ import { getDocument, getWindow } from "@zag-js/dom-query"
 
 export interface WaitOptions {
   timeout: number
-  rootNode?: Document | ShadowRoot
+  rootNode?: Document | ShadowRoot | undefined
 }
 
 type WaitForPromiseReturn<T> = [Promise<T>, () => void]

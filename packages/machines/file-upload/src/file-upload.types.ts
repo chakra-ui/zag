@@ -43,7 +43,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface IntlTranslations {
-  dropzone?: string
+  dropzone?: string | undefined
   itemPreview?(file: File): string
   deleteFile?(file: File): string
 }
@@ -52,11 +52,11 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * The name of the underlying file input
    */
-  name?: string
+  name?: string | undefined
   /**
    * The ids of the elements. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The localized messages to use.
    */
@@ -64,20 +64,20 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * The accept file types
    */
-  accept?: Record<string, string[]> | FileMimeType | FileMimeType[]
+  accept?: Record<string, string[]> | FileMimeType | FileMimeType[] | undefined
   /**
    * Whether the file input is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the file input is required
    */
-  required?: boolean
+  required?: boolean | undefined
   /**
    * Whether to allow drag and drop in the dropzone element
    * @default true
    */
-  allowDrop?: boolean
+  allowDrop?: boolean | undefined
   /**
    * The maximum file size in bytes
    *
@@ -98,31 +98,31 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * Function to validate a file
    */
-  validate?: (file: File) => FileError[] | null
+  validate?: ((file: File) => FileError[] | null) | undefined
   /**
    * Function called when the value changes, whether accepted or rejected
    */
-  onFileChange?: (details: FileChangeDetails) => void
+  onFileChange?: ((details: FileChangeDetails) => void) | undefined
   /**
    * Function called when the file is accepted
    */
-  onFileAccept?: (details: FileAcceptDetails) => void
+  onFileAccept?: ((details: FileAcceptDetails) => void) | undefined
   /**
    * Function called when the file is rejected
    */
-  onFileReject?: (details: FileRejectDetails) => void
+  onFileReject?: ((details: FileRejectDetails) => void) | undefined
   /**
    * The default camera to use when capturing media
    */
-  capture?: "user" | "environment"
+  capture?: "user" | "environment" | undefined
   /**
    * Whether to accept directories, only works in webkit browsers
    */
-  directory?: boolean
+  directory?: boolean | undefined
   /**
    * Whether the file input is invalid
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
 }
 
 interface PrivateContext {

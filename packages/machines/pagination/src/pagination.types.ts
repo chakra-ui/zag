@@ -24,9 +24,9 @@ export interface ItemLabelDetails {
 }
 
 export interface IntlTranslations {
-  rootLabel?: string
-  prevTriggerLabel?: string
-  nextTriggerLabel?: string
+  rootLabel?: string | undefined
+  prevTriggerLabel?: string | undefined
+  nextTriggerLabel?: string | undefined
   itemLabel?(details: ItemLabelDetails): string
 }
 
@@ -42,7 +42,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the accordion. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
@@ -69,11 +69,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Called when the page number is changed
    */
-  onPageChange?: (details: PageChangeDetails) => void
+  onPageChange?: ((details: PageChangeDetails) => void) | undefined
   /**
    * Called when the page size is changed
    */
-  onPageSizeChange?: (details: PageSizeChangeDetails) => void
+  onPageSizeChange?: ((details: PageSizeChangeDetails) => void) | undefined
   /**
    * The type of the trigger element
    * @default "button"

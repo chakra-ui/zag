@@ -231,7 +231,7 @@ export interface InteractionModalityChangeDetails {
 
 export interface InteractionModalityProps {
   /** The root element to track focus visibility for. */
-  root?: RootNode
+  root?: RootNode | undefined
   /** Callback to be called when the interaction modality changes. */
   onChange: (details: InteractionModalityChangeDetails) => void
 }
@@ -266,13 +266,13 @@ export interface FocusVisibleChangeDetails {
 
 export interface FocusVisibleProps {
   /** The root element to track focus visibility for. */
-  root?: RootNode
+  root?: RootNode | undefined
   /** Whether the element is a text input. */
-  isTextInput?: boolean
+  isTextInput?: boolean | undefined
   /** Whether the element will be auto focused. */
-  autoFocus?: boolean
+  autoFocus?: boolean | undefined
   /** Callback to be called when the focus visibility changes. */
-  onChange?: (details: FocusVisibleChangeDetails) => void
+  onChange?: ((details: FocusVisibleChangeDetails) => void) | undefined
 }
 
 export function trackFocusVisible(props: FocusVisibleProps = {}): VoidFunction {
