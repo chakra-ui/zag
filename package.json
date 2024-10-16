@@ -69,7 +69,7 @@
     "@commitlint/cli": "19.5.0",
     "@commitlint/config-conventional": "19.5.0",
     "@octokit/rest": "21.0.2",
-    "@playwright/test": "1.47.2",
+    "@playwright/test": "1.48.0",
     "@swc/core": "1.7.26",
     "@types/babel__generator": "7.6.8",
     "@types/babel__traverse": "7.20.6",
