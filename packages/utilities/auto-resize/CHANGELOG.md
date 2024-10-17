@@ -1,5 +1,17 @@
 # @zag-js/auto-resize
 
+## 0.75.0
+
+### Minor Changes
+
+- [`253603b`](https://github.com/chakra-ui/zag/commit/253603b41960d914d7abb196f1b81ce44f824dff) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for resizing textarea
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.75.0
+
 ## 0.74.2
 
 ### Patch Changes
