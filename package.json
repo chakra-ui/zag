@@ -97,7 +97,7 @@
     "ts-morph": "24.0.0",
     "tsup": "8.3.0",
     "tsx": "4.19.1",
-    "typescript": "5.6.2",
+    "typescript": "5.6.3",
     "vercel-submodules": "1.0.10",
     "vite": "5.4.8",
     "vite-plugin-dts": "4.2.3",
