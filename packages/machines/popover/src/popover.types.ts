@@ -34,7 +34,7 @@ interface PublicContext
   /**
    * The ids of the elements in the popover. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Whether the popover should be modal. When set to `true`:
    * - interaction with outside elements will be disabled
@@ -44,39 +44,39 @@ interface PublicContext
    *
    * @default false
    */
-  modal?: boolean
+  modal?: boolean | undefined
   /**
    * Whether the popover is portalled. This will proxy the tabbing behavior regardless of the DOM position
    * of the popover content.
    *
    * @default true
    */
-  portalled?: boolean
+  portalled?: boolean | undefined
   /**
    * Whether to automatically set focus on the first focusable
    * content within the popover when opened.
    *
    * @default true
    */
-  autoFocus?: boolean
+  autoFocus?: boolean | undefined
   /**
    * The element to focus on when the popover is opened.
    */
-  initialFocusEl?: () => HTMLElement | null
+  initialFocusEl?: (() => HTMLElement | null) | undefined
   /**
    * Whether to close the popover when the user clicks outside of the popover.
    * @default true
    */
-  closeOnInteractOutside?: boolean
+  closeOnInteractOutside?: boolean | undefined
   /**
    * Whether to close the popover when the escape key is pressed.
    * @default true
    */
-  closeOnEscape?: boolean
+  closeOnEscape?: boolean | undefined
   /**
    * Function invoked when the popover opens or closes
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * The user provided options used to position the popover content
    */
@@ -84,11 +84,11 @@ interface PublicContext
   /**
    * Whether the popover is open
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
    * Whether the popover is controlled by the user
    */
-  "open.controlled"?: boolean
+  "open.controlled"?: boolean | undefined
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -114,7 +114,7 @@ interface PrivateContext {
    * @internal
    * The computed placement (maybe different from initial placement)
    */
-  currentPlacement?: Placement
+  currentPlacement?: Placement | undefined
 }
 
 export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}

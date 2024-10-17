@@ -59,16 +59,16 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Function called when the slide changes.
    */
-  onIndexChange?: (details: SlideChangeDetails) => void
+  onIndexChange?: ((details: SlideChangeDetails) => void) | undefined
   /**
    * The ids of the elements in the carousel. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
 }
 
 interface PrivateContext {
   slideRects: DOMRect[]
-  containerRect?: DOMRect
+  containerRect?: DOMRect | undefined
   containerSize: number
   scrollSnaps: number[]
   scrollProgress: number
@@ -135,7 +135,7 @@ export interface ItemState {
 
 export interface IndicatorProps {
   index: number
-  readOnly?: boolean
+  readOnly?: boolean | undefined
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {

@@ -2,8 +2,8 @@ import { createScope, getByTypeahead, isHTMLElement, isHiddenElement, query, que
 import type { MachineContext as Ctx } from "./tree-view.types"
 
 interface TreeWalkerOpts {
-  skipHidden?: boolean
-  root?: HTMLElement | null
+  skipHidden?: boolean | undefined
+  root?: HTMLElement | null | undefined
 }
 
 export const dom = createScope({

@@ -69,8 +69,8 @@ export type RectCenters = Record<RectCenter, Point> & {
 export type RectInset = Partial<Record<RectSide, number>>
 
 export interface SymmetricRectInset {
-  dx?: number
-  dy?: number
+  dx?: number | undefined
+  dy?: number | undefined
 }
 
 export interface ScalingOptions {

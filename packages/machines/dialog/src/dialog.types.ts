@@ -32,7 +32,7 @@ interface PublicContext
   /**
    * The ids of the elements in the dialog. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Whether to trap focus inside the dialog when it's opened
    * @default true
@@ -47,23 +47,23 @@ interface PublicContext
    * Whether to prevent pointer interaction outside the element and hide all content below it
    * @default true
    */
-  modal?: boolean
+  modal?: boolean | undefined
   /**
    * Element to receive focus when the dialog is opened
    */
-  initialFocusEl?: () => HTMLElement | null
+  initialFocusEl?: (() => HTMLElement | null) | undefined
   /**
    * Element to receive focus when the dialog is closed
    */
-  finalFocusEl?: () => HTMLElement | null
+  finalFocusEl?: (() => HTMLElement | null) | undefined
   /**
    * Whether to restore focus to the element that had focus before the dialog was opened
    */
-  restoreFocus?: boolean
+  restoreFocus?: boolean | undefined
   /**
    * Callback to be invoked when the dialog is opened or closed
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * Whether to close the dialog when the outside is clicked
    * @default true
@@ -77,7 +77,7 @@ interface PublicContext
   /**
    * Human readable label for the dialog, in event the dialog title is not rendered
    */
-  "aria-label"?: string
+  "aria-label"?: string | undefined
   /**
    * The dialog's role
    * @default "dialog"
@@ -86,11 +86,11 @@ interface PublicContext
   /**
    * Whether the dialog is open
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
    * Whether the dialog is controlled by the user
    */
-  "open.controlled"?: boolean
+  "open.controlled"?: boolean | undefined
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

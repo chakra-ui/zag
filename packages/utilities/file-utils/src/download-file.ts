@@ -7,11 +7,11 @@ interface DownloadFileOptions {
   /**
    * The name of the file
    */
-  name?: string
+  name?: string | undefined
   /**
    * The MIME type of the file
    */
-  type?: string
+  type?: string | undefined
   /**
    * The file contents
    */

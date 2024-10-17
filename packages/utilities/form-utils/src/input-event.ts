@@ -1,6 +1,6 @@
 interface DescriptorOptions {
-  type?: "HTMLInputElement" | "HTMLTextAreaElement" | "HTMLSelectElement"
-  property?: "value" | "checked"
+  type?: "HTMLInputElement" | "HTMLTextAreaElement" | "HTMLSelectElement" | undefined
+  property?: "value" | "checked" | undefined
 }
 
 const getWindow = (el: HTMLElement) => el.ownerDocument.defaultView || window

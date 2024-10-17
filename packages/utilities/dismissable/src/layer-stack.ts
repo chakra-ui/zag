@@ -3,7 +3,7 @@ import { contains } from "@zag-js/dom-query"
 export interface Layer {
   dismiss: VoidFunction
   node: HTMLElement
-  pointerBlocking?: boolean
+  pointerBlocking?: boolean | undefined
 }
 
 export const layerStack = {

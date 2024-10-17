@@ -1,6 +1,6 @@
 interface VirtualElement {
   getBoundingClientRect(): DOMRect
-  contextElement?: Element
+  contextElement?: Element | undefined
 }
 
 export type MeasurableElement = Element | VirtualElement

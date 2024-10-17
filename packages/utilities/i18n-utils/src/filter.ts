@@ -7,7 +7,7 @@ export interface FilterReturn {
 }
 
 export interface FilterOptions extends Intl.CollatorOptions {
-  locale?: string
+  locale?: string | undefined
 }
 
 const collatorCache = i18nCache(Intl.Collator)

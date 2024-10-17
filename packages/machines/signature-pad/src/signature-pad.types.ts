@@ -21,7 +21,7 @@ export interface DrawingOptions extends StrokeOptions {
    * The color of the stroke.
    * Note: Must be a valid CSS color string, not a css variable.
    */
-  fill?: string
+  fill?: string | undefined
 }
 
 export type DataUrlType = "image/png" | "image/jpeg" | "image/svg+xml"
@@ -33,7 +33,7 @@ export interface DrawEndDetails {
 
 export interface DataUrlOptions {
   type: DataUrlType
-  quality?: number
+  quality?: number | undefined
 }
 
 export type ElementIds = Partial<{
@@ -58,11 +58,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the signature pad elements. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The translations of the signature pad. Useful for internationalization.
    */
-  translations?: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * Callback when the signature pad is drawing.
    */
@@ -79,19 +79,19 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the signature pad is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the signature pad is required.
    */
-  required?: boolean
+  required?: boolean | undefined
   /**
    * Whether the signature pad is read-only.
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * The name of the signature pad. Useful for form submission.
    */
-  name?: string
+  name?: string | undefined
 }
 
 interface PrivateContext {

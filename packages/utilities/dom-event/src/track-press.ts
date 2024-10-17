@@ -27,7 +27,7 @@ export interface TrackPressOptions {
   /**
    * The element that will be used to track the keyboard focus events.
    */
-  keyboardNode?: Element | null
+  keyboardNode?: Element | null | undefined
   /**
    * A function that determines if the key is valid for the press event.
    */

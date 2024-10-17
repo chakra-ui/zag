@@ -4,8 +4,8 @@ const bitPrefixes = ["", "kilo", "mega", "giga", "tera"]
 const bytePrefixes = ["", "kilo", "mega", "giga", "tera", "peta"]
 
 export interface FormatBytesOptions {
-  unit?: "bit" | "byte"
-  unitDisplay?: "long" | "short" | "narrow"
+  unit?: "bit" | "byte" | undefined
+  unitDisplay?: "long" | "short" | "narrow" | undefined
 }
 
 export const formatBytes = (bytes: number, locale = "en-US", options: FormatBytesOptions = {}) => {

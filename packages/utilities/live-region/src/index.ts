@@ -1,8 +1,8 @@
 export interface LiveRegionOptions {
   level: "polite" | "assertive"
-  document?: Document
-  root?: HTMLElement | null
-  delay?: number
+  document?: Document | undefined
+  root?: HTMLElement | null | undefined
+  delay?: number | undefined
 }
 
 export type LiveRegion = ReturnType<typeof createLiveRegion>

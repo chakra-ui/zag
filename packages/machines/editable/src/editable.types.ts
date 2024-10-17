@@ -45,23 +45,23 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * The ids of the elements in the editable. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Whether the input's value is invalid.
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * The name attribute of the editable component. Used for form submission.
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the underlying input.
    */
-  form?: string
+  form?: string | undefined
   /**
    * Whether the editable should auto-resize to fit the content.
    */
-  autoResize?: boolean
+  autoResize?: boolean | undefined
   /**
    * The activation mode for the preview element.
    *
@@ -86,16 +86,16 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * Whether the editable is in edit mode.
    */
-  edit?: boolean
+  edit?: boolean | undefined
   /**
    * Whether the editable is controlled
    */
-  "edit.controlled"?: boolean
+  "edit.controlled"?: boolean | undefined
   /**
    * Whether to select the text in the input when it is focused.
    * @default true
    */
-  selectOnFocus?: boolean
+  selectOnFocus?: boolean | undefined
   /**
    * The value of the editable in both edit and preview mode
    */
@@ -103,39 +103,39 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * The maximum number of characters allowed in the editable
    */
-  maxLength?: number
+  maxLength?: number | undefined
   /**
    * Whether the editable is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the editable is readonly
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the editable is required
    */
-  required?: boolean
+  required?: boolean | undefined
   /**
    * The callback that is called when the editable's value is changed
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * The callback that is called when the esc key is pressed or the cancel button is clicked
    */
-  onValueRevert?: (details: ValueChangeDetails) => void
+  onValueRevert?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * The callback that is called when the editable's value is submitted.
    */
-  onValueCommit?: (details: ValueChangeDetails) => void
+  onValueCommit?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * The callback that is called when the edit mode is changed
    */
-  onEditChange?: (details: EditChangeDetails) => void
+  onEditChange?: ((details: EditChangeDetails) => void) | undefined
   /**
    * The placeholder value to show when the `value` is empty
    */
-  placeholder?: string | { edit: string; preview: string }
+  placeholder?: string | { edit: string; preview: string } | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
@@ -144,7 +144,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * The element that should receive focus when the editable is closed.
    * By default, it will focus on the trigger element.
    */
-  finalFocusEl?: () => HTMLElement | null
+  finalFocusEl?: (() => HTMLElement | null) | undefined
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

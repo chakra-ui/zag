@@ -15,7 +15,7 @@ import type { ColorChannel } from "./types"
 interface GradientOptions {
   xChannel: ColorChannel
   yChannel: ColorChannel
-  dir?: "rtl" | "ltr"
+  dir?: "rtl" | "ltr" | undefined
 }
 
 interface GradientStyles {

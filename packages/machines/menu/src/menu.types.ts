@@ -48,7 +48,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
   /**
    * The ids of the elements in the menu. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The value of the highlighted menu item.
    */
@@ -56,11 +56,11 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
   /**
    * Function called when the highlighted menu item changes.
    */
-  onHighlightChange?: (details: HighlightChangeDetails) => void
+  onHighlightChange?: ((details: HighlightChangeDetails) => void) | undefined
   /**
    * Function called when a menu item is selected.
    */
-  onSelect?: (details: SelectionDetails) => void
+  onSelect?: ((details: SelectionDetails) => void) | undefined
   /**
    * The positioning point for the menu. Can be set by the context menu trigger or the button trigger.
    */
@@ -82,19 +82,19 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
   /**
    * The accessibility label for the menu
    */
-  "aria-label"?: string
+  "aria-label"?: string | undefined
   /**
    * Whether the menu is open
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
    * Function called when the menu opens or closes
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    *  Whether the menu's open state is controlled by the user
    */
-  "open.controlled"?: boolean
+  "open.controlled"?: boolean | undefined
   /**
    * Whether the pressing printable characters should trigger typeahead navigation
    * @default true
@@ -158,7 +158,7 @@ interface PrivateContext {
    * @internal
    * The computed placement (maybe different from initial placement)
    */
-  currentPlacement?: Placement
+  currentPlacement?: Placement | undefined
   /**
    * @internal
    * The typeahead state for faster keyboard navigation
@@ -168,7 +168,7 @@ interface PrivateContext {
    * @internal
    * Whether to return focus to the trigger when the menu is closed
    */
-  restoreFocus?: boolean
+  restoreFocus?: boolean | undefined
 }
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
@@ -201,16 +201,16 @@ export interface ItemProps {
   /**
    * Whether the menu item is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * The textual value of the option. Used in typeahead navigation of the menu.
    * If not provided, the text content of the menu item will be used.
    */
-  valueText?: string
+  valueText?: string | undefined
   /**
    * Whether the menu should be closed when the option is selected.
    */
-  closeOnSelect?: boolean
+  closeOnSelect?: boolean | undefined
 }
 
 export interface OptionItemProps extends Partial<ItemProps> {

@@ -39,23 +39,23 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the range slider. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The aria-label of each slider thumb. Useful for providing an accessible name to the slider
    */
-  "aria-label"?: string[]
+  "aria-label"?: string[] | undefined
   /**
    * The `id` of the elements that labels each slider thumb. Useful for providing an accessible name to the slider
    */
-  "aria-labelledby"?: string[]
+  "aria-labelledby"?: string[] | undefined
   /**
    * The name associated with each slider thumb (when used in a form)
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the underlying input element.
    */
-  form?: string
+  form?: string | undefined
   /**
    * The value of the range slider
    */
@@ -63,15 +63,15 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the slider is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the slider is read-only
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the slider is invalid
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * Function invoked when the value of the slider changes
    */
@@ -120,7 +120,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *
    * @default "start"
    */
-  origin?: "start" | "center"
+  origin?: "start" | "center" | undefined
   /**
    * The alignment of the slider thumb relative to the track
    * - `center`: the thumb will extend beyond the bounds of the slider track.
@@ -128,7 +128,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *
    * @default "contain"
    */
-  thumbAlignment?: "contain" | "center"
+  thumbAlignment?: "contain" | "center" | undefined
   /**
    * The slider thumbs dimensions
    */
@@ -216,7 +216,7 @@ export interface MarkerProps {
 
 export interface ThumbProps {
   index: number
-  name?: string
+  name?: string | undefined
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {
@@ -300,13 +300,13 @@ export interface SharedContext {
   min: number
   max: number
   step: number
-  dir?: "ltr" | "rtl"
+  dir?: "ltr" | "rtl" | undefined
   isRtl: boolean
   isVertical: boolean
   isHorizontal: boolean
   value: number
   thumbSize: Size | null
-  thumbAlignment?: "contain" | "center"
-  orientation?: "horizontal" | "vertical"
+  thumbAlignment?: "contain" | "center" | undefined
+  orientation?: "horizontal" | "vertical" | undefined
   readonly hasMeasuredThumbSize: boolean
 }

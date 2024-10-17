@@ -33,7 +33,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the rating. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
@@ -46,11 +46,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The name attribute of the rating element (used in forms).
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the underlying input element.
    */
-  form?: string
+  form?: string | undefined
   /**
    * The current rating value.
    */
@@ -58,31 +58,31 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the rating is readonly.
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the rating is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the rating is required.
    */
-  required?: boolean
+  required?: boolean | undefined
   /**
    * Whether to allow half stars.
    */
-  allowHalf?: boolean
+  allowHalf?: boolean | undefined
   /**
    * Whether to autofocus the rating.
    */
-  autoFocus?: boolean
+  autoFocus?: boolean | undefined
   /**
    * Function to be called when the rating value changes.
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Function to be called when the rating value is hovered.
    */
-  onHoverChange?: (details: HoverChangeDetails) => void
+  onHoverChange?: ((details: HoverChangeDetails) => void) | undefined
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

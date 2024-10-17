@@ -40,7 +40,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
   /**
    * The ids of the elements in the progress bar. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    *  The current value of the progress bar.
    * @default 50

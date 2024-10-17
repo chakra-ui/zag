@@ -13,7 +13,7 @@ export interface OrientationProperty {
    * The orientation of the element.
    * @default "horizontal"
    */
-  orientation?: Orientation
+  orientation?: Orientation | undefined
 }
 
 export interface DirectionProperty {
@@ -21,7 +21,7 @@ export interface DirectionProperty {
    * The document's text/writing direction.
    * @default "ltr"
    */
-  dir?: "ltr" | "rtl"
+  dir?: "ltr" | "rtl" | undefined
 }
 
 export interface LocaleProperties extends DirectionProperty {
@@ -29,7 +29,7 @@ export interface LocaleProperties extends DirectionProperty {
    * The current locale. Based on the BCP 47 definition.
    * @default "en-US"
    */
-  locale?: string
+  locale?: string | undefined
 }
 
 export interface CommonProperties {
@@ -40,7 +40,7 @@ export interface CommonProperties {
   /**
    * A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron.
    */
-  getRootNode?: () => ShadowRoot | Document | Node
+  getRootNode?: (() => ShadowRoot | Document | Node) | undefined
 }
 
 export type Style = JSX.CSSProperties

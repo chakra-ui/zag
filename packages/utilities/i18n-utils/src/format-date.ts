@@ -29,7 +29,7 @@ type Format = (typeof FORMATS)[number]
 interface FormatDateOptions {
   locale: string
   format: Format
-  timeZone?: string
+  timeZone?: string | undefined
 }
 
 function ordinal(num: string | number) {

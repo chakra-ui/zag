@@ -23,7 +23,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the radio. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The value of the checked radio
    */
@@ -32,19 +32,19 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The name of the input fields in the radio
    * (Useful for form submission).
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the underlying input.
    */
-  form?: string
+  form?: string | undefined
   /**
    * If `true`, the radio group will be disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the checkbox is read-only
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Function called once a radio is checked
    * @param value the value of the checked radio
@@ -53,7 +53,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Orientation of the radio group
    */
-  orientation?: "horizontal" | "vertical"
+  orientation?: "horizontal" | "vertical" | undefined
 }
 
 interface PrivateContext {
@@ -81,12 +81,12 @@ interface PrivateContext {
    * @internal
    * Whether the active tab indicator's rect can transition
    */
-  canIndicatorTransition?: boolean
+  canIndicatorTransition?: boolean | undefined
   /**
    * @internal
    * Function to clean up the observer for the active tab's rect
    */
-  indicatorCleanup?: VoidFunction | null
+  indicatorCleanup?: VoidFunction | null | undefined
   /**
    * @internal
    * Whether the radio group's fieldset is disabled
@@ -132,8 +132,8 @@ export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 export interface ItemProps {
   value: string
-  disabled?: boolean
-  invalid?: boolean
+  disabled?: boolean | undefined
+  invalid?: boolean | undefined
 }
 
 export interface ItemState {

@@ -26,7 +26,7 @@ export interface OpenChangeDetails {
 
 export interface ScrollToIndexDetails {
   index: number
-  immediate?: boolean
+  immediate?: boolean | undefined
 }
 
 /* -----------------------------------------------------------------------------
@@ -58,48 +58,48 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * The ids of the elements in the select. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The `name` attribute of the underlying select.
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the underlying select.
    */
-  form?: string
+  form?: string | undefined
   /**
    * Whether the select is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the select is invalid
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * Whether the select is read-only
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the select is required
    */
-  required?: boolean
+  required?: boolean | undefined
   /**
    * Whether the select should close after an item is selected
    * @default true
    */
-  closeOnSelect?: boolean
+  closeOnSelect?: boolean | undefined
   /**
    * The callback fired when the highlighted item changes.
    */
-  onHighlightChange?: (details: HighlightChangeDetails<T>) => void
+  onHighlightChange?: ((details: HighlightChangeDetails<T>) => void) | undefined
   /**
    * The callback fired when the selected item changes.
    */
-  onValueChange?: (details: ValueChangeDetails<T>) => void
+  onValueChange?: ((details: ValueChangeDetails<T>) => void) | undefined
   /**
    * Function called when the popup is opened
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * The positioning options of the menu.
    */
@@ -116,23 +116,23 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether to loop the keyboard navigation through the options
    * @default false
    */
-  loopFocus?: boolean
+  loopFocus?: boolean | undefined
   /**
    * Whether to allow multiple selection
    */
-  multiple?: boolean
+  multiple?: boolean | undefined
   /**
    * Whether the select menu is open
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
    * Whether the select's open state is controlled by the user
    */
-  "open.controlled"?: boolean
+  "open.controlled"?: boolean | undefined
   /**
    * Function to scroll to a specific index
    */
-  scrollToIndexFn?: (details: ScrollToIndexDetails) => void
+  scrollToIndexFn?: ((details: ScrollToIndexDetails) => void) | undefined
   /**
    * Whether the select is a composed with other composite widgets like tabs or combobox
    * @default true
@@ -143,7 +143,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    *
    * **Note:** this is only applicable for single selection
    */
-  deselectable?: boolean
+  deselectable?: boolean | undefined
 }
 
 interface PrivateContext<T extends CollectionItem = CollectionItem> {
@@ -156,7 +156,7 @@ interface PrivateContext<T extends CollectionItem = CollectionItem> {
    * @internal
    * The current placement of the menu
    */
-  currentPlacement?: Placement
+  currentPlacement?: Placement | undefined
   /**
    * @internal
    * Whether the fieldset is disabled
@@ -230,7 +230,7 @@ export interface ItemProps<T extends CollectionItem = CollectionItem> {
   /**
    * Whether hovering outside should clear the highlighted state
    */
-  persistFocus?: boolean
+  persistFocus?: boolean | undefined
 }
 
 export interface ItemState {

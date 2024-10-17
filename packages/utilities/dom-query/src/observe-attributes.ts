@@ -6,7 +6,7 @@ type NodeOrFn = MaybeElement | (() => MaybeElement)
 export interface ObserveAttributeOptions {
   attributes: string[]
   callback(record: MutationRecord): void
-  defer?: boolean
+  defer?: boolean | undefined
 }
 
 function observeAttributesImpl(node: MaybeElement, options: ObserveAttributeOptions) {

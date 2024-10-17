@@ -4,7 +4,7 @@ export type DataUrlType = "image/png" | "image/jpeg" | "image/svg+xml"
 
 export interface DataUrlOptions {
   type: DataUrlType
-  quality?: number
+  quality?: number | undefined
 }
 
 export function getDataUrl(svg: SVGElement | undefined | null, opts: DataUrlOptions): Promise<string> {

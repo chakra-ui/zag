@@ -45,7 +45,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the floating panel. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The strategy to use for positioning
    * @default "absolute"
@@ -59,17 +59,17 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the panel is open
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
    * Whether the panel is draggable
    * @default true
    */
-  draggable?: boolean
+  draggable?: boolean | undefined
   /**
    * Whether the panel is resizable
    * @default true
    */
-  resizable?: boolean
+  resizable?: boolean | undefined
   /**
    * The size of the panel
    */
@@ -77,11 +77,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The minimum size of the panel
    */
-  minSize?: Size
+  minSize?: Size | undefined
   /**
    * The maximum size of the panel
    */
-  maxSize?: Size
+  maxSize?: Size | undefined
   /**
    * The position of the panel
    */
@@ -94,11 +94,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the panel is locked to its aspect ratio
    */
-  lockAspectRatio?: boolean
+  lockAspectRatio?: boolean | undefined
   /**
    * Whether the panel should close when the escape key is pressed
    */
-  closeOnEscape?: boolean
+  closeOnEscape?: boolean | undefined
   /**
    * The boundary of the panel. Useful for recalculating the boundary rect when
    * the it is resized.
@@ -107,7 +107,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    *  Whether the panel is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Function called when the position of the panel changes via dragging
    */
@@ -131,7 +131,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the panel size and position should be preserved when it is closed
    */
-  persistRect?: boolean
+  persistRect?: boolean | undefined
   /**
    * The snap grid for the panel
    * @default 1
@@ -159,11 +159,11 @@ interface PrivateContext {
   /**
    * The stage of the panel
    */
-  stage?: Stage
+  stage?: Stage | undefined
   /**
    * Whether the panel is topmost in the panel stack
    */
-  isTopmost?: boolean
+  isTopmost?: boolean | undefined
 }
 
 type ComputedContext = Readonly<{

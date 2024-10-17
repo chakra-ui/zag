@@ -5,9 +5,9 @@ type MaybeElement = HTMLElement | null
 type NodeOrFn = MaybeElement | (() => MaybeElement)
 
 interface ProxyTabFocusOptions<T = MaybeElement> {
-  triggerElement?: T
-  onFocus?: (elementToFocus: HTMLElement) => void
-  defer?: boolean
+  triggerElement?: T | undefined
+  onFocus?: ((elementToFocus: HTMLElement) => void) | undefined
+  defer?: boolean | undefined
 }
 
 /**

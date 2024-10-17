@@ -2,9 +2,9 @@ import { getWindow } from "@zag-js/dom-query"
 import { getDefaultLocale, type Locale } from "./locale"
 
 export interface LocaleOptions {
-  locale?: string
-  getRootNode?: () => ShadowRoot | Document | Node
-  onLocaleChange?: (locale: Locale) => void
+  locale?: string | undefined
+  getRootNode?: (() => ShadowRoot | Document | Node) | undefined
+  onLocaleChange?: ((locale: Locale) => void) | undefined
 }
 
 export function trackLocale(options: LocaleOptions = {}) {

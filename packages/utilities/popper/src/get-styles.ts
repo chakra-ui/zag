@@ -3,7 +3,7 @@ import { cssVars } from "./middleware"
 import type { PositioningOptions } from "./types"
 
 export interface GetPlacementStylesOptions {
-  placement?: Placement
+  placement?: Placement | undefined
 }
 
 const ARROW_FLOATING_STYLE = {

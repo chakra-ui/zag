@@ -14,8 +14,8 @@ export interface StepChangeDetails {
  * -----------------------------------------------------------------------------*/
 
 export interface ElementIds {
-  root?: string
-  list?: string
+  root?: string | undefined
+  list?: string | undefined
   triggerId?(index: number): string
   contentId?(index: number): string
 }
@@ -24,7 +24,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The custom ids for the stepper elements
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The current value of the stepper
    */
@@ -36,15 +36,15 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Callback to be called when a step is completed
    */
-  onStepComplete?: VoidFunction
+  onStepComplete?: VoidFunction | undefined
   /**
    * If `true`, the stepper requires the user to complete the steps in order
    */
-  linear?: boolean
+  linear?: boolean | undefined
   /**
    * The orientation of the stepper
    */
-  orientation?: "horizontal" | "vertical"
+  orientation?: "horizontal" | "vertical" | undefined
   /**
    * The total number of steps
    */

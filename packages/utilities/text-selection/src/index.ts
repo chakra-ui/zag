@@ -7,9 +7,9 @@ let userSelect = ""
 const elementMap = new WeakMap<HTMLElement, string>()
 
 export interface DisableTextSelectionOptions<T = MaybeElement> {
-  target?: T
-  doc?: Document
-  defer?: boolean
+  target?: T | undefined
+  doc?: Document | undefined
+  defer?: boolean | undefined
 }
 
 function disableTextSelectionImpl(options: DisableTextSelectionOptions = {}) {

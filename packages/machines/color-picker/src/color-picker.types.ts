@@ -61,7 +61,7 @@ interface PublicContext extends CommonProperties, DirectionProperty, InteractOut
   /**
    * The ids of the elements in the color picker. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The current color value
    * @default #000000
@@ -70,31 +70,31 @@ interface PublicContext extends CommonProperties, DirectionProperty, InteractOut
   /**
    * Whether the color picker is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the color picker is read-only
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the color picker is required
    */
-  required?: boolean
+  required?: boolean | undefined
   /**
    * Handler that is called when the value changes, as the user drags.
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Handler that is called when the user stops dragging.
    */
-  onValueChangeEnd?: (details: ValueChangeDetails) => void
+  onValueChangeEnd?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Handler that is called when the user opens or closes the color picker.
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * The name for the form input
    */
-  name?: string
+  name?: string | undefined
   /**
    * The positioning options for the color picker
    */
@@ -102,15 +102,15 @@ interface PublicContext extends CommonProperties, DirectionProperty, InteractOut
   /**
    * The initial focus element when the color picker is opened.
    */
-  initialFocusEl?: () => HTMLElement | null
+  initialFocusEl?: (() => HTMLElement | null) | undefined
   /**
    * Whether the color picker is open
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
    * Whether the color picker open state is controlled by the user
    */
-  "open.controlled"?: boolean
+  "open.controlled"?: boolean | undefined
   /**
    * The color format to use
    * @default "rgba"
@@ -119,12 +119,12 @@ interface PublicContext extends CommonProperties, DirectionProperty, InteractOut
   /**
    * Function called when the color format changes
    */
-  onFormatChange?: (details: FormatChangeDetails) => void
+  onFormatChange?: ((details: FormatChangeDetails) => void) | undefined
   /**
    * Whether to close the color picker when a swatch is selected
    * @default false
    */
-  closeOnSelect?: boolean
+  closeOnSelect?: boolean | undefined
 }
 
 interface PrivateContext {
@@ -152,12 +152,12 @@ interface PrivateContext {
    * @internal
    * The current placement of the color picker
    */
-  currentPlacement?: PositioningOptions["placement"]
+  currentPlacement?: PositioningOptions["placement"] | undefined
   /**
    *  @internal
    * Whether the color picker should return focus to the trigger when closed
    */
-  restoreFocus?: boolean
+  restoreFocus?: boolean | undefined
 }
 
 type ComputedContext = Readonly<{
@@ -209,21 +209,21 @@ export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 export interface ChannelProps {
   channel: ColorChannel
-  orientation?: Orientation
+  orientation?: Orientation | undefined
 }
 
 export interface ChannelSliderProps extends ChannelProps {
-  format?: ColorFormat
+  format?: ColorFormat | undefined
 }
 
 export interface ChannelInputProps {
   channel: ExtendedColorChannel
-  orientation?: Orientation
+  orientation?: Orientation | undefined
 }
 
 export interface AreaProps {
-  xChannel?: ColorChannel
-  yChannel?: ColorChannel
+  xChannel?: ColorChannel | undefined
+  yChannel?: ColorChannel | undefined
 }
 
 export interface SwatchTriggerProps {
@@ -234,7 +234,7 @@ export interface SwatchTriggerProps {
   /**
    * Whether the swatch trigger is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 export interface SwatchTriggerState {
@@ -252,11 +252,11 @@ export interface SwatchProps {
   /**
    * Whether to include the alpha channel in the color
    */
-  respectAlpha?: boolean
+  respectAlpha?: boolean | undefined
 }
 
 export interface TransparencyGridProps {
-  size?: string
+  size?: string | undefined
 }
 
 export interface MachineApi<T extends PropTypes = PropTypes> {

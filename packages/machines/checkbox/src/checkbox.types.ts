@@ -26,19 +26,19 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the checkbox. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Whether the checkbox is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the checkbox is invalid
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * Whether the checkbox is required
    */
-  required?: boolean
+  required?: boolean | undefined
   /**
    * The checked state of the checkbox
    */
@@ -46,7 +46,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the checkbox is read-only
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * The callback invoked when the checked state changes.
    */
@@ -55,11 +55,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The name of the input field in a checkbox.
    * Useful for form submission.
    */
-  name?: string
+  name?: string | undefined
   /**
    * The id of the form that the checkbox belongs to.
    */
-  form?: string
+  form?: string | undefined
   /**
    * The value of checkbox input. Useful for form submission.
    * @default "on"
@@ -89,22 +89,22 @@ interface PrivateContext {
    * @internal
    * Whether the checkbox is pressed
    */
-  active?: boolean
+  active?: boolean | undefined
   /**
    * @internal
    * Whether the checkbox has focus
    */
-  focused?: boolean
+  focused?: boolean | undefined
   /**
    * @internal
    * Whether the checkbox is focus visible
    */
-  focusVisible?: boolean
+  focusVisible?: boolean | undefined
   /**
    * @internal
    * Whether the checkbox is hovered
    */
-  hovered?: boolean
+  hovered?: boolean | undefined
   /**
    * @internal
    * Whether the checkbox's fieldset is disabled

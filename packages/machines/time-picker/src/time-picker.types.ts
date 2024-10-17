@@ -51,19 +51,19 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the timepicker is open
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
    * Whether the timepicker open state is controlled by the user
    */
-  "open.controlled"?: boolean
+  "open.controlled"?: boolean | undefined
   /**
    * The ids of the elements in the date picker. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The `name` attribute of the input element.
    */
-  name?: string
+  name?: string | undefined
   /**
    * The user provided options used to position the time picker content
    */
@@ -71,47 +71,47 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The placeholder text of the input.
    */
-  placeholder?: string
+  placeholder?: string | undefined
   /**
    * Whether the time picker is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the time picker is read-only.
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * The minimum time that can be selected.
    */
-  min?: Time
+  min?: Time | undefined
   /**
    * The maximum time that can be selected.
    */
-  max?: Time
+  max?: Time | undefined
   /**
    * The steps of each time unit.
    */
-  steps?: { hour?: number; minute?: number; second?: number }
+  steps?: { hour?: number; minute?: number; second?: number } | undefined
   /**
    * Whether to show the seconds.
    */
-  allowSeconds?: boolean
+  allowSeconds?: boolean | undefined
   /**
    * Function called when the value changes.
    */
-  onValueChange?: (value: ValueChangeDetails) => void
+  onValueChange?: ((value: ValueChangeDetails) => void) | undefined
   /**
    * Function called when the time picker opens or closes.
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * Function called when the focused date changes.
    */
-  onFocusChange?: (details: FocusChangeDetails) => void
+  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
    * Whether to disable the interaction outside logic
    */
-  disableLayer?: boolean
+  disableLayer?: boolean | undefined
 }
 
 interface PrivateContext {
@@ -119,12 +119,12 @@ interface PrivateContext {
    * @internal
    * The computed placement (maybe different from initial placement)
    */
-  currentPlacement?: Placement
+  currentPlacement?: Placement | undefined
   /**
    * @internal
    * Whether the calendar should restore focus to the input when it closes.
    */
-  restoreFocus?: boolean
+  restoreFocus?: boolean | undefined
   /**
    * The focused unit column
    */

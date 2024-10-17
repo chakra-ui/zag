@@ -32,7 +32,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the tree elements. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The id of the expanded nodes
    */
@@ -56,25 +56,25 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Called when the tree is opened or closed
    */
-  onExpandedChange?: (details: ExpandedChangeDetails) => void
+  onExpandedChange?: ((details: ExpandedChangeDetails) => void) | undefined
   /**
    * Called when the selection changes
    */
-  onSelectionChange?: (details: SelectionChangeDetails) => void
+  onSelectionChange?: ((details: SelectionChangeDetails) => void) | undefined
   /**
    * Called when the focused node changes
    */
-  onFocusChange?: (details: FocusChangeDetails) => void
+  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
    * Whether clicking on a branch should open it or not
    * @default true
    */
-  expandOnClick?: boolean
+  expandOnClick?: boolean | undefined
   /**
    * Whether the tree supports typeahead search
    * @default true
    */
-  typeahead?: boolean
+  typeahead?: boolean | undefined
 }
 
 interface PrivateContext {
@@ -128,7 +128,7 @@ export interface ItemProps {
   /**
    * Whether the item or branch is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 export interface BranchProps extends ItemProps {}

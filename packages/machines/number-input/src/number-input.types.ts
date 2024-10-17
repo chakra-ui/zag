@@ -56,31 +56,31 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * The ids of the elements in the number input. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The name attribute of the number input. Useful for form submission.
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the input element.
    */
-  form?: string
+  form?: string | undefined
   /**
    * Whether the number input is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the number input is readonly
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the number input value is invalid.
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * Whether the number input is required
    */
-  required?: boolean
+  required?: boolean | undefined
   /**
    * The pattern used to check the <input> element's value against
    *
@@ -109,7 +109,7 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * Whether to allow mouse wheel to change the value
    */
-  allowMouseWheel?: boolean
+  allowMouseWheel?: boolean | undefined
   /**
    * Whether to allow the value overflow the min/max range
    * @default true
@@ -132,7 +132,7 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * The options to pass to the `Intl.NumberFormat` constructor
    */
-  formatOptions?: Intl.NumberFormatOptions
+  formatOptions?: Intl.NumberFormatOptions | undefined
   /**
    * Hints at the type of data that might be entered by the user. It also determines
    * the type of keyboard shown to the user on mobile devices
@@ -142,20 +142,20 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * Function invoked when the value changes
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Function invoked when the value overflows or underflows the min/max range
    */
-  onValueInvalid?: (details: ValueInvalidDetails) => void
+  onValueInvalid?: ((details: ValueInvalidDetails) => void) | undefined
   /**
    * Function invoked when the number input is focused
    */
-  onFocusChange?: (details: FocusChangeDetails) => void
+  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
    * Whether to spin the value when the increment/decrement button is pressed
    * @default true
    */
-  spinOnPress?: boolean
+  spinOnPress?: boolean | undefined
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

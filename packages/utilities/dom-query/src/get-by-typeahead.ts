@@ -10,8 +10,8 @@ export interface TypeaheadOptions {
   state: TypeaheadState
   activeId: string | null
   key: string
-  timeout?: number
-  itemToId?: ItemToId<HTMLElement>
+  timeout?: number | undefined
+  itemToId?: ItemToId<HTMLElement> | undefined
 }
 
 function getByTypeaheadImpl<T extends HTMLElement>(_items: T[], options: TypeaheadOptions) {

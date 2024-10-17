@@ -9,9 +9,9 @@ export type PanelId = string | number
 
 export interface PanelSizeData {
   id: PanelId
-  size?: number
-  minSize?: number
-  maxSize?: number
+  size?: number | undefined
+  minSize?: number | undefined
+  maxSize?: number | undefined
 }
 
 export interface SizeChangeDetails {
@@ -42,15 +42,15 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Function called when the splitter is resized.
    */
-  onSizeChange?: (details: SizeChangeDetails) => void
+  onSizeChange?: ((details: SizeChangeDetails) => void) | undefined
   /**
    * Function called when the splitter resize ends.
    */
-  onSizeChangeEnd?: (details: SizeChangeDetails) => void
+  onSizeChangeEnd?: ((details: SizeChangeDetails) => void) | undefined
   /**
    * The ids of the elements in the splitter. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -68,8 +68,8 @@ export type NormalizedPanelData = Array<
 type ComputedContext = Readonly<{
   isHorizontal: boolean
   panels: NormalizedPanelData
-  activeResizeBounds?: { min: number; max: number }
-  activeResizePanels?: { before: PanelSizeData; after: PanelSizeData }
+  activeResizeBounds?: { min: number; max: number } | undefined
+  activeResizePanels?: { before: PanelSizeData; after: PanelSizeData } | undefined
 }>
 
 interface PrivateContext {
@@ -98,13 +98,13 @@ export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 export interface PanelProps {
   id: PanelId
-  snapSize?: number
+  snapSize?: number | undefined
 }
 
 export interface ResizeTriggerProps {
   id: `${PanelId}:${PanelId}`
-  step?: number
-  disabled?: boolean
+  step?: number | undefined
+  disabled?: boolean | undefined
 }
 
 export interface ResizeTriggerState {
