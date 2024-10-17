@@ -2651,8 +2651,8 @@ importers:
         version: link:../../utilities/core
     devDependencies:
       '@internationalized/date':
-        specifier: 3.5.5
-        version: 3.5.5
+        specifier: 3.5.6
+        version: 3.5.6
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -3368,8 +3368,8 @@ importers:
         version: link:../../utilities/core
     devDependencies:
       '@internationalized/date':
-        specifier: 3.5.5
-        version: 3.5.5
+        specifier: 3.5.6
+        version: 3.5.6
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -3608,8 +3608,8 @@ importers:
   packages/utilities/date-utils:
     devDependencies:
       '@internationalized/date':
-        specifier: 3.5.5
-        version: 3.5.5
+        specifier: 3.5.6
+        version: 3.5.6
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -3820,8 +3820,8 @@ importers:
   starters/react:
     dependencies:
       '@internationalized/date':
-        specifier: 3.5.5
-        version: 3.5.5
+        specifier: 3.5.6
+        version: 3.5.6
       '@tanstack/react-virtual':
         specifier: 3.10.8
         version: 3.10.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4085,8 +4085,8 @@ importers:
         specifier: 11.13.0
         version: 11.13.0(@emotion/react@11.13.3(@types/react@18.3.11)(react@18.3.1))(@types/react@18.3.11)(react@18.3.1)
       '@internationalized/date':
-        specifier: 3.5.5
-        version: 3.5.5
+        specifier: 3.5.6
+        version: 3.5.6
       '@stackblitz/sdk':
         specifier: ^1.11.0
         version: 1.11.0
@@ -5730,6 +5730,9 @@ packages:
 
   '@internationalized/date@3.5.5':
     resolution: {integrity: sha512-H+CfYvOZ0LTJeeLOqm19E3uj/4YjrmOFtBufDHPfvtI80hFAMqtrp7oCACpe4Cil5l8S0Qu/9dYfZc/5lY8WQQ==}
+
+  '@internationalized/date@3.5.6':
+    resolution: {integrity: sha512-jLxQjefH9VI5P9UQuqB6qNKnvFt1Ky1TPIzHGsIlCi7sZZoMR8SdYbBGRvM0y+Jtb+ez4ieBzmiAUcpmPYpyOw==}
 
   '@internationalized/number@3.5.4':
     resolution: {integrity: sha512-h9huwWjNqYyE2FXZZewWqmCdkw1HeFds5q4Siuoms3hUQC5iPJK3aBmkFZoDSLN4UD0Bl8G22L/NdHpeOr+/7A==}
@@ -14599,6 +14602,10 @@ snapshots:
   '@inquirer/figures@1.0.5': {}
 
   '@internationalized/date@3.5.5':
+    dependencies:
+      '@swc/helpers': 0.5.12
+
+  '@internationalized/date@3.5.6':
     dependencies:
       '@swc/helpers': 0.5.12
 
