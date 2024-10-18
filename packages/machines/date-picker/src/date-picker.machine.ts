@@ -801,11 +801,11 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusFirstYear(ctx) {
           const range = getDecadeRange(ctx.focusedValue.year)
-          set.focusedValue(ctx, ctx.focusedValue.set({ year: range.at(0) }))
+          set.focusedValue(ctx, ctx.focusedValue.set({ year: range[0] }))
         },
         focusLastYear(ctx) {
           const range = getDecadeRange(ctx.focusedValue.year)
-          set.focusedValue(ctx, ctx.focusedValue.set({ year: range.at(-1) }))
+          set.focusedValue(ctx, ctx.focusedValue.set({ year: range[range.length - 1] }))
         },
         setActiveIndex(ctx, evt) {
           ctx.activeIndex = evt.index

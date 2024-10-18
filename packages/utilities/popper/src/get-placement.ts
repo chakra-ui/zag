@@ -32,6 +32,7 @@ function getBoundaryMiddleware(opts: PositioningOptions) {
 
 function getArrowMiddleware(arrowElement: HTMLElement | null, opts: PositioningOptions) {
   if (!arrowElement) return
+  // @ts-expect-error
   return arrow({
     element: arrowElement,
     padding: opts.arrowPadding,
@@ -40,6 +41,7 @@ function getArrowMiddleware(arrowElement: HTMLElement | null, opts: PositioningO
 
 function getOffsetMiddleware(arrowElement: HTMLElement | null, opts: PositioningOptions) {
   if (isNull(opts.offset ?? opts.gutter)) return
+  // @ts-expect-error
   return offset(({ placement }) => {
     const arrowOffset = (arrowElement?.clientHeight || 0) / 2
 
@@ -60,6 +62,7 @@ function getOffsetMiddleware(arrowElement: HTMLElement | null, opts: Positioning
 
 function getFlipMiddleware(opts: PositioningOptions) {
   if (!opts.flip) return
+  // @ts-expect-error
   return flip({
     boundary: getBoundaryMiddleware(opts),
     padding: opts.overflowPadding,
@@ -69,6 +72,7 @@ function getFlipMiddleware(opts: PositioningOptions) {
 
 function getShiftMiddleware(opts: PositioningOptions) {
   if (!opts.slide && !opts.overlap) return
+  // @ts-expect-error
   return shift({
     boundary: getBoundaryMiddleware(opts),
     mainAxis: opts.slide,
@@ -79,6 +83,7 @@ function getShiftMiddleware(opts: PositioningOptions) {
 }
 
 function getSizeMiddleware(opts: PositioningOptions) {
+  // @ts-expect-error
   return size({
     padding: opts.overflowPadding,
     apply({ elements, rects, availableHeight, availableWidth }) {
@@ -140,6 +145,7 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
   const updatePosition = async () => {
     if (!reference || !floating) return
 
+    // @ts-expect-error
     const pos = await computePosition(reference, floating, {
       placement,
       middleware,
@@ -178,6 +184,7 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
   }
 
   const autoUpdateOptions = getAutoUpdateOptions(options.listeners)
+  // @ts-expect-error
   const cancelAutoUpdate = options.listeners ? autoUpdate(reference, floating, update, autoUpdateOptions) : noop
 
   update()

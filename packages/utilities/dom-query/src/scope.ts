@@ -1,7 +1,7 @@
 import { getActiveElement, getDocument } from "./env"
 
 export interface ScopeContext {
-  getRootNode?(): Document | ShadowRoot | Node
+  getRootNode?: (() => Document | ShadowRoot | Node) | undefined
 }
 
 export function createScope<T>(methods: T) {

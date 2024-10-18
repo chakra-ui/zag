@@ -82,11 +82,11 @@ export interface PositioningOptions {
   /**
    * Function called when the placement is computed
    */
-  onComplete?(data: ComputePositionReturn): void
+  onComplete?: ((data: ComputePositionReturn) => void) | undefined
   /**
    * Function called when the floating element is positioned or not
    */
-  onPositioned?(data: { placed: boolean }): void
+  onPositioned?: ((data: { placed: boolean }) => void) | undefined
   /**
    *  Function that returns the anchor rect
    */
