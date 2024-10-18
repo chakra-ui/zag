@@ -40,6 +40,14 @@
   padding: 24px;
   position: relative;
   z-index: var(--layer-index);
+
+  &[data-state="open"] {
+    animation: dialogFadeIn 0.2s ease-in-out;
+  }
+
+  &[data-state="closed"] {
+    animation: dialogFadeOut 0.25s ease-in-out;
+  }
 }
 
 [data-scope="dialog"][data-part="close-trigger"] {
@@ -59,4 +67,23 @@
 [data-scope="dialog"][data-part="close-trigger"]:focus {
   outline: 2px blue solid;
   outline-offset: 2px;
+}
+
+@keyframes dialogFadeIn {
+  from {
+    scale: 0.9;
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes dialogFadeOut {
+  to {
+    opacity: 0;
+    scale: 0.9;
+  }
 }

@@ -35,14 +35,18 @@ const fetchMachine = createMachine({
     },
     unmountSuspended: {
       activities: ["trackAnimationEvents"],
+      after: {
+        // Fallback to timeout to ensure we exit this state even if the `animationend` event
+        // did not get trigger
+        ANIMATION_DURATION: {
+          target: "unmounted",
+          actions: ["invokeOnExitComplete"]
+        }
+      },
       on: {
         MOUNT: {
           target: "mounted",
           actions: ["setPrevAnimationName"]
-        },
-        "ANIMATION.END": {
-          target: "unmounted",
-          actions: ["invokeOnExitComplete"]
         },
         UNMOUNT: {
           target: "unmounted",
