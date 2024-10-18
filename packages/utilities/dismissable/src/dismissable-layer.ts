@@ -18,7 +18,7 @@ export interface DismissableElementHandlers extends InteractOutsideHandlers {
   /**
    * Function called when the escape key is pressed
    */
-  onEscapeKeyDown?: (event: KeyboardEvent) => void
+  onEscapeKeyDown?: ((event: KeyboardEvent) => void) | undefined
 }
 
 export interface PersistentElementOptions {
@@ -27,18 +27,18 @@ export interface PersistentElementOptions {
    * - should not have pointer-events disabled
    * - should not trigger the dismiss event
    */
-  persistentElements?: Array<() => Element | null>
+  persistentElements?: Array<() => Element | null> | undefined
 }
 
 export interface DismissableElementOptions extends DismissableElementHandlers, PersistentElementOptions {
   /**
    * Whether to log debug information
    */
-  debug?: boolean
+  debug?: boolean | undefined
   /**
    * Whether to block pointer events outside the dismissable element
    */
-  pointerBlocking?: boolean
+  pointerBlocking?: boolean | undefined
   /**
    * Function called when the dismissable element is dismissed
    */
@@ -46,11 +46,11 @@ export interface DismissableElementOptions extends DismissableElementHandlers, P
   /**
    * Exclude containers from the interact outside event
    */
-  exclude?: MaybeFunction<Container>
+  exclude?: MaybeFunction<Container> | undefined
   /**
    * Defer the interact outside event to the next frame
    */
-  defer?: boolean
+  defer?: boolean | undefined
 }
 
 function trackDismissableElementImpl(node: MaybeElement, options: DismissableElementOptions) {

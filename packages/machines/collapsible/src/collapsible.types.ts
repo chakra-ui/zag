@@ -23,27 +23,27 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the collapsible. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Function called when the animation ends in the closed state.
    */
-  onExitComplete?: () => void
+  onExitComplete?: (() => void) | undefined
   /**
    * Function called when the popup is opened
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * Whether the collapsible is open
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
    * Whether the collapsible is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    *  Whether the collapsible open state is controlled by the user
    */
-  "open.controlled"?: boolean
+  "open.controlled"?: boolean | undefined
 }
 
 type ComputedContext = Readonly<{}>
@@ -73,7 +73,7 @@ interface PrivateContext {
    * @internal
    * The requestAnimationFrame id
    */
-  _rafCleanup?: VoidFunction
+  _rafCleanup?: VoidFunction | undefined
   /**
    * @internal
    * The unmount animation name

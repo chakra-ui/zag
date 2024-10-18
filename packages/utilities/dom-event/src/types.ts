@@ -23,6 +23,6 @@ export type EventKeyMap = {
 }
 
 export interface EventKeyOptions {
-  dir?: "ltr" | "rtl"
-  orientation?: "horizontal" | "vertical"
+  dir?: "ltr" | "rtl" | undefined
+  orientation?: "horizontal" | "vertical" | undefined
 }

@@ -14,7 +14,7 @@ export interface StepEffectArgs {
   dismiss(): void
   show(): void
   update(data: Partial<StepBaseDetails>): void
-  target?: () => HTMLElement | null
+  target?: (() => HTMLElement | null) | undefined
 }
 
 export type StepType = "tooltip" | "dialog" | "wait" | "floating"
@@ -33,11 +33,11 @@ export interface StepAction {
   /**
    * The action to perform
    */
-  action?: StepActionType | StepActionFn
+  action?: StepActionType | StepActionFn | undefined
   /**
    * The attributes to apply to the action trigger
    */
-  attrs?: Record<string, any>
+  attrs?: Record<string, any> | undefined
 }
 
 export interface StepBaseDetails {
@@ -45,7 +45,7 @@ export interface StepBaseDetails {
    * The type of the step. If no target is provided,
    * the step will be treated as a modal step.
    */
-  type?: StepType
+  type?: StepType | undefined
   /**
    * Function to return the target element to highlight
    */
@@ -61,27 +61,27 @@ export interface StepBaseDetails {
   /**
    * The placement of the step
    */
-  placement?: StepPlacement
+  placement?: StepPlacement | undefined
   /**
    * The offset between the content and the target
    */
-  offset?: { mainAxis?: number; crossAxis?: number }
+  offset?: { mainAxis?: number; crossAxis?: number } | undefined
   /**
    * Additional metadata of the step
    */
-  meta?: Record<string, any>
+  meta?: Record<string, any> | undefined
   /**
    * Whether to show a backdrop behind the step
    */
-  backdrop?: boolean
+  backdrop?: boolean | undefined
   /**
    * Whether to show an arrow tip on the step
    */
-  arrow?: boolean
+  arrow?: boolean | undefined
   /**
    * The actions to perform when the step is completed
    */
-  actions?: StepAction[]
+  actions?: StepAction[] | undefined
 }
 
 export interface StepDetails extends StepBaseDetails {
@@ -125,10 +125,10 @@ export interface ProgressTextDetails {
 
 export interface IntlTranslations {
   progressText?(details: ProgressTextDetails): string
-  nextStep?: string
-  prevStep?: string
-  close?: string
-  skip?: string
+  nextStep?: string | undefined
+  prevStep?: string | undefined
+  close?: string | undefined
+  skip?: string | undefined
 }
 
 export type ElementIds = Partial<{
@@ -148,7 +148,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * The ids of the elements in the tour. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The steps of the tour
    */
@@ -211,7 +211,7 @@ interface PrivateContext {
    * @internal
    * The current placement of the menu
    */
-  currentPlacement?: StepPlacement
+  currentPlacement?: StepPlacement | undefined
   /**
    * @internal
    * The size of the boundary element (default to the window size)
@@ -221,12 +221,12 @@ interface PrivateContext {
    * @internal
    * The function to cleanup the target attributes
    */
-  _targetCleanup?: VoidFunction
+  _targetCleanup?: VoidFunction | undefined
   /**
    * @internal
    * The function to cleanup the step effects
    */
-  _effectCleanup?: VoidFunction
+  _effectCleanup?: VoidFunction | undefined
   /**
    * @internal
    * The resolved target element

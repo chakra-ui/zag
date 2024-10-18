@@ -25,11 +25,11 @@ interface PublicContext extends CommonProperties, DirectionProperty {
   /**
    * Functional called when the image loading status changes.
    */
-  onStatusChange?: (details: StatusChangeDetails) => void
+  onStatusChange?: ((details: StatusChangeDetails) => void) | undefined
   /**
    * The ids of the elements in the avatar. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
 }
 
 interface PrivateContext {}

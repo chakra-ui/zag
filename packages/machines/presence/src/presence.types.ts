@@ -16,7 +16,7 @@ interface PublicContext {
   /**
    * Whether to synchronize the present change immediately or defer it to the next frame
    */
-  immediate?: boolean
+  immediate?: boolean | undefined
 }
 
 interface PrivateContext {
@@ -25,7 +25,7 @@ interface PrivateContext {
   styles: CSSStyleDeclaration | null
   unmountAnimationName: string | null
   prevAnimationName: string | null
-  rafId?: number
+  rafId?: number | undefined
 }
 
 export interface UserDefinedContext extends PublicContext {}

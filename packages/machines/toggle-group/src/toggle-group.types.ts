@@ -22,11 +22,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the toggle. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Whether the toggle is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * The values of the toggles in the group.
    */
@@ -34,7 +34,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Function to call when the toggle is clicked.
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Whether to loop focus inside the toggle group.
    * @default true
@@ -44,7 +44,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *  Whether to use roving tab index to manage focus.
    * @default true
    */
-  rovingFocus?: boolean
+  rovingFocus?: boolean | undefined
   /**
    * The orientation of the toggle group.
    * @default "horizontal"
@@ -53,7 +53,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether to allow multiple toggles to be selected.
    */
-  multiple?: boolean
+  multiple?: boolean | undefined
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -104,7 +104,7 @@ export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 export interface ItemProps {
   value: string
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 export interface ItemState {
