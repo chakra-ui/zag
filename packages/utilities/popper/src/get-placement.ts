@@ -1,4 +1,4 @@
-import type { AutoUpdateOptions, Middleware } from "@floating-ui/dom"
+import type { AutoUpdateOptions, Middleware, Placement } from "@floating-ui/dom"
 import { arrow, autoUpdate, computePosition, flip, hide, limitShift, offset, shift, size } from "@floating-ui/dom"
 import { getWindow, raf } from "@zag-js/dom-query"
 import { compact, isNull, noop, runIfFn } from "@zag-js/utils"
@@ -21,27 +21,44 @@ const defaultOptions: PositioningOptions = {
   arrowPadding: 4,
 }
 
+type NonNullable<T> = T extends null | undefined ? never : T
+type RequiredBy<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> }
+
+interface Options
+  extends RequiredBy<
+    PositioningOptions,
+    | "strategy"
+    | "placement"
+    | "listeners"
+    | "gutter"
+    | "flip"
+    | "slide"
+    | "overlap"
+    | "sameWidth"
+    | "fitViewport"
+    | "overflowPadding"
+    | "arrowPadding"
+  > {}
+
 function roundByDpr(win: Window, value: number) {
   const dpr = win.devicePixelRatio || 1
   return Math.round(value * dpr) / dpr
 }
 
-function getBoundaryMiddleware(opts: PositioningOptions) {
+function getBoundaryMiddleware(opts: Options) {
   return runIfFn(opts.boundary)
 }
 
-function getArrowMiddleware(arrowElement: HTMLElement | null, opts: PositioningOptions) {
+function getArrowMiddleware(arrowElement: HTMLElement | null, opts: Options) {
   if (!arrowElement) return
-  // @ts-expect-error
   return arrow({
     element: arrowElement,
     padding: opts.arrowPadding,
   })
 }
 
-function getOffsetMiddleware(arrowElement: HTMLElement | null, opts: PositioningOptions) {
+function getOffsetMiddleware(arrowElement: HTMLElement | null, opts: Options) {
   if (isNull(opts.offset ?? opts.gutter)) return
-  // @ts-expect-error
   return offset(({ placement }) => {
     const arrowOffset = (arrowElement?.clientHeight || 0) / 2
 
@@ -53,26 +70,24 @@ function getOffsetMiddleware(arrowElement: HTMLElement | null, opts: Positioning
     const crossAxis = opts.offset?.crossAxis ?? shift
 
     return compact({
-      crossAxis: crossAxis,
+      crossAxis: crossAxis as number,
       mainAxis: mainAxis,
-      alignmentAxis: opts.shift,
+      alignmentAxis: opts.shift as number,
     })
   })
 }
 
-function getFlipMiddleware(opts: PositioningOptions) {
+function getFlipMiddleware(opts: Options) {
   if (!opts.flip) return
-  // @ts-expect-error
   return flip({
     boundary: getBoundaryMiddleware(opts),
     padding: opts.overflowPadding,
-    fallbackPlacements: opts.flip === true ? undefined : opts.flip,
+    fallbackPlacements: (opts.flip === true ? undefined : opts.flip) as Placement[],
   })
 }
 
-function getShiftMiddleware(opts: PositioningOptions) {
+function getShiftMiddleware(opts: Options) {
   if (!opts.slide && !opts.overlap) return
-  // @ts-expect-error
   return shift({
     boundary: getBoundaryMiddleware(opts),
     mainAxis: opts.slide,
@@ -82,8 +97,7 @@ function getShiftMiddleware(opts: PositioningOptions) {
   })
 }
 
-function getSizeMiddleware(opts: PositioningOptions) {
-  // @ts-expect-error
+function getSizeMiddleware(opts: Options) {
   return size({
     padding: opts.overflowPadding,
     apply({ elements, rects, availableHeight, availableWidth }) {
@@ -100,7 +114,7 @@ function getSizeMiddleware(opts: PositioningOptions) {
   })
 }
 
-function hideWhenDetachedMiddleware(opts: PositioningOptions) {
+function hideWhenDetachedMiddleware(opts: Options) {
   if (!opts.hideWhenDetached) return
   return hide({ strategy: "referenceHidden", boundary: opts.boundary?.() ?? "clippingAncestors" })
 }
@@ -116,7 +130,7 @@ function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOpt
 function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeElement, opts: PositioningOptions = {}) {
   const reference = getAnchorElement(referenceOrVirtual, opts.getAnchorRect)
   if (!floating || !reference) return
-  const options = Object.assign({}, defaultOptions, opts)
+  const options = Object.assign({}, defaultOptions, opts) as Options
 
   /* -----------------------------------------------------------------------------
    * The middleware stack
@@ -145,7 +159,6 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
   const updatePosition = async () => {
     if (!reference || !floating) return
 
-    // @ts-expect-error
     const pos = await computePosition(reference, floating, {
       placement,
       middleware,
@@ -184,7 +197,6 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
   }
 
   const autoUpdateOptions = getAutoUpdateOptions(options.listeners)
-  // @ts-expect-error
   const cancelAutoUpdate = options.listeners ? autoUpdate(reference, floating, update, autoUpdateOptions) : noop
 
   update()

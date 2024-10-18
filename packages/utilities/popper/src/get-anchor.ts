@@ -1,3 +1,4 @@
+import type { VirtualElement } from "@floating-ui/dom"
 import { isHTMLElement } from "@zag-js/dom-query"
 import type { AnchorRect, MaybeRectElement } from "./types"
 
@@ -27,7 +28,7 @@ function getDOMRect(anchorRect?: AnchorRect | null) {
 export function getAnchorElement(
   anchorElement: MaybeRectElement,
   getAnchorRect?: (anchor: MaybeRectElement) => AnchorRect | null,
-) {
+): VirtualElement {
   return {
     contextElement: isHTMLElement(anchorElement) ? anchorElement : undefined,
     getBoundingClientRect: () => {
@@ -38,5 +39,5 @@ export function getAnchorElement(
       }
       return anchor.getBoundingClientRect()
     },
-  }
+  } as VirtualElement
 }
