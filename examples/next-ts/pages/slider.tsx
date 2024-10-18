@@ -47,6 +47,7 @@ export default function Page() {
                 <div data-testid="track" {...api.getTrackProps()}>
                   <div {...api.getRangeProps()} />
                 </div>
+                <span {...api.getDraggingIndicatorProps({ index: 0 })}>{api.getThumbValue(0)}</span>
                 {api.value.map((_, index) => (
                   <div key={index} {...api.getThumbProps({ index })}>
                     <input {...api.getHiddenInputProps({ index })} />

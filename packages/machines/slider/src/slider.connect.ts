@@ -322,5 +322,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style,
       })
     },
+
+    getDraggingIndicatorProps(props) {
+      const { index = 0 } = props
+      const isDragging = index === state.context.focusedIndex && dragging
+      return normalize.element({
+        ...parts.draggingIndicator.attrs,
+        role: "presentation",
+        dir: state.context.dir,
+        hidden: !isDragging,
+        "data-orientation": state.context.orientation,
+        "data-state": isDragging ? "open" : "closed",
+        style: dom.getThumbStyle(state.context, index),
+      })
+    },
   }
 }

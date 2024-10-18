@@ -5,6 +5,7 @@ export * from "./slider.props"
 export type {
   MachineApi as Api,
   UserDefinedContext as Context,
+  DraggingIndicatorProps,
   ElementIds,
   FocusChangeDetails,
   MarkerProps,

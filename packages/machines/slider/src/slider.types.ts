@@ -219,6 +219,10 @@ export interface ThumbProps {
   name?: string | undefined
 }
 
+export interface DraggingIndicatorProps {
+  index: number
+}
+
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the slider.
@@ -290,6 +294,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getControlProps(): T["element"]
   getMarkerGroupProps(): T["element"]
   getMarkerProps(props: MarkerProps): T["element"]
+  getDraggingIndicatorProps(props: DraggingIndicatorProps): T["element"]
 }
 
 /* -----------------------------------------------------------------------------
