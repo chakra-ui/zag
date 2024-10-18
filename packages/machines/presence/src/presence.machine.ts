@@ -1,10 +1,6 @@
 import { createMachine, ref } from "@zag-js/core"
 import type { MachineContext, MachineState, UserDefinedContext } from "./presence.types"
 
-function getAnimationName(styles?: CSSStyleDeclaration | null) {
-  return styles?.animationName || "none"
-}
-
 export function machine(ctx: Partial<UserDefinedContext>) {
   return createMachine<MachineContext, MachineState>(
     {
@@ -44,14 +40,18 @@ export function machine(ctx: Partial<UserDefinedContext>) {
         },
         unmountSuspended: {
           activities: ["trackAnimationEvents"],
+          after: {
+            // Fallback to timeout to ensure we exit this state even if the `animationend` event
+            // did not get trigger
+            ANIMATION_DURATION: {
+              target: "unmounted",
+              actions: ["invokeOnExitComplete"],
+            },
+          },
           on: {
             MOUNT: {
               target: "mounted",
               actions: ["setPrevAnimationName"],
-            },
-            "ANIMATION.END": {
-              target: "unmounted",
-              actions: ["invokeOnExitComplete"],
             },
             UNMOUNT: {
               target: "unmounted",
@@ -71,6 +71,11 @@ export function machine(ctx: Partial<UserDefinedContext>) {
       },
     },
     {
+      delays: {
+        ANIMATION_DURATION(ctx) {
+          return parseMs(ctx.styles?.animationDuration) + parseMs(ctx.styles?.animationDelay) + ANIMATION_TIMEOUT_MARGIN
+        },
+      },
       actions: {
         setInitial(ctx) {
           ctx.initial = true
@@ -91,6 +96,11 @@ export function machine(ctx: Partial<UserDefinedContext>) {
         syncPresence(ctx, _evt, { send }) {
           if (ctx.present) {
             send({ type: "MOUNT", src: "presence.changed" })
+            return
+          }
+
+          if (!ctx.present && ctx.node?.ownerDocument.visibilityState === "hidden") {
+            send({ type: "UNMOUNT", src: "visibilitychange" })
             return
           }
 
@@ -155,3 +165,14 @@ export function machine(ctx: Partial<UserDefinedContext>) {
     },
   )
 }
+
+function getAnimationName(styles?: CSSStyleDeclaration | null) {
+  return styles?.animationName || "none"
+}
+
+function parseMs(value: string | undefined) {
+  return parseFloat(value || "0") * 1000
+}
+
+// Extra frame margin to account for event loop slowdowns
+const ANIMATION_TIMEOUT_MARGIN = 16.667
