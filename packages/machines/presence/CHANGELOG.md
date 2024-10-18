@@ -1,5 +1,20 @@
 # @zag-js/presence
 
+## 0.75.0
+
+### Patch Changes
+
+- [`571a30d`](https://github.com/chakra-ui/zag/commit/571a30d7ce6729b0885e65c2d044f8b2684cb5a9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where elements that use the presence machine doesn't
+  exit unmounting state when closed with delay and the active tab is switched.
+
+  This is because the v8 engine doesn't trigger the animationend event when the tab is inactive even though the
+  "present" state had changed before the tab is switched.
+
+- Updated dependencies []:
+  - @zag-js/core@0.75.0
+  - @zag-js/types@0.75.0
+
 ## 0.74.2
 
 ### Patch Changes

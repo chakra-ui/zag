@@ -1,5 +1,25 @@
 # @zag-js/editable
 
+## 0.75.0
+
+### Minor Changes
+
+- [`1a6a048`](https://github.com/chakra-ui/zag/commit/1a6a048b8b86b6fd60cdb7b7a5910176f5f3647b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-autoresize` to editable and preview parts when
+  autoresize is enabled.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.75.0
+  - @zag-js/core@0.75.0
+  - @zag-js/types@0.75.0
+  - @zag-js/utils@0.75.0
+  - @zag-js/dom-event@0.75.0
+  - @zag-js/dom-query@0.75.0
+  - @zag-js/form-utils@0.75.0
+  - @zag-js/interact-outside@0.75.0
+
 ## 0.74.2
 
 ### Patch Changes
