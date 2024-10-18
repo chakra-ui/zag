@@ -117,8 +117,9 @@ const [state, send] = useMachine(
 )
 ```
 
-> **Please note that**, in this mode, the input and preview elements should not
-> have any styles. Instead, pass the styles to the "area" element.
+When using autoresize, the input and preview elements should not have any
+styles. Use `all: unset` if needed and pass any styles to the "area" element
+since its shared by the input and preview elements.
 
 ### Setting a maxWidth
 

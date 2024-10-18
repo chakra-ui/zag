@@ -7,6 +7,10 @@
 [data-scope="editable"][data-part="input"] {
   width: auto;
   background: transparent;
+
+  &[data-autoresize] {
+    all: unset;
+  }
 }
 
 [data-scope="editable"][data-part="preview"][data-empty] {

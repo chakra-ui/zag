@@ -103,6 +103,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-readonly": dataAttr(readOnly),
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
+        "data-autoresize": dataAttr(autoResize),
         defaultValue: value,
         size: autoResize ? 1 : undefined,
         onChange(event) {
@@ -145,7 +146,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         style: autoResize
           ? {
-              all: "unset",
               gridArea: "1 / 1 / auto / auto",
               visibility: !editing ? "hidden" : undefined,
             }
@@ -166,6 +166,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
         "aria-label": translations.edit,
+        "data-autoresize": dataAttr(autoResize),
         children: valueText,
         hidden: autoResize ? undefined : editing,
         tabIndex: interactive ? 0 : undefined,
