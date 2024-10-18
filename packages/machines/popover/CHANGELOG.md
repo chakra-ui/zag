@@ -1,5 +1,24 @@
 # @zag-js/popover
 
+## 0.75.0
+
+### Patch Changes
+
+- [`f4a1360`](https://github.com/chakra-ui/zag/commit/f4a136053cee86615b0f9cfe9a4d5d014127f3e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix race condition in iOS Safari where switching between multiple
+  popovers causes both to close unexpectedly.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.75.0
+  - @zag-js/core@0.75.0
+  - @zag-js/types@0.75.0
+  - @zag-js/aria-hidden@0.75.0
+  - @zag-js/utils@0.75.0
+  - @zag-js/dismissable@0.75.0
+  - @zag-js/dom-query@0.75.0
+  - @zag-js/popper@0.75.0
+  - @zag-js/remove-scroll@0.75.0
+
 ## 0.74.2
 
 ### Patch Changes
