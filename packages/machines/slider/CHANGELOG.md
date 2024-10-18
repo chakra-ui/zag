@@ -1,5 +1,26 @@
 # @zag-js/slider
 
+## 0.75.0
+
+### Minor Changes
+
+- [`8a4ff3b`](https://github.com/chakra-ui/zag/commit/8a4ff3b50cc530d01f610cb16a9dd2f4debfa887) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for rendering a dragging indicator when a thumb is
+  dragged by using `api.getDraggingIndicatorProps(...)`.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.75.0
+  - @zag-js/core@0.75.0
+  - @zag-js/types@0.75.0
+  - @zag-js/utils@0.75.0
+  - @zag-js/dom-event@0.75.0
+  - @zag-js/dom-query@0.75.0
+  - @zag-js/element-size@0.75.0
+  - @zag-js/form-utils@0.75.0
+  - @zag-js/numeric-range@0.75.0
+
 ## 0.74.2
 
 ### Patch Changes
