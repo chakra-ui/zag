@@ -11,7 +11,7 @@ export const DataAttrTable = (props: Props) => {
 
   try {
     data = getDataAttrDoc(props.name)
-  } catch (error) {
+  } catch {
     return null
   }
 
