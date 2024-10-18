@@ -6,13 +6,44 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
-## [0.74.2](./#0.74.0) - 2024-10-09
+## [0.75.0](./#0.75.0) - 2024-10-18
+
+### Fixed
+
+- **Popover**: Fix race condition in iOS Safari where switching between multiple popovers causes both to close
+  unexpectedly.
+
+- **Presence**: Fix issue where elements that use the presence machine doesn't exit unmounting state when closed with
+  delay and the active tab is switched.
+
+  This is because the v8 engine doesn't trigger the animationend event when the tab is inactive even though the
+  "present" state had changed before the tab is switched.
+
+### Added
+
+- **Slider**: Add support for rendering a dragging indicator when a thumb is dragged by using
+  `api.getDraggingIndicatorProps(...)`.
+
+- **Editable**: Add `data-autoresize` to editable and preview parts when autoresize is enabled.
+
+### Changed
+
+- **Editable**: When `autoResize` is enabled, we removed the default `all: unset` applied to the input in favor of
+  userland css. Please add this in your userland css.
+
+```css
+[data-scope="editable"][data-part="input"][data-autoresize] {
+  all: unset;
+}
+```
+
+## [0.74.2](./#0.74.2) - 2024-10-09
 
 ### Fixed
 
 - **TimePicker**: Export missing `Time` type
 
-## [0.74.1](./#0.74.0) - 2024-10-09
+## [0.74.1](./#0.74.1) - 2024-10-09
 
 ### Fixed
 
@@ -33,7 +64,8 @@ See the [Changesets](./.changeset) for the latest changes.
 
 ### Changed
 
-- **DatePicker, TimePicker [BREAKING]**: Move `@internationalized/date` to peer dependency to prevent mismatching type errors.
+- **DatePicker, TimePicker [BREAKING]**: Move `@internationalized/date` to peer dependency to prevent mismatching type
+  errors.
 
 ## [0.73.0](./#0.73.0) - 2024-09-30
 
