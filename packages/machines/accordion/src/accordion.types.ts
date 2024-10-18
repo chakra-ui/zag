@@ -28,17 +28,17 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the accordion. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Whether multple accordion items can be expanded at the same time.
    * @default false
    */
-  multiple?: boolean
+  multiple?: boolean | undefined
   /**
    * Whether an accordion item can be closed after it has been expanded.
    * @default false
    */
-  collapsible?: boolean
+  collapsible?: boolean | undefined
   /**
    * The `value` of the accordion items that are currently being expanded.
    */
@@ -46,7 +46,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the accordion items are disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * The callback fired when the state of expanded/collapsed accordion items changes.
    */
@@ -59,7 +59,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *  The orientation of the accordion items.
    *  @default "vertical"
    */
-  orientation?: "horizontal" | "vertical"
+  orientation?: "horizontal" | "vertical" | undefined
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -104,7 +104,7 @@ export interface ItemProps {
   /**
    * Whether the accordion item is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 export interface ItemState {

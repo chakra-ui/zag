@@ -43,7 +43,7 @@ export interface IntlTranslations {
   tagEdited(value: string): string
   tagUpdated(value: string): string
   tagDeleted(value: string): string
-  noTagsSelected?: string
+  noTagsSelected?: string | undefined
   inputLabel?(count: number): string
 }
 
@@ -69,7 +69,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * The ids of the elements in the tags input. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
@@ -77,7 +77,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * The max length of the input.
    */
-  maxLength?: number
+  maxLength?: number | undefined
   /**
    * The character that serves has:
    * - event key to trigger the addition of a new tag
@@ -85,32 +85,32 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    *
    * @default ","
    */
-  delimiter?: string | RegExp
+  delimiter?: string | RegExp | undefined
   /**
    * Whether the input should be auto-focused
    */
-  autoFocus?: boolean
+  autoFocus?: boolean | undefined
   /**
    * Whether the tags input should be disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the tags input should be read-only
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the tags input is invalid
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * Whether the tags input is required
    */
-  required?: boolean
+  required?: boolean | undefined
   /**
    * Whether a tag can be edited after creation, by presing `Enter` or double clicking.
    * @default true
    */
-  editable?: boolean
+  editable?: boolean | undefined
   /**
    * The tag input's value
    */
@@ -145,12 +145,12 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * - `"add"`: add the input value as a new tag
    * - `"clear"`: clear the input value
    */
-  blurBehavior?: "clear" | "add"
+  blurBehavior?: "clear" | "add" | undefined
   /**
    * Whether to add a tag when you paste values into the tag input
    * @default false
    */
-  addOnPaste?: boolean
+  addOnPaste?: boolean | undefined
   /**
    * The max number of tags
    * @default Infinity
@@ -160,15 +160,15 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * Whether to allow tags to exceed max. In this case,
    * we'll attach `data-invalid` to the root
    */
-  allowOverflow?: boolean
+  allowOverflow?: boolean | undefined
   /**
    * The name attribute for the input. Useful for form submissions
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the underlying input element.
    */
-  form?: string
+  form?: string | undefined
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -231,7 +231,7 @@ interface PrivateContext {
    * @internal
    * The index of the deleted tag. Used to determine the next tag to focus.
    */
-  idx?: number
+  idx?: number | undefined
   /**
    * @internal
    * The `id` of the currently edited tag
@@ -267,7 +267,7 @@ export type Send = S.Send<S.AnyEventObject>
 export interface ItemProps {
   index: string | number
   value: string
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 export interface ItemState {

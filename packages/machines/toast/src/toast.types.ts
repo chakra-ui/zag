@@ -15,11 +15,11 @@ export interface GenericOptions<T = string> {
   /**
    * The title of the toast.
    */
-  title?: T
+  title?: T | undefined
   /**
    * The description of the toast.
    */
-  description?: T
+  description?: T | undefined
 }
 
 export interface StatusChangeDetails {
@@ -50,24 +50,24 @@ export interface Options<T> extends GenericOptions<T> {
   /**
    * The duration the toast will be visible
    */
-  duration?: number
+  duration?: number | undefined
   /**
    * The duration for the toast to kept alive before it is removed.
    * Useful for exit transitions.
    */
-  removeDelay?: number
+  removeDelay?: number | undefined
   /**
    * The placement of the toast
    */
-  placement?: Placement
+  placement?: Placement | undefined
   /**
    * The unique id of the toast
    */
-  id?: string
+  id?: string | undefined
   /**
    * The type of the toast
    */
-  type?: Type
+  type?: Type | undefined
   /**
    * Function called when the toast is visible
    */
@@ -75,11 +75,11 @@ export interface Options<T> extends GenericOptions<T> {
   /**
    * The action of the toast
    */
-  action?: ActionOptions
+  action?: ActionOptions | undefined
   /**
    * The metadata of the toast
    */
-  meta?: Record<string, any>
+  meta?: Record<string, any> | undefined
 }
 
 /* -----------------------------------------------------------------------------
@@ -98,7 +98,7 @@ export interface MachineContext<T = any>
   /**
    * The document's text/writing direction.
    */
-  dir?: Direction
+  dir?: Direction | undefined
   /**
    * The time the toast was created
    */
@@ -144,7 +144,7 @@ interface MachinePrivateContext {
    * @internal
    * Whether the toast is stacked
    */
-  stacked?: boolean
+  stacked?: boolean | undefined
 }
 
 export interface MachineState {
@@ -191,7 +191,7 @@ interface GroupPublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the toasts should overlap each other
    */
-  overlap?: boolean
+  overlap?: boolean | undefined
   /**
    * The placement of the toast
    */
@@ -206,7 +206,7 @@ interface GroupPublicContext extends DirectionProperty, CommonProperties {
   /**
    * The duration the toast will be visible
    */
-  duration?: number
+  duration?: number | undefined
 }
 
 export interface UserDefinedGroupContext extends RequiredBy<GroupPublicContext, "id"> {}
@@ -233,7 +233,7 @@ interface GroupPrivateContext<T> extends GenericOptions<T> {
   /**
    * @internal
    */
-  _cleanup?: VoidFunction
+  _cleanup?: VoidFunction | undefined
   /**
    * @internal
    */
@@ -269,7 +269,7 @@ export interface PromiseOptions<V, O = any> {
   loading: Options<O>
   success: MaybeFunction<Options<O>, V>
   error: MaybeFunction<Options<O>, Error>
-  finally?: () => void | Promise<void>
+  finally?: (() => void | Promise<void>) | undefined
 }
 
 export interface GroupProps {
@@ -280,7 +280,7 @@ export interface GroupProps {
   /**
    * The human-readable label for the toast region
    */
-  label?: string
+  label?: string | undefined
 }
 
 export interface GroupMachineApi<T extends PropTypes = PropTypes, O = any> {

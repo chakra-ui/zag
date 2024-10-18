@@ -34,7 +34,7 @@ export interface SelectionValueDetails<T extends CollectionItem = CollectionItem
 
 export interface ScrollToIndexDetails {
   index: number
-  immediate?: boolean
+  immediate?: boolean | undefined
 }
 
 /* -----------------------------------------------------------------------------
@@ -42,8 +42,8 @@ export interface ScrollToIndexDetails {
  * -----------------------------------------------------------------------------*/
 
 export interface IntlTranslations {
-  triggerLabel?: string
-  clearTriggerLabel?: string
+  triggerLabel?: string | undefined
+  clearTriggerLabel?: string | undefined
 }
 
 export type ElementIds = Partial<{
@@ -67,15 +67,15 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * Whether the combobox is open
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
    * Whether the combobox open state is controlled by the user
    */
-  "open.controlled"?: boolean
+  "open.controlled"?: boolean | undefined
   /**
    * The ids of the elements in the combobox. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The current value of the combobox's input
    */
@@ -83,32 +83,32 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * The `name` attribute of the combobox's input. Useful for form submission
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the combobox.
    */
-  form?: string
+  form?: string | undefined
   /**
    * Whether the combobox is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the combobox is readonly. This puts the combobox in a "non-editable" mode
    * but the user can still interact with it
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the combobox is invalid
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * Whether the combobox is required
    */
-  required?: boolean
+  required?: boolean | undefined
   /**
    * The placeholder text of the combobox's input
    */
-  placeholder?: string
+  placeholder?: string | undefined
   /**
    * The active item's id. Used to set the `aria-activedescendant` attribute
    */
@@ -139,26 +139,26 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * Whether to autofocus the input on mount
    */
-  autoFocus?: boolean
+  autoFocus?: boolean | undefined
   /**
    * Whether to open the combobox popup on initial click on the input
    * @default false
    */
-  openOnClick?: boolean
+  openOnClick?: boolean | undefined
   /**
    * Whether to show the combobox when the input value changes
    * @default true
    */
-  openOnChange?: boolean | ((details: InputValueChangeDetails) => boolean)
+  openOnChange?: boolean | ((details: InputValueChangeDetails) => boolean) | undefined
   /**
    * Whether to allow typing custom values in the input
    */
-  allowCustomValue?: boolean
+  allowCustomValue?: boolean | undefined
   /**
    * Whether to loop the keyboard navigation through the items
    * @default true
    */
-  loopFocus?: boolean
+  loopFocus?: boolean | undefined
   /**
    * The positioning options to dynamically position the menu
    */
@@ -166,20 +166,20 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * Function called when the input's value changes
    */
-  onInputValueChange?: (details: InputValueChangeDetails) => void
+  onInputValueChange?: ((details: InputValueChangeDetails) => void) | undefined
   /**
    * Function called when a new item is selected
    */
-  onValueChange?: (details: ValueChangeDetails<T>) => void
+  onValueChange?: ((details: ValueChangeDetails<T>) => void) | undefined
   /**
    * Function called when an item is highlighted using the pointer
    * or keyboard navigation.
    */
-  onHighlightChange?: (details: HighlightChangeDetails<T>) => void
+  onHighlightChange?: ((details: HighlightChangeDetails<T>) => void) | undefined
   /**
    * Function called when the popup is opened
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
@@ -194,15 +194,15 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * **Good to know:** When `multiple` is `true`, the `selectionBehavior` is automatically set to `clear`.
    * It is recommended to render the selected items in a separate container.
    */
-  multiple?: boolean
+  multiple?: boolean | undefined
   /**
    * Whether to close the combobox when an item is selected.
    */
-  closeOnSelect?: boolean
+  closeOnSelect?: boolean | undefined
   /**
    * Function to get the display value of the selected item
    */
-  getSelectionValue?: (details: SelectionValueDetails<T>) => string
+  getSelectionValue?: ((details: SelectionValueDetails<T>) => string) | undefined
   /**
    * Whether to open the combobox on arrow key press
    * @default true
@@ -211,7 +211,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * Function to scroll to a specific index
    */
-  scrollToIndexFn?: (details: ScrollToIndexDetails) => void
+  scrollToIndexFn?: ((details: ScrollToIndexDetails) => void) | undefined
   /**
    * Whether the combobox is a composed with other composite widgets like tabs
    * @default true
@@ -220,7 +220,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * Whether to disable registering this a dismissable layer
    */
-  disableLayer?: boolean
+  disableLayer?: boolean | undefined
 }
 
 export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
@@ -259,7 +259,7 @@ interface PrivateContext<T extends CollectionItem = CollectionItem> {
    * @internal
    * The placement of the combobox popover.
    */
-  currentPlacement?: Placement
+  currentPlacement?: Placement | undefined
   /**
    * The highlighted item
    */
@@ -297,14 +297,14 @@ export interface TriggerProps {
   /**
    * Whether the trigger is focusable
    */
-  focusable?: boolean
+  focusable?: boolean | undefined
 }
 
 export interface ItemProps {
   /**
    * Whether hovering outside should clear the highlighted state
    */
-  persistFocus?: boolean
+  persistFocus?: boolean | undefined
   /**
    * The item to render
    */

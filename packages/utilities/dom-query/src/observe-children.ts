@@ -5,7 +5,7 @@ type NodeOrFn = MaybeElement | (() => MaybeElement)
 
 export interface ObserveChildrenOptions {
   callback: MutationCallback
-  defer?: boolean
+  defer?: boolean | undefined
 }
 
 function observeChildrenImpl(node: MaybeElement, options: ObserveChildrenOptions) {

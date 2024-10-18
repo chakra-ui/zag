@@ -35,49 +35,49 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The name of the input element. Useful for form submission.
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the underlying input element.
    */
-  form?: string
+  form?: string | undefined
   /**
    * The regular expression that the user-entered input value is checked against.
    */
-  pattern?: string
+  pattern?: string | undefined
   /**
    * The ids of the elements in the pin input. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Whether the inputs are disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * The placeholder text for the input
    * @default "○"
    */
-  placeholder?: string
+  placeholder?: string | undefined
   /**
    * Whether to auto-focus the first input.
    */
-  autoFocus?: boolean
+  autoFocus?: boolean | undefined
   /**
    * Whether the pin input is in the invalid state
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * Whether the pin input is required
    */
-  required?: boolean
+  required?: boolean | undefined
   /**
    * Whether the pin input is in the valid state
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * If `true`, the pin input component signals to its fields that they should
    * use `autocomplete="one-time-code"`.
    */
-  otp?: boolean
+  otp?: boolean | undefined
   /**
    * The value of the the pin input.
    */
@@ -86,31 +86,31 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The type of value the pin-input should allow
    * @default "numeric"
    */
-  type?: "alphanumeric" | "numeric" | "alphabetic"
+  type?: "alphanumeric" | "numeric" | "alphabetic" | undefined
   /**
    * Function called when all inputs have valid values
    */
-  onValueComplete?: (details: ValueChangeDetails) => void
+  onValueComplete?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Function called on input change
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Function called when an invalid value is entered
    */
-  onValueInvalid?: (details: ValueInvalidDetails) => void
+  onValueInvalid?: ((details: ValueInvalidDetails) => void) | undefined
   /**
    * If `true`, the input's value will be masked just like `type=password`
    */
-  mask?: boolean
+  mask?: boolean | undefined
   /**
    * Whether to blur the input when the value is complete
    */
-  blurOnComplete?: boolean
+  blurOnComplete?: boolean | undefined
   /**
    * Whether to select input value when input is focused
    */
-  selectOnFocus?: boolean
+  selectOnFocus?: boolean | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */

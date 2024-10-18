@@ -15,7 +15,7 @@ interface PublicContext extends CommonProperties {
   /**
    * The ids of the elements in the clipboard. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The value to be copied to the clipboard
    */
@@ -23,7 +23,7 @@ interface PublicContext extends CommonProperties {
   /**
    * The function to be called when the value is copied to the clipboard
    */
-  onStatusChange?: (details: CopyStatusDetails) => void
+  onStatusChange?: ((details: CopyStatusDetails) => void) | undefined
   /**
    * The timeout for the copy operation
    * @default 3000

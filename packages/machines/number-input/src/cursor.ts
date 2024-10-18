@@ -3,11 +3,11 @@
  */
 
 interface Selection {
-  start?: number
-  end?: number
-  value?: string
-  beforeTxt?: string
-  afterTxt?: string
+  start?: number | undefined
+  end?: number | undefined
+  value?: string | undefined
+  beforeTxt?: string | undefined
+  afterTxt?: string | undefined
 }
 
 export function recordCursor(inputEl: HTMLInputElement): Selection | undefined {

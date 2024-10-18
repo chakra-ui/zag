@@ -16,11 +16,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The element ids.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The qr code encoding options.
    */
-  encoding?: QrCodeGenerateOptions
+  encoding?: QrCodeGenerateOptions | undefined
 }
 
 interface PrivateContext {

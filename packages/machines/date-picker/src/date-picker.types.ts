@@ -88,15 +88,15 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The localized messages to use.
    */
-  translations?: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The ids of the elements in the date picker. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The `name` attribute of the input element.
    */
-  name?: string
+  name?: string | undefined
   /**
    * The time zone to use
    * @default "UTC"
@@ -105,25 +105,25 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the calendar is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the calendar is read-only.
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * The minimum date that can be selected.
    */
-  min?: DateValue
+  min?: DateValue | undefined
   /**
    * The maximum date that can be selected.
    */
-  max?: DateValue
+  max?: DateValue | undefined
   /**
    * Whether the calendar should close after the date selection is complete.
    * This is ignored when the selection mode is `multiple`.
    * @default true
    */
-  closeOnSelect?: boolean
+  closeOnSelect?: boolean | undefined
   /**
    * The selected date(s).
    */
@@ -146,32 +146,32 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *  `5` - Friday
    *  `6` - Saturday
    */
-  startOfWeek?: number
+  startOfWeek?: number | undefined
   /**
    * Whether the calendar should have a fixed number of weeks.
    * This renders the calendar with 6 weeks instead of 5 or 6.
    */
-  fixedWeeks?: boolean
+  fixedWeeks?: boolean | undefined
   /**
    * Function called when the value changes.
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Function called when the focused date changes.
    */
-  onFocusChange?: (details: FocusChangeDetails) => void
+  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
    * Function called when the view changes.
    */
-  onViewChange?: (details: ViewChangeDetails) => void
+  onViewChange?: ((details: ViewChangeDetails) => void) | undefined
   /**
    * Function called when the calendar opens or closes.
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * Returns whether a date of the calendar is available.
    */
-  isDateUnavailable?: (date: DateValue, locale: string) => boolean
+  isDateUnavailable?: ((date: DateValue, locale: string) => boolean) | undefined
   /**
    * The selection mode of the calendar.
    * - `single` - only one date can be selected
@@ -184,7 +184,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The format of the date to display in the input.
    */
-  format?: (date: DateValue) => string
+  format?: ((date: DateValue) => string) | undefined
   /**
    * The view of the calendar
    * @default "day"
@@ -194,7 +194,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the calendar should be modal. This means that the calendar will
    * block interaction with the rest of the page, and trap focus within it.
    */
-  modal?: boolean
+  modal?: boolean | undefined
   /**
    * The user provided options used to position the date picker content
    */
@@ -202,11 +202,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the datepicker is open
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
    * Whether the datepicker open state is controlled by the user
    */
-  "open.controlled"?: boolean
+  "open.controlled"?: boolean | undefined
 }
 
 interface PrivateContext {
@@ -224,12 +224,12 @@ interface PrivateContext {
    * @internal
    * Whether the calendar has focus
    */
-  hasFocus?: boolean
+  hasFocus?: boolean | undefined
   /**
    * @internal
    * The live region to announce changes
    */
-  announcer?: LiveRegion
+  announcer?: LiveRegion | undefined
   /**
    * @internal
    * The current hovered date. Useful for range selection mode.
@@ -245,12 +245,12 @@ interface PrivateContext {
    * @internal
    * The computed placement (maybe different from initial placement)
    */
-  currentPlacement?: Placement
+  currentPlacement?: Placement | undefined
   /**
    * @internal
    * Whether the calendar should restore focus to the input when it closes.
    */
-  restoreFocus?: boolean
+  restoreFocus?: boolean | undefined
 }
 
 type ComputedContext = Readonly<{
@@ -333,9 +333,9 @@ export interface DateValueOffset {
 }
 
 export interface TableCellProps {
-  disabled?: boolean
+  disabled?: boolean | undefined
   value: number
-  columns?: number
+  columns?: number | undefined
 }
 
 export interface TableCellState {
@@ -348,8 +348,8 @@ export interface TableCellState {
 
 export interface DayTableCellProps {
   value: DateValue
-  disabled?: boolean
-  visibleRange?: VisibleRange
+  disabled?: boolean | undefined
+  visibleRange?: VisibleRange | undefined
 }
 
 export interface DayTableCellState {
@@ -370,9 +370,9 @@ export interface DayTableCellState {
 }
 
 export interface TableProps {
-  view?: DateView
-  columns?: number
-  id?: string
+  view?: DateView | undefined
+  columns?: number | undefined
+  id?: string | undefined
 }
 
 export type PresetTriggerValue = DateValue[] | DateRangePreset
@@ -382,20 +382,20 @@ export interface PresetTriggerProps {
 }
 
 export interface ViewProps {
-  view?: DateView
+  view?: DateView | undefined
 }
 
 export interface InputProps {
-  index?: number
+  index?: number | undefined
 }
 
 export interface LabelProps {
-  index?: number
+  index?: number | undefined
 }
 
 export interface MonthGridProps {
-  columns?: number
-  format?: "short" | "long"
+  columns?: number | undefined
+  format?: "short" | "long" | undefined
 }
 
 export interface Cell {
@@ -406,7 +406,7 @@ export interface Cell {
 export type MonthGridValue = Cell[][]
 
 export interface YearGridProps {
-  columns?: number
+  columns?: number | undefined
 }
 
 export type YearGridValue = Cell[][]
@@ -419,7 +419,7 @@ export interface WeekDay {
 }
 
 export interface MonthFormatOptions {
-  format?: "short" | "long"
+  format?: "short" | "long" | undefined
 }
 
 export interface VisibleRangeText extends Range<string> {

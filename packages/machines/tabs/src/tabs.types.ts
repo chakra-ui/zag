@@ -18,7 +18,7 @@ export interface FocusChangeDetails {
  * -----------------------------------------------------------------------------*/
 
 export interface IntlTranslations {
-  listLabel?: string
+  listLabel?: string | undefined
 }
 
 export type ElementIds = Partial<{
@@ -33,11 +33,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the tabs. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations?: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * Whether the keyboard navigation will loop from last tab to first, and vice versa.
    * @default true
@@ -54,7 +54,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *
    * @default "horizontal"
    */
-  orientation?: "horizontal" | "vertical"
+  orientation?: "horizontal" | "vertical" | undefined
   /**
    * The activation mode of the tabs. Can be `manual` or `automatic`
    * - `manual`: Tabs are activated when clicked or press `enter` key.
@@ -62,15 +62,15 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *
    * @default "automatic"
    */
-  activationMode?: "manual" | "automatic"
+  activationMode?: "manual" | "automatic" | undefined
   /**
    * Callback to be called when the selected/active tab changes
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Callback to be called when the focused tab changes
    */
-  onFocusChange?: (details: FocusChangeDetails) => void
+  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
    * Whether the tab is composite
    */
@@ -78,7 +78,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the active tab can be deselected when clicking on it.
    */
-  deselectable?: boolean
+  deselectable?: boolean | undefined
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -106,7 +106,7 @@ interface PrivateContext {
    * @internal
    * Function to clean up the observer for the active tab's rect
    */
-  indicatorCleanup?: VoidFunction | null
+  indicatorCleanup?: VoidFunction | null | undefined
   /**
    * @internal
    * Whether the radio group is in server-side rendering
@@ -138,7 +138,7 @@ export interface TriggerProps {
   /**
    * Whether the tab is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 export interface TriggerState {

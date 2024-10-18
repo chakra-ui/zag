@@ -25,11 +25,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the popover. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Function called when the hover card opens or closes.
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * The duration from when the mouse enters the trigger until the hover card opens.
    * @default 700
@@ -43,11 +43,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the hover card is open
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
    * Whether the hover card is controlled by the user
    */
-  "open.controlled"?: boolean
+  "open.controlled"?: boolean | undefined
   /**
    * The user provided options used to position the popover content
    */
@@ -59,12 +59,12 @@ interface PrivateContext {
    * @internal
    * The computed placement of the tooltip.
    */
-  currentPlacement?: Placement
+  currentPlacement?: Placement | undefined
   /**
    * @internal
    * Whether the hover card is open by pointer
    */
-  isPointer?: boolean
+  isPointer?: boolean | undefined
 }
 
 type ComputedContext = Readonly<{}>
