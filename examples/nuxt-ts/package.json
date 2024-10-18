@@ -9,7 +9,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.5",
+    "@internationalized/date": "3.5.6",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",

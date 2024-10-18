@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.5",
+    "@internationalized/date": "3.5.6",
     "@lit/context": "1.1.2",
     "@open-wc/lit-helpers": "^0.7.0",
     "@types/textarea-caret": "^3.0.3",
