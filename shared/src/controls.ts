@@ -283,3 +283,9 @@ export const stepsControls = defineControls({
   linear: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
 })
+
+export const navigationMenuControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  openDelay: { type: "number", defaultValue: 200 },
+  closeDelay: { type: "number", defaultValue: 300 },
+})
