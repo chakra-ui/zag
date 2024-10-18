@@ -89,7 +89,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return getMonthDays(from, locale, numOfWeeks, startOfWeek)
   }
 
-  function getMonths(props: { format?: "short" | "long" } = {}) {
+  function getMonths(props: { format?: "short" | "long" | undefined } = {}) {
     const { format } = props
     return getMonthNames(locale, format).map((label, index) => ({ label, value: index + 1 }))
   }

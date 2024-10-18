@@ -2,6 +2,12 @@ import type { JSX } from "./jsx"
 
 export type RequiredBy<T, K extends keyof T> = Partial<Omit<T, K>> & Required<Pick<T, K>>
 
+export type NonNullable<T> = T extends null | undefined ? never : T
+
+export type Required<T> = {
+  [P in keyof T]-?: NonNullable<T[P]>
+}
+
 export type Direction = "ltr" | "rtl"
 
 export type Orientation = "horizontal" | "vertical"

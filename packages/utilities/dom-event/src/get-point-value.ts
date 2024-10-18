@@ -2,15 +2,15 @@ function clamp(value: number) {
   return Math.max(0, Math.min(1, value))
 }
 
-export type Point = {
+export interface Point {
   x: number
   y: number
 }
 
-type PercentValueOptions = {
-  inverted?: boolean | { x?: boolean; y?: boolean }
-  dir?: "ltr" | "rtl"
-  orientation?: "vertical" | "horizontal"
+export interface PercentValueOptions {
+  inverted?: boolean | { x?: boolean; y?: boolean } | undefined
+  dir?: "ltr" | "rtl" | undefined
+  orientation?: "vertical" | "horizontal" | undefined
 }
 
 export function getRelativePoint(point: Point, element: HTMLElement) {

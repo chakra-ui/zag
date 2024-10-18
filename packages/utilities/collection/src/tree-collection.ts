@@ -1,13 +1,13 @@
 export interface TreeNodeOptions {
   value: string
-  data?: any
+  data?: any | undefined
   children?: TreeNodeOptions[]
 }
 
 export interface FlatTreeNode {
   value: string
-  parentValue?: string
-  data?: any
+  parentValue?: string | undefined
+  data?: any | undefined
 }
 
 export const enum TreeNodePosition {

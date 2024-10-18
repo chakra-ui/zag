@@ -1,7 +1,7 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { AnchorRect, Placement } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Required, RequiredBy } from "@zag-js/types"
 import type { Point } from "./utils/rect"
 
 /* -----------------------------------------------------------------------------

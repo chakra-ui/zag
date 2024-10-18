@@ -3,7 +3,7 @@ export function isMSEdge(win: Window): win is Window & { navigator: { msSaveOrOp
   return Boolean(win.navigator && win.navigator.msSaveOrOpenBlob)
 }
 
-interface DownloadFileOptions {
+export interface DownloadFileOptions {
   /**
    * The name of the file
    */
@@ -11,7 +11,7 @@ interface DownloadFileOptions {
   /**
    * The MIME type of the file
    */
-  type?: string | undefined
+  type: string
   /**
    * The file contents
    */
