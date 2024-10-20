@@ -45,7 +45,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       }
     },
     addValue(value) {
-      send({ type: "ADD_TAG", value })
+      send({ type: "ADD_TAG", value, src: "api" })
     },
     setValueAtIndex(index, value) {
       send({ type: "SET_VALUE_AT_INDEX", index, value })
