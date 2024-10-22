@@ -578,6 +578,7 @@ const invoke = {
   },
   valueChange: (ctx: MachineContext) => {
     ctx.onInputValueChange?.({ inputValue: ctx.inputValue })
+    dom.dispatchInputEvent(ctx)
   },
 }
 
