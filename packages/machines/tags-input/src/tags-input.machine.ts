@@ -101,7 +101,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         ADD_TAG: {
           // (!isAtMax || allowOverflow) && !inputValueIsEmpty
-          guard: and(or(not("isAtMax"), "allowOverflow"), not("isInputValueEmpty")),
+          guard: and(or(not("isAtMax"), "allowOverflow"), or(not("isInputValueEmpty"), "isApiEvt")),
           actions: ["addTag", "clearInputValue"],
         },
         EXTERNAL_BLUR: [
@@ -280,6 +280,7 @@ export function machine(userContext: UserDefinedContext) {
           return lastItemId === ctx.highlightedTagId
         },
         isInputValueEmpty: (ctx) => ctx.trimmedInputValue.length === 0,
+        isApiEvt: (_, evt) => evt.src === "api",
         hasTags: (ctx) => ctx.value.length > 0,
         allowOverflow: (ctx) => !!ctx.allowOverflow,
         autoFocus: (ctx) => !!ctx.autoFocus,
@@ -339,7 +340,7 @@ export function machine(userContext: UserDefinedContext) {
 
       actions: {
         raiseAddTagEvent(_, __, { self }) {
-          self.send("ADD_TAG")
+          self.send({ type: "ADD_TAG", src: "machine" })
         },
         raiseExternalBlurEvent(_, evt, { self }) {
           self.send({ type: "EXTERNAL_BLUR", id: evt.id })

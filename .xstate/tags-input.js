@@ -14,7 +14,7 @@ const fetchMachine = createMachine({
   initial: ctx.autoFocus ? "focused:input" : "idle",
   context: {
     "isTagEditable": false,
-    "(!isAtMax || allowOverflow) && !isInputValueEmpty": false,
+    "(!isAtMax || allowOverflow) && (!isInputValueEmpty || isApiEvt)": false,
     "addOnBlur": false,
     "clearOnBlur": false,
     "!hasHighlightedTag": false,
@@ -65,7 +65,7 @@ const fetchMachine = createMachine({
     },
     ADD_TAG: {
       // (!isAtMax || allowOverflow) && !inputValueIsEmpty
-      cond: "(!isAtMax || allowOverflow) && !isInputValueEmpty",
+      cond: "(!isAtMax || allowOverflow) && (!isInputValueEmpty || isApiEvt)",
       actions: ["addTag", "clearInputValue"]
     },
     EXTERNAL_BLUR: [{
@@ -223,7 +223,7 @@ const fetchMachine = createMachine({
   },
   guards: {
     "isTagEditable": ctx => ctx["isTagEditable"],
-    "(!isAtMax || allowOverflow) && !isInputValueEmpty": ctx => ctx["(!isAtMax || allowOverflow) && !isInputValueEmpty"],
+    "(!isAtMax || allowOverflow) && (!isInputValueEmpty || isApiEvt)": ctx => ctx["(!isAtMax || allowOverflow) && (!isInputValueEmpty || isApiEvt)"],
     "addOnBlur": ctx => ctx["addOnBlur"],
     "clearOnBlur": ctx => ctx["clearOnBlur"],
     "!hasHighlightedTag": ctx => ctx["!hasHighlightedTag"],
