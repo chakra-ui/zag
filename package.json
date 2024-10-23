@@ -99,7 +99,7 @@
     "tsx": "4.19.1",
     "typescript": "5.6.3",
     "vercel-submodules": "1.0.10",
-    "vite": "5.4.8",
+    "vite": "5.4.10",
     "vite-plugin-dts": "4.2.4",
     "vitest": "2.1.3"
   },
