@@ -31,7 +31,7 @@ importers:
         version: 2.27.9
       '@commitlint/cli':
         specifier: 19.5.0
-        version: 19.5.0(@types/node@22.7.5)(typescript@5.6.3)
+        version: 19.5.0(@types/node@22.7.9)(typescript@5.6.3)
       '@commitlint/config-conventional':
         specifier: 19.5.0
         version: 19.5.0
@@ -51,8 +51,8 @@ importers:
         specifier: 7.20.6
         version: 7.20.6
       '@types/node':
-        specifier: 22.7.5
-        version: 22.7.5
+        specifier: 22.7.9
+        version: 22.7.9
       '@types/signale':
         specifier: 1.4.7
         version: 1.4.7
@@ -67,7 +67,7 @@ importers:
         version: 4.10.0
       commitlint:
         specifier: 19.5.0
-        version: 19.5.0(@types/node@22.7.5)(typescript@5.6.3)
+        version: 19.5.0(@types/node@22.7.9)(typescript@5.6.3)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -118,7 +118,7 @@ importers:
         version: 24.0.0
       tsup:
         specifier: 8.3.0
-        version: 8.3.0(@microsoft/api-extractor@7.47.7(@types/node@22.7.5))(@swc/core@1.7.36(@swc/helpers@0.5.12))(jiti@1.21.6)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(yaml@2.5.0)
+        version: 8.3.0(@microsoft/api-extractor@7.47.7(@types/node@22.7.9))(@swc/core@1.7.36(@swc/helpers@0.5.12))(jiti@1.21.6)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(yaml@2.5.0)
       tsx:
         specifier: 4.19.1
         version: 4.19.1
@@ -130,13 +130,13 @@ importers:
         version: 1.0.10
       vite:
         specifier: 5.4.8
-        version: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+        version: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
       vite-plugin-dts:
         specifier: 4.2.4
-        version: 4.2.4(@types/node@22.7.5)(rollup@4.22.5)(typescript@5.6.3)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+        version: 4.2.4(@types/node@22.7.9)(rollup@4.22.5)(typescript@5.6.3)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@22.7.5)(terser@5.31.3)
+        version: 2.1.3(@types/node@22.7.9)(terser@5.31.3)
 
   examples/lit-ts:
     dependencies:
@@ -389,7 +389,7 @@ importers:
         version: 5.6.2
       vite:
         specifier: ^5.4.8
-        version: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+        version: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
 
   examples/next-ts:
     dependencies:
@@ -1181,7 +1181,7 @@ importers:
     devDependencies:
       '@preact/preset-vite':
         specifier: 2.9.1
-        version: 2.9.1(@babel/core@7.25.2)(preact@10.24.1)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+        version: 2.9.1(@babel/core@7.25.2)(preact@10.24.1)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
       eslint:
         specifier: 9.11.1
         version: 9.11.1(jiti@1.21.6)
@@ -1193,7 +1193,7 @@ importers:
         version: 5.6.2
       vite:
         specifier: 5.4.8
-        version: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+        version: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
 
   examples/react-19:
     dependencies:
@@ -1437,7 +1437,7 @@ importers:
         version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^4.3.2
-        version: 4.3.2(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+        version: 4.3.2(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
       eslint:
         specifier: ^9.11.1
         version: 9.11.1(jiti@1.21.6)
@@ -1458,7 +1458,7 @@ importers:
         version: 8.7.0(eslint@9.11.1(jiti@1.21.6))(typescript@5.6.2)
       vite:
         specifier: ^5.4.8
-        version: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+        version: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
 
   examples/solid-ts:
     dependencies:
@@ -1473,7 +1473,7 @@ importers:
         version: 0.14.7(solid-js@1.9.1)
       '@solidjs/start':
         specifier: 1.0.8
-        version: 1.0.8(solid-js@1.9.1)(vinxi@0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+        version: 1.0.8(solid-js@1.9.1)(vinxi@0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
@@ -1707,7 +1707,7 @@ importers:
         version: 1.9.1
       vinxi:
         specifier: 0.4.3
-        version: 0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3)
+        version: 0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3)
 
   examples/svelte-ts:
     dependencies:
@@ -1948,7 +1948,7 @@ importers:
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
         specifier: 4.0.0-next.3
-        version: 4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+        version: 4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
       '@tsconfig/svelte':
         specifier: 5.0.4
         version: 5.0.4
@@ -1969,10 +1969,10 @@ importers:
         version: 5.6.2
       vite:
         specifier: 5.4.8
-        version: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+        version: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
       vite-tsconfig-paths:
         specifier: 5.0.1
-        version: 5.0.1(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+        version: 5.0.1(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
 
   examples/vanilla-ts:
     dependencies:
@@ -2207,7 +2207,7 @@ importers:
         version: 5.6.2
       vite:
         specifier: ^5.4.8
-        version: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+        version: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
 
   packages/anatomy:
     devDependencies:
@@ -4040,8 +4040,8 @@ importers:
         version: 0.14.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@types/node':
-        specifier: 22.7.5
-        version: 22.7.5
+        specifier: 22.7.9
+        version: 22.7.9
       '@types/react':
         specifier: 18.3.11
         version: 18.3.11
@@ -6953,8 +6953,8 @@ packages:
   '@types/node@22.7.4':
     resolution: {integrity: sha512-y+NPi1rFzDs1NdQHHToqeiX2TIS79SWEAw9GYhkkx8bD0ChpfqC+n2j5OXOCpzfojBEBt6DnEnnG9MY0zk1XLg==}
 
-  '@types/node@22.7.5':
-    resolution: {integrity: sha512-jML7s2NAzMWc//QSJ1a3prpk78cOPchGvXJsC3C6R6PSMoooztvRVQEz89gmBTBY1SPMaqo5teB4uNHPdetShQ==}
+  '@types/node@22.7.9':
+    resolution: {integrity: sha512-jrTfRC7FM6nChvU7X2KqcrgquofrWLFDeYC1hKfwNWomVvrn7JIksqf344WN2X/y8xrgqBd2dJATZV4GbatBfg==}
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
@@ -13865,11 +13865,11 @@ snapshots:
     dependencies:
       '@cloudinary/transformation-builder-sdk': 1.14.1
 
-  '@commitlint/cli@19.5.0(@types/node@22.7.5)(typescript@5.6.3)':
+  '@commitlint/cli@19.5.0(@types/node@22.7.9)(typescript@5.6.3)':
     dependencies:
       '@commitlint/format': 19.5.0
       '@commitlint/lint': 19.5.0
-      '@commitlint/load': 19.5.0(@types/node@22.7.5)(typescript@5.6.3)
+      '@commitlint/load': 19.5.0(@types/node@22.7.9)(typescript@5.6.3)
       '@commitlint/read': 19.5.0
       '@commitlint/types': 19.5.0
       tinyexec: 0.3.0
@@ -13916,7 +13916,7 @@ snapshots:
       '@commitlint/rules': 19.5.0
       '@commitlint/types': 19.5.0
 
-  '@commitlint/load@19.5.0(@types/node@22.7.5)(typescript@5.6.3)':
+  '@commitlint/load@19.5.0(@types/node@22.7.9)(typescript@5.6.3)':
     dependencies:
       '@commitlint/config-validator': 19.5.0
       '@commitlint/execute-rule': 19.5.0
@@ -13924,7 +13924,7 @@ snapshots:
       '@commitlint/types': 19.5.0
       chalk: 5.3.0
       cosmiconfig: 9.0.0(typescript@5.6.3)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@22.7.5)(cosmiconfig@9.0.0(typescript@5.6.3))(typescript@5.6.3)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@22.7.9)(cosmiconfig@9.0.0(typescript@5.6.3))(typescript@5.6.3)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -14810,23 +14810,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@microsoft/api-extractor-model@7.29.6(@types/node@22.7.5)':
+  '@microsoft/api-extractor-model@7.29.6(@types/node@22.7.9)':
     dependencies:
       '@microsoft/tsdoc': 0.15.0
       '@microsoft/tsdoc-config': 0.17.0
-      '@rushstack/node-core-library': 5.7.0(@types/node@22.7.5)
+      '@rushstack/node-core-library': 5.7.0(@types/node@22.7.9)
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.47.7(@types/node@22.7.5)':
+  '@microsoft/api-extractor@7.47.7(@types/node@22.7.9)':
     dependencies:
-      '@microsoft/api-extractor-model': 7.29.6(@types/node@22.7.5)
+      '@microsoft/api-extractor-model': 7.29.6(@types/node@22.7.9)
       '@microsoft/tsdoc': 0.15.0
       '@microsoft/tsdoc-config': 0.17.0
-      '@rushstack/node-core-library': 5.7.0(@types/node@22.7.5)
+      '@rushstack/node-core-library': 5.7.0(@types/node@22.7.9)
       '@rushstack/rig-package': 0.5.3
-      '@rushstack/terminal': 0.14.0(@types/node@22.7.5)
-      '@rushstack/ts-command-line': 4.22.6(@types/node@22.7.5)
+      '@rushstack/terminal': 0.14.0(@types/node@22.7.9)
+      '@rushstack/ts-command-line': 4.22.6(@types/node@22.7.9)
       lodash: 4.17.21
       minimatch: 3.0.8
       resolve: 1.22.8
@@ -15491,13 +15491,13 @@ snapshots:
 
   '@polka/url@1.0.0-next.25': {}
 
-  '@preact/preset-vite@2.9.1(@babel/core@7.25.2)(preact@10.24.1)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))':
+  '@preact/preset-vite@2.9.1(@babel/core@7.25.2)(preact@10.24.1)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))':
     dependencies:
       '@babel/code-frame': 7.24.7
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx': 7.25.2(@babel/core@7.25.2)
       '@babel/plugin-transform-react-jsx-development': 7.24.7(@babel/core@7.25.2)
-      '@prefresh/vite': 2.4.6(preact@10.24.1)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+      '@prefresh/vite': 2.4.6(preact@10.24.1)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.25.2)
       debug: 4.3.6
@@ -15506,7 +15506,7 @@ snapshots:
       node-html-parser: 6.1.13
       source-map: 0.7.4
       stack-trace: 1.0.0-pre2
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
     transitivePeerDependencies:
       - preact
       - supports-color
@@ -15519,7 +15519,7 @@ snapshots:
 
   '@prefresh/utils@1.2.0': {}
 
-  '@prefresh/vite@2.4.6(preact@10.24.1)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))':
+  '@prefresh/vite@2.4.6(preact@10.24.1)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))':
     dependencies:
       '@babel/core': 7.25.2
       '@prefresh/babel-plugin': 0.5.1
@@ -15527,7 +15527,7 @@ snapshots:
       '@prefresh/utils': 1.2.0
       '@rollup/pluginutils': 4.2.1
       preact: 10.24.1
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -15724,7 +15724,7 @@ snapshots:
 
   '@rushstack/eslint-patch@1.10.4': {}
 
-  '@rushstack/node-core-library@5.7.0(@types/node@22.7.5)':
+  '@rushstack/node-core-library@5.7.0(@types/node@22.7.9)':
     dependencies:
       ajv: 8.13.0
       ajv-draft-04: 1.0.0(ajv@8.13.0)
@@ -15735,23 +15735,23 @@ snapshots:
       resolve: 1.22.8
       semver: 7.5.4
     optionalDependencies:
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
 
   '@rushstack/rig-package@0.5.3':
     dependencies:
       resolve: 1.22.8
       strip-json-comments: 3.1.1
 
-  '@rushstack/terminal@0.14.0(@types/node@22.7.5)':
+  '@rushstack/terminal@0.14.0(@types/node@22.7.9)':
     dependencies:
-      '@rushstack/node-core-library': 5.7.0(@types/node@22.7.5)
+      '@rushstack/node-core-library': 5.7.0(@types/node@22.7.9)
       supports-color: 8.1.1
     optionalDependencies:
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
 
-  '@rushstack/ts-command-line@4.22.6(@types/node@22.7.5)':
+  '@rushstack/ts-command-line@4.22.6(@types/node@22.7.9)':
     dependencies:
-      '@rushstack/terminal': 0.14.0(@types/node@22.7.5)
+      '@rushstack/terminal': 0.14.0(@types/node@22.7.9)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -15768,11 +15768,11 @@ snapshots:
     dependencies:
       solid-js: 1.9.1
 
-  '@solidjs/start@1.0.8(solid-js@1.9.1)(vinxi@0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))':
+  '@solidjs/start@1.0.8(solid-js@1.9.1)(vinxi@0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))':
     dependencies:
-      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))
-      '@vinxi/server-components': 0.4.3(vinxi@0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))
-      '@vinxi/server-functions': 0.4.3(vinxi@0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))
+      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))
+      '@vinxi/server-components': 0.4.3(vinxi@0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))
+      '@vinxi/server-functions': 0.4.3(vinxi@0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))
       defu: 6.1.4
       error-stack-parser: 2.1.4
       glob: 10.4.5
@@ -15783,7 +15783,7 @@ snapshots:
       shikiji: 0.9.19
       source-map-js: 1.2.1
       terracotta: 1.0.5(solid-js@1.9.1)
-      vite-plugin-solid: 2.10.2(solid-js@1.9.1)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+      vite-plugin-solid: 2.10.2(solid-js@1.9.1)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
     transitivePeerDependencies:
       - '@testing-library/jest-dom'
       - solid-js
@@ -15804,25 +15804,25 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@sveltejs/vite-plugin-svelte-inspector@3.0.0-next.3(@sveltejs/vite-plugin-svelte@4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3)))(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))':
+  '@sveltejs/vite-plugin-svelte-inspector@3.0.0-next.3(@sveltejs/vite-plugin-svelte@4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3)))(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+      '@sveltejs/vite-plugin-svelte': 4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
       debug: 4.3.6
       svelte: 5.0.0-next.262
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
     transitivePeerDependencies:
       - supports-color
 
-  '@sveltejs/vite-plugin-svelte@4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))':
+  '@sveltejs/vite-plugin-svelte@4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte-inspector': 3.0.0-next.3(@sveltejs/vite-plugin-svelte@4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3)))(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+      '@sveltejs/vite-plugin-svelte-inspector': 3.0.0-next.3(@sveltejs/vite-plugin-svelte@4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3)))(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
       debug: 4.3.6
       deepmerge: 4.3.1
       kleur: 4.1.5
       magic-string: 0.30.11
       svelte: 5.0.0-next.262
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
-      vitefu: 0.2.5(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
+      vitefu: 0.2.5(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
     transitivePeerDependencies:
       - supports-color
 
@@ -16009,7 +16009,7 @@ snapshots:
 
   '@types/conventional-commits-parser@5.0.0':
     dependencies:
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
 
   '@types/debug@4.1.12':
     dependencies:
@@ -16030,7 +16030,7 @@ snapshots:
   '@types/fs-extra@11.0.4':
     dependencies:
       '@types/jsonfile': 6.1.4
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
 
   '@types/hast@2.3.10':
     dependencies:
@@ -16042,7 +16042,7 @@ snapshots:
 
   '@types/http-proxy@1.17.14':
     dependencies:
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
 
   '@types/inquirer@9.0.7':
     dependencies:
@@ -16055,12 +16055,12 @@ snapshots:
 
   '@types/jsonfile@6.1.4':
     dependencies:
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
 
   '@types/liftoff@4.0.3':
     dependencies:
       '@types/fined': 1.1.5
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
 
   '@types/lodash.mergewith@4.6.7':
     dependencies:
@@ -16096,7 +16096,7 @@ snapshots:
     dependencies:
       undici-types: 6.19.8
 
-  '@types/node@22.7.5':
+  '@types/node@22.7.9':
     dependencies:
       undici-types: 6.19.8
 
@@ -16129,13 +16129,13 @@ snapshots:
 
   '@types/signale@1.4.7':
     dependencies:
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
 
   '@types/textarea-caret@3.0.3': {}
 
   '@types/through@0.0.33':
     dependencies:
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
 
   '@types/trusted-types@2.0.7': {}
 
@@ -16431,7 +16431,7 @@ snapshots:
     transitivePeerDependencies:
       - uWebSockets.js
 
-  '@vinxi/plugin-directives@0.4.3(vinxi@0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))':
+  '@vinxi/plugin-directives@0.4.3(vinxi@0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))':
     dependencies:
       '@babel/parser': 7.25.8
       acorn: 8.12.1
@@ -16442,38 +16442,38 @@ snapshots:
       magicast: 0.2.11
       recast: 0.23.9
       tslib: 2.7.0
-      vinxi: 0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3)
+      vinxi: 0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3)
 
-  '@vinxi/server-components@0.4.3(vinxi@0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))':
+  '@vinxi/server-components@0.4.3(vinxi@0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))':
     dependencies:
-      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))
+      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))
       acorn: 8.12.1
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.1)
       astring: 1.8.6
       magicast: 0.2.11
       recast: 0.23.9
-      vinxi: 0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3)
+      vinxi: 0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3)
 
-  '@vinxi/server-functions@0.4.3(vinxi@0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))':
+  '@vinxi/server-functions@0.4.3(vinxi@0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))':
     dependencies:
-      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))
+      '@vinxi/plugin-directives': 0.4.3(vinxi@0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3))
       acorn: 8.12.1
       acorn-loose: 8.4.0
       acorn-typescript: 1.4.13(acorn@8.12.1)
       astring: 1.8.6
       magicast: 0.2.11
       recast: 0.23.9
-      vinxi: 0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3)
+      vinxi: 0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3)
 
-  '@vitejs/plugin-react@4.3.2(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))':
+  '@vitejs/plugin-react@4.3.2(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.25.2)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -16499,13 +16499,13 @@ snapshots:
       chai: 5.1.1
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.3(@vitest/spy@2.1.3)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))':
+  '@vitest/mocker@2.1.3(@vitest/spy@2.1.3)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))':
     dependencies:
       '@vitest/spy': 2.1.3
       estree-walker: 3.0.3
       magic-string: 0.30.11
     optionalDependencies:
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
 
   '@vitest/pretty-format@2.1.3':
     dependencies:
@@ -17494,9 +17494,9 @@ snapshots:
       has-own-prop: 2.0.0
       repeat-string: 1.6.1
 
-  commitlint@19.5.0(@types/node@22.7.5)(typescript@5.6.3):
+  commitlint@19.5.0(@types/node@22.7.9)(typescript@5.6.3):
     dependencies:
-      '@commitlint/cli': 19.5.0(@types/node@22.7.5)(typescript@5.6.3)
+      '@commitlint/cli': 19.5.0(@types/node@22.7.9)(typescript@5.6.3)
       '@commitlint/types': 19.5.0
     transitivePeerDependencies:
       - '@types/node'
@@ -17589,9 +17589,9 @@ snapshots:
 
   core-util-is@1.0.3: {}
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@22.7.5)(cosmiconfig@9.0.0(typescript@5.6.3))(typescript@5.6.3):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@22.7.9)(cosmiconfig@9.0.0(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
       cosmiconfig: 9.0.0(typescript@5.6.3)
       jiti: 1.21.6
       typescript: 5.6.3
@@ -22119,7 +22119,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
       long: 5.2.3
 
   protocols@2.0.1: {}
@@ -23197,7 +23197,7 @@ snapshots:
 
   tslib@2.7.0: {}
 
-  tsup@8.3.0(@microsoft/api-extractor@7.47.7(@types/node@22.7.5))(@swc/core@1.7.36(@swc/helpers@0.5.12))(jiti@1.21.6)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(yaml@2.5.0):
+  tsup@8.3.0(@microsoft/api-extractor@7.47.7(@types/node@22.7.9))(@swc/core@1.7.36(@swc/helpers@0.5.12))(jiti@1.21.6)(postcss@8.4.47)(tsx@4.19.1)(typescript@5.6.3)(yaml@2.5.0):
     dependencies:
       bundle-require: 5.0.0(esbuild@0.23.0)
       cac: 6.7.14
@@ -23216,7 +23216,7 @@ snapshots:
       tinyglobby: 0.2.6
       tree-kill: 1.2.2
     optionalDependencies:
-      '@microsoft/api-extractor': 7.47.7(@types/node@22.7.5)
+      '@microsoft/api-extractor': 7.47.7(@types/node@22.7.9)
       '@swc/core': 1.7.36(@swc/helpers@0.5.12)
       postcss: 8.4.47
       typescript: 5.6.3
@@ -23658,7 +23658,7 @@ snapshots:
       unist-util-stringify-position: 4.0.0
       vfile-message: 4.0.2
 
-  vinxi@0.4.3(@types/node@22.7.5)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3):
+  vinxi@0.4.3(@types/node@22.7.9)(ioredis@5.4.1)(magicast@0.3.5)(terser@5.31.3):
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-syntax-jsx': 7.24.7(@babel/core@7.25.2)
@@ -23692,7 +23692,7 @@ snapshots:
       unctx: 2.3.1
       unenv: 1.10.0
       unstorage: 1.10.2(ioredis@5.4.1)
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
       zod: 3.23.8
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -23747,12 +23747,12 @@ snapshots:
       - supports-color
       - terser
 
-  vite-node@2.1.3(@types/node@22.7.5)(terser@5.31.3):
+  vite-node@2.1.3(@types/node@22.7.9)(terser@5.31.3):
     dependencies:
       cac: 6.7.14
       debug: 4.3.6
       pathe: 1.1.2
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -23786,9 +23786,9 @@ snapshots:
       optionator: 0.9.4
       typescript: 5.6.3
 
-  vite-plugin-dts@4.2.4(@types/node@22.7.5)(rollup@4.22.5)(typescript@5.6.3)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3)):
+  vite-plugin-dts@4.2.4(@types/node@22.7.9)(rollup@4.22.5)(typescript@5.6.3)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3)):
     dependencies:
-      '@microsoft/api-extractor': 7.47.7(@types/node@22.7.5)
+      '@microsoft/api-extractor': 7.47.7(@types/node@22.7.9)
       '@rollup/pluginutils': 5.1.2(rollup@4.22.5)
       '@volar/typescript': 2.4.5
       '@vue/language-core': 2.1.6(typescript@5.6.3)
@@ -23799,7 +23799,7 @@ snapshots:
       magic-string: 0.30.11
       typescript: 5.6.3
     optionalDependencies:
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
@@ -23823,7 +23823,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-plugin-solid@2.10.2(solid-js@1.9.1)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3)):
+  vite-plugin-solid@2.10.2(solid-js@1.9.1)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3)):
     dependencies:
       '@babel/core': 7.25.2
       '@types/babel__core': 7.20.5
@@ -23831,8 +23831,8 @@ snapshots:
       merge-anything: 5.1.7
       solid-js: 1.9.1
       solid-refresh: 0.6.3(solid-js@1.9.1)
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
-      vitefu: 0.2.5(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
+      vitefu: 0.2.5(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
     transitivePeerDependencies:
       - supports-color
 
@@ -23851,13 +23851,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-tsconfig-paths@5.0.1(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3)):
+  vite-tsconfig-paths@5.0.1(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3)):
     dependencies:
       debug: 4.3.6
       globrex: 0.1.2
       tsconfck: 3.1.1(typescript@5.6.2)
     optionalDependencies:
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -23872,24 +23872,24 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.31.3
 
-  vite@5.4.8(@types/node@22.7.5)(terser@5.31.3):
+  vite@5.4.8(@types/node@22.7.9)(terser@5.31.3):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.47
       rollup: 4.22.5
     optionalDependencies:
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
       fsevents: 2.3.3
       terser: 5.31.3
 
-  vitefu@0.2.5(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3)):
+  vitefu@0.2.5(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3)):
     optionalDependencies:
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
 
-  vitest@2.1.3(@types/node@22.7.5)(terser@5.31.3):
+  vitest@2.1.3(@types/node@22.7.9)(terser@5.31.3):
     dependencies:
       '@vitest/expect': 2.1.3
-      '@vitest/mocker': 2.1.3(@vitest/spy@2.1.3)(vite@5.4.8(@types/node@22.7.5)(terser@5.31.3))
+      '@vitest/mocker': 2.1.3(@vitest/spy@2.1.3)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
       '@vitest/pretty-format': 2.1.3
       '@vitest/runner': 2.1.3
       '@vitest/snapshot': 2.1.3
@@ -23904,11 +23904,11 @@ snapshots:
       tinyexec: 0.3.0
       tinypool: 1.0.0
       tinyrainbow: 1.2.0
-      vite: 5.4.8(@types/node@22.7.5)(terser@5.31.3)
-      vite-node: 2.1.3(@types/node@22.7.5)(terser@5.31.3)
+      vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
+      vite-node: 2.1.3(@types/node@22.7.9)(terser@5.31.3)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 22.7.5
+      '@types/node': 22.7.9
     transitivePeerDependencies:
       - less
       - lightningcss
