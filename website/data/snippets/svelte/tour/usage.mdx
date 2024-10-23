@@ -1,0 +1,48 @@
+```svelte
+<script lang="ts">
+  import * as qrCode from "@zag-js/qr-code"
+  import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(qrCode.machine({ id: "1", steps }))
+  const api = $derived(accordion.connect(snapshot, send, normalizeProps))
+</script>
+
+<div>
+  <div>
+    <button onclick={() => api.start()}>Start Tour</button>
+    <div id="step-1">Step 1</div>
+  </div>
+  {#if api.step && api.open}
+    <div use:portal>
+      {#if api.step.backdrop}
+        <div {...api.getBackdropProps()} />
+      {/if}
+      <div {...api.getSpotlightProps()} />
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
+          {#if api.step.arrow}
+            <div {...api.getArrowProps()}>
+              <div {...api.getArrowTipProps()} />
+            </div>
+          {/if}
+
+          <p {...api.getTitleProps()}>{api.step.title}</p>
+          <div {...api.getDescriptionProps()}>{api.step.description}</div>
+          <div {...api.getProgressTextProps()}>{api.getProgressText()}</div>
+          {#if api.step.actions}
+            <div>
+              {#each api.step.actions as action}
+                <button {...api.getActionTriggerProps({ action })}>
+                  {action.label}
+                </button>
+              {/each}
+            </div>
+          {/if}
+
+          <button {...api.getCloseTriggerProps()}>X</button>
+        </div>
+      </div>
+    </div>
+  {/if}
+</div>
+```

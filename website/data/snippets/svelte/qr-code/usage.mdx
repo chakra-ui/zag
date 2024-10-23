@@ -1,0 +1,21 @@
+```svelte
+<script lang="ts">
+  import * as qrCode from "@zag-js/qr-code"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(qrCode.machine({ id: "1", value: "https://github.com/chakra-ui", }))
+  const api = $derived(accordion.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <svg {...api.getFrameProps()}>
+    <path {...api.getPatternProps()} />
+  </svg>
+  <div {...api.getOverlayProps()}>
+    <img
+      src="https://avatars.githubusercontent.com/u/54212428?s=88&v=4"
+      alt=""
+    />
+  </div>
+</div>
+```
