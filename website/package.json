@@ -85,8 +85,8 @@
   "devDependencies": {
     "@types/react": "18.3.11",
     "all-contributors-cli": "6.26.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.15",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "15.0.1",
     "prettier": "3.3.3",
     "rehype": "13.0.2",
     "rehype-autolink-headings": "7.1.0",
