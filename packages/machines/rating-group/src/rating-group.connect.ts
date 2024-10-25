@@ -8,6 +8,7 @@ import type { ItemProps, ItemState, MachineApi, Send, State } from "./rating-gro
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const interactive = state.context.isInteractive
   const disabled = state.context.isDisabled
+  const readOnly = state.context.readOnly
   const value = state.context.value
   const hoveredValue = state.context.hoveredValue
   const translations = state.context.translations
@@ -54,7 +55,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: "text",
         hidden: true,
         disabled,
-        readOnly: state.context.readOnly,
+        readOnly,
         required: state.context.required,
         id: dom.getHiddenInputId(state.context),
         defaultValue: state.context.value,
@@ -86,9 +87,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "radiogroup",
         "aria-orientation": "horizontal",
         "aria-labelledby": dom.getLabelId(state.context),
-        "aria-readonly": ariaAttr(state.context.readOnly),
-        "data-readonly": dataAttr(state.context.readOnly),
-        tabIndex: state.context.readOnly ? 0 : -1,
+        "aria-readonly": ariaAttr(readOnly),
+        "data-readonly": dataAttr(readOnly),
         "data-disabled": dataAttr(disabled),
         onPointerMove(event) {
           if (!interactive) return
@@ -115,12 +115,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         id: dom.getItemId(state.context, index.toString()),
         role: "radio",
-        tabIndex: disabled ? undefined : itemState.checked ? 0 : -1,
+        tabIndex: (() => {
+          if (readOnly) return itemState.checked ? 0 : undefined
+          if (disabled) return undefined
+          return itemState.checked ? 0 : -1
+        })(),
         "aria-roledescription": "rating",
         "aria-label": valueText,
         "aria-disabled": disabled,
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(state.context.readOnly),
+        "data-readonly": dataAttr(readOnly),
         "aria-setsize": state.context.count,
         "aria-checked": itemState.checked,
         "data-checked": dataAttr(itemState.checked),
