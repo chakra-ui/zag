@@ -382,12 +382,18 @@ export class Machine<
   private getAfterActions = (transition: S.Transitions<TContext, TState, TEvent>, delay?: number) => {
     let id: ReturnType<typeof globalThis.setTimeout>
     const current = this.state.value!
+
+    const safeDelay =
+      delay != null
+        ? Math.min(delay, 2_147_483_647) // Ensure the delay does not exceed the maximum value for setTimeout
+        : undefined
+
     return {
       entry: () => {
         id = globalThis.setTimeout(() => {
           const next = this.getNextStateInfo(transition, this.state.event)
           this.performStateChangeEffects(current, next, this.state.event)
-        }, delay)
+        }, safeDelay)
       },
       exit: () => {
         globalThis.clearTimeout(id)
