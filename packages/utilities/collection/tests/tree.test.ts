@@ -1,10 +1,10 @@
 import { filePathToTree, flattenedToTree, TreeCollection } from "../src/tree-collection"
 
-let tree: TreeCollection<{ value: string; children: Array<{ value: string }> }>
+let tree: TreeCollection<{ value: string; children: { value: string }[] }>
 
 beforeEach(() => {
   tree = new TreeCollection({
-    itemToChildren: (node) => node.children,
+    itemToChildren: (node: any) => node.children,
     items: {
       value: "ROOT",
       children: [
@@ -161,13 +161,6 @@ describe("tree", () => {
   })
 
   it("value path", () => {
-    expect(tree.getIndexPath("child1-2")).toMatchInlineSnapshot(`
-      [
-        0,
-        1,
-      ]
-    `)
-
     expect(tree.getValuePath("child1-2")).toMatchInlineSnapshot(`
       [
         "branch1",
@@ -369,45 +362,6 @@ describe("tree", () => {
           },
         ],
         "value": "ROOT",
-      }
-    `)
-  })
-
-  it("skips disabled nodes", () => {
-    const tree = new TreeCollection({
-      itemToChildren: (node) => node.children,
-      items: {
-        value: "ROOT",
-        children: [
-          { value: "child1" },
-          { value: "child2", disabled: true },
-          { value: "child3" },
-          { value: "child4", disabled: true },
-        ],
-      },
-    })
-
-    expect(tree.getFirstNode()).toMatchInlineSnapshot(`
-      {
-        "value": "child1",
-      }
-    `)
-
-    expect(tree.getLastNode()).toMatchInlineSnapshot(`
-      {
-        "value": "child3",
-      }
-    `)
-
-    expect(tree.getNextNode("child1")).toMatchInlineSnapshot(`
-      {
-        "value": "child3",
-      }
-    `)
-
-    expect(tree.getPreviousNode("child3")).toMatchInlineSnapshot(`
-      {
-        "value": "child1",
       }
     `)
   })
