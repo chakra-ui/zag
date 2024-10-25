@@ -179,4 +179,28 @@ describe("after.test.ts", async () => {
     vi.advanceTimersByTime(200)
     expect(actor.state.matches("active")).toBe(true)
   })
+
+  it("should execute after the max delay value if the over maximum value is specified", () => {
+    const machine = createMachine({
+      initial: "inactive",
+      states: {
+        inactive: {
+          after: {
+            2_147_483_648: "active",
+            Infinity: "active",
+          },
+        },
+        active: {},
+      },
+    })
+
+    const actor = machine.start()
+    expect(actor.state.matches("inactive")).toBe(true)
+
+    vi.advanceTimersByTime(100)
+    expect(actor.state.matches("inactive")).toBe(true)
+
+    vi.advanceTimersByTime(2_147_483_647 - 100)
+    expect(actor.state.matches("active")).toBe(true)
+  })
 })
