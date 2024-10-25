@@ -3639,6 +3639,9 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../core
+      tree-visit:
+        specifier: 0.4.2
+        version: 0.4.2
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -12337,6 +12340,9 @@ packages:
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
+
+  tree-visit@0.4.2:
+    resolution: {integrity: sha512-BPfpiWqIwFzvObmmcUqUNt5A+2ZsOzrUcJ6DMaDKkNRz5gUAtdZu/Ya9f13/zjXkkiqYxNdKr8vd3pG2s400fQ==}
 
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
@@ -22923,6 +22929,8 @@ snapshots:
       punycode: 2.3.1
 
   tree-kill@1.2.2: {}
+
+  tree-visit@0.4.2: {}
 
   trim-lines@3.0.1: {}
 
