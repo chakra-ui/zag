@@ -1,5 +1,22 @@
 # @zag-js/hover-card
 
+## 0.76.0
+
+### Patch Changes
+
+- [`a6ed144`](https://github.com/chakra-ui/zag/commit/a6ed1441b67060a65e5b493704f98abd6cf0a047) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove prevent default calls on touch start event to avoid browser
+  error log.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.76.0
+  - @zag-js/core@0.76.0
+  - @zag-js/types@0.76.0
+  - @zag-js/utils@0.76.0
+  - @zag-js/dismissable@0.76.0
+  - @zag-js/dom-query@0.76.0
+  - @zag-js/popper@0.76.0
+
 ## 0.75.0
 
 ### Patch Changes
