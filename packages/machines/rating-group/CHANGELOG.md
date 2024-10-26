@@ -1,5 +1,22 @@
 # @zag-js/rating-group
 
+## 0.76.0
+
+### Patch Changes
+
+- [`79f6e71`](https://github.com/chakra-ui/zag/commit/79f6e71216e83f03ca21cf29d1a1a30338301888) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where both rating group and rating item have focus when
+  `readOnly` is set to `true`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.76.0
+  - @zag-js/core@0.76.0
+  - @zag-js/types@0.76.0
+  - @zag-js/utils@0.76.0
+  - @zag-js/dom-event@0.76.0
+  - @zag-js/dom-query@0.76.0
+  - @zag-js/form-utils@0.76.0
+
 ## 0.75.0
 
 ### Patch Changes

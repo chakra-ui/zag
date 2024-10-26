@@ -1,5 +1,24 @@
 # @zag-js/tags-input
 
+## 0.76.0
+
+### Patch Changes
+
+- [`bd45a73`](https://github.com/chakra-ui/zag/commit/bd45a73076475d2b75fd1b60bc48a9a754925d19) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `api.addTag(...)` doesn't work in tags input
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.76.0
+  - @zag-js/core@0.76.0
+  - @zag-js/types@0.76.0
+  - @zag-js/auto-resize@0.76.0
+  - @zag-js/utils@0.76.0
+  - @zag-js/dom-event@0.76.0
+  - @zag-js/dom-query@0.76.0
+  - @zag-js/form-utils@0.76.0
+  - @zag-js/interact-outside@0.76.0
+  - @zag-js/live-region@0.76.0
+
 ## 0.75.0
 
 ### Patch Changes

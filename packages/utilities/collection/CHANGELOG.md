@@ -1,5 +1,18 @@
 # @zag-js/collection
 
+## 0.76.0
+
+### Minor Changes
+
+- [`70297fe`](https://github.com/chakra-ui/zag/commit/70297fe6abbbc164ab2d38079122e23f8382a23a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `TreeCollection` which will be used to traverse
+  trees in the treeview and cascader components.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@0.76.0
+
 ## 0.75.0
 
 ### Patch Changes
