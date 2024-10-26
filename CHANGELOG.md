@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.76.0](./#0.76.0) - 2024-10-26
+
+### Fixed
+
+- **TagsInput**: Fix issue where `api.addTag(...)` doesn't work in tags input
+- **RatingGroup**: Fix issue where both rating group and rating item have focus when `readOnly` is set to `true`
+- **Combobox**: Fix issue where `getSelectionValue` could gets called multiple times. Now, it only gets called when a
+  selection is made
+- **HoverCard**: Remove prevent default calls on touch start event to avoid browser error log
+
+### Added
+
+- **Collection**: Add `TreeCollection` utility to traverse trees in the treeview and cascader components
+
 ## [0.75.0](./#0.75.0) - 2024-10-18
 
 ### Fixed
