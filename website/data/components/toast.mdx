@@ -53,13 +53,7 @@ toast machine in your project 🔥
 
 <CodeSnippet id="toast/usage.mdx" />
 
-The toast consists of three key aspects:
-
-### Toast Item
-
-- `toast.machine` — The state machine representation of a single toast.
-- `toast.connect` — The function that takes the toast machine and returns
-  methods and JSX properties.
+The use the toast effectively, you need to understand these key aspects:
 
 ### Toast Group
 
@@ -70,6 +64,12 @@ The toast consists of three key aspects:
 
   > We recommend setting up the toast group machine once at the root of your
   > project.
+
+### Toast Item
+
+- `toast.machine` — The state machine representation of a single toast.
+- `toast.connect` — The function that takes the toast machine and returns
+  methods and JSX properties.
 
 ## Creating a toast
 
@@ -125,6 +125,9 @@ const [state, send] = useMachine(
   }),
 )
 ```
+
+When using overlap, the toast's placement must match the `placement` of the
+toast group (which is `bottom` by default).
 
 > Be sure to set up the [required styles](#requirement) to make the toasts
 > overlap correctly.
