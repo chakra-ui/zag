@@ -60,9 +60,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onBlur() {
           send("TRIGGER_BLUR")
         },
-        onTouchStart(event) {
-          event.preventDefault()
-        },
       })
     },
 
