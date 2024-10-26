@@ -4,6 +4,16 @@
 
 # Zag
 
+<p>
+  <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@zag-js/core.svg?style=flat"/>
+  <img alt="Github Stars" src="https://badgen.net/github/stars/chakra-ui/zag" />
+  <a href="https://zagjs.com/discord">
+    <img alt="Discord" src="https://img.shields.io/discord/660863154703695893.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2" />
+  </a>
+</p>
+
+
+
 Finite state machines for accessible JavaScript components
 
 - **Write once, use everywhere 🦄**: The component interactions are modelled in a framework agnostic way. We provide
