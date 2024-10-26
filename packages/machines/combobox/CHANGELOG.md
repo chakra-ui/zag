@@ -1,5 +1,25 @@
 # @zag-js/combobox
 
+## 0.76.0
+
+### Patch Changes
+
+- [`649b8e6`](https://github.com/chakra-ui/zag/commit/649b8e6303326b239c500e3319038cad8a026876) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `getSelectionValue` could gets called multiple
+  times. Now, it only gets called when a selection is made.
+
+- Updated dependencies [[`70297fe`](https://github.com/chakra-ui/zag/commit/70297fe6abbbc164ab2d38079122e23f8382a23a)]:
+  - @zag-js/collection@0.76.0
+  - @zag-js/anatomy@0.76.0
+  - @zag-js/core@0.76.0
+  - @zag-js/types@0.76.0
+  - @zag-js/aria-hidden@0.76.0
+  - @zag-js/utils@0.76.0
+  - @zag-js/dismissable@0.76.0
+  - @zag-js/dom-event@0.76.0
+  - @zag-js/dom-query@0.76.0
+  - @zag-js/popper@0.76.0
+
 ## 0.75.0
 
 ### Patch Changes
