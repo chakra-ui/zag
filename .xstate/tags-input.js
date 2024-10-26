@@ -64,13 +64,16 @@ const fetchMachine = createMachine({
       actions: ["clearTags", "clearInputValue", "focusInput"]
     },
     ADD_TAG: {
+      actions: ["addTag"]
+    },
+    INSERT_TAG: {
       // (!isAtMax || allowOverflow) && !inputValueIsEmpty
       cond: "(!isAtMax || allowOverflow) && !isInputValueEmpty",
       actions: ["addTag", "clearInputValue"]
     },
     EXTERNAL_BLUR: [{
       cond: "addOnBlur",
-      actions: "raiseAddTagEvent"
+      actions: "raiseInsertTagEvent"
     }, {
       cond: "clearOnBlur",
       actions: "clearInputValue"
@@ -102,7 +105,7 @@ const fetchMachine = createMachine({
         BLUR: [{
           cond: "addOnBlur",
           target: "idle",
-          actions: "raiseAddTagEvent"
+          actions: "raiseInsertTagEvent"
         }, {
           cond: "clearOnBlur",
           target: "idle",
@@ -111,10 +114,10 @@ const fetchMachine = createMachine({
           target: "idle"
         }],
         ENTER: {
-          actions: ["raiseAddTagEvent"]
+          actions: ["raiseInsertTagEvent"]
         },
         DELIMITER_KEY: {
-          actions: ["raiseAddTagEvent"]
+          actions: ["raiseInsertTagEvent"]
         },
         ARROW_LEFT: {
           cond: "hasTags && isInputCaretAtStart",

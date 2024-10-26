@@ -100,12 +100,15 @@ export function machine(userContext: UserDefinedContext) {
           actions: ["clearTags", "clearInputValue", "focusInput"],
         },
         ADD_TAG: {
+          actions: ["addTag"],
+        },
+        INSERT_TAG: {
           // (!isAtMax || allowOverflow) && !inputValueIsEmpty
           guard: and(or(not("isAtMax"), "allowOverflow"), not("isInputValueEmpty")),
           actions: ["addTag", "clearInputValue"],
         },
         EXTERNAL_BLUR: [
-          { guard: "addOnBlur", actions: "raiseAddTagEvent" },
+          { guard: "addOnBlur", actions: "raiseInsertTagEvent" },
           { guard: "clearOnBlur", actions: "clearInputValue" },
         ],
       },
@@ -133,7 +136,7 @@ export function machine(userContext: UserDefinedContext) {
               {
                 guard: "addOnBlur",
                 target: "idle",
-                actions: "raiseAddTagEvent",
+                actions: "raiseInsertTagEvent",
               },
               {
                 guard: "clearOnBlur",
@@ -143,10 +146,10 @@ export function machine(userContext: UserDefinedContext) {
               { target: "idle" },
             ],
             ENTER: {
-              actions: ["raiseAddTagEvent"],
+              actions: ["raiseInsertTagEvent"],
             },
             DELIMITER_KEY: {
-              actions: ["raiseAddTagEvent"],
+              actions: ["raiseInsertTagEvent"],
             },
             ARROW_LEFT: {
               guard: and("hasTags", "isInputCaretAtStart"),
@@ -338,8 +341,8 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       actions: {
-        raiseAddTagEvent(_, __, { self }) {
-          self.send("ADD_TAG")
+        raiseInsertTagEvent(_, __, { self }) {
+          self.send("INSERT_TAG")
         },
         raiseExternalBlurEvent(_, evt, { self }) {
           self.send({ type: "EXTERNAL_BLUR", id: evt.id })
