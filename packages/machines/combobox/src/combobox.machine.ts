@@ -712,15 +712,18 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
         selectHighlightedItem(ctx) {
           set.value(ctx, ctx.highlightedValue)
+          set.inputValue(ctx, getInputValue(ctx, true))
         },
         selectItem(ctx, evt) {
           if (evt.value == null) return
           set.value(ctx, evt.value)
+          set.inputValue(ctx, getInputValue(ctx, true))
         },
         clearItem(ctx, evt) {
           if (evt.value == null) return
           const value = ctx.value.filter((v) => v !== evt.value)
           set.value(ctx, value)
+          set.inputValue(ctx, getInputValue(ctx))
         },
         setInitialFocus(ctx) {
           raf(() => {
@@ -791,9 +794,11 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         setSelectedItems(ctx, evt) {
           if (!isArray(evt.value)) return
           set.value(ctx, evt.value)
+          set.inputValue(ctx, getInputValue(ctx))
         },
         clearSelectedItems(ctx) {
           set.value(ctx, [])
+          set.inputValue(ctx, getInputValue(ctx))
         },
         scrollContentToTop(ctx) {
           if (ctx.scrollToIndexFn) {
@@ -890,6 +895,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
         syncSelectedItems(ctx) {
           sync.valueChange(ctx)
+          set.inputValue(ctx, getInputValue(ctx))
         },
         syncHighlightedItem(ctx) {
           sync.highlightChange(ctx)
@@ -900,6 +906,22 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
       },
     },
   )
+}
+
+function getInputValue(ctx: MachineContext, selection?: boolean) {
+  if (ctx.getSelectionValue && selection) {
+    return ctx.getSelectionValue({
+      inputValue: ctx.inputValue,
+      selectedItems: Array.from(ctx.selectedItems),
+      valueAsString: ctx.valueAsString,
+    })
+  }
+
+  return match(ctx.selectionBehavior, {
+    preserve: ctx.inputValue,
+    replace: ctx.valueAsString,
+    clear: "",
+  })
 }
 
 const sync = {
@@ -913,29 +935,7 @@ const sync = {
       return ctx.collection.find(v)
     })
 
-    const valueAsString = ctx.collection.stringifyItems(ctx.selectedItems)
-    ctx.valueAsString = valueAsString
-
-    // set inputValue
-    let inputValue: string | undefined
-    if (ctx.getSelectionValue) {
-      //
-      inputValue = ctx.getSelectionValue({
-        inputValue: ctx.inputValue,
-        selectedItems: Array.from(ctx.selectedItems),
-        valueAsString,
-      })
-      //
-    } else {
-      //
-      inputValue = match(ctx.selectionBehavior, {
-        replace: ctx.valueAsString,
-        preserve: ctx.inputValue,
-        clear: "",
-      })
-    }
-
-    set.inputValue(ctx, inputValue)
+    ctx.valueAsString = ctx.collection.stringifyItems(ctx.selectedItems)
   },
   highlightChange: (ctx: MachineContext) => {
     ctx.highlightedItem = ctx.collection.find(ctx.highlightedValue)
