@@ -5,7 +5,7 @@
 ### Patch Changes
 
 - [`bd45a73`](https://github.com/chakra-ui/zag/commit/bd45a73076475d2b75fd1b60bc48a9a754925d19) Thanks
-  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `api.addTag(...)` doesn't work in tags input
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `api.addValue(...)` doesn't work in tags input
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.76.0
