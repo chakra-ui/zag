@@ -10,7 +10,7 @@ See the [Changesets](./.changeset) for the latest changes.
 
 ### Fixed
 
-- **TagsInput**: Fix issue where `api.addTag(...)` doesn't work in tags input
+- **TagsInput**: Fix issue where `api.addValue(...)` doesn't work in tags input
 - **RatingGroup**: Fix issue where both rating group and rating item have focus when `readOnly` is set to `true`
 - **Combobox**: Fix issue where `getSelectionValue` could gets called multiple times. Now, it only gets called when a
   selection is made
