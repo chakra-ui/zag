@@ -1,52 +1,34 @@
 import { spread } from "@open-wc/lit-helpers"
 import * as carousel from "@zag-js/carousel"
-import { StateFrom } from "@zag-js/core"
+import { Machine } from "@zag-js/core"
 import { carouselData } from "@zag-js/shared"
-import { LitElement, html, unsafeCSS } from "lit"
-import { customElement, state } from "lit/decorators.js"
-import { normalizeProps } from "./normalize-props"
+import { PropTypes } from "@zag-js/types"
+import { html, unsafeCSS } from "lit"
+import { customElement } from "lit/decorators.js"
 import styles from "../../../shared/src/css/carousel.css?inline"
+import { Component } from "./component"
+import { normalizeProps } from "./normalize-props"
 
 @customElement("carousel-element")
-export class CarouselElement extends LitElement {
-  private service: carousel.Service
-
-  @state()
-  private state: StateFrom<carousel.Service>
-
-  constructor() {
-    super()
-    this.service = carousel.machine({ id: "1", index: 0, spacing: "20px", slidesPerView: 2 })
-    this.service._created()
-
-    this.state = this.service.getState()
-    this.service.subscribe((state) => {
-      this.state = state
-    })
+export class CarouselElement extends Component<carousel.Context, carousel.Api, carousel.Service> {
+  initService(context: carousel.Context): Machine<any, any, any> {
+    return carousel.machine({ ...context, id: "1", index: 0, spacing: "20px", slidesPerView: 2 })
   }
 
-  connectedCallback(): void {
-    super.connectedCallback()
-    this.service.start()
-  }
-
-  disconnectedCallback(): void {
-    super.disconnectedCallback()
-    this.service.stop()
+  initApi(): carousel.Api<PropTypes> {
+    return carousel.connect(this.state, this.service.send, normalizeProps)
   }
 
   render() {
-    const api = carousel.connect(this.state, this.service.send, normalizeProps)
-
     return html`
-      <div ${spread(api.getRootProps())}>
-        <button ${spread(api.getPrevTriggerProps())}>Prev</button>
-        <button ${spread(api.getNextTriggerProps())}>Next</button>
-        <div ${spread(api.getViewportProps())}>
-          <div ${spread(api.getItemGroupProps())}>
+      <div ${spread(this.api.getRootProps())}>
+        <button ${spread(this.api.getPrevTriggerProps())}>Prev</button>
+        <button ${spread(this.api.getNextTriggerProps())}>Next</button>
+        <div ${spread(this.api.getViewportProps())}>
+          <div ${spread(this.api.getItemGroupProps())}>
             ${carouselData.map(
               (image, index) =>
-                html`<div ${spread(api.getItemProps({ index }))}>
+                html`<div ${spread(this.api.getItemProps({ index }))}>
                   <img src="${image}" alt="" style="height: 300px; width: 100%; object-fit: cover;" />
                 </div>`,
             )}
