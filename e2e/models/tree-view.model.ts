@@ -18,12 +18,12 @@ export class TreeViewModel extends Model {
     return this.page.getByRole("treeitem", { name })
   }
 
-  private branch(name: string) {
-    return this.page.locator(`[role=treeitem][data-branch="${name}"]`)
+  private branch(value: string) {
+    return this.page.locator(`[data-part=branch][data-value="${value}"]`)
   }
 
-  private branchTrigger(name: string) {
-    return this.page.locator(`[role=button][data-branch="${name}"]`)
+  private branchTrigger(value: string) {
+    return this.page.locator(`[data-part=branch-control][data-value="${value}"]`)
   }
 
   private button(name: string) {

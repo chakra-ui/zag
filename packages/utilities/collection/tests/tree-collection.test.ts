@@ -4,8 +4,8 @@ let tree: TreeCollection<{ value: string; children: Array<{ value: string }> }>
 
 beforeEach(() => {
   tree = new TreeCollection({
-    itemToChildren: (node) => node.children,
-    items: {
+    nodeToChildren: (node) => node.children,
+    rootNode: {
       value: "ROOT",
       children: [
         {
@@ -168,7 +168,9 @@ describe("tree", () => {
       ]
     `)
 
-    expect(tree.getValuePath("child1-2")).toMatchInlineSnapshot(`
+    const indexPath = tree.getIndexPath("child1-2")
+
+    expect(tree.getValuePath(indexPath)).toMatchInlineSnapshot(`
       [
         "branch1",
         "child1-2",
@@ -177,16 +179,6 @@ describe("tree", () => {
 
     expect(tree.flatten()).toMatchInlineSnapshot(`
       [
-        {
-          "children": [
-            "branch1",
-            "child1",
-            "child2",
-          ],
-          "indexPath": [],
-          "label": "ROOT",
-          "value": "ROOT",
-        },
         {
           "children": [
             "child1-1",
@@ -299,7 +291,7 @@ describe("tree", () => {
           indexPath: [2],
           value: "child2",
         },
-      ]).items,
+      ]).rootNode,
     ).toMatchInlineSnapshot(`
       {
         "children": [
@@ -336,7 +328,7 @@ describe("tree", () => {
       }
     `)
 
-    expect(filePathToTree(["a/b/c", "a/b/d", "a/e", "f"]).items).toMatchInlineSnapshot(`
+    expect(filePathToTree(["a/b/c", "a/b/d", "a/e", "f"]).rootNode).toMatchInlineSnapshot(`
       {
         "children": [
           {
@@ -375,8 +367,8 @@ describe("tree", () => {
 
   it("skips disabled nodes", () => {
     const tree = new TreeCollection({
-      itemToChildren: (node) => node.children,
-      items: {
+      nodeToChildren: (node) => node.children,
+      rootNode: {
         value: "ROOT",
         children: [
           { value: "child1" },

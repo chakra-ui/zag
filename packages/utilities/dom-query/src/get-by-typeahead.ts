@@ -1,4 +1,4 @@
-import { getByText } from "./get-by-text"
+import { getByText, type SearchableItem } from "./get-by-text"
 import type { ItemToId } from "./get-by-id"
 
 export interface TypeaheadState {
@@ -6,15 +6,15 @@ export interface TypeaheadState {
   timer: number
 }
 
-export interface TypeaheadOptions {
+export interface TypeaheadOptions<T> {
   state: TypeaheadState
   activeId: string | null
   key: string
   timeout?: number | undefined
-  itemToId?: ItemToId<HTMLElement> | undefined
+  itemToId?: ItemToId<T> | undefined
 }
 
-function getByTypeaheadImpl<T extends HTMLElement>(_items: T[], options: TypeaheadOptions) {
+function getByTypeaheadImpl<T extends SearchableItem>(_items: T[], options: TypeaheadOptions<T>) {
   const { state, activeId, key, timeout = 350, itemToId } = options
 
   const search = state.keysSoFar + key
