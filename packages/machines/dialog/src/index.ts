@@ -7,6 +7,7 @@ export type {
   MachineApi as Api,
   UserDefinedContext as Context,
   ElementIds,
+  MachineContext,
   OpenChangeDetails,
   Service,
 } from "./dialog.types"

@@ -9,6 +9,7 @@ export type {
   IndicatorProps,
   ItemProps,
   ItemState,
-  SlideChangeDetails,
+  MachineContext,
   Service,
+  SlideChangeDetails,
 } from "./carousel.types"

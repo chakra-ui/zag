@@ -1,6 +1,5 @@
 import { spread } from "@open-wc/lit-helpers"
 import * as accordion from "@zag-js/accordion"
-import { Machine } from "@zag-js/core"
 import { accordionData } from "@zag-js/shared"
 import { PropTypes } from "@zag-js/types"
 import { html, unsafeCSS } from "lit"
@@ -10,8 +9,8 @@ import { Component } from "./component"
 import { normalizeProps } from "./normalize-props"
 
 @customElement("accordion-element")
-export class AccordionElement extends Component<accordion.Context, accordion.Api, accordion.Service> {
-  initService(context: accordion.Context): Machine<any, any, any> {
+export class AccordionElement extends Component<accordion.MachineContext, accordion.Api, accordion.Service> {
+  initService(context: accordion.Context): accordion.Service {
     return accordion.machine({ ...context, id: "1" })
   }
 

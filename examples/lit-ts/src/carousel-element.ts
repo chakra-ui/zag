@@ -1,6 +1,5 @@
 import { spread } from "@open-wc/lit-helpers"
 import * as carousel from "@zag-js/carousel"
-import { Machine } from "@zag-js/core"
 import { carouselData } from "@zag-js/shared"
 import { PropTypes } from "@zag-js/types"
 import { html, unsafeCSS } from "lit"
@@ -10,8 +9,8 @@ import { Component } from "./component"
 import { normalizeProps } from "./normalize-props"
 
 @customElement("carousel-element")
-export class CarouselElement extends Component<carousel.Context, carousel.Api, carousel.Service> {
-  initService(context: carousel.Context): Machine<any, any, any> {
+export class CarouselElement extends Component<carousel.MachineContext, carousel.Api, carousel.Service> {
+  initService(context: carousel.Context): carousel.Service {
     return carousel.machine({ ...context, id: "1", index: 0, spacing: "20px", slidesPerView: 2 })
   }
 

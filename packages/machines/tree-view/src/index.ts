@@ -8,6 +8,7 @@ export type {
   ElementIds,
   ExpandedChangeDetails,
   FocusChangeDetails,
+  MachineContext,
   NodeProps,
   NodeState,
   SelectionChangeDetails,

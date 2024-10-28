@@ -6,11 +6,12 @@ export type {
   MachineApi as Api,
   UserDefinedContext as Context,
   ElementIds,
+  MachineContext,
   OpenChangeDetails,
   PositionChangeDetails,
   ResizeTriggerAxis,
   ResizeTriggerProps,
+  Service,
   SizeChangeDetails,
   StageChangeDetails,
-  Service,
 } from "./floating-panel.types"

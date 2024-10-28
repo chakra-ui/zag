@@ -12,6 +12,7 @@ export type {
   IntlTranslations,
   ItemProps,
   ItemState,
+  MachineContext,
   ValidateArgs,
   ValidityChangeDetails,
   ValueChangeDetails,

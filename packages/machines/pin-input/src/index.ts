@@ -7,6 +7,7 @@ export type {
   ElementIds,
   InputProps,
   IntlTranslations,
+  MachineContext,
   ValueChangeDetails,
   ValueInvalidDetails,
 } from "./pin-input.types"

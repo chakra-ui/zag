@@ -5,6 +5,7 @@ export * from "./splitter.props"
 export type {
   MachineApi as Api,
   UserDefinedContext as Context,
+  MachineContext,
   MachineState,
   PanelProps,
   PanelSizeData,

@@ -9,6 +9,7 @@ export type {
   FocusChangeDetails,
   ItemProps,
   ItemState,
+  MachineContext,
   Service,
   ValueChangeDetails,
 } from "./accordion.types"

@@ -8,5 +8,6 @@ export type {
   CopyStatusDetails,
   ElementIds,
   IndicatorProps,
+  MachineContext,
   Service,
 } from "./clipboard.types"

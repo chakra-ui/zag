@@ -7,5 +7,6 @@ export type {
   CheckedChangeDetails,
   UserDefinedContext as Context,
   ElementIds,
+  MachineContext,
   Service,
 } from "./switch.types"

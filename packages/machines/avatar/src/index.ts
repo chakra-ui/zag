@@ -7,6 +7,7 @@ export type {
   UserDefinedContext as Context,
   ElementIds,
   LoadStatus,
-  StatusChangeDetails,
+  MachineContext,
   Service,
+  StatusChangeDetails,
 } from "./avatar.types"

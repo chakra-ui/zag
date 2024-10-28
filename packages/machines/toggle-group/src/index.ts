@@ -8,6 +8,7 @@ export type {
   ElementIds,
   ItemProps,
   ItemState,
+  MachineContext,
   Orientation,
   Service,
   ValueChangeDetails,

@@ -7,6 +7,7 @@ export type {
   UserDefinedContext as Context,
   ElementIds,
   IntlTranslations,
+  MachineContext,
   ProgressTextDetails,
   Service,
   StatusChangeDetails,
