@@ -1,57 +1,39 @@
 import { spread } from "@open-wc/lit-helpers"
 import * as accordion from "@zag-js/accordion"
-import { StateFrom } from "@zag-js/core"
+import { Machine } from "@zag-js/core"
 import { accordionData } from "@zag-js/shared"
-import { LitElement, html, unsafeCSS } from "lit"
-import { customElement, state } from "lit/decorators.js"
-import { normalizeProps } from "./normalize-props"
+import { PropTypes } from "@zag-js/types"
+import { html, unsafeCSS } from "lit"
+import { customElement } from "lit/decorators.js"
 import styles from "../../../shared/src/css/accordion.css?inline"
+import { Component } from "./component"
+import { normalizeProps } from "./normalize-props"
 
 @customElement("accordion-element")
-export class AccordionElement extends LitElement {
-  private service: accordion.Service
-
-  @state()
-  private state: StateFrom<accordion.Service>
-
-  constructor() {
-    super()
-    this.service = accordion.machine({ id: "1" })
-    this.service._created()
-
-    this.state = this.service.getState()
-    this.service.subscribe((state) => {
-      this.state = state
-    })
+export class AccordionElement extends Component<accordion.Context, accordion.Api, accordion.Service> {
+  initService(context: accordion.Context): Machine<any, any, any> {
+    return accordion.machine({ ...context, id: "1" })
   }
 
-  connectedCallback(): void {
-    super.connectedCallback()
-    this.service.start()
-  }
-
-  disconnectedCallback(): void {
-    super.disconnectedCallback()
-    this.service.stop()
+  initApi(): accordion.Api<PropTypes> {
+    return accordion.connect(this.state, this.service.send, normalizeProps)
   }
 
   render() {
-    const api = accordion.connect(this.state, this.service.send, normalizeProps)
-
     return html`
-      <div ${spread(api.getRootProps())}>
+      <div ${spread(this.api.getRootProps())}>
         ${accordionData.map(
           (item) =>
-            html`<div ${spread(api.getItemProps({ value: item.id }))}>
+            html`<div ${spread(this.api.getItemProps({ value: item.id }))}>
               <h3>
-                <button data-testid=${`${item.id}:trigger`} ${spread(api.getItemTriggerProps({ value: item.id }))}>
+                <button data-testid=${`${item.id}:trigger`} ${spread(this.api.getItemTriggerProps({ value: item.id }))}>
                   ${item.label}
-                  <div ${spread(api.getItemIndicatorProps({ value: item.id }))}>
+                  <div ${spread(this.api.getItemIndicatorProps({ value: item.id }))}>
                     <ArrowRight />
                   </div>
                 </button>
               </h3>
-              <div data-testid=${`${item.id}:content`} ${spread(api.getItemContentProps({ value: item.id }))}>
+              <div data-testid=${`${item.id}:content`} ${spread(this.api.getItemContentProps({ value: item.id }))}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </div>

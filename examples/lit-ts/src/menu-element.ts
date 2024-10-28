@@ -1,57 +1,43 @@
 import { spread } from "@open-wc/lit-helpers"
+import { Machine } from "@zag-js/core"
 import * as menu from "@zag-js/menu"
-import { StateFrom } from "@zag-js/core"
-import { LitElement, html, unsafeCSS } from "lit"
-import { customElement, state } from "lit/decorators.js"
-import { normalizeProps } from "./normalize-props"
+import { PropTypes } from "@zag-js/types"
+import { html, unsafeCSS } from "lit"
+import { customElement } from "lit/decorators.js"
 import styles from "../../../shared/src/css/menu.css?inline"
+import { Component } from "./component"
+import { normalizeProps } from "./normalize-props"
 
 @customElement("menu-element")
-export class MenuElement extends LitElement {
-  private service: menu.Service
-
-  @state()
-  private state: StateFrom<menu.Service>
-
-  constructor() {
-    super()
+export class MenuElement extends Component<menu.Context, menu.Api, menu.Service> {
+  initService(context: menu.Context): Machine<any, any, any> {
     const host = this
-    this.service = menu.machine({
+
+    return menu.machine({
+      ...context,
       id: "1",
       onSelect: console.log,
       getRootNode() {
         return host.shadowRoot as ShadowRoot
       },
     })
-    this.service._created()
-
-    this.state = this.service.getState()
-    this.service.subscribe((state) => {
-      this.state = state
-    })
   }
 
-  connectedCallback(): void {
-    super.connectedCallback()
-    this.service.start()
-  }
-
-  disconnectedCallback(): void {
-    super.disconnectedCallback()
-    this.service.stop()
+  initApi(): menu.Api<PropTypes> {
+    return menu.connect(this.state, this.service.send, normalizeProps)
   }
 
   render() {
-    const api = menu.connect(this.state, this.service.send, normalizeProps)
-
     return html`
-      <button ${spread(api.getTriggerProps())}>Actions <span ${spread(api.getIndicatorProps())}>▾</span></button>
-      <div ${spread(api.getPositionerProps())}>
-        <ul ${spread(api.getContentProps())}>
-          <li ${spread(api.getItemProps({ value: "edit" }))}>Edit</li>
-          <li ${spread(api.getItemProps({ value: "duplicate" }))}>Duplicate</li>
-          <li ${spread(api.getItemProps({ value: "delete" }))}>Delete</li>
-          <li ${spread(api.getItemProps({ value: "export" }))}>Export...</li>
+      <button ${spread(this.api.getTriggerProps())}>
+        Actions <span ${spread(this.api.getIndicatorProps())}>▾</span>
+      </button>
+      <div ${spread(this.api.getPositionerProps())}>
+        <ul ${spread(this.api.getContentProps())}>
+          <li ${spread(this.api.getItemProps({ value: "edit" }))}>Edit</li>
+          <li ${spread(this.api.getItemProps({ value: "duplicate" }))}>Duplicate</li>
+          <li ${spread(this.api.getItemProps({ value: "delete" }))}>Delete</li>
+          <li ${spread(this.api.getItemProps({ value: "export" }))}>Export...</li>
         </ul>
       </div>
     `
