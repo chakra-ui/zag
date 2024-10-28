@@ -12,7 +12,6 @@ export const props = createProps<UserDefinedContext>()([
   "disableLayer",
   "form",
   "getRootNode",
-  "getSelectionValue",
   "highlightedValue",
   "id",
   "ids",

@@ -26,12 +26,6 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
-export interface SelectionValueDetails<T extends CollectionItem = CollectionItem> {
-  inputValue: string
-  selectedItems: T[]
-  valueAsString: string
-}
-
 export interface ScrollToIndexDetails {
   index: number
   immediate?: boolean | undefined
@@ -199,10 +193,6 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether to close the combobox when an item is selected.
    */
   closeOnSelect?: boolean | undefined
-  /**
-   * Function to get the display value of the selected item
-   */
-  getSelectionValue?: ((details: SelectionValueDetails<T>) => string) | undefined
   /**
    * Whether to open the combobox on arrow key press
    * @default true

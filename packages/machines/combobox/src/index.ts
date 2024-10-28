@@ -20,7 +20,6 @@ export type {
   Placement,
   PositioningOptions,
   ScrollToIndexDetails,
-  SelectionValueDetails,
   Service,
   TriggerProps,
   ValueChangeDetails,

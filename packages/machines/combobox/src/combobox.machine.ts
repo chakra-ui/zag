@@ -712,12 +712,12 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         },
         selectHighlightedItem(ctx) {
           set.value(ctx, ctx.highlightedValue)
-          set.inputValue(ctx, getInputValue(ctx, true))
+          set.inputValue(ctx, getInputValue(ctx))
         },
         selectItem(ctx, evt) {
           if (evt.value == null) return
           set.value(ctx, evt.value)
-          set.inputValue(ctx, getInputValue(ctx, true))
+          set.inputValue(ctx, getInputValue(ctx))
         },
         clearItem(ctx, evt) {
           if (evt.value == null) return
@@ -908,15 +908,7 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
   )
 }
 
-function getInputValue(ctx: MachineContext, selection?: boolean) {
-  if (ctx.getSelectionValue && selection) {
-    return ctx.getSelectionValue({
-      inputValue: ctx.inputValue,
-      selectedItems: Array.from(ctx.selectedItems),
-      valueAsString: ctx.valueAsString,
-    })
-  }
-
+function getInputValue(ctx: MachineContext) {
   return match(ctx.selectionBehavior, {
     preserve: ctx.inputValue,
     replace: ctx.valueAsString,

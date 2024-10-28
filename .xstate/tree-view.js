@@ -36,17 +36,15 @@ const fetchMachine = createMachine({
     },
     "SELECTED.ALL": [{
       cond: "isMultipleSelection && moveFocus",
-      actions: ["selectAllItems", "focusTreeLastItem"]
+      actions: ["selectAllNodes", "focusTreeLastNode"]
     }, {
       cond: "isMultipleSelection",
-      actions: ["selectAllItems"]
+      actions: ["selectAllNodes"]
     }],
     "EXPANDED.ALL": {
       actions: ["expandAllBranches"]
     }
   },
-  activities: ["trackChildrenMutation"],
-  entry: ["setFocusableNode"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -55,80 +53,77 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        "ITEM.FOCUS": {
-          actions: ["setFocusedItem"]
+        "NODE.FOCUS": {
+          actions: ["setFocusedNode"]
         },
-        "ITEM.ARROW_DOWN": [{
+        "NODE.ARROW_DOWN": [{
           cond: "isShiftKey && isMultipleSelection",
-          actions: ["focusTreeNextItem", "extendSelectionToNextItem"]
+          actions: ["focusTreeNextNode", "extendSelectionToNextNode"]
         }, {
-          actions: ["focusTreeNextItem"]
+          actions: ["focusTreeNextNode"]
         }],
-        "ITEM.ARROW_UP": [{
+        "NODE.ARROW_UP": [{
           cond: "isShiftKey && isMultipleSelection",
-          actions: ["focusTreePrevItem", "extendSelectionToPrevItem"]
+          actions: ["focusTreePrevNode", "extendSelectionToPrevNode"]
         }, {
-          actions: ["focusTreePrevItem"]
+          actions: ["focusTreePrevNode"]
         }],
-        "ITEM.ARROW_LEFT": {
-          actions: ["focusBranchControl"]
+        "NODE.ARROW_LEFT": {
+          actions: ["focusBranchNode"]
         },
-        "BRANCH.ARROW_LEFT": [{
+        "BRANCH_NODE.ARROW_LEFT": [{
           cond: "isBranchExpanded",
           actions: ["collapseBranch"]
         }, {
-          actions: ["focusBranchControl"]
+          actions: ["focusBranchNode"]
         }],
-        "BRANCH.ARROW_RIGHT": [{
+        "BRANCH_NODE.ARROW_RIGHT": [{
           cond: "isBranchFocused && isBranchExpanded",
-          actions: ["focusBranchFirstItem"]
+          actions: ["focusBranchFirstNode"]
         }, {
           actions: ["expandBranch"]
         }],
-        "EXPAND.SIBLINGS": {
+        "SIBLINGS.EXPAND": {
           actions: ["expandSiblingBranches"]
         },
-        "ITEM.HOME": [{
+        "NODE.HOME": [{
           cond: "isShiftKey && isMultipleSelection",
-          actions: ["extendSelectionToFirstItem", "focusTreeFirstItem"]
+          actions: ["extendSelectionToFirstNode", "focusTreeFirstNode"]
         }, {
-          actions: ["focusTreeFirstItem"]
+          actions: ["focusTreeFirstNode"]
         }],
-        "ITEM.END": [{
+        "NODE.END": [{
           cond: "isShiftKey && isMultipleSelection",
-          actions: ["extendSelectionToLastItem", "focusTreeLastItem"]
+          actions: ["extendSelectionToLastNode", "focusTreeLastNode"]
         }, {
-          actions: ["focusTreeLastItem"]
+          actions: ["focusTreeLastNode"]
         }],
-        "ITEM.CLICK": [{
+        "NODE.CLICK": [{
           cond: "isCtrlKey && isMultipleSelection",
-          actions: ["addOrRemoveItemFromSelection"]
+          actions: ["toggleNodeSelection"]
         }, {
           cond: "isShiftKey && isMultipleSelection",
-          actions: ["extendSelectionToItem"]
+          actions: ["extendSelectionToNode"]
         }, {
-          actions: ["selectItem"]
+          actions: ["selectNode"]
         }],
-        "BRANCH.CLICK": [{
+        "BRANCH_NODE.CLICK": [{
           cond: "isCtrlKey && isMultipleSelection",
-          actions: ["addOrRemoveItemFromSelection"]
+          actions: ["toggleNodeSelection"]
         }, {
           cond: "isShiftKey && isMultipleSelection",
-          actions: ["extendSelectionToItem"]
+          actions: ["extendSelectionToNode"]
         }, {
           cond: "openOnClick",
-          actions: ["selectItem", "toggleBranch"]
+          actions: ["selectNode", "toggleBranchNode"]
         }, {
-          actions: ["selectItem"]
+          actions: ["selectNode"]
         }],
         "BRANCH_TOGGLE.CLICK": {
-          actions: ["toggleBranch"]
+          actions: ["toggleBranchNode"]
         },
         "TREE.TYPEAHEAD": {
-          actions: ["focusMatchedItem"]
-        },
-        "TREE.BLUR": {
-          actions: ["clearFocusedItem", "setFocusableNode"]
+          actions: ["focusMatchedNode"]
         }
       }
     }
