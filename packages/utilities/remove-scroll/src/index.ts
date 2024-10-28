@@ -4,10 +4,17 @@ const LOCK_CLASSNAME = "data-scroll-lock"
 
 function assignStyle(el: HTMLElement | null | undefined, style: Partial<CSSStyleDeclaration>) {
   if (!el) return
-  const previousStyle = el.style.cssText
+  const previousStyle = Object.keys(style).reduce(
+    (acc, key) => {
+      acc[key] = el.style.getPropertyValue(key)
+      return acc
+    },
+    {} as Record<string, string>,
+  )
+
   Object.assign(el.style, style)
   return () => {
-    el.style.cssText = previousStyle
+    Object.assign(el.style, previousStyle)
   }
 }
 
