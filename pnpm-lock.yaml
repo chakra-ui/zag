@@ -1959,7 +1959,7 @@ importers:
         version: 0.7.2
       lucide-svelte:
         specifier: 0.446.0
-        version: 0.446.0(svelte@5.0.0-next.262)
+        version: 0.446.0(svelte@5.1.2)
       match-sorter:
         specifier: 6.3.4
         version: 6.3.4
@@ -1969,7 +1969,7 @@ importers:
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
         specifier: 4.0.0-next.3
-        version: 4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
+        version: 4.0.0-next.3(svelte@5.1.2)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
       '@tsconfig/svelte':
         specifier: 5.0.4
         version: 5.0.4
@@ -1977,11 +1977,11 @@ importers:
         specifier: 0.7.4
         version: 0.7.4
       svelte:
-        specifier: 5.0.0-next.262
-        version: 5.0.0-next.262
+        specifier: 5.1.2
+        version: 5.1.2
       svelte-check:
         specifier: 4.0.4
-        version: 4.0.4(picomatch@4.0.2)(svelte@5.0.0-next.262)(typescript@5.6.2)
+        version: 4.0.4(picomatch@4.0.2)(svelte@5.1.2)(typescript@5.6.2)
       tslib:
         specifier: 2.7.0
         version: 2.7.0
@@ -3571,6 +3571,9 @@ importers:
       '@zag-js/anatomy':
         specifier: workspace:*
         version: link:../../anatomy
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../utilities/collection
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
@@ -3636,9 +3639,6 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../core
-      tree-visit:
-        specifier: 0.4.2
-        version: 0.4.2
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -12246,10 +12246,6 @@ packages:
       svelte: ^3.55 || ^4.0.0-next.0 || ^4.0 || ^5.0.0-next.0
       typescript: ^4.9.4 || ^5.0.0
 
-  svelte@5.0.0-next.262:
-    resolution: {integrity: sha512-gAY0POArLN5yI/ihvItG0wQCh7ycfvxSvvVlvPECshFKmR/ep6ZAlqX50+aUGDSG/5megFqnSJfP7piC6lOtew==}
-    engines: {node: '>=18'}
-
   svelte@5.1.2:
     resolution: {integrity: sha512-IovgkB3eQq0CdqQB1rd1F4SZbg8Z7VBSbAqhD2eE9t8l0KfJXZ/iHmfqnW5pxs5Lr89/cpIZTLU5buemsydYRw==}
     engines: {node: '>=18'}
@@ -12399,9 +12395,6 @@ packages:
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
-
-  tree-visit@0.4.2:
-    resolution: {integrity: sha512-BPfpiWqIwFzvObmmcUqUNt5A+2ZsOzrUcJ6DMaDKkNRz5gUAtdZu/Ya9f13/zjXkkiqYxNdKr8vd3pG2s400fQ==}
 
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
@@ -15902,23 +15895,23 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@sveltejs/vite-plugin-svelte-inspector@3.0.0-next.3(@sveltejs/vite-plugin-svelte@4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3)))(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))':
+  '@sveltejs/vite-plugin-svelte-inspector@3.0.0-next.3(@sveltejs/vite-plugin-svelte@4.0.0-next.3(svelte@5.1.2)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3)))(svelte@5.1.2)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
+      '@sveltejs/vite-plugin-svelte': 4.0.0-next.3(svelte@5.1.2)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
       debug: 4.3.6
-      svelte: 5.0.0-next.262
+      svelte: 5.1.2
       vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
     transitivePeerDependencies:
       - supports-color
 
-  '@sveltejs/vite-plugin-svelte@4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))':
+  '@sveltejs/vite-plugin-svelte@4.0.0-next.3(svelte@5.1.2)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte-inspector': 3.0.0-next.3(@sveltejs/vite-plugin-svelte@4.0.0-next.3(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3)))(svelte@5.0.0-next.262)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
+      '@sveltejs/vite-plugin-svelte-inspector': 3.0.0-next.3(@sveltejs/vite-plugin-svelte@4.0.0-next.3(svelte@5.1.2)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3)))(svelte@5.1.2)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
       debug: 4.3.6
       deepmerge: 4.3.1
       kleur: 4.1.5
       magic-string: 0.30.11
-      svelte: 5.0.0-next.262
+      svelte: 5.1.2
       vite: 5.4.8(@types/node@22.7.9)(terser@5.31.3)
       vitefu: 0.2.5(vite@5.4.8(@types/node@22.7.9)(terser@5.31.3))
     transitivePeerDependencies:
@@ -20489,9 +20482,9 @@ snapshots:
     dependencies:
       solid-js: 1.9.1
 
-  lucide-svelte@0.446.0(svelte@5.0.0-next.262):
+  lucide-svelte@0.446.0(svelte@5.1.2):
     dependencies:
-      svelte: 5.0.0-next.262
+      svelte: 5.1.2
 
   lucide-vue-next@0.446.0(vue@3.5.10(typescript@5.6.3)):
     dependencies:
@@ -23074,14 +23067,14 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@4.0.4(picomatch@4.0.2)(svelte@5.0.0-next.262)(typescript@5.6.2):
+  svelte-check@4.0.4(picomatch@4.0.2)(svelte@5.1.2)(typescript@5.6.2):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       chokidar: 4.0.1
       fdir: 6.3.0(picomatch@4.0.2)
       picocolors: 1.1.0
       sade: 1.8.1
-      svelte: 5.0.0-next.262
+      svelte: 5.1.2
       typescript: 5.6.2
     transitivePeerDependencies:
       - picomatch
@@ -23094,22 +23087,6 @@ snapshots:
       pascal-case: 3.1.2
       svelte: 5.1.2
       typescript: 5.6.3
-
-  svelte@5.0.0-next.262:
-    dependencies:
-      '@ampproject/remapping': 2.3.0
-      '@jridgewell/sourcemap-codec': 1.5.0
-      '@types/estree': 1.0.6
-      acorn: 8.12.1
-      acorn-typescript: 1.4.13(acorn@8.12.1)
-      aria-query: 5.3.2
-      axobject-query: 4.1.0
-      esm-env: 1.0.0
-      esrap: 1.2.2
-      is-reference: 3.0.2
-      locate-character: 3.0.0
-      magic-string: 0.30.11
-      zimmerframe: 1.1.2
 
   svelte@5.1.2:
     dependencies:
@@ -23261,8 +23238,6 @@ snapshots:
       punycode: 2.3.1
 
   tree-kill@1.2.2: {}
-
-  tree-visit@0.4.2: {}
 
   trim-lines@3.0.1: {}
 

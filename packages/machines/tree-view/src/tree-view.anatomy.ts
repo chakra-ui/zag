@@ -13,6 +13,7 @@ export const anatomy = createAnatomy("tree-view").parts(
   "branchContent",
   "branchText",
   "branchIndicator",
+  "branchIndentGuide",
 )
 
 export const parts = anatomy.build()

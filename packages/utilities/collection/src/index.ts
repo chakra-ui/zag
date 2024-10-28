@@ -3,7 +3,11 @@ export {
   TreeCollection,
   type TreeCollectionOptions,
   type TreeCollectionMethods,
+  type TreeNode,
+  type FlatTreeNode,
+  type TreeSkipFn,
   filePathToTree,
+  type FilePathTreeNode,
   flattenedToTree,
 } from "./tree-collection"
 export { ListCollection } from "./list-collection"

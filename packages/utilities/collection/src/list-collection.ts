@@ -269,9 +269,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   reorder(fromIndex: number, toIndex: number) {
     if (fromIndex === -1 || toIndex === -1) return
     if (fromIndex === toIndex) return
-
     const [removed] = this.items.splice(fromIndex, 1)
-
     this.items.splice(toIndex, 0, removed)
   }
 

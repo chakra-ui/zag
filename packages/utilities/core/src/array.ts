@@ -15,9 +15,11 @@ export const has = <T>(v: T[], t: any): boolean => v.indexOf(t) !== -1
 
 export const add = <T>(v: T[], ...items: T[]): T[] => v.concat(items)
 
-export const remove = <T>(v: T[], item: T): T[] => v.filter((t) => t !== item)
+export const remove = <T>(v: T[], ...items: T[]): T[] => v.filter((t) => !items.includes(t))
 
 export const removeAt = <T>(v: T[], i: number): T[] => v.filter((_, idx) => idx !== i)
+
+export const insertAt = <T>(v: T[], i: number, ...items: T[]): T[] => [...v.slice(0, i), ...items, ...v.slice(i)]
 
 export const uniq = <T>(v: T[]): T[] => Array.from(new Set(v))
 

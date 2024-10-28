@@ -1,7 +1,7 @@
 import { defaultItemToId, indexOfId, type ItemToId } from "./get-by-id"
 import { sanitize } from "./sanitize"
 
-const getValueText = <T extends HTMLElement>(item: T) => sanitize(item.dataset.valuetext ?? item.textContent ?? "")
+const getValueText = <T extends SearchableItem>(item: T) => sanitize(item.dataset?.valuetext ?? item.textContent ?? "")
 
 const match = (valueText: string, query: string) => valueText.trim().toLowerCase().startsWith(query.toLowerCase())
 
@@ -9,7 +9,13 @@ const wrap = <T>(v: T[], idx: number) => {
   return v.map((_, index) => v[(Math.max(idx, 0) + index) % v.length])
 }
 
-export function getByText<T extends HTMLElement>(
+export interface SearchableItem {
+  id: string
+  textContent: string | null
+  dataset?: any
+}
+
+export function getByText<T extends SearchableItem>(
   v: T[],
   text: string,
   currentId?: string | null,

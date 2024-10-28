@@ -1,35 +1,56 @@
-import { compact, hasProp, isObject } from "@zag-js/utils"
-import { access, find, findIndexPath, flatMap, insert, visit } from "tree-visit"
+import { compact, hasProp, isEqual, isObject } from "@zag-js/utils"
+import {
+  access,
+  find,
+  findIndexPath,
+  flatMap,
+  insert,
+  visit,
+  type VisitOptions,
+  replace,
+  move,
+  compareIndexPaths,
+} from "./tree-visit"
 
-export class TreeCollection<T> {
-  items: T
+export class TreeCollection<T = TreeNode> {
+  rootNode: T
 
   constructor(private options: TreeCollectionOptions<T>) {
-    this.items = options.items
+    this.rootNode = options.rootNode
   }
 
-  getItemChildren = (node: T) => {
-    return this.options.itemToChildren?.(node) ?? fallback.itemToChildren(node) ?? []
+  isEqual(other: TreeCollection<T>) {
+    return isEqual(this.rootNode, other.rootNode)
   }
 
-  getItemValue = (node: T) => {
-    return this.options.itemToValue?.(node) ?? fallback.itemToValue(node)
+  getNodeChildren = (node: T) => {
+    return this.options.nodeToChildren?.(node) ?? fallback.nodeToChildren(node) ?? []
   }
 
-  getItemDisabled = (node: T) => {
-    return this.options.isItemDisabled?.(node) ?? fallback.isItemDisabled(node)
+  getNodeValue = (node: T) => {
+    return this.options.nodeToValue?.(node) ?? fallback.nodeToValue(node)
   }
 
-  stringify = (node: T) => {
-    return this.options.itemToString?.(node) ?? fallback.itemToString(node)
+  getNodeDisabled = (node: T) => {
+    return this.options.isNodeDisabled?.(node) ?? fallback.isNodeDisabled(node)
   }
 
-  getFirstNode = (items = this.items): T | undefined => {
+  stringify = (value: string) => {
+    const node = this.findNode(value)
+    if (!node) return null
+    return this.stringifyNode(node)
+  }
+
+  stringifyNode = (node: T) => {
+    return this.options.nodeToString?.(node) ?? fallback.nodeToString(node)
+  }
+
+  getFirstNode = (rootNode = this.rootNode): T | undefined => {
     let firstChild: T | undefined
-    visit(items, {
-      getChildren: this.getItemChildren,
+    visit(rootNode, {
+      getChildren: this.getNodeChildren,
       onEnter: (node, indexPath) => {
-        if (!firstChild && indexPath.length > 0 && !this.getItemDisabled(node)) {
+        if (!firstChild && indexPath.length > 0 && !this.getNodeDisabled(node)) {
           firstChild = node
           return "stop"
         }
@@ -38,14 +59,15 @@ export class TreeCollection<T> {
     return firstChild
   }
 
-  getLastNode = (items = this.items, opts: SkipProperty<T> = {}): T | undefined => {
+  getLastNode = (rootNode = this.rootNode, opts: SkipProperty<T> = {}): T | undefined => {
     let lastChild: T | undefined
-    visit(items, {
-      getChildren: this.getItemChildren,
+    visit(rootNode, {
+      getChildren: this.getNodeChildren,
       onEnter: (node, indexPath) => {
-        if (opts.skip?.(this.getItemValue(node), node, indexPath)) return "skip"
+        const nodeValue = this.getNodeValue(node)
+        if (opts.skip?.({ value: nodeValue, node, indexPath })) return "skip"
         if (indexPath.length > 1) return "skip"
-        if (!this.getItemDisabled(node)) {
+        if (!this.getNodeDisabled(node)) {
           lastChild = node
         }
       },
@@ -54,82 +76,113 @@ export class TreeCollection<T> {
   }
 
   at(indexPath: number[]) {
-    return access(this.items, indexPath, { getChildren: this.getItemChildren })
+    return access(this.rootNode, indexPath, { getChildren: this.getNodeChildren })
   }
 
-  findNode = (value: string, items = this.items): T | undefined => {
-    return find(items, {
-      getChildren: this.getItemChildren,
-      predicate: (node) => this.getItemValue(node) === value,
+  findNode = (value: string, rootNode = this.rootNode): T | undefined => {
+    return find(rootNode, {
+      getChildren: this.getNodeChildren,
+      predicate: (node) => this.getNodeValue(node) === value,
     })
+  }
+
+  sort = (values: string[]) => {
+    return values
+      .reduce(
+        (acc, value) => {
+          const indexPath = this.getIndexPath(value)
+          if (indexPath != null) acc.push({ value, indexPath })
+          return acc
+        },
+        [] as { value: string; indexPath: number[] }[],
+      )
+      .sort((a, b) => compareIndexPaths(a.indexPath, b.indexPath))
+      .map(({ value }) => value)
   }
 
   getIndexPath = (value: string) => {
-    return findIndexPath(this.items, {
-      getChildren: this.getItemChildren,
-      predicate: (node) => this.getItemValue(node) === value,
+    return findIndexPath(this.rootNode, {
+      getChildren: this.getNodeChildren,
+      predicate: (node) => this.getNodeValue(node) === value,
     })
   }
 
-  getValuePath = (value: string) => {
-    const indexPath = this.getIndexPath(value)
+  getValuePath = (indexPath: number[] | undefined) => {
     if (!indexPath) return []
-
     const valuePath: string[] = []
     let currentPath = [...indexPath]
-
     while (currentPath.length > 0) {
       const node = this.at(currentPath)
-      if (node) valuePath.unshift(this.getItemValue(node))
+      if (node) valuePath.unshift(this.getNodeValue(node))
       currentPath.pop()
     }
-
     return valuePath
   }
 
   getDepth = (value: string) => {
-    const indexPath = findIndexPath(this.items, {
-      getChildren: this.getItemChildren,
-      predicate: (node) => this.getItemValue(node) === value,
+    const indexPath = findIndexPath(this.rootNode, {
+      getChildren: this.getNodeChildren,
+      predicate: (node) => this.getNodeValue(node) === value,
     })
     return indexPath?.length ?? 0
   }
 
-  getNextNode = (value: string, opts: SkipProperty<T> = {}): T | undefined => {
-    let current = false
-    let nextNode: T | undefined
-    visit(this.items, {
-      getChildren: this.getItemChildren,
-      onEnter: (node, indexPath) => {
-        if (opts.skip?.(this.getItemValue(node), node, indexPath)) return "skip"
+  isRootNode = (node: T) => {
+    return this.getNodeValue(node) === this.getNodeValue(this.rootNode)
+  }
 
-        if (current && !this.getItemDisabled(node)) {
+  contains = (parentIndexPath: number[], valueIndexPath: number[]) => {
+    if (!parentIndexPath || !valueIndexPath) return false
+    return valueIndexPath.slice(0, parentIndexPath.length).every((_, i) => parentIndexPath[i] === valueIndexPath[i])
+  }
+
+  getNextNode = (value: string, opts: SkipProperty<T> = {}): T | undefined => {
+    let found = false
+    let nextNode: T | undefined
+
+    visit(this.rootNode, {
+      getChildren: this.getNodeChildren,
+      onEnter: (node, indexPath) => {
+        if (this.isRootNode(node)) return
+        const nodeValue = this.getNodeValue(node)
+        if (opts.skip?.({ value: nodeValue, node, indexPath })) {
+          if (nodeValue === value) {
+            found = true
+          }
+          return "skip"
+        }
+        if (found && !this.getNodeDisabled(node)) {
           nextNode = node
           return "stop"
         }
-
-        if (this.getItemValue(node) === value) {
-          current = true
+        if (nodeValue === value) {
+          found = true
         }
       },
     })
+
     return nextNode
   }
 
   getPreviousNode = (value: string, opts: SkipProperty<T> = {}): T | undefined => {
     let previousNode: T | undefined
     let found = false
-    visit(this.items, {
-      getChildren: this.getItemChildren,
+    visit(this.rootNode, {
+      getChildren: this.getNodeChildren,
       onEnter: (node, indexPath) => {
-        if (opts.skip?.(this.getItemValue(node), node, indexPath)) return "skip"
+        if (this.isRootNode(node)) return
+        const nodeValue = this.getNodeValue(node)
 
-        if (this.getItemValue(node) === value) {
+        if (opts.skip?.({ value: nodeValue, node, indexPath })) {
+          return "skip"
+        }
+
+        if (nodeValue === value) {
           found = true
           return "stop"
         }
 
-        if (!this.getItemDisabled(node)) {
+        if (!this.getNodeDisabled(node)) {
           previousNode = node
         }
       },
@@ -137,37 +190,88 @@ export class TreeCollection<T> {
     return found ? previousNode : undefined
   }
 
-  getParentNode = (value: string): T | undefined => {
-    const parent = findIndexPath(this.items, {
-      getChildren: this.getItemChildren,
-      predicate: (node) => this.getItemValue(node) === value,
-    })
-    return parent ? this.at(parent.slice(0, -1)) : undefined
+  getParentNodes = (values: string): T[] => {
+    const result: T[] = []
+    let indexPath = this.getIndexPath(values)
+    while (indexPath && indexPath.length > 0) {
+      indexPath.pop()
+      const parentNode = this.at(indexPath)
+      if (parentNode && !this.isRootNode(parentNode)) {
+        result.unshift(parentNode)
+      }
+    }
+    return result
   }
 
-  getValues = (items = this.items) => {
-    const values = flatMap(items, {
-      getChildren: this.getItemChildren,
-      transform: (node) => [this.getItemValue(node)],
+  getParentNode = (value: string): T | undefined => {
+    const indexPath = this.getIndexPath(value)
+    return indexPath ? this.at(indexPath.slice(0, -1)) : undefined
+  }
+
+  visit = (opts: Omit<VisitOptions<T>, "getChildren"> & SkipProperty<T>) => {
+    const { skip, ...rest } = opts
+    visit(this.rootNode, {
+      ...rest,
+      getChildren: this.getNodeChildren,
+      onEnter: (node, indexPath) => {
+        if (this.isRootNode(node)) return
+        if (skip?.({ value: this.getNodeValue(node), node, indexPath })) return "skip"
+        return rest.onEnter?.(node, indexPath)
+      },
+    })
+  }
+
+  getSiblingNodes = (indexPath: number[]): T[] => {
+    const parentPath = indexPath.slice(0, -1)
+    const parentNode = this.at(parentPath)
+
+    if (!parentNode) return []
+
+    const depth = indexPath.length
+    const siblingNodes: T[] = []
+
+    visit(parentNode, {
+      getChildren: this.getNodeChildren,
+      onEnter: (node, path) => {
+        if (this.isRootNode(node)) return
+        if (isEqual(path, indexPath)) return
+        if (path.length === depth && this.isBranchNode(node)) {
+          siblingNodes.push(node)
+        }
+        return "skip"
+      },
+    })
+
+    return siblingNodes
+  }
+
+  getValues = (rootNode = this.rootNode): string[] => {
+    const values = flatMap(rootNode, {
+      getChildren: this.getNodeChildren,
+      transform: (node) => [this.getNodeValue(node)],
     })
     // remove the root node
     return values.slice(1)
   }
 
-  private isSameDepth = (indexPath: number[], depth?: number) => {
+  private isSameDepth = (indexPath: number[], depth?: number): boolean => {
     if (depth == null) return true
     return indexPath.length === depth
   }
 
-  getBranchValues = (items = this.items, opts: SkipProperty<T> & { depth?: number } = {}) => {
-    let values: string[] = []
-    visit(items, {
-      getChildren: this.getItemChildren,
-      onEnter: (node, indexPath) => {
-        if (opts.skip?.(this.getItemValue(node), node, indexPath)) return "skip"
+  isBranchNode = (node: T) => {
+    return this.getNodeChildren(node).length > 0
+  }
 
-        if (this.getItemChildren(node).length > 0 && this.isSameDepth(indexPath, opts.depth)) {
-          values.push(this.getItemValue(node))
+  getBranchValues = (rootNode = this.rootNode, opts: SkipProperty<T> & { depth?: number } = {}): string[] => {
+    let values: string[] = []
+    visit(rootNode, {
+      getChildren: this.getNodeChildren,
+      onEnter: (node, indexPath) => {
+        const nodeValue = this.getNodeValue(node)
+        if (opts.skip?.({ value: nodeValue, node, indexPath })) return "skip"
+        if (this.getNodeChildren(node).length > 0 && this.isSameDepth(indexPath, opts.depth)) {
+          values.push(this.getNodeValue(node))
         }
       },
     })
@@ -175,31 +279,76 @@ export class TreeCollection<T> {
     return values.slice(1)
   }
 
-  flatten = (items = this.items) => {
-    return flatMap(items, {
-      getChildren: this.getItemChildren,
-      transform: (node, indexPath): FlattedTreeItem[] => {
-        const children = this.getItemChildren(node).map((child) => this.getItemValue(child))
+  flatten = (rootNode = this.rootNode): FlatTreeNode[] => {
+    const nodes = flatMap(rootNode, {
+      getChildren: this.getNodeChildren,
+      transform: (node, indexPath): FlatTreeNode[] => {
+        const children = this.getNodeChildren(node).map((child) => this.getNodeValue(child))
         return [
           compact({
-            label: this.stringify(node),
-            value: this.getItemValue(node),
+            label: this.stringifyNode(node),
+            value: this.getNodeValue(node),
             indexPath,
             children: children.length > 0 ? children : undefined,
           }),
         ]
       },
     })
+    // remove the root node
+    return nodes.slice(1)
+  }
+
+  private _create = (node: T, children: T[]) => {
+    return compact({ ...node, children: children })
+  }
+
+  private _insert = (rootNode: T, indexPath: number[], nodes: T[]) => {
+    return insert(rootNode, { at: indexPath, nodes, getChildren: this.getNodeChildren, create: this._create })
+  }
+
+  private _replace = (rootNode: T, indexPath: number[], node: T) => {
+    return replace(rootNode, { at: indexPath, node, getChildren: this.getNodeChildren, create: this._create })
+  }
+
+  private _move = (rootNode: T, indexPaths: number[][], to: number[]) => {
+    return move(rootNode, { indexPaths, to, getChildren: this.getNodeChildren, create: this._create })
+  }
+
+  replace = (indexPath: number[], node: T) => {
+    return this._replace(this.rootNode, indexPath, node)
+  }
+
+  insertBefore = (indexPath: number[], ...nodes: T[]) => {
+    const parentIndexPath = indexPath.slice(0, -1)
+    const parentNode = this.at(parentIndexPath)
+    if (!parentNode) return
+    return this._insert(this.rootNode, indexPath, nodes)
+  }
+
+  insertAfter = (indexPath: number[], ...nodes: T[]) => {
+    const parentIndexPath = indexPath.slice(0, -1)
+    const parentNode = this.at(parentIndexPath)
+    if (!parentNode) return
+    const nextIndex = [...parentIndexPath, indexPath[indexPath.length - 1] + 1]
+    return this._insert(this.rootNode, nextIndex, nodes)
+  }
+
+  reorder = (toIndexPath: number[], ...fromIndexPaths: number[][]) => {
+    return this._move(this.rootNode, fromIndexPaths, toIndexPath)
+  }
+
+  json() {
+    return this.getValues(this.rootNode)
   }
 }
 
-export function flattenedToTree(items: FlattedTreeItem[]) {
+export function flattenedToTree(nodes: FlatTreeNode[]) {
   let rootNode = {
     value: "ROOT",
   }
 
-  items.map((item) => {
-    const { indexPath, label, value } = item
+  nodes.map((node) => {
+    const { indexPath, label, value } = node
     if (!indexPath.length) {
       Object.assign(rootNode, { label, value, children: [] })
       return
@@ -216,12 +365,19 @@ export function flattenedToTree(items: FlattedTreeItem[]) {
   })
 
   return new TreeCollection({
-    items: rootNode,
+    rootNode: rootNode,
   })
 }
 
-export function filePathToTree(paths: string[]) {
-  const rootNode: any = {
+export interface FilePathTreeNode {
+  label: string
+  value: string
+  children?: FilePathTreeNode[]
+}
+
+export function filePathToTree(paths: string[]): TreeCollection<FilePathTreeNode> {
+  const rootNode: FilePathTreeNode = {
+    label: "",
     value: "ROOT",
     children: [],
   }
@@ -247,48 +403,52 @@ export function filePathToTree(paths: string[]) {
   })
 
   return new TreeCollection({
-    items: rootNode,
+    rootNode: rootNode,
   })
 }
 
 export interface TreeCollectionMethods<T> {
-  isItemDisabled: (node: T) => boolean
-  itemToValue: (node: T) => string
-  itemToString: (node: T) => string
-  itemToChildren: (node: T) => any[]
+  isNodeDisabled: (node: T) => boolean
+  nodeToValue: (node: T) => string
+  nodeToString: (node: T) => string
+  nodeToChildren: (node: T) => any[]
 }
 
 export interface TreeCollectionOptions<T> extends Partial<TreeCollectionMethods<T>> {
-  items: T
+  rootNode: T
 }
 
-interface FlattedTreeItem {
+export type TreeNode = any
+
+export interface FlatTreeNode {
   label?: string | undefined
-  value: string | undefined
+  value: string
   indexPath: number[]
   children?: string[] | undefined
 }
 
+export type TreeSkipFn<T> = (opts: { value: string; node: T; indexPath: number[] }) => boolean | void
+
 interface SkipProperty<T> {
-  skip?: (value: string, node: T, indexPath: number[]) => boolean
+  skip?: TreeSkipFn<T>
 }
 
 const fallback: TreeCollectionMethods<any> = {
-  itemToValue(item) {
-    if (typeof item === "string") return item
-    if (isObject(item) && hasProp(item, "value")) return item.value
+  nodeToValue(node) {
+    if (typeof node === "string") return node
+    if (isObject(node) && hasProp(node, "value")) return node.value
     return ""
   },
-  itemToString(item) {
-    if (typeof item === "string") return item
-    if (isObject(item) && hasProp(item, "label")) return item.label
-    return fallback.itemToValue(item)
+  nodeToString(node) {
+    if (typeof node === "string") return node
+    if (isObject(node) && hasProp(node, "label")) return node.label
+    return fallback.nodeToValue(node)
   },
-  isItemDisabled(item) {
-    if (isObject(item) && hasProp(item, "disabled")) return !!item.disabled
+  isNodeDisabled(node) {
+    if (isObject(node) && hasProp(node, "disabled")) return !!node.disabled
     return false
   },
-  itemToChildren(node) {
+  nodeToChildren(node) {
     return node.children
   },
 }

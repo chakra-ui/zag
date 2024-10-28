@@ -1,15 +1,100 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
+import { FileIcon, FolderIcon, ChevronRightIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
+interface Node {
+  id: string
+  name: string
+  children?: Node[]
+}
+
+const collection = tree.collection<Node>({
+  nodeToValue: (node) => node.id,
+  nodeToString: (node) => node.name,
+  rootNode: {
+    id: "ROOT",
+    name: "",
+    children: [
+      {
+        id: "node_modules",
+        name: "node_modules",
+        children: [
+          { id: "node_modules/zag-js", name: "zag-js" },
+          { id: "node_modules/pandacss", name: "panda" },
+          {
+            id: "node_modules/@types",
+            name: "@types",
+            children: [
+              { id: "node_modules/@types/react", name: "react" },
+              { id: "node_modules/@types/react-dom", name: "react-dom" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "src",
+        name: "src",
+        children: [
+          { id: "src/app.tsx", name: "app.tsx" },
+          { id: "src/index.ts", name: "index.ts" },
+        ],
+      },
+      { id: "panda.config", name: "panda.config.ts" },
+      { id: "package.json", name: "package.json" },
+      { id: "renovate.json", name: "renovate.json" },
+      { id: "readme.md", name: "README.md" },
+    ],
+  },
+})
+
+interface TreeNodeProps {
+  node: Node
+  indexPath: number[]
+  api: tree.Api
+}
+
+const TreeNode = (props: TreeNodeProps): JSX.Element => {
+  const { node, indexPath, api } = props
+
+  const nodeProps = { indexPath, node }
+  const nodeState = api.getNodeState(nodeProps)
+
+  if (nodeState.isBranch) {
+    return (
+      <div {...api.getBranchProps(nodeProps)}>
+        <div {...api.getBranchControlProps(nodeProps)}>
+          <FolderIcon />
+          <span {...api.getBranchTextProps(nodeProps)}>{node.name}</span>
+          <span {...api.getBranchIndicatorProps(nodeProps)}>
+            <ChevronRightIcon />
+          </span>
+        </div>
+        <div {...api.getBranchContentProps(nodeProps)}>
+          <div {...api.getBranchIndentGuideProps(nodeProps)} />
+          {node.children?.map((childNode, index) => (
+            <TreeNode key={childNode.id} node={childNode} indexPath={[...indexPath, index]} api={api} />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div {...api.getItemProps(nodeProps)}>
+      <FileIcon /> {node.name}
+    </div>
+  )
+}
+
 export default function Page() {
   const controls = useControls(treeviewControls)
 
-  const [state, send] = useMachine(tree.machine({ id: useId() }), {
+  const [state, send] = useMachine(tree.machine({ id: useId(), collection }), {
     context: controls.context,
   })
 
@@ -20,58 +105,26 @@ export default function Page() {
       <main className="tree-view">
         <div {...api.getRootProps()}>
           <h3 {...api.getLabelProps()}>My Documents</h3>
-          <div>
+          <div style={{ display: "flex", gap: "10px" }}>
             <button onClick={() => api.collapse()}>Collapse All</button>
             <button onClick={() => api.expand()}>Expand All</button>
-            <span> - </span>
-            <button onClick={() => api.select()}>Select All</button>
-            <button onClick={() => api.deselect()}>Deselect All</button>
+            {controls.context.selectionMode === "multiple" && (
+              <>
+                <button onClick={() => api.select()}>Select All</button>
+                <button onClick={() => api.deselect()}>Deselect All</button>
+              </>
+            )}
           </div>
-
-          <ul {...api.getTreeProps()}>
-            <li {...api.getBranchProps({ value: "node_modules", depth: 1 })}>
-              <div {...api.getBranchControlProps({ value: "node_modules", depth: 1 })}>
-                <span {...api.getBranchTextProps({ value: "node_modules", depth: 1 })}> 📂 node_modules</span>
-              </div>
-
-              <ul {...api.getBranchContentProps({ value: "node_modules", depth: 1 })}>
-                <li {...api.getItemProps({ value: "node_modules/zag-js", depth: 2 })}>📄 zag-js</li>
-                <li {...api.getItemProps({ value: "node_modules/pandacss", depth: 2 })}>📄 panda</li>
-
-                <li {...api.getBranchProps({ value: "node_modules/@types", depth: 2 })}>
-                  <div {...api.getBranchControlProps({ value: "node_modules/@types", depth: 2 })}>
-                    <span {...api.getBranchTextProps({ value: "node_modules/@types", depth: 2 })}> 📂 @types</span>
-                  </div>
-
-                  <ul {...api.getBranchContentProps({ value: "node_modules/@types", depth: 2 })}>
-                    <li {...api.getItemProps({ value: "node_modules/@types/react", depth: 3 })}>📄 react</li>
-                    <li {...api.getItemProps({ value: "node_modules/@types/react-dom", depth: 3 })}>📄 react-dom</li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-
-            <li {...api.getBranchProps({ value: "src", depth: 1 })}>
-              <div {...api.getBranchControlProps({ value: "src", depth: 1 })}>
-                <span {...api.getBranchTextProps({ value: "src", depth: 1 })}> 📂 src</span>
-              </div>
-
-              <ul {...api.getBranchContentProps({ value: "src", depth: 1 })}>
-                <li {...api.getItemProps({ value: "src/app.tsx", depth: 2 })}>📄 app.tsx</li>
-                <li {...api.getItemProps({ value: "src/index.ts", depth: 2 })}>📄 index.ts</li>
-              </ul>
-            </li>
-
-            <li {...api.getItemProps({ value: "panda.config", depth: 1 })}>📄 panda.config.ts</li>
-            <li {...api.getItemProps({ value: "package.json", depth: 1 })}>📄 package.json</li>
-            <li {...api.getItemProps({ value: "renovate.json", depth: 1 })}>📄 renovate.json</li>
-            <li {...api.getItemProps({ value: "readme.md", depth: 1 })}>📄 README.md</li>
-          </ul>
+          <div {...api.getTreeProps()}>
+            {collection.rootNode.children?.map((node, index) => (
+              <TreeNode key={node.id} node={node} indexPath={[index]} api={api} />
+            ))}
+          </div>
         </div>
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={state} omit={["collection"]} />
       </Toolbar>
     </>
   )

@@ -1,88 +1,90 @@
 import { getEventKey, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
-import { contains, dataAttr, getEventTarget, isComposingEvent, isEditableElement } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget, isComposingEvent, isEditableElement } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { add, isEqual, remove, uniq } from "@zag-js/utils"
 import { parts } from "./tree-view.anatomy"
 import { dom } from "./tree-view.dom"
-import type { BranchProps, BranchState, ItemProps, ItemState, MachineApi, Send, State } from "./tree-view.types"
+import type { MachineApi, NodeProps, NodeState, Send, State } from "./tree-view.types"
+import { getVisibleNodes } from "./tree-view.utils"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+  const collection = state.context.collection
   const expandedValue = Array.from(state.context.expandedValue)
   const selectedValue = Array.from(state.context.selectedValue)
   const isTypingAhead = state.context.isTypingAhead
   const focusedValue = state.context.focusedValue
 
-  function getItemState(props: ItemProps): ItemState {
+  function getNodeState(props: NodeProps): NodeState {
+    const { node, indexPath } = props
+    const value = collection.getNodeValue(node)
     return {
-      value: props.value,
-      disabled: Boolean(props.disabled),
-      focused: focusedValue === props.value,
-      selected: selectedValue.includes(props.value),
-    }
-  }
-
-  function getBranchState(props: BranchProps): BranchState {
-    return {
-      value: props.value,
-      disabled: Boolean(props.disabled),
-      focused: focusedValue === props.value,
-      expanded: expandedValue.includes(props.value),
-      selected: selectedValue.includes(props.value),
+      value,
+      valuePath: collection.getValuePath(indexPath),
+      disabled: Boolean(node.disabled),
+      focused: focusedValue == null ? isEqual(indexPath, [0]) : focusedValue === value,
+      selected: selectedValue.includes(value),
+      expanded: expandedValue.includes(value),
+      depth: indexPath.length,
+      isBranch: collection.isBranchNode(node),
     }
   }
 
   return {
-    expandedValue: expandedValue,
-    selectedValue: selectedValue,
+    collection,
+    expandedValue,
+    selectedValue,
     expand(value) {
-      if (!value) {
-        send({ type: "EXPANDED.ALL" })
-        return
-      }
-      const nextValue = new Set(expandedValue)
-      value.forEach((id) => nextValue.add(id))
-      send({ type: "EXPANDED.SET", value: nextValue, src: "expand" })
+      if (!value) return send({ type: "EXPANDED.ALL" })
+      const _expandedValue = uniq(expandedValue.concat(...value))
+      send({ type: "EXPANDED.SET", value: _expandedValue, src: "expand" })
     },
     collapse(value) {
-      if (!value) {
-        send({ type: "EXPANDED.SET", value: new Set([]), src: "collapseAll" })
-        return
-      }
-      const nextValue = new Set(expandedValue)
-      value.forEach((id) => nextValue.delete(id))
-      send({ type: "EXPANDED.SET", value: nextValue, src: "collapse" })
+      if (!value) return send({ type: "EXPANDED.SET", value: [], src: "collapseAll" })
+      const _expandedValue = uniq(remove(expandedValue, ...value))
+      send({ type: "EXPANDED.SET", value: _expandedValue, src: "collapse" })
     },
     deselect(value) {
-      if (!value) {
-        send({ type: "SELECTED.SET", value: new Set([]), src: "deselectAll" })
-        return
-      }
-      const nextValue = new Set(selectedValue)
-      value.forEach((id) => nextValue.delete(id))
-      send({ type: "SELECTED.SET", value: nextValue, src: "deselect" })
+      if (!value) return send({ type: "SELECTED.SET", value: [], src: "deselectAll" })
+      const _selectedValue = uniq(remove(selectedValue, ...value))
+      send({ type: "SELECTED.SET", value: _selectedValue, src: "deselect" })
     },
     select(value) {
-      if (!value) {
-        send({ type: "SELECTED.ALL" })
-        return
-      }
-      const nextValue = new Set()
+      if (!value) return send({ type: "SELECTED.ALL" })
+      const nextValue: string[] = []
       if (state.context.selectionMode === "single") {
         // For single selection, only add the last item
-        if (value.length > 0) {
-          nextValue.add(value[value.length - 1])
-        }
+        if (value.length > 0) nextValue.push(value[value.length - 1])
       } else {
         // For multiple selection, add all items
-        value.forEach((id) => nextValue.add(id))
-        selectedValue.forEach((id) => nextValue.add(id))
+        nextValue.push(...selectedValue, ...value)
       }
       send({ type: "SELECTED.SET", value: nextValue, src: "select" })
     },
-    focusBranch(id) {
-      dom.getBranchControlEl(state.context, id)?.focus()
+    getVisibleNodes() {
+      return getVisibleNodes(state.context)
     },
-    focusItem(id) {
-      dom.getItemEl(state.context, id)?.focus()
+    focus(value) {
+      dom.focusNode(state.context, value)
+    },
+    selectParent(value) {
+      const parentNode = collection.getParentNode(value)
+      if (!parentNode) return
+      const _selectedValue = add(selectedValue, collection.getNodeValue(parentNode))
+      send({ type: "SELECTED.SET", value: _selectedValue, src: "select.parent" })
+    },
+    expandParent(value) {
+      const parentNode = collection.getParentNode(value)
+      if (!parentNode) return
+      const _expandedValue = add(expandedValue, collection.getNodeValue(parentNode))
+      send({ type: "EXPANDED.SET", value: _expandedValue, src: "expand.parent" })
+    },
+    setExpandedValue(value) {
+      const _expandedValue = uniq(value)
+      send({ type: "EXPANDED.SET", value: _expandedValue })
+    },
+    setSelectedValue(value) {
+      const _selectedValue = uniq(value)
+      send({ type: "SELECTED.SET", value: _selectedValue })
     },
 
     getRootProps() {
@@ -110,6 +112,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": "Tree View",
         "aria-labelledby": dom.getLabelId(state.context),
         "aria-multiselectable": state.context.selectionMode === "multiple" || undefined,
+        tabIndex: -1,
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (isComposingEvent(event)) return
@@ -118,47 +121,48 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           // allow typing in input elements within the tree
           if (isEditableElement(target)) return
 
-          const node = target?.closest<HTMLElement>("[role=treeitem]")
+          const node = target?.closest<HTMLElement>("[data-part=branch-control], [data-part=item]")
           if (!node) return
 
-          const nodeId = dom.getNodeId(node)
+          const nodeId = node.dataset.value
+
           if (nodeId == null) {
-            console.warn(`Node id not found for node`, node)
+            console.warn(`[zag-js/tree-view] Node id not found for node`, node)
             return
           }
 
-          const isBranchNode = !!target?.dataset.branch
+          const isBranchNode = node.matches("[data-part=branch-control]")
 
           const keyMap: EventKeyMap = {
             ArrowDown(event) {
               if (isModifierKey(event)) return
               event.preventDefault()
-              send({ type: "ITEM.ARROW_DOWN", id: nodeId, shiftKey: event.shiftKey })
+              send({ type: "NODE.ARROW_DOWN", id: nodeId, shiftKey: event.shiftKey })
             },
             ArrowUp(event) {
               if (isModifierKey(event)) return
               event.preventDefault()
-              send({ type: "ITEM.ARROW_UP", id: nodeId, shiftKey: event.shiftKey })
+              send({ type: "NODE.ARROW_UP", id: nodeId, shiftKey: event.shiftKey })
             },
             ArrowLeft(event) {
               if (isModifierKey(event) || node.dataset.disabled) return
               event.preventDefault()
-              send({ type: isBranchNode ? "BRANCH.ARROW_LEFT" : "ITEM.ARROW_LEFT", id: nodeId })
+              send({ type: isBranchNode ? "BRANCH_NODE.ARROW_LEFT" : "NODE.ARROW_LEFT", id: nodeId })
             },
             ArrowRight(event) {
               if (!isBranchNode || node.dataset.disabled) return
               event.preventDefault()
-              send({ type: "BRANCH.ARROW_RIGHT", id: nodeId })
+              send({ type: "BRANCH_NODE.ARROW_RIGHT", id: nodeId })
             },
             Home(event) {
               if (isModifierKey(event)) return
               event.preventDefault()
-              send({ type: "ITEM.HOME", id: nodeId, shiftKey: event.shiftKey })
+              send({ type: "NODE.HOME", id: nodeId, shiftKey: event.shiftKey })
             },
             End(event) {
               if (isModifierKey(event)) return
               event.preventDefault()
-              send({ type: "ITEM.END", id: nodeId, shiftKey: event.shiftKey })
+              send({ type: "NODE.END", id: nodeId, shiftKey: event.shiftKey })
             },
             Space(event) {
               if (node.dataset.disabled) return
@@ -175,17 +179,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               const isLink = target?.closest("a[href]")
               if (!isLink) event.preventDefault()
 
-              send({ type: isBranchNode ? "BRANCH.CLICK" : "ITEM.CLICK", id: nodeId, src: "keyboard" })
+              send({ type: isBranchNode ? "BRANCH_NODE.CLICK" : "NODE.CLICK", id: nodeId, src: "keyboard" })
             },
             "*"(event) {
               if (node.dataset.disabled) return
               event.preventDefault()
-              send({ type: "EXPAND.SIBLINGS", id: nodeId })
+              send({ type: "SIBLINGS.EXPAND", id: nodeId })
             },
             a(event) {
               if (!event.metaKey || node.dataset.disabled) return
               event.preventDefault()
-              send({ type: "SELECTED.ALL", preventScroll: true, moveFocus: true })
+              send({ type: "SELECTED.ALL", moveFocus: true })
             },
           }
 
@@ -205,21 +209,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "TREE.TYPEAHEAD", key: event.key, id: nodeId })
           event.preventDefault()
         },
-        onBlur(event) {
-          if (contains(event.currentTarget, event.relatedTarget)) return
-          send({ type: "TREE.BLUR" })
-        },
       })
     },
 
-    getItemState,
+    getNodeState,
+
     getItemProps(props) {
-      const itemState = getItemState(props)
+      const itemState = getNodeState(props)
       return normalize.element({
         ...parts.item.attrs,
+        id: dom.getNodeId(state.context, itemState.value),
         dir: state.context.dir,
         "data-ownedby": dom.getTreeId(state.context),
-        "data-item": itemState.value,
+        "data-path": props.indexPath.join("/"),
+        "data-value": itemState.value,
         tabIndex: itemState.focused ? 0 : -1,
         "data-focus": dataAttr(itemState.focused),
         role: "treeitem",
@@ -228,19 +231,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-selected": dataAttr(itemState.selected),
         "aria-disabled": itemState.disabled,
         "data-disabled": dataAttr(itemState.disabled),
-        "aria-level": props.depth,
-        "data-depth": props.depth,
+        "aria-level": itemState.depth,
+        "data-depth": itemState.depth,
         style: {
-          "--depth": props.depth,
+          "--depth": itemState.depth,
         },
         onFocus(event) {
           event.stopPropagation()
-          send({ type: "ITEM.FOCUS", id: itemState.value })
+          send({ type: "NODE.FOCUS", id: itemState.value })
         },
         onClick(event) {
           if (itemState.disabled) return
           const isMetaKey = event.metaKey || event.ctrlKey
-          send({ type: "ITEM.CLICK", id: itemState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
+          send({ type: "NODE.CLICK", id: itemState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
 
           const isLink = event.currentTarget.matches("a[href]")
@@ -250,7 +253,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getItemTextProps(props) {
-      const itemState = getItemState(props)
+      const itemState = getNodeState(props)
       return normalize.element({
         ...parts.itemText.attrs,
         "data-disabled": dataAttr(itemState.disabled),
@@ -260,7 +263,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getItemIndicatorProps(props) {
-      const itemState = getItemState(props)
+      const itemState = getNodeState(props)
       return normalize.element({
         ...parts.itemIndicator.attrs,
         "aria-hidden": true,
@@ -271,104 +274,113 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getBranchState,
     getBranchProps(props) {
-      const branchState = getBranchState(props)
+      const nodeState = getNodeState(props)
       return normalize.element({
         ...parts.branch.attrs,
-        "data-depth": props.depth,
+        "data-depth": nodeState.depth,
         dir: state.context.dir,
-        "data-branch": branchState.value,
+        "data-branch": nodeState.value,
         role: "treeitem",
         "data-ownedby": dom.getTreeId(state.context),
-        "aria-level": props.depth,
-        "aria-selected": branchState.disabled ? undefined : branchState.selected,
-        "data-selected": dataAttr(branchState.selected),
-        "aria-expanded": branchState.expanded,
-        "data-state": branchState.expanded ? "open" : "closed",
-        "aria-disabled": branchState.disabled,
-        "data-disabled": dataAttr(branchState.disabled),
+        "data-value": nodeState.value,
+        "aria-level": nodeState.depth,
+        "aria-selected": nodeState.disabled ? undefined : nodeState.selected,
+        "data-path": props.indexPath.join("/"),
+        "data-selected": dataAttr(nodeState.selected),
+        "aria-expanded": nodeState.expanded,
+        "data-state": nodeState.expanded ? "open" : "closed",
+        "aria-disabled": nodeState.disabled,
+        "data-disabled": dataAttr(nodeState.disabled),
         style: {
-          "--depth": props.depth,
+          "--depth": nodeState.depth,
         },
       })
     },
 
     getBranchIndicatorProps(props) {
-      const branchState = getBranchState(props)
+      const nodeState = getNodeState(props)
       return normalize.element({
         ...parts.branchIndicator.attrs,
         "aria-hidden": true,
-        "data-state": branchState.expanded ? "open" : "closed",
-        "data-disabled": dataAttr(branchState.disabled),
-        "data-selected": dataAttr(branchState.selected),
-        "data-focus": dataAttr(branchState.focused),
+        "data-state": nodeState.expanded ? "open" : "closed",
+        "data-disabled": dataAttr(nodeState.disabled),
+        "data-selected": dataAttr(nodeState.selected),
+        "data-focus": dataAttr(nodeState.focused),
       })
     },
 
     getBranchTriggerProps(props) {
-      const branchState = getBranchState(props)
+      const nodeState = getNodeState(props)
       return normalize.element({
         ...parts.branchTrigger.attrs,
         role: "button",
         dir: state.context.dir,
-        "data-disabled": dataAttr(branchState.disabled),
-        "data-state": branchState.expanded ? "open" : "closed",
+        "data-disabled": dataAttr(nodeState.disabled),
+        "data-state": nodeState.expanded ? "open" : "closed",
+        "data-value": nodeState.value,
         onClick(event) {
-          if (branchState.disabled) return
-          send({ type: "BRANCH_TOGGLE.CLICK", id: branchState.value })
+          if (nodeState.disabled) return
+          send({ type: "BRANCH_TOGGLE.CLICK", id: nodeState.value })
           event.stopPropagation()
         },
       })
     },
 
     getBranchControlProps(props) {
-      const branchState = getBranchState(props)
+      const nodeState = getNodeState(props)
       return normalize.element({
         ...parts.branchControl.attrs,
         role: "button",
+        id: dom.getNodeId(state.context, nodeState.value),
         dir: state.context.dir,
-        tabIndex: branchState.focused ? 0 : -1,
-        "data-state": branchState.expanded ? "open" : "closed",
-        "data-disabled": dataAttr(branchState.disabled),
-        "data-selected": dataAttr(branchState.selected),
-        "data-branch": branchState.value,
-        "data-depth": props.depth,
+        tabIndex: nodeState.focused ? 0 : -1,
+        "data-path": props.indexPath.join("/"),
+        "data-state": nodeState.expanded ? "open" : "closed",
+        "data-disabled": dataAttr(nodeState.disabled),
+        "data-selected": dataAttr(nodeState.selected),
+        "data-focus": dataAttr(nodeState.focused),
+        "data-value": nodeState.value,
+        "data-depth": nodeState.depth,
         onFocus(event) {
-          send({ type: "ITEM.FOCUS", id: branchState.value })
+          send({ type: "NODE.FOCUS", id: nodeState.value })
           event.stopPropagation()
         },
         onClick(event) {
-          if (branchState.disabled) return
-
+          if (nodeState.disabled) return
           const isMetaKey = event.metaKey || event.ctrlKey
-          send({ type: "BRANCH.CLICK", id: branchState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
-
+          send({ type: "BRANCH_NODE.CLICK", id: nodeState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
         },
       })
     },
 
     getBranchTextProps(props) {
-      const branchState = getBranchState(props)
+      const nodeState = getNodeState(props)
       return normalize.element({
         ...parts.branchText.attrs,
         dir: state.context.dir,
-        "data-branch": branchState.value,
-        "data-disabled": dataAttr(branchState.disabled),
-        "data-state": branchState.expanded ? "open" : "closed",
+        "data-disabled": dataAttr(nodeState.disabled),
+        "data-state": nodeState.expanded ? "open" : "closed",
       })
     },
 
     getBranchContentProps(props) {
-      const branchState = getBranchState(props)
+      const nodeState = getNodeState(props)
       return normalize.element({
         ...parts.branchContent.attrs,
         role: "group",
         dir: state.context.dir,
-        "data-branch": branchState.value,
-        "data-state": branchState.expanded ? "open" : "closed",
-        hidden: !branchState.expanded,
+        "data-state": nodeState.expanded ? "open" : "closed",
+        hidden: !nodeState.expanded,
+      })
+    },
+
+    getBranchIndentGuideProps(props) {
+      const nodeState = getNodeState(props)
+      return normalize.element({
+        ...parts.branchIndentGuide.attrs,
+        "data-depth": nodeState.depth,
       })
     },
   }
