@@ -36,7 +36,7 @@
   "clean-package": "../../clean-package.config.json",
   "main": "src/index.ts",
   "devDependencies": {
-    "@types/react": "18.3.11",
+    "@types/react": "18.3.12",
     "clean-package": "2.2.0",
     "react": "18.3.1"
   },
