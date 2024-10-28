@@ -9,7 +9,7 @@ export type {
   MachineApi as Api,
   GenericOptions,
   GroupMachineApi as GroupApi,
-  GroupMachineContext,
+  UserDefinedGroupContext as GroupMachineContext,
   GroupProps,
   GroupService,
   GroupState,
