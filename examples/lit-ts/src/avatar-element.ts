@@ -1,6 +1,5 @@
 import { spread } from "@open-wc/lit-helpers"
 import * as avatar from "@zag-js/avatar"
-import { Machine } from "@zag-js/core"
 import { PropTypes } from "@zag-js/types"
 import { html, unsafeCSS } from "lit"
 import { customElement } from "lit/decorators.js"
@@ -10,7 +9,7 @@ import { normalizeProps } from "./normalize-props"
 
 @customElement("avatar-element")
 export class AvatarElement extends Component<avatar.Context, avatar.Api, avatar.Service> {
-  initService(context: avatar.Context): Machine<any, any, any> {
+  initService(context: avatar.Context): avatar.Service {
     return avatar.machine({ ...context, id: "1" })
   }
 
