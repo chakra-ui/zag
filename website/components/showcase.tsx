@@ -40,6 +40,7 @@ import { ToastGroup } from "./machines/toast"
 import { ToggleGroup } from "./machines/toggle-group"
 import { Tooltip } from "./machines/tooltip"
 import { Tour } from "./machines/tour"
+import { TreeView } from "./machines/tree-view"
 import { Playground } from "./playground"
 
 const components = {
@@ -466,6 +467,19 @@ const components = {
       defaultProps={{
         closeOnInteractOutside: false,
         preventInteraction: false,
+      }}
+    />
+  ),
+  TreeView: () => (
+    <Playground
+      name="tree-view"
+      component={TreeView}
+      defaultProps={{
+        expandOnClick: true,
+        selectionMode: {
+          default: "single",
+          options: ["multiple", "single"],
+        },
       }}
     />
   ),

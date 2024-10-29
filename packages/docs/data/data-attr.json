@@ -276,14 +276,14 @@
       "data-scope": "color-picker",
       "data-part": "swatch-trigger",
       "data-state": "\"checked\" | \"unchecked\"",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-disabled": "Present when disabled"
     },
     "Swatch": {
       "data-scope": "color-picker",
       "data-part": "swatch",
       "data-state": "\"checked\" | \"unchecked\"",
-      "data-value": ""
+      "data-value": "The value of the item"
     }
   },
   "combobox": {
@@ -341,7 +341,7 @@
       "data-highlighted": "Present when highlighted",
       "data-state": "\"checked\" | \"unchecked\"",
       "data-disabled": "Present when disabled",
-      "data-value": ""
+      "data-value": "The value of the item"
     },
     "ItemText": {
       "data-scope": "combobox",
@@ -416,14 +416,14 @@
     "DayTableCell": {
       "data-scope": "date-picker",
       "data-part": "day-table-cell",
-      "data-value": ""
+      "data-value": "The value of the item"
     },
     "DayTableCellTrigger": {
       "data-scope": "date-picker",
       "data-part": "day-table-cell-trigger",
       "data-disabled": "Present when disabled",
       "data-selected": "Present when selected",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-view": "The view of the daytablecelltrigger",
       "data-today": "Present when the date represents today",
       "data-focus": "Present when focused",
@@ -438,7 +438,7 @@
       "data-scope": "date-picker",
       "data-part": "month-table-cell",
       "data-selected": "Present when selected",
-      "data-value": ""
+      "data-value": "The value of the item"
     },
     "MonthTableCellTrigger": {
       "data-scope": "date-picker",
@@ -447,13 +447,13 @@
       "data-disabled": "Present when disabled",
       "data-focus": "Present when focused",
       "data-view": "The view of the monthtablecelltrigger",
-      "data-value": ""
+      "data-value": "The value of the item"
     },
     "YearTableCell": {
       "data-scope": "date-picker",
       "data-part": "year-table-cell",
       "data-selected": "Present when selected",
-      "data-value": ""
+      "data-value": "The value of the item"
     },
     "YearTableCellTrigger": {
       "data-scope": "date-picker",
@@ -461,7 +461,7 @@
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
       "data-disabled": "Present when disabled",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-view": "The view of the yeartablecelltrigger"
     },
     "NextTrigger": {
@@ -533,7 +533,8 @@
       "data-part": "input",
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-autoresize": ""
     },
     "Preview": {
       "data-scope": "editable",
@@ -541,7 +542,8 @@
       "data-placeholder-shown": "Present when placeholder is shown",
       "data-readonly": "Present when read-only",
       "data-disabled": "Present when disabled",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-autoresize": ""
     }
   },
   "file-upload": {
@@ -692,7 +694,7 @@
       "data-scope": "menu",
       "data-part": "option-item",
       "data-type": "The type of the item",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-state": "\"checked\" | \"unchecked\"",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
@@ -833,7 +835,7 @@
       "data-scope": "progress",
       "data-part": "root",
       "data-max": "",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-state": "",
       "data-orientation": "The orientation of the progress"
     },
@@ -962,7 +964,7 @@
     "Item": {
       "data-scope": "select",
       "data-part": "item",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-state": "\"checked\" | \"unchecked\"",
       "data-highlighted": "Present when highlighted",
       "data-disabled": "Present when disabled"
@@ -1092,9 +1094,15 @@
       "data-scope": "slider",
       "data-part": "marker",
       "data-orientation": "The orientation of the marker",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-disabled": "Present when disabled",
       "data-state": ""
+    },
+    "DraggingIndicator": {
+      "data-scope": "slider",
+      "data-part": "dragging-indicator",
+      "data-orientation": "The orientation of the draggingindicator",
+      "data-state": "\"open\" | \"closed\""
     }
   },
   "splitter": {
@@ -1228,7 +1236,7 @@
       "data-part": "trigger",
       "data-orientation": "The orientation of the trigger",
       "data-disabled": "Present when disabled",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
       "data-ssr": ""
@@ -1279,13 +1287,13 @@
     "Item": {
       "data-scope": "tags-input",
       "data-part": "item",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-disabled": "Present when disabled"
     },
     "ItemPreview": {
       "data-scope": "tags-input",
       "data-part": "item-preview",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted"
     },
@@ -1352,7 +1360,7 @@
       "data-selected": "Present when selected",
       "data-now": "",
       "data-focus": "Present when focused",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-unit": ""
     },
     "MinuteCell": {
@@ -1360,7 +1368,7 @@
       "data-part": "minute-cell",
       "data-disabled": "Present when disabled",
       "data-selected": "Present when selected",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-now": "",
       "data-focus": "Present when focused",
       "data-unit": ""
@@ -1370,7 +1378,7 @@
       "data-part": "second-cell",
       "data-disabled": "Present when disabled",
       "data-selected": "Present when selected",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-unit": "",
       "data-focus": "Present when focused",
       "data-now": ""
@@ -1381,7 +1389,7 @@
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
       "data-now": "",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-unit": ""
     }
   },
@@ -1506,7 +1514,8 @@
     "Item": {
       "data-scope": "tree-view",
       "data-part": "item",
-      "data-item": "",
+      "data-path": "The path of the item",
+      "data-value": "The value of the item",
       "data-focus": "Present when focused",
       "data-selected": "Present when selected",
       "data-disabled": "Present when disabled",
@@ -1531,6 +1540,8 @@
       "data-part": "branch",
       "data-depth": "The depth of the item",
       "data-branch": "",
+      "data-value": "The value of the item",
+      "data-path": "The path of the item",
       "data-selected": "Present when selected",
       "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled"
@@ -1547,29 +1558,35 @@
       "data-scope": "tree-view",
       "data-part": "branch-trigger",
       "data-disabled": "Present when disabled",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-value": "The value of the item"
     },
     "BranchControl": {
       "data-scope": "tree-view",
       "data-part": "branch-control",
+      "data-path": "The path of the item",
       "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled",
       "data-selected": "Present when selected",
-      "data-branch": "",
+      "data-focus": "Present when focused",
+      "data-value": "The value of the item",
       "data-depth": "The depth of the item"
     },
     "BranchText": {
       "data-scope": "tree-view",
       "data-part": "branch-text",
-      "data-branch": "",
       "data-disabled": "Present when disabled",
       "data-state": "\"open\" | \"closed\""
     },
     "BranchContent": {
       "data-scope": "tree-view",
       "data-part": "branch-content",
-      "data-branch": "",
       "data-state": "\"open\" | \"closed\""
+    },
+    "BranchIndentGuide": {
+      "data-scope": "tree-view",
+      "data-part": "branch-indent-guide",
+      "data-depth": "The depth of the item"
     }
   }
 }
