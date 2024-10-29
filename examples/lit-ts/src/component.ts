@@ -1,4 +1,4 @@
-import { Dict, Machine, StateFrom, StateMachine } from "@zag-js/core"
+import { Machine, StateFrom, StateMachine } from "@zag-js/core"
 import { LitElement } from "lit"
 import { state } from "lit/decorators.js"
 
@@ -9,7 +9,7 @@ interface ComponentInterface<Api, Service> {
 }
 
 export abstract class Component<
-    Context extends Dict,
+    Context extends Record<string, any>,
     Api,
     Service extends Machine<any, any, StateMachine.AnyEventObject>,
   >
