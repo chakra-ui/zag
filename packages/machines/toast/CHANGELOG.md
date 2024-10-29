@@ -1,5 +1,21 @@
 # @zag-js/toast
 
+## 0.77.0
+
+### Patch Changes
+
+- [`c504c1c`](https://github.com/chakra-ui/zag/commit/c504c1c59088ea5b2af9dd8abc25abf4b6168bc7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix exported toast group context type
+
+- Updated dependencies [[`a2af4ad`](https://github.com/chakra-ui/zag/commit/a2af4adc6a0d9438e025eadd12eb7eb513131a90)]:
+  - @zag-js/dom-query@0.77.0
+  - @zag-js/utils@0.77.0
+  - @zag-js/dismissable@0.77.0
+  - @zag-js/dom-event@0.77.0
+  - @zag-js/core@0.77.0
+  - @zag-js/anatomy@0.77.0
+  - @zag-js/types@0.77.0
+
 ## 0.76.0
 
 ### Patch Changes

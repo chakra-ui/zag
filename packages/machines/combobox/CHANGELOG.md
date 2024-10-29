@@ -1,5 +1,27 @@
 # @zag-js/combobox
 
+## 0.77.0
+
+### Minor Changes
+
+- [`4be2c1d`](https://github.com/chakra-ui/zag/commit/4be2c1d731678b958233c41b815e66f41c15dcaf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove `getSelectionValue` in favor of userland programmatic
+  control.
+
+### Patch Changes
+
+- Updated dependencies [[`a2af4ad`](https://github.com/chakra-ui/zag/commit/a2af4adc6a0d9438e025eadd12eb7eb513131a90)]:
+  - @zag-js/collection@0.77.0
+  - @zag-js/dom-query@0.77.0
+  - @zag-js/utils@0.77.0
+  - @zag-js/dismissable@0.77.0
+  - @zag-js/dom-event@0.77.0
+  - @zag-js/popper@0.77.0
+  - @zag-js/core@0.77.0
+  - @zag-js/anatomy@0.77.0
+  - @zag-js/types@0.77.0
+  - @zag-js/aria-hidden@0.77.0
+
 ## 0.76.0
 
 ### Patch Changes
