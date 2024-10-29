@@ -2383,8 +2383,8 @@ importers:
         version: link:../../types
     devDependencies:
       '@sveltejs/package':
-        specifier: 2.3.5
-        version: 2.3.5(svelte@5.1.2)(typescript@5.6.3)
+        specifier: 2.3.7
+        version: 2.3.7(svelte@5.1.2)(typescript@5.6.3)
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -6725,8 +6725,8 @@ packages:
   '@stackblitz/sdk@1.11.0':
     resolution: {integrity: sha512-DFQGANNkEZRzFk1/rDP6TcFdM82ycHE+zfl9C/M/jXlH68jiqHWHFMQURLELoD8koxvu/eW5uhg94NSAZlYrUQ==}
 
-  '@sveltejs/package@2.3.5':
-    resolution: {integrity: sha512-fxWSG+pJHxWwcKltG+JoQ+P1CPO7NHVuZD1Gchi/1mNN6C60yD/voHeeXlqr0HHGkvIrpAjRIHLjsavI77Qsiw==}
+  '@sveltejs/package@2.3.7':
+    resolution: {integrity: sha512-LYgUkde5GUYqOpXbcoCGUpEH4Ctl3Wj4u4CVZBl56dEeLW5fGHE037ZL1qlK0Ky+QD5uUfwONSeGwIOIighFMQ==}
     engines: {node: ^16.14 || >=18}
     hasBin: true
     peerDependencies:
@@ -15900,7 +15900,7 @@ snapshots:
 
   '@stackblitz/sdk@1.11.0': {}
 
-  '@sveltejs/package@2.3.5(svelte@5.1.2)(typescript@5.6.3)':
+  '@sveltejs/package@2.3.7(svelte@5.1.2)(typescript@5.6.3)':
     dependencies:
       chokidar: 4.0.1
       kleur: 4.1.5
