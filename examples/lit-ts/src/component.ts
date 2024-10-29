@@ -3,9 +3,9 @@ import { LitElement } from "lit"
 import { state } from "lit/decorators.js"
 
 interface ComponentInterface<
-  Context extends Dict,
+  MContext extends Dict,
   Api,
-  Service extends Machine<Context, any, StateMachine.AnyEventObject>,
+  Service extends Machine<MContext, any, StateMachine.AnyEventObject>,
 > {
   api: Api
   service: Service
@@ -14,11 +14,12 @@ interface ComponentInterface<
 
 export abstract class Component<
     Context extends Dict,
+    MContext extends Dict,
     Api,
-    Service extends Machine<Context, any, StateMachine.AnyEventObject>,
+    Service extends Machine<MContext, any, StateMachine.AnyEventObject>,
   >
   extends LitElement
-  implements ComponentInterface<Context, Api, Service>
+  implements ComponentInterface<MContext, Api, Service>
 {
   api: Api
   service: Service

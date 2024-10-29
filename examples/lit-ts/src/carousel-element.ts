@@ -9,7 +9,12 @@ import { Component } from "./component"
 import { normalizeProps } from "./normalize-props"
 
 @customElement("carousel-element")
-export class CarouselElement extends Component<carousel.MachineContext, carousel.Api, carousel.Service> {
+export class CarouselElement extends Component<
+  carousel.Context,
+  carousel.MachineContext,
+  carousel.Api,
+  carousel.Service
+> {
   initService(context: carousel.Context): carousel.Service {
     return carousel.machine({ ...context, id: "1", index: 0, spacing: "20px", slidesPerView: 2 })
   }

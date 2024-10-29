@@ -9,7 +9,12 @@ import { Component } from "./component"
 import { normalizeProps } from "./normalize-props"
 
 @customElement("accordion-element")
-export class AccordionElement extends Component<accordion.MachineContext, accordion.Api, accordion.Service> {
+export class AccordionElement extends Component<
+  accordion.Context,
+  accordion.MachineContext,
+  accordion.Api,
+  accordion.Service
+> {
   initService(context: accordion.Context): accordion.Service {
     return accordion.machine({ ...context, id: "1" })
   }
