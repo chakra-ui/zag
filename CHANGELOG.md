@@ -6,6 +6,19 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.77.0](./#0.77.0) - 2024-10-29
+
+### Fixed
+
+- **Dialog**: Resolve an issue where body styles are not always restored correctly
+- **Toast**: Fix exported `ToastGroupContext` type. The previously exported type was incorrect
+
+### Changed
+
+- **TreeView**: Refactor treeview to use the new tree collection for better rendering and logic management
+
+- **Combobox**: Remove `getSelectionValue` in favor of userland programmatic control
+
 ## [0.76.0](./#0.76.0) - 2024-10-26
 
 ### Fixed
