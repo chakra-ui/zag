@@ -360,6 +360,7 @@ describe("tree", () => {
             "value": "f",
           },
         ],
+        "label": "",
         "value": "ROOT",
       }
     `)
