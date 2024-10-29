@@ -4216,6 +4216,9 @@ importers:
       '@zag-js/tour':
         specifier: workspace:*
         version: link:../packages/machines/tour
+      '@zag-js/tree-view':
+        specifier: workspace:*
+        version: link:../packages/machines/tree-view
       contentlayer:
         specifier: 0.3.4
         version: 0.3.4(esbuild@0.24.0)

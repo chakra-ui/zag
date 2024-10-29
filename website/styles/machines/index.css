@@ -36,6 +36,7 @@
 @import url(./presence.css);
 @import url(./steps.css);
 @import url(./tour.css);
+@import url(./tree-view.css);
 
 * {
   border-color: var(--colors-border-bold);

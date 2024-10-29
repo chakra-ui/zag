@@ -1,0 +1,93 @@
+```tsx
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import * as tree from "@zag-js/tree-view"
+import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-solid"
+import {
+  Accessor,
+  createMemo,
+  createUniqueId,
+  Index,
+  JSX,
+  Show,
+} from "solid-js"
+
+// 1. Create the tree collection
+
+interface Node {
+  id: string
+  name: string
+  children?: Node[]
+}
+
+const collection = tree.collection<Node>({
+  // ...
+})
+
+// 2. Create the recursive tree node
+
+interface TreeNodeProps {
+  node: Node
+  indexPath: number[]
+  api: Accessor<tree.Api>
+}
+
+const TreeNode = (props: TreeNodeProps): JSX.Element => {
+  const { node, indexPath, api } = props
+  const nodeProps = { indexPath, node }
+  const nodeState = createMemo(() => api().getNodeState(nodeProps))
+  return (
+    <Show
+      when={nodeState().isBranch}
+      fallback={
+        <div {...api().getItemProps(nodeProps)}>
+          <FileIcon /> {node.name}
+        </div>
+      }
+    >
+      <div {...api().getBranchProps(nodeProps)}>
+        <div {...api().getBranchControlProps(nodeProps)}>
+          <FolderIcon />
+          <span {...api().getBranchTextProps(nodeProps)}>{node.name}</span>
+          <span {...api().getBranchIndicatorProps(nodeProps)}>
+            <ChevronRightIcon />
+          </span>
+        </div>
+        <div {...api().getBranchContentProps(nodeProps)}>
+          <div {...api().getBranchIndentGuideProps(nodeProps)} />
+          <Index each={node.children}>
+            {(childNode, index) => (
+              <TreeNode
+                node={childNode()}
+                indexPath={[...indexPath, index]}
+                api={api}
+              />
+            )}
+          </Index>
+        </div>
+      </div>
+    </Show>
+  )
+}
+
+// 3. Create the tree view
+
+export function TreeView() {
+  const [state, send] = useMachine(
+    tree.machine({ id: createUniqueId(), collection }),
+  )
+  const api = createMemo(() => tree.connect(state, send, normalizeProps))
+
+  return (
+    <div {...api().getRootProps()}>
+      <h3 {...api().getLabelProps()}>My Documents</h3>
+      <div {...api().getTreeProps()}>
+        <Index each={collection.rootNode.children}>
+          {(node, index) => (
+            <TreeNode node={node()} indexPath={[index]} api={api} />
+          )}
+        </Index>
+      </div>
+    </div>
+  )
+}
+```

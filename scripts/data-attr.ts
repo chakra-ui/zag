@@ -43,6 +43,8 @@ const docsMap = {
   "data-paused": "Present when paused",
   "data-checked": "Present when checked",
   "data-overlap": "Present when overlapping",
+  "data-path": "The path of the item",
+  "data-value": "The value of the item",
 }
 
 const skipAttrs = ["data-ownedby", "data-uid"]

@@ -11,9 +11,9 @@ system explorer. It allows users to expand and collapse branches, select
 individual or multiple nodes, and traverse the hierarchy using keyboard
 navigation.
 
-{/* <Resources pkg="@zag-js/tree-view" /> */}
+<Resources pkg="@zag-js/tree-view" />
 
-{/* <Showcase id="TreeView" /> */}
+<Showcase id="TreeView" />
 
 **Features**
 
@@ -26,12 +26,217 @@ navigation.
 
 ## Installation
 
+To use the tree view machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="tree-view/installation.mdx" />
+
+This command will install the framework agnostic tree view logic and the
+reactive utilities for your framework of choice.
+
+## Anatomy
+
+To set up the tree view correctly, you'll need to understand its anatomy.
+
+<Anatomy id="tree-view" />
+
+## Usage
+
+First, import the tree view package into your project
+
+```jsx
+import * as tree from "@zag-js/tree-view"
+```
+
+The tree view package exports two key functions:
+
+- `machine` — The state machine logic for the tree view widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+Next, import the required hooks and functions for your framework and use the
+tree view machine in your project 🔥
+
+### Create the tree collection
+
+Use the `collection` function to create a tree collection. This create a tree
+factory that the component uses for traversal.
+
+```ts
+import * as tree from "@zag-js/tree-view"
+
+interface Node {
+  id: string
+  name: string
+  children?: Node[]
+}
+
+const collection = tree.collection<Node>({
+  nodeToValue: (node) => node.id,
+  nodeToString: (node) => node.name,
+  rootNode: {
+    id: "ROOT",
+    name: "",
+    children: [
+      {
+        id: "node_modules",
+        name: "node_modules",
+        children: [
+          { id: "node_modules/zag-js", name: "zag-js" },
+          { id: "node_modules/pandacss", name: "panda" },
+          {
+            id: "node_modules/@types",
+            name: "@types",
+            children: [
+              { id: "node_modules/@types/react", name: "react" },
+              { id: "node_modules/@types/react-dom", name: "react-dom" },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+})
+```
+
+### Create the tree view
+
+Pass the tree collection to the machine to create the tree view.
+
+<CodeSnippet id="tree-view/usage.mdx" />
+
 ## Expanding and Collapsing Nodes
+
+By default, the tree view will expand or collapse when clicking the branch
+control. To control the expanded state of the tree view, use the `api.expand`
+and `api.collapse` methods.
+
+```tsx
+api.expand(["node_modules/pandacss"]) // expand a single node
+api.expand() // expand all nodes
+
+api.collapse(["node_modules/pandacss"]) // collapse a single node
+api.collapse() // collapse all nodes
+```
 
 ## Multiple selection
 
+The tree view supports multiple selection. To enable this, set the
+`selectionMode` to `multiple`.
+
+```tsx {3}
+const [state, send] = useMachine(
+  tree.machine({
+    selectionMode: "multiple",
+  }),
+)
+```
+
+## Setting the default expanded nodes
+
+To set the default expanded nodes, use the `expandedValue` context property.
+
+```tsx {3}
+const [state, send] = useMachine(
+  tree.machine({
+    expandedValue: ["node_modules/pandacss"],
+  }),
+)
+```
+
+## Setting the default selected nodes
+
+To set the default selected nodes, use the `selectedValue` context property.
+
+```tsx {3}
+const [state, send] = useMachine(
+  tree.machine({
+    selectedValue: ["node_modules/pandacss"],
+  }),
+)
+```
+
 ## Indentation Guide
+
+When rendering a branch node in the tree view, you can render the `indentGuide`
+element by using the `api.getBranchIndentGuideProps()` function.
+
+```tsx {10}
+<div {...api.getBranchProps(nodeProps)}>
+  <div {...api.getBranchControlProps(nodeProps)}>
+    <FolderIcon />
+    {node.name}
+    <span {...api.getBranchIndicatorProps(nodeProps)}>
+      <ChevronRightIcon />
+    </span>
+  </div>
+  <div {...api.getBranchContentProps(nodeProps)}>
+    <div {...api.getBranchIndentGuideProps(nodeProps)} />
+    {node.children.map((childNode, index) => (
+      <TreeNode
+        key={childNode.id}
+        node={childNode}
+        indexPath={[...indexPath, index]}
+        api={api}
+      />
+    ))}
+  </div>
+</div>
+```
 
 ## Listening for selection
 
+When a node is selected, the `onSelectionChange` callback is invoked with the
+selected nodes.
+
+```jsx {3-6}
+const [state, send] = useMachine(
+  tree.machine({
+    onSelectionChange(details) {
+      console.log("selected nodes:", details)
+    },
+  }),
+)
+```
+
 ## Listening for expanding and collapsing
+
+When a node is expanded or collapsed, the `onExpandedChange` callback is invoked
+with the expanded nodes.
+
+```jsx {3-6}
+const [state, send] = useMachine(
+  tree.machine({
+    onExpandedChange(details) {
+      console.log("expanded nodes:", details)
+    },
+  }),
+)
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The tree view machine exposes the following context properties:
+
+<ContextTable name="tree-view" />
+
+### Machine API
+
+The tree view `api` exposes the following methods:
+
+<ApiTable name="tree-view" />
+
+### Data Attributes
+
+<DataAttrTable name="tree-view" />
+
+## Accessibility
+
+Adheres to the
+[Tree View WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treeview).
+
+### Keyboard Interactions
+
+<KeyboardTable name="tree-view" />
