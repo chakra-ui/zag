@@ -1,5 +1,12 @@
 # @zag-js/focus-trap
 
+## 0.77.0
+
+### Patch Changes
+
+- Updated dependencies [[`a2af4ad`](https://github.com/chakra-ui/zag/commit/a2af4adc6a0d9438e025eadd12eb7eb513131a90)]:
+  - @zag-js/dom-query@0.77.0
+
 ## 0.76.0
 
 ### Patch Changes
