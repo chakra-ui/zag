@@ -14,12 +14,12 @@ interface ComponentInterface<
 
 export abstract class Component<
     Context extends Dict,
-    MContext extends Dict,
+    MachineContext extends Dict,
     Api,
-    Service extends Machine<MContext, any, StateMachine.AnyEventObject>,
+    Service extends Machine<MachineContext, any, StateMachine.AnyEventObject>,
   >
   extends LitElement
-  implements ComponentInterface<MContext, Api, Service>
+  implements ComponentInterface<MachineContext, Api, Service>
 {
   api: Api
   service: Service
