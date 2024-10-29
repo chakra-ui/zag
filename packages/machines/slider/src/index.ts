@@ -8,7 +8,6 @@ export type {
   DraggingIndicatorProps,
   ElementIds,
   FocusChangeDetails,
-  MachineContext,
   MarkerProps,
   Service,
   ThumbProps,

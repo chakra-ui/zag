@@ -7,7 +7,6 @@ export type {
   ElementIds,
   FocusChangeDetails,
   IntlTranslations,
-  MachineContext,
   Service,
   ValueChangeDetails,
   ValueInvalidDetails,

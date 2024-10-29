@@ -11,7 +11,6 @@ export type {
   ItemGroupProps,
   ItemProps,
   ItemState,
-  MachineContext,
   OpenChangeDetails,
   OptionItemProps,
   OptionItemState,

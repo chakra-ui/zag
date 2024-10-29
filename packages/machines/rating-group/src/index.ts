@@ -9,7 +9,6 @@ export type {
   IntlTranslations,
   ItemProps,
   ItemState,
-  MachineContext,
   Service,
   ValueChangeDetails,
 } from "./rating-group.types"

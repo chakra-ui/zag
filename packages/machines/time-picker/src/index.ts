@@ -10,7 +10,6 @@ export type {
   UserDefinedContext as Context,
   ElementIds,
   FocusChangeDetails,
-  MachineContext,
   OpenChangeDetails,
   PeriodCellProps,
   PositioningOptions,

@@ -8,7 +8,7 @@ import { Component } from "./component"
 import { normalizeProps } from "./normalize-props"
 
 @customElement("avatar-element")
-export class AvatarElement extends Component<avatar.Context, avatar.MachineContext, avatar.Api, avatar.Service> {
+export class AvatarElement extends Component<avatar.Context, avatar.Api, avatar.Service> {
   initService(context: avatar.Context): avatar.Service {
     return avatar.machine({ ...context, id: "1" })
   }

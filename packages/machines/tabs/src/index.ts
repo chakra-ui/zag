@@ -9,7 +9,6 @@ export type {
   ElementIds,
   FocusChangeDetails,
   IntlTranslations,
-  MachineContext,
   Service,
   TriggerProps,
   ValueChangeDetails,

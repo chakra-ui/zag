@@ -10,7 +10,6 @@ export type {
   IntlTranslations,
   ItemLabelDetails,
   ItemProps,
-  MachineContext,
   PageChangeDetails,
   PageSizeChangeDetails,
   Service,

@@ -12,7 +12,6 @@ export type {
   ElementIds,
   HiddenInputProps,
   IntlTranslations,
-  MachineContext,
   SegmentPathProps,
   Service,
   StrokeOptions,

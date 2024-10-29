@@ -2,11 +2,7 @@ import { Dict, Machine, StateFrom, StateMachine } from "@zag-js/core"
 import { LitElement } from "lit"
 import { state } from "lit/decorators.js"
 
-interface ComponentInterface<
-  MContext extends Dict,
-  Api,
-  Service extends Machine<MContext, any, StateMachine.AnyEventObject>,
-> {
+interface ComponentInterface<Api, Service> {
   api: Api
   service: Service
   state: StateFrom<Service>
@@ -14,12 +10,11 @@ interface ComponentInterface<
 
 export abstract class Component<
     Context extends Dict,
-    MachineContext extends Dict,
     Api,
-    Service extends Machine<MachineContext, any, StateMachine.AnyEventObject>,
+    Service extends Machine<any, any, StateMachine.AnyEventObject>,
   >
   extends LitElement
-  implements ComponentInterface<MachineContext, Api, Service>
+  implements ComponentInterface<Api, Service>
 {
   api: Api
   service: Service

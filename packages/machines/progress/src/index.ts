@@ -7,7 +7,6 @@ export type {
   UserDefinedContext as Context,
   ElementIds,
   IntlTranslations,
-  MachineContext,
   Orientation,
   ProgressState,
   Service,

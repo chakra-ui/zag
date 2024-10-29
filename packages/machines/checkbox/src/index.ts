@@ -8,6 +8,5 @@ export type {
   CheckedState,
   UserDefinedContext as Context,
   ElementIds,
-  MachineContext,
   Service,
 } from "./checkbox.types"

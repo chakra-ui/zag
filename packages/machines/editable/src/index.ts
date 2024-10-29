@@ -7,11 +7,10 @@ export type {
   ActivationMode,
   MachineApi as Api,
   UserDefinedContext as Context,
-  EditChangeDetails,
   ElementIds,
   IntlTranslations,
-  MachineContext,
   Service,
   SubmitMode,
+  EditChangeDetails,
   ValueChangeDetails,
 } from "./editable.types"
