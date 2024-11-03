@@ -2,7 +2,7 @@
 <!-- TreeNode.vue -->
 <script setup lang="ts">
   import { FileIcon, FolderIcon, ChevronRightIcon } from "lucide-vue-next"
-  import * as tree from "@zag-js/tree-view"
+  import type { Api } from "@zag-js/tree-view"
 
   interface Node {
     id: string
@@ -13,7 +13,7 @@
   interface Props {
     node: Node
     indexPath: number[]
-    api: tree.Api
+    api: Api
   }
 
   const props = defineProps<Props>()
@@ -57,10 +57,9 @@
 ```html
 <!-- TreeView.vue -->
 <script setup lang="ts">
-  import { treeviewControls } from "@zag-js/shared"
   import * as tree from "@zag-js/tree-view"
   import { normalizeProps, useMachine } from "@zag-js/vue"
-  import { useId } from "vue"
+  import { computed, useId } from "vue"
 
   // 1. Create the tree collection
 
@@ -94,12 +93,5 @@
       </div>
     </div>
   </main>
-
-  <Toolbar>
-    <StateVisualizer :state="state" :omit="['collection']" />
-    <template #controls>
-      <Controls :control="controls" />
-    </template>
-  </Toolbar>
 </template>
 ```
