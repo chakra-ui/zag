@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, useId } from "vue"
-import * as tour from "@zag-js/tour"
 import { tourControls, tourData } from "@zag-js/shared"
-import { useMachine, normalizeProps } from "@zag-js/vue"
+import * as tour from "@zag-js/tour"
+import { normalizeProps, useMachine } from "@zag-js/vue"
 import { X } from "lucide-vue-next"
+import { useId } from "vue"
 
 const controls = useControls(tourControls)
 
@@ -43,21 +43,21 @@ const open = computed(() => api.value.open && api.value.step)
     </div>
 
     <Teleport to="body" v-if="open">
-      <div v-if="api.step.backdrop" v-bind="api.getBackdropProps()" />
+      <div v-if="api.step?.backdrop" v-bind="api.getBackdropProps()" />
       <div v-bind="api.getSpotlightProps()" />
       <div v-bind="api.getPositionerProps()">
         <div v-bind="api.getContentProps()">
-          <div v-if="api.step.arrow" v-bind="api.getArrowProps()">
+          <div v-if="api.step?.arrow" v-bind="api.getArrowProps()">
             <div v-bind="api.getArrowTipProps()" />
           </div>
 
-          <p v-bind="api.getTitleProps()">{{ api.step.title }}</p>
-          <div v-bind="api.getDescriptionProps()">{{ api.step.description }}</div>
+          <p v-bind="api.getTitleProps()">{{ api.step?.title }}</p>
+          <div v-bind="api.getDescriptionProps()">{{ api.step?.description }}</div>
           <div v-bind="api.getProgressTextProps()">{{ api.getProgressText() }}</div>
 
-          <div v-if="api.step.actions" class="tour button__group">
+          <div v-if="api.step?.actions" class="tour button__group">
             <button
-              v-for="action in api.step.actions"
+              v-for="action in api.step?.actions"
               :key="action.label"
               v-bind="api.getActionTriggerProps({ action })"
             >

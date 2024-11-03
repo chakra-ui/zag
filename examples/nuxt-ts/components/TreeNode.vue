@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { FileIcon, FolderIcon, ChevronRightIcon } from "lucide-vue-next"
-import * as tree from "@zag-js/tree-view"
+import type { Api } from "@zag-js/tree-view"
+import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-vue-next"
 
 interface Node {
   id: string
@@ -11,7 +11,7 @@ interface Node {
 interface Props {
   node: Node
   indexPath: number[]
-  api: tree.Api
+  api: Api
 }
 
 const props = defineProps<Props>()
