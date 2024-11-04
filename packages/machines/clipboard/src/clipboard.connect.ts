@@ -61,6 +61,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getTriggerProps() {
       return normalize.button({
         ...parts.trigger.attrs,
+        type: "button",
         "aria-label": copied ? "Copied to clipboard" : "Copy to clipboard",
         "data-copied": dataAttr(copied),
         onClick() {
