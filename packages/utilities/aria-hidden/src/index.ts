@@ -21,6 +21,7 @@ export function ariaHidden(targetsOrFn: TargetsOrFn, options: Options = {}) {
     func(() => {
       const targets = typeof targetsOrFn === "function" ? targetsOrFn() : targetsOrFn
       const elements = targets.filter(Boolean) as HTMLElement[]
+      if (elements.length === 0) return
       cleanups.push(hideOthers(elements))
     }),
   )
