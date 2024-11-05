@@ -18,8 +18,8 @@
         {#each presets as preset}
           <button {...api.getSwatchTriggerProps({ value: preset })}>
             <div style="position:relative;">
-              <div {...api.getTransparencyGridProps({ size: "4px" })} />
-              <div {...api.getSwatchProps({ value: preset })} />
+              <div {...api.getTransparencyGridProps({ size: "4px" })}></div>
+              <div {...api.getSwatchProps({ value: preset })}></div>
             </div>
           </button>
         {/each}

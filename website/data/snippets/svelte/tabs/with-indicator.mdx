@@ -8,7 +8,7 @@
         {item.label}
       </button>
     {/each}
-    <div {...api.getIndicatorProps()} />
+    <div {...api.getIndicatorProps()}></div>
   </div>
   {#each data as item}
     <div {...api.getContentProps({ value: item.value })}>
