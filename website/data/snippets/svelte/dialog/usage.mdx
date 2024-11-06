@@ -9,7 +9,7 @@
 
 <button {...api.getTriggerProps()}>Open Dialog</button>
 {#if api.open}
-  <div use:portal {...api.getBackdropProps()} />
+  <div use:portal {...api.getBackdropProps()}></div>
   <div use:portal {...api.getPositionerProps()}>
     <div {...api.getContentProps()}>
       <h2 {...api.getTitleProps()}>Edit profile</h2>
