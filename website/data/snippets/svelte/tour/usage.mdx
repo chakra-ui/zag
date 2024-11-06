@@ -15,14 +15,14 @@
   {#if api.step && api.open}
     <div use:portal>
       {#if api.step.backdrop}
-        <div {...api.getBackdropProps()} />
+        <div {...api.getBackdropProps()}></div>
       {/if}
-      <div {...api.getSpotlightProps()} />
+      <div {...api.getSpotlightProps()}></div>
       <div {...api.getPositionerProps()}>
         <div {...api.getContentProps()}>
           {#if api.step.arrow}
             <div {...api.getArrowProps()}>
-              <div {...api.getArrowTipProps()} />
+              <div {...api.getArrowTipProps()}></div>
             </div>
           {/if}
 
