@@ -110,7 +110,7 @@ export function ToggleGroup() {
 **Zag** means to _take a sharp change in direction_. This clearly describes our approach of using state machines to
 power the logic behind UI components.
 
-them to **"zag it!"** ⚡️
+### Teasers
 
 - When you see someone using classic react, vue or solid to build an interactive UI component that exists in Zag, tell
   them to **"zag it!"** ⚡️
