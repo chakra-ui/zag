@@ -10,6 +10,9 @@
   <a href="https://zagjs.com/discord">
     <img alt="Discord" src="https://img.shields.io/discord/660863154703695893.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2" />
   </a>
+  <a href="https://gurubase.io/g/zag">
+    <img alt="Gurubase" src="https://img.shields.io/badge/Gurubase-Ask%20Zag%20Guru-006BFF" />
+  </a>
 </p>
 
 
@@ -107,7 +110,7 @@ export function ToggleGroup() {
 **Zag** means to _take a sharp change in direction_. This clearly describes our approach of using state machines to
 power the logic behind UI components.
 
-### Teasers
+them to **"zag it!"** ⚡️
 
 - When you see someone using classic react, vue or solid to build an interactive UI component that exists in Zag, tell
   them to **"zag it!"** ⚡️
