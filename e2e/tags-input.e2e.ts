@@ -148,6 +148,33 @@ test.describe("tags-input", () => {
     await I.expectNoTagToBeHighlighted()
   })
 
+  test("delete + backspace interaction", async () => {
+    await I.addTag("Svelte")
+    await I.addTag("Angular")
+
+    await I.clickTag("Vue")
+
+    await I.pressKey("Delete")
+    await I.seeTagIsHighlighted("Svelte")
+    await I.dontSeeTag("Vue")
+
+    await I.pressKey("Delete")
+    await I.seeTagIsHighlighted("Angular")
+    await I.dontSeeTag("Svelte")
+
+    await I.pressKey("Delete")
+    await I.dontSeeTag("Angular")
+    await I.expectNoTagToBeHighlighted()
+
+    await I.pressKey("Backspace")
+    await I.seeTagIsHighlighted("React")
+
+    await I.pressKey("Backspace")
+    await I.dontSeeTag("React")
+
+    await I.expectNoTagToBeHighlighted()
+  })
+
   test("[addOnPaste: false] pasting should work everytime", async () => {
     await I.paste("Svelte")
     await I.seeInputHasValue("Svelte")

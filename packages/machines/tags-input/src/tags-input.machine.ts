@@ -161,6 +161,10 @@ export function machine(userContext: UserDefinedContext) {
               guard: and("hasTags", "isInputCaretAtStart"),
               actions: "highlightLastTag",
             },
+            DELETE: {
+              guard: "hasHighlightedTag",
+              actions: ["deleteHighlightedTag", "highlightTagAtIndex"],
+            },
             PASTE: [
               {
                 guard: "addOnPaste",
@@ -208,7 +212,11 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["deleteHighlightedTag", "highlightFirstTag"],
               },
               {
+                guard: "hasHighlightedTag",
                 actions: ["deleteHighlightedTag", "highlightPrevTag"],
+              },
+              {
+                actions: ["highlightLastTag"],
               },
             ],
             DELETE: {
