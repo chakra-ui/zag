@@ -42,6 +42,10 @@ export class TagsInputModel extends Model {
     await this.page.keyboard.press("Enter")
   }
 
+  clickTag(value: string) {
+    return this.getTag(value).click()
+  }
+
   focusInput() {
     return this.input.focus()
   }

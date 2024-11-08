@@ -22,10 +22,12 @@ const fetchMachine = createMachine({
     "clearOnBlur": false,
     "hasTags && isInputCaretAtStart": false,
     "hasTags && isInputCaretAtStart": false,
+    "hasHighlightedTag": false,
     "addOnPaste": false,
     "hasTags && isInputCaretAtStart && !isLastTagHighlighted": false,
     "isTagEditable && hasHighlightedTag": false,
     "isFirstTagHighlighted": false,
+    "hasHighlightedTag": false,
     "addOnPaste": false,
     "isInputRelatedTarget": false,
     "isEditedTagEmpty": false
@@ -129,6 +131,10 @@ const fetchMachine = createMachine({
           cond: "hasTags && isInputCaretAtStart",
           actions: "highlightLastTag"
         },
+        DELETE: {
+          cond: "hasHighlightedTag",
+          actions: ["deleteHighlightedTag", "highlightTagAtIndex"]
+        },
         PASTE: [{
           cond: "addOnPaste",
           actions: ["setInputValue", "addTagFromPaste"]
@@ -169,7 +175,10 @@ const fetchMachine = createMachine({
           cond: "isFirstTagHighlighted",
           actions: ["deleteHighlightedTag", "highlightFirstTag"]
         }, {
+          cond: "hasHighlightedTag",
           actions: ["deleteHighlightedTag", "highlightPrevTag"]
+        }, {
+          actions: ["highlightLastTag"]
         }],
         DELETE: {
           target: "focused:input",
@@ -231,6 +240,7 @@ const fetchMachine = createMachine({
     "clearOnBlur": ctx => ctx["clearOnBlur"],
     "!hasHighlightedTag": ctx => ctx["!hasHighlightedTag"],
     "hasTags && isInputCaretAtStart": ctx => ctx["hasTags && isInputCaretAtStart"],
+    "hasHighlightedTag": ctx => ctx["hasHighlightedTag"],
     "addOnPaste": ctx => ctx["addOnPaste"],
     "hasTags && isInputCaretAtStart && !isLastTagHighlighted": ctx => ctx["hasTags && isInputCaretAtStart && !isLastTagHighlighted"],
     "isTagEditable && hasHighlightedTag": ctx => ctx["isTagEditable && hasHighlightedTag"],
