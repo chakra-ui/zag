@@ -607,6 +607,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "SWATCH_TRIGGER.CLICK", value: swatchState.value })
         },
         style: {
+          "--color": swatchState.valueAsString,
           position: "relative",
         },
       })
@@ -624,14 +625,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getSwatchProps(props) {
       const { respectAlpha = true } = props
       const swatchState = getSwatchTriggerState(props)
+      const color = swatchState.value.toString(respectAlpha ? "css" : "hex")
       return normalize.element({
         ...parts.swatch.attrs,
         dir: state.context.dir,
         "data-state": swatchState.checked ? "checked" : "unchecked",
         "data-value": swatchState.valueAsString,
         style: {
+          "--color": color,
           position: "relative",
-          background: swatchState.value.toString(respectAlpha ? "css" : "hex"),
+          background: color,
         },
       })
     },
