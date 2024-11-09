@@ -42,6 +42,9 @@ const fetchMachine = createMachine({
     },
     "EYEDROPPER.CLICK": {
       actions: ["openEyeDropper"]
+    },
+    "SWATCH_TRIGGER.CLICK": {
+      actions: ["setValue"]
     }
   },
   on: {

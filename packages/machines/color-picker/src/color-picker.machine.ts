@@ -77,6 +77,9 @@ export function machine(userContext: UserDefinedContext) {
         "EYEDROPPER.CLICK": {
           actions: ["openEyeDropper"],
         },
+        "SWATCH_TRIGGER.CLICK": {
+          actions: ["setValue"],
+        },
       },
 
       states: {
