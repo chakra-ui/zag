@@ -1,5 +1,7 @@
 # @zag-js/dom-query
 
+## 0.77.1
+
 ## 0.77.0
 
 ### Minor Changes

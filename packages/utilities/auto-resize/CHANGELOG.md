@@ -1,5 +1,15 @@
 # @zag-js/auto-resize
 
+## 0.77.1
+
+### Patch Changes
+
+- [`75be963`](https://github.com/chakra-ui/zag/commit/75be9630851f64cce365b178c8200eeec7829605) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where resize observer was not cleanup.
+  - Trigger resize when `rows` attribute changes and fonts are loaded.
+- Updated dependencies []:
+  - @zag-js/dom-query@0.77.1
+
 ## 0.77.0
 
 ### Patch Changes
