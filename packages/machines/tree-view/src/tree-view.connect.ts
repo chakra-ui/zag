@@ -372,6 +372,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "group",
         dir: state.context.dir,
         "data-state": nodeState.expanded ? "open" : "closed",
+        "data-depth": nodeState.depth,
+        "data-path": props.indexPath.join("/"),
+        "data-value": nodeState.value,
         hidden: !nodeState.expanded,
       })
     },
