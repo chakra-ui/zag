@@ -6,6 +6,26 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.77.1](./#0.77.1) - 2024-10-29
+
+### Fixed
+
+- **ColorPicker**
+
+  - Add `--color` to the swatch and swatch trigger parts
+  - Allow clicking swatch being in the open state
+
+- **Autoresize**
+
+  - Fix issue where resize observer was not cleanup.
+  - Trigger resize when `rows` attribute changes and fonts are loaded.
+
+- **TagsInput**: Fix issue where delete behavior is inconsistent between states.
+
+- **TreeView**: Add `data-*` attributes to branch content
+
+- **Clipboard**: Fix issue where clipboard trigger doesn't have `type=button`
+
 ## [0.77.0](./#0.77.0) - 2024-10-29
 
 ### Fixed
