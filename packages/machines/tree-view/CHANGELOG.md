@@ -1,5 +1,21 @@
 # @zag-js/tree-view
 
+## 0.77.1
+
+### Patch Changes
+
+- [`da4bdce`](https://github.com/chakra-ui/zag/commit/da4bdcece6bbe746975d822a035ff4a314bea996) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-*` attributes to branch content
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.77.1
+  - @zag-js/core@0.77.1
+  - @zag-js/types@0.77.1
+  - @zag-js/collection@0.77.1
+  - @zag-js/utils@0.77.1
+  - @zag-js/dom-event@0.77.1
+  - @zag-js/dom-query@0.77.1
+
 ## 0.77.0
 
 ### Minor Changes

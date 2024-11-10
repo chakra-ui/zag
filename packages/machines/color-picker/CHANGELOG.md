@@ -1,5 +1,25 @@
 # @zag-js/color-picker
 
+## 0.77.1
+
+### Patch Changes
+
+- [`87ebdd1`](https://github.com/chakra-ui/zag/commit/87ebdd171d5e28fffe2cec7d0b0d5f5a68601963) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `--color` to the swatch and swatch trigger parts
+  - Allow clicking swatch being in the open state
+- Updated dependencies []:
+  - @zag-js/anatomy@0.77.1
+  - @zag-js/core@0.77.1
+  - @zag-js/types@0.77.1
+  - @zag-js/color-utils@0.77.1
+  - @zag-js/utils@0.77.1
+  - @zag-js/dismissable@0.77.1
+  - @zag-js/dom-event@0.77.1
+  - @zag-js/dom-query@0.77.1
+  - @zag-js/form-utils@0.77.1
+  - @zag-js/popper@0.77.1
+  - @zag-js/text-selection@0.77.1
+
 ## 0.77.0
 
 ### Patch Changes

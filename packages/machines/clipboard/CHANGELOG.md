@@ -1,5 +1,19 @@
 # @zag-js/clipboard
 
+## 0.77.1
+
+### Patch Changes
+
+- [`cbf5cfa`](https://github.com/chakra-ui/zag/commit/cbf5cfa143a6a468373b400740448a400bfb9297) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where clipboard trigger doesn't have `type=button`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.77.1
+  - @zag-js/core@0.77.1
+  - @zag-js/types@0.77.1
+  - @zag-js/utils@0.77.1
+  - @zag-js/dom-query@0.77.1
+
 ## 0.77.0
 
 ### Patch Changes
