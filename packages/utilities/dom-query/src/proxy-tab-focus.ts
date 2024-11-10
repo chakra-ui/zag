@@ -87,7 +87,7 @@ export function proxyTabFocus(container: NodeOrFn, options: ProxyTabFocusOptions
     func(() => {
       const node = typeof container === "function" ? container() : container
       const trigger = typeof triggerElement === "function" ? triggerElement() : triggerElement
-      cleanups.push(proxyTabFocusImpl(node, { triggerElement: trigger, ...restOptions }))
+      cleanups.push(proxyTabFocusImpl(node, { triggerElement: trigger!, ...restOptions }))
     }),
   )
   return () => {
