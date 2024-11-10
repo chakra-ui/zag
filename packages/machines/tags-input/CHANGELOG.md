@@ -1,5 +1,24 @@
 # @zag-js/tags-input
 
+## 0.77.1
+
+### Patch Changes
+
+- [`aba6af0`](https://github.com/chakra-ui/zag/commit/aba6af08c4371afe49dc8397e8bc7b5f46444e95) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where delete behavior is inconsistent between states.
+
+- Updated dependencies [[`75be963`](https://github.com/chakra-ui/zag/commit/75be9630851f64cce365b178c8200eeec7829605)]:
+  - @zag-js/auto-resize@0.77.1
+  - @zag-js/anatomy@0.77.1
+  - @zag-js/core@0.77.1
+  - @zag-js/types@0.77.1
+  - @zag-js/utils@0.77.1
+  - @zag-js/dom-event@0.77.1
+  - @zag-js/dom-query@0.77.1
+  - @zag-js/form-utils@0.77.1
+  - @zag-js/interact-outside@0.77.1
+  - @zag-js/live-region@0.77.1
+
 ## 0.77.0
 
 ### Patch Changes
