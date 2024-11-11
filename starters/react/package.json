@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@internationalized/date": "3.5.6",
-    "@tanstack/react-virtual": "3.10.8",
+    "@tanstack/react-virtual": "3.10.9",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
