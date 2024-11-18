@@ -33,6 +33,8 @@ export const props = createProps<UserDefinedContext>()([
   "required",
   "readOnly",
   "value",
+  "invalid",
+  "openAutoFocus",
 ])
 
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
