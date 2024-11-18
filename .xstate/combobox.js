@@ -64,6 +64,9 @@ const fetchMachine = createMachine({
     "isOpenControlled": false
   },
   on: {
+    "SELECTED_ITEMS.SYNC": {
+      actions: ["syncSelectedItems"]
+    },
     "HIGHLIGHTED_VALUE.SET": {
       actions: ["setHighlightedItem"]
     },

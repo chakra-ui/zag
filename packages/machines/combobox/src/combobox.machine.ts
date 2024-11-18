@@ -67,6 +67,9 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
       },
 
       on: {
+        "SELECTED_ITEMS.SYNC": {
+          actions: ["syncSelectedItems"],
+        },
         "HIGHLIGHTED_VALUE.SET": {
           actions: ["setHighlightedItem"],
         },

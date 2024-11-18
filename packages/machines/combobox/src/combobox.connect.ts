@@ -30,9 +30,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   })
 
   function getItemState(props: ItemProps): ItemState {
-    const { item } = props
-    const disabled = collection.getItemDisabled(item)
-    const value = collection.getItemValue(item)!
+    const disabled = collection.getItemDisabled(props.item)
+    const value = collection.getItemValue(props.item)!
     return {
       value,
       disabled: Boolean(disabled || disabled),
@@ -54,6 +53,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     collection: state.context.collection,
     multiple: !!state.context.multiple,
     disabled: !!disabled,
+    syncSelectedItems() {
+      send({ type: "SELECTED_ITEMS.SYNC" })
+    },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },

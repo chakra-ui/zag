@@ -354,6 +354,11 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   setHighlightValue(value: string): void
   /**
+   * Function to sync the selected items with the value.
+   * Useful when `value` is updated from async sources.
+   */
+  syncSelectedItems(): void
+  /**
    * The selected items
    */
   selectedItems: V[]
