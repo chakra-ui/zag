@@ -33,6 +33,7 @@ export function machine(userContext: UserDefinedContext) {
         format: "rgba",
         disabled: false,
         closeOnSelect: false,
+        openAutoFocus: true,
         ...ctx,
         activeId: null,
         activeChannel: null,
@@ -552,6 +553,7 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         setInitialFocus(ctx) {
+          if (!ctx.openAutoFocus) return
           raf(() => {
             const element = getInitialFocus({
               root: dom.getContentEl(ctx),

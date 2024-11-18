@@ -101,6 +101,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getRootId(state.context),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(state.context.readOnly),
+        "data-invalid": dataAttr(state.context.invalid),
         style: {
           "--value": value.toString("css"),
         },
@@ -115,6 +116,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         htmlFor: dom.getHiddenInputId(state.context),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(state.context.readOnly),
+        "data-invalid": dataAttr(state.context.invalid),
         "data-focus": dataAttr(focused),
         onClick(event) {
           event.preventDefault()
@@ -131,6 +133,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(state.context.readOnly),
+        "data-invalid": dataAttr(state.context.invalid),
         "data-state": open ? "open" : "closed",
         "data-focus": dataAttr(focused),
       })
@@ -147,6 +150,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-labelledby": dom.getLabelId(state.context),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(state.context.readOnly),
+        "data-invalid": dataAttr(state.context.invalid),
         "data-placement": currentPlacement,
         "aria-expanded": dataAttr(open),
         "data-state": open ? "open" : "closed",
@@ -207,6 +211,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.area.attrs,
         id: dom.getAreaId(state.context),
         role: "group",
+        "data-invalid": dataAttr(state.context.invalid),
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(state.context.readOnly),
         onPointerDown(event) {
           if (!interactive) return
           if (!isLeftClick(event)) return
@@ -238,6 +245,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.areaBackground.attrs,
         id: dom.getAreaGradientId(state.context),
+        "data-invalid": dataAttr(state.context.invalid),
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(state.context.readOnly),
         style: {
           position: "relative",
           touchAction: "none",
@@ -257,12 +267,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const xValue = areaValue.getChannelValue(xChannel)
       const yValue = areaValue.getChannelValue(yChannel)
 
+      const color = areaValue.withChannelValue("alpha", 1).toString("css")
+
       return normalize.element({
         ...parts.areaThumb.attrs,
         id: dom.getAreaThumbId(state.context),
         dir: state.context.dir,
         tabIndex: disabled ? undefined : 0,
         "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(state.context.invalid),
+        "data-readonly": dataAttr(state.context.readOnly),
         role: "slider",
         "aria-valuemin": 0,
         "aria-valuemax": 100,
@@ -277,7 +291,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           transform: "translate(-50%, -50%)",
           touchAction: "none",
           forcedColorAdjust: "none",
-          background: areaValue.withChannelValue("alpha", 1).toString("css"),
+          "--color": color,
+          background: color,
         },
         onFocus() {
           if (!interactive) return
@@ -515,6 +530,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         autoComplete: "off",
         disabled: disabled,
         "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(state.context.invalid),
+        "data-readonly": dataAttr(state.context.readOnly),
         readOnly: state.context.readOnly,
         defaultValue: getChannelValue(value, channel),
         min: channelRange?.minValue,
@@ -559,6 +576,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: "text",
         disabled,
         name: state.context.name,
+        tabIndex: -1,
         readOnly: state.context.readOnly,
         required: state.context.required,
         id: dom.getHiddenInputId(state.context),
@@ -574,6 +592,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         disabled: disabled,
         "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(state.context.invalid),
+        "data-readonly": dataAttr(state.context.readOnly),
         "aria-label": "Pick a color from the screen",
         onClick() {
           if (!interactive) return

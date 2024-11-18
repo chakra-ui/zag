@@ -80,6 +80,10 @@ interface PublicContext extends CommonProperties, DirectionProperty, InteractOut
    */
   required?: boolean | undefined
   /**
+   * Whether the color picker is invalid
+   */
+  invalid?: boolean | undefined
+  /**
    * Handler that is called when the value changes, as the user drags.
    */
   onValueChange?: ((details: ValueChangeDetails) => void) | undefined
@@ -125,6 +129,11 @@ interface PublicContext extends CommonProperties, DirectionProperty, InteractOut
    * @default false
    */
   closeOnSelect?: boolean | undefined
+  /**
+   * Whether to auto focus the color picker when it is opened
+   * @default true
+   */
+  openAutoFocus?: boolean | undefined
 }
 
 interface PrivateContext {
