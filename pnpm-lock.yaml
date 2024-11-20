@@ -263,6 +263,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/navigation-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -513,6 +516,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/navigation-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -799,6 +805,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/navigation-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -1055,6 +1064,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/navigation-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -1308,6 +1320,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/navigation-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -1585,6 +1600,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/navigation-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -1825,6 +1843,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/navigation-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -2090,6 +2111,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/navigation-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
@@ -2841,6 +2865,34 @@ importers:
       '@zag-js/rect-utils':
         specifier: workspace:*
         version: link:../../utilities/rect
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/navigation-menu:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-event':
+        specifier: workspace:*
+        version: link:../../utilities/dom-event
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/interact-outside':
+        specifier: workspace:*
+        version: link:../../utilities/interact-outside
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
