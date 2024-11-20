@@ -24,7 +24,7 @@ export function machine(userContext: UserDefinedContext) {
         open: ["setInitial", "computeSize", "toggleVisibility"],
       },
 
-      exit: ["clearInitial"],
+      exit: ["clearInitial", "cleanupNode"],
 
       states: {
         closed: {
@@ -91,6 +91,9 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["setInitial", "computeSize", "invokeOnClose"],
               },
             ],
+            "SIZE.MEASURE": {
+              actions: ["measureSize"],
+            },
           },
         },
       },
@@ -144,6 +147,16 @@ export function machine(userContext: UserDefinedContext) {
         },
         clearInitial(ctx) {
           ctx.initial = false
+        },
+        cleanupNode(ctx) {
+          ctx.stylesRef = null
+        },
+        measureSize(ctx) {
+          const contentEl = dom.getContentEl(ctx)
+          if (!contentEl) return
+          const { height, width } = contentEl.getBoundingClientRect()
+          ctx.height = height
+          ctx.width = width
         },
         computeSize(ctx, evt) {
           ctx._rafCleanup?.()

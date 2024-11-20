@@ -16,7 +16,7 @@ export function machine(ctx: Partial<UserDefinedContext>) {
         ...ctx,
       },
 
-      exit: ["clearInitial"],
+      exit: ["clearInitial", "cleanupNode"],
 
       watch: {
         present: ["setInitial", "syncPresence"],
@@ -82,6 +82,10 @@ export function machine(ctx: Partial<UserDefinedContext>) {
         },
         clearInitial(ctx) {
           ctx.initial = false
+        },
+        cleanupNode(ctx) {
+          ctx.node = null
+          ctx.styles = null
         },
         invokeOnExitComplete(ctx) {
           ctx.onExitComplete?.()

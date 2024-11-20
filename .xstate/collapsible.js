@@ -18,7 +18,7 @@ const fetchMachine = createMachine({
     "isOpenControlled": false,
     "isOpenControlled": false
   },
-  exit: ["clearInitial"],
+  exit: ["clearInitial", "cleanupNode"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -74,7 +74,10 @@ const fetchMachine = createMachine({
         }, {
           target: "closing",
           actions: ["setInitial", "computeSize", "invokeOnClose"]
-        }]
+        }],
+        "SIZE.MEASURE": {
+          actions: ["measureSize"]
+        }
       }
     }
   }

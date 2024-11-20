@@ -18,6 +18,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     disabled,
     visible,
     open,
+    measureSize() {
+      send("SIZE.MEASURE")
+    },
     setOpen(nextOpen) {
       if (nextOpen === open) return
       send(nextOpen ? "OPEN" : "CLOSE")
@@ -35,6 +38,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getContentProps() {
       return normalize.element({
         ...parts.content.attrs,
+        "data-collapsible": "",
         "data-state": skip ? undefined : open ? "open" : "closed",
         id: dom.getContentId(state.context),
         "data-disabled": dataAttr(disabled),

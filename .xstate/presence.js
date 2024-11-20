@@ -12,7 +12,7 @@ const {
 const fetchMachine = createMachine({
   initial: ctx.present ? "mounted" : "unmounted",
   context: {},
-  exit: ["clearInitial"],
+  exit: ["clearInitial", "cleanupNode"],
   on: {
     "NODE.SET": {
       actions: ["setNode", "setStyles"]

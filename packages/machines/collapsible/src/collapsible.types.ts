@@ -116,6 +116,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to open or close the collapsible.
    */
   setOpen(open: boolean): void
+  /**
+   * Function to measure the size of the content.
+   */
+  measureSize(): void
 
   getRootProps(): T["element"]
   getTriggerProps(): T["button"]
