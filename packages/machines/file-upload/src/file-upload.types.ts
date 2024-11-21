@@ -98,7 +98,7 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * Function to validate a file
    */
-  validate?: ((file: File) => FileError[] | null) | undefined
+  validate?: ((file: File, details: FileChangeDetails) => FileError[] | null) | undefined
   /**
    * Function called when the value changes, whether accepted or rejected
    */

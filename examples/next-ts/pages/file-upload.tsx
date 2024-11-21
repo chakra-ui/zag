@@ -9,9 +9,22 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(fileUploadControls)
 
-  const [state, send] = useMachine(fileUpload.machine({ id: useId() }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    fileUpload.machine({
+      id: useId(),
+      validate(file, { acceptedFiles, rejectedFiles }) {
+        // Check for duplicate files by comparing names in acceptedFiles
+        const duplicate = [...acceptedFiles, ...rejectedFiles].some((uploadedFile) => uploadedFile.name === file.name)
+        if (duplicate) {
+          return [`The file "${file.name}" has already been uploaded.`]
+        }
+        return null // No errors
+      },
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = fileUpload.connect(state, send, normalizeProps)
 
