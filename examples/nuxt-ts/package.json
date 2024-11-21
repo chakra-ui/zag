@@ -13,6 +13,7 @@
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
+    "@zag-js/angle-slider": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/avatar": "workspace:*",
@@ -94,6 +95,6 @@
     "@nuxt/devtools": "latest",
     "@types/form-serialize": "0.7.4",
     "@types/node": "22.8.2",
-    "nuxt": "3.13.2"
+    "nuxt": "3.14.1592"
   }
 }

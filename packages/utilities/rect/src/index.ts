@@ -1,5 +1,6 @@
 export * from "./affine-transform"
 export * from "./align"
+export * from "./angle"
 export * from "./clamp"
 export * from "./closest"
 export * from "./constrain"

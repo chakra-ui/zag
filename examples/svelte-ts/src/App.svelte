@@ -3,6 +3,7 @@
   import { routesData } from "@zag-js/shared"
   import { Link, Route, Router } from "svelte-routing"
   import Accordion from "./routes/accordion.svelte"
+  import AngleSlider from "./routes/angle-slider.svelte"
   import Avatar from "./routes/avatar.svelte"
   import Carousel from "./routes/carousel.svelte"
   import Checkbox from "./routes/checkbox.svelte"
@@ -54,6 +55,7 @@
     { path: "/", component: Index },
     { path: "/accordion", component: Accordion },
     { path: "/avatar", component: Avatar },
+    { path: "/angle-slider", component: AngleSlider },
     { path: "/carousel", component: Carousel },
     { path: "/checkbox", component: Checkbox },
     { path: "/clipboard", component: Clipboard },

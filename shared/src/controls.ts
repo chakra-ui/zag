@@ -283,3 +283,9 @@ export const stepsControls = defineControls({
   linear: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
 })
+
+export const angleSliderControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+  step: { type: "number", defaultValue: 1 },
+})
