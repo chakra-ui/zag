@@ -69,6 +69,79 @@
       }
     }
   },
+  "angle-slider": {
+    "api": {
+      "value": {
+        "type": "number",
+        "description": "The current value of the angle slider"
+      },
+      "valueAsDegree": {
+        "type": "string",
+        "description": "The current value as a degree string"
+      },
+      "setValue": {
+        "type": "(value: number) => void",
+        "description": "Sets the value of the angle slider"
+      },
+      "dragging": {
+        "type": "boolean",
+        "description": "Whether the slider is being dragged."
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "Partial<ElementIds>",
+        "description": "The ids of the elements in the machine.\nUseful for composition."
+      },
+      "step": {
+        "type": "number",
+        "description": "The step value for the slider.",
+        "defaultValue": "1"
+      },
+      "value": {
+        "type": "number",
+        "description": "The value of the slider.",
+        "defaultValue": "0"
+      },
+      "onValueChange": {
+        "type": "(details: ValueChangeDetails) => void",
+        "description": "The callback function for when the value changes."
+      },
+      "onValueChangeEnd": {
+        "type": "(details: ValueChangeDetails) => void",
+        "description": "The callback function for when the value changes ends."
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the slider is disabled."
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the slider is read-only."
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the slider is invalid."
+      },
+      "name": {
+        "type": "string",
+        "description": "The name of the slider. Useful for form submission."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "avatar": {
     "api": {
       "loaded": {
@@ -364,6 +437,10 @@
       "setOpen": {
         "type": "(open: boolean) => void",
         "description": "Function to open or close the collapsible."
+      },
+      "measureSize": {
+        "type": "() => void",
+        "description": "Function to measure the size of the content."
       }
     },
     "context": {
@@ -483,6 +560,10 @@
         "type": "boolean",
         "description": "Whether the color picker is required"
       },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the color picker is invalid"
+      },
       "onValueChange": {
         "type": "(details: ValueChangeDetails) => void",
         "description": "Handler that is called when the value changes, as the user drags."
@@ -528,6 +609,11 @@
         "type": "boolean",
         "description": "Whether to close the color picker when a swatch is selected",
         "defaultValue": "false"
+      },
+      "openAutoFocus": {
+        "type": "boolean",
+        "description": "Whether to auto focus the color picker when it is opened",
+        "defaultValue": "true"
       },
       "id": {
         "type": "string",
@@ -581,6 +667,10 @@
       "setHighlightValue": {
         "type": "(value: string) => void",
         "description": "The value of the combobox input"
+      },
+      "syncSelectedItems": {
+        "type": "() => void",
+        "description": "Function to sync the selected items with the value.\nUseful when `value` is updated from async sources."
       },
       "selectedItems": {
         "type": "V[]",

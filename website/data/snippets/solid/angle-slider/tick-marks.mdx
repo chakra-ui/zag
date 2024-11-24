@@ -1,0 +1,18 @@
+```jsx {7-11}
+//...
+
+<div {...api().getRootProps()}>
+  <label {...api().getLabelProps()}>Wind direction</label>
+  <div {...api().getControlProps()}>
+    <div {...api().getThumbProps()}></div>
+    <div {...api().getMarkerGroupProps()}>
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((value) => (
+        <div key={value} {...api().getMarkerProps({ value })}></div>
+      ))}
+    </div>
+  </div>
+  <div {...api().getValueTextProps()}>{api().value} degrees</div>
+  <input {...api().getHiddenInputProps()} />
+</div>
+//...
+```

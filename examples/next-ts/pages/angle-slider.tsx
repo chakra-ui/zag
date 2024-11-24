@@ -26,7 +26,7 @@ export default function Page() {
             <div {...api.getThumbProps()}></div>
             <div {...api.getMarkerGroupProps()}>
               {[0, 45, 90, 135, 180, 225, 270, 315].map((value) => (
-                <div {...api.getMarkerProps({ value })}></div>
+                <div key={value} {...api.getMarkerProps({ value })}></div>
               ))}
             </div>
           </div>
