@@ -19,7 +19,7 @@ export type PropTypes = SvelteHTMLElements & {
   style?: HTMLAttributes<HTMLElement>["style"]
 }
 
-function toStyleString(style: Record<string, number | string>) {
+export function toStyleString(style: Record<string, number | string>) {
   let string = ""
 
   for (let key in style) {

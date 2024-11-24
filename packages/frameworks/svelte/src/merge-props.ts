@@ -1,4 +1,5 @@
 import { mergeProps as zagMergeProps } from "@zag-js/core"
+import { toStyleString } from "./normalize-props"
 
 const CSS_REGEX = /((?:--)?(?:\w+-?)+)\s*:\s*([^;]*)/g
 
@@ -13,21 +14,14 @@ const serialize = (style: string): CSSObject => {
   return res
 }
 
-const css = (style: CSSObject | string | undefined): string => {
-  if (typeof style === "string") style = serialize(style)
-
-  const mergedString = Object.entries(style as CSSObject)
-    .map(([key, value]) => `${key}: ${value}`)
-    .join("; ")
-
-  return mergedString
-}
-
 export function mergeProps(...args: Record<string, any>[]) {
   const merged = zagMergeProps(...args)
 
   if ("style" in merged) {
-    merged.style = css(merged.style)
+    if (typeof merged.style === "string") {
+      merged.style = serialize(merged.style)
+    }
+    merged.style = toStyleString(merged.style)
   }
 
   return merged
