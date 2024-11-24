@@ -1,0 +1,89 @@
+[data-scope="angle-slider"][data-part="root"] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+[data-scope="angle-slider"][data-part="control"] {
+  --size: 120px;
+  --thumb-size: 40px;
+  --thumb-indicator-size: min(var(--thumb-size), calc(var(--size) / 2));
+  width: var(--size);
+  height: var(--size);
+  border-radius: 100%;
+  background-color: var(--colors-bg-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  position: relative;
+}
+
+[data-scope="angle-slider"][data-part="control"][data-disabled] {
+  opacity: 0.4;
+}
+
+[data-scope="angle-slider"][data-part="thumb"] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: calc(50% - 1.5px);
+  pointer-events: none;
+  height: 100%;
+  width: 3px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: var(--thumb-indicator-size);
+    background: var(--colors-border-primary-subtle);
+    width: 3px;
+  }
+}
+
+[data-scope="angle-slider"][data-part="label"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-scope="angle-slider"][data-part="marker-group"] {
+  position: absolute;
+  inset: 1px;
+  border-radius: var(--size);
+  pointer-events: none;
+}
+
+[data-scope="angle-slider"][data-part="marker"] {
+  width: 2px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 1px);
+  --marker-color: var(--marker-color, var(--colors-border-primary-subtle));
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: calc(var(--thumb-size) / 3);
+    left: 0.5px;
+    width: 1px;
+    height: calc(var(--thumb-size) / 1.5);
+    transform: translate(-50%, -50%);
+    background-color: var(--marker-color);
+  }
+
+  &[data-state="under-value"],
+  &[data-state="at-value"] {
+    --marker-color: var(--colors-border-primary-subtle);
+  }
+
+  &[data-state="over-value"] {
+    --marker-color: var(--colors-border-bold);
+  }
+}

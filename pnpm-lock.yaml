@@ -4154,6 +4154,9 @@ importers:
       '@zag-js/anatomy-icons':
         specifier: workspace:*
         version: link:../packages/anatomy-icons
+      '@zag-js/angle-slider':
+        specifier: workspace:*
+        version: link:../packages/machines/angle-slider
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../packages/machines/avatar

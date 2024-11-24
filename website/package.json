@@ -27,6 +27,7 @@
     "@emotion/styled": "11.13.0",
     "@stackblitz/sdk": "^1.11.0",
     "@zag-js/accordion": "workspace:*",
+    "@zag-js/angle-slider": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
     "@zag-js/avatar": "workspace:*",
     "@zag-js/carousel": "workspace:*",
