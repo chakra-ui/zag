@@ -1,4 +1,4 @@
-export { mergeProps } from "@zag-js/core"
+export { mergeProps } from "./merge-props"
 export type { ContextFrom, EventFrom, StateFrom } from "@zag-js/core"
 export { normalizeProps } from "./normalize-props.js"
 export type { PropTypes } from "./normalize-props.js"
