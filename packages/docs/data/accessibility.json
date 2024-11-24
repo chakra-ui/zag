@@ -35,6 +35,50 @@
       }
     ]
   },
+  "angle-slider": {
+    "keyboard": [
+      {
+        "keys": ["ArrowRight"],
+        "description": "<span>Increments the angle slider based on defined step</span>"
+      },
+      {
+        "keys": ["ArrowLeft"],
+        "description": "<span>Decrements the angle slider based on defined step</span>"
+      },
+      {
+        "keys": ["ArrowUp"],
+        "description": "<span>Increases the value by the step amount.</span>"
+      },
+      {
+        "keys": ["ArrowDown"],
+        "description": "<span>Decreases the value by the step amount.</span>"
+      },
+      {
+        "keys": ["PageUp"],
+        "description": "<span>Increases the value by a larger step</span>"
+      },
+      {
+        "keys": ["PageDown"],
+        "description": "<span>Decreases the value by a larger step</span>"
+      },
+      {
+        "keys": ["Shift + ArrowUp"],
+        "description": "<span>Increases the value by a larger step</span>"
+      },
+      {
+        "keys": ["Shift + ArrowDown"],
+        "description": "<span>Decreases the value by a larger step</span>"
+      },
+      {
+        "keys": ["Home"],
+        "description": "Sets the value to 0 degrees."
+      },
+      {
+        "keys": ["End"],
+        "description": "Sets the value to 360 degrees."
+      }
+    ]
+  },
   "checkbox": {
     "keyboard": [
       {

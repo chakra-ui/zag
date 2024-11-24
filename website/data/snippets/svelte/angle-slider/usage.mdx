@@ -1,0 +1,25 @@
+```svelte
+<script lang="ts">
+  import * as angleSlider from "@zag-js/angle-slider"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const [snapshot, send] = useMachine(angleSlider.machine({ id: "1" }))
+
+  const api = $derived(angleSlider.connect(snapshot, send, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>
+    Angle Slider: <div {...api.getValueTextProps()}>{api.valueAsDegree}</div>
+  </label>
+  <div {...api.getControlProps()}>
+    <div {...api.getThumbProps()}></div>
+    <div {...api.getMarkerGroupProps()}>
+      {#each [0, 45, 90, 135, 180, 225, 270, 315] as value}
+        <div {...api.getMarkerProps({ value })}></div>
+      {/each}
+    </div>
+  </div>
+  <input {...api.getHiddenInputProps()} />
+</div>
+```

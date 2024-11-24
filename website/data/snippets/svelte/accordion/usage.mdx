@@ -15,13 +15,13 @@
 
 <div {...api.getRootProps()}>
   {#each data as item}
-    <div {...api.getItemProps({ value: item.item.title })}>
+    <div {...api.getItemProps({ value: item.title })}>
       <h3>
-        <button {...api.getItemTriggerProps({ value: item.item.title })}>
+        <button {...api.getItemTriggerProps({ value: item.title })}>
           {item.title}
         </button>
       </h3>
-      <div {...api.getItemContentProps({ value: item.item.title })}>
+      <div {...api.getItemContentProps({ value: item.title })}>
         {item.content}
       </div>
     </div>

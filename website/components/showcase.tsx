@@ -1,4 +1,5 @@
 import { Accordion } from "./machines/accordion"
+import { AngleSlider } from "./machines/angle-slider"
 import { Avatar } from "./machines/avatar"
 import { Carousel } from "./machines/carousel"
 import { Checkbox } from "./machines/checkbox"
@@ -51,6 +52,17 @@ const components = {
       defaultProps={{
         collapsible: true,
         multiple: false,
+      }}
+    />
+  ),
+  AngleSlider: () => (
+    <Playground
+      name="angle-slider"
+      component={AngleSlider}
+      defaultProps={{
+        disabled: false,
+        readOnly: false,
+        step: 1,
       }}
     />
   ),
