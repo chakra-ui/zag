@@ -32,7 +32,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "proxy-compare": "3.0.0"
+    "proxy-compare": "3.0.1"
   },
   "clean-package": "../../clean-package.config.json",
   "main": "src/index.ts",
