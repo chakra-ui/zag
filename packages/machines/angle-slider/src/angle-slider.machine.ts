@@ -176,6 +176,8 @@ const invoke = {
 const set = {
   value: (ctx: MachineContext, value: number) => {
     if (ctx.value === value) return
+    if (value < MIN_VALUE || value > MAX_VALUE) return
+
     ctx.value = value
     invoke.valueChange(ctx)
   },
