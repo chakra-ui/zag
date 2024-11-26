@@ -170,10 +170,12 @@ const [state, send] = useMachine(
 ## Applying custom validation
 
 To apply custom validation, set the `validate` attribute to a function that
-returns an array of errors.
+returns an **array of error strings**.
 
-The returned error must be one of `TOO_MANY_FILES`, `FILE_INVALID_TYPE`
-,`FILE_TOO_LARGE`, or `FILE_TOO_SMALL`
+The returned array can contain any string as an error message. While zagjs
+supports default errors such as `TOO_MANY_FILES`, `FILE_INVALID_TYPE`,
+`FILE_TOO_LARGE`, or `FILE_TOO_SMALL`, you can return any string that represents
+your custom validation errors.
 
 ```jsx
 const [state, send] = useMachine(
@@ -187,6 +189,34 @@ const [state, send] = useMachine(
   }),
 )
 ```
+
+Apply multiple validation errors:
+
+```js
+const [state, send] = useMachine(
+  fileUpload.machine({
+    validate(file) {
+      const errors = []
+
+      if (file.size > 1024 * 1024 * 10) {
+        errors.push("FILE_TOO_LARGE") // Default error enum
+      }
+
+      if (!file.name.endsWith(".pdf")) {
+        errors.push("ONLY_PDF_ALLOWED") // Custom error
+      }
+
+      if (file.size < 1024) {
+        errors.push("FILE_TOO_SMALL") // Default error enum
+      }
+
+      return errors.length > 0 ? errors : null
+    },
+  }),
+)
+```
+
+> Return `null` if no validation errors are detected.
 
 ## Disabling drag and drop
 
