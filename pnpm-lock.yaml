@@ -2729,6 +2729,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/focus-trap':
+        specifier: workspace:*
+        version: link:../../utilities/focus-trap
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../utilities/remove-scroll
@@ -2738,9 +2741,6 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../utilities/core
-      focus-trap:
-        specifier: 7.6.2
-        version: 7.6.2
     devDependencies:
       clean-package:
         specifier: 2.2.0

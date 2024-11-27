@@ -34,7 +34,7 @@
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/types": "workspace:*",
-    "focus-trap": "7.6.2"
+    "@zag-js/focus-trap": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "2.2.0"
