@@ -8,7 +8,7 @@ import { dom } from "./angle-slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./angle-slider.types"
 
 const MIN_VALUE = 0
-const MAX_VALUE = 360
+const MAX_VALUE = 359
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -176,6 +176,8 @@ const invoke = {
 const set = {
   value: (ctx: MachineContext, value: number) => {
     if (ctx.value === value) return
+    if (value < MIN_VALUE || value > MAX_VALUE) return
+
     ctx.value = value
     invoke.valueChange(ctx)
   },
