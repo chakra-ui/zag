@@ -1,5 +1,27 @@
 # @zag-js/combobox
 
+## 0.78.0
+
+### Minor Changes
+
+- [`9054ca4`](https://github.com/chakra-ui/zag/commit/9054ca46d91ff0461d01663a4c790f4e4c8aa984) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `api.syncSelectedItems()` to allow rehydrating the select
+  items after fetching from async items.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.78.0
+  - @zag-js/core@0.78.0
+  - @zag-js/types@0.78.0
+  - @zag-js/aria-hidden@0.78.0
+  - @zag-js/collection@0.78.0
+  - @zag-js/utils@0.78.0
+  - @zag-js/dismissable@0.78.0
+  - @zag-js/dom-event@0.78.0
+  - @zag-js/dom-query@0.78.0
+  - @zag-js/popper@0.78.0
+
 ## 0.77.1
 
 ### Patch Changes
