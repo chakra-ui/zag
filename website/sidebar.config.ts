@@ -65,7 +65,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
       id: "components",
       items: [
         { type: "doc", label: "Accordion", id: "accordion" },
-        // { type: "doc", label: "Angle Slider", id: "angle-slider", beta: true },
+        { type: "doc", label: "Angle Slider", id: "angle-slider", beta: true },
         { type: "doc", label: "Avatar", id: "avatar" },
         { type: "doc", label: "Carousel", id: "carousel", beta: true },
         { type: "doc", label: "Checkbox", id: "checkbox" },
