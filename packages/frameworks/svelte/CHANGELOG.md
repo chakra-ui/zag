@@ -1,5 +1,17 @@
 # @zag-js/svelte
 
+## 0.78.0
+
+### Patch Changes
+
+- [#2047](https://github.com/chakra-ui/zag/pull/2047)
+  [`44106f6`](https://github.com/chakra-ui/zag/commit/44106f6779b6340d49174035e5abe09b9055baf6) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix style merging in svelte `mergeProps`
+
+- Updated dependencies []:
+  - @zag-js/core@0.78.0
+  - @zag-js/types@0.78.0
+
 ## 0.77.1
 
 ### Patch Changes

@@ -1,5 +1,27 @@
 # @zag-js/color-picker
 
+## 0.78.0
+
+### Minor Changes
+
+- [`7874ad3`](https://github.com/chakra-ui/zag/commit/7874ad3a08cb4d6d5b1a67995b7f5ca60007dfb3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `invalid` and `openAutoFocus` props.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.78.0
+  - @zag-js/core@0.78.0
+  - @zag-js/types@0.78.0
+  - @zag-js/color-utils@0.78.0
+  - @zag-js/utils@0.78.0
+  - @zag-js/dismissable@0.78.0
+  - @zag-js/dom-event@0.78.0
+  - @zag-js/dom-query@0.78.0
+  - @zag-js/form-utils@0.78.0
+  - @zag-js/popper@0.78.0
+  - @zag-js/text-selection@0.78.0
+
 ## 0.77.1
 
 ### Patch Changes

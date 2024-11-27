@@ -1,5 +1,20 @@
 # @zag-js/collapsible
 
+## 0.78.0
+
+### Patch Changes
+
+- [`c794e08`](https://github.com/chakra-ui/zag/commit/c794e081e805a2dd5e9711222f6ea3b8199daa21) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix memory leak where machine might hold on to the element and
+  it's styles after element is unmounted
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.78.0
+  - @zag-js/core@0.78.0
+  - @zag-js/types@0.78.0
+  - @zag-js/utils@0.78.0
+  - @zag-js/dom-query@0.78.0
+
 ## 0.77.1
 
 ### Patch Changes
