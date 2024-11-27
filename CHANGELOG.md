@@ -6,6 +6,23 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.78.0](./#0.78.0) - 2024-11-27
+
+### Fixed
+
+- **Presence, Collapsible**: Fix memory leak where machine might hold on to the element and it's styles after element is
+  unmounted
+
+- **Svelte**: Fix issue where `mergeProps` doesn't merge styles correctly
+
+### Added
+
+- **Angle Slider [NEW]**: Add new angle slider component to allow for selecting an angle between 0 and 360 degrees.
+
+- **Combobox**: Add `syncSelectedItems` api to allow rehydrating the select items after fetching from async items.
+
+- **ColorPicker**: Add support for `invalid` and `openAutoFocus` props.
+
 ## [0.77.1](./#0.77.1) - 2024-10-29
 
 ### Fixed
