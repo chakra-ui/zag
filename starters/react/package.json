@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.6",
+    "@internationalized/date": "3.6.0",
     "@tanstack/react-virtual": "3.10.9",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
@@ -84,11 +84,11 @@
     "react-spinners": "0.14.1"
   },
   "devDependencies": {
-    "@types/node": "22.9.0",
+    "@types/node": "22.10.0",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
     "eslint": "9.15.0",
     "eslint-config-next": "15.0.3",
-    "typescript": "5.6.3"
+    "typescript": "5.7.2"
   }
 }

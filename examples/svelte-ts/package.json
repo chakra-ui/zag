@@ -10,7 +10,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@internationalized/date": "3.5.6",
+    "@internationalized/date": "3.6.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -97,7 +97,7 @@
     "svelte": "5.2.7",
     "svelte-check": "4.0.5",
     "tslib": "2.7.0",
-    "typescript": "5.6.3",
+    "typescript": "5.7.2",
     "vite": "5.4.11",
     "vite-tsconfig-paths": "5.0.1"
   }
