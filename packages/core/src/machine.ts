@@ -105,10 +105,11 @@ export class Machine<
     return this.stateSnapshot.context
   }
 
+  // created actions
   public _created = () => {
-    // created actions
+    if (!this.config.created) return
     const event = toEvent<TEvent>(ActionTypes.Created)
-    this.executeActions(this.config?.created, event)
+    this.executeActions(this.config.created, event)
   }
 
   // Starts the interpreted machine.
