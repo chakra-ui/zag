@@ -1,4 +1,4 @@
-import { subscribe, type Machine, type StateMachine as S, snapshot } from "@zag-js/core"
+import { type Machine, type StateMachine as S } from "@zag-js/core"
 import { onDestroy } from "svelte"
 import { reflect } from "./reflect"
 
@@ -9,8 +9,8 @@ export function useSnapshot<
 >(service: Machine<TContext, TState, TEvent>) {
   let state = $state(service.state)
 
-  const unsubscribe = subscribe(service.state, () => {
-    state = snapshot(service.state) as any
+  const unsubscribe = service.subscribe((nextState) => {
+    state = nextState
   })
 
   onDestroy(unsubscribe)
