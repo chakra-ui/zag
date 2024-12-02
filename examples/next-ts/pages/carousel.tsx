@@ -29,14 +29,17 @@ export default function Page() {
         <div {...api.getRootProps()}>
           <button {...api.getPrevTriggerProps()}>Prev</button>
           <button {...api.getNextTriggerProps()}>Next</button>
-          <div {...api.getViewportProps()}>
-            <div {...api.getItemGroupProps()}>
-              {carouselData.map((image, index) => (
-                <div {...api.getItemProps({ index })} key={index}>
-                  <img src={image} alt="" style={{ height: "300px", width: "100%", objectFit: "cover" }} />
-                </div>
-              ))}
-            </div>
+          <div {...api.getItemGroupProps()}>
+            {carouselData.map((image, index) => (
+              <div {...api.getItemProps({ index })} key={index}>
+                <img src={image} alt="" style={{ height: "300px", width: "100%", objectFit: "cover" }} />
+              </div>
+            ))}
+          </div>
+          <div {...api.getIndicatorGroupProps()}>
+            {api.views.map(({ index }) => (
+              <button {...api.getIndicatorProps({ index })} key={index} />
+            ))}
           </div>
         </div>
       </main>

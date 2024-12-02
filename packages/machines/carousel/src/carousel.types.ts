@@ -5,7 +5,7 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export interface SlideChangeDetails {
+export interface ViewChangeDetails {
   index: number
 }
 
@@ -13,11 +13,8 @@ export interface SlideChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-type RectEdge = "top" | "right" | "bottom" | "left"
-
 export type ElementIds = Partial<{
   root: string
-  viewport: string
   item(index: number): string
   itemGroup: string
   nextTrigger: string
@@ -33,22 +30,32 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   orientation: "horizontal" | "vertical"
   /**
-   * The alignment of the slides in the carousel.
-   * @default "start"
-   */
-  align: "start" | "center" | "end"
-  /**
    * The number of slides to show at a time.
    * @default 1
    */
-  slidesPerView: number | "auto"
+  slidesPerView: number
+  /**
+   * Whether to scroll automatically
+   * @default false
+   */
+  autoplay?: boolean
+  /**
+   * Whether to scroll via dragging
+   * @default false
+   */
+  draggable: boolean
+  /**
+   * Defines the duration between automatic scroll transitions.
+   * @default 2000
+   */
+  autoplayInterval: number
   /**
    * Whether the carousel should loop around.
    * @default false
    */
   loop: boolean
   /**
-   * The current slide index.
+   * The current view index.
    */
   index: number
   /**
@@ -57,9 +64,20 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   spacing: string
   /**
-   * Function called when the slide changes.
+   * Defines the extra space added around the scrollable area,
+   * enabling nearby items to remain partially in view.
    */
-  onIndexChange?: ((details: SlideChangeDetails) => void) | undefined
+  padding?: string
+  /**
+   * Specifies the scrolling progression mode,
+   * whether between advancing by a full view or individual items.
+   * @default 'view'
+   */
+  scrollBy: "view" | "item"
+  /**
+   * Function called when the view changes.
+   */
+  onIndexChange?: ((details: ViewChangeDetails) => void) | undefined
   /**
    * The ids of the elements in the carousel. Useful for composition.
    */
@@ -67,20 +85,15 @@ interface PublicContext extends DirectionProperty, CommonProperties {
 }
 
 interface PrivateContext {
-  slideRects: DOMRect[]
-  containerRect?: DOMRect | undefined
-  containerSize: number
-  scrollSnaps: number[]
-  scrollProgress: number
+  views: number[][]
+  intersections: Set<Element>
+  _scrollEndTimeout?: NodeJS.Timeout
 }
 
 type ComputedContext = Readonly<{
   isRtl: boolean
   isHorizontal: boolean
   isVertical: boolean
-  startEdge: RectEdge
-  endEdge: RectEdge
-  translateValue: string
   canScrollNext: boolean
   canScrollPrev: boolean
 }>
@@ -117,6 +130,7 @@ export interface ItemState {
   valueText: string
   /**
    * Whether the item is the current item in the carousel
+   * (Only when `slidesPerView` is 1)
    */
   current: boolean
   /**
@@ -144,35 +158,35 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   index: number
   /**
-   * The current scroll progress of the carousel
-   */
-  scrollProgress: number
-  /**
    * Whether the carousel is auto playing
    */
   autoPlaying: boolean
   /**
-   * Whether the carousel is can scroll to the next slide
+   * Whether the carousel is can scroll to the next view
    */
   canScrollNext: boolean
   /**
-   * Whether the carousel is can scroll to the previous slide
+   * Whether the carousel is can scroll to the previous view
    */
   canScrollPrev: boolean
   /**
-   * Function to scroll to a specific slide index
+   * The views in the carousel
    */
-  scrollTo(index: number, jump?: boolean): void
+  views: { index: number }[]
   /**
-   * Function to scroll to the next slide
+   * Function to scroll to a specific view index
+   */
+  scrollTo(index: number): void
+  /**
+   * Function to scroll to the next view
    */
   scrollToNext(): void
   /**
-   * Function to scroll to the previous slide
+   * Function to scroll to the previous view
    */
   scrollToPrevious(): void
   /**
-   *  Returns the state of a specific slide
+   *  Returns the state of a specific view
    */
   getItemState(props: ItemProps): ItemState
   /**
@@ -185,7 +199,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   pause(): void
 
   getRootProps(): T["element"]
-  getViewportProps(): T["element"]
   getItemGroupProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
   getPrevTriggerProps(): T["button"]
