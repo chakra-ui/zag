@@ -73,7 +73,7 @@
     "@swc/core": "1.9.3",
     "@types/babel__generator": "7.6.8",
     "@types/babel__traverse": "7.20.6",
-    "@types/node": "22.10.0",
+    "@types/node": "22.10.1",
     "@types/signale": "1.4.7",
     "@typescript-eslint/eslint-plugin": "8.15.0",
     "@typescript-eslint/parser": "8.15.0",
@@ -101,7 +101,7 @@
     "vercel-submodules": "1.0.10",
     "vite": "5.4.11",
     "vite-plugin-dts": "4.3.0",
-    "vitest": "2.1.5"
+    "vitest": "2.1.8"
   },
   "engines": {
     "node": ">=18.0.0"
