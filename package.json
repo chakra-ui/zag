@@ -101,7 +101,7 @@
     "vercel-submodules": "1.0.10",
     "vite": "5.4.11",
     "vite-plugin-dts": "4.3.0",
-    "vitest": "2.1.5"
+    "vitest": "2.1.8"
   },
   "engines": {
     "node": ">=18.0.0"
