@@ -1,37 +1,42 @@
-import { dataAttr, isDom } from "@zag-js/dom-query"
+import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
 import type { ItemProps, ItemState, MachineApi, Send, State } from "./carousel.types"
-import { getSlidesInView } from "./utils/get-slide-in-view"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const canScrollNext = state.context.canScrollNext
   const canScrollPrev = state.context.canScrollPrev
   const horizontal = state.context.isHorizontal
+  const slidesPerView = state.context.slidesPerView
+  const spacing = state.context.spacing
+  const padding = state.context.padding
+  const scrollBy = state.context.scrollBy
+
   const autoPlaying = state.matches("autoplay")
 
-  const activeSnap = state.context.scrollSnaps[state.context.index]
-  const slidesInView = isDom() ? getSlidesInView(state.context)(activeSnap) : []
-
   function getItemState(props: ItemProps): ItemState {
+    const index = state.context.index
+    const slidesInView = state.context.views.at(index) ?? []
+
     return {
-      valueText: `Slide ${props.index + 1}`,
-      current: props.index === state.context.index,
-      next: props.index === state.context.index + 1,
-      previous: props.index === state.context.index - 1,
+      current: props.index === index && slidesPerView === 1,
+      next: props.index === index + 1,
+      previous: props.index === index - 1,
       inView: slidesInView.includes(props.index),
+      valueText: `Slide ${props.index + 1}`,
     }
   }
 
   return {
     index: state.context.index,
-    scrollProgress: state.context.scrollProgress,
+    views: state.context.views.map((_, index) => ({ index })),
     autoPlaying,
     canScrollNext,
     canScrollPrev,
-    scrollTo(index, jump) {
-      send({ type: "GOTO", index, jump })
+    scrollTo(index) {
+      send({ type: "GOTO", index })
     },
     scrollToNext() {
       send("NEXT")
@@ -39,7 +44,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     scrollToPrevious() {
       send("PREV")
     },
-    getItemState: getItemState,
+    getItemState,
     play() {
       send("PLAY")
     },
@@ -58,17 +63,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": "Carousel",
         style: {
           "--slide-spacing": state.context.spacing,
-          "--slide-size": `calc(100% / ${state.context.slidesPerView} - var(--slide-spacing))`,
         },
-      })
-    },
-
-    getViewportProps() {
-      return normalize.element({
-        ...parts.viewport.attrs,
-        dir: state.context.dir,
-        id: dom.getViewportId(state.context),
-        "data-orientation": state.context.orientation,
       })
     },
 
@@ -78,22 +73,68 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getItemGroupId(state.context),
         "data-orientation": state.context.orientation,
         dir: state.context.dir,
+        tabIndex: 0,
+        onPointerDown(event) {
+          if (event.button !== 0) return
+          event.preventDefault()
+          send({ type: "POINTER_DOWN" })
+        },
+
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+
+          const keyMap: EventKeyMap = {
+            ArrowDown() {
+              if (horizontal) return
+              send({ type: "GOTO.NEXT" })
+            },
+            ArrowUp() {
+              if (horizontal) return
+              send({ type: "GOTO.PREV" })
+            },
+            ArrowRight() {
+              if (!horizontal) return
+              send({ type: "GOTO.NEXT" })
+            },
+            ArrowLeft() {
+              if (!horizontal) return
+              send({ type: "GOTO.PREV" })
+            },
+            Home() {
+              send({ type: "GOTO.FIRST" })
+            },
+            End() {
+              send({ type: "GOTO.LAST" })
+            },
+          }
+
+          const key = getEventKey(event, {
+            dir: state.context.dir,
+            orientation: state.context.orientation,
+          })
+
+          const exec = keyMap[key]
+
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+          }
+        },
+
         style: {
-          display: "flex",
-          flexDirection: horizontal ? "row" : "column",
-          [horizontal ? "height" : "width"]: "auto",
+          [horizontal ? "gridAutoColumns" : "gridAutoRows"]:
+            `calc(100% / ${slidesPerView} - ${spacing} * ${slidesPerView - 1} / ${slidesPerView})`,
+          [horizontal ? "scrollPaddingInline" : "scrollPaddingBlock"]: padding,
+          [horizontal ? "paddingInline" : "paddingBlock"]: padding,
           gap: "var(--slide-spacing)",
-          transform: state.context.translateValue,
-          transitionProperty: "transform",
-          willChange: "transform",
-          transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-          transitionDuration: "0.3s",
         },
       })
     },
 
     getItemProps(props) {
       const itemState = getItemState(props)
+      const slides = Math.floor(slidesPerView)
+      const shouldSnap = scrollBy === "item" || (props.index + slides) % slides === 0
 
       return normalize.element({
         ...parts.item.attrs,
@@ -101,14 +142,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         "data-current": dataAttr(itemState.current),
         "data-inview": dataAttr(itemState.inView),
+        // Used to detect active slide after scroll
+        "data-index": props.index,
         role: "group",
-        "aria-roledescription": "slide",
+        "aria-roledescription": "carousel item",
         "data-orientation": state.context.orientation,
         "aria-label": itemState.valueText,
+        inert: itemState.inView ? undefined : "true",
+        "aria-hidden": ariaAttr(!itemState.inView),
+
         style: {
-          position: "relative",
-          flex: "0 0 var(--slide-size)",
-          [horizontal ? "minWidth" : "minHeight"]: "0px",
+          scrollSnapAlign: shouldSnap ? "start" : undefined,
         },
       })
     },
@@ -125,7 +169,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "aria-controls": dom.getItemGroupId(state.context),
         onClick() {
-          send("PREV")
+          send("GOTO.PREV")
         },
       })
     },
@@ -142,7 +186,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-controls": dom.getItemGroupId(state.context),
         disabled: !canScrollNext,
         onClick() {
-          send("NEXT")
+          send("GOTO.NEXT")
         },
       })
     },
