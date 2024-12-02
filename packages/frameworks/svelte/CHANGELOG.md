@@ -1,5 +1,17 @@
 # @zag-js/svelte
 
+## 0.78.1
+
+### Patch Changes
+
+- [`224b31a`](https://github.com/chakra-ui/zag/commit/224b31a3aecd3ef18a69783a81218658e06b51a4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue with useService where machine gets stopped and started
+  at `$effect` time, rather than `onMount` time
+  - Improve reactivity of `useService` when `context` changes
+- Updated dependencies []:
+  - @zag-js/core@0.78.1
+  - @zag-js/types@0.78.1
+
 ## 0.78.0
 
 ### Patch Changes
