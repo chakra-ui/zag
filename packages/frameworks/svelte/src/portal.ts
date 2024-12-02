@@ -5,7 +5,7 @@ export interface PortalActionProps {
 }
 
 export function portal(node: HTMLElement, props: PortalActionProps = {}) {
-  function update(props: PortalActionProps) {
+  function update(props: PortalActionProps = {}) {
     const { container, disabled, getRootNode } = props
     if (disabled) return
     const doc = getRootNode?.().ownerDocument ?? document
