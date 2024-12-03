@@ -25,7 +25,11 @@ export function getFilesFromEvent(ctx: MachineContext, files: File[]) {
     const [accepted, acceptError] = isValidFileType(file, ctx.acceptAttr)
     const [sizeMatch, sizeError] = isValidFileSize(file, ctx.minFileSize, ctx.maxFileSize)
 
-    const validateErrors = ctx.validate?.(file, { acceptedFiles: ctx.acceptedFiles, rejectedFiles: ctx.rejectedFiles })
+    const validateErrors = ctx.validate?.(file, {
+      acceptedFiles: ctx.acceptedFiles,
+      rejectedFiles: ctx.rejectedFiles,
+    })
+
     const valid = validateErrors ? validateErrors.length === 0 : true
 
     if (accepted && sizeMatch && valid) {
