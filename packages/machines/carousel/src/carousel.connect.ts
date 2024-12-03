@@ -74,10 +74,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         dir: state.context.dir,
         tabIndex: 0,
-        onPointerDown(event) {
+        onMouseDown(event) {
           if (event.button !== 0) return
           event.preventDefault()
-          send({ type: "POINTER_DOWN" })
+          send({ type: "MOUSE_DOWN" })
         },
 
         onKeyDown(event) {
