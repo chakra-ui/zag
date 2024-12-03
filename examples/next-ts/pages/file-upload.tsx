@@ -9,9 +9,14 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(fileUploadControls)
 
-  const [state, send] = useMachine(fileUpload.machine({ id: useId() }), {
-    context: controls.context,
-  })
+  const [state, send] = useMachine(
+    fileUpload.machine({
+      id: useId(),
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = fileUpload.connect(state, send, normalizeProps)
 
