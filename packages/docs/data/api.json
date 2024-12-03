@@ -1544,7 +1544,7 @@
         "defaultValue": "1"
       },
       "validate": {
-        "type": "(file: File) => FileError[]",
+        "type": "(file: File, details: FileValidateDetails) => FileError[]",
         "description": "Function to validate a file"
       },
       "onFileChange": {
