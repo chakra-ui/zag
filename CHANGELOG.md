@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.78.1](./#0.78.1) - 2024-12-03
+
+### Fixed
+
+- **Svelte**
+
+  - Fix issue with useService where machine gets stopped and started at `$effect` time, rather than `onMount` time
+  - Improve reactivity of `useService` when `context` changes
+
 ## [0.78.0](./#0.78.0) - 2024-11-27
 
 ### Fixed
