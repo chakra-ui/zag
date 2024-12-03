@@ -46,7 +46,7 @@ export function machine(userContext: UserDefinedContext) {
       states: {
         idle: {
           on: {
-            POINTER_DOWN: "dragging",
+            MOUSE_DOWN: "dragging",
           },
         },
 
@@ -247,22 +247,22 @@ export function machine(userContext: UserDefinedContext) {
           }
 
           const handleEnd = () => {
-            document.removeEventListener("pointermove", handleMove, {
+            dom.getDoc(ctx).removeEventListener("pointermove", handleMove, {
               capture: true,
             })
             send({ type: "POINTER_UP" })
 
             //* Not sure if this cleanup is okay
-            document.removeEventListener("pointerup", handleEnd, {
+            dom.getDoc(ctx).removeEventListener("pointerup", handleEnd, {
               capture: true,
             })
           }
 
-          document.addEventListener("pointermove", handleMove, {
+          dom.getDoc(ctx).addEventListener("pointermove", handleMove, {
             capture: true,
             passive: true,
           })
-          document.addEventListener("pointerup", handleEnd, {
+          dom.getDoc(ctx).addEventListener("pointerup", handleEnd, {
             capture: true,
             once: true,
           })
