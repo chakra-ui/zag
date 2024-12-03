@@ -51,12 +51,13 @@ export function machine(userContext: UserDefinedContext) {
         },
 
         dragging: {
-          entry: ["addListeners", "disableSnap"],
+          activities: ["attachPointerListeners"],
+          entry: ["disableScrollSnap"],
           on: {
-            POINTER_UP: { target: "idle", actions: ["endDragging"] },
             POINTER_MOVE: {
               actions: ["dragScroll"],
             },
+            POINTER_UP: { target: "idle", actions: ["endDragging"] },
           },
         },
 
@@ -177,6 +178,35 @@ export function machine(userContext: UserDefinedContext) {
             doc.removeEventListener("visibilitychange", onVisibilityChange)
           }
         },
+        attachPointerListeners(ctx, _evt, { send }) {
+          const slideGroupEl = dom.getSlideGroupEl(ctx)
+          if (!slideGroupEl) return
+          const doc = dom.getDoc(ctx)
+
+          const onMove = (moveEvent: PointerEvent) => {
+            send({ type: "POINTER_MOVE", left: -moveEvent.movementX, top: -moveEvent.movementY })
+          }
+
+          const onEnd = () => {
+            doc.removeEventListener("pointermove", onMove, true)
+            send({ type: "POINTER_UP" })
+          }
+
+          doc.addEventListener("pointermove", onMove, {
+            capture: true,
+            passive: true,
+          })
+
+          doc.addEventListener("pointerup", onEnd, {
+            capture: true,
+            once: true,
+          })
+
+          return () => {
+            doc.removeEventListener("pointermove", onMove, true)
+            doc.removeEventListener("pointerup", onEnd, true)
+          }
+        },
       },
       guards: {
         loop: (ctx) => ctx.loop,
@@ -238,36 +268,7 @@ export function machine(userContext: UserDefinedContext) {
         scrollToActiveView(ctx) {
           scrollToView(ctx, ctx.index, "instant")
         },
-        addListeners(ctx, _, { send }) {
-          const slideGroupEl = dom.getSlideGroupEl(ctx)
-          if (!slideGroupEl) return
-
-          const handleMove = (moveEvent: PointerEvent) => {
-            send({ type: "POINTER_MOVE", left: -moveEvent.movementX, top: -moveEvent.movementY })
-          }
-
-          const handleEnd = () => {
-            dom.getDoc(ctx).removeEventListener("pointermove", handleMove, {
-              capture: true,
-            })
-            send({ type: "POINTER_UP" })
-
-            //* Not sure if this cleanup is okay
-            dom.getDoc(ctx).removeEventListener("pointerup", handleEnd, {
-              capture: true,
-            })
-          }
-
-          dom.getDoc(ctx).addEventListener("pointermove", handleMove, {
-            capture: true,
-            passive: true,
-          })
-          dom.getDoc(ctx).addEventListener("pointerup", handleEnd, {
-            capture: true,
-            once: true,
-          })
-        },
-        disableSnap(ctx) {
+        disableScrollSnap(ctx) {
           const slideGroupEl = dom.getSlideGroupEl(ctx)
           if (!slideGroupEl) return
           slideGroupEl.style.setProperty("scroll-snap-type", "none")
