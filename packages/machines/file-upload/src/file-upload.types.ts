@@ -16,6 +16,11 @@ export interface FileChangeDetails {
   rejectedFiles: FileRejection[]
 }
 
+export interface FileValidateDetails {
+  acceptedFiles: File[]
+  rejectedFiles: FileRejection[]
+}
+
 export interface FileAcceptDetails {
   files: File[]
 }
@@ -98,7 +103,7 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   /**
    * Function to validate a file
    */
-  validate?: ((file: File, details: FileChangeDetails) => FileError[] | null) | undefined
+  validate?: ((file: File, details: FileValidateDetails) => FileError[] | null) | undefined
   /**
    * Function called when the value changes, whether accepted or rejected
    */

@@ -12,14 +12,6 @@ export default function Page() {
   const [state, send] = useMachine(
     fileUpload.machine({
       id: useId(),
-      validate(file, { acceptedFiles, rejectedFiles }) {
-        // Check for duplicate files by comparing names in acceptedFiles
-        const duplicate = [...acceptedFiles, ...rejectedFiles].some((uploadedFile) => uploadedFile.name === file.name)
-        if (duplicate) {
-          return [`The file "${file.name}" has already been uploaded.`]
-        }
-        return null // No errors
-      },
     }),
     {
       context: controls.context,

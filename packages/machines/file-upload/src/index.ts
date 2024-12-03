@@ -12,6 +12,7 @@ export type {
   FileMimeType,
   FileRejectDetails,
   FileRejection,
+  FileValidateDetails,
   IntlTranslations,
   ItemPreviewImageProps,
   ItemProps,
