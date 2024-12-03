@@ -177,10 +177,13 @@ supports default errors such as `TOO_MANY_FILES`, `FILE_INVALID_TYPE`,
 `FILE_TOO_LARGE`, or `FILE_TOO_SMALL`, you can return any string that represents
 your custom validation errors.
 
+> Return `null` if no validation errors are detected.
+
 ```jsx
 const [state, send] = useMachine(
   fileUpload.machine({
     validate(file) {
+      // Check if file size exceeds 10MB
       if (file.size > 1024 * 1024 * 10) {
         return ["FILE_TOO_LARGE"]
       }
@@ -198,16 +201,22 @@ const [state, send] = useMachine(
     validate(file) {
       const errors = []
 
-      if (file.size > 1024 * 1024 * 10) {
+      // Check file size
+      if (file.size > 10 * 1024 * 1024) {
         errors.push("FILE_TOO_LARGE") // Default error enum
       }
 
+      // Ensure file is a PDF
       if (!file.name.endsWith(".pdf")) {
         errors.push("ONLY_PDF_ALLOWED") // Custom error
       }
 
-      if (file.size < 1024) {
-        errors.push("FILE_TOO_SMALL") // Default error enum
+      // Custom check: Reject duplicate files
+      const isDuplicate = details.acceptedFiles.some(
+        (acceptedFile) => acceptedFile.name === file.name,
+      )
+      if (isDuplicate) {
+        errors.push("FILE_EXISTS")
       }
 
       return errors.length > 0 ? errors : null
@@ -215,8 +224,6 @@ const [state, send] = useMachine(
   }),
 )
 ```
-
-> Return `null` if no validation errors are detected.
 
 ## Disabling drag and drop
 
