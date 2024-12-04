@@ -24,21 +24,19 @@ export function getDataUrl(svg: SVGElement | undefined | null, opts: DataUrlOpti
   }
 
   const svgBounds = svg.getBoundingClientRect()
-  const dpr = win.devicePixelRatio || 1
 
   const canvas = doc.createElement("canvas")
   const image = new win.Image()
   image.src = svgString
 
-  canvas.width = svgBounds.width * dpr
-  canvas.height = svgBounds.height * dpr
+  canvas.width = svgBounds.width
+  canvas.height = svgBounds.height
 
   const context = canvas.getContext("2d")
-  context!.scale(dpr, dpr)
 
   return new Promise((resolve) => {
     image.onload = () => {
-      context!.drawImage(image, 0, 0)
+      context!.drawImage(image, 0, 0, canvas.width, canvas.height)
       resolve(canvas.toDataURL(type, quality))
     }
   })
