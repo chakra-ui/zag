@@ -1,10 +1,10 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { nextTick, raf } from "@zag-js/dom-query"
+import { raf } from "@zag-js/dom-query"
+import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { compact } from "@zag-js/utils"
-import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./dialog.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./dialog.types"
 
@@ -132,32 +132,18 @@ export function machine(userContext: UserDefinedContext) {
         },
         trapFocus(ctx) {
           if (!ctx.trapFocus || !ctx.modal) return
-          let trap: FocusTrap
-
-          const cleanup = nextTick(() => {
-            const contentEl = dom.getContentEl(ctx)
-            if (!contentEl) return
-            trap = createFocusTrap(contentEl, {
-              document: dom.getDoc(ctx),
-              escapeDeactivates: false,
-              preventScroll: true,
-              fallbackFocus: contentEl,
-              returnFocusOnDeactivate: !!ctx.restoreFocus,
-              allowOutsideClick: true,
-              initialFocus: ctx.initialFocusEl?.() ?? undefined,
-              setReturnFocus(triggerEl) {
-                return ctx.finalFocusEl?.() ?? triggerEl
-              },
-            })
-
-            try {
-              trap.activate()
-            } catch {}
+          const contentEl = () => dom.getContentEl(ctx)
+          return trapFocus(contentEl, {
+            escapeDeactivates: false,
+            preventScroll: true,
+            fallbackFocus: contentEl()!,
+            returnFocusOnDeactivate: !!ctx.restoreFocus,
+            allowOutsideClick: true,
+            initialFocus: ctx.initialFocusEl?.() ?? undefined,
+            setReturnFocus(triggerEl) {
+              return ctx.finalFocusEl?.() ?? triggerEl
+            },
           })
-          return () => {
-            trap?.deactivate()
-            cleanup()
-          }
         },
         hideContentBelow(ctx) {
           if (!ctx.modal) return

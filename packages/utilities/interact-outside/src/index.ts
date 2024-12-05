@@ -156,11 +156,15 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     cleanups.add(frames.addEventListener("pointerdown", onPointerDown, true))
   }, 0)
 
+  let hadLastActiveElement = false
+  let activeElement: Element | null = doc.activeElement
+
   function onFocusin(event: FocusEvent) {
+    activeElement = doc.activeElement
     //
     const func = defer ? raf : (v: any) => v()
     func(() => {
-      if (!node || !isEventOutside(event)) return
+      if (!node || !isEventOutside(event) || hadLastActiveElement) return
 
       if (onFocusOutside || onInteractOutside) {
         const handler = callAll(onFocusOutside, onInteractOutside) as EventListener
@@ -183,10 +187,25 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   cleanups.add(parentWin.addEventListener("focusin", onFocusin, true))
   cleanups.add(frames.addEventListener("focusin", onFocusin, true))
 
+  const obs = new win.MutationObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.removedNodes.length) return
+      const removedNodes = Array.from(entry.removedNodes)
+      hadLastActiveElement = removedNodes.some((node) => node.contains(activeElement))
+    })
+
+    if (hadLastActiveElement && !node.contains(activeElement) && doc.activeElement !== node) {
+      node?.focus({ preventScroll: true })
+    }
+  })
+
+  obs.observe(node, { childList: true, subtree: true })
+
   return () => {
     clearTimeout(timer)
     pointerdownCleanups.forEach((fn) => fn())
     cleanups.forEach((fn) => fn())
+    obs.disconnect()
   }
 }
 
