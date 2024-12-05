@@ -1,5 +1,15 @@
 # @zag-js/dom-query
 
+## 0.78.2
+
+### Patch Changes
+
+- [`ce85272`](https://github.com/chakra-ui/zag/commit/ce85272c3d64dd4c7bae911ec4e4b813234850c2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where signature pad `getDataUrl(...)` doesn't render the
+  correctly scaled image in Firefox
+
+## 0.78.1
+
 ## 0.78.0
 
 ## 0.77.1

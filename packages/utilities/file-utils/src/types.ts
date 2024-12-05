@@ -6,6 +6,7 @@ export type FileError =
   | "FILE_TOO_LARGE"
   | "FILE_TOO_SMALL"
   | "FILE_INVALID"
+  | "FILE_EXISTS"
   | AnyString
 
 export type ImageFileMimeType =

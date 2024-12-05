@@ -1,5 +1,48 @@
 # @zag-js/file-upload
 
+## 0.78.2
+
+### Patch Changes
+
+- [#2037](https://github.com/chakra-ui/zag/pull/2037)
+  [`e58126f`](https://github.com/chakra-ui/zag/commit/e58126f3ae0def8cf0a1c14ee917ede7405e8cf4) Thanks
+  [@anubra266](https://github.com/anubra266)! - Expose `acceptedFiles` and `rejectedFiles` to validate file method. This
+  is useful for checking for duplicate files.
+
+  ```ts
+  fileUpload.machine({
+    validate(file, details) {
+      const { acceptedFiles, rejectedFiles } = details
+      // Check for duplicate files by comparing names in acceptedFiles
+      const duplicate = acceptedFiles.some((item) => item.name === file.name)
+      if (duplicate) return ["FILE_EXISTS"]
+      return null // No errors
+    },
+  })
+  ```
+
+- Updated dependencies [[`ce85272`](https://github.com/chakra-ui/zag/commit/ce85272c3d64dd4c7bae911ec4e4b813234850c2)]:
+  - @zag-js/dom-query@0.78.2
+  - @zag-js/i18n-utils@0.78.2
+  - @zag-js/file-utils@0.78.2
+  - @zag-js/anatomy@0.78.2
+  - @zag-js/core@0.78.2
+  - @zag-js/types@0.78.2
+  - @zag-js/utils@0.78.2
+
+## 0.78.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.78.1
+  - @zag-js/core@0.78.1
+  - @zag-js/types@0.78.1
+  - @zag-js/utils@0.78.1
+  - @zag-js/dom-query@0.78.1
+  - @zag-js/file-utils@0.78.1
+  - @zag-js/i18n-utils@0.78.1
+
 ## 0.78.0
 
 ### Patch Changes

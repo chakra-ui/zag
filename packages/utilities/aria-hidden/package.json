@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/aria-hidden",
-  "version": "0.78.0",
+  "version": "0.78.2",
   "description": "Hide targets from screen readers",
   "keywords": [
     "js",
@@ -32,9 +32,6 @@
   },
   "clean-package": "../../../clean-package.config.json",
   "main": "src/index.ts",
-  "dependencies": {
-    "aria-hidden": "1.2.4"
-  },
   "devDependencies": {
     "clean-package": "2.2.0"
   }
