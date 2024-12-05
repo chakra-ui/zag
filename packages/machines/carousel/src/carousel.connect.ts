@@ -59,6 +59,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "region",
         "aria-roledescription": "carousel",
         "data-orientation": state.context.orientation,
+        "data-loaded": dataAttr(state.context.views.length > 0),
         dir: state.context.dir,
         "aria-label": "Carousel",
         style: {
@@ -72,6 +73,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.itemGroup.attrs,
         id: dom.getItemGroupId(state.context),
         "data-orientation": state.context.orientation,
+        "data-loaded": dataAttr(state.context.views.length > 0),
         dir: state.context.dir,
         tabIndex: 0,
         onMouseDown(event) {
