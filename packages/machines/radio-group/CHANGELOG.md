@@ -1,5 +1,19 @@
 # @zag-js/radio-group
 
+## 0.78.2
+
+### Patch Changes
+
+- Updated dependencies [[`ce85272`](https://github.com/chakra-ui/zag/commit/ce85272c3d64dd4c7bae911ec4e4b813234850c2)]:
+  - @zag-js/dom-query@0.78.2
+  - @zag-js/focus-visible@0.78.2
+  - @zag-js/anatomy@0.78.2
+  - @zag-js/core@0.78.2
+  - @zag-js/types@0.78.2
+  - @zag-js/utils@0.78.2
+  - @zag-js/element-rect@0.78.2
+  - @zag-js/form-utils@0.78.2
+
 ## 0.78.1
 
 ### Patch Changes

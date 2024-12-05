@@ -1,5 +1,19 @@
 # @zag-js/aria-hidden
 
+## 0.78.2
+
+### Patch Changes
+
+- [#2082](https://github.com/chakra-ui/zag/pull/2082)
+  [`eb948dc`](https://github.com/chakra-ui/zag/commit/eb948dcd54ba24aa7a779199e330d1e90b180fae) Thanks
+  [@healtheloper](https://github.com/healtheloper)! - Fixed accessibility warning related to `aria-hidden` on touch
+  devices.
+
+  **The error reads:**
+
+  "Blocked aria-hidden on an element because its descendant retained focus. The focus must not be hidden from assistive
+  technology users. Avoid using aria-hidden on a focused element or its ancestor"
+
 ## 0.78.1
 
 ## 0.78.0
