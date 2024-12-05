@@ -136,7 +136,7 @@ export function machine(userContext: UserDefinedContext) {
           return trapFocus(contentEl, {
             preventScroll: true,
             returnFocusOnDeactivate: !!ctx.restoreFocus,
-            initialFocus: ctx.initialFocusEl?.() ?? undefined,
+            initialFocus: ctx.initialFocusEl,
             setReturnFocus: (el) => ctx.finalFocusEl?.() ?? el,
           })
         },
