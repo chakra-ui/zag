@@ -627,7 +627,12 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
           })
         },
         hideOtherElements(ctx) {
-          return ariaHidden([dom.getInputEl(ctx), dom.getContentEl(ctx), dom.getTriggerEl(ctx)])
+          return ariaHidden([
+            dom.getInputEl(ctx),
+            dom.getContentEl(ctx),
+            dom.getTriggerEl(ctx),
+            dom.getClearTriggerEl(ctx),
+          ])
         },
         computePlacement(ctx) {
           const controlEl = () => dom.getControlEl(ctx)
