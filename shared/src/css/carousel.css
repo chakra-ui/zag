@@ -11,6 +11,11 @@
   display: grid;
   scrollbar-width: none;
   aspect-ratio: 3 / 2;
+  visibility: hidden;
+}
+
+[data-scope="carousel"][data-part="item-group"][data-loaded] {
+  visibility: visible;
 }
 
 [data-scope="carousel"][data-part="item-group"][data-orientation="horizontal"] {
