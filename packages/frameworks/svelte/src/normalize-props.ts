@@ -40,8 +40,14 @@ export function toStyleString(style: Record<string, number | string>) {
   return string
 }
 
+const preserveKeys =
+  "viewBox,className,preserveAspectRatio,fillRule,clipPath,clipRule,strokeWidth,strokeLinecap,strokeLinejoin,strokeDasharray,strokeDashoffset,strokeMiterlimit".split(
+    ",",
+  )
+
 function toSvelteProp(key: string) {
   if (key in propMap) return propMap[key]
+  if (preserveKeys.includes(key)) return key
   return key.toLowerCase()
 }
 

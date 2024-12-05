@@ -29,6 +29,7 @@
   import PinInput from "./routes/pin-input.svelte"
   import Popover from "./routes/popover.svelte"
   import Progress from "./routes/progress.svelte"
+  import QrCode from "./routes/qr-code.svelte"
   import RadioGroup from "./routes/radio-group.svelte"
   import RangeSlider from "./routes/range-slider.svelte"
   import RatingGroup from "./routes/rating-group.svelte"
@@ -98,6 +99,7 @@
     { path: "/tree-view", component: TreeView },
     { path: "/timer-countdown", component: TimerCountdown },
     { path: "/timer-stopwatch", component: TimerStopwatch },
+    { path: "/qr-code", component: QrCode },
   ]
 </script>
 
