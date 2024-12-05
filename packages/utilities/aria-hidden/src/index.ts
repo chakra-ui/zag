@@ -1,4 +1,4 @@
-import { hideOthers } from "aria-hidden"
+import { suppressOthers } from "aria-hidden"
 
 const raf = (fn: VoidFunction) => {
   const frameId = requestAnimationFrame(() => fn())
@@ -22,7 +22,7 @@ export function ariaHidden(targetsOrFn: TargetsOrFn, options: Options = {}) {
       const targets = typeof targetsOrFn === "function" ? targetsOrFn() : targetsOrFn
       const elements = targets.filter(Boolean) as HTMLElement[]
       if (elements.length === 0) return
-      cleanups.push(hideOthers(elements))
+      cleanups.push(suppressOthers(elements))
     }),
   )
   return () => {
