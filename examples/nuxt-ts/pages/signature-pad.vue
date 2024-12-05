@@ -46,7 +46,7 @@ const api = computed(() => signaturePad.connect(state.value, send, normalizeProp
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="state" :omit="['currentPoints', 'currentPath', 'paths']" />
     <template #controls>
       <Controls :control="controls" />
     </template>
