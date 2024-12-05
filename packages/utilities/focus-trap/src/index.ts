@@ -31,4 +31,4 @@ export function trapFocus(el: ElementOrGetter, options: TrapFocusOptions = {}) {
   }
 }
 
-export type { FocusTrap }
+export { createFocusTrap, type FocusTrap }

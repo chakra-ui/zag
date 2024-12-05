@@ -1,11 +1,11 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getInitialFocus, nextTick, proxyTabFocus, raf } from "@zag-js/dom-query"
+import { getInitialFocus, proxyTabFocus, raf } from "@zag-js/dom-query"
+import { trapFocus } from "@zag-js/focus-trap"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { compact } from "@zag-js/utils"
-import { createFocusTrap, type FocusTrap } from "focus-trap"
 import { dom } from "./popover.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
 
@@ -181,29 +181,14 @@ export function machine(userContext: UserDefinedContext) {
         },
         trapFocus(ctx) {
           if (!ctx.modal) return
-          let trap: FocusTrap | undefined
-          nextTick(() => {
-            const contentEl = dom.getContentEl(ctx)
-            if (!contentEl) return
-            trap = createFocusTrap(contentEl, {
-              escapeDeactivates: false,
-              allowOutsideClick: true,
-              preventScroll: true,
-              returnFocusOnDeactivate: true,
-              document: dom.getDoc(ctx),
-              fallbackFocus: contentEl,
-              initialFocus: getInitialFocus({
-                root: dom.getContentEl(ctx),
-                getInitialEl: ctx.initialFocusEl,
-                enabled: ctx.autoFocus,
-              }),
-            })
-
-            try {
-              trap.activate()
-            } catch {}
+          const contentEl = () => dom.getContentEl(ctx)
+          return trapFocus(contentEl, {
+            initialFocus: getInitialFocus({
+              root: dom.getContentEl(ctx),
+              getInitialEl: ctx.initialFocusEl,
+              enabled: ctx.autoFocus,
+            }),
           })
-          return () => trap?.deactivate()
         },
       },
       actions: {
