@@ -1,5 +1,22 @@
 # @zag-js/color-picker
 
+## 0.78.2
+
+### Patch Changes
+
+- Updated dependencies [[`ce85272`](https://github.com/chakra-ui/zag/commit/ce85272c3d64dd4c7bae911ec4e4b813234850c2)]:
+  - @zag-js/dom-query@0.78.2
+  - @zag-js/dismissable@0.78.2
+  - @zag-js/dom-event@0.78.2
+  - @zag-js/popper@0.78.2
+  - @zag-js/text-selection@0.78.2
+  - @zag-js/anatomy@0.78.2
+  - @zag-js/core@0.78.2
+  - @zag-js/types@0.78.2
+  - @zag-js/color-utils@0.78.2
+  - @zag-js/utils@0.78.2
+  - @zag-js/form-utils@0.78.2
+
 ## 0.78.1
 
 ### Patch Changes

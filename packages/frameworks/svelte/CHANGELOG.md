@@ -1,5 +1,17 @@
 # @zag-js/svelte
 
+## 0.78.2
+
+### Patch Changes
+
+- [`3e46aa6`](https://github.com/chakra-ui/zag/commit/3e46aa67bca8af25d384861d4627c943cdee89fb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix prop normalization issue where `viewBox` was incorrectly
+  converted to `viewbox` and renders svg incorrectly.
+
+- Updated dependencies []:
+  - @zag-js/core@0.78.2
+  - @zag-js/types@0.78.2
+
 ## 0.78.1
 
 ### Patch Changes
