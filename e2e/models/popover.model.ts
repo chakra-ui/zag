@@ -63,10 +63,6 @@ export class PopoverModel extends Model {
     return expect(this.content).toBeHidden()
   }
 
-  clickPlainText() {
-    return this.plainText.click({ force: true })
-  }
-
   clickButtonBefore() {
     return this.buttonBefore.click()
   }

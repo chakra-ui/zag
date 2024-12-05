@@ -6,6 +6,29 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.78.2](./#0.78.2) - 2024-12-05
+
+### Fixed
+
+- **File Upload**: Expose `acceptedFiles` and `rejectedFiles` to validate file method. This is useful for checking for
+  duplicate files.
+
+- **DOM Query**: Fix issue where signature pad `getDataUrl(...)` doesn't render the correctly scaled image in Firefox
+
+- **Date Picker**: Remove unimplemented `modal` prop in datepicker
+
+- **Svelte**: Fix prop normalization issue where `viewBox` was incorrectly converted to `viewbox` and renders svg
+  incorrectly
+
+## [0.78.1](./#0.78.1) - 2024-12-03
+
+### Fixed
+
+- **Svelte**
+
+  - Fix issue with useService where machine gets stopped and started at `$effect` time, rather than `onMount` time
+  - Improve reactivity of `useService` when `context` changes
+
 ## [0.78.0](./#0.78.0) - 2024-11-27
 
 ### Fixed

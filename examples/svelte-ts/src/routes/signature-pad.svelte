@@ -69,5 +69,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={snapshot} omit={["currentPoints", "currentPath", "paths"]} />
 </Toolbar>

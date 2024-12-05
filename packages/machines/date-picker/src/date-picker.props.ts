@@ -24,7 +24,6 @@ export const props = createProps<UserDefinedContext>()([
   "locale",
   "max",
   "min",
-  "modal",
   "name",
   "numOfMonths",
   "onFocusChange",

@@ -1,4 +1,4 @@
-import { hideOthers } from "aria-hidden"
+import { hideOthers } from "./aria-hidden"
 
 const raf = (fn: VoidFunction) => {
   const frameId = requestAnimationFrame(() => fn())

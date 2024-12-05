@@ -62,7 +62,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["points"]} />
+        <StateVisualizer state={state} omit={["currentPoints", "currentPath", "paths"]} />
       </Toolbar>
     </>
   )
