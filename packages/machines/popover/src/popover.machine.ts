@@ -183,11 +183,12 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.modal) return
           const contentEl = () => dom.getContentEl(ctx)
           return trapFocus(contentEl, {
-            initialFocus: getInitialFocus({
-              root: dom.getContentEl(ctx),
-              getInitialEl: ctx.initialFocusEl,
-              enabled: ctx.autoFocus,
-            }),
+            initialFocus: () =>
+              getInitialFocus({
+                root: dom.getContentEl(ctx),
+                getInitialEl: ctx.initialFocusEl,
+                enabled: ctx.autoFocus,
+              }),
           })
         },
       },
