@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { nextTick, raf } from "@zag-js/dom-query"
+import { raf } from "@zag-js/dom-query"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { compact } from "@zag-js/utils"
 import { createFocusTrap, type FocusTrap } from "focus-trap"
@@ -134,13 +134,14 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.trapFocus || !ctx.modal) return
           let trap: FocusTrap
 
-          const cleanup = nextTick(() => {
+          const cleanup = raf(() => {
             const contentEl = dom.getContentEl(ctx)
             if (!contentEl) return
             trap = createFocusTrap(contentEl, {
               document: dom.getDoc(ctx),
               escapeDeactivates: false,
               preventScroll: true,
+              delayInitialFocus: false,
               fallbackFocus: contentEl,
               returnFocusOnDeactivate: !!ctx.restoreFocus,
               allowOutsideClick: true,
