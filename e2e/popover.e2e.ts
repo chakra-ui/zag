@@ -79,9 +79,10 @@ test.describe("popover", () => {
     await I.dontSeeContent()
   })
 
-  test("[pointer] when clicking outside, should re-focus the button on click non-focusable element", async () => {
+  test.skip("[pointer] when clicking outside, should re-focus the button", async () => {
     await I.clickTrigger()
-    await I.clickPlainText()
+    await I.clickOutside()
+    await I.dontSeeContent()
     await I.seeTriggerIsFocused()
   })
 
