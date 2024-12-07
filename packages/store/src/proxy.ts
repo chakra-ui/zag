@@ -14,7 +14,7 @@ type Op = [op: "set", path: Path, value: unknown, prevValue: unknown] | [op: "de
 
 type Listener = (op: Op, nextVersion: number) => void
 
-export type Snapshot<T> = T extends { $$valtioSnapshot: infer S } ? S : T & { $$valtioSnapshot?: true }
+export type Snapshot<T> = T
 
 type CreateSnapshot = <T extends object>(target: T, version: number) => T
 
