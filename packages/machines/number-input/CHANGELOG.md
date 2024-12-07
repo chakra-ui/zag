@@ -1,5 +1,23 @@
 # @zag-js/number-input
 
+## 0.78.3
+
+### Patch Changes
+
+- [`7c5d106`](https://github.com/chakra-ui/zag/commit/7c5d106ff1aa55d8aa7a2ed4e47449ea8602a2e8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where input event doesn't get dispatched when initially
+  clicking the increment/decrement triggers
+
+- Updated dependencies [[`5584a83`](https://github.com/chakra-ui/zag/commit/5584a833151ee9f2c2ef9c07b6d699addfbca18e)]:
+  - @zag-js/core@0.78.3
+  - @zag-js/anatomy@0.78.3
+  - @zag-js/types@0.78.3
+  - @zag-js/utils@0.78.3
+  - @zag-js/dom-event@0.78.3
+  - @zag-js/dom-query@0.78.3
+  - @zag-js/form-utils@0.78.3
+  - @zag-js/number-utils@0.78.3
+
 ## 0.78.2
 
 ### Patch Changes
