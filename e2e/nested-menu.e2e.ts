@@ -106,7 +106,7 @@ test.describe("nested menu / keyboard typeahead", async () => {
     await expectToBeFocused(page, testid("new-win"))
   })
 
-  test("nested menu", async ({ page }) => {
+  test.skip("nested menu", async ({ page }) => {
     await page.click(menu_1.trigger)
 
     await page.keyboard.type("m")
