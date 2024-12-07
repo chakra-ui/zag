@@ -1,10 +1,8 @@
 // Credits: https://github.com/pmndrs/valtio
 
 import { getUntracked, markToTrack } from "proxy-compare"
-import { makeGlobal } from "./global"
-
-const isDev = () => process.env.NODE_ENV !== "production"
-const isObject = (x: unknown): x is object => typeof x === "object" && x !== null
+import { globalRef, refSet } from "./global"
+import { canProxy, isDev, isObject } from "./utils"
 
 type AsRef = { $$valtioRef: true }
 
@@ -12,29 +10,13 @@ type ProxyObject = object
 
 type Path = (string | symbol)[]
 
-type Op =
-  | [op: "set", path: Path, value: unknown, prevValue: unknown]
-  | [op: "delete", path: Path, prevValue: unknown]
-  | [op: "resolve", path: Path, value: unknown]
-  | [op: "reject", path: Path, error: unknown]
+type Op = [op: "set", path: Path, value: unknown, prevValue: unknown] | [op: "delete", path: Path, prevValue: unknown]
 
 type Listener = (op: Op, nextVersion: number) => void
 
-type AnyFunction = (...args: any[]) => any
+export type Snapshot<T> = T extends { $$valtioSnapshot: infer S } ? S : T & { $$valtioSnapshot?: true }
 
-export type Snapshot<T> = T extends AnyFunction
-  ? T
-  : T extends AsRef
-    ? T
-    : T extends Promise<any>
-      ? Awaited<T>
-      : {
-          readonly [K in keyof T]: Snapshot<T[K]>
-        }
-
-type HandlePromise = <P extends Promise<any>>(promise: P) => Awaited<P>
-
-type CreateSnapshot = <T extends object>(target: T, version: number, handlePromise?: HandlePromise) => T
+type CreateSnapshot = <T extends object>(target: T, version: number) => T
 
 type RemoveListener = () => void
 type AddListener = (listener: Listener) => RemoveListener
@@ -46,59 +28,16 @@ type ProxyState = readonly [
   addListener: AddListener,
 ]
 
-// shared state
-const proxyStateMap = makeGlobal("__zag__proxyStateMap", () => new WeakMap<ProxyObject, ProxyState>())
-const refSet = makeGlobal("__zag__refSet", () => new WeakSet())
-
-const isReactElement = (x: any) => typeof x === "object" && x !== null && "$$typeof" in x
-const isVueElement = (x: any) => typeof x === "object" && x !== null && "__v_isVNode" in x
-const isDOMElement = (x: any) =>
-  typeof x === "object" && x !== null && "nodeType" in x && typeof x.nodeName === "string"
-const isElement = (x: any) => isReactElement(x) || isVueElement(x) || isDOMElement(x)
+const proxyStateMap = globalRef("__zag__proxyStateMap", () => new WeakMap<ProxyObject, ProxyState>())
 
 const buildProxyFunction = (
   objectIs = Object.is,
 
   newProxy = <T extends object>(target: T, handler: ProxyHandler<T>): T => new Proxy(target, handler),
 
-  canProxy = (x: unknown) =>
-    isObject(x) &&
-    !refSet.has(x) &&
-    (Array.isArray(x) || !(Symbol.iterator in x)) &&
-    !isElement(x) &&
-    !(x instanceof WeakMap) &&
-    !(x instanceof WeakSet) &&
-    !(x instanceof Error) &&
-    !(x instanceof Number) &&
-    !(x instanceof Date) &&
-    !(x instanceof String) &&
-    !(x instanceof RegExp) &&
-    !(x instanceof ArrayBuffer),
-
-  defaultHandlePromise = <P extends Promise<any>>(
-    promise: P & {
-      status?: "pending" | "fulfilled" | "rejected"
-      value?: Awaited<P>
-      reason?: unknown
-    },
-  ) => {
-    switch (promise.status) {
-      case "fulfilled":
-        return promise.value as Awaited<P>
-      case "rejected":
-        throw promise.reason
-      default:
-        throw promise
-    }
-  },
-
   snapCache = new WeakMap<object, [version: number, snap: unknown]>(),
 
-  createSnapshot: CreateSnapshot = <T extends object>(
-    target: T,
-    version: number,
-    handlePromise: HandlePromise = defaultHandlePromise,
-  ): T => {
+  createSnapshot: CreateSnapshot = <T extends object>(target: T, version: number): T => {
     const cache = snapCache.get(target)
     if (cache?.[0] === version) {
       return cache[1] as T
@@ -111,14 +50,8 @@ const buildProxyFunction = (
       if (refSet.has(value as object)) {
         markToTrack(value as object, false) // mark not to track
         snap[key] = value
-      } else if (value instanceof Promise) {
-        Object.defineProperty(snap, key, {
-          get() {
-            return handlePromise(value)
-          },
-        })
       } else if (proxyStateMap.has(value as object)) {
-        snap[key] = snapshot(value as object, handlePromise)
+        snap[key] = snapshot(value as object)
       } else {
         snap[key] = value
       }
@@ -236,16 +169,6 @@ const buildProxyFunction = (
         let nextValue = value
         if (Object.getOwnPropertyDescriptor(target, prop)?.set) {
           // do nothing
-        } else if (value instanceof Promise) {
-          value
-            .then((v) => {
-              Object.assign(value, { status: "fulfilled", value: v })
-              notifyUpdate(["resolve", [prop], v])
-            })
-            .catch((e) => {
-              Object.assign(value, { status: "rejected", reason: e })
-              notifyUpdate(["reject", [prop], e])
-            })
         } else {
           if (!proxyStateMap.has(value) && canProxy(value)) {
             nextValue = proxy(value)
@@ -285,7 +208,6 @@ const buildProxyFunction = (
     objectIs,
     newProxy,
     canProxy,
-    defaultHandlePromise,
     snapCache,
     createSnapshot,
     proxyCache,
@@ -339,13 +261,13 @@ export function subscribe<T extends object>(
   }
 }
 
-export function snapshot<T extends object>(proxyObject: T, handlePromise?: HandlePromise): Snapshot<T> {
+export function snapshot<T extends object>(proxyObject: T): T {
   const proxyState = proxyStateMap.get(proxyObject as object)
   if (isDev() && !proxyState) {
     console.warn("Please use proxy object")
   }
   const [target, ensureVersion, createSnapshot] = proxyState as ProxyState
-  return createSnapshot(target, ensureVersion(), handlePromise) as Snapshot<T>
+  return createSnapshot(target, ensureVersion()) as T
 }
 
 export function ref<T extends object>(obj: T): Ref<T> {

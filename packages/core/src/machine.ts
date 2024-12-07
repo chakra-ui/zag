@@ -1,4 +1,4 @@
-import { ref, snapshot, subscribe } from "@zag-js/store"
+import { ref, snapshot, subscribe, clone } from "@zag-js/store"
 import {
   cast,
   clear,
@@ -28,7 +28,7 @@ import {
   type VoidFunction,
   type Writable,
 } from "./types"
-import { toArray, toEvent, structuredClone } from "./utils"
+import { toArray, toEvent } from "./utils"
 
 export class Machine<
   TContext extends Dict,
@@ -73,8 +73,8 @@ export class Machine<
   // Let's get started!
   constructor(config: S.MachineConfig<TContext, TState, TEvent>, options?: S.MachineOptions<TContext, TState, TEvent>) {
     // clone the config and options
-    this.config = structuredClone(config)
-    this.options = structuredClone(options ?? {})
+    this.config = clone(config)
+    this.options = clone(options ?? {})
 
     this.id = this.config.id ?? `machine-${uuid()}`
 
