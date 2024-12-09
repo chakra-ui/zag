@@ -89,7 +89,7 @@
     "all-contributors-cli": "6.26.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.18",
-    "prettier": "3.4.1",
+    "prettier": "3.4.2",
     "rehype": "13.0.2",
     "rehype-autolink-headings": "7.1.0",
     "rehype-code-titles": "1.2.0",
