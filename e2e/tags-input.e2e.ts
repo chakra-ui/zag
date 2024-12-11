@@ -175,7 +175,7 @@ test.describe("tags-input", () => {
     await I.expectNoTagToBeHighlighted()
   })
 
-  test("[addOnPaste: false] pasting should work everytime", async () => {
+  test("[addOnPaste: false] pasting should work every time", async () => {
     await I.paste("Svelte")
     await I.seeInputHasValue("Svelte")
 
@@ -197,7 +197,7 @@ test.describe("tags-input", () => {
     await I.seeTag("Svelte")
   })
 
-  test("[addOnPaste: true] pasting shoule add tags", async () => {
+  test("[addOnPaste: true] pasting should add tags", async () => {
     await I.controls.bool("addOnPaste", true)
 
     await I.paste("Github, Jenkins")

@@ -94,7 +94,7 @@
               </div>
             {/if}
 
-            <div style="display:flex;gap:10px;alig-items:center;">
+            <div style="display:flex;gap:10px;align-items:center;">
               <div style="position:relative;">
                 <div {...api.getTransparencyGridProps({ size: "4px" })}></div>
                 <div {...api.getSwatchProps({ value: api.value })}></div>

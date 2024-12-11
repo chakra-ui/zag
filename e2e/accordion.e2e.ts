@@ -20,7 +20,7 @@ test.describe("accordion", () => {
       await I.seeTriggerIsFocused("about")
     })
 
-    test("arrow up, focus pevious trigger", async () => {
+    test("arrow up, focus previous trigger", async () => {
       await I.focusTrigger("home")
       await I.pressKey("ArrowDown")
       await I.pressKey("ArrowUp")
