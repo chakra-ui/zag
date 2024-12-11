@@ -58,7 +58,7 @@ export const dom = createScope({
     }
   },
 
-  getMousementValue(ctx: Ctx, event: MouseEvent) {
+  getMousemoveValue(ctx: Ctx, event: MouseEvent) {
     const x = roundToDevicePixel(event.movementX)
     const y = roundToDevicePixel(event.movementY)
 

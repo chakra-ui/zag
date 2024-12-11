@@ -107,7 +107,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    */
   required?: boolean | undefined
   /**
-   * Whether a tag can be edited after creation, by presing `Enter` or double clicking.
+   * Whether a tag can be edited after creation, by pressing `Enter` or double clicking.
    * @default true
    */
   editable?: boolean | undefined

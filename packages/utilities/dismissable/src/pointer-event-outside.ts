@@ -13,7 +13,7 @@ export function clearPointerEvent(node: HTMLElement) {
   node.style.pointerEvents = ""
 }
 
-export function disablePointerEventsOutside(node: HTMLElement, peristentElements?: Array<() => Element | null>) {
+export function disablePointerEventsOutside(node: HTMLElement, persistentElements?: Array<() => Element | null>) {
   const doc = getDocument(node)
 
   const cleanups: VoidFunction[] = []
@@ -26,8 +26,8 @@ export function disablePointerEventsOutside(node: HTMLElement, peristentElements
     })
   }
 
-  if (peristentElements) {
-    const persistedCleanup = waitForElements(peristentElements, (el) => {
+  if (persistentElements) {
+    const persistedCleanup = waitForElements(persistentElements, (el) => {
       cleanups.push(setStyle(el, { pointerEvents: "auto" }))
     })
     cleanups.push(persistedCleanup)

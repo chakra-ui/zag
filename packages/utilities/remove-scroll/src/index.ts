@@ -63,7 +63,7 @@ export function preventBodyScroll(_document?: Document) {
   const setIOSStyle = () => {
     const { scrollX, scrollY, visualViewport } = win
 
-    // iOS 12 does not support `visuaViewport`.
+    // iOS 12 does not support `visualViewport`.
     const offsetLeft = visualViewport?.offsetLeft ?? 0
     const offsetTop = visualViewport?.offsetTop ?? 0
 

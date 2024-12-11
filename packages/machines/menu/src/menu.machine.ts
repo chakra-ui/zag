@@ -226,7 +226,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "closed",
-                actions: ["focusParentMenu", "restoreParentHiglightedItem", "invokeOnClose"],
+                actions: ["focusParentMenu", "restoreParentHighlightedItem", "invokeOnClose"],
               },
             ],
           },
@@ -234,7 +234,7 @@ export function machine(userContext: UserDefinedContext) {
             "CONTROLLED.OPEN": "open",
             "CONTROLLED.CLOSE": {
               target: "closed",
-              actions: ["focusParentMenu", "restoreParentHiglightedItem"],
+              actions: ["focusParentMenu", "restoreParentHighlightedItem"],
             },
             // don't invoke on open here since the menu is still open (we're only keeping it open)
             MENU_POINTERENTER: {
@@ -248,7 +248,7 @@ export function machine(userContext: UserDefinedContext) {
               },
               {
                 target: "closed",
-                actions: ["focusParentMenu", "restoreParentHiglightedItem"],
+                actions: ["focusParentMenu", "restoreParentHighlightedItem"],
               },
             ],
           },
@@ -694,7 +694,7 @@ export function machine(userContext: UserDefinedContext) {
           set.highlighted(ctx, ctx.lastHighlightedValue)
           ctx.lastHighlightedValue = null
         },
-        restoreParentHiglightedItem(ctx) {
+        restoreParentHighlightedItem(ctx) {
           ctx.parent?.send("HIGHLIGHTED.RESTORE")
         },
         invokeOnOpen(ctx) {

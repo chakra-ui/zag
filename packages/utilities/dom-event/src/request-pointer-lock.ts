@@ -12,7 +12,7 @@ export function requestPointerLock(doc: Document, fn?: (locked: boolean) => void
 
   function onPointerError(event: Event) {
     if (isLocked()) fn?.(false)
-    console.error("PointerLock error occured:", event)
+    console.error("PointerLock error occurred:", event)
     doc.exitPointerLock()
   }
 
