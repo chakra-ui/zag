@@ -103,7 +103,7 @@ A `Machine`, which provides:
   - `event`: the event that triggered the transition to the current state
   - `nextEvents`: the list of events the machine can respond to at its current state
   - `tags`: the tags associated with this state
-  - `done`: whehter the machine that reached its final state
+  - `done`: whether the machine that reached its final state
   - `context`: the current context value
   - `matches(...)`: a function used to test whether the current state matches one or more state values
 

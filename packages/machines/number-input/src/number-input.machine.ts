@@ -285,7 +285,7 @@ export function machine(userContext: UserDefinedContext) {
 
           function onMousemove(event: MouseEvent) {
             if (!ctx.scrubberCursorPoint) return
-            const value = dom.getMousementValue(ctx, event)
+            const value = dom.getMousemoveValue(ctx, event)
             if (!value.hint) return
             send({
               type: "SCRUBBER.POINTER_MOVE",

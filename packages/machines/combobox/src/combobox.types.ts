@@ -255,12 +255,12 @@ interface PrivateContext<T extends CollectionItem = CollectionItem> {
    */
   highlightedItem: T | null
   /**
-   * @interal
+   * @internal
    * The selected items
    */
   selectedItems: T[]
   /**
-   * @interal
+   * @internal
    * The display value of the combobox (based on the selected items)
    */
   valueAsString: string

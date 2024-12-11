@@ -184,14 +184,14 @@ const fetchMachine = createMachine({
           actions: ["invokeOnClose"]
         }, {
           target: "closed",
-          actions: ["focusParentMenu", "restoreParentHiglightedItem", "invokeOnClose"]
+          actions: ["focusParentMenu", "restoreParentHighlightedItem", "invokeOnClose"]
         }]
       },
       on: {
         "CONTROLLED.OPEN": "open",
         "CONTROLLED.CLOSE": {
           target: "closed",
-          actions: ["focusParentMenu", "restoreParentHiglightedItem"]
+          actions: ["focusParentMenu", "restoreParentHighlightedItem"]
         },
         // don't invoke on open here since the menu is still open (we're only keeping it open)
         MENU_POINTERENTER: {
@@ -203,7 +203,7 @@ const fetchMachine = createMachine({
           actions: "invokeOnClose"
         }, {
           target: "closed",
-          actions: ["focusParentMenu", "restoreParentHiglightedItem"]
+          actions: ["focusParentMenu", "restoreParentHighlightedItem"]
         }]
       }
     },
