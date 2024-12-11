@@ -14,7 +14,7 @@ const items = [
     content: "Sample accordion content",
   },
   {
-    title: "Aircrafts",
+    title: "Aircraft",
     desc: "Airplanes, Helicopters and Rockets",
     content: "Sample accordion content",
   },
@@ -29,7 +29,7 @@ type AccordionProps = {
 
 export function Accordion(props: AccordionProps) {
   const [state, send] = useMachine(
-    accordion.machine({ id: useId(), value: ["Aircrafts"] }),
+    accordion.machine({ id: useId(), value: ["Aircraft"] }),
     {
       context: props.controls,
     },

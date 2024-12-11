@@ -28,7 +28,7 @@ import {
   VueIcon,
 } from "components/icons"
 import { Illustration } from "components/illustration"
-import { MultiframeworkTabs } from "components/mutli-framework"
+import { MultiframeworkTabs } from "components/multi-framework"
 import { TopNavigation } from "components/top-navigation"
 import { NextSeo } from "next-seo"
 import Image from "next/image"

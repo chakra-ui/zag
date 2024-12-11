@@ -71,7 +71,7 @@ component. For example, you want to use the same trigger as a popover and
 tooltip trigger at the same time.
 
 To achieve this, you will need to pass custom `ids` to the machine's context.
-This will ensure that calling `document.getElementById(...)` within the toolip
+This will ensure that calling `document.getElementById(...)` within the tooltip
 and/or popover will return the same element.
 
 ```js {7,12}
@@ -120,7 +120,7 @@ import Frame, { useFrame } from "react-frame-component"
 const data = [
   { title: "Watercraft", content: "Sample accordion content" },
   { title: "Automobiles", content: "Sample accordion content" },
-  { title: "Aircrafts", content: "Sample accordion content" },
+  { title: "Aircraft", content: "Sample accordion content" },
 ]
 
 function Accordion({ id }) {
