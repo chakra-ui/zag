@@ -1,5 +1,7 @@
 # @zag-js/dom-query
 
+## 0.78.3
+
 ## 0.78.2
 
 ### Patch Changes
