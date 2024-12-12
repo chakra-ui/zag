@@ -3,7 +3,6 @@ import { createSplitProps } from "@zag-js/utils"
 import type { IndicatorProps, UserDefinedContext } from "./carousel.types"
 
 export const props = createProps<UserDefinedContext>()([
-  "align",
   "dir",
   "getRootNode",
   "id",
@@ -14,6 +13,11 @@ export const props = createProps<UserDefinedContext>()([
   "orientation",
   "slidesPerView",
   "spacing",
+  "padding",
+  "scrollBy",
+  "autoplayInterval",
+  "autoplay",
+  "draggable",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 
