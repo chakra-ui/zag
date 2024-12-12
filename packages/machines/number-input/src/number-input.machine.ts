@@ -1,7 +1,7 @@
 import { choose, createMachine, guards } from "@zag-js/core"
 import { addDomEvent, requestPointerLock } from "@zag-js/dom-event"
 import { isSafari, observeAttributes, raf } from "@zag-js/dom-query"
-import { trackFormControl } from "@zag-js/form-utils"
+import { setElementValue, trackFormControl } from "@zag-js/form-utils"
 import { clamp, decrement, increment, isAtMax, isAtMin, isWithinRange } from "@zag-js/number-utils"
 import { callAll, compact, isEqual } from "@zag-js/utils"
 import { recordCursor, restoreCursor } from "./cursor"
@@ -421,7 +421,7 @@ const sync = {
 
     // restore cursor position after updating input value
     raf(() => {
-      dom.setValue(inputEl, value)
+      setElementValue(inputEl, value)
       restoreCursor(inputEl, sel)
     })
   },

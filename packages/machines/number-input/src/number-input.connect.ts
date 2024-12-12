@@ -125,7 +125,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onBlur() {
           send("INPUT.BLUR")
         },
-        onChange(event) {
+        onInput(event) {
           send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set" })
         },
         onBeforeInput(event) {

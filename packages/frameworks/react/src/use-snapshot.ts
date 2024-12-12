@@ -1,16 +1,13 @@
 /// <reference types="react/experimental" />
 
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import { snapshot, subscribe, type Snapshot, makeGlobal } from "@zag-js/store"
+import { snapshot, subscribe, type Snapshot, globalRef } from "@zag-js/store"
 import { compact, isEqual } from "@zag-js/utils"
 import { createProxy as createProxyToCompare, isChanged } from "proxy-compare"
-import ReactExport, { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
+import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
 import { useUpdateEffect } from "./use-update-effect"
 
-//@ts-ignore
-const { use } = ReactExport
-
-const targetCache = makeGlobal("__zag__targetCache", () => new WeakMap())
+const targetCache = globalRef("__zag__targetCache", () => new WeakMap())
 
 export function useSnapshot<
   TContext extends Record<string, any>,
@@ -35,7 +32,7 @@ export function useSnapshot<
   const currSnapshot = useSyncExternalStore(
     useCallback((callback) => subscribe(service.state, callback, notifyInSync), [notifyInSync]),
     () => {
-      const nextSnapshot = snapshot(service.state, use)
+      const nextSnapshot = snapshot(service.state)
       try {
         if (
           lastSnapshot.current &&
@@ -49,7 +46,7 @@ export function useSnapshot<
       }
       return nextSnapshot
     },
-    () => snapshot(service.state, use),
+    () => snapshot(service.state),
   )
 
   /* -----------------------------------------------------------------------------

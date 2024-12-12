@@ -1,10 +1,15 @@
-import { defineConfig } from "@playwright/test"
+import { defineConfig, type PlaywrightTestConfig } from "@playwright/test"
 
 const CI = !!process.env.CI
 
-export function getWebServer() {
+type InferServer<T> = Exclude<T extends Array<infer U> ? U : T, undefined>
+
+type WebServer = InferServer<PlaywrightTestConfig["webServer"]>
+
+export function getWebServer(): WebServer {
   const framework = process.env.FRAMEWORK || "react"
-  const frameworks = {
+
+  const frameworks: Record<string, WebServer> = {
     react: {
       cwd: "./examples/next-ts",
       command: "cross-env PORT=3000 pnpm dev",
@@ -23,6 +28,12 @@ export function getWebServer() {
       url: "http://localhost:3002",
       reuseExistingServer: !CI,
     },
+    svelte: {
+      cwd: "./examples/svelte-ts",
+      command: "pnpm vite --port 3003",
+      url: "http://localhost:3003",
+      reuseExistingServer: !CI,
+    },
   }
 
   return frameworks[framework]
@@ -39,8 +50,8 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   forbidOnly: !!CI,
   reportSlowTests: null,
-  retries: CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : "50%",
   reporter: [
     process.env.CI ? ["github", ["junit", { outputFile: "e2e/junit.xml" }]] : ["list"],
     ["html", { outputFolder: "e2e/report", open: "never" }],
