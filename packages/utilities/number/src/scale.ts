@@ -1,4 +1,4 @@
-export type AlgoritmType = "linear" | "geometric" | "logarithmic"
+export type AlgorithmType = "linear" | "geometric" | "logarithmic"
 
 export type Algorithm = {
   valueToPercent(value: number, min: number, max: number): number

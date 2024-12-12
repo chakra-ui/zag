@@ -1,6 +1,6 @@
 # @zag-js/i18n-utils
 
-Interationalization utilities for Zag.js
+Internationalization utilities for Zag.js
 
 ## Installation
 

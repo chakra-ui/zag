@@ -145,7 +145,7 @@ it("does not transition into state after options defined timer delay has passed 
   counter.send("START")
   expect(counter.state.context.value).toBe(0)
   vi.advanceTimersByTime(200)
-  // since guard doesnt approve yet
+  // since guard doesn't approve yet
   expect(counter.state.value).toBe("running")
   expect(counter.state.context.value).toBe(2)
 

@@ -25,7 +25,7 @@
       },
       "multiple": {
         "type": "boolean",
-        "description": "Whether multple accordion items can be expanded at the same time.",
+        "description": "Whether multiple accordion items can be expanded at the same time.",
         "defaultValue": "false"
       },
       "collapsible": {
@@ -3682,7 +3682,7 @@
       },
       "editable": {
         "type": "boolean",
-        "description": "Whether a tag can be edited after creation, by presing `Enter` or double clicking.",
+        "description": "Whether a tag can be edited after creation, by pressing `Enter` or double clicking.",
         "defaultValue": "true"
       },
       "inputValue": {

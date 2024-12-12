@@ -3,8 +3,8 @@ import { createAnatomy } from "../src"
 
 describe("Anatomy", () => {
   it("should allow to set parts", () => {
-    const anamtomy = createAnatomy("accordion").parts("root").build()
-    expect(anamtomy).toMatchInlineSnapshot(`
+    const anatomy = createAnatomy("accordion").parts("root").build()
+    expect(anatomy).toMatchInlineSnapshot(`
       {
         "root": {
           "attrs": {
@@ -18,8 +18,8 @@ describe("Anatomy", () => {
   })
 
   it("should convert string to kebab case if needed", () => {
-    const anamtomy = createAnatomy("hoverCard").parts("toggleButton").build()
-    expect(anamtomy).toMatchInlineSnapshot(`
+    const anatomy = createAnatomy("hoverCard").parts("toggleButton").build()
+    expect(anatomy).toMatchInlineSnapshot(`
       {
         "toggleButton": {
           "attrs": {
