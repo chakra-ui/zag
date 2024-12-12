@@ -14,9 +14,10 @@ export function machine(userContext: UserDefinedContext) {
       initial: "idle",
       context: {
         minFileSize: 0,
-        maxFileSize: Infinity,
+        maxFileSize: Number.POSITIVE_INFINITY,
         maxFiles: 1,
         allowDrop: true,
+        accept: ctx.accept,
         ...ctx,
         acceptedFiles: ref([]),
         rejectedFiles: ref([]),
