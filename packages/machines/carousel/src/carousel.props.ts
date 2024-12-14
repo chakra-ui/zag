@@ -15,7 +15,6 @@ export const props = createProps<UserDefinedContext>()([
   "spacing",
   "padding",
   "scrollBy",
-  "autoplayInterval",
   "autoplay",
   "draggable",
   "inViewThreshold",

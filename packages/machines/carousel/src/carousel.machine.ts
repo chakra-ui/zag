@@ -2,7 +2,7 @@ import { createMachine } from "@zag-js/core"
 import { addDomEvent, trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
 import { getScrollSnapPositions } from "@zag-js/scroll-snap"
-import { compact, isEqual, nextIndex, prevIndex } from "@zag-js/utils"
+import { compact, isEqual, isObject, nextIndex, prevIndex } from "@zag-js/utils"
 import { dom } from "./carousel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./carousel.types"
 import { clamp, scrollToView } from "./carousel.utils"
@@ -21,7 +21,7 @@ export function machine(userContext: UserDefinedContext) {
         slidesPerView: 1,
         spacing: "0px",
         scrollBy: "view",
-        autoplayInterval: 2000,
+        autoplay: false,
         draggable: false,
         inViewThreshold: 0.6,
         ...ctx,
@@ -32,6 +32,15 @@ export function machine(userContext: UserDefinedContext) {
         },
         views: [],
         intersections: new Set<Element>(),
+      },
+
+      computed: {
+        isRtl: (ctx) => ctx.dir === "rtl",
+        isHorizontal: (ctx) => ctx.orientation === "horizontal",
+        isVertical: (ctx) => ctx.orientation === "vertical",
+        canScrollNext: (ctx) => ctx.loop || ctx.index < ctx.views.length - 1,
+        canScrollPrev: (ctx) => ctx.loop || ctx.index > 0,
+        autoplayInterval: (ctx) => (isObject(ctx.autoplay) ? ctx.autoplay.delay : 4000),
       },
 
       watch: {
@@ -50,6 +59,10 @@ export function machine(userContext: UserDefinedContext) {
         },
         PLAY: "autoplay",
       },
+
+      activities: ["trackSlideMutation", "trackSlideIntersections", "trackScroll"],
+
+      entry: ["measureViews", "scrollToActiveView"],
 
       states: {
         idle: {
@@ -81,15 +94,6 @@ export function machine(userContext: UserDefinedContext) {
             PAUSE: "idle",
           },
         },
-      },
-      activities: ["trackSlideMutation", "trackSlideIntersections", "trackScroll"],
-      entry: ["measureViews", "scrollToActiveView"],
-      computed: {
-        isRtl: (ctx) => ctx.dir === "rtl",
-        isHorizontal: (ctx) => ctx.orientation === "horizontal",
-        isVertical: (ctx) => ctx.orientation === "vertical",
-        canScrollNext: (ctx) => ctx.loop || ctx.index < ctx.views.length - 1,
-        canScrollPrev: (ctx) => ctx.loop || ctx.index > 0,
       },
     },
     {

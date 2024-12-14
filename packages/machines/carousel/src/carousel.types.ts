@@ -43,20 +43,15 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    */
   slidesPerView: number
   /**
-   * Whether to scroll automatically
+   * Whether to scroll automatically. The default delay is 4000ms.
    * @default false
    */
-  autoplay?: boolean
+  autoplay?: boolean | { delay: number }
   /**
    * Whether to scroll via dragging
    * @default false
    */
   draggable: boolean
-  /**
-   * Defines the duration between automatic scroll transitions.
-   * @default 2000
-   */
-  autoplayInterval: number
   /**
    * Whether the carousel should loop around.
    * @default false
@@ -105,6 +100,7 @@ type ComputedContext = Readonly<{
   isVertical: boolean
   canScrollNext: boolean
   canScrollPrev: boolean
+  autoplayInterval: number
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
