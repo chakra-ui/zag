@@ -18,6 +18,7 @@ export const props = createProps<UserDefinedContext>()([
   "autoplayInterval",
   "autoplay",
   "draggable",
+  "inViewThreshold",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 
