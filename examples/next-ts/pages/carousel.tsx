@@ -14,7 +14,8 @@ export default function Page() {
       id: useId(),
       index: 0,
       spacing: "20px",
-      slidesPerView: 2,
+      slidesPerView: 1,
+      draggable: true,
     }),
     {
       // context: controls.context,
@@ -27,8 +28,11 @@ export default function Page() {
     <>
       <main className="carousel">
         <div {...api.getRootProps()}>
-          <button {...api.getPrevTriggerProps()}>Prev</button>
-          <button {...api.getNextTriggerProps()}>Next</button>
+          <div {...api.getControlProps()}>
+            <button {...api.getPrevTriggerProps()}>Prev</button>
+            <button {...api.getNextTriggerProps()}>Next</button>
+          </div>
+
           <div {...api.getItemGroupProps()}>
             {carouselData.map((image, index) => (
               <div {...api.getItemProps({ index })} key={index}>

@@ -1,10 +1,11 @@
 import { createMachine } from "@zag-js/core"
+import { addDomEvent, trackPointerMove } from "@zag-js/dom-event"
+import { raf } from "@zag-js/dom-query"
+import { getScrollSnapPositions } from "@zag-js/scroll-snap"
 import { compact, isEqual, nextIndex, prevIndex } from "@zag-js/utils"
 import { dom } from "./carousel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./carousel.types"
-import { clamp, scrollToView, waitForEvent } from "./carousel.utils"
-import { addDomEvent } from "@zag-js/dom-event"
-import { raf } from "@zag-js/dom-query"
+import { clamp, scrollToView } from "./carousel.utils"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -13,6 +14,7 @@ export function machine(userContext: UserDefinedContext) {
       id: "carousel",
       initial: ctx.autoplay ? "autoplay" : "idle",
       context: {
+        dir: "ltr",
         index: 0,
         orientation: "horizontal",
         loop: false,
@@ -21,6 +23,7 @@ export function machine(userContext: UserDefinedContext) {
         scrollBy: "view",
         autoplayInterval: 2000,
         draggable: false,
+        inViewThreshold: 0.6,
         ...ctx,
         views: [],
         intersections: new Set<Element>(),
@@ -51,13 +54,16 @@ export function machine(userContext: UserDefinedContext) {
         },
 
         dragging: {
-          activities: ["attachPointerListeners"],
+          activities: ["trackPointerMove"],
           entry: ["disableScrollSnap"],
           on: {
             POINTER_MOVE: {
               actions: ["dragScroll"],
             },
-            POINTER_UP: { target: "idle", actions: ["endDragging"] },
+            POINTER_UP: {
+              target: "idle",
+              actions: ["endDragging"],
+            },
           },
         },
 
@@ -84,20 +90,18 @@ export function machine(userContext: UserDefinedContext) {
     {
       activities: {
         trackSlideMutation(ctx, _evt, { send }) {
-          const slideGroupEl = dom.getSlideGroupEl(ctx)
+          const slideGroupEl = dom.getItemGroupEl(ctx)
           if (!slideGroupEl) return
           const win = dom.getWin(ctx)
           const observer = new win.MutationObserver(() => {
             send({ type: "MEASURE_VIEWS" })
           })
           observer.observe(slideGroupEl, { childList: true, subtree: true })
-          return () => {
-            observer.disconnect()
-          }
+          return () => observer.disconnect()
         },
 
         trackSlideIntersections(ctx) {
-          const slideGroupEl = dom.getSlideGroupEl(ctx)
+          const slideGroupEl = dom.getItemGroupEl(ctx)
           if (!slideGroupEl) return
           const win = dom.getWin(ctx)
 
@@ -113,39 +117,34 @@ export function machine(userContext: UserDefinedContext) {
             },
             {
               root: slideGroupEl,
-              threshold: 0.6,
+              threshold: ctx.inViewThreshold,
             },
           )
 
-          dom.getSlideEls(ctx).forEach((slide) => observer.observe(slide))
-
-          return () => {
-            observer.disconnect()
-          }
+          dom.getItemEls(ctx).forEach((slide) => observer.observe(slide))
+          return () => observer.disconnect()
         },
 
         trackScroll(ctx, _, { getState }) {
-          const slideGroupEl = dom.getSlideGroupEl(ctx)
+          const slideGroupEl = dom.getItemGroupEl(ctx)
           if (!slideGroupEl) return
-
-          let cleanup: VoidFunction
 
           const onScrollEnd = () => {
             if (ctx.intersections.size === 0) return
 
             // Sort intersecting elements based on their document position
-            const sortedIntersections = Array.from(ctx.intersections).sort((a, b) =>
+            const intersections = Array.from(ctx.intersections).sort((a, b) =>
               a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1,
             )
 
-            const firstIntersecting = sortedIntersections[0]
+            const firstIntersecting = intersections[0]
             const indexString = (firstIntersecting as HTMLElement).dataset.index
 
             if (!indexString) return // Safeguard against missing data-index
 
             const slideIndex = parseInt(indexString, 10)
             const currentView = ctx.views.findIndex((view) => view[0] === slideIndex)
-            const newIndex = clamp(currentView, 0, dom.getSlideEls(ctx).length)
+            const newIndex = clamp(currentView, 0, dom.getItemEls(ctx).length)
 
             if (ctx.index === newIndex) return
 
@@ -161,9 +160,10 @@ export function machine(userContext: UserDefinedContext) {
             }, 150)
           }
 
-          cleanup = addDomEvent(slideGroupEl, "scroll", onScroll, { passive: true, capture: true })
-
-          return () => cleanup()
+          return addDomEvent(slideGroupEl, "scroll", onScroll, {
+            passive: true,
+            capture: true,
+          })
         },
 
         trackDocumentVisibility(ctx, _evt, { send }) {
@@ -178,46 +178,30 @@ export function machine(userContext: UserDefinedContext) {
             doc.removeEventListener("visibilitychange", onVisibilityChange)
           }
         },
-        attachPointerListeners(ctx, _evt, { send }) {
-          const slideGroupEl = dom.getSlideGroupEl(ctx)
-          if (!slideGroupEl) return
+
+        trackPointerMove(ctx, _evt, { send }) {
           const doc = dom.getDoc(ctx)
-
-          const onMove = (moveEvent: PointerEvent) => {
-            send({ type: "POINTER_MOVE", left: -moveEvent.movementX, top: -moveEvent.movementY })
-          }
-
-          const onEnd = () => {
-            doc.removeEventListener("pointermove", onMove, true)
-            send({ type: "POINTER_UP" })
-          }
-
-          doc.addEventListener("pointermove", onMove, {
-            capture: true,
-            passive: true,
+          return trackPointerMove(doc, {
+            onPointerMove({ event }) {
+              send({ type: "POINTER_MOVE", left: -event.movementX, top: -event.movementY })
+            },
+            onPointerUp() {
+              send({ type: "POINTER_UP" })
+            },
           })
-
-          doc.addEventListener("pointerup", onEnd, {
-            capture: true,
-            once: true,
-          })
-
-          return () => {
-            doc.removeEventListener("pointermove", onMove, true)
-            doc.removeEventListener("pointerup", onEnd, true)
-          }
         },
       },
+
       guards: {
         loop: (ctx) => ctx.loop,
         isLastSlide: (ctx) => ctx.index === ctx.views.length - 1,
         isFirstSlide: (ctx) => ctx.index === 0,
       },
+
       actions: {
         scrollToNext(ctx) {
           const index = nextIndex(ctx.views, ctx.index, { loop: ctx.loop })
           scrollToView(ctx, index)
-
           set.index(ctx, index)
         },
         scrollToPrev(ctx) {
@@ -231,89 +215,56 @@ export function machine(userContext: UserDefinedContext) {
           set.index(ctx, index)
         },
         measureViews(ctx) {
-          const slidesPerView = Math.floor(ctx.slidesPerView)
-          const slideElements = dom.getSlideEls(ctx)
+          const snapPoints = getScrollSnapPositions(dom.getItemGroupEl(ctx)!)
+          const axisPoint = ctx.isHorizontal ? snapPoints.x : snapPoints.y
 
           // Calculate views based on slidesPerView
-          const views = slideElements.reduce<number[][]>((acc, _, index) => {
-            const currentView = acc.at(-1)
-            if (currentView && currentView.length < slidesPerView) {
-              currentView.push(index)
-            } else {
-              acc.push([index])
-            }
-            return acc
-          }, [])
-
-          // Adjust for peeking slides
-          if (views.length >= 2) {
-            const lastView = views.at(-1)!
-            const secondLastView = views.at(-2)!
-
-            const deficit = ctx.slidesPerView - lastView.length
-            if (deficit > 0) {
-              const overflow = secondLastView.splice(slidesPerView - deficit)
-              lastView.unshift(...overflow)
-            }
-          }
-
+          const views = axisPoint.map((_v, key) => [key])
           ctx.views = views
 
           // Clamp the index to fit within the calculated views
           const newIndex = clamp(ctx.index, 0, views.length - 1)
-          if (newIndex !== ctx.index) {
-            set.index(ctx, newIndex)
-          }
+          set.index(ctx, newIndex)
         },
         scrollToActiveView(ctx) {
           scrollToView(ctx, ctx.index, "instant")
         },
         disableScrollSnap(ctx) {
-          const slideGroupEl = dom.getSlideGroupEl(ctx)
+          const slideGroupEl = dom.getItemGroupEl(ctx)
           if (!slideGroupEl) return
           slideGroupEl.style.setProperty("scroll-snap-type", "none")
         },
         dragScroll(ctx, evt) {
-          const slideGroupEl = dom.getSlideGroupEl(ctx)
+          const slideGroupEl = dom.getItemGroupEl(ctx)
           if (!slideGroupEl) return
-
-          slideGroupEl.scrollBy({
-            left: evt.left,
-            top: evt.top,
-            behavior: "instant",
-          })
+          slideGroupEl.scrollBy({ left: evt.left, top: evt.top, behavior: "instant" })
         },
         endDragging(ctx) {
-          const slideGroupEl = dom.getSlideGroupEl(ctx)
-          if (!slideGroupEl) return
+          const el = dom.getItemGroupEl(ctx)
+          if (!el) return
 
-          // Capture initial scroll position
-          const startLeft = slideGroupEl.scrollLeft
-          const startTop = slideGroupEl.scrollTop
+          const startX = el.scrollLeft
+          const startY = el.scrollTop
 
-          // Temporarily disable scroll snap and hide overflow
-          slideGroupEl.style.removeProperty("scroll-snap-type")
-          slideGroupEl.style.setProperty("overflow", "hidden")
+          const snapPositions = getScrollSnapPositions(el)
 
-          // Capture final scroll position after disabling snap
-          const finalLeft = slideGroupEl.scrollLeft
-          const finalTop = slideGroupEl.scrollTop
+          // Find closest x snap point
+          const closestX = snapPositions.x.reduce((closest, curr) => {
+            return Math.abs(curr - startX) < Math.abs(closest - startX) ? curr : closest
+          }, snapPositions.x[0])
 
-          // Restore initial scroll position instantly
-          slideGroupEl.style.removeProperty("overflow")
-          slideGroupEl.style.setProperty("scroll-snap-type", "none")
-          slideGroupEl.scrollTo({ left: startLeft, top: startTop, behavior: "instant" })
+          // Find closest y snap point
+          const closestY = snapPositions.y.reduce((closest, curr) => {
+            return Math.abs(curr - startY) < Math.abs(closest - startY) ? curr : closest
+          }, snapPositions.y[0])
 
-          raf(async () => {
-            if (startLeft !== finalLeft || startTop !== finalTop) {
-              // Smoothly scroll to the final position
-              slideGroupEl.scrollTo({ left: finalLeft, top: finalTop, behavior: "smooth" })
-
-              // Wait for the "scrollend" event to ensure smooth scrolling completes
-              await waitForEvent(slideGroupEl, "scrollend")
-            }
-            // Remove scroll snap after scrolling finishes
-            slideGroupEl.style.removeProperty("scroll-snap-type")
+          raf(() => {
+            // Scroll to closest snap points
+            el.scrollTo({
+              left: closestX,
+              top: closestY,
+              behavior: "smooth",
+            })
           })
         },
       },

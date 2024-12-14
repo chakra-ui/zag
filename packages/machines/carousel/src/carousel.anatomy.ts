@@ -4,6 +4,7 @@ export const anatomy = createAnatomy("carousel").parts(
   "root",
   "itemGroup",
   "item",
+  "control",
   "nextTrigger",
   "prevTrigger",
   "indicatorGroup",

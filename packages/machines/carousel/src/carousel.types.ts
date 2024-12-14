@@ -1,5 +1,5 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -23,12 +23,7 @@ export type ElementIds = Partial<{
   indicator(index: number): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
-  /**
-   * The orientation of the carousel.
-   * @default "horizontal"
-   */
-  orientation: "horizontal" | "vertical"
+interface PublicContext extends DirectionProperty, CommonProperties, OrientationProperty {
   /**
    * The number of slides to show at a time.
    * @default 1
@@ -82,6 +77,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The ids of the elements in the carousel. Useful for composition.
    */
   ids?: ElementIds | undefined
+  /**
+   * The threshold for determining if an item is in view.
+   * @default 0.6
+   */
+  inViewThreshold: number
 }
 
 interface PrivateContext {
@@ -199,6 +199,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   pause(): void
 
   getRootProps(): T["element"]
+  getControlProps(): T["element"]
   getItemGroupProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
   getPrevTriggerProps(): T["button"]

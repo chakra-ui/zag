@@ -7,14 +7,14 @@ export function clamp(value: number, min: number, max: number) {
 
 export const scrollToView = (ctx: MachineContext, index: number, behavior?: ScrollBehavior) => {
   const view = ctx.views[index]
-  const slide = dom.getSlideEls(ctx).at(view[0])
+  const slide = dom.getItemEls(ctx)[view[0]]
   if (!slide) return
 
   scrollToSlide(ctx, slide, behavior)
 }
 
 export const scrollToSlide = (ctx: MachineContext, slide: HTMLElement, behavior: ScrollBehavior = "smooth") => {
-  const slideGroup = dom.getSlideGroupEl(ctx)
+  const slideGroup = dom.getItemGroupEl(ctx)
   if (!slideGroup) return
   const slideGroupRect = slideGroup.getBoundingClientRect()
   const nextSlideRect = slide.getBoundingClientRect()

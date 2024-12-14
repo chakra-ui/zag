@@ -10,7 +10,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const canScrollPrev = state.context.canScrollPrev
   const horizontal = state.context.isHorizontal
   const slidesPerView = state.context.slidesPerView
-  const spacing = state.context.spacing
   const padding = state.context.padding
   const scrollBy = state.context.scrollBy
 
@@ -18,14 +17,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   function getItemState(props: ItemProps): ItemState {
     const index = state.context.index
-    const slidesInView = state.context.views.at(index) ?? []
-
+    const slidesInView = state.context.views[index] ?? []
     return {
       current: props.index === index && slidesPerView === 1,
       next: props.index === index + 1,
       previous: props.index === index - 1,
       inView: slidesInView.includes(props.index),
-      valueText: `Slide ${props.index + 1}`,
+      valueText: `slide ${props.index + 1}`,
     }
   }
 
@@ -44,7 +42,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     scrollToPrevious() {
       send("PREV")
     },
-    getItemState,
     play() {
       send("PLAY")
     },
@@ -63,7 +60,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         "aria-label": "Carousel",
         style: {
+          "--slides-per-view": slidesPerView,
           "--slide-spacing": state.context.spacing,
+          "--slide-item-size":
+            "calc(100% / var(--slides-per-view) - var(--slide-spacing) * (var(--slides-per-view) - 1) / var(--slides-per-view))",
         },
       })
     },
@@ -78,6 +78,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: 0,
         onMouseDown(event) {
           if (event.button !== 0) return
+          if (event.defaultPrevented) return
+          if (!state.context.draggable) return
           event.preventDefault()
           send({ type: "MOUSE_DOWN" })
         },
@@ -124,8 +126,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
 
         style: {
-          [horizontal ? "gridAutoColumns" : "gridAutoRows"]:
-            `calc(100% / ${slidesPerView} - ${spacing} * ${slidesPerView - 1} / ${slidesPerView})`,
+          [horizontal ? "gridAutoColumns" : "gridAutoRows"]: "var(--slide-item-size)",
           [horizontal ? "scrollPaddingInline" : "scrollPaddingBlock"]: padding,
           [horizontal ? "paddingInline" : "paddingBlock"]: padding,
           gap: "var(--slide-spacing)",
@@ -133,6 +134,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
+    getItemState,
     getItemProps(props) {
       const itemState = getItemState(props)
       const slides = Math.floor(slidesPerView)
@@ -147,7 +149,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         // Used to detect active slide after scroll
         "data-index": props.index,
         role: "group",
-        "aria-roledescription": "carousel item",
+        "aria-roledescription": "slide",
         "data-orientation": state.context.orientation,
         "aria-label": itemState.valueText,
         inert: itemState.inView ? undefined : "true",
@@ -156,6 +158,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         style: {
           scrollSnapAlign: shouldSnap ? "start" : undefined,
         },
+      })
+    },
+
+    getControlProps() {
+      return normalize.element({
+        ...parts.control.attrs,
+        "data-orientation": state.context.orientation,
       })
     },
 

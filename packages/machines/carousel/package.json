@@ -39,6 +39,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/dom-event": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
+    "@zag-js/scroll-snap": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
