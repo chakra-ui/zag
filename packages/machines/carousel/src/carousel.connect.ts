@@ -1,5 +1,5 @@
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, getEventTarget, isFocusable } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
@@ -62,10 +62,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-loaded": dataAttr(state.context.views.length > 0),
         dir: state.context.dir,
         style: {
-          "--slides-per-view": slidesPerView,
+          "--slide-per-view": slidesPerView,
           "--slide-spacing": state.context.spacing,
           "--slide-item-size":
-            "calc(100% / var(--slides-per-view) - var(--slide-spacing) * (var(--slides-per-view) - 1) / var(--slides-per-view))",
+            "calc(100% / var(--slide-per-view) - var(--slide-spacing) * (var(--slide-per-view) - 1) / var(--slide-per-view))",
         },
       })
     },
@@ -82,6 +82,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.button !== 0) return
           if (event.defaultPrevented) return
           if (!state.context.draggable) return
+
+          const target = getEventTarget<HTMLElement>(event)
+          if (isFocusable(target)) return
+
           event.preventDefault()
           send({ type: "MOUSE_DOWN" })
         },
