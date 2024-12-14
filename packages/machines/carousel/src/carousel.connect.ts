@@ -9,9 +9,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const canScrollNext = state.context.canScrollNext
   const canScrollPrev = state.context.canScrollPrev
   const horizontal = state.context.isHorizontal
+
   const slidesPerView = state.context.slidesPerView
   const padding = state.context.padding
   const scrollBy = state.context.scrollBy
+
+  const translations = state.context.translations
 
   const autoPlaying = state.matches("autoplay")
 
@@ -58,7 +61,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "data-loaded": dataAttr(state.context.views.length > 0),
         dir: state.context.dir,
-        "aria-label": "Carousel",
         style: {
           "--slides-per-view": slidesPerView,
           "--slide-spacing": state.context.spacing,
@@ -176,10 +178,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: -1,
         disabled: !canScrollPrev,
         dir: state.context.dir,
-        "aria-label": "Previous Slide",
+        "aria-label": translations.prevTrigger,
         "data-orientation": state.context.orientation,
         "aria-controls": dom.getItemGroupId(state.context),
-        onClick() {
+        onClick(event) {
+          if (event.defaultPrevented) return
           send("GOTO.PREV")
         },
       })
@@ -192,11 +195,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getNextTriggerId(state.context),
         type: "button",
         tabIndex: -1,
-        "aria-label": "Next Slide",
+        "aria-label": translations.nextTrigger,
         "data-orientation": state.context.orientation,
         "aria-controls": dom.getItemGroupId(state.context),
         disabled: !canScrollNext,
-        onClick() {
+        onClick(event) {
+          if (event.defaultPrevented) return
           send("GOTO.NEXT")
         },
       })
@@ -221,7 +225,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-index": props.index,
         "data-readonly": dataAttr(props.readOnly),
         "data-current": dataAttr(props.index === state.context.index),
-        onClick() {
+        onClick(event) {
+          if (event.defaultPrevented) return
           if (props.readOnly) return
           send({ type: "GOTO", index: props.index })
         },

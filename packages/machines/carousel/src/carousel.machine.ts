@@ -25,6 +25,11 @@ export function machine(userContext: UserDefinedContext) {
         draggable: false,
         inViewThreshold: 0.6,
         ...ctx,
+        translations: {
+          nextTrigger: "Next slide",
+          prevTrigger: "Previous slide",
+          ...ctx.translations,
+        },
         views: [],
         intersections: new Set<Element>(),
       },

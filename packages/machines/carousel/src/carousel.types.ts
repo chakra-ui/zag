@@ -13,6 +13,11 @@ export interface ViewChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+export interface IntlTranslations {
+  nextTrigger: string
+  prevTrigger: string
+}
+
 export type ElementIds = Partial<{
   root: string
   item(index: number): string
@@ -24,6 +29,14 @@ export type ElementIds = Partial<{
 }>
 
 interface PublicContext extends DirectionProperty, CommonProperties, OrientationProperty {
+  /**
+   * The ids of the elements in the carousel. Useful for composition.
+   */
+  ids?: ElementIds | undefined
+  /**
+   * The localized messages to use.
+   */
+  translations: IntlTranslations
   /**
    * The number of slides to show at a time.
    * @default 1
@@ -73,10 +86,6 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    * Function called when the view changes.
    */
   onIndexChange?: ((details: ViewChangeDetails) => void) | undefined
-  /**
-   * The ids of the elements in the carousel. Useful for composition.
-   */
-  ids?: ElementIds | undefined
   /**
    * The threshold for determining if an item is in view.
    * @default 0.6

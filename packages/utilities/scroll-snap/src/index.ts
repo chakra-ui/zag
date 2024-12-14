@@ -3,7 +3,7 @@
 
 import { getComputedStyle } from "@zag-js/dom-query"
 
-export type Axis = "x" | "y"
+export type ScrollAxis = "x" | "y"
 
 export type ScrollDirection = "left" | "right" | "up" | "down"
 
@@ -18,7 +18,7 @@ export function scrollSnapToNext(
 ) {
   let scrollFuzz = 2
 
-  const axis: Axis = direction === "up" || direction === "down" ? "y" : "x"
+  const axis: ScrollAxis = direction === "up" || direction === "down" ? "y" : "x"
   const sign = direction === "right" || direction === "down" ? "+" : "-"
   const maxScroll =
     axis === "x" ? element.scrollWidth - element.offsetWidth : element.scrollHeight - element.offsetHeight
@@ -60,7 +60,7 @@ export function scrollSnapToNext(
   })
 }
 
-export function getScrollPadding(element: HTMLElement): Record<Axis, { before: number; after: number }> {
+export function getScrollPadding(element: HTMLElement): Record<ScrollAxis, { before: number; after: number }> {
   const style = getComputedStyle(element)
   const rect = element.getBoundingClientRect()
 
@@ -89,7 +89,7 @@ export function getScrollPadding(element: HTMLElement): Record<Axis, { before: n
   }
 }
 
-function isRectIntersecting(a: DOMRect, b: DOMRect, axis: Axis | "both" = "both"): boolean {
+function isRectIntersecting(a: DOMRect, b: DOMRect, axis: ScrollAxis | "both" = "both"): boolean {
   return (
     (axis === "x" && a.right >= b.left && a.left <= b.right) ||
     (axis === "y" && a.bottom >= b.top && a.top <= b.bottom) ||
@@ -105,17 +105,17 @@ function getDescendants(parent: HTMLElement): HTMLElement[] {
   return children
 }
 
-export function getSnapPositions(parent: HTMLElement, excludeOffAxis = true): Record<Axis, SnapPositionList> {
+export function getSnapPositions(parent: HTMLElement, excludeOffAxis = true): Record<ScrollAxis, SnapPositionList> {
   const parentRect = parent.getBoundingClientRect()
 
-  const positions: Record<Axis, SnapPositionList> = {
+  const positions: Record<ScrollAxis, SnapPositionList> = {
     x: { start: [], center: [], end: [] },
     y: { start: [], center: [], end: [] },
   }
 
   const descendants = getDescendants(parent)
 
-  for (const axis of ["x", "y"] as Axis[]) {
+  for (const axis of ["x", "y"] as ScrollAxis[]) {
     const orthogonalAxis = axis === "x" ? "y" : "x"
     const axisStart = axis === "x" ? "left" : "top"
     const axisSize = axis === "x" ? "width" : "height"
@@ -164,7 +164,7 @@ export function getSnapPositions(parent: HTMLElement, excludeOffAxis = true): Re
   return positions
 }
 
-export function getScrollSnapPositions(element: HTMLElement): Record<Axis, number[]> {
+export function getScrollSnapPositions(element: HTMLElement): Record<ScrollAxis, number[]> {
   const rect = element.getBoundingClientRect()
   const scrollPadding = getScrollPadding(element)
   const snapPositions = getSnapPositions(element)

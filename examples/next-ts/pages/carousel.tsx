@@ -49,7 +49,7 @@ export default function Page() {
       </main>
 
       <Toolbar viz controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={state} omit={["translations"]} />
       </Toolbar>
     </>
   )

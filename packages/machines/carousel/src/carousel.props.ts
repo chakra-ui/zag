@@ -19,6 +19,7 @@ export const props = createProps<UserDefinedContext>()([
   "autoplay",
   "draggable",
   "inViewThreshold",
+  "translations",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 
