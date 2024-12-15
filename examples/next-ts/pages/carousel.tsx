@@ -1,5 +1,5 @@
 import * as carousel from "@zag-js/carousel"
-import { useMachine, normalizeProps } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { carouselControls, carouselData } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -12,10 +12,13 @@ export default function Page() {
   const [state, send] = useMachine(
     carousel.machine({
       id: useId(),
-      index: 0,
+      snapIndex: 0,
       spacing: "20px",
-      slidesPerView: 1,
+      slidesPerView: 2,
       draggable: true,
+      onSnapChange(details) {
+        console.log("onSnapChange", details)
+      },
     }),
     {
       // context: controls.context,
@@ -29,6 +32,8 @@ export default function Page() {
       <main className="carousel">
         <div {...api.getRootProps()}>
           <div {...api.getControlProps()}>
+            <button onClick={() => api.play()}>Start</button>
+            <button onClick={() => api.pause()}>Pause</button>
             <button {...api.getPrevTriggerProps()}>Prev</button>
             <button {...api.getNextTriggerProps()}>Next</button>
           </div>
@@ -41,8 +46,8 @@ export default function Page() {
             ))}
           </div>
           <div {...api.getIndicatorGroupProps()}>
-            {api.views.map(({ index }) => (
-              <button {...api.getIndicatorProps({ index })} key={index} />
+            {api.snapPoints.map((snapPoint, index) => (
+              <button {...api.getIndicatorProps({ index })} key={snapPoint} />
             ))}
           </div>
         </div>

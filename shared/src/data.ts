@@ -130,11 +130,12 @@ export const radioData = [
 ]
 
 export const carouselData = [
-  "https://tinyurl.com/5b6ka8jd",
-  "https://tinyurl.com/7rmccdn5",
-  "https://tinyurl.com/59jxz9uu",
-  "https://tinyurl.com/6jurv23t",
-  "https://tinyurl.com/yp4rfum7",
+  "https://picsum.photos/seed/a/500/300",
+  "https://picsum.photos/seed/b/500/300",
+  "https://picsum.photos/seed/c/500/300",
+  "https://picsum.photos/seed/d/500/300",
+  "https://picsum.photos/seed/e/500/300",
+  "https://picsum.photos/seed/f/500/300",
 ]
 
 export const toggleGroupData = [

@@ -11,23 +11,28 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "carousel",
-  initial: "idle",
+  initial: ctx.autoplay ? "autoplay" : "idle",
   context: {},
   on: {
-    NEXT: {
-      actions: ["scrollToNext"]
+    "GOTO.NEXT": {
+      target: "idle",
+      actions: ["clearScrollEndTimer", "setNextSnapIndex"]
     },
-    PREV: {
-      actions: ["scrollToPrev"]
+    "GOTO.PREV": {
+      target: "idle",
+      actions: ["clearScrollEndTimer", "setPrevSnapIndex"]
     },
     GOTO: {
-      actions: ["scrollTo"]
+      target: "idle",
+      actions: ["clearScrollEndTimer", "setSnapIndex"]
     },
-    MEASURE_DOM: {
-      actions: ["measureElements", "setScrollSnaps"]
-    },
-    PLAY: "autoplay"
+    "SLIDE.MUTATION": {
+      actions: ["setSnapPoints"]
+    }
   },
+  activities: ["trackSlideMutation", "trackSlideIntersections"],
+  entry: ["resetScrollPosition", "setSnapPoints", "setSnapIndex"],
+  exit: ["clearScrollEndTimer"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -35,31 +40,36 @@ const fetchMachine = createMachine({
   },
   states: {
     idle: {
+      activities: ["trackScroll"],
       on: {
-        POINTER_DOWN: "dragging"
+        MOUSE_DOWN: "dragging",
+        "AUTOPLAY.START": "autoplay"
+      }
+    },
+    dragging: {
+      activities: ["trackPointerMove"],
+      entry: ["disableScrollSnap"],
+      on: {
+        POINTER_MOVE: {
+          actions: ["scrollSlides"]
+        },
+        POINTER_UP: {
+          target: "idle",
+          actions: ["endDragging"]
+        }
       }
     },
     autoplay: {
-      activities: ["trackDocumentVisibility"],
+      activities: ["trackDocumentVisibility", "trackScroll"],
       invoke: {
         src: "interval",
         id: "interval"
       },
       on: {
-        PAUSE: "idle"
-      }
-    },
-    dragging: {
-      on: {
-        POINTER_UP: "idle",
-        POINTER_MOVE: {
-          actions: ["setScrollSnaps"]
-        }
+        "AUTOPLAY.PAUSE": "idle"
       }
     }
-  },
-  activities: ["trackContainerResize", "trackSlideMutation"],
-  entry: ["measureElements", "setScrollSnaps"]
+  }
 }, {
   actions: {
     updateContext: assign((context, event) => {

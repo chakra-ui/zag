@@ -1,4 +1,6 @@
 [data-scope="carousel"][data-part="root"] {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
   max-width: 400px;
 }
@@ -7,11 +9,13 @@
   margin: 0;
 }
 
+[data-scope="carousel"][data-part="control"] {
+  display: flex;
+  gap: 8px;
+}
+
 [data-scope="carousel"][data-part="item-group"] {
   display: grid;
-  aspect-ratio: 3 / 2;
-  visibility: hidden;
-
   /* Hide scrollbar */
   scrollbar-width: none;
   -webkit-scrollbar-width: none;
@@ -19,10 +23,6 @@
   &::-webkit-scrollbar {
     display: none;
   }
-}
-
-[data-scope="carousel"][data-part="item-group"][data-loaded] {
-  visibility: visible;
 }
 
 [data-scope="carousel"][data-part="item-group"][data-orientation="horizontal"] {

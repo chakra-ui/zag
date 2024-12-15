@@ -11,55 +11,6 @@ export type ScrollSnapAlignment = "start" | "end" | "center" | "none"
 
 export type SnapPositionList = Record<Exclude<ScrollSnapAlignment, "none">, number[]>
 
-export function scrollSnapToNext(
-  element: HTMLElement,
-  direction: ScrollDirection,
-  scrollToOptions: ScrollToOptions = { behavior: "smooth" },
-) {
-  let scrollFuzz = 2
-
-  const axis: ScrollAxis = direction === "up" || direction === "down" ? "y" : "x"
-  const sign = direction === "right" || direction === "down" ? "+" : "-"
-  const maxScroll =
-    axis === "x" ? element.scrollWidth - element.offsetWidth : element.scrollHeight - element.offsetHeight
-
-  const scrollSnapPositions = getScrollSnapPositions(element)[axis]
-
-  if (sign === "-") {
-    scrollFuzz *= -1
-  }
-
-  const currentScrollPosition = element[axis === "x" ? "scrollLeft" : "scrollTop"] + scrollFuzz
-
-  const nextScrollPositions = scrollSnapPositions
-    .filter((pos) => {
-      if (sign === "+") {
-        return pos > currentScrollPosition
-      } else {
-        return pos < currentScrollPosition
-      }
-    })
-    .sort((a, b) => (sign === "+" ? a - b : b - a))
-
-  let nextScrollPosition: number
-
-  if (nextScrollPositions.length > 0) {
-    nextScrollPosition = nextScrollPositions[0]
-  } else {
-    if (sign === "+") {
-      nextScrollPosition = maxScroll
-    } else {
-      nextScrollPosition = 0
-    }
-  }
-
-  // scrollTo might return a promise in the future
-  return element.scrollTo({
-    ...scrollToOptions,
-    [axis === "x" ? "left" : "top"]: nextScrollPosition,
-  })
-}
-
 export function getScrollPadding(element: HTMLElement): Record<ScrollAxis, { before: number; after: number }> {
   const style = getComputedStyle(element)
   const rect = element.getBoundingClientRect()
@@ -191,6 +142,40 @@ export function getScrollSnapPositions(element: HTMLElement): Record<ScrollAxis,
       ].map(clamp(0, maxScroll.y)),
     ),
   }
+}
+
+export function getSnapPointTarget(element: HTMLElement, snapPoint: number): HTMLElement {
+  const rect = element.getBoundingClientRect()
+  const scrollPadding = getScrollPadding(element)
+  const children = Array.from(element.children) as HTMLElement[]
+
+  for (const child of children) {
+    const childRect = child.getBoundingClientRect()
+    const childOffsetStart = {
+      x: childRect.left - rect.left + element.scrollLeft,
+      y: childRect.top - rect.top + element.scrollTop,
+    }
+
+    // Check if any of the child's snap positions match the target snapPoint
+    const matchesX = [
+      childOffsetStart.x - scrollPadding.x.before, // start
+      childOffsetStart.x + childRect.width / 2 - rect.width / 2, // center
+      childOffsetStart.x + childRect.width - rect.width + scrollPadding.x.after, // end
+    ].some((pos) => Math.abs(pos - snapPoint) < 1)
+
+    const matchesY = [
+      childOffsetStart.y - scrollPadding.y.before,
+      childOffsetStart.y + childRect.height / 2 - rect.height / 2,
+      childOffsetStart.y + childRect.height - rect.height + scrollPadding.y.after,
+    ].some((pos) => Math.abs(pos - snapPoint) < 1)
+
+    if (matchesX || matchesY) {
+      return child
+    }
+  }
+
+  // If no match found, return first child
+  return children[0]
 }
 
 const uniq = <T>(arr: T[]): T[] => [...new Set(arr)]

@@ -5,8 +5,10 @@ import type { CommonProperties, DirectionProperty, OrientationProperty, PropType
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export interface ViewChangeDetails {
-  index: number
+export interface SnapChangeDetails {
+  snapIndex: number
+  snapTarget: HTMLElement
+  snapPoint: number
 }
 
 /* -----------------------------------------------------------------------------
@@ -58,9 +60,9 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    */
   loop: boolean
   /**
-   * The current view index.
+   * The index of the active snap point.
    */
-  index: number
+  snapIndex: number
   /**
    * The amount of space between slides.
    * @default "0px"
@@ -80,7 +82,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
   /**
    * Function called when the view changes.
    */
-  onIndexChange?: ((details: ViewChangeDetails) => void) | undefined
+  onSnapChange?: ((details: SnapChangeDetails) => void) | undefined
   /**
    * The threshold for determining if an item is in view.
    * @default 0.6
@@ -89,9 +91,9 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
 }
 
 interface PrivateContext {
-  views: number[][]
-  intersections: Set<Element>
-  _scrollEndTimeout?: NodeJS.Timeout
+  snapPoints: number[]
+  slidesInView: number[]
+  scrollEndTimeout?: ReturnType<typeof setTimeout>
 }
 
 type ComputedContext = Readonly<{
@@ -128,30 +130,6 @@ export interface ItemProps {
   index: number
 }
 
-export interface ItemState {
-  /**
-   * The text value of the item. Used for accessibility.
-   */
-  valueText: string
-  /**
-   * Whether the item is the current item in the carousel
-   * (Only when `slidesPerView` is 1)
-   */
-  current: boolean
-  /**
-   * Whether the item is the next item in the carousel
-   */
-  next: boolean
-  /**
-   * Whether the item is the previous item in the carousel
-   */
-  previous: boolean
-  /**
-   * Whether the item is in view
-   */
-  inView: boolean
-}
-
 export interface IndicatorProps {
   index: number
   readOnly?: boolean | undefined
@@ -161,11 +139,19 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The current index of the carousel
    */
-  index: number
+  snapIndex: number
+  /**
+   * The current snap point of the carousel
+   */
+  snapPoint: number
+  /**
+   * The current snap points of the carousel
+   */
+  snapPoints: number[]
   /**
    * Whether the carousel is auto playing
    */
-  autoPlaying: boolean
+  isPlaying: boolean
   /**
    * Whether the carousel is can scroll to the next view
    */
@@ -175,25 +161,21 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   canScrollPrev: boolean
   /**
-   * The views in the carousel
-   */
-  views: { index: number }[]
-  /**
    * Function to scroll to a specific view index
    */
   scrollTo(index: number): void
   /**
-   * Function to scroll to the next view
+   * Function to scroll to the next page
    */
-  scrollToNext(): void
+  scrollNext(): void
   /**
-   * Function to scroll to the previous view
+   * Function to scroll to the previous page
    */
-  scrollToPrevious(): void
+  scrollPrevious(): void
   /**
-   *  Returns the state of a specific view
+   * Returns the current scroll progress as a percentage
    */
-  getItemState(props: ItemProps): ItemState
+  getScrollProgress(): number
   /**
    * Function to start/resume autoplay
    */

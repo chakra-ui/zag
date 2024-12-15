@@ -1,55 +1,46 @@
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, getEventTarget, isFocusable } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget, isFocusable } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
-import type { ItemProps, ItemState, MachineApi, Send, State } from "./carousel.types"
+import type { MachineApi, Send, State } from "./carousel.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const canScrollNext = state.context.canScrollNext
   const canScrollPrev = state.context.canScrollPrev
   const horizontal = state.context.isHorizontal
 
+  const snapPoints = Array.from(state.context.snapPoints)
+  const snapIndex = state.context.snapIndex
   const slidesPerView = state.context.slidesPerView
-  const padding = state.context.padding
-  const scrollBy = state.context.scrollBy
 
+  const padding = state.context.padding
   const translations = state.context.translations
 
-  const autoPlaying = state.matches("autoplay")
-
-  function getItemState(props: ItemProps): ItemState {
-    const index = state.context.index
-    const slidesInView = state.context.views[index] ?? []
-    return {
-      current: props.index === index && slidesPerView === 1,
-      next: props.index === index + 1,
-      previous: props.index === index - 1,
-      inView: slidesInView.includes(props.index),
-      valueText: `slide ${props.index + 1}`,
-    }
-  }
-
   return {
-    index: state.context.index,
-    views: state.context.views.map((_, index) => ({ index })),
-    autoPlaying,
+    snapIndex,
+    snapPoint: snapPoints[snapIndex],
+    snapPoints,
+    isPlaying: state.matches("autoplay"),
     canScrollNext,
     canScrollPrev,
+    getScrollProgress() {
+      return snapIndex / snapPoints.length
+    },
     scrollTo(index) {
       send({ type: "GOTO", index })
     },
-    scrollToNext() {
+    scrollNext() {
       send("NEXT")
     },
-    scrollToPrevious() {
+    scrollPrevious() {
       send("PREV")
     },
     play() {
-      send("PLAY")
+      send("AUTOPLAY.START")
     },
     pause() {
-      send("PAUSE")
+      send("AUTOPLAY.PAUSE")
     },
 
     getRootProps() {
@@ -59,7 +50,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "region",
         "aria-roledescription": "carousel",
         "data-orientation": state.context.orientation,
-        "data-loaded": dataAttr(state.context.views.length > 0),
         dir: state.context.dir,
         style: {
           "--slide-per-view": slidesPerView,
@@ -75,7 +65,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.itemGroup.attrs,
         id: dom.getItemGroupId(state.context),
         "data-orientation": state.context.orientation,
-        "data-loaded": dataAttr(state.context.views.length > 0),
         dir: state.context.dir,
         tabIndex: 0,
         onMouseDown(event) {
@@ -84,7 +73,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (!state.context.draggable) return
 
           const target = getEventTarget<HTMLElement>(event)
-          if (isFocusable(target)) return
+          if (isFocusable(target) && target !== event.currentTarget) return
 
           event.preventDefault()
           send({ type: "MOUSE_DOWN" })
@@ -140,27 +129,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getItemState,
     getItemProps(props) {
-      const itemState = getItemState(props)
       const slides = Math.floor(slidesPerView)
-      const shouldSnap = scrollBy === "item" || (props.index + slides) % slides === 0
-
+      const shouldSnap = (props.index + slides) % slides === 0
       return normalize.element({
         ...parts.item.attrs,
         id: dom.getItemId(state.context, props.index),
         dir: state.context.dir,
-        "data-current": dataAttr(itemState.current),
-        "data-inview": dataAttr(itemState.inView),
-        // Used to detect active slide after scroll
-        "data-index": props.index,
         role: "group",
+        "data-index": props.index,
+        "data-inview": state.context.slidesInView.includes(props.index),
         "aria-roledescription": "slide",
         "data-orientation": state.context.orientation,
-        "aria-label": itemState.valueText,
-        inert: itemState.inView ? undefined : "true",
-        "aria-hidden": ariaAttr(!itemState.inView),
-
+        // inert: itemState.isInView ? undefined : "true",
         style: {
           scrollSnapAlign: shouldSnap ? "start" : undefined,
         },
@@ -228,7 +209,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "data-index": props.index,
         "data-readonly": dataAttr(props.readOnly),
-        "data-current": dataAttr(props.index === state.context.index),
+        "data-current": dataAttr(props.index === state.context.snapIndex),
         onClick(event) {
           if (event.defaultPrevented) return
           if (props.readOnly) return

@@ -1,11 +1,10 @@
 import { createMachine } from "@zag-js/core"
 import { addDomEvent, trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
-import { getScrollSnapPositions } from "@zag-js/scroll-snap"
-import { compact, isEqual, isObject, nextIndex, prevIndex } from "@zag-js/utils"
+import { getScrollSnapPositions, getSnapPointTarget } from "@zag-js/scroll-snap"
+import { add, compact, isEqual, isObject, nextIndex, prevIndex, remove } from "@zag-js/utils"
 import { dom } from "./carousel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./carousel.types"
-import { clamp, scrollToView } from "./carousel.utils"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -15,7 +14,7 @@ export function machine(userContext: UserDefinedContext) {
       initial: ctx.autoplay ? "autoplay" : "idle",
       context: {
         dir: "ltr",
-        index: 0,
+        snapIndex: 0,
         orientation: "horizontal",
         loop: false,
         slidesPerView: 1,
@@ -30,44 +29,54 @@ export function machine(userContext: UserDefinedContext) {
           prevTrigger: "Previous slide",
           ...ctx.translations,
         },
-        views: [],
-        intersections: new Set<Element>(),
+        snapPoints: [],
+        slidesInView: [],
       },
 
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
         isVertical: (ctx) => ctx.orientation === "vertical",
-        canScrollNext: (ctx) => ctx.loop || ctx.index < ctx.views.length - 1,
-        canScrollPrev: (ctx) => ctx.loop || ctx.index > 0,
+        canScrollNext: (ctx) => ctx.loop || ctx.snapIndex < ctx.snapPoints.length - 1,
+        canScrollPrev: (ctx) => ctx.loop || ctx.snapIndex > 0,
         autoplayInterval: (ctx) => (isObject(ctx.autoplay) ? ctx.autoplay.delay : 4000),
       },
 
       watch: {
-        slidesPerView: ["measureViews"],
+        slidesPerView: ["setSnapPoints"],
+        snapIndex: ["scrollToSnapIndex"],
       },
 
       on: {
         "GOTO.NEXT": {
-          actions: ["scrollToNext"],
+          target: "idle",
+          actions: ["clearScrollEndTimer", "setNextSnapIndex"],
         },
         "GOTO.PREV": {
-          actions: ["scrollToPrev"],
+          target: "idle",
+          actions: ["clearScrollEndTimer", "setPrevSnapIndex"],
         },
         GOTO: {
-          actions: ["scrollTo"],
+          target: "idle",
+          actions: ["clearScrollEndTimer", "setSnapIndex"],
         },
-        PLAY: "autoplay",
+        "SLIDE.MUTATION": {
+          actions: ["setSnapPoints"],
+        },
       },
 
-      activities: ["trackSlideMutation", "trackSlideIntersections", "trackScroll"],
+      activities: ["trackSlideMutation", "trackSlideIntersections"],
 
-      entry: ["measureViews", "scrollToActiveView"],
+      entry: ["resetScrollPosition", "setSnapPoints", "setSnapIndex"],
+
+      exit: ["clearScrollEndTimer"],
 
       states: {
         idle: {
+          activities: ["trackScroll"],
           on: {
             MOUSE_DOWN: "dragging",
+            "AUTOPLAY.START": "autoplay",
           },
         },
 
@@ -76,7 +85,7 @@ export function machine(userContext: UserDefinedContext) {
           entry: ["disableScrollSnap"],
           on: {
             POINTER_MOVE: {
-              actions: ["dragScroll"],
+              actions: ["scrollSlides"],
             },
             POINTER_UP: {
               target: "idle",
@@ -86,12 +95,12 @@ export function machine(userContext: UserDefinedContext) {
         },
 
         autoplay: {
-          activities: ["trackDocumentVisibility"],
+          activities: ["trackDocumentVisibility", "trackScroll"],
           every: {
-            AUTOPLAY_INTERVAL: ["scrollToNext"],
+            AUTOPLAY_INTERVAL: ["setNextSnapIndex"],
           },
           on: {
-            PAUSE: "idle",
+            "AUTOPLAY.PAUSE": "idle",
           },
         },
       },
@@ -99,33 +108,31 @@ export function machine(userContext: UserDefinedContext) {
     {
       activities: {
         trackSlideMutation(ctx, _evt, { send }) {
-          const slideGroupEl = dom.getItemGroupEl(ctx)
-          if (!slideGroupEl) return
+          const el = dom.getItemGroupEl(ctx)
+          if (!el) return
           const win = dom.getWin(ctx)
           const observer = new win.MutationObserver(() => {
-            send({ type: "MEASURE_VIEWS" })
+            send({ type: "SLIDE.MUTATION" })
           })
-          observer.observe(slideGroupEl, { childList: true, subtree: true })
+          observer.observe(el, { childList: true, subtree: true })
           return () => observer.disconnect()
         },
 
         trackSlideIntersections(ctx) {
-          const slideGroupEl = dom.getItemGroupEl(ctx)
-          if (!slideGroupEl) return
+          const el = dom.getItemGroupEl(ctx)
           const win = dom.getWin(ctx)
 
           const observer = new win.IntersectionObserver(
             (entries) => {
               entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                  ctx.intersections.add(entry.target)
-                } else {
-                  ctx.intersections.delete(entry.target)
-                }
+                const target = entry.target as HTMLElement
+                const index = Number(target.dataset.index ?? "-1")
+                if (index == null || Number.isNaN(index) || index === -1) return
+                ctx.slidesInView = entry.isIntersecting ? add(ctx.slidesInView, index) : remove(ctx.slidesInView, index)
               })
             },
             {
-              root: slideGroupEl,
+              root: el,
               threshold: ctx.inViewThreshold,
             },
           )
@@ -134,58 +141,39 @@ export function machine(userContext: UserDefinedContext) {
           return () => observer.disconnect()
         },
 
-        trackScroll(ctx, _, { getState }) {
-          const slideGroupEl = dom.getItemGroupEl(ctx)
-          if (!slideGroupEl) return
+        trackScroll(ctx) {
+          const el = dom.getItemGroupEl(ctx)
+          if (!el) return
 
           const onScrollEnd = () => {
-            if (ctx.intersections.size === 0) return
+            if (ctx.slidesInView.length === 0) return
 
-            // Sort intersecting elements based on their document position
-            const intersections = Array.from(ctx.intersections).sort((a, b) =>
-              a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1,
-            )
+            const axisSnapPoints = getScrollSnapPositions(el)
+            const snapPoints = ctx.isHorizontal ? axisSnapPoints.x : axisSnapPoints.y
 
-            const firstIntersecting = intersections[0]
-            const indexString = (firstIntersecting as HTMLElement).dataset.index
+            const index = snapPoints.findIndex((point) => Math.abs(point - el.scrollLeft) < 1)
+            if (index === -1) return
 
-            if (!indexString) return // Safeguard against missing data-index
-
-            const slideIndex = parseInt(indexString, 10)
-            const currentView = ctx.views.findIndex((view) => view[0] === slideIndex)
-            const newIndex = clamp(currentView, 0, dom.getItemEls(ctx).length)
-
-            if (ctx.index === newIndex) return
-
-            set.index(ctx, newIndex)
+            set.snapIndex(ctx, index)
           }
 
           const onScroll = () => {
-            // Not using `scrollend` as some browsers trigger it before snapping finishes
-            clearTimeout(ctx._scrollEndTimeout)
-            ctx._scrollEndTimeout = setTimeout(() => {
-              if (ctx.draggable && getState().matches("dragging")) return
-              onScrollEnd()
+            clearTimeout(ctx.scrollEndTimeout)
+            ctx.scrollEndTimeout = setTimeout(() => {
+              onScrollEnd?.()
             }, 150)
           }
 
-          return addDomEvent(slideGroupEl, "scroll", onScroll, {
-            passive: true,
-            capture: true,
-          })
+          return addDomEvent(el, "scroll", onScroll, { passive: true })
         },
 
         trackDocumentVisibility(ctx, _evt, { send }) {
           const doc = dom.getDoc(ctx)
           const onVisibilityChange = () => {
-            if (doc.visibilityState !== "visible") {
-              send({ type: "PAUSE", src: "document-hidden" })
-            }
+            if (doc.visibilityState === "visible") return
+            send({ type: "PAUSE", src: "document-hidden" })
           }
-          doc.addEventListener("visibilitychange", onVisibilityChange)
-          return () => {
-            doc.removeEventListener("visibilitychange", onVisibilityChange)
-          }
+          return addDomEvent(doc, "visibilitychange", onVisibilityChange)
         },
 
         trackPointerMove(ctx, _evt, { send }) {
@@ -203,55 +191,52 @@ export function machine(userContext: UserDefinedContext) {
 
       guards: {
         loop: (ctx) => ctx.loop,
-        isLastSlide: (ctx) => ctx.index === ctx.views.length - 1,
-        isFirstSlide: (ctx) => ctx.index === 0,
+        isLastSlide: (ctx) => ctx.snapIndex === ctx.snapPoints.length - 1,
+        isFirstSlide: (ctx) => ctx.snapIndex === 0,
       },
 
       actions: {
-        scrollToNext(ctx) {
-          const index = nextIndex(ctx.views, ctx.index, { loop: ctx.loop })
-          scrollToView(ctx, index)
-          set.index(ctx, index)
+        resetScrollPosition(ctx) {
+          const el = dom.getItemGroupEl(ctx)
+          el.scrollTo(0, 0)
         },
-        scrollToPrev(ctx) {
-          const index = prevIndex(ctx.views, ctx.index, { loop: ctx.loop })
-          scrollToView(ctx, index)
-          set.index(ctx, index)
+        clearScrollEndTimer(ctx) {
+          clearTimeout(ctx.scrollEndTimeout)
         },
-        scrollTo(ctx, evt) {
-          const index = clamp(evt.index, 0, ctx.views.length - 1)
-          scrollToView(ctx, index)
-          set.index(ctx, index)
+        scrollToSnapIndex(ctx, evt) {
+          const index = clamp(evt.index ?? ctx.snapIndex, 0, ctx.snapPoints.length - 1)
+          const el = dom.getItemGroupEl(ctx)
+          const axis = ctx.isHorizontal ? "left" : "top"
+          el.scrollTo({ [axis]: ctx.snapPoints[index], behavior: "smooth" })
         },
-        measureViews(ctx) {
-          const snapPoints = getScrollSnapPositions(dom.getItemGroupEl(ctx)!)
-          const axisPoint = ctx.isHorizontal ? snapPoints.x : snapPoints.y
-
-          // Calculate views based on slidesPerView
-          const views = axisPoint.map((_v, key) => [key])
-          ctx.views = views
-
-          // Clamp the index to fit within the calculated views
-          const newIndex = clamp(ctx.index, 0, views.length - 1)
-          set.index(ctx, newIndex)
+        setNextSnapIndex(ctx) {
+          const index = nextIndex(ctx.snapPoints, ctx.snapIndex, { loop: ctx.loop })
+          set.snapIndex(ctx, index)
         },
-        scrollToActiveView(ctx) {
-          scrollToView(ctx, ctx.index, "instant")
+        setPrevSnapIndex(ctx) {
+          const index = prevIndex(ctx.snapPoints, ctx.snapIndex, { loop: ctx.loop })
+          set.snapIndex(ctx, index)
+        },
+        setSnapIndex(ctx, evt) {
+          set.snapIndex(ctx, evt.index ?? ctx.snapIndex)
+        },
+        setSnapPoints(ctx) {
+          const el = dom.getItemGroupEl(ctx)
+          const scrollSnapPoints = getScrollSnapPositions(el)
+          ctx.snapPoints = ctx.isHorizontal ? scrollSnapPoints.x : scrollSnapPoints.y
         },
         disableScrollSnap(ctx) {
-          const slideGroupEl = dom.getItemGroupEl(ctx)
-          if (!slideGroupEl) return
-          slideGroupEl.style.setProperty("scroll-snap-type", "none")
+          const el = dom.getItemGroupEl(ctx)
+          const styles = getComputedStyle(el)
+          el.dataset.scrollSnapType = styles.getPropertyValue("scroll-snap-type")
+          el.style.setProperty("scroll-snap-type", "none")
         },
-        dragScroll(ctx, evt) {
-          const slideGroupEl = dom.getItemGroupEl(ctx)
-          if (!slideGroupEl) return
-          slideGroupEl.scrollBy({ left: evt.left, top: evt.top, behavior: "instant" })
+        scrollSlides(ctx, evt) {
+          const el = dom.getItemGroupEl(ctx)
+          el.scrollBy({ left: evt.left, top: evt.top, behavior: "instant" })
         },
         endDragging(ctx) {
           const el = dom.getItemGroupEl(ctx)
-          if (!el) return
-
           const startX = el.scrollLeft
           const startY = el.scrollTop
 
@@ -269,11 +254,12 @@ export function machine(userContext: UserDefinedContext) {
 
           raf(() => {
             // Scroll to closest snap points
-            el.scrollTo({
-              left: closestX,
-              top: closestY,
-              behavior: "smooth",
-            })
+            el.scrollTo({ left: closestX, top: closestY, behavior: "smooth" })
+            const scrollSnapType = el.dataset.scrollSnapType
+            if (scrollSnapType) {
+              el.style.removeProperty("scroll-snap-type")
+              delete el.dataset.scrollSnapType
+            }
           })
         },
       },
@@ -285,15 +271,25 @@ export function machine(userContext: UserDefinedContext) {
 }
 
 const invoke = {
-  change: (ctx: MachineContext) => {
-    ctx.onIndexChange?.({ index: ctx.index })
+  snapChange: (ctx: MachineContext) => {
+    const slideGroupEl = dom.getItemGroupEl(ctx)
+    ctx.onSnapChange?.({
+      snapIndex: ctx.snapIndex,
+      snapPoint: ctx.snapPoints[ctx.snapIndex],
+      snapTarget: getSnapPointTarget(slideGroupEl!, ctx.snapPoints[ctx.snapIndex]),
+    })
   },
 }
 
 const set = {
-  index: (ctx: MachineContext, index: number) => {
-    if (isEqual(ctx.index, index)) return
-    ctx.index = index
-    invoke.change(ctx)
+  snapIndex: (ctx: MachineContext, index: number) => {
+    const idx = clamp(index, 0, ctx.snapPoints.length - 1)
+    if (isEqual(ctx.snapIndex, idx)) return
+    ctx.snapIndex = idx
+    invoke.snapChange(ctx)
   },
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max)
 }
