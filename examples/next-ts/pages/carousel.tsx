@@ -33,10 +33,9 @@ export default function Page() {
       <main className="carousel">
         <div {...api.getRootProps()}>
           <div {...api.getControlProps()}>
-            <button onClick={() => api.play()}>Start</button>
-            <button onClick={() => api.pause()}>Pause</button>
             <button {...api.getPrevTriggerProps()}>Prev</button>
             <button {...api.getNextTriggerProps()}>Next</button>
+            <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
           </div>
 
           <div {...api.getItemGroupProps()}>

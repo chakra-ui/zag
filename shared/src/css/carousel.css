@@ -29,7 +29,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: var(--font-sizes-2xl);
+  font-size: 24px;
 }
 
 [data-scope="carousel"][data-part="indicator-group"] {
@@ -41,22 +41,30 @@
 }
 
 [data-scope="carousel"][data-part="indicator"] {
-  all: unset;
   display: flex;
+  border: none;
   justify-content: center;
   align-items: center;
   height: 12px;
   width: 12px;
   border-radius: 6px;
   cursor: pointer;
-  background-color: rgb(186, 186, 196);
-  transition: all 0.2s ease-in-out;
-}
-
-[data-scope="carousel"][data-part="indicator"]:hover {
-  background-color: rgba(115, 115, 216, 0.609);
+  background-color: lightgray;
+  transition: background-color 0.2s ease-in-out;
 }
 
 [data-scope="carousel"][data-part="indicator"][data-current] {
-  background-color: rgb(115, 115, 216);
+  background-color: blue;
+}
+
+[data-scope="carousel"][data-part="autoplay-trigger"] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+}
+
+[data-scope="carousel"][data-part="autoplay-trigger"] svg {
+  width: 12px;
+  height: 12px;
 }

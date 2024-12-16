@@ -33,6 +33,8 @@ export function machine(userContext: UserDefinedContext) {
           prevTrigger: "Previous slide",
           indicator: (index) => `Go to slide ${index + 1}`,
           item: (index, count) => `${index + 1} of ${count}`,
+          autoplayStart: "Start slide rotation",
+          autoplayStop: "Stop slide rotation",
           ...ctx.translations,
         },
         snapPoints: initSnapPoints(
@@ -54,7 +56,7 @@ export function machine(userContext: UserDefinedContext) {
 
       watch: {
         slidesPerPage: ["setSnapPoints"],
-        snapIndex: ["scrollToSnapIndex"],
+        snapIndex: ["scrollToSnapIndex", "focusIndicatorIfNeeded"],
       },
 
       on: {
@@ -274,6 +276,11 @@ export function machine(userContext: UserDefinedContext) {
               delete el.dataset.scrollSnapType
             }
           })
+        },
+        focusIndicatorIfNeeded(ctx, evt) {
+          if (evt.src !== "indicator") return
+          const el = dom.getActiveIndicatorEl(ctx)
+          raf(() => el.focus({ preventScroll: true }))
         },
       },
       delays: {

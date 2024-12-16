@@ -20,6 +20,8 @@ export interface IntlTranslations {
   prevTrigger: string
   indicator: (index: number) => string
   item: (index: number, count: number) => string
+  autoplayStart: string
+  autoplayStop: string
 }
 
 export type ElementIds = Partial<{
@@ -212,6 +214,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getItemProps(props: ItemProps): T["element"]
   getPrevTriggerProps(): T["button"]
   getNextTriggerProps(): T["button"]
+  getAutoplayTriggerProps(): T["button"]
   getIndicatorGroupProps(): T["element"]
   getIndicatorProps(props: IndicatorProps): T["button"]
 }

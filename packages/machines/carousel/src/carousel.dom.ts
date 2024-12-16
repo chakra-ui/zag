@@ -13,4 +13,5 @@ export const dom = createScope({
   getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
   getItemGroupEl: (ctx: Ctx) => dom.getById(ctx, dom.getItemGroupId(ctx))!,
   getItemEls: (ctx: Ctx) => queryAll(dom.getItemGroupEl(ctx), `[data-part=item]`),
+  getActiveIndicatorEl: (ctx: Ctx) => dom.getById(ctx, dom.getIndicatorId(ctx, ctx.snapIndex))!,
 })

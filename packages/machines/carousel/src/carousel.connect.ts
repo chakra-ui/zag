@@ -6,6 +6,7 @@ import { dom } from "./carousel.dom"
 import type { ItemProps, MachineApi, MachineContext, Send, State } from "./carousel.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+  const isPlaying = state.matches("autoplay")
   const canScrollNext = state.context.canScrollNext
   const canScrollPrev = state.context.canScrollPrev
   const horizontal = state.context.isHorizontal
@@ -21,7 +22,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     snapIndex,
     snapPoint: snapPoints[snapIndex],
     snapPoints,
-    isPlaying: state.matches("autoplay"),
+    isPlaying,
     canScrollNext,
     canScrollPrev,
     getScrollProgress() {
@@ -69,7 +70,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getItemGroupId(state.context),
         "data-orientation": state.context.orientation,
         dir: state.context.dir,
-        tabIndex: 0,
+        "aria-live": isPlaying ? "off" : "polite",
         onMouseDown(event) {
           if (event.button !== 0) return
           if (event.defaultPrevented) return
@@ -79,48 +80,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (isFocusable(target) && target !== event.currentTarget) return
 
           event.preventDefault()
-          send({ type: "MOUSE_DOWN" })
-        },
-
-        onKeyDown(event) {
-          if (event.defaultPrevented) return
-
-          const keyMap: EventKeyMap = {
-            ArrowDown() {
-              if (horizontal) return
-              send({ type: "GOTO.NEXT" })
-            },
-            ArrowUp() {
-              if (horizontal) return
-              send({ type: "GOTO.PREV" })
-            },
-            ArrowRight() {
-              if (!horizontal) return
-              send({ type: "GOTO.NEXT" })
-            },
-            ArrowLeft() {
-              if (!horizontal) return
-              send({ type: "GOTO.PREV" })
-            },
-            Home() {
-              send({ type: "GOTO.FIRST" })
-            },
-            End() {
-              send({ type: "GOTO.LAST" })
-            },
-          }
-
-          const key = getEventKey(event, {
-            dir: state.context.dir,
-            orientation: state.context.orientation,
-          })
-
-          const exec = keyMap[key]
-
-          if (exec) {
-            exec(event)
-            event.preventDefault()
-          }
+          send({ type: "DRAGGING.START" })
         },
 
         style: {
@@ -145,7 +105,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         role: "group",
         "data-index": props.index,
-        "data-inview": isInView,
+        "data-inview": dataAttr(isInView),
         "aria-roledescription": "slide",
         "data-orientation": state.context.orientation,
         "aria-label": state.context.slideCount ? translations.item(props.index, state.context.slideCount) : undefined,
@@ -205,6 +165,48 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         id: dom.getIndicatorGroupId(state.context),
         "data-orientation": state.context.orientation,
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          const src = "indicator"
+          const keyMap: EventKeyMap = {
+            ArrowDown(event) {
+              if (horizontal) return
+              send({ type: "GOTO.NEXT", src })
+              event.preventDefault()
+            },
+            ArrowUp(event) {
+              if (horizontal) return
+              send({ type: "GOTO.PREV", src })
+              event.preventDefault()
+            },
+            ArrowRight(event) {
+              if (!horizontal) return
+              send({ type: "GOTO.NEXT", src })
+              event.preventDefault()
+            },
+            ArrowLeft(event) {
+              if (!horizontal) return
+              send({ type: "GOTO.PREV", src })
+              event.preventDefault()
+            },
+            Home(event) {
+              send({ type: "GOTO", index: 0, src })
+              event.preventDefault()
+            },
+            End(event) {
+              send({ type: "GOTO", index: snapPoints.length - 1, src })
+              event.preventDefault()
+            },
+          }
+
+          const key = getEventKey(event, {
+            dir: state.context.dir,
+            orientation: state.context.orientation,
+          })
+
+          const exec = keyMap[key]
+          exec?.(event)
+        },
       })
     },
 
@@ -223,6 +225,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           if (props.readOnly) return
           send({ type: "GOTO", index: props.index, src: "indicator" })
+        },
+      })
+    },
+
+    getAutoplayTriggerProps() {
+      return normalize.button({
+        ...parts.autoplayTrigger.attrs,
+        type: "button",
+        "data-orientation": state.context.orientation,
+        "aria-label": isPlaying ? translations.autoplayStop : translations.autoplayStart,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send({ type: isPlaying ? "AUTOPLAY.PAUSE" : "AUTOPLAY.START" })
         },
       })
     },
