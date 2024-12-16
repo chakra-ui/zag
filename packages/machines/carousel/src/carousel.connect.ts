@@ -46,6 +46,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     isInView(index) {
       return Array.from(state.context.slidesInView).includes(index)
     },
+    refresh() {
+      send({ type: "SNAP.REFRESH" })
+    },
 
     getRootProps() {
       return normalize.element({

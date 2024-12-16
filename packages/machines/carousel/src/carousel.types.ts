@@ -207,6 +207,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Whether the item is in view
    */
   isInView(index: number): boolean
+  /**
+   * Function to re-compute the snap points
+   * and clamp the snap index
+   */
+  refresh(): void
 
   getRootProps(): T["element"]
   getControlProps(): T["element"]

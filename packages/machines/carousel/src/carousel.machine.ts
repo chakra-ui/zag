@@ -72,8 +72,8 @@ export function machine(userContext: UserDefinedContext) {
           target: "idle",
           actions: ["clearScrollEndTimer", "setSnapIndex"],
         },
-        "SLIDE.MUTATION": {
-          actions: ["setSnapPoints"],
+        "SNAP.REFRESH": {
+          actions: ["setSnapPoints", "clampSnapIndex"],
         },
       },
 
@@ -124,7 +124,7 @@ export function machine(userContext: UserDefinedContext) {
           if (!el) return
           const win = dom.getWin(ctx)
           const observer = new win.MutationObserver(() => {
-            send({ type: "SLIDE.MUTATION" })
+            send({ type: "SNAP.REFRESH" })
           })
           observer.observe(el, { childList: true, subtree: true })
           return () => observer.disconnect()
@@ -234,6 +234,10 @@ export function machine(userContext: UserDefinedContext) {
         },
         setSnapIndex(ctx, evt) {
           set.snapIndex(ctx, evt.index ?? ctx.snapIndex)
+        },
+        clampSnapIndex(ctx) {
+          const index = clamp(ctx.snapIndex, 0, ctx.snapPoints.length - 1)
+          set.snapIndex(ctx, index)
         },
         setSnapPoints(ctx) {
           const el = dom.getItemGroupEl(ctx)

@@ -26,8 +26,8 @@ const fetchMachine = createMachine({
       target: "idle",
       actions: ["clearScrollEndTimer", "setSnapIndex"]
     },
-    "SLIDE.MUTATION": {
-      actions: ["setSnapPoints"]
+    "SNAP.REFRESH": {
+      actions: ["setSnapPoints", "clampSnapIndex"]
     }
   },
   activities: ["trackSlideMutation", "trackSlideIntersections"],
