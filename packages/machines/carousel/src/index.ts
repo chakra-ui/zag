@@ -11,4 +11,6 @@ export type {
   ItemProps,
   Service,
   SnapChangeDetails,
+  AutoplayStatusDetails,
+  DragStatusDetails,
 } from "./carousel.types"

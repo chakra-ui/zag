@@ -26,6 +26,10 @@ const fetchMachine = createMachine({
       target: "idle",
       actions: ["clearScrollEndTimer", "setSnapIndex"]
     },
+    "GOTO.INDEX": {
+      target: "idle",
+      actions: ["clearScrollEndTimer", "setMatchingSnapIndex"]
+    },
     "SNAP.REFRESH": {
       actions: ["setSnapPoints", "clampSnapIndex"]
     }
@@ -42,8 +46,14 @@ const fetchMachine = createMachine({
     idle: {
       activities: ["trackScroll"],
       on: {
-        "DRAGGING.START": "dragging",
-        "AUTOPLAY.START": "autoplay"
+        "DRAGGING.START": {
+          target: "dragging",
+          actions: ["invokeDragStart"]
+        },
+        "AUTOPLAY.START": {
+          target: "autoplay",
+          actions: ["invokeAutoplayStart"]
+        }
       }
     },
     dragging: {
@@ -51,16 +61,17 @@ const fetchMachine = createMachine({
       entry: ["disableScrollSnap"],
       on: {
         DRAGGING: {
-          actions: ["scrollSlides"]
+          actions: ["scrollSlides", "invokeDragging"]
         },
         "DRAGGING.END": {
           target: "idle",
-          actions: ["endDragging"]
+          actions: ["endDragging", "invokeDraggingEnd"]
         }
       }
     },
     autoplay: {
       activities: ["trackDocumentVisibility", "trackScroll"],
+      exit: ["invokeAutoplayEnd"],
       invoke: {
         src: "interval",
         id: "interval"

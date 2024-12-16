@@ -17,9 +17,6 @@ export default function Page() {
       slidesPerPage: 2,
       slideCount: carouselData.length,
       draggable: true,
-      onSnapChange(details) {
-        console.log("onSnapChange", details)
-      },
     }),
     {
       // context: controls.context,
@@ -32,10 +29,12 @@ export default function Page() {
     <>
       <main className="carousel">
         <div {...api.getRootProps()}>
+          <button onClick={() => api.scrollToIndex(4)}>Scroll to 4</button>
           <div {...api.getControlProps()}>
+            <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
+            <div className="carousel-spacer" />
             <button {...api.getPrevTriggerProps()}>Prev</button>
             <button {...api.getNextTriggerProps()}>Next</button>
-            <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
           </div>
 
           <div {...api.getItemGroupProps()}>

@@ -7,6 +7,8 @@ import type { ItemProps, MachineApi, MachineContext, Send, State } from "./carou
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const isPlaying = state.matches("autoplay")
+  const isDragging = state.matches("dragging")
+
   const canScrollNext = state.context.canScrollNext
   const canScrollPrev = state.context.canScrollPrev
   const horizontal = state.context.isHorizontal
@@ -19,13 +21,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const translations = state.context.translations
 
   return {
+    isPlaying,
+    isDragging,
     snapIndex,
     snapPoints,
-    isPlaying,
     canScrollNext,
     canScrollPrev,
     getScrollProgress() {
       return snapIndex / snapPoints.length
+    },
+    scrollToIndex(index, instant) {
+      send({ type: "GOTO.INDEX", index, instant })
     },
     scrollTo(index, instant) {
       send({ type: "GOTO", index, instant })
@@ -33,7 +39,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     scrollNext(instant) {
       send({ type: "GOTO.NEXT", instant })
     },
-    scrollPrevious(instant) {
+    scrollPrev(instant) {
       send({ type: "GOTO.PREV", instant })
     },
     play() {
@@ -71,6 +77,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.itemGroup.attrs,
         id: dom.getItemGroupId(state.context),
         "data-orientation": state.context.orientation,
+        "data-dragging": dataAttr(isDragging),
         dir: state.context.dir,
         "aria-live": isPlaying ? "off" : "polite",
         onMouseDown(event) {

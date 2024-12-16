@@ -11,6 +11,18 @@ export interface SnapChangeDetails {
   snapPoint: number
 }
 
+export interface DragStatusDetails {
+  type: "dragging.start" | "dragging" | "dragging.end"
+  dragging: boolean
+  snapIndex: number
+}
+
+export interface AutoplayStatusDetails {
+  type: "autoplay.start" | "autoplay" | "autoplay.stop"
+  playing: boolean
+  snapIndex: number
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -102,6 +114,14 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    * Useful for SSR to render the initial ating the snap points.
    */
   slideCount?: number
+  /**
+   * Function called when the drag status changes.
+   */
+  onDragStatusChange?: ((details: DragStatusDetails) => void) | undefined
+  /**
+   * Function called when the autoplay status changes.
+   */
+  onAutoplayStatusChange?: ((details: AutoplayStatusDetails) => void) | undefined
 }
 
 interface PrivateContext {
@@ -168,6 +188,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   isPlaying: boolean
   /**
+   * Whether the carousel is being dragged. This only works when `draggable` is true.
+   */
+  isDragging: boolean
+  /**
    * Whether the carousel is can scroll to the next view
    */
   canScrollNext: boolean
@@ -176,17 +200,21 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   canScrollPrev: boolean
   /**
-   * Function to scroll to a specific view index
+   * Function to scroll to a specific snap index
    */
   scrollTo(index: number, instant?: boolean): void
   /**
-   * Function to scroll to the next page
+   * Function to scroll to a specific item index
+   */
+  scrollToIndex(index: number, instant?: boolean): void
+  /**
+   * Function to scroll to the next snap index
    */
   scrollNext(instant?: boolean): void
   /**
-   * Function to scroll to the previous page
+   * Function to scroll to the previous snap index
    */
-  scrollPrevious(instant?: boolean): void
+  scrollPrev(instant?: boolean): void
   /**
    * Returns the current scroll progress as a percentage
    */

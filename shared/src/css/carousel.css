@@ -1,5 +1,6 @@
 [data-scope="carousel"][data-part="root"] {
   display: flex;
+  align-items: flex-start;
   flex-direction: column;
   gap: 16px;
   max-width: 400px;
@@ -12,9 +13,11 @@
 [data-scope="carousel"][data-part="control"] {
   display: flex;
   gap: 8px;
+  align-self: stretch;
 }
 
 [data-scope="carousel"][data-part="item-group"] {
+  align-self: stretch;
   /* Hide scrollbar */
   scrollbar-width: none;
   -webkit-scrollbar-width: none;
@@ -61,7 +64,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: auto;
+}
+
+.carousel-spacer {
+  flex-grow: 1;
 }
 
 [data-scope="carousel"][data-part="autoplay-trigger"] svg {

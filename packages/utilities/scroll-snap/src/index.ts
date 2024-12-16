@@ -9,9 +9,7 @@ export type ScrollDirection = "left" | "right" | "up" | "down"
 
 export type ScrollSnapAlignment = "start" | "end" | "center" | "none"
 
-export type SnapPositionList = Record<Exclude<ScrollSnapAlignment, "none">, number[]>
-
-export function getScrollPadding(element: HTMLElement): Record<ScrollAxis, { before: number; after: number }> {
+function getScrollPadding(element: HTMLElement): Record<ScrollAxis, { before: number; after: number }> {
   const style = getComputedStyle(element)
   const rect = element.getBoundingClientRect()
 
@@ -56,7 +54,9 @@ function getDescendants(parent: HTMLElement): HTMLElement[] {
   return children
 }
 
-export function getSnapPositions(parent: HTMLElement, excludeOffAxis = true): Record<ScrollAxis, SnapPositionList> {
+export type SnapPositionList = Record<Exclude<ScrollSnapAlignment, "none">, Array<{ node: Element; position: number }>>
+
+export function getSnapPositions(parent: HTMLElement, subtree = false): Record<ScrollAxis, SnapPositionList> {
   const parentRect = parent.getBoundingClientRect()
 
   const positions: Record<ScrollAxis, SnapPositionList> = {
@@ -64,7 +64,7 @@ export function getSnapPositions(parent: HTMLElement, excludeOffAxis = true): Re
     y: { start: [], center: [], end: [] },
   }
 
-  const descendants = getDescendants(parent)
+  const children = subtree ? getDescendants(parent) : parent.children
 
   for (const axis of ["x", "y"] as ScrollAxis[]) {
     const orthogonalAxis = axis === "x" ? "y" : "x"
@@ -72,11 +72,11 @@ export function getSnapPositions(parent: HTMLElement, excludeOffAxis = true): Re
     const axisSize = axis === "x" ? "width" : "height"
     const axisScroll = axis === "x" ? "scrollLeft" : "scrollTop"
 
-    for (const child of descendants) {
+    for (const child of children) {
       const childRect = child.getBoundingClientRect()
 
       // Skip child if it doesn't intersect the parent's opposite axis (it can never be in view)
-      if (excludeOffAxis && !isRectIntersecting(parentRect, childRect, orthogonalAxis)) {
+      if (!isRectIntersecting(parentRect, childRect, orthogonalAxis)) {
         continue
       }
 
@@ -98,15 +98,15 @@ export function getSnapPositions(parent: HTMLElement, excludeOffAxis = true): Re
           break
 
         case "start":
-          positions[axis].start.push(childOffsetStart)
+          positions[axis].start.push({ node: child, position: childOffsetStart })
           break
 
         case "center":
-          positions[axis].center.push(childOffsetStart + childRect[axisSize] / 2)
+          positions[axis].center.push({ node: child, position: childOffsetStart + childRect[axisSize] / 2 })
           break
 
         case "end":
-          positions[axis].end.push(childOffsetStart + childRect[axisSize])
+          positions[axis].end.push({ node: child, position: childOffsetStart + childRect[axisSize] })
           break
       }
     }
@@ -128,32 +128,42 @@ export function getScrollSnapPositions(element: HTMLElement): Record<ScrollAxis,
   return {
     x: uniq(
       [
-        ...snapPositions.x.start.map((v) => v - scrollPadding.x.before),
-        ...snapPositions.x.center.map((v) => v - rect.width / 2),
-        ...snapPositions.x.end.map((v) => v - rect.width + scrollPadding.x.after),
+        ...snapPositions.x.start.map((v) => v.position - scrollPadding.x.before),
+        ...snapPositions.x.center.map((v) => v.position - rect.width / 2),
+        ...snapPositions.x.end.map((v) => v.position - rect.width + scrollPadding.x.after),
       ].map(clamp(0, maxScroll.x)),
     ),
 
     y: uniq(
       [
-        ...snapPositions.y.start.map((v) => v - scrollPadding.y.before),
-        ...snapPositions.y.center.map((v) => v - rect.height / 2),
-        ...snapPositions.y.end.map((v) => v - rect.height + scrollPadding.y.after),
+        ...snapPositions.y.start.map((v) => v.position - scrollPadding.y.before),
+        ...snapPositions.y.center.map((v) => v.position - rect.height / 2),
+        ...snapPositions.y.end.map((v) => v.position - rect.height + scrollPadding.y.after),
       ].map(clamp(0, maxScroll.y)),
     ),
   }
 }
 
-export function getSnapPointTarget(element: HTMLElement, snapPoint: number): HTMLElement {
-  const rect = element.getBoundingClientRect()
-  const scrollPadding = getScrollPadding(element)
-  const children = Array.from(element.children) as HTMLElement[]
+export function findSnapPoint(parent: HTMLElement, predicate: (node: HTMLElement) => boolean): number | undefined {
+  const snapPositions = getSnapPositions(parent)
+  const items = [...snapPositions.x.start, ...snapPositions.x.center, ...snapPositions.x.end]
+  for (const item of items) {
+    if (predicate(item.node as HTMLElement)) {
+      return item.position
+    }
+  }
+}
+
+export function getSnapPointTarget(parent: HTMLElement, snapPoint: number): HTMLElement {
+  const rect = parent.getBoundingClientRect()
+  const scrollPadding = getScrollPadding(parent)
+  const children = Array.from(parent.children) as HTMLElement[]
 
   for (const child of children) {
     const childRect = child.getBoundingClientRect()
     const childOffsetStart = {
-      x: childRect.left - rect.left + element.scrollLeft,
-      y: childRect.top - rect.top + element.scrollTop,
+      x: childRect.left - rect.left + parent.scrollLeft,
+      y: childRect.top - rect.top + parent.scrollTop,
     }
 
     // Check if any of the child's snap positions match the target snapPoint

@@ -21,6 +21,8 @@ export const props = createProps<UserDefinedContext>()([
   "inViewThreshold",
   "translations",
   "snapType",
+  "onDragStatusChange",
+  "onAutoplayStatusChange",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 

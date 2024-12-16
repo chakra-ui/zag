@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { addDomEvent, trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
-import { getScrollSnapPositions, getSnapPointTarget } from "@zag-js/scroll-snap"
+import { findSnapPoint, getScrollSnapPositions, getSnapPointTarget } from "@zag-js/scroll-snap"
 import { add, compact, isEqual, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
 import { dom } from "./carousel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./carousel.types"
@@ -72,6 +72,10 @@ export function machine(userContext: UserDefinedContext) {
           target: "idle",
           actions: ["clearScrollEndTimer", "setSnapIndex"],
         },
+        "GOTO.INDEX": {
+          target: "idle",
+          actions: ["clearScrollEndTimer", "setMatchingSnapIndex"],
+        },
         "SNAP.REFRESH": {
           actions: ["setSnapPoints", "clampSnapIndex"],
         },
@@ -87,8 +91,14 @@ export function machine(userContext: UserDefinedContext) {
         idle: {
           activities: ["trackScroll"],
           on: {
-            "DRAGGING.START": "dragging",
-            "AUTOPLAY.START": "autoplay",
+            "DRAGGING.START": {
+              target: "dragging",
+              actions: ["invokeDragStart"],
+            },
+            "AUTOPLAY.START": {
+              target: "autoplay",
+              actions: ["invokeAutoplayStart"],
+            },
           },
         },
 
@@ -97,19 +107,20 @@ export function machine(userContext: UserDefinedContext) {
           entry: ["disableScrollSnap"],
           on: {
             DRAGGING: {
-              actions: ["scrollSlides"],
+              actions: ["scrollSlides", "invokeDragging"],
             },
             "DRAGGING.END": {
               target: "idle",
-              actions: ["endDragging"],
+              actions: ["endDragging", "invokeDraggingEnd"],
             },
           },
         },
 
         autoplay: {
           activities: ["trackDocumentVisibility", "trackScroll"],
+          exit: ["invokeAutoplayEnd"],
           every: {
-            AUTOPLAY_INTERVAL: ["setNextSnapIndex"],
+            AUTOPLAY_INTERVAL: ["setNextSnapIndex", "invokeAutoplay"],
           },
           on: {
             "AUTOPLAY.PAUSE": "idle",
@@ -171,6 +182,7 @@ export function machine(userContext: UserDefinedContext) {
             set.snapIndex(ctx, index)
           }
 
+          // Not using `scrollend` as some browsers trigger it before snapping finishes
           const onScroll = () => {
             clearTimeout(ctx.scrollEndTimeout)
             ctx.scrollEndTimeout = setTimeout(() => {
@@ -232,6 +244,15 @@ export function machine(userContext: UserDefinedContext) {
           const index = prevIndex(ctx.snapPoints, ctx.snapIndex, { loop: ctx.loop })
           set.snapIndex(ctx, index)
         },
+        setMatchingSnapIndex(ctx, evt) {
+          const el = dom.getItemGroupEl(ctx)
+
+          const snapPoint = findSnapPoint(el, (node) => node.dataset.index === evt.index.toString())
+          if (snapPoint == null) return
+
+          const index = ctx.snapPoints.indexOf(snapPoint)
+          set.snapIndex(ctx, index)
+        },
         setSnapIndex(ctx, evt) {
           set.snapIndex(ctx, evt.index ?? ctx.snapIndex)
         },
@@ -285,6 +306,24 @@ export function machine(userContext: UserDefinedContext) {
           if (evt.src !== "indicator") return
           const el = dom.getActiveIndicatorEl(ctx)
           raf(() => el.focus({ preventScroll: true }))
+        },
+        invokeDragStart(ctx) {
+          ctx.onDragStatusChange?.({ type: "dragging.start", dragging: true, snapIndex: ctx.snapIndex })
+        },
+        invokeDragging(ctx) {
+          ctx.onDragStatusChange?.({ type: "dragging", dragging: true, snapIndex: ctx.snapIndex })
+        },
+        invokeDraggingEnd(ctx) {
+          ctx.onDragStatusChange?.({ type: "dragging.end", dragging: false, snapIndex: ctx.snapIndex })
+        },
+        invokeAutoplay(ctx) {
+          ctx.onAutoplayStatusChange?.({ type: "autoplay", playing: true, snapIndex: ctx.snapIndex })
+        },
+        invokeAutoplayStart(ctx) {
+          ctx.onAutoplayStatusChange?.({ type: "autoplay.start", playing: true, snapIndex: ctx.snapIndex })
+        },
+        invokeAutoplayEnd(ctx) {
+          ctx.onAutoplayStatusChange?.({ type: "autoplay.stop", playing: false, snapIndex: ctx.snapIndex })
         },
       },
       delays: {
