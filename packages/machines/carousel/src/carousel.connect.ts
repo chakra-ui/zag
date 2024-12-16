@@ -27,14 +27,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getScrollProgress() {
       return snapIndex / snapPoints.length
     },
-    scrollTo(index) {
-      send({ type: "GOTO", index })
+    scrollTo(index, instant) {
+      send({ type: "GOTO", index, instant })
     },
-    scrollNext() {
-      send("NEXT")
+    scrollNext(instant) {
+      send({ type: "NEXT", instant })
     },
-    scrollPrevious() {
-      send("PREV")
+    scrollPrevious(instant) {
+      send({ type: "PREV", instant })
     },
     play() {
       send("AUTOPLAY.START")
@@ -174,7 +174,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-controls": dom.getItemGroupId(state.context),
         onClick(event) {
           if (event.defaultPrevented) return
-          send("GOTO.PREV")
+          send({ type: "GOTO.PREV", src: "trigger" })
         },
       })
     },
@@ -192,7 +192,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         disabled: !canScrollNext,
         onClick(event) {
           if (event.defaultPrevented) return
-          send("GOTO.NEXT")
+          send({ type: "GOTO.NEXT", src: "trigger" })
         },
       })
     },
@@ -219,7 +219,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick(event) {
           if (event.defaultPrevented) return
           if (props.readOnly) return
-          send({ type: "GOTO", index: props.index })
+          send({ type: "GOTO", index: props.index, src: "indicator" })
         },
       })
     },

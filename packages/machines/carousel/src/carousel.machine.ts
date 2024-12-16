@@ -205,10 +205,11 @@ export function machine(userContext: UserDefinedContext) {
           clearTimeout(ctx.scrollEndTimeout)
         },
         scrollToSnapIndex(ctx, evt) {
+          const behavior = evt.instant ? "instant" : "smooth"
           const index = clamp(evt.index ?? ctx.snapIndex, 0, ctx.snapPoints.length - 1)
           const el = dom.getItemGroupEl(ctx)
           const axis = ctx.isHorizontal ? "left" : "top"
-          el.scrollTo({ [axis]: ctx.snapPoints[index], behavior: "smooth" })
+          el.scrollTo({ [axis]: ctx.snapPoints[index], behavior })
         },
         setNextSnapIndex(ctx) {
           const index = nextIndex(ctx.snapPoints, ctx.snapIndex, { loop: ctx.loop })

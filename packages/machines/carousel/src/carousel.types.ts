@@ -173,15 +173,15 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Function to scroll to a specific view index
    */
-  scrollTo(index: number): void
+  scrollTo(index: number, instant?: boolean): void
   /**
    * Function to scroll to the next page
    */
-  scrollNext(): void
+  scrollNext(instant?: boolean): void
   /**
    * Function to scroll to the previous page
    */
-  scrollPrevious(): void
+  scrollPrevious(instant?: boolean): void
   /**
    * Returns the current scroll progress as a percentage
    */
