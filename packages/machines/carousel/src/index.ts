@@ -7,7 +7,8 @@ export type {
   UserDefinedContext as Context,
   ElementIds,
   IndicatorProps,
+  IntlTranslations,
   ItemProps,
-  SnapChangeDetails,
   Service,
+  SnapChangeDetails,
 } from "./carousel.types"
