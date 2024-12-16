@@ -32,10 +32,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "GOTO", index, instant })
     },
     scrollNext(instant) {
-      send({ type: "NEXT", instant })
+      send({ type: "GOTO.NEXT", instant })
     },
     scrollPrevious(instant) {
-      send({ type: "PREV", instant })
+      send({ type: "GOTO.PREV", instant })
     },
     play() {
       send("AUTOPLAY.START")
