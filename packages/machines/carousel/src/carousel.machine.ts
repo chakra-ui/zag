@@ -123,6 +123,10 @@ export function machine(userContext: UserDefinedContext) {
             AUTOPLAY_INTERVAL: ["setNextSnapIndex", "invokeAutoplay"],
           },
           on: {
+            "DRAGGING.START": {
+              target: "dragging",
+              actions: ["invokeDragStart"],
+            },
             "AUTOPLAY.PAUSE": "idle",
           },
         },

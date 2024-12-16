@@ -77,6 +77,10 @@ const fetchMachine = createMachine({
         id: "interval"
       },
       on: {
+        "DRAGGING.START": {
+          target: "dragging",
+          actions: ["invokeDragStart"]
+        },
         "AUTOPLAY.PAUSE": "idle"
       }
     }
