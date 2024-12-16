@@ -20,7 +20,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   return {
     snapIndex,
-    snapPoint: snapPoints[snapIndex],
     snapPoints,
     isPlaying,
     canScrollNext,

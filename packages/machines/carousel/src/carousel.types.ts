@@ -160,10 +160,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   snapIndex: number
   /**
-   * The current snap point of the carousel
-   */
-  snapPoint: number
-  /**
    * The current snap points of the carousel
    */
   snapPoints: number[]
