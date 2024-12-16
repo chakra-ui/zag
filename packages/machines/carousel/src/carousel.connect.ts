@@ -1,5 +1,5 @@
 import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
-import { dataAttr, getEventTarget, isFocusable } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, getEventTarget, isFocusable } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
@@ -41,6 +41,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     pause() {
       send("AUTOPLAY.PAUSE")
+    },
+    isInView(index) {
+      return Array.from(state.context.slidesInView).includes(index)
     },
 
     getRootProps() {
@@ -135,16 +138,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getItemProps(props) {
+      const isInView = state.context.slidesInView.includes(props.index)
       return normalize.element({
         ...parts.item.attrs,
         id: dom.getItemId(state.context, props.index),
         dir: state.context.dir,
         role: "group",
         "data-index": props.index,
-        "data-inview": state.context.slidesInView.includes(props.index),
+        "data-inview": isInView,
         "aria-roledescription": "slide",
         "data-orientation": state.context.orientation,
-        // inert: itemState.isInView ? undefined : "true",
+        "aria-label": state.context.slideCount ? translations.item(props.index, state.context.slideCount) : undefined,
+        "aria-hidden": ariaAttr(!isInView),
         style: {
           scrollSnapAlign: getItemSnapAlign(state.context, props),
         },

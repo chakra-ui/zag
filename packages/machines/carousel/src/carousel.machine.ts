@@ -2,7 +2,7 @@ import { createMachine } from "@zag-js/core"
 import { addDomEvent, trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
 import { getScrollSnapPositions, getSnapPointTarget } from "@zag-js/scroll-snap"
-import { add, compact, isEqual, isObject, nextIndex, prevIndex, remove } from "@zag-js/utils"
+import { add, compact, isEqual, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
 import { dom } from "./carousel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./carousel.types"
 
@@ -31,7 +31,8 @@ export function machine(userContext: UserDefinedContext) {
         translations: {
           nextTrigger: "Next slide",
           prevTrigger: "Previous slide",
-          indicator: (index) => `Goto slide ${index + 1}`,
+          indicator: (index) => `Go to slide ${index + 1}`,
+          item: (index, count) => `${index + 1} of ${count}`,
           ...ctx.translations,
         },
         snapPoints: initSnapPoints(
@@ -84,7 +85,7 @@ export function machine(userContext: UserDefinedContext) {
         idle: {
           activities: ["trackScroll"],
           on: {
-            MOUSE_DOWN: "dragging",
+            "DRAGGING.START": "dragging",
             "AUTOPLAY.START": "autoplay",
           },
         },
@@ -93,10 +94,10 @@ export function machine(userContext: UserDefinedContext) {
           activities: ["trackPointerMove"],
           entry: ["disableScrollSnap"],
           on: {
-            POINTER_MOVE: {
+            DRAGGING: {
               actions: ["scrollSlides"],
             },
-            POINTER_UP: {
+            "DRAGGING.END": {
               target: "idle",
               actions: ["endDragging"],
             },
@@ -133,12 +134,14 @@ export function machine(userContext: UserDefinedContext) {
 
           const observer = new win.IntersectionObserver(
             (entries) => {
-              entries.forEach((entry) => {
+              const slidesInView = entries.reduce((acc, entry) => {
                 const target = entry.target as HTMLElement
                 const index = Number(target.dataset.index ?? "-1")
-                if (index == null || Number.isNaN(index) || index === -1) return
-                ctx.slidesInView = entry.isIntersecting ? add(ctx.slidesInView, index) : remove(ctx.slidesInView, index)
-              })
+                if (index == null || Number.isNaN(index) || index === -1) return acc
+                return entry.isIntersecting ? add(acc, index) : remove(acc, index)
+              }, ctx.slidesInView)
+
+              ctx.slidesInView = uniq(slidesInView)
             },
             {
               root: el,
@@ -180,7 +183,7 @@ export function machine(userContext: UserDefinedContext) {
           const doc = dom.getDoc(ctx)
           const onVisibilityChange = () => {
             if (doc.visibilityState === "visible") return
-            send({ type: "PAUSE", src: "document-hidden" })
+            send({ type: "AUTOPLAY.PAUSE", src: "doc.hidden" })
           }
           return addDomEvent(doc, "visibilitychange", onVisibilityChange)
         },
@@ -189,10 +192,10 @@ export function machine(userContext: UserDefinedContext) {
           const doc = dom.getDoc(ctx)
           return trackPointerMove(doc, {
             onPointerMove({ event }) {
-              send({ type: "POINTER_MOVE", left: -event.movementX, top: -event.movementY })
+              send({ type: "DRAGGING", left: -event.movementX, top: -event.movementY })
             },
             onPointerUp() {
-              send({ type: "POINTER_UP" })
+              send({ type: "DRAGGING.END" })
             },
           })
         },

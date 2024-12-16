@@ -42,7 +42,7 @@ const fetchMachine = createMachine({
     idle: {
       activities: ["trackScroll"],
       on: {
-        MOUSE_DOWN: "dragging",
+        "DRAGGING.START": "dragging",
         "AUTOPLAY.START": "autoplay"
       }
     },
@@ -50,10 +50,10 @@ const fetchMachine = createMachine({
       activities: ["trackPointerMove"],
       entry: ["disableScrollSnap"],
       on: {
-        POINTER_MOVE: {
+        DRAGGING: {
           actions: ["scrollSlides"]
         },
-        POINTER_UP: {
+        "DRAGGING.END": {
           target: "idle",
           actions: ["endDragging"]
         }

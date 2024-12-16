@@ -19,6 +19,7 @@ export interface IntlTranslations {
   nextTrigger: string
   prevTrigger: string
   indicator: (index: number) => string
+  item: (index: number, count: number) => string
 }
 
 export type ElementIds = Partial<{
@@ -200,6 +201,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to pause autoplay
    */
   pause(): void
+  /**
+   * Whether the item is in view
+   */
+  isInView(index: number): boolean
 
   getRootProps(): T["element"]
   getControlProps(): T["element"]
