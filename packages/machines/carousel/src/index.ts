@@ -8,7 +8,6 @@ export type {
   ElementIds,
   IndicatorProps,
   ItemProps,
-  ItemState,
-  ViewChangeDetails,
+  SnapChangeDetails,
   Service,
 } from "./carousel.types"
