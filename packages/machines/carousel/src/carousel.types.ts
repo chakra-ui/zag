@@ -18,6 +18,7 @@ export interface SnapChangeDetails {
 export interface IntlTranslations {
   nextTrigger: string
   prevTrigger: string
+  indicator: (index: number) => string
 }
 
 export type ElementIds = Partial<{

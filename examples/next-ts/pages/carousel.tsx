@@ -47,8 +47,8 @@ export default function Page() {
             ))}
           </div>
           <div {...api.getIndicatorGroupProps()}>
-            {api.snapPoints.map((snapPoint, index) => (
-              <button {...api.getIndicatorProps({ index })} key={snapPoint} />
+            {api.snapPoints.map((_, index) => (
+              <button {...api.getIndicatorProps({ index })} key={index} />
             ))}
           </div>
         </div>

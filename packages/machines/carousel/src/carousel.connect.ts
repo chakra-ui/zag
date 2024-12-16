@@ -213,6 +213,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-index": props.index,
         "data-readonly": dataAttr(props.readOnly),
         "data-current": dataAttr(props.index === state.context.snapIndex),
+        "aria-label": `Goto slide ${props.index + 1}`,
         onClick(event) {
           if (event.defaultPrevented) return
           if (props.readOnly) return

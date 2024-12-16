@@ -31,6 +31,7 @@ export function machine(userContext: UserDefinedContext) {
         translations: {
           nextTrigger: "Next slide",
           prevTrigger: "Previous slide",
+          indicator: (index) => `Goto slide ${index + 1}`,
           ...ctx.translations,
         },
         snapPoints: initSnapPoints(

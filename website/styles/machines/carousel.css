@@ -2,10 +2,6 @@
   width: 400px;
   border-width: 2px;
   border-color: var(--colors-border-subtle);
-}
-
-[data-scope="carousel"][data-part="viewport"] {
-  overflow-x: hidden;
   position: relative;
 }
 
