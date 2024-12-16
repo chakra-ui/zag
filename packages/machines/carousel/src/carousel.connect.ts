@@ -121,10 +121,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
 
         style: {
+          display: "grid",
+          gap: "var(--slide-spacing)",
+          scrollSnapType: [horizontal ? "x" : "y", state.context.snapType].join(" "),
+          gridAutoFlow: horizontal ? "column" : "row",
+          overscrollBehavior: "contain",
           [horizontal ? "gridAutoColumns" : "gridAutoRows"]: "var(--slide-item-size)",
           [horizontal ? "scrollPaddingInline" : "scrollPaddingBlock"]: padding,
           [horizontal ? "paddingInline" : "paddingBlock"]: padding,
-          gap: "var(--slide-spacing)",
+          [horizontal ? "overflowX" : "overflowY"]: "auto",
         },
       })
     },
@@ -132,6 +137,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getItemProps(props) {
       const slides = Math.floor(slidesPerView)
       const shouldSnap = (props.index + slides) % slides === 0
+      const snapAlign = props.snapAlign ?? "start"
       return normalize.element({
         ...parts.item.attrs,
         id: dom.getItemId(state.context, props.index),
@@ -143,7 +149,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         // inert: itemState.isInView ? undefined : "true",
         style: {
-          scrollSnapAlign: shouldSnap ? "start" : undefined,
+          scrollSnapAlign: shouldSnap ? snapAlign : undefined,
         },
       })
     },

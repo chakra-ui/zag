@@ -15,7 +15,6 @@
 }
 
 [data-scope="carousel"][data-part="item-group"] {
-  display: grid;
   /* Hide scrollbar */
   scrollbar-width: none;
   -webkit-scrollbar-width: none;
@@ -23,20 +22,6 @@
   &::-webkit-scrollbar {
     display: none;
   }
-}
-
-[data-scope="carousel"][data-part="item-group"][data-orientation="horizontal"] {
-  scroll-snap-type: x mandatory;
-  grid-auto-flow: column;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-[data-scope="carousel"][data-part="item-group"][data-orientation="vertical"] {
-  scroll-snap-type: y mandatory;
-  grid-auto-flow: row;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 [data-scope="carousel"][data-part="item"] {

@@ -16,6 +16,7 @@ export function machine(userContext: UserDefinedContext) {
         dir: "ltr",
         snapIndex: 0,
         orientation: "horizontal",
+        snapType: "mandatory",
         loop: false,
         slidesPerView: 1,
         spacing: "0px",

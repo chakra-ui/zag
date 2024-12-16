@@ -88,6 +88,11 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    * @default 0.6
    */
   inViewThreshold: number
+  /**
+   * The snap type of the item.
+   * @default "mandatory"
+   */
+  snapType: "proximity" | "mandatory"
 }
 
 interface PrivateContext {
@@ -128,6 +133,11 @@ export interface ItemProps {
    * The index of the item.
    */
   index: number
+  /**
+   * The snap alignment of the item.
+   * @default "start"
+   */
+  snapAlign?: "start" | "end" | "center" | undefined
 }
 
 export interface IndicatorProps {
