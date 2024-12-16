@@ -14,7 +14,8 @@ export default function Page() {
       id: useId(),
       snapIndex: 0,
       spacing: "20px",
-      slidesPerView: 2,
+      slidesPerPage: 2,
+      slideCount: carouselData.length,
       draggable: true,
       onSnapChange(details) {
         console.log("onSnapChange", details)

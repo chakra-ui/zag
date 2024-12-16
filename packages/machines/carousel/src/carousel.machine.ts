@@ -6,6 +6,9 @@ import { add, compact, isEqual, isObject, nextIndex, prevIndex, remove } from "@
 import { dom } from "./carousel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./carousel.types"
 
+const DEFAULT_SLIDES_PER_PAGE = 1
+const DEFAULT_SCROLL_BY = "page"
+
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
   return createMachine<MachineContext, MachineState>(
@@ -18,9 +21,9 @@ export function machine(userContext: UserDefinedContext) {
         orientation: "horizontal",
         snapType: "mandatory",
         loop: false,
-        slidesPerView: 1,
+        slidesPerPage: DEFAULT_SLIDES_PER_PAGE,
         spacing: "0px",
-        scrollBy: "view",
+        scrollBy: DEFAULT_SCROLL_BY,
         autoplay: false,
         draggable: false,
         inViewThreshold: 0.6,
@@ -30,7 +33,11 @@ export function machine(userContext: UserDefinedContext) {
           prevTrigger: "Previous slide",
           ...ctx.translations,
         },
-        snapPoints: [],
+        snapPoints: initSnapPoints(
+          ctx.slideCount,
+          ctx.scrollBy ?? DEFAULT_SCROLL_BY,
+          ctx.slidesPerPage ?? DEFAULT_SLIDES_PER_PAGE,
+        ),
         slidesInView: [],
       },
 
@@ -44,7 +51,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        slidesPerView: ["setSnapPoints"],
+        slidesPerPage: ["setSnapPoints"],
         snapIndex: ["scrollToSnapIndex"],
       },
 
@@ -294,4 +301,12 @@ const set = {
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max)
+}
+
+function initSnapPoints(totalSlides: number | undefined, scrollBy: "page" | "item", slidesPerPage: number) {
+  if (totalSlides == null) return []
+  if (scrollBy === "item") return Array.from({ length: totalSlides - 1 }, (_, i) => i)
+  const snapPoints: number[] = []
+  for (let i = 0; i < totalSlides; i += slidesPerPage) snapPoints.push(i)
+  return snapPoints
 }

@@ -43,7 +43,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    * The number of slides to show at a time.
    * @default 1
    */
-  slidesPerView: number
+  slidesPerPage: number
   /**
    * Whether to scroll automatically. The default delay is 4000ms.
    * @default false
@@ -75,10 +75,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
   padding?: string
   /**
    * Specifies the scrolling progression mode,
-   * whether between advancing by a full view or individual items.
-   * @default 'view'
+   * whether between advancing per page or individual items.
+   * @default 'page'
    */
-  scrollBy: "view" | "item"
+  scrollBy: "page" | "item"
   /**
    * Function called when the view changes.
    */
@@ -93,6 +93,11 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    * @default "mandatory"
    */
   snapType: "proximity" | "mandatory"
+  /**
+   * The total number of slides.
+   * Useful for SSR to render the initial ating the snap points.
+   */
+  slideCount?: number
 }
 
 interface PrivateContext {

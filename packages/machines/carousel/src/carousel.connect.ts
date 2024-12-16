@@ -3,7 +3,7 @@ import { dataAttr, getEventTarget, isFocusable } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
-import type { MachineApi, Send, State } from "./carousel.types"
+import type { ItemProps, MachineApi, MachineContext, Send, State } from "./carousel.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const canScrollNext = state.context.canScrollNext
@@ -12,7 +12,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   const snapPoints = Array.from(state.context.snapPoints)
   const snapIndex = state.context.snapIndex
-  const slidesPerView = state.context.slidesPerView
+  const slidesPerPage = state.context.slidesPerPage
 
   const padding = state.context.padding
   const translations = state.context.translations
@@ -52,10 +52,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         dir: state.context.dir,
         style: {
-          "--slide-per-view": slidesPerView,
+          "--slides-per-page": slidesPerPage,
           "--slide-spacing": state.context.spacing,
           "--slide-item-size":
-            "calc(100% / var(--slide-per-view) - var(--slide-spacing) * (var(--slide-per-view) - 1) / var(--slide-per-view))",
+            "calc(100% / var(--slides-per-page) - var(--slide-spacing) * (var(--slides-per-page) - 1) / var(--slides-per-page))",
         },
       })
     },
@@ -135,9 +135,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getItemProps(props) {
-      const slides = Math.floor(slidesPerView)
-      const shouldSnap = (props.index + slides) % slides === 0
-      const snapAlign = props.snapAlign ?? "start"
       return normalize.element({
         ...parts.item.attrs,
         id: dom.getItemId(state.context, props.index),
@@ -149,7 +146,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         // inert: itemState.isInView ? undefined : "true",
         style: {
-          scrollSnapAlign: shouldSnap ? snapAlign : undefined,
+          scrollSnapAlign: getItemSnapAlign(state.context, props),
         },
       })
     },
@@ -224,4 +221,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
   }
+}
+
+function getItemSnapAlign(ctx: MachineContext, props: ItemProps) {
+  const snapAlign = props.snapAlign ?? "start"
+  if (ctx.scrollBy === "item") return snapAlign
+  const perPage = Math.floor(ctx.slidesPerPage)
+  const shouldSnap = (props.index + perPage) % perPage === 0
+  return shouldSnap ? snapAlign : undefined
 }
