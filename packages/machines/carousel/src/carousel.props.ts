@@ -19,6 +19,7 @@ export const props = createProps<UserDefinedContext>()([
   "draggable",
   "inViewThreshold",
   "translations",
+  "snapType",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 
