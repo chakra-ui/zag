@@ -38,7 +38,7 @@
     <div {...api.getItemGroupProps()}>
       {#each carouselData as image, index}
         <div {...api.getItemProps({ index })}>
-          <img src={image} alt="" style="height:300px;width:100%;object-fit:cover;" />
+          <img src={image} alt="" />
         </div>
       {/each}
     </div>

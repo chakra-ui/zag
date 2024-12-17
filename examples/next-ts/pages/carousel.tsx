@@ -40,7 +40,7 @@ export default function Page() {
           <div {...api.getItemGroupProps()}>
             {carouselData.map((image, index) => (
               <div {...api.getItemProps({ index })} key={index}>
-                <img src={image} alt="" style={{ height: "300px", width: "100%", objectFit: "cover" }} />
+                <img src={image} alt="" />
               </div>
             ))}
           </div>

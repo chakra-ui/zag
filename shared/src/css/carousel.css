@@ -35,6 +35,12 @@
   font-size: 24px;
 }
 
+[data-scope="carousel"][data-part="item"] img {
+  height: 300px;
+  width: 100%;
+  object-fit: cover;
+}
+
 [data-scope="carousel"][data-part="indicator-group"] {
   display: flex;
   justify-content: center;
