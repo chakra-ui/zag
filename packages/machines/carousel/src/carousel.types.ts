@@ -66,10 +66,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    */
   autoplay?: boolean | { delay: number }
   /**
-   * Whether to scroll via dragging
+   * Whether to allow scrolling via dragging with mouse
    * @default false
    */
-  draggable: boolean
+  allowMouseDrag: boolean
   /**
    * Whether the carousel should loop around.
    * @default false

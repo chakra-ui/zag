@@ -16,7 +16,7 @@ export default function Page() {
       spacing: "20px",
       slidesPerPage: 2,
       slideCount: carouselData.length,
-      draggable: true,
+      allowMouseDrag: true,
     }),
     {
       context: controls.context,

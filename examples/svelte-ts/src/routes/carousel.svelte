@@ -8,25 +8,45 @@
 
   const controls = useControls(carouselControls)
 
-  const [snapshot, send] = useMachine(carousel.machine({ id: "1", index: 0, spacing: "20px", slidesPerView: 2 }), {
-    // context: controls.context,
-  })
+  const [snapshot, send] = useMachine(
+    carousel.machine({
+      id: "1",
+      snapIndex: 0,
+      spacing: "20px",
+      slidesPerPage: 2,
+      slideCount: carouselData.length,
+      allowMouseDrag: true,
+    }),
+    {
+      context: controls.context,
+    },
+  )
 
   const api = $derived(carousel.connect(snapshot, send, normalizeProps))
 </script>
 
 <main class="carousel">
   <div {...api.getRootProps()}>
-    <button {...api.getPrevTriggerProps()}>Prev</button>
-    <button {...api.getNextTriggerProps()}>Next</button>
-    <div {...api.getViewportProps()}>
-      <div {...api.getItemGroupProps()}>
-        {#each carouselData as image, index}
-          <div {...api.getItemProps({ index })}>
-            <img src={image} alt="" style="height:300px;width:100%;object-fit:cover;" />
-          </div>
-        {/each}
-      </div>
+    <button onclick={() => api.scrollToIndex(4)}>Scroll to 4</button>
+    <div {...api.getControlProps()}>
+      <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
+      <div class="carousel-spacer"></div>
+      <button {...api.getPrevTriggerProps()}>Prev</button>
+      <button {...api.getNextTriggerProps()}>Next</button>
+    </div>
+
+    <div {...api.getItemGroupProps()}>
+      {#each carouselData as image, index}
+        <div {...api.getItemProps({ index })}>
+          <img src={image} alt="" style="height:300px;width:100%;object-fit:cover;" />
+        </div>
+      {/each}
+    </div>
+    <div {...api.getIndicatorGroupProps()}>
+      {#each api.snapPoints as _, index}
+        <!-- svelte-ignore a11y_consider_explicit_label -->
+        <button {...api.getIndicatorProps({ index })}></button>
+      {/each}
     </div>
   </div>
 </main>

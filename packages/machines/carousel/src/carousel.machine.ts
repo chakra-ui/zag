@@ -25,7 +25,7 @@ export function machine(userContext: UserDefinedContext) {
         spacing: "0px",
         scrollBy: DEFAULT_SCROLL_BY,
         autoplay: false,
-        draggable: false,
+        allowMouseDrag: false,
         inViewThreshold: 0.6,
         ...ctx,
         translations: {
