@@ -97,6 +97,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           gap: "var(--slide-spacing)",
           scrollSnapType: [horizontal ? "x" : "y", state.context.snapType].join(" "),
           gridAutoFlow: horizontal ? "column" : "row",
+          scrollbarWidth: "none",
           overscrollBehavior: "contain",
           [horizontal ? "gridAutoColumns" : "gridAutoRows"]: "var(--slide-item-size)",
           [horizontal ? "scrollPaddingInline" : "scrollPaddingBlock"]: padding,

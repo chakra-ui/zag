@@ -5,6 +5,15 @@
   position: relative;
 }
 
+[data-scope="carousel"][data-part="item-group"] {
+  scrollbar-width: none;
+  -webkit-scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 [data-scope="carousel"][data-part="item"] > img {
   height: 250px;
   width: 100%;

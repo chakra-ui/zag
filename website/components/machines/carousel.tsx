@@ -12,9 +12,12 @@ const items = [
 ]
 
 export function Carousel(props: any) {
-  const [state, send] = useMachine(carousel.machine({ id: useId() }), {
-    context: props.controls,
-  })
+  const [state, send] = useMachine(
+    carousel.machine({ id: useId(), slideCount: items.length }),
+    {
+      context: props.controls,
+    },
+  )
 
   const api = carousel.connect(state, send, normalizeProps)
 
