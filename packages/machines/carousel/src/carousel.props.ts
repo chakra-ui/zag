@@ -17,7 +17,7 @@ export const props = createProps<UserDefinedContext>()([
   "padding",
   "scrollBy",
   "autoplay",
-  "draggable",
+  "allowMouseDrag",
   "inViewThreshold",
   "translations",
   "snapType",
