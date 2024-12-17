@@ -33,6 +33,7 @@
   justify-content: center;
   align-items: center;
   font-size: 24px;
+  border: 1px solid lightgray;
 }
 
 [data-scope="carousel"][data-part="item"] img {

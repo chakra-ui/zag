@@ -81,9 +81,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         "aria-live": isPlaying ? "off" : "polite",
         onMouseDown(event) {
+          if (!state.context.allowMouseDrag) return
           if (event.button !== 0) return
           if (event.defaultPrevented) return
-          if (!state.context.allowMouseDrag) return
 
           const target = getEventTarget<HTMLElement>(event)
           if (isFocusable(target) && target !== event.currentTarget) return
