@@ -265,9 +265,11 @@ export function machine(userContext: UserDefinedContext) {
           set.snapIndex(ctx, index)
         },
         setSnapPoints(ctx) {
-          const el = dom.getItemGroupEl(ctx)
-          const scrollSnapPoints = getScrollSnapPositions(el)
-          ctx.snapPoints = ctx.isHorizontal ? scrollSnapPoints.x : scrollSnapPoints.y
+          queueMicrotask(() => {
+            const el = dom.getItemGroupEl(ctx)
+            const scrollSnapPoints = getScrollSnapPositions(el)
+            ctx.snapPoints = ctx.isHorizontal ? scrollSnapPoints.x : scrollSnapPoints.y
+          })
         },
         disableScrollSnap(ctx) {
           const el = dom.getItemGroupEl(ctx)
