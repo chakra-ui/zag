@@ -272,7 +272,7 @@ ${guardsWithoutDuplicates.map((gua) => `    "${gua}": (ctx) => ctx["${gua}"],`).
           )
           path.stop()
         }
-        //Check for gobal events so we can add the `UPDATE_CONTEXT` event
+        //Check for global events so we can add the `UPDATE_CONTEXT` event
         if (
           path.node.name === "on" &&
           t.isObjectProperty(path.parentPath.node) &&

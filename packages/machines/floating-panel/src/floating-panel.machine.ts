@@ -111,7 +111,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["setRestored"],
             },
             MOVE: {
-              actions: ["setPositionFromKeybord"],
+              actions: ["setPositionFromKeyboard"],
             },
           },
         },
@@ -367,7 +367,7 @@ export function machine(userContext: UserDefinedContext) {
             ctx.prevPosition = null
           }
         },
-        setPositionFromKeybord(ctx, evt) {
+        setPositionFromKeyboard(ctx, evt) {
           invariant(evt.step == null, "step is required")
 
           let nextPosition = match(evt.direction, {

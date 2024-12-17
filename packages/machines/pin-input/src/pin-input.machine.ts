@@ -190,7 +190,7 @@ export function machine(userContext: UserDefinedContext) {
             const startIndex = Math.min(ctx.focusedIndex, ctx.filledValueLength)
 
             // keep value left of cursor
-            // replace value from curor to end with pasted text
+            // replace value from cursor to end with pasted text
             const left = startIndex > 0 ? ctx.valueAsString.substring(0, ctx.focusedIndex) : ""
             const right = evt.value.substring(0, ctx.valueLength - startIndex)
 

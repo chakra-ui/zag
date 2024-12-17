@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.78.3](./#0.78.3) - 2024-12-13
+
+### Fixed
+
+- **File Upload**: Fix issue where `accept` attribute is not applied to hidden input
+
+- **Number Input**: Fix issue where input event doesn't get dispatched when initially clicking the increment/decrement
+  triggers
+
+- **TreeView**: Fix issue where react elements could not be passed to tree view. We've improved the entire machine store
+  to better support complex objects like react and vue elements.
+
 ## [0.78.2](./#0.78.2) - 2024-12-05
 
 ### Fixed

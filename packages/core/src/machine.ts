@@ -85,7 +85,7 @@ export class Machine<
     this.activityMap = this.options?.activities ?? {}
     this.sync = this.options?.sync ?? false
 
-    // create mutatable state
+    // create mutable state
     this.state = createProxy(this.config)
 
     this.initialContext = snapshot(this.state.context)
@@ -400,7 +400,7 @@ export class Machine<
    * All `after` events leverage `setTimeout` and `clearTimeout`,
    * we invoke the `clearTimeout` on exit and `setTimeout` on entry.
    *
-   * To achieve this, we split the `after` defintion into `entry` and `exit`
+   * To achieve this, we split the `after` definition into `entry` and `exit`
    *  functions and append them to the state's `entry` and `exit` actions
    */
   private getDelayedEventActions = (state: TState["value"]) => {
