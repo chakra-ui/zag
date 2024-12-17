@@ -200,8 +200,7 @@ export const transitionControls = defineControls({
 
 export const carouselControls = defineControls({
   orientatation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
-  slidesPerView: { type: "number", defaultValue: 1 },
-  align: { type: "select", options: ["start", "center", "end"] as const, defaultValue: "start" },
+  slidesPerView: { type: "number", defaultValue: 2 },
   loop: { type: "boolean", defaultValue: false },
 })
 

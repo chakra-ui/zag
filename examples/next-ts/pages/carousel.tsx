@@ -19,7 +19,7 @@ export default function Page() {
       draggable: true,
     }),
     {
-      // context: controls.context,
+      context: controls.context,
     },
   )
 
@@ -52,7 +52,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar viz controls={controls.ui}>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer state={state} omit={["translations"]} />
       </Toolbar>
     </>
