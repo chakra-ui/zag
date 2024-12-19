@@ -81,11 +81,7 @@ const components = {
       name="carousel"
       component={Carousel}
       defaultProps={{
-        align: {
-          default: "start",
-          options: ["start", "center", "end"],
-        },
-        index: 0,
+        slidesPerPage: 1,
         loop: false,
         spacing: "0px",
       }}

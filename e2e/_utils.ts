@@ -114,3 +114,50 @@ export const pointer = {
 export const textSelection = (page: Page) => {
   return page.evaluate(() => window.getSelection()?.toString())
 }
+
+export type SwipeDirection = "left" | "right" | "up" | "down"
+
+export async function swipe(
+  page: Page,
+  locator: Locator,
+  direction: SwipeDirection,
+  distance: number = 100,
+  duration: number = 500,
+): Promise<void> {
+  if (!["left", "right", "up", "down"].includes(direction)) {
+    throw new Error("Invalid direction. Use 'left', 'right', 'up', or 'down'.")
+  }
+
+  const box = await rect(locator)
+  if (!box) {
+    throw new Error("Could not determine the element bounding box.")
+  }
+
+  // Calculate start and end points for the swipe
+  const startX = box.midX
+  const startY = box.midY
+
+  let endX = startX
+  let endY = startY
+
+  switch (direction) {
+    case "left":
+      endX = startX - distance
+      break
+    case "right":
+      endX = startX + distance
+      break
+    case "up":
+      endY = startY - distance
+      break
+    case "down":
+      endY = startY + distance
+      break
+  }
+
+  // Perform the swipe action using mouse drag
+  await page.mouse.move(startX, startY)
+  await page.mouse.down()
+  await page.mouse.move(endX, endY, { steps: Math.max(duration / 10, 1) }) // Smoothness based on duration
+  await page.mouse.up()
+}

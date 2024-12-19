@@ -1,5 +1,5 @@
 import * as carousel from "@zag-js/carousel"
-import { useMachine, normalizeProps } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { carouselControls, carouselData } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -12,12 +12,13 @@ export default function Page() {
   const [state, send] = useMachine(
     carousel.machine({
       id: useId(),
-      index: 0,
       spacing: "20px",
-      slidesPerView: 2,
+      slidesPerPage: 2,
+      slideCount: carouselData.length,
+      allowMouseDrag: true,
     }),
     {
-      // context: controls.context,
+      context: controls.context,
     },
   )
 
@@ -27,22 +28,31 @@ export default function Page() {
     <>
       <main className="carousel">
         <div {...api.getRootProps()}>
-          <button {...api.getPrevTriggerProps()}>Prev</button>
-          <button {...api.getNextTriggerProps()}>Next</button>
-          <div {...api.getViewportProps()}>
-            <div {...api.getItemGroupProps()}>
-              {carouselData.map((image, index) => (
-                <div {...api.getItemProps({ index })} key={index}>
-                  <img src={image} alt="" style={{ height: "300px", width: "100%", objectFit: "cover" }} />
-                </div>
-              ))}
-            </div>
+          <button onClick={() => api.scrollToIndex(4)}>Scroll to 4</button>
+          <div {...api.getControlProps()}>
+            <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
+            <div className="carousel-spacer" />
+            <button {...api.getPrevTriggerProps()}>Prev</button>
+            <button {...api.getNextTriggerProps()}>Next</button>
+          </div>
+
+          <div {...api.getItemGroupProps()}>
+            {carouselData.map((image, index) => (
+              <div {...api.getItemProps({ index })} key={index}>
+                <img src={image} alt="" width="188px" />
+              </div>
+            ))}
+          </div>
+          <div {...api.getIndicatorGroupProps()}>
+            {api.pageSnapPoints.map((_, index) => (
+              <button {...api.getIndicatorProps({ index })} key={index} />
+            ))}
           </div>
         </div>
       </main>
 
-      <Toolbar viz controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={state} omit={["translations"]} />
       </Toolbar>
     </>
   )
