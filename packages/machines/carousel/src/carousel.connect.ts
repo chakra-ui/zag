@@ -1,50 +1,58 @@
-import { dataAttr, isDom } from "@zag-js/dom-query"
+import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
+import { ariaAttr, dataAttr, getEventTarget, isFocusable } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
-import type { ItemProps, ItemState, MachineApi, Send, State } from "./carousel.types"
-import { getSlidesInView } from "./utils/get-slide-in-view"
+import type { ItemProps, MachineApi, MachineContext, Send, State } from "./carousel.types"
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+  const isPlaying = state.matches("autoplay")
+  const isDragging = state.matches("dragging")
+
   const canScrollNext = state.context.canScrollNext
   const canScrollPrev = state.context.canScrollPrev
   const horizontal = state.context.isHorizontal
-  const autoPlaying = state.matches("autoplay")
 
-  const activeSnap = state.context.scrollSnaps[state.context.index]
-  const slidesInView = isDom() ? getSlidesInView(state.context)(activeSnap) : []
+  const pageSnapPoints = Array.from(state.context.pageSnapPoints)
+  const page = state.context.page
+  const slidesPerPage = state.context.slidesPerPage
 
-  function getItemState(props: ItemProps): ItemState {
-    return {
-      valueText: `Slide ${props.index + 1}`,
-      current: props.index === state.context.index,
-      next: props.index === state.context.index + 1,
-      previous: props.index === state.context.index - 1,
-      inView: slidesInView.includes(props.index),
-    }
-  }
+  const padding = state.context.padding
+  const translations = state.context.translations
 
   return {
-    index: state.context.index,
-    scrollProgress: state.context.scrollProgress,
-    autoPlaying,
+    isPlaying,
+    isDragging,
+    page,
+    pageSnapPoints,
     canScrollNext,
     canScrollPrev,
-    scrollTo(index, jump) {
-      send({ type: "GOTO", index, jump })
+    getProgress() {
+      return page / pageSnapPoints.length
     },
-    scrollToNext() {
-      send("NEXT")
+    scrollToIndex(index, instant) {
+      send({ type: "INDEX.SET", index, instant })
     },
-    scrollToPrevious() {
-      send("PREV")
+    scrollTo(index, instant) {
+      send({ type: "PAGE.SET", index, instant })
     },
-    getItemState: getItemState,
+    scrollNext(instant) {
+      send({ type: "PAGE.NEXT", instant })
+    },
+    scrollPrev(instant) {
+      send({ type: "PAGE.PREV", instant })
+    },
     play() {
-      send("PLAY")
+      send("AUTOPLAY.START")
     },
     pause() {
-      send("PAUSE")
+      send("AUTOPLAY.PAUSE")
+    },
+    isInView(index) {
+      return Array.from(state.context.slidesInView).includes(index)
+    },
+    refresh() {
+      send({ type: "SNAP.REFRESH" })
     },
 
     getRootProps() {
@@ -55,20 +63,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-roledescription": "carousel",
         "data-orientation": state.context.orientation,
         dir: state.context.dir,
-        "aria-label": "Carousel",
         style: {
+          "--slides-per-page": slidesPerPage,
           "--slide-spacing": state.context.spacing,
-          "--slide-size": `calc(100% / ${state.context.slidesPerView} - var(--slide-spacing))`,
+          "--slide-item-size":
+            "calc(100% / var(--slides-per-page) - var(--slide-spacing) * (var(--slides-per-page) - 1) / var(--slides-per-page))",
         },
-      })
-    },
-
-    getViewportProps() {
-      return normalize.element({
-        ...parts.viewport.attrs,
-        dir: state.context.dir,
-        id: dom.getViewportId(state.context),
-        "data-orientation": state.context.orientation,
       })
     },
 
@@ -77,39 +77,59 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.itemGroup.attrs,
         id: dom.getItemGroupId(state.context),
         "data-orientation": state.context.orientation,
+        "data-dragging": dataAttr(isDragging),
         dir: state.context.dir,
+        "aria-live": isPlaying ? "off" : "polite",
+        onMouseDown(event) {
+          if (!state.context.allowMouseDrag) return
+          if (event.button !== 0) return
+          if (event.defaultPrevented) return
+
+          const target = getEventTarget<HTMLElement>(event)
+          if (isFocusable(target) && target !== event.currentTarget) return
+
+          event.preventDefault()
+          send({ type: "DRAGGING.START" })
+        },
+
         style: {
-          display: "flex",
-          flexDirection: horizontal ? "row" : "column",
-          [horizontal ? "height" : "width"]: "auto",
+          display: "grid",
           gap: "var(--slide-spacing)",
-          transform: state.context.translateValue,
-          transitionProperty: "transform",
-          willChange: "transform",
-          transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-          transitionDuration: "0.3s",
+          scrollSnapType: [horizontal ? "x" : "y", state.context.snapType].join(" "),
+          gridAutoFlow: horizontal ? "column" : "row",
+          scrollbarWidth: "none",
+          overscrollBehavior: "contain",
+          [horizontal ? "gridAutoColumns" : "gridAutoRows"]: "var(--slide-item-size)",
+          [horizontal ? "scrollPaddingInline" : "scrollPaddingBlock"]: padding,
+          [horizontal ? "paddingInline" : "paddingBlock"]: padding,
+          [horizontal ? "overflowX" : "overflowY"]: "auto",
         },
       })
     },
 
     getItemProps(props) {
-      const itemState = getItemState(props)
-
+      const isInView = state.context.slidesInView.includes(props.index)
       return normalize.element({
         ...parts.item.attrs,
         id: dom.getItemId(state.context, props.index),
         dir: state.context.dir,
-        "data-current": dataAttr(itemState.current),
-        "data-inview": dataAttr(itemState.inView),
         role: "group",
+        "data-index": props.index,
+        "data-inview": dataAttr(isInView),
         "aria-roledescription": "slide",
         "data-orientation": state.context.orientation,
-        "aria-label": itemState.valueText,
+        "aria-label": state.context.slideCount ? translations.item(props.index, state.context.slideCount) : undefined,
+        "aria-hidden": ariaAttr(!isInView),
         style: {
-          position: "relative",
-          flex: "0 0 var(--slide-size)",
-          [horizontal ? "minWidth" : "minHeight"]: "0px",
+          scrollSnapAlign: getSnapAlign(state.context, props),
         },
+      })
+    },
+
+    getControlProps() {
+      return normalize.element({
+        ...parts.control.attrs,
+        "data-orientation": state.context.orientation,
       })
     },
 
@@ -118,14 +138,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.prevTrigger.attrs,
         id: dom.getPrevTriggerId(state.context),
         type: "button",
-        tabIndex: -1,
         disabled: !canScrollPrev,
         dir: state.context.dir,
-        "aria-label": "Previous Slide",
+        "aria-label": translations.prevTrigger,
         "data-orientation": state.context.orientation,
         "aria-controls": dom.getItemGroupId(state.context),
-        onClick() {
-          send("PREV")
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send({ type: "PAGE.PREV", src: "trigger" })
         },
       })
     },
@@ -136,13 +156,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         id: dom.getNextTriggerId(state.context),
         type: "button",
-        tabIndex: -1,
-        "aria-label": "Next Slide",
+        "aria-label": translations.nextTrigger,
         "data-orientation": state.context.orientation,
         "aria-controls": dom.getItemGroupId(state.context),
         disabled: !canScrollNext,
-        onClick() {
-          send("NEXT")
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send({ type: "PAGE.NEXT", src: "trigger" })
         },
       })
     },
@@ -153,6 +173,48 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         id: dom.getIndicatorGroupId(state.context),
         "data-orientation": state.context.orientation,
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          const src = "indicator"
+          const keyMap: EventKeyMap = {
+            ArrowDown(event) {
+              if (horizontal) return
+              send({ type: "PAGE.NEXT", src })
+              event.preventDefault()
+            },
+            ArrowUp(event) {
+              if (horizontal) return
+              send({ type: "PAGE.PREV", src })
+              event.preventDefault()
+            },
+            ArrowRight(event) {
+              if (!horizontal) return
+              send({ type: "PAGE.NEXT", src })
+              event.preventDefault()
+            },
+            ArrowLeft(event) {
+              if (!horizontal) return
+              send({ type: "PAGE.PREV", src })
+              event.preventDefault()
+            },
+            Home(event) {
+              send({ type: "PAGE.SET", index: 0, src })
+              event.preventDefault()
+            },
+            End(event) {
+              send({ type: "PAGE.SET", index: pageSnapPoints.length - 1, src })
+              event.preventDefault()
+            },
+          }
+
+          const key = getEventKey(event, {
+            dir: state.context.dir,
+            orientation: state.context.orientation,
+          })
+
+          const exec = keyMap[key]
+          exec?.(event)
+        },
       })
     },
 
@@ -165,12 +227,35 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "data-index": props.index,
         "data-readonly": dataAttr(props.readOnly),
-        "data-current": dataAttr(props.index === state.context.index),
-        onClick() {
+        "data-current": dataAttr(props.index === state.context.page),
+        "aria-label": translations.indicator(props.index),
+        onClick(event) {
+          if (event.defaultPrevented) return
           if (props.readOnly) return
-          send({ type: "GOTO", index: props.index })
+          send({ type: "PAGE.SET", index: props.index, src: "indicator" })
+        },
+      })
+    },
+
+    getAutoplayTriggerProps() {
+      return normalize.button({
+        ...parts.autoplayTrigger.attrs,
+        type: "button",
+        "data-orientation": state.context.orientation,
+        "data-pressed": dataAttr(isPlaying),
+        "aria-label": isPlaying ? translations.autoplayStop : translations.autoplayStart,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send({ type: isPlaying ? "AUTOPLAY.PAUSE" : "AUTOPLAY.START" })
         },
       })
     },
   }
+}
+
+function getSnapAlign(ctx: MachineContext, props: ItemProps) {
+  const { snapAlign = "start", index } = props
+  const perMove = ctx.slidesPerMove === "auto" ? Math.floor(ctx.slidesPerPage) : ctx.slidesPerMove
+  const shouldSnap = (index + perMove) % perMove === 0
+  return shouldSnap ? snapAlign : undefined
 }

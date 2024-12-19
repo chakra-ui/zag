@@ -11,23 +11,32 @@ const {
 } = actions;
 const fetchMachine = createMachine({
   id: "carousel",
-  initial: "idle",
+  initial: ctx.autoplay ? "autoplay" : "idle",
   context: {},
   on: {
-    NEXT: {
-      actions: ["scrollToNext"]
+    "PAGE.NEXT": {
+      target: "idle",
+      actions: ["clearScrollEndTimer", "setNextPage"]
     },
-    PREV: {
-      actions: ["scrollToPrev"]
+    "PAGE.PREV": {
+      target: "idle",
+      actions: ["clearScrollEndTimer", "setPrevPage"]
     },
-    GOTO: {
-      actions: ["scrollTo"]
+    "PAGE.SET": {
+      target: "idle",
+      actions: ["clearScrollEndTimer", "setPage"]
     },
-    MEASURE_DOM: {
-      actions: ["measureElements", "setScrollSnaps"]
+    "INDEX.SET": {
+      target: "idle",
+      actions: ["clearScrollEndTimer", "setMatchingPage"]
     },
-    PLAY: "autoplay"
+    "SNAP.REFRESH": {
+      actions: ["setSnapPoints", "clampPage"]
+    }
   },
+  activities: ["trackSlideMutation", "trackSlideIntersections", "trackSlideResize"],
+  entry: ["resetScrollPosition", "setSnapPoints", "setPage"],
+  exit: ["clearScrollEndTimer"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -35,31 +44,47 @@ const fetchMachine = createMachine({
   },
   states: {
     idle: {
+      activities: ["trackScroll"],
       on: {
-        POINTER_DOWN: "dragging"
+        "DRAGGING.START": {
+          target: "dragging",
+          actions: ["invokeDragStart"]
+        },
+        "AUTOPLAY.START": {
+          target: "autoplay",
+          actions: ["invokeAutoplayStart"]
+        }
+      }
+    },
+    dragging: {
+      activities: ["trackPointerMove"],
+      entry: ["disableScrollSnap"],
+      on: {
+        DRAGGING: {
+          actions: ["scrollSlides", "invokeDragging"]
+        },
+        "DRAGGING.END": {
+          target: "idle",
+          actions: ["endDragging", "invokeDraggingEnd"]
+        }
       }
     },
     autoplay: {
-      activities: ["trackDocumentVisibility"],
+      activities: ["trackDocumentVisibility", "trackScroll"],
+      exit: ["invokeAutoplayEnd"],
       invoke: {
         src: "interval",
         id: "interval"
       },
       on: {
-        PAUSE: "idle"
-      }
-    },
-    dragging: {
-      on: {
-        POINTER_UP: "idle",
-        POINTER_MOVE: {
-          actions: ["setScrollSnaps"]
-        }
+        "DRAGGING.START": {
+          target: "dragging",
+          actions: ["invokeDragStart"]
+        },
+        "AUTOPLAY.PAUSE": "idle"
       }
     }
-  },
-  activities: ["trackContainerResize", "trackSlideMutation"],
-  entry: ["measureElements", "setScrollSnaps"]
+  }
 }, {
   actions: {
     updateContext: assign((context, event) => {

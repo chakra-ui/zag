@@ -187,41 +187,49 @@
   },
   "carousel": {
     "api": {
-      "index": {
+      "page": {
         "type": "number",
         "description": "The current index of the carousel"
       },
-      "scrollProgress": {
-        "type": "number",
-        "description": "The current scroll progress of the carousel"
+      "pageSnapPoints": {
+        "type": "number[]",
+        "description": "The current snap points of the carousel"
       },
-      "autoPlaying": {
+      "isPlaying": {
         "type": "boolean",
         "description": "Whether the carousel is auto playing"
       },
+      "isDragging": {
+        "type": "boolean",
+        "description": "Whether the carousel is being dragged. This only works when `draggable` is true."
+      },
       "canScrollNext": {
         "type": "boolean",
-        "description": "Whether the carousel is can scroll to the next slide"
+        "description": "Whether the carousel is can scroll to the next view"
       },
       "canScrollPrev": {
         "type": "boolean",
-        "description": "Whether the carousel is can scroll to the previous slide"
+        "description": "Whether the carousel is can scroll to the previous view"
+      },
+      "scrollToIndex": {
+        "type": "(index: number, instant?: boolean) => void",
+        "description": "Function to scroll to a specific item index"
       },
       "scrollTo": {
-        "type": "(index: number, jump?: boolean) => void",
-        "description": "Function to scroll to a specific slide index"
+        "type": "(page: number, instant?: boolean) => void",
+        "description": "Function to scroll to a specific page"
       },
-      "scrollToNext": {
-        "type": "() => void",
-        "description": "Function to scroll to the next slide"
+      "scrollNext": {
+        "type": "(instant?: boolean) => void",
+        "description": "Function to scroll to the next page"
       },
-      "scrollToPrevious": {
-        "type": "() => void",
-        "description": "Function to scroll to the previous slide"
+      "scrollPrev": {
+        "type": "(instant?: boolean) => void",
+        "description": "Function to scroll to the previous page"
       },
-      "getItemState": {
-        "type": "(props: ItemProps) => ItemState",
-        "description": "Returns the state of a specific slide"
+      "getProgress": {
+        "type": "() => number",
+        "description": "Returns the current scroll progress as a percentage"
       },
       "play": {
         "type": "() => void",
@@ -230,45 +238,88 @@
       "pause": {
         "type": "() => void",
         "description": "Function to pause autoplay"
+      },
+      "isInView": {
+        "type": "(index: number) => boolean",
+        "description": "Whether the item is in view"
+      },
+      "refresh": {
+        "type": "() => void",
+        "description": "Function to re-compute the snap points\nand clamp the page"
       }
     },
     "context": {
-      "orientation": {
-        "type": "\"horizontal\" | \"vertical\"",
-        "description": "The orientation of the carousel.",
-        "defaultValue": "\"horizontal\""
+      "ids": {
+        "type": "Partial<{ root: string; item(index: number): string; itemGroup: string; nextTrigger: string; prevTrigger: string; indicatorGroup: string; indicator(index: number): string; }>",
+        "description": "The ids of the elements in the carousel. Useful for composition."
       },
-      "align": {
-        "type": "\"start\" | \"center\" | \"end\"",
-        "description": "The alignment of the slides in the carousel.",
-        "defaultValue": "\"start\""
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "The localized messages to use."
       },
-      "slidesPerView": {
-        "type": "number | \"auto\"",
+      "slidesPerPage": {
+        "type": "number",
         "description": "The number of slides to show at a time.",
         "defaultValue": "1"
+      },
+      "slidesPerMove": {
+        "type": "number | \"auto\"",
+        "description": "The number of slides to scroll at a time.\n\nWhen set to `auto`, the number of slides to scroll is determined by the\n`slidesPerPage` property.",
+        "defaultValue": "\"auto\""
+      },
+      "autoplay": {
+        "type": "boolean | { delay: number; }",
+        "description": "Whether to scroll automatically. The default delay is 4000ms.",
+        "defaultValue": "false"
+      },
+      "allowMouseDrag": {
+        "type": "boolean",
+        "description": "Whether to allow scrolling via dragging with mouse",
+        "defaultValue": "false"
       },
       "loop": {
         "type": "boolean",
         "description": "Whether the carousel should loop around.",
         "defaultValue": "false"
       },
-      "index": {
+      "page": {
         "type": "number",
-        "description": "The current slide index."
+        "description": "The index of the active page."
       },
       "spacing": {
         "type": "string",
-        "description": "The amount of space between slides.",
+        "description": "The amount of space between items.",
         "defaultValue": "\"0px\""
       },
-      "onIndexChange": {
-        "type": "(details: SlideChangeDetails) => void",
-        "description": "Function called when the slide changes."
+      "padding": {
+        "type": "string",
+        "description": "Defines the extra space added around the scrollable area,\nenabling nearby items to remain partially in view."
       },
-      "ids": {
-        "type": "Partial<{ root: string; viewport: string; item(index: number): string; itemGroup: string; nextTrigger: string; prevTrigger: string; indicatorGroup: string; indicator(index: number): string; }>",
-        "description": "The ids of the elements in the carousel. Useful for composition."
+      "onPageChange": {
+        "type": "(details: PageChangeDetails) => void",
+        "description": "Function called when the page changes."
+      },
+      "inViewThreshold": {
+        "type": "number | number[]",
+        "description": "The threshold for determining if an item is in view.",
+        "defaultValue": "0.6"
+      },
+      "snapType": {
+        "type": "\"proximity\" | \"mandatory\"",
+        "description": "The snap type of the item.",
+        "defaultValue": "\"mandatory\""
+      },
+      "slideCount": {
+        "type": "number",
+        "description": "The total number of slides.\nUseful for SSR to render the initial ating the snap points."
+      },
+      "onDragStatusChange": {
+        "type": "(details: DragStatusDetails) => void",
+        "description": "Function called when the drag status changes."
+      },
+      "onAutoplayStatusChange": {
+        "type": "(details: AutoplayStatusDetails) => void",
+        "description": "Function called when the autoplay status changes."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -282,6 +333,11 @@
       "getRootNode": {
         "type": "() => ShadowRoot | Node | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "orientation": {
+        "type": "Orientation",
+        "description": "The orientation of the element.",
+        "defaultValue": "\"horizontal\""
       }
     }
   },
@@ -1152,10 +1208,6 @@
         "type": "DateView",
         "description": "The view of the calendar",
         "defaultValue": "\"day\""
-      },
-      "modal": {
-        "type": "boolean",
-        "description": "Whether the calendar should be modal. This means that the calendar will\nblock interaction with the rest of the page, and trap focus within it."
       },
       "positioning": {
         "type": "PositioningOptions",

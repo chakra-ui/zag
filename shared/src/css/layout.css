@@ -18,6 +18,10 @@ input::-webkit-inner-spin-button {
   outline-offset: 2px;
 }
 
+button {
+  flex-shrink: 0;
+}
+
 .root {
   margin: 24px;
 }

@@ -1,23 +1,42 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { ContextRef, Machine, StateMachine as S } from "@zag-js/core"
+import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export interface SlideChangeDetails {
-  index: number
+export interface PageChangeDetails {
+  page: number
+  pageSnapPoint: number
+}
+
+export interface DragStatusDetails {
+  type: "dragging.start" | "dragging" | "dragging.end"
+  page: number
+  isDragging: boolean
+}
+
+export interface AutoplayStatusDetails {
+  type: "autoplay.start" | "autoplay" | "autoplay.stop"
+  page: number
+  isPlaying: boolean
 }
 
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-type RectEdge = "top" | "right" | "bottom" | "left"
+export interface IntlTranslations {
+  nextTrigger: string
+  prevTrigger: string
+  indicator: (index: number) => string
+  item: (index: number, count: number) => string
+  autoplayStart: string
+  autoplayStop: string
+}
 
 export type ElementIds = Partial<{
   root: string
-  viewport: string
   item(index: number): string
   itemGroup: string
   nextTrigger: string
@@ -26,63 +45,99 @@ export type ElementIds = Partial<{
   indicator(index: number): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+interface PublicContext extends DirectionProperty, CommonProperties, OrientationProperty {
   /**
-   * The orientation of the carousel.
-   * @default "horizontal"
+   * The ids of the elements in the carousel. Useful for composition.
    */
-  orientation: "horizontal" | "vertical"
+  ids?: ElementIds | undefined
   /**
-   * The alignment of the slides in the carousel.
-   * @default "start"
+   * The localized messages to use.
    */
-  align: "start" | "center" | "end"
+  translations: IntlTranslations
   /**
    * The number of slides to show at a time.
    * @default 1
    */
-  slidesPerView: number | "auto"
+  slidesPerPage: number
+  /**
+   * The number of slides to scroll at a time.
+   *
+   * When set to `auto`, the number of slides to scroll is determined by the
+   * `slidesPerPage` property.
+   *
+   * @default "auto"
+   */
+  slidesPerMove: number | "auto"
+  /**
+   * Whether to scroll automatically. The default delay is 4000ms.
+   * @default false
+   */
+  autoplay?: boolean | { delay: number } | undefined
+  /**
+   * Whether to allow scrolling via dragging with mouse
+   * @default false
+   */
+  allowMouseDrag: boolean
   /**
    * Whether the carousel should loop around.
    * @default false
    */
   loop: boolean
   /**
-   * The current slide index.
+   * The index of the active page.
    */
-  index: number
+  page: number
   /**
-   * The amount of space between slides.
+   * The amount of space between items.
    * @default "0px"
    */
   spacing: string
   /**
-   * Function called when the slide changes.
+   * Defines the extra space added around the scrollable area,
+   * enabling nearby items to remain partially in view.
    */
-  onIndexChange?: ((details: SlideChangeDetails) => void) | undefined
+  padding?: string
   /**
-   * The ids of the elements in the carousel. Useful for composition.
+   * Function called when the page changes.
    */
-  ids?: ElementIds | undefined
+  onPageChange?: ((details: PageChangeDetails) => void) | undefined
+  /**
+   * The threshold for determining if an item is in view.
+   * @default 0.6
+   */
+  inViewThreshold: number | number[]
+  /**
+   * The snap type of the item.
+   * @default "mandatory"
+   */
+  snapType: "proximity" | "mandatory"
+  /**
+   * The total number of slides.
+   * Useful for SSR to render the initial ating the snap points.
+   */
+  slideCount?: number | undefined
+  /**
+   * Function called when the drag status changes.
+   */
+  onDragStatusChange?: ((details: DragStatusDetails) => void) | undefined
+  /**
+   * Function called when the autoplay status changes.
+   */
+  onAutoplayStatusChange?: ((details: AutoplayStatusDetails) => void) | undefined
 }
 
 interface PrivateContext {
-  slideRects: DOMRect[]
-  containerRect?: DOMRect | undefined
-  containerSize: number
-  scrollSnaps: number[]
-  scrollProgress: number
+  pageSnapPoints: number[]
+  slidesInView: number[]
+  timeoutRef: ContextRef<ReturnType<typeof setTimeout>>
 }
 
 type ComputedContext = Readonly<{
   isRtl: boolean
   isHorizontal: boolean
-  isVertical: boolean
-  startEdge: RectEdge
-  endEdge: RectEdge
-  translateValue: string
   canScrollNext: boolean
   canScrollPrev: boolean
+  autoplayInterval: number
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -108,33 +163,22 @@ export interface ItemProps {
    * The index of the item.
    */
   index: number
-}
-
-export interface ItemState {
   /**
-   * The text value of the item. Used for accessibility.
+   * The snap alignment of the item.
+   * @default "start"
    */
-  valueText: string
-  /**
-   * Whether the item is the current item in the carousel
-   */
-  current: boolean
-  /**
-   * Whether the item is the next item in the carousel
-   */
-  next: boolean
-  /**
-   * Whether the item is the previous item in the carousel
-   */
-  previous: boolean
-  /**
-   * Whether the item is in view
-   */
-  inView: boolean
+  snapAlign?: "start" | "end" | "center" | undefined
 }
 
 export interface IndicatorProps {
+  /**
+   * The index of the indicator.
+   */
   index: number
+  /**
+   * Whether the indicator is read only.
+   * @default false
+   */
   readOnly?: boolean | undefined
 }
 
@@ -142,39 +186,47 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The current index of the carousel
    */
-  index: number
+  page: number
   /**
-   * The current scroll progress of the carousel
+   * The current snap points of the carousel
    */
-  scrollProgress: number
+  pageSnapPoints: number[]
   /**
    * Whether the carousel is auto playing
    */
-  autoPlaying: boolean
+  isPlaying: boolean
   /**
-   * Whether the carousel is can scroll to the next slide
+   * Whether the carousel is being dragged. This only works when `draggable` is true.
+   */
+  isDragging: boolean
+  /**
+   * Whether the carousel is can scroll to the next view
    */
   canScrollNext: boolean
   /**
-   * Whether the carousel is can scroll to the previous slide
+   * Whether the carousel is can scroll to the previous view
    */
   canScrollPrev: boolean
   /**
-   * Function to scroll to a specific slide index
+   * Function to scroll to a specific item index
    */
-  scrollTo(index: number, jump?: boolean): void
+  scrollToIndex(index: number, instant?: boolean): void
   /**
-   * Function to scroll to the next slide
+   * Function to scroll to a specific page
    */
-  scrollToNext(): void
+  scrollTo(page: number, instant?: boolean): void
   /**
-   * Function to scroll to the previous slide
+   * Function to scroll to the next page
    */
-  scrollToPrevious(): void
+  scrollNext(instant?: boolean): void
   /**
-   *  Returns the state of a specific slide
+   * Function to scroll to the previous page
    */
-  getItemState(props: ItemProps): ItemState
+  scrollPrev(instant?: boolean): void
+  /**
+   * Returns the current scroll progress as a percentage
+   */
+  getProgress(): number
   /**
    * Function to start/resume autoplay
    */
@@ -183,13 +235,23 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to pause autoplay
    */
   pause(): void
+  /**
+   * Whether the item is in view
+   */
+  isInView(index: number): boolean
+  /**
+   * Function to re-compute the snap points
+   * and clamp the page
+   */
+  refresh(): void
 
   getRootProps(): T["element"]
-  getViewportProps(): T["element"]
+  getControlProps(): T["element"]
   getItemGroupProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
   getPrevTriggerProps(): T["button"]
   getNextTriggerProps(): T["button"]
+  getAutoplayTriggerProps(): T["button"]
   getIndicatorGroupProps(): T["element"]
   getIndicatorProps(props: IndicatorProps): T["button"]
 }

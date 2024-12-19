@@ -12,9 +12,12 @@ const items = [
 ]
 
 export function Carousel(props: any) {
-  const [state, send] = useMachine(carousel.machine({ id: useId() }), {
-    context: props.controls,
-  })
+  const [state, send] = useMachine(
+    carousel.machine({ id: useId(), slideCount: items.length }),
+    {
+      context: props.controls,
+    },
+  )
 
   const api = carousel.connect(state, send, normalizeProps)
 
@@ -22,32 +25,26 @@ export function Carousel(props: any) {
     <>
       <main className="carousel">
         <div {...api.getRootProps()}>
-          <div {...api.getViewportProps()}>
-            <div {...api.getItemGroupProps()}>
-              {items.map((image, index) => (
-                <div {...api.getItemProps({ index })} key={index}>
-                  <img src={image} alt={`Slide Image ${index}`} />
-                </div>
+          <div {...api.getItemGroupProps()}>
+            {items.map((image, index) => (
+              <div {...api.getItemProps({ index })} key={index}>
+                <img src={image} alt={`Slide Image ${index}`} />
+              </div>
+            ))}
+          </div>
+
+          <div {...api.getControlProps()}>
+            <button {...api.getPrevTriggerProps()}>
+              <HiChevronLeft />
+            </button>
+            <div {...api.getIndicatorGroupProps()}>
+              {api.pageSnapPoints.map((_, index) => (
+                <button key={index} {...api.getIndicatorProps({ index })} />
               ))}
             </div>
-
-            <div data-scope="carousel" data-part="control">
-              <button aria-label="Previous Slide" {...api.getPrevTriggerProps()}>
-                <HiChevronLeft />
-              </button>
-              <div {...api.getIndicatorGroupProps()}>
-                {items.map((_, index) => (
-                  <button
-                    key={index}
-                    aria-label={`Goto slide ${index + 1}`}
-                    {...api.getIndicatorProps({ index })}
-                  />
-                ))}
-              </div>
-              <button aria-label="Previous Slide" {...api.getNextTriggerProps()}>
-                <HiChevronRight />
-              </button>
-            </div>
+            <button {...api.getNextTriggerProps()}>
+              <HiChevronRight />
+            </button>
           </div>
         </div>
       </main>

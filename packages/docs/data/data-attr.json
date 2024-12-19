@@ -91,22 +91,23 @@
       "data-part": "root",
       "data-orientation": "The orientation of the carousel"
     },
-    "Viewport": {
-      "data-scope": "carousel",
-      "data-part": "viewport",
-      "data-orientation": "The orientation of the viewport"
-    },
     "ItemGroup": {
       "data-scope": "carousel",
       "data-part": "item-group",
-      "data-orientation": "The orientation of the item"
+      "data-orientation": "The orientation of the item",
+      "data-dragging": "Present when in the dragging state"
     },
     "Item": {
       "data-scope": "carousel",
       "data-part": "item",
-      "data-current": "Present when current",
+      "data-index": "The index of the item",
       "data-inview": "Present when in viewport",
       "data-orientation": "The orientation of the item"
+    },
+    "Control": {
+      "data-scope": "carousel",
+      "data-part": "control",
+      "data-orientation": "The orientation of the control"
     },
     "PrevTrigger": {
       "data-scope": "carousel",
@@ -130,6 +131,12 @@
       "data-index": "The index of the item",
       "data-readonly": "Present when read-only",
       "data-current": "Present when current"
+    },
+    "AutoplayTrigger": {
+      "data-scope": "carousel",
+      "data-part": "autoplay-trigger",
+      "data-orientation": "The orientation of the autoplaytrigger",
+      "data-pressed": "Present when pressed"
     }
   },
   "checkbox": {
