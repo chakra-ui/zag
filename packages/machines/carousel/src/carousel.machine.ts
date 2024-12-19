@@ -1,7 +1,7 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, ref } from "@zag-js/core"
 import { addDomEvent, trackPointerMove } from "@zag-js/dom-event"
 import { raf } from "@zag-js/dom-query"
-import { findSnapPoint, getScrollSnapPositions, getSnapPointTarget } from "@zag-js/scroll-snap"
+import { findSnapPoint, getScrollSnapPositions } from "@zag-js/scroll-snap"
 import { add, compact, isEqual, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
 import { dom } from "./carousel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./carousel.types"
@@ -17,7 +17,7 @@ export function machine(userContext: UserDefinedContext) {
       initial: ctx.autoplay ? "autoplay" : "idle",
       context: {
         dir: "ltr",
-        snapIndex: 0,
+        page: 0,
         orientation: "horizontal",
         snapType: "mandatory",
         loop: false,
@@ -28,6 +28,7 @@ export function machine(userContext: UserDefinedContext) {
         allowMouseDrag: false,
         inViewThreshold: 0.6,
         ...ctx,
+        timeoutRef: ref({ current: undefined }),
         translations: {
           nextTrigger: "Next slide",
           prevTrigger: "Previous slide",
@@ -37,7 +38,7 @@ export function machine(userContext: UserDefinedContext) {
           autoplayStop: "Stop slide rotation",
           ...ctx.translations,
         },
-        snapPoints: initSnapPoints(
+        pageSnapPoints: getPageSnapPoints(
           ctx.slideCount,
           ctx.scrollBy ?? DEFAULT_SCROLL_BY,
           ctx.slidesPerPage ?? DEFAULT_SLIDES_PER_PAGE,
@@ -48,42 +49,42 @@ export function machine(userContext: UserDefinedContext) {
       computed: {
         isRtl: (ctx) => ctx.dir === "rtl",
         isHorizontal: (ctx) => ctx.orientation === "horizontal",
-        isVertical: (ctx) => ctx.orientation === "vertical",
-        canScrollNext: (ctx) => ctx.loop || ctx.snapIndex < ctx.snapPoints.length - 1,
-        canScrollPrev: (ctx) => ctx.loop || ctx.snapIndex > 0,
+        canScrollNext: (ctx) => ctx.loop || ctx.page < ctx.pageSnapPoints.length - 1,
+        canScrollPrev: (ctx) => ctx.loop || ctx.page > 0,
         autoplayInterval: (ctx) => (isObject(ctx.autoplay) ? ctx.autoplay.delay : 4000),
       },
 
       watch: {
         slidesPerPage: ["setSnapPoints"],
-        snapIndex: ["scrollToSnapIndex", "focusIndicatorIfNeeded"],
+        page: ["scrollToPage", "focusIndicatorEl"],
+        orientation: ["setSnapPoints", "scrollToPage"],
       },
 
       on: {
-        "GOTO.NEXT": {
+        "PAGE.NEXT": {
           target: "idle",
-          actions: ["clearScrollEndTimer", "setNextSnapIndex"],
+          actions: ["clearScrollEndTimer", "setNextPage"],
         },
-        "GOTO.PREV": {
+        "PAGE.PREV": {
           target: "idle",
-          actions: ["clearScrollEndTimer", "setPrevSnapIndex"],
+          actions: ["clearScrollEndTimer", "setPrevPage"],
         },
-        GOTO: {
+        "PAGE.SET": {
           target: "idle",
-          actions: ["clearScrollEndTimer", "setSnapIndex"],
+          actions: ["clearScrollEndTimer", "setPage"],
         },
-        "GOTO.INDEX": {
+        "INDEX.SET": {
           target: "idle",
-          actions: ["clearScrollEndTimer", "setMatchingSnapIndex"],
+          actions: ["clearScrollEndTimer", "setMatchingPage"],
         },
         "SNAP.REFRESH": {
-          actions: ["setSnapPoints", "clampSnapIndex"],
+          actions: ["setSnapPoints", "clampPage"],
         },
       },
 
-      activities: ["trackSlideMutation", "trackSlideIntersections"],
+      activities: ["trackSlideMutation", "trackSlideIntersections", "trackSlideResize"],
 
-      entry: ["resetScrollPosition", "setSnapPoints", "setSnapIndex"],
+      entry: ["resetScrollPosition", "setSnapPoints", "setPage"],
 
       exit: ["clearScrollEndTimer"],
 
@@ -120,7 +121,7 @@ export function machine(userContext: UserDefinedContext) {
           activities: ["trackDocumentVisibility", "trackScroll"],
           exit: ["invokeAutoplayEnd"],
           every: {
-            AUTOPLAY_INTERVAL: ["setNextSnapIndex", "invokeAutoplay"],
+            AUTOPLAY_INTERVAL: ["setNextPage", "invokeAutoplay"],
           },
           on: {
             "DRAGGING.START": {
@@ -139,9 +140,20 @@ export function machine(userContext: UserDefinedContext) {
           if (!el) return
           const win = dom.getWin(ctx)
           const observer = new win.MutationObserver(() => {
-            send({ type: "SNAP.REFRESH" })
+            send({ type: "SNAP.REFRESH", src: "slide.mutation" })
           })
-          observer.observe(el, { childList: true, subtree: true })
+          observer.observe(el, { childList: true })
+          return () => observer.disconnect()
+        },
+
+        trackSlideResize(ctx, _evt, { send }) {
+          const el = dom.getItemGroupEl(ctx)
+          if (!el) return
+          const win = dom.getWin(ctx)
+          const observer = new win.ResizeObserver(() => {
+            send({ type: "SNAP.REFRESH", src: "slide.resize" })
+          })
+          dom.getItemEls(ctx).forEach((slide) => observer.observe(slide))
           return () => observer.disconnect()
         },
 
@@ -176,20 +188,16 @@ export function machine(userContext: UserDefinedContext) {
 
           const onScrollEnd = () => {
             if (ctx.slidesInView.length === 0) return
-
-            const axisSnapPoints = getScrollSnapPositions(el)
-            const snapPoints = ctx.isHorizontal ? axisSnapPoints.x : axisSnapPoints.y
-
-            const index = snapPoints.findIndex((point) => Math.abs(point - el.scrollLeft) < 1)
-            if (index === -1) return
-
-            set.snapIndex(ctx, index)
+            const scrollPosition = ctx.isHorizontal ? el.scrollLeft : el.scrollTop
+            const page = ctx.pageSnapPoints.findIndex((point) => Math.abs(point - scrollPosition) < 1)
+            if (page === -1) return
+            set.page(ctx, page)
           }
 
           // Not using `scrollend` as some browsers trigger it before snapping finishes
           const onScroll = () => {
-            clearTimeout(ctx.scrollEndTimeout)
-            ctx.scrollEndTimeout = setTimeout(() => {
+            clearTimeout(ctx.timeoutRef.current)
+            ctx.timeoutRef.current = setTimeout(() => {
               onScrollEnd?.()
             }, 150)
           }
@@ -219,56 +227,54 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
 
-      guards: {
-        loop: (ctx) => ctx.loop,
-        isLastSlide: (ctx) => ctx.snapIndex === ctx.snapPoints.length - 1,
-        isFirstSlide: (ctx) => ctx.snapIndex === 0,
-      },
-
       actions: {
         resetScrollPosition(ctx) {
           const el = dom.getItemGroupEl(ctx)
           el.scrollTo(0, 0)
         },
         clearScrollEndTimer(ctx) {
-          clearTimeout(ctx.scrollEndTimeout)
+          if (ctx.timeoutRef.current == null) return
+          clearTimeout(ctx.timeoutRef.current)
+          ctx.timeoutRef.current = undefined
         },
-        scrollToSnapIndex(ctx, evt) {
+        scrollToPage(ctx, evt) {
           const behavior = evt.instant ? "instant" : "smooth"
-          const index = clamp(evt.index ?? ctx.snapIndex, 0, ctx.snapPoints.length - 1)
+          const index = clamp(evt.index ?? ctx.page, 0, ctx.pageSnapPoints.length - 1)
           const el = dom.getItemGroupEl(ctx)
           const axis = ctx.isHorizontal ? "left" : "top"
-          el.scrollTo({ [axis]: ctx.snapPoints[index], behavior })
+          el.scrollTo({ [axis]: ctx.pageSnapPoints[index], behavior })
         },
-        setNextSnapIndex(ctx) {
-          const index = nextIndex(ctx.snapPoints, ctx.snapIndex, { loop: ctx.loop })
-          set.snapIndex(ctx, index)
+        setNextPage(ctx) {
+          const page = nextIndex(ctx.pageSnapPoints, ctx.page, { loop: ctx.loop })
+          set.page(ctx, page)
         },
-        setPrevSnapIndex(ctx) {
-          const index = prevIndex(ctx.snapPoints, ctx.snapIndex, { loop: ctx.loop })
-          set.snapIndex(ctx, index)
+        setPrevPage(ctx) {
+          const page = prevIndex(ctx.pageSnapPoints, ctx.page, { loop: ctx.loop })
+          set.page(ctx, page)
         },
-        setMatchingSnapIndex(ctx, evt) {
-          const el = dom.getItemGroupEl(ctx)
-
-          const snapPoint = findSnapPoint(el, (node) => node.dataset.index === evt.index.toString())
+        setMatchingPage(ctx, evt) {
+          const snapPoint = findSnapPoint(
+            dom.getItemGroupEl(ctx),
+            ctx.isHorizontal ? "x" : "y",
+            (node) => node.dataset.index === evt.index.toString(),
+          )
           if (snapPoint == null) return
 
-          const index = ctx.snapPoints.indexOf(snapPoint)
-          set.snapIndex(ctx, index)
+          const page = ctx.pageSnapPoints.indexOf(snapPoint)
+          set.page(ctx, page)
         },
-        setSnapIndex(ctx, evt) {
-          set.snapIndex(ctx, evt.index ?? ctx.snapIndex)
+        setPage(ctx, evt) {
+          set.page(ctx, evt.index ?? ctx.page)
         },
-        clampSnapIndex(ctx) {
-          const index = clamp(ctx.snapIndex, 0, ctx.snapPoints.length - 1)
-          set.snapIndex(ctx, index)
+        clampPage(ctx) {
+          const index = clamp(ctx.page, 0, ctx.pageSnapPoints.length - 1)
+          set.page(ctx, index)
         },
         setSnapPoints(ctx) {
           queueMicrotask(() => {
             const el = dom.getItemGroupEl(ctx)
             const scrollSnapPoints = getScrollSnapPositions(el)
-            ctx.snapPoints = ctx.isHorizontal ? scrollSnapPoints.x : scrollSnapPoints.y
+            ctx.pageSnapPoints = ctx.isHorizontal ? scrollSnapPoints.x : scrollSnapPoints.y
           })
         },
         disableScrollSnap(ctx) {
@@ -308,30 +314,31 @@ export function machine(userContext: UserDefinedContext) {
             }
           })
         },
-        focusIndicatorIfNeeded(ctx, evt) {
+        focusIndicatorEl(ctx, evt) {
           if (evt.src !== "indicator") return
           const el = dom.getActiveIndicatorEl(ctx)
           raf(() => el.focus({ preventScroll: true }))
         },
         invokeDragStart(ctx) {
-          ctx.onDragStatusChange?.({ type: "dragging.start", dragging: true, snapIndex: ctx.snapIndex })
+          ctx.onDragStatusChange?.({ type: "dragging.start", isDragging: true, page: ctx.page })
         },
         invokeDragging(ctx) {
-          ctx.onDragStatusChange?.({ type: "dragging", dragging: true, snapIndex: ctx.snapIndex })
+          ctx.onDragStatusChange?.({ type: "dragging", isDragging: true, page: ctx.page })
         },
         invokeDraggingEnd(ctx) {
-          ctx.onDragStatusChange?.({ type: "dragging.end", dragging: false, snapIndex: ctx.snapIndex })
+          ctx.onDragStatusChange?.({ type: "dragging.end", isDragging: false, page: ctx.page })
         },
         invokeAutoplay(ctx) {
-          ctx.onAutoplayStatusChange?.({ type: "autoplay", playing: true, snapIndex: ctx.snapIndex })
+          ctx.onAutoplayStatusChange?.({ type: "autoplay", isPlaying: true, page: ctx.page })
         },
         invokeAutoplayStart(ctx) {
-          ctx.onAutoplayStatusChange?.({ type: "autoplay.start", playing: true, snapIndex: ctx.snapIndex })
+          ctx.onAutoplayStatusChange?.({ type: "autoplay.start", isPlaying: true, page: ctx.page })
         },
         invokeAutoplayEnd(ctx) {
-          ctx.onAutoplayStatusChange?.({ type: "autoplay.stop", playing: false, snapIndex: ctx.snapIndex })
+          ctx.onAutoplayStatusChange?.({ type: "autoplay.stop", isPlaying: false, page: ctx.page })
         },
       },
+
       delays: {
         AUTOPLAY_INTERVAL: (ctx) => ctx.autoplayInterval,
       },
@@ -340,22 +347,20 @@ export function machine(userContext: UserDefinedContext) {
 }
 
 const invoke = {
-  snapChange: (ctx: MachineContext) => {
-    const slideGroupEl = dom.getItemGroupEl(ctx)
-    ctx.onSnapChange?.({
-      snapIndex: ctx.snapIndex,
-      snapPoint: ctx.snapPoints[ctx.snapIndex],
-      snapTarget: getSnapPointTarget(slideGroupEl!, ctx.snapPoints[ctx.snapIndex]),
+  pageChange: (ctx: MachineContext) => {
+    ctx.onPageChange?.({
+      page: ctx.page,
+      pageSnapPoint: ctx.pageSnapPoints[ctx.page],
     })
   },
 }
 
 const set = {
-  snapIndex: (ctx: MachineContext, index: number) => {
-    const idx = clamp(index, 0, ctx.snapPoints.length - 1)
-    if (isEqual(ctx.snapIndex, idx)) return
-    ctx.snapIndex = idx
-    invoke.snapChange(ctx)
+  page: (ctx: MachineContext, value: number) => {
+    const page = clamp(value, 0, ctx.pageSnapPoints.length - 1)
+    if (isEqual(ctx.page, page)) return
+    ctx.page = page
+    invoke.pageChange(ctx)
   },
 }
 
@@ -363,7 +368,7 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max)
 }
 
-function initSnapPoints(totalSlides: number | undefined, scrollBy: "page" | "item", slidesPerPage: number) {
+function getPageSnapPoints(totalSlides: number | undefined, scrollBy: "page" | "item", slidesPerPage: number) {
   if (totalSlides == null) return []
   if (scrollBy === "item") return Array.from({ length: totalSlides - 1 }, (_, i) => i)
   const snapPoints: number[] = []

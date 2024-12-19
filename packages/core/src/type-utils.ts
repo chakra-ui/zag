@@ -16,3 +16,5 @@ export type ContextFrom<T> =
 
 export type EventFrom<T> =
   ReturnTypeOrValue<T> extends infer R ? (R extends Machine<any, any, infer TEvent> ? TEvent : never) : never
+
+export type ContextRef<T> = { current: T | undefined }

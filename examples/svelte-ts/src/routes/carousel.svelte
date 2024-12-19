@@ -11,7 +11,6 @@
   const [snapshot, send] = useMachine(
     carousel.machine({
       id: "1",
-      snapIndex: 0,
       spacing: "20px",
       slidesPerPage: 2,
       slideCount: carouselData.length,
@@ -43,7 +42,7 @@
       {/each}
     </div>
     <div {...api.getIndicatorGroupProps()}>
-      {#each api.snapPoints as _, index}
+      {#each api.pageSnapPoints as _, index}
         <!-- svelte-ignore a11y_consider_explicit_label -->
         <button {...api.getIndicatorProps({ index })}></button>
       {/each}

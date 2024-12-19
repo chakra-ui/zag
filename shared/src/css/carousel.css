@@ -3,11 +3,14 @@
   align-items: flex-start;
   flex-direction: column;
   gap: 16px;
+}
+
+[data-scope="carousel"][data-part="root"][data-orientation="horizontal"] {
   max-width: 400px;
 }
 
-[data-scope="carousel"][data-part="root"] img {
-  margin: 0;
+[data-scope="carousel"][data-part="root"][data-orientation="vertical"] {
+  max-height: 400px;
 }
 
 [data-scope="carousel"][data-part="control"] {
@@ -28,7 +31,6 @@
 }
 
 [data-scope="carousel"][data-part="item"] {
-  aspect-ratio: 3 / 2;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,9 +39,18 @@
 }
 
 [data-scope="carousel"][data-part="item"] img {
+  margin: 0;
+  object-fit: cover;
+}
+
+[data-scope="carousel"][data-part="item"][data-orientation="horizontal"] img {
   height: 300px;
   width: 100%;
-  object-fit: cover;
+}
+
+[data-scope="carousel"][data-part="item"][data-orientation="vertical"] img {
+  height: 100%;
+  width: 400px;
 }
 
 [data-scope="carousel"][data-part="indicator-group"] {

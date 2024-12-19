@@ -13,8 +13,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const canScrollPrev = state.context.canScrollPrev
   const horizontal = state.context.isHorizontal
 
-  const snapPoints = Array.from(state.context.snapPoints)
-  const snapIndex = state.context.snapIndex
+  const pageSnapPoints = Array.from(state.context.pageSnapPoints)
+  const page = state.context.page
   const slidesPerPage = state.context.slidesPerPage
 
   const padding = state.context.padding
@@ -23,24 +23,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   return {
     isPlaying,
     isDragging,
-    snapIndex,
-    snapPoints,
+    page,
+    pageSnapPoints,
     canScrollNext,
     canScrollPrev,
-    getScrollProgress() {
-      return snapIndex / snapPoints.length
+    getProgress() {
+      return page / pageSnapPoints.length
     },
     scrollToIndex(index, instant) {
-      send({ type: "GOTO.INDEX", index, instant })
+      send({ type: "INDEX.SET", index, instant })
     },
     scrollTo(index, instant) {
-      send({ type: "GOTO", index, instant })
+      send({ type: "PAGE.SET", index, instant })
     },
     scrollNext(instant) {
-      send({ type: "GOTO.NEXT", instant })
+      send({ type: "PAGE.NEXT", instant })
     },
     scrollPrev(instant) {
-      send({ type: "GOTO.PREV", instant })
+      send({ type: "PAGE.PREV", instant })
     },
     play() {
       send("AUTOPLAY.START")
@@ -146,7 +146,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-controls": dom.getItemGroupId(state.context),
         onClick(event) {
           if (event.defaultPrevented) return
-          send({ type: "GOTO.PREV", src: "trigger" })
+          send({ type: "PAGE.PREV", src: "trigger" })
         },
       })
     },
@@ -164,7 +164,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         disabled: !canScrollNext,
         onClick(event) {
           if (event.defaultPrevented) return
-          send({ type: "GOTO.NEXT", src: "trigger" })
+          send({ type: "PAGE.NEXT", src: "trigger" })
         },
       })
     },
@@ -181,30 +181,30 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const keyMap: EventKeyMap = {
             ArrowDown(event) {
               if (horizontal) return
-              send({ type: "GOTO.NEXT", src })
+              send({ type: "PAGE.NEXT", src })
               event.preventDefault()
             },
             ArrowUp(event) {
               if (horizontal) return
-              send({ type: "GOTO.PREV", src })
+              send({ type: "PAGE.PREV", src })
               event.preventDefault()
             },
             ArrowRight(event) {
               if (!horizontal) return
-              send({ type: "GOTO.NEXT", src })
+              send({ type: "PAGE.NEXT", src })
               event.preventDefault()
             },
             ArrowLeft(event) {
               if (!horizontal) return
-              send({ type: "GOTO.PREV", src })
+              send({ type: "PAGE.PREV", src })
               event.preventDefault()
             },
             Home(event) {
-              send({ type: "GOTO", index: 0, src })
+              send({ type: "PAGE.SET", index: 0, src })
               event.preventDefault()
             },
             End(event) {
-              send({ type: "GOTO", index: snapPoints.length - 1, src })
+              send({ type: "PAGE.SET", index: pageSnapPoints.length - 1, src })
               event.preventDefault()
             },
           }
@@ -229,12 +229,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": state.context.orientation,
         "data-index": props.index,
         "data-readonly": dataAttr(props.readOnly),
-        "data-current": dataAttr(props.index === state.context.snapIndex),
-        "aria-label": `Goto slide ${props.index + 1}`,
+        "data-current": dataAttr(props.index === state.context.page),
+        "aria-label": translations.indicator(props.index),
         onClick(event) {
           if (event.defaultPrevented) return
           if (props.readOnly) return
-          send({ type: "GOTO", index: props.index, src: "indicator" })
+          send({ type: "PAGE.SET", index: props.index, src: "indicator" })
         },
       })
     },

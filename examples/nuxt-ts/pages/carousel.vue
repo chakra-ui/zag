@@ -8,7 +8,6 @@ const controls = useControls(carouselControls)
 const [state, send] = useMachine(
   carousel.machine({
     id: "1",
-    snapIndex: 0,
     spacing: "20px",
     slidesPerPage: 2,
     slideCount: carouselData.length,
@@ -40,7 +39,11 @@ const api = computed(() => carousel.connect(state.value, send, normalizeProps))
       </div>
 
       <div v-bind="api.getIndicatorGroupProps()">
-        <button v-for="(_, index) in api.snapPoints" :key="index" v-bind="api.getIndicatorProps({ index })"></button>
+        <button
+          v-for="(_, index) in api.pageSnapPoints"
+          :key="index"
+          v-bind="api.getIndicatorProps({ index })"
+        ></button>
       </div>
     </div>
   </main>

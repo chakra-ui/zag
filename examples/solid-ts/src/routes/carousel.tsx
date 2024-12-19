@@ -12,7 +12,6 @@ export default function Page() {
   const [state, send] = useMachine(
     carousel.machine({
       id: createUniqueId(),
-      snapIndex: 0,
       spacing: "20px",
       slidesPerPage: 2,
       slideCount: carouselData.length,
@@ -51,7 +50,9 @@ export default function Page() {
           </div>
 
           <div {...api().getIndicatorGroupProps()}>
-            <Index each={api().snapPoints}>{(_, index) => <button {...api().getIndicatorProps({ index })} />}</Index>
+            <Index each={api().pageSnapPoints}>
+              {(_, index) => <button {...api().getIndicatorProps({ index })} />}
+            </Index>
           </div>
         </div>
       </main>

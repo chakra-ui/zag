@@ -1,26 +1,25 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { ContextRef, Machine, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export interface SnapChangeDetails {
-  snapIndex: number
-  snapTarget: HTMLElement
-  snapPoint: number
+export interface PageChangeDetails {
+  page: number
+  pageSnapPoint: number
 }
 
 export interface DragStatusDetails {
   type: "dragging.start" | "dragging" | "dragging.end"
-  dragging: boolean
-  snapIndex: number
+  page: number
+  isDragging: boolean
 }
 
 export interface AutoplayStatusDetails {
   type: "autoplay.start" | "autoplay" | "autoplay.stop"
-  playing: boolean
-  snapIndex: number
+  page: number
+  isPlaying: boolean
 }
 
 /* -----------------------------------------------------------------------------
@@ -64,7 +63,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    * Whether to scroll automatically. The default delay is 4000ms.
    * @default false
    */
-  autoplay?: boolean | { delay: number }
+  autoplay?: boolean | { delay: number } | undefined
   /**
    * Whether to allow scrolling via dragging with mouse
    * @default false
@@ -76,11 +75,11 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    */
   loop: boolean
   /**
-   * The index of the active snap point.
+   * The index of the active page.
    */
-  snapIndex: number
+  page: number
   /**
-   * The amount of space between slides.
+   * The amount of space between items.
    * @default "0px"
    */
   spacing: string
@@ -96,14 +95,14 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    */
   scrollBy: "page" | "item"
   /**
-   * Function called when the view changes.
+   * Function called when the page changes.
    */
-  onSnapChange?: ((details: SnapChangeDetails) => void) | undefined
+  onPageChange?: ((details: PageChangeDetails) => void) | undefined
   /**
    * The threshold for determining if an item is in view.
    * @default 0.6
    */
-  inViewThreshold: number
+  inViewThreshold: number | number[]
   /**
    * The snap type of the item.
    * @default "mandatory"
@@ -113,7 +112,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    * The total number of slides.
    * Useful for SSR to render the initial ating the snap points.
    */
-  slideCount?: number
+  slideCount?: number | undefined
   /**
    * Function called when the drag status changes.
    */
@@ -125,15 +124,14 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
 }
 
 interface PrivateContext {
-  snapPoints: number[]
+  pageSnapPoints: number[]
   slidesInView: number[]
-  scrollEndTimeout?: ReturnType<typeof setTimeout>
+  timeoutRef: ContextRef<ReturnType<typeof setTimeout>>
 }
 
 type ComputedContext = Readonly<{
   isRtl: boolean
   isHorizontal: boolean
-  isVertical: boolean
   canScrollNext: boolean
   canScrollPrev: boolean
   autoplayInterval: number
@@ -170,7 +168,14 @@ export interface ItemProps {
 }
 
 export interface IndicatorProps {
+  /**
+   * The index of the indicator.
+   */
   index: number
+  /**
+   * Whether the indicator is read only.
+   * @default false
+   */
   readOnly?: boolean | undefined
 }
 
@@ -178,11 +183,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The current index of the carousel
    */
-  snapIndex: number
+  page: number
   /**
    * The current snap points of the carousel
    */
-  snapPoints: number[]
+  pageSnapPoints: number[]
   /**
    * Whether the carousel is auto playing
    */
@@ -200,25 +205,25 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   canScrollPrev: boolean
   /**
-   * Function to scroll to a specific snap index
-   */
-  scrollTo(index: number, instant?: boolean): void
-  /**
    * Function to scroll to a specific item index
    */
   scrollToIndex(index: number, instant?: boolean): void
   /**
-   * Function to scroll to the next snap index
+   * Function to scroll to a specific page
+   */
+  scrollTo(page: number, instant?: boolean): void
+  /**
+   * Function to scroll to the next page
    */
   scrollNext(instant?: boolean): void
   /**
-   * Function to scroll to the previous snap index
+   * Function to scroll to the previous page
    */
   scrollPrev(instant?: boolean): void
   /**
    * Returns the current scroll progress as a percentage
    */
-  getScrollProgress(): number
+  getProgress(): number
   /**
    * Function to start/resume autoplay
    */
@@ -233,7 +238,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   isInView(index: number): boolean
   /**
    * Function to re-compute the snap points
-   * and clamp the snap index
+   * and clamp the page
    */
   refresh(): void
 

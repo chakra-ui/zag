@@ -14,28 +14,28 @@ const fetchMachine = createMachine({
   initial: ctx.autoplay ? "autoplay" : "idle",
   context: {},
   on: {
-    "GOTO.NEXT": {
+    "PAGE.NEXT": {
       target: "idle",
-      actions: ["clearScrollEndTimer", "setNextSnapIndex"]
+      actions: ["clearScrollEndTimer", "setNextPage"]
     },
-    "GOTO.PREV": {
+    "PAGE.PREV": {
       target: "idle",
-      actions: ["clearScrollEndTimer", "setPrevSnapIndex"]
+      actions: ["clearScrollEndTimer", "setPrevPage"]
     },
-    GOTO: {
+    "PAGE.SET": {
       target: "idle",
-      actions: ["clearScrollEndTimer", "setSnapIndex"]
+      actions: ["clearScrollEndTimer", "setPage"]
     },
-    "GOTO.INDEX": {
+    "INDEX.SET": {
       target: "idle",
-      actions: ["clearScrollEndTimer", "setMatchingSnapIndex"]
+      actions: ["clearScrollEndTimer", "setMatchingPage"]
     },
     "SNAP.REFRESH": {
-      actions: ["setSnapPoints", "clampSnapIndex"]
+      actions: ["setSnapPoints", "clampPage"]
     }
   },
-  activities: ["trackSlideMutation", "trackSlideIntersections"],
-  entry: ["resetScrollPosition", "setSnapPoints", "setSnapIndex"],
+  activities: ["trackSlideMutation", "trackSlideIntersections", "trackSlideResize"],
+  entry: ["resetScrollPosition", "setSnapPoints", "setPage"],
   exit: ["clearScrollEndTimer"],
   on: {
     UPDATE_CONTEXT: {

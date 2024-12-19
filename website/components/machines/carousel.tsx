@@ -38,7 +38,7 @@ export function Carousel(props: any) {
               <HiChevronLeft />
             </button>
             <div {...api.getIndicatorGroupProps()}>
-              {api.snapPoints.map((_, index) => (
+              {api.pageSnaps.map((_, index) => (
                 <button key={index} {...api.getIndicatorProps({ index })} />
               ))}
             </div>

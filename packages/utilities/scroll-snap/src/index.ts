@@ -144,9 +144,13 @@ export function getScrollSnapPositions(element: HTMLElement): Record<ScrollAxis,
   }
 }
 
-export function findSnapPoint(parent: HTMLElement, predicate: (node: HTMLElement) => boolean): number | undefined {
+export function findSnapPoint(
+  parent: HTMLElement,
+  axis: ScrollAxis,
+  predicate: (node: HTMLElement) => boolean,
+): number | undefined {
   const snapPositions = getSnapPositions(parent)
-  const items = [...snapPositions.x.start, ...snapPositions.x.center, ...snapPositions.x.end]
+  const items = [...snapPositions[axis].start, ...snapPositions[axis].center, ...snapPositions[axis].end]
   for (const item of items) {
     if (predicate(item.node as HTMLElement)) {
       return item.position

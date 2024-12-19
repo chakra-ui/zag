@@ -69,7 +69,12 @@ test.describe("carousel", () => {
   test("[loop=true] should loop slides", async () => {
     await I.controls.bool("loop")
     await I.seePrevTriggerIsEnabled()
-    await I.clickPrevTrigger()
+
+    await I.clickNextTrigger()
+    await I.clickNextTrigger()
     await I.seeItemInView(5)
+
+    await I.clickNextTrigger()
+    await I.seeItemInView(0)
   })
 })
