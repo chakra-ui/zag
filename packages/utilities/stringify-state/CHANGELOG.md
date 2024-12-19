@@ -1,5 +1,7 @@
 # @zag-js/stringify-state
 
+## 0.79.0
+
 ## 0.78.3
 
 ## 0.78.2
