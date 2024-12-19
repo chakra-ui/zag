@@ -14,7 +14,6 @@ export default function Page() {
       id: useId(),
       spacing: "20px",
       slidesPerPage: 2,
-      slidesPerMove: 1,
       slideCount: carouselData.length,
       allowMouseDrag: true,
     }),
