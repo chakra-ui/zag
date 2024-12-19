@@ -60,6 +60,15 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    */
   slidesPerPage: number
   /**
+   * The number of slides to scroll at a time.
+   *
+   * When set to `auto`, the number of slides to scroll is determined by the
+   * `slidesPerPage` property.
+   *
+   * @default "auto"
+   */
+  slidesPerMove: number | "auto"
+  /**
    * Whether to scroll automatically. The default delay is 4000ms.
    * @default false
    */
@@ -88,12 +97,6 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    * enabling nearby items to remain partially in view.
    */
   padding?: string
-  /**
-   * Specifies the scrolling progression mode,
-   * whether between advancing per page or individual items.
-   * @default 'page'
-   */
-  scrollBy: "page" | "item"
   /**
    * Function called when the page changes.
    */

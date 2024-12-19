@@ -7,7 +7,7 @@ import { dom } from "./carousel.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./carousel.types"
 
 const DEFAULT_SLIDES_PER_PAGE = 1
-const DEFAULT_SCROLL_BY = "page"
+const DEFAULT_SLIDES_PER_MOVE = "auto"
 
 export function machine(userContext: UserDefinedContext) {
   const ctx = compact(userContext)
@@ -22,8 +22,8 @@ export function machine(userContext: UserDefinedContext) {
         snapType: "mandatory",
         loop: false,
         slidesPerPage: DEFAULT_SLIDES_PER_PAGE,
+        slidesPerMove: DEFAULT_SLIDES_PER_MOVE,
         spacing: "0px",
-        scrollBy: DEFAULT_SCROLL_BY,
         autoplay: false,
         allowMouseDrag: false,
         inViewThreshold: 0.6,
@@ -40,7 +40,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         pageSnapPoints: getPageSnapPoints(
           ctx.slideCount,
-          ctx.scrollBy ?? DEFAULT_SCROLL_BY,
+          ctx.slidesPerMove ?? DEFAULT_SLIDES_PER_MOVE,
           ctx.slidesPerPage ?? DEFAULT_SLIDES_PER_PAGE,
         ),
         slidesInView: [],
@@ -370,10 +370,10 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max)
 }
 
-function getPageSnapPoints(totalSlides: number | undefined, scrollBy: "page" | "item", slidesPerPage: number) {
+function getPageSnapPoints(totalSlides: number | undefined, slidesPerMove: number | "auto", slidesPerPage: number) {
   if (totalSlides == null) return []
-  if (scrollBy === "item") return Array.from({ length: totalSlides - 1 }, (_, i) => i)
   const snapPoints: number[] = []
-  for (let i = 0; i < totalSlides; i += slidesPerPage) snapPoints.push(i)
+  const perMove = slidesPerMove === "auto" ? Math.floor(slidesPerPage) : slidesPerMove
+  for (let i = 0; i < totalSlides - 1; i += perMove) snapPoints.push(i)
   return snapPoints
 }

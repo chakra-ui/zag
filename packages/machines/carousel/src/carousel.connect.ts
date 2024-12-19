@@ -121,7 +121,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-label": state.context.slideCount ? translations.item(props.index, state.context.slideCount) : undefined,
         "aria-hidden": ariaAttr(!isInView),
         style: {
-          scrollSnapAlign: getItemSnapAlign(state.context, props),
+          scrollSnapAlign: getSnapAlign(state.context, props),
         },
       })
     },
@@ -252,10 +252,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 }
 
-function getItemSnapAlign(ctx: MachineContext, props: ItemProps) {
-  const snapAlign = props.snapAlign ?? "start"
-  if (ctx.scrollBy === "item") return snapAlign
-  const perPage = Math.floor(ctx.slidesPerPage)
-  const shouldSnap = (props.index + perPage) % perPage === 0
+function getSnapAlign(ctx: MachineContext, props: ItemProps) {
+  const { snapAlign = "start", index } = props
+  const perMove = ctx.slidesPerMove === "auto" ? Math.floor(ctx.slidesPerPage) : ctx.slidesPerMove
+  const shouldSnap = (index + perMove) % perMove === 0
   return shouldSnap ? snapAlign : undefined
 }
