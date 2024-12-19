@@ -95,11 +95,11 @@
     "@sveltejs/vite-plugin-svelte": "5.0.1",
     "@tsconfig/svelte": "5.0.4",
     "@types/form-serialize": "0.7.4",
-    "svelte": "5.4.0",
+    "svelte": "5.14.5",
     "svelte-check": "4.1.0",
     "tslib": "2.7.0",
     "typescript": "5.7.2",
-    "vite": "6.0.2",
+    "vite": "6.0.4",
     "vite-tsconfig-paths": "5.1.3"
   }
 }

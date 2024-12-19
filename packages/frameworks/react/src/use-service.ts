@@ -18,7 +18,7 @@ export function useService<
     return instance
   })
 
-  const snapshotRef = useRef<S.StateInit<TContext, TState>>()
+  const snapshotRef = useRef<S.StateInit<TContext, TState>>(undefined)
 
   useSafeLayoutEffect(() => {
     const stateInit = hydratedState ?? snapshotRef.current

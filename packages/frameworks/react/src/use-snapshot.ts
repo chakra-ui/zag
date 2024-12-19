@@ -26,8 +26,8 @@ export function useSnapshot<
    * Subscribe to the service state and create a snapshot of it
    * -----------------------------------------------------------------------------*/
 
-  const lastSnapshot = useRef<Snapshot<State>>()
-  const lastAffected = useRef<WeakMap<object, unknown>>()
+  const lastSnapshot = useRef<Snapshot<State>>(undefined)
+  const lastAffected = useRef<WeakMap<object, unknown>>(undefined)
 
   const currSnapshot = useSyncExternalStore(
     useCallback((callback) => subscribe(service.state, callback, notifyInSync), [notifyInSync]),
