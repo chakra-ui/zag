@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/interact-outside",
-  "version": "0.78.3",
+  "version": "0.79.0",
   "description": "Track interactions or focus outside an element",
   "keywords": [
     "js",
