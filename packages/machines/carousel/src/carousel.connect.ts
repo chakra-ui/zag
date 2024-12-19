@@ -242,6 +242,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.autoplayTrigger.attrs,
         type: "button",
         "data-orientation": state.context.orientation,
+        "data-pressed": dataAttr(isPlaying),
         "aria-label": isPlaying ? translations.autoplayStop : translations.autoplayStart,
         onClick(event) {
           if (event.defaultPrevented) return
