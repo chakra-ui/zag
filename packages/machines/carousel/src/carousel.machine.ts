@@ -141,8 +141,10 @@ export function machine(userContext: UserDefinedContext) {
           const win = dom.getWin(ctx)
           const observer = new win.MutationObserver(() => {
             send({ type: "SNAP.REFRESH", src: "slide.mutation" })
+            dom.syncTabIndex(ctx)
           })
-          observer.observe(el, { childList: true })
+          dom.syncTabIndex(ctx)
+          observer.observe(el, { childList: true, subtree: true })
           return () => observer.disconnect()
         },
 

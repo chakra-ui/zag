@@ -9,6 +9,10 @@ test.describe("carousel", () => {
     await I.goto()
   })
 
+  test("should have no accessibility violations", async () => {
+    await I.checkAccessibility()
+  })
+
   test("renders correctly", async () => {
     await I.seeNumOfItems(6)
     await I.seeIndicatorIsActive(0)

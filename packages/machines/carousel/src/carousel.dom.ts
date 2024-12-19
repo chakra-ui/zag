@@ -1,4 +1,4 @@
-import { createScope, queryAll } from "@zag-js/dom-query"
+import { createScope, getTabbables, queryAll } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./carousel.types"
 
 export const dom = createScope({
@@ -14,5 +14,16 @@ export const dom = createScope({
   getItemGroupEl: (ctx: Ctx) => dom.getById(ctx, dom.getItemGroupId(ctx))!,
   getItemEl: (ctx: Ctx, index: number) => dom.getById(ctx, dom.getItemId(ctx, index)),
   getItemEls: (ctx: Ctx) => queryAll(dom.getItemGroupEl(ctx), `[data-part=item]`),
-  getActiveIndicatorEl: (ctx: Ctx) => dom.getById(ctx, dom.getIndicatorId(ctx, ctx.snapIndex))!,
+  getActiveIndicatorEl: (ctx: Ctx) => dom.getById(ctx, dom.getIndicatorId(ctx, ctx.page))!,
+
+  syncTabIndex(ctx: Ctx) {
+    const el = dom.getItemGroupEl(ctx)
+    if (!el) return
+    const tabbables = getTabbables(el)
+    if (tabbables.length > 0) {
+      el.removeAttribute("tabindex")
+    } else {
+      el.setAttribute("tabindex", "0")
+    }
+  },
 })
