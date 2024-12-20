@@ -208,12 +208,8 @@ Earlier, we mentioned that each carousel part has a `data-part` attribute added
 to them to select and style them in the DOM.
 
 ```css
-[data-part="item"] {
+[data-part="root"] {
   /* styles for the root part */
-}
-
-[data-part="viewport"] {
-  /* styles for the viewport part */
 }
 
 [data-part="item-group"] {
@@ -221,7 +217,11 @@ to them to select and style them in the DOM.
 }
 
 [data-part="item"] {
-  /* styles for the item part */
+  /* styles for the root part */
+}
+
+[data-part="control"] {
+  /* styles for the control part */
 }
 
 [data-part="next-trigger"] {
@@ -238,6 +238,10 @@ to them to select and style them in the DOM.
 
 [data-part="indicator"] {
   /* styles for the indicator part */
+}
+
+[data-part="autoplay-trigger"] {
+  /* styles for the autoplay-trigger part */
 }
 ```
 
