@@ -28,5 +28,11 @@
       </div>
     {/each}
   </div>
+  <div {...api.getIndicatorGroupProps()}>
+    {#each api.pageSnapPoints as _, index}
+      <!-- svelte-ignore a11y_consider_explicit_label -->
+      <button {...api.getIndicatorProps({ index })}></button>
+    {/each}
+  </div>
 </div>
 ```

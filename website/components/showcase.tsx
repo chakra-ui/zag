@@ -84,6 +84,7 @@ const components = {
         slidesPerPage: 1,
         loop: false,
         spacing: "0px",
+        allowMouseDrag: false,
       }}
     />
   ),

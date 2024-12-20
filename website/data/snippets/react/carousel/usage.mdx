@@ -32,6 +32,11 @@ export function Carousel() {
           </div>
         ))}
       </div>
+      <div {...api.getIndicatorGroupProps()}>
+        {api.pageSnapPoints.map((_, index) => (
+          <button {...api.getIndicatorProps({ index })} key={index} />
+        ))}
+      </div>
     </div>
   )
 }
