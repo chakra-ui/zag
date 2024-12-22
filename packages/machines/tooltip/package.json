@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/tooltip",
-  "version": "0.78.3",
+  "version": "0.79.0",
   "description": "Core logic for the tooltip widget implemented as a state machine",
   "keywords": [
     "js",
