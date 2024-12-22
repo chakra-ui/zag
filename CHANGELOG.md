@@ -6,7 +6,16 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
-## [0.78.3](./#0.78.3) - 2024-12-13
+## [0.79.0](./#0.79.0) - 2024-12-22
+
+### Changed
+
+- **Carousel [BREAKING]**: Redesign carousel machine to improve touch handling and performance.
+
+  - Changed the implementation to rely on the native CSS `scroll-snap` feature, and added new features.
+  - Changed `index` prop to `page`
+  - Changed `onIndexChange` to `onPageChange`
+  - Removed need for `api.getViewportProps()`
 
 ### Fixed
 
