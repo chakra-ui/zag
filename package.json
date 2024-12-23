@@ -65,7 +65,7 @@
     "@babel/traverse": "7.26.4",
     "@babel/types": "7.26.3",
     "@changesets/changelog-github": "0.5.0",
-    "@changesets/cli": "2.27.10",
+    "@changesets/cli": "2.27.11",
     "@commitlint/cli": "19.6.0",
     "@commitlint/config-conventional": "19.6.0",
     "@octokit/rest": "21.0.2",
@@ -88,7 +88,7 @@
     "fast-glob": "3.3.2",
     "find-packages": "10.0.4",
     "husky": "9.1.7",
-    "lint-staged": "15.2.10",
+    "lint-staged": "15.2.11",
     "node-fetch": "3.3.2",
     "plop": "4.0.1",
     "prettier": "3.4.2",
@@ -99,8 +99,8 @@
     "tsx": "4.19.2",
     "typescript": "5.7.2",
     "vercel-submodules": "1.0.10",
-    "vite": "6.0.4",
-    "vite-plugin-dts": "4.3.0",
+    "vite": "6.0.5",
+    "vite-plugin-dts": "4.4.0",
     "vitest": "2.1.8"
   },
   "engines": {

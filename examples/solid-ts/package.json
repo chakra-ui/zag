@@ -89,7 +89,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-solid": "0.462.0",
+    "lucide-solid": "0.469.0",
     "match-sorter": "8.0.0",
     "solid-js": "1.9.3",
     "vinxi": "0.4.3"
