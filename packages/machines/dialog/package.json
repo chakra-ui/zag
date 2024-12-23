@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/dialog",
-  "version": "0.78.3",
+  "version": "0.79.0",
   "description": "Core logic for the dialog widget implemented as a state machine",
   "keywords": [
     "js",
