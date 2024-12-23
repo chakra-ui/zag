@@ -65,7 +65,7 @@
     "@babel/traverse": "7.26.4",
     "@babel/types": "7.26.3",
     "@changesets/changelog-github": "0.5.0",
-    "@changesets/cli": "2.27.10",
+    "@changesets/cli": "2.27.11",
     "@commitlint/cli": "19.6.0",
     "@commitlint/config-conventional": "19.6.0",
     "@octokit/rest": "21.0.2",
