@@ -255,3 +255,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getIndicatorGroupProps(): T["element"]
   getIndicatorProps(props: IndicatorProps): T["button"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { Orientation } from "@zag-js/types"
