@@ -1,5 +1,21 @@
 # @zag-js/carousel
 
+## 0.79.1
+
+### Patch Changes
+
+- [`da214c0`](https://github.com/chakra-ui/zag/commit/da214c015a78ae8783a64991d0025dbcbc650659) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Re-export Orientation type
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.79.1
+  - @zag-js/core@0.79.1
+  - @zag-js/types@0.79.1
+  - @zag-js/utils@0.79.1
+  - @zag-js/dom-event@0.79.1
+  - @zag-js/dom-query@0.79.1
+  - @zag-js/scroll-snap@0.79.1
+
 ## 0.79.0
 
 ### Minor Changes
