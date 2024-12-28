@@ -7,9 +7,10 @@ export interface TrapFocusOptions extends Omit<Options, "document"> {}
 
 export function trapFocus(el: ElementOrGetter, options: TrapFocusOptions = {}) {
   let trap: FocusTrap | undefined
-  raf(() => {
+  const cleanup = raf(() => {
     const contentEl = typeof el === "function" ? el() : el
     if (!contentEl) return
+
     trap = createFocusTrap(contentEl, {
       escapeDeactivates: false,
       allowOutsideClick: true,
@@ -28,6 +29,7 @@ export function trapFocus(el: ElementOrGetter, options: TrapFocusOptions = {}) {
 
   return function destroy() {
     trap?.deactivate()
+    cleanup()
   }
 }
 
