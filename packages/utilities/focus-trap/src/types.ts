@@ -1,6 +1,6 @@
-import type { FocusableElement } from "tabbable"
+export type FocusableElement = HTMLElement | SVGElement
 
-export type FocusTargetValue = HTMLElement | SVGElement | string
+export type FocusTargetValue = FocusableElement | string
 
 export type FocusTargetValueOrFalse = FocusTargetValue | false
 
