@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.79.1](./#0.79.1) - 2024-12-27
+
+### Fixed
+
+- **Carousel**: Exported misising `Orientation` type
+
 ## [0.79.0](./#0.79.0) - 2024-12-22
 
 ### Changed
