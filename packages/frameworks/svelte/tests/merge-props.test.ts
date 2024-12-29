@@ -29,7 +29,7 @@ describe("mergeProps for Svelte", () => {
 
   it("combines css classes", () => {
     const className1 = "primary"
-    const className2 = ["hover", "focus", null, undefined]
+    const className2 = ["hover", { focus: true }, null, undefined]
     const className3 = {
       md: false,
       lg: true,
