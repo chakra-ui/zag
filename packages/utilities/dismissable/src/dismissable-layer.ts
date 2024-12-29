@@ -135,7 +135,9 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
     }),
   )
   return () => {
-    cleanups.forEach((fn) => fn?.())
+    func(() => {
+      cleanups.forEach((fn) => fn?.())
+    })
   }
 }
 
@@ -159,6 +161,8 @@ export function trackDismissableBranch(nodeOrFn: NodeOrFn, options: { defer?: bo
   )
 
   return () => {
-    cleanups.forEach((fn) => fn?.())
+    func(() => {
+      cleanups.forEach((fn) => fn?.())
+    })
   }
 }
