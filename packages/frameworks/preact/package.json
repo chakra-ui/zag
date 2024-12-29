@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/preact",
-  "version": "0.79.1",
+  "version": "0.79.2",
   "description": "The react wrapper for zag",
   "keywords": [
     "ui-machines",

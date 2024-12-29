@@ -1,5 +1,20 @@
 # @zag-js/collapsible
 
+## 0.79.2
+
+### Patch Changes
+
+- [`1ee1c97`](https://github.com/chakra-ui/zag/commit/1ee1c977892cfdc9f73f52f2f471df34d7fc136d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where re-rendering an open collapsible causes a replay
+  of the opening animation
+
+- Updated dependencies [[`525e645`](https://github.com/chakra-ui/zag/commit/525e645404f56c10919cc9d36279044dff253a08)]:
+  - @zag-js/dom-query@0.79.2
+  - @zag-js/anatomy@0.79.2
+  - @zag-js/core@0.79.2
+  - @zag-js/types@0.79.2
+  - @zag-js/utils@0.79.2
+
 ## 0.79.1
 
 ### Patch Changes
