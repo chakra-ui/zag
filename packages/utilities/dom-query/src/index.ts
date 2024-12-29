@@ -1,3 +1,4 @@
+export * from "./add-dom-event"
 export * from "./attrs"
 export * from "./constants"
 export * from "./contains"

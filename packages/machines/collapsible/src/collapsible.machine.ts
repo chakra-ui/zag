@@ -46,7 +46,7 @@ export function machine(userContext: UserDefinedContext) {
 
         closing: {
           tags: ["open"],
-          activities: ["trackAnimationEvents"],
+          activities: ["trackExitAnimation"],
           on: {
             "CONTROLLED.CLOSE": "closed",
             "CONTROLLED.OPEN": "open",
@@ -72,13 +72,14 @@ export function machine(userContext: UserDefinedContext) {
             ],
             "ANIMATION.END": {
               target: "closed",
-              actions: ["invokeOnExitComplete"],
+              actions: ["invokeOnExitComplete", "clearInitial"],
             },
           },
         },
 
         open: {
           tags: ["open"],
+          activities: ["trackEnterAnimation"],
           on: {
             "CONTROLLED.CLOSE": "closing",
             CLOSE: [
@@ -94,6 +95,9 @@ export function machine(userContext: UserDefinedContext) {
             "SIZE.MEASURE": {
               actions: ["measureSize"],
             },
+            "ANIMATION.END": {
+              actions: ["clearInitial"],
+            },
           },
         },
       },
@@ -103,7 +107,42 @@ export function machine(userContext: UserDefinedContext) {
         isOpenControlled: (ctx) => !!ctx["open.controlled"],
       },
       activities: {
-        trackAnimationEvents(ctx, _evt, { send }) {
+        trackEnterAnimation(ctx, _evt, { send }) {
+          let cleanup: VoidFunction | undefined
+
+          const rafCleanup = raf(() => {
+            const contentEl = dom.getContentEl(ctx)
+            if (!contentEl) return
+
+            // if there's no animation, send ANIMATION.END immediately
+            const animationName = getComputedStyle(contentEl).animationName
+            const hasNoAnimation = !animationName || animationName === "none"
+
+            if (hasNoAnimation) {
+              send({ type: "ANIMATION.END" })
+              return
+            }
+
+            const onEnd = (event: AnimationEvent) => {
+              const target = getEventTarget<Element>(event)
+              if (target === contentEl) {
+                send({ type: "ANIMATION.END" })
+              }
+            }
+
+            contentEl.addEventListener("animationend", onEnd)
+            cleanup = () => {
+              contentEl.removeEventListener("animationend", onEnd)
+            }
+          })
+
+          return () => {
+            rafCleanup()
+            cleanup?.()
+          }
+        },
+
+        trackExitAnimation(ctx, _evt, { send }) {
           let cleanup: VoidFunction | undefined
 
           const rafCleanup = raf(() => {
@@ -146,7 +185,9 @@ export function machine(userContext: UserDefinedContext) {
           ctx.initial = true
         },
         clearInitial(ctx) {
-          ctx.initial = false
+          raf(() => {
+            ctx.initial = false
+          })
         },
         cleanupNode(ctx) {
           ctx.stylesRef = null

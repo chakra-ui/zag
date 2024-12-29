@@ -145,3 +145,20 @@ export function getNextTabbable(container: HTMLElement | null, current?: HTMLEle
   const index = tabbables.indexOf(currentElement)
   return tabbables[index + 1] || null
 }
+
+const hasTabIndex = (node: Element) => !Number.isNaN(parseInt(node.getAttribute("tabindex") || "0", 10))
+
+const isContentEditable = (node: Element) =>
+  // @ts-ignore
+  node.isContentEditable ||
+  node.getAttribute("contenteditable") === "true" ||
+  node.getAttribute("contenteditable") === ""
+
+export function getTabIndex(node: HTMLElement | SVGElement) {
+  if (node.tabIndex < 0) {
+    if ((/^(audio|video|details)$/.test(node.localName) || isContentEditable(node)) && !hasTabIndex(node)) {
+      return 0
+    }
+  }
+  return node.tabIndex
+}

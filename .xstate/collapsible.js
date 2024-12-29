@@ -40,7 +40,7 @@ const fetchMachine = createMachine({
     },
     closing: {
       tags: ["open"],
-      activities: ["trackAnimationEvents"],
+      activities: ["trackExitAnimation"],
       on: {
         "CONTROLLED.CLOSE": "closed",
         "CONTROLLED.OPEN": "open",
@@ -60,12 +60,13 @@ const fetchMachine = createMachine({
         }],
         "ANIMATION.END": {
           target: "closed",
-          actions: ["invokeOnExitComplete"]
+          actions: ["invokeOnExitComplete", "clearInitial"]
         }
       }
     },
     open: {
       tags: ["open"],
+      activities: ["trackEnterAnimation"],
       on: {
         "CONTROLLED.CLOSE": "closing",
         CLOSE: [{
@@ -77,6 +78,9 @@ const fetchMachine = createMachine({
         }],
         "SIZE.MEASURE": {
           actions: ["measureSize"]
+        },
+        "ANIMATION.END": {
+          actions: ["clearInitial"]
         }
       }
     }
