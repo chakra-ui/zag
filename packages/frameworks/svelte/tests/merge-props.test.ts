@@ -10,7 +10,7 @@ describe("mergeProps for Svelte", () => {
     const props = mergeProps({ onClick, className, id })
 
     expect(props.onClick).toBe(onClick)
-    expect(props.className).toBe(className)
+    expect(props.class).toBe(className)
     expect(props.id).toBe(id)
   })
 
@@ -40,7 +40,7 @@ describe("mergeProps for Svelte", () => {
     expect(props.class).toBe("primary hover focus lg")
 
     const props2 = mergeProps({ className: className1 }, { className: className2 }, { className: className3 })
-    expect(props2.className).toBe("primary hover focus lg")
+    expect(props2.class).toBe("primary hover focus lg")
   })
 
   it("combines styles", () => {

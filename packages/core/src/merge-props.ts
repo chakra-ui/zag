@@ -4,59 +4,11 @@ interface Props {
   [key: string]: any
 }
 
-type ClassValue = ClassValue[] | Record<string, any> | string | number | bigint | null | boolean | undefined
-
-const classValueToString = (mix: ClassValue) => {
-  let i: any
-  let j: any
-
-  let str = ""
-
-  if (typeof mix === "string" || typeof mix === "number") {
-    str += mix
-  } else if (typeof mix === "object") {
-    if (Array.isArray(mix)) {
-      const len = mix.length
-
-      for (i = 0; i < len; i++) {
-        if (mix[i]) {
-          if ((j = classValueToString(mix[i]))) {
-            str && (str += " ")
-            str += j
-          }
-        }
-      }
-    } else {
-      for (j in mix) {
-        if (mix![j]) {
-          str && (str += " ")
-          str += j
-        }
-      }
-    }
-  }
-
-  return str
-}
-
-const clsx = (...args: ClassValue[]) => {
-  let idx = 0
-  let tmp: ClassValue
-  let cls: string
-  let str = ""
-  let len = args.length
-
-  for (; idx < len; idx++) {
-    if ((tmp = args[idx])) {
-      if ((cls = classValueToString(tmp))) {
-        str && (str += " ")
-        str += cls
-      }
-    }
-  }
-
-  return str
-}
+const clsx = (...args: (string | undefined)[]) =>
+  args
+    .map((str) => str?.trim?.())
+    .filter(Boolean)
+    .join(" ")
 
 const CSS_REGEX = /((?:--)?(?:\w+-?)+)\s*:\s*([^;]*)/g
 
