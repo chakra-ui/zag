@@ -73,14 +73,32 @@ function isEventPointWithin(node: MaybeElement, event: Event) {
   )
 }
 
-function isEventWithinScrollbar(event: Event, target: HTMLElement): boolean {
-  if (!target || !isPointerEvent(event)) return false
+function isPointInRect(rect: { x: number; y: number; width: number; height: number }, point: { x: number; y: number }) {
+  return rect.y <= point.y && point.y <= rect.y + rect.height && rect.x <= point.x && point.x <= rect.x + rect.width
+}
 
-  const isScrollableY = target.scrollHeight > target.clientHeight
-  const onScrollbarY = isScrollableY && event.clientX > target.clientWidth
+function isEventWithinScrollbar(event: Event, ancestor: HTMLElement): boolean {
+  if (!ancestor || !isPointerEvent(event)) return false
 
-  const isScrollableX = target.scrollWidth > target.clientWidth
-  const onScrollbarX = isScrollableX && event.clientY > target.clientHeight
+  const isScrollableY = ancestor.scrollHeight > ancestor.clientHeight
+  const onScrollbarY = isScrollableY && event.clientX > ancestor.offsetLeft + ancestor.clientWidth
+
+  const isScrollableX = ancestor.scrollWidth > ancestor.clientWidth
+  const onScrollbarX = isScrollableX && event.clientY > ancestor.offsetTop + ancestor.clientHeight
+
+  const rect = {
+    x: ancestor.offsetLeft,
+    y: ancestor.offsetTop,
+    width: ancestor.clientWidth + (isScrollableY ? 16 : 0),
+    height: ancestor.clientHeight + (isScrollableX ? 16 : 0),
+  }
+
+  const point = {
+    x: event.clientX,
+    y: event.clientY,
+  }
+
+  if (!isPointInRect(rect, point)) return false
 
   return onScrollbarY || onScrollbarX
 }
@@ -98,17 +116,27 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   function isEventOutside(event: Event): boolean {
     const target = getEventTarget(event)
     if (!isHTMLElement(target)) return false
+
     // ignore disconnected nodes (removed from DOM)
     if (!target.isConnected) return false
+
     // ignore nodes that are inside the component
     if (contains(node, target)) return false
+
     // Ex: password manager selection
     if (isEventPointWithin(node, event)) return false
+
     // Ex: page content that is scrollable
-    if (isEventWithinScrollbar(event, target)) return false
+    const triggerEl = doc.querySelector(`[aria-controls="${node!.id}"]`)
+    if (triggerEl) {
+      const triggerAncestor = getNearestOverflowAncestor(triggerEl)
+      if (isEventWithinScrollbar(event, triggerAncestor)) return false
+    }
+
     // Ex: dialog positioner that is scrollable
-    const scrollParent = getNearestOverflowAncestor(node!)
-    if (isEventWithinScrollbar(event, scrollParent)) return false
+    const nodeAncestor = getNearestOverflowAncestor(node!)
+    if (isEventWithinScrollbar(event, nodeAncestor)) return false
+
     // Custom exclude function
     return !exclude?.(target)
   }

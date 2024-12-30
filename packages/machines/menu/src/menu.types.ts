@@ -164,11 +164,6 @@ interface PrivateContext {
    * The typeahead state for faster keyboard navigation
    */
   typeaheadState: TypeaheadState
-  /**
-   * @internal
-   * Whether to return focus to the trigger when the menu is closed
-   */
-  restoreFocus?: boolean | undefined
 }
 
 export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}

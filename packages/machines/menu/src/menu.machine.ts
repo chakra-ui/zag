@@ -42,7 +42,6 @@ export function machine(userContext: UserDefinedContext) {
         lastHighlightedValue: null,
         children: cast(ref({})),
         suspendPointer: false,
-        restoreFocus: true,
         typeaheadState: getByTypeahead.defaultOptions,
       },
 
@@ -489,6 +488,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         trackInteractOutside(ctx, _evt, { send }) {
           const getContentEl = () => dom.getContentEl(ctx)
+          let restoreFocus = true
           return trackDismissableElement(getContentEl, {
             defer: true,
             exclude: [dom.getTriggerEl(ctx)],
@@ -500,11 +500,11 @@ export function machine(userContext: UserDefinedContext) {
               closeRootMenu(ctx)
             },
             onPointerDownOutside(event) {
-              ctx.restoreFocus = !event.detail.focusable
+              restoreFocus = !event.detail.focusable
               ctx.onPointerDownOutside?.(event)
             },
             onDismiss() {
-              send({ type: "CLOSE", src: "interact-outside" })
+              send({ type: "CLOSE", src: "interact-outside", restoreFocus })
             },
           })
         },
@@ -659,8 +659,8 @@ export function machine(userContext: UserDefinedContext) {
           if (!ctx.highlightedValue) return
           ctx.onSelect?.({ value: ctx.highlightedValue })
         },
-        focusTrigger(ctx) {
-          if (ctx.isSubmenu || ctx.anchorPoint || !ctx.restoreFocus) return
+        focusTrigger(ctx, evt) {
+          if (ctx.isSubmenu || ctx.anchorPoint || evt.restoreFocus === false) return
           queueMicrotask(() => dom.getTriggerEl(ctx)?.focus({ preventScroll: true }))
         },
         highlightMatchedItem(ctx, evt) {
