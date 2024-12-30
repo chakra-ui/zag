@@ -349,16 +349,6 @@ export function machine<V>(userContext: UserDefinedContext<V>) {
         isTriggerArrowDownEvent: (_ctx, evt) => evt.previousEvent?.type === "TRIGGER.ARROW_DOWN",
       },
       activities: {
-        trackFormControlState(ctx, _evt, { initialContext }) {
-          // return trackFormControl(dom.getHiddenSelectEl(ctx), {
-          //   onFieldsetDisabledChange(disabled) {
-          //     ctx.fieldsetDisabled = disabled
-          //   },
-          //   onFormReset() {
-          //     set.selectedItems(ctx, initialContext.value)
-          //   },
-          // })
-        },
         trackDismissableElement(ctx, _evt, { send }) {
           const contentEl = () => dom.getContentEl(ctx)
           let restoreFocus = true
