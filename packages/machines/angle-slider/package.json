@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/angle-slider",
-  "version": "0.79.2",
+  "version": "0.79.3",
   "description": "Core logic for the angle-slider widget implemented as a state machine",
   "keywords": [
     "js",

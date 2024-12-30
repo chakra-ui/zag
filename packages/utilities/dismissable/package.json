@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/dismissable",
-  "version": "0.79.2",
+  "version": "0.79.3",
   "description": "Dismissable layer utilities for the DOM",
   "keywords": [
     "js",
