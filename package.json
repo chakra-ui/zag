@@ -99,12 +99,12 @@
     "tsx": "4.19.2",
     "typescript": "5.7.2",
     "vercel-submodules": "1.0.10",
-    "vite": "6.0.5",
+    "vite": "6.0.6",
     "vite-plugin-dts": "4.4.0",
     "vitest": "2.1.8"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "packageManager": "pnpm@9.15.2"
+  "packageManager": "pnpm@9.15.1"
 }
