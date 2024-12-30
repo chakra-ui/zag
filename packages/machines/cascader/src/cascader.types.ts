@@ -168,7 +168,7 @@ type ComputedContext = Readonly<{
   isDisabled: boolean
 }>
 
-export type UserDefinedContext<V> = RequiredBy<PublicContext<V>, "id" | "collection">
+export type UserDefinedContext<V = any> = RequiredBy<PublicContext<V>, "id" | "collection">
 
 export interface MachineContext<V = TreeNode> extends PublicContext<V>, PrivateContext<V>, ComputedContext {}
 
