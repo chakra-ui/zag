@@ -68,6 +68,9 @@ export function machine<V>(userContext: UserDefinedContext<V>) {
         "VALUE.CLEAR": {
           actions: ["clearSelectedItems"],
         },
+        "CLEAR.CLICK": {
+          actions: ["clearSelectedItems", "focusTriggerEl"],
+        },
       },
 
       states: {

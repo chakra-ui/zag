@@ -57,6 +57,9 @@ const fetchMachine = createMachine({
     },
     "VALUE.CLEAR": {
       actions: ["clearSelectedItems"]
+    },
+    "CLEAR.CLICK": {
+      actions: ["clearSelectedItems", "focusTriggerEl"]
     }
   },
   on: {

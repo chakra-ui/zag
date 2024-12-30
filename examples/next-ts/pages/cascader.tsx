@@ -75,7 +75,7 @@ export default function Page() {
               <span>{api.selectedItems.map((i) => i.label).join(", ") || "Select option"}</span>
               {/* <span {...api.getIndicatorProps()}>▼</span> */}
             </button>
-            {/* <button {...api.getClearTriggerProps()}>X</button> */}
+            <button {...api.getClearTriggerProps()}>X</button>
           </div>
 
           {/* UI select */}

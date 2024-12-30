@@ -23,6 +23,8 @@ export function connect<T extends PropTypes, V = any>(
   const selectedItems = state.context.selectedItems
   const highlightedValue = state.context.highlightedValue
 
+  const hasSelectedItems = state.context.hasSelectedItems
+
   const open = state.hasTag("open")
   const focused = state.matches("focused")
 
@@ -113,7 +115,6 @@ export function connect<T extends PropTypes, V = any>(
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
-        // htmlFor: dom.getHiddenSelectId(state.context),
         onClick(event) {
           if (event.defaultPrevented) return
           if (disabled) return
@@ -152,7 +153,7 @@ export function connect<T extends PropTypes, V = any>(
         "aria-haspopup": "listbox",
         "aria-invalid": invalid,
         "data-placement": state.context.currentPlacement,
-        // "data-placeholder-shown": dataAttr(!hasSelectedItems),
+        "data-placeholder-shown": dataAttr(!hasSelectedItems),
 
         onPointerDown(event) {
           if (!isLeftClick(event)) return
@@ -219,7 +220,7 @@ export function connect<T extends PropTypes, V = any>(
         "aria-label": "Clear value",
         "data-invalid": dataAttr(invalid),
         disabled: disabled,
-        // hidden: !state.context.hasSelectedItems,
+        hidden: !hasSelectedItems,
         dir: state.context.dir,
         onClick(event) {
           if (event.defaultPrevented) return
@@ -347,12 +348,12 @@ export function connect<T extends PropTypes, V = any>(
         "aria-expanded": itemState.isBranch ? itemState.highlighted : false,
         "aria-controls": itemState.isBranch ? dom.getListId(state.context, itemState.value) : undefined,
         "data-value": itemState.value,
-        // "aria-selected": itemState.selected,
-        // "data-state": itemState.selected ? "checked" : "unchecked",
+        "aria-selected": itemState.selected,
+        "data-state": itemState.selected ? "checked" : "unchecked",
         "data-highlighted": dataAttr(itemState.highlighted),
         "data-disabled": dataAttr(itemState.disabled),
         "aria-disabled": ariaAttr(itemState.disabled),
-        // "data-selected": dataAttr(itemState.selected),
+        "data-selected": dataAttr(itemState.selected),
         onDoubleClick() {
           if (itemState.disabled) return
           send("CLOSE")
@@ -381,7 +382,7 @@ export function connect<T extends PropTypes, V = any>(
       const itemState = getNodeState(props)
       return normalize.element({
         ...parts.itemText.attrs,
-        // "data-state": itemState.selected ? "checked" : "unchecked",
+        "data-state": itemState.selected ? "checked" : "unchecked",
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
       })
