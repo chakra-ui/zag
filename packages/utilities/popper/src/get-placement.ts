@@ -1,6 +1,6 @@
 import type { AutoUpdateOptions, Middleware, Placement } from "@floating-ui/dom"
 import { arrow, autoUpdate, computePosition, flip, hide, limitShift, offset, shift, size } from "@floating-ui/dom"
-import { getWindow, raf } from "@zag-js/dom-query"
+import { getComputedStyle, getWindow, raf } from "@zag-js/dom-query"
 import { compact, isNull, noop, runIfFn } from "@zag-js/utils"
 import { getAnchorElement } from "./get-anchor"
 import { rectMiddleware, shiftArrowMiddleware, transformOriginMiddleware } from "./middleware"
@@ -175,15 +175,22 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     floating.style.setProperty("--x", `${x}px`)
     floating.style.setProperty("--y", `${y}px`)
 
-    if (options.hideWhenDetached && pos.middlewareData.hide?.referenceHidden) {
-      floating.style.setProperty("visibility", "hidden")
+    if (options.hideWhenDetached) {
+      const isHidden = pos.middlewareData.hide?.referenceHidden
+      if (isHidden) {
+        floating.style.setProperty("visibility", "hidden")
+        floating.style.setProperty("pointer-events", "none")
+      } else {
+        floating.style.removeProperty("visibility")
+        floating.style.removeProperty("pointer-events")
+      }
     }
 
     const contentEl = floating.firstElementChild
 
     if (contentEl) {
-      const zIndex = win.getComputedStyle(contentEl).zIndex
-      floating.style.setProperty("--z-index", zIndex)
+      const styles = getComputedStyle(contentEl)
+      floating.style.setProperty("--z-index", styles.zIndex)
     }
   }
 
