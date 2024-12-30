@@ -1,16 +1,18 @@
 import { getDocument, raf } from "@zag-js/dom-query"
-import { createFocusTrap, type FocusTrap, type Options } from "focus-trap"
+import { FocusTrap } from "./focus-trap"
+import type { FocusTrapOptions } from "./types"
 
 type ElementOrGetter = HTMLElement | null | (() => HTMLElement | null)
 
-export interface TrapFocusOptions extends Omit<Options, "document"> {}
+export interface TrapFocusOptions extends Omit<FocusTrapOptions, "document"> {}
 
 export function trapFocus(el: ElementOrGetter, options: TrapFocusOptions = {}) {
   let trap: FocusTrap | undefined
-  raf(() => {
+  const cleanup = raf(() => {
     const contentEl = typeof el === "function" ? el() : el
     if (!contentEl) return
-    trap = createFocusTrap(contentEl, {
+
+    trap = new FocusTrap(contentEl, {
       escapeDeactivates: false,
       allowOutsideClick: true,
       preventScroll: true,
@@ -28,7 +30,8 @@ export function trapFocus(el: ElementOrGetter, options: TrapFocusOptions = {}) {
 
   return function destroy() {
     trap?.deactivate()
+    cleanup()
   }
 }
 
-export { createFocusTrap, type FocusTrap }
+export { FocusTrap, type FocusTrapOptions }

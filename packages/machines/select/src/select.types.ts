@@ -282,7 +282,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   highlightedItem: V | null
   /**
-   * The value of the select input
+   * Function to highlight a value
    */
   highlightValue(value: string): void
   /**

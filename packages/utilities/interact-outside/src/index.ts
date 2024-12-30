@@ -98,6 +98,9 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   function isEventOutside(event: Event): boolean {
     const target = getEventTarget(event)
     if (!isHTMLElement(target)) return false
+    // ignore disconnected nodes (removed from DOM)
+    if (!target.isConnected) return false
+    // ignore nodes that are inside the component
     if (contains(node, target)) return false
     // Ex: password manager selection
     if (isEventPointWithin(node, event)) return false

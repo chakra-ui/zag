@@ -380,3 +380,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getCloseTriggerProps(): T["button"]
   getActionTriggerProps(props: StepActionTriggerProps): T["button"]
 }
+
+/* -----------------------------------------------------------------------------
+ * Re-exported types
+ * -----------------------------------------------------------------------------*/
+
+export type { Point } from "./utils/rect"

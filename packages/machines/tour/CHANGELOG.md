@@ -1,5 +1,54 @@
 # @zag-js/tour
 
+## 0.79.2
+
+### Patch Changes
+
+- [`56f0ea6`](https://github.com/chakra-ui/zag/commit/56f0ea6f1fe8fee4a432575799a27d1869acf148) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Re-export missing types
+
+- Updated dependencies [[`525e645`](https://github.com/chakra-ui/zag/commit/525e645404f56c10919cc9d36279044dff253a08),
+  [`5bfca99`](https://github.com/chakra-ui/zag/commit/5bfca9934030eac6b25dd1fd78db2371a74c3b33)]:
+  - @zag-js/interact-outside@0.79.2
+  - @zag-js/focus-trap@0.79.2
+  - @zag-js/dom-query@0.79.2
+  - @zag-js/dismissable@0.79.2
+  - @zag-js/popper@0.79.2
+  - @zag-js/anatomy@0.79.2
+  - @zag-js/core@0.79.2
+  - @zag-js/types@0.79.2
+  - @zag-js/utils@0.79.2
+
+## 0.79.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.79.1
+  - @zag-js/core@0.79.1
+  - @zag-js/types@0.79.1
+  - @zag-js/utils@0.79.1
+  - @zag-js/dismissable@0.79.1
+  - @zag-js/dom-query@0.79.1
+  - @zag-js/focus-trap@0.79.1
+  - @zag-js/interact-outside@0.79.1
+  - @zag-js/popper@0.79.1
+
+## 0.79.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.79.0
+  - @zag-js/core@0.79.0
+  - @zag-js/types@0.79.0
+  - @zag-js/utils@0.79.0
+  - @zag-js/dismissable@0.79.0
+  - @zag-js/dom-query@0.79.0
+  - @zag-js/focus-trap@0.79.0
+  - @zag-js/interact-outside@0.79.0
+  - @zag-js/popper@0.79.0
+
 ## 0.78.3
 
 ### Patch Changes

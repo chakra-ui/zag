@@ -1,5 +1,18 @@
 # @zag-js/dom-query
 
+## 0.79.2
+
+### Patch Changes
+
+- [`525e645`](https://github.com/chakra-ui/zag/commit/525e645404f56c10919cc9d36279044dff253a08) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where dialog or popover closes when the focused
+  element is removed from the DOM.
+  - Improve touch device outside interaction detection.
+
+## 0.79.1
+
+## 0.79.0
+
 ## 0.78.3
 
 ## 0.78.2

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/focus-trap",
-  "version": "0.78.3",
+  "version": "0.79.2",
   "description": "Focus trap utility",
   "keywords": [
     "js",
@@ -31,8 +31,7 @@
   },
   "clean-package": "../../../clean-package.config.json",
   "dependencies": {
-    "@zag-js/dom-query": "workspace:*",
-    "focus-trap": "7.6.2"
+    "@zag-js/dom-query": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "2.2.0"
