@@ -1,0 +1,113 @@
+[data-scope="cascader"][data-part="control"] {
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  align-items: flex-start;
+}
+
+[data-scope="cascader"][data-part="label"] {
+  font-size: 14px;
+}
+
+[data-scope="cascader"][data-part="label"][data-disabled] {
+  cursor: default;
+  color: gray;
+}
+
+[data-scope="cascader"][data-part="label"][data-invalid] {
+  color: red;
+}
+
+[data-scope="cascader"][data-part="trigger"] {
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 6px;
+  cursor: default;
+  background: #eeeeee;
+  font-size: 14px;
+  border: 1px solid slategray;
+
+  & svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.cascader svg {
+  position: relative;
+  top: 1px;
+}
+
+[data-scope="cascader"][data-part="trigger"]:disabled {
+  cursor: default;
+}
+
+[data-scope="cascader"][data-part="trigger"][data-invalid] {
+  border: 2px solid red;
+}
+
+[data-scope="cascader"][data-part="positioner"] {
+  width: max-content;
+}
+
+[data-scope="cascader"][data-part="content"] {
+  margin-top: 4px;
+  max-height: min(var(--available-height), 400px);
+  display: flex;
+  background: white;
+  width: fit-content;
+  margin-top: 4px;
+}
+
+[data-scope="cascader"][data-part="list"] {
+  list-style-type: none;
+  max-height: min(var(--available-height), 400px);
+  margin: 0;
+  min-width: 151px;
+  overflow-y: auto;
+  height: 120px;
+  border-right: 1px solid #e8e8e8;
+  padding: 8px;
+  overscroll-behavior: contain;
+  position: relative;
+}
+
+.cascader input {
+  position: sticky;
+  top: 0;
+}
+
+[data-scope="cascader"][data-part="item"] {
+  padding: 4px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+}
+
+[data-scope="cascader"][data-part="item"]:not(:first-child) {
+  margin-top: 2px;
+}
+
+[data-scope="cascader"][data-part="item"][data-disabled] {
+  color: #777;
+  cursor: not-allowed;
+}
+
+[data-scope="cascader"][data-part="item"]:not([data-disabled]):not([data-highlighted]):hover {
+  background: rgba(107, 107, 110, 0.105);
+}
+
+[data-scope="cascader"][data-part="item"][data-highlighted] {
+  background: rgb(0, 0, 195);
+  color: white;
+}
+
+[data-scope="cascader"][data-part="item-text"] {
+  flex: 1;
+  width: 100%;
+}
