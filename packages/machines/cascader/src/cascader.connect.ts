@@ -239,10 +239,7 @@ export function connect<T extends PropTypes, V = any>(
     },
 
     getContentProps() {
-      const highlightedValue = collection.getNodeValue(collection.at(highlightedIndexPath))
-      const ariaActiveDescendant = highlightedIndexPath.length
-        ? dom.getItemId(state.context, highlightedValue)
-        : undefined
+      const ariaActiveDescendant = highlightedValue ? dom.getItemId(state.context, highlightedValue) : undefined
 
       return normalize.element({
         hidden: !open,
@@ -296,11 +293,11 @@ export function connect<T extends PropTypes, V = any>(
               send({ type: "CONTENT.END" })
             },
             Enter() {
-              if (!highlightedIndexPath.length) return
+              if (!highlightedValue) return
               send({ type: "ITEM.CLICK", src: "keydown.enter", indexPath: highlightedIndexPath })
             },
             Space() {
-              if (!highlightedIndexPath.length) return
+              if (!highlightedValue) return
               send({ type: "ITEM.CLICK", src: "keydown.space", indexPath: highlightedIndexPath })
             },
           }
