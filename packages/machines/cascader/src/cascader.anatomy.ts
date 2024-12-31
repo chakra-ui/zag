@@ -9,6 +9,7 @@ export const anatomy = createAnatomy("cascader").parts(
   "positioner",
   "content",
   "list",
+  "indicator",
   "item",
   "itemText",
 )

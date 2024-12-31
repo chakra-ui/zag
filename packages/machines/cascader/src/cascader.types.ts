@@ -317,6 +317,7 @@ export interface MachineApi<T extends PropTypes = PropTypes, V = TreeNode> {
   getLabelProps(): T["label"]
   getControlProps(): T["element"]
   getTriggerProps(): T["button"]
+  getIndicatorProps(): T["element"]
   getClearTriggerProps(): T["button"]
   getPositionerProps(): T["element"]
   getContentProps(): T["element"]

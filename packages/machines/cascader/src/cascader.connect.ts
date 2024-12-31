@@ -339,6 +339,18 @@ export function connect<T extends PropTypes, V = any>(
       })
     },
 
+    getIndicatorProps() {
+      return normalize.element({
+        ...parts.indicator.attrs,
+        dir: state.context.dir,
+        "aria-hidden": true,
+        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
+      })
+    },
+
     getItemProps(props) {
       const itemState = getNodeState(props)
 

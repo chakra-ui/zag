@@ -90,7 +90,7 @@ export default function Page() {
           <div {...api.getControlProps()}>
             <button {...api.getTriggerProps()}>
               <span>{api.selectedItems.map((i) => i.label).join(", ") || "Select option"}</span>
-              {/* <span {...api.getIndicatorProps()}>▼</span> */}
+              <span {...api.getIndicatorProps()}>▼</span>
             </button>
             <button {...api.getClearTriggerProps()}>X</button>
           </div>
