@@ -1,5 +1,16 @@
 # @zag-js/popper
 
+## 0.79.3
+
+### Patch Changes
+
+- [`5fa08c5`](https://github.com/chakra-ui/zag/commit/5fa08c5f8894d6b23570fcd9e2c7bc1ca3d50f01) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `positioning.hideWhenDetached` doesn't remove the
+  `visibility:hidden` attached to the positioner when reference comes back into view
+- Updated dependencies []:
+  - @zag-js/utils@0.79.3
+  - @zag-js/dom-query@0.79.3
+
 ## 0.79.2
 
 ### Patch Changes
