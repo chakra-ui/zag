@@ -176,6 +176,9 @@ importers:
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
+      '@zag-js/cascader':
+        specifier: workspace:*
+        version: link:../../packages/machines/cascader
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
@@ -432,6 +435,9 @@ importers:
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
+      '@zag-js/cascader':
+        specifier: workspace:*
+        version: link:../../packages/machines/cascader
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
@@ -724,6 +730,9 @@ importers:
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
+      '@zag-js/cascader':
+        specifier: workspace:*
+        version: link:../../packages/machines/cascader
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
@@ -986,6 +995,9 @@ importers:
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
+      '@zag-js/cascader':
+        specifier: workspace:*
+        version: link:../../packages/machines/cascader
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
@@ -1245,6 +1257,9 @@ importers:
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
+      '@zag-js/cascader':
+        specifier: workspace:*
+        version: link:../../packages/machines/cascader
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
@@ -1528,6 +1543,9 @@ importers:
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
+      '@zag-js/cascader':
+        specifier: workspace:*
+        version: link:../../packages/machines/cascader
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
@@ -1774,6 +1792,9 @@ importers:
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
+      '@zag-js/cascader':
+        specifier: workspace:*
+        version: link:../../packages/machines/cascader
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
@@ -2045,6 +2066,9 @@ importers:
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
+      '@zag-js/cascader':
+        specifier: workspace:*
+        version: link:../../packages/machines/cascader
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
@@ -2530,6 +2554,31 @@ importers:
       '@zag-js/scroll-snap':
         specifier: workspace:*
         version: link:../../utilities/scroll-snap
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/cascader:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../utilities/collection
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -21809,7 +21858,7 @@ snapshots:
       klona: 2.0.6
       knitwork: 1.1.0
       listhen: 1.9.0
-      magic-string: 0.30.13
+      magic-string: 0.30.14
       mime: 4.0.4
       mlly: 1.7.2
       mri: 1.2.0
@@ -23891,7 +23940,7 @@ snapshots:
     dependencies:
       acorn: 8.14.0
       estree-walker: 3.0.3
-      magic-string: 0.30.13
+      magic-string: 0.30.14
       unplugin: 1.15.0
     transitivePeerDependencies:
       - webpack-sources
