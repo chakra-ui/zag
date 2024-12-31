@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.79.3](./#0.79.3) - 2024-12-31
+
+### Fixed
+
+- **Menu, Popover**
+
+  - Fix issue where interaction outside detection doesn't work consistently when trigger is within a scrollable
+    container.
+
+  - Fix issue where `positioning.hideWhenDetached` doesn't remove the `visibility:hidden` attached to the positioner
+    when reference comes back into view.
+
 ## [0.79.2](./#0.79.2) - 2024-12-29
 
 ### Fixed
