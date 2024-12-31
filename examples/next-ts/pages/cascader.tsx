@@ -75,7 +75,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 export default function Page() {
   const controls = useControls(cascaderControls)
 
-  const [state, send] = useMachine(cascader.machine({ id: useId(), collection, value: ["réunion"] }), {
+  const [state, send] = useMachine(cascader.machine({ id: useId(), collection }), {
     context: controls.context,
   })
 
