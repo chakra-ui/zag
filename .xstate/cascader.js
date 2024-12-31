@@ -74,7 +74,7 @@ const fetchMachine = createMachine({
         "CONTROLLED.OPEN": [{
           cond: "isTriggerClickEvent",
           target: "open",
-          actions: ["setInitialFocus", "highlightFirstSelectedItem"]
+          actions: ["setInitialFocus", "highlightLastSelectedItem"]
         }, {
           target: "open",
           actions: ["setInitialFocus"]
@@ -84,7 +84,7 @@ const fetchMachine = createMachine({
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["invokeOnOpen", "setInitialFocus", "highlightFirstSelectedItem"]
+          actions: ["invokeOnOpen", "setInitialFocus", "highlightLastSelectedItem"]
         }],
         "TRIGGER.FOCUS": {
           target: "focused"
@@ -104,7 +104,7 @@ const fetchMachine = createMachine({
         "CONTROLLED.OPEN": [{
           cond: "isTriggerClickEvent",
           target: "open",
-          actions: ["setInitialFocus", "highlightFirstSelectedItem"]
+          actions: ["setInitialFocus", "highlightLastSelectedItem"]
         }, {
           cond: "isTriggerArrowUpEvent",
           target: "open",
@@ -132,7 +132,7 @@ const fetchMachine = createMachine({
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
-          actions: ["setInitialFocus", "invokeOnOpen", "highlightFirstSelectedItem"]
+          actions: ["setInitialFocus", "invokeOnOpen", "highlightLastSelectedItem"]
         }],
         "TRIGGER.ENTER": [{
           cond: "isOpenControlled",

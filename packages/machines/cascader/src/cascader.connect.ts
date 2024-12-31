@@ -35,12 +35,20 @@ export function connect<T extends PropTypes, V = any>(
     placement: state.context.currentPlacement,
   })
 
+  function isPrefixOfHighlight(indexPath: number[], highlightedIndexPath: number[]) {
+    // If indexPath is longer, it can't be a prefix.
+    if (indexPath.length > highlightedIndexPath.length) return false
+
+    // Check each element in indexPath against the corresponding element
+    return indexPath.every((val, idx) => val === highlightedIndexPath[idx])
+  }
+
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
     const value = collection.getNodeValue(node)
     const isBranch = collection.isBranchNode(node)
-    const highlighted = highlightedIndexPath.join(",").startsWith(indexPath.join(","))
-    const depth = indexPath.length
+    const highlighted = isPrefixOfHighlight(indexPath, highlightedIndexPath)
+    const depth = indexPath.length + 1
     const selected = state.context.value.includes(value)
 
     return {
@@ -357,7 +365,7 @@ export function connect<T extends PropTypes, V = any>(
         },
         onPointerMove(event) {
           if (itemState.disabled || event.pointerType !== "mouse") return
-          if (state.context.highlightedIndexPath.join(",") === props.indexPath.join(",")) return
+          if (highlightedValue === itemState.value) return
           // We only want to highlight items that have children (mouse only)
           if (!itemState.isBranch) return
           send({ type: "ITEM.POINTER_MOVE", indexPath })

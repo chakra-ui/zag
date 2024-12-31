@@ -9,12 +9,16 @@ import { useControls } from "../hooks/use-controls"
 interface Node {
   label: string
   value: string
-  children?: Node[]
+  continents?: Node[]
+  countries?: Node[]
+  code?: string
+  states?: Node[]
 }
 
 const collection = cascader.collection<Node>({
   nodeToValue: (node) => node.value,
   nodeToString: (node) => node.label,
+  nodeToChildren: (node) => node.continents ?? node.countries ?? node.states,
   rootNode: cascaderData,
 })
 
@@ -24,26 +28,39 @@ interface TreeNodeProps {
   api: cascader.Api
 }
 
+// "Regional Indicator Symbol Letter A" - "Latin Capital Letter A"
+const UNICODE_BASE = 127462 - "A".charCodeAt(0)
+
+// Country code should contain exactly 2 uppercase characters from A..Z
+const COUNTRY_CODE_REGEX = /^[A-Z]{2}$/
+
+export const getEmojiFlag = (countryCode: string): string =>
+  COUNTRY_CODE_REGEX.test(countryCode)
+    ? String.fromCodePoint(...countryCode.split("").map((letter) => UNICODE_BASE + letter.toUpperCase().charCodeAt(0)))
+    : ""
+
 const TreeNode = (props: TreeNodeProps): JSX.Element => {
   const { node, indexPath, api } = props
 
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
+
   // TODO encapsulate
-  const activeIndex = api.highlightedIndexPath[nodeState.depth] ?? -1
+  const activeIndex = api.highlightedIndexPath[nodeState.depth - 1] ?? -1
   const children = collection.getNodeChildren(node)
   const activeNode = activeIndex >= 0 ? children[activeIndex] : null
   const isBranchActiveNode = activeNode && collection.isBranchNode(activeNode)
-
   return (
     <>
       <ul {...api.getListProps(nodeProps)}>
-        {node.children?.map((item, index) => {
+        {children?.map((item, index) => {
           const itemProps = { indexPath: [...indexPath, index], node: item }
           const itemState = api.getNodeState(itemProps)
           return (
-            <li key={item.label} {...api.getItemProps(itemProps)}>
-              <span {...api.getItemTextProps(itemProps)}>{item.label}</span>
+            <li key={item.value} {...api.getItemProps(itemProps)}>
+              <span {...api.getItemTextProps(itemProps)}>
+                {getEmojiFlag(item.code)} {item.label}
+              </span>
 
               {itemState.isBranch && <span>&nbsp; ⦔</span>}
             </li>
@@ -58,7 +75,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 export default function Page() {
   const controls = useControls(cascaderControls)
 
-  const [state, send] = useMachine(cascader.machine({ id: useId(), collection }), {
+  const [state, send] = useMachine(cascader.machine({ id: useId(), collection, value: ["réunion"] }), {
     context: controls.context,
   })
 
@@ -90,7 +107,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["collection"]} />
+        <StateVisualizer state={state} omit={["collection", "highlightedItem", "selectedItems"]} />
       </Toolbar>
     </>
   )

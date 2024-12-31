@@ -67,7 +67,7 @@
   list-style-type: none;
   max-height: min(var(--available-height), 400px);
   margin: 0;
-  min-width: 151px;
+  width: 170px;
   overflow-y: auto;
   height: 120px;
   border-right: 1px solid #e8e8e8;

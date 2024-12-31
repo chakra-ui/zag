@@ -81,7 +81,7 @@ export function machine<V>(userContext: UserDefinedContext<V>) {
               {
                 guard: "isTriggerClickEvent",
                 target: "open",
-                actions: ["setInitialFocus", "highlightFirstSelectedItem"],
+                actions: ["setInitialFocus", "highlightLastSelectedItem"],
               },
               {
                 target: "open",
@@ -95,7 +95,7 @@ export function machine<V>(userContext: UserDefinedContext<V>) {
               },
               {
                 target: "open",
-                actions: ["invokeOnOpen", "setInitialFocus", "highlightFirstSelectedItem"],
+                actions: ["invokeOnOpen", "setInitialFocus", "highlightLastSelectedItem"],
               },
             ],
             "TRIGGER.FOCUS": {
@@ -121,7 +121,7 @@ export function machine<V>(userContext: UserDefinedContext<V>) {
               {
                 guard: "isTriggerClickEvent",
                 target: "open",
-                actions: ["setInitialFocus", "highlightFirstSelectedItem"],
+                actions: ["setInitialFocus", "highlightLastSelectedItem"],
               },
               {
                 guard: "isTriggerArrowUpEvent",
@@ -158,7 +158,7 @@ export function machine<V>(userContext: UserDefinedContext<V>) {
               },
               {
                 target: "open",
-                actions: ["setInitialFocus", "invokeOnOpen", "highlightFirstSelectedItem"],
+                actions: ["setInitialFocus", "invokeOnOpen", "highlightLastSelectedItem"],
               },
             ],
             "TRIGGER.ENTER": [
@@ -484,10 +484,12 @@ export function machine<V>(userContext: UserDefinedContext<V>) {
           const previousSibling = utils.getPreviousSibling(ctx)
           set.highlightedItem(ctx, previousSibling)
         },
-        highlightFirstSelectedItem(ctx) {
-          const firstSelected = ctx.valueIndexPaths[0]
-          if (!firstSelected) return
-          set.highlightedItem(ctx, firstSelected)
+        highlightLastSelectedItem(ctx) {
+          const lastSelected = ctx.valueIndexPaths.at(-1)
+          console.log({ lastSelected })
+
+          if (!lastSelected) return
+          set.highlightedItem(ctx, lastSelected)
         },
         highlightComputedFirstItem(ctx) {
           const firstItem = ctx.valueIndexPaths.length > 0 ? ctx.valueIndexPaths[0] : [0]
