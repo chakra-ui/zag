@@ -1,5 +1,13 @@
 # @zag-js/dom-query
 
+## 0.80.0
+
+### Patch Changes
+
+- [`d7617d1`](https://github.com/chakra-ui/zag/commit/d7617d1d95f93b3557eb88ba879737894da42d51) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in QR Code export where `getDataUrl` doesn't render the
+  full sized QR code.
+
 ## 0.79.3
 
 ## 0.79.2

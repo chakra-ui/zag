@@ -1,5 +1,12 @@
 # @zag-js/auto-resize
 
+## 0.80.0
+
+### Patch Changes
+
+- Updated dependencies [[`d7617d1`](https://github.com/chakra-ui/zag/commit/d7617d1d95f93b3557eb88ba879737894da42d51)]:
+  - @zag-js/dom-query@0.80.0
+
 ## 0.79.3
 
 ### Patch Changes
