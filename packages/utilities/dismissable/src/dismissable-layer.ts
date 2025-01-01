@@ -105,7 +105,10 @@ function trackDismissableElementImpl(node: MaybeElement, options: DismissableEle
     const _containers = Array.isArray(containers) ? containers : [containers]
     const persistentElements = options.persistentElements?.map((fn) => fn()).filter(isHTMLElement)
     if (persistentElements) _containers.push(...persistentElements)
-    return _containers.some((node) => contains(node, target)) || layerStack.isInNestedLayer(node, target)
+    return (
+      _containers.filter(isHTMLElement).some((node) => contains(node, target)) ||
+      layerStack.isInNestedLayer(node, target)
+    )
   }
 
   const cleanups = [

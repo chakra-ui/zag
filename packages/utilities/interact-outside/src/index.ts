@@ -1,13 +1,15 @@
 import { addDomEvent, fireCustomEvent, isContextMenuEvent } from "@zag-js/dom-event"
 import {
   contains,
-  getDocument,
+  getRootNode,
   getEventTarget,
   getNearestOverflowAncestor,
   getWindow,
   isFocusable,
   isHTMLElement,
   raf,
+  getDocument,
+  isShadowRoot,
 } from "@zag-js/dom-query"
 import { callAll } from "@zag-js/utils"
 import { getParentWindow, getWindowFrames } from "./frame-utils"
@@ -108,14 +110,17 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
 
   if (!node) return
 
-  const doc = getDocument(node)
-  const win = getWindow(node)
+  const rootNode = getRootNode(node)
+  const win = getWindow(rootNode)
   const frames = getWindowFrames(win)
   const parentWin = getParentWindow(win)
 
   function isEventOutside(event: Event): boolean {
     const target = getEventTarget(event)
     if (!isHTMLElement(target)) return false
+
+    // Custom exclude function
+    if (exclude?.(target)) return false
 
     // ignore disconnected nodes (removed from DOM)
     if (!target.isConnected) return false
@@ -127,7 +132,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     if (isEventPointWithin(node, event)) return false
 
     // Ex: page content that is scrollable
-    const triggerEl = doc.querySelector(`[aria-controls="${node!.id}"]`)
+    const triggerEl = rootNode.querySelector(`[aria-controls="${node!.id}"]`)
     if (triggerEl) {
       const triggerAncestor = getNearestOverflowAncestor(triggerEl)
       if (isEventWithinScrollbar(event, triggerAncestor)) return false
@@ -137,8 +142,8 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     const nodeAncestor = getNearestOverflowAncestor(node!)
     if (isEventWithinScrollbar(event, nodeAncestor)) return false
 
-    // Custom exclude function
-    return !exclude?.(target)
+    // Final fallback
+    return true
   }
 
   const pointerdownCleanups: Set<VoidFunction> = new Set()
@@ -148,6 +153,12 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     function handler() {
       const func = defer ? raf : (v: any) => v()
       const composedPath = event.composedPath?.() ?? [event.target]
+
+      const target = getEventTarget<HTMLElement>(event)
+
+      // skip shadow root event since it's handled by the host
+      if (target && isShadowRoot(target.getRootNode())) return
+
       func(() => {
         if (!node || !isEventOutside(event)) return
 
@@ -172,16 +183,21 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
       // flush any pending pointerup events
       pointerdownCleanups.forEach((fn) => fn())
       // add a pointerup event listener to the document and all frame documents
-      pointerdownCleanups.add(addDomEvent(doc, "click", handler, { once: true }))
+      pointerdownCleanups.add(addDomEvent(rootNode, "click", handler, { once: true }))
       pointerdownCleanups.add(parentWin.addEventListener("click", handler, { once: true }))
       pointerdownCleanups.add(frames.addEventListener("click", handler, { once: true }))
     } else {
       handler()
     }
   }
+
   const cleanups = new Set<VoidFunction>()
+  const doc = getDocument(rootNode)
 
   const timer = setTimeout(() => {
+    if (isShadowRoot(node.getRootNode())) {
+      cleanups.add(addDomEvent((rootNode as ShadowRoot).host, "pointerdown", onPointerDown, true))
+    }
     cleanups.add(addDomEvent(doc, "pointerdown", onPointerDown, true))
     cleanups.add(parentWin.addEventListener("pointerdown", onPointerDown, true))
     cleanups.add(frames.addEventListener("pointerdown", onPointerDown, true))
@@ -210,7 +226,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     })
   }
 
-  cleanups.add(addDomEvent(doc, "focusin", onFocusin, true))
+  cleanups.add(addDomEvent(rootNode, "focusin", onFocusin, true))
   cleanups.add(parentWin.addEventListener("focusin", onFocusin, true))
   cleanups.add(frames.addEventListener("focusin", onFocusin, true))
 
