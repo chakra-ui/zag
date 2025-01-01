@@ -95,7 +95,7 @@
     "@sveltejs/vite-plugin-svelte": "5.0.1",
     "@tsconfig/svelte": "5.0.4",
     "@types/form-serialize": "0.7.4",
-    "svelte": "5.15.0",
+    "svelte": "5.16.0",
     "svelte-check": "4.1.1",
     "tslib": "2.7.0",
     "typescript": "5.7.2",

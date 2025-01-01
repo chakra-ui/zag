@@ -44,6 +44,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       cb(url)
       return () => win.URL.revokeObjectURL(url)
     },
+    setClipboardFiles(dt) {
+      const items = Array.from(dt?.items ?? [])
+      const files = items.reduce<File[]>((acc, item) => {
+        if (item.kind !== "file") return acc
+        const file = item.getAsFile()
+        if (!file) return acc
+        return [...acc, file]
+      }, [])
+      if (!files.length) return false
+      send({ type: "FILES.SET", files })
+      return true
+    },
 
     getRootProps() {
       return normalize.element({
