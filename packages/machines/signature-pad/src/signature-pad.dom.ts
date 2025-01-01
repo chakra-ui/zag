@@ -8,7 +8,7 @@ export const dom = createScope({
   getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `signature-input-${ctx.id}`,
 
   getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
-  getSegmentEl: (ctx: Ctx) => query<SVGElement>(dom.getControlEl(ctx), "[data-part=segment]"),
+  getSegmentEl: (ctx: Ctx) => query<SVGSVGElement>(dom.getControlEl(ctx), "[data-part=segment]"),
   getHiddenInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenInputId(ctx)),
 
   getDataUrl: (ctx: Ctx, options: DataUrlOptions): Promise<string> => {
