@@ -6,6 +6,23 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.80.0](./#0.80.0) - 2025-01-01
+
+### Fixed
+
+- **File Upload**: Fix issue where hidden input isn't synced with the accepted files.
+
+- **QR Code**: Fix issue where `getDataUrl` doesn't render the full sized QR code.
+
+### Added
+
+- **File Upload**
+
+  - Add support for preventing drop on document when the file upload is used. Use the `preventDropOnDocument` context
+    property. Set to `true` by default to prevent drop on document.
+
+  - Add `api.setClipboardFiles` method to set the files from the clipboard data.
+
 ## [0.79.3](./#0.79.3) - 2024-12-31
 
 ### Fixed
