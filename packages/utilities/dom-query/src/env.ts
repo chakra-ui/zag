@@ -28,3 +28,8 @@ export function getActiveElement(rootNode: Document | ShadowRoot): HTMLElement |
 
   return activeElement
 }
+
+export function getRootNode(el: Element | ShadowRoot): DocumentFragment {
+  if (isShadowRoot(el)) return el
+  return el.getRootNode({ composed: true }) as DocumentFragment
+}
