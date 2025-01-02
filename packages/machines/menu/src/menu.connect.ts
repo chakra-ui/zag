@@ -1,10 +1,10 @@
 import { mergeProps } from "@zag-js/core"
 import {
-  clickIfLink,
   dataAttr,
   getEventKey,
   getEventPoint,
   getEventTarget,
+  isAnchorElement,
   isContextMenuEvent,
   isDownloadingEvent,
   isEditableElement,
@@ -316,7 +316,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             },
             Enter() {
               send("ENTER")
-              clickIfLink(item)
+              if (isAnchorElement(item)) {
+                state.context.navigate({ value: state.context.highlightedValue, node: item })
+              }
             },
             Space(event) {
               if (isTypingAhead) {

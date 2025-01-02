@@ -45,7 +45,7 @@ export class Model {
       const el = document.activeElement
       try {
         return (el as any).selectionStart
-      } catch (error) {
+      } catch {
         return -1
       }
     })

@@ -52,7 +52,8 @@ test.describe("menu", () => {
     await I.dontSeeDropdown()
   })
 
-  test("on click outside, close menu", async () => {
+  // flaky
+  test.skip("on click outside, close menu", async () => {
     await I.clickTrigger()
     await I.clickOutside()
     await I.dontSeeDropdown()

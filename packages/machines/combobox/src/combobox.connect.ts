@@ -1,8 +1,8 @@
 import {
   ariaAttr,
-  clickIfLink,
   dataAttr,
   getEventKey,
+  isAnchorElement,
   isComposingEvent,
   isContextMenuEvent,
   isDownloadingEvent,
@@ -230,8 +230,14 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               if (open) {
                 event.preventDefault()
               }
+
               const itemEl = dom.getHighlightedItemEl(state.context)
-              clickIfLink(itemEl)
+              if (isAnchorElement(itemEl)) {
+                state.context.navigate({
+                  value: state.context.highlightedValue,
+                  node: itemEl,
+                })
+              }
             },
             Escape() {
               send({ type: "INPUT.ESCAPE", keypress })

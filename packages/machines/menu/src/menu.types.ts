@@ -30,6 +30,11 @@ export interface HighlightChangeDetails {
   highlightedValue: string | null
 }
 
+export interface NavigateDetails {
+  value: string | null
+  node: HTMLAnchorElement
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -105,6 +110,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
    * @default true
    */
   composite: boolean
+  /**
+   * Function to navigate to the selected item if it's an anchor element
+   */
+  navigate: (details: NavigateDetails) => void
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

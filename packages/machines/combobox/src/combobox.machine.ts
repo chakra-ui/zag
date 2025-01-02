@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { observeAttributes, observeChildren, raf, scrollIntoView } from "@zag-js/dom-query"
+import { clickIfLink, observeAttributes, observeChildren, raf, scrollIntoView } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, compact, isArray, isBoolean, isEqual, match } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
@@ -31,6 +31,9 @@ export function machine<T extends CollectionItem>(userContext: UserDefinedContex
         composite: true,
         readOnly: false,
         disabled: false,
+        navigate({ node }) {
+          clickIfLink(node)
+        },
         ...ctx,
         highlightedItem: null,
         selectedItems: [],

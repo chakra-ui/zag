@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { clickIfLink, getFocusables, nextTick, raf } from "@zag-js/dom-query"
+import { clickIfLink, getFocusables, isAnchorElement, nextTick, raf } from "@zag-js/dom-query"
 import { trackElementRect } from "@zag-js/element-rect"
 import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./tabs.dom"
@@ -20,6 +20,9 @@ export function machine(userContext: UserDefinedContext) {
         value: null,
         loopFocus: true,
         composite: true,
+        navigate(details) {
+          clickIfLink(details.node)
+        },
         ...ctx,
         focusedValue: ctx.value ?? null,
         ssr: true,
@@ -31,7 +34,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        value: ["allowIndicatorTransition", "syncIndicatorRect", "syncTabIndex", "clickIfLink"],
+        value: ["allowIndicatorTransition", "syncIndicatorRect", "syncTabIndex", "navigateIfNeeded"],
         dir: ["syncIndicatorRect"],
         orientation: ["syncIndicatorRect"],
       },
@@ -249,8 +252,10 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
-        clickIfLink(ctx) {
-          clickIfLink(dom.getSelectedTriggerEl(ctx))
+        navigateIfNeeded(ctx) {
+          const triggerEl = dom.getSelectedTriggerEl(ctx)
+          if (!isAnchorElement(triggerEl)) return
+          ctx.navigate({ value: ctx.value, node: triggerEl })
         },
       },
     },

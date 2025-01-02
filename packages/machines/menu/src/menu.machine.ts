@@ -2,6 +2,7 @@ import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   addDomEvent,
+  clickIfLink,
   contains,
   getByTypeahead,
   getInitialFocus,
@@ -31,6 +32,9 @@ export function machine(userContext: UserDefinedContext) {
         closeOnSelect: true,
         typeahead: true,
         composite: true,
+        navigate(details) {
+          clickIfLink(details.node)
+        },
         ...ctx,
         positioning: {
           placement: "bottom-start",

@@ -13,6 +13,11 @@ export interface FocusChangeDetails {
   focusedValue: string
 }
 
+export interface NavigateDetails {
+  value: string | null
+  node: HTMLAnchorElement
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -79,6 +84,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the active tab can be deselected when clicking on it.
    */
   deselectable?: boolean | undefined
+  /**
+   * Function to navigate to the selected tab when clicking on it.
+   * Useful if tab triggers are anchor elements.
+   */
+  navigate: (details: NavigateDetails) => void
 }
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">

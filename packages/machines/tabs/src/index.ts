@@ -9,6 +9,7 @@ export type {
   ElementIds,
   FocusChangeDetails,
   IntlTranslations,
+  NavigateDetails,
   Service,
   TriggerProps,
   ValueChangeDetails,
