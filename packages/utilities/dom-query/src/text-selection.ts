@@ -1,4 +1,5 @@
-import { isIos, nextTick, raf } from "@zag-js/dom-query"
+import { isIos } from "./platform"
+import { nextTick, raf } from "./raf"
 
 type State = "default" | "disabled" | "restoring"
 

@@ -1,6 +1,6 @@
 import { createMachine, ref } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
-import { addDomEvent } from "@zag-js/dom-event"
+import { addDomEvent } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./toast.dom"
 import { createToastMachine } from "./toast.machine"

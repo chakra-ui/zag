@@ -1,6 +1,5 @@
-import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
-import { dataAttr, isComposingEvent, isSafari, isSelfTarget } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { dataAttr, getEventKey, isComposingEvent, isSafari, isSelfTarget } from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
 import { dom } from "./tabs.dom"
 import type { MachineApi, Send, State, TriggerProps, TriggerState } from "./tabs.types"

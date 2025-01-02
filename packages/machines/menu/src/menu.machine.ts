@@ -1,7 +1,7 @@
 import { createMachine, guards, ref } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { addDomEvent } from "@zag-js/dom-event"
 import {
+  addDomEvent,
   contains,
   getByTypeahead,
   getInitialFocus,

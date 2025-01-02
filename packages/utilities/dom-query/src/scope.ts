@@ -1,4 +1,4 @@
-import { getActiveElement, getDocument } from "./env"
+import { getActiveElement, getDocument } from "./node"
 
 export interface ScopeContext {
   getRootNode?: (() => Document | ShadowRoot | Node) | undefined

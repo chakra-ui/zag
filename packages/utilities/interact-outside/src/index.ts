@@ -1,4 +1,4 @@
-import { addDomEvent, fireCustomEvent, isContextMenuEvent } from "@zag-js/dom-event"
+import { addDomEvent, isContextMenuEvent } from "@zag-js/dom-query"
 import {
   contains,
   getDocument,
@@ -234,4 +234,10 @@ export function trackInteractOutside(nodeOrFn: NodeOrFn, options: InteractOutsid
   return () => {
     cleanups.forEach((fn) => fn?.())
   }
+}
+
+function fireCustomEvent(el: HTMLElement, type: string, init?: CustomEventInit) {
+  const win = el.ownerDocument.defaultView || window
+  const event = new win.CustomEvent(type, init)
+  return el.dispatchEvent(event)
 }

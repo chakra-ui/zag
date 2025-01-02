@@ -1,5 +1,5 @@
-import { getByText, type SearchableItem } from "./get-by-text"
-import type { ItemToId } from "./get-by-id"
+import type { ItemToId } from "./query"
+import { getByText, type SearchableItem } from "./searchable"
 
 export interface TypeaheadState {
   keysSoFar: string
@@ -14,7 +14,7 @@ export interface TypeaheadOptions<T> {
   itemToId?: ItemToId<T> | undefined
 }
 
-function getByTypeaheadImpl<T extends SearchableItem>(_items: T[], options: TypeaheadOptions<T>) {
+function getByTypeaheadImpl<T extends SearchableItem>(baseItems: T[], options: TypeaheadOptions<T>) {
   const { state, activeId, key, timeout = 350, itemToId } = options
 
   const search = state.keysSoFar + key
@@ -22,7 +22,7 @@ function getByTypeaheadImpl<T extends SearchableItem>(_items: T[], options: Type
 
   const query = isRepeated ? search[0] : search
 
-  let items = _items.slice()
+  let items = baseItems.slice()
 
   const next = getByText(items, query, activeId, itemToId)
 

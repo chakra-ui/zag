@@ -1,4 +1,4 @@
-import { getWindow } from "./env"
+import { getWindow } from "./node"
 
 export type DataUrlType = "image/png" | "image/jpeg" | "image/svg+xml"
 

@@ -215,9 +215,6 @@ importers:
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../packages/utilities/dom-query
@@ -344,9 +341,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/text-selection
       '@zag-js/time-picker':
         specifier: workspace:*
         version: link:../../packages/machines/time-picker
@@ -471,9 +465,6 @@ importers:
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../packages/utilities/dom-query
@@ -603,9 +594,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/text-selection
       '@zag-js/time-picker':
         specifier: workspace:*
         version: link:../../packages/machines/time-picker
@@ -763,9 +751,6 @@ importers:
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../packages/utilities/dom-query
@@ -892,9 +877,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/text-selection
       '@zag-js/time-picker':
         specifier: workspace:*
         version: link:../../packages/machines/time-picker
@@ -1025,9 +1007,6 @@ importers:
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../packages/utilities/dom-query
@@ -1157,9 +1136,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/text-selection
       '@zag-js/time-picker':
         specifier: workspace:*
         version: link:../../packages/machines/time-picker
@@ -1284,9 +1260,6 @@ importers:
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../packages/utilities/dom-query
@@ -1416,9 +1389,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/text-selection
       '@zag-js/time-picker':
         specifier: workspace:*
         version: link:../../packages/machines/time-picker
@@ -1567,9 +1537,6 @@ importers:
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../packages/utilities/dom-query
@@ -1699,9 +1666,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/text-selection
       '@zag-js/time-picker':
         specifier: workspace:*
         version: link:../../packages/machines/time-picker
@@ -1813,9 +1777,6 @@ importers:
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../packages/utilities/dom-query
@@ -1945,9 +1906,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/text-selection
       '@zag-js/time-picker':
         specifier: workspace:*
         version: link:../../packages/machines/time-picker
@@ -2084,9 +2042,6 @@ importers:
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../packages/utilities/dom-query
@@ -2210,9 +2165,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/text-selection
       '@zag-js/time-picker':
         specifier: workspace:*
         version: link:../../packages/machines/time-picker
@@ -2443,9 +2395,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2468,9 +2417,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2521,9 +2467,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2549,9 +2492,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2630,9 +2570,6 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../utilities/dismissable
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2642,9 +2579,6 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../../utilities/text-selection
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2673,9 +2607,6 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../utilities/dismissable
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2707,9 +2638,6 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../utilities/dismissable
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2722,9 +2650,6 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../../utilities/text-selection
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2781,9 +2706,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2843,9 +2765,6 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../utilities/dismissable
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2911,9 +2830,6 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../utilities/dismissable
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2945,9 +2861,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2998,9 +2911,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3157,9 +3067,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3191,9 +3098,6 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../utilities/dismissable
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3222,9 +3126,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3250,9 +3151,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3284,9 +3182,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3334,9 +3229,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3365,9 +3257,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3396,9 +3285,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3433,9 +3319,6 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../utilities/dismissable
-      '@zag-js/dom-event':
-        specifier: workspace:^
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3489,9 +3372,6 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../utilities/dismissable
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3514,9 +3394,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3539,9 +3416,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3607,9 +3481,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -3697,9 +3568,6 @@ importers:
 
   packages/utilities/dismissable:
     dependencies:
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../dom-query
@@ -3714,23 +3582,11 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  packages/utilities/dom-event:
+  packages/utilities/dom-query:
     dependencies:
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../dom-query
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../text-selection
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/dom-query:
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -3805,9 +3661,6 @@ importers:
 
   packages/utilities/interact-outside:
     dependencies:
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../dom-query
@@ -3889,16 +3742,6 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  packages/utilities/text-selection:
-    dependencies:
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../dom-query
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
   shared:
     dependencies:
       '@zag-js/tour':
@@ -3973,9 +3816,6 @@ importers:
       '@zag-js/docs':
         specifier: workspace:*
         version: link:../../packages/docs
-      '@zag-js/dom-event':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-event
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../packages/utilities/dom-query
@@ -4084,9 +3924,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/text-selection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/text-selection
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast

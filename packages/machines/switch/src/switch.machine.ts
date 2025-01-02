@@ -1,5 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { trackPress } from "@zag-js/dom-event"
+import { trackPress } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
 import { compact, isEqual } from "@zag-js/utils"

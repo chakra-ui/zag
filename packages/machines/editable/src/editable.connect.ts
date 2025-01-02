@@ -1,6 +1,5 @@
-import { type EventKeyMap } from "@zag-js/dom-event"
 import { ariaAttr, dataAttr, isApple, isComposingEvent } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./editable.anatomy"
 import { dom } from "./editable.dom"
 import type { MachineApi, Send, State } from "./editable.types"

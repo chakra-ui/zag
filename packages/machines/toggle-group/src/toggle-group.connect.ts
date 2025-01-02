@@ -1,6 +1,5 @@
-import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
-import { dataAttr, isSafari, isSelfTarget } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { dataAttr, getEventKey, isSafari, isSelfTarget } from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toggle-group.anatomy"
 import { dom } from "./toggle-group.dom"
 import type { ItemProps, ItemState, MachineApi, Send, State } from "./toggle-group.types"

@@ -1,6 +1,5 @@
 import { choose, createMachine, guards } from "@zag-js/core"
-import { addDomEvent, requestPointerLock } from "@zag-js/dom-event"
-import { isSafari, observeAttributes, raf } from "@zag-js/dom-query"
+import { addDomEvent, isSafari, observeAttributes, raf, requestPointerLock } from "@zag-js/dom-query"
 import { setElementValue, trackFormControl } from "@zag-js/form-utils"
 import { clamp, decrement, increment, isAtMax, isAtMin, isWithinRange } from "@zag-js/number-utils"
 import { callAll, compact, isEqual } from "@zag-js/utils"

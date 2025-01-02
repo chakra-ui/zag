@@ -1,6 +1,5 @@
-import { getEventKey, getEventPoint, getRelativePoint, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { ariaAttr, dataAttr, getEventKey, getEventPoint, getRelativePoint, isLeftClick } from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./rating-group.anatomy"
 import { dom } from "./rating-group.dom"
 import type { ItemProps, ItemState, MachineApi, Send, State } from "./rating-group.types"

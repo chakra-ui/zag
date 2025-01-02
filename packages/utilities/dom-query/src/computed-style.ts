@@ -1,4 +1,4 @@
-import { getWindow } from "./env"
+import { getWindow } from "./node"
 
 const styleCache = new WeakMap<Element, CSSStyleDeclaration>()
 

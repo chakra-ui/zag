@@ -1,11 +1,6 @@
-import { disableTextSelection } from "@zag-js/text-selection"
-import { addDomEvent } from "./add-dom-event"
-import { getEventPoint } from "./get-event-point"
-
-interface Point {
-  x: number
-  y: number
-}
+import { addDomEvent, getEventPoint } from "./event"
+import { disableTextSelection } from "./text-selection"
+import type { Point } from "./types"
 
 export interface PointerMoveDetails {
   /**

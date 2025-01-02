@@ -1,6 +1,12 @@
-import { getEventKey, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
-import { dataAttr, getEventTarget, isComposingEvent, isEditableElement } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import {
+  dataAttr,
+  getEventKey,
+  getEventTarget,
+  isComposingEvent,
+  isEditableElement,
+  isModifierKey,
+} from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { add, isEqual, remove, uniq } from "@zag-js/utils"
 import { parts } from "./tree-view.anatomy"
 import { dom } from "./tree-view.dom"

@@ -1,24 +1,21 @@
 import { mergeProps } from "@zag-js/core"
 import {
   clickIfLink,
+  dataAttr,
   getEventKey,
   getEventPoint,
-  isContextMenuEvent,
-  isModifierKey,
-  isPrintableKey,
-  type EventKeyMap,
-} from "@zag-js/dom-event"
-import {
-  dataAttr,
   getEventTarget,
+  isContextMenuEvent,
   isDownloadingEvent,
   isEditableElement,
+  isModifierKey,
   isOpeningInNewTab,
+  isPrintableKey,
   isSelfTarget,
   isValidTabEvent,
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./menu.anatomy"
 import { dom } from "./menu.dom"
 import type { ItemProps, ItemState, MachineApi, OptionItemProps, OptionItemState, Send, State } from "./menu.types"

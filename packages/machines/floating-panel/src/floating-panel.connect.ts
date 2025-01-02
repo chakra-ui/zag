@@ -1,6 +1,5 @@
-import { getEventKey, getEventStep, type EventKeyMap } from "@zag-js/dom-event"
-import { dataAttr, getEventTarget, isSelfTarget } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { dataAttr, getEventKey, getEventStep, getEventTarget, isSelfTarget } from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./floating-panel.anatomy"
 import { dom } from "./floating-panel.dom"
 import type { MachineApi, ResizeTriggerProps, Send, State } from "./floating-panel.types"

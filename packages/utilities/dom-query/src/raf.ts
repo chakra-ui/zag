@@ -16,3 +16,16 @@ export function raf(fn: VoidFunction) {
     globalThis.cancelAnimationFrame(id)
   }
 }
+
+export function queueBeforeEvent(el: EventTarget, type: string, cb: () => void) {
+  const cancelTimer = raf(() => {
+    el.removeEventListener(type, exec, true)
+    cb()
+  })
+  const exec = () => {
+    cancelTimer()
+    cb()
+  }
+  el.addEventListener(type, exec, { once: true, capture: true })
+  return cancelTimer
+}

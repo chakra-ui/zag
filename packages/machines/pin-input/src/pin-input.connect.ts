@@ -1,6 +1,6 @@
-import { getEventKey, getNativeEvent, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
+import { getEventKey, getNativeEvent, isModifierKey } from "@zag-js/dom-query"
 import { ariaAttr, dataAttr, getBeforeInputValue, isComposingEvent, visuallyHiddenStyle } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant } from "@zag-js/utils"
 import { parts } from "./pin-input.anatomy"
 import { dom } from "./pin-input.dom"

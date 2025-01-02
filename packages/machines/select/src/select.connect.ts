@@ -1,8 +1,8 @@
-import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
 import {
   ariaAttr,
   dataAttr,
   getByTypeahead,
+  getEventKey,
   getEventTarget,
   isEditableElement,
   isSelfTarget,
@@ -10,7 +10,7 @@ import {
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./select.anatomy"
 import { dom } from "./select.dom"
 import type { CollectionItem, ItemProps, ItemState, MachineApi, Send, State } from "./select.types"

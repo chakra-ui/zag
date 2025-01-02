@@ -22,10 +22,9 @@ import {
   type AdjustDateReturn,
 } from "@zag-js/date-utils"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { raf } from "@zag-js/dom-query"
+import { disableTextSelection, raf, restoreTextSelection } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement } from "@zag-js/popper"
-import { disableTextSelection, restoreTextSelection } from "@zag-js/text-selection"
 import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./date-picker.dom"
 import type { DateValue, DateView, MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"

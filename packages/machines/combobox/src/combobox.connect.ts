@@ -1,7 +1,16 @@
-import { clickIfLink, getEventKey, isContextMenuEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, isComposingEvent, isDownloadingEvent, isOpeningInNewTab } from "@zag-js/dom-query"
+import {
+  ariaAttr,
+  clickIfLink,
+  dataAttr,
+  getEventKey,
+  isComposingEvent,
+  isContextMenuEvent,
+  isDownloadingEvent,
+  isLeftClick,
+  isOpeningInNewTab,
+} from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
 import { dom } from "./combobox.dom"
 import type { CollectionItem, ItemProps, ItemState, MachineApi, Send, State } from "./combobox.types"

@@ -1,6 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { trackPointerMove } from "@zag-js/dom-event"
-import { raf } from "@zag-js/dom-query"
+import { raf, trackPointerMove } from "@zag-js/dom-query"
 import { trackElementsSize, type ElementSize } from "@zag-js/element-size"
 import { trackFormControl } from "@zag-js/form-utils"
 import { getValuePercent } from "@zag-js/numeric-range"

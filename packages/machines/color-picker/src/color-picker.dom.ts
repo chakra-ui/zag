@@ -1,6 +1,6 @@
 import type { ColorChannel } from "@zag-js/color-utils"
-import { getRelativePoint, type Point } from "@zag-js/dom-event"
-import { createScope, queryAll } from "@zag-js/dom-query"
+import { createScope, getRelativePoint, queryAll } from "@zag-js/dom-query"
+import type { Point } from "@zag-js/types"
 import type { MachineContext as Ctx } from "./color-picker.types"
 
 export const dom = createScope({

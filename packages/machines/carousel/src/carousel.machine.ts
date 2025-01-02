@@ -1,6 +1,5 @@
 import { createMachine, ref } from "@zag-js/core"
-import { addDomEvent, trackPointerMove } from "@zag-js/dom-event"
-import { raf } from "@zag-js/dom-query"
+import { addDomEvent, raf, trackPointerMove } from "@zag-js/dom-query"
 import { findSnapPoint, getScrollSnapPositions } from "@zag-js/scroll-snap"
 import { add, compact, isEqual, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
 import { dom } from "./carousel.dom"

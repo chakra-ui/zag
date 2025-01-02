@@ -1,7 +1,14 @@
-import { getEventPoint, getEventStep, isLeftClick, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, isComposingEvent } from "@zag-js/dom-query"
+import {
+  ariaAttr,
+  dataAttr,
+  getEventPoint,
+  getEventStep,
+  isComposingEvent,
+  isLeftClick,
+  isModifierKey,
+} from "@zag-js/dom-query"
 import { roundToDevicePixel } from "@zag-js/number-utils"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./number-input.anatomy"
 import { dom } from "./number-input.dom"
 import type { MachineApi, Send, State } from "./number-input.types"

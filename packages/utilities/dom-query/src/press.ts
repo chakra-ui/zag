@@ -1,14 +1,9 @@
-import { contains, getDocument, getEventTarget, getWindow } from "@zag-js/dom-query"
-import { addDomEvent } from "./add-dom-event"
-import { getEventPoint } from "./get-event-point"
-import { noop, pipe } from "./pipe"
+import { addDomEvent, getEventPoint, getEventTarget } from "./event"
+import { contains, getDocument, getWindow } from "./node"
+import { noop, pipe } from "./shared"
+import type { Point } from "./types"
 
-interface Point {
-  x: number
-  y: number
-}
-
-interface TapDetails {
+export interface PressDetails {
   /**
    * The current position of the pointer.
    */
@@ -35,15 +30,15 @@ export interface TrackPressOptions {
   /**
    * A function that will be called when the pointer is pressed.
    */
-  onPress?(details: TapDetails): void
+  onPress?(details: PressDetails): void
   /**
    * A function that will be called when the pointer is pressed down.
    */
-  onPressStart?(details: TapDetails): void
+  onPressStart?(details: PressDetails): void
   /**
    * A function that will be called when the pointer is pressed up or cancelled.
    */
-  onPressEnd?(details: TapDetails): void
+  onPressEnd?(details: PressDetails): void
 }
 
 export function trackPress(options: TrackPressOptions) {
@@ -65,7 +60,7 @@ export function trackPress(options: TrackPressOptions) {
   let removeEndListeners: VoidFunction = noop
   let removeAccessibleListeners: VoidFunction = noop
 
-  const getInfo = (event: PointerEvent): TapDetails => ({
+  const getInfo = (event: PointerEvent): PressDetails => ({
     point: getEventPoint(event),
     event,
   })
@@ -137,7 +132,7 @@ export function trackPress(options: TrackPressOptions) {
     removeAccessibleListeners = pipe(removeKeydownListener, removeBlurListener)
   }
 
-  return function () {
+  return () => {
     removeStartListeners()
     removeEndListeners()
     removeAccessibleListeners()

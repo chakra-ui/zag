@@ -1,4 +1,4 @@
-import { addDomEvent } from "./add-dom-event"
+import { addDomEvent } from "./event"
 
 export function requestPointerLock(doc: Document, fn?: (locked: boolean) => void) {
   const body = doc.body

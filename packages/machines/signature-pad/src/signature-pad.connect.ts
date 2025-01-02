@@ -1,5 +1,4 @@
-import { getRelativePoint, isLeftClick, isModifierKey } from "@zag-js/dom-event"
-import { dataAttr, getEventTarget } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget, getRelativePoint, isLeftClick, isModifierKey } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./signature-pad.anatomy"
 import { dom } from "./signature-pad.dom"

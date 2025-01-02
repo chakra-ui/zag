@@ -1,6 +1,5 @@
 import { createMachine, guards } from "@zag-js/core"
-import { clickIfLink } from "@zag-js/dom-event"
-import { nextTick, raf, getFocusables } from "@zag-js/dom-query"
+import { clickIfLink, getFocusables, nextTick, raf } from "@zag-js/dom-query"
 import { trackElementRect } from "@zag-js/element-rect"
 import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./tabs.dom"

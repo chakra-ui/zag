@@ -1,6 +1,5 @@
-import { getEventKey, getEventStep, type EventKeyMap } from "@zag-js/dom-event"
-import { dataAttr } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { dataAttr, getEventKey, getEventStep } from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./splitter.anatomy"
 import { dom } from "./splitter.dom"
 import type { MachineApi, ResizeTriggerProps, ResizeTriggerState, Send, State } from "./splitter.types"

@@ -1,14 +1,14 @@
 import {
+  ariaAttr,
+  dataAttr,
   getEventKey,
   getEventPoint,
   getEventStep,
   isLeftClick,
   isModifierKey,
-  type EventKeyMap,
-} from "@zag-js/dom-event"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+} from "@zag-js/dom-query"
 import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./slider.anatomy"
 import { dom } from "./slider.dom"
 import type { MachineApi, Send, State } from "./slider.types"

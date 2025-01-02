@@ -1,6 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { getRelativePoint, trackPointerMove } from "@zag-js/dom-event"
-import { raf } from "@zag-js/dom-query"
+import { getRelativePoint, raf, trackPointerMove } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./splitter.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./splitter.types"
