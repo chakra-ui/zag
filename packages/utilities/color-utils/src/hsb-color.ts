@@ -1,4 +1,4 @@
-import { clampValue, mod, toFixedNumber } from "@zag-js/numeric-range"
+import { clampValue, mod, toFixedNumber } from "@zag-js/utils"
 import { Color } from "./color"
 import { HSLColor } from "./hsl-color"
 import { RGBColor } from "./rgb-color"

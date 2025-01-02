@@ -266,12 +266,6 @@ importers:
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/number
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../packages/utilities/numeric-range
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
@@ -516,12 +510,6 @@ importers:
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/number
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../packages/utilities/numeric-range
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
@@ -802,12 +790,6 @@ importers:
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/number
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../packages/utilities/numeric-range
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
@@ -1058,12 +1040,6 @@ importers:
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/number
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../packages/utilities/numeric-range
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
@@ -1311,12 +1287,6 @@ importers:
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/number
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../packages/utilities/numeric-range
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
@@ -1588,12 +1558,6 @@ importers:
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/number
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../packages/utilities/numeric-range
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
@@ -1828,12 +1792,6 @@ importers:
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/number
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../packages/utilities/numeric-range
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
@@ -2093,12 +2051,6 @@ importers:
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/number
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../packages/utilities/numeric-range
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
@@ -2420,9 +2372,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../utilities/numeric-range
       '@zag-js/rect-utils':
         specifier: workspace:*
         version: link:../../utilities/rect
@@ -2768,9 +2717,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../utilities/numeric-range
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
@@ -2867,9 +2813,6 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../utilities/form-utils
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../utilities/number
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3160,9 +3103,6 @@ importers:
       '@zag-js/form-utils':
         specifier: workspace:*
         version: link:../../utilities/form-utils
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../utilities/numeric-range
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3185,9 +3125,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../utilities/number
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3543,9 +3480,9 @@ importers:
 
   packages/utilities/color-utils:
     dependencies:
-      '@zag-js/numeric-range':
+      '@zag-js/utils':
         specifier: workspace:*
-        version: link:../numeric-range
+        version: link:../core
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -3673,18 +3610,6 @@ importers:
         version: 2.2.0
 
   packages/utilities/live-region:
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/number:
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/numeric-range:
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -3858,12 +3783,6 @@ importers:
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
-      '@zag-js/number-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/number
-      '@zag-js/numeric-range':
-        specifier: workspace:*
-        version: link:../../packages/utilities/numeric-range
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination

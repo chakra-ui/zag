@@ -7,8 +7,8 @@ import {
   isLeftClick,
   isModifierKey,
 } from "@zag-js/dom-query"
-import { getPercentValue, getValuePercent } from "@zag-js/numeric-range"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { getPercentValue, getValuePercent } from "@zag-js/utils"
 import { parts } from "./slider.anatomy"
 import { dom } from "./slider.dom"
 import type { MachineApi, Send, State } from "./slider.types"

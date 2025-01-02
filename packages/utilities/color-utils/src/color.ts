@@ -1,4 +1,4 @@
-import { clampValue, getPercentValue, getValuePercent, snapValueToStep } from "@zag-js/numeric-range"
+import { clampValue, getPercentValue, getValuePercent, snapValueToStep } from "@zag-js/utils"
 import type {
   Color2DAxes,
   ColorAxes,

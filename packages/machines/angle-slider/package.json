@@ -35,7 +35,6 @@
   },
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
-    "@zag-js/numeric-range": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",

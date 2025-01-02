@@ -32,7 +32,6 @@
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "@zag-js/numeric-range": "workspace:*",
     "@zag-js/element-size": "workspace:*",
     "@zag-js/types": "workspace:*"
   },
