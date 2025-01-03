@@ -40,7 +40,7 @@ export function machine(userContext: UserDefinedContext) {
         nextPage: (ctx) => (ctx.page === ctx.totalPages ? null : ctx.page + 1),
         pageRange: (ctx) => {
           const start = (ctx.page - 1) * ctx.pageSize
-          const end = start + ctx.pageSize
+          const end = Math.min(start + ctx.pageSize, ctx.count)
           return { start, end }
         },
         isValidPage: (ctx) => ctx.page >= 1 && ctx.page <= ctx.totalPages,
