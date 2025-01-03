@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { mergeProps } from "../src"
 
 describe("mergeProps for Svelte", () => {
@@ -10,7 +10,7 @@ describe("mergeProps for Svelte", () => {
     const props = mergeProps({ onClick, className, id })
 
     expect(props.onClick).toBe(onClick)
-    expect(props.className).toBe(className)
+    expect(props.class).toBe(className)
     expect(props.id).toBe(id)
   })
 
@@ -29,14 +29,18 @@ describe("mergeProps for Svelte", () => {
 
   it("combines css classes", () => {
     const className1 = "primary"
-    const className2 = "hover"
-    const className3 = "focus"
+    const className2 = ["hover", { focus: true }, null, undefined]
+    const className3 = {
+      md: false,
+      lg: true,
+      xl: false,
+    }
 
     const props = mergeProps({ class: className1 }, { class: className2 }, { class: className3 })
-    expect(props.class).toBe("primary hover focus")
+    expect(props.class).toBe("primary hover focus lg")
 
     const props2 = mergeProps({ className: className1 }, { className: className2 }, { className: className3 })
-    expect(props2.className).toBe("primary hover focus")
+    expect(props2.class).toBe("primary hover focus lg")
   })
 
   it("combines styles", () => {
