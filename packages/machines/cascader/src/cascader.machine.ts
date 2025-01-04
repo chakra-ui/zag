@@ -455,19 +455,26 @@ export function machine<V>(userContext: UserDefinedContext<V>) {
         highlightItemFirstChild(ctx) {
           const item = ctx.collection.at(ctx.highlightedIndexPath)
           if (!ctx.collection.isBranchNode(item)) return
-          ctx.highlightedIndexPath.push(0)
+
+          const newPath = [...ctx.highlightedIndexPath, 0]
+          set.highlightedItem(ctx, newPath)
         },
         highlightItemParent(ctx) {
-          ctx.highlightedIndexPath.pop()
+          const parentPath = ctx.highlightedIndexPath.slice(0, -1)
+          set.highlightedItem(ctx, parentPath)
         },
         highlightFirstItem(ctx) {
-          ctx.highlightedIndexPath[ctx.highlightedIndexPath.length - 1] = 0
+          const newPath = [...ctx.highlightedIndexPath]
+          newPath[newPath.length - 1] = 0
+          set.highlightedItem(ctx, newPath)
         },
         highlightLastItem(ctx) {
           const siblings = utils.getSiblings(ctx)
           if (!siblings) return
 
-          ctx.highlightedIndexPath[ctx.highlightedIndexPath.length - 1] = siblings.length - 1
+          const newPath = [...ctx.highlightedIndexPath]
+          newPath[newPath.length - 1] = siblings.length - 1
+          set.highlightedItem(ctx, newPath)
         },
         highlightFirstItemInRoot(ctx) {
           set.highlightedItem(ctx, [0])
@@ -477,12 +484,16 @@ export function machine<V>(userContext: UserDefinedContext<V>) {
           set.highlightedItem(ctx, [rootNodes.length - 1])
         },
         highlightNextItem(ctx) {
-          const nextSibling = utils.getNextSibling(ctx)
-          set.highlightedItem(ctx, nextSibling)
+          const nextSibling = ctx.collection.getNextSibling(ctx.highlightedIndexPath)
+          if (!nextSibling) return
+          const value = ctx.collection.getNodeValue(nextSibling)
+          set.highlightedItem(ctx, ctx.collection.getIndexPath(value))
         },
         highlightPreviousItem(ctx) {
-          const previousSibling = utils.getPreviousSibling(ctx)
-          set.highlightedItem(ctx, previousSibling)
+          const previousSibling = ctx.collection.getPreviousSibling(ctx.highlightedIndexPath)
+          if (!previousSibling) return
+          const value = ctx.collection.getNodeValue(previousSibling)
+          set.highlightedItem(ctx, ctx.collection.getIndexPath(value))
         },
         highlightLastSelectedItem(ctx) {
           const lastSelected = ctx.valueIndexPaths.at(-1)

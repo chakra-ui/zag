@@ -1,5 +1,5 @@
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { getEventKey, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
+import type { NormalizeProps, PropTypes, EventKeyMap } from "@zag-js/types"
+import { getEventKey, isLeftClick } from "@zag-js/dom-query"
 
 import type { State, Send, MachineApi, NodeProps, NodeState } from "./cascader.types"
 import { parts } from "./cascader.anatomy"
