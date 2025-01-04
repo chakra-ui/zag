@@ -12,6 +12,7 @@ export const dom = createScope({
   getItemSizeTextId: (ctx: Ctx, id: string) => ctx.ids?.itemSizeText?.(id) ?? `file:${ctx.id}:item-size:${id}`,
   getItemPreviewId: (ctx: Ctx, id: string) => ctx.ids?.itemPreview?.(id) ?? `file:${ctx.id}:item-preview:${id}`,
 
+  getRootEl: (ctx: Ctx) => dom.getById<HTMLElement>(ctx, dom.getRootId(ctx)),
   getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
   getDropzoneEl: (ctx: Ctx) => dom.getById(ctx, dom.getDropzoneId(ctx)),
 })

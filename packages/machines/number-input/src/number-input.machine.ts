@@ -1,9 +1,17 @@
 import { choose, createMachine, guards } from "@zag-js/core"
-import { addDomEvent, requestPointerLock } from "@zag-js/dom-event"
-import { isSafari, observeAttributes, raf } from "@zag-js/dom-query"
+import { addDomEvent, isSafari, observeAttributes, raf, requestPointerLock } from "@zag-js/dom-query"
 import { setElementValue, trackFormControl } from "@zag-js/form-utils"
-import { clamp, decrement, increment, isAtMax, isAtMin, isWithinRange } from "@zag-js/number-utils"
-import { callAll, compact, isEqual } from "@zag-js/utils"
+import {
+  callAll,
+  clampValue,
+  compact,
+  decrementValue,
+  incrementValue,
+  isEqual,
+  isValueAtMax,
+  isValueAtMin,
+  isValueWithinRange,
+} from "@zag-js/utils"
 import { recordCursor, restoreCursor } from "./cursor"
 import { dom } from "./number-input.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./number-input.types"
@@ -50,9 +58,9 @@ export function machine(userContext: UserDefinedContext) {
         isRtl: (ctx) => ctx.dir === "rtl",
         valueAsNumber: (ctx) => parseValue(ctx, ctx.value),
         formattedValue: (ctx) => formatValue(ctx, ctx.valueAsNumber),
-        isAtMin: (ctx) => isAtMin(ctx.valueAsNumber, ctx),
-        isAtMax: (ctx) => isAtMax(ctx.valueAsNumber, ctx),
-        isOutOfRange: (ctx) => !isWithinRange(ctx.valueAsNumber, ctx),
+        isAtMin: (ctx) => isValueAtMin(ctx.valueAsNumber, ctx.min),
+        isAtMax: (ctx) => isValueAtMax(ctx.valueAsNumber, ctx.max),
+        isOutOfRange: (ctx) => !isValueWithinRange(ctx.valueAsNumber, ctx.min, ctx.max),
         isValueEmpty: (ctx) => ctx.value === "",
         isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
         canIncrement: (ctx) => ctx.allowOverflow || !ctx.isAtMax,
@@ -313,22 +321,22 @@ export function machine(userContext: UserDefinedContext) {
           raf(() => inputEl?.focus({ preventScroll: true }))
         },
         increment(ctx, evt) {
-          const nextValue = increment(ctx.valueAsNumber, evt.step ?? ctx.step)
-          const value = formatValue(ctx, clamp(nextValue, ctx))
+          const nextValue = incrementValue(ctx.valueAsNumber, evt.step ?? ctx.step)
+          const value = formatValue(ctx, clampValue(nextValue, ctx.min, ctx.max))
           set.value(ctx, value)
         },
         decrement(ctx, evt) {
-          const nextValue = decrement(ctx.valueAsNumber, evt.step ?? ctx.step)
-          const value = formatValue(ctx, clamp(nextValue, ctx))
+          const nextValue = decrementValue(ctx.valueAsNumber, evt.step ?? ctx.step)
+          const value = formatValue(ctx, clampValue(nextValue, ctx.min, ctx.max))
           set.value(ctx, value)
         },
         setClampedValue(ctx) {
-          const nextValue = clamp(ctx.valueAsNumber, ctx)
+          const nextValue = clampValue(ctx.valueAsNumber, ctx.min, ctx.max)
           set.value(ctx, formatValue(ctx, nextValue))
         },
         setRawValue(ctx, evt) {
           const parsedValue = parseValue(ctx, evt.value)
-          const value = formatValue(ctx, clamp(parsedValue, ctx))
+          const value = formatValue(ctx, clampValue(parsedValue, ctx.min, ctx.max))
           set.value(ctx, value)
         },
         setValue(ctx, evt) {

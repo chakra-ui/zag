@@ -1,7 +1,15 @@
-import { getEventPoint, getEventStep, isLeftClick, isModifierKey, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, isComposingEvent } from "@zag-js/dom-query"
-import { roundToDevicePixel } from "@zag-js/number-utils"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import {
+  ariaAttr,
+  dataAttr,
+  getEventPoint,
+  getEventStep,
+  getWindow,
+  isComposingEvent,
+  isLeftClick,
+  isModifierKey,
+} from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { roundToDpr } from "@zag-js/utils"
 import { parts } from "./number-input.anatomy"
 import { dom } from "./number-input.dom"
 import type { MachineApi, Send, State } from "./number-input.types"
@@ -251,9 +259,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (disabled) return
 
           const point = getEventPoint(event)
+          const win = getWindow(event.currentTarget)
 
-          point.x = point.x - roundToDevicePixel(7.5)
-          point.y = point.y - roundToDevicePixel(7.5)
+          const dpr = win.devicePixelRatio
+          point.x = point.x - roundToDpr(7.5, dpr)
+          point.y = point.y - roundToDpr(7.5, dpr)
 
           send({ type: "SCRUBBER.PRESS_DOWN", point })
           event.preventDefault()

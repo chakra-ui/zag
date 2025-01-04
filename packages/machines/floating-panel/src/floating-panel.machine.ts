@@ -1,6 +1,5 @@
 import { createMachine, guards, subscribe } from "@zag-js/core"
-import { addDomEvent, trackPointerMove } from "@zag-js/dom-event"
-import { isHTMLElement, raf } from "@zag-js/dom-query"
+import { addDomEvent, isHTMLElement, raf, trackPointerMove } from "@zag-js/dom-query"
 import {
   addPoints,
   clampPoint,

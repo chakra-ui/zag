@@ -105,7 +105,7 @@ describe("tree / operations", () => {
   })
 
   it("insert before", () => {
-    const rootNode = tree.insertBefore([0, 0], { id: "---------> test", name: "test" })
+    const rootNode = tree.insertBefore([0, 0], [{ id: "---------> test", name: "test" }])
     expect(tree.getValues(rootNode!)).toMatchInlineSnapshot(`
       [
         "node_modules",
@@ -127,7 +127,7 @@ describe("tree / operations", () => {
   })
 
   it("insert after", () => {
-    const rootNode = tree.insertAfter([0, 2], { id: "---------> test", name: "test" })
+    const rootNode = tree.insertAfter([0, 2], [{ id: "---------> test", name: "test" }])
     expect(tree.getValues(rootNode!)).toMatchInlineSnapshot(`
       [
         "node_modules",

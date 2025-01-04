@@ -1,7 +1,7 @@
 import { createMachine, ref } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
+import { addDomEvent, contains, getEventTarget, raf } from "@zag-js/dom-query"
 import { getAcceptAttrString, isFileEqual } from "@zag-js/file-utils"
-import { compact } from "@zag-js/utils"
+import { callAll, compact } from "@zag-js/utils"
 import { dom } from "./file-upload.dom"
 import type { FileRejection, MachineContext, MachineState, UserDefinedContext } from "./file-upload.types"
 import { getFilesFromEvent } from "./file-upload.utils"
@@ -12,12 +12,14 @@ export function machine(userContext: UserDefinedContext) {
     {
       id: "fileupload",
       initial: "idle",
+
       context: {
         minFileSize: 0,
         maxFileSize: Number.POSITIVE_INFINITY,
         maxFiles: 1,
         allowDrop: true,
         accept: ctx.accept,
+        preventDocumentDrop: true,
         ...ctx,
         acceptedFiles: ref([]),
         rejectedFiles: ref([]),
@@ -28,10 +30,16 @@ export function machine(userContext: UserDefinedContext) {
           ...ctx.translations,
         },
       },
+
       computed: {
         acceptAttr: (ctx) => getAcceptAttrString(ctx.accept),
         multiple: (ctx) => ctx.maxFiles > 1,
       },
+
+      watch: {
+        acceptedFiles: ["syncInputElement"],
+      },
+
       on: {
         "FILES.SET": {
           actions: ["setFilesFromEvent"],
@@ -46,6 +54,9 @@ export function machine(userContext: UserDefinedContext) {
           actions: ["clearRejectedFiles"],
         },
       },
+
+      activities: ["preventDocumentDrop"],
+
       states: {
         idle: {
           on: {
@@ -56,9 +67,7 @@ export function machine(userContext: UserDefinedContext) {
               actions: ["openFilePicker"],
             },
             "DROPZONE.FOCUS": "focused",
-            "DROPZONE.DRAG_OVER": {
-              target: "dragging",
-            },
+            "DROPZONE.DRAG_OVER": "dragging",
           },
         },
         focused: {
@@ -70,38 +79,52 @@ export function machine(userContext: UserDefinedContext) {
             "DROPZONE.CLICK": {
               actions: ["openFilePicker"],
             },
-            "DROPZONE.DRAG_OVER": {
-              target: "dragging",
-            },
+            "DROPZONE.DRAG_OVER": "dragging",
           },
         },
         dragging: {
           on: {
             "DROPZONE.DROP": {
               target: "idle",
-              actions: ["setFilesFromEvent", "syncInputElement"],
+              actions: ["setFilesFromEvent"],
             },
-            "DROPZONE.DRAG_LEAVE": {
-              target: "idle",
-            },
+            "DROPZONE.DRAG_LEAVE": "idle",
           },
         },
       },
     },
     {
+      activities: {
+        preventDocumentDrop(ctx) {
+          if (!ctx.preventDocumentDrop) return
+          if (!ctx.allowDrop) return
+          if (ctx.disabled) return
+          const doc = dom.getDoc(ctx)
+          const onDragOver = (event: DragEvent) => {
+            event?.preventDefault()
+          }
+          const onDrop = (event: DragEvent) => {
+            if (contains(dom.getRootEl(ctx), getEventTarget(event))) return
+            event.preventDefault()
+          }
+          return callAll(addDomEvent(doc, "dragover", onDragOver, false), addDomEvent(doc, "drop", onDrop, false))
+        },
+      },
       actions: {
         syncInputElement(ctx) {
-          const inputEl = dom.getHiddenInputEl(ctx)
-          if (!inputEl) return
+          queueMicrotask(() => {
+            const inputEl = dom.getHiddenInputEl(ctx)
+            if (!inputEl) return
 
-          const win = dom.getWin(ctx)
-          const dataTransfer = new win.DataTransfer()
+            const win = dom.getWin(ctx)
+            const dataTransfer = new win.DataTransfer()
 
-          ctx.acceptedFiles.forEach((v) => {
-            dataTransfer.items.add(v)
+            ctx.acceptedFiles.forEach((v) => {
+              dataTransfer.items.add(v)
+            })
+
+            inputEl.files = dataTransfer.files
           })
-
-          inputEl.files = dataTransfer.files
         },
         openFilePicker(ctx) {
           raf(() => {

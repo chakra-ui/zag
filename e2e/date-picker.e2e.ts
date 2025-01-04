@@ -4,6 +4,9 @@ import { DatePickerModel } from "./models/datepicker.model"
 let I: DatePickerModel
 
 test.describe("datepicker [single]", () => {
+  const currentDate = new Date()
+  const year = currentDate.getFullYear()
+
   test.beforeEach(async ({ page }) => {
     I = new DatePickerModel(page)
     await I.goto()
@@ -77,19 +80,19 @@ test.describe("datepicker [single]", () => {
   })
 
   test("keyboard selection", async () => {
-    await I.type("02/28/2024")
+    await I.type(`02/28/${year}`)
     await I.pressKey("Enter")
-    await I.seeInputHasValue("02/28/2024")
+    await I.seeInputHasValue(`02/28/${year}`)
   })
 
   test("keyboard selection + re-selection", async () => {
-    await I.type("02/28/2024")
+    await I.type(`02/28/${year}`)
     await I.pressKey("Enter")
-    await I.seeInputHasValue("02/28/2024")
+    await I.seeInputHasValue(`02/28/${year}`)
 
     await I.pressKey("Backspace", 5) // becomes 02/28
     await I.pressKey("Enter")
-    await I.seeInputHasValue("02/28/2024")
+    await I.seeInputHasValue(`02/28/${year}`)
   })
 
   // test("click trigger + focus input + selection, set value in input", async () => {

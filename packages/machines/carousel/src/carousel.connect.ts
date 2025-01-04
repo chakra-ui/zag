@@ -1,6 +1,5 @@
-import { getEventKey, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, getEventTarget, isFocusable } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { ariaAttr, dataAttr, getEventKey, getEventTarget, isFocusable } from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./carousel.anatomy"
 import { dom } from "./carousel.dom"
 import type { ItemProps, MachineApi, MachineContext, Send, State } from "./carousel.types"

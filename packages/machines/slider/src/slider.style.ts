@@ -1,5 +1,5 @@
-import { getValuePercent, getValueTransformer } from "@zag-js/numeric-range"
 import type { Style } from "@zag-js/types"
+import { getValuePercent, getValueTransformer } from "@zag-js/utils"
 import type { MachineContext as Ctx, SharedContext } from "./slider.types"
 
 /* -----------------------------------------------------------------------------

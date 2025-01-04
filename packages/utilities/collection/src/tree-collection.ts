@@ -1,16 +1,25 @@
 import { compact, hasProp, isEqual, isObject } from "@zag-js/utils"
 import {
   access,
+  compareIndexPaths,
   find,
   findIndexPath,
   flatMap,
   insert,
-  visit,
-  type VisitOptions,
-  replace,
   move,
-  compareIndexPaths,
+  remove,
+  replace,
+  visit,
+  type TreeVisitOptions,
 } from "./tree-visit"
+import type {
+  FilePathTreeNode,
+  FlatTreeNode,
+  TreeCollectionMethods,
+  TreeCollectionOptions,
+  TreeNode,
+  TreeSkipOptions,
+} from "./types"
 
 export class TreeCollection<T = TreeNode> {
   rootNode: T
@@ -19,7 +28,7 @@ export class TreeCollection<T = TreeNode> {
     this.rootNode = options.rootNode
   }
 
-  isEqual(other: TreeCollection<T>) {
+  isEqual = (other: TreeCollection<T>) => {
     return isEqual(this.rootNode, other.rootNode)
   }
 
@@ -59,7 +68,7 @@ export class TreeCollection<T = TreeNode> {
     return firstChild
   }
 
-  getLastNode = (rootNode = this.rootNode, opts: SkipProperty<T> = {}): T | undefined => {
+  getLastNode = (rootNode = this.rootNode, opts: TreeSkipOptions<T> = {}): T | undefined => {
     let lastChild: T | undefined
     visit(rootNode, {
       getChildren: this.getNodeChildren,
@@ -75,7 +84,7 @@ export class TreeCollection<T = TreeNode> {
     return lastChild
   }
 
-  at(indexPath: number[]) {
+  at = (indexPath: number[]) => {
     return access(this.rootNode, indexPath, { getChildren: this.getNodeChildren })
   }
 
@@ -136,7 +145,7 @@ export class TreeCollection<T = TreeNode> {
     return valueIndexPath.slice(0, parentIndexPath.length).every((_, i) => parentIndexPath[i] === valueIndexPath[i])
   }
 
-  getNextNode = (value: string, opts: SkipProperty<T> = {}): T | undefined => {
+  getNextNode = (value: string, opts: TreeSkipOptions<T> = {}): T | undefined => {
     let found = false
     let nextNode: T | undefined
 
@@ -164,7 +173,7 @@ export class TreeCollection<T = TreeNode> {
     return nextNode
   }
 
-  getPreviousNode = (value: string, opts: SkipProperty<T> = {}): T | undefined => {
+  getPreviousNode = (value: string, opts: TreeSkipOptions<T> = {}): T | undefined => {
     let previousNode: T | undefined
     let found = false
     visit(this.rootNode, {
@@ -203,12 +212,16 @@ export class TreeCollection<T = TreeNode> {
     return result
   }
 
-  getParentNode = (value: string): T | undefined => {
-    const indexPath = this.getIndexPath(value)
+  private getParentIndexPath = (indexPath: number[]): number[] => {
+    return indexPath.slice(0, -1)
+  }
+
+  getParentNode = (valueOrIndexPath: string | number[]): T | undefined => {
+    const indexPath = typeof valueOrIndexPath === "string" ? this.getIndexPath(valueOrIndexPath) : valueOrIndexPath
     return indexPath ? this.at(indexPath.slice(0, -1)) : undefined
   }
 
-  visit = (opts: Omit<VisitOptions<T>, "getChildren"> & SkipProperty<T>) => {
+  visit = (opts: Omit<TreeVisitOptions<T>, "getChildren"> & TreeSkipOptions<T>) => {
     const { skip, ...rest } = opts
     visit(this.rootNode, {
       ...rest,
@@ -221,28 +234,33 @@ export class TreeCollection<T = TreeNode> {
     })
   }
 
+  getPreviousSibling = (indexPath: number[]): T | undefined => {
+    const parentPath = this.getParentIndexPath(indexPath)
+    if (!parentPath) return undefined
+
+    const currentIndex = indexPath[indexPath.length - 1]
+    if (currentIndex === 0) return undefined
+
+    const previousPath = [...parentPath, currentIndex - 1]
+    return this.at(previousPath)
+  }
+
+  getNextSibling = (indexPath: number[]): T | undefined => {
+    const parentPath = this.getParentIndexPath(indexPath)
+    if (!parentPath) return undefined
+
+    const currentIndex = indexPath[indexPath.length - 1]
+    const siblings = this.getNodeChildren(this.at(parentPath))
+    if (currentIndex >= siblings.length - 1) return undefined
+
+    const nextPath = [...parentPath, currentIndex + 1]
+    return this.at(nextPath)
+  }
+
   getSiblingNodes = (indexPath: number[]): T[] => {
-    const parentPath = indexPath.slice(0, -1)
-    const parentNode = this.at(parentPath)
-
+    const parentNode = this.getParentNode(indexPath)
     if (!parentNode) return []
-
-    const depth = indexPath.length
-    const siblingNodes: T[] = []
-
-    visit(parentNode, {
-      getChildren: this.getNodeChildren,
-      onEnter: (node, path) => {
-        if (this.isRootNode(node)) return
-        if (isEqual(path, indexPath)) return
-        if (path.length === depth && this.isBranchNode(node)) {
-          siblingNodes.push(node)
-        }
-        return "skip"
-      },
-    })
-
-    return siblingNodes
+    return this.getNodeChildren(parentNode)
   }
 
   getValues = (rootNode = this.rootNode): string[] => {
@@ -263,7 +281,7 @@ export class TreeCollection<T = TreeNode> {
     return this.getNodeChildren(node).length > 0
   }
 
-  getBranchValues = (rootNode = this.rootNode, opts: SkipProperty<T> & { depth?: number } = {}): string[] => {
+  getBranchValues = (rootNode = this.rootNode, opts: TreeSkipOptions<T> & { depth?: number } = {}): string[] => {
     let values: string[] = []
     visit(rootNode, {
       getChildren: this.getNodeChildren,
@@ -314,18 +332,26 @@ export class TreeCollection<T = TreeNode> {
     return move(rootNode, { indexPaths, to, getChildren: this.getNodeChildren, create: this._create })
   }
 
+  private _remove = (rootNode: T, indexPaths: number[][]) => {
+    return remove(rootNode, { indexPaths, getChildren: this.getNodeChildren, create: this._create })
+  }
+
   replace = (indexPath: number[], node: T) => {
     return this._replace(this.rootNode, indexPath, node)
   }
 
-  insertBefore = (indexPath: number[], ...nodes: T[]) => {
+  remove = (indexPaths: number[][]) => {
+    return this._remove(this.rootNode, indexPaths)
+  }
+
+  insertBefore = (indexPath: number[], nodes: T[]) => {
     const parentIndexPath = indexPath.slice(0, -1)
     const parentNode = this.at(parentIndexPath)
     if (!parentNode) return
     return this._insert(this.rootNode, indexPath, nodes)
   }
 
-  insertAfter = (indexPath: number[], ...nodes: T[]) => {
+  insertAfter = (indexPath: number[], nodes: T[]) => {
     const parentIndexPath = indexPath.slice(0, -1)
     const parentNode = this.at(parentIndexPath)
     if (!parentNode) return
@@ -333,11 +359,11 @@ export class TreeCollection<T = TreeNode> {
     return this._insert(this.rootNode, nextIndex, nodes)
   }
 
-  reorder = (toIndexPath: number[], ...fromIndexPaths: number[][]) => {
+  move = (fromIndexPaths: number[][], toIndexPath: number[]) => {
     return this._move(this.rootNode, fromIndexPaths, toIndexPath)
   }
 
-  json() {
+  json = () => {
     return this.getValues(this.rootNode)
   }
 }
@@ -359,20 +385,12 @@ export function flattenedToTree(nodes: FlatTreeNode[]) {
       nodes: [compact({ label, value }) as any],
       getChildren: (node) => node.children ?? [],
       create: (node, children) => {
-        return compact({ ...node, children: children })
+        return compact({ ...node, children })
       },
     })
   })
 
-  return new TreeCollection({
-    rootNode: rootNode,
-  })
-}
-
-export interface FilePathTreeNode {
-  label: string
-  value: string
-  children?: FilePathTreeNode[]
+  return new TreeCollection({ rootNode })
 }
 
 export function filePathToTree(paths: string[]): TreeCollection<FilePathTreeNode> {
@@ -402,38 +420,10 @@ export function filePathToTree(paths: string[]): TreeCollection<FilePathTreeNode
     })
   })
 
-  return new TreeCollection({
-    rootNode: rootNode,
-  })
+  return new TreeCollection({ rootNode })
 }
 
-export interface TreeCollectionMethods<T> {
-  isNodeDisabled: (node: T) => boolean
-  nodeToValue: (node: T) => string
-  nodeToString: (node: T) => string
-  nodeToChildren: (node: T) => any[]
-}
-
-export interface TreeCollectionOptions<T> extends Partial<TreeCollectionMethods<T>> {
-  rootNode: T
-}
-
-export type TreeNode = any
-
-export interface FlatTreeNode {
-  label?: string | undefined
-  value: string
-  indexPath: number[]
-  children?: string[] | undefined
-}
-
-export type TreeSkipFn<T> = (opts: { value: string; node: T; indexPath: number[] }) => boolean | void
-
-interface SkipProperty<T> {
-  skip?: TreeSkipFn<T>
-}
-
-const fallback: TreeCollectionMethods<any> = {
+const fallback: TreeCollectionMethods<TreeNode> = {
   nodeToValue(node) {
     if (typeof node === "string") return node
     if (isObject(node) && hasProp(node, "value")) return node.value

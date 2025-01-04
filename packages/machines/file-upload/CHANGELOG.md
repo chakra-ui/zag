@@ -1,5 +1,40 @@
 # @zag-js/file-upload
 
+## 0.80.0
+
+### Minor Changes
+
+- [`59b04ae`](https://github.com/chakra-ui/zag/commit/59b04ae0a004475524d6936971d0fc99fe5c4dfb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for preventing drop on document when the file upload
+  is used. Use the `preventDropOnDocument` context property. Set to `true` by default to prevent drop on document.
+
+  - Add `api.setClipboardFiles` method to set the files from the clipboard data.
+  - Fix issue where hidden input isn't synced with the accepted files.
+
+### Patch Changes
+
+- Updated dependencies [[`d7617d1`](https://github.com/chakra-ui/zag/commit/d7617d1d95f93b3557eb88ba879737894da42d51)]:
+  - @zag-js/dom-query@0.80.0
+  - @zag-js/i18n-utils@0.80.0
+  - @zag-js/file-utils@0.80.0
+  - @zag-js/anatomy@0.80.0
+  - @zag-js/core@0.80.0
+  - @zag-js/types@0.80.0
+  - @zag-js/utils@0.80.0
+
+## 0.79.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.79.3
+  - @zag-js/core@0.79.3
+  - @zag-js/types@0.79.3
+  - @zag-js/utils@0.79.3
+  - @zag-js/dom-query@0.79.3
+  - @zag-js/file-utils@0.79.3
+  - @zag-js/i18n-utils@0.79.3
+
 ## 0.79.2
 
 ### Patch Changes

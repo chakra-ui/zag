@@ -101,6 +101,11 @@ interface PublicContext extends LocaleProperties, CommonProperties {
    */
   maxFiles: number
   /**
+   * Whether to prevent the drop event on the document
+   * @default true
+   */
+  preventDocumentDrop?: boolean | undefined
+  /**
    * Function to validate a file
    */
   validate?: ((file: File, details: FileValidateDetails) => FileError[] | null) | undefined
@@ -225,9 +230,14 @@ export interface MachineApi<T extends PropTypes> {
   getFileSize(file: File): string
   /**
    * Function to get the preview url of a file.
-   * It returns a function to revoke the url.
+   * Returns a function to revoke the url.
    */
   createFileUrl(file: File, cb: (url: string) => void): VoidFunction
+  /**
+   * Function to set the clipboard files.
+   * Returns `true` if the clipboard data contains files, `false` otherwise.
+   */
+  setClipboardFiles(dt: DataTransfer | null): boolean
 
   getLabelProps(): T["label"]
   getRootProps(): T["element"]

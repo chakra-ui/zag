@@ -1,9 +1,8 @@
 import { createMachine } from "@zag-js/core"
-import { trackPointerMove, type Point } from "@zag-js/dom-event"
-import { raf } from "@zag-js/dom-query"
-import { snapValueToStep } from "@zag-js/numeric-range"
+import { raf, trackPointerMove } from "@zag-js/dom-query"
 import { createRect, getPointAngle } from "@zag-js/rect-utils"
-import { compact } from "@zag-js/utils"
+import type { Point } from "@zag-js/types"
+import { compact, snapValueToStep } from "@zag-js/utils"
 import { dom } from "./angle-slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./angle-slider.types"
 

@@ -7,6 +7,7 @@ export const props = createProps<UserDefinedContext>()([
   "autoFocus",
   "closeOnSelect",
   "collection",
+  "composite",
   "dir",
   "disabled",
   "disableLayer",
@@ -21,6 +22,7 @@ export const props = createProps<UserDefinedContext>()([
   "loopFocus",
   "multiple",
   "name",
+  "navigate",
   "onFocusOutside",
   "onHighlightChange",
   "onInputValueChange",
@@ -31,8 +33,8 @@ export const props = createProps<UserDefinedContext>()([
   "onValueChange",
   "open.controlled",
   "open",
-  "openOnClick",
   "openOnChange",
+  "openOnClick",
   "openOnKeyPress",
   "placeholder",
   "positioning",
@@ -41,7 +43,6 @@ export const props = createProps<UserDefinedContext>()([
   "scrollToIndexFn",
   "selectionBehavior",
   "translations",
-  "composite",
   "value",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)

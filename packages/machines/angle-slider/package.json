@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/angle-slider",
-  "version": "0.79.2",
+  "version": "0.80.0",
   "description": "Core logic for the angle-slider widget implemented as a state machine",
   "keywords": [
     "js",
@@ -35,10 +35,8 @@
   },
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
-    "@zag-js/numeric-range": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/dom-event": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/types": "workspace:*"

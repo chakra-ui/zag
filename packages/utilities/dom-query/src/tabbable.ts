@@ -1,19 +1,11 @@
-const isHTMLElement = (element: any): element is HTMLElement =>
-  typeof element === "object" && element !== null && element.nodeType === 1
-
-const isFrame = (element: any): element is HTMLIFrameElement => isHTMLElement(element) && element.tagName === "IFRAME"
-
-function isVisible(el: any) {
-  if (!isHTMLElement(el)) return false
-  return el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0
-}
+import { isEditableElement, isElementVisible, isHTMLElement } from "./node"
 
 type IncludeContainerType = boolean | "if-empty"
 
-function hasNegativeTabIndex(element: Element) {
-  const tabIndex = parseInt(element.getAttribute("tabindex") || "0", 10)
-  return tabIndex < 0
-}
+const isFrame = (el: any): el is HTMLIFrameElement => isHTMLElement(el) && el.tagName === "IFRAME"
+
+const hasTabIndex = (el: Element) => !Number.isNaN(parseInt(el.getAttribute("tabindex") || "0", 10))
+const hasNegativeTabIndex = (el: Element) => parseInt(el.getAttribute("tabindex") || "0", 10) < 0
 
 const focusableSelector =
   /*#__PURE__*/ "input:not([type='hidden']):not([disabled]), select:not([disabled]), " +
@@ -21,9 +13,6 @@ const focusableSelector =
   "iframe, object, embed, area[href], audio[controls], video[controls], " +
   "[contenteditable]:not([contenteditable='false']), details > summary:first-of-type"
 
-/**
- * Returns the focusable elements within the element
- */
 export const getFocusables = (
   container: Pick<HTMLElement, "querySelectorAll"> | null,
   includeContainer: IncludeContainerType = false,
@@ -48,12 +37,9 @@ export const getFocusables = (
   return focusableElements
 }
 
-/**
- * Whether this element is focusable
- */
 export function isFocusable(element: HTMLElement | null): element is HTMLElement {
   if (!element || element.closest("[inert]")) return false
-  return element.matches(focusableSelector) && isVisible(element)
+  return element.matches(focusableSelector) && isElementVisible(element)
 }
 
 export function getFirstFocusable(
@@ -64,9 +50,6 @@ export function getFirstFocusable(
   return first || null
 }
 
-/**
- * Returns the tabbable elements within the element
- */
 export function getTabbables(container: HTMLElement | null, includeContainer?: IncludeContainerType) {
   if (!container) return []
   const elements = Array.from(container.querySelectorAll<HTMLElement>(focusableSelector))
@@ -91,17 +74,11 @@ export function getTabbables(container: HTMLElement | null, includeContainer?: I
   return tabbableElements
 }
 
-/**
- * Whether this element is tabbable
- */
 export function isTabbable(el: HTMLElement | null): el is HTMLElement {
   if (el != null && el.tabIndex > 0) return true
   return isFocusable(el) && !hasNegativeTabIndex(el)
 }
 
-/**
- * Returns the first focusable element within the element
- */
 export function getFirstTabbable(
   container: HTMLElement | null,
   includeContainer?: IncludeContainerType,
@@ -110,9 +87,6 @@ export function getFirstTabbable(
   return first || null
 }
 
-/**
- * Returns the last focusable element within the element
- */
 export function getLastTabbable(
   container: HTMLElement | null,
   includeContainer?: IncludeContainerType,
@@ -121,9 +95,6 @@ export function getLastTabbable(
   return elements[elements.length - 1] || null
 }
 
-/**
- * Returns the first and last focusable elements within the element
- */
 export function getTabbableEdges(
   container: HTMLElement | null,
   includeContainer?: IncludeContainerType,
@@ -134,9 +105,6 @@ export function getTabbableEdges(
   return [first, last]
 }
 
-/**
- * Returns the next tabbable element after the current element
- */
 export function getNextTabbable(container: HTMLElement | null, current?: HTMLElement | null): HTMLElement | null {
   const tabbables = getTabbables(container)
   const doc = container?.ownerDocument || document
@@ -146,17 +114,9 @@ export function getNextTabbable(container: HTMLElement | null, current?: HTMLEle
   return tabbables[index + 1] || null
 }
 
-const hasTabIndex = (node: Element) => !Number.isNaN(parseInt(node.getAttribute("tabindex") || "0", 10))
-
-const isContentEditable = (node: Element) =>
-  // @ts-ignore
-  node.isContentEditable ||
-  node.getAttribute("contenteditable") === "true" ||
-  node.getAttribute("contenteditable") === ""
-
 export function getTabIndex(node: HTMLElement | SVGElement) {
   if (node.tabIndex < 0) {
-    if ((/^(audio|video|details)$/.test(node.localName) || isContentEditable(node)) && !hasTabIndex(node)) {
+    if ((/^(audio|video|details)$/.test(node.localName) || isEditableElement(node)) && !hasTabIndex(node)) {
       return 0
     }
   }

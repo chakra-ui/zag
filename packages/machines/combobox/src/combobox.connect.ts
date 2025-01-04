@@ -1,7 +1,16 @@
-import { clickIfLink, getEventKey, isContextMenuEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr, isComposingEvent, isDownloadingEvent, isOpeningInNewTab } from "@zag-js/dom-query"
+import {
+  ariaAttr,
+  dataAttr,
+  getEventKey,
+  isAnchorElement,
+  isComposingEvent,
+  isContextMenuEvent,
+  isDownloadingEvent,
+  isLeftClick,
+  isOpeningInNewTab,
+} from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
 import { dom } from "./combobox.dom"
 import type { CollectionItem, ItemProps, ItemState, MachineApi, Send, State } from "./combobox.types"
@@ -221,8 +230,14 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               if (open) {
                 event.preventDefault()
               }
+
               const itemEl = dom.getHighlightedItemEl(state.context)
-              clickIfLink(itemEl)
+              if (isAnchorElement(itemEl)) {
+                state.context.navigate({
+                  value: state.context.highlightedValue,
+                  node: itemEl,
+                })
+              }
             },
             Escape() {
               send({ type: "INPUT.ESCAPE", keypress })

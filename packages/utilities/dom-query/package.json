@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/dom-query",
-  "version": "0.79.2",
+  "version": "0.80.0",
   "description": "The dom helper library for zag.js machines",
   "keywords": [
     "js",
@@ -33,5 +33,8 @@
   "main": "src/index.ts",
   "devDependencies": {
     "clean-package": "2.2.0"
+  },
+  "dependencies": {
+    "@zag-js/types": "workspace:*"
   }
 }

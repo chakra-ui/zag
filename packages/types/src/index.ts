@@ -2,6 +2,8 @@ import type { JSX } from "./jsx"
 
 export type RequiredBy<T, K extends keyof T> = Partial<Omit<T, K>> & Required<Pick<T, K>>
 
+export type Nullable<T> = T | null
+
 export type NonNullable<T> = T extends null | undefined ? never : T
 
 export type Required<T> = {
@@ -12,7 +14,9 @@ export type Direction = "ltr" | "rtl"
 
 export type Orientation = "horizontal" | "vertical"
 
-export type MaybeElement<T extends HTMLElement = HTMLElement> = T | null
+export type MaybeFn<T> = T | (() => T)
+
+export type MaybeElement<T extends HTMLElement = HTMLElement> = Nullable<T>
 
 export interface OrientationProperty {
   /**
@@ -51,6 +55,35 @@ export interface CommonProperties {
 
 export type Style = JSX.CSSProperties
 
+export type EventKey =
+  | "ArrowDown"
+  | "ArrowUp"
+  | "ArrowLeft"
+  | "ArrowRight"
+  | "Space"
+  | "Enter"
+  | "Comma"
+  | "Escape"
+  | "Backspace"
+  | "Delete"
+  | "Home"
+  | "End"
+  | "Tab"
+  | "PageUp"
+  | "PageDown"
+  | (string & {})
+
+export type EventKeyMap = {
+  [key in EventKey]?: (event: JSX.KeyboardEvent) => void
+}
+
+export interface Point {
+  x: number
+  y: number
+}
+
 export * from "./prop-types"
-export type { JSX }
+
 export * from "./create-props"
+
+export type { JSX }

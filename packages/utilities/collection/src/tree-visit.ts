@@ -1,4 +1,5 @@
-// Credits: https://github.com/dabbott/tree-visit
+// Modified from https://github.com/dabbott/tree-visit
+// MIT License
 
 // Accessors
 
@@ -17,15 +18,17 @@ export function accessPath<T>(node: T, indexPath: IndexPath, options: BaseOption
 }
 
 export function ancestorIndexPaths(indexPaths: IndexPath[]): IndexPath[] {
+  // Sort index paths to ensure we process parents before children
+  const sortedPaths = sortIndexPaths(indexPaths)
   const result: IndexPath[] = []
   const seen = new Set<string>()
-  for (const indexPath of indexPaths) {
-    for (let i = indexPath.length; i > 0; i--) {
-      const path = indexPath.slice(0, i)
-      const key = path.join()
-      if (seen.has(key)) break
+
+  for (const indexPath of sortedPaths) {
+    // Only include the exact path, not ancestors
+    const key = indexPath.join()
+    if (!seen.has(key)) {
       seen.add(key)
-      result.push(path)
+      result.push(indexPath)
     }
   }
   return result
@@ -184,28 +187,33 @@ function getInsertionOperations<T>(indexPath: IndexPath, nodes: T[], operations:
 }
 
 function getRemovalOperations<T>(indexPaths: IndexPath[]) {
-  const _ancestorIndexPaths = ancestorIndexPaths(indexPaths)
+  const operations: OperationMap<T> = new Map()
   const indexesToRemove = new Map<string, number[]>()
-  for (const indexPath of _ancestorIndexPaths) {
+
+  // Group indexes to remove by parent path
+  for (const indexPath of indexPaths) {
     const parentKey = indexPath.slice(0, -1).join()
     const value = indexesToRemove.get(parentKey) ?? []
     value.push(indexPath[indexPath.length - 1])
-    indexesToRemove.set(parentKey, value)
+    indexesToRemove.set(
+      parentKey,
+      value.sort((a, b) => a - b),
+    )
   }
 
-  const operations: OperationMap<T> = new Map()
   // Mark all parents for replacing
-  for (const indexPath of _ancestorIndexPaths) {
-    for (let i = indexPath.length - 1; i >= 0; i--) {
+  for (const indexPath of indexPaths) {
+    for (let i = indexPath.length - 2; i >= 0; i--) {
       const parentKey = indexPath.slice(0, i).join()
-      operations.set(parentKey, replaceOperation())
+      if (!operations.has(parentKey)) {
+        operations.set(parentKey, replaceOperation())
+      }
     }
   }
 
-  // Mark all nodes for removal
-  for (const indexPath of _ancestorIndexPaths) {
-    const parentKey = indexPath.slice(0, -1).join()
-    operations.set(parentKey, removeOperation(indexesToRemove.get(parentKey) ?? []))
+  // Mark nodes for removal
+  for (const [parentKey, indexes] of indexesToRemove) {
+    operations.set(parentKey, removeOperation(indexes))
   }
 
   return operations
@@ -332,10 +340,10 @@ export function move<T>(node: T, options: MoveOptions<T>) {
   return mutate(node, operations, options)
 }
 
-export function visit<T>(node: T, options: VisitOptions<T>): void {
+export function visit<T>(node: T, options: TreeVisitOptions<T>): void {
   const { onEnter, onLeave, getChildren } = options
   let indexPath: IndexPath = []
-  let stack: VisitStack<T>[] = [{ node }]
+  let stack: TreeVisitStack<T>[] = [{ node }]
   const getIndexPath = options.reuseIndexPath ? () => indexPath : () => indexPath.slice()
   while (stack.length > 0) {
     let wrapper = stack[stack.length - 1]
@@ -426,7 +434,7 @@ export interface ReplaceOptions<T> extends MutationBaseOptions<T> {
   node: T
 }
 
-interface VisitStack<T> {
+interface TreeVisitStack<T> {
   node: T
 
   /**
@@ -444,10 +452,10 @@ interface VisitStack<T> {
   children?: T[]
 }
 
-export type EnterReturnValue = void | "skip" | "stop"
-export type LeaveReturnValue = void | "stop"
+export type TreeVisitEnterReturnValue = void | "skip" | "stop"
+export type TreeVisitLeaveReturnValue = void | "stop"
 
-export interface VisitOptions<T> extends BaseOptions<T> {
-  onEnter?(node: T, indexPath: IndexPath): EnterReturnValue
-  onLeave?(node: T, indexPath: IndexPath): LeaveReturnValue
+export interface TreeVisitOptions<T> extends BaseOptions<T> {
+  onEnter?(node: T, indexPath: IndexPath): TreeVisitEnterReturnValue
+  onLeave?(node: T, indexPath: IndexPath): TreeVisitLeaveReturnValue
 }

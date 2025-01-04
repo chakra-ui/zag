@@ -1,6 +1,6 @@
 const cleanups = new WeakMap<Element, Map<string, () => void>>()
 
-export function set(element: Element, key: string, setup: () => () => void) {
+function set(element: Element, key: string, setup: () => () => void) {
   if (!cleanups.has(element)) {
     cleanups.set(element, new Map())
   }

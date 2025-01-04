@@ -50,7 +50,7 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   forbidOnly: !!CI,
   reportSlowTests: null,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 1,
   workers: process.env.CI ? 1 : "50%",
   reporter: [
     process.env.CI ? ["github", ["junit", { outputFile: "e2e/junit.xml" }]] : ["list"],

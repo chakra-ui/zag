@@ -31,6 +31,11 @@ export interface ScrollToIndexDetails {
   immediate?: boolean | undefined
 }
 
+export interface NavigateDetails {
+  value: string | null
+  node: HTMLAnchorElement
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -211,6 +216,10 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether to disable registering this a dismissable layer
    */
   disableLayer?: boolean | undefined
+  /**
+   * Function to navigate to the selected item
+   */
+  navigate: (details: NavigateDetails) => void
 }
 
 export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<

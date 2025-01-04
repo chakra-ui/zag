@@ -1,3 +1,7 @@
+// ==============================
+// Grid and List Collections
+// ==============================
+
 export interface CollectionSearchState {
   keysSoFar: string
   timer: number
@@ -31,4 +35,46 @@ export interface CollectionOptions<T extends CollectionItem = CollectionItem> ex
    * The options of the select
    */
   items: T[] | readonly T[]
+}
+
+// ==============================
+// Tree Collections
+// ==============================
+
+export interface TreeCollectionMethods<T> {
+  isNodeDisabled: (node: T) => boolean
+  nodeToValue: (node: T) => string
+  nodeToString: (node: T) => string
+  nodeToChildren: (node: T) => any[]
+}
+
+export interface TreeCollectionOptions<T> extends Partial<TreeCollectionMethods<T>> {
+  rootNode: T
+}
+
+export type TreeNode = any
+
+export interface FilePathTreeNode {
+  label: string
+  value: string
+  children?: FilePathTreeNode[]
+}
+
+export interface FlatTreeNode {
+  label?: string | undefined
+  value: string
+  indexPath: number[]
+  children?: string[] | undefined
+}
+
+export interface TreeSkipFnArgs<T> {
+  value: string
+  node: T
+  indexPath: number[]
+}
+
+export type TreeSkipFn<T> = (args: TreeSkipFnArgs<T>) => boolean | void
+
+export interface TreeSkipOptions<T> {
+  skip?: TreeSkipFn<T>
 }

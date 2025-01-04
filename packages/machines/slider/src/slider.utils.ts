@@ -5,17 +5,13 @@ import {
   getPreviousStepValue,
   getValueRanges,
   snapValueToStep,
-} from "@zag-js/numeric-range"
+} from "@zag-js/utils"
 import type { MachineContext as Ctx } from "./slider.types"
 
 export function normalizeValues(ctx: Ctx, nextValues: number[]) {
   return nextValues.map((value, index, values) => {
     return constrainValue({ ...ctx, value: values }, value, index)
   })
-}
-
-export function clampPercent(percent: number) {
-  return clampValue(percent, 0, 1)
 }
 
 export function getRangeAtIndex(ctx: Ctx, index: number) {

@@ -21,6 +21,7 @@ export const props = createProps<UserDefinedContext>()([
   "onFileAccept",
   "onFileReject",
   "onFileChange",
+  "preventDocumentDrop",
   "required",
   "translations",
   "validate",

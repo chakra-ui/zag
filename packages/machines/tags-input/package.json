@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/tags-input",
-  "version": "0.79.2",
+  "version": "0.80.0",
   "description": "Core logic for the tags-input widget implemented as a state machine",
   "keywords": [
     "js",
@@ -32,7 +32,6 @@
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/dom-event": "workspace:*",
     "@zag-js/form-utils": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/types": "workspace:*"

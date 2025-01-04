@@ -1,19 +1,13 @@
+import { addDomEvent } from "./event"
 import { raf } from "./raf"
 import { getNextTabbable, getTabbableEdges } from "./tabbable"
+import type { MaybeElement, MaybeElementOrFn } from "./types"
 
-type MaybeElement = HTMLElement | null
-type NodeOrFn = MaybeElement | (() => MaybeElement)
-
-interface ProxyTabFocusOptions<T = MaybeElement> {
+export interface ProxyTabFocusOptions<T = MaybeElement> {
   triggerElement?: T | undefined
   onFocus?: ((elementToFocus: HTMLElement) => void) | undefined
   defer?: boolean | undefined
 }
-
-/**
- * Proxies tab focus within a container to a reference element
- * when the container is rendered in a portal
- */
 
 function proxyTabFocusImpl(container: MaybeElement, options: ProxyTabFocusOptions = {}) {
   const { triggerElement, onFocus } = options
@@ -57,14 +51,10 @@ function proxyTabFocusImpl(container: MaybeElement, options: ProxyTabFocusOption
   }
 
   // listen for the tab key in the capture phase
-  doc?.addEventListener("keydown", onKeyDown, true)
-
-  return () => {
-    doc?.removeEventListener("keydown", onKeyDown, true)
-  }
+  return addDomEvent(doc, "keydown", onKeyDown, true)
 }
 
-export function proxyTabFocus(container: NodeOrFn, options: ProxyTabFocusOptions<NodeOrFn>) {
+export function proxyTabFocus(container: MaybeElementOrFn, options: ProxyTabFocusOptions<MaybeElementOrFn>) {
   const { defer, triggerElement, ...restOptions } = options
   const func = defer ? raf : (v: any) => v()
   const cleanups: (VoidFunction | undefined)[] = []

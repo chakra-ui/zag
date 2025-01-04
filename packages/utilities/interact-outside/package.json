@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/interact-outside",
-  "version": "0.79.2",
+  "version": "0.80.0",
   "description": "Track interactions or focus outside an element",
   "keywords": [
     "js",
@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/dom-event": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {

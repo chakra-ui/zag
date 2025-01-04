@@ -5,16 +5,17 @@ import type { ContentProps, TriggerProps, UserDefinedContext } from "./tabs.type
 export const props = createProps<UserDefinedContext>()([
   "activationMode",
   "composite",
+  "deselectable",
   "dir",
   "getRootNode",
   "id",
   "ids",
   "loopFocus",
+  "navigate",
   "onFocusChange",
   "onValueChange",
   "orientation",
   "translations",
-  "deselectable",
   "value",
 ])
 

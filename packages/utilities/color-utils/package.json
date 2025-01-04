@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/color-utils",
-  "version": "0.79.2",
+  "version": "0.80.0",
   "description": "Color utilities for zag.js",
   "keywords": [
     "js",
@@ -31,7 +31,7 @@
   },
   "clean-package": "../../../clean-package.config.json",
   "dependencies": {
-    "@zag-js/numeric-range": "workspace:*"
+    "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "2.2.0"

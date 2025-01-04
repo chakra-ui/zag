@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { getRelativePoint, trackPointerMove } from "@zag-js/dom-event"
+import { getRelativePoint, trackPointerMove } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import getStroke from "perfect-freehand"
 import { getSvgPathFromStroke } from "./get-svg-path"

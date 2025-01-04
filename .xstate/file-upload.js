@@ -27,6 +27,7 @@ const fetchMachine = createMachine({
       actions: ["clearRejectedFiles"]
     }
   },
+  activities: ["preventDocumentDrop"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -42,9 +43,7 @@ const fetchMachine = createMachine({
           actions: ["openFilePicker"]
         },
         "DROPZONE.FOCUS": "focused",
-        "DROPZONE.DRAG_OVER": {
-          target: "dragging"
-        }
+        "DROPZONE.DRAG_OVER": "dragging"
       }
     },
     focused: {
@@ -56,20 +55,16 @@ const fetchMachine = createMachine({
         "DROPZONE.CLICK": {
           actions: ["openFilePicker"]
         },
-        "DROPZONE.DRAG_OVER": {
-          target: "dragging"
-        }
+        "DROPZONE.DRAG_OVER": "dragging"
       }
     },
     dragging: {
       on: {
         "DROPZONE.DROP": {
           target: "idle",
-          actions: ["setFilesFromEvent", "syncInputElement"]
+          actions: ["setFilesFromEvent"]
         },
-        "DROPZONE.DRAG_LEAVE": {
-          target: "idle"
-        }
+        "DROPZONE.DRAG_LEAVE": "idle"
       }
     }
   }

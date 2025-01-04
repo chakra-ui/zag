@@ -1,15 +1,8 @@
 import { getColorAreaGradient, normalizeColor } from "@zag-js/color-utils"
-import {
-  getEventKey,
-  getEventPoint,
-  getEventStep,
-  isLeftClick,
-  isModifierKey,
-  type EventKeyMap,
-} from "@zag-js/dom-event"
+import { getEventKey, getEventPoint, getEventStep, isLeftClick, isModifierKey } from "@zag-js/dom-query"
 import { dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes, EventKeyMap } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
 import { dom } from "./color-picker.dom"
 import type {
