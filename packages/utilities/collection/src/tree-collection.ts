@@ -241,8 +241,17 @@ export class TreeCollection<T = TreeNode> {
     const currentIndex = indexPath[indexPath.length - 1]
     if (currentIndex === 0) return undefined
 
-    const previousPath = [...parentPath, currentIndex - 1]
-    return this.at(previousPath)
+    const siblings = this.getNodeChildren(this.at(parentPath))
+
+    // Search backwards from current index for first non-disabled sibling
+    for (let i = currentIndex - 1; i >= 0; i--) {
+      const sibling = siblings[i]
+      if (!this.getNodeDisabled(sibling)) {
+        return sibling
+      }
+    }
+
+    return undefined
   }
 
   getNextSibling = (indexPath: number[]): T | undefined => {
@@ -253,8 +262,15 @@ export class TreeCollection<T = TreeNode> {
     const siblings = this.getNodeChildren(this.at(parentPath))
     if (currentIndex >= siblings.length - 1) return undefined
 
-    const nextPath = [...parentPath, currentIndex + 1]
-    return this.at(nextPath)
+    // Search forwards from current index for first non-disabled sibling
+    for (let i = currentIndex + 1; i < siblings.length; i++) {
+      const sibling = siblings[i]
+      if (!this.getNodeDisabled(sibling)) {
+        return sibling
+      }
+    }
+
+    return undefined
   }
 
   getSiblingNodes = (indexPath: number[]): T[] => {
