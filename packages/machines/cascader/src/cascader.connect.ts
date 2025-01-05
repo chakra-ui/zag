@@ -361,16 +361,19 @@ export function connect<T extends PropTypes, V = any>(
         id: dom.getItemId(state.context, itemState.value),
         dir: state.context.dir,
         role: "treeitem",
-        "data-index-path": props.indexPath.join(","),
+        "aria-haspopup": itemState.isBranch ? "menu" : undefined,
         "aria-expanded": itemState.isBranch ? itemState.highlighted : false,
         "aria-controls": itemState.isBranch ? dom.getListId(state.context, itemState.value) : undefined,
-        "data-value": itemState.value,
+        "aria-owns": itemState.isBranch ? dom.getListId(state.context, itemState.value) : undefined,
         "aria-selected": itemState.selected,
+        "aria-disabled": ariaAttr(itemState.disabled),
+        "data-value": itemState.value,
         "data-state": itemState.selected ? "checked" : "unchecked",
         "data-highlighted": dataAttr(itemState.highlighted),
         "data-disabled": dataAttr(itemState.disabled),
-        "aria-disabled": ariaAttr(itemState.disabled),
         "data-selected": dataAttr(itemState.selected),
+        "data-type": itemState.isBranch ? "branch" : "leaf",
+        "data-index-path": props.indexPath.join(","),
         onDoubleClick() {
           if (itemState.disabled) return
           send("CLOSE")
@@ -378,8 +381,6 @@ export function connect<T extends PropTypes, V = any>(
         onPointerMove(event) {
           if (itemState.disabled || event.pointerType !== "mouse") return
           if (highlightedValue === itemState.value) return
-          // We only want to highlight items that have children (mouse only)
-          if (!itemState.isBranch) return
           send({ type: "ITEM.POINTER_MOVE", indexPath })
         },
         onClick(event) {

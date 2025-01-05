@@ -98,13 +98,14 @@
   cursor: not-allowed;
 }
 
-[data-scope="cascader"][data-part="item"]:not([data-disabled]):not([data-highlighted]):hover {
-  background: rgba(107, 107, 110, 0.105);
-}
-
 [data-scope="cascader"][data-part="item"][data-highlighted] {
   background: rgb(0, 0, 195);
   color: white;
+}
+
+[data-scope="cascader"][data-part="item"][data-highlighted][data-type="leaf"] {
+  background: rgba(107, 107, 110, 0.105);
+  color: inherit;
 }
 
 [data-scope="cascader"][data-part="item-text"] {
