@@ -85,7 +85,7 @@
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-prettier": "5.2.1",
-    "fast-glob": "3.3.2",
+    "fast-glob": "3.3.3",
     "find-packages": "10.0.4",
     "husky": "9.1.7",
     "lint-staged": "15.3.0",
