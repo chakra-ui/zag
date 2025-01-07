@@ -16,6 +16,9 @@ const fetchMachine = createMachine({
   on: {
     "VALUE.SET": {
       actions: ["setValue"]
+    },
+    "DOWNLOAD_TRIGGER.CLICK": {
+      actions: ["downloadQrCode"]
     }
   }
 }, {

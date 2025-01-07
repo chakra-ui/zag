@@ -73,5 +73,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
       })
     },
+
+    getDownloadTriggerProps(props) {
+      return normalize.button({
+        type: "button",
+        ...parts.downloadTrigger.attrs,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send({ type: "DOWNLOAD_TRIGGER.CLICK", ...props })
+        },
+      })
+    },
   }
 }

@@ -1,7 +1,9 @@
 import { createMachine } from "@zag-js/core"
+import { getDataUrl } from "@zag-js/dom-query"
 import { compact, isEqual } from "@zag-js/utils"
 import { memoize } from "proxy-memoize"
 import { encode } from "uqr"
+import { dom } from "./qr-code.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./qr-code.types"
 
 export function machine(userContext: UserDefinedContext) {
@@ -24,12 +26,30 @@ export function machine(userContext: UserDefinedContext) {
         "VALUE.SET": {
           actions: ["setValue"],
         },
+        "DOWNLOAD_TRIGGER.CLICK": {
+          actions: ["downloadQrCode"],
+        },
       },
     },
     {
       actions: {
         setValue(ctx, evt) {
           set.value(ctx, evt.value)
+        },
+        downloadQrCode(ctx, evt) {
+          const { mimeType, quality, fileName } = evt
+          const svgEl = dom.getFrameEl(ctx)
+          const doc = dom.getDoc(ctx)
+          getDataUrl(svgEl, { type: mimeType, quality }).then((dataUri) => {
+            const a = doc.createElement("a")
+            a.href = dataUri
+            a.rel = "noopener"
+            a.download = fileName
+            a.click()
+            setTimeout(() => {
+              a.remove()
+            }, 0)
+          })
         },
       },
     },

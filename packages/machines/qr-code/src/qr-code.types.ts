@@ -60,6 +60,21 @@ export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface DownloadTriggerProps {
+  /**
+   * The mime type of the image.
+   */
+  mimeType: DataUrlType
+  /**
+   * The quality of the image.
+   */
+  quality?: number
+  /**
+   * The name of the file.
+   */
+  fileName: string
+}
+
 export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * The value to encode.
@@ -78,6 +93,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   getFrameProps(): T["svg"]
   getPatternProps(): T["path"]
   getOverlayProps(): T["element"]
+  getDownloadTriggerProps(props: DownloadTriggerProps): T["button"]
 }
 
 export type { QrCodeGenerateOptions, QrCodeGenerateResult } from "uqr"
