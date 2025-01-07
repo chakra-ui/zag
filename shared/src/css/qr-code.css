@@ -9,8 +9,8 @@
 }
 
 [data-scope="qr-code"][data-part="overlay"] {
-  width: 24px;
-  height: 24px;
+  width: 25%;
+  height: 25%;
   outline: 4px solid white;
 
   & img {

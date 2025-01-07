@@ -10,6 +10,7 @@ export type {
   Orientation,
   ProgressState,
   Service,
+  ValueChangeDetails,
   ValueTranslationDetails,
   ViewProps,
 } from "./progress.types"

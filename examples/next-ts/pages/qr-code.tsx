@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
 import * as qrCode from "@zag-js/qr-code"
 import { useMachine, normalizeProps } from "@zag-js/react"
 import { qrCodeControls } from "@zag-js/shared"

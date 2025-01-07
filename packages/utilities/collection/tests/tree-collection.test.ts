@@ -674,4 +674,38 @@ describe("tree / siblings", () => {
       ]
     `)
   })
+
+  it("skips disabled siblings", () => {
+    const tree = new TreeCollection({
+      nodeToChildren: (node) => node.children,
+      rootNode: {
+        value: "ROOT",
+        children: [
+          { value: "child1" },
+          { value: "child2", disabled: true },
+          { value: "child3" },
+          { value: "child4", disabled: true },
+          { value: "child5" },
+        ],
+      },
+    })
+
+    expect(tree.getPreviousSibling([2])).toMatchInlineSnapshot(`
+      {
+        "value": "child1",
+      }
+    `)
+
+    expect(tree.getNextSibling([2])).toMatchInlineSnapshot(`
+      {
+        "value": "child5",
+      }
+    `)
+
+    // edges: no siblings
+
+    expect(tree.getPreviousSibling([0])).toBeUndefined()
+
+    expect(tree.getNextSibling([4])).toBeUndefined()
+  })
 })

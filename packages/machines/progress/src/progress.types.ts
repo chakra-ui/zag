@@ -21,6 +21,10 @@ export interface ValueTranslationDetails {
   percent: number
 }
 
+export interface ValueChangeDetails {
+  value: number | null
+}
+
 export interface IntlTranslations {
   value(details: ValueTranslationDetails): string
 }
@@ -60,6 +64,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    * The localized messages to use.
    */
   translations: IntlTranslations
+  /**
+   * Callback fired when the value changes.
+   */
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
 }
 
 interface PrivateContext {}
