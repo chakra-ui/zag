@@ -6,6 +6,44 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.81.0](./#0.81.0) - 2025-01-07
+
+### Fixed
+
+- **Vue**: Fix issue where svg `viewBox` attribute handling between client and server
+
+- **Pagination**: Fix issue where page range could return incorrect `end` value when `pageSize` is greater than `count`
+
+### Added
+
+- **[NEW] Preact**: Add support for Preact
+
+- **TreeCollection**: Add support for new methods
+
+  - `getPreviousSibling`: Get the previous sibling node of the given node.
+  - `getNextSibling`: Get the next sibling node of the given node.
+  - `remove`: Remove the given node from the collection.
+
+- **Tabs**: Add support for `navigate` context property to handle custom router navigations when trigger is rendered as
+  a link.
+
+Here's a React example usage with the tabs machine.
+
+```tsx
+const [state, send] = useMachine(
+  tabs.machine({
+    id: useId(),
+    value: "nils",
+    // use router.push to navigate to the selected tab
+    navigate(details) {
+      router.push(`#${details.value}`)
+    },
+  }),
+)
+```
+
+- **Progress, QR Code**: Add support for `onValueChange` callback
+
 ## [0.80.0](./#0.80.0) - 2025-01-01
 
 ### Fixed
