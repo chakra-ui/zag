@@ -30,13 +30,15 @@ const propMap: Record<string, string> = {
   defaultChecked: "checked",
 }
 
+const preserveKeys =
+  "viewBox,className,preserveAspectRatio,fillRule,clipPath,clipRule,strokeWidth,strokeLinecap,strokeLinejoin,strokeDasharray,strokeDashoffset,strokeMiterlimit".split(
+    ",",
+  )
+
 function toVueProp(prop: string) {
   if (prop in propMap) return propMap[prop]
-
-  if (prop.startsWith("on")) {
-    return `on${toCase(prop.substr(2))}`
-  }
-
+  if (prop.startsWith("on")) return `on${toCase(prop.substr(2))}`
+  if (preserveKeys.includes(prop)) return prop
   return prop.toLowerCase()
 }
 
