@@ -96,7 +96,7 @@
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "@types/node": "22.10.2",
+    "@types/node": "22.10.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint-plugin-react": "7.37.2",

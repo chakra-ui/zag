@@ -91,6 +91,6 @@
     "eslint": "9.13.0",
     "eslint-config-preact": "1.5.0",
     "typescript": "5.7.2",
-    "vite": "6.0.5"
+    "vite": "6.0.7"
   }
 }
