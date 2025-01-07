@@ -1,5 +1,42 @@
 # @zag-js/tabs
 
+## 0.81.0
+
+### Minor Changes
+
+- [`792939f`](https://github.com/chakra-ui/zag/commit/792939f9d9eac5a97cc46f1b0ab286666ba1edd8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `navigate` context property to handle custom
+  router navigations when trigger is rendered as a link.
+
+  Here's a React example usage with the tabs machine.
+
+  ```tsx
+  const [state, send] = useMachine(
+    tabs.machine({
+      id: useId(),
+      value: "nils",
+      // use router.push to navigate to the selected tab
+      navigate(details) {
+        router.push(`#${details.value}`)
+      },
+    }),
+  )
+  ```
+
+### Patch Changes
+
+- [`552e55d`](https://github.com/chakra-ui/zag/commit/552e55db4ec8c0fa86c5b7e5ce3ad08eb350ca68) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor and streamline packages
+
+- Updated dependencies [[`792939f`](https://github.com/chakra-ui/zag/commit/792939f9d9eac5a97cc46f1b0ab286666ba1edd8),
+  [`552e55d`](https://github.com/chakra-ui/zag/commit/552e55db4ec8c0fa86c5b7e5ce3ad08eb350ca68)]:
+  - @zag-js/dom-query@0.81.0
+  - @zag-js/types@0.81.0
+  - @zag-js/anatomy@0.81.0
+  - @zag-js/core@0.81.0
+  - @zag-js/utils@0.81.0
+  - @zag-js/element-rect@0.81.0
+
 ## 0.80.0
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @zag-js/collection
 
+## 0.81.0
+
+### Patch Changes
+
+- [`2e4ae72`](https://github.com/chakra-ui/zag/commit/2e4ae729818cd334d9cfe4ddb15c14dc2aabb6bb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **TreeCollection**: Add support for new methods:
+
+  - `getPreviousSibling`: Get the previous sibling node of the given node.
+  - `getNextSibling`: Get the next sibling node of the given node.
+  - `remove`: Remove the given node from the collection.
+
+- Updated dependencies []:
+  - @zag-js/utils@0.81.0
+
 ## 0.80.0
 
 ### Patch Changes
