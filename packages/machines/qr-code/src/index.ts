@@ -9,4 +9,5 @@ export type {
   QrCodeGenerateOptions,
   QrCodeGenerateResult,
   Service,
+  ValueChangeDetails,
 } from "./qr-code.types"

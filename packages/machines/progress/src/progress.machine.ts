@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { compact, isNumber } from "@zag-js/utils"
+import { compact, isEqual, isNumber } from "@zag-js/utils"
 import type { MachineContext, MachineState, UserDefinedContext } from "./progress.types"
 
 function midValue(min: number, max: number) {
@@ -50,7 +50,7 @@ export function machine(userContext: UserDefinedContext) {
     {
       actions: {
         setValue: (ctx, evt) => {
-          ctx.value = evt.value === null ? null : Math.max(0, Math.min(evt.value, ctx.max))
+          set.value(ctx, evt.value)
         },
         validateContext: (ctx) => {
           if (ctx.value == null) return
@@ -82,4 +82,12 @@ function isValidMax(value: number, max: number) {
 
 function isValidMin(value: number, min: number) {
   return isValidNumber(value) && value >= min
+}
+
+const set = {
+  value(ctx: MachineContext, value: number | null) {
+    if (isEqual(ctx.value, value)) return
+    ctx.value = value === null ? null : Math.max(0, Math.min(value, ctx.max))
+    ctx.onValueChange?.({ value })
+  },
 }

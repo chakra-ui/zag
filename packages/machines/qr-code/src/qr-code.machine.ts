@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { compact } from "@zag-js/utils"
+import { compact, isEqual } from "@zag-js/utils"
 import { memoize } from "proxy-memoize"
 import { encode } from "uqr"
 import type { MachineContext, MachineState, UserDefinedContext } from "./qr-code.types"
@@ -28,10 +28,18 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       actions: {
-        setValue: (ctx, e) => {
-          ctx.value = e.value
+        setValue(ctx, evt) {
+          set.value(ctx, evt.value)
         },
       },
     },
   )
+}
+
+const set = {
+  value(ctx: MachineContext, value: string) {
+    if (isEqual(ctx.value, value)) return
+    ctx.value = value
+    ctx.onValueChange?.({ value })
+  },
 }

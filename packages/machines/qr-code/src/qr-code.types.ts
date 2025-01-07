@@ -8,6 +8,10 @@ export type ElementIds = Partial<{
   frame: string
 }>
 
+export interface ValueChangeDetails {
+  value: string
+}
+
 interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The value to encode.
@@ -21,6 +25,10 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The qr code encoding options.
    */
   encoding?: QrCodeGenerateOptions | undefined
+  /**
+   * Callback fired when the value changes.
+   */
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
 }
 
 interface PrivateContext {
