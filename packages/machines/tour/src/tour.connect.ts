@@ -1,5 +1,5 @@
 import { mergeProps } from "@zag-js/core"
-import { dataAttr, MAX_Z_INDEX } from "@zag-js/dom-query"
+import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tour.anatomy"
@@ -111,12 +111,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         dir: state.context.dir,
         hidden: !open,
         "data-state": open ? "open" : "closed",
+        "data-type": step?.type,
         style: {
+          "--tour-layer": 0,
           clipPath: isTooltipStep(step) ? `path("${clipPath}")` : undefined,
           position: "absolute",
           inset: "0",
           willChange: "clip-path",
-          zIndex: MAX_Z_INDEX,
         },
       })
     },
@@ -126,6 +127,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.spotlight.attrs,
         hidden: !open || !step?.target?.(),
         style: {
+          "--tour-layer": 1,
           position: "absolute",
           width: `${targetRect.width}px`,
           height: `${targetRect.height}px`,
@@ -150,7 +152,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         id: dom.getPositionerId(state.context),
         "data-type": step?.type,
         "data-placement": state.context.currentPlacement,
-        style: step?.type === "tooltip" ? popperStyles.floating : { zIndex: MAX_Z_INDEX },
+        style: {
+          "--tour-layer": 2,
+          ...(step?.type === "tooltip" && popperStyles.floating),
+        },
       })
     },
 
@@ -190,7 +195,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-labelledby": dom.getTitleId(state.context),
         "aria-describedby": dom.getDescriptionId(state.context),
         tabIndex: -1,
-        style: { zIndex: MAX_Z_INDEX },
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!state.context.keyboardNavigation) return

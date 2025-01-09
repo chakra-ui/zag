@@ -285,6 +285,112 @@ const Lifecycle = () => {
 }
 ```
 
+## Styling guide
+
+### Prerequisites
+
+Ensure the `box-sizing` is set to `border-box` for the means of measuring the
+tour target.
+
+```css
+* {
+  box-sizing: border-box;
+}
+```
+
+Ensure the `body` has a `position` of `relative`.
+
+```css
+body {
+  position: relative;
+}
+```
+
+### Overview
+
+Each tour part has a `data-part` attribute that can be used to style them in the
+DOM.
+
+```css
+[data-scope="tour"][data-part="content"] {
+  /* styles for the content part */
+}
+
+[data-scope="tour"][data-part="positioner"] {
+  /* styles for the positioner part */
+}
+
+[data-scope="tour"][data-part="arrow"] {
+  /* styles for the arrow part */
+}
+
+[data-scope="tour"][data-part="title"] {
+  /* styles for the title part */
+}
+
+[data-scope="tour"][data-part="description"] {
+  /* styles for the description part */
+}
+
+[data-scope="tour"][data-part="progress-text"] {
+  /* styles for the progress text part */
+}
+
+[data-scope="tour"][data-part="action-trigger"] {
+  /* styles for the action trigger part */
+}
+
+[data-scope="tour"][data-part="backdrop"] {
+  /* styles for the backdrop part */
+}
+```
+
+### Step types
+
+The tour component supports two types: `dialog` and `floating`. You can apply
+specific styles based on the tour type:
+
+```css
+[data-scope="tour"][data-part="content"][data-type="dialog"] {
+  /* styles for content when step is dialog type */
+}
+
+[data-scope="tour"][data-part="content"][data-type="floating"] {
+  /* styles for content when step is floating type */
+}
+
+[data-scope="tour"][data-part="positioner"][data-type="dialog"] {
+  /* styles for positioner when step is dialog type */
+}
+
+[data-scope="tour"][data-part="positioner"][data-type="floating"] {
+  /* styles for positioner when step is floating type */
+}
+```
+
+### Placement Styles
+
+For floating type tours, you can style based on the placement using the
+`data-placement` attribute:
+
+```css
+[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="bottom"] {
+  /* styles for bottom placement */
+}
+
+[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="top"] {
+  /* styles for top placement */
+}
+
+[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="start"] {
+  /* styles for start placement */
+}
+
+[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="end"] {
+  /* styles for end placement */
+}
+```
+
 ## Methods and Properties
 
 ### Machine Context

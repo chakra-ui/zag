@@ -1,3 +1,7 @@
+:root {
+  --tour-z-index: 100;
+}
+
 .tour-trigger {
   display: inline-flex;
   align-items: center;
@@ -20,9 +24,13 @@
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 300px;
+  position: relative;
+  z-index: calc(var(--tour-layer) + var(--tour-z-index));
 }
 
 [data-scope="tour"][data-part="positioner"] {
+  z-index: calc(var(--tour-layer) + var(--tour-z-index));
+
   &[data-type="floating"] {
     position: absolute;
 
@@ -55,8 +63,6 @@
 }
 
 [data-scope="tour"][data-part="content"] {
-  position: relative;
-
   &[data-type="dialog"] {
     width: 500px;
     background: var(--colors-bg-subtle);
@@ -105,10 +111,12 @@
 
 [data-scope="tour"][data-part="backdrop"] {
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: calc(var(--tour-layer) + var(--tour-z-index));
 }
 
 [data-scope="tour"][data-part="spotlight"] {
   border: 3px solid var(--colors-bg-primary-subtle);
+  z-index: calc(var(--tour-layer) + var(--tour-z-index));
 }
 
 [data-scope="tour"][data-part="close-trigger"] {
