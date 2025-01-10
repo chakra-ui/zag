@@ -57,6 +57,7 @@ type ComputedContext = Readonly<{
   percent: number
   hasNextStep: boolean
   hasPrevStep: boolean
+  completed: boolean
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -113,6 +114,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Whether the stepper has a previous step.
    */
   hasPrevStep: boolean
+  /**
+   * Whether the stepper is completed.
+   */
+  isCompleted: boolean
   /**
    * Function to set the value of the stepper.
    */

@@ -45,6 +45,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     percent,
     hasNextStep,
     hasPrevStep,
+    isCompleted: state.context.completed,
     goToNextStep,
     goToPrevStep,
     resetStep,

@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { compact, isEqual } from "@zag-js/utils"
+import { compact, isEqual, isValueWithinRange } from "@zag-js/utils"
 import type { MachineContext, MachineState, UserDefinedContext } from "./steps.types"
 
 export function machine(userContext: UserDefinedContext) {
@@ -21,6 +21,7 @@ export function machine(userContext: UserDefinedContext) {
         percent: (ctx) => (ctx.step / ctx.count) * 100,
         hasNextStep: (ctx) => ctx.step < ctx.count,
         hasPrevStep: (ctx) => ctx.step > 0,
+        completed: (ctx) => ctx.step === ctx.count,
       },
 
       states: {
@@ -55,21 +56,30 @@ export function machine(userContext: UserDefinedContext) {
         resetStep(ctx) {
           set.value(ctx, 0)
         },
-        setStep(ctx, event) {
-          const value = event.value
-          const inRange = value >= 0 && value < ctx.count
-          if (!inRange) throw new RangeError(`Index ${value} is out of bounds`)
-          set.value(ctx, value)
+        setStep(ctx, evt) {
+          set.value(ctx, evt.value)
         },
       },
     },
   )
 }
 
+const validateStep = (ctx: MachineContext, step: number) => {
+  if (!isValueWithinRange(step, 0, ctx.count)) {
+    throw new RangeError(`[zag-js/steps] step index ${step} is out of bounds`)
+  }
+}
+
 const set = {
   value(ctx: MachineContext, step: number) {
     if (isEqual(ctx.step, step)) return
+    validateStep(ctx, step)
+
     ctx.step = step
     ctx.onStepChange?.({ step })
+
+    if (ctx.completed) {
+      ctx.onStepComplete?.()
+    }
   },
 }

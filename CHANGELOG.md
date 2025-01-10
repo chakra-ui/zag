@@ -15,6 +15,8 @@ See the [Changesets](./.changeset) for the latest changes.
 
 - **Tour**: Remove `zIndex` from elements in favor of userland control.
 
+- **Steps**: Fix issue where `onStepComplete` is not implemented
+
 ## [0.81.0](./#0.81.0) - 2025-01-07
 
 ### Fixed
