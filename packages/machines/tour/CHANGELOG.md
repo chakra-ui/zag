@@ -1,5 +1,23 @@
 # @zag-js/tour
 
+## 0.81.1
+
+### Patch Changes
+
+- [`656b39f`](https://github.com/chakra-ui/zag/commit/656b39f271702ff82cb28542a9c19e4626336b3e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove `zIndex` from your elements in favor of userland control.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.81.1
+  - @zag-js/core@0.81.1
+  - @zag-js/types@0.81.1
+  - @zag-js/utils@0.81.1
+  - @zag-js/dismissable@0.81.1
+  - @zag-js/dom-query@0.81.1
+  - @zag-js/focus-trap@0.81.1
+  - @zag-js/interact-outside@0.81.1
+  - @zag-js/popper@0.81.1
+
 ## 0.81.0
 
 ### Patch Changes

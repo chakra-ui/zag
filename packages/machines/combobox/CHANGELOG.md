@@ -1,5 +1,20 @@
 # @zag-js/combobox
 
+## 0.81.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.81.1
+  - @zag-js/core@0.81.1
+  - @zag-js/types@0.81.1
+  - @zag-js/aria-hidden@0.81.1
+  - @zag-js/collection@0.81.1
+  - @zag-js/utils@0.81.1
+  - @zag-js/dismissable@0.81.1
+  - @zag-js/dom-query@0.81.1
+  - @zag-js/popper@0.81.1
+
 ## 0.81.0
 
 ### Minor Changes

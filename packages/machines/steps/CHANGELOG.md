@@ -1,5 +1,19 @@
 # @zag-js/steps
 
+## 0.81.1
+
+### Patch Changes
+
+- [`5492945`](https://github.com/chakra-ui/zag/commit/5492945a5383ea80e7be193337be40beedad6195) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onStepComplete` is not implemented
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.81.1
+  - @zag-js/core@0.81.1
+  - @zag-js/types@0.81.1
+  - @zag-js/utils@0.81.1
+  - @zag-js/dom-query@0.81.1
+
 ## 0.81.0
 
 ### Patch Changes

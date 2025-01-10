@@ -1,5 +1,21 @@
 # @zag-js/hover-card
 
+## 0.81.1
+
+### Patch Changes
+
+- [`7891d15`](https://github.com/chakra-ui/zag/commit/7891d15c2344fb4b6aea7ea39aaa88a4868b7cac) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where controlled open state could get into an
+  inconsistent machine state during the `opening` or `closing` state.
+- Updated dependencies []:
+  - @zag-js/anatomy@0.81.1
+  - @zag-js/core@0.81.1
+  - @zag-js/types@0.81.1
+  - @zag-js/utils@0.81.1
+  - @zag-js/dismissable@0.81.1
+  - @zag-js/dom-query@0.81.1
+  - @zag-js/popper@0.81.1
+
 ## 0.81.0
 
 ### Patch Changes
