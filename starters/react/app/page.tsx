@@ -11,6 +11,7 @@ const routes = [
   { path: "/date-picker/controlled-range-picker", name: "DateRangePicker - Controlled" },
   { path: "/hover-card/controlled", name: "HoverCard - Controlled" },
   { path: "/tooltip/controlled", name: "Tooltip - Controlled" },
+  { path: "/tooltip/controlled-multiple", name: "Tooltip - Controlled Multiple" },
   { path: "/menu/controlled", name: "Menu - Controlled" },
   { path: "/collapsible/controlled", name: "Collapsible - Controlled" },
   { path: "/collapsible/uncontrolled", name: "Collapsible - Uncontrolled" },

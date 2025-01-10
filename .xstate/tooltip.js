@@ -14,8 +14,11 @@ const fetchMachine = createMachine({
   initial: ctx.open ? "open" : "closed",
   activities: ["trackFocusVisible"],
   context: {
+    "isOpenControlled": false,
     "noVisibleTooltip && !hasPointerMoveOpened": false,
     "!hasPointerMoveOpened": false,
+    "isOpenControlled": false,
+    "isOpenControlled": false,
     "isOpenControlled": false,
     "isOpenControlled": false,
     "isOpenControlled": false,
@@ -38,10 +41,13 @@ const fetchMachine = createMachine({
       entry: ["clearGlobalId"],
       on: {
         "CONTROLLED.OPEN": "open",
-        OPEN: {
+        OPEN: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnOpen"]
+        }, {
           target: "open",
           actions: ["invokeOnOpen"]
-        },
+        }],
         POINTER_LEAVE: {
           actions: ["clearPointerMoveOpened"]
         },
@@ -79,15 +85,20 @@ const fetchMachine = createMachine({
         }],
         POINTER_LEAVE: [{
           cond: "isOpenControlled",
-          actions: ["clearPointerMoveOpened", "invokeOnClose"]
+          // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
+          actions: ["clearPointerMoveOpened", "invokeOnClose", "toggleVisibility"]
         }, {
           target: "closed",
           actions: ["clearPointerMoveOpened", "invokeOnClose"]
         }],
-        CLOSE: {
+        CLOSE: [{
+          cond: "isOpenControlled",
+          // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
+          actions: ["invokeOnClose", "toggleVisibility"]
+        }, {
           target: "closed",
           actions: ["invokeOnClose"]
-        }
+        }]
       }
     },
     open: {
@@ -96,10 +107,13 @@ const fetchMachine = createMachine({
       entry: ["setGlobalId"],
       on: {
         "CONTROLLED.CLOSE": "closed",
-        CLOSE: {
+        CLOSE: [{
+          cond: "isOpenControlled",
+          actions: ["invokeOnClose"]
+        }, {
           target: "closed",
           actions: ["invokeOnClose"]
-        },
+        }],
         POINTER_LEAVE: [{
           cond: "isVisible",
           target: "closing",
@@ -146,7 +160,8 @@ const fetchMachine = createMachine({
         }],
         POINTER_MOVE: [{
           cond: "isOpenControlled",
-          actions: ["setPointerMoveOpened", "invokeOnOpen"]
+          // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
+          actions: ["setPointerMoveOpened", "invokeOnOpen", "toggleVisibility"]
         }, {
           target: "open",
           actions: ["setPointerMoveOpened", "invokeOnOpen"]
@@ -174,9 +189,9 @@ const fetchMachine = createMachine({
     CLOSE_DELAY: 500
   },
   guards: {
+    "isOpenControlled": ctx => ctx["isOpenControlled"],
     "noVisibleTooltip && !hasPointerMoveOpened": ctx => ctx["noVisibleTooltip && !hasPointerMoveOpened"],
     "!hasPointerMoveOpened": ctx => ctx["!hasPointerMoveOpened"],
-    "isOpenControlled": ctx => ctx["isOpenControlled"],
     "isVisible": ctx => ctx["isVisible"],
     "isInteractive": ctx => ctx["isInteractive"]
   }

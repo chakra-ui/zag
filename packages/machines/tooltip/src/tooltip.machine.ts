@@ -26,6 +26,7 @@ export function machine(userContext: UserDefinedContext) {
         interactive: false,
         closeOnScroll: true,
         closeOnClick: true,
+        disabled: false,
         ...ctx,
         currentPlacement: undefined,
         hasPointerMoveOpened: false,
@@ -50,10 +51,16 @@ export function machine(userContext: UserDefinedContext) {
           entry: ["clearGlobalId"],
           on: {
             "CONTROLLED.OPEN": "open",
-            OPEN: {
-              target: "open",
-              actions: ["invokeOnOpen"],
-            },
+            OPEN: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnOpen"],
+              },
+              {
+                target: "open",
+                actions: ["invokeOnOpen"],
+              },
+            ],
             POINTER_LEAVE: {
               actions: ["clearPointerMoveOpened"],
             },
@@ -102,17 +109,25 @@ export function machine(userContext: UserDefinedContext) {
             POINTER_LEAVE: [
               {
                 guard: "isOpenControlled",
-                actions: ["clearPointerMoveOpened", "invokeOnClose"],
+                // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
+                actions: ["clearPointerMoveOpened", "invokeOnClose", "toggleVisibility"],
               },
               {
                 target: "closed",
                 actions: ["clearPointerMoveOpened", "invokeOnClose"],
               },
             ],
-            CLOSE: {
-              target: "closed",
-              actions: ["invokeOnClose"],
-            },
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
+                actions: ["invokeOnClose", "toggleVisibility"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+            ],
           },
         },
 
@@ -122,10 +137,16 @@ export function machine(userContext: UserDefinedContext) {
           entry: ["setGlobalId"],
           on: {
             "CONTROLLED.CLOSE": "closed",
-            CLOSE: {
-              target: "closed",
-              actions: ["invokeOnClose"],
-            },
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+            ],
             POINTER_LEAVE: [
               {
                 guard: "isVisible",
@@ -183,7 +204,8 @@ export function machine(userContext: UserDefinedContext) {
             POINTER_MOVE: [
               {
                 guard: "isOpenControlled",
-                actions: ["setPointerMoveOpened", "invokeOnOpen"],
+                // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
+                actions: ["setPointerMoveOpened", "invokeOnOpen", "toggleVisibility"],
               },
               {
                 target: "open",
@@ -292,7 +314,9 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
         toggleVisibility(ctx, evt, { send }) {
-          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
+          queueMicrotask(() => {
+            send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
+          })
         },
         setPointerMoveOpened(ctx) {
           ctx.hasPointerMoveOpened = true

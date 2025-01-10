@@ -387,6 +387,7 @@ export declare namespace StateMachine {
   }
 
   export type HookOptions<TContext extends Dict, TState extends StateSchema, TEvent extends EventObject> = {
+    sync?: boolean
     actions?: ActionMap<TContext, TState, TEvent> | undefined
     state?: StateInit<TContext, TState> | undefined
     context?: UserContext<TContext> | undefined

@@ -55,16 +55,19 @@ const fetchMachine = createMachine({
       },
       on: {
         "CONTROLLED.OPEN": "open",
+        "CONTROLLED.CLOSE": "closed",
         POINTER_LEAVE: [{
           cond: "isOpenControlled",
-          actions: ["invokeOnClose"]
+          // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
+          actions: ["invokeOnClose", "toggleVisibility"]
         }, {
           target: "closed",
           actions: ["invokeOnClose"]
         }],
         TRIGGER_BLUR: [{
           cond: "isOpenControlled && !isPointer",
-          actions: ["invokeOnClose"]
+          // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
+          actions: ["invokeOnClose", "toggleVisibility"]
         }, {
           cond: "!isPointer",
           target: "closed",
@@ -72,7 +75,8 @@ const fetchMachine = createMachine({
         }],
         CLOSE: [{
           cond: "isOpenControlled",
-          actions: ["invokeOnClose"]
+          // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
+          actions: ["invokeOnClose", "toggleVisibility"]
         }, {
           target: "closed",
           actions: ["invokeOnClose"]
@@ -122,6 +126,7 @@ const fetchMachine = createMachine({
       },
       on: {
         "CONTROLLED.CLOSE": "closed",
+        "CONTROLLED.OPEN": "open",
         POINTER_ENTER: {
           target: "open",
           // no need to invokeOnOpen here because it's still open (but about to close)
