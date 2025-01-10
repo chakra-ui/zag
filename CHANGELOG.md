@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.81.1](./#0.81.1) - 2025-01-10
+
+### Fixed
+
+- **Hover Card, Tooltip**: Fix issue where controlled open state could get into an inconsistent machine state during the
+  `opening` or `closing` state.
+
+- **Tour**: Remove `zIndex` from elements in favor of userland control.
+
 ## [0.81.0](./#0.81.0) - 2025-01-07
 
 ### Fixed

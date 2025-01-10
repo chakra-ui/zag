@@ -14,7 +14,7 @@ export function useSnapshot<
   TEvent extends S.EventObject = S.AnyEventObject,
 >(
   service: Machine<TContext, TState, TEvent>,
-  options?: S.HookOptions<TContext, TState, TEvent> & { sync?: boolean },
+  options?: S.HookOptions<TContext, TState, TEvent>,
 ): S.State<TContext, TState, TEvent> {
   //
   type State = S.State<TContext, TState, TEvent>
