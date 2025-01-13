@@ -1,5 +1,21 @@
 # @zag-js/file-upload
 
+## 0.81.2
+
+### Patch Changes
+
+- [`884973b`](https://github.com/chakra-ui/zag/commit/884973b53e16aaa364f466e5f416caa3aa431c65) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Improve click detection for dropzone
+  - Add support for `disableClick` prop on dropzone
+- Updated dependencies [[`e9313a3`](https://github.com/chakra-ui/zag/commit/e9313a3663285a05c9ac9ac92f1c09fcb27ac818)]:
+  - @zag-js/dom-query@0.81.2
+  - @zag-js/i18n-utils@0.81.2
+  - @zag-js/file-utils@0.81.2
+  - @zag-js/anatomy@0.81.2
+  - @zag-js/core@0.81.2
+  - @zag-js/types@0.81.2
+  - @zag-js/utils@0.81.2
+
 ## 0.81.1
 
 ### Patch Changes
