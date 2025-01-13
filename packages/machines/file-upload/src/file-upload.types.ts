@@ -187,6 +187,13 @@ export interface ItemPreviewImageProps extends ItemProps {
   url: string
 }
 
+export interface DropzoneProps {
+  /**
+   * Whether to disable the click event on the dropzone
+   */
+  disableClick?: boolean
+}
+
 export interface MachineApi<T extends PropTypes> {
   /**
    * Whether the user is dragging something over the root element
@@ -241,7 +248,7 @@ export interface MachineApi<T extends PropTypes> {
 
   getLabelProps(): T["label"]
   getRootProps(): T["element"]
-  getDropzoneProps(): T["element"]
+  getDropzoneProps(props?: DropzoneProps): T["element"]
   getTriggerProps(): T["button"]
   getHiddenInputProps(): T["input"]
   getItemGroupProps(): T["element"]

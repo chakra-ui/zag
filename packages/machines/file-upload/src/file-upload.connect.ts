@@ -67,7 +67,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    getDropzoneProps() {
+    getDropzoneProps(props = {}) {
       return normalize.element({
         ...parts.dropzone.attrs,
         dir: state.context.dir,
@@ -86,9 +86,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "DROPZONE.CLICK", src: "keydown" })
         },
         onClick(event) {
-          const isLabel = event.currentTarget.localName === "label"
+          if (event.defaultPrevented) return
+          if (props.disableClick) return
+          // ensure it's the dropzone that's actually clicked
+          if (!isSelfTarget(event)) return
           // prevent opening the file dialog when clicking on the label (to avoid double opening)
-          if (isLabel) event.preventDefault()
+          if (event.currentTarget.localName === "label") {
+            event.preventDefault()
+          }
           send("DROPZONE.CLICK")
         },
         onDragOver(event) {
