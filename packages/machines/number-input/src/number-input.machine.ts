@@ -1,6 +1,13 @@
 import { choose, createMachine, guards } from "@zag-js/core"
-import { addDomEvent, isSafari, observeAttributes, raf, requestPointerLock } from "@zag-js/dom-query"
-import { setElementValue, trackFormControl } from "@zag-js/form-utils"
+import {
+  addDomEvent,
+  isSafari,
+  observeAttributes,
+  raf,
+  requestPointerLock,
+  setElementValue,
+  trackFormControl,
+} from "@zag-js/dom-query"
 import {
   callAll,
   clampValue,

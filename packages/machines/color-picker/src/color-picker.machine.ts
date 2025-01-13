@@ -1,8 +1,14 @@
 import { parseColor, type Color } from "@zag-js/color-utils"
 import { createMachine, guards } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { getInitialFocus, raf, trackPointerMove, disableTextSelection } from "@zag-js/dom-query"
-import { dispatchInputValueEvent, trackFormControl } from "@zag-js/form-utils"
+import {
+  disableTextSelection,
+  dispatchInputValueEvent,
+  getInitialFocus,
+  raf,
+  trackFormControl,
+  trackPointerMove,
+} from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { compact, tryCatch } from "@zag-js/utils"
 import { dom } from "./color-picker.dom"

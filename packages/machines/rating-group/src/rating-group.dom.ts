@@ -1,5 +1,4 @@
-import { createScope, query } from "@zag-js/dom-query"
-import { dispatchInputValueEvent } from "@zag-js/form-utils"
+import { createScope, dispatchInputValueEvent, query } from "@zag-js/dom-query"
 import type { MachineContext as Ctx } from "./rating-group.types"
 
 export const dom = createScope({

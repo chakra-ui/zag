@@ -1,7 +1,6 @@
 import { createMachine } from "@zag-js/core"
-import { raf, trackPointerMove } from "@zag-js/dom-query"
+import { raf, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
 import { trackElementsSize, type ElementSize } from "@zag-js/element-size"
-import { trackFormControl } from "@zag-js/form-utils"
 import { compact, getValuePercent, isEqual } from "@zag-js/utils"
 import { dom } from "./slider.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./slider.types"

@@ -38,7 +38,6 @@
     "@zag-js/popper": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/collection": "workspace:*",
-    "@zag-js/form-utils": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/types": "workspace:*"

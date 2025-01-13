@@ -242,9 +242,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/form-utils
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
@@ -486,9 +483,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/form-utils
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
@@ -766,9 +760,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/form-utils
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
@@ -1016,9 +1007,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/form-utils
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
@@ -1263,9 +1251,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/form-utils
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
@@ -1534,9 +1519,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/form-utils
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
@@ -1768,9 +1750,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/form-utils
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
@@ -2027,9 +2006,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/form-utils
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
@@ -2447,9 +2423,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2522,9 +2495,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
@@ -2590,9 +2560,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/live-region':
         specifier: workspace:*
         version: link:../../utilities/live-region
@@ -2658,9 +2625,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../utilities/interact-outside
@@ -2810,9 +2774,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2857,9 +2818,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2988,9 +2946,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3013,9 +2968,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3044,9 +2996,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
@@ -3100,9 +3049,6 @@ importers:
       '@zag-js/element-size':
         specifier: workspace:*
         version: link:../../utilities/element-size
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3172,9 +3118,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3225,9 +3168,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../utilities/form-utils
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../utilities/interact-outside
@@ -3571,12 +3511,6 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  packages/utilities/form-utils:
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
   packages/utilities/highlight-word:
     devDependencies:
       clean-package:
@@ -3762,9 +3696,6 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../packages/utilities/focus-visible
-      '@zag-js/form-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/form-utils
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -18635,7 +18566,7 @@ snapshots:
       '@typescript-eslint/parser': 8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2)
       eslint: 9.17.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@9.17.0(jiti@2.4.2))
       eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-typescript@3.6.3)(eslint@9.17.0(jiti@2.4.2))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.17.0(jiti@2.4.2))
       eslint-plugin-react: 7.37.2(eslint@9.17.0(jiti@2.4.2))
@@ -18672,13 +18603,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2)):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@9.17.0(jiti@2.4.2)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.0(supports-color@9.4.0)
       enhanced-resolve: 5.17.1
       eslint: 9.17.0(jiti@2.4.2)
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2))
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.17.0(jiti@2.4.2))
       fast-glob: 3.3.3
       get-tsconfig: 4.8.1
       is-bun-module: 1.2.1
@@ -18710,14 +18641,14 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2)):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.17.0(jiti@2.4.2)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2)
       eslint: 9.17.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@9.17.0(jiti@2.4.2))
     transitivePeerDependencies:
       - supports-color
 
@@ -18764,7 +18695,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.17.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2))
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.17.0(jiti@2.4.2))
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3

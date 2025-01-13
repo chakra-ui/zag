@@ -1,6 +1,7 @@
 export * from "./computed-style"
 export * from "./data-url"
 export * from "./event"
+export * from "./form"
 export * from "./initial-focus"
 export * from "./mutation-observer"
 export * from "./navigate"

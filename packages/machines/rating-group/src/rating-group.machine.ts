@@ -1,6 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
-import { trackFormControl } from "@zag-js/form-utils"
+import { raf, trackFormControl } from "@zag-js/dom-query"
 import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./rating-group.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./rating-group.types"

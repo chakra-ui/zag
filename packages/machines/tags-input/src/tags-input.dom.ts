@@ -1,5 +1,4 @@
-import { createScope, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-query"
-import { dispatchInputValueEvent } from "@zag-js/form-utils"
+import { createScope, dispatchInputValueEvent, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-query"
 import type { MachineContext as Ctx, ItemProps } from "./tags-input.types"
 
 export const dom = createScope({

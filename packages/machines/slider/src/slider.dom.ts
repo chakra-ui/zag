@@ -1,5 +1,4 @@
-import { createScope, getRelativePoint, queryAll } from "@zag-js/dom-query"
-import { dispatchInputValueEvent } from "@zag-js/form-utils"
+import { createScope, dispatchInputValueEvent, getRelativePoint, queryAll } from "@zag-js/dom-query"
 import type { Point } from "@zag-js/types"
 import { getPercentValue } from "@zag-js/utils"
 import { styleGetterFns } from "./slider.style"
