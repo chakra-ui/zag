@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.81.2](./#0.81.2) - 2025-01-13
+
+### Fixed
+
+- **File Upload**: Improve click detection for dropzone and add support for `disableClick` prop on dropzone
+
+- **General**: Don't reset form-related components if reset event is cancelled
+
 ## [0.81.1](./#0.81.1) - 2025-01-10
 
 ### Fixed
