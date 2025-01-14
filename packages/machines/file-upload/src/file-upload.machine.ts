@@ -149,8 +149,10 @@ export function machine(userContext: UserDefinedContext) {
           }
         },
         removeFile(ctx, evt) {
-          const nextFiles = ctx.acceptedFiles.filter((file) => file !== evt.file)
-          ctx.acceptedFiles = ref(nextFiles)
+          const files = Array.from(ctx.acceptedFiles.filter((file) => file !== evt.file))
+          const rejectedFiles = Array.from(ctx.rejectedFiles.filter((item) => item.file !== evt.file))
+          ctx.acceptedFiles = ref(files)
+          ctx.rejectedFiles = ref(rejectedFiles)
           invoke.change(ctx)
         },
         clearRejectedFiles(ctx) {
