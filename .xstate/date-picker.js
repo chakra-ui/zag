@@ -13,6 +13,8 @@ const fetchMachine = createMachine({
   id: "datepicker",
   initial: ctx.open ? "open" : "idle",
   context: {
+    "isInputValueEmpty": false,
+    "shouldFixOnBlur": false,
     "isOpenControlled": false,
     "isYearView": false,
     "isMonthView": false,
@@ -76,18 +78,24 @@ const fetchMachine = createMachine({
     "VALUE.CLEAR": {
       actions: ["clearDateValue", "clearFocusedDate", "focusFirstInputElement"]
     },
-    "INPUT.CHANGE": {
+    "INPUT.CHANGE": [{
+      cond: "isInputValueEmpty",
+      actions: ["clearDateValue"]
+    }, {
       actions: ["setInputValue", "focusParsedDate"]
-    },
+    }],
     "INPUT.ENTER": {
       actions: ["focusParsedDate", "selectFocusedDate"]
     },
     "INPUT.FOCUS": {
       actions: ["setActiveIndex"]
     },
-    "INPUT.BLUR": {
+    "INPUT.BLUR": [{
+      cond: "shouldFixOnBlur",
       actions: ["setActiveIndexToStart", "selectParsedDate"]
-    },
+    }, {
+      actions: ["setActiveIndexToStart"]
+    }],
     "PRESET.CLICK": [{
       cond: "isOpenControlled",
       actions: ["setDateValue", "setFocusedDate", "invokeOnClose"]
@@ -350,7 +358,7 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: ["invokeOnClose"]
         }],
-        "VIEW.CHANGE": {
+        "VIEW.TOGGLE": {
           actions: ["setNextView"]
         },
         INTERACT_OUTSIDE: [{
@@ -383,6 +391,8 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
+    "isInputValueEmpty": ctx => ctx["isInputValueEmpty"],
+    "shouldFixOnBlur": ctx => ctx["shouldFixOnBlur"],
     "isOpenControlled": ctx => ctx["isOpenControlled"],
     "isYearView": ctx => ctx["isYearView"],
     "isMonthView": ctx => ctx["isMonthView"],

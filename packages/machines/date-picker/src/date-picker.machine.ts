@@ -28,7 +28,17 @@ import { getPlacement } from "@zag-js/popper"
 import { compact, isEqual } from "@zag-js/utils"
 import { dom } from "./date-picker.dom"
 import type { DateValue, DateView, MachineContext, MachineState, UserDefinedContext } from "./date-picker.types"
-import { adjustStartAndEndDate, sortDates } from "./date-picker.utils"
+import {
+  adjustStartAndEndDate,
+  clampView,
+  eachView,
+  getNextView,
+  getPreviousView,
+  isAboveMinView,
+  isBelowMinView,
+  isValidDate,
+  sortDates,
+} from "./date-picker.utils"
 
 const { and } = guards
 
@@ -48,6 +58,11 @@ const transformContext = (ctx: Partial<MachineContext>): MachineContext => {
   // get initial start value for visible range
   const startValue = alignDate(focusedValue, "start", { months: numOfMonths }, locale)
 
+  // get the initial view
+  const minView: DateView = "day"
+  const maxView: DateView = "year"
+  const view = clampView(ctx.view || minView, minView, maxView)
+
   return {
     locale,
     numOfMonths,
@@ -57,12 +72,23 @@ const transformContext = (ctx: Partial<MachineContext>): MachineContext => {
     timeZone,
     value,
     selectionMode,
-    view: "day",
+    view,
+    minView,
+    maxView,
     activeIndex: 0,
     hoveredValue: null,
     closeOnSelect: true,
     disabled: false,
     readOnly: false,
+    min: undefined,
+    max: undefined,
+    format(date, { locale, timeZone }) {
+      const formatter = new DateFormatter(locale, { timeZone, day: "2-digit", month: "2-digit", year: "numeric" })
+      return formatter.format(date.toDate(timeZone))
+    },
+    parse(value, { locale, timeZone }) {
+      return parseDateString(value, locale, timeZone)
+    },
     ...ctx,
     positioning: {
       placement: "bottom",
@@ -79,7 +105,6 @@ export function machine(userContext: UserDefinedContext) {
       initial: ctx.open ? "open" : "idle",
       context: transformContext(ctx),
       computed: {
-        valueAsString: (ctx) => ctx.value.map((date) => formatSelectedDate(date, null, ctx.locale, ctx.timeZone)),
         isInteractive: (ctx) => !ctx.disabled && !ctx.readOnly,
         visibleDuration: (ctx) => ({ months: ctx.numOfMonths }),
         endValue: (ctx) => getEndDate(ctx.startValue, ctx.visibleDuration),
@@ -93,10 +118,8 @@ export function machine(userContext: UserDefinedContext) {
         },
         isPrevVisibleRangeValid: (ctx) => !isPreviousVisibleRangeInvalid(ctx.startValue, ctx.min, ctx.max),
         isNextVisibleRangeValid: (ctx) => !isNextVisibleRangeInvalid(ctx.endValue, ctx.min, ctx.max),
-        formattedValue(ctx) {
-          const opts = { timeZone: ctx.timeZone, day: "2-digit", month: "2-digit", year: "numeric" } as const
-          const formatter = new DateFormatter(ctx.locale, opts)
-          return ctx.value.map((date) => ctx.format?.(date) ?? formatter.format(date.toDate(ctx.timeZone)))
+        valueAsString(ctx) {
+          return ctx.value.map((date) => ctx.format(date, { locale: ctx.locale, timeZone: ctx.timeZone }))
         },
       },
 
@@ -133,18 +156,30 @@ export function machine(userContext: UserDefinedContext) {
         "VALUE.CLEAR": {
           actions: ["clearDateValue", "clearFocusedDate", "focusFirstInputElement"],
         },
-        "INPUT.CHANGE": {
-          actions: ["setInputValue", "focusParsedDate"],
-        },
+        "INPUT.CHANGE": [
+          {
+            guard: "isInputValueEmpty",
+            actions: ["clearDateValue"],
+          },
+          {
+            actions: ["setInputValue", "focusParsedDate"],
+          },
+        ],
         "INPUT.ENTER": {
           actions: ["focusParsedDate", "selectFocusedDate"],
         },
         "INPUT.FOCUS": {
           actions: ["setActiveIndex"],
         },
-        "INPUT.BLUR": {
-          actions: ["setActiveIndexToStart", "selectParsedDate"],
-        },
+        "INPUT.BLUR": [
+          {
+            guard: "shouldFixOnBlur",
+            actions: ["setActiveIndexToStart", "selectParsedDate"],
+          },
+          {
+            actions: ["setActiveIndexToStart"],
+          },
+        ],
         "PRESET.CLICK": [
           {
             guard: "isOpenControlled",
@@ -266,12 +301,8 @@ export function machine(userContext: UserDefinedContext) {
             ],
             "CELL.CLICK": [
               {
-                guard: "isMonthView",
-                actions: ["setFocusedMonth", "setViewToDay"],
-              },
-              {
-                guard: "isYearView",
-                actions: ["setFocusedYear", "setViewToMonth"],
+                guard: "isAboveMinView",
+                actions: ["setFocusedValueForView", "setPreviousView"],
               },
               {
                 guard: and("isRangePicker", "hasSelectedRange"),
@@ -359,12 +390,8 @@ export function machine(userContext: UserDefinedContext) {
             ],
             "TABLE.ENTER": [
               {
-                guard: "isMonthView",
-                actions: "setViewToDay",
-              },
-              {
-                guard: "isYearView",
-                actions: "setViewToMonth",
+                guard: "isAboveMinView",
+                actions: ["setPreviousView"],
               },
               {
                 guard: and("isRangePicker", "hasSelectedRange"),
@@ -502,16 +529,9 @@ export function machine(userContext: UserDefinedContext) {
                 actions: ["invokeOnClose"],
               },
             ],
-            "VIEW.CHANGE": [
-              {
-                guard: "isDayView",
-                actions: ["setViewToMonth"],
-              },
-              {
-                guard: "isMonthView",
-                actions: ["setViewToYear"],
-              },
-            ],
+            "VIEW.TOGGLE": {
+              actions: ["setNextView"],
+            },
             INTERACT_OUTSIDE: [
               {
                 guard: "isOpenControlled",
@@ -543,6 +563,7 @@ export function machine(userContext: UserDefinedContext) {
     },
     {
       guards: {
+        isAboveMinView: (ctx) => isAboveMinView(ctx.view, ctx.minView),
         isDayView: (ctx, evt) => (evt.view || ctx.view) === "day",
         isMonthView: (ctx, evt) => (evt.view || ctx.view) === "month",
         isYearView: (ctx, evt) => (evt.view || ctx.view) === "year",
@@ -554,10 +575,13 @@ export function machine(userContext: UserDefinedContext) {
         closeOnSelect: (ctx) => !!ctx.closeOnSelect,
         isOpenControlled: (ctx) => !!ctx["open.controlled"],
         isInteractOutsideEvent: (_ctx, evt) => evt.previousEvent?.type === "INTERACT_OUTSIDE",
+        isInputValueEmpty: (_ctx, evt) => evt.value.trim() === "",
+        shouldFixOnBlur: (_ctx, evt) => !!evt.fixOnBlur,
       },
+
       activities: {
         trackPositioning(ctx) {
-          ctx.currentPlacement = ctx.positioning.placement
+          ctx.currentPlacement ||= ctx.positioning.placement
           const anchorEl = dom.getControlEl(ctx)
           const getPositionerEl = () => dom.getPositionerEl(ctx)
           return getPlacement(anchorEl, getPositionerEl, {
@@ -568,11 +592,13 @@ export function machine(userContext: UserDefinedContext) {
             },
           })
         },
+
         setupLiveRegion(ctx) {
           const doc = dom.getDoc(ctx)
           ctx.announcer = createLiveRegion({ level: "assertive", document: doc })
           return () => ctx.announcer?.destroy?.()
         },
+
         trackDismissableElement(ctx, _evt, { send }) {
           const getContentEl = () => dom.getContentEl(ctx)
           return trackDismissableElement(getContentEl, {
@@ -591,24 +617,25 @@ export function machine(userContext: UserDefinedContext) {
           })
         },
       },
+
       actions: {
-        setViewToDay(ctx) {
-          set.view(ctx, "day")
+        setNextView(ctx) {
+          const nextView = getNextView(ctx.view, ctx.minView, ctx.maxView)
+          set.view(ctx, nextView)
         },
-        setViewToMonth(ctx) {
-          set.view(ctx, "month")
-        },
-        setViewToYear(ctx) {
-          set.view(ctx, "year")
+        setPreviousView(ctx) {
+          const prevView = getPreviousView(ctx.view, ctx.minView, ctx.maxView)
+          set.view(ctx, prevView)
         },
         setView(ctx, evt) {
-          set.view(ctx, evt.cell)
+          set.view(ctx, evt.view)
         },
         setRestoreFocus(ctx) {
           ctx.restoreFocus = true
         },
         announceValueText(ctx) {
-          ctx.announcer?.announce(ctx.valueAsString.join(","), 3000)
+          const announceText = ctx.value.map((date) => formatSelectedDate(date, null, ctx.locale, ctx.timeZone))
+          ctx.announcer?.announce(announceText.join(","), 3000)
         },
         announceVisibleRange(ctx) {
           const { formatted } = ctx.visibleRangeText
@@ -628,7 +655,7 @@ export function machine(userContext: UserDefinedContext) {
           raf(() => {
             const inputEls = dom.getInputEls(ctx)
             inputEls.forEach((inputEl, index) => {
-              dom.setValue(inputEl, ctx.formattedValue[index] || "")
+              dom.setValue(inputEl, ctx.valueAsString[index] || "")
             })
           })
         },
@@ -636,17 +663,14 @@ export function machine(userContext: UserDefinedContext) {
           const value = Array.isArray(evt.value) ? evt.value[0] : evt.value
           set.focusedValue(ctx, value)
         },
-        setFocusedMonth(ctx, evt) {
-          set.focusedValue(ctx, ctx.focusedValue.set({ month: evt.value }))
+        setFocusedValueForView(ctx, evt) {
+          set.focusedValue(ctx, ctx.focusedValue.set({ [ctx.view]: evt.value }))
         },
         focusNextMonth(ctx) {
           set.focusedValue(ctx, ctx.focusedValue.add({ months: 1 }))
         },
         focusPreviousMonth(ctx) {
           set.focusedValue(ctx, ctx.focusedValue.subtract({ months: 1 }))
-        },
-        setFocusedYear(ctx, evt) {
-          set.focusedValue(ctx, ctx.focusedValue.set({ year: evt.value }))
         },
         setDateValue(ctx, evt) {
           if (!Array.isArray(evt.value)) return
@@ -658,11 +682,11 @@ export function machine(userContext: UserDefinedContext) {
         },
         setSelectedDate(ctx, evt) {
           const values = Array.from(ctx.value)
-          values[ctx.activeIndex] = evt.value ?? ctx.focusedValue
+          values[ctx.activeIndex] = normalizeValue(ctx, evt.value ?? ctx.focusedValue)
           set.value(ctx, adjustStartAndEndDate(values))
         },
         toggleSelectedDate(ctx, evt) {
-          const currentValue = evt.value ?? ctx.focusedValue
+          const currentValue = normalizeValue(ctx, evt.value ?? ctx.focusedValue)
           const index = ctx.value.findIndex((date) => isDateEqual(date, currentValue))
 
           if (index === -1) {
@@ -837,7 +861,7 @@ export function machine(userContext: UserDefinedContext) {
         },
         focusFirstInputElement(ctx) {
           raf(() => {
-            const inputEl = dom.getInputEls(ctx)[0]
+            const [inputEl] = dom.getInputEls(ctx)
             inputEl?.focus({ preventScroll: true })
           })
         },
@@ -856,13 +880,11 @@ export function machine(userContext: UserDefinedContext) {
         },
         syncMonthSelectElement(ctx) {
           const monthSelectEl = dom.getMonthSelectEl(ctx)
-          if (!monthSelectEl) return
-          monthSelectEl.value = ctx.startValue.month.toString()
+          dom.setValue(monthSelectEl, ctx.startValue.month.toString())
         },
         syncYearSelectElement(ctx) {
           const yearSelectEl = dom.getYearSelectEl(ctx)
-          if (!yearSelectEl) return
-          yearSelectEl.value = ctx.startValue.year.toString()
+          dom.setValue(yearSelectEl, ctx.startValue.year.toString())
         },
         setInputValue(ctx, evt) {
           if (ctx.activeIndex !== evt.index) return
@@ -872,23 +894,26 @@ export function machine(userContext: UserDefinedContext) {
           queueMicrotask(() => {
             const inputEls = dom.getInputEls(ctx)
             const idx = evt.index ?? ctx.activeIndex
-            const inputEl = inputEls[idx]
-            dom.setValue(inputEl, ctx.inputValue)
+            dom.setValue(inputEls[idx], ctx.inputValue)
           })
         },
         focusParsedDate(ctx, evt) {
           if (evt.index == null) return
 
-          const date = parseDateString(evt.value, ctx.locale, ctx.timeZone)
-          if (!date) return
+          const date = ctx.parse(evt.value, { locale: ctx.locale, timeZone: ctx.timeZone })
+          if (!date || !isValidDate(date)) return
 
           set.focusedValue(ctx, date)
         },
         selectParsedDate(ctx, evt) {
           if (evt.index == null) return
 
-          const date = parseDateString(evt.value, ctx.locale, ctx.timeZone)
-          if (!date) return
+          let date = ctx.parse(evt.value, { locale: ctx.locale, timeZone: ctx.timeZone })
+
+          // reset to last valid date
+          if (!date || !isValidDate(date)) {
+            date = ctx.focusedValue.copy()
+          }
 
           const values = Array.from(ctx.value)
           values[evt.index] = date
@@ -929,21 +954,17 @@ export function machine(userContext: UserDefinedContext) {
 
 const invoke = {
   change(ctx: MachineContext) {
-    const value = Array.from(ctx.value)
-    const valueAsString = value.map((date) => date.toString())
     ctx.onValueChange?.({
-      value,
-      valueAsString,
+      value: Array.from(ctx.value),
+      valueAsString: Array.from(ctx.valueAsString),
       view: ctx.view,
     })
   },
   focusChange(ctx: MachineContext) {
-    const value = Array.from(ctx.value)
-    const valueAsString = value.map((date) => date.toString())
     ctx.onFocusChange?.({
       focusedValue: ctx.focusedValue,
-      value,
-      valueAsString,
+      value: Array.from(ctx.value),
+      valueAsString: Array.from(ctx.valueAsString),
       view: ctx.view,
     })
   },
@@ -957,6 +978,17 @@ const isDateEqualFn = (a: DateValue[], b: DateValue[]) => {
   return a.every((date, index) => isDateEqual(date, b[index]))
 }
 
+const normalizeValue = (ctx: MachineContext, value: number | DateValue) => {
+  let dateValue = typeof value === "number" ? ctx.focusedValue.set({ [ctx.view]: value }) : value
+  eachView((view) => {
+    // normalize month and day
+    if (isBelowMinView(view, ctx.minView)) {
+      dateValue = dateValue.set({ [view]: view === "day" ? 1 : 0 })
+    }
+  })
+  return dateValue
+}
+
 const set = {
   value(ctx: MachineContext, value: DateValue[]) {
     if (isDateEqualFn(ctx.value, value)) return
@@ -964,8 +996,11 @@ const set = {
     invoke.change(ctx)
   },
 
-  focusedValue(ctx: MachineContext, value: DateValue | undefined) {
-    if (!value || isDateEqual(ctx.focusedValue, value)) return
+  focusedValue(ctx: MachineContext, mixedValue: DateValue | number | undefined) {
+    if (!mixedValue) return
+
+    const value = normalizeValue(ctx, mixedValue)
+    if (isDateEqual(ctx.focusedValue, value)) return
 
     const adjustFn = getAdjustedDateFn(ctx.visibleDuration, ctx.locale, ctx.min, ctx.max)
     const adjustedValue = adjustFn({
@@ -994,7 +1029,7 @@ const set = {
   },
 
   inputValue(ctx: MachineContext, index: number) {
-    const value = ctx.formattedValue[index]
+    const value = ctx.valueAsString[index]
     if (ctx.inputValue === value) return
     ctx.inputValue = value
   },

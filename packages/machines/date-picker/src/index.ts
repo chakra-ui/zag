@@ -23,6 +23,7 @@ export type {
   InputProps,
   IntlTranslations,
   LabelProps,
+  LocaleDetails,
   MonthGridProps,
   OpenChangeDetails,
   PositioningOptions,

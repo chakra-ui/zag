@@ -1,4 +1,5 @@
 import { getWindow } from "./node"
+import type { HTMLElementWithValue } from "./types"
 
 interface DescriptorOptions {
   type?: "HTMLInputElement" | "HTMLTextAreaElement" | "HTMLSelectElement" | undefined
@@ -11,13 +12,22 @@ function getDescriptor(el: HTMLElement, options: DescriptorOptions) {
   return Object.getOwnPropertyDescriptor(proto, property) ?? {}
 }
 
-export function setElementValue(el: HTMLElement, value: string, option: DescriptorOptions = {}) {
-  const descriptor = getDescriptor(el, option)
-  descriptor.set?.call(el, value)
-  el.setAttribute("value", value)
+function getElementType(el: HTMLElementWithValue) {
+  if (el.localName === "input") return "HTMLInputElement"
+  if (el.localName === "textarea") return "HTMLTextAreaElement"
+  if (el.localName === "select") return "HTMLSelectElement"
 }
 
-export function setElementChecked(el: HTMLElement, checked: boolean) {
+export function setElementValue(el: HTMLElementWithValue, value: string, property: "value" | "checked" = "value") {
+  const type = getElementType(el)
+  if (type) {
+    const descriptor = getDescriptor(el, { type, property })
+    descriptor.set?.call(el, value)
+  }
+  el.setAttribute(property, value)
+}
+
+export function setElementChecked(el: HTMLInputElement, checked: boolean) {
   const descriptor = getDescriptor(el, { type: "HTMLInputElement", property: "checked" })
   descriptor.set?.call(el, checked)
   // react applies the `checked` automatically when we call the descriptor
@@ -31,7 +41,7 @@ export interface InputValueEventOptions {
   bubbles?: boolean
 }
 
-export function dispatchInputValueEvent(el: HTMLElement | null, options: InputValueEventOptions) {
+export function dispatchInputValueEvent(el: HTMLElementWithValue | null, options: InputValueEventOptions) {
   const { value, bubbles = true } = options
 
   if (!el) return
@@ -48,7 +58,7 @@ export interface CheckedEventOptions {
   bubbles?: boolean
 }
 
-export function dispatchInputCheckedEvent(el: HTMLElement | null, options: CheckedEventOptions) {
+export function dispatchInputCheckedEvent(el: HTMLInputElement | null, options: CheckedEventOptions) {
   const { checked, bubbles = true } = options
   if (!el) return
   const win = getWindow(el)
@@ -61,11 +71,11 @@ function getClosestForm(el: HTMLElement) {
   return isFormElement(el) ? el.form : el.closest("form")
 }
 
-function isFormElement(el: HTMLElement): el is HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement {
+function isFormElement(el: HTMLElement): el is HTMLElementWithValue {
   return el.matches("textarea, input, select, button")
 }
 
-function trackFormReset(el: HTMLElement | null | undefined, callback: () => void) {
+function trackFormReset(el: HTMLElement | null | undefined, callback: VoidFunction) {
   if (!el) return
   const form = getClosestForm(el)
   const onReset = (e: Event) => {
@@ -91,7 +101,7 @@ function trackFieldsetDisabled(el: HTMLElement | null | undefined, callback: (di
 
 export interface TrackFormControlOptions {
   onFieldsetDisabledChange: (disabled: boolean) => void
-  onFormReset: () => void
+  onFormReset: VoidFunction
 }
 
 export function trackFormControl(el: HTMLElement | null, options: TrackFormControlOptions) {

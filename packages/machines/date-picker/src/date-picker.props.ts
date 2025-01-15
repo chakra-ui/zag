@@ -16,6 +16,8 @@ export const props = createProps<UserDefinedContext>()([
   "fixedWeeks",
   "focusedValue",
   "format",
+  "parse",
+  "placeholder",
   "getRootNode",
   "id",
   "ids",
@@ -40,6 +42,8 @@ export const props = createProps<UserDefinedContext>()([
   "translations",
   "value",
   "view",
+  "minView",
+  "maxView",
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 

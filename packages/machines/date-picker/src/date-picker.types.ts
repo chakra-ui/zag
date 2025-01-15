@@ -38,6 +38,11 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export interface LocaleDetails {
+  locale: string
+  timeZone: string
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -184,12 +189,30 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The format of the date to display in the input.
    */
-  format?: ((date: DateValue) => string) | undefined
+  format: (date: DateValue, details: LocaleDetails) => string
+  /**
+   * Function to parse the date from the input back to a DateValue.
+   */
+  parse: (value: string, details: LocaleDetails) => DateValue | undefined
+  /**
+   * The placeholder text to display in the input.
+   */
+  placeholder?: string | undefined
   /**
    * The view of the calendar
    * @default "day"
    */
   view: DateView
+  /**
+   * The minimum view of the calendar
+   * @default "day"
+   */
+  minView: DateView
+  /**
+   * The maximum view of the calendar
+   * @default "year"
+   */
+  maxView: DateView
   /**
    * The user provided options used to position the date picker content
    */
@@ -289,11 +312,6 @@ type ComputedContext = Readonly<{
    * The value text to display in the input.
    */
   valueAsString: string[]
-  /**
-   * @internal
-   * The input element's value
-   */
-  formattedValue: string[]
 }>
 
 export type UserDefinedContext = RequiredBy<PublicContext, "id">
@@ -381,7 +399,15 @@ export interface ViewProps {
 }
 
 export interface InputProps {
+  /**
+   * The index of the input to focus.
+   */
   index?: number | undefined
+  /**
+   * Whether to fix the input value on blur.
+   * @default true
+   */
+  fixOnBlur?: boolean | undefined
 }
 
 export interface LabelProps {

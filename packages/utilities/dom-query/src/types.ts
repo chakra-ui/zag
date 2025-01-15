@@ -27,3 +27,5 @@ export type AnyPointerEvent = MouseEvent | TouchEvent | PointerEvent
 export type MaybeElement = Nullable<HTMLElement>
 
 export type MaybeElementOrFn = MaybeFn<MaybeElement>
+
+export type HTMLElementWithValue = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
