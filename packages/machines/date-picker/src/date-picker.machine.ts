@@ -159,7 +159,7 @@ export function machine(userContext: UserDefinedContext) {
         "INPUT.CHANGE": [
           {
             guard: "isInputValueEmpty",
-            actions: ["clearDateValue"],
+            actions: ["setInputValue", "clearDateValue"],
           },
           {
             actions: ["setInputValue", "focusParsedDate"],
@@ -912,8 +912,12 @@ export function machine(userContext: UserDefinedContext) {
 
           // reset to last valid date
           if (!date || !isValidDate(date)) {
-            date = ctx.focusedValue.copy()
+            if (ctx.inputValue) {
+              date = ctx.focusedValue.copy()
+            }
           }
+
+          if (!date) return
 
           const values = Array.from(ctx.value)
           values[evt.index] = date
