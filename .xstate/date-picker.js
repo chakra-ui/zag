@@ -24,8 +24,7 @@ const fetchMachine = createMachine({
     "isOpenControlled": false,
     "shouldRestoreFocus && isInteractOutsideEvent": false,
     "shouldRestoreFocus": false,
-    "isMonthView": false,
-    "isYearView": false,
+    "isAboveMinView": false,
     "isRangePicker && hasSelectedRange": false,
     "isRangePicker && isSelectingEndDate && closeOnSelect && isOpenControlled": false,
     "isRangePicker && isSelectingEndDate && closeOnSelect": false,
@@ -37,8 +36,7 @@ const fetchMachine = createMachine({
     "isRangePicker && isSelectingEndDate": false,
     "isRangePicker": false,
     "isOpenControlled": false,
-    "isMonthView": false,
-    "isYearView": false,
+    "isAboveMinView": false,
     "isRangePicker && hasSelectedRange": false,
     "isRangePicker && isSelectingEndDate && closeOnSelect && isOpenControlled": false,
     "isRangePicker && isSelectingEndDate && closeOnSelect": false,
@@ -60,8 +58,6 @@ const fetchMachine = createMachine({
     "isMonthView": false,
     "isYearView": false,
     "isOpenControlled": false,
-    "isDayView": false,
-    "isMonthView": false,
     "isOpenControlled": false,
     "shouldRestoreFocus": false,
     "isOpenControlled": false
@@ -187,11 +183,8 @@ const fetchMachine = createMachine({
           target: "idle"
         }],
         "CELL.CLICK": [{
-          cond: "isMonthView",
-          actions: ["setFocusedMonth", "setViewToDay"]
-        }, {
-          cond: "isYearView",
-          actions: ["setFocusedYear", "setViewToMonth"]
+          cond: "isAboveMinView",
+          actions: ["setFocusedValueForView", "setPreviousView"]
         }, {
           cond: "isRangePicker && hasSelectedRange",
           actions: ["setActiveIndexToStart", "clearDateValue", "setFocusedDate", "setSelectedDate", "setActiveIndexToEnd"]
@@ -251,11 +244,8 @@ const fetchMachine = createMachine({
           actions: ["focusFirstSelectedDate", "invokeOnClose", "focusTriggerElement"]
         }],
         "TABLE.ENTER": [{
-          cond: "isMonthView",
-          actions: "setViewToDay"
-        }, {
-          cond: "isYearView",
-          actions: "setViewToMonth"
+          cond: "isAboveMinView",
+          actions: ["setPreviousView"]
         }, {
           cond: "isRangePicker && hasSelectedRange",
           actions: ["setActiveIndexToStart", "clearDateValue", "setSelectedDate", "setActiveIndexToEnd"]
@@ -360,13 +350,9 @@ const fetchMachine = createMachine({
           target: "focused",
           actions: ["invokeOnClose"]
         }],
-        "VIEW.CHANGE": [{
-          cond: "isDayView",
-          actions: ["setViewToMonth"]
-        }, {
-          cond: "isMonthView",
-          actions: ["setViewToYear"]
-        }],
+        "VIEW.CHANGE": {
+          actions: ["setNextView"]
+        },
         INTERACT_OUTSIDE: [{
           cond: "isOpenControlled",
           actions: ["setActiveIndexToStart", "invokeOnClose"]
@@ -402,6 +388,7 @@ const fetchMachine = createMachine({
     "isMonthView": ctx => ctx["isMonthView"],
     "shouldRestoreFocus && isInteractOutsideEvent": ctx => ctx["shouldRestoreFocus && isInteractOutsideEvent"],
     "shouldRestoreFocus": ctx => ctx["shouldRestoreFocus"],
+    "isAboveMinView": ctx => ctx["isAboveMinView"],
     "isRangePicker && hasSelectedRange": ctx => ctx["isRangePicker && hasSelectedRange"],
     "isRangePicker && isSelectingEndDate && closeOnSelect && isOpenControlled": ctx => ctx["isRangePicker && isSelectingEndDate && closeOnSelect && isOpenControlled"],
     "isRangePicker && isSelectingEndDate && closeOnSelect": ctx => ctx["isRangePicker && isSelectingEndDate && closeOnSelect"],
@@ -409,7 +396,6 @@ const fetchMachine = createMachine({
     "isRangePicker": ctx => ctx["isRangePicker"],
     "isMultiPicker": ctx => ctx["isMultiPicker"],
     "closeOnSelect && isOpenControlled": ctx => ctx["closeOnSelect && isOpenControlled"],
-    "closeOnSelect": ctx => ctx["closeOnSelect"],
-    "isDayView": ctx => ctx["isDayView"]
+    "closeOnSelect": ctx => ctx["closeOnSelect"]
   }
 });
