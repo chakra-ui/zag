@@ -13,3 +13,6 @@
 - Add support for `placeholder` context property to customize the input placeholder text.
 
 - Fix issue where entering very large invalid dates in the input field would cause the datepicker to crash.
+
+- Fix issue in year view, where user is unable to select year when `min` and `max` dates are less than 1 year and
+  overlap 2 unique years

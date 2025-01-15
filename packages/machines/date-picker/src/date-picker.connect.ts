@@ -24,7 +24,7 @@ import {
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { chunk } from "@zag-js/utils"
+import { chunk, isValueWithinRange } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
 import type {
@@ -117,10 +117,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   function getYearTableCellState(props: TableCellProps): TableCellState {
     const { value, disabled } = props
-    const normalized = focusedValue.set({ year: value })
     const cellState = {
       focused: focusedValue.year === props.value,
-      selectable: !isDateInvalid(normalized, min, max),
+      selectable: isValueWithinRange(value, min?.year ?? 0, max?.year ?? 9999),
       selected: !!selectedValue.find((date) => date.year === value),
       valueText: value.toString(),
       get disabled() {
