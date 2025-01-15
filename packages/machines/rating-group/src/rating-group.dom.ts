@@ -15,7 +15,7 @@ export const dom = createScope({
     return query(dom.getControlEl(ctx), selector)
   },
 
-  getHiddenInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenInputId(ctx)),
+  getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
 
   dispatchChangeEvent: (ctx: Ctx) => {
     const inputEl = dom.getHiddenInputEl(ctx)

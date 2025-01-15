@@ -47,7 +47,7 @@ export const props = createProps<UserDefinedContext>()([
 ])
 export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
 
-export const inputProps = createProps<InputProps>()(["index"])
+export const inputProps = createProps<InputProps>()(["index", "fixOnBlur"])
 export const splitInputProps = createSplitProps<InputProps>(inputProps)
 
 export const presetTriggerProps = createProps<PresetTriggerProps>()(["value"])
