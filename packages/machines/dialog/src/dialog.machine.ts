@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { raf } from "@zag-js/dom-query"
+import { raf, getComputedStyle } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { compact } from "@zag-js/utils"
@@ -164,9 +164,7 @@ export function machine(userContext: UserDefinedContext) {
             const contentEl = dom.getContentEl(ctx)
             if (!contentEl) return
 
-            const win = dom.getWin(ctx)
-            const styles = win.getComputedStyle(contentEl)
-
+            const styles = getComputedStyle(contentEl)
             const elems = [dom.getPositionerEl(ctx), dom.getBackdropEl(ctx)]
             elems.forEach((node) => {
               node?.style.setProperty("--z-index", styles.zIndex)

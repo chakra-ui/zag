@@ -7,6 +7,10 @@ export const isTooltipStep = (
   return step?.type === "tooltip"
 }
 
+export const isDialogStep = (step: StepDetails | null) => {
+  return step?.type === "dialog"
+}
+
 export const isTooltipPlacement = (placement: StepPlacement | undefined): placement is Placement => {
   return placement != null && placement != "center"
 }
