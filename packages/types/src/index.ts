@@ -73,8 +73,8 @@ export type EventKey =
   | "PageDown"
   | (string & {})
 
-export type EventKeyMap = {
-  [key in EventKey]?: (event: JSX.KeyboardEvent) => void
+export type EventKeyMap<T extends HTMLElement = HTMLElement> = {
+  [key in EventKey]?: (event: JSX.KeyboardEvent<T>) => void
 }
 
 export interface Point {

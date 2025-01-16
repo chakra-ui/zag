@@ -1,5 +1,5 @@
 import { DateFormatter, type DateValue } from "@internationalized/date"
-import { match } from "@zag-js/utils"
+import { clampValue, match } from "@zag-js/utils"
 import type { DateView, IntlTranslations } from "./date-picker.types"
 
 export function adjustStartAndEndDate(value: DateValue[]) {
@@ -42,6 +42,10 @@ export function getInputPlaceholder(locale: string) {
 export const isValidCharacter = (char: string | null, separator: string) => {
   if (!char) return true
   return /\d/.test(char) || char === separator || char.length !== 1
+}
+
+export const isValidDate = (value: DateValue) => {
+  return !Number.isNaN(value.day) && !Number.isNaN(value.month) && !Number.isNaN(value.year)
 }
 
 export const ensureValidCharacters = (value: string, separator: string) => {
@@ -99,4 +103,49 @@ export const defaultTranslations: IntlTranslations = {
   monthSelect: "Select month",
   yearSelect: "Select year",
   clearTrigger: "Clear selected dates",
+}
+
+// 0 – day, 1 – month, 2 – year;
+type DateViewNumber = 0 | 1 | 2
+
+function viewToNumber(view: DateView | undefined, fallback: DateViewNumber | undefined): DateViewNumber {
+  if (!view) return fallback || 0
+  return view === "day" ? 0 : view === "month" ? 1 : 2
+}
+
+function viewNumberToView(viewNumber: DateViewNumber | undefined): DateView {
+  return viewNumber === 0 ? "day" : viewNumber === 1 ? "month" : "year"
+}
+
+export function clampView(
+  view: DateView | undefined,
+  minView: DateView | undefined,
+  maxView: DateView | undefined,
+): DateView {
+  return viewNumberToView(
+    clampValue(viewToNumber(view, 0), viewToNumber(minView, 0), viewToNumber(maxView, 2)) as DateViewNumber,
+  )
+}
+
+export function isAboveMinView(view: DateView, minView: DateView) {
+  return viewToNumber(view, 0) > viewToNumber(minView, 0)
+}
+
+export function isBelowMinView(view: DateView, minView: DateView) {
+  return viewToNumber(view, 0) < viewToNumber(minView, 0)
+}
+
+export function getNextView(view: DateView, minView: DateView, maxView: DateView) {
+  const nextViewNumber = (viewToNumber(view, 0) + 1) as DateViewNumber
+  return clampView(viewNumberToView(nextViewNumber), minView, maxView)
+}
+
+export function getPreviousView(view: DateView, minView: DateView, maxView: DateView) {
+  const prevViewNumber = (viewToNumber(view, 0) - 1) as DateViewNumber
+  return clampView(viewNumberToView(prevViewNumber), minView, maxView)
+}
+
+const views: DateView[] = ["day", "month", "year"]
+export function eachView(cb: (view: DateView) => void) {
+  views.forEach((view) => cb(view))
 }

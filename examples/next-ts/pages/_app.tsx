@@ -14,6 +14,9 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
       <aside className="nav">
         <header>Zagjs</header>
+        <Link href="/compositions" style={{ background: "blue", color: "white" }}>
+          Compositions
+        </Link>
         {routesData
           .sort((a, b) => a.label.localeCompare(b.label))
           .map((route) => {

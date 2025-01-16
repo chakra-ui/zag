@@ -1,4 +1,6 @@
+import { setElementValue } from "./form"
 import { getActiveElement, getDocument } from "./node"
+import type { HTMLElementWithValue } from "./types"
 
 export interface ScopeContext {
   getRootNode?: (() => Document | ShadowRoot | Node) | undefined
@@ -13,11 +15,9 @@ export function createScope<T>(methods: T) {
     isActiveElement: (ctx: ScopeContext, elem: HTMLElement | null) => elem === dom.getActiveElement(ctx),
     getById: <T extends Element = HTMLElement>(ctx: ScopeContext, id: string) =>
       dom.getRootNode(ctx).getElementById(id) as T | null,
-    setValue: <T extends { value: string }>(elem: T | null, value: string | number | null | undefined) => {
+    setValue: <T extends HTMLElementWithValue>(elem: T | null, value: string | number | null | undefined) => {
       if (elem == null || value == null) return
-      const valueAsString = value.toString()
-      if (elem.value === valueAsString) return
-      elem.value = value.toString()
+      setElementValue(elem, value.toString())
     },
   }
 

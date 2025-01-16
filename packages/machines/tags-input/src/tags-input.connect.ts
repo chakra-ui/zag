@@ -116,7 +116,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         autoCorrect: "off",
         autoCapitalize: "none",
         disabled: disabled || readOnly,
-        onChange(event) {
+        onInput(event) {
           const evt = getNativeEvent(event)
           const value = event.currentTarget.value
 
@@ -254,7 +254,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         tabIndex: -1,
         hidden: !itemState.editing,
         defaultValue: itemState.editing ? state.context.editedTagValue : "",
-        onChange(event) {
+        onInput(event) {
           send({ type: "TAG_INPUT_TYPE", value: event.currentTarget.value })
         },
         onBlur(event) {

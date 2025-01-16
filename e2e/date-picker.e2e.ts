@@ -6,6 +6,8 @@ let I: DatePickerModel
 test.describe("datepicker [single]", () => {
   const currentDate = new Date()
   const year = currentDate.getFullYear()
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, "0")
+  // const day = currentDate.getDate().toString().padStart(2, "0")
 
   test.beforeEach(async ({ page }) => {
     I = new DatePickerModel(page)
@@ -93,6 +95,26 @@ test.describe("datepicker [single]", () => {
     await I.pressKey("Backspace", 5) // becomes 02/28
     await I.pressKey("Enter")
     await I.seeInputHasValue(`02/28/${year}`)
+  })
+
+  test("clearing input field should clear the date picker value", async () => {
+    await I.type(`${month}/05/${year}`)
+    await I.pressKey("Enter")
+    await I.seeInputHasValue(`${month}/05/${year}`)
+
+    await I.clearInput()
+    await I.seeInputHasValue("")
+    await I.seeSelectedValue("")
+
+    await I.clickTrigger()
+    await I.clickDayCell("5")
+    await I.seeInputHasValue(`${month}/05/${year}`)
+  })
+
+  test("entering invalid date should not crash the datepicker", async () => {
+    await I.type("93495849")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("01/01/9999")
   })
 
   // test("click trigger + focus input + selection, set value in input", async () => {

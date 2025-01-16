@@ -229,7 +229,7 @@ export function machine(userContext: UserDefinedContext) {
           return trackFocusVisible({ root: dom.getRootNode(ctx) })
         },
         trackPositioning(ctx) {
-          ctx.currentPlacement = ctx.positioning.placement
+          ctx.currentPlacement ||= ctx.positioning.placement
           const getPositionerEl = () => dom.getPositionerEl(ctx)
           return getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
             ...ctx.positioning,

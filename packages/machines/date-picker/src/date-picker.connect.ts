@@ -24,7 +24,7 @@ import {
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { chunk } from "@zag-js/utils"
+import { chunk, isValueWithinRange } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import { dom } from "./date-picker.dom"
 import type {
@@ -47,8 +47,6 @@ import {
   isDateWithinRange,
   isValidCharacter,
 } from "./date-picker.utils"
-
-const pretty = (value: DateValue) => value.toString().split("T")[0]
 
 export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const startValue = state.context.startValue
@@ -119,10 +117,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   function getYearTableCellState(props: TableCellProps): TableCellState {
     const { value, disabled } = props
-    const normalized = focusedValue.set({ year: value })
     const cellState = {
       focused: focusedValue.year === props.value,
-      selectable: !isDateInvalid(normalized, min, max),
+      selectable: isValueWithinRange(value, min?.year ?? 0, max?.year ?? 9999),
       selected: !!selectedValue.find((date) => date.year === value),
       valueText: value.toString(),
       get disabled() {
@@ -206,17 +203,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         weeks: getMonthWeeks(from),
       }
     },
-    getMonthWeeks: getMonthWeeks,
+    getMonthWeeks,
     isUnavailable,
     weeks: getMonthWeeks(),
     weekDays: getWeekDays(getTodayDate(timeZone), startOfWeek, timeZone, locale),
     visibleRangeText: state.context.visibleRangeText,
     value: selectedValue,
     valueAsDate: selectedValue.map((date) => date.toDate(timeZone)),
-    valueAsString: selectedValue.map(pretty),
-    focusedValue: focusedValue,
+    valueAsString: state.context.valueAsString,
+    focusedValue,
     focusedValueAsDate: focusedValue?.toDate(timeZone),
-    focusedValueAsString: pretty(focusedValue),
+    focusedValueAsString: state.context.format(focusedValue, { locale, timeZone }),
     visibleRange: state.context.visibleRange,
     selectToday() {
       const value = constrainValue(getTodayDate(timeZone), min, max)
@@ -256,7 +253,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return new DateFormatter(locale, opts).format(value.toDate(timeZone))
     },
     setView(view) {
-      send({ type: "VIEW.SET", cell: view })
+      send({ type: "VIEW.SET", view })
     },
     goToNext() {
       send({ type: "GOTO.NEXT", view: state.context.view })
@@ -651,7 +648,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send("VIEW.CHANGE")
+          send({ type: "VIEW.TOGGLE", src: "viewTrigger" })
         },
       })
     },
@@ -666,7 +663,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getInputProps(props = {}) {
-      const { index = 0 } = props
+      const { index = 0, fixOnBlur = true } = props
 
       return normalize.input({
         ...parts.input.attrs,
@@ -680,8 +677,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-state": open ? "open" : "closed",
         readOnly,
         disabled,
-        placeholder: getInputPlaceholder(locale),
-        defaultValue: state.context.formattedValue[index],
+        placeholder: state.context.placeholder || getInputPlaceholder(locale),
+        defaultValue: state.context.valueAsString[index],
         onBeforeInput(event) {
           const { data } = getNativeEvent(event)
           if (!isValidCharacter(data, separator)) {
@@ -692,18 +689,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "INPUT.FOCUS", index })
         },
         onBlur(event) {
-          send({ type: "INPUT.BLUR", value: event.currentTarget.value, index })
+          const value = event.currentTarget.value
+          send({ type: "INPUT.BLUR", value, index, fixOnBlur })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          if (isComposingEvent(event)) return
-          if (event.key !== "Enter") return
-          if (isUnavailable(state.context.focusedValue)) return
-          send({ type: "INPUT.ENTER", value: event.currentTarget.value, index })
-          event.preventDefault()
+          const keyMap: EventKeyMap<HTMLInputElement> = {
+            Enter(event) {
+              // TODO: consider form submission (with enter key)
+              if (isComposingEvent(event)) return
+              if (isUnavailable(state.context.focusedValue)) return
+              if (event.currentTarget.value.trim() === "") return
+              send({ type: "INPUT.ENTER", value: event.currentTarget.value, index })
+            },
+          }
+
+          const exec = keyMap[event.key]
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+          }
         },
-        onChange(event) {
+        onInput(event) {
           const value = event.currentTarget.value
           send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator), index })
         },

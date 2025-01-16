@@ -353,7 +353,7 @@ export function machine(userContext: UserDefinedContext) {
       },
       activities: {
         trackPositioning(ctx) {
-          ctx.currentPlacement = ctx.positioning.placement
+          ctx.currentPlacement ||= ctx.positioning.placement
           const anchorEl = dom.getTriggerEl(ctx)
           const getPositionerEl = () => dom.getPositionerEl(ctx)
           return getPlacement(anchorEl, getPositionerEl, {

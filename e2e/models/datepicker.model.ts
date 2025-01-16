@@ -143,6 +143,12 @@ export class DatePickerModel extends Model {
     return this.getInput(index).focus()
   }
 
+  async clearInput(index = 0) {
+    await this.focusInput(index)
+    await this.pressKey("ControlOrMeta+A")
+    await this.pressKey("Backspace")
+  }
+
   seeContent() {
     return expect(this.content).toBeVisible()
   }
@@ -185,5 +191,13 @@ export class DatePickerModel extends Model {
 
   seeInputIsFocused(index?: number) {
     return expect(this.getInput(index)).toBeFocused()
+  }
+
+  seeSelectedValue(value: string) {
+    return expect(this.page.locator(".date-output")).toContainText(`Selected: ${value}`)
+  }
+
+  seeFocusedValue(value: string) {
+    return expect(this.page.locator(".date-output")).toContainText(`Focused: ${value}`)
   }
 }
