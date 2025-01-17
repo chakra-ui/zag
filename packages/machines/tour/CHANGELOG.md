@@ -1,5 +1,24 @@
 # @zag-js/tour
 
+## 0.82.0
+
+### Patch Changes
+
+- [`674ddb0`](https://github.com/chakra-ui/zag/commit/674ddb054afd38f6ac416a2b30cb5c507bc2d4f1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where dialog tour step doesn't sync its z-index with the
+  content.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.82.0
+  - @zag-js/core@0.82.0
+  - @zag-js/types@0.82.0
+  - @zag-js/utils@0.82.0
+  - @zag-js/dismissable@0.82.0
+  - @zag-js/dom-query@0.82.0
+  - @zag-js/focus-trap@0.82.0
+  - @zag-js/interact-outside@0.82.0
+  - @zag-js/popper@0.82.0
+
 ## 0.81.2
 
 ### Patch Changes

@@ -1,5 +1,25 @@
 # @zag-js/file-upload
 
+## 0.82.0
+
+### Patch Changes
+
+- [`b655b4d`](https://github.com/chakra-ui/zag/commit/b655b4de8d6a4762e6bc3a4ae1f68fa65098dff5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where change event is not fired when dropping files
+  into the dropzone
+  - Fix issue where `api.setClipboardFiles(...)` was still called when file upload is disabled
+  - Expose disabled state via `api.disabled`
+  - Fix issue where machine transitions to `dragging` when disabled
+  - Fix issue where rejected files could not be deleted using the item delete trigger.
+- Updated dependencies []:
+  - @zag-js/anatomy@0.82.0
+  - @zag-js/core@0.82.0
+  - @zag-js/types@0.82.0
+  - @zag-js/utils@0.82.0
+  - @zag-js/dom-query@0.82.0
+  - @zag-js/file-utils@0.82.0
+  - @zag-js/i18n-utils@0.82.0
+
 ## 0.81.2
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @zag-js/color-picker
 
+## 0.82.0
+
+### Patch Changes
+
+- [`ee91c38`](https://github.com/chakra-ui/zag/commit/ee91c380023d6af8bdc95c26b5a62e5b9498c5eb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where placement could intermittently shift due to
+  `data-placement` being updated
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.82.0
+  - @zag-js/core@0.82.0
+  - @zag-js/types@0.82.0
+  - @zag-js/color-utils@0.82.0
+  - @zag-js/utils@0.82.0
+  - @zag-js/dismissable@0.82.0
+  - @zag-js/dom-query@0.82.0
+  - @zag-js/popper@0.82.0
+
 ## 0.81.2
 
 ### Patch Changes
