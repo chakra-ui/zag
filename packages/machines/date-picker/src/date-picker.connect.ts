@@ -689,7 +689,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "INPUT.FOCUS", index })
         },
         onBlur(event) {
-          const value = event.currentTarget.value
+          const value = event.currentTarget.value.trim()
           send({ type: "INPUT.BLUR", value, index, fixOnBlur })
         },
         onKeyDown(event) {

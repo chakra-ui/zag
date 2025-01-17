@@ -912,7 +912,7 @@ export function machine(userContext: UserDefinedContext) {
 
           // reset to last valid date
           if (!date || !isValidDate(date)) {
-            if (ctx.inputValue) {
+            if (evt.value) {
               date = ctx.focusedValue.copy()
             }
           }
