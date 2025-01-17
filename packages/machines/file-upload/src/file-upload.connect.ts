@@ -15,8 +15,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const focused = state.matches("focused") && !disabled
 
   return {
-    dragging: dragging,
-    focused: focused,
+    dragging,
+    focused,
+    disabled: !!disabled,
     openFilePicker() {
       send("OPEN")
     },
@@ -45,6 +46,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return () => win.URL.revokeObjectURL(url)
     },
     setClipboardFiles(dt) {
+      if (disabled) return false
       const items = Array.from(dt?.items ?? [])
       const files = items.reduce<File[]>((acc, item) => {
         if (item.kind !== "file") return acc
@@ -80,6 +82,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-disabled": dataAttr(disabled),
         "data-dragging": dataAttr(dragging),
         onKeyDown(event) {
+          if (disabled) return
           if (event.defaultPrevented) return
           if (!isSelfTarget(event)) return
           if (props.disableClick) return
@@ -98,6 +101,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send("DROPZONE.CLICK")
         },
         onDragOver(event) {
+          if (disabled) return
           if (!allowDrop) return
           event.preventDefault()
           event.stopPropagation()
@@ -112,11 +116,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "DROPZONE.DRAG_OVER", count })
         },
         onDragLeave(event) {
-          if (!allowDrop || disabled) return
+          if (disabled) return
+          if (!allowDrop) return
           if (contains(event.currentTarget, event.relatedTarget)) return
           send({ type: "DROPZONE.DRAG_LEAVE" })
         },
         onDrop(event) {
+          if (disabled) return
           if (allowDrop) {
             event.preventDefault()
             event.stopPropagation()
@@ -128,9 +134,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "DROPZONE.DROP", files: Array.from(event.dataTransfer.files) })
         },
         onFocus() {
+          if (disabled) return
           send("DROPZONE.FOCUS")
         },
         onBlur() {
+          if (disabled) return
           send("DROPZONE.BLUR")
         },
       })

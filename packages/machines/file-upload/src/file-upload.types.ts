@@ -204,6 +204,10 @@ export interface MachineApi<T extends PropTypes> {
    */
   focused: boolean
   /**
+   * Whether the file input is disabled
+   */
+  disabled: boolean
+  /**
    * Function to open the file dialog
    */
   openFilePicker(): void
