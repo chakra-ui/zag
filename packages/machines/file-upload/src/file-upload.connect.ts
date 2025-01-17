@@ -19,6 +19,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     focused,
     disabled: !!disabled,
     openFilePicker() {
+      if (disabled) return
       send("OPEN")
     },
     deleteFile(file) {
@@ -90,6 +91,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "DROPZONE.CLICK", src: "keydown" })
         },
         onClick(event) {
+          if (disabled) return
           if (event.defaultPrevented) return
           if (props.disableClick) return
           // ensure it's the dropzone that's actually clicked
