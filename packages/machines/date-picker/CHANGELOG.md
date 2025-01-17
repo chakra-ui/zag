@@ -1,5 +1,34 @@
 # @zag-js/date-picker
 
+## 0.82.0
+
+### Minor Changes
+
+- [`c4eb308`](https://github.com/chakra-ui/zag/commit/c4eb30878405fccef1ba05e947470dacc1368adc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `minView` and `maxView` to provide better
+  control of the datepicker views. This makes it easier to build month and year only pickers.
+
+  - Add new `parse` method to parse the input value and return a valid date. This should be paired with the `format`
+    option to provide a better user experience.
+  - Add `locale` and `timeZone` to the `format` method.
+  - Add support for `placeholder` context property to customize the input placeholder text.
+  - Fix issue where entering very large invalid dates in the input field would cause the datepicker to crash.
+  - Fix issue in year view, where user is unable to select year when `min` and `max` dates are less than 1 year and
+    overlap 2 unique years
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.82.0
+  - @zag-js/core@0.82.0
+  - @zag-js/types@0.82.0
+  - @zag-js/utils@0.82.0
+  - @zag-js/date-utils@0.82.0
+  - @zag-js/dismissable@0.82.0
+  - @zag-js/dom-query@0.82.0
+  - @zag-js/live-region@0.82.0
+  - @zag-js/popper@0.82.0
+
 ## 0.81.2
 
 ### Patch Changes
