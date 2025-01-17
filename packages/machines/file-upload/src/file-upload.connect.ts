@@ -72,8 +72,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.dropzone.attrs,
         dir: state.context.dir,
         id: dom.getDropzoneId(state.context),
-        tabIndex: disabled ? undefined : 0,
-        role: "button",
+        tabIndex: disabled || props.disableClick ? undefined : 0,
+        role: props.disableClick ? "application" : "button",
         "aria-label": translations.dropzone,
         "aria-disabled": disabled,
         "data-invalid": dataAttr(state.context.invalid),
@@ -82,6 +82,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!isSelfTarget(event)) return
+          if (props.disableClick) return
           if (event.key !== "Enter" && event.key !== " ") return
           send({ type: "DROPZONE.CLICK", src: "keydown" })
         },
@@ -172,7 +173,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           // allow for re-selection of the same file
           event.currentTarget.value = ""
         },
-        onChange(event) {
+        onInput(event) {
           if (disabled) return
           const { files } = event.currentTarget
           send({ type: "FILES.SET", files: files ? Array.from(files) : [] })

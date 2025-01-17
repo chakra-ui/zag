@@ -30,7 +30,7 @@ export function machine(userContext: UserDefinedContext) {
       },
 
       watch: {
-        value: ["syncInputElements"],
+        value: ["syncInputElement"],
       },
 
       on: {

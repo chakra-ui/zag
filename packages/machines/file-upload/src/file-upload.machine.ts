@@ -124,6 +124,8 @@ export function machine(userContext: UserDefinedContext) {
             })
 
             inputEl.files = dataTransfer.files
+            inputEl.dispatchEvent(new win.Event("input", { bubbles: true, composed: true }))
+            inputEl.dispatchEvent(new win.Event("change", { bubbles: true }))
           })
         },
         openFilePicker(ctx) {
