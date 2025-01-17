@@ -80,7 +80,7 @@ const fetchMachine = createMachine({
     },
     "INPUT.CHANGE": [{
       cond: "isInputValueEmpty",
-      actions: ["setInputValue", "clearDateValue"]
+      actions: ["setInputValue", "clearDateValue", "clearFocusedDate"]
     }, {
       actions: ["setInputValue", "focusParsedDate"]
     }],

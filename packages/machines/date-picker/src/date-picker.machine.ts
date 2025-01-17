@@ -159,7 +159,7 @@ export function machine(userContext: UserDefinedContext) {
         "INPUT.CHANGE": [
           {
             guard: "isInputValueEmpty",
-            actions: ["setInputValue", "clearDateValue"],
+            actions: ["setInputValue", "clearDateValue", "clearFocusedDate"],
           },
           {
             actions: ["setInputValue", "focusParsedDate"],
