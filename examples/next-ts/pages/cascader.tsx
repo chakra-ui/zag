@@ -45,9 +45,10 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
 
+  const children = collection.getNodeChildren(node)
+
   // TODO encapsulate
   const activeIndex = api.highlightedIndexPath[nodeState.depth - 1] ?? -1
-  const children = collection.getNodeChildren(node)
   const activeNode = activeIndex >= 0 ? children[activeIndex] : null
   const isBranchActiveNode = activeNode && collection.isBranchNode(activeNode)
   return (
