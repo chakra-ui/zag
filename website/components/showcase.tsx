@@ -265,8 +265,8 @@ const components = {
         modal: false,
         portalled: false,
         autoFocus: true,
-        closeOnBlur: true,
-        closeOnEsc: true,
+        closeOnInteractOutside: true,
+        closeOnEscape: true,
       }}
     />
   ),
