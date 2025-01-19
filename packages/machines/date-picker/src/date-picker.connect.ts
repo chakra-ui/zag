@@ -1,4 +1,4 @@
-import { DateFormatter, isEqualDay, isWeekend, type DateValue } from "@internationalized/date"
+import { DateFormatter, isEqualDay, isToday, isWeekend, type DateValue } from "@internationalized/date"
 import {
   constrainValue,
   getDateRangePreset,
@@ -17,9 +17,6 @@ import {
   isDateInvalid,
   isDateOutsideVisibleRange,
   isDateUnavailable,
-  isTodayDate,
-  setMonth,
-  setYear,
 } from "@zag-js/date-utils"
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
@@ -106,13 +103,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   function focusMonth(month: number) {
-    const value = setMonth(startValue ?? getTodayDate(timeZone), month)
-    send({ type: "FOCUS.SET", value })
+    const date = startValue ?? getTodayDate(timeZone)
+    send({ type: "FOCUS.SET", value: date.set({ month }) })
   }
 
   function focusYear(year: number) {
-    const value = setYear(startValue ?? getTodayDate(timeZone), year)
-    send({ type: "FOCUS.SET", value })
+    const date = startValue ?? getTodayDate(timeZone)
+    send({ type: "FOCUS.SET", value: date.set({ year }) })
   }
 
   function getYearTableCellState(props: TableCellProps): TableCellState {
@@ -165,7 +162,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         isRangePicker && (isDateWithinRange(value, selectedValue) || isDateWithinRange(value, hoveredRangeValue)),
       firstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
       lastInRange: isRangePicker && isDateEqual(value, selectedValue[1]),
-      today: isTodayDate(value, timeZone),
+      today: isToday(value, timeZone),
       weekend: isWeekend(value, locale),
       formattedDate: formatter.format(value.toDate(timeZone)),
       get focused() {

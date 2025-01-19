@@ -141,8 +141,8 @@ importers:
   examples/lit-ts:
     dependencies:
       '@internationalized/date':
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.7.0
+        version: 3.7.0
       '@lit/context':
         specifier: 1.1.2
         version: 1.1.2
@@ -385,8 +385,8 @@ importers:
   examples/next-ts:
     dependencies:
       '@internationalized/date':
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.7.0
+        version: 3.7.0
       '@tanstack/react-virtual':
         specifier: 3.11.2
         version: 3.11.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -671,8 +671,8 @@ importers:
   examples/nuxt-ts:
     dependencies:
       '@internationalized/date':
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.7.0
+        version: 3.7.0
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
@@ -918,8 +918,8 @@ importers:
   examples/preact-ts:
     dependencies:
       '@internationalized/date':
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.7.0
+        version: 3.7.0
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
@@ -1421,8 +1421,8 @@ importers:
   examples/solid-ts:
     dependencies:
       '@internationalized/date':
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.7.0
+        version: 3.7.0
       '@solidjs/meta':
         specifier: 0.29.4
         version: 0.29.4(solid-js@1.9.3)
@@ -1661,8 +1661,8 @@ importers:
   examples/svelte-ts:
     dependencies:
       '@internationalized/date':
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.7.0
+        version: 3.7.0
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
@@ -1917,8 +1917,8 @@ importers:
   examples/vanilla-ts:
     dependencies:
       '@internationalized/date':
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.7.0
+        version: 3.7.0
       '@zag-js/accordion':
         specifier: workspace:*
         version: link:../../packages/machines/accordion
@@ -2577,8 +2577,8 @@ importers:
         version: link:../../utilities/core
     devDependencies:
       '@internationalized/date':
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.7.0
+        version: 3.7.0
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -3213,8 +3213,8 @@ importers:
         version: link:../../utilities/core
     devDependencies:
       '@internationalized/date':
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.7.0
+        version: 3.7.0
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -3440,8 +3440,8 @@ importers:
   packages/utilities/date-utils:
     devDependencies:
       '@internationalized/date':
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.7.0
+        version: 3.7.0
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -3613,8 +3613,8 @@ importers:
   starters/react:
     dependencies:
       '@internationalized/date':
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.7.0
+        version: 3.7.0
       '@tanstack/react-virtual':
         specifier: 3.11.2
         version: 3.11.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3863,8 +3863,8 @@ importers:
         specifier: 11.14.0
         version: 11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1)
       '@internationalized/date':
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.7.0
+        version: 3.7.0
       '@stackblitz/sdk':
         specifier: ^1.11.0
         version: 1.11.0
@@ -5770,8 +5770,8 @@ packages:
     resolution: {integrity: sha512-m+Trk77mp54Zma6xLkLuY+mvanPxlE4A7yNKs2HBiyZ4UkVs28Mv5c/pgWrHeInx+USHeX/WEPzjrWrcJiQgjw==}
     engines: {node: '>=18'}
 
-  '@internationalized/date@3.6.0':
-    resolution: {integrity: sha512-+z6ti+CcJnRlLHok/emGEsWQhe7kfSmEW+/6qCzvKY67YPh7YOBfvc7+/+NXq+zJlbArg30tYpqLjNgcAYv2YQ==}
+  '@internationalized/date@3.7.0':
+    resolution: {integrity: sha512-VJ5WS3fcVx0bejE/YHfbDKR/yawZgKqn/if+oEeLqNwBtPzVB06olkfcnojTmEMX+gTpH+FlQ69SHNitJ8/erQ==}
 
   '@internationalized/number@3.6.0':
     resolution: {integrity: sha512-PtrRcJVy7nw++wn4W2OuePQQfTqDzfusSuY1QTtui4wa7r+rGVtR75pO8CyKvHvzyQYi3Q1uO5sY0AsB4e65Bw==}
@@ -14964,9 +14964,9 @@ snapshots:
 
   '@inquirer/figures@1.0.7': {}
 
-  '@internationalized/date@3.6.0':
+  '@internationalized/date@3.7.0':
     dependencies:
-      '@swc/helpers': 0.5.13
+      '@swc/helpers': 0.5.15
 
   '@internationalized/number@3.6.0':
     dependencies:

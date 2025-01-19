@@ -7,10 +7,8 @@ import {
   getAdjustedDateFn,
   getDecadeRange,
   getEndDate,
-  getNextDay,
   getNextPage,
   getNextSection,
-  getPreviousDay,
   getPreviousPage,
   getPreviousSection,
   getTodayDate,
@@ -712,12 +710,6 @@ export function machine(userContext: UserDefinedContext) {
           // always sync the input value, even if the selecteddate is not changed
           // e.g. selected value is 02/28/2024, and the input value changed to 02/28
           set.inputValue(ctx, ctx.activeIndex)
-        },
-        setPreviousDate(ctx) {
-          set.focusedValue(ctx, getPreviousDay(ctx.focusedValue))
-        },
-        setNextDate(ctx) {
-          set.focusedValue(ctx, getNextDay(ctx.focusedValue))
         },
         focusPreviousDay(ctx) {
           set.focusedValue(ctx, ctx.focusedValue.subtract({ days: 1 }))

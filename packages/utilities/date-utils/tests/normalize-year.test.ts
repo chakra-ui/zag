@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import { normalizeYear } from "../src/normalize-year"
+import { normalizeYear } from "../src"
 
 describe("normalize year", () => {
   test("with 2 digits", () => {

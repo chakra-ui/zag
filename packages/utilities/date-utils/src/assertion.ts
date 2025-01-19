@@ -1,9 +1,5 @@
-import { type DateValue, isSameDay, isToday } from "@internationalized/date"
+import { type DateValue, isSameDay } from "@internationalized/date"
 import type { DateAvailableFn } from "./types"
-
-export function isTodayDate(date: DateValue, timeZone: string) {
-  return isToday(date, timeZone)
-}
 
 export function isDateEqual(dateA: DateValue, dateB?: DateValue | null) {
   return dateB != null && isSameDay(dateA, dateB)
