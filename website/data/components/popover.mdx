@@ -109,23 +109,23 @@ const [state, send] = useMachine(
 The popover is designed to close on blur and when the `esc` key is pressed.
 
 To prevent it from closing on blur (clicking or focusing outside), pass the
-`closeOnBlur` property and set it to `false`.
+`closeOnInteractOutside` property and set it to `false`.
 
 ```jsx {3}
 const [state, send] = useMachine(
   popover.machine({
-    closeOnBlur: true,
+    closeOnInteractOutside: true,
   }),
 )
 ```
 
-To prevent it from closing when the `esc` key is pressed, pass the `closeOnEsc`
+To prevent it from closing when the `esc` key is pressed, pass the `closeOnEscape`
 property and set it to `false`.
 
 ```jsx {3}
 const [state, send] = useMachine(
   popover.machine({
-    closeOnEsc: true,
+    closeOnEscape: true,
   }),
 )
 ```
