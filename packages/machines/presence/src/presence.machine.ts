@@ -1,4 +1,5 @@
 import { createMachine, ref } from "@zag-js/core"
+import { getComputedStyle, nextTick, setStyle } from "@zag-js/dom-query"
 import type { MachineContext, MachineState, UserDefinedContext } from "./presence.types"
 
 export function machine(ctx: Partial<UserDefinedContext>) {
@@ -94,8 +95,7 @@ export function machine(ctx: Partial<UserDefinedContext>) {
           ctx.node = ref(evt.node)
         },
         setStyles(ctx, evt) {
-          const win = evt.node.ownerDocument.defaultView || window
-          ctx.styles = ref(win.getComputedStyle(evt.node))
+          ctx.styles = ref(getComputedStyle(evt.node))
         },
         syncPresence(ctx, _evt, { send }) {
           if (ctx.present) {
@@ -158,11 +158,13 @@ export function machine(ctx: Partial<UserDefinedContext>) {
           node.addEventListener("animationstart", onStart)
           node.addEventListener("animationcancel", onEnd)
           node.addEventListener("animationend", onEnd)
+          const restoreStyles = setStyle(node, { animationFillMode: "forwards" })
 
           return () => {
             node.removeEventListener("animationstart", onStart)
             node.removeEventListener("animationcancel", onEnd)
             node.removeEventListener("animationend", onEnd)
+            nextTick(() => restoreStyles())
           }
         },
       },

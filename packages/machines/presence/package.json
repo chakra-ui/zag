@@ -35,7 +35,8 @@
   },
   "dependencies": {
     "@zag-js/core": "workspace:*",
-    "@zag-js/types": "workspace:*"
+    "@zag-js/types": "workspace:*",
+    "@zag-js/dom-query": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "2.2.0"

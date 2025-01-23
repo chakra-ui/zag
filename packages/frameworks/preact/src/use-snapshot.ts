@@ -1,12 +1,7 @@
 import type { Machine, StateMachine as S } from "@zag-js/core"
-import { globalRef, snapshot, subscribe, type Snapshot } from "@zag-js/store"
 import { compact, isEqual } from "@zag-js/utils"
-import { useSyncExternalStore } from "preact/compat"
-import { useCallback, useEffect, useMemo, useRef } from "preact/hooks"
-import { createProxy as createProxyToCompare, isChanged } from "proxy-compare"
+import { useEffect, useMemo, useState } from "preact/hooks"
 import { useUpdateEffect } from "./use-update-effect"
-
-const targetCache = globalRef("__zag__targetCache", () => new WeakMap())
 
 export function useSnapshot<
   TContext extends Record<string, any>,
@@ -17,35 +12,19 @@ export function useSnapshot<
   options?: S.HookOptions<TContext, TState, TEvent>,
 ): S.State<TContext, TState, TEvent> {
   //
-  type State = S.State<TContext, TState, TEvent>
 
-  const { actions, context, sync: notifyInSync } = options ?? {}
+  const { actions, context } = options ?? {}
 
   /* -----------------------------------------------------------------------------
    * Subscribe to the service state and create a snapshot of it
    * -----------------------------------------------------------------------------*/
+  const [currSnapshot, setCurrSnapshot] = useState(() => service.getState())
 
-  const lastSnapshot = useRef<Snapshot<State>>()
-  const lastAffected = useRef<WeakMap<object, unknown>>()
-
-  const currSnapshot = useSyncExternalStore(
-    useCallback((callback) => subscribe(service.state, callback, notifyInSync), [notifyInSync]),
-    () => {
-      const nextSnapshot = snapshot(service.state)
-      try {
-        if (
-          lastSnapshot.current &&
-          lastAffected.current &&
-          !isChanged(lastSnapshot.current, nextSnapshot, lastAffected.current, new WeakMap())
-        ) {
-          return lastSnapshot.current
-        }
-      } catch {
-        // ignore if a promise or something is thrown
-      }
-      return nextSnapshot
-    },
-  )
+  useEffect(() => {
+    return service.subscribe(() => {
+      setCurrSnapshot(service.getState())
+    })
+  }, [])
 
   /* -----------------------------------------------------------------------------
    * Sync actions
@@ -62,11 +41,13 @@ export function useSnapshot<
   useUpdateEffect(() => {
     const entries = Object.entries(ctx)
 
+    const previousCtx = service.contextSnapshot ?? {}
+
     const equality = entries.map(([key, value]) => ({
       key,
       curr: value,
-      prev: currSnapshot.context[key],
-      equal: isEqual(currSnapshot.context[key], value),
+      prev: previousCtx[key],
+      equal: isEqual(previousCtx[key], value),
     }))
 
     const allEqual = equality.every(({ equal }) => equal)
@@ -77,14 +58,5 @@ export function useSnapshot<
     }
   }, [ctx])
 
-  const currAffected = new WeakMap()
-
-  useEffect(() => {
-    lastSnapshot.current = currSnapshot
-    lastAffected.current = currAffected
-  })
-
-  const proxyCache = useMemo(() => new WeakMap(), []) // per-hook proxyCache
-
-  return createProxyToCompare(currSnapshot, currAffected, proxyCache, targetCache) as any
+  return currSnapshot
 }
