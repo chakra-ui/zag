@@ -1,5 +1,22 @@
 # @zag-js/file-upload
 
+## 0.82.1
+
+### Patch Changes
+
+- [`a7ea823`](https://github.com/chakra-ui/zag/commit/a7ea82364e7a680bc2fa1ebbe8dd00b98d3debb4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where multiple files could get added a single upload
+  operation.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.82.1
+  - @zag-js/core@0.82.1
+  - @zag-js/types@0.82.1
+  - @zag-js/utils@0.82.1
+  - @zag-js/dom-query@0.82.1
+  - @zag-js/file-utils@0.82.1
+  - @zag-js/i18n-utils@0.82.1
+
 ## 0.82.0
 
 ### Patch Changes
