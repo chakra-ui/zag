@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.82.1](./#0.82.1) - 2025-01-23
+
+### Fixed
+
+- **File Upload**: Fix issue where multiple files could get added a single upload operation.
+
 ## [0.82.0](./#0.82.0) - 2025-01-17
 
 ### Fixed
