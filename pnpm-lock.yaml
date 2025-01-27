@@ -2287,8 +2287,8 @@ importers:
         version: link:../../types
     devDependencies:
       '@sveltejs/package':
-        specifier: 2.3.7
-        version: 2.3.7(svelte@5.16.5)(typescript@5.7.2)
+        specifier: 2.3.9
+        version: 2.3.9(svelte@5.16.5)(typescript@5.7.2)
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -6676,8 +6676,8 @@ packages:
   '@stackblitz/sdk@1.11.0':
     resolution: {integrity: sha512-DFQGANNkEZRzFk1/rDP6TcFdM82ycHE+zfl9C/M/jXlH68jiqHWHFMQURLELoD8koxvu/eW5uhg94NSAZlYrUQ==}
 
-  '@sveltejs/package@2.3.7':
-    resolution: {integrity: sha512-LYgUkde5GUYqOpXbcoCGUpEH4Ctl3Wj4u4CVZBl56dEeLW5fGHE037ZL1qlK0Ky+QD5uUfwONSeGwIOIighFMQ==}
+  '@sveltejs/package@2.3.9':
+    resolution: {integrity: sha512-POIiQknGmcGCcM7ZbFG7cjsJ51GndFOY3PTXa8XFzZ+C/GJfx/JufvVXiWcXVsteP74FeXSSgcC+b5sIayXXKw==}
     engines: {node: ^16.14 || >=18}
     hasBin: true
     peerDependencies:
@@ -10218,12 +10218,14 @@ packages:
 
   lodash.get@4.4.2:
     resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
+    deprecated: This package is deprecated. Use the optional chaining (?.) operator instead.
 
   lodash.isarguments@3.1.0:
     resolution: {integrity: sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==}
 
   lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
+    deprecated: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
 
   lodash.isplainobject@4.0.6:
     resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==}
@@ -10251,6 +10253,7 @@ packages:
 
   lodash.template@4.5.0:
     resolution: {integrity: sha512-84vYFxIkmidUiFxidA/KjjH9pAycqW+h980j7Fuz5qxRtO9pgB7MDFTdys1N7A5mcucRiDyEq4fusljItR1T/A==}
+    deprecated: This package is deprecated. Use https://socket.dev/npm/package/eta instead.
 
   lodash.templatesettings@4.2.0:
     resolution: {integrity: sha512-stgLz+i3Aa9mZgnjr/O+v9ruKZsPsndy7qPZOchbqk2cnTU1ZaldKK+v7m54WoKIyxiuMZTKT2H81F8BeAc3ZQ==}
@@ -12327,8 +12330,8 @@ packages:
   svelte-routing@2.13.0:
     resolution: {integrity: sha512-/NTxqTwLc7Dq306hARJrH2HLXOBtKd7hu8nxgoFDlK0AC4SOKnzisiX/9m8Uksei1QAWtlAEdF91YphNM8iDMg==}
 
-  svelte2tsx@0.7.22:
-    resolution: {integrity: sha512-hf55ujq17ufVpDQlJzaQfRr9EjlLIwGmFlpKq4uYrQAQFw/99q1OcVYyBT6568iJySgBUY9PdccURrORmfetmQ==}
+  svelte2tsx@0.7.34:
+    resolution: {integrity: sha512-WTMhpNhFf8/h3SMtR5dkdSy2qfveomkhYei/QW9gSPccb0/b82tjHvLop6vT303ZkGswU/da1s6XvrLgthQPCw==}
     peerDependencies:
       svelte: ^3.55 || ^4.0.0-next.0 || ^4.0 || ^5.0.0-next.0
       typescript: ^4.9.4 || ^5.0.0
@@ -16284,14 +16287,14 @@ snapshots:
 
   '@stackblitz/sdk@1.11.0': {}
 
-  '@sveltejs/package@2.3.7(svelte@5.16.5)(typescript@5.7.2)':
+  '@sveltejs/package@2.3.9(svelte@5.16.5)(typescript@5.7.2)':
     dependencies:
       chokidar: 4.0.1
       kleur: 4.1.5
       sade: 1.8.1
       semver: 7.6.3
       svelte: 5.16.5
-      svelte2tsx: 0.7.22(svelte@5.16.5)(typescript@5.7.2)
+      svelte2tsx: 0.7.34(svelte@5.16.5)(typescript@5.7.2)
     transitivePeerDependencies:
       - typescript
 
@@ -23614,7 +23617,7 @@ snapshots:
 
   svelte-routing@2.13.0: {}
 
-  svelte2tsx@0.7.22(svelte@5.16.5)(typescript@5.7.2):
+  svelte2tsx@0.7.34(svelte@5.16.5)(typescript@5.7.2):
     dependencies:
       dedent-js: 1.0.1
       pascal-case: 3.1.2
