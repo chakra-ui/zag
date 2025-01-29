@@ -1,5 +1,5 @@
-import { createMachine, ref } from "@zag-js/core"
-import { getComputedStyle, getEventTarget, raf } from "@zag-js/dom-query"
+import { createMachine } from "@zag-js/core"
+import { getComputedStyle, getEventTarget, nextTick, raf, setStyle } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
 import { dom } from "./collapsible.dom"
 import type { MachineContext, MachineState, UserDefinedContext } from "./collapsible.types"
@@ -168,9 +168,11 @@ export function machine(userContext: UserDefinedContext) {
               }
             }
 
+            const restoreStyles = setStyle(contentEl, { animationFillMode: "forwards" })
             contentEl.addEventListener("animationend", onEnd)
             cleanup = () => {
               contentEl.removeEventListener("animationend", onEnd)
+              nextTick(() => restoreStyles())
             }
           })
 
@@ -206,11 +208,6 @@ export function machine(userContext: UserDefinedContext) {
             const contentEl = dom.getContentEl(ctx)
             if (!contentEl) return
 
-            ctx.stylesRef ||= ref({
-              animationName: contentEl.style.animationName,
-              animationDuration: contentEl.style.animationDuration,
-            })
-
             if (evt.type === "CLOSE" || !ctx.open) {
               const win = contentEl.ownerDocument.defaultView || window
               ctx.unmountAnimationName = win.getComputedStyle(contentEl).animationName
@@ -229,8 +226,8 @@ export function machine(userContext: UserDefinedContext) {
 
             // kick off any animations/transitions that were originally set up if it isn't the initial mount
             if (ctx.initial) {
-              contentEl.style.animationName = ctx.stylesRef.animationName
-              contentEl.style.animationDuration = ctx.stylesRef.animationDuration
+              contentEl.style.animationName = ""
+              contentEl.style.animationDuration = ""
             }
 
             contentEl.hidden = hidden
