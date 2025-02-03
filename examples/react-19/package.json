@@ -80,7 +80,7 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "lucide-react": "0.469.0",
+    "lucide-react": "0.474.0",
     "react": "19.0.0-rc-b57d2823-20240822",
     "react-dom": "19.0.0-rc-b57d2823-20240822"
   },
@@ -93,8 +93,8 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.9.0",
-    "typescript": "^5.7.2",
+    "typescript": "^5.7.3",
     "typescript-eslint": "^8.7.0",
-    "vite": "^6.0.7"
+    "vite": "^6.0.11"
   }
 }

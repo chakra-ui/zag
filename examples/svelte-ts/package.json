@@ -82,7 +82,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-svelte": "0.469.0",
+    "lucide-svelte": "0.474.0",
     "match-sorter": "8.0.0",
     "svelte-routing": "2.13.0"
   },
@@ -93,8 +93,8 @@
     "svelte": "5.16.5",
     "svelte-check": "4.1.1",
     "tslib": "2.7.0",
-    "typescript": "5.7.2",
-    "vite": "6.0.7",
+    "typescript": "5.7.3",
+    "vite": "6.0.11",
     "vite-tsconfig-paths": "5.1.4"
   }
 }
