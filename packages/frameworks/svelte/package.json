@@ -30,7 +30,7 @@
     "@zag-js/types": "workspace:*"
   },
   "devDependencies": {
-    "@sveltejs/package": "2.3.7",
+    "@sveltejs/package": "2.3.10",
     "clean-package": "2.2.0",
     "svelte": "5.16.5"
   },
