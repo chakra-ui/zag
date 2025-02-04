@@ -15,8 +15,12 @@ export function isDateDisabled(
   endDate: DateValue,
   minValue?: DateValue | null,
   maxValue?: DateValue | null,
+  isOutsideVisibleRangeEnabled?: boolean,
 ) {
-  return isDateOutsideVisibleRange(date, startDate, endDate) || isDateInvalid(date, minValue, maxValue)
+  return (
+    (!isOutsideVisibleRangeEnabled && isDateOutsideVisibleRange(date, startDate, endDate)) ||
+    isDateInvalid(date, minValue, maxValue)
+  )
 }
 
 export function isDateUnavailable(

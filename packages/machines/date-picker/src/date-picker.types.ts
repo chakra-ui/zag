@@ -174,9 +174,14 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
-   * Returns whether a date of the calendar is available.
+   * Returns whether a date of the calendar is available in the current visible range.
    */
   isDateUnavailable?: ((date: DateValue, locale: string) => boolean) | undefined
+  /**
+   * By default the dates outside of the visible range are not selectable.
+   * This option allows the dates outside of the visible range to be selectable.
+   */
+  isOutsideVisibleRangeEnabled?: boolean | undefined
   /**
    * The selection mode of the calendar.
    * - `single` - only one date can be selected

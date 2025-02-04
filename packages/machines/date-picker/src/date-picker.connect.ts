@@ -147,6 +147,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   function getDayTableCellState(props: DayTableCellProps): DayTableCellState {
     const { value, disabled, visibleRange = state.context.visibleRange } = props
 
+    const isOutsideVisibleRangeEnabled = state.context.isOutsideVisibleRangeEnabled
+
     const formatter = getDayFormatter(locale, timeZone)
     const unitDuration = getUnitDuration(state.context.visibleDuration)
 
@@ -154,7 +156,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     const cellState = {
       invalid: isDateInvalid(value, min, max),
-      disabled: disabled || isDateDisabled(value, visibleRange.start, end, min, max),
+      disabled: disabled || isDateDisabled(value, visibleRange.start, end, min, max, isOutsideVisibleRangeEnabled),
       selected: selectedValue.some((date) => isDateEqual(value, date)),
       unavailable: isDateUnavailable(value, isDateUnavailableFn, locale, min, max) && !disabled,
       outsideRange: isDateOutsideVisibleRange(value, visibleRange.start, end),
