@@ -74,6 +74,11 @@ interface PrivateContext {
    * The timer count in milliseconds.
    */
   currentMs: number
+  /**
+   * @internal
+   * Timestamp at the beginning of counting.
+   */
+  startTimeMs: number
 }
 
 type ComputedContext = Readonly<{

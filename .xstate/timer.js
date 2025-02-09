@@ -36,6 +36,7 @@ const fetchMachine = createMachine({
       }
     },
     running: {
+      entry: ["setStartTime"],
       invoke: {
         src: "interval",
         id: "interval"
