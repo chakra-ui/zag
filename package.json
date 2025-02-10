@@ -94,7 +94,7 @@
     "prettier": "3.4.2",
     "prettier-plugin-svelte": "3.3.3",
     "signale": "1.4.0",
-    "ts-morph": "25.0.0",
+    "ts-morph": "25.0.1",
     "tsup": "8.3.6",
     "tsx": "4.19.2",
     "typescript": "5.7.3",
