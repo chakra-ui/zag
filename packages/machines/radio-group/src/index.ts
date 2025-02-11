@@ -3,11 +3,11 @@ export { connect } from "./radio-group.connect"
 export { machine } from "./radio-group.machine"
 export * from "./radio-group.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  RadioGroupApi as Api,
   ElementIds,
   ItemProps,
   ItemState,
-  Service,
+  RadioGroupProps as Props,
+  RadioGroupService as Service,
   ValueChangeDetails,
 } from "./radio-group.types"
