@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
-import { FileIcon, FolderIcon, ChevronRightIcon } from "lucide-react"
+import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"

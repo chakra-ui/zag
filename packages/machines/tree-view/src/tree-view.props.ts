@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { NodeProps, UserDefinedContext } from "./tree-view.types"
+import type { NodeProps, TreeViewProps } from "./tree-view.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<TreeViewProps>()([
   "ids",
   "collection",
   "dir",
@@ -17,9 +17,11 @@ export const props = createProps<UserDefinedContext>()([
   "selectedValue",
   "selectionMode",
   "typeahead",
+  "defaultExpandedValue",
+  "defaultSelectedValue",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<TreeViewProps>>(props)
 
 export const itemProps = createProps<NodeProps>()(["node", "indexPath"])
 
