@@ -10,17 +10,12 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(pinInputControls)
 
-  const [state, send] = useMachine(
-    pinInput.machine({
-      name: "test",
-      id: useId(),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(pinInput.machine, {
+    name: "test",
+    id: useId(),
+  })
 
-  const api = pinInput.connect(state, send, normalizeProps)
+  const api = pinInput.connect(service, normalizeProps)
 
   return (
     <>
@@ -49,7 +44,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

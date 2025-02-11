@@ -1,26 +1,40 @@
-import { getEventKey, getNativeEvent, isModifierKey } from "@zag-js/dom-query"
-import { ariaAttr, dataAttr, getBeforeInputValue, isComposingEvent, visuallyHiddenStyle } from "@zag-js/dom-query"
+import type { Service } from "@zag-js/core"
+import {
+  ariaAttr,
+  dataAttr,
+  getBeforeInputValue,
+  getEventKey,
+  getNativeEvent,
+  isComposingEvent,
+  isModifierKey,
+  visuallyHiddenStyle,
+} from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { invariant } from "@zag-js/utils"
 import { parts } from "./pin-input.anatomy"
-import { dom } from "./pin-input.dom"
-import type { MachineApi, Send, State } from "./pin-input.types"
+import * as dom from "./pin-input.dom"
+import type { PinInputApi, PinInputSchema } from "./pin-input.types"
 import { isValidValue } from "./pin-input.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const complete = state.context.isValueComplete
-  const invalid = state.context.invalid
-  const focusedIndex = state.context.focusedIndex
-  const translations = state.context.translations
+export function connect<T extends PropTypes>(
+  service: Service<PinInputSchema>,
+  normalize: NormalizeProps<T>,
+): PinInputApi<T> {
+  const { send, context, computed, prop, scope } = service
+
+  const complete = computed("isValueComplete")
+  const invalid = prop("invalid")
+  const translations = prop("translations")
+  const focusedIndex = context.get("focusedIndex")
 
   function focus() {
-    dom.getFirstInputEl(state.context)?.focus()
+    dom.getFirstInputEl(scope)?.focus()
   }
 
   return {
     focus,
-    value: state.context.value,
-    valueAsString: state.context.valueAsString,
+    value: context.get("value"),
+    valueAsString: computed("valueAsString"),
     complete: complete,
     setValue(value) {
       if (!Array.isArray(value)) {
@@ -37,26 +51,26 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getRootProps() {
       return normalize.element({
-        dir: state.context.dir,
+        dir: prop("dir"),
         ...parts.root.attrs,
-        id: dom.getRootId(state.context),
+        id: dom.getRootId(scope),
         "data-invalid": dataAttr(invalid),
-        "data-disabled": dataAttr(state.context.disabled),
+        "data-disabled": dataAttr(prop("disabled")),
         "data-complete": dataAttr(complete),
-        "data-readonly": dataAttr(state.context.readOnly),
+        "data-readonly": dataAttr(prop("readOnly")),
       })
     },
 
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
-        dir: state.context.dir,
-        htmlFor: dom.getHiddenInputId(state.context),
-        id: dom.getLabelId(state.context),
+        dir: prop("dir"),
+        htmlFor: dom.getHiddenInputId(scope),
+        id: dom.getLabelId(scope),
         "data-invalid": dataAttr(invalid),
-        "data-disabled": dataAttr(state.context.disabled),
+        "data-disabled": dataAttr(prop("disabled")),
         "data-complete": dataAttr(complete),
-        "data-readonly": dataAttr(state.context.readOnly),
+        "data-readonly": dataAttr(prop("readOnly")),
         onClick(event) {
           event.preventDefault()
           focus()
@@ -69,51 +83,51 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-hidden": true,
         type: "text",
         tabIndex: -1,
-        id: dom.getHiddenInputId(state.context),
-        readOnly: state.context.readOnly,
-        disabled: state.context.disabled,
-        required: state.context.required,
-        name: state.context.name,
-        form: state.context.form,
+        id: dom.getHiddenInputId(scope),
+        readOnly: prop("readOnly"),
+        disabled: prop("disabled"),
+        required: prop("required"),
+        name: prop("name"),
+        form: prop("form"),
         style: visuallyHiddenStyle,
-        maxLength: state.context.valueLength,
-        defaultValue: state.context.valueAsString,
+        maxLength: computed("valueLength"),
+        defaultValue: computed("valueAsString"),
       })
     },
 
     getControlProps() {
       return normalize.element({
         ...parts.control.attrs,
-        dir: state.context.dir,
-        id: dom.getControlId(state.context),
+        dir: prop("dir"),
+        id: dom.getControlId(scope),
       })
     },
 
     getInputProps(props) {
       const { index } = props
-      const inputType = state.context.type === "numeric" ? "tel" : "text"
+      const inputType = prop("type") === "numeric" ? "tel" : "text"
       return normalize.input({
         ...parts.input.attrs,
-        dir: state.context.dir,
-        disabled: state.context.disabled,
-        "data-disabled": dataAttr(state.context.disabled),
+        dir: prop("dir"),
+        disabled: prop("disabled"),
+        "data-disabled": dataAttr(prop("disabled")),
         "data-complete": dataAttr(complete),
-        id: dom.getInputId(state.context, index.toString()),
-        "data-ownedby": dom.getRootId(state.context),
-        "aria-label": translations.inputLabel(index, state.context.valueLength),
-        inputMode: state.context.otp || state.context.type === "numeric" ? "numeric" : "text",
+        id: dom.getInputId(scope, index.toString()),
+        "data-ownedby": dom.getRootId(scope),
+        "aria-label": translations?.inputLabel?.(index, computed("valueLength")),
+        inputMode: prop("otp") || prop("type") === "numeric" ? "numeric" : "text",
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
-        type: state.context.mask ? "password" : inputType,
-        defaultValue: state.context.value[index] || "",
-        readOnly: state.context.readOnly,
+        type: prop("mask") ? "password" : inputType,
+        defaultValue: context.get("value")[index] || "",
+        readOnly: prop("readOnly"),
         autoCapitalize: "none",
-        autoComplete: state.context.otp ? "one-time-code" : "off",
-        placeholder: focusedIndex === index ? "" : state.context.placeholder,
+        autoComplete: prop("otp") ? "one-time-code" : "off",
+        placeholder: focusedIndex === index ? "" : prop("placeholder"),
         onBeforeInput(event) {
           try {
             const value = getBeforeInputValue(event)
-            const isValid = isValidValue(state.context, value)
+            const isValid = isValidValue(value, prop("type")!, prop("pattern")!)
             if (!isValid) {
               send({ type: "VALUE.INVALID", value })
               event.preventDefault()
@@ -143,7 +157,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
 
           if (evt.inputType === "deleteContentBackward") {
-            send("INPUT.BACKSPACE")
+            send({ type: "INPUT.BACKSPACE" })
             return
           }
 
@@ -157,23 +171,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
           const keyMap: EventKeyMap = {
             Backspace() {
-              send("INPUT.BACKSPACE")
+              send({ type: "INPUT.BACKSPACE" })
             },
             Delete() {
-              send("INPUT.DELETE")
+              send({ type: "INPUT.DELETE" })
             },
             ArrowLeft() {
-              send("INPUT.ARROW_LEFT")
+              send({ type: "INPUT.ARROW_LEFT" })
             },
             ArrowRight() {
-              send("INPUT.ARROW_RIGHT")
+              send({ type: "INPUT.ARROW_RIGHT" })
             },
             Enter() {
-              send("INPUT.ENTER")
+              send({ type: "INPUT.ENTER" })
             },
           }
 
-          const exec = keyMap[getEventKey(event, state.context)]
+          const exec =
+            keyMap[
+              getEventKey(event, {
+                dir: prop("dir"),
+                orientation: "horizontal",
+              })
+            ]
 
           if (exec) {
             exec(event)
