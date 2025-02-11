@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { UserDefinedContext } from "./progress.types"
+import type { ProgressProps } from "./progress.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<ProgressProps>()([
   "dir",
   "getRootNode",
   "id",
@@ -13,6 +13,7 @@ export const props = createProps<UserDefinedContext>()([
   "translations",
   "value",
   "onValueChange",
+  "defaultValue",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<ProgressProps>>(props)

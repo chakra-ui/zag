@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type {
   CommonProperties,
   DirectionProperty,
@@ -40,16 +40,20 @@ export type ElementIds = Partial<{
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext extends DirectionProperty, CommonProperties, OrientationProperty {
+export interface ProgressProps extends DirectionProperty, CommonProperties, OrientationProperty {
   /**
    * The ids of the elements in the progress bar. Useful for composition.
    */
   ids?: ElementIds | undefined
   /**
    *  The current value of the progress bar.
+   */
+  value?: number | null
+  /**
+   * The default value of the progress bar.
    * @default 50
    */
-  value: number | null
+  defaultValue?: number | null
   /**
    * The minimum allowed value of the progress bar.
    * @default 0
@@ -63,56 +67,52 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
   /**
    * The localized messages to use.
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * Callback fired when the value changes.
    */
   onValueChange?: ((details: ValueChangeDetails) => void) | undefined
 }
 
-interface PrivateContext {}
+type PropsWithDefault = "orientation" | "translations" | "min" | "max"
 
-type ComputedContext = Readonly<{
+type Computed = Readonly<{
   /**
-   * @computed
    * Whether the progress bar is indeterminate.
    */
   isIndeterminate: boolean
   /**
-   * @computed
    * The percentage of the progress bar's value.
    */
   percent: number
   /**
-   * @computed
    * Whether the progress bar is at its minimum value.
    */
   isAtMax: boolean
   /**
-   * @computed
    *  Whether the progress bar is horizontal.
    */
   isHorizontal: boolean
   /**
-   * @computed
    * Whether the progress bar is in RTL mode.
    */
   isRtl: boolean
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
-
-export type MachineState = {
-  value: "idle"
+export interface ProgressSchema {
+  props: RequiredBy<ProgressProps, PropsWithDefault>
+  computed: Computed
+  context: {
+    value: number | null
+  }
+  state: "idle"
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type ProgressService = Service<ProgressSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -122,7 +122,7 @@ export interface ViewProps {
   state: ProgressState
 }
 
-export interface MachineApi<T extends PropTypes> {
+export interface ProgressApi<T extends PropTypes> {
   /**
    * The current value of the progress bar.
    */
