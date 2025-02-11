@@ -2,8 +2,8 @@ import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 
 export default function Dialog() {
-  const [state, send] = useMachine(dialog.machine({ id: "1" }))
-  const api = dialog.connect(state, send, normalizeProps)
+  const service = useMachine(dialog.machine, { id: "1" })
+  const api = dialog.connect(service, normalizeProps)
 
   return (
     <main>

@@ -4,8 +4,8 @@ import { useState } from "react"
 
 export default function Dialog() {
   const [nextContent, setNextContent] = useState(false)
-  const [state, send] = useMachine(dialog.machine({ id: "1" }))
-  const api = dialog.connect(state, send, normalizeProps)
+  const service = useMachine(dialog.machine, { id: "1" })
+  const api = dialog.connect(service, normalizeProps)
 
   return (
     <main>

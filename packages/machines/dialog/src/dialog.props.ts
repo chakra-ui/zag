@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { UserDefinedContext } from "./dialog.types"
+import type { DialogProps } from "./dialog.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<DialogProps>()([
   "aria-label",
   "closeOnEscape",
   "closeOnInteractOutside",
@@ -20,7 +20,7 @@ export const props = createProps<UserDefinedContext>()([
   "onInteractOutside",
   "onOpenChange",
   "onPointerDownOutside",
-  "open.controlled",
+  "defaultOpen",
   "open",
   "persistentElements",
   "preventScroll",
@@ -29,4 +29,4 @@ export const props = createProps<UserDefinedContext>()([
   "trapFocus",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<DialogProps>>(props)
