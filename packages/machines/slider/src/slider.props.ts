@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { ThumbProps, UserDefinedContext } from "./slider.types"
+import type { ThumbProps, SliderProps } from "./slider.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<SliderProps>()([
   "aria-label",
   "aria-labelledby",
   "dir",
@@ -28,9 +28,10 @@ export const props = createProps<UserDefinedContext>()([
   "thumbAlignment",
   "thumbSize",
   "value",
+  "defaultValue",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<SliderProps>>(props)
 
 export const thumbProps = createProps<ThumbProps>()(["index", "name"])
 export const splitThumbProps = createSplitProps<ThumbProps>(thumbProps)

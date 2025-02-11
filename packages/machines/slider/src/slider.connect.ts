@@ -8,37 +8,49 @@ import {
   isModifierKey,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { getPercentValue, getValuePercent } from "@zag-js/utils"
+import { first, getPercentValue, getValuePercent, last } from "@zag-js/utils"
 import { parts } from "./slider.anatomy"
-import { dom } from "./slider.dom"
-import type { MachineApi, Send, State } from "./slider.types"
+import * as dom from "./slider.dom"
+import {
+  getControlStyle,
+  getMarkerGroupStyle,
+  getMarkerStyle,
+  getRangeStyle,
+  getRootStyle,
+  getThumbStyle,
+} from "./slider.style"
+import type { SliderApi, SliderService } from "./slider.types"
 import { getRangeAtIndex } from "./slider.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const ariaLabel = state.context["aria-label"]
-  const ariaLabelledBy = state.context["aria-labelledby"]
-  const sliderValue = state.context.value
+export function connect<T extends PropTypes>(service: SliderService, normalize: NormalizeProps<T>): SliderApi<T> {
+  const { state, send, context, prop, computed, scope } = service
+
+  const ariaLabel = prop("aria-label")
+  const ariaLabelledBy = prop("aria-labelledby")
+
+  const sliderValue = context.get("value")
+  const focusedIndex = context.get("focusedIndex")
 
   const focused = state.matches("focus")
   const dragging = state.matches("dragging")
 
-  const disabled = state.context.isDisabled
-  const invalid = state.context.invalid
-  const interactive = state.context.isInteractive
+  const disabled = computed("isDisabled")
+  const invalid = prop("invalid")
+  const interactive = computed("isInteractive")
 
-  const isHorizontal = state.context.orientation === "horizontal"
-  const isVertical = state.context.orientation === "vertical"
+  const isHorizontal = prop("orientation") === "horizontal"
+  const isVertical = prop("orientation") === "vertical"
 
   function getValuePercentFn(value: number) {
-    return getValuePercent(value, state.context.min, state.context.max)
+    return getValuePercent(value, prop("min"), prop("max"))
   }
 
   function getPercentValueFn(percent: number) {
-    return getPercentValue(percent, state.context.min, state.context.max, state.context.step)
+    return getPercentValue(percent, prop("min"), prop("max"), prop("step"))
   }
 
   return {
-    value: state.context.value,
+    value: sliderValue,
     dragging,
     focused,
     setValue(value) {
@@ -60,10 +72,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SET_VALUE", index, value })
     },
     getThumbMin(index) {
-      return getRangeAtIndex(state.context, index).min
+      return getRangeAtIndex(service, index).min
     },
     getThumbMax(index) {
-      return getRangeAtIndex(state.context, index).max
+      return getRangeAtIndex(service, index).max
     },
     increment(index) {
       send({ type: "INCREMENT", index })
@@ -79,18 +91,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         "data-invalid": dataAttr(invalid),
         "data-dragging": dataAttr(dragging),
         "data-focus": dataAttr(focused),
-        id: dom.getLabelId(state.context),
-        htmlFor: dom.getHiddenInputId(state.context, 0),
+        id: dom.getLabelId(scope),
+        htmlFor: dom.getHiddenInputId(scope, 0),
         onClick(event) {
           if (!interactive) return
           event.preventDefault()
-          dom.getFirstEl(state.context)?.focus()
+          dom.getFirstEl(scope)?.focus()
         },
         style: {
           userSelect: "none",
@@ -103,37 +115,37 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.root.attrs,
         "data-disabled": dataAttr(disabled),
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         "data-dragging": dataAttr(dragging),
         "data-invalid": dataAttr(invalid),
         "data-focus": dataAttr(focused),
-        id: dom.getRootId(state.context),
-        dir: state.context.dir,
-        style: dom.getRootStyle(state.context),
+        id: dom.getRootId(scope),
+        dir: prop("dir"),
+        style: getRootStyle(service),
       })
     },
 
     getValueTextProps() {
       return normalize.element({
         ...parts.valueText.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         "data-invalid": dataAttr(invalid),
         "data-focus": dataAttr(focused),
-        id: dom.getValueTextId(state.context),
+        id: dom.getValueTextId(scope),
       })
     },
 
     getTrackProps() {
       return normalize.element({
         ...parts.track.attrs,
-        dir: state.context.dir,
-        id: dom.getTrackId(state.context),
+        dir: prop("dir"),
+        id: dom.getTrackId(scope),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-dragging": dataAttr(dragging),
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         "data-focus": dataAttr(focused),
         style: { position: "relative" },
       })
@@ -143,33 +155,33 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { index = 0, name } = props
 
       const value = sliderValue[index]
-      const range = getRangeAtIndex(state.context, index)
-      const valueText = state.context.getAriaValueText?.({ value, index })
+      const range = getRangeAtIndex(service, index)
+      const valueText = prop("getAriaValueText")?.({ value, index })
       const _ariaLabel = Array.isArray(ariaLabel) ? ariaLabel[index] : ariaLabel
       const _ariaLabelledBy = Array.isArray(ariaLabelledBy) ? ariaLabelledBy[index] : ariaLabelledBy
 
       return normalize.element({
         ...parts.thumb.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-index": index,
         "data-name": name,
-        id: dom.getThumbId(state.context, index),
+        id: dom.getThumbId(scope, index),
         "data-disabled": dataAttr(disabled),
-        "data-orientation": state.context.orientation,
-        "data-focus": dataAttr(focused && state.context.focusedIndex === index),
-        "data-dragging": dataAttr(dragging && state.context.focusedIndex === index),
+        "data-orientation": prop("orientation"),
+        "data-focus": dataAttr(focused && focusedIndex === index),
+        "data-dragging": dataAttr(dragging && focusedIndex === index),
         draggable: false,
         "aria-disabled": ariaAttr(disabled),
         "aria-label": _ariaLabel,
-        "aria-labelledby": _ariaLabelledBy ?? dom.getLabelId(state.context),
-        "aria-orientation": state.context.orientation,
+        "aria-labelledby": _ariaLabelledBy ?? dom.getLabelId(scope),
+        "aria-orientation": prop("orientation"),
         "aria-valuemax": range.max,
         "aria-valuemin": range.min,
         "aria-valuenow": sliderValue[index],
         "aria-valuetext": valueText,
         role: "slider",
         tabIndex: disabled ? undefined : 0,
-        style: dom.getThumbStyle(state.context, index),
+        style: getThumbStyle(service, index),
         onPointerDown(event) {
           if (!interactive) return
           send({ type: "THUMB_POINTER_DOWN", index })
@@ -177,7 +189,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onBlur() {
           if (!interactive) return
-          send("BLUR")
+          send({ type: "BLUR" })
         },
         onFocus() {
           if (!interactive) return
@@ -187,7 +199,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           if (!interactive) return
 
-          const step = getEventStep(event) * state.context.step
+          const step = getEventStep(event) * prop("step")
 
           const keyMap: EventKeyMap = {
             ArrowUp() {
@@ -213,14 +225,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               send({ type: "ARROW_DEC", step, src: "PageDown" })
             },
             Home() {
-              send("HOME")
+              send({ type: "HOME" })
             },
             End() {
-              send("END")
+              send({ type: "END" })
             },
           }
 
-          const key = getEventKey(event, state.context)
+          const key = getEventKey(event, {
+            dir: prop("dir"),
+            orientation: prop("orientation"),
+          })
           const exec = keyMap[key]
 
           if (exec) {
@@ -235,41 +250,40 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getHiddenInputProps(props) {
       const { index = 0, name } = props
       return normalize.input({
-        name:
-          name ?? (state.context.name ? state.context.name + (state.context.value.length > 1 ? "[]" : "") : undefined),
-        form: state.context.form,
+        name: name ?? (prop("name") ? prop("name") + (sliderValue.length > 1 ? "[]" : "") : undefined),
+        form: prop("form"),
         type: "text",
         hidden: true,
-        defaultValue: state.context.value[index],
-        id: dom.getHiddenInputId(state.context, index),
+        defaultValue: sliderValue[index],
+        id: dom.getHiddenInputId(scope, index),
       })
     },
 
     getRangeProps() {
       return normalize.element({
-        id: dom.getRangeId(state.context),
+        id: dom.getRangeId(scope),
         ...parts.range.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-dragging": dataAttr(dragging),
         "data-focus": dataAttr(focused),
         "data-invalid": dataAttr(invalid),
         "data-disabled": dataAttr(disabled),
-        "data-orientation": state.context.orientation,
-        style: dom.getRangeStyle(state.context),
+        "data-orientation": prop("orientation"),
+        style: getRangeStyle(service),
       })
     },
 
     getControlProps() {
       return normalize.element({
         ...parts.control.attrs,
-        dir: state.context.dir,
-        id: dom.getControlId(state.context),
+        dir: prop("dir"),
+        id: dom.getControlId(scope),
         "data-dragging": dataAttr(dragging),
         "data-disabled": dataAttr(disabled),
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         "data-invalid": dataAttr(invalid),
         "data-focus": dataAttr(focused),
-        style: dom.getControlStyle(),
+        style: getControlStyle(),
         onPointerDown(event) {
           if (!interactive) return
           if (!isLeftClick(event)) return
@@ -288,23 +302,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.markerGroup.attrs,
         role: "presentation",
-        dir: state.context.dir,
+        dir: prop("dir"),
         "aria-hidden": true,
-        "data-orientation": state.context.orientation,
-        style: dom.getMarkerGroupStyle(),
+        "data-orientation": prop("orientation"),
+        style: getMarkerGroupStyle(),
       })
     },
 
     getMarkerProps(props) {
-      const style = dom.getMarkerStyle(state.context, props.value)
+      const style = getMarkerStyle(service, props.value)
       let markerState: "over-value" | "under-value" | "at-value"
 
-      const first = state.context.value[0]
-      const last = state.context.value[state.context.value.length - 1]
-
-      if (props.value < first) {
+      if (props.value < first(sliderValue)!) {
         markerState = "under-value"
-      } else if (props.value > last) {
+      } else if (props.value > last(sliderValue)!) {
         markerState = "over-value"
       } else {
         markerState = "at-value"
@@ -312,10 +323,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.marker.attrs,
-        id: dom.getMarkerId(state.context, props.value),
+        id: dom.getMarkerId(scope, props.value),
         role: "presentation",
-        dir: state.context.dir,
-        "data-orientation": state.context.orientation,
+        dir: prop("dir"),
+        "data-orientation": prop("orientation"),
         "data-value": props.value,
         "data-disabled": dataAttr(disabled),
         "data-state": markerState,
@@ -325,15 +336,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getDraggingIndicatorProps(props) {
       const { index = 0 } = props
-      const isDragging = index === state.context.focusedIndex && dragging
+      const isDragging = index === focusedIndex && dragging
       return normalize.element({
         ...parts.draggingIndicator.attrs,
         role: "presentation",
-        dir: state.context.dir,
+        dir: prop("dir"),
         hidden: !isDragging,
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         "data-state": isDragging ? "open" : "closed",
-        style: dom.getThumbStyle(state.context, index),
+        style: getThumbStyle(service, index),
       })
     },
   }

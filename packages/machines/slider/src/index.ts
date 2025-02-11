@@ -3,13 +3,13 @@ export { connect } from "./slider.connect"
 export { machine } from "./slider.machine"
 export * from "./slider.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  SliderApi as Api,
+  SliderProps as Props,
   DraggingIndicatorProps,
   ElementIds,
   FocusChangeDetails,
   MarkerProps,
-  Service,
+  SliderService as Service,
   ThumbProps,
   ValueChangeDetails,
   ValueTextDetails,

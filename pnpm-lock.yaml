@@ -3308,6 +3308,9 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
+      '@zag-js/store':
+        specifier: workspace:*
+        version: link:../../store
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

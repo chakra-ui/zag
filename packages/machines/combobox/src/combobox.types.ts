@@ -193,7 +193,7 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The collection of items
    */
