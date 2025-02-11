@@ -1,4 +1,4 @@
-import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { EventObject, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
@@ -66,9 +66,11 @@ export interface AccordionProps extends DirectionProperty, CommonProperties {
   orientation?: "horizontal" | "vertical" | undefined
 }
 
+type PropsWithDefault = "multiple" | "collapsible" | "orientation"
+
 export type AccordionSchema = {
   state: "idle" | "focused"
-  props: AccordionProps
+  props: RequiredBy<AccordionProps, PropsWithDefault>
   context: {
     value: string[]
     focusedValue: string | null

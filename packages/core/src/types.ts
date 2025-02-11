@@ -63,8 +63,8 @@ interface BindableFn {
 }
 
 export interface Scope {
-  id?: string
-  ids?: Record<string, any>
+  id?: string | undefined
+  ids?: Record<string, any> | undefined
   getRootNode: (() => ShadowRoot | Document | Node) | undefined
   getById: <T extends Element = HTMLElement>(id: string) => T | null
   getActiveElement: () => HTMLElement | null

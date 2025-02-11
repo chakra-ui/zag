@@ -1,5 +1,5 @@
-import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
-import type { EventObject, Service } from "@zag-mini/core"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { EventObject, Service } from "@zag-js/core"
 
 export interface ElementIds {
   root: string
@@ -19,50 +19,52 @@ export interface AngleSliderProps extends DirectionProperty, CommonProperties {
    * The ids of the elements in the machine.
    * Useful for composition.
    */
-  ids?: Partial<ElementIds>
+  ids?: Partial<ElementIds> | undefined
   /**
    * The step value for the slider.
    * @default 1
    */
-  step?: number
+  step?: number | undefined
   /**
    * The value of the slider.
    */
-  value?: number
+  value?: number | undefined
   /**
    * The default value of the slider.
    * @default 0
    */
-  defaultValue?: number
+  defaultValue?: number | undefined
   /**
    * The callback function for when the value changes.
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * The callback function for when the value changes ends.
    */
-  onValueChangeEnd?: (details: ValueChangeDetails) => void
+  onValueChangeEnd?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Whether the slider is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the slider is read-only.
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the slider is invalid.
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * The name of the slider. Useful for form submission.
    */
-  name?: string
+  name?: string | undefined
 }
+
+type PropsWithDefault = "step" | "defaultValue"
 
 export interface AngleSliderSchema {
   state: "idle" | "focused" | "dragging"
-  props: AngleSliderProps
+  props: RequiredBy<AngleSliderProps, PropsWithDefault>
   computed: {
     interactive: boolean
     valueAsDegree: string
