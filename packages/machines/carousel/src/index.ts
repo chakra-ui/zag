@@ -3,15 +3,15 @@ export { connect } from "./carousel.connect"
 export { machine } from "./carousel.machine"
 export * from "./carousel.props"
 export type {
-  MachineApi as Api,
+  CarouselApi as Api,
   AutoplayStatusDetails,
-  UserDefinedContext as Context,
+  CarouselProps as Props,
   DragStatusDetails,
   ElementIds,
   IndicatorProps,
   IntlTranslations,
   ItemProps,
   PageChangeDetails,
-  Service,
+  CarouselService as Service,
   Orientation,
 } from "./carousel.types"

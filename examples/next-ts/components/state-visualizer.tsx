@@ -14,7 +14,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
       <pre dir="ltr">
         <details open>
           <summary> {label || "Visualizer"} </summary>
-          <div dangerouslySetInnerHTML={{ __html: highlightState(state, omit) }} />
+          {/* <div dangerouslySetInnerHTML={{ __html: highlightState(state, omit) }} /> */}
         </details>
       </pre>
     </div>

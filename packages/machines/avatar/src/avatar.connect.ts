@@ -1,27 +1,32 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { Service } from "@zag-js/core"
 import { parts } from "./avatar.anatomy"
-import { dom } from "./avatar.dom"
-import type { MachineApi, Send, State } from "./avatar.types"
+import * as dom from "./avatar.dom"
+import type { AvatarApi, AvatarSchema } from "./avatar.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(
+  service: Service<AvatarSchema>,
+  normalize: NormalizeProps<T>,
+): AvatarApi<T> {
+  const { state, send, prop, scope } = service
   const loaded = state.matches("loaded")
   return {
     loaded,
     setSrc(src) {
-      send({ type: "SRC.SET", src })
+      send({ type: "src.change", src })
     },
     setLoaded() {
-      send({ type: "IMG.LOADED", src: "api" })
+      send({ type: "img.loaded", src: "api" })
     },
     setError() {
-      send({ type: "IMG.ERROR", src: "api" })
+      send({ type: "img.error", src: "api" })
     },
 
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        dir: state.context.dir,
-        id: dom.getRootId(state.context),
+        dir: prop("dir"),
+        id: dom.getRootId(scope),
       })
     },
 
@@ -29,14 +34,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.img({
         ...parts.image.attrs,
         hidden: !loaded,
-        dir: state.context.dir,
-        id: dom.getImageId(state.context),
+        dir: prop("dir"),
+        id: dom.getImageId(scope),
         "data-state": loaded ? "visible" : "hidden",
         onLoad() {
-          send({ type: "IMG.LOADED", src: "element" })
+          send({ type: "img.loaded", src: "element" })
         },
         onError() {
-          send({ type: "IMG.ERROR", src: "element" })
+          send({ type: "img.error", src: "element" })
         },
       })
     },
@@ -44,8 +49,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getFallbackProps() {
       return normalize.element({
         ...parts.fallback.attrs,
-        dir: state.context.dir,
-        id: dom.getFallbackId(state.context),
+        dir: prop("dir"),
+        id: dom.getFallbackId(scope),
         hidden: loaded,
         "data-state": loaded ? "hidden" : "visible",
       })

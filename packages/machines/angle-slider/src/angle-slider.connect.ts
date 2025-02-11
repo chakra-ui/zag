@@ -1,19 +1,21 @@
 import { dataAttr, getEventPoint, getEventStep } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./angle-slider.anatomy"
-import { dom } from "./angle-slider.dom"
-import type { MachineApi, Send, State } from "./angle-slider.types"
+import * as dom from "./angle-slider.dom"
+import type { AngleSliderService, MachineApi } from "./angle-slider.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(service: AngleSliderService, normalize: NormalizeProps<T>): MachineApi<T> {
+  const { state, send, context, prop, computed, scope } = service
+
   const dragging = state.matches("dragging")
 
-  const value = state.context.value
-  const valueAsDegree = state.context.valueAsDegree
+  const value = context.get("value")
+  const valueAsDegree = computed("valueAsDegree")
 
-  const disabled = state.context.disabled
-  const invalid = state.context.invalid
-  const readOnly = state.context.readOnly
-  const interactive = state.context.interactive
+  const disabled = prop("disabled")
+  const invalid = prop("invalid")
+  const readOnly = prop("readOnly")
+  const interactive = computed("interactive")
 
   return {
     value,
@@ -26,7 +28,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        id: dom.getRootId(state.context),
+        id: dom.getRootId(scope),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
@@ -40,14 +42,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
-        htmlFor: dom.getHiddenInputId(state.context),
+        htmlFor: dom.getHiddenInputId(scope),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
         onClick(event) {
           if (!interactive) return
           event.preventDefault()
-          dom.getThumbEl(state.context)?.focus()
+          dom.getThumbEl(scope)?.focus()
         },
       })
     },
@@ -56,8 +58,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         type: "hidden",
         value,
-        name: state.context.name,
-        id: dom.getHiddenInputId(state.context),
+        name: prop("name"),
+        id: dom.getHiddenInputId(scope),
       })
     },
 
@@ -65,7 +67,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.control.attrs,
         role: "presentation",
-        id: dom.getControlId(state.context),
+        id: dom.getControlId(scope),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
@@ -80,7 +82,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getThumbProps() {
       return normalize.element({
         ...parts.thumb.attrs,
-        id: dom.getThumbId(state.context),
+        id: dom.getThumbId(scope),
         role: "slider",
         "aria-valuemax": 360,
         "aria-valuemin": 0,
@@ -98,7 +100,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onKeyDown(event) {
           if (!interactive) return
 
-          const step = getEventStep(event) * state.context.step
+          const step = getEventStep(event) * prop("step")!
 
           switch (event.key) {
             case "ArrowLeft":
@@ -132,7 +134,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getValueTextProps() {
       return normalize.element({
         ...parts.valueText.attrs,
-        id: dom.getValueTextId(state.context),
+        id: dom.getValueTextId(scope),
       })
     },
 

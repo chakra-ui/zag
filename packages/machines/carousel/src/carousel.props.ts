@@ -1,14 +1,15 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { IndicatorProps, ItemProps, UserDefinedContext } from "./carousel.types"
+import type { IndicatorProps, ItemProps, CarouselProps } from "./carousel.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<CarouselProps>()([
   "dir",
   "getRootNode",
   "id",
   "ids",
   "loop",
   "page",
+  "defaultPage",
   "onPageChange",
   "orientation",
   "slideCount",
@@ -24,7 +25,7 @@ export const props = createProps<UserDefinedContext>()([
   "onDragStatusChange",
   "onAutoplayStatusChange",
 ])
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<CarouselProps>>(props)
 
 export const indicatorProps = createProps<IndicatorProps>()(["index", "readOnly"])
 export const splitIndicatorProps = createSplitProps<IndicatorProps>(indicatorProps)

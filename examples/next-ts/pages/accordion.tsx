@@ -10,16 +10,11 @@ import { ArrowRight } from "lucide-react"
 export default function Page() {
   const controls = useControls(accordionControls)
 
-  const [state, send] = useMachine(
-    accordion.machine({
-      id: useId(),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(accordion.machine, {
+    id: useId(),
+  })
 
-  const api = accordion.connect(state, send, normalizeProps)
+  const api = accordion.connect(service, normalizeProps)
 
   return (
     <>
@@ -45,7 +40,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

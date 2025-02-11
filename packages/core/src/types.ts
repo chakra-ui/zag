@@ -29,8 +29,8 @@ type AnyFunction = () => string | number | boolean | null | undefined
 type TrackFn = (deps: AnyFunction[], fn: VoidFunction) => void
 
 export interface BindableParams<T> {
-  defaultValue?: T
-  value?: T
+  defaultValue?: T | undefined
+  value?: T | undefined
   isEqual?: (a: T, b: T | undefined) => boolean
   onChange?: (value: T, prev: T | undefined) => void
   debug?: string
@@ -108,7 +108,7 @@ interface Transition<T extends Dict> {
 }
 
 interface PropsParams<T extends Dict> {
-  props: T["props"]
+  props: Partial<T["props"]>
   scope: Scope
 }
 
@@ -155,9 +155,9 @@ export interface MachineConfig<T extends Dict> {
 }
 
 interface BaseProps {
-  id?: string
-  ids?: Record<string, any>
-  getRootNode?: () => ShadowRoot | Document | Node
+  id?: string | undefined
+  ids?: Record<string, any> | undefined
+  getRootNode?: (() => ShadowRoot | Document | Node) | undefined
   [key: string]: any
 }
 

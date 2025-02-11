@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { UserDefinedContext } from "./angle-slider.types"
+import type { AngleSliderProps } from "./angle-slider.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<AngleSliderProps>()([
   "dir",
   "disabled",
   "getRootNode",
@@ -15,6 +15,7 @@ export const props = createProps<UserDefinedContext>()([
   "readOnly",
   "step",
   "value",
+  "defaultValue",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<AngleSliderProps>>(props)

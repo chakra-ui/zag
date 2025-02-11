@@ -1,159 +1,187 @@
-import { createMachine } from "@zag-js/core"
-import { raf, trackPointerMove } from "@zag-js/dom-query"
+import { raf, setElementValue, trackPointerMove } from "@zag-js/dom-query"
 import { createRect, getPointAngle } from "@zag-js/rect-utils"
 import type { Point } from "@zag-js/types"
-import { compact, snapValueToStep } from "@zag-js/utils"
-import { dom } from "./angle-slider.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./angle-slider.types"
+import { snapValueToStep } from "@zag-js/utils"
+import { createMachine } from "@zag-js/core"
+import * as dom from "./angle-slider.dom"
+import type { AngleSliderSchema } from "./angle-slider.types"
 
 const MIN_VALUE = 0
 const MAX_VALUE = 359
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "angle-slider",
-      initial: "idle",
+export const machine = createMachine<AngleSliderSchema>({
+  props({ props }) {
+    return {
+      step: 1,
+      defaultValue: 0,
+      ...props,
+    }
+  },
 
-      context: {
-        value: 0,
-        step: 1,
-        disabled: false,
-        readOnly: false,
-        ...ctx,
-      },
+  context({ prop, bindable }) {
+    return {
+      value: bindable(() => ({
+        defaultValue: prop("defaultValue"),
+        value: prop("value"),
+        onChange(value) {
+          prop("onValueChange")?.({ value, valueAsDegree: `${value}deg` })
+        },
+      })),
+    }
+  },
 
-      computed: {
-        interactive: (ctx) => !(ctx.disabled || ctx.readOnly),
-        valueAsDegree: (ctx) => `${ctx.value}deg`,
-      },
+  computed: {
+    interactive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
+    valueAsDegree: ({ context }) => `${context.get("value")}deg`,
+  },
 
-      watch: {
-        value: ["syncInputElement"],
-      },
+  watch({ track, context, action }) {
+    track([() => context.get("value")], () => {
+      action(["syncInputElement"])
+    })
+  },
 
+  initialState() {
+    return "idle"
+  },
+
+  on: {
+    "VALUE.SET": {
+      actions: ["setValue"],
+    },
+  },
+
+  states: {
+    idle: {
       on: {
-        "VALUE.SET": {
-          actions: ["setValue"],
+        "CONTROL.POINTER_DOWN": {
+          target: "dragging",
+          actions: ["setPointerValue", "focusThumb"],
         },
-      },
-
-      states: {
-        idle: {
-          on: {
-            "CONTROL.POINTER_DOWN": {
-              target: "dragging",
-              actions: ["setPointerValue", "focusThumb"],
-            },
-            "THUMB.FOCUS": {
-              target: "focused",
-            },
-          },
-        },
-
-        focused: {
-          on: {
-            "CONTROL.POINTER_DOWN": {
-              target: "dragging",
-              actions: ["setPointerValue", "focusThumb"],
-            },
-            "THUMB.ARROW_DEC": {
-              actions: ["decrementValue", "invokeOnChangeEnd"],
-            },
-            "THUMB.ARROW_INC": {
-              actions: ["incrementValue", "invokeOnChangeEnd"],
-            },
-            "THUMB.HOME": {
-              actions: ["setValueToMin", "invokeOnChangeEnd"],
-            },
-            "THUMB.END": {
-              actions: ["setValueToMax", "invokeOnChangeEnd"],
-            },
-            "THUMB.BLUR": {
-              target: "idle",
-            },
-          },
-        },
-
-        dragging: {
-          entry: "focusThumb",
-          activities: "trackPointerMove",
-          on: {
-            "DOC.POINTER_UP": {
-              target: "focused",
-              actions: "invokeOnChangeEnd",
-            },
-            "DOC.POINTER_MOVE": {
-              actions: "setPointerValue",
-            },
-          },
+        "THUMB.FOCUS": {
+          target: "focused",
         },
       },
     },
-    {
-      activities: {
-        trackPointerMove(ctx, _evt, { send }) {
-          return trackPointerMove(dom.getDoc(ctx), {
-            onPointerMove(info) {
-              send({ type: "DOC.POINTER_MOVE", point: info.point })
-            },
-            onPointerUp() {
-              send({ type: "DOC.POINTER_UP" })
-            },
-          })
-        },
-      },
 
-      actions: {
-        syncInputElement(ctx) {
-          const inputEl = dom.getHiddenInputEl(ctx)
-          dom.setValue(inputEl, ctx.value)
+    focused: {
+      on: {
+        "CONTROL.POINTER_DOWN": {
+          target: "dragging",
+          actions: ["setPointerValue", "focusThumb"],
         },
-        invokeOnChangeEnd(ctx) {
-          invoke.valueChangeEnd(ctx)
+        "THUMB.ARROW_DEC": {
+          actions: ["decrementValue", "invokeOnChangeEnd"],
         },
-        setPointerValue(ctx, evt) {
-          const controlEl = dom.getControlEl(ctx)!
-          if (!controlEl) return
-          const deg = getAngle(controlEl, evt.point)
-          const value = constrainAngle(deg, ctx.step)
-          set.value(ctx, value)
+        "THUMB.ARROW_INC": {
+          actions: ["incrementValue", "invokeOnChangeEnd"],
         },
-        setValueToMin(ctx) {
-          set.value(ctx, MIN_VALUE)
+        "THUMB.HOME": {
+          actions: ["setValueToMin", "invokeOnChangeEnd"],
         },
-        setValueToMax(ctx) {
-          set.value(ctx, MAX_VALUE)
+        "THUMB.END": {
+          actions: ["setValueToMax", "invokeOnChangeEnd"],
         },
-        setValue(ctx, evt) {
-          set.value(ctx, evt.value)
-        },
-        decrementValue(ctx, evt) {
-          const value = snapValueToStep(ctx.value - evt.step, MIN_VALUE, MAX_VALUE, evt.step ?? ctx.step)
-          set.value(ctx, value)
-        },
-        incrementValue(ctx, evt) {
-          const value = snapValueToStep(ctx.value + evt.step, MIN_VALUE, MAX_VALUE, evt.step ?? ctx.step)
-          set.value(ctx, value)
-        },
-        focusThumb(ctx) {
-          raf(() => {
-            dom.getThumbEl(ctx)?.focus({ preventScroll: true })
-          })
+        "THUMB.BLUR": {
+          target: "idle",
         },
       },
     },
-  )
-}
+
+    dragging: {
+      entry: ["focusThumb"],
+      effects: ["trackPointerMove"],
+      on: {
+        "DOC.POINTER_UP": {
+          target: "focused",
+          actions: ["invokeOnChangeEnd"],
+        },
+        "DOC.POINTER_MOVE": {
+          actions: ["setPointerValue"],
+        },
+      },
+    },
+  },
+
+  implementations: {
+    effects: {
+      trackPointerMove({ scope, send }) {
+        return trackPointerMove(scope.getDoc(), {
+          onPointerMove(info) {
+            send({ type: "DOC.POINTER_MOVE", point: info.point })
+          },
+          onPointerUp() {
+            send({ type: "DOC.POINTER_UP" })
+          },
+        })
+      },
+    },
+
+    actions: {
+      syncInputElement({ scope, context }) {
+        const inputEl = dom.getHiddenInputEl(scope)
+        if (!inputEl) return
+        setElementValue(inputEl, context.get("value").toString())
+      },
+      invokeOnChangeEnd({ context, prop, computed }) {
+        prop("onValueChangeEnd")?.({
+          value: context.get("value"),
+          valueAsDegree: computed("valueAsDegree"),
+        })
+      },
+      setPointerValue({ scope, event, context, prop }) {
+        const controlEl = dom.getControlEl(scope)!
+        if (!controlEl) return
+        const deg = getAngle(controlEl, event.point)
+        context.set("value", constrainAngle(deg, prop("step")!))
+      },
+      setValueToMin({ context }) {
+        context.set("value", MIN_VALUE)
+      },
+      setValueToMax({ context }) {
+        context.set("value", MAX_VALUE)
+      },
+      setValue({ context, event }) {
+        context.set("value", clampAngle(event.value))
+      },
+      decrementValue({ context, event, prop }) {
+        const value = snapValueToStep(
+          context.get("value") - event.step,
+          MIN_VALUE,
+          MAX_VALUE,
+          event.step ?? prop("step"),
+        )
+        context.set("value", value)
+      },
+      incrementValue({ context, event, prop }) {
+        const value = snapValueToStep(
+          context.get("value") + event.step,
+          MIN_VALUE,
+          MAX_VALUE,
+          event.step ?? prop("step"),
+        )
+        context.set("value", value)
+      },
+      focusThumb({ scope }) {
+        raf(() => {
+          dom.getThumbEl(scope)?.focus({ preventScroll: true })
+        })
+      },
+    },
+  },
+})
 
 function getAngle(controlEl: HTMLElement, point: Point) {
   const rect = createRect(controlEl.getBoundingClientRect())
   return getPointAngle(rect, point)
 }
 
+function clampAngle(degree: number) {
+  return Math.min(Math.max(degree, MIN_VALUE), MAX_VALUE)
+}
+
 function constrainAngle(degree: number, step: number) {
-  const clampedDegree = Math.min(Math.max(degree, MIN_VALUE), MAX_VALUE)
+  const clampedDegree = clampAngle(degree)
   const upperStep = Math.ceil(clampedDegree / step)
   const nearestStep = Math.round(clampedDegree / step)
   return upperStep >= clampedDegree / step
@@ -161,23 +189,4 @@ function constrainAngle(degree: number, step: number) {
       ? MIN_VALUE
       : upperStep * step
     : nearestStep * step
-}
-
-const invoke = {
-  valueChange(ctx: MachineContext) {
-    ctx.onValueChange?.({ value: ctx.value, valueAsDegree: ctx.valueAsDegree })
-  },
-  valueChangeEnd(ctx: MachineContext) {
-    ctx.onValueChangeEnd?.({ value: ctx.value, valueAsDegree: ctx.valueAsDegree })
-  },
-}
-
-const set = {
-  value: (ctx: MachineContext, value: number) => {
-    if (ctx.value === value) return
-    if (value < MIN_VALUE || value > MAX_VALUE) return
-
-    ctx.value = value
-    invoke.valueChange(ctx)
-  },
 }

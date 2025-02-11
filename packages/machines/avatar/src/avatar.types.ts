@@ -1,9 +1,5 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
-
-/* -----------------------------------------------------------------------------
- * Callback details
- * -----------------------------------------------------------------------------*/
+import type { Service } from "@zag-js/core"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 export type LoadStatus = "error" | "loaded"
 
@@ -17,61 +13,32 @@ export type ElementIds = Partial<{
   fallback: string
 }>
 
-/* -----------------------------------------------------------------------------
- * Machine context
- * -----------------------------------------------------------------------------*/
-
-interface PublicContext extends CommonProperties, DirectionProperty {
-  /**
-   * Functional called when the image loading status changes.
-   */
-  onStatusChange?: ((details: StatusChangeDetails) => void) | undefined
-  /**
-   * The ids of the elements in the avatar. Useful for composition.
-   */
-  ids?: ElementIds | undefined
+export interface AvatarProps extends CommonProperties, DirectionProperty {
+  ids: ElementIds
+  onStatusChange?: (e: StatusChangeDetails) => void
 }
 
-interface PrivateContext {}
-
-type ComputedContext = Readonly<{}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "loading" | "error" | "loaded"
+export interface AvatarSchema {
+  props: AvatarProps
+  context: any
+  initial: "loading"
+  effect: "trackImageRemoval" | "trackSrcChange"
+  action: "invokeOnLoad" | "invokeOnError" | "checkImageStatus"
+  event:
+    | { type: "img.loaded"; src?: string }
+    | { type: "img.error"; src?: string }
+    | { type: "img.unmount" }
+    | { type: "src.change" }
+  state: "loading" | "error" | "loaded"
 }
 
-export type State = S.State<MachineContext, MachineState>
+export type AvatarService = Service<AvatarSchema>
 
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
-
-/* -----------------------------------------------------------------------------
- * Component API
- * -----------------------------------------------------------------------------*/
-
-export interface MachineApi<T extends PropTypes = PropTypes> {
-  /**
-   * Whether the image is loaded.
-   */
+export interface AvatarApi<T extends PropTypes = PropTypes> {
   loaded: boolean
-  /**
-   * Function to set new src.
-   */
   setSrc(src: string): void
-  /**
-   * Function to set loaded state.
-   */
   setLoaded(): void
-  /**
-   * Function to set error state.
-   */
   setError(): void
-
   getRootProps(): T["element"]
   getImageProps(): T["img"]
   getFallbackProps(): T["element"]

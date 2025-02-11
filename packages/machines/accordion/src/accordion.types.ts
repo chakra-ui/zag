@@ -1,5 +1,5 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
+import type { EventObject, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -24,7 +24,7 @@ export type ElementIds = Partial<{
   itemTrigger(value: string): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface AccordionProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the accordion. Useful for composition.
    */
@@ -42,7 +42,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The `value` of the accordion items that are currently being expanded.
    */
-  value: string[]
+  value?: string[] | undefined
+  /**
+   * The default value of the accordion items that are currently being expanded.
+   */
+  defaultValue?: string[] | undefined
   /**
    * Whether the accordion items are disabled
    */
@@ -62,35 +66,23 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   orientation?: "horizontal" | "vertical" | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the accordion items are horizontal.
-   */
-  isHorizontal: boolean
-}>
-
-interface PrivateContext {
-  /**
-   * @internal
-   * The `id` of the focused accordion item.
-   */
-  focusedValue: string | null
+export type AccordionSchema = {
+  state: "idle" | "focused"
+  props: AccordionProps
+  context: {
+    value: string[]
+    focusedValue: string | null
+  }
+  computed: {
+    isHorizontal: boolean
+  }
+  action: string
+  guard: string
+  effect: string
+  event: EventObject
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type AccordionService = Service<AccordionSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -122,7 +114,7 @@ export interface ItemState {
   disabled: boolean
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface AccordionApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the focused accordion item.
    */

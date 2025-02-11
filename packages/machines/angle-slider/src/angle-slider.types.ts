@@ -1,5 +1,5 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
+import type { EventObject, Service } from "@zag-mini/core"
 
 export interface ElementIds {
   root: string
@@ -14,7 +14,7 @@ export interface ValueChangeDetails {
   valueAsDegree: string
 }
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface AngleSliderProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the machine.
    * Useful for composition.
@@ -24,12 +24,16 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The step value for the slider.
    * @default 1
    */
-  step: number
+  step?: number
   /**
    * The value of the slider.
+   */
+  value?: number
+  /**
+   * The default value of the slider.
    * @default 0
    */
-  value: number
+  defaultValue?: number
   /**
    * The callback function for when the value changes.
    */
@@ -56,32 +60,23 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   name?: string
 }
 
-interface PrivateContext {}
-
-type ComputedContext = Readonly<{
-  /**
-   * Whether the slider is interactive.
-   */
-  interactive: boolean
-  /**
-   * The value of the slider as a degree string.
-   */
-  valueAsDegree: string
-}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused" | "dragging"
+export interface AngleSliderSchema {
+  state: "idle" | "focused" | "dragging"
+  props: AngleSliderProps
+  computed: {
+    interactive: boolean
+    valueAsDegree: string
+  }
+  context: {
+    value: number
+  }
+  action: string
+  event: EventObject
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type AngleSliderService = Service<AngleSliderSchema>
 
 export interface MarkerProps {
   /**

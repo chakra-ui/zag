@@ -9,11 +9,11 @@ const images = avatarData.full
 const getRandomImage = () => images[Math.floor(Math.random() * images.length)]
 
 export default function Page() {
-  const [state, send] = useMachine(avatar.machine({ id: useId() }))
+  const service = useMachine(avatar.machine, { id: useId() })
   const [src, setSrc] = useState(images[0])
   const [showImage, setShowImage] = useState(true)
 
-  const api = avatar.connect(state, send, normalizeProps)
+  const api = avatar.connect(service, normalizeProps)
 
   return (
     <>
@@ -31,7 +31,7 @@ export default function Page() {
       </main>
 
       <Toolbar>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )
