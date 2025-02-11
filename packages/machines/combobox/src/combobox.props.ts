@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, UserDefinedContext } from "./combobox.types"
+import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, ComboboxProps } from "./combobox.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<ComboboxProps>()([
   "allowCustomValue",
   "autoFocus",
   "closeOnSelect",
@@ -17,6 +17,7 @@ export const props = createProps<UserDefinedContext>()([
   "id",
   "ids",
   "inputBehavior",
+  "defaultInputValue",
   "inputValue",
   "invalid",
   "loopFocus",
@@ -31,7 +32,7 @@ export const props = createProps<UserDefinedContext>()([
   "onOpenChange",
   "onPointerDownOutside",
   "onValueChange",
-  "open.controlled",
+  "defaultOpen",
   "open",
   "openOnChange",
   "openOnClick",
@@ -44,8 +45,9 @@ export const props = createProps<UserDefinedContext>()([
   "selectionBehavior",
   "translations",
   "value",
+  "defaultValue",
 ])
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<ComboboxProps>>(props)
 
 export const itemGroupLabelProps = createProps<ItemGroupLabelProps>()(["htmlFor"])
 export const splitItemGroupLabelProps = createSplitProps<ItemGroupLabelProps>(itemGroupLabelProps)

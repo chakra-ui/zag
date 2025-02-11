@@ -1,5 +1,5 @@
 import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -59,7 +59,7 @@ export type ElementIds = Partial<{
   itemGroupLabel(id: string | number): string
 }>
 
-interface PublicContext<T extends CollectionItem = CollectionItem>
+export interface ComboboxProps<T extends CollectionItem = CollectionItem>
   extends DirectionProperty,
     CommonProperties,
     InteractOutsideHandlers {
@@ -68,9 +68,9 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    */
   open?: boolean | undefined
   /**
-   * Whether the combobox open state is controlled by the user
+   * Whether the combobox is open on default
    */
-  "open.controlled"?: boolean | undefined
+  defaultOpen?: boolean | undefined
   /**
    * The ids of the elements in the combobox. Useful for composition.
    */
@@ -78,7 +78,12 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * The current value of the combobox's input
    */
-  inputValue: string
+  inputValue?: string | undefined
+  /**
+   * The default value of the combobox's input
+   * @default ""
+   */
+  defaultInputValue?: string | undefined
   /**
    * The `name` attribute of the combobox's input. Useful for form submission
    */
@@ -111,11 +116,16 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * The active item's id. Used to set the `aria-activedescendant` attribute
    */
-  highlightedValue: string | null
+  highlightedValue?: string | null | undefined
   /**
    * The keys of the selected items
    */
-  value: string[]
+  value?: string[] | undefined
+  /**
+   * The default value of the combobox's selected items
+   * @default []
+   */
+  defaultValue?: string[] | undefined
   /**
    * Defines the auto-completion behavior of the combobox.
    *
@@ -124,7 +134,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    *
    * @default "none"
    */
-  inputBehavior: "autohighlight" | "autocomplete" | "none"
+  inputBehavior?: "autohighlight" | "autocomplete" | "none" | undefined
   /**
    * The behavior of the combobox input when an item is selected
    *
@@ -134,7 +144,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    *
    * @default "replace"
    */
-  selectionBehavior: "clear" | "replace" | "preserve"
+  selectionBehavior?: "clear" | "replace" | "preserve" | undefined
   /**
    * Whether to autofocus the input on mount
    */
@@ -160,8 +170,9 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   loopFocus?: boolean | undefined
   /**
    * The positioning options to dynamically position the menu
+   * @default { placement: "bottom-start" }
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
    * Function called when the input's value changes
    */
@@ -186,7 +197,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * The collection of items
    */
-  collection: ListCollection<any>
+  collection?: ListCollection<any> | undefined
   /**
    * Whether to allow multiple selection.
    *
@@ -202,7 +213,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether to open the combobox on arrow key press
    * @default true
    */
-  openOnKeyPress: boolean
+  openOnKeyPress?: boolean | undefined
   /**
    * Function to scroll to a specific index
    */
@@ -211,7 +222,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether the combobox is a composed with other composite widgets like tabs
    * @default true
    */
-  composite: boolean
+  composite?: boolean | undefined
   /**
    * Whether to disable registering this a dismissable layer
    */
@@ -219,74 +230,53 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * Function to navigate to the selected item
    */
-  navigate: (details: NavigateDetails) => void
+  navigate?: ((details: NavigateDetails) => void) | undefined
 }
 
-export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
-  PublicContext<T>,
-  "id" | "collection"
->
+type PropsWithDefault =
+  | "openOnChange"
+  | "openOnKeyPress"
+  | "composite"
+  | "disableLayer"
+  | "navigate"
+  | "loopFocus"
+  | "positioning"
+  | "defaultInputValue"
+  | "openOnClick"
+  | "openOnChange"
+  | "inputBehavior"
+  | "collection"
+  | "selectionBehavior"
+  | "closeOnSelect"
+  | "translations"
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the input's value is empty
-   */
-  isInputValueEmpty: boolean
-  /**
-   * @computed
-   * Whether the combobox is interactive
-   */
-  isInteractive: boolean
-  /**
-   * @computed
-   */
-  autoComplete: boolean
-  /**
-   * @computed
-   */
-  autoHighlight: boolean
-  /**
-   * @computed
-   * Whether there's a selected option
-   */
-  hasSelectedItems: boolean
-}>
+export type ComboboxService<T extends CollectionItem = CollectionItem> = Service<ComboboxSchema<T>>
 
-interface PrivateContext<T extends CollectionItem = CollectionItem> {
-  /**
-   * @internal
-   * The placement of the combobox popover.
-   */
-  currentPlacement?: Placement | undefined
-  /**
-   * The highlighted item
-   */
-  highlightedItem: T | null
-  /**
-   * @internal
-   * The selected items
-   */
-  selectedItems: T[]
-  /**
-   * @internal
-   * The display value of the combobox (based on the selected items)
-   */
-  valueAsString: string
+export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
+  props: RequiredBy<ComboboxProps<T>, PropsWithDefault>
+  state: "idle" | "focused" | "suggesting" | "interacting"
+  tag: "open" | "focused" | "idle" | "closed"
+  context: {
+    value: string[]
+    inputValue: string
+    highlightedValue: string | null
+    currentPlacement?: Placement | undefined
+    highlightedItem: T | null
+    selectedItems: T[]
+    valueAsString: string
+  }
+  computed: {
+    isInputValueEmpty: boolean
+    isInteractive: boolean
+    autoComplete: boolean
+    autoHighlight: boolean
+    hasSelectedItems: boolean
+  }
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused" | "suggesting" | "interacting"
-  tags: "open" | "focused" | "idle" | "closed"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API

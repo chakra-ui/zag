@@ -12,30 +12,31 @@ import {
 import { getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
-import { dom } from "./combobox.dom"
-import type { CollectionItem, ItemProps, ItemState, MachineApi, Send, State } from "./combobox.types"
+import * as dom from "./combobox.dom"
+import type { CollectionItem, ItemProps, ItemState, MachineApi, ComboboxService } from "./combobox.types"
 
 export function connect<T extends PropTypes, V extends CollectionItem>(
-  state: State,
-  send: Send,
+  service: ComboboxService<V>,
   normalize: NormalizeProps<T>,
 ): MachineApi<T, V> {
-  const translations = state.context.translations
-  const collection = state.context.collection
+  const { context, prop, state, send, scope, computed, event } = service
 
-  const disabled = state.context.disabled
-  const interactive = state.context.isInteractive
-  const invalid = state.context.invalid
-  const readOnly = state.context.readOnly
+  const translations = prop("translations")
+  const collection = prop("collection")
+
+  const disabled = prop("disabled")
+  const interactive = computed("isInteractive")
+  const invalid = prop("invalid")
+  const readOnly = prop("readOnly")
 
   const open = state.hasTag("open")
   const focused = state.hasTag("focused")
-  const composite = state.context.composite
-  const highlightedValue = state.context.highlightedValue
+  const composite = prop("composite")
+  const highlightedValue = context.get("highlightedValue")
 
   const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
-    placement: state.context.currentPlacement,
+    ...prop("positioning"),
+    placement: context.get("currentPlacement"),
   })
 
   function getItemState(props: ItemProps): ItemState {
@@ -45,22 +46,22 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       value,
       disabled: Boolean(disabled || disabled),
       highlighted: highlightedValue === value,
-      selected: state.context.value.includes(value),
+      selected: context.get("value").includes(value),
     }
   }
 
   return {
     focused,
     open,
-    inputValue: state.context.inputValue,
+    inputValue: context.get("inputValue"),
     highlightedValue,
-    highlightedItem: state.context.highlightedItem,
-    value: state.context.value,
-    valueAsString: state.context.valueAsString,
-    hasSelectedItems: state.context.hasSelectedItems,
-    selectedItems: state.context.selectedItems,
-    collection: state.context.collection,
-    multiple: !!state.context.multiple,
+    highlightedItem: context.get("highlightedItem"),
+    value: context.get("value"),
+    valueAsString: context.get("valueAsString"),
+    hasSelectedItems: computed("hasSelectedItems"),
+    selectedItems: context.get("selectedItems"),
+    collection: prop("collection"),
+    multiple: !!prop("multiple"),
     disabled: !!disabled,
     syncSelectedItems() {
       send({ type: "SELECTED_ITEMS.SYNC" })
@@ -87,22 +88,22 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       if (value != null) {
         send({ type: "ITEM.CLEAR", value })
       } else {
-        send("VALUE.CLEAR")
+        send({ type: "VALUE.CLEAR" })
       }
     },
     focus() {
-      dom.getInputEl(state.context)?.focus()
+      dom.getInputEl(scope)?.focus()
     },
     setOpen(nextOpen) {
       if (nextOpen === open) return
-      send(nextOpen ? "OPEN" : "CLOSE")
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
 
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        dir: state.context.dir,
-        id: dom.getRootId(state.context),
+        dir: prop("dir"),
+        id: dom.getRootId(scope),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
       })
@@ -111,9 +112,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
-        dir: state.context.dir,
-        htmlFor: dom.getInputId(state.context),
-        id: dom.getLabelId(state.context),
+        dir: prop("dir"),
+        htmlFor: dom.getInputId(scope),
+        id: dom.getLabelId(scope),
         "data-readonly": dataAttr(readOnly),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
@@ -121,7 +122,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         onClick(event) {
           if (composite) return
           event.preventDefault()
-          dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
+          dom.getTriggerEl(scope)?.focus({ preventScroll: true })
         },
       })
     },
@@ -129,8 +130,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     getControlProps() {
       return normalize.element({
         ...parts.control.attrs,
-        dir: state.context.dir,
-        id: dom.getControlId(state.context),
+        dir: prop("dir"),
+        id: dom.getControlId(scope),
         "data-state": open ? "open" : "closed",
         "data-focus": dataAttr(focused),
         "data-disabled": dataAttr(disabled),
@@ -141,8 +142,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs,
-        dir: state.context.dir,
-        id: dom.getPositionerId(state.context),
+        dir: prop("dir"),
+        id: dom.getPositionerId(scope),
         style: popperStyles.floating,
       })
     },
@@ -150,42 +151,42 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     getInputProps() {
       return normalize.input({
         ...parts.input.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
-        name: state.context.name,
-        form: state.context.form,
+        name: prop("name"),
+        form: prop("form"),
         disabled: disabled,
-        autoFocus: state.context.autoFocus,
-        required: state.context.required,
+        autoFocus: prop("autoFocus"),
+        required: prop("required"),
         autoComplete: "off",
         autoCorrect: "off",
         autoCapitalize: "none",
         spellCheck: "false",
         readOnly: readOnly,
-        placeholder: state.context.placeholder,
-        id: dom.getInputId(state.context),
+        placeholder: prop("placeholder"),
+        id: dom.getInputId(scope),
         type: "text",
         role: "combobox",
-        defaultValue: state.context.inputValue,
-        "aria-autocomplete": state.context.autoComplete ? "both" : "list",
-        "aria-controls": dom.getContentId(state.context),
+        defaultValue: context.get("inputValue"),
+        "aria-autocomplete": computed("autoComplete") ? "both" : "list",
+        "aria-controls": dom.getContentId(scope),
         "aria-expanded": open,
         "data-state": open ? "open" : "closed",
-        "aria-activedescendant": highlightedValue ? dom.getItemId(state.context, highlightedValue) : undefined,
+        "aria-activedescendant": highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined,
         onClick(event) {
           if (event.defaultPrevented) return
-          if (!state.context.openOnClick) return
+          if (!prop("openOnClick")) return
           if (!interactive) return
-          send("INPUT.CLICK")
+          send({ type: "INPUT.CLICK" })
         },
         onFocus() {
           if (disabled) return
-          send("INPUT.FOCUS")
+          send({ type: "INPUT.FOCUS" })
         },
         onBlur() {
           if (disabled) return
-          send("INPUT.BLUR")
+          send({ type: "INPUT.BLUR" })
         },
         onChange(event) {
           send({ type: "INPUT.CHANGE", value: event.currentTarget.value })
@@ -196,7 +197,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
           if (event.ctrlKey || event.shiftKey || isComposingEvent(event)) return
 
-          const openOnKeyPress = state.context.openOnKeyPress
+          const openOnKeyPress = prop("openOnKeyPress")
           const isModifierKey = event.ctrlKey || event.metaKey || event.shiftKey
           const keypress = true
 
@@ -231,12 +232,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
                 event.preventDefault()
               }
 
-              const itemEl = dom.getHighlightedItemEl(state.context)
+              const highlightedValue = context.get("highlightedValue")
+              const itemEl = dom.getItemEl(scope, highlightedValue)
               if (isAnchorElement(itemEl)) {
-                state.context.navigate({
-                  value: state.context.highlightedValue,
-                  node: itemEl,
-                })
+                prop("navigate")({ value: highlightedValue, node: itemEl })
               }
             },
             Escape() {
@@ -245,7 +244,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
             },
           }
 
-          const key = getEventKey(event, state.context)
+          const key = getEventKey(event, { dir: prop("dir") })
           const exec = keymap[key]
           exec?.(event)
         },
@@ -255,15 +254,15 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     getTriggerProps(props = {}) {
       return normalize.button({
         ...parts.trigger.attrs,
-        dir: state.context.dir,
-        id: dom.getTriggerId(state.context),
+        dir: prop("dir"),
+        id: dom.getTriggerId(scope),
         "aria-haspopup": composite ? "listbox" : "dialog",
         type: "button",
         tabIndex: props.focusable ? undefined : -1,
         "aria-label": translations.triggerLabel,
         "aria-expanded": open,
         "data-state": open ? "open" : "closed",
-        "aria-controls": open ? dom.getContentId(state.context) : undefined,
+        "aria-controls": open ? dom.getContentId(scope) : undefined,
         disabled,
         "data-invalid": dataAttr(invalid),
         "data-focusable": dataAttr(props.focusable),
@@ -277,14 +276,14 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (event.defaultPrevented) return
           if (!interactive) return
           if (!isLeftClick(event)) return
-          send("TRIGGER.CLICK")
+          send({ type: "TRIGGER.CLICK" })
         },
         onPointerDown(event) {
           if (!interactive) return
           if (event.pointerType === "touch") return
           event.preventDefault()
           queueMicrotask(() => {
-            dom.getInputEl(state.context)?.focus({ preventScroll: true })
+            dom.getInputEl(scope)?.focus({ preventScroll: true })
           })
         },
         onKeyDown(event) {
@@ -300,7 +299,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
             },
           }
 
-          const key = getEventKey(event, state.context)
+          const key = getEventKey(event, { dir: prop("dir") })
           const exec = keyMap[key]
 
           if (exec) {
@@ -314,15 +313,15 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     getContentProps() {
       return normalize.element({
         ...parts.content.attrs,
-        dir: state.context.dir,
-        id: dom.getContentId(state.context),
+        dir: prop("dir"),
+        id: dom.getContentId(scope),
         role: !composite ? "dialog" : "listbox",
         tabIndex: -1,
         hidden: !open,
         "data-state": open ? "open" : "closed",
-        "data-placement": state.context.currentPlacement,
-        "aria-labelledby": dom.getLabelId(state.context),
-        "aria-multiselectable": state.context.multiple && composite ? true : undefined,
+        "data-placement": context.get("currentPlacement"),
+        "aria-labelledby": dom.getLabelId(scope),
+        "aria-multiselectable": prop("multiple") && composite ? true : undefined,
         onPointerDown(event) {
           // prevent options or elements within listbox from taking focus
           event.preventDefault()
@@ -334,23 +333,23 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       return normalize.element({
         ...parts.list.attrs,
         role: !composite ? "listbox" : undefined,
-        "aria-labelledby": dom.getLabelId(state.context),
-        "aria-multiselectable": state.context.multiple && !composite ? true : undefined,
+        "aria-labelledby": dom.getLabelId(scope),
+        "aria-multiselectable": prop("multiple") && !composite ? true : undefined,
       })
     },
 
     getClearTriggerProps() {
       return normalize.button({
         ...parts.clearTrigger.attrs,
-        dir: state.context.dir,
-        id: dom.getClearTriggerId(state.context),
+        dir: prop("dir"),
+        id: dom.getClearTriggerId(scope),
         type: "button",
         tabIndex: -1,
         disabled: disabled,
         "data-invalid": dataAttr(invalid),
         "aria-label": translations.clearTriggerLabel,
-        "aria-controls": dom.getInputId(state.context),
-        hidden: !state.context.value.length,
+        "aria-controls": dom.getInputId(scope),
+        hidden: !context.get("value").length,
         onPointerDown(event) {
           event.preventDefault()
         },
@@ -370,8 +369,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
       return normalize.element({
         ...parts.item.attrs,
-        dir: state.context.dir,
-        id: dom.getItemId(state.context, value),
+        dir: prop("dir"),
+        id: dom.getItemId(scope, value),
         role: "option",
         tabIndex: -1,
         "data-highlighted": dataAttr(itemState.highlighted),
@@ -388,7 +387,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         onPointerLeave() {
           if (props.persistFocus) return
           if (itemState.disabled) return
-          const mouseMoved = state.previousEvent.type.includes("POINTER")
+          const prev = event.previous()
+          const mouseMoved = prev?.type.includes("POINTER")
           if (!mouseMoved) return
           send({ type: "ITEM.POINTER_LEAVE", value })
         },
@@ -406,7 +406,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemText.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-state": itemState.selected ? "checked" : "unchecked",
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
@@ -417,7 +417,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       return normalize.element({
         "aria-hidden": true,
         ...parts.itemIndicator.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-state": itemState.selected ? "checked" : "unchecked",
         hidden: !itemState.selected,
       })
@@ -427,9 +427,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       const { id } = props
       return normalize.element({
         ...parts.itemGroup.attrs,
-        dir: state.context.dir,
-        id: dom.getItemGroupId(state.context, id),
-        "aria-labelledby": dom.getItemGroupLabelId(state.context, id),
+        dir: prop("dir"),
+        id: dom.getItemGroupId(scope, id),
+        "aria-labelledby": dom.getItemGroupLabelId(scope, id),
       })
     },
 
@@ -437,8 +437,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       const { htmlFor } = props
       return normalize.element({
         ...parts.itemGroupLabel.attrs,
-        dir: state.context.dir,
-        id: dom.getItemGroupLabelId(state.context, htmlFor),
+        dir: prop("dir"),
+        id: dom.getItemGroupLabelId(scope, htmlFor),
         role: "group",
       })
     },

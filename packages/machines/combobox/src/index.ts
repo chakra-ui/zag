@@ -7,7 +7,7 @@ export type {
   MachineApi as Api,
   CollectionItem,
   CollectionOptions,
-  UserDefinedContext as Context,
+  ComboboxProps as Props,
   ElementIds,
   HighlightChangeDetails,
   InputValueChangeDetails,
@@ -21,7 +21,7 @@ export type {
   Placement,
   PositioningOptions,
   ScrollToIndexDetails,
-  Service,
+  ComboboxService as Service,
   TriggerProps,
   ValueChangeDetails,
 } from "./combobox.types"

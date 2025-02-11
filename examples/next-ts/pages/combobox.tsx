@@ -19,27 +19,19 @@ export default function Page() {
     itemToString: (item) => item.label,
   })
 
-  const [state, send] = useMachine(
-    combobox.machine({
-      id: useId(),
-      collection,
-      onOpenChange() {
-        setOptions(comboboxData)
-      },
-      onInputValueChange({ inputValue }) {
-        const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
-        setOptions(filtered.length > 0 ? filtered : comboboxData)
-      },
-    }),
-    {
-      context: {
-        ...controls.context,
-        collection,
-      },
+  const service = useMachine(combobox.machine, {
+    id: useId(),
+    collection,
+    onOpenChange() {
+      setOptions(comboboxData)
     },
-  )
+    onInputValueChange({ inputValue }) {
+      const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+      setOptions(filtered.length > 0 ? filtered : comboboxData)
+    },
+  })
 
-  const api = combobox.connect(state, send, normalizeProps)
+  const api = combobox.connect(service, normalizeProps)
 
   return (
     <>
@@ -78,7 +70,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["collection"]} />
+        <StateVisualizer state={service} omit={["collection"]} />
       </Toolbar>
     </>
   )
