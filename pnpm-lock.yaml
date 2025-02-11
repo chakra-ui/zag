@@ -2874,6 +2874,9 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

@@ -11,11 +11,12 @@ interface AnimatePresenceProps extends React.ComponentPropsWithoutRef<"div"> {
 function AnimatePresence(props: AnimatePresenceProps) {
   const { keepMounted, open, onExitComplete, ...rest } = props
 
-  const [state, send] = useMachine(presence.machine({ present: open }), {
-    context: { present: open, onExitComplete },
+  const service = useMachine(presence.machine, {
+    present: open,
+    onExitComplete,
   })
 
-  const api = presence.connect(state, send, normalizeProps)
+  const api = presence.connect(service, normalizeProps)
 
   if (!api.present && !keepMounted) return null
 

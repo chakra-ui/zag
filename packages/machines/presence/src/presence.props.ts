@@ -1,4 +1,4 @@
 import { createProps } from "@zag-js/types"
-import type { UserDefinedContext } from "./presence.types"
+import type { PresenceProps } from "./presence.types"
 
-export const props = createProps<UserDefinedContext>()(["onExitComplete", "present", "immediate"])
+export const props = createProps<PresenceProps>()(["onExitComplete", "present", "immediate"])
