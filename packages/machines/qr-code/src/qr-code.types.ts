@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { DataUrlType } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { QrCodeGenerateOptions, QrCodeGenerateResult } from "uqr"
@@ -12,11 +12,15 @@ export interface ValueChangeDetails {
   value: string
 }
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface QRCodeProps extends DirectionProperty, CommonProperties {
   /**
    * The value to encode.
    */
-  value: string
+  value?: string | undefined
+  /**
+   * The default value to encode.
+   */
+  defaultValue?: string | undefined
   /**
    * The element ids.
    */
@@ -29,32 +33,32 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Callback fired when the value changes.
    */
   onValueChange?: ((details: ValueChangeDetails) => void) | undefined
-}
-
-interface PrivateContext {
   /**
    * The pixel size of the qr code.
    */
-  pixelSize: number
+  pixelSize?: number | undefined
 }
 
-type ComputedContext = Readonly<{
+type PropsWithDefault = "pixelSize" | "defaultValue"
+
+type Computed = Readonly<{
   encoded: QrCodeGenerateResult
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle"
+export interface QrCodeSchema {
+  props: RequiredBy<QRCodeProps, PropsWithDefault>
+  context: {
+    value: string
+  }
+  computed: Computed
+  state: "idle"
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type QrCodeService = Service<QrCodeSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -75,7 +79,7 @@ export interface DownloadTriggerProps {
   fileName: string
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface QrCodeApi<T extends PropTypes = PropTypes> {
   /**
    * The value to encode.
    */

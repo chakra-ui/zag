@@ -1,15 +1,17 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { UserDefinedContext } from "./qr-code.types"
+import type { QRCodeProps } from "./qr-code.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<QRCodeProps>()([
   "ids",
+  "defaultValue",
   "value",
   "id",
   "encoding",
   "dir",
   "getRootNode",
   "onValueChange",
+  "pixelSize",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<QRCodeProps>>(props)
