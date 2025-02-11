@@ -5,14 +5,12 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
-  const [state, send] = useMachine(
-    menu.machine({
-      id: useId(),
-      onSelect: console.log,
-    }),
-  )
+  const service = useMachine(menu.machine, {
+    id: useId(),
+    onSelect: console.log,
+  })
 
-  const api = menu.connect(state, send, normalizeProps)
+  const api = menu.connect(service, normalizeProps)
 
   return (
     <>
@@ -31,7 +29,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={null}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

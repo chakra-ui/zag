@@ -9,17 +9,12 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(editableControls)
 
-  const [state, send] = useMachine(
-    editable.machine({
-      id: useId(),
-      value: "Hello World",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(editable.machine, {
+    id: useId(),
+    value: "Hello World",
+  })
 
-  const api = editable.connect(state, send, normalizeProps)
+  const api = editable.connect(service, normalizeProps)
 
   return (
     <>
@@ -49,7 +44,7 @@ export default function Page() {
         </div>
       </main>
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

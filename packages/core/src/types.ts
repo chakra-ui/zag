@@ -74,7 +74,7 @@ export interface Scope {
 }
 
 type EventType<T = any> = T & {
-  previousEvent?: T
+  previousEvent?: T & { [key: string]: any }
   src?: string
   [key: string]: any
 }

@@ -7,7 +7,7 @@ import type {
   DateValue,
   ZonedDateTime,
 } from "@internationalized/date"
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { Service } from "@zag-js/core"
 import type { DateRangePreset } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
@@ -84,12 +84,12 @@ export type ElementIds = Partial<{
   positioner: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface DatePickerProps extends DirectionProperty, CommonProperties {
   /**
    * The locale (BCP 47 language tag) to use when formatting the date.
    * @default "en-US"
    */
-  locale: string
+  locale?: string | undefined
   /**
    * The localized messages to use.
    */
@@ -106,7 +106,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The time zone to use
    * @default "UTC"
    */
-  timeZone: string
+  timeZone?: string | undefined
   /**
    * Whether the calendar is disabled.
    */
@@ -132,15 +132,23 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The selected date(s).
    */
-  value: DateValue[]
+  value?: DateValue[] | undefined
+  /**
+   * The default selected date(s).
+   */
+  defaultValue?: DateValue[] | undefined
   /**
    * The focused date.
    */
-  focusedValue: DateValue
+  focusedValue?: DateValue | undefined
+  /**
+   * The default focused date.
+   */
+  defaultFocusedValue?: DateValue | undefined
   /**
    * The number of months to display.
    */
-  numOfMonths: number
+  numOfMonths?: number | undefined
   /**
    * The first day of the week.
    *  `0` - Sunday
@@ -185,7 +193,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *
    * @default "single"
    */
-  selectionMode: SelectionMode
+  selectionMode?: SelectionMode | undefined
   /**
    * The format of the date to display in the input.
    */
@@ -200,134 +208,150 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   placeholder?: string | undefined
   /**
    * The view of the calendar
+   */
+  view?: DateView | undefined
+  /**
+   * The default view of the calendar
    * @default "day"
    */
-  view: DateView
+  defaultView?: DateView | undefined
   /**
    * The minimum view of the calendar
    * @default "day"
    */
-  minView: DateView
+  minView?: DateView | undefined
   /**
    * The maximum view of the calendar
    * @default "year"
    */
-  maxView: DateView
+  maxView?: DateView | undefined
   /**
    * The user provided options used to position the date picker content
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
    * Whether the datepicker is open
    */
   open?: boolean | undefined
   /**
-   * Whether the datepicker open state is controlled by the user
+   * Whether the datepicker is open by default
    */
-  "open.controlled"?: boolean | undefined
+  defaultOpen?: boolean | undefined
 }
+
+type PropsWithDefault =
+  | "minView"
+  | "maxView"
+  | "numOfMonths"
+  | "view"
+  | "selectionMode"
+  | "positioning"
+  | "locale"
+  | "timeZone"
+  | "closeOnSelect"
+  | "format"
+  | "parse"
+  | "focusedValue"
 
 interface PrivateContext {
   /**
-   * @internal
    * The active input value (based on the active index)
    */
   inputValue: string
   /**
-   * @internal
    * The start date of the current visible duration.
    */
   startValue: DateValue
   /**
-   * @internal
    * Whether the calendar has focus
    */
   hasFocus?: boolean | undefined
   /**
-   * @internal
-   * The live region to announce changes
-   */
-  announcer?: LiveRegion | undefined
-  /**
-   * @internal
    * The current hovered date. Useful for range selection mode.
    */
   hoveredValue: DateValue | null
   /**
-   * @internal
    * The index of the currently active date.
    * Used in range selection mode.
    */
   activeIndex: number
   /**
-   * @internal
    * The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement | undefined
   /**
-   * @internal
    * Whether the calendar should restore focus to the input when it closes.
    */
   restoreFocus?: boolean | undefined
+  /**
+   * The selected date(s).
+   */
+  value: DateValue[]
+  /**
+   * The view of the calendar.
+   */
+  view: DateView
+  /**
+   * The focused date.
+   */
+  focusedValue: DateValue
 }
 
 type ComputedContext = Readonly<{
   /**
-   * @computed
    * The end date of the current visible duration.
    */
   endValue: DateValue
   /**
-   * @computed
    * Whether the calendar is interactive.
    */
   isInteractive: boolean
   /**
-   * @computed
    * The duration of the visible range.
    */
   visibleDuration: DateDuration
   /**
-   * @computed
    * The start/end date of the current visible duration.
    */
   visibleRange: { start: DateValue; end: DateValue }
   /**
-   * @computed
    * The text to announce when the visible range changes.
    */
   visibleRangeText: { start: string; end: string; formatted: string }
   /**
-   * @computed
    * Whether the next visible range is valid.
    */
   isNextVisibleRangeValid: boolean
   /**
-   * @computed
    * Whether the previous visible range is valid.
    */
   isPrevVisibleRangeValid: boolean
   /**
-   * @computed
    * The value text to display in the input.
    */
   valueAsString: string[]
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  tags: "open" | "closed"
-  value: "idle" | "focused" | "open"
+type Refs = {
+  /**
+   * The live region to announce changes
+   */
+  announcer?: LiveRegion | undefined
 }
 
-export type State = S.State<MachineContext, MachineState>
+export interface DatePickerSchema {
+  state: "idle" | "focused" | "open"
+  tag: "open" | "closed"
+  props: RequiredBy<DatePickerProps, PropsWithDefault>
+  context: PrivateContext
+  computed: ComputedContext
+  refs: Refs
+  guard: string
+  effect: string
+  action: string
+}
 
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type DatePickerService = Service<DatePickerSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
