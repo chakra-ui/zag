@@ -1,37 +1,42 @@
+import type { Service } from "@zag-js/core"
 import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./collapsible.anatomy"
-import { dom } from "./collapsible.dom"
-import type { MachineApi, Send, State } from "./collapsible.types"
+import * as dom from "./collapsible.dom"
+import type { CollapsibleApi, CollapsibleSchema } from "./collapsible.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const visible = state.matches("open", "closing")
+export function connect<T extends PropTypes>(
+  service: Service<CollapsibleSchema>,
+  normalize: NormalizeProps<T>,
+): CollapsibleApi<T> {
+  const { state, send, context, scope } = service
+  const visible = state.matches("open") || state.matches("closing")
   const open = state.matches("open")
 
-  const height = state.context.height
-  const width = state.context.width
-  const disabled = !!state.context.disabled
+  const { width, height } = context.get("size")
+  const disabled = false
 
-  const skip = !state.context.initial && open
+  const skip = !context.get("initial") && open
+  const dir = "ltr"
 
   return {
     disabled,
     visible,
     open,
     measureSize() {
-      send("SIZE.MEASURE")
+      send({ type: "size.measure" })
     },
     setOpen(nextOpen) {
       if (nextOpen === open) return
-      send(nextOpen ? "OPEN" : "CLOSE")
+      send(nextOpen ? { type: "open" } : { type: "close" })
     },
 
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
         "data-state": open ? "open" : "closed",
-        dir: state.context.dir,
-        id: dom.getRootId(state.context),
+        dir: dir,
+        id: dom.getRootId(scope),
       })
     },
 
@@ -40,7 +45,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.content.attrs,
         "data-collapsible": "",
         "data-state": skip ? undefined : open ? "open" : "closed",
-        id: dom.getContentId(state.context),
+        id: dom.getContentId(scope),
         "data-disabled": dataAttr(disabled),
         hidden: !visible,
         style: {
@@ -53,17 +58,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getTriggerProps() {
       return normalize.element({
         ...parts.trigger.attrs,
-        id: dom.getTriggerId(state.context),
-        dir: state.context.dir,
+        id: dom.getTriggerId(scope),
+        dir: dir,
         type: "button",
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
-        "aria-controls": dom.getContentId(state.context),
+        "aria-controls": dom.getContentId(scope),
         "aria-expanded": visible || false,
         onClick(event) {
           if (event.defaultPrevented) return
           if (disabled) return
-          send({ type: open ? "CLOSE" : "OPEN", src: "trigger.click" })
+          send({ type: open ? "close" : "open" })
         },
       })
     },
