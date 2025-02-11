@@ -1,17 +1,15 @@
-import * as tagsInput from "@zag-js/tags-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
+import * as tagsInput from "@zag-js/tags-input"
 import { useId } from "react"
 
 export function TagsInput(props: any) {
-  const [state, send] = useMachine(
-    tagsInput.machine({
-      id: useId(),
-      value: ["React", "Vue"],
-    }),
-    { context: props.controls },
-  )
+  const service = useMachine(tagsInput.machine, {
+    id: useId(),
+    defaultValue: ["React", "Vue"],
+    ...props.controls,
+  })
 
-  const api = tagsInput.connect(state, send, normalizeProps)
+  const api = tagsInput.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

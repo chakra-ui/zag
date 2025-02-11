@@ -13,12 +13,10 @@ function toDashCase(str: string) {
 export default function Page() {
   const controls = useControls(tagsInputControls)
 
-  const service = useMachine(
-    tagsInput.machine({
-      id: useId(),
-      defaultValue: ["React", "Vue"],
-    }),
-  )
+  const service = useMachine(tagsInput.machine, {
+    id: useId(),
+    defaultValue: ["React", "Vue"],
+  })
 
   const api = tagsInput.connect(service, normalizeProps)
 

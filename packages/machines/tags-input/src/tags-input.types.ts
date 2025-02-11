@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { EventObject } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -65,7 +65,7 @@ export type ElementIds = Partial<{
   itemInput(opts: ItemProps): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+export interface TagsInputProps extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The ids of the elements in the tags input. Useful for composition.
    */
@@ -73,7 +73,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations
   /**
    * The max length of the input.
    */
@@ -119,6 +119,10 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    * The tag values
    */
   value: string[]
+  /**
+   * The default tag values
+   */
+  defaultValue: string[]
   /**
    * Callback fired when the tag values is updated
    */
@@ -171,94 +175,59 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   form?: string | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault =
+  | "dir"
+  | "addOnPaste"
+  | "editable"
+  | "validate"
+  | "delimiter"
+  | "defaultValue"
+  | "translations"
+  | "max"
 
 type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * The string value of the tags input
-   */
   valueAsString: string
-  /**
-   * @computed
-   * The trimmed value of the input
-   */
   trimmedInputValue: string
-  /**
-   * @computed
-   * Whether the tags input is interactive
-   */
   isInteractive: boolean
-  /**
-   * @computed
-   * Whether the tags input is at the maximum allowed number of tags
-   */
   isAtMax: boolean
-  /**
-   * @computed
-   * The total number of tags
-   */
   count: number
-  /**
-   * @computed
-   * Whether the tags input is exceeding the max number of tags
-   */
   isOverflowing: boolean
-  /**
-   * @computed
-   * Whether the tags input is disabled
-   */
   isDisabled: boolean
 }>
 
-interface PrivateContext {
-  /**
-   * @internal
-   * The output log for the screen reader to speak
-   */
-  log: { current: Log | null; prev: Log | null }
-  /**
-   * @internal
-   * The live region to announce changes to the user
-   */
-  liveRegion: LiveRegion | null
-  /**
-   * @internal
-   * The `id` of the currently highlighted tag
-   */
-  highlightedTagId: string | null
-  /**
-   * @internal
-   * The index of the deleted tag. Used to determine the next tag to focus.
-   */
-  idx?: number | undefined
-  /**
-   * @internal
-   * The `id` of the currently edited tag
-   */
-  editedTagId: string | null
-  /**
-   * @internal
-   * The value of the currently edited tag
-   */
-  editedTagValue: string
-  /**
-   * @internal
-   * Whether the fieldset is disabled
-   */
-  fieldsetDisabled: boolean
+export interface TagsInputSchema {
+  state: "idle" | "navigating:tag" | "focused:input" | "editing:tag"
+  tag: "focused" | "editing"
+  props: RequiredBy<TagsInputProps, PropsWithDefault>
+  context: {
+    value: string[]
+    inputValue: string
+    highlightedTagId: string | null
+    editedTagValue: string
+    editedTagId: string | null
+    editedTagIndex: number | null
+    fieldsetDisabled: boolean
+  }
+  refs: {
+    log: { current: Log | null; prev: Log | null }
+    liveRegion: LiveRegion | null
+  }
+  computed: ComputedContext
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
-
-export interface MachineState {
-  value: "idle" | "navigating:tag" | "focused:input" | "editing:tag"
-  tags: "focused" | "editing"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
+// interface PrivateContext {
+//   log: { current: Log | null; prev: Log | null }
+//   liveRegion: LiveRegion | null
+//   highlightedTagId: string | null
+//   idx?: number | undefined
+//   editedTagId: string | null
+//   editedTagValue: string
+//   fieldsetDisabled: boolean
+// }
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -289,7 +258,7 @@ export interface ItemState {
   disabled: boolean
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface TagsInputApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tags are empty
    */
