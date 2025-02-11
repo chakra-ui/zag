@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
@@ -13,7 +12,7 @@ const collection = select.collection({
   itemToValue: (item) => item.value,
 })
 
-interface SelectProps extends Omit<select.Context, "id" | "value" | "onValueChange" | "collection"> {
+interface SelectProps extends Omit<select.Props, "id" | "value" | "defaultValue" | "onValueChange" | "collection"> {
   defaultValue?: string | null | undefined
   defaultOpen?: boolean
   value?: string | null | undefined
@@ -25,27 +24,18 @@ const toArray = (value: string | null | undefined) => (value ? [value] : undefin
 export function Select(props: SelectProps) {
   const { value, defaultValue, onValueChange, defaultOpen, open, ...contextProps } = props
 
-  const [state, send] = useMachine(
-    select.machine({
-      id: useId(),
-      collection,
-      value: toArray(value) ?? toArray(defaultValue),
-      open: open ?? defaultOpen,
-    }),
-    {
-      context: {
-        ...contextProps,
-        open,
-        "open.controlled": open !== undefined,
-        value: toArray(value),
-        onValueChange(details: any) {
-          onValueChange?.(details.value[0])
-        },
-      },
+  const service = useMachine(select.machine, {
+    id: useId(),
+    collection,
+    value: toArray(value) ?? toArray(defaultValue),
+    open: open ?? defaultOpen,
+    onValueChange(details: any) {
+      onValueChange?.(details.value[0])
     },
-  )
+    ...contextProps,
+  })
 
-  const api = select.connect(state, send, normalizeProps)
+  const api = select.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

@@ -1,287 +1,306 @@
-import { createMachine, guards } from "@zag-js/core"
+import { createGuards, createMachine } from "@zag-js/core"
 import { clickIfLink, getFocusables, isAnchorElement, nextTick, raf } from "@zag-js/dom-query"
-import { trackElementRect } from "@zag-js/element-rect"
-import { compact, isEqual } from "@zag-js/utils"
-import { dom } from "./tabs.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./tabs.types"
+import * as dom from "./tabs.dom"
+import type { TabsSchema } from "./tabs.types"
 
-const { not } = guards
+const { not } = createGuards<TabsSchema>()
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      initial: "idle",
-
-      context: {
-        dir: "ltr",
-        orientation: "horizontal",
-        activationMode: "automatic",
-        value: null,
-        loopFocus: true,
-        composite: true,
-        navigate(details) {
-          clickIfLink(details.node)
-        },
-        ...ctx,
-        focusedValue: ctx.value ?? null,
-        ssr: true,
-        indicatorState: {
-          rendered: false,
-          transition: false,
-          rect: { left: "0px", top: "0px", width: "0px", height: "0px" },
-        },
+export const machine = createMachine<TabsSchema>({
+  props({ props }) {
+    return {
+      dir: "ltr",
+      orientation: "horizontal",
+      activationMode: "automatic",
+      loopFocus: true,
+      composite: true,
+      navigate(details) {
+        clickIfLink(details.node)
       },
+      defaultValue: null,
+      ...props,
+    }
+  },
 
-      watch: {
-        value: ["allowIndicatorTransition", "syncIndicatorRect", "syncTabIndex", "navigateIfNeeded"],
-        dir: ["syncIndicatorRect"],
-        orientation: ["syncIndicatorRect"],
-      },
+  initialState() {
+    return "idle"
+  },
 
+  context({ prop, bindable }) {
+    return {
+      value: bindable(() => ({
+        defaultValue: prop("defaultValue"),
+        value: prop("value"),
+        debug: "value",
+        onChange(value) {
+          prop("onValueChange")?.({ value: value! })
+        },
+      })),
+      focusedValue: bindable(() => ({
+        defaultValue: prop("value") || prop("defaultValue"),
+        onChange(value) {
+          prop("onFocusChange")?.({ focusedValue: value! })
+        },
+      })),
+      ssr: bindable(() => ({ defaultValue: true })),
+      indicatorTransition: bindable(() => ({ defaultValue: false })),
+      indicatorRect: bindable(() => ({
+        defaultValue: { left: "0px", top: "0px", width: "0px", height: "0px" },
+      })),
+    }
+  },
+
+  watch({ context, prop, track, action }) {
+    track([() => context.get("value")], () => {
+      action(["allowIndicatorTransition", "syncIndicatorRect", "syncTabIndex", "navigateIfNeeded"])
+    })
+    track([() => prop("dir"), () => prop("orientation")], () => {
+      action(["syncIndicatorRect"])
+    })
+  },
+
+  on: {
+    SET_VALUE: {
+      actions: ["setValue"],
+    },
+    CLEAR_VALUE: {
+      actions: ["clearValue"],
+    },
+    SET_INDICATOR_RECT: {
+      actions: ["setIndicatorRect"],
+    },
+    SYNC_TAB_INDEX: {
+      actions: ["syncTabIndex"],
+    },
+  },
+
+  entry: ["syncIndicatorRect", "syncTabIndex", "syncSsr"],
+
+  exit: ["cleanupObserver"],
+
+  states: {
+    idle: {
       on: {
-        SET_VALUE: {
-          actions: "setValue",
+        TAB_FOCUS: {
+          target: "focused",
+          actions: ["setFocusedValue"],
         },
-        CLEAR_VALUE: {
-          actions: "clearValue",
-        },
-        SET_INDICATOR_RECT: {
-          actions: "setIndicatorRect",
-        },
-        SYNC_TAB_INDEX: {
-          actions: "syncTabIndex",
-        },
-      },
-
-      created: ["syncFocusedValue"],
-
-      entry: ["checkRenderedElements", "syncIndicatorRect", "syncTabIndex", "syncSsr"],
-
-      exit: ["cleanupObserver"],
-
-      states: {
-        idle: {
-          on: {
-            TAB_FOCUS: {
-              target: "focused",
-              actions: "setFocusedValue",
-            },
-            TAB_CLICK: {
-              target: "focused",
-              actions: ["setFocusedValue", "setValue"],
-            },
-          },
-        },
-        focused: {
-          on: {
-            TAB_CLICK: {
-              target: "focused",
-              actions: ["setFocusedValue", "setValue"],
-            },
-            ARROW_PREV: [
-              {
-                guard: "selectOnFocus",
-                actions: ["focusPrevTab", "selectFocusedTab"],
-              },
-              {
-                actions: "focusPrevTab",
-              },
-            ],
-            ARROW_NEXT: [
-              {
-                guard: "selectOnFocus",
-                actions: ["focusNextTab", "selectFocusedTab"],
-              },
-              {
-                actions: "focusNextTab",
-              },
-            ],
-            HOME: [
-              {
-                guard: "selectOnFocus",
-                actions: ["focusFirstTab", "selectFocusedTab"],
-              },
-              {
-                actions: "focusFirstTab",
-              },
-            ],
-            END: [
-              {
-                guard: "selectOnFocus",
-                actions: ["focusLastTab", "selectFocusedTab"],
-              },
-              {
-                actions: "focusLastTab",
-              },
-            ],
-            ENTER: {
-              guard: not("selectOnFocus"),
-              actions: "selectFocusedTab",
-            },
-            TAB_FOCUS: {
-              actions: ["setFocusedValue"],
-            },
-            TAB_BLUR: {
-              target: "idle",
-              actions: "clearFocusedValue",
-            },
-          },
+        TAB_CLICK: {
+          target: "focused",
+          actions: ["setFocusedValue", "setValue"],
         },
       },
     },
-    {
-      guards: {
-        selectOnFocus: (ctx) => ctx.activationMode === "automatic",
+    focused: {
+      on: {
+        TAB_CLICK: {
+          target: "focused",
+          actions: ["setFocusedValue", "setValue"],
+        },
+        ARROW_PREV: [
+          {
+            guard: "selectOnFocus",
+            actions: ["focusPrevTab", "selectFocusedTab"],
+          },
+          {
+            actions: ["focusPrevTab"],
+          },
+        ],
+        ARROW_NEXT: [
+          {
+            guard: "selectOnFocus",
+            actions: ["focusNextTab", "selectFocusedTab"],
+          },
+          {
+            actions: ["focusNextTab"],
+          },
+        ],
+        HOME: [
+          {
+            guard: "selectOnFocus",
+            actions: ["focusFirstTab", "selectFocusedTab"],
+          },
+          {
+            actions: ["focusFirstTab"],
+          },
+        ],
+        END: [
+          {
+            guard: "selectOnFocus",
+            actions: ["focusLastTab", "selectFocusedTab"],
+          },
+          {
+            actions: ["focusLastTab"],
+          },
+        ],
+        ENTER: {
+          guard: not("selectOnFocus"),
+          actions: ["selectFocusedTab"],
+        },
+        TAB_FOCUS: {
+          actions: ["setFocusedValue"],
+        },
+        TAB_BLUR: {
+          target: "idle",
+          actions: ["clearFocusedValue"],
+        },
+      },
+    },
+  },
+
+  implementations: {
+    guards: {
+      selectOnFocus: ({ prop }) => prop("activationMode") === "automatic",
+    },
+
+    actions: {
+      selectFocusedTab({ context, prop }) {
+        raf(() => {
+          const focusedValue = context.get("focusedValue")
+          if (!focusedValue) return
+          const nullable = prop("deselectable") && context.get("value") === focusedValue
+          const value = nullable ? null : focusedValue
+          context.set("value", value)
+        })
+      },
+      setFocusedValue({ context, event, flush }) {
+        if (event.value == null) return
+        flush(() => {
+          context.set("focusedValue", event.value)
+        })
+      },
+      clearFocusedValue({ context }) {
+        context.set("focusedValue", null)
+      },
+      setValue({ context, event, prop }) {
+        const nullable = prop("deselectable") && context.get("value") === context.get("focusedValue")
+        context.set("value", nullable ? null : event.value)
+      },
+      clearValue({ context }) {
+        context.set("value", null)
       },
 
-      actions: {
-        syncFocusedValue(ctx) {
-          if (ctx.value != null && ctx.focusedValue == null) {
-            ctx.focusedValue = ctx.value
+      focusFirstTab({ scope }) {
+        raf(() => {
+          dom.getFirstTriggerEl(scope)?.focus()
+        })
+      },
+
+      focusLastTab({ scope }) {
+        raf(() => {
+          dom.getLastTriggerEl(scope)?.focus()
+        })
+      },
+
+      focusNextTab({ context, prop, scope, event }) {
+        const focusedValue = event.value ?? context.get("focusedValue")
+        if (!focusedValue) return
+
+        const triggerEl = dom.getNextTriggerEl(scope, {
+          value: focusedValue,
+          loopFocus: prop("loopFocus"),
+        })
+
+        raf(() => {
+          if (prop("composite")) {
+            triggerEl?.focus()
+          } else if (triggerEl?.dataset.value != null) {
+            context.set("focusedValue", triggerEl.dataset.value)
           }
-        },
-        selectFocusedTab(ctx) {
-          raf(() => {
-            const nullable = ctx.deselectable && ctx.value === ctx.focusedValue
-            const value = nullable ? null : ctx.focusedValue
-            set.value(ctx, value)
-          })
-        },
-        setFocusedValue(ctx, evt) {
-          if (evt.value == null) return
-          set.focusedValue(ctx, evt.value)
-        },
-        clearFocusedValue(ctx) {
-          set.focusedValue(ctx, null)
-        },
-        setValue(ctx, evt) {
-          const nullable = ctx.deselectable && ctx.value === ctx.focusedValue
-          const value = nullable ? null : evt.value
-          set.value(ctx, value)
-        },
-        clearValue(ctx) {
-          set.value(ctx, null)
-        },
-        focusFirstTab(ctx) {
-          raf(() => {
-            dom.getFirstTriggerEl(ctx)?.focus()
-          })
-        },
-        focusLastTab(ctx) {
-          raf(() => {
-            dom.getLastTriggerEl(ctx)?.focus()
-          })
-        },
-        focusNextTab(ctx) {
-          if (!ctx.focusedValue) return
-          const triggerEl = dom.getNextTriggerEl(ctx, ctx.focusedValue)
-          raf(() => {
-            if (ctx.composite) {
-              triggerEl?.focus()
-            } else if (triggerEl?.dataset.value != null) {
-              set.focusedValue(ctx, triggerEl.dataset.value)
-            }
-          })
-        },
-        focusPrevTab(ctx) {
-          if (!ctx.focusedValue) return
-          const triggerEl = dom.getPrevTriggerEl(ctx, ctx.focusedValue)
-          raf(() => {
-            if (ctx.composite) {
-              triggerEl?.focus()
-            } else if (triggerEl?.dataset.value != null) {
-              set.focusedValue(ctx, triggerEl.dataset.value)
-            }
-          })
-        },
-        checkRenderedElements(ctx) {
-          ctx.indicatorState.rendered = !!dom.getIndicatorEl(ctx)
-        },
-        syncTabIndex(ctx) {
-          raf(() => {
-            const contentEl = dom.getSelectedContentEl(ctx)
-            if (!contentEl) return
-            const focusables = getFocusables(contentEl)
-            if (focusables.length > 0) {
-              contentEl.removeAttribute("tabindex")
-            } else {
-              contentEl.setAttribute("tabindex", "0")
-            }
-          })
-        },
-        cleanupObserver(ctx) {
-          ctx.indicatorCleanup?.()
-        },
-        allowIndicatorTransition(ctx) {
-          ctx.indicatorState.transition = true
-        },
-        setIndicatorRect(ctx, evt) {
-          const value = evt.id ?? ctx.value
-          if (!ctx.indicatorState.rendered || !value) return
+        })
+      },
 
-          const triggerEl = dom.getTriggerEl(ctx, value)
-          if (!triggerEl) return
+      focusPrevTab({ context, prop, scope, event }) {
+        const focusedValue = event.value ?? context.get("focusedValue")
+        if (!focusedValue) return
 
-          ctx.indicatorState.rect = dom.getRectById(ctx, value)
+        const triggerEl = dom.getPrevTriggerEl(scope, {
+          value: focusedValue,
+          loopFocus: prop("loopFocus"),
+        })
+
+        raf(() => {
+          if (prop("composite")) {
+            triggerEl?.focus()
+          } else if (triggerEl?.dataset.value != null) {
+            context.set("focusedValue", triggerEl.dataset.value)
+          }
+        })
+      },
+
+      syncTabIndex({ context, scope }) {
+        raf(() => {
+          const value = context.get("value")
+          if (!value) return
+
+          const contentEl = dom.getContentEl(scope, value)
+          if (!contentEl) return
+
+          const focusables = getFocusables(contentEl)
+          if (focusables.length > 0) {
+            contentEl.removeAttribute("tabindex")
+          } else {
+            contentEl.setAttribute("tabindex", "0")
+          }
+        })
+      },
+      cleanupObserver({ refs }) {
+        const cleanup = refs.get("indicatorCleanup")
+        if (cleanup) cleanup()
+      },
+      allowIndicatorTransition({ context }) {
+        context.set("indicatorTransition", true)
+      },
+      setIndicatorRect({ context, event, scope }) {
+        const value = event.id ?? context.get("value")
+        const indicatorEl = dom.getIndicatorEl(scope)
+        if (!indicatorEl || !value) return
+
+        const triggerEl = dom.getTriggerEl(scope, value)
+        if (!triggerEl) return
+
+        context.set("indicatorRect", dom.getRectById(scope, value))
+
+        nextTick(() => {
+          context.set("indicatorTransition", false)
+        })
+      },
+      syncSsr({ context }) {
+        context.set("ssr", false)
+      },
+      syncIndicatorRect({ context, refs, scope }) {
+        const cleanup = refs.get("indicatorCleanup")
+        if (cleanup) cleanup()
+
+        const value = context.get("value")
+        if (!value) return
+
+        const triggerEl = dom.getTriggerEl(scope, value)
+        const indicatorEl = dom.getIndicatorEl(scope)
+        if (!triggerEl || !indicatorEl) return
+
+        const exec = () => {
+          const rect = dom.getOffsetRect(triggerEl)
+          context.set("indicatorRect", dom.resolveRect(rect))
           nextTick(() => {
-            ctx.indicatorState.transition = false
+            context.set("indicatorTransition", false)
           })
-        },
-        syncSsr(ctx) {
-          ctx.ssr = false
-        },
-        syncIndicatorRect(ctx) {
-          ctx.indicatorCleanup?.()
+        }
 
-          const value = ctx.value
-          if (!ctx.indicatorState.rendered || !value) return
+        exec()
+        const win = scope.getWin()
+        const obs = new win.ResizeObserver(exec)
+        obs.observe(triggerEl)
 
-          const triggerEl = dom.getSelectedTriggerEl(ctx)
-          if (!triggerEl) return
+        refs.set("indicatorCleanup", () => obs.disconnect())
+      },
+      navigateIfNeeded({ context, prop, scope }) {
+        const value = context.get("value")
+        if (!value) return
 
-          ctx.indicatorCleanup = trackElementRect(triggerEl, {
-            getRect(el) {
-              return dom.getOffsetRect(el)
-            },
-            onChange(rect) {
-              ctx.indicatorState.rect = dom.resolveRect(rect)
-              nextTick(() => {
-                ctx.indicatorState.transition = false
-              })
-            },
-          })
-        },
-        navigateIfNeeded(ctx) {
-          const triggerEl = dom.getSelectedTriggerEl(ctx)
-          if (!isAnchorElement(triggerEl)) return
-          ctx.navigate({ value: ctx.value, node: triggerEl })
-        },
+        const triggerEl = dom.getTriggerEl(scope, value)
+        if (!isAnchorElement(triggerEl)) return
+        prop("navigate")?.({ value, node: triggerEl })
       },
     },
-  )
-}
-
-const invoke = {
-  change: (ctx: MachineContext) => {
-    if (ctx.value == null) return
-    ctx.onValueChange?.({ value: ctx.value })
   },
-  focusChange: (ctx: MachineContext) => {
-    if (ctx.focusedValue == null) return
-    ctx.onFocusChange?.({ focusedValue: ctx.focusedValue })
-  },
-}
-
-const set = {
-  value: (ctx: MachineContext, value: string | null) => {
-    if (isEqual(value, ctx.value)) return
-    ctx.value = value
-    invoke.change(ctx)
-  },
-  focusedValue: (ctx: MachineContext, value: string | null) => {
-    if (isEqual(value, ctx.focusedValue)) return
-    ctx.focusedValue = value
-    invoke.focusChange(ctx)
-  },
-}
+})
