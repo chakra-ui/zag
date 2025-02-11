@@ -10,17 +10,12 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(clipboardControls)
 
-  const [state, send] = useMachine(
-    clipboard.machine({
-      id: useId(),
-      value: "https://github.com/chakra-ui/zag",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(clipboard.machine, {
+    id: useId(),
+    value: "https://github.com/chakra-ui/zag",
+  })
 
-  const api = clipboard.connect(state, send, normalizeProps)
+  const api = clipboard.connect(service, normalizeProps)
 
   return (
     <>
@@ -37,7 +32,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

@@ -1,13 +1,11 @@
-import { createScope, getWindow } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./clipboard.types"
+import type { Scope } from "@zag-js/core"
+import { getWindow } from "@zag-js/dom-query"
 
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `clip:${ctx.id}`,
-  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `clip:${ctx.id}:input`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `clip:${ctx.id}:label`,
-  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
-  writeToClipboard: (ctx: Ctx) => copyText(dom.getDoc(ctx), ctx.value),
-})
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `clip:${ctx.id}`
+export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `clip:${ctx.id}:input`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `clip:${ctx.id}:label`
+export const getInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getInputId(ctx))
+export const writeToClipboard = (ctx: Scope, value: string) => copyText(ctx.getDoc(), value)
 
 function createNode(doc: Document, text: string): HTMLElement {
   const node = doc.createElement("pre")
