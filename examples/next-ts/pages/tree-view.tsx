@@ -94,11 +94,8 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 export default function Page() {
   const controls = useControls(treeviewControls)
 
-  const [state, send] = useMachine(tree.machine({ id: useId(), collection }), {
-    context: controls.context,
-  })
-
-  const api = tree.connect(state, send, normalizeProps)
+  const service = useMachine(tree.machine, { id: useId(), collection })
+  const api = tree.connect(service, normalizeProps)
 
   return (
     <>
@@ -124,7 +121,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["collection"]} />
+        <StateVisualizer state={service} omit={["collection"]} />
       </Toolbar>
     </>
   )

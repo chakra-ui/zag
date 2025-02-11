@@ -8,11 +8,12 @@ import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
   const controls = useControls(menuControls)
-  const [state, send] = useMachine(menu.machine({ id: useId(), onSelect: console.log }), {
-    context: controls.context,
+  const service = useMachine(menu.machine, {
+    id: useId(),
+    onSelect: console.log,
   })
 
-  const api = menu.connect(state, send, normalizeProps)
+  const api = menu.connect(service, normalizeProps)
 
   return (
     <>
@@ -36,7 +37,7 @@ export default function Page() {
         </div>
       </main>
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

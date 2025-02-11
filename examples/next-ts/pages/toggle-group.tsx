@@ -9,11 +9,8 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(toggleGroupControls)
 
-  const [state, send] = useMachine(toggle.machine({ id: useId() }), {
-    context: controls.context,
-  })
-
-  const api = toggle.connect(state, send, normalizeProps)
+  const service = useMachine(toggle.machine, { id: useId() })
+  const api = toggle.connect(service, normalizeProps)
 
   return (
     <>
@@ -29,7 +26,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

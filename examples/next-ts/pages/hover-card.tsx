@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-target-blank */
 import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { hoverCardControls } from "@zag-js/shared"
@@ -10,16 +9,11 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(hoverCardControls)
 
-  const [state, send] = useMachine(
-    hoverCard.machine({
-      id: useId(),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(hoverCard.machine, {
+    id: useId(),
+  })
 
-  const api = hoverCard.connect(state, send, normalizeProps)
+  const api = hoverCard.connect(service, normalizeProps)
 
   return (
     <>
@@ -50,7 +44,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

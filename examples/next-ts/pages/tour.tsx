@@ -11,17 +11,12 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(tourControls)
 
-  const [state, send] = useMachine(
-    tour.machine({
-      id: useId(),
-      steps: tourData,
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(tour.machine, {
+    id: useId(),
+    steps: tourData,
+  })
 
-  const api = tour.connect(state, send, normalizeProps)
+  const api = tour.connect(service, normalizeProps)
 
   return (
     <>
@@ -83,7 +78,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["steps"]} />
+        <StateVisualizer state={service} omit={["steps"]} />
       </Toolbar>
     </>
   )

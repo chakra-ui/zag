@@ -11,20 +11,15 @@ export default function Page() {
   const controls = useControls(paginationControls)
   const [details, setDetails] = useState({} as any)
 
-  const [state, send] = useMachine(
-    pagination.machine({
-      id: useId(),
-      count: paginationData.length,
-      onPageChange(details) {
-        setDetails(details)
-      },
-    }),
-    {
-      context: controls.context,
+  const service = useMachine(pagination.machine, {
+    id: useId(),
+    count: paginationData.length,
+    onPageChange(details) {
+      setDetails(details)
     },
-  )
+  })
 
-  const api = pagination.connect(state, send, normalizeProps)
+  const api = pagination.connect(service, normalizeProps)
 
   const data = api.slice(paginationData)
 
@@ -88,7 +83,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

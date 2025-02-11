@@ -1,4 +1,4 @@
-import * as floatingPanel from "@zag-js/floating-panel"
+import * as floating from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { floatingPanelControls } from "@zag-js/shared"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-react"
@@ -10,11 +10,9 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(floatingPanelControls)
 
-  const [state, send] = useMachine(floatingPanel.machine({ id: useId() }), {
-    context: controls.context,
-  })
+  const service = useMachine(floating.machine, { id: useId() })
 
-  const api = floatingPanel.connect(state, send, normalizeProps)
+  const api = floating.connect(service, normalizeProps)
 
   return (
     <>
@@ -60,7 +58,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

@@ -13,17 +13,14 @@ function toDashCase(str: string) {
 export default function Page() {
   const controls = useControls(tagsInputControls)
 
-  const [state, send] = useMachine(
+  const service = useMachine(
     tagsInput.machine({
       id: useId(),
-      value: ["React", "Vue"],
+      defaultValue: ["React", "Vue"],
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = tagsInput.connect(state, send, normalizeProps)
+  const api = tagsInput.connect(service, normalizeProps)
 
   return (
     <>
@@ -53,7 +50,7 @@ export default function Page() {
         </div>
       </main>
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

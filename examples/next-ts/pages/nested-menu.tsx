@@ -7,27 +7,25 @@ import { Toolbar } from "../components/toolbar"
 import { useEffectOnce } from "../hooks/use-effect-once"
 
 export default function Page() {
-  const [state, send, machine] = useMachine(
-    menu.machine({
-      id: useId(),
-    }),
-  )
-  const root = menu.connect(state, send, normalizeProps)
+  const service = useMachine(menu.machine, {
+    id: useId(),
+  })
+  const root = menu.connect(service, normalizeProps)
 
-  const [subState, subSend, subMachine] = useMachine(menu.machine({ id: useId() }))
-  const sub = menu.connect(subState, subSend, normalizeProps)
+  const subService = useMachine(menu.machine, { id: useId() })
+  const sub = menu.connect(subService, normalizeProps)
 
-  const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine({ id: useId() }))
-  const sub2 = menu.connect(sub2State, sub2Send, normalizeProps)
+  const sub2Service = useMachine(menu.machine, { id: useId() })
+  const sub2 = menu.connect(sub2Service, normalizeProps)
 
   useEffectOnce(() => {
-    root.setChild(subMachine)
-    sub.setParent(machine)
+    root.setChild(subService)
+    sub.setParent(service)
   })
 
   useEffectOnce(() => {
-    sub.setChild(sub2Machine)
-    sub2.setParent(subMachine)
+    sub.setChild(sub2Service)
+    sub2.setParent(subService)
   })
 
   const triggerItemProps = root.getTriggerItemProps(sub)
@@ -88,9 +86,9 @@ export default function Page() {
       </main>
 
       <Toolbar controls={null}>
-        <StateVisualizer state={state} label="Root Machine" />
-        <StateVisualizer state={subState} label="Sub Machine" />
-        <StateVisualizer state={sub2State} label="Sub2 Machine" />
+        <StateVisualizer state={service} label="Root Machine" />
+        <StateVisualizer state={subService} label="Sub Machine" />
+        <StateVisualizer state={sub2Service} label="Sub2 Machine" />
       </Toolbar>
     </>
   )

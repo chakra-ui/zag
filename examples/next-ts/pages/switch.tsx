@@ -9,17 +9,12 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(switchControls)
 
-  const [state, send] = useMachine(
-    zagSwitch.machine({
-      id: useId(),
-      name: "switch",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(zagSwitch.machine, {
+    id: useId(),
+    name: "switch",
+  })
 
-  const api = zagSwitch.connect(state, send, normalizeProps)
+  const api = zagSwitch.connect(service, normalizeProps)
 
   return (
     <>
@@ -34,7 +29,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

@@ -12,11 +12,8 @@ export default function Page() {
   const [order, setOrder] = useState("")
   const [type, setType] = useState<string[]>([])
 
-  const [state, send] = useMachine(menu.machine({ id: useId() }), {
-    context: controls.context,
-  })
-
-  const api = menu.connect(state, send, normalizeProps)
+  const service = useMachine(menu.machine, { id: useId() })
+  const api = menu.connect(service, normalizeProps)
 
   const radios = menuOptionData.order.map((item) => ({
     type: "radio" as const,
