@@ -14,7 +14,7 @@ export type {
   ColorChannel,
   ColorFormat,
   ColorType,
-  UserDefinedContext as Context,
+  ColorPickerProps as Props,
   ElementIds,
   FormatChangeDetails,
   OpenChangeDetails,
@@ -24,5 +24,5 @@ export type {
   SwatchTriggerState,
   TransparencyGridProps,
   ValueChangeDetails,
-  Service,
+  ColorPickerService as Service,
 } from "./color-picker.types"
