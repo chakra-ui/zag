@@ -5,12 +5,11 @@ export * from "./timer.parse"
 export * from "./timer.props"
 export type {
   ActionTriggerProps,
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  TimerApi as Api,
+  TimerProps as Props,
   ItemProps,
   ElementIds,
-  MachineState,
-  Service,
+  TimerService as Service,
   TickDetails,
   Time,
   TimePart,
