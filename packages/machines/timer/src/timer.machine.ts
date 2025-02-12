@@ -12,6 +12,7 @@ export function machine(userContext: UserDefinedContext) {
         interval: 250,
         ...ctx,
         currentMs: ctx.startMs ?? 0,
+        startTimeMs: calculateStartTime(ctx.startMs ?? 0, ctx.countdown),
       },
 
       on: {
@@ -39,6 +40,7 @@ export function machine(userContext: UserDefinedContext) {
           },
         },
         running: {
+          entry: ["setStartTime"],
           every: {
             TICK_INTERVAL: ["sendTickEvent"],
           },
@@ -73,9 +75,12 @@ export function machine(userContext: UserDefinedContext) {
         TICK_INTERVAL: (ctx) => ctx.interval,
       },
       actions: {
+        setStartTime(ctx) {
+          ctx.startTimeMs = calculateStartTime(ctx.currentMs, ctx.countdown)
+        },
         updateTime(ctx) {
           const sign = ctx.countdown ? -1 : 1
-          ctx.currentMs = ctx.currentMs + sign * ctx.interval
+          ctx.currentMs = sign * (Date.now() - ctx.startTimeMs)
         },
         sendTickEvent(_ctx, _evt, { send }) {
           send({ type: "TICK" })
@@ -84,6 +89,7 @@ export function machine(userContext: UserDefinedContext) {
           let targetMs = ctx.targetMs
           if (targetMs == null && ctx.countdown) targetMs = 0
           ctx.currentMs = ctx.startMs ?? 0
+          ctx.startTimeMs = calculateStartTime(ctx.currentMs, ctx.countdown)
         },
         invokeOnTick(ctx) {
           ctx.onTick?.({
@@ -106,6 +112,11 @@ export function machine(userContext: UserDefinedContext) {
       },
     },
   )
+}
+
+function calculateStartTime(currentMs: number, countdown?: boolean): number {
+  const sign = countdown ? -1 : 1
+  return Date.now() - sign * currentMs
 }
 
 function msToTime(ms: number): Time {
