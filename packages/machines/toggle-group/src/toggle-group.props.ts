@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { ItemProps, UserDefinedContext } from "./toggle-group.types"
+import type { ItemProps, ToggleGroupProps } from "./toggle-group.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<ToggleGroupProps>()([
   "dir",
   "disabled",
   "getRootNode",
@@ -14,9 +14,10 @@ export const props = createProps<UserDefinedContext>()([
   "orientation",
   "rovingFocus",
   "value",
+  "defaultValue",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<ToggleGroupProps>>(props)
 
 export const itemProps = createProps<ItemProps>()(["value", "disabled"])
 
