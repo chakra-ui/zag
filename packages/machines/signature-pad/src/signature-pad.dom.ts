@@ -1,18 +1,16 @@
-import { createScope, getDataUrl, query } from "@zag-js/dom-query"
-import type { MachineContext as Ctx, DataUrlOptions } from "./signature-pad.types"
+import { getDataUrl as dataUrl, query } from "@zag-js/dom-query"
+import type { DataUrlOptions } from "./signature-pad.types"
+import type { Scope } from "@zag-js/core"
 
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `signature-${ctx.id}`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `signature-control-${ctx.id}`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `signature-label-${ctx.id}`,
-  getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `signature-input-${ctx.id}`,
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `signature-${ctx.id}`
+export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `signature-control-${ctx.id}`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `signature-label-${ctx.id}`
+export const getHiddenInputId = (ctx: Scope) => ctx.ids?.hiddenInput ?? `signature-input-${ctx.id}`
 
-  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
-  getSegmentEl: (ctx: Ctx) => query<SVGSVGElement>(dom.getControlEl(ctx), "[data-part=segment]"),
-  getHiddenInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenInputId(ctx)),
+export const getControlEl = (ctx: Scope) => ctx.getById(getControlId(ctx))
+export const getSegmentEl = (ctx: Scope) => query<SVGSVGElement>(getControlEl(ctx), "[data-part=segment]")
+export const getHiddenInputEl = (ctx: Scope) => ctx.getById(getHiddenInputId(ctx))
 
-  getDataUrl: (ctx: Ctx, options: DataUrlOptions): Promise<string> => {
-    if (ctx.isEmpty) return Promise.resolve("")
-    return getDataUrl(dom.getSegmentEl(ctx), options)
-  },
-})
+export const getDataUrl = (ctx: Scope, options: DataUrlOptions): Promise<string> => {
+  return dataUrl(getSegmentEl(ctx), options)
+}
