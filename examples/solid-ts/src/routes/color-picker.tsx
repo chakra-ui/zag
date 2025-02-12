@@ -26,19 +26,14 @@ const EyeDropIcon = () => (
 export default function Page() {
   const controls = useControls(colorPickerControls)
 
-  const [state, send] = useMachine(
-    colorPicker.machine({
-      id: createUniqueId(),
-      name: "color",
-      format: "hsla",
-      value: colorPicker.parse("hsl(0, 100%, 50%)"),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(colorPicker.machine, {
+    id: createUniqueId(),
+    name: "color",
+    format: "hsla",
+    value: colorPicker.parse("hsl(0, 100%, 50%)"),
+  })
 
-  const api = createMemo(() => colorPicker.connect(state, send, normalizeProps))
+  const api = createMemo(() => colorPicker.connect(service, normalizeProps))
 
   return (
     <>
@@ -145,7 +140,7 @@ export default function Page() {
       </main>
 
       <Toolbar viz controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

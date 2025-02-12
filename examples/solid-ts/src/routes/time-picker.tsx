@@ -14,11 +14,11 @@ function Wrapper(props: ParentProps) {
 export default function Page() {
   const controls = useControls(timePickerControls)
 
-  const [state, send] = useMachine(timePicker.machine({ id: createUniqueId() }), {
-    context: controls.context,
+  const service = useMachine(timePicker.machine, {
+    id: createUniqueId(),
   })
 
-  const api = createMemo(() => timePicker.connect(state, send, normalizeProps))
+  const api = createMemo(() => timePicker.connect(service, normalizeProps))
 
   return (
     <>
@@ -59,7 +59,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

@@ -6,11 +6,11 @@ import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 
 export default function Page() {
-  const [state, send] = useMachine(tooltip.machine({ id: createUniqueId() }))
-  const api = createMemo(() => tooltip.connect(state, send, normalizeProps))
+  const service = useMachine(tooltip.machine, { id: createUniqueId() })
+  const api = createMemo(() => tooltip.connect(service, normalizeProps))
 
-  const [state2, send2] = useMachine(tooltip.machine({ id: createUniqueId() }))
-  const api2 = createMemo(() => tooltip.connect(state2, send2, normalizeProps))
+  const service2 = useMachine(tooltip.machine, { id: createUniqueId() })
+  const api2 = createMemo(() => tooltip.connect(service2, normalizeProps))
 
   return (
     <>
@@ -47,8 +47,8 @@ export default function Page() {
       </main>
 
       <Toolbar>
-        <StateVisualizer state={state} />
-        <StateVisualizer state={state2} />
+        <StateVisualizer state={service} />
+        <StateVisualizer state={service2} />
       </Toolbar>
     </>
   )

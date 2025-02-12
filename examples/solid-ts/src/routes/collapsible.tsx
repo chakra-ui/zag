@@ -9,11 +9,9 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(collapsibleControls)
 
-  const [state, send] = useMachine(collapsible.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const service = useMachine(collapsible.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => collapsible.connect(state, send, normalizeProps))
+  const api = createMemo(() => collapsible.connect(service, normalizeProps))
 
   return (
     <>
@@ -39,7 +37,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

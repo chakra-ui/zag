@@ -12,19 +12,14 @@ export default function Page() {
 
   const controls = useControls(signaturePadControls)
 
-  const [state, send] = useMachine(
-    signaturePad.machine({
-      id: createUniqueId(),
-      onDrawEnd(details) {
-        details.getDataUrl("image/png").then(setUrl)
-      },
-    }),
-    {
-      context: controls.context,
+  const service = useMachine(signaturePad.machine, {
+    id: createUniqueId(),
+    onDrawEnd(details) {
+      details.getDataUrl("image/png").then(setUrl)
     },
-  )
+  })
 
-  const api = createMemo(() => signaturePad.connect(state, send, normalizeProps))
+  const api = createMemo(() => signaturePad.connect(service, normalizeProps))
 
   return (
     <>
@@ -61,7 +56,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["currentPoints", "currentPath", "paths"]} />
+        <StateVisualizer state={service} omit={["currentPoints", "currentPath", "paths"]} />
       </Toolbar>
     </>
   )
