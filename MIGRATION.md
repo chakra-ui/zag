@@ -5,6 +5,7 @@
   - `api.setCount` is removed in favor of explicitly setting the `count` prop.
 
 - Machine
+
   - `activities` is now renamed to `effects`
   - prop, context and refs are now explicitly passed to the machine. Prior to this everything was pass to the `context`
     object.
@@ -14,6 +15,8 @@
     `useMachine` hook.
   - `useMachine` now returns a `service` object with `send`, `prop`, `context`, `computed` and `scope` properties. It no
     longer returns a tuple of `[state, send]`.
+
+- Removed `useActor` hook in favor of `useMachine` everywhere.
 
 ## Avatar
 

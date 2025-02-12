@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -21,7 +21,7 @@ export type ElementIds = Partial<{
   arrow: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface HoverCardProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the popover. Useful for composition.
    */
@@ -34,61 +34,61 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The duration from when the mouse enters the trigger until the hover card opens.
    * @default 700
    */
-  openDelay: number
+  openDelay?: number | undefined
   /**
    * The duration from when the mouse leaves the trigger or content until the hover card closes.
    * @default 300
    */
-  closeDelay: number
+  closeDelay?: number | undefined
   /**
    * Whether the hover card is open
    */
   open?: boolean | undefined
   /**
-   * Whether the hover card is controlled by the user
+   * Whether the hover card is open by default
    */
-  "open.controlled"?: boolean | undefined
+  defaultOpen?: boolean | undefined
   /**
    * The user provided options used to position the popover content
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
 }
+
+type PropsWithDefault = "openDelay" | "closeDelay" | "positioning"
 
 interface PrivateContext {
   /**
-   * @internal
    * The computed placement of the tooltip.
    */
-  currentPlacement?: Placement | undefined
+  currentPlacement: Placement | undefined
   /**
-   * @internal
    * Whether the hover card is open by pointer
    */
-  isPointer?: boolean | undefined
+  isPointer: boolean
+  /**
+   * Whether the hover card is open
+   */
+  open: boolean
 }
 
-type ComputedContext = Readonly<{}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
-
-export interface MachineState {
-  value: "opening" | "open" | "closing" | "closed"
-  tags: "open" | "closed"
+export interface HoverCardSchema {
+  props: RequiredBy<HoverCardProps, PropsWithDefault>
+  context: PrivateContext
+  state: "opening" | "open" | "closing" | "closed"
+  tag: "open" | "closed"
+  action: string
+  event: EventObject
+  guard: string
+  effect: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type HoverCardService = Service<HoverCardSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface HoverCardApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the hover card is open
    */

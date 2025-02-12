@@ -1,4 +1,4 @@
-import { Portal, normalizeProps, useActor, useMachine } from "@zag-js/react"
+import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { toastControls } from "@zag-js/shared"
 import * as toast from "@zag-js/toast"
 import { XIcon } from "lucide-react"
@@ -10,8 +10,8 @@ import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 function ToastItem({ actor }: { actor: toast.Service }) {
-  const [state, send] = useActor(actor)
-  const api = toast.connect(state, send, normalizeProps)
+  const service = useMachine(actor)
+  const api = toast.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>
@@ -33,18 +33,13 @@ function ToastItem({ actor }: { actor: toast.Service }) {
 export default function Page() {
   const controls = useControls(toastControls)
 
-  const [state, send] = useMachine(
-    toast.group.machine({
-      id: useId(),
-      placement: "bottom",
-      removeDelay: 200,
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(toast.group.machine, {
+    id: useId(),
+    placement: "bottom",
+    removeDelay: 200,
+  })
 
-  const api = toast.group.connect(state, send, normalizeProps)
+  const api = toast.group.connect(service, normalizeProps)
   const id = useRef<string>()
 
   return (
@@ -99,7 +94,7 @@ export default function Page() {
         </Portal>
       </main>
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )
