@@ -115,6 +115,11 @@ interface PropsParams<T extends Dict> {
   scope: Scope
 }
 
+interface RefsParams<T extends Dict> {
+  prop: PropFn<T>
+  context: BindableContext<T>
+}
+
 export interface MachineConfig<T extends Dict> {
   props?: (params: PropsParams<T>) => T["props"]
   context?: (params: ContextParams<T>) => {
@@ -127,7 +132,7 @@ export interface MachineConfig<T extends Dict> {
   entry?: T["action"][]
   exit?: T["action"][]
   effects?: T["effect"][]
-  refs?: (params: { prop: PropFn<T> }) => T["refs"]
+  refs?: (params: RefsParams<T>) => T["refs"]
   dom?: (params: Params<T>) => T["dom"]
   watch?: (params: Params<T>) => void
   on?: {

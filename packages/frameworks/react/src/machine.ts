@@ -1,4 +1,4 @@
-import type { BaseSchema, Bindable, BindableContext, GuardFn, MachineConfig, Service } from "@zag-js/core"
+import type { BaseSchema, Bindable, BindableContext, BindableRefs, GuardFn, MachineConfig, Service } from "@zag-js/core"
 import { createScope } from "@zag-js/core"
 import { isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { useLayoutEffect, useMemo, useRef } from "react"
@@ -57,7 +57,7 @@ export function useMachine<T extends BaseSchema>(
   const currentEvent = () => eventRef.current
   const previousEvent = () => previousEventRef.current
 
-  const refs = useRefs(machine.refs?.({ prop }) ?? {})
+  const refs: BindableRefs<T> = useRefs(machine.refs?.({ prop, context: ctx }) ?? {})
 
   const getParams = (): any => ({
     state,
