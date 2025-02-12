@@ -1,6 +1,7 @@
 import { observeAttributes, observeChildren } from "@zag-js/dom-query"
 import { createMachine } from "@zag-js/core"
 import type { AvatarSchema } from "./avatar.types"
+import * as dom from "./avatar.dom"
 
 export const machine = createMachine<AvatarSchema>({
   initialState() {
@@ -59,21 +60,21 @@ export const machine = createMachine<AvatarSchema>({
       invokeOnError({ prop }) {
         prop("onStatusChange")?.({ status: "error" })
       },
-      checkImageStatus({ send }) {
-        const imageEl = document.querySelector<HTMLImageElement>(".avatar-image")
+      checkImageStatus({ send, scope }) {
+        const imageEl = dom.getImageEl(scope)
         if (!imageEl?.complete) return
         const type = hasLoaded(imageEl) ? "img.loaded" : "img.error"
         send({ type, src: "ssr" })
       },
     },
     effects: {
-      trackImageRemoval({ send }) {
-        const rootEl = document.querySelector<HTMLElement>(".avatar-root")
+      trackImageRemoval({ send, scope }) {
+        const rootEl = dom.getRootEl(scope)
         return observeChildren(rootEl, {
           callback(records) {
             const removedNodes = Array.from(records[0].removedNodes) as HTMLElement[]
             const removed = removedNodes.find(
-              (node) => node.nodeType === Node.ELEMENT_NODE && node.matches(".avatar-image"),
+              (node) => node.nodeType === Node.ELEMENT_NODE && node.matches("[data-scope=avatar][data-part=image]"),
             )
             if (removed) {
               send({ type: "img.unmount" })
@@ -82,8 +83,8 @@ export const machine = createMachine<AvatarSchema>({
         })
       },
 
-      trackSrcChange({ send }) {
-        const imageEl = document.querySelector<HTMLImageElement>(".avatar-image")
+      trackSrcChange({ send, scope }) {
+        const imageEl = dom.getImageEl(scope)
         return observeAttributes(imageEl, {
           attributes: ["src", "srcset"],
           callback() {
