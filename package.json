@@ -60,20 +60,20 @@
   },
   "dependencies": {
     "@axe-core/playwright": "4.10.1",
-    "@babel/generator": "7.26.5",
-    "@babel/parser": "7.26.7",
-    "@babel/traverse": "7.26.7",
-    "@babel/types": "7.26.7",
+    "@babel/generator": "7.26.8",
+    "@babel/parser": "7.26.8",
+    "@babel/traverse": "7.26.8",
+    "@babel/types": "7.26.8",
     "@changesets/changelog-github": "0.5.0",
-    "@changesets/cli": "2.27.11",
+    "@changesets/cli": "2.27.12",
     "@commitlint/cli": "19.6.1",
     "@commitlint/config-conventional": "19.6.0",
-    "@octokit/rest": "21.0.2",
-    "@playwright/test": "1.49.1",
-    "@swc/core": "1.10.12",
+    "@octokit/rest": "21.1.0",
+    "@playwright/test": "1.50.1",
+    "@swc/core": "1.10.15",
     "@types/babel__generator": "7.6.8",
     "@types/babel__traverse": "7.20.6",
-    "@types/node": "22.13.0",
+    "@types/node": "22.13.1",
     "@types/signale": "1.4.7",
     "@typescript-eslint/eslint-plugin": "8.19.1",
     "@typescript-eslint/parser": "8.19.1",
@@ -94,17 +94,17 @@
     "prettier": "3.4.2",
     "prettier-plugin-svelte": "3.3.3",
     "signale": "1.4.0",
-    "ts-morph": "25.0.0",
+    "ts-morph": "25.0.1",
     "tsup": "8.3.6",
     "tsx": "4.19.2",
     "typescript": "5.7.3",
     "vercel-submodules": "1.0.10",
-    "vite": "6.0.11",
+    "vite": "6.1.0",
     "vite-plugin-dts": "4.5.0",
-    "vitest": "2.1.8"
+    "vitest": "3.0.5"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "packageManager": "pnpm@10.2.0"
+  "packageManager": "pnpm@10.3.0"
 }

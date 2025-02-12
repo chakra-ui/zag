@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@internationalized/date": "3.7.0",
-    "@tanstack/react-virtual": "3.12.0",
+    "@tanstack/react-virtual": "3.13.0",
     "@types/textarea-caret": "3.0.3",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
@@ -84,7 +84,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-react": "0.474.0",
+    "lucide-react": "0.475.0",
     "match-sorter": "8.0.0",
     "next": "15.1.2",
     "next-cloudinary": "6.13.0",
@@ -96,7 +96,7 @@
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "@types/node": "22.13.0",
+    "@types/node": "22.13.1",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint-plugin-react": "7.37.2",

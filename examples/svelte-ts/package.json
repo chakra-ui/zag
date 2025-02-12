@@ -82,19 +82,19 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-svelte": "0.474.0",
+    "lucide-svelte": "0.475.0",
     "match-sorter": "8.0.0",
     "svelte-routing": "2.13.0"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "5.0.1",
+    "@sveltejs/vite-plugin-svelte": "5.0.3",
     "@tsconfig/svelte": "5.0.4",
     "@types/form-serialize": "0.7.4",
-    "svelte": "5.16.5",
+    "svelte": "5.19.10",
     "svelte-check": "4.1.1",
     "tslib": "2.7.0",
     "typescript": "5.7.3",
-    "vite": "6.0.11",
+    "vite": "6.1.0",
     "vite-tsconfig-paths": "5.1.4"
   }
 }
