@@ -2,12 +2,12 @@ export { anatomy } from "./number-input.anatomy"
 export { connect } from "./number-input.connect"
 export { machine } from "./number-input.machine"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  NumberInputApi as Api,
+  NumberInputProps as Props,
+  NumberInputService as Service,
   ElementIds,
   FocusChangeDetails,
   IntlTranslations,
-  Service,
   ValueChangeDetails,
   ValueInvalidDetails,
 } from "./number-input.types"

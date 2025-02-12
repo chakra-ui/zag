@@ -18,11 +18,11 @@ interface ContextParams<T extends Dict> {
   flush: (fn: VoidFunction) => void
 }
 
-interface PropFn<T extends Dict> {
+export interface PropFn<T extends Dict> {
   <K extends keyof T["props"]>(key: K): T["props"][K]
 }
 
-interface ComputedFn<T extends Dict> {
+export interface ComputedFn<T extends Dict> {
   <K extends keyof T["computed"]>(key: K): T["computed"][K]
 }
 
@@ -86,7 +86,6 @@ export type EventObject = EventType<{ type: string }>
 
 export interface Params<T extends Dict> {
   prop: PropFn<T>
-  bindable: BindableFn
   action: (action: T["action"][]) => void
   context: BindableContext<T>
   refs: BindableRefs<T>
@@ -100,15 +99,23 @@ export interface Params<T extends Dict> {
   computed: ComputedFn<T>
   scope: Scope
   state: Bindable<T["state"]>
+  choose: ChooseFn<T>
+  guard: (key: T["guard"] | GuardFn<T>) => boolean | undefined
 }
 
-export type GuardFn = (params: any) => boolean
+export type GuardFn<T extends Dict> = (params: Params<T>) => boolean
 
-interface Transition<T extends Dict> {
+export interface Transition<T extends Dict> {
   target?: T["state"]
   actions?: T["action"][]
-  guard?: T["guard"] | GuardFn
+  guard?: T["guard"] | GuardFn<T>
 }
+
+type MaybeArray<T> = T | T[]
+
+export type ChooseFn<T extends Dict> = (
+  transitions: MaybeArray<Omit<Transition<T>, "target">>,
+) => Transition<T> | undefined
 
 interface PropsParams<T extends Dict> {
   props: Partial<T["props"]>
@@ -120,6 +127,10 @@ interface RefsParams<T extends Dict> {
   context: BindableContext<T>
 }
 
+export type ActionsOrFn<T extends Dict> = T["action"][] | ((params: Params<T>) => T["action"][] | undefined)
+
+export type EffectsOrFn<T extends Dict> = T["effect"][] | ((params: Params<T>) => T["effect"][] | undefined)
+
 export interface MachineConfig<T extends Dict> {
   props?: (params: PropsParams<T>) => T["props"]
   context?: (params: ContextParams<T>) => {
@@ -129,9 +140,9 @@ export interface MachineConfig<T extends Dict> {
     [K in keyof T["computed"]]: (params: ComputedParams<T>) => T["computed"][K]
   }
   initialState: (params: { prop: PropFn<T> }) => T["state"]
-  entry?: T["action"][]
-  exit?: T["action"][]
-  effects?: T["effect"][]
+  entry?: ActionsOrFn<T>
+  exit?: ActionsOrFn<T>
+  effects?: EffectsOrFn<T>
   refs?: (params: RefsParams<T>) => T["refs"]
   dom?: (params: Params<T>) => T["dom"]
   watch?: (params: Params<T>) => void
@@ -141,9 +152,9 @@ export interface MachineConfig<T extends Dict> {
   states: {
     [K in T["state"]]: {
       tags?: T["tag"][]
-      entry?: T["action"][]
-      exit?: T["action"][]
-      effects?: T["effect"][]
+      entry?: ActionsOrFn<T>
+      exit?: ActionsOrFn<T>
+      effects?: EffectsOrFn<T>
       on?: {
         [E in T["event"]["type"]]?: Transition<T> | Array<Transition<T>>
       }

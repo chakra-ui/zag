@@ -1,5 +1,10 @@
 # Migration Guide
 
+- Initial and controlled values are now handled in the machine.
+
+  - `defaultOpen` and `open`
+  - `defaultValue` and `value`
+
 - Pagination
 
   - `api.setCount` is removed in favor of explicitly setting the `count` prop.
@@ -17,6 +22,7 @@
     longer returns a tuple of `[state, send]`.
 
 - Removed `useActor` hook in favor of `useMachine` everywhere.
+- Removed `open.controlled` in favor of `defaultOpen` and `open` props.
 
 ## Avatar
 

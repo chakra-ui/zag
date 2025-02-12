@@ -1,5 +1,5 @@
 import type { NumberFormatter, NumberParser } from "@internationalized/number"
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ export type IntlTranslations = {
   decrementLabel: string
 }
 
-interface PublicContext extends LocaleProperties, CommonProperties {
+export interface NumberInputProps extends LocaleProperties, CommonProperties {
   /**
    * The ids of the elements in the number input. Useful for composition.
    */
@@ -91,6 +91,10 @@ interface PublicContext extends LocaleProperties, CommonProperties {
    * The value of the input
    */
   value: string
+  /**
+   * The default value of the input
+   */
+  defaultValue: string
   /**
    * The minimum value of the number input
    * @default Number.MIN_SAFE_INTEGER
@@ -158,112 +162,117 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   spinOnPress?: boolean | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault =
+  | "dir"
+  | "locale"
+  | "focusInputOnChange"
+  | "clampValueOnBlur"
+  | "allowOverflow"
+  | "inputMode"
+  | "pattern"
+  | "translations"
+  | "step"
+  | "spinOnPress"
+  | "min"
+  | "max"
+  | "step"
+  | "translations"
 
 type ComputedContext = Readonly<{
   /**
-   * @computed
    * The value of the input as a number
    */
   valueAsNumber: number
   /**
-   * @computed
    * Whether the value is at the min
    */
   isAtMin: boolean
   /**
-   * @computed
    * Whether the value is at the max
    */
   isAtMax: boolean
   /**
-   * @computed
    * Whether the value is out of the min/max range
    */
   isOutOfRange: boolean
   /**
-   * @computed
    * Whether the value is empty
    */
   isValueEmpty: boolean
   /**
-   * @computed
    * Whether the color picker is disabled
    */
   isDisabled: boolean
   /**
-   * @computed
    * Whether the increment button is enabled
    */
   canIncrement: boolean
   /**
-   * @computed
    * Whether the decrement button is enabled
    */
   canDecrement: boolean
   /**
-   * @computed
    * The `aria-valuetext` attribute of the input
    */
   valueText: string | undefined
   /**
-   * @computed
    * The formatted value of the input
    */
   formattedValue: string
   /**
-   * @computed
    * Whether the writing direction is RTL
    */
   isRtl: boolean
-}>
-
-interface PrivateContext {
   /**
-   * @internal
-   * The hint that determines if we're incrementing or decrementing
-   */
-  hint: "increment" | "decrement" | "set" | null
-  /**
-   * @internal
-   * The scrubber cursor position
-   */
-  scrubberCursorPoint: { x: number; y: number } | null
-  /**
-   * @internal
    * The number i18n formatter
    */
   formatter: NumberFormatter
   /**
-   * @internal
    * The number i18n parser
    */
   parser: NumberParser
+}>
+
+export type HintValue = "increment" | "decrement" | "set"
+
+interface PrivateContext {
   /**
-   * @internal
+   * The hint that determines if we're incrementing or decrementing
+   */
+  hint: HintValue | null
+  /**
+   * The scrubber cursor position
+   */
+  scrubberCursorPoint: { x: number; y: number } | null
+  /**
    * Whether the checkbox's fieldset is disabled
    */
   fieldsetDisabled: boolean
+  /**
+   * The value of the input
+   */
+  value: string
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"
-  tags: "focus"
+export interface NumberInputSchema {
+  state: "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"
+  tag: "focus"
+  props: RequiredBy<NumberInputProps, PropsWithDefault>
+  context: PrivateContext
+  computed: ComputedContext
+  action: string
+  event: EventObject
+  guard: string
+  effect: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type NumberInputService = Service<NumberInputSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface NumberInputApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the input is focused.
    */

@@ -1,22 +1,26 @@
 import { NumberParser } from "@internationalized/number"
-import { ref } from "@zag-js/core"
-import type { MachineContext } from "./number-input.types"
+import type { Params } from "@zag-js/core"
+import type { NumberInputSchema } from "./number-input.types"
 
 export const createFormatter = (locale: string, options: Intl.NumberFormatOptions = {}) => {
-  return ref(new Intl.NumberFormat(locale, options))
+  return new Intl.NumberFormat(locale, options)
 }
 
 export const createParser = (locale: string, options: Intl.NumberFormatOptions = {}) => {
-  return ref(new NumberParser(locale, options))
+  return new NumberParser(locale, options)
 }
 
-export const parseValue = (ctx: MachineContext, value: string) => {
-  if (!ctx.formatOptions) return parseFloat(value)
-  return ctx.parser.parse(String(value))
+type Ctx = Pick<Params<NumberInputSchema>, "prop" | "computed">
+
+export const parseValue = (value: string, params: Ctx) => {
+  const { prop, computed } = params
+  if (!prop("formatOptions")) return parseFloat(value)
+  return computed("parser").parse(String(value))
 }
 
-export const formatValue = (ctx: MachineContext, value: number): string => {
+export const formatValue = (value: number, params: Ctx): string => {
+  const { prop, computed } = params
   if (Number.isNaN(value)) return ""
-  if (!ctx.formatOptions) return value.toString()
-  return ctx.formatter.format(value)
+  if (!prop("formatOptions")) return value.toString()
+  return computed("formatter").format(value)
 }

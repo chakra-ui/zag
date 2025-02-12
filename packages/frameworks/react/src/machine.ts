@@ -1,4 +1,17 @@
-import type { BaseSchema, Bindable, BindableContext, BindableRefs, GuardFn, MachineConfig, Service } from "@zag-js/core"
+import type {
+  ActionsOrFn,
+  BaseSchema,
+  Bindable,
+  BindableContext,
+  BindableRefs,
+  ChooseFn,
+  ComputedFn,
+  EffectsOrFn,
+  GuardFn,
+  MachineConfig,
+  Params,
+  Service,
+} from "@zag-js/core"
 import { createScope } from "@zag-js/core"
 import { isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { useLayoutEffect, useMemo, useRef } from "react"
@@ -59,7 +72,7 @@ export function useMachine<T extends BaseSchema>(
 
   const refs: BindableRefs<T> = useRefs(machine.refs?.({ prop, context: ctx }) ?? {})
 
-  const getParams = (): any => ({
+  const getParams = (): Params<T> => ({
     state,
     context: ctx,
     event: {
@@ -76,9 +89,12 @@ export function useMachine<T extends BaseSchema>(
     computed,
     flush,
     scope,
+    choose,
   })
 
-  const action = (strs: T["action"][]) => {
+  const action = (keys: ActionsOrFn<T> | undefined) => {
+    const strs = isFunction(keys) ? keys(getParams()) : keys
+    if (!strs) return
     const fns = strs.map((s) => {
       const fn = machine.implementations?.actions?.[s]
       if (!fn) warn(`[zag-js] No implementation found for action "${JSON.stringify(s)}"`)
@@ -89,12 +105,14 @@ export function useMachine<T extends BaseSchema>(
     }
   }
 
-  const guard = (str: T["guard"] | GuardFn) => {
+  const guard = (str: T["guard"] | GuardFn<T>) => {
     if (isFunction(str)) return str(getParams())
     return machine.implementations?.guards?.[str](getParams())
   }
 
-  const effect = (strs: T["effect"][]) => {
+  const effect = (keys: EffectsOrFn<T> | undefined) => {
+    const strs = isFunction(keys) ? keys(getParams()) : keys
+    if (!strs) return
     const fns = strs.map((s) => {
       const fn = machine.implementations?.effects?.[s]
       if (!fn) warn(`[zag-js] No implementation found for effect "${JSON.stringify(s)}"`)
@@ -108,15 +126,26 @@ export function useMachine<T extends BaseSchema>(
     return () => cleanups.forEach((fn) => fn?.())
   }
 
-  const computed = (key: keyof T["computed"]) => {
-    return machine.computed?.[key]({
-      context: ctx as any,
-      event: eventRef.current,
-      prop,
-      refs,
-      scope,
-      computed: computed as any,
+  const choose: ChooseFn<T> = (transitions) => {
+    return toArray(transitions).find((t) => {
+      let result = !t.guard
+      if (isString(t.guard)) result = !!guard(t.guard)
+      else if (isFunction(t.guard)) result = t.guard(getParams())
+      return result
     })
+  }
+
+  const computed: ComputedFn<T> = (key) => {
+    return (
+      machine.computed?.[key]({
+        context: ctx as any,
+        event: eventRef.current,
+        prop,
+        refs,
+        scope,
+        computed: computed as any,
+      }) ?? ({} as any)
+    )
   }
 
   const state = useBindable(() => ({
@@ -134,27 +163,27 @@ export function useMachine<T extends BaseSchema>(
       // exit actions
       if (prevState) {
         // @ts-ignore
-        action(machine.states[prevState]?.exit ?? [])
+        action(machine.states[prevState]?.exit)
       }
 
       // transition actions
-      action(transitionRef.current?.actions ?? [])
+      action(transitionRef.current?.actions)
 
       // enter effect
       // @ts-ignore
-      const cleanup = effect(machine.states[nextState]?.effects ?? [])
-      effects.current.set(nextState as string, cleanup)
+      const cleanup = effect(machine.states[nextState]?.effects)
+      if (cleanup) effects.current.set(nextState as string, cleanup)
 
       // root entry actions
       if (prevState === "__init__") {
-        action(machine.entry ?? [])
-        const cleanup = effect(machine.effects ?? [])
-        effects.current.set("__init__", cleanup)
+        action(machine.entry)
+        const cleanup = effect(machine.effects)
+        if (cleanup) effects.current.set("__init__", cleanup)
       }
 
       // enter actions
       // @ts-ignore
-      action(machine.states[nextState]?.entry ?? [])
+      action(machine.states[nextState]?.entry)
     },
   }))
 
@@ -165,7 +194,7 @@ export function useMachine<T extends BaseSchema>(
       fns.forEach((fn) => fn?.())
       effects.current = new Map()
       transitionRef.current = null
-      action(machine.exit ?? [])
+      action(machine.exit)
     }
   }, [])
 
@@ -187,13 +216,7 @@ export function useMachine<T extends BaseSchema>(
         // @ts-ignore
         machine.on?.[event.type]
 
-      const transition = toArray(transitions).find((t) => {
-        let result = !t.guard
-        if (isString(t.guard)) result = !!guard(t.guard)
-        else if (isFunction(t.guard)) result = t.guard(getParams())
-        return result
-      })
-
+      const transition = choose(transitions)
       if (!transition) return
 
       // save current transition
