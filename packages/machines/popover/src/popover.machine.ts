@@ -5,7 +5,7 @@ import { getInitialFocus, proxyTabFocus, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import { dom } from "./popover.dom"
+import * as dom from "./popover.dom"
 import type { Placement, PopoverSchema } from "./popover.types"
 
 export const machine = createMachine<PopoverSchema>({
@@ -44,9 +44,11 @@ export const machine = createMachine<PopoverSchema>({
     currentPortalled: ({ prop }) => !!prop("modal") || !!prop("portalled"),
   },
 
-  // watch: {
-  //   open: ["toggleVisibility"],
-  // },
+  watch({ track, prop, action }) {
+    track([() => prop("open")], () => {
+      action(["toggleVisibility"])
+    })
+  },
 
   entry: ["checkRenderedElements"],
 
@@ -188,7 +190,7 @@ export const machine = createMachine<PopoverSchema>({
 
       preventScroll({ prop, scope }) {
         if (!prop("modal")) return
-        return preventBodyScroll(dom.getDoc(scope))
+        return preventBodyScroll(scope.getDoc())
       },
 
       trapFocus({ prop, scope }) {

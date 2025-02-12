@@ -84,21 +84,22 @@ export const machine = createMachine<TagsInputSchema>({
     isOverflowing: ({ context, prop }) => context.get("value").length > prop("max"),
   },
 
-  // watch: {
-  //   highlightedTagId: "logHighlightedTag",
-  //   isOverflowing: "invokeOnInvalid",
-  //   log: "announceLog",
-  //   inputValue: "syncInputValue",
-  //   editedTagValue: "syncEditedTagInputValue",
-  // },
-
-  watch({ track, context, action }) {
+  watch({ track, context, action, computed }) {
     track([() => context.get("editedTagValue")], () => {
       action(["syncEditedTagInputValue"])
     })
     track([() => context.get("inputValue")], () => {
       action(["syncInputValue"])
     })
+    track([() => context.get("highlightedTagId")], () => {
+      action(["logHighlightedTag"])
+    })
+    track([() => computed("isOverflowing")], () => {
+      action(["invokeOnInvalid"])
+    })
+    // track([() => context.get("log")], () => {
+    //   action(["announceLog"])
+    // })
   },
 
   effects: ["trackLiveRegion", "trackFormControlState"],
@@ -461,10 +462,11 @@ export const machine = createMachine<TagsInputSchema>({
         const value = context.get("value")[index]
 
         // log
-        refs.set("log", (prev) => ({
-          prev: prev.current,
+        const prevLog = refs.get("log")
+        refs.set("log", {
+          prev: prevLog.current,
           current: { type: "delete", value },
-        }))
+        })
 
         context.set("value", (prev) => removeAt(prev, index))
       },
@@ -478,10 +480,11 @@ export const machine = createMachine<TagsInputSchema>({
 
         const value = context.get("value")
         // log
-        refs.set("log", (prev) => ({
-          prev: prev.current,
+        const prevLog = refs.get("log")
+        refs.set("log", {
+          prev: prevLog.current,
           current: { type: "delete", value: value[index] },
-        }))
+        })
 
         context.set("value", (prev) => removeAt(prev, index))
       },
@@ -518,10 +521,11 @@ export const machine = createMachine<TagsInputSchema>({
         })
 
         // log
-        refs.set("log", (prev) => ({
-          prev: prev.current,
+        const prevLog = refs.get("log")
+        refs.set("log", {
+          prev: prevLog.current,
           current: { type: "update", value: context.get("editedTagValue") },
-        }))
+        })
       },
 
       setValueAtIndex({ context, event, refs }) {
@@ -532,10 +536,11 @@ export const machine = createMachine<TagsInputSchema>({
             return value
           })
           // log
-          refs.set("log", (prev) => ({
-            prev: prev.current,
+          const prevLog = refs.get("log")
+          refs.set("log", {
+            prev: prevLog.current,
             current: { type: "update", value: event.value },
-          }))
+          })
         } else {
           warn("You need to provide a value for the tag")
         }
@@ -591,10 +596,11 @@ export const machine = createMachine<TagsInputSchema>({
           const nextValue = uniq(value.concat(inputValue))
           context.set("value", nextValue)
           // log
-          refs.set("log", (prev) => ({
-            prev: prev.current,
+          const prevLog = refs.get("log")
+          refs.set("log", {
+            prev: prevLog.current,
             current: { type: "add", value: inputValue },
-          }))
+          })
         } else {
           prop("onValueInvalid")?.({ reason: "invalidTag" })
         }
@@ -617,10 +623,11 @@ export const machine = createMachine<TagsInputSchema>({
             const nextValue = uniq(value.concat(...trimmedValue))
             context.set("value", nextValue)
             // log
-            refs.set("log", (prev) => ({
-              prev: prev.current,
+            const prevLog = refs.get("log")
+            refs.set("log", {
+              prev: prevLog.current,
               current: { type: "paste", values: trimmedValue },
-            }))
+            })
             //
           } else {
             prop("onValueInvalid")?.({ reason: "invalidTag" })
@@ -632,10 +639,11 @@ export const machine = createMachine<TagsInputSchema>({
 
       clearTags({ context, refs }) {
         context.set("value", [])
-        refs.set("log", (prev) => ({
-          prev: prev.current,
+        const prevLog = refs.get("log")
+        refs.set("log", {
+          prev: prevLog.current,
           current: { type: "clear" },
-        }))
+        })
       },
 
       setValue({ context, event }) {
@@ -662,10 +670,11 @@ export const machine = createMachine<TagsInputSchema>({
         const value = context.get("value")[index]
 
         // log
-        refs.set("log", (prev) => ({
-          prev: prev.current,
+        const prevLog = refs.get("log")
+        refs.set("log", {
+          prev: prevLog.current,
           current: { type: "select", value },
-        }))
+        })
       },
 
       // queue logs with screen reader and get it announced
