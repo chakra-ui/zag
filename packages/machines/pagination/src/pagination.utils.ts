@@ -1,4 +1,4 @@
-import type { MachineContext as Ctx, Pages } from "./pagination.types"
+import type { Pages, PaginationService } from "./pagination.types"
 
 export const range = (start: number, end: number) => {
   let length = end - start + 1
@@ -14,9 +14,8 @@ export const transform = (items: (string | number)[]): Pages => {
 
 const ELLIPSIS = "ellipsis"
 
-export type PageContext = Pick<Ctx, "siblingCount" | "page" | "totalPages">
-
-export const getRange = (ctx: PageContext) => {
+export const getRange = (params: PaginationService) => {
+  const { context, prop, computed } = params
   /**
    * `2 * ctx.siblingCount + 5` explanation:
    * 2 * ctx.siblingCount for left/right siblings
@@ -26,13 +25,13 @@ export const getRange = (ctx: PageContext) => {
    * calculated max page is higher than total pages,
    * so we need to take the minimum of both.
    */
-  const totalPageNumbers = Math.min(2 * ctx.siblingCount + 5, ctx.totalPages)
+  const totalPageNumbers = Math.min(2 * prop("siblingCount") + 5, computed("totalPages"))
 
   const firstPageIndex = 1
-  const lastPageIndex = ctx.totalPages
+  const lastPageIndex = computed("totalPages")
 
-  const leftSiblingIndex = Math.max(ctx.page - ctx.siblingCount, firstPageIndex)
-  const rightSiblingIndex = Math.min(ctx.page + ctx.siblingCount, lastPageIndex)
+  const leftSiblingIndex = Math.max(context.get("page") - prop("siblingCount"), firstPageIndex)
+  const rightSiblingIndex = Math.min(context.get("page") + prop("siblingCount"), lastPageIndex)
 
   const showLeftEllipsis = leftSiblingIndex > firstPageIndex + 1
   const showRightEllipsis = rightSiblingIndex < lastPageIndex - 1
@@ -58,4 +57,4 @@ export const getRange = (ctx: PageContext) => {
   return fullRange
 }
 
-export const getTransformedRange = (ctx: PageContext) => transform(getRange(ctx))
+export const getTransformedRange = (params: PaginationService) => transform(getRange(params))

@@ -1,3 +1,20 @@
+# Migration Guide
+
+- Pagination
+
+  - `api.setCount` is removed in favor of explicitly setting the `count` prop.
+
+- Machine
+  - `activities` is now renamed to `effects`
+  - prop, context and refs are now explicitly passed to the machine. Prior to this everything was pass to the `context`
+    object.
+  - The syntax for `watch` has changed significantly, refer to the new machines to learn how it works. It is somewhat
+    similar to how `useEffect` works in react.
+  - `createMachine` is just an identity function, it doesn't do anything. The machine work is now moved to the framework
+    `useMachine` hook.
+  - `useMachine` now returns a `service` object with `send`, `prop`, `context`, `computed` and `scope` properties. It no
+    longer returns a tuple of `[state, send]`.
+
 ## Avatar
 
 ### Before
