@@ -5,9 +5,6 @@ import { add, clampValue, isObject, nextIndex, prevIndex, remove, uniq } from "@
 import * as dom from "./carousel.dom"
 import type { CarouselSchema } from "./carousel.types"
 
-const DEFAULT_SLIDES_PER_PAGE = 1
-const DEFAULT_SLIDES_PER_MOVE = "auto"
-
 export const machine = createMachine<CarouselSchema>({
   props({ props }) {
     return {
@@ -16,8 +13,8 @@ export const machine = createMachine<CarouselSchema>({
       orientation: "horizontal",
       snapType: "mandatory",
       loop: false,
-      slidesPerPage: DEFAULT_SLIDES_PER_PAGE,
-      slidesPerMove: DEFAULT_SLIDES_PER_MOVE,
+      slidesPerPage: 1,
+      slidesPerMove: "auto",
       spacing: "0px",
       autoplay: false,
       allowMouseDrag: false,
@@ -85,12 +82,17 @@ export const machine = createMachine<CarouselSchema>({
     },
   },
 
-  // watch: {
-  //   slidesPerPage: ["setSnapPoints"],
-  //   slidesPerMove: ["setSnapPoints"],
-  //   page: ["scrollToPage", "focusIndicatorEl"],
-  //   orientation: ["setSnapPoints", "scrollToPage"],
-  // },
+  watch({ track, action, context, prop }) {
+    track([() => prop("slidesPerPage"), () => prop("slidesPerMove")], () => {
+      action(["setSnapPoints"])
+    })
+    track([() => context.get("page")], () => {
+      action(["scrollToPage", "focusIndicatorEl"])
+    })
+    track([() => prop("orientation")], () => {
+      action(["setSnapPoints", "scrollToPage"])
+    })
+  },
 
   on: {
     "PAGE.NEXT": {
