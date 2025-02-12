@@ -14,6 +14,7 @@ interface ContextParams<T extends Dict> {
   bindable: BindableFn
   scope: Scope
   getContext: () => BindableContext<T>
+  getComputed: () => ComputedFn<T>
   flush: (fn: VoidFunction) => void
 }
 
@@ -47,8 +48,8 @@ export interface Bindable<T> {
   invoke(nextValue: T, prevValue: T): void
 }
 
-interface BindableRefs<T extends Dict> {
-  set<K extends keyof T["refs"]>(key: K, value: ValueOrFn<T["refs"][K]>): void
+export interface BindableRefs<T extends Dict> {
+  set<K extends keyof T["refs"]>(key: K, value: T["refs"][K]): void
   get<K extends keyof T["refs"]>(key: K): T["refs"][K]
 }
 
@@ -65,7 +66,7 @@ interface BindableFn {
 export interface Scope {
   id?: string | undefined
   ids?: Record<string, any> | undefined
-  getRootNode: (() => ShadowRoot | Document | Node) | undefined
+  getRootNode: () => ShadowRoot | Document | Node
   getById: <T extends Element = HTMLElement>(id: string) => T | null
   getActiveElement: () => HTMLElement | null
   isActiveElement: (elem: HTMLElement | null) => boolean

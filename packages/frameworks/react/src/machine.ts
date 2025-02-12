@@ -27,6 +27,9 @@ export function useMachine<T extends BaseSchema>(
     getContext() {
       return ctx as any
     },
+    getComputed() {
+      return computed as any
+    },
   })
 
   const contextRef = useLiveRef<any>(context)

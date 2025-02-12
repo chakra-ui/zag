@@ -1,8 +1,8 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
-import type { AnchorRect, Placement } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, PropTypes, Required, RequiredBy } from "@zag-js/types"
-import type { Point } from "./utils/rect"
+import type { Placement } from "@zag-js/popper"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { Point, Rect, Size } from "./utils/rect"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -103,6 +103,10 @@ export interface StepChangeDetails {
   progress: number
 }
 
+export interface StepsChangeDetails {
+  steps: StepDetails[]
+}
+
 export type StepStatus = "idle" | "started" | "skipped" | "completed" | "dismissed" | "not-found"
 
 export interface StepActionMap {
@@ -144,7 +148,7 @@ export type ElementIds = Partial<{
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+export interface TourProps extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The ids of the elements in the tour. Useful for composition.
    */
@@ -152,86 +156,104 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
   /**
    * The steps of the tour
    */
-  steps: StepDetails[]
+  steps?: StepDetails[] | undefined
   /**
    * The id of the currently highlighted step
    */
-  stepId: string | null
+  stepId?: string | null | undefined
   /**
    * Callback when the highlighted step changes
    */
-  onStepChange?(details: StepChangeDetails): void
+  onStepChange?: ((details: StepChangeDetails) => void) | undefined
+  /**
+   * Callback when the steps change
+   */
+  onStepsChange?: ((details: StepsChangeDetails) => void) | undefined
   /**
    * Callback when the tour is opened or closed
    */
-  onStatusChange?(details: StatusChangeDetails): void
+  onStatusChange?: ((details: StatusChangeDetails) => void) | undefined
   /**
    * Whether to close the tour when the user clicks outside the tour
    * @default true
    */
-  closeOnInteractOutside: boolean
+  closeOnInteractOutside?: boolean | undefined
   /**
    * Whether to close the tour when the user presses the escape key
    * @default true
    */
-  closeOnEscape: boolean
+  closeOnEscape?: boolean | undefined
   /**
    * Whether to allow keyboard navigation (right/left arrow keys to navigate between steps)
    * @default true
    */
-  keyboardNavigation: boolean
+  keyboardNavigation?: boolean | undefined
   /**
    * Prevents interaction with the rest of the page while the tour is open
    * @default false
    */
-  preventInteraction: boolean
+  preventInteraction?: boolean | undefined
   /**
    * The offsets to apply to the spotlight
    * @default "{ x: 10, y: 10 }"
    */
-  spotlightOffset: Point
+  spotlightOffset?: Point | undefined
   /**
    * The radius of the spotlight clip path
    * @default 4
    */
-  spotlightRadius: number
+  spotlightRadius?: number | undefined
   /**
    * The translations for the tour
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
 }
+
+type PropsWithDefault =
+  | "spotlightOffset"
+  | "spotlightRadius"
+  | "translations"
+  | "closeOnInteractOutside"
+  | "closeOnEscape"
+  | "keyboardNavigation"
+  | "preventInteraction"
 
 interface PrivateContext {
   /**
-   * @internal
    * The rect of the current step's target element
    */
-  targetRect: Required<AnchorRect>
+  targetRect: Rect
   /**
-   * @internal
    * The current placement of the menu
    */
   currentPlacement?: StepPlacement | undefined
   /**
-   * @internal
    * The size of the boundary element (default to the window size)
    */
-  boundarySize: { width: number; height: number }
+  boundarySize: Size
   /**
-   * @internal
+   * The resolved target element
+   */
+  resolvedTarget: HTMLElement | null
+  /**
+   * The id of the current step
+   */
+  stepId: string | null
+  /**
+   * The steps of the tour
+   */
+  steps: StepDetails[]
+}
+
+interface Refs {
+  /**
    * The function to cleanup the target attributes
    */
   _targetCleanup?: VoidFunction | undefined
   /**
-   * @internal
    * The function to cleanup the step effects
    */
   _effectCleanup?: VoidFunction | undefined
-  /**
-   * @internal
-   * The resolved target element
-   */
-  resolvedTarget: { value: HTMLElement | null }
 }
 
 type ComputedContext = Readonly<{
@@ -259,22 +281,26 @@ type ComputedContext = Readonly<{
    * Whether the current step is the last step
    */
   isLastStep: boolean
+  /**
+   * The progress of the tour
+   */
+  progress: number
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  tags: "closed" | "open"
-  value: "tour.inactive" | "tour.active" | "step.waiting" | "target.resolving" | "target.scrolling"
+export interface TourSchema {
+  tag: "open" | "closed"
+  state: "tour.inactive" | "tour.active" | "step.waiting" | "target.resolving" | "target.scrolling"
+  props: RequiredBy<TourProps, PropsWithDefault>
+  context: PrivateContext
+  refs: Refs
+  computed: ComputedContext
+  event: EventObject
+  action: string
+  guard: string
+  effect: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type TourService = Service<TourSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -284,7 +310,7 @@ export interface StepActionTriggerProps {
   action: StepAction
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface TourApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tour is open
    */

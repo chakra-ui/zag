@@ -4,13 +4,13 @@ export { connect } from "./tour.connect"
 export { machine } from "./tour.machine"
 export * from "./tour.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  TourApi as Api,
+  TourProps as Props,
   ElementIds,
   IntlTranslations,
   Point,
   ProgressTextDetails,
-  Service,
+  TourService as Service,
   StatusChangeDetails,
   StepAction,
   StepActionMap,
