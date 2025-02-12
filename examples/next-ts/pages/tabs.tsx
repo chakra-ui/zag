@@ -11,7 +11,7 @@ export default function Page() {
 
   const service = useMachine(tabs.machine, {
     id: useId(),
-    value: "nils",
+    defaultValue: "nils",
   })
 
   const api = tabs.connect(service, normalizeProps)
