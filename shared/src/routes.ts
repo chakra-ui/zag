@@ -32,7 +32,7 @@ export const routesData: RouteData[] = [
   { label: "Dialog", path: "/dialog" },
   { label: "Hover Card", path: "/hover-card" },
   { label: "Menu", path: "/menu" },
-  { label: "Nested Menu", path: "/nested-menu" },
+  { label: "Menu Nested", path: "/menu-nested" },
   { label: "Menu With options", path: "/menu-options" },
   { label: "Context Menu", path: "/context-menu" },
   { label: "Number Input", path: "/number-input" },

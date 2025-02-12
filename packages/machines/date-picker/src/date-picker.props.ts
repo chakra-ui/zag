@@ -22,7 +22,6 @@ export const props = createProps<DatePickerProps>()([
   "id",
   "ids",
   "isDateUnavailable",
-  "isDateUnavailable",
   "locale",
   "max",
   "min",
