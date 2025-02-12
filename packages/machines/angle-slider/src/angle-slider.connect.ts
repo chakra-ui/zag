@@ -2,9 +2,12 @@ import { dataAttr, getEventPoint, getEventStep } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./angle-slider.anatomy"
 import * as dom from "./angle-slider.dom"
-import type { AngleSliderService, MachineApi } from "./angle-slider.types"
+import type { AngleSliderService, AngleSliderApi } from "./angle-slider.types"
 
-export function connect<T extends PropTypes>(service: AngleSliderService, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(
+  service: AngleSliderService,
+  normalize: NormalizeProps<T>,
+): AngleSliderApi<T> {
   const { state, send, context, prop, computed, scope } = service
 
   const dragging = state.matches("dragging")

@@ -3,10 +3,10 @@ export { connect } from "./angle-slider.connect"
 export { machine } from "./angle-slider.machine"
 export * from "./angle-slider.props"
 export type {
-  UserDefinedContext as Context,
-  MachineApi as Api,
+  AngleSliderProps as Props,
+  AngleSliderApi as Api,
   ElementIds,
   ValueChangeDetails,
-  Service,
+  AngleSliderService as Service,
   MarkerProps,
 } from "./angle-slider.types"

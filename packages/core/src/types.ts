@@ -32,6 +32,7 @@ type TrackFn = (deps: AnyFunction[], fn: VoidFunction) => void
 export interface BindableParams<T> {
   defaultValue?: T | undefined
   value?: T | undefined
+  hash?: (a: T) => string
   isEqual?: (a: T, b: T | undefined) => boolean
   onChange?: (value: T, prev: T | undefined) => void
   debug?: string
@@ -57,6 +58,7 @@ export interface BindableContext<T extends Dict> {
   set<K extends keyof T["context"]>(key: K, value: ValueOrFn<T["context"][K]>): void
   get<K extends keyof T["context"]>(key: K): T["context"][K]
   initial<K extends keyof T["context"]>(key: K): T["context"][K]
+  hash<K extends keyof T["context"]>(key: K): string
 }
 
 interface BindableFn {

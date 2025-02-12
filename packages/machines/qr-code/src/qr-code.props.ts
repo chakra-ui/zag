@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { QRCodeProps } from "./qr-code.types"
+import type { QrCodeProps } from "./qr-code.types"
 
-export const props = createProps<QRCodeProps>()([
+export const props = createProps<QrCodeProps>()([
   "ids",
   "defaultValue",
   "value",
@@ -14,4 +14,4 @@ export const props = createProps<QRCodeProps>()([
   "pixelSize",
 ])
 
-export const splitProps = createSplitProps<Partial<QRCodeProps>>(props)
+export const splitProps = createSplitProps<Partial<QrCodeProps>>(props)

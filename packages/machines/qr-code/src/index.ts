@@ -4,7 +4,7 @@ export { machine } from "./qr-code.machine"
 export * from "./qr-code.props"
 export type {
   QrCodeApi as Api,
-  QRCodeProps as Props,
+  QrCodeProps as Props,
   DownloadTriggerProps,
   ElementIds,
   QrCodeGenerateOptions,

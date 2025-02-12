@@ -87,7 +87,7 @@ export interface MarkerProps {
   value: number
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface AngleSliderApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the angle slider
    */

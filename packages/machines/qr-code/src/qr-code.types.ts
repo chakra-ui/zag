@@ -12,7 +12,7 @@ export interface ValueChangeDetails {
   value: string
 }
 
-export interface QRCodeProps extends DirectionProperty, CommonProperties {
+export interface QrCodeProps extends DirectionProperty, CommonProperties {
   /**
    * The value to encode.
    */
@@ -46,7 +46,7 @@ type Computed = Readonly<{
 }>
 
 export interface QrCodeSchema {
-  props: RequiredBy<QRCodeProps, PropsWithDefault>
+  props: RequiredBy<QrCodeProps, PropsWithDefault>
   context: {
     value: string
   }

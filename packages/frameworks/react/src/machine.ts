@@ -1,4 +1,4 @@
-import type { BaseSchema, Bindable, GuardFn, MachineConfig, Service } from "@zag-js/core"
+import type { BaseSchema, Bindable, BindableContext, GuardFn, MachineConfig, Service } from "@zag-js/core"
 import { createScope } from "@zag-js/core"
 import { isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { useLayoutEffect, useMemo, useRef } from "react"
@@ -33,15 +33,19 @@ export function useMachine<T extends BaseSchema>(
   })
 
   const contextRef = useLiveRef<any>(context)
-  const ctx = {
-    get(key: string) {
+  const ctx: BindableContext<T> = {
+    get(key) {
       return contextRef.current?.[key].get()
     },
-    set(key: string, value: any) {
+    set(key, value) {
       contextRef.current?.[key].set(value)
     },
-    initial(key: string) {
+    initial(key) {
       return contextRef.current?.[key].initial
+    },
+    hash(key) {
+      const current = contextRef.current?.[key].get()
+      return contextRef.current?.[key].hash(current)
     },
   }
 

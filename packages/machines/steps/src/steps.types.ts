@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ export interface ElementIds {
   contentId?(index: number): string
 }
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface StepsProps extends DirectionProperty, CommonProperties {
   /**
    * The custom ids for the stepper elements
    */
@@ -28,11 +28,15 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The current value of the stepper
    */
-  step: number
+  step?: number | undefined
+  /**
+   * The default value of the stepper
+   */
+  defaultStep?: number | undefined
   /**
    * Callback to be called when the value changes
    */
-  onStepChange?(details: StepChangeDetails): void
+  onStepChange?: ((details: StepChangeDetails) => void) | undefined
   /**
    * Callback to be called when a step is completed
    */
@@ -43,6 +47,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   linear?: boolean | undefined
   /**
    * The orientation of the stepper
+   * @default "horizontal"
    */
   orientation?: "horizontal" | "vertical" | undefined
   /**
@@ -51,7 +56,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   count: number
 }
 
-interface PrivateContext {}
+type PropsWithDefault = "orientation" | "linear" | "count"
+
+interface PrivateContext {
+  step: number
+}
 
 type ComputedContext = Readonly<{
   percent: number
@@ -60,19 +69,18 @@ type ComputedContext = Readonly<{
   completed: boolean
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle"
+export interface StepsSchema {
+  props: RequiredBy<StepsProps, PropsWithDefault>
+  context: PrivateContext
+  computed: ComputedContext
+  state: "idle"
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type StepsService = Service<StepsSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -93,7 +101,7 @@ export interface ItemState {
   first: boolean
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface StepsApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the stepper.
    */
