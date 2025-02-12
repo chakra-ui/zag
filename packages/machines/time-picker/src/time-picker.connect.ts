@@ -2,8 +2,8 @@ import { ariaAttr, dataAttr, getEventKey, isComposingEvent } from "@zag-js/dom-q
 import { getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./time-picker.anatomy"
-import { dom } from "./time-picker.dom"
-import type { MachineApi, Send, State } from "./time-picker.types"
+import * as dom from "./time-picker.dom"
+import type { TimePickerApi, TimePickerService } from "./time-picker.types"
 import {
   get12HourFormatPeriodHour,
   getHourPeriod,
@@ -12,28 +12,34 @@ import {
   padStart,
 } from "./time-picker.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const disabled = state.context.disabled
-  const readOnly = state.context.readOnly
+export function connect<T extends PropTypes>(
+  service: TimePickerService,
+  normalize: NormalizeProps<T>,
+): TimePickerApi<T> {
+  const { state, send, prop, computed, scope, context } = service
 
-  const locale = state.context.locale
+  const disabled = prop("disabled")
+  const readOnly = prop("readOnly")
+
+  const locale = prop("locale")
   const hour12 = is12HourFormat(locale)
 
-  const min = state.context.min
-  const max = state.context.max
-  const steps = state.context.steps
+  const min = prop("min")
+  const max = prop("max")
+  const steps = prop("steps")
 
   const focused = state.matches("focused")
   const open = state.hasTag("open")
 
-  const value = state.context.value
-  const valueAsString = state.context.valueAsString
-  const currentTime = state.context.currentTime
+  const value = context.get("value")
+  const valueAsString = computed("valueAsString")
+  const currentTime = context.get("currentTime")
+  const focusedColumn = context.get("focusedColumn")
 
-  const currentPlacement = state.context.currentPlacement
+  const currentPlacement = context.get("currentPlacement")
   const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
-    placement: state.context.currentPlacement,
+    ...prop("positioning"),
+    placement: currentPlacement,
   })
 
   return {
@@ -47,7 +53,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     setOpen(nextOpen) {
       if (nextOpen === open) return
-      send(nextOpen ? "OPEN" : "CLOSE")
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     setUnitValue(unit, value) {
       send({ type: "UNIT.SET", unit, value })
@@ -56,7 +62,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "VALUE.SET", value })
     },
     clearValue() {
-      send("VALUE.CLEAR")
+      send({ type: "VALUE.CLEAR" })
     },
     getHours() {
       const length = hour12 ? 12 : 24
@@ -90,8 +96,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
-        dir: state.context.dir,
-        htmlFor: dom.getInputId(state.context),
+        dir: prop("dir"),
+        htmlFor: dom.getInputId(scope),
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
@@ -101,8 +107,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getControlProps() {
       return normalize.element({
         ...parts.control.attrs,
-        dir: state.context.dir,
-        id: dom.getControlId(state.context),
+        dir: prop("dir"),
+        id: dom.getControlId(scope),
         "data-disabled": dataAttr(disabled),
       })
     },
@@ -110,18 +116,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getInputProps() {
       return normalize.input({
         ...parts.input.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         autoComplete: "off",
         autoCorrect: "off",
         spellCheck: "false",
-        id: dom.getInputId(state.context),
-        name: state.context.name,
+        id: dom.getInputId(scope),
+        name: prop("name"),
         defaultValue: valueAsString,
-        placeholder: getInputPlaceholder(state.context),
+        placeholder: getInputPlaceholder(prop("placeholder"), prop("allowSeconds"), locale),
         disabled,
         readOnly,
         onFocus() {
-          send("INPUT.FOCUS")
+          send({ type: "INPUT.FOCUS" })
         },
         onBlur(event) {
           send({ type: "INPUT.BLUR", value: event.currentTarget.value })
@@ -138,17 +144,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getTriggerProps() {
       return normalize.button({
         ...parts.trigger.attrs,
-        id: dom.getTriggerId(state.context),
+        id: dom.getTriggerId(scope),
         type: "button",
-        "data-placement": state.context.currentPlacement,
+        "data-placement": currentPlacement,
         disabled,
         "data-readonly": dataAttr(readOnly),
         "aria-label": open ? "Close calendar" : "Open calendar",
-        "aria-controls": dom.getContentId(state.context),
+        "aria-controls": dom.getContentId(scope),
         "data-state": open ? "open" : "closed",
         onClick(event) {
           if (event.defaultPrevented) return
-          send("TRIGGER.CLICK")
+          send({ type: "TRIGGER.CLICK" })
         },
       })
     },
@@ -156,15 +162,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getClearTriggerProps() {
       return normalize.button({
         ...parts.clearTrigger.attrs,
-        id: dom.getClearTriggerId(state.context),
+        id: dom.getClearTriggerId(scope),
         type: "button",
-        hidden: !state.context.value,
+        hidden: !value,
         disabled,
         "data-readonly": dataAttr(readOnly),
         "aria-label": "Clear time",
         onClick(event) {
           if (event.defaultPrevented) return
-          send("VALUE.CLEAR")
+          send({ type: "VALUE.CLEAR" })
         },
       })
     },
@@ -172,8 +178,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs,
-        dir: state.context.dir,
-        id: dom.getPositionerId(state.context),
+        dir: prop("dir"),
+        id: dom.getPositionerId(scope),
         style: popperStyles.floating,
       })
     },
@@ -187,8 +193,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getContentProps() {
       return normalize.element({
         ...parts.content.attrs,
-        dir: state.context.dir,
-        id: dom.getContentId(state.context),
+        dir: prop("dir"),
+        id: dom.getContentId(scope),
         hidden: !open,
         tabIndex: 0,
         role: "application",
@@ -219,12 +225,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             // prevent tabbing out of the time picker
             Tab() {},
             Escape() {
-              if (!state.context.disableLayer) return
+              if (!prop("disableLayer")) return
               send({ type: "CONTENT.ESCAPE" })
             },
           }
 
-          const exec = keyMap[getEventKey(event, state.context)]
+          const exec = keyMap[getEventKey(event, { dir: prop("dir") })]
 
           if (exec) {
             exec(event)
@@ -235,12 +241,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getColumnProps(props) {
-      const hidden = (props.unit === "second" && !state.context.allowSeconds) || (props.unit === "period" && !hour12)
+      const hidden = (props.unit === "second" && !prop("allowSeconds")) || (props.unit === "period" && !hour12)
       return normalize.element({
         ...parts.column.attrs,
-        id: dom.getColumnId(state.context, props.unit),
+        id: dom.getColumnId(scope, props.unit),
         "data-unit": props.unit,
-        "data-focus": dataAttr(state.context.focusedColumn === props.unit),
+        "data-focus": dataAttr(focusedColumn === props.unit),
         hidden,
       })
     },
@@ -248,11 +254,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getHourCellProps(props) {
       const hour = props.value
       const isSelectable = !(
-        (min && get12HourFormatPeriodHour(hour, state.context.period) < min.hour) ||
-        (max && get12HourFormatPeriodHour(hour, state.context.period) > max.hour)
+        (min && get12HourFormatPeriodHour(hour, computed("period")) < min.hour) ||
+        (max && get12HourFormatPeriodHour(hour, computed("period")) > max.hour)
       )
-      const isSelected = state.context.value?.hour === get12HourFormatPeriodHour(hour, state.context.period)
-      const isFocused = state.context.focusedColumn === "hour" && state.context.focusedValue === hour
+      const isSelected = value?.hour === get12HourFormatPeriodHour(hour, computed("period"))
+      const isFocused = focusedColumn === "hour" && context.get("focusedValue") === hour
 
       const currentHour = hour12 && currentTime ? currentTime?.hour % 12 : currentTime?.hour
       const isCurrent = currentHour === hour || (hour === 12 && currentHour === 0)
@@ -279,7 +285,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getMinuteCellProps(props) {
       const minute = props.value
-      const { value } = state.context
+      const value = context.get("value")
       const minMinute = min?.set({ second: 0 })
       const maxMinute = max?.set({ second: 0 })
 
@@ -287,9 +293,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         (minMinute && value && minMinute.compare(value.set({ minute })) > 0) ||
         (maxMinute && value && maxMinute.compare(value.set({ minute })) < 0)
       )
-      const isSelected = state.context.value?.minute === minute
+      const isSelected = value?.minute === minute
       const isCurrent = currentTime?.minute === minute
-      const isFocused = state.context.focusedColumn === "minute" && state.context.focusedValue === minute
+      const isFocused = focusedColumn === "minute" && context.get("focusedValue") === minute
 
       return normalize.button({
         ...parts.cell.attrs,
@@ -318,9 +324,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         (min && value?.minute && min.compare(value.set({ second })) > 0) ||
         (max && value?.minute && max.compare(value.set({ second })) < 0)
       )
-      const isSelected = state.context.value?.second === second
+      const isSelected = value?.second === second
       const isCurrent = currentTime?.second === second
-      const isFocused = state.context.focusedColumn === "second" && state.context.focusedValue === second
+      const isFocused = focusedColumn === "second" && context.get("focusedValue") === second
 
       return normalize.button({
         ...parts.cell.attrs,
@@ -343,10 +349,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getPeriodCellProps(props) {
-      const isSelected = state.context.period === props.value
-      const currentPeriod = getHourPeriod(currentTime?.hour, state.context.locale)
+      const isSelected = computed("period") === props.value
+      const currentPeriod = getHourPeriod(currentTime?.hour, locale)
       const isCurrent = currentPeriod === props.value
-      const isFocused = state.context.focusedColumn === "period" && state.context.focusedValue === props.value
+      const isFocused = focusedColumn === "period" && context.get("focusedValue") === props.value
 
       return normalize.button({
         ...parts.cell.attrs,
