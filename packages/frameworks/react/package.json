@@ -33,10 +33,15 @@
   "devDependencies": {
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/jsdom": "^21.1.7",
     "@zag-js/utils": "workspace:*",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "clean-package": "2.2.0"
+    "clean-package": "2.2.0",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^26.0.0"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
@@ -47,7 +52,8 @@
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
-    "postpack": "clean-package restore"
+    "postpack": "clean-package restore",
+    "test": "vitest"
   },
   "clean-package": "../../../clean-package.config.json",
   "main": "src/index.ts"

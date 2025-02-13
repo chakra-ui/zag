@@ -25,7 +25,11 @@ export function connect<T extends PropTypes>(
 
   const isFirstPage = page === 1
   const isLastPage = page === totalPages
-  const pages = getTransformedRange(service)
+  const pages = getTransformedRange({
+    page,
+    totalPages,
+    siblingCount: prop("siblingCount"),
+  })
 
   return {
     count,

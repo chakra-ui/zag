@@ -38,7 +38,10 @@
     "lint": "eslint packages",
     "version": "changeset version",
     "release": "changeset publish",
-    "test": "vitest",
+    "test:js": "vitest packages/{utilities,core}",
+    "test:react": "cd packages/frameworks/react && pnpm exec vitest",
+    "test:svelte": "cd packages/frameworks/svelte && pnpm exec vitest",
+    "test": "pnpm test:js --run && pnpm test:react --run && pnpm test:svelte --run",
     "visualize": "tsx scripts/visualize.ts --all",
     "slack": "tsx scripts/slack.ts",
     "play": "tsx scripts/play.ts",
@@ -73,6 +76,7 @@
     "@swc/core": "1.10.12",
     "@types/babel__generator": "7.6.8",
     "@types/babel__traverse": "7.20.6",
+    "@types/jsdom": "^21.1.7",
     "@types/node": "22.13.0",
     "@types/signale": "1.4.7",
     "@typescript-eslint/eslint-plugin": "8.19.1",
@@ -100,7 +104,6 @@
     "typescript": "5.7.3",
     "vercel-submodules": "1.0.10",
     "vite": "6.0.11",
-    "vite-plugin-dts": "4.5.0",
     "vitest": "2.1.8"
   },
   "engines": {

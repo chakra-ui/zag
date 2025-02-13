@@ -161,7 +161,7 @@ export interface MachineConfig<T extends Dict> {
       }
     }
   }
-  implementations: {
+  implementations?: {
     guards?: {
       [K in T["guard"]]: (params: Params<T>) => boolean
     }
