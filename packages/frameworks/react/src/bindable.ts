@@ -1,6 +1,9 @@
 import { isFunction } from "@zag-js/utils"
 import type { Bindable, BindableParams } from "@zag-js/core"
 import { useLayoutEffect, useRef, useState } from "react"
+import { flushSync } from "react-dom"
+
+const identity = (v: VoidFunction) => v()
 
 export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().value ?? props().defaultValue
@@ -24,7 +27,7 @@ export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
     prevValue.current = valueRef.current
   }, [value, props().value])
 
-  const set = (value: T | ((prev: T) => T)) => {
+  const setFn = (value: T | ((prev: T) => T)) => {
     const prev = prevValue.current
     const next = isFunction(value) ? value(prev as T) : value
 
@@ -46,7 +49,10 @@ export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
     initial,
     ref: valueRef,
     get,
-    set,
+    set(value: T | ((prev: T) => T)) {
+      const exec = props().sync ? flushSync : identity
+      exec(() => setFn(value))
+    },
     invoke(nextValue: T, prevValue: T) {
       props().onChange?.(nextValue, prevValue)
     },

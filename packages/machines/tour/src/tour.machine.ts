@@ -47,6 +47,7 @@ export const machine = createMachine<TourSchema>({
       })),
       stepId: bindable<string | null>(() => ({
         defaultValue: prop("stepId"),
+        sync: true,
         onChange(value) {
           const computed = getComputed()
           const context = getContext()
@@ -97,7 +98,7 @@ export const machine = createMachine<TourSchema>({
 
   effects: ["trackBoundarySize"],
 
-  exit: ["clearStep", "cleanupRefs"],
+  exit: ["cleanupRefs"],
 
   on: {
     "STEPS.SET": {
@@ -524,7 +525,7 @@ function syncZIndex(scope: Scope) {
 }
 
 function setStep(params: Params<TourSchema>, idx: number) {
-  const { context, refs, send } = params
+  const { context, refs, computed, prop } = params
   const steps = context.get("steps")
   const step = steps[idx]
 
@@ -540,19 +541,23 @@ function setStep(params: Params<TourSchema>, idx: number) {
   }
 
   const next = () => {
-    send({ type: "STEP.NEXT" })
+    const idx = nextIndex(steps, computed("stepIndex"))
+    context.set("stepId", steps[idx].id)
   }
 
   const goto = (id: string) => {
-    send({ type: "STEP.SET", id })
+    const step = findStep(steps, id)
+    if (!step) return
+    context.set("stepId", step.id)
   }
 
   const dismiss = () => {
-    send({ type: "DISMISS" })
+    context.set("stepId", null)
+    prop("onStatusChange")?.({ status: "dismissed", stepId: null, stepIndex: -1 })
   }
 
   const show = () => {
-    send({ type: "STEP.SET", id: step.id })
+    context.set("stepId", step.id)
   }
 
   if (!step.effect) {

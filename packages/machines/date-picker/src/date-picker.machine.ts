@@ -136,6 +136,7 @@ export const machine = createMachine<DatePickerSchema>({
       })),
       activeIndex: bindable(() => ({
         defaultValue: 0,
+        sync: true,
         onChange(value) {
           console.log("activeIndex", value)
         },

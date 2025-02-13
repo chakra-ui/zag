@@ -51,9 +51,7 @@ export function useMachine<T extends BaseSchema>(
       return contextRef.current?.[key].get()
     },
     set(key, value) {
-      flushSync(() => {
-        contextRef.current?.[key].set(value)
-      })
+      contextRef.current?.[key].set(value)
     },
     initial(key) {
       return contextRef.current?.[key].initial
