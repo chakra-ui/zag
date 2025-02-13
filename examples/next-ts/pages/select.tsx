@@ -23,6 +23,7 @@ export default function Page() {
     onOpenChange(details) {
       console.log("onOpenChange", details)
     },
+    ...controls.context,
   })
 
   const api = select.connect(service, normalizeProps)

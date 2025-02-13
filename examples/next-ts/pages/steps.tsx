@@ -12,6 +12,7 @@ export default function Page() {
   const service = useMachine(steps.machine, {
     id: useId(),
     count: stepsData.length,
+    ...controls.context,
   })
 
   const api = steps.connect(service, normalizeProps)

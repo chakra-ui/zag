@@ -11,6 +11,7 @@ export default function Page() {
 
   const service = useMachine(progress.machine, {
     id: useId(),
+    ...controls.context,
   })
 
   const api = progress.connect(service, normalizeProps)

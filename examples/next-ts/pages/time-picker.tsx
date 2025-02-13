@@ -9,7 +9,10 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(timePickerControls)
 
-  const service = useMachine(timePicker.machine, { id: useId() })
+  const service = useMachine(timePicker.machine, {
+    id: useId(),
+    ...controls.context,
+  })
   const api = timePicker.connect(service, normalizeProps)
 
   return (

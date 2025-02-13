@@ -32,6 +32,7 @@ export default function Page() {
     name: "color",
     format: "hsla",
     defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+    ...controls.context,
   })
 
   const api = colorPicker.connect(service, normalizeProps)

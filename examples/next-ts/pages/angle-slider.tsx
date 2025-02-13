@@ -11,6 +11,7 @@ export default function Page() {
 
   const service = useMachine(angleSlider.machine, {
     id: useId(),
+    ...controls.context,
   })
 
   const api = angleSlider.connect(service, normalizeProps)

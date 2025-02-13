@@ -12,6 +12,7 @@ export default function Page() {
   const service = useMachine(zagSwitch.machine, {
     id: useId(),
     name: "switch",
+    ...controls.context,
   })
 
   const api = zagSwitch.connect(service, normalizeProps)

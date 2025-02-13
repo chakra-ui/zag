@@ -29,6 +29,7 @@ export default function Page() {
       const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
       setOptions(filtered.length > 0 ? filtered : comboboxData)
     },
+    ...controls.context,
   })
 
   const api = combobox.connect(service, normalizeProps)

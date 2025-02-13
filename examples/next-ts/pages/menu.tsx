@@ -11,6 +11,7 @@ export default function Page() {
   const service = useMachine(menu.machine, {
     id: useId(),
     onSelect: console.log,
+    ...controls.context,
   })
 
   const api = menu.connect(service, normalizeProps)

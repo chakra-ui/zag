@@ -17,6 +17,7 @@ export default function Page() {
     onPageChange(details) {
       setDetails(details)
     },
+    ...controls.context,
   })
 
   const api = pagination.connect(service, normalizeProps)

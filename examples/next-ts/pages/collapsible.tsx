@@ -11,6 +11,7 @@ export default function Page() {
 
   const service = useMachine(collapsible.machine, {
     id: useId(),
+    ...controls.context,
   })
 
   const api = collapsible.connect(service, normalizeProps)

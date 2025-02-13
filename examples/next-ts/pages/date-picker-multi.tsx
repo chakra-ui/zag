@@ -12,6 +12,7 @@ export default function Page() {
     id: useId(),
     locale: "en",
     selectionMode: "multiple",
+    ...controls.context,
   })
 
   const api = datePicker.connect(service, normalizeProps)

@@ -11,6 +11,7 @@ export default function Page() {
 
   const service = useMachine(numberInput.machine, {
     id: useId(),
+    ...controls.context,
   })
 
   const api = numberInput.connect(service, normalizeProps)

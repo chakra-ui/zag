@@ -12,6 +12,7 @@ export default function Page() {
 
   const service = useMachine(accordion.machine, {
     id: useId(),
+    ...controls.context,
   })
 
   const api = accordion.connect(service, normalizeProps)

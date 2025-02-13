@@ -14,6 +14,7 @@ export default function Page() {
     locale: "en",
     numOfMonths: 2,
     selectionMode: "range",
+    ...controls.context,
   })
 
   const api = datePicker.connect(service, normalizeProps)

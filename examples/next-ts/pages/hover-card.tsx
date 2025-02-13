@@ -11,6 +11,7 @@ export default function Page() {
 
   const service = useMachine(hoverCard.machine, {
     id: useId(),
+    ...controls.context,
   })
 
   const api = hoverCard.connect(service, normalizeProps)

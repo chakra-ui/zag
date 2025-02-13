@@ -22,6 +22,7 @@ export default function Page() {
       size: 4,
       simulatePressure: true,
     },
+    ...controls.context,
   })
 
   const api = signaturePad.connect(service, normalizeProps)

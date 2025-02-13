@@ -13,6 +13,7 @@ export default function Page() {
   const service = useMachine(pinInput.machine, {
     name: "test",
     id: useId(),
+    ...controls.context,
   })
 
   const api = pinInput.connect(service, normalizeProps)

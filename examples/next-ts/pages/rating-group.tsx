@@ -41,7 +41,8 @@ export default function Page() {
 
   const service = useMachine(rating.machine, {
     id: useId(),
-    value: 2.5,
+    defaultValue: 2.5,
+    ...controls.context,
   })
 
   const api = rating.connect(service, normalizeProps)

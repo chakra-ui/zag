@@ -14,6 +14,7 @@ export default function Page() {
   const service = useMachine(tour.machine, {
     id: useId(),
     steps: tourData,
+    ...controls.context,
   })
 
   const api = tour.connect(service, normalizeProps)

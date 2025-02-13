@@ -9,7 +9,10 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(toggleGroupControls)
 
-  const service = useMachine(toggle.machine, { id: useId() })
+  const service = useMachine(toggle.machine, {
+    id: useId(),
+    ...controls.context,
+  })
   const api = toggle.connect(service, normalizeProps)
 
   return (

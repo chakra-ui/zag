@@ -13,6 +13,7 @@ export default function Page() {
     id: useId(),
     name: "fruit",
     orientation: "horizontal",
+    ...controls.context,
   })
 
   const api = radio.connect(service, normalizeProps)

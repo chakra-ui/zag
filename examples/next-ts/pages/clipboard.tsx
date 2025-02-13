@@ -13,6 +13,7 @@ export default function Page() {
   const service = useMachine(clipboard.machine, {
     id: useId(),
     value: "https://github.com/chakra-ui/zag",
+    ...controls.context,
   })
 
   const api = clipboard.connect(service, normalizeProps)

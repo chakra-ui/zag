@@ -13,6 +13,7 @@ export default function Page() {
   const service = useMachine(radio.machine, {
     id: useId(),
     name: "fruit",
+    ...controls.context,
   })
 
   const api = radio.connect(service, normalizeProps)

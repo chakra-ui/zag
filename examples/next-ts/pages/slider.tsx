@@ -14,6 +14,7 @@ export default function Page() {
     id: useId(),
     name: "quantity",
     defaultValue: [0],
+    ...controls.context,
   })
 
   const api = slider.connect(service, normalizeProps)

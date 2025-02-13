@@ -15,6 +15,7 @@ export default function Page() {
     slidesPerPage: 2,
     slideCount: carouselData.length,
     allowMouseDrag: true,
+    ...controls.context,
   })
 
   const api = carousel.connect(service, normalizeProps)

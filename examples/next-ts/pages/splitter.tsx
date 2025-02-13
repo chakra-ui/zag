@@ -15,6 +15,7 @@ export default function Page() {
       { id: "a", size: 50 },
       { id: "b", size: 50 },
     ],
+    ...controls.context,
   })
 
   const api = splitter.connect(service, normalizeProps)

@@ -13,6 +13,7 @@ export default function Page() {
   const service = useMachine(checkbox.machine, {
     id: useId(),
     name: "checkbox",
+    ...controls.context,
   })
 
   const api = checkbox.connect(service, normalizeProps)

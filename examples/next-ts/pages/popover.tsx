@@ -11,6 +11,7 @@ export default function Page() {
 
   const service = useMachine(popover.machine, {
     id: useId(),
+    ...controls.context,
   })
 
   const api = popover.connect(service, normalizeProps)

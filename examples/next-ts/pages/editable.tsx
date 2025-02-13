@@ -11,7 +11,8 @@ export default function Page() {
 
   const service = useMachine(editable.machine, {
     id: useId(),
-    value: "Hello World",
+    defaultValue: "Hello World",
+    ...controls.context,
   })
 
   const api = editable.connect(service, normalizeProps)
