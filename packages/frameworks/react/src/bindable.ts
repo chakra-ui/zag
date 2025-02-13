@@ -3,7 +3,12 @@ import type { Bindable, BindableParams } from "@zag-js/core"
 import { useLayoutEffect, useRef, useState } from "react"
 
 export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
-  const initial = props().defaultValue ?? props().value
+  const initial = props().value ?? props().defaultValue
+
+  if (props().debug) {
+    console.log(`[bindable > ${props().debug}] initial`, initial)
+  }
+
   const eq = props().isEqual ?? Object.is
 
   const [initialValue] = useState(initial)
@@ -44,6 +49,9 @@ export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
     set,
     invoke(nextValue: T, prevValue: T) {
       props().onChange?.(nextValue, prevValue)
+    },
+    hash(value: T) {
+      return props().hash?.(value) ?? String(value)
     },
   }
 }

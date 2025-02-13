@@ -61,17 +61,17 @@ export const machine = createMachine<DatePickerSchema>({
     // get the initial view
     const minView: DateView = "day"
     const maxView: DateView = "year"
-    const view = clampView(props.view || minView, minView, maxView)
+    const defaultView = clampView(props.view || minView, minView, maxView)
 
     return {
       locale,
       numOfMonths,
       focusedValue,
       timeZone,
-      defaultValue,
+      defaultValue: defaultValue ?? [],
       value,
       selectionMode,
-      view,
+      defaultView,
       minView,
       maxView,
       closeOnSelect: true,
@@ -120,6 +120,9 @@ export const machine = createMachine<DatePickerSchema>({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         isEqual: (a, b) => b != null && a != null && a.every((date, index) => isDateEqual(date, b[index])),
+        hash(value) {
+          return value.map((date) => date.toString()).join(",")
+        },
         onChange(value) {
           const context = getContext()
           prop("onValueChange")?.({ value, valueAsString: [], view: context.get("view") })
@@ -217,7 +220,7 @@ export const machine = createMachine<DatePickerSchema>({
       action(["syncInputValue"])
     })
 
-    track([() => context.get("value").toString()], () => {
+    track([() => context.hash("value")], () => {
       action(["syncInputElement"])
     })
 
@@ -1107,7 +1110,8 @@ export const machine = createMachine<DatePickerSchema>({
 
 const normalizeValue = (ctx: Params<DatePickerSchema>, value: number | DateValue) => {
   const { context, prop } = ctx
-  let dateValue = typeof value === "number" ? context.get("focusedValue").set({ [prop("view")]: value }) : value
+  const view = context.get("view")
+  let dateValue = typeof value === "number" ? context.get("focusedValue").set({ [view]: value }) : value
   eachView((view) => {
     // normalize month and day
     if (isBelowMinView(view, prop("minView"))) {

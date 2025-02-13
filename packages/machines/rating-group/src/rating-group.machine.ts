@@ -10,7 +10,7 @@ export const machine = createMachine<RatingGroupSchema>({
       name: "rating",
       count: 5,
       dir: "ltr",
-      value: -1,
+      defaultValue: -1,
       ...compact(props),
       translations: {
         ratingValueText: (index) => `${index} stars`,
@@ -23,13 +23,14 @@ export const machine = createMachine<RatingGroupSchema>({
     return "idle"
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, scope }) {
     return {
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         onChange(value) {
           prop("onValueChange")?.({ value })
+          dom.dispatchChangeEvent(scope, value)
         },
       })),
       hoveredValue: bindable(() => ({
@@ -202,26 +203,3 @@ export const machine = createMachine<RatingGroupSchema>({
     },
   },
 })
-
-// const invoke = {
-//   change: (ctx: MachineContext) => {
-//     ctx.onValueChange?.({ value: ctx.value })
-//     dom.dispatchChangeEvent(ctx)
-//   },
-//   hoverChange: (ctx: MachineContext) => {
-//     ctx.onHoverChange?.({ hoveredValue: ctx.hoveredValue })
-//   },
-// }
-
-// const set = {
-//   value: (ctx: MachineContext, value: number) => {
-//     if (isEqual(ctx.value, value)) return
-//     ctx.value = value
-//     invoke.change(ctx)
-//   },
-//   hoveredValue: (ctx: MachineContext, value: number) => {
-//     if (isEqual(ctx.hoveredValue, value)) return
-//     ctx.hoveredValue = value
-//     invoke.hoverChange(ctx)
-//   },
-// }

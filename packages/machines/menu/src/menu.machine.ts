@@ -5,6 +5,7 @@ import {
   clickIfLink,
   contains,
   getByTypeahead,
+  getEventTarget,
   getInitialFocus,
   isEditableElement,
   observeAttributes,
@@ -63,6 +64,9 @@ export const machine = createMachine<MenuSchema>({
       })),
       anchorPoint: bindable<Point | null>(() => ({
         defaultValue: null,
+        hash(value) {
+          return `x: ${value?.x}, y: ${value?.y}`
+        },
       })),
     }
   },
@@ -86,7 +90,7 @@ export const machine = createMachine<MenuSchema>({
     track([() => computed("isSubmenu")], () => {
       action(["setSubmenuPlacement"])
     })
-    track([() => Object.values(context.get("anchorPoint") ?? {}).join(",")], () => {
+    track([() => context.hash("anchorPoint")], () => {
       action(["reposition"])
     })
     track([() => prop("open")], () => {
@@ -393,6 +397,9 @@ export const machine = createMachine<MenuSchema>({
             actions: ["invokeOnClose"],
           },
         ],
+        CONTEXT_MENU: {
+          actions: ["setAnchorPoint", "focusMenu"],
+        },
         ARROW_UP: {
           actions: ["highlightPrevItem", "focusMenu"],
         },
@@ -530,7 +537,7 @@ export const machine = createMachine<MenuSchema>({
         return () => clearTimeout(timer)
       },
       trackPositioning({ context, prop, scope, refs }) {
-        if (context.get("anchorPoint") === null) return
+        if (!!dom.getContextTriggerEl(scope)) return
         const positioning = {
           ...prop("positioning"),
           ...refs.get("positioningOverride"),
@@ -559,6 +566,12 @@ export const machine = createMachine<MenuSchema>({
             closeRootMenu({ parent: refs.get("parent") })
           },
           onPointerDownOutside(event) {
+            const target = getEventTarget(event.detail.originalEvent)
+            const isWithinContextTrigger = contains(dom.getContextTriggerEl(scope), target)
+            if (isWithinContextTrigger && event.detail.contextmenu) {
+              event.preventDefault()
+              return
+            }
             restoreFocus = !event.detail.focusable
             prop("onPointerDownOutside")?.(event)
           },

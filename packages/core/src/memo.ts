@@ -20,7 +20,6 @@ export function memo<TDeps extends any[], TDepArgs, TResult>(
     deps = newDeps
     result = fn(...newDeps)
     opts?.onChange?.(result)
-    console.log("result", result)
     return result!
   }
 }

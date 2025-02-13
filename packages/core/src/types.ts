@@ -47,6 +47,7 @@ export interface Bindable<T> {
   get: () => T
   set(value: ValueOrFn<T>): void
   invoke(nextValue: T, prevValue: T): void
+  hash(value: T): string
 }
 
 export interface BindableRefs<T extends Dict> {

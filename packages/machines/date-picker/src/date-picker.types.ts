@@ -243,7 +243,7 @@ type PropsWithDefault =
   | "minView"
   | "maxView"
   | "numOfMonths"
-  | "view"
+  | "defaultView"
   | "selectionMode"
   | "positioning"
   | "locale"

@@ -17,7 +17,7 @@ const fetchMachine = createMachine({
       name: "rating",
       count: 5,
       dir: "ltr",
-      value: -1,
+      defaultValue: -1,
       ...compact(props),
       translations: {
         ratingValueText: index => `${index} stars`,
@@ -30,7 +30,8 @@ const fetchMachine = createMachine({
   },
   context({
     prop,
-    bindable
+    bindable,
+    scope
   }) {
     return {
       value: bindable(() => ({
@@ -40,6 +41,7 @@ const fetchMachine = createMachine({
           prop("onValueChange")?.({
             value
           });
+          dom.dispatchChangeEvent(scope, value);
         }
       })),
       hoveredValue: bindable(() => ({

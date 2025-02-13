@@ -24,6 +24,8 @@
 - Removed `useActor` hook in favor of `useMachine` everywhere.
 - Removed `open.controlled` in favor of `defaultOpen` and `open` props.
 
+- Fix issue where context menu doesn't update positioning on subsequent right clicks.
+
 ## Avatar
 
 ### Before

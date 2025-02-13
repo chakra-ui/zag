@@ -67,7 +67,12 @@ export const machine = createMachine({
         },
       })),
       hint: bindable<HintValue | null>(() => ({ defaultValue: null })),
-      scrubberCursorPoint: bindable<Point | null>(() => ({ defaultValue: null })),
+      scrubberCursorPoint: bindable<Point | null>(() => ({
+        defaultValue: null,
+        hash(value) {
+          return value ? `x:${value.x}, y:${value.y}` : ""
+        },
+      })),
       fieldsetDisabled: bindable<boolean>(() => ({ defaultValue: false })),
     }
   },

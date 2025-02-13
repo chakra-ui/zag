@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, trackFormControl, trackPress } from "@zag-js/dom-query"
+import { dispatchInputCheckedEvent, setElementChecked, trackFormControl, trackPress } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import { compact } from "@zag-js/utils"
 import * as dom from "./switch.dom"
@@ -24,7 +24,7 @@ export const machine = createMachine<SwitchSchema>({
   context({ prop, bindable }) {
     return {
       checked: bindable<boolean>(() => ({
-        defaultValue: prop("checked"),
+        defaultValue: prop("defaultChecked"),
         value: prop("checked"),
         onChange(value) {
           prop("onCheckedChange")?.({ checked: value })
@@ -133,7 +133,7 @@ export const machine = createMachine<SwitchSchema>({
       syncInputElement({ context, scope }) {
         const inputEl = dom.getHiddenInputEl(scope)
         if (!inputEl) return
-        inputEl.checked = !!context.get("checked")
+        setElementChecked(inputEl, !!context.get("checked"))
       },
       removeFocusIfNeeded({ context, prop }) {
         if (prop("disabled")) {

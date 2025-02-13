@@ -10,7 +10,7 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
 
   const disabled = prop("disabled")
   const readOnly = prop("readOnly")
-  const checked = !!prop("checked")
+  const checked = !!context.get("checked")
 
   const focused = !disabled && context.get("focused")
   const focusVisible = !disabled && context.get("focusVisible")
@@ -116,6 +116,8 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
             event.preventDefault()
             return
           }
+
+          if (!event.isTrusted) return
 
           const checked = event.currentTarget.checked
           send({ type: "CHECKED.SET", checked, isTrusted: true })

@@ -16,6 +16,7 @@ export const getPositionerEl = (ctx: Scope) => ctx.getById(getPositionerId(ctx))
 export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))
 export const getItemEl = (ctx: Scope, value: string | null) => (value ? ctx.getById(value) : null)
 export const getArrowEl = (ctx: Scope) => ctx.getById(getArrowId(ctx))
+export const getContextTriggerEl = (ctx: Scope) => ctx.getById(getContextTriggerId(ctx))
 
 export const getElements = (ctx: Scope) => {
   const ownerId = CSS.escape(getContentId(ctx))
