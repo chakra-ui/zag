@@ -23,7 +23,6 @@ function Popover({ children, bg, inert }: { children?: React.ReactNode; bg: stri
     return () => {
       cleanup.forEach((c) => c())
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
   return (

@@ -3,14 +3,12 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
 const Menu = () => {
-  const [state, send] = useMachine(
-    menu.machine({
-      id: useId(),
-      positioning: { hideWhenDetached: true },
-    }),
-  )
+  const service = useMachine(menu.machine, {
+    id: useId(),
+    positioning: { hideWhenDetached: true },
+  })
 
-  const api = menu.connect(state, send, normalizeProps)
+  const api = menu.connect(service, normalizeProps)
 
   return (
     <div>

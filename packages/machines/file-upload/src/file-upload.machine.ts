@@ -1,203 +1,212 @@
-import { createMachine, ref } from "@zag-js/core"
+import { createMachine } from "@zag-js/core"
 import { addDomEvent, contains, getEventTarget, raf } from "@zag-js/dom-query"
 import { getAcceptAttrString, isFileEqual } from "@zag-js/file-utils"
-import { callAll, compact } from "@zag-js/utils"
-import { dom } from "./file-upload.dom"
-import type { FileRejection, MachineContext, MachineState, UserDefinedContext } from "./file-upload.types"
+import { callAll } from "@zag-js/utils"
+import * as dom from "./file-upload.dom"
+import type { FileRejection, FileUploadSchema } from "./file-upload.types"
 import { getFilesFromEvent } from "./file-upload.utils"
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "fileupload",
-      initial: "idle",
+export const machine = createMachine<FileUploadSchema>({
+  props({ props }) {
+    return {
+      minFileSize: 0,
+      maxFileSize: Number.POSITIVE_INFINITY,
+      maxFiles: 1,
+      allowDrop: true,
+      preventDocumentDrop: true,
+      ...(props as any),
+      translations: {
+        dropzone: "dropzone",
+        itemPreview: (file) => `preview of ${file.name}`,
+        deleteFile: (file) => `delete file ${file.name}`,
+        ...props.translations,
+      },
+    }
+  },
 
-      context: {
-        minFileSize: 0,
-        maxFileSize: Number.POSITIVE_INFINITY,
-        maxFiles: 1,
-        allowDrop: true,
-        accept: ctx.accept,
-        preventDocumentDrop: true,
-        ...ctx,
-        acceptedFiles: ref([]),
-        rejectedFiles: ref([]),
-        translations: {
-          dropzone: "dropzone",
-          itemPreview: (file) => `preview of ${file.name}`,
-          deleteFile: (file) => `delete file ${file.name}`,
-          ...ctx.translations,
+  initialState() {
+    return "idle"
+  },
+
+  context({ prop, bindable, getContext }) {
+    return {
+      acceptedFiles: bindable<File[]>(() => ({
+        defaultValue: [],
+        isEqual: (a, b) => a.length === b?.length && a.every((file, i) => isFileEqual(file, b[i])),
+        onChange(value) {
+          const ctx = getContext()
+          prop("onFileAccept")?.({ files: value })
+          prop("onFileChange")?.({ acceptedFiles: value, rejectedFiles: ctx.get("rejectedFiles") })
+        },
+      })),
+      rejectedFiles: bindable<FileRejection[]>(() => ({
+        defaultValue: [],
+        onChange(value) {
+          const ctx = getContext()
+          prop("onFileReject")?.({ files: value })
+          prop("onFileChange")?.({ acceptedFiles: ctx.get("acceptedFiles"), rejectedFiles: value })
+        },
+      })),
+    }
+  },
+
+  computed: {
+    acceptAttr: ({ prop }) => getAcceptAttrString(prop("accept")),
+    multiple: ({ prop }) => prop("maxFiles") > 1,
+  },
+
+  watch({ track, context, action }) {
+    track(
+      [
+        () =>
+          context
+            .get("acceptedFiles")
+            .map((file) => `${file.name}-${file.size}`)
+            .join(","),
+      ],
+      () => {
+        action(["syncInputElement"])
+      },
+    )
+  },
+
+  on: {
+    "FILES.SET": {
+      actions: ["setFilesFromEvent"],
+    },
+    "FILE.DELETE": {
+      actions: ["removeFile"],
+    },
+    "FILES.CLEAR": {
+      actions: ["clearFiles"],
+    },
+    "REJECTED_FILES.CLEAR": {
+      actions: ["clearRejectedFiles"],
+    },
+  },
+
+  effects: ["preventDocumentDrop"],
+
+  states: {
+    idle: {
+      on: {
+        OPEN: {
+          actions: ["openFilePicker"],
+        },
+        "DROPZONE.CLICK": {
+          actions: ["openFilePicker"],
+        },
+        "DROPZONE.FOCUS": {
+          target: "focused",
+        },
+        "DROPZONE.DRAG_OVER": {
+          target: "dragging",
         },
       },
-
-      computed: {
-        acceptAttr: (ctx) => getAcceptAttrString(ctx.accept),
-        multiple: (ctx) => ctx.maxFiles > 1,
-      },
-
-      watch: {
-        acceptedFiles: ["syncInputElement"],
-      },
-
+    },
+    focused: {
       on: {
-        "FILES.SET": {
+        "DROPZONE.BLUR": {
+          target: "idle",
+        },
+        OPEN: {
+          actions: ["openFilePicker"],
+        },
+        "DROPZONE.CLICK": {
+          actions: ["openFilePicker"],
+        },
+        "DROPZONE.DRAG_OVER": {
+          target: "dragging",
+        },
+      },
+    },
+    dragging: {
+      on: {
+        "DROPZONE.DROP": {
+          target: "idle",
           actions: ["setFilesFromEvent"],
         },
-        "FILE.DELETE": {
-          actions: ["removeFile"],
-        },
-        "FILES.CLEAR": {
-          actions: ["clearFiles"],
-        },
-        "REJECTED_FILES.CLEAR": {
-          actions: ["clearRejectedFiles"],
-        },
-      },
-
-      activities: ["preventDocumentDrop"],
-
-      states: {
-        idle: {
-          on: {
-            OPEN: {
-              actions: ["openFilePicker"],
-            },
-            "DROPZONE.CLICK": {
-              actions: ["openFilePicker"],
-            },
-            "DROPZONE.FOCUS": "focused",
-            "DROPZONE.DRAG_OVER": "dragging",
-          },
-        },
-        focused: {
-          on: {
-            "DROPZONE.BLUR": "idle",
-            OPEN: {
-              actions: ["openFilePicker"],
-            },
-            "DROPZONE.CLICK": {
-              actions: ["openFilePicker"],
-            },
-            "DROPZONE.DRAG_OVER": "dragging",
-          },
-        },
-        dragging: {
-          on: {
-            "DROPZONE.DROP": {
-              target: "idle",
-              actions: ["setFilesFromEvent"],
-            },
-            "DROPZONE.DRAG_LEAVE": "idle",
-          },
+        "DROPZONE.DRAG_LEAVE": {
+          target: "idle",
         },
       },
     },
-    {
-      activities: {
-        preventDocumentDrop(ctx) {
-          if (!ctx.preventDocumentDrop) return
-          if (!ctx.allowDrop) return
-          if (ctx.disabled) return
-          const doc = dom.getDoc(ctx)
-          const onDragOver = (event: DragEvent) => {
-            event?.preventDefault()
-          }
-          const onDrop = (event: DragEvent) => {
-            if (contains(dom.getRootEl(ctx), getEventTarget(event))) return
-            event.preventDefault()
-          }
-          return callAll(addDomEvent(doc, "dragover", onDragOver, false), addDomEvent(doc, "drop", onDrop, false))
-        },
-      },
-      actions: {
-        syncInputElement(ctx) {
-          queueMicrotask(() => {
-            const inputEl = dom.getHiddenInputEl(ctx)
-            if (!inputEl) return
+  },
 
-            const win = dom.getWin(ctx)
-            const dataTransfer = new win.DataTransfer()
-
-            ctx.acceptedFiles.forEach((v) => {
-              dataTransfer.items.add(v)
-            })
-
-            inputEl.files = dataTransfer.files
-            inputEl.dispatchEvent(new win.Event("change", { bubbles: true }))
-          })
-        },
-        openFilePicker(ctx) {
-          raf(() => {
-            dom.getHiddenInputEl(ctx)?.click()
-          })
-        },
-        setFilesFromEvent(ctx, evt) {
-          const result = getFilesFromEvent(ctx, evt.files)
-          const { acceptedFiles, rejectedFiles } = result
-
-          if (ctx.multiple) {
-            const files = ref([...ctx.acceptedFiles, ...acceptedFiles])
-            set.files(ctx, files, rejectedFiles)
-            return
-          }
-
-          if (acceptedFiles.length) {
-            const files = ref([acceptedFiles[0]])
-            set.files(ctx, files, rejectedFiles)
-          } else if (rejectedFiles.length) {
-            set.files(ctx, ctx.acceptedFiles, rejectedFiles)
-          }
-        },
-        removeFile(ctx, evt) {
-          const files = Array.from(ctx.acceptedFiles.filter((file) => file !== evt.file))
-          const rejectedFiles = Array.from(ctx.rejectedFiles.filter((item) => item.file !== evt.file))
-          ctx.acceptedFiles = ref(files)
-          ctx.rejectedFiles = ref(rejectedFiles)
-          invoke.change(ctx)
-        },
-        clearRejectedFiles(ctx) {
-          ctx.rejectedFiles = ref([])
-          invoke.change(ctx)
-        },
-        clearFiles(ctx) {
-          ctx.acceptedFiles = ref([])
-          ctx.rejectedFiles = ref([])
-          invoke.change(ctx)
-        },
-      },
-      compareFns: {
-        acceptedFiles: (a, b) => a.length === b.length && a.every((file, i) => isFileEqual(file, b[i])),
+  implementations: {
+    effects: {
+      preventDocumentDrop({ prop, scope }) {
+        if (!prop("preventDocumentDrop")) return
+        if (!prop("allowDrop")) return
+        if (prop("disabled")) return
+        const doc = scope.getDoc()
+        const onDragOver = (event: DragEvent) => {
+          event?.preventDefault()
+        }
+        const onDrop = (event: DragEvent) => {
+          if (contains(dom.getRootEl(scope), getEventTarget(event))) return
+          event.preventDefault()
+        }
+        return callAll(addDomEvent(doc, "dragover", onDragOver, false), addDomEvent(doc, "drop", onDrop, false))
       },
     },
-  )
-}
 
-const invoke = {
-  change: (ctx: MachineContext) => {
-    ctx.onFileChange?.({
-      acceptedFiles: ctx.acceptedFiles,
-      rejectedFiles: ctx.rejectedFiles,
-    })
-  },
-  accept: (ctx: MachineContext) => {
-    ctx.onFileAccept?.({ files: ctx.acceptedFiles })
-  },
-  reject: (ctx: MachineContext) => {
-    ctx.onFileReject?.({ files: ctx.rejectedFiles })
-  },
-}
+    actions: {
+      syncInputElement({ scope, context }) {
+        queueMicrotask(() => {
+          const inputEl = dom.getHiddenInputEl(scope)
+          if (!inputEl) return
 
-const set = {
-  files: (ctx: MachineContext, acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-    ctx.acceptedFiles = ref(acceptedFiles)
-    invoke.accept(ctx)
+          const win = scope.getWin()
+          const dataTransfer = new win.DataTransfer()
 
-    if (rejectedFiles) {
-      ctx.rejectedFiles = ref(rejectedFiles)
-      invoke.reject(ctx)
-    }
+          context.get("acceptedFiles").forEach((v) => {
+            dataTransfer.items.add(v)
+          })
 
-    invoke.change(ctx)
+          inputEl.files = dataTransfer.files
+          inputEl.dispatchEvent(new win.Event("change", { bubbles: true }))
+        })
+      },
+      openFilePicker({ scope }) {
+        raf(() => {
+          dom.getHiddenInputEl(scope)?.click()
+        })
+      },
+      setFilesFromEvent(params) {
+        const { computed, context, event } = params
+        const result = getFilesFromEvent(params, event.files)
+        const { acceptedFiles, rejectedFiles } = result
+
+        if (computed("multiple")) {
+          context.set("acceptedFiles", (prev) => [...prev, ...acceptedFiles])
+          context.set("rejectedFiles", rejectedFiles)
+          return
+        }
+
+        if (acceptedFiles.length) {
+          const files = [acceptedFiles[0]]
+          context.set("acceptedFiles", files)
+          context.set("rejectedFiles", rejectedFiles)
+        } else if (rejectedFiles.length) {
+          context.set("acceptedFiles", context.get("acceptedFiles"))
+          context.set("rejectedFiles", rejectedFiles)
+        }
+      },
+      removeFile({ context, event }) {
+        const files = context.get("acceptedFiles").filter((file) => file !== event.file)
+        const rejectedFiles = context.get("rejectedFiles").filter((item) => item.file !== event.file)
+        context.set("acceptedFiles", files)
+        context.set("rejectedFiles", rejectedFiles)
+      },
+      clearRejectedFiles({ context }) {
+        context.set("acceptedFiles", context.get("acceptedFiles"))
+        context.set("rejectedFiles", [])
+      },
+      clearFiles({ context }) {
+        context.set("acceptedFiles", [])
+        context.set("rejectedFiles", [])
+      },
+    },
   },
-}
+})

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
@@ -13,7 +12,7 @@ const collection = select.collection({
 })
 
 interface SelectProps
-  extends Omit<select.Context, "id" | "value" | "onValueChange" | "collection" | "scrollToIndexFn"> {
+  extends Omit<select.Props, "id" | "value" | "defaultValue" | "onValueChange" | "collection" | "scrollToIndexFn"> {
   defaultValue?: string | null | undefined
   defaultOpen?: boolean
   value?: string | null | undefined
@@ -35,37 +34,29 @@ export function VirtualizedSelect(props: SelectProps) {
 
   const timerRef = useRef<NodeJS.Timeout>()
 
-  const [state, send] = useMachine(
-    select.machine({
-      id: useId(),
-      collection,
-      value: toArray(value) ?? toArray(defaultValue),
-      open: open ?? defaultOpen,
-      scrollToIndexFn(details) {
-        if (!details.immediate) {
-          rowVirtualizer.scrollToIndex(details.index, { align: "center", behavior: "auto" })
-        } else {
-          clearTimeout(timerRef.current)
-          timerRef.current = setTimeout(() => {
-            rowVirtualizer.scrollToIndex(details.index, { align: "center", behavior: "auto" })
-          })
-        }
-      },
-    }),
-    {
-      context: {
-        ...contextProps,
-        open,
-        "open.controlled": open !== undefined,
-        value: toArray(value),
-        onValueChange(details: any) {
-          onValueChange?.(details.value[0])
-        },
-      },
+  const service = useMachine(select.machine, {
+    id: useId(),
+    collection,
+    defaultValue: toArray(defaultValue),
+    value: toArray(value),
+    open: open ?? defaultOpen,
+    onValueChange(details: any) {
+      onValueChange?.(details.value[0])
     },
-  )
+    scrollToIndexFn(details) {
+      if (!details.immediate) {
+        rowVirtualizer.scrollToIndex(details.index, { align: "center", behavior: "auto" })
+      } else {
+        clearTimeout(timerRef.current)
+        timerRef.current = setTimeout(() => {
+          rowVirtualizer.scrollToIndex(details.index, { align: "center", behavior: "auto" })
+        })
+      }
+    },
+    ...contextProps,
+  })
 
-  const api = select.connect(state, send, normalizeProps)
+  const api = select.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

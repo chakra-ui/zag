@@ -9,20 +9,15 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(carouselControls)
 
-  const [state, send] = useMachine(
-    carousel.machine({
-      id: createUniqueId(),
-      spacing: "20px",
-      slidesPerPage: 2,
-      slideCount: carouselData.length,
-      allowMouseDrag: true,
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(carousel.machine, {
+    id: createUniqueId(),
+    spacing: "20px",
+    slidesPerPage: 2,
+    slideCount: carouselData.length,
+    allowMouseDrag: true,
+  })
 
-  const api = createMemo(() => carousel.connect(state, send, normalizeProps))
+  const api = createMemo(() => carousel.connect(service, normalizeProps))
 
   return (
     <>
@@ -58,7 +53,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

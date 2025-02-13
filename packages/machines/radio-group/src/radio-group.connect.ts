@@ -2,21 +2,25 @@ import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./radio-group.anatomy"
-import { dom } from "./radio-group.dom"
-import type { ItemProps, ItemState, MachineApi, Send, State } from "./radio-group.types"
+import * as dom from "./radio-group.dom"
+import type { ItemProps, ItemState, RadioGroupApi, RadioGroupService } from "./radio-group.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const groupDisabled = state.context.isDisabled
-  const readOnly = state.context.readOnly
+export function connect<T extends PropTypes>(
+  service: RadioGroupService,
+  normalize: NormalizeProps<T>,
+): RadioGroupApi<T> {
+  const { context, send, computed, prop, scope } = service
+  const groupDisabled = computed("isDisabled")
+  const readOnly = prop("readOnly")
 
   function getItemState(props: ItemProps): ItemState {
     return {
       invalid: !!props.invalid,
       disabled: !!props.disabled || groupDisabled,
-      checked: state.context.value === props.value,
-      focused: state.context.focusedValue === props.value,
-      hovered: state.context.hoveredValue === props.value,
-      active: state.context.activeValue === props.value,
+      checked: context.get("value") === props.value,
+      focused: context.get("focusedValue") === props.value,
+      hovered: context.get("hoveredValue") === props.value,
+      active: context.get("activeValue") === props.value,
     }
   }
 
@@ -24,32 +28,32 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     const radioState = getItemState(props)
     return {
       "data-focus": dataAttr(radioState.focused),
-      "data-focus-visible": dataAttr(radioState.focused && state.context.focusVisible),
+      "data-focus-visible": dataAttr(radioState.focused && context.get("focusVisible")),
       "data-disabled": dataAttr(radioState.disabled),
       "data-readonly": dataAttr(readOnly),
       "data-state": radioState.checked ? "checked" : "unchecked",
       "data-hover": dataAttr(radioState.hovered),
       "data-invalid": dataAttr(radioState.invalid),
-      "data-orientation": state.context.orientation,
-      "data-ssr": dataAttr(state.context.ssr),
+      "data-orientation": prop("orientation"),
+      "data-ssr": dataAttr(context.get("ssr")),
     }
   }
 
   const focus = () => {
-    const firstEnabledAndCheckedInput = dom.getFirstEnabledAndCheckedInputEl(state.context)
+    const firstEnabledAndCheckedInput = dom.getFirstEnabledAndCheckedInputEl(scope)
 
     if (firstEnabledAndCheckedInput) {
       firstEnabledAndCheckedInput.focus()
       return
     }
 
-    const firstEnabledInput = dom.getFirstEnabledInputEl(state.context)
+    const firstEnabledInput = dom.getFirstEnabledInputEl(scope)
     firstEnabledInput?.focus()
   }
 
   return {
     focus,
-    value: state.context.value,
+    value: context.get("value"),
     setValue(value) {
       send({ type: "SET_VALUE", value, isTrusted: false })
     },
@@ -61,12 +65,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.root.attrs,
         role: "radiogroup",
-        id: dom.getRootId(state.context),
-        "aria-labelledby": dom.getLabelId(state.context),
-        "data-orientation": state.context.orientation,
+        id: dom.getRootId(scope),
+        "aria-labelledby": dom.getLabelId(scope),
+        "data-orientation": prop("orientation"),
         "data-disabled": dataAttr(groupDisabled),
-        "aria-orientation": state.context.orientation,
-        dir: state.context.dir,
+        "aria-orientation": prop("orientation"),
+        dir: prop("dir"),
         style: {
           position: "relative",
         },
@@ -76,10 +80,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getLabelProps() {
       return normalize.element({
         ...parts.label.attrs,
-        dir: state.context.dir,
-        "data-orientation": state.context.orientation,
+        dir: prop("dir"),
+        "data-orientation": prop("orientation"),
         "data-disabled": dataAttr(groupDisabled),
-        id: dom.getLabelId(state.context),
+        id: dom.getLabelId(scope),
         onClick: focus,
       })
     },
@@ -91,9 +95,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.label({
         ...parts.item.attrs,
-        dir: state.context.dir,
-        id: dom.getItemId(state.context, props.value),
-        htmlFor: dom.getItemHiddenInputId(state.context, props.value),
+        dir: prop("dir"),
+        id: dom.getItemId(scope, props.value),
+        htmlFor: dom.getItemHiddenInputId(scope, props.value),
         ...getItemDataAttrs(props),
         onPointerMove() {
           if (itemState.disabled) return
@@ -123,8 +127,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getItemTextProps(props) {
       return normalize.element({
         ...parts.itemText.attrs,
-        dir: state.context.dir,
-        id: dom.getItemLabelId(state.context, props.value),
+        dir: prop("dir"),
+        id: dom.getItemLabelId(scope, props.value),
         ...getItemDataAttrs(props),
       })
     },
@@ -134,8 +138,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.itemControl.attrs,
-        dir: state.context.dir,
-        id: dom.getItemControlId(state.context, props.value),
+        dir: prop("dir"),
+        id: dom.getItemControlId(scope, props.value),
         "data-active": dataAttr(controlState.active),
         "aria-hidden": true,
         ...getItemDataAttrs(props),
@@ -146,11 +150,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const inputState = getItemState(props)
 
       return normalize.input({
-        "data-ownedby": dom.getRootId(state.context),
-        id: dom.getItemHiddenInputId(state.context, props.value),
+        "data-ownedby": dom.getRootId(scope),
+        id: dom.getItemHiddenInputId(scope, props.value),
         type: "radio",
-        name: state.context.name || state.context.id,
-        form: state.context.form,
+        name: prop("name") || prop("id"),
+        form: prop("form"),
         value: props.value,
         onClick(event) {
           if (readOnly) {
@@ -188,26 +192,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getIndicatorProps() {
+      const rect = context.get("indicatorRect")
       return normalize.element({
-        id: dom.getIndicatorId(state.context),
+        id: dom.getIndicatorId(scope),
         ...parts.indicator.attrs,
-        dir: state.context.dir,
-        hidden: state.context.value == null,
+        dir: prop("dir"),
+        hidden: context.get("value") == null,
         "data-disabled": dataAttr(groupDisabled),
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         style: {
           "--transition-property": "left, top, width, height",
-          "--left": state.context.indicatorRect?.left,
-          "--top": state.context.indicatorRect?.top,
-          "--width": state.context.indicatorRect?.width,
-          "--height": state.context.indicatorRect?.height,
+          "--left": rect?.left,
+          "--top": rect?.top,
+          "--width": rect?.width,
+          "--height": rect?.height,
           position: "absolute",
           willChange: "var(--transition-property)",
           transitionProperty: "var(--transition-property)",
-          transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration, 150ms)" : "0ms",
+          transitionDuration: context.get("canIndicatorTransition") ? "var(--transition-duration, 150ms)" : "0ms",
           transitionTimingFunction: "var(--transition-timing-function)",
-          [state.context.orientation === "horizontal" ? "left" : "top"]:
-            state.context.orientation === "horizontal" ? "var(--left)" : "var(--top)",
+          [prop("orientation") === "horizontal" ? "left" : "top"]:
+            prop("orientation") === "horizontal" ? "var(--left)" : "var(--top)",
         },
       })
     },

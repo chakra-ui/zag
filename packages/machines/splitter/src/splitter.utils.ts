@@ -1,4 +1,4 @@
-import type { MachineContext as Ctx, NormalizedPanelData } from "./splitter.types"
+import type { NormalizedPanelData, PanelSizeData } from "./splitter.types"
 
 function validateSize(key: string, size: number) {
   if (Math.floor(size) > 100) {
@@ -6,12 +6,12 @@ function validateSize(key: string, size: number) {
   }
 }
 
-export function getNormalizedPanels(ctx: Ctx): NormalizedPanelData {
+export function getNormalizedPanels(sizes: PanelSizeData[]): NormalizedPanelData {
   let numOfPanelsWithoutSize = 0
   let totalSize = 0
   let totalMinSize = 0
 
-  const panels = ctx.size.map((panel) => {
+  const panels = sizes.map((panel) => {
     const minSize = panel.minSize ?? 0
     const maxSize = panel.maxSize ?? 100
 
@@ -60,16 +60,16 @@ export function getNormalizedPanels(ctx: Ctx): NormalizedPanelData {
   return result as NormalizedPanelData
 }
 
-export function getHandlePanels(ctx: Ctx, id = ctx.activeResizeId) {
+export function getHandlePanels(panels: NormalizedPanelData, id: string | null) {
   const [beforeId, afterId] = id?.split(":") ?? []
   if (!beforeId || !afterId) return
 
-  const beforeIndex = ctx.previousPanels.findIndex((panel) => panel.id === beforeId)
-  const afterIndex = ctx.previousPanels.findIndex((panel) => panel.id === afterId)
+  const beforeIndex = panels.findIndex((panel) => panel.id === beforeId)
+  const afterIndex = panels.findIndex((panel) => panel.id === afterId)
   if (beforeIndex === -1 || afterIndex === -1) return
 
-  const before = ctx.previousPanels[beforeIndex]
-  const after = ctx.previousPanels[afterIndex]
+  const before = panels[beforeIndex]
+  const after = panels[afterIndex]
 
   return {
     before: {
@@ -83,24 +83,22 @@ export function getHandlePanels(ctx: Ctx, id = ctx.activeResizeId) {
   }
 }
 
-export function getHandleBounds(ctx: Ctx, id = ctx.activeResizeId) {
-  const panels = getHandlePanels(ctx, id)
-  if (!panels) return
-
-  const { before, after } = panels
-
+export function getHandleBounds(panels: NormalizedPanelData, id: string | null) {
+  const handlePanels = getHandlePanels(panels, id)
+  if (!handlePanels) return
+  const { before, after } = handlePanels
   return {
     min: Math.max(before.start + before.minSize, after.end - after.maxSize),
     max: Math.min(after.end - after.minSize, before.maxSize + before.start),
   }
 }
 
-export function getPanelBounds(ctx: Ctx, id?: string | null) {
-  const bounds = getHandleBounds(ctx, id)
-  const panels = getHandlePanels(ctx, id)
+export function getPanelBounds(panels: NormalizedPanelData, id: string | null) {
+  const bounds = getHandleBounds(panels, id)
+  const handlePanels = getHandlePanels(panels, id)
 
-  if (!bounds || !panels) return
-  const { before, after } = panels
+  if (!bounds || !handlePanels) return
+  const { before, after } = handlePanels
 
   const beforeMin = Math.abs(before.start - bounds.min)
   const afterMin = after.size + (before.size - beforeMin)

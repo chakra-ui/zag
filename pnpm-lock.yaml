@@ -2170,9 +2170,9 @@ importers:
 
   packages/core:
     dependencies:
-      '@zag-js/store':
+      '@zag-js/dom-query':
         specifier: workspace:*
-        version: link:../store
+        version: link:../utilities/dom-query
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../utilities/core
@@ -2874,6 +2874,9 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3305,6 +3308,9 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
+      '@zag-js/store':
+        specifier: workspace:*
+        version: link:../../store
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

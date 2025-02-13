@@ -1,78 +1,83 @@
 import { ariaAttr, dataAttr, getEventKey, getEventPoint, getRelativePoint, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import * as dom from "./rating-group.dom"
 import { parts } from "./rating-group.anatomy"
-import { dom } from "./rating-group.dom"
-import type { ItemProps, ItemState, MachineApi, Send, State } from "./rating-group.types"
+import type { ItemProps, ItemState, RatingGroupApi, RatingGroupService } from "./rating-group.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const interactive = state.context.isInteractive
-  const disabled = state.context.isDisabled
-  const readOnly = state.context.readOnly
-  const value = state.context.value
-  const hoveredValue = state.context.hoveredValue
-  const translations = state.context.translations
+export function connect<T extends PropTypes>(
+  service: RatingGroupService,
+  normalize: NormalizeProps<T>,
+): RatingGroupApi<T> {
+  const { context, send, prop, scope, computed } = service
+
+  const interactive = computed("isInteractive")
+  const disabled = computed("isDisabled")
+  const readOnly = prop("readOnly")
+  const value = context.get("value")
+  const hoveredValue = context.get("hoveredValue")
+  const translations = prop("translations")
 
   function getItemState(props: ItemProps): ItemState {
-    const value = state.context.isHovering ? state.context.hoveredValue : state.context.value
-    const equal = Math.ceil(value) === props.index
-    const highlighted = props.index <= value || equal
-    const half = equal && Math.abs(value - props.index) === 0.5
+    const currentValue = computed("isHovering") ? hoveredValue : value
+    const equal = Math.ceil(currentValue) === props.index
+    const highlighted = props.index <= currentValue || equal
+    const half = equal && Math.abs(currentValue - props.index) === 0.5
 
     return {
       highlighted,
       half,
-      checked: equal || (state.context.value === -1 && props.index === 1),
+      checked: equal || (value === -1 && props.index === 1),
     }
   }
 
   return {
-    hovering: state.context.isHovering,
+    hovering: computed("isHovering"),
     value,
     hoveredValue,
-    count: state.context.count,
-    items: Array.from({ length: state.context.count }).map((_, index) => index + 1),
+    count: prop("count"),
+    items: Array.from({ length: prop("count") }).map((_, index) => index + 1),
 
     setValue(value) {
       send({ type: "SET_VALUE", value })
     },
     clearValue() {
-      send("CLEAR_VALUE")
+      send({ type: "CLEAR_VALUE" })
     },
 
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        dir: state.context.dir,
-        id: dom.getRootId(state.context),
+        dir: prop("dir"),
+        id: dom.getRootId(scope),
       })
     },
 
     getHiddenInputProps() {
       return normalize.input({
-        name: state.context.name,
-        form: state.context.form,
+        name: prop("name"),
+        form: prop("form"),
         type: "text",
         hidden: true,
         disabled,
         readOnly,
-        required: state.context.required,
-        id: dom.getHiddenInputId(state.context),
-        defaultValue: state.context.value,
+        required: prop("required"),
+        id: dom.getHiddenInputId(scope),
+        defaultValue: value,
       })
     },
 
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
-        dir: state.context.dir,
-        id: dom.getLabelId(state.context),
+        dir: prop("dir"),
+        id: dom.getLabelId(scope),
         "data-disabled": dataAttr(disabled),
-        htmlFor: dom.getHiddenInputId(state.context),
+        htmlFor: dom.getHiddenInputId(scope),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
           event.preventDefault()
-          const radioEl = dom.getRadioEl(state.context, 1)
+          const radioEl = dom.getRadioEl(scope, 1)
           radioEl?.focus({ preventScroll: true })
         },
       })
@@ -80,24 +85,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getControlProps() {
       return normalize.element({
-        id: dom.getControlId(state.context),
+        id: dom.getControlId(scope),
         ...parts.control.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         role: "radiogroup",
         "aria-orientation": "horizontal",
-        "aria-labelledby": dom.getLabelId(state.context),
+        "aria-labelledby": dom.getLabelId(scope),
         "aria-readonly": ariaAttr(readOnly),
         "data-readonly": dataAttr(readOnly),
         "data-disabled": dataAttr(disabled),
         onPointerMove(event) {
           if (!interactive) return
           if (event.pointerType === "touch") return
-          send("GROUP_POINTER_OVER")
+          send({ type: "GROUP_POINTER_OVER" })
         },
         onPointerLeave(event) {
           if (!interactive) return
           if (event.pointerType === "touch") return
-          send("GROUP_POINTER_LEAVE")
+          send({ type: "GROUP_POINTER_LEAVE" })
         },
       })
     },
@@ -111,8 +116,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.item.attrs,
-        dir: state.context.dir,
-        id: dom.getItemId(state.context, index.toString()),
+        dir: prop("dir"),
+        id: dom.getItemId(scope, index.toString()),
         role: "radio",
         tabIndex: (() => {
           if (readOnly) return itemState.checked ? 0 : undefined
@@ -124,7 +129,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-disabled": disabled,
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
-        "aria-setsize": state.context.count,
+        "aria-setsize": prop("count"),
         "aria-checked": itemState.checked,
         "data-checked": dataAttr(itemState.checked),
         "aria-posinset": index,
@@ -141,7 +146,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           const relativePoint = getRelativePoint(point, event.currentTarget)
           const percentX = relativePoint.getPercentValue({
             orientation: "horizontal",
-            dir: state.context.dir,
+            dir: prop("dir"),
           })
           const isMidway = percentX < 0.5
           send({ type: "POINTER_OVER", index, isMidway })
@@ -152,29 +157,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
           const keyMap: EventKeyMap = {
             ArrowLeft() {
-              send("ARROW_LEFT")
+              send({ type: "ARROW_LEFT" })
             },
             ArrowRight() {
-              send("ARROW_RIGHT")
+              send({ type: "ARROW_RIGHT" })
             },
             ArrowUp() {
-              send("ARROW_LEFT")
+              send({ type: "ARROW_LEFT" })
             },
             ArrowDown() {
-              send("ARROW_RIGHT")
+              send({ type: "ARROW_RIGHT" })
             },
             Space() {
               send({ type: "SPACE", value: index })
             },
             Home() {
-              send("HOME")
+              send({ type: "HOME" })
             },
             End() {
-              send("END")
+              send({ type: "END" })
             },
           }
 
-          const key = getEventKey(event, state.context)
+          const key = getEventKey(event, { dir: prop("dir") })
           const exec = keyMap[key]
 
           if (exec) {
@@ -188,11 +193,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onFocus() {
           if (!interactive) return
-          send("FOCUS")
+          send({ type: "FOCUS" })
         },
         onBlur() {
           if (!interactive) return
-          send("BLUR")
+          send({ type: "BLUR" })
         },
       })
     },

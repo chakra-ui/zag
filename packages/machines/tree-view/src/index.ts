@@ -4,14 +4,14 @@ export { connect } from "./tree-view.connect"
 export { machine } from "./tree-view.machine"
 export * from "./tree-view.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  TreeViewApi as Api,
+  TreeViewProps as Props,
   ElementIds,
   ExpandedChangeDetails,
   FocusChangeDetails,
   NodeProps,
   NodeState,
   SelectionChangeDetails,
-  Service,
+  TreeViewService as Service,
   TreeNode,
 } from "./tree-view.types"

@@ -1,41 +1,39 @@
-import { createScope, query } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./combobox.types"
+import type { Scope } from "@zag-js/core"
+import { query } from "@zag-js/dom-query"
 
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `combobox:${ctx.id}`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `combobox:${ctx.id}:label`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `combobox:${ctx.id}:control`,
-  getInputId: (ctx: Ctx) => ctx.ids?.input ?? `combobox:${ctx.id}:input`,
-  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `combobox:${ctx.id}:content`,
-  getPositionerId: (ctx: Ctx) => ctx.ids?.positioner ?? `combobox:${ctx.id}:popper`,
-  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `combobox:${ctx.id}:toggle-btn`,
-  getClearTriggerId: (ctx: Ctx) => ctx.ids?.clearTrigger ?? `combobox:${ctx.id}:clear-btn`,
-  getItemGroupId: (ctx: Ctx, id: string | number) => ctx.ids?.itemGroup?.(id) ?? `combobox:${ctx.id}:optgroup:${id}`,
-  getItemGroupLabelId: (ctx: Ctx, id: string | number) =>
-    ctx.ids?.itemGroupLabel?.(id) ?? `combobox:${ctx.id}:optgroup-label:${id}`,
-  getItemId: (ctx: Ctx, id: string) => ctx.ids?.item?.(id) ?? `combobox:${ctx.id}:option:${id}`,
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `combobox:${ctx.id}`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `combobox:${ctx.id}:label`
+export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `combobox:${ctx.id}:control`
+export const getInputId = (ctx: Scope) => ctx.ids?.input ?? `combobox:${ctx.id}:input`
+export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `combobox:${ctx.id}:content`
+export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `combobox:${ctx.id}:popper`
+export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `combobox:${ctx.id}:toggle-btn`
+export const getClearTriggerId = (ctx: Scope) => ctx.ids?.clearTrigger ?? `combobox:${ctx.id}:clear-btn`
+export const getItemGroupId = (ctx: Scope, id: string | number) =>
+  ctx.ids?.itemGroup?.(id) ?? `combobox:${ctx.id}:optgroup:${id}`
+export const getItemGroupLabelId = (ctx: Scope, id: string | number) =>
+  ctx.ids?.itemGroupLabel?.(id) ?? `combobox:${ctx.id}:optgroup-label:${id}`
+export const getItemId = (ctx: Scope, id: string) => ctx.ids?.item?.(id) ?? `combobox:${ctx.id}:option:${id}`
 
-  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
-  getInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getInputId(ctx)),
-  getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
-  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
-  getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
-  getClearTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getClearTriggerId(ctx)),
-  getHighlightedItemEl: (ctx: Ctx) => {
-    const value = ctx.highlightedValue
-    if (value == null) return
-    const selector = `[role=option][data-value="${CSS.escape(value)}"`
-    return query(dom.getContentEl(ctx), selector)
-  },
+export const getContentEl = (ctx: Scope) => ctx.getById(getContentId(ctx))
+export const getInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getInputId(ctx))
+export const getPositionerEl = (ctx: Scope) => ctx.getById(getPositionerId(ctx))
+export const getControlEl = (ctx: Scope) => ctx.getById(getControlId(ctx))
+export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))
+export const getClearTriggerEl = (ctx: Scope) => ctx.getById(getClearTriggerId(ctx))
+export const getItemEl = (ctx: Scope, value: string | null) => {
+  if (value == null) return
+  const selector = `[role=option][data-value="${CSS.escape(value)}"`
+  return query(getContentEl(ctx), selector)
+}
 
-  focusInputEl: (ctx: Ctx) => {
-    const inputEl = dom.getInputEl(ctx)
-    if (dom.isActiveElement(ctx, inputEl)) return
-    inputEl?.focus({ preventScroll: true })
-  },
-  focusTriggerEl: (ctx: Ctx) => {
-    const triggerEl = dom.getTriggerEl(ctx)
-    if (dom.isActiveElement(ctx, triggerEl)) return
-    triggerEl?.focus({ preventScroll: true })
-  },
-})
+export const focusInputEl = (ctx: Scope) => {
+  const inputEl = getInputEl(ctx)
+  if (ctx.isActiveElement(inputEl)) return
+  inputEl?.focus({ preventScroll: true })
+}
+export const focusTriggerEl = (ctx: Scope) => {
+  const triggerEl = getTriggerEl(ctx)
+  if (ctx.isActiveElement(triggerEl)) return
+  triggerEl?.focus({ preventScroll: true })
+}

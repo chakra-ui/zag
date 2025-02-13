@@ -1,15 +1,16 @@
 import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./clipboard.anatomy"
-import type { MachineApi, Send, State } from "./clipboard.types"
-import { dom } from "./clipboard.dom"
+import type { ClipboardService, ClipboardApi } from "./clipboard.types"
+import * as dom from "./clipboard.dom"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(service: ClipboardService, normalize: NormalizeProps<T>): ClipboardApi<T> {
+  const { state, send, context, scope } = service
   const copied = state.matches("copied")
 
   return {
     copied,
-    value: state.context.value,
+    value: context.get("value"),
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
@@ -21,16 +22,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.root.attrs,
         "data-copied": dataAttr(copied),
-        id: dom.getRootId(state.context),
+        id: dom.getRootId(scope),
       })
     },
 
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
-        htmlFor: dom.getInputId(state.context),
+        htmlFor: dom.getInputId(scope),
         "data-copied": dataAttr(copied),
-        id: dom.getLabelId(state.context),
+        id: dom.getLabelId(scope),
       })
     },
 
@@ -44,11 +45,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getInputProps() {
       return normalize.input({
         ...parts.input.attrs,
-        defaultValue: state.context.value,
+        defaultValue: context.get("value"),
         "data-copied": dataAttr(copied),
         readOnly: true,
         "data-readonly": "true",
-        id: dom.getInputId(state.context),
+        id: dom.getInputId(scope),
         onFocus(event) {
           event.currentTarget.select()
         },

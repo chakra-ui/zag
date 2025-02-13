@@ -4,16 +4,16 @@ export { machine } from "./time-picker.machine"
 export * from "./time-picker.parse"
 export * from "./time-picker.props"
 export type {
-  MachineApi as Api,
+  TimePickerApi as Api,
   CellProps,
   ColumnProps,
-  UserDefinedContext as Context,
   ElementIds,
   FocusChangeDetails,
   OpenChangeDetails,
   PeriodCellProps,
   PositioningOptions,
-  Service,
+  TimePickerProps as Props,
+  TimePickerService as Service,
   Time,
   TimePeriod,
   TimeUnit,

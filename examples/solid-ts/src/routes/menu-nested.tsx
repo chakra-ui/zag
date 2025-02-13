@@ -7,24 +7,23 @@ import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 
 export default function Page() {
-  const [state, send, machine] = useMachine(menu.machine({ id: createUniqueId() }))
+  const service = useMachine(menu.machine, { id: createUniqueId() })
+  const root = createMemo(() => menu.connect(service, normalizeProps))
 
-  const root = createMemo(() => menu.connect(state, send, normalizeProps))
+  const subService = useMachine(menu.machine, { id: createUniqueId() })
+  const sub = createMemo(() => menu.connect(subService, normalizeProps))
 
-  const [subState, subSend, subMachine] = useMachine(menu.machine({ id: createUniqueId() }))
-  const sub = createMemo(() => menu.connect(subState, subSend, normalizeProps))
-
-  const [sub2State, sub2Send, sub2Machine] = useMachine(menu.machine({ id: createUniqueId() }))
-  const sub2 = createMemo(() => menu.connect(sub2State, sub2Send, normalizeProps))
+  const sub2Service = useMachine(menu.machine, { id: createUniqueId() })
+  const sub2 = createMemo(() => menu.connect(sub2Service, normalizeProps))
 
   onMount(() => {
-    root().setChild(subMachine)
-    sub().setParent(machine)
+    root().setChild(subService)
+    sub().setParent(service)
   })
 
   onMount(() => {
-    sub().setChild(sub2Machine)
-    sub2().setParent(subMachine)
+    sub().setChild(sub2Service)
+    sub2().setParent(subService)
   })
 
   const triggerItemProps = createMemo(() => root().getTriggerItemProps(sub()))
@@ -95,9 +94,9 @@ export default function Page() {
       </main>
 
       <Toolbar>
-        <StateVisualizer state={state} />
-        <StateVisualizer state={subState} />
-        <StateVisualizer state={sub2State} />
+        <StateVisualizer state={service} />
+        <StateVisualizer state={subService} />
+        <StateVisualizer state={sub2Service} />
       </Toolbar>
     </>
   )

@@ -10,18 +10,65 @@ const {
   choose
 } = actions;
 const fetchMachine = createMachine({
-  id: "hover-card",
-  initial: ctx.open ? "open" : "closed",
-  context: {
-    "isOpenControlled": false,
-    "isOpenControlled": false,
-    "isOpenControlled && !isPointer": false,
-    "!isPointer": false,
-    "isOpenControlled": false,
-    "isOpenControlled": false,
-    "isOpenControlled && !isPointer": false,
-    "!isPointer": false,
-    "isOpenControlled": false
+  props({
+    props
+  }) {
+    return {
+      openDelay: 700,
+      closeDelay: 300,
+      ...compact(props),
+      positioning: {
+        placement: "bottom",
+        ...props.positioning
+      }
+    };
+  },
+  initialState({
+    prop
+  }) {
+    const open = prop("open") || prop("defaultOpen");
+    return open ? "open" : "closed";
+  },
+  context({
+    prop,
+    bindable
+  }) {
+    return {
+      open: bindable < boolean > (() => ({
+        defaultValue: prop("defaultOpen"),
+        value: prop("open"),
+        onChange(value) {
+          prop("onOpenChange")?.({
+            open: value
+          });
+        }
+      })),
+      currentPlacement: bindable < Placement | undefined > (() => ({
+        defaultValue: undefined
+      })),
+      isPointer: bindable < boolean > (() => ({
+        defaultValue: false
+      }))
+    };
+  },
+  watch({
+    track,
+    context: {
+      "isOpenControlled": false,
+      "isOpenControlled": false,
+      "isOpenControlled && !isPointer": false,
+      "!isPointer": false,
+      "isOpenControlled": false,
+      "isOpenControlled": false,
+      "isOpenControlled && !isPointer": false,
+      "!isPointer": false,
+      "isOpenControlled": false
+    },
+    action
+  }) {
+    track([() => context.get("open")], () => {
+      action(["toggleVisibility"]);
+    });
   },
   on: {
     UPDATE_CONTEXT: {
@@ -33,29 +80,38 @@ const fetchMachine = createMachine({
       tags: ["closed"],
       entry: ["clearIsPointer"],
       on: {
-        "CONTROLLED.OPEN": "open",
+        "CONTROLLED.OPEN": {
+          target: "open"
+        },
         POINTER_ENTER: {
           target: "opening",
           actions: ["setIsPointer"]
         },
-        TRIGGER_FOCUS: "opening",
-        OPEN: "opening"
+        TRIGGER_FOCUS: {
+          target: "opening"
+        },
+        OPEN: {
+          target: "opening"
+        }
       }
     },
     opening: {
       tags: ["closed"],
-      after: {
+      effects: ["waitForOpenDelay"],
+      on: {
         OPEN_DELAY: [{
           cond: "isOpenControlled",
           actions: ["invokeOnOpen"]
         }, {
           target: "open",
           actions: ["invokeOnOpen"]
-        }]
-      },
-      on: {
-        "CONTROLLED.OPEN": "open",
-        "CONTROLLED.CLOSE": "closed",
+        }],
+        "CONTROLLED.OPEN": {
+          target: "open"
+        },
+        "CONTROLLED.CLOSE": {
+          target: "closed"
+        },
         POINTER_LEAVE: [{
           cond: "isOpenControlled",
           // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
@@ -85,13 +141,17 @@ const fetchMachine = createMachine({
     },
     open: {
       tags: ["open"],
-      activities: ["trackDismissableElement", "trackPositioning"],
+      effects: ["trackDismissableElement", "trackPositioning"],
       on: {
-        "CONTROLLED.CLOSE": "closed",
+        "CONTROLLED.CLOSE": {
+          target: "closed"
+        },
         POINTER_ENTER: {
           actions: ["setIsPointer"]
         },
-        POINTER_LEAVE: "closing",
+        POINTER_LEAVE: {
+          target: "closing"
+        },
         CLOSE: [{
           cond: "isOpenControlled",
           actions: ["invokeOnClose"]
@@ -108,30 +168,157 @@ const fetchMachine = createMachine({
           actions: ["invokeOnClose"]
         }],
         "POSITIONING.SET": {
-          actions: "reposition"
+          actions: ["reposition"]
         }
       }
     },
     closing: {
       tags: ["open"],
-      activities: ["trackPositioning"],
-      after: {
+      effects: ["trackPositioning", "waitForCloseDelay"],
+      on: {
         CLOSE_DELAY: [{
           cond: "isOpenControlled",
           actions: ["invokeOnClose"]
         }, {
           target: "closed",
           actions: ["invokeOnClose"]
-        }]
-      },
-      on: {
-        "CONTROLLED.CLOSE": "closed",
-        "CONTROLLED.OPEN": "open",
+        }],
+        "CONTROLLED.CLOSE": {
+          target: "closed"
+        },
+        "CONTROLLED.OPEN": {
+          target: "open"
+        },
         POINTER_ENTER: {
           target: "open",
           // no need to invokeOnOpen here because it's still open (but about to close)
           actions: ["setIsPointer"]
         }
+      }
+    }
+  },
+  implementations: {
+    guards: {
+      isPointer: ({
+        context
+      }) => !!context.get("isPointer"),
+      isOpenControlled: ({
+        prop
+      }) => prop("open") != null
+    },
+    effects: {
+      waitForOpenDelay({
+        send,
+        prop
+      }) {
+        const id = setTimeout(() => {
+          send({
+            type: "OPEN_DELAY"
+          });
+        }, prop("openDelay"));
+        return () => clearTimeout(id);
+      },
+      waitForCloseDelay({
+        send,
+        prop
+      }) {
+        const id = setTimeout(() => {
+          send({
+            type: "CLOSE_DELAY"
+          });
+        }, prop("closeDelay"));
+        return () => clearTimeout(id);
+      },
+      trackPositioning({
+        context,
+        prop,
+        scope
+      }) {
+        if (!context.get("currentPlacement")) {
+          context.set("currentPlacement", prop("positioning").placement);
+        }
+        const getPositionerEl = () => dom.getPositionerEl(scope);
+        return getPlacement(dom.getTriggerEl(scope), getPositionerEl, {
+          ...prop("positioning"),
+          defer: true,
+          onComplete(data) {
+            context.set("currentPlacement", data.placement);
+          }
+        });
+      },
+      trackDismissableElement({
+        send,
+        scope
+      }) {
+        const getContentEl = () => dom.getContentEl(scope);
+        return trackDismissableElement(getContentEl, {
+          defer: true,
+          exclude: [dom.getTriggerEl(scope)],
+          onDismiss() {
+            send({
+              type: "CLOSE",
+              src: "interact-outside"
+            });
+          },
+          onFocusOutside(event) {
+            event.preventDefault();
+          }
+        });
+      }
+    },
+    actions: {
+      invokeOnClose({
+        prop
+      }) {
+        prop("onOpenChange")?.({
+          open: false
+        });
+      },
+      invokeOnOpen({
+        prop
+      }) {
+        prop("onOpenChange")?.({
+          open: true
+        });
+      },
+      setIsPointer({
+        context
+      }) {
+        context.set("isPointer", true);
+      },
+      clearIsPointer({
+        context
+      }) {
+        context.set("isPointer", false);
+      },
+      reposition({
+        context,
+        prop,
+        scope,
+        event
+      }) {
+        const getPositionerEl = () => dom.getPositionerEl(scope);
+        getPlacement(dom.getTriggerEl(scope), getPositionerEl, {
+          ...prop("positioning"),
+          ...event.options,
+          defer: true,
+          listeners: false,
+          onComplete(data) {
+            context.set("currentPlacement", data.placement);
+          }
+        });
+      },
+      toggleVisibility({
+        prop,
+        event,
+        send
+      }) {
+        queueMicrotask(() => {
+          send({
+            type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE",
+            previousEvent: event
+          });
+        });
       }
     }
   }

@@ -7,14 +7,12 @@ import { Toolbar } from "~/components/toolbar"
 
 export default function Page() {
   // dialog 1
-  const [state, send] = useMachine(dialog.machine({ id: createUniqueId() }))
-
-  const parentDialog = createMemo(() => dialog.connect(state, send, normalizeProps))
+  const service = useMachine(dialog.machine, { id: createUniqueId() })
+  const parentDialog = createMemo(() => dialog.connect(service, normalizeProps))
 
   // dialog 2
-  const [state2, send2] = useMachine(dialog.machine({ id: createUniqueId() }))
-
-  const childDialog = createMemo(() => dialog.connect(state2, send2, normalizeProps))
+  const service2 = useMachine(dialog.machine, { id: createUniqueId() })
+  const childDialog = createMemo(() => dialog.connect(service2, normalizeProps))
 
   return (
     <>
@@ -67,8 +65,8 @@ export default function Page() {
       </main>
 
       <Toolbar controls={null}>
-        <StateVisualizer state={state} />
-        <StateVisualizer state={state2} />
+        <StateVisualizer state={service} />
+        <StateVisualizer state={service2} />
       </Toolbar>
     </>
   )

@@ -1,76 +1,94 @@
+import { isNumber } from "@zag-js/utils"
 import { createMachine } from "@zag-js/core"
-import { compact, isEqual, isNumber } from "@zag-js/utils"
-import type { MachineContext, MachineState, UserDefinedContext } from "./progress.types"
+import type { ProgressSchema } from "./progress.types"
 
 function midValue(min: number, max: number) {
   return min + (max - min) / 2
 }
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "progress",
-      initial: "idle",
-      context: {
-        max: ctx.max ?? 100,
-        min: ctx.min ?? 0,
-        value: midValue(ctx.min ?? 0, ctx.max ?? 100),
-        orientation: "horizontal",
-        translations: {
-          value: ({ percent }) => (percent === -1 ? "loading..." : `${percent} percent`),
-          ...ctx.translations,
-        },
-        ...ctx,
+export const machine = createMachine<ProgressSchema>({
+  props({ props }) {
+    const min = props.min ?? 0
+    const max = props.max ?? 100
+    return {
+      ...props,
+      max,
+      min,
+      defaultValue: props.defaultValue ?? midValue(min, max),
+      orientation: "horizontal",
+      translations: {
+        value: ({ percent }) => (percent === -1 ? "loading..." : `${percent} percent`),
+        ...props.translations,
       },
+    }
+  },
 
-      created: ["validateContext"],
+  initialState() {
+    return "idle"
+  },
 
-      computed: {
-        isIndeterminate: (ctx) => ctx.value === null,
-        percent(ctx) {
-          if (!isNumber(ctx.value)) return -1
-          return Math.round(((ctx.value - ctx.min) / (ctx.max - ctx.min)) * 100)
+  context({ bindable, prop }) {
+    return {
+      value: bindable<number | null>(() => ({
+        defaultValue: prop("defaultValue"),
+        value: prop("value"),
+        onChange(value) {
+          prop("onValueChange")?.({ value })
         },
-        isAtMax: (ctx) => ctx.value === ctx.max,
-        isHorizontal: (ctx) => ctx.orientation === "horizontal",
-        isRtl: (ctx) => ctx.dir === "rtl",
-      },
+      })),
+    }
+  },
 
-      states: {
-        idle: {
-          on: {
-            "VALUE.SET": {
-              actions: ["setValue"],
-            },
-          },
+  computed: {
+    isIndeterminate: ({ context }) => context.get("value") === null,
+    percent({ context, prop }) {
+      const value = context.get("value")
+      if (!isNumber(value)) return -1
+      return Math.round(((value - prop("min")) / (prop("max") - prop("min"))) * 100)
+    },
+    isAtMax: ({ context, prop }) => context.get("value") === prop("max"),
+    isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
+    isRtl: ({ prop }) => prop("dir") === "rtl",
+  },
+
+  states: {
+    idle: {
+      on: {
+        "VALUE.SET": {
+          actions: ["setValue"],
         },
       },
     },
-    {
-      actions: {
-        setValue: (ctx, evt) => {
-          set.value(ctx, evt.value)
-        },
-        validateContext: (ctx) => {
-          if (ctx.value == null) return
+  },
 
-          if (!isValidNumber(ctx.max)) {
-            throw new Error(`[progress] The max value passed \`${ctx.max}\` is not a valid number`)
-          }
+  implementations: {
+    actions: {
+      setValue: ({ context, event, prop }) => {
+        const value = event.value === null ? null : Math.max(0, Math.min(event.value, prop("max")))
+        context.set("value", value)
+      },
+      validateContext: ({ context, prop }) => {
+        const max = prop("max")
+        const min = prop("min")
 
-          if (!isValidMax(ctx.value, ctx.max)) {
-            throw new Error(`[progress] The value passed \`${ctx.value}\` exceeds the max value \`${ctx.max}\``)
-          }
+        const value = context.get("value")
+        if (value == null) return
 
-          if (!isValidMin(ctx.value, ctx.min)) {
-            throw new Error(`[progress] The value passed \`${ctx.value}\` exceeds the min value \`${ctx.min}\``)
-          }
-        },
+        if (!isValidNumber(max)) {
+          throw new Error(`[progress] The max value passed \`${max}\` is not a valid number`)
+        }
+
+        if (!isValidMax(value, max)) {
+          throw new Error(`[progress] The value passed \`${value}\` exceeds the max value \`${max}\``)
+        }
+
+        if (!isValidMin(value, min)) {
+          throw new Error(`[progress] The value passed \`${value}\` exceeds the min value \`${min}\``)
+        }
       },
     },
-  )
-}
+  },
+})
 
 function isValidNumber(max: any) {
   return isNumber(max) && !isNaN(max)
@@ -82,12 +100,4 @@ function isValidMax(value: number, max: number) {
 
 function isValidMin(value: number, min: number) {
   return isValidNumber(value) && value >= min
-}
-
-const set = {
-  value(ctx: MachineContext, value: number | null) {
-    if (isEqual(ctx.value, value)) return
-    ctx.value = value === null ? null : Math.max(0, Math.min(value, ctx.max))
-    ctx.onValueChange?.({ value })
-  },
 }

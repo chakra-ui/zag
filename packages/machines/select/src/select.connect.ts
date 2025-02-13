@@ -11,31 +11,34 @@ import {
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import type { Service } from "@zag-js/core"
 import { parts } from "./select.anatomy"
-import { dom } from "./select.dom"
-import type { CollectionItem, ItemProps, ItemState, MachineApi, Send, State } from "./select.types"
+import * as dom from "./select.dom"
+import type { CollectionItem, ItemProps, ItemState, SelectApi, SelectSchema } from "./select.types"
 
 export function connect<T extends PropTypes, V extends CollectionItem = CollectionItem>(
-  state: State,
-  send: Send,
+  service: Service<SelectSchema<V>>,
   normalize: NormalizeProps<T>,
-): MachineApi<T, V> {
-  const disabled = state.context.isDisabled
-  const invalid = state.context.invalid
-  const readOnly = state.context.readOnly
-  const interactive = state.context.isInteractive
-  const composite = state.context.composite
+): SelectApi<T, V> {
+  const { context, prop, scope, state, computed, send } = service
+
+  const disabled = prop("disabled") || context.get("fieldsetDisabled")
+  const invalid = prop("invalid")
+  const readOnly = prop("readOnly")
+  const composite = prop("composite")
+  const collection = prop("collection")
 
   const open = state.hasTag("open")
   const focused = state.matches("focused")
 
-  const highlightedValue = state.context.highlightedValue
-  const highlightedItem = state.context.highlightedItem
-  const selectedItems = state.context.selectedItems
-  const isTypingAhead = state.context.isTypingAhead
-  const collection = state.context.collection
+  const highlightedValue = context.get("highlightedValue")
+  const highlightedItem = context.get("highlightedItem")
+  const selectedItems = context.get("selectedItems")
 
-  const ariaActiveDescendant = highlightedValue ? dom.getItemId(state.context, highlightedValue) : undefined
+  const isTypingAhead = computed("isTypingAhead")
+  const interactive = computed("isInteractive")
+
+  const ariaActiveDescendant = highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined
 
   function getItemState(props: ItemProps): ItemState {
     const _disabled = collection.getItemDisabled(props.item)
@@ -44,27 +47,27 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       value,
       disabled: Boolean(disabled || _disabled),
       highlighted: highlightedValue === value,
-      selected: state.context.value.includes(value),
+      selected: context.get("value").includes(value),
     }
   }
 
   const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
-    placement: state.context.currentPlacement,
+    ...prop("positioning"),
+    placement: context.get("currentPlacement"),
   })
 
   return {
     open: open,
     focused: focused,
-    empty: state.context.value.length === 0,
+    empty: context.get("value").length === 0,
     highlightedItem,
     highlightedValue,
     selectedItems,
-    hasSelectedItems: state.context.hasSelectedItems,
-    value: state.context.value,
-    valueAsString: state.context.valueAsString,
+    hasSelectedItems: computed("hasSelectedItems"),
+    value: context.get("value"),
+    valueAsString: context.get("valueAsString"),
     collection,
-    multiple: !!state.context.multiple,
+    multiple: !!prop("multiple"),
     disabled: !!disabled,
     setCollection(collection) {
       send({ type: "COLLECTION.SET", value: collection })
@@ -73,11 +76,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       send({ type: "POSITIONING.SET", options })
     },
     focus() {
-      dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
+      dom.getTriggerEl(scope)?.focus({ preventScroll: true })
     },
     setOpen(nextOpen) {
       if (nextOpen === open) return
-      send(nextOpen ? "OPEN" : "CLOSE")
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     selectValue(value) {
       send({ type: "ITEM.SELECT", value })
@@ -104,8 +107,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        dir: state.context.dir,
-        id: dom.getRootId(state.context),
+        dir: prop("dir"),
+        id: dom.getRootId(scope),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
       })
@@ -113,17 +116,17 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getLabelProps() {
       return normalize.label({
-        dir: state.context.dir,
-        id: dom.getLabelId(state.context),
+        dir: prop("dir"),
+        id: dom.getLabelId(scope),
         ...parts.label.attrs,
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
-        htmlFor: dom.getHiddenSelectId(state.context),
+        htmlFor: dom.getHiddenSelectId(scope),
         onClick(event) {
           if (event.defaultPrevented) return
           if (disabled) return
-          dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
+          dom.getTriggerEl(scope)?.focus({ preventScroll: true })
         },
       })
     },
@@ -131,8 +134,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getControlProps() {
       return normalize.element({
         ...parts.control.attrs,
-        dir: state.context.dir,
-        id: dom.getControlId(state.context),
+        dir: prop("dir"),
+        id: dom.getControlId(scope),
         "data-state": open ? "open" : "closed",
         "data-focus": dataAttr(focused),
         "data-disabled": dataAttr(disabled),
@@ -143,7 +146,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getValueTextProps() {
       return normalize.element({
         ...parts.valueText.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-focus": dataAttr(focused),
@@ -152,33 +155,33 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getTriggerProps() {
       return normalize.button({
-        id: dom.getTriggerId(state.context),
+        id: dom.getTriggerId(scope),
         disabled: disabled,
-        dir: state.context.dir,
+        dir: prop("dir"),
         type: "button",
         role: "combobox",
-        "aria-controls": dom.getContentId(state.context),
+        "aria-controls": dom.getContentId(scope),
         "aria-expanded": open,
         "aria-haspopup": "listbox",
         "data-state": open ? "open" : "closed",
         "aria-invalid": invalid,
-        "aria-labelledby": dom.getLabelId(state.context),
+        "aria-labelledby": dom.getLabelId(scope),
         ...parts.trigger.attrs,
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
-        "data-placement": state.context.currentPlacement,
-        "data-placeholder-shown": dataAttr(!state.context.hasSelectedItems),
+        "data-placement": context.get("currentPlacement"),
+        "data-placeholder-shown": dataAttr(!computed("hasSelectedItems")),
         onClick(event) {
           if (!interactive) return
           if (event.defaultPrevented) return
           send({ type: "TRIGGER.CLICK" })
         },
         onFocus() {
-          send("TRIGGER.FOCUS")
+          send({ type: "TRIGGER.FOCUS" })
         },
         onBlur() {
-          send("TRIGGER.BLUR")
+          send({ type: "TRIGGER.BLUR" })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
@@ -215,7 +218,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
           }
 
-          const exec = keyMap[getEventKey(event, state.context)]
+          const exec =
+            keyMap[
+              getEventKey(event, {
+                dir: prop("dir"),
+                orientation: "vertical",
+              })
+            ]
 
           if (exec) {
             exec(event)
@@ -234,7 +243,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getIndicatorProps() {
       return normalize.element({
         ...parts.indicator.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "aria-hidden": true,
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
@@ -247,10 +256,10 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const itemState = getItemState(props)
 
       return normalize.element({
-        id: dom.getItemId(state.context, itemState.value),
+        id: dom.getItemId(scope, itemState.value),
         role: "option",
         ...parts.item.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-value": itemState.value,
         "aria-selected": itemState.selected,
         "data-state": itemState.selected ? "checked" : "unchecked",
@@ -259,7 +268,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "aria-disabled": ariaAttr(itemState.disabled),
         onPointerMove(event) {
           if (itemState.disabled || event.pointerType !== "mouse") return
-          if (itemState.value === state.context.highlightedValue) return
+          if (itemState.value === highlightedValue) return
           send({ type: "ITEM.POINTER_MOVE", value: itemState.value })
         },
         onClick(event) {
@@ -272,7 +281,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (props.persistFocus) return
           if (event.pointerType !== "mouse") return
 
-          const pointerMoved = state.previousEvent.type.includes("POINTER")
+          const pointerMoved = service.event.previous()?.type.includes("POINTER")
           if (!pointerMoved) return
 
           send({ type: "ITEM.POINTER_LEAVE" })
@@ -304,9 +313,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const { htmlFor } = props
       return normalize.element({
         ...parts.itemGroupLabel.attrs,
-        id: dom.getItemGroupLabelId(state.context, htmlFor),
+        id: dom.getItemGroupLabelId(scope, htmlFor),
         role: "group",
-        dir: state.context.dir,
+        dir: prop("dir"),
       })
     },
 
@@ -315,55 +324,57 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         ...parts.itemGroup.attrs,
         "data-disabled": dataAttr(disabled),
-        id: dom.getItemGroupId(state.context, id),
-        "aria-labelledby": dom.getItemGroupLabelId(state.context, id),
-        dir: state.context.dir,
+        id: dom.getItemGroupId(scope, id),
+        "aria-labelledby": dom.getItemGroupLabelId(scope, id),
+        dir: prop("dir"),
       })
     },
 
     getClearTriggerProps() {
       return normalize.button({
         ...parts.clearTrigger.attrs,
-        id: dom.getClearTriggerId(state.context),
+        id: dom.getClearTriggerId(scope),
         type: "button",
         "aria-label": "Clear value",
         "data-invalid": dataAttr(invalid),
         disabled: disabled,
-        hidden: !state.context.hasSelectedItems,
-        dir: state.context.dir,
+        hidden: !computed("hasSelectedItems"),
+        dir: prop("dir"),
         onClick(event) {
           if (event.defaultPrevented) return
-          send("CLEAR.CLICK")
+          send({ type: "CLEAR.CLICK" })
         },
       })
     },
 
     getHiddenSelectProps() {
+      const value = context.get("value")
+      const defaultValue = prop("multiple") ? value : value?.[0]
       return normalize.select({
-        name: state.context.name,
-        form: state.context.form,
+        name: prop("name"),
+        form: prop("form"),
         disabled: disabled,
-        multiple: state.context.multiple,
-        required: state.context.required,
+        multiple: prop("multiple"),
+        required: prop("required"),
         "aria-hidden": true,
-        id: dom.getHiddenSelectId(state.context),
-        defaultValue: state.context.multiple ? state.context.value : state.context.value[0],
+        id: dom.getHiddenSelectId(scope),
+        defaultValue,
         style: visuallyHiddenStyle,
         tabIndex: -1,
         // Some browser extensions will focus the hidden select.
         // Let's forward the focus to the trigger.
         onFocus() {
-          dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
+          dom.getTriggerEl(scope)?.focus({ preventScroll: true })
         },
-        "aria-labelledby": dom.getLabelId(state.context),
+        "aria-labelledby": dom.getLabelId(scope),
       })
     },
 
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs,
-        dir: state.context.dir,
-        id: dom.getPositionerId(state.context),
+        dir: prop("dir"),
+        id: dom.getPositionerId(scope),
         style: popperStyles.floating,
       })
     },
@@ -371,16 +382,16 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getContentProps() {
       return normalize.element({
         hidden: !open,
-        dir: state.context.dir,
-        id: dom.getContentId(state.context),
+        dir: prop("dir"),
+        id: dom.getContentId(scope),
         role: composite ? "listbox" : "dialog",
         ...parts.content.attrs,
         "data-state": open ? "open" : "closed",
-        "data-placement": state.context.currentPlacement,
+        "data-placement": context.get("currentPlacement"),
         "data-activedescendant": ariaActiveDescendant,
         "aria-activedescendant": composite ? ariaActiveDescendant : undefined,
-        "aria-multiselectable": state.context.multiple && composite ? true : undefined,
-        "aria-labelledby": dom.getLabelId(state.context),
+        "aria-multiselectable": prop("multiple") && composite ? true : undefined,
+        "aria-labelledby": dom.getLabelId(scope),
         tabIndex: 0,
         onKeyDown(event) {
           if (!interactive) return
@@ -449,9 +460,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         ...parts.list.attrs,
         tabIndex: 0,
         role: !composite ? "listbox" : undefined,
-        "aria-labelledby": dom.getTriggerId(state.context),
+        "aria-labelledby": dom.getTriggerId(scope),
         "aria-activedescendant": !composite ? ariaActiveDescendant : undefined,
-        "aria-multiselectable": !composite && state.context.multiple ? true : undefined,
+        "aria-multiselectable": !composite && prop("multiple") ? true : undefined,
       })
     },
   }

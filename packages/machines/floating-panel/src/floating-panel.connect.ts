@@ -1,20 +1,31 @@
 import { dataAttr, getEventKey, getEventStep, getEventTarget, isSelfTarget } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./floating-panel.anatomy"
-import { dom } from "./floating-panel.dom"
-import type { MachineApi, ResizeTriggerProps, Send, State } from "./floating-panel.types"
+import * as dom from "./floating-panel.dom"
+import type { FloatingPanelService, FloatingPanelApi, ResizeTriggerProps } from "./floating-panel.types"
 import { getResizeAxisStyle } from "./get-resize-axis-style"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(
+  service: FloatingPanelService,
+  normalize: NormalizeProps<T>,
+): FloatingPanelApi<T> {
+  const { state, send, scope, prop, computed, context } = service
+
   const open = state.hasTag("open")
   const dragging = state.matches("open.dragging")
   const resizing = state.matches("open.resizing")
+  const isTopmost = context.get("isTopmost")
+  const isMaximized = computed("isMaximized")
+  const isMinimized = computed("isMinimized")
+  const isStaged = computed("isStaged")
+  const canResize = computed("canResize")
+  const canDrag = computed("canDrag")
 
   return {
     open: open,
     setOpen(nextOpen) {
       if (nextOpen === open) return
-      send(nextOpen ? "OPEN" : "CLOSE")
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     dragging: dragging,
     resizing: resizing,
@@ -23,14 +34,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.trigger.attrs,
         type: "button",
-        disabled: state.context.disabled,
-        id: dom.getTriggerId(state.context),
+        disabled: prop("disabled"),
+        id: dom.getTriggerId(scope),
         "data-state": open ? "open" : "closed",
         "data-dragging": dataAttr(dragging),
-        "aria-controls": dom.getContentId(state.context),
+        "aria-controls": dom.getContentId(scope),
         onClick(event) {
           if (event.defaultPrevented) return
-          if (state.context.disabled) return
+          if (prop("disabled")) return
           send({ type: "OPEN" })
         },
       })
@@ -39,7 +50,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs,
-        id: dom.getPositionerId(state.context),
+        id: dom.getPositionerId(scope),
         style: {
           position: "absolute",
           top: "var(--y)",
@@ -54,17 +65,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "dialog",
         tabIndex: 0,
         hidden: !open,
-        id: dom.getContentId(state.context),
-        "aria-labelledby": dom.getTitleId(state.context),
+        id: dom.getContentId(scope),
+        "aria-labelledby": dom.getTitleId(scope),
         "data-state": open ? "open" : "closed",
         "data-dragging": dataAttr(dragging),
-        "data-topmost": dataAttr(state.context.isTopmost),
-        "data-behind": dataAttr(!state.context.isTopmost),
+        "data-topmost": dataAttr(isTopmost),
+        "data-behind": dataAttr(!isTopmost),
         style: {
-          position: state.context.strategy,
+          position: prop("strategy"),
           width: "var(--width)",
           height: "var(--height)",
-          overflow: state.context.isMinimized ? "hidden" : undefined,
+          overflow: isMinimized ? "hidden" : undefined,
         },
         onFocus() {
           send({ type: "WINDOW_FOCUS" })
@@ -73,11 +84,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           if (!isSelfTarget(event)) return
 
-          const step = getEventStep(event) * state.context.gridSize
+          const step = getEventStep(event) * prop("gridSize")
           const keyMap: EventKeyMap = {
             Escape() {
-              if (!state.context.isTopmost) return
-              send("ESCAPE")
+              if (!isTopmost) return
+              send({ type: "ESCAPE" })
             },
             ArrowLeft() {
               send({ type: "MOVE", direction: "left", step })
@@ -93,7 +104,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             },
           }
 
-          const handler = keyMap[getEventKey(event, state.context)]
+          const handler = keyMap[getEventKey(event, { dir: prop("dir") })]
 
           if (handler) {
             event.preventDefault()
@@ -106,12 +117,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getCloseTriggerProps() {
       return normalize.button({
         ...parts.closeTrigger.attrs,
-        disabled: state.context.disabled,
+        disabled: prop("disabled"),
         "aria-label": "Close Window",
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
-          send("CLOSE")
+          send({ type: "CLOSE" })
         },
       })
     },
@@ -119,13 +130,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getMinimizeTriggerProps() {
       return normalize.button({
         ...parts.minimizeTrigger.attrs,
-        disabled: state.context.disabled,
+        disabled: prop("disabled"),
         "aria-label": "Minimize Window",
-        hidden: state.context.isStaged,
+        hidden: isStaged,
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
-          send("MINIMIZE")
+          send({ type: "MINIMIZE" })
         },
       })
     },
@@ -133,13 +144,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getMaximizeTriggerProps() {
       return normalize.button({
         ...parts.maximizeTrigger.attrs,
-        disabled: state.context.disabled,
+        disabled: prop("disabled"),
         "aria-label": "Maximize Window",
-        hidden: state.context.isStaged,
+        hidden: isStaged,
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
-          send("MAXIMIZE")
+          send({ type: "MAXIMIZE" })
         },
       })
     },
@@ -147,13 +158,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getRestoreTriggerProps() {
       return normalize.button({
         ...parts.restoreTrigger.attrs,
-        disabled: state.context.disabled,
+        disabled: prop("disabled"),
         "aria-label": "Restore Window",
-        hidden: !state.context.isStaged,
+        hidden: !isStaged,
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
-          send("RESTORE")
+          send({ type: "RESTORE" })
         },
       })
     },
@@ -161,10 +172,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getResizeTriggerProps(props: ResizeTriggerProps) {
       return normalize.element({
         ...parts.resizeTrigger.attrs,
-        "data-disabled": dataAttr(!state.context.canResize),
+        "data-disabled": dataAttr(!canResize),
         "data-axis": props.axis,
         onPointerDown(event) {
-          if (!state.context.canResize || event.button == 2) return
+          if (!canResize || event.button == 2) return
 
           event.currentTarget.setPointerCapture(event.pointerId)
           event.stopPropagation()
@@ -176,7 +187,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           })
         },
         onPointerUp(event) {
-          if (!state.context.canResize) return
+          if (!canResize) return
           const node = event.currentTarget
           if (node.hasPointerCapture(event.pointerId)) {
             node.releasePointerCapture(event.pointerId)
@@ -193,9 +204,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getDragTriggerProps() {
       return normalize.element({
         ...parts.dragTrigger.attrs,
-        "data-disabled": dataAttr(!state.context.canDrag),
+        "data-disabled": dataAttr(!canDrag),
         onPointerDown(event) {
-          if (!state.context.canDrag || event.button == 2) return
+          if (!canDrag || event.button == 2) return
 
           const target = getEventTarget<HTMLElement>(event)
           if (target?.closest("button") || target?.closest("[data-no-drag]")) {
@@ -212,14 +223,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           })
         },
         onPointerUp(event) {
-          if (!state.context.canDrag) return
+          if (!canDrag) return
           const node = event.currentTarget
           if (node.hasPointerCapture(event.pointerId)) {
             node.releasePointerCapture(event.pointerId)
           }
         },
         onDoubleClick() {
-          send(state.context.isMaximized ? "RESTORE" : "MAXIMIZE")
+          send({ type: isMaximized ? "RESTORE" : "MAXIMIZE" })
         },
         style: {
           WebkitUserSelect: "none",
@@ -233,17 +244,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getTitleProps() {
       return normalize.element({
         ...parts.title.attrs,
-        id: dom.getTitleId(state.context),
+        id: dom.getTitleId(scope),
       })
     },
 
     getHeaderProps() {
       return normalize.element({
         ...parts.header.attrs,
-        id: dom.getHeaderId(state.context),
+        id: dom.getHeaderId(scope),
         "data-dragging": dataAttr(dragging),
-        "data-topmost": dataAttr(state.context.isTopmost),
-        "data-behind": dataAttr(!state.context.isTopmost),
+        "data-topmost": dataAttr(isTopmost),
+        "data-behind": dataAttr(!isTopmost),
       })
     },
 
@@ -251,7 +262,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.body.attrs,
         "data-dragging": dataAttr(dragging),
-        hidden: state.context.isMinimized,
+        hidden: isMinimized,
       })
     },
   }

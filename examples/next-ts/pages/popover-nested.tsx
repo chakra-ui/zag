@@ -3,13 +3,12 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as React from "react"
 
 function Popover({ children, nested, id }: any) {
-  const [state, send] = useMachine(popover.machine({ id }), {
-    context: {
-      portalled: true,
-      modal: false,
-    },
+  const service = useMachine(popover.machine, {
+    id,
+    portalled: true,
+    modal: false,
   })
-  const api = popover.connect(state, send, normalizeProps)
+  const api = popover.connect(service, normalizeProps)
   const Wrapper = api.portalled ? Portal : React.Fragment
 
   return (

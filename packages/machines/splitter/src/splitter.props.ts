@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { PanelProps, ResizeTriggerProps, UserDefinedContext } from "./splitter.types"
+import type { PanelProps, ResizeTriggerProps, SplitterProps } from "./splitter.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<SplitterProps>()([
   "dir",
   "getRootNode",
   "id",
@@ -11,9 +11,10 @@ export const props = createProps<UserDefinedContext>()([
   "onSizeChangeEnd",
   "orientation",
   "size",
+  "defaultSize",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<SplitterProps>>(props)
 
 export const panelProps = createProps<PanelProps>()(["id", "snapSize"])
 export const splitPanelProps = createSplitProps<PanelProps>(panelProps)

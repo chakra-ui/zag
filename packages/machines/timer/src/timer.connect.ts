@@ -1,17 +1,20 @@
+import type { Service } from "@zag-js/core"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./timer.anatomy"
-import type { MachineApi, Send, State } from "./timer.types"
-import { dom } from "./timer.dom"
+import * as dom from "./timer.dom"
+import type { TimerApi, TimerSchema } from "./timer.types"
 
 const validActions = new Set(["start", "pause", "resume", "reset"])
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(service: Service<TimerSchema>, normalize: NormalizeProps<T>): TimerApi<T> {
+  const { state, send, computed, scope } = service
+
   const running = state.matches("running")
   const paused = state.matches("paused")
 
-  const time = state.context.time
-  const formattedTime = state.context.formattedTime
-  const progressPercent = state.context.progressPercent
+  const time = computed("time")
+  const formattedTime = computed("formattedTime")
+  const progressPercent = computed("progressPercent")
 
   return {
     running,
@@ -20,24 +23,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     formattedTime,
     progressPercent,
     start() {
-      send("START")
+      send({ type: "START" })
     },
     pause() {
-      send("PAUSE")
+      send({ type: "PAUSE" })
     },
     resume() {
-      send("RESUME")
+      send({ type: "RESUME" })
     },
     reset() {
-      send("RESET")
+      send({ type: "RESET" })
     },
     restart() {
-      send("RESTART")
+      send({ type: "RESTART" })
     },
 
     getRootProps() {
       return normalize.element({
-        id: dom.getRootId(state.context),
+        id: dom.getRootId(scope),
         ...parts.root.attrs,
       })
     },
@@ -45,7 +48,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getAreaProps() {
       return normalize.element({
         role: "timer",
-        id: dom.getAreaId(state.context),
+        id: dom.getAreaId(scope),
         "aria-label": `${time.days} days ${formattedTime.hours}:${formattedTime.minutes}:${formattedTime.seconds}`,
         "aria-atomic": true,
         ...parts.area.attrs,
@@ -116,7 +119,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
-          send(props.action.toUpperCase())
+          send({ type: props.action.toUpperCase() })
         },
       })
     },

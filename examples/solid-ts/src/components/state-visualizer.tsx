@@ -1,4 +1,4 @@
-import { highlightState } from "@zag-js/stringify-state"
+// import { highlightState } from "@zag-js/stringify-state"
 
 type StateVisualizerProps = {
   state: Record<string, any>
@@ -14,7 +14,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
       <pre dir="ltr">
         <details open>
           <summary> {label || "Visualizer"} </summary>
-          <div innerHTML={highlightState(state, omit)} />
+          {/* <div innerHTML={highlightState(state, omit)} /> */}
         </details>
       </pre>
     </div>

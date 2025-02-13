@@ -5,245 +5,262 @@ import { getInitialFocus, proxyTabFocus, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { getPlacement } from "@zag-js/popper"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import { compact } from "@zag-js/utils"
-import { dom } from "./popover.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./popover.types"
+import * as dom from "./popover.dom"
+import type { Placement, PopoverSchema } from "./popover.types"
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "popover",
-      initial: ctx.open ? "open" : "closed",
-      context: {
-        closeOnInteractOutside: true,
-        closeOnEscape: true,
-        autoFocus: true,
-        modal: false,
-        portalled: true,
-        positioning: {
-          placement: "bottom",
-          ...ctx.positioning,
+export const machine = createMachine<PopoverSchema>({
+  props({ props }) {
+    return {
+      closeOnInteractOutside: true,
+      closeOnEscape: true,
+      autoFocus: true,
+      modal: false,
+      portalled: true,
+      ...props,
+      positioning: {
+        placement: "bottom",
+        ...props.positioning,
+      },
+    }
+  },
+
+  initialState({ prop }) {
+    const open = prop("open") || prop("defaultOpen")
+    return open ? "open" : "closed"
+  },
+
+  context({ bindable }) {
+    return {
+      currentPlacement: bindable<Placement | undefined>(() => ({
+        defaultValue: undefined,
+      })),
+      renderedElements: bindable<{ title: boolean; description: boolean }>(() => ({
+        defaultValue: { title: true, description: true },
+      })),
+    }
+  },
+
+  computed: {
+    currentPortalled: ({ prop }) => !!prop("modal") || !!prop("portalled"),
+  },
+
+  watch({ track, prop, action }) {
+    track([() => prop("open")], () => {
+      action(["toggleVisibility"])
+    })
+  },
+
+  entry: ["checkRenderedElements"],
+
+  states: {
+    closed: {
+      on: {
+        "CONTROLLED.OPEN": {
+          target: "open",
+          actions: ["setInitialFocus"],
         },
-        currentPlacement: undefined,
-        ...ctx,
-        renderedElements: {
-          title: true,
-          description: true,
-        },
-      },
-
-      computed: {
-        currentPortalled: (ctx) => !!ctx.modal || !!ctx.portalled,
-      },
-
-      watch: {
-        open: ["toggleVisibility"],
-      },
-
-      entry: ["checkRenderedElements"],
-
-      states: {
-        closed: {
-          on: {
-            "CONTROLLED.OPEN": {
-              target: "open",
-              actions: ["setInitialFocus"],
-            },
-            TOGGLE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen", "setInitialFocus"],
-              },
-            ],
-            OPEN: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen", "setInitialFocus"],
-              },
-            ],
+        TOGGLE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
           },
-        },
-
-        open: {
-          activities: [
-            "trapFocus",
-            "preventScroll",
-            "hideContentBelow",
-            "trackPositioning",
-            "trackDismissableElement",
-            "proxyTabFocus",
-          ],
-          on: {
-            "CONTROLLED.CLOSE": {
-              target: "closed",
-              actions: ["setFinalFocus"],
-            },
-            CLOSE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "closed",
-                actions: ["invokeOnClose", "setFinalFocus"],
-              },
-            ],
-            TOGGLE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "closed",
-                actions: ["invokeOnClose"],
-              },
-            ],
-            "POSITIONING.SET": {
-              actions: "reposition",
-            },
+          {
+            target: "open",
+            actions: ["invokeOnOpen", "setInitialFocus"],
           },
+        ],
+        OPEN: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen", "setInitialFocus"],
+          },
+        ],
+      },
+    },
+
+    open: {
+      effects: [
+        "trapFocus",
+        "preventScroll",
+        "hideContentBelow",
+        "trackPositioning",
+        "trackDismissableElement",
+        "proxyTabFocus",
+      ],
+      on: {
+        "CONTROLLED.CLOSE": {
+          target: "closed",
+          actions: ["setFinalFocus"],
+        },
+        CLOSE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["invokeOnClose", "setFinalFocus"],
+          },
+        ],
+        TOGGLE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        "POSITIONING.SET": {
+          actions: ["reposition"],
         },
       },
     },
-    {
-      guards: {
-        isOpenControlled: (ctx) => !!ctx["open.controlled"],
+  },
+
+  implementations: {
+    guards: {
+      isOpenControlled: ({ prop }) => prop("open") != undefined,
+    },
+    effects: {
+      trackPositioning({ context, prop, scope }) {
+        context.set("currentPlacement", prop("positioning").placement)
+        const anchorEl = dom.getAnchorEl(scope) ?? dom.getTriggerEl(scope)
+        const getPositionerEl = () => dom.getPositionerEl(scope)
+        return getPlacement(anchorEl, getPositionerEl, {
+          ...prop("positioning"),
+          defer: true,
+          onComplete(data) {
+            context.set("currentPlacement", data.placement)
+          },
+        })
       },
-      activities: {
-        trackPositioning(ctx) {
-          ctx.currentPlacement = ctx.positioning.placement
-          const anchorEl = dom.getAnchorEl(ctx) ?? dom.getTriggerEl(ctx)
-          const getPositionerEl = () => dom.getPositionerEl(ctx)
-          return getPlacement(anchorEl, getPositionerEl, {
-            ...ctx.positioning,
-            defer: true,
-            onComplete(data) {
-              ctx.currentPlacement = data.placement
-            },
-          })
-        },
-        trackDismissableElement(ctx, _evt, { send }) {
-          const getContentEl = () => dom.getContentEl(ctx)
-          let restoreFocus = true
-          return trackDismissableElement(getContentEl, {
-            pointerBlocking: ctx.modal,
-            exclude: dom.getTriggerEl(ctx),
-            defer: true,
-            onEscapeKeyDown(event) {
-              ctx.onEscapeKeyDown?.(event)
-              if (ctx.closeOnEscape) return
+
+      trackDismissableElement({ send, prop, scope }) {
+        const getContentEl = () => dom.getContentEl(scope)
+        let restoreFocus = true
+        return trackDismissableElement(getContentEl, {
+          pointerBlocking: prop("modal"),
+          exclude: dom.getTriggerEl(scope),
+          defer: true,
+          onEscapeKeyDown(event) {
+            prop("onEscapeKeyDown")?.(event)
+            if (prop("closeOnEscape")) return
+            event.preventDefault()
+          },
+          onInteractOutside(event) {
+            prop("onInteractOutside")?.(event)
+            if (event.defaultPrevented) return
+            restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
+            if (!prop("closeOnInteractOutside")) {
               event.preventDefault()
-            },
-            onInteractOutside(event) {
-              ctx.onInteractOutside?.(event)
-              if (event.defaultPrevented) return
-              restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
-              if (!ctx.closeOnInteractOutside) {
-                event.preventDefault()
-              }
-            },
-            onPointerDownOutside: ctx.onPointerDownOutside,
-            onFocusOutside: ctx.onFocusOutside,
-            persistentElements: ctx.persistentElements,
-            onDismiss() {
-              send({ type: "CLOSE", src: "interact-outside", restoreFocus })
-            },
-          })
-        },
-        proxyTabFocus(ctx) {
-          if (ctx.modal || !ctx.portalled) return
-          const getContentEl = () => dom.getContentEl(ctx)
-          return proxyTabFocus(getContentEl, {
-            triggerElement: dom.getTriggerEl(ctx),
-            defer: true,
-            onFocus(el) {
-              el.focus({ preventScroll: true })
-            },
-          })
-        },
-        hideContentBelow(ctx) {
-          if (!ctx.modal) return
-          const getElements = () => [dom.getContentEl(ctx), dom.getTriggerEl(ctx)]
-          return ariaHidden(getElements, { defer: true })
-        },
-        preventScroll(ctx) {
-          if (!ctx.modal) return
-          return preventBodyScroll(dom.getDoc(ctx))
-        },
-        trapFocus(ctx) {
-          if (!ctx.modal) return
-          const contentEl = () => dom.getContentEl(ctx)
-          return trapFocus(contentEl, {
-            initialFocus: () =>
-              getInitialFocus({
-                root: dom.getContentEl(ctx),
-                getInitialEl: ctx.initialFocusEl,
-                enabled: ctx.autoFocus,
-              }),
-          })
-        },
+            }
+          },
+          onPointerDownOutside: prop("onPointerDownOutside"),
+          onFocusOutside: prop("onFocusOutside"),
+          persistentElements: prop("persistentElements"),
+          onDismiss() {
+            send({ type: "CLOSE", src: "interact-outside", restoreFocus })
+          },
+        })
       },
-      actions: {
-        reposition(ctx, evt) {
-          const anchorEl = dom.getAnchorEl(ctx) ?? dom.getTriggerEl(ctx)
-          const getPositionerEl = () => dom.getPositionerEl(ctx)
-          getPlacement(anchorEl, getPositionerEl, {
-            ...ctx.positioning,
-            ...evt.options,
-            defer: true,
-            listeners: false,
-            onComplete(data) {
-              ctx.currentPlacement = data.placement
-            },
-          })
-        },
-        checkRenderedElements(ctx) {
-          raf(() => {
-            Object.assign(ctx.renderedElements, {
-              title: !!dom.getTitleEl(ctx),
-              description: !!dom.getDescriptionEl(ctx),
-            })
-          })
-        },
-        setInitialFocus(ctx) {
-          // handoff to `trapFocus` activity for initial focus
-          if (ctx.modal) return
-          raf(() => {
-            const element = getInitialFocus({
-              root: dom.getContentEl(ctx),
-              getInitialEl: ctx.initialFocusEl,
-              enabled: ctx.autoFocus,
-            })
-            element?.focus({ preventScroll: true })
-          })
-        },
-        setFinalFocus(ctx, evt) {
-          const restoreFocus = evt.restoreFocus ?? evt.previousEvent?.restoreFocus
-          if (restoreFocus != null && !restoreFocus) return
-          raf(() => {
-            const element = dom.getTriggerEl(ctx)
-            element?.focus({ preventScroll: true })
-          })
-        },
-        invokeOnOpen(ctx) {
-          ctx.onOpenChange?.({ open: true })
-        },
-        invokeOnClose(ctx) {
-          ctx.onOpenChange?.({ open: false })
-        },
-        toggleVisibility(ctx, evt, { send }) {
-          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
-        },
+
+      proxyTabFocus({ prop, scope }) {
+        if (prop("modal") || !prop("portalled")) return
+        const getContentEl = () => dom.getContentEl(scope)
+        return proxyTabFocus(getContentEl, {
+          triggerElement: dom.getTriggerEl(scope),
+          defer: true,
+          onFocus(el) {
+            el.focus({ preventScroll: true })
+          },
+        })
+      },
+
+      hideContentBelow({ prop, scope }) {
+        if (!prop("modal")) return
+        const getElements = () => [dom.getContentEl(scope), dom.getTriggerEl(scope)]
+        return ariaHidden(getElements, { defer: true })
+      },
+
+      preventScroll({ prop, scope }) {
+        if (!prop("modal")) return
+        return preventBodyScroll(scope.getDoc())
+      },
+
+      trapFocus({ prop, scope }) {
+        if (!prop("modal")) return
+        const contentEl = () => dom.getContentEl(scope)
+        return trapFocus(contentEl, {
+          initialFocus: () =>
+            getInitialFocus({
+              root: dom.getContentEl(scope),
+              getInitialEl: prop("initialFocusEl"),
+              enabled: prop("autoFocus"),
+            }),
+        })
       },
     },
-  )
-}
+
+    actions: {
+      reposition({ event, prop, scope, context }) {
+        const anchorEl = dom.getAnchorEl(scope) ?? dom.getTriggerEl(scope)
+        const getPositionerEl = () => dom.getPositionerEl(scope)
+        getPlacement(anchorEl, getPositionerEl, {
+          ...prop("positioning"),
+          ...event.options,
+          defer: true,
+          listeners: false,
+          onComplete(data) {
+            context.set("currentPlacement", data.placement)
+          },
+        })
+      },
+
+      checkRenderedElements({ context, scope }) {
+        raf(() => {
+          Object.assign(context.get("renderedElements"), {
+            title: !!dom.getTitleEl(scope),
+            description: !!dom.getDescriptionEl(scope),
+          })
+        })
+      },
+
+      setInitialFocus({ prop, scope }) {
+        // handoff to `trapFocus` activity for initial focus
+        if (prop("modal")) return
+        raf(() => {
+          const element = getInitialFocus({
+            root: dom.getContentEl(scope),
+            getInitialEl: prop("initialFocusEl"),
+            enabled: prop("autoFocus"),
+          })
+          element?.focus({ preventScroll: true })
+        })
+      },
+
+      setFinalFocus({ event, scope }) {
+        const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
+        if (restoreFocus != null && !restoreFocus) return
+        raf(() => {
+          const element = dom.getTriggerEl(scope)
+          element?.focus({ preventScroll: true })
+        })
+      },
+      invokeOnOpen({ prop }) {
+        prop("onOpenChange")?.({ open: true })
+      },
+      invokeOnClose({ prop }) {
+        prop("onOpenChange")?.({ open: false })
+      },
+      toggleVisibility({ event, send, prop }) {
+        send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
+      },
+    },
+  },
+})

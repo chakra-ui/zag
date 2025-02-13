@@ -5,17 +5,13 @@ import { useId, useState } from "react"
 export default function Page() {
   const [url, setUrl] = useState("")
   const [image, setImage] = useState("")
-  const [state, send] = useMachine(
-    qrCode.machine({
-      id: useId(),
-      encoding: { ecc: "H" },
-    }),
-    {
-      context: { value: url },
-    },
-  )
+  const service = useMachine(qrCode.machine, {
+    id: useId(),
+    encoding: { ecc: "H" },
+    value: url,
+  })
 
-  const api = qrCode.connect(state, send, normalizeProps)
+  const api = qrCode.connect(service, normalizeProps)
 
   return (
     <main className="qr-code">

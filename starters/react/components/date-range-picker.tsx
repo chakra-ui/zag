@@ -3,34 +3,23 @@ import { getYearsRange } from "@zag-js/date-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-interface Props extends Omit<datePicker.Context, "id" | "open.controlled"> {
-  defaultOpen?: boolean
-  defaultValue?: datePicker.Context["value"]
-}
+interface Props extends Omit<datePicker.Props, "id"> {}
 
 export function DateRangePicker(props: Props) {
-  const { defaultOpen, defaultValue, value, open, ...contextProps } = props
+  const { value, defaultValue, open, ...contextProps } = props
 
-  const [state, send] = useMachine(
-    datePicker.machine({
-      id: useId(),
-      value: value ?? defaultValue,
-      open: open ?? defaultOpen,
-    }),
-    {
-      context: {
-        locale: "en",
-        numOfMonths: 2,
-        ...contextProps,
-        selectionMode: "range",
-        "open.controlled": open !== undefined,
-        open,
-        value,
-      },
-    },
-  )
+  const service = useMachine(datePicker.machine, {
+    id: useId(),
+    value,
+    defaultValue,
+    open,
+    locale: "en",
+    numOfMonths: 2,
+    ...contextProps,
+    selectionMode: "range",
+  })
 
-  const api = datePicker.connect(state, send, normalizeProps)
+  const api = datePicker.connect(service, normalizeProps)
 
   const offset = api.getOffset({ months: 1 })
 

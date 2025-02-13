@@ -3,12 +3,12 @@ export { connect } from "./rating-group.connect"
 export { machine } from "./rating-group.machine"
 export * from "./rating-group.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  RatingGroupApi as Api,
+  RatingGroupProps as Props,
   HoverChangeDetails,
   IntlTranslations,
   ItemProps,
   ItemState,
-  Service,
+  RatingGroupService as Service,
   ValueChangeDetails,
 } from "./rating-group.types"

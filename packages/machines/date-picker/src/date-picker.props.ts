@@ -5,11 +5,11 @@ import type {
   PresetTriggerProps,
   TableCellProps,
   TableProps,
-  UserDefinedContext,
+  DatePickerProps,
   ViewProps,
 } from "./date-picker.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<DatePickerProps>()([
   "closeOnSelect",
   "dir",
   "disabled",
@@ -22,7 +22,6 @@ export const props = createProps<UserDefinedContext>()([
   "id",
   "ids",
   "isDateUnavailable",
-  "isDateUnavailable",
   "locale",
   "max",
   "min",
@@ -33,7 +32,7 @@ export const props = createProps<UserDefinedContext>()([
   "onValueChange",
   "onViewChange",
   "open",
-  "open.controlled",
+  "defaultOpen",
   "positioning",
   "readOnly",
   "selectionMode",
@@ -41,11 +40,14 @@ export const props = createProps<UserDefinedContext>()([
   "timeZone",
   "translations",
   "value",
+  "defaultView",
+  "defaultValue",
   "view",
+  "defaultFocusedValue",
   "minView",
   "maxView",
 ])
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<DatePickerProps>>(props)
 
 export const inputProps = createProps<InputProps>()(["index", "fixOnBlur"])
 export const splitInputProps = createSplitProps<InputProps>(inputProps)

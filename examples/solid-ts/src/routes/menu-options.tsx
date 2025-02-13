@@ -13,11 +13,8 @@ export default function Page() {
   const [order, setOrder] = createSignal("")
   const [type, setType] = createSignal<string[]>([])
 
-  const [state, send] = useMachine(menu.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
-
-  const api = createMemo(() => menu.connect(state, send, normalizeProps))
+  const service = useMachine(menu.machine, { id: createUniqueId() })
+  const api = createMemo(() => menu.connect(service, normalizeProps))
 
   const radios = createMemo(() =>
     menuOptionData.order.map((item) => ({
@@ -75,7 +72,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

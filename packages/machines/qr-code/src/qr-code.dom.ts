@@ -1,8 +1,5 @@
-import { createScope } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./qr-code.types"
+import type { Scope } from "@zag-js/core"
 
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `qrcode:${ctx.id}:root`,
-  getFrameId: (ctx: Ctx) => ctx.ids?.frame ?? `qrcode:${ctx.id}:frame`,
-  getFrameEl: (ctx: Ctx) => dom.getById<SVGSVGElement>(ctx, dom.getFrameId(ctx)),
-})
+export const getRootId = (scope: Scope) => scope.ids?.root ?? `qrcode:${scope.id}:root`
+export const getFrameId = (scope: Scope) => scope.ids?.frame ?? `qrcode:${scope.id}:frame`
+export const getFrameEl = (scope: Scope) => scope.getById<SVGSVGElement>(getFrameId(scope))

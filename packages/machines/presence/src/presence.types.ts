@@ -1,52 +1,48 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext {
+export interface PresenceProps {
   /**
    * Whether the node is present (controlled by the user)
    */
-  present: boolean
+  present?: boolean | undefined
   /**
    * Function called when the animation ends in the closed state
    */
-  onExitComplete?(): void
+  onExitComplete?: VoidFunction | undefined
   /**
    * Whether to synchronize the present change immediately or defer it to the next frame
    */
   immediate?: boolean | undefined
 }
 
-interface PrivateContext {
-  initial: boolean
-  node: HTMLElement | null
-  styles: CSSStyleDeclaration | null
-  unmountAnimationName: string | null
-  prevAnimationName: string | null
-  rafId?: number | undefined
+export interface PresenceSchema {
+  refs: {
+    node: HTMLElement | null
+    styles: CSSStyleDeclaration | null
+  }
+  props: PresenceProps
+  context: {
+    initial: boolean
+    unmountAnimationName: string | null
+    prevAnimationName: string | null
+  }
+  state: "unmounted" | "unmountSuspended" | "mounted"
+  action: string
+  effect: string
+  event: EventObject
 }
 
-export interface UserDefinedContext extends PublicContext {}
-
-export interface MachineContext extends PublicContext, PrivateContext {}
-
-export interface MachineState {
-  value: "mounted" | "unmountSuspended" | "unmounted"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type PresenceService = Service<PresenceSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi {
+export interface PresenceApi {
   /**
    * Whether the animation should be skipped.
    */

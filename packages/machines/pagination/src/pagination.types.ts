@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -38,7 +38,7 @@ export type ElementIds = Partial<{
   item(page: number): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface PaginationProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the accordion. Useful for composition.
    */
@@ -46,26 +46,34 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * Total number of data items
    */
-  count: number
+  count?: number | undefined
   /**
    * Number of data items per page
+   */
+  pageSize?: number | undefined
+  /**
+   * Default number of data items per page
    * @default 10
    */
-  pageSize: number
+  defaultPageSize?: number | undefined
   /**
    * Number of pages to show beside active page
    * @default 1
    */
-  siblingCount: number
+  siblingCount?: number | undefined
   /**
    * The active page
+   */
+  page?: number | undefined
+  /**
+   * Default active page
    * @default 1
    */
-  page: number
+  defaultPage?: number | undefined
   /**
    * Called when the page number is changed
    */
@@ -78,57 +86,51 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The type of the trigger element
    * @default "button"
    */
-  type: "button" | "link"
+  type?: "button" | "link" | undefined
 }
 
-interface PrivateContext {}
+type PropsWithDefault = "defaultPageSize" | "defaultPage" | "siblingCount" | "translations" | "type" | "count"
+
+interface PrivateContext {
+  page: number
+  pageSize: number
+}
 
 type ComputedContext = Readonly<{
   /**
-   * @computed
    * Total number of pages
    */
   totalPages: number
   /**
-   * @computed
-   * Pages to render in pagination
-   */
-  items: Pages
-  /**
-   * @computed
    * Index of first and last data items on current page
    */
   pageRange: { start: number; end: number }
   /**
-   * @computed
    * The previous page index
    */
   previousPage: number | null
   /**
-   * @computed
    * The next page index
    */
   nextPage: number | null
   /**
-   * @computed
    * Whether the current page is valid
    */
   isValidPage: boolean
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id" | "count">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle"
+export interface PaginationSchema {
+  state: "idle"
+  props: RequiredBy<PaginationProps, PropsWithDefault>
+  context: PrivateContext
+  computed: ComputedContext
+  event: EventObject
+  action: string
+  guard: string
+  effect: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type PaginationService = Service<PaginationSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -150,7 +152,7 @@ interface PageRange {
   end: number
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface PaginationApi<T extends PropTypes = PropTypes> {
   /**
    * The current page.
    */
@@ -187,10 +189,6 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to slice an array of data based on the current page.
    */
   slice<V>(data: V[]): V[]
-  /**
-   * Function to set the total number of pages.
-   */
-  setCount(count: number): void
   /**
    * Function to set the page size.
    */

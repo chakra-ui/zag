@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ export type ElementIds = Partial<{
   item(value: string): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface ToggleGroupProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the toggle. Useful for composition.
    */
@@ -30,7 +30,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The values of the toggles in the group.
    */
-  value: string[]
+  value?: string[] | undefined
+  /**
+   * The default value of the toggle group.
+   */
+  defaultValue?: string[] | undefined
   /**
    * Function to call when the toggle is clicked.
    */
@@ -39,7 +43,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether to loop focus inside the toggle group.
    * @default true
    */
-  loopFocus: boolean
+  loopFocus?: boolean | undefined
   /**
    *  Whether to use roving tab index to manage focus.
    * @default true
@@ -49,14 +53,14 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The orientation of the toggle group.
    * @default "horizontal"
    */
-  orientation: Orientation
+  orientation?: Orientation | undefined
   /**
    * Whether to allow multiple toggles to be selected.
    */
   multiple?: boolean | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "loopFocus" | "rovingFocus" | "orientation"
 
 type ComputedContext = Readonly<{
   currentLoopFocus: boolean
@@ -64,39 +68,40 @@ type ComputedContext = Readonly<{
 
 interface PrivateContext {
   /**
-   * @internal
    * Whether the user is tabbing backward.
    */
   isTabbingBackward: boolean
   /**
-   * @internal
    * Whether the toggle was focused by a click.
    */
   isClickFocus: boolean
   /**
-   * @internal
    * The value of the toggle that was focused.
    */
   focusedId: string | null
   /**
-   * @internal
    * Whether the toggle group is within a toolbar.
    * This is used to determine whether to use roving tab index.
    */
   isWithinToolbar: boolean
+  /**
+   * The value of the toggle group.
+   */
+  value: string[]
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused"
+export interface ToggleGroupSchema {
+  props: RequiredBy<ToggleGroupProps, PropsWithDefault>
+  context: PrivateContext
+  computed: ComputedContext
+  state: "idle" | "focused"
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type ToggleGroupService = Service<ToggleGroupSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -126,7 +131,7 @@ export interface ItemState {
   focused: boolean
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface ToggleGroupApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the toggle group.
    */

@@ -19,33 +19,20 @@ const EyeDropIcon = () => (
   </svg>
 )
 
-interface Props extends Omit<colorPicker.Context, "id"> {
-  defaultOpen?: boolean
-  defaultValue?: colorPicker.Color
-}
+interface Props extends Omit<colorPicker.Props, "id"> {}
 
 export function ColorPicker(props: Props) {
-  const { defaultOpen, defaultValue = colorPicker.parse("hsl(0, 100%, 50%)"), open, value, ...contextProps } = props
+  const { defaultValue = colorPicker.parse("hsl(0, 100%, 50%)"), ...contextProps } = props
 
-  const [state, send] = useMachine(
-    colorPicker.machine({
-      id: useId(),
-      name: "color",
-      format: "hsla",
-      value: value ?? defaultValue,
-      open: open ?? defaultOpen,
-    }),
-    {
-      context: {
-        ...contextProps,
-        "open.controlled": open !== undefined,
-        open,
-        value,
-      },
-    },
-  )
+  const service = useMachine(colorPicker.machine, {
+    id: useId(),
+    name: "color",
+    defaultFormat: "hsla",
+    defaultValue,
+    ...contextProps,
+  })
 
-  const api = colorPicker.connect(state, send, normalizeProps)
+  const api = colorPicker.connect(service, normalizeProps)
 
   return (
     <>

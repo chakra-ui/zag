@@ -23,7 +23,7 @@ export interface OrientationProperty {
    * The orientation of the element.
    * @default "horizontal"
    */
-  orientation: Orientation
+  orientation?: "horizontal" | "vertical" | undefined
 }
 
 export interface DirectionProperty {

@@ -1,85 +1,86 @@
 import { createMachine } from "@zag-js/core"
-import { compact, isEqual, isValueWithinRange } from "@zag-js/utils"
-import type { MachineContext, MachineState, UserDefinedContext } from "./steps.types"
+// import { isEqual, isValueWithinRange } from "@zag-js/utils"
+import type { StepsSchema } from "./steps.types"
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "steps",
-      initial: "idle",
-
-      context: {
-        step: 0,
-        count: 1,
-        linear: false,
-        orientation: "horizontal",
-        ...ctx,
-      },
-
-      computed: {
-        percent: (ctx) => (ctx.step / ctx.count) * 100,
-        hasNextStep: (ctx) => ctx.step < ctx.count,
-        hasPrevStep: (ctx) => ctx.step > 0,
-        completed: (ctx) => ctx.step === ctx.count,
-      },
-
-      states: {
-        idle: {
-          on: {
-            "STEP.SET": {
-              actions: "setStep",
-            },
-            "STEP.NEXT": {
-              actions: "goToNextStep",
-            },
-            "STEP.PREV": {
-              actions: "goToPrevStep",
-            },
-            "STEP.RESET": {
-              actions: "resetStep",
-            },
-          },
-        },
-      },
-    },
-    {
-      actions: {
-        goToNextStep(ctx) {
-          const value = Math.min(ctx.step + 1, ctx.count)
-          set.value(ctx, value)
-        },
-        goToPrevStep(ctx) {
-          const value = Math.max(ctx.step - 1, 0)
-          set.value(ctx, value)
-        },
-        resetStep(ctx) {
-          set.value(ctx, 0)
-        },
-        setStep(ctx, evt) {
-          set.value(ctx, evt.value)
-        },
-      },
-    },
-  )
-}
-
-const validateStep = (ctx: MachineContext, step: number) => {
-  if (!isValueWithinRange(step, 0, ctx.count)) {
-    throw new RangeError(`[zag-js/steps] step index ${step} is out of bounds`)
-  }
-}
-
-const set = {
-  value(ctx: MachineContext, step: number) {
-    if (isEqual(ctx.step, step)) return
-    validateStep(ctx, step)
-
-    ctx.step = step
-    ctx.onStepChange?.({ step })
-
-    if (ctx.completed) {
-      ctx.onStepComplete?.()
+export const machine = createMachine<StepsSchema>({
+  props({ props }) {
+    return {
+      defaultStep: 0,
+      count: 1,
+      linear: false,
+      orientation: "horizontal",
+      ...props,
     }
   },
-}
+
+  context({ prop, bindable, getComputed }) {
+    return {
+      step: bindable<number>(() => ({
+        defaultValue: prop("defaultStep"),
+        value: prop("step"),
+        onChange(value) {
+          const computed = getComputed()
+          prop("onStepChange")?.({ step: value })
+          if (computed("completed")) {
+            prop("onStepComplete")?.()
+          }
+        },
+      })),
+    }
+  },
+
+  computed: {
+    percent: ({ context, prop }) => (context.get("step") / prop("count")) * 100,
+    hasNextStep: ({ context, prop }) => context.get("step") < prop("count"),
+    hasPrevStep: ({ context }) => context.get("step") > 0,
+    completed: ({ context, prop }) => context.get("step") === prop("count"),
+  },
+
+  initialState() {
+    return "idle"
+  },
+
+  states: {
+    idle: {
+      on: {
+        "STEP.SET": {
+          actions: ["setStep"],
+        },
+        "STEP.NEXT": {
+          actions: ["goToNextStep"],
+        },
+        "STEP.PREV": {
+          actions: ["goToPrevStep"],
+        },
+        "STEP.RESET": {
+          actions: ["resetStep"],
+        },
+      },
+    },
+  },
+
+  implementations: {
+    actions: {
+      goToNextStep({ context, prop }) {
+        const value = Math.min(context.get("step") + 1, prop("count"))
+        context.set("step", value)
+      },
+      goToPrevStep({ context }) {
+        const value = Math.max(context.get("step") - 1, 0)
+        context.set("step", value)
+      },
+      resetStep({ context }) {
+        context.set("step", 0)
+      },
+      setStep({ context, event }) {
+        context.set("step", event.value)
+      },
+    },
+  },
+})
+
+// const validateStep = (ctx: MachineContext, step: number) => {
+//   if (!isValueWithinRange(step, 0, ctx.count)) {
+//     throw new RangeError(`[zag-js/steps] step index ${step} is out of bounds`)
+//   }
+// }

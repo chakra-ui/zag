@@ -10,17 +10,12 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(checkboxControls)
 
-  const [state, send] = useMachine(
-    checkbox.machine({
-      name: "checkbox",
-      id: createUniqueId(),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(checkbox.machine, {
+    name: "checkbox",
+    id: createUniqueId(),
+  })
 
-  const api = createMemo(() => checkbox.connect(state, send, normalizeProps))
+  const api = createMemo(() => checkbox.connect(service, normalizeProps))
 
   return (
     <>
@@ -55,7 +50,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

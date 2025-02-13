@@ -1,5 +1,5 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { Service } from "@zag-js/core"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -9,116 +9,63 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
-/* -----------------------------------------------------------------------------
- * Machine context
- * -----------------------------------------------------------------------------*/
-
 export type ElementIds = Partial<{
   root: string
   content: string
   trigger: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
-  /**
-   * The ids of the elements in the collapsible. Useful for composition.
-   */
-  ids?: ElementIds | undefined
-  /**
-   * Function called when the animation ends in the closed state.
-   */
-  onExitComplete?: (() => void) | undefined
-  /**
-   * Function called when the popup is opened
-   */
-  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
-  /**
-   * Whether the collapsible is open
-   */
-  open?: boolean | undefined
-  /**
-   * Whether the collapsible is disabled
-   */
-  disabled?: boolean | undefined
-  /**
-   *  Whether the collapsible open state is controlled by the user
-   */
-  "open.controlled"?: boolean | undefined
+export interface CollapsibleProps extends CommonProperties, DirectionProperty {
+  ids?: ElementIds
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (details: OpenChangeDetails) => void
+  onExitComplete?: () => void
 }
 
-type ComputedContext = Readonly<{}>
+export interface CollapsibleSchema {
+  state: "open" | "closed" | "closing"
+  props: CollapsibleProps
+  context: {
+    size: { width: number; height: number }
+    initial: boolean
+  }
+  refs: {
+    stylesRef: any
+    cleanup: VoidFunction | undefined
+  }
 
-interface PrivateContext {
-  /**
-   * @internal
-   * The height of the content
-   */
-  height: number
-  /**
-   * @internal
-   * The width of the content
-   */
-  width: number
-  /**
-   * @internal
-   * The styles of the content
-   */
-  stylesRef: Record<string, any> | null
-  /**
-   * @internal
-   * Whether the initial animation is allowed
-   */
-  initial: boolean
-  /**
-   * @internal
-   * The requestAnimationFrame id
-   */
-  _rafCleanup?: VoidFunction | undefined
-  /**
-   * @internal
-   * The unmount animation name
-   */
-  unmountAnimationName: string | null
+  guard: "isOpenControlled"
+
+  event:
+    | { type: "controlled.open" }
+    | { type: "controlled.close" }
+    | { type: "open" }
+    | { type: "close" }
+    | { type: "size.measure" }
+    | { type: "animation.end" }
+
+  action:
+    | "setInitial"
+    | "clearInitial"
+    | "cleanupNode"
+    | "measureSize"
+    | "computeSize"
+    | "invokeOnOpen"
+    | "invokeOnClose"
+    | "invokeOnExitComplete"
+    | "toggleVisibility"
+
+  effect: "trackEnterAnimation" | "trackExitAnimation"
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+export type CollapsibleService = Service<CollapsibleSchema>
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export type MachineState = {
-  value: "open" | "closed" | "closing"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
-
-/* -----------------------------------------------------------------------------
- * Component API
- * -----------------------------------------------------------------------------*/
-
-export interface MachineApi<T extends PropTypes = PropTypes> {
-  /**
-   * Whether the collapsible is open.
-   */
+export interface CollapsibleApi<T extends PropTypes = PropTypes> {
   open: boolean
-  /**
-   * Whether the collapsible is visible (open or closing)
-   */
   visible: boolean
-  /**
-   * Whether the collapsible is disabled
-   */
   disabled: boolean
-  /**
-   * Function to open or close the collapsible.
-   */
   setOpen(open: boolean): void
-  /**
-   * Function to measure the size of the content.
-   */
   measureSize(): void
 
   getRootProps(): T["element"]

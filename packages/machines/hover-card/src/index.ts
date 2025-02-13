@@ -3,11 +3,11 @@ export { connect } from "./hover-card.connect"
 export { machine } from "./hover-card.machine"
 export * from "./hover-card.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  HoverCardApi as Api,
+  HoverCardProps as Props,
+  HoverCardService as Service,
   ElementIds,
   OpenChangeDetails,
   Placement,
   PositioningOptions,
-  Service,
 } from "./hover-card.types"

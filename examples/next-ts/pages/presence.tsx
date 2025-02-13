@@ -3,11 +3,8 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useState } from "react"
 
 function usePresence(present: boolean) {
-  const context: presence.Context = { present }
-  const [state, send] = useMachine(presence.machine(context), {
-    context,
-  })
-  return presence.connect(state, send, normalizeProps)
+  const service = useMachine(presence.machine, { present })
+  return presence.connect(service, normalizeProps)
 }
 
 export default function Page() {

@@ -1,27 +1,43 @@
-import { createMachine } from "@zag-js/core"
 import { getDataUrl } from "@zag-js/dom-query"
-import { compact, isEqual } from "@zag-js/utils"
-import { memoize } from "proxy-memoize"
+import { createMachine, memo } from "@zag-js/core"
 import { encode } from "uqr"
-import { dom } from "./qr-code.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./qr-code.types"
+import * as dom from "./qr-code.dom"
+import type { QrCodeSchema } from "./qr-code.types"
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "qr-code",
-      initial: "idle",
-      context: {
-        value: "",
-        ...ctx,
-        pixelSize: 10,
-      },
+export const machine = createMachine<QrCodeSchema>({
+  props({ props }) {
+    return {
+      defaultValue: "",
+      pixelSize: 10,
+      ...props,
+    }
+  },
 
-      computed: {
-        encoded: memoize((ctx) => encode(ctx.value, ctx.encoding)),
-      },
+  initialState() {
+    return "idle"
+  },
 
+  context({ prop, bindable }) {
+    return {
+      value: bindable(() => ({
+        value: prop("value"),
+        defaultValue: prop("defaultValue"),
+        onChange(value) {
+          prop("onValueChange")?.({ value })
+        },
+      })),
+    }
+  },
+
+  computed: {
+    encoded: memo(
+      ({ context, prop }) => [context.get("value"), prop("encoding")],
+      (value, encoding) => encode(value, encoding),
+    ),
+  },
+
+  states: {
+    idle: {
       on: {
         "VALUE.SET": {
           actions: ["setValue"],
@@ -31,35 +47,28 @@ export function machine(userContext: UserDefinedContext) {
         },
       },
     },
-    {
-      actions: {
-        setValue(ctx, evt) {
-          set.value(ctx, evt.value)
-        },
-        downloadQrCode(ctx, evt) {
-          const { mimeType, quality, fileName } = evt
-          const svgEl = dom.getFrameEl(ctx)
-          const doc = dom.getDoc(ctx)
-          getDataUrl(svgEl, { type: mimeType, quality }).then((dataUri) => {
-            const a = doc.createElement("a")
-            a.href = dataUri
-            a.rel = "noopener"
-            a.download = fileName
-            a.click()
-            setTimeout(() => {
-              a.remove()
-            }, 0)
-          })
-        },
+  },
+
+  implementations: {
+    actions: {
+      setValue({ context, event }) {
+        context.set("value", event.value)
+      },
+      downloadQrCode({ event, scope }) {
+        const { mimeType, quality, fileName } = event
+        const svgEl = dom.getFrameEl(scope)
+        const doc = scope.getDoc()
+        getDataUrl(svgEl, { type: mimeType, quality }).then((dataUri) => {
+          const a = doc.createElement("a")
+          a.href = dataUri
+          a.rel = "noopener"
+          a.download = fileName
+          a.click()
+          setTimeout(() => {
+            a.remove()
+          }, 0)
+        })
       },
     },
-  )
-}
-
-const set = {
-  value(ctx: MachineContext, value: string) {
-    if (isEqual(ctx.value, value)) return
-    ctx.value = value
-    ctx.onValueChange?.({ value })
   },
-}
+})

@@ -11,11 +11,9 @@ interface UsePresenceProps {
 export function usePresence(props: UsePresenceProps) {
   const { keepMounted, present, onExitComplete } = props
 
-  const [state, send] = useMachine(presence.machine({ present }), {
-    context: { present, onExitComplete },
-  })
+  const service = useMachine(presence.machine, { present, onExitComplete })
 
-  const api = presence.connect(state, send, normalizeProps)
+  const api = presence.connect(service, normalizeProps)
 
   return {
     unmount: !api.present && !keepMounted,

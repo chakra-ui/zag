@@ -1,22 +1,24 @@
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
-import { dom } from "./hover-card.dom"
-import type { MachineApi, Send, State } from "./hover-card.types"
+import * as dom from "./hover-card.dom"
+import type { HoverCardApi, HoverCardService } from "./hover-card.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(service: HoverCardService, normalize: NormalizeProps<T>): HoverCardApi<T> {
+  const { state, send, prop, context, scope } = service
+
   const open = state.hasTag("open")
 
   const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
-    placement: state.context.currentPlacement,
+    ...prop("positioning"),
+    placement: context.get("currentPlacement"),
   })
 
   return {
     open: open,
     setOpen(nextOpen) {
       if (nextOpen === open) return
-      send(nextOpen ? "OPEN" : "CLOSE")
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
@@ -24,9 +26,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getArrowProps() {
       return normalize.element({
-        id: dom.getArrowId(state.context),
+        id: dom.getArrowId(scope),
         ...parts.arrow.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         style: popperStyles.arrow,
       })
     },
@@ -34,7 +36,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getArrowTipProps() {
       return normalize.element({
         ...parts.arrowTip.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         style: popperStyles.arrowTip,
       })
     },
@@ -42,9 +44,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getTriggerProps() {
       return normalize.element({
         ...parts.trigger.attrs,
-        dir: state.context.dir,
-        "data-placement": state.context.currentPlacement,
-        id: dom.getTriggerId(state.context),
+        dir: prop("dir"),
+        "data-placement": context.get("currentPlacement"),
+        id: dom.getTriggerId(scope),
         "data-state": open ? "open" : "closed",
         onPointerEnter(event) {
           if (event.pointerType === "touch") return
@@ -55,19 +57,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "POINTER_LEAVE", src: "trigger" })
         },
         onFocus() {
-          send("TRIGGER_FOCUS")
+          send({ type: "TRIGGER_FOCUS" })
         },
         onBlur() {
-          send("TRIGGER_BLUR")
+          send({ type: "TRIGGER_BLUR" })
         },
       })
     },
 
     getPositionerProps() {
       return normalize.element({
-        id: dom.getPositionerId(state.context),
+        id: dom.getPositionerId(scope),
         ...parts.positioner.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         style: popperStyles.floating,
       })
     },
@@ -75,11 +77,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getContentProps() {
       return normalize.element({
         ...parts.content.attrs,
-        dir: state.context.dir,
-        id: dom.getContentId(state.context),
+        dir: prop("dir"),
+        id: dom.getContentId(scope),
         hidden: !open,
         "data-state": open ? "open" : "closed",
-        "data-placement": state.context.currentPlacement,
+        "data-placement": context.get("currentPlacement"),
         onPointerEnter(event) {
           if (event.pointerType === "touch") return
           send({ type: "POINTER_ENTER", src: "content" })

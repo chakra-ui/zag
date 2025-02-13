@@ -1,4 +1,4 @@
-import type { ChannelProps, Color, MachineContext } from "../color-picker.types"
+import type { ChannelProps, Color, ColorPickerProps } from "../color-picker.types"
 
 function getSliderBackgroundDirection(
   orientation: "vertical" | "horizontal" | undefined,
@@ -15,7 +15,7 @@ function getSliderBackgroundDirection(
 
 interface SliderBackgroundProps extends Required<ChannelProps> {
   value: Color
-  dir: MachineContext["dir"]
+  dir: ColorPickerProps["dir"]
 }
 
 export const getSliderBackground = (props: SliderBackgroundProps) => {

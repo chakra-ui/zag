@@ -2,18 +2,19 @@ import { dataAttr, isSafari } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./popover.anatomy"
-import { dom } from "./popover.dom"
-import type { MachineApi, Send, State } from "./popover.types"
+import * as dom from "./popover.dom"
+import type { PopoverApi, PopoverService } from "./popover.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(service: PopoverService, normalize: NormalizeProps<T>): PopoverApi<T> {
+  const { state, context, send, computed, prop, scope } = service
   const open = state.matches("open")
 
-  const currentPlacement = state.context.currentPlacement
-  const portalled = state.context.currentPortalled
-  const rendered = state.context.renderedElements
+  const currentPlacement = context.get("currentPlacement")
+  const portalled = computed("currentPortalled")
+  const rendered = context.get("renderedElements")
 
   const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
+    ...prop("positioning"),
     placement: currentPlacement,
   })
 
@@ -22,7 +23,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     open: open,
     setOpen(nextOpen) {
       if (nextOpen === open) return
-      send(nextOpen ? "OPEN" : "CLOSE")
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
@@ -30,9 +31,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getArrowProps() {
       return normalize.element({
-        id: dom.getArrowId(state.context),
+        id: dom.getArrowId(scope),
         ...parts.arrow.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         style: popperStyles.arrow,
       })
     },
@@ -40,7 +41,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getArrowTipProps() {
       return normalize.element({
         ...parts.arrowTip.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         style: popperStyles.arrowTip,
       })
     },
@@ -48,22 +49,22 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getAnchorProps() {
       return normalize.element({
         ...parts.anchor.attrs,
-        dir: state.context.dir,
-        id: dom.getAnchorId(state.context),
+        dir: prop("dir"),
+        id: dom.getAnchorId(scope),
       })
     },
 
     getTriggerProps() {
       return normalize.button({
         ...parts.trigger.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         type: "button",
         "data-placement": currentPlacement,
-        id: dom.getTriggerId(state.context),
+        id: dom.getTriggerId(scope),
         "aria-haspopup": "dialog",
         "aria-expanded": open,
         "data-state": open ? "open" : "closed",
-        "aria-controls": dom.getContentId(state.context),
+        "aria-controls": dom.getContentId(scope),
         onPointerDown(event) {
           if (isSafari()) {
             event.currentTarget.focus()
@@ -71,7 +72,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onClick(event) {
           if (event.defaultPrevented) return
-          send("TOGGLE")
+          send({ type: "TOGGLE" })
         },
         onBlur(event) {
           send({ type: "TRIGGER_BLUR", target: event.relatedTarget })
@@ -82,16 +83,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getIndicatorProps() {
       return normalize.element({
         ...parts.indicator.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-state": open ? "open" : "closed",
       })
     },
 
     getPositionerProps() {
       return normalize.element({
-        id: dom.getPositionerId(state.context),
+        id: dom.getPositionerId(scope),
         ...parts.positioner.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         style: popperStyles.floating,
       })
     },
@@ -99,15 +100,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getContentProps() {
       return normalize.element({
         ...parts.content.attrs,
-        dir: state.context.dir,
-        id: dom.getContentId(state.context),
+        dir: prop("dir"),
+        id: dom.getContentId(scope),
         tabIndex: -1,
         role: "dialog",
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-expanded": dataAttr(open),
-        "aria-labelledby": rendered.title ? dom.getTitleId(state.context) : undefined,
-        "aria-describedby": rendered.description ? dom.getDescriptionId(state.context) : undefined,
+        "aria-labelledby": rendered.title ? dom.getTitleId(scope) : undefined,
+        "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,
         "data-placement": currentPlacement,
       })
     },
@@ -115,29 +116,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getTitleProps() {
       return normalize.element({
         ...parts.title.attrs,
-        id: dom.getTitleId(state.context),
-        dir: state.context.dir,
+        id: dom.getTitleId(scope),
+        dir: prop("dir"),
       })
     },
 
     getDescriptionProps() {
       return normalize.element({
         ...parts.description.attrs,
-        id: dom.getDescriptionId(state.context),
-        dir: state.context.dir,
+        id: dom.getDescriptionId(scope),
+        dir: prop("dir"),
       })
     },
 
     getCloseTriggerProps() {
       return normalize.button({
         ...parts.closeTrigger.attrs,
-        dir: state.context.dir,
-        id: dom.getCloseTriggerId(state.context),
+        dir: prop("dir"),
+        id: dom.getCloseTriggerId(scope),
         type: "button",
         "aria-label": "close",
         onClick(event) {
           if (event.defaultPrevented) return
-          send("CLOSE")
+          send({ type: "CLOSE" })
         },
       })
     },

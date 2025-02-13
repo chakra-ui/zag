@@ -2,30 +2,20 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
 import { cloneElement, isValidElement, useId } from "react"
 
-interface Props extends Omit<tooltip.Context, "id" | "open.controlled"> {
-  defaultOpen?: boolean
+interface Props extends Omit<tooltip.Props, "id"> {
   children: React.ReactNode
   label: React.ReactNode
 }
 
 export function Tooltip(props: Props) {
-  const { defaultOpen, label, open, children, ...context } = props
+  const { label, children, ...rest } = props
 
-  const [state, send] = useMachine(
-    tooltip.machine({
-      id: useId(),
-      open: open ?? defaultOpen,
-    }),
-    {
-      context: {
-        ...context,
-        "open.controlled": open !== undefined,
-        open,
-      },
-    },
-  )
+  const service = useMachine(tooltip.machine, {
+    id: useId(),
+    ...rest,
+  })
 
-  const api = tooltip.connect(state, send, normalizeProps)
+  const api = tooltip.connect(service, normalizeProps)
 
   return (
     <main className="tooltip">

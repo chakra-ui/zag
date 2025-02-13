@@ -1,28 +1,23 @@
-import { createScope } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./select.types"
+import type { Scope } from "@zag-js/core"
 
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `select:${ctx.id}`,
-  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `select:${ctx.id}:content`,
-  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `select:${ctx.id}:trigger`,
-  getClearTriggerId: (ctx: Ctx) => ctx.ids?.clearTrigger ?? `select:${ctx.id}:clear-trigger`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `select:${ctx.id}:label`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `select:${ctx.id}:control`,
-  getItemId: (ctx: Ctx, id: string | number) => ctx.ids?.item?.(id) ?? `select:${ctx.id}:option:${id}`,
-  getHiddenSelectId: (ctx: Ctx) => ctx.ids?.hiddenSelect ?? `select:${ctx.id}:select`,
-  getPositionerId: (ctx: Ctx) => ctx.ids?.positioner ?? `select:${ctx.id}:positioner`,
-  getItemGroupId: (ctx: Ctx, id: string | number) => ctx.ids?.itemGroup?.(id) ?? `select:${ctx.id}:optgroup:${id}`,
-  getItemGroupLabelId: (ctx: Ctx, id: string | number) =>
-    ctx.ids?.itemGroupLabel?.(id) ?? `select:${ctx.id}:optgroup-label:${id}`,
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `select:${ctx.id}`
+export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `select:${ctx.id}:content`
+export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `select:${ctx.id}:trigger`
+export const getClearTriggerId = (ctx: Scope) => ctx.ids?.clearTrigger ?? `select:${ctx.id}:clear-trigger`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `select:${ctx.id}:label`
+export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `select:${ctx.id}:control`
+export const getItemId = (ctx: Scope, id: string | number) => ctx.ids?.item?.(id) ?? `select:${ctx.id}:option:${id}`
+export const getHiddenSelectId = (ctx: Scope) => ctx.ids?.hiddenSelect ?? `select:${ctx.id}:select`
+export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `select:${ctx.id}:positioner`
+export const getItemGroupId = (ctx: Scope, id: string | number) =>
+  ctx.ids?.itemGroup?.(id) ?? `select:${ctx.id}:optgroup:${id}`
+export const getItemGroupLabelId = (ctx: Scope, id: string | number) =>
+  ctx.ids?.itemGroupLabel?.(id) ?? `select:${ctx.id}:optgroup-label:${id}`
 
-  getHiddenSelectEl: (ctx: Ctx) => dom.getById<HTMLSelectElement>(ctx, dom.getHiddenSelectId(ctx)),
-  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
-  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
-  getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
-  getClearTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getClearTriggerId(ctx)),
-  getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
-  getHighlightedOptionEl(ctx: Ctx) {
-    if (!ctx.highlightedValue) return null
-    return dom.getById(ctx, dom.getItemId(ctx, ctx.highlightedValue))
-  },
-})
+export const getHiddenSelectEl = (ctx: Scope) => ctx.getById<HTMLSelectElement>(getHiddenSelectId(ctx))
+export const getContentEl = (ctx: Scope) => ctx.getById(getContentId(ctx))
+export const getControlEl = (ctx: Scope) => ctx.getById(getControlId(ctx))
+export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))
+export const getClearTriggerEl = (ctx: Scope) => ctx.getById(getClearTriggerId(ctx))
+export const getPositionerEl = (ctx: Scope) => ctx.getById(getPositionerId(ctx))
+export const getItemEl = (ctx: Scope, id: string | number) => ctx.getById(getItemId(ctx, id))

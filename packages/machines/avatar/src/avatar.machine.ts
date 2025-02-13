@@ -1,107 +1,100 @@
-import { createMachine } from "@zag-js/core"
 import { observeAttributes, observeChildren } from "@zag-js/dom-query"
-import { compact } from "@zag-js/utils"
-import { dom } from "./avatar.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./avatar.types"
+import { createMachine } from "@zag-js/core"
+import type { AvatarSchema } from "./avatar.types"
+import * as dom from "./avatar.dom"
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "avatar",
-      initial: "loading",
-      activities: ["trackImageRemoval"],
+export const machine = createMachine<AvatarSchema>({
+  initialState() {
+    return "loading"
+  },
 
-      context: ctx,
+  effects: ["trackImageRemoval", "trackSrcChange"],
 
+  on: {
+    "src.change": {
+      target: "loading",
+    },
+    "img.unmount": {
+      target: "error",
+    },
+  },
+
+  states: {
+    loading: {
+      entry: ["checkImageStatus"],
       on: {
-        "SRC.CHANGE": {
-          target: "loading",
+        "img.loaded": {
+          target: "loaded",
+          actions: ["invokeOnLoad"],
         },
-        "IMG.UNMOUNT": {
+        "img.error": {
           target: "error",
+          actions: ["invokeOnError"],
         },
+      },
+    },
+    error: {
+      on: {
+        "img.loaded": {
+          target: "loaded",
+          actions: ["invokeOnLoad"],
+        },
+      },
+    },
+    loaded: {
+      on: {
+        "img.error": {
+          target: "error",
+          actions: ["invokeOnError"],
+        },
+      },
+    },
+  },
+
+  implementations: {
+    actions: {
+      invokeOnLoad({ prop }) {
+        prop("onStatusChange")?.({ status: "loaded" })
       },
 
-      states: {
-        loading: {
-          activities: ["trackSrcChange"],
-          entry: ["checkImageStatus"],
-          on: {
-            "IMG.LOADED": {
-              target: "loaded",
-              actions: ["invokeOnLoad"],
-            },
-            "IMG.ERROR": {
-              target: "error",
-              actions: ["invokeOnError"],
-            },
-          },
-        },
-        error: {
-          activities: ["trackSrcChange"],
-          on: {
-            "IMG.LOADED": {
-              target: "loaded",
-              actions: ["invokeOnLoad"],
-            },
-          },
-        },
-        loaded: {
-          activities: ["trackSrcChange"],
-          on: {
-            "IMG.ERROR": {
-              target: "error",
-              actions: ["invokeOnError"],
-            },
-          },
-        },
+      invokeOnError({ prop }) {
+        prop("onStatusChange")?.({ status: "error" })
+      },
+      checkImageStatus({ send, scope }) {
+        const imageEl = dom.getImageEl(scope)
+        if (!imageEl?.complete) return
+        const type = hasLoaded(imageEl) ? "img.loaded" : "img.error"
+        send({ type, src: "ssr" })
       },
     },
-    {
-      activities: {
-        trackSrcChange(ctx, _evt, { send }) {
-          const imageEl = dom.getImageEl(ctx)
-          return observeAttributes(imageEl, {
-            attributes: ["src", "srcset"],
-            callback() {
-              send({ type: "SRC.CHANGE" })
-            },
-          })
-        },
-        trackImageRemoval(ctx, _evt, { send }) {
-          const rootEl = dom.getRootEl(ctx)
-          return observeChildren(rootEl, {
-            callback(records) {
-              const removedNodes = Array.from(records[0].removedNodes) as HTMLElement[]
-              const removed = removedNodes.find(
-                (node) => node.nodeType === Node.ELEMENT_NODE && node.matches("[data-scope=avatar][data-part=image]"),
-              )
-              if (removed) {
-                send({ type: "IMG.UNMOUNT" })
-              }
-            },
-          })
-        },
+    effects: {
+      trackImageRemoval({ send, scope }) {
+        const rootEl = dom.getRootEl(scope)
+        return observeChildren(rootEl, {
+          callback(records) {
+            const removedNodes = Array.from(records[0].removedNodes) as HTMLElement[]
+            const removed = removedNodes.find(
+              (node) => node.nodeType === Node.ELEMENT_NODE && node.matches("[data-scope=avatar][data-part=image]"),
+            )
+            if (removed) {
+              send({ type: "img.unmount" })
+            }
+          },
+        })
       },
-      actions: {
-        invokeOnLoad(ctx) {
-          ctx.onStatusChange?.({ status: "loaded" })
-        },
-        invokeOnError(ctx) {
-          ctx.onStatusChange?.({ status: "error" })
-        },
-        checkImageStatus(ctx, _evt, { send }) {
-          const imageEl = dom.getImageEl(ctx)
-          if (imageEl?.complete) {
-            const type = hasLoaded(imageEl) ? "IMG.LOADED" : "IMG.ERROR"
-            send({ type, src: "ssr" })
-          }
-        },
+
+      trackSrcChange({ send, scope }) {
+        const imageEl = dom.getImageEl(scope)
+        return observeAttributes(imageEl, {
+          attributes: ["src", "srcset"],
+          callback() {
+            send({ type: "src.change" })
+          },
+        })
       },
     },
-  )
-}
+  },
+})
 
 function hasLoaded(image: HTMLImageElement) {
   return image.complete && image.naturalWidth !== 0 && image.naturalHeight !== 0

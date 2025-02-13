@@ -3,13 +3,13 @@ export { connect } from "./progress.connect"
 export { machine } from "./progress.machine"
 export * from "./progress.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  ProgressApi as Api,
+  ProgressService as Service,
+  ProgressProps as Props,
   ElementIds,
   IntlTranslations,
   Orientation,
   ProgressState,
-  Service,
   ValueChangeDetails,
   ValueTranslationDetails,
   ViewProps,

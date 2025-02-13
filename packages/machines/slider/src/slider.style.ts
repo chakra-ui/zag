@@ -1,6 +1,9 @@
+import type { Params } from "@zag-js/core"
 import type { Style } from "@zag-js/types"
 import { getValuePercent, getValueTransformer } from "@zag-js/utils"
-import type { MachineContext as Ctx, SharedContext } from "./slider.types"
+import type { SliderSchema } from "./slider.types"
+
+type Ctx = Params<SliderSchema>
 
 /* -----------------------------------------------------------------------------
  * Range style calculations
@@ -12,15 +15,16 @@ function getBounds<T>(value: T[]): [T, T] {
   return [firstValue, lastThumb]
 }
 
-export function getRangeOffsets(ctx: Ctx) {
-  const [firstPercent, lastPercent] = getBounds(ctx.valuePercent)
+export function getRangeOffsets(params: Pick<Ctx, "prop" | "computed">) {
+  const { prop, computed } = params
+  const valuePercent = computed("valuePercent")
+  const [firstPercent, lastPercent] = getBounds(valuePercent)
 
-  if (ctx.valuePercent.length === 1) {
-    if (ctx.origin === "center") {
-      const isNegative = ctx.valuePercent[0] < 50
-      const start = isNegative ? `${ctx.valuePercent[0]}%` : "50%"
-      const end = isNegative ? "50%" : `${100 - ctx.valuePercent[0]}%`
-
+  if (valuePercent.length === 1) {
+    if (prop("origin") === "center") {
+      const isNegative = valuePercent[0] < 50
+      const start = isNegative ? `${valuePercent[0]}%` : "50%"
+      const end = isNegative ? "50%" : `${100 - valuePercent[0]}%`
       return { start, end }
     }
 
@@ -30,19 +34,22 @@ export function getRangeOffsets(ctx: Ctx) {
   return { start: `${firstPercent}%`, end: `${100 - lastPercent}%` }
 }
 
-function getRangeStyle(ctx: Pick<SharedContext, "isVertical" | "isRtl">): Style {
-  if (ctx.isVertical) {
+export function getRangeStyle(params: Pick<Ctx, "computed">): Style {
+  const { computed } = params
+  const isVertical = computed("isVertical")
+  const isRtl = computed("isRtl")
+
+  if (isVertical) {
     return {
       position: "absolute",
       bottom: "var(--slider-range-start)",
       top: "var(--slider-range-end)",
     }
   }
-
   return {
     position: "absolute",
-    [ctx.isRtl ? "right" : "left"]: "var(--slider-range-start)",
-    [ctx.isRtl ? "left" : "right"]: "var(--slider-range-end)",
+    [isRtl ? "right" : "left"]: "var(--slider-range-start)",
+    [isRtl ? "left" : "right"]: "var(--slider-range-end)",
   }
 }
 
@@ -50,47 +57,57 @@ function getRangeStyle(ctx: Pick<SharedContext, "isVertical" | "isRtl">): Style 
  * Thumb style calculations
  * -----------------------------------------------------------------------------*/
 
-function getVerticalThumbOffset(ctx: SharedContext) {
-  const { height = 0 } = ctx.thumbSize ?? {}
-  const getValue = getValueTransformer([ctx.min, ctx.max], [-height / 2, height / 2])
-  return parseFloat(getValue(ctx.value).toFixed(2))
+function getVerticalThumbOffset(params: Pick<Ctx, "context" | "prop">, value: number) {
+  const { context, prop } = params
+  const { height = 0 } = context.get("thumbSize") ?? {}
+  const getValue = getValueTransformer([prop("min"), prop("max")], [-height / 2, height / 2])
+  return parseFloat(getValue(value).toFixed(2))
 }
 
-function getHorizontalThumbOffset(ctx: SharedContext) {
-  const { width = 0 } = ctx.thumbSize ?? {}
+function getHorizontalThumbOffset(params: Pick<Ctx, "computed" | "context" | "prop">, value: number) {
+  const { computed, context, prop } = params
+  const { width = 0 } = context.get("thumbSize") ?? {}
 
-  if (ctx.isRtl) {
-    const getValue = getValueTransformer([ctx.max, ctx.min], [-width / 2, width / 2])
-    return -1 * parseFloat(getValue(ctx.value).toFixed(2))
+  const isRtl = computed("isRtl")
+
+  if (isRtl) {
+    const getValue = getValueTransformer([prop("max"), prop("min")], [-width / 2, width / 2])
+    return -1 * parseFloat(getValue(value).toFixed(2))
   }
 
-  const getValue = getValueTransformer([ctx.min, ctx.max], [-width / 2, width / 2])
-  return parseFloat(getValue(ctx.value).toFixed(2))
+  const getValue = getValueTransformer([prop("min"), prop("max")], [-width / 2, width / 2])
+  return parseFloat(getValue(value).toFixed(2))
 }
 
-function getOffset(ctx: SharedContext, percent: number) {
-  if (ctx.thumbAlignment === "center") return `${percent}%`
-  const offset = ctx.isVertical ? getVerticalThumbOffset(ctx) : getHorizontalThumbOffset(ctx)
+function getOffset(params: Pick<Ctx, "computed" | "context" | "prop">, percent: number, value: number) {
+  const { computed, prop } = params
+  if (prop("thumbAlignment") === "center") return `${percent}%`
+  const offset = computed("isVertical")
+    ? getVerticalThumbOffset(params, value)
+    : getHorizontalThumbOffset(params, value)
   return `calc(${percent}% - ${offset}px)`
 }
 
-function getThumbOffset(ctx: SharedContext) {
-  let percent = getValuePercent(ctx.value, ctx.min, ctx.max) * 100
-  return getOffset(ctx, percent)
+export function getThumbOffset(params: Pick<Ctx, "computed" | "context" | "prop">, value: number) {
+  const { prop } = params
+  const percent = getValuePercent(value, prop("min"), prop("max")) * 100
+  return getOffset(params, percent, value)
 }
 
-function getVisibility(ctx: Ctx) {
+export function getVisibility(params: Pick<Ctx, "computed" | "prop">) {
+  const { computed, prop } = params
   let visibility: "visible" | "hidden" = "visible"
-  if (ctx.thumbAlignment === "contain" && !ctx.hasMeasuredThumbSize) {
+  if (prop("thumbAlignment") === "contain" && !computed("hasMeasuredThumbSize")) {
     visibility = "hidden"
   }
   return visibility
 }
 
-function getThumbStyle(ctx: Ctx, index: number): Style {
-  const placementProp = ctx.isVertical ? "bottom" : "insetInlineStart"
+export function getThumbStyle(params: Pick<Ctx, "computed" | "prop">, index: number): Style {
+  const { computed } = params
+  const placementProp = computed("isVertical") ? "bottom" : "insetInlineStart"
   return {
-    visibility: getVisibility(ctx),
+    visibility: getVisibility(params),
     position: "absolute",
     transform: "var(--slider-thumb-transform)",
     [placementProp]: `var(--slider-thumb-offset-${index})`,
@@ -101,7 +118,7 @@ function getThumbStyle(ctx: Ctx, index: number): Style {
  * Control style calculations
  * -----------------------------------------------------------------------------*/
 
-function getControlStyle(): Style {
+export function getControlStyle(): Style {
   return {
     touchAction: "none",
     userSelect: "none",
@@ -114,17 +131,20 @@ function getControlStyle(): Style {
  * Root style calculations
  * -----------------------------------------------------------------------------*/
 
-function getRootStyle(ctx: Ctx): Style {
-  const range = getRangeOffsets(ctx)
+export function getRootStyle(params: Pick<Ctx, "context" | "computed" | "prop">): Style {
+  const { context, computed } = params
+  const isVertical = computed("isVertical")
+  const isRtl = computed("isRtl")
+  const range = getRangeOffsets(params)
 
-  const offsetStyles = ctx.value.reduce<Style>((styles, value, index) => {
-    const offset = getThumbOffset({ ...ctx, value })
+  const offsetStyles = context.get("value").reduce<Style>((styles, value, index) => {
+    const offset = getThumbOffset(params, value)
     return { ...styles, [`--slider-thumb-offset-${index}`]: offset }
   }, {})
 
   return {
     ...offsetStyles,
-    "--slider-thumb-transform": ctx.isVertical ? "translateY(50%)" : ctx.isRtl ? "translateX(50%)" : "translateX(-50%)",
+    "--slider-thumb-transform": isVertical ? "translateY(50%)" : isRtl ? "translateX(50%)" : "translateX(-50%)",
     "--slider-range-start": range.start,
     "--slider-range-end": range.end,
   }
@@ -134,20 +154,18 @@ function getRootStyle(ctx: Ctx): Style {
  * Marker style calculations
  * -----------------------------------------------------------------------------*/
 
-function getMarkerStyle(
-  ctx: Pick<SharedContext, "isHorizontal" | "isRtl" | "thumbAlignment" | "hasMeasuredThumbSize">,
-  value: number,
-): Style {
+export function getMarkerStyle(params: Pick<Ctx, "computed" | "context" | "prop">, value: number): Style {
+  const { computed } = params
+  const isHorizontal = computed("isHorizontal")
+  const isRtl = computed("isRtl")
   return {
-    // @ts-expect-error
-    visibility: getVisibility(ctx),
+    visibility: getVisibility(params),
     position: "absolute",
     pointerEvents: "none",
-    // @ts-expect-error
-    [ctx.isHorizontal ? "insetInlineStart" : "bottom"]: getThumbOffset({ ...ctx, value }),
+    [isHorizontal ? "insetInlineStart" : "bottom"]: getThumbOffset(params, value),
     translate: "var(--tx) var(--ty)",
-    "--tx": ctx.isHorizontal ? (ctx.isRtl ? "50%" : "-50%") : "0%",
-    "--ty": !ctx.isHorizontal ? "50%" : "0%",
+    "--tx": isHorizontal ? (isRtl ? "50%" : "-50%") : "0%",
+    "--ty": !isHorizontal ? "50%" : "0%",
   }
 }
 
@@ -155,20 +173,11 @@ function getMarkerStyle(
  * Label style calculations
  * -----------------------------------------------------------------------------*/
 
-function getMarkerGroupStyle(): Style {
+export function getMarkerGroupStyle(): Style {
   return {
     userSelect: "none",
     WebkitUserSelect: "none",
     pointerEvents: "none",
     position: "relative",
   }
-}
-
-export const styleGetterFns = {
-  getRootStyle,
-  getControlStyle,
-  getThumbStyle,
-  getRangeStyle,
-  getMarkerStyle,
-  getMarkerGroupStyle,
 }

@@ -2,19 +2,21 @@ import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { fromLength } from "@zag-js/utils"
 import { parts } from "./steps.anatomy"
-import { dom } from "./steps.dom"
-import type { ItemProps, ItemState, MachineApi, Send, State } from "./steps.types"
+import * as dom from "./steps.dom"
+import type { ItemProps, ItemState, StepsApi, StepsService } from "./steps.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const step = state.context.step
-  const count = state.context.count
-  const percent = state.context.percent
-  const hasNextStep = state.context.hasNextStep
-  const hasPrevStep = state.context.hasPrevStep
+export function connect<T extends PropTypes>(service: StepsService, normalize: NormalizeProps<T>): StepsApi<T> {
+  const { context, send, computed, prop, scope } = service
+
+  const step = context.get("step")
+  const count = prop("count")
+  const percent = computed("percent")
+  const hasNextStep = computed("hasNextStep")
+  const hasPrevStep = computed("hasPrevStep")
 
   const getItemState = (props: ItemProps): ItemState => ({
-    triggerId: dom.getTriggerId(state.context, props.index),
-    contentId: dom.getContentId(state.context, props.index),
+    triggerId: dom.getTriggerId(scope, props.index),
+    contentId: dom.getContentId(scope, props.index),
     current: props.index === step,
     completed: props.index < step,
     incomplete: props.index > step,
@@ -45,7 +47,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     percent,
     hasNextStep,
     hasPrevStep,
-    isCompleted: state.context.completed,
+    isCompleted: computed("completed"),
     goToNextStep,
     goToPrevStep,
     resetStep,
@@ -55,9 +57,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        id: dom.getRootId(state.context),
-        dir: state.context.dir,
-        "data-orientation": state.context.orientation,
+        id: dom.getRootId(scope),
+        dir: prop("dir"),
+        "data-orientation": prop("orientation"),
         style: {
           "--percent": `${percent}%`,
         },
@@ -65,16 +67,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getListProps() {
-      const arr = fromLength(state.context.count)
-      const triggerIds = arr.map((_, index) => dom.getTriggerId(state.context, index))
+      const arr = fromLength(count)
+      const triggerIds = arr.map((_, index) => dom.getTriggerId(scope, index))
       return normalize.element({
         ...parts.list.attrs,
-        dir: state.context.dir,
-        id: dom.getListId(state.context),
+        dir: prop("dir"),
+        id: dom.getListId(scope),
         role: "tablist",
         "aria-owns": triggerIds.join(" "),
-        "aria-orientation": state.context.orientation,
-        "data-orientation": state.context.orientation,
+        "aria-orientation": prop("orientation"),
+        "data-orientation": prop("orientation"),
       })
     },
 
@@ -82,9 +84,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "aria-current": itemState.current ? "step" : undefined,
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
       })
     },
 
@@ -94,18 +96,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.trigger.attrs,
         id: itemState.triggerId,
         role: "tab",
-        dir: state.context.dir,
-        tabIndex: !state.context.linear || itemState.current ? 0 : -1,
+        dir: prop("dir"),
+        tabIndex: !prop("linear") || itemState.current ? 0 : -1,
         "aria-selected": itemState.current,
         "aria-controls": itemState.contentId,
         "data-state": itemState.current ? "open" : "closed",
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         "data-complete": dataAttr(itemState.completed),
         "data-current": dataAttr(itemState.current),
         "data-incomplete": dataAttr(itemState.incomplete),
         onClick(event) {
           if (event.defaultPrevented) return
-          if (state.context.linear) return
+          if (prop("linear")) return
           send({ type: "STEP.SET", value: props.index, src: "trigger.click" })
         },
       })
@@ -115,13 +117,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.content.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         id: itemState.contentId,
         role: "tabpanel",
         tabIndex: 0,
         hidden: !itemState.current,
         "data-state": itemState.current ? "open" : "closed",
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         "aria-labelledby": itemState.triggerId,
       })
     },
@@ -130,7 +132,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.indicator.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "aria-hidden": true,
         "data-complete": dataAttr(itemState.completed),
         "data-current": dataAttr(itemState.current),
@@ -142,8 +144,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.separator.attrs,
-        dir: state.context.dir,
-        "data-orientation": state.context.orientation,
+        dir: prop("dir"),
+        "data-orientation": prop("orientation"),
         "data-complete": dataAttr(itemState.completed),
         "data-current": dataAttr(itemState.current),
         "data-incomplete": dataAttr(itemState.incomplete),
@@ -153,7 +155,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getNextTriggerProps() {
       return normalize.button({
         ...parts.nextTrigger.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         type: "button",
         disabled: !hasNextStep,
         onClick(event) {
@@ -165,7 +167,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getPrevTriggerProps() {
       return normalize.button({
-        dir: state.context.dir,
+        dir: prop("dir"),
         ...parts.prevTrigger.attrs,
         type: "button",
         disabled: !hasPrevStep,
@@ -178,7 +180,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getProgressProps() {
       return normalize.element({
-        dir: state.context.dir,
+        dir: prop("dir"),
         ...parts.progress.attrs,
         role: "progressbar",
         "aria-valuenow": percent,

@@ -8,18 +8,14 @@ import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
   const controls = useControls(datePickerControls)
-  const [state, send] = useMachine(
-    datePicker.machine({
-      id: useId(),
-      locale: "en",
-      selectionMode: "multiple",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(datePicker.machine, {
+    id: useId(),
+    locale: "en",
+    selectionMode: "multiple",
+    ...controls.context,
+  })
 
-  const api = datePicker.connect(state, send, normalizeProps)
+  const api = datePicker.connect(service, normalizeProps)
 
   return (
     <>
@@ -143,7 +139,7 @@ export default function Page() {
       </main>
 
       <Toolbar viz controls={controls.ui}>
-        <StateVisualizer state={state} omit={["weeks"]} />
+        <StateVisualizer state={service} omit={["weeks"]} />
       </Toolbar>
     </>
   )

@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, Required, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -30,15 +30,20 @@ type ElementIds = Partial<{
   panel(id: string | number): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface SplitterProps extends DirectionProperty, CommonProperties {
   /**
    * The orientation of the splitter. Can be `horizontal` or `vertical`
+   * @default "horizontal"
    */
-  orientation: "horizontal" | "vertical"
+  orientation?: "horizontal" | "vertical" | undefined
   /**
    * The size data of the panels
    */
-  size: PanelSizeData[]
+  size?: PanelSizeData[] | undefined
+  /**
+   * The default size of the panels
+   */
+  defaultSize?: PanelSizeData[] | undefined
   /**
    * Function called when the splitter is resized.
    */
@@ -53,7 +58,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   ids?: ElementIds | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+export type PropWithDefault = "orientation"
 
 export type NormalizedPanelData = Array<
   Required<PanelSizeData> & {
@@ -72,25 +77,35 @@ type ComputedContext = Readonly<{
   activeResizePanels?: { before: PanelSizeData; after: PanelSizeData } | undefined
 }>
 
+export interface ResizeState {
+  isAtMin: boolean
+  isAtMax: boolean
+}
+
 interface PrivateContext {
   activeResizeId: string | null
+  activeResizeState: ResizeState
+  size: PanelSizeData[]
+}
+
+interface Refs {
   previousPanels: NormalizedPanelData
-  activeResizeState: { isAtMin: boolean; isAtMax: boolean }
-  initialSize: Array<Required<Pick<PanelSizeData, "id" | "size">>>
 }
 
-export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
-
-export interface MachineState {
-  value: "idle" | "hover:temp" | "hover" | "dragging" | "focused"
-  tags: "focus"
+export interface SplitterSchema {
+  state: "idle" | "hover:temp" | "hover" | "dragging" | "focused"
+  tag: "focus"
+  props: RequiredBy<SplitterProps, PropWithDefault>
+  context: PrivateContext
+  refs: Refs
+  computed: ComputedContext
+  action: string
+  event: EventObject
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type SplitterService = Service<SplitterSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -121,7 +136,7 @@ export interface PanelBounds {
   max: number
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface SplitterApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the splitter is focused.
    */

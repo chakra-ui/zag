@@ -18,7 +18,12 @@ function getElementType(el: HTMLElementWithValue) {
   if (el.localName === "select") return "HTMLSelectElement"
 }
 
-export function setElementValue(el: HTMLElementWithValue, value: string, property: "value" | "checked" = "value") {
+export function setElementValue(
+  el: HTMLElementWithValue | null,
+  value: string,
+  property: "value" | "checked" = "value",
+) {
+  if (!el) return
   const type = getElementType(el)
   if (type) {
     const descriptor = getDescriptor(el, { type, property })
@@ -27,7 +32,8 @@ export function setElementValue(el: HTMLElementWithValue, value: string, propert
   el.setAttribute(property, value)
 }
 
-export function setElementChecked(el: HTMLInputElement, checked: boolean) {
+export function setElementChecked(el: HTMLInputElement | null, checked: boolean) {
+  if (!el) return
   const descriptor = getDescriptor(el, { type: "HTMLInputElement", property: "checked" })
   descriptor.set?.call(el, checked)
   // react applies the `checked` automatically when we call the descriptor

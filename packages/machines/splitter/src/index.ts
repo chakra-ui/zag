@@ -3,12 +3,11 @@ export { connect } from "./splitter.connect"
 export { machine } from "./splitter.machine"
 export * from "./splitter.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
-  MachineState,
+  SplitterApi as Api,
+  SplitterProps as Props,
+  SplitterService as Service,
   PanelProps,
   PanelSizeData,
   ResizeTriggerProps,
-  Service,
   SizeChangeDetails,
 } from "./splitter.types"

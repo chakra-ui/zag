@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { ItemProps, UserDefinedContext } from "./file-upload.types"
+import type { ItemProps, FileUploadProps } from "./file-upload.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<FileUploadProps>()([
   "accept",
   "allowDrop",
   "capture",
@@ -26,7 +26,7 @@ export const props = createProps<UserDefinedContext>()([
   "translations",
   "validate",
 ])
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<FileUploadProps>>(props)
 
 export const itemProps = createProps<ItemProps>()(["file"])
 export const splitItemProps = createSplitProps<ItemProps>(itemProps)

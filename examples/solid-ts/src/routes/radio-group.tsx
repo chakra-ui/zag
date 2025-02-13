@@ -10,17 +10,12 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(radioControls)
 
-  const [state, send] = useMachine(
-    radio.machine({
-      name: "fruits",
-      id: createUniqueId(),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(radio.machine, {
+    name: "fruits",
+    id: createUniqueId(),
+  })
 
-  const api = createMemo(() => radio.connect(state, send, normalizeProps))
+  const api = createMemo(() => radio.connect(service, normalizeProps))
 
   return (
     <>
@@ -59,7 +54,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

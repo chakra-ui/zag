@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { StrokeOptions } from "perfect-freehand"
 
@@ -6,7 +6,7 @@ import type { StrokeOptions } from "perfect-freehand"
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-interface Point {
+export interface Point {
   x: number
   y: number
   pressure: number
@@ -54,7 +54,7 @@ export type { StrokeOptions }
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface SignaturePadProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the signature pad elements. Useful for composition.
    */
@@ -66,16 +66,16 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Callback when the signature pad is drawing.
    */
-  onDraw?(details: DrawDetails): void
+  onDraw?: ((details: DrawDetails) => void) | undefined
   /**
    * Callback when the signature pad is done drawing.
    */
-  onDrawEnd?(details: DrawEndDetails): void
+  onDrawEnd?: ((details: DrawEndDetails) => void) | undefined
   /**
    * The drawing options.
    * @default '{ size: 2, simulatePressure: true }'
    */
-  drawing: DrawingOptions
+  drawing?: DrawingOptions | undefined
   /**
    * Whether the signature pad is disabled.
    */
@@ -93,6 +93,8 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   name?: string | undefined
 }
+
+type PropsWithDefault = "drawing" | "translations"
 
 interface PrivateContext {
   /**
@@ -114,19 +116,18 @@ type ComputedContext = Readonly<{
   isEmpty: boolean
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "drawing"
+export interface SignaturePadSchema {
+  state: "idle" | "drawing"
+  props: RequiredBy<SignaturePadProps, PropsWithDefault>
+  context: PrivateContext
+  computed: ComputedContext
+  action: string
+  event: EventObject
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type SignaturePadService = Service<SignaturePadSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -140,7 +141,7 @@ export interface HiddenInputProps {
   value: string
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface SignaturePadApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the signature pad is empty.
    */

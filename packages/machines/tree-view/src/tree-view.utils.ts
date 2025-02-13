@@ -1,17 +1,20 @@
 import type { TreeNode, TreeSkipFn } from "@zag-js/collection"
-import type { MachineContext } from "./tree-view.types"
+import type { Params } from "@zag-js/core"
+import type { TreeViewSchema } from "./tree-view.types"
 
-export function skipFn(ctx: MachineContext): TreeSkipFn<any> {
+export function skipFn(params: Pick<Params<TreeViewSchema>, "prop" | "context">): TreeSkipFn<any> {
+  const { prop, context } = params
   return function skip({ indexPath }) {
-    const paths = ctx.collection.getValuePath(indexPath).slice(0, -1)
-    return paths.some((value) => !ctx.expandedValue.includes(value))
+    const paths = prop("collection").getValuePath(indexPath).slice(0, -1)
+    return paths.some((value) => !context.get("expandedValue").includes(value))
   }
 }
 
-export function getVisibleNodes(ctx: MachineContext) {
+export function getVisibleNodes(params: Pick<Params<TreeViewSchema>, "prop" | "context">) {
+  const { prop } = params
   const nodes: { node: TreeNode; indexPath: number[] }[] = []
-  ctx.collection.visit({
-    skip: skipFn(ctx),
+  prop("collection").visit({
+    skip: skipFn(params),
     onEnter: (node, indexPath) => {
       nodes.push({ node, indexPath })
     },

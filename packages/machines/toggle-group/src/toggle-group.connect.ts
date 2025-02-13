@@ -1,23 +1,28 @@
 import { dataAttr, getEventKey, isSafari, isSelfTarget } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toggle-group.anatomy"
-import { dom } from "./toggle-group.dom"
-import type { ItemProps, ItemState, MachineApi, Send, State } from "./toggle-group.types"
+import * as dom from "./toggle-group.dom"
+import type { ItemProps, ItemState, ToggleGroupApi, ToggleGroupService } from "./toggle-group.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const value = state.context.value
-  const disabled = state.context.disabled
-  const isSingle = !state.context.multiple
-  const rovingFocus = state.context.rovingFocus
-  const isHorizontal = state.context.orientation === "horizontal"
+export function connect<T extends PropTypes>(
+  service: ToggleGroupService,
+  normalize: NormalizeProps<T>,
+): ToggleGroupApi<T> {
+  const { context, send, prop, scope } = service
+
+  const value = context.get("value")
+  const disabled = prop("disabled")
+  const isSingle = !prop("multiple")
+  const rovingFocus = prop("rovingFocus")
+  const isHorizontal = prop("orientation") === "horizontal"
 
   function getItemState(props: ItemProps): ItemState {
-    const id = dom.getItemId(state.context, props.value)
+    const id = dom.getItemId(scope, props.value)
     return {
       id,
       disabled: Boolean(props.disabled || disabled),
       pressed: !!value.includes(props.value),
-      focused: state.context.focusedId === id,
+      focused: context.get("focusedId") === id,
     }
   }
 
@@ -30,27 +35,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        id: dom.getRootId(state.context),
-        dir: state.context.dir,
+        id: dom.getRootId(scope),
+        dir: prop("dir"),
         role: isSingle ? "radiogroup" : "group",
-        tabIndex: state.context.isTabbingBackward ? -1 : 0,
+        tabIndex: context.get("isTabbingBackward") ? -1 : 0,
         "data-disabled": dataAttr(disabled),
-        "data-orientation": state.context.orientation,
-        "data-focus": dataAttr(state.context.focusedId != null),
+        "data-orientation": prop("orientation"),
+        "data-focus": dataAttr(context.get("focusedId") != null),
         style: { outline: "none" },
         onMouseDown() {
           if (disabled) return
-          send("ROOT.MOUSE_DOWN")
+          send({ type: "ROOT.MOUSE_DOWN" })
         },
         onFocus(event) {
           if (disabled) return
           const evt = event.nativeEvent || event
-          if (!isSelfTarget(evt) || !!state.context.isClickFocus || state.context.isTabbingBackward) return
-          send("ROOT.FOCUS")
+          if (!isSelfTarget(evt) || !!context.get("isClickFocus") || context.get("isTabbingBackward")) return
+          send({ type: "ROOT.FOCUS" })
         },
         onBlur() {
           if (disabled) return
-          send("ROOT.BLUR")
+          send({ type: "ROOT.BLUR" })
         },
       })
     },
@@ -65,7 +70,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.item.attrs,
         id: itemState.id,
         type: "button",
-        "data-ownedby": dom.getRootId(state.context),
+        "data-ownedby": dom.getRootId(scope),
         "data-focus": dataAttr(itemState.focused),
         disabled: itemState.disabled,
         tabIndex: rovingFocus ? rovingTabIndex : undefined,
@@ -75,8 +80,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "aria-pressed": isSingle ? undefined : itemState.pressed,
         //
         "data-disabled": dataAttr(itemState.disabled),
-        "data-orientation": state.context.orientation,
-        dir: state.context.dir,
+        "data-orientation": prop("orientation"),
+        dir: prop("dir"),
         "data-state": itemState.pressed ? "on" : "off",
         onFocus() {
           if (itemState.disabled) return
@@ -101,27 +106,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             },
             ArrowLeft() {
               if (!rovingFocus || !isHorizontal) return
-              send("TOGGLE.FOCUS_PREV")
+              send({ type: "TOGGLE.FOCUS_PREV" })
             },
             ArrowRight() {
               if (!rovingFocus || !isHorizontal) return
-              send("TOGGLE.FOCUS_NEXT")
+              send({ type: "TOGGLE.FOCUS_NEXT" })
             },
             ArrowUp() {
               if (!rovingFocus || isHorizontal) return
-              send("TOGGLE.FOCUS_PREV")
+              send({ type: "TOGGLE.FOCUS_PREV" })
             },
             ArrowDown() {
               if (!rovingFocus || isHorizontal) return
-              send("TOGGLE.FOCUS_NEXT")
+              send({ type: "TOGGLE.FOCUS_NEXT" })
             },
             Home() {
               if (!rovingFocus) return
-              send("TOGGLE.FOCUS_FIRST")
+              send({ type: "TOGGLE.FOCUS_FIRST" })
             },
             End() {
               if (!rovingFocus) return
-              send("TOGGLE.FOCUS_LAST")
+              send({ type: "TOGGLE.FOCUS_LAST" })
             },
           }
 

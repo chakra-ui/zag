@@ -1,13 +1,10 @@
-import { createScope } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./switch.types"
+import type { Scope } from "@zag-js/core"
 
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `switch:${ctx.id}`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `switch:${ctx.id}:label`,
-  getThumbId: (ctx: Ctx) => ctx.ids?.thumb ?? `switch:${ctx.id}:thumb`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `switch:${ctx.id}:control`,
-  getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `switch:${ctx.id}:input`,
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `switch:${ctx.id}`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `switch:${ctx.id}:label`
+export const getThumbId = (ctx: Scope) => ctx.ids?.thumb ?? `switch:${ctx.id}:thumb`
+export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `switch:${ctx.id}:control`
+export const getHiddenInputId = (ctx: Scope) => ctx.ids?.hiddenInput ?? `switch:${ctx.id}:input`
 
-  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
-  getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
-})
+export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
+export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))

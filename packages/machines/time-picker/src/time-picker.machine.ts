@@ -1,11 +1,11 @@
 import { Time } from "@internationalized/date"
-import { createMachine, guards } from "@zag-js/core"
+import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
-import { getPlacement } from "@zag-js/popper"
-import { compact, isEqual, match, next, prev } from "@zag-js/utils"
-import { dom } from "./time-picker.dom"
-import type { MachineContext, MachineState, TimeUnit, UserDefinedContext } from "./time-picker.types"
+import { getPlacement, type Placement } from "@zag-js/popper"
+import { compact, match, next, prev } from "@zag-js/utils"
+import * as dom from "./time-picker.dom"
+import type { TimePickerSchema, TimeUnit } from "./time-picker.types"
 import {
   clampTime,
   getCurrentTime,
@@ -15,470 +15,487 @@ import {
   is12HourFormat,
 } from "./time-picker.utils"
 
-const { and } = guards
+const { and } = createGuards<TimePickerSchema>()
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "time-picker",
-      initial: ctx.open ? "open" : "idle",
-      context: {
-        value: null,
-        locale: "en-US",
-        ...ctx,
-        focusedColumn: "hour",
-        focusedValue: null,
-        currentTime: null,
-        positioning: {
-          placement: "bottom-start",
-          gutter: 8,
-          ...ctx.positioning,
+export const machine = createMachine<TimePickerSchema>({
+  props({ props }) {
+    return {
+      locale: "en-US",
+      ...compact(props),
+      positioning: {
+        placement: "bottom-start",
+        gutter: 8,
+        ...props.positioning,
+      },
+    }
+  },
+
+  initialState({ prop }) {
+    const open = prop("open") || prop("defaultOpen")
+    return open ? "open" : "idle"
+  },
+
+  context({ prop, bindable, getComputed }) {
+    return {
+      value: bindable(() => ({
+        value: prop("value"),
+        defaultValue: prop("defaultValue"),
+        hash(a) {
+          return a?.toString() ?? ""
         },
-      },
+        onChange(value) {
+          const computed = getComputed()
+          prop("onValueChange")?.({
+            value,
+            valueAsString: computed("valueAsString"),
+          })
+        },
+      })),
+      focusedColumn: bindable<TimeUnit>(() => ({ defaultValue: "hour" })),
+      focusedValue: bindable(() => ({ defaultValue: null })),
+      currentTime: bindable<Time | null>(() => ({ defaultValue: null })),
+      currentPlacement: bindable<Placement | undefined>(() => ({ defaultValue: undefined })),
+      restoreFocus: bindable<boolean | undefined>(() => ({ defaultValue: undefined })),
+    }
+  },
 
-      computed: {
-        valueAsString: (ctx) => getStringifiedValue(ctx),
-        hour12: (ctx) => is12HourFormat(ctx.locale),
-        period: (ctx) => getHourPeriod(ctx.value?.hour, ctx.locale),
-      },
+  computed: {
+    valueAsString: ({ context, prop, computed }) =>
+      getStringifiedValue(context.get("value"), computed("hour12"), computed("period"), prop("allowSeconds")),
+    hour12: ({ prop }) => is12HourFormat(prop("locale")),
+    period: ({ context, prop }) => getHourPeriod(context.get("value")?.hour, prop("locale")),
+  },
 
-      watch: {
-        open: ["toggleVisibility"],
-        value: ["syncInputElement"],
-        period: ["syncInputElement"],
-        focusedColumn: ["syncFocusedValue"],
-        focusedValue: ["focusCell"],
-      },
+  watch({ track, action, prop, context, computed }) {
+    track([() => prop("open")], () => {
+      action(["toggleVisibility"])
+    })
+    track([() => context.hash("value"), () => computed("period")], () => {
+      action(["syncInputElement"])
+    })
+    track([() => context.get("focusedColumn")], () => {
+      action(["syncFocusedValue"])
+    })
+    track([() => context.get("focusedValue")], () => {
+      action(["focusCell"])
+    })
+  },
 
+  on: {
+    "VALUE.CLEAR": {
+      actions: ["clearValue"],
+    },
+    "VALUE.SET": {
+      actions: ["setValue"],
+    },
+    "UNIT.SET": {
+      actions: ["setUnitValue"],
+    },
+  },
+
+  states: {
+    idle: {
+      tags: ["closed"],
       on: {
-        "VALUE.CLEAR": {
-          actions: ["clearValue"],
+        "INPUT.FOCUS": {
+          target: "focused",
         },
-        "VALUE.SET": {
-          actions: ["setValue"],
-        },
-        "UNIT.SET": {
-          actions: ["setUnitValue"],
-        },
-      },
-
-      states: {
-        idle: {
-          tags: ["closed"],
-          on: {
-            "INPUT.FOCUS": {
-              target: "focused",
-            },
-            "TRIGGER.CLICK": [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen"],
-              },
-            ],
-            OPEN: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen"],
-              },
-            ],
-            "CONTROLLED.OPEN": {
-              target: "open",
-              actions: ["invokeOnOpen"],
-            },
+        "TRIGGER.CLICK": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
           },
-        },
-        focused: {
-          tags: ["closed"],
-          on: {
-            "TRIGGER.CLICK": [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen"],
-              },
-            ],
-            OPEN: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen"],
-              },
-            ],
-            "INPUT.ENTER": {
-              actions: ["setInputValue", "clampTimeValue"],
-            },
-            "INPUT.BLUR": {
-              target: "idle",
-              actions: ["setInputValue", "clampTimeValue"],
-            },
-            "CONTROLLED.OPEN": {
-              target: "open",
-              actions: ["invokeOnOpen"],
-            },
+          {
+            target: "open",
+            actions: ["invokeOnOpen"],
           },
-        },
-        open: {
-          tags: ["open"],
-          entry: ["setCurrentTime", "scrollColumnsToTop", "focusHourColumn"],
-          exit: ["resetFocusedCell"],
-          activities: ["computePlacement", "trackDismissableElement"],
-          on: {
-            "TRIGGER.CLICK": [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "focused",
-                actions: ["invokeOnClose"],
-              },
-            ],
-            "INPUT.ENTER": {
-              actions: ["setInputValue", "clampTimeValue"],
-            },
-            CLOSE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "idle",
-                actions: ["invokeOnClose"],
-              },
-            ],
-            "CONTROLLED.CLOSE": [
-              {
-                guard: and("shouldRestoreFocus", "isInteractOutsideEvent"),
-                target: "focused",
-                actions: ["focusTriggerElement"],
-              },
-              {
-                guard: "shouldRestoreFocus",
-                target: "focused",
-                actions: ["focusInputElement"],
-              },
-              {
-                target: "idle",
-              },
-            ],
-            "CONTENT.ESCAPE": [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "focused",
-                actions: ["invokeOnClose", "focusInputElement"],
-              },
-            ],
-            INTERACT_OUTSIDE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                guard: "shouldRestoreFocus",
-                target: "focused",
-                actions: ["invokeOnClose", "focusTriggerElement"],
-              },
-              {
-                target: "idle",
-                actions: ["invokeOnClose"],
-              },
-            ],
-            "POSITIONING.SET": {
-              actions: ["reposition"],
-            },
-            "UNIT.CLICK": {
-              actions: ["setFocusedValue", "setFocusedColumn", "setUnitValue"],
-            },
-            "CONTENT.ARROW_UP": {
-              actions: ["focusPreviousCell"],
-            },
-            "CONTENT.ARROW_DOWN": {
-              actions: ["focusNextCell"],
-            },
-            "CONTENT.ARROW_LEFT": {
-              actions: ["focusPreviousColumnCell"],
-            },
-            "CONTENT.ARROW_RIGHT": {
-              actions: ["focusNextColumnCell"],
-            },
-            "CONTENT.ENTER": {
-              actions: ["selectFocusedCell", "focusNextColumnCell"],
-            },
+        ],
+        OPEN: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
           },
+          {
+            target: "open",
+            actions: ["invokeOnOpen"],
+          },
+        ],
+        "CONTROLLED.OPEN": {
+          target: "open",
+          actions: ["invokeOnOpen"],
         },
       },
     },
-    {
-      guards: {
-        shouldRestoreFocus: (ctx) => !!ctx.restoreFocus,
-        isOpenControlled: (ctx) => !!ctx["open.controlled"],
-        isInteractOutsideEvent: (_ctx, evt) => evt.previousEvent?.type === "INTERACT_OUTSIDE",
-      },
-      activities: {
-        computePlacement(ctx) {
-          ctx.currentPlacement = ctx.positioning.placement
-          const anchorEl = () => dom.getControlEl(ctx)
-          const positionerEl = () => dom.getPositionerEl(ctx)
-          return getPlacement(anchorEl, positionerEl, {
-            defer: true,
-            ...ctx.positioning,
-            onComplete(data) {
-              ctx.currentPlacement = data.placement
-            },
-          })
+    focused: {
+      tags: ["closed"],
+      on: {
+        "TRIGGER.CLICK": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen"],
+          },
+        ],
+        OPEN: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen"],
+          },
+        ],
+        "INPUT.ENTER": {
+          actions: ["setInputValue", "clampTimeValue"],
         },
-        trackDismissableElement(ctx, _evt, { send }) {
-          if (ctx.disableLayer) return
-          return trackDismissableElement(dom.getContentEl(ctx), {
-            defer: true,
-            exclude: [dom.getTriggerEl(ctx), dom.getClearTriggerEl(ctx)],
-            onEscapeKeyDown(event) {
-              event.preventDefault()
-              ctx.restoreFocus = true
-              send({ type: "CONTENT.ESCAPE" })
-            },
-            onInteractOutside(event) {
-              ctx.restoreFocus = !event.detail.focusable
-            },
-            onDismiss() {
-              send({ type: "INTERACT_OUTSIDE" })
-            },
-          })
+        "INPUT.BLUR": {
+          target: "idle",
+          actions: ["setInputValue", "clampTimeValue"],
+        },
+        "CONTROLLED.OPEN": {
+          target: "open",
+          actions: ["invokeOnOpen"],
         },
       },
-      actions: {
-        reposition(ctx, evt) {
-          const positionerEl = () => dom.getPositionerEl(ctx)
-          getPlacement(dom.getTriggerEl(ctx), positionerEl, {
-            ...ctx.positioning,
-            ...evt.options,
-            defer: true,
-            listeners: false,
-            onComplete(data) {
-              ctx.currentPlacement = data.placement
-            },
-          })
+    },
+    open: {
+      tags: ["open"],
+      entry: ["setCurrentTime", "scrollColumnsToTop", "focusHourColumn"],
+      exit: ["resetFocusedCell"],
+      effects: ["computePlacement", "trackDismissableElement"],
+      on: {
+        "TRIGGER.CLICK": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "focused",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        "INPUT.ENTER": {
+          actions: ["setInputValue", "clampTimeValue"],
         },
-        toggleVisibility(ctx, evt, { send }) {
-          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
+        CLOSE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "idle",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        "CONTROLLED.CLOSE": [
+          {
+            guard: and("shouldRestoreFocus", "isInteractOutsideEvent"),
+            target: "focused",
+            actions: ["focusTriggerElement"],
+          },
+          {
+            guard: "shouldRestoreFocus",
+            target: "focused",
+            actions: ["focusInputElement"],
+          },
+          {
+            target: "idle",
+          },
+        ],
+        "CONTENT.ESCAPE": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "focused",
+            actions: ["invokeOnClose", "focusInputElement"],
+          },
+        ],
+        INTERACT_OUTSIDE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            guard: "shouldRestoreFocus",
+            target: "focused",
+            actions: ["invokeOnClose", "focusTriggerElement"],
+          },
+          {
+            target: "idle",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        "POSITIONING.SET": {
+          actions: ["reposition"],
         },
-        invokeOnOpen(ctx) {
-          ctx.onOpenChange?.({ open: true })
+        "UNIT.CLICK": {
+          actions: ["setFocusedValue", "setFocusedColumn", "setUnitValue"],
         },
-        invokeOnClose(ctx) {
-          ctx.onOpenChange?.({ open: false })
+        "CONTENT.ARROW_UP": {
+          actions: ["focusPreviousCell"],
         },
-        setInputValue(ctx, evt) {
-          const timeValue = getTimeValue(ctx, evt.value)
-          if (!timeValue) return
-          set.value(ctx, timeValue.time)
+        "CONTENT.ARROW_DOWN": {
+          actions: ["focusNextCell"],
         },
-        syncInputElement(ctx) {
-          const inputEl = dom.getInputEl(ctx)
-          if (!inputEl) return
-          inputEl.value = ctx.valueAsString
+        "CONTENT.ARROW_LEFT": {
+          actions: ["focusPreviousColumnCell"],
         },
-        setUnitValue(ctx, evt) {
-          const { unit, value } = evt
-          const current = ctx.value ?? ctx.currentTime ?? new Time(0)
-          const nextTime = match(unit, {
-            hour: () => current.set({ hour: ctx.hour12 ? value + 12 : value }),
-            minute: () => current.set({ minute: value }),
-            second: () => current.set({ second: value }),
-            period: () => {
-              if (!ctx.value) return
-              const diff = value === "pm" ? 12 : 0
-              return ctx.value.set({ hour: (ctx.value.hour % 12) + diff })
-            },
-          })
+        "CONTENT.ARROW_RIGHT": {
+          actions: ["focusNextColumnCell"],
+        },
+        "CONTENT.ENTER": {
+          actions: ["selectFocusedCell", "focusNextColumnCell"],
+        },
+      },
+    },
+  },
 
-          if (!nextTime) return
-          set.value(ctx, nextTime)
-        },
-        setValue(ctx, evt) {
-          if (!(evt.value instanceof Time)) return
-          set.value(ctx, evt.value)
-        },
-        clearValue(ctx) {
-          set.value(ctx, null)
-        },
-        setFocusedValue(ctx, evt) {
-          set.focusedValue(ctx, evt.value)
-        },
-        setFocusedColumn(ctx, evt) {
-          set.focusedColumn(ctx, evt.unit)
-        },
-        resetFocusedCell(ctx) {
-          set.focusedColumn(ctx, "hour")
-          set.focusedValue(ctx, null)
-        },
-        clampTimeValue(ctx) {
-          if (!ctx.value) return
-          const nextTime = clampTime(ctx.value, ctx.min, ctx.max)
-          set.value(ctx, nextTime)
-        },
-        setCurrentTime(ctx) {
-          ctx.currentTime = getCurrentTime()
-        },
-        scrollColumnsToTop(ctx) {
-          raf(() => {
-            const columnEls = dom.getColumnEls(ctx)
-            for (const columnEl of columnEls) {
-              const cellEl = dom.getInitialFocusCell(ctx, columnEl.dataset.unit as TimeUnit)
-              if (!cellEl) continue
-              columnEl.scrollTop = cellEl.offsetTop - 4
-            }
-          })
-        },
-        focusTriggerElement(ctx) {
-          dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
-        },
-        focusInputElement(ctx) {
-          dom.getInputEl(ctx)?.focus({ preventScroll: true })
-        },
-        focusHourColumn(ctx) {
-          raf(() => {
-            const hourEl = dom.getInitialFocusCell(ctx, "hour")
-            if (!hourEl) return
-            set.focusedValue(ctx, dom.getCellValue(hourEl))
-          })
-        },
-        focusPreviousCell(ctx) {
-          raf(() => {
-            const cells = dom.getColumnCellEls(ctx, ctx.focusedColumn)
-            const focusedEl = dom.getFocusedCell(ctx)
-            const focusedIndex = focusedEl ? cells.indexOf(focusedEl) : -1
-            const prevCell = prev(cells, focusedIndex, { loop: false })
-            if (!prevCell) return
-            set.focusedValue(ctx, dom.getCellValue(prevCell))
-          })
-        },
-        focusNextCell(ctx) {
-          raf(() => {
-            const cells = dom.getColumnCellEls(ctx, ctx.focusedColumn)
-            const focusedEl = dom.getFocusedCell(ctx)
-            const focusedIndex = focusedEl ? cells.indexOf(focusedEl) : -1
+  implementations: {
+    guards: {
+      shouldRestoreFocus: ({ context }) => !!context.get("restoreFocus"),
+      isOpenControlled: ({ prop }) => prop("open") != null,
+      isInteractOutsideEvent: ({ event }) => event.previousEvent?.type === "INTERACT_OUTSIDE",
+    },
 
-            const nextCell = next(cells, focusedIndex, { loop: false })
-            if (!nextCell) return
+    effects: {
+      computePlacement({ context, prop, scope }) {
+        context.set("currentPlacement", prop("positioning").placement)
+        const anchorEl = () => dom.getControlEl(scope)
+        const positionerEl = () => dom.getPositionerEl(scope)
+        return getPlacement(anchorEl, positionerEl, {
+          defer: true,
+          ...prop("positioning"),
+          onComplete(data) {
+            context.set("currentPlacement", data.placement)
+          },
+        })
+      },
 
-            set.focusedValue(ctx, dom.getCellValue(nextCell))
-          })
-        },
-        selectFocusedCell(ctx) {
-          const current = ctx.value ?? ctx.currentTime ?? new Time(0)
+      trackDismissableElement({ context, prop, scope, send }) {
+        if (prop("disableLayer")) return
+        return trackDismissableElement(dom.getContentEl(scope), {
+          defer: true,
+          exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
+          onEscapeKeyDown(event) {
+            event.preventDefault()
+            context.set("restoreFocus", true)
+            send({ type: "CONTENT.ESCAPE" })
+          },
+          onInteractOutside(event) {
+            context.set("restoreFocus", !event.detail.focusable)
+          },
+          onDismiss() {
+            send({ type: "INTERACT_OUTSIDE" })
+          },
+        })
+      },
+    },
 
-          let value = ctx.focusedValue
-          let column = ctx.focusedColumn
+    actions: {
+      reposition({ context, prop, scope, event }) {
+        const positionerEl = () => dom.getPositionerEl(scope)
+        getPlacement(dom.getTriggerEl(scope), positionerEl, {
+          ...prop("positioning"),
+          ...event.options,
+          defer: true,
+          listeners: false,
+          onComplete(data) {
+            context.set("currentPlacement", data.placement)
+          },
+        })
+      },
 
-          if (column === "hour" && ctx.hour12) {
-            value = ctx.hour12 ? value + 12 : value
-          } else if (ctx.focusedColumn === "period") {
-            column = "hour"
+      toggleVisibility({ prop, send, event }) {
+        send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
+      },
+
+      invokeOnOpen({ prop }) {
+        prop("onOpenChange")?.({ open: true })
+      },
+
+      invokeOnClose({ prop }) {
+        prop("onOpenChange")?.({ open: false })
+      },
+
+      setInputValue({ context, event, prop, computed }) {
+        const timeValue = getTimeValue(prop("locale"), computed("period"), event.value)
+        if (!timeValue) return
+        context.set("value", timeValue.time)
+      },
+
+      syncInputElement({ scope, computed }) {
+        const inputEl = dom.getInputEl(scope)
+        if (!inputEl) return
+        inputEl.value = computed("valueAsString")
+      },
+
+      setUnitValue({ context, event, computed }) {
+        const { unit, value } = event
+        const _value = context.get("value")
+        const current = _value ?? context.get("currentTime") ?? new Time(0)
+        const nextTime = match(unit, {
+          hour: () => current.set({ hour: computed("hour12") ? value + 12 : value }),
+          minute: () => current.set({ minute: value }),
+          second: () => current.set({ second: value }),
+          period: () => {
+            if (!_value) return
             const diff = value === "pm" ? 12 : 0
-            value = (current.hour % 12) + diff
-          }
+            return _value.set({ hour: (_value.hour % 12) + diff })
+          },
+        })
 
-          const nextTime = current.set({ [column]: value })
-          set.value(ctx, nextTime)
-        },
-        focusPreviousColumnCell(ctx) {
-          raf(() => {
-            const columns = dom.getColumnEls(ctx)
-            const currentColumnEl = dom.getColumnEl(ctx, ctx.focusedColumn)
-            const focusedIndex = columns.indexOf(currentColumnEl!)
-
-            const prevColumnEl = prev(columns, focusedIndex, { loop: false })
-            if (!prevColumnEl) return
-
-            set.focusedColumn(ctx, dom.getColumnUnit(prevColumnEl))
-          })
-        },
-        focusNextColumnCell(ctx) {
-          raf(() => {
-            const columns = dom.getColumnEls(ctx)
-            const currentColumnEl = dom.getColumnEl(ctx, ctx.focusedColumn)
-            const focusedIndex = columns.indexOf(currentColumnEl!)
-
-            const nextColumnEl = next(columns, focusedIndex, { loop: false })
-            if (!nextColumnEl) return
-
-            set.focusedColumn(ctx, dom.getColumnUnit(nextColumnEl))
-          })
-        },
-        focusCell(ctx) {
-          queueMicrotask(() => {
-            const cellEl = dom.getFocusedCell(ctx)
-            cellEl?.focus()
-          })
-        },
-        syncFocusedValue(ctx) {
-          if (ctx.focusedValue === null) return
-          queueMicrotask(() => {
-            const cellEl = dom.getInitialFocusCell(ctx, ctx.focusedColumn)
-            set.focusedValue(ctx, dom.getCellValue(cellEl))
-          })
-        },
+        if (!nextTime) return
+        context.set("value", nextTime)
       },
-      compareFns: {
-        value: isTimeEqual,
+
+      setValue({ context, event }) {
+        if (!(event.value instanceof Time)) return
+        context.set("value", event.value)
+      },
+
+      clearValue({ context }) {
+        context.set("value", null)
+      },
+
+      setFocusedValue({ context, event }) {
+        context.set("focusedValue", event.value)
+      },
+
+      setFocusedColumn({ context, event }) {
+        context.set("focusedColumn", event.unit)
+      },
+
+      resetFocusedCell({ context }) {
+        context.set("focusedColumn", "hour")
+        context.set("focusedValue", null)
+      },
+
+      clampTimeValue({ context, prop }) {
+        const value = context.get("value")
+        if (!value) return
+        const nextTime = clampTime(value, prop("min"), prop("max"))
+        context.set("value", nextTime)
+      },
+
+      setCurrentTime({ context }) {
+        context.set("currentTime", getCurrentTime())
+      },
+
+      scrollColumnsToTop({ scope }) {
+        raf(() => {
+          const columnEls = dom.getColumnEls(scope)
+          for (const columnEl of columnEls) {
+            const cellEl = dom.getInitialFocusCell(scope, columnEl.dataset.unit as TimeUnit)
+            if (!cellEl) continue
+            columnEl.scrollTop = cellEl.offsetTop - 4
+          }
+        })
+      },
+
+      focusTriggerElement({ scope }) {
+        dom.getTriggerEl(scope)?.focus({ preventScroll: true })
+      },
+
+      focusInputElement({ scope }) {
+        dom.getInputEl(scope)?.focus({ preventScroll: true })
+      },
+
+      focusHourColumn({ context, scope }) {
+        raf(() => {
+          const hourEl = dom.getInitialFocusCell(scope, "hour")
+          if (!hourEl) return
+          context.set("focusedValue", dom.getCellValue(hourEl))
+        })
+      },
+
+      focusPreviousCell({ context, scope }) {
+        raf(() => {
+          const cells = dom.getColumnCellEls(scope, context.get("focusedColumn"))
+          const focusedEl = dom.getFocusedCell(scope)
+          const focusedIndex = focusedEl ? cells.indexOf(focusedEl) : -1
+          const prevCell = prev(cells, focusedIndex, { loop: false })
+          if (!prevCell) return
+          context.set("focusedValue", dom.getCellValue(prevCell))
+        })
+      },
+
+      focusNextCell({ context, scope }) {
+        raf(() => {
+          const cells = dom.getColumnCellEls(scope, context.get("focusedColumn"))
+          const focusedEl = dom.getFocusedCell(scope)
+          const focusedIndex = focusedEl ? cells.indexOf(focusedEl) : -1
+
+          const nextCell = next(cells, focusedIndex, { loop: false })
+          if (!nextCell) return
+
+          context.set("focusedValue", dom.getCellValue(nextCell))
+        })
+      },
+
+      selectFocusedCell({ context, computed }) {
+        const current = context.get("value") ?? context.get("currentTime") ?? new Time(0)
+
+        let value = context.get("focusedValue")
+        let column = context.get("focusedColumn")
+
+        if (column === "hour" && computed("hour12")) {
+          value = computed("hour12") ? value + 12 : value
+        } else if (context.get("focusedColumn") === "period") {
+          column = "hour"
+          const diff = value === "pm" ? 12 : 0
+          value = (current.hour % 12) + diff
+        }
+
+        const nextTime = current.set({ [column]: value })
+        context.set("value", nextTime)
+      },
+
+      focusPreviousColumnCell({ context, scope }) {
+        raf(() => {
+          const columns = dom.getColumnEls(scope)
+          const currentColumnEl = dom.getColumnEl(scope, context.get("focusedColumn"))
+          const focusedIndex = columns.indexOf(currentColumnEl!)
+
+          const prevColumnEl = prev(columns, focusedIndex, { loop: false })
+          if (!prevColumnEl) return
+
+          context.set("focusedColumn", dom.getColumnUnit(prevColumnEl))
+        })
+      },
+
+      focusNextColumnCell({ context, scope }) {
+        raf(() => {
+          const columns = dom.getColumnEls(scope)
+          const currentColumnEl = dom.getColumnEl(scope, context.get("focusedColumn"))
+          const focusedIndex = columns.indexOf(currentColumnEl!)
+
+          const nextColumnEl = next(columns, focusedIndex, { loop: false })
+          if (!nextColumnEl) return
+
+          context.set("focusedColumn", dom.getColumnUnit(nextColumnEl))
+        })
+      },
+
+      focusCell({ scope }) {
+        queueMicrotask(() => {
+          const cellEl = dom.getFocusedCell(scope)
+          cellEl?.focus()
+        })
+      },
+
+      syncFocusedValue({ context, scope }) {
+        if (context.get("focusedValue") === null) return
+        queueMicrotask(() => {
+          const cellEl = dom.getInitialFocusCell(scope, context.get("focusedColumn"))
+          context.set("focusedValue", dom.getCellValue(cellEl))
+        })
       },
     },
-  )
-}
-
-const isTimeEqual = (a: Time | null, b: Time | null) => {
-  return a?.toString() === b?.toString()
-}
-
-const invoke = {
-  change(ctx: MachineContext) {
-    ctx.onValueChange?.({
-      value: ctx.value,
-      valueAsString: ctx.valueAsString,
-    })
   },
-  focusChange(ctx: MachineContext) {
-    ctx.onFocusChange?.({
-      value: ctx.value,
-      valueAsString: ctx.valueAsString,
-      focusedValue: ctx.focusedValue,
-      focusedUnit: ctx.focusedColumn,
-    })
-  },
-}
-
-const set = {
-  value(ctx: MachineContext, value: Time | null) {
-    if (isTimeEqual(ctx.value, value)) return
-    ctx.value = value
-    invoke.change(ctx)
-  },
-  focusedValue(ctx: MachineContext, value: any) {
-    if (isEqual(ctx.focusedValue, value)) return
-    ctx.focusedValue = value
-    invoke.focusChange(ctx)
-  },
-  focusedColumn(ctx: MachineContext, column: TimeUnit) {
-    if (ctx.focusedColumn === column) return
-    ctx.focusedColumn = column
-  },
-}
+})

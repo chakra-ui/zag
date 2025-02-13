@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { UserDefinedContext } from "./tour.types"
+import type { TourProps } from "./tour.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<TourProps>()([
   "closeOnEscape",
   "closeOnInteractOutside",
   "dir",
@@ -15,6 +15,7 @@ export const props = createProps<UserDefinedContext>()([
   "onPointerDownOutside",
   "onStatusChange",
   "onStepChange",
+  "onStepsChange",
   "preventInteraction",
   "spotlightOffset",
   "spotlightRadius",
@@ -23,4 +24,4 @@ export const props = createProps<UserDefinedContext>()([
   "translations",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<TourProps>>(props)

@@ -3,12 +3,12 @@ export { connect } from "./qr-code.connect"
 export { machine } from "./qr-code.machine"
 export * from "./qr-code.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  QrCodeApi as Api,
+  QrCodeProps as Props,
   DownloadTriggerProps,
   ElementIds,
   QrCodeGenerateOptions,
   QrCodeGenerateResult,
-  Service,
+  QrCodeService as Service,
   ValueChangeDetails,
 } from "./qr-code.types"

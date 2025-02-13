@@ -2,26 +2,28 @@ import { dataAttr, getEventTarget, visuallyHiddenStyle } from "@zag-js/dom-query
 import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./switch.anatomy"
-import { dom } from "./switch.dom"
-import type { MachineApi, Send, State } from "./switch.types"
+import * as dom from "./switch.dom"
+import type { SwitchApi, SwitchService } from "./switch.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const disabled = state.context.isDisabled
-  const readOnly = state.context.readOnly
-  const checked = state.context.checked
+export function connect<T extends PropTypes>(service: SwitchService, normalize: NormalizeProps<T>): SwitchApi<T> {
+  const { context, send, prop, scope } = service
 
-  const focused = !disabled && state.context.focused
-  const focusVisible = !disabled && state.context.focusVisible
+  const disabled = prop("disabled")
+  const readOnly = prop("readOnly")
+  const checked = !!context.get("checked")
+
+  const focused = !disabled && context.get("focused")
+  const focusVisible = !disabled && context.get("focusVisible")
 
   const dataAttrs = {
-    "data-active": dataAttr(state.context.active),
+    "data-active": dataAttr(context.get("active")),
     "data-focus": dataAttr(focused),
     "data-focus-visible": dataAttr(focusVisible),
     "data-readonly": dataAttr(readOnly),
-    "data-hover": dataAttr(state.context.hovered),
+    "data-hover": dataAttr(context.get("hovered")),
     "data-disabled": dataAttr(disabled),
-    "data-state": state.context.checked ? "checked" : "unchecked",
-    "data-invalid": dataAttr(state.context.invalid),
+    "data-state": checked ? "checked" : "unchecked",
+    "data-invalid": dataAttr(prop("invalid")),
   }
 
   return {
@@ -39,9 +41,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.label({
         ...parts.root.attrs,
         ...dataAttrs,
-        dir: state.context.dir,
-        id: dom.getRootId(state.context),
-        htmlFor: dom.getHiddenInputId(state.context),
+        dir: prop("dir"),
+        id: dom.getRootId(scope),
+        htmlFor: dom.getHiddenInputId(scope),
         onPointerMove() {
           if (disabled) return
           send({ type: "CONTEXT.SET", context: { hovered: true } })
@@ -53,7 +55,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick(event) {
           if (disabled) return
           const target = getEventTarget<Element>(event)
-          if (target === dom.getHiddenInputEl(state.context)) {
+          if (target === dom.getHiddenInputEl(scope)) {
             event.stopPropagation()
           }
         },
@@ -64,8 +66,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.label.attrs,
         ...dataAttrs,
-        dir: state.context.dir,
-        id: dom.getLabelId(state.context),
+        dir: prop("dir"),
+        id: dom.getLabelId(scope),
       })
     },
 
@@ -73,8 +75,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.thumb.attrs,
         ...dataAttrs,
-        dir: state.context.dir,
-        id: dom.getThumbId(state.context),
+        dir: prop("dir"),
+        id: dom.getThumbId(scope),
         "aria-hidden": true,
       })
     },
@@ -83,24 +85,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.control.attrs,
         ...dataAttrs,
-        dir: state.context.dir,
-        id: dom.getControlId(state.context),
+        dir: prop("dir"),
+        id: dom.getControlId(scope),
         "aria-hidden": true,
       })
     },
 
     getHiddenInputProps() {
       return normalize.input({
-        id: dom.getHiddenInputId(state.context),
+        id: dom.getHiddenInputId(scope),
         type: "checkbox",
-        required: state.context.required,
+        required: prop("required"),
         defaultChecked: checked,
         disabled: disabled,
-        "aria-labelledby": dom.getLabelId(state.context),
-        "aria-invalid": state.context.invalid,
-        name: state.context.name,
-        form: state.context.form,
-        value: state.context.value,
+        "aria-labelledby": dom.getLabelId(scope),
+        "aria-invalid": prop("invalid"),
+        name: prop("name"),
+        form: prop("form"),
+        value: prop("value"),
         style: visuallyHiddenStyle,
         onFocus() {
           const focusVisible = isFocusVisible()
@@ -114,6 +116,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             event.preventDefault()
             return
           }
+
+          if (!event.isTrusted) return
 
           const checked = event.currentTarget.checked
           send({ type: "CHECKED.SET", checked, isTrusted: true })

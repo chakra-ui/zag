@@ -3,31 +3,21 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { cloneElement, isValidElement, useId } from "react"
 import { RenderStrategyProps, useRenderStrategy } from "./use-render"
 
-interface Props extends Omit<collapsible.Context, "id" | "open.controlled">, RenderStrategyProps {
-  defaultOpen?: boolean
+interface Props extends Omit<collapsible.Props, "id" | "open.controlled">, RenderStrategyProps {
   trigger?: React.ReactNode
   children: React.ReactNode
 }
 
 export function Collapsible(props: Props) {
   const [machineProps, restProps] = collapsible.splitProps(props)
-  const { trigger, children, defaultOpen, lazyMount, unmountOnExit } = restProps
+  const { trigger, children, lazyMount, unmountOnExit } = restProps
 
-  const [state, send] = useMachine(
-    collapsible.machine({
-      id: useId(),
-      open: machineProps.open ?? defaultOpen,
-      "open.controlled": machineProps.open !== undefined,
-    }),
-    {
-      context: {
-        ...machineProps,
-        open: machineProps.open,
-      },
-    },
-  )
+  const service = useMachine(collapsible.machine, {
+    id: useId(),
+    ...machineProps,
+  })
 
-  const api = collapsible.connect(state, send, normalizeProps)
+  const api = collapsible.connect(service, normalizeProps)
 
   const { unmount } = useRenderStrategy({
     visible: api.visible,

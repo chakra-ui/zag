@@ -10,9 +10,43 @@ const {
   choose
 } = actions;
 const fetchMachine = createMachine({
-  id: "clipboard",
-  initial: "idle",
-  context: {},
+  props({
+    props
+  }) {
+    return {
+      timeout: 3000,
+      defaultValue: "",
+      ...props
+    };
+  },
+  initialState() {
+    return "idle";
+  },
+  context({
+    prop,
+    bindable
+  }) {
+    return {
+      value: bindable(() => ({
+        defaultValue: prop("defaultValue"),
+        value: prop("value"),
+        onChange(value) {
+          prop("onValueChange")?.({
+            value
+          });
+        }
+      }))
+    };
+  },
+  watch({
+    track,
+    context: {},
+    action
+  }) {
+    track([() => context.get("value")], () => {
+      action(["syncInputElement"]);
+    });
+  },
   on: {
     "VALUE.SET": {
       actions: ["setValue"]
@@ -37,10 +71,11 @@ const fetchMachine = createMachine({
       }
     },
     copied: {
-      after: {
-        COPY_TIMEOUT: "idle"
-      },
+      effects: ["waitForTimeout"],
       on: {
+        "COPY.DONE": {
+          target: "idle"
+        },
         COPY: {
           target: "copied",
           actions: ["copyToClipboard", "invokeOnCopy"]
@@ -48,6 +83,49 @@ const fetchMachine = createMachine({
         "INPUT.COPY": {
           actions: ["invokeOnCopy"]
         }
+      }
+    }
+  },
+  implementations: {
+    effects: {
+      waitForTimeout({
+        prop,
+        send
+      }) {
+        setTimeout(() => {
+          send({
+            type: "COPY.DONE"
+          });
+        }, prop("timeout"));
+      }
+    },
+    actions: {
+      setValue({
+        context,
+        event
+      }) {
+        context.set("value", event.value);
+      },
+      copyToClipboard({
+        context,
+        scope
+      }) {
+        dom.writeToClipboard(scope, context.get("value"));
+      },
+      invokeOnCopy({
+        prop
+      }) {
+        prop("onStatusChange")?.({
+          copied: true
+        });
+      },
+      syncInputElement({
+        context,
+        scope
+      }) {
+        const inputEl = dom.getInputEl(scope);
+        if (!inputEl) return;
+        setElementValue(inputEl, context.get("value"));
       }
     }
   }

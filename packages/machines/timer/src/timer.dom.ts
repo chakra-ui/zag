@@ -1,8 +1,5 @@
-import { createScope } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./timer.types"
+import type { Scope } from "@zag-js/core"
 
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `timer:${ctx.id}:root`,
-  getAreaId: (ctx: Ctx) => ctx.ids?.area ?? `timer:${ctx.id}:area`,
-  getAreaEl: (ctx: Ctx) => dom.getById(ctx, dom.getAreaId(ctx)),
-})
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `timer:${ctx.id}:root`
+export const getAreaId = (ctx: Scope) => ctx.ids?.area ?? `timer:${ctx.id}:area`
+export const getAreaEl = (ctx: Scope) => ctx.getById(getAreaId(ctx))

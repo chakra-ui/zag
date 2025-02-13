@@ -1,168 +1,175 @@
-import { createMachine, guards } from "@zag-js/core"
+import { createMachine, createGuards } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
 import { add, compact, isEqual, remove } from "@zag-js/utils"
-import { dom } from "./toggle-group.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./toggle-group.types"
+import * as dom from "./toggle-group.dom"
+import type { ToggleGroupSchema } from "./toggle-group.types"
 
-const { not, and } = guards
+const { not, and } = createGuards<ToggleGroupSchema>()
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "toggle-group",
-      initial: "idle",
+export const machine = createMachine<ToggleGroupSchema>({
+  props({ props }) {
+    return {
+      defaultValue: [],
+      orientation: "horizontal",
+      rovingFocus: true,
+      loopFocus: true,
+      ...compact(props),
+    }
+  },
 
-      context: {
-        value: [],
-        disabled: false,
-        orientation: "horizontal",
-        rovingFocus: true,
-        loopFocus: true,
-        ...ctx,
-        focusedId: null,
-        isTabbingBackward: false,
-        isClickFocus: false,
-        isWithinToolbar: false,
-      },
+  initialState() {
+    return "idle"
+  },
 
-      computed: {
-        currentLoopFocus: (ctx) => ctx.loopFocus && !ctx.isWithinToolbar,
-      },
+  context({ prop, bindable }) {
+    return {
+      value: bindable<string[]>(() => ({
+        defaultValue: prop("defaultValue"),
+        value: prop("value"),
+        onChange(value) {
+          prop("onValueChange")?.({ value })
+        },
+      })),
+      focusedId: bindable<string | null>(() => ({
+        defaultValue: null,
+      })),
+      isTabbingBackward: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      isClickFocus: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      isWithinToolbar: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+    }
+  },
 
-      entry: ["checkIfWithinToolbar"],
+  computed: {
+    currentLoopFocus: ({ context, prop }) => prop("loopFocus") && !context.get("isWithinToolbar"),
+  },
 
+  entry: ["checkIfWithinToolbar"],
+
+  on: {
+    "VALUE.SET": {
+      actions: ["setValue"],
+    },
+    "TOGGLE.CLICK": {
+      actions: ["setValue"],
+    },
+    "ROOT.MOUSE_DOWN": {
+      actions: ["setClickFocus"],
+    },
+  },
+
+  states: {
+    idle: {
       on: {
-        "VALUE.SET": {
-          actions: ["setValue"],
+        "ROOT.FOCUS": {
+          target: "focused",
+          guard: not(and("isClickFocus", "isTabbingBackward")),
+          actions: ["focusFirstToggle", "clearClickFocus"],
         },
-        "TOGGLE.CLICK": {
-          actions: ["setValue"],
-        },
-        "ROOT.MOUSE_DOWN": {
-          actions: ["setClickFocus"],
-        },
-      },
-
-      states: {
-        idle: {
-          on: {
-            "ROOT.FOCUS": {
-              target: "focused",
-              guard: not(and("isClickFocus", "isTabbingBackward")),
-              actions: ["focusFirstToggle", "clearClickFocus"],
-            },
-            "TOGGLE.FOCUS": {
-              target: "focused",
-              actions: ["setFocusedId"],
-            },
-          },
-        },
-
-        focused: {
-          on: {
-            "ROOT.BLUR": {
-              target: "idle",
-              actions: ["clearIsTabbingBackward"],
-            },
-            "TOGGLE.FOCUS": {
-              actions: ["setFocusedId"],
-            },
-            "TOGGLE.FOCUS_NEXT": {
-              actions: ["focusNextToggle"],
-            },
-            "TOGGLE.FOCUS_PREV": {
-              actions: ["focusPrevToggle"],
-            },
-            "TOGGLE.FOCUS_FIRST": {
-              actions: ["focusFirstToggle"],
-            },
-            "TOGGLE.FOCUS_LAST": {
-              actions: ["focusLastToggle"],
-            },
-            "TOGGLE.SHIFT_TAB": {
-              target: "idle",
-              actions: ["setIsTabbingBackward"],
-            },
-          },
+        "TOGGLE.FOCUS": {
+          target: "focused",
+          actions: ["setFocusedId"],
         },
       },
     },
-    {
-      guards: {
-        isClickFocus: (ctx) => ctx.isClickFocus,
-        isTabbingBackward: (ctx) => ctx.isTabbingBackward,
-      },
-      actions: {
-        setIsTabbingBackward(ctx) {
-          ctx.isTabbingBackward = true
+
+    focused: {
+      on: {
+        "ROOT.BLUR": {
+          target: "idle",
+          actions: ["clearIsTabbingBackward"],
         },
-        clearIsTabbingBackward(ctx) {
-          ctx.isTabbingBackward = false
+        "TOGGLE.FOCUS": {
+          actions: ["setFocusedId"],
         },
-        setClickFocus(ctx) {
-          ctx.isClickFocus = true
+        "TOGGLE.FOCUS_NEXT": {
+          actions: ["focusNextToggle"],
         },
-        clearClickFocus(ctx) {
-          ctx.isClickFocus = false
+        "TOGGLE.FOCUS_PREV": {
+          actions: ["focusPrevToggle"],
         },
-        checkIfWithinToolbar(ctx) {
-          const closestToolbar = dom.getRootEl(ctx)?.closest("[role=toolbar]")
-          ctx.isWithinToolbar = !!closestToolbar
+        "TOGGLE.FOCUS_FIRST": {
+          actions: ["focusFirstToggle"],
         },
-        setFocusedId(ctx, evt) {
-          ctx.focusedId = evt.id
+        "TOGGLE.FOCUS_LAST": {
+          actions: ["focusLastToggle"],
         },
-        clearFocusedId(ctx) {
-          ctx.focusedId = null
-        },
-        setValue(ctx, evt) {
-          if (!evt.value) return
-          let next = Array.from(ctx.value)
-          if (ctx.multiple) {
-            next = next.includes(evt.value) ? remove(next, evt.value) : add(next, evt.value)
-          } else {
-            next = isEqual(ctx.value, [evt.value]) ? [] : [evt.value]
-          }
-          set.value(ctx, next)
-        },
-        focusNextToggle(ctx) {
-          raf(() => {
-            if (!ctx.focusedId) return
-            dom.getNextEl(ctx, ctx.focusedId)?.focus({ preventScroll: true })
-          })
-        },
-        focusPrevToggle(ctx) {
-          raf(() => {
-            if (!ctx.focusedId) return
-            dom.getPrevEl(ctx, ctx.focusedId)?.focus({ preventScroll: true })
-          })
-        },
-        focusFirstToggle(ctx) {
-          raf(() => {
-            dom.getFirstEl(ctx)?.focus({ preventScroll: true })
-          })
-        },
-        focusLastToggle(ctx) {
-          raf(() => {
-            dom.getLastEl(ctx)?.focus({ preventScroll: true })
-          })
+        "TOGGLE.SHIFT_TAB": {
+          target: "idle",
+          actions: ["setIsTabbingBackward"],
         },
       },
     },
-  )
-}
-
-const invoke = {
-  change(ctx: MachineContext) {
-    ctx.onValueChange?.({ value: Array.from(ctx.value) })
   },
-}
 
-const set = {
-  value(ctx: MachineContext, value: string[]) {
-    if (isEqual(ctx.value, value)) return
-    ctx.value = value
-    invoke.change(ctx)
+  implementations: {
+    guards: {
+      isClickFocus: ({ context }) => context.get("isClickFocus"),
+      isTabbingBackward: ({ context }) => context.get("isTabbingBackward"),
+    },
+    actions: {
+      setIsTabbingBackward({ context }) {
+        context.set("isTabbingBackward", true)
+      },
+      clearIsTabbingBackward({ context }) {
+        context.set("isTabbingBackward", false)
+      },
+      setClickFocus({ context }) {
+        context.set("isClickFocus", true)
+      },
+      clearClickFocus({ context }) {
+        context.set("isClickFocus", false)
+      },
+      checkIfWithinToolbar({ context, scope }) {
+        const closestToolbar = dom.getRootEl(scope)?.closest("[role=toolbar]")
+        context.set("isWithinToolbar", !!closestToolbar)
+      },
+      setFocusedId({ context, event }) {
+        context.set("focusedId", event.id)
+      },
+      clearFocusedId({ context }) {
+        context.set("focusedId", null)
+      },
+      setValue({ context, event, prop }) {
+        if (!event.value) return
+        const value = context.get("value")
+        let next = Array.from(value)
+        if (prop("multiple")) {
+          next = next.includes(event.value) ? remove(next, event.value) : add(next, event.value)
+        } else {
+          next = isEqual(value, [event.value]) ? [] : [event.value]
+        }
+        context.set("value", next)
+      },
+      focusNextToggle({ context, scope, prop }) {
+        raf(() => {
+          const focusedId = context.get("focusedId")
+          if (!focusedId) return
+          dom.getNextEl(scope, focusedId, prop("loopFocus"))?.focus({ preventScroll: true })
+        })
+      },
+      focusPrevToggle({ context, scope, prop }) {
+        raf(() => {
+          const focusedId = context.get("focusedId")
+          if (!focusedId) return
+          dom.getPrevEl(scope, focusedId, prop("loopFocus"))?.focus({ preventScroll: true })
+        })
+      },
+      focusFirstToggle({ scope }) {
+        raf(() => {
+          dom.getFirstEl(scope)?.focus({ preventScroll: true })
+        })
+      },
+      focusLastToggle({ scope }) {
+        raf(() => {
+          dom.getLastEl(scope)?.focus({ preventScroll: true })
+        })
+      },
+    },
   },
-}
+})

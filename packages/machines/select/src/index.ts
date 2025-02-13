@@ -5,10 +5,11 @@ export { connect } from "./select.connect"
 export { machine } from "./select.machine"
 export * from "./select.props"
 export type {
-  MachineApi as Api,
+  SelectApi as Api,
   CollectionItem,
   CollectionOptions,
-  UserDefinedContext as Context,
+  SelectProps as Props,
+  SelectService as Service,
   ElementIds,
   HighlightChangeDetails,
   ItemGroupLabelProps,
@@ -18,6 +19,5 @@ export type {
   OpenChangeDetails,
   PositioningOptions,
   ScrollToIndexDetails,
-  Service,
   ValueChangeDetails,
 } from "./select.types"

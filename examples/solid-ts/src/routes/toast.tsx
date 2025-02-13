@@ -1,5 +1,5 @@
 import { toastControls } from "@zag-js/shared"
-import { normalizeProps, useActor, useMachine } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
 import { XIcon } from "lucide-solid"
 import { For, createMemo, createSignal, createUniqueId } from "solid-js"
@@ -9,8 +9,8 @@ import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
 
 function ToastItem(props: { actor: toast.Service }) {
-  const [state, send] = useActor(props.actor)
-  const api = createMemo(() => toast.connect(state, send, normalizeProps))
+  const service = useMachine(props.actor)
+  const api = createMemo(() => toast.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>
@@ -31,19 +31,16 @@ function ToastItem(props: { actor: toast.Service }) {
 export default function Page() {
   const controls = useControls(toastControls)
 
-  const [state, send] = useMachine(
+  const service = useMachine(
     toast.group.machine({
       id: createUniqueId(),
       placement: "bottom-end",
       overlap: true,
       removeDelay: 200,
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = createMemo(() => toast.group.connect(state, send, normalizeProps))
+  const api = createMemo(() => toast.group.connect(service, normalizeProps))
   const [id, setId] = createSignal<string>()
 
   return (
@@ -97,7 +94,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui} viz>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

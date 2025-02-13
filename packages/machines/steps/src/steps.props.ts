@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { UserDefinedContext } from "./steps.types"
+import type { StepsProps } from "./steps.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<StepsProps>()([
   "count",
   "dir",
   "getRootNode",
@@ -13,6 +13,7 @@ export const props = createProps<UserDefinedContext>()([
   "onStepComplete",
   "orientation",
   "step",
+  "defaultStep",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<StepsProps>>(props)

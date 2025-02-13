@@ -1,6 +1,6 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { FileError, FileMimeType } from "@zag-js/file-utils"
-import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, LocaleProperties, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -53,7 +53,7 @@ export interface IntlTranslations {
   deleteFile?(file: File): string
 }
 
-interface PublicContext extends LocaleProperties, CommonProperties {
+export interface FileUploadProps extends LocaleProperties, CommonProperties {
   /**
    * The name of the underlying file input
    */
@@ -135,45 +135,40 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   invalid?: boolean | undefined
 }
 
-interface PrivateContext {
+interface Context {
   /**
-   * @internal
    * The rejected files
    */
   rejectedFiles: FileRejection[]
   /**
-   * @internal
    * The current value of the file input
    */
   acceptedFiles: File[]
 }
 
-type ComputedContext = Readonly<{
+type Computed = {
   /**
-   * @computed
    * The accept attribute as a string
    */
   acceptAttr: string | undefined
   /**
-   * @computed
    * Whether the file can select multiple files
    */
   multiple: boolean
-}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused" | "open" | "dragging"
 }
 
-export type State = S.State<MachineContext, MachineState>
+export interface FileUploadSchema {
+  state: "idle" | "focused" | "dragging"
+  props: FileUploadProps
+  context: Context
+  computed: Computed
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
+}
 
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type FileUploadService = Service<FileUploadSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -194,7 +189,7 @@ export interface DropzoneProps {
   disableClick?: boolean
 }
 
-export interface MachineApi<T extends PropTypes> {
+export interface FileUploadApi<T extends PropTypes> {
   /**
    * Whether the user is dragging something over the root element
    */

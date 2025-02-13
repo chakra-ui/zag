@@ -20,27 +20,21 @@ export default function Page() {
     }),
   )
 
-  const context = createMemo(() => ({
-    ...controls.context,
-    collection: collection(),
-  }))
+  const service = useMachine(combobox.machine, {
+    id: createUniqueId(),
+    get collection() {
+      return collection()
+    },
+    onOpenChange() {
+      setOptions(comboboxData)
+    },
+    onInputValueChange({ inputValue }) {
+      const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+      setOptions(filtered.length > 0 ? filtered : comboboxData)
+    },
+  })
 
-  const [state, send] = useMachine(
-    combobox.machine({
-      id: createUniqueId(),
-      collection: collection(),
-      onOpenChange() {
-        setOptions(comboboxData)
-      },
-      onInputValueChange({ inputValue }) {
-        const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
-        setOptions(filtered.length > 0 ? filtered : comboboxData)
-      },
-    }),
-    { context },
-  )
-
-  const api = createMemo(() => combobox.connect(state, send, normalizeProps))
+  const api = createMemo(() => combobox.connect(service, normalizeProps))
 
   return (
     <>
@@ -80,7 +74,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["collection"]} />
+        <StateVisualizer state={service} omit={["collection"]} />
       </Toolbar>
     </>
   )

@@ -1,29 +1,31 @@
+import type { Service } from "@zag-js/core"
 import { dataAttr, getEventKey, isComposingEvent, isSafari, isSelfTarget } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
-import { dom } from "./tabs.dom"
-import type { MachineApi, Send, State, TriggerProps, TriggerState } from "./tabs.types"
+import * as dom from "./tabs.dom"
+import type { TabsApi, TabsSchema, TriggerProps, TriggerState } from "./tabs.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const translations = state.context.translations
+export function connect<T extends PropTypes>(service: Service<TabsSchema>, normalize: NormalizeProps<T>): TabsApi<T> {
+  const { state, send, context, prop, scope } = service
+
+  const translations = prop("translations")
   const focused = state.matches("focused")
 
-  const isVertical = state.context.orientation === "vertical"
-  const isHorizontal = state.context.orientation === "horizontal"
-  const composite = state.context.composite
-  const indicator = state.context.indicatorState
+  const isVertical = prop("orientation") === "vertical"
+  const isHorizontal = prop("orientation") === "horizontal"
+  const composite = prop("composite")
 
   function getTriggerState(props: TriggerProps): TriggerState {
     return {
-      selected: state.context.value === props.value,
-      focused: state.context.focusedValue === props.value,
+      selected: context.get("value") === props.value,
+      focused: context.get("focusedValue") === props.value,
       disabled: !!props.disabled,
     }
   }
 
   return {
-    value: state.context.value,
-    focusedValue: state.context.focusedValue,
+    value: context.get("value"),
+    focusedValue: context.get("focusedValue"),
     setValue(value) {
       send({ type: "SET_VALUE", value })
     },
@@ -31,11 +33,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "CLEAR_VALUE" })
     },
     setIndicatorRect(value) {
-      const id = dom.getTriggerId(state.context, value)
+      const id = dom.getTriggerId(scope, value)
       send({ type: "SET_INDICATOR_RECT", id })
     },
     syncTabIndex() {
-      send("SYNC_TAB_INDEX")
+      send({ type: "SYNC_TAB_INDEX" })
     },
     selectNext(fromValue) {
       send({ type: "TAB_FOCUS", value: fromValue, src: "selectNext" })
@@ -46,28 +48,30 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "ARROW_PREV", src: "selectPrev" })
     },
     focus() {
-      dom.getSelectedTriggerEl(state.context)?.focus()
+      const value = context.get("value")
+      if (!value) return
+      dom.getTriggerEl(scope, value)?.focus()
     },
 
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        id: dom.getRootId(state.context),
-        "data-orientation": state.context.orientation,
+        id: dom.getRootId(scope),
+        "data-orientation": prop("orientation"),
         "data-focus": dataAttr(focused),
-        dir: state.context.dir,
+        dir: prop("dir"),
       })
     },
 
     getListProps() {
       return normalize.element({
         ...parts.list.attrs,
-        id: dom.getListId(state.context),
+        id: dom.getListId(scope),
         role: "tablist",
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-focus": dataAttr(focused),
-        "aria-orientation": state.context.orientation,
-        "data-orientation": state.context.orientation,
+        "aria-orientation": prop("orientation"),
+        "data-orientation": prop("orientation"),
         "aria-label": translations?.listLabel,
         onKeyDown(event) {
           if (event.defaultPrevented) return
@@ -93,17 +97,21 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               send({ type: "ARROW_NEXT", key: "ArrowRight" })
             },
             Home() {
-              send("HOME")
+              send({ type: "HOME" })
             },
             End() {
-              send("END")
+              send({ type: "END" })
             },
             Enter() {
               send({ type: "ENTER" })
             },
           }
 
-          let key = getEventKey(event, state.context)
+          let key = getEventKey(event, {
+            dir: prop("dir"),
+            orientation: prop("orientation"),
+          })
+
           const exec = keyMap[key]
 
           if (exec) {
@@ -125,18 +133,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "tab",
         type: "button",
         disabled,
-        dir: state.context.dir,
-        "data-orientation": state.context.orientation,
+        dir: prop("dir"),
+        "data-orientation": prop("orientation"),
         "data-disabled": dataAttr(disabled),
         "aria-disabled": disabled,
         "data-value": value,
         "aria-selected": triggerState.selected,
         "data-selected": dataAttr(triggerState.selected),
         "data-focus": dataAttr(triggerState.focused),
-        "aria-controls": triggerState.selected ? dom.getContentId(state.context, value) : undefined,
-        "data-ownedby": dom.getListId(state.context),
-        "data-ssr": dataAttr(state.context.ssr),
-        id: dom.getTriggerId(state.context, value),
+        "aria-controls": triggerState.selected ? dom.getContentId(scope, value) : undefined,
+        "data-ownedby": dom.getListId(scope),
+        "data-ssr": dataAttr(context.get("ssr")),
+        id: dom.getTriggerId(scope, value),
         tabIndex: triggerState.selected && composite ? 0 : -1,
         onFocus() {
           send({ type: "TAB_FOCUS", value })
@@ -160,37 +168,39 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getContentProps(props) {
       const { value } = props
-      const selected = state.context.value === value
+      const selected = context.get("value") === value
       return normalize.element({
         ...parts.content.attrs,
-        dir: state.context.dir,
-        id: dom.getContentId(state.context, value),
+        dir: prop("dir"),
+        id: dom.getContentId(scope, value),
         tabIndex: composite ? 0 : -1,
-        "aria-labelledby": dom.getTriggerId(state.context, value),
+        "aria-labelledby": dom.getTriggerId(scope, value),
         role: "tabpanel",
-        "data-ownedby": dom.getListId(state.context),
+        "data-ownedby": dom.getListId(scope),
         "data-selected": dataAttr(selected),
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         hidden: !selected,
       })
     },
 
     getIndicatorProps() {
+      const indicatorRect = context.get("indicatorRect")
+      const indicatorTransition = context.get("indicatorTransition")
       return normalize.element({
-        id: dom.getIndicatorId(state.context),
+        id: dom.getIndicatorId(scope),
         ...parts.indicator.attrs,
-        dir: state.context.dir,
-        "data-orientation": state.context.orientation,
+        dir: prop("dir"),
+        "data-orientation": prop("orientation"),
         style: {
           "--transition-property": "left, right, top, bottom, width, height",
-          "--left": indicator.rect?.left,
-          "--top": indicator.rect?.top,
-          "--width": indicator.rect?.width,
-          "--height": indicator.rect?.height,
+          "--left": indicatorRect.left,
+          "--top": indicatorRect.top,
+          "--width": indicatorRect.width,
+          "--height": indicatorRect.height,
           position: "absolute",
           willChange: "var(--transition-property)",
           transitionProperty: "var(--transition-property)",
-          transitionDuration: indicator.transition ? "var(--transition-duration, 150ms)" : "0ms",
+          transitionDuration: indicatorTransition ? "var(--transition-duration, 150ms)" : "0ms",
           transitionTimingFunction: "var(--transition-timing-function)",
           [isHorizontal ? "left" : "top"]: isHorizontal ? "var(--left)" : "var(--top)",
         },

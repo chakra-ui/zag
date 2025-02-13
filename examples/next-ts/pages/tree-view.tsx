@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { treeviewControls } from "@zag-js/shared"
 import * as tree from "@zag-js/tree-view"
-import { FileIcon, FolderIcon, ChevronRightIcon } from "lucide-react"
+import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -94,11 +94,12 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 export default function Page() {
   const controls = useControls(treeviewControls)
 
-  const [state, send] = useMachine(tree.machine({ id: useId(), collection }), {
-    context: controls.context,
+  const service = useMachine(tree.machine, {
+    id: useId(),
+    collection,
+    ...controls.context,
   })
-
-  const api = tree.connect(state, send, normalizeProps)
+  const api = tree.connect(service, normalizeProps)
 
   return (
     <>
@@ -124,7 +125,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["collection"]} />
+        <StateVisualizer state={service} omit={["collection"]} />
       </Toolbar>
     </>
   )

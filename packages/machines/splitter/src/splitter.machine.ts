@@ -1,284 +1,355 @@
 import { createMachine } from "@zag-js/core"
 import { getRelativePoint, raf, trackPointerMove } from "@zag-js/dom-query"
 import { compact } from "@zag-js/utils"
-import { dom } from "./splitter.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./splitter.types"
+import * as dom from "./splitter.dom"
+import type { PanelSizeData, ResizeState, SplitterSchema } from "./splitter.types"
 import { clamp, getHandleBounds, getHandlePanels, getNormalizedPanels, getPanelBounds } from "./splitter.utils"
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "splitter",
-      initial: "idle",
-      context: {
-        orientation: "horizontal",
-        activeResizeId: null,
-        previousPanels: [],
-        size: [],
-        initialSize: [],
-        activeResizeState: {
-          isAtMin: false,
-          isAtMax: false,
+export const machine = createMachine<SplitterSchema>({
+  props({ props }) {
+    return {
+      orientation: "horizontal",
+      defaultSize: [],
+      ...compact(props),
+    }
+  },
+
+  initialState() {
+    return "idle"
+  },
+
+  context({ prop, bindable, getContext }) {
+    return {
+      activeResizeId: bindable<string | null>(() => ({
+        defaultValue: null,
+      })),
+      size: bindable<PanelSizeData[]>(() => ({
+        defaultValue: prop("defaultSize"),
+        value: prop("size"),
+        hash(a) {
+          return a.map((panel) => `${panel.id}:${panel.size}`).join(",")
         },
-        ...ctx,
-      },
+        onChange(value) {
+          const context = getContext()
+          prop("onSizeChange")?.({
+            size: value,
+            activeHandleId: context.get("activeResizeId"),
+          })
+        },
+      })),
+      activeResizeState: bindable<ResizeState>(() => ({
+        defaultValue: { isAtMin: false, isAtMax: false },
+      })),
+    }
+  },
 
-      created: ["setPreviousPanels", "setInitialSize"],
+  refs({ context }) {
+    return {
+      previousPanels: getNormalizedPanels(context.get("size")),
+    }
+  },
 
-      watch: {
-        size: ["setActiveResizeState"],
-      },
+  watch({ track, action, context }) {
+    track([() => context.hash("size")], () => {
+      action(["setActiveResizeState"])
+    })
+  },
 
-      computed: {
-        isHorizontal: (ctx) => ctx.orientation === "horizontal",
-        panels: (ctx) => getNormalizedPanels(ctx),
-      },
+  computed: {
+    isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
+    panels: ({ context }) => getNormalizedPanels(context.get("size")),
+  },
 
+  on: {
+    SET_PANEL_SIZE: {
+      actions: ["setPanelSize"],
+    },
+  },
+  states: {
+    idle: {
+      entry: ["clearActiveHandleId"],
       on: {
-        SET_PANEL_SIZE: {
-          actions: "setPanelSize",
+        POINTER_OVER: {
+          target: "hover:temp",
+          actions: ["setActiveHandleId"],
         },
-      },
-      states: {
-        idle: {
-          entry: ["clearActiveHandleId"],
-          on: {
-            POINTER_OVER: {
-              target: "hover:temp",
-              actions: ["setActiveHandleId"],
-            },
-            FOCUS: {
-              target: "focused",
-              actions: ["setActiveHandleId"],
-            },
-            DOUBLE_CLICK: {
-              actions: ["resetStartPanel", "setPreviousPanels"],
-            },
-          },
+        FOCUS: {
+          target: "focused",
+          actions: ["setActiveHandleId"],
         },
-
-        "hover:temp": {
-          after: {
-            HOVER_DELAY: "hover",
-          },
-          on: {
-            POINTER_DOWN: {
-              target: "dragging",
-              actions: ["setActiveHandleId"],
-            },
-            POINTER_LEAVE: "idle",
-          },
-        },
-
-        hover: {
-          tags: ["focus"],
-          on: {
-            POINTER_DOWN: "dragging",
-            POINTER_LEAVE: "idle",
-          },
-        },
-
-        focused: {
-          tags: ["focus"],
-          on: {
-            BLUR: "idle",
-            POINTER_DOWN: {
-              target: "dragging",
-              actions: ["setActiveHandleId"],
-            },
-            ARROW_LEFT: {
-              guard: "isHorizontal",
-              actions: ["shrinkStartPanel", "setPreviousPanels"],
-            },
-            ARROW_RIGHT: {
-              guard: "isHorizontal",
-              actions: ["expandStartPanel", "setPreviousPanels"],
-            },
-            ARROW_UP: {
-              guard: "isVertical",
-              actions: ["shrinkStartPanel", "setPreviousPanels"],
-            },
-            ARROW_DOWN: {
-              guard: "isVertical",
-              actions: ["expandStartPanel", "setPreviousPanels"],
-            },
-            ENTER: [
-              {
-                guard: "isStartPanelAtMax",
-                actions: ["setStartPanelToMin", "setPreviousPanels"],
-              },
-              { actions: ["setStartPanelToMax", "setPreviousPanels"] },
-            ],
-            HOME: {
-              actions: ["setStartPanelToMin", "setPreviousPanels"],
-            },
-            END: {
-              actions: ["setStartPanelToMax", "setPreviousPanels"],
-            },
-          },
-        },
-
-        dragging: {
-          tags: ["focus"],
-          entry: "focusResizeHandle",
-          activities: ["trackPointerMove"],
-          on: {
-            POINTER_MOVE: {
-              actions: ["setPointerValue", "setGlobalCursor", "invokeOnResize"],
-            },
-            POINTER_UP: {
-              target: "focused",
-              actions: ["setPreviousPanels", "clearGlobalCursor", "blurResizeHandle", "invokeOnResizeEnd"],
-            },
-          },
+        DOUBLE_CLICK: {
+          actions: ["resetStartPanel", "setPreviousPanels"],
         },
       },
     },
-    {
-      activities: {
-        trackPointerMove: (ctx, _evt, { send }) => {
-          const doc = dom.getDoc(ctx)
-          return trackPointerMove(doc, {
-            onPointerMove(info) {
-              send({ type: "POINTER_MOVE", point: info.point })
-            },
-            onPointerUp() {
-              send("POINTER_UP")
-            },
-          })
+
+    "hover:temp": {
+      effects: ["waitForHoverDelay"],
+      on: {
+        HOVER_DELAY: {
+          target: "hover",
+        },
+        POINTER_DOWN: {
+          target: "dragging",
+          actions: ["setActiveHandleId"],
+        },
+        POINTER_LEAVE: {
+          target: "idle",
         },
       },
-      guards: {
-        isStartPanelAtMin: (ctx) => ctx.activeResizeState.isAtMin,
-        isStartPanelAtMax: (ctx) => ctx.activeResizeState.isAtMax,
-        isHorizontal: (ctx) => ctx.isHorizontal,
-        isVertical: (ctx) => !ctx.isHorizontal,
+    },
+
+    hover: {
+      tags: ["focus"],
+      on: {
+        POINTER_DOWN: {
+          target: "dragging",
+        },
+        POINTER_LEAVE: {
+          target: "idle",
+        },
       },
-      delays: {
-        HOVER_DELAY: 250,
+    },
+
+    focused: {
+      tags: ["focus"],
+      on: {
+        BLUR: {
+          target: "idle",
+        },
+        POINTER_DOWN: {
+          target: "dragging",
+          actions: ["setActiveHandleId"],
+        },
+        ARROW_LEFT: {
+          guard: "isHorizontal",
+          actions: ["shrinkStartPanel", "setPreviousPanels"],
+        },
+        ARROW_RIGHT: {
+          guard: "isHorizontal",
+          actions: ["expandStartPanel", "setPreviousPanels"],
+        },
+        ARROW_UP: {
+          guard: "isVertical",
+          actions: ["shrinkStartPanel", "setPreviousPanels"],
+        },
+        ARROW_DOWN: {
+          guard: "isVertical",
+          actions: ["expandStartPanel", "setPreviousPanels"],
+        },
+        ENTER: [
+          {
+            guard: "isStartPanelAtMax",
+            actions: ["setStartPanelToMin", "setPreviousPanels"],
+          },
+          { actions: ["setStartPanelToMax", "setPreviousPanels"] },
+        ],
+        HOME: {
+          actions: ["setStartPanelToMin", "setPreviousPanels"],
+        },
+        END: {
+          actions: ["setStartPanelToMax", "setPreviousPanels"],
+        },
       },
-      actions: {
-        setGlobalCursor(ctx) {
-          dom.setupGlobalCursor(ctx)
+    },
+
+    dragging: {
+      tags: ["focus"],
+      entry: ["focusResizeHandle"],
+      effects: ["trackPointerMove"],
+      on: {
+        POINTER_MOVE: {
+          actions: ["setPointerValue", "setGlobalCursor", "invokeOnResize"],
         },
-        clearGlobalCursor(ctx) {
-          dom.removeGlobalCursor(ctx)
+        POINTER_UP: {
+          target: "focused",
+          actions: ["setPreviousPanels", "clearGlobalCursor", "blurResizeHandle", "invokeOnResizeEnd"],
         },
-        invokeOnResize(ctx) {
-          ctx.onSizeChange?.({ size: Array.from(ctx.size), activeHandleId: ctx.activeResizeId })
-        },
-        invokeOnResizeEnd(ctx) {
-          ctx.onSizeChangeEnd?.({ size: Array.from(ctx.size), activeHandleId: ctx.activeResizeId })
-        },
-        setActiveHandleId(ctx, evt) {
-          ctx.activeResizeId = evt.id
-        },
-        clearActiveHandleId(ctx) {
-          ctx.activeResizeId = null
-        },
-        setInitialSize(ctx) {
-          ctx.initialSize = ctx.panels.slice().map((panel) => ({
-            id: panel.id,
-            size: panel.size,
-          }))
-        },
-        setPanelSize(ctx, evt) {
-          const { id, size } = evt
-          ctx.size = ctx.size.map((panel) => {
+      },
+    },
+  },
+
+  implementations: {
+    effects: {
+      waitForHoverDelay: ({ send }) => {
+        const id = setTimeout(() => {
+          send({ type: "HOVER_DELAY" })
+        }, 250)
+        return () => clearTimeout(id)
+      },
+      trackPointerMove: ({ scope, send }) => {
+        const doc = scope.getDoc()
+        return trackPointerMove(doc, {
+          onPointerMove(info) {
+            send({ type: "POINTER_MOVE", point: info.point })
+          },
+          onPointerUp() {
+            send({ type: "POINTER_UP" })
+          },
+        })
+      },
+    },
+
+    guards: {
+      isStartPanelAtMin: ({ context }) => context.get("activeResizeState").isAtMin,
+      isStartPanelAtMax: ({ context }) => context.get("activeResizeState").isAtMax,
+      isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
+      isVertical: ({ prop }) => prop("orientation") !== "horizontal",
+    },
+
+    actions: {
+      setGlobalCursor({ context, scope, computed }) {
+        const activeState = context.get("activeResizeState")
+        const isHorizontal = computed("isHorizontal")
+        dom.setupGlobalCursor(scope, activeState, isHorizontal)
+      },
+      clearGlobalCursor({ scope }) {
+        dom.removeGlobalCursor(scope)
+      },
+      invokeOnResize({ context, prop }) {
+        prop("onSizeChange")?.({
+          size: Array.from(context.get("size")),
+          activeHandleId: context.get("activeResizeId"),
+        })
+      },
+      invokeOnResizeEnd({ context, prop }) {
+        prop("onSizeChangeEnd")?.({
+          size: Array.from(context.get("size")),
+          activeHandleId: context.get("activeResizeId"),
+        })
+      },
+      setActiveHandleId({ context, event }) {
+        context.set("activeResizeId", event.id)
+      },
+      clearActiveHandleId({ context }) {
+        context.set("activeResizeId", null)
+      },
+      setPanelSize({ context, event }) {
+        const { id, size } = event
+        context.set("size", (prev) =>
+          prev.map((panel) => {
             const panelSize = clamp(size, panel.minSize ?? 0, panel.maxSize ?? 100)
             return panel.id === id ? { ...panel, size: panelSize } : panel
-          })
-        },
-        setStartPanelToMin(ctx) {
-          const bounds = getPanelBounds(ctx)
-          if (!bounds) return
-          const { before, after } = bounds
-          ctx.size[before.index].size = before.min
-          ctx.size[after.index].size = after.min
-        },
-        setStartPanelToMax(ctx) {
-          const bounds = getPanelBounds(ctx)
-          if (!bounds) return
-          const { before, after } = bounds
-          ctx.size[before.index].size = before.max
-          ctx.size[after.index].size = after.max
-        },
-        expandStartPanel(ctx, evt) {
-          const bounds = getPanelBounds(ctx)
-          if (!bounds) return
-          const { before, after } = bounds
-          ctx.size[before.index].size = before.up(evt.step)
-          ctx.size[after.index].size = after.down(evt.step)
-        },
-        shrinkStartPanel(ctx, evt) {
-          const bounds = getPanelBounds(ctx)
-          if (!bounds) return
-          const { before, after } = bounds
-          ctx.size[before.index].size = before.down(evt.step)
-          ctx.size[after.index].size = after.up(evt.step)
-        },
-        resetStartPanel(ctx, evt) {
-          const bounds = getPanelBounds(ctx, evt.id)
-          if (!bounds) return
-          const { before, after } = bounds
-          ctx.size[before.index].size = ctx.initialSize[before.index].size
-          ctx.size[after.index].size = ctx.initialSize[after.index].size
-        },
-        focusResizeHandle(ctx) {
-          raf(() => {
-            dom.getActiveHandleEl(ctx)?.focus({ preventScroll: true })
-          })
-        },
-        blurResizeHandle(ctx) {
-          raf(() => {
-            dom.getActiveHandleEl(ctx)?.blur()
-          })
-        },
-        setPreviousPanels(ctx) {
-          ctx.previousPanels = ctx.panels.slice()
-        },
-        setActiveResizeState(ctx) {
-          const panels = getPanelBounds(ctx)
-          if (!panels) return
-          const { before } = panels
-          ctx.activeResizeState = {
-            isAtMin: before.isAtMin,
-            isAtMax: before.isAtMax,
-          }
-        },
-        setPointerValue(ctx, evt) {
-          const panels = getHandlePanels(ctx)
-          const bounds = getHandleBounds(ctx)
+          }),
+        )
+      },
+      setStartPanelToMin({ context, computed }) {
+        const bounds = getPanelBounds(computed("panels"), context.get("activeResizeId"))
+        if (!bounds) return
+        const { before, after } = bounds
+        context.set("size", (prev) => {
+          const next = prev.slice()
+          next[before.index].size = before.min
+          next[after.index].size = after.min
+          return next
+        })
+      },
+      setStartPanelToMax({ context, computed }) {
+        const bounds = getPanelBounds(computed("panels"), context.get("activeResizeId"))
+        if (!bounds) return
+        const { before, after } = bounds
+        context.set("size", (prev) => {
+          const next = prev.slice()
+          next[before.index].size = before.max
+          next[after.index].size = after.max
+          return next
+        })
+      },
+      expandStartPanel({ context, event, computed }) {
+        const bounds = getPanelBounds(computed("panels"), context.get("activeResizeId"))
+        if (!bounds) return
+        const { before, after } = bounds
+        context.set("size", (prev) => {
+          const next = prev.slice()
+          next[before.index].size = before.up(event.step)
+          next[after.index].size = after.down(event.step)
+          return next
+        })
+      },
+      shrinkStartPanel({ context, event, computed }) {
+        const bounds = getPanelBounds(computed("panels"), context.get("activeResizeId"))
+        if (!bounds) return
+        const { before, after } = bounds
+        context.set("size", (prev) => {
+          const next = prev.slice()
+          next[before.index].size = before.down(event.step)
+          next[after.index].size = after.up(event.step)
+          return next
+        })
+      },
+      resetStartPanel({ context, computed }) {
+        const bounds = getPanelBounds(computed("panels"), context.get("activeResizeId"))
+        if (!bounds) return
+        const { before, after } = bounds
+        const initialSize = context.initial("size")
+        context.set("size", (prev) => {
+          const next = prev.slice()
+          next[before.index].size = initialSize[before.index].size
+          next[after.index].size = initialSize[after.index].size
+          return next
+        })
+      },
+      focusResizeHandle({ scope, context }) {
+        raf(() => {
+          const activeId = context.get("activeResizeId")
+          if (!activeId) return
+          dom.getResizeTriggerEl(scope, activeId)?.focus({ preventScroll: true })
+        })
+      },
+      blurResizeHandle({ scope, context }) {
+        raf(() => {
+          const activeId = context.get("activeResizeId")
+          if (!activeId) return
+          dom.getResizeTriggerEl(scope, activeId)?.blur()
+        })
+      },
+      setPreviousPanels({ refs, computed }) {
+        refs.set("previousPanels", computed("panels").slice())
+      },
+      setActiveResizeState({ context, computed }) {
+        const panels = getPanelBounds(computed("panels"), context.get("activeResizeId"))
+        if (!panels) return
+        const { before } = panels
+        context.set("activeResizeState", {
+          isAtMin: before.isAtMin,
+          isAtMax: before.isAtMax,
+        })
+      },
+      setPointerValue({ context, event, prop, scope, computed }) {
+        const panels = getHandlePanels(computed("panels"), context.get("activeResizeId"))
+        const bounds = getHandleBounds(computed("panels"), context.get("activeResizeId"))
 
-          if (!panels || !bounds) return
+        if (!panels || !bounds) return
 
-          const rootEl = dom.getRootEl(ctx)
-          if (!rootEl) return
+        const rootEl = dom.getRootEl(scope)
+        if (!rootEl) return
 
-          const relativePoint = getRelativePoint(evt.point, rootEl)
-          const percentValue = relativePoint.getPercentValue({
-            dir: ctx.dir,
-            orientation: ctx.orientation,
-          })
+        const relativePoint = getRelativePoint(event.point, rootEl)
+        const percentValue = relativePoint.getPercentValue({
+          dir: prop("dir"),
+          orientation: prop("orientation"),
+        })
 
-          let pointValue = percentValue * 100
+        let pointValue = percentValue * 100
 
-          // update active resize state here because we use `previousPanels` in the calculations
-          ctx.activeResizeState = {
-            isAtMin: pointValue < bounds.min,
-            isAtMax: pointValue > bounds.max,
-          }
+        // update active resize state here because we use `previousPanels` in the calculations
+        context.set("activeResizeState", {
+          isAtMin: pointValue < bounds.min,
+          isAtMax: pointValue > bounds.max,
+        })
 
-          pointValue = clamp(pointValue, bounds.min, bounds.max)
+        pointValue = clamp(pointValue, bounds.min, bounds.max)
 
-          const { before, after } = panels
+        const { before, after } = panels
 
-          const offset = pointValue - before.end
-          ctx.size[before.index].size = before.size + offset
-          ctx.size[after.index].size = after.size - offset
-        },
+        const offset = pointValue - before.end
+        context.set("size", (prev) => {
+          const next = prev.slice()
+          next[before.index].size = before.size + offset
+          next[after.index].size = after.size - offset
+          return next
+        })
       },
     },
-  )
-}
+  },
+})

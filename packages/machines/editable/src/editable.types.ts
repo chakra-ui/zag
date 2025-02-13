@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -41,7 +41,7 @@ export type ElementIds = Partial<{
   editTrigger: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+export interface EditableProps extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The ids of the elements in the editable. Useful for composition.
    */
@@ -71,7 +71,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    *
    * @default "focus"
    */
-  activationMode: ActivationMode
+  activationMode?: ActivationMode | undefined
   /**
    * The action that triggers submit in the edit mode:
    *
@@ -82,116 +82,97 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    *
    * @default "both"
    */
-  submitMode: SubmitMode
-  /**
-   * Whether the editable is in edit mode.
-   */
-  edit?: boolean | undefined
-  /**
-   * Whether the editable is controlled
-   */
-  "edit.controlled"?: boolean | undefined
+  submitMode?: SubmitMode | undefined
   /**
    * Whether to select the text in the input when it is focused.
    * @default true
    */
   selectOnFocus?: boolean | undefined
   /**
-   * The value of the editable in both edit and preview mode
+   * Whether the editable is in edit mode.
    */
-  value: string
+  edit?: boolean | undefined
+  /**
+   * Whether the editable is in edit mode by default.
+   */
+  defaultEdit?: boolean | undefined
+  /**
+   * Function to call when the edit mode changes.
+   */
+  onEditChange?: ((details: EditChangeDetails) => void) | undefined
   /**
    * The maximum number of characters allowed in the editable
    */
   maxLength?: number | undefined
   /**
-   * Whether the editable is disabled
+   * Whether the editable is disabled.
    */
   disabled?: boolean | undefined
   /**
-   * Whether the editable is readonly
+   * Whether the editable is read-only.
    */
   readOnly?: boolean | undefined
   /**
-   * Whether the editable is required
+   * Whether the editable is required.
    */
   required?: boolean | undefined
   /**
-   * The callback that is called when the editable's value is changed
-   */
-  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
-  /**
-   * The callback that is called when the esc key is pressed or the cancel button is clicked
-   */
-  onValueRevert?: ((details: ValueChangeDetails) => void) | undefined
-  /**
-   * The callback that is called when the editable's value is submitted.
-   */
-  onValueCommit?: ((details: ValueChangeDetails) => void) | undefined
-  /**
-   * The callback that is called when the edit mode is changed
-   */
-  onEditChange?: ((details: EditChangeDetails) => void) | undefined
-  /**
-   * The placeholder value to show when the `value` is empty
+   * The placeholder text for the editable.
    */
   placeholder?: string | { edit: string; preview: string } | undefined
   /**
-   * Specifies the localized strings that identifies the accessibility elements and their states
+   * The translations for the editable.
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
-   * The element that should receive focus when the editable is closed.
-   * By default, it will focus on the trigger element.
+   * The element to receive focus when the editable is closed.
    */
   finalFocusEl?: (() => HTMLElement | null) | undefined
+  /**
+   * The value of the editable.
+   */
+  value?: string | undefined
+  /**
+   * The default value of the editable.
+   */
+  defaultValue?: string | undefined
+  /**
+   * Function to call when the value changes.
+   */
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
+  /**
+   * Function to call when the value is reverted.
+   */
+  onValueRevert?: ((details: ValueChangeDetails) => void) | undefined
+  /**
+   * Function to call when the value is committed.
+   */
+  onValueCommit?: ((details: ValueChangeDetails) => void) | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "activationMode" | "submitMode" | "selectOnFocus" | "translations"
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the editable can be interacted with
-   */
-  isInteractive: boolean
-  /**
-   * @computed
-   * Whether to submit on enter press
-   */
-  submitOnEnter: boolean
-  /**
-   * @computed
-   * Whether to submit on blur
-   */
-  submitOnBlur: boolean
-}>
-
-interface PrivateContext {
-  /**
-   * @internal
-   * The previous value of the editable. Used to revert in case of cancel/escape
-   */
-  previousValue: string
+export interface EditableSchema {
+  props: RequiredBy<EditableProps, PropsWithDefault>
+  state: "edit" | "preview"
+  context: {
+    value: string
+    previousValue: string
+  }
+  computed: {
+    isInteractive: boolean
+    submitOnEnter: boolean
+    submitOnBlur: boolean
+  }
+  action: string
+  effect: string
+  event: EventObject
+  guard: string
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
+export type EditableService = Service<EditableSchema>
 
-export interface MachineState {
-  value: "preview" | "edit"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
-
-/* -----------------------------------------------------------------------------
- * Component API
- * -----------------------------------------------------------------------------*/
-
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface EditableApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the editable is in edit mode
    */

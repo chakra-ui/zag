@@ -1,8 +1,12 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { Service } from "@zag-js/core"
 import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 export interface CopyStatusDetails {
   copied: boolean
+}
+
+export interface ValueChangeDetails {
+  value: string
 }
 
 export type ElementIds = Partial<{
@@ -11,7 +15,7 @@ export type ElementIds = Partial<{
   label: string
 }>
 
-interface PublicContext extends CommonProperties {
+export interface ClipboardProps extends CommonProperties {
   /**
    * The ids of the elements in the clipboard. Useful for composition.
    */
@@ -19,7 +23,15 @@ interface PublicContext extends CommonProperties {
   /**
    * The value to be copied to the clipboard
    */
-  value: string
+  value?: string | undefined
+  /**
+   * The default value to be copied to the clipboard
+   */
+  defaultValue?: string | undefined
+  /**
+   * The function to be called when the value changes
+   */
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * The function to be called when the value is copied to the clipboard
    */
@@ -28,26 +40,21 @@ interface PublicContext extends CommonProperties {
    * The timeout for the copy operation
    * @default 3000
    */
-  timeout: number
+  timeout?: number | undefined
 }
 
-interface PrivateContext {}
-
-type ComputedContext = Readonly<{}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "copied"
+export interface ClipboardSchema {
+  state: "idle" | "copied"
+  props: RequiredBy<ClipboardProps, "timeout">
+  context: {
+    value: string
+  }
+  effect: string
+  action: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type ClipboardService = Service<ClipboardSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -57,7 +64,7 @@ export interface IndicatorProps {
   copied: boolean
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface ClipboardApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the value has been copied to the clipboard
    */
