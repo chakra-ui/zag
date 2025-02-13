@@ -43,6 +43,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.trigger.attrs,
         dir: state.context.dir,
+        type: "button",
         "data-placement": state.context.currentPlacement,
         id: dom.getTriggerId(state.context),
         "data-state": open ? "open" : "closed",
