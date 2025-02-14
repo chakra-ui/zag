@@ -69,7 +69,7 @@ export function useMachine<T extends BaseSchema>(
   const transitionRef: any = { current: null }
 
   const previousEventRef: any = { current: null }
-  const eventRef: any = { type: "" }
+  const eventRef: any = { current: { type: "" } }
   const currentEvent = () => eventRef.current
   const previousEvent = () => previousEventRef.current
 
@@ -92,14 +92,6 @@ export function useMachine<T extends BaseSchema>(
     flush,
     scope: reflect(scope),
     choose,
-  })
-
-  onCleanup(() => {
-    const fns = effects.current
-    fns.forEach((fn) => fn?.())
-    effects.current = new Map()
-    // root exit actions
-    action(machine.exit ?? [])
   })
 
   const action = (keys: ActionsOrFn<T> | undefined) => {
@@ -173,35 +165,40 @@ export function useMachine<T extends BaseSchema>(
       // exit actions
       if (prevState) {
         // @ts-ignore
-        action(machine.states[prevState]?.exit ?? [])
+        action(machine.states[prevState]?.exit)
       }
 
       // transition actions
-      action(transitionRef.current?.actions ?? [])
+      action(transitionRef.current?.actions)
 
       // enter effect
       // @ts-ignore
-      const cleanup = effect(machine.states[nextState]?.effects ?? [])
+      const cleanup = effect(machine.states[nextState]?.effects)
       if (cleanup) effects.current.set(nextState as string, cleanup)
 
       // root entry actions
       if (prevState === "__init__") {
-        action(machine.entry ?? [])
-        const cleanup = effect(machine.effects ?? [])
+        action(machine.entry)
+        const cleanup = effect(machine.effects)
         if (cleanup) effects.current.set("__init__", cleanup)
       }
 
       // enter actions
       // @ts-ignore
-      action(machine.states[nextState]?.entry ?? [])
+      action(machine.states[nextState]?.entry)
     },
   }))
 
-  const mounted = { current: false }
   onMount(() => {
-    if (mounted.current) return
-    mounted.current = true
     state.invoke(state.initial!, "__init__")
+  })
+
+  onCleanup(() => {
+    const fns = effects.current
+    fns.forEach((fn) => fn?.())
+    effects.current = new Map()
+    // root exit actions
+    action(machine.exit ?? [])
   })
 
   const getCurrentState = () => {
@@ -270,9 +267,7 @@ export function useMachine<T extends BaseSchema>(
 }
 
 function flush(fn: VoidFunction) {
-  queueMicrotask(() => {
-    fn()
-  })
+  fn()
 }
 
 function access<T>(value: T | Accessor<T>) {

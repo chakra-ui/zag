@@ -59,7 +59,7 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
   /**
    * The value of the range slider
    */
-  value: number[]
+  value?: number[] | undefined
   /**
    * The default value of the range slider
    */
@@ -96,27 +96,27 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    * The minimum value of the slider
    * @default 0
    */
-  min: number
+  min?: number | undefined
   /**
    * The maximum value of the slider
    * @default 100
    */
-  max: number
+  max?: number | undefined
   /**
    * The step value of the slider
    * @default 1
    */
-  step: number
+  step?: number | undefined
   /**
    * The minimum permitted steps between multiple thumbs.
    * @default 0
    */
-  minStepsBetweenThumbs: number
+  minStepsBetweenThumbs?: number | undefined
   /**
    * The orientation of the slider
    * @default "horizontal"
    */
-  orientation: "vertical" | "horizontal"
+  orientation?: "vertical" | "horizontal" | undefined
   /**
    * The origin of the slider range
    * - "start": Useful when the value represents an absolute value
@@ -136,7 +136,7 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
   /**
    * The slider thumbs dimensions
    */
-  thumbSize: { width: number; height: number } | null
+  thumbSize?: { width: number; height: number } | undefined
 }
 
 type Computed = Readonly<{

@@ -55,7 +55,7 @@ export default function Page() {
         </Show>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls}>
         <StateVisualizer state={service} omit={["currentPoints", "currentPath", "paths"]} />
       </Toolbar>
     </>

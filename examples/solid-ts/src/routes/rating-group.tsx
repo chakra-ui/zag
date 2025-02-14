@@ -41,7 +41,7 @@ export default function Page() {
 
   const service = useMachine(rating.machine, {
     id: createUniqueId(),
-    value: 2.5,
+    defaultValue: 2.5,
   })
 
   const api = createMemo(() => rating.connect(service, normalizeProps))
@@ -67,7 +67,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls}>
         <StateVisualizer state={service} />
       </Toolbar>
     </>

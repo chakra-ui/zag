@@ -11,7 +11,7 @@ export default function Page() {
 
   const service = useMachine(tabs.machine, {
     id: createUniqueId(),
-    value: "nils",
+    defaultValue: "nils",
   })
 
   const api = createMemo(() => tabs.connect(service, normalizeProps))
@@ -43,7 +43,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls}>
         <StateVisualizer state={service} />
       </Toolbar>
     </>

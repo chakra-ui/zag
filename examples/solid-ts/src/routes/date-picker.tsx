@@ -160,7 +160,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar viz controls={controls.ui}>
+      <Toolbar viz controls={controls}>
         <StateVisualizer state={service} omit={["weeks"]} />
       </Toolbar>
     </>

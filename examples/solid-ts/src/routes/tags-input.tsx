@@ -15,7 +15,7 @@ export default function Page() {
 
   const service = useMachine(tagsInput.machine, {
     id: createUniqueId(),
-    value: ["React", "Vue"],
+    defaultValue: ["React", "Vue"],
   })
 
   const api = createMemo(() => tagsInput.connect(service, normalizeProps))
@@ -59,7 +59,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls}>
         <StateVisualizer state={service} />
       </Toolbar>
     </>

@@ -50,5 +50,8 @@ export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<
     invoke(nextValue: T, prevValue: T) {
       props().onChange?.(nextValue, prevValue)
     },
+    hash(value: T) {
+      return props().hash?.(value) ?? String(value)
+    },
   }
 }

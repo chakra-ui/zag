@@ -1,8 +1,10 @@
 import { dataAttr } from "@zag-js/dom-query"
 import { createSignal, JSX } from "solid-js"
+import { UseControlsReturn } from "~/hooks/use-controls"
+import { Controls } from "./controls"
 
 type ToolbarProps = {
-  controls?: null | (() => JSX.Element)
+  controls?: UseControlsReturn | null
   children?: JSX.Element
   viz?: boolean
 }
@@ -25,7 +27,7 @@ export function Toolbar(props: ToolbarProps) {
       <div>
         {props.controls && (
           <div data-content data-active={dataAttr(active() === 0)}>
-            <props.controls />
+            <Controls store={props.controls} />
           </div>
         )}
         <div data-content data-active={dataAttr(active() === 1)}>

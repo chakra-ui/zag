@@ -36,7 +36,7 @@ export default function Page() {
         <button onClick={api().clearValue}>reset</button>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls}>
         <StateVisualizer state={service} />
       </Toolbar>
     </>

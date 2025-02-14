@@ -11,8 +11,8 @@
   "dependencies": {
     "@internationalized/date": "3.7.0",
     "@solidjs/meta": "0.29.4",
-    "@solidjs/router": "0.14.7",
-    "@solidjs/start": "1.0.8",
+    "@solidjs/router": "0.15.3",
+    "@solidjs/start": "1.1.1",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -87,7 +87,7 @@
     "lucide-solid": "0.474.0",
     "match-sorter": "8.0.0",
     "solid-js": "1.9.4",
-    "vinxi": "0.4.3"
+    "vinxi": "0.5.3"
   },
   "engines": {
     "node": ">=18"

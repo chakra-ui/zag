@@ -201,7 +201,9 @@ export function connect<T extends PropTypes>(
           }
         },
         onFocus() {
-          send({ type: "INPUT.FOCUS", index })
+          queueMicrotask(() => {
+            send({ type: "INPUT.FOCUS", index })
+          })
         },
         onBlur() {
           send({ type: "INPUT.BLUR", index })

@@ -10,7 +10,7 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(accordionControls)
 
-  const service = useMachine(accordion.machine, { id: createUniqueId() })
+  const service = useMachine(accordion.machine, controls.mergeProps({ id: createUniqueId() }))
   const api = createMemo(() => accordion.connect(service, normalizeProps))
 
   return (
@@ -38,7 +38,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls}>
         <StateVisualizer state={service} />
       </Toolbar>
     </>

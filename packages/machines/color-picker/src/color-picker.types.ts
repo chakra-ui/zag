@@ -65,7 +65,7 @@ export interface ColorPickerProps extends CommonProperties, DirectionProperty, I
   /**
    * The current color value
    */
-  value: Color
+  value?: Color | undefined
   /**
    * The default color value
    * @default #000000

@@ -108,7 +108,7 @@ export default function Page() {
           <div style={{ display: "flex", gap: "10px" }}>
             <button onClick={() => api().collapse()}>Collapse All</button>
             <button onClick={() => api().expand()}>Expand All</button>
-            <Show when={controls.context().selectionMode === "multiple"}>
+            <Show when={controls.state().selectionMode === "multiple"}>
               <button onClick={() => api().select()}>Select All</button>
               <button onClick={() => api().deselect()}>Deselect All</button>
             </Show>
@@ -121,7 +121,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls}>
         <StateVisualizer state={service} omit={["collection"]} />
       </Toolbar>
     </>

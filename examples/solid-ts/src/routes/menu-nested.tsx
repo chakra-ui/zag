@@ -47,6 +47,7 @@ export default function Page() {
                     const props = createMemo(() =>
                       item.trigger ? triggerItemProps() : root().getItemProps({ value: item.value }),
                     )
+
                     return (
                       <li data-testid={item.value} {...props()}>
                         {item.label}
@@ -94,8 +95,8 @@ export default function Page() {
       </main>
 
       <Toolbar>
-        <StateVisualizer state={service} />
-        <StateVisualizer state={subService} />
+        <StateVisualizer state={service} context={["currentPlacement", "highlightedValue"]} />
+        <StateVisualizer state={subService} computed={["isSubmenu"]} />
         <StateVisualizer state={sub2Service} />
       </Toolbar>
     </>

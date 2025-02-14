@@ -26,12 +26,15 @@ const EyeDropIcon = () => (
 export default function Page() {
   const controls = useControls(colorPickerControls)
 
-  const service = useMachine(colorPicker.machine, {
-    id: createUniqueId(),
-    name: "color",
-    format: "hsla",
-    value: colorPicker.parse("hsl(0, 100%, 50%)"),
-  })
+  const service = useMachine(
+    colorPicker.machine,
+    controls.mergeProps<colorPicker.Props>({
+      id: createUniqueId(),
+      name: "color",
+      defaultFormat: "hsla",
+      defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+    }),
+  )
 
   const api = createMemo(() => colorPicker.connect(service, normalizeProps))
 
@@ -139,7 +142,7 @@ export default function Page() {
         </form>
       </main>
 
-      <Toolbar viz controls={controls.ui}>
+      <Toolbar viz controls={controls}>
         <StateVisualizer state={service} />
       </Toolbar>
     </>

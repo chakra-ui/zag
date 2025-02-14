@@ -48,7 +48,7 @@ export const machine = createMachine<ComboboxSchema>({
     return open ? "suggesting" : "idle"
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, getContext }) {
     return {
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
@@ -57,8 +57,19 @@ export const machine = createMachine<ComboboxSchema>({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         onChange(value) {
-          const items = prop("collection").findMany(value)
-          prop("onValueChange")?.({ value, items })
+          const context = getContext()
+          const prevSelectedItems = context.get("selectedItems")
+          const collection = prop("collection")
+
+          const nextItems = value.map((v) => {
+            const item = prevSelectedItems.find((item) => collection.getItemValue(item) === v)
+            return item || collection.find(v)
+          })
+
+          context.set("selectedItems", nextItems)
+          context.set("valueAsString", collection.stringifyItems(nextItems))
+
+          prop("onValueChange")?.({ value, items: nextItems })
         },
       })),
       highlightedValue: bindable<string | null>(() => ({
@@ -777,22 +788,23 @@ export const machine = createMachine<ComboboxSchema>({
         const { context } = params
         context.set("highlightedValue", null)
       },
-      selectHighlightedItem({ context, prop }) {
-        context.set("value", (prev) => {
-          const value = context.get("highlightedValue")
-          if (!value) return prev
-          if (prop("multiple")) return addOrRemove(prev, value)
-          return [value]
-        })
+      selectHighlightedItem(params) {
+        const { context, prop } = params
+
+        const highlightedValue = context.get("highlightedValue")
+        if (!highlightedValue) return
+
+        const nextValue = prop("multiple") ? addOrRemove(context.get("value"), highlightedValue) : [highlightedValue]
+
+        context.set("value", nextValue)
+        context.set("inputValue", getInputValue(params))
       },
       selectItem(params) {
         const { context, event, flush, prop } = params
         if (event.value == null) return
         flush(() => {
-          context.set("value", (prev) => {
-            if (prop("multiple")) return addOrRemove(prev, event.value)
-            return [event.value]
-          })
+          const nextValue = prop("multiple") ? addOrRemove(context.get("value"), event.value) : [event.value]
+          context.set("value", nextValue)
           context.set("inputValue", getInputValue(params))
         })
       },
@@ -800,7 +812,8 @@ export const machine = createMachine<ComboboxSchema>({
         const { context, event, flush } = params
         if (event.value == null) return
         flush(() => {
-          context.set("value", (prev) => remove(prev, event.value))
+          const nextValue = remove(context.get("value"), event.value)
+          context.set("value", nextValue)
           context.set("inputValue", getInputValue(params))
         })
       },
