@@ -2,6 +2,7 @@
 import * as combobox from "@zag-js/combobox"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
 import { matchSorter } from "match-sorter"
 
 const controls = useControls(comboboxControls)
@@ -37,7 +38,9 @@ const api = computed(() => combobox.connect(service, normalizeProps))
     <div>
       <button @click="() => api.setValue(['TG'])">Set to Togo</button>
       <button data-testid="clear-value-button" @click="() => api.clearValue()">Clear Value</button>
-      <button v-bind="api.getClearTriggerProps()">Clear Trigger</button>
+      <button v-bind="api.getClearTriggerProps()">
+        <XIcon />
+      </button>
       <br />
 
       <div v-bind="api.getRootProps()">
