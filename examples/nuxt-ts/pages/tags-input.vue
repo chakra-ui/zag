@@ -9,15 +9,12 @@ function toDashCase(str: string) {
   return str.replace(/\s+/g, "-").toLowerCase()
 }
 
-const [state, send] = useMachine(
-  tagsInput.machine({
-    id: "1",
-    value: ["React", "Vue"],
-  }),
-  { context: controls.context },
-)
+const service = useMachine(tagsInput.machine, {
+  id: useId(),
+  defaultValue: ["React", "Vue"],
+})
 
-const api = computed(() => tagsInput.connect(state.value, send, normalizeProps))
+const api = computed(() => tagsInput.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -47,7 +44,7 @@ const api = computed(() => tagsInput.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

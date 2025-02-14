@@ -2,14 +2,12 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
-const [state, send] = useMachine(
-  menu.machine({
-    id: "v1",
-    onSelect: console.log,
-  }),
-)
+const service = useMachine(menu.machine, {
+  id: useId(),
+  onSelect: console.log,
+})
 
-const api = computed(() => menu.connect(state.value, send, normalizeProps))
+const api = computed(() => menu.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -28,6 +26,6 @@ const api = computed(() => menu.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
   </Toolbar>
 </template>

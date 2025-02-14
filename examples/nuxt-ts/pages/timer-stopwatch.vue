@@ -3,14 +3,12 @@ import * as timer from "@zag-js/timer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed } from "vue"
 
-const [state, send] = useMachine(
-  timer.machine({
-    id: "v1",
-    autoStart: true,
-  }),
-)
+const service = useMachine(timer.machine, {
+  id: useId(),
+  autoStart: true,
+})
 
-const api = computed(() => timer.connect(state.value, send, normalizeProps))
+const api = computed(() => timer.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -35,7 +33,7 @@ const api = computed(() => timer.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="null" />
     </template>

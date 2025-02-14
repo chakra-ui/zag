@@ -5,11 +5,9 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(angleSliderControls)
 
-const [state, send] = useMachine(angleSlider.machine({ id: "1" }), {
-  context: controls.context,
-})
+const service = useMachine(angleSlider.machine, { id: useId() })
 
-const api = computed(() => angleSlider.connect(state.value, send, normalizeProps))
+const api = computed(() => angleSlider.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -34,7 +32,7 @@ const api = computed(() => angleSlider.connect(state.value, send, normalizeProps
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -7,15 +7,12 @@ import { useId } from "vue"
 
 const controls = useControls(tourControls)
 
-const [state, send] = useMachine(
-  tour.machine({
-    id: useId(),
-    steps: tourData,
-  }),
-  { context: controls.context },
-)
+const service = useMachine(tour.machine, {
+  id: useId(),
+  steps: tourData,
+})
 
-const api = computed(() => tour.connect(state.value, send, normalizeProps))
+const api = computed(() => tour.connect(service, normalizeProps))
 const open = computed(() => api.value.open && api.value.step)
 </script>
 
@@ -74,7 +71,7 @@ const open = computed(() => api.value.open && api.value.step)
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" :omit="['steps']" />
+    <StateVisualizer :state="service" :omit="['steps']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

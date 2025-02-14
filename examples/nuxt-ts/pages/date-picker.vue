@@ -6,18 +6,13 @@ import { computed } from "vue"
 
 const controls = useControls(datePickerControls)
 
-const [state, send] = useMachine(
-  datePicker.machine({
-    id: "1",
-    locale: "en",
-    selectionMode: "single",
-  }),
-  {
-    context: controls.context,
-  },
-)
+const service = useMachine(datePicker.machine, {
+  id: "1",
+  locale: "en",
+  selectionMode: "single",
+})
 
-const api = computed(() => datePicker.connect(state.value, send, normalizeProps))
+const api = computed(() => datePicker.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -138,7 +133,7 @@ const api = computed(() => datePicker.connect(state.value, send, normalizeProps)
   </main>
 
   <Toolbar viz>
-    <StateVisualizer :state="state" :omit="['weeks']" />
+    <StateVisualizer :state="service" :omit="['weeks']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

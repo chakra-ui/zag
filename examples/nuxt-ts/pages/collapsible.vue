@@ -5,11 +5,11 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(collapsibleControls)
 
-const [state, send] = useMachine(collapsible.machine({ id: "1" }), {
-  context: controls.context,
+const service = useMachine(collapsible.machine, {
+  id: useId(),
 })
 
-const api = computed(() => collapsible.connect(state.value, send, normalizeProps))
+const api = computed(() => collapsible.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -29,7 +29,7 @@ const api = computed(() => collapsible.connect(state.value, send, normalizeProps
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" :state="controls.context" />
     </template>

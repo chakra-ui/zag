@@ -6,15 +6,12 @@ import serialize from "form-serialize"
 
 const controls = useControls(checkboxControls)
 
-const [state, send] = useMachine(
-  checkbox.machine({
-    name: "checkbox",
-    id: "v1",
-  }),
-  { context: controls.context },
-)
+const service = useMachine(checkbox.machine, {
+  name: "checkbox",
+  id: useId(),
+})
 
-const api = computed(() => checkbox.connect(state.value, send, normalizeProps))
+const api = computed(() => checkbox.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -43,7 +40,7 @@ const api = computed(() => checkbox.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

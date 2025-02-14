@@ -5,15 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(switchControls)
 
-const [state, send] = useMachine(
-  zagSwitch.machine({
-    name: "switch",
-    id: "1",
-  }),
-  { context: controls.context },
-)
+const service = useMachine(zagSwitch.machine, {
+  name: "switch",
+  id: useId(),
+})
 
-const api = computed(() => zagSwitch.connect(state.value, send, normalizeProps))
+const api = computed(() => zagSwitch.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -28,7 +25,7 @@ const api = computed(() => zagSwitch.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

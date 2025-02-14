@@ -6,17 +6,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(selectControls)
 
-const [state, send] = useMachine(
-  select.machine({
-    collection: select.collection({ items: selectData }),
-    id: "1",
-  }),
-  {
-    context: controls.context,
-  },
-)
+const service = useMachine(select.machine, {
+  collection: select.collection({ items: selectData }),
+  id: useId(),
+})
 
-const api = computed(() => select.connect(state.value, send, normalizeProps))
+const api = computed(() => select.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -56,7 +51,7 @@ const api = computed(() => select.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" :omit="['collection']" />
+    <StateVisualizer :state="service" :omit="['collection']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

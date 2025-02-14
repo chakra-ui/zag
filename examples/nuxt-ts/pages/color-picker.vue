@@ -6,17 +6,14 @@ import serialize from "form-serialize"
 
 const controls = useControls(colorPickerControls)
 
-const [state, send] = useMachine(
-  colorPicker.machine({
-    id: "1",
-    name: "color",
-    format: "hsla",
-    value: colorPicker.parse("hsl(0, 100%, 50%)"),
-  }),
-  { context: controls.context },
-)
+const service = useMachine(colorPicker.machine, {
+  id: useId(),
+  name: "color",
+  defaultFormat: "hsla",
+  defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+})
 
-const api = computed(() => colorPicker.connect(state.value, send, normalizeProps))
+const api = computed(() => colorPicker.connect(service, normalizeProps))
 
 const presets = ["#f47373", "#697689"]
 </script>
@@ -86,7 +83,7 @@ const presets = ["#f47373", "#697689"]
               <input v-bind="api.getChannelInputProps({ channel: 'alpha' })" />
             </div>
 
-            <div style="display: flex; gap: 10px; alignitems: center">
+            <div style="display: flex; gap: 10px; align-items: center">
               <div style="position: relative">
                 <div v-bind="api.getTransparencyGridProps({ size: '4px' })" />
                 <div v-bind="api.getSwatchProps({ value: api.value })" />
@@ -115,7 +112,7 @@ const presets = ["#f47373", "#697689"]
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

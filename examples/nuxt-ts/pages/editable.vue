@@ -5,11 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(editableControls)
 
-const [state, send] = useMachine(editable.machine({ id: "editable", value: "Hello World" }), {
-  context: controls.context,
+const service = useMachine(editable.machine, {
+  id: useId(),
+  defaultValue: "Hello World",
 })
 
-const api = computed(() => editable.connect(state.value, send, normalizeProps))
+const api = computed(() => editable.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -31,7 +32,7 @@ const api = computed(() => editable.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

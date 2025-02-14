@@ -5,9 +5,11 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(timePickerControls)
 
-const [state, send] = useMachine(timePicker.machine({ id: "1" }))
+const service = useMachine(timePicker.machine, {
+  id: useId(),
+})
 
-const api = computed(() => timePicker.connect(state.value, send, normalizeProps))
+const api = computed(() => timePicker.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -48,7 +50,7 @@ const api = computed(() => timePicker.connect(state.value, send, normalizeProps)
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -50,11 +50,12 @@ const collection = tree.collection<Node>({
   },
 })
 
-const [state, send] = useMachine(tree.machine({ id: "1", collection }), {
-  context: controls.context,
+const service = useMachine(tree.machine, {
+  id: useId(),
+  collection,
 })
 
-const api = computed(() => tree.connect(state.value, send, normalizeProps))
+const api = computed(() => tree.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -82,7 +83,7 @@ const api = computed(() => tree.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" :omit="['collection']" />
+    <StateVisualizer :state="service" :omit="['collection']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -6,16 +6,13 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(sliderControls)
 
-const [state, send] = useMachine(
-  slider.machine({
-    id: "1",
-    name: "quantity",
-    value: [0],
-  }),
-  { context: controls.context },
-)
+const service = useMachine(slider.machine, {
+  id: useId(),
+  name: "quantity",
+  defaultValue: [0],
+})
 
-const api = computed(() => slider.connect(state.value, send, normalizeProps))
+const api = computed(() => slider.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -54,7 +51,7 @@ const api = computed(() => slider.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

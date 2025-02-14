@@ -5,17 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(qrCodeControls)
 
-const [state, send] = useMachine(
-  qrCode.machine({
-    id: "1",
-    encoding: { ecc: "H" },
-  }),
-  {
-    context: controls.context,
-  },
-)
+const service = useMachine(qrCode.machine, {
+  id: useId(),
+  encoding: { ecc: "H" },
+})
 
-const api = computed(() => qrCode.connect(state.value, send, normalizeProps))
+const api = computed(() => qrCode.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -31,6 +26,6 @@ const api = computed(() => qrCode.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" :omit="['encoded']" />
+    <StateVisualizer :state="service" :omit="['encoded']" />
   </Toolbar>
 </template>

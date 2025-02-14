@@ -5,11 +5,11 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(hoverCardControls)
 
-const [state, send] = useMachine(hoverCard.machine({ id: "1" }), {
-  context: controls.context,
+const service = useMachine(hoverCard.machine, {
+  id: useId(),
 })
 
-const api = computed(() => hoverCard.connect(state.value, send, normalizeProps))
+const api = computed(() => hoverCard.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -34,7 +34,7 @@ const api = computed(() => hoverCard.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -6,20 +6,15 @@ import { computed } from "vue"
 
 const controls = useControls(datePickerControls)
 
-const [state, send] = useMachine(
-  datePicker.machine({
-    id: "1",
-    name: "date[]",
-    locale: "en",
-    numOfMonths: 2,
-    selectionMode: "range",
-  }),
-  {
-    context: controls.context,
-  },
-)
+const service = useMachine(datePicker.machine, {
+  id: useId(),
+  name: "date[]",
+  locale: "en",
+  numOfMonths: 2,
+  selectionMode: "range",
+})
 
-const api = computed(() => datePicker.connect(state.value, send, normalizeProps))
+const api = computed(() => datePicker.connect(service, normalizeProps))
 const offset = computed(() => api.value.getOffset({ months: 1 }))
 </script>
 
@@ -121,7 +116,7 @@ const offset = computed(() => api.value.getOffset({ months: 1 }))
   </main>
 
   <Toolbar viz>
-    <StateVisualizer :state="state" :omit="['weeks']" />
+    <StateVisualizer :state="service" :omit="['weeks']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

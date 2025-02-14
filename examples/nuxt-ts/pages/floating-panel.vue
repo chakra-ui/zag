@@ -5,11 +5,11 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(floatingPanelControls)
 
-const [state, send] = useMachine(floatingPanel.machine({ id: "1" }), {
-  context: controls.context,
+const service = useMachine(floatingPanel.machine, {
+  id: useId(),
 })
 
-const api = computed(() => floatingPanel.connect(state.value, send, normalizeProps))
+const api = computed(() => floatingPanel.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -55,7 +55,7 @@ const api = computed(() => floatingPanel.connect(state.value, send, normalizePro
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -9,8 +9,8 @@ const getRandomImage = () => images[Math.floor(Math.random() * images.length)]
 const src = ref(images[0])
 const showImage = ref(true)
 
-const [state, send] = useMachine(avatar.machine({ id: "1" }))
-const api = computed(() => avatar.connect(state.value, send, normalizeProps))
+const service = useMachine(avatar.machine, { id: useId() })
+const api = computed(() => avatar.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -28,6 +28,6 @@ const api = computed(() => avatar.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
   </Toolbar>
 </template>

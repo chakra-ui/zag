@@ -8,11 +8,11 @@ const setUrl = (v: string) => (url.value = v)
 
 const controls = useControls(signaturePadControls)
 
-const [state, send] = useMachine(signaturePad.machine({ id: "1" }), {
-  context: controls.context,
+const service = useMachine(signaturePad.machine, {
+  id: useId(),
 })
 
-const api = computed(() => signaturePad.connect(state.value, send, normalizeProps))
+const api = computed(() => signaturePad.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -46,7 +46,7 @@ const api = computed(() => signaturePad.connect(state.value, send, normalizeProp
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" :omit="['currentPoints', 'currentPath', 'paths']" />
+    <StateVisualizer :state="service" :omit="['currentPoints', 'currentPath', 'paths']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

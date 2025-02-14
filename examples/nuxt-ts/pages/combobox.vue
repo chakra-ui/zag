@@ -15,34 +15,28 @@ const collectionRef = computed(() =>
   }),
 )
 
-const [state, send] = useMachine(
-  combobox.machine({
-    id: "1",
-    collection: collectionRef.value,
-    onOpenChange() {
-      options.value = comboboxData
-    },
-    onInputValueChange({ inputValue }) {
-      const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
-      options.value = filtered.length > 0 ? filtered : comboboxData
-    },
-  }),
-  {
-    context: computed(() => ({
-      ...controls.context.value,
-      collection: collectionRef.value,
-    })),
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  get collection() {
+    return collectionRef.value
   },
-)
+  onOpenChange() {
+    options.value = comboboxData
+  },
+  onInputValueChange({ inputValue }) {
+    const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+    options.value = filtered.length > 0 ? filtered : comboboxData
+  },
+})
 
-const api = computed(() => combobox.connect(state.value, send, normalizeProps))
+const api = computed(() => combobox.connect(service, normalizeProps))
 </script>
 
 <template>
   <main class="combobox">
     <div>
       <button @click="() => api.setValue(['TG'])">Set to Togo</button>
-      <button data-testid="clear-value-button" @click="api.clearValue">Clear Value</button>
+      <button data-testid="clear-value-button" @click="() => api.clearValue()">Clear Value</button>
       <button v-bind="api.getClearTriggerProps()">Clear Trigger</button>
       <br />
 
@@ -66,7 +60,7 @@ const api = computed(() => combobox.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" :omit="['collection']" />
+    <StateVisualizer :state="service" :omit="['collection']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

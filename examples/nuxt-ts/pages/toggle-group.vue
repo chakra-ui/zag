@@ -5,10 +5,10 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(toggleGroupControls)
 
-const [state, send] = useMachine(toggle.machine({ id: "1" }), {
-  context: controls.context,
+const service = useMachine(toggle.machine, {
+  id: useId(),
 })
-const api = computed(() => toggle.connect(state.value, send, normalizeProps))
+const api = computed(() => toggle.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -22,6 +22,6 @@ const api = computed(() => toggle.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
   </Toolbar>
 </template>
