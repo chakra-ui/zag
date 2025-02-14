@@ -9,10 +9,13 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(qrCodeControls)
 
-  const service = useMachine(qrCode.machine, {
-    id: createUniqueId(),
-    encoding: { ecc: "H" },
-  })
+  const service = useMachine(
+    qrCode.machine,
+    controls.mergeProps<qrCode.Props>({
+      id: createUniqueId(),
+      encoding: { ecc: "H" },
+    }),
+  )
 
   const api = createMemo(() => qrCode.connect(service, normalizeProps))
 

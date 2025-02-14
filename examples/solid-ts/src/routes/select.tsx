@@ -11,10 +11,13 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(selectControls)
 
-  const service = useMachine(select.machine, {
-    collection: select.collection({ items: selectData }),
-    id: createUniqueId(),
-  })
+  const service = useMachine(
+    select.machine,
+    controls.mergeProps<select.Props>(() => ({
+      collection: select.collection({ items: selectData }),
+      id: createUniqueId(),
+    })),
+  )
 
   const api = createMemo(() => select.connect(service, normalizeProps))
 

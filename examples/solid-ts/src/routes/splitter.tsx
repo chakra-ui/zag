@@ -9,13 +9,16 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(splitterControls)
 
-  const service = useMachine(splitter.machine, {
-    id: createUniqueId(),
-    defaultSize: [
-      { id: "a", size: 50 },
-      { id: "b", size: 50 },
-    ],
-  })
+  const service = useMachine(
+    splitter.machine,
+    controls.mergeProps<splitter.Props>({
+      id: createUniqueId(),
+      defaultSize: [
+        { id: "a", size: 50 },
+        { id: "b", size: 50 },
+      ],
+    }),
+  )
 
   const api = createMemo(() => splitter.connect(service, normalizeProps))
 

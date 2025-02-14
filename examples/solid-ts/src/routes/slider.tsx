@@ -10,10 +10,13 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(sliderControls)
 
-  const service = useMachine(slider.machine, {
-    id: createUniqueId(),
-    defaultValue: [0],
-  })
+  const service = useMachine(
+    slider.machine,
+    controls.mergeProps<slider.Props>({
+      id: createUniqueId(),
+      defaultValue: [0],
+    }),
+  )
 
   const api = createMemo(() => slider.connect(service, normalizeProps))
 

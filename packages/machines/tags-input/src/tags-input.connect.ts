@@ -141,7 +141,9 @@ export function connect<T extends PropTypes>(
           send({ type: "TYPE", value, key: evt.inputType })
         },
         onFocus() {
-          send({ type: "FOCUS" })
+          queueMicrotask(() => {
+            send({ type: "FOCUS" })
+          })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
@@ -256,7 +258,6 @@ export function connect<T extends PropTypes>(
         ...parts.itemInput.attrs,
         dir: prop("dir"),
         "aria-label": translations?.tagEdited?.(props.value),
-        "aria-hidden": true,
         disabled: disabled,
         id: dom.getItemInputId(scope, props),
         tabIndex: -1,
@@ -266,7 +267,9 @@ export function connect<T extends PropTypes>(
           send({ type: "TAG_INPUT_TYPE", value: event.currentTarget.value })
         },
         onBlur(event) {
-          send({ type: "TAG_INPUT_BLUR", target: event.relatedTarget, id: itemState.id })
+          queueMicrotask(() => {
+            send({ type: "TAG_INPUT_BLUR", target: event.relatedTarget, id: itemState.id })
+          })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return

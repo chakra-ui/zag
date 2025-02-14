@@ -9,10 +9,13 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(tabsControls)
 
-  const service = useMachine(tabs.machine, {
-    id: createUniqueId(),
-    defaultValue: "nils",
-  })
+  const service = useMachine(
+    tabs.machine,
+    controls.mergeProps<tabs.Props>({
+      id: createUniqueId(),
+      defaultValue: "nils",
+    }),
+  )
 
   const api = createMemo(() => tabs.connect(service, normalizeProps))
 

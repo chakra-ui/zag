@@ -39,10 +39,13 @@ function Star() {
 export default function Page() {
   const controls = useControls(ratingControls)
 
-  const service = useMachine(rating.machine, {
-    id: createUniqueId(),
-    defaultValue: 2.5,
-  })
+  const service = useMachine(
+    rating.machine,
+    controls.mergeProps<rating.Props>({
+      id: createUniqueId(),
+      defaultValue: 2.5,
+    }),
+  )
 
   const api = createMemo(() => rating.connect(service, normalizeProps))
 

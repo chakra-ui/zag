@@ -59,9 +59,9 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls}>
-        <StateVisualizer state={service} />
-      </Toolbar>
+      {/* <Toolbar viz controls={controls}>
+        <StateVisualizer state={service} context={["value"]} />
+      </Toolbar> */}
     </>
   )
 }

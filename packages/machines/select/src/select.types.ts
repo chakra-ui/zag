@@ -103,7 +103,7 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
   /**
    * The positioning options of the menu.
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
    * The keys of the selected items
    */

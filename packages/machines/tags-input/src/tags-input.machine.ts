@@ -18,6 +18,7 @@ export const machine = createMachine<TagsInputSchema>({
       validate: () => true,
       delimiter: ",",
       defaultValue: [],
+      defaultInputValue: "",
       max: Infinity,
       ...props,
       translations: {
@@ -55,7 +56,7 @@ export const machine = createMachine<TagsInputSchema>({
         },
       })),
       inputValue: bindable(() => ({
-        defaultValue: "",
+        defaultValue: prop("defaultInputValue"),
         value: prop("inputValue"),
         onChange(value) {
           prop("onInputValueChange")?.({ inputValue: value })

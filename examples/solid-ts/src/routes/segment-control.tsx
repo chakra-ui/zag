@@ -9,11 +9,14 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(radioControls)
 
-  const service = useMachine(radio.machine, {
-    id: createUniqueId(),
-    name: "fruit",
-    orientation: "horizontal",
-  })
+  const service = useMachine(
+    radio.machine,
+    controls.mergeProps<radio.Props>({
+      id: createUniqueId(),
+      name: "fruit",
+      orientation: "horizontal",
+    }),
+  )
 
   const api = createMemo(() => radio.connect(service, normalizeProps))
 

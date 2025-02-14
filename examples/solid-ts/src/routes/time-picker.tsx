@@ -14,9 +14,12 @@ function Wrapper(props: ParentProps) {
 export default function Page() {
   const controls = useControls(timePickerControls)
 
-  const service = useMachine(timePicker.machine, {
-    id: createUniqueId(),
-  })
+  const service = useMachine(
+    timePicker.machine,
+    controls.mergeProps<timePicker.Props>({
+      id: createUniqueId(),
+    }),
+  )
 
   const api = createMemo(() => timePicker.connect(service, normalizeProps))
 

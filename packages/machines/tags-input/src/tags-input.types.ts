@@ -114,15 +114,19 @@ export interface TagsInputProps extends DirectionProperty, CommonProperties, Int
   /**
    * The tag input's value
    */
-  inputValue: string
+  inputValue?: string | undefined
+  /**
+   * The default tag input value
+   */
+  defaultInputValue?: string | undefined
   /**
    * The tag values
    */
-  value: string[]
+  value?: string[] | undefined
   /**
    * The default tag values
    */
-  defaultValue: string[]
+  defaultValue?: string[] | undefined
   /**
    * Callback fired when the tag values is updated
    */
@@ -159,7 +163,7 @@ export interface TagsInputProps extends DirectionProperty, CommonProperties, Int
    * The max number of tags
    * @default Infinity
    */
-  max: number
+  max?: number | undefined
   /**
    * Whether to allow tags to exceed max. In this case,
    * we'll attach `data-invalid` to the root

@@ -71,7 +71,7 @@ export interface TimePickerProps extends DirectionProperty, CommonProperties {
   /**
    * The user provided options used to position the time picker content
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
    * The placeholder text of the input.
    */

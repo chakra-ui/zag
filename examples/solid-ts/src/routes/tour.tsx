@@ -11,10 +11,13 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(tourControls)
 
-  const service = useMachine(tour.machine, {
-    id: createUniqueId(),
-    steps: tourData,
-  })
+  const service = useMachine(
+    tour.machine,
+    controls.mergeProps<tour.Props>({
+      id: createUniqueId(),
+      steps: tourData,
+    }),
+  )
 
   const api = createMemo(() => tour.connect(service, normalizeProps))
 

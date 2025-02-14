@@ -12,12 +12,15 @@ export default function Page() {
 
   const controls = useControls(signaturePadControls)
 
-  const service = useMachine(signaturePad.machine, {
-    id: createUniqueId(),
-    onDrawEnd(details) {
-      details.getDataUrl("image/png").then(setUrl)
-    },
-  })
+  const service = useMachine(
+    signaturePad.machine,
+    controls.mergeProps<signaturePad.Props>({
+      id: createUniqueId(),
+      onDrawEnd(details) {
+        details.getDataUrl("image/png").then(setUrl)
+      },
+    }),
+  )
 
   const api = createMemo(() => signaturePad.connect(service, normalizeProps))
 

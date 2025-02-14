@@ -9,7 +9,7 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(numberInputControls)
 
-  const service = useMachine(numberInput.machine, { id: createUniqueId() })
+  const service = useMachine(numberInput.machine, controls.mergeProps({ id: createUniqueId() }))
 
   const api = createMemo(() => numberInput.connect(service, normalizeProps))
 
