@@ -8,17 +8,12 @@
 
   const controls = useControls(qrCodeControls)
 
-  const [snapshot, send] = useMachine(
-    qrCode.machine({
-      id: crypto.randomUUID(),
-      encoding: { ecc: "H" },
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(qrCode.machine, {
+    id: crypto.randomUUID(),
+    encoding: { ecc: "H" },
+  })
 
-  const api = $derived(qrCode.connect(snapshot, send, normalizeProps))
+  const api = $derived(qrCode.connect(service, normalizeProps))
 </script>
 
 <main class="qr-code">
@@ -33,5 +28,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} omit={["encoded"]} />
+  <StateVisualizer state={service} omit={["encoded"]} />
 </Toolbar>

@@ -9,11 +9,11 @@
 
   const controls = useControls(timePickerControls)
 
-  const [state, send] = useMachine(timePicker.machine({ id: "1" }), {
-    context: controls.context,
+  const service = useMachine(timePicker.machine, {
+    id: "1",
   })
 
-  const api = $derived(timePicker.connect(state, send, normalizeProps))
+  const api = $derived(timePicker.connect(service, normalizeProps))
 </script>
 
 <main class="time-picker">
@@ -51,5 +51,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer {state} />
+  <StateVisualizer state={service} />
 </Toolbar>

@@ -8,11 +8,11 @@
 
   const controls = useControls(toggleGroupControls)
 
-  const [snapshot, send] = useMachine(toggle.machine({ id: "1" }), {
-    context: controls.context,
+  const service = useMachine(toggle.machine, {
+    id: "1",
   })
 
-  const api = $derived(toggle.connect(snapshot, send, normalizeProps))
+  const api = $derived(toggle.connect(service, normalizeProps))
 </script>
 
 <main class="toggle-group">
@@ -27,5 +27,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

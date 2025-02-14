@@ -11,11 +11,9 @@
   let order = $state("")
   let type = $state<string[]>([])
 
-  const [snapshot, send] = useMachine(menu.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const service = useMachine(menu.machine, { id: "1" })
 
-  const api = $derived(menu.connect(snapshot, send, normalizeProps))
+  const api = $derived(menu.connect(service, normalizeProps))
 
   const radios = $derived(
     menuOptionData.order.map((item) => ({
@@ -71,5 +69,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

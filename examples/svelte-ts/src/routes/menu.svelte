@@ -8,11 +8,9 @@
 
   const controls = useControls(menuControls)
 
-  const [snapshot, send] = useMachine(menu.machine({ id: "1", onSelect: console.log }), {
-    context: controls.context,
-  })
+  const service = useMachine(menu.machine, { id: "1", onSelect: console.log })
 
-  const api = $derived(menu.connect(snapshot, send, normalizeProps))
+  const api = $derived(menu.connect(service, normalizeProps))
 </script>
 
 <main>
@@ -32,5 +30,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

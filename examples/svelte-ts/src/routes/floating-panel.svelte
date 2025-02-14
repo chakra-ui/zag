@@ -9,11 +9,9 @@
 
   const controls = useControls(floatingPanelControls)
 
-  const [snapshot, send] = useMachine(floatingPanel.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const service = useMachine(floatingPanel.machine, { id: "1" })
 
-  const api = $derived(floatingPanel.connect(snapshot, send, normalizeProps))
+  const api = $derived(floatingPanel.connect(service, normalizeProps))
 </script>
 
 <main class="floating-panel">
@@ -58,5 +56,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

@@ -8,11 +8,9 @@
 
   const controls = useControls(numberInputControls)
 
-  const [snapshot, send] = useMachine(numberInput.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const service = useMachine(numberInput.machine, { id: "1" })
 
-  const api = $derived(numberInput.connect(snapshot, send, normalizeProps))
+  const api = $derived(numberInput.connect(service, normalizeProps))
 </script>
 
 <main>
@@ -29,5 +27,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} omit={["formatter", "parser"]} />
+  <StateVisualizer state={service} omit={["formatter", "parser"]} />
 </Toolbar>

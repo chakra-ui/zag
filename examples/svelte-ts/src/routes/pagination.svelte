@@ -9,20 +9,15 @@
   const controls = useControls(paginationControls)
   let details = $state<any>({})
 
-  const [snapshot, send] = useMachine(
-    pagination.machine({
-      id: "1",
-      count: paginationData.length,
-      onPageChange(v) {
-        details = v
-      },
-    }),
-    {
-      context: controls.context,
+  const service = useMachine(pagination.machine, {
+    id: "1",
+    count: paginationData.length,
+    onPageChange(v) {
+      details = v
     },
-  )
+  })
 
-  const api = $derived(pagination.connect(snapshot, send, normalizeProps))
+  const api = $derived(pagination.connect(service, normalizeProps))
 
   const data = $derived(api.slice(paginationData))
 </script>
@@ -82,5 +77,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

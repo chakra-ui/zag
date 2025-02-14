@@ -8,17 +8,12 @@
 
   const controls = useControls(tabsControls)
 
-  const [snapshot, send] = useMachine(
-    tabs.machine({
-      id: "1",
-      value: "nils",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(tabs.machine, {
+    id: "1",
+    defaultValue: "nils",
+  })
 
-  const api = $derived(tabs.connect(snapshot, send, normalizeProps))
+  const api = $derived(tabs.connect(service, normalizeProps))
 </script>
 
 <main class="tabs">
@@ -44,5 +39,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

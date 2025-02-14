@@ -8,18 +8,13 @@
 
   const controls = useControls(datePickerControls)
 
-  const [snapshot, send] = useMachine(
-    datePicker.machine({
-      id: "1",
-      locale: "en",
-      selectionMode: "single",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(datePicker.machine, {
+    id: "1",
+    locale: "en",
+    selectionMode: "single",
+  })
 
-  const api = $derived(datePicker.connect(snapshot, send, normalizeProps))
+  const api = $derived(datePicker.connect(service, normalizeProps))
 </script>
 
 <main class="date-picker">
@@ -136,5 +131,5 @@
 </main>
 
 <Toolbar viz {controls}>
-  <StateVisualizer state={snapshot} omit={["weeks"]} />
+  <StateVisualizer state={service} omit={["weeks"]} />
 </Toolbar>

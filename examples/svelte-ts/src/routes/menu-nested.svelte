@@ -6,23 +6,23 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import { onMount } from "svelte"
 
-  const [snapshot, send, machine] = useMachine(menu.machine({ id: "1" }))
-  const root = $derived(menu.connect(snapshot, send, normalizeProps))
+  const service = useMachine(menu.machine, { id: "1" })
+  const root = $derived(menu.connect(service, normalizeProps))
 
-  const [subSnapshot, subSend, subMachine] = useMachine(menu.machine({ id: "2" }))
-  const sub = $derived(menu.connect(subSnapshot, subSend, normalizeProps))
+  const service2 = useMachine(menu.machine, { id: "2" })
+  const sub = $derived(menu.connect(service2, normalizeProps))
 
-  const [sub2Snapshot, sub2Send, sub2Machine] = useMachine(menu.machine({ id: "3" }))
-  const sub2 = $derived(menu.connect(sub2Snapshot, sub2Send, normalizeProps))
+  const service3 = useMachine(menu.machine, { id: "3" })
+  const sub2 = $derived(menu.connect(service3, normalizeProps))
 
   onMount(() => {
-    root.setChild(subMachine)
-    sub.setParent(machine)
+    root.setChild(service2)
+    sub.setParent(service)
   })
 
   onMount(() => {
-    sub.setChild(sub2Machine)
-    sub2.setParent(subMachine)
+    sub.setChild(service3)
+    sub2.setParent(service2)
   })
 
   const triggerItemProps = $derived(root.getTriggerItemProps(sub))
@@ -69,8 +69,8 @@
   </div>
 </main>
 
-<Toolbar controls={null}>
-  <StateVisualizer state={snapshot} label="Root Machine" />
-  <StateVisualizer state={subSnapshot} label="Sub Machine" />
-  <StateVisualizer state={sub2Snapshot} label="Sub2 Machine" />
+<Toolbar>
+  <StateVisualizer state={service} label="Root Machine" />
+  <StateVisualizer state={service2} label="Sub Machine" />
+  <StateVisualizer state={service3} label="Sub2 Machine" />
 </Toolbar>

@@ -2309,6 +2309,9 @@ importers:
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
     devDependencies:
       '@sveltejs/package':
         specifier: 2.3.7

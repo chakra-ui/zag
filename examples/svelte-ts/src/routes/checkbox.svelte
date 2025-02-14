@@ -9,11 +9,9 @@
 
   const controls = useControls(checkboxControls)
 
-  const [snapshot, send] = useMachine(checkbox.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const service = useMachine(checkbox.machine, { id: "1" })
 
-  const api = $derived(checkbox.connect(snapshot, send, normalizeProps))
+  const api = $derived(checkbox.connect(service, normalizeProps))
 </script>
 
 <main class="checkbox">
@@ -39,5 +37,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

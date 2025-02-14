@@ -6,11 +6,12 @@
 
   const controls = useControls(editableControls)
 
-  const [snapshot, send] = useMachine(editable.machine({ id: "1", value: "Hello World" }), {
-    context: controls.context,
+  const service = useMachine(editable.machine, {
+    id: "1",
+    defaultValue: "Hello World",
   })
 
-  const api = $derived(editable.connect(snapshot, send, normalizeProps))
+  const api = $derived(editable.connect(service, normalizeProps))
 </script>
 
 <main class="editable">

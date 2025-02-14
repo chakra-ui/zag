@@ -1,6 +1,6 @@
 import type { EventObject, Service } from "@zag-js/core"
 import type { FileError, FileMimeType } from "@zag-js/file-utils"
-import type { CommonProperties, LocaleProperties, PropTypes } from "@zag-js/types"
+import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -88,18 +88,18 @@ export interface FileUploadProps extends LocaleProperties, CommonProperties {
    *
    * @default Infinity
    */
-  maxFileSize: number
+  maxFileSize?: number | undefined
   /**
    * The minimum file size in bytes
    *
    * @default 0
    */
-  minFileSize: number
+  minFileSize?: number | undefined
   /**
    * The maximum number of files
    * @default 1
    */
-  maxFiles: number
+  maxFiles?: number | undefined
   /**
    * Whether to prevent the drop event on the document
    * @default true
@@ -135,6 +135,8 @@ export interface FileUploadProps extends LocaleProperties, CommonProperties {
   invalid?: boolean | undefined
 }
 
+type PropWithDefault = "minFileSize" | "maxFileSize" | "maxFiles" | "preventDocumentDrop" | "allowDrop"
+
 interface Context {
   /**
    * The rejected files
@@ -159,7 +161,7 @@ type Computed = {
 
 export interface FileUploadSchema {
   state: "idle" | "focused" | "dragging"
-  props: FileUploadProps
+  props: RequiredBy<FileUploadProps, PropWithDefault>
   context: Context
   computed: Computed
   event: EventObject

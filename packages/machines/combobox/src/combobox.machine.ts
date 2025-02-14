@@ -155,7 +155,7 @@ export const machine = createMachine<ComboboxSchema>({
       actions: ["clearItem"],
     },
     "VALUE.SET": {
-      actions: ["setSelectedItems"],
+      actions: ["setValue"],
     },
     "INPUT_VALUE.SET": {
       actions: ["setInputValue"],
@@ -862,7 +862,7 @@ export const machine = createMachine<ComboboxSchema>({
         })
         context.set("inputValue", inputValue)
       },
-      setSelectedItems(params) {
+      setValue(params) {
         const { context, flush, event } = params
         flush(() => {
           context.set("value", event.value)

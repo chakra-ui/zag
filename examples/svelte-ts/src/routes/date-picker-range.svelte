@@ -8,20 +8,15 @@
 
   const controls = useControls(datePickerControls)
 
-  const [snapshot, send] = useMachine(
-    datePicker.machine({
-      id: "1",
-      name: "date[]",
-      locale: "en",
-      numOfMonths: 2,
-      selectionMode: "range",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(datePicker.machine, {
+    id: "1",
+    name: "date[]",
+    locale: "en",
+    numOfMonths: 2,
+    selectionMode: "range",
+  })
 
-  const api = $derived(datePicker.connect(snapshot, send, normalizeProps))
+  const api = $derived(datePicker.connect(service, normalizeProps))
   const offset = $derived(api.getOffset({ months: 1 }))
 </script>
 
@@ -134,5 +129,5 @@
 </main>
 
 <Toolbar viz {controls}>
-  <StateVisualizer state={snapshot} omit={["weeks"]} />
+  <StateVisualizer state={service} omit={["weeks"]} />
 </Toolbar>

@@ -12,24 +12,19 @@
   let url = $state("")
   const setUrl = (value: string) => (url = value)
 
-  const [snapshot, send] = useMachine(
-    signaturePad.machine({
-      id: "1",
-      onDrawEnd(details) {
-        details.getDataUrl("image/png").then(setUrl)
-      },
-      drawing: {
-        fill: "red",
-        size: 4,
-        simulatePressure: true,
-      },
-    }),
-    {
-      context: controls.context,
+  const service = useMachine(signaturePad.machine, {
+    id: "1",
+    onDrawEnd(details) {
+      details.getDataUrl("image/png").then(setUrl)
     },
-  )
+    drawing: {
+      fill: "red",
+      size: 4,
+      simulatePressure: true,
+    },
+  })
 
-  const api = $derived(signaturePad.connect(snapshot, send, normalizeProps))
+  const api = $derived(signaturePad.connect(service, normalizeProps))
 </script>
 
 <main class="signature-pad">
@@ -69,5 +64,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} omit={["currentPoints", "currentPath", "paths"]} />
+  <StateVisualizer state={service} omit={["currentPoints", "currentPath", "paths"]} />
 </Toolbar>

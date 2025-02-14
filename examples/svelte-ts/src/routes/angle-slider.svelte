@@ -8,11 +8,9 @@
 
   const controls = useControls(angleSliderControls)
 
-  const [snapshot, send] = useMachine(angleSlider.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const service = useMachine(angleSlider.machine, { id: "1" })
 
-  const api = $derived(angleSlider.connect(snapshot, send, normalizeProps))
+  const api = $derived(angleSlider.connect(service, normalizeProps))
 </script>
 
 <main class="angle-slider">
@@ -34,5 +32,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

@@ -8,11 +8,9 @@
 
   const controls = useControls(progressControls)
 
-  const [snapshot, send] = useMachine(progress.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const service = useMachine(progress.machine, { id: "1" })
 
-  const api = $derived(progress.connect(snapshot, send, normalizeProps))
+  const api = $derived(progress.connect(service, normalizeProps))
 </script>
 
 <main class="progress">
@@ -39,5 +37,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

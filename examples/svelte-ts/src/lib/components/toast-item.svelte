@@ -1,5 +1,5 @@
-<script lang="ts">
-  import { normalizeProps, useActor } from "@zag-js/svelte"
+<!-- <script lang="ts">
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
   import { XIcon } from "lucide-svelte"
 
@@ -9,8 +9,8 @@
 
   const { actor }: Props = $props()
 
-  const [snapshot, send] = useActor(actor)
-  const api = $derived(toast.connect(snapshot, send, normalizeProps))
+  const service = useMachine(actor)
+  const api = $derived(toast.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>
@@ -22,4 +22,4 @@
     <XIcon />
   </button>
   <div {...api.getGhostAfterProps()}></div>
-</div>
+</div> -->

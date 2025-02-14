@@ -1,49 +1,47 @@
 import type {
   ActionsOrFn,
   BaseSchema,
-  Bindable,
-  GuardFn,
-  MachineConfig,
-  Service,
+  BindableContext,
   ChooseFn,
   ComputedFn,
   EffectsOrFn,
-  BindableContext,
+  GuardFn,
+  MachineConfig,
   Params,
+  Service,
 } from "@zag-js/core"
 import { createScope } from "@zag-js/core"
 import { isFunction, isString, toArray, warn } from "@zag-js/utils"
-import { type Accessor, createMemo, mergeProps, onCleanup, onMount } from "solid-js"
-import { createBindable } from "./bindable"
-import { createRefs } from "./refs"
-import { createTrack } from "./track"
+import { flushSync, onDestroy, onMount } from "svelte"
+import { reflect } from "./reflect"
+import { bindable } from "./bindable.svelte"
+import { useRefs } from "./refs.svelte"
+import { track } from "./track.svelte"
+
+function access<T>(userProps: T | (() => T)): T {
+  if (isFunction(userProps)) return userProps()
+  return userProps
+}
 
 export function useMachine<T extends BaseSchema>(
   machine: MachineConfig<T>,
-  userProps: Partial<T["props"]> | Accessor<Partial<T["props"]>> = {},
+  userProps: Partial<T["props"]> | (() => Partial<T["props"]>),
 ): Service<T> {
-  const scope = createMemo(() => {
+  const scope = $derived.by(() => {
     const { id, ids, getRootNode } = access(userProps) as any
     return createScope({ id, ids, getRootNode })
   })
 
-  const props = createMemo(
-    () =>
-      machine.props?.({
-        props: access(userProps),
-        scope: scope(),
-      }) ?? access(userProps),
-  )
-
-  const prop: any = createProp(props)
+  const props: any = $derived(machine.props?.({ props: access(userProps), scope }) ?? access(userProps))
+  const prop = useProp(reflect(() => props))
 
   const context: any = machine.context?.({
     prop,
-    bindable: createBindable,
-    scope: reflect(scope),
-    flush,
+    bindable: bindable,
+    scope: reflect(() => scope),
+    flush: flush,
     getContext() {
-      return ctx as any
+      return ctx
     },
     getComputed() {
       return computed as any
@@ -66,33 +64,35 @@ export function useMachine<T extends BaseSchema>(
     },
   }
 
-  const effects = { current: new Map<string, VoidFunction>() }
-  const transitionRef: any = { current: null }
+  let effects = new Map<string, VoidFunction>()
+  let transitionRef: any = { current: null }
 
-  const previousEventRef: any = { current: null }
-  const eventRef: any = { current: { type: "" } }
+  let previousEventRef: any = { current: null }
+  let eventRef: any = { current: { type: "" } }
   const currentEvent = () => eventRef.current
   const previousEvent = () => previousEventRef.current
 
-  const refs = createRefs(machine.refs?.({ prop, context: ctx }) ?? {})
+  const refs = useRefs(machine.refs?.({ prop, context: ctx }) ?? {})
 
   const getParams = (): Params<T> => ({
     state,
     context: ctx,
-    // @ts-ignore
-    event: mergeProps(eventRef.current, {
-      current: currentEvent,
-      previous: previousEvent,
-    }),
+    get event() {
+      return {
+        ...eventRef.current,
+        current: currentEvent,
+        previous: previousEvent,
+      }
+    },
     prop,
     send,
     action,
     guard,
-    track: createTrack,
+    track: track,
     refs,
     computed,
     flush,
-    scope: reflect(scope),
+    scope,
     choose,
   })
 
@@ -139,34 +139,33 @@ export function useMachine<T extends BaseSchema>(
     })
   }
 
-  const computed: ComputedFn<T> = (key: keyof T["computed"]) => {
+  const computed: ComputedFn<T> = (key) => {
     return (
       machine.computed?.[key]({
         context: ctx,
         event: eventRef.current,
         prop,
         refs,
-        scope: scope(),
-        computed: computed,
+        scope,
+        computed: computed as any,
       }) ?? ({} as any)
     )
   }
 
-  const state = createBindable(() => ({
+  const state = bindable(() => ({
     defaultValue: machine.initialState({ prop }),
     onChange(nextState, prevState) {
       // compute effects: exit -> transition -> enter
 
       // exit effects
       if (prevState) {
-        const exitEffects = effects.current.get(prevState)
+        const exitEffects = effects.get(prevState)
         exitEffects?.()
-        effects.current.delete(prevState)
+        effects.delete(prevState)
       }
 
       // exit actions
       if (prevState) {
-        // @ts-ignore
         action(machine.states[prevState]?.exit)
       }
 
@@ -174,19 +173,17 @@ export function useMachine<T extends BaseSchema>(
       action(transitionRef.current?.actions)
 
       // enter effect
-      // @ts-ignore
       const cleanup = effect(machine.states[nextState]?.effects)
-      if (cleanup) effects.current.set(nextState as string, cleanup)
+      if (cleanup) effects.set(nextState as string, cleanup)
 
       // root entry actions
       if (prevState === "__init__") {
         action(machine.entry)
         const cleanup = effect(machine.effects)
-        if (cleanup) effects.current.set("__init__", cleanup)
+        if (cleanup) effects.set("__init__", cleanup)
       }
 
       // enter actions
-      // @ts-ignore
       action(machine.states[nextState]?.entry)
     },
   }))
@@ -195,33 +192,23 @@ export function useMachine<T extends BaseSchema>(
     state.invoke(state.initial!, "__init__")
   })
 
-  onCleanup(() => {
-    const fns = effects.current
-    fns.forEach((fn) => fn?.())
-    effects.current = new Map()
+  onDestroy(() => {
+    effects.forEach((fn) => fn?.())
+    effects = new Map()
     // root exit actions
     action(machine.exit ?? [])
   })
-
-  const getCurrentState = () => {
-    if ("ref" in state) return state.ref.current
-    return (state as Bindable<string>).get()
-  }
 
   const send = (event: any) => {
     previousEventRef.current = eventRef.current
     eventRef.current = event
 
-    let currentState = getCurrentState()
+    let currentState = state.get()
 
-    const transitions =
-      // @ts-ignore
-      machine.states[currentState].on?.[event.type] ??
-      // @ts-ignore
-      machine.on?.[event.type]
+    // @ts-ignore
+    const transitions = machine.states[currentState].on?.[event.type] ?? machine.on?.[event.type]
 
     const transition = choose(transitions)
-
     if (!transition) return
 
     // save current transition
@@ -240,7 +227,8 @@ export function useMachine<T extends BaseSchema>(
 
   machine.watch?.(getParams())
 
-  const enhancedState = mergeProps(state, {
+  const enhancedState = {
+    ...state,
     hasTag(tag: T["tag"]) {
       const currentState = state.get()
       return !!machine.states[currentState as T["state"]]?.tags?.includes(tag)
@@ -249,43 +237,30 @@ export function useMachine<T extends BaseSchema>(
       const currentState = state.get()
       return values.includes(currentState)
     },
-  })
-
-  const event = mergeProps(eventRef.current, {
-    current: currentEvent,
-    previous: previousEvent,
-  })
+  }
 
   return {
     state: enhancedState,
     send,
     context: ctx,
     prop,
-    scope: reflect(scope),
+    scope,
     refs,
     computed,
-    event,
-  } as unknown as Service<T>
+    event: {
+      ...eventRef.current,
+      current: currentEvent,
+      previous: previousEvent,
+    },
+  } as Service<T>
+}
+
+function useProp<T>(value: T) {
+  return function get<K extends keyof T>(key: K): T[K] {
+    return value[key]
+  }
 }
 
 function flush(fn: VoidFunction) {
-  fn()
-}
-
-function access<T>(value: T | Accessor<T>) {
-  return isFunction(value) ? value() : value
-}
-
-function reflect<T extends object>(value: Accessor<T>) {
-  return new Proxy(value(), {
-    get(_, prop) {
-      return Reflect.get(value(), prop)
-    },
-  })
-}
-
-function createProp<T>(value: Accessor<T>) {
-  return function get<K extends keyof T>(key: K): T[K] {
-    return value()[key]
-  }
+  flushSync(() => fn())
 }

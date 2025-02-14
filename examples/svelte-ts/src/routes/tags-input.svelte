@@ -12,17 +12,12 @@
 
   const controls = useControls(tagsInputControls)
 
-  const [snapshot, send] = useMachine(
-    tagsInput.machine({
-      id: "1",
-      value: ["React", "Vue"],
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(tagsInput.machine, {
+    id: "1",
+    defaultValue: ["React", "Vue"],
+  })
 
-  const api = $derived(tagsInput.connect(snapshot, send, normalizeProps))
+  const api = $derived(tagsInput.connect(service, normalizeProps))
 </script>
 
 <main class="tags-input">
@@ -54,5 +49,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

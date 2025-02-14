@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import { useControls } from "$lib/use-controls.svelte"
   import { toastControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
@@ -74,4 +74,4 @@
 
 <Toolbar {controls} viz>
   <StateVisualizer state={snapshot} />
-</Toolbar>
+</Toolbar> -->

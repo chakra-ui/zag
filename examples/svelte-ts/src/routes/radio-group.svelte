@@ -9,11 +9,9 @@
 
   const controls = useControls(radioControls)
 
-  const [snapshot, send] = useMachine(radio.machine({ id: "1", name: "fruit" }), {
-    context: controls.context,
-  })
+  const service = useMachine(radio.machine, { id: "1", name: "fruit" })
 
-  const api = $derived(radio.connect(snapshot, send, normalizeProps))
+  const api = $derived(radio.connect(service, normalizeProps))
 </script>
 
 <main class="radio">
@@ -47,5 +45,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

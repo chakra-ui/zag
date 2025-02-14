@@ -72,7 +72,7 @@
     { path: "/file-upload", component: FileUpload },
     { path: "/floating-panel", component: FloatingPanel },
     { path: "/hover-card", component: HoverCard },
-    { path: "/nested-menu", component: NestedMenu },
+    { path: "/menu-nested", component: NestedMenu },
     { path: "/menu", component: Menu },
     { path: "/menu-options", component: MenuOptions },
     { path: "/number-input", component: NumberInput },

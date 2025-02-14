@@ -11,8 +11,8 @@
   let src = $state(images[0])
   let showImage = $state(true)
 
-  const [snapshot, send] = useMachine(avatar.machine({ id: "1" }))
-  const api = $derived(avatar.connect(snapshot, send, normalizeProps))
+  const service = useMachine(avatar.machine, { id: "1" })
+  const api = $derived(avatar.connect(service, normalizeProps))
 </script>
 
 <main class="avatar">
@@ -31,5 +31,5 @@
 </main>
 
 <Toolbar>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

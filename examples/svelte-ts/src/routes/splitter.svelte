@@ -8,20 +8,15 @@
 
   const controls = useControls(splitterControls)
 
-  const [snapshot, send] = useMachine(
-    splitter.machine({
-      id: "1",
-      size: [
-        { id: "a", size: 50 },
-        { id: "b", size: 50 },
-      ],
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(splitter.machine, {
+    id: "1",
+    defaultSize: [
+      { id: "a", size: 50 },
+      { id: "b", size: 50 },
+    ],
+  })
 
-  const api = $derived(splitter.connect(snapshot, send, normalizeProps))
+  const api = $derived(splitter.connect(service, normalizeProps))
 </script>
 
 <main class="splitter">
@@ -37,5 +32,5 @@
 </main>
 
 <Toolbar {controls} viz>
-  <StateVisualizer state={snapshot} omit={["previousPanels", "initialSize"]} />
+  <StateVisualizer state={service} omit={["previousPanels", "initialSize"]} />
 </Toolbar>
