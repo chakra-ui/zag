@@ -13,7 +13,7 @@ const api = computed(() => menu.connect(service, normalizeProps))
 <template>
   <main className="context-menu">
     <div v-bind="api.getContextTriggerProps()">Right Click here</div>
-    <Teleport to="body">
+    <Teleport to="#teleports"">
       <div v-bind="api.getPositionerProps()">
         <ul v-bind="api.getContentProps()">
           <li v-bind="api.getItemProps({ value: 'edit' })">Edit</li>

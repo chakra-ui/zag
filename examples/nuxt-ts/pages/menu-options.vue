@@ -42,7 +42,7 @@ const checkboxes = computed(() =>
   <main>
     <div>
       <button v-bind="api.getTriggerProps()">Actions <span v-bind="api.getIndicatorProps()">▾</span></button>
-      <Teleport to="body">
+      <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <div v-bind="api.getContentProps()">
             <div v-for="item in radios" :key="item.value" v-bind="api.getOptionItemProps(item)">

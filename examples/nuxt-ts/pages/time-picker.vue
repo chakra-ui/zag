@@ -21,7 +21,7 @@ const api = computed(() => timePicker.connect(service, normalizeProps))
         <button v-bind="api.getClearTriggerProps()">❌</button>
       </div>
 
-      <Teleport to="body">
+      <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <div v-bind="api.getContentProps()">
             <div v-bind="api.getColumnProps({ unit: 'hour' })">

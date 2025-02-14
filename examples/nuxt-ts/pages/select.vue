@@ -37,7 +37,7 @@ const api = computed(() => select.connect(service, normalizeProps))
           <option v-for="option in selectData" :key="option.value" :value="option.value">{{ option.label }}</option>
         </select>
       </form>
-      <Teleport to="body">
+      <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <ul v-bind="api.getContentProps()">
             <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">

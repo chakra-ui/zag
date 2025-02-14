@@ -17,7 +17,7 @@ const api = computed(() => hoverCard.connect(service, normalizeProps))
     <div style="display: flex; gap: 50px">
       <a href="https://twitter.com/zag_js" target="_blank" v-bind="api.getTriggerProps()"> Twitter </a>
 
-      <Teleport to="body" v-if="api.open">
+      <Teleport to="#teleports" v-if="api.open">
         <div v-bind="api.getPositionerProps()">
           <div v-bind="api.getContentProps()">
             <div v-bind="api.getArrowProps()">

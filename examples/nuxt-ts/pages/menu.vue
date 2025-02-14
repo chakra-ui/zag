@@ -17,7 +17,7 @@ const api = computed(() => menu.connect(service, normalizeProps))
   <main>
     <div>
       <button v-bind="api.getTriggerProps()">Actions <span v-bind="api.getIndicatorProps()">▾</span></button>
-      <Teleport to="body">
+      <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <ul v-bind="api.getContentProps()">
             <li v-bind="api.getItemProps({ value: 'edit' })">Edit</li>

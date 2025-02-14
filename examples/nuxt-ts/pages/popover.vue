@@ -20,7 +20,7 @@ const api = computed(() => popover.connect(service, normalizeProps))
         Click me
         <div v-bind="api.getIndicatorProps()">{{ ">" }}</div>
       </button>
-      <Teleport to="body" :disabled="!api.portalled">
+      <Teleport to="#teleports" :disabled="!api.portalled">
         <div v-bind="api.getPositionerProps()">
           <div data-testid="popover-content" class="popover-content" v-bind="api.getContentProps()">
             <div v-bind="api.getArrowProps()">

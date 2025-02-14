@@ -80,18 +80,24 @@ export function useMachine<T extends BaseSchema>(
 
   let previousEventRef: any = { current: null }
   let eventRef = { current: { type: "__init__" } }
-  const currentEvent = () => eventRef.current
-  const previousEvent = () => previousEventRef.current
+
+  const getEvent = () => ({
+    ...eventRef.current,
+    current() {
+      return eventRef.current
+    },
+    previous() {
+      return previousEventRef.current
+    },
+  })
 
   const refs = useRefs(machine.refs?.({ prop, context: ctx }) ?? {})
 
   const getParams = (): any => ({
     state,
     context: ctx,
-    event: {
-      ...eventRef,
-      current: currentEvent,
-      previous: previousEvent,
+    get event() {
+      return getEvent()
     },
     prop,
     send,
@@ -150,7 +156,9 @@ export function useMachine<T extends BaseSchema>(
     return (
       machine.computed?.[key]({
         context: ctx as any,
-        event: eventRef.current,
+        get event() {
+          return getEvent()
+        },
         prop,
         refs,
         get scope() {
@@ -216,8 +224,8 @@ export function useMachine<T extends BaseSchema>(
   }
 
   const send = (event: any) => {
-    previousEventRef = eventRef
-    eventRef = event
+    previousEventRef.current = eventRef.current
+    eventRef.current = event
 
     let currentState = getCurrentState()
 
@@ -263,10 +271,8 @@ export function useMachine<T extends BaseSchema>(
     scope: scope.value,
     refs,
     computed,
-    event: {
-      ...eventRef,
-      current: currentEvent,
-      previous: previousEvent,
+    get event() {
+      return getEvent()
     },
   } as Service<T>
 }

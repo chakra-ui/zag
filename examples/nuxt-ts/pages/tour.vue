@@ -39,7 +39,7 @@ const open = computed(() => api.value.open && api.value.step)
       </div>
     </div>
 
-    <Teleport to="body" v-if="open">
+    <Teleport to="#teleports" v-if="open">
       <div v-if="api.step?.backdrop" v-bind="api.getBackdropProps()" />
       <div v-bind="api.getSpotlightProps()" />
       <div v-bind="api.getPositionerProps()">
