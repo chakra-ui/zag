@@ -2,7 +2,6 @@ import type { Service } from "@zag-js/core"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { PresenceApi, PresenceSchema } from "./presence.types"
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function connect<T extends PropTypes>(
   service: Service<PresenceSchema>,
   _normalize: NormalizeProps<T>,
