@@ -9,11 +9,12 @@ type SwitchProps = {
 }
 
 export function Switch(props: SwitchProps) {
-  const [state, send] = useMachine(zagSwitch.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(zagSwitch.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = zagSwitch.connect(state, send, normalizeProps)
+  const api = zagSwitch.connect(service, normalizeProps)
 
   return (
     <div>

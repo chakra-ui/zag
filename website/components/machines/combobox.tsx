@@ -70,25 +70,25 @@ export function Combobox(props: ComboboxProps) {
     [options],
   )
 
-  const [state, send] = useMachine(
-    combobox.machine({
-      id: useId(),
-      collection,
-      onOpenChange() {
-        setOptions(comboboxData)
-      },
-      onInputValueChange({ inputValue }) {
-        const filtered = comboboxData.filter((item) =>
-          item.label.toLowerCase().includes(inputValue.toLowerCase()),
-        )
-        setOptions(filtered.length > 0 ? filtered : comboboxData)
-      },
-      placeholder: "Type or select country",
-    }),
-    { context: { ...props.controls, collection } },
-  )
+  const service = useMachine(combobox.machine, {
+    id: useId(),
+    collection,
+    onOpenChange() {
+      setOptions(comboboxData)
+    },
+    onInputValueChange({ inputValue }) {
+      const filtered = comboboxData.filter((item) =>
+        item.label.toLowerCase().includes(inputValue.toLowerCase()),
+      )
+      setOptions(filtered.length > 0 ? filtered : comboboxData)
+    },
+    placeholder: "Type or select country",
+    ...props.controls,
+  })
 
-  const api = combobox.connect(state, send, normalizeProps)
+  // { context: { ...props.controls, collection } },
+
+  const api = combobox.connect(service, normalizeProps)
 
   return (
     <div>

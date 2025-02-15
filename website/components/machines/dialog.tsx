@@ -4,11 +4,12 @@ import { HiX } from "react-icons/hi"
 import { useId } from "react"
 
 export function Dialog(props: { controls: any }) {
-  const [state, send] = useMachine(dialog.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(dialog.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = dialog.connect(state, send, normalizeProps)
+  const api = dialog.connect(service, normalizeProps)
 
   return (
     <>

@@ -8,7 +8,10 @@ import { NumberInput } from "./machines/number-input"
 import { Playground } from "./playground"
 
 export function MultiframeworkTabs() {
-  const [state, send] = useMachine(tabs.machine({ id: "m2", value: "react" }))
+  const service = useMachine(tabs.machine, {
+    id: "m2",
+    defaultValue: "react",
+  })
 
   const FrameworkButton = chakra("button", {
     baseStyle: {
@@ -29,7 +32,7 @@ export function MultiframeworkTabs() {
     },
   })
 
-  const api = tabs.connect(state, send, normalizeProps)
+  const api = tabs.connect(service, normalizeProps)
   return (
     <Box {...api.getRootProps()}>
       <HStack {...api.getListProps()}>

@@ -42,18 +42,14 @@ type RadioProps = {
 }
 
 export function Rating(props: RadioProps) {
-  const [state, send] = useMachine(
-    rating.machine({
-      id: useId(),
-      name: "service",
-      value: 2.5,
-    }),
-    {
-      context: props.controls,
-    },
-  )
+  const service = useMachine(rating.machine, {
+    id: useId(),
+    name: "service",
+    value: 2.5,
+    ...props.controls,
+  })
 
-  const api = rating.connect(state, send, normalizeProps)
+  const api = rating.connect(service, normalizeProps)
 
   return (
     <div>

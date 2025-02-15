@@ -3,16 +3,14 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
 export function RangeSlider(props: any) {
-  const [state, send] = useMachine(
-    slider.machine({
-      id: useId(),
-      name: "quantity",
-      value: [10, 60],
-    }),
-    { context: props.controls },
-  )
+  const service = useMachine(slider.machine, {
+    id: useId(),
+    name: "quantity",
+    defaultValue: [10, 60],
+    ...props.controls,
+  })
 
-  const api = slider.connect(state, send, normalizeProps)
+  const api = slider.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

@@ -11,15 +11,13 @@ const stepsData = [
 export function Steps(props: any) {
   const context = props.controls
 
-  const [state, send] = useMachine(
-    steps.machine({
-      id: useId(),
-      count: stepsData.length,
-    }),
-    { context },
-  )
+  const service = useMachine(steps.machine, {
+    id: useId(),
+    count: stepsData.length,
+    ...props.controls,
+  })
 
-  const api = steps.connect(state, send, normalizeProps)
+  const api = steps.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

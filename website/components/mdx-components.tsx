@@ -199,14 +199,12 @@ const components: Record<string, FC<any>> = {
       return str === props.id
     })
 
-    const [state, send] = useMachine(
-      tabs.machine({
-        id: props.id,
-        value: userFramework ?? "react",
-      }),
-    )
+    const service = useMachine(tabs.machine, {
+      id: props.id,
+      defaultValue: userFramework ?? "react",
+    })
 
-    const api = tabs.connect(state, send, normalizeProps)
+    const api = tabs.connect(service, normalizeProps)
 
     return (
       <Box

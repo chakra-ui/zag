@@ -33,17 +33,13 @@ const EyeDropIcon = () => (
 )
 
 export function ColorPicker(props: Props) {
-  const [state, send] = useMachine(
-    colorPicker.machine({
-      id: useId(),
-      value: colorPicker.parse("#38a169"),
-    }),
-    {
-      context: props.controls,
-    },
-  )
+  const service = useMachine(colorPicker.machine, {
+    id: useId(),
+    defaultValue: colorPicker.parse("#38a169"),
+    ...props.controls,
+  })
 
-  const api = colorPicker.connect(state, send, normalizeProps)
+  const api = colorPicker.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

@@ -5,8 +5,12 @@ import { useId } from "react"
 export function Avatar(props: { controls: { src: string; name: string } }) {
   const { src, name } = props.controls
 
-  const [state, send] = useMachine(avatar.machine({ id: useId() }))
-  const api = avatar.connect(state, send, normalizeProps)
+  const service = useMachine(avatar.machine, {
+    id: useId(),
+    ...props.controls,
+  })
+
+  const api = avatar.connect(service, normalizeProps)
 
   const initial = name
     .split(" ")

@@ -10,18 +10,13 @@ type PaginationProps = {
 }
 
 export function Pagination(props: PaginationProps) {
-  const [state, send] = useMachine(
-    pagination.machine({
-      id: useId(),
-      count: 1000,
-    }),
+  const service = useMachine(pagination.machine, {
+    id: useId(),
+    count: 1000,
+    ...props.controls,
+  })
 
-    {
-      context: props.controls,
-    },
-  )
-
-  const api = pagination.connect(state, send, normalizeProps)
+  const api = pagination.connect(service, normalizeProps)
 
   return (
     <>

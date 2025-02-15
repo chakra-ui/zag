@@ -3,11 +3,12 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
 export function Editable(props: any) {
-  const [state, send] = useMachine(editable.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(editable.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = editable.connect(state, send, normalizeProps)
+  const api = editable.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

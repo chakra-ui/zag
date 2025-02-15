@@ -3,19 +3,16 @@ import * as splitter from "@zag-js/splitter"
 import { useId } from "react"
 
 export function Splitter(props: any) {
-  const context = props.controls
-  const [state, send] = useMachine(
-    splitter.machine({
-      id: useId(),
-      size: [
-        { id: "a", size: 50 },
-        { id: "b", size: 50 },
-      ],
-    }),
-    { context },
-  )
+  const service = useMachine(splitter.machine, {
+    id: useId(),
+    defaultSize: [
+      { id: "a", size: 50 },
+      { id: "b", size: 50 },
+    ],
+    ...props.controls,
+  })
 
-  const api = splitter.connect(state, send, normalizeProps)
+  const api = splitter.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

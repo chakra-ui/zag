@@ -4,11 +4,12 @@ import { useId } from "react"
 import { HiX } from "react-icons/hi"
 
 export function FileUpload(props: { controls: any }) {
-  const [state, send] = useMachine(fileUpload.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(fileUpload.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = fileUpload.connect(state, send, normalizeProps)
+  const api = fileUpload.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

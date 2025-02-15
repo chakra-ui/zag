@@ -10,11 +10,12 @@ type CollapsibleProps = {
 }
 
 export function Collapsible(props: CollapsibleProps) {
-  const [state, send] = useMachine(collapsible.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(collapsible.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = collapsible.connect(state, send, normalizeProps)
+  const api = collapsible.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

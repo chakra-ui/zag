@@ -9,11 +9,12 @@ type TimePickerProps = {
 }
 
 export function TimePicker(props: TimePickerProps) {
-  const [state, send] = useMachine(timePicker.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(timePicker.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = timePicker.connect(state, send, normalizeProps)
+  const api = timePicker.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

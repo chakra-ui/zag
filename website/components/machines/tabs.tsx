@@ -9,14 +9,13 @@ const data = [
 ]
 
 export function Tabs(props: any) {
-  const [state, send] = useMachine(
-    tabs.machine({ id: useId(), value: "item-1" }),
-    {
-      context: props.controls,
-    },
-  )
+  const service = useMachine(tabs.machine, {
+    id: useId(),
+    defaultValue: "item-1",
+    ...props.controls,
+  })
 
-  const api = tabs.connect(state, send, normalizeProps)
+  const api = tabs.connect(service, normalizeProps)
 
   return (
     <div className="tabs">

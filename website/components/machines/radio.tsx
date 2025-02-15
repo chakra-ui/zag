@@ -16,14 +16,13 @@ type RadioProps = {
 }
 
 export function Radio(props: RadioProps) {
-  const [state, send] = useMachine(
-    radio.machine({ id: useId(), name: "fruits" }),
-    {
-      context: props.controls,
-    },
-  )
+  const service = useMachine(radio.machine, {
+    id: useId(),
+    ...props.controls,
+    name: "fruits",
+  })
 
-  const api = radio.connect(state, send, normalizeProps)
+  const api = radio.connect(service, normalizeProps)
 
   return (
     <div className="radio">

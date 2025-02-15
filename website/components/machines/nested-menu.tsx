@@ -17,23 +17,25 @@ const shareMenuData = [
 
 export function NestedMenu() {
   // Level 1 - File Menu
-  const [fileMenuState, fileMenuSend, fileMenuMachine] = useMachine(
-    menu.machine({ id: "1", "aria-label": "File" }),
-  )
+  const fileMenuService = useMachine(menu.machine, {
+    id: "1",
+    "aria-label": "File",
+  })
 
-  const fileMenu = menu.connect(fileMenuState, fileMenuSend, normalizeProps)
+  const fileMenu = menu.connect(fileMenuService, normalizeProps)
 
   // Level 2 - Share Menu
-  const [shareMenuState, shareMenuSend, shareMenuMachine] = useMachine(
-    menu.machine({ id: "2", "aria-label": "Share" }),
-  )
+  const shareMenuService = useMachine(menu.machine, {
+    id: "2",
+    "aria-label": "Share",
+  })
 
-  const shareMenu = menu.connect(shareMenuState, shareMenuSend, normalizeProps)
+  const shareMenu = menu.connect(shareMenuService, normalizeProps)
 
   useEffect(() => {
     setTimeout(() => {
-      fileMenu.setChild(shareMenuMachine)
-      shareMenu.setParent(fileMenuMachine)
+      fileMenu.setChild(shareMenuService)
+      shareMenu.setParent(fileMenuService)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
