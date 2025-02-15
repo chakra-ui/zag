@@ -1,4 +1,5 @@
 import { dataAttr } from "@zag-js/dom-query"
+import type { JSX } from "preact"
 import { ComponentChildren } from "preact"
 import { useState } from "preact/hooks"
 
