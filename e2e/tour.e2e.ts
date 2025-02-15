@@ -30,7 +30,7 @@ test.describe("tour", () => {
     await I.seeSpotlightAroundTarget()
   })
 
-  test.only("keyboard navigation", async () => {
+  test("keyboard navigation", async () => {
     await I.page.route("https://api.github.com/users/octocat", async (route) => {
       await route.fulfill({
         status: 200,
