@@ -79,7 +79,7 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "lucide-preact": "0.474.0",
+    "lucide-preact": "0.475.0",
     "match-sorter": "8.0.0",
     "preact": "10.25.4",
     "preact-iso": "2.9.0",
@@ -90,6 +90,6 @@
     "eslint": "9.13.0",
     "eslint-config-preact": "1.5.0",
     "typescript": "5.7.3",
-    "vite": "6.0.11"
+    "vite": "6.1.0"
   }
 }

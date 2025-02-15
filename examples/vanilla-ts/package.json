@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "typescript": "^5.7.3",
-    "vite": "^6.0.11"
+    "vite": "^6.1.0"
   },
   "dependencies": {
     "@internationalized/date": "3.7.0",
