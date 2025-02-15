@@ -23,6 +23,9 @@ export function getRangeOffsets(ctx: Ctx) {
 
       return { start, end }
     }
+    if (ctx.origin === "end") {
+      return { start: `${lastPercent}%`, end: "0%" }
+    }
 
     return { start: "0%", end: `${100 - lastPercent}%` }
   }
