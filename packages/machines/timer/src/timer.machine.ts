@@ -1,4 +1,5 @@
 import { createMachine } from "@zag-js/core"
+import { setRafInterval } from "@zag-js/utils"
 import type { Time, TimerSchema } from "./timer.types"
 
 export const machine = createMachine<TimerSchema>({
@@ -160,22 +161,4 @@ function formatTime(time: Time): Time<string> {
     seconds: padStart(seconds),
     milliseconds: time.milliseconds.toString(),
   }
-}
-
-function setRafInterval(callback: () => void, interval: number) {
-  let start = performance.now()
-  let handle: number
-
-  function loop(now: number) {
-    handle = requestAnimationFrame(loop)
-    const delta = now - start
-
-    if (delta >= interval) {
-      start = now - (delta % interval)
-      callback()
-    }
-  }
-
-  handle = requestAnimationFrame(loop)
-  return () => cancelAnimationFrame(handle)
 }
