@@ -18,13 +18,11 @@ interface UseSearchReturn {
 }
 
 export function useSearch(): UseSearchReturn {
-  const [dialog_state, dialog_send] = useMachine(
-    dialog.machine({
-      id: useId(),
-    }),
-  )
+  const dialog_service = useMachine(dialog.machine, {
+    id: useId(),
+  })
 
-  const dialog_api = dialog.connect(dialog_state, dialog_send, normalizeProps)
+  const dialog_api = dialog.connect(dialog_service, normalizeProps)
 
   const [results, setResults] = useState<SearchMetaResult>(searchData)
 
@@ -42,38 +40,26 @@ export function useSearch(): UseSearchReturn {
     [results],
   )
 
-  const [combobox_state, combobox_send] = useMachine(
-    combobox.machine({
-      id: useId(),
-      placeholder: "Search the docs",
-      inputBehavior: "autohighlight",
-      selectionBehavior: "clear",
-      collection,
-    }),
-    {
-      context: {
-        collection,
-        openOnChange({ inputValue }) {
-          return inputValue.length > 2
-        },
-        onValueChange() {
-          dialog_api.setOpen(false)
-        },
-        onInputValueChange({ inputValue }) {
-          if (inputValue.length < 3) return
-          const results = matchSorter(searchData, inputValue, {
-            keys: [
-              "hierarchy.lvl1",
-              "hierarchy.lvl2",
-              "hierarchy.lvl3",
-              "content",
-            ],
-          })
-          setResults(results.slice(0, 10))
-        },
-      },
+  const combobox_service = useMachine(combobox.machine, {
+    id: useId(),
+    placeholder: "Search the docs",
+    inputBehavior: "autohighlight",
+    selectionBehavior: "clear",
+    collection,
+    openOnChange({ inputValue }) {
+      return inputValue.length > 2
     },
-  )
+    onValueChange() {
+      dialog_api.setOpen(false)
+    },
+    onInputValueChange({ inputValue }) {
+      if (inputValue.length < 3) return
+      const results = matchSorter(searchData, inputValue, {
+        keys: ["hierarchy.lvl1", "hierarchy.lvl2", "hierarchy.lvl3", "content"],
+      })
+      setResults(results.slice(0, 10))
+    },
+  })
 
   useEffect(() => {
     const fn = (event: KeyboardEvent) => {
@@ -90,11 +76,7 @@ export function useSearch(): UseSearchReturn {
     }
   }, [dialog_api.setOpen, dialog_api.open])
 
-  const combobox_api = combobox.connect(
-    combobox_state,
-    combobox_send,
-    normalizeProps,
-  )
+  const combobox_api = combobox.connect(combobox_service, normalizeProps)
 
   const isInputEmpty = combobox_api.inputValue.trim() === ""
 
