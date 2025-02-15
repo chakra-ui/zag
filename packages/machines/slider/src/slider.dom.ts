@@ -38,8 +38,8 @@ export const getValueFromPoint = (params: Params<SliderSchema>, point: Point) =>
 }
 
 export const dispatchChangeEvent = (params: Params<SliderSchema>) => {
-  const { prop, scope } = params
-  const valueArray = Array.from(prop("value"))
+  const { context, scope } = params
+  const valueArray = Array.from(context.get("value"))
   valueArray.forEach((value, index) => {
     const inputEl = getHiddenInputEl(scope, index)
     if (!inputEl) return

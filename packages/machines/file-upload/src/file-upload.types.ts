@@ -135,7 +135,7 @@ export interface FileUploadProps extends LocaleProperties, CommonProperties {
   invalid?: boolean | undefined
 }
 
-type PropWithDefault = "minFileSize" | "maxFileSize" | "maxFiles" | "preventDocumentDrop" | "allowDrop"
+type PropWithDefault = "minFileSize" | "maxFileSize" | "maxFiles" | "preventDocumentDrop" | "allowDrop" | "translations"
 
 interface Context {
   /**

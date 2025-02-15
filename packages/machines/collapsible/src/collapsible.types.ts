@@ -15,11 +15,30 @@ export type ElementIds = Partial<{
   trigger: string
 }>
 
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
 export interface CollapsibleProps extends CommonProperties, DirectionProperty {
+  /**
+   * The ids of the elements in the collapsible. Useful for composition.
+   */
   ids?: ElementIds
+  /**
+   * Whether the collapsible is open.
+   */
   open?: boolean
+  /**
+   * The default open state of the collapsible.
+   */
   defaultOpen?: boolean
+  /**
+   * The callback invoked when the open state changes.
+   */
   onOpenChange?: (details: OpenChangeDetails) => void
+  /**
+   * The callback invoked when the exit animation completes.
+   */
   onExitComplete?: () => void
 }
 
@@ -61,11 +80,30 @@ export interface CollapsibleSchema {
 
 export type CollapsibleService = Service<CollapsibleSchema>
 
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
+
 export interface CollapsibleApi<T extends PropTypes = PropTypes> {
+  /**
+   * Whether the collapsible is open.
+   */
   open: boolean
+  /**
+   * Whether the collapsible is visible (open or closing)
+   */
   visible: boolean
+  /**
+   * Whether the collapsible is disabled
+   */
   disabled: boolean
+  /**
+   * Function to open or close the collapsible.
+   */
   setOpen(open: boolean): void
+  /**
+   * Function to measure the size of the content.
+   */
   measureSize(): void
 
   getRootProps(): T["element"]

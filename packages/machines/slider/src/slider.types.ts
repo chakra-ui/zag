@@ -1,5 +1,5 @@
 import type { EventObject, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -139,6 +139,8 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
   thumbSize?: { width: number; height: number } | undefined
 }
 
+type PropsWithDefault = "min" | "max" | "step" | "orientation" | "origin" | "thumbAlignment" | "minStepsBetweenThumbs"
+
 type Computed = Readonly<{
   /**
    * @computed
@@ -200,7 +202,7 @@ interface Context {
 
 export interface SliderSchema {
   state: "idle" | "dragging" | "focus"
-  props: SliderProps
+  props: RequiredBy<SliderProps, PropsWithDefault>
   context: Context
   computed: Computed
   event: EventObject

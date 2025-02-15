@@ -33,6 +33,7 @@ export const props = createProps<TagsInputProps>()([
   "validate",
   "value",
   "defaultValue",
+  "defaultInputValue",
 ])
 
 export const splitProps = createSplitProps<Partial<TagsInputProps>>(props)
