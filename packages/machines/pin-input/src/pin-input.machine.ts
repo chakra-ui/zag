@@ -26,6 +26,7 @@ export const machine = createMachine<PinInputSchema>({
   context({ prop, bindable }) {
     return {
       value: bindable(() => ({
+        sync: true,
         value: prop("value"),
         defaultValue: prop("defaultValue"),
         isEqual: isEqual,
@@ -34,6 +35,7 @@ export const machine = createMachine<PinInputSchema>({
         },
       })),
       focusedIndex: bindable(() => ({
+        sync: true,
         defaultValue: -1,
       })),
     }

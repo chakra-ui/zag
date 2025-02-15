@@ -3,7 +3,7 @@ import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { clickIfLink, observeAttributes, observeChildren, raf, scrollIntoView } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
-import { addOrRemove, isBoolean, match, remove } from "@zag-js/utils"
+import { addOrRemove, compact, isBoolean, match, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
 import * as dom from "./combobox.dom"
 import type { ComboboxSchema, Placement } from "./combobox.types"
@@ -11,25 +11,24 @@ import type { ComboboxSchema, Placement } from "./combobox.types"
 const { and, not } = createGuards<ComboboxSchema>()
 
 export const machine = createMachine<ComboboxSchema>({
+  debug: true,
   props({ props }) {
     return {
       loopFocus: true,
       openOnClick: false,
+      defaultValue: [],
       closeOnSelect: !props.multiple,
       allowCustomValue: false,
       inputBehavior: "none",
       selectionBehavior: props.multiple ? "clear" : "replace",
       openOnKeyPress: true,
-      composite: true,
       openOnChange: true,
-      readOnly: false,
-      disabled: false,
+      composite: true,
       navigate({ node }) {
         clickIfLink(node)
       },
-      defaultValue: [],
       collection: collection.empty(),
-      ...(props as any),
+      ...compact(props),
       positioning: {
         placement: "bottom",
         sameWidth: true,
@@ -902,13 +901,13 @@ export const machine = createMachine<ComboboxSchema>({
         if (!computed("autoHighlight")) return
         raf(() => {
           const value = prop("collection").firstValue
-          context.set("highlightedValue", value)
+          if (value) context.set("highlightedValue", value)
         })
       },
       highlightLastItem({ context, prop }) {
         raf(() => {
           const value = prop("collection").lastValue
-          context.set("highlightedValue", value)
+          if (value) context.set("highlightedValue", value)
         })
       },
       highlightNextItem({ context, prop }) {
@@ -921,7 +920,7 @@ export const machine = createMachine<ComboboxSchema>({
         } else {
           value = collection.firstValue
         }
-        context.set("highlightedValue", value)
+        if (value) context.set("highlightedValue", value)
       },
       highlightPrevItem({ context, prop }) {
         let value: string | null = null
@@ -933,12 +932,12 @@ export const machine = createMachine<ComboboxSchema>({
         } else {
           value = collection.lastValue
         }
-        context.set("highlightedValue", value)
+        if (value) context.set("highlightedValue", value)
       },
       highlightFirstSelectedItem({ context, prop }) {
         raf(() => {
           const [value] = prop("collection").sort(context.get("value"))
-          context.set("highlightedValue", value)
+          if (value) context.set("highlightedValue", value)
         })
       },
       highlightFirstOrSelectedItem({ context, prop, computed }) {
@@ -949,7 +948,7 @@ export const machine = createMachine<ComboboxSchema>({
           } else {
             value = prop("collection").firstValue
           }
-          context.set("highlightedValue", value)
+          if (value) context.set("highlightedValue", value)
         })
       },
       highlightLastOrSelectedItem({ context, prop, computed }) {
@@ -961,7 +960,7 @@ export const machine = createMachine<ComboboxSchema>({
           } else {
             value = collection.lastValue
           }
-          context.set("highlightedValue", value)
+          if (value) context.set("highlightedValue", value)
         })
       },
       autofillInputValue({ context, computed, prop, event, scope }) {

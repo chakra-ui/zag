@@ -34,6 +34,7 @@ const fetchMachine = createMachine({
   }) {
     return {
       value: bindable(() => ({
+        sync: true,
         value: prop("value"),
         defaultValue: prop("defaultValue"),
         isEqual: isEqual,
@@ -45,6 +46,7 @@ const fetchMachine = createMachine({
         }
       })),
       focusedIndex: bindable(() => ({
+        sync: true,
         defaultValue: -1
       }))
     };

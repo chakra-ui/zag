@@ -30,6 +30,10 @@ export function useMachine<T extends BaseSchema>(
     return createScope({ id, ids, getRootNode })
   }, [userProps])
 
+  const debug = (...args: any[]) => {
+    if (machine.debug) console.log(...args)
+  }
+
   const props: any = machine.props?.({ props: userProps, scope }) ?? userProps
   const prop = useProp(props)
 
@@ -49,7 +53,7 @@ export function useMachine<T extends BaseSchema>(
   const contextRef = useLiveRef<any>(context)
   const ctx: BindableContext<T> = {
     get(key) {
-      return contextRef.current?.[key].get()
+      return contextRef.current?.[key].ref.current
     },
     set(key, value) {
       contextRef.current?.[key].set(value)
@@ -68,19 +72,33 @@ export function useMachine<T extends BaseSchema>(
 
   const previousEventRef = useRef<any>(null)
   const eventRef = useRef<any>({ type: "" })
-  const currentEvent = () => eventRef.current
-  const previousEvent = () => previousEventRef.current
+
+  const getEvent = () => ({
+    ...eventRef.current,
+    current() {
+      return eventRef.current
+    },
+    previous() {
+      return previousEventRef.current
+    },
+  })
+
+  const getState = () => ({
+    ...state,
+    matches(...values: T["state"][]) {
+      return values.includes(state.ref.current)
+    },
+    hasTag(tag: T["tag"]) {
+      return !!machine.states[state.ref.current as T["state"]]?.tags?.includes(tag)
+    },
+  })
 
   const refs: BindableRefs<T> = useRefs(machine.refs?.({ prop, context: ctx }) ?? {})
 
   const getParams = (): Params<T> => ({
-    state,
+    state: getState(),
     context: ctx,
-    event: {
-      ...eventRef.current,
-      current: currentEvent,
-      previous: previousEvent,
-    },
+    event: getEvent(),
     prop,
     send,
     action,
@@ -140,7 +158,7 @@ export function useMachine<T extends BaseSchema>(
     return (
       machine.computed?.[key]({
         context: ctx as any,
-        event: eventRef.current,
+        event: getEvent(),
         prop,
         refs,
         scope,
@@ -209,6 +227,8 @@ export function useMachine<T extends BaseSchema>(
       previousEventRef.current = eventRef.current
       eventRef.current = event
 
+      debug("send", event)
+
       let currentState = getCurrentState()
 
       const transitions =
@@ -224,6 +244,8 @@ export function useMachine<T extends BaseSchema>(
       transitionRef.current = transition
       const target = transition.target ?? currentState
 
+      debug("transition", transition)
+
       const changed = target !== currentState
       if (changed) {
         // state change is high priority
@@ -237,31 +259,15 @@ export function useMachine<T extends BaseSchema>(
 
   machine.watch?.(getParams())
 
-  const enhancedState = {
-    ...state,
-    hasTag(tag: T["tag"]) {
-      const currentState = state.get()
-      return !!machine.states[currentState as T["state"]]?.tags?.includes(tag)
-    },
-    matches(...values: T["state"][]) {
-      const currentState = state.get()
-      return values.includes(currentState)
-    },
-  }
-
   return {
-    state: enhancedState,
+    state: getState(),
     send,
     context: ctx,
     prop,
     scope,
     refs,
     computed,
-    event: {
-      ...eventRef.current,
-      current: currentEvent,
-      previous: previousEvent,
-    },
+    event: getEvent(),
   } as Service<T>
 }
 

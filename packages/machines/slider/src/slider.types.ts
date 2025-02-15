@@ -139,7 +139,16 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
   thumbSize?: { width: number; height: number } | undefined
 }
 
-type PropsWithDefault = "min" | "max" | "step" | "orientation" | "origin" | "thumbAlignment" | "minStepsBetweenThumbs"
+type PropsWithDefault =
+  | "dir"
+  | "min"
+  | "max"
+  | "step"
+  | "orientation"
+  | "defaultValue"
+  | "origin"
+  | "thumbAlignment"
+  | "minStepsBetweenThumbs"
 
 type Computed = Readonly<{
   /**

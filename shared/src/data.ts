@@ -255,7 +255,7 @@ export const tourData: StepDetails[] = [
         })
 
       return () => {
-        abort.abort()
+        abort.abort("Network signal aborted")
       }
     },
   },

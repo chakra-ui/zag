@@ -91,14 +91,24 @@ export function useMachine<T extends BaseSchema>(
     },
   })
 
+  const getState = () => ({
+    ...state,
+    matches(...values: T["state"][]) {
+      const currentState = state.get()
+      return values.includes(currentState)
+    },
+    hasTag(tag: T["tag"]) {
+      const currentState = state.get()
+      return !!machine.states[currentState as T["state"]]?.tags?.includes(tag)
+    },
+  })
+
   const refs = useRefs(machine.refs?.({ prop, context: ctx }) ?? {})
 
   const getParams = (): any => ({
-    state,
+    state: getState(),
     context: ctx,
-    get event() {
-      return getEvent()
-    },
+    event: getEvent(),
     prop,
     send,
     action,
@@ -156,9 +166,7 @@ export function useMachine<T extends BaseSchema>(
     return (
       machine.computed?.[key]({
         context: ctx as any,
-        get event() {
-          return getEvent()
-        },
+        event: getEvent(),
         prop,
         refs,
         get scope() {
@@ -251,29 +259,15 @@ export function useMachine<T extends BaseSchema>(
 
   machine.watch?.(getParams())
 
-  const enhancedState = {
-    ...state,
-    hasTag(tag: T["tag"]) {
-      const currentState = state.get()
-      return !!machine.states[currentState as T["state"]]?.tags?.includes(tag)
-    },
-    matches(...values: T["state"][]) {
-      const currentState = state.get()
-      return values.includes(currentState)
-    },
-  }
-
   return {
-    state: enhancedState,
+    state: getState(),
     send,
     context: ctx,
     prop,
     scope: scope.value,
     refs,
     computed,
-    get event() {
-      return getEvent()
-    },
+    event: getEvent(),
   } as Service<T>
 }
 

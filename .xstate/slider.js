@@ -10,25 +10,83 @@ const {
   choose
 } = actions;
 const fetchMachine = createMachine({
-  id: "slider",
-  initial: "idle",
-  context: {
-    "hasIndex": false
+  props({
+    props
+  }) {
+    return {
+      dir: "ltr",
+      thumbAlignment: "contain",
+      min: 0,
+      max: 100,
+      step: 1,
+      defaultValue: [0],
+      origin: "start",
+      orientation: "horizontal",
+      minStepsBetweenThumbs: 0,
+      ...compact(props)
+    };
+  },
+  initialState() {
+    return "idle";
+  },
+  context({
+    prop,
+    bindable,
+    getContext
+  }) {
+    return {
+      thumbSize: bindable(() => ({
+        defaultValue: prop("thumbSize") || null
+      })),
+      value: bindable(() => ({
+        defaultValue: prop("defaultValue"),
+        value: prop("value"),
+        onChange(value) {
+          prop("onValueChange")?.({
+            value
+          });
+        }
+      })),
+      focusedIndex: bindable(() => ({
+        defaultValue: -1,
+        onChange(value) {
+          const ctx = getContext();
+          prop("onFocusChange")?.({
+            focusedIndex: value,
+            value: ctx.get("value")
+          });
+        }
+      })),
+      fieldsetDisabled: bindable(() => ({
+        defaultValue: false
+      }))
+    };
+  },
+  watch({
+    track,
+    action,
+    context: {
+      "hasIndex": false
+    }
+  }) {
+    track([() => context.get("value").join(",")], () => {
+      action(["syncInputElements"]);
+    });
   },
   entry: ["coarseValue"],
-  activities: ["trackFormControlState", "trackThumbsSize"],
+  effects: ["trackFormControlState", "trackThumbsSize"],
   on: {
     SET_VALUE: [{
       cond: "hasIndex",
-      actions: "setValueAtIndex"
+      actions: ["setValueAtIndex"]
     }, {
-      actions: "setValue"
+      actions: ["setValue"]
     }],
     INCREMENT: {
-      actions: "incrementThumbAtIndex"
+      actions: ["incrementThumbAtIndex"]
     },
     DECREMENT: {
-      actions: "decrementThumbAtIndex"
+      actions: ["decrementThumbAtIndex"]
     }
   },
   on: {
@@ -45,7 +103,7 @@ const fetchMachine = createMachine({
         },
         FOCUS: {
           target: "focus",
-          actions: "setFocusedIndex"
+          actions: ["setFocusedIndex"]
         },
         THUMB_POINTER_DOWN: {
           target: "dragging",
@@ -54,7 +112,7 @@ const fetchMachine = createMachine({
       }
     },
     focus: {
-      entry: "focusActiveThumb",
+      entry: ["focusActiveThumb"],
       on: {
         POINTER_DOWN: {
           target: "dragging",
@@ -78,21 +136,199 @@ const fetchMachine = createMachine({
         },
         BLUR: {
           target: "idle",
-          actions: "clearFocusedIndex"
+          actions: ["clearFocusedIndex"]
         }
       }
     },
     dragging: {
-      entry: "focusActiveThumb",
-      activities: "trackPointerMove",
+      entry: ["focusActiveThumb"],
+      effects: ["trackPointerMove"],
       on: {
         POINTER_UP: {
           target: "focus",
-          actions: "invokeOnChangeEnd"
+          actions: ["invokeOnChangeEnd"]
         },
         POINTER_MOVE: {
-          actions: "setPointerValue"
+          actions: ["setPointerValue"]
         }
+      }
+    }
+  },
+  implementations: {
+    guards: {
+      hasIndex: ({
+        event
+      }) => event.index != null
+    },
+    effects: {
+      trackFormControlState({
+        context,
+        scope
+      }) {
+        return trackFormControl(dom.getRootEl(scope), {
+          onFieldsetDisabledChange(disabled) {
+            context.set("fieldsetDisabled", disabled);
+          },
+          onFormReset() {
+            context.set("value", context.initial("value"));
+          }
+        });
+      },
+      trackPointerMove({
+        scope,
+        send
+      }) {
+        return trackPointerMove(scope.getDoc(), {
+          onPointerMove(info) {
+            send({
+              type: "POINTER_MOVE",
+              point: info.point
+            });
+          },
+          onPointerUp() {
+            send({
+              type: "POINTER_UP"
+            });
+          }
+        });
+      },
+      trackThumbsSize({
+        context,
+        scope,
+        prop
+      }) {
+        if (prop("thumbAlignment") !== "contain" || context.get("thumbSize")) return;
+        return trackElementsSize({
+          getNodes: () => dom.getElements(scope),
+          observeMutation: true,
+          callback(size) {
+            if (!size || isEqualSize(context.get("thumbSize"), size)) return;
+            context.set("thumbSize", size);
+          }
+        });
+      }
+    },
+    actions: {
+      syncInputElements({
+        context,
+        scope
+      }) {
+        context.get("value").forEach((value, index) => {
+          const inputEl = dom.getHiddenInputEl(scope, index);
+          setElementValue(inputEl, value.toString());
+        });
+      },
+      invokeOnChangeEnd({
+        prop,
+        context
+      }) {
+        prop("onValueChangeEnd")?.({
+          value: context.get("value")
+        });
+      },
+      setClosestThumbIndex(params) {
+        const {
+          context,
+          event
+        } = params;
+        const pointValue = dom.getValueFromPoint(params, event.point);
+        if (pointValue == null) return;
+        const focusedIndex = getClosestIndex(params, pointValue);
+        context.set("focusedIndex", focusedIndex);
+      },
+      setFocusedIndex({
+        context,
+        event
+      }) {
+        context.set("focusedIndex", event.index);
+      },
+      clearFocusedIndex({
+        context
+      }) {
+        context.set("focusedIndex", -1);
+      },
+      setPointerValue(params) {
+        queueMicrotask(() => {
+          const {
+            context,
+            event
+          } = params;
+          const pointValue = dom.getValueFromPoint(params, event.point);
+          if (pointValue == null) return;
+          const focusedIndex = context.get("focusedIndex");
+          const value = constrainValue(params, pointValue, focusedIndex);
+          context.set("value", prev => setValueAtIndex(prev, focusedIndex, value));
+        });
+      },
+      focusActiveThumb({
+        scope,
+        context
+      }) {
+        raf(() => {
+          const thumbEl = dom.getThumbEl(scope, context.get("focusedIndex"));
+          thumbEl?.focus({
+            preventScroll: true
+          });
+        });
+      },
+      decrementThumbAtIndex(params) {
+        const {
+          context,
+          event
+        } = params;
+        const value = decrement(params, event.index, event.step);
+        context.set("value", value);
+      },
+      incrementThumbAtIndex(params) {
+        const {
+          context,
+          event
+        } = params;
+        const value = increment(params, event.index, event.step);
+        context.set("value", value);
+      },
+      setFocusedThumbToMin(params) {
+        const {
+          context
+        } = params;
+        const index = context.get("focusedIndex");
+        const {
+          min
+        } = getRangeAtIndex(params, index);
+        context.set("value", prev => setValueAtIndex(prev, index, min));
+      },
+      setFocusedThumbToMax(params) {
+        const {
+          context
+        } = params;
+        const index = context.get("focusedIndex");
+        const {
+          max
+        } = getRangeAtIndex(params, index);
+        context.set("value", prev => setValueAtIndex(prev, index, max));
+      },
+      coarseValue(params) {
+        const {
+          context
+        } = params;
+        const value = normalizeValues(params, context.get("value"));
+        context.set("value", value);
+      },
+      setValueAtIndex(params) {
+        const {
+          context,
+          event
+        } = params;
+        const value = constrainValue(params, event.value, event.index);
+        context.set("value", prev => setValueAtIndex(prev, event.index, value));
+      },
+      setValue(params) {
+        const {
+          context,
+          event
+        } = params;
+        const value = normalizeValues(params, event.value);
+        context.set("value", value);
       }
     }
   }

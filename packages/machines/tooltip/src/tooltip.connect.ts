@@ -12,7 +12,7 @@ export function connect<P extends PropTypes>(
   service: Service<TooltipSchema>,
   normalize: NormalizeProps<P>,
 ): TooltipApi<P> {
-  const { state, context, send, scope, prop } = service
+  const { state, context, send, scope, prop, event: _event } = service
   const id = prop("id")
   const hasAriaLabel = !!prop("aria-label")
 
@@ -53,12 +53,13 @@ export function connect<P extends PropTypes>(
           send({ type: "close", src: "trigger.click" })
         },
         onFocus(event) {
-          if (event.defaultPrevented) return
-          if (disabled) return
-          // @ts-expect-error
-          if (state.event.src === "trigger.pointerdown") return
-          if (!isFocusVisible()) return
-          send({ type: "open", src: "trigger.focus" })
+          queueMicrotask(() => {
+            if (event.defaultPrevented) return
+            if (disabled) return
+            if (_event.src === "trigger.pointerdown") return
+            if (!isFocusVisible()) return
+            send({ type: "open", src: "trigger.focus" })
+          })
         },
         onBlur(event) {
           if (event.defaultPrevented) return

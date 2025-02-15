@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { raf, setElementValue, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
 import { trackElementsSize, type ElementSize } from "@zag-js/element-size"
-import { getValuePercent, setValueAtIndex } from "@zag-js/utils"
+import { compact, getValuePercent, setValueAtIndex } from "@zag-js/utils"
 import * as dom from "./slider.dom"
 import type { SliderSchema } from "./slider.types"
 import { constrainValue, decrement, getClosestIndex, getRangeAtIndex, increment, normalizeValues } from "./slider.utils"
@@ -14,9 +14,6 @@ export const machine = createMachine<SliderSchema>({
   props({ props }) {
     return {
       dir: "ltr",
-      disabled: false,
-      readOnly: false,
-      thumbSize: null,
       thumbAlignment: "contain",
       min: 0,
       max: 100,
@@ -25,7 +22,7 @@ export const machine = createMachine<SliderSchema>({
       origin: "start",
       orientation: "horizontal",
       minStepsBetweenThumbs: 0,
-      ...(props as any),
+      ...compact(props),
     }
   },
 
@@ -205,7 +202,6 @@ export const machine = createMachine<SliderSchema>({
       syncInputElements({ context, scope }) {
         context.get("value").forEach((value, index) => {
           const inputEl = dom.getHiddenInputEl(scope, index)
-          if (!inputEl) return
           setElementValue(inputEl, value.toString())
         })
       },
@@ -238,9 +234,9 @@ export const machine = createMachine<SliderSchema>({
           context.set("value", (prev) => setValueAtIndex(prev, focusedIndex, value))
         })
       },
-      focusActiveThumb({ scope, event }) {
+      focusActiveThumb({ scope, context }) {
         raf(() => {
-          const thumbEl = dom.getThumbEl(scope, event.index)
+          const thumbEl = dom.getThumbEl(scope, context.get("focusedIndex"))
           thumbEl?.focus({ preventScroll: true })
         })
       },
@@ -255,14 +251,16 @@ export const machine = createMachine<SliderSchema>({
         context.set("value", value)
       },
       setFocusedThumbToMin(params) {
-        const { context, event } = params
-        const { min } = getRangeAtIndex(params, event.index)
-        context.set("value", (prev) => setValueAtIndex(prev, event.index, min))
+        const { context } = params
+        const index = context.get("focusedIndex")
+        const { min } = getRangeAtIndex(params, index)
+        context.set("value", (prev) => setValueAtIndex(prev, index, min))
       },
       setFocusedThumbToMax(params) {
-        const { context, event } = params
-        const { max } = getRangeAtIndex(params, event.index)
-        context.set("value", (prev) => setValueAtIndex(prev, event.index, max))
+        const { context } = params
+        const index = context.get("focusedIndex")
+        const { max } = getRangeAtIndex(params, index)
+        context.set("value", (prev) => setValueAtIndex(prev, index, max))
       },
       coarseValue(params) {
         const { context } = params

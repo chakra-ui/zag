@@ -12,7 +12,7 @@ export const machine = createMachine<CarouselSchema>({
       defaultPage: 0,
       orientation: "horizontal",
       snapType: "mandatory",
-      loop: false,
+      loop: !!props.autoplay,
       slidesPerPage: 1,
       slidesPerMove: "auto",
       spacing: "0px",
@@ -56,16 +56,10 @@ export const machine = createMachine<CarouselSchema>({
       pageSnapPoints: bindable(() => {
         return {
           defaultValue: getPageSnapPoints(prop("slideCount"), prop("slidesPerMove"), prop("slidesPerPage")),
-          onChange(value) {
-            console.log("snap points", value)
-          },
         }
       }),
       slidesInView: bindable<number[]>(() => ({
         defaultValue: [],
-        onChange(value) {
-          console.log("slides in view", value)
-        },
       })),
     }
   },
@@ -162,7 +156,9 @@ export const machine = createMachine<CarouselSchema>({
           target: "dragging",
           actions: ["invokeDragStart"],
         },
-        "AUTOPLAY.PAUSE": "idle",
+        "AUTOPLAY.PAUSE": {
+          target: "idle",
+        },
       },
     },
   },
@@ -170,10 +166,10 @@ export const machine = createMachine<CarouselSchema>({
   implementations: {
     effects: {
       autoUpdateSlide({ computed, send }) {
-        const id = setTimeout(() => {
+        const id = setInterval(() => {
           send({ type: "AUTOPLAY.TICK", src: "autoplay.interval" })
         }, computed("autoplayInterval"))
-        return () => clearTimeout(id)
+        return () => clearInterval(id)
       },
       trackSlideMutation({ scope, send }) {
         const el = dom.getItemGroupEl(scope)
@@ -289,12 +285,14 @@ export const machine = createMachine<CarouselSchema>({
         const axis = computed("isHorizontal") ? "left" : "top"
         el.scrollTo({ [axis]: context.get("pageSnapPoints")[index], behavior })
       },
-      setNextPage({ context, prop }) {
-        const page = nextIndex(context.get("pageSnapPoints"), context.get("page"), { loop: prop("loop") })
+      setNextPage({ context, prop, state }) {
+        const loop = state.matches("autoplay") || prop("loop")
+        const page = nextIndex(context.get("pageSnapPoints"), context.get("page"), { loop })
         context.set("page", page)
       },
-      setPrevPage({ context, prop }) {
-        const page = prevIndex(context.get("pageSnapPoints"), context.get("page"), { loop: prop("loop") })
+      setPrevPage({ context, prop, state }) {
+        const loop = state.matches("autoplay") || prop("loop")
+        const page = prevIndex(context.get("pageSnapPoints"), context.get("page"), { loop })
         context.set("page", page)
       },
       setMatchingPage({ context, event, computed, scope }) {

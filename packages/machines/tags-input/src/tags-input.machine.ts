@@ -51,11 +51,15 @@ export const machine = createMachine<TagsInputSchema>({
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
+        hash(value) {
+          return value.join(", ")
+        },
         onChange(value) {
           prop("onValueChange")?.({ value })
         },
       })),
       inputValue: bindable(() => ({
+        sync: true,
         defaultValue: prop("defaultInputValue"),
         value: prop("inputValue"),
         onChange(value) {
@@ -65,9 +69,13 @@ export const machine = createMachine<TagsInputSchema>({
       fieldsetDisabled: bindable(() => ({ defaultValue: false })),
       editedTagValue: bindable(() => ({ defaultValue: "" })),
       editedTagId: bindable<string | null>(() => ({ defaultValue: null })),
-      editedTagIndex: bindable<number | null>(() => ({ defaultValue: null })),
+      editedTagIndex: bindable<number | null>(() => ({
+        defaultValue: null,
+        sync: true,
+      })),
       highlightedTagId: bindable<string | null>(() => ({
         defaultValue: null,
+        sync: true,
         onChange(value) {
           prop("onHighlightChange")?.({ highlightedValue: value })
         },
@@ -77,7 +85,7 @@ export const machine = createMachine<TagsInputSchema>({
 
   computed: {
     count: ({ context }) => context.get("value").length,
-    valueAsString: ({ context }) => JSON.stringify(context.get("value")),
+    valueAsString: ({ context }) => context.hash("value"),
     trimmedInputValue: ({ context }) => context.get("inputValue").trim(),
     isDisabled: ({ prop }) => !!prop("disabled"),
     isInteractive: ({ prop }) => !(prop("readOnly") || !!prop("disabled")),

@@ -99,7 +99,10 @@ export interface Params<T extends Dict> {
   send: (event: EventType<T["event"]>) => void
   computed: ComputedFn<T>
   scope: Scope
-  state: Bindable<T["state"]>
+  state: Bindable<T["state"]> & {
+    matches: (...values: T["state"][]) => boolean
+    hasTag: (tag: T["tag"]) => boolean
+  }
   choose: ChooseFn<T>
   guard: (key: T["guard"] | GuardFn<T>) => boolean | undefined
 }
@@ -133,6 +136,7 @@ export type ActionsOrFn<T extends Dict> = T["action"][] | ((params: Params<T>) =
 export type EffectsOrFn<T extends Dict> = T["effect"][] | ((params: Params<T>) => T["effect"][] | undefined)
 
 export interface MachineConfig<T extends Dict> {
+  debug?: boolean
   props?: (params: PropsParams<T>) => T["props"]
   context?: (params: ContextParams<T>) => {
     [K in keyof T["context"]]: Bindable<T["context"][K]>
@@ -145,7 +149,6 @@ export interface MachineConfig<T extends Dict> {
   exit?: ActionsOrFn<T>
   effects?: EffectsOrFn<T>
   refs?: (params: RefsParams<T>) => T["refs"]
-  dom?: (params: Params<T>) => T["dom"]
   watch?: (params: Params<T>) => void
   on?: {
     [E in T["event"]["type"]]?: Transition<T> | Array<Transition<T>>
@@ -200,7 +203,10 @@ type State<T extends BaseSchema> = Bindable<T["state"]> & {
 }
 
 export type Service<T extends BaseSchema> = {
-  state: State<T>
+  state: State<T> & {
+    matches: (...values: T["state"][]) => boolean
+    hasTag: (tag: T["tag"]) => boolean
+  }
   context: BindableContext<T>
   send: (event: EventType<T["event"]>) => void
   prop: PropFn<T>

@@ -61,6 +61,7 @@ export const machine = createMachine<TourSchema>({
         },
       })),
       resolvedTarget: bindable<HTMLElement | null>(() => ({
+        sync: true,
         defaultValue: null,
       })),
       targetRect: bindable<Rect>(() => ({
@@ -87,8 +88,6 @@ export const machine = createMachine<TourSchema>({
       return (computed("stepIndex") + 1) / effectiveLength
     },
   },
-
-  // created: ["validateSteps"],
 
   watch({ track, context, action }) {
     track([() => context.get("stepId")], () => {
@@ -288,11 +287,9 @@ export const machine = createMachine<TourSchema>({
       raiseStepChange({ send }) {
         send({ type: "STEP.CHANGED" })
       },
-      setResolvedTarget({ context, event, computed, flush }) {
+      setResolvedTarget({ context, event, computed }) {
         const node = event.node ?? computed("step")?.target?.()
-        flush(() => {
-          context.set("resolvedTarget", node ?? null)
-        })
+        context.set("resolvedTarget", node ?? null)
       },
       syncTargetAttrs({ context, refs, prop }) {
         refs.get("_targetCleanup")?.()

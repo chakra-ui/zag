@@ -237,11 +237,9 @@ type PropsWithDefault =
   | "openOnChange"
   | "openOnKeyPress"
   | "composite"
-  | "disableLayer"
   | "navigate"
   | "loopFocus"
   | "positioning"
-  | "defaultInputValue"
   | "openOnClick"
   | "openOnChange"
   | "inputBehavior"
@@ -249,6 +247,7 @@ type PropsWithDefault =
   | "selectionBehavior"
   | "closeOnSelect"
   | "translations"
+  | "positioning"
 
 export type ComboboxService<T extends CollectionItem = CollectionItem> = Service<ComboboxSchema<T>>
 

@@ -16,6 +16,7 @@ export default function Page() {
   const service = useMachine(tagsInput.machine, {
     id: useId(),
     defaultValue: ["React", "Vue"],
+    ...controls.context,
   })
 
   const api = tagsInput.connect(service, normalizeProps)

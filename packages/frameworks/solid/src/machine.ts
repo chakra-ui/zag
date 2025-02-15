@@ -71,19 +71,33 @@ export function useMachine<T extends BaseSchema>(
 
   const previousEventRef: any = { current: null }
   const eventRef: any = { current: { type: "" } }
-  const currentEvent = () => eventRef.current
-  const previousEvent = () => previousEventRef.current
+
+  const getEvent = (): any =>
+    mergeProps(eventRef.current, {
+      current() {
+        return eventRef.current
+      },
+      previous() {
+        return previousEventRef.current
+      },
+    })
+
+  const getState = () =>
+    mergeProps(state, {
+      matches(...values: T["state"][]) {
+        return values.includes(state.ref.current)
+      },
+      hasTag(tag: T["tag"]) {
+        return !!machine.states[state.ref.current as T["state"]]?.tags?.includes(tag)
+      },
+    })
 
   const refs = createRefs(machine.refs?.({ prop, context: ctx }) ?? {})
 
   const getParams = (): Params<T> => ({
-    state,
+    state: getState(),
     context: ctx,
-    // @ts-ignore
-    event: mergeProps(eventRef.current, {
-      current: currentEvent,
-      previous: previousEvent,
-    }),
+    event: getEvent(),
     prop,
     send,
     action,
@@ -240,31 +254,15 @@ export function useMachine<T extends BaseSchema>(
 
   machine.watch?.(getParams())
 
-  const enhancedState = mergeProps(state, {
-    hasTag(tag: T["tag"]) {
-      const currentState = state.get()
-      return !!machine.states[currentState as T["state"]]?.tags?.includes(tag)
-    },
-    matches(...values: T["state"][]) {
-      const currentState = state.get()
-      return values.includes(currentState)
-    },
-  })
-
-  const event = mergeProps(eventRef.current, {
-    current: currentEvent,
-    previous: previousEvent,
-  })
-
   return {
-    state: enhancedState,
+    state: getState(),
     send,
     context: ctx,
     prop,
     scope: reflect(scope),
     refs,
     computed,
-    event,
+    event: getEvent(),
   } as unknown as Service<T>
 }
 

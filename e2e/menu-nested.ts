@@ -48,13 +48,13 @@ async function expectAllMenusToBeClosed(page: Page) {
 
 test.describe("nested menu / pointer", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/nested-menu")
+    await page.goto("/menu-nested")
   })
 })
 
 test.describe("nested menu / keyboard navigation", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/nested-menu")
+    await page.goto("/menu-nested")
   })
 
   test("open submenu when moving focus to trigger", async ({ page }) => {
@@ -65,6 +65,7 @@ test.describe("nested menu / keyboard navigation", async () => {
   test("open submenu with space", async ({ page }) => {
     await navigateToSubmenuTrigger(page)
     await page.keyboard.press("Space")
+    await page.waitForTimeout(1)
     await expectSubmenuToBeFocused(page)
   })
 
@@ -90,7 +91,7 @@ test.describe("nested menu / keyboard navigation", async () => {
 
 test.describe("nested menu / keyboard typeahead", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/nested-menu")
+    await page.goto("/menu-nested")
   })
 
   test("parent menu", async ({ page }) => {
@@ -123,7 +124,7 @@ test.describe("nested menu / keyboard typeahead", async () => {
 
 test.describe("nested menu / select item", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/nested-menu")
+    await page.goto("/menu-nested")
   })
 
   test("using keyboard", async ({ page }) => {
@@ -162,7 +163,7 @@ test.describe("nested menu / select item", async () => {
 
 test.describe("nested menu / pointer movement", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/nested-menu")
+    await page.goto("/menu-nested")
   })
 
   test("should open submenu and not focus first item", async ({ page }) => {

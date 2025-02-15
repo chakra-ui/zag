@@ -67,19 +67,35 @@ export function useMachine<T extends BaseSchema>(
 
   const previousEventRef = useRef<any>(null)
   const eventRef = useRef<any>({ type: "" })
-  const currentEvent = () => eventRef.current
-  const previousEvent = () => previousEventRef.current
 
   const refs: BindableRefs<T> = useRefs(machine.refs?.({ prop, context: ctx }) ?? {})
 
-  const getParams = (): Params<T> => ({
-    state,
-    context: ctx,
-    event: {
-      ...eventRef.current,
-      current: currentEvent,
-      previous: previousEvent,
+  const getEvent = () => ({
+    ...eventRef.current,
+    current() {
+      return eventRef.current
     },
+    previous() {
+      return previousEventRef.current
+    },
+  })
+
+  const getState = () => ({
+    ...state,
+    hasTag(tag: T["tag"]) {
+      const currentState = state.get()
+      return !!machine.states[currentState as T["state"]]?.tags?.includes(tag)
+    },
+    matches(...values: T["state"][]) {
+      const currentState = state.get()
+      return values.includes(currentState)
+    },
+  })
+
+  const getParams = (): Params<T> => ({
+    state: getState(),
+    context: ctx,
+    event: getEvent(),
     prop,
     send,
     action,
@@ -139,7 +155,7 @@ export function useMachine<T extends BaseSchema>(
     return (
       machine.computed?.[key]({
         context: ctx as any,
-        event: eventRef.current,
+        event: getEvent(),
         prop,
         refs,
         scope,
@@ -236,31 +252,15 @@ export function useMachine<T extends BaseSchema>(
 
   machine.watch?.(getParams())
 
-  const enhancedState = {
-    ...state,
-    hasTag(tag: T["tag"]) {
-      const currentState = state.get()
-      return !!machine.states[currentState as T["state"]]?.tags?.includes(tag)
-    },
-    matches(...values: T["state"][]) {
-      const currentState = state.get()
-      return values.includes(currentState)
-    },
-  }
-
   return {
-    state: enhancedState,
+    state: getState(),
     send,
     context: ctx,
     prop,
     scope,
     refs,
     computed,
-    event: {
-      ...eventRef.current,
-      current: currentEvent,
-      previous: previousEvent,
-    },
+    event: getEvent(),
   } as Service<T>
 }
 
