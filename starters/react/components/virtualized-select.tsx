@@ -14,7 +14,6 @@ const collection = select.collection({
 interface SelectProps
   extends Omit<select.Props, "id" | "value" | "defaultValue" | "onValueChange" | "collection" | "scrollToIndexFn"> {
   defaultValue?: string | null | undefined
-  defaultOpen?: boolean
   value?: string | null | undefined
   onValueChange?: (value: string) => void
 }
@@ -39,7 +38,9 @@ export function VirtualizedSelect(props: SelectProps) {
     collection,
     defaultValue: toArray(defaultValue),
     value: toArray(value),
-    open: open ?? defaultOpen,
+    open,
+    defaultOpen,
+    ...contextProps,
     onValueChange(details: any) {
       onValueChange?.(details.value[0])
     },
@@ -53,7 +54,6 @@ export function VirtualizedSelect(props: SelectProps) {
         })
       }
     },
-    ...contextProps,
   })
 
   const api = select.connect(service, normalizeProps)

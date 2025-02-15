@@ -1,21 +1,24 @@
-/* eslint-disable @next/next/no-img-element */
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as signaturePad from "@zag-js/signature-pad"
 import { useId, useState } from "react"
 
-export function SignaturePad(props: { value?: string }) {
-  const [url, setUrl] = useState(props.value ?? "")
+interface Props extends Omit<signaturePad.Props, "id"> {
+  value?: string
+}
 
-  const [state, send] = useMachine(
-    signaturePad.machine({
-      id: useId(),
-      onDrawEnd(details) {
-        details.getDataUrl("image/png").then(setUrl)
-      },
-    }),
-  )
+export function SignaturePad(props: Props) {
+  const { value, ...context } = props
+  const [url, setUrl] = useState(value ?? "")
 
-  const api = signaturePad.connect(state, send, normalizeProps)
+  const service = useMachine(signaturePad.machine, {
+    id: useId(),
+    onDrawEnd(details) {
+      details.getDataUrl("image/png").then(setUrl)
+    },
+    ...context,
+  })
+
+  const api = signaturePad.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

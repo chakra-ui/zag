@@ -14,7 +14,6 @@ const collection = select.collection({
 
 interface SelectProps extends Omit<select.Props, "id" | "value" | "defaultValue" | "onValueChange" | "collection"> {
   defaultValue?: string | null | undefined
-  defaultOpen?: boolean
   value?: string | null | undefined
   onValueChange?: (value: string) => void
 }
@@ -27,8 +26,10 @@ export function Select(props: SelectProps) {
   const service = useMachine(select.machine, {
     id: useId(),
     collection,
-    value: toArray(value) ?? toArray(defaultValue),
-    open: open ?? defaultOpen,
+    defaultValue: toArray(defaultValue),
+    value: toArray(value),
+    open,
+    defaultOpen,
     onValueChange(details: any) {
       onValueChange?.(details.value[0])
     },

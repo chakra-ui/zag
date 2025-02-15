@@ -2,28 +2,19 @@ import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-interface Props extends Omit<hoverCard.Context, "open.controlled" | "id"> {
-  defaultOpen?: boolean
-}
+interface Props extends Omit<hoverCard.Props, "id"> {}
 
 export function HoverCard(props: Props) {
   const { defaultOpen, open, ...context } = props
 
-  const [state, send] = useMachine(
-    hoverCard.machine({
-      id: useId(),
-      open: open ?? defaultOpen,
-    }),
-    {
-      context: {
-        ...context,
-        "open.controlled": open !== undefined,
-        open,
-      },
-    },
-  )
+  const service = useMachine(hoverCard.machine, {
+    id: useId(),
+    defaultOpen,
+    open,
+    ...context,
+  })
 
-  const api = hoverCard.connect(state, send, normalizeProps)
+  const api = hoverCard.connect(service, normalizeProps)
 
   return (
     <main className="hover-card">
