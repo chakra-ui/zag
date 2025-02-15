@@ -14,11 +14,12 @@ import type {
 } from "@zag-js/core"
 import { createScope } from "@zag-js/core"
 import { isFunction, isString, toArray, warn } from "@zag-js/utils"
-import { useLayoutEffect, useMemo, useRef } from "react"
+import { useMemo, useRef } from "react"
 import { flushSync } from "react-dom"
 import { useBindable } from "./bindable"
 import { useRefs } from "./refs"
 import { useTrack } from "./track"
+import { useSafeLayoutEffect } from "./use-layout-effect"
 
 export function useMachine<T extends BaseSchema>(
   machine: MachineConfig<T>,
@@ -187,7 +188,7 @@ export function useMachine<T extends BaseSchema>(
     },
   }))
 
-  useLayoutEffect(() => {
+  useSafeLayoutEffect(() => {
     state.invoke(state.initial!, "__init__")
     const fns = effects.current
     return () => {

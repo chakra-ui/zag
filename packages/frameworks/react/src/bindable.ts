@@ -1,7 +1,8 @@
-import { isFunction } from "@zag-js/utils"
 import type { Bindable, BindableParams } from "@zag-js/core"
-import { useLayoutEffect, useRef, useState } from "react"
+import { isFunction } from "@zag-js/utils"
+import { useRef, useState } from "react"
 import { flushSync } from "react-dom"
+import { useSafeLayoutEffect } from "./use-layout-effect"
 
 const identity = (v: VoidFunction) => v()
 
@@ -23,7 +24,7 @@ export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
   valueRef.current = controlled ? props().value : value
 
   const prevValue = useRef(valueRef.current)
-  useLayoutEffect(() => {
+  useSafeLayoutEffect(() => {
     prevValue.current = valueRef.current
   }, [value, props().value])
 
