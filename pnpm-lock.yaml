@@ -138,250 +138,6 @@ importers:
         specifier: 2.1.8
         version: 2.1.8(@types/node@22.13.0)(jsdom@26.0.0)(terser@5.36.0)
 
-  examples/lit-ts:
-    dependencies:
-      '@internationalized/date':
-        specifier: 3.7.0
-        version: 3.7.0
-      '@lit/context':
-        specifier: 1.1.2
-        version: 1.1.2
-      '@open-wc/lit-helpers':
-        specifier: ^0.7.0
-        version: 0.7.0(lit@3.2.1)
-      '@types/textarea-caret':
-        specifier: ^3.0.3
-        version: 3.0.3
-      '@zag-js/accordion':
-        specifier: workspace:*
-        version: link:../../packages/machines/accordion
-      '@zag-js/anatomy':
-        specifier: workspace:*
-        version: link:../../packages/anatomy
-      '@zag-js/anatomy-icons':
-        specifier: workspace:*
-        version: link:../../packages/anatomy-icons
-      '@zag-js/angle-slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/angle-slider
-      '@zag-js/aria-hidden':
-        specifier: workspace:*
-        version: link:../../packages/utilities/aria-hidden
-      '@zag-js/auto-resize':
-        specifier: workspace:*
-        version: link:../../packages/utilities/auto-resize
-      '@zag-js/avatar':
-        specifier: workspace:*
-        version: link:../../packages/machines/avatar
-      '@zag-js/carousel':
-        specifier: workspace:*
-        version: link:../../packages/machines/carousel
-      '@zag-js/checkbox':
-        specifier: workspace:*
-        version: link:../../packages/machines/checkbox
-      '@zag-js/clipboard':
-        specifier: workspace:*
-        version: link:../../packages/machines/clipboard
-      '@zag-js/collapsible':
-        specifier: workspace:*
-        version: link:../../packages/machines/collapsible
-      '@zag-js/collection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/collection
-      '@zag-js/color-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/color-picker
-      '@zag-js/color-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/color-utils
-      '@zag-js/combobox':
-        specifier: workspace:*
-        version: link:../../packages/machines/combobox
-      '@zag-js/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@zag-js/date-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/date-picker
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/date-utils
-      '@zag-js/dialog':
-        specifier: workspace:*
-        version: link:../../packages/machines/dialog
-      '@zag-js/dismissable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dismissable
-      '@zag-js/docs':
-        specifier: workspace:*
-        version: link:../../packages/docs
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-query
-      '@zag-js/editable':
-        specifier: workspace:*
-        version: link:../../packages/machines/editable
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-rect
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-size
-      '@zag-js/file-upload':
-        specifier: workspace:*
-        version: link:../../packages/machines/file-upload
-      '@zag-js/file-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/file-utils
-      '@zag-js/floating-panel':
-        specifier: workspace:*
-        version: link:../../packages/machines/floating-panel
-      '@zag-js/focus-trap':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-trap
-      '@zag-js/focus-visible':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-visible
-      '@zag-js/highlight-word':
-        specifier: workspace:*
-        version: link:../../packages/utilities/highlight-word
-      '@zag-js/hover-card':
-        specifier: workspace:*
-        version: link:../../packages/machines/hover-card
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/i18n-utils
-      '@zag-js/interact-outside':
-        specifier: workspace:*
-        version: link:../../packages/utilities/interact-outside
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../packages/utilities/live-region
-      '@zag-js/menu':
-        specifier: workspace:*
-        version: link:../../packages/machines/menu
-      '@zag-js/number-input':
-        specifier: workspace:*
-        version: link:../../packages/machines/number-input
-      '@zag-js/pagination':
-        specifier: workspace:*
-        version: link:../../packages/machines/pagination
-      '@zag-js/pin-input':
-        specifier: workspace:*
-        version: link:../../packages/machines/pin-input
-      '@zag-js/popover':
-        specifier: workspace:*
-        version: link:../../packages/machines/popover
-      '@zag-js/popper':
-        specifier: workspace:*
-        version: link:../../packages/utilities/popper
-      '@zag-js/presence':
-        specifier: workspace:*
-        version: link:../../packages/machines/presence
-      '@zag-js/progress':
-        specifier: workspace:*
-        version: link:../../packages/machines/progress
-      '@zag-js/qr-code':
-        specifier: workspace:*
-        version: link:../../packages/machines/qr-code
-      '@zag-js/radio-group':
-        specifier: workspace:*
-        version: link:../../packages/machines/radio-group
-      '@zag-js/rating-group':
-        specifier: workspace:*
-        version: link:../../packages/machines/rating-group
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/rect
-      '@zag-js/remove-scroll':
-        specifier: workspace:*
-        version: link:../../packages/utilities/remove-scroll
-      '@zag-js/scroll-snap':
-        specifier: workspace:*
-        version: link:../../packages/utilities/scroll-snap
-      '@zag-js/select':
-        specifier: workspace:*
-        version: link:../../packages/machines/select
-      '@zag-js/shared':
-        specifier: workspace:*
-        version: link:../../shared
-      '@zag-js/signature-pad':
-        specifier: workspace:*
-        version: link:../../packages/machines/signature-pad
-      '@zag-js/slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/slider
-      '@zag-js/splitter':
-        specifier: workspace:*
-        version: link:../../packages/machines/splitter
-      '@zag-js/steps':
-        specifier: workspace:*
-        version: link:../../packages/machines/steps
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../packages/store
-      '@zag-js/stringify-state':
-        specifier: workspace:*
-        version: link:../../packages/utilities/stringify-state
-      '@zag-js/switch':
-        specifier: workspace:*
-        version: link:../../packages/machines/switch
-      '@zag-js/tabs':
-        specifier: workspace:*
-        version: link:../../packages/machines/tabs
-      '@zag-js/tags-input':
-        specifier: workspace:*
-        version: link:../../packages/machines/tags-input
-      '@zag-js/time-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/time-picker
-      '@zag-js/timer':
-        specifier: workspace:*
-        version: link:../../packages/machines/timer
-      '@zag-js/toast':
-        specifier: workspace:*
-        version: link:../../packages/machines/toast
-      '@zag-js/toggle-group':
-        specifier: workspace:*
-        version: link:../../packages/machines/toggle-group
-      '@zag-js/tooltip':
-        specifier: workspace:*
-        version: link:../../packages/machines/tooltip
-      '@zag-js/tour':
-        specifier: workspace:*
-        version: link:../../packages/machines/tour
-      '@zag-js/tree-view':
-        specifier: workspace:*
-        version: link:../../packages/machines/tree-view
-      '@zag-js/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/core
-      form-serialize:
-        specifier: 0.7.2
-        version: 0.7.2
-      lit:
-        specifier: ^3.2.0
-        version: 3.2.1
-      lucide-react:
-        specifier: 0.474.0
-        version: 0.474.0(react@19.0.0-rc-b57d2823-20240822)
-      match-sorter:
-        specifier: 8.0.0
-        version: 8.0.0
-      textarea-caret:
-        specifier: ^3.1.0
-        version: 3.1.0
-    devDependencies:
-      typescript:
-        specifier: ^5.7.3
-        version: 5.7.3
-      vite:
-        specifier: ^6.0.11
-        version: 6.0.11(@types/node@22.13.0)(jiti@2.4.2)(terser@5.36.0)(tsx@4.19.2)(yaml@2.7.0)
-
   examples/next-ts:
     dependencies:
       '@internationalized/date':
@@ -1160,262 +916,6 @@ importers:
         version: 5.7.3
       vite:
         specifier: 6.0.11
-        version: 6.0.11(@types/node@22.13.0)(jiti@2.4.2)(terser@5.36.0)(tsx@4.19.2)(yaml@2.7.0)
-
-  examples/react-19:
-    dependencies:
-      '@zag-js/accordion':
-        specifier: workspace:*
-        version: link:../../packages/machines/accordion
-      '@zag-js/anatomy':
-        specifier: workspace:*
-        version: link:../../packages/anatomy
-      '@zag-js/anatomy-icons':
-        specifier: workspace:*
-        version: link:../../packages/anatomy-icons
-      '@zag-js/angle-slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/angle-slider
-      '@zag-js/aria-hidden':
-        specifier: workspace:*
-        version: link:../../packages/utilities/aria-hidden
-      '@zag-js/auto-resize':
-        specifier: workspace:*
-        version: link:../../packages/utilities/auto-resize
-      '@zag-js/avatar':
-        specifier: workspace:*
-        version: link:../../packages/machines/avatar
-      '@zag-js/carousel':
-        specifier: workspace:*
-        version: link:../../packages/machines/carousel
-      '@zag-js/checkbox':
-        specifier: workspace:*
-        version: link:../../packages/machines/checkbox
-      '@zag-js/clipboard':
-        specifier: workspace:*
-        version: link:../../packages/machines/clipboard
-      '@zag-js/collapsible':
-        specifier: workspace:*
-        version: link:../../packages/machines/collapsible
-      '@zag-js/collection':
-        specifier: workspace:*
-        version: link:../../packages/utilities/collection
-      '@zag-js/color-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/color-picker
-      '@zag-js/color-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/color-utils
-      '@zag-js/combobox':
-        specifier: workspace:*
-        version: link:../../packages/machines/combobox
-      '@zag-js/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@zag-js/date-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/date-picker
-      '@zag-js/date-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/date-utils
-      '@zag-js/dialog':
-        specifier: workspace:*
-        version: link:../../packages/machines/dialog
-      '@zag-js/dismissable':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dismissable
-      '@zag-js/docs':
-        specifier: workspace:*
-        version: link:../../packages/docs
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../../packages/utilities/dom-query
-      '@zag-js/editable':
-        specifier: workspace:*
-        version: link:../../packages/machines/editable
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-rect
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-size
-      '@zag-js/file-upload':
-        specifier: workspace:*
-        version: link:../../packages/machines/file-upload
-      '@zag-js/file-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/file-utils
-      '@zag-js/floating-panel':
-        specifier: workspace:*
-        version: link:../../packages/machines/floating-panel
-      '@zag-js/focus-trap':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-trap
-      '@zag-js/focus-visible':
-        specifier: workspace:*
-        version: link:../../packages/utilities/focus-visible
-      '@zag-js/highlight-word':
-        specifier: workspace:*
-        version: link:../../packages/utilities/highlight-word
-      '@zag-js/hover-card':
-        specifier: workspace:*
-        version: link:../../packages/machines/hover-card
-      '@zag-js/i18n-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/i18n-utils
-      '@zag-js/interact-outside':
-        specifier: workspace:*
-        version: link:../../packages/utilities/interact-outside
-      '@zag-js/live-region':
-        specifier: workspace:*
-        version: link:../../packages/utilities/live-region
-      '@zag-js/menu':
-        specifier: workspace:*
-        version: link:../../packages/machines/menu
-      '@zag-js/number-input':
-        specifier: workspace:*
-        version: link:../../packages/machines/number-input
-      '@zag-js/pagination':
-        specifier: workspace:*
-        version: link:../../packages/machines/pagination
-      '@zag-js/pin-input':
-        specifier: workspace:*
-        version: link:../../packages/machines/pin-input
-      '@zag-js/popover':
-        specifier: workspace:*
-        version: link:../../packages/machines/popover
-      '@zag-js/popper':
-        specifier: workspace:*
-        version: link:../../packages/utilities/popper
-      '@zag-js/presence':
-        specifier: workspace:*
-        version: link:../../packages/machines/presence
-      '@zag-js/progress':
-        specifier: workspace:*
-        version: link:../../packages/machines/progress
-      '@zag-js/qr-code':
-        specifier: workspace:*
-        version: link:../../packages/machines/qr-code
-      '@zag-js/radio-group':
-        specifier: workspace:*
-        version: link:../../packages/machines/radio-group
-      '@zag-js/rating-group':
-        specifier: workspace:*
-        version: link:../../packages/machines/rating-group
-      '@zag-js/react':
-        specifier: workspace:*
-        version: link:../../packages/frameworks/react
-      '@zag-js/rect-utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/rect
-      '@zag-js/remove-scroll':
-        specifier: workspace:*
-        version: link:../../packages/utilities/remove-scroll
-      '@zag-js/scroll-snap':
-        specifier: workspace:*
-        version: link:../../packages/utilities/scroll-snap
-      '@zag-js/select':
-        specifier: workspace:*
-        version: link:../../packages/machines/select
-      '@zag-js/shared':
-        specifier: workspace:*
-        version: link:../../shared
-      '@zag-js/signature-pad':
-        specifier: workspace:*
-        version: link:../../packages/machines/signature-pad
-      '@zag-js/slider':
-        specifier: workspace:*
-        version: link:../../packages/machines/slider
-      '@zag-js/splitter':
-        specifier: workspace:*
-        version: link:../../packages/machines/splitter
-      '@zag-js/steps':
-        specifier: workspace:*
-        version: link:../../packages/machines/steps
-      '@zag-js/store':
-        specifier: workspace:*
-        version: link:../../packages/store
-      '@zag-js/stringify-state':
-        specifier: workspace:*
-        version: link:../../packages/utilities/stringify-state
-      '@zag-js/switch':
-        specifier: workspace:*
-        version: link:../../packages/machines/switch
-      '@zag-js/tabs':
-        specifier: workspace:*
-        version: link:../../packages/machines/tabs
-      '@zag-js/tags-input':
-        specifier: workspace:*
-        version: link:../../packages/machines/tags-input
-      '@zag-js/time-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/time-picker
-      '@zag-js/timer':
-        specifier: workspace:*
-        version: link:../../packages/machines/timer
-      '@zag-js/toast':
-        specifier: workspace:*
-        version: link:../../packages/machines/toast
-      '@zag-js/toggle-group':
-        specifier: workspace:*
-        version: link:../../packages/machines/toggle-group
-      '@zag-js/tooltip':
-        specifier: workspace:*
-        version: link:../../packages/machines/tooltip
-      '@zag-js/tour':
-        specifier: workspace:*
-        version: link:../../packages/machines/tour
-      '@zag-js/tree-view':
-        specifier: workspace:*
-        version: link:../../packages/machines/tree-view
-      '@zag-js/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../../packages/utilities/core
-      lucide-react:
-        specifier: 0.474.0
-        version: 0.474.0(react@19.0.0-rc-b57d2823-20240822)
-      react:
-        specifier: 19.0.0-rc-b57d2823-20240822
-        version: 19.0.0-rc-b57d2823-20240822
-      react-dom:
-        specifier: 19.0.0-rc-b57d2823-20240822
-        version: 19.0.0-rc-b57d2823-20240822(react@19.0.0-rc-b57d2823-20240822)
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.11.1
-        version: 9.13.0
-      '@types/react':
-        specifier: ^18
-        version: 18.3.18
-      '@types/react-dom':
-        specifier: ^18
-        version: 18.3.5(@types/react@18.3.18)
-      '@vitejs/plugin-react':
-        specifier: ^4.3.4
-        version: 4.3.4(vite@6.0.11(@types/node@22.13.0)(jiti@2.4.2)(terser@5.36.0)(tsx@4.19.2)(yaml@2.7.0))
-      eslint:
-        specifier: ^9.13.0
-        version: 9.13.0(jiti@2.4.2)
-      eslint-plugin-react-hooks:
-        specifier: ^5.1.0-rc.0
-        version: 5.1.0-rc-fb9a90fa48-20240614(eslint@9.13.0(jiti@2.4.2))
-      eslint-plugin-react-refresh:
-        specifier: ^0.4.14
-        version: 0.4.14(eslint@9.13.0(jiti@2.4.2))
-      globals:
-        specifier: ^15.9.0
-        version: 15.11.0
-      typescript:
-        specifier: ^5.7.3
-        version: 5.7.3
-      typescript-eslint:
-        specifier: ^8.7.0
-        version: 8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3)
-      vite:
-        specifier: ^6.0.11
         version: 6.0.11(@types/node@22.13.0)(jiti@2.4.2)(terser@5.36.0)(tsx@4.19.2)(yaml@2.7.0)
 
   examples/solid-ts:
@@ -5786,15 +5286,6 @@ packages:
   '@kwsites/promise-deferred@1.1.1':
     resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
 
-  '@lit-labs/ssr-dom-shim@1.2.1':
-    resolution: {integrity: sha512-wx4aBmgeGvFmOKucFKY+8VFJSYZxs9poN3SDNQFF6lT6NrQUnHiPB2PWz2sc4ieEcAaYYzN+1uWahEeTq2aRIQ==}
-
-  '@lit/context@1.1.2':
-    resolution: {integrity: sha512-S0nw2C6Tkm7fVX5TGYqeROGD+Z9Coa2iFpW+ysYBDH3YvCqOY3wVQvSgwbaliLJkjTnSEYCBe9qFqKV8WUFpVw==}
-
-  '@lit/reactive-element@2.0.4':
-    resolution: {integrity: sha512-GFn91inaUa2oHLak8awSIigYz0cU0Payr1rcFsrkf5OJ5eSPxElyZfKh0f2p9FsTiZWXQdWGJeXZICEfXXYSXQ==}
-
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
 
@@ -6076,11 +5567,6 @@ packages:
 
   '@octokit/types@13.6.1':
     resolution: {integrity: sha512-PHZE9Z+kWXb23Ndik8MKPirBPziOc0D2/3KH1P+6jK5nGWe96kadZuE4jev2/Jq7FvIfTlT2Ltg8Fv2x1v0a5g==}
-
-  '@open-wc/lit-helpers@0.7.0':
-    resolution: {integrity: sha512-4NBlx5ve0EvZplCRJbESm0MdMbRCw16alP2y76KAAAwzmFFXXrUj5hFwhw55+sSg5qaRRx6sY+s7usKgnNo3TQ==}
-    peerDependencies:
-      lit: ^2.0.0 || ^3.0.0
 
   '@opentelemetry/api-logs@0.39.1':
     resolution: {integrity: sha512-9BJ8lMcOzEN0lu+Qji801y707oFO4xT3db6cosPvl+k7ItUHKN5ofWqtSbM9gbt1H4JJ/4/2TVrqI9Rq7hNv6Q==}
@@ -7045,9 +6531,6 @@ packages:
   '@types/tough-cookie@4.0.5':
     resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
 
-  '@types/trusted-types@2.0.7':
-    resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
-
   '@types/unist@2.0.11':
     resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
 
@@ -7056,17 +6539,6 @@ packages:
 
   '@types/which@3.0.4':
     resolution: {integrity: sha512-liyfuo/106JdlgSchJzXEQCVArk0CvevqPote8F8HgWgJ3dRCcTHgJIsLDuee0kxk/mhbInzIZk3QWSZJ8R+2w==}
-
-  '@typescript-eslint/eslint-plugin@8.12.2':
-    resolution: {integrity: sha512-gQxbxM8mcxBwaEmWdtLCIGLfixBMHhQjBqR8sVWNTPpcj45WlYL2IObS/DNMLH1DBP0n8qz+aiiLTGfopPEebw==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      '@typescript-eslint/parser': ^8.0.0 || ^8.0.0-alpha.0
-      eslint: ^8.57.0 || ^9.0.0
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
   '@typescript-eslint/eslint-plugin@8.18.2':
     resolution: {integrity: sha512-adig4SzPLjeQ0Tm+jvsozSGiCliI2ajeURDGHjZ2llnA+A67HihCQ+a3amtPhUakd1GlwHxSRvzOZktbEvhPPg==}
@@ -7084,16 +6556,6 @@ packages:
       eslint: ^8.57.0 || ^9.0.0
       typescript: '>=4.8.4 <5.8.0'
 
-  '@typescript-eslint/parser@8.12.2':
-    resolution: {integrity: sha512-MrvlXNfGPLH3Z+r7Tk+Z5moZAc0dzdVjTgUgwsdGweH7lydysQsnSww3nAmsq8blFuRD5VRlAr9YdEFw3e6PBw==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      eslint: ^8.57.0 || ^9.0.0
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   '@typescript-eslint/parser@8.18.2':
     resolution: {integrity: sha512-y7tcq4StgxQD4mDr9+Jb26dZ+HTZ/SkfqpXSiqeUXZHxOUyjWDKsmwKhJ0/tApR08DgOhrFAoAhyB80/p3ViuA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -7108,10 +6570,6 @@ packages:
       eslint: ^8.57.0 || ^9.0.0
       typescript: '>=4.8.4 <5.8.0'
 
-  '@typescript-eslint/scope-manager@8.12.2':
-    resolution: {integrity: sha512-gPLpLtrj9aMHOvxJkSbDBmbRuYdtiEbnvO25bCMza3DhMjTQw0u7Y1M+YR5JPbMsXXnSPuCf5hfq0nEkQDL/JQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
   '@typescript-eslint/scope-manager@8.18.2':
     resolution: {integrity: sha512-YJFSfbd0CJjy14r/EvWapYgV4R5CHzptssoag2M7y3Ra7XNta6GPAJPPP5KGB9j14viYXyrzRO5GkX7CRfo8/g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -7119,15 +6577,6 @@ packages:
   '@typescript-eslint/scope-manager@8.19.1':
     resolution: {integrity: sha512-60L9KIuN/xgmsINzonOcMDSB8p82h95hoBfSBtXuO4jlR1R9L1xSkmVZKgCPVfavDlXihh4ARNjXhh1gGnLC7Q==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@typescript-eslint/type-utils@8.12.2':
-    resolution: {integrity: sha512-bwuU4TAogPI+1q/IJSKuD4shBLc/d2vGcRT588q+jzayQyjVK2X6v/fbR4InY2U2sgf8MEvVCqEWUzYzgBNcGQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
   '@typescript-eslint/type-utils@8.18.2':
     resolution: {integrity: sha512-AB/Wr1Lz31bzHfGm/jgbFR0VB0SML/hd2P1yxzKDM48YmP7vbyJNHRExUE/wZsQj2wUCvbWH8poNHFuxLqCTnA==}
@@ -7143,10 +6592,6 @@ packages:
       eslint: ^8.57.0 || ^9.0.0
       typescript: '>=4.8.4 <5.8.0'
 
-  '@typescript-eslint/types@8.12.2':
-    resolution: {integrity: sha512-VwDwMF1SZ7wPBUZwmMdnDJ6sIFk4K4s+ALKLP6aIQsISkPv8jhiw65sAK6SuWODN/ix+m+HgbYDkH+zLjrzvOA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
   '@typescript-eslint/types@8.18.2':
     resolution: {integrity: sha512-Z/zblEPp8cIvmEn6+tPDIHUbRu/0z5lqZ+NvolL5SvXWT5rQy7+Nch83M0++XzO0XrWRFWECgOAyE8bsJTl1GQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -7154,15 +6599,6 @@ packages:
   '@typescript-eslint/types@8.19.1':
     resolution: {integrity: sha512-JBVHMLj7B1K1v1051ZaMMgLW4Q/jre5qGK0Ew6UgXz1Rqh+/xPzV1aW581OM00X6iOfyr1be+QyW8LOUf19BbA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@typescript-eslint/typescript-estree@8.12.2':
-    resolution: {integrity: sha512-mME5MDwGe30Pq9zKPvyduyU86PH7aixwqYR2grTglAdB+AN8xXQ1vFGpYaUSJ5o5P/5znsSBeNcs5g5/2aQwow==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
   '@typescript-eslint/typescript-estree@8.18.2':
     resolution: {integrity: sha512-WXAVt595HjpmlfH4crSdM/1bcsqh+1weFRWIa9XMTx/XHZ9TCKMcr725tLYqWOgzKdeDrqVHxFotrvWcEsk2Tg==}
@@ -7175,12 +6611,6 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       typescript: '>=4.8.4 <5.8.0'
-
-  '@typescript-eslint/utils@8.12.2':
-    resolution: {integrity: sha512-UTTuDIX3fkfAz6iSVa5rTuSfWIYZ6ATtEocQ/umkRSyC9O919lbZ8dcH7mysshrCdrAM03skJOEYaBugxN+M6A==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      eslint: ^8.57.0 || ^9.0.0
 
   '@typescript-eslint/utils@8.18.2':
     resolution: {integrity: sha512-Cr4A0H7DtVIPkauj4sTSXVl+VBWewE9/o40KcF3TV9aqDEOWoXF3/+oRXNby3DYzZeCATvbdksYsGZzplwnK/Q==}
@@ -7195,10 +6625,6 @@ packages:
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
       typescript: '>=4.8.4 <5.8.0'
-
-  '@typescript-eslint/visitor-keys@8.12.2':
-    resolution: {integrity: sha512-PChz8UaKQAVNHghsHcPyx1OMHoFRUEA7rJSK/mDhdq85bk+PLsUHUBqTQTFt18VJZbmxBovM65fezlheQRsSDA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@typescript-eslint/visitor-keys@8.18.2':
     resolution: {integrity: sha512-zORcwn4C3trOWiCqFQP1x6G3xTRyZ1LYydnj51cRnJ6hxBlr/cKPckk+PKPUw/fXmvfKTcw7bwY3w9izgx5jZw==}
@@ -8809,17 +8235,6 @@ packages:
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
 
-  eslint-plugin-react-hooks@5.1.0-rc-fb9a90fa48-20240614:
-    resolution: {integrity: sha512-xsiRwaDNF5wWNC4ZHLut+x/YcAxksUd9Rizt7LaEn3bV8VyYRpXnRJQlLOfYaVy9esk4DFP4zPPnoNVjq5Gc0w==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
-
-  eslint-plugin-react-refresh@0.4.14:
-    resolution: {integrity: sha512-aXvzCTK7ZBv1e7fahFuR3Z/fyQQSIQ711yPgYRj+Oj64tyTgO4iQIDmYXDBqvSWQ/FA4OSCsXOStlF+noU0/NA==}
-    peerDependencies:
-      eslint: '>=7'
-
   eslint-plugin-react@7.37.2:
     resolution: {integrity: sha512-EsTAnj9fLVr/GZleBLFbj/sSuXeWmp1eXIN60ceYnZveqEaUCyW4X+Vh4WTdUhCkW4xutXYqTXCUSyqD4rB75w==}
     engines: {node: '>=4'}
@@ -9359,10 +8774,6 @@ packages:
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
-    engines: {node: '>=18'}
-
-  globals@15.11.0:
-    resolution: {integrity: sha512-yeyNSjdbyVaWurlwCpcA6XNBrHTMIeDdj0/hnvX/OLJ9ekOXYbLsLinH/MucQyGvNnXhidTdNhTtJaffL2sMfw==}
     engines: {node: '>=18'}
 
   globalthis@1.0.4:
@@ -10233,15 +9644,6 @@ packages:
   listr2@8.2.5:
     resolution: {integrity: sha512-iyAZCeyD+c1gPyE9qpFu8af0Y+MRtmKOncdGoA2S5EY8iFq99dmmvkNnHiWo+pj0s7yH7l3KPIgee77tKpXPWQ==}
     engines: {node: '>=18.0.0'}
-
-  lit-element@4.1.1:
-    resolution: {integrity: sha512-HO9Tkkh34QkTeUmEdNYhMT8hzLid7YlMlATSi1q4q17HE5d9mrrEHJ/o8O2D0cMi182zK1F3v7x0PWFjrhXFew==}
-
-  lit-html@3.2.1:
-    resolution: {integrity: sha512-qI/3lziaPMSKsrwlxH/xMgikhQ0EGOX2ICU73Bi/YHFvz2j/yMCIrw4+puF2IpQ4+upd3EWbvnHM9+PnJn48YA==}
-
-  lit@3.2.1:
-    resolution: {integrity: sha512-1BBa1E/z0O9ye5fZprPtdqnc0BFzxIxTTOO/tQFmyC/hj1O3jL4TfmLBw0WEwjAokdLwpclkvGgDJwTIh0/22w==}
 
   load-json-file@4.0.0:
     resolution: {integrity: sha512-Kx8hMakjX03tiGTLAIdJ+lL0htKnXjEZN6hk/tozf/WOuYGdZBJrZ+rCJRbVCugsjB3jMLn9746NsQIf5VjBMw==}
@@ -11750,11 +11152,6 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
-  react-dom@19.0.0-rc-b57d2823-20240822:
-    resolution: {integrity: sha512-WZbYsxoOD/aUZyeTIN2J7hJmbVvdZoAaneyGuO/5BILH8gy0dsXlrwj/IB1Ji/HyrxA/QBfBRg/9w2TNjw8RfA==}
-    peerDependencies:
-      react: 19.0.0-rc-b57d2823-20240822
-
   react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
 
@@ -11803,10 +11200,6 @@ packages:
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
-    engines: {node: '>=0.10.0'}
-
-  react@19.0.0-rc-b57d2823-20240822:
-    resolution: {integrity: sha512-SI/vK7ym+yDyJ58/g4sE1F+dUI1g2uEVJUODaLCMgDdGBgEyjjohrdQYDnKfoSCraEMO/Pgoj9QIbagJ8ma0vw==}
     engines: {node: '>=0.10.0'}
 
   read-yaml-file@1.1.0:
@@ -12079,9 +11472,6 @@ packages:
 
   scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
-
-  scheduler@0.25.0-rc-b57d2823-20240822:
-    resolution: {integrity: sha512-sTgNaWduDaKMwu5wCllFKDqqqeO0GA7XdwUmuYqrlDStdgQpWJHBVW42JCw5b9CWApUP2v/YOb0CDAEzf0fxew==}
 
   scule@1.3.0:
     resolution: {integrity: sha512-6FtHJEvt+pVMIB9IBY+IcCJ6Z5f1iQnytgyfKMhDKgmzYG+TeH/wx1y3l27rshSbLiSanrR9ffZDrEsmjlQF2g==}
@@ -12778,15 +12168,6 @@ packages:
 
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
-
-  typescript-eslint@8.12.2:
-    resolution: {integrity: sha512-UbuVUWSrHVR03q9CWx+JDHeO6B/Hr9p4U5lRH++5tq/EbFq1faYZe50ZSBePptgfIKLEti0aPQ3hFgnPVcd8ZQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
   typescript@5.7.2:
     resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
@@ -15375,16 +14756,6 @@ snapshots:
 
   '@kwsites/promise-deferred@1.1.1': {}
 
-  '@lit-labs/ssr-dom-shim@1.2.1': {}
-
-  '@lit/context@1.1.2':
-    dependencies:
-      '@lit/reactive-element': 2.0.4
-
-  '@lit/reactive-element@2.0.4':
-    dependencies:
-      '@lit-labs/ssr-dom-shim': 1.2.1
-
   '@manypkg/find-root@1.1.0':
     dependencies:
       '@babel/runtime': 7.26.0
@@ -15911,10 +15282,6 @@ snapshots:
   '@octokit/types@13.6.1':
     dependencies:
       '@octokit/openapi-types': 22.2.0
-
-  '@open-wc/lit-helpers@0.7.0(lit@3.2.1)':
-    dependencies:
-      lit: 3.2.1
 
   '@opentelemetry/api-logs@0.39.1':
     dependencies:
@@ -16930,31 +16297,11 @@ snapshots:
 
   '@types/tough-cookie@4.0.5': {}
 
-  '@types/trusted-types@2.0.7': {}
-
   '@types/unist@2.0.11': {}
 
   '@types/unist@3.0.3': {}
 
   '@types/which@3.0.4': {}
-
-  '@typescript-eslint/eslint-plugin@8.12.2(@typescript-eslint/parser@8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3)':
-    dependencies:
-      '@eslint-community/regexpp': 4.12.1
-      '@typescript-eslint/parser': 8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3)
-      '@typescript-eslint/scope-manager': 8.12.2
-      '@typescript-eslint/type-utils': 8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3)
-      '@typescript-eslint/utils': 8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3)
-      '@typescript-eslint/visitor-keys': 8.12.2
-      eslint: 9.13.0(jiti@2.4.2)
-      graphemer: 1.4.0
-      ignore: 5.3.2
-      natural-compare: 1.4.0
-      ts-api-utils: 1.4.0(typescript@5.7.3)
-    optionalDependencies:
-      typescript: 5.7.3
-    transitivePeerDependencies:
-      - supports-color
 
   '@typescript-eslint/eslint-plugin@8.18.2(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3)':
     dependencies:
@@ -17007,19 +16354,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3)':
-    dependencies:
-      '@typescript-eslint/scope-manager': 8.12.2
-      '@typescript-eslint/types': 8.12.2
-      '@typescript-eslint/typescript-estree': 8.12.2(typescript@5.7.3)
-      '@typescript-eslint/visitor-keys': 8.12.2
-      debug: 4.4.0(supports-color@9.4.0)
-      eslint: 9.13.0(jiti@2.4.2)
-    optionalDependencies:
-      typescript: 5.7.3
-    transitivePeerDependencies:
-      - supports-color
-
   '@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.18.2
@@ -17056,11 +16390,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/scope-manager@8.12.2':
-    dependencies:
-      '@typescript-eslint/types': 8.12.2
-      '@typescript-eslint/visitor-keys': 8.12.2
-
   '@typescript-eslint/scope-manager@8.18.2':
     dependencies:
       '@typescript-eslint/types': 8.18.2
@@ -17070,18 +16399,6 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.19.1
       '@typescript-eslint/visitor-keys': 8.19.1
-
-  '@typescript-eslint/type-utils@8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3)':
-    dependencies:
-      '@typescript-eslint/typescript-estree': 8.12.2(typescript@5.7.3)
-      '@typescript-eslint/utils': 8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3)
-      debug: 4.4.0(supports-color@9.4.0)
-      ts-api-utils: 1.4.0(typescript@5.7.3)
-    optionalDependencies:
-      typescript: 5.7.3
-    transitivePeerDependencies:
-      - eslint
-      - supports-color
 
   '@typescript-eslint/type-utils@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3)':
     dependencies:
@@ -17116,26 +16433,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/types@8.12.2': {}
-
   '@typescript-eslint/types@8.18.2': {}
 
   '@typescript-eslint/types@8.19.1': {}
-
-  '@typescript-eslint/typescript-estree@8.12.2(typescript@5.7.3)':
-    dependencies:
-      '@typescript-eslint/types': 8.12.2
-      '@typescript-eslint/visitor-keys': 8.12.2
-      debug: 4.4.0(supports-color@9.4.0)
-      fast-glob: 3.3.3
-      is-glob: 4.0.3
-      minimatch: 9.0.5
-      semver: 7.6.3
-      ts-api-utils: 1.4.0(typescript@5.7.3)
-    optionalDependencies:
-      typescript: 5.7.3
-    transitivePeerDependencies:
-      - supports-color
 
   '@typescript-eslint/typescript-estree@8.18.2(typescript@5.7.3)':
     dependencies:
@@ -17164,17 +16464,6 @@ snapshots:
       typescript: 5.7.3
     transitivePeerDependencies:
       - supports-color
-
-  '@typescript-eslint/utils@8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3)':
-    dependencies:
-      '@eslint-community/eslint-utils': 4.4.1(eslint@9.13.0(jiti@2.4.2))
-      '@typescript-eslint/scope-manager': 8.12.2
-      '@typescript-eslint/types': 8.12.2
-      '@typescript-eslint/typescript-estree': 8.12.2(typescript@5.7.3)
-      eslint: 9.13.0(jiti@2.4.2)
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
 
   '@typescript-eslint/utils@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3)':
     dependencies:
@@ -17208,11 +16497,6 @@ snapshots:
       typescript: 5.7.3
     transitivePeerDependencies:
       - supports-color
-
-  '@typescript-eslint/visitor-keys@8.12.2':
-    dependencies:
-      '@typescript-eslint/types': 8.12.2
-      eslint-visitor-keys: 3.4.3
 
   '@typescript-eslint/visitor-keys@8.18.2':
     dependencies:
@@ -19038,7 +18322,7 @@ snapshots:
       '@typescript-eslint/parser': 8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3)
       eslint: 9.17.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@9.17.0(jiti@2.4.2))
       eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-typescript@3.6.3)(eslint@9.17.0(jiti@2.4.2))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.17.0(jiti@2.4.2))
       eslint-plugin-react: 7.37.2(eslint@9.17.0(jiti@2.4.2))
@@ -19075,13 +18359,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2)):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@9.17.0(jiti@2.4.2)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.0(supports-color@9.4.0)
       enhanced-resolve: 5.17.1
       eslint: 9.17.0(jiti@2.4.2)
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2))
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.17.0(jiti@2.4.2))
       fast-glob: 3.3.3
       get-tsconfig: 4.8.1
       is-bun-module: 1.2.1
@@ -19113,14 +18397,14 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2)):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.17.0(jiti@2.4.2)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3)
       eslint: 9.17.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@9.17.0(jiti@2.4.2))
     transitivePeerDependencies:
       - supports-color
 
@@ -19167,7 +18451,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.17.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2)))(eslint@9.17.0(jiti@2.4.2))
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@2.4.2))(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.17.0(jiti@2.4.2))
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -19305,14 +18589,6 @@ snapshots:
   eslint-plugin-react-hooks@5.1.0(eslint@9.17.0(jiti@2.4.2)):
     dependencies:
       eslint: 9.17.0(jiti@2.4.2)
-
-  eslint-plugin-react-hooks@5.1.0-rc-fb9a90fa48-20240614(eslint@9.13.0(jiti@2.4.2)):
-    dependencies:
-      eslint: 9.13.0(jiti@2.4.2)
-
-  eslint-plugin-react-refresh@0.4.14(eslint@9.13.0(jiti@2.4.2)):
-    dependencies:
-      eslint: 9.13.0(jiti@2.4.2)
 
   eslint-plugin-react@7.37.2(eslint@8.57.1):
     dependencies:
@@ -20081,8 +19357,6 @@ snapshots:
       type-fest: 0.20.2
 
   globals@14.0.0: {}
-
-  globals@15.11.0: {}
 
   globalthis@1.0.4:
     dependencies:
@@ -21078,22 +20352,6 @@ snapshots:
       rfdc: 1.4.1
       wrap-ansi: 9.0.0
 
-  lit-element@4.1.1:
-    dependencies:
-      '@lit-labs/ssr-dom-shim': 1.2.1
-      '@lit/reactive-element': 2.0.4
-      lit-html: 3.2.1
-
-  lit-html@3.2.1:
-    dependencies:
-      '@types/trusted-types': 2.0.7
-
-  lit@3.2.1:
-    dependencies:
-      '@lit/reactive-element': 2.0.4
-      lit-element: 4.1.1
-      lit-html: 3.2.1
-
   load-json-file@4.0.0:
     dependencies:
       graceful-fs: 4.2.11
@@ -21229,10 +20487,6 @@ snapshots:
   lucide-react@0.474.0(react@18.3.1):
     dependencies:
       react: 18.3.1
-
-  lucide-react@0.474.0(react@19.0.0-rc-b57d2823-20240822):
-    dependencies:
-      react: 19.0.0-rc-b57d2823-20240822
 
   lucide-solid@0.474.0(solid-js@1.9.4):
     dependencies:
@@ -23118,11 +22372,6 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
-  react-dom@19.0.0-rc-b57d2823-20240822(react@19.0.0-rc-b57d2823-20240822):
-    dependencies:
-      react: 19.0.0-rc-b57d2823-20240822
-      scheduler: 0.25.0-rc-b57d2823-20240822
-
   react-fast-compare@3.2.2: {}
 
   react-hook-form@7.54.2(react@18.3.1):
@@ -23159,8 +22408,6 @@ snapshots:
   react@18.3.1:
     dependencies:
       loose-envify: 1.4.0
-
-  react@19.0.0-rc-b57d2823-20240822: {}
 
   read-yaml-file@1.1.0:
     dependencies:
@@ -23521,8 +22768,6 @@ snapshots:
   scheduler@0.23.2:
     dependencies:
       loose-envify: 1.4.0
-
-  scheduler@0.25.0-rc-b57d2823-20240822: {}
 
   scule@1.3.0: {}
 
@@ -24280,17 +23525,6 @@ snapshots:
       is-typedarray: 1.0.0
 
   typedarray@0.0.6: {}
-
-  typescript-eslint@8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3):
-    dependencies:
-      '@typescript-eslint/eslint-plugin': 8.12.2(@typescript-eslint/parser@8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3)
-      '@typescript-eslint/parser': 8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3)
-      '@typescript-eslint/utils': 8.12.2(eslint@9.13.0(jiti@2.4.2))(typescript@5.7.3)
-    optionalDependencies:
-      typescript: 5.7.3
-    transitivePeerDependencies:
-      - eslint
-      - supports-color
 
   typescript@5.7.2:
     optional: true
