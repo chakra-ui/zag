@@ -33,7 +33,7 @@
   "devDependencies": {
     "@types/react-dom": "19.0.3",
     "@zag-js/utils": "workspace:*",
-    "preact": "10.25.4",
+    "preact": "10.26.0",
     "clean-package": "2.2.0"
   },
   "peerDependencies": {
