@@ -6,7 +6,6 @@ import { computed, Teleport } from "vue"
 const service = useMachine(tooltip.machine, {
   id: useId(),
   positioning: { sameWidth: true },
-  closeDelay: 60000,
 })
 
 const api = computed(() => tooltip.connect(service, normalizeProps))
@@ -14,11 +13,10 @@ const api = computed(() => tooltip.connect(service, normalizeProps))
 
 <template>
   <div style="padding: 40px">
-    <pre>{{ state.value }}</pre>
-    <button ref="ref" v-bind="api.getTriggerProps()">Hover me</button>
+    <button v-bind="api.getTriggerProps()">Hover me</button>
     <Teleport to="#teleports">
       <div v-if="api.open" v-bind="api.getPositionerProps()">
-        <div v-bind="api.getContentProps()">Tooltip with a lot of text probably</div>
+        <div v-bind="api.getContentProps()">Tooltip</div>
       </div>
     </Teleport>
   </div>
