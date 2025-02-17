@@ -1,101 +1,135 @@
-// import { Portal, normalizeProps, useMachine } from "@zag-js/react"
-// import { toastControls } from "@zag-js/shared"
-// import * as toast from "@zag-js/toast"
-// import { XIcon } from "lucide-react"
-// import { useId, useRef } from "react"
-// import { Dialog } from "../components/dialog"
-// import { LoaderBar } from "../components/loader"
-// import { StateVisualizer } from "../components/state-visualizer"
-// import { Toolbar } from "../components/toolbar"
-// import { useControls } from "../hooks/use-controls"
+import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import * as toast from "@zag-js/toast"
+import { XIcon } from "lucide-react"
+import { useId, useRef } from "react"
 
-// function ToastItem({ actor }: { actor: toast.Service }) {
-//   const service = useMachine(actor)
-//   const api = toast.connect(service, normalizeProps)
+interface ToastProps {
+  actor: toast.Options<React.ReactNode>
+  index: number
+  parent: toast.GroupService
+}
 
-//   return (
-//     <div {...api.getRootProps()}>
-//       <span {...api.getGhostBeforeProps()} />
-//       <div data-scope="toast" data-part="progressbar" />
-//       <p {...api.getTitleProps()}>
-//         {api.type === "loading" && <LoaderBar />}
-//         {api.title}
-//       </p>
-//       <p {...api.getDescriptionProps()}>{api.description}</p>
-//       <button {...api.getCloseTriggerProps()}>
-//         <XIcon />
-//       </button>
-//       <span {...api.getGhostAfterProps()} />
-//     </div>
-//   )
-// }
+function Toast(props: ToastProps) {
+  const { actor, index, parent } = props
+  const composedProps = { ...actor, index, parent }
 
-// export default function Page() {
-//   const controls = useControls(toastControls)
+  const service = useMachine(toast.machine, composedProps)
+  const api = toast.connect(service, normalizeProps)
 
-//   const service = useMachine(toast.group.machine, {
-//     id: useId(),
-//     placement: "bottom",
-//     removeDelay: 200,
-//   })
+  return (
+    <div {...api.getRootProps()}>
+      <span {...api.getGhostBeforeProps()} />
+      <div data-scope="toast" data-part="progressbar" />
+      <div {...api.getTitleProps()}>
+        {api.type === "loading" && "<...>"}
+        {api.title} {api.type}
+      </div>
+      <div {...api.getDescriptionProps()}>{api.description}</div>
+      <button {...api.getCloseTriggerProps()}>
+        <XIcon />
+      </button>
+      <span {...api.getGhostAfterProps()} />
+    </div>
+  )
+}
 
-//   const api = toast.group.connect(service, normalizeProps)
-//   const id = useRef<string>()
+const toaster = toast.createStore({
+  overlap: false,
+  placement: "bottom",
+})
 
-//   return (
-//     <>
-//       <main>
-//         <Dialog />
-//         <div style={{ display: "flex", gap: "16px" }}>
-//           <button
-//             onClick={() => {
-//               api.create({
-//                 title: "Fetching data...",
-//                 type: "loading",
-//               })
-//             }}
-//           >
-//             Notify (Loading)
-//           </button>
-//           <button
-//             onClick={() => {
-//               id.current = api.create({
-//                 title: "Ooops! Something was wrong",
-//                 type: "error",
-//               })
-//             }}
-//           >
-//             Notify (Error)
-//           </button>
-//           <button
-//             onClick={() => {
-//               if (!id.current) return
-//               api.update(id.current, {
-//                 title: "Testing",
-//                 type: "loading",
-//               })
-//             }}
-//           >
-//             Update Latest
-//           </button>
-//           <button onClick={() => api.dismiss()}>Close all</button>
-//           <button onClick={() => api.pause()}>Pause all</button>
-//           <button onClick={() => api.resume()}>Resume all</button>
-//         </div>
+export default function ToastGroup() {
+  const service = useMachine(toast.group.machine, {
+    id: useId(),
+    gap: 24,
+    store: toaster,
+  })
 
-//         <Portal>
-//           {api.getPlacements().map((placement) => (
-//             <div key={placement} {...api.getGroupProps({ placement })}>
-//               {api.getToastsByPlacement(placement).map((toast) => (
-//                 <ToastItem key={toast.id} actor={toast} />
-//               ))}
-//             </div>
-//           ))}
-//         </Portal>
-//       </main>
-//       <Toolbar controls={controls.ui}>
-//         <StateVisualizer state={service} />
-//       </Toolbar>
-//     </>
-//   )
-// }
+  const api = toast.group.connect(service, normalizeProps)
+  const id = useRef<string>()
+
+  return (
+    <main>
+      <div style={{ display: "flex", gap: "16px" }}>
+        <button
+          onClick={() => {
+            toaster.create({
+              title: "Fetching data...",
+              type: "loading",
+            })
+          }}
+        >
+          Notify (Loading)
+        </button>
+        <button
+          onClick={() => {
+            id.current = toaster.create({
+              title: "Ooops! Something was wrong",
+              type: "error",
+              onStatusChange(details) {
+                console.log(details)
+              },
+              // duration: Infinity,
+            })
+          }}
+        >
+          Notify (Error)
+        </button>
+        <button
+          onClick={() => {
+            if (!id.current) return
+            toaster.update(id.current, {
+              title: "Testing",
+              type: "loading",
+            })
+          }}
+        >
+          Update Latest
+        </button>
+        <button
+          className="toast-button"
+          onClick={() => {
+            const promise = new Promise<{ name: string }>((resolve) => {
+              setTimeout(() => {
+                resolve({ name: "Chakra" })
+              }, 3000)
+            })
+
+            toaster.promise(promise, {
+              loading: { title: "Creating toast..." },
+              success: (data) => {
+                return { title: `${data.name} toast added` }
+              },
+              error: { title: "Error" },
+            })
+          }}
+        >
+          Promise
+        </button>
+        <button
+          onClick={() => {
+            toaster.create({
+              type: "info",
+              title: <h1 style={{ color: "red" }}>Hello</h1>,
+              description: <p>This is a description</p>,
+            })
+          }}
+        >
+          Create (JSX)
+        </button>
+
+        <button onClick={() => toaster.dismiss()}>Close all</button>
+        <button onClick={() => toaster.pause()}>Pause all</button>
+        <button onClick={() => toaster.resume()}>Resume all</button>
+      </div>
+
+      <Portal>
+        <div {...api.getGroupProps()}>
+          {api.getToasts().map((toast, index) => (
+            <Toast key={toast.id} actor={toast} index={index} parent={service} />
+          ))}
+        </div>
+      </Portal>
+    </main>
+  )
+}

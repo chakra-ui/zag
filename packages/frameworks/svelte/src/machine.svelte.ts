@@ -13,7 +13,6 @@ import type {
 import { createScope } from "@zag-js/core"
 import { isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { flushSync, onDestroy, onMount } from "svelte"
-import { reflect } from "./reflect"
 import { bindable } from "./bindable.svelte"
 import { useRefs } from "./refs.svelte"
 import { track } from "./track.svelte"
@@ -33,12 +32,14 @@ export function useMachine<T extends BaseSchema>(
   })
 
   const props: any = $derived(machine.props?.({ props: access(userProps), scope }) ?? access(userProps))
-  const prop = useProp(reflect(() => props))
+  const prop = useProp(() => props)
 
   const context: any = machine.context?.({
     prop,
     bindable: bindable,
-    scope: reflect(() => scope),
+    get scope() {
+      return scope
+    },
     flush: flush,
     getContext() {
       return ctx
@@ -102,7 +103,7 @@ export function useMachine<T extends BaseSchema>(
     send,
     action,
     guard,
-    track: track,
+    track,
     refs,
     computed,
     flush,
@@ -253,9 +254,9 @@ export function useMachine<T extends BaseSchema>(
   } as Service<T>
 }
 
-function useProp<T>(value: T) {
+function useProp<T>(value: () => T) {
   return function get<K extends keyof T>(key: K): T[K] {
-    return value[key]
+    return value()[key]
   }
 }
 

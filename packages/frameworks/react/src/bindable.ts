@@ -1,10 +1,8 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
-import { isFunction } from "@zag-js/utils"
+import { identity, isFunction } from "@zag-js/utils"
 import { useRef, useState } from "react"
 import { flushSync } from "react-dom"
 import { useSafeLayoutEffect } from "./use-layout-effect"
-
-const identity = (v: VoidFunction) => v()
 
 export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().value ?? props().defaultValue

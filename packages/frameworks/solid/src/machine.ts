@@ -1,7 +1,6 @@
 import type {
   ActionsOrFn,
   BaseSchema,
-  Bindable,
   GuardFn,
   MachineConfig,
   Service,
@@ -27,6 +26,10 @@ export function useMachine<T extends BaseSchema>(
     return createScope({ id, ids, getRootNode })
   })
 
+  const debug = (...args: any[]) => {
+    if (machine.debug) console.log(...args)
+  }
+
   const props = createMemo(
     () =>
       machine.props?.({
@@ -40,7 +43,9 @@ export function useMachine<T extends BaseSchema>(
   const context: any = machine.context?.({
     prop,
     bindable: createBindable,
-    scope: reflect(scope),
+    get scope() {
+      return scope()
+    },
     flush,
     getContext() {
       return ctx as any
@@ -85,10 +90,12 @@ export function useMachine<T extends BaseSchema>(
   const getState = () =>
     mergeProps(state, {
       matches(...values: T["state"][]) {
-        return values.includes(state.ref.current)
+        const current = state.get()
+        return values.includes(current)
       },
       hasTag(tag: T["tag"]) {
-        return !!machine.states[state.ref.current as T["state"]]?.tags?.includes(tag)
+        const current = state.get()
+        return !!machine.states[current as T["state"]]?.tags?.includes(tag)
       },
     })
 
@@ -106,7 +113,9 @@ export function useMachine<T extends BaseSchema>(
     refs,
     computed,
     flush,
-    scope: reflect(scope),
+    get scope() {
+      return scope()
+    },
     choose,
   })
 
@@ -217,16 +226,13 @@ export function useMachine<T extends BaseSchema>(
     action(machine.exit ?? [])
   })
 
-  const getCurrentState = () => {
-    if ("ref" in state) return state.ref.current
-    return (state as Bindable<string>).get()
-  }
-
   const send = (event: any) => {
     previousEventRef.current = eventRef.current
     eventRef.current = event
 
-    let currentState = getCurrentState()
+    debug("send", event)
+
+    let currentState = state.get()
 
     const transitions =
       // @ts-ignore
@@ -235,8 +241,9 @@ export function useMachine<T extends BaseSchema>(
       machine.on?.[event.type]
 
     const transition = choose(transitions)
-
     if (!transition) return
+
+    debug("transition", transition)
 
     // save current transition
     transitionRef.current = transition
@@ -259,7 +266,9 @@ export function useMachine<T extends BaseSchema>(
     send,
     context: ctx,
     prop,
-    scope: reflect(scope),
+    get scope() {
+      return scope()
+    },
     refs,
     computed,
     event: getEvent(),
@@ -272,14 +281,6 @@ function flush(fn: VoidFunction) {
 
 function access<T>(value: T | Accessor<T>) {
   return isFunction(value) ? value() : value
-}
-
-function reflect<T extends object>(value: Accessor<T>) {
-  return new Proxy(value(), {
-    get(_, prop) {
-      return Reflect.get(value(), prop)
-    },
-  })
 }
 
 function createProp<T>(value: Accessor<T>) {

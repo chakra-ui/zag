@@ -10,10 +10,14 @@ export function nextTick(fn: VoidFunction) {
   }
 }
 
-export function raf(fn: VoidFunction) {
-  const id = globalThis.requestAnimationFrame(fn)
+export function raf(fn: VoidFunction | (() => VoidFunction)) {
+  let cleanup: VoidFunction | undefined | void
+  const id = globalThis.requestAnimationFrame(() => {
+    cleanup = fn()
+  })
   return () => {
     globalThis.cancelAnimationFrame(id)
+    cleanup?.()
   }
 }
 

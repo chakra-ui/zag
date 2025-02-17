@@ -93,12 +93,10 @@ export const machine = createMachine<PresenceSchema>({
       },
 
       setNode: ({ refs, event }) => {
-        if (event.type !== "NODE.SET") return
         refs.set("node", event.node)
       },
 
       setStyles: ({ refs, event }) => {
-        if (event.type !== "NODE.SET") return
         refs.set("styles", getComputedStyle(event.node))
       },
 

@@ -1,21 +1,14 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
 import { isFunction } from "@zag-js/utils"
-import { ref, computed as vueComputed, watchEffect } from "vue"
+import { shallowRef, computed as __computed } from "vue"
 
 export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().defaultValue ?? props().value
   const eq = props().isEqual ?? Object.is
 
-  const v = ref(initial)
-  const controlled = vueComputed(() => props().value !== undefined)
-  const valueRef = ref(controlled.value ? props().value : v.value)
-  const prevValue = ref(v.value)
-
-  watchEffect(() => {
-    const next = controlled.value ? props().value : v.value
-    prevValue.value = next
-    valueRef.value = next
-  })
+  const v = shallowRef(initial)
+  const controlled = __computed(() => props().value !== undefined)
+  const valueRef = shallowRef(controlled.value ? props().value : v.value)
 
   return {
     initial,
@@ -24,10 +17,11 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
       return (controlled.value ? props().value : v.value) as T
     },
     set(val: T | ((prev: T) => T)) {
-      const nextValue = isFunction(val) ? val(valueRef.value as T) : val
+      const prev = controlled.value ? props().value : v.value
+      const nextValue = isFunction(val) ? val(prev as T) : val
       if (!controlled.value) v.value = nextValue
-      if (!eq(nextValue, prevValue.value)) {
-        props().onChange?.(nextValue, prevValue.value)
+      if (!eq(nextValue, prev)) {
+        props().onChange?.(nextValue, prev)
       }
     },
     invoke(nextValue: T, prevValue: T) {

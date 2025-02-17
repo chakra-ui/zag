@@ -1772,6 +1772,9 @@ importers:
 
   packages/frameworks/solid:
     dependencies:
+      '@solid-primitives/keyed':
+        specifier: ^1.5.0
+        version: 1.5.0(solid-js@1.9.4)
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
@@ -6061,6 +6064,11 @@ packages:
   '@sindresorhus/merge-streams@4.0.0':
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
+
+  '@solid-primitives/keyed@1.5.0':
+    resolution: {integrity: sha512-g04CXywgWG/7L4sTxQP6q1gdiirItVBq6ZO9YuLTqPFlkX3uD4IEjeL9cLHP6waahrnO8yL3OZl64pcKGYN5Qw==}
+    peerDependencies:
+      solid-js: ^1.6.12
 
   '@solidjs/meta@0.29.4':
     resolution: {integrity: sha512-zdIWBGpR9zGx1p1bzIPqF5Gs+Ks/BH8R6fWhmUa/dcK1L2rUC8BAcZJzNRYBQv74kScf1TSOs0EY//Vd/I0V8g==}
@@ -15732,6 +15740,10 @@ snapshots:
   '@sindresorhus/merge-streams@2.3.0': {}
 
   '@sindresorhus/merge-streams@4.0.0': {}
+
+  '@solid-primitives/keyed@1.5.0(solid-js@1.9.4)':
+    dependencies:
+      solid-js: 1.9.4
 
   '@solidjs/meta@0.29.4(solid-js@1.9.4)':
     dependencies:

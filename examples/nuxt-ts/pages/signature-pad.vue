@@ -2,6 +2,7 @@
 import { signaturePadControls } from "@zag-js/shared"
 import * as signaturePad from "@zag-js/signature-pad"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { RotateCcw } from "lucide-vue-next"
 
 const url = ref("")
 const setUrl = (v: string) => (url.value = v)
@@ -10,6 +11,14 @@ const controls = useControls(signaturePadControls)
 
 const service = useMachine(signaturePad.machine, {
   id: useId(),
+  onDrawEnd(details) {
+    details.getDataUrl("image/png").then(setUrl)
+  },
+  drawing: {
+    fill: "red",
+    size: 4,
+    simulatePressure: true,
+  },
 })
 
 const api = computed(() => signaturePad.connect(service, normalizeProps))

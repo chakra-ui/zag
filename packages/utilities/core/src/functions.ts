@@ -12,6 +12,8 @@ export const runIfFn = <T>(
 
 export const cast = <T>(v: unknown): T => v as T
 
+export const identity = (v: VoidFunction) => v()
+
 export const noop = () => {}
 
 export const callAll =

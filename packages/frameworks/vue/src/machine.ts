@@ -11,17 +11,7 @@ import {
   type Service,
 } from "@zag-js/core"
 import { isFunction, isString, toArray, warn } from "@zag-js/utils"
-import {
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  unref,
-  computed as vueComputed,
-  watch,
-  type ComputedRef,
-  type Ref,
-} from "vue"
+import { computed as __computed, nextTick, onBeforeUnmount, onMounted, toValue, type ComputedRef, type Ref } from "vue"
 import { bindable } from "./bindable"
 import { useRefs } from "./refs"
 import { useTrack } from "./track"
@@ -32,13 +22,23 @@ export function useMachine<T extends BaseSchema>(
   machine: MachineConfig<T>,
   userProps: MaybeRef<Partial<T["props"]>> = {},
 ): Service<T> {
-  const scope = vueComputed(() => {
-    const { id, ids, getRootNode } = unref(userProps) as any
+  const scope = __computed(() => {
+    const { id, ids, getRootNode } = toValue(userProps) as any
     return createScope({ id, ids, getRootNode })
   })
 
-  const props: any = vueComputed(
-    () => machine.props?.({ props: unref(userProps), scope: scope.value }) ?? unref(userProps),
+  const debug = (...args: any[]) => {
+    if (machine.debug) console.log(...args)
+  }
+
+  const props: any = __computed(
+    () =>
+      machine.props?.({
+        props: toValue(userProps),
+        get scope() {
+          return scope.value
+        },
+      }) ?? toValue(userProps),
   )
 
   const prop = useProp<any>(props)
@@ -225,17 +225,13 @@ export function useMachine<T extends BaseSchema>(
     action(machine.exit)
   })
 
-  const getCurrentState = () => {
-    if ("ref" in state) return state.ref.value
-    //@ts-expect-error
-    return state.get()
-  }
-
   const send = (event: any) => {
     previousEventRef.current = eventRef.current
     eventRef.current = event
 
-    let currentState = getCurrentState()
+    debug("send", event)
+
+    let currentState = state.get()
 
     const transitions =
       //@ts-expect-error
@@ -247,6 +243,8 @@ export function useMachine<T extends BaseSchema>(
     // save current transition
     transitionRef = transition
     const target = transition.target ?? currentState
+
+    debug("transition", transition)
 
     const changed = target !== currentState
     if (changed) {
@@ -272,16 +270,9 @@ export function useMachine<T extends BaseSchema>(
 }
 
 function useProp<T>(valueRef: Ref<T>) {
-  const _ref = useLiveRef(valueRef)
   return function get<K extends keyof T>(key: K): T[K] {
-    return _ref.value[key]
+    return valueRef.value[key]
   }
-}
-
-function useLiveRef<T>(value: Ref<T>) {
-  const _ref = ref(value.value)
-  watch(value, (v) => (_ref.value = v), { immediate: true })
-  return _ref
 }
 
 const flush = (fn: VoidFunction) => {

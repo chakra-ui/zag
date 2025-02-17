@@ -1,5 +1,6 @@
 import { type Bindable, type BindableParams } from "@zag-js/core"
-import { isFunction } from "@zag-js/utils"
+import { identity, isFunction } from "@zag-js/utils"
+import { flushSync } from "svelte"
 
 export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().defaultValue ?? props().value
@@ -35,7 +36,8 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
     ref: valueRef,
     get,
     set(val: T | ((prev: T) => T)) {
-      setValueFn(val)
+      const exec = props().sync ? flushSync : identity
+      exec(() => setValueFn(val))
     },
     invoke(nextValue: T, prevValue: T) {
       props().onChange?.(nextValue, prevValue)
