@@ -1,5 +1,5 @@
 import { parseColor, type Color } from "@zag-js/color-utils"
-import { createGuards, createMachine, type Params, type Scope } from "@zag-js/core"
+import { createGuards, createMachine, type Scope } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   disableTextSelection,
@@ -40,12 +40,23 @@ export const machine = createMachine<ColorPickerSchema>({
     return open ? "open" : "idle"
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, getContext, scope }) {
     return {
       value: bindable<Color>(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
-        // change is called explicitly (below the file)
+        isEqual(a, b) {
+          return a.toString("css") === b?.toString("css")
+        },
+        hash(a) {
+          return a.toString("css")
+        },
+        onChange(value) {
+          const ctx = getContext()
+          const valueAsString = value.toString(ctx.get("format"))
+          prop("onValueChange")?.({ value, valueAsString })
+          dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: valueAsString })
+        },
       })),
       format: bindable<ColorFormat>(() => ({
         defaultValue: prop("defaultFormat"),
@@ -81,7 +92,7 @@ export const machine = createMachine<ColorPickerSchema>({
   effects: ["trackFormControl"],
 
   watch({ prop, context, action, track }) {
-    track([() => context.get("value").toString("css")], () => {
+    track([() => context.hash("value")], () => {
       action(["syncInputElements"])
     })
 
@@ -440,8 +451,7 @@ export const machine = createMachine<ColorPickerSchema>({
       },
     },
     actions: {
-      openEyeDropper(params) {
-        const { context, scope } = params
+      openEyeDropper({ scope, context }) {
         const win = scope.getWin()
         const isSupported = "EyeDropper" in win
         if (!isSupported) return
@@ -451,8 +461,7 @@ export const machine = createMachine<ColorPickerSchema>({
           .then(({ sRGBHex }) => {
             const format = context.get("value").getFormat()
             const color = parseColor(sRGBHex).toFormat(format) as Color
-            setValue(params, color)
-            invokeOnChange(params, color)
+            context.set("value", color)
           })
           .catch(() => void 0)
       },
@@ -466,8 +475,7 @@ export const machine = createMachine<ColorPickerSchema>({
         context.set("activeId", null)
         context.set("activeOrientation", null)
       },
-      setAreaColorFromPoint(params) {
-        const { context, event, computed, scope } = params
+      setAreaColorFromPoint({ context, event, computed, scope }) {
         const v = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
         const { xChannel, yChannel } = event.channel || context.get("activeChannel")
 
@@ -478,10 +486,9 @@ export const machine = createMachine<ColorPickerSchema>({
         const yValue = v.getChannelPercentValue(yChannel, 1 - percent.y)
 
         const color = v.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
-        setValue(params, color)
+        context.set("value", color)
       },
-      setChannelColorFromPoint(params) {
-        const { context, event, computed, scope } = params
+      setChannelColorFromPoint({ context, event, computed, scope }) {
         const channel = event.channel || context.get("activeId")
         const normalizedValue = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
 
@@ -493,11 +500,10 @@ export const machine = createMachine<ColorPickerSchema>({
 
         const value = normalizedValue.getChannelPercentValue(channel, channelPercent)
         const color = normalizedValue.withChannelValue(channel, value)
-        setValue(params, color)
+        context.set("value", color)
       },
-      setValue(params) {
-        const { event } = params
-        setValue(params, event.value)
+      setValue({ context, event }) {
+        context.set("value", event.value)
       },
       setFormat({ context, event }) {
         context.set("format", event.format)
@@ -511,8 +517,7 @@ export const machine = createMachine<ColorPickerSchema>({
           valueAsString: computed("valueAsString"),
         })
       },
-      setChannelColorFromInput(params) {
-        const { context, event, scope } = params
+      setChannelColorFromInput({ context, event, scope }) {
         const { channel, isTextField, value } = event
         const currentAlpha = context.get("value").getChannelValue("alpha")
 
@@ -545,55 +550,47 @@ export const machine = createMachine<ColorPickerSchema>({
         syncInputs(scope, context.get("value"), color)
 
         // set new color
-        setValue(params, color)
+        context.set("value", color)
       },
-      incrementChannel(params) {
-        const { context, event } = params
+      incrementChannel({ context, event }) {
         const color = context.get("value").incrementChannel(event.channel, event.step)
-        setValue(params, color)
+        context.set("value", color)
       },
-      decrementChannel(params) {
-        const { context, event } = params
+      decrementChannel({ context, event }) {
         const color = context.get("value").decrementChannel(event.channel, event.step)
-        setValue(params, color)
+        context.set("value", color)
       },
-      incrementAreaXChannel(params) {
-        const { event, computed } = params
+      incrementAreaXChannel({ context, event, computed }) {
         const { xChannel } = event.channel
         const color = computed("areaValue").incrementChannel(xChannel, event.step)
-        setValue(params, color)
+        context.set("value", color)
       },
-      decrementAreaXChannel(params) {
-        const { event, computed } = params
+      decrementAreaXChannel({ context, event, computed }) {
         const { xChannel } = event.channel
         const color = computed("areaValue").decrementChannel(xChannel, event.step)
-        setValue(params, color)
+        context.set("value", color)
       },
-      incrementAreaYChannel(params) {
-        const { event, computed } = params
+      incrementAreaYChannel({ context, event, computed }) {
         const { yChannel } = event.channel
         const color = computed("areaValue").incrementChannel(yChannel, event.step)
-        setValue(params, color)
+        context.set("value", color)
       },
-      decrementAreaYChannel(params) {
-        const { event, computed } = params
+      decrementAreaYChannel({ context, event, computed }) {
         const { yChannel } = event.channel
         const color = computed("areaValue").decrementChannel(yChannel, event.step)
-        setValue(params, color)
+        context.set("value", color)
       },
-      setChannelToMax(params) {
-        const { context, event } = params
+      setChannelToMax({ context, event }) {
         const value = context.get("value")
         const range = value.getChannelRange(event.channel)
         const color = value.withChannelValue(event.channel, range.maxValue)
-        setValue(params, color)
+        context.set("value", color)
       },
-      setChannelToMin(params) {
-        const { context, event } = params
+      setChannelToMin({ context, event }) {
         const value = context.get("value")
         const range = value.getChannelRange(event.channel)
         const color = value.withChannelValue(event.channel, range.minValue)
-        setValue(params, color)
+        context.set("value", color)
       },
       focusAreaThumb({ scope }) {
         raf(() => {
@@ -605,8 +602,7 @@ export const machine = createMachine<ColorPickerSchema>({
           dom.getChannelSliderThumbEl(scope, event.channel)?.focus({ preventScroll: true })
         })
       },
-      setInitialFocus(params) {
-        const { prop, scope } = params
+      setInitialFocus({ prop, scope }) {
         if (!prop("openAutoFocus")) return
         raf(() => {
           const element = getInitialFocus({
@@ -651,20 +647,4 @@ function syncFormatSelect(scope: Scope, format: ColorFormat) {
   const selectEl = dom.getFormatSelectEl(scope)
   if (!selectEl) return
   raf(() => setElementValue(selectEl, format))
-}
-
-function setValue({ context, prop, scope }: Params<ColorPickerSchema>, value: Color) {
-  const format = context.get("format")
-  const valueAsString = value.toString(format!)
-
-  context.set("value", value)
-  prop("onValueChange")?.({ value, valueAsString })
-  dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: valueAsString })
-}
-
-function invokeOnChange(params: Params<ColorPickerSchema>, color: Color) {
-  const { context, prop } = params
-  const format = context.get("format")
-  const valueAsString = color.toString(format!)
-  prop("onValueChange")?.({ value: color, valueAsString })
 }

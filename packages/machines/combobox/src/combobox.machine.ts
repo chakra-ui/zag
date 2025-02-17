@@ -55,6 +55,9 @@ export const machine = createMachine<ComboboxSchema>({
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
+        hash(value) {
+          return value.join(",")
+        },
         onChange(value) {
           const context = getContext()
           const prevSelectedItems = context.get("selectedItems")
@@ -126,7 +129,7 @@ export const machine = createMachine<ComboboxSchema>({
   },
 
   watch({ context, prop, track, action }) {
-    track([() => context.get("value").join(",")], () => {
+    track([() => context.hash("value")], () => {
       action(["syncSelectedItems"])
     })
     track([() => context.get("inputValue")], () => {

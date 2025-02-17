@@ -14,7 +14,7 @@ const api = computed(() => qrCode.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="qr-code">
+  <main class="qr-code">
     <div v-bind="api.getRootProps()">
       <svg v-bind="api.getFrameProps()">
         <path v-bind="api.getPatternProps()" />

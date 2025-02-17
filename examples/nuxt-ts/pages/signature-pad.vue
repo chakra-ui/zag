@@ -25,7 +25,7 @@ const api = computed(() => signaturePad.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="signature-pad">
+  <main class="signature-pad">
     <div v-bind="api.getRootProps()">
       <label v-bind="api.getLabelProps()">Signature Pad</label>
 

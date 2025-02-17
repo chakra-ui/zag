@@ -11,7 +11,7 @@ const api = computed(() => menu.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="context-menu">
+  <main class="context-menu">
     <div v-bind="api.getContextTriggerProps()">Right Click here</div>
     <Teleport to="#teleports"">
       <div v-bind="api.getPositionerProps()">

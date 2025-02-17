@@ -38,9 +38,7 @@ const api = computed(() => combobox.connect(service, normalizeProps))
     <div>
       <button @click="() => api.setValue(['TG'])">Set to Togo</button>
       <button data-testid="clear-value-button" @click="() => api.clearValue()">Clear Value</button>
-      <button v-bind="api.getClearTriggerProps()">
-        <XIcon />
-      </button>
+
       <br />
 
       <div v-bind="api.getRootProps()">
@@ -49,6 +47,9 @@ const api = computed(() => combobox.connect(service, normalizeProps))
         <div v-bind="api.getControlProps()">
           <input data-testid="input" v-bind="api.getInputProps()" />
           <button data-testid="trigger" v-bind="api.getTriggerProps()">▼</button>
+          <button v-bind="api.getClearTriggerProps()">
+            <XIcon />
+          </button>
         </div>
       </div>
 

@@ -33,6 +33,9 @@ export const machine = createMachine<FileUploadSchema>({
       acceptedFiles: bindable<File[]>(() => ({
         defaultValue: [],
         isEqual: (a, b) => a.length === b?.length && a.every((file, i) => isFileEqual(file, b[i])),
+        hash(value) {
+          return value.map((file) => `${file.name}-${file.size}`).join(",")
+        },
         onChange(value) {
           const ctx = getContext()
           prop("onFileAccept")?.({ files: value })
@@ -56,18 +59,9 @@ export const machine = createMachine<FileUploadSchema>({
   },
 
   watch({ track, context, action }) {
-    track(
-      [
-        () =>
-          context
-            .get("acceptedFiles")
-            .map((file) => `${file.name}-${file.size}`)
-            .join(","),
-      ],
-      () => {
-        action(["syncInputElement"])
-      },
-    )
+    track([() => context.hash("acceptedFiles")], () => {
+      action(["syncInputElement"])
+    })
   },
 
   on: {

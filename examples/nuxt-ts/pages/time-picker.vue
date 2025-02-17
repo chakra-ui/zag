@@ -13,7 +13,7 @@ const api = computed(() => timePicker.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="time-picker">
+  <main class="time-picker">
     <div v-bind="api.getRootProps()">
       <div v-bind="api.getControlProps()" :style="{ display: 'flex', gap: '10px' }">
         <input v-bind="api.getInputProps()" />

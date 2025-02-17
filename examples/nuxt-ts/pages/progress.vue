@@ -13,7 +13,7 @@ const api = computed(() => progress.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="progress">
+  <main class="progress">
     <div v-bind="api.getRootProps()">
       <div v-bind="api.getLabelProps()">Upload progress</div>
       <svg v-bind="api.getCircleProps()">

@@ -106,6 +106,7 @@ export const machine = createMachine<DatePickerSchema>({
       focusedValue: bindable<DateValue>(() => ({
         defaultValue: prop("focusedValue"),
         isEqual: (a, b) => b !== null && a !== null && isDateEqual(a, b),
+        hash: (v) => v.toString(),
         onChange(focusedValue) {
           const context = getContext()
           prop("onFocusChange")?.({
@@ -120,9 +121,7 @@ export const machine = createMachine<DatePickerSchema>({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         isEqual: (a, b) => b != null && a != null && a.every((date, index) => isDateEqual(date, b[index])),
-        hash(value) {
-          return value.map((date) => date.toString()).join(",")
-        },
+        hash: (v) => v.map((date) => date.toString()).join(","),
         onChange(value) {
           const context = getContext()
           prop("onValueChange")?.({ value, valueAsString: [], view: context.get("view") })
@@ -179,13 +178,10 @@ export const machine = createMachine<DatePickerSchema>({
     endValue: ({ context, computed }) => getEndDate(context.get("startValue"), computed("visibleDuration")),
     visibleRange: ({ context, computed }) => ({ start: context.get("startValue"), end: computed("endValue") }),
     visibleRangeText({ context, prop, computed }) {
-      const formatter = new DateFormatter(prop("locale"), {
-        month: "long",
-        year: "numeric",
-        timeZone: prop("timeZone"),
-      })
-      const start = formatter.format(context.get("startValue").toDate(prop("timeZone")))
-      const end = formatter.format(computed("endValue").toDate(prop("timeZone")))
+      const timeZone = prop("timeZone")
+      const formatter = new DateFormatter(prop("locale"), { month: "long", year: "numeric", timeZone })
+      const start = formatter.format(context.get("startValue").toDate(timeZone))
+      const end = formatter.format(computed("endValue").toDate(timeZone))
       const formatted = prop("selectionMode") === "range" ? `${start} - ${end}` : start
       return { start, end, formatted }
     },
@@ -207,7 +203,7 @@ export const machine = createMachine<DatePickerSchema>({
       action(["setStartValue"])
     })
 
-    track([() => context.get("focusedValue").toString()], () => {
+    track([() => context.hash("focusedValue")], () => {
       action([
         "setStartValue",
         "syncMonthSelectElement",

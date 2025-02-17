@@ -15,7 +15,7 @@ const api = computed(() => clipboard.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="clipboard">
+  <main class="clipboard">
     <div v-bind="api.getRootProps()">
       <label v-bind="api.getLabelProps()">Copy this link</label>
       <div v-bind="api.getControlProps()">

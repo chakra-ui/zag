@@ -14,13 +14,13 @@ const api = computed(() => avatar.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="avatar">
+  <main class="avatar">
     <div v-bind="api.getRootProps()">
       <span v-bind="api.getFallbackProps()">PA</span>
       <img v-if="showImage" alt="" referrerPolicy="no-referrer" :src="src" v-bind="api.getImageProps()" />
     </div>
 
-    <div className="controls">
+    <div class="controls">
       <button @click="() => (src = getRandomImage())">Change Image</button>
       <button @click="() => (src = avatarData.broken)">Broken Image</button>
       <button @click="() => (showImage = !showImage)">Toggle Image</button>
