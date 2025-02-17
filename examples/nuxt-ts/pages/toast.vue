@@ -66,8 +66,6 @@ const id = ref<string>()
       <button @click="() => toaster.resume()">Resume all</button>
     </div>
 
-    <pre>{{ api.getToasts() }}</pre>
-
     <Teleport to="#teleports">
       <div v-bind="api.getGroupProps()">
         <ToastItem
