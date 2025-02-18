@@ -3,9 +3,9 @@ import * as {{camelCase machine}} from "@zag-js/{{machine}}"
 import { {{camelCase machine}}Controls, {{camelCase machine}}Data } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
-const [state, send] = useMachine({{camelCase machine}}.machine({ id: "1" }))
+const service = useMachine({{camelCase machine}}.machine, { id: useId() })
 
-const api = computed(() => {{camelCase machine}}.connect(state.value, send, normalizeProps))
+const api = computed(() => {{camelCase machine}}.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -15,6 +15,6 @@ const api = computed(() => {{camelCase machine}}.connect(state.value, send, norm
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
   </Toolbar>
 </template>
