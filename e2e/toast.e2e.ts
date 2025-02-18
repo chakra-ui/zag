@@ -6,8 +6,7 @@ let I: ToastModel
 test.describe("toast / stacked", () => {
   test.beforeEach(async ({ page }) => {
     I = new ToastModel(page)
-    await I.goto()
-    await I.controls.bool("overlap", false)
+    await I.goto("stacked")
   })
 
   test("should pause on hover region", async () => {
@@ -34,7 +33,7 @@ test.describe("toast / stacked", () => {
 test.describe("toast / overlapping", () => {
   test.beforeEach(async ({ page }) => {
     I = new ToastModel(page)
-    await I.goto()
+    await I.goto("overlap")
   })
 
   test("should render/remove error toast", async () => {

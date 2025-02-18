@@ -4,7 +4,7 @@ import { useId } from "react"
 
 interface Props extends Omit<dialog.Props, "id"> {}
 
-export function Dialog(props: Props) {
+export function Dialog(props: Props = {}) {
   const { open, defaultOpen, ...context } = props
 
   const service = useMachine(dialog.machine, {

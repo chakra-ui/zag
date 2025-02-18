@@ -44,7 +44,8 @@
   import TimePicker from "./routes/time-picker.svelte"
   import TimerCountdown from "./routes/timer-countdown.svelte"
   import TimerStopwatch from "./routes/timer-stopwatch.svelte"
-  import Toast from "./routes/toast.svelte"
+  import ToastOverlap from "./routes/toast-overlap.svelte"
+  import ToastStacked from "./routes/toast-stacked.svelte"
   import ToggleGroup from "./routes/toggle-group.svelte"
   import Tooltip from "./routes/tooltip.svelte"
   import Tour from "./routes/tour.svelte"
@@ -92,7 +93,8 @@
     { path: "/tabs", component: Tabs },
     { path: "/tags-input", component: TagsInput },
     { path: "/time-picker", component: TimePicker },
-    { path: "/toast", component: Toast },
+    { path: "/toast-overlap", component: ToastOverlap },
+    { path: "/toast-stacked", component: ToastStacked },
     { path: "/toggle-group", component: ToggleGroup },
     { path: "/tooltip", component: Tooltip },
     { path: "/tour", component: Tour },

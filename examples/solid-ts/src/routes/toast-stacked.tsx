@@ -1,37 +1,8 @@
-import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { Key, normalizeProps, useMachine } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
-import { XIcon } from "lucide-react"
-import { useId, useRef } from "react"
-
-interface ToastProps {
-  actor: toast.Options<React.ReactNode>
-  index: number
-  parent: toast.GroupService
-}
-
-function Toast(props: ToastProps) {
-  const { actor, index, parent } = props
-  const composedProps = { ...actor, index, parent }
-
-  const service = useMachine(toast.machine, composedProps)
-  const api = toast.connect(service, normalizeProps)
-
-  return (
-    <div {...api.getRootProps()}>
-      <span {...api.getGhostBeforeProps()} />
-      <div data-scope="toast" data-part="progressbar" />
-      <div {...api.getTitleProps()}>
-        {api.type === "loading" && "<...>"}
-        {api.title} {api.type}
-      </div>
-      <div {...api.getDescriptionProps()}>{api.description}</div>
-      <button {...api.getCloseTriggerProps()}>
-        <XIcon />
-      </button>
-      <span {...api.getGhostAfterProps()} />
-    </div>
-  )
-}
+import { createMemo, createUniqueId } from "solid-js"
+import { Portal } from "solid-js/web"
+import { ToastItem } from "~/components/toast-item"
 
 const toaster = toast.createStore({
   overlap: false,
@@ -40,16 +11,18 @@ const toaster = toast.createStore({
 
 export default function ToastGroup() {
   const service = useMachine(toast.group.machine, {
-    id: useId(),
+    id: createUniqueId(),
     gap: 24,
     store: toaster,
   })
 
-  const api = toast.group.connect(service, normalizeProps)
-  const id = useRef<string>()
+  const api = createMemo(() => toast.group.connect(service, normalizeProps))
+  let id: string | undefined
 
   return (
     <main>
+      {/* <pre>{JSON.stringify(service.context.get("toasts"), null, 2)}</pre> */}
+
       <div style={{ display: "flex", gap: "16px" }}>
         <button
           onClick={() => {
@@ -63,7 +36,7 @@ export default function ToastGroup() {
         </button>
         <button
           onClick={() => {
-            id.current = toaster.create({
+            id = toaster.create({
               title: "Ooops! Something was wrong",
               type: "error",
               onStatusChange(details) {
@@ -77,8 +50,8 @@ export default function ToastGroup() {
         </button>
         <button
           onClick={() => {
-            if (!id.current) return
-            toaster.update(id.current, {
+            if (!id) return
+            toaster.update(id, {
               title: "Testing",
               type: "loading",
             })
@@ -87,17 +60,17 @@ export default function ToastGroup() {
           Update Latest
         </button>
         <button
-          className="toast-button"
+          class="toast-button"
           onClick={() => {
-            const promise = new Promise<{ name: string }>((resolve) => {
+            const myPromise = new Promise<{ name: string }>((resolve) => {
               setTimeout(() => {
                 resolve({ name: "Chakra" })
               }, 3000)
             })
 
-            toaster.promise(promise, {
+            toaster.promise(myPromise, {
               loading: { title: "Creating toast..." },
-              success: (data) => {
+              success: (data: { name: string }) => {
                 return { title: `${data.name} toast added` }
               },
               error: { title: "Error" },
@@ -124,10 +97,10 @@ export default function ToastGroup() {
       </div>
 
       <Portal>
-        <div {...api.getGroupProps()}>
-          {api.getToasts().map((toast, index) => (
-            <Toast key={toast.id} actor={toast} index={index} parent={service} />
-          ))}
+        <div {...api().getGroupProps()}>
+          <Key each={api().getToasts()} by={(t) => t.id}>
+            {(toast, index) => <ToastItem actor={toast} index={index} parent={service} />}
+          </Key>
         </div>
       </Portal>
     </main>

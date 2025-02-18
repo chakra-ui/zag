@@ -64,12 +64,12 @@ export interface DialogProps
    * Whether to close the dialog when the outside is clicked
    * @default true
    */
-  closeOnInteractOutside: boolean
+  closeOnInteractOutside?: boolean | undefined
   /**
    * Whether to close the dialog when the escape key is pressed
    * @default true
    */
-  closeOnEscape: boolean
+  closeOnEscape?: boolean | undefined
   /**
    * Human readable label for the dialog, in event the dialog title is not rendered
    */
@@ -78,7 +78,7 @@ export interface DialogProps
    * The dialog's role
    * @default "dialog"
    */
-  role: "dialog" | "alertdialog"
+  role?: "dialog" | "alertdialog" | undefined
   /**
    * Whether the dialog is open
    */

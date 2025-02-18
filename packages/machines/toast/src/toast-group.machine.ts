@@ -69,9 +69,10 @@ export const groupMachine = createMachine<ToastGroupSchema>({
       {
         guard: "isOverlapping",
         target: "overlap",
-        actions: ["resumeToasts", "restoreLastFocusedEl"],
+        actions: ["collapseToasts", "resumeToasts", "restoreLastFocusedEl"],
       },
       {
+        target: "stack",
         actions: ["resumeToasts", "restoreLastFocusedEl"],
       },
     ],
