@@ -43,7 +43,6 @@ export const machine = createMachine<SelectSchema>({
         },
       })),
       highlightedValue: bindable<string | null>(() => ({
-        debug: "highlightedValue",
         defaultValue: prop("defaultHighlightedValue") || null,
         value: prop("highlightedValue"),
         onChange(value) {

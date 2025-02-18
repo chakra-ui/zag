@@ -11,7 +11,6 @@ import type { ComboboxSchema, Placement } from "./combobox.types"
 const { and, not } = createGuards<ComboboxSchema>()
 
 export const machine = createMachine<ComboboxSchema>({
-  debug: true,
   props({ props }) {
     return {
       loopFocus: true,

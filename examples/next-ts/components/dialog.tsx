@@ -2,28 +2,19 @@ import * as dialog from "@zag-js/dialog"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 import { useId } from "react"
 
-interface Props extends Omit<dialog.Context, "open.controlled" | "id"> {
-  defaultOpen?: boolean
-}
+interface Props extends Omit<dialog.Props, "id"> {}
 
 export function Dialog(props: Props) {
   const { open, defaultOpen, ...context } = props
 
-  const [state, send] = useMachine(
-    dialog.machine({
-      id: useId(),
-      open: open ?? defaultOpen,
-    }),
-    {
-      context: {
-        ...context,
-        "open.controlled": open !== undefined,
-        open,
-      },
-    },
-  )
+  const service = useMachine(dialog.machine, {
+    id: useId(),
+    defaultOpen,
+    open,
+    ...context,
+  })
 
-  const api = dialog.connect(state, send, normalizeProps)
+  const api = dialog.connect(service, normalizeProps)
 
   return (
     <>

@@ -30,7 +30,6 @@ export const machine = createMachine<TabsSchema>({
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
-        debug: "value",
         onChange(value) {
           prop("onValueChange")?.({ value: value! })
         },
