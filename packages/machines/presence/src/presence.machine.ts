@@ -7,8 +7,8 @@ export const machine = createMachine<PresenceSchema>({
     return { ...props, present: !!props.present }
   },
 
-  initialState() {
-    return "unmounted"
+  initialState({ prop }) {
+    return prop("present") ? "mounted" : "unmounted"
   },
 
   refs() {
@@ -23,7 +23,10 @@ export const machine = createMachine<PresenceSchema>({
       unmountAnimationName: bindable<string | null>(() => ({ defaultValue: null })),
       prevAnimationName: bindable<string | null>(() => ({ defaultValue: null })),
       present: bindable<boolean>(() => ({ defaultValue: false })),
-      initial: bindable<boolean>(() => ({ defaultValue: false })),
+      initial: bindable<boolean>(() => ({
+        sync: true,
+        defaultValue: false,
+      })),
     }
   },
 
@@ -79,7 +82,10 @@ export const machine = createMachine<PresenceSchema>({
   implementations: {
     actions: {
       setInitial: ({ context }) => {
-        context.set("initial", true)
+        if (context.get("initial")) return
+        queueMicrotask(() => {
+          context.set("initial", true)
+        })
       },
       clearInitial: ({ context }) => {
         context.set("initial", false)

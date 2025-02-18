@@ -114,7 +114,7 @@ export const machine = createMachine<ComboboxSchema>({
       valueAsString: bindable<string>(() => {
         const value = prop("value") || prop("defaultValue") || []
         const valueAsString = prop("collection").stringifyMany(value)
-        return { defaultValue: valueAsString }
+        return { sync: true, defaultValue: valueAsString }
       }),
     }
   },

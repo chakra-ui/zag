@@ -37,7 +37,7 @@ import { Tabs } from "./machines/tabs"
 import { TagsInput } from "./machines/tags-input"
 import { TimePicker } from "./machines/time-picker"
 import { TimerCountdown } from "./machines/timer-countdown"
-// import { ToastGroup } from "./machines/toast"
+import { ToastGroup } from "./machines/toast"
 import { ToggleGroup } from "./machines/toggle-group"
 import { Tooltip } from "./machines/tooltip"
 import { Tour } from "./machines/tour"
@@ -413,11 +413,10 @@ const components = {
   Toast: () => (
     <Playground
       name="toast"
-      // component={ToastGroup}
-      component={() => <div>Toast</div>}
+      component={ToastGroup}
       defaultProps={{
         pauseOnPageIdle: false,
-        max: 20,
+        gap: 16,
       }}
     />
   ),

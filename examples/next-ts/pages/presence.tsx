@@ -2,14 +2,10 @@ import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useState } from "react"
 
-function usePresence(present: boolean) {
-  const service = useMachine(presence.machine, { present })
-  return presence.connect(service, normalizeProps)
-}
-
 export default function Page() {
   const [present, setPresent] = useState(false)
-  const api = usePresence(present)
+  const service = useMachine(presence.machine, { present })
+  const api = presence.connect(service, normalizeProps)
 
   return (
     <main className="presence">
@@ -20,7 +16,7 @@ export default function Page() {
             api.setNode(node)
           }}
           data-scope="presence"
-          data-state={present ? "open" : "closed"}
+          data-state={api.skip ? undefined : present ? "open" : "closed"}
         >
           Content
         </div>

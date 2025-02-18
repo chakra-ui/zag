@@ -37,7 +37,6 @@ export function NestedMenu() {
       fileMenu.setChild(shareMenuService)
       shareMenu.setParent(fileMenuService)
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Share menu trigger

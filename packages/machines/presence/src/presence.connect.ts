@@ -9,7 +9,7 @@ export function connect<T extends PropTypes>(
   const { state, send, context } = service
   const present = state.matches("mounted", "unmountSuspended")
   return {
-    skip: !context.initial && present,
+    skip: !context.get("initial"),
     present,
     setNode(node) {
       if (!node) return

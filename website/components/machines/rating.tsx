@@ -45,7 +45,7 @@ export function Rating(props: RadioProps) {
   const service = useMachine(rating.machine, {
     id: useId(),
     name: "service",
-    value: 2.5,
+    defaultValue: 2.5,
     ...props.controls,
   })
 

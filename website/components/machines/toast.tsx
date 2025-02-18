@@ -33,15 +33,17 @@ function Toast(props: ToastProps) {
 }
 
 const toaster = toast.createStore({
-  overlap: false,
-  placement: "bottom",
+  overlap: true,
+  placement: "bottom-end",
 })
 
-export default function ToastGroup() {
+export function ToastGroup(props: { controls: any }) {
   const service = useMachine(toast.group.machine, {
     id: useId(),
     store: toaster,
     gap: 24,
+    offsets: "24px",
+    ...props.controls,
   })
 
   const api = toast.group.connect(service, normalizeProps)

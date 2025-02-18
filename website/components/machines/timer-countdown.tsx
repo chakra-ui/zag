@@ -9,6 +9,7 @@ export function TimerCountdown(props: any) {
     autoStart: true,
     startMs: timer.parse({ days: 2, seconds: 10 }),
     ...props.controls,
+    interval: 1000,
   })
 
   const api = timer.connect(service, normalizeProps)
