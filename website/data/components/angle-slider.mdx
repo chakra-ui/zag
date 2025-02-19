@@ -64,7 +64,7 @@ angle slider machine in your project 🔥
 
 ## Setting the initial value
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(angleSlider.machine, {
   defaultValue: 45,
 })
@@ -78,7 +78,7 @@ integer. You can change the step attribute to control the granularity.
 For example, If you need a value between `5` and `10`, accurate to two decimal
 places, you should set the value of step to `0.01`:
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(angleSlider.machine, {
   step: 0.01,
 })
@@ -89,7 +89,7 @@ const service = useMachine(angleSlider.machine, {
 When the angle slider value changes, the `onValueChange` and `onValueChangeEnd`
 callbacks are invoked. You can use this to setup custom behaviors in your app.
 
-```jsx {3-8}
+```jsx {2-7}
 const service = useMachine(angleSlider.machine, {
   onValueChange(details) {
     console.log("value is changing to:", details)
@@ -107,7 +107,7 @@ To use angle slider within forms, use the exposed `hiddenInputProps` from the
 will render a hidden input and ensure the value changes get propagated to the
 form correctly.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(angleSlider.machine, {
   name: "wind-direction",
 })

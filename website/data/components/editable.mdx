@@ -68,7 +68,7 @@ editable machine in your project 🔥
 To set the initial value of the editable, pass the `value` property to the
 machine's context.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(editable.machine, {
   defaultValue: "Hello World",
 })
@@ -81,7 +81,7 @@ The editable machine supports two ways of listening for value changes:
 - `onValueChange`: called when value changes.
 - `onValueCommit`: called when the value is committed.
 
-```jsx {3-4}
+```jsx {2-4}
 const service = useMachine(editable.machine, {
   onValueChange(details) {
     console.log("Value changed", details.value)
@@ -105,7 +105,7 @@ the component.
 To auto-grow the editable as the content changes, pass the `autoResize: true`
 property to the machine's context.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(editable.machine, {
   autoResize: true,
 })
@@ -121,7 +121,7 @@ It is a common pattern to set a maximum of the editable as it auto-grows. To
 achieve this, set the `maxWidth` property of the machine's context to the
 desired value.
 
-```jsx {3-4}
+```jsx {2-3}
 const service = useMachine(editable.machine, {
   autoResize: true,
   maxWidth: "320px",
@@ -141,7 +141,7 @@ The editable supports two modes of activating the "edit" state:
 To change the mode to "double-click", set the `activationMode: 'dblclick'`
 property in the machine's context.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(editable.machine, {
   activationMode: "dblclick",
 })
@@ -156,7 +156,7 @@ When a textarea is used, the editable will commit the value on `Cmd + Enter` or
 > Use the `api.inputProps` to spread the input props to the textarea element.
 > You might need to cast the input props to the correct type.
 
-```tsx {3}
+```tsx {2}
 <textarea {...(api.inputProps as HTMLTextareaProps<HTMLTextareaElement>)} />
 ```
 

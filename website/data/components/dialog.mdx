@@ -82,7 +82,7 @@ To set the element that receives focus when the dialog closes, pass the
 By default, the dialog closes when you click its overlay. You can set
 `closeOnInteractOutside` to `false` if you want the modal to stay visible.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(dialog.machine, {
   closeOnInteractOutside: false,
 })
@@ -91,7 +91,7 @@ const service = useMachine(dialog.machine, {
 You can also customize the behavior by passing a function to the
 `onInteractOutside` context and calling `event.preventDefault()`
 
-```jsx {3-8}
+```jsx {2-7}
 const service = useMachine(dialog.machine, {
   onInteractOutside(event) {
     const target = event.target
@@ -106,7 +106,7 @@ const service = useMachine(dialog.machine, {
 
 When the dialog is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {3-8}
+```jsx {2-7}
 const service = useMachine(dialog.machine, {
   onOpenChange(details) {
     // details => { open: boolean }
@@ -120,7 +120,7 @@ const service = useMachine(dialog.machine, {
 When the dialog is open, it prevents scrolling on the `body` element. To disable
 this behavior, set the `preventScroll` context to `false`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(dialog.machine, {
   preventScroll: false,
 })
@@ -134,7 +134,7 @@ machine's context.
 
 That's it! Now you have an alert dialog.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(dialog.machine, {
   role: "alertdialog",
 })

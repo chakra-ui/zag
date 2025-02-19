@@ -70,7 +70,7 @@ machine's context.
 > The `value` property must be an array of strings. If selecting a single value,
 > pass an array with a single string.
 
-```jsx {14}
+```jsx {13}
 const collection = combobox.collection({
   items: [
     { label: "Nigeria", value: "ng" },
@@ -92,7 +92,7 @@ const service = useMachine(combobox.machine, {
 To allow selecting multiple values, set the `multiple` property in the machine's
 context to `true`.
 
-```jsx {5}
+```jsx {4}
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -154,7 +154,7 @@ To achieve this you need to:
 - Set the `multiple` property to `true` to allow selecting multiple values.
 - Render the selected values outside the combobox.
 
-```jsx {5-7}
+```jsx {4-6}
 const service = useMachine(combobox.machine, {
   id: useId(),
   collection,
@@ -167,7 +167,7 @@ const service = useMachine(combobox.machine, {
 
 To make a combobox disabled, set the context's `disabled` property to `true`
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(combobox.machine, {
   disabled: true,
 })
@@ -197,7 +197,7 @@ This behaviour ensures that the menu is closed when an option is selected and is
 pointer or enter key. To disable the behaviour, set the `closeOnSelect` property
 in the machine's context to `false`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(combobox.machine, {
   closeOnSelect: false,
 })
@@ -207,7 +207,7 @@ const service = useMachine(combobox.machine, {
 
 To make a combobox readonly, set the context's `readOnly` property to `true`
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(combobox.machine, {
   readOnly: true,
 })
@@ -218,7 +218,7 @@ const service = useMachine(combobox.machine, {
 When an option is highlighted with the pointer or keyboard, use the
 `onHighlightChange` property to listen for this change and do something with it.
 
-```jsx {4-7}
+```jsx {3-6}
 const service = useMachine(combobox.machine, {
   id: useId(),
   onHighlightChange(details) {
@@ -253,7 +253,7 @@ achieve this by:
 
 To get this feature working you need to pass a `name` option to the context.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(combobox.machine, {
   name: "countries",
 })
@@ -265,7 +265,7 @@ By default, the combobox only allows selecting values from the collection. To
 allow custom values, set the `allowCustomValue` property in the machine's
 context to `true`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(combobox.machine, {
   allowCustomValue: true,
 })

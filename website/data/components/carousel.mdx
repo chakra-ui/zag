@@ -68,7 +68,7 @@ carousel machine in your project 🔥
 To create a vertical carousel, set the `orientation` property in the machine's
 context to `vertical`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(carousel.machine, {
   orientation: "vertical",
 })
@@ -82,7 +82,7 @@ machine's context.
 The `page` corresponds to the scroll snap position index based on the layout. It
 does not necessarily correspond to the index of the slide in the carousel.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(carousel.machine, {
   defaultPage: 2,
 })
@@ -93,7 +93,7 @@ const service = useMachine(carousel.machine, {
 To customize number of slides to show at a time, set the `slidesPerPage`
 property in the machine's context. The value must be an integer.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(carousel.machine, {
   slidesPerPage: 2,
 })
@@ -107,7 +107,7 @@ property in the machine's context. The value must be an integer or `auto`.
 > If the value is `auto`, the carousel will move the number of slides equal to
 > the number of slides per page.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(carousel.machine, {
   slidesPerMove: 2,
 })
@@ -121,7 +121,7 @@ const service = useMachine(carousel.machine, {
 To allow looping of slides, set the `loop` property in the machine's context to
 `true`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(carousel.machine, {
   loop: true,
 })
@@ -132,7 +132,7 @@ const service = useMachine(carousel.machine, {
 To customize spacing between slides, set the `spacing` property in the machine's
 context to a valid CSS unit.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(carousel.machine, {
   spacing: "16px",
 })
@@ -142,7 +142,7 @@ const service = useMachine(carousel.machine, {
 
 When the carousel page changes, the `onPageChange` callback is invoked.
 
-```jsx {3-6}
+```jsx {2-5}
 const service = useMachine(carousel.machine, {
   onPageChange(details) {
     // details => { page: number }
@@ -156,7 +156,7 @@ const service = useMachine(carousel.machine, {
 To allow dragging the carousel with the mouse, set the `allowMouseDrag` property
 in the machine's context to `true`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(carousel.machine, {
   allowMouseDrag: true,
 })
@@ -167,7 +167,7 @@ const service = useMachine(carousel.machine, {
 To allow the carousel to autoplay, set the `autoplay` property in the machine's
 context to `true`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(carousel.machine, {
   autoplay: true,
 })
@@ -176,7 +176,7 @@ const service = useMachine(carousel.machine, {
 Alternatively, you can configure the autoplay interval by setting the `delay`
 property in the machine's context.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(carousel.machine, {
   autoplay: { delay: 2000 },
 })

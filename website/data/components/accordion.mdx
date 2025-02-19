@@ -72,7 +72,7 @@ To allow multiple items to be expanded at once, set `multiple` to `true`. This
 mode implicitly sets `collapsible` to `true` and ensures that each accordion can
 be expanded.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(accordion.machine, {
   multiple: true,
 })
@@ -83,7 +83,7 @@ const service = useMachine(accordion.machine, {
 To set the value of the accordion(s) that should be opened initially, pass the
 `value` property to the machine function.
 
-```jsx {4,5,12}
+```jsx {3,4,9}
 // for multiple accordions
 const service = useMachine(accordion.machine, {
   multiple: true,
@@ -103,7 +103,7 @@ context's `collapsible` property to `true`.
 
 > Note: If `multiple` is `true`, we internally set `collapsible` to be `true`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(accordion.machine, {
   collapsible: true,
 })
@@ -113,7 +113,7 @@ const service = useMachine(accordion.machine, {
 
 When the accordion value changes, the `onValueChange` callback is invoked.
 
-```jsx {3-6}
+```jsx {2-5}
 const service = useMachine(accordion.machine, {
   onValueChange(details) {
     // details => { value: string[] }
@@ -148,7 +148,7 @@ can't be interacted with.
 You can also disable the entire accordion items by passing `disabled` to the
 machine's context.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(accordion.machine, {
   disabled: true,
 })

@@ -64,7 +64,7 @@ progress machine in your project 🔥
 
 Use the `api.setValue` method to set the value of the progress bar.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(progress.machine, {
   defaultValue: 50,
 })
@@ -76,7 +76,7 @@ By default, the progress bar has a minimum value of `0` and a maximum value of
 `100`. You can change these values by passing the `min` and `max` options to the
 machine.
 
-```jsx {3-4}
+```jsx {2-3}
 const service = useMachine(progress.machine, {
   min: 0,
   max: 1000,
@@ -91,7 +91,7 @@ The progress component is determinate by default, with the value and max set to
 Set `value` to `null` to indicate an indeterminate value for operations whose
 progress can't be determined (e.g., attempting to reconnect to a server).
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(progress.machine, {
   defaultValue: null,
 })
