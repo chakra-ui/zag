@@ -108,11 +108,14 @@ export const machine = createMachine<CarouselSchema>({
     "SNAP.REFRESH": {
       actions: ["setSnapPoints", "clampPage"],
     },
+    "PAGE.SCROLL": {
+      actions: ["scrollToPage"],
+    },
   },
 
   effects: ["trackSlideMutation", "trackSlideIntersections", "trackSlideResize"],
 
-  entry: ["resetScrollPosition", "setSnapPoints", "setPage"],
+  entry: ["setSnapPoints", "setPage"],
 
   exit: ["clearScrollEndTimer"],
 
@@ -188,9 +191,17 @@ export const machine = createMachine<CarouselSchema>({
         const el = dom.getItemGroupEl(scope)
         if (!el) return
         const win = scope.getWin()
-        const observer = new win.ResizeObserver(() => {
+        const exec = () => {
           send({ type: "SNAP.REFRESH", src: "slide.resize" })
+        }
+        raf(() => {
+          exec()
+          // sync initial scroll position
+          raf(() => {
+            send({ type: "PAGE.SCROLL", instant: true })
+          })
         })
+        const observer = new win.ResizeObserver(exec)
         dom.getItemEls(scope).forEach((slide) => observer.observe(slide))
         return () => observer.disconnect()
       },
@@ -269,10 +280,6 @@ export const machine = createMachine<CarouselSchema>({
     },
 
     actions: {
-      resetScrollPosition({ scope }) {
-        const el = dom.getItemGroupEl(scope)
-        el.scrollTo(0, 0)
-      },
       clearScrollEndTimer({ refs }) {
         if (refs.get("timeoutRef") == null) return
         clearTimeout(refs.get("timeoutRef"))
