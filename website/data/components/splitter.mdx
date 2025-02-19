@@ -65,7 +65,7 @@ splitter machine in your project 🔥
 When the resize trigger of splitter changes, the `onSizeChangeStart` and
 `onSizeChangeEnd` callback is invoked.
 
-```jsx {8-13}
+```jsx {7-12}
 const service = useMachine(splitter.machine, {
   id: useId(),
   defaultSize: [
@@ -87,7 +87,7 @@ By default, the splitter is assumed to be horizontal. To change the orientation
 to vertical, set the `orientation` property in the machine's context to
 `vertical`.
 
-```jsx {8}
+```jsx {7}
 const service = useMachine(splitter.machine, {
   id: useId(),
   defaultSize: [

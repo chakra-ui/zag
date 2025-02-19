@@ -6,7 +6,7 @@ package: "@zag-js/qr-code"
 
 # QR Code
 
-A QR (Quick Response) Code is used to provide information or link which can be
+QR (Quick Response) Code is used to provide information or link which can be
 accessed by scanning the code with an app or a smartphone.
 
 > **Good to know**: The QR code encoding logic is built on top of the
@@ -65,7 +65,7 @@ code machine in your project 🔥
 
 To set the value of the QR code, pass the `value` property to the machine.
 
-```jsx {4}
+```jsx {3}
 const service = useMachine(qrCode.machine, {
   // ...
   value: "https://example.com",
@@ -88,7 +88,7 @@ The QR code machine accepts the following error correction levels:
 To set the error correction level, pass the `encoding.ecc` or
 `encoding.boostEcc` context property.
 
-```jsx {4}
+```jsx {3}
 const service = useMachine(qrCode.machine, {
   value: "...",
   encoding: { ecc: "H" },

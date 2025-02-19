@@ -76,7 +76,7 @@ By default, the tooltip is designed to open after `1000ms` and close after
 `500ms`. You can customize this by passing the `openDelay` and `closeDelay`
 context properties.
 
-```jsx {3-4}
+```jsx {2-3}
 const service = useMachine(tooltip.machine, {
   openDelay: 500,
   closeDelay: 200,
@@ -89,7 +89,7 @@ The tooltip uses [floating-ui](https://floating-ui.com/) for dynamic
 positioning. You can change the placement of the tooltip by passing the
 `positioning.placement` context property to the machine.
 
-```jsx {3-5}
+```jsx {2-4}
 const service = useMachine(tooltip.machine, {
   positioning: {
     placement: "bottom-start",
@@ -163,7 +163,7 @@ By default, the tooltip will close when the pointer is down on its trigger. To
 prevent this behavior, pass the `closeOnPointerDown` context property and set it
 to `false`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(tooltip.machine, {
   closeOnPointerDown: false,
 })
@@ -174,7 +174,7 @@ const service = useMachine(tooltip.machine, {
 The tooltip is designed to close when the escape key is pressed. To prevent
 this, pass the `closeOnEscape` context property and set it to `false`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(tooltip.machine, {
   closeOnEsc: false,
 })
@@ -187,7 +187,7 @@ Set the `interactive` context property to `true` to make them interactive.
 When a tooltip is interactive, it'll remain open even the pointer leaves the
 trigger and move into the tooltip's content.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(tooltip.machine, {
   interactive: true,
 })
@@ -197,7 +197,7 @@ const service = useMachine(tooltip.machine, {
 
 When the tooltip is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {3-8}
+```jsx {2-7}
 const service = useMachine(tooltip.machine, {
   onOpenChange(details) {
     // details => { open: boolean }

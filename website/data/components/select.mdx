@@ -74,7 +74,7 @@ machine's context.
 > The `value` property must be an array of strings. If selecting a single value,
 > pass an array with a single string.
 
-```jsx {14}
+```jsx {13}
 const collection = select.collection({
   items: [
     { label: "Nigeria", value: "ng" },
@@ -159,7 +159,7 @@ To use select within a form, you'll need to:
 To disable the select, set the `disabled` property in the machine's context to
 `true`.
 
-```jsx {5}
+```jsx {4}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -172,7 +172,7 @@ const service = useMachine(select.machine, {
 To make a combobox option disabled, pass the `isItemDisabled` property to the
 collection function.
 
-```jsx {3-5}
+```jsx {3-4}
 const collection = select.collection({
   items: countries,
   isItemDisabled(item) {
@@ -193,7 +193,7 @@ This behaviour ensures that the menu is closed when an item is selected and is
 pointer, space key or enter key. To disable the behaviour, set the
 `closeOnSelect` property in the machine's context to `false`.
 
-```jsx {5}
+```jsx {4}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -207,7 +207,7 @@ When navigating with the select using the arrow down and up keys, the select
 stops at the first and last options. If you need want the navigation to loop
 back to the first or last option, set the `loop: true` in the machine's context.
 
-```jsx {5}
+```jsx {4}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -220,7 +220,7 @@ const service = useMachine(select.machine, {
 When an item is highlighted with the pointer or keyboard, use the
 `onHighlightChange` to listen for the change and do something with it.
 
-```jsx {4-7}
+```jsx {3-6}
 const service = useMachine(select.machine, {
   id: useId(),
   onHighlightChange(details) {
@@ -235,7 +235,7 @@ const service = useMachine(select.machine, {
 When an item is selected, use the `onValueChange` property to listen for the
 change and do something with it.
 
-```jsx {5-7}
+```jsx {4-6}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,
@@ -251,7 +251,7 @@ const service = useMachine(select.machine, {
 When the select is opened or closed, the `onOpenChange` callback is called. You
 can listen for these events and do something with it.
 
-```jsx {5-8}
+```jsx {4-7}
 const service = useMachine(select.machine, {
   id: useId(),
   collection,

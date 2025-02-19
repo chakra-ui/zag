@@ -75,7 +75,7 @@ increment/decrement its value.
 > Don't forget to change the styles of the vertical slider by specifying its
 > height
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(slider.machine, {
   orientation: "vertical",
 })
@@ -83,7 +83,7 @@ const service = useMachine(slider.machine, {
 
 ## Setting the initial value
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(slider.machine, {
   defaultValue: [30, 60],
 })
@@ -97,7 +97,7 @@ and/or max attributes.
 
 For example, to ask the user for a value between `-10` and `10`, you can use:
 
-```jsx {3-4}
+```jsx {2-3}
 const service = useMachine(slider.machine, {
   min: -10,
   max: 10,
@@ -112,7 +112,7 @@ integer. You can change the step attribute to control the granularity.
 For example, If you need a value between `5` and `10`, accurate to two decimal
 places, you should set the value of step to `0.01`:
 
-```jsx {5}
+```jsx {4}
 const service = useMachine(slider.machine, {
   min: 5,
   max: 10,
@@ -125,7 +125,7 @@ const service = useMachine(slider.machine, {
 When the slider value changes, the `onValueChange` and `onValueChangeEnd`
 callbacks are invoked. You can use this to setup custom behaviors in your app.
 
-```jsx {3-8}
+```jsx {2-7}
 const service = useMachine(slider.machine, {
   onValueChange(details) {
     // details => { values: number[] }
@@ -144,7 +144,7 @@ By default, the range slider thumbs are allowed to overlap when their values are
 equal. To prevent this, use the `minStepsBetweenThumbs` to avoid thumbs with
 equal values.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(slider.machine, {
   minStepsBetweenThumbs: 1,
 })
@@ -157,7 +157,7 @@ function and ensure you pass `name` value to the machine's context. It will
 render a hidden input for each value and ensure the value changes get propagated
 to the form correctly.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(slider.machine, {
   name: "quantity",
 })
@@ -171,7 +171,7 @@ will increment and the right arrow key will decrement.
 
 To enable RTL support, pass the `dir: rtl` context property
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(slider.machine, {
   dir: "rtl",
 })

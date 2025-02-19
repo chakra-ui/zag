@@ -73,7 +73,7 @@ property.
 
 > **Note:** The value must be a string
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(numberInput.machine, {
   defaultValue: "13",
 })
@@ -85,7 +85,7 @@ Pass the `min` prop or `max` prop to set an upper and lower limit for the input.
 By default, the input will restrict the value to stay within the specified
 range.
 
-```jsx {3,4}
+```jsx {2,3}
 const service = useMachine(numberInput.machine, {
   min: 10,
   max: 200,
@@ -111,7 +111,7 @@ The number input machine exposes a way to increment/decrement the value using
 the mouse wheel event. To activate this, pass the `allowMouseWheel` property to
 the machine's context.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(numberInput.machine, {
   allowMouseWheel: true,
 })
@@ -125,7 +125,7 @@ of the input.
 
 To disable this behavior, pass `clampValueOnBlur` and set to `false`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(numberInput.machine, {
   clampValueOnBlur: false,
 })
@@ -135,7 +135,7 @@ const service = useMachine(numberInput.machine, {
 
 When the value changes, the `onValueChange` callback is invoked.
 
-```jsx {3-8}
+```jsx {2-7}
 const service = useMachine(numberInput.machine, {
   onValueChange(details) {
     // details => { value: string, valueAsNumber: number }
@@ -149,7 +149,7 @@ const service = useMachine(numberInput.machine, {
 To use the number input within forms, set the `name` property in the machine's
 context.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(numberInput.machine, {
   name: "quantity",
 })
@@ -161,7 +161,7 @@ To format the input value to be rounded to specific decimal points, set the
 `formatOptions` and provide `Intl.NumberFormatOptions` such as
 `maximumFractionDigits` or `minimumFractionDigits`
 
-```jsx {3-6}
+```jsx {2-5}
 const service = useMachine(numberInput.machine, {
   formatOptions: {
     maximumFractionDigits: 4,
@@ -174,7 +174,7 @@ const service = useMachine(numberInput.machine, {
 
 To disable the long press spin, set the `spinOnPress` to `false`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(numberInput.machine, {
   spinOnPress: false,
 })
@@ -185,7 +185,7 @@ const service = useMachine(numberInput.machine, {
 To apply custom formatting to the input's value, set the `formatOptions` and
 provide `Intl.NumberFormatOptions` such as `style` and `currency`
 
-```jsx {3-6}
+```jsx {2-5}
 const service = useMachine(numberInput.machine, {
   formatOptions: {
     style: "currency",

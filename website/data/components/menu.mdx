@@ -65,7 +65,7 @@ menu machine in your project 🔥
 
 When a menu item is clicked, the `onSelect` callback is invoked.
 
-```jsx {4-7}
+```jsx {3-6}
 const service = useMachine(menu.machine, {
   onSelect(details) {
     // details => { value: string }
@@ -78,7 +78,7 @@ const service = useMachine(menu.machine, {
 
 When a menu is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {4-7}
+```jsx {3-6}
 const service = useMachine(menu.machine, {
   onOpenChange(details) {
     // details => { open: boolean }

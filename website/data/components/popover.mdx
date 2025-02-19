@@ -96,7 +96,7 @@ context. When `modal: true`, we set the `portalled` attribute to `true` as well.
 
 > **Note**: This requires that you render the component within a `Portal`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(popover.machine, {
   modal: true,
 })
@@ -109,7 +109,7 @@ The popover is designed to close on blur and when the `esc` key is pressed.
 To prevent it from closing on blur (clicking or focusing outside), pass the
 `closeOnInteractOutside` property and set it to `false`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(popover.machine, {
   closeOnInteractOutside: true,
 })
@@ -118,7 +118,7 @@ const service = useMachine(popover.machine, {
 To prevent it from closing when the `esc` key is pressed, pass the
 `closeOnEscape` property and set it to `false`.
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(popover.machine, {
   closeOnEscape: true,
 })
@@ -149,7 +149,7 @@ return (
 To change the placement of the popover, set the `positioning.placement` property
 in the machine's context.
 
-```jsx {3-5}
+```jsx {2-4}
 const service = useMachine(popover.machine, {
   positioning: {
     placement: "top-start",
@@ -161,7 +161,7 @@ const service = useMachine(popover.machine, {
 
 When the popover is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {3-8}
+```jsx {2-7}
 const service = useMachine(popover.machine, {
   onOpenChange(details) {
     // details => { open: boolean }

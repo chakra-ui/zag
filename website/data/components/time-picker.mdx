@@ -73,7 +73,7 @@ time picker machine's context.
 > The `value` property must be an instance of `Time` exported from
 > `@internationalized/date`, or undefined.
 
-```jsx {4}
+```jsx {3}
 const service = useMachine(timePicker.machine, {
   id: useId(),
   defaultValue: new Time(12, 30),
@@ -85,7 +85,7 @@ const service = useMachine(timePicker.machine, {
 To disable the time picker, set the `disabled` property in the machine's context
 to `true`.
 
-```jsx {4}
+```jsx {3}
 const service = useMachine(timePicker.machine, {
   id: useId(),
   disabled: true,
@@ -97,7 +97,7 @@ const service = useMachine(timePicker.machine, {
 By default, the time picker only shows the hour and minute cells. To show the
 second cell, set the `showSeconds` property in the machine's context to `true`.
 
-```jsx {4}
+```jsx {3}
 const service = useMachine(timePicker.machine, {
   id: useId(),
   withSeconds: true,
@@ -111,7 +111,7 @@ picker machine's context.
 
 > This will affect the presence of the period cell and the time format.
 
-```jsx {4}
+```jsx {3}
 const service = useMachine(timePicker.machine, {
   id: useId(),
   locale: "fr-FR",
@@ -129,7 +129,7 @@ picker machine's context.
 > - `minute` — The step for the minute cell.
 > - `second` — The step for the second cell.
 
-```jsx {4-8}
+```jsx {3-7}
 const service = useMachine(timePicker.machine, {
   id: useId(),
   steps: {
@@ -148,7 +148,7 @@ To set the minimum and maximum values for the time picker, pass the `min` and
 > The `min` and `max` properties must be an instance of `Time` exported from
 > `@internationalized/date`.
 
-```jsx {4-5}
+```jsx {3-4}
 const service = useMachine(timePicker.machine, {
   id: useId(),
   min: new Time(10), // Only allow times after 10:00:00
@@ -161,7 +161,7 @@ const service = useMachine(timePicker.machine, {
 When an item is focused with the keyboard, use the `onFocusChange` to listen for
 the change and do something with it.
 
-```jsx {4-7}
+```jsx {3-6}
 const service = useMachine(timePicker.machine, {
   id: useId(),
   onFocusChange(details) {
@@ -176,7 +176,7 @@ const service = useMachine(timePicker.machine, {
 When the value changes, use the `onValueChange` property to listen for the
 change and do something with it.
 
-```jsx {4-7}
+```jsx {3-6}
 const service = useMachine(timePicker.machine, {
   id: useId(),
   onValueChange(details) {
@@ -191,7 +191,7 @@ const service = useMachine(timePicker.machine, {
 When the time picker is opened or closed, the `onOpenChange` callback is called.
 You can listen for these events and do something with it.
 
-```jsx {4-7}
+```jsx {3-6}
 const service = useMachine(timePicker.machine, {
   id: useId(),
   onOpenChange(details) {

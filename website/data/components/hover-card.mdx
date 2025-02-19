@@ -62,7 +62,7 @@ hover-card machine in your project 🔥
 
 To make an hover card open by default, set the context's `open` property to true
 
-```jsx {3}
+```jsx {2}
 const service = useMachine(hoverCard.machine, {
   defaultOpen: true,
 })
@@ -73,7 +73,7 @@ const service = useMachine(hoverCard.machine, {
 When the hover card is `opened` or `closed`, the `onOpenChange` callback is
 invoked.
 
-```jsx {3-6}
+```jsx {2-5}
 const service = useMachine(hoverCard.machine, {
   onOpenChange(details) {
     // details => { open: boolean }
