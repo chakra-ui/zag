@@ -66,12 +66,10 @@ code machine in your project 🔥
 To set the value of the QR code, pass the `value` property to the machine.
 
 ```jsx {4}
-const [state, send] = useMachine(
-  qrCode.machine({
-    // ...
-    value: "https://example.com",
-  }),
-)
+const service = useMachine(qrCode.machine, {
+  // ...
+  value: "https://example.com",
+})
 ```
 
 ## Setting the correction level
@@ -91,12 +89,10 @@ To set the error correction level, pass the `encoding.ecc` or
 `encoding.boostEcc` context property.
 
 ```jsx {4}
-const [state, send] = useMachine(
-  qrCode.machine({
-    value: "...",
-    encoding: { ecc: "H" },
-  }),
-)
+const service = useMachine(qrCode.machine, {
+  value: "...",
+  encoding: { ecc: "H" },
+})
 ```
 
 > The alternative is to enlarge the QRCode by increasing the size of the `svg`

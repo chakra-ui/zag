@@ -5,14 +5,12 @@
 
   const controls = useControls(qrCodeControls)
 
-  const [state, send] = useMachine(
-    qrCode.machine({
-      id: "1",
-      value: "https://github.com/chakra-ui",
-    }),
-  )
+  const service = useMachine(qrCode.machine, {
+    id: "1",
+    value: "https://github.com/chakra-ui",
+  })
 
-  const api = computed(() => qrCode.connect(state.value, send, normalizeProps))
+  const api = computed(() => qrCode.connect(service, normalizeProps))
 </script>
 
 <template>

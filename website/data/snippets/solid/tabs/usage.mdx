@@ -10,11 +10,12 @@ const data = [
 ]
 
 export function Tabs() {
-  const [state, send] = useMachine(
-    tabs.machine({ id: createUniqueId(), value: "item-1" }),
-  )
+  const service = useMachine(tabs.machine, {
+    id: createUniqueId(),
+    defaultValue: "item-1",
+  })
 
-  const api = createMemo(() => tabs.connect(state, send, normalizeProps))
+  const api = createMemo(() => tabs.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>

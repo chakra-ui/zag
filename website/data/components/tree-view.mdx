@@ -125,11 +125,9 @@ The tree view supports multiple selection. To enable this, set the
 `selectionMode` to `multiple`.
 
 ```tsx {3}
-const [state, send] = useMachine(
-  tree.machine({
-    selectionMode: "multiple",
-  }),
-)
+const service = useMachine(tree.machine, {
+  selectionMode: "multiple",
+})
 ```
 
 ## Setting the default expanded nodes
@@ -137,11 +135,9 @@ const [state, send] = useMachine(
 To set the default expanded nodes, use the `expandedValue` context property.
 
 ```tsx {3}
-const [state, send] = useMachine(
-  tree.machine({
-    expandedValue: ["node_modules/pandacss"],
-  }),
-)
+const service = useMachine(tree.machine, {
+  defaultExpandedValue: ["node_modules/pandacss"],
+})
 ```
 
 ## Setting the default selected nodes
@@ -149,11 +145,9 @@ const [state, send] = useMachine(
 To set the default selected nodes, use the `selectedValue` context property.
 
 ```tsx {3}
-const [state, send] = useMachine(
-  tree.machine({
-    selectedValue: ["node_modules/pandacss"],
-  }),
-)
+const service = useMachine(tree.machine, {
+  defaultSelectedValue: ["node_modules/pandacss"],
+})
 ```
 
 ## Indentation Guide
@@ -190,13 +184,11 @@ When a node is selected, the `onSelectionChange` callback is invoked with the
 selected nodes.
 
 ```jsx {3-6}
-const [state, send] = useMachine(
-  tree.machine({
-    onSelectionChange(details) {
-      console.log("selected nodes:", details)
-    },
-  }),
-)
+const service = useMachine(tree.machine, {
+  onSelectionChange(details) {
+    console.log("selected nodes:", details)
+  },
+})
 ```
 
 ## Listening for expanding and collapsing
@@ -205,13 +197,11 @@ When a node is expanded or collapsed, the `onExpandedChange` callback is invoked
 with the expanded nodes.
 
 ```jsx {3-6}
-const [state, send] = useMachine(
-  tree.machine({
-    onExpandedChange(details) {
-      console.log("expanded nodes:", details)
-    },
-  }),
-)
+const service = useMachine(tree.machine, {
+  onExpandedChange(details) {
+    console.log("expanded nodes:", details)
+  },
+})
 ```
 
 ## Methods and Properties

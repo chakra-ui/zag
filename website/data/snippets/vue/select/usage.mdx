@@ -10,16 +10,14 @@
     //...
   ]
 
-  const [state, send] = useMachine(
-    select.machine({ 
-      id: "1",
-      collection: select.collection({
-        items: selectData,
-      }),
-    })
-  )
+  const service = useMachine(select.machine, {
+    id: "1",
+    collection: select.collection({
+      items: selectData,
+    }),
+  })
 
-  const api = computed(() => select.connect(state.value, send, normalizeProps))
+  const api = computed(() => select.connect(service, normalizeProps))
 </script>
 
 <template>

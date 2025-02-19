@@ -3,9 +3,9 @@ import * as slider from "@zag-js/slider"
 import { useMachine, normalizeProps } from "@zag-js/react"
 
 export function Slider() {
-  const [state, send] = useMachine(slider.machine({ id: "1", value: [0] }))
+  const service = useMachine(slider.machine, { id: "1", value: [0] })
 
-  const api = slider.connect(state, send, normalizeProps)
+  const api = slider.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

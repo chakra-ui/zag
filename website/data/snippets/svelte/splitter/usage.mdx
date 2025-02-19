@@ -3,17 +3,15 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as splitter from "@zag-js/splitter"
 
-  const [snapshot, send] = useMachine(
-    splitter.machine({
-      id: "1",
-      size: [
+  const service = useMachine(splitter.machine, {
+    id: "1",
+    defaultSize: [
         { id: "a", size: 50 },
         { id: "b", size: 50 },
       ],
-    }),
-  )
+  })
 
-  const api = $derived(splitter.connect(snapshot, send, normalizeProps))
+  const api = $derived(splitter.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

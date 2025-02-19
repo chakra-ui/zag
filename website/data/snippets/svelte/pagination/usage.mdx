@@ -4,16 +4,12 @@
   import { useMachine, normalizeProps } from "@zag-js/svelte"
   import { data } from "./data"
 
-  let details = $state<any>({})
+  const service = useMachine(pagination.machine, {
+    id: "1",
+    count: data.length,
+  })
 
-  const [snapshot, send] = useMachine(
-    pagination.machine({
-      id: "1",
-      count: data.length,
-    }),
-  )
-
-  const api = $derived(pagination.connect(snapshot, send, normalizeProps))
+  const api = $derived(pagination.connect(service, normalizeProps))
 </script>
 
 <div>

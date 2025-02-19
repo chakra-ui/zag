@@ -11,17 +11,15 @@ interface PresenceProps {
 }
 
 function Presence(props: PresenceProps) {
-  const [localProps, restProps] = splitProps(props, [
+  const [machineProps, localProps] = splitProps(props, [
     "present",
     "unmountOnExit",
     "onExitComplete",
   ])
 
-  const [state, send] = useMachine(presence.machine({ present }), {
-    context: { present, onExitComplete },
-  })
+  const service = useMachine(presence.machine, machineProps)
 
-  const api = createMemo(() => presence.connect(state, send, normalizeProps))
+  const api = createMemo(() => presence.connect(service, normalizeProps))
   const unmount = createMemo(() => !api().present && localProps.unmountOnExit)
 
   return (
@@ -30,7 +28,7 @@ function Presence(props: PresenceProps) {
         hidden={!api().present}
         data-state={api().skip ? undefined : present ? "open" : "closed"}
         ref={api().setNode}
-        {...restProps}
+        {...localProps}
       />
     </Show>
   )

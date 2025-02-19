@@ -10,9 +10,9 @@ const data = [
 ]
 
 function Accordion() {
-  const [state, send] = useMachine(accordion.machine({ id: createUniqueId() }))
+  const service = useMachine(accordion.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => accordion.connect(state, send, normalizeProps))
+  const api = createMemo(() => accordion.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>

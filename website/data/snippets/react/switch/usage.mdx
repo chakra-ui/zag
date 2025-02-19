@@ -3,9 +3,9 @@ import * as zagSwitch from "@zag-js/switch"
 import { useMachine, normalizeProps } from "@zag-js/react"
 
 function Checkbox() {
-  const [state, send] = useMachine(zagSwitch.machine({ id: "1" }))
+  const service = useMachine(zagSwitch.machine, { id: "1" })
 
-  const api = zagSwitch.connect(state, send, normalizeProps)
+  const api = zagSwitch.connect(service, normalizeProps)
 
   return (
     <label {...api.getRootProps()}>

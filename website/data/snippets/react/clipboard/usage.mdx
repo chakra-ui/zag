@@ -1,18 +1,16 @@
-```jsx
+```tsx
 import * as clipboard from "@zag-js/clipboard"
 import { useMachine, normalizeProps } from "@zag-js/react"
 import { ClipboardCheck, ClipboardCopyIcon } from "lucide-react"
 import { useId } from "react"
 
 function Clipboard() {
-  const [state, send] = useMachine(
-    clipboard.machine({
-      id: useId(),
-      value: "https://github.com/chakra-ui/zag",
-    }),
-  )
+  const service = useMachine(clipboard.machine, {
+    id: useId(),
+    value: "https://github.com/chakra-ui/zag",
+  })
 
-  const api = clipboard.connect(state, send, normalizeProps)
+  const api = clipboard.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

@@ -20,14 +20,12 @@ export function Select() {
     itemToValue: (item) => item.value,
   })
 
-  const [state, send] = useMachine(
-    select.machine({
-      id: useId(),
-      collection,
-    }),
-  )
+  const service = useMachine(select.machine, {
+    id: useId(),
+    collection,
+  })
 
-  const api = select.connect(state, send, normalizeProps)
+  const api = select.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

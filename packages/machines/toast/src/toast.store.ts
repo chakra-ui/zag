@@ -1,13 +1,11 @@
 import { runIfFn, uuid } from "@zag-js/utils"
 import type { Options, Placement, ToastProps, ToastStoreProps } from "./toast.types"
 
-// type Toast = Partial<ToastProps>
-// type ToastSubscriber = (toast: Toast) => void
 type MaybeFunction<V, A> = V | ((arg: A) => V)
 
 export function createToastStore<V = any>(props: ToastStoreProps) {
   const placement: Placement = props.placement ?? "bottom"
-  const overlap = props.overlap ?? true
+  const overlap = !!props.overlap
   const duration = props.duration
   const max = props.max ?? 10
 

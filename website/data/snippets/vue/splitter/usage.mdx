@@ -1,20 +1,18 @@
-```md
+```html
 <script setup>
-import * as splitter from "@zag-js/splitter"
-import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed } from "vue"
+  import * as splitter from "@zag-js/splitter"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
 
-const [state, send] = useMachine(
-  splitter.machine({
+  const service = useMachine(splitter.machine, {
     id: "1",
-    size: [
+    defaultSize: [
       { id: "a", size: 50 },
       { id: "b", size: 50 },
-    ]
+    ],
   })
-)
 
-const api = computed(() => splitter.connect(state.value, send, normalizeProps))
+  const api = computed(() => splitter.connect(service, normalizeProps))
 </script>
 
 <template>

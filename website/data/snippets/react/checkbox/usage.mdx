@@ -1,11 +1,12 @@
 ```jsx
 import * as checkbox from "@zag-js/checkbox"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
 
 function Checkbox() {
-  const [state, send] = useMachine(checkbox.machine({ id: "1" }))
+  const service = useMachine(checkbox.machine, { id: useId() })
 
-  const api = checkbox.connect(state, send, normalizeProps)
+  const api = checkbox.connect(service, normalizeProps)
 
   return (
     <label {...api.getRootProps()}>

@@ -10,13 +10,12 @@
     "https://tinyurl.com/59jxz9uu",
   ]
 
-  const [state, send] = useMachine(
-    carousel.machine({ id: "1", slideCount: items.length }),
-  )
+  const service = useMachine(carousel.machine, {
+    id: "1",
+    slideCount: items.length,
+  })
 
-  const api = computed(() =>
-    carousel.connect(state.value, send, normalizeProps),
-  )
+  const api = computed(() => carousel.connect(service, normalizeProps))
 </script>
 
 <template>

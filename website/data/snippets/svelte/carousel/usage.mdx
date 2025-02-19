@@ -9,11 +9,11 @@
   "https://tinyurl.com/59jxz9uu",
  ]
 
-  const [snapshot, send] = useMachine(
-    carousel.machine({ id: "1", slideCount: items.length }),
+  const service = useMachine(
+    carousel.machine, ({ id: "1", slideCount: items.length }),
   )
 
-  const api = $derived(carousel.connect(snapshot, send, normalizeProps))
+  const api = $derived(carousel.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

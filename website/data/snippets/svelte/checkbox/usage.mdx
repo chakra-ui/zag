@@ -3,8 +3,8 @@
   import * as checkbox from "@zag-js/checkbox"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
-  const [snapshot, send] = useMachine(checkbox.machine({ id: "1" }))
-  const api = $derived(checkbox.connect(snapshot, send, normalizeProps))
+  const service = useMachine(checkbox.machine, ({ id: "1" }))
+  const api = $derived(checkbox.connect(service, normalizeProps))
 </script>
 
 <label {...api.getRootProps()}>

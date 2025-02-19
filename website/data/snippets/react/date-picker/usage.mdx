@@ -4,9 +4,9 @@ import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 import { useId } from "react"
 
 function DatePicker() {
-  const [state, send] = useMachine(datepicker.machine({ id: useId() }))
+  const service = useMachine(datepicker.machine, { id: useId() })
 
-  const api = datepicker.connect(state, send, normalizeProps)
+  const api = datepicker.connect(service, normalizeProps)
 
   return (
     <>

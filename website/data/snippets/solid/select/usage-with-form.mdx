@@ -10,8 +10,8 @@ const selectData = [
 ]
 
 export function SelectWithForm() {
-  const [state, send] = useMachine(
-    select.machine({
+  const service = useMachine(
+    select.machine, ({
       collection: select.collection({
         items: selectData,
       }),
@@ -20,7 +20,7 @@ export function SelectWithForm() {
     }),
   )Ø
 
-  const api = createMemo(() => select.connect(state, send, normalizeProps))
+  const api = createMemo(() => select.connect(service, normalizeProps))
 
   return (
     <form>

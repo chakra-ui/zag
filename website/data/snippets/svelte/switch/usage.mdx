@@ -3,9 +3,12 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as zagSwitch from "@zag-js/switch"
 
-  const [snapshot, send] = useMachine(zagSwitch.machine({ id: "1", name: "switch" }))
+  const service = useMachine(zagSwitch.machine, {
+    id: "1",
+    name: "switch",
+  })
 
-  const api = $derived(zagSwitch.connect(snapshot, send, normalizeProps))
+  const api = $derived(zagSwitch.connect(service, normalizeProps))
 </script>
 
 <label {...api.getRootProps()}>

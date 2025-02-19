@@ -63,11 +63,9 @@ rating machine in your project 🔥
 To make rating disabled, set the context's `disabled` property to true
 
 ```jsx {3}
-const [state, send] = useMachine(
-  rating.machine({
-    disabled: true,
-  }),
-)
+const service = useMachine(rating.machine, {
+  disabled: true,
+})
 ```
 
 ## Making the rating readonly
@@ -75,11 +73,9 @@ const [state, send] = useMachine(
 To make rating readonly, set the context's `readOnly` property to true
 
 ```jsx {3}
-const [state, send] = useMachine(
-  rating.machine({
-    readOnly: true,
-  }),
-)
+const service = useMachine(rating.machine, {
+  readOnly: true,
+})
 ```
 
 ## Setting the initial value
@@ -87,11 +83,9 @@ const [state, send] = useMachine(
 To set the rating's initial value, set the context's `value` property.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  rating.machine({
-    value: 2.5,
-  }),
-)
+const service = useMachine(rating.machine, {
+  defaultValue: 2.5,
+})
 ```
 
 ## Listening for changes
@@ -99,14 +93,12 @@ const [state, send] = useMachine(
 When the rating value changes, the `onValueChange` callback is invoked.
 
 ```jsx {3-8}
-const [state, send] = useMachine(
-  rating.machine({
-    onValueChange({ value }) {
-      console.log("rating value is:", value)
-      // '1' | '2.5' | '4'
-    },
-  }),
-)
+const service = useMachine(rating.machine, {
+  onValueChange({ value }) {
+    console.log("rating value is:", value)
+    // '1' | '2.5' | '4'
+  },
+})
 ```
 
 ## Usage within forms
@@ -117,11 +109,9 @@ render a hidden input and ensure the value changes get propagated to the form
 correctly.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  rating.machine({
-    name: "rating",
-  }),
-)
+const service = useMachine(rating.machine, {
+  name: "rating",
+})
 ```
 
 ## Styling guide

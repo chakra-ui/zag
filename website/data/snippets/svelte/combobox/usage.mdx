@@ -17,24 +17,24 @@
     itemToString: (item) => item.label,
   })
 
-  const [snapshot, send] = useMachine(
-    combobox.machine({
-      id: "1",
-      collection,
-      onOpenChange() {
-        options = comboboxData
-      },
-      onInputValueChange({ inputValue }) {
-        const filtered = comboboxData.filter((item) => item.label.toLowerCase().includes(inputValue.toLowerCase()))
-        const newOptions = filtered.length > 0 ? filtered : comboboxData
+  const service = useMachine(combobox.machine, {
+    id: "1",
+    collection,
+    onOpenChange() {
+      options = comboboxData
+    },
+    onInputValueChange({ inputValue }) {
+      const filtered = comboboxData.filter((item) =>
+        item.label.toLowerCase().includes(inputValue.toLowerCase()),
+      )
+      const newOptions = filtered.length > 0 ? filtered : comboboxData
 
-        collection.setItems(newOptions)
-        options = newOptions
-      },
-    }),
-  )
+      collection.setItems(newOptions)
+      options = newOptions
+    },
+  })
 
-  const api = $derived(combobox.connect(snapshot, send, normalizeProps))
+  const api = $derived(combobox.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>
@@ -46,13 +46,11 @@
 </div>
 <div {...api.getPositionerProps()}>
   {#if options.length > 0}
-    <ul {...api.getContentProps()}>
-      {#each options as item}
-        <li {...api.getItemProps({ item })}>
-          {item.label}
-        </li>
-      {/each}
-    </ul>
+  <ul {...api.getContentProps()}>
+    {#each options as item}
+    <li {...api.getItemProps({ item })}>{item.label}</li>
+    {/each}
+  </ul>
   {/if}
 </div>
 ```

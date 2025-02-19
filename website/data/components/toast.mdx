@@ -76,10 +76,10 @@ The use the toast effectively, you need to understand these key aspects:
 There are five toast types that can be created with the toast machine. `info`,
 `success`, `loading`, `custom` and `error`.
 
-To create a toast, use the `toast.create(...)` method.
+To create a toast, use the `toaster.create(...)` method.
 
 ```jsx
-toast.create({
+toaster.create({
   title: "Hello World",
   description: "This is a toast",
   type: "info",
@@ -96,17 +96,16 @@ The options you can pass in are:
   on the specified `type`.
 - `onStatusChange` — A callback that listens for the status changes across the
   toast lifecycle.
-- `placement` — The placement of the toast.
 - `removeDelay` — The delay before unmounting the toast from the DOM. Useful for
   transition.
 
 ## Changing the placement
 
-Use the `placement` property when you call the `toast.create(...)` to change the
-position of the toast.
+Use the `placement` property when you call the `toaster.create(...)` to change
+the position of the toast.
 
 ```jsx {3}
-toast.info({
+toaster.info({
   title: "Hello World",
   description: "This is a toast",
   placement: "top-start",
@@ -119,11 +118,9 @@ When multiple toasts are created, they are rendered in a stack. To make the
 toasts overlap, set the `overlap` property to `true`.
 
 ```jsx
-const [state, send] = useMachine(
-  toast.group.machine({
-    overlap: true,
-  }),
-)
+const toaster = toast.createStore({
+  overlap: true,
+})
 ```
 
 When using overlap, the toast's placement must match the `placement` of the
@@ -150,10 +147,10 @@ the following toast types and matching default durations:
 />
 
 You can override the duration of the toast by passing the `duration` property to
-the `toast.create(...)` function.
+the `toaster.create(...)` function.
 
 ```jsx {5}
-toast.create({
+toaster.create({
   title: "Hello World",
   description: "This is a toast",
   type: "info",
@@ -161,7 +158,7 @@ toast.create({
 })
 ```
 
-> You can also use the `toast.upsert(...)` function which creates or updates a
+> You can also use the `toaster.upsert(...)` function which creates or updates a
 > toast.
 
 ## Using portals
@@ -179,21 +176,21 @@ the toast.
 
 This identifier can be either:
 
-- the `id` passed into `toast.create(...)` or,
-- the returned random `id` when the `toast.create(...)` is called.
+- the `id` passed into `toaster.create(...)` or,
+- the returned random `id` when the `toaster.create(...)` is called.
 
 You can use any of the following methods to control a toast:
 
-- `toast.upsert(...)` — Creates or updates a toast.
-- `toast.update(...)` — Updates a toast.
-- `toast.remove(...)` — Removes a toast instantly without delay.
-- `toast.dismiss(...)` — Removes a toast with delay.
-- `toast.pause(...)` — Pauses a toast.
-- `toast.resume(...)` — Resumes a toast.
+- `toaster.upsert(...)` — Creates or updates a toast.
+- `toaster.update(...)` — Updates a toast.
+- `toaster.remove(...)` — Removes a toast instantly without delay.
+- `toaster.dismiss(...)` — Removes a toast with delay.
+- `toaster.pause(...)` — Pauses a toast.
+- `toaster.resume(...)` — Resumes a toast.
 
 ```jsx {2,11-15}
 // grab the id from the created toast
-const id = toast.create({
+const id = toaster.create({
   title: "Hello World",
   description: "This is a toast",
   type: "info",
@@ -202,29 +199,29 @@ const id = toast.create({
 })
 
 // update the toast
-toast.update(id, {
+toaster.update(id, {
   title: "Hello World",
   description: "This is a toast",
   type: "success",
 })
 
 // remove the toast
-toast.remove(id)
+toaster.remove(id)
 
 // dismiss the toast
-toast.dismiss(id)
+toaster.dismiss(id)
 ```
 
 ## Handling promises
 
-The toast group API exposes a `toast.promise()` function to allow you update the
-toast when it resolves or rejects.
+The toast group API exposes a `toaster.promise()` function to allow you update
+the toast when it resolves or rejects.
 
 > With the promise API, you can pass the toast options for each promise
 > lifecycle.
 
 ```jsx
-toast.promise(promise, {
+toaster.promise(promise, {
   loading: {
     title: "Loading",
     description: "Please wait...",
@@ -246,20 +243,17 @@ There are three scenarios we provide to pause a toast from timing out:
 
 - When the document loses focus or the page is idle (e.g. switching to a new
   browser tab), controlled via the `pauseOnPageIdle` context property.
-- When the `toast.pause(id)` provided by the `toast.group.connect(...)` is
-  called.
+- When the `toaster.pause(id)` is called.
 
 ```jsx
 // Global pause options
-const [state, send] = useMachine(
-  toast.group.machine({
-    pauseOnPageIdle: true,
-  }),
-)
+const service = useMachine(toast.group.machine, {
+  pauseOnPageIdle: true,
+})
 
 // Programmatically pause a toast (by `id`)
 // `id` is the return value of `api.create(...)`
-toast.pause(id)
+toaster.pause(id)
 ```
 
 ## Limiting the number of toasts
@@ -269,11 +263,9 @@ experience. To limit the number of visible toasts, pass the `max` property to
 the group machine's context.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  toast.group.machine({
-    max: 10,
-  }),
-)
+const toaster = toast.createStore({
+  max: 10,
+})
 ```
 
 ## Focus Hotkey for toasts
@@ -284,17 +276,16 @@ When a toast is created, you can focus the toast region by pressing the
 Set the `hotkey` context property to change the underlying hotkey.
 
 ```jsx
-const [state, send] = useMachine(
-  toast.group.machine({
-    hotkey: ["F6"],
-  }),
-)
+const service = useMachine(toast.group.machine, {
+  hotkey: ["F6"],
+})
 ```
 
 ## Listening for toast lifecycle
 
 When a toast is created, you can listen for the status changes across its
-lifecycle using the `onStatusChange` callback when you call `toast.create(...)`.
+lifecycle using the `onStatusChange` callback when you call
+`toaster.create(...)`.
 
 The status values are:
 
@@ -303,7 +294,7 @@ The status values are:
 - `unmounted` - The toast has been completely unmounted and no longer exists
 
 ```jsx {3-7}
-toast.info({
+toaster.info({
   title: "Hello World",
   description: "This is a toast",
   type: "info",
@@ -320,11 +311,9 @@ When multiple toasts are rendered, a gap of `16px` is applied between each
 toast. To change this value, set the `gap` context property.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  toast.group.machine({
-    gap: 24,
-  }),
-)
+const service = useMachine(toast.group.machine, {
+  gap: 24,
+})
 ```
 
 ## Changing the offset
@@ -333,11 +322,9 @@ The toast region has a default `16px` offset from the viewport. Use the `offset`
 context property to change the offset.
 
 ```jsx {4-8}
-const [state, send] = useMachine(
-  toast.group.machine({
-    offsets: "24px",
-  }),
-)
+const service = useMachine(toast.group.machine, {
+  offsets: "24px",
+})
 ```
 
 ## Styling guide

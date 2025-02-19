@@ -69,11 +69,9 @@ To set the initial value of the editable, pass the `value` property to the
 machine's context.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  editable.machine({
-    value: "Hello World",
-  }),
-)
+const service = useMachine(editable.machine, {
+  defaultValue: "Hello World",
+})
 ```
 
 ## Listening for value changes
@@ -84,16 +82,14 @@ The editable machine supports two ways of listening for value changes:
 - `onValueCommit`: called when the value is committed.
 
 ```jsx {3-4}
-const [state, send] = useMachine(
-  editable.machine({
-    onValueChange(details) {
-      console.log("Value changed", details.value)
-    },
-    onValueCommit(details) {
-      console.log("Value submitted", details.value)
-    },
-  }),
-)
+const service = useMachine(editable.machine, {
+  onValueChange(details) {
+    console.log("Value changed", details.value)
+  },
+  onValueCommit(details) {
+    console.log("Value submitted", details.value)
+  },
+})
 ```
 
 ## Using custom controls
@@ -110,11 +106,9 @@ To auto-grow the editable as the content changes, pass the `autoResize: true`
 property to the machine's context.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  editable.machine({
-    autoResize: true,
-  }),
-)
+const service = useMachine(editable.machine, {
+  autoResize: true,
+})
 ```
 
 When using autoresize, the input and preview elements should not have any
@@ -128,12 +122,10 @@ achieve this, set the `maxWidth` property of the machine's context to the
 desired value.
 
 ```jsx {3-4}
-const [state, send] = useMachine(
-  editable.machine({
-    autoResize: true,
-    maxWidth: "320px",
-  }),
-)
+const service = useMachine(editable.machine, {
+  autoResize: true,
+  maxWidth: "320px",
+})
 ```
 
 When the editable reaches the specified max-width, it'll clip the preview text
@@ -150,11 +142,9 @@ To change the mode to "double-click", set the `activationMode: 'dblclick'`
 property in the machine's context.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  editable.machine({
-    activationMode: "dblclick",
-  }),
-)
+const service = useMachine(editable.machine, {
+  activationMode: "dblclick",
+})
 ```
 
 ## Usage with Textarea

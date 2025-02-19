@@ -1,18 +1,18 @@
-```md
+```html
 <script setup>
-import * as hoverCard from "@zag-js/hover-card"
-import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, Teleport } from "vue"
+  import * as hoverCard from "@zag-js/hover-card"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed, Teleport } from "vue"
 
-const [state, send] = useMachine(hoverCard.machine({ id: "1" }))
+  const service = useMachine(hoverCard.machine, { id: "1" })
 
-const api = computed(() => hoverCard.connect(state.value, send, normalizeProps))
+  const api = computed(() => hoverCard.connect(service, normalizeProps))
 </script>
 
 <template>
-  <a 
+  <a
     href="https://twitter.com/zag_js"
-    target="_blank" 
+    target="_blank"
     v-bind="api.getTriggerProps()"
   >
     Twitter

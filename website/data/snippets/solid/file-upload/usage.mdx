@@ -4,13 +4,11 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createUniqueId, createMemo, Index } from "solid-js"
 
 export function FileUpload() {
-  const [state, send] = useMachine(
-    fileUpload.machine({
-      id: createUniqueId(),
-    }),
-  )
+  const service = useMachine(fileUpload.machine, {
+    id: createUniqueId(),
+  })
 
-  const api = createMemo(() => fileUpload.connect(state, send, normalizeProps))
+  const api = createMemo(() => fileUpload.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>

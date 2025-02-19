@@ -3,11 +3,9 @@ export function Dialog() {
   // initial focused element signal
   const [inputEl, setInputEl] = createSignal()
 
-  const [state, send] = useMachine(
-    dialog.machine({
-      initialFocusEl: inputEl,
-    }),
-  )
+  const service = useMachine(dialog.machine, {
+    initialFocusEl: inputEl,
+  })
 
   // ...
 

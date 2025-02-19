@@ -54,14 +54,12 @@ collapsible machine in your project 🔥
 When the collapsible state changes, the `onOpenChange` callback is invoked.
 
 ```jsx {3-6}
-const [state, send] = useMachine(
-  collapsible.machine({
-    onOpenChange(details) {
-      // details => { open: boolean }
-      console.log("collapsible open:", details.open)
-    },
-  }),
-)
+const service = useMachine(collapsible.machine, {
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("collapsible open:", details.open)
+  },
+})
 ```
 
 ## Disabling the collapsible
@@ -70,11 +68,9 @@ Set the `disabled` machine context property to `true` to disable the
 collapsible.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  collapsible.machine({
-    disabled: true,
-  }),
-)
+const service = useMachine(collapsible.machine, {
+  disabled: true,
+})
 ```
 
 ## Animating the collapsible

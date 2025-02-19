@@ -71,11 +71,9 @@ To set the initially selected tab, pass the `value` property to the machine's
 context.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  tabs.machine({
-    value: "tab-1",
-  }),
-)
+const service = useMachine(tabs.machine, {
+  defaultValue: "tab-1",
+})
 ```
 
 Subsequently, you can use the `api.setValue` function to set the selected tab.
@@ -86,11 +84,9 @@ The default orientation of the tabs is horizontal. To change the orientation,
 set the `orientation` property in the machine's context to `"vertical"`.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  tabs.machine({
-    orientation: "vertical",
-  }),
-)
+const service = useMachine(tabs.machine, {
+  orientation: "vertical",
+})
 ```
 
 ## Showing an indicator
@@ -120,18 +116,16 @@ clickable.
 - `onFocusChange` — Callback invoked when the focused tab changes.
 
 ```jsx {3-8}
-const [state, send] = useMachine(
-  tabs.machine({
-    onFocusChange(details) {
-      // details => { value: string | null }
-      console.log("focused tab:", details.value)
-    },
-    onValueChange(details) {
-      // details => { value: string }
-      console.log("selected tab:", details.value)
-    },
-  }),
-)
+const service = useMachine(tabs.machine, {
+  onFocusChange(details) {
+    // details => { value: string | null }
+    console.log("focused tab:", details.value)
+  },
+  onValueChange(details) {
+    // details => { value: string }
+    console.log("selected tab:", details.value)
+  },
+})
 ```
 
 ## Manual tab activation
@@ -143,11 +137,9 @@ The other approach is "manual tab activation" which means the tab is selected
 with the Enter key or by clicking on the tab.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  tabs.machine({
-    activationMode: "manual",
-  }),
-)
+const service = useMachine(tabs.machine, {
+  activationMode: "manual",
+})
 ```
 
 ## RTL Support
@@ -158,11 +150,9 @@ mode, the layout and keyboard interaction is flipped.
 To enable RTL support, set the `dir` property in the machine's context to `rtl`.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  tabs.machine({
-    dir: "rtl",
-  }),
-)
+const service = useMachine(tabs.machine, {
+  dir: "rtl",
+})
 ```
 
 ## Styling guide

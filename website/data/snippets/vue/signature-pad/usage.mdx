@@ -4,11 +4,9 @@
   import { useMachine, normalizeProps } from "@zag-js/vue"
   import { computed } from "vue"
 
-  const [state, send] = useMachine(signaturePad.machine({ id: "1" }))
+  const service = useMachine(signaturePad.machine, { id: "1" })
 
-  const api = computed(() =>
-    signaturePad.connect(state.value, send, normalizeProps),
-  )
+  const api = computed(() => signaturePad.connect(service, normalizeProps))
 </script>
 
 <template>

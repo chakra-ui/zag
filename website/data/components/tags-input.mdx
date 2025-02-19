@@ -80,11 +80,9 @@ To set the initial tag values, pass the `value` property in the machine's
 context.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    value: ["React", "Redux", "TypeScript"],
-  }),
-)
+const service = useMachine(tagsInput.machine, {
+  defaultValue: ["React", "Redux", "TypeScript"],
+})
 ```
 
 ## Removing all tags
@@ -117,12 +115,10 @@ To get this feature working you need to pass a `name` option to the context and
 render the `hiddenInput` element.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    name: "tags",
-    value: ["React", "Redux", "TypeScript"],
-  }),
-)
+const service = useMachine(tagsInput.machine, {
+  name: "tags",
+  defaultValue: ["React", "Redux", "TypeScript"],
+})
 ```
 
 ## Limiting the number of tags
@@ -134,12 +130,10 @@ When the tag reaches the limit, new tags cannot be added except the
 `allowOverflow` option is passed to the context.
 
 ```jsx {3-4}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    max: 10,
-    allowOverflow: true,
-  }),
-)
+const service = useMachine(tagsInput.machine, {
+  max: 10,
+  allowOverflow: true,
+})
 ```
 
 ## Validating Tags
@@ -151,13 +145,11 @@ A common use-case for validating tags is preventing duplicates or validating the
 data type.
 
 ```jsx {3-4}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    validate(details) {
-      return !details.values.includes(details.inputValue)
-    },
-  }),
-)
+const service = useMachine(tagsInput.machine, {
+  validate(details) {
+    return !details.values.includes(details.inputValue)
+  },
+})
 ```
 
 ## Blur behavior
@@ -169,11 +161,9 @@ take by passing the `blurBehavior` option to the context.
 - `"clear"` — Clears the tags input value.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    blurBehavior: "add",
-  }),
-)
+const service = useMachine(tagsInput.machine, {
+  blurBehavior: "add",
+})
 ```
 
 ## Paste behavior
@@ -187,11 +177,9 @@ When a value is pasted, the machine will:
 - split the value by the `delimiter` option passed
 
 ```jsx {3}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    addOnPaste: true,
-  }),
-)
+const service = useMachine(tagsInput.machine, {
+  addOnPaste: true,
+})
 ```
 
 ## Disable tag editing
@@ -201,11 +189,9 @@ them and pressing `Enter`. To disable this behavior, pass the
 `allowEditTag: false`
 
 ```jsx {3}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    allowEditTag: false,
-  }),
-)
+const service = useMachine(tagsInput.machine, {
+  allowEditTag: false,
+})
 ```
 
 ## Listening for events
@@ -219,21 +205,19 @@ emit:
   function returns `false`.
 
 ```jsx
-const [state, send] = useMachine(
-  tagsInput.machine({
-    onValueChange(details) {
-      // details => { value: string[] }
-      console.log("tags changed to:", details.value)
-    },
-    onHighlightChange(details) {
-      // details => { value: string }
-      console.log("highlighted tag:", details.value)
-    },
-    onValueInvalid(details) {
-      console.log("Invalid!", details.reason)
-    },
-  }),
-)
+const service = useMachine(tagsInput.machine, {
+  onValueChange(details) {
+    // details => { value: string[] }
+    console.log("tags changed to:", details.value)
+  },
+  onHighlightChange(details) {
+    // details => { value: string }
+    console.log("highlighted tag:", details.value)
+  },
+  onValueInvalid(details) {
+    console.log("Invalid!", details.reason)
+  },
+})
 ```
 
 ## Styling guide

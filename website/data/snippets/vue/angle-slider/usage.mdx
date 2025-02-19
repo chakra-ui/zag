@@ -1,11 +1,11 @@
-```md
+```html
 <script setup lang="ts">
-import * as angleSlider from "@zag-js/angle-slider"
-import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed } from "vue"
+  import * as angleSlider from "@zag-js/angle-slider"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
 
-const [state, send] = useMachine(angleSlider.machine({ id: "1" }))
-const api = computed(() => angleSlider.connect(state.value, send, normalizeProps))
+  const service = useMachine(angleSlider.machine, { id: "1" })
+  const api = computed(() => angleSlider.connect(service, normalizeProps))
 </script>
 
 <template>

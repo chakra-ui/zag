@@ -1,7 +1,14 @@
 ```tsx
 import * as accordion from "@zag-js/accordion"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createMemo, createUniqueId, For, JSX } from "solid-js"
+import {
+  mergeProps,
+  splitProps,
+  createMemo,
+  createUniqueId,
+  For,
+  JSX,
+} from "solid-js"
 
 interface Item {
   value: string
@@ -15,13 +22,11 @@ export interface AccordionProps extends Omit<accordion.Context, "id"> {
 
 export function Accordion(props: AccordionProps) {
   const [machineProps, localProps] = splitProps(props, accordion.props)
+  const context = mergeProps(machineProps, { id: createUniqueId() })
 
-  const [state, send] = useMachine(
-    accordion.machine({ id: createUniqueId() }),
-    { context: machineProps },
-  )
+  const service = useMachine(accordion.machine, context)
 
-  const api = createMemo(() => accordion.connect(state, send, normalizeProps))
+  const api = createMemo(() => accordion.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>

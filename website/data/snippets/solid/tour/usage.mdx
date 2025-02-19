@@ -5,10 +5,8 @@ import { For, Show, createMemo, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
 
 function Tour() {
-  const [state, send] = useMachine(
-    tour.machine({ id: createUniqueId(), steps }),
-  )
-  const api = createMemo(() => tour.connect(state, send, normalizeProps))
+  const service = useMachine(tour.machine, { id: createUniqueId(), steps })
+  const api = createMemo(() => tour.connect(service, normalizeProps))
 
   return (
     <div>

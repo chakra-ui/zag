@@ -1,13 +1,13 @@
-```md
+```html
 <script setup>
   import * as rating from "@zag-js/rating-group"
   import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed } from "vue"
   import { HalfStar, Star } from "./icons"
 
-  const [state, send] = useMachine(rating.machine({ id: "1" }))
+  const service = useMachine(rating.machine, { id: "1" })
 
-  const api = computed(() => rating.connect(state.value, send, normalizeProps))
+  const api = computed(() => rating.connect(service, normalizeProps))
 </script>
 
 <template>

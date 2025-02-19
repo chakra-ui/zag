@@ -3,9 +3,11 @@
   import * as popover from "@zag-js/popover"
   import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
 
-  const [snapshot, send] = useMachine(popover.machine({ id: "1" }))
+  const service = useMachine(popover.machine, {
+    id: "1",
+  })
 
-  const api = $derived(popover.connect(snapshot, send, normalizeProps))
+  const api = $derived(popover.connect(service, normalizeProps))
 </script>
 
 <button {...api.getTriggerProps()}>Click me</button>

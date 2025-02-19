@@ -74,12 +74,10 @@ time picker machine's context.
 > `@internationalized/date`, or undefined.
 
 ```jsx {4}
-const [state, send] = useMachine(
-  timePicker.machine({
-    id: useId(),
-    value: new Time(12, 30),
-  }),
-)
+const service = useMachine(timePicker.machine, {
+  id: useId(),
+  defaultValue: new Time(12, 30),
+})
 ```
 
 ## Disabling the time picker
@@ -88,12 +86,10 @@ To disable the time picker, set the `disabled` property in the machine's context
 to `true`.
 
 ```jsx {4}
-const [state, send] = useMachine(
-  timePicker.machine({
-    id: useId(),
-    disabled: true,
-  }),
-)
+const service = useMachine(timePicker.machine, {
+  id: useId(),
+  disabled: true,
+})
 ```
 
 ## Usage with seconds
@@ -102,12 +98,10 @@ By default, the time picker only shows the hour and minute cells. To show the
 second cell, set the `showSeconds` property in the machine's context to `true`.
 
 ```jsx {4}
-const [state, send] = useMachine(
-  timePicker.machine({
-    id: useId(),
-    withSeconds: true,
-  }),
-)
+const service = useMachine(timePicker.machine, {
+  id: useId(),
+  withSeconds: true,
+})
 ```
 
 ## Setting the locale
@@ -118,12 +112,10 @@ picker machine's context.
 > This will affect the presence of the period cell and the time format.
 
 ```jsx {4}
-const [state, send] = useMachine(
-  timePicker.machine({
-    id: useId(),
-    locale: "fr-FR",
-  }),
-)
+const service = useMachine(timePicker.machine, {
+  id: useId(),
+  locale: "fr-FR",
+})
 ```
 
 ## Setting steps
@@ -138,16 +130,14 @@ picker machine's context.
 > - `second` — The step for the second cell.
 
 ```jsx {4-8}
-const [state, send] = useMachine(
-  timePicker.machine({
-    id: useId(),
-    steps: {
-      hour: 2,
-      minute: 15,
-      second: 30,
-    },
-  }),
-)
+const service = useMachine(timePicker.machine, {
+  id: useId(),
+  steps: {
+    hour: 2,
+    minute: 15,
+    second: 30,
+  },
+})
 ```
 
 ## Setting min and max values
@@ -159,13 +149,11 @@ To set the minimum and maximum values for the time picker, pass the `min` and
 > `@internationalized/date`.
 
 ```jsx {4-5}
-const [state, send] = useMachine(
-  timePicker.machine({
-    id: useId(),
-    min: new Time(10), // Only allow times after 10:00:00
-    max: new Time(18, 30, 20), // Only allow times before 18:30:20
-  }),
-)
+const service = useMachine(timePicker.machine, {
+  id: useId(),
+  min: new Time(10), // Only allow times after 10:00:00
+  max: new Time(18, 30, 20), // Only allow times before 18:30:20
+})
 ```
 
 ## Listening for focus changes
@@ -174,15 +162,13 @@ When an item is focused with the keyboard, use the `onFocusChange` to listen for
 the change and do something with it.
 
 ```jsx {4-7}
-const [state, send] = useMachine(
-  timePicker.machine({
-    id: useId(),
-    onFocusChange(details) {
-      // details => { focusedCell: { value: number, unit: TimeUnit } }
-      console.log(details)
-    },
-  }),
-)
+const service = useMachine(timePicker.machine, {
+  id: useId(),
+  onFocusChange(details) {
+    // details => { focusedCell: { value: number, unit: TimeUnit } }
+    console.log(details)
+  },
+})
 ```
 
 ## Listening for value changes
@@ -191,15 +177,13 @@ When the value changes, use the `onValueChange` property to listen for the
 change and do something with it.
 
 ```jsx {4-7}
-const [state, send] = useMachine(
-  timePicker.machine({
-    id: useId(),
-    onValueChange(details) {
-      // details => { value?: Time, valueAsString?: string }
-      console.log(details)
-    },
-  }),
-)
+const service = useMachine(timePicker.machine, {
+  id: useId(),
+  onValueChange(details) {
+    // details => { value?: Time, valueAsString?: string }
+    console.log(details)
+  },
+})
 ```
 
 ## Listening for open and close events
@@ -208,15 +192,13 @@ When the time picker is opened or closed, the `onOpenChange` callback is called.
 You can listen for these events and do something with it.
 
 ```jsx {4-7}
-const [state, send] = useMachine(
-  timePicker.machine({
-    id: useId(),
-    onOpenChange(details) {
-      // details => { open: boolean }
-      console.log("time picker opened")
-    },
-  }),
-)
+const service = useMachine(timePicker.machine, {
+  id: useId(),
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("time picker opened")
+  },
+})
 ```
 
 ## Usage within dialog

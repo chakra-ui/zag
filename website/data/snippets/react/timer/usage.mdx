@@ -3,16 +3,14 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as timer from "@zag-js/timer"
 
 export function Countdown() {
-  const [state, send] = useMachine(
-    timer.machine({
-      id: useId(),
-      countdown: true,
-      autoStart: true,
-      startMs: timer.parse({ days: 2, seconds: 10 }),
-    }),
-  )
+  const service = useMachine(timer.machine, {
+    id: useId(),
+    countdown: true,
+    autoStart: true,
+    startMs: timer.parse({ days: 2, seconds: 10 }),
+  })
 
-  const api = timer.connect(state, send, normalizeProps)
+  const api = timer.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

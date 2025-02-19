@@ -1,13 +1,16 @@
-```md
+```html
 <script setup>
-import * as pagination from "@zag-js/pagination"
-import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed } from "vue"
-import { data } from "./data"
+  import * as pagination from "@zag-js/pagination"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+  import { data } from "./data"
 
-const [state, send] = useMachine(pagination.machine({ id: "1", count: data.length }))
+  const service = useMachine(pagination.machine, {
+    id: "1",
+    count: data.length,
+  })
 
-const api = computed(() => pagination.connect(state.value, send, normalizeProps))
+  const api = computed(() => pagination.connect(service, normalizeProps))
 </script>
 
 <template>

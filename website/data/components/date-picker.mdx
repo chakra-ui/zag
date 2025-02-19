@@ -75,11 +75,9 @@ To set the initial value that is rendered by the date picker, set the `value`
 property in the machine context.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    value: datepicker.parse("2022-01-01"),
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  defaultValue: [datepicker.parse("2022-01-01")],
+})
 ```
 
 ## Controlling the selected date
@@ -120,12 +118,10 @@ To constrain the date range that can be selected by the user, set the `min` and
 `max` properties in the machine context.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    min: datepicker.parse("2022-01-01"),
-    max: datepicker.parse("2022-12-31"),
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  min: datepicker.parse("2022-01-01"),
+  max: datepicker.parse("2022-12-31"),
+})
 ```
 
 When the min or max date value is reached, the next and prev triggers will be
@@ -138,11 +134,9 @@ week. The property accepts a number from `0` to `6`, where `0` is Sunday and `6`
 is Saturday.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    startOfWeek: 1, // Monday
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  startOfWeek: 1, // Monday
+})
 ```
 
 ## Disabling the date picker
@@ -151,11 +145,9 @@ To disable the date picker, set the `disabled` property in the machine context
 to `true`.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    disabled: true,
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  disabled: true,
+})
 ```
 
 ## Rendering month and year pickers
@@ -190,14 +182,12 @@ the machine context. This function should return `true` for dates that are
 unavailable.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    isDateUnavailable: (date, locale) => {
-      // mark weekends as unavailable
-      return date.day === 0 || date.day === 6
-    },
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  isDateUnavailable: (date, locale) => {
+    // mark weekends as unavailable
+    return date.day === 0 || date.day === 6
+  },
+})
 ```
 
 You can also leverage the numerous helpers from
@@ -207,14 +197,12 @@ to create more complex date availability rules.
 ```jsx
 import { isWeekend } from "@internationalized/date"
 
-const [state, send] = useMachine(
-  datepicker.machine({
-    isDateUnavailable: (date, locale) => {
-      // mark weekends as unavailable
-      return isWeekend(date, locale)
-    },
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  isDateUnavailable: (date, locale) => {
+    // mark weekends as unavailable
+    return isWeekend(date, locale)
+  },
+})
 ```
 
 ## Setting the calendar starting view
@@ -224,11 +212,9 @@ calendar, set the `view` property in the machine context to either `day`,
 `month`, or `year`.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    view: "month",
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  view: "month",
+})
 ```
 
 ## Setting the read-only mode
@@ -237,11 +223,9 @@ Set the `readOnly` property in the machine context to `true` to make the date
 picker read-only. This means that users can't change the selected date.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    readOnly: true,
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  readOnly: true,
+})
 ```
 
 ## Setting the focused date
@@ -253,11 +237,9 @@ To change the focused date, set the `focusedDate` property in the machine
 context.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    focusedDate: datepicker.parse("2022-01-01"),
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  focusedDate: datepicker.parse("2022-01-01"),
+})
 ```
 
 ## Rendering the calendar inline
@@ -266,13 +248,10 @@ To render the calendar inline, we recommended setting the `open` property to
 `true` and `closeOnSelect` to `false`.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    open: true,
-    "open.controlled": true,
-    closeOnSelect: false,
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  open: true,
+  closeOnSelect: false,
+})
 ```
 
 ## Usage within a form
@@ -281,11 +260,9 @@ To use the date picker within a form, set the `name` property in the machine
 context. This property is used to identify the date picker in the form data.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    name: "date",
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  name: "date",
+})
 ```
 
 ## Rendering fixed number of weeks
@@ -298,11 +275,9 @@ To ensure the calendar renders the maximum number of weeks (6), you can set the
 `fixedWeeks` prop to `true`.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    fixedWeeks: true,
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  fixedWeeks: true,
+})
 ```
 
 ## Listening to date changes
@@ -311,14 +286,12 @@ To listen to date changes, use the `onValueChange` callback in the machine
 context.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    onValueChange(details) {
-      // details => { value: DateValue[], valueAsString: string[], view: string }
-      console.log("selected date:", details.valueAsString)
-    },
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  onValueChange(details) {
+    // details => { value: DateValue[], valueAsString: string[], view: string }
+    console.log("selected date:", details.valueAsString)
+  },
+})
 ```
 
 ## Listening to view changes
@@ -327,14 +300,12 @@ When the calendar view changes by click on the view controls, the `onViewChange`
 callback is invoked.
 
 ```jsx
-const [state, send] = useMachine(
-  datepicker.machine({
-    onViewChange(details) {
-      // details => { view: string }
-      console.log("view changed to:", details.view)
-    },
-  }),
-)
+const service = useMachine(datepicker.machine, {
+  onViewChange(details) {
+    // details => { view: string }
+    console.log("view changed to:", details.view)
+  },
+})
 ```
 
 ## Styling guide

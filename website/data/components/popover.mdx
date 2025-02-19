@@ -97,11 +97,9 @@ context. When `modal: true`, we set the `portalled` attribute to `true` as well.
 > **Note**: This requires that you render the component within a `Portal`.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  popover.machine({
-    modal: true,
-  }),
-)
+const service = useMachine(popover.machine, {
+  modal: true,
+})
 ```
 
 ## Close behavior
@@ -112,22 +110,18 @@ To prevent it from closing on blur (clicking or focusing outside), pass the
 `closeOnInteractOutside` property and set it to `false`.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  popover.machine({
-    closeOnInteractOutside: true,
-  }),
-)
+const service = useMachine(popover.machine, {
+  closeOnInteractOutside: true,
+})
 ```
 
-To prevent it from closing when the `esc` key is pressed, pass the `closeOnEscape`
-property and set it to `false`.
+To prevent it from closing when the `esc` key is pressed, pass the
+`closeOnEscape` property and set it to `false`.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  popover.machine({
-    closeOnEscape: true,
-  }),
-)
+const service = useMachine(popover.machine, {
+  closeOnEscape: true,
+})
 ```
 
 ## Adding an arrow
@@ -137,7 +131,7 @@ To render an arrow within the popover, use the `api.getArrowProps()` and
 
 ```jsx {6-8}
 //...
-const api = popover.connect(state, send)
+const api = popover.connect(service, normalizeProps)
 //...
 return (
   <div {...api.getPositionerProps()}>
@@ -156,13 +150,11 @@ To change the placement of the popover, set the `positioning.placement` property
 in the machine's context.
 
 ```jsx {3-5}
-const [state, send] = useMachine(
-  popover.machine({
-    positioning: {
-      placement: "top-start",
-    },
-  }),
-)
+const service = useMachine(popover.machine, {
+  positioning: {
+    placement: "top-start",
+  },
+})
 ```
 
 ## Listening for open state changes
@@ -170,14 +162,12 @@ const [state, send] = useMachine(
 When the popover is opened or closed, the `onOpenChange` callback is invoked.
 
 ```jsx {3-8}
-const [state, send] = useMachine(
-  popover.machine({
-    onOpenChange(details) {
-      // details => { open: boolean }
-      console.log("Popover", details.open)
-    },
-  }),
-)
+const service = useMachine(popover.machine, {
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("Popover", details.open)
+  },
+})
 ```
 
 ## Usage within dialog

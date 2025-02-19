@@ -77,12 +77,10 @@ By default, the tooltip is designed to open after `1000ms` and close after
 context properties.
 
 ```jsx {3-4}
-const [state, send] = useMachine(
-  tooltip.machine({
-    openDelay: 500,
-    closeDelay: 200,
-  }),
-)
+const service = useMachine(tooltip.machine, {
+  openDelay: 500,
+  closeDelay: 200,
+})
 ```
 
 ## Changing the placement
@@ -92,13 +90,11 @@ positioning. You can change the placement of the tooltip by passing the
 `positioning.placement` context property to the machine.
 
 ```jsx {3-5}
-const [state, send] = useMachine(
-  tooltip.machine({
-    positioning: {
-      placement: "bottom-start",
-    },
-  }),
-)
+const service = useMachine(tooltip.machine, {
+  positioning: {
+    placement: "bottom-start",
+  },
+})
 ```
 
 You can configure other position-related properties in the `positioning` object.
@@ -148,7 +144,7 @@ To render an arrow within the tooltip, use the `api.getArrowProps()` and
 
 ```jsx {6-8}
 //...
-const api = popover.connect(state, send)
+const api = popover.connect(service, normalizeProps)
 //...
 return (
   <div {...api.getPositionerProps()}>
@@ -168,11 +164,9 @@ prevent this behavior, pass the `closeOnPointerDown` context property and set it
 to `false`.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  tooltip.machine({
-    closeOnPointerDown: false,
-  }),
-)
+const service = useMachine(tooltip.machine, {
+  closeOnPointerDown: false,
+})
 ```
 
 ## Closing on Esc
@@ -181,11 +175,9 @@ The tooltip is designed to close when the escape key is pressed. To prevent
 this, pass the `closeOnEscape` context property and set it to `false`.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  tooltip.machine({
-    closeOnEsc: false,
-  }),
-)
+const service = useMachine(tooltip.machine, {
+  closeOnEsc: false,
+})
 ```
 
 ## Making the tooltip interactive
@@ -196,11 +188,9 @@ When a tooltip is interactive, it'll remain open even the pointer leaves the
 trigger and move into the tooltip's content.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  tooltip.machine({
-    interactive: true,
-  }),
-)
+const service = useMachine(tooltip.machine, {
+  interactive: true,
+})
 ```
 
 ## Listening for open state changes
@@ -208,14 +198,12 @@ const [state, send] = useMachine(
 When the tooltip is opened or closed, the `onOpenChange` callback is invoked.
 
 ```jsx {3-8}
-const [state, send] = useMachine(
-  tooltip.machine({
-    onOpenChange(details) {
-      // details => { open: boolean }
-      console.log(details.open)
-    },
-  }),
-)
+const service = useMachine(tooltip.machine, {
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log(details.open)
+  },
+})
 ```
 
 ## Styling guide

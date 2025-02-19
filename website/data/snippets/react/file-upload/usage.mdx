@@ -4,13 +4,11 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
 export function FileUpload() {
-  const [state, send] = useMachine(
-    fileUpload.machine({
-      id: useId(),
-    }),
-  )
+  const service = useMachine(fileUpload.machine, {
+    id: useId(),
+  })
 
-  const api = fileUpload.connect(state, send, normalizeProps)
+  const api = fileUpload.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

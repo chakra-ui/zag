@@ -4,8 +4,8 @@
   import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed, Teleport, Fragment } from "vue"
 
-  const [state, send] = useMachine(popover.machine({ id: "1" }))
-  const api = computed(() => popover.connect(state.value, send, normalizeProps))
+  const service = useMachine(popover.machine, { id: "1" })
+  const api = computed(() => popover.connect(service, normalizeProps))
 </script>
 
 <template>

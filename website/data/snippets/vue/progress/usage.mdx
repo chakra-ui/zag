@@ -1,14 +1,12 @@
-```md
+```html
 <script setup>
   import * as progress from "@zag-js/progress"
   import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed } from "vue"
 
-  const [state, send] = useMachine(progress.machine({ id: "1" }))
+  const service = useMachine(progress.machine, { id: "1" })
 
-  const api = computed(() =>
-    progress.connect(state.value, send, normalizeProps),
-  )
+  const api = computed(() => progress.connect(service, normalizeProps))
 </script>
 
 <template>

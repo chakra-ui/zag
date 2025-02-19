@@ -66,23 +66,19 @@ Set the `startMs` property to the timer machine's context to set the start time
 in milliseconds.
 
 ```jsx
-const [state, send] = useMachine(
-  timer.machine({
-    startMs: 1000 * 60 * 60, // 1 hour
-  }),
-)
+const service = useMachine(timer.machine, {
+  startMs: 1000 * 60 * 60, // 1 hour
+})
 ```
 
 Alternatively, you can also use the `timer.parse` function to convert a date
 time string or object into milliseconds
 
 ```jsx
-const [state, send] = useMachine(
-  timer.machine({
-    startMs: timer.parse("2021-01-01T12:00:00Z"),
-    // startMs: timer.parse({ hours: 12, minutes: 0, seconds: 0 }),
-  }),
-)
+const service = useMachine(timer.machine, {
+  startMs: timer.parse("2021-01-01T12:00:00Z"),
+  // startMs: timer.parse({ hours: 12, minutes: 0, seconds: 0 }),
+})
 ```
 
 ## Auto starting the timer
@@ -91,11 +87,9 @@ Set the `autoStart` property to `true` in the timer machine's context to start
 the timer automatically when the component mounts.
 
 ```jsx
-const [state, send] = useMachine(
-  timer.machine({
-    autoStart: true,
-  }),
-)
+const service = useMachine(timer.machine, {
+  autoStart: true,
+})
 ```
 
 ## Usage as countdown timer
@@ -104,11 +98,9 @@ To use the timer as a countdown timer, set the `countdown` property to `true` in
 the timer machine's context.
 
 ```jsx
-const [state, send] = useMachine(
-  timer.machine({
-    countdown: true,
-  }),
-)
+const service = useMachine(timer.machine, {
+  countdown: true,
+})
 ```
 
 ## Setting the target value
@@ -121,23 +113,19 @@ When `targetMs` is set and `countdown=true`, the timer ticks down to zero from
 the specified target time.
 
 ```jsx
-const [state, send] = useMachine(
-  timer.machine({
-    countdown: true,
-    targetMs: 1000 * 60 * 60, // 1 hour
-  }),
-)
+const service = useMachine(timer.machine, {
+  countdown: true,
+  targetMs: 1000 * 60 * 60, // 1 hour
+})
 ```
 
 When `targetMs` is set and `countdown=false|undefined`, the timer ticks up to
 the specified target time.
 
 ```jsx
-const [state, send] = useMachine(
-  timer.machine({
-    targetMs: 1000 * 60 * 60, // 1 hour
-  }),
-)
+const service = useMachine(timer.machine, {
+  targetMs: 1000 * 60 * 60, // 1 hour
+})
 ```
 
 ## Setting the tick interval
@@ -146,11 +134,9 @@ Set the `interval` property to the timer machine's context to set the tick
 interval in milliseconds.
 
 ```jsx
-const [state, send] = useMachine(
-  timer.machine({
-    interval: 1000, // 1 second
-  }),
-)
+const service = useMachine(timer.machine, {
+  interval: 1000, // 1 second
+})
 ```
 
 ## Listening to tick events
@@ -159,14 +145,12 @@ When the timer ticks, the `onTick` callback is invoke. You can listen to this
 event and update your UI accordingly.
 
 ```jsx
-const [state, send] = useMachine(
-  timer.machine({
-    onTick(details) {
-      // details => { value, segments }
-      console.log(details)
-    },
-  }),
-)
+const service = useMachine(timer.machine, {
+  onTick(details) {
+    // details => { value, segments }
+    console.log(details)
+  },
+})
 ```
 
 ## Listening for completion events
@@ -174,15 +158,13 @@ const [state, send] = useMachine(
 When the timer reaches the target time, the `onComplete` callback is invoked.
 
 ```jsx
-const [state, send] = useMachine(
-  timer.machine({
-    countdown: true,
-    targetMs: 1000 * 60 * 60, // 1 hour
-    onComplete() {
-      console.log("Timer completed")
-    },
-  }),
-)
+const service = useMachine(timer.machine, {
+  countdown: true,
+  targetMs: 1000 * 60 * 60, // 1 hour
+  onComplete() {
+    console.log("Timer completed")
+  },
+})
 ```
 
 ## Starting and Stopping the timer

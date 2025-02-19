@@ -1,12 +1,12 @@
-```md
+```html
 <script setup>
-import * as menu from "@zag-js/menu";
-import { normalizeProps, useMachine } from "@zag-js/vue";
-import { computed } from "vue";
+  import * as menu from "@zag-js/menu"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
 
-const [state, send] = useMachine(menu.machine({ id: "1", "aria-label": "File" }));
+  const service = useMachine(menu.machine, { id: "1", "aria-label": "File" })
 
-const api = computed(() => menu.connect(state.value, send, normalizeProps));
+  const api = computed(() => menu.connect(service, normalizeProps))
 </script>
 
 <template>

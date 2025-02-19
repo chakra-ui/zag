@@ -4,15 +4,13 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, For, createUniqueId } from "solid-js"
 
 export function RangeSlider() {
-  const [state, send] = useMachine(
-    slider.machine({
-      id: createUniqueId(),
-      name: "quantity",
-      value: [10, 60],
-    }),
-  )
+  const service = useMachine(slider.machine, {
+    id: createUniqueId(),
+    name: "quantity",
+    defaultValue: [10, 60],
+  })
 
-  const api = createMemo(() => slider.connect(state, send, normalizeProps))
+  const api = createMemo(() => slider.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>

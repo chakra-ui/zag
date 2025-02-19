@@ -5,16 +5,12 @@
   import { ClipboardCheck, ClipboardCopyIcon } from "lucide-vue-next"
   import { computed } from "vue"
 
-  const [state, send] = useMachine(
-    clipboard.machine({
-      id: "1",
-      value: "https://github.com/chakra-ui/zag",
-    }),
-  )
+  const service = useMachine(clipboard.machine, {
+    id: "1",
+    value: "https://github.com/chakra-ui/zag",
+  })
 
-  const api = computed(() =>
-    clipboard.connect(state.value, send, normalizeProps),
-  )
+  const api = computed(() => clipboard.connect(service, normalizeProps))
 </script>
 
 <template>

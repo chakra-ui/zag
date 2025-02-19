@@ -1,19 +1,19 @@
-```md
+```html
 <script setup>
-import * as radio from "@zag-js/radio-group"
-import { normalizeProps, useMachine } from "@zag-js/vue";
-import { computed } from "vue";
+  import * as radio from "@zag-js/radio-group"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
 
-const items = [
-  { label: "React", value: "react" },
-  { label: "Angular", value: "ng" },
-  { label: "Vue", value: "vue" },
-  { label: "Svelte", value: "svelte" },
-];
+  const items = [
+    { label: "React", value: "react" },
+    { label: "Angular", value: "ng" },
+    { label: "Vue", value: "vue" },
+    { label: "Svelte", value: "svelte" },
+  ]
 
-const [state, send] = useMachine(radio.machine({ id: "1" }));
+  const service = useMachine(radio.machine, { id: "1" })
 
-const api = computed(() => radio.connect(state.value, send, normalizeProps));
+  const api = computed(() => radio.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -21,9 +21,9 @@ const api = computed(() => radio.connect(state.value, send, normalizeProps));
     <div v-bind="api.getIndicatorProps()" />
     <div v-for="opt in items" :key="opt.value">
       <label v-bind="api.getItemProps({ value: opt.value })">
-        <span v-bind="api.getItemTextProps({ value: opt.value })">{{
-          opt.label
-        }}</span>
+        <span v-bind="api.getItemTextProps({ value: opt.value })"
+          >{{ opt.label }}</span
+        >
         <input v-bind="api.getItemHiddenInputProps({ value: opt.value })" />
       </label>
     </div>

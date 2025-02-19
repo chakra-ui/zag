@@ -1,5 +1,5 @@
 ```jsx
-import { useActor, useMachine, normalizeProps } from "@zag-js/solid"
+import { useMachine, normalizeProps, Key } from "@zag-js/solid"
 import * as toast from "@zag-js/toast"
 import {
   createMemo,
@@ -10,10 +10,21 @@ import {
   For,
 } from "solid-js"
 
-// 1. Create the single toast
+// 1. Create the toast store
+const toaster = toast.createStore({
+  placement: "top-end",
+  overlap: true,
+})
+
+// 2. Design the toast component
 function Toast(props) {
-  const [state, send] = useActor(props.actor)
-  const api = createMemo(() => toast.connect(state, send, normalizeProps))
+  const machineProps = createMemo(() => ({
+    ...props.toast(),
+    parent: props.parent,
+    index: props.index(),
+  }))
+  const service = useMachine(toast.machine, machineProps)
+  const api = createMemo(() => toast.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>
@@ -24,66 +35,53 @@ function Toast(props) {
   )
 }
 
-// 2. Create the toast context
-const ToastContext = createContext()
-const useToast = () => useContext(ToastContext)
+// 3. Design the toaster
+export function Toaster() {
+  const service = useMachine(toast.group.machine, {
+    id: createUniqueId(),
+    store: toaster,
+  })
 
-// 3. Create the toast group provider
-export function ToastProvider(props) {
-  const [state, send] = useMachine(
-    toast.group.machine({ id: createUniqueId() }),
-  )
-
-  const api = createMemo(() => toast.group.connect(state, send, normalizeProps))
+  const api = createMemo(() => toast.group.connect(service, normalizeProps))
 
   return (
-    <ToastContext.Provider value={api}>
-      <For each={api().getPlacements()}>
-        {(placement) => (
-          <div {...api().getGroupProps({ placement })}>
-            <For each={api().getToastsByPlacement(placement)}>
-              {(toast) => <ToastItem actor={toast} />}
-            </For>
-          </div>
+    <div {...api().getGroupProps()}>
+      <Key each={api().getToasts()} by={(toast) => toast.id}>
+        {(toast, index) => (
+          <Toast toast={toast} parent={service} index={index} />
         )}
-      </For>
-      {props.children}
-    </ToastContext.Provider>
+      </Key>
+    </div>
   )
 }
 
-// 4. Wrap your app with the toast group provider
+// 4. Render the toaster in your app
 export function App() {
   return (
-    <ToastProvider>
+    <>
+      <Toaster />
       <ExampleComponent />
-    </ToastProvider>
+    </>
   )
 }
 
 // 5. Within your app
-function ExampleComponent() {
-  const toast = useToast()
-
+function Demo() {
   return (
     <div>
       <button
         onClick={() => {
-          toast().create({ title: "Hello", placement: "top-end" })
+          toaster.create({ title: "Hello" })
         }}
       >
-        Add top-right toast
+        Info toast
       </button>
       <button
         onClick={() => {
-          toast.create({
-            title: "Data submitted!",
-            type: "success",
-            placement: "bottom-end",
-          })
+          toaster.create({ title: "Data submitted!", type: "success" })
         }}
       >
-        Add bottom-right toast
+        Success toast
       </button>
     </div>
   )

@@ -4,11 +4,9 @@
   import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed } from "vue"
 
-  const [state, send] = useMachine(zagSwitch.machine({ id: "1" }))
+  const service = useMachine(zagSwitch.machine, { id: "1" })
 
-  const api = computed(() =>
-    zagSwitch.connect(state.value, send, normalizeProps),
-  )
+  const api = computed(() => zagSwitch.connect(service, normalizeProps))
 </script>
 
 <template>

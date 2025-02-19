@@ -4,11 +4,9 @@
   // initial focused element ref
   let inputRef: HTMLInputElement | null = null
 
-  const [snapshot, send] = useMachine(
-    popover.machine({
-      initialFocusEl: () => inputRef,
-    }),
-  )
+  const service = useMachine(popover.machine, {
+    initialFocusEl: () => inputRef,
+  })
   // ...
 </script>
 

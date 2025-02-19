@@ -1,15 +1,13 @@
-```md
+```html
 <script setup>
-import { ref } from "vue";
+  import { ref } from "vue"
 
-// initial focused element ref
-const inputRef = ref(null);
+  // initial focused element ref
+  const inputRef = ref(null)
 
-const [state, send] = useMachine(
-  popover.machine({
+  const service = useMachine(popover.machine, {
     initialFocusEl: () => inputRef.value,
   })
-);
 </script>
 
 <template>

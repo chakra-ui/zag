@@ -76,21 +76,17 @@ increment/decrement its value.
 > height
 
 ```jsx {3}
-const [state, send] = useMachine(
-  slider.machine({
-    orientation: "vertical",
-  }),
-)
+const service = useMachine(slider.machine, {
+  orientation: "vertical",
+})
 ```
 
 ## Setting the initial value
 
 ```jsx {3}
-const [state, send] = useMachine(
-  slider.machine({
-    values: [30, 60],
-  }),
-)
+const service = useMachine(slider.machine, {
+  defaultValue: [30, 60],
+})
 ```
 
 ## Specifying the minimum and maximum
@@ -102,12 +98,10 @@ and/or max attributes.
 For example, to ask the user for a value between `-10` and `10`, you can use:
 
 ```jsx {3-4}
-const [state, send] = useMachine(
-  slider.machine({
-    min: -10,
-    max: 10,
-  }),
-)
+const service = useMachine(slider.machine, {
+  min: -10,
+  max: 10,
+})
 ```
 
 ## Setting the value's granularity
@@ -119,13 +113,11 @@ For example, If you need a value between `5` and `10`, accurate to two decimal
 places, you should set the value of step to `0.01`:
 
 ```jsx {5}
-const [state, send] = useMachine(
-  slider.machine({
-    min: 5,
-    max: 10,
-    step: 0.01,
-  }),
-)
+const service = useMachine(slider.machine, {
+  min: 5,
+  max: 10,
+  step: 0.01,
+})
 ```
 
 ## Listening for changes
@@ -134,18 +126,16 @@ When the slider value changes, the `onValueChange` and `onValueChangeEnd`
 callbacks are invoked. You can use this to setup custom behaviors in your app.
 
 ```jsx {3-8}
-const [state, send] = useMachine(
-  slider.machine({
-    onValueChange(details) {
-      // details => { values: number[] }
-      console.log("value changing to:", details)
-    },
-    onValueChangeEnd(details) {
-      // details => { values: number[] }
-      console.log("value has changed to:", details)
-    },
-  }),
-)
+const service = useMachine(slider.machine, {
+  onValueChange(details) {
+    // details => { values: number[] }
+    console.log("value changing to:", details)
+  },
+  onValueChangeEnd(details) {
+    // details => { values: number[] }
+    console.log("value has changed to:", details)
+  },
+})
 ```
 
 ## Preventing thumb overlap
@@ -155,11 +145,9 @@ equal. To prevent this, use the `minStepsBetweenThumbs` to avoid thumbs with
 equal values.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  slider.machine({
-    minStepsBetweenThumbs: 1,
-  }),
-)
+const service = useMachine(slider.machine, {
+  minStepsBetweenThumbs: 1,
+})
 ```
 
 ## Usage within forms
@@ -170,11 +158,9 @@ render a hidden input for each value and ensure the value changes get propagated
 to the form correctly.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  slider.machine({
-    name: "quantity",
-  }),
-)
+const service = useMachine(slider.machine, {
+  name: "quantity",
+})
 ```
 
 ## RTL Support
@@ -186,11 +172,9 @@ will increment and the right arrow key will decrement.
 To enable RTL support, pass the `dir: rtl` context property
 
 ```jsx {3}
-const [state, send] = useMachine(
-  slider.machine({
-    dir: "rtl",
-  }),
-)
+const service = useMachine(slider.machine, {
+  dir: "rtl",
+})
 ```
 
 > While we take care of the interactions in RTL mode, you'll have to ensure you

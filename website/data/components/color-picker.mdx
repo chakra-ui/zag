@@ -69,11 +69,9 @@ color picker machine in your project 🔥
 To set the initial value of the color picker, use the `value` context property.
 
 ```jsx
-const [current, send] = useMachine(
-  colorPicker.machine({
-    value: colorPicker.parse("#ff0000"),
-  }),
-)
+const [current, send] = useMachine(colorPicker.machine, {
+  defaultValue: colorPicker.parse("#ff0000"),
+})
 ```
 
 ## Listening for change events
@@ -86,16 +84,14 @@ When the user selects a color using the color picker, the `onValueChange` and
   debounced updates)
 
 ```jsx
-const [current, send] = useMachine(
-  colorPicker.machine({
-    onValueChange: (details) => {
-      // details => { value: Color, valueAsString: string }
-    },
-    onValueChangeEnd: (details) => {
-      // details => { value: Color, valueAsString: string }
-    },
-  }),
-)
+const [current, send] = useMachine(colorPicker.machine, {
+  onValueChange: (details) => {
+    // details => { value: Color, valueAsString: string }
+  },
+  onValueChangeEnd: (details) => {
+    // details => { value: Color, valueAsString: string }
+  },
+})
 ```
 
 > When using the `onValueChange` method in React.js, you might need to use the
@@ -110,14 +106,12 @@ When this property is set, the `value` and `valueAsString` properties of the
 `onValueChange` event will be updated to reflect the new format.
 
 ```jsx
-const [current, send] = useMachine(
-  colorPicker.machine({
-    format: "hsla",
-    onValueChange: (details) => {
-      // details => { value: HSLAColor, valueAsString: string }
-    },
-  }),
-)
+const [current, send] = useMachine(colorPicker.machine, {
+  format: "hsla",
+  onValueChange: (details) => {
+    // details => { value: HSLAColor, valueAsString: string }
+  },
+})
 ```
 
 ## Showing color presets
@@ -134,11 +128,9 @@ To disable user interactions with the color picker, set the `disabled` context
 property to `true`.
 
 ```jsx
-const [current, send] = useMachine(
-  colorPicker.machine({
-    disabled: true,
-  }),
-)
+const [current, send] = useMachine(colorPicker.machine, {
+  disabled: true,
+})
 ```
 
 ## Controlling the open and closed state
@@ -147,14 +139,12 @@ To control the open and closed state of the color picker, use the `open` and
 `onOpenChange` context properties.
 
 ```jsx
-const [current, send] = useMachine(
-  colorPicker.machine({
-    open: true,
-    onOpenChange: (details) => {
-      // details => { open: boolean }
-    },
-  }),
-)
+const [current, send] = useMachine(colorPicker.machine, {
+  open: true,
+  onOpenChange: (details) => {
+    // details => { open: boolean }
+  },
+})
 ```
 
 You can also leverage the `api.setOpen(...)` method to control the open and
@@ -199,11 +189,9 @@ To use the color picker within a form, add the `name` context property to the
 machine and render the visually hidden input using the `hiddenInputProps`.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  colorPicker.machine({
-    name: "color-preference",
-  }),
-)
+const service = useMachine(colorPicker.machine, {
+  name: "color-preference",
+})
 ```
 
 ## Styling guide

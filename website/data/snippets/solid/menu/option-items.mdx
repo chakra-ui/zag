@@ -4,9 +4,9 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 
 export function Menu() {
-  const [state, send] = useMachine(menu.machine({ id: createUniqueId() }))
+  const service = useMachine(menu.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => menu.connect(state, send, normalizeProps))
+  const api = createMemo(() => menu.connect(service, normalizeProps))
 
   const [order, setOrder] = createSignal("")
   const [type, setType] = createSignal([])
@@ -46,9 +46,7 @@ export function Menu() {
             {(item) => (
               <div {...api().getOptionItemProps(item)}>
                 <span {...api().getItemIndicatorProps(item)}>✅</span>
-                <span {...api().getItemTextProps(item)}>
-                  {item.label}
-                </span>
+                <span {...api().getItemTextProps(item)}>{item.label}</span>
               </div>
             )}
           </For>
@@ -57,9 +55,7 @@ export function Menu() {
             {(item) => (
               <div {...api().getOptionItemProps(item)}>
                 <span {...api().getItemIndicatorProps(item)}>✅</span>
-                <span {...api().getItemTextProps(item)}>
-                  {item.label}
-                </span>
+                <span {...api().getItemTextProps(item)}>{item.label}</span>
               </div>
             )}
           </For>

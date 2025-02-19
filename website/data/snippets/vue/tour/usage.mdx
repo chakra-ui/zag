@@ -6,34 +6,36 @@
 
   const steps: tour.StepDetails[] = [
     {
-      type: 'dialog',
-      id: 'start',
-      title: 'Ready to go for a ride',
-      description: "Let's take the tour component for a ride and have some fun!",
-      actions: [{ label: "Let's go!", action: 'next' }],
+      type: "dialog",
+      id: "start",
+      title: "Ready to go for a ride",
+      description:
+        "Let's take the tour component for a ride and have some fun!",
+      actions: [{ label: "Let's go!", action: "next" }],
     },
     {
-      type: 'dialog',
-      id: 'logic',
-      title: 'Statechart',
+      type: "dialog",
+      id: "logic",
+      title: "Statechart",
       description: `As an engineer, you'll learn about the internal statechart that powers the tour.`,
       actions: [
-        { label: 'Prev', action: 'prev' },
-        { label: 'Next', action: 'next' },
+        { label: "Prev", action: "prev" },
+        { label: "Next", action: "next" },
       ],
     },
     {
-      type: 'dialog',
-      id: 'end',
-      title: 'Amazing! You got to the end',
-      description: 'Like what you see? Now go ahead and use it in your project.',
-      actions: [{ label: 'Finish', action: 'dismiss' }],
+      type: "dialog",
+      id: "end",
+      title: "Amazing! You got to the end",
+      description:
+        "Like what you see? Now go ahead and use it in your project.",
+      actions: [{ label: "Finish", action: "dismiss" }],
     },
   ]
 
-  const [state, send] = useMachine(tour.machine({ id: useId(), steps }))
+  const service = useMachine(tour.machine, { id: useId(), steps })
 
-  const api = computed(() => tour.connect(state.value, send, normalizeProps))
+  const api = computed(() => tour.connect(service, normalizeProps))
   const open = computed(() => api.value.open && api.value.step)
 </script>
 
@@ -53,7 +55,9 @@
         </div>
 
         <p v-bind="api.getTitleProps()">{{ api.step?.title }}</p>
-        <div v-bind="api.getDescriptionProps()">{{ api.step?.description }}</div>
+        <div v-bind="api.getDescriptionProps()">
+          {{ api.step?.description }}
+        </div>
         <div v-bind="api.getProgressTextProps()">
           {{ api.getProgressText() }}
         </div>

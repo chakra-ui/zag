@@ -66,11 +66,9 @@ radio machine in your project 🔥
 To make a radio group disabled, set the context's `disabled` property to true
 
 ```jsx {3}
-const [state, send] = useMachine(
-  radio.machine({
-    disabled: true,
-  }),
-)
+const service = useMachine(radio.machine, {
+  disabled: true,
+})
 ```
 
 ## Setting the initial value
@@ -79,11 +77,9 @@ To set the radio group's initial value, set the context's `value` property to
 the value of the radio item to be selected by default
 
 ```jsx {3}
-const [state, send] = useMachine(
-  radio.machine({
-    value: "apple",
-  }),
-)
+const service = useMachine(radio.machine, {
+  defaultValue: "apple",
+})
 ```
 
 ## Listening for changes
@@ -91,14 +87,12 @@ const [state, send] = useMachine(
 When the radio group value changes, the `onValueChange` callback is invoked.
 
 ```jsx {3-8}
-const [state, send] = useMachine(
-  radio.machine({
-    onValueChange(details) {
-      // details => { value: string }
-      console.log("radio value is:", details.value)
-    },
-  }),
-)
+const service = useMachine(radio.machine, {
+  onValueChange(details) {
+    // details => { value: string }
+    console.log("radio value is:", details.value)
+  },
+})
 ```
 
 ## Usage within forms
@@ -109,11 +103,9 @@ render a hidden input and ensure the value changes get propagated to the form
 correctly.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  radio.machine({
-    name: "fruits",
-  }),
-)
+const service = useMachine(radio.machine, {
+  name: "fruits",
+})
 ```
 
 ## Styling guide

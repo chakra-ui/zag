@@ -1,6 +1,7 @@
 ```jsx
 import * as menu from "@zag-js/menu"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useState } from "react"
 
 const data = {
   order: [
@@ -19,9 +20,9 @@ export function Menu() {
   const [order, setOrder] = useState("")
   const [type, setType] = useState([])
 
-  const [state, send] = useMachine(menu.machine({ id: "1" }))
+  const service = useMachine(menu.machine, { id: "1" })
 
-  const api = menu.connect(state, send, normalizeProps)
+  const api = menu.connect(service, normalizeProps)
 
   const radios = menuOptionData.order.map((item) => ({
     type: "radio",

@@ -4,11 +4,9 @@
   import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed } from "vue"
 
-  const [state, send] = useMachine(checkbox.machine({ id: "1" }))
+  const service = useMachine(checkbox.machine, { id: "1" })
 
-  const api = computed(() =>
-    checkbox.connect(state.value, send, normalizeProps),
-  )
+  const api = computed(() => checkbox.connect(service, normalizeProps))
 </script>
 
 <template>

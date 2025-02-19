@@ -5,10 +5,10 @@ import { useId } from "react"
 
 export function NumberInput() {
   // 1. Consume the machine
-  const [state, send] = useMachine(numberInput.machine({ id: useId() }))
+  const service = useMachine(numberInput.machine, { id: useId() })
 
   // 2. Convert machine to the provided API
-  const api = numberInput.connect(state, send, normalizeProps)
+  const api = numberInput.connect(service, normalizeProps)
 
   // 3. Render the component
   return (

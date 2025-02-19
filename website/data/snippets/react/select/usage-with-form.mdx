@@ -14,15 +14,13 @@ const selectData = [
 ]
 
 export function SelectWithForm() {
-  const [state, send] = useMachine(
-    select.machine({
-      id: useId(),
-      collection: select.collection({ items: selectData })
-      name: "country",
-    }),
-  )
+  const service = useMachine(select.machine, {
+    id: useId(),
+    collection: select.collection({ items: selectData }),
+    name: "country",
+  })
 
-  const api = select.connect(state, send, normalizeProps)
+  const api = select.connect(service, normalizeProps)
 
   return (
     <form>

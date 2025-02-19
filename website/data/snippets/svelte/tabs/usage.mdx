@@ -9,14 +9,12 @@
     { value: "item-3", label: "Item three", content: "Item three content" },
   ]
 
-  const [snapshot, send] = useMachine(
-    tabs.machine({
-      id: "1",
-      value: "item-1",
-    }),
-  )
+  const service = useMachine(tabs.machine, {
+    id: "1",
+    defaultValue: "item-1",
+  })
 
-  const api = $derived(tabs.connect(snapshot, send, normalizeProps))
+  const api = $derived(tabs.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

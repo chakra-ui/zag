@@ -9,9 +9,13 @@
     { label: "Vue", value: "vue" },
     { label: "Svelte", value: "svelte" },
   ]
-  const [snapshot, send] = useMachine(radio.machine({ id: "2", name: "fruit", orientation: "horizontal" }))
+  const service = useMachine(radio.machine, {
+    id: "2",
+    name: "fruit",
+    orientation: "horizontal",
+  })
 
-  const api = $derived(radio.connect(snapshot, send, normalizeProps))
+  const api = $derived(radio.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

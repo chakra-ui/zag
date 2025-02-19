@@ -73,11 +73,9 @@ mode implicitly sets `collapsible` to `true` and ensures that each accordion can
 be expanded.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  accordion.machine({
-    multiple: true,
-  }),
-)
+const service = useMachine(accordion.machine, {
+  multiple: true,
+})
 ```
 
 ## Opening specific accordions
@@ -87,19 +85,15 @@ To set the value of the accordion(s) that should be opened initially, pass the
 
 ```jsx {4,5,12}
 // for multiple accordions
-const [state, send] = useMachine(
-  accordion.machine({
-    multiple: true,
-    value: ["home"],
-  }),
-)
+const service = useMachine(accordion.machine, {
+  multiple: true,
+  defaultValue: ["home"],
+})
 
 // for single accordions
-const [state, send] = useMachine(
-  accordion.machine({
-    value: ["home"],
-  }),
-)
+const service = useMachine(accordion.machine, {
+  defaultValue: ["home"],
+})
 ```
 
 ## Toggle each accordion item
@@ -110,11 +104,9 @@ context's `collapsible` property to `true`.
 > Note: If `multiple` is `true`, we internally set `collapsible` to be `true`.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  accordion.machine({
-    collapsible: true,
-  }),
-)
+const service = useMachine(accordion.machine, {
+  collapsible: true,
+})
 ```
 
 ## Listening for changes
@@ -122,14 +114,12 @@ const [state, send] = useMachine(
 When the accordion value changes, the `onValueChange` callback is invoked.
 
 ```jsx {3-6}
-const [state, send] = useMachine(
-  accordion.machine({
-    onValueChange(details) {
-      // details => { value: string[] }
-      console.log("selected accordion:", details.value)
-    },
-  }),
-)
+const service = useMachine(accordion.machine, {
+  onValueChange(details) {
+    // details => { value: string[] }
+    console.log("selected accordion:", details.value)
+  },
+})
 ```
 
 ## Disabling an accordion item
@@ -159,11 +149,9 @@ You can also disable the entire accordion items by passing `disabled` to the
 machine's context.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  accordion.machine({
-    disabled: true,
-  }),
-)
+const service = useMachine(accordion.machine, {
+  disabled: true,
+})
 ```
 
 ## Styling guide

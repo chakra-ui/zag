@@ -4,16 +4,14 @@ import * as timer from "@zag-js/timer"
 import { createMemo, createUniqueId } from "solid-js"
 
 export default function Page() {
-  const [state, send] = useMachine(
-    timer.machine({
-      id: createUniqueId(),
-      countdown: true,
-      autoStart: true,
-      startMs: timer.parse({ days: 2, seconds: 10 }),
-    }),
-  )
+  const service = useMachine(timer.machine, {
+    id: createUniqueId(),
+    countdown: true,
+    autoStart: true,
+    startMs: timer.parse({ days: 2, seconds: 10 }),
+  })
 
-  const api = createMemo(() => timer.connect(state, send, normalizeProps))
+  const api = createMemo(() => timer.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>

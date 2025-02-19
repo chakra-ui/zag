@@ -10,11 +10,9 @@
     { title: "Aircraft", content: "Sample accordion content" },
   ]
 
-  const [state, send] = useMachine(accordion.machine({ id: "1" }))
+  const service = useMachine(accordion.machine, { id: "1" })
 
-  const api = computed(() =>
-    accordion.connect(state.value, send, normalizeProps),
-  )
+  const api = computed(() => accordion.connect(service, normalizeProps))
 </script>
 
 <template>

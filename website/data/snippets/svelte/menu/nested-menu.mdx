@@ -5,18 +5,18 @@
   import { onMount } from "svelte"
 
   // Level 1 - File Menu
-  const [fileMenuState, fileMenuSend, fileMenuMachine] = useMachine(menu.machine({ id: "1", "aria-label": "File" }))
+  const fileService = useMachine(menu.machine, ({ id: "1", "aria-label": "File" }))
 
-  const fileMenu = $derived(menu.connect(fileMenuState, fileMenuSend, normalizeProps))
+  const fileMenu = $derived(menu.connect(fileService, normalizeProps))
 
   // Level 2 - Share Menu
-  const [shareMenuState, shareMenuSend, shareMenuMachine] = useMachine(menu.machine({ id: "2", "aria-label": "Share" }))
+  const shareService = useMachine(menu.machine, ({ id: "2", "aria-label": "Share" }))
 
-  const shareMenu = $derived(menu.connect(shareMenuState, shareMenuSend, normalizeProps))
+  const shareMenu = $derived(menu.connect(shareService, normalizeProps))
 
   onMount(() => {
-    fileMenu.setChild(shareMenuMachine)
-    shareMenu.setParent(fileMenuMachine)
+    fileMenu.setChild(shareService)
+    shareMenu.setParent(fileService)
   })
 
   // Share menu trigger

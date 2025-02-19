@@ -4,16 +4,17 @@ import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 import { useId } from "react"
 
 export function TimePicker() {
-  const [state, send] = useMachine(timePicker.machine({ id: useId() }), {
-    context: controls.context,
-  })
+  const service = useMachine(timePicker.machine, { id: useId() })
 
-  const api = timePicker.connect(state, send, normalizeProps)
+  const api = timePicker.connect(service, normalizeProps)
 
   return (
     <>
       <div {...api.getRootProps()}>
-        <div {...api.getControlProps()} style={{ display: "flex", gap: "10px" }}>
+        <div
+          {...api.getControlProps()}
+          style={{ display: "flex", gap: "10px" }}
+        >
           <input {...api.getInputProps()} />
           <button {...api.getTriggerProps()}>🗓</button>
           <button {...api.getClearTriggerProps()}>❌</button>

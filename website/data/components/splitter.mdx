@@ -6,8 +6,9 @@ package: "@zag-js/splitter"
 
 # Splitter
 
-A splitter allow create dynamic layouts split into vertically or horizontally arranged panes. 
-Panes are separated by the splitter bars that allow dragging to resize or expand/collapse them.
+A splitter allow create dynamic layouts split into vertically or horizontally
+arranged panes. Panes are separated by the splitter bars that allow dragging to
+resize or expand/collapse them.
 
 <Resources pkg="@zag-js/splitter" />
 
@@ -61,42 +62,40 @@ splitter machine in your project 🔥
 
 ## Listening for events
 
-When the resize trigger of splitter changes, the `onSizeChangeStart` and `onSizeChangeEnd` callback is invoked.
+When the resize trigger of splitter changes, the `onSizeChangeStart` and
+`onSizeChangeEnd` callback is invoked.
 
 ```jsx {8-13}
-const [state, send] = useMachine(
-  splitter.machine({
-    id: useId(),
-    size: [
-      { id: "a", size: 50 },
-      { id: "b", size: 50 },
-    ],
-    onSizeChangeStart(detail) {
-      console.log("change start", detail)
-    },
-    onSizeChangeEnd(detail) {
-      console.log("change end", detail)
-    },
-  }),
-)
+const service = useMachine(splitter.machine, {
+  id: useId(),
+  defaultSize: [
+    { id: "a", size: 50 },
+    { id: "b", size: 50 },
+  ],
+  onSizeChangeStart(detail) {
+    console.log("change start", detail)
+  },
+  onSizeChangeEnd(detail) {
+    console.log("change end", detail)
+  },
+})
 ```
 
 ## Changing the orientation
 
-By default, the splitter is assumed to be horizontal. To change the orientation to
-vertical, set the `orientation` property in the machine's context to `vertical`.
+By default, the splitter is assumed to be horizontal. To change the orientation
+to vertical, set the `orientation` property in the machine's context to
+`vertical`.
 
 ```jsx {8}
-const [state, send] = useMachine(
-  splitter.machine({
-    id: useId(),
-    size: [
-      { id: "a", size: 50 },
-      { id: "b", size: 50 },
-    ],
-    orientation: "vertical"
-  })
-)
+const service = useMachine(splitter.machine, {
+  id: useId(),
+  defaultSize: [
+    { id: "a", size: 50 },
+    { id: "b", size: 50 },
+  ],
+  orientation: "vertical",
+})
 ```
 
 ## Styling guide

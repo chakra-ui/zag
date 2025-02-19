@@ -10,9 +10,9 @@ const items = [
 ]
 
 function Radio() {
-  const [state, send] = useMachine(radio.machine({ id: "1" }))
+  const service = useMachine(radio.machine, { id: "1" })
 
-  const api = radio.connect(state, send, normalizeProps)
+  const api = radio.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

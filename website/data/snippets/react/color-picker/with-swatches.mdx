@@ -1,13 +1,11 @@
-```jsx {18-31}
+```tsx {18-31}
 const ColorPicker = () => {
-  const [state, send] = useMachine(
-    colorPicker.machine({
-      id: useId(),
-      value: colorPicker.parse("hsl(0, 100%, 50%)"),
-    }),
-  )
+  const service = useMachine(colorPicker.machine, {
+    id: useId(),
+    defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+  })
 
-  const api = colorPicker.connect(state, send, normalizeProps)
+  const api = colorPicker.connect(service, normalizeProps)
 
   const presets = ["#ff0000", "#00ff00", "#0000ff"]
 

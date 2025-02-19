@@ -67,11 +67,9 @@ Set the initial step by passing the `step` property to the machine context.
 > The value of the `step` property is zero-based index.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  steps.machine({
-    step: 1,
-  }),
-)
+const service = useMachine(steps.machine, {
+  defaultStep: 1,
+})
 ```
 
 ## Listening for step change
@@ -79,14 +77,12 @@ const [state, send] = useMachine(
 When the active step changes, the machine will invoke the `onStepChange` event
 
 ```jsx {3-5}
-const [state, send] = useMachine(
-  steps.machine({
-    onStepChange(details) {
-      // details => { step: number }
-      console.log(`Step changed to ${details.step}`)
-    },
-  }),
-)
+const service = useMachine(steps.machine, {
+  onStepChange(details) {
+    // details => { step: number }
+    console.log(`Step changed to ${details.step}`)
+  },
+})
 ```
 
 ## Listening for steps completion
@@ -94,13 +90,11 @@ const [state, send] = useMachine(
 When all steps are completed, the machine will invoke the `onStepComplete` event
 
 ```jsx {3-5}
-const [state, send] = useMachine(
-  steps.machine({
-    onStepComplete() {
-      console.log("All steps are complete")
-    },
-  }),
-)
+const service = useMachine(steps.machine, {
+  onStepComplete() {
+    console.log("All steps are complete")
+  },
+})
 ```
 
 ## Enforcing linear steps
@@ -109,11 +103,9 @@ To enforce linear steps, you can set the `linear` prop to `true` when creating
 the steps machine. This will prevent users from skipping steps.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  steps.machine({
-    linear: true,
-  }),
-)
+const service = useMachine(steps.machine, {
+  linear: true,
+})
 ```
 
 ## Changing the orientation
@@ -123,11 +115,9 @@ set the `orientation` prop to `horizontal` or `vertical` to change the
 orientation of the steps.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  steps.machine({
-    orientation: "vertical",
-  }),
-)
+const service = useMachine(steps.machine, {
+  orientation: "vertical",
+})
 ```
 
 ## Styling guide

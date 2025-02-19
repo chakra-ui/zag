@@ -68,11 +68,9 @@ To make a segmented control disabled, set the context's `disabled` property to
 true
 
 ```jsx {3}
-const [state, send] = useMachine(
-  radio.machine({
-    disabled: true,
-  }),
-)
+const service = useMachine(radio.machine, {
+  disabled: true,
+})
 ```
 
 ## Making the segmented control readonly
@@ -81,11 +79,9 @@ To make a segmented control readonly, set the context's `readOnly` property to
 true
 
 ```jsx {3}
-const [state, send] = useMachine(
-  radio.machine({
-    readOnly: true,
-  }),
-)
+const service = useMachine(radio.machine, {
+  readOnly: true,
+})
 ```
 
 ## Setting the initial value
@@ -94,11 +90,9 @@ To set the segmented control's initial value, set the context's `value` property
 to the value of the radio item to be selected by default
 
 ```jsx {3}
-const [state, send] = useMachine(
-  radio.machine({
-    value: "apple",
-  }),
-)
+const service = useMachine(radio.machine, {
+  value: "apple",
+})
 ```
 
 ## Listening for changes
@@ -107,14 +101,12 @@ When the segmented control value changes, the `onValueChange` callback is
 invoked.
 
 ```jsx {3-8}
-const [state, send] = useMachine(
-  radio.machine({
-    onValueChange(details) {
-      // details => { value: string }
-      console.log("segmented control value is:", details.value)
-    },
-  }),
-)
+const service = useMachine(radio.machine, {
+  onValueChange(details) {
+    // details => { value: string }
+    console.log("segmented control value is:", details.value)
+  },
+})
 ```
 
 ## Usage within forms
@@ -125,11 +117,9 @@ will render a hidden input and ensure the value changes get propagated to the
 form correctly.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  radio.machine({
-    name: "fruits",
-  }),
-)
+const service = useMachine(radio.machine, {
+  name: "fruits",
+})
 ```
 
 ## Styling guide
