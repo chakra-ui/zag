@@ -3,6 +3,7 @@ export { anatomy } from "./combobox.anatomy"
 export { collection } from "./combobox.collection"
 export { connect } from "./combobox.connect"
 export { machine } from "./combobox.machine"
+export * from "./combobox.props"
 export type {
   MachineApi as Api,
   CollectionItem,

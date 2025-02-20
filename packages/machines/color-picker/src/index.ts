@@ -3,26 +3,27 @@ export { anatomy } from "./color-picker.anatomy"
 export { connect } from "./color-picker.connect"
 export { machine } from "./color-picker.machine"
 export { parse } from "./color-picker.parse"
+export * from "./color-picker.props"
 export type {
   MachineApi as Api,
   AreaProps,
-  ChannelSliderProps,
   ChannelInputProps,
   ChannelProps,
+  ChannelSliderProps,
   Color,
   ColorAxes,
   ColorChannel,
   ColorFormat,
   ColorType,
-  ColorPickerProps as Props,
   ElementIds,
   FormatChangeDetails,
   OpenChangeDetails,
   PositioningOptions,
+  ColorPickerProps as Props,
+  ColorPickerService as Service,
   SwatchProps,
   SwatchTriggerProps,
   SwatchTriggerState,
   TransparencyGridProps,
   ValueChangeDetails,
-  ColorPickerService as Service,
 } from "./color-picker.types"
