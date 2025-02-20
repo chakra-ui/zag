@@ -239,4 +239,24 @@ describe("deepMerge", () => {
       c: { e: 2 },
     })
   })
+
+  test("handles objects with functions", () => {
+    const fn1 = () => "hello"
+    const fn2 = () => "world"
+
+    const obj1 = {
+      a: fn1,
+      b: { c: fn1 },
+    }
+
+    const obj2 = {
+      a: fn2,
+      b: { c: fn2 },
+    }
+
+    const result = deepMerge<any>(obj1, obj2)
+
+    expect(result.a).toBe(fn2)
+    expect(result.b.c).toBe(fn2)
+  })
 })
