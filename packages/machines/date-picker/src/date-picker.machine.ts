@@ -129,23 +129,14 @@ export const machine = createMachine<DatePickerSchema>({
       })),
       inputValue: bindable(() => ({
         defaultValue: "",
-        onChange(value) {
-          console.log("inputValue", value)
-        },
       })),
       activeIndex: bindable(() => ({
         defaultValue: 0,
         sync: true,
-        onChange(value) {
-          console.log("activeIndex", value)
-        },
       })),
       hoveredValue: bindable<DateValue | null>(() => ({
         defaultValue: null,
         isEqual: (a, b) => b !== null && a !== null && isDateEqual(a, b),
-        onChange(value) {
-          console.log("hoveredValue", value)
-        },
       })),
       view: bindable(() => ({
         defaultValue: prop("defaultView"),
@@ -158,9 +149,6 @@ export const machine = createMachine<DatePickerSchema>({
         return {
           defaultValue: alignDate(prop("focusedValue"), "start", { months: prop("numOfMonths") }, prop("locale")),
           isEqual: isDateEqual,
-          onChange(value) {
-            console.log("startValue", value)
-          },
         }
       }),
       currentPlacement: bindable<Placement | undefined>(() => ({
