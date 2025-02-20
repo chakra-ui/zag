@@ -40,6 +40,10 @@ export interface CollapsibleProps extends CommonProperties, DirectionProperty {
    * The callback invoked when the exit animation completes.
    */
   onExitComplete?: () => void
+  /**
+   * Whether the collapsible is disabled.
+   */
+  disabled?: boolean
 }
 
 export interface CollapsibleSchema {

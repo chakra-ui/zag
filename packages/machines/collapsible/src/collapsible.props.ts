@@ -4,6 +4,7 @@ import type { CollapsibleProps } from "./collapsible.types"
 
 export const props = createProps<CollapsibleProps>()([
   "dir",
+  "disabled",
   "getRootNode",
   "id",
   "ids",

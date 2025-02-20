@@ -9,12 +9,12 @@ export function connect<T extends PropTypes>(
   service: Service<CollapsibleSchema>,
   normalize: NormalizeProps<T>,
 ): CollapsibleApi<T> {
-  const { state, send, context, scope } = service
+  const { state, send, context, scope, prop } = service
   const visible = state.matches("open") || state.matches("closing")
   const open = state.matches("open")
 
   const { width, height } = context.get("size")
-  const disabled = false
+  const disabled = !!prop("disabled")
 
   const skip = !context.get("initial") && open
   const dir = "ltr"
