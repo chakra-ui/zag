@@ -1,9 +1,7 @@
 import { runIfFn, uuid } from "@zag-js/utils"
-import type { Options, Placement, ToastProps, ToastStoreProps } from "./toast.types"
+import type { Options, Placement, PromiseOptions, ToastProps, ToastStore, ToastStoreProps } from "./toast.types"
 
-type MaybeFunction<V, A> = V | ((arg: A) => V)
-
-export function createToastStore<V = any>(props: ToastStoreProps) {
+export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V> {
   const placement: Placement = props.placement ?? "bottom"
   const overlap = !!props.overlap
   const duration = props.duration
@@ -99,12 +97,7 @@ export function createToastStore<V = any>(props: ToastStoreProps) {
 
   const promise = <T>(
     promise: Promise<T> | (() => Promise<T>),
-    options?: {
-      loading?: Omit<Options<V>, "type">
-      success?: MaybeFunction<Omit<Options<V>, "type">, T>
-      error?: MaybeFunction<Omit<Options<V>, "type">, unknown>
-      finally?: (() => void | Promise<void>) | undefined
-    },
+    options: PromiseOptions<T, V>,
     shared: Omit<Options<V>, "type"> = {},
   ) => {
     if (!options) return
@@ -243,8 +236,6 @@ export function createToastStore<V = any>(props: ToastStoreProps) {
     collapse,
   }
 }
-
-export type ToastStore = ReturnType<typeof createToastStore>
 
 const isHttpResponse = (data: any): data is Response => {
   return (

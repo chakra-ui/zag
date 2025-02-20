@@ -334,7 +334,7 @@ export interface ItemGroupLabelProps {
   htmlFor: string
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
+export interface ComboboxApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
   /**
    * Whether the combobox is focused
    */

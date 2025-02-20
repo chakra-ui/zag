@@ -234,7 +234,7 @@ export interface TransparencyGridProps {
   size?: string | undefined
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface ColorPickerApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the color picker is being dragged
    */

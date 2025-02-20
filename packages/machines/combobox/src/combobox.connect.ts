@@ -13,12 +13,12 @@ import { getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./combobox.anatomy"
 import * as dom from "./combobox.dom"
-import type { CollectionItem, ItemProps, ItemState, MachineApi, ComboboxService } from "./combobox.types"
+import type { CollectionItem, ItemProps, ItemState, ComboboxApi, ComboboxService } from "./combobox.types"
 
 export function connect<T extends PropTypes, V extends CollectionItem>(
   service: ComboboxService<V>,
   normalize: NormalizeProps<T>,
-): MachineApi<T, V> {
+): ComboboxApi<T, V> {
   const { context, prop, state, send, scope, computed, event } = service
 
   const translations = prop("translations")

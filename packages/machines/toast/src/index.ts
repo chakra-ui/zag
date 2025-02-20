@@ -18,6 +18,7 @@ export type {
   ToastService as Service,
   Status,
   StatusChangeDetails,
+  ToastStore,
   ToastStoreProps,
   Type,
 } from "./toast.types"

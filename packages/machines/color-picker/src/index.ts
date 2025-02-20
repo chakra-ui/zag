@@ -5,7 +5,7 @@ export { machine } from "./color-picker.machine"
 export { parse } from "./color-picker.parse"
 export * from "./color-picker.props"
 export type {
-  MachineApi as Api,
+  ColorPickerApi as Api,
   AreaProps,
   ChannelInputProps,
   ChannelProps,

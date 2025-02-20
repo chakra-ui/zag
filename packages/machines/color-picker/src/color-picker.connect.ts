@@ -9,7 +9,7 @@ import type {
   AreaProps,
   ColorFormat,
   ColorPickerService,
-  MachineApi,
+  ColorPickerApi,
   SwatchTriggerProps,
   SwatchTriggerState,
 } from "./color-picker.types"
@@ -17,7 +17,10 @@ import { getChannelDisplayColor } from "./utils/get-channel-display-color"
 import { getChannelRange, getChannelValue } from "./utils/get-channel-input-value"
 import { getSliderBackground } from "./utils/get-slider-background"
 
-export function connect<T extends PropTypes>(service: ColorPickerService, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(
+  service: ColorPickerService,
+  normalize: NormalizeProps<T>,
+): ColorPickerApi<T> {
   const { context, send, prop, computed, state, scope } = service
 
   const value = context.get("value")

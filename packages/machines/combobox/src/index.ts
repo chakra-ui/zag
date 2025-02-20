@@ -5,7 +5,7 @@ export { connect } from "./combobox.connect"
 export { machine } from "./combobox.machine"
 export * from "./combobox.props"
 export type {
-  MachineApi as Api,
+  ComboboxApi as Api,
   CollectionItem,
   CollectionOptions,
   ComboboxProps as Props,

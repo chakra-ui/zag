@@ -474,7 +474,7 @@ export interface VisibleRangeText extends Range<string> {
   formatted: string
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the input is focused
    */

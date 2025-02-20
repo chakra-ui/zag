@@ -1,6 +1,5 @@
 import type { CommonProperties, Direction, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { EventObject, Service } from "@zag-js/core"
-import type { ToastStore } from "./toast.store"
 
 /* -----------------------------------------------------------------------------
  * Base types
@@ -257,15 +256,112 @@ export type ToastGroupSchema = {
 export type ToastGroupService = Service<ToastGroupSchema>
 
 /* -----------------------------------------------------------------------------
+ * Toaster API
+ * -----------------------------------------------------------------------------*/
+
+export interface ToastStore<V = any> {
+  /**
+   * The placement of the toast
+   */
+  placement: Placement
+  /**
+   * Whether the toast is overlapping
+   */
+  overlap: boolean
+  /**
+   * Subscribe to the toast store
+   */
+  subscribe: (subscriber: (...args: any[]) => void) => () => void
+  /**
+   * Create a new toast with the given options
+   */
+  create: (data: Options<V>) => void
+  /**
+   * Update an existing toast with new properties
+   */
+  update: (id: string, data: Partial<ToastProps<V>>) => void
+  /**
+   * Remove a toast by its ID
+   */
+  remove: (id: string) => void
+  /**
+   * Dismiss a toast by its ID. If no ID is provided, dismisses all toasts
+   */
+  dismiss: (id?: string) => void
+  /**
+   * Create an error toast with the given options
+   */
+  error: (data: Options<V>) => void
+  /**
+   * Create a success toast with the given options
+   */
+  success: (data: Options<V>) => void
+  /**
+   * Create an info toast with the given options
+   */
+  info: (data: Options<V>) => void
+  /**
+   * Create a warning toast with the given options
+   */
+  warning: (data: Options<V>) => void
+  /**
+   * Create a loading toast with the given options
+   */
+  loading: (data: Options<V>) => void
+  /**
+   * Get all currently visible toasts
+   */
+  getVisibleToasts: () => Partial<ToastProps<V>>[]
+  /**
+   * Get the total number of toasts
+   */
+  getCount: () => number
+  /**
+   * Create a toast that tracks a promise's state
+   */
+  promise: <T>(
+    promise: Promise<T> | (() => Promise<T>),
+    options: PromiseOptions<T, V>,
+    shared?: Omit<Options<V>, "type">,
+  ) => Promise<T> | undefined | { unwrap: () => Promise<T> }
+  /**
+   * Pause a toast's auto-dismiss timer. If no ID is provided, pauses all toasts
+   */
+  pause: (id?: string) => void
+  /**
+   * Resume a toast's auto-dismiss timer. If no ID is provided, resumes all toasts
+   */
+  resume: (id?: string) => void
+  /**
+   * Check if a toast with the given ID is currently visible
+   */
+  isVisible: (id: string) => boolean
+  /**
+   * Check if a toast with the given ID has been dismissed
+   */
+  isDismissed: (id: string) => boolean
+  /**
+   * @internal
+   * Expand all toasts to show their full content
+   */
+  expand: () => void
+  /**
+   * @internal
+   * Collapse all toasts to their compact state
+   */
+  collapse: () => void
+}
+
+/* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
 
 export interface PromiseOptions<V, O = any> {
-  loading: Options<O>
-  success: MaybeFunction<Options<O>, V>
-  error: MaybeFunction<Options<O>, Error>
+  loading?: Omit<Options<O>, "type">
+  success?: MaybeFunction<Omit<Options<O>, "type">, V>
+  error?: MaybeFunction<Omit<Options<O>, "type">, unknown>
   finally?: (() => void | Promise<void>) | undefined
 }
 

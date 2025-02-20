@@ -28,7 +28,7 @@ import type {
   DatePickerService,
   DayTableCellProps,
   DayTableCellState,
-  MachineApi,
+  DatePickerApi,
   TableCellProps,
   TableCellState,
   TableProps,
@@ -44,7 +44,10 @@ import {
   isValidCharacter,
 } from "./date-picker.utils"
 
-export function connect<T extends PropTypes>(service: DatePickerService, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(
+  service: DatePickerService,
+  normalize: NormalizeProps<T>,
+): DatePickerApi<T> {
   const { state, context, prop, send, computed, scope } = service
 
   const startValue = context.get("startValue")
