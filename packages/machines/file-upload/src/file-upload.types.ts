@@ -65,7 +65,7 @@ export interface FileUploadProps extends LocaleProperties, CommonProperties {
   /**
    * The localized messages to use.
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The accept file types
    */

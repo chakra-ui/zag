@@ -199,11 +199,11 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
   /**
    * The format of the date to display in the input.
    */
-  format: (date: DateValue, details: LocaleDetails) => string
+  format?: ((date: DateValue, details: LocaleDetails) => string) | undefined
   /**
    * Function to parse the date from the input back to a DateValue.
    */
-  parse: (value: string, details: LocaleDetails) => DateValue | undefined
+  parse?: ((value: string, details: LocaleDetails) => DateValue | undefined) | undefined
   /**
    * The placeholder text to display in the input.
    */

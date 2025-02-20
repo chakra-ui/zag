@@ -54,7 +54,7 @@ export interface StepsProps extends DirectionProperty, CommonProperties {
   /**
    * The total number of steps
    */
-  count: number
+  count?: number | undefined
 }
 
 type PropsWithDefault = "orientation" | "linear" | "count"

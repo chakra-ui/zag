@@ -50,12 +50,12 @@ export interface FloatingPanelProps extends DirectionProperty, CommonProperties 
    * The strategy to use for positioning
    * @default "absolute"
    */
-  strategy: "absolute" | "fixed"
+  strategy?: "absolute" | "fixed" | undefined
   /**
    * Whether the panel should be strictly contained within the boundary when dragging
    * @default true
    */
-  allowOverflow: boolean
+  allowOverflow?: boolean | undefined
   /**
    * The controlled open state of the panel
    */

@@ -36,20 +36,20 @@ export type ElementIds = Partial<{
   scrubber: string
 }>
 
-export type IntlTranslations = {
+export interface IntlTranslations {
   /**
    * Function that returns the human-readable value.
    * It is used to set the `aria-valuetext` property of the input
    */
-  valueText?: (value: string) => string
+  valueText?: ((value: string) => string) | undefined
   /**
    * The label foe the increment button
    */
-  incrementLabel: string
+  incrementLabel?: string | undefined
   /**
    * The label for the decrement button
    */
-  decrementLabel: string
+  decrementLabel?: string | undefined
 }
 
 export interface NumberInputProps extends LocaleProperties, CommonProperties {
