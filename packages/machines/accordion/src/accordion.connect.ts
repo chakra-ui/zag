@@ -11,7 +11,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
   function setValue(value: string[]) {
     let nextValue = value
-    if (multiple && nextValue.length > 1) {
+    if (!multiple && nextValue.length > 1) {
       nextValue = [nextValue[0]]
     }
     send({ type: "VALUE.SET", value: nextValue })
