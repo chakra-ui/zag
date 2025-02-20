@@ -13,7 +13,8 @@ export function connect<T extends PropTypes>(
   return {
     loaded,
     setSrc(src) {
-      send({ type: "src.change", src })
+      const img = dom.getImageEl(scope)
+      img?.setAttribute("src", src)
     },
     setLoaded() {
       send({ type: "img.loaded", src: "api" })

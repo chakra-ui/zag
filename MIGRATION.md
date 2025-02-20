@@ -3,7 +3,12 @@
 ## Fixed
 
 - **Menu**
+
   - Fix issue where context menu doesn't update positioning on subsequent right clicks.
+
+- **Avatar**
+
+  - Fix issue where `api.setSrc` doesn't work.
 
 ## Removed
 
@@ -17,6 +22,26 @@
   - `api.setCount` is removed in favor of explicitly setting the `count` prop.
 
 ## Changed
+
+### Typings
+
+- `<component>.Context` is not renamed to `<component>.Props`
+
+Before:
+
+```tsx
+import * as accordion from "@zag-js/accordion"
+
+interface Props extends accordion.Context {}
+```
+
+After:
+
+```tsx
+import * as accordion from "@zag-js/accordion"
+
+interface Props extends accordion.Props {}
+```
 
 ### `useMachine`
 
