@@ -933,6 +933,10 @@
         "type": "boolean",
         "description": "Whether to disable registering this a dismissable layer"
       },
+      "navigate": {
+        "type": "(details: NavigateDetails) => void",
+        "description": "Function to navigate to the selected item"
+      },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",
@@ -1201,13 +1205,31 @@
         "defaultValue": "\"single\""
       },
       "format": {
-        "type": "(date: DateValue) => string",
+        "type": "(date: LocaleDetails) => string",
         "description": "The format of the date to display in the input."
+      },
+      "parse": {
+        "type": "(value: string, details: LocaleDetails) => DateValue",
+        "description": "Function to parse the date from the input back to a DateValue."
+      },
+      "placeholder": {
+        "type": "string",
+        "description": "The placeholder text to display in the input."
       },
       "view": {
         "type": "DateView",
         "description": "The view of the calendar",
         "defaultValue": "\"day\""
+      },
+      "minView": {
+        "type": "DateView",
+        "description": "The minimum view of the calendar",
+        "defaultValue": "\"day\""
+      },
+      "maxView": {
+        "type": "DateView",
+        "description": "The maximum view of the calendar",
+        "defaultValue": "\"year\""
       },
       "positioning": {
         "type": "PositioningOptions",
@@ -1513,6 +1535,10 @@
         "type": "boolean",
         "description": "Whether the user is focused on the dropzone element"
       },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the file input is disabled"
+      },
       "openFilePicker": {
         "type": "() => void",
         "description": "Function to open the file dialog"
@@ -1547,7 +1573,11 @@
       },
       "createFileUrl": {
         "type": "(file: File, cb: (url: string) => void) => VoidFunction",
-        "description": "Function to get the preview url of a file.\nIt returns a function to revoke the url."
+        "description": "Function to get the preview url of a file.\nReturns a function to revoke the url."
+      },
+      "setClipboardFiles": {
+        "type": "(dt: DataTransfer) => boolean",
+        "description": "Function to set the clipboard files.\nReturns `true` if the clipboard data contains files, `false` otherwise."
       }
     },
     "context": {
@@ -1594,6 +1624,11 @@
         "type": "number",
         "description": "The maximum number of files",
         "defaultValue": "1"
+      },
+      "preventDocumentDrop": {
+        "type": "boolean",
+        "description": "Whether to prevent the drop event on the document",
+        "defaultValue": "true"
       },
       "validate": {
         "type": "(file: File, details: FileValidateDetails) => FileError[]",
@@ -1935,6 +1970,10 @@
         "type": "boolean",
         "description": "Whether the menu is a composed with other composite widgets like a combobox or tabs",
         "defaultValue": "true"
+      },
+      "navigate": {
+        "type": "(details: NavigateDetails) => void",
+        "description": "Function to navigate to the selected item if it's an anchor element"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -2597,6 +2636,10 @@
         "type": "IntlTranslations",
         "description": "The localized messages to use."
       },
+      "onValueChange": {
+        "type": "(details: ValueChangeDetails) => void",
+        "description": "Callback fired when the value changes."
+      },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",
@@ -2644,6 +2687,10 @@
       "encoding": {
         "type": "QrCodeGenerateOptions",
         "description": "The qr code encoding options."
+      },
+      "onValueChange": {
+        "type": "(details: ValueChangeDetails) => void",
+        "description": "Callback fired when the value changes."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -2859,7 +2906,7 @@
       },
       "highlightValue": {
         "type": "(value: string) => void",
-        "description": "The value of the select input"
+        "description": "Function to highlight a value"
       },
       "selectedItems": {
         "type": "V[]",
@@ -3384,6 +3431,10 @@
         "type": "boolean",
         "description": "Whether the stepper has a previous step."
       },
+      "isCompleted": {
+        "type": "boolean",
+        "description": "Whether the stepper is completed."
+      },
       "setStep": {
         "type": "(step: number) => void",
         "description": "Function to set the value of the stepper."
@@ -3619,6 +3670,10 @@
       "deselectable": {
         "type": "boolean",
         "description": "Whether the active tab can be deselected when clicking on it."
+      },
+      "navigate": {
+        "type": "(details: NavigateDetails) => void",
+        "description": "Function to navigate to the selected tab when clicking on it.\nUseful if tab triggers are anchor elements."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

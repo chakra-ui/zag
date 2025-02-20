@@ -1541,7 +1541,8 @@
     "Backdrop": {
       "data-scope": "tour",
       "data-part": "backdrop",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-type": "The type of the item"
     },
     "Positioner": {
       "data-scope": "tour",
