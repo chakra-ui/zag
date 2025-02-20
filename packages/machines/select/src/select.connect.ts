@@ -34,6 +34,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const highlightedValue = context.get("highlightedValue")
   const highlightedItem = context.get("highlightedItem")
   const selectedItems = context.get("selectedItems")
+  const currentPlacement = context.get("currentPlacement")
 
   const isTypingAhead = computed("isTypingAhead")
   const interactive = computed("isInteractive")
@@ -53,7 +54,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
-    placement: context.get("currentPlacement"),
+    placement: currentPlacement,
   })
 
   return {
@@ -69,9 +70,6 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     collection,
     multiple: !!prop("multiple"),
     disabled: !!disabled,
-    setCollection(collection) {
-      send({ type: "COLLECTION.SET", value: collection })
-    },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
@@ -170,7 +168,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
-        "data-placement": context.get("currentPlacement"),
+        "data-placement": currentPlacement,
         "data-placeholder-shown": dataAttr(!computed("hasSelectedItems")),
         onClick(event) {
           if (!interactive) return
@@ -375,6 +373,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         ...parts.positioner.attrs,
         dir: prop("dir"),
         id: dom.getPositionerId(scope),
+        inert: currentPlacement == null ? "" : undefined,
         style: popperStyles.floating,
       })
     },
@@ -387,7 +386,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         role: composite ? "listbox" : "dialog",
         ...parts.content.attrs,
         "data-state": open ? "open" : "closed",
-        "data-placement": context.get("currentPlacement"),
+        "data-placement": currentPlacement,
         "data-activedescendant": ariaActiveDescendant,
         "aria-activedescendant": composite ? ariaActiveDescendant : undefined,
         "aria-multiselectable": prop("multiple") && composite ? true : undefined,

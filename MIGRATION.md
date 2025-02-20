@@ -21,11 +21,15 @@
 
   - `api.setCount` is removed in favor of explicitly setting the `count` prop.
 
+- Select, Combobox
+
+  - `api.setCollection` is removed in favor of explicitly setting the `collection` prop.
+
 ## Changed
 
 ### Typings
 
-- `<component>.Context` is not renamed to `<component>.Props`
+- `<component>.Context` is now renamed to `<component>.Props`
 
 Before:
 
@@ -45,8 +49,7 @@ interface Props extends accordion.Props {}
 
 ### `useMachine`
 
-`useMachine` now returns a `service` object with `send`, `prop`, `context`, `computed` and `scope` properties. It no
-longer returns a tuple of `[state, send]`.
+`useMachine` now returns a `service` object instead of a tuple of `[state, send]`.
 
 This change is the same across all components.
 
@@ -59,8 +62,10 @@ const [state, send] = useMachine(avatar.machine({ id: useId() }))
 After:
 
 ```tsx
-const service = useMachine(avatar.machine({ id: useId() }))
+const service = useMachine(avatar.machine, { id: useId() })
 ```
+
+> Notice that `avatar.machine` is no longer a function, it's an object.
 
 ### Controlled vs uncontrolled values
 

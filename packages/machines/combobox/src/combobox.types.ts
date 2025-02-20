@@ -405,10 +405,6 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   collection: ListCollection<V>
   /**
-   * Function to set the collection of items
-   */
-  setCollection(collection: ListCollection<V>): void
-  /**
    * Function to set the positioning options
    */
   reposition(options?: Partial<PositioningOptions>): void

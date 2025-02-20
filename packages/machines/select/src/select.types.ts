@@ -302,10 +302,6 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
    */
   collection: ListCollection<V>
   /**
-   * Function to set the collection of items
-   */
-  setCollection(collection: ListCollection<V>): void
-  /**
    * Function to set the positioning options of the select
    */
   reposition(options?: Partial<PositioningOptions>): void

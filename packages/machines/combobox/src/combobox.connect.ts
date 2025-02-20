@@ -69,9 +69,6 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
-    setCollection(collection) {
-      send({ type: "COLLECTION.SET", value: collection })
-    },
     setHighlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
