@@ -14,11 +14,12 @@ export interface ValueChangeDetails {
 
 export interface QrCodeProps extends DirectionProperty, CommonProperties {
   /**
-   * The value to encode.
+   * The controlled value to encode.
    */
   value?: string | undefined
   /**
-   * The default value to encode.
+   * The initial value to encode when rendered.
+   * Use when you don't need to control the value of the qr code.
    */
   defaultValue?: string | undefined
   /**

@@ -30,7 +30,8 @@ export interface AngleSliderProps extends DirectionProperty, CommonProperties {
    */
   value?: number | undefined
   /**
-   * The default value of the slider.
+   * The initial value of the slider.
+   * Use when you don't need to control the value of the slider.
    * @default 0
    */
   defaultValue?: number | undefined

@@ -80,11 +80,12 @@ export interface DialogProps
    */
   role?: "dialog" | "alertdialog" | undefined
   /**
-   * Whether the dialog is open
+   * The controlled open state of the dialog
    */
   open?: boolean | undefined
   /**
-   * Whether the dialog is open by default
+   * The initial open state of the dialog when rendered.
+   * Use when you don't need to control the open state of the dialog.
    * @default false
    */
   defaultOpen?: boolean | undefined

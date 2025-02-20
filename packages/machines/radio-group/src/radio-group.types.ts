@@ -25,11 +25,12 @@ export interface RadioGroupProps extends DirectionProperty, CommonProperties {
    */
   ids?: ElementIds | undefined
   /**
-   * The value of the checked radio
+   * The controlled value of the radio group
    */
   value?: string | null | undefined
   /**
-   * The default value of the checked radio
+   * The initial value of the checked radio when rendered.
+   * Use when you don't need to control the value of the radio group.
    */
   defaultValue?: string | null | undefined
   /**

@@ -79,11 +79,12 @@ export interface PinInputProps extends DirectionProperty, CommonProperties {
    */
   otp?: boolean | undefined
   /**
-   * The value of the the pin input.
+   * The controlled value of the the pin input.
    */
   value?: string[] | undefined
   /**
-   * The default value of the the pin input.
+   * The initial value of the the pin input when rendered.
+   * Use when you don't need to control the value of the pin input.
    */
   defaultValue?: string[] | undefined
   /**

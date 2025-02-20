@@ -45,11 +45,12 @@ export interface TimePickerProps extends DirectionProperty, CommonProperties {
    */
   locale?: string | undefined
   /**
-   * The selected time.
+   * The controlled selected time.
    */
   value?: Time | null | undefined
   /**
-   * The default selected time.
+   * The initial selected time when rendered.
+   * Use when you don't need to control the selected time.
    */
   defaultValue?: Time | null | undefined
   /**

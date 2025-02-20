@@ -64,11 +64,12 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
     CommonProperties,
     InteractOutsideHandlers {
   /**
-   * Whether the combobox is open
+   * The controlled open state of the combobox
    */
   open?: boolean | undefined
   /**
-   * Whether the combobox is open on default
+   * The initial open state of the combobox when rendered.
+   * Use when you don't need to control the open state of the combobox.
    */
   defaultOpen?: boolean | undefined
   /**
@@ -76,11 +77,12 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    */
   ids?: ElementIds | undefined
   /**
-   * The current value of the combobox's input
+   * The controlled value of the combobox's input
    */
   inputValue?: string | undefined
   /**
-   * The default value of the combobox's input
+   * The initial value of the combobox's input when rendered.
+   * Use when you don't need to control the value of the combobox's input.
    * @default ""
    */
   defaultInputValue?: string | undefined
@@ -114,15 +116,21 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    */
   placeholder?: string | undefined
   /**
-   * The active item's id. Used to set the `aria-activedescendant` attribute
+   * The initial highlighted value of the combobox when rendered.
+   * Use when you don't need to control the highlighted value of the combobox.
+   */
+  defaultHighlightedValue?: string | null | undefined
+  /**
+   * The controlled highlighted value of the combobox
    */
   highlightedValue?: string | null | undefined
   /**
-   * The keys of the selected items
+   * The controlled value of the combobox's selected items
    */
   value?: string[] | undefined
   /**
-   * The default value of the combobox's selected items
+   * The initial value of the combobox's selected items when rendered.
+   * Use when you don't need to control the value of the combobox's selected items.
    * @default []
    */
   defaultValue?: string[] | undefined

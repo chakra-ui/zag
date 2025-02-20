@@ -105,21 +105,23 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    */
   positioning?: PositioningOptions | undefined
   /**
-   * The keys of the selected items
+   * The controlled keys of the selected items
    */
   value?: string[] | undefined
   /**
-   * The default value of the select
+   * The initial default value of the select when rendered.
+   * Use when you don't need to control the value of the select.
    */
   defaultValue?: string[] | undefined
   /**
-   * The key of the highlighted item
+   * The controlled key of the highlighted item
    */
   highlightedValue?: string | null
   /**
-   * The default value of the highlighted item
+   * The initial value of the highlighted item when opened.
+   * Use when you don't need to control the highlighted value of the select.
    */
-  defaultHighlightedValue?: string | null
+  defaultHighlightedValue?: string | null | undefined
   /**
    * Whether to loop the keyboard navigation through the options
    * @default false

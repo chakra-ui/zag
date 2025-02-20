@@ -26,11 +26,12 @@ export interface StepsProps extends DirectionProperty, CommonProperties {
    */
   ids?: ElementIds | undefined
   /**
-   * The current value of the stepper
+   * The controlled value of the stepper
    */
   step?: number | undefined
   /**
-   * The default value of the stepper
+   * The initial value of the stepper when rendered.
+   * Use when you don't need to control the value of the stepper.
    */
   defaultStep?: number | undefined
   /**

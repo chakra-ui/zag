@@ -63,11 +63,11 @@ export interface TooltipProps extends DirectionProperty, CommonProperties {
    *
    * @default false
    */
-  interactive?: boolean
+  interactive?: boolean | undefined
   /**
    * Function called when the tooltip is opened.
    */
-  onOpenChange?(details: OpenChangeDetails): void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * Custom label for the tooltip.
    */
@@ -75,17 +75,18 @@ export interface TooltipProps extends DirectionProperty, CommonProperties {
   /**
    * The user provided options used to position the popover content
    */
-  positioning?: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
    * Whether the tooltip is disabled
    */
   disabled?: boolean | undefined
   /**
-   * Whether the tooltip is open
+   * The controlled open state of the tooltip
    */
   open?: boolean | undefined
   /**
-   * Whether the tooltip is controlled by the user
+   * The initial open state of the tooltip when rendered.
+   * Use when you don't need to control the open state of the tooltip.
    */
   defaultOpen?: boolean | undefined
 }

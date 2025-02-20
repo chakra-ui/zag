@@ -51,11 +51,12 @@ export interface SwitchProps extends DirectionProperty, CommonProperties {
    */
   onCheckedChange?: ((details: CheckedChangeDetails) => void) | undefined
   /**
-   * Whether the switch is checked.
+   * The controlled checked state of the switch
    */
   checked?: boolean | undefined
   /**
-   * The default checked state of the switch
+   * The initial checked state of the switch when rendered.
+   * Use when you don't need to control the checked state of the switch.
    */
   defaultChecked?: boolean | undefined
   /**

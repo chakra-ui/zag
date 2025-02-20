@@ -48,7 +48,8 @@ export const machine = createMachine<MenuSchema>({
         defaultValue: false,
       })),
       highlightedValue: bindable<string | null>(() => ({
-        defaultValue: null,
+        defaultValue: prop("defaultHighlightedValue") || null,
+        prop: prop("highlightedValue"),
         onChange(value) {
           prop("onHighlightChange")?.({ highlightedValue: value })
         },

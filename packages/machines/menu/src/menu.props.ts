@@ -7,6 +7,8 @@ export const props = createProps<MenuProps>()([
   "aria-label",
   "closeOnSelect",
   "composite",
+  "defaultHighlightedValue",
+  "defaultOpen",
   "dir",
   "getRootNode",
   "highlightedValue",
@@ -21,7 +23,6 @@ export const props = createProps<MenuProps>()([
   "onOpenChange",
   "onPointerDownOutside",
   "onSelect",
-  "defaultOpen",
   "open",
   "positioning",
   "typeahead",
@@ -39,13 +40,13 @@ export const itemGroupProps = createProps<ItemGroupProps>()(["id"])
 export const splitItemGroupProps = createSplitProps<ItemGroupProps>(itemGroupProps)
 
 export const optionItemProps = createProps<OptionItemProps>()([
-  "disabled",
-  "valueText",
+  "checked",
   "closeOnSelect",
+  "disabled",
+  "onCheckedChange",
   "type",
   "value",
-  "checked",
-  "onCheckedChange",
+  "valueText",
 ])
 
 export const splitOptionItemProps = createSplitProps<OptionItemProps>(optionItemProps)

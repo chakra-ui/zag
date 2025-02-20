@@ -74,7 +74,8 @@ export const machine = createMachine<ComboboxSchema>({
         },
       })),
       highlightedValue: bindable<string | null>(() => ({
-        defaultValue: prop("highlightedValue"),
+        defaultValue: prop("defaultHighlightedValue") || null,
+        value: prop("highlightedValue"),
         onChange(value) {
           const item = prop("collection").find(value)
           prop("onHighlightChange")?.({ highlightedValue: value, highlightedItem: item })

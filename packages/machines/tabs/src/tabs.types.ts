@@ -49,11 +49,12 @@ export interface TabsProps extends DirectionProperty, CommonProperties {
    */
   loopFocus?: boolean | undefined
   /**
-   * The selected tab id
+   * The controlled selected tab value
    */
   value?: string | null | undefined
   /**
-   * The default selected tab id
+   * The initial selected tab value when rendered.
+   * Use when you don't need to control the selected tab value.
    */
   defaultValue?: string | null | undefined
   /**

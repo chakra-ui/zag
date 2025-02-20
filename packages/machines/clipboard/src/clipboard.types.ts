@@ -21,11 +21,12 @@ export interface ClipboardProps extends CommonProperties {
    */
   ids?: ElementIds | undefined
   /**
-   * The value to be copied to the clipboard
+   * The controlled value of the clipboard
    */
   value?: string | undefined
   /**
-   * The default value to be copied to the clipboard
+   * The initial value to be copied to the clipboard when rendered.
+   * Use when you don't need to control the value of the clipboard.
    */
   defaultValue?: string | undefined
   /**

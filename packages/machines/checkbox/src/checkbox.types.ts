@@ -40,13 +40,14 @@ export interface CheckboxProps extends DirectionProperty, CommonProperties {
    */
   required?: boolean | undefined
   /**
-   * The checked state of the checkbox
+   * The controlled checked state of the checkbox
    */
-  checked?: CheckedState
+  checked?: CheckedState | undefined
   /**
-   * The default checked state of the checkbox
+   * The initial checked state of the checkbox when rendered.
+   * Use when you don't need to control the checked state of the checkbox.
    */
-  defaultChecked?: CheckedState
+  defaultChecked?: CheckedState | undefined
   /**
    * Whether the checkbox is read-only
    */
@@ -54,7 +55,7 @@ export interface CheckboxProps extends DirectionProperty, CommonProperties {
   /**
    * The callback invoked when the checked state changes.
    */
-  onCheckedChange?(details: CheckedChangeDetails): void
+  onCheckedChange?: ((details: CheckedChangeDetails) => void) | undefined
   /**
    * The name of the input field in a checkbox.
    * Useful for form submission.

@@ -37,7 +37,7 @@ export type ElementIds = Partial<{
 
 export interface SliderProps extends DirectionProperty, CommonProperties {
   /**
-   * The ids of the elements in the range slider. Useful for composition.
+   * The ids of the elements in the slider. Useful for composition.
    */
   ids?: ElementIds | undefined
   /**
@@ -57,11 +57,12 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    */
   form?: string | undefined
   /**
-   * The value of the range slider
+   * The controlled value of the slider
    */
   value?: number[] | undefined
   /**
-   * The default value of the range slider
+   * The initial value of the slider when rendered.
+   * Use when you don't need to control the value of the slider.
    */
   defaultValue?: number[] | undefined
   /**

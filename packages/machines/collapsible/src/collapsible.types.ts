@@ -23,27 +23,28 @@ export interface CollapsibleProps extends CommonProperties, DirectionProperty {
   /**
    * The ids of the elements in the collapsible. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
-   * Whether the collapsible is open.
+   * The controlled open state of the collapsible.
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
-   * The default open state of the collapsible.
+   * The initial open state of the collapsible when rendered.
+   * Use when you don't need to control the open state of the collapsible.
    */
-  defaultOpen?: boolean
+  defaultOpen?: boolean | undefined
   /**
    * The callback invoked when the open state changes.
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * The callback invoked when the exit animation completes.
    */
-  onExitComplete?: () => void
+  onExitComplete?: VoidFunction | undefined
   /**
    * Whether the collapsible is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 export interface CollapsibleSchema {

@@ -57,11 +57,12 @@ export interface FloatingPanelProps extends DirectionProperty, CommonProperties 
    */
   allowOverflow: boolean
   /**
-   * Whether the panel is open
+   * The controlled open state of the panel
    */
   open?: boolean | undefined
   /**
-   * The default open state of the panel
+   * The initial open state of the panel when rendered.
+   * Use when you don't need to control the open state of the panel.
    * @default false
    */
   defaultOpen?: boolean | undefined
@@ -92,11 +93,12 @@ export interface FloatingPanelProps extends DirectionProperty, CommonProperties 
    */
   maxSize?: Size | undefined
   /**
-   * The position of the panel
+   * The controlled position of the panel
    */
   position?: Point | undefined
   /**
-   * The default position of the panel
+   * The initial position of the panel when rendered.
+   * Use when you don't need to control the position of the panel.
    */
   defaultPosition?: Point | undefined
   /**

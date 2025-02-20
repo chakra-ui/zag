@@ -63,11 +63,12 @@ export interface ColorPickerProps extends CommonProperties, DirectionProperty, I
    */
   ids?: ElementIds | undefined
   /**
-   * The current color value
+   * The controlled color value of the color picker
    */
   value?: Color | undefined
   /**
-   * The default color value
+   * The initial color value when rendered.
+   * Use when you don't need to control the color value of the color picker.
    * @default #000000
    */
   defaultValue?: Color | undefined
@@ -112,19 +113,21 @@ export interface ColorPickerProps extends CommonProperties, DirectionProperty, I
    */
   initialFocusEl?: (() => HTMLElement | null) | undefined
   /**
-   * Whether the color picker is open
+   * The controlled open state of the color picker
    */
   open?: boolean | undefined
   /**
-   * Whether the initial color picker open state
+   * The initial open state of the color picker when rendered.
+   * Use when you don't need to control the open state of the color picker.
    */
   defaultOpen?: boolean | undefined
   /**
-   * The color format to use
+   * The controlled color format to use
    */
   format?: ColorFormat | undefined
   /**
-   * The default color format
+   * The initial color format when rendered.
+   * Use when you don't need to control the color format of the color picker.
    * @default "rgba"
    */
   defaultFormat?: ColorFormat | undefined

@@ -37,11 +37,12 @@ export interface SplitterProps extends DirectionProperty, CommonProperties {
    */
   orientation?: "horizontal" | "vertical" | undefined
   /**
-   * The size data of the panels
+   * The controlled size data of the panels
    */
   size?: PanelSizeData[] | undefined
   /**
-   * The default size of the panels
+   * The initial size of the panels when rendered.
+   * Use when you don't need to control the size of the panels.
    */
   defaultSize?: PanelSizeData[] | undefined
   /**

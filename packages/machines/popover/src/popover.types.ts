@@ -80,13 +80,14 @@ export interface PopoverProps
   /**
    * The user provided options used to position the popover content
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
-   * Whether the popover is open
+   * The controlled open state of the popover
    */
   open?: boolean | undefined
   /**
-   * Whether the popover is open by default
+   * The initial open state of the popover when rendered.
+   * Use when you don't need to control the open state of the popover.
    */
   defaultOpen?: boolean | undefined
 }

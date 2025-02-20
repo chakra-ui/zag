@@ -28,11 +28,12 @@ export interface ToggleGroupProps extends DirectionProperty, CommonProperties {
    */
   disabled?: boolean | undefined
   /**
-   * The values of the toggles in the group.
+   * The controlled selected value of the toggle group.
    */
   value?: string[] | undefined
   /**
-   * The default value of the toggle group.
+   * The initial selected value of the toggle group when rendered.
+   * Use when you don't need to control the selected value of the toggle group.
    */
   defaultValue?: string[] | undefined
   /**

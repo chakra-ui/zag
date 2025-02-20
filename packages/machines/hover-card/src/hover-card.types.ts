@@ -41,11 +41,12 @@ export interface HoverCardProps extends DirectionProperty, CommonProperties {
    */
   closeDelay?: number | undefined
   /**
-   * Whether the hover card is open
+   * The controlled open state of the hover card
    */
   open?: boolean | undefined
   /**
-   * Whether the hover card is open by default
+   * The initial open state of the hover card when rendered.
+   * Use when you don't need to control the open state of the hover card.
    */
   defaultOpen?: boolean | undefined
   /**

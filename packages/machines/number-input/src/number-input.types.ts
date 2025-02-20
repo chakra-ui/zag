@@ -86,30 +86,31 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
    *
    * @default "[0-9]*(.[0-9]+)?"
    */
-  pattern: string
+  pattern?: string | undefined
   /**
-   * The value of the input
+   * The controlled value of the input
    */
-  value: string
+  value?: string | undefined
   /**
-   * The default value of the input
+   * The initial value of the input when rendered.
+   * Use when you don't need to control the value of the input.
    */
-  defaultValue: string
+  defaultValue?: string | undefined
   /**
    * The minimum value of the number input
    * @default Number.MIN_SAFE_INTEGER
    */
-  min: number
+  min?: number | undefined
   /**
    * The maximum value of the number input
    * @default Number.MAX_SAFE_INTEGER
    */
-  max: number
+  max?: number | undefined
   /**
    * The amount to increment or decrement the value by
    * @default 1
    */
-  step: number
+  step?: number | undefined
   /**
    * Whether to allow mouse wheel to change the value
    */
@@ -118,21 +119,21 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
    * Whether to allow the value overflow the min/max range
    * @default true
    */
-  allowOverflow: boolean
+  allowOverflow?: boolean | undefined
   /**
    * Whether to clamp the value when the input loses focus (blur)
    * @default true
    */
-  clampValueOnBlur: boolean
+  clampValueOnBlur?: boolean | undefined
   /**
    * Whether to focus input when the value changes
    * @default true
    */
-  focusInputOnChange: boolean
+  focusInputOnChange?: boolean | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The options to pass to the `Intl.NumberFormat` constructor
    */
@@ -142,7 +143,7 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
    * the type of keyboard shown to the user on mobile devices
    * @default "decimal"
    */
-  inputMode: InputMode
+  inputMode?: InputMode | undefined
   /**
    * Function invoked when the value changes
    */

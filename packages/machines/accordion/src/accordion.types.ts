@@ -40,11 +40,12 @@ export interface AccordionProps extends DirectionProperty, CommonProperties {
    */
   collapsible?: boolean | undefined
   /**
-   * The `value` of the accordion items that are currently being expanded.
+   * The controlled value of the expanded accordion items.
    */
   value?: string[] | undefined
   /**
-   * The default value of the accordion items that are currently being expanded.
+   * The initial value of the expanded accordion items.
+   * Use when you don't need to control the value of the accordion.
    */
   defaultValue?: string[] | undefined
   /**
@@ -54,11 +55,11 @@ export interface AccordionProps extends DirectionProperty, CommonProperties {
   /**
    * The callback fired when the state of expanded/collapsed accordion items changes.
    */
-  onValueChange?(details: ValueChangeDetails): void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * The callback fired when the focused accordion item changes.
    */
-  onFocusChange?(details: FocusChangeDetails): void
+  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
    *  The orientation of the accordion items.
    *  @default "vertical"

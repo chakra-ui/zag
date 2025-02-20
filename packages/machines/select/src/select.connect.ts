@@ -373,7 +373,6 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         ...parts.positioner.attrs,
         dir: prop("dir"),
         id: dom.getPositionerId(scope),
-        inert: currentPlacement == null ? "" : undefined,
         style: popperStyles.floating,
       })
     },

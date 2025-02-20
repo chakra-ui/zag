@@ -85,11 +85,13 @@ export interface CarouselProps extends DirectionProperty, CommonProperties, Orie
    */
   loop?: boolean | undefined
   /**
-   * The index of the active page.
+   * The controlled page of the carousel.
    */
   page?: number | undefined
   /**
-   * The default page to scroll to.
+   * The initial page to scroll to when rendered.
+   * Use when you don't need to control the page of the carousel.
+   * @default 0
    */
   defaultPage?: number | undefined
   /**

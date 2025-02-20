@@ -8,6 +8,10 @@ export const props = createProps<ComboboxProps>()([
   "closeOnSelect",
   "collection",
   "composite",
+  "defaultHighlightedValue",
+  "defaultInputValue",
+  "defaultOpen",
+  "defaultValue",
   "dir",
   "disabled",
   "disableLayer",
@@ -17,7 +21,6 @@ export const props = createProps<ComboboxProps>()([
   "id",
   "ids",
   "inputBehavior",
-  "defaultInputValue",
   "inputValue",
   "invalid",
   "loopFocus",
@@ -32,7 +35,6 @@ export const props = createProps<ComboboxProps>()([
   "onOpenChange",
   "onPointerDownOutside",
   "onValueChange",
-  "defaultOpen",
   "open",
   "openOnChange",
   "openOnClick",
@@ -45,7 +47,6 @@ export const props = createProps<ComboboxProps>()([
   "selectionBehavior",
   "translations",
   "value",
-  "defaultValue",
 ])
 export const splitProps = createSplitProps<Partial<ComboboxProps>>(props)
 

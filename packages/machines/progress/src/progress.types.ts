@@ -46,24 +46,25 @@ export interface ProgressProps extends DirectionProperty, CommonProperties, Orie
    */
   ids?: ElementIds | undefined
   /**
-   *  The current value of the progress bar.
+   * The controlled value of the progress bar.
    */
-  value?: number | null
+  value?: number | null | undefined
   /**
-   * The default value of the progress bar.
+   * The initial value of the progress bar when rendered.
+   * Use when you don't need to control the value of the progress bar.
    * @default 50
    */
-  defaultValue?: number | null
+  defaultValue?: number | null | undefined
   /**
    * The minimum allowed value of the progress bar.
    * @default 0
    */
-  min: number
+  min?: number | undefined
   /**
    * The maximum allowed value of the progress bar.
    * @default 100
    */
-  max: number
+  max?: number | undefined
   /**
    * The localized messages to use.
    */

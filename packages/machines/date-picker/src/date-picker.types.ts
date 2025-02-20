@@ -130,19 +130,21 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   closeOnSelect?: boolean | undefined
   /**
-   * The selected date(s).
+   * The controlled selected date(s).
    */
   value?: DateValue[] | undefined
   /**
-   * The default selected date(s).
+   * The initial selected date(s) when rendered.
+   * Use when you don't need to control the selected date(s) of the date picker.
    */
   defaultValue?: DateValue[] | undefined
   /**
-   * The focused date.
+   * The controlled focused date.
    */
   focusedValue?: DateValue | undefined
   /**
-   * The default focused date.
+   * The initial focused date when rendered.
+   * Use when you don't need to control the focused date of the date picker.
    */
   defaultFocusedValue?: DateValue | undefined
   /**
@@ -230,11 +232,12 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   positioning?: PositioningOptions | undefined
   /**
-   * Whether the datepicker is open
+   * The controlled open state of the date picker
    */
   open?: boolean | undefined
   /**
-   * Whether the datepicker is open by default
+   * The initial open state of the date picker when rendered.
+   * Use when you don't need to control the open state of the date picker.
    */
   defaultOpen?: boolean | undefined
 }

@@ -73,7 +73,7 @@ export interface TagsInputProps extends DirectionProperty, CommonProperties, Int
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations?: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The max length of the input.
    */
@@ -112,42 +112,44 @@ export interface TagsInputProps extends DirectionProperty, CommonProperties, Int
    */
   editable?: boolean | undefined
   /**
-   * The tag input's value
+   * The controlled tag input's value
    */
   inputValue?: string | undefined
   /**
-   * The default tag input value
+   * The initial tag input value when rendered.
+   * Use when you don't need to control the tag input value.
    */
   defaultInputValue?: string | undefined
   /**
-   * The tag values
+   * The controlled tag value
    */
   value?: string[] | undefined
   /**
-   * The default tag values
+   * The initial tag value when rendered.
+   * Use when you don't need to control the tag value.
    */
   defaultValue?: string[] | undefined
   /**
    * Callback fired when the tag values is updated
    */
-  onValueChange?(details: ValueChangeDetails): void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Callback fired when the input value is updated
    */
-  onInputValueChange?(details: InputValueChangeDetails): void
+  onInputValueChange?: ((details: InputValueChangeDetails) => void) | undefined
   /**
    * Callback fired when a tag is highlighted by pointer or keyboard navigation
    */
-  onHighlightChange?(details: HighlightChangeDetails): void
+  onHighlightChange?: ((details: HighlightChangeDetails) => void) | undefined
   /**
    * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
    */
-  onValueInvalid?(details: ValidityChangeDetails): void
+  onValueInvalid?: ((details: ValidityChangeDetails) => void) | undefined
   /**
    * Returns a boolean that determines whether a tag can be added.
    * Useful for preventing duplicates or invalid tag values.
    */
-  validate?(details: ValidateArgs): boolean
+  validate?: ((details: ValidateArgs) => boolean) | undefined
   /**
    * The behavior of the tags input when the input is blurred
    * - `"add"`: add the input value as a new tag

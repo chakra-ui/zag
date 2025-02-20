@@ -52,11 +52,12 @@ export interface PaginationProps extends DirectionProperty, CommonProperties {
    */
   count?: number | undefined
   /**
-   * Number of data items per page
+   * The controlled number of data items per page
    */
   pageSize?: number | undefined
   /**
-   * Default number of data items per page
+   * The initial number of data items per page when rendered.
+   * Use when you don't need to control the page size of the pagination.
    * @default 10
    */
   defaultPageSize?: number | undefined
@@ -66,11 +67,12 @@ export interface PaginationProps extends DirectionProperty, CommonProperties {
    */
   siblingCount?: number | undefined
   /**
-   * The active page
+   * The controlled active page
    */
   page?: number | undefined
   /**
-   * Default active page
+   * The initial active page when rendered.
+   * Use when you don't need to control the active page of the pagination.
    * @default 1
    */
   defaultPage?: number | undefined

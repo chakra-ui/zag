@@ -52,11 +52,12 @@ export interface RatingGroupProps extends DirectionProperty, CommonProperties {
    */
   form?: string | undefined
   /**
-   * The rating value.
+   * The controlled value of the rating
    */
   value?: number | undefined
   /**
-   * The default value of the rating
+   * The initial value of the rating when rendered.
+   * Use when you don't need to control the value of the rating.
    */
   defaultValue?: number | undefined
   /**

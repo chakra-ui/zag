@@ -55,9 +55,14 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    */
   ids?: ElementIds | undefined
   /**
-   * The value of the highlighted menu item.
+   * The initial highlighted value of the menu item when rendered.
+   * Use when you don't need to control the highlighted value of the menu item.
    */
-  highlightedValue: string | null
+  defaultHighlightedValue?: string | null | undefined
+  /**
+   * The controlled highlighted value of the menu item.
+   */
+  highlightedValue?: string | null | undefined
   /**
    * Function called when the highlighted menu item changes.
    */
@@ -89,7 +94,7 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    */
   "aria-label"?: string | undefined
   /**
-   * Whether the menu is open
+   * The controlled open state of the menu
    */
   open?: boolean | undefined
   /**
@@ -97,7 +102,8 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    */
   onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
-   *  Whether the menu's open state is controlled by the user
+   * The initial open state of the menu when rendered.
+   * Use when you don't need to control the open state of the menu.
    */
   defaultOpen?: boolean | undefined
   /**

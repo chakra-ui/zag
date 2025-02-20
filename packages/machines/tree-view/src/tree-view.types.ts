@@ -40,19 +40,21 @@ export interface TreeViewProps<T = any> extends DirectionProperty, CommonPropert
    */
   ids?: ElementIds | undefined
   /**
-   * The id of the expanded nodes
+   * The controlled expanded node ids
    */
   expandedValue?: string[] | undefined
   /**
-   * The default id of the expanded nodes
+   * The initial expanded node ids when rendered.
+   * Use when you don't need to control the expanded node ids.
    */
   defaultExpandedValue?: string[] | undefined
   /**
-   * The id of the selected nodes
+   * The controlled selected node ids
    */
   selectedValue?: string[] | undefined
   /**
-   * The default id of the selected nodes
+   * The initial selected node ids when rendered.
+   * Use when you don't need to control the selected node ids.
    */
   defaultSelectedValue?: string[] | undefined
   /**

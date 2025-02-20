@@ -129,11 +129,12 @@ export interface EditableProps extends DirectionProperty, CommonProperties, Inte
    */
   finalFocusEl?: (() => HTMLElement | null) | undefined
   /**
-   * The value of the editable.
+   * The controlled value of the editable.
    */
   value?: string | undefined
   /**
-   * The default value of the editable.
+   * The initial value of the editable when rendered.
+   * Use when you don't need to control the value of the editable.
    */
   defaultValue?: string | undefined
   /**
