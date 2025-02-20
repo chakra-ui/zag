@@ -271,15 +271,15 @@ export interface ToastStore<V = any> {
   /**
    * Subscribe to the toast store
    */
-  subscribe: (subscriber: (...args: any[]) => void) => () => void
+  subscribe: (subscriber: (...args: any[]) => void) => VoidFunction
   /**
    * Create a new toast with the given options
    */
-  create: (data: Options<V>) => void
+  create: (data: Options<V>) => string
   /**
    * Update an existing toast with new properties
    */
-  update: (id: string, data: Partial<ToastProps<V>>) => void
+  update: (id: string, data: Partial<ToastProps<V>>) => string
   /**
    * Remove a toast by its ID
    */
