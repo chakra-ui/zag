@@ -1,5 +1,21 @@
 # @zag-js/accordion
 
+## 0.82.2
+
+### Patch Changes
+
+- [#2247](https://github.com/chakra-ui/zag/pull/2247)
+  [`83fbd21`](https://github.com/chakra-ui/zag/commit/83fbd218b05d4db3e94afca0c9ef8a57e41f8718) Thanks
+  [@lee-donghyun](https://github.com/lee-donghyun)! - Fix issue where `api.setValue` doesn't work well when `multiple`
+  is set to `true`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.82.2
+  - @zag-js/core@0.82.2
+  - @zag-js/types@0.82.2
+  - @zag-js/utils@0.82.2
+  - @zag-js/dom-query@0.82.2
+
 ## 0.82.1
 
 ### Patch Changes

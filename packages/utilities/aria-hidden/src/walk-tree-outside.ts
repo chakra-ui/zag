@@ -26,6 +26,7 @@ interface WalkTreeOutsideOptions {
   parentNode: HTMLElement
   markerName: string
   controlAttribute: string
+  explicitBooleanValue: boolean
 }
 
 const isIgnoredNode = (node: Element) => {
@@ -36,7 +37,7 @@ const isIgnoredNode = (node: Element) => {
 }
 
 export const walkTreeOutside = (originalTarget: Element | Element[], props: WalkTreeOutsideOptions): VoidFunction => {
-  const { parentNode, markerName, controlAttribute } = props
+  const { parentNode, markerName, controlAttribute, explicitBooleanValue } = props
   const targets = correctTargets(parentNode, Array.isArray(originalTarget) ? originalTarget : [originalTarget])
 
   markerMap[markerName] ||= new WeakMap()
@@ -66,7 +67,7 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
         try {
           if (isIgnoredNode(node)) return
           const attr = node.getAttribute(controlAttribute)
-          const alreadyHidden = attr !== null && attr !== "false"
+          const alreadyHidden = explicitBooleanValue ? attr === "true" : attr !== null && attr !== "false"
           const counterValue = (counterMap.get(node) || 0) + 1
           const markerValue = (markerCounter.get(node) || 0) + 1
 
@@ -83,7 +84,7 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
           }
 
           if (!alreadyHidden) {
-            node.setAttribute(controlAttribute, "")
+            node.setAttribute(controlAttribute, explicitBooleanValue ? "true" : "")
           }
         } catch (e) {
           console.error("[zag-js > ariaHidden] cannot operate on ", node, e)

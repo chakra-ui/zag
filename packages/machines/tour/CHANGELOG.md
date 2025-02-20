@@ -1,5 +1,20 @@
 # @zag-js/tour
 
+## 0.82.2
+
+### Patch Changes
+
+- Updated dependencies [[`7519355`](https://github.com/chakra-ui/zag/commit/7519355cca15c10c90f47c30aaa3e8041b7089e8)]:
+  - @zag-js/dismissable@0.82.2
+  - @zag-js/anatomy@0.82.2
+  - @zag-js/core@0.82.2
+  - @zag-js/types@0.82.2
+  - @zag-js/utils@0.82.2
+  - @zag-js/dom-query@0.82.2
+  - @zag-js/focus-trap@0.82.2
+  - @zag-js/interact-outside@0.82.2
+  - @zag-js/popper@0.82.2
+
 ## 0.82.1
 
 ### Patch Changes

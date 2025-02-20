@@ -1,5 +1,16 @@
 # @zag-js/rating-group
 
+## 0.82.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.82.2
+  - @zag-js/core@0.82.2
+  - @zag-js/types@0.82.2
+  - @zag-js/utils@0.82.2
+  - @zag-js/dom-query@0.82.2
+
 ## 0.82.1
 
 ### Patch Changes
