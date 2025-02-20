@@ -6,6 +6,19 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [0.82.2](./#0.82.2) - 2025-02-20
+
+### Fixed
+
+- **Accordion**: Fix issue where `api.setValue` doesn't work well when `multiple` is set to `true`
+
+- **Dismissable**: Fix issue where popovers close instantly when it is opened while also having another popover is open
+
+- **Aria Hidden**: Fix issue where `aria-hidden` could be set `''` instead of 'true'
+
+- **Core**: Fix security issue where `deepMerge` was flagged as unsafe by CVE scanners due to potential prototype
+  pollution risk.
+
 ## [0.82.1](./#0.82.1) - 2025-01-23
 
 ### Fixed
