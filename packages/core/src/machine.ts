@@ -337,7 +337,7 @@ export class Machine<
    */
   public setContext = (context: Partial<Writable<TContext>> | undefined) => {
     if (!context) return
-    deepMerge(this.state.context, compact(context))
+    deepMerge(this.state.context, context)
   }
 
   public setOptions = (options: Partial<S.MachineOptions<TContext, TState, TEvent>>) => {
