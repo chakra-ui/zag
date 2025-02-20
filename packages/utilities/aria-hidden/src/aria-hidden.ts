@@ -18,6 +18,7 @@ export const hideOthers = (
     parentNode,
     markerName,
     controlAttribute: "aria-hidden",
+    explicitBooleanValue: true,
   })
 }
 
@@ -31,6 +32,7 @@ export const inertOthers = (
     parentNode,
     markerName,
     controlAttribute: "inert",
+    explicitBooleanValue: false,
   })
 }
 
