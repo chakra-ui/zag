@@ -10,6 +10,10 @@
 
   - Fix issue where `api.setSrc` doesn't work.
 
+- **File Upload**
+
+  - Fix issue where drag-and-drop doesn't work when `directory` is `true`.
+
 ## Removed
 
 - General

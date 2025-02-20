@@ -1,6 +1,8 @@
 import { contains, dataAttr, isSelfTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { getFileEntries } from "@zag-js/file-utils"
 import { formatBytes } from "@zag-js/i18n-utils"
 import { type NormalizeProps, type PropTypes } from "@zag-js/types"
+import { flatArray } from "@zag-js/utils"
 import { parts } from "./file-upload.anatomy"
 import * as dom from "./file-upload.dom"
 import type { FileUploadApi, FileUploadService } from "./file-upload.types"
@@ -137,7 +139,9 @@ export function connect<T extends PropTypes>(
           const hasFiles = isEventWithFiles(event)
           if (disabled || !hasFiles) return
 
-          send({ type: "DROPZONE.DROP", files: Array.from(event.dataTransfer.files) })
+          getFileEntries(event.dataTransfer.items, prop("directory")).then((files) => {
+            send({ type: "DROPZONE.DROP", files: flatArray(files) })
+          })
         },
         onFocus() {
           if (disabled) return

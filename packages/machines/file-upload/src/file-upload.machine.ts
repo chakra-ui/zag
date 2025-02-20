@@ -44,6 +44,7 @@ export const machine = createMachine<FileUploadSchema>({
       })),
       rejectedFiles: bindable<FileRejection[]>(() => ({
         defaultValue: [],
+        isEqual: (a, b) => a.length === b?.length && a.every((file, i) => isFileEqual(file.file, b[i].file)),
         onChange(value) {
           const ctx = getContext()
           prop("onFileReject")?.({ files: value })
@@ -170,7 +171,6 @@ export const machine = createMachine<FileUploadSchema>({
       setFilesFromEvent(params) {
         const { computed, context, event } = params
         const result = getFilesFromEvent(params, event.files)
-        console.log(result)
         const { acceptedFiles, rejectedFiles } = result
 
         if (computed("multiple")) {

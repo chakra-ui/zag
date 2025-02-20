@@ -70,3 +70,12 @@ export const chunk = <T>(v: T[], size: number): T[][] => {
     return rows
   }, res)
 }
+
+export function flatArray<T>(arr: T[]): T[] {
+  return arr.reduce<T[]>((flat, item) => {
+    if (Array.isArray(item)) {
+      return flat.concat(flatArray(item))
+    }
+    return flat.concat(item)
+  }, [])
+}
