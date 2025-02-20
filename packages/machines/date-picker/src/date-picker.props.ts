@@ -22,7 +22,7 @@ export const props = createProps<UserDefinedContext>()([
   "id",
   "ids",
   "isDateUnavailable",
-  "isDateUnavailable",
+  "isOutsideVisibleRangeEnabled",
   "locale",
   "max",
   "min",
