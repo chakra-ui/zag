@@ -62,12 +62,15 @@ export const machine = createMachine<SelectSchema>({
       highlightedItem: bindable<CollectionItem | null>(() => ({
         defaultValue: null,
       })),
-      selectedItems: bindable<CollectionItem[]>(() => ({
-        defaultValue: [],
-      })),
-      valueAsString: bindable(() => ({
-        defaultValue: "",
-      })),
+      selectedItems: bindable<CollectionItem[]>(() => {
+        const value = prop("value") ?? prop("defaultValue") ?? []
+        const items = prop("collection").findMany(value)
+        return { defaultValue: items }
+      }),
+      valueAsString: bindable(() => {
+        const value = prop("value") ?? prop("defaultValue") ?? []
+        return { defaultValue: prop("collection").stringifyMany(value) }
+      }),
     }
   },
 
