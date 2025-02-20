@@ -1,5 +1,14 @@
 # @zag-js/aria-hidden
 
+## 0.82.2
+
+### Patch Changes
+
+- [#2249](https://github.com/chakra-ui/zag/pull/2249)
+  [`a747af4`](https://github.com/chakra-ui/zag/commit/a747af4b4dac0b47d74a2a6e9e886272f193f098) Thanks
+  [@maartenottenhof](https://github.com/maartenottenhof)! - Fix issue where `aria-hidden` could be set `''` instead of
+  'true'
+
 ## 0.82.1
 
 ## 0.82.0

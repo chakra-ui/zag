@@ -1,5 +1,18 @@
 # @zag-js/dismissable
 
+## 0.82.2
+
+### Patch Changes
+
+- [`7519355`](https://github.com/chakra-ui/zag/commit/7519355cca15c10c90f47c30aaa3e8041b7089e8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where popovers close instantly when it is opened while
+  also having another popover is open
+
+- Updated dependencies []:
+  - @zag-js/utils@0.82.2
+  - @zag-js/dom-query@0.82.2
+  - @zag-js/interact-outside@0.82.2
+
 ## 0.82.1
 
 ### Patch Changes
