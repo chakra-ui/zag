@@ -1,8 +1,9 @@
 import { ariaAttr, dataAttr, getEventKey, getEventTarget, isFocusable } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { throttle } from "@zag-js/utils"
 import { parts } from "./carousel.anatomy"
 import * as dom from "./carousel.dom"
-import type { CarouselService, CarouselApi } from "./carousel.types"
+import type { CarouselApi, CarouselService } from "./carousel.types"
 
 export function connect<T extends PropTypes>(service: CarouselService, normalize: NormalizeProps<T>): CarouselApi<T> {
   const { state, context, computed, send, scope, prop } = service
@@ -92,7 +93,12 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
           event.preventDefault()
           send({ type: "DRAGGING.START" })
         },
-
+        onWheel: throttle(() => {
+          send({ type: "USER.SCROLL" })
+        }, 150),
+        onTouchStart() {
+          send({ type: "USER.SCROLL" })
+        },
         style: {
           display: "grid",
           gap: "var(--slide-spacing)",

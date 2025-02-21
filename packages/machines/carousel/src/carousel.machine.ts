@@ -121,7 +121,6 @@ export const machine = createMachine<CarouselSchema>({
 
   states: {
     idle: {
-      effects: ["trackScroll"],
       on: {
         "DRAGGING.START": {
           target: "dragging",
@@ -130,6 +129,9 @@ export const machine = createMachine<CarouselSchema>({
         "AUTOPLAY.START": {
           target: "autoplay",
           actions: ["invokeAutoplayStart"],
+        },
+        "USER.SCROLL": {
+          target: "userScroll",
         },
       },
     },
@@ -144,6 +146,16 @@ export const machine = createMachine<CarouselSchema>({
         "DRAGGING.END": {
           target: "idle",
           actions: ["endDragging", "invokeDraggingEnd"],
+        },
+      },
+    },
+
+    userScroll: {
+      effects: ["trackScroll"],
+      on: {
+        "SCROLL.END": {
+          target: "idle",
+          actions: ["setClosestPage"],
         },
       },
     },
@@ -231,25 +243,18 @@ export const machine = createMachine<CarouselSchema>({
         return () => observer.disconnect()
       },
 
-      trackScroll({ context, scope, computed, refs }) {
+      trackScroll({ send, refs, scope }) {
         const el = dom.getItemGroupEl(scope)
         if (!el) return
 
-        const onScrollEnd = () => {
-          if (context.get("slidesInView").length === 0) return
-          const scrollPosition = computed("isHorizontal") ? el.scrollLeft : el.scrollTop
-          const page = context.get("pageSnapPoints").findIndex((point) => Math.abs(point - scrollPosition) < 1)
-          if (page === -1) return
-          context.set("page", page)
-        }
-
-        // Not using `scrollend` as some browsers trigger it before snapping finishes
         const onScroll = () => {
           clearTimeout(refs.get("timeoutRef"))
+          refs.set("timeoutRef", undefined)
+
           refs.set(
             "timeoutRef",
             setTimeout(() => {
-              onScrollEnd?.()
+              send({ type: "SCROLL.END" })
             }, 150),
           )
         }
@@ -292,6 +297,14 @@ export const machine = createMachine<CarouselSchema>({
         const axis = computed("isHorizontal") ? "left" : "top"
         el.scrollTo({ [axis]: context.get("pageSnapPoints")[index], behavior })
       },
+      setClosestPage({ context, scope, computed }) {
+        const el = dom.getItemGroupEl(scope)
+        if (!el) return
+        const scrollPosition = computed("isHorizontal") ? el.scrollLeft : el.scrollTop
+        const page = context.get("pageSnapPoints").findIndex((point) => Math.abs(point - scrollPosition) < 1)
+        if (page === -1) return
+        context.set("page", page)
+      },
       setNextPage({ context, prop, state }) {
         const loop = state.matches("autoplay") || prop("loop")
         const page = nextIndex(context.get("pageSnapPoints"), context.get("page"), { loop })
@@ -310,7 +323,7 @@ export const machine = createMachine<CarouselSchema>({
         )
         if (snapPoint == null) return
 
-        const page = context.get("pageSnapPoints").indexOf(snapPoint)
+        const page = context.get("pageSnapPoints").findIndex((point) => Math.abs(point - snapPoint) < 1)
         context.set("page", page)
       },
       setPage({ context, event }) {
@@ -338,7 +351,7 @@ export const machine = createMachine<CarouselSchema>({
         const el = dom.getItemGroupEl(scope)
         el.scrollBy({ left: event.left, top: event.top, behavior: "instant" })
       },
-      endDragging({ scope }) {
+      endDragging({ scope, context, computed }) {
         const el = dom.getItemGroupEl(scope)
         const startX = el.scrollLeft
         const startY = el.scrollTop
@@ -358,6 +371,10 @@ export const machine = createMachine<CarouselSchema>({
         raf(() => {
           // Scroll to closest snap points
           el.scrollTo({ left: closestX, top: closestY, behavior: "smooth" })
+
+          const closest = computed("isHorizontal") ? closestX : closestY
+          context.set("page", context.get("pageSnapPoints").indexOf(closest))
+
           const scrollSnapType = el.dataset.scrollSnapType
           if (scrollSnapType) {
             el.style.removeProperty("scroll-snap-type")

@@ -58,3 +58,28 @@ export const tryCatch = <R>(fn: () => R, fallback: () => R) => {
     return fallback?.()
   }
 }
+
+export function throttle<T extends (...args: any[]) => void>(fn: T, wait = 0): T {
+  let lastCall = 0
+  let timeout: ReturnType<typeof setTimeout> | null = null
+
+  return ((...args: Parameters<T>) => {
+    const now = Date.now()
+    const timeSinceLastCall = now - lastCall
+
+    if (timeSinceLastCall >= wait) {
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
+      fn(...args)
+      lastCall = now
+    } else if (!timeout) {
+      timeout = setTimeout(() => {
+        fn(...args)
+        lastCall = Date.now()
+        timeout = null
+      }, wait - timeSinceLastCall)
+    }
+  }) as T
+}

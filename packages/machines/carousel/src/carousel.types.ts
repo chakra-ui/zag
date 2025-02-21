@@ -1,4 +1,4 @@
-import type { Service } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { RequiredBy } from "@zag-js/types"
 import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes } from "@zag-js/types"
 
@@ -170,10 +170,11 @@ export interface CarouselSchema {
   refs: {
     timeoutRef: any
   }
-  state: "idle" | "dragging" | "autoplay"
+  state: "idle" | "dragging" | "autoplay" | "userScroll"
   effect: string
   action: string
   guard: string
+  event: EventObject
 }
 
 /* -----------------------------------------------------------------------------
