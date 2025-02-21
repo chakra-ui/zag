@@ -52,6 +52,12 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "FAQ", id: "faq" },
         {
           type: "doc",
+          label: "Migration",
+          id: "migration",
+          href: "https://github.com/chakra-ui/zag/blob/main/MIGRATION.md",
+        },
+        {
+          type: "doc",
           label: "Changelog",
           id: "changelogs",
           href: "https://github.com/chakra-ui/zag/blob/main/CHANGELOG.md",
