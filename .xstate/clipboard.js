@@ -92,7 +92,7 @@ const fetchMachine = createMachine({
         prop,
         send
       }) {
-        setTimeout(() => {
+        return setRafTimeout(() => {
           send({
             type: "COPY.DONE"
           });
