@@ -4276,15 +4276,15 @@
         "description": "Whether the toast is overlapping"
       },
       "subscribe": {
-        "type": "(subscriber: (...args: any[]) => void) => () => void",
+        "type": "(subscriber: (...args: any[]) => void) => VoidFunction",
         "description": "Subscribe to the toast store"
       },
       "create": {
-        "type": "(data: Options<V>) => void",
+        "type": "(data: Options<V>) => string",
         "description": "Create a new toast with the given options"
       },
       "update": {
-        "type": "(id: string, data: Partial<ToastProps<V>>) => void",
+        "type": "(id: string, data: Partial<ToastProps<V>>) => string",
         "description": "Update an existing toast with new properties"
       },
       "remove": {
