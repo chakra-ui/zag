@@ -10,7 +10,7 @@
   "scripts": {
     "packages": "pnpm --filter=./packages/** -r",
     "build": "pnpm packages -- build",
-    "postbuild": "pnpm document:types && pnpm document:data-attr",
+    "postbuild": "pnpm document-types && pnpm document-attr",
     "prepare": "husky",
     "sync-pkgs": "tsx scripts/sync-packages.ts",
     "clean-pkgs": "pnpm -r exec rm -rf dist .swc *.log",
@@ -49,8 +49,8 @@
     "visualize": "tsx scripts/visualize.ts --all",
     "slack": "tsx scripts/slack.ts",
     "play": "tsx scripts/play.ts",
-    "document:types": "tsx scripts/typedocs.ts",
-    "document:data-attr": "tsx scripts/data-attr.ts",
+    "document-types": "tsx scripts/typedocs.ts",
+    "document-attr": "tsx scripts/data-attr.ts",
     "website": "pnpm --filter=./website"
   },
   "lint-staged": {
