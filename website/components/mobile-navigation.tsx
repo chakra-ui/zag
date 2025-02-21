@@ -25,7 +25,6 @@ export function MobileNavigation() {
 
   useEffect(() => {
     if (desktop) api.setOpen(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [desktop])
 
   useRouteChange(() => {

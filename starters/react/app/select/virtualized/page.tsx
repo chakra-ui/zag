@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 
 import { VirtualizedSelect } from "../../../components/virtualized-select"
