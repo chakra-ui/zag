@@ -23,7 +23,7 @@ function Popover({ children, bg, inert }: { children?: React.ReactNode; bg: stri
     return () => {
       cleanup.forEach((c) => c())
     }
-  }, [open])
+  }, [open, inert])
 
   return (
     <div style={{ padding: 40 }}>

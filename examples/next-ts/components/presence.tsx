@@ -9,7 +9,7 @@ function usePresence(present: boolean) {
 
 interface PresenceProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const Presence = forwardRef<HTMLDivElement, PresenceProps>((props: PresenceProps, ref) => {
+export const Presence = forwardRef<HTMLDivElement, PresenceProps>(function Presence(props, ref) {
   const { hidden, ...rest } = props
 
   const present = !hidden
@@ -32,7 +32,7 @@ function mergeRefs<T>(...refs: (RefObject<T> | Ref<T>)[]) {
       if (typeof ref === "function") {
         ref(node)
       } else if (ref != null) {
-        // @ts-ignore
+        // @ts-expect-error - ref is a ref object
         ref.current = node
       }
     })

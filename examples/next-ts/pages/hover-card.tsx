@@ -20,7 +20,7 @@ export default function Page() {
     <>
       <main className="hover-card">
         <div style={{ display: "flex", gap: "50px" }}>
-          <a href="https://twitter.com/zag_js" target="_blank" {...api.getTriggerProps()}>
+          <a href="https://twitter.com/zag_js" target="_blank" rel="noreferrer" {...api.getTriggerProps()}>
             Twitter
           </a>
 
@@ -32,7 +32,7 @@ export default function Page() {
                     <div {...api.getArrowTipProps()} />
                   </div>
                   Twitter Preview
-                  <a href="https://twitter.com/zag_js" target="_blank">
+                  <a href="https://twitter.com/zag_js" target="_blank" rel="noreferrer">
                     Twitter
                   </a>
                 </div>

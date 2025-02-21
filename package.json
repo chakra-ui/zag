@@ -85,6 +85,7 @@
     "@types/signale": "1.4.7",
     "@typescript-eslint/eslint-plugin": "8.24.1",
     "@typescript-eslint/parser": "8.24.1",
+    "@eslint/eslintrc": "3.2.0",
     "axe-core": "4.10.2",
     "commitlint": "19.7.1",
     "cross-env": "^7.0.3",

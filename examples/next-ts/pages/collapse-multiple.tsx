@@ -2,7 +2,7 @@ import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { memo, useId, useRef, useState } from "react"
 
-const Collapse = memo((props: { value: number; open: boolean }) => {
+const Collapse = memo(function Collapse(props: { value: number; open: boolean }) {
   const { open, value } = props
   const ref = useRef(0)
 
