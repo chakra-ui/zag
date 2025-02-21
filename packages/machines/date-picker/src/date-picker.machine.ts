@@ -107,6 +107,7 @@ export const machine = createMachine<DatePickerSchema>({
         defaultValue: prop("focusedValue"),
         isEqual: (a, b) => b !== null && a !== null && isDateEqual(a, b),
         hash: (v) => v.toString(),
+        sync: true,
         onChange(focusedValue) {
           const context = getContext()
           prop("onFocusChange")?.({

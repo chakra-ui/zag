@@ -5,14 +5,18 @@ type StateVisualizerProps = {
   state: Service<any>
   label?: string
   omit?: string[]
+  context?: string[]
+  computed?: string[]
 }
 
 export function StateVisualizer(props: StateVisualizerProps) {
-  const { label, omit } = props
+  const { label, omit, context, computed } = props
   const service = props.state
   const obj = {
     state: service.state.get(),
     event: service.event.current(),
+    context: context ? Object.fromEntries(context.map((key) => [key, service.context.get(key)])) : undefined,
+    computed: computed ? Object.fromEntries(computed.map((key) => [key, service.computed(key)])) : undefined,
   }
 
   return (
