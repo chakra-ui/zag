@@ -55,8 +55,8 @@ export async function openInStackblitz(component: string, defaultProps: any) {
     dependencies: {
       react: "^18.3.1",
       "react-dom": "^18.3.1",
-      "@zag-js/react": "latest",
-      [`@zag-js/${componentName}`]: "latest",
+      "@zag-js/react": "0.82.2",
+      [`@zag-js/${componentName}`]: "0.82.2",
       "react-icons": "latest",
     },
     devDependencies: {
