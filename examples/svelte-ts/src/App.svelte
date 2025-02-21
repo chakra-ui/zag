@@ -21,13 +21,15 @@
   import FloatingPanel from "./routes/floating-panel.svelte"
   import HoverCard from "./routes/hover-card.svelte"
   import Index from "./routes/index.svelte"
+  import NestedMenu from "./routes/menu-nested.svelte"
   import MenuOptions from "./routes/menu-options.svelte"
   import Menu from "./routes/menu.svelte"
-  import NestedMenu from "./routes/menu-nested.svelte"
   import NumberInput from "./routes/number-input.svelte"
   import Pagination from "./routes/pagination.svelte"
   import PinInput from "./routes/pin-input.svelte"
   import Popover from "./routes/popover.svelte"
+  import Popper from "./routes/popper.svelte"
+  import Presence from "./routes/presence.svelte"
   import Progress from "./routes/progress.svelte"
   import QrCode from "./routes/qr-code.svelte"
   import RadioGroup from "./routes/radio-group.svelte"
@@ -38,6 +40,7 @@
   import SignaturePad from "./routes/signature-pad.svelte"
   import Slider from "./routes/slider.svelte"
   import Splitter from "./routes/splitter.svelte"
+  import Steps from "./routes/steps.svelte"
   import Switch from "./routes/switch.svelte"
   import Tabs from "./routes/tabs.svelte"
   import TagsInput from "./routes/tags-input.svelte"
@@ -102,6 +105,9 @@
     { path: "/timer-countdown", component: TimerCountdown },
     { path: "/timer-stopwatch", component: TimerStopwatch },
     { path: "/qr-code", component: QrCode },
+    { path: "/presence", component: Presence },
+    { path: "/popper", component: Popper },
+    { path: "/steps", component: Steps },
   ]
 </script>
 
