@@ -122,7 +122,7 @@ export type ChooseFn<T extends Dict> = (
 ) => Transition<T> | undefined
 
 interface PropsParams<T extends Dict> {
-  props: Partial<T["props"]>
+  props: T["props"]
   scope: Scope
 }
 

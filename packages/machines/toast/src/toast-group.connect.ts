@@ -22,7 +22,8 @@ export function groupConnect<T extends PropTypes, O = any>(
     },
     getGroupProps(options = {}) {
       const { label = "Notifications" } = options
-      const hotkeyLabel = prop("hotkey").join("+").replace(/Key/g, "").replace(/Digit/g, "")
+      const { hotkey } = prop("store").attrs
+      const hotkeyLabel = hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "")
       const placement = computed("placement")
       const [side, align = "center"] = placement.split("-")
 

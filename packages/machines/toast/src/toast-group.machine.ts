@@ -1,6 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
 import { addDomEvent } from "@zag-js/dom-query"
+import { uuid } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema } from "./toast.types"
 
@@ -8,17 +9,14 @@ export const groupMachine = createMachine<ToastGroupSchema>({
   props({ props }) {
     return {
       dir: "ltr",
-      hotkey: ["altKey", "KeyT"],
-      offsets: "1rem",
-      gap: 16,
-      pauseOnPageIdle: true,
+      id: uuid(),
       ...props,
       store: props.store!,
     }
   },
 
   initialState({ prop }) {
-    return prop("store").overlap ? "overlap" : "stack"
+    return prop("store").attrs.overlap ? "overlap" : "stack"
   },
 
   refs() {
@@ -45,8 +43,8 @@ export const groupMachine = createMachine<ToastGroupSchema>({
 
   computed: {
     count: ({ context }) => context.get("toasts").length,
-    overlap: ({ prop }) => prop("store").overlap,
-    placement: ({ prop }) => prop("store").placement,
+    overlap: ({ prop }) => prop("store").attrs.overlap,
+    placement: ({ prop }) => prop("store").attrs.placement,
   },
 
   effects: ["subscribeToStore", "trackDocumentVisibility", "trackHotKeyPress"],
@@ -152,16 +150,16 @@ export const groupMachine = createMachine<ToastGroupSchema>({
       },
       trackHotKeyPress({ prop, send }) {
         const handleKeyDown = (event: KeyboardEvent) => {
-          const isHotkeyPressed = prop("hotkey")?.every((key) => (event as any)[key] || event.code === key)
+          const { hotkey } = prop("store").attrs
+          const isHotkeyPressed = hotkey.every((key) => (event as any)[key] || event.code === key)
           if (!isHotkeyPressed) return
           send({ type: "DOC.HOTKEY" })
         }
-        return addDomEvent(document, "keydown", handleKeyDown, {
-          capture: true,
-        })
+        return addDomEvent(document, "keydown", handleKeyDown, { capture: true })
       },
       trackDocumentVisibility({ prop, send, scope }) {
-        if (!prop("pauseOnPageIdle")) return
+        const { pauseOnPageIdle } = prop("store").attrs
+        if (!pauseOnPageIdle) return
         const doc = scope.getDoc()
         return addDomEvent(doc, "visibilitychange", () => {
           const isHidden = doc.visibilityState === "hidden"

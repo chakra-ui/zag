@@ -11,6 +11,7 @@ import { Dialog } from "../components/dialog"
 const toaster = toast.createStore({
   overlap: true,
   placement: "bottom",
+  gap: 24,
 })
 
 export default function ToastGroup() {
@@ -18,7 +19,6 @@ export default function ToastGroup() {
 
   const service = useMachine(toast.group.machine, {
     id: useId(),
-    gap: 24,
     store: toaster,
     ...controls.context,
   })

@@ -1,4 +1,4 @@
-import type { CommonProperties, Direction, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, Direction, DirectionProperty, PropTypes, Required, RequiredBy } from "@zag-js/types"
 import type { EventObject, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
@@ -177,43 +177,36 @@ export interface ToastStoreProps {
    * The placement of the toast
    * @default "bottom"
    */
-  placement?: Placement
+  placement?: Placement | undefined
   /**
    * The maximum number of toasts
    * @default 10
    */
-  max?: number
+  max?: number | undefined
   /**
    * Whether to overlap the toasts
    */
-  overlap?: boolean
+  overlap?: boolean | undefined
   /**
    * The duration of the toast.
    * By default, it is determined by the type of the toast.
    */
-  duration?: number
-}
-
-export interface ToastGroupProps extends DirectionProperty, CommonProperties {
+  duration?: number | undefined
   /**
-   * Whether to pause toast when the user leaves the browser tab
-   * @default false
+   * The gap between the toasts
+   * @default 16
    */
-  pauseOnPageIdle?: boolean | undefined
-  /**
-   * The store of the toast
-   */
-  store: ToastStore
-  /**
-   * The hotkey that will move focus to the toast group
-   * @default '["altKey", "KeyT"]'
-   */
-  hotkey?: string[] | undefined
+  gap?: number | undefined
   /**
    * The offset from the safe environment edge of the viewport
    * @default "1rem"
    */
   offsets?: string | Record<"left" | "right" | "bottom" | "top", string> | undefined
+  /**
+   * The hotkey that will move focus to the toast group
+   * @default '["altKey", "KeyT"]'
+   */
+  hotkey?: string[] | undefined
   /**
    * The duration for the toast to kept alive before it is removed.
    * Useful for exit transitions.
@@ -222,17 +215,22 @@ export interface ToastGroupProps extends DirectionProperty, CommonProperties {
    */
   removeDelay?: number | undefined
   /**
-   * The gap between the toasts
-   * @default 16
+   * Whether to pause toast when the user leaves the browser tab
+   * @default false
    */
-  gap?: number | undefined
+  pauseOnPageIdle?: boolean | undefined
 }
 
-type ToastGroupPropsWithDefault = "offsets" | "hotkey" | "gap" | "store"
+export interface ToastGroupProps extends DirectionProperty, CommonProperties {
+  /**
+   * The store of the toast
+   */
+  store: ToastStore
+}
 
 export type ToastGroupSchema = {
   state: "stack" | "overlap"
-  props: RequiredBy<ToastGroupProps, ToastGroupPropsWithDefault>
+  props: ToastGroupProps
   context: {
     toasts: RequiredBy<ToastProps, ToastPropsWithDefault>[]
     heights: ToastHeight[]
@@ -261,13 +259,9 @@ export type ToastGroupService = Service<ToastGroupSchema>
 
 export interface ToastStore<V = any> {
   /**
-   * The placement of the toast
+   * The attributes of the toast store
    */
-  placement: Placement
-  /**
-   * Whether the toast is overlapping
-   */
-  overlap: boolean
+  attrs: Required<ToastStoreProps>
   /**
    * Subscribe to the toast store
    */
@@ -323,7 +317,7 @@ export interface ToastStore<V = any> {
     promise: Promise<T> | (() => Promise<T>),
     options: PromiseOptions<T, V>,
     shared?: Omit<Options<V>, "type">,
-  ) => Promise<T> | undefined | { unwrap: () => Promise<T> }
+  ) => { id: string | undefined; unwrap: () => Promise<T> } | undefined
   /**
    * Pause a toast's auto-dismiss timer. If no ID is provided, pauses all toasts
    */

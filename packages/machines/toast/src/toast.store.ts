@@ -1,11 +1,22 @@
+import type { Required } from "@zag-js/types"
 import { runIfFn, uuid } from "@zag-js/utils"
-import type { Options, Placement, PromiseOptions, ToastProps, ToastStore, ToastStoreProps } from "./toast.types"
+import type { Options, PromiseOptions, ToastProps, ToastStore, ToastStoreProps } from "./toast.types"
+
+const withDefaults = <T extends object, D extends Partial<T>>(options: T, defaults: D): T & Required<D> => {
+  return { ...defaults, ...options } as any
+}
 
 export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V> {
-  const placement: Placement = props.placement ?? "bottom"
-  const overlap = !!props.overlap
-  const duration = props.duration
-  const max = props.max ?? 10
+  const attrs = withDefaults(props, {
+    placement: "bottom",
+    overlap: false,
+    max: 10,
+    gap: 16,
+    offsets: "1rem",
+    hotkey: ["altKey", "KeyT"],
+    removeDelay: 200,
+    pauseOnPageIdle: true,
+  })
 
   let subscribers: Array<(...args: any[]) => void> = []
   let toasts: Partial<ToastProps<V>>[] = []
@@ -25,7 +36,7 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
   }
 
   const addToast = (data: Partial<ToastProps<V>>) => {
-    if (toasts.length >= max) return
+    if (toasts.length >= attrs.max) return
     publish(data)
     toasts.unshift(data)
   }
@@ -34,19 +45,26 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
     const id = data.id ?? `toast:${uuid()}`
     const exists = toasts.find((toast) => toast.id === id)
 
-    const closable = data.closable ?? true
     if (dismissedToasts.has(id)) dismissedToasts.delete(id)
 
     if (exists) {
       toasts = toasts.map((toast) => {
         if (toast.id === id) {
-          return publish({ ...toast, ...data, id, closable })
+          return publish({ ...toast, ...data, id })
         }
 
         return toast
       })
     } else {
-      addToast({ ...data, closable, id, stacked: !overlap, duration })
+      addToast({
+        id,
+        duration: attrs.duration,
+        removeDelay: attrs.removeDelay,
+        type: "info",
+        ...data,
+        stacked: !attrs.overlap,
+        gap: attrs.gap,
+      })
     }
 
     return id
@@ -151,12 +169,7 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
         prom.then(() => (result[0] === "reject" ? reject(result[1]) : resolve(result[1]))).catch(reject),
       )
 
-    if (typeof id !== "string" && typeof id !== "number") {
-      // cannot Object.assign on undefined
-      return { unwrap }
-    } else {
-      return Object.assign(id, { unwrap })
-    }
+    return { id, unwrap }
   }
 
   const update = (id: string, data: Omit<Options, "id">) => {
@@ -213,8 +226,7 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
   }
 
   return {
-    placement,
-    overlap,
+    attrs,
     subscribe,
     create,
     update,

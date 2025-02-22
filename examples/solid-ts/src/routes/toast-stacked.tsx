@@ -7,12 +7,12 @@ import { ToastItem } from "~/components/toast-item"
 const toaster = toast.createStore({
   overlap: false,
   placement: "bottom",
+  gap: 24,
 })
 
 export default function ToastGroup() {
   const service = useMachine(toast.group.machine, {
     id: createUniqueId(),
-    gap: 24,
     store: toaster,
   })
 

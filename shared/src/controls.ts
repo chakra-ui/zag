@@ -161,8 +161,6 @@ export const splitterControls = defineControls({
 
 export const toastControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
-  pauseOnPageIdle: { type: "boolean", defaultValue: false },
-  gap: { type: "number", defaultValue: 16 },
 })
 
 export const selectControls = defineControls({

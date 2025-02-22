@@ -1,7 +1,7 @@
 import type { Service } from "@zag-js/core"
 import { MAX_Z_INDEX } from "@zag-js/dom-query"
 import type { Style } from "@zag-js/types"
-import type { Placement, ToastGroupSchema, ToastSchema, Type } from "./toast.types"
+import type { Placement, ToastGroupService, ToastSchema, Type } from "./toast.types"
 
 export const defaultTimeouts: Record<Type, number> = {
   info: 5000,
@@ -15,13 +15,15 @@ export function getToastDuration(duration: number | undefined, type: Type) {
   return duration ?? defaultTimeouts[type] ?? defaultTimeouts.DEFAULT
 }
 
-export function getGroupPlacementStyle(service: Service<ToastGroupSchema>, placement: Placement): Style {
+const getOffsets = (offsets: string | Record<"left" | "right" | "bottom" | "top", string>) =>
+  typeof offsets === "string" ? { left: offsets, right: offsets, bottom: offsets, top: offsets } : offsets
+
+export function getGroupPlacementStyle(service: ToastGroupService, placement: Placement): Style {
   const { prop, computed, context } = service
-  const offset = prop("offsets")
+  const { offsets, gap } = prop("store").attrs
 
   const heights = context.get("heights")
-  const computedOffset =
-    typeof offset === "string" ? { left: offset, right: offset, bottom: offset, top: offset } : offset
+  const computedOffset = getOffsets(offsets)
 
   const rtl = prop("dir") === "rtl"
   const computedPlacement = placement
@@ -36,7 +38,7 @@ export function getGroupPlacementStyle(service: Service<ToastGroupSchema>, place
     pointerEvents: computed("count") > 0 ? undefined : "none",
     display: "flex",
     flexDirection: "column",
-    "--gap": `${prop("gap")}px`,
+    "--gap": `${gap}px`,
     "--first-height": `${heights[0]?.height || 0}px`,
     zIndex: MAX_Z_INDEX,
   }
@@ -73,8 +75,9 @@ export function getGroupPlacementStyle(service: Service<ToastGroupSchema>, place
 export function getPlacementStyle(service: Service<ToastSchema>, visible: boolean): Style {
   const { prop, context, computed } = service
 
-  const placement = prop("parent").computed("placement")
-  const gap = prop("parent").prop("gap")
+  const parent = prop("parent")
+  const placement = parent.computed("placement")
+  const { gap } = parent.prop("store").attrs
 
   const [side] = placement.split("-")
 
@@ -90,7 +93,6 @@ export function getPlacementStyle(service: Service<ToastSchema>, visible: boolea
   const type = prop("type")
 
   const duration = type === "loading" ? Number.MAX_SAFE_INTEGER : remainingTime
-
   const offset = computed("heightIndex") * gap + computed("heightBefore")
 
   const styles: Style = {

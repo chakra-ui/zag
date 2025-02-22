@@ -10,16 +10,9 @@ const { not } = createGuards<ToastSchema>()
 export const machine = createMachine<ToastSchema>({
   props({ props }) {
     return {
-      removeDelay: 200,
-      placement: "bottom",
-      closable: true,
-      type: "info",
-      offset: 0,
       ...props,
-      id: props.id!,
-      parent: props.parent!,
-      gap: props.parent!.prop("gap"),
-      duration: getToastDuration(props.duration, props.type!),
+      closable: props.closable ?? true,
+      duration: getToastDuration(props.duration, props.type),
     }
   },
 
