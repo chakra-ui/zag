@@ -1,5 +1,29 @@
 # @zag-js/toast
 
+## 1.0.0
+
+### Major Changes
+
+- [#2233](https://github.com/chakra-ui/zag/pull/2233)
+  [`b1caa44`](https://github.com/chakra-ui/zag/commit/b1caa44085e7f1da0ad24fc7b25178081811646c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **Core**: Rewrite machines for increased performance and initial
+  mount time. The results show roughly 1.5x - 4x performance improvements across components.
+
+  - **[Breaking] Toast**
+
+    - Require the creation of a toast store using `createStore`
+    - Solid.js: Require the usage of `<Key>` component to render toasts
+
+### Patch Changes
+
+- Updated dependencies [[`b1caa44`](https://github.com/chakra-ui/zag/commit/b1caa44085e7f1da0ad24fc7b25178081811646c)]:
+  - @zag-js/core@1.0.0
+  - @zag-js/anatomy@1.0.0
+  - @zag-js/types@1.0.0
+  - @zag-js/utils@1.0.0
+  - @zag-js/dismissable@1.0.0
+  - @zag-js/dom-query@1.0.0
+
 ## 0.82.2
 
 ### Patch Changes

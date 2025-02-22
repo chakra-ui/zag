@@ -1,5 +1,7 @@
 # @zag-js/aria-hidden
 
+## 1.0.0
+
 ## 0.82.2
 
 ### Patch Changes
