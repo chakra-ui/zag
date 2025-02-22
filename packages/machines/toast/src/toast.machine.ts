@@ -11,8 +11,11 @@ export const machine = createMachine<ToastSchema>({
   props({ props }) {
     return {
       ...props,
+      id: props.id!,
+      type: props.type!,
+      parent: props.parent!,
       closable: props.closable ?? true,
-      duration: getToastDuration(props.duration, props.type),
+      duration: getToastDuration(props.duration, props.type!),
     }
   },
 
