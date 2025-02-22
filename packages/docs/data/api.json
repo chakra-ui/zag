@@ -4267,13 +4267,9 @@
       }
     },
     "context": {
-      "placement": {
-        "type": "Placement",
-        "description": "The placement of the toast"
-      },
-      "overlap": {
-        "type": "boolean",
-        "description": "Whether the toast is overlapping"
+      "attrs": {
+        "type": "ToastStoreProps>",
+        "description": "The attributes of the toast store"
       },
       "subscribe": {
         "type": "(subscriber: (...args: any[]) => void) => VoidFunction",
@@ -4324,7 +4320,7 @@
         "description": "Get the total number of toasts"
       },
       "promise": {
-        "type": "<T>(promise: Promise<T> | (() => Promise<T>), options: Options<V>, \"type\">) => Promise<T> | { unwrap: () => Promise<T>; }",
+        "type": "<T>(promise: Promise<T> | (() => Promise<T>), options: Options<V>, \"type\">) => { id: string; unwrap: () => Promise<T>; }",
         "description": "Create a toast that tracks a promise's state"
       },
       "pause": {
